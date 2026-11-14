@@ -199,7 +199,8 @@ describe("reusing a branch's OS images (reuse.mjs, 3.7.4)", () => {
     ]);
   });
 
-  it.skipIf(process.platform === "win32")(
+  // GNU tar (files.mjs sorts names), as the OS and its builder have.
+  it.skipIf(process.platform !== "linux")(
     "checks the archive against its manifest, blob by blob",
     () => {
       const dir = mkdtempSync(join(tmpdir(), "rg-os-reuse-test-"));
