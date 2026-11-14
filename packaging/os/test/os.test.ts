@@ -20,6 +20,8 @@ import {
   KEEP,
   // @ts-expect-error plain JavaScript, no types
 } from "../files.mjs";
+// @ts-expect-error plain JavaScript, no types
+import { latestOsRelease, OS_PATHS, osChanged } from "../os-release.mjs";
 import {
   archiveDifferences,
   filesDifferences,
@@ -112,6 +114,75 @@ describe("the stack of a release", () => {
     const pub = publicKey.export({ type: "spki", format: "pem" }).toString();
     const data = Buffer.from(JSON.stringify(stack()));
     expect(checkSignature(data, signManifest(data, pem), pub)).toBe(true);
+  });
+});
+
+// RedGiant OS's images only when the OS changed since the latest release that has them (3.7.4).
+describe("the latest release with RedGiant OS's images (os-release.mjs, 3.7.4)", () => {
+  const rel = (tag: string, o: Record<string, unknown> = {}, images = true) => ({
+    tag_name: tag,
+    draft: false,
+    prerelease: false,
+    assets: images
+      ? [{ name: "SHA256SUMS-os" }, { name: `redgiant-os-${tag.slice(1)}-x86_64.qcow2` }]
+      : [{ name: "redgiant-os-stack.json" }, { name: "redgiant-os-release" }],
+    ...o,
+  });
+  it.each([
+    ["the newest with images", [rel("v3.7.3"), rel("v3.7.10"), rel("v3.7.9")], "", "v3.7.10"],
+    [
+      "a release without images is passed over",
+      [rel("v3.7.5", {}, false), rel("v3.7.4")],
+      "",
+      "v3.7.4",
+    ],
+    [
+      "never a pre-release or a draft",
+      [rel("v3.8.0", { prerelease: true }), rel("v3.7.9", { draft: true }), rel("v3.7.1")],
+      "",
+      "v3.7.1",
+    ],
+    [
+      "never a tag that is not a version",
+      [rel("os-preview"), rel("engine-cache"), rel("v3.7.2")],
+      "",
+      "v3.7.2",
+    ],
+    ["only older than --below", [rel("v3.7.4"), rel("v3.7.3")], "3.7.4", "v3.7.3"],
+    ["none", [rel("v3.7.5", {}, false)], "", null],
+  ])("%s", (_name, list, below, tag) => {
+    expect(latestOsRelease(list, below)).toBe(tag);
+  });
+
+  it("decides by the OS's files and the update key, with git", () => {
+    expect(OS_PATHS).toEqual([
+      "packaging/os",
+      "packages/server/helpers",
+      ".github/workflows/os.yml",
+      "packages/server/src/release-key.ts",
+    ]);
+    const repo = mkdtempSync(join(tmpdir(), "rg-os-release-"));
+    const put = (path: string, text: string) => {
+      mkdirSync(dirname(join(repo, path)), { recursive: true });
+      writeFileSync(join(repo, path), text);
+    };
+    const git = (...a: string[]) =>
+      execFileSync("git", ["-C", repo, ...a], { encoding: "utf8" }).trim();
+    git("init", "-q");
+    git("config", "user.email", "t@example.com");
+    git("config", "user.name", "t");
+    put("packaging/os/build.sh", "one\n");
+    put("README.md", "one\n");
+    git("add", "-A");
+    git("commit", "-qm", "one");
+    git("tag", "v1.0.0");
+    put("README.md", "two\n");
+    git("commit", "-qam", "docs");
+    expect(osChanged("v1.0.0", "HEAD", repo)).toBe(false);
+    put("packaging/os/build.sh", "two\n");
+    git("commit", "-qam", "os");
+    expect(osChanged("v1.0.0", "HEAD", repo)).toBe(true);
+    expect(osChanged("v9.9.9", "HEAD", repo)).toBe(true);
   });
 });
 

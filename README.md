@@ -60,6 +60,14 @@ curl -fsSL https://raw.githubusercontent.com/Frostmoore/redgiant2/main/install.s
 It runs RedGiant in Docker (Docker Engine 26+; the script offers to install it), everything in
 `~/redgiant`, and opens the browser already signed in.
 
+### RedGiant OS (a machine that only runs RedGiant)
+
+USB stick, Proxmox, Hyper-V, VirtualBox, VMware, clouds, a Raspberry Pi: see
+[docs/INSTALL-OS.md](docs/INSTALL-OS.md). The OS images are made only when the OS itself changes, so
+they sit on the latest release that carries them: the [latest release](https://github.com/Frostmoore/redgiant2/releases/latest)'s
+notes link it, and the Proxmox script finds it by itself. A new machine updates itself to the latest
+RedGiant at its first start.
+
 ### First run
 
 The setup in the browser asks one thing at a time: models (a subscription, API keys, your own server or

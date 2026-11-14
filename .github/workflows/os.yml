@@ -61,6 +61,18 @@ on:
       expect_tag:
         type: string
         default: ""
+      # 3.7.4, the OS unchanged since os_tag (the latest release with its images): only the stack
+      # and the system's files are attached, with the update test first unless `tested` (the
+      # branch's run of this commit passed it).
+      stack_only:
+        type: boolean
+        default: false
+      os_tag:
+        type: string
+        default: ""
+      tested:
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -86,11 +98,15 @@ jobs:
       release: ${{ steps.plan.outputs.release }}
       version: ${{ steps.plan.outputs.version }}
       source_tag: ${{ steps.plan.outputs.source_tag }}
+      os_tag: ${{ steps.plan.outputs.os_tag }}
+      update: ${{ steps.plan.outputs.update }}
     steps:
+      # The whole history (no file contents): the OS's files are compared with git.
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: packaging/release-kind.json
-          sparse-checkout-cone-mode: false
+          ref: ${{ inputs.sha || github.sha }}
+          fetch-depth: 0
+          filter: blob:none
       - id: plan
         shell: bash
         env:
@@ -98,20 +114,34 @@ jobs:
           EVENT: ${{ github.event_name }}
           REUSE_RUN: ${{ inputs.reuse_run }}
           DRY_RUN: ${{ inputs.dry_run }}
+          STACK_ONLY: ${{ inputs.stack_only }}
+          TESTED: ${{ inputs.tested }}
+          GIVEN_OS_TAG: ${{ inputs.os_tag }}
           WANTED: ${{ inputs.version }}
         run: |
           set -euo pipefail
           version_branch='^[pab][0-9]+[.][0-9]+[.][0-9]+$'
-          build=true release=false version="" source_tag="" why=""
-          if [ -n "$REUSE_RUN" ]; then
+          build=true release=false version="" source_tag="" os_tag="" update=false why=""
+          if [ "$STACK_ONLY" = true ]; then
+            # release.yml, the OS unchanged: the stack and the system's files only, after the update
+            # test (here, unless the branch's run passed it).
+            build=false; os_tag=$GIVEN_OS_TAG; version="${WANTED#v}"
+            [ "$TESTED" = true ] || update=true
+            why="the OS is $os_tag's: the stack and the system's files only (update test: $update)"
+          elif [ -n "$REUSE_RUN" ]; then
             build=false; why="release.yml reuses run $REUSE_RUN"
           elif [ "$DRY_RUN" = true ]; then
             build=false; why="dry run: nothing reusable, the images would be built"
           elif [ "$EVENT" = push ] && [ "$GITHUB_REF_TYPE" = branch ] && [[ "$GITHUB_REF_NAME" =~ $version_branch ]]; then
-            version=$(node -p "require('./packaging/release-kind.json').version")
+            version=$(git show HEAD:packaging/release-kind.json | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).version")
             if [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              # 3.7.4: the Docker images always; RedGiant OS's images only when the OS changed since
+              # the latest release that carries them (os-release.mjs, git diff on its tag).
               release=true; source_tag="ci-$version-$GITHUB_SHA"
-              why="version branch: the Docker images of this commit ($source_tag), the OS of $version"
+              eval "$(node packaging/os/os-release.mjs --sha HEAD | sed 's/^/os_/')"
+              build=$os_changed
+              [ -z "$os_tag" ] || update=true
+              why="version branch: the Docker images of this commit ($source_tag); the OS's images: $([ "$build" = true ] && echo "built (changed since ${os_tag:-no release with them})" || echo "$os_tag's, unchanged"); update test from $os_tag: $update"
             else
               version=""; why="version branch without a version in release-kind.json: the latest release's images"
             fi
@@ -133,12 +163,14 @@ jobs:
             [ -n "$version" ] || version=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq .tag_name | sed 's/^v//')
             [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "not a version: $version"; exit 1; }
           fi
-          echo "::notice title=RedGiant OS::build=$build release=$release version=${version:-none} ($why)"
+          echo "::notice title=RedGiant OS::build=$build release=$release update=$update version=${version:-none} ($why)"
           {
             echo "build=$build"
             echo "release=$release"
             echo "version=$version"
             echo "source_tag=$source_tag"
+            echo "os_tag=$os_tag"
+            echo "update=$update"
           } >> "$GITHUB_OUTPUT"
 
   # The Docker images of this commit (version branches): RedGiant OS is built with these.
@@ -335,7 +367,7 @@ jobs:
   # nesting), as Proxmox runs it; the Proxmox helper script is checked by shellcheck here and by its
   # tests (packaging/os/test/proxmox.test.ts) in CI.
   lxc:
-    needs: stack
+    needs: [plan, stack]
     if: ${{ !inputs.only || contains(inputs.only, 'lxc') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 150
@@ -347,7 +379,8 @@ jobs:
         run: |
           shellcheck --version | head -2
           shellcheck -x packaging/os/proxmox/redgiant-proxmox.sh packaging/os/lxc/lxc.sh packaging/os/raspi/raspi.sh \
-            packaging/os/test/lxc-test.sh packaging/os/test/boot-test.sh
+            packaging/os/test/lxc-test.sh packaging/os/test/boot-test.sh packaging/os/test/update-test.sh \
+            packaging/os/test/update-feed.sh
           bash packaging/os/proxmox/redgiant-proxmox.sh --help | head -5
       - uses: actions/download-artifact@v4
         with:
@@ -396,6 +429,16 @@ jobs:
       - name: Start the template in Incus and check
         timeout-minutes: 50
         run: sudo packaging/os/test/lxc-test.sh --template "$OUT"/redgiant-os-*-x86_64-lxc.tar.zst --files "$RUNNER_TEMP/files" --logs logs/lxc --timeout 1500
+      # 3.7.4: a new machine's first start brings it to the latest release by itself (here a feed of
+      # this commit, one patch newer, signed with a throwaway key).
+      - name: A new machine's first start updates it (redgiant-os-update first)
+        timeout-minutes: 40
+        env:
+          VERSION: ${{ needs.stack.outputs.version }}
+          SOURCE_TAG: ${{ needs.plan.outputs.source_tag }}
+        run: |
+          packaging/os/test/update-feed.sh --out "$RUNNER_TEMP/feed" --version "$VERSION" --above "$VERSION" --source-tag "$SOURCE_TAG"
+          sudo packaging/os/test/update-test.sh --first --template "$OUT"/redgiant-os-*-x86_64-lxc.tar.zst --feed "$RUNNER_TEMP/feed" --logs logs/lxc-first --timeout 1500
       - name: sha256
         if: ${{ always() }}
         run: |
@@ -417,6 +460,60 @@ jobs:
         with:
           name: redgiant-os-amd64-lxc-logs
           path: logs/lxc/*.log
+          retention-days: 7
+
+  # The update an existing machine makes (3.7.4), at every version and cheap: the container template
+  # of the latest release that carries RedGiant OS, started in Incus, updated by its own updater to
+  # this commit's stack (its Docker images) and system's files. A release whose OS did not change
+  # publishes no new images: this is how its stack meets the machines that exist.
+  update-test:
+    needs: [plan, images]
+    if: ${{ !cancelled() && needs.plan.outputs.update == 'true' && (needs.images.result == 'success' || needs.images.result == 'skipped') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: The template of ${{ needs.plan.outputs.os_tag }}, checked against its signed list
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OS_TAG: ${{ needs.plan.outputs.os_tag }}
+        run: |
+          set -euo pipefail
+          mkdir -p old && cd old
+          gh release download "$OS_TAG" -R "$GITHUB_REPOSITORY" -p SHA256SUMS-os -p SHA256SUMS-os.sig -p 'redgiant-os-*-x86_64-lxc.tar.zst'
+          sed -n '/BEGIN PUBLIC KEY/,/END PUBLIC KEY/p' ../packages/server/src/release-key.ts | sed 's/^.*\(-----BEGIN\)/\1/; s/\(KEY-----\).*$/\1/' >key.pem
+          openssl dgst -sha256 -verify key.pem -signature <(base64 -d SHA256SUMS-os.sig) SHA256SUMS-os
+          sha256sum -c --ignore-missing SHA256SUMS-os
+          ls -la
+      - name: Incus
+        timeout-minutes: 10
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q --no-install-recommends incus dnsmasq-base
+          sudo incus admin init --minimal
+          sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT || true
+          sudo iptables -I DOCKER-USER -o incusbr0 -j ACCEPT || true
+      - name: This commit's release as a feed (throwaway key)
+        env:
+          VERSION: ${{ needs.plan.outputs.version }}
+          # Branch: this commit's images; a release: its tags (copied already), or for a dry run the branch's.
+          SOURCE_TAG: ${{ needs.plan.outputs.source_tag || (inputs.dry_run && inputs.expect_tag) || '' }}
+        run: |
+          old=$(basename old/redgiant-os-*-x86_64-lxc.tar.zst | sed -E 's/^redgiant-os-([0-9]+\.[0-9]+\.[0-9]+)-.*/\1/')
+          packaging/os/test/update-feed.sh --out "$RUNNER_TEMP/feed" --version "$VERSION" --above "$old" --source-tag "$SOURCE_TAG"
+      - name: The old machine updates itself to this commit
+        timeout-minutes: 40
+        run: sudo packaging/os/test/update-test.sh --template old/redgiant-os-*-x86_64-lxc.tar.zst --feed "$RUNNER_TEMP/feed" --logs logs/update --timeout 1500
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: redgiant-os-update-test-logs
+          path: logs/update/*.log
           retention-days: 7
 
   # Raspberry Pi 4 (G39.2): no Pi here, so the image's layout and files are checked (build.sh does it
@@ -577,7 +674,7 @@ jobs:
   # the system's files they carry are the release's (reuse.mjs: against the tags just published).
   # With dry_run: checked and signed, nothing attached.
   publish:
-    if: ${{ !cancelled() && (inputs.publish || inputs.dry_run) && (startsWith(github.ref, 'refs/tags/') || inputs.dry_run) && needs.plan.result == 'success' && (inputs.reuse_run != '' || (needs.stack.result == 'success' && needs.build.result == 'success' && needs.lxc.result == 'success' && needs.raspi.result == 'success')) }}
+    if: ${{ !cancelled() && !inputs.stack_only && (inputs.publish || inputs.dry_run) && (startsWith(github.ref, 'refs/tags/') || inputs.dry_run) && needs.plan.result == 'success' && (inputs.reuse_run != '' || (needs.stack.result == 'success' && needs.build.result == 'success' && needs.lxc.result == 'success' && needs.raspi.result == 'success')) }}
     needs: [plan, stack, build, lxc, raspi]
     runs-on: ubuntu-latest
     permissions:
@@ -618,6 +715,7 @@ jobs:
       - name: SHA256SUMS, the stack and the system's files, signed with the update key
         env:
           UPDATE_SIGNING_KEY: ${{ secrets.UPDATE_SIGNING_KEY }}
+          WANTED: ${{ inputs.version }}
         run: |
           mkdir -p rel
           find dl -type f \( -name 'redgiant-os-*.qcow2' -o -name 'redgiant-os-*.raw.zst' -o -name 'redgiant-os-*.iso' -o -name 'redgiant-os-*.vhdx.zip' -o -name 'redgiant-os-*.ova' -o -name 'redgiant-os-*-lxc.tar.zst' -o -name 'redgiant-os-*-raspi.img.xz' -o -name redgiant-os-stack.json -o -name redgiant-os-files.json -o -name 'redgiant-os-files-*.tar.zst' \) -exec cp {} rel/ \;
@@ -628,6 +726,10 @@ jobs:
           node packaging/update/sign.mjs rel/SHA256SUMS-os
           node packaging/update/sign.mjs rel/redgiant-os-stack.json
           node packaging/update/sign.mjs rel/redgiant-os-files.json
+          # Where the latest RedGiant OS images are (3.7.4): here. redgiant-proxmox.sh reads it from
+          # the latest release, which may carry the stack alone.
+          echo "v${WANTED#v}" > rel/redgiant-os-release
+          node packaging/update/sign.mjs rel/redgiant-os-release
           ls -la rel
           cat rel/SHA256SUMS-os
       - name: Dry run, stopping here
@@ -635,6 +737,50 @@ jobs:
         env:
           REUSE_RUN: ${{ inputs.reuse_run }}
         run: echo "::notice title=Dry run::RedGiant OS images of run ${REUSE_RUN:-$GITHUB_RUN_ID} checked and signed; nothing attached"
+      - name: Attach to the release
+        if: ${{ !inputs.dry_run && startsWith(github.ref, 'refs/tags/') }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" rel/* --clobber
+
+  # The OS unchanged (3.7.4): no images, but the stack of this version (its Docker images' digests,
+  # resolved now from the tags the release just copied) and the system's files (even when identical:
+  # they carry the version), signed, so the machines that exist update; and the pointer to the
+  # release whose images are the latest. Only after the update test passed (here, or on the branch).
+  publish-stack:
+    if: ${{ !cancelled() && inputs.stack_only && (inputs.publish || inputs.dry_run) && (startsWith(github.ref, 'refs/tags/') || inputs.dry_run) && needs.plan.result == 'success' && (needs.update-test.result == 'success' || (needs.update-test.result == 'skipped' && inputs.tested)) }}
+    needs: [plan, update-test]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: The stack, the system's files and the pointer, signed with the update key
+        env:
+          UPDATE_SIGNING_KEY: ${{ secrets.UPDATE_SIGNING_KEY }}
+          WANTED: ${{ inputs.version }}
+          OS_TAG: ${{ needs.plan.outputs.os_tag }}
+          EXPECT_TAG: ${{ inputs.dry_run && inputs.expect_tag || '' }}
+        run: |
+          set -euo pipefail
+          version="${WANTED#v}"
+          [[ "$OS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "no release with RedGiant OS's images: $OS_TAG"; exit 1; }
+          mkdir -p rel
+          node packaging/os/stack.mjs --version "$version" --source-tag "$EXPECT_TAG" --out rel/redgiant-os-stack.json
+          node packaging/os/files.mjs --version "$version" --out rel
+          echo "$OS_TAG" > rel/redgiant-os-release
+          [ -n "$UPDATE_SIGNING_KEY" ] || { echo "UPDATE_SIGNING_KEY is missing: the OS's files must be signed"; exit 1; }
+          for f in redgiant-os-stack.json redgiant-os-files.json redgiant-os-release; do node packaging/update/sign.mjs "rel/$f"; done
+          ls -la rel
+          echo "::notice title=RedGiant OS::$version: the stack and the system's files; the images stay $OS_TAG's"
+      - name: Dry run, stopping here
+        if: inputs.dry_run
+        run: echo "::notice title=Dry run::the stack and the system's files signed; nothing attached"
       - name: Attach to the release
         if: ${{ !inputs.dry_run && startsWith(github.ref, 'refs/tags/') }}
         env:

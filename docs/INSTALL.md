@@ -13,8 +13,11 @@ local models). A subscription, an API key for a cloud model, or a GGUF model for
 ## Every way to install RedGiant
 
 Pick the line that matches what you have. Every download is on the
-[latest release](https://github.com/Frostmoore/redgiant2/releases/latest); the RedGiant OS files are
-listed in `SHA256SUMS-os`, signed with RedGiant's update key.
+[latest release](https://github.com/Frostmoore/redgiant2/releases/latest), except RedGiant OS's
+images: they are made only when the OS changes, so they are on the latest release that carries them
+(the latest release's notes link it; `redgiant-proxmox.sh` finds it by itself), listed in
+`SHA256SUMS-os`, signed with RedGiant's update key. A machine made from them updates itself to the
+latest RedGiant at its first start.
 
 | You have                                             | Use                                                                  | How                                                              |
 | ---------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------- |

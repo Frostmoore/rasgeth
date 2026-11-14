@@ -4,6 +4,8 @@
 #   redgiant-os-update check     looks, writes /var/lib/redgiant/os-update.json
 #   redgiant-os-update apply     check, then pull the new stack, install the system's new files,
 #                                start it, and put everything back if it does not come up
+#   redgiant-os-update first     a new machine's first start (3.7.4): apply once, by itself, when
+#                                the image is older than the latest release (never a breaking one)
 #   redgiant-os-update gate <installed> <release.json>   the rule alone (tested against assessRelease)
 #   redgiant-os-update files <dir> <root> <key>          the system's files alone (tested)
 # Only files signed with the update key count (release.json, redgiant-os-stack.json and
@@ -312,13 +314,34 @@ apply() {
   exit 1
 }
 
+# A new machine (3.7.4): its image may be older than the latest release (the images are made only
+# when the OS changes), so its first start brings RedGiant up to date by itself, once. The image
+# carries the marker $STATE/first-update; machines that ran already have none and keep the person's
+# choice. Unreachable: tried again at the next start. Up to date, unsigned or breaking: never.
+first() {
+  [ -e "$STATE/first-update" ] || return 0
+  if ! check; then
+    [ "$(jq -r .state "$OUT" 2>/dev/null)" = unreachable ] || rm -f "$STATE/first-update"
+    return 0
+  fi
+  rm -f "$STATE/first-update"
+  case "$GATE" in
+    normal | mandatory)
+      log "a new machine: RedGiant $LATEST before anything else"
+      apply
+      ;;
+    *) return 0 ;;
+  esac
+}
+
 case "${1:-}" in
   check) check ;;
   apply) apply ;;
+  first) first ;;
   gate) gate "$2" "$3" ;;
   files) files_apply "$2" "$3" "$4" || { files_undo "$2" "$3"; exit 1; } ;;
   *)
-    echo "usage: redgiant-os-update check | apply | gate <installed> <release.json> | files <dir> <root> <key>" >&2
+    echo "usage: redgiant-os-update check | apply | first | gate <installed> <release.json> | files <dir> <root> <key>" >&2
     exit 2
     ;;
 esac

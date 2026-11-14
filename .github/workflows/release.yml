@@ -41,6 +41,10 @@ on:
         description: "The commit whose CI packages are looked for (empty: this run's commit)"
         type: string
         default: ""
+      stack_only:
+        description: "Dry run only: take the path of a version whose OS did not change (the stack and the system's files, no OS images)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -187,8 +191,9 @@ jobs:
   # before any installer or app is attached, so no launcher or server ever meets this release's
   # files without its kind (a breaking release must never be taken for a normal one).
   release-info:
-    needs: ci-build
-    if: ${{ !inputs.only && !inputs.dry_run }}
+    # The release's body says where RedGiant OS's images are (os-plan, 3.7.4).
+    needs: [ci-build, os-plan]
+    if: ${{ !cancelled() && !inputs.only && !inputs.dry_run && needs.ci-build.result == 'success' && (needs.os-plan.result == 'success' || needs.os-plan.result == 'skipped') }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -230,6 +235,8 @@ jobs:
             dist-info/models-catalog.json.sig
           fail_on_unmatched_files: false
           generate_release_notes: true
+          # Before the generated notes.
+          body: ${{ needs.os-plan.outputs.body }}
 
   # RedGiant OS (G39.1, G39.2): the installer ISO, the qcow2 and raw disks for x86_64 and arm64 and
   # the signed stack the OS updates RedGiant from, built and booted in QEMU by os.yml, attached
@@ -249,6 +256,10 @@ jobs:
       contents: read
     outputs:
       run_id: ${{ steps.find.outputs.run_id }}
+      mode: ${{ steps.find.outputs.mode }}
+      os_tag: ${{ steps.find.outputs.os_tag }}
+      tested: ${{ steps.find.outputs.tested }}
+      body: ${{ steps.find.outputs.body }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -263,9 +274,44 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           SHA: ${{ needs.ci-build.outputs.sha }}
           VERSION: ${{ needs.ci-build.outputs.version }}
+          FORCE_STACK: ${{ inputs.dry_run && inputs.stack_only }}
         run: |
           set -euo pipefail
           api="repos/$GITHUB_REPOSITORY/actions"
+          # 3.7.4: images only when the OS changed since the latest release that carries them.
+          eval "$(node packaging/os/os-release.mjs --sha "$SHA" | sed 's/^/os_/')"
+          mode=images tested=false body=""
+          if [ -n "$os_tag" ] && { [ "$os_changed" = false ] || [ "$FORCE_STACK" = true ]; }; then mode=stack; fi
+          url="https://github.com/$GITHUB_REPOSITORY/releases/tag"
+          if [ "$mode" = stack ]; then
+            # The branch's run of this commit tried the update from $os_tag's template already?
+            for id in $(gh api "$api/workflows/os.yml/runs?head_sha=$SHA&status=success&event=push&per_page=20" --jq '.workflow_runs[].id'); do
+              c=$(gh api "$api/runs/$id/jobs?per_page=100" --jq '.jobs[] | select(.name == "update-test") | .conclusion')
+              if [ "$c" = success ]; then tested=true; echo "update test passed in run $id"; break; fi
+            done
+            body="**RedGiant OS**: unchanged since [$os_tag]($url/$os_tag), whose release has the images (ISO, qcow2, VHDX, OVA, LXC, Raspberry Pi). Machines running RedGiant OS, and new ones at their first start, update to $VERSION from the signed \`redgiant-os-stack.json\` attached here."
+            echo "::notice title=RedGiant OS images::none (the OS is $os_tag's$([ "$FORCE_STACK" = true ] && echo ", forced for this dry run")); stack and files only, update test $([ "$tested" = true ] && echo "passed on the branch" || echo "run by the release")"
+            {
+              echo "| RedGiant OS | Version | Commit | Decision | Why |"
+              echo "| --- | --- | --- | --- | --- |"
+              echo "| stack and system's files | $VERSION | \`${SHA:0:7}\` | images stay $os_tag's | update test passed on the branch: $tested |"
+            } >> "$GITHUB_STEP_SUMMARY"
+            {
+              echo "run_id="
+              echo "mode=$mode"
+              echo "os_tag=$os_tag"
+              echo "tested=$tested"
+              echo "body=$body"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          body="**RedGiant OS**: the images of $VERSION are attached to this release (listed in \`SHA256SUMS-os\`, signed)."
+          {
+            echo "mode=$mode"
+            echo "os_tag=$os_tag"
+            echo "tested=false"
+            echo "body=$body"
+          } >> "$GITHUB_OUTPUT"
           paths=(packaging/os packages/server/helpers .github/workflows/os.yml)
           wanted=(redgiant-os-stack redgiant-os-amd64 redgiant-os-arm64 redgiant-os-amd64-lxc redgiant-os-arm64-raspi)
           version_branch='^[pab][0-9]+[.][0-9]+[.][0-9]+$'
@@ -302,12 +348,13 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
 
-  # Attached by os.yml's publish: the reusable run's images (only when the job images copied the
+  # Attached by os.yml's publish (3.7.4: or, the OS unchanged, publish-stack: the stack and the
+  # system's files of this version and the pointer to the release with the images): the reusable run's images (only when the job images copied the
   # same branch's Docker images), otherwise built and booted there as before. A dry run checks and
   # signs the reusable ones and stops; with nothing reusable it builds nothing.
   os-images:
     needs: [ci-build, release-info, images, os-plan]
-    if: ${{ !cancelled() && !inputs.only && vars.REDGIANT_OS_RELEASE == 'true' && needs.images.result == 'success' && needs.os-plan.result == 'success' && ((startsWith(github.ref, 'refs/tags/') && !inputs.dry_run && needs.release-info.result == 'success') || (inputs.dry_run && needs.images.outputs.action == 'copy' && needs.os-plan.outputs.run_id != '')) }}
+    if: ${{ !cancelled() && !inputs.only && vars.REDGIANT_OS_RELEASE == 'true' && needs.images.result == 'success' && needs.os-plan.result == 'success' && ((startsWith(github.ref, 'refs/tags/') && !inputs.dry_run && needs.release-info.result == 'success') || (inputs.dry_run && needs.images.outputs.action == 'copy' && (needs.os-plan.outputs.run_id != '' || needs.os-plan.outputs.mode == 'stack'))) }}
     permissions:
       actions: read
       contents: write
@@ -320,6 +367,9 @@ jobs:
       dry_run: ${{ inputs.dry_run == true }}
       sha: ${{ needs.ci-build.outputs.sha }}
       expect_tag: ci-${{ needs.ci-build.outputs.version }}-${{ needs.ci-build.outputs.sha }}
+      stack_only: ${{ needs.os-plan.outputs.mode == 'stack' }}
+      os_tag: ${{ needs.os-plan.outputs.os_tag }}
+      tested: ${{ needs.os-plan.outputs.tested == 'true' }}
     secrets: inherit
 
   # The keychain's browser extension (G36.21): the zips for Chromium (Chrome, Edge, Brave, Opera)

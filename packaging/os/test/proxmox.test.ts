@@ -41,6 +41,7 @@ esac`,
   // Downloads come from $STUB_DIR/release (a release's files); the rest of the network is not there.
   curl: `case "$*" in
   *api/health*) echo '{"ok":true}' ;;
+  *releases/latest*) echo "https://github.com/Frostmoore/redgiant2/releases/tag/v9.9.10" ;;
   *releases/download/*) out=""; prev=""; for a in "$@"; do [ "$prev" = -o ] && out=$a; prev=$a; url=$a; done
     cp "$STUB_DIR/release/\${url##*/}" "$out" ;;
   *) echo "no network in tests" >&2; exit 7 ;;
@@ -67,18 +68,14 @@ describe.skipIf(!linux)("redgiant-proxmox.sh", () => {
       sign("sha256", Buffer.from(list), signWith).toString("base64"),
     );
   };
-  const proxmox = (...args: string[]) => {
+  const proxmox = (...given: string[]) => {
+    // "@net": no --from, the latest release through the curl stand-in.
+    const net = given.includes("--release") || given.includes("@net");
+    const args = given.filter((a) => a !== "@net");
     const r = spawnSync(
       "bash",
       // --release downloads (from the curl stand-in); everything else takes the files from --from.
-      [
-        script,
-        ...(args.includes("--release") ? [] : ["--from", from]),
-        "--key",
-        key,
-        "--yes",
-        ...args,
-      ],
+      [script, ...(net ? [] : ["--from", from]), "--key", key, "--yes", ...args],
       {
         encoding: "utf8",
         env: { PATH: `${join(dir, "bin")}:/usr/bin:/bin`, STUB_DIR: dir, TMPDIR: dir },
@@ -173,6 +170,50 @@ describe.skipIf(!linux)("redgiant-proxmox.sh", () => {
     expect(r.calls).toMatch(
       /^pct create 102 local:vztmpl\/redgiant-os-9\.9\.9-x86_64-lxc\.tar\.zst /m,
     );
+  });
+
+  // 3.7.4: a release whose OS did not change carries no images; it names the one that has them.
+  const latest = (pointer?: string, signWith = priv) => {
+    mkdirSync(join(dir, "release"));
+    for (const f of ["SHA256SUMS-os", "SHA256SUMS-os.sig", LXC])
+      writeFileSync(join(dir, "release", f), readFileSync(join(from, f)));
+    if (pointer === undefined) return;
+    writeFileSync(join(dir, "release", "redgiant-os-release"), pointer);
+    writeFileSync(
+      join(dir, "release", "redgiant-os-release.sig"),
+      sign("sha256", Buffer.from(pointer), signWith).toString("base64"),
+    );
+  };
+
+  it("takes the images from the release the latest one names, signed (3.7.4)", () => {
+    latest("v9.9.9\n");
+    const r = proxmox("--lxc", "@net");
+    expect(r.status, r.out).toBe(0);
+    expect(r.calls).toContain("releases/download/v9.9.10/redgiant-os-release");
+    expect(r.calls).toContain("releases/download/v9.9.9/SHA256SUMS-os");
+    expect(r.calls).not.toContain("releases/download/v9.9.10/SHA256SUMS-os");
+    expect(r.out).toContain("RedGiant OS's images are in v9.9.9");
+    expect(r.calls).toMatch(
+      /^pct create 102 local:vztmpl\/redgiant-os-9\.9\.9-x86_64-lxc\.tar\.zst /m,
+    );
+  });
+
+  it("takes the latest release itself when it names none (before 3.7.4)", () => {
+    latest();
+    const r = proxmox("--lxc", "@net");
+    expect(r.status, r.out).toBe(0);
+    expect(r.calls).toContain("releases/download/v9.9.10/SHA256SUMS-os");
+  });
+
+  it("refuses a pointer signed by another key", () => {
+    const other = generateKeyPairSync("rsa", { modulusLength: 2048 })
+      .privateKey.export({ type: "pkcs8", format: "pem" })
+      .toString();
+    latest("v9.9.1\n", other);
+    const r = proxmox("--lxc", "@net");
+    expect(r.status).not.toBe(0);
+    expect(r.out).toContain("redgiant-os-release is not signed by RedGiant's update key");
+    expect(r.calls).not.toMatch(/^pct create/m);
   });
 
   it("binds a host folder for backups into the container, owned by its user 1000", () => {

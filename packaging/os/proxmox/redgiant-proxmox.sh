@@ -12,7 +12,9 @@
 #
 #   --vm | --lxc            a virtual machine (default: q35, OVMF with Secure Boot, virtio, the guest
 #                           agent) or a container (unprivileged, features nesting and keyctl for Docker)
-#   --version <x.y.z>       the release (default: the latest)
+#   --version <x.y.z>       the release (default: the latest). A release whose OS did not change
+#                           names the one with the images (redgiant-os-release, signed): those are
+#                           taken, and the machine updates itself to the release at its first start
 #   --id <n>                the machine's id (default: the next free one)
 #   --name <name>           default: redgiant
 #   --storage <id>          where its disk goes (default: local-lvm, or the first storage that takes it)
@@ -181,6 +183,27 @@ fi
 URL=https://github.com/$REPO/releases/download/${TAG:-}
 WORK=$(mktemp -d "${TMPDIR:-/var/tmp}/redgiant-proxmox.XXXXXX")
 trap 'rm -rf "$WORK"' EXIT
+if [ -n "$KEY" ]; then cp "$KEY" "$WORK/key.pem"; else printf '%s\n' "$RELEASE_KEY" >"$WORK/key.pem"; fi
+signed() { # file: its .sig (base64) made by the update key
+  base64 -d "$1.sig" >"$1.bin" 2>/dev/null &&
+    openssl dgst -sha256 -verify "$WORK/key.pem" -signature "$1.bin" "$1" >/dev/null 2>&1
+}
+# 3.7.4: RedGiant OS's images are made only when the OS changes, so a release may carry none: it
+# names (signed) the release that has the latest ones, redgiant-os-release. That machine then
+# brings itself to this release at its first start. Releases before 3.7.4 carry their images.
+if [ -z "$FROM" ] && [ -z "$RELEASE" ] &&
+  curl -fsSL --retry 3 --connect-timeout 20 -o "$WORK/redgiant-os-release" "$URL/redgiant-os-release" 2>/dev/null; then
+  curl -fsSL --retry 3 --connect-timeout 20 -o "$WORK/redgiant-os-release.sig" "$URL/redgiant-os-release.sig" ||
+    die "redgiant-os-release has no signature: nothing is changed"
+  signed "$WORK/redgiant-os-release" || die "redgiant-os-release is not signed by RedGiant's update key: nothing is changed"
+  OS_TAG=$(head -1 "$WORK/redgiant-os-release")
+  [[ $OS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || die "redgiant-os-release names no release: $OS_TAG"
+  if [ "$OS_TAG" != "$TAG" ]; then
+    echo "RedGiant ${TAG#v}: RedGiant OS's images are in $OS_TAG (the machine updates itself at its first start)"
+    TAG=$OS_TAG VERSION=""
+    URL=https://github.com/$REPO/releases/download/$TAG
+  fi
+fi
 fetch() { # name: into $WORK, from --from or the release (with a progress meter: speed and time left)
   if [ -n "$FROM" ]; then
     [ -r "$FROM/$1" ] || die "$FROM/$1 is missing"
@@ -192,7 +215,6 @@ fetch() { # name: into $WORK, from --from or the release (with a progress meter:
 }
 fetch SHA256SUMS-os
 fetch SHA256SUMS-os.sig
-if [ -n "$KEY" ]; then cp "$KEY" "$WORK/key.pem"; else printf '%s\n' "$RELEASE_KEY" >"$WORK/key.pem"; fi
 base64 -d "$WORK/SHA256SUMS-os.sig" >"$WORK/sums.sig" 2>/dev/null || die "SHA256SUMS-os.sig is not a signature"
 openssl dgst -sha256 -verify "$WORK/key.pem" -signature "$WORK/sums.sig" "$WORK/SHA256SUMS-os" >/dev/null 2>&1 ||
   die "SHA256SUMS-os is not signed by RedGiant's update key: nothing is changed"

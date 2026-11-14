@@ -160,6 +160,11 @@ GRUB_DISABLE_OS_PROBER=true
 GRUB_DISABLE_RECOVERY=true
 EOF
 
+# A new machine updates itself once at its first start (redgiant-os-first-update, 3.7.4): the
+# images are made only when the OS changes, so they may carry an older RedGiant than the latest.
+# (/var/lib/redgiant exists already: setup-chroot.sh made it, 0700.)
+: >"$ROOT/var/lib/redgiant/first-update"
+
 if [ "$PRELOAD" = 1 ]; then
   step "The images of the stack, built in (first start without a download)"
   install -d -m 0700 "$ROOT/var/lib/redgiant/preload"

@@ -24,6 +24,15 @@ better; the disk needs 16 GB or more.
 All the ways to install RedGiant, RedGiant OS and the others, are on one page:
 [INSTALL.md](INSTALL.md#every-way-to-install-redgiant).
 
+**Where the images are.** They are made only when the OS itself changes, not at every RedGiant
+version, so they are on the latest release that carries them: the
+[latest release](https://github.com/Frostmoore/redgiant2/releases/latest)'s notes link it (a line
+starting with "RedGiant OS"), and its signed file `redgiant-os-release` names it, which is how
+`redgiant-proxmox.sh` finds it. An image may therefore carry an older RedGiant: at its **first
+start** a new machine brings itself to the latest release by itself (once, never a release that
+needs a clean install; without a network it tries again at the next start). Afterwards updates are
+your choice, as always (the console's `[u]` or RedGiant's page).
+
 Every file is listed in `SHA256SUMS-os`, signed with RedGiant's update key
 (`SHA256SUMS-os.sig`). Check a download with `sha256sum -c SHA256SUMS-os --ignore-missing`.
 
@@ -444,14 +453,23 @@ checks its partitions and files and starts its system on QEMU's arm64 machine). 
 script is `proxmox/redgiant-proxmox.sh` (tests: `test/proxmox.test.ts`, with stand-ins for `qm`,
 `pct`, `pvesh` and `pvesm`).
 
-Releases build nothing twice (3.7.4). Every push to a version branch runs `os.yml` in full: it
-first builds the Docker images of that commit (`images.yml`, each processor on its own runner,
-tagged `ci-<version>-<sha>`), then the OS with their stack (`stack.mjs --source-tag`, the
-references keeping the release's tags) and boots it. On the tag, `release.yml` copies those
-images to the version's tags (same digests, checked) and attaches that run's OS images once
-`reuse.mjs` has confirmed they carry the release's stack and system's files; only when no such
-run is left (expired, failed, other OS files) does it build and boot them again. A dry run
-(`Run workflow` with `dry_run`) checks and signs what it would reuse and publishes nothing.
+Releases build nothing twice (3.7.4). Every push to a version branch runs `os.yml`: it builds the
+Docker images of that commit (`images.yml`, each processor on its own runner, tagged
+`ci-<version>-<sha>`) and tries the update an existing machine makes (`update-test`: the container
+template of the latest release with OS images, started in Incus, updated by its own
+`redgiant-os-update` to this commit's stack and system's files, `test/update-test.sh`). The OS images
+themselves are built and booted only when `packaging/os`, the OS helper, `os.yml` or the update key
+changed since the latest release that carries them (`os-release.mjs`, a git diff on its tag), with
+the stack of those Docker images (`stack.mjs --source-tag`, the references keeping the release's
+tags); their LXC job also tries a new machine's first-start update (`update-test.sh --first`).
+
+On the tag, `release.yml` copies the branch's Docker images to the version's tags (same digests,
+checked). The OS changed: it attaches the branch run's OS images once `reuse.mjs` has confirmed
+they carry the release's stack and system's files (building and booting them again only when no
+such run is left). The OS unchanged: no images, but the signed `redgiant-os-stack.json`,
+`redgiant-os-files*` and `redgiant-os-release` (the tag with the images), after the update test.
+A dry run (`Run workflow` with `dry_run`; `stack_only` takes the second path) checks and signs what
+it would publish and publishes nothing.
 
 ```sh
 node packaging/os/stack.mjs --version 3.7.0 --out out/redgiant-os-stack.json

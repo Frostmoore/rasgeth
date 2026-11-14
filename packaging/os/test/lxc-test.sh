@@ -55,9 +55,13 @@ tar -C "$work" -czf "$work/metadata.tar.gz" metadata.yaml
 timeout 900 incus image import "$work/metadata.tar.gz" "$TEMPLATE" --alias redgiant-os-ci ||
   fail "incus could not import the template"
 echo "imported after $((SECONDS - start)) s"
-timeout 600 incus launch redgiant-os-ci "$NAME" -c security.nesting=true \
+timeout 600 incus init redgiant-os-ci "$NAME" -c security.nesting=true \
   -c security.syscalls.intercept.mknod=true -c security.syscalls.intercept.setxattr=true ||
-  fail "the container did not start"
+  fail "the container could not be made"
+# A new machine updates itself at its first start (redgiant-os-first-update): never to the real
+# latest release while it is tested (update-test.sh --first tries that path against a feed).
+timeout 60 incus file delete "$NAME/var/lib/redgiant/first-update" >/dev/null 2>&1 || true
+timeout 300 incus start "$NAME" || fail "the container did not start"
 
 wait_until() { # what seconds command…: true once the command succeeds
   local what=$1 deadline=$((SECONDS + $2))
