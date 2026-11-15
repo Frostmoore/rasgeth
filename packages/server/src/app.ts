@@ -877,6 +877,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.use("*", async (c, next) => {
     const lan = options.setup?.firstBoot?.lan.settings;
     if (!lan?.redirect) return next();
+    // Never on RedGiant OS's temporary network (G40.3): its address is not in the certificate.
+    if (options.setupNetwork && (await options.setupNetwork.here(clientAddress(c))) !== "home")
+      return next();
     const url = new URL(c.req.url);
     const r = {
       redirect: true,
