@@ -22,6 +22,7 @@ import '../ui/model_sheet.dart';
 import '../ui/words.dart';
 import 'conversation_screen.dart';
 import 'first_start_screen.dart';
+import 'instructions_screen.dart';
 import 'new_agent_screen.dart';
 
 class TeamScreen extends StatelessWidget {
@@ -643,6 +644,17 @@ class AgentSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 AgentModelRow(agent: a, parent: parent),
+                const SizedBox(height: 8),
+                _SheetRow(
+                  key: const Key('agent-instructions'),
+                  icon: RgIcons.edit,
+                  title: app.isChat(a) ? l.chatInstructions : l.agentInstructions,
+                  subtitle: l.agentInstructionsRow,
+                  onTap: () {
+                    close();
+                    openInstructions(parent, a);
+                  },
+                ),
                 const SizedBox(height: 14),
                 if (running.isNotEmpty)
                   Padding(
@@ -826,6 +838,59 @@ class _AgentModelRowState extends State<AgentModelRow> {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(color: c.dim, fontSize: 12.5),
                     ),
+                  ],
+                ),
+              ),
+              RgIcon(RgIcons.chevronRight, size: 18, color: c.dim),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SheetRow extends StatelessWidget {
+  const _SheetRow({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final RgIcons icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    return Material(
+      color: c.panel,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: c.line),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+          child: Row(
+            children: [
+              RgIcon(icon, size: 18, color: c.dim),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(fontWeight: FontWeight.w700, color: c.text),
+                    ),
+                    Text(subtitle, style: TextStyle(color: c.dim, fontSize: 12.5)),
                   ],
                 ),
               ),

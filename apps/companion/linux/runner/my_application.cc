@@ -1,5 +1,7 @@
 #include "my_application.h"
 
+#include <cstdio>
+
 #include <flutter_linux/flutter_linux.h>
 #ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
@@ -52,7 +54,14 @@ static void my_application_activate(GApplication* application) {
     gtk_window_set_title(window, "RGCompanion");
   }
 
-  gtk_window_set_default_size(window, 1280, 720);
+  // RGCOMPANION_WINDOW=WxH (the screenshots' phone-sized window); 1280x720 otherwise.
+  int width = 1280, height = 720;
+  const char* size = g_getenv("RGCOMPANION_WINDOW");
+  if (size != nullptr && sscanf(size, "%dx%d", &width, &height) != 2) {
+    width = 1280;
+    height = 720;
+  }
+  gtk_window_set_default_size(window, width, height);
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
   fl_dart_project_set_dart_entrypoint_arguments(

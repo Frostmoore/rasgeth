@@ -2798,6 +2798,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All'**
   String get reviewAllTools;
+
+  /// No description provided for @agentInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions'**
+  String get agentInstructions;
+
+  /// No description provided for @agentInstructionsOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions of {name}'**
+  String agentInstructionsOf(String name);
+
+  /// No description provided for @chatInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'The Chat\'s instructions'**
+  String get chatInstructions;
+
+  /// No description provided for @agentInstructionsRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Its system prompt: read and change it'**
+  String get agentInstructionsRow;
+
+  /// No description provided for @promptDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in instructions'**
+  String get promptDefault;
+
+  /// No description provided for @promptOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'Your instructions'**
+  String get promptOwn;
+
+  /// No description provided for @promptNewChats.
+  ///
+  /// In en, this message translates to:
+  /// **'New instructions apply to new conversations: the open ones keep theirs. The agents\' names stay right if you rename them later.'**
+  String get promptNewChats;
+
+  /// No description provided for @promptSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get promptSave;
+
+  /// No description provided for @promptSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved.'**
+  String get promptSaved;
+
+  /// No description provided for @promptSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'I could not save them: {why}'**
+  String promptSaveFailed(String why);
+
+  /// No description provided for @promptReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore the built-in ones'**
+  String get promptReset;
+
+  /// No description provided for @promptResetConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back to the built-in instructions? Your text will be lost.'**
+  String get promptResetConfirm;
+
+  /// No description provided for @promptUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo the changes'**
+  String get promptUndo;
+
+  /// No description provided for @refineOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Improve the instructions'**
+  String get refineOpen;
+
+  /// No description provided for @refineLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A model reads them again and proposes a clearer version. You see what changes before using it; nothing is saved until you save.'**
+  String get refineLead;
+
+  /// No description provided for @refineWish.
+  ///
+  /// In en, this message translates to:
+  /// **'What do you want to change? (you can leave it empty)'**
+  String get refineWish;
+
+  /// No description provided for @refineWishPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: more concise; always answer with lists; specialise it in invoices. Empty: a general improvement.'**
+  String get refineWishPlaceholder;
+
+  /// No description provided for @refineEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate: {what}.'**
+  String refineEstimate(String what);
+
+  /// No description provided for @refineNoEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'No estimate: check that the model is still connected.'**
+  String get refineNoEstimate;
+
+  /// No description provided for @refineSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent: {what}.'**
+  String refineSpent(String what);
+
+  /// No description provided for @refineCostLine.
+  ///
+  /// In en, this message translates to:
+  /// **'about {tokens} tokens, {cost}'**
+  String refineCostLine(String tokens, String cost);
+
+  /// No description provided for @refineFree.
+  ///
+  /// In en, this message translates to:
+  /// **'no money (a local model or a subscription)'**
+  String get refineFree;
+
+  /// No description provided for @refineCost.
+  ///
+  /// In en, this message translates to:
+  /// **'about {usd}'**
+  String refineCost(String usd);
+
+  /// No description provided for @refineCostTiny.
+  ///
+  /// In en, this message translates to:
+  /// **'less than a cent'**
+  String get refineCostTiny;
+
+  /// No description provided for @refineGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Improve'**
+  String get refineGo;
+
+  /// No description provided for @refineWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewriting the instructions...'**
+  String get refineWorking;
+
+  /// No description provided for @refineChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'What changed'**
+  String get refineChanges;
+
+  /// No description provided for @refineUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this version'**
+  String get refineUse;
+
+  /// No description provided for @refineRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get refineRetry;
+
+  /// No description provided for @refineUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'The new version is in the field: save to keep it.'**
+  String get refineUsed;
+
+  /// No description provided for @refineSame.
+  ///
+  /// In en, this message translates to:
+  /// **'The model left them as they were.'**
+  String get refineSame;
+
+  /// No description provided for @refineErr_budget.
+  ///
+  /// In en, this message translates to:
+  /// **'The budget is used up: raise it in Settings, Budget.'**
+  String get refineErr_budget;
+
+  /// No description provided for @refineErr_no_model.
+  ///
+  /// In en, this message translates to:
+  /// **'No model is connected: connect one in Settings, Models.'**
+  String get refineErr_no_model;
+
+  /// No description provided for @refineErr_no_answer.
+  ///
+  /// In en, this message translates to:
+  /// **'The model gave no usable text. Try again or choose another model.'**
+  String get refineErr_no_answer;
+
+  /// No description provided for @refineErr_removed_parts.
+  ///
+  /// In en, this message translates to:
+  /// **'The model left out parts that must stay (tools, names). Nothing changed: try again or choose another model.'**
+  String get refineErr_removed_parts;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

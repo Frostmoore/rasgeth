@@ -1544,4 +1544,127 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get reviewAllTools => 'Tutti';
+
+  @override
+  String get agentInstructions => 'Istruzioni';
+
+  @override
+  String agentInstructionsOf(String name) {
+    return 'Istruzioni di $name';
+  }
+
+  @override
+  String get chatInstructions => 'Istruzioni della Chat';
+
+  @override
+  String get agentInstructionsRow => 'Il suo system prompt: leggilo e cambialo';
+
+  @override
+  String get promptDefault => 'Istruzioni predefinite';
+
+  @override
+  String get promptOwn => 'Istruzioni tue';
+
+  @override
+  String get promptNewChats =>
+      'Le istruzioni nuove valgono per le conversazioni nuove: quelle già aperte tengono le loro. I nomi degli agenti restano giusti anche se li cambi dopo.';
+
+  @override
+  String get promptSave => 'Salva';
+
+  @override
+  String get promptSaved => 'Salvato.';
+
+  @override
+  String promptSaveFailed(String why) {
+    return 'Non sono riuscito a salvarle: $why';
+  }
+
+  @override
+  String get promptReset => 'Ripristina le predefinite';
+
+  @override
+  String get promptResetConfirm => 'Tornare alle istruzioni predefinite? Il tuo testo andrà perso.';
+
+  @override
+  String get promptUndo => 'Annulla le modifiche';
+
+  @override
+  String get refineOpen => 'Migliora le istruzioni';
+
+  @override
+  String get refineLead =>
+      'Un modello le rilegge e propone una versione più chiara. Vedi cosa cambia prima di usarla; non si salva niente finché non salvi tu.';
+
+  @override
+  String get refineWish => 'Cosa vuoi cambiare? (puoi lasciarlo vuoto)';
+
+  @override
+  String get refineWishPlaceholder =>
+      'Per esempio: più conciso; rispondi sempre con elenchi; specializzalo in fatture. Vuoto: un miglioramento generale.';
+
+  @override
+  String refineEstimate(String what) {
+    return 'Stima: $what.';
+  }
+
+  @override
+  String get refineNoEstimate => 'Nessuna stima: controlla che il modello sia ancora collegato.';
+
+  @override
+  String refineSpent(String what) {
+    return 'Speso: $what.';
+  }
+
+  @override
+  String refineCostLine(String tokens, String cost) {
+    return 'circa $tokens token, $cost';
+  }
+
+  @override
+  String get refineFree => 'nessuna spesa in denaro (modello locale o abbonamento)';
+
+  @override
+  String refineCost(String usd) {
+    return 'circa $usd';
+  }
+
+  @override
+  String get refineCostTiny => 'meno di un centesimo';
+
+  @override
+  String get refineGo => 'Migliora';
+
+  @override
+  String get refineWorking => 'Sto riscrivendo le istruzioni...';
+
+  @override
+  String get refineChanges => 'Cosa è cambiato';
+
+  @override
+  String get refineUse => 'Usa questa versione';
+
+  @override
+  String get refineRetry => 'Riprova';
+
+  @override
+  String get refineUsed => 'La versione nuova è nel campo: salva per tenerla.';
+
+  @override
+  String get refineSame => 'Il modello le ha lasciate com\'erano.';
+
+  @override
+  String get refineErr_budget => 'Il budget è finito: alzalo in Impostazioni, Budget.';
+
+  @override
+  String get refineErr_no_model =>
+      'Nessun modello collegato: collegane uno in Impostazioni, Modelli.';
+
+  @override
+  String get refineErr_no_answer =>
+      'Il modello non ha dato un testo utilizzabile. Riprova o scegli un altro modello.';
+
+  @override
+  String get refineErr_removed_parts =>
+      'Il modello ha tolto parti che devono restare (strumenti, nomi). Non è cambiato niente: riprova o scegli un altro modello.';
 }

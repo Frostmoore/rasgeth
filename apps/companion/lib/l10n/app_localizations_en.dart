@@ -1541,4 +1541,126 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reviewAllTools => 'All';
+
+  @override
+  String get agentInstructions => 'Instructions';
+
+  @override
+  String agentInstructionsOf(String name) {
+    return 'Instructions of $name';
+  }
+
+  @override
+  String get chatInstructions => 'The Chat\'s instructions';
+
+  @override
+  String get agentInstructionsRow => 'Its system prompt: read and change it';
+
+  @override
+  String get promptDefault => 'Built-in instructions';
+
+  @override
+  String get promptOwn => 'Your instructions';
+
+  @override
+  String get promptNewChats =>
+      'New instructions apply to new conversations: the open ones keep theirs. The agents\' names stay right if you rename them later.';
+
+  @override
+  String get promptSave => 'Save';
+
+  @override
+  String get promptSaved => 'Saved.';
+
+  @override
+  String promptSaveFailed(String why) {
+    return 'I could not save them: $why';
+  }
+
+  @override
+  String get promptReset => 'Restore the built-in ones';
+
+  @override
+  String get promptResetConfirm => 'Go back to the built-in instructions? Your text will be lost.';
+
+  @override
+  String get promptUndo => 'Undo the changes';
+
+  @override
+  String get refineOpen => 'Improve the instructions';
+
+  @override
+  String get refineLead =>
+      'A model reads them again and proposes a clearer version. You see what changes before using it; nothing is saved until you save.';
+
+  @override
+  String get refineWish => 'What do you want to change? (you can leave it empty)';
+
+  @override
+  String get refineWishPlaceholder =>
+      'For example: more concise; always answer with lists; specialise it in invoices. Empty: a general improvement.';
+
+  @override
+  String refineEstimate(String what) {
+    return 'Estimate: $what.';
+  }
+
+  @override
+  String get refineNoEstimate => 'No estimate: check that the model is still connected.';
+
+  @override
+  String refineSpent(String what) {
+    return 'Spent: $what.';
+  }
+
+  @override
+  String refineCostLine(String tokens, String cost) {
+    return 'about $tokens tokens, $cost';
+  }
+
+  @override
+  String get refineFree => 'no money (a local model or a subscription)';
+
+  @override
+  String refineCost(String usd) {
+    return 'about $usd';
+  }
+
+  @override
+  String get refineCostTiny => 'less than a cent';
+
+  @override
+  String get refineGo => 'Improve';
+
+  @override
+  String get refineWorking => 'Rewriting the instructions...';
+
+  @override
+  String get refineChanges => 'What changed';
+
+  @override
+  String get refineUse => 'Use this version';
+
+  @override
+  String get refineRetry => 'Try again';
+
+  @override
+  String get refineUsed => 'The new version is in the field: save to keep it.';
+
+  @override
+  String get refineSame => 'The model left them as they were.';
+
+  @override
+  String get refineErr_budget => 'The budget is used up: raise it in Settings, Budget.';
+
+  @override
+  String get refineErr_no_model => 'No model is connected: connect one in Settings, Models.';
+
+  @override
+  String get refineErr_no_answer =>
+      'The model gave no usable text. Try again or choose another model.';
+
+  @override
+  String get refineErr_removed_parts =>
+      'The model left out parts that must stay (tools, names). Nothing changed: try again or choose another model.';
 }

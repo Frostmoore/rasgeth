@@ -86,7 +86,9 @@ describe("mascots", () => {
     const svg = await fetch(`${s.url}${q("Posta")}&format=svg&theme=dark&size=96`, {
       headers: { authorization: `Bearer ${TOKEN}` },
     });
-    expect(await svg.text()).toMatch(/^<svg xmlns="http:\/\/www.w3.org\/2000\/svg" class="masc st-idle"/);
+    expect(await svg.text()).toMatch(
+      /^<svg xmlns="http:\/\/www.w3.org\/2000\/svg" class="masc st-idle"/,
+    );
     expect((await s.api("GET", "/api/mascot/preview?kind=agent&name=")).status).toBe(400);
     expect((await s.api("GET", "/api/mascot/preview?kind=dragon&name=X")).status).toBe(400);
   });

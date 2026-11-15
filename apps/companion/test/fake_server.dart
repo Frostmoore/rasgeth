@@ -72,6 +72,10 @@ class FakeRedGiant {
   final rooms = <Map<String, dynamic>>[];
   final sent = <Map<String, dynamic>>[];
   final previews = <String>[];
+  final prompts = <String, String>{};
+  final promptPuts = <Map<String, dynamic>>[];
+  final refines = <Map<String, dynamic>>[];
+  String? refineFails;
 
   // The settings of this RedGiant (G40.8).
   String machine = 'RedGiant di casa';
@@ -293,6 +297,49 @@ class FakeRedGiant {
       created.add(made);
       newAgents.add(b);
       return _json(r, 201, made);
+    }
+    final promptOf = RegExp(r'^/api/agents/([^/]+)/prompt$').firstMatch(path);
+    if (promptOf != null || path == '/api/chat/prompt') {
+      final key = promptOf?.group(1) ?? 'chat';
+      final builtIn = 'You are ${key == 'chat' ? 'Chat' : key}. Built-in instructions.';
+      if (r.method == 'PUT') {
+        final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+        promptPuts.add({'who': key, 'text': b['text']});
+        final t = b['text'] as String?;
+        if (t == null || t.trim().isEmpty || t.trim() == builtIn) {
+          prompts.remove(key);
+        } else {
+          prompts[key] = t;
+        }
+      }
+      final own = prompts[key];
+      return _json(r, 200, {
+        'text': own ?? builtIn,
+        'isDefault': own == null,
+        'defaultText': builtIn,
+      });
+    }
+    if (r.method == 'POST' && path.startsWith('/api/prompts/refine')) {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      refines.add({'path': path, ...b});
+      if (path.endsWith('/estimate')) {
+        return _json(r, 200, {
+          'inputTokens': 3000,
+          'outputTokens': 1200,
+          'usd': 0.004,
+          'model': {'provider': 'anthropic', 'model': 'claude-haiku-5'},
+          'base': b['text'],
+        });
+      }
+      if (refineFails != null) return _json(r, 400, {'error': 'x', 'code': refineFails});
+      return _json(r, 200, {
+        'text': '${b['text']}\nAnswer briefly.',
+        'changes': 'Added: answer briefly.',
+        'inputTokens': 3000,
+        'outputTokens': 1300,
+        'usd': null,
+        'model': {'provider': 'claude-subscription', 'model': 'claude-sonnet-5'},
+      });
     }
     final agentTools = RegExp(r'^/api/agents/([^/]+)/tools$').firstMatch(path);
     if (r.method == 'PUT' && agentTools != null) {

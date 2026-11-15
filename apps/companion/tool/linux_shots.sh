@@ -18,7 +18,10 @@ export FLUTTER_ROOT="$rg/flutter" PUB_CACHE="$rg/pub-cache" PATH="$rg/flutter/bi
 node="${RG_NODE:-$rg/bin/node}"
 repo="$(cd ../.. && pwd)"
 mkdir -p "$shots"
-Xvfb :99 -screen 0 1280x720x24 >/tmp/xvfb.log 2>&1 &
+# RG_SCREEN=WxH: a phone-sized screen, and the app's window as big (default 1280x720).
+screen="${RG_SCREEN:-1280x720}"
+export RGCOMPANION_WINDOW="$screen"
+Xvfb :99 -screen 0 "${screen}x24" >/tmp/xvfb.log 2>&1 &
 export DISPLAY=:99
 eval "$(dbus-launch --sh-syntax)"
 # shellcheck disable=SC2086 # the variables are words on purpose

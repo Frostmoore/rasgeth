@@ -919,5 +919,85 @@
   "reviewKind": "Kind",
   "reviewProject": "Project",
   "reviewTools": "Tools",
-  "reviewAllTools": "All"
+  "reviewAllTools": "All",
+  "agentInstructions": "Instructions",
+  "agentInstructionsOf": "Instructions of {name}",
+  "@agentInstructionsOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chatInstructions": "The Chat's instructions",
+  "agentInstructionsRow": "Its system prompt: read and change it",
+  "promptDefault": "Built-in instructions",
+  "promptOwn": "Your instructions",
+  "promptNewChats": "New instructions apply to new conversations: the open ones keep theirs. The agents' names stay right if you rename them later.",
+  "promptSave": "Save",
+  "promptSaved": "Saved.",
+  "promptSaveFailed": "I could not save them: {why}",
+  "@promptSaveFailed": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "promptReset": "Restore the built-in ones",
+  "promptResetConfirm": "Go back to the built-in instructions? Your text will be lost.",
+  "promptUndo": "Undo the changes",
+  "refineOpen": "Improve the instructions",
+  "refineLead": "A model reads them again and proposes a clearer version. You see what changes before using it; nothing is saved until you save.",
+  "refineWish": "What do you want to change? (you can leave it empty)",
+  "refineWishPlaceholder": "For example: more concise; always answer with lists; specialise it in invoices. Empty: a general improvement.",
+  "refineEstimate": "Estimate: {what}.",
+  "@refineEstimate": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "refineNoEstimate": "No estimate: check that the model is still connected.",
+  "refineSpent": "Spent: {what}.",
+  "@refineSpent": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "refineCostLine": "about {tokens} tokens, {cost}",
+  "@refineCostLine": {
+    "placeholders": {
+      "tokens": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "refineFree": "no money (a local model or a subscription)",
+  "refineCost": "about {usd}",
+  "@refineCost": {
+    "placeholders": {
+      "usd": {
+        "type": "String"
+      }
+    }
+  },
+  "refineCostTiny": "less than a cent",
+  "refineGo": "Improve",
+  "refineWorking": "Rewriting the instructions...",
+  "refineChanges": "What changed",
+  "refineUse": "Use this version",
+  "refineRetry": "Try again",
+  "refineUsed": "The new version is in the field: save to keep it.",
+  "refineSame": "The model left them as they were.",
+  "refineErr_budget": "The budget is used up: raise it in Settings, Budget.",
+  "refineErr_no_model": "No model is connected: connect one in Settings, Models.",
+  "refineErr_no_answer": "The model gave no usable text. Try again or choose another model.",
+  "refineErr_removed_parts": "The model left out parts that must stay (tools, names). Nothing changed: try again or choose another model."
 }

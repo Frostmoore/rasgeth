@@ -359,6 +359,63 @@ class RedGiantClient {
     _object(await _post('/api/agents/${Uri.encodeComponent(agentId)}/mascot', const {})),
   );
 
+  /// `GET /api/agents/:id/prompt` (or the Chat's `GET /api/chat/prompt`): the instructions in
+  /// use, its own or the built-in ones, with the current names.
+  Future<PromptView> prompt({String? agentId}) async => PromptView.fromJson(
+    _object(
+      await _get(
+        agentId == null ? '/api/chat/prompt' : '/api/agents/${Uri.encodeComponent(agentId)}/prompt',
+      ),
+    ),
+  );
+
+  /// `PUT /api/agents/:id/prompt` (or `/api/chat/prompt`): new instructions, null for the
+  /// built-in ones; conversations already open keep theirs.
+  Future<PromptView> setPrompt(String? text, {String? agentId}) async => PromptView.fromJson(
+    _object(
+      await _call(
+        'PUT',
+        agentId == null ? '/api/chat/prompt' : '/api/agents/${Uri.encodeComponent(agentId)}/prompt',
+        {'text': text},
+      ),
+    ),
+  );
+
+  Map<String, Object?> _refineBody(String? agentId, String text, String request, String lang) => {
+    'target': agentId == null ? {'chat': true} : {'agentId': agentId},
+    'goal': 'refine',
+    'text': text,
+    'request': request,
+    'lang': lang,
+  };
+
+  /// `POST /api/prompts/refine/estimate`: about how much «Improve the instructions» takes.
+  Future<RefineCost> refineEstimate({
+    String? agentId,
+    required String text,
+    String request = '',
+    String lang = 'it',
+  }) async => RefineCost.fromJson(
+    _object(await _post('/api/prompts/refine/estimate', _refineBody(agentId, text, request, lang))),
+  );
+
+  /// `POST /api/prompts/refine`: a revised text and what changed (nothing is saved).
+  Future<({String text, String changes, RefineCost cost})> refine({
+    String? agentId,
+    required String text,
+    String request = '',
+    String lang = 'it',
+  }) async {
+    final j = _object(
+      await _post('/api/prompts/refine', _refineBody(agentId, text, request, lang)),
+    );
+    return (
+      text: j['text'] is String ? j['text'] as String : text,
+      changes: j['changes'] is String ? j['changes'] as String : '',
+      cost: RefineCost.fromJson(j),
+    );
+  }
+
   /// `GET /api/chat/agent`: the everyday Chat (made the first time it is asked for).
   Future<Agent> chatAgent() async => Agent.fromJson(_object(await _get('/api/chat/agent')));
 

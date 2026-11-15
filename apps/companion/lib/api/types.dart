@@ -361,3 +361,31 @@ class ToolEntry {
   /// On for every agent (not switched off in Settings › Tools).
   final bool globalOn;
 }
+
+/// An agent's instructions as the person reads them (`PromptView`).
+class PromptView {
+  const PromptView({required this.text, required this.isDefault, required this.defaultText});
+
+  factory PromptView.fromJson(Map<String, dynamic> j) => PromptView(
+    text: _str(j['text']) ?? '',
+    isDefault: j['isDefault'] != false,
+    defaultText: _str(j['defaultText']) ?? '',
+  );
+
+  final String text;
+  final bool isDefault;
+  final String defaultText;
+}
+
+/// What «Improve the instructions» takes or took: tokens and dollars (null: no money).
+class RefineCost {
+  const RefineCost({required this.tokens, this.usd});
+
+  factory RefineCost.fromJson(Map<String, dynamic> j) => RefineCost(
+    tokens: _int(j['inputTokens']) + _int(j['outputTokens']),
+    usd: j['usd'] is num ? (j['usd'] as num).toDouble() : null,
+  );
+
+  final int tokens;
+  final double? usd;
+}
