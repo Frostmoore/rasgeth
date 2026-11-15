@@ -6,6 +6,7 @@
   },
   "include": ["src"],
   "references": [
+    { "path": "../mascot" },
     { "path": "../protocol" },
     { "path": "../providers" },
     { "path": "../events" },

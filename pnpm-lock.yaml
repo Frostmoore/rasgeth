@@ -409,6 +409,9 @@ importers:
       '@redgiant/events':
         specifier: workspace:*
         version: link:../events
+      '@redgiant/mascot':
+        specifier: workspace:*
+        version: link:../mascot
       '@redgiant/protocol':
         specifier: workspace:*
         version: link:../protocol
@@ -508,6 +511,9 @@ importers:
       '@redgiant/hierarchy':
         specifier: workspace:*
         version: link:../hierarchy
+      '@redgiant/mascot':
+        specifier: workspace:*
+        version: link:../mascot
       '@redgiant/protocol':
         specifier: workspace:*
         version: link:../protocol

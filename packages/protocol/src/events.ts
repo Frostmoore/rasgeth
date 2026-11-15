@@ -436,6 +436,18 @@ export const EventBody = z.discriminatedUnion("type", [
     payload: z.object({ agentId: z.string(), reason: z.string() }),
   }),
   /**
+   * An agent's mascot seed (G40.2): given once to the agents made before mascots ("migrated"), or
+   * a new face the person asked for ("changed"). New agents carry theirs in `agent.spawned`.
+   */
+  z.object({
+    type: z.literal("agent.mascot_changed"),
+    payload: z.object({
+      agentId: z.string(),
+      seed: z.string(),
+      reason: z.enum(["migrated", "changed"]),
+    }),
+  }),
+  /**
    * A whole project archived (2026-11-09): nothing is deleted. The turns it interrupted, the
    * automations it paused (they come back as they were) and whether its sandbox was stopped.
    */
