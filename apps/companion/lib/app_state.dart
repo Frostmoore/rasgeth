@@ -13,6 +13,7 @@ import 'api/conversation.dart';
 import 'api/discovery.dart';
 import 'api/live.dart';
 import 'api/live_model.dart';
+import 'api/names.dart';
 import 'api/servers.dart';
 import 'api/setup_channel.dart';
 import 'api/token_store.dart';
@@ -125,6 +126,9 @@ class AppController extends ChangeNotifier {
   String? chatDraft;
 
   bool get connected => client != null && hello?.signedIn == true;
+
+  /// The RedGiant in use as people read it (never a container's id).
+  String get displayName => readableName(label: server?.label, machine: hello?.machine);
 
   /// Whether conversations stream (false inside the setup channel).
   bool get isLive => client?.transport.live == true && socket != null;
@@ -421,6 +425,36 @@ class AppController extends ChangeNotifier {
     server = s;
     await prefs.set('current', s.id);
   }
+
+  /// The first start from the app (G40.8): the RedGiant set up over its setup channel is kept
+  /// with its device token, before the app reaches it at home.
+  Future<void> adoptServer(SavedServer s, String token) async {
+    await _keep(s, token);
+    notifyListeners();
+  }
+
+  /// Opens the setup channel with the app's own identity ([expect]: the pinned key).
+  Future<SetupChannel> dialSetup(Uri base, {String? expect}) async =>
+      _dial(base, await _identity(), expect);
+
+  /// Renames the RedGiant in use: in the app, and on the server for the page and the nodes.
+  /// The server's name stays as it was when the server refuses (an older one, a node).
+  Future<void> renameRedGiant(String name) async {
+    final s = server;
+    final t = name.trim();
+    if (s == null || t.isEmpty) return;
+    await renameServer(s, t);
+    try {
+      await client?.setMachineName(t.length > 40 ? t.substring(0, 40) : t);
+      hello = await client?.hello() ?? hello;
+    } on ApiException {
+      // The app's own name is enough.
+    }
+    notifyListeners();
+  }
+
+  /// Forgets a token the app no longer uses (a RedGiant paired again under another id).
+  Future<void> dropToken(String serverId) => tokens.delete(serverId);
 
   /// The key RedGiant shows over https must be the pinned one.
   Future<AppHello> _check(RedGiantClient c, SavedServer s) async {

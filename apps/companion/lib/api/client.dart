@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'conversation.dart';
+import 'settings_types.dart';
 import 'transport.dart';
 import 'types.dart';
 
@@ -264,6 +265,156 @@ class RedGiantClient {
     );
     if (r.status != 200) _decode(r);
     return r.bytes;
+  }
+
+  // ---- the first start (G40.8) and the settings of this RedGiant ----
+
+  /// A request whose answer may be empty (`{ok: true}`, nothing at all).
+  Future<Object?> _call(String method, String path, [Object? body]) async {
+    final r = await _send(method, path, json: body);
+    if (r.status >= 200 && r.status < 300 && r.bytes.isEmpty) return null;
+    return _decode(r);
+  }
+
+  /// `GET /api/auth/methods`: password, code and, while there is none, the first access.
+  Future<Map<String, dynamic>> authMethods() async => _object(await _get('/api/auth/methods'));
+
+  /// `POST /api/auth/first-access` (G39.7): the first password. Inside the setup channel the
+  /// session it opens is the channel's own.
+  Future<String> firstAccess(String password) async {
+    final t = _object(await _post('/api/auth/first-access', {'password': password}))['token'];
+    if (t is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    return t;
+  }
+
+  /// `POST /api/auth/login`: the password (and the code) for a session.
+  Future<String> login(String password, {String? code}) async {
+    final t = _object(
+      await _post('/api/auth/login', {
+        'password': password,
+        if (code != null && code.isNotEmpty) 'code': code,
+      }),
+    )['token'];
+    if (t is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    return t;
+  }
+
+  /// `GET /api/setup-network`: the temporary network, the networks seen, the last try.
+  Future<SetupNetworkInfo> setupNetwork() async =>
+      SetupNetworkInfo.fromJson(_object(await _get('/api/setup-network')));
+
+  /// `POST /api/setup-network/home`: `{cable: true}` or `{ssid, password?, hidden?}`.
+  Future<HomeResult> setupNetworkHome(Map<String, Object?> choice) async =>
+      HomeResult.fromJson(_object(await _post('/api/setup-network/home', choice)));
+
+  /// `GET /api/setup`: the wizard's state, as the app reads it.
+  Future<Map<String, dynamic>> setupState() async => _object(await _get('/api/setup'));
+
+  Future<SetupSummary> setupSummary() async => SetupSummary.fromJson(await setupState());
+
+  /// `PUT /api/setup/languages`: the interface's and the agents' language.
+  Future<void> setupLanguages({String? language, String? agentLanguage}) => _call(
+    'PUT',
+    '/api/setup/languages',
+    {'language': ?language, 'agentLanguage': ?agentLanguage},
+  );
+
+  /// `PUT /api/setup/names`: God's and Demi-God's names.
+  Future<void> setupNames({required String god, required String demigod, String? language}) =>
+      _call('PUT', '/api/setup/names', {'god': god, 'demigod': demigod, 'language': ?language});
+
+  /// `PUT /api/setup/keys/:id`: a provider's key, checked by the server; its models.
+  Future<List<String>> setupKey(String provider, String key) async {
+    final r = _object(
+      await _call('PUT', '/api/setup/keys/${Uri.encodeComponent(provider)}', {'key': key}),
+    );
+    return [for (final m in (r['models'] is List ? r['models'] as List : const [])) '$m'];
+  }
+
+  /// `PUT /api/setup/subscriptions`: the terms read (`ack`), a subscription on or off.
+  Future<void> setupSubscriptions(Map<String, Object?> b) =>
+      _call('PUT', '/api/setup/subscriptions', b);
+
+  /// `POST /api/subscriptions/claude/login`: Anthropic's page, to open in the browser.
+  Future<String> claudeLogin({required bool ack}) async {
+    final u = _object(await _post('/api/subscriptions/claude/login', {'ack': ack}))['url'];
+    if (u is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    return u;
+  }
+
+  /// `POST /api/subscriptions/claude/code`: the code Anthropic's page shows.
+  Future<Map<String, dynamic>> claudeCode(String code) async =>
+      _object(await _post('/api/subscriptions/claude/code', {'code': code}));
+
+  Future<Map<String, dynamic>> claudeStatus() async =>
+      _object(await _get('/api/subscriptions/claude'));
+
+  /// `POST /api/subscriptions/chatgpt/login`: OpenAI's page and the code to type there.
+  Future<({String url, String code})> chatgptLogin() async {
+    final r = _object(await _post('/api/subscriptions/chatgpt/login', const {}));
+    return (url: '${r['url'] ?? ''}', code: '${r['code'] ?? ''}');
+  }
+
+  Future<Map<String, dynamic>> chatgptStatus() async =>
+      _object(await _get('/api/subscriptions/chatgpt'));
+
+  /// `POST /api/setup/complete`: the first start is completed (the temporary network closes).
+  Future<void> setupComplete() => _call('POST', '/api/setup/complete', const {});
+
+  /// `GET /api/models`: the models of the ways connected.
+  Future<List<ModelChoice>> models() async => [
+    for (final m in _array(await _get('/api/models'))) ModelChoice.fromJson(m),
+  ];
+
+  /// `PUT /api/setup/models`: the model agents use when nobody chose another.
+  Future<void> setDefaultModel(String provider, String model, {String? effort}) =>
+      _call('PUT', '/api/setup/models', {
+        'defaultModel': {'provider': provider, 'model': model, 'effort': ?effort},
+      });
+
+  /// `PUT /api/nodes/name`: the machine's name, for the page, the nodes and the app.
+  Future<void> setMachineName(String name) => _call('PUT', '/api/nodes/name', {'name': name});
+
+  /// `GET /api/devices`: the devices with a token (never the token).
+  Future<List<DeviceRow>> devices() async => [
+    for (final d in _array(await _get('/api/devices'))) DeviceRow.fromJson(d),
+  ];
+
+  /// `DELETE /api/devices/:id`: that device is signed out at once.
+  Future<void> revokeDevice(String id) =>
+      _call('DELETE', '/api/devices/${Uri.encodeComponent(id)}');
+
+  /// `POST /api/devices/:id/push/test`: a test notification; null when it went.
+  Future<String?> pushTest(String id) async {
+    final r = _object(
+      await _call('POST', '/api/devices/${Uri.encodeComponent(id)}/push/test', const {}),
+    );
+    return r['ok'] == true ? null : '${r['error'] ?? 'failed'}';
+  }
+
+  /// `GET /api/update/status`: the last look for a new version.
+  Future<UpdateStatus> updateStatus() async =>
+      UpdateStatus.fromJson(_object(await _get('/api/update/status')));
+
+  /// `POST /api/update/look`: looks now.
+  Future<UpdateStatus> updateLook() async =>
+      UpdateStatus.fromJson(_object(await _post('/api/update/look', const {})));
+
+  /// `POST /api/update/act {action: update}`: where this installation updates itself.
+  Future<void> updateNow() => _call('POST', '/api/update/act', {'action': 'update'});
+
+  /// `GET /api/setup/os-updates` (RedGiant OS); null where there is none.
+  Future<OsUpdates?> osUpdates({bool check = false}) async {
+    try {
+      final r = check
+          ? await _post('/api/setup/os-updates/check', const {})
+          : await _get('/api/setup/os-updates');
+      final u = OsUpdates.fromJson(_object(r));
+      return u.available ? u : null;
+    } on ApiException catch (e) {
+      if (e.status == 400 || e.status == 404) return null;
+      rethrow;
+    }
   }
 
   void close() => transport.close();

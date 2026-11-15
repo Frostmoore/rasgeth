@@ -120,6 +120,15 @@ void main() {
     await _pump(tester, app);
     await tester.tap(find.byKey(const Key('tab-you')));
     await tester.pumpAndSettle();
+    // Under the RedGiants and «Set up a new RedGiant» (G40.8).
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('reduce-motion')),
+      200,
+      scrollable: find
+          .descendant(of: find.byKey(const Key('you-list')), matching: find.byType(Scrollable))
+          .first,
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Scuro'));
     await tester.pumpAndSettle();
     expect(app.themeMode, ThemeMode.dark);

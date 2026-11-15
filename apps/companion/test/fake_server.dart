@@ -59,6 +59,69 @@ class FakeRedGiant {
     },
   ];
   final answered = <String, String>{};
+
+  // The settings of this RedGiant (G40.8).
+  String machine = 'RedGiant di casa';
+  Map<String, dynamic> update = {
+    'install': 'os',
+    'installed': '3.8.0',
+    'latest': '3.8.1',
+    'checkedAt': '2026-11-15T09:00:00.000Z',
+    'state': 'available',
+    'gate': 'normal',
+    'signed': true,
+    'note': {
+      'it': 'Aggiornamenti spiegati passo per passo.',
+      'en': 'Updates explained step by step.',
+    },
+    'downloadUrl': null,
+    'command': null,
+    'backupDir': null,
+    'canUpdateHere': true,
+    'canUninstall': false,
+  };
+  Map<String, dynamic>? osUpdates;
+  int updateActs = 0;
+  final devices = <Map<String, dynamic>>[
+    {
+      'id': 'd1',
+      'name': 'RGCompanion (Linux)',
+      'platform': 'linux',
+      'createdAt': '2026-11-15T10:00:00.000Z',
+      'lastUsedAt': '2026-11-15T11:00:00.000Z',
+      'current': true,
+      'push': {
+        'kind': 'webpush',
+        'registeredAt': '2026-11-15T10:00:00.000Z',
+        'target': 'ntfy.sh',
+        'lastSentAt': null,
+        'lastError': null,
+      },
+    },
+    {
+      'id': 'd2',
+      'name': 'Telefono di Mario',
+      'platform': 'android',
+      'createdAt': '2026-11-14T10:00:00.000Z',
+      'lastUsedAt': '2026-11-14T20:00:00.000Z',
+      'push': null,
+    },
+  ];
+  final pushTests = <String>[];
+  Map<String, dynamic> setup = {
+    'config': {
+      'completed': true,
+      'language': 'it',
+      'defaultModel': {'provider': 'anthropic', 'model': 'claude-sonnet-5', 'effort': 'medium'},
+      'transcription': {'api': 'local', 'url': ''},
+      'remote': {'way': 'tailscale', 'url': 'https://casa.tail1234.ts.net'},
+    },
+    'secretsSet': {
+      'keys': ['anthropic'],
+    },
+    'locked': {},
+    'names': {'god': 'God', 'demigod': 'Demi-God'},
+  };
   int _sessionSeq = 1;
   late final mascots = loadMascots();
 
@@ -111,7 +174,7 @@ class FakeRedGiant {
         'version': '3.8.0',
         'appProtocol': appProtocol,
         'protocolVersion': 12,
-        'machine': 'RedGiant di casa',
+        'machine': machine,
         'firstStartCompleted': true,
         'access': {'password': true, 'code': codeOn, 'token': true},
         'signedIn': tokens.contains(token),
@@ -187,6 +250,57 @@ class FakeRedGiant {
       answered[ans.group(1)!] = b['decision'] as String;
       permissions.remove(p);
       return _json(r, 200, {'ok': true});
+    }
+    if (r.method == 'GET' && path == '/api/update/status') return _json(r, 200, update);
+    if (r.method == 'POST' && path == '/api/update/look') {
+      update = {...update, 'checkedAt': '2026-11-15T12:00:00.000Z'};
+      return _json(r, 200, update);
+    }
+    if (r.method == 'POST' && path == '/api/update/act') {
+      updateActs++;
+      return _json(r, 200, {'ok': true});
+    }
+    if (path == '/api/setup/os-updates' || path == '/api/setup/os-updates/check') {
+      final os = osUpdates;
+      return os == null ? _json(r, 400, {'error': 'Not RedGiant OS'}) : _json(r, 200, os);
+    }
+    if (r.method == 'GET' && path == '/api/devices') return _json(r, 200, devices);
+    final dev = RegExp(r'^/api/devices/([^/]+)$').firstMatch(path);
+    if (r.method == 'DELETE' && dev != null) {
+      devices.removeWhere((d) => d['id'] == dev.group(1));
+      return _json(r, 200, {'ok': true});
+    }
+    final pt = RegExp(r'^/api/devices/([^/]+)/push/test$').firstMatch(path);
+    if (r.method == 'POST' && pt != null) {
+      pushTests.add(pt.group(1)!);
+      return _json(r, 200, {'ok': true});
+    }
+    if (r.method == 'GET' && path == '/api/setup') return _json(r, 200, setup);
+    if (r.method == 'GET' && path == '/api/models') {
+      return _json(r, 200, [
+        {
+          'provider': 'anthropic',
+          'model': 'claude-sonnet-5',
+          'effort': true,
+          'name': 'Claude Sonnet 5',
+        },
+        {
+          'provider': 'anthropic',
+          'model': 'claude-haiku-5',
+          'effort': true,
+          'name': 'Claude Haiku 5',
+        },
+      ]);
+    }
+    if (r.method == 'PUT' && path == '/api/setup/models') {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      (setup['config'] as Map<String, dynamic>)['defaultModel'] = b['defaultModel'];
+      return _json(r, 200, {'ok': true});
+    }
+    if (r.method == 'PUT' && path == '/api/nodes/name') {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      machine = b['name'] as String;
+      return _json(r, 200, {});
     }
     if (r.method == 'GET' && path == '/api/projects') {
       return _json(r, 200, [

@@ -249,5 +249,356 @@
   "addServerFirst": "Connect a RedGiant",
   "addServer": "Add another RedGiant",
   "foundOnNetwork": "Found on this network",
-  "pairingNote": "The password is used once: the app keeps only a device token, revocable from Settings › Devices."
+  "pairingNote": "The password is used once: the app keeps only a device token, revocable from Settings › Devices.",
+  "allSettings": "All settings",
+  "allSettingsHint": "RedGiant's whole Settings page, inside the app, signed in with this device.",
+  "allSettingsBrowser": "Opens RedGiant's page in the browser: sign in there as usual.",
+  "allSettingsNoHttps": "The full settings need HTTPS: from here the page would travel in clear. Switch on HTTPS in the home network from the computer.",
+  "close": "Close",
+  "copy": "Copy",
+  "connectExisting": "Connect a RedGiant that runs already",
+  "firstStepsTitle": "No RedGiant yet",
+  "firstStepsLead": "Set up a new one from here (RedGiant OS opens its own Wi-Fi network at the first start), or connect one you already use.",
+  "setupNew": "Set up a new RedGiant",
+  "setupNewHint": "A RedGiant OS machine turned on for the first time: the app joins its temporary network and does the whole first start.",
+  "defaultModel": "Default model",
+  "setModel": "The model agents use when nobody chose another",
+  "modelNone": "None yet: connect a way of thinking",
+  "devLastUsed": "last used {when}",
+  "@devLastUsed": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "devNeverUsed": "never used",
+  "devNone": "No device with its own access.",
+  "devRevoke": "Sign out",
+  "devRevokeTitle": "Sign this device out?",
+  "devRevokeBody": "«{name}» is signed out at once and needs the password to come back.",
+  "@devRevokeBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "devThis": "this device",
+  "fsTitle": "First start",
+  "fsLeave": "Leave",
+  "fsLeaveTitle": "Leave the first start?",
+  "fsLeaveBody": "What is done stays done; you can come back here, or finish from the browser, while the temporary network is open (30 minutes from when RedGiant was turned on).",
+  "fsIntroTitle": "Set up a new RedGiant",
+  "fsIntroLead": "Turn your RedGiant on: for 30 minutes it opens the Wi-Fi network RedGiant-Setup-XXXX. The app joins it, you create the access and choose your home network, then RedGiant moves there and the app finds it again.",
+  "fsIntroSafe": "Everything you type travels encrypted, with RedGiant's own key checked by the app: nobody on the temporary network reads it.",
+  "fsSeen": "Temporary networks around",
+  "fsNoScan": "The system does not show the networks around: type the four characters after RedGiant-Setup- (you see them in the computer's Wi-Fi list).",
+  "fsLetters": "The last four characters",
+  "fsScanAgain": "Look again",
+  "fsJoin": "Join the network",
+  "fsByHand": "I join by hand",
+  "fsJoining": "Joining the temporary network…",
+  "fsJoiningSheet": "Choose RedGiant-Setup in the window the system shows.",
+  "fsConnecting": "Looking for RedGiant on the network…",
+  "fsManualTitle": "Join by hand",
+  "fsManualLead": "Join the network {ssid} (password {password}) from the Wi-Fi settings, then come back here.",
+  "@fsManualLead": {
+    "placeholders": {
+      "ssid": {
+        "type": "String"
+      },
+      "password": {
+        "type": "String"
+      }
+    }
+  },
+  "fsNetworkName": "Network",
+  "fsNetworkPassword": "Password",
+  "fsWhereAndroid": "Settings › Network › Wi-Fi: tap RedGiant-Setup-…",
+  "fsWhereIos": "Settings › Wi-Fi: tap RedGiant-Setup-…",
+  "fsWhereMac": "The Wi-Fi menu at the top right of the screen: choose RedGiant-Setup-…",
+  "fsWhereWindows": "The Wi-Fi icon at the bottom right: choose RedGiant-Setup-…",
+  "fsWhereOther": "The system's Wi-Fi list: choose RedGiant-Setup-…",
+  "fsManualNoInternet": "The system may say the network has no internet: that is right, stay on it.",
+  "fsJoinedContinue": "Done, go on",
+  "fsErrNotFound": "RedGiant does not answer: are you on the RedGiant-Setup network? It stays open for 30 minutes after RedGiant is turned on.",
+  "fsErrNotHere": "This RedGiant does not let a new access be created from here: finish from its page.",
+  "fsErrCancelled": "The network was not joined. Try again, or join by hand.",
+  "fsErrDenied": "The app needs the permission for nearby devices to join the network: allow it, or join by hand.",
+  "fsErrJoinFailed": "The system could not join the network: join by hand.",
+  "fsErrNoName": "Choose the network, or type its four last characters.",
+  "fsAccessTitle": "Create your access",
+  "fsAccessLead": "The password that opens RedGiant from every device. Keep it: it is also what opens its keychain.",
+  "fsPassword": "Password",
+  "fsPasswordAgain": "The password again",
+  "fsPasswordNeeded": "A password is needed.",
+  "fsPasswordWeak": "At least 10 characters, not all the same.",
+  "fsPasswordDiffer": "The two passwords are different.",
+  "fsAccessSafe": "It travels encrypted to RedGiant and stays only there; this device gets its own access, which you can sign out from Settings › Devices.",
+  "fsAccessGo": "Create the access",
+  "fsSignInTitle": "Sign in",
+  "fsSignInLead": "This RedGiant has its password already: type it to go on.",
+  "fsMaintenanceTitle": "RedGiant lost its network",
+  "fsMaintenanceLead": "It opened the temporary network to be given a new one. Its owner's password, and nothing else changes.",
+  "fsHomeTitle": "Your home network",
+  "fsHomeLead": "Which network should RedGiant use at home? These are the ones it saw around it.",
+  "fsHomeNone": "No network was seen around: use the cable, or type the name of a hidden network.",
+  "fsHomeUnusable": "RedGiant cannot join this kind of network",
+  "fsHomeHidden": "A hidden network",
+  "fsHomeHiddenName": "Network name",
+  "fsHomePassword": "Password of «{name}»",
+  "@fsHomePassword": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fsHomeSafe": "The Wi-Fi password stays only in RedGiant.",
+  "fsHomeJoin": "Use «{name}»",
+  "@fsHomeJoin": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fsHomeCable": "I use the cable",
+  "fsHomeWaitWifi": "RedGiant is joining «{name}»…",
+  "@fsHomeWaitWifi": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fsHomeWaitCable": "RedGiant moves to the home network…",
+  "fsHomeWaitSub": "The device goes back to its own network and finds RedGiant there (up to two minutes). If it does not work, RedGiant opens the temporary network again and says why.",
+  "fsLostTitle": "RedGiant is not found",
+  "fsLostLead": "Neither at home nor on {ssid}. Check that this device is back on the home network, then look again; or join the temporary network by hand to see what happened.",
+  "@fsLostLead": {
+    "placeholders": {
+      "ssid": {
+        "type": "String"
+      }
+    }
+  },
+  "fsLookAgain": "Look again",
+  "fsLanguageTitle": "Languages",
+  "fsLanguageLead": "The language of the app and of the page, and the one the agents speak to you.",
+  "fsLanguageUi": "App and page",
+  "fsLanguageAgents": "The agents speak",
+  "fsNext": "Next",
+  "fsLater": "Later",
+  "fsBrainTitle": "How should RedGiant think?",
+  "fsBrainLead": "A subscription you have already, or a key of a provider. Any of them, or none for now.",
+  "fsClaude": "Claude Pro or Max",
+  "fsClaudeText": "Anthropic's page in the browser, then the code it shows",
+  "fsClaudeOpen": "Open Anthropic's page",
+  "fsClaudeCode": "The code the page shows",
+  "fsChatgpt": "ChatGPT Plus or Pro",
+  "fsChatgptText": "A code to type on OpenAI's page",
+  "fsChatgptOpen": "Open OpenAI's page",
+  "fsChatgptCode": "Type this code on the page; the app notices when it is done.",
+  "fsChatgptOpenAgain": "Open the page again",
+  "fsKey": "A key of a provider",
+  "fsKeyText": "Anthropic, OpenAI, Gemini, OpenRouter…: paid per use",
+  "fsKeyOf": "Key of {name}",
+  "@fsKeyOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fsKeySaved": "{name}: the key works.",
+  "@fsKeySaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fsTerms": "I read the provider's terms: a subscription is used by me, on my own RedGiant.",
+  "fsBrainLater": "Models on this machine, your own server and the rest are in Settings, from the computer or from «All settings».",
+  "fsNamesTitle": "The names",
+  "fsNamesLead": "Who runs your RedGiant, and who speaks for it in the chats. You can change them later.",
+  "fsGodName": "The chief",
+  "fsGodHelp": "It organises the work and hands it to the agents",
+  "fsDemigodName": "The spokesperson",
+  "fsDemigodHelp": "It answers you on Telegram and the other chats",
+  "fsFinish": "Finish",
+  "fsFinishing": "Completing the first start…",
+  "fsDoneTitle": "RedGiant is ready",
+  "fsDoneLead": "The temporary network is closed: RedGiant is on your home network, and this device is connected to it.",
+  "fsDoneMaintenance": "RedGiant is on its new network again, and this device is connected to it.",
+  "fsDoneMore": "The rest of the first start (backups, chats, access from outside…) is in the page, whenever you want: «Settings of RedGiant» › «All settings».",
+  "fsDoneGo": "Open the team",
+  "homeErrConnectFailed": "The network refused to connect: check the password and try again.",
+  "homeErrNotFound": "That network is not in reach now.",
+  "homeErrBadPassword": "A Wi-Fi password has 8 to 63 characters.",
+  "homeErrBadSsid": "A network's name has 1 to 32 characters.",
+  "homeErrBusy": "RedGiant is already joining a network: wait a moment.",
+  "homeErrWifiOff": "Wi-Fi is not running on RedGiant.",
+  "homeErrNoCable": "No cable with an address: connect it to the router, or choose a Wi-Fi network.",
+  "homeErrFailed": "That did not work. Try again in a moment.",
+  "outsideNone": "Only from the home network. Tailscale, Cloudflare or your own name: in «All settings».",
+  "outsideOwn": "Your own way in",
+  "outsideOwnName": "Your own name (Caddy)",
+  "pushOff": "Not on for this device yet.",
+  "pushOn": "On, through {target}",
+  "@pushOn": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "pushBlocked": "Nothing can be sent now (the keychain is locked, or the relay is off).",
+  "pushTest": "Send a test",
+  "pushTestSent": "Test notification sent.",
+  "pushTestFailed": "The test did not go: {why}",
+  "@pushTestFailed": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "sectionUpdates": "UPDATES",
+  "sectionDevices": "DEVICES CONNECTED",
+  "sectionNotifications": "THIS DEVICE'S NOTIFICATIONS",
+  "sectionModel": "MODEL AND VOICE",
+  "sectionOutside": "FROM OUTSIDE HOME",
+  "serverSettingsTitle": "Settings of {name}",
+  "@serverSettingsTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "serverSettingsSub": "Name, updates, devices, model, voice",
+  "versionOf": "version {version}",
+  "@versionOf": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updLatest": "Up to date",
+  "updAvailable": "Version {version} is available",
+  "@updAvailable": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updApplying": "Updating to {version}…",
+  "@updApplying": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updInstalled": "installed {version}",
+  "@updInstalled": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updChecked": "checked {when}",
+  "@updChecked": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "updLook": "Look for updates",
+  "updLooking": "Looking…",
+  "updNow": "Update",
+  "updNowTitle": "Update RedGiant?",
+  "updNowBody": "RedGiant installs {version} and restarts: for a few minutes it does not answer, then the app connects again by itself.",
+  "@updNowBody": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updStarted": "The update started.",
+  "updBreaking": "This version needs a clean install (with a backup first): from the computer.",
+  "updDockerHint": "In Docker the new version comes with these commands, on the computer that runs it:",
+  "updReboot": "A security update asks for a restart.",
+  "updBytes": "{done} MB of {total} MB",
+  "@updBytes": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "updSpeed": "{mb} MB/s",
+  "@updSpeed": {
+    "placeholders": {
+      "mb": {
+        "type": "String"
+      }
+    }
+  },
+  "updEtaMin": "{n} min left",
+  "@updEtaMin": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "updEtaSec": "{n} s left",
+  "@updEtaSec": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "updStepCheck": "Checking the release",
+  "updStepDownload": "Downloading",
+  "updStepFiles": "The system's files",
+  "updStepInstall": "Installing",
+  "updStepRestart": "Restarting",
+  "updStepWait": "Waiting for RedGiant to answer",
+  "updStepRollback": "Going back to the version before",
+  "updStepScan": "Comparing the files",
+  "updStepBuild": "Preparing",
+  "updStepFailed": "It stopped",
+  "voice": "Voice",
+  "voiceHear": "Hears with: {what}",
+  "@voiceHear": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceRead": "Reads with: {what}",
+  "@voiceRead": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceNone": "nothing set yet",
+  "voiceBrowser": "the device's own voice"
 }

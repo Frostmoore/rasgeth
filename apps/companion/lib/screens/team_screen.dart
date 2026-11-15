@@ -14,6 +14,7 @@ import '../ui/common.dart';
 import '../ui/icons.dart';
 import '../ui/words.dart';
 import 'conversation_screen.dart';
+import 'first_start_screen.dart';
 
 class TeamScreen extends StatelessWidget {
   const TeamScreen({super.key});
@@ -34,7 +35,7 @@ class TeamScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ScreenHeader(
-            title: hello?.machine ?? l.noServer,
+            title: hello == null ? l.noServer : app.displayName,
             subtitle: Row(
               children: [
                 Dot(
@@ -84,7 +85,9 @@ class TeamScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: team.isEmpty
+            child: team.isEmpty && app.servers.isEmpty && !app.connecting
+                ? const _FirstSteps()
+                : team.isEmpty
                 ? EmptyState(
                     icon: RgIcons.users,
                     text: hello == null ? l.connectFromYou : l.teamEmpty,
@@ -107,6 +110,60 @@ class TeamScreen extends StatelessWidget {
                   ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// No RedGiant yet: set a new one up from here (G40.8), or connect one that runs already.
+class _FirstSteps extends StatelessWidget {
+  const _FirstSteps();
+
+  @override
+  Widget build(BuildContext context) {
+    final app = AppScope.of(context);
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(28),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 420),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              RgIcon(RgIcons.server, size: 44, color: c.dim),
+              const SizedBox(height: 12),
+              Text(
+                l.firstStepsTitle,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700, color: c.text),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                l.firstStepsLead,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: c.dim),
+              ),
+              const SizedBox(height: 18),
+              FilledButton.icon(
+                key: const Key('team-setup-new'),
+                onPressed: () =>
+                    Navigator.of(context)
+                        .push(MaterialPageRoute<void>(builder: (_) => const FirstStartScreen())),
+                icon: const RgIcon(RgIcons.wifi, size: 18, color: Colors.white),
+                label: Text(l.setupNew),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton(
+                key: const Key('team-connect'),
+                onPressed: () => app.setTab(AppTab.you),
+                child: Text(l.connectExisting),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -244,7 +301,14 @@ class AgentCard extends StatelessWidget {
                 MascotState.idle => c.dim,
               }),
               const SizedBox(width: 5),
-              Text(word, style: TextStyle(fontSize: 12.5, color: c.dim)),
+              Flexible(
+                child: Text(
+                  word,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 12.5, color: c.dim),
+                ),
+              ),
             ],
           ),
         ],

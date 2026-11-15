@@ -884,6 +884,1068 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The password is used once: the app keeps only a device token, revocable from Settings › Devices.'**
   String get pairingNote;
+
+  /// No description provided for @allSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'All settings'**
+  String get allSettings;
+
+  /// No description provided for @allSettingsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant\'s whole Settings page, inside the app, signed in with this device.'**
+  String get allSettingsHint;
+
+  /// No description provided for @allSettingsBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens RedGiant\'s page in the browser: sign in there as usual.'**
+  String get allSettingsBrowser;
+
+  /// No description provided for @allSettingsNoHttps.
+  ///
+  /// In en, this message translates to:
+  /// **'The full settings need HTTPS: from here the page would travel in clear. Switch on HTTPS in the home network from the computer.'**
+  String get allSettingsNoHttps;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
+
+  /// No description provided for @connectExisting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect a RedGiant that runs already'**
+  String get connectExisting;
+
+  /// No description provided for @firstStepsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No RedGiant yet'**
+  String get firstStepsTitle;
+
+  /// No description provided for @firstStepsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up a new one from here (RedGiant OS opens its own Wi-Fi network at the first start), or connect one you already use.'**
+  String get firstStepsLead;
+
+  /// No description provided for @setupNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up a new RedGiant'**
+  String get setupNew;
+
+  /// No description provided for @setupNewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A RedGiant OS machine turned on for the first time: the app joins its temporary network and does the whole first start.'**
+  String get setupNewHint;
+
+  /// No description provided for @defaultModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Default model'**
+  String get defaultModel;
+
+  /// No description provided for @setModel.
+  ///
+  /// In en, this message translates to:
+  /// **'The model agents use when nobody chose another'**
+  String get setModel;
+
+  /// No description provided for @modelNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None yet: connect a way of thinking'**
+  String get modelNone;
+
+  /// No description provided for @devLastUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'last used {when}'**
+  String devLastUsed(String when);
+
+  /// No description provided for @devNeverUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'never used'**
+  String get devNeverUsed;
+
+  /// No description provided for @devNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No device with its own access.'**
+  String get devNone;
+
+  /// No description provided for @devRevoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get devRevoke;
+
+  /// No description provided for @devRevokeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign this device out?'**
+  String get devRevokeTitle;
+
+  /// No description provided for @devRevokeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'«{name}» is signed out at once and needs the password to come back.'**
+  String devRevokeBody(String name);
+
+  /// No description provided for @devThis.
+  ///
+  /// In en, this message translates to:
+  /// **'this device'**
+  String get devThis;
+
+  /// No description provided for @fsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'First start'**
+  String get fsTitle;
+
+  /// No description provided for @fsLeave.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get fsLeave;
+
+  /// No description provided for @fsLeaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave the first start?'**
+  String get fsLeaveTitle;
+
+  /// No description provided for @fsLeaveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'What is done stays done; you can come back here, or finish from the browser, while the temporary network is open (30 minutes from when RedGiant was turned on).'**
+  String get fsLeaveBody;
+
+  /// No description provided for @fsIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up a new RedGiant'**
+  String get fsIntroTitle;
+
+  /// No description provided for @fsIntroLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn your RedGiant on: for 30 minutes it opens the Wi-Fi network RedGiant-Setup-XXXX. The app joins it, you create the access and choose your home network, then RedGiant moves there and the app finds it again.'**
+  String get fsIntroLead;
+
+  /// No description provided for @fsIntroSafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything you type travels encrypted, with RedGiant\'s own key checked by the app: nobody on the temporary network reads it.'**
+  String get fsIntroSafe;
+
+  /// No description provided for @fsSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporary networks around'**
+  String get fsSeen;
+
+  /// No description provided for @fsNoScan.
+  ///
+  /// In en, this message translates to:
+  /// **'The system does not show the networks around: type the four characters after RedGiant-Setup- (you see them in the computer\'s Wi-Fi list).'**
+  String get fsNoScan;
+
+  /// No description provided for @fsLetters.
+  ///
+  /// In en, this message translates to:
+  /// **'The last four characters'**
+  String get fsLetters;
+
+  /// No description provided for @fsScanAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Look again'**
+  String get fsScanAgain;
+
+  /// No description provided for @fsJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Join the network'**
+  String get fsJoin;
+
+  /// No description provided for @fsByHand.
+  ///
+  /// In en, this message translates to:
+  /// **'I join by hand'**
+  String get fsByHand;
+
+  /// No description provided for @fsJoining.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining the temporary network…'**
+  String get fsJoining;
+
+  /// No description provided for @fsJoiningSheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose RedGiant-Setup in the window the system shows.'**
+  String get fsJoiningSheet;
+
+  /// No description provided for @fsConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for RedGiant on the network…'**
+  String get fsConnecting;
+
+  /// No description provided for @fsManualTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Join by hand'**
+  String get fsManualTitle;
+
+  /// No description provided for @fsManualLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Join the network {ssid} (password {password}) from the Wi-Fi settings, then come back here.'**
+  String fsManualLead(String ssid, String password);
+
+  /// No description provided for @fsNetworkName.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get fsNetworkName;
+
+  /// No description provided for @fsNetworkPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get fsNetworkPassword;
+
+  /// No description provided for @fsWhereAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings › Network › Wi-Fi: tap RedGiant-Setup-…'**
+  String get fsWhereAndroid;
+
+  /// No description provided for @fsWhereIos.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings › Wi-Fi: tap RedGiant-Setup-…'**
+  String get fsWhereIos;
+
+  /// No description provided for @fsWhereMac.
+  ///
+  /// In en, this message translates to:
+  /// **'The Wi-Fi menu at the top right of the screen: choose RedGiant-Setup-…'**
+  String get fsWhereMac;
+
+  /// No description provided for @fsWhereWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'The Wi-Fi icon at the bottom right: choose RedGiant-Setup-…'**
+  String get fsWhereWindows;
+
+  /// No description provided for @fsWhereOther.
+  ///
+  /// In en, this message translates to:
+  /// **'The system\'s Wi-Fi list: choose RedGiant-Setup-…'**
+  String get fsWhereOther;
+
+  /// No description provided for @fsManualNoInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'The system may say the network has no internet: that is right, stay on it.'**
+  String get fsManualNoInternet;
+
+  /// No description provided for @fsJoinedContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Done, go on'**
+  String get fsJoinedContinue;
+
+  /// No description provided for @fsErrNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant does not answer: are you on the RedGiant-Setup network? It stays open for 30 minutes after RedGiant is turned on.'**
+  String get fsErrNotFound;
+
+  /// No description provided for @fsErrNotHere.
+  ///
+  /// In en, this message translates to:
+  /// **'This RedGiant does not let a new access be created from here: finish from its page.'**
+  String get fsErrNotHere;
+
+  /// No description provided for @fsErrCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'The network was not joined. Try again, or join by hand.'**
+  String get fsErrCancelled;
+
+  /// No description provided for @fsErrDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'The app needs the permission for nearby devices to join the network: allow it, or join by hand.'**
+  String get fsErrDenied;
+
+  /// No description provided for @fsErrJoinFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The system could not join the network: join by hand.'**
+  String get fsErrJoinFailed;
+
+  /// No description provided for @fsErrNoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the network, or type its four last characters.'**
+  String get fsErrNoName;
+
+  /// No description provided for @fsAccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your access'**
+  String get fsAccessTitle;
+
+  /// No description provided for @fsAccessLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The password that opens RedGiant from every device. Keep it: it is also what opens its keychain.'**
+  String get fsAccessLead;
+
+  /// No description provided for @fsPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get fsPassword;
+
+  /// No description provided for @fsPasswordAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'The password again'**
+  String get fsPasswordAgain;
+
+  /// No description provided for @fsPasswordNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'A password is needed.'**
+  String get fsPasswordNeeded;
+
+  /// No description provided for @fsPasswordWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 10 characters, not all the same.'**
+  String get fsPasswordWeak;
+
+  /// No description provided for @fsPasswordDiffer.
+  ///
+  /// In en, this message translates to:
+  /// **'The two passwords are different.'**
+  String get fsPasswordDiffer;
+
+  /// No description provided for @fsAccessSafe.
+  ///
+  /// In en, this message translates to:
+  /// **'It travels encrypted to RedGiant and stays only there; this device gets its own access, which you can sign out from Settings › Devices.'**
+  String get fsAccessSafe;
+
+  /// No description provided for @fsAccessGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Create the access'**
+  String get fsAccessGo;
+
+  /// No description provided for @fsSignInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get fsSignInTitle;
+
+  /// No description provided for @fsSignInLead.
+  ///
+  /// In en, this message translates to:
+  /// **'This RedGiant has its password already: type it to go on.'**
+  String get fsSignInLead;
+
+  /// No description provided for @fsMaintenanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant lost its network'**
+  String get fsMaintenanceTitle;
+
+  /// No description provided for @fsMaintenanceLead.
+  ///
+  /// In en, this message translates to:
+  /// **'It opened the temporary network to be given a new one. Its owner\'s password, and nothing else changes.'**
+  String get fsMaintenanceLead;
+
+  /// No description provided for @fsHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your home network'**
+  String get fsHomeTitle;
+
+  /// No description provided for @fsHomeLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Which network should RedGiant use at home? These are the ones it saw around it.'**
+  String get fsHomeLead;
+
+  /// No description provided for @fsHomeNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No network was seen around: use the cable, or type the name of a hidden network.'**
+  String get fsHomeNone;
+
+  /// No description provided for @fsHomeUnusable.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant cannot join this kind of network'**
+  String get fsHomeUnusable;
+
+  /// No description provided for @fsHomeHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'A hidden network'**
+  String get fsHomeHidden;
+
+  /// No description provided for @fsHomeHiddenName.
+  ///
+  /// In en, this message translates to:
+  /// **'Network name'**
+  String get fsHomeHiddenName;
+
+  /// No description provided for @fsHomePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password of «{name}»'**
+  String fsHomePassword(String name);
+
+  /// No description provided for @fsHomeSafe.
+  ///
+  /// In en, this message translates to:
+  /// **'The Wi-Fi password stays only in RedGiant.'**
+  String get fsHomeSafe;
+
+  /// No description provided for @fsHomeJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Use «{name}»'**
+  String fsHomeJoin(String name);
+
+  /// No description provided for @fsHomeCable.
+  ///
+  /// In en, this message translates to:
+  /// **'I use the cable'**
+  String get fsHomeCable;
+
+  /// No description provided for @fsHomeWaitWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant is joining «{name}»…'**
+  String fsHomeWaitWifi(String name);
+
+  /// No description provided for @fsHomeWaitCable.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant moves to the home network…'**
+  String get fsHomeWaitCable;
+
+  /// No description provided for @fsHomeWaitSub.
+  ///
+  /// In en, this message translates to:
+  /// **'The device goes back to its own network and finds RedGiant there (up to two minutes). If it does not work, RedGiant opens the temporary network again and says why.'**
+  String get fsHomeWaitSub;
+
+  /// No description provided for @fsLostTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant is not found'**
+  String get fsLostTitle;
+
+  /// No description provided for @fsLostLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Neither at home nor on {ssid}. Check that this device is back on the home network, then look again; or join the temporary network by hand to see what happened.'**
+  String fsLostLead(String ssid);
+
+  /// No description provided for @fsLookAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Look again'**
+  String get fsLookAgain;
+
+  /// No description provided for @fsLanguageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Languages'**
+  String get fsLanguageTitle;
+
+  /// No description provided for @fsLanguageLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The language of the app and of the page, and the one the agents speak to you.'**
+  String get fsLanguageLead;
+
+  /// No description provided for @fsLanguageUi.
+  ///
+  /// In en, this message translates to:
+  /// **'App and page'**
+  String get fsLanguageUi;
+
+  /// No description provided for @fsLanguageAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents speak'**
+  String get fsLanguageAgents;
+
+  /// No description provided for @fsNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get fsNext;
+
+  /// No description provided for @fsLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get fsLater;
+
+  /// No description provided for @fsBrainTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How should RedGiant think?'**
+  String get fsBrainTitle;
+
+  /// No description provided for @fsBrainLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A subscription you have already, or a key of a provider. Any of them, or none for now.'**
+  String get fsBrainLead;
+
+  /// No description provided for @fsClaude.
+  ///
+  /// In en, this message translates to:
+  /// **'Claude Pro or Max'**
+  String get fsClaude;
+
+  /// No description provided for @fsClaudeText.
+  ///
+  /// In en, this message translates to:
+  /// **'Anthropic\'s page in the browser, then the code it shows'**
+  String get fsClaudeText;
+
+  /// No description provided for @fsClaudeOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Anthropic\'s page'**
+  String get fsClaudeOpen;
+
+  /// No description provided for @fsClaudeCode.
+  ///
+  /// In en, this message translates to:
+  /// **'The code the page shows'**
+  String get fsClaudeCode;
+
+  /// No description provided for @fsChatgpt.
+  ///
+  /// In en, this message translates to:
+  /// **'ChatGPT Plus or Pro'**
+  String get fsChatgpt;
+
+  /// No description provided for @fsChatgptText.
+  ///
+  /// In en, this message translates to:
+  /// **'A code to type on OpenAI\'s page'**
+  String get fsChatgptText;
+
+  /// No description provided for @fsChatgptOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open OpenAI\'s page'**
+  String get fsChatgptOpen;
+
+  /// No description provided for @fsChatgptCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Type this code on the page; the app notices when it is done.'**
+  String get fsChatgptCode;
+
+  /// No description provided for @fsChatgptOpenAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the page again'**
+  String get fsChatgptOpenAgain;
+
+  /// No description provided for @fsKey.
+  ///
+  /// In en, this message translates to:
+  /// **'A key of a provider'**
+  String get fsKey;
+
+  /// No description provided for @fsKeyText.
+  ///
+  /// In en, this message translates to:
+  /// **'Anthropic, OpenAI, Gemini, OpenRouter…: paid per use'**
+  String get fsKeyText;
+
+  /// No description provided for @fsKeyOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Key of {name}'**
+  String fsKeyOf(String name);
+
+  /// No description provided for @fsKeySaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: the key works.'**
+  String fsKeySaved(String name);
+
+  /// No description provided for @fsTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'I read the provider\'s terms: a subscription is used by me, on my own RedGiant.'**
+  String get fsTerms;
+
+  /// No description provided for @fsBrainLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Models on this machine, your own server and the rest are in Settings, from the computer or from «All settings».'**
+  String get fsBrainLater;
+
+  /// No description provided for @fsNamesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The names'**
+  String get fsNamesTitle;
+
+  /// No description provided for @fsNamesLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Who runs your RedGiant, and who speaks for it in the chats. You can change them later.'**
+  String get fsNamesLead;
+
+  /// No description provided for @fsGodName.
+  ///
+  /// In en, this message translates to:
+  /// **'The chief'**
+  String get fsGodName;
+
+  /// No description provided for @fsGodHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It organises the work and hands it to the agents'**
+  String get fsGodHelp;
+
+  /// No description provided for @fsDemigodName.
+  ///
+  /// In en, this message translates to:
+  /// **'The spokesperson'**
+  String get fsDemigodName;
+
+  /// No description provided for @fsDemigodHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It answers you on Telegram and the other chats'**
+  String get fsDemigodHelp;
+
+  /// No description provided for @fsFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get fsFinish;
+
+  /// No description provided for @fsFinishing.
+  ///
+  /// In en, this message translates to:
+  /// **'Completing the first start…'**
+  String get fsFinishing;
+
+  /// No description provided for @fsDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant is ready'**
+  String get fsDoneTitle;
+
+  /// No description provided for @fsDoneLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The temporary network is closed: RedGiant is on your home network, and this device is connected to it.'**
+  String get fsDoneLead;
+
+  /// No description provided for @fsDoneMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant is on its new network again, and this device is connected to it.'**
+  String get fsDoneMaintenance;
+
+  /// No description provided for @fsDoneMore.
+  ///
+  /// In en, this message translates to:
+  /// **'The rest of the first start (backups, chats, access from outside…) is in the page, whenever you want: «Settings of RedGiant» › «All settings».'**
+  String get fsDoneMore;
+
+  /// No description provided for @fsDoneGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the team'**
+  String get fsDoneGo;
+
+  /// No description provided for @homeErrConnectFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The network refused to connect: check the password and try again.'**
+  String get homeErrConnectFailed;
+
+  /// No description provided for @homeErrNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'That network is not in reach now.'**
+  String get homeErrNotFound;
+
+  /// No description provided for @homeErrBadPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'A Wi-Fi password has 8 to 63 characters.'**
+  String get homeErrBadPassword;
+
+  /// No description provided for @homeErrBadSsid.
+  ///
+  /// In en, this message translates to:
+  /// **'A network\'s name has 1 to 32 characters.'**
+  String get homeErrBadSsid;
+
+  /// No description provided for @homeErrBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant is already joining a network: wait a moment.'**
+  String get homeErrBusy;
+
+  /// No description provided for @homeErrWifiOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi is not running on RedGiant.'**
+  String get homeErrWifiOff;
+
+  /// No description provided for @homeErrNoCable.
+  ///
+  /// In en, this message translates to:
+  /// **'No cable with an address: connect it to the router, or choose a Wi-Fi network.'**
+  String get homeErrNoCable;
+
+  /// No description provided for @homeErrFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'That did not work. Try again in a moment.'**
+  String get homeErrFailed;
+
+  /// No description provided for @outsideNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Only from the home network. Tailscale, Cloudflare or your own name: in «All settings».'**
+  String get outsideNone;
+
+  /// No description provided for @outsideOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'Your own way in'**
+  String get outsideOwn;
+
+  /// No description provided for @outsideOwnName.
+  ///
+  /// In en, this message translates to:
+  /// **'Your own name (Caddy)'**
+  String get outsideOwnName;
+
+  /// No description provided for @pushOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Not on for this device yet.'**
+  String get pushOff;
+
+  /// No description provided for @pushOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On, through {target}'**
+  String pushOn(String target);
+
+  /// No description provided for @pushBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing can be sent now (the keychain is locked, or the relay is off).'**
+  String get pushBlocked;
+
+  /// No description provided for @pushTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a test'**
+  String get pushTest;
+
+  /// No description provided for @pushTestSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Test notification sent.'**
+  String get pushTestSent;
+
+  /// No description provided for @pushTestFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The test did not go: {why}'**
+  String pushTestFailed(String why);
+
+  /// No description provided for @sectionUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'UPDATES'**
+  String get sectionUpdates;
+
+  /// No description provided for @sectionDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'DEVICES CONNECTED'**
+  String get sectionDevices;
+
+  /// No description provided for @sectionNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'THIS DEVICE\'S NOTIFICATIONS'**
+  String get sectionNotifications;
+
+  /// No description provided for @sectionModel.
+  ///
+  /// In en, this message translates to:
+  /// **'MODEL AND VOICE'**
+  String get sectionModel;
+
+  /// No description provided for @sectionOutside.
+  ///
+  /// In en, this message translates to:
+  /// **'FROM OUTSIDE HOME'**
+  String get sectionOutside;
+
+  /// No description provided for @serverSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings of {name}'**
+  String serverSettingsTitle(String name);
+
+  /// No description provided for @serverSettingsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Name, updates, devices, model, voice'**
+  String get serverSettingsSub;
+
+  /// No description provided for @versionOf.
+  ///
+  /// In en, this message translates to:
+  /// **'version {version}'**
+  String versionOf(String version);
+
+  /// No description provided for @updLatest.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get updLatest;
+
+  /// No description provided for @updAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} is available'**
+  String updAvailable(String version);
+
+  /// No description provided for @updApplying.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating to {version}…'**
+  String updApplying(String version);
+
+  /// No description provided for @updInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'installed {version}'**
+  String updInstalled(String version);
+
+  /// No description provided for @updChecked.
+  ///
+  /// In en, this message translates to:
+  /// **'checked {when}'**
+  String updChecked(String when);
+
+  /// No description provided for @updLook.
+  ///
+  /// In en, this message translates to:
+  /// **'Look for updates'**
+  String get updLook;
+
+  /// No description provided for @updLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking…'**
+  String get updLooking;
+
+  /// No description provided for @updNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get updNow;
+
+  /// No description provided for @updNowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update RedGiant?'**
+  String get updNowTitle;
+
+  /// No description provided for @updNowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant installs {version} and restarts: for a few minutes it does not answer, then the app connects again by itself.'**
+  String updNowBody(String version);
+
+  /// No description provided for @updStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'The update started.'**
+  String get updStarted;
+
+  /// No description provided for @updBreaking.
+  ///
+  /// In en, this message translates to:
+  /// **'This version needs a clean install (with a backup first): from the computer.'**
+  String get updBreaking;
+
+  /// No description provided for @updDockerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'In Docker the new version comes with these commands, on the computer that runs it:'**
+  String get updDockerHint;
+
+  /// No description provided for @updReboot.
+  ///
+  /// In en, this message translates to:
+  /// **'A security update asks for a restart.'**
+  String get updReboot;
+
+  /// No description provided for @updBytes.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} MB of {total} MB'**
+  String updBytes(String done, String total);
+
+  /// No description provided for @updSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'{mb} MB/s'**
+  String updSpeed(String mb);
+
+  /// No description provided for @updEtaMin.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} min left'**
+  String updEtaMin(String n);
+
+  /// No description provided for @updEtaSec.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} s left'**
+  String updEtaSec(String n);
+
+  /// No description provided for @updStepCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking the release'**
+  String get updStepCheck;
+
+  /// No description provided for @updStepDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading'**
+  String get updStepDownload;
+
+  /// No description provided for @updStepFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'The system\'s files'**
+  String get updStepFiles;
+
+  /// No description provided for @updStepInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Installing'**
+  String get updStepInstall;
+
+  /// No description provided for @updStepRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Restarting'**
+  String get updStepRestart;
+
+  /// No description provided for @updStepWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for RedGiant to answer'**
+  String get updStepWait;
+
+  /// No description provided for @updStepRollback.
+  ///
+  /// In en, this message translates to:
+  /// **'Going back to the version before'**
+  String get updStepRollback;
+
+  /// No description provided for @updStepScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Comparing the files'**
+  String get updStepScan;
+
+  /// No description provided for @updStepBuild.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing'**
+  String get updStepBuild;
+
+  /// No description provided for @updStepFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'It stopped'**
+  String get updStepFailed;
+
+  /// No description provided for @voice.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get voice;
+
+  /// No description provided for @voiceHear.
+  ///
+  /// In en, this message translates to:
+  /// **'Hears with: {what}'**
+  String voiceHear(String what);
+
+  /// No description provided for @voiceRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Reads with: {what}'**
+  String voiceRead(String what);
+
+  /// No description provided for @voiceNone.
+  ///
+  /// In en, this message translates to:
+  /// **'nothing set yet'**
+  String get voiceNone;
+
+  /// No description provided for @voiceBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'the device\'s own voice'**
+  String get voiceBrowser;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

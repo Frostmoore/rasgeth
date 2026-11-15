@@ -5,6 +5,18 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+    <!-- The first start (G40.8): RedGiant OS's temporary network, joined with
+         WifiNetworkSpecifier (a network without internet bound to the app alone). Android 13+
+         asks for nearby Wi-Fi devices, never the location; before 13 the system wants the
+         location for a network request, so it is asked only up to Android 12L. -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission
+        android:name="android.permission.NEARBY_WIFI_DEVICES"
+        android:usesPermissionFlags="neverForLocation"/>
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:maxSdkVersion="32"/>
     <application
         android:label="RGCompanion"
         android:name="${applicationName}"

@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../api/discovery.dart';
+import '../api/names.dart';
 import '../api/servers.dart';
 import '../api/transport.dart';
 import '../app_state.dart';
@@ -14,6 +15,8 @@ import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
+import 'first_start_screen.dart';
+import 'server_settings_screen.dart';
 
 class YouScreen extends StatelessWidget {
   const YouScreen({super.key});
@@ -27,8 +30,48 @@ class YouScreen extends StatelessWidget {
       children: [
         ScreenHeader(title: l.tabYou),
         _Section(l.sectionServer),
-        const ServersList(),
-        const AddServer(),
+        if (app.connected)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Material(
+              color: RgColors.of(context).accentDim,
+              borderRadius: BorderRadius.circular(14),
+              child: ListTile(
+                key: const Key('open-server-settings'),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                leading: RgIcon(RgIcons.settings, color: RgColors.of(context).accent),
+                title: Text(
+                  l.serverSettingsTitle(app.displayName),
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+                subtitle: Text(l.serverSettingsSub),
+                trailing: RgIcon(RgIcons.chevronRight, color: RgColors.of(context).dim),
+                onTap: () => Navigator.of(context)
+                    .push(MaterialPageRoute<void>(builder: (_) => const ServerSettingsScreen())),
+              ),
+            ),
+          ),
+        // Keyed: the settings' row above them comes and goes without remaking their state.
+        const ServersList(key: Key('servers-list')),
+        const AddServer(key: Key('add-server')),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+          child: OutlinedButton.icon(
+            key: const Key('setup-new'),
+            onPressed: () =>
+                Navigator.of(context)
+                    .push(MaterialPageRoute<void>(builder: (_) => const FirstStartScreen())),
+            icon: RgIcon(RgIcons.wifi, size: 18, color: RgColors.of(context).accent),
+            label: Text(l.setupNew),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+          child: Text(
+            l.setupNewHint,
+            style: TextStyle(color: RgColors.of(context).dim, fontSize: 12.5),
+          ),
+        ),
         _Section(l.sectionAppearance),
         _Row(
           label: l.themeLabel,
@@ -180,7 +223,10 @@ class _ServerTile extends StatelessWidget {
         children: [
           ListTile(
             leading: RgIcon(RgIcons.server, color: on ? c.ok : c.dim),
-            title: Text(s.label, style: const TextStyle(fontWeight: FontWeight.w700)),
+            title: Text(
+              current ? app.displayName : readableName(label: s.label),
+              style: const TextStyle(fontWeight: FontWeight.w700),
+            ),
             subtitle: Text('${s.address}\n${reachWord(l, s)}'),
             isThreeLine: true,
             trailing: current
@@ -212,8 +258,8 @@ class _ServerTile extends StatelessWidget {
             ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 6),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            child: Wrap(
+              alignment: WrapAlignment.end,
               children: [
                 TextButton.icon(
                   key: Key('rename-${s.id}'),
@@ -221,10 +267,14 @@ class _ServerTile extends StatelessWidget {
                     final t = await askText(
                       context,
                       title: l.renameServer,
-                      initial: s.label,
+                      initial: current ? app.displayName : readableName(label: s.label),
                       yes: l.save,
                     );
-                    if (t != null) await app.renameServer(s, t);
+                    if (t == null) return;
+                    // The one in use is renamed on the server too (the page, the nodes).
+                    current && app.connected
+                        ? await app.renameRedGiant(t)
+                        : await app.renameServer(s, t);
                   },
                   icon: RgIcon(RgIcons.edit, size: 16, color: c.dim),
                   label: Text(l.rename),
@@ -311,6 +361,7 @@ class _AddServerState extends State<AddServer> {
             _password.text,
             code: _code.text,
           );
+    if (!mounted) return;
     if (ok) {
       _password.clear();
       _code.clear();

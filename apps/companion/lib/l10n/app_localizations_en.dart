@@ -445,4 +445,615 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pairingNote =>
       'The password is used once: the app keeps only a device token, revocable from Settings › Devices.';
+
+  @override
+  String get allSettings => 'All settings';
+
+  @override
+  String get allSettingsHint =>
+      'RedGiant\'s whole Settings page, inside the app, signed in with this device.';
+
+  @override
+  String get allSettingsBrowser => 'Opens RedGiant\'s page in the browser: sign in there as usual.';
+
+  @override
+  String get allSettingsNoHttps =>
+      'The full settings need HTTPS: from here the page would travel in clear. Switch on HTTPS in the home network from the computer.';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get connectExisting => 'Connect a RedGiant that runs already';
+
+  @override
+  String get firstStepsTitle => 'No RedGiant yet';
+
+  @override
+  String get firstStepsLead =>
+      'Set up a new one from here (RedGiant OS opens its own Wi-Fi network at the first start), or connect one you already use.';
+
+  @override
+  String get setupNew => 'Set up a new RedGiant';
+
+  @override
+  String get setupNewHint =>
+      'A RedGiant OS machine turned on for the first time: the app joins its temporary network and does the whole first start.';
+
+  @override
+  String get defaultModel => 'Default model';
+
+  @override
+  String get setModel => 'The model agents use when nobody chose another';
+
+  @override
+  String get modelNone => 'None yet: connect a way of thinking';
+
+  @override
+  String devLastUsed(String when) {
+    return 'last used $when';
+  }
+
+  @override
+  String get devNeverUsed => 'never used';
+
+  @override
+  String get devNone => 'No device with its own access.';
+
+  @override
+  String get devRevoke => 'Sign out';
+
+  @override
+  String get devRevokeTitle => 'Sign this device out?';
+
+  @override
+  String devRevokeBody(String name) {
+    return '«$name» is signed out at once and needs the password to come back.';
+  }
+
+  @override
+  String get devThis => 'this device';
+
+  @override
+  String get fsTitle => 'First start';
+
+  @override
+  String get fsLeave => 'Leave';
+
+  @override
+  String get fsLeaveTitle => 'Leave the first start?';
+
+  @override
+  String get fsLeaveBody =>
+      'What is done stays done; you can come back here, or finish from the browser, while the temporary network is open (30 minutes from when RedGiant was turned on).';
+
+  @override
+  String get fsIntroTitle => 'Set up a new RedGiant';
+
+  @override
+  String get fsIntroLead =>
+      'Turn your RedGiant on: for 30 minutes it opens the Wi-Fi network RedGiant-Setup-XXXX. The app joins it, you create the access and choose your home network, then RedGiant moves there and the app finds it again.';
+
+  @override
+  String get fsIntroSafe =>
+      'Everything you type travels encrypted, with RedGiant\'s own key checked by the app: nobody on the temporary network reads it.';
+
+  @override
+  String get fsSeen => 'Temporary networks around';
+
+  @override
+  String get fsNoScan =>
+      'The system does not show the networks around: type the four characters after RedGiant-Setup- (you see them in the computer\'s Wi-Fi list).';
+
+  @override
+  String get fsLetters => 'The last four characters';
+
+  @override
+  String get fsScanAgain => 'Look again';
+
+  @override
+  String get fsJoin => 'Join the network';
+
+  @override
+  String get fsByHand => 'I join by hand';
+
+  @override
+  String get fsJoining => 'Joining the temporary network…';
+
+  @override
+  String get fsJoiningSheet => 'Choose RedGiant-Setup in the window the system shows.';
+
+  @override
+  String get fsConnecting => 'Looking for RedGiant on the network…';
+
+  @override
+  String get fsManualTitle => 'Join by hand';
+
+  @override
+  String fsManualLead(String ssid, String password) {
+    return 'Join the network $ssid (password $password) from the Wi-Fi settings, then come back here.';
+  }
+
+  @override
+  String get fsNetworkName => 'Network';
+
+  @override
+  String get fsNetworkPassword => 'Password';
+
+  @override
+  String get fsWhereAndroid => 'Settings › Network › Wi-Fi: tap RedGiant-Setup-…';
+
+  @override
+  String get fsWhereIos => 'Settings › Wi-Fi: tap RedGiant-Setup-…';
+
+  @override
+  String get fsWhereMac => 'The Wi-Fi menu at the top right of the screen: choose RedGiant-Setup-…';
+
+  @override
+  String get fsWhereWindows => 'The Wi-Fi icon at the bottom right: choose RedGiant-Setup-…';
+
+  @override
+  String get fsWhereOther => 'The system\'s Wi-Fi list: choose RedGiant-Setup-…';
+
+  @override
+  String get fsManualNoInternet =>
+      'The system may say the network has no internet: that is right, stay on it.';
+
+  @override
+  String get fsJoinedContinue => 'Done, go on';
+
+  @override
+  String get fsErrNotFound =>
+      'RedGiant does not answer: are you on the RedGiant-Setup network? It stays open for 30 minutes after RedGiant is turned on.';
+
+  @override
+  String get fsErrNotHere =>
+      'This RedGiant does not let a new access be created from here: finish from its page.';
+
+  @override
+  String get fsErrCancelled => 'The network was not joined. Try again, or join by hand.';
+
+  @override
+  String get fsErrDenied =>
+      'The app needs the permission for nearby devices to join the network: allow it, or join by hand.';
+
+  @override
+  String get fsErrJoinFailed => 'The system could not join the network: join by hand.';
+
+  @override
+  String get fsErrNoName => 'Choose the network, or type its four last characters.';
+
+  @override
+  String get fsAccessTitle => 'Create your access';
+
+  @override
+  String get fsAccessLead =>
+      'The password that opens RedGiant from every device. Keep it: it is also what opens its keychain.';
+
+  @override
+  String get fsPassword => 'Password';
+
+  @override
+  String get fsPasswordAgain => 'The password again';
+
+  @override
+  String get fsPasswordNeeded => 'A password is needed.';
+
+  @override
+  String get fsPasswordWeak => 'At least 10 characters, not all the same.';
+
+  @override
+  String get fsPasswordDiffer => 'The two passwords are different.';
+
+  @override
+  String get fsAccessSafe =>
+      'It travels encrypted to RedGiant and stays only there; this device gets its own access, which you can sign out from Settings › Devices.';
+
+  @override
+  String get fsAccessGo => 'Create the access';
+
+  @override
+  String get fsSignInTitle => 'Sign in';
+
+  @override
+  String get fsSignInLead => 'This RedGiant has its password already: type it to go on.';
+
+  @override
+  String get fsMaintenanceTitle => 'RedGiant lost its network';
+
+  @override
+  String get fsMaintenanceLead =>
+      'It opened the temporary network to be given a new one. Its owner\'s password, and nothing else changes.';
+
+  @override
+  String get fsHomeTitle => 'Your home network';
+
+  @override
+  String get fsHomeLead =>
+      'Which network should RedGiant use at home? These are the ones it saw around it.';
+
+  @override
+  String get fsHomeNone =>
+      'No network was seen around: use the cable, or type the name of a hidden network.';
+
+  @override
+  String get fsHomeUnusable => 'RedGiant cannot join this kind of network';
+
+  @override
+  String get fsHomeHidden => 'A hidden network';
+
+  @override
+  String get fsHomeHiddenName => 'Network name';
+
+  @override
+  String fsHomePassword(String name) {
+    return 'Password of «$name»';
+  }
+
+  @override
+  String get fsHomeSafe => 'The Wi-Fi password stays only in RedGiant.';
+
+  @override
+  String fsHomeJoin(String name) {
+    return 'Use «$name»';
+  }
+
+  @override
+  String get fsHomeCable => 'I use the cable';
+
+  @override
+  String fsHomeWaitWifi(String name) {
+    return 'RedGiant is joining «$name»…';
+  }
+
+  @override
+  String get fsHomeWaitCable => 'RedGiant moves to the home network…';
+
+  @override
+  String get fsHomeWaitSub =>
+      'The device goes back to its own network and finds RedGiant there (up to two minutes). If it does not work, RedGiant opens the temporary network again and says why.';
+
+  @override
+  String get fsLostTitle => 'RedGiant is not found';
+
+  @override
+  String fsLostLead(String ssid) {
+    return 'Neither at home nor on $ssid. Check that this device is back on the home network, then look again; or join the temporary network by hand to see what happened.';
+  }
+
+  @override
+  String get fsLookAgain => 'Look again';
+
+  @override
+  String get fsLanguageTitle => 'Languages';
+
+  @override
+  String get fsLanguageLead =>
+      'The language of the app and of the page, and the one the agents speak to you.';
+
+  @override
+  String get fsLanguageUi => 'App and page';
+
+  @override
+  String get fsLanguageAgents => 'The agents speak';
+
+  @override
+  String get fsNext => 'Next';
+
+  @override
+  String get fsLater => 'Later';
+
+  @override
+  String get fsBrainTitle => 'How should RedGiant think?';
+
+  @override
+  String get fsBrainLead =>
+      'A subscription you have already, or a key of a provider. Any of them, or none for now.';
+
+  @override
+  String get fsClaude => 'Claude Pro or Max';
+
+  @override
+  String get fsClaudeText => 'Anthropic\'s page in the browser, then the code it shows';
+
+  @override
+  String get fsClaudeOpen => 'Open Anthropic\'s page';
+
+  @override
+  String get fsClaudeCode => 'The code the page shows';
+
+  @override
+  String get fsChatgpt => 'ChatGPT Plus or Pro';
+
+  @override
+  String get fsChatgptText => 'A code to type on OpenAI\'s page';
+
+  @override
+  String get fsChatgptOpen => 'Open OpenAI\'s page';
+
+  @override
+  String get fsChatgptCode => 'Type this code on the page; the app notices when it is done.';
+
+  @override
+  String get fsChatgptOpenAgain => 'Open the page again';
+
+  @override
+  String get fsKey => 'A key of a provider';
+
+  @override
+  String get fsKeyText => 'Anthropic, OpenAI, Gemini, OpenRouter…: paid per use';
+
+  @override
+  String fsKeyOf(String name) {
+    return 'Key of $name';
+  }
+
+  @override
+  String fsKeySaved(String name) {
+    return '$name: the key works.';
+  }
+
+  @override
+  String get fsTerms =>
+      'I read the provider\'s terms: a subscription is used by me, on my own RedGiant.';
+
+  @override
+  String get fsBrainLater =>
+      'Models on this machine, your own server and the rest are in Settings, from the computer or from «All settings».';
+
+  @override
+  String get fsNamesTitle => 'The names';
+
+  @override
+  String get fsNamesLead =>
+      'Who runs your RedGiant, and who speaks for it in the chats. You can change them later.';
+
+  @override
+  String get fsGodName => 'The chief';
+
+  @override
+  String get fsGodHelp => 'It organises the work and hands it to the agents';
+
+  @override
+  String get fsDemigodName => 'The spokesperson';
+
+  @override
+  String get fsDemigodHelp => 'It answers you on Telegram and the other chats';
+
+  @override
+  String get fsFinish => 'Finish';
+
+  @override
+  String get fsFinishing => 'Completing the first start…';
+
+  @override
+  String get fsDoneTitle => 'RedGiant is ready';
+
+  @override
+  String get fsDoneLead =>
+      'The temporary network is closed: RedGiant is on your home network, and this device is connected to it.';
+
+  @override
+  String get fsDoneMaintenance =>
+      'RedGiant is on its new network again, and this device is connected to it.';
+
+  @override
+  String get fsDoneMore =>
+      'The rest of the first start (backups, chats, access from outside…) is in the page, whenever you want: «Settings of RedGiant» › «All settings».';
+
+  @override
+  String get fsDoneGo => 'Open the team';
+
+  @override
+  String get homeErrConnectFailed =>
+      'The network refused to connect: check the password and try again.';
+
+  @override
+  String get homeErrNotFound => 'That network is not in reach now.';
+
+  @override
+  String get homeErrBadPassword => 'A Wi-Fi password has 8 to 63 characters.';
+
+  @override
+  String get homeErrBadSsid => 'A network\'s name has 1 to 32 characters.';
+
+  @override
+  String get homeErrBusy => 'RedGiant is already joining a network: wait a moment.';
+
+  @override
+  String get homeErrWifiOff => 'Wi-Fi is not running on RedGiant.';
+
+  @override
+  String get homeErrNoCable =>
+      'No cable with an address: connect it to the router, or choose a Wi-Fi network.';
+
+  @override
+  String get homeErrFailed => 'That did not work. Try again in a moment.';
+
+  @override
+  String get outsideNone =>
+      'Only from the home network. Tailscale, Cloudflare or your own name: in «All settings».';
+
+  @override
+  String get outsideOwn => 'Your own way in';
+
+  @override
+  String get outsideOwnName => 'Your own name (Caddy)';
+
+  @override
+  String get pushOff => 'Not on for this device yet.';
+
+  @override
+  String pushOn(String target) {
+    return 'On, through $target';
+  }
+
+  @override
+  String get pushBlocked =>
+      'Nothing can be sent now (the keychain is locked, or the relay is off).';
+
+  @override
+  String get pushTest => 'Send a test';
+
+  @override
+  String get pushTestSent => 'Test notification sent.';
+
+  @override
+  String pushTestFailed(String why) {
+    return 'The test did not go: $why';
+  }
+
+  @override
+  String get sectionUpdates => 'UPDATES';
+
+  @override
+  String get sectionDevices => 'DEVICES CONNECTED';
+
+  @override
+  String get sectionNotifications => 'THIS DEVICE\'S NOTIFICATIONS';
+
+  @override
+  String get sectionModel => 'MODEL AND VOICE';
+
+  @override
+  String get sectionOutside => 'FROM OUTSIDE HOME';
+
+  @override
+  String serverSettingsTitle(String name) {
+    return 'Settings of $name';
+  }
+
+  @override
+  String get serverSettingsSub => 'Name, updates, devices, model, voice';
+
+  @override
+  String versionOf(String version) {
+    return 'version $version';
+  }
+
+  @override
+  String get updLatest => 'Up to date';
+
+  @override
+  String updAvailable(String version) {
+    return 'Version $version is available';
+  }
+
+  @override
+  String updApplying(String version) {
+    return 'Updating to $version…';
+  }
+
+  @override
+  String updInstalled(String version) {
+    return 'installed $version';
+  }
+
+  @override
+  String updChecked(String when) {
+    return 'checked $when';
+  }
+
+  @override
+  String get updLook => 'Look for updates';
+
+  @override
+  String get updLooking => 'Looking…';
+
+  @override
+  String get updNow => 'Update';
+
+  @override
+  String get updNowTitle => 'Update RedGiant?';
+
+  @override
+  String updNowBody(String version) {
+    return 'RedGiant installs $version and restarts: for a few minutes it does not answer, then the app connects again by itself.';
+  }
+
+  @override
+  String get updStarted => 'The update started.';
+
+  @override
+  String get updBreaking =>
+      'This version needs a clean install (with a backup first): from the computer.';
+
+  @override
+  String get updDockerHint =>
+      'In Docker the new version comes with these commands, on the computer that runs it:';
+
+  @override
+  String get updReboot => 'A security update asks for a restart.';
+
+  @override
+  String updBytes(String done, String total) {
+    return '$done MB of $total MB';
+  }
+
+  @override
+  String updSpeed(String mb) {
+    return '$mb MB/s';
+  }
+
+  @override
+  String updEtaMin(String n) {
+    return '$n min left';
+  }
+
+  @override
+  String updEtaSec(String n) {
+    return '$n s left';
+  }
+
+  @override
+  String get updStepCheck => 'Checking the release';
+
+  @override
+  String get updStepDownload => 'Downloading';
+
+  @override
+  String get updStepFiles => 'The system\'s files';
+
+  @override
+  String get updStepInstall => 'Installing';
+
+  @override
+  String get updStepRestart => 'Restarting';
+
+  @override
+  String get updStepWait => 'Waiting for RedGiant to answer';
+
+  @override
+  String get updStepRollback => 'Going back to the version before';
+
+  @override
+  String get updStepScan => 'Comparing the files';
+
+  @override
+  String get updStepBuild => 'Preparing';
+
+  @override
+  String get updStepFailed => 'It stopped';
+
+  @override
+  String get voice => 'Voice';
+
+  @override
+  String voiceHear(String what) {
+    return 'Hears with: $what';
+  }
+
+  @override
+  String voiceRead(String what) {
+    return 'Reads with: $what';
+  }
+
+  @override
+  String get voiceNone => 'nothing set yet';
+
+  @override
+  String get voiceBrowser => 'the device\'s own voice';
 }

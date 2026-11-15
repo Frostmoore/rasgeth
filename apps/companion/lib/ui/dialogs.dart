@@ -41,16 +41,41 @@ Future<String?> askText(
   required String title,
   String initial = '',
   required String yes,
-}) async {
-  final l = AppLocalizations.of(context);
-  final t = TextEditingController(text: initial);
-  final r = await showDialog<String>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(title),
+}) => showDialog<String>(
+  context: context,
+  builder: (context) => _TextDialog(title: title, initial: initial, yes: yes),
+);
+
+/// The dialog owns its field: the controller lives as long as the dialog (its closing animation
+/// included), never disposed under it.
+class _TextDialog extends StatefulWidget {
+  const _TextDialog({required this.title, required this.initial, required this.yes});
+
+  final String title;
+  final String initial;
+  final String yes;
+
+  @override
+  State<_TextDialog> createState() => _TextDialogState();
+}
+
+class _TextDialogState extends State<_TextDialog> {
+  late final _t = TextEditingController(text: widget.initial);
+
+  @override
+  void dispose() {
+    _t.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return AlertDialog(
+      title: Text(widget.title),
       content: TextField(
         key: const Key('dialog-text'),
-        controller: t,
+        controller: _t,
         autofocus: true,
         onSubmitted: (v) => Navigator.pop(context, v),
       ),
@@ -58,12 +83,10 @@ Future<String?> askText(
         TextButton(onPressed: () => Navigator.pop(context), child: Text(l.cancel)),
         FilledButton(
           key: const Key('dialog-yes'),
-          onPressed: () => Navigator.pop(context, t.text),
-          child: Text(yes),
+          onPressed: () => Navigator.pop(context, _t.text),
+          child: Text(widget.yes),
         ),
       ],
-    ),
-  );
-  t.dispose();
-  return r;
+    );
+  }
 }
