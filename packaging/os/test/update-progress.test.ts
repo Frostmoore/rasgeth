@@ -359,7 +359,9 @@ describe("redgiant-os-update apply: the page can follow every step", () => {
     expect(done.at(-1)).toBeGreaterThan(0);
     expect(
       bars.some((s) => (s.progress?.bps ?? 0) > 0 && (s.progress?.eta ?? 0) > 0),
-      JSON.stringify(bars.map((s) => [s.checkedAt, s.progress?.done, s.progress?.bps, s.progress?.eta])),
+      JSON.stringify(
+        bars.map((s) => [s.checkedAt, s.progress?.done, s.progress?.bps, s.progress?.eta]),
+      ),
     ).toBe(true);
     expect(bars.at(-1)?.progress?.items.map((i) => i.name)).toEqual(["redgiant", "postgres"]);
     // At its end the bar is full, every image done (written once more after the pulls).

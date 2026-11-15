@@ -135,7 +135,7 @@ function stepText(id: string, mark: string, up: OsUpdate, lost: boolean) {
                         : now && live?.state === "extract"
                           ? t("osImgExtract")
                           : live?.state === "done" || mark === "done"
-                            ? t("osImgDone", { size: bytes(live?.total || i.bytes) })
+                            ? t("osImgDone")
                             : bytes(i.bytes)}
                   </span>
                 </li>
