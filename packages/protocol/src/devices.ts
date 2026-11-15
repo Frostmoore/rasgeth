@@ -4,6 +4,7 @@
 // makes it; the server keeps a hash. `GET /api/app/hello` tells an app what this RedGiant is
 // before it signs in, and never anything personal.
 import { z } from "zod";
+import { PushChannelView } from "./push.js";
 
 /**
  * The app's protocol (an integer, raised when the app and the server stop understanding each
@@ -37,6 +38,8 @@ export const DeviceView = z.object({
   lastAddress: z.string().nullable(),
   /** The device asking (the list seen from the app itself). */
   current: z.boolean().optional(),
+  /** Where its notifications go (G40.4): null when it registered none. */
+  push: PushChannelView.nullable().optional(),
 });
 export type DeviceView = z.infer<typeof DeviceView>;
 
