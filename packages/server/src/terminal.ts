@@ -50,6 +50,15 @@ export function handleTerminal(ws: WebSocket, core: RedGiantCore, auth: AuthProv
     }
     const principal = await auth.authenticate(hello.token);
     if (!principal) return ws.close(4003, "unauthorized");
+    // A device revoked (G40.1): its terminal closes at once.
+    const device = principal.device?.id;
+    if (device) {
+      const onRevoked = (_o: string, ids: string[]) => {
+        if (ids.includes(device)) ws.close(4003, "revoked");
+      };
+      core.devices.on("revoked", onRevoked);
+      ws.once("close", () => core.devices.off("revoked", onRevoked));
+    }
     const owner = principal.ownerId;
     if ((openPerOwner.get(owner) ?? 0) >= MAX_PER_OWNER) {
       send({ type: "error", message: `At most ${MAX_PER_OWNER} terminals at a time.` });

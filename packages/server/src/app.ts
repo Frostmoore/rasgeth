@@ -77,6 +77,7 @@ import {
   SessionBusyError,
 } from "./core.js";
 import { debugLog } from "./debug-log.js";
+import { deviceRoutes } from "./device-routes.js";
 import { imageRoutes } from "./editor/image-routes.js";
 import { modelRoutes } from "./editor/model-routes.js";
 import { officeRoutes } from "./editor/office-routes.js";
@@ -855,6 +856,8 @@ export interface AppOptions {
   pages?: OpenPages;
   /** Who may create the first access (G39.7): the local network (default) or anywhere. */
   firstAccessFrom?: FirstAccessFrom;
+  /** RedGiant's version, told to the app (`GET /api/app/hello`); null from the sources. */
+  version?: string | null;
 }
 
 export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOptions = {}) {
@@ -927,6 +930,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       "/api/auth/setup-code",
       // The first access (G39.7): only while there is no password, from the local network.
       "/api/auth/first-access",
+      // The app's protocol (G40.1): what this RedGiant is, and the password for a device's token.
+      "/api/app/hello",
+      "/api/app/pair",
       // The service sends the person back here after signing in; the state is the credential.
       "/api/extensions/oauth/callback",
     ];
@@ -944,6 +950,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     const principal = await auth.authenticate(bearer(c.req.header("authorization")));
     if (!principal) return c.json({ error: "Missing or invalid token" }, 401);
     c.set("principal", principal);
+    // A device's last use and where from (G40.1, Settings › Devices).
+    if (principal.device) void core.devices.used(principal.device.id, clientAddress(c));
     return next();
   });
 
@@ -1110,6 +1118,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.get("/api/auth/sessions", async (c) => c.json(await core.logins.sessions(owner(c)), 200));
   app.post("/api/auth/sessions/revoke", async (c) => {
     await core.logins.revokeAll(owner(c));
+    // «Sign out everywhere» (a lost phone): the apps too (G40.1).
+    await core.devices.revokeAll(owner(c));
     return c.json({ ok: true }, 200);
   });
   app.put("/api/auth/password", async (c) => {
@@ -1121,6 +1131,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       // The page that sets it stays signed in (the wizard after a setup code, G39.3).
       const keep = await core.logins.sessionIdOf(bearer(c.req.header("authorization")));
       await core.logins.setPassword(owner(c), b.data.password, keep);
+      // A new password ends the devices' tokens too (G40.1), but the one asking: a token made
+      // with a stolen password must not outlive the change.
+      await core.devices.revokeAll(owner(c), c.get("principal").device?.id);
       return c.json({ ok: true }, 200);
     } catch (err) {
       return loginFailure(c, err);
@@ -1143,6 +1156,16 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.delete("/api/auth/code", async (c) => {
     await core.logins.disableCode(owner(c));
     return c.json({ ok: true }, 200);
+  });
+  // Devices and the app's protocol (G40.1).
+  deviceRoutes(app, core, {
+    owner,
+    clientAddress,
+    loginOwner,
+    auth,
+    version: options.version ?? null,
+    completed: () => options.setup?.completed ?? true,
+    firstAccess,
   });
   const human = (c: Context<Env>) => ({ type: "human" as const, ownerId: owner(c) });
 

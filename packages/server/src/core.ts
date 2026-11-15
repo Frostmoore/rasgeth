@@ -180,6 +180,7 @@ import { FileConverter, readManifest } from "./convert.js";
 import { Programs } from "./convert-programs.js";
 import { convertTools, vaultFigma } from "./convert-tools.js";
 import { debugLog } from "./debug-log.js";
+import { DeviceStore, migrateDevices } from "./devices.js";
 import { copyOfAnyOriginal, originalOfSheetCopy } from "./editor/copies.js";
 import { EditorHost, type EditorHostOptions } from "./editor/host.js";
 import { ImageFamily, oraCopyOfOriginal } from "./editor/image-family.js";
@@ -667,9 +668,13 @@ export class RedGiantCore implements OrchestrationHost {
   /** What reaches the person and what their classifier decides (G36.17, Settings > Requests). */
   readonly requestSettings: OwnerSettings<RequestSettings>;
   readonly person: PersonRequests;
-  /** Phones and browsers paired by QR code, each with its own revocable token. */
   /** Signing in with a password (G24.6). */
   readonly logins: LoginStore;
+  /**
+   * The devices' own tokens (G40.1): RGCompanion on a phone or a computer. `devices.create` makes
+   * one for a device that proved who the person is (also the setup channel of G40.3).
+   */
+  readonly devices: DeviceStore;
   readonly tasks: TaskTracker;
   readonly board: Board;
   /** Persistent memory of every agent (G29.3). */
@@ -860,6 +865,7 @@ export class RedGiantCore implements OrchestrationHost {
       },
     );
     this.logins = new LoginStore(o.db);
+    this.devices = new DeviceStore(o.db);
     if (o.transcription?.key) o.redactor?.addSecret("transcription", o.transcription.key);
     if (o.images?.key) o.redactor?.addSecret("openai-images", o.images.key);
     this.registry = new AgentRegistry(o.db, this.store);
@@ -1379,6 +1385,7 @@ export class RedGiantCore implements OrchestrationHost {
     // Paired devices are gone (G24.7): their tokens stop working with their table.
     await o.db.query("DROP TABLE IF EXISTS rg_devices");
     await migrateLogin(o.db);
+    await migrateDevices(o.db);
     const core = new RedGiantCore(o);
     // The artifacts' bridge from the start: it follows the person's deletions and moves (3.6).
     void core.artifactBridge;

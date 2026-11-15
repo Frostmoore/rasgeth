@@ -32,6 +32,7 @@ const en = {
   timedOut: "Time ran out without your answer.",
   whereWeb: "on the web page",
   whereChat: "on {name}",
+  whereApp: "in the app ({name})",
   pickByNumber: "Reply with the number of your choice{many}, or write your own answer.",
   pickMany: " (more than one: 1,3)",
   noTranscription:
@@ -106,6 +107,7 @@ const it: Record<TextKey, string> = {
   timedOut: "Tempo scaduto senza la tua risposta.",
   whereWeb: "nella pagina web",
   whereChat: "su {name}",
+  whereApp: "nell'app ({name})",
   pickByNumber: "Rispondi con il numero della scelta{many}, oppure scrivi una risposta tua.",
   pickMany: " (più di una: 1,3)",
   noTranscription:

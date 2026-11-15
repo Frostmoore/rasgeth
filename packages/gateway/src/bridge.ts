@@ -10,6 +10,7 @@ import { randomInt } from "node:crypto";
 import type { SqlClient } from "@redgiant/events";
 import {
   type Answers,
+  appViaName,
   CHANNEL_NAMES,
   criticalChatLines,
   dangerWords,
@@ -720,10 +721,14 @@ export class ChatBridge {
     if (via === "timeout") return this.say(owner, "timedOut");
     const done = decision && this.say(owner, decision === "allow" ? "allowed" : "denied");
     if (!via || via === this.platform) return done ?? this.say(owner, "noAnswer");
+    // An answer given in RGCompanion (G40.1) names the device: «nell'app (Pixel 8)».
+    const app = appViaName(via);
     const where =
       via === "web"
         ? this.say(owner, "whereWeb")
-        : this.say(owner, "whereChat", { name: CHANNEL_NAMES[via] ?? via });
+        : app
+          ? this.say(owner, "whereApp", { name: app })
+          : this.say(owner, "whereChat", { name: CHANNEL_NAMES[via] ?? via });
     return done
       ? this.say(owner, "decidedVia", { where, decision: done.toLowerCase() })
       : this.say(owner, "answeredVia", { where });

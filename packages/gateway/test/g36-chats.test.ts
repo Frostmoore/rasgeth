@@ -192,3 +192,41 @@ describe("unreadable messages", () => {
     expect(h.asked).toEqual([]);
   });
 });
+
+describe("a request answered in the app (G40.1)", () => {
+  it("the chat's copy names the device", async () => {
+    const { db } = await memoryDb();
+    const h = fakeHost("it");
+    const sent: string[] = [];
+    let on: ((m: Incoming) => Promise<void>) | undefined;
+    const bridge = new ChatBridge({
+      db,
+      host: h.host,
+      transport: {
+        platform: "matrix",
+        buttons: false,
+        maxLength: 1000,
+        async start(o) {
+          on = o;
+        },
+        async stop() {},
+        async send(_c, text) {
+          sent.push(text);
+          return undefined;
+        },
+      },
+    });
+    await bridge.start();
+    try {
+      const { code } = bridge.pairingCode("me");
+      await on?.({ userId: "@marta:hs", chatId: "!r", text: `/start ${code}` });
+      h.approvals.emit("request", "me", perm);
+      await waitFor(() => sent.some((t) => t.startsWith("Serve un'approvazione")));
+      h.approvals.emit("closed", "me", "r1", "allow", "app (Pixel 8)");
+      await waitFor(() => sent.some((t) => t.includes("nell'app (Pixel 8)")));
+      expect(sent.at(-1)).toBe("Già deciso da te nell'app (Pixel 8): consentito.");
+    } finally {
+      await bridge.stop();
+    }
+  });
+});

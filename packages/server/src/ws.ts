@@ -3,6 +3,7 @@ import type { IncomingMessage, Server } from "node:http";
 import type { Duplex } from "node:stream";
 import {
   ARTIFACT_GRANT_TOOL,
+  answerVia,
   ClientMessage,
   DocFile,
   docKey,
@@ -62,6 +63,19 @@ export class OpenPages {
   }
 }
 
+/**
+ * Who connected, as far as can be trusted (as the HTTP routes read it): Cloudflare's header, the
+ * last address our own proxy added, or the connection itself.
+ */
+function addressOf(req: IncomingMessage): string | undefined {
+  const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
+  return (
+    one(req.headers["cf-connecting-ip"]) ||
+    one(req.headers["x-forwarded-for"])?.split(",").at(-1)?.trim() ||
+    req.socket.remoteAddress
+  );
+}
+
 export function attachWebSocket(
   server: Server,
   core: RedGiantCore,
@@ -71,7 +85,8 @@ export function attachWebSocket(
   const wss = new WebSocketServer({ noServer: true, maxPayload: 32 * 1024 * 1024 });
   server.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
     const path = new URL(req.url ?? "/", "http://x").pathname;
-    if (path === "/ws") return wss.handleUpgrade(req, socket, head, (ws) => connection(ws));
+    if (path === "/ws")
+      return wss.handleUpgrade(req, socket, head, (ws) => connection(ws, addressOf(req)));
     // Another RedGiant (G39.4): its own handshake authenticates it (pinned keys), no token.
     if (path === "/nodes")
       return wss.handleUpgrade(req, socket, head, (ws) => void core.nodes.accept(ws));
@@ -80,8 +95,17 @@ export function attachWebSocket(
     socket.destroy();
   });
 
-  function connection(ws: WebSocket) {
+  function connection(ws: WebSocket, address: string | undefined) {
     let principal: Principal | null = null;
+    /** Where this connection answers from (G36.17): the page, the editor, or the app (G40.1). */
+    const via = (claimed?: "editor") => {
+      const d = principal?.device;
+      return answerVia({ device: d && (core.devices.nameOf(d.id) ?? d.name), claimed });
+    };
+    // A device revoked (G40.1): its connections close at once.
+    const onRevoked = (_ownerId: string, ids: string[]) => {
+      if (principal?.device && ids.includes(principal.device.id)) ws.close(4003, "revoked");
+    };
     let offBoard: (() => void) | undefined;
     let offAutomations: (() => void) | undefined;
     let offNotices: (() => void) | undefined;
@@ -211,6 +235,10 @@ export function attachWebSocket(
           principal = await auth.authenticate(msg.token);
           if (!principal) return ws.close(4003, "unauthorized");
           clearTimeout(helloTimer);
+          if (principal.device) {
+            core.devices.on("revoked", onRevoked);
+            void core.devices.used(principal.device.id, address);
+          }
           core.approvals.on("request", onRequest);
           core.approvals.on("closed", onClosed);
           core.questions.on("request", onQuestion);
@@ -311,7 +339,7 @@ export function attachWebSocket(
             await core.unqueue(owner, msg.sessionId, msg.clientId);
             return;
           case "question.answer":
-            if (!core.questions.answer(owner, msg.requestId, msg.answers, "web"))
+            if (!core.questions.answer(owner, msg.requestId, msg.answers, via()))
               return fail("not_found", "No such open question");
             return;
           // The agents' browser (G24.14b): watching, control, the person's input (never logged).
@@ -569,7 +597,7 @@ export function attachWebSocket(
             if (pending?.tool === ARTIFACT_GRANT_TOOL) {
               if (msg.decision === "allow")
                 core.artifactBridge.chooseCap(msg.requestId, msg.capUsd);
-              if (!core.approvals.decide(owner, msg.requestId, msg.decision, msg.reason, "web"))
+              if (!core.approvals.decide(owner, msg.requestId, msg.decision, msg.reason, via()))
                 return fail("not_found", "No such pending request");
               return;
             }
@@ -577,13 +605,7 @@ export function attachWebSocket(
             if (toolRequest)
               core.toolRequestScope(msg.requestId, msg.remember ? "always" : msg.scope);
             if (
-              !core.approvals.decide(
-                owner,
-                msg.requestId,
-                msg.decision,
-                msg.reason,
-                msg.via ?? "web",
-              )
+              !core.approvals.decide(owner, msg.requestId, msg.decision, msg.reason, via(msg.via))
             )
               return fail("not_found", "No such pending request");
             if (toolRequest) return;
@@ -634,6 +656,7 @@ export function attachWebSocket(
       core.approvals.off("closed", onClosed);
       core.questions.off("request", onQuestion);
       core.questions.off("closed", onQuestionClosed);
+      core.devices.off("revoked", onRevoked);
       offBoard?.();
       offAutomations?.();
       offNotices?.();

@@ -12,6 +12,7 @@ export * from "./chat.js";
 export * from "./code.js";
 export * from "./core.js";
 export { debugLog } from "./debug-log.js";
+export * from "./devices.js";
 export * from "./discovery.js";
 export * from "./egress-routes.js";
 export * from "./email.js";

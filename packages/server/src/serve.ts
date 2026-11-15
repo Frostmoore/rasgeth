@@ -33,8 +33,8 @@ export function serve(
 ): Promise<Running> {
   const pages = new OpenPages();
   const version = listen.version !== undefined ? listen.version : installedVersion();
-  // Password sessions sign in with their own tokens, next to the installation's.
-  const full = new ChainAuth([auth, core.logins]);
+  // Password sessions and devices (G40.1) sign in with their own tokens, next to the installation's.
+  const full = new ChainAuth([auth, core.logins, core.devices]);
   const app = createApp(core, full, {
     ...(listen.webDir && { webDir: listen.webDir }),
     ...(listen.telegram && { telegram: listen.telegram }),
@@ -45,6 +45,7 @@ export function serve(
     ...(listen.loginOwner && { loginOwner: listen.loginOwner }),
     ...(listen.firstAccessFrom && { firstAccessFrom: listen.firstAccessFrom }),
     pages,
+    version,
   });
   return new Promise((ok) => {
     const server = nodeServe(

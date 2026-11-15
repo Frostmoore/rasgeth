@@ -334,6 +334,31 @@ export class Nodes {
     return id;
   }
 
+  /**
+   * The identity's fingerprint when the machine has one already, read without making one and
+   * without throwing (the app's hello, G40.1): undefined while the keychain is closed.
+   */
+  knownFingerprint(ownerId: string): string | undefined {
+    const hit = this.identities.get(ownerId);
+    if (hit) return hit.fingerprint;
+    const vault = this.o.vault();
+    if (!vault?.ready) return undefined;
+    try {
+      const pem = vault.systemValue(ownerId, IDENTITY_KEY);
+      if (!pem) return undefined;
+      const id = identityFromPem(pem);
+      this.identities.set(ownerId, id);
+      return id.fingerprint;
+    } catch {
+      return undefined;
+    }
+  }
+
+  /** This machine's name as the nodes show it: the person's, or the host's. */
+  machineName(ownerId: string): Promise<string> {
+    return this.name(ownerId);
+  }
+
   private async name(ownerId: string): Promise<string> {
     return (await this.load(ownerId)).name ?? (this.o.hostName ?? hostname()).slice(0, 40);
   }

@@ -2,6 +2,8 @@ import { timingSafeEqual } from "node:crypto";
 
 export interface Principal {
   ownerId: string;
+  /** Signed in with a device's own token (G40.1): which device. */
+  device?: { id: string; name: string };
 }
 
 /**

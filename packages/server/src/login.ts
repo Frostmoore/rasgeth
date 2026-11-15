@@ -222,6 +222,20 @@ export class LoginStore {
     address: string,
     name: string,
   ): Promise<{ token: string; expiresAt: string }> {
+    await this.check(ownerId, password, code, address);
+    return this.openSession(ownerId, name);
+  }
+
+  /**
+   * The password (and the code, when on) checked with the same limits as a sign-in, without
+   * opening a session: a device's token is made right after (G40.1, `POST /api/app/pair`).
+   */
+  async check(
+    ownerId: string,
+    password: string,
+    code: string | undefined,
+    address: string,
+  ): Promise<void> {
     if (this.tooMany(address))
       throw new LoginError("too_many", "Too many wrong tries: wait 15 minutes");
     const [r] = await this.db.query<{ password_hash: string; totp_secret: string | null }>(
@@ -241,7 +255,6 @@ export class LoginStore {
       }
     }
     this.failures.delete(address);
-    return this.openSession(ownerId, name);
   }
 
   /**
