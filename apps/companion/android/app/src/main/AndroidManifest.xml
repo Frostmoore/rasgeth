@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The app talks to a RedGiant over the network (the template grants it only in debug). -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="RGCompanion"
         android:name="${applicationName}"
