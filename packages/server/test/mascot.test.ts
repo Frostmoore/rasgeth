@@ -62,6 +62,35 @@ describe("mascots", () => {
     );
   });
 
+  it("previews the face a new agent would get, the same create then gives (3.8.1)", async () => {
+    s = await startServer();
+    const god = (
+      await s.api<AgentOut>("POST", "/api/agents", { kind: "god", parentId: null, name: "God" })
+    ).body;
+    const q = (name: string) =>
+      `/api/mascot/preview?kind=assistant&parentId=${god.id}&name=${encodeURIComponent(name)}`;
+    const preview = await s.api<MascotSpec>("GET", q("Agenda"));
+    expect(preview.status).toBe(200);
+    const made = (
+      await s.api<AgentOut>("POST", "/api/agents", {
+        kind: "assistant",
+        parentId: god.id,
+        name: "Agenda",
+      })
+    ).body;
+    expect(made.mascot).toEqual(preview.body);
+    // The same name again: a face not in use, as create would give, and nothing saved.
+    const again = await s.api<MascotSpec>("GET", q("Agenda"));
+    expect(again.body.seed).not.toBe(made.mascotSeed);
+    expect((await s.api<AgentOut[]>("GET", "/api/agents")).body).toHaveLength(2);
+    const svg = await fetch(`${s.url}${q("Posta")}&format=svg&theme=dark&size=96`, {
+      headers: { authorization: `Bearer ${TOKEN}` },
+    });
+    expect(await svg.text()).toMatch(/^<svg xmlns="http:\/\/www.w3.org\/2000\/svg" class="masc st-idle"/);
+    expect((await s.api("GET", "/api/mascot/preview?kind=agent&name=")).status).toBe(400);
+    expect((await s.api("GET", "/api/mascot/preview?kind=dragon&name=X")).status).toBe(400);
+  });
+
   it("keeps the face through a rename and changes it only on «Change mascot»", async () => {
     s = await startServer();
     await s.api("POST", "/api/projects", { name: "Shop" });

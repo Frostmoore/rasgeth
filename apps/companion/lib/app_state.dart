@@ -648,6 +648,56 @@ class AppController extends ChangeNotifier {
     }
   }
 
+  /// A new agent with the page's own API (3.8.1): `POST /api/agents`, then its tools switched
+  /// off (`PUT /api/agents/:id/tools`, never the essential ones); the team again.
+  Future<Agent> createAgent({
+    required String kind,
+    required String? parentId,
+    required String name,
+    String? projectId,
+    String? role,
+    AgentModel? model,
+    Set<String> toolsOff = const {},
+  }) async {
+    final c = client;
+    if (c == null) throw const ApiException(0, 'offline');
+    final a = await c.createAgent(
+      kind: kind,
+      parentId: parentId,
+      name: name,
+      projectId: projectId,
+      role: role,
+      model: model,
+      mode: 'auto',
+    );
+    if (toolsOff.isNotEmpty) {
+      await c.setAgentTools(a.id, {for (final t in toolsOff) t: 'off'});
+    }
+    try {
+      agents = await c.agents();
+    } on ApiException {
+      agents = [...agents, a];
+    }
+    notifyListeners();
+    return agents.where((x) => x.id == a.id).firstOrNull ?? a;
+  }
+
+  /// «Change mascot»: a new face, different from every one in use (the person's, never God's).
+  Future<Agent?> changeMascot(Agent a) async {
+    final c = client;
+    if (c == null) return null;
+    try {
+      final updated = await c.changeMascot(a.id);
+      final m = mascots;
+      if (m is ClientMascotSource) m.forget(a.id);
+      agents = [for (final x in agents) x.id == a.id ? updated : x];
+      notifyListeners();
+      return updated;
+    } on ApiException {
+      return null;
+    }
+  }
+
   /// [agentId]'s latest conversation (not archived), if any.
   SessionRow? latestOf(String agentId) {
     final rows = live.sessions.where((s) => s.agentId == agentId && !s.archived).toList()

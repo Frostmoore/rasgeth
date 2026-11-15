@@ -16,6 +16,7 @@ import '../l10n/app_localizations.dart';
 import '../mascot/mascot_view.dart';
 import '../theme/colors.dart';
 import '../ui/common.dart';
+import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/model_sheet.dart';
 import '../ui/words.dart';
@@ -679,6 +680,30 @@ class AgentSheet extends StatelessWidget {
                       },
                       icon: RgIcon(RgIcons.checkSquare, size: 18, color: c.text),
                       label: Text(l.agentOpenTask),
+                    ),
+                  ),
+                if (a.kind != AgentKind.god && a.active)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: OutlinedButton.icon(
+                      key: const Key('agent-mascot-change'),
+                      style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(46)),
+                      onPressed: () async {
+                        final messenger = ScaffoldMessenger.of(parent);
+                        final yes = await askConfirm(
+                          context,
+                          title: l.mascotChange,
+                          body: l.mascotChangeAsk(a.name),
+                          yes: l.mascotChangeYes,
+                        );
+                        if (!yes) return;
+                        final updated = await app.changeMascot(a);
+                        if (updated != null) {
+                          messenger.showSnackBar(SnackBar(content: Text(l.mascotChanged(a.name))));
+                        }
+                      },
+                      icon: RgIcon(RgIcons.refresh, size: 18, color: c.text),
+                      label: Text(l.mascotChange),
                     ),
                   ),
                 OutlinedButton.icon(

@@ -71,6 +71,7 @@ class FakeRedGiant {
   final asides = <String>[];
   final rooms = <Map<String, dynamic>>[];
   final sent = <Map<String, dynamic>>[];
+  final previews = <String>[];
 
   // The settings of this RedGiant (G40.8).
   String machine = 'RedGiant di casa';
@@ -323,6 +324,14 @@ class FakeRedGiant {
             },
         ],
       });
+    }
+    if (r.method == 'GET' && path == '/api/mascot/preview') {
+      final q = r.uri.queryParameters;
+      previews.add('${q['kind']} ${q['name']} ${q['parentId']}');
+      if ((q['name'] ?? '').isEmpty) return _json(r, 400, {'error': 'A name'});
+      r.response.headers.contentType = ContentType('image', 'svg+xml', charset: 'utf-8');
+      r.response.write(mascots[3].svg[q['theme'] ?? 'light']!['idle']);
+      return r.response.close();
     }
     final mascotNew = RegExp(r'^/api/agents/([^/]+)/mascot$').firstMatch(path);
     if (r.method == 'POST' && mascotNew != null) {

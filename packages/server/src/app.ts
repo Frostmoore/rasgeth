@@ -1315,6 +1315,26 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       "Cache-Control": "no-store",
     });
   });
+  // The face a new agent would get (3.8.1, the app's «New agent» while the person types its
+  // name): the same choice `POST /api/agents` makes, nothing saved; the spec, or the SVG.
+  app.get("/api/mascot/preview", (c) => {
+    const kind = AgentKind.safeParse(c.req.query("kind") ?? "agent");
+    const name = (c.req.query("name") ?? "").trim();
+    const parentId = c.req.query("parentId") || null;
+    if (!kind.success || !name || name.length > 60)
+      return c.json({ error: "A kind and a name (1-60) are needed" }, 400);
+    const spec = core.registry.previewMascot(owner(c), name, kind.data, parentId);
+    if (c.req.query("format") !== "svg") return c.json(spec, 200);
+    const state = MascotState.safeParse(c.req.query("state") ?? "idle");
+    const theme = c.req.query("theme") ?? "light";
+    const size = Number(c.req.query("size") ?? 128);
+    if (!state.success || (theme !== "light" && theme !== "dark") || !(size >= 16 && size <= 1024))
+      return c.json({ error: "state, theme (light, dark) or size (16-1024) not valid" }, 400);
+    return c.body(mascotSvg(spec, { state: state.data, theme, size, idPrefix: "m" }), 200, {
+      "Content-Type": "image/svg+xml; charset=utf-8",
+      "Cache-Control": "no-store",
+    });
+  });
   // «Change mascot» (G40.2): a new face, only when the person asks; God's is drawn by hand.
   app.post("/api/agents/:id/mascot", async (c) => {
     const id = c.req.param("id");

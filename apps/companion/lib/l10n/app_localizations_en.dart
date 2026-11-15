@@ -1396,4 +1396,149 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get whileRunning => 'Not while it works.';
+
+  @override
+  String get newAgentTitle => 'New agent';
+
+  @override
+  String newAgentStep(int n, int total) {
+    return 'Step $n of $total';
+  }
+
+  @override
+  String get newAgentKindQ => 'What kind of agent do you need?';
+
+  @override
+  String get newAgentKindAgent => 'A project\'s agent';
+
+  @override
+  String get newAgentKindAgentText =>
+      'Works in a project under its orchestrator: writes code, reviews, researches, tests.';
+
+  @override
+  String get newAgentKindOrch => 'A project\'s orchestrator';
+
+  @override
+  String get newAgentKindOrchText =>
+      'Leads a project: splits the work and hands it to its agents. One per project.';
+
+  @override
+  String get newAgentKindAsst => 'Personal assistant';
+
+  @override
+  String get newAgentKindAsstText =>
+      'Helps you outside the projects: mail, calendar, research, accounts.';
+
+  @override
+  String get newAgentProjectQ => 'In which project?';
+
+  @override
+  String get newAgentNoOrch => 'It has no orchestrator yet: make one first.';
+
+  @override
+  String get newAgentHasOrch => 'It already has an orchestrator.';
+
+  @override
+  String get newAgentNoProjects => 'No projects: make one from the page.';
+
+  @override
+  String get newAgentNameQ => 'What is its name and what does it do?';
+
+  @override
+  String get newAgentName => 'Name';
+
+  @override
+  String get newAgentRole => 'Its job, in your own words';
+
+  @override
+  String get newAgentRoleHint => 'For example: writes the tests and checks they pass';
+
+  @override
+  String get newAgentMascotPreview => 'Its mascot';
+
+  @override
+  String get newAgentMascotLater =>
+      'RedGiant picks the face from the name; once it is made you can change it.';
+
+  @override
+  String get newAgentModelQ => 'Which model does it use? (optional)';
+
+  @override
+  String get newAgentModelLead => 'By default it uses the one above it.';
+
+  @override
+  String get newAgentModelGod => 'The same as God';
+
+  @override
+  String get newAgentToolsQ => 'Tools to switch off (optional)';
+
+  @override
+  String get newAgentToolsLead =>
+      'By default it has every tool. The essential ones never switch off.';
+
+  @override
+  String newAgentToolsOff(int n) {
+    return '$n off';
+  }
+
+  @override
+  String get newAgentReview => 'Here is the new agent';
+
+  @override
+  String get newAgentBack => 'Back';
+
+  @override
+  String get newAgentNext => 'Next';
+
+  @override
+  String get newAgentCreate => 'Create';
+
+  @override
+  String get newAgentCreating => 'Making it…';
+
+  @override
+  String newAgentFailed(String why) {
+    return 'I could not make it: $why';
+  }
+
+  @override
+  String newAgentMade(String name) {
+    return '$name is in the team.';
+  }
+
+  @override
+  String newAgentOpen(String name) {
+    return 'Open the conversation with $name';
+  }
+
+  @override
+  String get newAgentNeedsGod => 'God is needed to make agents: finish the first start first.';
+
+  @override
+  String get mascotChange => 'Change mascot';
+
+  @override
+  String mascotChangeAsk(String name) {
+    return 'Give $name a new face? The current one does not come back.';
+  }
+
+  @override
+  String get mascotChangeYes => 'New face';
+
+  @override
+  String mascotChanged(String name) {
+    return 'A new face for $name.';
+  }
+
+  @override
+  String get reviewKind => 'Kind';
+
+  @override
+  String get reviewProject => 'Project';
+
+  @override
+  String get reviewTools => 'Tools';
+
+  @override
+  String get reviewAllTools => 'All';
 }

@@ -2546,6 +2546,258 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not while it works.'**
   String get whileRunning;
+
+  /// No description provided for @newAgentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New agent'**
+  String get newAgentTitle;
+
+  /// No description provided for @newAgentStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {n} of {total}'**
+  String newAgentStep(int n, int total);
+
+  /// No description provided for @newAgentKindQ.
+  ///
+  /// In en, this message translates to:
+  /// **'What kind of agent do you need?'**
+  String get newAgentKindQ;
+
+  /// No description provided for @newAgentKindAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'A project\'s agent'**
+  String get newAgentKindAgent;
+
+  /// No description provided for @newAgentKindAgentText.
+  ///
+  /// In en, this message translates to:
+  /// **'Works in a project under its orchestrator: writes code, reviews, researches, tests.'**
+  String get newAgentKindAgentText;
+
+  /// No description provided for @newAgentKindOrch.
+  ///
+  /// In en, this message translates to:
+  /// **'A project\'s orchestrator'**
+  String get newAgentKindOrch;
+
+  /// No description provided for @newAgentKindOrchText.
+  ///
+  /// In en, this message translates to:
+  /// **'Leads a project: splits the work and hands it to its agents. One per project.'**
+  String get newAgentKindOrchText;
+
+  /// No description provided for @newAgentKindAsst.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal assistant'**
+  String get newAgentKindAsst;
+
+  /// No description provided for @newAgentKindAsstText.
+  ///
+  /// In en, this message translates to:
+  /// **'Helps you outside the projects: mail, calendar, research, accounts.'**
+  String get newAgentKindAsstText;
+
+  /// No description provided for @newAgentProjectQ.
+  ///
+  /// In en, this message translates to:
+  /// **'In which project?'**
+  String get newAgentProjectQ;
+
+  /// No description provided for @newAgentNoOrch.
+  ///
+  /// In en, this message translates to:
+  /// **'It has no orchestrator yet: make one first.'**
+  String get newAgentNoOrch;
+
+  /// No description provided for @newAgentHasOrch.
+  ///
+  /// In en, this message translates to:
+  /// **'It already has an orchestrator.'**
+  String get newAgentHasOrch;
+
+  /// No description provided for @newAgentNoProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'No projects: make one from the page.'**
+  String get newAgentNoProjects;
+
+  /// No description provided for @newAgentNameQ.
+  ///
+  /// In en, this message translates to:
+  /// **'What is its name and what does it do?'**
+  String get newAgentNameQ;
+
+  /// No description provided for @newAgentName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get newAgentName;
+
+  /// No description provided for @newAgentRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Its job, in your own words'**
+  String get newAgentRole;
+
+  /// No description provided for @newAgentRoleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: writes the tests and checks they pass'**
+  String get newAgentRoleHint;
+
+  /// No description provided for @newAgentMascotPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Its mascot'**
+  String get newAgentMascotPreview;
+
+  /// No description provided for @newAgentMascotLater.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant picks the face from the name; once it is made you can change it.'**
+  String get newAgentMascotLater;
+
+  /// No description provided for @newAgentModelQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Which model does it use? (optional)'**
+  String get newAgentModelQ;
+
+  /// No description provided for @newAgentModelLead.
+  ///
+  /// In en, this message translates to:
+  /// **'By default it uses the one above it.'**
+  String get newAgentModelLead;
+
+  /// No description provided for @newAgentModelGod.
+  ///
+  /// In en, this message translates to:
+  /// **'The same as God'**
+  String get newAgentModelGod;
+
+  /// No description provided for @newAgentToolsQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools to switch off (optional)'**
+  String get newAgentToolsQ;
+
+  /// No description provided for @newAgentToolsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'By default it has every tool. The essential ones never switch off.'**
+  String get newAgentToolsLead;
+
+  /// No description provided for @newAgentToolsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} off'**
+  String newAgentToolsOff(int n);
+
+  /// No description provided for @newAgentReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Here is the new agent'**
+  String get newAgentReview;
+
+  /// No description provided for @newAgentBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get newAgentBack;
+
+  /// No description provided for @newAgentNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get newAgentNext;
+
+  /// No description provided for @newAgentCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get newAgentCreate;
+
+  /// No description provided for @newAgentCreating.
+  ///
+  /// In en, this message translates to:
+  /// **'Making it…'**
+  String get newAgentCreating;
+
+  /// No description provided for @newAgentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'I could not make it: {why}'**
+  String newAgentFailed(String why);
+
+  /// No description provided for @newAgentMade.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is in the team.'**
+  String newAgentMade(String name);
+
+  /// No description provided for @newAgentOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the conversation with {name}'**
+  String newAgentOpen(String name);
+
+  /// No description provided for @newAgentNeedsGod.
+  ///
+  /// In en, this message translates to:
+  /// **'God is needed to make agents: finish the first start first.'**
+  String get newAgentNeedsGod;
+
+  /// No description provided for @mascotChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change mascot'**
+  String get mascotChange;
+
+  /// No description provided for @mascotChangeAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Give {name} a new face? The current one does not come back.'**
+  String mascotChangeAsk(String name);
+
+  /// No description provided for @mascotChangeYes.
+  ///
+  /// In en, this message translates to:
+  /// **'New face'**
+  String get mascotChangeYes;
+
+  /// No description provided for @mascotChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'A new face for {name}.'**
+  String mascotChanged(String name);
+
+  /// No description provided for @reviewKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Kind'**
+  String get reviewKind;
+
+  /// No description provided for @reviewProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get reviewProject;
+
+  /// No description provided for @reviewTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get reviewTools;
+
+  /// No description provided for @reviewAllTools.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get reviewAllTools;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

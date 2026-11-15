@@ -129,7 +129,8 @@ class _MascotViewState extends State<MascotView> {
     final source = MascotScope.maybeOf(context)?.source;
     final id = widget.agentId;
     if (source == null || id == null) return null;
-    final key = '$id|${widget.state.name}|${_theme.name}|${widget.tiny}';
+    // The seed too: after «Change mascot» the same agent has a new face.
+    final key = '$id|${widget.spec?.seed}|${widget.state.name}|${_theme.name}|${widget.tiny}';
     if (key != _futureKey) {
       _futureKey = key;
       _future = source.svg(id, widget.state, _theme, tiny: widget.tiny);

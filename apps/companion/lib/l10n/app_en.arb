@@ -825,5 +825,99 @@
     }
   },
   "roomFailed": "I could not make the group chat.",
-  "whileRunning": "Not while it works."
+  "whileRunning": "Not while it works.",
+  "newAgentTitle": "New agent",
+  "newAgentStep": "Step {n} of {total}",
+  "@newAgentStep": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "newAgentKindQ": "What kind of agent do you need?",
+  "newAgentKindAgent": "A project's agent",
+  "newAgentKindAgentText": "Works in a project under its orchestrator: writes code, reviews, researches, tests.",
+  "newAgentKindOrch": "A project's orchestrator",
+  "newAgentKindOrchText": "Leads a project: splits the work and hands it to its agents. One per project.",
+  "newAgentKindAsst": "Personal assistant",
+  "newAgentKindAsstText": "Helps you outside the projects: mail, calendar, research, accounts.",
+  "newAgentProjectQ": "In which project?",
+  "newAgentNoOrch": "It has no orchestrator yet: make one first.",
+  "newAgentHasOrch": "It already has an orchestrator.",
+  "newAgentNoProjects": "No projects: make one from the page.",
+  "newAgentNameQ": "What is its name and what does it do?",
+  "newAgentName": "Name",
+  "newAgentRole": "Its job, in your own words",
+  "newAgentRoleHint": "For example: writes the tests and checks they pass",
+  "newAgentMascotPreview": "Its mascot",
+  "newAgentMascotLater": "RedGiant picks the face from the name; once it is made you can change it.",
+  "newAgentModelQ": "Which model does it use? (optional)",
+  "newAgentModelLead": "By default it uses the one above it.",
+  "newAgentModelGod": "The same as God",
+  "newAgentToolsQ": "Tools to switch off (optional)",
+  "newAgentToolsLead": "By default it has every tool. The essential ones never switch off.",
+  "newAgentToolsOff": "{n} off",
+  "@newAgentToolsOff": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "newAgentReview": "Here is the new agent",
+  "newAgentBack": "Back",
+  "newAgentNext": "Next",
+  "newAgentCreate": "Create",
+  "newAgentCreating": "Making it…",
+  "newAgentFailed": "I could not make it: {why}",
+  "@newAgentFailed": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "newAgentMade": "{name} is in the team.",
+  "@newAgentMade": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "newAgentOpen": "Open the conversation with {name}",
+  "@newAgentOpen": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "newAgentNeedsGod": "God is needed to make agents: finish the first start first.",
+  "mascotChange": "Change mascot",
+  "mascotChangeAsk": "Give {name} a new face? The current one does not come back.",
+  "@mascotChangeAsk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mascotChangeYes": "New face",
+  "mascotChanged": "A new face for {name}.",
+  "@mascotChanged": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewKind": "Kind",
+  "reviewProject": "Project",
+  "reviewTools": "Tools",
+  "reviewAllTools": "All"
 }

@@ -214,6 +214,20 @@ export class AgentRegistry {
   }
 
   /** The first free face for `base` among the owner's agents: the seed to save. */
+  /**
+   * The face a new agent named `name` would get now (3.8.1, the app's preview while the person
+   * types): the same choice `create` makes, nothing saved.
+   */
+  previewMascot(
+    ownerId: string,
+    name: string,
+    kind: AgentSpec["kind"],
+    parentId: string | null,
+  ): MascotSpec {
+    const parent = kind === "subagent" && parentId ? this.mascotOf(parentId) : undefined;
+    return this.mascotBook(ownerId).claim(name, kind, parent);
+  }
+
   private claimSeed(
     ownerId: string,
     base: string,

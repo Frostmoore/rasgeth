@@ -185,6 +185,33 @@ class RedGiantClient {
     return text;
   }
 
+  /// `GET /api/mascot/preview`: the face a new agent named [name] would get now (nothing saved).
+  Future<String> mascotPreviewSvg(
+    String name, {
+    required String kind,
+    String? parentId,
+    MascotTheme theme = MascotTheme.light,
+    int size = 128,
+  }) async {
+    final r = await _send(
+      'GET',
+      '/api/mascot/preview',
+      query: {
+        'name': name,
+        'kind': kind,
+        'parentId': ?parentId,
+        'format': 'svg',
+        'theme': theme.name,
+        'size': '$size',
+      },
+      accept: 'image/svg+xml',
+    );
+    if (r.status != 200) _decode(r);
+    final text = r.text;
+    if (!text.trimLeft().startsWith('<svg')) throw const ApiException(0, 'Not an SVG');
+    return text;
+  }
+
   /// `GET /api/sessions[?agentId=]`: the conversations, the latest first.
   Future<List<SessionRow>> sessions({String? agentId}) async {
     final rows = [
