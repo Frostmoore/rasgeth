@@ -15,6 +15,10 @@
   /* The yellow as text (on a panel or on --warn-soft): 4.5:1 or more in both themes (WCAG AA). */
   --warn-text: #7a5600;
   --err: #d23d3d;
+  /* The mascots' lightness (G40.2): body, outline, light parts. */
+  --mL: 0.62;
+  --mLo: 0.4;
+  --mLl: 0.8;
   /* The truly dangerous requests (p3.5.4): a deeper red than the accent, white on it. */
   --critical: #b0151c;
   --critical-ink: #ffffff;
@@ -46,6 +50,9 @@ html[data-theme="dark"] {
   --critical-soft: #2a1214;
   --critical-text: #ff8a8f;
   color-scheme: dark;
+  --mL: 0.74;
+  --mLo: 0.44;
+  --mLl: 0.87;
 }
 @media (prefers-color-scheme: dark) {
   html[data-theme="system"] {
@@ -67,6 +74,9 @@ html[data-theme="dark"] {
     --critical-soft: #2a1214;
     --critical-text: #ff8a8f;
     color-scheme: dark;
+    --mL: 0.74;
+    --mLo: 0.44;
+    --mLl: 0.87;
   }
 }
 * {
@@ -477,6 +487,9 @@ button.bar-settings {
 .session-row .who {
   font-size: 11px;
   color: var(--dim);
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 .session-row.task .what {
   font-weight: 600;
@@ -6910,6 +6923,9 @@ a.button.primary {
 .sub-agent-name {
   padding: 2px 0 0 30px;
   font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .subprojects .bar-hint {
   display: flex;
@@ -20150,4 +20166,214 @@ html[data-theme="dark"] {
     border-top: none;
     background: none;
   }
+}
+
+/* The agents' mascots (G40.2), as on the approved board: colours from the theme's variables,
+   animations on transform and opacity only, none with reduced motion (the sign stays). */
+.mascot {
+  display: inline-flex;
+  flex: none;
+  line-height: 0;
+}
+.masc {
+  overflow: visible;
+  display: block;
+}
+.masc .b {
+  fill: oklch(var(--mL) var(--c) var(--h));
+}
+.masc .so {
+  stroke: oklch(var(--mLo) calc(var(--c) * 0.9) var(--h));
+}
+.masc .o {
+  fill: oklch(var(--mLo) calc(var(--c) * 0.9) var(--h));
+}
+.masc .l {
+  fill: oklch(var(--mLl) calc(var(--c) * 0.55) var(--h));
+}
+.masc .sl {
+  stroke: oklch(var(--mLl) calc(var(--c) * 0.55) var(--h));
+  fill: none;
+}
+.masc .tint2 {
+  fill: oklch(0.68 0.13 var(--h2));
+}
+.masc .cap {
+  fill: oklch(0.64 0.12 var(--h2));
+}
+.masc .godlid {
+  fill: var(--accent);
+}
+.masc .orb {
+  stroke: #ffb36b;
+}
+.masc .orbp {
+  fill: #ffd27a;
+}
+.masc.st-error .b {
+  fill: oklch(var(--mL) calc(var(--c) * 0.3) var(--h));
+}
+.masc .mk.think circle {
+  fill: var(--dim);
+}
+.masc .mk.think circle:nth-child(1) {
+  opacity: 0.35;
+}
+.masc .mk.think circle:nth-child(2) {
+  opacity: 0.65;
+}
+.masc .mk.wait .dot {
+  fill: var(--accent);
+}
+.masc .mk.wait .ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.2;
+  opacity: 0.45;
+}
+.masc .mk.err circle {
+  fill: var(--err);
+}
+.masc .mk.work,
+.masc .mk.idle {
+  stroke: var(--dim);
+}
+.masc .hsled {
+  fill: var(--accent);
+}
+.masc .core,
+.masc .tool,
+.masc .mk circle,
+.masc .hs {
+  transform-box: view-box;
+}
+.masc .core {
+  transform-origin: 50px 90px;
+}
+.masc.st-idle .core {
+  animation: m-breathe 3.6s ease-in-out infinite;
+}
+@keyframes m-breathe {
+  50% {
+    transform: scale(1.02, 1.03);
+  }
+}
+.masc.st-think .mk circle {
+  animation: m-dot 1.8s ease-in-out infinite;
+}
+.masc.st-think .mk circle:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.masc.st-think .mk circle:nth-child(3) {
+  animation-delay: 0.6s;
+}
+@keyframes m-dot {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  35% {
+    opacity: 1;
+  }
+}
+.masc.st-work .core {
+  animation: m-sway 1.6s ease-in-out infinite;
+}
+@keyframes m-sway {
+  25% {
+    transform: rotate(-2.5deg);
+  }
+  75% {
+    transform: rotate(2.5deg);
+  }
+}
+.masc.st-work .tool {
+  animation: m-tool 0.8s ease-in-out infinite alternate;
+}
+@keyframes m-tool {
+  to {
+    transform: rotate(-16deg);
+  }
+}
+.masc.st-work .hs {
+  animation: m-pulse 1.2s ease-in-out infinite;
+}
+@keyframes m-pulse {
+  50% {
+    opacity: 0.75;
+  }
+}
+.masc.st-wait .core {
+  animation: m-hop 3s ease-in-out infinite;
+}
+@keyframes m-hop {
+  0%,
+  78%,
+  100% {
+    transform: none;
+  }
+  86% {
+    transform: translateY(-6px);
+  }
+  93% {
+    transform: translateY(1px) scale(1.02, 0.98);
+  }
+}
+.masc.st-wait .mk .ring {
+  animation: m-ring 1.6s ease-in-out infinite;
+  transform-origin: 86px 14px;
+}
+@keyframes m-ring {
+  50% {
+    transform: scale(1.25);
+    opacity: 0.1;
+  }
+}
+.masc.tiny .core {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .masc,
+  .masc * {
+    animation: none !important;
+  }
+}
+/* «Change mascot» in the agent's General tab (G40.2). */
+.st-field.mascot-field {
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+}
+.mascot-field-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.mascot-field-text .st-save {
+  justify-content: flex-start;
+}
+/* The conversation's agent, over the chat (G40.2): its face and what it is doing, in words. */
+.chat-agent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--line);
+  min-height: 44px;
+}
+.chat-agent strong {
+  font-size: 14px;
+}
+.chat-agent .chat-agent-state {
+  font-size: 12px;
+  color: var(--dim);
+}
+.dailychat .chat-head .mascot + strong {
+  font-size: 14px;
+}
+.chats-page header .chats-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }

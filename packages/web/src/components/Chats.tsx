@@ -7,6 +7,7 @@ import type { ChatSummary } from "../api.js";
 import { t } from "../i18n.js";
 import { IconArchive, IconChat, IconFolder, IconPencil, IconPlus, IconUsers } from "../icons.js";
 import {
+  agents,
   attempt,
   chatAgentId,
   chatRows,
@@ -20,6 +21,7 @@ import {
   sessionRows,
 } from "../state.js";
 import { FolderMenu } from "./FolderMenu.js";
+import { Mascot } from "./Mascot.js";
 import { PromptEditor } from "./PromptEditor.js";
 import { Modal } from "./ui.js";
 
@@ -124,10 +126,14 @@ export function Chats() {
       await refreshConversations();
       openSession({ id: sessionId, agentId: id, title: null });
     });
+  const chatAgent = agents.value.find((a) => a.id === chatAgentId.value);
   return (
     <div class="chats-page">
       <header>
-        <h1>{t("dailyChat")}</h1>
+        <div class="chats-title">
+          {chatAgent && <Mascot agent={chatAgent} size={48} />}
+          <h1>{t("dailyChat")}</h1>
+        </div>
         <p class="ui-help">{t("chatHint")}</p>
         {error && <p class="notice error">{error}</p>}
         <button type="button" class="chats-prompt" onClick={() => setInstructions(true)}>

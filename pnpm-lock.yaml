@@ -780,6 +780,9 @@ importers:
       '@preact/signals':
         specifier: ^2.11.4
         version: 2.11.4(preact@11.1.1)
+      '@redgiant/mascot':
+        specifier: workspace:*
+        version: link:../mascot
       '@redgiant/protocol':
         specifier: workspace:*
         version: link:../protocol

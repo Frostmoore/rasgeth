@@ -10,7 +10,6 @@ import {
   IconCanvas,
   IconChat,
   IconClose,
-  IconCrown,
   IconEye,
   IconFolder,
   IconMenu,
@@ -29,6 +28,7 @@ import {
   approvals,
   attempt,
   budgets,
+  chatAgentId,
   citationNote,
   closeTab,
   drawerOpen,
@@ -63,6 +63,7 @@ import { Dialogs } from "./dialogs.js";
 import { EngineLoading } from "./EngineLoading.js";
 import { Explorer } from "./Explorer.js";
 import { lazy } from "./lazy.js";
+import { Mascot } from "./Mascot.js";
 import { ConnectionLost, MemoryNotice } from "./PageHealth.js";
 import { preloadCanvas, SideArea } from "./SideArea.js";
 import { Sidebar } from "./Sidebar.js";
@@ -230,12 +231,24 @@ function Budgets() {
   );
 }
 
+/** The agent a tab talks to (G40.2: its mascot is the tab's icon). */
+const tabAgent = (tab: Tab) => {
+  const id =
+    tab.type === "chat" || tab.type === "assistant"
+      ? tab.agentId
+      : tab.type === "dailychat"
+        ? chatAgentId.value
+        : null;
+  if (id) return agents.value.find((a) => a.id === id);
+  return tab.type === "inspector"
+    ? agents.value.find(
+        (a) => a.kind === "inspector" && a.projectId === tab.projectId && !a.subprojectId,
+      )
+    : undefined;
+};
+
 const tabIcon = (tab: Tab) =>
-  tab.type === "chat" ? (
-    agents.value.find((a) => a.id === tab.agentId)?.kind === "god" ? (
-      <IconCrown size={13} />
-    ) : null
-  ) : tab.type === "dailychat" ? (
+  tab.type === "chat" ? null : tab.type === "dailychat" ? (
     <IconChat size={13} />
   ) : tab.type === "board" ? (
     <IconBoard size={13} />
@@ -263,8 +276,7 @@ function Tabs() {
   return (
     <div class="tabs" role="tablist">
       {tabs.value.map((tab) => {
-        const agent =
-          tab.type === "chat" ? agents.value.find((a) => a.id === tab.agentId) : undefined;
+        const agent = tabAgent(tab);
         const running =
           tab.type === "chat" && sessionRows.value.some((r) => r.id === tab.sessionId && r.running);
         const label =
@@ -284,7 +296,9 @@ function Tabs() {
               onClick={() => activateTab(tab.id)}
               title={`${label} ${detail}`}
             >
-              {running ? <span class="dot running" /> : tabIcon(tab)}
+              {/* Its agent's face (G40.2); at this size the state is the dot, as before. */}
+              {agent && <Mascot agent={agent} size={20} />}
+              {running ? <span class="dot running" /> : !agent && tabIcon(tab)}
               <span class="lp">{label}</span>
               {detail && detail !== label && <span class="lt">{detail}</span>}
             </button>
