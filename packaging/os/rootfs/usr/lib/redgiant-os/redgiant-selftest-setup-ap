@@ -60,18 +60,16 @@ sap_joined() {
   done
   return 1
 }
-# An address from the temporary network (and the captive portal's address, option 114).
+# An address from the temporary network: udhcpc's lease (its own script left out: /run may not
+# run programs), then the address on the client's card.
 sap_lease() {
-  cat >/run/rgc-udhcpc.sh <<'SH'
-#!/bin/sh
-[ "$1" = bound ] || exit 0
-ip addr add "$ip/${mask:-24}" dev "$interface"
-echo "$ip ${opt114:-}" >/run/rgc-lease
-SH
-  chmod 0755 /run/rgc-udhcpc.sh
+  local ip
   rm -f /run/rgc-lease
-  sap_in busybox udhcpc -i "$sap_if" -n -q -t 10 -T 3 -s /run/rgc-udhcpc.sh >/run/rgc-udhcpc.log 2>&1 || return 1
-  grep -q '^10\.42\.0\.' /run/rgc-lease
+  sap_in busybox udhcpc -i "$sap_if" -n -q -t 10 -T 3 -s /bin/true >/run/rgc-udhcpc.log 2>&1 || return 1
+  ip=$(sed -n 's/^.*lease of \([0-9.]*\) obtained.*$/\1/p' /run/rgc-udhcpc.log | tail -1)
+  case "$ip" in 10.42.0.*) ;; *) return 1 ;; esac
+  sap_in ip addr add "$ip/24" dev "$sap_if" || return 1
+  echo "$ip" >/run/rgc-lease
 }
 # A DNS question (A, captive.apple.com) to the temporary network's address: the answer must be it.
 sap_dns() {
