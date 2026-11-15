@@ -747,5 +747,83 @@
       }
     }
   },
-  "noModels": "No model connected: connect one in the settings."
+  "noModels": "No model connected: connect one in the settings.",
+  "more": "More commands",
+  "moreChanged": "More commands (something is not as it starts)",
+  "moreMode": "Mode: {mode}",
+  "@moreMode": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "moreModeHint": "It holds for all of {name}'s conversations.",
+  "@moreModeHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moreModel": "Model: {model}",
+  "@moreModel": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "moreModelHint": "The model of this conversation (agents' models: long press the agent in Team)",
+  "moreModelBusy": "It changes once it has finished working.",
+  "moreOpen": "open",
+  "moreClosed": "closed",
+  "moreSectionHow": "How it works",
+  "moreSectionMore": "More",
+  "mode_manual": "Ask",
+  "mode_auto": "Automatic",
+  "mode_plan": "Plan",
+  "mode_readonly": "Read only",
+  "modeFailed": "I could not change the mode.",
+  "agentsModel": "Agent's model",
+  "modelPick": "Choose a model",
+  "sessionModelTitle": "Model of this conversation",
+  "sessionModelBusy": "It is working: the model changes once it has finished.",
+  "asideChip": "Meanwhile",
+  "asideHint": "A quick question on the side, also while the agent works: it knows the conversation, but nothing of it enters the chat",
+  "asideTitle": "Meanwhile",
+  "asideSub": "Not part of the conversation",
+  "asideEmpty": "Ask anything about this conversation. The answer stays here: it does not enter the chat nor the agent's memory.",
+  "asidePlaceholder": "A quick question…",
+  "asidePlaceholderBusy": "A quick question, while the agent works…",
+  "asideAsk": "Ask",
+  "asideThinking": "Thinking…",
+  "asideFailed": "No answer: {why}",
+  "@asideFailed": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "asideToChat": "Bring into the chat",
+  "asideBrought": "Brought into the chat.",
+  "compactNow": "Summarise",
+  "compactNowHint": "Summarise the older part of this conversation now: the agent keeps the recent turns and can still read everything",
+  "compactNowAsk": "Summarise the conversation now. Anything to keep in particular? (optional)",
+  "compactNowYes": "Summarise",
+  "compactNowSent": "Summarising the conversation.",
+  "roomFromChat": "Add an agent",
+  "roomFromChatHint": "Turn this conversation into a group chat: add other agents, inspectors included",
+  "roomPickTitle": "Who joins the group chat?",
+  "roomAdded": "{name} is in the group chat: you find it in the page, among the conversations.",
+  "@roomAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "roomFailed": "I could not make the group chat.",
+  "whileRunning": "Not while it works."
 }

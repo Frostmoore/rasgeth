@@ -18,6 +18,7 @@ import '../ui/icons.dart';
 import '../ui/markdown.dart';
 import '../ui/words.dart';
 import 'canvas_screen.dart';
+import 'conversation_more.dart';
 
 /// An image ready to go with the message (`ImagePart`).
 class Attachment {
@@ -213,7 +214,18 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   ],
                 ),
               ),
-            _Composer(controller: _text, sending: _sending, onAttach: _attach, onSend: _send),
+            ListenableBuilder(
+              listenable: Listenable.merge([app, app.live]),
+              builder: (context, _) => _Composer(
+                controller: _text,
+                sending: _sending,
+                onAttach: _attach,
+                onSend: _send,
+                changed: moreChanged(app, widget.sessionId, agent),
+                onMore: () =>
+                    showMoreSheet(context, sessionId: widget.sessionId, agent: agent, view: view),
+              ),
+            ),
           ],
         ),
       ),
@@ -295,7 +307,15 @@ class _Composer extends StatelessWidget {
     required this.sending,
     required this.onAttach,
     required this.onSend,
+    required this.onMore,
+    this.changed = false,
   });
+
+  /// The «…»: mode, model, meanwhile, summarise, add an agent.
+  final VoidCallback onMore;
+
+  /// Something is not as it starts: a mark on the «…».
+  final bool changed;
 
   final TextEditingController controller;
   final bool sending;
@@ -330,7 +350,30 @@ class _Composer extends StatelessWidget {
               decoration: InputDecoration(hintText: l.composerAgentHint, isDense: true),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 2),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              IconButton(
+                key: const Key('composer-more'),
+                tooltip: changed ? l.moreChanged : l.more,
+                onPressed: onMore,
+                icon: RgIcon(RgIcons.more, size: 22, color: c.dim, filled: true),
+              ),
+              if (changed)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    key: const Key('composer-more-mark'),
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(color: c.accent, shape: BoxShape.circle),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(width: 4),
           Semantics(
             button: true,
             label: l.composerSend,

@@ -1251,4 +1251,149 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noModels => 'No model connected: connect one in the settings.';
+
+  @override
+  String get more => 'More commands';
+
+  @override
+  String get moreChanged => 'More commands (something is not as it starts)';
+
+  @override
+  String moreMode(String mode) {
+    return 'Mode: $mode';
+  }
+
+  @override
+  String moreModeHint(String name) {
+    return 'It holds for all of $name\'s conversations.';
+  }
+
+  @override
+  String moreModel(String model) {
+    return 'Model: $model';
+  }
+
+  @override
+  String get moreModelHint =>
+      'The model of this conversation (agents\' models: long press the agent in Team)';
+
+  @override
+  String get moreModelBusy => 'It changes once it has finished working.';
+
+  @override
+  String get moreOpen => 'open';
+
+  @override
+  String get moreClosed => 'closed';
+
+  @override
+  String get moreSectionHow => 'How it works';
+
+  @override
+  String get moreSectionMore => 'More';
+
+  @override
+  String get mode_manual => 'Ask';
+
+  @override
+  String get mode_auto => 'Automatic';
+
+  @override
+  String get mode_plan => 'Plan';
+
+  @override
+  String get mode_readonly => 'Read only';
+
+  @override
+  String get modeFailed => 'I could not change the mode.';
+
+  @override
+  String get agentsModel => 'Agent\'s model';
+
+  @override
+  String get modelPick => 'Choose a model';
+
+  @override
+  String get sessionModelTitle => 'Model of this conversation';
+
+  @override
+  String get sessionModelBusy => 'It is working: the model changes once it has finished.';
+
+  @override
+  String get asideChip => 'Meanwhile';
+
+  @override
+  String get asideHint =>
+      'A quick question on the side, also while the agent works: it knows the conversation, but nothing of it enters the chat';
+
+  @override
+  String get asideTitle => 'Meanwhile';
+
+  @override
+  String get asideSub => 'Not part of the conversation';
+
+  @override
+  String get asideEmpty =>
+      'Ask anything about this conversation. The answer stays here: it does not enter the chat nor the agent\'s memory.';
+
+  @override
+  String get asidePlaceholder => 'A quick question…';
+
+  @override
+  String get asidePlaceholderBusy => 'A quick question, while the agent works…';
+
+  @override
+  String get asideAsk => 'Ask';
+
+  @override
+  String get asideThinking => 'Thinking…';
+
+  @override
+  String asideFailed(String why) {
+    return 'No answer: $why';
+  }
+
+  @override
+  String get asideToChat => 'Bring into the chat';
+
+  @override
+  String get asideBrought => 'Brought into the chat.';
+
+  @override
+  String get compactNow => 'Summarise';
+
+  @override
+  String get compactNowHint =>
+      'Summarise the older part of this conversation now: the agent keeps the recent turns and can still read everything';
+
+  @override
+  String get compactNowAsk =>
+      'Summarise the conversation now. Anything to keep in particular? (optional)';
+
+  @override
+  String get compactNowYes => 'Summarise';
+
+  @override
+  String get compactNowSent => 'Summarising the conversation.';
+
+  @override
+  String get roomFromChat => 'Add an agent';
+
+  @override
+  String get roomFromChatHint =>
+      'Turn this conversation into a group chat: add other agents, inspectors included';
+
+  @override
+  String get roomPickTitle => 'Who joins the group chat?';
+
+  @override
+  String roomAdded(String name) {
+    return '$name is in the group chat: you find it in the page, among the conversations.';
+  }
+
+  @override
+  String get roomFailed => 'I could not make the group chat.';
+
+  @override
+  String get whileRunning => 'Not while it works.';
 }

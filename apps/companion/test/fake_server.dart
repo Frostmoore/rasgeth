@@ -70,6 +70,7 @@ class FakeRedGiant {
   final mascotChanges = <String>[];
   final asides = <String>[];
   final rooms = <Map<String, dynamic>>[];
+  final sent = <Map<String, dynamic>>[];
 
   // The settings of this RedGiant (G40.8).
   String machine = 'RedGiant di casa';
@@ -386,7 +387,10 @@ class FakeRedGiant {
         row.addAll(body);
         return _json(r, 200, {'ok': true});
       }
-      if (r.method == 'POST' && one.group(2) == '/messages') return _json(r, 202, {'ok': true});
+      if (r.method == 'POST' && one.group(2) == '/messages') {
+        sent.add({'sessionId': one.group(1), ...body});
+        return _json(r, 202, {'ok': true});
+      }
       if (r.method == 'POST' && one.group(2) == '/interrupt') {
         return _json(r, 200, {'interrupted': true});
       }

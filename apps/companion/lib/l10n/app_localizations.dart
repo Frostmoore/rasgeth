@@ -2288,6 +2288,264 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No model connected: connect one in the settings.'**
   String get noModels;
+
+  /// No description provided for @more.
+  ///
+  /// In en, this message translates to:
+  /// **'More commands'**
+  String get more;
+
+  /// No description provided for @moreChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'More commands (something is not as it starts)'**
+  String get moreChanged;
+
+  /// No description provided for @moreMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode: {mode}'**
+  String moreMode(String mode);
+
+  /// No description provided for @moreModeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'It holds for all of {name}\'s conversations.'**
+  String moreModeHint(String name);
+
+  /// No description provided for @moreModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model: {model}'**
+  String moreModel(String model);
+
+  /// No description provided for @moreModelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The model of this conversation (agents\' models: long press the agent in Team)'**
+  String get moreModelHint;
+
+  /// No description provided for @moreModelBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'It changes once it has finished working.'**
+  String get moreModelBusy;
+
+  /// No description provided for @moreOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'open'**
+  String get moreOpen;
+
+  /// No description provided for @moreClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'closed'**
+  String get moreClosed;
+
+  /// No description provided for @moreSectionHow.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get moreSectionHow;
+
+  /// No description provided for @moreSectionMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get moreSectionMore;
+
+  /// No description provided for @mode_manual.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask'**
+  String get mode_manual;
+
+  /// No description provided for @mode_auto.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get mode_auto;
+
+  /// No description provided for @mode_plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get mode_plan;
+
+  /// No description provided for @mode_readonly.
+  ///
+  /// In en, this message translates to:
+  /// **'Read only'**
+  String get mode_readonly;
+
+  /// No description provided for @modeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'I could not change the mode.'**
+  String get modeFailed;
+
+  /// No description provided for @agentsModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent\'s model'**
+  String get agentsModel;
+
+  /// No description provided for @modelPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a model'**
+  String get modelPick;
+
+  /// No description provided for @sessionModelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Model of this conversation'**
+  String get sessionModelTitle;
+
+  /// No description provided for @sessionModelBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'It is working: the model changes once it has finished.'**
+  String get sessionModelBusy;
+
+  /// No description provided for @asideChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Meanwhile'**
+  String get asideChip;
+
+  /// No description provided for @asideHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A quick question on the side, also while the agent works: it knows the conversation, but nothing of it enters the chat'**
+  String get asideHint;
+
+  /// No description provided for @asideTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Meanwhile'**
+  String get asideTitle;
+
+  /// No description provided for @asideSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Not part of the conversation'**
+  String get asideSub;
+
+  /// No description provided for @asideEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask anything about this conversation. The answer stays here: it does not enter the chat nor the agent\'s memory.'**
+  String get asideEmpty;
+
+  /// No description provided for @asidePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'A quick question…'**
+  String get asidePlaceholder;
+
+  /// No description provided for @asidePlaceholderBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'A quick question, while the agent works…'**
+  String get asidePlaceholderBusy;
+
+  /// No description provided for @asideAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask'**
+  String get asideAsk;
+
+  /// No description provided for @asideThinking.
+  ///
+  /// In en, this message translates to:
+  /// **'Thinking…'**
+  String get asideThinking;
+
+  /// No description provided for @asideFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'No answer: {why}'**
+  String asideFailed(String why);
+
+  /// No description provided for @asideToChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring into the chat'**
+  String get asideToChat;
+
+  /// No description provided for @asideBrought.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought into the chat.'**
+  String get asideBrought;
+
+  /// No description provided for @compactNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Summarise'**
+  String get compactNow;
+
+  /// No description provided for @compactNowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Summarise the older part of this conversation now: the agent keeps the recent turns and can still read everything'**
+  String get compactNowHint;
+
+  /// No description provided for @compactNowAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Summarise the conversation now. Anything to keep in particular? (optional)'**
+  String get compactNowAsk;
+
+  /// No description provided for @compactNowYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Summarise'**
+  String get compactNowYes;
+
+  /// No description provided for @compactNowSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Summarising the conversation.'**
+  String get compactNowSent;
+
+  /// No description provided for @roomFromChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an agent'**
+  String get roomFromChat;
+
+  /// No description provided for @roomFromChatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn this conversation into a group chat: add other agents, inspectors included'**
+  String get roomFromChatHint;
+
+  /// No description provided for @roomPickTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who joins the group chat?'**
+  String get roomPickTitle;
+
+  /// No description provided for @roomAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is in the group chat: you find it in the page, among the conversations.'**
+  String roomAdded(String name);
+
+  /// No description provided for @roomFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'I could not make the group chat.'**
+  String get roomFailed;
+
+  /// No description provided for @whileRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Not while it works.'**
+  String get whileRunning;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
