@@ -60,6 +60,9 @@ import {
   type RefineResult,
   type SearchProviderId,
   type ServerMessage,
+  type SetupHomeChoice,
+  type SetupHomeResult,
+  type SetupNetworkInfo,
   type SharedMemoryEntry,
   type SharedMemoryView,
   type SshAccess,
@@ -1260,6 +1263,10 @@ export class Api {
   probeName = (name: string) => this.call<NameProbe>("POST", "/api/setup/net/probe", { name });
   setupSsh = () => this.call<SshAccess>("GET", "/api/setup/ssh");
   // RedGiant OS (G39.1): Wi-Fi, HTTPS in the local network, its updates, a restart.
+  // RedGiant OS's temporary network (G40.3): the home network chosen from it.
+  setupNetwork = () => this.call<SetupNetworkInfo>("GET", "/api/setup-network");
+  setupNetworkHome = (b: SetupHomeChoice) =>
+    this.call<SetupHomeResult>("POST", "/api/setup-network/home", b);
   setupWifi = () => this.call<WifiState>("GET", "/api/setup/wifi");
   setupWifiScan = () => this.call<WifiState>("POST", "/api/setup/wifi/scan");
   setupWifiConnect = (ssid: string, password: string, hidden = false) =>

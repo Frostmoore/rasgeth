@@ -85,7 +85,7 @@ import { ImportFrom } from "./ImportFrom.js";
 import { AgentLanguagePicker } from "./LanguagePicker.js";
 import { hardwareText, LocalModels } from "./LocalModels.js";
 import { modelName } from "./ModelMenu.js";
-import { OsNetworkSection } from "./OsSystem.js";
+import { OsNetworkSection, SetupNetworkPanel } from "./OsSystem.js";
 import { OwnInfra } from "./OwnInfra.js";
 import { PromptRefiner } from "./PromptRefiner.js";
 import { RemoteAccess } from "./RemoteAccess.js";
@@ -161,6 +161,8 @@ function Welcome() {
   return (
     <div class="wz-inner">
       <Head eyebrow={t("wzSetup")} q={t("wzHello")} lead={t("wzHelloLead")} />
+      {/* From RedGiant OS's temporary network (G40.3): the home network first. */}
+      <SetupNetworkPanel />
       {/* After a clean install (G36.19): the backup left in Documents, found by itself. */}
       <FoundBackups onRestored={reload} />
       <div class="wz-langs">
