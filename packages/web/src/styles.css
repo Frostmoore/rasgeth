@@ -983,6 +983,9 @@ button.bar-settings {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 180px;
+  /* The agent's name keeps a few letters next to its face (G40.2): the title gives way first. */
+  min-width: 3.5em;
+  flex-shrink: 0.3;
 }
 .tab-label .lt {
   color: var(--dim);
