@@ -2162,6 +2162,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'active'**
   String get stateActive;
+
+  /// No description provided for @teamAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get teamAgents;
+
+  /// No description provided for @teamNewAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'New agent'**
+  String get teamNewAgent;
+
+  /// No description provided for @teamNoAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'No other agents yet: make one with «New agent».'**
+  String get teamNoAgents;
+
+  /// No description provided for @teamChatLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Your everyday conversations'**
+  String get teamChatLead;
+
+  /// No description provided for @agentJustAnswered.
+  ///
+  /// In en, this message translates to:
+  /// **'It has just answered you.'**
+  String get agentJustAnswered;
+
+  /// No description provided for @agentBlockedNow.
+  ///
+  /// In en, this message translates to:
+  /// **'It is blocked: open the conversation to see why.'**
+  String get agentBlockedNow;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

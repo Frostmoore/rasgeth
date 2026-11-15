@@ -235,6 +235,20 @@ class FakeRedGiant {
       });
       return _json(r, 201, {'sessionId': id});
     }
+    final work = RegExp(r'^/api/agents/([^/]+)/work-session$').firstMatch(path);
+    if (r.method == 'POST' && work != null) {
+      final id = 's${++_sessionSeq}';
+      sessions.add({
+        'id': id,
+        'agentId': work.group(1),
+        'createdAt': DateTime.now().toUtc().toIso8601String(),
+        'lastAt': null,
+        'title': null,
+        'archived': false,
+        'running': false,
+      });
+      return _json(r, 200, {'sessionId': id});
+    }
     final one = RegExp(r'^/api/sessions/([^/]+)(/messages|/interrupt)?$').firstMatch(path);
     if (one != null) {
       final row = sessions.where((x) => x['id'] == one.group(1)).firstOrNull;

@@ -89,33 +89,38 @@ Map<String, dynamic> _req(String id, {bool critical = false, String at = '10:00'
 
 void main() {
   group('Team', () {
-    testWidgets('God first, then by name; a project shows its agents and those that worked in it', (
-      tester,
-    ) async {
-      final app = _team();
-      await _pump(tester, app);
-      expect(_names(tester), ['God', 'Coder Web', 'Ricercatore']);
-      await tester.tap(find.byKey(const Key('team-filter-demo')));
-      await tester.pumpAndSettle();
-      expect(_names(tester), ['Coder Web']);
-      // The filters scroll sideways.
-      await tester.scrollUntilVisible(
-        find.byKey(const Key('team-filter-site')),
-        80,
-        scrollable: find.descendant(
-          of: find.byKey(const Key('team-filters')),
-          matching: find.byType(Scrollable),
-        ),
-      );
-      await tester.ensureVisible(find.byKey(const Key('team-filter-site')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('team-filter-site')));
-      await tester.pumpAndSettle();
-      expect(find.text('Nessun agente ha lavorato in questo progetto.'), findsOneWidget);
-      app.setTeamFilter(TeamFilter.all);
-      await tester.pumpAndSettle();
-      expect(_names(tester), hasLength(3));
-    });
+    testWidgets(
+      'God on its card, then the agents by name; a project shows those that worked in it',
+      (tester) async {
+        final app = _team();
+        await _pump(tester, app);
+        expect(
+          find.descendant(of: find.byKey(const Key('team-god')), matching: find.text('God')),
+          findsOneWidget,
+        );
+        expect(_names(tester), ['Coder Web', 'Ricercatore']);
+        await tester.tap(find.byKey(const Key('team-filter-demo')));
+        await tester.pumpAndSettle();
+        expect(_names(tester), ['Coder Web']);
+        // The filters scroll sideways.
+        await tester.scrollUntilVisible(
+          find.byKey(const Key('team-filter-site')),
+          80,
+          scrollable: find.descendant(
+            of: find.byKey(const Key('team-filters')),
+            matching: find.byType(Scrollable),
+          ),
+        );
+        await tester.ensureVisible(find.byKey(const Key('team-filter-site')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('team-filter-site')));
+        await tester.pumpAndSettle();
+        expect(find.text('Nessun agente ha lavorato in questo progetto.'), findsOneWidget);
+        app.setTeamFilter(TeamFilter.all);
+        await tester.pumpAndSettle();
+        expect(_names(tester), hasLength(2));
+      },
+    );
 
     testWidgets('a long press: what it is doing, Stop, Open the task, the favourite', (
       tester,
@@ -148,7 +153,7 @@ void main() {
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
 
-      expect(_names(tester), ['Coder Web', 'God', 'Ricercatore']);
+      expect(_names(tester), ['Coder Web', 'Ricercatore']);
       await tester.tap(find.byKey(const Key('team-filter-favourites')));
       await tester.pumpAndSettle();
       expect(_names(tester), ['Coder Web']);
@@ -161,7 +166,13 @@ void main() {
       await _pump(tester, app);
       await tester.longPress(find.byKey(const Key('agent-res')));
       await tester.pumpAndSettle();
-      expect(find.text('Ora è fermo.'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('agent-sheet-res')),
+          matching: find.text('Ora è fermo.'),
+        ),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('agent-stop')), findsNothing);
       expect(find.byKey(const Key('agent-open-task')), findsNothing);
       await tester.tapAt(const Offset(10, 10));

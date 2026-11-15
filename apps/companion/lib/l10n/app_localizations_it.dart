@@ -1184,4 +1184,22 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get stateActive => 'attivo';
+
+  @override
+  String get teamAgents => 'Agenti';
+
+  @override
+  String get teamNewAgent => 'Nuovo agente';
+
+  @override
+  String get teamNoAgents => 'Nessun altro agente: creane uno con «Nuovo agente».';
+
+  @override
+  String get teamChatLead => 'Le tue conversazioni di ogni giorno';
+
+  @override
+  String get agentJustAnswered => 'Ti ha appena risposto.';
+
+  @override
+  String get agentBlockedNow => 'È bloccato: apri la conversazione per vedere perché.';
 }

@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../api/conversation.dart';
 import '../api/live.dart';
 import '../api/types.dart';
 import '../app_state.dart';
@@ -17,6 +18,7 @@ import '../ui/icons.dart';
 import '../ui/words.dart';
 import 'conversation_screen.dart';
 import 'first_start_screen.dart';
+import 'new_agent_screen.dart';
 
 class TeamScreen extends StatelessWidget {
   const TeamScreen({super.key});
@@ -88,42 +90,344 @@ class TeamScreen extends StatelessWidget {
                 ],
               ),
             ),
-            if (everyone && (app.projects.isNotEmpty || app.favourites.isNotEmpty))
-              const _Filters(),
             Expanded(
               child: !everyone && app.servers.isEmpty && !app.connecting
                   ? const _FirstSteps()
-                  : team.isEmpty
+                  : !everyone
                   ? EmptyState(
-                      icon: app.teamFilter == TeamFilter.favourites ? RgIcons.star : RgIcons.users,
-                      text: !everyone
-                          ? (hello == null ? l.connectFromYou : l.teamEmpty)
-                          : app.teamFilter == TeamFilter.favourites
-                          ? l.teamNoFavourites
-                          : l.teamNoneInProject,
+                      icon: RgIcons.users,
+                      text: hello == null ? l.connectFromYou : l.teamEmpty,
                     )
-                  : GridView.builder(
-                      key: const Key('team-grid'),
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 220,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                        childAspectRatio: .95,
-                      ),
-                      itemCount: team.length,
-                      itemBuilder: (context, i) => AgentCard(
-                        agent: team[i],
-                        state: app.live.mascotStateOf(team[i].id),
-                        favourite: app.isFavourite(team[i].id),
-                        onTap: () => openAgentConversation(context, team[i]),
-                        onLongPress: () => showAgentSheet(context, team[i]),
-                      ),
+                  : CustomScrollView(
+                      key: const Key('team-scroll'),
+                      slivers: [
+                        if (app.god case final god?)
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                              child: GodCard(
+                                agent: god,
+                                state: app.live.mascotStateOf(god.id),
+                                doing: doingOf(l, app, god, app.live.mascotStateOf(god.id)),
+                                onTap: () => openAgentConversation(context, god),
+                                onLongPress: () => showAgentSheet(context, god),
+                              ),
+                            ),
+                          ),
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+                            child: ChatCard(
+                              agent: app.chatAgent,
+                              state: app.chatAgent == null
+                                  ? MascotState.idle
+                                  : app.live.mascotStateOf(app.chatAgent!.id),
+                              latest: app.chatAgent == null
+                                  ? null
+                                  : app.latestOf(app.chatAgent!.id),
+                              onTap: () => app.setTab(AppTab.chat),
+                              onLongPress: app.chatAgent == null
+                                  ? null
+                                  : () => showAgentSheet(context, app.chatAgent!),
+                            ),
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 14, 12, 6),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Semantics(
+                                    header: true,
+                                    child: Text(
+                                      l.teamAgents,
+                                      key: const Key('team-agents-header'),
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w800,
+                                        color: c.text,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                TextButton.icon(
+                                  key: const Key('team-new-agent'),
+                                  onPressed: () => openNewAgent(context),
+                                  icon: RgIcon(RgIcons.plus, size: 18, color: c.accent),
+                                  label: Text(
+                                    l.teamNewAgent,
+                                    style: TextStyle(color: c.accent, fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if (app.projects.isNotEmpty || app.favourites.isNotEmpty)
+                          const SliverToBoxAdapter(child: _Filters()),
+                        if (team.isEmpty)
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 24),
+                              child: EmptyState(
+                                icon: app.teamFilter == TeamFilter.favourites
+                                    ? RgIcons.star
+                                    : RgIcons.users,
+                                text: app.teamFilter == TeamFilter.favourites
+                                    ? l.teamNoFavourites
+                                    : app.teamFilter == TeamFilter.all
+                                    ? l.teamNoAgents
+                                    : l.teamNoneInProject,
+                              ),
+                            ),
+                          )
+                        else
+                          SliverPadding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                            sliver: SliverGrid.builder(
+                              key: const Key('team-grid'),
+                              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 220,
+                                mainAxisSpacing: 10,
+                                crossAxisSpacing: 10,
+                                childAspectRatio: .95,
+                              ),
+                              itemCount: team.length,
+                              itemBuilder: (context, i) => AgentCard(
+                                agent: team[i],
+                                state: app.live.mascotStateOf(team[i].id),
+                                favourite: app.isFavourite(team[i].id),
+                                onTap: () => openAgentConversation(context, team[i]),
+                                onLongPress: () => showAgentSheet(context, team[i]),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
             ),
           ],
         );
       },
+    );
+  }
+}
+
+/// What [a] is doing now, in words: its running conversation's title, waiting for the person,
+/// just answered, or still.
+String doingOf(AppLocalizations l, AppController app, Agent a, MascotState state) {
+  final running = app.runningOf(a.id);
+  if (running.isNotEmpty) {
+    final t = running.first.title;
+    return t != null && t.isNotEmpty ? t : stateWord(l, state);
+  }
+  return switch (state) {
+    MascotState.wait => l.agentWaitsYou,
+    MascotState.active => l.agentJustAnswered,
+    MascotState.error => l.agentBlockedNow,
+    _ => l.agentIdleNow,
+  };
+}
+
+/// God's big card at the top of Team: its mascot, its state and what it is doing.
+class GodCard extends StatelessWidget {
+  const GodCard({
+    super.key,
+    required this.agent,
+    required this.state,
+    required this.doing,
+    this.onTap,
+    this.onLongPress,
+  });
+
+  final Agent agent;
+  final MascotState state;
+  final String doing;
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    final l = AppLocalizations.of(context);
+    final word = stateWord(l, state);
+    final waiting = state == MascotState.wait;
+    return Semantics(
+      button: true,
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          key: const Key('team-god'),
+          borderRadius: BorderRadius.circular(24),
+          onTap: onTap,
+          onLongPress: onLongPress,
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(14, 14, 18, 14),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: waiting ? c.accentDim : c.line),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [c.accentSoft, c.panel],
+                stops: const [0, .8],
+              ),
+            ),
+            child: Row(
+              children: [
+                MascotView(
+                  agentId: agent.id,
+                  spec: agent.mascot,
+                  state: state,
+                  size: (MediaQuery.sizeOf(context).width * .28).clamp(84.0, 120.0),
+                  label: l.mascotLabel(agent.name, word),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        agent.name,
+                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: c.text),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Dot(stateColor(c, state)),
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              word,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 13.5, color: c.dim),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        doing,
+                        key: const Key('team-god-doing'),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 14.5, color: c.text, height: 1.3),
+                      ),
+                    ],
+                  ),
+                ),
+                RgIcon(RgIcons.chevronRight, size: 20, color: c.dim),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The Chat's wide card under God's: a tap opens the Chat.
+class ChatCard extends StatelessWidget {
+  const ChatCard({
+    super.key,
+    this.agent,
+    this.state = MascotState.idle,
+    this.latest,
+    this.onTap,
+    this.onLongPress,
+  });
+
+  final Agent? agent;
+  final MascotState state;
+  final SessionRow? latest;
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    final l = AppLocalizations.of(context);
+    final a = agent;
+    final word = stateWord(l, state);
+    final title = latest?.title;
+    return Semantics(
+      button: true,
+      child: Material(
+        color: c.panel,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: c.line),
+        ),
+        child: InkWell(
+          key: const Key('team-chat'),
+          borderRadius: BorderRadius.circular(20),
+          onTap: onTap,
+          onLongPress: onLongPress,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 16, 10),
+            child: Row(
+              children: [
+                if (a != null)
+                  MascotView(
+                    agentId: a.id,
+                    spec: a.mascot,
+                    state: state,
+                    size: 60,
+                    label: l.mascotLabel(a.name, word),
+                  )
+                else
+                  SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: Center(child: RgIcon(RgIcons.chat, size: 28, color: c.dim)),
+                  ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            a?.name ?? l.tabChat,
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w800,
+                              color: c.text,
+                            ),
+                          ),
+                          if (a != null) ...[
+                            const SizedBox(width: 8),
+                            Dot(stateColor(c, state)),
+                            const SizedBox(width: 5),
+                            Flexible(
+                              child: Text(
+                                word,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 12.5, color: c.dim),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        title != null && title.isNotEmpty ? title : l.teamChatLead,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 13.5, color: c.dim),
+                      ),
+                    ],
+                  ),
+                ),
+                RgIcon(RgIcons.chevronRight, size: 20, color: c.dim),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -308,13 +612,7 @@ class AgentSheet extends StatelessWidget {
                           const SizedBox(width: 7),
                           Expanded(
                             child: Text(
-                              running.isNotEmpty
-                                  ? (running.first.title?.isNotEmpty == true
-                                        ? running.first.title!
-                                        : stateWord(l, state))
-                                  : state == MascotState.wait
-                                  ? l.agentWaitsYou
-                                  : l.agentIdleNow,
+                              doingOf(l, app, a, state),
                               style: TextStyle(fontWeight: FontWeight.w600, color: c.text),
                             ),
                           ),

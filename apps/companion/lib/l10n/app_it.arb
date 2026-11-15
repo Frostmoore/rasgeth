@@ -344,5 +344,11 @@
   "modelHintNode": "Passa dal computer {node}.",
   "modelHintLocal": "Gira su un computer tuo: niente costi a consumo.",
   "modelHintOther": "Tramite un fornitore collegato.",
-  "stateActive": "attivo"
+  "stateActive": "attivo",
+  "teamAgents": "Agenti",
+  "teamNewAgent": "Nuovo agente",
+  "teamNoAgents": "Nessun altro agente: creane uno con «Nuovo agente».",
+  "teamChatLead": "Le tue conversazioni di ogni giorno",
+  "agentJustAnswered": "Ti ha appena risposto.",
+  "agentBlockedNow": "È bloccato: apri la conversazione per vedere perché."
 }

@@ -486,6 +486,7 @@ class AppController extends ChangeNotifier {
       return;
     }
     agents = await c.agents();
+    unawaited(ensureChatAgent());
     await _loadTeamPrefs();
     await _loadLists();
     _startLive();
@@ -517,17 +518,29 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// The team as Team shows it: first level, favourites first, then by name; filtered.
+  /// God, shown on its own card at the top of Team.
+  Agent? get god => agents.where((a) => a.kind == AgentKind.god).firstOrNull;
+
+  /// The Chat's agent, shown on its own wide card under God's.
+  Agent? get chatAgent => agents.where((a) => a.id == chatAgentId).firstOrNull;
+
+  /// Team's «Agents» grid: first level without God, the Chat and Demi-God (Telegram's voice: it
+  /// stays in the full list in the settings), favourites first, then by name; filtered.
   List<Agent> teamShown() {
     final first = agents
-        .where((a) => a.kind != AgentKind.subagent && a.kind != AgentKind.inspector)
+        .where(
+          (a) =>
+              a.kind != AgentKind.subagent &&
+              a.kind != AgentKind.inspector &&
+              a.kind != AgentKind.god &&
+              a.kind != AgentKind.demigod &&
+              a.id != chatAgentId,
+        )
         .toList();
-    int rank(Agent a) => a.kind == AgentKind.god ? 0 : (a.kind == AgentKind.demigod ? 1 : 2);
     first.sort((a, b) {
       final f = (isFavourite(b.id) ? 1 : 0) - (isFavourite(a.id) ? 1 : 0);
       if (f != 0) return f;
-      final r = rank(a) - rank(b);
-      return r != 0 ? r : a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
     });
     final f = teamFilter;
     if (f == TeamFilter.favourites) return first.where((a) => isFavourite(a.id)).toList();
@@ -540,6 +553,13 @@ class AppController extends ChangeNotifier {
       return first.where((a) => a.projectId == f || worked.contains(a.id)).toList();
     }
     return first;
+  }
+
+  /// [agentId]'s latest conversation (not archived), if any.
+  SessionRow? latestOf(String agentId) {
+    final rows = live.sessions.where((s) => s.agentId == agentId && !s.archived).toList()
+      ..sort((x, y) => y.when.compareTo(x.when));
+    return rows.firstOrNull;
   }
 
   /// The conversations [agentId] is running now, the latest first.

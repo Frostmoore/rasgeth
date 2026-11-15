@@ -143,32 +143,36 @@ void main() {
     );
   });
 
-  testWidgets('the team shows first-level agents with their mascots and states in words', (
-    tester,
-  ) async {
-    final fixtures = loadMascots();
-    final byId = {for (final (i, f) in fixtures.indexed) 'a$i': f};
-    final source = FixtureMascots(byId);
-    final app = _controller()
-      ..agents = [
-        for (final MapEntry(key: id, value: f) in byId.entries)
-          Agent(id: id, kind: f.spec.kind, name: f.seed, active: true, mascot: f.spec),
-      ]
-      ..mascots = source;
-    await _pump(tester, app);
-    await settleSvgs(tester);
-    expect(find.byKey(const Key('team-grid')), findsOneWidget);
-    // Subagents and inspectors are not first level.
-    expect(find.text('Tester'), findsNothing);
-    expect(find.text('Revisore'), findsNothing);
-    expect(find.text('God'), findsOneWidget);
-    expect(find.byType(MascotView), findsNWidgets(6));
-    expect(
-      find.byWidgetPredicate(
-        (w) => w is Semantics && w.properties.label == 'Mascotte di God, fermo',
-      ),
-      findsOneWidget,
-    );
-    expect(source.asked, contains('a0 idle light'));
-  });
+  testWidgets(
+    'the team shows God, then first-level agents with their mascots and states in words',
+    (tester) async {
+      final fixtures = loadMascots();
+      final byId = {for (final (i, f) in fixtures.indexed) 'a$i': f};
+      final source = FixtureMascots(byId);
+      final app = _controller()
+        ..agents = [
+          for (final MapEntry(key: id, value: f) in byId.entries)
+            Agent(id: id, kind: f.spec.kind, name: f.seed, active: true, mascot: f.spec),
+        ]
+        ..mascots = source;
+      await _pump(tester, app);
+      await settleSvgs(tester);
+      expect(find.byKey(const Key('team-grid')), findsOneWidget);
+      // Subagents and inspectors are not first level.
+      expect(find.text('Tester'), findsNothing);
+      expect(find.text('Revisore'), findsNothing);
+      expect(find.text('God'), findsOneWidget);
+      // Demi-God (Telegram's voice) is not in Team.
+      expect(find.text('Demi'), findsNothing);
+      // God's card and the agents' grid (the Chat's card waits for its agent).
+      expect(find.byType(MascotView), findsNWidgets(5));
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is Semantics && w.properties.label == 'Mascotte di God, fermo',
+        ),
+        findsOneWidget,
+      );
+      expect(source.asked, contains('a0 idle light'));
+    },
+  );
 }

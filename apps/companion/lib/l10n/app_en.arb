@@ -695,5 +695,11 @@
   },
   "modelHintLocal": "Runs on a computer of yours: nothing is paid per use.",
   "modelHintOther": "Through a connected provider.",
-  "stateActive": "active"
+  "stateActive": "active",
+  "teamAgents": "Agents",
+  "teamNewAgent": "New agent",
+  "teamNoAgents": "No other agents yet: make one with «New agent».",
+  "teamChatLead": "Your everyday conversations",
+  "agentJustAnswered": "It has just answered you.",
+  "agentBlockedNow": "It is blocked: open the conversation to see why."
 }
