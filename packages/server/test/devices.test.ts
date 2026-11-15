@@ -180,7 +180,7 @@ describe("over HTTP", () => {
     expect((await s.api("DELETE", `/api/devices/${id}`)).status).toBe(404);
   });
 
-  it("a new password and «sign out everywhere» end the devices (but the one changing it)", async () => {
+  it("a new password ends the other devices only when asked; «sign out everywhere» ends them all", async () => {
     s = await startServer(() => ({ text: "x" }));
     await s.api("PUT", "/api/auth/password", { password: PASSWORD });
     const mk = async (name: string) =>
@@ -188,8 +188,21 @@ describe("over HTTP", () => {
         .token as string;
     const a = await mk("A");
     const b = await mk("B");
+    // Changed without asking to sign out the others (p3.8.0: the page asks): everyone stays in.
     expect(
       (await anon("PUT", "/api/auth/password", { password: "altra-password-lunga" }, a)).status,
+    ).toBe(200);
+    expect((await anon("GET", "/api/agents", undefined, b)).status).toBe(200);
+    // Asked: the others end, the one changing it stays.
+    expect(
+      (
+        await anon(
+          "PUT",
+          "/api/auth/password",
+          { password: "terza-password-lunga", signOutOthers: true },
+          a,
+        )
+      ).status,
     ).toBe(200);
     expect((await anon("GET", "/api/agents", undefined, a)).status).toBe(200);
     expect((await anon("GET", "/api/agents", undefined, b)).status).toBe(401);

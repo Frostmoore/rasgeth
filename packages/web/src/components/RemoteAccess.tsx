@@ -1,11 +1,13 @@
 // Reaching RedGiant from outside home (G24.6): first a password (and, better, a second check
 // with an authenticator app), then one of three ways out, each with its guide. Used by the
 // advanced wizard and by Settings.
+
 import { useEffect, useState } from "preact/hooks";
 import { loginMethods, type SetupState } from "../api.js";
 import { t } from "../i18n.js";
 import { getApi } from "../state.js";
 import { explain } from "./Brain.js";
+import { askConfirm } from "./dialogs.js";
 import { Advanced, Choice, Field, JobView, Qr, useJob } from "./ui.js";
 
 /** The password that signs in from anywhere, and the authenticator app's code. */
@@ -47,7 +49,16 @@ function PasswordPanel({ onChange }: { onChange: () => void }) {
           class="form"
           onSubmit={(e) => {
             e.preventDefault();
-            void run(() => getApi().setPassword(pw), t("remotePasswordSaved")).then(() => {
+            void run(async () => {
+              // Changing it (p3.8.0): the person chooses whether the others sign in again.
+              const others =
+                methods.password &&
+                (await askConfirm(t("pwSignOutOthersQ"), {
+                  text: t("pwSignOutOthersText"),
+                  yes: t("pwSignOutOthersYes"),
+                }));
+              await getApi().setPassword(pw, others);
+            }, t("remotePasswordSaved")).then(() => {
               setPw("");
               setAgain("");
               setChanging(false);

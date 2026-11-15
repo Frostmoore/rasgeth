@@ -140,7 +140,13 @@ export class LoginStore {
   }
 
   /** Sets (or changes) the password; every session but the caller's ends. */
-  async setPassword(ownerId: string, password: string, keep?: string): Promise<void> {
+  /** `revokeOthers`: the other signed-in browsers end too (the person chooses, p3.8.0). */
+  async setPassword(
+    ownerId: string,
+    password: string,
+    keep?: string,
+    revokeOthers = true,
+  ): Promise<void> {
     if (password.length < 10 || /^(.)\1+$/.test(password))
       throw new LoginError("weak", "The password needs at least 10 characters, not all the same");
     await this.db.query(
@@ -148,6 +154,7 @@ export class LoginStore {
        ON CONFLICT (owner_id) DO UPDATE SET password_hash = EXCLUDED.password_hash, updated_at = now()`,
       [ownerId, await hashPassword(password)],
     );
+    if (!revokeOthers) return;
     await this.db.query(
       `UPDATE rg_login_sessions SET revoked_at = now()
        WHERE owner_id = $1 AND revoked_at IS NULL AND id <> $2`,

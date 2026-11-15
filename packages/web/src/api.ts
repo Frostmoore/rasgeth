@@ -1173,7 +1173,8 @@ export class Api {
   /** «Skip: I am reachable already» (G39.8), or the invitations back (`on: false`). */
   setReachable = (on: boolean, url?: string) =>
     this.call("PUT", "/api/setup/reachable", { on, ...(url && { url }) });
-  setPassword = (password: string) => this.call("PUT", "/api/auth/password", { password });
+  setPassword = (password: string, signOutOthers = false) =>
+    this.call("PUT", "/api/auth/password", { password, signOutOthers });
   newCodeSecret = () => this.call<{ secret: string; url: string }>("POST", "/api/auth/code/new");
   enableCode = (secret: string, code: string) =>
     this.call("POST", "/api/auth/code", { secret, code });

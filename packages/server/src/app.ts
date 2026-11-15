@@ -1150,16 +1150,16 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   });
   app.put("/api/auth/password", async (c) => {
     const b = z
-      .object({ password: z.string().max(500) })
+      .object({ password: z.string().max(500), signOutOthers: z.boolean().optional() })
       .safeParse(await c.req.json().catch(() => ({})));
     if (!b.success) return c.json({ error: "A password is needed" }, 400);
     try {
-      // The page that sets it stays signed in (the wizard after a setup code, G39.3).
+      // The page that sets it stays signed in (the wizard after a setup code, G39.3). The other
+      // browsers and devices end only if the person asks (p3.8.0: the page asks when changing it).
+      const others = b.data.signOutOthers === true;
       const keep = await core.logins.sessionIdOf(bearer(c.req.header("authorization")));
-      await core.logins.setPassword(owner(c), b.data.password, keep);
-      // A new password ends the devices' tokens too (G40.1), but the one asking: a token made
-      // with a stolen password must not outlive the change.
-      await core.devices.revokeAll(owner(c), c.get("principal").device?.id);
+      await core.logins.setPassword(owner(c), b.data.password, keep, others);
+      if (others) await core.devices.revokeAll(owner(c), c.get("principal").device?.id);
       return c.json({ ok: true }, 200);
     } catch (err) {
       return loginFailure(c, err);

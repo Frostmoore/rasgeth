@@ -561,7 +561,11 @@ const en = {
     "From outside, RedGiant asks for this password (the link with the token stays for this computer). Choose one you use nowhere else.",
   remotePasswordSet: "A password is set",
   remotePasswordChange: "Change it",
-  remotePasswordSaved: "Saved: every other signed-in browser has been signed out.",
+  pwSignOutOthersQ: "Sign out your other devices too?",
+  pwSignOutOthersText:
+    "The other browsers and the apps signed in with the old password stay in if you keep them. Sign them out if you changed it because someone else might know it.",
+  pwSignOutOthersYes: "Sign them out",
+  remotePasswordSaved: "Password saved.",
   remoteNewPassword: "New password",
   remotePasswordRule:
     "At least 10 characters. A short sentence is easy to remember and hard to guess.",
@@ -6920,7 +6924,11 @@ const it: Record<Key, string> = {
     "Da fuori RedGiant chiede questa password (il link con il token resta per questo computer). Scegline una che non usi da nessun'altra parte.",
   remotePasswordSet: "La password è impostata",
   remotePasswordChange: "Cambiala",
-  remotePasswordSaved: "Salvata: tutti gli altri browser collegati sono stati scollegati.",
+  pwSignOutOthersQ: "Scollegare anche gli altri dispositivi?",
+  pwSignOutOthersText:
+    "Gli altri browser e le app collegate con la password vecchia restano dentro se li tieni. Scollegali se l'hai cambiata perché qualcun altro potrebbe conoscerla.",
+  pwSignOutOthersYes: "Scollegali",
+  remotePasswordSaved: "Password salvata.",
   remoteNewPassword: "Nuova password",
   remotePasswordRule:
     "Almeno 10 caratteri. Una frase breve è facile da ricordare e difficile da indovinare.",
