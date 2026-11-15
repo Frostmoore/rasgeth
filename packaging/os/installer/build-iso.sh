@@ -29,7 +29,11 @@ mkdir -p "$ISO/live" "$ISO/redgiant" "$ISO/boot/grub" "$ISO/.disk" "$ISO/EFI/BOO
 CONSOLE="console=tty0 console=ttyS0,115200"
 
 echo "== installer system (mmdebstrap)"
+# No /vmlinuz, /initrd.img links (kernel-img.conf before the kernel comes): the live system never
+# upgrades, and linux-base's linux-update-symlinks can fail at random ("Failed to create or replace
+# /vmlinuz.old": its temporary link is skipped when rand() gives 0). The files come from /boot.
 mmdebstrap --variant=apt --architectures=amd64 --components="main non-free-firmware" \
+  --setup-hook='mkdir -p "$1/etc" && echo "do_symlinks = no" >"$1/etc/kernel-img.conf"' \
   --include=systemd,systemd-sysv,udev,kmod,live-boot,linux-image-amd64,initramfs-tools,zstd,pv,gdisk,parted,util-linux,firmware-linux-free,firmware-realtek \
   --customize-hook="sync-in $HERE/rootfs /" \
   --customize-hook='chroot "$1" sh -c "chmod 755 /usr/local/sbin/redgiant-install && systemctl enable redgiant-install.service && echo redgiant-installer >/etc/hostname && : >/etc/machine-id && apt-get clean && rm -rf /var/lib/apt/lists/*"' \
@@ -37,8 +41,12 @@ mmdebstrap --variant=apt --architectures=amd64 --components="main non-free-firmw
   "deb $MIRROR trixie main non-free-firmware" \
   "deb $SECURITY_MIRROR trixie-security main non-free-firmware"
 
-cp "$(readlink -f "$LIVE/vmlinuz")" "$ISO/live/vmlinuz"
-cp "$(readlink -f "$LIVE/initrd.img")" "$ISO/live/initrd.img"
+KERNELS=("$LIVE"/boot/vmlinuz-*)
+[ ${#KERNELS[@]} = 1 ] && [ -f "${KERNELS[0]}" ] || { echo "installer: not one kernel in /boot" >&2; exit 1; }
+KVER=${KERNELS[0]##*/vmlinuz-}
+[ -f "$LIVE/boot/initrd.img-$KVER" ] || { echo "installer: no initrd.img-$KVER in /boot" >&2; exit 1; }
+cp "${KERNELS[0]}" "$ISO/live/vmlinuz"
+cp "$LIVE/boot/initrd.img-$KVER" "$ISO/live/initrd.img"
 mksquashfs "$LIVE" "$ISO/live/filesystem.squashfs" -comp zstd -noappend -quiet -no-xattrs \
   -e boot -wildcards -e 'usr/share/doc/*' -e 'usr/share/man/*'
 cp "$PAYLOAD" "$ISO/redgiant/"

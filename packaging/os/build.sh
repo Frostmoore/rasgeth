@@ -120,7 +120,11 @@ OVERLAY=$WORK/overlay
 mkdir -p "$OVERLAY"
 cp -a "$HERE/rootfs/." "$OVERLAY/"
 install -D -m 0755 "$REPO_ROOT/packages/server/helpers/redgiant-helper" "$OVERLAY/usr/lib/redgiant/redgiant-helper"
+# The kernel's /vmlinuz and /initrd.img links are made below, not by linux-base while the packages
+# go in: its linux-update-symlinks can fail at random ("Failed to create or replace /vmlinuz.old",
+# its temporary link is skipped when rand() gives 0). kernel-img.conf only lives during the build.
 mmdebstrap --variant=apt --architectures="$ARCH" --components="main non-free-firmware" \
+  --setup-hook='mkdir -p "$1/etc" && echo "do_symlinks = no" >"$1/etc/kernel-img.conf"' \
   --include="$(IFS=,; echo "${PACKAGES[*]}")" \
   --customize-hook="sync-in $OVERLAY /" \
   --customize-hook="copy-in $HERE/setup-chroot.sh /tmp" \
@@ -129,6 +133,18 @@ mmdebstrap --variant=apt --architectures="$ARCH" --components="main non-free-fir
   "deb $MIRROR trixie main non-free-firmware" \
   "deb $MIRROR trixie-updates main non-free-firmware" \
   "deb $SECURITY_MIRROR trixie-security main non-free-firmware"
+
+# Debian's defaults again for the machine's own kernel updates, and the links they would have made
+# (GRUB's grub.cfg boots /vmlinuz and /initrd.img). A container has no kernel.
+rm -f "$ROOT/etc/kernel-img.conf"
+KERNELS=("$ROOT"/boot/vmlinuz-*)
+if [ -e "${KERNELS[0]}" ]; then
+  [ ${#KERNELS[@]} = 1 ] || { echo "more than one kernel in /boot: ${KERNELS[*]}" >&2; exit 1; }
+  KVER=${KERNELS[0]##*/vmlinuz-}
+  [ -f "$ROOT/boot/initrd.img-$KVER" ] || { echo "no /boot/initrd.img-$KVER" >&2; exit 1; }
+  for link in vmlinuz vmlinuz.old; do ln -sfn "boot/vmlinuz-$KVER" "$ROOT/$link"; done
+  for link in initrd.img initrd.img.old; do ln -sfn "boot/initrd.img-$KVER" "$ROOT/$link"; done
+fi
 
 step "RedGiant $VERSION in the system"
 SHARE=$ROOT/usr/share/redgiant-os
