@@ -28,6 +28,11 @@
 //   os-update-status, os-update-check → {"update": <os-update.json>|null, "running", "security": {…}}
 //   os-update-apply          → {}      (redgiant-os-update.service, in the background)
 //   reboot                   → {"in": 5}
+// The temporary network (G40.3, redgiant-setup-ap):
+//   ap-status                → {"active", "mode": "off"|"setup"|"maintenance", "ssid", "networks"…}
+//   ap-start | ap-stop | ap-keep | ap-done → {}  (open it, close it, keep it open, first start done)
+//   home-network-try cable   → {"state": "connected", "address": "192.168.1.40"}
+//   home-network-try <base64 ssid> <base64 password|-> <visible|hidden> → {"state": "trying"}
 // A Wi-Fi password travels only base64 in the request line (the line is never logged, here or
 // by the helper) and ends in iwd's own file for that network.
 import { execFile } from "node:child_process";
@@ -51,7 +56,14 @@ export type HelperOp =
   | { op: "os-update-status" }
   | { op: "os-update-check" }
   | { op: "os-update-apply" }
-  | { op: "reboot" };
+  | { op: "reboot" }
+  | { op: "ap-status" }
+  | { op: "ap-start" }
+  | { op: "ap-stop" }
+  | { op: "ap-keep" }
+  | { op: "ap-done" }
+  | { op: "home-network-try"; cable: true }
+  | { op: "home-network-try"; ssid: string; password: string; hidden?: boolean };
 
 export class HelperError extends Error {
   constructor(
@@ -99,6 +111,11 @@ export function helperRequest(o: HelperOp): string {
       if (!wifiSsidOk(o.ssid)) throw new HelperError("bad_ssid");
       if (o.password !== "" && !wifiPasswordOk(o.password)) throw new HelperError("bad_password");
       return `wifi-connect ${b64(o.ssid)} ${o.password === "" ? "-" : b64(o.password)} ${o.hidden ? "hidden" : "visible"}`;
+    case "home-network-try":
+      if ("cable" in o) return "home-network-try cable";
+      if (!wifiSsidOk(o.ssid)) throw new HelperError("bad_ssid");
+      if (o.password !== "" && !wifiPasswordOk(o.password)) throw new HelperError("bad_password");
+      return `home-network-try ${b64(o.ssid)} ${o.password === "" ? "-" : b64(o.password)} ${o.hidden ? "hidden" : "visible"}`;
     case "wifi-forget":
       if (!wifiSsidOk(o.ssid)) throw new HelperError("bad_ssid");
       return `wifi-forget ${b64(o.ssid)}`;
@@ -191,7 +208,7 @@ function viaCommand(file: string, pre: string[], line: string): Promise<Record<s
   return new Promise((resolve, reject) => {
     // The request's words as arguments: no shell, and the helper checks them again. A Wi-Fi
     // password is never an argument (any process may read those): that request goes on stdin.
-    const secret = line.startsWith("wifi-connect ");
+    const secret = line.startsWith("wifi-connect ") || line.startsWith("home-network-try ");
     const child = execFile(
       file,
       secret ? [...pre, "--stdin"] : [...pre, ...line.split(" ")],

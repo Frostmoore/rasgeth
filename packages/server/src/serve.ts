@@ -1,9 +1,12 @@
 import type { Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { serve as nodeServe } from "@hono/node-server";
+import { LOCAL_OWNER_ID } from "@redgiant/protocol";
 import { type AppOptions, createApp } from "./app.js";
 import { type AuthProvider, ChainAuth } from "./auth.js";
 import type { RedGiantCore } from "./core.js";
+import { type IssueDeviceToken, SetupChannel } from "./setup-channel.js";
+import type { SetupNetwork } from "./setup-network.js";
 import { installedVersion } from "./updates.js";
 import { attachWebSocket, OpenPages } from "./ws.js";
 
@@ -27,6 +30,10 @@ export function serve(
     winHf?: AppOptions["winHf"];
     loginOwner?: string;
     firstAccessFrom?: AppOptions["firstAccessFrom"];
+    /** RedGiant OS's temporary network (G40.3). */
+    setupNetwork?: SetupNetwork;
+    /** Device tokens for the app (G40.1), handed over by the setup channel (G40.3). */
+    issueDeviceToken?: IssueDeviceToken;
     /** The version pages are told (default the installed one, null from the source). */
     version?: string | null;
   },
@@ -44,13 +51,28 @@ export function serve(
     ...(listen.winHf && { winHf: listen.winHf }),
     ...(listen.loginOwner && { loginOwner: listen.loginOwner }),
     ...(listen.firstAccessFrom && { firstAccessFrom: listen.firstAccessFrom }),
+    ...(listen.setupNetwork && { setupNetwork: listen.setupNetwork }),
     pages,
+  });
+  // The app's setup channel (G40.3): the API itself, carried encrypted, with this machine's key.
+  const setupChannel = new SetupChannel({
+    owner: listen.loginOwner ?? LOCAL_OWNER_ID,
+    identity: (ownerId) => core.nodes.identity(ownerId),
+    fetch: (req, env) => app.fetch(req, env as never),
+    authenticate: (t) => full.authenticate(t),
+    network: listen.setupNetwork,
+    issueDeviceToken: listen.issueDeviceToken,
+    version,
   });
   return new Promise((ok) => {
     const server = nodeServe(
       { fetch: app.fetch, port: listen.port, hostname: listen.host ?? "0.0.0.0" },
       (info: AddressInfo) => {
-        const wss = attachWebSocket(server as unknown as Server, core, full, { pages, version });
+        const wss = attachWebSocket(server as unknown as Server, core, full, {
+          pages,
+          version,
+          setupChannel,
+        });
         const host = listen.host && listen.host !== "0.0.0.0" ? listen.host : "127.0.0.1";
         ok({
           url: `http://${host}:${info.port}`,

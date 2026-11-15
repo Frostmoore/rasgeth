@@ -74,9 +74,18 @@ export type FirstAccessFrom = "lan" | "anywhere";
 export type FirstAccess = "password" | "code" | "not_here";
 
 /**
- * The rule, in one place: nothing once a password exists or the first start is completed; the
+ * Where a request comes from, as RedGiant OS's temporary network sees it (G40.3): "setup" from
+ * RedGiant-Setup-XXXX at a first start, "maintenance" from the same network opened later because
+ * the home network was missing, "home" (or absent) from anywhere else.
+ */
+export type SetupNetworkKind = "home" | "setup" | "maintenance";
+
+/**
+ * The rule, in one place: nothing once a password exists or the first start is completed, and
+ * never from the temporary network in maintenance (it never makes a new owner, G40.3); the
  * one-time code when the administrator asked for it (`REDGIANT_SETUP_CODE=1`); otherwise the
- * password page, from the local network only unless allowed from anywhere.
+ * password page, from the local network only unless allowed from anywhere. The temporary
+ * network of a first start is the local network.
  */
 export function firstAccessOf(o: {
   hasPassword: boolean;
@@ -85,10 +94,11 @@ export function firstAccessOf(o: {
   codeActive: boolean;
   local: boolean;
   from: FirstAccessFrom;
+  network?: SetupNetworkKind | undefined;
 }): FirstAccess | null {
-  if (o.hasPassword || o.completed) return null;
+  if (o.hasPassword || o.completed || o.network === "maintenance") return null;
   if (o.codeActive) return "code";
-  return o.local || o.from === "anywhere" ? "password" : "not_here";
+  return o.local || o.network === "setup" || o.from === "anywhere" ? "password" : "not_here";
 }
 
 /** `REDGIANT_FIRST_ACCESS`: "anywhere" lets the first access be created from any address. */

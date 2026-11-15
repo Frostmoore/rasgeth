@@ -2740,7 +2740,15 @@ export class SetupService {
     await this.save();
     // The first start's code (G39.3) is gone with the wizard.
     await this.setupCode.clear();
+    // RedGiant OS's temporary network closes (G40.3), and the machine forgets it was new.
+    for (const fn of this.completedHooks)
+      await Promise.resolve()
+        .then(fn)
+        .catch((err) => console.warn(`setup completed: ${(err as Error).message}`));
   }
+
+  /** What runs once the first start is completed (G40.3: the temporary network closes). */
+  readonly completedHooks: (() => void | Promise<void>)[] = [];
 
   get completed(): boolean {
     return this.config.completed;

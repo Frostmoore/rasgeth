@@ -17,6 +17,7 @@ import {
   serve,
   TokenAuth,
 } from "../src/index.js";
+import type { IssueDeviceToken } from "../src/setup-channel.js";
 import { memoryDb } from "./pglite.js";
 
 export const TOKEN = "test-token-0123456789";
@@ -37,7 +38,11 @@ export async function startServer(
   extra?: (
     core: RedGiantCore,
     dir: string,
-  ) => Promise<Pick<AppOptions, "setup" | "hf" | "firstAccessFrom">>,
+  ) => Promise<
+    Pick<AppOptions, "setup" | "hf" | "firstAccessFrom" | "setupNetwork"> & {
+      issueDeviceToken?: IssueDeviceToken;
+    }
+  >,
 ) {
   const dir = await mkdtemp(join(tmpdir(), "rg-server-"));
   const { db } = await memoryDb();

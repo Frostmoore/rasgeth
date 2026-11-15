@@ -20,6 +20,12 @@
 // HMAC of th under scrypt(code, th) — the dialler first, so a fake principal learns nothing; the
 // scrypt makes guessing the code from a recorded proof cost far more than its ten minutes. The
 // person then compares the fingerprints (and six digits from th) on both machines and confirms.
+//
+// Setup (G40.3, the app at a first start, RedGiant OS's temporary network): the same handshake,
+// with the app as the dialler and nothing pinned on RedGiant's side. The app pins RedGiant's key
+// the first time (trust on first use) and from then on talks only to that key (`expect`), at
+// home too. Who may do what over it is the setup channel's business (setup-channel.ts): the
+// first access, signing in, the home network.
 import {
   createCipheriv,
   createDecipheriv,
@@ -40,6 +46,9 @@ import {
 import WebSocket from "ws";
 
 const VERSION = "rg-node-v1";
+
+/** link: two paired machines; pair: with a one-time code; setup: the app at a first start. */
+export type ChannelMode = "link" | "pair" | "setup";
 
 /** A machine's long-term identity: an ed25519 pair. */
 export interface NodeIdentity {
@@ -99,6 +108,7 @@ export type ChannelErrorCode =
   | "wrong-code"
   | "expired-code"
   | "too-many-tries"
+  | "busy"
   | "protocol"
   | "unreachable"
   | "timeout"
@@ -122,6 +132,7 @@ const CLOSE: Record<string, number> = {
   "expired-code": 4005,
   protocol: 4006,
   "too-many-tries": 4007,
+  busy: 4008,
 };
 const CODE_OF = Object.fromEntries(
   Object.entries(CLOSE).map(([k, v]) => [v, k as ChannelErrorCode]),
@@ -157,7 +168,7 @@ const sameBytes = (a: Buffer, b: Buffer) => a.length === b.length && timingSafeE
 interface Hello {
   t: "hello";
   v: string;
-  mode: "link" | "pair";
+  mode: ChannelMode;
   eph: string;
   id: string;
   nonce: string;
@@ -386,8 +397,12 @@ export function channelUrl(address: string): string {
 export interface DialOptions {
   url: string;
   identity: NodeIdentity;
-  /** link: `expect` is the pinned fingerprint; pair: `code` is the one the person typed. */
-  mode: "link" | "pair";
+  /**
+   * link: `expect` is the pinned fingerprint; pair: `code` is the one the person typed; setup:
+   * `expect` when the machine's key is already pinned (absent the first time: any key, pinned
+   * by the caller from `peer`).
+   */
+  mode: ChannelMode;
   expect?: string;
   code?: string;
   timeoutMs?: number;
@@ -439,7 +454,7 @@ export async function dialNode(o: DialOptions): Promise<Dialled> {
     const th = transcript(o.mode, hello, { eph: str(w.eph), id: str(w.id), nonce: str(w.nonce) });
     if (!verifyWith(peerRaw, Buffer.concat([Buffer.from("listener"), th]), bytes(w.sig)))
       throw new NodeChannelError("protocol", "The other machine's signature is wrong");
-    if (o.mode === "link" && peerFp !== o.expect)
+    if ((o.mode === "link" || (o.mode === "setup" && o.expect)) && peerFp !== o.expect)
       throw new NodeChannelError(
         "fingerprint-changed",
         `DANGER: the machine at ${o.url} answered with another key (${peerFp}, pinned: ${o.expect}). Another computer may be in its place: nothing was sent.`,
@@ -492,11 +507,16 @@ export interface AcceptOptions {
     | { ok: true; key: Buffer }
     | { ok: false; code: "wrong-code" | "expired-code" | "too-many-tries" }
   >;
+  /**
+   * Setup mode (G40.3): whether a dialler with this fingerprint may open the setup channel now
+   * (one device at a time: "busy" while another one has it). Absent: setup is refused.
+   */
+  setup?: (fingerprint: string) => true | "busy";
   timeoutMs?: number;
 }
 
 export interface Accepted extends Dialled {
-  mode: "link" | "pair";
+  mode: ChannelMode;
 }
 
 function refuse(ws: WebSocket, code: ChannelErrorCode, message: string): never {
@@ -511,7 +531,11 @@ export async function acceptNode(ws: WebSocket, o: AcceptOptions): Promise<Accep
   const timeoutMs = o.timeoutMs ?? 15_000;
   const inbox = new Inbox(ws);
   const h = (await inbox.next(timeoutMs)) as unknown as Hello;
-  if (h.t !== "hello" || h.v !== VERSION || (h.mode !== "link" && h.mode !== "pair"))
+  if (
+    h.t !== "hello" ||
+    h.v !== VERSION ||
+    (h.mode !== "link" && h.mode !== "pair" && h.mode !== "setup")
+  )
     refuse(ws, "protocol", "Not a RedGiant node handshake");
   const peerRaw = bytes(h.id);
   const peerFp = fingerprintOf(peerRaw);
@@ -521,6 +545,11 @@ export async function acceptNode(ws: WebSocket, o: AcceptOptions): Promise<Accep
     refuse(ws, "unknown-peer", "This machine is not paired here");
   if (h.mode === "pair" && !o.pairProof)
     refuse(ws, "expired-code", "No pairing code is being shown");
+  if (h.mode === "setup") {
+    if (!o.setup) refuse(ws, "protocol", "This is not a setup channel");
+    if (o.setup(peerFp) === "busy")
+      refuse(ws, "busy", "Another device is setting up this RedGiant: one at a time");
+  }
   const eph = x25519Pair();
   const mine = { eph: b64(eph.pub), id: b64(o.identity.raw), nonce: b64(randomBytes(32)) };
   const th = transcript(h.mode, h, mine);
