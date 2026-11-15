@@ -198,6 +198,7 @@ there. The main settings:
 - **Phones and other computers**: Settings > Access from outside home sets a password (with an optional
   second check from an authenticator app) and opens a way in: Tailscale, a Cloudflare Tunnel or your own
   domain with Caddy. Served over HTTPS, the page can also be installed as an app.
+  Every way, step by step (your own infrastructure, Tailscale, or nothing at all): [REMOTE-ACCESS.md](REMOTE-ACCESS.md).
 - **Voice messages**: `docker compose --profile voice up -d` and `http://whisper-asr:9000` in the wizard
   (or `REDGIANT_WHISPER_URL`). Any OpenAI-compatible transcription API works too
   (`REDGIANT_WHISPER_API=openai`, `REDGIANT_WHISPER_KEY`, `REDGIANT_WHISPER_MODEL`).
