@@ -2353,6 +2353,15 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news380Setup: "A mini PC with no screen, set up from your phone",
+  news380SetupText:
+    "At its first start RedGiant OS opens its own Wi-Fi, RedGiant-Setup-XXXX (password redgiant): join it from a phone or a laptop and the setup page opens by itself; choose your home Wi-Fi or the cable. If the home network is lost later, it opens again so you can give it the new one (only after signing in).",
+  news380Mascots: "Every agent has its face",
+  news380MascotsText:
+    "Each agent has a mascot of its own, made from its name, that shows whether it is resting, thinking, working, waiting for you or stuck. God keeps its red giant. «Change mascot» in the agent's panel.",
+  news380Devices: "Devices and notifications",
+  news380DevicesText:
+    "Settings › Devices lists the apps signed in with their own access, each revocable on its own, with notifications and «Send a test». Changing the password now asks whether to sign out the other devices.",
   news373Voice: "Your voice, your way",
   news373VoiceText:
     "Settings › Voice: choose your own wake word, a transcription in the cloud (OpenAI, Groq, ElevenLabs) or on your computers, a voice that reads the answers (OpenAI, ElevenLabs, Gemini or the browser's), and the volume. Every voice message speaks your language.",
@@ -8737,6 +8746,15 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news380Setup: "Un mini PC senza schermo, configurato dal telefono",
+  news380SetupText:
+    "Al primo avvio RedGiant OS apre un suo Wi-Fi, RedGiant-Setup-XXXX (password redgiant): collegati dal telefono o dal portatile e la pagina di configurazione si apre da sola; scegli il Wi-Fi di casa o il cavo. Se più avanti perde la rete di casa, lo riapre perché tu gli dia quella nuova (solo dopo l'accesso).",
+  news380Mascots: "Ogni agente ha la sua faccia",
+  news380MascotsText:
+    "Ogni agente ha una mascotte tutta sua, nata dal suo nome, che mostra se è fermo, pensa, lavora, aspetta te o è bloccato. God tiene il suo gigante rosso. «Cambia mascotte» nel pannello dell'agente.",
+  news380Devices: "Dispositivi e notifiche",
+  news380DevicesText:
+    "Impostazioni › Dispositivi elenca le app collegate, ognuna con il suo accesso revocabile da solo, con le notifiche e «Manda una prova». Cambiando la password ora ti chiede se scollegare gli altri dispositivi.",
   news373Voice: "La tua voce, a modo tuo",
   news373VoiceText:
     "Impostazioni › Voce: scegli la tua parola di attivazione, una trascrizione in cloud (OpenAI, Groq, ElevenLabs) o sui tuoi computer, una voce che legge le risposte (OpenAI, ElevenLabs, Gemini o quella del browser) e il volume. Ogni messaggio della voce parla la tua lingua.",

@@ -320,8 +320,11 @@ RedGiant is in pre-alpha. What comes next, in order:
   Raspberry Pi — headless, with Wi-Fi, HTTPS at home and updates from the page; your RedGiants joined as nodes;
   the first sign-in is just «create your access»; and a guide for those who already have a proxy, a VPN and a
   home DNS.
-- **3.8 — Native apps**: a companion app for Android and iOS (Flutter) and native apps for Windows, macOS
-  and Linux.
+- **3.8 — Native apps**: RGCompanion, one Flutter app for Android, iOS, Windows, macOS and Linux, with its
+  own agent-first look (every agent has its own mascot) and an advanced mode for coders. 3.8.0 (released) lays the
+  ground: RedGiant OS opens its own temporary Wi-Fi at the first start, so a mini PC with no screen is set up from
+  a phone or a laptop; devices with their own revocable access; push notifications; the mascots, already in the
+  page. The app follows in 3.8.x.
 - **3.9 and 3.10 — Video and 3D generation**: a video editor shared by you and the agent, and 3D
   generation with local or cloud engines, finished in Blender.
 - **3.11 — Emulators in the Canvas**: an Android emulator or the iOS simulator found on the computer
