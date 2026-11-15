@@ -1018,6 +1018,16 @@ const core = await RedGiantCore.create({
     machines: { dial: () => ({ host: "127.0.0.1", port: sshDemo.port }), connectTimeoutMs: 5000 },
   }),
 });
+// DEMO_API_KEY=1 (G40.9b): an Anthropic API key stand-in next to the subscription, so the same
+// Claude models go both ways and the menus offer «Abbonamento» / «Chiave API».
+if (process.env.DEMO_API_KEY)
+  core.providers.register(
+    new FakeProvider(brain, {
+      id: "anthropic",
+      contextWindow: 200_000,
+      models: ["claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5"],
+    }),
+  );
 // G38.4, DEMO_VOICE=1: a transcription service on 127.0.0.1 that hears DEMO_VOICE_TEXT in every
 // recording (each request body kept next to DEMO_VOICE_LOG), and the wake word's models
 // already prepared in DEMO_VOSK (the .tar.gz files `WakeModels` makes), so nothing is downloaded.

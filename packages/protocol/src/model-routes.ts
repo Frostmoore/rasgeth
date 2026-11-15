@@ -1,0 +1,184 @@
+/**
+ * How a model is reached (G40.9b, the person: «se ho sia abbonamento che api key di un fornitore,
+ * quando scelgo i modelli mi deve far scegliere tra abbonamento e api key»). The server keeps the
+ * ways apart as providers (`claude-subscription` and `anthropic`, `chatgpt-subscription` and
+ * `openai`, a node's `node-<name>`); the menus show one entry per model family (same company,
+ * same model) with the ways it can go: the subscription, the API key, a node, a local engine.
+ * One pure rule, read by the page, the app (mirrored in Dart) and the request sentences.
+ */
+
+type Lang = "it" | "en";
+const lng = (lang: string): Lang => (lang === "it" ? "it" : "en");
+
+export type ModelRouteKind = "subscription" | "key" | "node" | "local" | "other";
+
+export interface ModelRoute {
+  kind: ModelRouteKind;
+  /** The company behind the model (`anthropic`, `openai`…), or the provider when unknown. */
+  vendor: string;
+  /** The model's id at that company (without a node's `<provider>:` prefix). */
+  model: string;
+  /** For `node`: the node's name. */
+  node?: string;
+  /** For `node`: how the node itself reaches the model, when it says. */
+  through?: "subscription" | "key";
+}
+
+/** The subscriptions and the company they belong to. */
+const SUBSCRIPTION_VENDOR: Readonly<Record<string, string>> = {
+  "claude-subscription": "anthropic",
+  "chatgpt-subscription": "openai",
+};
+
+/** Providers that run on a computer of the person's (llama.cpp, their own server). */
+const LOCAL = new Set(["local", "server"]);
+
+/** Companies people pay with an API key (`KEY_PROVIDERS`; kept here so the rule stays pure). */
+const KEYS = new Set([
+  "anthropic",
+  "openai",
+  "gemini",
+  "mistral",
+  "deepseek",
+  "xai",
+  "groq",
+  "openrouter",
+  "together",
+  "fireworks",
+  "cerebras",
+]);
+
+const viaName = (name: string | undefined) => name?.match(/\(via ([^)]+)\)\s*$/)?.[1]?.trim();
+
+/** How `provider` reaches `model`; `name` is the menu's name (a node's says «(via Rig)»). */
+export function modelRoute(provider: string, model: string, name?: string): ModelRoute {
+  const sub = SUBSCRIPTION_VENDOR[provider];
+  if (sub) return { kind: "subscription", vendor: sub, model };
+  if (provider.startsWith("node-")) {
+    const i = model.indexOf(":");
+    const inner = i > 0 ? model.slice(0, i) : "";
+    const id = i > 0 ? model.slice(i + 1) : model;
+    const r = modelRoute(inner, id);
+    return {
+      kind: "node",
+      vendor: inner ? r.vendor : provider,
+      model: id,
+      node: viaName(name) ?? provider.slice(5),
+      ...(r.kind === "subscription" && { through: "subscription" as const }),
+      ...(r.kind === "key" && { through: "key" as const }),
+    };
+  }
+  if (LOCAL.has(provider)) return { kind: "local", vendor: provider, model };
+  if (KEYS.has(provider)) return { kind: "key", vendor: provider, model };
+  return { kind: "other", vendor: provider, model };
+}
+
+const ORDER: readonly ModelRouteKind[] = ["subscription", "key", "node", "local", "other"];
+
+/** One model with every way it can go, the cheapest-to-think-about first. */
+export interface ModelFamily<T> {
+  /** `<vendor>/<model>`: the same for every way. */
+  id: string;
+  vendor: string;
+  model: string;
+  /** The menus' name without a node's «(via …)». */
+  name?: string;
+  routes: { route: ModelRoute; choice: T }[];
+}
+
+/** The models in families, in the order they first appear; each family's ways in `ORDER`. */
+export function modelFamilies<T extends { provider: string; model: string; name?: string }>(
+  choices: readonly T[],
+): ModelFamily<T>[] {
+  const out: ModelFamily<T>[] = [];
+  const byId = new Map<string, ModelFamily<T>>();
+  for (const choice of choices) {
+    const route = modelRoute(choice.provider, choice.model, choice.name);
+    const id = `${route.vendor}/${route.model}`;
+    let f = byId.get(id);
+    if (!f) {
+      const name = choice.name?.replace(/\s*\(via [^)]+\)\s*$/, "") || undefined;
+      f = { id, vendor: route.vendor, model: route.model, ...(name && { name }), routes: [] };
+      byId.set(id, f);
+      out.push(f);
+    } else if (!f.name && choice.name && route.kind !== "node") f.name = choice.name;
+    f.routes.push({ route, choice });
+  }
+  for (const f of out)
+    f.routes.sort((a, b) => ORDER.indexOf(a.route.kind) - ORDER.indexOf(b.route.kind));
+  return out;
+}
+
+/** The family and the way a chosen model belongs to; undefined when it is not among them. */
+export function familyOf<T extends { provider: string; model: string; name?: string }>(
+  families: readonly ModelFamily<T>[],
+  m: { provider: string; model: string },
+): { family: ModelFamily<T>; index: number } | undefined {
+  for (const family of families) {
+    const index = family.routes.findIndex(
+      (r) => r.choice.provider === m.provider && r.choice.model === m.model,
+    );
+    if (index >= 0) return { family, index };
+  }
+  return undefined;
+}
+
+/** A way's name, short: «Abbonamento», «Chiave API», «Tramite Rig», «Locale». */
+export function routeLabel(route: ModelRoute, lang: string, provider?: string): string {
+  const it = lng(lang) === "it";
+  switch (route.kind) {
+    case "subscription":
+      return it ? "Abbonamento" : "Subscription";
+    case "key":
+      return it ? "Chiave API" : "API key";
+    case "node":
+      return it ? `Tramite ${route.node}` : `Via ${route.node}`;
+    case "local":
+      return it ? "Locale" : "Local";
+    default:
+      return provider ?? route.vendor;
+  }
+}
+
+/** What a way means for the person, in one line. */
+export function routeHint(route: ModelRoute, lang: string): string {
+  const it = lng(lang) === "it";
+  switch (route.kind) {
+    case "subscription":
+      return it
+        ? "Nei limiti del tuo piano: non paghi a consumo."
+        : "Within your plan's limits: nothing is paid per use.";
+    case "key":
+      return it
+        ? "A consumo con la tua chiave API: conta per il tetto di spesa."
+        : "Paid per use with your API key: it counts toward the spending cap.";
+    case "node":
+      return it
+        ? `Passa dal computer ${route.node}${route.through === "subscription" ? ", con il suo abbonamento" : route.through === "key" ? ", con la sua chiave API" : ""}.`
+        : `Goes through the computer ${route.node}${route.through === "subscription" ? ", with its subscription" : route.through === "key" ? ", with its API key" : ""}.`;
+    case "local":
+      return it
+        ? "Gira su un computer tuo: niente costi a consumo."
+        : "Runs on a computer of yours: nothing is paid per use.";
+    default:
+      return it ? "Tramite un fornitore collegato." : "Through a connected provider.";
+  }
+}
+
+/** The way in a sentence's tail: « con l'abbonamento», « con la chiave API», « tramite Rig». */
+export function routePhrase(provider: string, model: string, lang: string): string {
+  const it = lng(lang) === "it";
+  const r = modelRoute(provider, model);
+  switch (r.kind) {
+    case "subscription":
+      return it ? " con l'abbonamento" : " with the subscription";
+    case "key":
+      return it ? " con la chiave API" : " with the API key";
+    case "node":
+      return it ? ` tramite ${r.node}` : ` via ${r.node}`;
+    case "local":
+      return it ? " in locale" : " locally";
+    default:
+      return "";
+  }
+}

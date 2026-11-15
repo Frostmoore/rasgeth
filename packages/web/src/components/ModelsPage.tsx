@@ -24,6 +24,7 @@ import {
   wayTiles,
 } from "./Brain.js";
 import { LocalModels } from "./LocalModels.js";
+import { sourceOf, useModels, wayOf } from "./ModelSelect.js";
 import { ModelsCatalogRow } from "./ModelsCatalogRow.js";
 import { SearchSettings } from "./SearchSettings.js";
 import { OwnSearch } from "./Services.js";
@@ -61,6 +62,7 @@ export function ModelsPage({ s, reload }: { s: SetupState; reload: () => void })
     if (w === "local") local.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     else setOpen(w);
   };
+  const models = useModels();
   const d = s.config.defaultModel;
   const searchNow = s.config.searchProvider ?? (s.config.searxngUrl ? "searxng" : undefined);
   const searchOpen = open?.startsWith("search:")
@@ -105,7 +107,10 @@ export function ModelsPage({ s, reload }: { s: SetupState; reload: () => void })
             title={d ? localModelName(d.model.split("/").pop() ?? d.model) : t("mpNoDefault")}
             text={
               d
-                ? [providerName(d.provider), tOptional(`effort_${d.effort ?? "medium"}`)]
+                ? [
+                    models && wayOf(models, d) ? sourceOf(models, d) : providerName(d.provider),
+                    tOptional(`effort_${d.effort ?? "medium"}`),
+                  ]
                     .filter(Boolean)
                     .join(" · ")
                 : t("mpNoDefaultText")

@@ -332,5 +332,16 @@
   "inboxCriticalHint": "Davvero pericolosa: non si scorre, si guarda a schermo intero.",
   "inboxSaidYes": "Sì a {name}",
   "inboxSaidNo": "No a {name}",
-  "inboxNext": "Dopo"
+  "inboxNext": "Dopo",
+  "modelWay": "Da dove passa",
+  "modelWaySubscription": "Abbonamento",
+  "modelWayKey": "Chiave API",
+  "modelWayNode": "Tramite {node}",
+  "modelWayLocal": "Locale",
+  "modelWayOr": "o",
+  "modelHintSubscription": "Nei limiti del tuo piano: non paghi a consumo.",
+  "modelHintKey": "A consumo con la tua chiave API: conta per il tetto di spesa.",
+  "modelHintNode": "Passa dal computer {node}.",
+  "modelHintLocal": "Gira su un computer tuo: niente costi a consumo.",
+  "modelHintOther": "Tramite un fornitore collegato."
 }

@@ -265,7 +265,28 @@ void main() {
       expect(find.text('questo dispositivo'), findsOneWidget);
       await see(find.text('Attive, attraverso ntfy.sh'));
       await see(find.byKey(const Key('settings-model')));
-      expect(find.text('Claude Sonnet 5'), findsOneWidget);
+      expect(find.text('Claude Sonnet 5 · Chiave API'), findsOneWidget);
+      // The model reached both ways shows once, with the way to choose and its line (G40.9b).
+      await tester.tap(find.byKey(const Key('settings-model')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('model-anthropic/claude-sonnet-5')), findsOneWidget);
+      expect(find.text('Abbonamento o Chiave API'), findsOneWidget);
+      expect(find.text('Chiave API'), findsWidgets);
+      expect(
+        find.text('A consumo con la tua chiave API: conta per il tetto di spesa.'),
+        findsOneWidget,
+      );
+      await tester.tap(find.byKey(const Key('way-claude-subscription/claude-sonnet-5')));
+      await tester.pumpAndSettle();
+      expect(find.text('Nei limiti del tuo piano: non paghi a consumo.'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('model-anthropic/claude-sonnet-5')));
+      await tester.pumpAndSettle();
+      await _settle(tester);
+      expect(
+        (server.setup['config'] as Map<String, dynamic>)['defaultModel'],
+        containsPair('provider', 'claude-subscription'),
+      );
+      expect(find.text('Claude Sonnet 5 · Abbonamento'), findsOneWidget);
       await see(find.byKey(const Key('outside-link')));
       expect(find.text('https://casa.tail1234.ts.net'), findsOneWidget);
       // On a phone, the page's Settings inside the app.

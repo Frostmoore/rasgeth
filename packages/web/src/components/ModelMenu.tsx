@@ -4,6 +4,7 @@ import type { ModelChoice } from "../api.js";
 import { localModelName } from "../format.js";
 import { t } from "../i18n.js";
 import { attempt, getApi, refreshConversations } from "../state.js";
+import { ModelFamilySelect } from "./ModelSelect.js";
 
 type Model = { provider: string; model: string; effort?: string };
 const EFFORTS = ["low", "medium", "high", "max"] as const;
@@ -76,47 +77,32 @@ export function ModelMenu({
     await refreshConversations().catch(() => {});
   };
   const key = (m: { provider: string; model: string }) => `${m.provider}/${m.model}`;
-  const known = current && models.some((m) => key(m) === key(current));
   const effortOk =
     current !== undefined &&
     (models.find((m) => key(m) === key(current))?.effort ?? current.effort !== undefined);
 
   return (
     <>
-      <select
-        class={`model ${own ? "own" : ""}`}
-        aria-label={t("model")}
+      <ModelFamilySelect
+        selectClass={`model ${own ? "own" : ""}`}
         title={t("modelHint")}
         disabled={disabled}
         // A way of thinking connected meanwhile shows up as soon as the menu is opened.
         onFocus={() => void loadModels(true).then(setModels)}
         value={own && current ? key(current) : AGENTS}
-        onChange={(e) => {
-          const v = (e.target as HTMLSelectElement).value;
-          if (v === AGENTS) return void choose(null);
-          const [provider = "", ...rest] = v.split("/");
-          const m = models.find((x) => key(x) === v);
+        empty={AGENTS}
+        emptyText={!current ? t("modelPick") : own ? t("agentsModel") : modelName(current.model)}
+        wayFor={current}
+        models={models}
+        onChange={(v, m) => {
+          if (v === AGENTS || !m) return void choose(null);
           void choose({
-            provider,
-            model: rest.join("/"),
-            ...(m?.effort && { effort: current?.effort ?? "medium" }),
+            provider: m.provider,
+            model: m.model,
+            ...(m.effort && { effort: current?.effort ?? "medium" }),
           });
         }}
-      >
-        <option value={AGENTS}>
-          {!current ? t("modelPick") : own ? t("agentsModel") : modelName(current.model)}
-        </option>
-        {own && current && !known && (
-          <option value={key(current)}>{modelName(current.model)}</option>
-        )}
-        {models.map((m) => (
-          <option key={key(m)} value={key(m)}>
-            {modelName(m.model)}
-            {models.some((x) => x.provider !== m.provider) ? ` · ${via(m.provider)}` : ""}
-            {modelNote(m)}
-          </option>
-        ))}
-      </select>
+      />
       {current && effortOk && (
         <select
           class="model effort"

@@ -292,6 +292,13 @@ class FakeRedGiant {
     if (r.method == 'GET' && path == '/api/setup') return _json(r, 200, setup);
     if (r.method == 'GET' && path == '/api/models') {
       return _json(r, 200, [
+        // The same model through the subscription and the API key (G40.9b).
+        {
+          'provider': 'claude-subscription',
+          'model': 'claude-sonnet-5',
+          'effort': true,
+          'name': 'Claude Sonnet 5',
+        },
         {
           'provider': 'anthropic',
           'model': 'claude-sonnet-5',

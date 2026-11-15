@@ -1144,4 +1144,41 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get inboxNext => 'Dopo';
+
+  @override
+  String get modelWay => 'Da dove passa';
+
+  @override
+  String get modelWaySubscription => 'Abbonamento';
+
+  @override
+  String get modelWayKey => 'Chiave API';
+
+  @override
+  String modelWayNode(String node) {
+    return 'Tramite $node';
+  }
+
+  @override
+  String get modelWayLocal => 'Locale';
+
+  @override
+  String get modelWayOr => 'o';
+
+  @override
+  String get modelHintSubscription => 'Nei limiti del tuo piano: non paghi a consumo.';
+
+  @override
+  String get modelHintKey => 'A consumo con la tua chiave API: conta per il tetto di spesa.';
+
+  @override
+  String modelHintNode(String node) {
+    return 'Passa dal computer $node.';
+  }
+
+  @override
+  String get modelHintLocal => 'Gira su un computer tuo: niente costi a consumo.';
+
+  @override
+  String get modelHintOther => 'Tramite un fornitore collegato.';
 }

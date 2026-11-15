@@ -2090,6 +2090,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Later'**
   String get inboxNext;
+
+  /// No description provided for @modelWay.
+  ///
+  /// In en, this message translates to:
+  /// **'How it goes'**
+  String get modelWay;
+
+  /// No description provided for @modelWaySubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription'**
+  String get modelWaySubscription;
+
+  /// No description provided for @modelWayKey.
+  ///
+  /// In en, this message translates to:
+  /// **'API key'**
+  String get modelWayKey;
+
+  /// No description provided for @modelWayNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Via {node}'**
+  String modelWayNode(String node);
+
+  /// No description provided for @modelWayLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Local'**
+  String get modelWayLocal;
+
+  /// No description provided for @modelWayOr.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get modelWayOr;
+
+  /// No description provided for @modelHintSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Within your plan\'s limits: nothing is paid per use.'**
+  String get modelHintSubscription;
+
+  /// No description provided for @modelHintKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid per use with your API key: it counts toward the spending cap.'**
+  String get modelHintKey;
+
+  /// No description provided for @modelHintNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Goes through the computer {node}.'**
+  String modelHintNode(String node);
+
+  /// No description provided for @modelHintLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Runs on a computer of yours: nothing is paid per use.'**
+  String get modelHintLocal;
+
+  /// No description provided for @modelHintOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Through a connected provider.'**
+  String get modelHintOther;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

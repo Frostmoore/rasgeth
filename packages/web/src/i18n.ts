@@ -1486,6 +1486,8 @@ const en = {
   modelNew: "new",
   toolNoResult: "No result: the call ended without one (the turn was cancelled or stopped).",
   modelUnconfirmed: "data to be confirmed",
+  modelWay: "How it goes",
+  modelWayOr: "or",
   catalogRow: "Models catalog: updated on {date}",
   catalogBuiltin: "the one built into RedGiant",
   catalogDownloaded: "downloaded and signed",
@@ -7864,6 +7866,8 @@ const it: Record<Key, string> = {
   toolNoResult:
     "Nessun risultato: la chiamata è finita senza (il turno è stato annullato o si è fermato).",
   modelUnconfirmed: "dati da confermare",
+  modelWay: "Da dove passa",
+  modelWayOr: "o",
   catalogRow: "Catalogo dei modelli: aggiornato il {date}",
   catalogBuiltin: "quello incluso in RedGiant",
   catalogDownloaded: "scaricato e firmato",

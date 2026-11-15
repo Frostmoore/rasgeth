@@ -1819,7 +1819,7 @@ fieldset.more-row > legend {
   min-width: 0;
 }
 .more-panel select.model {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
   max-width: none;
   min-height: 0;
@@ -7107,6 +7107,81 @@ a.button.primary {
 }
 .model-select select:first-child {
   min-width: 220px;
+}
+/* How the chosen model goes (G40.9b): subscription or API key, drawn, with its line under it. */
+.model-way {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-basis: 100%;
+  order: 3;
+  min-width: 0;
+}
+.model-way-seg {
+  display: inline-flex;
+  align-self: flex-start;
+  gap: 4px;
+  margin: 0;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel-2);
+  min-inline-size: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+.model-way-seg .model-way-opt {
+  font: inherit;
+  line-height: 1.3;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 999px;
+  padding: 3px 12px;
+  min-height: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--dim);
+  cursor: pointer;
+}
+.model-way-seg .model-way-opt:hover:not(.on) {
+  color: var(--text);
+}
+.model-way-seg .model-way-opt.on {
+  background: var(--panel);
+  color: var(--text);
+  border-color: var(--accent);
+}
+/* In the wizard's windows, sized like their fields and their help. */
+:is(.wz, .wz-look) .model-way-seg .model-way-opt {
+  font-size: 14px;
+  padding: 6px 14px;
+}
+:is(.wz, .wz-look) .model-way-hint {
+  font-size: 13.5px;
+}
+.model-way-hint {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--dim);
+}
+.model-way-one {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  font-size: 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 1px 9px;
+  color: var(--dim);
+  background: var(--panel);
+  white-space: nowrap;
+}
+.more-model {
+  flex-wrap: wrap;
+}
+.more-model .model-way {
+  flex-basis: 100%;
 }
 .chat-head .model-select select {
   width: auto;

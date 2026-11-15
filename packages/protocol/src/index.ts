@@ -36,6 +36,7 @@ export * from "./media.js";
 export * from "./memory.js";
 export * from "./messages.js";
 export * from "./metrics.js";
+export * from "./model-routes.js";
 export * from "./models-catalog.js";
 export * from "./nodes.js";
 export * from "./paths.js";

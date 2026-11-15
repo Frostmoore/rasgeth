@@ -1140,4 +1140,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get inboxNext => 'Later';
+
+  @override
+  String get modelWay => 'How it goes';
+
+  @override
+  String get modelWaySubscription => 'Subscription';
+
+  @override
+  String get modelWayKey => 'API key';
+
+  @override
+  String modelWayNode(String node) {
+    return 'Via $node';
+  }
+
+  @override
+  String get modelWayLocal => 'Local';
+
+  @override
+  String get modelWayOr => 'or';
+
+  @override
+  String get modelHintSubscription => 'Within your plan\'s limits: nothing is paid per use.';
+
+  @override
+  String get modelHintKey => 'Paid per use with your API key: it counts toward the spending cap.';
+
+  @override
+  String modelHintNode(String node) {
+    return 'Goes through the computer $node.';
+  }
+
+  @override
+  String get modelHintLocal => 'Runs on a computer of yours: nothing is paid per use.';
+
+  @override
+  String get modelHintOther => 'Through a connected provider.';
 }

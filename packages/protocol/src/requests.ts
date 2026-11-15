@@ -9,6 +9,7 @@
 
 import { ARTIFACT_GRANT_TOOL, grantSentence } from "./artifact-bridge.js";
 import { preparedMailOf } from "./mail.js";
+import { routePhrase } from "./model-routes.js";
 
 type Lang = "it" | "en";
 const lng = (lang: string): Lang => (lang === "it" ? "it" : "en");
@@ -271,6 +272,10 @@ type Sentence = (c: Ctx) => string | undefined;
 const modelName = (i: Input) =>
   [str(i.provider), str(i.model)].filter((s): s is string => s !== undefined).join("/") || "?";
 
+/** How the model is reached (G40.9b): « con l'abbonamento», « con la chiave API»… */
+const viaOf = (i: Input, l: Lang) =>
+  str(i.provider) && str(i.model) ? routePhrase(str(i.provider) ?? "", str(i.model) ?? "", l) : "";
+
 /** One sentence per tool, both languages: the table `requestSentence` reads. */
 const SENTENCES: Record<string, Record<Lang, Sentence>> = {
   // An artifact's first use of a capability (3.6, G38.7): granted by the person only.
@@ -389,9 +394,9 @@ const SENTENCES: Record<string, Record<Lang, Sentence>> = {
   },
   set_agent_model: {
     it: ({ i, name, q }) =>
-      `Passa l'agente ${name(i.agent_id)} al modello ${q(modelName(i))}${str(i.effort) ? ` (effort ${str(i.effort)})` : ""}`,
+      `Passa l'agente ${name(i.agent_id)} al modello ${q(modelName(i))}${viaOf(i, "it")}${str(i.effort) ? ` (effort ${str(i.effort)})` : ""}`,
     en: ({ i, name, q }) =>
-      `Moves the agent ${name(i.agent_id)} to the model ${q(modelName(i))}${str(i.effort) ? ` (effort ${str(i.effort)})` : ""}`,
+      `Moves the agent ${name(i.agent_id)} to the model ${q(modelName(i))}${viaOf(i, "en")}${str(i.effort) ? ` (effort ${str(i.effort)})` : ""}`,
   },
   create_project: {
     it: ({ i, q }) => `Crea il progetto ${q(str(i.name) ?? "?")}`,

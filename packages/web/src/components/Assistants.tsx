@@ -30,7 +30,8 @@ import { Editor, recipeWhen } from "./Automations.js";
 import { explain, providerName } from "./Brain.js";
 import { CompactionSettings } from "./CompactionSettings.js";
 import { askConfirm } from "./dialogs.js";
-import { modelName, modelNote } from "./ModelMenu.js";
+import { modelName } from "./ModelMenu.js";
+import { ModelFamilySelect } from "./ModelSelect.js";
 import { NotesEditor } from "./NotesEditor.js";
 import { PromptEditor } from "./PromptEditor.js";
 import {
@@ -165,7 +166,6 @@ export function AssistantWizard({ onDone }: { onDone: (a?: Agent) => void }) {
     openSession({ id: sessionId, agentId: god.id, title: null });
     onDone();
   };
-  const providers = [...new Set(models.map((m) => m.provider))];
   const draft: DraftTarget = {
     kind: "assistant",
     name: name.trim(),
@@ -238,21 +238,14 @@ export function AssistantWizard({ onDone }: { onDone: (a?: Agent) => void }) {
       />
       <Advanced label={t("asstBrain")}>
         <Field label={t("asstBrain")} help={t("agentStep4Help")}>
-          <select value={model} onChange={(e) => setModel((e.target as HTMLSelectElement).value)}>
-            <option value="">{t("asstSameAsGod")}</option>
-            {providers.map((p) => (
-              <optgroup key={p} label={providerName(p)}>
-                {models
-                  .filter((m) => m.provider === p)
-                  .map((m) => (
-                    <option key={m.model} value={`${m.provider}/${m.model}`}>
-                      {modelName(m.model)}
-                      {modelNote(m)}
-                    </option>
-                  ))}
-              </optgroup>
-            ))}
-          </select>
+          <div class="model-select">
+            <ModelFamilySelect
+              value={model}
+              onChange={(v) => setModel(v)}
+              models={models}
+              empty={t("asstSameAsGod")}
+            />
+          </div>
         </Field>
       </Advanced>
       <div class="row">

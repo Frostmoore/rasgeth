@@ -12,7 +12,8 @@ import { t } from "../i18n.js";
 import { IconChat, IconKey, IconMonitor, IconServer, IconSpark } from "../icons.js";
 import { getApi, refreshLimits } from "../state.js";
 import type { Way } from "../wizard.js";
-import { modelName, modelNote } from "./ModelMenu.js";
+import { modelName } from "./ModelMenu.js";
+import { ModelFamilySelect } from "./ModelSelect.js";
 import { Acts } from "./SettingsKit.js";
 import { Field, Pick } from "./ui.js";
 
@@ -529,27 +530,15 @@ export function DefaultModel({ s, onSaved }: { s: SetupState; onSaved: () => voi
     }
     setBusy(false);
   };
-  const providers = [...new Set(models.map((m) => m.provider))];
   return (
     <div class="brain-panel">
       <h3>{t("brainDefault")}</h3>
       <p class="ui-help">{t("brainDefaultHint")}</p>
       <div class="form">
         <Field label={t("wzDefaultModel")}>
-          <select value={model} onChange={(e) => setModel((e.target as HTMLSelectElement).value)}>
-            {providers.map((p) => (
-              <optgroup key={p} label={providerName(p)}>
-                {models
-                  .filter((m) => m.provider === p)
-                  .map((m) => (
-                    <option key={m.model} value={`${m.provider}/${m.model}`}>
-                      {modelName(m.model)}
-                      {modelNote(m)}
-                    </option>
-                  ))}
-              </optgroup>
-            ))}
-          </select>
+          <div class="model-select">
+            <ModelFamilySelect value={model} onChange={(v) => setModel(v)} models={models} />
+          </div>
         </Field>
         <Field label={t("effort")} help={t("brainEffortHelp")}>
           <select value={effort} onChange={(e) => setEffort((e.target as HTMLSelectElement).value)}>

@@ -234,8 +234,14 @@ const TABLE: Row[] = [
   [
     "set_agent_model",
     { agent_id: "a1", provider: "anthropic", model: "claude-x", effort: "high" },
-    "Passa l'agente «Coder» al modello «anthropic/claude-x» (effort high)",
-    "Moves the agent “Coder” to the model “anthropic/claude-x” (effort high)",
+    "Passa l'agente «Coder» al modello «anthropic/claude-x» con la chiave API (effort high)",
+    "Moves the agent “Coder” to the model “anthropic/claude-x” with the API key (effort high)",
+  ],
+  [
+    "set_agent_model",
+    { agent_id: "a1", provider: "claude-subscription", model: "claude-x" },
+    "Passa l'agente «Coder» al modello «claude-subscription/claude-x» con l'abbonamento",
+    "Moves the agent “Coder” to the model “claude-subscription/claude-x” with the subscription",
   ],
   [
     "browser_click",

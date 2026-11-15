@@ -4,10 +4,12 @@
 // one out), this device's notifications, the default model, the voice, the access from outside
 // (to read, with its link); and «All settings», the page's Settings inside the app.
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
 import '../api/client.dart';
+import '../api/model_routes.dart';
 import '../api/settings_types.dart';
 import '../api/transport.dart';
 import '../api/web_settings.dart';
@@ -16,6 +18,7 @@ import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
+import '../ui/words.dart';
 import 'first_start_screen.dart' show openExternal;
 import 'full_settings_screen.dart';
 import 'you_screen.dart' show reachWord;
@@ -194,31 +197,13 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
   }
 
   Future<void> _pickModel() async {
-    final l = AppLocalizations.of(context);
     final models = _models ?? const <ModelChoice>[];
     if (models.isEmpty) return;
     final chosen = await showModalBottomSheet<ModelChoice>(
       context: context,
       showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-              child: Text(l.setModel, style: const TextStyle(fontWeight: FontWeight.w700)),
-            ),
-            for (final m in models)
-              ListTile(
-                key: Key('model-${m.key}'),
-                title: Text(m.label),
-                subtitle: Text(m.provider),
-                trailing: _setup?.defaultModel == m.key ? const RgIcon(RgIcons.check) : null,
-                onTap: () => Navigator.pop(context, m),
-              ),
-          ],
-        ),
-      ),
+      isScrollControlled: true,
+      builder: (context) => ModelSheet(models: models, current: _setup?.defaultModel),
     );
     if (chosen == null || !mounted) return;
     final ok = await _try<bool>(() async {
@@ -458,7 +443,10 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
   String? _modelName() {
     final m = _setup?.defaultModel;
     if (m == null) return null;
-    return _models?.where((x) => x.key == m).firstOrNull?.label ?? m.split('/').skip(1).join('/');
+    final at = familyOf(modelFamilies(_models ?? const []), m);
+    if (at == null) return m.split('/').skip(1).join('/');
+    final (f, i) = at;
+    return '${f.label} · ${wayWord(AppLocalizations.of(context), f.ways[i])}';
   }
 
   static String _when(String iso) {
@@ -712,6 +700,98 @@ class _Banner extends StatelessWidget {
         border: Border.all(color: col.withValues(alpha: .35)),
       ),
       child: Text(text, style: TextStyle(color: col)),
+    );
+  }
+}
+
+/// The models by family (G40.9b): a model that goes both through the subscription and through the
+/// API key shows once, with the drawn choice of the way and a line on what it means; a model with
+/// one way says it under its name. A tap on the model takes it with the way shown.
+class ModelSheet extends StatefulWidget {
+  const ModelSheet({super.key, required this.models, this.current});
+
+  final List<ModelChoice> models;
+
+  /// The `provider/model` in use now.
+  final String? current;
+
+  @override
+  State<ModelSheet> createState() => _ModelSheetState();
+}
+
+class _ModelSheetState extends State<ModelSheet> {
+  late final List<ModelFamily> _families = modelFamilies(widget.models);
+
+  /// The way shown per family: the one in use, else the first (the subscription).
+  late final Map<String, int> _way = {
+    for (final f in _families)
+      f.id: math.max(0, f.ways.indexWhere((w) => w.choice.key == widget.current)),
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    return SafeArea(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * .8),
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Text(l.setModel, style: const TextStyle(fontWeight: FontWeight.w700)),
+            ),
+            for (final f in _families) _family(context, l, c, f),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _family(BuildContext context, AppLocalizations l, RgColors c, ModelFamily f) {
+    final i = _way[f.id] ?? 0;
+    final way = f.ways[i];
+    final inUse = f.ways.any((w) => w.choice.key == widget.current);
+    final many = f.ways.length > 1;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ListTile(
+          key: Key('model-${f.id}'),
+          title: Text(f.label),
+          subtitle: Text(
+            many ? f.ways.map((w) => wayWord(l, w)).join(' ${l.modelWayOr} ') : wayWord(l, way),
+          ),
+          trailing: inUse ? const RgIcon(RgIcons.check) : null,
+          onTap: () => Navigator.pop(context, way.choice),
+        ),
+        if (many)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 6,
+              children: [
+                SegmentedButton<int>(
+                  key: Key('ways-${f.id}'),
+                  showSelectedIcon: false,
+                  segments: [
+                    for (final (j, w) in f.ways.indexed)
+                      ButtonSegment(
+                        value: j,
+                        label: Text(wayWord(l, w), key: Key('way-${w.choice.key}')),
+                      ),
+                  ],
+                  selected: {i},
+                  onSelectionChanged: (s) => setState(() => _way[f.id] = s.first),
+                ),
+                Text(wayHint(l, way), style: TextStyle(color: c.dim, fontSize: 12.5)),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }

@@ -669,5 +669,30 @@
       }
     }
   },
-  "inboxNext": "Later"
+  "inboxNext": "Later",
+  "modelWay": "How it goes",
+  "modelWaySubscription": "Subscription",
+  "modelWayKey": "API key",
+  "modelWayNode": "Via {node}",
+  "@modelWayNode": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      }
+    }
+  },
+  "modelWayLocal": "Local",
+  "modelWayOr": "or",
+  "modelHintSubscription": "Within your plan's limits: nothing is paid per use.",
+  "modelHintKey": "Paid per use with your API key: it counts toward the spending cap.",
+  "modelHintNode": "Goes through the computer {node}.",
+  "@modelHintNode": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      }
+    }
+  },
+  "modelHintLocal": "Runs on a computer of yours: nothing is paid per use.",
+  "modelHintOther": "Through a connected provider."
 }

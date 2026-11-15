@@ -7,7 +7,8 @@ import type { ModelChoice } from "../api.js";
 import { t } from "../i18n.js";
 import { agents, getApi, projects, refresh, subprojects } from "../state.js";
 import { explain, providerName } from "./Brain.js";
-import { modelName, modelNote } from "./ModelMenu.js";
+import { modelName } from "./ModelMenu.js";
+import { ModelFamilySelect } from "./ModelSelect.js";
 import {
   DraftEstimate,
   DraftInstructions,
@@ -119,7 +120,6 @@ export function AgentWizard({ onDone }: { onDone: () => void }) {
         {error && <p class="notice error">{error}</p>}
       </div>
     );
-  const providers = [...new Set(models.map((m) => m.provider))];
   return (
     <div class="ui-step agent-wizard">
       <h3>{t("agentStep1")}</h3>
@@ -181,21 +181,14 @@ export function AgentWizard({ onDone }: { onDone: () => void }) {
           />
         </Field>
         <Field label={t("agentStep4")} help={t("agentStep4Help")}>
-          <select value={model} onChange={(e) => setModel((e.target as HTMLSelectElement).value)}>
-            <option value="">{t("agentSameAsLead")}</option>
-            {providers.map((p) => (
-              <optgroup key={p} label={providerName(p)}>
-                {models
-                  .filter((m) => m.provider === p)
-                  .map((m) => (
-                    <option key={m.model} value={`${m.provider}/${m.model}`}>
-                      {modelName(m.model)}
-                      {modelNote(m)}
-                    </option>
-                  ))}
-              </optgroup>
-            ))}
-          </select>
+          <div class="model-select">
+            <ModelFamilySelect
+              value={model}
+              onChange={(v) => setModel(v)}
+              models={models}
+              empty={t("agentSameAsLead")}
+            />
+          </div>
         </Field>
         {model && (
           <Field label={t("effort")} help={t("brainEffortHelp")}>
