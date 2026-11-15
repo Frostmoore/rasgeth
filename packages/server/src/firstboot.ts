@@ -14,6 +14,7 @@ import type {
   LocalHttps,
   MountMethod,
   NetDetected,
+  OsUpdateRun,
   OsUpdates,
   SshAccess,
   StorageInfo,
@@ -623,6 +624,7 @@ export function parseOsUpdates(r: Record<string, unknown>): OsUpdates {
           note: s(u.note),
           step: s(u.step),
           checkedAt: s(u.checkedAt),
+          run: parseOsUpdateRun(u),
         }
       : null,
     running: r.running === true,
@@ -638,6 +640,68 @@ export function parseOsUpdates(r: Record<string, unknown>): OsUpdates {
           packages: Array.isArray(sec.packages)
             ? sec.packages.filter((p): p is string => typeof p === "string").slice(0, 50)
             : [],
+        }
+      : null,
+  };
+}
+
+const STEP = /^[a-z_]{1,20}$/;
+const count = (v: unknown) =>
+  typeof v === "number" && Number.isFinite(v) && v >= 0 ? Math.round(v) : 0;
+const word = (v: unknown, max = 200) =>
+  typeof v === "string" && v ? v.slice(0, max) : null;
+const records = (v: unknown) =>
+  Array.isArray(v)
+    ? v.filter((x): x is Record<string, unknown> => !!x && typeof x === "object").slice(0, 20)
+    : [];
+
+/** The update's own part of os-update.json (3.8.1), checked field by field; null without one. */
+export function parseOsUpdateRun(u: Record<string, unknown>): OsUpdateRun | null {
+  const startedAt = word(u.startedAt, 40);
+  if (!startedAt) return null;
+  const plan = u.plan && typeof u.plan === "object" ? (u.plan as Record<string, unknown>) : null;
+  const files =
+    plan?.files && typeof plan.files === "object" ? (plan.files as Record<string, unknown>) : null;
+  const p =
+    u.progress && typeof u.progress === "object" ? (u.progress as Record<string, unknown>) : null;
+  const at =
+    u.stepAt && typeof u.stepAt === "object" ? (u.stepAt as Record<string, unknown>) : {};
+  return {
+    from: word(u.from, 20),
+    startedAt,
+    finishedAt: word(u.finishedAt, 40),
+    reason: typeof u.reason === "string" && STEP.test(u.reason) ? u.reason : null,
+    steps: Array.isArray(u.steps)
+      ? u.steps.filter((x): x is string => typeof x === "string" && STEP.test(x)).slice(0, 12)
+      : [],
+    stepAt: Object.fromEntries(
+      Object.entries(at)
+        .filter(([k, v]) => STEP.test(k) && typeof v === "string")
+        .slice(0, 12) as [string, string][],
+    ),
+    plan: plan
+      ? {
+          images: records(plan.images).map((i) => ({
+            name: word(i.name, 60) ?? "image",
+            ref: word(i.ref) ?? "",
+            bytes: count(i.bytes),
+            here: i.here === true,
+          })),
+          files: files ? { name: word(files.name) ?? "", bytes: count(files.bytes) } : null,
+        }
+      : null,
+    progress: p
+      ? {
+          done: count(p.done),
+          total: count(p.total),
+          bps: count(p.bps),
+          eta: typeof p.eta === "number" && p.eta >= 0 ? Math.round(p.eta) : null,
+          items: records(p.items).map((i) => ({
+            name: word(i.name, 60) ?? "",
+            done: count(i.done),
+            total: count(i.total),
+            state: typeof i.state === "string" && STEP.test(i.state) ? i.state : "wait",
+          })),
         }
       : null,
   };

@@ -313,6 +313,37 @@ export type LocalHttps =
       inFront: string | null;
     };
 
+/** How far a download is: bytes, speed (bytes a second) and seconds left (null: not known yet). */
+export interface OsUpdateProgress {
+  done: number;
+  total: number;
+  bps: number;
+  eta: number | null;
+  /** Each image (or the system's files' archive): wait, down, extract, done, error. */
+  items: { name: string; done: number; total: number; state: string }[];
+}
+
+/** An update RedGiant OS is applying, or applied last (redgiant-os-update, 3.8.1). */
+export interface OsUpdateRun {
+  /** The version it left. */
+  from: string | null;
+  startedAt: string;
+  finishedAt: string | null;
+  /** Why it stopped: download, files, not_up, no_images, breaking. */
+  reason: string | null;
+  /** Its steps in order (check, download, files, install, restart, wait, rollback). */
+  steps: string[];
+  /** When each step began. */
+  stepAt: Record<string, string>;
+  /** What it downloads: every image with its size (here: nothing to download), the system's files. */
+  plan: {
+    images: { name: string; ref: string; bytes: number; here: boolean }[];
+    files: { name: string; bytes: number } | null;
+  } | null;
+  /** The download running now (images, or the system's files). */
+  progress: OsUpdateProgress | null;
+}
+
 /** RedGiant OS's own updates: RedGiant's signed stack, and Debian's security updates. */
 export interface OsUpdates {
   available: boolean;
@@ -323,9 +354,11 @@ export interface OsUpdates {
     latest: string | null;
     gate: "none" | "normal" | "mandatory" | "breaking";
     note: string | null;
-    /** While applying: download, files, restart, wait, rollback. */
+    /** While applying: check, download, files, install, restart, wait, rollback. */
     step: string | null;
     checkedAt: string | null;
+    /** 3.8.1: the update in progress, or the last one (empty before 3.8.1's updater). */
+    run?: OsUpdateRun | null;
   } | null;
   /** The updater is running now. */
   running: boolean;

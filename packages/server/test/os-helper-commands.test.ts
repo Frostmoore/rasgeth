@@ -114,6 +114,7 @@ echo "${name} $*" >>"$REDGIANT_HELPER_TEST_ROOT/fake/calls"
 case "${name} $*" in "systemctl restart iwd"*) rm -f "$REDGIANT_HELPER_TEST_ROOT/fake/joined" ;; esac
 case "$*" in *is-active*caddy* | *is-enabled*caddy*) exit 0 ;; *is-active*) exit 3 ;; esac
 case "$*" in *ExecMainExitTimestamp*) echo "@1762920000" ;; *"-P Result"*) echo success ;; esac
+case "$*" in *"-P ActiveState redgiant-os-update"*) [ -e "$REDGIANT_HELPER_TEST_ROOT/fake/updating" ] && echo activating || echo inactive ;; esac
 exit 0
 `;
 
@@ -400,6 +401,9 @@ describe("the helper's HTTPS, update and restart commands", { skip: !tools }, ()
         packages: ["libc6", "linux-image-6.12.0-1-amd64"],
       },
     });
+    // The updater is a oneshot unit: «activating» all the time it runs.
+    writeFileSync(fake("updating"), "");
+    expect((await ask("os-update-status")).running).toBe(true);
   });
 
   it("starts the signed updater in the background, and schedules the restart", async () => {

@@ -1595,6 +1595,100 @@ if (process.env.DEMO_KEYS) {
   await core.email.accountOf("local", "box_demo1");
 }
 let demoHttps = Boolean(process.env.DEMO_HTTPS);
+// DEMO_OS_UPDATE=download|files|restart|done|error|live (3.8.1, with DEMO_INSTALL=os and
+// DEMO_UPDATE=normal): RedGiant OS updating from 3.8.0 to 3.8.1 as redgiant-os-update writes its
+// state, stopped at one moment for the pictures, or (live) from «Update» on: the image comes down
+// at 8 MB/s, the system's files, the restart (the helper does not answer, as when RedGiant
+// restarts), the first answer, done.
+let demoOsStart = null;
+const DEMO_OS_AT = { download: 18, files: 44, restart: 50, done: 75, error: 75 };
+function demoOsUpdate() {
+  const mode = process.env.DEMO_OS_UPDATE;
+  const MB = 1_000_000;
+  const security = {
+    lastRun: Math.floor(Date.now() / 1000) - 3 * 3600,
+    result: "success",
+    upgraded: 2,
+    rebootRequired: false,
+    packages: [],
+  };
+  const base = { state: "available", installed: "3.8.0", latest: "3.8.1", gate: "normal" };
+  if (!mode || (mode === "live" && demoOsStart === null))
+    return { ok: true, running: false, security, update: { ...base, checkedAt: new Date().toISOString() } };
+  const e = mode === "live" ? (Date.now() - demoOsStart) / 1000 : DEMO_OS_AT[mode];
+  const t0 = Date.now() - e * 1000;
+  const at = (s) => new Date(t0 + s * 1000).toISOString();
+  const total = 318 * MB;
+  const bps = 8.2 * MB;
+  const plan = {
+    images: [
+      { name: "redgiant", ref: "ghcr.io/frostmoore/redgiant2:3.8.1", bytes: 412 * MB, here: false },
+      {
+        name: "postgres",
+        ref: "ghcr.io/frostmoore/redgiant2-postgres:17-pgvector0.8.7",
+        bytes: 96 * MB,
+        here: true,
+      },
+    ],
+    files: { name: "redgiant-os-files-3.8.1.tar.zst", bytes: 2.4 * MB },
+  };
+  const steps = ["check", "download", "files", "install", "restart", "wait"];
+  const starts = { check: 0, download: 3, files: 43, install: 45, restart: 47, wait: 60 };
+  const stepAt = Object.fromEntries(steps.filter((s) => starts[s] <= e).map((s) => [s, at(starts[s])]));
+  const run = { from: "3.8.0", startedAt: at(0), finishedAt: null, reason: null, steps, stepAt, plan };
+  if (mode === "error")
+    return {
+      ok: true,
+      running: false,
+      security,
+      update: {
+        ...base,
+        state: "error",
+        note: "3.8.1 did not come up; the previous version is running again",
+        ...run,
+        steps: [...steps, "rollback"],
+        stepAt: { ...stepAt, rollback: at(70) },
+        finishedAt: at(74),
+        reason: "not_up",
+      },
+    };
+  if (e >= 64)
+    return {
+      ok: true,
+      running: false,
+      security,
+      update: { ...base, state: "latest", installed: "3.8.1", gate: "none", ...run, finishedAt: at(64) },
+    };
+  // RedGiant restarting: nobody answers for a while.
+  if (e >= 48 && e < 58) throw new Error("restarting");
+  const step = [...steps].reverse().find((s) => starts[s] <= e);
+  let progress = null;
+  if (step === "download") {
+    const done = Math.min(total, Math.round((e - 3) * bps));
+    progress = {
+      done,
+      total,
+      bps,
+      eta: Math.ceil((total - done) / bps),
+      items: [{ name: "redgiant", done, total, state: done < total ? "down" : "extract" }],
+    };
+  } else if (step === "files") {
+    const done = Math.min(plan.files.bytes, Math.round((e - 43) * 1.2 * MB));
+    progress = {
+      done,
+      total: plan.files.bytes,
+      bps: 1.2 * MB,
+      eta: Math.ceil((plan.files.bytes - done) / (1.2 * MB)),
+      items: [{ name: plan.files.name, done, total: plan.files.bytes, state: "down" }],
+    };
+  }
+  return {
+    ok: true,
+    running: true,
+    security,
+    update: { ...base, state: "applying", step, checkedAt: at(e), ...run, progress },
+  };
+}
 // The setup wizard, already completed, with hooks that change nothing (no keys, no engine).
 const setup = new SetupService({
   // DEMO_KEYS: the pictures key set by the administrator (an environment variable).
@@ -1698,6 +1792,8 @@ const setup = new SetupService({
                 names: ["redgiant.local", "192.168.1.50"],
               }
             : { ok: true, on: false };
+        // DEMO_OS_UPDATE (3.8.1): RedGiant OS updating, as its updater writes it.
+        if (o.op === "os-update-status" || o.op === "os-update-check") return demoOsUpdate();
         if (o.op === "tailscale")
           return {
             ok: true,
@@ -2583,8 +2679,12 @@ if (process.env.DEMO_UPDATE || process.env.DEMO_FOUND) {
     feed: "https://demo.feed/latest",
     publicKey: keys.publicKey.export({ type: "spki", format: "pem" }).toString(),
     launcher: true,
+    osUpdater: process.env.DEMO_INSTALL === "os",
     composeDir: "~/redgiant",
-    act: async () => true,
+    act: async (action) => {
+      if (process.env.DEMO_INSTALL === "os" && action === "update") demoOsStart = Date.now();
+      return true;
+    },
     fetch: async (url) => {
       if (url === "https://demo.feed/latest")
         return Response.json({

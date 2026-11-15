@@ -7,6 +7,7 @@
 import type { ComponentChildren, JSX } from "preact";
 import { useEffect, useId, useRef } from "preact/hooks";
 import { t } from "../i18n.js";
+import { IconCheck, IconSpinner, IconX } from "../icons.js";
 
 /**
  * A row of choices that never wraps scrolls sideways when a phone is narrower than it: the chosen
@@ -322,6 +323,52 @@ export function Steps({
           <div>
             <b>{s.title}</b>
             <span>{s.text}</span>
+          </div>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+export type StepMark = "done" | "now" | "todo" | "failed";
+
+/**
+ * The steps of something under way (3.8.1, the person: «passi chiari e numerati»): one under the
+ * other, the ones done ticked, the one running lit by border and background, a failed one in red,
+ * the ones still to come numbered; what a step says (a bar…) under its title.
+ */
+export function StepList({
+  steps,
+  label,
+}: {
+  steps: { id: string; title: string; mark: StepMark; text?: ComponentChildren }[];
+  label?: string;
+}) {
+  return (
+    <ol class="st-run" aria-label={label}>
+      {steps.map((s, i) => (
+        <li
+          key={s.id}
+          class={`st-run-step ${s.mark}`}
+          aria-current={s.mark === "now" ? "step" : undefined}
+        >
+          <span class="st-run-n" aria-hidden="true">
+            {s.mark === "done" ? (
+              <IconCheck size={14} />
+            ) : s.mark === "failed" ? (
+              <IconX size={14} />
+            ) : s.mark === "now" ? (
+              <IconSpinner size={14} />
+            ) : (
+              i + 1
+            )}
+          </span>
+          <div class="st-run-body">
+            <b>
+              {s.title}
+              <span class="sr-only"> ({t(`stStep_${s.mark}`)})</span>
+            </b>
+            {s.text && <div class="st-run-text">{s.text}</div>}
           </div>
         </li>
       ))}
