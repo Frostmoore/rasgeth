@@ -15,6 +15,51 @@ class FakeRedGiant {
   int wrongTries = 0;
   final tokens = <String>{};
   final requests = <String>[];
+
+  /// What the live socket received, and the sockets open.
+  final received = <Map<String, dynamic>>[];
+  final sockets = <WebSocket>[];
+  final sessions = <Map<String, dynamic>>[
+    {
+      'id': 's1',
+      'agentId': 'a0',
+      'projectId': null,
+      'createdAt': '2026-11-14T09:00:00.000Z',
+      'lastAt': '2026-11-14T09:05:00.000Z',
+      'title': 'Ieri',
+      'archived': false,
+      'running': false,
+    },
+  ];
+  final permissions = <Map<String, dynamic>>[
+    {
+      'requestId': 'r1',
+      'agentId': 'a0',
+      'agentName': 'God',
+      'projectId': null,
+      'tool': 'run_command',
+      'input': {'command': 'npm install'},
+      'reasons': ['installs packages'],
+      'danger': <String>[],
+      'createdAt': '2026-11-15T10:00:00.000Z',
+    },
+    {
+      'requestId': 'r2',
+      'agentId': 'a0',
+      'agentName': 'God',
+      'projectId': null,
+      'tool': 'run_command',
+      'input': {'command': 'rm -rf /'},
+      'reasons': ['deletes everything'],
+      'danger': ['critical-delete'],
+      'critical': [
+        {'id': 'critical-delete', 'action': 'delete-disk', 'target': '/'},
+      ],
+      'createdAt': '2026-11-15T10:01:00.000Z',
+    },
+  ];
+  final answered = <String, String>{};
+  int _sessionSeq = 1;
   late final mascots = loadMascots();
 
   Uri get base => Uri.parse('http://127.0.0.1:${_server.port}');
@@ -103,8 +148,83 @@ class FakeRedGiant {
         },
       });
     }
+    if (path == '/ws' && WebSocketTransformer.isUpgradeRequest(r)) return _socket(r);
     if (!tokens.contains(token)) return _json(r, 401, {'error': 'Unauthorized'});
     if (r.method == 'GET' && path == '/api/agents') return _json(r, 200, agents);
+    if (r.method == 'GET' && path == '/api/sessions') {
+      final a = r.uri.queryParameters['agentId'];
+      return _json(r, 200, [
+        for (final x in sessions)
+          if (a == null || x['agentId'] == a) x,
+      ]);
+    }
+    if (r.method == 'POST' && path == '/api/sessions') {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      final id = 's${++_sessionSeq}';
+      sessions.add({
+        'id': id,
+        'agentId': b['agentId'],
+        'createdAt': DateTime.now().toUtc().toIso8601String(),
+        'lastAt': null,
+        'title': null,
+        'archived': false,
+        'running': false,
+      });
+      return _json(r, 201, {'sessionId': id});
+    }
+    if (r.method == 'GET' && path == '/api/chat/agent') {
+      return _json(r, 200, {...agents.first, 'id': 'chat', 'kind': 'assistant', 'name': 'Chat'});
+    }
+    if (r.method == 'GET' && path == '/api/permissions') return _json(r, 200, permissions);
+    final ans = RegExp(r'^/api/app/requests/([^/]+)/answer$').firstMatch(path);
+    if (r.method == 'POST' && ans != null) {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      final p = permissions.where((x) => x['requestId'] == ans.group(1)).firstOrNull;
+      if (p == null) return _json(r, 404, {'error': 'Not found', 'code': 'not_found'});
+      if (b['decision'] == 'allow' && (p['danger'] as List).isNotEmpty) {
+        return _json(r, 403, {'error': 'Open the app', 'code': 'open_app'});
+      }
+      answered[ans.group(1)!] = b['decision'] as String;
+      permissions.remove(p);
+      return _json(r, 200, {'ok': true});
+    }
+    if (r.method == 'GET' && path == '/api/projects') {
+      return _json(r, 200, [
+        {'id': 'demo', 'name': 'Demo', 'path': '/p', 'createdAt': '2026-11-01T00:00:00.000Z'},
+      ]);
+    }
+    if (r.method == 'GET' && path == '/api/projects/demo/tasks') {
+      return _json(r, 200, [
+        {
+          'id': 'task_1',
+          'title': 'Add the --json flag',
+          'agentId': 'a1',
+          'agentName': 'Coder Web',
+          'sessionId': 's1',
+          'outcome': 'open',
+          'openedAt': '2026-11-15T09:00:00.000Z',
+        },
+        {
+          'id': 'task_0',
+          'title': 'Fix the README',
+          'agentId': 'a1',
+          'agentName': 'Coder Web',
+          'sessionId': null,
+          'outcome': 'verified',
+          'openedAt': '2026-11-14T09:00:00.000Z',
+        },
+      ]);
+    }
+    if (r.method == 'GET' && path == '/api/files/content') {
+      final p = r.uri.queryParameters['path'] ?? '';
+      return _json(r, 200, {
+        'path': p,
+        'encoding': 'utf8',
+        'content': '# Report\n\n<b>bold?</b> and a [link](https://example.com)',
+        'size': 40,
+        'modifiedAt': '2026-11-15T10:00:00.000Z',
+      });
+    }
     final m = RegExp(r'^/api/agents/a(\d+)/mascot$').firstMatch(path);
     if (r.method == 'GET' && m != null) {
       final i = int.parse(m.group(1)!);
@@ -119,4 +239,86 @@ class FakeRedGiant {
     }
     return _json(r, 404, {'error': 'Not found'});
   }
+
+  /// `/ws` as ws.ts: hello with a token, welcome, the waiting requests, follow and send.
+  Future<void> _socket(HttpRequest r) async {
+    final ws = await WebSocketTransformer.upgrade(r);
+    sockets.add(ws);
+    void send(Map<String, dynamic> m) => ws.add(jsonEncode(m));
+    ws.listen((data) {
+      final m = jsonDecode(data as String) as Map<String, dynamic>;
+      received.add(m);
+      switch (m['type']) {
+        case 'hello':
+          if (!tokens.contains(m['token'])) {
+            ws.close(4003, 'unauthorized');
+            return;
+          }
+          send({'type': 'welcome', 'protocolVersion': 2, 'ownerId': 'me', 'version': '3.8.0'});
+          for (final p in permissions) {
+            send({'type': 'permission.request', 'request': p});
+          }
+        case 'session.follow':
+          send({
+            'type': 'session.history',
+            'sessionId': m['sessionId'],
+            'events': [_event(1, 'session.started', {})],
+            'lastSeq': 1,
+            'incremental': false,
+          });
+          send({'type': 'session.state', 'sessionId': m['sessionId'], 'state': 'idle'});
+        case 'session.send':
+          final sid = m['sessionId'];
+          send({
+            'type': 'event',
+            'sessionId': sid,
+            'event': _event(2, 'message.user', {'text': m['text']}),
+          });
+          send({'type': 'session.state', 'sessionId': sid, 'state': 'running'});
+          send({'type': 'delta', 'sessionId': sid, 'kind': 'thinking', 'text': 'Let me see'});
+          send({'type': 'delta', 'sessionId': sid, 'kind': 'text', 'text': 'Hello'});
+          send({
+            'type': 'event',
+            'sessionId': sid,
+            'event': _event(3, 'message.assistant', {
+              'parts': [
+                {'type': 'thinking', 'text': 'Let me see'},
+                {'type': 'text', 'text': 'Hello **there**'},
+              ],
+              'stopReason': 'end_turn',
+            }),
+          });
+          send({
+            'type': 'session.state',
+            'sessionId': sid,
+            'state': 'idle',
+            'stopReason': 'end_turn',
+          });
+        case 'permission.resolve':
+          permissions.removeWhere((p) => p['requestId'] == m['requestId']);
+          answered[m['requestId'] as String] = m['decision'] as String;
+          send({
+            'type': 'permission.closed',
+            'requestId': m['requestId'],
+            'decision': m['decision'],
+            'via': 'app (test)',
+          });
+        case 'ping':
+          send({'type': 'pong'});
+      }
+    });
+  }
+
+  Map<String, dynamic> _event(int seq, String type, Map<String, dynamic> payload) => {
+    'id': 'e$seq',
+    'seq': seq,
+    'ts': '2026-11-15T10:00:0$seq.000Z',
+    'ownerId': 'me',
+    'projectId': null,
+    'agentId': 'a0',
+    'sessionId': 's1',
+    'erased': false,
+    'type': type,
+    'payload': payload,
+  };
 }

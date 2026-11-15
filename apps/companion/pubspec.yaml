@@ -9,18 +9,30 @@ environment:
   flutter: ">=3.47.0"
 
 dependencies:
+  bonsoir: ^7.1.6
+  cryptography: ^2.9.0
+  file_picker: ^13.3.3
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  flutter_markdown_plus: ^1.0.12
   flutter_secure_storage: ^11.2.0
   flutter_svg: ^2.4.0
   http: ^1.6.0
   intl: ^0.20.3
+  markdown: ^7.3.1
   path_drawing: ^1.0.1
+  path_provider: ^2.1.6
+  pdfx: ^2.11.0
+  shared_preferences: ^2.5.6
+  url_launcher: ^6.3.3
+  webview_flutter: ^4.14.1
 
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+  integration_test:
     sdk: flutter
   flutter_lints: ^6.0.0
 

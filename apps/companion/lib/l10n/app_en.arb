@@ -33,7 +33,6 @@
   "teamEmpty": "No agents yet.",
   "chatNew": "New conversation",
   "chatEmpty": "Your conversations with Chat, day by day, show here.",
-  "chatDraftNote": "Message ready: sending comes with the next version of the app.",
   "inboxEmpty": "Nothing to decide: when an agent asks you something, it shows here.",
   "activityEmpty": "Tasks in progress and done, grouped by agent, show here.",
   "sectionAppearance": "Appearance",
@@ -47,7 +46,7 @@
   "reduceMotionHint": "The mascots stay still; their state shows by its sign.",
   "sectionServer": "RedGiant",
   "serverAddress": "Address",
-  "serverAddressHint": "redgiant.local:8787",
+  "serverAddressHint": "redgiant.local, https://…, 10.42.0.1",
   "serverPassword": "Password",
   "serverCode": "Authenticator code",
   "connect": "Connect",
@@ -76,5 +75,179 @@
       }
     }
   },
-  "appVersion": "App version"
+  "appVersion": "App version",
+  "attachmentOnly": "(images)",
+  "sendFailed": "The message did not leave: try again.",
+  "attachmentTooBig": "{name} is over 5 MB.",
+  "@attachmentTooBig": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notLive": "No live connection here: answers show when you open the conversation again.",
+  "conversationEmpty": "Nothing yet: write the first message.",
+  "loading": "Loading…",
+  "attachmentRemove": "Remove",
+  "back": "Back",
+  "stop": "Stop",
+  "attach": "Attach images",
+  "composerAgentHint": "Write a message…",
+  "fromSomeone": "from {from}",
+  "@fromSomeone": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "imagesCount": "{count, plural, =1{1 image} other{{count} images}}",
+  "@imagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reasoning": "Reasoning",
+  "reasoningNow": "Reasoning…",
+  "writing": "writing…",
+  "toolRunning": "running",
+  "toolOk": "done",
+  "toolFailed": "failed",
+  "open": "Open",
+  "linkOpenTitle": "Open this link outside the app?",
+  "linkOpen": "Open",
+  "cancel": "Cancel",
+  "canvasFailed": "It cannot be shown: {error}",
+  "@canvasFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "openWithSystem": "Open with the system's viewer",
+  "artifactSourceOnly": "On this system the app shows the artifact's source; its isolated preview comes with the desktop version.",
+  "statusReconnecting": "reconnecting…",
+  "openFailed": "It did not open: check the connection.",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "untitled": "Conversation",
+  "requestFrom": "{agent} asks you",
+  "@requestFrom": {
+    "placeholders": {
+      "agent": {
+        "type": "String"
+      }
+    }
+  },
+  "requestCritical": "Truly dangerous, from {agent}",
+  "@requestCritical": {
+    "placeholders": {
+      "agent": {
+        "type": "String"
+      }
+    }
+  },
+  "no": "No",
+  "yes": "Yes",
+  "requestLook": "Look at it",
+  "criticalTitle": "A truly dangerous request",
+  "criticalBody": "{agent} asks to do something that cannot be undone or that touches what protects you. Read it all before answering.",
+  "@criticalBody": {
+    "placeholders": {
+      "agent": {
+        "type": "String"
+      }
+    }
+  },
+  "requestClosed": "Already answered ({via}).",
+  "@requestClosed": {
+    "placeholders": {
+      "via": {
+        "type": "String"
+      }
+    }
+  },
+  "criticalNo": "No, do not do it",
+  "criticalYes": "Yes, do it",
+  "criticalConfirmTitle": "Are you sure?",
+  "criticalConfirmBody": "This cannot be taken back.",
+  "criticalSystem": "System files",
+  "criticalDelete": "Deleting for good",
+  "criticalSecret": "A secret leaving",
+  "criticalPayment": "A real payment",
+  "criticalProtections": "RedGiant's own protections",
+  "questionFrom": "{agent} asks you a question",
+  "@questionFrom": {
+    "placeholders": {
+      "agent": {
+        "type": "String"
+      }
+    }
+  },
+  "answer": "Answer",
+  "refresh": "Refresh",
+  "taskRunning": "in progress",
+  "taskOpen": "open",
+  "taskVerified": "verified",
+  "taskNotTestable": "not testable",
+  "taskAbandoned": "abandoned",
+  "taskSteps": "{done} of {total} steps",
+  "@taskSteps": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "verifiers": "Verifier",
+  "noVerifier": "No verifier has run yet.",
+  "openConversation": "Open the conversation",
+  "reachPinned": "https, only with its own certificate (local CA)",
+  "reachPublic": "public https (proxy, Tailscale)",
+  "reachLoopback": "this computer",
+  "reachChannel": "encrypted setup channel",
+  "noServers": "No RedGiant yet.",
+  "useServer": "Use",
+  "pinnedKey": "Key: {fingerprint}",
+  "@pinnedKey": {
+    "placeholders": {
+      "fingerprint": {
+        "type": "String"
+      }
+    }
+  },
+  "renameServer": "Name of this RedGiant",
+  "save": "Save",
+  "rename": "Rename",
+  "forgetServer": "Disconnect this RedGiant?",
+  "forgetServerBody": "The app forgets {name} and its device token. To come back, the password again.",
+  "@forgetServerBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "errKeyChanged": "DANGER: this RedGiant answered with another key ({fingerprint}). Another computer may be in its place: nothing was sent.",
+  "@errKeyChanged": {
+    "placeholders": {
+      "fingerprint": {
+        "type": "String"
+      }
+    }
+  },
+  "errCertificate": "The certificate is not this RedGiant's: the app did not go on.",
+  "errBusy": "Another device is setting this RedGiant up: one at a time.",
+  "errSignInAgain": "Sign in again with the password.",
+  "addServerFirst": "Connect a RedGiant",
+  "addServer": "Add another RedGiant",
+  "foundOnNetwork": "Found on this network",
+  "pairingNote": "The password is used once: the app keeps only a device token, revocable from Settings › Devices."
 }

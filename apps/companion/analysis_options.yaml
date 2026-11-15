@@ -19,6 +19,8 @@ analyzer:
 
 linter:
   rules:
-    - prefer_single_quotes
-    - always_declare_return_types
-    - unawaited_futures
+    prefer_single_quotes: true
+    always_declare_return_types: true
+    unawaited_futures: true
+    # Private fields set from public named parameters.
+    prefer_initializing_formals: false

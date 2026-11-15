@@ -91,9 +91,9 @@ void main() {
     await tester.tap(find.byKey(const Key('chat-send')));
     await tester.pumpAndSettle();
     expect(app.tab, AppTab.chat);
-    expect(app.chatDraft, 'Che tempo fa domani?');
-    expect(find.byKey(const Key('chat-draft')).hitTestable(), findsOneWidget);
-    expect(find.text('Nuova conversazione').hitTestable(), findsOneWidget);
+    // Taken by the Chat at once; without a RedGiant it says where to connect one.
+    expect(app.chatDraft, isNull);
+    expect(find.text('Collegalo da Tu.'), findsWidgets);
     final field = tester.widget<TextField>(find.byKey(const Key('chat-field')));
     expect(field.controller!.text, isEmpty);
   });

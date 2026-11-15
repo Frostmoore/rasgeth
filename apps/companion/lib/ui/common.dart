@@ -5,11 +5,12 @@ import 'icons.dart';
 
 /// A screen's title row (the board's `.appbar`).
 class ScreenHeader extends StatelessWidget {
-  const ScreenHeader({super.key, required this.title, this.subtitle, this.leading});
+  const ScreenHeader({super.key, required this.title, this.subtitle, this.leading, this.trailing});
 
   final String title;
   final Widget? subtitle;
   final Widget? leading;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +38,7 @@ class ScreenHeader extends StatelessWidget {
               ],
             ),
           ),
+          ?trailing,
         ],
       ),
     );

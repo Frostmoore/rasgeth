@@ -1,8 +1,10 @@
 // Team (proposal A's home): the RedGiant's name and state, the «For you» and «In progress» pills,
-// and the grid of first-level agents with their living mascots. Long press, favourites and the
-// project filter come with G40.9; the live states with the WebSocket (G40.7).
+// and the grid of first-level agents with their living mascots (the page's `agentMascotState`,
+// kept up to date by the live connection). A tap opens the agent's conversation. Long press,
+// favourites and the project filter come with G40.9.
 import 'package:flutter/material.dart';
 
+import '../api/live.dart';
 import '../api/types.dart';
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
@@ -11,6 +13,7 @@ import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/icons.dart';
 import '../ui/words.dart';
+import 'conversation_screen.dart';
 
 class TeamScreen extends StatelessWidget {
   const TeamScreen({super.key});
@@ -25,72 +28,106 @@ class TeamScreen extends StatelessWidget {
     final team = app.agents
         .where((a) => a.kind != AgentKind.subagent && a.kind != AgentKind.inspector)
         .toList();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ScreenHeader(
-          title: hello?.machine ?? l.noServer,
-          subtitle: Row(
-            children: [
-              Dot(app.connected ? c.ok : c.dim),
-              const SizedBox(width: 5),
-              Text(
-                hello == null
-                    ? l.connectFromYou
-                    : app.connected
-                    ? l.statusConnected
-                    : l.statusUnreachable,
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-          child: Row(
-            children: [
-              Expanded(
-                child: _Pill(
-                  icon: RgIcons.bell,
-                  label: l.pillInbox,
-                  count: 0,
-                  hot: true,
-                  onTap: () => app.setTab(AppTab.inbox),
+    return ListenableBuilder(
+      listenable: app.live,
+      builder: (context, _) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ScreenHeader(
+            title: hello?.machine ?? l.noServer,
+            subtitle: Row(
+              children: [
+                Dot(
+                  app.connected
+                      ? (app.isLive && app.liveStatus != LiveStatus.open ? c.warn : c.ok)
+                      : c.dim,
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _Pill(
-                  icon: RgIcons.spinner,
-                  label: l.pillRunning,
-                  count: 0,
-                  onTap: () => app.setTab(AppTab.activity),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: team.isEmpty
-              ? EmptyState(
-                  icon: RgIcons.users,
-                  text: hello == null ? l.connectFromYou : l.teamEmpty,
-                )
-              : GridView.builder(
-                  key: const Key('team-grid'),
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 220,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: .95,
+                const SizedBox(width: 5),
+                Flexible(
+                  child: Text(
+                    hello == null
+                        ? (app.connecting ? l.connecting : l.connectFromYou)
+                        : !app.connected
+                        ? l.statusUnreachable
+                        : app.isLive && app.liveStatus != LiveStatus.open
+                        ? l.statusReconnecting
+                        : l.statusConnected,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  itemCount: team.length,
-                  itemBuilder: (context, i) => AgentCard(agent: team[i]),
                 ),
-        ),
-      ],
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _Pill(
+                    icon: RgIcons.bell,
+                    label: l.pillInbox,
+                    count: app.live.forYou,
+                    hot: true,
+                    onTap: () => app.setTab(AppTab.inbox),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _Pill(
+                    icon: RgIcons.spinner,
+                    label: l.pillRunning,
+                    count: app.live.inProgress,
+                    onTap: () => app.setTab(AppTab.activity),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: team.isEmpty
+                ? EmptyState(
+                    icon: RgIcons.users,
+                    text: hello == null ? l.connectFromYou : l.teamEmpty,
+                  )
+                : GridView.builder(
+                    key: const Key('team-grid'),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 220,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      childAspectRatio: .95,
+                    ),
+                    itemCount: team.length,
+                    itemBuilder: (context, i) => AgentCard(
+                      agent: team[i],
+                      state: app.live.mascotStateOf(team[i].id),
+                      onTap: () => openAgentConversation(context, team[i]),
+                    ),
+                  ),
+          ),
+        ],
+      ),
     );
   }
+}
+
+/// Opens [a]'s conversation (God's shared one, or the latest).
+Future<void> openAgentConversation(BuildContext context, Agent a, {bool fresh = false}) async {
+  final app = AppScope.read(context);
+  final nav = Navigator.of(context);
+  final messenger = ScaffoldMessenger.of(context);
+  final l = AppLocalizations.of(context);
+  final id = await app.openAgent(a, fresh: fresh);
+  if (id == null) {
+    messenger.showSnackBar(SnackBar(content: Text(l.openFailed)));
+    return;
+  }
+  await nav.push(
+    MaterialPageRoute<void>(
+      builder: (_) => ConversationScreen(sessionId: id, agent: a),
+    ),
+  );
 }
 
 class _Pill extends StatelessWidget {
@@ -152,10 +189,11 @@ class _Pill extends StatelessWidget {
 }
 
 class AgentCard extends StatelessWidget {
-  const AgentCard({super.key, required this.agent, this.state = MascotState.idle});
+  const AgentCard({super.key, required this.agent, this.state = MascotState.idle, this.onTap});
 
   final Agent agent;
   final MascotState state;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -163,8 +201,7 @@ class AgentCard extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final word = stateWord(l, state);
     final waiting = state == MascotState.wait;
-    return Container(
-      key: Key('agent-${agent.id}'),
+    final card = Container(
       decoration: BoxDecoration(
         color: c.panel,
         borderRadius: BorderRadius.circular(20),
@@ -211,6 +248,18 @@ class AgentCard extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+    return Semantics(
+      button: onTap != null,
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          key: Key('agent-${agent.id}'),
+          borderRadius: BorderRadius.circular(20),
+          onTap: onTap,
+          child: card,
+        ),
       ),
     );
   }

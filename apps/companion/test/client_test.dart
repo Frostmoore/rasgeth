@@ -1,7 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/material.dart';
 import 'package:rgcompanion/api/client.dart';
+import 'package:rgcompanion/api/conversation.dart';
+import 'package:rgcompanion/api/live.dart';
+import 'package:rgcompanion/api/servers.dart';
 import 'package:rgcompanion/api/token_store.dart';
 import 'package:rgcompanion/api/types.dart';
 import 'package:rgcompanion/app_state.dart';
@@ -126,17 +130,23 @@ void main() {
   });
 
   group('AppController', () {
-    test('connect keeps only the token, in the store; restore uses it', () async {
+    AppController make(MemoryTokenStore t, MemoryAppPrefs p, {bool live = true}) =>
+        AppController(tokens: t, prefs: p, platform: DevicePlatform.linux, liveEnabled: live);
+
+    test('connect keeps only the token, in the keystore; a restart uses it', () async {
       final store = MemoryTokenStore();
-      final app = AppController(tokens: store, platform: DevicePlatform.linux);
+      final prefs = MemoryAppPrefs();
+      final app = make(store, prefs, live: false);
       expect(await app.connect(server.base.toString(), 'secret'), isTrue);
       expect(app.connected, isTrue);
       expect(app.agents, isNotEmpty);
+      expect(app.servers, hasLength(1));
       expect(store.values.values.where((v) => v.startsWith('rgd_')), hasLength(1));
       expect(store.values.values.any((v) => v.contains('secret')), isFalse);
+      expect(prefs.values.values.any((v) => v.contains('rgd_') || v.contains('secret')), isFalse);
       expect(server.requests.where((r) => r.startsWith('POST /api/app/pair')), hasLength(1));
 
-      final again = AppController(tokens: store, platform: DevicePlatform.linux);
+      final again = make(store, prefs, live: false);
       await again.restore();
       expect(again.connected, isTrue);
       expect(again.hello?.deviceName, 'RGCompanion (Linux)');
@@ -144,21 +154,96 @@ void main() {
 
       await again.disconnect();
       expect(store.values, isEmpty);
+      expect(again.servers, isEmpty);
+    });
+
+    test('theme, language and motion survive a restart', () async {
+      final prefs = MemoryAppPrefs();
+      final app = make(MemoryTokenStore(), prefs)
+        ..setThemeMode(ThemeMode.dark)
+        ..setLocale(const Locale('en'))
+        ..setReduceMotion(true);
+      await Future<void>.delayed(Duration.zero);
+      expect(app.themeMode, ThemeMode.dark);
+      final again = make(MemoryTokenStore(), prefs);
+      await again.restore();
+      expect(again.themeMode, ThemeMode.dark);
+      expect(again.locale, const Locale('en'));
+      expect(again.reduceMotion, isTrue);
     });
 
     test('a server speaking a newer app protocol is refused before the password', () async {
       server.appProtocol = kAppProtocolVersion + 1;
-      final app = AppController(tokens: MemoryTokenStore(), platform: DevicePlatform.android);
+      final app = make(MemoryTokenStore(), MemoryAppPrefs());
       expect(await app.connect(server.base.toString(), 'secret'), isFalse);
       expect(app.error, ConnectError.tooNew);
       expect(server.requests.where((r) => r.startsWith('POST')), isEmpty);
     });
 
     test('a wrong password is ConnectError.wrong', () async {
-      final app = AppController(tokens: MemoryTokenStore(), platform: DevicePlatform.android);
+      final app = make(MemoryTokenStore(), MemoryAppPrefs());
       expect(await app.connect(server.base.toString(), 'nope'), isFalse);
       expect(app.error, ConnectError.wrong);
       expect(app.connected, isFalse);
     });
+
+    test('the live socket: requests, a followed conversation streaming, the answers', () async {
+      final app = make(MemoryTokenStore(), MemoryAppPrefs());
+      expect(await app.connect(server.base.toString(), 'secret'), isTrue);
+      await until(() => app.liveStatus == LiveStatus.open);
+      expect(server.received.first['type'], 'hello');
+      expect(server.received.first['token'], startsWith('rgd_'));
+      expect(app.live.forYou, 2);
+      final quick = app.live.approvals.firstWhere((r) => r.requestId == 'r1');
+      final critical = app.live.approvals.firstWhere((r) => r.requestId == 'r2');
+      expect(quick.isCritical, isFalse);
+      expect(critical.isCritical, isTrue);
+      // Never the quick yes for a critical one.
+      expect(await app.resolvePermission(critical, allow: true), isFalse);
+      expect(server.answered, isEmpty);
+      expect(await app.resolvePermission(quick, allow: true), isTrue);
+      await until(() => app.live.forYou == 1);
+      expect(server.answered['r1'], 'allow');
+      expect(app.live.lastClosedVia, 'app (test)');
+      expect(await app.resolvePermission(critical, allow: true, fromFullScreen: true), isTrue);
+      await until(() => app.live.forYou == 0);
+
+      final view = app.follow('s1');
+      await until(() => view.synced);
+      expect(await app.send('s1', 'Ciao'), isTrue);
+      await until(() => view.events.any((e) => e.type == 'message.assistant') && !view.running);
+      final items = view.items;
+      expect(items.whereType<UserItem>().single.text, 'Ciao');
+      final a = items.whereType<AssistantItem>().single;
+      expect(a.text, 'Hello **there**');
+      expect(a.thinking, 'Let me see');
+      expect(view.liveText, isEmpty);
+      await app.disconnect();
+    });
+
+    test('Chat: its agent, a new conversation listed', () async {
+      final app = make(MemoryTokenStore(), MemoryAppPrefs(), live: false);
+      expect(await app.connect(server.base.toString(), 'secret'), isTrue);
+      final id = await app.newChatSession();
+      expect(app.chatAgentId, 'chat');
+      expect(app.live.sessions.any((s) => s.id == id && s.agentId == 'chat'), isTrue);
+    });
+
+    test('Activity: the tasks of every project', () async {
+      final app = make(MemoryTokenStore(), MemoryAppPrefs(), live: false);
+      expect(await app.connect(server.base.toString(), 'secret'), isTrue);
+      final tasks = await allTasks(app.client!);
+      expect(tasks.map((t) => t.title), ['Add the --json flag', 'Fix the README']);
+      expect(tasks.first.done, isFalse);
+      expect(tasks.last.outcome, TaskOutcome.verified);
+    });
   });
+}
+
+Future<void> until(bool Function() ok, {Duration within = const Duration(seconds: 10)}) async {
+  final end = DateTime.now().add(within);
+  while (!ok()) {
+    if (DateTime.now().isAfter(end)) throw StateError('condition not met');
+    await Future<void>.delayed(const Duration(milliseconds: 20));
+  }
 }

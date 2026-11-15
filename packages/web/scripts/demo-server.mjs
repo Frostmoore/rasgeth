@@ -2950,12 +2950,16 @@ if (!process.env.DEMO_FRESH) await setup.complete();
 // A first start (G39.7): only the address in the log, the page creates the access; with
 // DEMO_SETUP_CODE=1 (G39.3) the one-time code is required too.
 else await setup.startSetupCode(port, false, Boolean(process.env.DEMO_SETUP_CODE));
+// DEMO_PASSWORD (G40.7): an account password, so the app can pair (by REST or the setup channel).
+if (process.env.DEMO_PASSWORD) await core.logins.setPassword("local", process.env.DEMO_PASSWORD);
 const running = await serve(core, new TokenAuth({ [token]: "local" }), {
   port,
   host: process.env.DEMO_HOST ?? "0.0.0.0",
   webDir: web,
   setup,
   hf: new HuggingFace(join(dir, "models")),
+  // As main.ts: the setup channel hands the app a device token (G40.1, G40.3).
+  issueDeviceToken: (ownerId, device) => core.devices.create(ownerId, device),
 });
 console.log(
   JSON.stringify({

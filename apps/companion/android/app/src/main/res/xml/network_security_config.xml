@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- RGCompanion (G40.7): https everywhere; plain http only towards RedGiant OS's temporary network
+     (RedGiant-Setup-XXXX, 10.42.0.1), where the app talks through the encrypted setup channel.
+     The local CA is pinned by the app itself (Dart's SecurityContext), never added to the
+     system's trust: user-installed CAs are not trusted here either. This file governs the
+     platform's own stacks (the WebView, the system's HTTP); the app's Dart connections follow the
+     same rule in code (`transportFor` in lib/api/transport.dart, tested as a table). -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.42.0.1</domain>
+    </domain-config>
+</network-security-config>

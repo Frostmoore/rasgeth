@@ -1,0 +1,45 @@
+{
+  "note": "made by tool/setup_vectors.mjs (node:crypto, the formulas of nodes/channel.ts)",
+  "mode": "setup",
+  "seeds": {
+    "dialler": "AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE=",
+    "listener": "AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI="
+  },
+  "dEph": "Xf7dO2vUf2+ijuFdlp1bsOpTd01Ii9r53xxuASSz7yI=",
+  "dEphPriv": "AwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwM=",
+  "dId": "iojj3XQJ8ZX9UtstPLpdcspnCb8dlBIb83SIAbQPb1w=",
+  "dNonce": "BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU=",
+  "lEph": "rAGyIJ6GNU+4UyN7XeD0+rE8f8v0M6YcAZNpYX/s8Qs=",
+  "lId": "gTl3Dqh9F19Wo1Rmw0x+zMuNipG07jeiXfYPW4/Js5Q=",
+  "lNonce": "BgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgY=",
+  "listenerFingerprint": "SHA256:ajgD1fBZkCocba+8m6RykhL3yqwIY0zDrnaydSnwOCc",
+  "diallerFingerprint": "SHA256:NHUPmL1Z/PyUbaRaqr6TO+FUpLUJThxKv0KGZQXzyX4",
+  "th": "hTFeo2F0sBjTB0WGCq556lhuQIE48joBcMVHlhuvq34=",
+  "listenerSig": "0mHXLYx4TgCt1rPI13A105iqbPcplG01lZti2Y9tNcKBq1jQtSrwNsi09xLJWns3hQabtuE6XVjNHE74jZSeBg==",
+  "diallerSig": "aJl+ycIygN7hlS0rNhns/vRlCGv3zeOfUaXLR09CL8elxJmF0WLsIBItq1kqXMeAep5rt0y3PCSsY+Qf1qfFAQ==",
+  "secret": "QOR6P1Jb3KxJHUGJeNfbWvYjrHr+diPG14pdT86dD2M=",
+  "d2l": "46T8KI11E7bzvjx/DdLNU06EARXxno6gP7mu7FhU8+w=",
+  "l2d": "JJ2WoUCKE5EE6IhQOLVJdsmM+u3CvVFJs5gidtsyF88=",
+  "frames": [
+    {
+      "key": "d2l",
+      "n": 0,
+      "message": {
+        "t": "info",
+        "id": 1
+      },
+      "frame": "AAAAAAAAAADu+RWFllzPkagU9VH6L/JGyvKSK/9uHbcJC7q6qBTbfpdJLA=="
+    },
+    {
+      "key": "l2d",
+      "n": 3,
+      "message": {
+        "id": 4,
+        "ok": true,
+        "status": 200,
+        "body": "è"
+      },
+      "frame": "AAAAAAAAAAP+Nke1GybYWi38H/ZScyryoI7Ddv7NlRRvSOslbG4H8ufSMSBd9ydFORkn+590qfkPxs0JLNdPK6uVBA=="
+    }
+  ]
+}

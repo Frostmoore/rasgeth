@@ -81,10 +81,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get chatEmpty => 'Le conversazioni con la Chat, giorno per giorno, compaiono qui.';
 
   @override
-  String get chatDraftNote =>
-      'Messaggio pronto: l\'invio arriva con la prossima versione dell\'app.';
-
-  @override
   String get inboxEmpty => 'Niente da decidere: quando un agente ti chiede qualcosa, lo trovi qui.';
 
   @override
@@ -124,7 +120,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get serverAddress => 'Indirizzo';
 
   @override
-  String get serverAddressHint => 'redgiant.local:8787';
+  String get serverAddressHint => 'redgiant.local, https://…, 10.42.0.1';
 
   @override
   String get serverPassword => 'Password';
@@ -175,4 +171,280 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get appVersion => 'Versione dell\'app';
+
+  @override
+  String get attachmentOnly => '(immagini)';
+
+  @override
+  String get sendFailed => 'Il messaggio non è partito: riprova.';
+
+  @override
+  String attachmentTooBig(String name) {
+    return '$name supera i 5 MB.';
+  }
+
+  @override
+  String get notLive =>
+      'Qui non c\'è la connessione viva: le risposte si vedono riaprendo la conversazione.';
+
+  @override
+  String get conversationEmpty => 'Ancora niente: scrivi il primo messaggio.';
+
+  @override
+  String get loading => 'Carico…';
+
+  @override
+  String get attachmentRemove => 'Togli';
+
+  @override
+  String get back => 'Indietro';
+
+  @override
+  String get stop => 'Ferma';
+
+  @override
+  String get attach => 'Allega immagini';
+
+  @override
+  String get composerAgentHint => 'Scrivi un messaggio…';
+
+  @override
+  String fromSomeone(String from) {
+    return 'da $from';
+  }
+
+  @override
+  String imagesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count immagini',
+      one: '1 immagine',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reasoning => 'Ragionamento';
+
+  @override
+  String get reasoningNow => 'Sta ragionando…';
+
+  @override
+  String get writing => 'sta scrivendo…';
+
+  @override
+  String get toolRunning => 'in corso';
+
+  @override
+  String get toolOk => 'fatto';
+
+  @override
+  String get toolFailed => 'non riuscito';
+
+  @override
+  String get open => 'Apri';
+
+  @override
+  String get linkOpenTitle => 'Aprire questo collegamento fuori dall\'app?';
+
+  @override
+  String get linkOpen => 'Apri';
+
+  @override
+  String get cancel => 'Annulla';
+
+  @override
+  String canvasFailed(String error) {
+    return 'Non si può mostrare: $error';
+  }
+
+  @override
+  String get openWithSystem => 'Apri con il visore del sistema';
+
+  @override
+  String get artifactSourceOnly =>
+      'Su questo sistema l\'app mostra il sorgente dell\'artefatto; l\'anteprima isolata arriva con la versione per computer.';
+
+  @override
+  String get statusReconnecting => 'mi ricollego…';
+
+  @override
+  String get openFailed => 'Non si è aperto: controlla la connessione.';
+
+  @override
+  String get today => 'Oggi';
+
+  @override
+  String get yesterday => 'Ieri';
+
+  @override
+  String get untitled => 'Conversazione';
+
+  @override
+  String requestFrom(String agent) {
+    return '$agent ti chiede';
+  }
+
+  @override
+  String requestCritical(String agent) {
+    return 'Davvero pericolosa, da $agent';
+  }
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get yes => 'Sì';
+
+  @override
+  String get requestLook => 'Guardala';
+
+  @override
+  String get criticalTitle => 'Una richiesta davvero pericolosa';
+
+  @override
+  String criticalBody(String agent) {
+    return '$agent chiede di fare una cosa che non si può annullare o che tocca ciò che ti protegge. Leggila tutta prima di rispondere.';
+  }
+
+  @override
+  String requestClosed(String via) {
+    return 'Già risposta ($via).';
+  }
+
+  @override
+  String get criticalNo => 'No, non farlo';
+
+  @override
+  String get criticalYes => 'Sì, fallo';
+
+  @override
+  String get criticalConfirmTitle => 'Sei sicuro?';
+
+  @override
+  String get criticalConfirmBody => 'Non si torna indietro.';
+
+  @override
+  String get criticalSystem => 'File di sistema';
+
+  @override
+  String get criticalDelete => 'Cancellazione definitiva';
+
+  @override
+  String get criticalSecret => 'Un segreto che esce';
+
+  @override
+  String get criticalPayment => 'Un pagamento vero';
+
+  @override
+  String get criticalProtections => 'Le protezioni di RedGiant';
+
+  @override
+  String questionFrom(String agent) {
+    return '$agent ti fa una domanda';
+  }
+
+  @override
+  String get answer => 'Rispondi';
+
+  @override
+  String get refresh => 'Aggiorna';
+
+  @override
+  String get taskRunning => 'in corso';
+
+  @override
+  String get taskOpen => 'aperto';
+
+  @override
+  String get taskVerified => 'verificato';
+
+  @override
+  String get taskNotTestable => 'non verificabile';
+
+  @override
+  String get taskAbandoned => 'abbandonato';
+
+  @override
+  String taskSteps(int done, int total) {
+    return '$done passi su $total';
+  }
+
+  @override
+  String get verifiers => 'Verificatore';
+
+  @override
+  String get noVerifier => 'Nessun verificatore eseguito finora.';
+
+  @override
+  String get openConversation => 'Apri la conversazione';
+
+  @override
+  String get reachPinned => 'https, solo con il suo certificato (CA locale)';
+
+  @override
+  String get reachPublic => 'https pubblico (proxy, Tailscale)';
+
+  @override
+  String get reachLoopback => 'questo computer';
+
+  @override
+  String get reachChannel => 'canale di configurazione cifrato';
+
+  @override
+  String get noServers => 'Ancora nessun RedGiant.';
+
+  @override
+  String get useServer => 'Usa';
+
+  @override
+  String pinnedKey(String fingerprint) {
+    return 'Chiave: $fingerprint';
+  }
+
+  @override
+  String get renameServer => 'Nome di questo RedGiant';
+
+  @override
+  String get save => 'Salva';
+
+  @override
+  String get rename => 'Rinomina';
+
+  @override
+  String get forgetServer => 'Scollegare questo RedGiant?';
+
+  @override
+  String forgetServerBody(String name) {
+    return 'L\'app dimentica $name e il suo token del dispositivo. Per tornare serve di nuovo la password.';
+  }
+
+  @override
+  String errKeyChanged(String fingerprint) {
+    return 'PERICOLO: questo RedGiant ha risposto con un\'altra chiave ($fingerprint). Al suo posto potrebbe esserci un altro computer: non è stato mandato niente.';
+  }
+
+  @override
+  String get errCertificate =>
+      'Il certificato non è di questo RedGiant: l\'app non è andata avanti.';
+
+  @override
+  String get errBusy => 'Un altro dispositivo sta configurando questo RedGiant: uno alla volta.';
+
+  @override
+  String get errSignInAgain => 'Entra di nuovo con la password.';
+
+  @override
+  String get addServerFirst => 'Collega un RedGiant';
+
+  @override
+  String get addServer => 'Aggiungi un altro RedGiant';
+
+  @override
+  String get foundOnNetwork => 'Trovati in questa rete';
+
+  @override
+  String get pairingNote =>
+      'La password serve una volta: l\'app tiene solo un token del dispositivo, revocabile da Impostazioni › Dispositivi.';
 }
