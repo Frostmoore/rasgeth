@@ -4,7 +4,14 @@
 // https), and the updates (RedGiant's signed stack applied by the machine, Debian's security
 // updates, a restart asked in plain words). Every panel shows nothing where the installation is
 // not RedGiant OS (no OS helper).
-import type { LocalHttps, OsUpdates, WifiNetwork, WifiState } from "@redgiant/protocol";
+import type {
+  LocalHttps,
+  OsUpdates,
+  SetupNetworkInfo,
+  SetupWifiNetwork,
+  WifiNetwork,
+  WifiState,
+} from "@redgiant/protocol";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { type Key, t, tOptional } from "../i18n.js";
 import {
@@ -584,6 +591,160 @@ export function OsUpdatesPanel({ initial }: { initial?: OsUpdates | undefined } 
 // --- the sections of Settings › System (and the first boot) ------------------------------------
 
 /** «Network»: Wi-Fi and HTTPS, with its heading; nothing at all where it is not RedGiant OS. */
+// --- The temporary network (G40.3) ------------------------------------------------------------
+
+/** dBm as the 0-100 the Wi-Fi panel shows. */
+const quality = (dbm: number) => Math.max(0, Math.min(100, 2 * (dbm + 100)));
+
+/**
+ * The home network, chosen from RedGiant OS's temporary network (RedGiant-Setup-XXXX): the
+ * networks the machine saw before opening it, or the cable. Shown only to a page that is on the
+ * temporary network (a first start without the app, or maintenance): Wi-Fi is tried with the
+ * temporary network closed, which comes back with the reason when it does not work.
+ */
+export function SetupNetworkPanel({ demo }: { demo?: SetupNetworkInfo } = {}) {
+  const [info, setInfo] = useState<SetupNetworkInfo | null>(demo ?? null);
+  const [pick, setPick] = useState<SetupWifiNetwork | null>(null);
+  const [hidden, setHidden] = useState(false);
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [said, setSaid] = useState<{ ok: boolean; text: string }>();
+  useEffect(() => {
+    if (!demo)
+      void getApi()
+        .setupNetwork()
+        .then(setInfo, () => setInfo(null));
+  }, []);
+  const st = info?.status;
+  if (!info || info.here === "home" || !st) return null;
+  const ssid = st.ssid;
+  const last = st.lastTry;
+  const needsPassword = hidden || (pick !== null && pick.security !== "open");
+  const join = async () => {
+    const target = hidden ? name.trim() : (pick?.ssid ?? "");
+    if (!target) return;
+    setBusy(true);
+    const r = await tryApi(() =>
+      getApi().setupNetworkHome({
+        ssid: target,
+        ...(needsPassword && { password }),
+        ...(hidden && { hidden: true }),
+      }),
+    );
+    setBusy(false);
+    setPassword("");
+    setSaid(
+      "ok" in r
+        ? { ok: true, text: t("snTrying", { name: target, ssid }) }
+        : { ok: false, text: errorText(r.code) },
+    );
+  };
+  const cable = async () => {
+    setBusy(true);
+    const r = await tryApi(() => getApi().setupNetworkHome({ cable: true }));
+    setBusy(false);
+    setSaid(
+      "ok" in r
+        ? { ok: true, text: t("snCableDone", { address: r.ok.address ?? "redgiant.local" }) }
+        : { ok: false, text: errorText(r.code) },
+    );
+  };
+  return (
+    <SCard
+      icon={<IconWifi size={22} />}
+      title={t("snTitle")}
+      q={t(info.here === "maintenance" ? "snMaintQ" : "snQ", { ssid })}
+      class="sn-panel"
+    >
+      {last?.state === "failed" && !said && (
+        <p class="notice error">{t("snFailed", { name: last.ssid, why: errorText(last.error) })}</p>
+      )}
+      {st.networks.length === 0 ? (
+        <p class="dim">{t("snNone")}</p>
+      ) : (
+        <ul class="os-wifi-list">
+          {st.networks.map((n) => (
+            <li class="os-wifi-row" key={`${n.ssid}-${n.security}`}>
+              <button
+                type="button"
+                class={`wz-btn quiet os-wifi-pick${pick?.ssid === n.ssid ? " on" : ""}`}
+                disabled={n.security === "8021x" || n.security === "wep"}
+                aria-pressed={pick?.ssid === n.ssid}
+                onClick={() => {
+                  setPick(n);
+                  setHidden(false);
+                  setPassword("");
+                  setSaid(undefined);
+                }}
+              >
+                {n.security !== "open" && <IconLock size={16} />}
+                <span class="os-wifi-name">{n.ssid}</span>
+                <span class="dim">{bars(quality(n.signal))}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      {(pick || hidden) && (
+        <div class="os-wifi-join">
+          {hidden && (
+            <Field label={t("snHiddenName")}>
+              <input
+                class="wz-field"
+                value={name}
+                maxLength={32}
+                autocomplete="off"
+                onInput={(e) => setName((e.target as HTMLInputElement).value)}
+              />
+            </Field>
+          )}
+          {needsPassword && (
+            <Field label={t("snPassword", { name: hidden ? name || "…" : (pick?.ssid ?? "") })}>
+              <input
+                class="wz-field"
+                type="password"
+                value={password}
+                maxLength={64}
+                autocomplete="off"
+                onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
+              />
+            </Field>
+          )}
+        </div>
+      )}
+      {said && <p class={`notice ${said.ok ? "ok" : "error"}`}>{said.text}</p>}
+      <Acts>
+        <button type="button" class="wz-btn" disabled={busy} onClick={() => void cable()}>
+          {t("snCable")}
+        </button>
+        {!pick && !hidden && (
+          <button
+            type="button"
+            class="wz-btn quiet"
+            onClick={() => {
+              setHidden(true);
+              setSaid(undefined);
+            }}
+          >
+            {t("snHidden")}
+          </button>
+        )}
+        {(pick || hidden) && (
+          <button
+            type="button"
+            class="wz-btn primary"
+            disabled={busy || (hidden && !name.trim()) || (needsPassword && password.length < 8)}
+            onClick={() => void join()}
+          >
+            <IconWifi size={18} /> {t("snJoin")}
+          </button>
+        )}
+      </Acts>
+    </SCard>
+  );
+}
+
 export function OsNetworkSection({ wizard }: { wizard?: boolean } = {}) {
   const [got, setGot] = useState<{ w: WifiState | null; h: LocalHttps | null } | null>(null);
   useEffect(() => {
@@ -604,6 +765,7 @@ export function OsNetworkSection({ wizard }: { wizard?: boolean } = {}) {
   return (
     <>
       {!wizard && <Sub title={t("osNetSub")} lead={t("osNetSubLead")} />}
+      {!wizard && <SetupNetworkPanel />}
       {wifi && got.w && <WifiPanel initial={got.w} />}
       {https && got.h && <HttpsPanel initial={got.h} />}
     </>

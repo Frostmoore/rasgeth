@@ -224,6 +224,9 @@ jobs:
 
   build:
     needs: stack
+    # A skipped ancestor (images, outside a version branch) would skip this job too: only the stack's
+    # own result counts.
+    if: ${{ !cancelled() && needs.stack.result == 'success' }}
     strategy:
       fail-fast: false
       matrix:
@@ -368,7 +371,7 @@ jobs:
   # tests (packaging/os/test/proxmox.test.ts) in CI.
   lxc:
     needs: [plan, stack]
-    if: ${{ !inputs.only || contains(inputs.only, 'lxc') }}
+    if: ${{ !cancelled() && needs.stack.result == 'success' && (!inputs.only || contains(inputs.only, 'lxc')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 150
     env:
@@ -521,7 +524,7 @@ jobs:
   # machine with the image's own kernel and initramfs (emulated: slow) and checked like the others.
   raspi:
     needs: stack
-    if: ${{ !inputs.only || contains(inputs.only, 'raspi') }}
+    if: ${{ !cancelled() && needs.stack.result == 'success' && (!inputs.only || contains(inputs.only, 'raspi')) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 240
     env:

@@ -10,6 +10,7 @@ import {
   PERSON,
   PROTOCOL_VERSION,
   type QuestionRequestInfo,
+  SETUP_CHANNEL_PATH,
   type ServerMessage,
 } from "@redgiant/protocol";
 import { type WebSocket, WebSocketServer } from "ws";
@@ -17,6 +18,7 @@ import { BridgeFailure } from "./artifact-bridge.js";
 import type { AuthProvider, Principal } from "./auth.js";
 import type { RedGiantCore } from "./core.js";
 import type { Outcome } from "./editor/host.js";
+import type { SetupChannel } from "./setup-channel.js";
 import { handleTerminal } from "./terminal.js";
 
 /**
@@ -80,7 +82,7 @@ export function attachWebSocket(
   server: Server,
   core: RedGiantCore,
   auth: AuthProvider,
-  live: { pages?: OpenPages; version?: string | null } = {},
+  live: { pages?: OpenPages; version?: string | null; setupChannel?: SetupChannel } = {},
 ): WebSocketServer {
   const wss = new WebSocketServer({ noServer: true, maxPayload: 32 * 1024 * 1024 });
   server.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
@@ -90,6 +92,11 @@ export function attachWebSocket(
     // Another RedGiant (G39.4): its own handshake authenticates it (pinned keys), no token.
     if (path === "/nodes")
       return wss.handleUpgrade(req, socket, head, (ws) => void core.nodes.accept(ws));
+    // The app's setup channel (G40.3): the nodes' handshake in setup mode, one device at a time.
+    if (path === SETUP_CHANNEL_PATH && live.setupChannel) {
+      const channel = live.setupChannel;
+      return wss.handleUpgrade(req, socket, head, (ws) => void channel.accept(ws, req));
+    }
     if (path === "/term")
       return wss.handleUpgrade(req, socket, head, (ws) => handleTerminal(ws, core, auth));
     socket.destroy();

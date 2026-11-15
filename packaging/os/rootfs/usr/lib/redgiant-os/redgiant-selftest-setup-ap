@@ -1,0 +1,145 @@
+# RedGiant OS self-test, the temporary network (G40.3), sourced by redgiant-selftest after the
+# Wi-Fi part (credential redgiant.selftest.wifi=1): the machine is new (its first start is not
+# completed), so redgiant-setup-ap opens RedGiant-Setup-XXXX on the first simulated radio (iwd as
+# an access point). A client on the second radio, moved into its own network namespace so that
+# its traffic really goes through the simulated air (wpa_supplicant and busybox's udhcpc, from
+# Debian's archive, on this test machine only), joins it, gets an address, opens the first start's
+# page and a captive portal probe, and asks the DNS for a name. Then maintenance: the first access
+# is never offered there. hostapd's network of the Wi-Fi part is still up when the network opens,
+# so the networks seen before must list it.
+# shellcheck shell=bash
+sap_ns=rgc
+sap_sock() { socat -t 60 - UNIX-CONNECT:/run/redgiant-helper/helper.sock; }
+sap_status() { echo ap-status | sap_sock; }
+sap_wait() { # jq condition on ap-status, seconds
+  local _i
+  for _i in $(seq 1 "$2"); do
+    sap_status | jq -e "$1" >/dev/null 2>&1 && return 0
+    sleep 1
+  done
+  return 1
+}
+sap_in() { ip netns exec "$sap_ns" "$@"; }
+sap_setup() {
+  local ap_if
+  # The client's radio: the one hostapd uses (iwd leaves it alone, the Wi-Fi part's drop-in).
+  local d
+  ap_if=""
+  for d in /sys/class/net/wlan*; do [ -e "$d" ] && ap_if=${d##*/}; done
+  [ -n "$ap_if" ] || return 1
+  sap_phy=$(cat "/sys/class/net/$ap_if/phy80211/name") || return 1
+  sap_if=$ap_if
+  DEBIAN_FRONTEND=noninteractive timeout 300 apt-get install -y -qq --no-install-recommends wpasupplicant iw busybox >/dev/null 2>&1 || return 1
+  # The machine has been on for a while (RedGiant's first start, the Wi-Fi part): a window of a
+  # day for the test, and a quicker look.
+  mkdir -p /run/systemd/system/redgiant-setup-ap.service.d
+  printf '[Service]\nEnvironment=REDGIANT_SETUP_WINDOW=86400 REDGIANT_SETUP_TICK=2\n' \
+    >/run/systemd/system/redgiant-setup-ap.service.d/test.conf
+  systemctl daemon-reload
+  systemctl restart redgiant-setup-ap.service
+  sap_wait '.active == true and .mode == "setup"' 90 || return 1
+  # The client: hostapd's radio, in its own namespace.
+  pkill hostapd || true
+  rm -f /run/systemd/network/10-rg-test-ap.network
+  networkctl reload >/dev/null 2>&1 || true
+  ip netns add "$sap_ns" || return 1
+  iw phy "$sap_phy" set netns name "$sap_ns" || return 1
+  sap_in ip link set lo up
+  sap_in ip link set "$sap_if" up || return 1
+  printf 'ctrl_interface=/run/rgc-wpa\nnetwork={\n  ssid="%s"\n  psk="%s"\n  key_mgmt=WPA-PSK\n}\n' \
+    "$(sap_status | jq -r .ssid)" "$(sap_status | jq -r .passphrase)" >/run/rgc-wpa.conf
+  sap_in wpa_supplicant -B -i "$sap_if" -c /run/rgc-wpa.conf -P /run/rgc-wpa.pid >/dev/null 2>&1 || return 1
+  return 0
+}
+# Joined: associated and the 4-way handshake done (wpa_supplicant's COMPLETED).
+sap_joined() {
+  local _i
+  for _i in $(seq 1 40); do
+    sap_in wpa_cli -p /run/rgc-wpa -i "$sap_if" status 2>/dev/null | grep -q '^wpa_state=COMPLETED' && return 0
+    sleep 1
+  done
+  return 1
+}
+# An address from the temporary network: udhcpc's lease (its own script left out: /run may not
+# run programs), then the address on the client's card.
+sap_lease() {
+  local ip
+  rm -f /run/rgc-lease
+  sap_in busybox udhcpc -i "$sap_if" -n -q -t 10 -T 3 -s /bin/true >/run/rgc-udhcpc.log 2>&1 || return 1
+  ip=$(sed -n 's/^.*lease of \([0-9.]*\) obtained.*$/\1/p' /run/rgc-udhcpc.log | tail -1)
+  case "$ip" in 10.42.0.*) ;; *) return 1 ;; esac
+  sap_in ip addr add "$ip/24" dev "$sap_if" || return 1
+  echo "$ip" >/run/rgc-lease
+}
+# A DNS question (A, captive.apple.com) to the temporary network's address: the answer must be it.
+sap_dns() {
+  sap_in bash -c 'exec 3<>/dev/udp/10.42.0.1/53
+    printf "\x12\x34\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x07captive\x05apple\x03com\x00\x00\x01\x00\x01" >&3
+    timeout 5 dd bs=512 count=1 status=none <&3 | od -An -tx1' | tr -d ' \n' | grep -q '0a2a0001$'
+}
+sap_probe() { # host path: the probe of a phone goes to the page (302 to http://10.42.0.1/)
+  local r
+  r=$(sap_in curl -s -o /dev/null -w '%{http_code} %{redirect_url}' --max-time 10 --resolve "$1:80:10.42.0.1" "http://$1$2")
+  say "setup-ap probe $1$2: $r"
+  [ "$r" = "302 http://10.42.0.1/" ]
+}
+# The server's side of it (captive portal, where a request comes from, maintenance) is in the
+# server image this machine carries: a work branch's image carries the latest release's server,
+# which may be older. Those checks then say "skip", by name (boot-test.sh accepts it); a version
+# branch builds its own server and runs them all.
+sap_server_new() {
+  [ "$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "http://127.0.0.1:$PORT/api/setup-network/here")" = 200 ]
+}
+server_check() { # name command…
+  if [ "$sap_new" = 1 ]; then check "$@"; else say "skip $1 (the server in this image is older: $(curl -fsS --max-time 5 "http://127.0.0.1:$PORT/api/health" 2>/dev/null))"; fi
+}
+sap_new=0
+sap_server_new && sap_new=1
+if sap_setup; then
+  say "ok   setup-ap open at a first start ($(sap_status | jq -c '{mode, ssid, capable, pending}'))"
+  check "setup-ap networks seen before opening" bash -c "echo ap-status | socat -t 60 - UNIX-CONNECT:/run/redgiant-helper/helper.sock | jq -e '[.networks[].ssid] | index(\"${wifi_ssid:-RedGiant Test}\") != null'"
+  check "setup-ap runtime network file" test -e /run/systemd/network/70-redgiant-setup.network
+  check "setup-ap client joined" sap_joined
+  check "setup-ap client got an address" sap_lease
+  say "setup-ap lease $(cat /run/rgc-lease 2>/dev/null)"
+  if [ ! -s /run/rgc-lease ]; then
+    # Why, while the network is still open.
+    {
+      sap_in wpa_cli -p /run/rgc-wpa -i "$sap_if" status 2>&1
+      cat /run/rgc-udhcpc.log 2>&1
+      sap_in ip addr 2>&1
+      ip -4 addr show dev wlan0 2>&1
+      networkctl status --no-pager -n 15 wlan0 2>&1
+      cat /run/systemd/network/70-redgiant-setup.network 2>&1
+    } | sed 's/^/REDGIANT-SELFTEST setup-ap dhcp: /' >/dev/console
+  fi
+  check "setup-ap first start page from the client" bash -c "ip netns exec $sap_ns curl -fsS --max-time 10 http://10.42.0.1/ | grep -qi '<html'"
+  server_check "setup-ap captive probe android" sap_probe connectivitycheck.gstatic.com /generate_204
+  server_check "setup-ap captive probe apple" sap_probe captive.apple.com /hotspot-detect.html
+  check "setup-ap dns answers with redgiant" sap_dns
+  check "setup-ap is the local network for the first access" bash -c "ip netns exec $sap_ns curl -fsS --max-time 10 http://10.42.0.1/api/auth/methods | jq -e '.firstAccess == \"password\"'"
+  server_check "setup-ap page knows the temporary network" bash -c "ip netns exec $sap_ns curl -fsS --max-time 10 http://10.42.0.1/api/setup-network/here | jq -e '.here == \"setup\"'"
+  check "setup-ap nothing routed from it" bash -c "[ \"\$(cat /proc/sys/net/ipv4/conf/wlan0/forwarding)\" = 0 ]"
+  # The first start completed (the server asks the same): the network closes, the marker goes.
+  check "setup-ap closes when the first start is done" bash -c 'echo ap-done | socat -t 30 - UNIX-CONNECT:/run/redgiant-helper/helper.sock | jq -e .ok'
+  check "setup-ap closed" sap_wait '.active == false and .pending == false' 60
+  check "setup-ap runtime file removed" bash -c '[ ! -e /run/systemd/network/70-redgiant-setup.network ]'
+  # Maintenance, asked by hand (it opens by itself after 10 minutes without a home network): the
+  # first access is never offered from it.
+  check "setup-ap maintenance opens" bash -c 'echo ap-start | socat -t 30 - UNIX-CONNECT:/run/redgiant-helper/helper.sock | jq -e .ok'
+  check "setup-ap maintenance open" sap_wait '.active == true and .mode == "maintenance"' 60
+  check "setup-ap maintenance client joined again" sap_joined
+  server_check "setup-ap maintenance never offers the first access" bash -c "for i in \$(seq 1 20); do r=\$(ip netns exec $sap_ns curl -fsS --max-time 5 http://10.42.0.1/api/setup-network/here) && echo \"\$r\" | jq -e '.here == \"maintenance\"' >/dev/null && break; sleep 2; done; ip netns exec $sap_ns curl -fsS --max-time 10 http://10.42.0.1/api/auth/methods | jq -e 'has(\"firstAccess\") | not'"
+  check "setup-ap maintenance closes" bash -c 'echo ap-stop | socat -t 30 - UNIX-CONNECT:/run/redgiant-helper/helper.sock | jq -e .ok'
+  check "setup-ap maintenance closed" sap_wait '.active == false' 60
+  if [ "$ok" != 1 ]; then
+    sap_status 2>&1 | sed 's/^/REDGIANT-SELFTEST setup-ap: /' >/dev/console
+    journalctl -b -u redgiant-setup-ap.service -u iwd.service --no-pager -n 40 -o cat 2>&1 | sed 's/^/REDGIANT-SELFTEST setup-ap: /' >/dev/console
+    networkctl status --no-pager wlan0 2>&1 | sed 's/^/REDGIANT-SELFTEST setup-ap: /' >/dev/console
+  fi
+else
+  say "FAIL setup-ap temporary network (redgiant-setup-ap, a client in a namespace)"
+  sap_status 2>&1 | sed 's/^/REDGIANT-SELFTEST setup-ap: /' >/dev/console
+  journalctl -b -u redgiant-setup-ap.service -u iwd.service --no-pager -n 40 -o cat 2>&1 | sed 's/^/REDGIANT-SELFTEST setup-ap: /' >/dev/console
+  ok=0
+fi

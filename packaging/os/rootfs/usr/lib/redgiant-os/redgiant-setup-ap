@@ -1,0 +1,428 @@
+#!/usr/bin/env bash
+# RedGiant OS (G40.3): the temporary network RedGiant-Setup-XXXX, for a first start without a
+# screen (study_g40_app_native.md §2). iwd turns the Wi-Fi card into an access point, a runtime
+# systemd-networkd file (in /run, gone at the next start) gives the addresses with one lease at a
+# time (one device at a time), and a minimal DNS answers every name with RedGiant's address, so
+# phones show the first start's page by themselves (captive portal; the server answers the
+# probes, packages/server/src/setup-network.ts). Nothing is routed anywhere: the temporary
+# network gives no one the internet nor the home network.
+#
+#   redgiant-setup-ap run                    the service: decides every few seconds (below)
+#   redgiant-setup-ap status                 one JSON line: what the network is doing
+#   redgiant-setup-ap ssid                   RedGiant-Setup-XXXX (XXXX from the machine's id)
+#   redgiant-setup-ap capable                ok, or why not (container, no_wifi, no_ap)
+#   redgiant-setup-ap decide k=v…            the rule alone (tested as a table)
+#   redgiant-setup-ap start setup|maintenance / stop      (the service does it; by hand for tests)
+#   redgiant-setup-ap try                    the home network's attempt (started by the OS helper)
+#   redgiant-setup-ap handover               the home network works (the cable): off for good
+#   redgiant-setup-ap done | keep | force | close          the OS helper's ap-* requests
+#
+# When it is open:
+#   - first start (the marker /var/lib/redgiant/setup-ap/pending, made only in a new image: an
+#     installation that is already configured never has it): ALWAYS, the cable plugged in too,
+#     for 30 minutes from power on; it opens again by switching the machine on again. It closes
+#     when the first start is completed (the server asks: ap-done) or the home network works.
+#   - maintenance (the first start done): when no home network is there for 10 minutes. It never
+#     allows a new owner nor the first access (the server's rule, first-access.ts): only changing
+#     the home network after signing in. It closes when the cable is back, or after 10 minutes so
+#     the card can look for the home Wi-Fi again (and it opens again 10 minutes later if not).
+#   - "try and return": the home Wi-Fi is tried with the network closed (one card cannot be both);
+#     when it does not work the network opens again, with the error, for 10 more minutes.
+#   - containers, or no card that can be an access point: never; RedGiant is found on the
+#     network instead (avahi announces _redgiant._tcp).
+set -uo pipefail
+LC_ALL=C
+export LC_ALL
+# Tests only (packaging/os/test/setup-ap.test.ts): fake programs and another root, as the OS
+# helper's. Never set by the units.
+[ -n "${REDGIANT_SETUP_TEST_BIN:-}" ] && PATH=$REDGIANT_SETUP_TEST_BIN:$PATH
+R=${REDGIANT_SETUP_TEST_ROOT:-}
+HELPER=${REDGIANT_SETUP_TEST_HELPER:-/usr/lib/redgiant/redgiant-helper}
+
+SETUP_AP_ADDRESS=10.42.0.1
+# iwd's access point needs a WPA password: a public one (security is the app's channel, the
+# handshake with the pinned key; a password everyone may know protects nothing anyway).
+SETUP_AP_PASSPHRASE=redgiant
+SETUP_AP_CHANNEL=6
+# shellcheck disable=SC1091
+[ -z "$R" ] && [ -r /etc/redgiant-os/os.conf ] && . /etc/redgiant-os/os.conf
+WINDOW=${REDGIANT_SETUP_WINDOW:-1800}
+HOME_WAIT=${REDGIANT_SETUP_HOME_WAIT:-600}
+MAINT_ON=${REDGIANT_SETUP_MAINT_ON:-600}
+GRACE=${REDGIANT_SETUP_GRACE:-600}
+TICK=${REDGIANT_SETUP_TICK:-5}
+
+STATE=$R/var/lib/redgiant/setup-ap
+PENDING=$STATE/pending
+RUN=$R/run/redgiant-setup
+NET_FILE=$R/run/systemd/network/70-redgiant-setup.network
+AP_DIR=$R/var/lib/iwd/ap
+
+log() { echo "redgiant-setup-ap: $*" >&2; }
+now() { date +%s; }
+uptime_s() { cut -d. -f1 "$R/proc/uptime" 2>/dev/null || echo 0; }
+num() { case "${1:-}" in '' | *[!0-9]*) echo 0 ;; *) echo "$1" ;; esac; }
+readnum() { num "$(cat "$1" 2>/dev/null)"; }
+
+# RedGiant-Setup- and four characters of the machine's id (the same at every start).
+ssid() {
+  local id
+  id=$(tr -cd 'a-f0-9' <"$R/etc/machine-id" 2>/dev/null)
+  [ -n "$id" ] || id=$(cat /proc/sys/kernel/random/boot_id 2>/dev/null)
+  printf 'RedGiant-Setup-%s\n' "$(printf '%s' "$id" | sha256sum | cut -c1-4 | tr a-f A-F)"
+}
+
+# The rule, nothing else: what the network should be now. Arguments k=v (missing ones are 0):
+#   pending  1 while the first start is not completed     handed  1 once the home network works
+#   uptime   seconds since power on                       now     the time (seconds)
+#   grace    until when it stays open (a try that failed, a device using it)
+#   force    until when it was asked open (ap-start)      closed  until when it was asked closed
+#   cur      off|setup|maintenance
+#   missing  seconds without a home network (-1: it is there)   on  seconds the network is open
+decide() {
+  local pending=0 handed=0 uptime=0 now=0 grace=0 force=0 closed=0 cur=off missing=-1 on=0 kv
+  for kv in "$@"; do
+    case "$kv" in
+      pending=*) pending=$(num "${kv#*=}") ;;
+      handed=*) handed=$(num "${kv#*=}") ;;
+      uptime=*) uptime=$(num "${kv#*=}") ;;
+      now=*) now=$(num "${kv#*=}") ;;
+      grace=*) grace=$(num "${kv#*=}") ;;
+      force=*) force=$(num "${kv#*=}") ;;
+      closed=*) closed=$(num "${kv#*=}") ;;
+      cur=*) cur=${kv#*=} ;;
+      missing=-1) missing=-1 ;;
+      missing=*) missing=$(num "${kv#*=}") ;;
+      on=*) on=$(num "${kv#*=}") ;;
+      *) echo "decide: unknown $kv" >&2; return 2 ;;
+    esac
+  done
+  # Asked open (ap-start) wins; asked closed (ap-stop) comes next.
+  if [ "$now" -lt "$force" ]; then
+    [ "$pending" = 1 ] && echo setup || echo maintenance
+    return
+  fi
+  [ "$now" -lt "$closed" ] && { echo off; return; }
+  if [ "$pending" = 1 ]; then
+    if [ "$handed" != 1 ] && { [ "$uptime" -lt "$WINDOW" ] || [ "$now" -lt "$grace" ]; }; then
+      echo setup
+    else
+      echo off
+    fi
+    return
+  fi
+  if [ "$cur" = maintenance ]; then
+    [ "$missing" = -1 ] && { echo off; return; }
+    if [ "$on" -ge "$MAINT_ON" ] && [ "$now" -ge "$grace" ]; then echo off; else echo maintenance; fi
+    return
+  fi
+  if [ "$missing" != -1 ] && [ "$missing" -ge "$HOME_WAIT" ]; then echo maintenance; else echo off; fi
+}
+
+# --- iwd ------------------------------------------------------------------------------------------
+
+objects() { busctl --json=short --timeout=10 call net.connman.iwd / org.freedesktop.DBus.ObjectManager GetManagedObjects 2>/dev/null; }
+# "<device path> <interface name> <ap 0|1>" of the first Wi-Fi card, the one that can be an access
+# point first.
+card_of() {
+  printf '%s' "$1" | jq -r '.data[0] as $d | [$d | to_entries[] | select(.value["net.connman.iwd.Device"])
+    | .value["net.connman.iwd.Device"] as $v
+    | {p: .key, n: ($v.Name.data // ""),
+       ap: ((($d[$v.Adapter.data // ""] // {})["net.connman.iwd.Adapter"].SupportedModes.data // []) | index("ap") != null)}]
+    | sort_by(if .ap then 0 else 1 end) | .[0] // empty | "\(.p) \(.n) \(if .ap then 1 else 0 end)"' 2>/dev/null
+}
+valid_ifname() { case "$1" in '' | *[!A-Za-z0-9_.-]*) return 1 ;; esac; [ "${#1}" -le 15 ]; }
+valid_path() { case "$1" in /net/connman/iwd/*) case "$1" in *[!A-Za-z0-9_/]*) return 1 ;; esac ;; *) return 1 ;; esac; }
+
+# ok, container, no_wifi or no_ap; waits up to $1 seconds for iwd and its card.
+capable() {
+  local wait=${1:-0} i=0 o c
+  c=$(systemd-detect-virt --container 2>/dev/null) || c=none
+  [ "$c" = none ] || { echo container; return; }
+  if ! command -v busctl >/dev/null 2>&1 || ! command -v jq >/dev/null 2>&1; then echo no_wifi; return; fi
+  while :; do
+    if o=$(objects) && c=$(card_of "$o") && [ -n "$c" ]; then
+      [ "${c##* }" = 1 ] && echo ok || echo no_ap
+      return
+    fi
+    [ "$i" -ge "$wait" ] && break
+    sleep 1
+    i=$((i + 1))
+  done
+  echo no_wifi
+}
+
+# The networks around, before the card becomes an access point (one card cannot look around
+# while it is one): [{ssid, security, signal}], the strongest first, for the app and the page.
+prescan() {
+  local dev=$1 o ordered i=0 s
+  busctl --timeout=10 call net.connman.iwd "$dev" net.connman.iwd.Station Scan >/dev/null 2>&1 || true
+  while [ $i -lt 12 ]; do
+    sleep 1
+    s=$(busctl --json=short get-property net.connman.iwd "$dev" net.connman.iwd.Station Scanning 2>/dev/null | jq -r .data 2>/dev/null) || s=false
+    [ "$s" = true ] || break
+    i=$((i + 1))
+  done
+  o=$(objects) || return 0
+  ordered=$(busctl --json=short --timeout=10 call net.connman.iwd "$dev" net.connman.iwd.Station GetOrderedNetworks 2>/dev/null) || ordered='{"data":[[]]}'
+  jq -cn --argjson o "$o" --argjson r "$ordered" '[($r.data[0] // [])[] as [$p, $sig]
+    | $o.data[0][$p]["net.connman.iwd.Network"] as $n | select($n)
+    | {ssid: $n.Name.data, security: $n.Type.data, signal: ($sig / 100 | floor)}]
+    | unique_by(.ssid) | sort_by(-.signal) | .[:40]' >"$RUN/networks.json.new" 2>/dev/null &&
+    mv -f "$RUN/networks.json.new" "$RUN/networks.json"
+}
+
+# --- the network ----------------------------------------------------------------------------------
+
+net_file() { # interface, with DNS (0|1)
+  local dns=$2
+  cat <<EOF
+# RedGiant OS (G40.3): the temporary network RedGiant-Setup-XXXX, valid only while it is open
+# (redgiant-setup-ap writes it into /run and removes it; nothing of it survives a restart).
+[Match]
+Name=$1
+
+[Link]
+RequiredForOnline=no
+
+[Network]
+Address=$SETUP_AP_ADDRESS/24
+DHCPServer=yes
+ConfigureWithoutCarrier=yes
+LinkLocalAddressing=no
+IPv6AcceptRA=no
+IPv4Forwarding=no
+MulticastDNS=no
+LLMNR=no
+
+[DHCPServer]
+# One address: one device at a time (a lease lasts two minutes).
+PoolOffset=10
+PoolSize=1
+DefaultLeaseTimeSec=120
+MaxLeaseTimeSec=120
+EmitRouter=yes
+EmitDNS=$([ "$dns" = 1 ] && echo yes || echo no)
+$([ "$dns" = 1 ] && echo "DNS=$SETUP_AP_ADDRESS")
+# RFC 8910: the captive portal's address (Android 11+, iOS 14+).
+SendOption=114:string:http://$SETUP_AP_ADDRESS/
+EOF
+}
+
+dns_start() { # interface
+  command -v dnsmasq >/dev/null 2>&1 || return 1
+  local i=0
+  while [ $i -lt 20 ] && ! ip -o -4 addr show dev "$1" 2>/dev/null | grep -qF " $SETUP_AP_ADDRESS/"; do
+    sleep 0.5
+    i=$((i + 1))
+  done
+  # Every name is RedGiant: the probes of phones and computers land on its page.
+  dnsmasq --conf-file=/dev/null --no-resolv --no-hosts --no-poll --bind-interfaces \
+    --listen-address="$SETUP_AP_ADDRESS" --port=53 --address="/#/$SETUP_AP_ADDRESS" --local-ttl=1 \
+    --no-dhcp-interface="$1" --pid-file="$RUN/dns.pid" --user=nobody --group=nogroup >/dev/null 2>&1
+}
+dns_stop() {
+  local p
+  p=$(readnum "$RUN/dns.pid")
+  [ "$p" -gt 1 ] && kill "$p" 2>/dev/null
+  rm -f "$RUN/dns.pid"
+}
+
+write_state() { # mode device interface since
+  jq -cn --arg m "$1" --arg d "$2" --arg i "$3" --argjson s "$4" '{mode: $m, device: $d, ifname: $i, since: $s}' \
+    >"$RUN/state.json.new" && mv -f "$RUN/state.json.new" "$RUN/state.json"
+}
+state_field() { jq -r --arg k "$1" '.[$k] // empty' "$RUN/state.json" 2>/dev/null; }
+current() { local m; m=$(state_field mode); echo "${m:-off}"; }
+
+start() { # setup|maintenance
+  local mode=$1 o c dev ifn name dns=0 i=0
+  case "$mode" in setup | maintenance) ;; *) return 2 ;; esac
+  mkdir -p "$RUN"
+  o=$(objects) || { log "iwd is not answering"; return 1; }
+  c=$(card_of "$o")
+  dev=${c%% *} c=${c#* }
+  ifn=${c%% *}
+  if ! valid_path "$dev" || ! valid_ifname "$ifn"; then log "no Wi-Fi card"; return 1; fi
+  name=$(ssid)
+  # The networks around, while the card can still look.
+  if printf '%s' "$o" | jq -e --arg p "$dev" '.data[0][$p]["net.connman.iwd.Station"]' >/dev/null 2>&1; then
+    prescan "$dev"
+  fi
+  command -v dnsmasq >/dev/null 2>&1 && dns=1
+  mkdir -p "$(dirname "$NET_FILE")"
+  net_file "$ifn" "$dns" >"$NET_FILE"
+  networkctl reload >/dev/null 2>&1 || true
+  install -d -m 0700 "$AP_DIR"
+  (
+    umask 077
+    printf '# RedGiant OS: the temporary network (redgiant-setup-ap).\n[General]\nChannel=%s\n\n[Security]\nPassphrase=%s\n' \
+      "$SETUP_AP_CHANNEL" "$SETUP_AP_PASSPHRASE" >"$AP_DIR/$name.ap"
+  )
+  busctl --timeout=10 set-property net.connman.iwd "$dev" net.connman.iwd.Device Mode s ap >/dev/null 2>&1 || true
+  while [ $i -lt 20 ]; do
+    o=$(objects) && printf '%s' "$o" | jq -e --arg p "$dev" '.data[0][$p]["net.connman.iwd.AccessPoint"]' >/dev/null 2>&1 && break
+    sleep 0.5
+    i=$((i + 1))
+  done
+  if ! busctl --timeout=20 call net.connman.iwd "$dev" net.connman.iwd.AccessPoint StartProfile s "$name" >/dev/null 2>&1; then
+    log "iwd did not open $name"
+    write_state "$mode" "$dev" "$ifn" "$(now)"
+    stop
+    return 1
+  fi
+  # Nothing that arrives from the temporary network goes anywhere else.
+  sysctl -qw "net.ipv4.conf.$ifn.forwarding=0" >/dev/null 2>&1 || true
+  sysctl -qw "net.ipv6.conf.$ifn.disable_ipv6=1" >/dev/null 2>&1 || true
+  networkctl reconfigure "$ifn" >/dev/null 2>&1 || true
+  [ "$dns" = 1 ] && { dns_start "$ifn" || log "no DNS for the temporary network"; }
+  write_state "$mode" "$dev" "$ifn" "$(now)"
+  log "$name open ($mode) on $ifn, http://$SETUP_AP_ADDRESS/"
+  return 0
+}
+
+stop() {
+  local dev ifn
+  dev=$(state_field device)
+  ifn=$(state_field ifname)
+  dns_stop
+  if valid_path "$dev"; then
+    busctl --timeout=10 call net.connman.iwd "$dev" net.connman.iwd.AccessPoint Stop >/dev/null 2>&1 || true
+    busctl --timeout=10 set-property net.connman.iwd "$dev" net.connman.iwd.Device Mode s station >/dev/null 2>&1 || true
+  fi
+  rm -f "$NET_FILE"
+  networkctl reload >/dev/null 2>&1 || true
+  if valid_ifname "$ifn"; then
+    sysctl -qw "net.ipv6.conf.$ifn.disable_ipv6=0" >/dev/null 2>&1 || true
+    networkctl reconfigure "$ifn" >/dev/null 2>&1 || true
+  fi
+  rm -f "$RUN/state.json"
+  [ -n "$ifn" ] && log "temporary network closed"
+  return 0
+}
+
+# A home network: a default route through a card that is not the temporary network's.
+home_up() {
+  local ap
+  ap=$(state_field ifname)
+  ip -4 route show default 2>/dev/null | awk -v ap="$ap" '{ for (i = 1; i < NF; i++) if ($i == "dev") print $(i + 1) }' |
+    grep -vE '^(docker|br-|veth|lo$)' | grep -qvxF "${ap:-//none//}"
+}
+
+status() {
+  local cap=${1:-} st pend=false nets='[]' try=null mode
+  [ -e "$PENDING" ] && pend=true
+  [ -n "$cap" ] || cap=$(cat "$RUN/capable" 2>/dev/null) || cap=unknown
+  [ -n "$cap" ] || cap=unknown
+  mode=$(current)
+  st=$(jq -c . "$RUN/state.json" 2>/dev/null) || st=null
+  [ -n "$st" ] || st=null
+  [ -s "$RUN/networks.json" ] && nets=$(jq -c . "$RUN/networks.json" 2>/dev/null)
+  [ -n "$nets" ] || nets='[]'
+  [ -s "$RUN/try.json" ] && try=$(jq -c . "$RUN/try.json" 2>/dev/null)
+  [ -n "$try" ] || try=null
+  jq -cn --argjson pend "$pend" --arg cap "$cap" --arg mode "$mode" --argjson st "$st" --argjson n "$nets" \
+    --argjson t "$try" --arg ssid "$(ssid)" --arg pass "$SETUP_AP_PASSPHRASE" --arg addr "$SETUP_AP_ADDRESS" \
+    --argjson up "$(uptime_s)" --argjson w "$WINDOW" --argjson now "$(now)" \
+    --argjson trying "$([ -e "$RUN/trying" ] && echo true || echo false)" \
+    '{ok: true, active: ($mode != "off"), mode: $mode, capable: $cap, pending: $pend, ssid: $ssid,
+      passphrase: $pass, address: $addr, subnet: "\($addr | sub("\\.[0-9]+$"; ".0"))/24",
+      since: ($st.since // null), windowEnds: ($now - $up + $w), trying: $trying, networks: $n, lastTry: $t}'
+}
+
+# --- the home network -----------------------------------------------------------------------------
+
+# The OS helper wrote iwd's file for the network (the password only there) and the request
+# (no secret) into $RUN/try.req: "wifi <base64 ssid> <psk|open> <visible|hidden> <had 0|1>".
+# The network closes, the card joins the home network; if that fails it opens again with the
+# error.
+try_home() {
+  local req mode reply st err ssid_b64
+  req=$(cat "$RUN/try.req" 2>/dev/null) || return 1
+  rm -f "$RUN/try.req"
+  set -f
+  # shellcheck disable=SC2086 # the helper wrote checked words
+  set -- $req
+  set +f
+  [ "${1:-}" = wifi ] && [ $# -eq 5 ] || return 1
+  ssid_b64=$2
+  touch "$RUN/trying"
+  mode=$(current)
+  [ "$mode" = off ] && { [ -e "$PENDING" ] && mode=setup || mode=maintenance; }
+  stop
+  reply=$(printf 'wifi-join-trial %s %s %s %s\n' "$2" "$3" "$4" "$5" | "$HELPER" --stdin 2>/dev/null) || true
+  st=$(printf '%s' "$reply" | jq -r '.state // empty' 2>/dev/null)
+  if [ "$st" = connected ]; then
+    jq -cn --arg s "$ssid_b64" --argjson t "$(now)" '{state: "connected", ssid: ($s | @base64d), at: $t}' >"$RUN/try.json"
+    touch "$RUN/handed"
+    rm -f "$RUN/trying" "$RUN/grace" "$RUN/force"
+    log "home Wi-Fi joined: the temporary network stays closed"
+    return 0
+  fi
+  err=$(printf '%s' "$reply" | jq -r '.error // "connect_failed"' 2>/dev/null) || err=connect_failed
+  [ -n "$err" ] || err=connect_failed
+  jq -cn --arg s "$ssid_b64" --arg e "$err" --argjson t "$(now)" '{state: "failed", ssid: ($s | @base64d), error: $e, at: $t}' >"$RUN/try.json"
+  echo $(($(now) + GRACE)) >"$RUN/grace"
+  log "home Wi-Fi not joined ($err): the temporary network opens again"
+  start "$mode" || true
+  rm -f "$RUN/trying"
+}
+
+# --- the service ----------------------------------------------------------------------------------
+
+run() {
+  mkdir -p "$RUN"
+  local cap
+  cap=$(capable 20)
+  echo "$cap" >"$RUN/capable"
+  if [ "$cap" != ok ]; then
+    log "no temporary network here ($cap): RedGiant is found on the network (mDNS _redgiant._tcp)"
+    return 0
+  fi
+  stop >/dev/null 2>&1
+  local missing_since="" cur want t on missing
+  trap 'stop; exit 0' TERM INT
+  while :; do
+    # A try that never finished (killed) holds nothing for long.
+    find "$RUN/trying" -mmin +5 -delete 2>/dev/null
+    if [ ! -e "$RUN/trying" ]; then
+      t=$(now)
+      cur=$(current)
+      if home_up; then missing_since=""; elif [ -z "$missing_since" ]; then missing_since=$t; fi
+      missing=-1
+      [ -n "$missing_since" ] && missing=$((t - missing_since))
+      on=0
+      [ "$cur" != off ] && on=$((t - $(num "$(state_field since)")))
+      want=$(decide "pending=$([ -e "$PENDING" ] && echo 1 || echo 0)" "handed=$([ -e "$RUN/handed" ] && echo 1 || echo 0)" \
+        "uptime=$(uptime_s)" "now=$t" "grace=$(readnum "$RUN/grace")" "force=$(readnum "$RUN/force")" "closed=$(readnum "$RUN/closed")" \
+        "cur=$cur" "missing=$missing" "on=$on")
+      if [ "$want" != "$cur" ]; then
+        [ "$cur" != off ] && stop
+        # Closed: the card looks for the home network again; the 10 minutes start again.
+        [ "$cur" = maintenance ] && missing_since=$(now)
+        [ "$want" != off ] && { start "$want" || log "could not open the temporary network"; }
+      fi
+    fi
+    sleep "$TICK"
+  done
+}
+
+case "${1:-}" in
+  run) run ;;
+  status) status "${2:-}" ;;
+  ssid) ssid ;;
+  capable) capable "${2:-0}" ;;
+  decide) shift && decide "$@" ;;
+  start) mkdir -p "$RUN" && start "${2:-}" ;;
+  stop) stop ;;
+  try) try_home ;;
+  handover) mkdir -p "$RUN" && touch "$RUN/handed" && rm -f "$RUN/force" "$RUN/grace" ;;
+  # The first start is completed (the server says so): the marker goes, the network closes.
+  done) rm -f "$PENDING" && mkdir -p "$RUN" && touch "$RUN/handed" && rm -f "$RUN/force" "$RUN/grace" ;;
+  # A device is using the network: it stays open 10 more minutes.
+  keep) mkdir -p "$RUN" && [ "$(current)" != off ] && echo $(($(now) + GRACE)) >"$RUN/grace" ;;
+  # Asked open (ap-start) for 10 minutes, or closed (ap-stop) until the home network is missing again.
+  force) mkdir -p "$RUN" && rm -f "$RUN/closed" && echo $(($(now) + GRACE)) >"$RUN/force" ;;
+  close) mkdir -p "$RUN" && rm -f "$RUN/force" "$RUN/grace" && echo $(($(now) + HOME_WAIT)) >"$RUN/closed" ;;
+  *) echo "usage: redgiant-setup-ap run|status|ssid|capable|decide|start|stop|try|handover|done|keep|force|close" >&2; exit 2 ;;
+esac

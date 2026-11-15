@@ -123,6 +123,17 @@ describe("the local network (G39.7)", () => {
     expect(firstAccessOf({ ...base, hasPassword: true })).toBeNull();
     expect(firstAccessOf({ ...base, completed: true })).toBeNull();
     expect(firstAccessOf({ ...base, completed: true, from: "anywhere" })).toBeNull();
+    // The temporary network of RedGiant OS (G40.3): at a first start it counts as the local
+    // network (whatever the proxies said); in maintenance it never opens the first access, nor
+    // does it hand out a code, whatever the rest says.
+    expect(firstAccessOf({ ...base, local: false, network: "setup" })).toBe("password");
+    expect(firstAccessOf({ ...base, network: "setup", codeActive: true })).toBe("code");
+    expect(firstAccessOf({ ...base, network: "setup", completed: true })).toBeNull();
+    expect(firstAccessOf({ ...base, network: "maintenance" })).toBeNull();
+    expect(firstAccessOf({ ...base, network: "maintenance", from: "anywhere" })).toBeNull();
+    expect(firstAccessOf({ ...base, network: "maintenance", codeActive: true })).toBeNull();
+    expect(firstAccessOf({ ...base, network: "home" })).toBe("password");
+    expect(firstAccessOf({ ...base, network: "home", local: false })).toBe("not_here");
     expect(firstAccessFromEnv(undefined)).toBe("lan");
     expect(firstAccessFromEnv("anywhere")).toBe("anywhere");
     expect(firstAccessFromEnv("yes")).toBe("lan");

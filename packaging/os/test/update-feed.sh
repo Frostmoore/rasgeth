@@ -8,7 +8,7 @@
 #     --above: the version the machine runs; the feed must be newer, so a version that is not
 #       (a branch whose release-kind.json still names the last release) becomes the next patch.
 set -euo pipefail
-OUT="" VERSION="" ABOVE="" SOURCE=""
+OUT="" VERSION="" ABOVE="" SOURCE="" TAG=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --out) OUT=$2 && shift ;;
@@ -27,10 +27,12 @@ ROOT=$(cd "$(dirname "$0")/../../.." && pwd)
 if [ "$(printf '%s\n%s\n' "$ABOVE" "$VERSION" | sort -V | tail -1)" = "$ABOVE" ]; then
   IFS=. read -r a b c <<<"$ABOVE"
   echo "::notice title=Update test::$VERSION is not newer than $ABOVE: the feed is $a.$b.$((c + 1)) (same images and files)"
+  # The next patch has no images of its own: the stack names the version's (its tag).
+  TAG=$VERSION
   VERSION=$a.$b.$((c + 1))
 fi
 mkdir -p "$OUT"
-node "$ROOT/packaging/os/stack.mjs" --version "$VERSION" --source-tag "$SOURCE" --out "$OUT/redgiant-os-stack.json"
+node "$ROOT/packaging/os/stack.mjs" --version "$VERSION" --tag "${TAG:-$VERSION}" --source-tag "$SOURCE" --out "$OUT/redgiant-os-stack.json"
 node "$ROOT/packaging/os/files.mjs" --version "$VERSION" --out "$OUT"
 node "$ROOT/packaging/update/release-info.mjs" --version "$VERSION" --out "$OUT"
 key=$(mktemp)

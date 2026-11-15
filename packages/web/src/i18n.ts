@@ -6008,6 +6008,21 @@ const en = {
   osUpdSubLead: "RedGiant and the system it runs on, kept up to date.",
   osWifiTitle: "Wi-Fi",
   osWifiQ: "Which wireless network does the machine join?",
+  snTitle: "Your home network",
+  snQ: "You are on {ssid}, RedGiant's temporary network: which network should RedGiant use at home?",
+  snMaintQ:
+    "RedGiant could not find your home network, so it opened {ssid} again: choose the network it should use.",
+  snCable: "I use the cable",
+  snCableDone:
+    "The cable works: RedGiant is at {address}. Join your home network with this device and open http://{address}:7600 (or http://redgiant.local:7600).",
+  snJoin: "Use this network",
+  snTrying:
+    "RedGiant is joining «{name}»: this temporary network closes now. Join your home network with this device and open http://redgiant.local:7600. If it does not work, {ssid} comes back in a minute with the reason.",
+  snFailed: "RedGiant could not join «{name}»: {why}",
+  snNone: "No network was seen around: use the cable, or type the name of a hidden network.",
+  snPassword: "Password of «{name}»",
+  snHiddenName: "Network name",
+  snHidden: "A hidden network",
   osWifiNow: "Now",
   osWifiConnectedTo: "Connected to «{name}» ({ip})",
   osWifiNotConnected: "Not connected to a Wi-Fi network",
@@ -12424,6 +12439,22 @@ const it: Record<Key, string> = {
   osUpdSubLead: "RedGiant e il sistema su cui gira, sempre aggiornati.",
   osWifiTitle: "Wi-Fi",
   osWifiQ: "A quale rete senza fili si collega la macchina?",
+  snTitle: "La rete di casa",
+  snQ: "Sei collegato a {ssid}, la rete temporanea di RedGiant: quale rete deve usare RedGiant a casa?",
+  snMaintQ:
+    "RedGiant non trovava più la rete di casa e ha riaperto {ssid}: scegli la rete che deve usare.",
+  snCable: "Uso il cavo",
+  snCableDone:
+    "Il cavo funziona: RedGiant è a {address}. Collega questo dispositivo alla rete di casa e apri http://{address}:7600 (oppure http://redgiant.local:7600).",
+  snJoin: "Usa questa rete",
+  snTrying:
+    "RedGiant si collega a «{name}»: questa rete temporanea adesso si chiude. Collega questo dispositivo alla rete di casa e apri http://redgiant.local:7600. Se non funziona, {ssid} torna fra un minuto con il motivo.",
+  snFailed: "RedGiant non è riuscito a collegarsi a «{name}»: {why}",
+  snNone:
+    "Intorno non si vede nessuna rete: usa il cavo, oppure scrivi il nome di una rete nascosta.",
+  snPassword: "Password di «{name}»",
+  snHiddenName: "Nome della rete",
+  snHidden: "Una rete nascosta",
   osWifiNow: "Adesso",
   osWifiConnectedTo: "Collegata a «{name}» ({ip})",
   osWifiNotConnected: "Non collegata a una rete Wi-Fi",

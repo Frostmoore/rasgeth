@@ -8,6 +8,15 @@
     <port>7600</port>
     <txt-record>path=/</txt-record>
   </service>
+  <!-- G40.3: RedGiant's own service, for the app (RGCompanion) and the first start without a
+       screen: the app checks the machine's key over the setup channel, never this record. -->
+  <service>
+    <type>_redgiant._tcp</type>
+    <port>7600</port>
+    <txt-record>path=/</txt-record>
+    <txt-record>channel=/api/setup-channel</txt-record>
+    <txt-record>proto=1</txt-record>
+  </service>
   <service>
     <type>_https._tcp</type>
     <port>443</port>

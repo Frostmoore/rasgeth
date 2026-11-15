@@ -45,6 +45,7 @@ import { ensureGit } from "./portable-git.js";
 import { backgroundPuller, runtimeHooks } from "./runtime.js";
 import { serve } from "./serve.js";
 import { SetupService } from "./setup.js";
+import { SetupNetwork } from "./setup-network.js";
 import {
   installedVersion,
   installKind,
@@ -399,6 +400,11 @@ const setup = new SetupService({
   },
 });
 await setup.applyAtStartup();
+// RedGiant OS's temporary network (G40.3): closed once the first start is completed (and at start,
+// should it have been completed before the machine knew).
+const setupNetwork = new SetupNetwork({ helper: osHelper });
+setup.completedHooks.push(() => setupNetwork.done());
+void setupNetwork.reconcile(setup.completed).catch(() => {});
 // The keys the setup keeps are listed in the keychain too (names only), so there is one place.
 core.vaultSystem = async () => setup.keysForVault();
 if (vaultEgress && "close" in vaultEgress) shutdownHooks.push(() => vaultEgress.close());
@@ -494,6 +500,9 @@ const running = await serve(core, new TokenAuth({ [token]: owner }), {
   loginOwner: owner,
   // Who may create the first access (G39.7): the local network, or anywhere when allowed.
   firstAccessFrom: firstAccessFromEnv(env.REDGIANT_FIRST_ACCESS),
+  setupNetwork,
+  // The setup channel hands the app its device token (G40.1) once the access exists.
+  issueDeviceToken: (ownerId, device) => core.devices.create(ownerId, device),
   webDir: env.REDGIANT_WEB_DIR ?? fileURLToPath(new URL("../../web/dist", import.meta.url)),
 });
 console.log(`RedGiant listening on ${running.url} (sandbox: ${sandbox.kind})`);

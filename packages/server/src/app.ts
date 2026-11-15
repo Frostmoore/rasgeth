@@ -108,6 +108,8 @@ import { ProjectError, SubprojectError } from "./projects.js";
 import { RefineError } from "./prompt-refiner.js";
 import { RoomError } from "./rooms.js";
 import type { SetupService } from "./setup.js";
+import type { SetupNetwork } from "./setup-network.js";
+import { setupCaptive, setupNetworkRoutes } from "./setup-network-routes.js";
 import { MEMORY_ENTRY_LIMIT, MemoryError } from "./shared-memory.js";
 import { sheetRoutes } from "./sheet-routes.js";
 import { updateRoutes } from "./update-routes.js";
@@ -869,6 +871,8 @@ export interface AppOptions {
   firstAccessFrom?: FirstAccessFrom;
   /** RedGiant's version, told to the app (`GET /api/app/hello`); null from the sources. */
   version?: string | null;
+  /** RedGiant OS's temporary network (G40.3): captive portal, where a request comes from. */
+  setupNetwork?: SetupNetwork;
 }
 
 export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOptions = {}) {
@@ -887,6 +891,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.use("*", async (c, next) => {
     const lan = options.setup?.firstBoot?.lan.settings;
     if (!lan?.redirect) return next();
+    // Never on RedGiant OS's temporary network (G40.3): its address is not in the certificate.
+    if (options.setupNetwork && (await options.setupNetwork.here(clientAddress(c))) !== "home")
+      return next();
     const url = new URL(c.req.url);
     const r = {
       redirect: true,
@@ -899,6 +906,10 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     const hsts = lanHsts(r);
     if (hsts) c.header("strict-transport-security", hsts);
   });
+
+  // The captive portal of RedGiant OS's temporary network (G40.3): the probes of phones and
+  // computers get the first start's page. (clientAddress is read at request time.)
+  setupCaptive(app, options.setupNetwork, (c) => clientAddress(c));
 
   app.get("/api/health", (c) => c.json({ ok: true, protocolVersion: PROTOCOL_VERSION }));
   app.doc31("/api/openapi.json", {
@@ -944,6 +955,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       // The app's protocol (G40.1): what this RedGiant is, and the password for a device's token.
       "/api/app/hello",
       "/api/app/pair",
+      // Whether the page is on RedGiant OS's temporary network (G40.3): nothing secret.
+      "/api/setup-network/here",
       // The service sends the person back here after signing in; the state is the credential.
       "/api/extensions/oauth/callback",
     ];
@@ -1032,6 +1045,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
           codeActive: options.setup.setupCode.required,
           local: fromLocalNetwork(socketAddress(c), (n) => c.req.header(n)),
           from: options.firstAccessFrom ?? "lan",
+          // The temporary network (G40.3): local at a first start, never a new owner in maintenance.
+          network: await options.setupNetwork?.here(clientAddress(c)),
         })
       : null;
   app.get("/api/auth/methods", async (c) => {
@@ -1580,6 +1595,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   browserRoutes(app, core.browserLinks, owner, clientAddress);
   // Mandatory and breaking updates (G36.19): the status, the safety backup, found backups.
   updateRoutes(app, core, owner, options.setup);
+  // RedGiant OS's temporary network (G40.3): the home network chosen from it.
+  setupNetworkRoutes(app, options.setupNetwork, clientAddress);
   // The first boot anywhere (G39.3): role, storage, backups' destination, what reaches the machine.
   firstBootRoutes(app, options.setup, () => options.setup?.scheduler, core, owner);
   // The knowledge (G36, the RAG): collections, sources, models, search, citations.

@@ -10,6 +10,8 @@
 #   | wifi-forget <base64 ssid>
 #   | https-status | https-local <on|off>
 #   | os-update-status | os-update-check | os-update-apply | reboot
+#   | ap-status | ap-start | ap-stop | ap-keep | ap-done
+#   | home-network-try <cable | <base64 ssid> <base64 password|-> <visible|hidden>>
 #
 # Rules: only filesystems on a disk that can be unplugged (RM, HOTPLUG or USB), never a disk
 # with a system mount point; mounted nosuid,nodev,noexec under /var/lib/redgiant/backups/<label>;
@@ -37,6 +39,8 @@ IWD_DIR=$R/var/lib/iwd
 OS_STATE=$R/var/lib/redgiant
 OS_LIB=$R/usr/lib/redgiant-os
 TLS_DIR=$OS_STATE/tls
+# The temporary network's state (redgiant-setup-ap, G40.3).
+SETUP_RUN=$R/run/redgiant-setup
 
 BASE=$R/var/lib/redgiant/backups
 OWNER_UID=${REDGIANT_HELPER_UID:-${SUDO_UID:-0}}
@@ -315,6 +319,156 @@ os_update_reply() {
   exit 0
 }
 
+# --- joining a network (wifi-connect, and the home network tried from the temporary network) --
+
+# wifi_args <base64 ssid> <base64 password|-> <visible|hidden>: sets ssid, pass, kind, mode and
+# the files.
+wifi_args() {
+  ssid=$(b64d "$1") || fail bad_request
+  valid_ssid "$ssid" || fail bad_ssid
+  if [ "$2" = - ]; then
+    pass="" kind=open
+  else
+    pass=$(b64d "$2") || fail bad_request
+    valid_password "$pass" || fail bad_password
+    kind=psk
+  fi
+  case "$3" in visible | hidden) ;; *) fail bad_request ;; esac
+  mode=$3
+  wifi_files
+}
+# iwd's file for the network, a new one being written, and the one that worked before while a
+# new password is tried (one per network, so a later request can put it back).
+wifi_files() {
+  file=$IWD_DIR/$(iwd_name "$ssid").$kind
+  tmp=$IWD_DIR/.redgiant-new.$$
+  old=$IWD_DIR/.redgiant-old.$(iwd_name "$ssid").$kind
+}
+# write_file <trial 0|1> <visible|hidden>: the network's file, written whole and then moved in
+# place (root only); on trial iwd may not join it by itself (AutoConnect=false), so the only
+# attempt is ours and its answer is the password's.
+write_file() {
+  {
+    if [ "$2" = hidden ] || [ "$1" = 1 ]; then
+      printf '[Settings]\n'
+      [ "$2" = hidden ] && printf 'Hidden=true\n'
+      [ "$1" = 1 ] && printf 'AutoConnect=false\n'
+      printf '\n'
+    fi
+    if [ "$kind" = psk ]; then
+      printf '[Security]\n'
+      if is_hex64 "$pass"; then
+        printf 'PreSharedKey=%s\n' "$pass"
+      else
+        printf 'Passphrase=%s\n' "$pass"
+      fi
+    fi
+  } >"$tmp"
+  chmod 0600 "$tmp"
+  mv -f "$tmp" "$file"
+}
+# The trial file in place, the one from before kept aside (had=1). Nothing of the network stays
+# from before: iwd forgets it (it would keep the old password in memory), and the restart in
+# wifi_join drops whatever it still held (keys cached from earlier joins).
+wifi_save_trial() {
+  umask 077
+  mkdir -p "$IWD_DIR"
+  chmod 0700 "$IWD_DIR"
+  had=0
+  rm -f "$old"
+  if [ -e "$file" ]; then cp -p "$file" "$old" && had=1; fi
+  forget_known "$ssid"
+  write_file 1 "$mode"
+}
+# Joins the network whose trial file is in place (ssid, kind, mode, file, old, had, keep set) and
+# answers: connected, saved, or the error with the network as it was before.
+wifi_join() {
+  # undo: the network as it was before (the file that worked, or none), read again by iwd.
+  undo() {
+    forget_known "$ssid"
+    rm -f "$file"
+    [ "$had" = 1 ] && mv -f "$old" "$file"
+    iwd_reload "" || true
+  }
+  # settle: the trial file becomes the real one: iwd joins it by itself again from now on.
+  # iwd writes the setting into the file itself (seen in QEMU); when it did not, the line goes
+  # (iwd reads it at its next start at the latest). No password needed for that.
+  settle() {
+    rm -f "$old"
+    if o=$(iwd_objects); then
+      for k in $(known_of "$o" "$ssid"); do
+        busctl --timeout=10 set-property net.connman.iwd "$k" net.connman.iwd.KnownNetwork AutoConnect b true >/dev/null 2>&1 || true
+      done
+    fi
+    if grep -q '^AutoConnect=false' "$file" 2>/dev/null; then
+      # The line goes, and the [Settings] section with it when nothing else was in it.
+      sed -e '/^AutoConnect=false$/d' "$file" | sed -e '1{/^\[Settings\]$/{N;/^\[Settings\]\n$/d;};}' >"$tmp" 2>/dev/null
+      chmod 0600 "$tmp"
+      mv -f "$tmp" "$file"
+    fi
+    return 0
+  }
+  # iwd reads its saved networks again from the files (watching its folder is not reliable:
+  # in QEMU it kept a refused password in memory and then failed to load the new file).
+  # Wi-Fi drops for a moment, as joining another network does anyway.
+  iwd_reload "$ssid" || { undo; fail wifi_off; }
+  objs=$(iwd_objects) || objs='{"data":[{}]}'
+  st=$(station_of "$objs")
+  net=$(network_of "$objs" "$ssid" "$kind" "$st")
+  if [ -z "$net" ]; then
+    scan "$st"
+    objs=$(iwd_objects) || objs='{"data":[{}]}'
+    net=$(network_of "$objs" "$ssid" "$kind" "$st")
+  fi
+  err=""
+  if [ -n "$net" ]; then
+    err=$(busctl --timeout=40 call net.connman.iwd "$net" net.connman.iwd.Network Connect 2>&1 >/dev/null) || err=${err:-failed}
+  elif [ "$mode" = hidden ]; then
+    err=$(busctl --timeout=40 call net.connman.iwd "$st" net.connman.iwd.Station ConnectHiddenNetwork s "$ssid" 2>&1 >/dev/null) || err=${err:-failed}
+    objs=$(iwd_objects) || objs='{"data":[{}]}'
+    net=$(network_of "$objs" "$ssid" "$kind" "$st")
+  else
+    if [ "$keep" = 1 ]; then
+      settle
+      ok ',"state":"saved"'
+    fi
+    undo
+    fail not_found
+  fi
+  # iwd's yes is not enough (it says yes to a network it is still joining): the card must be
+  # associated, link up and an access point, within 20 s.
+  if [ -z "$err" ] && [ -n "$net" ] && wait_associated "$st" "$net" 40; then
+    settle
+    # An address from the network (DHCP, router advertisements), up to 20 s more.
+    i=0
+    while [ $i -lt 40 ] && [ -z "$(address_of "$LINK_DEV")" ]; do
+      sleep 0.5
+      i=$((i + 1))
+    done
+    [ -n "$(address_of "$LINK_DEV")" ] || ok ',"state":"saved","detail":"no_address"'
+    ok ',"state":"connected"'
+  fi
+  [ -n "$err" ] || err="not associated"
+  if [ "$keep" = 1 ]; then
+    settle
+    ok ',"state":"saved"'
+  fi
+  undo
+  # iwd's error name only (no secret can be in it), for the page's details.
+  detail=$(printf '%s' "$err" | head -n1 | sed 's/^Call failed: //' | tr -cd 'A-Za-z .' | cut -c1-80)
+  case "$err" in
+    *InProgress* | *"in progress"*) fail busy ;;
+    *NotFound* | *"not found"*) fail not_found ;;
+    *) printf '{"ok":false,"error":"connect_failed","detail":"%s"}\n' "$detail"; exit 1 ;;
+  esac
+}
+
+# A wired card with carrier and an address of the home network: "<address>", or nothing.
+cable_address() {
+  ip -j -4 addr show 2>/dev/null | jq -r '[.[] | select(.ifname | test("^(lo|docker|br-|veth|virbr|tailscale|wl)") | not)
+    | select(.operstate == "UP") | .addr_info[]? | select(.scope == "global") | .local][0] // empty' 2>/dev/null
+}
+
 case "$op" in
   list)
     [ $# -eq 0 ] || fail bad_request
@@ -486,49 +640,13 @@ EOF
 
   wifi-connect)
     [ $# -ge 3 ] && [ $# -le 4 ] || fail bad_request
-    ssid=$(b64d "$1") || fail bad_request
-    valid_ssid "$ssid" || fail bad_ssid
-    if [ "$2" = - ]; then
-      pass="" kind=open
-    else
-      pass=$(b64d "$2") || fail bad_request
-      valid_password "$pass" || fail bad_password
-      kind=psk
-    fi
-    case "$3" in visible | hidden) ;; *) fail bad_request ;; esac
-    mode=$3
+    wifi_args "$1" "$2" "$3"
     keep=0
     if [ $# -eq 4 ]; then [ "$4" = keep ] || fail bad_request; keep=1; fi
     need jq
-    # iwd's file for the network, written whole and then moved in place (root only).
     umask 077
     mkdir -p "$IWD_DIR"
     chmod 0700 "$IWD_DIR"
-    file=$IWD_DIR/$(iwd_name "$ssid").$kind
-    tmp=$IWD_DIR/.redgiant-new.$$
-    old=$IWD_DIR/.redgiant-old.$$
-    # write_file <trial 0|1> <visible|hidden>: the network's file; on trial iwd may not join it by itself
-    # (AutoConnect=false), so the only attempt is ours and its answer is the password's.
-    write_file() {
-      {
-        if [ "$2" = hidden ] || [ "$1" = 1 ]; then
-          printf '[Settings]\n'
-          [ "$2" = hidden ] && printf 'Hidden=true\n'
-          [ "$1" = 1 ] && printf 'AutoConnect=false\n'
-          printf '\n'
-        fi
-        if [ "$kind" = psk ]; then
-          printf '[Security]\n'
-          if is_hex64 "$pass"; then
-            printf 'PreSharedKey=%s\n' "$pass"
-          else
-            printf 'Passphrase=%s\n' "$pass"
-          fi
-        fi
-      } >"$tmp"
-      chmod 0600 "$tmp"
-      mv -f "$tmp" "$file"
-    }
     objs="" st=""
     if command -v busctl >/dev/null 2>&1 && objs=$(iwd_objects); then
       power_on "$objs"
@@ -539,85 +657,84 @@ EOF
       write_file 0 "$mode"
       ok ',"state":"saved"'
     fi
-    had=0
-    if [ -e "$file" ]; then cp -p "$file" "$old" && had=1; fi
-    # Nothing of the network stays from before: iwd forgets it (it would keep the old password in
-    # memory), and the restart below drops whatever it still held (keys cached from earlier joins).
-    forget_known "$ssid"
-    write_file 1 "$mode"
-    # undo: the network as it was before (the file that worked, or none), read again by iwd.
-    undo() {
-      forget_known "$ssid"
-      rm -f "$file"
-      [ "$had" = 1 ] && mv -f "$old" "$file"
-      iwd_reload "" || true
-    }
-    # settle: the trial file becomes the real one: iwd joins it by itself again from now on.
-    # iwd writes the setting into the file itself (seen in QEMU); when it did not, the file is
-    # written again without it (iwd reads it at its next start at the latest).
-    settle() {
-      rm -f "$old"
-      if o=$(iwd_objects); then
-        for k in $(known_of "$o" "$ssid"); do
-          busctl --timeout=10 set-property net.connman.iwd "$k" net.connman.iwd.KnownNetwork AutoConnect b true >/dev/null 2>&1 || true
-        done
-      fi
-      grep -q '^AutoConnect=false' "$file" 2>/dev/null && write_file 0 "$mode"
-      return 0
-    }
-    # iwd reads its saved networks again from the files (watching its folder is not reliable:
-    # in QEMU it kept a refused password in memory and then failed to load the new file).
-    # Wi-Fi drops for a moment, as joining another network does anyway.
-    iwd_reload "$ssid" || { undo; fail wifi_off; }
-    objs=$(iwd_objects) || objs='{"data":[{}]}'
-    st=$(station_of "$objs")
-    net=$(network_of "$objs" "$ssid" "$kind" "$st")
-    if [ -z "$net" ]; then
-      scan "$st"
-      objs=$(iwd_objects) || objs='{"data":[{}]}'
-      net=$(network_of "$objs" "$ssid" "$kind" "$st")
-    fi
-    err=""
-    if [ -n "$net" ]; then
-      err=$(busctl --timeout=40 call net.connman.iwd "$net" net.connman.iwd.Network Connect 2>&1 >/dev/null) || err=${err:-failed}
-    elif [ "$mode" = hidden ]; then
-      err=$(busctl --timeout=40 call net.connman.iwd "$st" net.connman.iwd.Station ConnectHiddenNetwork s "$ssid" 2>&1 >/dev/null) || err=${err:-failed}
-      objs=$(iwd_objects) || objs='{"data":[{}]}'
-      net=$(network_of "$objs" "$ssid" "$kind" "$st")
-    else
-      if [ "$keep" = 1 ]; then
-        settle
-        ok ',"state":"saved"'
-      fi
-      undo
-      fail not_found
-    fi
-    # iwd's yes is not enough (it says yes to a network it is still joining): the card must be
-    # associated, link up and an access point, within 20 s.
-    if [ -z "$err" ] && [ -n "$net" ] && wait_associated "$st" "$net" 40; then
-      settle
-      # An address from the network (DHCP, router advertisements), up to 20 s more.
-      i=0
-      while [ $i -lt 40 ] && [ -z "$(address_of "$LINK_DEV")" ]; do
-        sleep 0.5
-        i=$((i + 1))
-      done
-      [ -n "$(address_of "$LINK_DEV")" ] || ok ',"state":"saved","detail":"no_address"'
-      ok ',"state":"connected"'
-    fi
-    [ -n "$err" ] || err="not associated"
-    if [ "$keep" = 1 ]; then
-      settle
-      ok ',"state":"saved"'
-    fi
-    undo
-    # iwd's error name only (no secret can be in it), for the page's details.
-    detail=$(printf '%s' "$err" | head -n1 | sed 's/^Call failed: //' | tr -cd 'A-Za-z .' | cut -c1-80)
-    case "$err" in
-      *InProgress* | *"in progress"*) fail busy ;;
-      *NotFound* | *"not found"*) fail not_found ;;
-      *) printf '{"ok":false,"error":"connect_failed","detail":"%s"}\n' "$detail"; exit 1 ;;
+    wifi_save_trial
+    wifi_join
+    ;;
+
+  wifi-join-trial)
+    # Only from redgiant-setup-ap's try (the home network, G40.3): the trial file home-network-try
+    # wrote is joined now that the temporary network is closed. No password here: it is in the file.
+    [ $# -eq 4 ] || fail bad_request
+    ssid=$(b64d "$1") || fail bad_request
+    valid_ssid "$ssid" || fail bad_ssid
+    case "$2" in psk | open) kind=$2 ;; *) fail bad_request ;; esac
+    case "$3" in visible | hidden) mode=$3 ;; *) fail bad_request ;; esac
+    case "$4" in 0 | 1) had=$4 ;; *) fail bad_request ;; esac
+    need busctl jq
+    wifi_files
+    grep -q '^AutoConnect=false' "$file" 2>/dev/null || fail not_found
+    [ "$had" = 0 ] || [ -e "$old" ] || had=0
+    keep=0
+    umask 077
+    if objs=$(iwd_objects); then power_on "$objs"; fi
+    wifi_join
+    ;;
+
+  ap-status)
+    [ $# -eq 0 ] || fail bad_request
+    need jq
+    [ -x "$OS_LIB/redgiant-setup-ap" ] || fail not_installed
+    out=$("$OS_LIB/redgiant-setup-ap" status 2>/dev/null) || fail bad_output
+    printf '%s\n' "$out" | jq -c 'select(.ok == true)' 2>/dev/null | grep -q . || fail bad_output
+    printf '%s\n' "$out"
+    exit 0
+    ;;
+
+  ap-start | ap-stop | ap-keep | ap-done)
+    # Open it now for 10 minutes, close it, keep it open (a device is using it), the first start
+    # is completed. The service decides the rest (redgiant-setup-ap run).
+    [ $# -eq 0 ] || fail bad_request
+    [ -x "$OS_LIB/redgiant-setup-ap" ] || fail not_installed
+    case "$op" in
+      ap-start)
+        [ "$(cat "$SETUP_RUN/capable" 2>/dev/null)" = ok ] || fail no_ap
+        "$OS_LIB/redgiant-setup-ap" force >/dev/null 2>&1 || fail failed
+        ;;
+      ap-stop) "$OS_LIB/redgiant-setup-ap" close >/dev/null 2>&1 || fail failed ;;
+      ap-keep) "$OS_LIB/redgiant-setup-ap" keep >/dev/null 2>&1 || true ;;
+      ap-done) "$OS_LIB/redgiant-setup-ap" "done" >/dev/null 2>&1 || fail failed ;;
     esac
+    ok
+    ;;
+
+  home-network-try)
+    # The home network chosen from the temporary network (G40.3): "cable", or a Wi-Fi network
+    # tried with the temporary network closed ("try and return": when it does not work, the
+    # temporary network opens again with the error). The reply comes first: the attempt starts
+    # a few seconds later, in its own unit.
+    need jq
+    [ -x "$OS_LIB/redgiant-setup-ap" ] || fail not_installed
+    if [ "${1:-}" = cable ]; then
+      [ $# -eq 1 ] || fail bad_request
+      a=$(cable_address)
+      [ -n "$a" ] || fail no_cable
+      case "$a" in *[!0-9.]*) fail no_cable ;; esac
+      systemd-run --on-active=20 --unit=redgiant-setup-handover --collect \
+        "$OS_LIB/redgiant-setup-ap" handover >/dev/null 2>&1 || fail busy
+      ok ",\"state\":\"connected\",\"address\":\"$a\""
+    fi
+    [ $# -eq 3 ] || fail bad_request
+    wifi_args "$1" "$2" "$3"
+    [ -e "$SETUP_RUN/trying" ] && fail busy
+    wifi_save_trial
+    mkdir -p "$SETUP_RUN"
+    printf 'wifi %s %s %s %s\n' "$1" "$kind" "$mode" "$had" >"$SETUP_RUN/try.req"
+    if ! systemd-run --on-active=3 --unit=redgiant-setup-try --collect "$OS_LIB/redgiant-setup-ap" try >/dev/null 2>&1; then
+      rm -f "$SETUP_RUN/try.req" "$file"
+      [ "$had" = 1 ] && mv -f "$old" "$file"
+      fail busy
+    fi
+    ok ',"state":"trying"'
     ;;
 
   wifi-forget)

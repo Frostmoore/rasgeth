@@ -81,6 +81,7 @@ DISK_ID=$(uuid disk)
 # Debian's non-free-firmware section: Intel, Realtek, Qualcomm Atheros, Broadcom (Raspberry Pi
 # and many laptops) and the rest of firmware-misc-nonfree (MediaTek, Ralink…). Everything in that
 # section is redistributable (Debian ships it on its own installer images since Debian 12).
+# dnsmasq-base (the program only, no service): the temporary network's DNS (G40.3).
 # Caddy (Debian's) serves https://redgiant.local with the machine's local certificate authority.
 PACKAGES=(
   systemd systemd-sysv systemd-resolved udev dbus kmod iproute2 iputils-ping netbase
@@ -90,7 +91,7 @@ PACKAGES=(
   openssh-server unattended-upgrades
   cloud-guest-utils gdisk fdisk parted e2fsprogs dosfstools exfatprogs pciutils usbutils
   initramfs-tools zstd linux-image-"$ARCH" firmware-linux-free firmware-realtek
-  iwd wireless-regdb rfkill firmware-iwlwifi firmware-atheros firmware-brcm80211 firmware-misc-nonfree
+  iwd wireless-regdb rfkill dnsmasq-base firmware-iwlwifi firmware-atheros firmware-brcm80211 firmware-misc-nonfree
   caddy
   grub2-common grub-efi-"$ARCH"-bin grub-efi-"$ARCH"-signed shim-signed
 )
