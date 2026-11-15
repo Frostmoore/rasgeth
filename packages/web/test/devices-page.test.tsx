@@ -25,6 +25,14 @@ const mac = {
   lastAddress: null,
 };
 let list: unknown[] = [];
+let testAnswer: unknown = { ok: true };
+const webpush = {
+  kind: "webpush",
+  registeredAt: "2026-11-15T09:00:00Z",
+  target: "ntfy.sh",
+  lastSentAt: null,
+  lastError: null,
+};
 const fakeApi = new Proxy(
   {},
   {
@@ -34,6 +42,7 @@ const fakeApi = new Proxy(
         calls.push([name, args]);
         if (name === "devices") return Promise.resolve(list);
         if (name === "renameDevice") return Promise.resolve({ ...pixel, name: args[1] });
+        if (name === "testDevicePush") return Promise.resolve(testAnswer);
         return Promise.resolve({ ok: true });
       };
     },
@@ -52,6 +61,7 @@ beforeEach(() => {
   lang.value = "it";
   calls.length = 0;
   list = [pixel, mac];
+  testAnswer = { ok: true };
 });
 afterEach(() => cleanup());
 
@@ -117,6 +127,42 @@ describe("Settings › Devices (G40.1)", () => {
     expect(confirm).not.toHaveBeenCalled();
   });
 
+  it("says where each device's notifications go, and sends a test (G40.4)", async () => {
+    list = [
+      { ...pixel, push: webpush },
+      { ...mac, push: null },
+      {
+        ...mac,
+        id: "dev_3",
+        name: "iPhone",
+        platform: "ios",
+        push: { ...webpush, kind: "apns", target: "APNs", blocked: "relay_off" },
+      },
+    ];
+    const r = page();
+    await waitFor(() => r.getByText("Notifiche tramite ntfy.sh"));
+    const text = r.container.textContent ?? "";
+    expect(text).toContain(t("dvPushNone"));
+    expect(text).toContain(t("dvPushRelayOff"));
+    // Only a device whose notifications can go is offered a test.
+    expect(r.getAllByText("Manda una prova")).toHaveLength(1);
+    fireEvent.click(r.getByText("Manda una prova"));
+    await waitFor(() => r.getByText("Prova mandata a «Pixel 8»: tra poco dovrebbe comparire lì."));
+    expect(calls.find(([n]) => n === "testDevicePush")?.[1]).toEqual(["dev_1"]);
+
+    testAnswer = { ok: false, error: "HTTP 500", gone: false };
+    fireEvent.click(r.getByText("Manda una prova"));
+    await waitFor(() => r.getByText("La prova non è arrivata a «Pixel 8»: HTTP 500."));
+  });
+
+  it("shows the last failure of a device's notifications", async () => {
+    list = [{ ...pixel, push: { ...webpush, lastError: "timed out" } }];
+    const r = page();
+    await waitFor(() =>
+      r.getByText("Notifiche tramite ntfy.sh · l'ultima non è arrivata (timed out)"),
+    );
+  });
+
   it("every text is there in both languages", () => {
     for (const l of ["it", "en"] as const) {
       lang.value = l;
@@ -134,6 +180,16 @@ describe("Settings › Devices (G40.1)", () => {
         "dvPlatform_macos",
         "dvPlatform_linux",
         "dvPlatform_other",
+        "dvPushNone",
+        "dvPushOn",
+        "dvPushLast",
+        "dvPushFailed",
+        "dvPushRelayOff",
+        "dvPushLocked",
+        "dvPushTest",
+        "dvPushTestOk",
+        "dvPushTestFailed",
+        "dvPushTestGone",
       ])
         expect(t(k as never)).not.toBe(k);
     }

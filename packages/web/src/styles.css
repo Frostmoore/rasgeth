@@ -20160,3 +20160,8 @@ html[data-theme="dark"] {
 :is(.wz, .wz-look) .wz-btn.quiet.dv-revoke {
   color: var(--err);
 }
+/* Where a device's notifications go (G40.4): its own line under the facts. */
+.dv-push {
+  display: block;
+  margin-top: 2px;
+}

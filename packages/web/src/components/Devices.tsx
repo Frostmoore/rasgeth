@@ -1,7 +1,8 @@
 // Settings › Devices (G40.1, 3.8): the person's phones and computers with RGCompanion, each with
 // its own access. The list says the platform, when it was last used and from where; a device is
 // renamed in our window and revoked after our confirmation (it is signed out at once). The
-// devices' tokens never reach the page.
+// devices' tokens never reach the page. Each device says where its notifications go (G40.4) and
+// can be sent a test.
 import type { DevicePlatform, DeviceView } from "@redgiant/protocol";
 import { useEffect, useState } from "preact/hooks";
 import { t } from "../i18n.js";
@@ -15,6 +16,22 @@ function when(iso: string): string {
 }
 
 const platformName = (p: DevicePlatform) => t(`dvPlatform_${p}` as const);
+
+/** «Notifications through ntfy.sh · last sent …», or why there are none. */
+export function pushFacts(d: DeviceView): string {
+  const p = d.push;
+  if (!p) return t("dvPushNone");
+  if (p.blocked === "relay_off") return t("dvPushRelayOff");
+  if (p.blocked === "keychain_locked") return t("dvPushLocked");
+  return [
+    t("dvPushOn", { target: p.target }),
+    ...(p.lastError
+      ? [t("dvPushFailed", { error: p.lastError })]
+      : p.lastSentAt
+        ? [t("dvPushLast", { when: when(p.lastSentAt) })]
+        : []),
+  ].join(" · ");
+}
 
 /** «Android · last used 15/11/26, 10:00 · from 192.168.1.20». */
 export function deviceFacts(d: DeviceView): string {
@@ -56,6 +73,20 @@ export function Devices() {
     }
   };
 
+  const test = async (d: DeviceView) => {
+    setDone(undefined);
+    const r = await attempt(() => getApi().testDevicePush(d.id));
+    if (!r) return;
+    setDone(
+      r.ok
+        ? t("dvPushTestOk", { name: d.name })
+        : r.gone
+          ? t("dvPushTestGone", { name: d.name })
+          : t("dvPushTestFailed", { name: d.name, error: r.error ?? "?" }),
+    );
+    reload();
+  };
+
   return (
     <WzPage class="dv-page">
       <Head q={t("dvQ")} lead={t("dvLead")} />
@@ -70,8 +101,18 @@ export function Devices() {
                   {d.current && <span class="wz-badge">{t("dvThis")}</span>}
                 </span>
               }
-              help={deviceFacts(d)}
+              help={
+                <>
+                  {deviceFacts(d)}
+                  <span class="dv-push">{pushFacts(d)}</span>
+                </>
+              }
             >
+              {d.push && !d.push.blocked && (
+                <button type="button" class="wz-btn small quiet" onClick={() => void test(d)}>
+                  {t("dvPushTest")}
+                </button>
+              )}
               <button type="button" class="wz-btn small quiet" onClick={() => void rename(d)}>
                 {t("dvRename")}
               </button>

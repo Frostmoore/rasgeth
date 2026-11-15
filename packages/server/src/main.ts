@@ -223,6 +223,12 @@ const core = await RedGiantCore.create({
   }),
   ...(metal && { metal }),
   ...(source && { source }),
+  // Notifications to the devices (G40.4): the APNs relay stays off (empty) until the app is
+  // published; VAPID's subject names who runs this server for the push services.
+  push: {
+    ...(env.REDGIANT_PUSH_RELAY_URL?.trim() && { relayUrl: env.REDGIANT_PUSH_RELAY_URL.trim() }),
+    ...(env.REDGIANT_PUSH_SUBJECT && { subject: env.REDGIANT_PUSH_SUBJECT }),
+  },
 });
 // Demi-God on Telegram: polling by default (works behind NAT), webhook when a secret is set.
 // The holder is shared with the HTTP app, so the setup wizard can start the bot later.

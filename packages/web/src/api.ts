@@ -1184,6 +1184,12 @@ export class Api {
   renameDevice = (id: string, name: string) =>
     this.call<DeviceView>("PATCH", `/api/devices/${encodeURIComponent(id)}`, { name });
   revokeDevice = (id: string) => this.call("DELETE", `/api/devices/${encodeURIComponent(id)}`);
+  /** «Send a test» to a device's notifications (G40.4). */
+  testDevicePush = (id: string) =>
+    this.call<{ ok: boolean; error?: string; gone?: boolean }>(
+      "POST",
+      `/api/devices/${encodeURIComponent(id)}/push/test`,
+    );
   setupGithub = (token: string) =>
     this.call<{ login: string }>("PUT", "/api/setup/github", { token });
   removeGithub = () => this.call("DELETE", "/api/setup/github");

@@ -5660,6 +5660,18 @@ const en = {
   dvPlatform_macos: "macOS",
   dvPlatform_linux: "Linux",
   dvPlatform_other: "Another system",
+  dvPushNone: "Notifications: off (the app has not turned them on)",
+  dvPushOn: "Notifications through {target}",
+  dvPushLast: "last sent {when}",
+  dvPushFailed: "the last one did not arrive ({error})",
+  dvPushRelayOff:
+    "Apple notifications are ready: they switch on when the app is published on the App Store",
+  dvPushLocked: "Notifications stopped: the keychain is locked",
+  dvPushTest: "Send a test",
+  dvPushTestOk: "Test sent to «{name}»: it should show up there in a moment.",
+  dvPushTestFailed: "The test did not reach «{name}»: {error}.",
+  dvPushTestGone:
+    "«{name}» no longer receives notifications there: the app registers them again when it opens.",
   ndQ: "Nodes",
   ndLead:
     "Other RedGiant machines that work with this one: they lend commands, local models and room for projects and backups. Who may command whom is decided here, machine by machine.",
@@ -12040,6 +12052,18 @@ const it: Record<Key, string> = {
   dvPlatform_macos: "macOS",
   dvPlatform_linux: "Linux",
   dvPlatform_other: "Un altro sistema",
+  dvPushNone: "Notifiche: spente (l'app non le ha attivate)",
+  dvPushOn: "Notifiche tramite {target}",
+  dvPushLast: "ultima inviata {when}",
+  dvPushFailed: "l'ultima non è arrivata ({error})",
+  dvPushRelayOff:
+    "Notifiche Apple pronte: si accendono quando l'app sarà pubblicata sull'App Store",
+  dvPushLocked: "Notifiche ferme: il Portachiavi è chiuso",
+  dvPushTest: "Manda una prova",
+  dvPushTestOk: "Prova mandata a «{name}»: tra poco dovrebbe comparire lì.",
+  dvPushTestFailed: "La prova non è arrivata a «{name}»: {error}.",
+  dvPushTestGone:
+    "«{name}» non riceve più notifiche lì: l'app le registra di nuovo quando si apre.",
   ndQ: "Nodi",
   ndLead:
     "Altre macchine RedGiant che lavorano con questa: prestano comandi, modelli locali e spazio per progetti e copie di sicurezza. Chi può comandare chi si decide qui, macchina per macchina.",
