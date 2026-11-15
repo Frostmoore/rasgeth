@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- RGCompanion's provisional icon: RedGiant's red giant (the page's favicon), drawn. -->
+  <defs>
+    <radialGradient id="bg" cx=".5" cy=".42" r=".75">
+      <stop offset="0" stop-color="#2a1716"/>
+      <stop offset="1" stop-color="#121418"/>
+    </radialGradient>
+    <radialGradient id="halo" cx=".5" cy=".5" r=".5">
+      <stop offset=".45" stop-color="#ef4b3a" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#ef4b3a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="star" cx=".38" cy=".32" r=".75">
+      <stop offset="0" stop-color="#ffd0a0"/>
+      <stop offset=".22" stop-color="#ffb070"/>
+      <stop offset=".55" stop-color="#d23a2c"/>
+      <stop offset="1" stop-color="#7a1810"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <circle cx="512" cy="512" r="420" fill="url(#halo)"/>
+  <path d="M138 610A390 108 -16 0 1 886 414" fill="none" stroke="#ffb36b" stroke-width="22" stroke-linecap="round" opacity=".5"/>
+  <circle cx="512" cy="512" r="255" fill="url(#star)"/>
+  <ellipse cx="420" cy="388" rx="70" ry="38" fill="#fff" opacity=".28" transform="rotate(-35 420 388)"/>
+  <g fill="none" stroke="#ffe0b0" stroke-width="9" opacity=".55">
+    <path d="M610 650L680 570L645 490M610 650L545 690"/>
+  </g>
+  <g fill="#ffe0b0" opacity=".7">
+    <circle cx="610" cy="650" r="14"/><circle cx="680" cy="570" r="14"/><circle cx="645" cy="490" r="11"/><circle cx="545" cy="690" r="11"/>
+  </g>
+  <path d="M886 414A390 108 -16 0 1 138 610" fill="none" stroke="#ffb36b" stroke-width="24" stroke-linecap="round"/>
+  <circle cx="218" cy="648" r="34" fill="#ffd27a"/>
+</svg>

@@ -20,6 +20,7 @@ export default defineConfig({
     testTimeout: 30_000,
     setupFiles: ["./vitest.setup.ts"],
     // Live tests call real models; they run only with `pnpm test:live`.
-    exclude: ["**/node_modules/**", "**/*.live.test.ts", "**/*.docker.test.ts"],
+    // RGCompanion (apps/companion) is Flutter: `flutter test` runs its tests (companion.yml).
+    exclude: ["**/node_modules/**", "**/*.live.test.ts", "**/*.docker.test.ts", "apps/**"],
   },
 });

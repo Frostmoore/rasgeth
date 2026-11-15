@@ -1,0 +1,29 @@
+name: rgcompanion
+description: "RGCompanion: the RedGiant app (Android, iOS, Windows, macOS, Linux)."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  # The same Flutter as Rig and the CI (companion.yml): 3.47.3, Dart 3.13.3.
+  sdk: ^3.13.0
+  flutter: ">=3.47.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_secure_storage: ^11.2.0
+  flutter_svg: ^2.4.0
+  http: ^1.6.0
+  intl: ^0.20.3
+  path_drawing: ^1.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  generate: true
+  uses-material-design: true

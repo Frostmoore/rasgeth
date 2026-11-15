@@ -1,0 +1,80 @@
+{
+  "@@locale": "en",
+  "appTitle": "RGCompanion",
+  "tabTeam": "Team",
+  "tabChat": "Chat",
+  "tabInbox": "For you",
+  "tabActivity": "Activity",
+  "tabYou": "You",
+  "composerHint": "Write to Chat…",
+  "composerSend": "Send",
+  "noServer": "No RedGiant connected",
+  "connectFromYou": "Connect one from You.",
+  "statusConnected": "connected",
+  "statusUnreachable": "unreachable",
+  "pillInbox": "For you",
+  "pillRunning": "In progress",
+  "stateIdle": "idle",
+  "stateThink": "thinking",
+  "stateWork": "working",
+  "stateWait": "waiting for you",
+  "stateError": "blocked",
+  "mascotLabel": "Mascot of {name}, {state}",
+  "@mascotLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "teamEmpty": "No agents yet.",
+  "chatNew": "New conversation",
+  "chatEmpty": "Your conversations with Chat, day by day, show here.",
+  "chatDraftNote": "Message ready: sending comes with the next version of the app.",
+  "inboxEmpty": "Nothing to decide: when an agent asks you something, it shows here.",
+  "activityEmpty": "Tasks in progress and done, grouped by agent, show here.",
+  "sectionAppearance": "Appearance",
+  "themeLabel": "Theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "languageLabel": "Language",
+  "languageSystem": "System",
+  "reduceMotion": "Reduce motion",
+  "reduceMotionHint": "The mascots stay still; their state shows by its sign.",
+  "sectionServer": "RedGiant",
+  "serverAddress": "Address",
+  "serverAddressHint": "redgiant.local:8787",
+  "serverPassword": "Password",
+  "serverCode": "Authenticator code",
+  "connect": "Connect",
+  "connecting": "Connecting…",
+  "disconnect": "Disconnect",
+  "connectedTo": "Connected to {machine}",
+  "@connectedTo": {
+    "placeholders": {
+      "machine": {
+        "type": "String"
+      }
+    }
+  },
+  "errUnreachable": "RedGiant does not answer at this address.",
+  "errWrong": "Wrong password or code.",
+  "errCodeNeeded": "The authenticator app's code is needed too.",
+  "errTooMany": "Too many tries: try again in a few minutes.",
+  "errNoPassword": "This RedGiant has no password yet: complete its first start.",
+  "errServerTooOld": "This RedGiant is too old for the app: update it.",
+  "errServerTooNew": "This app is too old for this RedGiant: update the app.",
+  "errGeneric": "It did not work: {message}",
+  "@errGeneric": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "appVersion": "App version"
+}
