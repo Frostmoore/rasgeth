@@ -11,6 +11,7 @@ import type { Automation, AutomationRun, FoundBackup, Job, UpdateStatus } from "
 import { afterEach, describe, expect, it } from "vitest";
 import { BackupError, findBackups, verifyBackup } from "../src/backup.js";
 import {
+  launcherProgress,
   rememberFirstVersion,
   UpdateRequiredError,
   UpdateWatcher,
@@ -119,6 +120,49 @@ describe("the version an installation was born with (what is new after an update
     const w = await watcher({ fetch: feed("3.4.0").fetch, firstVersion: "3.6.0" });
     expect(w.status().firstVersion).toBe("3.6.0");
     expect((await watcher({ fetch: feed("3.4.0").fetch })).status().firstVersion).toBeNull();
+  });
+});
+
+describe("RedGiant.exe's update in the page (3.8.1)", () => {
+  const now = new Date("2026-11-15T10:00:30Z");
+  const p = (o: Record<string, unknown> = {}) =>
+    JSON.stringify({
+      version: "3.8.1",
+      phase: "download",
+      done: 40e6,
+      total: 120e6,
+      bps: 8e6,
+      eta: 10,
+      at: "2026-11-15T10:00:29.5Z",
+      ...o,
+    });
+
+  it.each([
+    ["a download under way", p(), "download"],
+    [
+      "the launcher's own line (written on Windows, seven decimals)",
+      '{"version":"3.8.1","phase":"download","done":5000000,"total":9000000,"bps":1841273,"eta":3,"at":"2026-11-15T10:00:21.8503751Z"}',
+      "download",
+    ],
+    [
+      "the restart, said for ten minutes",
+      p({ phase: "restart", at: "2026-11-15T09:52:00Z" }),
+      "restart",
+    ],
+    ["a download that stopped a minute ago", p({ at: "2026-11-15T09:59:00Z" }), null],
+    ["an unknown phase", p({ phase: "explode" }), null],
+    ["a strange version", p({ version: "3.8.1; rm" }), null],
+    ["not JSON", "{", null],
+  ])("%s", (_name, text, phase) => {
+    expect(launcherProgress(text, now)?.phase ?? null).toBe(phase);
+  });
+
+  it("is part of the status while it runs", async () => {
+    let progress = launcherProgress(p(), now);
+    const w = await watcher({ fetch: async () => new Response("{}"), progress: () => progress });
+    expect(w.status().progress?.done).toBe(40e6);
+    progress = null;
+    expect(w.status().progress).toBeUndefined();
   });
 });
 

@@ -365,6 +365,8 @@ apply() {
     rm -f "$STATE/stack.json.new"
     give_up download "the new images could not be downloaded"
   fi
+  # The bar at its end (the last second may have passed between two writes).
+  write_state applying "$LATEST" "$GATE" "" download
   # Then the system's files of the release, before the new server starts (it may ask the new OS
   # helper). A release without them updates the containers only.
   if [ -s "$files" ]; then

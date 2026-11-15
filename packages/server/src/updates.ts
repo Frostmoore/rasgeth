@@ -16,6 +16,7 @@ import {
   type InstallKind,
   ReleaseInfo,
   type ReleaseNote,
+  UpdateProgress,
   type UpdateStatus,
 } from "@redgiant/protocol";
 import { debugLog } from "./debug-log.js";
@@ -140,6 +141,8 @@ export interface UpdateWatcherOptions {
   /** Docker: where the compose file is, for the command shown. */
   composeDir?: string;
   arch?: string;
+  /** Windows: the update RedGiant.exe is applying now (`launcherProgress`), or null. */
+  progress?: () => UpdateProgress | null;
   /** Called whenever the gate changes (the core holds work on "mandatory"). */
   onChange?: (status: UpdateStatus) => void;
   /**
@@ -199,7 +202,8 @@ export class UpdateWatcher {
   }
 
   status(): UpdateStatus {
-    return this.last;
+    const progress = this.o.progress?.() ?? null;
+    return progress ? { ...this.last, progress } : this.last;
   }
 
   /** True while a mandatory update holds the agents' work. */
@@ -331,6 +335,22 @@ export class UpdateWatcher {
 /** The release's own reason when it is about this gate; otherwise the carried rule speaks for itself. */
 function noteFor(info: ReleaseInfo | null, gate: "mandatory" | "breaking"): ReleaseNote | null {
   return info?.note && info.kind === gate ? info.note : null;
+}
+
+/**
+ * RedGiant.exe's update-progress.json (3.8.1), checked: null when it is not one, or old (a
+ * download that has not moved for a minute; the restart and a failure are said for ten).
+ */
+export function launcherProgress(text: string, now: Date = new Date()): UpdateProgress | null {
+  try {
+    const p = UpdateProgress.safeParse(JSON.parse(text));
+    if (!p.success || !/^\d+\.\d+\.\d+$/.test(p.data.version)) return null;
+    const age = now.getTime() - Date.parse(p.data.at);
+    const limit = p.data.phase === "restart" || p.data.phase === "failed" ? 600_000 : 60_000;
+    return Number.isFinite(age) && age < limit ? p.data : null;
+  } catch {
+    return null;
+  }
 }
 
 /** The error a new turn gets while a mandatory update is waiting (G36.19): nothing is lost. */

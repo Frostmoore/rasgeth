@@ -1614,7 +1614,12 @@ function demoOsUpdate() {
   };
   const base = { state: "available", installed: "3.8.0", latest: "3.8.1", gate: "normal" };
   if (!mode || (mode === "live" && demoOsStart === null))
-    return { ok: true, running: false, security, update: { ...base, checkedAt: new Date().toISOString() } };
+    return {
+      ok: true,
+      running: false,
+      security,
+      update: { ...base, checkedAt: new Date().toISOString() },
+    };
   const e = mode === "live" ? (Date.now() - demoOsStart) / 1000 : DEMO_OS_AT[mode];
   const t0 = Date.now() - e * 1000;
   const at = (s) => new Date(t0 + s * 1000).toISOString();
@@ -1634,8 +1639,18 @@ function demoOsUpdate() {
   };
   const steps = ["check", "download", "files", "install", "restart", "wait"];
   const starts = { check: 0, download: 3, files: 43, install: 45, restart: 47, wait: 60 };
-  const stepAt = Object.fromEntries(steps.filter((s) => starts[s] <= e).map((s) => [s, at(starts[s])]));
-  const run = { from: "3.8.0", startedAt: at(0), finishedAt: null, reason: null, steps, stepAt, plan };
+  const stepAt = Object.fromEntries(
+    steps.filter((s) => starts[s] <= e).map((s) => [s, at(starts[s])]),
+  );
+  const run = {
+    from: "3.8.0",
+    startedAt: at(0),
+    finishedAt: null,
+    reason: null,
+    steps,
+    stepAt,
+    plan,
+  };
   if (mode === "error")
     return {
       ok: true,
@@ -1657,7 +1672,14 @@ function demoOsUpdate() {
       ok: true,
       running: false,
       security,
-      update: { ...base, state: "latest", installed: "3.8.1", gate: "none", ...run, finishedAt: at(64) },
+      update: {
+        ...base,
+        state: "latest",
+        installed: "3.8.1",
+        gate: "none",
+        ...run,
+        finishedAt: at(64),
+      },
     };
   // RedGiant restarting: nobody answers for a while.
   if (e >= 48 && e < 58) throw new Error("restarting");
@@ -2680,6 +2702,18 @@ if (process.env.DEMO_UPDATE || process.env.DEMO_FOUND) {
     publicKey: keys.publicKey.export({ type: "spki", format: "pem" }).toString(),
     launcher: true,
     osUpdater: process.env.DEMO_INSTALL === "os",
+    // DEMO_WIN_PROGRESS=1 (3.8.1): RedGiant.exe downloading the update, as it tells the page.
+    ...(process.env.DEMO_WIN_PROGRESS && {
+      progress: () => ({
+        version: "3.5.0",
+        phase: "download",
+        done: 46_000_000,
+        total: 128_000_000,
+        bps: 7_400_000,
+        eta: 11,
+        at: new Date().toISOString(),
+      }),
+    }),
     composeDir: "~/redgiant",
     act: async (action) => {
       if (process.env.DEMO_INSTALL === "os" && action === "update") demoOsStart = Date.now();

@@ -106,13 +106,18 @@ describe("the stack of a release", () => {
     [
       "its layers with their sizes",
       stack({
-        images: { amd64: [image({ layers: [{ digest: digest("d"), size: 10 }] })], arm64: [image()] },
+        images: {
+          amd64: [image({ layers: [{ digest: digest("d"), size: 10 }] })],
+          arm64: [image()],
+        },
       }),
       null,
     ],
     [
       "a layer without its size",
-      stack({ images: { amd64: [image({ layers: [{ digest: digest("d") }] })], arm64: [image()] } }),
+      stack({
+        images: { amd64: [image({ layers: [{ digest: digest("d") }] })], arm64: [image()] },
+      }),
       "layers",
     ],
   ])("%s", (_name, s, error) => {

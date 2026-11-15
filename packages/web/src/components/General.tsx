@@ -6,12 +6,14 @@
 // backup model, web search, voice messages, pictures, updates and the debug log. The account at the bottom. The mailbox serves automations only and lives
 // in Settings > Automations (2026-11-07).
 
+import type { UpdateProgress, UpdateStatus } from "@redgiant/protocol";
 import type { JSX } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import type { SetupState } from "../api.js";
 import { bytes, localModelName } from "../format.js";
-import { lang, setLang, t } from "../i18n.js";
+import { type Key, lang, setLang, t } from "../i18n.js";
 import {
+  IconAlert,
   IconBook,
   IconBox,
   IconCrown,
@@ -43,14 +45,16 @@ import {
   Head,
   Row,
   Seg,
+  StepList,
+  Steps,
   Sub,
   Switch,
   Tile,
   Tiles,
   WzPage,
 } from "./SettingsKit.js";
-import { refreshUpdateStatus, updateStatus } from "./UpdateGate.js";
-import { Modal } from "./ui.js";
+import { Command, refreshUpdateStatus, updateStatus } from "./UpdateGate.js";
+import { Modal, Progress } from "./ui.js";
 import { NewsWindow, newsSince } from "./WhatsNew.js";
 
 type DebugState = { enabled: boolean; forced: boolean; bytes: number; files: number };
@@ -243,10 +247,109 @@ function Diagnostics({ st, setSt }: { st: DebugState; setSt: (x: DebugState) => 
   );
 }
 
-/** «Look for updates» (2026-11-04): the answer in words; on Windows the question on the desktop. */
-function Updates() {
+/** The steps RedGiant.exe goes through (3.8.1): the differential way, or the whole installer. */
+const WIN_STEPS = {
+  differential: ["scan", "download", "build", "restart", "back"],
+  installer: ["installer", "restart", "back"],
+};
+
+/** Windows' update followed in the page: the same bar, speed and time left as RedGiant's window. */
+export function LauncherProgress({ p }: { p: UpdateProgress }) {
+  if (p.phase === "failed")
+    return (
+      <div class="os-run os-run-stop">
+        <div class="wz-note warn">
+          <IconAlert size={18} />
+          <span>
+            <b>{t("updWinFailed")}</b> {t("updWinFailedText")}
+          </span>
+        </div>
+      </div>
+    );
+  const steps = p.phase === "installer" ? WIN_STEPS.installer : WIN_STEPS.differential;
+  const at = steps.indexOf(p.phase);
+  const bar = (unit: "bytes" | "count") => (
+    <Progress
+      unit={unit}
+      progress={{
+        done: p.done,
+        total: p.total > 0 ? p.total : null,
+        rate: p.bps > 0 ? p.bps : null,
+        secondsLeft: p.eta,
+      }}
+    />
+  );
+  return (
+    <div class="os-run" aria-live="polite">
+      <div class="os-run-hd">
+        <b>{t("updWinTitle", { version: p.version })}</b>
+        <span class="dim">{t("updWinWindow")}</span>
+      </div>
+      <StepList
+        label={t("osRunSteps")}
+        steps={steps.map((id, i) => ({
+          id,
+          title: t(`updWin_${id}` as Key),
+          mark: i < at ? "done" : i === at ? "now" : "todo",
+          ...(i === at && {
+            text:
+              id === "scan" ? (
+                bar("count")
+              ) : id === "download" || id === "installer" ? (
+                bar("bytes")
+              ) : (
+                <span>{t(`updWinText_${id}` as Key)}</span>
+              ),
+          }),
+        }))}
+      />
+    </div>
+  );
+}
+
+/** How the update goes on this installation, in numbered steps (where RedGiant cannot do it alone). */
+function UpdateHow({ s }: { s: UpdateStatus }) {
+  const kind = s.install;
+  if (kind !== "windows" && kind !== "mac" && kind !== "docker" && kind !== "source") return null;
+  const v = { version: s.latest ?? "" };
+  return (
+    <>
+      <Steps
+        label={t("updHowTitle")}
+        steps={[1, 2, 3].map((n) => ({
+          title: t(`updHow_${kind}_${n}T` as Key),
+          text: t(`updHow_${kind}_${n}` as Key, v),
+        }))}
+      />
+      {kind === "docker" && s.command && <Command text={s.command} />}
+      {kind === "mac" && s.downloadUrl && (
+        <Acts>
+          <a class="wz-btn" href={s.downloadUrl} target="_blank" rel="noreferrer">
+            <IconDownload size={18} /> {t("updDownloadNew")}
+          </a>
+        </Acts>
+      )}
+    </>
+  );
+}
+
+/**
+ * «Look for updates» (2026-11-04): the answer in words, how the update goes here in steps (3.8.1),
+ * and on Windows «Update now» with the update followed in the page (the launcher's own bar).
+ */
+export function Updates() {
+  const s = updateStatus.value;
   const [busy, setBusy] = useState(false);
+  const [asked, setAsked] = useState(false);
   const [answer, setAnswer] = useState<{ ok: boolean; text: string }>();
+  const progress = s?.progress ?? null;
+  // While RedGiant.exe works, its progress every second and a half (the page reloads as the new
+  // version by itself when RedGiant comes back: UpdateGate).
+  useEffect(() => {
+    if (!asked && !progress) return;
+    const timer = setInterval(() => void refreshUpdateStatus(), 1500);
+    return () => clearInterval(timer);
+  }, [asked, !!progress]);
   const look = async () => {
     setBusy(true);
     setAnswer(undefined);
@@ -266,15 +369,31 @@ function Updates() {
             : { ok: false, text: t("updUnreachable") },
     );
   };
+  const now = async () => {
+    const r = await attempt(() => getApi().updateAct("update"));
+    if (r) {
+      setAsked(true);
+      setAnswer({ ok: true, text: t("updReqUpdating") });
+    }
+  };
+  const available = s?.state === "available" && s.gate !== "breaking";
   return (
     <>
       <p class="wz-lead2">{t("updHelp")}</p>
-      {answer && <p class={`notice ${answer.ok ? "ok" : "error"}`}>{answer.text}</p>}
-      <Acts>
-        <button type="button" class="wz-btn primary" disabled={busy} onClick={() => void look()}>
-          <IconRefresh size={18} /> {busy ? t("updLooking") : t("updLook")}
-        </button>
-      </Acts>
+      {answer && !progress && <p class={`notice ${answer.ok ? "ok" : "error"}`}>{answer.text}</p>}
+      {progress ? <LauncherProgress p={progress} /> : available && s && <UpdateHow s={s} />}
+      {!progress && (
+        <Acts>
+          <button type="button" class="wz-btn" disabled={busy} onClick={() => void look()}>
+            <IconRefresh size={18} /> {busy ? t("updLooking") : t("updLook")}
+          </button>
+          {available && s.install === "windows" && s.canUpdateHere && !asked && (
+            <button type="button" class="wz-btn primary" onClick={() => void now()}>
+              <IconDownload size={18} /> {t("osUpdApply", { version: s.latest ?? "" })}
+            </button>
+          )}
+        </Acts>
+      )}
     </>
   );
 }

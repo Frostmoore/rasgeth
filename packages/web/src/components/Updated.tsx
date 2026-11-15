@@ -37,10 +37,13 @@ export function pendingUpdated(): Updated | null {
   }
 }
 
+/** How the page reloads (tests put their own). */
+export const reloader = { reload: () => location.reload() };
+
 /** Reloads the page as the new version, telling it what happened. */
 export function reloadAsUpdated(to: string, from: string | null, afterMs = 1500): void {
   rememberUpdated(to, from);
-  setTimeout(() => location.reload(), afterMs);
+  setTimeout(() => reloader.reload(), afterMs);
 }
 
 /** The window the reloaded page shows once: the version, and what is new in it. */

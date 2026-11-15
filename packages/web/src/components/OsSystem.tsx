@@ -27,8 +27,8 @@ import {
 } from "../icons.js";
 import { attempt, getApi } from "../state.js";
 import { askConfirm } from "./dialogs.js";
-import { Acts, Facts, SCard, Seg, Sub, SwitchRow } from "./SettingsKit.js";
 import { OsRunResult, OsRunView, useOsUpdateFollow } from "./OsUpdateRun.js";
+import { Acts, Facts, SCard, Seg, Sub, SwitchRow } from "./SettingsKit.js";
 import { refreshUpdateStatus, updateStatus } from "./UpdateGate.js";
 import { Field, Qr } from "./ui.js";
 
@@ -449,7 +449,11 @@ export function OsUpdatesPanel({ initial }: { initial?: OsUpdates | undefined } 
     }
     // The steps show at once; the machine's own state follows in a moment.
     const before = u.update?.installed ?? null;
-    f.setU({ ...u, running: true, ...(u.update && { update: { ...u.update, run: null } }) });
+    f.setU({
+      ...u,
+      running: true,
+      ...(u.update && { update: { ...u.update, state: "applying", step: "check", run: null } }),
+    });
     void f.follow(before, 15_000);
   };
   const restart = async () => {

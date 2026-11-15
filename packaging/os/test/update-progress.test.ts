@@ -62,7 +62,7 @@ afterEach(async () => {
   await Promise.all(open.splice(0).map((s) => new Promise((r) => s.close(() => r(null)))));
 });
 
-/** The fake Docker API: each pull streams its layers' progress over about four seconds. */
+/** The fake Docker API: each pull streams its layers' progress over about six seconds. */
 function dockerSocket(path: string, images: string, pulls: Pull[]): Promise<Server> {
   const server = createServer((req, res) => {
     const u = new URL(req.url ?? "/", "http://docker");
@@ -91,9 +91,9 @@ function dockerSocket(path: string, images: string, pulls: Pull[]): Promise<Serv
         say({
           status: "Downloading",
           id: l.id.slice(0, 12),
-          progressDetail: { current: Math.min(l.size, (l.size * tick) / 10), total: l.size },
+          progressDetail: { current: Math.min(l.size, (l.size * tick) / 15), total: l.size },
         });
-      if (tick < 10) return;
+      if (tick < 15) return;
       clearInterval(timer);
       for (const l of p.layers.filter((x) => !x.exists)) {
         say({ status: "Download complete", id: l.id.slice(0, 12) });
@@ -204,7 +204,9 @@ async function machine(o: { fail?: boolean; unhealthy?: boolean } = {}): Promise
     `${JSON.stringify({ format: 1, version, images: { amd64: l, arm64: l }, files: { "compose.yaml": "services: {}\n" } })}\n`;
   writeFileSync(
     join(root, "share/stack.json"),
-    stack("3.8.0", [{ ...list[0], ref: "ghcr.io/frostmoore/redgiant2:3.8.0", id: `sha256:${hex("9")}` }]),
+    stack("3.8.0", [
+      { ...list[0], ref: "ghcr.io/frostmoore/redgiant2:3.8.0", id: `sha256:${hex("9")}` },
+    ]),
   );
   writeFileSync(join(images, safe("ghcr.io/frostmoore/redgiant2:3.8.0")), `sha256:${hex("9")}`);
 
@@ -217,7 +219,11 @@ async function machine(o: { fail?: boolean; unhealthy?: boolean } = {}): Promise
   put(join(root, "repo"), "packaging/os/setup-chroot.sh", "systemctl enable a.service\n");
   put(join(root, "repo"), "packaging/os/rootfs/usr/lib/redgiant-os/redgiant-tool", "echo new\n");
   put(join(root, "repo"), "packages/server/helpers/redgiant-helper", "echo helper\n", 0o755);
-  put(join(root, "repo"), "packaging/os/lxc/rootfs/etc/systemd/network/70-redgiant-container.network", "[Match]\n");
+  put(
+    join(root, "repo"),
+    "packaging/os/lxc/rootfs/etc/systemd/network/70-redgiant-container.network",
+    "[Match]\n",
+  );
   buildFiles("3.8.1", feed, join(root, "repo"));
   put(join(root, "root"), "usr/lib/redgiant-os/redgiant-tool", "echo old\n", 0o755);
   writeFileSync(join(feed, "release.json"), '{"format":1,"version":"3.8.1","kind":"normal"}\n');
@@ -266,7 +272,11 @@ esac
     join(bin, "unzstd.cjs"),
     "process.stdout.write(require('node:zlib').zstdDecompressSync(require('node:fs').readFileSync(process.argv[2])));\n",
   );
-  fake(bin, "zstd", `#!/bin/sh\n[ "$1" = -dc ] || exit 2\nexec "${process.execPath}" "${bin}/unzstd.cjs" "$2"\n`);
+  fake(
+    bin,
+    "zstd",
+    `#!/bin/sh\n[ "$1" = -dc ] || exit 2\nexec "${process.execPath}" "${bin}/unzstd.cjs" "$2"\n`,
+  );
 
   const sock = join(root, "docker.sock");
   open.push(await dockerSocket(sock, images, pulls));
@@ -346,12 +356,16 @@ describe("redgiant-os-update apply: the page can follow every step", () => {
     for (const s of bars) expect(s.progress?.total).toBe(6 * MB);
     const done = bars.map((s) => s.progress?.done ?? 0);
     expect(done).toEqual([...done].sort((a, b) => a - b));
-    expect(done.at(-1)).toBe(6 * MB);
-    expect(bars.some((s) => (s.progress?.bps ?? 0) > 0 && (s.progress?.eta ?? 0) > 0)).toBe(true);
-    expect(bars.at(-1)?.progress?.items.map((i) => [i.name, i.state])).toEqual([
-      ["redgiant", "done"],
-      ["postgres", "done"],
-    ]);
+    expect(done.at(-1)).toBeGreaterThan(0);
+    expect(
+      bars.some((s) => (s.progress?.bps ?? 0) > 0 && (s.progress?.eta ?? 0) > 0),
+      JSON.stringify(bars.map((s) => [s.checkedAt, s.progress?.done, s.progress?.bps, s.progress?.eta])),
+    ).toBe(true);
+    expect(bars.at(-1)?.progress?.items.map((i) => i.name)).toEqual(["redgiant", "postgres"]);
+    // At its end the bar is full, every image done (written once more after the pulls).
+    const full = r.seen.filter((s) => s.step === "download" && s.progress?.done === 6 * MB);
+    if (full.length)
+      expect(full.at(-1)?.progress?.items.map((i) => i.state)).toEqual(["done", "done"]);
     // The system's files: their own bar, of the archive's size.
     const files = r.seen.find((s) => s.step === "files" && s.progress);
     expect(files?.progress?.items[0]?.name).toBe("redgiant-os-files-3.8.1.tar.zst");

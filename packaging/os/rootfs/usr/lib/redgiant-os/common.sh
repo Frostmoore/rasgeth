@@ -100,7 +100,8 @@ progress_reset() {
   PROGRESS_D=()
 }
 progress_write() { # file done total [items-json]
-  local now span bps=0 eta=null tmp
+  local now span bps=0 eta=null tmp done=${2%.*} total=${3%.*}
+  set -- "$1" "${done:-0}" "${total:-0}" "${4:-[]}"
   now=$(date +%s)
   PROGRESS_T+=("$now")
   PROGRESS_D+=("$2")

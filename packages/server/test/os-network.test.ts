@@ -393,8 +393,18 @@ describe("RedGiant OS's updates", () => {
         stepAt: { check: "2026-11-15T10:00:00Z", download: "2026-11-15T10:00:04Z", "x y": "z" },
         plan: {
           images: [
-            { name: "redgiant", ref: "ghcr.io/frostmoore/redgiant2:3.8.1", bytes: 512e6, here: false },
-            { name: "postgres", ref: "ghcr.io/frostmoore/redgiant2-postgres:17", bytes: -1, here: true },
+            {
+              name: "redgiant",
+              ref: "ghcr.io/frostmoore/redgiant2:3.8.1",
+              bytes: 512e6,
+              here: false,
+            },
+            {
+              name: "postgres",
+              ref: "ghcr.io/frostmoore/redgiant2-postgres:17",
+              bytes: -1,
+              here: true,
+            },
             "junk",
           ],
           files: { name: "redgiant-os-files-3.8.1.tar.zst", bytes: 2.5e6 },
@@ -417,8 +427,18 @@ describe("RedGiant OS's updates", () => {
       stepAt: { check: "2026-11-15T10:00:00Z", download: "2026-11-15T10:00:04Z" },
       plan: {
         images: [
-          { name: "redgiant", ref: "ghcr.io/frostmoore/redgiant2:3.8.1", bytes: 512e6, here: false },
-          { name: "postgres", ref: "ghcr.io/frostmoore/redgiant2-postgres:17", bytes: 0, here: true },
+          {
+            name: "redgiant",
+            ref: "ghcr.io/frostmoore/redgiant2:3.8.1",
+            bytes: 512e6,
+            here: false,
+          },
+          {
+            name: "postgres",
+            ref: "ghcr.io/frostmoore/redgiant2-postgres:17",
+            bytes: 0,
+            here: true,
+          },
         ],
         files: { name: "redgiant-os-files-3.8.1.tar.zst", bytes: 2.5e6 },
       },

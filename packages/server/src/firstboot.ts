@@ -648,8 +648,7 @@ export function parseOsUpdates(r: Record<string, unknown>): OsUpdates {
 const STEP = /^[a-z_]{1,20}$/;
 const count = (v: unknown) =>
   typeof v === "number" && Number.isFinite(v) && v >= 0 ? Math.round(v) : 0;
-const word = (v: unknown, max = 200) =>
-  typeof v === "string" && v ? v.slice(0, max) : null;
+const word = (v: unknown, max = 200) => (typeof v === "string" && v ? v.slice(0, max) : null);
 const records = (v: unknown) =>
   Array.isArray(v)
     ? v.filter((x): x is Record<string, unknown> => !!x && typeof x === "object").slice(0, 20)
@@ -664,8 +663,7 @@ export function parseOsUpdateRun(u: Record<string, unknown>): OsUpdateRun | null
     plan?.files && typeof plan.files === "object" ? (plan.files as Record<string, unknown>) : null;
   const p =
     u.progress && typeof u.progress === "object" ? (u.progress as Record<string, unknown>) : null;
-  const at =
-    u.stepAt && typeof u.stepAt === "object" ? (u.stepAt as Record<string, unknown>) : {};
+  const at = u.stepAt && typeof u.stepAt === "object" ? (u.stepAt as Record<string, unknown>) : {};
   return {
     from: word(u.from, 20),
     startedAt,

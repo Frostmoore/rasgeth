@@ -13,8 +13,8 @@ import {
   planBytes,
   secondsLeft,
   tookSeconds,
-  updateSteps,
   updatedTo,
+  updateSteps,
   updating,
 } from "../os-update.js";
 import { getApi } from "../state.js";
@@ -23,14 +23,14 @@ import { reloadAsUpdated } from "./Updated.js";
 import { Progress, timeLeft } from "./ui.js";
 import { NewsWindow, newsSince } from "./WhatsNew.js";
 
-/** How often the page reads the updater's state (it writes it once a second). */
-export const FOLLOW_EVERY = 2000;
+/** How often the page reads the updater's state (it writes it once a second); tests shorten it. */
+export const followTiming = { every: 2000 };
 
 /**
  * Follows the machine's update: its state every two seconds, through RedGiant's own restart
  * (the server stops answering for a while), then reloads the page as the new version.
  */
-export function useOsUpdateFollow(initial: OsUpdates | null, every = FOLLOW_EVERY) {
+export function useOsUpdateFollow(initial: OsUpdates | null) {
   const [u, setU] = useState<OsUpdates | null>(initial);
   const [lost, setLost] = useState(false);
   const [following, setFollowing] = useState(false);
@@ -47,7 +47,7 @@ export function useOsUpdateFollow(initial: OsUpdates | null, every = FOLLOW_EVER
     const until = started + 45 * 60_000;
     let wasLost = false;
     while (live.current && Date.now() < until) {
-      await new Promise((r) => setTimeout(r, every));
+      await new Promise((r) => setTimeout(r, followTiming.every));
       const r = await getApi()
         .setupOsUpdates()
         .catch(() => null);
@@ -95,7 +95,7 @@ export function useOsUpdateFollow(initial: OsUpdates | null, every = FOLLOW_EVER
       clearInterval(tick);
     };
   }, []);
-  const active = !!u && (following || lost || updating(u.update, u.running));
+  const active = !!u && (following || lost || !!reloading || updating(u.update, u.running));
   return { u, setU, lost, following, reloading, active, now, follow };
 }
 
@@ -144,9 +144,7 @@ function stepText(id: string, mark: string, up: OsUpdate, lost: boolean) {
           </ul>
         )}
         {now && (p ? <Bar p={p} /> : <p class="dim">{t("osRunAsking")}</p>)}
-        {now && p && p.total > 0 && p.done >= p.total && (
-          <p class="dim">{t("osRunExtracting")}</p>
-        )}
+        {now && p && p.total > 0 && p.done >= p.total && <p class="dim">{t("osRunExtracting")}</p>}
       </>
     );
   }

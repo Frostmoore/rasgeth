@@ -9,12 +9,15 @@
 // The models live in that folder too, so the engine reads them at the disk's full speed.
 
 import { randomUUID } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import type { UpdateProgress } from "@redgiant/protocol";
 import { debugLog } from "./debug-log.js";
 import { engineError } from "./engine-errors.js";
 import { JobFailure, type JobHandle } from "./jobs.js";
 import { speculativeArgs } from "./stream.js";
+import { launcherProgress } from "./updates.js";
 
 /** llama.cpp's release the launcher downloads (`llama-<build>-bin-win-vulkan-x64.zip`). */
 export const WIN_ENGINE_BUILD = "b12034";
@@ -210,6 +213,15 @@ export class WinEngine {
     await writeFile(`${file}.tmp`, JSON.stringify({ id: randomUUID(), action }));
     await rename(`${file}.tmp`, file);
     debugLog.write("engine", `asked RedGiant.exe: ${action}`);
+  }
+
+  /** The update RedGiant.exe is applying now (its update-progress.json, 3.8.1), or null. */
+  updateProgress(): UpdateProgress | null {
+    try {
+      return launcherProgress(readFileSync(join(this.o.dir, "update-progress.json"), "utf8"));
+    } catch {
+      return null;
+    }
   }
 
   async checkUpdate(): Promise<{ state: string; version: string } | null> {

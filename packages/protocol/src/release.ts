@@ -74,6 +74,21 @@ export const InstallKind = z.enum(["windows", "mac", "docker", "os", "source"]);
 export type InstallKind = z.infer<typeof InstallKind>;
 
 /** The last look for updates, as the page shows it (`GET /api/update/status`). */
+/**
+ * An update RedGiant.exe is applying (3.8.1): its phase, and how far the phase is (files compared
+ * for "scan", bytes for "download" and "installer"), with the speed and the seconds left.
+ */
+export const UpdateProgress = z.object({
+  version: z.string(),
+  phase: z.enum(["scan", "download", "installer", "build", "restart", "failed"]),
+  done: z.number().nonnegative(),
+  total: z.number().nonnegative(),
+  bps: z.number().nonnegative(),
+  eta: z.number().nonnegative().nullable(),
+  at: z.string(),
+});
+export type UpdateProgress = z.infer<typeof UpdateProgress>;
+
 export const UpdateStatus = z.object({
   install: InstallKind,
   /** Null when this installation does not know its version (run from the source). */
@@ -99,6 +114,8 @@ export const UpdateStatus = z.object({
   /** Windows: RedGiant.exe can update itself, and run the uninstaller. RedGiant OS: its signed updater. */
   canUpdateHere: z.boolean(),
   canUninstall: z.boolean(),
+  /** Windows: the update RedGiant.exe is applying now (3.8.1); optional for older servers. */
+  progress: UpdateProgress.nullable().optional(),
 });
 export type UpdateStatus = z.infer<typeof UpdateStatus>;
 

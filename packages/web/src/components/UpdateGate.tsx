@@ -20,8 +20,8 @@ import {
 } from "../icons.js";
 import { attempt, getApi, status } from "../state.js";
 import { OsUpdateLive } from "./OsUpdateRun.js";
-import { Field, JobView, Modal, useJob } from "./ui.js";
 import { pendingUpdated, reloadAsUpdated, UpdatedNotice } from "./Updated.js";
+import { Field, JobView, Modal, useJob } from "./ui.js";
 
 /** The last look, for every part of the page. */
 export const updateStatus = signal<UpdateStatus | null>(null);
@@ -116,7 +116,7 @@ export function UpdateGate() {
 
 const noteOf = (s: UpdateStatus) => (s.note ? (lang.value === "it" ? s.note.it : s.note.en) : null);
 
-function Command({ text }: { text: string }) {
+export function Command({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   return (
     <div class="upd-cmd">

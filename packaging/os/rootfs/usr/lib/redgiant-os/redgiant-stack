@@ -137,13 +137,14 @@ def got: . == "got" or . == "extract" or . == "done";
     | ([$ids[] as $id | ($g[$id] // {s: "wait"}).s]) as $states
     | (if ($ids | length) == 0 then {d: 0, t: ($img.bytes // 0)} else {d: $sum.d, t: $sum.t} end) as $n
     | .seen = $sum.seen | .done += $n.d | .total += $n.t
-    | .items += [{name: $img.name, ref: $img.ref, done: $n.d, total: $n.t,
+    | .items += [{name: $img.name, ref: $img.ref, done: ($n.d | floor), total: ($n.t | floor),
         state: (if $st[$i].error then "error"
           elif ($states | length) > 0 and all($states[]; . == "done" or . == "exists") then "done"
           elif ($states | length) > 0 and all($states[]; got or . == "exists") then "extract"
           elif any($states[]; . != "wait") then "down"
           else "wait" end)}])
-| {done, total, items, ready: all($st[]; ((.layers // {}) | length) > 0 or .error != null)}
+| {done: (.done | floor), total: (.total | floor), items,
+   ready: all($st[]; ((.layers // {}) | length) > 0 or .error != null)}
 JQ
 
 # Pulls one image by digest through the API; its layers' state goes to <out>.

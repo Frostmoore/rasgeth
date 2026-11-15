@@ -20521,6 +20521,7 @@ html[data-theme="dark"] {
   line-height: 1.5;
 }
 .os-run-stop > .wz-note {
+  color: var(--text);
   background: color-mix(in srgb, var(--err) 9%, transparent);
   border-color: color-mix(in srgb, var(--err) 40%, transparent);
 }

@@ -34,7 +34,8 @@ export function updateSteps(
   const finished = state === "latest" && !!run?.finishedAt;
   // Before 3.8.1 «files» was both the download and the install of the system's files.
   let current = restarting ? "restart" : (u?.step ?? (running ? "check" : null));
-  if (current && !steps.includes(current)) current = current === "files" ? "install" : null;
+  if (current === "files" && !run) current = "install";
+  if (current && !steps.includes(current)) current = null;
   if (finished) return steps.map((id) => ({ id, mark: "done" }));
   // Stopped: the last step it began failed (rollback itself went through).
   if (state === "error" || state === "breaking") {
