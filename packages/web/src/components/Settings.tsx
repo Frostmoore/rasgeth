@@ -24,6 +24,7 @@ import {
   IconLayers,
   IconMic,
   IconNodes,
+  IconPhone,
   IconPuzzle,
   IconServer,
   IconSettings,
@@ -42,6 +43,7 @@ import { Budgets } from "./Budgets.js";
 import { ChatPlatforms } from "./ChatPlatforms.js";
 import { CodeSettings } from "./CodeSettings.js";
 import { CommandLimits } from "./CommandLimits.js";
+import { Devices } from "./Devices.js";
 import { Extensions } from "./Extensions.js";
 import { ExternalAgents } from "./ExternalAgents.js";
 import { SystemSettings } from "./FirstBoot.js";
@@ -99,6 +101,7 @@ const GROUPS: { title: () => string; sections: Section[] }[] = [
     sections: [
       { id: "telegram", label: () => t("telegram"), icon: <IconTelegram size={20} /> },
       { id: "chats", label: () => t("chats"), icon: <IconChat size={20} /> },
+      { id: "devices", label: () => t("dvSection"), icon: <IconPhone size={20} /> },
     ],
   },
   {
@@ -209,6 +212,7 @@ export function Settings({ section = "general" }: { section?: SettingsSection | 
         {section === "keychain" && <Keychain />}
         {section === "telegram" && <Telegram />}
         {section === "chats" && <ChatPlatforms />}
+        {section === "devices" && <Devices />}
         {section === "subscriptions" && <Subscriptions />}
         {section === "code" && <CodeSettings />}
         {section === "remote" && <RemoteSettings />}

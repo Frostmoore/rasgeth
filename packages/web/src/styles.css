@@ -20151,3 +20151,12 @@ html[data-theme="dark"] {
     background: none;
   }
 }
+/* Settings, Devices (G40.1) */
+.dv-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+:is(.wz, .wz-look) .wz-btn.quiet.dv-revoke {
+  color: var(--err);
+}

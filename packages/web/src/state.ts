@@ -1107,6 +1107,8 @@ export type SettingsSection =
   | "machines"
   /** Other RedGiant machines paired with this one (G39.4). */
   | "nodes"
+  /** The person's phones and computers with RGCompanion, each with its own token (G40.1). */
+  | "devices"
   /** Hands-free voice on this device (G38.4). */
   | "voice";
 

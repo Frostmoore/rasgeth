@@ -565,7 +565,7 @@ const en = {
   remoteCodeOff: "Second check off.",
   remoteSessions: "Signed-in browsers",
   remoteSessionsHint:
-    "Each sign-in lasts 30 days. If you lost a phone, or think someone else got in:",
+    "Each sign-in lasts 30 days. If you lost a phone, or think someone else got in (the RGCompanion apps are signed out too):",
   remoteSignOutAll: "Sign out everywhere",
   remoteSignedOut: "Signed out everywhere.",
   remoteHow: "How to reach it",
@@ -5633,6 +5633,33 @@ const en = {
   fbOfferNoLocal:
     "Local models: not offered, too little memory here. You can still add one from Settings › Models.",
   ndSection: "Nodes",
+  dvSection: "Devices",
+  dvQ: "Your devices",
+  dvLead:
+    "Phones and computers with the RGCompanion app. Each one has its own access: revoke one and it is signed out at once, the others stay.",
+  dvNone:
+    "No device yet. Install RGCompanion on a phone or a computer and sign in with your password: it shows up here.",
+  dvThis: "this device",
+  dvNeverUsed: "never used",
+  dvLastUsed: "last used {when}",
+  dvFrom: "from {address}",
+  dvAdded: "added {when}",
+  dvRename: "Rename",
+  dvRenameQ: "A new name for «{name}»",
+  dvName: "Name",
+  dvRevoke: "Revoke",
+  dvRevokeQ: "Revoke «{name}»?",
+  dvRevokeText:
+    "The app on that device is signed out at once and has to sign in again with your password.",
+  dvRevoked: "«{name}» revoked.",
+  dvKeysNote:
+    "The devices' keys are never shown, not even here. A new password or «Sign out everywhere» revokes them all.",
+  dvPlatform_android: "Android",
+  dvPlatform_ios: "iPhone or iPad",
+  dvPlatform_windows: "Windows",
+  dvPlatform_macos: "macOS",
+  dvPlatform_linux: "Linux",
+  dvPlatform_other: "Another system",
   ndQ: "Nodes",
   ndLead:
     "Other RedGiant machines that work with this one: they lend commands, local models and room for projects and backups. Who may command whom is decided here, machine by machine.",
@@ -6858,7 +6885,7 @@ const it: Record<Key, string> = {
   remoteCodeOff: "Seconda verifica spenta.",
   remoteSessions: "Browser collegati",
   remoteSessionsHint:
-    "Ogni accesso dura 30 giorni. Se hai perso un telefono, o pensi che qualcun altro sia entrato:",
+    "Ogni accesso dura 30 giorni. Se hai perso un telefono, o pensi che qualcun altro sia entrato (si scollegano anche le app RGCompanion):",
   remoteSignOutAll: "Scollega tutti",
   remoteSignedOut: "Scollegati tutti.",
   remoteHow: "Come raggiungerlo",
@@ -11986,6 +12013,33 @@ const it: Record<Key, string> = {
   fbOfferNoLocal:
     "Modelli locali: non proposti, qui c'è troppa poca memoria. Puoi comunque aggiungerne uno da Impostazioni › Modelli.",
   ndSection: "Nodi",
+  dvSection: "Dispositivi",
+  dvQ: "I tuoi dispositivi",
+  dvLead:
+    "Telefoni e computer con l'app RGCompanion. Ognuno ha il suo accesso: se ne revochi uno si scollega subito, gli altri restano.",
+  dvNone:
+    "Ancora nessun dispositivo. Installa RGCompanion su un telefono o un computer ed entra con la tua password: comparirà qui.",
+  dvThis: "questo dispositivo",
+  dvNeverUsed: "mai usato",
+  dvLastUsed: "ultimo uso {when}",
+  dvFrom: "da {address}",
+  dvAdded: "aggiunto {when}",
+  dvRename: "Rinomina",
+  dvRenameQ: "Un nome nuovo per «{name}»",
+  dvName: "Nome",
+  dvRevoke: "Revoca",
+  dvRevokeQ: "Revocare «{name}»?",
+  dvRevokeText:
+    "L'app su quel dispositivo si scollega subito e dovrà entrare di nuovo con la tua password.",
+  dvRevoked: "«{name}» revocato.",
+  dvKeysNote:
+    "Le chiavi dei dispositivi non si vedono mai, nemmeno qui. Una password nuova o «Scollega tutti» le revocano tutte.",
+  dvPlatform_android: "Android",
+  dvPlatform_ios: "iPhone o iPad",
+  dvPlatform_windows: "Windows",
+  dvPlatform_macos: "macOS",
+  dvPlatform_linux: "Linux",
+  dvPlatform_other: "Un altro sistema",
   ndQ: "Nodi",
   ndLead:
     "Altre macchine RedGiant che lavorano con questa: prestano comandi, modelli locali e spazio per progetti e copie di sicurezza. Chi può comandare chi si decide qui, macchina per macchina.",

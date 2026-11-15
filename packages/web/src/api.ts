@@ -9,6 +9,7 @@ import {
   type BlockDisk,
   type ClientMessage,
   type CloudEmbeddingModel,
+  type DeviceView,
   type Event,
   type FoundBackup,
   type ImportApply,
@@ -1178,6 +1179,11 @@ export class Api {
       }[]
     >("GET", "/api/auth/sessions");
   revokeSessions = () => this.call("POST", "/api/auth/sessions/revoke");
+  /** The person's devices with RGCompanion (G40.1): never a token. */
+  devices = () => this.call<DeviceView[]>("GET", "/api/devices");
+  renameDevice = (id: string, name: string) =>
+    this.call<DeviceView>("PATCH", `/api/devices/${encodeURIComponent(id)}`, { name });
+  revokeDevice = (id: string) => this.call("DELETE", `/api/devices/${encodeURIComponent(id)}`);
   setupGithub = (token: string) =>
     this.call<{ login: string }>("PUT", "/api/setup/github", { token });
   removeGithub = () => this.call("DELETE", "/api/setup/github");

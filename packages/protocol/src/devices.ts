@@ -20,7 +20,10 @@ export const DeviceName = z
   .trim()
   .min(1)
   .max(60)
-  .refine((s) => !/[\u0000-\u001f\u007f]/.test(s), "no control characters");
+  .refine(
+    (s) => [...s].every((ch) => ch.charCodeAt(0) >= 32 && ch.charCodeAt(0) !== 127),
+    "no control characters",
+  );
 
 /** A device as the page lists it: never its token nor the token's hash. */
 export const DeviceView = z.object({
