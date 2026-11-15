@@ -13,7 +13,8 @@
 # /api/health from outside through a forwarded port, then over HTTPS with the machine's own CA
 # (printed by the self-test), and looks for the login prompt's address. --wifi adds the Wi-Fi
 # checks inside the machine (mac80211_hwsim, hostapd: redgiant-selftest-wifi) and requires its
-# password checks by name (a wrong password refused, fresh and after a good join).
+# password checks by name (a wrong password refused, fresh and after a good join), then the
+# temporary network's (G40.3: redgiant-selftest-setup-ap).
 # install: boots the ISO with an empty disk and the credentials that answer the installer, and
 # waits for it to write the disk and power off.
 # Uses KVM when /dev/kvm is there, otherwise QEMU's emulation (slow: minutes become tens).
@@ -174,6 +175,14 @@ case "$MODE" in
         "wifi wrong password refused after a good one" "wifi good password restored" \
         "wifi joined again with the good password" "wifi password in no log"; do
         grep -aqF "REDGIANT-SELFTEST ok   $c" "$SERIAL" || { echo "::error::Wi-Fi check missing or failed: $c"; ok=0; }
+      done
+      # The temporary network (G40.3): a client on the second radio joins RedGiant-Setup-XXXX,
+      # gets an address, opens the first start's page and the captive probes.
+      for c in "setup-ap client joined" "setup-ap client got an address" "setup-ap first start page from the client" \
+        "setup-ap captive probe android" "setup-ap captive probe apple" "setup-ap dns answers with redgiant" \
+        "setup-ap is the local network for the first access" "setup-ap closed" \
+        "setup-ap maintenance never offers the first access"; do
+        grep -aqF "REDGIANT-SELFTEST ok   $c" "$SERIAL" || { echo "::error::temporary network check missing or failed: $c"; ok=0; }
       done
     fi
     # From outside the machine, through the forwarded port.

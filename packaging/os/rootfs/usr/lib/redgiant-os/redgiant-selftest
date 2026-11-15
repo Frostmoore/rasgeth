@@ -64,6 +64,9 @@ fi
 if [ "$(cat "${CREDENTIALS_DIRECTORY:-/nonexistent}/redgiant.selftest.wifi" 2>/dev/null)" = 1 ]; then
   # shellcheck source=redgiant-selftest-wifi
   . /usr/lib/redgiant-os/redgiant-selftest-wifi
+  # The temporary network of a first start (G40.3), on the same simulated radios.
+  # shellcheck source=redgiant-selftest-setup-ap
+  . /usr/lib/redgiant-os/redgiant-selftest-setup-ap
 fi
 say "addresses $(addresses | tr '\n' ' ')"
 # The CA's certificate, for the checks from outside the machine (boot-test.sh).
