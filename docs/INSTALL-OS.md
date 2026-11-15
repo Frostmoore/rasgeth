@@ -341,6 +341,34 @@ networks can be joined; company networks (802.1X) cannot yet. Three ways:
 Passwords are kept only in iwd's own file for each network (`/var/lib/iwd`, readable by root
 alone): never in RedGiant's data, its logs or its events, and never in a program's arguments.
 
+### The temporary network (no screen, no cable needed)
+
+At its first start a machine with a Wi-Fi card that can be an access point opens its own network,
+**`RedGiant-Setup-XXXX`** (XXXX: four characters of the machine), always, even with a cable
+plugged in, for **30 minutes from power on** (switch it on again to open it again). Its password is
+`redgiant` (iwd needs one; it is public on purpose: the app's channel is encrypted with the
+machine's own key, and a password everyone knows would protect nothing).
+
+- **With the RGCompanion app**: it joins the network and does the whole setup over an encrypted
+  channel (the nodes' handshake: the app pins the machine's key the first time), then receives the
+  machine's local CA and a token of its own (Settings › Devices).
+- **Without the app**: join `RedGiant-Setup-XXXX` from a phone or a computer: the system shows the
+  first start's page by itself (a captive portal; otherwise open `http://10.42.0.1`). Create your
+  access, then choose **your home network** (the networks the machine saw around it) or «I use the
+  cable».
+
+One device at a time (one address on that network), and it gives no one the internet nor the home
+network. When the first start is completed, or the home network works, it closes and RedGiant uses
+the home network. A home Wi-Fi is tried with the temporary network closed (one card cannot do
+both): if it does not work, the temporary network opens again within a minute and says why.
+
+**Maintenance**: on a machine already set up, when no home network is there for 10 minutes (a new
+router), the same network opens again for 10 minutes at a time, but it never makes a new owner:
+there you sign in with your password and change the home network only.
+
+Containers (LXC, Docker) and machines whose card cannot be an access point never open it: RedGiant
+is announced on the network instead (`_redgiant._tcp` over mDNS, next to `redgiant.local`).
+
 ## HTTPS in your network
 
 RedGiant OS answers on `https://redgiant.local` (and on the machine's private addresses) with a
