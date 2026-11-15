@@ -136,41 +136,10 @@ void main() {
     await waitFor(t, () => app.chatAgentId != null);
     await frames(t, 2500);
     await shot(t, 'g40-squad-01-team');
-    final grid = find.byKey(const Key('team-scroll'));
-    await t.drag(grid, const Offset(0, -400));
-    await frames(t, 800);
-    await shot(t, 'g40-squad-02-team-agents');
-    await t.drag(grid, const Offset(0, 800));
-    await frames(t, 800);
-
-    // God's sheet: «Model» with its way; the families with Subscription / API key.
-    await t.longPress(find.byKey(const Key('team-god')));
-    await frames(t, 1500);
-    await shot(t, 'g40-squad-03-god-sheet');
-    await t.tap(find.byKey(const Key('agent-model')));
-    await frames(t, 1500);
-    final family = find.byWidgetPredicate(
-      (w) =>
-          w.key is ValueKey<String> &&
-          (w.key! as ValueKey<String>).value.startsWith('model-anthropic/'),
-    );
-    if (family.evaluate().isNotEmpty) {
-      await t.tap(family.first);
-      await frames(t, 800);
-    }
-    await shot(t, 'g40-squad-04-model-sheet');
-    final use = find.byKey(const Key('model-use'));
-    if (use.evaluate().isNotEmpty) {
-      await t.tap(use);
-      await frames(t, 2000);
-      await shot(t, 'g40-squad-05-god-model-saved');
-    }
-    await t.tapAt(const Offset(20, 20));
-    await frames(t, 800);
-
-    // God's conversation: an answer, then the «…».
+    // God's conversation (a tap on its card): an answer, then the «…».
     await t.tap(find.byKey(const Key('team-god')));
-    await frames(t, 2000);
+    await waitFor(t, () => find.byKey(const Key('composer-text')).evaluate().isNotEmpty);
+    await frames(t, 1500);
     await t.enterText(find.byKey(const Key('composer-text')), 'Ciao God, come va?');
     await t.tap(find.byKey(const Key('composer-send')));
     await frames(t, 5000);
@@ -199,7 +168,103 @@ void main() {
     await t.tap(find.byKey(const Key('conversation-back')));
     await frames(t, 2000);
     // God answered: awake, «active».
-    await shot(t, 'g40-squad-10-team-god-active');
+    await shot(t, 'g40-squad-06b-team-god-active');
+    final grid = find.byKey(const Key('team-scroll'));
+    await t.drag(grid, const Offset(0, -400));
+    await frames(t, 800);
+    await shot(t, 'g40-squad-02-team-agents');
+    await t.drag(grid, const Offset(0, 800));
+    await frames(t, 800);
+
+    // God's sheet: «Model» with its way; the families with Subscription / API key.
+    await t.longPress(find.byKey(const Key('team-god')));
+    await frames(t, 1500);
+    await shot(t, 'g40-squad-03-god-sheet');
+    await t.tap(find.byKey(const Key('agent-model')));
+    await frames(t, 1500);
+    final family = find.byWidgetPredicate(
+      (w) =>
+          w.key is ValueKey<String> &&
+          (w.key! as ValueKey<String>).value.startsWith('model-anthropic/'),
+    );
+    if (family.evaluate().isNotEmpty) {
+      await t.tap(family.first);
+      await frames(t, 800);
+    }
+    await shot(t, 'g40-squad-04-model-sheet');
+    final use = find.byKey(const Key('model-use'));
+    if (use.evaluate().isNotEmpty) {
+      await t.tap(use);
+      await frames(t, 2000);
+      await shot(t, 'g40-squad-05-god-model-saved');
+    } else {
+      await t.tapAt(const Offset(20, 20));
+      await frames(t, 800);
+      await t.longPress(find.byKey(const Key('team-god')));
+      await frames(t, 1500);
+    }
+
+    // God's instructions, from the same sheet: the editor, then «Improve the instructions».
+    await t.ensureVisible(find.byKey(const Key('agent-instructions')));
+    await frames(t, 300);
+    await t.tap(find.byKey(const Key('agent-instructions')));
+    await frames(t, 2000);
+    await shot(t, 'g40-squad-05b-instructions');
+    final body = find
+        .descendant(of: find.byKey(const Key('prompt-body')), matching: find.byType(Scrollable))
+        .first;
+    await t.scrollUntilVisible(find.byKey(const Key('refine-open')), 300, scrollable: body);
+    await frames(t, 300);
+    await t.tap(find.byKey(const Key('refine-open')));
+    await frames(t, 2500);
+    await t.scrollUntilVisible(find.byKey(const Key('refine-estimate')), 300, scrollable: body);
+    await frames(t, 500);
+    await shot(t, 'g40-squad-05c-instructions-improve');
+    await t.tap(find.byKey(const Key('prompt-close')));
+    await frames(t, 1000);
+
+    // A tap on God's card again after the sheets (the tour reports what it sees).
+    await t.tap(find.byKey(const Key('team-god')));
+    for (var i = 0; i < 20; i++) {
+      await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 150)));
+      await t.pump(const Duration(milliseconds: 50));
+    }
+    final reopened = find.byKey(const Key('conversation-back')).evaluate().isNotEmpty;
+    debugPrint('TOUR god card after the sheets: ${reopened ? 'opens' : 'does not open'}');
+    if (reopened) {
+      await t.tap(find.byKey(const Key('conversation-back')));
+      await frames(t, 1500);
+    }
+    // A card never long-pressed, after the same sheets.
+    final other = find.byWidgetPredicate(
+      (w) =>
+          w.key is ValueKey<String> &&
+          (w.key! as ValueKey<String>).value.startsWith('agent-') &&
+          w is InkWell,
+    );
+    if (other.evaluate().isNotEmpty) {
+      await t.tap(other.first);
+      for (var i = 0; i < 20; i++) {
+        await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 150)));
+        await t.pump(const Duration(milliseconds: 50));
+      }
+      final opened = find.byKey(const Key('conversation-back')).evaluate().isNotEmpty;
+      debugPrint('TOUR another card after the sheets: ${opened ? 'opens' : 'does not open'}');
+      if (opened) {
+        await t.tap(find.byKey(const Key('conversation-back')));
+        await frames(t, 1500);
+      }
+    }
+    // And God's card with a fresh pointer: a long press opens its sheet?
+    await t.longPress(find.byKey(const Key('team-god')));
+    await frames(t, 1200);
+    debugPrint(
+      'TOUR god long press after the sheets: '
+      '${find.byWidgetPredicate((w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('agent-sheet-')).evaluate().isNotEmpty ? 'sheet' : 'nothing'}',
+    );
+    await t.tapAt(const Offset(20, 20));
+    await frames(t, 1200);
+    await shot(t, 'g40-squad-10-team');
 
     // New agent: an assistant, step by step.
     await t.tap(find.byKey(const Key('team-new-agent')));
