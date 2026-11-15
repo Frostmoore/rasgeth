@@ -694,5 +694,6 @@
     }
   },
   "modelHintLocal": "Runs on a computer of yours: nothing is paid per use.",
-  "modelHintOther": "Through a connected provider."
+  "modelHintOther": "Through a connected provider.",
+  "stateActive": "active"
 }

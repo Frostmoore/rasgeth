@@ -1177,4 +1177,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get modelHintOther => 'Through a connected provider.';
+
+  @override
+  String get stateActive => 'active';
 }

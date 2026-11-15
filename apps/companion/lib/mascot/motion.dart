@@ -9,6 +9,7 @@ import 'package:flutter/animation.dart';
 
 import '../api/types.dart';
 import 'motion_table.g.dart';
+import 'rhythm.dart';
 
 /// One keyframe: when (0..1) and the value (x and y; rotate and opacity use x).
 typedef MotionFrame = ({double at, double x, double y});
@@ -26,6 +27,9 @@ class MotionTrack {
     required this.phase,
     required this.curve,
     required this.frames,
+    this.rareEv,
+    this.gapMin = 0,
+    this.gapMax = 0,
   });
 
   factory MotionTrack.fromJson(Map<String, dynamic> j) {
@@ -33,7 +37,12 @@ class MotionTrack {
     final (lo, hi) = dur is List
         ? ((dur[0] as num).toDouble(), (dur[1] as num).toDouble())
         : ((dur as num).toDouble(), dur.toDouble());
+    final rare = j['rare'] as Map<String, dynamic>?;
+    final gap = rare?['gap'] as List<dynamic>?;
     return MotionTrack._(
+      rareEv: rare?['ev'] as String?,
+      gapMin: (gap?[0] as num?)?.toDouble() ?? 0,
+      gapMax: (gap?[1] as num?)?.toDouble() ?? 0,
       el: j['el'] as String,
       prop: MotionProp.values.byName(j['prop'] as String),
       durMin: lo,
@@ -75,6 +84,26 @@ class MotionTrack {
   final Curve curve;
   final List<MotionFrame> frames;
 
+  /// A rare event (its name; null for the tracks that loop): it lasts [durMin] and comes back
+  /// after [gapMin]..[gapMax] seconds, a different gap every time and per mascot.
+  final String? rareEv;
+  final double gapMin;
+  final double gapMax;
+
+  bool get isRare => rareEv != null;
+
+  /// When this rare event starts between [from] and [to] (the library's `rareStarts`).
+  List<double> starts(List<double> k, double from, double to) =>
+      isRare ? rareStarts(rareEv!, gapMin, gapMax, pk, k, from, to) : const [];
+
+  /// Where the rare event is at [seconds] (0..1), or null while it rests.
+  double? rareProgress(double seconds, List<double> k) {
+    for (final s in starts(k, seconds - durMin, seconds + 1e-9)) {
+      if (seconds >= s && seconds < s + durMin) return (seconds - s) / durMin;
+    }
+    return null;
+  }
+
   double duration(List<double> k) => durMin + (durMax - durMin) * _k(k, dk);
 
   /// Where the cycle is at [seconds] (0..1), as CSS with the delay `-dur * (k[pk] + phase)`.
@@ -84,8 +113,14 @@ class MotionTrack {
   }
 
   /// The value at [seconds]: the frames around the cycle's position, eased between them.
-  ({double x, double y}) valueAt(double seconds, List<double> k) =>
-      valueAtProgress(progress(seconds, k));
+  ({double x, double y}) valueAt(double seconds, List<double> k) {
+    if (isRare) {
+      final p = rareProgress(seconds, k);
+      if (p == null) return (x: frames.first.x, y: frames.first.y);
+      return valueAtProgress(p);
+    }
+    return valueAtProgress(progress(seconds, k));
+  }
 
   ({double x, double y}) valueAtProgress(double p) {
     for (var i = 1; i < frames.length; i++) {

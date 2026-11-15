@@ -1181,4 +1181,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get modelHintOther => 'Tramite un fornitore collegato.';
+
+  @override
+  String get stateActive => 'attivo';
 }

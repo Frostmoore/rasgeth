@@ -16,6 +16,7 @@ class SessionRow {
     required this.createdAt,
     this.projectId,
     this.lastAt,
+    this.repliedAt,
     this.title,
     this.archived = false,
     this.running = false,
@@ -28,6 +29,7 @@ class SessionRow {
     projectId: _str(j['projectId']),
     createdAt: _str(j['createdAt']) ?? '',
     lastAt: _str(j['lastAt']),
+    repliedAt: _str(j['repliedAt']),
     title: _str(j['title']),
     archived: j['archived'] == true,
     running: j['running'] == true,
@@ -39,6 +41,9 @@ class SessionRow {
   final String? projectId;
   final String createdAt;
   final String? lastAt;
+
+  /// When the agent last answered the person here (3.8.1): its mascot stays awake a while.
+  final String? repliedAt;
   final String? title;
   final bool archived;
   final bool running;
@@ -48,27 +53,20 @@ class SessionRow {
 
   String get when => lastAt ?? createdAt;
 
-  SessionRow withTitle(String t) => SessionRow(
-    id: id,
-    agentId: agentId,
-    projectId: projectId,
-    createdAt: createdAt,
-    lastAt: lastAt,
-    title: t,
-    archived: archived,
-    running: running,
-    task: task,
-  );
+  SessionRow withTitle(String t) => copy(title: t);
 
-  SessionRow withRunning(bool r) => SessionRow(
+  SessionRow withRunning(bool r) => copy(running: r);
+
+  SessionRow copy({String? title, bool? running, String? repliedAt}) => SessionRow(
     id: id,
     agentId: agentId,
     projectId: projectId,
     createdAt: createdAt,
     lastAt: lastAt,
-    title: title,
+    repliedAt: repliedAt ?? this.repliedAt,
+    title: title ?? this.title,
     archived: archived,
-    running: r,
+    running: running ?? this.running,
     task: task,
   );
 }

@@ -2156,6 +2156,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Through a connected provider.'**
   String get modelHintOther;
+
+  /// No description provided for @stateActive.
+  ///
+  /// In en, this message translates to:
+  /// **'active'**
+  String get stateActive;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

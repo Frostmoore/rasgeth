@@ -18,7 +18,8 @@ AgentKind agentKindFrom(String? s) =>
     AgentKind.values.firstWhere((k) => k.name == s, orElse: () => AgentKind.agent);
 
 /// `MascotState`: idle, thinking, working, waiting for the person, blocked.
-enum MascotState { idle, think, work, wait, error }
+/// What a mascot shows; `active`: awake for two minutes after answering the person (3.8.1).
+enum MascotState { idle, active, think, work, wait, error }
 
 MascotState mascotStateFrom(String? s) =>
     MascotState.values.firstWhere((k) => k.name == s, orElse: () => MascotState.idle);

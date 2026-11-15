@@ -1,6 +1,8 @@
 // What the live connection keeps up to date (G40.7): the conversations' rows and views, the
 // requests waiting for the person and the counters «For you» and «In progress». [apply] takes one
 // server message, as the page's state.ts does; it is pure enough to test without a socket.
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import 'conversation.dart';
@@ -42,6 +44,16 @@ class SessionView extends ChangeNotifier {
 }
 
 class LiveModel extends ChangeNotifier {
+  LiveModel({DateTime Function()? now}) : now = now ?? DateTime.now;
+
+  /// How long an agent stays awake after its last answer to the person (the page's `ACTIVE_FOR_MS`).
+  static const activeFor = Duration(minutes: 2);
+
+  /// The clock (tests give a fake one).
+  final DateTime Function() now;
+  Timer? _asleep;
+  DateTime? _asleepAt;
+
   List<SessionRow> sessions = const [];
   List<PermissionRequest> approvals = const [];
   List<QuestionRequest> questions = const [];
@@ -106,7 +118,10 @@ class LiveModel extends ChangeNotifier {
         final running = m['state'] == 'running';
         if (sid == null) break;
         if (!sessions.any((s) => s.id == sid)) onUnknownSession?.call();
-        sessions = [for (final s in sessions) s.id == sid ? s.withRunning(running) : s];
+        final replied = m['repliedAt'] is String ? m['repliedAt'] as String : null;
+        sessions = [
+          for (final s in sessions) s.id == sid ? s.copy(running: running, repliedAt: replied) : s,
+        ];
         final v = views[sid];
         if (v != null) {
           if (running && !v.running) v.calling = true;
@@ -172,9 +187,39 @@ class LiveModel extends ChangeNotifier {
     rows.sort((a, b) => b.when.compareTo(a.when));
     final events = views[rows.first.id]?.events;
     final last = events == null || events.isEmpty ? null : events.last;
-    return last != null && blockingEvents.contains(last.type)
-        ? MascotState.error
-        : MascotState.idle;
+    if (last != null && blockingEvents.contains(last.type)) return MascotState.error;
+    // Awake for two minutes after answering the person.
+    DateTime? replied;
+    for (final r in rows) {
+      final t = r.repliedAt == null ? null : DateTime.tryParse(r.repliedAt!);
+      if (t != null && (replied == null || t.isAfter(replied))) replied = t;
+    }
+    if (replied != null) {
+      final t = now();
+      final until = replied.add(activeFor);
+      if (t.isBefore(until) && t.isAfter(replied.subtract(const Duration(minutes: 1)))) {
+        _fallAsleepAt(until);
+        return MascotState.active;
+      }
+    }
+    return MascotState.idle;
+  }
+
+  /// Tells the mascots when the first awake one falls asleep again.
+  void _fallAsleepAt(DateTime at) {
+    if (_asleepAt != null && !at.isBefore(_asleepAt!) && (_asleep?.isActive ?? false)) return;
+    _asleep?.cancel();
+    _asleepAt = at;
+    _asleep = Timer(at.difference(now()) + const Duration(milliseconds: 50), () {
+      _asleepAt = null;
+      notifyListeners();
+    });
+  }
+
+  @override
+  void dispose() {
+    _asleep?.cancel();
+    super.dispose();
   }
 }
 

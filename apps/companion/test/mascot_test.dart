@@ -116,7 +116,7 @@ void main() {
       final breath = table.states[MascotState.idle]!.firstWhere(
         (t) => t.el == 'core' && t.prop == MotionProp.scale,
       );
-      expect(breath.valueAtProgress(.5).y, closeTo(1.035, 1e-9));
+      expect(breath.valueAtProgress(.5).y, closeTo(1.065, 1e-9));
       final z = table.states[MascotState.idle]!.firstWhere(
         (t) => t.el == 'z1' && t.prop == MotionProp.opacity,
       );
@@ -125,7 +125,7 @@ void main() {
       final hop = table.states[MascotState.wait]!.firstWhere(
         (t) => t.el == 'core' && t.prop == MotionProp.translate,
       );
-      expect(hop.valueAtProgress(.86).y, closeTo(-6, 1e-9));
+      expect(hop.valueAtProgress(.86).y, closeTo(-9, 1e-9));
     });
 
     test('the rhythm sets period and phase as the CSS delay does', () {

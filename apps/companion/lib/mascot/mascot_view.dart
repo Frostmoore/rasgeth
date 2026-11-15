@@ -16,12 +16,20 @@ import '../api/types.dart';
 import 'clock.dart';
 import 'mascot_source.dart';
 import 'motion.dart';
+import 'rhythm.dart';
 import 'svg_layers.dart';
 
 Color hexColor(String hex) {
   final h = hex.replaceFirst('#', '');
   final v = int.tryParse(h.length == 3 ? h.split('').map((c) => '$c$c').join() : h, radix: 16);
   return Color(0xFF000000 | (v ?? 0x888888));
+}
+
+/// The rhythm in the drawing; from an older server (none in it), the app's own from the seed (or
+/// the agent's id), so the mascots never all move with the same zero.
+List<double> rhythmFor(MascotLayers layers, {String? seed, String? agentId}) {
+  if (layers.rhythm.isNotEmpty) return layers.rhythm;
+  return rhythmOf(seed != null && seed.isNotEmpty ? seed : agentId ?? '');
 }
 
 class MascotView extends StatefulWidget {
@@ -67,6 +75,10 @@ class MascotView extends StatefulWidget {
 }
 
 class _MascotViewState extends State<MascotView> {
+  /// A small shift of its own when it appears (seconds, as the page's `--j`): two mascots drawn
+  /// at the same moment, even twins, never move together.
+  final double _shift = math.Random().nextDouble() * 2.5;
+  List<double>? _ownRhythm;
   Future<String>? _future;
   String? _futureKey;
   bool _listening = false;
@@ -145,6 +157,10 @@ class _MascotViewState extends State<MascotView> {
         : Semantics(label: label, image: true, excludeSemantics: true, child: box);
   }
 
+  List<double> _rhythmOf(MascotLayers layers, String svg) => layers.rhythm.isNotEmpty
+      ? layers.rhythm
+      : _ownRhythm ??= rhythmFor(layers, seed: widget.spec?.seed, agentId: widget.agentId);
+
   Widget _placeholder() => CustomPaint(
     size: Size.square(widget.size),
     painter: SpecPainter(spec: widget.spec, theme: _theme, state: widget.state),
@@ -157,8 +173,8 @@ class _MascotViewState extends State<MascotView> {
     // have their own `fill-opacity` (the sleep bubble); the layers leave hidden groups out.
     final layers = splitMascotSvg(svg, table.elements);
     if (!_moving) return MascotLayersView(layers: layers, size: s);
-    final t = widget.seconds ?? MascotClock.instance.seconds;
-    final poses = table.poses(widget.state, t, layers.rhythm, tiny: widget.tiny);
+    final t = widget.seconds ?? MascotClock.instance.seconds + _shift;
+    final poses = table.poses(widget.state, t, _rhythmOf(layers, svg), tiny: widget.tiny);
     return MascotLayersView(layers: layers, poses: poses, size: s);
   }
 }

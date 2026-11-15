@@ -343,5 +343,6 @@
   "modelHintKey": "A consumo con la tua chiave API: conta per il tetto di spesa.",
   "modelHintNode": "Passa dal computer {node}.",
   "modelHintLocal": "Gira su un computer tuo: niente costi a consumo.",
-  "modelHintOther": "Tramite un fornitore collegato."
+  "modelHintOther": "Tramite un fornitore collegato.",
+  "stateActive": "attivo"
 }

@@ -403,6 +403,7 @@ Color stateColor(RgColors c, MascotState s) => switch (s) {
   MascotState.error => c.err,
   MascotState.think => c.warn,
   MascotState.work => c.ok,
+  MascotState.active => c.ok,
   MascotState.idle => c.dim,
 };
 
