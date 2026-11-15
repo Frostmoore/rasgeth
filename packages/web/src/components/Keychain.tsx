@@ -57,6 +57,8 @@ const PAGE_OF: Record<string, Key> = {
   code: "wzCode",
   remote: "wzRemote",
   machines: "mcSection",
+  // The notifications' VAPID key (G40.4).
+  devices: "dvSection",
   automations: "automations",
   extensions: "extensions",
 };
