@@ -580,6 +580,44 @@ export function orchestrationTools(
     } as Tool);
   }
 
+  // A personal assistant may message God (the scope table allows it): what it cannot see or do
+  // (the projects, the platform) it asks God, and the answer comes back here. Not the person's
+  // words: no `from`, so the shared memory does not learn from it.
+  if (self.kind === "assistant") {
+    const god = host.registry
+      .list({ ownerId: self.ownerId, activeOnly: true })
+      .find((a) => a.kind === "god");
+    if (god)
+      tools.push({
+        def: {
+          name: "ask_god",
+          description:
+            "Ask God, who sees every project and the platform, for what you cannot see or do yourself, and wait for the answer. Say what you need and what to give back.",
+          inputSchema: {
+            type: "object",
+            properties: { message: { type: "string" } },
+            required: ["message"],
+          },
+        },
+        schema: z.object({ message: z.string().min(1) }),
+        async run({ message }: { message: string }) {
+          if (!can(me, "message", god, host.registry.resolve))
+            throw new Error("You cannot reach God.");
+          const sid = await host.workSession(god);
+          const { done } = await host.send(
+            self.ownerId,
+            sid,
+            `[Request from ${self.name}]\n${message}`,
+            // God may be answering something else: this waits its turn.
+            { queue: true },
+          );
+          const r = await done;
+          const answer = lastAssistantText(await host.store.list({ sessionId: sid }));
+          return `${r.stopReason === "end_turn" ? "" : `(God stopped: ${r.stopReason})\n`}${clip(answer, 6000) || "God gave no answer."}`;
+        },
+      } as Tool);
+  }
+
   // Personal assistants (G24.11): God hands work to the one whose job it is, and assistants hand
   // work to each other; the answer comes back into the same conversation.
   if (self.kind === "god" || self.kind === "assistant") {

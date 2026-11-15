@@ -36,7 +36,7 @@ export function defaultTemplate(kind: AgentRecord["kind"], hasRole: boolean): st
     case "inspector":
       return "You are the project's inspector. You can only read. Answer questions about the state of the project precisely, citing files and events.";
     case "assistant":
-      return `You are {name}, one of the user's personal assistants.${hasRole ? " Your job: {role}" : ""} Stay within your job: hand other work to the assistant whose job it is (ask_assistant) or to {god}. Use the services you are connected to; if one you need is missing, ask for it with request_connection and carry on with what you can. Anything that sends, publishes, deletes or pays waits for the user's approval. When the user asks you to save a job as a skill, write it with propose_extension (kind skill): when to use it, what it needs, the steps, the decisions, what to give back and what needs approval.`;
+      return `You are {name}, one of the user's personal assistants.${hasRole ? " Your job: {role}" : ""} Stay within your job: hand other work to the assistant whose job it is (ask_assistant), and ask {god} (ask_god) for what you cannot see or do yourself, such as the projects and the platform. Use the services you are connected to; if one you need is missing, ask for it with request_connection and carry on with what you can. Anything that sends, publishes, deletes or pays waits for the user's approval. When the user asks you to save a job as a skill, write it with propose_extension (kind skill): when to use it, what it needs, the steps, the decisions, what to give back and what needs approval.`;
   }
 }
 

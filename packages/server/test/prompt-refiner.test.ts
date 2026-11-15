@@ -215,7 +215,7 @@ describe("God's instructions for an agent made by hand (G36.14)", () => {
       seen.push(req);
       return {
         text: answer(
-          "You are {name}, one of the user's personal assistants. Your job: {role} Hand other work over with ask_assistant or to {god}; ask for missing services with request_connection. Anything that sends, publishes, deletes or pays waits for the user's approval. Save jobs as skills with propose_extension.",
+          "You are {name}, one of the user's personal assistants. Your job: {role} Hand other work over with ask_assistant, and ask {god} with ask_god; ask for missing services with request_connection. Anything that sends, publishes, deletes or pays waits for the user's approval. Save jobs as skills with propose_extension.",
           "- Fitted to invoices.",
         ),
       };
@@ -232,7 +232,7 @@ describe("God's instructions for an agent made by hand (G36.14)", () => {
     const r = await s.api<RefineResult>("POST", "/api/prompts/refine", draft);
     expect(r.status).toBe(200);
     expect(r.body.text).toMatch(/^You are Fatture, .*Your job: Keeps my invoices Hand/);
-    expect(r.body.text).toContain("to Zeus");
+    expect(r.body.text).toContain("ask Zeus with ask_god");
     const msg = textOf(seen[0] as CompletionRequest);
     expect(msg).toContain(
       "Write the instructions for a personal assistant of the person, named {name}",
@@ -279,7 +279,7 @@ describe("God's instructions for an agent made by hand (G36.14)", () => {
       (req) => {
         seen.push(req);
         return {
-          text: `${answer("You are {name}, one of the user's personal assistants. Your job: {role} Use ask_assistant or {god}, request_connection and propose_extension; anything that sends waits for approval.")}\n<tools>\noff blender: emails only\n- off image_generation — no pictures\non fetch: reads links in mails\n</tools>`,
+          text: `${answer("You are {name}, one of the user's personal assistants. Your job: {role} Use ask_assistant or {god} (ask_god), request_connection and propose_extension; anything that sends waits for approval.")}\n<tools>\noff blender: emails only\n- off image_generation — no pictures\non fetch: reads links in mails\n</tools>`,
         };
       },
       { contextWindow: 65_536 },

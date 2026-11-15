@@ -117,6 +117,45 @@ describe("personal assistants (G24.11)", () => {
     expect(answer.parts.find((p) => p.type === "text")?.text).toContain("9:00 dentist");
   });
 
+  it("an assistant asks God for what it cannot see, and gets the answer back (p3.7.5)", async () => {
+    let godAsked = "";
+    s = await startServer((req) => {
+      const isAssistant = (req.system ?? "").includes("one of the user's personal assistants");
+      if (isAssistant) {
+        expect(req.tools.map((t) => t.name)).toContain("ask_god");
+        const r = lastResult(req);
+        if (r === undefined)
+          return {
+            toolCalls: [{ name: "ask_god", input: { message: "Which projects are archived?" } }],
+          };
+        return { text: `God says: ${r}` };
+      }
+      godAsked = lastUserText(req);
+      return { text: "One archived project: Old site." };
+    });
+    const god = await s.api<{ id: string }>("POST", "/api/agents", {
+      kind: "god",
+      parentId: null,
+      name: "God",
+    });
+    const chat = await s.api<{ id: string }>("POST", "/api/agents", {
+      kind: "assistant",
+      parentId: god.body.id,
+      name: "Chat",
+    });
+    const sid = (
+      await s.api<{ sessionId: string }>("POST", "/api/sessions", { agentId: chat.body.id })
+    ).body.sessionId;
+    await (await s.core.send("me", sid, "Did I archive any project?")).done;
+    // God reads who is asking: an agent, not the person.
+    expect(godAsked).toBe("[Request from Chat]\nWhich projects are archived?");
+    const events = await s.core.history("me", sid);
+    const answer = events.filter((e) => e.type === "message.assistant").at(-1)?.payload as {
+      parts: { type: string; text?: string }[];
+    };
+    expect(answer.parts.find((p) => p.type === "text")?.text).toContain("Old site");
+  });
+
   it("runs a routine that belongs to an assistant", async () => {
     s = await startServer((req) =>
       (req.system ?? "").includes("one of the user's personal assistants")
