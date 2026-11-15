@@ -125,6 +125,15 @@ class AppController extends ChangeNotifier {
   /// The Chat's new conversation, started from the field over the bar: opened by the Chat screen.
   String? chatDraft;
 
+  /// The projects of the RedGiant in use (Team's filter).
+  List<Project> projects = const [];
+
+  /// Team's favourites, per RedGiant (kept on this device).
+  Set<String> favourites = const {};
+
+  /// Team's filter: [TeamFilter.all], [TeamFilter.favourites] or a project's id.
+  String teamFilter = TeamFilter.all;
+
   bool get connected => client != null && hello?.signedIn == true;
 
   /// The RedGiant in use as people read it (never a container's id).
@@ -477,13 +486,92 @@ class AppController extends ChangeNotifier {
       return;
     }
     agents = await c.agents();
+    await _loadTeamPrefs();
     await _loadLists();
     _startLive();
+  }
+
+  // ---- Team: favourites and the project filter (G40.9) ----
+
+  String get _favKey => 'favourites:${server?.id ?? '-'}';
+
+  Future<void> _loadTeamPrefs() async {
+    final raw = await prefs.get(_favKey);
+    favourites = raw == null || raw.isEmpty ? <String>{} : raw.split(',').toSet();
+    teamFilter = await prefs.get('teamFilter:${server?.id ?? '-'}') ?? TeamFilter.all;
+  }
+
+  bool isFavourite(String agentId) => favourites.contains(agentId);
+
+  void toggleFavourite(String agentId) {
+    final f = {...favourites};
+    if (!f.remove(agentId)) f.add(agentId);
+    favourites = f;
+    unawaited(prefs.set(_favKey, f.isEmpty ? null : (f.toList()..sort()).join(',')));
+    notifyListeners();
+  }
+
+  void setTeamFilter(String f) {
+    teamFilter = f;
+    unawaited(prefs.set('teamFilter:${server?.id ?? '-'}', f == TeamFilter.all ? null : f));
+    notifyListeners();
+  }
+
+  /// The team as Team shows it: first level, favourites first, then by name; filtered.
+  List<Agent> teamShown() {
+    final first = agents
+        .where((a) => a.kind != AgentKind.subagent && a.kind != AgentKind.inspector)
+        .toList();
+    int rank(Agent a) => a.kind == AgentKind.god ? 0 : (a.kind == AgentKind.demigod ? 1 : 2);
+    first.sort((a, b) {
+      final f = (isFavourite(b.id) ? 1 : 0) - (isFavourite(a.id) ? 1 : 0);
+      if (f != 0) return f;
+      final r = rank(a) - rank(b);
+      return r != 0 ? r : a.name.toLowerCase().compareTo(b.name.toLowerCase());
+    });
+    final f = teamFilter;
+    if (f == TeamFilter.favourites) return first.where((a) => isFavourite(a.id)).toList();
+    if (f != TeamFilter.all) {
+      // A project's agents, and those that worked in it (God, Chat…).
+      final worked = {
+        for (final s in live.sessions)
+          if (s.projectId == f) s.agentId,
+      };
+      return first.where((a) => a.projectId == f || worked.contains(a.id)).toList();
+    }
+    return first;
+  }
+
+  /// The conversations [agentId] is running now, the latest first.
+  List<SessionRow> runningOf(String agentId) =>
+      live.sessions.where((s) => s.agentId == agentId && s.running && !s.archived).toList();
+
+  /// Stops every turn [agentId] is running (over the socket, else by REST).
+  Future<bool> stopAgent(String agentId) async {
+    var ok = true;
+    for (final s in runningOf(agentId)) {
+      final sock = socket;
+      if (sock != null && sock.send({'type': 'session.interrupt', 'sessionId': s.id})) continue;
+      try {
+        await client?.interruptSession(s.id);
+      } on ApiException {
+        ok = false;
+      }
+    }
+    return ok;
   }
 
   Future<void> _loadLists() async {
     final c = client;
     if (c == null) return;
+    try {
+      projects = [
+        for (final p in await c.projects())
+          if (!p.archived) p,
+      ];
+    } on ApiException {
+      // The filter shows no projects.
+    }
     try {
       live.setSessions(await c.sessions());
     } on ApiException {
@@ -562,6 +650,19 @@ class AppController extends ChangeNotifier {
 
   /// Sends a message: over the socket (queued while the agent works), else by REST.
   Future<bool> send(String sessionId, String text, {List<Map<String, Object?>>? images}) async {
+    // A Chat conversation's first message names it (G40.9), unless the server named it already.
+    final row = live.sessions.where((r) => r.id == sessionId).firstOrNull;
+    final first =
+        row != null &&
+        row.agentId == chatAgentId &&
+        row.title?.isNotEmpty != true &&
+        !(live.views[sessionId]?.events.any((e) => e.type == 'message.user') ?? false);
+    final sent = await _send(sessionId, text, images: images);
+    if (sent && first) unawaited(nameNewChat(sessionId, text));
+    return sent;
+  }
+
+  Future<bool> _send(String sessionId, String text, {List<Map<String, Object?>>? images}) async {
     final s = socket;
     if (s != null &&
         s.send({
@@ -602,6 +703,28 @@ class AppController extends ChangeNotifier {
       return id;
     } on ApiException {
       return null;
+    }
+  }
+
+  /// A new Chat conversation's title from its first message (G40.9), unless the server gave one
+  /// already: its first line, at most [max] characters, cut at a word.
+  static String titleFrom(String text, {int max = 60}) {
+    final line = text.trim().split('\n').first.trim().replaceAll(RegExp(r'\s+'), ' ');
+    if (line.length <= max) return line;
+    final cut = line.substring(0, max);
+    final sp = cut.lastIndexOf(' ');
+    return '${(sp > max ~/ 2 ? cut.substring(0, sp) : cut).trimRight()}…';
+  }
+
+  Future<void> nameNewChat(String sessionId, String firstMessage) async {
+    final row = live.sessions.where((s) => s.id == sessionId).firstOrNull;
+    if (row?.title?.isNotEmpty == true || firstMessage.trim().isEmpty) return;
+    final title = titleFrom(firstMessage);
+    try {
+      await client?.renameSession(sessionId, title);
+      live.setSessions([for (final s in live.sessions) s.id == sessionId ? s.withTitle(title) : s]);
+    } on ApiException {
+      // Untitled until the next try; the page can name it too.
     }
   }
 
@@ -686,6 +809,9 @@ class AppController extends ChangeNotifier {
     hello = null;
     mascots = null;
     agents = const [];
+    projects = const [];
+    favourites = const {};
+    teamFilter = TeamFilter.all;
     chatAgentId = null;
     live.clear();
   }
@@ -713,6 +839,12 @@ class _KeyChanged implements Exception {
   const _KeyChanged(this.seen);
 
   final String? seen;
+}
+
+/// Team's filter values besides a project's id.
+abstract final class TeamFilter {
+  static const all = '';
+  static const favourites = '*';
 }
 
 class AppScope extends InheritedNotifier<AppController> {

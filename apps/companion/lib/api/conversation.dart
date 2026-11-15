@@ -48,6 +48,18 @@ class SessionRow {
 
   String get when => lastAt ?? createdAt;
 
+  SessionRow withTitle(String t) => SessionRow(
+    id: id,
+    agentId: agentId,
+    projectId: projectId,
+    createdAt: createdAt,
+    lastAt: lastAt,
+    title: t,
+    archived: archived,
+    running: running,
+    task: task,
+  );
+
   SessionRow withRunning(bool r) => SessionRow(
     id: id,
     agentId: agentId,

@@ -157,6 +157,45 @@ void main() {
       expect(again.servers, isEmpty);
     });
 
+    test("a new Chat's first message names it; a title from the server stays", () async {
+      final app = make(MemoryTokenStore(), MemoryAppPrefs(), live: false);
+      expect(await app.connect(server.base.toString(), 'secret'), isTrue);
+      final sid = await app.newChatSession();
+      expect(sid, isNotNull);
+      expect(await app.send(sid!, 'Che tempo fa domani a Bologna?\nE dopodomani?'), isTrue);
+      await until(() => server.requests.any((x) => x.startsWith('PATCH /api/sessions/$sid')));
+      expect(
+        server.sessions.firstWhere((x) => x['id'] == sid)['title'],
+        'Che tempo fa domani a Bologna?',
+      );
+      expect(
+        app.live.sessions.firstWhere((x) => x.id == sid).title,
+        'Che tempo fa domani a Bologna?',
+      );
+      // A second message does not rename it; a conversation the server named keeps its title.
+      expect(await app.send(sid, 'Grazie'), isTrue);
+      expect(server.requests.where((x) => x.startsWith('PATCH')), hasLength(1));
+      final other = await app.newChatSession();
+      server.sessions.firstWhere((x) => x['id'] == other)['title'] = 'Dal server';
+      await app.refresh();
+      expect(await app.send(other!, 'Ciao'), isTrue);
+      expect(server.requests.where((x) => x.startsWith('PATCH')), hasLength(1));
+    });
+
+    test(
+      'Stop on the long press interrupts every turn the agent runs (REST without socket)',
+      () async {
+        final app = make(MemoryTokenStore(), MemoryAppPrefs(), live: false);
+        expect(await app.connect(server.base.toString(), 'secret'), isTrue);
+        server.sessions.first['running'] = true;
+        await app.refresh();
+        final agentId = server.sessions.first['agentId'] as String;
+        expect(app.runningOf(agentId), hasLength(1));
+        expect(await app.stopAgent(agentId), isTrue);
+        expect(server.requests, contains(startsWith('POST /api/sessions/s1/interrupt')));
+      },
+    );
+
     test('theme, language and motion survive a restart', () async {
       final prefs = MemoryAppPrefs();
       final app = make(MemoryTokenStore(), prefs)

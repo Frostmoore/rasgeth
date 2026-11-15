@@ -235,6 +235,20 @@ class FakeRedGiant {
       });
       return _json(r, 201, {'sessionId': id});
     }
+    final one = RegExp(r'^/api/sessions/([^/]+)(/messages|/interrupt)?$').firstMatch(path);
+    if (one != null) {
+      final row = sessions.where((x) => x['id'] == one.group(1)).firstOrNull;
+      if (row == null) return _json(r, 404, {'error': 'Not found'});
+      final body = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      if (r.method == 'PATCH' && one.group(2) == null) {
+        row.addAll(body);
+        return _json(r, 200, {'ok': true});
+      }
+      if (r.method == 'POST' && one.group(2) == '/messages') return _json(r, 202, {'ok': true});
+      if (r.method == 'POST' && one.group(2) == '/interrupt') {
+        return _json(r, 200, {'interrupted': true});
+      }
+    }
     if (r.method == 'GET' && path == '/api/chat/agent') {
       return _json(r, 200, {...agents.first, 'id': 'chat', 'kind': 'assistant', 'name': 'Chat'});
     }

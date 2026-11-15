@@ -212,6 +212,17 @@ class RedGiantClient {
     return id;
   }
 
+  /// `PATCH /api/sessions/:id`: a conversation's title (the page shows the same).
+  Future<void> renameSession(String sessionId, String title) =>
+      _call('PATCH', '/api/sessions/${Uri.encodeComponent(sessionId)}', {'title': title});
+
+  /// `POST /api/sessions/:id/interrupt`: stops the turn running (without the live socket).
+  Future<void> interruptSession(String sessionId) => _call(
+    'POST',
+    '/api/sessions/${Uri.encodeComponent(sessionId)}/interrupt',
+    const <String, Object?>{},
+  );
+
   /// `GET /api/chat/agent`: the everyday Chat (made the first time it is asked for).
   Future<Agent> chatAgent() async => Agent.fromJson(_object(await _get('/api/chat/agent')));
 

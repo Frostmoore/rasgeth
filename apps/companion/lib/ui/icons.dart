@@ -80,17 +80,24 @@ enum RgIcons {
   home('<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10"/>'),
   copy(
     '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
-  );
+  ),
+  star(
+    '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+  ),
+  folder('<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>');
 
   const RgIcons(this.paths);
   final String paths;
 }
 
 class RgIcon extends StatelessWidget {
-  const RgIcon(this.icon, {super.key, this.size = 22, this.color});
+  const RgIcon(this.icon, {super.key, this.size = 22, this.color, this.filled = false});
 
   final RgIcons icon;
   final double size;
+
+  /// Filled with the colour too (a favourite's star).
+  final bool filled;
 
   /// Default: the surrounding text colour.
   final Color? color;
@@ -99,7 +106,8 @@ class RgIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = color ?? DefaultTextStyle.of(context).style.color ?? const Color(0xFF888888);
     return SvgPicture.string(
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" '
+      'fill="${filled ? 'currentColor' : 'none'}" '
       'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
       '${icon.paths}</svg>',
       width: size,

@@ -1056,4 +1056,88 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceBrowser => 'the device\'s own voice';
+
+  @override
+  String get teamAll => 'All';
+
+  @override
+  String get teamFavourites => 'Favourites';
+
+  @override
+  String get teamFilterLabel => 'Show';
+
+  @override
+  String get teamNoFavourites => 'No favourites yet: press and hold an agent to add it.';
+
+  @override
+  String get teamNoneInProject => 'No agent has worked in this project.';
+
+  @override
+  String get favouriteMark => 'favourite';
+
+  @override
+  String get agentDoing => 'What it is doing';
+
+  @override
+  String get agentIdleNow => 'Idle right now.';
+
+  @override
+  String get agentWaitsYou => 'It is waiting for your answer in «For you».';
+
+  @override
+  String agentTask(String title) {
+    return 'Task: $title';
+  }
+
+  @override
+  String agentLastAt(String when) {
+    return 'Last activity: $when';
+  }
+
+  @override
+  String get agentStop => 'Stop';
+
+  @override
+  String agentStopped(String name) {
+    return 'Stopped: $name';
+  }
+
+  @override
+  String get agentStopFailed => 'It did not stop: check the connection.';
+
+  @override
+  String get agentOpenTask => 'Open the task';
+
+  @override
+  String get agentOpenChat => 'Open the conversation';
+
+  @override
+  String get favouriteAdd => 'Add to favourites';
+
+  @override
+  String get favouriteRemove => 'Remove from favourites';
+
+  @override
+  String inboxPosition(String n, String total) {
+    return '$n of $total';
+  }
+
+  @override
+  String get inboxSwipeHint => 'Swipe right to say yes, left to say no.';
+
+  @override
+  String get inboxCriticalHint => 'Truly dangerous: no swiping, it opens full screen.';
+
+  @override
+  String inboxSaidYes(String name) {
+    return 'Yes to $name';
+  }
+
+  @override
+  String inboxSaidNo(String name) {
+    return 'No to $name';
+  }
+
+  @override
+  String get inboxNext => 'Later';
 }

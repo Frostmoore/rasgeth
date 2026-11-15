@@ -1946,6 +1946,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'the device\'s own voice'**
   String get voiceBrowser;
+
+  /// No description provided for @teamAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get teamAll;
+
+  /// No description provided for @teamFavourites.
+  ///
+  /// In en, this message translates to:
+  /// **'Favourites'**
+  String get teamFavourites;
+
+  /// No description provided for @teamFilterLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get teamFilterLabel;
+
+  /// No description provided for @teamNoFavourites.
+  ///
+  /// In en, this message translates to:
+  /// **'No favourites yet: press and hold an agent to add it.'**
+  String get teamNoFavourites;
+
+  /// No description provided for @teamNoneInProject.
+  ///
+  /// In en, this message translates to:
+  /// **'No agent has worked in this project.'**
+  String get teamNoneInProject;
+
+  /// No description provided for @favouriteMark.
+  ///
+  /// In en, this message translates to:
+  /// **'favourite'**
+  String get favouriteMark;
+
+  /// No description provided for @agentDoing.
+  ///
+  /// In en, this message translates to:
+  /// **'What it is doing'**
+  String get agentDoing;
+
+  /// No description provided for @agentIdleNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Idle right now.'**
+  String get agentIdleNow;
+
+  /// No description provided for @agentWaitsYou.
+  ///
+  /// In en, this message translates to:
+  /// **'It is waiting for your answer in «For you».'**
+  String get agentWaitsYou;
+
+  /// No description provided for @agentTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Task: {title}'**
+  String agentTask(String title);
+
+  /// No description provided for @agentLastAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Last activity: {when}'**
+  String agentLastAt(String when);
+
+  /// No description provided for @agentStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get agentStop;
+
+  /// No description provided for @agentStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped: {name}'**
+  String agentStopped(String name);
+
+  /// No description provided for @agentStopFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'It did not stop: check the connection.'**
+  String get agentStopFailed;
+
+  /// No description provided for @agentOpenTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the task'**
+  String get agentOpenTask;
+
+  /// No description provided for @agentOpenChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the conversation'**
+  String get agentOpenChat;
+
+  /// No description provided for @favouriteAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favourites'**
+  String get favouriteAdd;
+
+  /// No description provided for @favouriteRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favourites'**
+  String get favouriteRemove;
+
+  /// No description provided for @inboxPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} of {total}'**
+  String inboxPosition(String n, String total);
+
+  /// No description provided for @inboxSwipeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe right to say yes, left to say no.'**
+  String get inboxSwipeHint;
+
+  /// No description provided for @inboxCriticalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Truly dangerous: no swiping, it opens full screen.'**
+  String get inboxCriticalHint;
+
+  /// No description provided for @inboxSaidYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes to {name}'**
+  String inboxSaidYes(String name);
+
+  /// No description provided for @inboxSaidNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No to {name}'**
+  String inboxSaidNo(String name);
+
+  /// No description provided for @inboxNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get inboxNext;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

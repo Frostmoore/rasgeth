@@ -1,6 +1,7 @@
 // Chat (decision D9, variant 3): the everyday conversations with Chat (the `assistant` agent the
 // server makes the first time, `GET /api/chat/agent`), day by day. The field over the bar opens
-// a new one at once, with its text as the first message.
+// a new one at once, with its text as the first message, which also names it (G40.9) unless the
+// server has a title for it already.
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -140,7 +141,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 color: r.running ? c.ok : c.dim,
                               ),
                               title: Text(
-                                r.title?.isNotEmpty == true ? r.title! : l.untitled,
+                                r.task ?? (r.title?.isNotEmpty == true ? r.title! : l.untitled),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),

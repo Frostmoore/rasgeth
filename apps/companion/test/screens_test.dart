@@ -65,9 +65,14 @@ void main() {
     expect(find.text('2'), findsWidgets);
     await tester.tap(find.byKey(const Key('tab-inbox')));
     await tester.pumpAndSettle();
-    expect(find.byKey(const Key('allow-r1')), findsOneWidget);
+    // The critical one on top of the stack: no quick yes.
     expect(find.byKey(const Key('allow-r2')), findsNothing);
     expect(find.text('Davvero pericolosa, da God'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('inbox-later')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('allow-r1')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('inbox-later')));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('open-r2')));
     await tester.pumpAndSettle();

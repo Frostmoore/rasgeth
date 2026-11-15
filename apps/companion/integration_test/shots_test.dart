@@ -35,8 +35,10 @@ Future<void> waitFor(WidgetTester t, bool Function() ok, {int seconds = 30}) asy
   }
 }
 
-Future<void> shot(WidgetTester t, String name) async {
-  await frames(t, 900);
+Future<void> shot(WidgetTester t, String name, {int wait = 900}) async {
+  await frames(t, wait);
+  // Where the tour is, so an exception in the log can be placed.
+  debugPrint('shot: $name');
   final dir = _shots;
   if (dir == null) return;
   await t.runAsync(
@@ -69,6 +71,36 @@ void main() {
     await t.tap(find.byKey(const Key('tab-team')));
     await frames(t, 2500);
     await shot(t, 'linux-04-team-live');
+    // G40.9: the mascots always move: a few frames of the team, 0.4 s apart.
+    for (var i = 0; i < 6; i++) {
+      await shot(t, 'linux-04-team-frame-$i', wait: 400);
+    }
+    // The long press: what the agent is doing, its actions; then a favourite.
+    Finder byPrefix(String p) => find.byWidgetPredicate(
+      (w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith(p),
+    );
+    final cards = byPrefix('agent-').evaluate().toList();
+    if (cards.length > 1) {
+      await t.longPress(find.byWidget(cards[1].widget));
+      await frames(t);
+      await shot(t, 'linux-04b-agent-sheet');
+      await t.tap(find.byKey(const Key('agent-favourite')));
+      await frames(t, 400);
+      await t.tapAt(const Offset(20, 20));
+      await frames(t);
+      await shot(t, 'linux-04c-team-favourite');
+    }
+    final projects = byPrefix('team-filter-').evaluate().where((e) {
+      final k = (e.widget.key! as ValueKey<String>).value;
+      return k != 'team-filters' && k != 'team-filter-all' && k != 'team-filter-favourites';
+    }).toList();
+    if (projects.isNotEmpty) {
+      await t.tap(find.byWidget(projects.first.widget));
+      await frames(t);
+      await shot(t, 'linux-04d-team-project');
+      app.setTeamFilter(TeamFilter.all);
+      await frames(t);
+    }
 
     await t.tap(find.byKey(const Key('tab-inbox')));
     await frames(t);
@@ -80,6 +112,45 @@ void main() {
       await shot(t, 'linux-06-critical');
       await t.tap(find.byKey(const Key('critical-no')));
       await frames(t);
+    }
+    await shot(t, 'linux-06b-after-critical');
+    // G40.9: an ordinary request on top of the stack, half swiped to the right. The demo's
+    // classifier answers its ordinary requests by itself: for the picture only, one is shown
+    // in the app (its answer goes to a request the server does not know, and is dropped).
+    if (byPrefix('swipe-').evaluate().isEmpty) {
+      app.live.apply({
+        'type': 'permission.request',
+        'request': {
+          'requestId': 'shots-ordinary',
+          'agentId': app.agents.first.id,
+          'agentName': app.agents.first.name,
+          'projectId': null,
+          'tool': 'bash',
+          'input': {'command': 'npm install --save-dev vitest'},
+          'reasons': ['Installs packages'],
+          'danger': <String>[],
+          'createdAt': DateTime.now().toUtc().toIso8601String(),
+        },
+      });
+      for (var i = 0; i < 4 && byPrefix('swipe-').evaluate().isEmpty; i++) {
+        if (find.byKey(const Key('inbox-later')).evaluate().isEmpty) break;
+        await t.tap(find.byKey(const Key('inbox-later')));
+        await frames(t, 300);
+      }
+    }
+    final swipe = byPrefix('swipe-');
+    if (swipe.evaluate().isNotEmpty) {
+      await shot(t, 'linux-05b-stack');
+      final g = await t.startGesture(t.getCenter(swipe.first));
+      for (var i = 0; i < 6; i++) {
+        await g.moveBy(const Offset(15, 0));
+        await t.pump(const Duration(milliseconds: 16));
+      }
+      await shot(t, 'linux-05c-swiping-yes', wait: 100);
+      await g.moveBy(const Offset(120, 0));
+      await g.up();
+      await frames(t);
+      await shot(t, 'linux-05d-after-swipe');
     }
 
     // The field over the bar: a new conversation with Chat, at once.
@@ -116,6 +187,10 @@ void main() {
     await t.tap(find.byKey(const Key('tab-team')));
     await frames(t, 2000);
     await shot(t, 'linux-12-team-dark');
+    // The app taken down while its mascots move: nothing may break on the way out.
+    await t.pumpWidget(const SizedBox());
+    await frames(t, 500);
+    debugPrint('tour: closed');
   });
 }
 

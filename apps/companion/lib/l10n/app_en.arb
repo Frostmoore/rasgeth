@@ -600,5 +600,74 @@
     }
   },
   "voiceNone": "nothing set yet",
-  "voiceBrowser": "the device's own voice"
+  "voiceBrowser": "the device's own voice",
+  "teamAll": "All",
+  "teamFavourites": "Favourites",
+  "teamFilterLabel": "Show",
+  "teamNoFavourites": "No favourites yet: press and hold an agent to add it.",
+  "teamNoneInProject": "No agent has worked in this project.",
+  "favouriteMark": "favourite",
+  "agentDoing": "What it is doing",
+  "agentIdleNow": "Idle right now.",
+  "agentWaitsYou": "It is waiting for your answer in «For you».",
+  "agentTask": "Task: {title}",
+  "@agentTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "agentLastAt": "Last activity: {when}",
+  "@agentLastAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "agentStop": "Stop",
+  "agentStopped": "Stopped: {name}",
+  "@agentStopped": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "agentStopFailed": "It did not stop: check the connection.",
+  "agentOpenTask": "Open the task",
+  "agentOpenChat": "Open the conversation",
+  "favouriteAdd": "Add to favourites",
+  "favouriteRemove": "Remove from favourites",
+  "inboxPosition": "{n} of {total}",
+  "@inboxPosition": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "inboxSwipeHint": "Swipe right to say yes, left to say no.",
+  "inboxCriticalHint": "Truly dangerous: no swiping, it opens full screen.",
+  "inboxSaidYes": "Yes to {name}",
+  "@inboxSaidYes": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "inboxSaidNo": "No to {name}",
+  "@inboxSaidNo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "inboxNext": "Later"
 }
