@@ -182,7 +182,8 @@ case "$MODE" in
         "setup-ap captive probe android" "setup-ap captive probe apple" "setup-ap dns answers with redgiant" \
         "setup-ap is the local network for the first access" "setup-ap closed" \
         "setup-ap maintenance never offers the first access"; do
-        grep -aqF "REDGIANT-SELFTEST ok   $c" "$SERIAL" || { echo "::error::temporary network check missing or failed: $c"; ok=0; }
+        # "skip": a check of the server's side, when the image carries an older server (a work branch).
+        grep -aqF -e "REDGIANT-SELFTEST ok   $c" -e "REDGIANT-SELFTEST skip $c" "$SERIAL" || { echo "::error::temporary network check missing or failed: $c"; ok=0; }
       done
     fi
     # From outside the machine, through the forwarded port.

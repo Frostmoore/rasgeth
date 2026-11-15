@@ -83,6 +83,18 @@ sap_probe() { # host path: the probe of a phone goes to the page (302 to http://
   say "setup-ap probe $1$2: $r"
   [ "$r" = "302 http://10.42.0.1/" ]
 }
+# The server's side of it (captive portal, where a request comes from, maintenance) is in the
+# server image this machine carries: a work branch's image carries the latest release's server,
+# which may be older. Those checks then say "skip", by name (boot-test.sh accepts it); a version
+# branch builds its own server and runs them all.
+sap_server_new() {
+  [ "$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "http://127.0.0.1:$PORT/api/setup-network/here")" = 200 ]
+}
+server_check() { # name command…
+  if [ "$sap_new" = 1 ]; then check "$@"; else say "skip $1 (the server in this image is older: $(curl -fsS --max-time 5 "http://127.0.0.1:$PORT/api/health" 2>/dev/null))"; fi
+}
+sap_new=0
+sap_server_new && sap_new=1
 if sap_setup; then
   say "ok   setup-ap open at a first start ($(sap_status | jq -c '{mode, ssid, capable, pending}'))"
   check "setup-ap networks seen before opening" bash -c "echo ap-status | socat -t 60 - UNIX-CONNECT:/run/redgiant-helper/helper.sock | jq -e '[.networks[].ssid] | index(\"${wifi_ssid:-RedGiant Test}\") != null'"
@@ -102,11 +114,11 @@ if sap_setup; then
     } | sed 's/^/REDGIANT-SELFTEST setup-ap dhcp: /' >/dev/console
   fi
   check "setup-ap first start page from the client" bash -c "ip netns exec $sap_ns curl -fsS --max-time 10 http://10.42.0.1/ | grep -qi '<html'"
-  check "setup-ap captive probe android" sap_probe connectivitycheck.gstatic.com /generate_204
-  check "setup-ap captive probe apple" sap_probe captive.apple.com /hotspot-detect.html
+  server_check "setup-ap captive probe android" sap_probe connectivitycheck.gstatic.com /generate_204
+  server_check "setup-ap captive probe apple" sap_probe captive.apple.com /hotspot-detect.html
   check "setup-ap dns answers with redgiant" sap_dns
   check "setup-ap is the local network for the first access" bash -c "ip netns exec $sap_ns curl -fsS --max-time 10 http://10.42.0.1/api/auth/methods | jq -e '.firstAccess == \"password\"'"
-  check "setup-ap page knows the temporary network" bash -c "ip netns exec $sap_ns curl -fsS --max-time 10 http://10.42.0.1/api/setup-network/here | jq -e '.here == \"setup\"'"
+  server_check "setup-ap page knows the temporary network" bash -c "ip netns exec $sap_ns curl -fsS --max-time 10 http://10.42.0.1/api/setup-network/here | jq -e '.here == \"setup\"'"
   check "setup-ap nothing routed from it" bash -c "[ \"\$(cat /proc/sys/net/ipv4/conf/wlan0/forwarding)\" = 0 ]"
   # The first start completed (the server asks the same): the network closes, the marker goes.
   check "setup-ap closes when the first start is done" bash -c 'echo ap-done | socat -t 30 - UNIX-CONNECT:/run/redgiant-helper/helper.sock | jq -e .ok'
@@ -117,7 +129,7 @@ if sap_setup; then
   check "setup-ap maintenance opens" bash -c 'echo ap-start | socat -t 30 - UNIX-CONNECT:/run/redgiant-helper/helper.sock | jq -e .ok'
   check "setup-ap maintenance open" sap_wait '.active == true and .mode == "maintenance"' 60
   check "setup-ap maintenance client joined again" sap_joined
-  check "setup-ap maintenance never offers the first access" bash -c "for i in \$(seq 1 20); do r=\$(ip netns exec $sap_ns curl -fsS --max-time 5 http://10.42.0.1/api/setup-network/here) && echo \"\$r\" | jq -e '.here == \"maintenance\"' >/dev/null && break; sleep 2; done; ip netns exec $sap_ns curl -fsS --max-time 10 http://10.42.0.1/api/auth/methods | jq -e 'has(\"firstAccess\") | not'"
+  server_check "setup-ap maintenance never offers the first access" bash -c "for i in \$(seq 1 20); do r=\$(ip netns exec $sap_ns curl -fsS --max-time 5 http://10.42.0.1/api/setup-network/here) && echo \"\$r\" | jq -e '.here == \"maintenance\"' >/dev/null && break; sleep 2; done; ip netns exec $sap_ns curl -fsS --max-time 10 http://10.42.0.1/api/auth/methods | jq -e 'has(\"firstAccess\") | not'"
   check "setup-ap maintenance closes" bash -c 'echo ap-stop | socat -t 30 - UNIX-CONNECT:/run/redgiant-helper/helper.sock | jq -e .ok'
   check "setup-ap maintenance closed" sap_wait '.active == false' 60
   if [ "$ok" != 1 ]; then
