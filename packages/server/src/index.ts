@@ -56,6 +56,7 @@ export * from "./rooms.js";
 export * from "./serve.js";
 export * from "./setup.js";
 export * from "./setup-code.js";
+export * from "./setup-network.js";
 export * from "./shared-memory.js";
 export * from "./site-match.js";
 export * from "./ssh-tools.js";

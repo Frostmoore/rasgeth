@@ -137,4 +137,14 @@ describe("links with #token= (G39.7)", () => {
     expect(takeFromLink()).toEqual({});
     expect(location.hash).toBe("");
   });
+
+  it("takes RGCompanion's #open=settings with its token (G40.8)", () => {
+    history.replaceState(null, "", "/#token=rgd_dev&open=settings");
+    expect(takeFromLink()).toEqual({ token: "rgd_dev", open: "settings" });
+    expect(location.href).not.toContain("rgd_dev");
+    expect(location.hash).toBe("");
+    history.replaceState(null, "", "/#open=elsewhere");
+    expect(takeFromLink()).toEqual({});
+    expect(location.hash).toBe("");
+  });
 });

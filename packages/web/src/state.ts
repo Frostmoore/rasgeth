@@ -988,24 +988,27 @@ export async function refresh(): Promise<void> {
 
 /**
  * What a link brings after '#' (G39.7): `#token=…` from the apps, the console or the installer
- * (a fragment never reaches the server, so no log holds it) and `#tavola=…` from Telegram. Both
- * are taken out of the address bar at once, the rest of the fragment stays; the token is kept
- * by `signIn` when it works.
+ * (a fragment never reaches the server, so no log holds it), `#tavola=…` from Telegram and
+ * `#open=settings` from RGCompanion's «All settings» (G40.8, with its device token). All are taken
+ * out of the address bar at once, the rest of the fragment stays; the token is kept by `signIn`
+ * when it works.
  */
-export function takeFromLink(): { token?: string; board?: string } {
+export function takeFromLink(): { token?: string; board?: string; open?: "settings" } {
   const hash = new URLSearchParams(location.hash.slice(1));
   const token = hash.get("token")?.trim() || undefined;
   const board = hash.get("tavola") || undefined;
-  if (!hash.has("token") && !hash.has("tavola")) return {};
+  const open = hash.get("open") === "settings" ? "settings" : undefined;
+  if (!hash.has("token") && !hash.has("tavola") && !hash.has("open")) return {};
   hash.delete("token");
   hash.delete("tavola");
+  hash.delete("open");
   const rest = hash.toString();
   history.replaceState(
     history.state,
     "",
     location.pathname + location.search + (rest ? `#${rest}` : ""),
   );
-  return { ...(token && { token }), ...(board && { board }) };
+  return { ...(token && { token }), ...(board && { board }), ...(open && { open }) };
 }
 
 export async function signIn(t: string): Promise<void> {

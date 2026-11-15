@@ -361,6 +361,11 @@ export function App() {
     if (link.board) sessionStorage.setItem("rg.tavola", link.board);
     if (token.value)
       void signIn(token.value)
+        // RGCompanion's «All settings» (G40.8): the page opens on Settings.
+        .then(() => {
+          if (link.open === "settings")
+            openTab({ id: "settings", type: "settings", title: t("settings") });
+        })
         .catch(() => signOut())
         .finally(() => setReady(true));
     else setReady(true);

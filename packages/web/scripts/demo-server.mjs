@@ -19,6 +19,7 @@ import {
   HuggingFace,
   JobFailure,
   RedGiantCore,
+  SetupNetwork,
   SetupService,
   serve,
   TokenAuth,
@@ -2952,6 +2953,75 @@ if (!process.env.DEMO_FRESH) await setup.complete();
 else await setup.startSetupCode(port, false, Boolean(process.env.DEMO_SETUP_CODE));
 // DEMO_PASSWORD (G40.7): an account password, so the app can pair (by REST or the setup channel).
 if (process.env.DEMO_PASSWORD) await core.logins.setPassword("local", process.env.DEMO_PASSWORD);
+// G40.8, DEMO_SETUP_AP=1: RedGiant OS's temporary network acted out (the helper's ap-status and
+// home-network-try), so the app's first start runs against the real server. While it is open,
+// every address in DEMO_SETUP_SUBNET (default 127.0.0.0/8) is on the temporary network; the
+// cable answers with DEMO_SETUP_HOME (default 127.0.0.1:<port>) and closes it; a Wi-Fi network
+// is tried for a few seconds with the network closed, and the password "sbagliata" fails (the
+// network comes back with the reason), as redgiant-setup-ap does.
+let setupNetwork;
+if (process.env.DEMO_SETUP_AP) {
+  const now = () => Math.floor(Date.now() / 1000);
+  const since = now();
+  const ap = { active: true, trying: false, lastTry: null };
+  setupNetwork = new SetupNetwork({
+    cacheMs: 0,
+    helper: {
+      how: "socket",
+      call: async (o) => {
+        if (o.op === "ap-status")
+          return {
+            ok: true,
+            active: ap.active,
+            mode: ap.active ? "setup" : "off",
+            capable: "ok",
+            pending: true,
+            ssid: "RedGiant-Setup-D3M0",
+            passphrase: "redgiant",
+            address: "10.42.0.1",
+            subnet: process.env.DEMO_SETUP_SUBNET ?? "127.0.0.0/8",
+            since,
+            windowEnds: since + 30 * 60,
+            trying: ap.trying,
+            networks: [
+              { ssid: "Casa Rossi", security: "psk", signal: -48 },
+              { ssid: "Vodafone-A1B2C3", security: "psk", signal: -66 },
+              { ssid: "Ospiti", security: "open", signal: -79 },
+            ],
+            lastTry: ap.lastTry,
+          };
+        if (o.op === "ap-done") ap.active = false;
+        if (o.op === "home-network-try") {
+          if (o.cable) {
+            setTimeout(() => (ap.active = false), 3000);
+            return {
+              ok: true,
+              state: "connected",
+              address: process.env.DEMO_SETUP_HOME ?? `127.0.0.1:${port}`,
+            };
+          }
+          ap.active = false;
+          ap.trying = true;
+          setTimeout(() => {
+            ap.trying = false;
+            const failed = o.password === "sbagliata";
+            ap.active = failed;
+            ap.lastTry = {
+              state: failed ? "failed" : "connected",
+              ssid: o.ssid,
+              ...(failed && { error: "connect_failed" }),
+              at: now(),
+            };
+          }, 4000);
+          return { ok: true, state: "trying" };
+        }
+        if (o.op === "https-status") return { ok: true, on: false };
+        return { ok: true };
+      },
+    },
+  });
+  setup.completedHooks.push(() => setupNetwork.done());
+}
 const running = await serve(core, new TokenAuth({ [token]: "local" }), {
   port,
   host: process.env.DEMO_HOST ?? "0.0.0.0",
@@ -2960,6 +3030,7 @@ const running = await serve(core, new TokenAuth({ [token]: "local" }), {
   hf: new HuggingFace(join(dir, "models")),
   // As main.ts: the setup channel hands the app a device token (G40.1, G40.3).
   issueDeviceToken: (ownerId, device) => core.devices.create(ownerId, device),
+  ...(setupNetwork && { setupNetwork }),
 });
 console.log(
   JSON.stringify({
