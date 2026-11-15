@@ -15,6 +15,7 @@ import 'api/live.dart';
 import 'api/live_model.dart';
 import 'api/names.dart';
 import 'api/servers.dart';
+import 'api/settings_types.dart';
 import 'api/setup_channel.dart';
 import 'api/token_store.dart';
 import 'api/transport.dart';
@@ -555,6 +556,98 @@ class AppController extends ChangeNotifier {
     return first;
   }
 
+  // ---- Models (3.8.1): an agent's, the Chat's, a conversation's ----
+
+  List<ModelChoice>? _models;
+
+  /// The models one can pick (`GET /api/models`), asked once per connection.
+  Future<List<ModelChoice>> modelChoices({bool again = false}) async {
+    final c = client;
+    if (c == null) return const [];
+    if (_models != null && !again) return _models!;
+    try {
+      return _models = await c.models();
+    } on ApiException {
+      return const [];
+    }
+  }
+
+  /// Models already asked for (for words; empty before the first [modelChoices]).
+  List<ModelChoice> get knownModels => _models ?? const [];
+
+  bool isChat(Agent a) => a.id == chatAgentId;
+
+  /// [a]'s own model: the Chat's from its settings (the page's Chat header), the others' from
+  /// their record.
+  Future<AgentModel?> ownModelOf(Agent a) async {
+    if (!isChat(a)) return agents.where((x) => x.id == a.id).firstOrNull?.model ?? a.model;
+    try {
+      return await client?.chatModel();
+    } on ApiException {
+      return a.model;
+    }
+  }
+
+  /// The model [a] follows without one of its own: the first one up its parents (the page's
+  /// `inheritedModel`); null means the default model.
+  AgentModel? inheritedModelOf(Agent a) {
+    var p = agents.where((x) => x.id == a.parentId).firstOrNull;
+    final seen = <String>{};
+    while (p != null && seen.add(p.id)) {
+      if (p.model != null) return p.model;
+      final up = p.parentId;
+      p = agents.where((x) => x.id == up).firstOrNull;
+    }
+    return null;
+  }
+
+  /// Changes [a]'s model with the page's own API: the Chat through its settings, every other
+  /// agent (God included) through `PATCH /api/agents/:id`. Null: back to the one above.
+  Future<bool> setAgentModel(Agent a, AgentModel? model) async {
+    final c = client;
+    if (c == null) return false;
+    try {
+      if (isChat(a)) {
+        await c.setChatModel(model);
+        agents = [for (final x in agents) x.id == a.id ? x.withModel(model) : x];
+      } else {
+        final updated = await c.configureAgent(a.id, model: model, clearModel: model == null);
+        agents = [for (final x in agents) x.id == a.id ? updated : x];
+      }
+      notifyListeners();
+      return true;
+    } on ApiException {
+      return false;
+    }
+  }
+
+  /// The composer's mode: the agent's, for all its conversations (`PATCH /api/agents/:id`).
+  Future<bool> setAgentMode(Agent a, String mode) async {
+    final c = client;
+    if (c == null) return false;
+    try {
+      final updated = await c.configureAgent(a.id, mode: mode);
+      agents = [for (final x in agents) x.id == a.id ? updated : x];
+      notifyListeners();
+      return true;
+    } on ApiException {
+      return false;
+    }
+  }
+
+  /// One conversation's own model (null: its agent's), then the rows again.
+  Future<String?> setSessionModel(String sessionId, AgentModel? model) async {
+    final c = client;
+    if (c == null) return 'offline';
+    try {
+      await c.setSessionModel(sessionId, model);
+      live.setSessions(await c.sessions());
+      return null;
+    } on ApiException catch (e) {
+      return e.status == 409 ? 'busy' : e.message;
+    }
+  }
+
   /// [agentId]'s latest conversation (not archived), if any.
   SessionRow? latestOf(String agentId) {
     final rows = live.sessions.where((s) => s.agentId == agentId && !s.archived).toList()
@@ -833,6 +926,7 @@ class AppController extends ChangeNotifier {
     favourites = const {};
     teamFilter = TeamFilter.all;
     chatAgentId = null;
+    _models = null;
     live.clear();
   }
 

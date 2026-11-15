@@ -2198,6 +2198,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'It is blocked: open the conversation to see why.'**
   String get agentBlockedNow;
+
+  /// No description provided for @effortLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get effortLow;
+
+  /// No description provided for @effortMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get effortMedium;
+
+  /// No description provided for @effortHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get effortHigh;
+
+  /// No description provided for @effortMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get effortMax;
+
+  /// No description provided for @effortTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reasoning effort'**
+  String get effortTitle;
+
+  /// No description provided for @agentModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get agentModel;
+
+  /// No description provided for @agentModelInherit.
+  ///
+  /// In en, this message translates to:
+  /// **'The same as the one above it'**
+  String get agentModelInherit;
+
+  /// No description provided for @agentModelDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'The default model'**
+  String get agentModelDefault;
+
+  /// No description provided for @agentModelSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: its next messages use it.'**
+  String get agentModelSaved;
+
+  /// No description provided for @agentModelFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'I could not change the model.'**
+  String get agentModelFailed;
+
+  /// No description provided for @agentModelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Model of {name}'**
+  String agentModelTitle(String name);
+
+  /// No description provided for @modelNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now: {model}'**
+  String modelNow(String model);
+
+  /// No description provided for @modelUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use {model}'**
+  String modelUse(String model);
+
+  /// No description provided for @modelInheritOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} ({model})'**
+  String modelInheritOf(String label, String model);
+
+  /// No description provided for @noModels.
+  ///
+  /// In en, this message translates to:
+  /// **'No model connected: connect one in the settings.'**
+  String get noModels;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

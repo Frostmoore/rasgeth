@@ -60,6 +60,17 @@ class FakeRedGiant {
   ];
   final answered = <String, String>{};
 
+  // 3.8.1: what the app changed, for the tests to look at.
+  final patches = <Map<String, dynamic>>[];
+  final agentOverrides = <String, Map<String, dynamic>>{};
+  Map<String, dynamic>? chatModel;
+  final created = <Map<String, dynamic>>[];
+  final newAgents = <Map<String, dynamic>>[];
+  final toolChoices = <String, Map<String, String>>{};
+  final mascotChanges = <String>[];
+  final asides = <String>[];
+  final rooms = <Map<String, dynamic>>[];
+
   // The settings of this RedGiant (G40.8).
   String machine = 'RedGiant di casa';
   Map<String, dynamic> update = {
@@ -161,7 +172,9 @@ class FakeRedGiant {
         'mascot': m.raw,
         'status': 'active',
         'futureField': {'ignored': true},
+        ...?agentOverrides['a$i'],
       },
+    ...created,
   ];
 
   Future<void> _handle(HttpRequest r) async {
@@ -234,6 +247,121 @@ class FakeRedGiant {
         'running': false,
       });
       return _json(r, 201, {'sessionId': id});
+    }
+    // An agent's model and mode (PATCH), the Chat's settings, new agents, tools, mascots (3.8.1).
+    final agentOne = RegExp(r'^/api/agents/([^/]+)$').firstMatch(path);
+    if (r.method == 'PATCH' && agentOne != null) {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      patches.add({'agent': agentOne.group(1), ...b});
+      final base = [
+        ...agents,
+        ...created,
+      ].firstWhere((a) => a['id'] == agentOne.group(1), orElse: () => <String, dynamic>{});
+      if (base.isEmpty) return _json(r, 404, {'error': 'Agent not found'});
+      final own = agentOverrides.putIfAbsent(agentOne.group(1)!, () => {});
+      own.addAll(b);
+      return _json(r, 200, {...base, ...own});
+    }
+    if (path == '/api/chat/settings') {
+      if (r.method == 'GET') return _json(r, 200, {'model': ?chatModel});
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      chatModel = b['model'] as Map<String, dynamic>?;
+      patches.add({'chat': true, ...b});
+      return _json(r, 200, {'model': chatModel});
+    }
+    if (r.method == 'POST' && path == '/api/agents') {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      if ((b['name'] as String? ?? '').trim().isEmpty) {
+        return _json(r, 400, {'error': 'A name is needed'});
+      }
+      final made = {
+        'id': 'agent_${created.length + 1}',
+        'kind': b['kind'],
+        'parentId': b['parentId'],
+        'projectId': b['projectId'],
+        'persistent': true,
+        'name': b['name'],
+        'role': b['role'],
+        'model': b['model'],
+        'mode': b['mode'],
+        'mascotSeed': b['name'],
+        'mascot': mascots[3].raw,
+        'status': 'active',
+      };
+      created.add(made);
+      newAgents.add(b);
+      return _json(r, 201, made);
+    }
+    final agentTools = RegExp(r'^/api/agents/([^/]+)/tools$').firstMatch(path);
+    if (r.method == 'PUT' && agentTools != null) {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      toolChoices[agentTools.group(1)!] = (b['tools'] as Map).cast<String, String>();
+      return _json(r, 200, {'ok': true});
+    }
+    if (r.method == 'GET' && path == '/api/tools') {
+      return _json(r, 200, {
+        'agentId': null,
+        'total': 1000,
+        'saved': 0,
+        'entries': [
+          for (final (id, group, essential) in const [
+            ('read_file', 'files', true),
+            ('bash', 'files', true),
+            ('grep', 'files', false),
+            ('fetch', 'web', false),
+            ('ask_user', 'people', true),
+          ])
+            {
+              'id': id,
+              'group': group,
+              'essential': essential,
+              'tools': [id],
+              'chars': 100,
+              'tokens': 30,
+              'global': true,
+            },
+        ],
+      });
+    }
+    final mascotNew = RegExp(r'^/api/agents/([^/]+)/mascot$').firstMatch(path);
+    if (r.method == 'POST' && mascotNew != null) {
+      mascotChanges.add(mascotNew.group(1)!);
+      final a = created.where((x) => x['id'] == mascotNew.group(1)).firstOrNull;
+      if (a == null) return _json(r, 404, {'error': 'Agent not found'});
+      a['mascot'] = mascots[4].raw;
+      a['mascotSeed'] = '${a['name']}~abc123';
+      return _json(r, 200, a);
+    }
+    final aside = RegExp(r'^/api/sessions/([^/]+)/aside$').firstMatch(path);
+    if (r.method == 'POST' && aside != null) {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      asides.add('${aside.group(1)}: ${b['question']}');
+      return _json(r, 201, {
+        'aside': {'id': 'as${asides.length}', 'answer': 'Meanwhile: 42'},
+      });
+    }
+    final asideChat = RegExp(r'^/api/sessions/([^/]+)/asides/([^/]+)/chat$').firstMatch(path);
+    if (r.method == 'POST' && asideChat != null) {
+      asides.add('chat ${asideChat.group(2)}');
+      return _json(r, 200, {'ok': true});
+    }
+    if (r.method == 'POST' && path == '/api/rooms') {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      rooms.add(b);
+      return _json(r, 201, {
+        'id': 'room_1',
+        'title': 'Group',
+        'members': [b['from']],
+        'createdAt': '2026-11-15T10:00:00.000Z',
+        'lastAt': null,
+        'answering': <String>[],
+      });
+    }
+    final roomMember = RegExp(r'^/api/rooms/([^/]+)/members$').firstMatch(path);
+    if (r.method == 'POST' && roomMember != null) {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      rooms.add({'room': roomMember.group(1), ...b});
+      return _json(r, 200, {'ok': true});
     }
     final work = RegExp(r'^/api/agents/([^/]+)/work-session$').firstMatch(path);
     if (r.method == 'POST' && work != null) {

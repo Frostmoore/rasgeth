@@ -223,6 +223,115 @@ class RedGiantClient {
     const <String, Object?>{},
   );
 
+  /// `PATCH /api/agents/:id`: an agent's model (null: the one above it, or the default) or its
+  /// mode, as the page's agent settings and the composer's «…» do.
+  Future<Agent> configureAgent(
+    String agentId, {
+    AgentModel? model,
+    bool clearModel = false,
+    String? mode,
+  }) async => Agent.fromJson(
+    _object(
+      await _call('PATCH', '/api/agents/${Uri.encodeComponent(agentId)}', {
+        if (model != null || clearModel) 'model': model?.toJson(),
+        'mode': ?mode,
+      }),
+    ),
+  );
+
+  /// `GET /api/chat/settings`: the Chat's own model (its agent's record follows it).
+  Future<AgentModel?> chatModel() async =>
+      AgentModel.fromJson(_object(await _get('/api/chat/settings'))['model']);
+
+  /// `PUT /api/chat/settings`: the Chat's model (null: the default), as the page's Chat header.
+  Future<void> setChatModel(AgentModel? model) =>
+      _call('PUT', '/api/chat/settings', {'model': model?.toJson()});
+
+  /// `PATCH /api/sessions/:id`: one conversation's own model (null: its agent's); refused (409)
+  /// while it runs.
+  Future<void> setSessionModel(String sessionId, AgentModel? model) =>
+      _call('PATCH', '/api/sessions/${Uri.encodeComponent(sessionId)}', {'model': model?.toJson()});
+
+  /// `POST /api/sessions/:id/aside`: a question «meanwhile», outside the conversation.
+  Future<({String id, String? answer, String? error})> aside(
+    String sessionId,
+    String question,
+  ) async {
+    final a = _object(
+      _object(
+        await _post('/api/sessions/${Uri.encodeComponent(sessionId)}/aside', {
+          'question': question,
+        }),
+      )['aside'],
+    );
+    return (
+      id: a['id'] is String ? a['id'] as String : '',
+      answer: a['answer'] is String ? a['answer'] as String : null,
+      error: a['error'] is String ? a['error'] as String : null,
+    );
+  }
+
+  /// `POST /api/sessions/:id/asides/:asideId/chat`: «Bring into the chat» (only between turns).
+  Future<void> asideToChat(String sessionId, String asideId) => _call(
+    'POST',
+    '/api/sessions/${Uri.encodeComponent(sessionId)}/asides/${Uri.encodeComponent(asideId)}/chat',
+    const <String, Object?>{},
+  );
+
+  /// `POST /api/rooms`: this conversation becomes a group chat (the page's «Add an agent»).
+  Future<String> roomFrom(String agentId, String sessionId) async {
+    final id = _object(
+      await _post('/api/rooms', {
+        'members': const <String>[],
+        'from': {'agentId': agentId, 'sessionId': sessionId},
+      }),
+    )['id'];
+    if (id is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    return id;
+  }
+
+  /// `POST /api/rooms/:id/members`: an agent joins the group chat.
+  Future<void> addRoomMember(String roomId, String agentId) =>
+      _call('POST', '/api/rooms/${Uri.encodeComponent(roomId)}/members', {'agentId': agentId});
+
+  /// `POST /api/agents`: a new agent, with the page's fields and rules (the server checks kind,
+  /// parent and project).
+  Future<Agent> createAgent({
+    required String kind,
+    required String? parentId,
+    required String name,
+    String? projectId,
+    String? role,
+    AgentModel? model,
+    String? mode,
+  }) async => Agent.fromJson(
+    _object(
+      await _post('/api/agents', {
+        'kind': kind,
+        'parentId': parentId,
+        'name': name,
+        'projectId': ?projectId,
+        'role': ?role,
+        if (model != null) 'model': model.toJson(),
+        'mode': ?mode,
+      }),
+    ),
+  );
+
+  /// `PUT /api/agents/:id/tools`: the agent's own on/off per tool (never the essential ones).
+  Future<void> setAgentTools(String agentId, Map<String, String> tools) =>
+      _call('PUT', '/api/agents/${Uri.encodeComponent(agentId)}/tools', {'tools': tools});
+
+  /// `GET /api/tools`: the tools' catalog (ids, groups, essential or not).
+  Future<List<ToolEntry>> tools() async => [
+    for (final e in _array(_object(await _get('/api/tools'))['entries'])) ToolEntry.fromJson(e),
+  ];
+
+  /// `POST /api/agents/:id/mascot`: a new face, different from every one in use.
+  Future<Agent> changeMascot(String agentId) async => Agent.fromJson(
+    _object(await _post('/api/agents/${Uri.encodeComponent(agentId)}/mascot', const {})),
+  );
+
   /// `GET /api/chat/agent`: the everyday Chat (made the first time it is asked for).
   Future<Agent> chatAgent() async => Agent.fromJson(_object(await _get('/api/chat/agent')));
 

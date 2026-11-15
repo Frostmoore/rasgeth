@@ -232,6 +232,45 @@ class MascotSpec {
 }
 
 /// An agent as `GET /api/agents` lists it (the fields the app uses).
+/// A chosen model (`ModelSpec`): provider, model and, when the model takes one, the effort.
+class AgentModel {
+  const AgentModel({required this.provider, required this.model, this.effort});
+
+  static AgentModel? fromJson(Object? o) {
+    if (o is! Map<String, dynamic>) return null;
+    final p = _str(o['provider']);
+    final m = _str(o['model']);
+    if (p == null || m == null || p.isEmpty || m.isEmpty) return null;
+    return AgentModel(provider: p, model: m, effort: _str(o['effort']));
+  }
+
+  final String provider;
+  final String model;
+
+  /// low | medium | high | max.
+  final String? effort;
+
+  String get key => '$provider/$model';
+
+  Map<String, Object?> toJson() => {'provider': provider, 'model': model, 'effort': ?effort};
+
+  @override
+  bool operator ==(Object other) =>
+      other is AgentModel &&
+      other.provider == provider &&
+      other.model == model &&
+      other.effort == effort;
+
+  @override
+  int get hashCode => Object.hash(provider, model, effort);
+}
+
+/// How an agent asks before acting (`PermissionMode`), in the page's order.
+const agentModes = ['manual', 'auto', 'plan', 'readonly'];
+
+/// The efforts a model may take (the protocol's `Effort`).
+const efforts = ['low', 'medium', 'high', 'max'];
+
 class Agent {
   const Agent({
     required this.id,
@@ -242,6 +281,9 @@ class Agent {
     this.projectId,
     this.role,
     this.mascot,
+    this.model,
+    this.mode,
+    this.mascotSeed,
   });
 
   factory Agent.fromJson(Map<String, dynamic> j) {
@@ -255,6 +297,9 @@ class Agent {
       projectId: _str(j['projectId']),
       role: _str(j['role']),
       mascot: m is Map<String, dynamic> ? MascotSpec.fromJson(m) : null,
+      model: AgentModel.fromJson(j['model']),
+      mode: _str(j['mode']),
+      mascotSeed: _str(j['mascotSeed']),
     );
   }
 
@@ -268,4 +313,51 @@ class Agent {
   final String? projectId;
   final String? role;
   final MascotSpec? mascot;
+
+  /// Its own model (null: the one above it, or the default).
+  final AgentModel? model;
+
+  /// manual | auto | plan | readonly (null: auto).
+  final String? mode;
+  final String? mascotSeed;
+
+  Agent withModel(AgentModel? m) => Agent(
+    id: id,
+    kind: kind,
+    name: name,
+    active: active,
+    parentId: parentId,
+    projectId: projectId,
+    role: role,
+    mascot: mascot,
+    model: m,
+    mode: mode,
+    mascotSeed: mascotSeed,
+  );
+}
+
+/// One entry of the tools' catalog (`GET /api/tools`).
+class ToolEntry {
+  const ToolEntry({
+    required this.id,
+    required this.group,
+    this.essential = false,
+    this.globalOn = true,
+  });
+
+  factory ToolEntry.fromJson(Map<String, dynamic> j) => ToolEntry(
+    id: _str(j['id']) ?? '',
+    group: _str(j['group']) ?? '',
+    essential: j['essential'] == true,
+    globalOn: j['global'] != false,
+  );
+
+  final String id;
+  final String group;
+
+  /// Never switched off.
+  final bool essential;
+
+  /// On for every agent (not switched off in Settings › Tools).
+  final bool globalOn;
 }

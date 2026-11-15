@@ -350,5 +350,20 @@
   "teamNoAgents": "Nessun altro agente: creane uno con «Nuovo agente».",
   "teamChatLead": "Le tue conversazioni di ogni giorno",
   "agentJustAnswered": "Ti ha appena risposto.",
-  "agentBlockedNow": "È bloccato: apri la conversazione per vedere perché."
+  "agentBlockedNow": "È bloccato: apri la conversazione per vedere perché.",
+  "effortLow": "Basso",
+  "effortMedium": "Medio",
+  "effortHigh": "Alto",
+  "effortMax": "Massimo",
+  "effortTitle": "Impegno nel ragionare",
+  "agentModel": "Modello",
+  "agentModelInherit": "Lo stesso di chi sta sopra",
+  "agentModelDefault": "Il modello predefinito",
+  "agentModelSaved": "Salvato: i suoi prossimi messaggi lo usano.",
+  "agentModelFailed": "Non sono riuscito a cambiare il modello.",
+  "agentModelTitle": "Modello di {name}",
+  "modelNow": "Ora: {model}",
+  "modelUse": "Usa {model}",
+  "modelInheritOf": "{label} ({model})",
+  "noModels": "Nessun modello collegato: collegane uno nelle impostazioni."
 }

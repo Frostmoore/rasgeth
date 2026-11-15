@@ -3,6 +3,8 @@
 // kept up to date by the live connection). A tap opens the agent's conversation; a long press
 // shows what it is doing, with «Stop», «Open the task» and the favourite (G40.9). Favourites come
 // first and have their own filter, as each project does.
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -15,6 +17,7 @@ import '../mascot/mascot_view.dart';
 import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/icons.dart';
+import '../ui/model_sheet.dart';
 import '../ui/words.dart';
 import 'conversation_screen.dart';
 import 'first_start_screen.dart';
@@ -543,7 +546,7 @@ class AgentSheet extends StatelessWidget {
         final when = latest == null ? null : DateTime.tryParse(latest.when)?.toLocal();
         void close() => Navigator.of(context).pop();
         return SafeArea(
-          child: Padding(
+          child: SingleChildScrollView(
             key: Key('agent-sheet-${a.id}'),
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
             child: Column(
@@ -637,6 +640,8 @@ class AgentSheet extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: 10),
+                AgentModelRow(agent: a, parent: parent),
                 const SizedBox(height: 14),
                 if (running.isNotEmpty)
                   Padding(
@@ -691,6 +696,119 @@ class AgentSheet extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+/// The sheet's «Model»: [agent]'s model now with its way, and a tap to change it (the families
+/// with Subscription / API key, G40.9b), saved with the page's own API.
+class AgentModelRow extends StatefulWidget {
+  const AgentModelRow({super.key, required this.agent, required this.parent});
+
+  final Agent agent;
+  final BuildContext parent;
+
+  @override
+  State<AgentModelRow> createState() => _AgentModelRowState();
+}
+
+class _AgentModelRowState extends State<AgentModelRow> {
+  AgentModel? _own;
+  bool _loaded = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_loaded) unawaited(_load());
+  }
+
+  Future<void> _load() async {
+    _loaded = true;
+    final app = AppScope.read(context);
+    final own = await app.ownModelOf(widget.agent);
+    await app.modelChoices();
+    if (mounted) setState(() => _own = own);
+  }
+
+  String _inheritLabel(AppLocalizations l, AppController app) {
+    final a = widget.agent;
+    if (a.kind == AgentKind.god || app.isChat(a)) return l.agentModelDefault;
+    final up = app.inheritedModelOf(a);
+    return up == null
+        ? l.agentModelInherit
+        : l.modelInheritOf(l.agentModelInherit, modelWords(l, app.knownModels, up));
+  }
+
+  Future<void> _pick() async {
+    final app = AppScope.read(context);
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(widget.parent);
+    final models = await app.modelChoices(again: true);
+    if (!mounted) return;
+    if (models.isEmpty) {
+      messenger.showSnackBar(SnackBar(content: Text(l.noModels)));
+      return;
+    }
+    final pick = await showModelPicker(
+      context,
+      title: l.agentModelTitle(widget.agent.name),
+      models: models,
+      current: _own,
+      inheritLabel: _inheritLabel(l, app),
+    );
+    if (pick == null || !mounted) return;
+    final ok = await app.setAgentModel(widget.agent, pick.model);
+    if (!mounted) return;
+    if (ok) setState(() => _own = pick.model);
+    messenger.showSnackBar(SnackBar(content: Text(ok ? l.agentModelSaved : l.agentModelFailed)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final app = AppScope.of(context);
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final own = _own;
+    final words = own == null ? _inheritLabel(l, app) : modelWords(l, app.knownModels, own);
+    return Material(
+      color: c.panel,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: c.line),
+      ),
+      child: InkWell(
+        key: const Key('agent-model'),
+        borderRadius: BorderRadius.circular(14),
+        onTap: _loaded ? _pick : null,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+          child: Row(
+            children: [
+              RgIcon(RgIcons.zap, size: 18, color: c.dim),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l.agentModel,
+                      style: TextStyle(fontWeight: FontWeight.w700, color: c.text),
+                    ),
+                    Text(
+                      words,
+                      key: const Key('agent-model-now'),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: c.dim, fontSize: 12.5),
+                    ),
+                  ],
+                ),
+              ),
+              RgIcon(RgIcons.chevronRight, size: 18, color: c.dim),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

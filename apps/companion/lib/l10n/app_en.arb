@@ -701,5 +701,51 @@
   "teamNoAgents": "No other agents yet: make one with «New agent».",
   "teamChatLead": "Your everyday conversations",
   "agentJustAnswered": "It has just answered you.",
-  "agentBlockedNow": "It is blocked: open the conversation to see why."
+  "agentBlockedNow": "It is blocked: open the conversation to see why.",
+  "effortLow": "Low",
+  "effortMedium": "Medium",
+  "effortHigh": "High",
+  "effortMax": "Max",
+  "effortTitle": "Reasoning effort",
+  "agentModel": "Model",
+  "agentModelInherit": "The same as the one above it",
+  "agentModelDefault": "The default model",
+  "agentModelSaved": "Saved: its next messages use it.",
+  "agentModelFailed": "I could not change the model.",
+  "agentModelTitle": "Model of {name}",
+  "@agentModelTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "modelNow": "Now: {model}",
+  "@modelNow": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "modelUse": "Use {model}",
+  "@modelUse": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "modelInheritOf": "{label} ({model})",
+  "@modelInheritOf": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "noModels": "No model connected: connect one in the settings."
 }

@@ -1202,4 +1202,57 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get agentBlockedNow => 'È bloccato: apri la conversazione per vedere perché.';
+
+  @override
+  String get effortLow => 'Basso';
+
+  @override
+  String get effortMedium => 'Medio';
+
+  @override
+  String get effortHigh => 'Alto';
+
+  @override
+  String get effortMax => 'Massimo';
+
+  @override
+  String get effortTitle => 'Impegno nel ragionare';
+
+  @override
+  String get agentModel => 'Modello';
+
+  @override
+  String get agentModelInherit => 'Lo stesso di chi sta sopra';
+
+  @override
+  String get agentModelDefault => 'Il modello predefinito';
+
+  @override
+  String get agentModelSaved => 'Salvato: i suoi prossimi messaggi lo usano.';
+
+  @override
+  String get agentModelFailed => 'Non sono riuscito a cambiare il modello.';
+
+  @override
+  String agentModelTitle(String name) {
+    return 'Modello di $name';
+  }
+
+  @override
+  String modelNow(String model) {
+    return 'Ora: $model';
+  }
+
+  @override
+  String modelUse(String model) {
+    return 'Usa $model';
+  }
+
+  @override
+  String modelInheritOf(String label, String model) {
+    return '$label ($model)';
+  }
+
+  @override
+  String get noModels => 'Nessun modello collegato: collegane uno nelle impostazioni.';
 }

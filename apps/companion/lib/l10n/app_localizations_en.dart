@@ -1198,4 +1198,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get agentBlockedNow => 'It is blocked: open the conversation to see why.';
+
+  @override
+  String get effortLow => 'Low';
+
+  @override
+  String get effortMedium => 'Medium';
+
+  @override
+  String get effortHigh => 'High';
+
+  @override
+  String get effortMax => 'Max';
+
+  @override
+  String get effortTitle => 'Reasoning effort';
+
+  @override
+  String get agentModel => 'Model';
+
+  @override
+  String get agentModelInherit => 'The same as the one above it';
+
+  @override
+  String get agentModelDefault => 'The default model';
+
+  @override
+  String get agentModelSaved => 'Saved: its next messages use it.';
+
+  @override
+  String get agentModelFailed => 'I could not change the model.';
+
+  @override
+  String agentModelTitle(String name) {
+    return 'Model of $name';
+  }
+
+  @override
+  String modelNow(String model) {
+    return 'Now: $model';
+  }
+
+  @override
+  String modelUse(String model) {
+    return 'Use $model';
+  }
+
+  @override
+  String modelInheritOf(String label, String model) {
+    return '$label ($model)';
+  }
+
+  @override
+  String get noModels => 'No model connected: connect one in the settings.';
 }

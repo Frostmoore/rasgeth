@@ -3,6 +3,7 @@
 // and `QuestionRequestInfo` (wire.ts, questions.ts), `GET /api/projects/:id/tasks`. Read
 // leniently. [buildItems] is the app's `buildItems` (packages/web/src/state.ts): pure, events in,
 // chat items out.
+import 'types.dart';
 
 Map<String, dynamic> _map(Object? o) => o is Map<String, dynamic> ? o : const {};
 String? _str(Object? o) => o is String ? o : null;
@@ -21,6 +22,7 @@ class SessionRow {
     this.archived = false,
     this.running = false,
     this.task,
+    this.model,
   });
 
   factory SessionRow.fromJson(Map<String, dynamic> j) => SessionRow(
@@ -34,6 +36,7 @@ class SessionRow {
     archived: j['archived'] == true,
     running: j['running'] == true,
     task: _str(j['task']),
+    model: AgentModel.fromJson(j['model']),
   );
 
   final String id;
@@ -50,6 +53,9 @@ class SessionRow {
 
   /// The title of the task open in it.
   final String? task;
+
+  /// The conversation's own model (null: its agent's).
+  final AgentModel? model;
 
   String get when => lastAt ?? createdAt;
 
@@ -68,6 +74,7 @@ class SessionRow {
     archived: archived,
     running: running ?? this.running,
     task: task,
+    model: model,
   );
 }
 
