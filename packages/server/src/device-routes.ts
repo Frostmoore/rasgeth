@@ -7,15 +7,26 @@
 //   PATCH  /api/devices/:id {name}
 //   DELETE /api/devices/:id                  revoked at once: its open connections close
 // The token in clear exists only in the answers of the two POSTs.
+// Notifications (G40.4):
+//   GET    /api/app/push                     what this server sends with: VAPID's public key, APNs on
+//   PUT    /api/devices/:id/push            where a device's notifications go (a device: only its own)
+//   DELETE /api/devices/:id/push
+//   POST   /api/devices/:id/push/test       «Send a test» (Settings › Devices)
+//   POST   /api/app/requests/:id/answer {decision}   a notification's quick answer, from the
+//                                           device only; never a quick yes to a critical request
 import {
   APP_PROTOCOL_VERSION,
   type AppHello,
+  appVia,
   type Credential,
   DeviceCreateBody,
   DevicePairBody,
   DeviceRenameBody,
   mayIssueDevice,
   PROTOCOL_VERSION,
+  PushAnswerBody,
+  PushRegisterBody,
+  quickAnswerAllowed,
 } from "@redgiant/protocol";
 import type { Context, Hono } from "hono";
 import { type AuthProvider, bearer, type Principal } from "./auth.js";
@@ -23,6 +34,7 @@ import type { RedGiantCore } from "./core.js";
 import { DEVICE_TOKEN_PREFIX } from "./devices.js";
 import type { FirstAccess } from "./first-access.js";
 import { LoginError } from "./login.js";
+import { PushError } from "./push/service.js";
 
 export interface DeviceRouteOptions<E extends { Variables: { principal: Principal } }> {
   owner: (c: Context<E>) => string;
@@ -114,8 +126,13 @@ export function deviceRoutes<E extends { Variables: { principal: Principal } }>(
   app.get("/api/devices", async (c) => {
     const current = c.get("principal").device?.id;
     const list = await core.devices.list(o.owner(c));
+    const push = await core.push.views(o.owner(c));
     return c.json(
-      list.map((d) => (d.id === current ? { ...d, current: true } : d)),
+      list.map((d) => ({
+        ...d,
+        ...(d.id === current && { current: true }),
+        push: push.get(d.id) ?? null,
+      })),
       200,
     );
   });
@@ -130,6 +147,70 @@ export function deviceRoutes<E extends { Variables: { principal: Principal } }>(
   app.delete("/api/devices/:id", async (c) => {
     if (!(await core.devices.revoke(o.owner(c), c.req.param("id"))))
       return c.json({ error: "No such device" }, 404);
+    return c.json({ ok: true }, 200);
+  });
+
+  // --- Notifications (G40.4) ---
+
+  /** A device changes only its own channel; the page (a session) any of the owner's. */
+  const mayTouch = (c: Context<E>) => {
+    const device = c.get("principal").device;
+    return !device || device.id === c.req.param("id");
+  };
+
+  app.get("/api/app/push", async (c) => {
+    const vapid = await core.push.vapid(o.owner(c)).catch(() => null);
+    return c.json({ vapidPublicKey: vapid?.publicKey ?? null, apns: core.push.relayOn }, 200);
+  });
+
+  app.put("/api/devices/:id/push", async (c) => {
+    if (!mayTouch(c)) return c.json({ error: "Another device's notifications" }, 403);
+    const b = PushRegisterBody.safeParse(await body(c));
+    if (!b.success)
+      return c.json({ error: "An endpoint or a token, and the keys", code: "bad" }, 400);
+    try {
+      return c.json(await core.push.register(o.owner(c), c.req.param("id"), b.data), 200);
+    } catch (err) {
+      if (err instanceof PushError)
+        return c.json({ error: err.message, code: err.code }, err.code === "not_found" ? 404 : 400);
+      throw err;
+    }
+  });
+
+  app.delete("/api/devices/:id/push", async (c) => {
+    if (!mayTouch(c)) return c.json({ error: "Another device's notifications" }, 403);
+    if (!(await core.push.unregister(o.owner(c), c.req.param("id"))))
+      return c.json({ error: "No notifications registered" }, 404);
+    return c.json({ ok: true }, 200);
+  });
+
+  app.post("/api/devices/:id/push/test", async (c) => {
+    if (!mayTouch(c)) return c.json({ error: "Another device's notifications" }, 403);
+    const r = await core.push.test(o.owner(c), c.req.param("id"));
+    if (!r) return c.json({ error: "No notifications registered" }, 404);
+    return c.json(r.ok ? { ok: true } : { ok: false, error: r.error, gone: r.gone }, 200);
+  });
+
+  // The Yes / No of a notification. It decides only an open request, with the device's name as
+  // where it was answered, through the same `decide` as every channel: nothing here turns a
+  // failure into a yes, and a truly dangerous request takes no quick yes (its full screen does).
+  app.post("/api/app/requests/:id/answer", async (c) => {
+    const device = c.get("principal").device;
+    if (!device) return c.json({ error: "Only a device answers from a notification" }, 403);
+    const b = PushAnswerBody.safeParse(await body(c));
+    if (!b.success) return c.json({ error: "allow or deny" }, 400);
+    const owner = o.owner(c);
+    const id = c.req.param("id");
+    const pending = core.approvals.list(owner).find((r) => r.requestId === id);
+    if (!pending) return c.json({ error: "No such open request", code: "not_found" }, 404);
+    if (!quickAnswerAllowed(pending, b.data.decision))
+      return c.json(
+        { error: "This request is answered from its own screen", code: "open_app" },
+        403,
+      );
+    const via = appVia(core.devices.nameOf(device.id) ?? device.name);
+    if (!core.approvals.decide(owner, id, b.data.decision, undefined, via))
+      return c.json({ error: "No such open request", code: "not_found" }, 404);
     return c.json({ ok: true }, 200);
   });
 }

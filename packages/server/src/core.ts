@@ -284,6 +284,7 @@ import {
   placeholdersOf,
   toPlaceholders,
 } from "./prompts.js";
+import { migratePush, type PushOptions, PushService } from "./push/service.js";
 import { HumanQuestions, questionTools } from "./questions.js";
 import {
   REQUEST_TOOL_DRY,
@@ -451,6 +452,11 @@ export interface CoreOptions {
    * repository), the egress proxy that gives credentials to the tools bound to them, and the
    * master key's stores (tests).
    */
+  /**
+   * Notifications to the devices (G40.4): the blind relay for APNs (empty = switched off until the
+   * app is published), VAPID's subject; tests give a fetch and short timings.
+   */
+  push?: Pick<PushOptions, "relayUrl" | "subject" | "fetch" | "timeoutMs" | "retryDelayMs">;
   vault?: {
     dir?: string;
     egress?: VaultEgress;
@@ -675,6 +681,8 @@ export class RedGiantCore implements OrchestrationHost {
    * one for a device that proved who the person is (also the setup channel of G40.3).
    */
   readonly devices: DeviceStore;
+  /** Notifications to the devices (G40.4): Web Push, APNs through the blind relay. */
+  readonly push: PushService;
   readonly tasks: TaskTracker;
   readonly board: Board;
   /** Persistent memory of every agent (G29.3). */
@@ -801,6 +809,32 @@ export class RedGiantCore implements OrchestrationHost {
     this.noticeListeners.add(listener);
     return () => this.noticeListeners.delete(listener);
   }
+  private readonly turnEndListeners = new Set<
+    (t: {
+      ownerId: string;
+      sessionId: string;
+      agentId: string;
+      byPerson: boolean;
+      stopReason: string;
+    }) => void
+  >();
+  /** A turn ended (G40.4: the notification of an answer nobody watched). */
+  onTurnEnded(
+    listener: (t: {
+      ownerId: string;
+      sessionId: string;
+      agentId: string;
+      byPerson: boolean;
+      stopReason: string;
+    }) => void,
+  ): () => void {
+    this.turnEndListeners.add(listener);
+    return () => this.turnEndListeners.delete(listener);
+  }
+  /** A page or an app follows this conversation now (G40.4). */
+  isWatched(sessionId: string): boolean {
+    return (this.followers.get(sessionId)?.size ?? 0) > 0;
+  }
   private readonly ownerListeners = new Set<(ownerId: string, m: ServerMessage) => void>();
   /**
    * What every page of an owner hears about all their conversations, followed or not (p3.5.3):
@@ -919,6 +953,12 @@ export class RedGiantCore implements OrchestrationHost {
       ...(o.vault?.fetch && { fetch: o.vault.fetch }),
       ask: (caller, entry, host, method) => this.askVault(caller, entry, host, method),
       system: (ownerId) => this.keysElsewhere(ownerId),
+    });
+    this.push = new PushService({
+      db: o.db,
+      devices: this.devices,
+      vault: this.vault,
+      ...o.push,
     });
     this.browserLinks = new BrowserLinks({ db: o.db, vault: this.vault });
     // Conversions (G34.3): programs in the data folder's tools, LibreOffice with its own profile.
@@ -1386,7 +1426,20 @@ export class RedGiantCore implements OrchestrationHost {
     await o.db.query("DROP TABLE IF EXISTS rg_devices");
     await migrateLogin(o.db);
     await migrateDevices(o.db);
+    await migratePush(o.db);
     const core = new RedGiantCore(o);
+    // Notifications to the devices (G40.4): one more channel of the requests «all at once».
+    core.push.attach({
+      approvals: core.approvals,
+      questions: core.questions,
+      store: core.store,
+      tasks: core.tasks,
+      registry: core.registry,
+      language: (ownerId) => core.language(ownerId),
+      machineName: (ownerId) => core.nodes.machineName(ownerId),
+      isWatched: (sessionId) => core.isWatched(sessionId),
+      onTurnEnded: (f) => core.onTurnEnded(f),
+    });
     // The artifacts' bridge from the start: it follows the person's deletions and moves (3.6).
     void core.artifactBridge;
     await core.vault.open();
@@ -6238,6 +6291,8 @@ export class RedGiantCore implements OrchestrationHost {
       l.running = null;
       this.sharedMemory.turnEnded(sessionId);
       notify("idle", stopReason);
+      for (const f of this.turnEndListeners)
+        f({ ownerId, sessionId, agentId: l.agentId, byPerson: human, stopReason });
     };
     // A new turn: one group of edits (G37.1); what the person changed meanwhile rides with it.
     this.editor.turnStarted(sessionId);

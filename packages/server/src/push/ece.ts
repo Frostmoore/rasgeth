@@ -48,7 +48,9 @@ export function validKeys(k: SubscriberKeys): boolean {
     const auth = unb64u(k.auth);
     if (pub.length !== 65 || pub[0] !== 4 || auth.length !== 16) return false;
     // A point off the curve fails here, not at the first message.
-    createECDH("prime256v1").setPrivateKey(randomBytes(32)).computeSecret(pub);
+    const probe = createECDH("prime256v1");
+    probe.generateKeys();
+    probe.computeSecret(pub);
     return true;
   } catch {
     return false;
