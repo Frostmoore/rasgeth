@@ -409,6 +409,9 @@ importers:
       '@redgiant/events':
         specifier: workspace:*
         version: link:../events
+      '@redgiant/mascot':
+        specifier: workspace:*
+        version: link:../mascot
       '@redgiant/protocol':
         specifier: workspace:*
         version: link:../protocol
@@ -419,6 +422,16 @@ importers:
       '@electric-sql/pglite':
         specifier: ^0.5.13
         version: 0.5.13
+
+  packages/mascot:
+    dependencies:
+      '@redgiant/protocol':
+        specifier: workspace:*
+        version: link:../protocol
+    devDependencies:
+      jsdom:
+        specifier: ^29.1.1
+        version: 29.1.1(@noble/hashes@1.8.0)
 
   packages/protocol:
     dependencies:
@@ -498,6 +511,9 @@ importers:
       '@redgiant/hierarchy':
         specifier: workspace:*
         version: link:../hierarchy
+      '@redgiant/mascot':
+        specifier: workspace:*
+        version: link:../mascot
       '@redgiant/protocol':
         specifier: workspace:*
         version: link:../protocol
@@ -764,6 +780,9 @@ importers:
       '@preact/signals':
         specifier: ^2.11.4
         version: 2.11.4(preact@11.1.1)
+      '@redgiant/mascot':
+        specifier: workspace:*
+        version: link:../mascot
       '@redgiant/protocol':
         specifier: workspace:*
         version: link:../protocol

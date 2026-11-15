@@ -17,7 +17,8 @@
     "@redgiant/agent": "workspace:*",
     "@redgiant/events": "workspace:*",
     "@redgiant/protocol": "workspace:*",
-    "@redgiant/providers": "workspace:*"
+    "@redgiant/providers": "workspace:*",
+    "@redgiant/mascot": "workspace:*"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.13"

@@ -35,6 +35,7 @@
     "@redgiant/extensions": "workspace:*",
     "@redgiant/gateway": "workspace:*",
     "@redgiant/hierarchy": "workspace:*",
+    "@redgiant/mascot": "workspace:*",
     "@redgiant/protocol": "workspace:*",
     "@redgiant/providers": "workspace:*",
     "@redgiant/sandbox": "workspace:*",

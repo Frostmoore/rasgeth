@@ -1,8 +1,10 @@
 import { randomUUID } from "node:crypto";
 import type { EventStore, SqlClient } from "@redgiant/events";
+import { MascotBook, mascotSpec } from "@redgiant/mascot";
 import {
   type AgentSpec,
   LOCAL_OWNER_ID,
+  type MascotSpec,
   type ModelSpec,
   type PermissionMode,
 } from "@redgiant/protocol";
@@ -56,7 +58,9 @@ interface Row {
   compaction: string | null;
   skills: string | null;
   projects: string | null;
+  mascot_seed: string | null;
   status: "active" | "stopped";
+  created_at?: string | Date;
 }
 
 export async function migrateHierarchy(db: SqlClient): Promise<void> {
@@ -86,6 +90,8 @@ export async function migrateHierarchy(db: SqlClient): Promise<void> {
   await db.query("ALTER TABLE rg_agents ADD COLUMN IF NOT EXISTS projects text");
   // The skills an agent uses, when not all (G24.14c).
   await db.query("ALTER TABLE rg_agents ADD COLUMN IF NOT EXISTS skills text");
+  // Its mascot's seed (G40.2): fixed at creation; the agents made before get theirs at `load`.
+  await db.query("ALTER TABLE rg_agents ADD COLUMN IF NOT EXISTS mascot_seed text");
   // One God and one Demi-God per owner, one orchestrator and one inspector per project.
   await db.query(
     "CREATE UNIQUE INDEX IF NOT EXISTS rg_agents_one_god ON rg_agents (owner_id, kind) WHERE kind IN ('god', 'demigod') AND status = 'active'",
@@ -134,6 +140,7 @@ const fromRow = (r: Row): AgentRecord => ({
   ...(r.subproject_id !== null && { subprojectId: r.subproject_id }),
   ...(r.skills !== null && { skills: JSON.parse(r.skills) as string[] }),
   ...(r.projects && { projects: JSON.parse(r.projects) as string[] }),
+  ...(r.mascot_seed && { mascotSeed: r.mascot_seed }),
   ...(r.compaction !== null && {
     compaction: JSON.parse(r.compaction) as { at?: number; keep?: number },
   }),
@@ -156,10 +163,91 @@ export class AgentRegistry {
     private readonly store: EventStore,
   ) {}
 
-  /** Loads every agent into memory (the tree is small). */
+  /**
+   * Loads every agent into memory (the tree is small). Agents made before mascots (G40.2) get
+   * their seed now, once, in the order they were made: their name of today (or `name#1`… when
+   * that face is taken), saved and logged, so it never changes again.
+   */
   async load(): Promise<void> {
     const rows = await this.db.query<Row>("SELECT * FROM rg_agents");
     this.cache = new Map(rows.map((r) => [r.id, this.mark(fromRow(r))]));
+    const time = (r: Row) => (r.created_at ? new Date(r.created_at).getTime() : 0);
+    const missing = rows.filter((r) => !r.mascot_seed).sort((a, b) => time(a) - time(b));
+    for (const r of missing) {
+      const a = this.cache.get(r.id);
+      if (!a) continue;
+      const seed = this.claimSeed(a.ownerId, a.name, a.kind, a.parentId, a.id);
+      await this.db.query("UPDATE rg_agents SET mascot_seed = $2 WHERE id = $1", [a.id, seed]);
+      a.mascotSeed = seed;
+      await this.store.append({
+        ownerId: a.ownerId,
+        projectId: a.projectId,
+        agentId: null,
+        body: {
+          type: "agent.mascot_changed",
+          payload: { agentId: a.id, seed, reason: "migrated" },
+        },
+      });
+    }
+  }
+
+  /**
+   * An agent's mascot (G40.2): from its saved seed (its id if it has none yet); a subagent's
+   * looks like its parent's.
+   */
+  mascotOf(id: string): MascotSpec | undefined {
+    const a = this.cache.get(id);
+    if (!a) return undefined;
+    const parent = a.kind === "subagent" && a.parentId ? this.mascotOf(a.parentId) : undefined;
+    return mascotSpec(a.mascotSeed ?? a.id, a.kind, parent);
+  }
+
+  /** The faces the owner's working agents have now (all but `except`). */
+  private mascotBook(ownerId: string, except?: string): MascotBook {
+    const book = new MascotBook();
+    for (const a of this.cache.values())
+      if (a.ownerId === ownerId && a.status === "active" && a.mascotSeed && a.id !== except) {
+        const spec = this.mascotOf(a.id);
+        if (spec) book.add(spec);
+      }
+    return book;
+  }
+
+  /** The first free face for `base` among the owner's agents: the seed to save. */
+  private claimSeed(
+    ownerId: string,
+    base: string,
+    kind: AgentSpec["kind"],
+    parentId: string | null,
+    except?: string,
+  ): string {
+    const parent = kind === "subagent" && parentId ? this.mascotOf(parentId) : undefined;
+    return this.mascotBook(ownerId, except).claim(base, kind, parent).seed;
+  }
+
+  /**
+   * «Change mascot» (G40.2): the person asks for a new face, explicitly. A new seed, different
+   * from every face in use (the old one included), saved and logged. God is drawn by hand.
+   */
+  async changeMascot(actor: Actor, id: string): Promise<AgentRecord> {
+    const a = this.cache.get(id);
+    if (!a) throw new HierarchyError(`Unknown agent "${id}"`);
+    if (actor.type !== "human") throw new HierarchyError("Only the person changes a mascot");
+    if (a.kind === "god") throw new HierarchyError("God's mascot is drawn by hand");
+    const book = this.mascotBook(a.ownerId);
+    const parent = a.kind === "subagent" && a.parentId ? this.mascotOf(a.parentId) : undefined;
+    const base = `${a.name}~${randomUUID().slice(0, 6)}`;
+    const seed = book.claim(base, a.kind, parent).seed;
+    await this.db.query("UPDATE rg_agents SET mascot_seed = $2 WHERE id = $1", [id, seed]);
+    const updated: AgentRecord = { ...a, mascotSeed: seed };
+    this.cache.set(id, this.mark(updated));
+    await this.store.append({
+      ownerId: a.ownerId,
+      projectId: a.projectId,
+      agentId: null,
+      body: { type: "agent.mascot_changed", payload: { agentId: id, seed, reason: "changed" } },
+    });
+    return updated;
   }
 
   get(id: string): AgentRecord | undefined {
@@ -247,8 +335,11 @@ export class AgentRegistry {
     if (parent?.subprojectId && input.subprojectId && input.subprojectId !== parent.subprojectId)
       throw new HierarchyError("A child works in its parent's subproject");
 
+    const agentId = `${input.kind}_${randomUUID().slice(0, 8)}`;
+    // The mascot's seed is fixed now (G40.2): renaming never changes the face.
+    const mascotSeed = this.claimSeed(ownerId, input.name, input.kind, input.parentId);
     const record: AgentRecord = {
-      id: `${input.kind}_${randomUUID().slice(0, 8)}`,
+      id: agentId,
       ownerId,
       kind: input.kind,
       parentId: input.parentId,
@@ -261,12 +352,13 @@ export class AgentRegistry {
       ...(input.mode !== undefined && { mode: input.mode }),
       ...(input.connections !== undefined && { connections: input.connections }),
       ...(subprojectId !== undefined && { subprojectId }),
+      mascotSeed,
       status: "active",
     };
     try {
       await this.db.query(
-        `INSERT INTO rg_agents (id, owner_id, kind, parent_id, project_id, persistent, name, role, system_prompt, model, mode, connections, subproject_id)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+        `INSERT INTO rg_agents (id, owner_id, kind, parent_id, project_id, persistent, name, role, system_prompt, model, mode, connections, subproject_id, mascot_seed)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
         [
           record.id,
           ownerId,
@@ -281,6 +373,7 @@ export class AgentRegistry {
           input.mode ?? null,
           input.connections ? JSON.stringify(input.connections) : null,
           subprojectId ?? null,
+          mascotSeed,
         ],
       );
     } catch (err) {

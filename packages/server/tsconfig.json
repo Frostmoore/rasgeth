@@ -6,53 +6,22 @@
   },
   "include": ["src"],
   "references": [
-    {
-      "path": "../protocol"
-    },
-    {
-      "path": "../providers"
-    },
-    {
-      "path": "../events"
-    },
-    {
-      "path": "../agent"
-    },
-    {
-      "path": "../tools"
-    },
-    {
-      "path": "../sandbox"
-    },
-    {
-      "path": "../hierarchy"
-    },
-    {
-      "path": "../engine-local"
-    },
-    {
-      "path": "../board"
-    },
-    {
-      "path": "../extensions"
-    },
-    {
-      "path": "../telegram"
-    },
-    {
-      "path": "../gateway"
-    },
-    {
-      "path": "../automations"
-    },
-    {
-      "path": "../supervisor"
-    },
-    {
-      "path": "../subscriptions"
-    },
-    {
-      "path": "../acp"
-    }
+    { "path": "../mascot" },
+    { "path": "../protocol" },
+    { "path": "../providers" },
+    { "path": "../events" },
+    { "path": "../agent" },
+    { "path": "../tools" },
+    { "path": "../sandbox" },
+    { "path": "../hierarchy" },
+    { "path": "../engine-local" },
+    { "path": "../board" },
+    { "path": "../extensions" },
+    { "path": "../telegram" },
+    { "path": "../gateway" },
+    { "path": "../automations" },
+    { "path": "../supervisor" },
+    { "path": "../subscriptions" },
+    { "path": "../acp" }
   ]
 }

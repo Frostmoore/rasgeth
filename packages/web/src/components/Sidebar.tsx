@@ -9,7 +9,6 @@ import {
   IconBranch,
   IconChat,
   IconChevron,
-  IconCrown,
   IconDownload,
   IconEye,
   IconFolder,
@@ -41,6 +40,7 @@ import {
 } from "../state.js";
 import { askConfirm } from "./dialogs.js";
 import { FolderMenu } from "./FolderMenu.js";
+import { Mascot } from "./Mascot.js";
 import { ArchivedList, ArchiveProjectDialog, noGitNotice } from "./ProjectArchive.js";
 
 const SHOWN = 8;
@@ -71,7 +71,15 @@ function Folder({ name, children }: { name: string; children: preact.ComponentCh
  * One conversation: open it, pin it, archive it (the log is never touched). One working on a
  * task says so (p3.5.4: «Compito: …»); `who` names the agent when the list mixes several.
  */
-function SessionLine({ row, folders, who }: { row: SessionRow; folders: string[]; who?: string }) {
+function SessionLine({
+  row,
+  folders,
+  who,
+}: {
+  row: SessionRow;
+  folders: string[];
+  who?: Agent | undefined;
+}) {
   const active = activeTab.value === `chat:${row.id}`;
   const origin = row.forkedFrom
     ? sessionRows.value.find((r) => r.id === row.forkedFrom)
@@ -95,7 +103,12 @@ function SessionLine({ row, folders, who }: { row: SessionRow; folders: string[]
           </span>
         )}
         <span class={`title${who ? " with-who" : ""}`}>
-          {who && <span class="who">{who}</span>}
+          {who && (
+            <span class="who">
+              <Mascot agent={who} size={16} />
+              {who.name}
+            </span>
+          )}
           <span class="what">
             {row.task ? t("barTask", { title: row.task }) : (row.title ?? t("newConversation"))}
           </span>
@@ -246,7 +259,7 @@ function TeamSessions({
           key={r.id}
           row={r}
           folders={[]}
-          who={agents.value.find((a) => a.id === r.agentId)?.name}
+          who={agents.value.find((a) => a.id === r.agentId)}
         />
       ))}
       {rows.length > SHOWN && (
@@ -331,7 +344,7 @@ function Assistants({ open, toggle }: { open: Set<string>; toggle: (key: string)
                 title={roleText(a.role) ?? ""}
               >
                 <IconChevron open={open.has(key)} />
-                <IconUser size={14} />
+                <Mascot agent={a} size={24} />
                 <span class="name">{a.name}</span>
                 {state !== "free" && (
                   <span
@@ -435,7 +448,10 @@ function Subprojects({
               ) : (
                 team.map((a) => (
                   <div key={a.id} class="sub-agent">
-                    <div class="dim sub-agent-name">{a.name}</div>
+                    <div class="dim sub-agent-name">
+                      <Mascot agent={a} size={16} />
+                      {a.name}
+                    </div>
                     <Sessions agent={a} />
                   </div>
                 ))
@@ -599,7 +615,7 @@ export function Sidebar() {
       {god && (
         <div class="bar-god">
           <Entry
-            icon={<IconCrown />}
+            icon={<Mascot agent={god} size={24} />}
             name={god.name}
             open={open.has("god")}
             toggle={() => toggle("god")}
@@ -692,6 +708,7 @@ export function Sidebar() {
                       title={orchestrator ? t("barOpenOrchestrator", { name: p.name }) : p.name}
                       onClick={openProject}
                     >
+                      {orchestrator && <Mascot agent={orchestrator} size={20} />}
                       <span class="name">{p.name}</span>
                       {running && (
                         <span

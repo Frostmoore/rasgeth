@@ -18,6 +18,7 @@ import {
 } from "@redgiant/extensions";
 import { teamsAppPackage } from "@redgiant/gateway";
 import { HierarchyError } from "@redgiant/hierarchy";
+import { mascotSvg } from "@redgiant/mascot";
 import {
   AgentKind,
   ARTIFACT_SANDBOX,
@@ -30,6 +31,8 @@ import {
   LOCAL_OWNER_ID,
   MachineAccess,
   MachineBody,
+  MascotSpec,
+  MascotState,
   MEDIA_KINDS,
   type ModelSpec as ModelSpecType,
   PermissionMode,
@@ -166,6 +169,10 @@ const Agent = z
     compaction: z.object({ at: z.number().optional(), keep: z.number().optional() }).optional(),
     skills: z.array(z.string()).optional(),
     projects: z.array(z.string()).optional(),
+    /** Its mascot's seed (G40.2), fixed at creation. */
+    mascotSeed: z.string().optional(),
+    /** Its mascot (G40.2): what the app paints, the same face everywhere. */
+    mascot: MascotSpec.optional(),
     status: z.enum(["active", "stopped"]),
   })
   .openapi("Agent");
@@ -833,9 +840,13 @@ const routes = {
   }),
 };
 
-const agentOut = (a: NonNullable<ReturnType<RedGiantCore["registry"]["get"]>>) => {
+const agentOut = (
+  a: NonNullable<ReturnType<RedGiantCore["registry"]["get"]>>,
+  registry: RedGiantCore["registry"],
+) => {
   const { ownerId: _o, ...rest } = a;
-  return rest;
+  const mascot = registry.mascotOf(a.id);
+  return { ...rest, ...(mascot && { mascot }) };
 };
 
 /** The HTTP API. Every route but /api/health and /api/openapi.json needs a bearer token. */
@@ -1201,7 +1212,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     const { projectId } = c.req.valid("query");
     return c.json(
       core.registry.list({ ownerId: owner(c), ...(projectId && { projectId }) }).map((a) => ({
-        ...agentOut(a),
+        ...agentOut(a, core.registry),
         // An external ACP agent (G38.6): its program runs its turns.
         ...(core.acpWorkers.get(owner(c), a.id) && { external: "acp" as const }),
       })),
@@ -1238,6 +1249,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
           human(c),
           input as unknown as Parameters<typeof core.registry.create>[1],
         ),
+        core.registry,
       ),
       201,
     );
@@ -1267,7 +1279,36 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     if (name !== undefined) await core.registry.rename(id, name);
     const updated = await core.registry.configure(human(c), id, rest);
     if ("model" in change) core.agentModelChanged(id);
-    return c.json(agentOut(updated), 200);
+    return c.json(agentOut(updated, core.registry), 200);
+  });
+  // An agent's mascot (G40.2): the spec the app paints, or the page's drawing as an SVG file
+  // (`?format=svg`, with `state`, `size` and `theme` light or dark: colours written in).
+  app.get("/api/agents/:id/mascot", (c) => {
+    const id = c.req.param("id");
+    const spec = core.registry.get(id)?.ownerId === owner(c) && core.registry.mascotOf(id);
+    if (!spec) return c.json({ error: "Agent not found" }, 404);
+    if (c.req.query("format") !== "svg") return c.json(spec, 200);
+    const state = MascotState.safeParse(c.req.query("state") ?? "idle");
+    const theme = c.req.query("theme") ?? "light";
+    const size = Number(c.req.query("size") ?? 128);
+    if (!state.success || (theme !== "light" && theme !== "dark") || !(size >= 16 && size <= 1024))
+      return c.json({ error: "state, theme (light, dark) or size (16-1024) not valid" }, 400);
+    return c.body(mascotSvg(spec, { state: state.data, theme, size, idPrefix: "m" }), 200, {
+      "Content-Type": "image/svg+xml; charset=utf-8",
+      "Cache-Control": "no-store",
+    });
+  });
+  // «Change mascot» (G40.2): a new face, only when the person asks; God's is drawn by hand.
+  app.post("/api/agents/:id/mascot", async (c) => {
+    const id = c.req.param("id");
+    if (core.registry.get(id)?.ownerId !== owner(c))
+      return c.json({ error: "Agent not found" }, 404);
+    try {
+      return c.json(agentOut(await core.registry.changeMascot(human(c), id), core.registry), 200);
+    } catch (err) {
+      if (err instanceof HierarchyError) return c.json({ error: err.message }, 400);
+      throw err;
+    }
   });
   // An agent's instructions as the person reads them (2026-11-06): its own or the built-in ones,
   // with the current names; saving keeps the names as placeholders. Open conversations keep theirs.
@@ -2158,7 +2199,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   );
   app.get("/api/chat/agent", async (c) => {
     try {
-      return c.json(agentOut(await core.chatAgent(owner(c))), 200);
+      return c.json(agentOut(await core.chatAgent(owner(c)), core.registry), 200);
     } catch (err) {
       if (err instanceof ChatError) return c.json({ error: err.message }, 400);
       throw err;

@@ -33,6 +33,7 @@ import {
   IconUsers,
 } from "../icons.js";
 import { renderAnswer, renderMarkdown, renderStreamingMarkdown } from "../markdown.js";
+import { agentMascotState } from "../mascot-state.js";
 import {
   agents,
   approvals,
@@ -85,6 +86,7 @@ import { Composer, packMessage } from "./Composer.js";
 import { askText } from "./dialogs.js";
 import { Images } from "./Images.js";
 import { MailRequestPreview, MailToolCard, mailSummary } from "./MailCards.js";
+import { Mascot } from "./Mascot.js";
 import { MetricsBar } from "./MetricsBar.js";
 import { ModelMenu, modelName } from "./ModelMenu.js";
 import { ArchivedNotice } from "./ProjectArchive.js";
@@ -1251,6 +1253,7 @@ function SubTabButton({
   const fresh = !on && lastSeq > (subSeen.value[tab.childSessionId] ?? tab.fromSeq);
   const waiting = asks(tab);
   const from = agentName(tab.childAgentId);
+  const childAgent = agents.value.find((a) => a.id === tab.childAgentId);
   return (
     <div
       class={`sub-tab ${on ? "on" : ""} ${status}`}
@@ -1258,6 +1261,8 @@ function SubTabButton({
     >
       <button type="button" role="tab" aria-selected={on} class="sub-tab-main" onClick={select}>
         <span role="img" class={`sub-dot ${status}`} aria-label={t(`subStatus_${status}`)} />
+        {/* The subagent's face: like its parent's (G40.2). */}
+        {childAgent && <Mascot agent={childAgent} size={16} decorative />}
         <span class="sub-tab-title">{tab.title}</span>
         {fresh && (
           <span role="img" class="sub-new" aria-label={t("subFresh")} title={t("subFresh")} />
@@ -1476,6 +1481,14 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
   ].find((p): p is string => !!p && isArchived(p));
   return (
     <div class={`chat${archivedIn ? " read-only" : ""}`}>
+      {agent && (
+        // Who the conversation is with, and what it is doing in words (G40.2).
+        <div class="chat-agent">
+          <Mascot agent={agent} size={32} decorative />
+          <strong>{agent.name}</strong>
+          <span class="chat-agent-state">{t(`mascotState_${agentMascotState(agent.id)}`)}</span>
+        </div>
+      )}
       <CommandStrip sessionId={sessionId} />
       <div class="chat-body" ref={body}>
         <QuotePicker

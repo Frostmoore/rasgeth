@@ -70,5 +70,10 @@ export const AgentSpec = z.object({
   connections: z.array(z.string().min(1)).optional(),
   /** Other projects it is assigned to (2026-11-03): it sits under their orchestrators too. */
   projects: z.array(z.string().min(1)).optional(),
+  /**
+   * Its mascot's seed (G40.2): fixed when it is made (its first name, or `name#1`, `name#2`… when
+   * that face is taken) and kept when it is renamed; only «Change mascot» gives a new one.
+   */
+  mascotSeed: z.string().min(1).optional(),
 });
 export type AgentSpec = z.infer<typeof AgentSpec>;

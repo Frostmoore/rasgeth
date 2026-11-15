@@ -5,23 +5,17 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import type { Agent } from "../api.js";
 import { usd } from "../format.js";
 import { lang, roleText, t } from "../i18n.js";
-import { IconClose, IconCrown, IconEye, IconPlus, IconTree, IconUser } from "../icons.js";
+import { IconClose, IconPlus, IconTree } from "../icons.js";
 import { renderAnswer } from "../markdown.js";
 import { agents, attempt, getApi, projects, refreshRooms, rooms, roomsVersion } from "../state.js";
 import { Composer, packMessage } from "./Composer.js";
+import { Mascot } from "./Mascot.js";
 
 const MAX = 6;
 
+/** The agent's face (G40.2); a generic sign for one that is gone. */
 const kindIcon = (a: Agent | undefined) =>
-  a?.kind === "god" ? (
-    <IconCrown size={13} />
-  ) : a?.kind === "inspector" ? (
-    <IconEye size={13} />
-  ) : a?.kind === "assistant" ? (
-    <IconUser size={13} />
-  ) : (
-    <IconTree size={13} />
-  );
+  a ? <Mascot agent={a} size={20} /> : <IconTree size={13} />;
 
 /** Who can be added: every active agent of the person, and every project's inspector. */
 export function joinable(memberIds: string[]): { id: string; label: string; group: string }[] {

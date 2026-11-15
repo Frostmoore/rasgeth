@@ -27,6 +27,7 @@ import { AgentTools } from "./AgentTools.js";
 import { AgentWizard } from "./AgentWizard.js";
 import { LimitEditor } from "./Budgets.js";
 import { askConfirm } from "./dialogs.js";
+import { Mascot } from "./Mascot.js";
 import { modelName } from "./ModelMenu.js";
 import { ModelSelect, useModels } from "./ModelSelect.js";
 import { PromptEditor } from "./PromptEditor.js";
@@ -46,13 +47,6 @@ const MODES = ["auto", "manual", "plan", "readonly"] as const;
 type View = "tree" | "cards";
 type PanelTab = "general" | "model" | "limits" | "behaviour" | "memory" | "knowledge" | "tools";
 
-const initials = (name: string) =>
-  name
-    .split(/[\s-]+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase())
-    .join("") || "?";
 const canAddUnder = (a: Agent) =>
   a.status === "active" && CHILDREN[a.kind].some((k) => k !== "subagent");
 const projectName = (id: string | null) =>
@@ -206,8 +200,33 @@ function GeneralTab({ agent }: { agent: Agent }) {
     else next.delete(id);
     void attempt(() => getApi().configureAgent(agent.id, { projects: [...next] })).then(refresh);
   };
+  const [newFace, setNewFace] = useState(false);
+  // «Change mascot» (G40.2): explicit, confirmed; renaming never changes the face.
+  const changeMascot = async () => {
+    if (!(await askConfirm(t("mascotChangeAsk", { name: agent.name }), { yes: t("mascotChange") })))
+      return;
+    if (await attempt(() => getApi().changeMascot(agent.id))) {
+      await refresh();
+      setNewFace(true);
+    }
+  };
   return (
     <div class="st-form">
+      <div class="st-field mascot-field">
+        <Mascot agent={agent} size={128} />
+        <div class="mascot-field-text">
+          <span class="wz-lb">{t("mascotTitle")}</span>
+          <span class="ui-help">{t(agent.kind === "god" ? "mascotGodHelp" : "mascotHelp")}</span>
+          {agent.kind !== "god" && agent.status === "active" && (
+            <div class="st-save">
+              {newFace && <span class="st-on">{t("mascotChanged")}</span>}
+              <button type="button" class="wz-btn small" onClick={() => void changeMascot()}>
+                {t("mascotChange")}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
       <label class="st-field">
         <span class="wz-lb">{t("name")}</span>
         <input
@@ -353,7 +372,7 @@ function BehaviourTab({ agent }: { agent: Agent }) {
  * the person: «facci una modale, e uniforma l'interfaccia col resto delle modali»); a sheet from
  * below on a phone. Its buttons stay in the window's bottom bar.
  */
-function AgentPanel({
+export function AgentPanel({
   agent,
   onClose,
   onAdd,
@@ -403,7 +422,7 @@ function AgentPanel({
       wide
       class="agent-panel-modal"
       title={agent.name}
-      icon={<span class={`agent-avatar ${agent.kind}`}>{initials(agent.name)}</span>}
+      icon={<Mascot agent={agent} size={48} />}
       sub={
         <>
           {t(`kind_${agent.kind}`)}
@@ -465,7 +484,7 @@ function OrgNode({
       title={roleText(agent.role)}
       onClick={() => select(agent)}
     >
-      <span class={`agent-avatar ${agent.kind}`}>{initials(agent.name)}</span>
+      <Mascot agent={agent} size={32} />
       <span class="org-node-text">
         <strong>{agent.name}</strong>
         <span class="dim">
@@ -668,7 +687,7 @@ function Card({
       onClick={() => select(agent)}
     >
       <span class="agent-tile-head">
-        <span class={`agent-avatar ${agent.kind}`}>{initials(agent.name)}</span>
+        <Mascot agent={agent} size={48} />
         <span class="agent-tile-name">
           <strong>{agent.name}</strong>
           <span class="dim">{assigned ? t("assignedChip") : t(`kind_${agent.kind}`)}</span>

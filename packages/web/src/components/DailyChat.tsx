@@ -13,7 +13,9 @@ import {
 } from "../icons.js";
 import { renderAnswer, renderStreamingMarkdown } from "../markdown.js";
 import {
+  agents,
   attempt,
+  chatAgentId,
   closeTab,
   getApi,
   openTab,
@@ -23,6 +25,7 @@ import {
 import { type Attachment, Composer } from "./Composer.js";
 import { askConfirm } from "./dialogs.js";
 import { Images } from "./Images.js";
+import { Mascot } from "./Mascot.js";
 import { MetricsBar } from "./MetricsBar.js";
 import { ModelSelect, type Spec, useModels } from "./ModelSelect.js";
 import { PromptEditor } from "./PromptEditor.js";
@@ -305,9 +308,16 @@ export function DailyChat({
     reload();
   };
 
+  // Who answers here (G40.2): the project's inspector, or the Chat.
+  const headAgent = agents.value.find((a) =>
+    projectId
+      ? a.kind === "inspector" && a.projectId === projectId && !a.subprojectId
+      : a.id === chatAgentId.value,
+  );
   return (
     <div class="chat dailychat">
       <div class="chat-head">
+        {headAgent && <Mascot agent={headAgent} size={32} />}
         {projectId && (
           <select
             value={open ?? ""}

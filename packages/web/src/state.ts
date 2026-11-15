@@ -594,6 +594,9 @@ const newCall = (): ModelCall => ({ since: Date.now(), chars: 0 });
 
 const sessions = new Map<string, Signal<SessionView>>();
 
+/** A conversation's live view if the page has one, without making it (G40.2: the mascots' state). */
+export const peekSessionView = (id: string): Signal<SessionView> | undefined => sessions.get(id);
+
 export function sessionView(id: string): Signal<SessionView> {
   let s = sessions.get(id);
   if (!s) {

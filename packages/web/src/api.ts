@@ -41,6 +41,7 @@ import {
   type MagicExtension,
   type MagicExtKind,
   type Mailbox as MailboxInfo,
+  type MascotSpec,
   type ModelsCatalogStatus,
   type NameProbe,
   type NetDetected,
@@ -420,6 +421,10 @@ export interface Agent {
   status: "active" | "stopped";
   /** An external ACP agent (G38.6): its program runs its turns, without RedGiant's figures. */
   external?: "acp";
+  /** Its mascot's seed, fixed at creation (G40.2). */
+  mascotSeed?: string;
+  /** Its mascot (G40.2), from the server: the same face everywhere. */
+  mascot?: MascotSpec;
 }
 
 export interface SessionInfo {
@@ -781,6 +786,8 @@ export class Api {
   createAgent = (a: Record<string, unknown>) => this.call<Agent>("POST", "/api/agents", a);
   configureAgent = (id: string, change: Record<string, unknown>) =>
     this.call<Agent>("PATCH", `/api/agents/${id}`, change);
+  /** «Change mascot» (G40.2): a new face for the agent, only when the person asks. */
+  changeMascot = (id: string) => this.call<Agent>("POST", `/api/agents/${id}/mascot`);
   /** An agent's instructions as they are now, and the built-in ones (2026-11-06). */
   agentPrompt = (id: string) => this.call<PromptView>("GET", `/api/agents/${id}/prompt`);
   /** null: the built-in instructions again. */
