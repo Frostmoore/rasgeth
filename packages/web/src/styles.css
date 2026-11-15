@@ -7575,6 +7575,24 @@ button.bar-chat:hover {
   font-size: 15px;
   margin: 22px 0 8px;
 }
+/* The archived chats: a heading that opens them (2026-11-15). */
+.chats-archived-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 22px 0 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--dim);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.chats-archived-toggle:hover {
+  color: var(--text);
+}
 .chat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));

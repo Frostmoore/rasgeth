@@ -5,7 +5,7 @@
 import { useEffect, useState } from "preact/hooks";
 import type { ChatSummary } from "../api.js";
 import { t } from "../i18n.js";
-import { IconChat, IconFolder, IconPencil, IconPlus, IconUsers } from "../icons.js";
+import { IconArchive, IconChat, IconFolder, IconPencil, IconPlus, IconUsers } from "../icons.js";
 import {
   attempt,
   chatAgentId,
@@ -65,13 +65,31 @@ function SessionCard({ r, folders }: { r: SessionRow; folders: string[] }) {
         <strong>{r.title ?? t("newChat")}</strong>
         {r.running && <span class="dot running" />}
       </button>
-      <FolderMenu
-        current={r.folder ?? null}
-        folders={folders}
-        onPick={(f) =>
-          void attempt(() => getApi().updateSession(r.id, { folder: f })).then(refreshConversations)
+      {!r.archived && (
+        <FolderMenu
+          current={r.folder ?? null}
+          folders={folders}
+          onPick={(f) =>
+            void attempt(() => getApi().updateSession(r.id, { folder: f })).then(
+              refreshConversations,
+            )
+          }
+        />
+      )}
+      {/* Archived (2026-11-15): out of the list, read and brought back from «Archived». */}
+      <button
+        type="button"
+        class="icon-button"
+        title={r.archived ? t("unarchive") : t("archive")}
+        aria-label={r.archived ? t("unarchive") : t("archive")}
+        onClick={() =>
+          void attempt(() => getApi().updateSession(r.id, { archived: !r.archived })).then(
+            refreshConversations,
+          )
         }
-      />
+      >
+        <IconArchive size={15} />
+      </button>
     </div>
   );
 }
@@ -79,6 +97,7 @@ function SessionCard({ r, folders }: { r: SessionRow; folders: string[] }) {
 export function Chats() {
   const [error, setError] = useState<string>();
   const [instructions, setInstructions] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
   useEffect(() => {
     void refreshConversations().catch(() => {});
     void getApi()
@@ -91,7 +110,9 @@ export function Chats() {
         (e: unknown) => setError((e as Error).message),
       );
   }, []);
-  const mine = sessionRows.value.filter((r) => r.agentId === chatAgentId.value && !r.archived);
+  const all = sessionRows.value.filter((r) => r.agentId === chatAgentId.value);
+  const mine = all.filter((r) => !r.archived);
+  const archived = all.filter((r) => r.archived);
   const old = chatRows.value;
   const folders = [
     ...new Set([...mine, ...old].flatMap((c) => (c.folder ? [c.folder] : []))),
@@ -166,6 +187,25 @@ export function Chats() {
                 <ChatCard key={c.id} c={c} folders={folders} />
               ))}
           </div>
+        </section>
+      )}
+      {archived.length > 0 && (
+        <section class="chats-folder">
+          <button
+            type="button"
+            class="chats-archived-toggle"
+            aria-expanded={showArchived}
+            onClick={() => setShowArchived(!showArchived)}
+          >
+            <IconArchive size={15} /> {t("chatsArchived", { n: String(archived.length) })}
+          </button>
+          {showArchived && (
+            <div class="chat-grid">
+              {archived.map((r) => (
+                <SessionCard key={r.id} r={r} folders={folders} />
+              ))}
+            </div>
+          )}
         </section>
       )}
       <section class="chats-folder">
