@@ -1,17 +1,19 @@
 // An agent's mascot (G40.2, study G40 section 3.6). The drawing is the server's own SVG, made by
 // `@redgiant/mascot` (the same function the page uses), so faces, colours and proportions are
-// identical by construction; the app cuts it into layers and moves them like the page's CSS.
-// Until the SVG arrives (or without a server) it paints the spec's body outline in its colours.
+// identical by construction. Always alive: the app cuts the drawing into layers once
+// (`splitMascotSvg`) and moves them with the library's motion table on one shared clock
+// (`MascotClock`), each mascot with its own rhythm; nothing is redrawn, only transforms and
+// opacity change. Until the SVG arrives (or without a server) it paints the spec's body outline.
 // With «Reduce motion» (the system's or the app's) nothing moves: the state's sign stays.
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 import '../api/types.dart';
-import 'marks_painter.dart';
+import 'clock.dart';
 import 'mascot_source.dart';
 import 'motion.dart';
 import 'svg_layers.dart';
@@ -33,6 +35,7 @@ class MascotView extends StatefulWidget {
     this.svg,
     this.theme,
     this.animate,
+    this.seconds,
   });
 
   /// Whose drawing to ask the [MascotScope]'s source for.
@@ -53,57 +56,59 @@ class MascotView extends StatefulWidget {
   /// Default: on, unless the system or the app reduces motion.
   final bool? animate;
 
-  /// 16-20 px: body and eyes only, no sign, no motion (as the library draws it).
+  /// A fixed moment of the motion (tests, film strips) instead of the shared clock.
+  final double? seconds;
+
+  /// 16-20 px: body and eyes only, no sign; only the eyes blink (as the library draws it).
   bool get tiny => size <= 20;
 
   @override
   State<MascotView> createState() => _MascotViewState();
 }
 
-class _MascotViewState extends State<MascotView> with SingleTickerProviderStateMixin {
-  late final Ticker _ticker = createTicker(
-    (d) => setState(() => _seconds = d.inMicroseconds / 1e6),
-  );
-  double _seconds = 0;
+class _MascotViewState extends State<MascotView> {
   Future<String>? _future;
   String? _futureKey;
+  bool _listening = false;
 
   MascotTheme get _theme =>
       widget.theme ??
       (Theme.of(context).brightness == Brightness.dark ? MascotTheme.dark : MascotTheme.light);
 
   bool get _moving {
-    if (widget.tiny || widget.state == MascotState.error) return false;
+    if (widget.seconds != null) return true;
     final reduced =
         (MediaQuery.maybeDisableAnimationsOf(context) ?? false) ||
         (MascotScope.maybeOf(context)?.reduceMotion ?? false);
     return widget.animate ?? !reduced;
   }
 
-  void _syncTicker() {
-    final want = _moving && TickerMode.valuesOf(context).enabled;
-    if (want && !_ticker.isActive) _ticker.start();
-    if (!want && _ticker.isActive) {
-      _ticker.stop();
-      _seconds = 0;
-    }
+  void _tick() {
+    if (mounted) setState(() {});
+  }
+
+  void _syncClock() {
+    final want = _moving && widget.seconds == null && TickerMode.valuesOf(context).enabled;
+    if (want && !_listening) MascotClock.instance.attach(_tick);
+    if (!want && _listening) MascotClock.instance.detach(_tick);
+    _listening = want;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _syncTicker();
+    _syncClock();
   }
 
   @override
   void didUpdateWidget(MascotView old) {
     super.didUpdateWidget(old);
-    _syncTicker();
+    _syncClock();
   }
 
   @override
   void dispose() {
-    _ticker.dispose();
+    if (_listening) MascotClock.instance.detach(_tick);
     super.dispose();
   }
 
@@ -147,54 +152,93 @@ class _MascotViewState extends State<MascotView> with SingleTickerProviderStateM
 
   Widget _drawing(String svg) {
     final s = widget.size;
-    final moving = _moving;
-    final t = _seconds;
-    final layers = splitMascotSvg(svg, split: !widget.tiny);
-    final k = s / 100;
-    Widget pic(String text) =>
-        SvgPicture.string(text, width: s, height: s, allowDrawingOutsideViewBox: true);
+    final table = MotionTable.instance;
+    // Layers even when still: flutter_svg would show a hidden group (`opacity="0"`) whose shapes
+    // have their own `fill-opacity` (the sleep bubble); the layers leave hidden groups out.
+    final layers = splitMascotSvg(svg, table.elements);
+    if (!_moving) return MascotLayersView(layers: layers, size: s);
+    final t = widget.seconds ?? MascotClock.instance.seconds;
+    final poses = table.poses(widget.state, t, layers.rhythm, tiny: widget.tiny);
+    return MascotLayersView(layers: layers, poses: poses, size: s);
+  }
+}
 
-    final working = widget.state == MascotState.work && moving;
-    final children = <Widget>[pic(layers.base)];
-    if (layers.headset != null) {
-      children.add(Opacity(opacity: working ? headsetOpacity(t) : 1, child: pic(layers.headset!)));
+/// The layers of one drawing in one pose ([poses] by group; none: the drawing at rest).
+class MascotLayersView extends StatelessWidget {
+  const MascotLayersView({
+    super.key,
+    required this.layers,
+    required this.size,
+    this.poses = const {},
+  });
+
+  final MascotLayers layers;
+  final double size;
+  final Map<String, MotionPose> poses;
+
+  @override
+  Widget build(BuildContext context) {
+    final k = size / 100;
+    final inner = <Widget>[];
+    final children = <Widget>[];
+    var coreAt = -1;
+    for (final l in layers.layers) {
+      final w = _layer(l, k);
+      if (w == null) continue;
+      if (l.inCore) {
+        if (coreAt < 0) coreAt = children.length;
+        inner.add(w);
+      } else {
+        children.add(w);
+      }
     }
-    if (layers.tool != null) {
-      final o = layers.toolOrigin ?? const Offset(50, 73);
-      children.add(
-        Transform.rotate(
-          angle: working ? toolAngle(t) : 0,
-          origin: Offset((o.dx - 50) * k, (o.dy - 50) * k),
-          child: pic(layers.tool!),
-        ),
-      );
+    if (coreAt >= 0) {
+      Widget core = Stack(alignment: Alignment.topLeft, clipBehavior: Clip.none, children: inner);
+      final o = layers.coreOrigin;
+      for (final el in const ['ev', 'core']) {
+        final p = poses[el];
+        if (p != null && !p.movesNothing) core = _moved(core, p, o, null, k);
+      }
+      children.insert(coreAt, core);
     }
-    final m = moving ? coreMotion(widget.state, t) : CoreMotion.still;
-    final core = Transform(
-      // Around 50,90 of the box, like `.masc .core { transform-origin: 50px 90px }`.
-      origin: Offset(50 * k, 90 * k),
-      transform: Matrix4.identity()
-        ..translateByDouble(0, m.dy * k, 0, 1)
-        ..rotateZ(m.rotate)
-        ..scaleByDouble(m.scaleX, m.scaleY, 1, 1),
-      child: Stack(children: children),
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(alignment: Alignment.topLeft, clipBehavior: Clip.none, children: children),
     );
-    if (widget.tiny) return core;
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        core,
-        CustomPaint(
-          size: Size.square(s),
-          painter: MarksPainter(
-            state: widget.state,
-            colors: MarkColors.of(_theme),
-            thinkPhase: moving && widget.state == MascotState.think ? thinkPhase(t) : null,
-            ringPhase: moving && widget.state == MascotState.wait ? ringPhase(t) : null,
-          ),
-        ),
-      ],
+  }
+
+  Widget? _layer(MascotLayer l, double k) {
+    final p = l.el == null ? null : poses[l.el];
+    final opacity = p?.opacity ?? l.restOpacity;
+    if (opacity <= 0.004) return null;
+    Widget w = SvgPicture.string(
+      l.svg,
+      width: size,
+      height: size,
+      allowDrawingOutsideViewBox: true,
     );
+    if (p != null && !p.movesNothing) w = _moved(w, p, l.origin, l.parent, k);
+    if (opacity < 0.996) w = Opacity(opacity: opacity.clamp(0.0, 1.0), child: w);
+    return w;
+  }
+
+  /// The page's `translate rotate scale` around [origin], inside the groups' [parent] transform.
+  static Widget _moved(Widget child, MotionPose p, Offset origin, Matrix4? parent, double k) {
+    final a = Matrix4.identity()
+      ..translateByDouble(origin.dx + p.dx, origin.dy + p.dy, 0, 1)
+      ..rotateZ(p.rotate * math.pi / 180)
+      ..scaleByDouble(p.sx, p.sy, 1, 1)
+      ..translateByDouble(-origin.dx, -origin.dy, 0, 1);
+    var m = a;
+    if (parent != null)
+      m = parent.clone()
+        ..multiply(a)
+        ..multiply(Matrix4.inverted(parent));
+    final screen = Matrix4.diagonal3Values(k, k, 1)
+      ..multiply(m)
+      ..multiply(Matrix4.diagonal3Values(1 / k, 1 / k, 1));
+    return Transform(transform: screen, child: child);
   }
 }
 

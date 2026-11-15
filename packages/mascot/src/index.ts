@@ -7,6 +7,7 @@
 
 import type { AgentKind, MascotColors, MascotSpec, MascotState } from "@redgiant/protocol";
 import { oklchHex } from "./color.js";
+import { mascotRhythm, Z_REST } from "./motion.js";
 import {
   BODIES,
   COLD,
@@ -24,6 +25,17 @@ import {
 } from "./tables.js";
 
 export { contrast, hexToLinear, luminance, oklchHex, oklchToLinear } from "./color.js";
+export {
+  MASCOT_MOTION,
+  type MotionEase,
+  type MotionProp,
+  type MotionTable,
+  type MotionTrack,
+  type MotionValue,
+  mascotMotionCss,
+  RHYTHM_SIZE,
+  Z_REST,
+} from "./motion.js";
 export { BODIES, EYES, HEAD, HUES, MOUTHS, PATTERNS, TOOLS } from "./tables.js";
 export type { AgentKind, MascotSpec, MascotState };
 
@@ -59,6 +71,9 @@ function rng(seed: string): () => number {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
+
+/** A seed's sixteen rhythm numbers in 0..1 (`--k0`…`--k15`): when it blinks, hops, yawns. */
+export const rhythmOf = (seed: string): number[] => mascotRhythm(seed, rng);
 
 const pick = (r: () => number, n: number) => Math.floor(r() * n);
 const at = <T>(list: readonly T[], i: number): T => list[i] as T;
@@ -254,10 +269,30 @@ type EyeMode = "open" | "half" | "up" | "x";
 const eyeMode = (st: MascotState): EyeMode =>
   st === "idle" ? "half" : st === "think" ? "up" : st === "error" ? "x" : "open";
 
-function eyesSvg(eyesIndex: number, mode: EyeMode, lidClass: string): string {
+/** An animated group: its one class, its turning point, and an opacity when it starts hidden. */
+const group = (cls: string, x: number, y: number, inner: string, opacity?: number) =>
+  `<g class="${cls}"${opacity === undefined ? "" : ` opacity="${opacity}"`} style="transform-origin:${+x.toFixed(2)}px ${+y.toFixed(2)}px">${inner}</g>`;
+
+/**
+ * The eyes in a group that blinks (`eyes`, around their middle); asleep, also the open eyes of
+ * waking up with a start (`eyw`, hidden). Glasses and lashes stay out: they do not blink.
+ */
+function eyesSvg(eyesIndex: number, mode: EyeMode, lidClass: string, tiny = false): string {
   const t = at(EYES, eyesIndex);
-  const y = 55;
   const pos = t.single ? [50] : [50 - t.dx, 50 + t.dx];
+  let out = group("eyes", 50, 55, eyeShapes(t, pos, mode, lidClass));
+  if (mode === "half" && !tiny) out += group("eyw", 50, 55, eyeShapes(t, pos, "open", lidClass), 0);
+  if (t.post && mode !== "x") out += t.post(pos, 55);
+  return out;
+}
+
+function eyeShapes(
+  t: (typeof EYES)[number],
+  pos: number[],
+  mode: EyeMode,
+  lidClass: string,
+): string {
+  const y = 55;
   let out = "";
   for (const x of pos) {
     if (mode === "x") {
@@ -272,30 +307,106 @@ function eyesSvg(eyesIndex: number, mode: EyeMode, lidClass: string): string {
       out += `<path d="M${x - t.w - 2} ${y - t.h - 2.5}H${x + t.w + 2}V${ly}Q${x} ${ly + 2.6} ${x - t.w - 2} ${ly}Z" class="${lidClass}"/><path d="M${x - t.w - 0.6} ${ly + 0.2}Q${x} ${ly + 2.8} ${x + t.w + 0.6} ${ly + 0.2}" fill="none" stroke="${INK}" stroke-width="2" stroke-linecap="round"/>`;
     }
   }
-  if (t.post && mode !== "x") out += t.post(pos, y);
   return out;
+}
+
+/** The mouth (`mouth`) and, asleep, the round open mouth of a yawn (`yn`, hidden). */
+function mouthSvg(mouth: string, my: number, state: MascotState): string {
+  if (!mouth) return "";
+  let out = group("mouth", 50, my, mouth);
+  if (state === "idle")
+    out += group(
+      "yn",
+      50,
+      my + 1,
+      `<ellipse cx="50" cy="${my + 1}" rx="3.6" ry="4.2" fill="${INK}"/><ellipse cx="50" cy="${my + 3.4}" rx="2.1" ry="1.3" fill="#ff8f9c"/>`,
+      0,
+    );
+  return out;
+}
+
+/** What the state adds to the face (all hidden without motion, the sign stays outside). */
+function extrasSvg(state: MascotState, my: number, top: number): string {
+  if (state === "idle") {
+    // The sleep bubble at the corner of the mouth, and the lines of its pop.
+    const x = 60;
+    const y = my - 2;
+    return `${group(
+      "bub",
+      x,
+      y,
+      `<circle cx="${x}" cy="${y}" r="3.8" fill="#dff1ff" fill-opacity=".6" stroke="#8dbbe0" stroke-width="1.1"/><circle cx="${x - 1.3}" cy="${y - 1.3}" r=".9" fill="#fff"/>`,
+      0,
+    )}${group(
+      "pop",
+      x,
+      y,
+      `<path d="M${x} ${y - 4}v-2.4M${x + 3.6} ${y - 2.4}l1.8-1.6M${x - 3.6} ${y - 2.4}l-1.8-1.6M${x + 4.4} ${y + 1}h2.2M${x - 4.4} ${y + 1}h-2.2" fill="none" stroke="#8dbbe0" stroke-width="1.2" stroke-linecap="round"/>`,
+      0,
+    )}`;
+  }
+  if (state === "error")
+    return [46, 53, 49]
+      .map((x, i) =>
+        group(
+          `smk${i + 1}`,
+          x,
+          top - 3,
+          `<circle cx="${x}" cy="${top - 3}" r="3.2" fill="#9aa1ad"/>`,
+          0,
+        ),
+      )
+      .join("");
+  return "";
 }
 
 /** The state's sign, visible without animation: z z (idle), dots (think), waves (work), dot (wait), "!" (blocked). */
 function marks(state: MascotState): string {
-  if (state === "think")
-    return `<g class="mk think"><circle cx="74" cy="13" r="3.2"/><circle cx="83" cy="13" r="3.2"/><circle cx="92" cy="13" r="3.2"/></g>`;
+  if (state === "think") {
+    // The thought's two little bubbles, then the three dots (.35, .65, 1 at rest).
+    const dots = [0.35, 0.65, 1]
+      .map((o, i) =>
+        group(`d${i + 1}`, 74 + 9 * i, 13, `<circle cx="${74 + 9 * i}" cy="13" r="3.2"/>`, o),
+      )
+      .join("");
+    return `<g class="mk think">${group("tc1", 64.5, 25.5, `<circle cx="64.5" cy="25.5" r="1.7"/>`, 0.5)}${group("tc2", 68.5, 20, `<circle cx="68.5" cy="20" r="2.3"/>`, 0.5)}${dots}</g>`;
+  }
   if (state === "wait")
-    return `<g class="mk wait"><circle class="ring" cx="86" cy="14" r="9"/><circle class="dot" cx="86" cy="14" r="5.5"/></g>`;
+    return `<g class="mk wait">${group("rng", 86, 14, `<circle class="ring" cx="86" cy="14" r="9"/>`)}${group("dt", 86, 14, `<circle class="dot" cx="86" cy="14" r="5.5"/>`)}</g>`;
   if (state === "error")
-    return `<g class="mk err"><circle cx="86" cy="14" r="8.5"/><path d="M86 9.5v5.6M86 18.6v.1" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></g>`;
+    return `<g class="mk err">${group("ex", 86, 14, `<circle cx="86" cy="14" r="8.5"/><path d="M86 9.5v5.6M86 18.6v.1" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>`)}</g>`;
   if (state === "work")
-    return `<g class="mk work" fill="none" stroke-width="2.4" stroke-linecap="round"><path d="M9 54q-3 6 0 12"/><path d="M4 50q-4.5 10 0 20"/></g>`;
-  return `<g class="mk idle" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M78 9h7l-7 8h7"/><path d="M89 2h5l-5 6h5"/></g>`;
+    return `<g class="mk work" fill="none" stroke-width="2.4" stroke-linecap="round">${group("w1", 9, 60, `<path d="M9 54q-3 6 0 12"/>`)}${group("w2", 4, 60, `<path d="M4 50q-4.5 10 0 20"/>`)}</g>`;
+  // Two z's at rest (the sign); moving, three rise from the head one after the other.
+  const z = (cls: string, o?: number) => {
+    const [x, y, w, h] = Z_REST[cls] as [number, number, number, number];
+    const d = `M${x - w / 2} ${y - h / 2}h${w}l${-w} ${h}h${w}`;
+    return group(cls, x, y, `<path d="${d}"/>`, o);
+  };
+  return `<g class="mk idle" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${z("z3", 0)}${z("z1")}${z("z2")}</g>`;
 }
+
+/** The body (`core`, the state's motion) and inside it the rare events (`ev`), both around 50,90. */
+const CORE = `<g class="core" style="transform-origin:50px 90px"><g class="ev" style="transform-origin:50px 90px">`;
 
 function godSvg(state: MascotState, small: boolean, demi: boolean, id: string): string {
   const body = demi ? `class="b so"` : `fill="url(#${id}b)" stroke="#7d1b12"`;
+  // The crown, and the glint that runs over it now and then (hidden at rest).
+  const glint = (x: number, y: number) =>
+    group(
+      "gl",
+      x,
+      y,
+      `<path d="M${x} ${y - 4.2}L${x + 1.1} ${y - 1.1}L${x + 4.2} ${y}L${x + 1.1} ${y + 1.1}L${x} ${y + 4.2}L${x - 1.1} ${y + 1.1}L${x - 4.2} ${y}L${x - 1.1} ${y - 1.1}Z" fill="#fff"/>`,
+      0,
+    );
   const crown = demi
-    ? `<path d="M40 37L42 27L47 32L52 24L55 33Z" fill="#f5c04a" stroke="#8a5a00" stroke-width="1.8" stroke-linejoin="round" transform="rotate(-14 48 32)"/>`
-    : `<path d="M37 37L39 24L45 30.5L50 20L55 30.5L61 24L63 37Z" fill="#f5c04a" stroke="#8a5a00" stroke-width="2" stroke-linejoin="round"/><circle cx="50" cy="20" r="2.2" fill="#fff3c4" stroke="#8a5a00" stroke-width="1.2"/><circle cx="39" cy="24" r="1.7" fill="#fff3c4" stroke="#8a5a00" stroke-width="1"/><circle cx="61" cy="24" r="1.7" fill="#fff3c4" stroke="#8a5a00" stroke-width="1"/><path d="M38.5 33.5H61.5" stroke="#c88a12" stroke-width="1.6"/>`;
-  const orbitBack = `<path d="M8 66A43 12 -14 0 1 92 46" fill="none" class="orb" stroke-width="2.4" stroke-linecap="round" opacity=".55"/>`;
-  const orbitFront = `<path d="M92 46A43 12 -14 0 1 8 66" fill="none" class="orb" stroke-width="2.6" stroke-linecap="round"/><circle cx="17" cy="70.5" r="3.4" class="orbp"/>`;
+    ? `<path d="M40 37L42 27L47 32L52 24L55 33Z" fill="#f5c04a" stroke="#8a5a00" stroke-width="1.8" stroke-linejoin="round" transform="rotate(-14 48 32)"/>${glint(50.5, 23)}`
+    : `<path d="M37 37L39 24L45 30.5L50 20L55 30.5L61 24L63 37Z" fill="#f5c04a" stroke="#8a5a00" stroke-width="2" stroke-linejoin="round"/><circle cx="50" cy="20" r="2.2" fill="#fff3c4" stroke="#8a5a00" stroke-width="1.2"/><circle cx="39" cy="24" r="1.7" fill="#fff3c4" stroke="#8a5a00" stroke-width="1"/><circle cx="61" cy="24" r="1.7" fill="#fff3c4" stroke="#8a5a00" stroke-width="1"/><path d="M38.5 33.5H61.5" stroke="#c88a12" stroke-width="1.6"/>${glint(53, 18.5)}`;
+  // The little planet goes round: the copy behind the body shows on the far half of the orbit.
+  const planet = `<circle cx="17" cy="70.5" r="3.4" class="orbp"/>`;
+  const orbitBack = `<path d="M8 66A43 12 -14 0 1 92 46" fill="none" class="orb" stroke-width="2.4" stroke-linecap="round" opacity=".55"/>${group("orbb", 17, 70.5, planet, 0)}`;
+  const orbitFront = `<path d="M92 46A43 12 -14 0 1 8 66" fill="none" class="orb" stroke-width="2.6" stroke-linecap="round"/>${group("orbf", 17, 70.5, planet)}`;
   const net = demi
     ? ""
     : `<g opacity=".55" stroke="#ffe0b0" stroke-width="1.1" fill="#ffe0b0"><path d="M62 80L70 71L66 62M62 80L55 84" fill="none"/><circle cx="62" cy="80" r="1.6"/><circle cx="70" cy="71" r="1.6"/><circle cx="66" cy="62" r="1.3"/><circle cx="55" cy="84" r="1.3"/></g>`;
@@ -308,12 +419,15 @@ function godSvg(state: MascotState, small: boolean, demi: boolean, id: string): 
           ? at(MOUTHS, 1).draw(69)
           : at(MOUTHS, 0).draw(69);
   return `<defs><radialGradient id="${id}b" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#ffb070"/><stop offset=".5" style="stop-color:var(--accent)"/><stop offset="1" stop-color="#8f2016"/></radialGradient><radialGradient id="${id}h"><stop offset=".55" style="stop-color:var(--accent)" stop-opacity=".35"/><stop offset="1" style="stop-color:var(--accent)" stop-opacity="0"/></radialGradient></defs>${
-    demi || small ? "" : `<circle cx="50" cy="60" r="48" fill="url(#${id}h)" class="halo"/>`
-  }<g class="core">${small ? "" : orbitBack}<circle cx="50" cy="61" r="28.5" ${body} stroke-width="2.4"/><ellipse cx="38" cy="45" rx="7" ry="4" fill="#fff" opacity=".35" transform="rotate(-35 38 45)"/>${net}${eyesSvg(
+    demi || small
+      ? ""
+      : group("hal", 50, 60, `<circle cx="50" cy="60" r="48" fill="url(#${id}h)" class="halo"/>`)
+  }${CORE}${small ? "" : orbitBack}<circle cx="50" cy="61" r="28.5" ${body} stroke-width="2.4"/><ellipse cx="38" cy="45" rx="7" ry="4" fill="#fff" opacity=".35" transform="rotate(-35 38 45)"/>${net}${eyesSvg(
     9,
     eyeMode(state),
     demi ? "b" : "godlid",
-  )}<ellipse cx="33" cy="64" rx="4.5" ry="2.8" fill="#ff9aa0" opacity=".55"/><ellipse cx="67" cy="64" rx="4.5" ry="2.8" fill="#ff9aa0" opacity=".55"/>${mouth}${small ? "" : orbitFront}${small ? "" : crown}</g>`;
+    small,
+  )}<ellipse cx="33" cy="64" rx="4.5" ry="2.8" fill="#ff9aa0" opacity=".55"/><ellipse cx="67" cy="64" rx="4.5" ry="2.8" fill="#ff9aa0" opacity=".55"/>${small ? mouth : mouthSvg(mouth, 69, state)}${small ? "" : orbitFront}${small ? "" : crown}${small ? "" : extrasSvg(state, 69, demi ? 24 : 18)}</g></g>`;
 }
 
 function bodySvg(s: MascotSpec, state: MascotState, size: number, id: string): string {
@@ -324,8 +438,9 @@ function bodySvg(s: MascotSpec, state: MascotState, size: number, id: string): s
   let back = "";
   let front = "";
   let inner = "";
-  if (!tiny && h.back) back += h.back(b);
-  if (!tiny && h.front) front += h.front(b);
+  // The head's things wiggle around the top of the head.
+  if (!tiny && h.back) back += group("hb", 50, b.top + 4, h.back(b));
+  if (!tiny && h.front) front += group("hf", 50, b.top + 4, h.front(b));
   const feet = b.feet
     ? `<ellipse cx="39" cy="89.5" rx="7" ry="3.6" class="o"/><ellipse cx="61" cy="89.5" rx="7" ry="3.6" class="o"/>`
     : "";
@@ -363,19 +478,29 @@ function bodySvg(s: MascotSpec, state: MascotState, size: number, id: string): s
     const hx = 50 + b.h72 + 2;
     const lx = 50 - b.h72 - 2;
     const toolD = s.kind === "inspector" ? LENS : at(TOOLS, s.tool).d;
-    hands = `<circle cx="${lx}" cy="73" r="4.8" class="b so" stroke-width="2.2"/><g class="tool" style="transform-origin:${hx}px 73px"><g transform="translate(${hx} 73) rotate(18)">${toolD}</g><circle cx="${hx}" cy="73" r="4.8" class="b so" stroke-width="2.2"/></g>`;
+    // The free hand scratches its head and waves; working, sparks fly at the end of each stroke.
+    hands = `${group("hand", lx, 73, `<circle cx="${lx}" cy="73" r="4.8" class="b so" stroke-width="2.2"/>`)}<g class="tool" style="transform-origin:${hx}px 73px"><g transform="translate(${hx} 73) rotate(18)">${toolD}</g><circle cx="${hx}" cy="73" r="4.8" class="b so" stroke-width="2.2"/></g>`;
+    if (state === "work")
+      hands += group(
+        "spk",
+        hx + 1,
+        45,
+        `<path d="M${hx + 1} 41v-4.4M${hx + 4.6} 42.6l3-3M${hx - 2.6} 42.6l-3-3M${hx + 5.4} 46h4" fill="none" stroke="#ffc94a" stroke-width="2" stroke-linecap="round"/>`,
+        0,
+      );
   }
   let headset = "";
   if (!tiny && s.kind === "orchestrator") {
     const w = b.h72 - 2 + 1;
-    headset = `<g class="hs"><path d="M${50 - w} 54C${50 - w} ${b.top - 16} ${50 + w} ${b.top - 16} ${50 + w} 54" fill="none" stroke="#2b2f3a" stroke-width="3.4" stroke-linecap="round"/><rect x="${50 - w - 5}" y="47" width="9" height="15" rx="4" fill="#2b2f3a"/><rect x="${50 + w - 4}" y="47" width="9" height="15" rx="4" fill="#2b2f3a"/><path d="M${50 - w} 60Q${50 - w + 2} 73 40.5 72.5" fill="none" stroke="#2b2f3a" stroke-width="2.2" stroke-linecap="round"/><circle cx="39.5" cy="72.5" r="2.6" fill="#2b2f3a"/><circle class="hsled" cx="${50 + w + 0.5}" cy="54.5" r="1.6"/></g>`;
+    headset = `<g class="hs" style="transform-origin:50px 54px"><path d="M${50 - w} 54C${50 - w} ${b.top - 16} ${50 + w} ${b.top - 16} ${50 + w} 54" fill="none" stroke="#2b2f3a" stroke-width="3.4" stroke-linecap="round"/><rect x="${50 - w - 5}" y="47" width="9" height="15" rx="4" fill="#2b2f3a"/><rect x="${50 + w - 4}" y="47" width="9" height="15" rx="4" fill="#2b2f3a"/><path d="M${50 - w} 60Q${50 - w + 2} 73 40.5 72.5" fill="none" stroke="#2b2f3a" stroke-width="2.2" stroke-linecap="round"/><circle cx="39.5" cy="72.5" r="2.6" fill="#2b2f3a"/><circle class="hsled" cx="${50 + w + 0.5}" cy="54.5" r="1.6"/></g>`;
   }
   const scale = sub ? ` transform="translate(10 18) scale(.8)"` : "";
-  return `<defs><clipPath id="${id}"><path d="${b.d}"/></clipPath></defs><g class="core"><g${scale}>${back}${feet}<path d="${b.d}" class="b so" stroke-width="2.6" stroke-linejoin="round"/><g clip-path="url(#${id})">${inner}</g>${hl}${freckles}${cheeks}${eyesSvg(
+  return `<defs><clipPath id="${id}"><path d="${b.d}"/></clipPath></defs>${CORE}<g${scale}>${back}${feet}<path d="${b.d}" class="b so" stroke-width="2.6" stroke-linejoin="round"/><g clip-path="url(#${id})">${inner}</g>${hl}${freckles}${cheeks}${eyesSvg(
     s.eyes,
     eyeMode(state),
     "b",
-  )}${mouth}${front}${headset}${hands}</g></g>`;
+    tiny,
+  )}${mouthSvg(mouth, my, state)}${front}${headset}${tiny ? "" : extrasSvg(state, my, b.top - 2)}${hands}</g></g></g>`;
 }
 
 const escapeAttr = (v: string) =>
@@ -446,14 +571,13 @@ export function mascotSvg(spec: MascotSpec, options: MascotSvgOptions = {}): str
   const a11y = options.label
     ? `role="img" aria-label="${escapeAttr(options.label)}"`
     : `aria-hidden="true"`;
-  let out = `<svg xmlns="http://www.w3.org/2000/svg" class="masc st-${state}${small ? " tiny" : ""}" viewBox="0 0 100 100" width="${size}" height="${size}" style="--h:${spec.hue};--c:${spec.chroma};--h2:${(spec.hue + 150) % 360}" ${a11y}>${content}</svg>`;
+  const rhythm = rhythmOf(spec.seed)
+    .map((k, i) => `;--k${i}:${k}`)
+    .join("");
+  let out = `<svg xmlns="http://www.w3.org/2000/svg" class="masc st-${state}${small ? " tiny" : ""}" viewBox="0 0 100 100" width="${size}" height="${size}" style="--h:${spec.hue};--c:${spec.chroma};--h2:${(spec.hue + 150) % 360}${rhythm}" ${a11y}>${content}</svg>`;
   if (options.theme) {
     const t = THEMES[options.theme];
     out = paint(out, painter(spec, state, options.theme)).replace(/var\(--accent\)/g, t.accent);
-    // The thinking dots' resting look (the page's CSS gives it with nth-child).
-    out = out
-      .replace(/(<g class="mk think"[^>]*>)<circle /, `$1<circle opacity=".35" `)
-      .replace(/(<g class="mk think"[^>]*><circle [^>]*\/>)<circle /, `$1<circle opacity=".65" `);
   }
   return out;
 }

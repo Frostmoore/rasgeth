@@ -1,78 +1,179 @@
-// The mascots' light animations, the same as the page's CSS (styles.css, `.masc`): only
-// transforms and opacity, cycles of 1-4 seconds. [seconds] is the time since the mascot appeared.
-import 'dart:math' as math;
+// The mascots' motion: the library's table (`MASCOT_MOTION` in `@redgiant/mascot`, embedded in
+// motion_table.g.dart), the same one the page's CSS is made from, played on the drawing's layers.
+// Only transforms (translate, rotate, scale around each group's turning point) and opacity move.
+// Every mascot has its own rhythm: the sixteen `--k` numbers on the SVG's root pick each track's
+// period and phase, exactly as the page's `calc()` does.
+import 'dart:convert';
 
 import 'package:flutter/animation.dart';
 
 import '../api/types.dart';
+import 'motion_table.g.dart';
 
-/// A CSS-like keyframe track: ([at], value) pairs on 0..1, ease-in-out between them.
-double keyframes(double phase, List<(double, double)> frames) {
-  final p = phase % 1;
-  for (var i = 1; i < frames.length; i++) {
-    final (a, va) = frames[i - 1];
-    final (b, vb) = frames[i];
-    if (p <= b) {
-      final t = b == a ? 1.0 : (p - a) / (b - a);
-      return va + (vb - va) * Curves.easeInOut.transform(t.clamp(0, 1));
-    }
+/// One keyframe: when (0..1) and the value (x and y; rotate and opacity use x).
+typedef MotionFrame = ({double at, double x, double y});
+
+enum MotionProp { translate, rotate, scale, opacity }
+
+class MotionTrack {
+  MotionTrack._({
+    required this.el,
+    required this.prop,
+    required this.durMin,
+    required this.durMax,
+    required this.dk,
+    required this.pk,
+    required this.phase,
+    required this.curve,
+    required this.frames,
+  });
+
+  factory MotionTrack.fromJson(Map<String, dynamic> j) {
+    final dur = j['dur'];
+    final (lo, hi) = dur is List
+        ? ((dur[0] as num).toDouble(), (dur[1] as num).toDouble())
+        : ((dur as num).toDouble(), dur.toDouble());
+    return MotionTrack._(
+      el: j['el'] as String,
+      prop: MotionProp.values.byName(j['prop'] as String),
+      durMin: lo,
+      durMax: hi,
+      dk: (j['dk'] as num?)?.toInt(),
+      pk: (j['pk'] as num?)?.toInt(),
+      phase: (j['phase'] as num?)?.toDouble() ?? 0,
+      curve: _curves[j['ease'] as String? ?? 'ease-in-out'] ?? Curves.easeInOut,
+      frames: [
+        for (final f in (j['frames'] as List).cast<List<dynamic>>())
+          switch (f[1]) {
+            final List<dynamic> v => (
+              at: (f[0] as num).toDouble(),
+              x: (v[0] as num).toDouble(),
+              y: (v[1] as num).toDouble(),
+            ),
+            final num v => (at: (f[0] as num).toDouble(), x: v.toDouble(), y: v.toDouble()),
+            _ => throw FormatException('bad frame $f'),
+          },
+      ],
+    );
   }
-  return frames.last.$2;
+
+  /// The CSS timing functions, the same cubic curves.
+  static const _curves = {
+    'ease-in-out': Curves.easeInOut,
+    'linear': Curves.linear,
+    'ease-out': Curves.easeOut,
+    'ease-in': Curves.easeIn,
+  };
+
+  final String el;
+  final MotionProp prop;
+  final double durMin;
+  final double durMax;
+  final int? dk;
+  final int? pk;
+  final double phase;
+  final Curve curve;
+  final List<MotionFrame> frames;
+
+  double duration(List<double> k) => durMin + (durMax - durMin) * _k(k, dk);
+
+  /// Where the cycle is at [seconds] (0..1), as CSS with the delay `-dur * (k[pk] + phase)`.
+  double progress(double seconds, List<double> k) {
+    final p = seconds / duration(k) + _k(k, pk) + phase;
+    return p - p.floorToDouble();
+  }
+
+  /// The value at [seconds]: the frames around the cycle's position, eased between them.
+  ({double x, double y}) valueAt(double seconds, List<double> k) =>
+      valueAtProgress(progress(seconds, k));
+
+  ({double x, double y}) valueAtProgress(double p) {
+    for (var i = 1; i < frames.length; i++) {
+      final a = frames[i - 1];
+      final b = frames[i];
+      if (p <= b.at) {
+        final t = b.at == a.at ? 1.0 : ((p - a.at) / (b.at - a.at)).clamp(0.0, 1.0);
+        final e = curve.transform(t);
+        return (x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e);
+      }
+    }
+    final last = frames.last;
+    return (x: last.x, y: last.y);
+  }
+
+  static double _k(List<double> k, int? i) => i == null || i >= k.length ? 0 : k[i];
 }
 
-double _phase(double seconds, double period) => (seconds % period) / period;
+/// How one group stands at a moment: the page's `translate`, `rotate`, `scale` and `opacity`.
+class MotionPose {
+  const MotionPose({
+    this.dx = 0,
+    this.dy = 0,
+    this.rotate = 0,
+    this.sx = 1,
+    this.sy = 1,
+    this.opacity,
+  });
 
-/// How the body (`.core`, turning around 50,90 of the box) moves now.
-class CoreMotion {
-  const CoreMotion({this.scaleX = 1, this.scaleY = 1, this.rotate = 0, this.dy = 0});
-
-  final double scaleX;
-  final double scaleY;
-
-  /// Radians.
-  final double rotate;
-
-  /// In the box's units (100 = the mascot's height).
+  /// Box units (100 = the mascot's height).
+  final double dx;
   final double dy;
 
-  static const still = CoreMotion();
+  /// Degrees.
+  final double rotate;
+  final double sx;
+  final double sy;
 
-  bool get isStill => scaleX == 1 && scaleY == 1 && rotate == 0 && dy == 0;
+  /// Null: the drawing's own (the group's `opacity` attribute).
+  final double? opacity;
+
+  static const rest = MotionPose();
+
+  bool get movesNothing => dx == 0 && dy == 0 && rotate == 0 && sx == 1 && sy == 1;
 }
 
-CoreMotion coreMotion(MascotState state, double seconds) {
-  switch (state) {
-    case MascotState.idle:
-      // m-breathe 3.6 s: scale(1.02, 1.03) at half.
-      final k = keyframes(_phase(seconds, 3.6), const [(0, 0), (.5, 1), (1, 0)]);
-      return CoreMotion(scaleX: 1 + .02 * k, scaleY: 1 + .03 * k);
-    case MascotState.work:
-      // m-sway 1.6 s: -2.5 degrees at 25%, +2.5 at 75%.
-      final d = keyframes(_phase(seconds, 1.6), const [(0, 0), (.25, -2.5), (.75, 2.5), (1, 0)]);
-      return CoreMotion(rotate: d * math.pi / 180);
-    case MascotState.wait:
-      // m-hop 3 s: still until 78%, up 6 at 86%, a squash at 93%.
-      final p = _phase(seconds, 3);
-      final dy = keyframes(p, const [(0, 0), (.78, 0), (.86, -6), (.93, 1), (1, 0)]);
-      final sq = keyframes(p, const [(0, 0), (.86, 0), (.93, 1), (1, 0)]);
-      return CoreMotion(dy: dy, scaleX: 1 + .02 * sq, scaleY: 1 - .02 * sq);
-    case MascotState.think:
-    case MascotState.error:
-      return CoreMotion.still;
+class MotionTable {
+  MotionTable._(this.elements, this.states, this.tiny);
+
+  factory MotionTable.parse(String json) {
+    final j = jsonDecode(json) as Map<String, dynamic>;
+    List<MotionTrack> list(Object? l) => [
+      for (final t in (l as List).cast<Map<String, dynamic>>()) MotionTrack.fromJson(t),
+    ];
+    final states = j['states'] as Map<String, dynamic>;
+    return MotionTable._((j['elements'] as List).cast<String>().toSet(), {
+      for (final s in MascotState.values) s: list(states[s.name]),
+    }, list(j['tiny']));
+  }
+
+  static final MotionTable instance = MotionTable.parse(mascotMotionJson);
+
+  /// Every group that moves (the app cuts these out as layers).
+  final Set<String> elements;
+  final Map<MascotState, List<MotionTrack>> states;
+  final List<MotionTrack> tiny;
+
+  /// Every moving group's pose at [seconds], for a mascot of rhythm [k].
+  Map<String, MotionPose> poses(
+    MascotState state,
+    double seconds,
+    List<double> k, {
+    bool tiny = false,
+  }) {
+    final acc = <String, Map<MotionProp, ({double x, double y})>>{};
+    for (final t in tiny ? this.tiny : states[state]!) {
+      (acc[t.el] ??= {})[t.prop] = t.valueAt(seconds, k);
+    }
+    return {
+      for (final MapEntry(key: el, value: v) in acc.entries)
+        el: MotionPose(
+          dx: v[MotionProp.translate]?.x ?? 0,
+          dy: v[MotionProp.translate]?.y ?? 0,
+          rotate: v[MotionProp.rotate]?.x ?? 0,
+          sx: v[MotionProp.scale]?.x ?? 1,
+          sy: v[MotionProp.scale]?.y ?? 1,
+          opacity: v[MotionProp.opacity]?.x,
+        ),
+    };
   }
 }
-
-/// The tool while working (m-tool 0.8 s, alternate): down to -16 degrees, in radians.
-double toolAngle(double seconds) {
-  final p = _phase(seconds, 1.6);
-  final k = keyframes(p, const [(0, 0), (.5, 1), (1, 0)]);
-  return -16 * k * math.pi / 180;
-}
-
-/// The headset while working (m-pulse 1.2 s): opacity .75 at half.
-double headsetOpacity(double seconds) =>
-    1 - .25 * keyframes(_phase(seconds, 1.2), const [(0, 0), (.5, 1), (1, 0)]);
-
-/// Thinking dots' cycle (1.8 s) and the waiting ring's (1.6 s), as 0..1.
-double thinkPhase(double seconds) => _phase(seconds, 1.8);
-double ringPhase(double seconds) => _phase(seconds, 1.6);

@@ -194,6 +194,24 @@ describe("the styles", () => {
     expect(css.match(/--mL: 0\.62;/g)).toHaveLength(1);
     expect(css.match(/--mL: 0\.74;/g)).toHaveLength(2);
   });
+  it("keeps the mascots moving with the library's motion, once, paused while the page is hidden", () => {
+    render(<Mascot agent={agents.value[1] as never} size={64} state="idle" />);
+    render(<Mascot agent={agents.value[2] as never} size={64} state="work" />);
+    const styles = document.querySelectorAll("style#rg-mascot-motion");
+    expect(styles).toHaveLength(1);
+    expect(styles[0]?.textContent).toContain(".masc.st-idle:not(.tiny) .core{animation:");
+    // Each mascot carries its own rhythm, so neighbours do not move together.
+    const svgs = [...document.querySelectorAll("svg.masc")].map((s) => s.getAttribute("style"));
+    expect(svgs[0]).toMatch(/--k0:/);
+    expect(new Set(svgs).size).toBe(svgs.length);
+    Object.defineProperty(document, "hidden", { configurable: true, get: () => true });
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(document.documentElement.classList.contains("rg-hidden")).toBe(true);
+    Object.defineProperty(document, "hidden", { configurable: true, get: () => false });
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(document.documentElement.classList.contains("rg-hidden")).toBe(false);
+    expect(css).toMatch(/\.rg-hidden \.masc \* \{\s*animation-play-state: paused !important;/);
+  });
   it("stops every animation with reduced motion, keeping the sign", () => {
     expect(css).toMatch(
       /@media \(prefers-reduced-motion: reduce\) \{\s*\.masc,\s*\.masc \* \{\s*animation: none !important;/,

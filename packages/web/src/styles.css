@@ -20219,12 +20219,6 @@ html[data-theme="dark"] {
 .masc .mk.think circle {
   fill: var(--dim);
 }
-.masc .mk.think circle:nth-child(1) {
-  opacity: 0.35;
-}
-.masc .mk.think circle:nth-child(2) {
-  opacity: 0.65;
-}
 .masc .mk.wait .dot {
   fill: var(--accent);
 }
@@ -20244,96 +20238,11 @@ html[data-theme="dark"] {
 .masc .hsled {
   fill: var(--accent);
 }
-.masc .core,
-.masc .tool,
-.masc .mk circle,
-.masc .hs {
-  transform-box: view-box;
-}
-.masc .core {
-  transform-origin: 50px 90px;
-}
-.masc.st-idle .core {
-  animation: m-breathe 3.6s ease-in-out infinite;
-}
-@keyframes m-breathe {
-  50% {
-    transform: scale(1.02, 1.03);
-  }
-}
-.masc.st-think .mk circle {
-  animation: m-dot 1.8s ease-in-out infinite;
-}
-.masc.st-think .mk circle:nth-child(2) {
-  animation-delay: 0.3s;
-}
-.masc.st-think .mk circle:nth-child(3) {
-  animation-delay: 0.6s;
-}
-@keyframes m-dot {
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-  35% {
-    opacity: 1;
-  }
-}
-.masc.st-work .core {
-  animation: m-sway 1.6s ease-in-out infinite;
-}
-@keyframes m-sway {
-  25% {
-    transform: rotate(-2.5deg);
-  }
-  75% {
-    transform: rotate(2.5deg);
-  }
-}
-.masc.st-work .tool {
-  animation: m-tool 0.8s ease-in-out infinite alternate;
-}
-@keyframes m-tool {
-  to {
-    transform: rotate(-16deg);
-  }
-}
-.masc.st-work .hs {
-  animation: m-pulse 1.2s ease-in-out infinite;
-}
-@keyframes m-pulse {
-  50% {
-    opacity: 0.75;
-  }
-}
-.masc.st-wait .core {
-  animation: m-hop 3s ease-in-out infinite;
-}
-@keyframes m-hop {
-  0%,
-  78%,
-  100% {
-    transform: none;
-  }
-  86% {
-    transform: translateY(-6px);
-  }
-  93% {
-    transform: translateY(1px) scale(1.02, 0.98);
-  }
-}
-.masc.st-wait .mk .ring {
-  animation: m-ring 1.6s ease-in-out infinite;
-  transform-origin: 86px 14px;
-}
-@keyframes m-ring {
-  50% {
-    transform: scale(1.25);
-    opacity: 0.1;
-  }
-}
-.masc.tiny .core {
-  animation: none;
+/* The motion itself comes from the library's table (`mascotMotionCss`, added once by Mascot.tsx):
+   each mascot with its own rhythm. Paused while the page is not in front. */
+.rg-hidden .masc,
+.rg-hidden .masc * {
+  animation-play-state: paused !important;
 }
 @media (prefers-reduced-motion: reduce) {
   .masc,

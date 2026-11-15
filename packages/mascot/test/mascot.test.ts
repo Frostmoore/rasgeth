@@ -108,7 +108,9 @@ describe("seed and choices", () => {
     const b = mascotSpec("Zeus", "god");
     expect(a.handDrawn).toBe(true);
     expect({ ...a, seed: "" }).toEqual({ ...b, seed: "" });
-    expect(mascotSvg(a, { idPrefix: "x" })).toBe(mascotSvg(b, { idPrefix: "x" }));
+    // The same drawing; only the rhythm (when it blinks, hops…) follows the seed.
+    const still = (svg: string) => svg.replace(/;--k\d+:[\d.]+/g, "");
+    expect(still(mascotSvg(a, { idPrefix: "x" }))).toBe(still(mascotSvg(b, { idPrefix: "x" })));
   });
 
   it("makes a subagent look like its parent: body, hue, headgear and pattern", () => {

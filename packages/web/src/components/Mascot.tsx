@@ -1,7 +1,8 @@
 // An agent's mascot (G40.2): its face from `@redgiant/mascot`, coloured by the theme's CSS
-// variables and animated by the classes in styles.css (none with reduced motion). The state is
-// the agent's live one unless given; screen readers hear the name and the state.
-import { mascotSpec, mascotSvg } from "@redgiant/mascot";
+// variables and always moving (the library's motion table as CSS animations, each mascot with its
+// own rhythm from its seed; none with reduced motion, paused while the page is hidden). The state
+// is the agent's live one unless given; screen readers hear the name and the state.
+import { mascotMotionCss, mascotSpec, mascotSvg } from "@redgiant/mascot";
 import type { MascotSpec, MascotState } from "@redgiant/protocol";
 import { useMemo } from "preact/hooks";
 import type { Agent } from "../api.js";
@@ -10,6 +11,20 @@ import { agentMascotState } from "../mascot-state.js";
 import { agents } from "../state.js";
 
 let next = 0;
+let motionAdded = false;
+
+/** Adds the motion's CSS once, and pauses it while the page is not in front. */
+export function addMascotMotion(doc: Document | undefined = globalThis.document): void {
+  if (motionAdded || !doc?.head) return;
+  motionAdded = true;
+  const style = doc.createElement("style");
+  style.id = "rg-mascot-motion";
+  style.textContent = mascotMotionCss();
+  doc.head.append(style);
+  const sync = () => doc.documentElement.classList.toggle("rg-hidden", doc.hidden);
+  doc.addEventListener("visibilitychange", sync);
+  sync();
+}
 
 /** The agent's spec: the server's, or made here from its seed (older servers, the demo). */
 export function specOf(agent: Agent): MascotSpec {
@@ -35,6 +50,7 @@ export function Mascot({
   /** Next to the agent's name and its state in words: screen readers skip it. */
   decorative?: boolean;
 }) {
+  addMascotMotion();
   const shown = state ?? agentMascotState(agent.id);
   const spec = specOf(agent);
   const id = useMemo(() => `rgm${++next}-`, []);
