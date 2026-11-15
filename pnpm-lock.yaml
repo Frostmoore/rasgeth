@@ -420,6 +420,16 @@ importers:
         specifier: ^0.5.13
         version: 0.5.13
 
+  packages/mascot:
+    dependencies:
+      '@redgiant/protocol':
+        specifier: workspace:*
+        version: link:../protocol
+    devDependencies:
+      jsdom:
+        specifier: ^29.1.1
+        version: 29.1.1(@noble/hashes@1.8.0)
+
   packages/protocol:
     dependencies:
       zod:
