@@ -222,6 +222,32 @@ describe("a followed conversation, turn after turn (p3.5.4)", () => {
     p.close();
   });
 
+  it("says when the agent answered the person, not its work in the background (3.8.1)", async () => {
+    const { server, godId, orchId } = await boot();
+    const id = await newSession(server, godId);
+    const p = await open(server);
+    await follow(p, id);
+    await turn(server, [p], id, "first: delega");
+    await settle(server);
+    const idle = p.messages.filter(
+      (m): m is Extract<ServerMessage, { type: "session.activity" }> =>
+        m.type === "session.activity" && m.state === "idle",
+    );
+    const god = idle.find((m) => m.sessionId === id);
+    expect(god?.repliedAt).toMatch(/^\d{4}-/);
+    // The orchestrator's task, handed over by God: no answer to the person.
+    const work = idle.filter((m) => m.agentId === orchId);
+    expect(work.length).toBeGreaterThan(0);
+    for (const m of work) expect(m.repliedAt).toBeUndefined();
+    const list = await server.api<{ id: string; agentId: string; repliedAt?: string | null }[]>(
+      "GET",
+      "/api/sessions",
+    );
+    expect(list.body.find((r) => r.id === id)?.repliedAt).toBe(god?.repliedAt);
+    expect(list.body.find((r) => r.agentId === orchId)?.repliedAt ?? null).toBe(null);
+    p.close();
+  });
+
   it("God's and the orchestrator's conversations after God hands over tasks", async () => {
     const { server, godId, orchId } = await boot();
     const id = await newSession(server, godId);

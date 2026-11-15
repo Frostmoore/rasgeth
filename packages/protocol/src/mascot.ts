@@ -6,8 +6,11 @@ import { AgentKind } from "./agents.js";
  * it with `mascotSvg` (`@redgiant/mascot`) and the app paints the same parts natively.
  */
 
-/** What the mascot shows: idle, thinking, working, waiting for the person, blocked. */
-export const MascotState = z.enum(["idle", "think", "work", "wait", "error"]);
+/**
+ * What the mascot shows: idle (asleep), active (awake for a while after answering the person),
+ * thinking, working, waiting for the person, blocked.
+ */
+export const MascotState = z.enum(["idle", "active", "think", "work", "wait", "error"]);
 export type MascotState = z.infer<typeof MascotState>;
 
 /** One theme's colours of a mascot, as sRGB hex (the page uses CSS variables instead). */

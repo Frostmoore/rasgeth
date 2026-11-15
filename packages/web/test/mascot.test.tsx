@@ -125,6 +125,55 @@ describe("the live state", () => {
   });
 });
 
+describe("awake after answering (active)", () => {
+  const at = (iso: string) => Date.parse(iso);
+  const replied = "2026-11-15T10:00:00.000Z";
+  // [what the rows say, seconds after the answer, the state]
+  const table: [string, Record<string, unknown>, number, string][] = [
+    ["just answered the person", { repliedAt: replied }, 1, "active"],
+    ["a minute and a half later", { repliedAt: replied }, 90, "active"],
+    ["two minutes later: asleep again", { repliedAt: replied }, 121, "idle"],
+    ["never answered", {}, 1, "idle"],
+    ["answering again: running wins", { repliedAt: replied, running: true }, 1, "work"],
+  ];
+  it.each(table)("%s", (_name, extra, seconds, want) => {
+    sessionRows.value = [row("s9", "orch", extra)];
+    expect(agentMascotState("orch", at(replied) + seconds * 1000)).toBe(want);
+  });
+
+  it("a request for the person comes first, and only the person's own conversations count", () => {
+    sessionRows.value = [row("s9", "orch", { repliedAt: replied })];
+    approvals.value = [{ requestId: "r1", agentId: "orch" }] as never;
+    expect(agentMascotState("orch", at(replied) + 1000)).toBe("wait");
+    approvals.value = [];
+    expect(agentMascotState("asst", at(replied) + 1000)).toBe("idle");
+  });
+
+  it("learns of the answer from the live connection, and falls asleep by itself", async () => {
+    vi.useFakeTimers();
+    try {
+      const early = "2026-11-15T07:00:00.000Z";
+      const { mascotNow } = await import("../src/mascot-state.js");
+      vi.setSystemTime(at(early));
+      mascotNow.value = Date.now();
+      sessionRows.value = [row("s9", "orch", { running: true })];
+      state.applyMessage({
+        type: "session.activity",
+        sessionId: "s9",
+        agentId: "orch",
+        state: "idle",
+        repliedAt: early,
+      } as never);
+      expect(sessionRows.value[0]?.repliedAt).toBe(early);
+      expect(agentMascotState("orch")).toBe("active");
+      vi.advanceTimersByTime(121_000);
+      expect(agentMascotState("orch")).toBe("idle");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
 describe("the face", () => {
   it("draws the server's spec, named with its state in both languages", () => {
     const { container } = render(<Mascot agent={agents.value[1] as never} size={32} />);

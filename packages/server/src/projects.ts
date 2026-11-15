@@ -90,6 +90,8 @@ export async function migrateProjects(db: SqlClient): Promise<void> {
     "ALTER TABLE rg_sessions ADD COLUMN IF NOT EXISTS archived boolean NOT NULL DEFAULT false",
   );
   await db.query("ALTER TABLE rg_sessions ADD COLUMN IF NOT EXISTS last_at timestamptz");
+  // When the agent last answered the person here (the mascot stays awake for a while, 3.8.1).
+  await db.query("ALTER TABLE rg_sessions ADD COLUMN IF NOT EXISTS replied_at timestamptz");
   // Folders of conversations (2026-11-03): a name, or none.
   await db.query("ALTER TABLE rg_sessions ADD COLUMN IF NOT EXISTS folder text");
   // A conversation that goes on from another one (G36.23): the link the list shows.

@@ -34,6 +34,8 @@ export {
   type MotionValue,
   mascotMotionCss,
   RHYTHM_SIZE,
+  rareProgress,
+  rareStarts,
   Z_REST,
 } from "./motion.js";
 export { BODIES, EYES, HEAD, HUES, MOUTHS, PATTERNS, TOOLS } from "./tables.js";
@@ -360,7 +362,10 @@ function extrasSvg(state: MascotState, my: number, top: number): string {
   return "";
 }
 
-/** The state's sign, visible without animation: z z (idle), dots (think), waves (work), dot (wait), "!" (blocked). */
+/**
+ * The state's sign, visible without animation: z z (idle), dots (think), waves (work), dot (wait),
+ * "!" (blocked); none when active (awake, eyes open).
+ */
 function marks(state: MascotState): string {
   if (state === "think") {
     // The thought's two little bubbles, then the three dots (.35, .65, 1 at rest).
@@ -383,6 +388,8 @@ function marks(state: MascotState): string {
     const d = `M${x - w / 2} ${y - h / 2}h${w}l${-w} ${h}h${w}`;
     return group(cls, x, y, `<path d="${d}"/>`, o);
   };
+  // Awake after answering: no sign, its open eyes say it.
+  if (state === "active") return "";
   return `<g class="mk idle" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${z("z3", 0)}${z("z1")}${z("z2")}</g>`;
 }
 
@@ -583,7 +590,14 @@ export function mascotSvg(spec: MascotSpec, options: MascotSvgOptions = {}): str
 }
 
 /** Every state, in the board's order. */
-export const MASCOT_STATES: readonly MascotState[] = ["idle", "think", "work", "wait", "error"];
+export const MASCOT_STATES: readonly MascotState[] = [
+  "idle",
+  "active",
+  "think",
+  "work",
+  "wait",
+  "error",
+];
 
 /** The assistants' cold hues (for tests). */
 export const COLD_HUES_FOR_TEST: readonly number[] = COLD;

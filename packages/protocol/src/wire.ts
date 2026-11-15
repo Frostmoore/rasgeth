@@ -272,6 +272,8 @@ export const ServerMessage = z.discriminatedUnion("type", [
     sessionId: z.string(),
     agentId: z.string(),
     state: z.enum(["idle", "running"]),
+    /** Idle after answering the person (3.8.1): when; the mascot stays awake for a while. */
+    repliedAt: z.string().optional(),
   }),
   /**
    * To every page of the owner that does not follow the conversation (p3.5.3): an agent showed a

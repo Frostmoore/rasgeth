@@ -10,7 +10,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const lib = resolve(process.argv[2] ?? join(here, "../../../packages/mascot/dist/index.js"));
-const { mascotSpec, mascotSvg, MASCOT_STATES, MASCOT_MOTION } = await import(
+const { mascotSpec, mascotSvg, MASCOT_STATES, MASCOT_MOTION, rareStarts, rhythmOf } = await import(
   pathToFileURL(lib).href
 );
 
@@ -52,3 +52,19 @@ const mascotMotionJson = r'''${JSON.stringify(MASCOT_MOTION)}''';
 `,
 );
 console.log(`motion table -> ${table}`);
+
+// The rhythm and the rare events' times, so the app's own port (motion.dart) is checked against
+// the library's numbers.
+const seeds = ["God", "Chat", "Coder Web", "Ricercatore", "Revisore", "Assistente mail", "Àgata"];
+const vectors = seeds.map((seed) => {
+  const k = rhythmOf(seed);
+  const rare = {};
+  for (const [state, tracks] of Object.entries(MASCOT_MOTION.states))
+    for (const t of tracks)
+      if (t.rare && rare[`${state}:${t.rare.ev}`] === undefined)
+        rare[`${state}:${t.rare.ev}`] = rareStarts(t, k, 0, 200);
+  return { seed, k, rare };
+});
+const vfile = join(here, "../test/fixtures/motion_vectors.json");
+writeFileSync(vfile, `${JSON.stringify(vectors)}\n`);
+console.log(`motion vectors -> ${vfile}`);

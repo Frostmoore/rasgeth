@@ -54,6 +54,9 @@ export function Mascot({
   const shown = state ?? agentMascotState(agent.id);
   const spec = specOf(agent);
   const id = useMemo(() => `rgm${++next}-`, []);
+  // A small shift of its own when it appears (`--j`, seconds): two mascots drawn at the same
+  // moment, even with the same rhythm, never move together.
+  const shift = useMemo(() => (Math.random() * 2.5).toFixed(2), []);
   const label = decorative
     ? undefined
     : t("mascotOf", { name: agent.name, state: t(`mascotState_${shown}`) });
@@ -65,7 +68,7 @@ export function Mascot({
     <span
       class="mascot"
       data-state={shown}
-      style={{ width: `${size}px`, height: `${size}px` }}
+      style={{ width: `${size}px`, height: `${size}px`, "--j": shift }}
       // Our own drawing: numbers from the spec and an escaped label, never the agent's text.
       dangerouslySetInnerHTML={{ __html: svg }}
     />

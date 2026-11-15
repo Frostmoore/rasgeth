@@ -392,6 +392,8 @@ const routes = {
             projectId: z.string().nullable(),
             createdAt: z.string(),
             lastAt: z.string().nullable(),
+            /** When the agent last answered the person here (3.8.1). */
+            repliedAt: z.string().nullable().optional(),
             title: z.string().nullable(),
             pinned: z.boolean(),
             archived: z.boolean(),
@@ -1386,6 +1388,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
         projectId: r.project_id,
         createdAt: new Date(r.created_at).toISOString(),
         lastAt: r.last_at ? new Date(r.last_at).toISOString() : null,
+        repliedAt: r.replied_at ? new Date(r.replied_at).toISOString() : null,
         title: r.title,
         pinned: r.pinned,
         archived: r.archived,

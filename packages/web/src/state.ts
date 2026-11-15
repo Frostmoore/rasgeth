@@ -722,7 +722,13 @@ export function applyMessage(m: ServerMessage): void {
       const known = sessionRows.value.find((r) => r.id === m.sessionId);
       if (known)
         sessionRows.value = sessionRows.value.map((r) =>
-          r.id === m.sessionId ? { ...r, running: m.state === "running" } : r,
+          r.id === m.sessionId
+            ? {
+                ...r,
+                running: m.state === "running",
+                ...(m.repliedAt && { repliedAt: m.repliedAt }),
+              }
+            : r,
         );
       if (!known || (m.state === "running") !== !!known.task) refreshSoon();
       // An agent made after the page loaded (one God just created and handed a task to,
@@ -1534,6 +1540,8 @@ export interface SessionRow {
   projectId: string | null;
   createdAt: string;
   lastAt: string | null;
+  /** When the agent last answered the person here (3.8.1): its mascot stays awake a while. */
+  repliedAt?: string | null;
   title: string | null;
   pinned: boolean;
   archived: boolean;

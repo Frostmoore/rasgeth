@@ -5801,11 +5801,12 @@ export class RedGiantCore implements OrchestrationHost {
       pinned: boolean;
       archived: boolean;
       last_at: Date | null;
+      replied_at: Date | null;
       model: ModelSpec | string | null;
       folder: string | null;
       forked_from: string | null;
     }>(
-      `SELECT id, agent_id, project_id, created_at, title, pinned, archived, last_at, model, folder, forked_from FROM rg_sessions WHERE owner_id = $1${agentId ? " AND agent_id = $2" : ""} ORDER BY created_at`,
+      `SELECT id, agent_id, project_id, created_at, title, pinned, archived, last_at, replied_at, model, folder, forked_from FROM rg_sessions WHERE owner_id = $1${agentId ? " AND agent_id = $2" : ""} ORDER BY created_at`,
       agentId ? [ownerId, agentId] : [ownerId],
     );
   }
@@ -6254,10 +6255,16 @@ export class RedGiantCore implements OrchestrationHost {
     this.sharedMemory.turnStarted(sessionId, human);
     this.skillNudge.turnStarted(sessionId);
     if (human) this.sharedMemory.heard(ownerId, sessionId, l.agentId, ownWords(text, extra.quotes));
-    const notify = (state: "idle" | "running", stopReason?: string) => {
+    const notify = (state: "idle" | "running", stopReason?: string, repliedAt?: string) => {
       for (const f of l.listeners)
         f({ type: "session.state", sessionId, state, ...(stopReason && { stopReason }) });
-      this.toOwner(l.ownerId, { type: "session.activity", sessionId, agentId: l.agentId, state });
+      this.toOwner(l.ownerId, {
+        type: "session.activity",
+        sessionId,
+        agentId: l.agentId,
+        state,
+        ...(repliedAt && { repliedAt }),
+      });
     };
     notify("running");
     // "/compact [what to keep]" (G24.14): a summary now, asked by the person; no message.
@@ -6290,7 +6297,13 @@ export class RedGiantCore implements OrchestrationHost {
     const ended = (stopReason: string) => {
       l.running = null;
       this.sharedMemory.turnEnded(sessionId);
-      notify("idle", stopReason);
+      // The agent answered the person (3.8.1): its mascot stays awake for a while.
+      const repliedAt = human && stopReason === "end_turn" ? new Date().toISOString() : undefined;
+      if (repliedAt)
+        void this.o.db
+          .query("UPDATE rg_sessions SET replied_at = $2 WHERE id = $1", [sessionId, repliedAt])
+          .catch(() => {});
+      notify("idle", stopReason, repliedAt);
       for (const f of this.turnEndListeners)
         f({ ownerId, sessionId, agentId: l.agentId, byPerson: human, stopReason });
     };

@@ -15,8 +15,11 @@ import {
   mascotSpec,
   mascotSvg,
   RHYTHM_SIZE,
+  rareProgress,
+  rareStarts,
   rhythmOf,
 } from "../src/index.js";
+import { cssRareStarts } from "../src/motion.js";
 
 const KINDS: [string, AgentKind][] = [
   ["God", "god"],
@@ -154,5 +157,106 @@ describe("the app", () => {
     );
     const json = /r'''(.*)'''/s.exec(dart)?.[1];
     expect(json && JSON.parse(json)).toEqual(MASCOT_MOTION);
+  });
+});
+
+describe("the rare events", () => {
+  const rares = Object.entries(MASCOT_MOTION.states).flatMap(([s, l]) =>
+    l.filter((t) => t.rare).map((t) => [s, t] as [string, MotionTrack]),
+  );
+  const team = ["God", "Chat", "Coder Web", "Ricercatore", "Revisore", "Assistente mail"];
+
+  it("come back at irregular times, always gap[0]..gap[1] apart, never overlapping", () => {
+    expect(rares.length).toBeGreaterThan(10);
+    for (const [state, t] of rares) {
+      const [g0, g1] = (t.rare as { gap: [number, number] }).gap;
+      expect(t.dur as number, `${state} ${t.el}`).toBeLessThan(g0);
+      for (const seed of team) {
+        const starts = rareStarts(t, rhythmOf(seed), 0, 600);
+        const gaps = starts.slice(1).map((s, i) => s - (starts[i] as number));
+        for (const g of gaps) {
+          expect(g).toBeGreaterThanOrEqual(g0 - 1e-3);
+          expect(g).toBeLessThanOrEqual(g1 + 1e-3);
+        }
+        // Not a period: the gaps differ from each other.
+        const mean = gaps.reduce((a, b) => a + b, 0) / gaps.length;
+        const sd = Math.sqrt(gaps.reduce((a, g) => a + (g - mean) ** 2, 0) / gaps.length);
+        expect(sd, `${state} ${t.el} ${seed}`).toBeGreaterThan((g1 - g0) * 0.14);
+      }
+    }
+  });
+
+  it("tracks of one event share its schedule", () => {
+    const byEv = new Map<string, string>();
+    for (const [state, t] of rares) {
+      const key = `${state}:${t.rare?.ev}`;
+      const sig = JSON.stringify([t.rare?.gap, t.pk]);
+      expect(byEv.get(key) ?? sig, key).toBe(sig);
+      byEv.set(key, sig);
+    }
+  });
+
+  it("never hop together: six sleeping mascots over ten seconds, in the app and on the page", () => {
+    const hop = MASCOT_MOTION.states.idle.find(
+      (t) => t.el === "ev" && t.prop === "translate",
+    ) as MotionTrack;
+    for (const where of ["app", "page"] as const) {
+      const all = team.flatMap((seed) => {
+        const k = rhythmOf(seed);
+        const starts = where === "app" ? rareStarts(hop, k, 0, 10) : cssRareStarts(hop, k, 0, 10);
+        return starts.map((s) => ({ seed, s }));
+      });
+      all.sort((a, b) => a.s - b.s);
+      // Most of them hop at least once in ten seconds…
+      expect(new Set(all.map((h) => h.seed)).size, where).toBeGreaterThanOrEqual(4);
+      // …and no two of them in the same instant.
+      for (let i = 1; i < all.length; i++)
+        expect(
+          (all[i] as { s: number }).s - (all[i - 1] as { s: number }).s,
+          `${where}: ${all[i - 1]?.seed} and ${all[i]?.seed}`,
+        ).toBeGreaterThan(0.15);
+    }
+  });
+
+  it("tells where an event is, and rests between events", () => {
+    const hop = MASCOT_MOTION.states.idle.find(
+      (t) => t.el === "ev" && t.prop === "translate",
+    ) as MotionTrack;
+    const k = rhythmOf("Chat");
+    const [s] = rareStarts(hop, k, 0, 30) as [number];
+    expect(rareProgress(hop, k, s + 0.65)).toBeCloseTo(0.5, 2);
+    expect(rareProgress(hop, k, s - 0.01)).toBeNull();
+    expect(rareProgress(hop, k, s + 1.31)).toBeNull();
+  });
+
+  it("are bigger than before: a sleeping hop of 11, a waking start of 12% and more", () => {
+    const idle = MASCOT_MOTION.states.idle;
+    const hop = idle.find((t) => t.el === "ev" && t.prop === "translate") as MotionTrack;
+    expect(Math.min(...hop.frames.map(([, v]) => (v as [number, number])[1]))).toBeLessThanOrEqual(
+      -10,
+    );
+    const breath = idle.find((t) => t.el === "core" && t.prop === "scale") as MotionTrack;
+    expect(
+      Math.max(...breath.frames.map(([, v]) => (v as [number, number])[1])),
+    ).toBeGreaterThanOrEqual(1.06);
+    expect(idle.some((t) => t.el === "core" && t.prop === "rotate")).toBe(true);
+  });
+
+  it("puts a small shift per mascot in the page's delays (--j)", () => {
+    expect(mascotMotionCss()).toContain("var(--j, 0) * 1s");
+  });
+});
+
+describe("the active state", () => {
+  it("is awake: open eyes, looking around, no z and no sleep bubble", () => {
+    const tracks = MASCOT_MOTION.states.active;
+    const els = new Set(tracks.map((t) => t.el));
+    for (const el of ["z1", "z2", "z3", "bub", "yn", "eyw"]) expect(els.has(el), el).toBe(false);
+    expect(tracks.some((t) => t.el === "eyes" && t.prop === "translate")).toBe(true);
+    const svg = mascotSvg(mascotSpec("Chat", "assistant"), { state: "active", size: 64 });
+    expect(svg).toContain("st-active");
+    expect(svg).not.toContain("mk idle");
+    expect(svg).not.toContain('class="eyw"');
+    expect(svg).not.toContain('class="yn"');
   });
 });

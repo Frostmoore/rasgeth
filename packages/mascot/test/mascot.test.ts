@@ -195,13 +195,16 @@ describe("drawing", () => {
     const s = mascotSpec("Ricercatore", "agent");
     const marks: Record<MascotState, string> = {
       idle: "mk idle",
+      active: "",
       think: "mk think",
       work: "mk work",
       wait: "mk wait",
       error: "mk err",
     };
     for (const state of MASCOT_STATES) {
-      expect(mascotSvg(s, { state, size: 32 })).toContain(`class="${marks[state]}"`);
+      if (marks[state])
+        expect(mascotSvg(s, { state, size: 32 })).toContain(`class="${marks[state]}"`);
+      else expect(mascotSvg(s, { state, size: 32 })).not.toContain('class="mk');
       const tiny = mascotSvg(s, { state, size: 20 });
       expect(tiny).toContain('class="masc st-');
       expect(tiny).toContain(" tiny");
