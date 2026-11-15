@@ -13,6 +13,8 @@ export default defineConfig({
       "packaging/stores/test/*.test.ts",
       // RedGiant OS: the pinned stack and the updater's gate (G39.1).
       "packaging/os/test/*.test.ts",
+      // The blind push relay for APNs (G40.4).
+      "packaging/push-relay/test/*.test.ts",
     ],
     // In-process Postgres and git worktrees make some integration tests take seconds.
     testTimeout: 30_000,

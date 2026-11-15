@@ -1,0 +1,14 @@
+{
+  "name": "redgiant-push-relay",
+  "version": "0.1.0",
+  "description": "RedGiant's blind push relay for APNs (G40.4): sealed content in, APNs out, nothing kept. Not published nor switched on yet.",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "redgiant-push-relay": "relay.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
