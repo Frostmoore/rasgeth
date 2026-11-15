@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # RedGiant OS (G39.1): starts and stops RedGiant's compose stack (redgiant.service).
-#   redgiant-stack up | down | images | status
+#   redgiant-stack up | down | images | images-of <stack> [progress-file] | status
 # The images are the stack's (stack.json), pinned by digest: loaded from the copies built into the
 # image the first time, otherwise pulled by digest; an image whose id is not the pinned one is
 # never started.
@@ -79,9 +79,149 @@ files() {
 
 image_id() { docker image inspect --format '{{.Id}}' "$1" 2>/dev/null || true; }
 
+# Docker's own socket: the images come down through its API, whose answer says how far every
+# layer is (`docker pull` without a terminal says nothing of it).
+DOCKER_SOCK=${REDGIANT_DOCKER_SOCK:-/var/run/docker.sock}
+
+# One pull's answer (JSON lines) reduced to the last state of each layer, printed at most twice a
+# second and whenever a layer moves on: {"layers": {"<id>": {"s", "c", "t"}}, "error"}, where s is
+# wait, down (c of t bytes), got (downloaded), extract, done or exists (already here).
+read -r -d '' PULL_JQ <<'JQ' || true
+foreach ((inputs | objects), {end: true}) as $e ({layers: {}, error: null, at: 0, out: false};
+  .out = false
+  | if $e.end == true then .out = true
+    elif ($e.error // $e.message // null) != null then (.error = (($e.error // $e.message) | tostring) | .out = true)
+    elif (($e.id // "") | test("^[0-9a-f]{12}$")) and (($e.status // null) | type) == "string" then
+      $e.status as $s
+      | (if $s == "Already exists" then "exists"
+         elif $s == "Downloading" then "down"
+         elif $s == "Verifying Checksum" or $s == "Download complete" then "got"
+         elif $s == "Extracting" then "extract"
+         elif $s == "Pull complete" then "done"
+         else "wait" end) as $k
+      | (.layers[$e.id] // {s: "wait", c: 0, t: 0}) as $old
+      | .layers[$e.id] = ($old + {s: $k}
+          + (if $k == "down" then {c: ($e.progressDetail.current // $old.c),
+                                   t: ($e.progressDetail.total // $old.t)} else {} end))
+      | if $k != $old.s or (now - .at) >= 0.5 then (.out = true | .at = now) else . end
+    else . end;
+  select(.out) | {layers, error})
+JQ
+
+# Every pull's layers together: bytes done and in all (a layer two images share counts once, one
+# already here not at all; sizes from the stack's own list of layers when it has one) and each
+# image's state. The plan (--slurpfile plan) and the pulls' files come in the same order.
+read -r -d '' SUM_JQ <<'JQ' || true
+def rank: {wait: 0, down: 1, got: 2, extract: 3, done: 4}[.] // 0;
+def got: . == "got" or . == "extract" or . == "done";
+[inputs] as $st
+| $plan[0] as $p
+| (reduce ($st[] | (.layers // {}) | to_entries[]) as $x ({};
+    .[$x.key] as $o
+    | if $o == null or $o.s == "exists" then .[$x.key] = $x.value
+      elif $x.value.s == "exists" then .
+      elif ($x.value.s | rank) > ($o.s | rank) or ($x.value.s == "down" and $o.s == "down" and $x.value.c > $o.c)
+        then .[$x.key] = $x.value
+      else . end)) as $g
+| reduce range(0; $p | length) as $i ({seen: {}, done: 0, total: 0, items: []};
+    $p[$i] as $img
+    | (($img.layers // []) | map({key: .digest[7:19], value: .size}) | from_entries) as $sizes
+    | (((($img.layers // []) | map(.digest[7:19])) + (($st[$i].layers // {}) | keys)) | unique) as $ids
+    | (reduce $ids[] as $id ({d: 0, t: 0, seen: .seen};
+        ($g[$id] // {s: "wait", c: 0, t: 0}) as $l
+        | ($sizes[$id] // $l.t // 0) as $size
+        | if .seen[$id] or $l.s == "exists" then .
+          else .seen[$id] = true | .t += $size
+            | .d += (if ($l.s | got) then $size elif $l.s == "down" then ([$l.c, $size] | min) else 0 end)
+          end)) as $sum
+    | ([$ids[] as $id | ($g[$id] // {s: "wait"}).s]) as $states
+    | (if ($ids | length) == 0 then {d: 0, t: ($img.bytes // 0)} else {d: $sum.d, t: $sum.t} end) as $n
+    | .seen = $sum.seen | .done += $n.d | .total += $n.t
+    | .items += [{name: $img.name, ref: $img.ref, done: $n.d, total: $n.t,
+        state: (if $st[$i].error then "error"
+          elif ($states | length) > 0 and all($states[]; . == "done" or . == "exists") then "done"
+          elif ($states | length) > 0 and all($states[]; got or . == "exists") then "extract"
+          elif any($states[]; . != "wait") then "down"
+          else "wait" end)}])
+| {done, total, items, ready: all($st[]; ((.layers // {}) | length) > 0 or .error != null)}
+JQ
+
+# Pulls one image by digest through the API; its layers' state goes to <out>.
+pull_api() { # repo digest out
+  curl -sSN --max-time 7200 --unix-socket "$DOCKER_SOCK" -X POST \
+    "http://docker/images/create?fromImage=$1&tag=$2" |
+    jq -nc --unbuffered "$PULL_JQ" |
+    while IFS= read -r line; do
+      printf '%s\n' "$line" >"$3.new" && mv -f "$3.new" "$3"
+    done
+}
+
+# The missing images pulled together (the layers already here are known at once, so the total is
+# right from the first seconds) and tagged with their references; with a progress file, how far
+# they are is written there about once a second (progress_write).
+pull_all() { # stack progress-file ref<TAB>digest…
+  local stack=$1 progress=$2 dir n=0 i line ref digest repo bad=0 sum alive e
+  local -a pids=() states=()
+  shift 2
+  [ $# -gt 0 ] || return 0
+  if ! [ -S "$DOCKER_SOCK" ]; then
+    for line; do
+      IFS=$'\t' read -r ref digest <<<"$line"
+      repo=${ref%:*}
+      log "downloading $repo@$digest"
+      docker pull -q "$repo@$digest" >/dev/null || return 1
+      docker tag "$repo@$digest" "$ref"
+    done
+    return 0
+  fi
+  dir=$(mktemp -d)
+  printf '%s\n' "$@" | cut -f1 | jq -R . | jq -s --arg a "$(arch)" --slurpfile s "$stack" \
+    '. as $refs | [$refs[] as $r | $s[0].images[$a][] | select(.ref == $r)
+      | {name, ref, bytes: (.bytes // 0), layers: (.layers // [])}]' >"$dir/plan.json"
+  for line; do
+    IFS=$'\t' read -r ref digest <<<"$line"
+    repo=${ref%:*}
+    log "downloading $repo@$digest"
+    echo '{"layers":{},"error":null}' >"$dir/$n.json"
+    states+=("$dir/$n.json")
+    pull_api "$repo" "$digest" "$dir/$n.json" &
+    pids+=($!)
+    n=$((n + 1))
+  done
+  if [ -n "$progress" ]; then progress_reset; fi
+  while :; do
+    alive=0
+    for i in "${pids[@]}"; do kill -0 "$i" 2>/dev/null && alive=1; done
+    # Written once every pull said which layers it needs (before, the total would be too big).
+    if [ -n "$progress" ] &&
+      sum=$(jq -nc --slurpfile plan "$dir/plan.json" "$SUM_JQ" "${states[@]}" 2>/dev/null) &&
+      { [ "$alive" = 0 ] || [ "$(jq .ready <<<"$sum")" = true ]; }; then
+      progress_write "$progress" "$(jq .done <<<"$sum")" "$(jq .total <<<"$sum")" "$(jq -c .items <<<"$sum")"
+    fi
+    [ "$alive" = 1 ] || break
+    sleep "${REDGIANT_PROGRESS_EVERY:-1}"
+  done
+  for i in "${pids[@]}"; do wait "$i" || bad=1; done
+  n=0
+  for line; do
+    IFS=$'\t' read -r ref digest <<<"$line"
+    repo=${ref%:*}
+    e=$(jq -r '.error // empty' "${states[$n]}" 2>/dev/null) || e=""
+    if [ -n "$e" ]; then
+      log "$ref: $e"
+      bad=1
+    fi
+    docker tag "$repo@$digest" "$ref" 2>/dev/null || bad=1
+    n=$((n + 1))
+  done
+  rm -r -f -- "$dir"
+  return "$bad"
+}
+
 # Every image of the stack present with its pinned id: from the built-in copies, else pulled.
-images() {
-  local stack=$1 ref digest id repo tar
+images() { # stack [progress-file]
+  local stack=$1 progress=${2:-} ref digest id tar
+  local -a need=()
   while IFS=$'\t' read -r ref digest id; do
     [ "$(image_id "$ref")" = "$id" ] && continue
     tar="$STATE/preload/$(echo "$ref" | tr '/:' '__').tar"
@@ -89,18 +229,16 @@ images() {
       log "loading $ref from the built-in copy"
       docker load -i "$tar" >/dev/null
     fi
-    if [ "$(image_id "$ref")" != "$id" ]; then
-      repo=${ref%:*}
-      log "downloading $repo@$digest"
-      docker pull -q "$repo@$digest" >/dev/null
-      docker tag "$repo@$digest" "$ref"
-    fi
+    [ "$(image_id "$ref")" = "$id" ] || need+=("$ref"$'\t'"$digest")
+  done < <(jq -r --arg a "$(arch)" '.images[$a][] | [.ref, .digest, .id] | @tsv' "$stack")
+  pull_all "$stack" "$progress" "${need[@]}" || log "an image could not be downloaded"
+  while IFS=$'\t' read -r ref id; do
     if [ "$(image_id "$ref")" != "$id" ]; then
       log "$ref is not the pinned image ($id): not started"
       return 1
     fi
-    rm -f "$tar"
-  done < <(jq -r --arg a "$(arch)" '.images[$a][] | [.ref, .digest, .id] | @tsv' "$stack")
+    rm -f "$STATE/preload/$(echo "$ref" | tr '/:' '__').tar"
+  done < <(jq -r --arg a "$(arch)" '.images[$a][] | [.ref, .id] | @tsv' "$stack")
 }
 
 case "${1:-}" in
@@ -113,8 +251,9 @@ case "${1:-}" in
     ;;
   down) compose down ;;
   images) images "$(current_stack)" ;;
-  # The images of another stack (an update about to be applied), nothing started.
-  images-of) images "$2" ;;
+  # The images of another stack (an update about to be applied), nothing started; with a file,
+  # how far the download is goes there about once a second.
+  images-of) images "$2" "${3:-}" ;;
   status) compose ps ;;
   *)
     echo "usage: redgiant-stack up | down | images | status" >&2

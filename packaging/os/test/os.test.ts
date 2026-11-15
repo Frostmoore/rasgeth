@@ -103,6 +103,18 @@ describe("the stack of a release", () => {
       "env",
     ],
     ["a file it does not use", stack({ files: { "../../etc/passwd": "x" } }), "unexpected file"],
+    [
+      "its layers with their sizes",
+      stack({
+        images: { amd64: [image({ layers: [{ digest: digest("d"), size: 10 }] })], arm64: [image()] },
+      }),
+      null,
+    ],
+    [
+      "a layer without its size",
+      stack({ images: { amd64: [image({ layers: [{ digest: digest("d") }] })], arm64: [image()] } }),
+      "layers",
+    ],
   ])("%s", (_name, s, error) => {
     if (error) expect(() => checkStack(s)).toThrow(error as string);
     else expect(checkStack(s)).toBe(s);

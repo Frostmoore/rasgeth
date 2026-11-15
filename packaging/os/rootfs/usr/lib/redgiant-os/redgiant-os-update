@@ -43,20 +43,57 @@ signed() { # file [key]: true when file.sig is its signature by the update key
   openssl dgst -sha256 -verify "$key" -signature <(base64 -d "$1.sig") "$1" >/dev/null 2>&1
 }
 
+# What an update adds to the state (3.8.1, the person: «si deve capire che sta aggiornando»): the
+# version it left and when it started, its steps in order with the time each began, what it
+# downloads (the images and the system's files, with their sizes), how far the download is
+# (progress_write's file), why it stopped (a word the page explains) and when it ended.
+UPD_FROM="" UPD_START="" UPD_END="" UPD_REASON="" UPD_STEPS='[]' UPD_TIMES='{}' UPD_PLAN=null
+PROGRESS=$WORK/progress.json
+
 write_state() { # state latest gate note [step]: the page and the console read it
-  local tmp
+  local tmp now prog=null
+  now=$(date -u +%FT%TZ)
+  if [ -n "${5:-}" ]; then
+    UPD_TIMES=$(jq -c --arg s "$5" --arg at "$now" 'if has($s) then . else .[$s] = $at end' <<<"$UPD_TIMES")
+    case "$5" in download | files) prog=$(jq -c . "$PROGRESS" 2>/dev/null) || prog=null ;; esac
+    [ -n "$prog" ] || prog=null
+  fi
   tmp=$(mktemp "$STATE/.os-update.XXXXXX")
   jq -n --arg s "$1" --arg l "$2" --arg g "$3" --arg n "$4" --arg st "${5:-}" --arg i "$(installed_version)" \
-    --arg at "$(date -u +%FT%TZ)" \
-    '{state: $s, installed: $i, latest: (if $l == "" then null else $l end), gate: $g,
-      note: (if $n == "" then null else $n end), step: (if $st == "" then null else $st end),
-      checkedAt: $at}' >"$tmp"
+    --arg at "$now" --arg from "$UPD_FROM" --arg start "$UPD_START" --arg end "$UPD_END" \
+    --arg why "$UPD_REASON" --argjson steps "$UPD_STEPS" --argjson times "$UPD_TIMES" \
+    --argjson plan "$UPD_PLAN" --argjson prog "$prog" \
+    'def opt: if . == "" then null else . end;
+     {state: $s, installed: $i, latest: ($l | opt), gate: $g, note: ($n | opt), step: ($st | opt),
+      checkedAt: $at}
+     + (if $start == "" then {} else
+         {from: ($from | opt), startedAt: $start, finishedAt: ($end | opt), reason: ($why | opt),
+          steps: $steps, stepAt: $times, plan: $plan, progress: $prog} end)' >"$tmp"
   chmod 644 "$tmp"
   mv "$tmp" "$OUT"
 }
 
 download() { # url file
   curl -fsSL --retry 3 --max-time 120 -o "$2" "$1"
+}
+
+# A bigger download with its bar: the bytes on disk against the size the release gives, written
+# with the state once a second.
+download_progress() { # url file size step
+  local pid size name
+  name=$(basename "$2")
+  rm -f "$PROGRESS" "$2"
+  progress_reset
+  curl -fsSL --retry 3 --max-time 1800 -o "$2" "$1" &
+  pid=$!
+  while kill -0 "$pid" 2>/dev/null; do
+    size=$(stat -c %s "$2" 2>/dev/null) || size=0
+    progress_write "$PROGRESS" "$size" "$3" \
+      "$(jq -nc --arg n "$name" --argjson d "$size" --argjson t "$3" '[{name: $n, done: $d, total: $t, state: "down"}]')"
+    write_state applying "$LATEST" "$GATE" "" "$4"
+    sleep "${REDGIANT_PROGRESS_EVERY:-1}"
+  done
+  wait "$pid"
 }
 
 asset_url() { # name: its download address in the release check() looked at
@@ -260,58 +297,107 @@ wait_healthy() {
   return 1
 }
 
+# What this update downloads: every image of the stack with its size (an image already here
+# downloads nothing).
+plan_images() { # stack
+  local name ref id bytes here out='[]'
+  while IFS=$'\t' read -r name ref id bytes; do
+    here=false
+    [ "$(docker image inspect --format '{{.Id}}' "$ref" 2>/dev/null)" = "$id" ] && here=true
+    out=$(jq -c --arg n "$name" --arg r "$ref" --argjson b "$bytes" --argjson h "$here" \
+      '. + [{name: $n, ref: $r, bytes: $b, here: $h}]' <<<"$out")
+  done < <(jq -r --arg a "$(arch)" '.images[$a][] | [(.name // "image"), .ref, .id, (.bytes // 0)] | @tsv' "$1")
+  echo "$out"
+}
+
+# Stops with the reason the page explains (download, files, not_up, no_images, breaking).
+give_up() { # reason note [state] [gate]
+  UPD_REASON=$1
+  UPD_END=$(date -u +%FT%TZ)
+  write_state "${3:-error}" "$LATEST" "${4:-$GATE}" "$2"
+  exit 1
+}
+
 apply() {
+  UPD_START=$(date -u +%FT%TZ)
+  UPD_FROM=$(installed_version)
+  UPD_STEPS='["check","download","restart","wait"]'
+  LATEST=$(jq -r '.latest // empty' "$OUT" 2>/dev/null) || LATEST=""
+  GATE=none
+  write_state applying "$LATEST" none "" check
   check || exit 1
   case "$GATE" in
-    none) log "RedGiant $(installed_version) is the latest"; return 0 ;;
+    none)
+      UPD_START=""
+      write_state latest "$LATEST" none ""
+      log "RedGiant $(installed_version) is the latest"
+      return 0
+      ;;
     breaking)
-      write_state breaking "$LATEST" breaking "a clean install is needed: back up, then reinstall"
       log "$LATEST needs a clean install: not applied"
-      exit 1
+      give_up breaking "a clean install is needed: back up, then reinstall" breaking breaking
       ;;
   esac
-  local stack=$WORK/redgiant-os-stack.json files=$WORK/redgiant-os-files.json prev="" name url
+  local stack=$WORK/redgiant-os-stack.json files=$WORK/redgiant-os-files.json prev="" name="" url size=0 pid
   jq -e --arg a "$(arch)" '.format == 1 and (.images[$a] | length > 0)' "$stack" >/dev/null ||
-    { write_state error "$LATEST" "$GATE" "the stack has no images for this processor"; exit 1; }
+    give_up no_images "the stack has no images for this processor"
+  if [ -s "$files" ]; then
+    name=$(jq -r '.archive.name // empty' "$files")
+    [[ "$name" =~ ^redgiant-os-files-[0-9]+\.[0-9]+\.[0-9]+\.tar\.zst$ ]] || name=""
+    size=$(jq -r --arg n "$name" '[.assets[] | select(.name == $n) | .size | numbers][0] // 0' "$WORK/release-api.json")
+    UPD_STEPS='["check","download","files","install","restart","wait"]'
+  fi
+  UPD_PLAN=$(jq -nc --argjson i "$(plan_images "$stack")" --arg n "$name" --argjson s "$size" \
+    '{images: $i, files: (if $n == "" then null else {name: $n, bytes: $s} end)}')
+  rm -f "$PROGRESS"
   write_state applying "$LATEST" "$GATE" "" download
-  # The new images first, all of them, while the old version keeps running.
+  # The new images first, all of them, while the old version keeps running; how far they are goes
+  # into the state once a second.
   [ -r "$STATE/stack.json" ] && prev=$STATE/stack.json.prev && cp "$STATE/stack.json" "$prev"
   install -m 0644 "$stack" "$STATE/stack.json.new"
-  if ! /usr/lib/redgiant-os/redgiant-stack images-of "$STATE/stack.json.new"; then
+  /usr/lib/redgiant-os/redgiant-stack images-of "$STATE/stack.json.new" "$PROGRESS" &
+  pid=$!
+  while kill -0 "$pid" 2>/dev/null; do
+    sleep "${REDGIANT_PROGRESS_EVERY:-1}"
+    write_state applying "$LATEST" "$GATE" "" download
+  done
+  if ! wait "$pid"; then
     rm -f "$STATE/stack.json.new"
-    write_state error "$LATEST" "$GATE" "the new images could not be downloaded"
-    exit 1
+    give_up download "the new images could not be downloaded"
   fi
   # Then the system's files of the release, before the new server starts (it may ask the new OS
   # helper). A release without them updates the containers only.
   if [ -s "$files" ]; then
-    write_state applying "$LATEST" "$GATE" "" files
-    name=$(jq -r '.archive.name // empty' "$files")
     url=""
-    [[ "$name" =~ ^redgiant-os-files-[0-9]+\.[0-9]+\.[0-9]+\.tar\.zst$ ]] && url=$(asset_url "$name")
-    if [ -z "$url" ] || ! download "$url" "$WORK/$name" || ! files_apply "$WORK" / "$KEY"; then
+    [ -n "$name" ] && url=$(asset_url "$name")
+    if [ -z "$url" ] || ! download_progress "$url" "$WORK/$name" "$size" files; then
+      rm -f "$STATE/stack.json.new"
+      give_up files "the system's new files could not be downloaded; nothing changed"
+    fi
+    write_state applying "$LATEST" "$GATE" "" install
+    if ! files_apply "$WORK" / "$KEY"; then
       files_undo "$WORK" /
       rm -f "$STATE/stack.json.new"
-      write_state error "$LATEST" "$GATE" "the system's new files could not be installed; nothing changed"
-      exit 1
+      give_up files "the system's new files could not be installed; nothing changed"
     fi
   fi
   mv "$STATE/stack.json.new" "$STATE/stack.json"
   write_state applying "$LATEST" "$GATE" "" restart
   if /usr/lib/redgiant-os/redgiant-stack up && write_state applying "$LATEST" "$GATE" "" wait && wait_healthy; then
     if [ -s "$files" ]; then install -m 0644 "$files" "$STATE/os-files.json"; fi
+    UPD_END=$(date -u +%FT%TZ)
     write_state latest "$LATEST" none ""
     log "RedGiant $LATEST is running"
     return 0
   fi
   # Back to the version that ran: its system files, then the previous applied stack (or the one
   # built in).
+  UPD_STEPS=$(jq -c '. + ["rollback"]' <<<"$UPD_STEPS")
   write_state applying "$LATEST" "$GATE" "" rollback
   files_undo "$WORK" /
   if [ -n "$prev" ]; then mv "$prev" "$STATE/stack.json"; else rm -f "$STATE/stack.json"; fi
   /usr/lib/redgiant-os/redgiant-stack up || true
-  write_state error "$LATEST" "$GATE" "$LATEST did not come up; the previous version is running again"
-  exit 1
+  give_up not_up "$LATEST did not come up; the previous version is running again"
 }
 
 # A new machine (3.7.4): its image may be older than the latest release (the images are made only
