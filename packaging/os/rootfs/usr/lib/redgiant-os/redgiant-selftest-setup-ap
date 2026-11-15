@@ -51,10 +51,11 @@ sap_setup() {
   sap_in wpa_supplicant -B -i "$sap_if" -c /run/rgc-wpa.conf -P /run/rgc-wpa.pid >/dev/null 2>&1 || return 1
   return 0
 }
+# Joined: associated and the 4-way handshake done (wpa_supplicant's COMPLETED).
 sap_joined() {
   local _i
-  for _i in $(seq 1 30); do
-    sap_in iw dev "$sap_if" link 2>/dev/null | grep -q "Connected to" && return 0
+  for _i in $(seq 1 40); do
+    sap_in wpa_cli -p /run/rgc-wpa -i "$sap_if" status 2>/dev/null | grep -q '^wpa_state=COMPLETED' && return 0
     sleep 1
   done
   return 1
@@ -69,7 +70,7 @@ echo "$ip ${opt114:-}" >/run/rgc-lease
 SH
   chmod 0755 /run/rgc-udhcpc.sh
   rm -f /run/rgc-lease
-  sap_in busybox udhcpc -i "$sap_if" -n -q -t 10 -T 3 -O 114 -s /run/rgc-udhcpc.sh >/dev/null 2>&1 || return 1
+  sap_in busybox udhcpc -i "$sap_if" -n -q -t 10 -T 3 -s /run/rgc-udhcpc.sh >/run/rgc-udhcpc.log 2>&1 || return 1
   grep -q '^10\.42\.0\.' /run/rgc-lease
 }
 # A DNS question (A, captive.apple.com) to the temporary network's address: the answer must be it.
@@ -91,6 +92,17 @@ if sap_setup; then
   check "setup-ap client joined" sap_joined
   check "setup-ap client got an address" sap_lease
   say "setup-ap lease $(cat /run/rgc-lease 2>/dev/null)"
+  if [ ! -s /run/rgc-lease ]; then
+    # Why, while the network is still open.
+    {
+      sap_in wpa_cli -p /run/rgc-wpa -i "$sap_if" status 2>&1
+      cat /run/rgc-udhcpc.log 2>&1
+      sap_in ip addr 2>&1
+      ip -4 addr show dev wlan0 2>&1
+      networkctl status --no-pager -n 15 wlan0 2>&1
+      cat /run/systemd/network/70-redgiant-setup.network 2>&1
+    } | sed 's/^/REDGIANT-SELFTEST setup-ap dhcp: /' >/dev/console
+  fi
   check "setup-ap first start page from the client" bash -c "ip netns exec $sap_ns curl -fsS --max-time 10 http://10.42.0.1/ | grep -qi '<html'"
   check "setup-ap captive probe android" sap_probe connectivitycheck.gstatic.com /generate_204
   check "setup-ap captive probe apple" sap_probe captive.apple.com /hotspot-detect.html
