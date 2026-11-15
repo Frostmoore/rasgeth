@@ -28,3 +28,6 @@ Mascot fixtures (`test/fixtures/mascots.json`) come from the library:
 `assets/icon/rgcompanion.svg`: `flutter test tool/make_icons_test.dart`.
 
 Linux builds need `clang cmake ninja-build pkg-config libgtk-3-dev libsecret-1-dev`.
+On Severino the Linux build runs in the agents' Docker with the image
+`rgcompanion-linux-build:trixie` (Debian trixie with those packages; Flutter and the pub cache are
+mounted from `/mnt/archive1/officina-dati/rg-test`).
