@@ -9,6 +9,7 @@ export * from "./canvas.js";
 export * from "./chat-tools.js";
 export * from "./critical.js";
 export * from "./dangers.js";
+export * from "./devices.js";
 export * from "./doc.js";
 export * from "./doc-image.js";
 export * from "./doc-model.js";
