@@ -26,7 +26,7 @@ import {
   stepArgs,
   wrapText,
 } from "../src/editor/video/compile.js";
-import { probeFromJson } from "../src/editor/video/probe.js";
+import { probeFromJson } from "../src/editor/video/render-probe.js";
 import {
   captionsAss,
   captionsSrt,

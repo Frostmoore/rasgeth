@@ -2,6 +2,8 @@
 // for the handles of transitions and `cleanTimeline`), whether it is a picture, whether it has
 // sound, and a fingerprint for the segments' cache. ffprobe's JSON is read by a pure function;
 // `probeMedia` runs ffprobe with execFile (the path may come from a person or an agent).
+// G41.4 has a fuller probe (`probe.ts`: rotation, timecode, `videoProbeOf`): at the merge this one
+// can become `videoProbeOf(parseProbe(...))` plus the fingerprint.
 import { execFile } from "node:child_process";
 import { stat } from "node:fs/promises";
 import type { VideoRate } from "@redgiant/protocol";
