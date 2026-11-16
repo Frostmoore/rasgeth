@@ -129,7 +129,13 @@ class HomeResult {
 
 /// How far a download (or a phase) is: bytes, speed and the seconds left.
 class Progress {
-  const Progress({required this.done, required this.total, required this.bps, this.eta});
+  const Progress({
+    required this.done,
+    required this.total,
+    required this.bps,
+    this.eta,
+    this.items = const [],
+  });
 
   static Progress? fromJson(Object? o) {
     if (o is! Map<String, dynamic>) return null;
@@ -138,6 +144,15 @@ class Progress {
       total: _num(o['total']),
       bps: _num(o['bps']),
       eta: _intOrNull(o['eta']),
+      items: [
+        for (final i in _list(o['items']))
+          ProgressItem(
+            name: _str(i['name']) ?? '',
+            done: _num(i['done']),
+            total: _num(i['total']),
+            state: _str(i['state']) ?? 'wait',
+          ),
+      ],
     );
   }
 
@@ -146,8 +161,26 @@ class Progress {
   final double bps;
   final int? eta;
 
+  /// RedGiant OS: each image (or the system's files' archive) on its own.
+  final List<ProgressItem> items;
+
   /// 0-1, or null while the total is not known.
   double? get fraction => total > 0 ? (done / total).clamp(0, 1).toDouble() : null;
+}
+
+/// One image of a download: wait, down, extract, done, error.
+class ProgressItem {
+  const ProgressItem({
+    required this.name,
+    required this.done,
+    required this.total,
+    required this.state,
+  });
+
+  final String name;
+  final double done;
+  final double total;
+  final String state;
 }
 
 /// `UpdateStatus` (`GET /api/update/status`), with 3.8.1's `progress` when the server has it.
@@ -215,6 +248,67 @@ class UpdateStatus {
   String? noteIn(String lang) => _str(note?[lang]) ?? _str(note?['en']);
 }
 
+/// `OsUpdateRun` (3.8.1): an update RedGiant OS is applying, or applied last.
+class OsRun {
+  const OsRun({
+    this.from,
+    this.startedAt,
+    this.finishedAt,
+    this.reason,
+    this.steps = const [],
+    this.stepAt = const {},
+    this.images = const [],
+    this.filesBytes = 0,
+    this.progress,
+  });
+
+  static OsRun? fromJson(Object? o) {
+    if (o is! Map<String, dynamic>) return null;
+    final plan = _map(o['plan']);
+    return OsRun(
+      from: _str(o['from']),
+      startedAt: _str(o['startedAt']),
+      finishedAt: _str(o['finishedAt']),
+      reason: _str(o['reason']),
+      steps: [for (final s in (o['steps'] is List ? o['steps'] as List : const [])) '$s'],
+      stepAt: {
+        for (final e in _map(o['stepAt']).entries)
+          if (e.value is String) e.key: e.value as String,
+      },
+      images: [
+        for (final i in _list(plan['images']))
+          (name: _str(i['name']) ?? '', bytes: _num(i['bytes']), here: i['here'] == true),
+      ],
+      filesBytes: _num(_map(plan['files'])['bytes']),
+      progress: Progress.fromJson(o['progress']),
+    );
+  }
+
+  /// The version it left.
+  final String? from;
+  final String? startedAt;
+  final String? finishedAt;
+
+  /// Why it stopped: download, files, not_up, no_images, breaking.
+  final String? reason;
+
+  /// check, download, files, install, restart, wait, rollback (in order).
+  final List<String> steps;
+
+  /// When each step began (ISO).
+  final Map<String, String> stepAt;
+
+  /// The images it downloads, with their size and whether they are here already.
+  final List<({String name, double bytes, bool here})> images;
+
+  /// The system's files' archive, in bytes (0: none).
+  final double filesBytes;
+  final Progress? progress;
+
+  /// The bytes the images still need from the internet.
+  double get imageBytes => images.fold(0, (n, i) => n + (i.here ? 0 : i.bytes));
+}
+
 /// `OsUpdates` (`GET /api/setup/os-updates`): RedGiant OS's own updater, with 3.8.1's run.
 class OsUpdates {
   const OsUpdates({
@@ -223,26 +317,30 @@ class OsUpdates {
     this.state,
     this.installed,
     this.latest,
+    this.gate,
     this.step,
     this.steps = const [],
     this.reason,
     this.progress,
+    this.run,
     this.rebootRequired = false,
   });
 
   factory OsUpdates.fromJson(Map<String, dynamic> j) {
     final u = _map(j['update']);
-    final run = _map(u['run']);
+    final run = OsRun.fromJson(u['run']);
     return OsUpdates(
       available: j['available'] == true,
       running: j['running'] == true,
       state: _str(u['state']),
       installed: _str(u['installed']),
       latest: _str(u['latest']),
+      gate: _str(u['gate']),
       step: _str(u['step']),
-      steps: [for (final s in (run['steps'] is List ? run['steps'] as List : const [])) '$s'],
-      reason: _str(run['reason']),
-      progress: Progress.fromJson(run['progress']),
+      steps: run?.steps ?? const [],
+      reason: run?.reason,
+      progress: run?.progress,
+      run: run,
       rebootRequired: _map(j['security'])['rebootRequired'] == true,
     );
   }
@@ -255,12 +353,21 @@ class OsUpdates {
   final String? installed;
   final String? latest;
 
+  /// none, normal, mandatory, breaking.
+  final String? gate;
+
   /// check, download, files, install, restart, wait, rollback.
   final String? step;
   final List<String> steps;
   final String? reason;
   final Progress? progress;
+
+  /// 3.8.1: the update in progress, or the last one (null before 3.8.1's updater).
+  final OsRun? run;
   final bool rebootRequired;
+
+  /// The machine is applying an update now.
+  bool get updating => running || state == 'applying';
 }
 
 /// `GET /api/devices`: a device with whether it is this one and its notifications.

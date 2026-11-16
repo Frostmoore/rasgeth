@@ -99,6 +99,25 @@ class FakeRedGiant {
   };
   Map<String, dynamic>? osUpdates;
   int updateActs = 0;
+
+  /// The version hello and the live socket say (changes when an update ends).
+  String version = '3.8.0';
+
+  /// RedGiant restarting: every request and socket is cut off without an answer.
+  bool down = false;
+
+  /// What `POST /api/update/act` does (a test's script of the update); null: just counted.
+  Map<String, dynamic>? Function()? onUpdateAct;
+
+  /// Stops answering (the restart of an update): open sockets are cut too.
+  Future<void> goDown() async {
+    down = true;
+    for (final ws in [...sockets]) {
+      await ws.close(1001, 'restarting');
+    }
+    sockets.clear();
+  }
+
   final devices = <Map<String, dynamic>>[
     {
       'id': 'd1',
@@ -232,13 +251,19 @@ class FakeRedGiant {
   ];
 
   Future<void> _handle(HttpRequest r) async {
+    if (down) {
+      // As a server that is not there: the connection drops without an answer.
+      final sock = await r.response.detachSocket(writeHeaders: false);
+      sock.destroy();
+      return;
+    }
     requests.add('${r.method} ${r.uri}');
     final token = _bearer(r);
     final path = r.uri.path;
     if (r.method == 'GET' && path == '/api/app/hello') {
       return _json(r, 200, {
         'app': 'redgiant',
-        'version': '3.8.0',
+        'version': version,
         'appProtocol': appProtocol,
         'protocolVersion': 12,
         'machine': machine,
@@ -523,6 +548,8 @@ class FakeRedGiant {
     }
     if (r.method == 'POST' && path == '/api/update/act') {
       updateActs++;
+      final refused = onUpdateAct?.call();
+      if (refused != null) return _json(r, 400, refused);
       return _json(r, 200, {'ok': true});
     }
     if (path == '/api/setup/os-updates' || path == '/api/setup/os-updates/check') {
@@ -1080,7 +1107,7 @@ class FakeRedGiant {
             ws.close(4003, 'unauthorized');
             return;
           }
-          send({'type': 'welcome', 'protocolVersion': 2, 'ownerId': 'me', 'version': '3.8.0'});
+          send({'type': 'welcome', 'protocolVersion': 2, 'ownerId': 'me', 'version': version});
           for (final p in permissions) {
             send({'type': 'permission.request', 'request': p});
           }

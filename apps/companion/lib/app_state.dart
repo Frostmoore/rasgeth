@@ -18,6 +18,7 @@ import 'api/servers.dart';
 import 'api/settings_types.dart';
 import 'api/setup_channel.dart';
 import 'api/token_store.dart';
+import 'api/update_follower.dart';
 import 'api/transport.dart';
 import 'api/types.dart';
 import 'desktop/handoff.dart';
@@ -170,6 +171,13 @@ class AppController extends ChangeNotifier {
   StreamSubscription<Map<String, dynamic>>? _liveSub;
   StreamSubscription<LiveStatus>? _statusSub;
   Timer? _reloadTimer;
+
+  /// The update of the RedGiant in use the app follows (one at a time, kept across screens).
+  UpdateFollower? updateRun;
+  bool _updateToOpen = false;
+
+  /// How often an update is read (tests shorten it).
+  Duration updateEvery = const Duration(seconds: 1);
 
   /// The Chat's new conversation, started from the field over the bar: opened by the Chat screen.
   String? chatDraft;
@@ -595,6 +603,86 @@ class AppController extends ChangeNotifier {
     _startLive();
     unawaited(voice.attach(c, s?.id));
     unawaited(_renewPush());
+    await _lookForUpdate();
+  }
+
+  // ---- updates of the RedGiant in use ----
+
+  /// The RedGiant of this very computer (the launcher's): its launcher does the update.
+  bool get localRedGiant => desktop && client?.transport.kind == TransportKind.loopback;
+
+  UpdateFollower _newFollower({String? from, String? to, Map<String, dynamic>? note}) {
+    updateRun?.dispose();
+    return updateRun = UpdateFollower(
+      source: ClientUpdateSource(client!),
+      from: from,
+      to: to,
+      note: note,
+      local: localRedGiant,
+      every: updateEvery,
+      onBack: _afterUpdate,
+    );
+  }
+
+  /// «Update»: asks RedGiant to update, then follows it.
+  Future<void> startUpdate({String? from, String? to, Map<String, dynamic>? note}) async {
+    if (client == null) return;
+    final f = _newFollower(from: from, to: to, note: note);
+    notifyListeners();
+    await f.begin();
+  }
+
+  /// An update found running: followed, and its screen opened ([takeUpdateToOpen]).
+  void followUpdate(UpdateStatus? s, OsUpdates? os, {bool open = true}) {
+    if (client == null) return;
+    if (updateRun != null && !updateRun!.finished) return;
+    _newFollower(
+      from: os?.run?.from ?? os?.installed ?? s?.installed,
+      to: os?.latest ?? s?.latest,
+      note: s?.note,
+    ).follow();
+    if (open) _updateToOpen = true;
+    notifyListeners();
+  }
+
+  /// The update's screen should open (once).
+  bool takeUpdateToOpen() {
+    final v = _updateToOpen;
+    _updateToOpen = false;
+    return v;
+  }
+
+  /// Whether the RedGiant in use is updating now: then its update is followed and shown.
+  Future<void> _lookForUpdate() async {
+    final c = client;
+    if (c == null) return;
+    try {
+      final s = await c.updateStatus();
+      final os = s.install == 'os' ? await c.osUpdates() : null;
+      final running = (os?.updating ?? false) || (s.progress != null && s.phase != 'failed');
+      if (running) followUpdate(s, os);
+    } on ApiException {
+      // An older server, or one that does not say: nothing to follow.
+    }
+  }
+
+  /// RedGiant answers as the new version: the app reconnects by itself, HTTP and the live socket.
+  Future<void> _afterUpdate() async {
+    final c = client;
+    if (c == null) return;
+    hello = await c.hello();
+    error = null;
+    errorMessage = null;
+    agents = await c.agents();
+    await _loadLists();
+    final sock = socket;
+    if (sock != null && sock.status != LiveStatus.open) {
+      sock.reconnectNow();
+      await sock.statuses
+          .firstWhere((st) => st == LiveStatus.open)
+          .timeout(const Duration(seconds: 10), onTimeout: () => LiveStatus.down);
+    }
+    notifyListeners();
   }
 
   // ---- Team: favourites and the project filter (G40.9) ----
@@ -1263,6 +1351,9 @@ class AppController extends ChangeNotifier {
 
   Future<void> _drop() async {
     _reloadTimer?.cancel();
+    updateRun?.dispose();
+    updateRun = null;
+    _updateToOpen = false;
     await _liveSub?.cancel();
     await _statusSub?.cancel();
     final s = socket;

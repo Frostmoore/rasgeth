@@ -971,7 +971,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String updNowBody(String version) {
-    return 'RedGiant installs $version and restarts: for a few minutes it does not answer, then the app connects again by itself.';
+    return 'RedGiant downloads $version, then restarts: for a minute or two it does not answer. You see every step, and the app reconnects by itself as soon as RedGiant is back.';
   }
 
   @override
@@ -2584,4 +2584,299 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get metricsShowAll => 'Show all the message\'s figures';
+
+  @override
+  String updNowBodyLocal(String version) {
+    return 'On this computer RedGiant does the update to $version in its own window: it downloads, closes and starts again as the new version. Here you see the steps it reports.';
+  }
+
+  @override
+  String get updFollow => 'Follow the update';
+
+  @override
+  String upd2Title(String from, String to) {
+    return 'Updating RedGiant from $from to $to';
+  }
+
+  @override
+  String upd2TitleTo(String to) {
+    return 'Updating RedGiant to $to';
+  }
+
+  @override
+  String get upd2Starting => 'Starting the update…';
+
+  @override
+  String upd2Left(String time) {
+    return 'about $time left';
+  }
+
+  @override
+  String upd2Total(String time) {
+    return 'about $time in all';
+  }
+
+  @override
+  String get upd2LeftUnknown => 'working out how long it takes…';
+
+  @override
+  String upd2Elapsed(String time) {
+    return 'running for $time';
+  }
+
+  @override
+  String upd2ToDownload(String size) {
+    return '$size to download';
+  }
+
+  @override
+  String get upd2Steps => 'The update\'s steps';
+
+  @override
+  String get upd2Restarting => 'RedGiant is restarting, reconnecting…';
+
+  @override
+  String upd2Attempt(String n, String time) {
+    return 'Attempt $n · no answer for $time';
+  }
+
+  @override
+  String get upd2Back => 'RedGiant answers: checking it is the new version…';
+
+  @override
+  String get upd2Keeps =>
+      'RedGiant keeps working while it downloads: it stops only for the restart, a minute or two.';
+
+  @override
+  String get upd2ComesBack =>
+      'Keep the app open: it reconnects by itself as soon as RedGiant answers as the new version.';
+
+  @override
+  String get upd2Local =>
+      'On this computer RedGiant does the update in its own window, with the bar and the time: here you see the steps it reports, and if this window stays open it reconnects by itself when RedGiant is back.';
+
+  @override
+  String get upd2Older =>
+      'This RedGiant does not report each step\'s details yet (they come with 3.8.1): you see where it is and for how long.';
+
+  @override
+  String upd2Done(String version) {
+    return 'Updated to $version';
+  }
+
+  @override
+  String upd2DoneText(String from, String time) {
+    return 'From $from, in $time. Conversations, agents and settings are as before.';
+  }
+
+  @override
+  String upd2DoneFrom(String from) {
+    return 'From $from. Conversations, agents and settings are as before.';
+  }
+
+  @override
+  String get upd2Reconnected => 'The app reconnected by itself.';
+
+  @override
+  String get upd2Reconnecting => 'Reconnecting to the new version…';
+
+  @override
+  String upd2News(String version) {
+    return 'What\'s new in $version';
+  }
+
+  @override
+  String get upd2Notes => 'The version\'s notes on GitHub';
+
+  @override
+  String get upd2BackHome => 'Back to RedGiant';
+
+  @override
+  String get upd2Hide => 'Hide: the update goes on';
+
+  @override
+  String get upd2Retry => 'Try again';
+
+  @override
+  String get upd2Close => 'Go back';
+
+  @override
+  String get upd2TookLess => 'less than a minute';
+
+  @override
+  String upd2TookMin(String min) {
+    return '$min min';
+  }
+
+  @override
+  String upd2TookHours(String h, String min) {
+    return '$h h $min min';
+  }
+
+  @override
+  String get upd2ImgHere => 'already here';
+
+  @override
+  String get upd2ImgDone => 'downloaded';
+
+  @override
+  String get upd2ImgDatabase => 'The database (Postgres)';
+
+  @override
+  String get upd2StepDone => 'done';
+
+  @override
+  String get upd2StepNow => 'in progress';
+
+  @override
+  String get upd2StepTodo => 'to do';
+
+  @override
+  String get upd2StepFailed => 'stopped here';
+
+  @override
+  String get upd2Step_check => 'Check the new version\'s signature';
+
+  @override
+  String get upd2Step_download => 'Download the new version';
+
+  @override
+  String get upd2Step_files => 'Download the system\'s files';
+
+  @override
+  String get upd2Step_install => 'Install the system\'s files';
+
+  @override
+  String get upd2Step_restart => 'Restart RedGiant as the new version';
+
+  @override
+  String get upd2Step_wait => 'Check that RedGiant answers';
+
+  @override
+  String get upd2Step_rollback => 'Put the previous version back';
+
+  @override
+  String get upd2Step_scan => 'Compare the installed files';
+
+  @override
+  String get upd2Step_build => 'Put the new version together';
+
+  @override
+  String get upd2Step_installer => 'Download the installer';
+
+  @override
+  String get upd2StepText_check => 'Only a version signed by RedGiant is installed.';
+
+  @override
+  String get upd2StepText_download => 'RedGiant keeps working while it downloads.';
+
+  @override
+  String get upd2StepText_files => 'The programs of the system around RedGiant.';
+
+  @override
+  String get upd2StepText_install =>
+      'A copy of every file replaced is kept: if something goes wrong, it goes back as it was.';
+
+  @override
+  String get upd2StepText_restart =>
+      'For a minute or two RedGiant does not answer: the app reconnects by itself.';
+
+  @override
+  String get upd2StepText_wait =>
+      'If the new version does not answer within ten minutes, the previous one comes back by itself.';
+
+  @override
+  String get upd2StepText_rollback =>
+      'The new version did not start: the previous one is coming back, nothing is lost.';
+
+  @override
+  String get upd2StepText_scan => 'So only what changed is downloaded.';
+
+  @override
+  String get upd2StepText_build => 'The new version is prepared beside the current one.';
+
+  @override
+  String get upd2StepText_installer => 'The whole program: it installs over the current one.';
+
+  @override
+  String get upd2Why_download => 'The new version could not be downloaded.';
+
+  @override
+  String upd2WhyText_download(String from) {
+    return 'Nothing changed: RedGiant $from keeps working. Check that the machine reaches the internet, then press «Try again»: what came down already is not downloaded twice.';
+  }
+
+  @override
+  String get upd2Why_files => 'The system\'s new files could not be installed.';
+
+  @override
+  String upd2WhyText_files(String from) {
+    return 'Every file went back as it was and RedGiant $from keeps working. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.';
+  }
+
+  @override
+  String get upd2Why_not_up => 'The new version did not start.';
+
+  @override
+  String upd2WhyText_not_up(String from) {
+    return 'RedGiant went back to $from by itself: nothing is lost. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.';
+  }
+
+  @override
+  String get upd2Why_no_images => 'This version has nothing for this machine\'s processor.';
+
+  @override
+  String upd2WhyText_no_images(String from) {
+    return 'Nothing changed: RedGiant $from keeps working. Wait for the next version.';
+  }
+
+  @override
+  String get upd2Why_breaking => 'This version cannot be installed over the current one.';
+
+  @override
+  String upd2WhyText_breaking(String from) {
+    return 'Nothing changed: RedGiant $from keeps working. Open RedGiant\'s page from the computer: it guides you through the clean install.';
+  }
+
+  @override
+  String get upd2Why_unsigned => 'The new version is not signed.';
+
+  @override
+  String get upd2WhyText_unsigned =>
+      'For safety it was not installed: nothing changed. Look again later.';
+
+  @override
+  String get upd2Why_unreachable => 'GitHub did not answer.';
+
+  @override
+  String get upd2WhyText_unreachable =>
+      'Nothing changed. Check that the machine reaches the internet and press «Try again».';
+
+  @override
+  String get upd2Why_other => 'The update did not finish.';
+
+  @override
+  String upd2WhyText_other(String from) {
+    return 'The previous version ($from) is running: nothing is lost. Try again in a while.';
+  }
+
+  @override
+  String get upd2Why_gone => 'RedGiant does not answer any more.';
+
+  @override
+  String get upd2WhyText_gone =>
+      'It did not come back after the restart. Check that the machine is on and in the network, then press «Try again»: the app looks for it again.';
+
+  @override
+  String get upd2Why_start => 'The update did not start.';
+
+  @override
+  String upd2WhyText_start(String from) {
+    return 'Nothing changed: RedGiant $from keeps working. Try again in a while.';
+  }
+
+  @override
+  String upd2WhySaid(String error) {
+    return 'RedGiant said: $error';
+  }
 }

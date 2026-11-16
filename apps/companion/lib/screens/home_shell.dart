@@ -17,6 +17,7 @@ import 'inbox_screen.dart';
 import 'projects_screen.dart';
 import 'share_screen.dart';
 import 'team_screen.dart';
+import 'update_screen.dart';
 import 'you_screen.dart';
 
 class HomeShell extends StatefulWidget {
@@ -61,6 +62,8 @@ class _HomeShellState extends State<HomeShell> {
             }),
       );
     }
+    // An update found running when the app connected: its screen, by itself.
+    if (_app.takeUpdateToOpen() && !updateScreenOpen) unawaited(openUpdateScreen(context));
     final sid = _app.takePendingSession();
     if (sid != null) {
       unawaited(

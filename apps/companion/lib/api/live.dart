@@ -42,6 +42,7 @@ class LiveSocket {
   Timer? _ping;
   Timer? _retry;
   int _attempt = 0;
+  int _tries = 0;
   bool _stopped = false;
   String? ownerId;
   String? serverVersion;
@@ -58,14 +59,17 @@ class LiveSocket {
 
   Future<void> _connect() async {
     if (_stopped) return;
+    final mine = ++_tries;
     _set(LiveStatus.connecting);
     WebSocket ws;
     try {
       ws = await _open().timeout(const Duration(seconds: 15));
     } on Object {
+      // A newer try is under way ([reconnectNow]): it decides.
+      if (mine != _tries) return;
       return _later();
     }
-    if (_stopped) {
+    if (_stopped || mine != _tries) {
       await ws.close(1000);
       return;
     }
@@ -129,6 +133,15 @@ class LiveSocket {
     _attempt++;
     _retry?.cancel();
     _retry = Timer(Duration(seconds: s), _connect);
+  }
+
+  /// Right now, even while a try hangs on a server that went away (RedGiant answers again after
+  /// an update): the older try is dropped when it ends.
+  void reconnectNow() {
+    if (_stopped || status == LiveStatus.open) return;
+    _retry?.cancel();
+    _attempt = 0;
+    unawaited(_connect());
   }
 
   /// Right now, not after the back-off (the app came to the foreground, the person asked).

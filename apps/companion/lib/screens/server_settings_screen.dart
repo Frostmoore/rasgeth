@@ -1,6 +1,6 @@
 // «Settings of <name>» (G40.8, the person's request): the settings of the RedGiant the app is
-// connected to that are used most, made for the phone: its name, its state and updates (with
-// the bar and the steps when the server says them, 3.8.1), the devices connected (and signing
+// connected to that are used most, made for the phone: its name, its state and updates («Update»
+// opens the update's own screen, update_screen.dart), the devices connected (and signing
 // one out), this device's notifications, the default model, the voice, the access from outside
 // (to read, with its link); and «All settings», the page's Settings inside the app.
 import 'dart:async';
@@ -21,6 +21,7 @@ import '../ui/icons.dart';
 import '../ui/words.dart';
 import 'first_start_screen.dart' show openExternal;
 import 'full_settings_screen.dart';
+import 'update_screen.dart';
 import 'you_screen.dart' show reachWord;
 
 /// «12 MB of 340 MB · 2.1 MB/s · 2 min left», as the page says a download.
@@ -65,7 +66,6 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
   String? _error;
   String? _said;
   bool _looking = false;
-  Timer? _follow;
 
   RedGiantClient? get _c => AppScope.read(context).client;
 
@@ -73,12 +73,6 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
   void initState() {
     super.initState();
     unawaited(_load());
-  }
-
-  @override
-  void dispose() {
-    _follow?.cancel();
-    super.dispose();
   }
 
   Future<T?> _try<T>(Future<T> Function() f) async {
@@ -111,25 +105,25 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
     _followIfApplying();
   }
 
-  bool get _applying =>
-      (_os?.running ?? false) || _os?.state == 'applying' || _update?.progress != null;
+  bool get _applying {
+    final run = AppScope.read(context).updateRun;
+    if (run != null && !run.finished) return true;
+    return (_os?.updating ?? false) || (_update?.progress != null && _update?.phase != 'failed');
+  }
 
-  /// While an update runs, its bar and its steps every two seconds.
+  /// An update found running: the app follows it and its screen opens by itself.
   void _followIfApplying() {
-    _follow?.cancel();
+    final app = AppScope.read(context);
+    final run = app.updateRun;
+    if (run != null && !run.finished) return;
     if (!_applying) return;
-    _follow = Timer.periodic(const Duration(seconds: 2), (_) async {
-      final c = _c;
-      if (c == null) return;
-      final u = await _try(c.updateStatus);
-      final os = await _try(() => c.osUpdates());
-      if (!mounted) return;
-      setState(() {
-        _update = u ?? _update;
-        _os = os ?? _os;
-      });
-      if (!_applying) _follow?.cancel();
-    });
+    app.followUpdate(_update, _os, open: false);
+    unawaited(_openRun());
+  }
+
+  Future<void> _openRun() async {
+    await openUpdateScreen(context);
+    if (mounted) await _load();
   }
 
   Future<void> _look() async {
@@ -150,21 +144,29 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
   }
 
   Future<void> _updateNow() async {
+    final app = AppScope.read(context);
     final l = AppLocalizations.of(context);
+    final to = _os?.latest ?? _update?.latest ?? '';
     final ok = await askConfirm(
       context,
       title: l.updNowTitle,
-      body: l.updNowBody(_update?.latest ?? _os?.latest ?? ''),
+      // Only what really happens: on this computer RedGiant's own window does it.
+      body: app.localRedGiant ? l.updNowBodyLocal(to) : l.updNowBody(to),
       yes: l.updNow,
     );
     if (!ok || !mounted) return;
-    final done = await _try<bool>(() async {
-      await _c!.updateNow();
-      return true;
+    setState(() {
+      _error = null;
+      _said = null;
     });
-    if (done != true) return;
-    setState(() => _said = l.updStarted);
-    await _load();
+    unawaited(
+      app.startUpdate(
+        from: _os?.installed ?? _update?.installed,
+        to: to.isEmpty ? null : to,
+        note: _update?.note,
+      ),
+    );
+    await _openRun();
   }
 
   Future<void> _rename() async {
@@ -466,8 +468,6 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
     final breaking = u?.gate == 'breaking' || os?.state == 'breaking';
     final canHere = (u?.canUpdateHere ?? false) && !breaking;
     final installed = os?.installed ?? u?.installed;
-    final progress = os?.progress ?? u?.progress;
-    final step = os?.step ?? u?.phase;
     final facts = [
       if (installed != null) l.updInstalled(installed),
       if (u?.checkedAt != null) l.updChecked(_when(u!.checkedAt!)),
@@ -489,37 +489,21 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
       ),
     ];
     if (_applying) {
-      final steps = os?.steps ?? const <String>[];
       out.add(
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (step != null)
-                Text(updateStepText(l, step), style: const TextStyle(fontWeight: FontWeight.w600)),
-              const SizedBox(height: 6),
-              LinearProgressIndicator(key: const Key('update-bar'), value: progress?.fraction),
-              if (progress != null) ...[
-                const SizedBox(height: 4),
-                Text(progressText(l, progress), style: TextStyle(color: c.dim, fontSize: 12.5)),
-              ],
-              if (steps.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                for (final s in steps)
-                  Row(
-                    children: [
-                      RgIcon(
-                        s == step ? RgIcons.spinner : RgIcons.check,
-                        size: 14,
-                        color: s == step ? c.accent : c.ok,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(updateStepText(l, s)),
-                    ],
-                  ),
-              ],
-            ],
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: FilledButton.icon(
+              key: const Key('update-follow'),
+              onPressed: () {
+                final app = AppScope.read(context);
+                if (app.updateRun == null) app.followUpdate(_update, _os, open: false);
+                unawaited(_openRun());
+              },
+              icon: const RgIcon(RgIcons.download, size: 16, color: Colors.white),
+              label: Text(l.updFollow),
+            ),
           ),
         ),
       );
@@ -692,8 +676,8 @@ class _Banner extends StatelessWidget {
     final c = RgColors.of(context);
     final col = error ? c.err : c.ok;
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: col.withValues(alpha: .08),
         borderRadius: BorderRadius.circular(12),

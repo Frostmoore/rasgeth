@@ -1806,7 +1806,7 @@ abstract class AppLocalizations {
   /// No description provided for @updNowBody.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant installs {version} and restarts: for a few minutes it does not answer, then the app connects again by itself.'**
+  /// **'RedGiant downloads {version}, then restarts: for a minute or two it does not answer. You see every step, and the app reconnects by itself as soon as RedGiant is back.'**
   String updNowBody(String version);
 
   /// No description provided for @updStarted.
@@ -4616,6 +4616,486 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show all the message\'s figures'**
   String get metricsShowAll;
+
+  /// No description provided for @updNowBodyLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'On this computer RedGiant does the update to {version} in its own window: it downloads, closes and starts again as the new version. Here you see the steps it reports.'**
+  String updNowBodyLocal(String version);
+
+  /// No description provided for @updFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow the update'**
+  String get updFollow;
+
+  /// No description provided for @upd2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating RedGiant from {from} to {to}'**
+  String upd2Title(String from, String to);
+
+  /// No description provided for @upd2TitleTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating RedGiant to {to}'**
+  String upd2TitleTo(String to);
+
+  /// No description provided for @upd2Starting.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting the update…'**
+  String get upd2Starting;
+
+  /// No description provided for @upd2Left.
+  ///
+  /// In en, this message translates to:
+  /// **'about {time} left'**
+  String upd2Left(String time);
+
+  /// No description provided for @upd2Total.
+  ///
+  /// In en, this message translates to:
+  /// **'about {time} in all'**
+  String upd2Total(String time);
+
+  /// No description provided for @upd2LeftUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'working out how long it takes…'**
+  String get upd2LeftUnknown;
+
+  /// No description provided for @upd2Elapsed.
+  ///
+  /// In en, this message translates to:
+  /// **'running for {time}'**
+  String upd2Elapsed(String time);
+
+  /// No description provided for @upd2ToDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} to download'**
+  String upd2ToDownload(String size);
+
+  /// No description provided for @upd2Steps.
+  ///
+  /// In en, this message translates to:
+  /// **'The update\'s steps'**
+  String get upd2Steps;
+
+  /// No description provided for @upd2Restarting.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant is restarting, reconnecting…'**
+  String get upd2Restarting;
+
+  /// No description provided for @upd2Attempt.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempt {n} · no answer for {time}'**
+  String upd2Attempt(String n, String time);
+
+  /// No description provided for @upd2Back.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant answers: checking it is the new version…'**
+  String get upd2Back;
+
+  /// No description provided for @upd2Keeps.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant keeps working while it downloads: it stops only for the restart, a minute or two.'**
+  String get upd2Keeps;
+
+  /// No description provided for @upd2ComesBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the app open: it reconnects by itself as soon as RedGiant answers as the new version.'**
+  String get upd2ComesBack;
+
+  /// No description provided for @upd2Local.
+  ///
+  /// In en, this message translates to:
+  /// **'On this computer RedGiant does the update in its own window, with the bar and the time: here you see the steps it reports, and if this window stays open it reconnects by itself when RedGiant is back.'**
+  String get upd2Local;
+
+  /// No description provided for @upd2Older.
+  ///
+  /// In en, this message translates to:
+  /// **'This RedGiant does not report each step\'s details yet (they come with 3.8.1): you see where it is and for how long.'**
+  String get upd2Older;
+
+  /// No description provided for @upd2Done.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated to {version}'**
+  String upd2Done(String version);
+
+  /// No description provided for @upd2DoneText.
+  ///
+  /// In en, this message translates to:
+  /// **'From {from}, in {time}. Conversations, agents and settings are as before.'**
+  String upd2DoneText(String from, String time);
+
+  /// No description provided for @upd2DoneFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From {from}. Conversations, agents and settings are as before.'**
+  String upd2DoneFrom(String from);
+
+  /// No description provided for @upd2Reconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'The app reconnected by itself.'**
+  String get upd2Reconnected;
+
+  /// No description provided for @upd2Reconnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnecting to the new version…'**
+  String get upd2Reconnecting;
+
+  /// No description provided for @upd2News.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new in {version}'**
+  String upd2News(String version);
+
+  /// No description provided for @upd2Notes.
+  ///
+  /// In en, this message translates to:
+  /// **'The version\'s notes on GitHub'**
+  String get upd2Notes;
+
+  /// No description provided for @upd2BackHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to RedGiant'**
+  String get upd2BackHome;
+
+  /// No description provided for @upd2Hide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide: the update goes on'**
+  String get upd2Hide;
+
+  /// No description provided for @upd2Retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get upd2Retry;
+
+  /// No description provided for @upd2Close.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back'**
+  String get upd2Close;
+
+  /// No description provided for @upd2TookLess.
+  ///
+  /// In en, this message translates to:
+  /// **'less than a minute'**
+  String get upd2TookLess;
+
+  /// No description provided for @upd2TookMin.
+  ///
+  /// In en, this message translates to:
+  /// **'{min} min'**
+  String upd2TookMin(String min);
+
+  /// No description provided for @upd2TookHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{h} h {min} min'**
+  String upd2TookHours(String h, String min);
+
+  /// No description provided for @upd2ImgHere.
+  ///
+  /// In en, this message translates to:
+  /// **'already here'**
+  String get upd2ImgHere;
+
+  /// No description provided for @upd2ImgDone.
+  ///
+  /// In en, this message translates to:
+  /// **'downloaded'**
+  String get upd2ImgDone;
+
+  /// No description provided for @upd2ImgDatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'The database (Postgres)'**
+  String get upd2ImgDatabase;
+
+  /// No description provided for @upd2StepDone.
+  ///
+  /// In en, this message translates to:
+  /// **'done'**
+  String get upd2StepDone;
+
+  /// No description provided for @upd2StepNow.
+  ///
+  /// In en, this message translates to:
+  /// **'in progress'**
+  String get upd2StepNow;
+
+  /// No description provided for @upd2StepTodo.
+  ///
+  /// In en, this message translates to:
+  /// **'to do'**
+  String get upd2StepTodo;
+
+  /// No description provided for @upd2StepFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'stopped here'**
+  String get upd2StepFailed;
+
+  /// No description provided for @upd2Step_check.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the new version\'s signature'**
+  String get upd2Step_check;
+
+  /// No description provided for @upd2Step_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the new version'**
+  String get upd2Step_download;
+
+  /// No description provided for @upd2Step_files.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the system\'s files'**
+  String get upd2Step_files;
+
+  /// No description provided for @upd2Step_install.
+  ///
+  /// In en, this message translates to:
+  /// **'Install the system\'s files'**
+  String get upd2Step_install;
+
+  /// No description provided for @upd2Step_restart.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart RedGiant as the new version'**
+  String get upd2Step_restart;
+
+  /// No description provided for @upd2Step_wait.
+  ///
+  /// In en, this message translates to:
+  /// **'Check that RedGiant answers'**
+  String get upd2Step_wait;
+
+  /// No description provided for @upd2Step_rollback.
+  ///
+  /// In en, this message translates to:
+  /// **'Put the previous version back'**
+  String get upd2Step_rollback;
+
+  /// No description provided for @upd2Step_scan.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare the installed files'**
+  String get upd2Step_scan;
+
+  /// No description provided for @upd2Step_build.
+  ///
+  /// In en, this message translates to:
+  /// **'Put the new version together'**
+  String get upd2Step_build;
+
+  /// No description provided for @upd2Step_installer.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the installer'**
+  String get upd2Step_installer;
+
+  /// No description provided for @upd2StepText_check.
+  ///
+  /// In en, this message translates to:
+  /// **'Only a version signed by RedGiant is installed.'**
+  String get upd2StepText_check;
+
+  /// No description provided for @upd2StepText_download.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant keeps working while it downloads.'**
+  String get upd2StepText_download;
+
+  /// No description provided for @upd2StepText_files.
+  ///
+  /// In en, this message translates to:
+  /// **'The programs of the system around RedGiant.'**
+  String get upd2StepText_files;
+
+  /// No description provided for @upd2StepText_install.
+  ///
+  /// In en, this message translates to:
+  /// **'A copy of every file replaced is kept: if something goes wrong, it goes back as it was.'**
+  String get upd2StepText_install;
+
+  /// No description provided for @upd2StepText_restart.
+  ///
+  /// In en, this message translates to:
+  /// **'For a minute or two RedGiant does not answer: the app reconnects by itself.'**
+  String get upd2StepText_restart;
+
+  /// No description provided for @upd2StepText_wait.
+  ///
+  /// In en, this message translates to:
+  /// **'If the new version does not answer within ten minutes, the previous one comes back by itself.'**
+  String get upd2StepText_wait;
+
+  /// No description provided for @upd2StepText_rollback.
+  ///
+  /// In en, this message translates to:
+  /// **'The new version did not start: the previous one is coming back, nothing is lost.'**
+  String get upd2StepText_rollback;
+
+  /// No description provided for @upd2StepText_scan.
+  ///
+  /// In en, this message translates to:
+  /// **'So only what changed is downloaded.'**
+  String get upd2StepText_scan;
+
+  /// No description provided for @upd2StepText_build.
+  ///
+  /// In en, this message translates to:
+  /// **'The new version is prepared beside the current one.'**
+  String get upd2StepText_build;
+
+  /// No description provided for @upd2StepText_installer.
+  ///
+  /// In en, this message translates to:
+  /// **'The whole program: it installs over the current one.'**
+  String get upd2StepText_installer;
+
+  /// No description provided for @upd2Why_download.
+  ///
+  /// In en, this message translates to:
+  /// **'The new version could not be downloaded.'**
+  String get upd2Why_download;
+
+  /// No description provided for @upd2WhyText_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing changed: RedGiant {from} keeps working. Check that the machine reaches the internet, then press «Try again»: what came down already is not downloaded twice.'**
+  String upd2WhyText_download(String from);
+
+  /// No description provided for @upd2Why_files.
+  ///
+  /// In en, this message translates to:
+  /// **'The system\'s new files could not be installed.'**
+  String get upd2Why_files;
+
+  /// No description provided for @upd2WhyText_files.
+  ///
+  /// In en, this message translates to:
+  /// **'Every file went back as it was and RedGiant {from} keeps working. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.'**
+  String upd2WhyText_files(String from);
+
+  /// No description provided for @upd2Why_not_up.
+  ///
+  /// In en, this message translates to:
+  /// **'The new version did not start.'**
+  String get upd2Why_not_up;
+
+  /// No description provided for @upd2WhyText_not_up.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant went back to {from} by itself: nothing is lost. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.'**
+  String upd2WhyText_not_up(String from);
+
+  /// No description provided for @upd2Why_no_images.
+  ///
+  /// In en, this message translates to:
+  /// **'This version has nothing for this machine\'s processor.'**
+  String get upd2Why_no_images;
+
+  /// No description provided for @upd2WhyText_no_images.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing changed: RedGiant {from} keeps working. Wait for the next version.'**
+  String upd2WhyText_no_images(String from);
+
+  /// No description provided for @upd2Why_breaking.
+  ///
+  /// In en, this message translates to:
+  /// **'This version cannot be installed over the current one.'**
+  String get upd2Why_breaking;
+
+  /// No description provided for @upd2WhyText_breaking.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing changed: RedGiant {from} keeps working. Open RedGiant\'s page from the computer: it guides you through the clean install.'**
+  String upd2WhyText_breaking(String from);
+
+  /// No description provided for @upd2Why_unsigned.
+  ///
+  /// In en, this message translates to:
+  /// **'The new version is not signed.'**
+  String get upd2Why_unsigned;
+
+  /// No description provided for @upd2WhyText_unsigned.
+  ///
+  /// In en, this message translates to:
+  /// **'For safety it was not installed: nothing changed. Look again later.'**
+  String get upd2WhyText_unsigned;
+
+  /// No description provided for @upd2Why_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub did not answer.'**
+  String get upd2Why_unreachable;
+
+  /// No description provided for @upd2WhyText_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing changed. Check that the machine reaches the internet and press «Try again».'**
+  String get upd2WhyText_unreachable;
+
+  /// No description provided for @upd2Why_other.
+  ///
+  /// In en, this message translates to:
+  /// **'The update did not finish.'**
+  String get upd2Why_other;
+
+  /// No description provided for @upd2WhyText_other.
+  ///
+  /// In en, this message translates to:
+  /// **'The previous version ({from}) is running: nothing is lost. Try again in a while.'**
+  String upd2WhyText_other(String from);
+
+  /// No description provided for @upd2Why_gone.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant does not answer any more.'**
+  String get upd2Why_gone;
+
+  /// No description provided for @upd2WhyText_gone.
+  ///
+  /// In en, this message translates to:
+  /// **'It did not come back after the restart. Check that the machine is on and in the network, then press «Try again»: the app looks for it again.'**
+  String get upd2WhyText_gone;
+
+  /// No description provided for @upd2Why_start.
+  ///
+  /// In en, this message translates to:
+  /// **'The update did not start.'**
+  String get upd2Why_start;
+
+  /// No description provided for @upd2WhyText_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing changed: RedGiant {from} keeps working. Try again in a while.'**
+  String upd2WhyText_start(String from);
+
+  /// No description provided for @upd2WhySaid.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant said: {error}'**
+  String upd2WhySaid(String error);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

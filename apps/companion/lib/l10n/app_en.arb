@@ -525,7 +525,7 @@
   "updLooking": "Looking…",
   "updNow": "Update",
   "updNowTitle": "Update RedGiant?",
-  "updNowBody": "RedGiant installs {version} and restarts: for a few minutes it does not answer, then the app connects again by itself.",
+  "updNowBody": "RedGiant downloads {version}, then restarts: for a minute or two it does not answer. You see every step, and the app reconnects by itself as soon as RedGiant is back.",
   "@updNowBody": {
     "placeholders": {
       "version": {
@@ -1551,5 +1551,251 @@
   "metricsRestoredFromDisk": "KV cache restored from the SSD before this request",
   "metricsCostUnknown": "cost not known",
   "metricsCostUnknownHint": "This model is not in the models catalog yet: its prices are not known, so its cost is not counted.",
-  "metricsShowAll": "Show all the message's figures"
+  "metricsShowAll": "Show all the message's figures",
+  "updNowBodyLocal": "On this computer RedGiant does the update to {version} in its own window: it downloads, closes and starts again as the new version. Here you see the steps it reports.",
+  "@updNowBodyLocal": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updFollow": "Follow the update",
+  "upd2Title": "Updating RedGiant from {from} to {to}",
+  "@upd2Title": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2TitleTo": "Updating RedGiant to {to}",
+  "@upd2TitleTo": {
+    "placeholders": {
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2Starting": "Starting the update…",
+  "upd2Left": "about {time} left",
+  "@upd2Left": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2Total": "about {time} in all",
+  "@upd2Total": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2LeftUnknown": "working out how long it takes…",
+  "upd2Elapsed": "running for {time}",
+  "@upd2Elapsed": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2ToDownload": "{size} to download",
+  "@upd2ToDownload": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2Steps": "The update's steps",
+  "upd2Restarting": "RedGiant is restarting, reconnecting…",
+  "upd2Attempt": "Attempt {n} · no answer for {time}",
+  "@upd2Attempt": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2Back": "RedGiant answers: checking it is the new version…",
+  "upd2Keeps": "RedGiant keeps working while it downloads: it stops only for the restart, a minute or two.",
+  "upd2ComesBack": "Keep the app open: it reconnects by itself as soon as RedGiant answers as the new version.",
+  "upd2Local": "On this computer RedGiant does the update in its own window, with the bar and the time: here you see the steps it reports, and if this window stays open it reconnects by itself when RedGiant is back.",
+  "upd2Older": "This RedGiant does not report each step's details yet (they come with 3.8.1): you see where it is and for how long.",
+  "upd2Done": "Updated to {version}",
+  "@upd2Done": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2DoneText": "From {from}, in {time}. Conversations, agents and settings are as before.",
+  "@upd2DoneText": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2DoneFrom": "From {from}. Conversations, agents and settings are as before.",
+  "@upd2DoneFrom": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2Reconnected": "The app reconnected by itself.",
+  "upd2Reconnecting": "Reconnecting to the new version…",
+  "upd2News": "What's new in {version}",
+  "@upd2News": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2Notes": "The version's notes on GitHub",
+  "upd2BackHome": "Back to RedGiant",
+  "upd2Hide": "Hide: the update goes on",
+  "upd2Retry": "Try again",
+  "upd2Close": "Go back",
+  "upd2TookLess": "less than a minute",
+  "upd2TookMin": "{min} min",
+  "@upd2TookMin": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2TookHours": "{h} h {min} min",
+  "@upd2TookHours": {
+    "placeholders": {
+      "h": {
+        "type": "String"
+      },
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2ImgHere": "already here",
+  "upd2ImgDone": "downloaded",
+  "upd2ImgDatabase": "The database (Postgres)",
+  "upd2StepDone": "done",
+  "upd2StepNow": "in progress",
+  "upd2StepTodo": "to do",
+  "upd2StepFailed": "stopped here",
+  "upd2Step_check": "Check the new version's signature",
+  "upd2Step_download": "Download the new version",
+  "upd2Step_files": "Download the system's files",
+  "upd2Step_install": "Install the system's files",
+  "upd2Step_restart": "Restart RedGiant as the new version",
+  "upd2Step_wait": "Check that RedGiant answers",
+  "upd2Step_rollback": "Put the previous version back",
+  "upd2Step_scan": "Compare the installed files",
+  "upd2Step_build": "Put the new version together",
+  "upd2Step_installer": "Download the installer",
+  "upd2StepText_check": "Only a version signed by RedGiant is installed.",
+  "upd2StepText_download": "RedGiant keeps working while it downloads.",
+  "upd2StepText_files": "The programs of the system around RedGiant.",
+  "upd2StepText_install": "A copy of every file replaced is kept: if something goes wrong, it goes back as it was.",
+  "upd2StepText_restart": "For a minute or two RedGiant does not answer: the app reconnects by itself.",
+  "upd2StepText_wait": "If the new version does not answer within ten minutes, the previous one comes back by itself.",
+  "upd2StepText_rollback": "The new version did not start: the previous one is coming back, nothing is lost.",
+  "upd2StepText_scan": "So only what changed is downloaded.",
+  "upd2StepText_build": "The new version is prepared beside the current one.",
+  "upd2StepText_installer": "The whole program: it installs over the current one.",
+  "upd2Why_download": "The new version could not be downloaded.",
+  "upd2WhyText_download": "Nothing changed: RedGiant {from} keeps working. Check that the machine reaches the internet, then press «Try again»: what came down already is not downloaded twice.",
+  "@upd2WhyText_download": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2Why_files": "The system's new files could not be installed.",
+  "upd2WhyText_files": "Every file went back as it was and RedGiant {from} keeps working. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.",
+  "@upd2WhyText_files": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2Why_not_up": "The new version did not start.",
+  "upd2WhyText_not_up": "RedGiant went back to {from} by itself: nothing is lost. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.",
+  "@upd2WhyText_not_up": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2Why_no_images": "This version has nothing for this machine's processor.",
+  "upd2WhyText_no_images": "Nothing changed: RedGiant {from} keeps working. Wait for the next version.",
+  "@upd2WhyText_no_images": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2Why_breaking": "This version cannot be installed over the current one.",
+  "upd2WhyText_breaking": "Nothing changed: RedGiant {from} keeps working. Open RedGiant's page from the computer: it guides you through the clean install.",
+  "@upd2WhyText_breaking": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2Why_unsigned": "The new version is not signed.",
+  "upd2WhyText_unsigned": "For safety it was not installed: nothing changed. Look again later.",
+  "upd2Why_unreachable": "GitHub did not answer.",
+  "upd2WhyText_unreachable": "Nothing changed. Check that the machine reaches the internet and press «Try again».",
+  "upd2Why_other": "The update did not finish.",
+  "upd2WhyText_other": "The previous version ({from}) is running: nothing is lost. Try again in a while.",
+  "@upd2WhyText_other": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2Why_gone": "RedGiant does not answer any more.",
+  "upd2WhyText_gone": "It did not come back after the restart. Check that the machine is on and in the network, then press «Try again»: the app looks for it again.",
+  "upd2Why_start": "The update did not start.",
+  "upd2WhyText_start": "Nothing changed: RedGiant {from} keeps working. Try again in a while.",
+  "@upd2WhyText_start": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "upd2WhySaid": "RedGiant said: {error}",
+  "@upd2WhySaid": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }
