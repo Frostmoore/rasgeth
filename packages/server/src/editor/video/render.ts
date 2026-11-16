@@ -4,7 +4,6 @@
 // again (the exact preview of G41.5a, a second render after a small edit). Nothing is left
 // half-written: the output is written as `<out>.part.mp4` and renamed, the work folder goes.
 // G41.6 wraps it in a job (`video_render`, the bar from `progress`, «Cancel» from `signal`).
-import { spawn } from "node:child_process";
 import { copyFile, mkdir, mkdtemp, rename, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -18,6 +17,7 @@ import {
   type RenderStep,
   stepArgs,
 } from "./compile.js";
+import { type MediaRunner, progressSeconds, runMedia } from "./media-run.js";
 
 /** The server's fonts (p3.5.8, `packages/server/fonts`): Inter for texts and subtitles. */
 export const RENDER_FONTS_DIR = fileURLToPath(new URL("../../../fonts/", import.meta.url));
@@ -31,39 +31,22 @@ export type FfmpegRun = (
   o: { cwd: string; signal?: AbortSignal; onTime?: (seconds: number) => void },
 ) => Promise<string>;
 
-/** ffmpeg with execFile semantics (no shell), its progress read from `-progress pipe:1`. */
-export function ffmpegRunner(ffmpeg: string): FfmpegRun {
-  return (args, o) =>
-    new Promise((resolve, reject) => {
-      const child = spawn(ffmpeg, ["-progress", "pipe:1", "-nostats", ...args], {
-        cwd: o.cwd,
-        windowsHide: true,
-        stdio: ["ignore", "pipe", "pipe"],
-        ...(o.signal && { signal: o.signal }),
-      });
-      let err = "";
-      let buf = "";
-      child.stderr.on("data", (d: Buffer) => {
-        err = (err + d.toString()).slice(-4000);
-      });
-      child.stdout.on("data", (d: Buffer) => {
-        buf += d.toString();
-        const lines = buf.split("\n");
-        buf = lines.pop() ?? "";
-        for (const line of lines) {
-          const m = /^out_time_us=(\d+)/.exec(line);
-          if (m) o.onTime?.(Number(m[1]) / 1e6);
-        }
-      });
-      child.on("error", reject);
-      child.on("close", (code) =>
-        code === 0
-          ? resolve(err)
-          : reject(
-              new Error(`ffmpeg failed (${code}): ${err.trim().split("\n").slice(-6).join("\n")}`),
-            ),
-      );
+/**
+ * ffmpeg through `runMedia` (no shell, «Cancel» kills it), its progress read from
+ * `-progress pipe:1`; resolves with the end of stderr (loudnorm's measure).
+ */
+export function ffmpegRunner(ffmpeg: string, run: MediaRunner = runMedia): FfmpegRun {
+  return async (args, o) => {
+    const r = await run(ffmpeg, ["-progress", "pipe:1", "-nostats", ...args], {
+      cwd: o.cwd,
+      ...(o.signal && { signal: o.signal }),
+      onStdoutLine: (line) => {
+        const t = progressSeconds(line);
+        if (t !== undefined) o.onTime?.(t);
+      },
     });
+    return r.stderr;
+  };
 }
 
 export interface RenderOptions {

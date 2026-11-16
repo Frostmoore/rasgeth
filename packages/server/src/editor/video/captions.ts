@@ -226,26 +226,36 @@ function clock(seconds: number, sep: "," | "."): string {
 
 type Timed = Pick<VideoCaption, "start" | "end" | "text">;
 
-function ordered(captions: readonly Timed[]): Timed[] {
+function ordered<T extends Timed>(captions: readonly T[]): T[] {
   return captions.filter((c) => c.end > c.start && c.text.trim()).sort((a, b) => a.start - b.start);
 }
 
-/** The timeline's captions (frames at `rate`) as SubRip. */
+/** A cue's text: trimmed, one line break at most between lines (a blank line ends a cue). */
+function cueText(text: string): string {
+  return text
+    .trim()
+    .replace(/\r\n?/g, "\n")
+    .replace(/\n{2,}/g, "\n");
+}
+
+/** The timeline's captions (frames at `rate`) as SubRip: the render's sidecar and text track. */
 export function captionsToSrt(captions: readonly Timed[], rate: VideoRate): string {
   return ordered(captions)
     .map(
       (c, i) =>
-        `${i + 1}\n${clock(framesToSeconds(c.start, rate), ",")} --> ${clock(framesToSeconds(c.end, rate), ",")}\n${c.text.trim()}\n`,
+        `${i + 1}\n${clock(framesToSeconds(c.start, rate), ",")} --> ${clock(framesToSeconds(c.end, rate), ",")}\n${cueText(c.text)}\n`,
     )
     .join("\n");
 }
 
-/** The timeline's captions as WebVTT (the browser's `<track>`). */
+/**
+ * The timeline's captions as WebVTT (the browser's `<track>`, the render's sidecar). The text is
+ * escaped (& < >), so a "-->" inside a cue cannot end its timing line.
+ */
 export function captionsToVtt(captions: readonly Timed[], rate: VideoRate): string {
-  const cues = ordered(captions).map(
-    (c) =>
-      // "-->" may not appear inside a cue's text.
-      `${clock(framesToSeconds(c.start, rate), ".")} --> ${clock(framesToSeconds(c.end, rate), ".")}\n${c.text.trim().replace(/-->/g, "->")}\n`,
-  );
+  const cues = ordered(captions).map((c) => {
+    const text = cueText(c.text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return `${clock(framesToSeconds(c.start, rate), ".")} --> ${clock(framesToSeconds(c.end, rate), ".")}\n${text}\n`;
+  });
   return `WEBVTT\n\n${cues.join("\n")}`;
 }

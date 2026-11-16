@@ -8,7 +8,8 @@ import { isAbsolute, join } from "node:path";
 import { newRgVideo, type RgVideo, type VideoClip } from "@redgiant/protocol";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { compileVideo, type RenderPlan } from "../src/editor/video/compile.js";
-import { type FfmpegRun, renderVideo } from "../src/editor/video/render.js";
+import type { MediaRunner } from "../src/editor/video/media-run.js";
+import { type FfmpegRun, ffmpegRunner, renderVideo } from "../src/editor/video/render.js";
 
 const R = { num: 25, den: 1 };
 const clip = (
@@ -232,5 +233,46 @@ describe("renderVideo", () => {
     expect(f.calls).toHaveLength(1);
     expect(existsSync(out)).toBe(false);
     expect(readdirSync(join(dir, "work"))).toEqual([]);
+  });
+});
+
+describe("ffmpegRunner", () => {
+  it("runs ffmpeg through runMedia: progress lines, cwd, signal, the end of stderr", async () => {
+    const seen: { program: string; args: string[]; cwd?: string; signal?: AbortSignal }[] = [];
+    const run: MediaRunner = async (program, args, o = {}) => {
+      seen.push({
+        program,
+        args,
+        ...(o.cwd && { cwd: o.cwd }),
+        ...(o.signal && { signal: o.signal }),
+      });
+      for (const line of ["frame=1", "out_time_us=500000", "out_time_ms=1500000", "progress=end"])
+        o.onStdoutLine?.(line);
+      return { stdout: "", stderr: "measure" };
+    };
+    const signal = new AbortController().signal;
+    const times: number[] = [];
+    const out = await ffmpegRunner("/bin/ffmpeg", run)(["-i", "a.mp4", "b.mp4"], {
+      cwd: "/work",
+      signal,
+      onTime: (t) => times.push(t),
+    });
+    expect(out).toBe("measure");
+    expect(times).toEqual([0.5, 1.5]);
+    expect(seen).toEqual([
+      {
+        program: "/bin/ffmpeg",
+        args: ["-progress", "pipe:1", "-nostats", "-i", "a.mp4", "b.mp4"],
+        cwd: "/work",
+        signal,
+      },
+    ]);
+  });
+
+  it("a failure is runMedia's error", async () => {
+    const run: MediaRunner = async () => {
+      throw new Error("ffmpeg exited with 1: boom");
+    };
+    await expect(ffmpegRunner("ffmpeg", run)([], { cwd: "/w" })).rejects.toThrow("boom");
   });
 });

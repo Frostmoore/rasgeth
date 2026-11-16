@@ -49,13 +49,8 @@ import {
   type VideoRect,
   type VideoTransition,
 } from "@redgiant/protocol";
-import {
-  captionsAss,
-  captionsSrt,
-  captionsVtt,
-  subtitleLanguage,
-  textWidth,
-} from "./render-subtitles.js";
+import { captionsToSrt, captionsToVtt } from "./captions.js";
+import { captionsAss, subtitleLanguage, textWidth } from "./render-subtitles.js";
 
 export { textWidth };
 
@@ -978,8 +973,8 @@ export function compileVideo(
     captions: {
       mode,
       ...(hasCaptions && {
-        srt: captionsSrt(doc.captions.segments, rate),
-        vtt: captionsVtt(doc.captions.segments, rate),
+        srt: captionsToSrt(doc.captions.segments, rate),
+        vtt: captionsToVtt(doc.captions.segments, rate),
       }),
       language: subtitleLanguage(doc.captions.language),
     },

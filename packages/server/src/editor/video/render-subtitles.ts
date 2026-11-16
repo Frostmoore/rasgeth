@@ -1,6 +1,7 @@
 // Subtitles for a render (G41.3): an ASS file for libass when they are burnt into the picture
-// (one per segment, its times from the segment's start), an SRT for the MP4's text track
-// (mov_text) and the SRT and WebVTT files saved beside the video. Pure: text in, text out.
+// (one per segment, its times from the segment's start). The SRT for the MP4's text track
+// (mov_text) and the SRT and WebVTT files saved beside the video are `captionsToSrt` and
+// `captionsToVtt` of captions.ts (G41.4). Pure: text in, text out.
 // G41.4 splits the transcript into lines (`captionLines`); here every subtitle is written as
 // it is, wrapped by libass when it is too long for the picture.
 import {
@@ -11,16 +12,6 @@ import {
 } from "@redgiant/protocol";
 
 const two = (n: number) => String(n).padStart(2, "0");
-const three = (n: number) => String(n).padStart(3, "0");
-
-/** HH:MM:SS,mmm (SRT) or HH:MM:SS.mmm (WebVTT). */
-function clock(seconds: number, sep: "," | "."): string {
-  const ms = Math.max(0, Math.round(seconds * 1000));
-  const h = Math.floor(ms / 3_600_000);
-  const m = Math.floor(ms / 60_000) % 60;
-  const s = Math.floor(ms / 1000) % 60;
-  return `${two(h)}:${two(m)}:${two(s)}${sep}${three(ms % 1000)}`;
-}
 
 /** H:MM:SS.cc, ASS's own clock (hundredths). */
 function assClock(seconds: number): string {
@@ -33,34 +24,6 @@ function assClock(seconds: number): string {
 
 const sorted = (caps: readonly VideoCaption[]) =>
   caps.filter((c) => c.end > c.start && c.text.trim()).sort((a, b) => a.start - b.start);
-
-/** The subtitles as SRT, times in the timeline. */
-export function captionsSrt(caps: readonly VideoCaption[], rate: VideoRate): string {
-  return sorted(caps)
-    .map(
-      (c, i) =>
-        `${i + 1}\n${clock(framesToSeconds(c.start, rate), ",")} --> ${clock(framesToSeconds(c.end, rate), ",")}\n${c.text
-          .trim()
-          .replace(/\r\n?/g, "\n")
-          .replace(/\n{2,}/g, "\n")}\n`,
-    )
-    .join("\n");
-}
-
-/** The subtitles as WebVTT (the cue text escaped: & < > and no "-->"). */
-export function captionsVtt(caps: readonly VideoCaption[], rate: VideoRate): string {
-  const cues = sorted(caps).map((c) => {
-    const text = c.text
-      .trim()
-      .replace(/\r\n?/g, "\n")
-      .replace(/\n{2,}/g, "\n")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-    return `${clock(framesToSeconds(c.start, rate), ".")} --> ${clock(framesToSeconds(c.end, rate), ".")}\n${text}\n`;
-  });
-  return `WEBVTT\n\n${cues.join("\n")}`;
-}
 
 /** Text as ASS shows it literally: braces would start an override, a new line is \N. */
 function assText(text: string): string {

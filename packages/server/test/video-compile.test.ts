@@ -11,6 +11,7 @@ import {
   type VideoTransition,
 } from "@redgiant/protocol";
 import { describe, expect, it } from "vitest";
+import { captionsToSrt, captionsToVtt } from "../src/editor/video/captions.js";
 import {
   compileVideo,
   EmptyTimeline,
@@ -28,13 +29,8 @@ import {
   TITLE_SAFE,
   textWidth,
 } from "../src/editor/video/compile.js";
-import { probeFromJson } from "../src/editor/video/render-probe.js";
-import {
-  captionsAss,
-  captionsSrt,
-  captionsVtt,
-  subtitleLanguage,
-} from "../src/editor/video/render-subtitles.js";
+import { parseProbe, renderProbeOf } from "../src/editor/video/probe.js";
+import { captionsAss, subtitleLanguage } from "../src/editor/video/render-subtitles.js";
 
 const R = { num: 25, den: 1 };
 const TARGET: RenderTarget = { encoder: "libx264", fontsDir: "/srv/fonts", quality: "draft" };
@@ -608,10 +604,10 @@ describe("texts and captions", () => {
       { id: "a", start: 0, end: 25, text: "Uno\r\n\r\nriga" },
       { id: "e", start: 80, end: 80, text: "vuoto" },
     ];
-    expect(captionsSrt(list, R)).toBe(
+    expect(captionsToSrt(list, R)).toBe(
       "1\n00:00:00,000 --> 00:00:01,000\nUno\nriga\n\n2\n00:00:02,000 --> 00:00:03,000\nDue <b> & tre\n",
     );
-    expect(captionsVtt(list, R)).toBe(
+    expect(captionsToVtt(list, R)).toBe(
       "WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nUno\nriga\n\n00:00:02.000 --> 00:00:03.000\nDue &lt;b&gt; &amp; tre\n",
     );
     const ass = captionsAss(
@@ -894,7 +890,8 @@ describe("probe", () => {
         ],
         format: { format_name: "mov,mp4,m4a,3gp,3g2,mj2", duration: "10.010000" },
       },
-      { frames: 300, audio: true, width: 3840, height: 2160, seconds: 10.01 },
+      { frames: 300, audio: true },
+      [3840, 2160],
     ],
     [
       "a photo",
@@ -910,7 +907,8 @@ describe("probe", () => {
         ],
         format: { format_name: "image2", duration: "0.040000" },
       },
-      { frames: null, audio: false, width: 600, height: 900 },
+      { frames: null, audio: false },
+      [600, 900],
     ],
     [
       "music with a cover picture",
@@ -927,13 +925,17 @@ describe("probe", () => {
         ],
         format: { format_name: "mp3", duration: "180.500000" },
       },
-      { frames: 5409, audio: true, seconds: 180.5 },
+      { frames: 5409, audio: true },
+      [0, 0],
     ],
-    ["nothing readable", {}, { audio: false }],
-  ])("%s", (_, json, expected) => {
-    expect(probeFromJson(json, rate)).toEqual(expected);
+  ])("%s: what the render reads of the analysis' probe", (_, json, expected, size) => {
+    const p = parseProbe(json, 1000);
+    expect(renderProbeOf(p, rate)).toEqual(expected);
+    expect([p.width, p.height]).toEqual(size);
   });
-  it("carries the fingerprint", () => {
-    expect(probeFromJson({ format: { duration: "1" } }, R, "10:20").fingerprint).toBe("10:20");
+  it("nothing readable is refused; the fingerprint is carried", () => {
+    expect(() => parseProbe({})).toThrow();
+    const p = parseProbe({ streams: [{ codec_type: "audio" }], format: { duration: "1" } });
+    expect(renderProbeOf(p, R, "10:20")).toEqual({ frames: 25, audio: true, fingerprint: "10:20" });
   });
 });

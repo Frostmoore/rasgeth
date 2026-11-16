@@ -834,9 +834,9 @@ describe("captions", () => {
     );
   });
 
-  it("WebVTT: the header, dots in the times, no arrow inside a cue", () => {
+  it("WebVTT: the header, dots in the times, the cue text escaped (no arrow inside a cue)", () => {
     expect(captionsToVtt(caps, rate)).toBe(
-      "WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nPrima\nriga\n\n00:00:02.000 --> 00:00:04.000\nBuongiorno a tutti.\n\n01:00:01.200 --> 01:00:02.400\nUn'ora -> dopo\n",
+      "WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nPrima\nriga\n\n00:00:02.000 --> 00:00:04.000\nBuongiorno a tutti.\n\n01:00:01.200 --> 01:00:02.400\nUn'ora --&gt; dopo\n",
     );
     expect(captionsToVtt([], rate)).toBe("WEBVTT\n\n");
     // NTSC: frames to milliseconds at 30000/1001.

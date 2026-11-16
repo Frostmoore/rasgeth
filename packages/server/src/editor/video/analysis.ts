@@ -8,7 +8,7 @@
 
 import { createHash, randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
-import { mkdir, open, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
+import { mkdir, open, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { cpus } from "node:os";
 import { join } from "node:path";
 import {
@@ -32,7 +32,7 @@ import {
   waveformWidth,
 } from "./derived.js";
 import { MediaRunError, type MediaRunner, progressSeconds, runMedia } from "./media-run.js";
-import { parseProbe, probeArgs } from "./probe.js";
+import { probeFile, UnreadableMedia } from "./probe.js";
 import { parseSilenceDetect, silenceArgs, silenceCuts, soundSpans } from "./silences.js";
 import { speechRatio } from "./speech.js";
 import {
@@ -157,21 +157,16 @@ export class VideoAnalysis {
     const cached = join(this.dirOf(fp), "probe.json");
     const hit = await readJson<MediaProbe>(cached);
     if (hit) return hit;
-    const { size } = await stat(file);
-    const r = await this.run(tools.ffprobe, probeArgs(file), {
-      stdout: true,
+    const p = await probeFile(tools.ffprobe, file, {
+      run: this.run,
       ...(signal && { signal }),
     }).catch((e: unknown) => {
       if (e instanceof MediaRunError)
         throw new JobFailure("video_unreadable", `ffprobe cannot read the file: ${e.message}`);
+      if (e instanceof UnreadableMedia)
+        throw new JobFailure("video_unreadable", `ffprobe: ${e.message}`);
       throw e;
     });
-    let p: MediaProbe;
-    try {
-      p = parseProbe(JSON.parse(r.stdout), size);
-    } catch (e) {
-      throw new JobFailure("video_unreadable", `ffprobe: ${(e as Error).message}`);
-    }
     await mkdir(this.dirOf(fp), { recursive: true });
     await writeAtomic(cached, JSON.stringify(p));
     return p;

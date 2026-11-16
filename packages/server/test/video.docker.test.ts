@@ -10,6 +10,7 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import type { MediaProbe, VideoRate } from "@redgiant/protocol";
 import {
   type H264Encoder,
   kenBurnsPreset,
@@ -19,9 +20,20 @@ import {
   type VideoRef,
 } from "@redgiant/protocol";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { mediaFingerprint } from "../src/editor/video/analysis.js";
 import { compileVideo, type RenderTarget } from "../src/editor/video/compile.js";
+import { probeFile, renderProbeOf } from "../src/editor/video/probe.js";
 import { ffmpegRunner, renderVideo } from "../src/editor/video/render.js";
-import { probeMedia, type RenderMediaProbe } from "../src/editor/video/render-probe.js";
+
+/** The analysis' probe (G41.4) and what the render reads of it. */
+async function probeMedia(ffprobe: string, file: string, rate: VideoRate) {
+  const p: MediaProbe = await probeFile(ffprobe, file);
+  return {
+    ...renderProbeOf(p, rate, await mediaFingerprint(file)),
+    width: p.width,
+    height: p.height,
+  };
+}
 
 const ffmpeg = process.env.REDGIANT_FFMPEG ?? "";
 const ffprobe =
@@ -190,7 +202,7 @@ const loudness = (file: string): number => {
 describe.skipIf(!on)("video render with ffmpeg", () => {
   let dir: string;
   let media: string;
-  let probes: Record<string, RenderMediaProbe>;
+  let probes: Record<string, Awaited<ReturnType<typeof probeMedia>>>;
   let fonts: string;
 
   beforeAll(async () => {

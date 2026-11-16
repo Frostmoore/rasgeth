@@ -1,9 +1,13 @@
 // ffprobe's answer made into a `MediaProbe` (G41.4), as montatore's probe.py: rotation from the
 // display matrix or the old `rotate` tag (sides swapped at 90/270), the frame rate as a fraction,
-// pictures told apart from one-frame videos, the camera's timecode and the shooting date. Pure:
-// the program runs in analysis.ts.
+// pictures told apart from one-frame videos, the camera's timecode and the shooting date. The one
+// probe of the video editor: the analysis caches it (analysis.ts) and the render reads what it
+// needs of it (`renderProbeOf`, G41.3). `probeFile` runs ffprobe with `runMedia` (no shell).
 
+import { stat } from "node:fs/promises";
 import type { MediaProbe, RgVideo, VideoProbe, VideoRate } from "@redgiant/protocol";
+import type { RenderProbe } from "./compile.js";
+import { type MediaRunner, runMedia } from "./media-run.js";
 
 /** The arguments: JSON with the container and every stream. */
 export function probeArgs(file: string): string[] {
@@ -114,4 +118,33 @@ export function timelineProbes(
   const out: Record<string, VideoProbe> = {};
   for (const [path, p] of Object.entries(probes)) out[path] = videoProbeOf(p, doc.format.rate);
   return out;
+}
+
+/** What the render needs of a file (`compileVideo`): its length, its sound and a fingerprint. */
+export function renderProbeOf(p: MediaProbe, rate: VideoRate, fingerprint?: string): RenderProbe {
+  return { ...videoProbeOf(p, rate), audio: p.audio, ...(fingerprint && { fingerprint }) };
+}
+
+/** ffprobe answered, but not about a picture or a sound. */
+export class UnreadableMedia extends Error {}
+
+/**
+ * Runs ffprobe on a file and reads it. A program that fails rejects with its `MediaRunError`, an
+ * answer that is not a picture or a sound with `UnreadableMedia`, a cancel with an `AbortError`.
+ */
+export async function probeFile(
+  ffprobe: string,
+  file: string,
+  o: { run?: MediaRunner; signal?: AbortSignal } = {},
+): Promise<MediaProbe> {
+  const { size } = await stat(file);
+  const r = await (o.run ?? runMedia)(ffprobe, probeArgs(file), {
+    stdout: true,
+    ...(o.signal && { signal: o.signal }),
+  });
+  try {
+    return parseProbe(JSON.parse(r.stdout), size);
+  } catch (e) {
+    throw new UnreadableMedia((e as Error).message);
+  }
 }
