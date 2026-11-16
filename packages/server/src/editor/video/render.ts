@@ -103,9 +103,10 @@ export async function renderVideo(plan: RenderPlan, options: RenderOptions): Pro
   await mkdir(o.workDir, { recursive: true });
   const work = await mkdtemp(join(o.workDir, "render-"));
   const part = `${o.out}.part.mp4`;
+  // The sound is the whole timeline's, also for a span.
+  const sound = plan.audio.frames;
   const weight = (s: RenderStep) => s.frames * (1 + 0.5 * s.inputs.length);
-  const total =
-    plan.segments.reduce((n, s) => n + weight(s), 0) + plan.frames * 0.3 + plan.frames * 0.05;
+  const total = plan.segments.reduce((n, s) => n + weight(s), 0) + sound * 0.3 + plan.frames * 0.05;
   let done = 0;
   const tell = (extra: number, step: string) =>
     o.progress?.(Math.min(1, (done + extra) / Math.max(1, total)), step);
@@ -155,7 +156,7 @@ export async function renderVideo(plan: RenderPlan, options: RenderOptions): Pro
     }
     o.signal?.throwIfAborted();
     let audio: string;
-    if (!plan.loudness) audio = await runStep(plan.audio, "sound", plan.frames * 0.3, seen);
+    if (!plan.loudness) audio = await runStep(plan.audio, "sound", sound * 0.3, seen);
     else {
       // A2: the mix (lossless, not kept), its loudness measured, then corrected into AAC.
       const name = `audio-${plan.audio.hash}.m4a`;
@@ -164,8 +165,8 @@ export async function renderVideo(plan: RenderPlan, options: RenderOptions): Pro
         reused++;
         audio = kept;
       } else {
-        const mix = await runStep(plan.audio, "sound", plan.frames * 0.2, seen, false);
-        tell(plan.frames * 0.2, "loudness");
+        const mix = await runStep(plan.audio, "sound", sound * 0.2, seen, false);
+        tell(sound * 0.2, "loudness");
         const measured = parseLoudnorm(
           await o.run(loudnormMeasureArgs(mix), {
             cwd: work,
@@ -181,7 +182,7 @@ export async function renderVideo(plan: RenderPlan, options: RenderOptions): Pro
         await moveInto(join(work, tmp), audio);
       }
     }
-    done += plan.frames * 0.3;
+    done += sound * 0.3;
     tell(0, "join");
     await writeFile(join(work, "list.txt"), files.map(concatLine).join(""));
     let srt: string | undefined;

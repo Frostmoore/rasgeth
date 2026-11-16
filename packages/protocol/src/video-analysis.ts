@@ -132,3 +132,41 @@ export type MediaAnalysis = z.infer<typeof MediaAnalysis>;
 /** The derived files for playing and showing a clip in the page (G41.5a uses them). */
 export const MEDIA_DERIVED = ["proxy", "filmstrip", "waveform"] as const;
 export type MediaDerived = (typeof MEDIA_DERIVED)[number];
+
+/**
+ * What the page knows of one file of a timeline (G41.5a, `POST /api/editor/video/prepare`):
+ * its probe and signed links (served with Range) to what is made, and the jobs making the rest.
+ */
+export const VideoMediaInfo = z.object({
+  media: z.string(),
+  /** Not in the project (moved or deleted): the timeline shows a gap. */
+  missing: z.literal(true).optional(),
+  kind: z.enum(["video", "image", "audio"]).optional(),
+  probe: MediaProbe.optional(),
+  /** The file itself (pictures are shown as they are; a sound file plays as it is). */
+  file: z.string().optional(),
+  proxy: z.string().optional(),
+  filmstrip: z.object({ url: z.string(), tiles: z.number().int() }).optional(),
+  waveform: z.object({ url: z.string(), width: z.number().int() }).optional(),
+  /** Jobs making what is missing (the page follows them and asks again). */
+  jobs: z.array(z.string()),
+});
+export type VideoMediaInfo = z.infer<typeof VideoMediaInfo>;
+
+/** The answer of `prepare`: the files, and the server's fonts for texts and subtitles. */
+export interface VideoPrepared {
+  media: VideoMediaInfo[];
+  fonts: { regular: string; bold: string };
+}
+
+/** The result of a `video_preview` job (the exact preview of a stretch, G41.5a). */
+export interface VideoPreviewResult {
+  /** Its name, for `GET /api/editor/video/exact/:id`. */
+  id: string;
+  start: number;
+  frames: number;
+  seconds: number;
+  width: number;
+  height: number;
+  warnings: string[];
+}

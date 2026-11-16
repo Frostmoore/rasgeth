@@ -210,6 +210,7 @@ import { svgCopyOfOriginal, svgFamily } from "./editor/svg-family.js";
 import { textFamily } from "./editor/text-family.js";
 import { type CanvasEditHost, canvasEditTool } from "./editor/tool.js";
 import { VideoAnalysis } from "./editor/video/analysis.js";
+import { VideoPreviews } from "./editor/video/preview.js";
 import { videoFamily } from "./editor/video-family.js";
 import { ZetaOffice } from "./editor/zeta.js";
 import { EditorLinks } from "./editor-links.js";
@@ -5322,6 +5323,20 @@ export class RedGiantCore implements OrchestrationHost {
     return this.videoAnalysisCache;
   }
   private videoAnalysisCache: VideoAnalysis | undefined;
+
+  /** The exact preview of a stretch of a timeline (G41.5a): ffmpeg at 360p, segments cached. */
+  get videoPreviews(): VideoPreviews {
+    this.videoPreviewsCache ??= new VideoPreviews({
+      analysis: this.videoAnalysis,
+      jobs: this.jobs,
+      tools: async (owner, into) => ({
+        ffmpeg: await this.programs.ensure(owner, "ffmpeg", into),
+        ffprobe: await this.programs.ffprobe(owner, into),
+      }),
+    });
+    return this.videoPreviewsCache;
+  }
+  private videoPreviewsCache: VideoPreviews | undefined;
 
   /** The hands-free voice's wake-word models (G38.4), in the data folder. */
   get wakeModels(): WakeModels {

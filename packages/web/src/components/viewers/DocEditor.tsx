@@ -47,6 +47,7 @@ import { isOfficeFile } from "../../viewers/office-bridge.js";
 import { pdfChangeText } from "../../viewers/pdf-words.js";
 import { sheetChangeText } from "../../viewers/sheet-words.js";
 import { svgChangeText } from "../../viewers/svg-words.js";
+import { videoChangeText } from "../../viewers/video-ops.js";
 import type { DocDiff as DiffView, DiffWhat } from "./DocDiff.js";
 import { ImageEditor, pictureEditable } from "./ImageEditor.js";
 import { MODEL_EDITABLE, ModelEditor } from "./ModelEditor.js";
@@ -55,6 +56,7 @@ import { isPdfFile, PdfEditor } from "./PdfEditor.js";
 import { SHEET_EDITABLE, SheetEditor } from "./SheetEditor.js";
 import { SVG_EDITABLE, SvgEditor } from "./SvgEditor.js";
 import { TextEditor } from "./TextEditor.js";
+import { TIMELINE_EDITABLE, VideoEditor } from "./VideoEditor.js";
 
 /** The kinds of the viewer that are text the page edits (G37.2): code, Markdown, trees, text. */
 const TEXT_KINDS = new Set(["text", "code", "markdown", "tree"]);
@@ -68,6 +70,7 @@ export const editableInCanvas = (file: { scope: string; path: string }) =>
     isOfficeFile(file.path) ||
     SVG_EDITABLE.test(file.path) ||
     MODEL_EDITABLE.test(file.path) ||
+    TIMELINE_EDITABLE.test(file.path) ||
     isPdfFile(file.path) ||
     pictureEditable(file));
 
@@ -101,6 +104,8 @@ export function changeText(s: DocSummary): string {
   if (s.image && s.kind !== "undo" && s.kind !== "replaced") return imageChangeText(s);
   // A 3D model's change (G37.7) too.
   if (s.model && s.kind !== "undo" && s.kind !== "replaced") return modelChangeText(s);
+  // A timeline's change (G41.5b) too.
+  if (s.video && s.kind !== "undo" && s.kind !== "replaced") return videoChangeText(s);
   // Documents and presentations (G37.4) count paragraphs and slides.
   if (s.unit === "paragraph" || s.unit === "slide") {
     const para = s.unit === "paragraph";
@@ -389,6 +394,7 @@ export function DocEditor({
   const show = (c: DocChange) => {
     if (sheet) return c.revision === v.revision ? reveal.current?.(c) : undefined;
     if (pdf) return reveal.current?.(c);
+    if (TIMELINE_EDITABLE.test(file.path)) return reveal.current?.(c);
     const ed = view.current;
     const r = c.wrote?.[0];
     if (!ed || !r || c.revision !== v.revision) return;
@@ -606,6 +612,8 @@ export function DocEditor({
               <SvgEditor file={file} />
             ) : MODEL_EDITABLE.test(file.path) ? (
               <ModelEditor file={file} />
+            ) : TIMELINE_EDITABLE.test(file.path) ? (
+              <VideoEditor file={file} onReveal={(r) => (reveal.current = r)} />
             ) : (
               <TextEditor file={file} name={name} line={line} onReady={(e) => (view.current = e)} />
             )}

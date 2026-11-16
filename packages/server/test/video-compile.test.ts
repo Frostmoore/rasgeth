@@ -864,6 +864,36 @@ describe("encoding and hashes", () => {
     expect(one.segments[0]?.name).toBe(`seg-${one.segments[0]?.hash}.mp4`);
   });
 
+  it("a span (the exact preview, G41.5a): its segments only, the sound from its start", () => {
+    const d = doc([
+      clip("v1", "V1", 0, 100, A),
+      clip("v2", "V1", 100, 100, B),
+      clip("a1", "A1", 0, 200, A),
+    ]);
+    const whole = compileVideo(d, PROBES, TARGET);
+    expect([whole.start, whole.frames]).toEqual([0, 200]);
+    expect(joinArgs(whole, "l", "a", undefined, "o")).not.toContain("-ss");
+    const part = compileVideo(d, PROBES, { ...TARGET, span: { from: 60, to: 130 } });
+    expect(part.segments.map((x) => [x.start, x.frames])).toEqual([
+      [60, 40],
+      [100, 30],
+    ]);
+    expect([part.start, part.frames, part.seconds]).toEqual([60, 70, 2.8]);
+    // the same segment of the whole timeline is the same work (one cache)
+    expect(part.audio.hash).toBe(whole.audio.hash);
+    const args = joinArgs(part, "l", "a", undefined, "o");
+    expect(args.slice(args.indexOf("-ss"), args.indexOf("-ss") + 4)).toEqual([
+      "-ss",
+      "2.400000",
+      "-i",
+      "a",
+    ]);
+    expect(args[args.indexOf("-t") + 1]).toBe("2.800000");
+    // beyond the end: kept inside the timeline, never empty
+    const end = compileVideo(d, PROBES, { ...TARGET, span: { from: 500, to: 900 } });
+    expect([end.start, end.frames]).toEqual([199, 1]);
+  });
+
   it("speed (A3) is not rendered yet, and says so", () => {
     const plan = compileVideo(doc([clip("v", "V1", 0, 25, A, { speed: 2 })]), PROBES, TARGET);
     expect(plan.warnings).toEqual([

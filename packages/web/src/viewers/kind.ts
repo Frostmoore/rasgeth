@@ -20,6 +20,7 @@ export type ViewerKind =
   | "tree"
   | "site"
   | "layers"
+  | "timeline"
   | "unknown";
 
 export interface ViewerChoice {
@@ -53,6 +54,8 @@ put("tree", "json jsonc json5 geojson yaml yml xml plist");
 put("site", "html htm xhtml");
 // OpenRaster (G34.4): the open copy of a PSD, its layers one by one.
 put("layers", "ora");
+// A video timeline (G41.5b): edited in the canvas; elsewhere (an archive) its JSON.
+put("timeline", "rgvideo");
 
 /** Files known by their whole name (no extension). */
 const BY_NAME: Record<string, ViewerChoice> = {
@@ -322,6 +325,8 @@ export function tabIconFor(name: string): TabIcon {
       return kind;
     case "layers":
       return "design";
+    case "timeline":
+      return "video";
     case "table":
       return "sheet";
     case "tree":

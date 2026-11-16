@@ -146,6 +146,11 @@ export class VideoAnalysis {
     return join(this.cacheRoot, fingerprint);
   }
 
+  /** ffprobe's facts already in the cache for a fingerprint (nothing runs). */
+  cachedProbe(fingerprint: string): Promise<MediaProbe | undefined> {
+    return readJson<MediaProbe>(join(this.dirOf(fingerprint), "probe.json"));
+  }
+
   /** ffprobe's facts, from the cache when the file was seen before. */
   async probe(
     file: string,

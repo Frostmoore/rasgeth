@@ -89,6 +89,11 @@ export interface RenderTarget {
   captions?: RenderCaptions;
   /** The folder of the server's fonts (`packages/server/fonts`: Inter for texts and subtitles). */
   fontsDir: string;
+  /**
+   * Only a stretch of the timeline, in frames [from, to) (G41.5a, the exact preview): segments cut
+   * at its ends, the sound of the whole timeline (cached by its hash) started at `from`.
+   */
+  span?: { from: number; to: number };
 }
 
 /** One ffmpeg input: its options and the project file it reads. */
@@ -118,6 +123,8 @@ export interface RenderPlan {
   width: number;
   height: number;
   rate: VideoRate;
+  /** The first frame rendered (0, or a span's start); `frames` are counted from it. */
+  start: number;
   frames: number;
   seconds: number;
   segments: RenderStep[];
@@ -938,9 +945,11 @@ export function compileVideo(
       total = Math.max(total, clipEnd(c));
   if (total <= 0) throw new EmptyTimeline();
 
-  const cuts = new Set<number>([0, total]);
+  const from = target.span ? Math.max(0, Math.min(total - 1, Math.round(target.span.from))) : 0;
+  const to = target.span ? Math.max(from + 1, Math.min(total, Math.round(target.span.to))) : total;
+  const cuts = new Set<number>([from, to]);
   for (const list of pieces) for (const p of list) cuts.add(p.from).add(p.to);
-  const bounds = [...cuts].filter((x) => x >= 0 && x <= total).sort((a, b) => a - b);
+  const bounds = [...cuts].filter((x) => x >= from && x <= to).sort((a, b) => a - b);
 
   const quality = target.quality ?? "good";
   const enc = encoderArgs(target.encoder, quality, rate);
@@ -965,8 +974,9 @@ export function compileVideo(
     width: w,
     height: h,
     rate,
-    frames: total,
-    seconds: (total * rate.den) / rate.num,
+    start: from,
+    frames: to - from,
+    seconds: ((to - from) * rate.den) / rate.num,
     segments,
     audio,
     loudness,
@@ -1077,6 +1087,8 @@ export function joinArgs(
     "0",
     "-i",
     list,
+    // A span: the whole timeline's sound, from the span's first frame.
+    ...(plan.start > 0 ? ["-ss", num((plan.start * plan.rate.den) / plan.rate.num)] : []),
     "-i",
     audio,
     ...(subs ? ["-i", srt] : []),

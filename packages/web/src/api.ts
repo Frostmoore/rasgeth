@@ -1910,6 +1910,19 @@ export class Api {
     errors: import("@redgiant/protocol").ArtifactError[];
     fresh?: boolean;
   }) => this.call<{ added: number }>("POST", "/api/artifacts/errors", body);
+  /** A timeline's files for the page's playback (G41.5a): links, and the jobs started. */
+  videoPrepare = (scope: string, path: string, extra?: string[]) =>
+    this.call<import("@redgiant/protocol").VideoPrepared>("POST", "/api/editor/video/prepare", {
+      scope,
+      path,
+      ...(extra?.length && { extra }),
+    });
+  /** The exact preview of frames [from, to) of a timeline, made by ffmpeg: a job to follow. */
+  videoExact = (scope: string, path: string, from: number, to: number) =>
+    this.call<{ job: Job }>("POST", "/api/editor/video/exact", { scope, path, from, to });
+  /** A finished exact preview's link (plays with ranges). */
+  videoExactLink = (id: string) =>
+    this.call<{ url: string }>("GET", `/api/editor/video/exact/${encodeURIComponent(id)}`);
   /** When what the canvas shows last changed (ms). */
   canvasVersion = (scope: string, path: string, fileOnly = false) =>
     this.call<{ version: number }>(
