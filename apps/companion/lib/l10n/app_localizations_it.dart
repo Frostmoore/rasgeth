@@ -3603,4 +3603,19 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get deskGitMissing => 'git non è ancora installato su questo computer';
+
+  @override
+  String get limitsTotal => 'Totale';
+
+  @override
+  String get limitsSpent => 'Speso';
+
+  @override
+  String get limitsContext => 'Contesto';
+
+  @override
+  String get limitsWeekShort => '7g';
+
+  @override
+  String get deskSendMessage => 'Invia il messaggio (nei campi delle conversazioni)';
 }

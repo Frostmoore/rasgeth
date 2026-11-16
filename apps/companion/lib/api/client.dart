@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'budgets.dart';
 import 'code.dart';
 import 'conversation.dart';
 import 'saved.dart';
@@ -275,6 +276,16 @@ class RedGiantClient {
       }),
     ),
   );
+
+  /// `GET /api/budgets`: spending against the limits (the header's bars, 3.9.0).
+  Future<List<Budget>> budgets() async => [
+    for (final o in _array(await _get('/api/budgets'))) ?Budget.fromJson(o),
+  ];
+
+  /// `GET /api/limits`: the flat subscriptions' windows (5h, 7d…).
+  Future<List<PlanLimits>> planLimits() async => [
+    for (final o in _array(await _get('/api/limits'))) ?PlanLimits.fromJson(o),
+  ];
 
   /// `GET /api/chat/settings`: the Chat's own model (its agent's record follows it).
   Future<AgentModel?> chatModel() async =>

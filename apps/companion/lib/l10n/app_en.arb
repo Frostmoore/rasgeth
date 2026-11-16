@@ -2252,5 +2252,10 @@
       }
     }
   },
-  "deskGitMissing": "git is not installed on this computer yet"
+  "deskGitMissing": "git is not installed on this computer yet",
+  "limitsTotal": "Total",
+  "limitsSpent": "Spent",
+  "limitsContext": "Context",
+  "limitsWeekShort": "7d",
+  "deskSendMessage": "Send the message (in the conversations' fields)"
 }

@@ -10,6 +10,7 @@ import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../ui/icons.dart';
+import '../ui/send_keys.dart';
 import 'activity_screen.dart';
 import 'chat_screen.dart';
 import 'conversation_screen.dart';
@@ -138,14 +139,17 @@ class _ChatFieldState extends State<ChatField> {
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              key: const Key('chat-field'),
-              controller: _text,
-              minLines: 1,
-              maxLines: 4,
-              textInputAction: TextInputAction.send,
-              onSubmitted: (_) => _send(),
-              decoration: InputDecoration(hintText: l.composerHint, isDense: true),
+            child: SendKeys(
+              onSend: _send,
+              child: TextField(
+                key: const Key('chat-field'),
+                controller: _text,
+                minLines: 1,
+                maxLines: 4,
+                textInputAction: TextInputAction.send,
+                onSubmitted: (_) => _send(),
+                decoration: InputDecoration(hintText: l.composerHint, isDense: true),
+              ),
             ),
           ),
           const SizedBox(width: 8),

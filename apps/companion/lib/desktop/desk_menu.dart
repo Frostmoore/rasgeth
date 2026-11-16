@@ -139,14 +139,17 @@ List<PlatformMenuItem> platformMenus(List<DeskMenu> menus, AppLocalizations l) =
     menus: [
       if (PlatformProvidedMenuItem.hasMenu(PlatformProvidedMenuItemType.about))
         const PlatformProvidedMenuItem(type: PlatformProvidedMenuItemType.about),
-      PlatformMenuItemGroup(
-        members: [
-          if (PlatformProvidedMenuItem.hasMenu(PlatformProvidedMenuItemType.hide))
-            const PlatformProvidedMenuItem(type: PlatformProvidedMenuItemType.hide),
-          if (PlatformProvidedMenuItem.hasMenu(PlatformProvidedMenuItemType.quit))
-            const PlatformProvidedMenuItem(type: PlatformProvidedMenuItemType.quit),
-        ],
-      ),
+      // Empty where the system has neither (a group may not be empty).
+      if (PlatformProvidedMenuItem.hasMenu(PlatformProvidedMenuItemType.hide) ||
+          PlatformProvidedMenuItem.hasMenu(PlatformProvidedMenuItemType.quit))
+        PlatformMenuItemGroup(
+          members: [
+            if (PlatformProvidedMenuItem.hasMenu(PlatformProvidedMenuItemType.hide))
+              const PlatformProvidedMenuItem(type: PlatformProvidedMenuItemType.hide),
+            if (PlatformProvidedMenuItem.hasMenu(PlatformProvidedMenuItemType.quit))
+              const PlatformProvidedMenuItem(type: PlatformProvidedMenuItemType.quit),
+          ],
+        ),
     ],
   ),
   for (final m in menus)

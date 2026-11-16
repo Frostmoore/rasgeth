@@ -22,6 +22,7 @@ import '../theme/colors.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/model_sheet.dart';
+import '../ui/send_keys.dart';
 
 String modeWord(AppLocalizations l, String mode) => switch (mode) {
   'manual' => l.mode_manual,
@@ -541,14 +542,17 @@ class _AsideSheetState extends State<AsideSheet> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: TextField(
-                            key: const Key('aside-field'),
-                            controller: _q,
-                            minLines: 1,
-                            maxLines: 4,
-                            decoration: InputDecoration(
-                              isDense: true,
-                              hintText: running ? l.asidePlaceholderBusy : l.asidePlaceholder,
+                          child: SendKeys(
+                            onSend: _asking ? null : _ask,
+                            child: TextField(
+                              key: const Key('aside-field'),
+                              controller: _q,
+                              minLines: 1,
+                              maxLines: 4,
+                              decoration: InputDecoration(
+                                isDense: true,
+                                hintText: running ? l.asidePlaceholderBusy : l.asidePlaceholder,
+                              ),
                             ),
                           ),
                         ),
