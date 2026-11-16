@@ -13,6 +13,7 @@ import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/screens/conversation_screen.dart';
 import 'package:rgcompanion/ui/paste_files.dart';
+import 'package:rgcompanion/theme/colors.dart';
 
 import 'fake_server.dart';
 
@@ -113,7 +114,7 @@ void main() {
     });
     tearDown(() => server.close());
 
-    Future<void> open(WidgetTester tester) async {
+    Future<void> open(WidgetTester tester, {Size size = const Size(1440, 900)}) async {
       final app =
           AppController(
               tokens: MemoryTokenStore(),
@@ -124,7 +125,7 @@ void main() {
             ..locale = const Locale('it')
             ..reduceMotion = true;
       await tester.runAsync(() => app.connect(server.base.toString(), 'secret'));
-      tester.view.physicalSize = const Size(1440, 900);
+      tester.view.physicalSize = size;
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       await tester.pumpWidget(RGCompanionApp(controller: app));
@@ -209,5 +210,66 @@ void main() {
       );
       await done(tester);
     });
+    // 3.8.5: Officina's composer: one box with the text on the whole width and the buttons inside.
+    for (final size in const [Size(390, 844), Size(1440, 900)]) {
+      testWidgets('the buttons and the chips sit inside one box (${size.width.toInt()})', (
+        tester,
+      ) async {
+        clipboardReader = _FakeClipboard(
+          copied: [
+            ('note.md', Uint8List.fromList('# Ciao'.codeUnits)),
+            ('foto.jpg', Uint8List.fromList([0xFF, 0xD8, 0xFF, 0xE0])),
+          ],
+        );
+        await open(tester, size: size);
+        await paste(tester);
+        final box = find.byKey(const Key('composer-box'));
+        final rect = tester.getRect(box);
+        for (final k in const [
+          'composer-text',
+          'composer-attach',
+          'composer-more',
+          'composer-talk',
+          'composer-send',
+          'composer-attachments',
+        ]) {
+          expect(
+            find.descendant(of: box, matching: find.byKey(Key(k))),
+            findsOneWidget,
+            reason: k,
+          );
+        }
+        // The text on (nearly) the box's whole width, the buttons under it: attach and «…» on the
+        // left, the microphone and send on the right.
+        final text = tester.getRect(find.byKey(const Key('composer-text')));
+        expect(text.width, greaterThan(rect.width - 20));
+        final attach = tester.getRect(find.byKey(const Key('composer-attach')));
+        final more = tester.getRect(find.byKey(const Key('composer-more')));
+        final talk = tester.getRect(find.byKey(const Key('composer-talk')));
+        final send = tester.getRect(find.byKey(const Key('composer-send')));
+        expect(attach.top, greaterThanOrEqualTo(text.bottom - 1));
+        expect(attach.left < more.left && more.right < talk.left && talk.right < send.left, isTrue);
+        expect(send.right, greaterThan(rect.right - 16));
+        expect(attach.left, lessThan(rect.left + 16));
+        // The accent's border while the field has focus.
+        final c = RgColors.of(tester.element(box));
+        final deco = tester.widget<AnimatedContainer>(box).decoration! as BoxDecoration;
+        expect((deco.border! as Border).top.color, c.accent);
+        // Several lines: the field grows, the buttons stay under it.
+        await tester.enterText(find.byKey(const Key('composer-text')), 'uno\ndue\ntre\nquattro');
+        await tester.pump();
+        expect(
+          tester.getRect(find.byKey(const Key('composer-text'))).height,
+          greaterThan(text.height),
+        );
+        // Send: the two files go with the text, and the chips leave.
+        await tester.tap(find.byKey(const Key('composer-send')));
+        await _settle(tester);
+        final sent = server.sent.single;
+        expect(sent['text'], contains('note.md'));
+        expect(find.byType(InputChip), findsNothing);
+        await done(tester);
+      });
+    }
   });
 }

@@ -14,6 +14,7 @@ import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import 'dialogs.dart';
 import 'icons.dart';
+import 'stream_cursor.dart';
 
 /// GitHub's Markdown without the inline HTML syntax: `<b>` stays the text «<b>».
 final md.ExtensionSet safeExtensions = md.ExtensionSet(
@@ -58,10 +59,22 @@ bool openableLink(String? href) {
 }
 
 class SafeMarkdown extends StatelessWidget {
-  const SafeMarkdown(this.data, {super.key, this.selectable = true});
+  const SafeMarkdown(
+    this.data, {
+    super.key,
+    this.selectable = true,
+    this.cursor = false,
+    this.cursorStill = false,
+  });
 
   final String data;
   final bool selectable;
+
+  /// An answer being written: the cursor after its last character (3.8.5, `stream_cursor.dart`).
+  final bool cursor;
+
+  /// «Reduce motion»: the cursor without its flicker.
+  final bool cursorStill;
 
   Future<void> _open(BuildContext context, String? href) async {
     if (!openableLink(href)) return;
@@ -75,12 +88,24 @@ class SafeMarkdown extends StatelessWidget {
     final c = RgColors.of(context);
     final base = Theme.of(context).textTheme.bodyMedium!
         .copyWith(color: c.text, fontSize: 15, height: 1.4);
+    final code = base.copyWith(fontFamily: 'monospace', fontSize: 13.5, backgroundColor: c.panel2);
+    final marked = data.contains(markOpen);
     return MarkdownBody(
-      data: data,
-      selectable: selectable,
+      data: cursor ? withStreamCursor(data) : data,
+      // The cursor is a widget inside the text: an answer being written is not selectable yet.
+      selectable: selectable && !cursor,
       extensionSet: safeExtensions,
-      inlineSyntaxes: data.contains(markOpen) ? [_MarkSyntax()] : null,
-      builders: data.contains(markOpen) ? {'rgmark': _MarkBuilder(c.accentDim)} : const {},
+      inlineSyntaxes: [if (marked) _MarkSyntax(), if (cursor) StreamCursorSyntax()],
+      builders: {
+        if (marked) 'rgmark': _MarkBuilder(c.accentDim),
+        if (cursor) 'rgcursor': StreamCursorBuilder(still: cursorStill),
+        if (cursor)
+          'pre': StreamCursorCodeBuilder(
+            still: cursorStill,
+            style: code,
+            padding: const EdgeInsets.all(8),
+          ),
+      },
       onTapLink: (text, href, title) => _open(context, href),
       imageBuilder: (uri, title, alt) => Container(
         margin: const EdgeInsets.symmetric(vertical: 2),
@@ -112,7 +137,7 @@ class SafeMarkdown extends StatelessWidget {
         p: base,
         listBullet: base,
         a: base.copyWith(color: c.accent, decoration: TextDecoration.underline),
-        code: base.copyWith(fontFamily: 'monospace', fontSize: 13.5, backgroundColor: c.panel2),
+        code: code,
         codeblockDecoration: BoxDecoration(
           color: c.panel2,
           borderRadius: BorderRadius.circular(10),

@@ -495,36 +495,39 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 onRemove: (q) => setState(() => _quotes.remove(q)),
                 onJump: _jumpQuote,
               ),
-            if (_attached.isNotEmpty)
-              SizedBox(
-                height: 44,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  children: [
-                    for (final (i, a) in _attached.indexed)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 6),
-                        child: InputChip(
-                          avatar: RgIcon(
-                            a is AttachedImage ? RgIcons.image : RgIcons.file,
-                            size: 16,
-                            color: c.dim,
-                          ),
-                          label: Text(a.name, overflow: TextOverflow.ellipsis),
-                          deleteButtonTooltipMessage: l.attachmentRemove,
-                          deleteIcon: RgIcon(RgIcons.x, size: 14, color: c.dim),
-                          onDeleted: () => setState(() => _attached.removeAt(i)),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
             ListenableBuilder(
               listenable: Listenable.merge([app, app.live]),
               builder: (context, _) => _Composer(
                 controller: _text,
                 sending: _sending,
+                attachments: _attached.isEmpty
+                    ? null
+                    : SizedBox(
+                        key: const Key('composer-attachments'),
+                        height: 40,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          children: [
+                            for (final (i, a) in _attached.indexed)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 6),
+                                child: InputChip(
+                                  visualDensity: VisualDensity.compact,
+                                  avatar: RgIcon(
+                                    a is AttachedImage ? RgIcons.image : RgIcons.file,
+                                    size: 16,
+                                    color: c.dim,
+                                  ),
+                                  label: Text(a.name, overflow: TextOverflow.ellipsis),
+                                  deleteButtonTooltipMessage: l.attachmentRemove,
+                                  deleteIcon: RgIcon(RgIcons.x, size: 14, color: c.dim),
+                                  onDeleted: () => setState(() => _attached.removeAt(i)),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
                 onAttach: _attach,
                 onFiles: _take,
                 onSend: _send,
@@ -641,7 +644,11 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _Composer extends StatelessWidget {
+/// The composer, as Officina's: one rounded box (the accent's border while it has focus) with the text
+/// on the whole width, growing up to a limit and then scrolling, and under it, inside the same box,
+/// the row of buttons: attach and «…» on the left, the microphone and send on the right. The chips
+/// of the attachments sit at the top of the box.
+class _Composer extends StatefulWidget {
   const _Composer({
     required this.controller,
     required this.sending,
@@ -653,6 +660,7 @@ class _Composer extends StatelessWidget {
     required this.onTalkEnd,
     required this.onTalkCancel,
     required this.onTalkTap,
+    this.attachments,
     this.changed = false,
   });
 
@@ -670,6 +678,9 @@ class _Composer extends StatelessWidget {
   /// Something is not as it starts: a mark on the «…».
   final bool changed;
 
+  /// The chips of the attached files, inside the box above the text (null: none).
+  final Widget? attachments;
+
   final TextEditingController controller;
   final bool sending;
   final VoidCallback onAttach;
@@ -679,89 +690,149 @@ class _Composer extends StatelessWidget {
   final VoidCallback onSend;
 
   @override
+  State<_Composer> createState() => _ComposerState();
+}
+
+class _ComposerState extends State<_Composer> {
+  final _focus = FocusNode(debugLabel: 'composer');
+
+  @override
+  void initState() {
+    super.initState();
+    _focus.addListener(_changed);
+  }
+
+  void _changed() => setState(() {});
+
+  @override
+  void dispose() {
+    _focus.removeListener(_changed);
+    _focus.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
+    final w = widget;
+    final focused = _focus.hasFocus;
     return Container(
-      decoration: BoxDecoration(
-        color: c.bg,
-        border: Border(top: BorderSide(color: c.line)),
-      ),
-      padding: const EdgeInsets.fromLTRB(6, 6, 10, 8),
-      child: Row(
-        children: [
-          IconButton(
-            key: const Key('composer-attach'),
-            tooltip: l.attach,
-            onPressed: onAttach,
-            icon: RgIcon(RgIcons.paperclip, size: 20, color: c.dim),
+      color: c.bg,
+      padding: const EdgeInsets.fromLTRB(10, 6, 10, 10),
+      child: GestureDetector(
+        // A tap on the box (not on a button) puts the cursor in the text.
+        onTap: _focus.requestFocus,
+        behavior: HitTestBehavior.translucent,
+        child: AnimatedContainer(
+          key: const Key('composer-box'),
+          duration: const Duration(milliseconds: 120),
+          decoration: BoxDecoration(
+            color: c.panel2,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: focused ? c.accent : c.line, width: 1.5),
           ),
-          Expanded(
-            child: SendKeys(
-              onSend: sending ? null : onSend,
-              child: PasteFiles(
-                onFiles: onFiles,
-                child: TextField(
-                  key: const Key('composer-text'),
-                  controller: controller,
-                  minLines: 1,
-                  maxLines: 6,
-                  textInputAction: TextInputAction.newline,
-                  contentInsertionConfiguration: contentInsertion(onFiles),
-                  decoration: InputDecoration(hintText: l.composerAgentHint, isDense: true),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 2),
-          _TalkButton(
-            onStart: onTalkStart,
-            onEnd: onTalkEnd,
-            onCancel: onTalkCancel,
-            onTap: onTalkTap,
-          ),
-          Stack(
-            clipBehavior: Clip.none,
+          padding: const EdgeInsets.fromLTRB(4, 4, 6, 6),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              IconButton(
-                key: const Key('composer-more'),
-                tooltip: changed ? l.moreChanged : l.more,
-                onPressed: onMore,
-                icon: RgIcon(RgIcons.more, size: 22, color: c.dim, filled: true),
-              ),
-              if (changed)
-                Positioned(
-                  right: 8,
-                  top: 8,
-                  child: Container(
-                    key: const Key('composer-more-mark'),
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(color: c.accent, shape: BoxShape.circle),
+              if (w.attachments != null)
+                Padding(padding: const EdgeInsets.only(top: 4), child: w.attachments),
+              SendKeys(
+                onSend: w.sending ? null : w.onSend,
+                child: PasteFiles(
+                  onFiles: w.onFiles,
+                  child: TextField(
+                    key: const Key('composer-text'),
+                    controller: w.controller,
+                    focusNode: _focus,
+                    minLines: 1,
+                    maxLines: 8,
+                    textInputAction: TextInputAction.newline,
+                    contentInsertionConfiguration: contentInsertion(w.onFiles),
+                    style: TextStyle(color: c.text, fontSize: 15.5, height: 1.35),
+                    decoration: InputDecoration(
+                      hintText: l.composerAgentHint,
+                      isDense: true,
+                      filled: false,
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 8),
+                    ),
                   ),
                 ),
+              ),
+              Row(
+                key: const Key('composer-buttons'),
+                children: [
+                  IconButton(
+                    key: const Key('composer-attach'),
+                    tooltip: l.attach,
+                    visualDensity: VisualDensity.compact,
+                    onPressed: w.onAttach,
+                    icon: RgIcon(RgIcons.paperclip, size: 20, color: c.dim),
+                  ),
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      IconButton(
+                        key: const Key('composer-more'),
+                        tooltip: w.changed ? l.moreChanged : l.more,
+                        visualDensity: VisualDensity.compact,
+                        onPressed: w.onMore,
+                        icon: RgIcon(RgIcons.more, size: 22, color: c.dim, filled: true),
+                      ),
+                      if (w.changed)
+                        Positioned(
+                          right: 6,
+                          top: 6,
+                          child: Container(
+                            key: const Key('composer-more-mark'),
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(color: c.accent, shape: BoxShape.circle),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const Spacer(),
+                  _TalkButton(
+                    onStart: w.onTalkStart,
+                    onEnd: w.onTalkEnd,
+                    onCancel: w.onTalkCancel,
+                    onTap: w.onTalkTap,
+                  ),
+                  const SizedBox(width: 6),
+                  Semantics(
+                    button: true,
+                    label: l.composerSend,
+                    child: Tooltip(
+                      message: l.composerSend,
+                      child: Material(
+                        color: w.sending ? c.dim : c.accent,
+                        borderRadius: BorderRadius.circular(10),
+                        child: InkWell(
+                          key: const Key('composer-send'),
+                          borderRadius: BorderRadius.circular(10),
+                          onTap: w.sending ? null : w.onSend,
+                          child: const SizedBox(
+                            width: 38,
+                            height: 38,
+                            child: Center(
+                              child: RgIcon(RgIcons.send, size: 18, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
-          const SizedBox(width: 4),
-          Semantics(
-            button: true,
-            label: l.composerSend,
-            child: Material(
-              color: sending ? c.dim : c.accent,
-              shape: const CircleBorder(),
-              child: InkWell(
-                key: const Key('composer-send'),
-                customBorder: const CircleBorder(),
-                onTap: sending ? null : onSend,
-                child: const SizedBox(
-                  width: 42,
-                  height: 42,
-                  child: Center(child: RgIcon(RgIcons.send, size: 19, color: Colors.white)),
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -958,7 +1029,15 @@ class _AssistantViewState extends State<AssistantView> {
   Widget _body(RgColors c) {
     final it = widget.item;
     final a = widget.actions;
-    if (it.live || it.seq == null) return SafeMarkdown(it.text);
+    if (it.live) {
+      final app = AppScope.maybeRead(context);
+      return SafeMarkdown(
+        it.text,
+        cursor: true,
+        cursorStill: (app?.reduceMotion ?? false) || MediaQuery.disableAnimationsOf(context),
+      );
+    }
+    if (it.seq == null) return SafeMarkdown(it.text);
     final lit = a.lit;
     final marked = lit != null && lit.seq == it.seq
         ? markPassage(it.text, lit.text, start: lit.start, end: lit.end)

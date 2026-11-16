@@ -72,6 +72,40 @@ class FakeRedGiant {
   final rooms = <Map<String, dynamic>>[];
   final sent = <Map<String, dynamic>>[];
 
+  /// 3.8.5: an answer streaming in, piece by piece, on every open live socket (the stream
+  /// cursor's tests), and its end.
+  void streamPiece(String sid, String text) {
+    for (final ws in sockets) {
+      ws.add(jsonEncode({'type': 'session.state', 'sessionId': sid, 'state': 'running'}));
+      ws.add(jsonEncode({'type': 'delta', 'sessionId': sid, 'kind': 'text', 'text': text}));
+    }
+  }
+
+  void streamEnd(String sid, String text, {int seq = 3}) {
+    for (final ws in sockets) {
+      ws.add(
+        jsonEncode({
+          'type': 'event',
+          'sessionId': sid,
+          'event': _event(seq, 'message.assistant', {
+            'parts': [
+              {'type': 'text', 'text': text},
+            ],
+            'stopReason': 'end_turn',
+          }),
+        }),
+      );
+      ws.add(
+        jsonEncode({
+          'type': 'session.state',
+          'sessionId': sid,
+          'state': 'idle',
+          'stopReason': 'end_turn',
+        }),
+      );
+    }
+  }
+
   /// `GET /api/budgets` and `GET /api/limits` (the conversations' header bars, 3.9.0): empty
   /// unless a test fills them.
   List<Map<String, dynamic>> budgets = [];
