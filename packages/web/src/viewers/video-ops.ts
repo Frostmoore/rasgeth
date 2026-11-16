@@ -5,6 +5,7 @@
 // flight; the keys of Resolve (and montatore) as a table; the ruler's ticks, the snapping of a
 // block, J/K/L; a change in the person's words. The server owns the file: the page never writes it.
 import {
+  captionWords,
   clipEnd,
   type DocSummary,
   diffTimeline,
@@ -19,9 +20,12 @@ import {
   type VideoAction,
   type VideoEdit,
   type VideoIdGen,
+  type VideoKenBurns,
   type VideoMediaInfo,
   type VideoMediaRef,
   type VideoRate,
+  type VideoTrack,
+  type VideoTransitionKind,
   videoActionsConflict,
 } from "@redgiant/protocol";
 import { type Key, t } from "../i18n.js";
@@ -402,6 +406,147 @@ export function gapAt(doc: RgVideo, trackId: string, frame: number): [number, nu
     s = Math.max(s, clipEnd(c));
   }
   return undefined;
+}
+
+// ---- G41.5c: transitions, the inspector's values, the transcript, the phone ------------------
+
+/** The cut nearest `frame` on a track (two clips touching), within `th` frames. */
+export function cutNear(
+  doc: RgVideo,
+  trackId: string,
+  frame: number,
+  th: number,
+): { from: string; to: string; at: number } | undefined {
+  const list = doc.clips.filter((x) => x.track === trackId).sort((a, b) => a.start - b.start);
+  let best: { from: string; to: string; at: number } | undefined;
+  for (let i = 0; i + 1 < list.length; i++) {
+    const a = list[i] as RgVideo["clips"][number];
+    const b = list[i + 1] as RgVideo["clips"][number];
+    const at = clipEnd(a);
+    if (b.start !== at || Math.abs(at - frame) > th) continue;
+    if (!best || Math.abs(at - frame) < Math.abs(best.at - frame))
+      best = { from: a.id, to: b.id, at };
+  }
+  return best;
+}
+
+/** The four transitions to drag (their direction is chosen in the inspector). */
+export const TRANSITION_FAMILIES = ["dissolve", "dip", "wipe", "slide"] as const;
+export type TransitionFamily = (typeof TRANSITION_FAMILIES)[number];
+export const TRANSITION_DIRS = ["left", "right", "up", "down"] as const;
+export type TransitionDir = (typeof TRANSITION_DIRS)[number];
+
+export function transitionFamily(k: VideoTransitionKind): {
+  family: TransitionFamily;
+  dir?: TransitionDir;
+} {
+  if (k === "dissolve") return { family: "dissolve" };
+  if (k === "dip_to_black") return { family: "dip" };
+  const [f, d] = k.split("_") as ["wipe" | "slide", TransitionDir];
+  return { family: f, dir: d };
+}
+
+export function transitionKind(
+  f: TransitionFamily,
+  dir: TransitionDir = "left",
+): VideoTransitionKind {
+  if (f === "dissolve") return "dissolve";
+  if (f === "dip") return "dip_to_black";
+  return `${f}_${dir}` as VideoTransitionKind;
+}
+
+/** Ken Burns' presets: none, then zoom in and out towards each side (montatore's eight). */
+export const KB_PRESETS = [
+  ["in", "left"],
+  ["in", "right"],
+  ["in", "up"],
+  ["in", "down"],
+  ["out", "left"],
+  ["out", "right"],
+  ["out", "up"],
+  ["out", "down"],
+] as const;
+export type KbPreset = `${(typeof KB_PRESETS)[number][0]}-${(typeof KB_PRESETS)[number][1]}`;
+
+/** Which preset a clip's Ken Burns is ("none", "custom" when moved by hand). */
+export function kbPresetOf(
+  kb: VideoKenBurns | undefined,
+  preset: (z: "in" | "out", p: "left" | "right" | "up" | "down") => VideoKenBurns,
+): KbPreset | "none" | "custom" {
+  if (!kb) return "none";
+  const same = (a: VideoKenBurns, b: VideoKenBurns) => JSON.stringify(a) === JSON.stringify(b);
+  for (const [z, p] of KB_PRESETS) if (same(preset(z, p), kb)) return `${z}-${p}`;
+  return "custom";
+}
+
+/** dB in the person's words: "+3,5 dB", "0 dB", "−12 dB" (a true minus). */
+export function dbText(v: number, it: boolean): string {
+  const r = Math.round(v * 10) / 10;
+  if (r === 0) return "0 dB";
+  const n = Math.abs(r).toFixed(Number.isInteger(r) ? 0 : 1);
+  return `${r > 0 ? "+" : "\u2212"}${it ? n.replace(".", ",") : n} dB`;
+}
+
+/** Frames in seconds, in the person's words: "0,5 s". */
+export function secText(frames: number, rate: VideoRate, it: boolean): string {
+  const v = Math.round((frames / fps(rate)) * 10) / 10;
+  const n = v.toFixed(Number.isInteger(v) ? 0 : 1);
+  return `${it ? n.replace(".", ",") : n} s`;
+}
+
+/** Every word of the subtitles, in order (their own, or spread by length): the transcript. */
+export interface TranscriptWordRef {
+  cap: string;
+  i: number;
+  start: number;
+  end: number;
+  text: string;
+}
+export function transcriptOf(doc: RgVideo): TranscriptWordRef[] {
+  const out: TranscriptWordRef[] = [];
+  for (const c of [...doc.captions.segments].sort((a, b) => a.start - b.start))
+    captionWords(c).forEach((w, i) => {
+      out.push({ cap: c.id, i, start: w.start, end: w.end, text: w.text });
+    });
+  return out;
+}
+
+/**
+ * The frames a chosen run of words takes ([first, last] in any order), from the first word's
+ * start to the last word's end; the pause after the last word goes too when the next word comes
+ * within a second (a clean cut), never into the next word.
+ */
+export function wordsSpan(
+  words: readonly TranscriptWordRef[],
+  a: number,
+  b: number,
+  rate: VideoRate,
+): [number, number] | undefined {
+  const lo = Math.max(0, Math.min(a, b));
+  const hi = Math.min(words.length - 1, Math.max(a, b));
+  const first = words[lo];
+  const last = words[hi];
+  if (!first || !last) return undefined;
+  const next = words[hi + 1];
+  const end =
+    next && next.start - last.end <= Math.round(fps(rate))
+      ? Math.max(last.end, next.start)
+      : last.end;
+  return end > first.start ? [first.start, end] : undefined;
+}
+
+/**
+ * The tracks a phone shows: the lowest video and audio tracks, and any other with a chosen
+ * clip; every track when the person opened them all.
+ */
+export function phoneTracks(doc: RgVideo, chosen: readonly string[], all: boolean): VideoTrack[] {
+  if (all) return doc.tracks;
+  const keep = new Set<string>();
+  const firstOf = (k: VideoTrack["kind"]) => doc.tracks.find((t) => t.kind === k)?.id;
+  for (const id of [firstOf("Video"), firstOf("Audio")]) if (id) keep.add(id);
+  const sel = new Set(chosen);
+  for (const c of doc.clips) if (sel.has(c.id)) keep.add(c.track);
+  return doc.tracks.filter((t) => keep.has(t.id));
 }
 
 // ---- files ----------------------------------------------------------------------------------

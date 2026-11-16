@@ -393,6 +393,68 @@ function shiftAfter(
       c.start += delta;
 }
 
+// -------------------------------------------------------------------------------------------
+// Markers and subtitles follow the ripples (G41.5c)
+
+/**
+ * Markers and subtitles belong to the timeline, not to a track: they follow a ripple that moves
+ * the main tracks (every unlocked track, or a set that holds V1 or A1, where the picture and the
+ * voice are), never one on a side track alone (music closing up under a still voice).
+ */
+const timedFollow = (only?: ReadonlySet<string>) => !only || only.has("V1") || only.has("A1");
+
+/** Everything timed from `from` on moves by `delta` (a space opened, F9). */
+function shiftTimed(doc: RgVideo, from: number, delta: number) {
+  for (const m of doc.markers) if (m.frame >= from) m.frame = Math.max(0, m.frame + delta);
+  for (const c of doc.captions.segments) {
+    if (c.start < from) continue;
+    c.start = Math.max(0, c.start + delta);
+    c.end = Math.max(c.start + 1, c.end + delta);
+    if (c.words)
+      c.words = c.words.map((w) => ({ ...w, start: w.start + delta, end: w.end + delta }));
+  }
+}
+
+/**
+ * Frames [s, e) left the timeline: markers inside go to `s`, those after move back; a subtitle
+ * inside goes, one across an edge loses the part (and the words) that went, the rest moves back.
+ * A subtitle keeps its text unless its words say what is left.
+ */
+function cutTimed(doc: RgVideo, s: number, e: number) {
+  const len = e - s;
+  if (len <= 0) return;
+  const at = (f: number) => (f >= e ? f - len : Math.min(f, s));
+  const seen = new Set<number>();
+  doc.markers = doc.markers.filter((m) => {
+    m.frame = at(m.frame);
+    if (seen.has(m.frame)) return false; // two markers on one frame: the first stays
+    seen.add(m.frame);
+    return true;
+  });
+  const out: VideoCaption[] = [];
+  for (const c of doc.captions.segments) {
+    if (c.end <= s) {
+      out.push(c);
+      continue;
+    }
+    if (c.start >= s && c.end <= e) continue;
+    const start = at(c.start);
+    const end = at(c.end);
+    if (end - start < 1) continue;
+    const n: VideoCaption = { ...c, start, end };
+    if (c.words) {
+      const words = c.words
+        .filter((w) => (w.start + w.end) / 2 < s || (w.start + w.end) / 2 >= e)
+        .map((w) => ({ ...w, start: at(w.start), end: Math.max(at(w.start) + 1, at(w.end)) }));
+      if (!words.length) continue;
+      if (words.length !== c.words.length) n.text = words.map((w) => w.text).join(" ");
+      n.words = words;
+    }
+    out.push(n);
+  }
+  doc.captions.segments = out;
+}
+
 /**
  * Trims the `edge` ("in" = start, "out" = end) of clip `id` by `delta` frames (positive = to the
  * right). Without `ripple` the clip neither crosses its neighbours nor leaves its file; with
@@ -454,6 +516,10 @@ export function trimClip(
       if (doc.clips.some((c) => !own.has(c.track) && c.start < e0 && clipEnd(c) > s0)) only = own;
     }
     shiftAfter(doc, oldEnd, shift, moved, only);
+    if (timedFollow(only)) {
+      if (shift < 0) cutTimed(doc, oldEnd + shift, oldEnd);
+      else shiftTimed(doc, oldEnd, shift);
+    }
   }
   return settle(doc);
 }
@@ -548,6 +614,7 @@ function closeSpan(doc: RgVideo, s: number, e: number, ownTracks: ReadonlySet<st
     others.length ? [...ownTracks] : doc.tracks.filter((t) => !t.locked).map((t) => t.id),
   );
   for (const c of doc.clips) if (tracks.has(c.track) && c.start >= e) c.start -= len;
+  if (timedFollow(others.length ? tracks : undefined)) cutTimed(doc, s, e);
 }
 
 /**
@@ -569,6 +636,35 @@ export function rippleDeleteClips(
   const spans = mergeSpans(removed.map((c) => [c.start, clipEnd(c)])).reverse();
   const own = new Set(removed.map((c) => c.track));
   for (const [s, e] of spans) closeSpan(doc, s, e, own);
+  return settle(doc);
+}
+
+/**
+ * Takes frames [s, e) out of the whole timeline and closes them up (the speech cut from its
+ * text, G41.5c): every unlocked track is cut at both edges, what lies between goes, what follows
+ * moves back; markers and subtitles follow. Locked tracks stay as they are.
+ */
+export function cutTimeRange(doc0: RgVideo, s: number, e: number, o: VideoEditOpts = {}): RgVideo {
+  const a = Math.max(0, Math.round(s));
+  const b = Math.round(e);
+  if (b <= a) return doc0;
+  let doc = bladeAt(doc0, a, null, o.ids ? { ids: o.ids } : {});
+  doc = bladeAt(doc, b, null, o.ids ? { ids: o.ids } : {});
+  doc = doc === doc0 ? clone(doc0) : doc;
+  const len = b - a;
+  const open = (c: VideoClip) => !isLocked(doc, c.track);
+  const before = doc.clips.length;
+  doc.clips = doc.clips.filter((c) => !(open(c) && c.start >= a && clipEnd(c) <= b));
+  let moved = false;
+  for (const c of doc.clips)
+    if (open(c) && c.start >= b) {
+      c.start -= len;
+      moved = true;
+    }
+  const timed = JSON.stringify([doc.markers, doc.captions.segments]);
+  cutTimed(doc, a, b);
+  const timedChanged = timed !== JSON.stringify([doc.markers, doc.captions.segments]);
+  if (doc.clips.length === before && !moved && !timedChanged) return doc0;
   return settle(doc);
 }
 
@@ -651,6 +747,7 @@ export function placeClip(
     doc = bladeAt(doc, at, null, { ids: gen });
     if (doc === doc0) doc = clone(doc0);
     shiftAfter(doc, at, dur);
+    shiftTimed(doc, at, dur);
   }
   const link = withVideo && withAudio ? gen("g") : undefined;
   const src = { start: still ? 0 : Math.max(0, Math.round(srcIn)), duration: dur };
@@ -1142,6 +1239,20 @@ export function setCaption(
     s.text = props.text.slice(0, 2000);
     delete s.words; // the words were of the old text
   }
+  return settle(doc);
+}
+
+/** A subtitle moved by `delta` frames with its words (never before frame 0). */
+export function moveCaption(doc0: RgVideo, id: string, delta: number): RgVideo {
+  const old = doc0.captions.segments.find((x) => x.id === id);
+  if (!old) return doc0;
+  const d = Math.max(-old.start, Math.round(delta));
+  if (!d) return doc0;
+  const doc = clone(doc0);
+  const s = doc.captions.segments.find((x) => x.id === id) as VideoCaption;
+  s.start += d;
+  s.end += d;
+  if (s.words) s.words = s.words.map((w) => ({ ...w, start: w.start + d, end: w.end + d }));
   return settle(doc);
 }
 

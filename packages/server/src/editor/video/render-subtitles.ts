@@ -6,6 +6,7 @@
 // it is, wrapped by libass when it is too long for the picture.
 import {
   framesToSeconds,
+  textWidth,
   type VideoCaption,
   type VideoCaptionSettings,
   type VideoRate,
@@ -34,24 +35,6 @@ function assText(text: string): string {
     .replace(/\{/g, "(")
     .replace(/\}/g, ")")
     .replace(/\n+/g, "\\N");
-}
-
-/**
- * A text's width in pixels at `size`, estimated from Inter's glyphs (measured with ffmpeg's
- * bbox at 100 px: lowercase 0.44-0.58 em, "MMMMWWWW" 0.93, "iiiilll" 0.22, digits 0.58; bold
- * about 5% wider). The classes are rounded up: the estimate is never narrower than the text.
- */
-export function textWidth(text: string, size: number, bold = false): number {
-  let em = 0;
-  for (const ch of text) {
-    if (/[iljI.,:;'!|ìíïî`]/.test(ch)) em += 0.3;
-    else if (/[\sfrt()[\]/\-"]/.test(ch)) em += 0.4;
-    else if (/[mwMW@%]/.test(ch)) em += 0.95;
-    else if (/\p{Lu}/u.test(ch)) em += 0.72;
-    else if (/[0-9]/.test(ch)) em += 0.62;
-    else em += 0.58;
-  }
-  return em * size * (bold ? 1.05 : 1);
 }
 
 /** The font libass uses: the family of the server's `Inter-*.ttf` (fontsdir). */

@@ -7,17 +7,24 @@
 // J- and L-cuts), gaps to choose and close; the files of this timeline in a row (dragged in, or from
 // the project's files). Every change is one of the protocol's pure edits (video-timeline.ts) sent
 // to the host as its difference (video-ops.ts): revisions, undo, an agent's changes highlighted.
-// The clip's inspector, texts, subtitles and the phone are G41.5c (the inspector's place is here).
+// G41.5c: the inspector (video/Inspector.tsx), transitions dragged onto a cut with handles for
+// their length, texts edited on the picture, a lane of subtitles, the «Trascrizione» panel cutting
+// the speech from its words, and a narrow canvas or a phone: the inspector as a panel to open, one
+// video and one audio track shown (the others a tap away), big touch targets.
 
 import {
+  addCaption,
+  addedClips,
+  addGenerator,
   addMarker,
   addTrack,
-  addedClips,
+  addTransition,
   appendClip,
   applyVideoAction,
   bladeAt,
   clipAt,
   clipEnd,
+  clipLength,
   clipOf,
   closeGap,
   copyClips,
@@ -28,6 +35,7 @@ import {
   lanes,
   liftClips,
   linkClips,
+  moveCaption,
   moveClips,
   nextEdit,
   PERSON,
@@ -35,14 +43,20 @@ import {
   placeClip,
   prevEdit,
   type RgVideo,
+  removeCaptions,
   removeMarker,
   removeTrack,
+  removeTransition,
   rippleDeleteClips,
+  setCaptionSegments,
   setClipProps,
+  setGenerator,
   setMarker,
   setTrack,
+  setTransition,
   snap,
   snapPoints,
+  TEXT_LOOK,
   timecode,
   timelineDuration,
   trackClips,
@@ -52,6 +66,7 @@ import {
   type VideoClip,
   type VideoEdit,
   type VideoMediaInfo,
+  type VideoTextRef,
   type VideoTrack,
   withLinked,
 } from "@redgiant/protocol";
@@ -62,17 +77,20 @@ import { lang, t } from "../../i18n.js";
 import {
   IconAppend,
   IconBlade,
+  IconCaption,
   IconChevronLeft,
   IconChevronRight,
   IconClose,
   IconCursor,
   IconEye,
   IconEyeOff,
+  IconFileText,
   IconFilm,
   IconFlag,
   IconImage,
   IconInsert,
   IconKeyboard,
+  IconLayers,
   IconLink,
   IconLock,
   IconMagnet,
@@ -87,9 +105,12 @@ import {
   IconPlus,
   IconRedo,
   IconRippleTrim,
+  IconSliders,
   IconSpeaker,
   IconSpeakerOff,
+  IconTransition,
   IconTrash,
+  IconType,
   IconUndo,
   IconUnlock,
 } from "../../icons.js";
@@ -111,6 +132,7 @@ import { holdMark } from "../../viewers/agent-marks.js";
 import { OwnUndo } from "../../viewers/own-undo.js";
 import {
   clampPpf,
+  cutNear,
   edgeAt,
   editAction,
   fitPpf,
@@ -119,28 +141,39 @@ import {
   keyWords,
   mediaRefOf,
   PageIds,
+  phoneTracks,
   rulerTicks,
   shuttleRate,
   snapBlock,
   sourceLength,
+  TRANSITION_FAMILIES,
+  type TransitionFamily,
   touchedIds,
+  transcriptOf,
+  transitionFamily,
+  transitionKind,
   VIDEO_KEYS,
-  type VideoCommand,
   VideoCollab,
+  type VideoCommand,
   videoActionsOf,
   videoDocOp,
   videoKey,
 } from "../../viewers/video-ops.js";
-import { askText } from "../dialogs.js";
+import { askConfirm, askText } from "../dialogs.js";
 import { Modal } from "../ui.js";
-import { type PlayerMediaMap, TimelinePlayer } from "./video/player.js";
 import { ExactJob, PrepJob, playerMediaOf, useFonts, usePrepared } from "./VideoPreview.js";
+import { Inspector, TranscriptPanel } from "./video/Inspector.js";
+import { type PlayerMediaMap, TimelinePlayer, textStyle } from "./video/player.js";
 
 export const TIMELINE_EDITABLE = /\.rgvideo$/i;
 
 /** The track headers' width (they stay at the left while the timeline scrolls). */
 export const HEAD_W = 152;
+/** A phone's track headers: the id and one button. */
+export const PHONE_HEAD_W = 64;
 const LANE_H: Record<VideoTrack["kind"], number> = { Video: 58, Audio: 44 };
+const PHONE_LANE_H: Record<VideoTrack["kind"], number> = { Video: 64, Audio: 52 };
+const CAPTION_H = 30;
 const RULER_H = 26;
 const SNAP_PX = 10;
 const EDGE_PX = 7;
@@ -148,6 +181,11 @@ const EDGE_PX = 7;
 const MEDIA_TYPE = "application/x-redgiant-media";
 /** The project's files tree (Explorer.tsx). */
 export const FILE_TYPE = "application/x-redgiant-file";
+/** A transition dragged from the effects' row onto a cut (G41.5c). */
+export const TRANSITION_TYPE = "application/x-redgiant-transition";
+/** Below this the inspector is a panel to open; below PHONE_W the timeline is a phone's. */
+export const NARROW_W = 820;
+export const PHONE_W = 560;
 
 let asks = 0;
 const askId = () => `v${Date.now().toString(36)}${(asks++).toString(36)}`;
@@ -179,7 +217,9 @@ type Drag =
       linked: boolean;
       view?: RgVideo;
     }
-  | { mode: "marquee"; x0: number; y0: number; keep: string[]; frame: number; moved: boolean };
+  | { mode: "marquee"; x0: number; y0: number; keep: string[]; frame: number; moved: boolean }
+  | { mode: "trans"; id: string; side: "in" | "out"; x0: number; base: RgVideo; view?: RgVideo }
+  | { mode: "cap"; id: string; x0: number; base: RgVideo; moved: boolean; view?: RgVideo };
 
 interface HostApi {
   commit(next: RgVideo, what: VideoEdit, select?: string[]): boolean;
@@ -404,6 +444,79 @@ function SourceViewer({
   );
 }
 
+/**
+ * A text edited where it shows (G41.5c): the same size, lines and place as the render
+ * (`textStyle`), typed straight on the picture. Leaving it or Ctrl+Enter keeps the words; Esc
+ * gives them back.
+ */
+function TextOnPicture({
+  textRef,
+  w,
+  h,
+  onDone,
+}: {
+  textRef: VideoTextRef;
+  w: number;
+  h: number;
+  onDone: (text: string | undefined) => void;
+}) {
+  const box = useRef<HTMLDivElement>(null);
+  const span = useRef<HTMLSpanElement>(null);
+  const ended = useRef(false);
+  const lines = useMemo(() => {
+    const el = { style: { setProperty: (_k: string, _v: string) => {} } };
+    return textStyle(el, textRef, w, h);
+  }, [textRef, w, h]);
+  useEffect(() => {
+    if (box.current) textStyle(box.current, textRef, w, h);
+    const el = span.current;
+    if (!el) return;
+    el.focus();
+    const r = document.createRange?.();
+    if (r && typeof window.getSelection === "function") {
+      r.selectNodeContents(el);
+      window.getSelection()?.removeAllRanges();
+      window.getSelection()?.addRange(r);
+    }
+  }, []);
+  const end = (text: string | undefined) => {
+    if (ended.current) return;
+    ended.current = true;
+    onDone(text);
+  };
+  const look = TEXT_LOOK[textRef.style];
+  const words = (el: HTMLElement) => (el.textContent ?? "").replace(/\n$/, "");
+  return (
+    <div
+      ref={box}
+      class={`vp-box vp-text ve-text-edit pos-${textRef.position}${look.box ? " boxed" : ""}${look.shadow ? " shadow" : ""}${look.bold ? " bold" : ""}`}
+    >
+      {/* biome-ignore lint/a11y/useSemanticElements: typed on the picture with the render's own lines and box, which an input cannot draw */}
+      <span
+        ref={span}
+        role="textbox"
+        tabIndex={0}
+        aria-multiline="true"
+        aria-label={t("veEditOnPicture")}
+        contentEditable={"plaintext-only" as unknown as boolean}
+        onBlur={(e) => end(words(e.currentTarget as HTMLElement))}
+        onKeyDown={(e) => {
+          e.stopPropagation();
+          if (e.key === "Escape") {
+            e.preventDefault();
+            end(undefined);
+          } else if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            end(words(e.currentTarget as HTMLElement));
+          }
+        }}
+      >
+        {lines}
+      </span>
+    </div>
+  );
+}
+
 export function VideoEditor({
   file,
   onReveal,
@@ -414,7 +527,9 @@ export function VideoEditor({
   const key = videoViewKey(file);
   const view = videoViewOf(key);
   const ed = videoEditOf(key);
-  const edit = (patch: Partial<VideoEditState>) => setVideoEdit(key, patch);
+  // Choosing clips leaves a chosen transition or subtitle (one thing in the inspector).
+  const edit = (patch: Partial<VideoEditState>) =>
+    setVideoEdit(key, patch.sel?.length ? { trans: undefined, cap: undefined, ...patch } : patch);
   const [doc, setDoc] = useState<RgVideo>();
   /** The timeline while a drag goes on (committed on release). */
   const [shown, setShown] = useState<RgVideo>();
@@ -424,6 +539,10 @@ export function VideoEditor({
   const [dropHint, setDropHint] = useState<{ track: string; frame: number }>();
   const [notice, setNotice] = useState<string>();
   const [selMarker, setSelMarker] = useState<string>();
+  /** The canvas's width class: a narrow one (inspector as a panel), a phone's. */
+  const [size, setSize] = useState<"wide" | "narrow" | "phone">("wide");
+  const [captionsJob, setCaptionsJob] = useState<string[]>();
+  const capJobs = useRef<string[]>([]);
   const root = useRef<HTMLElement>(null);
   const rows = useRef<HTMLDivElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
@@ -617,9 +736,27 @@ export function VideoEditor({
   useEffect(() => {
     const el = stage.current;
     if (!el || typeof ResizeObserver === "undefined") return;
-    const ro = new ResizeObserver(() =>
-      el.style.setProperty("--side", `${Math.min(el.clientWidth, el.clientHeight)}px`),
-    );
+    const ro = new ResizeObserver(() => {
+      const side = `${Math.min(el.clientWidth, el.clientHeight)}px`;
+      el.style.setProperty("--side", side);
+      // The text edited on the picture is the stage's sibling: the same measure.
+      el.parentElement?.style.setProperty("--side", side);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [!!doc]);
+  // The canvas's width: narrow (the inspector a panel to open), a phone (or a touch screen
+  // not wide enough): the simple timeline. Unknown (0) counts as wide.
+  useEffect(() => {
+    const el = root.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const coarse =
+      typeof matchMedia !== "undefined" && matchMedia("(pointer: coarse)").matches === true;
+    const ro = new ResizeObserver(() => {
+      const w = el.clientWidth;
+      if (!w) return;
+      setSize(w < PHONE_W || (coarse && w < NARROW_W) ? "phone" : w < NARROW_W ? "narrow" : "wide");
+    });
     ro.observe(el);
     return () => ro.disconnect();
   }, [!!doc]);
@@ -643,6 +780,8 @@ export function VideoEditor({
   // width (maximized, the panel closed) as long as the person has not zoomed by hand.
   const docNow = useRef(doc);
   docNow.current = doc;
+  const headNow = useRef(HEAD_W);
+  headNow.current = size === "phone" ? PHONE_HEAD_W : HEAD_W;
   useEffect(() => {
     const sc = scroller.current;
     if (!doc || !sc) return;
@@ -650,7 +789,7 @@ export function VideoEditor({
       const d = docNow.current;
       const e = videoEditOf(key);
       if (!d || (e.ppf !== undefined && e.fitted === false)) return;
-      const ppf = fitPpf(sc.clientWidth - HEAD_W, timelineDuration(d), d.format.rate);
+      const ppf = fitPpf(sc.clientWidth - headNow.current, timelineDuration(d), d.format.rate);
       if (e.ppf !== undefined && Math.abs(ppf - e.ppf) / e.ppf <= 0.02) return;
       setVideoEdit(key, { ppf, fitted: true });
       // Fitted: the whole timeline is in view from its start.
@@ -668,7 +807,7 @@ export function VideoEditor({
     });
     ro.observe(sc);
     return () => ro.disconnect();
-  }, [!!doc]);
+  }, [!!doc, size]);
 
   // «Show» in the changes' panel: the clip the change was about, chosen and in view.
   useEffect(() => {
@@ -698,12 +837,15 @@ export function VideoEditor({
   const sel = ed.sel.filter((id) => has.has(id));
   const selSet = new Set(sel);
   const linked = ed.linkedSel;
+  const phone = size === "phone";
+  const headW = phone ? PHONE_HEAD_W : HEAD_W;
+  const laneH = phone ? PHONE_LANE_H : LANE_H;
   const gen = (d: RgVideo) => ids.current.for(d);
   const commit = (next: RgVideo, what: VideoEdit, select?: string[]) =>
     host.current?.commit(next, what, select) ?? false;
   const frameAt = (clientX: number) => {
     const r = rows.current?.getBoundingClientRect();
-    const f = Math.round((clientX - (r?.left ?? 0) - HEAD_W) / ppf);
+    const f = Math.round((clientX - (r?.left ?? 0) - headW) / ppf);
     return Number.isFinite(f) ? Math.max(0, f) : playhead;
   };
   const trackUnder = (x: number, y: number) =>
@@ -716,7 +858,7 @@ export function VideoEditor({
     if (!sc) return;
     const x = f * (videoEditOf(key).ppf ?? 1);
     const left = sc.scrollLeft;
-    const room = sc.clientWidth - HEAD_W;
+    const room = sc.clientWidth - headNow.current;
     if (x < left || x > left + room - 30) sc.scrollLeft = Math.max(0, x - room * 0.25);
   }
 
@@ -755,7 +897,7 @@ export function VideoEditor({
   };
   const fit = () => {
     const w = scroller.current?.clientWidth ?? 900;
-    edit({ ppf: fitPpf(w - HEAD_W, timelineDuration(doc), rate), fitted: true });
+    edit({ ppf: fitPpf(w - headW, timelineDuration(doc), rate), fitted: true });
     requestAnimationFrame(() => {
       if (scroller.current) scroller.current.scrollLeft = 0;
     });
@@ -831,6 +973,107 @@ export function VideoEditor({
   };
   const toggleTrack = (tr: VideoTrack, prop: "locked" | "hidden" | "muted") =>
     commit(setTrack(doc, tr.id, { [prop]: !tr[prop] }), "track");
+
+  // ---- G41.5c: transitions, texts, subtitles ----------------------------------------------
+  const openInspector = () => size !== "wide" && edit({ inspOpen: true });
+  const chooseTransition = (id: string) => {
+    setSelMarker(undefined);
+    edit({ sel: [], trans: id, cap: undefined, gap: undefined });
+  };
+  const chooseCaption = (id: string) => {
+    setSelMarker(undefined);
+    edit({ sel: [], cap: id, trans: undefined, gap: undefined });
+  };
+  /** A transition one second long on the cut after clip `from`. */
+  const transitionAt = (from: string, family: TransitionFamily) => {
+    const next = addTransition(doc, from, transitionKind(family), sec, { ids: gen(doc) });
+    if (next === doc) return say(t("veNoCut"));
+    commit(next, "transition", []);
+    const made = next.transitions.find((x) => x.from === from);
+    if (made) chooseTransition(made.id);
+    say(t("veTransitionAdded", { kind: t(`veFx_${family}`) }));
+  };
+  /** A tile pressed (keys, touch): the cut nearest the playhead, on the target video track first. */
+  const transitionHere = (family: TransitionFamily) => {
+    const tracks = [
+      ...new Set([ed.targets.video, ...lanes(doc, "Video")].filter((x): x is string => !!x)),
+    ];
+    for (const id of tracks) {
+      const c = cutNear(doc, id, playhead, sec * 2);
+      if (c) return transitionAt(c.from, family);
+    }
+    say(t("veNoCutNear"));
+  };
+  const startTextEdit = (id: string, d: RgVideo = doc) => {
+    const c = clipOf(d, id);
+    if (!c || !("text" in c.ref)) return;
+    halt();
+    if (playhead < c.start || playhead >= clipEnd(c))
+      seek(c.start + Math.min(clipLength(c) - 1, sec));
+    edit({ sel: [id], editText: id });
+  };
+  const addText = () => {
+    const ref: VideoTextRef = {
+      generator: "text",
+      text: t("veNewTitle"),
+      style: "title",
+      position: "center",
+    };
+    const next = addGenerator(doc, ref, playhead, sec * 3, { ids: gen(doc) });
+    if (next === doc) return say(t("veNothingToPlace"));
+    const added = addedClips(doc, next);
+    commit(next, "text", added);
+    if (added[0]) startTextEdit(added[0], next);
+  };
+  const addCaptionHere = () => {
+    const next = addCaption(doc, playhead, playhead + sec * 2, t("veNewCaption"), {
+      ids: gen(doc),
+    });
+    if (next === doc) return;
+    const id = next.captions.segments.find(
+      (x) => !doc.captions.segments.some((o) => o.id === x.id),
+    )?.id;
+    commit(next, "caption", []);
+    if (!id) return;
+    chooseCaption(id);
+    openInspector();
+    setTimeout(() => document.getElementById("ve-caption-text")?.focus(), 30);
+  };
+  /** The subtitles from the speech (G41.4): the sounds analysed on the server, then written. */
+  const fromSpeech = async (asked = false) => {
+    if (!asked && doc.captions.segments.length) {
+      const yes = await askConfirm(t("veReplaceCaptions"), {
+        text: t("veReplaceCaptionsText", { n: String(doc.captions.segments.length) }),
+        yes: t("veReplaceCaptionsYes"),
+      });
+      if (!yes) return;
+    }
+    const r = await getApi()
+      .videoCaptions(file.scope, file.path)
+      .catch(() => undefined);
+    if (!r) return say(t("veCaptionsFailed"));
+    if (r.jobs.length) {
+      capJobs.current = r.jobs;
+      setCaptionsJob(r.jobs);
+      return say(t("veTranscribingNow"));
+    }
+    setCaptionsJob(undefined);
+    const now = docNow.current as RgVideo;
+    if (!r.captions?.length)
+      return say(
+        r.silent.length
+          ? t("veNoWords", { names: r.silent.map(fileName).join(", ") })
+          : t("veNoSound"),
+      );
+    commit(setCaptionSegments(now, r.captions, { ids: gen(now) }), "caption", []);
+    say(t("veCaptionsMade", { n: String(r.captions.length) }));
+  };
+  const captionJobEnded = (id: string) => {
+    const rest = capJobs.current.filter((x) => x !== id);
+    capJobs.current = rest;
+    setCaptionsJob(rest);
+    if (!rest.length) void fromSpeech(true);
+  };
 
   const run = (cmd: VideoCommand, inSource = false) => {
     const s = ed.source;
@@ -911,6 +1154,16 @@ export function VideoEditor({
         return commit(next, "blade");
       }
       case "lift":
+        if (ed.trans) {
+          const id = ed.trans;
+          edit({ trans: undefined });
+          return commit(removeTransition(doc, id), "transition");
+        }
+        if (ed.cap) {
+          const id = ed.cap;
+          edit({ cap: undefined });
+          return commit(removeCaptions(doc, [id]), "caption");
+        }
         if (selMarker) {
           setSelMarker(undefined);
           return commit(removeMarker(doc, selMarker), "marker");
@@ -918,6 +1171,16 @@ export function VideoEditor({
         if (sel.length) return commit(liftClips(doc, sel, { linked }), "lift", []);
         return;
       case "ripple":
+        if (ed.trans) {
+          const id = ed.trans;
+          edit({ trans: undefined });
+          return commit(removeTransition(doc, id), "transition");
+        }
+        if (ed.cap) {
+          const id = ed.cap;
+          edit({ cap: undefined });
+          return commit(removeCaptions(doc, [id]), "caption");
+        }
         if (selMarker) {
           setSelMarker(undefined);
           return commit(removeMarker(doc, selMarker), "marker");
@@ -966,7 +1229,15 @@ export function VideoEditor({
         return say(linked ? t("veLinkedSelOff") : t("veLinkedSelOn"));
       case "escape":
         setSelMarker(undefined);
-        return edit({ sel: [], gap: undefined, help: false });
+        return edit({
+          sel: [],
+          gap: undefined,
+          help: false,
+          trans: undefined,
+          cap: undefined,
+          words: undefined,
+          editText: undefined,
+        });
       case "insert":
       case "overwrite":
       case "append":
@@ -1093,6 +1364,31 @@ export function VideoEditor({
       if (now) player.current?.seek(d.edge === "in" ? now.start : clipEnd(now) - 1);
       return;
     }
+    if (d.mode === "trans") {
+      const x = d.base.transitions.find((y) => y.id === d.id);
+      if (!x) return;
+      const delta = Math.round((ev.clientX - d.x0) / ppf);
+      if (!d.view) host.current?.presence(true);
+      // Never shorter than two frames: one on each side of the cut at least.
+      d.view =
+        d.side === "in"
+          ? setTransition(d.base, d.id, {
+              inOffset: Math.max(x.outOffset ? 0 : 1, x.inOffset - delta),
+            })
+          : setTransition(d.base, d.id, {
+              outOffset: Math.max(x.inOffset ? 0 : 1, x.outOffset + delta),
+            });
+      setShown(d.view);
+      return;
+    }
+    if (d.mode === "cap") {
+      if (!d.moved && Math.abs(ev.clientX - d.x0) < 3) return;
+      if (!d.moved) host.current?.presence(true);
+      d.moved = true;
+      d.view = moveCaption(d.base, d.id, Math.round((ev.clientX - d.x0) / ppf));
+      setShown(d.view);
+      return;
+    }
     // The marquee: the clips it touches join the selection.
     const r = rows.current?.getBoundingClientRect();
     if (!r) return;
@@ -1121,6 +1417,13 @@ export function VideoEditor({
     if (d.mode === "marquee") {
       setMarquee(undefined);
       if (!d.moved) seek(d.frame);
+      return;
+    }
+    if (d.mode === "trans" || d.mode === "cap") {
+      const v = d.view;
+      setShown(undefined);
+      if (v) host.current?.presence(false);
+      if (v && v !== d.base) commit(v, d.mode === "trans" ? "transition" : "caption", []);
       return;
     }
     if (d.mode === "move" || d.mode === "trim") {
@@ -1158,7 +1461,7 @@ export function VideoEditor({
     }
     const el = e.currentTarget as HTMLElement;
     const r = el.getBoundingClientRect();
-    const edge = edgeAt(e.clientX, r.left, r.width, EDGE_PX);
+    const edge = edgeAt(e.clientX, r.left, r.width, phone ? 14 : EDGE_PX);
     const link = linked && !e.altKey;
     const mine = link ? withLinked(doc, [c.id]) : [c.id];
     if (edge) {
@@ -1205,8 +1508,27 @@ export function VideoEditor({
     const keep = e.shiftKey || e.ctrlKey || e.metaKey ? sel : [];
     const gap =
       !clipAt(doc, tr.id, f) && gapAt(doc, tr.id, f) ? { track: tr.id, frame: f } : undefined;
-    edit({ sel: keep, gap });
+    edit({ sel: keep, gap, trans: undefined, cap: undefined });
+    // A finger on an empty lane moves the playhead (and scrolls): no marquee on a phone.
+    if (e.pointerType === "touch") return seek(f);
     startDrag({ mode: "marquee", x0: e.clientX, y0: e.clientY, keep, frame: f, moved: false });
+  };
+  const pressCaption = (e: PointerEvent, id: string) => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+    root.current?.focus({ preventScroll: true });
+    const c = doc.captions.segments.find((x) => x.id === id);
+    chooseCaption(id);
+    if (c && (playhead < c.start || playhead >= c.end)) seek(c.start);
+    startDrag({ mode: "cap", id, x0: e.clientX, base: doc, moved: false });
+  };
+  const pressHandle = (e: PointerEvent, id: string, side: "in" | "out") => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+    chooseTransition(id);
+    startDrag({ mode: "trans", id, side, x0: e.clientX, base: doc });
   };
   const clipKey = (e: KeyboardEvent, c: VideoClip) => {
     if (e.key !== "Enter" && e.key !== " ") return;
@@ -1224,6 +1546,9 @@ export function VideoEditor({
   const dropTypes = (e: DragEvent) => Array.from(e.dataTransfer?.types ?? []);
   const accepts = (e: DragEvent) =>
     dropTypes(e).includes(MEDIA_TYPE) || dropTypes(e).includes(FILE_TYPE);
+  const isTransition = (e: DragEvent) => dropTypes(e).includes(TRANSITION_TYPE);
+  const cutUnder = (e: DragEvent, tr: VideoTrack) =>
+    cutNear(doc, tr.id, frameAt(e.clientX), Math.max(th * 3, sec));
   const targetsFor = (tr: VideoTrack) => {
     if (tr.kind === "Audio") return { video: null, audio: tr.id };
     const i = lanes(doc, "Video").indexOf(tr.id);
@@ -1231,6 +1556,13 @@ export function VideoEditor({
     return { video: tr.id, audio: audio[i] ?? audio[0] ?? null };
   };
   const dragOverLane = (e: DragEvent, tr: VideoTrack) => {
+    if (isTransition(e)) {
+      const cut = cutUnder(e, tr);
+      if (!cut || tr.locked) return setDropHint(undefined);
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = "copy";
+      return setDropHint({ track: tr.id, frame: cut.at });
+    }
     if (!accepts(e)) return;
     e.preventDefault();
     if (e.dataTransfer) e.dataTransfer.dropEffect = "copy";
@@ -1238,6 +1570,14 @@ export function VideoEditor({
   };
   const dropOnLane = (e: DragEvent, tr: VideoTrack) => {
     setDropHint(undefined);
+    if (isTransition(e)) {
+      e.preventDefault();
+      if (tr.locked) return say(t("veLocked", { id: tr.id }));
+      const cut = cutUnder(e, tr);
+      if (!cut) return say(t("veNoCutNear"));
+      const fam = e.dataTransfer?.getData(TRANSITION_TYPE) as TransitionFamily;
+      return transitionAt(cut.from, TRANSITION_FAMILIES.includes(fam) ? fam : "dissolve");
+    }
     if (!accepts(e)) return;
     e.preventDefault();
     const frame = snapFrame(frameAt(e.clientX), new Set());
@@ -1265,8 +1605,28 @@ export function VideoEditor({
 
   // ---- drawing -----------------------------------------------------------------------------
   const tl = showing as RgVideo;
-  const videoTracks = tl.tracks.filter((x) => x.kind === "Video").reverse();
-  const audioTracks = tl.tracks.filter((x) => x.kind === "Audio");
+  // A phone shows one video and one audio track (and those with a chosen clip).
+  const shownTracks = phone ? phoneTracks(tl, sel, !!ed.allTracks) : tl.tracks;
+  const hiddenTracks = tl.tracks.length - shownTracks.length;
+  const videoTracks = shownTracks.filter((x) => x.kind === "Video").reverse();
+  const audioTracks = shownTracks.filter((x) => x.kind === "Audio");
+  const trans = ed.trans ? tl.transitions.find((x) => x.id === ed.trans) : undefined;
+  const cap = ed.cap ? tl.captions.segments.find((x) => x.id === ed.cap) : undefined;
+  const editing = ed.editText ? clipOf(tl, ed.editText) : undefined;
+  const editingRef = editing && "text" in editing.ref ? (editing.ref as VideoTextRef) : undefined;
+  const words = ed.transcript ? transcriptOf(tl) : [];
+  /** The text on the picture under the playhead, highest track first (a double click edits it). */
+  const textNow = () =>
+    tl.clips
+      .filter(
+        (c) =>
+          "text" in c.ref &&
+          c.enabled &&
+          !trackOf(tl, c.track)?.hidden &&
+          playhead >= c.start &&
+          playhead < clipEnd(c),
+      )
+      .sort((a, b) => lanes(tl, "Video").indexOf(b.track) - lanes(tl, "Video").indexOf(a.track))[0];
   const used = [...new Set(doc.clips.flatMap((c) => (isMediaRef(c.ref) ? [c.ref.media] : [])))];
   const pool = [...used, ...ed.pool.filter((m) => !used.includes(m))];
   const missing = (prepared?.media ?? []).filter((m) => m.missing).map((m) => m.media);
@@ -1332,11 +1692,12 @@ export function VideoEditor({
         onPointerDown={(e) => pressClip(e as PointerEvent, c)}
         onKeyDown={(e) => clipKey(e as KeyboardEvent, c)}
         onDblClick={() =>
-          isMediaRef(c.ref) &&
-          openSource(c.ref.media, {
-            in: c.sourceRange.start,
-            out: c.sourceRange.start + c.sourceRange.duration,
-          })
+          isMediaRef(c.ref)
+            ? openSource(c.ref.media, {
+                in: c.sourceRange.start,
+                out: c.sourceRange.start + c.sourceRange.duration,
+              })
+            : "text" in c.ref && startTextEdit(c.id)
         }
       >
         {tr.kind === "Video" && info?.filmstrip && fileW > 0 && (
@@ -1374,7 +1735,7 @@ export function VideoEditor({
     );
   };
   const lane = (tr: VideoTrack) => {
-    const h = LANE_H[tr.kind];
+    const h = laneH[tr.kind];
     const off = tr.kind === "Video" ? tr.hidden : tr.muted;
     const target = tr.kind === "Video" ? ed.targets.video : ed.targets.audio;
     const empty = !doc.clips.some((c) => c.track === tr.id);
@@ -1402,29 +1763,33 @@ export function VideoEditor({
           >
             {tr.id}
           </button>
-          <button
-            type="button"
-            class="ve-track-name"
-            title={t("veRenameHint")}
-            // As in Resolve: a double click renames (a single one on a crowded header never does);
-            // from the keys, Enter or F2.
-            onDblClick={() => renameTrack(tr)}
-            onKeyDown={(e) => {
-              if (e.key !== "Enter" && e.key !== "F2") return;
-              e.preventDefault();
-              e.stopPropagation();
-              renameTrack(tr);
-            }}
-          >
-            {tr.name}
-          </button>
-          <Tool
-            label={tr.locked ? t("veUnlockTrack") : t("veLockTrack")}
-            pressed={tr.locked}
-            on={() => toggleTrack(tr, "locked")}
-          >
-            {tr.locked ? <IconLock size={13} /> : <IconUnlock size={13} />}
-          </Tool>
+          {!phone && (
+            <button
+              type="button"
+              class="ve-track-name"
+              title={t("veRenameHint")}
+              // As in Resolve: a double click renames (a single one on a crowded header never does);
+              // from the keys, Enter or F2.
+              onDblClick={() => renameTrack(tr)}
+              onKeyDown={(e) => {
+                if (e.key !== "Enter" && e.key !== "F2") return;
+                e.preventDefault();
+                e.stopPropagation();
+                renameTrack(tr);
+              }}
+            >
+              {tr.name}
+            </button>
+          )}
+          {!phone && (
+            <Tool
+              label={tr.locked ? t("veUnlockTrack") : t("veLockTrack")}
+              pressed={tr.locked}
+              on={() => toggleTrack(tr, "locked")}
+            >
+              {tr.locked ? <IconLock size={13} /> : <IconUnlock size={13} />}
+            </Tool>
+          )}
           {tr.kind === "Video" ? (
             <Tool
               label={tr.hidden ? t("veShowTrack") : t("veHideTrack")}
@@ -1442,7 +1807,7 @@ export function VideoEditor({
               {tr.muted ? <IconSpeakerOff size={13} /> : <IconSpeaker size={13} />}
             </Tool>
           )}
-          {empty && tr.id !== "V1" && tr.id !== "A1" && (
+          {!phone && empty && tr.id !== "V1" && tr.id !== "A1" && (
             <Tool
               label={t("veRemoveTrack", { id: tr.id })}
               on={() => {
@@ -1481,13 +1846,48 @@ export function VideoEditor({
               const from = clipOf(tl, x.from);
               if (!from) return null;
               const cut = clipEnd(from);
+              const fam = t(`veFx_${transitionFamily(x.kind).family}`);
+              const label = t("veTransitionLabel", { kind: fam, tc: timecode(cut, rate) });
               return (
+                // biome-ignore lint/a11y/useSemanticElements: drawn on the lane with two handles inside
                 <div
                   key={x.id}
-                  class="ve-trans"
-                  title={t("veTransition")}
+                  data-trans={x.id}
+                  class={`ve-trans${ed.trans === x.id ? " sel" : ""}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={ed.trans === x.id}
+                  aria-label={label}
+                  title={label}
                   style={{ left: px(cut - x.inOffset), width: px(x.inOffset + x.outOffset) }}
-                />
+                  onPointerDown={(e) => {
+                    if (e.button !== 0) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    root.current?.focus({ preventScroll: true });
+                    chooseTransition(x.id);
+                  }}
+                  onDblClick={openInspector}
+                  onKeyDown={(e) => {
+                    if (e.key !== "Enter" && e.key !== " ") return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    chooseTransition(x.id);
+                    openInspector();
+                  }}
+                >
+                  <span
+                    class="ve-trans-h in"
+                    aria-hidden="true"
+                    onPointerDown={(e) => pressHandle(e as PointerEvent, x.id, "in")}
+                  />
+                  <IconTransition size={11} />
+                  <span
+                    class="ve-trans-h out"
+                    aria-hidden="true"
+                    onPointerDown={(e) => pressHandle(e as PointerEvent, x.id, "out")}
+                  />
+                </div>
               );
             })}
           {trackClips(tl, tr.id).map((c) => clipBox(tr, c))}
@@ -1501,7 +1901,7 @@ export function VideoEditor({
 
   return (
     <section
-      class={`ve tool-${ed.tool}${view.playing ? " playing" : ""}`}
+      class={`ve tool-${ed.tool}${view.playing ? " playing" : ""} ${size}${ed.inspOpen ? " insp" : ""}`}
       ref={root}
       tabIndex={-1}
       onKeyDown={onKey}
@@ -1519,11 +1919,16 @@ export function VideoEditor({
           />
         )}
         <section class="ve-program" aria-label={t("veProgram")}>
+          {/* biome-ignore lint/a11y/noStaticElementInteractions: a double click on a text edits it on the picture; the keys have the inspector's button */}
           <div
-            class="vp-screen ve-screen"
+            class={`vp-screen ve-screen${editing ? " editing" : ""}`}
             style={{
               "--ar": `${doc.format.width} / ${doc.format.height}`,
               "--arn": String(doc.format.width / doc.format.height),
+            }}
+            onDblClick={() => {
+              const c = textNow();
+              if (c) startTextEdit(c.id);
             }}
           >
             <div
@@ -1532,6 +1937,20 @@ export function VideoEditor({
               role="img"
               aria-label={doc.name ?? fileName(file.path)}
             />
+            {editing && editingRef && (
+              <TextOnPicture
+                key={editing.id}
+                textRef={editingRef}
+                w={doc.format.width}
+                h={doc.format.height}
+                onDone={(text) => {
+                  edit({ editText: undefined });
+                  if (text?.trim() && text !== editingRef.text)
+                    commit(setGenerator(doc, editing.id, { text }), "text");
+                  root.current?.focus({ preventScroll: true });
+                }}
+              />
+            )}
             <div ref={audioBox} class="vp-audio" aria-hidden="true" />
             {end === 0 && <p class="vp-empty">{t("veEmpty")}</p>}
             {view.exact && (
@@ -1601,38 +2020,27 @@ export function VideoEditor({
           </div>
           {view.exactJob && <ExactJob id={view.exactJob} view={key} from={playhead} />}
         </section>
-        <aside class="ve-inspector" aria-label={t("veInspector")}>
-          {one ? (
-            <>
-              <h4>{clipLabel(one)}</h4>
-              <dl>
-                <dt>{t("veTrack")}</dt>
-                <dd>{one.track}</dd>
-                <dt>{t("veStart")}</dt>
-                <dd>{timecode(one.start, rate)}</dd>
-                <dt>{t("veLength")}</dt>
-                <dd>{timecode(one.sourceRange.duration, rate)}</dd>
-                {isMediaRef(one.ref) && !one.ref.still && (
-                  <>
-                    <dt>{t("veSourceInOut")}</dt>
-                    <dd>
-                      {timecode(one.sourceRange.start, rate)} -{" "}
-                      {timecode(one.sourceRange.start + one.sourceRange.duration, rate)}
-                    </dd>
-                  </>
-                )}
-                <dt>{t("veState")}</dt>
-                <dd>
-                  {one.enabled ? t("veOn") : t("veOff")}
-                  {one.link ? ` · ${t("veIsLinked")}` : ""}
-                </dd>
-              </dl>
-              {sel.length > 1 && <p class="dim">{t("veSelected", { n: String(sel.length) })}</p>}
-            </>
-          ) : (
-            <p class="dim">{t("veInspectorNone")}</p>
-          )}
-        </aside>
+        {(size === "wide" || ed.inspOpen) && (
+          <aside
+            class={`ve-inspector${size !== "wide" ? " panel" : ""}`}
+            aria-label={t("veInspector")}
+          >
+            <Inspector
+              doc={tl}
+              name={fileName(file.path)}
+              clip={one}
+              selected={sel.length}
+              transition={trans}
+              caption={cap}
+              info={one && isMediaRef(one.ref) ? byName[one.ref.media] : undefined}
+              playhead={playhead}
+              commit={commit}
+              onLink={() => run("link")}
+              onEditText={(id) => startTextEdit(id)}
+              onClose={size !== "wide" ? () => edit({ inspOpen: false }) : undefined}
+            />
+          </aside>
+        )}
       </div>
 
       <div class="vw-bar ve-bar" role="toolbar" aria-label={t("veTools")}>
@@ -1713,6 +2121,31 @@ export function VideoEditor({
             <IconPlus />
           </Tool>
         </div>
+        <div class="vw-seg">
+          <Tool label={t("veAddText")} on={addText}>
+            <IconType size={14} />
+          </Tool>
+          <Tool label={t("veAddCaption")} on={addCaptionHere}>
+            <IconCaption />
+          </Tool>
+          <Tool
+            label={t("veTranscript")}
+            pressed={!!ed.transcript}
+            on={() => edit({ transcript: !ed.transcript, words: undefined })}
+          >
+            <IconFileText size={14} />
+          </Tool>
+          {size !== "wide" && (
+            <Tool
+              label={t("veInspectorOpen")}
+              pressed={!!ed.inspOpen}
+              on={() => edit({ inspOpen: !ed.inspOpen })}
+              class="ve-insp-btn"
+            >
+              <IconSliders size={14} />
+            </Tool>
+          )}
+        </div>
         <div class="spacer" />
         <div class="vw-seg">
           <Tool label={t("veUndo")} keys="Ctrl+Z" on={() => run("undo")}>
@@ -1736,23 +2169,40 @@ export function VideoEditor({
           zoom(e.deltaY < 0 ? 1.25 : 0.8, frameAt(e.clientX));
         }}
       >
-        <div class="ve-rows" ref={rows} style={{ width: `${width + HEAD_W}px` }}>
+        <div class="ve-rows" ref={rows} style={{ width: `${width + headW}px` }}>
           <div class="ve-row ve-ruler-row" style={{ height: `${RULER_H}px` }}>
             <div class="ve-head ve-corner">
-              <button
-                type="button"
-                class="link"
-                onClick={() => commit(addTrack(doc, "Video"), "add_track")}
-              >
-                <IconPlus size={11} /> {t("veAddVideo")}
-              </button>
-              <button
-                type="button"
-                class="link"
-                onClick={() => commit(addTrack(doc, "Audio"), "add_track")}
-              >
-                <IconPlus size={11} /> {t("veAddAudio")}
-              </button>
+              {phone ? (
+                <Tool
+                  label={
+                    ed.allTracks
+                      ? t("veFewerTracks")
+                      : t("veAllTracks", { n: String(hiddenTracks) })
+                  }
+                  pressed={!!ed.allTracks}
+                  disabled={!ed.allTracks && !hiddenTracks}
+                  on={() => edit({ allTracks: !ed.allTracks })}
+                >
+                  <IconLayers size={14} />
+                </Tool>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    class="link"
+                    onClick={() => commit(addTrack(doc, "Video"), "add_track")}
+                  >
+                    <IconPlus size={11} /> {t("veAddVideo")}
+                  </button>
+                  <button
+                    type="button"
+                    class="link"
+                    onClick={() => commit(addTrack(doc, "Audio"), "add_track")}
+                  >
+                    <IconPlus size={11} /> {t("veAddAudio")}
+                  </button>
+                </>
+              )}
             </div>
             <div
               class="ve-ruler"
@@ -1806,9 +2256,57 @@ export function VideoEditor({
           {videoTracks.map(lane)}
           <div class="ve-split" />
           {audioTracks.map(lane)}
+          <div class="ve-row ve-cap-row" style={{ height: `${CAPTION_H}px` }}>
+            <div class="ve-head ve-cap-head">
+              <IconCaption size={13} />
+              {!phone && <span class="ve-track-name">{t("veCaptions")}</span>}
+              <Tool label={t("veAddCaption")} on={addCaptionHere}>
+                <IconPlus size={12} />
+              </Tool>
+            </div>
+            {/* biome-ignore lint/a11y/noStaticElementInteractions: a click on the lane moves the playhead; the subtitles are buttons */}
+            <div
+              class="ve-lane ve-cap-lane"
+              style={{ width: `${width}px` }}
+              onPointerDown={(e) => {
+                if (e.button !== 0) return;
+                edit({ cap: undefined, trans: undefined });
+                seek(frameAt(e.clientX));
+              }}
+            >
+              {tl.captions.segments.map((x) => (
+                // biome-ignore lint/a11y/useSemanticElements: drawn on the lane at its time, dragged like a clip
+                <div
+                  key={x.id}
+                  data-cap={x.id}
+                  class={`ve-cap${ed.cap === x.id ? " sel" : ""}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={ed.cap === x.id}
+                  aria-label={t("veCaptionLabel", { text: x.text, tc: timecode(x.start, rate) })}
+                  title={x.text}
+                  style={{ left: px(x.start), width: px(Math.max(1, x.end - x.start)) }}
+                  onPointerDown={(e) => pressCaption(e as PointerEvent, x.id)}
+                  onDblClick={() => {
+                    openInspector();
+                    setTimeout(() => document.getElementById("ve-caption-text")?.focus(), 30);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key !== "Enter" && e.key !== " ") return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    chooseCaption(x.id);
+                    openInspector();
+                  }}
+                >
+                  {x.text}
+                </div>
+              ))}
+            </div>
+          </div>
           <div
             class="ve-playhead"
-            style={{ left: `${HEAD_W + playhead * ppf}px` }}
+            style={{ left: `${headW + playhead * ppf}px` }}
             aria-hidden="true"
           />
           {marquee && (
@@ -1824,6 +2322,56 @@ export function VideoEditor({
           )}
         </div>
       </div>
+
+      {ed.transcript && (
+        <TranscriptPanel
+          doc={tl}
+          words={words}
+          chosen={ed.words}
+          playhead={playhead}
+          rate={rate}
+          busy={!!captionsJob?.length}
+          onChoose={(w) => edit({ words: w })}
+          onSeek={(f) => {
+            halt();
+            seek(f);
+          }}
+          commit={commit}
+          gen={gen(doc)}
+          onFromSpeech={() => void fromSpeech()}
+          onClose={() => edit({ transcript: false, words: undefined })}
+        />
+      )}
+      {!!captionsJob?.length && (
+        <div class="vp-prep">
+          <strong>{t("veTranscribingNow")}</strong>
+          {captionsJob.map((id) => (
+            <PrepJob key={id} id={id} onEnd={() => captionJobEnded(id)} />
+          ))}
+        </div>
+      )}
+
+      <section class="ve-fx" aria-label={t("veTransitions")}>
+        <strong>{t("veTransitions")}</strong>
+        {TRANSITION_FAMILIES.map((f) => (
+          <button
+            key={f}
+            type="button"
+            class={`ve-fx-item fx-${f}`}
+            draggable
+            title={t("veFxHint", { kind: t(`veFx_${f}`) })}
+            onClick={() => transitionHere(f)}
+            onDragStart={(e) => {
+              e.dataTransfer?.setData(TRANSITION_TYPE, f);
+              if (e.dataTransfer) e.dataTransfer.effectAllowed = "copy";
+            }}
+          >
+            <span class="ve-fx-pic" aria-hidden="true" />
+            <span>{t(`veFx_${f}`)}</span>
+          </button>
+        ))}
+        {!phone && <span class="dim ve-pool-hint">{t("veFxDrag")}</span>}
+      </section>
 
       <section class="ve-pool" aria-label={t("vePool")}>
         <strong>{t("vePool")}</strong>

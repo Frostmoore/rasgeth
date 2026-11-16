@@ -11,9 +11,11 @@
 import {
   clipEnd,
   clipLength,
+  fitText,
   framesToSeconds,
   isMediaRef,
   type RgVideo,
+  TEXT_LOOK,
   type VideoCaption,
   type VideoClip,
   type VideoKenBurns,
@@ -241,18 +243,6 @@ export const timelineEnd = (doc: RgVideo): number =>
 export function nextClip(doc: RgVideo, trackId: string, frame: number): VideoClip | undefined {
   return playing(doc, trackId).find((c) => c.start > frame);
 }
-
-/** How compile.ts draws a text (share of the short side, box, shadow), for the HTML copy. */
-export const TEXT_LOOK: Record<
-  VideoTextRef["style"],
-  { size: number; bold: boolean; box: boolean; shadow: boolean }
-> = {
-  title: { size: 0.085, bold: true, box: false, shadow: true },
-  subtitle: { size: 0.055, bold: false, box: false, shadow: true },
-  lower_third: { size: 0.05, bold: true, box: true, shadow: false },
-  caption: { size: 0.045, bold: false, box: true, shadow: false },
-  plain: { size: 0.05, bold: false, box: false, shadow: false },
-};
 
 // ---- the elements ---------------------------------------------------------------------------
 
@@ -561,8 +551,7 @@ export class TimelinePlayer {
           const look_ = TEXT_LOOK[ref.style];
           el.className = `vp-box vp-text pos-${ref.position}${look_.box ? " boxed" : ""}${look_.shadow ? " shadow" : ""}${look_.bold ? " bold" : ""}`;
           el.style.background = "";
-          el.style.setProperty("--size", String(look_.size));
-          setText(el, ref.text);
+          setText(el, textStyle(el, ref, doc.format.width, doc.format.height));
         }
       }
     }
@@ -624,6 +613,29 @@ export class TimelinePlayer {
 }
 
 /** A text in a box's inner span (its background is a box behind each line, as drawtext's). */
+/**
+ * A text's size, lines and place as the render has them (`fitText`, G41.5c): every length as a
+ * share of the frame's short side (`--side` is the stage's), so the page wraps where ffmpeg does.
+ */
+export function textStyle(
+  el: { style: { setProperty(k: string, v: string): void } },
+  ref: Pick<VideoTextRef, "text" | "style" | "position">,
+  w: number,
+  h: number,
+): string {
+  const f = fitText(ref.text, ref.style, ref.position, w, h);
+  const side = Math.min(w, h);
+  const k = (v: number | undefined) => String(Math.round(((v ?? 0) / side) * 10_000) / 10_000);
+  el.style.setProperty("--size", k(f.size));
+  el.style.setProperty("--px", k(f.mx));
+  el.style.setProperty("--py", k(f.my));
+  el.style.setProperty("--pt", k(f.top));
+  el.style.setProperty("--pb", k(f.bottom));
+  el.style.setProperty("--pl", k(f.left));
+  el.style.setProperty("--bd", k(f.border));
+  return f.lines.join("\n");
+}
+
 function setText(el: HTMLElement, text: string): void {
   let span = el.firstElementChild as HTMLElement | null;
   if (span?.tagName !== "SPAN") {

@@ -2372,6 +2372,18 @@ export interface VideoEditState {
   help: boolean;
   /** Files brought in this time (not in the timeline yet): the pool's row shows them. */
   pool: string[];
+  /** G41.5c: a transition or a subtitle chosen (the inspector shows it). */
+  trans?: string;
+  cap?: string;
+  /** A narrow canvas: the inspector opened as a panel. */
+  inspOpen?: boolean;
+  /** The «Trascrizione» panel, and its chosen words (indices of `transcriptOf`). */
+  transcript?: boolean;
+  words?: { a: number; b: number };
+  /** A phone: every track shown (otherwise one video and one audio). */
+  allTracks?: boolean;
+  /** A text clip edited on the picture. */
+  editText?: string;
 }
 
 const VIDEO_EDIT: VideoEditState = {

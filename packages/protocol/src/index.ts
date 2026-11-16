@@ -58,6 +58,7 @@ export * from "./tools.js";
 export * from "./vault.js";
 export * from "./video-analysis.js";
 export * from "./video-patch.js";
+export * from "./video-text.js";
 export * from "./video-timeline.js";
 export * from "./voice.js";
 export * from "./widget.js";

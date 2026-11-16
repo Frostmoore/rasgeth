@@ -1900,6 +1900,18 @@ export class Api {
   videoExact = (scope: string, path: string, from: number, to: number) =>
     this.call<{ job: Job }>("POST", "/api/editor/video/exact", { scope, path, from, to });
   /** A finished exact preview's link (plays with ranges). */
+  /** The subtitles from what the timeline plays (G41.5c): `captions`, or the jobs analysing. */
+  videoCaptions = (scope: string, path: string) =>
+    this.call<{
+      jobs: string[];
+      silent: string[];
+      captions?: {
+        start: number;
+        end: number;
+        text: string;
+        words: import("@redgiant/protocol").VideoCaptionWord[];
+      }[];
+    }>("POST", "/api/editor/video/captions", { scope, path });
   videoExactLink = (id: string) =>
     this.call<{ url: string }>("GET", `/api/editor/video/exact/${encodeURIComponent(id)}`);
   /** When what the canvas shows last changed (ms). */
