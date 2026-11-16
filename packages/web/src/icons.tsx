@@ -678,6 +678,19 @@ export const IconReply = ({ size = 14 }: P) => (
     <path d="M20 18v-2a4 4 0 0 0-4-4H4" />
   </Svg>
 );
+/** «Salva» (G40.14): a passage kept in the person's saved items, a bookmark. */
+export const IconBookmark = ({ size = 14 }: P) => (
+  <Svg size={size}>
+    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+  </Svg>
+);
+/** A tag on a saved item (G40.14). */
+export const IconTag = ({ size = 13 }: P) => (
+  <Svg size={size}>
+    <path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z" />
+    <circle cx="7.5" cy="7.5" r="1.5" />
+  </Svg>
+);
 /** A conversation that goes on from another one (G36.23): a branch. */
 export const IconBranch = ({ size = 14 }: P) => (
   <Svg size={size}>

@@ -15304,6 +15304,19 @@ button.sub-tab {
   border-color: var(--accent);
   color: var(--accent);
 }
+/* «Rispondi» and «Salva» side by side over a selection (G40.14). */
+.quote-pops {
+  position: absolute;
+  z-index: 6;
+  display: flex;
+  gap: 6px;
+}
+.quote-pops .quote-pop {
+  position: static;
+  width: auto;
+  flex: 1;
+  white-space: nowrap;
+}
 .quote-drafts {
   display: flex;
   flex-direction: column;
@@ -20532,4 +20545,179 @@ html[data-theme="dark"] {
 .dv-push {
   display: block;
   margin-top: 2px;
+}
+
+/* «Salvati» (G40.14): the person's saved passages. */
+.chats-head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.saved-page {
+  height: 100%;
+  overflow: auto;
+  padding: 20px 24px 32px;
+  max-width: 900px;
+}
+.saved-page h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
+}
+.saved-page header .chats-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.saved-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 14px 0 8px;
+}
+.saved-search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 0 10px;
+  color: var(--dim);
+}
+.saved-search input {
+  flex: 1;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  padding: 8px 0;
+  outline: none;
+}
+.saved-search:focus-within {
+  border-color: var(--accent);
+}
+.saved-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.saved-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.saved-filter .ui-label {
+  min-width: 70px;
+}
+.saved-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.saved-card {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.saved-origin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--dim);
+}
+.saved-origin strong {
+  color: var(--text);
+}
+.saved-body {
+  max-height: 320px;
+  overflow: auto;
+}
+.saved-plain {
+  white-space: pre-wrap;
+}
+.saved-note {
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--panel-2);
+  white-space: pre-wrap;
+  font-size: 14px;
+}
+.saved-tags,
+.saved-tag-picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.saved-tags .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.saved-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+.saved-actions .msg-action.danger {
+  color: var(--err);
+}
+.saved-edit,
+.saved-dialog,
+.saved-tags-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.saved-edit textarea,
+.saved-dialog textarea,
+.saved-tags-edit input {
+  width: 100%;
+  box-sizing: border-box;
+}
+.saved-preview {
+  margin: 0;
+  padding: 8px 12px;
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  background: var(--panel-2);
+  max-height: 180px;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+.saved-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 100%;
+}
+.saved-empty {
+  margin: 24px 0;
+}
+.saved-more {
+  margin-top: 12px;
+}
+fieldset.saved-filter {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+fieldset.saved-filter legend {
+  float: left;
+  padding: 0;
+  margin-right: 6px;
 }

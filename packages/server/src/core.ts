@@ -302,6 +302,7 @@ import {
   switchedOffSection,
 } from "./request-tool.js";
 import { migrateRooms, Rooms } from "./rooms.js";
+import { migrateSaved, SavedStore } from "./saved.js";
 import { scriptTool } from "./script.js";
 import { SharedMemory } from "./shared-memory.js";
 import { SKILL_PROMPT, SkillNudge } from "./skill-nudge.js";
@@ -694,6 +695,8 @@ export class RedGiantCore implements OrchestrationHost {
    * one for a device that proved who the person is (also the setup channel of G40.3).
    */
   readonly devices: DeviceStore;
+  /** The person's saved passages (G40.14). */
+  readonly saved: SavedStore;
   /** Notifications to the devices (G40.4): Web Push, APNs through the blind relay. */
   readonly push: PushService;
   readonly tasks: TaskTracker;
@@ -918,6 +921,11 @@ export class RedGiantCore implements OrchestrationHost {
     if (o.transcription?.key) o.redactor?.addSecret("transcription", o.transcription.key);
     if (o.images?.key) o.redactor?.addSecret("openai-images", o.images.key);
     this.registry = new AgentRegistry(o.db, this.store);
+    this.saved = new SavedStore(o.db, {
+      db: o.db,
+      events: this.store,
+      agentName: (id) => this.registry.get(id)?.name ?? null,
+    });
     this.budget = new PersistentBudget(o.db, this.store);
     this.projects = new ProjectStore(o.db, o.workspacesDir, o.projectFoldersInside);
     // Requests say projects and agents by name on every channel (3.5.6).
@@ -1445,6 +1453,7 @@ export class RedGiantCore implements OrchestrationHost {
     await o.db.query("DROP TABLE IF EXISTS rg_devices");
     await migrateLogin(o.db);
     await migrateDevices(o.db);
+    await migrateSaved(o.db);
     await migratePush(o.db);
     const core = new RedGiantCore(o);
     // Notifications to the devices (G40.4): one more channel of the requests «all at once».

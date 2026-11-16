@@ -60,6 +60,11 @@ import {
   type RefineEstimate,
   type RefineRequest,
   type RefineResult,
+  type SavedCreateBody,
+  type SavedItem,
+  type SavedList,
+  type SavedQuery,
+  type SavedUpdateBody,
   type SearchProviderId,
   type ServerMessage,
   type SetupHomeChoice,
@@ -1190,6 +1195,27 @@ export class Api {
       }[]
     >("GET", "/api/auth/sessions");
   revokeSessions = () => this.call("POST", "/api/auth/sessions/revoke");
+  /** The person's saved passages (G40.14). */
+  savedList = (q: SavedQuery = {}) => {
+    const p = new URLSearchParams();
+    for (const [k, v] of Object.entries(q)) if (v !== undefined && v !== "") p.set(k, String(v));
+    const qs = p.toString();
+    return this.call<SavedList>("GET", `/api/saved${qs ? `?${qs}` : ""}`);
+  };
+  saveItem = (body: SavedCreateBody) => this.call<SavedItem>("POST", "/api/saved", body);
+  updateSaved = (id: string, body: SavedUpdateBody) =>
+    this.call<SavedItem>("PATCH", `/api/saved/${encodeURIComponent(id)}`, body);
+  deleteSaved = (id: string) => this.call("DELETE", `/api/saved/${encodeURIComponent(id)}`);
+  /** Every saved item matching the filters, as one Markdown file. */
+  async exportSaved(q: Omit<SavedQuery, "before" | "limit">, lang: "it" | "en"): Promise<Blob> {
+    const p = new URLSearchParams({ lang });
+    for (const [k, v] of Object.entries(q)) if (v) p.set(k, String(v));
+    const r = await fetch(`/api/saved/export?${p}`, {
+      headers: { authorization: `Bearer ${this.token}` },
+    });
+    if (!r.ok) throw new ApiError(r.status, `HTTP ${r.status}`);
+    return r.blob();
+  }
   /** The person's devices with RGCompanion (G40.1): never a token. */
   devices = () => this.call<DeviceView[]>("GET", "/api/devices");
   renameDevice = (id: string, name: string) =>

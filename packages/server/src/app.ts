@@ -107,6 +107,7 @@ import { hasOwnRepo } from "./project-git.js";
 import { ProjectError, SubprojectError } from "./projects.js";
 import { RefineError } from "./prompt-refiner.js";
 import { RoomError } from "./rooms.js";
+import { savedRoutes } from "./saved-routes.js";
 import type { SetupService } from "./setup.js";
 import type { SetupNetwork } from "./setup-network.js";
 import { setupCaptive, setupNetworkRoutes } from "./setup-network-routes.js";
@@ -1611,6 +1612,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   artifactRoutes(app, core, owner);
   // Commands' limits and requests to the person (G36.16, G36.17).
   personRoutes(app, core, owner);
+  // The person's saved passages (G40.14).
+  savedRoutes(app, core, owner);
   acpRoutes(app, core, owner);
   sheetRoutes(app, core, owner);
   svgRoutes(app, core, owner);

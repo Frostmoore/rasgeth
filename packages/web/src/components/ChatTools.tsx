@@ -5,8 +5,17 @@ import type { RefObject } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { usd } from "../format.js";
 import { t } from "../i18n.js";
-import { IconAside, IconBranch, IconClose, IconReply, IconSend, IconSpinner } from "../icons.js";
+import {
+  IconAside,
+  IconBookmark,
+  IconBranch,
+  IconClose,
+  IconReply,
+  IconSend,
+  IconSpinner,
+} from "../icons.js";
 import { renderAnswer } from "../markdown.js";
+import { selectionMarkdown } from "../saved-markdown.js";
 import {
   asidesOf,
   attempt,
@@ -19,28 +28,47 @@ import {
 
 export type QuoteDraft = MessageQuote & { key: string };
 
-/** The model's message a DOM node is in: its bubble carries the event and its time. */
+/**
+ * The model's message a DOM node is in: its bubble carries the event and its time (an agent's
+ * conversation), or the daily chat's message id (`data-chat-msg`, G40.14).
+ */
 const bubbleOf = (n: Node | null): HTMLElement | null => {
   const el = n instanceof HTMLElement ? n : (n?.parentElement ?? null);
-  return el?.closest<HTMLElement>(".bubble.assistant[data-seq]") ?? null;
+  return (
+    el?.closest<HTMLElement>(".bubble.assistant[data-seq], .bubble.assistant[data-chat-msg]") ??
+    null
+  );
+};
+
+/** A passage picked for «Salva» (G40.14): the whole selected text and its Markdown. */
+export type PickedPassage = {
+  quote: MessageQuote;
+  /** The selection's text, whole (the quote's is cut at 4000 characters). */
+  text: string;
+  markdown: string;
+  /** The daily chat's message, when the bubble is one of its. */
+  chatMessageId?: number;
 };
 
 const squash = (s: string) => s.replace(/\s+/g, " ").trim();
 
 /**
- * A selection inside one of the model's messages offers «Rispondi a questo» (G36.22): the button
- * floats over the selection, inside the chat's body; picking it hands the passage over.
+ * A selection inside one of the model's messages offers «Rispondi a questo» (G36.22) and «Salva»
+ * (G40.14): the buttons float over the selection, inside the chat's body; picking one hands the
+ * passage over. The daily chat has «Salva» only.
  */
 export function QuotePicker({
   scroller,
   body,
   onPick,
+  onSave,
 }: {
   scroller: RefObject<HTMLDivElement | null>;
   body: RefObject<HTMLDivElement | null>;
-  onPick: (q: MessageQuote) => void;
+  onPick?: (q: MessageQuote) => void;
+  onSave?: (p: PickedPassage) => void;
 }) {
-  const [pop, setPop] = useState<{ x: number; y: number; quote: MessageQuote } | null>(null);
+  const [pop, setPop] = useState<({ x: number; y: number } & PickedPassage) | null>(null);
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined;
     const check = () => {
@@ -60,15 +88,19 @@ export function QuotePicker({
       const start = before.toString().length;
       const r = range.getBoundingClientRect();
       const b = box.getBoundingClientRect();
-      const width = 168;
+      const width = onPick && onSave ? 264 : 168;
       const x = Math.min(
         Math.max(8, r.left - b.left + r.width / 2 - width / 2),
         b.width - width - 8,
       );
       const above = r.top - b.top - 40;
+      const chatMsg = Number(bubble.dataset.chatMsg);
       setPop({
         x,
         y: above > 4 ? above : r.bottom - b.top + 8,
+        text: text.length > 20_000 ? `${text.slice(0, 19_999)}…` : text,
+        markdown: selectionMarkdown(range).slice(0, 40_000),
+        ...(Number.isFinite(chatMsg) && { chatMessageId: chatMsg }),
         quote: {
           seq: Number(bubble.dataset.seq),
           ...(bubble.dataset.at && { at: bubble.dataset.at }),
@@ -93,22 +125,44 @@ export function QuotePicker({
     };
   }, []);
   if (!pop) return null;
+  const done = () => {
+    window.getSelection()?.removeAllRanges();
+    setPop(null);
+  };
   return (
-    <button
-      type="button"
-      class="quote-pop"
-      style={{ left: `${pop.x}px`, top: `${pop.y}px` }}
-      // Pressing it must not drop the selection before the click.
-      onMouseDown={(e) => e.preventDefault()}
-      onClick={() => {
-        onPick(pop.quote);
-        window.getSelection()?.removeAllRanges();
-        setPop(null);
-      }}
-    >
-      <IconReply size={14} />
-      {t("quoteReply")}
-    </button>
+    <div class="quote-pops" style={{ left: `${pop.x}px`, top: `${pop.y}px` }}>
+      {onPick && (
+        <button
+          type="button"
+          class="quote-pop"
+          // Pressing it must not drop the selection before the click.
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => {
+            onPick(pop.quote);
+            done();
+          }}
+        >
+          <IconReply size={14} />
+          {t("quoteReply")}
+        </button>
+      )}
+      {onSave && (
+        <button
+          type="button"
+          class="quote-pop"
+          title={t("savedSaveHint")}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => {
+            const { x: _x, y: _y, ...picked } = pop;
+            onSave(picked);
+            done();
+          }}
+        >
+          <IconBookmark size={14} />
+          {t("savedSave")}
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -235,7 +289,14 @@ export function findPassage(
 export function jumpToQuote(q: MessageQuote): boolean {
   if (q.seq === undefined) return false;
   const bubble = document.querySelector<HTMLElement>(`.bubble.assistant[data-seq="${q.seq}"]`);
-  if (!bubble) return false;
+  return bubble ? flashPassage(bubble, q) : false;
+}
+
+/** Scrolls to a message and lights the passage up (a quote, a saved passage of G40.14). */
+export function flashPassage(
+  bubble: HTMLElement,
+  q: Pick<MessageQuote, "text" | "start" | "end">,
+): boolean {
   bubble.scrollIntoView({ block: "center", behavior: "smooth" });
   bubble.classList.remove("quote-flash");
   void bubble.offsetWidth;
