@@ -135,7 +135,18 @@ describe("the routes", () => {
     );
     // G40.17: every commit with its parents, and every branch with ?all=1 (the app's graph).
     await git(p.path, "checkout", "-qb", "side");
-    await git(p.path, "-c", "user.name=T", "-c", "user.email=t@x", "commit", "-q", "--allow-empty", "-m", "Side");
+    await git(
+      p.path,
+      "-c",
+      "user.name=T",
+      "-c",
+      "user.email=t@x",
+      "commit",
+      "-q",
+      "--allow-empty",
+      "-m",
+      "Side",
+    );
     await git(p.path, "checkout", "-q", "main");
     const graph = await server.api<{ subject: string; hash: string; parents: string[] }[]>(
       "GET",

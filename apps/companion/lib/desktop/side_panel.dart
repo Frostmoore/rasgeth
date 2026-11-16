@@ -104,23 +104,7 @@ class _SidePanelState extends State<SidePanel> {
       ),
       PanelPage(:final screen) => Column(
         children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(16, 4, 6, 4),
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: c.line)),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    panelTitle(l, screen),
-                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: c.text),
-                  ),
-                ),
-                close,
-              ],
-            ),
-          ),
+          _PageHead(screen: screen, close: close),
           Expanded(child: _screen(screen)),
         ],
       ),
@@ -391,4 +375,34 @@ class PanelSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(color: RgColors.of(context).bg, child: child);
+}
+
+/// The title over a screen in the panel (its colours read when it paints, as [PanelSurface]).
+class _PageHead extends StatelessWidget {
+  const _PageHead({required this.screen, required this.close});
+
+  final PanelScreen screen;
+  final Widget close;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 4, 6, 4),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: c.line)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              panelTitle(AppLocalizations.of(context), screen),
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: c.text),
+            ),
+          ),
+          close,
+        ],
+      ),
+    );
+  }
 }
