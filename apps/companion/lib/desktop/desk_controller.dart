@@ -83,7 +83,9 @@ class PendingFile {
 }
 
 class DeskController extends ChangeNotifier {
-  DeskController(this.app);
+  DeskController(this.app) {
+    unawaited(_loadFull());
+  }
 
   final AppController app;
 
@@ -105,6 +107,36 @@ class DeskController extends ChangeNotifier {
   PendingFile? pendingFile;
 
   static const minPanel = 320.0;
+
+  /// Conversations «full window» (3.8.3): the open conversation covers the room under the menus,
+  /// with the agents' mascots in a bar on its left. Kept between one opening and the next.
+  bool full = false;
+
+  /// The full window shows a conversation now (else the room as usual, with the panel).
+  bool get showingFull => full && panel is PanelConversation;
+
+  /// The panel's conversation keeps its state (what is being written) going full and back.
+  final panelKey = GlobalKey(debugLabel: 'desk-panel');
+
+  static const fullPref = 'deskFull';
+
+  Future<void> _loadFull() async {
+    final v = await app.prefs.get(fullPref) == '1';
+    if (v != full) {
+      full = v;
+      notifyListeners();
+    }
+  }
+
+  void setFull(bool v) {
+    if (full == v) return;
+    full = v;
+    unawaited(app.prefs.set(fullPref, v ? '1' : null));
+    notifyListeners();
+  }
+
+  /// Back to the wall: the conversation closes, the mode stays for the next one.
+  void backToRoom() => closePanel();
 
   /// The God and Chat fields at the top (Ctrl/Cmd+G and the Chat's shortcut focus them).
   final godFocus = FocusNode(debugLabel: 'god-field');
@@ -174,13 +206,21 @@ class DeskController extends ChangeNotifier {
   }
 
   void closePanel() {
-    if (panel == null) return;
+    final p = panel;
+    if (p == null) return;
+    if (p is PanelConversation) _last = PanelConversation(p.sessionId, agent: p.agent);
     panel = null;
     notifyListeners();
   }
 
   /// Ctrl+\: the panel shows again what it showed last, or the requests for the person.
   PanelContent? _last;
+
+  /// The conversation the panel showed last (Ctrl/Cmd+Shift+F with none open).
+  PanelConversation? get lastConversation => switch (_last) {
+    final PanelConversation c => c,
+    _ => null,
+  };
   void togglePanel() {
     final p = panel;
     if (p != null) {

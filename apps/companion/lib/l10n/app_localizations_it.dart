@@ -3618,4 +3618,27 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get deskSendMessage => 'Invia il messaggio (nei campi delle conversazioni)';
+
+  @override
+  String get deskFullWindow => 'A tutta finestra';
+
+  @override
+  String get deskFullWindowOff => 'Torna al pannello';
+
+  @override
+  String get deskBackToRoom => 'Torna alla Sala';
+
+  @override
+  String get deskRailLabel => 'Agenti';
+
+  @override
+  String deskRailWaiting(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count richieste per te',
+      one: '1 richiesta per te',
+    );
+    return '$_temp0';
+  }
 }

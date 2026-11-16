@@ -3611,4 +3611,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deskSendMessage => 'Send the message (in the conversations\' fields)';
+
+  @override
+  String get deskFullWindow => 'Full window';
+
+  @override
+  String get deskFullWindowOff => 'Back to the panel';
+
+  @override
+  String get deskBackToRoom => 'Back to the room';
+
+  @override
+  String get deskRailLabel => 'Agents';
+
+  @override
+  String deskRailWaiting(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count requests for you',
+      one: '1 request for you',
+    );
+    return '$_temp0';
+  }
 }

@@ -89,6 +89,7 @@ enum RgIcons {
     '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
   ),
   minimize('<path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/>'),
+  maximize('<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>'),
   userPlus(
     '<circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1M19 8v6M16 11h6"/>',
   ),

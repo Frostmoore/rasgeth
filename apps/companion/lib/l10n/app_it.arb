@@ -1037,5 +1037,10 @@
   "limitsSpent": "Speso",
   "limitsContext": "Contesto",
   "limitsWeekShort": "7g",
-  "deskSendMessage": "Invia il messaggio (nei campi delle conversazioni)"
+  "deskSendMessage": "Invia il messaggio (nei campi delle conversazioni)",
+  "deskFullWindow": "A tutta finestra",
+  "deskFullWindowOff": "Torna al pannello",
+  "deskBackToRoom": "Torna alla Sala",
+  "deskRailLabel": "Agenti",
+  "deskRailWaiting": "{count, plural, =1{1 richiesta per te} other{{count} richieste per te}}"
 }

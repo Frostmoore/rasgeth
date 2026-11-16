@@ -6320,6 +6320,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send the message (in the conversations\' fields)'**
   String get deskSendMessage;
+
+  /// No description provided for @deskFullWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Full window'**
+  String get deskFullWindow;
+
+  /// No description provided for @deskFullWindowOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the panel'**
+  String get deskFullWindowOff;
+
+  /// No description provided for @deskBackToRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the room'**
+  String get deskBackToRoom;
+
+  /// No description provided for @deskRailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get deskRailLabel;
+
+  /// No description provided for @deskRailWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 request for you} other{{count} requests for you}}'**
+  String deskRailWaiting(int count);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
