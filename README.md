@@ -324,7 +324,9 @@ RedGiant is in pre-alpha. What comes next, in order:
   own agent-first look (every agent has its own mascot) and an advanced mode for coders. 3.8.0 (released) lays the
   ground: RedGiant OS opens its own temporary Wi-Fi at the first start, so a mini PC with no screen is set up from
   a phone or a laptop; devices with their own revocable access; push notifications; the mascots, already in the
-  page. The app follows in 3.8.x.
+  page. 3.8.1 (released) brings the app itself: RGCompanion for the phone (Android; iOS prepared) and, through the
+  launchers, for Windows, macOS and Linux — the team with live mascots, chats, requests, tasks, the Canvas, notifications,
+  voice, sharing, Saved passages and the advanced mode — plus product cards with pictures and clearer updates.
 - **3.9 and 3.10 — Video and 3D generation**: a video editor shared by you and the agent, and 3D
   generation with local or cloud engines, finished in Blender.
 - **3.11 — Emulators in the Canvas**: an Android emulator or the iOS simulator found on the computer

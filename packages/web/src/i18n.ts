@@ -2404,6 +2404,18 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news381App: "RGCompanion, the app",
+  news381AppText:
+    "RedGiant on your phone and as a window on your computer: your team with live mascots, chats with the «…» options, requests to answer with a swipe, tasks, the Canvas, notifications, voice and sharing to RedGiant. The advanced mode adds projects, files, diffs, the terminal and git.",
+  news381Saved: "Save what matters",
+  news381SavedText:
+    "Select part of an answer and choose Save (or save a whole message): it goes to Saved, in the Chat screen, with a note and tags, to search, reopen at the right spot or export.",
+  news381Products: "Products with pictures, a warmer Chat",
+  news381ProductsText:
+    "The Chat answers like a friend who knows a lot, brings concrete options and shows products as cards with picture, price and shop (the pictures pass through RedGiant, never from your browser to the shops). Wherever you choose a model, you also choose subscription or API key.",
+  news381Update: "Updates you can follow",
+  news381UpdateText:
+    "Updating RedGiant OS now shows numbered steps, a real bar with speed and time left, and the page reconnects by itself after the restart.",
   news380Setup: "A mini PC with no screen, set up from your phone",
   news380SetupText:
     "At its first start RedGiant OS opens its own Wi-Fi, RedGiant-Setup-XXXX (password redgiant): join it from a phone or a laptop and the setup page opens by itself; choose your home Wi-Fi or the cable. If the home network is lost later, it opens again so you can give it the new one (only after signing in).",
@@ -8946,6 +8958,18 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news381App: "RGCompanion, l'app",
+  news381AppText:
+    "RedGiant sul telefono e come finestra sul computer: la tua squadra con le mascotte vive, le conversazioni con le opzioni del «…», le richieste a cui rispondi con uno scorrimento, i compiti, il Canvas, le notifiche, la voce e la condivisione verso RedGiant. L'interfaccia avanzata aggiunge progetti, file, diff, terminale e git.",
+  news381Saved: "Salva quello che conta",
+  news381SavedText:
+    "Seleziona una parte di una risposta e scegli Salva (o salva un messaggio intero): finisce nei Salvati, nella schermata Chat, con una nota e le etichette, da cercare, riaprire nel punto giusto o esportare.",
+  news381Products: "Prodotti con le foto, una Chat più calda",
+  news381ProductsText:
+    "La Chat risponde come un amico che sa tante cose, porta opzioni concrete e mostra i prodotti come schede con foto, prezzo e negozio (le foto passano da RedGiant, mai dal tuo browser ai negozi). Dove scegli un modello, scegli anche abbonamento o chiave API.",
+  news381Update: "Aggiornamenti che si capiscono",
+  news381UpdateText:
+    "L'aggiornamento di RedGiant OS mostra i passi numerati, una barra vera con velocità e tempo che manca, e dopo il riavvio la pagina si ricollega da sola.",
   news380Setup: "Un mini PC senza schermo, configurato dal telefono",
   news380SetupText:
     "Al primo avvio RedGiant OS apre un suo Wi-Fi, RedGiant-Setup-XXXX (password redgiant): collegati dal telefono o dal portatile e la pagina di configurazione si apre da sola; scegli il Wi-Fi di casa o il cavo. Se più avanti perde la rete di casa, lo riapre perché tu gli dia quella nuova (solo dopo l'accesso).",
