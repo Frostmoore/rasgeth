@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The notifications' small icon (G40.10): a white silhouette, as Android wants it; the
-     RedGiant mark of assets/icon/rgcompanion.svg reduced to a disc with its eyes. -->
+<!-- The notifications' small icon (G40.10, G40.18): a white silhouette, as Android wants it, of
+     RedGiant's logo (packaging/icon/redgiant-icon.jpg): the giant with its network of nodes and
+     its orbit. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
@@ -9,5 +10,11 @@
     <path
         android:fillColor="#FFFFFFFF"
         android:fillType="evenOdd"
-        android:pathData="M12,2.5a9.5,9.5 0,1 1,0 19a9.5,9.5 0,1 1,0 -19zM9,9.2a1.6,1.6 0,1 0,0 3.2a1.6,1.6 0,1 0,0 -3.2zM15,9.2a1.6,1.6 0,1 0,0 3.2a1.6,1.6 0,1 0,0 -3.2zM8.4,15.2a4.6,3 0,0 0,7.2 0z"/>
+        android:pathData="M4.40,12.00a7.6,7.6 0,1 0,15.2,0a7.6,7.6 0,1 0,-15.2,0zM9.70,12.00a2.3,2.3 0,1 0,4.6,0a2.3,2.3 0,1 0,-4.6,0zM10.85,7.40a1.15,1.15 0,1 0,2.3,0a1.15,1.15 0,1 0,-2.3,0zM14.83,9.70a1.15,1.15 0,1 0,2.3,0a1.15,1.15 0,1 0,-2.3,0zM14.83,14.30a1.15,1.15 0,1 0,2.3,0a1.15,1.15 0,1 0,-2.3,0zM10.85,16.60a1.15,1.15 0,1 0,2.3,0a1.15,1.15 0,1 0,-2.3,0zM6.87,9.70a1.15,1.15 0,1 0,2.3,0a1.15,1.15 0,1 0,-2.3,0zM6.87,14.30a1.15,1.15 0,1 0,2.3,0a1.15,1.15 0,1 0,-2.3,0z"/>
+    <group android:rotation="-18" android:pivotX="12" android:pivotY="12">
+        <path
+            android:strokeColor="#FFFFFFFF"
+            android:strokeWidth="1.3"
+            android:pathData="M1,12a11,3.6 0,1 0,22,0a11,3.6 0,1 0,-22,0z"/>
+    </group>
 </vector>

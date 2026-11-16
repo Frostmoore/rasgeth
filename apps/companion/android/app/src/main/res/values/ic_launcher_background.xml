@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The edge colour of RedGiant's logo, made by tool/make_icons_test.dart. -->
+<resources>
+    <color name="ic_launcher_background">#FF370B08</color>
+</resources>

@@ -53,6 +53,8 @@ static void my_application_activate(GApplication* application) {
   } else {
     gtk_window_set_title(window, "RGCompanion");
   }
+  // RedGiant's logo (G40.18), installed in the icon theme by packaging/linux-app/install-app.sh.
+  gtk_window_set_icon_name(window, "rgcompanion");
 
   // RGCOMPANION_WINDOW=WxH (the screenshots' phone-sized window); 1280x720 otherwise.
   int width = 1280, height = 720;
