@@ -1,5 +1,6 @@
 // Demo server for screenshots and UI development: the real server and UI, an in-process
 // Postgres and a scripted model. Usage: node packages/web/scripts/demo-server.mjs [port]
+import { execFileSync } from "node:child_process";
 import { appendFileSync } from "node:fs";
 import { copyFile, mkdir, mkdtemp, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
@@ -1192,6 +1193,59 @@ await core.tasks.open(
   { brief: "Print the result as JSON with --json, with tests." },
 );
 await core.nameSession(coderSid, `${orch.name}: Add the --json flag`);
+// G40.11 (DEMO_CODE): the project's files in a commit, then work in progress (two files changed,
+// one new), a verifier run that did not pass and one closed task, for the app's advanced view.
+if (process.env.DEMO_CODE) {
+  const git = (...args) =>
+    execFileSync("git", ["-c", "user.name=Coder", "-c", "user.email=coder@localhost", ...args], {
+      cwd: project.path,
+    });
+  git("add", "-A");
+  // Already committed when an agent's worktree was made (ensureRepo): nothing to add then.
+  if (String(git("status", "--porcelain")).trim()) git("commit", "-qm", "Demo files");
+  await writeFile(
+    join(project.path, "src", "app.py"),
+    'import json\nimport sys\n\n\ndef main():\n    result = {"greeting": "Hello RedGiant"}\n    if "--json" in sys.argv:\n        print(json.dumps(result))\n    else:\n        print(result["greeting"])\n\n\nif __name__ == "__main__":\n    main()\n',
+  );
+  await writeFile(
+    join(project.path, "README.md"),
+    "# Demo\n\nA small project to show RedGiant.\n\nRun `python src/app.py --json` for JSON.\n",
+  );
+  await writeFile(
+    join(project.path, "src", "test_app.py"),
+    'import subprocess\n\n\ndef test_json():\n    out = subprocess.check_output(["python", "src/app.py", "--json"])\n    assert b"greeting" in out\n',
+  );
+  const [opened] = (await core.store.list({ projectId: "demo", types: ["task.opened"] })).slice(-1);
+  if (opened?.payload)
+    await core.store.append({
+      ownerId: "local",
+      projectId: "demo",
+      agentId: coder.id,
+      sessionId: coderSid,
+      body: {
+        type: "task.verified",
+        payload: { taskId: opened.payload.taskId, verifier: "pytest -q", passed: false },
+      },
+    });
+  for (const body of [
+    {
+      type: "tool.call",
+      payload: { callId: "demo-c1", tool: "bash", input: { command: "pytest -q" } },
+    },
+    {
+      type: "tool.result",
+      payload: { callId: "demo-c1", ok: false, output: "F\n1 failed in 0.12s" },
+    },
+  ])
+    await core.store.append({
+      ownerId: "local",
+      projectId: "demo",
+      agentId: coder.id,
+      // Outside the conversation: its history stays as the agent wrote it.
+      sessionId: null,
+      body,
+    });
+}
 // 3.5.6: a turn of God's that reached the step limit (set to 5 just for it), «Continua» under
 // its summary.
 {
