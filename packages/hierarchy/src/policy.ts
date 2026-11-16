@@ -228,6 +228,8 @@ export const READ_ONLY_TOOLS = new Set([
   "web_search",
   "fetch",
   "view_image",
+  // Product cards (G40.16): shown in the answer; the server only downloads public pictures.
+  "show_products",
   "list_agents",
   "read_agent",
   "board_list",

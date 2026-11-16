@@ -19,9 +19,11 @@ import {
   closeTab,
   getApi,
   openTab,
+  pendingJump,
   refreshConversations,
   refreshRooms,
 } from "../state.js";
+import { flashPassage, QuotePicker } from "./ChatTools.js";
 import { type Attachment, Composer } from "./Composer.js";
 import { askConfirm } from "./dialogs.js";
 import { Images } from "./Images.js";
@@ -30,6 +32,7 @@ import { MetricsBar } from "./MetricsBar.js";
 import { ModelSelect, type Spec, useModels } from "./ModelSelect.js";
 import { PromptEditor } from "./PromptEditor.js";
 import { joinable } from "./Room.js";
+import { SaveMessage, saveDraft } from "./Saved.js";
 import { Pick } from "./ui.js";
 
 /** The chat has no workspace: text files and images travel with the message, nothing else. */
@@ -52,7 +55,7 @@ function ToolChip({ name, input }: { name: string; input: unknown }) {
   );
 }
 
-function Entry({ e }: { e: ChatEntry }) {
+function Entry({ e, chatId }: { e: ChatEntry; chatId: string | null }) {
   const m = e.message;
   if (m.role === "user") {
     // Tool results are for the model; the chips on the answer say what was done.
@@ -68,29 +71,41 @@ function Entry({ e }: { e: ChatEntry }) {
   const thinking = m.parts.flatMap((p) => (p.type === "thinking" ? [p.text] : [])).join("");
   const calls = m.parts.flatMap((p) => (p.type === "tool_call" ? [p] : []));
   return (
-    <div class="bubble assistant">
-      {thinking && (
-        <details class="thinking">
-          <summary>{t("thinking")}</summary>
-          <div class="md">{thinking}</div>
-        </details>
-      )}
-      {calls.length > 0 && (
-        <div class="row wrap">
-          {calls.map((c) => (
-            <ToolChip key={c.callId} name={c.name} input={c.input} />
-          ))}
+    <>
+      <div class="bubble assistant" data-chat-msg={e.id}>
+        {thinking && (
+          <details class="thinking">
+            <summary>{t("thinking")}</summary>
+            <div class="md">{thinking}</div>
+          </details>
+        )}
+        {calls.length > 0 && (
+          <div class="row wrap">
+            {calls.map((c) => (
+              <ToolChip key={c.callId} name={c.name} input={c.input} />
+            ))}
+          </div>
+        )}
+        {text && <div class="md" dangerouslySetInnerHTML={{ __html: renderAnswer(text) }} />}
+        {e.metrics && text && (
+          <MetricsBar
+            m={e.metrics}
+            {...(e.costUsd !== null && { costUsd: e.costUsd })}
+            {...(e.model && { model: e.model })}
+          />
+        )}
+      </div>
+      {chatId && text.trim() && (
+        <div class="msg-actions">
+          <SaveMessage
+            draft={{
+              body: { source: { kind: "chat", chatId, messageId: e.id } },
+              preview: text.trim(),
+            }}
+          />
         </div>
       )}
-      {text && <div class="md" dangerouslySetInnerHTML={{ __html: renderAnswer(text) }} />}
-      {e.metrics && text && (
-        <MetricsBar
-          m={e.metrics}
-          {...(e.costUsd !== null && { costUsd: e.costUsd })}
-          {...(e.model && { model: e.model })}
-        />
-      )}
-    </div>
+    </>
   );
 }
 
@@ -268,6 +283,19 @@ export function DailyChat({
     else setEntries([]);
   }, [open]);
   useEffect(() => bottom.current?.scrollIntoView({ block: "end" }), [entries, live]);
+  // A saved passage opened from «Salvati» (G40.14): there, once its message shows.
+  const scroller = useRef<HTMLDivElement>(null);
+  const body = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const j = pendingJump.value;
+    if (!j || !("chatId" in j) || j.chatId !== open) return;
+    const bubble = scroller.current?.querySelector<HTMLElement>(
+      `.bubble.assistant[data-chat-msg="${j.messageId}"]`,
+    );
+    if (!bubble) return;
+    pendingJump.value = null;
+    setTimeout(() => flashPassage(bubble, { text: j.text }), 60);
+  }, [entries, pendingJump.value, open]);
 
   const send = async (text: string, attachments: Attachment[]) => {
     if (live) return;
@@ -395,8 +423,25 @@ export function DailyChat({
         ) : (
           <Settings onClose={() => setSettings(false)} />
         ))}
-      <div class="chat-body">
-        <div class="chat-scroll">
+      <div class="chat-body" ref={body}>
+        {open && (
+          <QuotePicker
+            scroller={scroller}
+            body={body}
+            onSave={(p) => {
+              if (p.chatMessageId === undefined) return;
+              saveDraft.value = {
+                body: {
+                  source: { kind: "chat", chatId: open, messageId: p.chatMessageId },
+                  text: p.text,
+                  ...(p.markdown && { markdown: p.markdown }),
+                },
+                preview: p.text,
+              };
+            }}
+          />
+        )}
+        <div class="chat-scroll" ref={scroller}>
           {!open && entries.length === 0 && !live && (
             <div class="welcome">
               {projectId ? <IconEye size={40} /> : <IconChat size={40} />}
@@ -404,7 +449,7 @@ export function DailyChat({
             </div>
           )}
           {entries.map((e) => (
-            <Entry key={e.id} e={e} />
+            <Entry key={e.id} e={e} chatId={open} />
           ))}
           {live && (
             <div class="bubble assistant streaming">

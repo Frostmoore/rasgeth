@@ -174,7 +174,13 @@ import { CanvasLive } from "./canvas-live.js";
 import { lookAt } from "./canvas-look.js";
 import { type CanvasToolsHost, canvasTools } from "./canvas-tools.js";
 import { canvasView } from "./canvas-view.js";
-import { CHAT_AGENT_PROMPT, ChatError, DailyChat, migrateChat } from "./chat.js";
+import {
+  CHAT_AGENT_PROMPT,
+  ChatError,
+  DailyChat,
+  isBuiltInChatPrompt,
+  migrateChat,
+} from "./chat.js";
 import { CodeChanges, platformCodeTools, type SourceOptions } from "./code.js";
 import { FileConverter, readManifest } from "./convert.js";
 import { Programs } from "./convert-programs.js";
@@ -274,6 +280,8 @@ import {
   PolicyStore,
   platformConfigTools,
 } from "./platform.js";
+import { PRODUCTS_GUIDANCE, type ProductsToolHost, showProductsTool } from "./product-cards.js";
+import { ProductImages, type ProductImagesOptions } from "./product-images.js";
 import { migrateProjects, ProjectStore, type Subproject, slug } from "./projects.js";
 import { kindLabel, PromptRefiner, RefineError, type RefineJob } from "./prompt-refiner.js";
 import {
@@ -294,6 +302,7 @@ import {
   switchedOffSection,
 } from "./request-tool.js";
 import { migrateRooms, Rooms } from "./rooms.js";
+import { migrateSaved, SavedStore } from "./saved.js";
 import { scriptTool } from "./script.js";
 import { SharedMemory } from "./shared-memory.js";
 import { SKILL_PROMPT, SkillNudge } from "./skill-nudge.js";
@@ -397,6 +406,11 @@ export interface CoreOptions {
   /** Email for the agents (G38.1): how mailboxes are reached and mail leaves (tests: servers in the process). */
   mailClient?: MailClient;
   mailTransport?: MailTransport;
+  /**
+   * Product pictures (G40.16): tests and the demo only, hosts allowed although local (a test
+   * server on 127.0.0.1), and the cache's clock and limits.
+   */
+  productImages?: Omit<ProductImagesOptions, "dir">;
   /** How many emails the agents may send an hour and a day (default 20 and 100). */
   mailSendLimit?: { perHour: number; perDay: number };
   providers: ProviderRegistry;
@@ -681,6 +695,8 @@ export class RedGiantCore implements OrchestrationHost {
    * one for a device that proved who the person is (also the setup channel of G40.3).
    */
   readonly devices: DeviceStore;
+  /** The person's saved passages (G40.14). */
+  readonly saved: SavedStore;
   /** Notifications to the devices (G40.4): Web Push, APNs through the blind relay. */
   readonly push: PushService;
   readonly tasks: TaskTracker;
@@ -769,6 +785,8 @@ export class RedGiantCore implements OrchestrationHost {
   readonly pdf: PdfFamily;
   /** The layered picture family (G37.5): its blobs serve the page's exports. */
   readonly pictures: ImageFamily;
+  /** show_products' pictures (G40.16), downloaded and kept by the server. */
+  readonly productImages: ProductImages;
   /** The rule for the agents' edits, for an agent or a file (G37.1). */
   readonly editorSettings: OwnerSettings<EditorSettings>;
   /** External ACP agents (G38.6): the program each such agent of a project runs as. */
@@ -903,6 +921,11 @@ export class RedGiantCore implements OrchestrationHost {
     if (o.transcription?.key) o.redactor?.addSecret("transcription", o.transcription.key);
     if (o.images?.key) o.redactor?.addSecret("openai-images", o.images.key);
     this.registry = new AgentRegistry(o.db, this.store);
+    this.saved = new SavedStore(o.db, {
+      db: o.db,
+      events: this.store,
+      agentName: (id) => this.registry.get(id)?.name ?? null,
+    });
     this.budget = new PersistentBudget(o.db, this.store);
     this.projects = new ProjectStore(o.db, o.workspacesDir, o.projectFoldersInside);
     // Requests say projects and agents by name on every channel (3.5.6).
@@ -1017,6 +1040,10 @@ export class RedGiantCore implements OrchestrationHost {
     });
     this.pdf = new PdfFamily({ dataDir: dirname(o.workspacesDir) });
     this.pictures = new ImageFamily({ dataDir: dirname(o.workspacesDir) });
+    this.productImages = new ProductImages({
+      ...o.productImages,
+      dir: join(dirname(o.workspacesDir), "cache", "product-images"),
+    });
     this.editor = new EditorHost({
       store: this.store,
       dataDir: dirname(o.workspacesDir),
@@ -1426,6 +1453,7 @@ export class RedGiantCore implements OrchestrationHost {
     await o.db.query("DROP TABLE IF EXISTS rg_devices");
     await migrateLogin(o.db);
     await migrateDevices(o.db);
+    await migrateSaved(o.db);
     await migratePush(o.db);
     const core = new RedGiantCore(o);
     // Notifications to the devices (G40.4): one more channel of the requests «all at once».
@@ -1881,6 +1909,8 @@ export class RedGiantCore implements OrchestrationHost {
           canvasEditTool(agent, ws, this.canvasEditHost()),
           this.sendFileTool(agent, ws),
           this.variantsTool(agent, ws),
+          // Product cards with pictures (G40.16).
+          showProductsTool(agent, this.productsHost(agent)),
           // Chains of tool calls that do not fill the context (G29.7).
           scriptTool(
             agent,
@@ -2061,6 +2091,8 @@ export class RedGiantCore implements OrchestrationHost {
         magicExtSession?.agentId === agent.id ? MAGIC_EXT_PROMPT : "",
         // Text, widget, artifact, board or project (3.5.9): for every agent that can show files.
         tools.some((t) => t.def.name === "show_file") ? ARTIFACT_GUIDANCE : "",
+        // Products to buy or compare (G40.16): cards with pictures.
+        tools.some((t) => t.def.name === "show_products") ? PRODUCTS_GUIDANCE : "",
         // Email is data, never instructions (G38.1): for every agent that can read it.
         tools.some((t) => t.def.name === "mail_read") ? MAIL_GUIDANCE : "",
         assignedTo
@@ -3186,11 +3218,7 @@ export class RedGiantCore implements OrchestrationHost {
     const onAgent = id ? this.registry.get(id)?.systemPrompt : undefined;
     const own =
       (await this.chat.settings(ownerId)).systemPrompt ??
-      (onAgent &&
-      onAgent !== CHAT_AGENT_PROMPT &&
-      onAgent !== CHAT_AGENT_PROMPT.replace("{god}", "God")
-        ? onAgent
-        : undefined);
+      (onAgent && !isBuiltInChatPrompt(onAgent) ? onAgent : undefined);
     return own
       ? { text: expandPrompt(own, names), isDefault: false, defaultText }
       : { text: defaultText, isDefault: true, defaultText };
@@ -4458,6 +4486,21 @@ export class RedGiantCore implements OrchestrationHost {
     done.catch(() => {});
   }
 
+  private productsHost(agent: AgentRecord): ProductsToolHost {
+    return {
+      images: this.productImages,
+      shown: async (sessionId, payload) => {
+        await this.store.append({
+          ownerId: agent.ownerId,
+          projectId: agent.projectId,
+          agentId: agent.id,
+          sessionId,
+          body: { type: "products.shown", payload },
+        });
+      },
+    };
+  }
+
   private sendFileTool(agent: AgentRecord, ws: Workspace): Tool {
     const Input = z.object({ path: z.string().min(1), caption: z.string().max(1000).optional() });
     const MAX = 50 * 1024 * 1024;
@@ -5262,7 +5305,8 @@ export class RedGiantCore implements OrchestrationHost {
     if (
       found?.status === "active" &&
       !settings.systemPrompt &&
-      found.systemPrompt === CHAT_AGENT_PROMPT.replace("{god}", "God")
+      found.systemPrompt !== CHAT_AGENT_PROMPT &&
+      isBuiltInChatPrompt(found.systemPrompt)
     )
       return this.registry.configure({ type: "human", ownerId }, found.id, {
         systemPrompt: CHAT_AGENT_PROMPT,

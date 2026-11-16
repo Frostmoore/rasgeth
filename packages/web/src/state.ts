@@ -10,6 +10,7 @@ import type {
   MessageMetrics,
   MessageQuote,
   PermissionRequestInfo,
+  ProductCard,
   Question,
   QuestionRequestInfo,
   ServerMessage,
@@ -132,6 +133,8 @@ export type ChatItem =
       mime: string;
       caption?: string;
     }
+  /** Product cards an agent showed (G40.16): a carousel with the server's pictures. */
+  | { kind: "products"; key: string; title?: string; products: ProductCard[] }
   /** A board of variants (G25.4): a card that opens it, with what the person said. */
   | {
       kind: "variants";
@@ -479,6 +482,14 @@ export function buildItems(events: Event[]): ChatItem[] {
       }
       case "file.sent":
         items.push({ kind: "file", key, ...e.payload });
+        break;
+      case "products.shown":
+        items.push({
+          kind: "products",
+          key,
+          ...(e.payload.title && { title: e.payload.title }),
+          products: e.payload.products,
+        });
         break;
       case "canvas.show":
         items.push({ kind: "canvas", key, title: e.payload.title, target: e.payload.target });
@@ -1067,6 +1078,8 @@ export type Tab =
   | { id: string; type: "assistant"; title: string; agentId: string | null }
   /** Every chat, as cards in folders, and the group chats (2026-11-03). */
   | { id: string; type: "chats"; title: string }
+  /** The person's saved passages (G40.14), opened from the Chat's page. */
+  | { id: string; type: "saved"; title: string }
   /** The agents of one project, as a tree. */
   | { id: string; type: "agents"; title: string; projectId: string }
   /** An archived project, read only (2026-11-09): conversations, tasks, files; «Restore». */
@@ -1636,6 +1649,21 @@ export function openSession(row: { id: string; agentId: string; title: string | 
     sessionId: row.id,
     agentId: row.agentId,
   });
+}
+
+/**
+ * A place to go to once a conversation shows (G40.14: a saved passage opened from «Salvati»):
+ * the view that shows it scrolls there, lights the passage up and clears this.
+ */
+export const pendingJump = signal<
+  | { sessionId: string; seq: number; start?: number; end?: number; text: string }
+  | { chatId: string; messageId: number; text: string }
+  | null
+>(null);
+
+/** «Salvati» (G40.14): the person's saved passages, a tab of its own. */
+export function openSaved(): void {
+  openTab({ id: "saved", type: "saved", title: t("savedTitle") });
 }
 
 /** A new conversation with an agent. */

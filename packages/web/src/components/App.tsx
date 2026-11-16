@@ -7,6 +7,7 @@ import {
   IconArchive,
   IconBell,
   IconBoard,
+  IconBookmark,
   IconCanvas,
   IconChat,
   IconClose,
@@ -65,6 +66,7 @@ import { Explorer } from "./Explorer.js";
 import { lazy } from "./lazy.js";
 import { Mascot } from "./Mascot.js";
 import { ConnectionLost, MemoryNotice } from "./PageHealth.js";
+import { SaveDialogHost, SavedPage } from "./Saved.js";
 import { preloadCanvas, SideArea } from "./SideArea.js";
 import { Sidebar } from "./Sidebar.js";
 import { UpdateGate } from "./UpdateGate.js";
@@ -260,6 +262,8 @@ const tabIcon = (tab: Tab) =>
     <IconUsers size={13} />
   ) : tab.type === "chats" ? (
     <IconChat size={13} />
+  ) : tab.type === "saved" ? (
+    <IconBookmark size={13} />
   ) : tab.type === "agents" ? (
     <IconTree size={13} />
   ) : tab.type === "tavola" ? (
@@ -335,6 +339,8 @@ function View({ tab }: { tab: Tab }) {
       return <RoomView key={tab.id} roomId={tab.roomId} />;
     case "chats":
       return <Chats />;
+    case "saved":
+      return <SavedPage />;
     case "agents":
       return <ProjectAgents key={tab.id} projectId={tab.projectId} />;
     case "tavola":
@@ -474,6 +480,8 @@ export function App() {
       <UpdateGate />
       {/* Our own questions, never the browser's (2026-11-09). */}
       <Dialogs />
+      {/* «Salva» a passage or a message (G40.14). */}
+      <SaveDialogHost />
       {citationNote.value && <CitationNote />}
       <ConnectionLost />
       <MemoryNotice />

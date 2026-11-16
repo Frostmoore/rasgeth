@@ -267,6 +267,118 @@ const MAGIC_DEMO = [
   },
 ];
 
+// G40.16, DEMO_PRODUCTS=1: a shop's pictures on 127.0.0.1 (the server downloads them; the page
+// never calls it), and the four products the Chat shows.
+let productShop;
+const demoProducts = (base) => ({
+  title: "Moka da 3-4 tazze",
+  products: [
+    {
+      name: "Bialetti Moka Express 3 tazze",
+      price: 32.9,
+      currency: "EUR",
+      shop: "Bialetti",
+      url: "https://www.bialetti.com/it_it/moka-express",
+      image_url: `${base}/moka-express.png`,
+      description: "La classica in alluminio, per fornelli a gas ed elettrici.",
+      source: 1,
+    },
+    {
+      name: "Bialetti Venus 4 tazze, acciaio",
+      price: 44.5,
+      currency: "EUR",
+      shop: "Amazon",
+      url: "https://www.amazon.it/dp/B000000000",
+      image_url: `${base}/venus.png`,
+      description: "In acciaio inox: va anche sull'induzione.",
+      source: 2,
+    },
+    {
+      name: "Bialetti Brikka 4 tazze",
+      price: 49.99,
+      currency: "EUR",
+      shop: "Coin Casa",
+      url: "https://www.example.com/brikka",
+      image_url: `${base}/brikka.png`,
+      description: "Valvola a pressione: una crema più densa.",
+      source: 3,
+    },
+    {
+      name: "Moka elettrica 3 tazze",
+      price: 39,
+      currency: "EUR",
+      shop: "MediaWorld",
+      url: "https://www.example.com/moka-elettrica",
+      image_url: `${base}/introvabile.png`,
+      description: "Con la base che si spegne da sola.",
+    },
+  ],
+});
+
+/** A moka pot drawn on white (480×360 PNG), in a colour of its own. */
+function mokaPicture(encodePng, [r, g, b], wide) {
+  const w = 480;
+  const h = 360;
+  const data = new Uint8Array(w * h * 4).fill(255);
+  const inside = (x, y, poly) => {
+    let hit = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, yi] = poly[i];
+      const [xj, yj] = poly[j];
+      if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) hit = !hit;
+    }
+    return hit;
+  };
+  const k = wide ? 1.15 : 1;
+  const cx = 240;
+  const top = [
+    [cx - 55 * k, 70],
+    [cx + 55 * k, 70],
+    [cx + 75 * k, 175],
+    [cx - 75 * k, 175],
+  ];
+  const bottom = [
+    [cx - 75 * k, 185],
+    [cx + 75 * k, 185],
+    [cx + 55 * k, 300],
+    [cx - 55 * k, 300],
+  ];
+  const lid = [
+    [cx - 45 * k, 55],
+    [cx + 45 * k, 55],
+    [cx + 55 * k, 70],
+    [cx - 55 * k, 70],
+  ];
+  const spout = [
+    [cx - 55 * k, 70],
+    [cx - 95 * k, 60],
+    [cx - 70 * k, 110],
+  ];
+  const handle = [
+    [cx + 62 * k, 90],
+    [cx + 120 * k, 95],
+    [cx + 112 * k, 185],
+    [cx + 70 * k, 160],
+    [cx + 98 * k, 165],
+    [cx + 102 * k, 112],
+    [cx + 66 * k, 110],
+  ];
+  for (let y = 0; y < h; y++)
+    for (let x = 0; x < w; x++) {
+      const i = (y * w + x) * 4;
+      let c;
+      if (inside(x, y, handle)) c = [40, 40, 44];
+      else if (inside(x, y, lid)) c = [60, 60, 66];
+      else if (inside(x, y, top) || inside(x, y, bottom) || inside(x, y, spout)) {
+        // A light from the left.
+        const shade = 0.75 + 0.35 * (1 - (x - (cx - 80)) / 160);
+        c = [r * shade, g * shade, b * shade].map((v) => Math.max(0, Math.min(255, v)));
+      } else if (y > 300 && y < 312 && Math.abs(x - cx) < 110) c = [225, 225, 228];
+      if (c) data.set([...c, 255], i);
+    }
+  return encodePng({ width: w, height: h, data, channels: 4, depth: 8 });
+}
+
 const brain = (req) => {
   const last = req.messages.at(-1);
   // A tool's pictures (canvas_look, G36.12) come in the same message as the results.
@@ -276,6 +388,27 @@ const brain = (req) => {
     last.parts.every((p) => p.type === "tool_result" || p.type === "image");
   turn++;
   const said = last?.parts.find((p) => p.type === "text")?.text ?? "";
+  // G40.16, DEMO_PRODUCTS=1: the Chat shows four moka pots as cards, then picks one.
+  if (productShop && said.startsWith("Mi consigli una moka") && !results)
+    return {
+      text: "Cerco qualche moka da 3-4 tazze e te le mostro.",
+      toolCalls: [{ name: "show_products", input: demoProducts(productShop) }],
+    };
+  if (
+    results &&
+    last.parts.some(
+      (p) => p.type === "tool_result" && String(p.content).startsWith("Shown to the person as"),
+    )
+  )
+    return {
+      text:
+        "Per tutti i giorni prenderei la **Moka Express**: costa meno ed è quella che dura di più [1]. " +
+        "Se hai un fornello a induzione, la **Venus** in acciaio è l'unica delle quattro che ci va senza adattatore [2]. " +
+        "La **Brikka** fa una crema più densa, ma è più delicata da pulire [3].\n\n" +
+        "Fonti:\n\n1. [Bialetti, Moka Express](https://www.bialetti.com/it_it/moka-express)\n" +
+        "2. [Bialetti, Venus](https://www.bialetti.com/it_it/venus)\n" +
+        "3. [Caffè e moka, prova della Brikka](https://www.example.com/brikka)",
+    };
   // G38.3: a magic integration's or extension's conversation ends in a package.
   if (/^Magic (integration|extension): /.test(said) && !results) {
     const demo = MAGIC_DEMO.find((d) => said.includes(d.when));
@@ -1014,6 +1147,8 @@ const core = await RedGiantCore.create({
     reconnectMs: [500, 1000, 2000],
     pollMs: 2000,
   },
+  // DEMO_PRODUCTS=1 (G40.16): the shop's pictures come from 127.0.0.1.
+  ...(process.env.DEMO_PRODUCTS && { productImages: { allowHosts: ["127.0.0.1"] } }),
   // DEMO_SSH=1 (G38.2): every machine leads to a fake SSH server on 127.0.0.1, never a real one.
   ...(process.env.DEMO_SSH && {
     machines: { dial: () => ({ host: "127.0.0.1", port: sshDemo.port }), connectTimeoutMs: 5000 },
@@ -1616,6 +1751,34 @@ if (process.env.DEMO_ARCHIVE === "1") {
   await core.nameSession(ssid, "Schede prodotto");
   const { done } = await core.send("local", ssid, "Rifai tutte le schede prodotto");
   done.catch(() => {});
+}
+
+// DEMO_PRODUCTS=1 (G40.16): the Chat recommends moka pots with product cards.
+if (process.env.DEMO_PRODUCTS === "1") {
+  const { createServer } = await import("node:http");
+  const { encode: encodePng } = await import(
+    createRequire(new URL("../../server/package.json", import.meta.url)).resolve("fast-png")
+  );
+  const pictures = {
+    "/moka-express.png": mokaPicture(encodePng, [168, 170, 176], false),
+    "/venus.png": mokaPicture(encodePng, [205, 208, 214], true),
+    "/brikka.png": mokaPicture(encodePng, [150, 40, 40], false),
+  };
+  const pictureServer = createServer((req, res) => {
+    const body = pictures[req.url ?? ""];
+    if (!body) {
+      res.statusCode = 404;
+      return res.end();
+    }
+    res.setHeader("content-type", "image/png");
+    res.end(body);
+  });
+  await new Promise((r) => pictureServer.listen(0, "127.0.0.1", r));
+  productShop = `http://127.0.0.1:${pictureServer.address().port}`;
+  const chatAgent = await core.chatAgent("local");
+  const psid = await core.startSession("local", chatAgent.id);
+  await core.nameSession(psid, "Una moka nuova");
+  await (await core.send("local", psid, "Mi consigli una moka da 3-4 tazze?")).done;
 }
 
 // DEMO_WEB: another build of the page (3.5.11, the measures before and after a change).

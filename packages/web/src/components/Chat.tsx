@@ -53,6 +53,7 @@ import {
   openSessionById,
   openSubPath,
   openTab,
+  pendingJump,
   projects,
   questions,
   refresh,
@@ -76,6 +77,8 @@ import {
   addQuote,
   ContinueHere,
   ForkMark,
+  jumpToQuote,
+  type PickedPassage,
   type QuoteDraft,
   QuoteDrafts,
   QuotePicker,
@@ -89,8 +92,10 @@ import { MailRequestPreview, MailToolCard, mailSummary } from "./MailCards.js";
 import { Mascot } from "./Mascot.js";
 import { MetricsBar } from "./MetricsBar.js";
 import { ModelMenu, modelName } from "./ModelMenu.js";
+import { ProductCards } from "./ProductCards.js";
 import { ArchivedNotice } from "./ProjectArchive.js";
 import { QuestionCard } from "./QuestionCard.js";
+import { SaveMessage, saveDraft } from "./Saved.js";
 import { ToolRequestCard } from "./ToolRequestCard.js";
 import { TurnProgress } from "./TurnProgress.js";
 import { FileIcon } from "./viewers/FileIcon.js";
@@ -889,6 +894,15 @@ function Item({
           {actions && item.parts.some((p) => p.type === "text" && p.text.trim()) && (
             <div class="msg-actions">
               <ContinueHere sessionId={sessionId} agentId={agentId} seq={item.seq} />
+              <SaveMessage
+                draft={{
+                  body: { source: { kind: "session", sessionId, seq: item.seq } },
+                  preview: item.parts
+                    .flatMap((p) => (p.type === "text" ? [p.text] : []))
+                    .join("")
+                    .trim(),
+                }}
+              />
             </div>
           )}
           {actions && item.stepLimit && <GoOn sessionId={sessionId} />}
@@ -929,6 +943,8 @@ function Item({
       );
     case "file":
       return <FileCard item={item} />;
+    case "products":
+      return <ProductCards title={item.title} products={item.products} />;
     case "widget":
       return (
         <WidgetCard
@@ -1430,6 +1446,22 @@ function SubagentView({
   );
 }
 
+/** «Salva» on a selected passage of this conversation (G40.14). */
+const sessionSave = (sessionId: string, p: PickedPassage) => ({
+  body: {
+    source: {
+      kind: "session" as const,
+      sessionId,
+      seq: p.quote.seq ?? 0,
+      ...(p.quote.start !== undefined && { start: p.quote.start }),
+      ...(p.quote.end !== undefined && { end: p.quote.end }),
+    },
+    text: p.text,
+    ...(p.markdown && { markdown: p.markdown }),
+  },
+  preview: p.text,
+});
+
 /** The conversation itself (the main agent's, or the only one). */
 function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }) {
   const view = sessionView(sessionId);
@@ -1470,6 +1502,17 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
     if (el && atBottom) el.scrollTop = el.scrollHeight;
   });
 
+  // A saved passage opened from «Salvati» (G40.14): there, once its message shows.
+  useEffect(() => {
+    const j = pendingJump.value;
+    if (!j || !("sessionId" in j) || j.sessionId !== sessionId) return;
+    if (!items.value.some((i) => i.kind === "assistant" && i.seq === j.seq)) return;
+    pendingJump.value = null;
+    setAtBottom(false);
+    const { sessionId: _s, ...quote } = j;
+    setTimeout(() => jumpToQuote(quote), 60);
+  }, [items.value, pendingJump.value, sessionId]);
+
   const v = view.value;
   const mode = agent?.mode ?? "auto";
   const own = sessionRows.value.find((r) => r.id === sessionId)?.model ?? undefined;
@@ -1495,6 +1538,7 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
           scroller={scroller}
           body={body}
           onPick={(q) => setDrafts((d) => addQuote(d, q))}
+          onSave={(p) => (saveDraft.value = sessionSave(sessionId, p))}
         />
         <div
           class="chat-scroll"

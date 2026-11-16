@@ -5,13 +5,22 @@
 import { useEffect, useState } from "preact/hooks";
 import type { ChatSummary } from "../api.js";
 import { t } from "../i18n.js";
-import { IconArchive, IconChat, IconFolder, IconPencil, IconPlus, IconUsers } from "../icons.js";
+import {
+  IconArchive,
+  IconBookmark,
+  IconChat,
+  IconFolder,
+  IconPencil,
+  IconPlus,
+  IconUsers,
+} from "../icons.js";
 import {
   agents,
   attempt,
   chatAgentId,
   chatRows,
   getApi,
+  openSaved,
   openSession,
   openTab,
   refresh,
@@ -136,9 +145,15 @@ export function Chats() {
         </div>
         <p class="ui-help">{t("chatHint")}</p>
         {error && <p class="notice error">{error}</p>}
-        <button type="button" class="chats-prompt" onClick={() => setInstructions(true)}>
-          <IconPencil size={15} /> {t("chatInstructions")}
-        </button>
+        <div class="chats-head-actions">
+          <button type="button" class="chats-prompt" onClick={() => setInstructions(true)}>
+            <IconPencil size={15} /> {t("chatInstructions")}
+          </button>
+          {/* The person's saved passages (G40.14): kept from the conversations, a tab of its own. */}
+          <button type="button" class="chats-prompt chats-saved" onClick={openSaved}>
+            <IconBookmark size={15} /> {t("savedTitle")}
+          </button>
+        </div>
       </header>
       {/* The Chat's instructions, built-in or its own (2026-11-06). */}
       {instructions && (

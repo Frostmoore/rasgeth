@@ -1228,6 +1228,8 @@ const OUTBOUND = (name: string) =>
     "fetch",
     "web_search",
     "publish_board",
+    // Its picture and page addresses are downloaded by the server (G40.16).
+    "show_products",
     "image_generation",
     "video_generation",
     "audio_generation",

@@ -6,6 +6,7 @@ import { MAX_NOTES, MAX_QUOTES, MessageQuote } from "./chat-tools.js";
 import { DocDecidedPayload, DocOpsPayload, DocProposedPayload, DocReplacedPayload } from "./doc.js";
 import { AssistantPart, ImagePart, NativeContent, StopReason } from "./messages.js";
 import { MessageMetrics } from "./metrics.js";
+import { ProductsShownPayload } from "./products.js";
 import { Answers, Question } from "./questions.js";
 
 /** Hex-encoded SHA-256. */
@@ -425,6 +426,11 @@ export const EventBody = z.discriminatedUnion("type", [
       caption: z.string().optional(),
     }),
   }),
+  /**
+   * Product cards an agent showed (G40.16, show_products): their data and their cached pictures'
+   * references, drawn as a carousel; the model read only a summary in words.
+   */
+  z.object({ type: z.literal("products.shown"), payload: ProductsShownPayload }),
   /** A compaction undone by the person: the whole history comes back (nothing was deleted). */
   z.object({
     type: z.literal("compaction.undone"),

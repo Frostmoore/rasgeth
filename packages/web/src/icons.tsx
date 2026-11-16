@@ -380,6 +380,19 @@ export const IconChevronLeft = ({ size = 20 }: P) => (
     <path d="M15 18l-6-6 6-6" />
   </Svg>
 );
+export const IconChevronRight = ({ size = 20 }: P) => (
+  <Svg size={size}>
+    <path d="M9 18l6-6-6-6" />
+  </Svg>
+);
+/** A product without its picture (G40.16): a shopping bag. */
+export const IconBag = ({ size = 20 }: P) => (
+  <Svg size={size}>
+    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+    <path d="M3 6h18" />
+    <path d="M16 10a4 4 0 0 1-8 0" />
+  </Svg>
+);
 export const IconChevronDown = ({ size = 20 }: P) => (
   <Svg size={size}>
     <path d="M6 9l6 6 6-6" />
@@ -663,6 +676,19 @@ export const IconReply = ({ size = 14 }: P) => (
   <Svg size={size}>
     <path d="M9 17l-5-5 5-5" />
     <path d="M20 18v-2a4 4 0 0 0-4-4H4" />
+  </Svg>
+);
+/** «Salva» (G40.14): a passage kept in the person's saved items, a bookmark. */
+export const IconBookmark = ({ size = 14 }: P) => (
+  <Svg size={size}>
+    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+  </Svg>
+);
+/** A tag on a saved item (G40.14). */
+export const IconTag = ({ size = 13 }: P) => (
+  <Svg size={size}>
+    <path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z" />
+    <circle cx="7.5" cy="7.5" r="1.5" />
   </Svg>
 );
 /** A conversation that goes on from another one (G36.23): a branch. */
