@@ -106,7 +106,9 @@ class _SidePanelState extends State<SidePanel> {
         children: [
           Container(
             padding: const EdgeInsets.fromLTRB(16, 4, 6, 4),
-            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: c.line))),
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: c.line)),
+            ),
             child: Row(
               children: [
                 Expanded(
@@ -182,10 +184,7 @@ class PanelResizer extends StatelessWidget {
                 child: Container(
                   width: 3,
                   height: 36,
-                  decoration: BoxDecoration(
-                    color: c.line,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
+                  decoration: BoxDecoration(color: c.line, borderRadius: BorderRadius.circular(2)),
                 ),
               ),
             ),
@@ -373,7 +372,11 @@ class _Grip extends CustomPainter {
       ..strokeWidth = 1.4;
     for (var i = 1; i <= 3; i++) {
       final d = i * 4.0;
-      canvas.drawLine(Offset(size.width - d, size.height - 2), Offset(size.width - 2, size.height - d), p);
+      canvas.drawLine(
+        Offset(size.width - d, size.height - 2),
+        Offset(size.width - 2, size.height - d),
+        p,
+      );
     }
   }
 

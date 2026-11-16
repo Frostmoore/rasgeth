@@ -109,10 +109,7 @@ List<GraphRow> layoutGraph(List<GitCommit> commits) {
         toBottom: parents.isNotEmpty,
         mergesIn: mergesIn,
         branchesOut: out,
-        width: math.max(
-          lanes.length,
-          [col, ...before, ...mergesIn, ...out].fold(0, math.max) + 1,
-        ),
+        width: math.max(lanes.length, [col, ...before, ...mergesIn, ...out].fold(0, math.max) + 1),
       ),
     );
   }
@@ -187,13 +184,12 @@ class _GraphPainter extends CustomPainter {
 }
 
 /// The push of [project] waiting for the person, if any.
-PermissionRequest? pendingPush(AppController app, Project project) =>
-    app.live.approvals.where((r) {
-      final i = r.input;
-      if (i is! Map) return false;
-      final cmd = i['command'];
-      return cmd is String && cmd.startsWith('git push') && i['project'] == project.name;
-    }).firstOrNull;
+PermissionRequest? pendingPush(AppController app, Project project) => app.live.approvals.where((r) {
+  final i = r.input;
+  if (i is! Map) return false;
+  final cmd = i['command'];
+  return cmd is String && cmd.startsWith('git push') && i['project'] == project.name;
+}).firstOrNull;
 
 class GitView extends StatefulWidget {
   const GitView({super.key});
@@ -319,49 +315,62 @@ class _GitViewState extends State<GitView> {
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
       child: Row(
         children: [
-          if (_git?.branch != null)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-              decoration: BoxDecoration(
-                color: c.panel2,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: c.line),
-              ),
+          Flexible(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  RgIcon(RgIcons.gitBranch, size: 14, color: c.text),
-                  const SizedBox(width: 6),
-                  Text(
-                    _git!.branch!,
-                    style: mono.copyWith(color: c.text, fontWeight: FontWeight.w700),
+                  if (_git?.branch != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: c.panel2,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: c.line),
+                      ),
+                      child: Row(
+                        children: [
+                          RgIcon(RgIcons.gitBranch, size: 14, color: c.text),
+                          const SizedBox(width: 6),
+                          Text(
+                            _git!.branch!,
+                            style: mono.copyWith(color: c.text, fontWeight: FontWeight.w700),
+                          ),
+                        ],
+                      ),
+                    ),
+                  const SizedBox(width: 8),
+                  OutlinedButton.icon(
+                    key: const Key('git-reload'),
+                    onPressed: () => _load(p.id),
+                    icon: RgIcon(RgIcons.refresh, size: 15, color: c.text),
+                    label: Text(l.codeReload),
+                  ),
+                  const SizedBox(width: 8),
+                  OutlinedButton.icon(
+                    key: const Key('git-commit'),
+                    onPressed: p.archived
+                        ? null
+                        : () => commitInProject(context, app, p.id).then((_) => _load(p.id)),
+                    icon: RgIcon(RgIcons.gitCommit, size: 15, color: c.text),
+                    label: Text(l.deskGitCommit),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton.icon(
+                    key: const Key('git-push'),
+                    onPressed: p.archived || push != null
+                        ? null
+                        : () => pushProject(context, app, p.id),
+                    icon: const RgIcon(RgIcons.upload, size: 15, color: Colors.white),
+                    label: Text(l.deskGitPush),
                   ),
                 ],
               ),
             ),
-          const SizedBox(width: 8),
-          OutlinedButton.icon(
-            key: const Key('git-reload'),
-            onPressed: () => _load(p.id),
-            icon: RgIcon(RgIcons.refresh, size: 15, color: c.text),
-            label: Text(l.codeReload),
           ),
-          const SizedBox(width: 8),
-          OutlinedButton.icon(
-            key: const Key('git-commit'),
-            onPressed: p.archived ? null : () => commitInProject(context, app, p.id).then((_) => _load(p.id)),
-            icon: RgIcon(RgIcons.gitCommit, size: 15, color: c.text),
-            label: Text(l.deskGitCommit),
-          ),
-          const SizedBox(width: 8),
-          FilledButton.icon(
-            key: const Key('git-push'),
-            onPressed: p.archived || push != null ? null : () => pushProject(context, app, p.id),
-            icon: const RgIcon(RgIcons.upload, size: 15, color: Colors.white),
-            label: Text(l.deskGitPush),
-          ),
-          const Spacer(),
+          const SizedBox(width: 12),
           SizedBox(
-            width: 240,
+            width: 220,
             height: 34,
             child: TextField(
               key: const Key('git-search'),
@@ -576,7 +585,9 @@ class _GitViewState extends State<GitView> {
       children: [
         Container(
           width: 230,
-          decoration: BoxDecoration(border: Border(right: BorderSide(color: c.line))),
+          decoration: BoxDecoration(
+            border: Border(right: BorderSide(color: c.line)),
+          ),
           child: left,
         ),
         Expanded(
@@ -590,7 +601,9 @@ class _GitViewState extends State<GitView> {
         ),
         Container(
           width: 360,
-          decoration: BoxDecoration(border: Border(left: BorderSide(color: c.line))),
+          decoration: BoxDecoration(
+            border: Border(left: BorderSide(color: c.line)),
+          ),
           child: right,
         ),
       ],
@@ -632,7 +645,15 @@ class _SideRow extends StatelessWidget {
               ),
             ),
           ),
-          if (trailing != null) Text(trailing!, style: TextStyle(fontSize: 12, color: c.dim)),
+          if (trailing != null)
+            Flexible(
+              child: Text(
+                trailing!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 12, color: c.dim),
+              ),
+            ),
         ],
       ),
     );

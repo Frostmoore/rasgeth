@@ -39,8 +39,9 @@ class PanelConversation extends PanelContent {
   /// With a first message the conversation is made again, so that the message goes (a second
   /// question from God's field while God's conversation is open).
   @override
-  String get id =>
-      firstMessage == null ? 'conversation:$sessionId' : 'conversation:$sessionId:${identityHashCode(this)}';
+  String get id => firstMessage == null
+      ? 'conversation:$sessionId'
+      : 'conversation:$sessionId:${identityHashCode(this)}';
 }
 
 /// The screens that open in the panel (the phone's, reused as they are).
@@ -150,8 +151,7 @@ class DeskController extends ChangeNotifier {
   }
 
   /// The project the advanced views use: the chosen one, else the first not archived.
-  String? projectOr() =>
-      projectId ?? app.projects.where((p) => !p.archived).firstOrNull?.id;
+  String? projectOr() => projectId ?? app.projects.where((p) => !p.archived).firstOrNull?.id;
 
   // ---- the side panel ----
 
@@ -202,8 +202,7 @@ class DeskController extends ChangeNotifier {
   String? get panelAgentId {
     final p = panel;
     if (p is! PanelConversation) return null;
-    return p.agent?.id ??
-        app.live.sessions.where((s) => s.id == p.sessionId).firstOrNull?.agentId;
+    return p.agent?.id ?? app.live.sessions.where((s) => s.id == p.sessionId).firstOrNull?.agentId;
   }
 
   /// Takes the panel's conversation out: it floats over the window.

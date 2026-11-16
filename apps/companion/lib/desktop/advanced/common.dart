@@ -152,10 +152,7 @@ class SideHead extends StatelessWidget {
           if (count != null)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-              decoration: BoxDecoration(
-                color: c.panel2,
-                borderRadius: BorderRadius.circular(99),
-              ),
+              decoration: BoxDecoration(color: c.panel2, borderRadius: BorderRadius.circular(99)),
               child: Text('$count', style: TextStyle(fontSize: 11, color: c.dim)),
             ),
         ],

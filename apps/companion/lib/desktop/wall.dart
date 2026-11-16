@@ -33,20 +33,21 @@ WallFilter filterOf(MascotState s) => switch (s) {
 };
 
 /// The wall's agents: the first level without God, the Chat and Demi-God (as Team).
-List<Agent> wallAgents(AppController app) => app.agents
-    .where(
-      (a) =>
-          a.kind != AgentKind.subagent &&
-          a.kind != AgentKind.inspector &&
-          a.kind != AgentKind.god &&
-          a.kind != AgentKind.demigod &&
-          a.id != app.chatAgentId,
-    )
-    .toList()
-  ..sort((a, b) {
-    final f = (app.isFavourite(b.id) ? 1 : 0) - (app.isFavourite(a.id) ? 1 : 0);
-    return f != 0 ? f : a.name.toLowerCase().compareTo(b.name.toLowerCase());
-  });
+List<Agent> wallAgents(AppController app) =>
+    app.agents
+        .where(
+          (a) =>
+              a.kind != AgentKind.subagent &&
+              a.kind != AgentKind.inspector &&
+              a.kind != AgentKind.god &&
+              a.kind != AgentKind.demigod &&
+              a.id != app.chatAgentId,
+        )
+        .toList()
+      ..sort((a, b) {
+        final f = (app.isFavourite(b.id) ? 1 : 0) - (app.isFavourite(a.id) ? 1 : 0);
+        return f != 0 ? f : a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      });
 
 /// The wall's sections: by project (in the projects' order, the agents without one last) or by
 /// state (waiting first, then working, blocked, still). Empty sections are left out.
@@ -78,8 +79,8 @@ List<({String title, List<Agent> agents})> wallSections(
   ];
   return [
     for (final (f, title) in order)
-      if (agents.where((a) => filterOf(app.live.mascotStateOf(a.id)) == f).toList()
-          case final list when list.isNotEmpty)
+      if (agents.where((a) => filterOf(app.live.mascotStateOf(a.id)) == f).toList() case final list
+          when list.isNotEmpty)
         (title: title, agents: list),
   ];
 }
@@ -232,19 +233,47 @@ class TeamWall extends StatelessWidget {
 class HeroRow extends StatelessWidget {
   const HeroRow({super.key});
 
+  /// The cards' height: God's name, what it does and its field.
+  static const height = 146.0;
+
   @override
   Widget build(BuildContext context) {
-    return const IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(flex: 5, child: GodHero()),
-          SizedBox(width: 12),
-          Expanded(flex: 4, child: ChatHero()),
-          SizedBox(width: 12),
-          Expanded(flex: 4, child: ForYouHero()),
-        ],
-      ),
+    return LayoutBuilder(
+      builder: (context, box) {
+        // A narrow room (a small window with the panel open): God on its own line.
+        if (box.maxWidth < 860) {
+          return const Column(
+            children: [
+              SizedBox(height: height, child: GodHero()),
+              SizedBox(height: 10),
+              SizedBox(
+                height: height,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(child: ChatHero()),
+                    SizedBox(width: 10),
+                    Expanded(child: ForYouHero()),
+                  ],
+                ),
+              ),
+            ],
+          );
+        }
+        return const SizedBox(
+          height: height,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(flex: 5, child: GodHero()),
+              SizedBox(width: 12),
+              Expanded(flex: 4, child: ChatHero()),
+              SizedBox(width: 12),
+              Expanded(flex: 4, child: ForYouHero()),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -307,9 +336,20 @@ class _HeroFieldState extends State<HeroField> {
     }
   }
 
+  bool _narrow = false;
+
   @override
   Widget build(BuildContext context) {
     final c = RgColors.of(context);
+    return LayoutBuilder(
+      builder: (context, box) {
+        _narrow = box.maxWidth < 260;
+        return _field(c);
+      },
+    );
+  }
+
+  Widget _field(RgColors c) {
     return Container(
       height: widget.dense ? 34 : 40,
       padding: const EdgeInsets.only(left: 12, right: 4),
@@ -338,7 +378,7 @@ class _HeroFieldState extends State<HeroField> {
               ),
             ),
           ),
-          if (widget.shortcut != null)
+          if (widget.shortcut != null && !_narrow)
             Padding(padding: const EdgeInsets.only(left: 6), child: KeyCap(widget.shortcut!)),
           if (!widget.dense)
             Padding(
@@ -428,11 +468,7 @@ class GodHero extends StatelessWidget {
                   key: const Key('desk-god-field'),
                   hint: l.deskGodHint,
                   focus: desk.godFocus,
-                  shortcut: shortcutLabel(
-                    cmdKey(LogicalKeyboardKey.keyG, mac: mac),
-                    l,
-                    mac: mac,
-                  ),
+                  shortcut: shortcutLabel(cmdKey(LogicalKeyboardKey.keyG, mac: mac), l, mac: mac),
                   onSend: (t) async => god != null && await desk.openAgent(god, firstMessage: t),
                 ),
               ],
@@ -554,9 +590,10 @@ class ForYouHero extends StatelessWidget {
         borderRadius: BorderRadius.circular(dense ? 10 : 14),
         onTap: () => desk.show(const PanelPage(PanelScreen.inbox)),
         child: Ink(
-          decoration: heroBox(c, lit: reqs.isNotEmpty).copyWith(
-            borderRadius: BorderRadius.circular(dense ? 10 : 14),
-          ),
+          decoration: heroBox(
+            c,
+            lit: reqs.isNotEmpty,
+          ).copyWith(borderRadius: BorderRadius.circular(dense ? 10 : 14)),
           padding: dense
               ? const EdgeInsets.symmetric(horizontal: 10, vertical: 4)
               : const EdgeInsets.fromLTRB(16, 12, 14, 12),
@@ -598,10 +635,7 @@ class ForYouHero extends StatelessWidget {
                                 : l.deskRequestsCount(reqs.length),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 12.5,
-                              color: critical > 0 ? c.err : c.dim,
-                            ),
+                            style: TextStyle(fontSize: 12.5, color: critical > 0 ? c.err : c.dim),
                           ),
                         ],
                       ),
@@ -826,7 +860,9 @@ class AgentTile extends StatelessWidget {
           Expanded(
             child: Container(
               padding: const EdgeInsets.only(left: 8),
-              decoration: BoxDecoration(border: Border(left: BorderSide(color: c.line, width: 2))),
+              decoration: BoxDecoration(
+                border: Border(left: BorderSide(color: c.line, width: 2)),
+              ),
               child: ClipRect(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -876,7 +912,10 @@ class AgentTile extends StatelessWidget {
                       label: l.mascotLabel(s.name, stateWord(l, app.live.mascotStateOf(s.id))),
                     ),
                   const SizedBox(width: 6),
-                  Text(l.deskSubagents(subs.length), style: TextStyle(fontSize: 11.5, color: c.dim)),
+                  Text(
+                    l.deskSubagents(subs.length),
+                    style: TextStyle(fontSize: 11.5, color: c.dim),
+                  ),
                 ],
               ),
             ),
@@ -932,7 +971,10 @@ class _NewAgentTile extends StatelessWidget {
             children: [
               RgIcon(RgIcons.plus, size: 18, color: c.dim),
               const SizedBox(width: 8),
-              Text(l.teamNewAgent, style: TextStyle(color: c.dim, fontWeight: FontWeight.w600)),
+              Text(
+                l.teamNewAgent,
+                style: TextStyle(color: c.dim, fontWeight: FontWeight.w600),
+              ),
               const SizedBox(width: 10),
               KeyCap(shortcutLabel(cmdKey(LogicalKeyboardKey.keyN, mac: mac), l, mac: mac)),
             ],
@@ -1065,64 +1107,72 @@ class HeroStrip extends StatelessWidget {
     final god = app.god;
     final chat = app.chatAgent;
     final mac = isMacLike(app);
-    return Container(
-      key: const Key('desk-strip'),
-      padding: const EdgeInsets.fromLTRB(12, 7, 12, 7),
-      decoration: BoxDecoration(
-        color: c.panel,
-        border: Border(bottom: BorderSide(color: c.line)),
-      ),
-      child: Row(
-        children: [
-          if (god != null)
-            MascotView(
-              agentId: god.id,
-              spec: god.mascot,
-              state: app.live.mascotStateOf(god.id),
-              size: 30,
-              label: l.mascotLabel(god.name, stateWord(l, app.live.mascotStateOf(god.id))),
-            ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 5,
-            child: HeroField(
-              key: const Key('desk-god-field'),
-              dense: true,
-              hint: l.deskGodHint,
-              focus: desk.godFocus,
-              shortcut: shortcutLabel(cmdKey(LogicalKeyboardKey.keyG, mac: mac), l, mac: mac),
-              onSend: (t) async => god != null && await desk.openAgent(god, firstMessage: t),
-            ),
+    return LayoutBuilder(
+      builder: (context, box) {
+        final narrow = box.maxWidth < 820;
+        return Container(
+          key: const Key('desk-strip'),
+          padding: const EdgeInsets.fromLTRB(12, 7, 12, 7),
+          decoration: BoxDecoration(
+            color: c.panel,
+            border: Border(bottom: BorderSide(color: c.line)),
           ),
-          const SizedBox(width: 14),
-          if (chat != null)
-            MascotView(
-              agentId: chat.id,
-              spec: chat.mascot,
-              state: app.live.mascotStateOf(chat.id),
-              size: 26,
-              label: l.mascotLabel(chat.name, stateWord(l, app.live.mascotStateOf(chat.id))),
-            ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 3,
-            child: HeroField(
-              key: const Key('desk-chat-field'),
-              dense: true,
-              hint: l.deskChatHint,
-              focus: desk.chatFocus,
-              onSend: desk.startChat,
-            ),
+          child: Row(
+            children: [
+              if (god != null)
+                MascotView(
+                  agentId: god.id,
+                  spec: god.mascot,
+                  state: app.live.mascotStateOf(god.id),
+                  size: 30,
+                  label: l.mascotLabel(god.name, stateWord(l, app.live.mascotStateOf(god.id))),
+                ),
+              const SizedBox(width: 8),
+              Expanded(
+                flex: 5,
+                child: HeroField(
+                  key: const Key('desk-god-field'),
+                  dense: true,
+                  hint: l.deskGodHint,
+                  focus: desk.godFocus,
+                  shortcut: shortcutLabel(cmdKey(LogicalKeyboardKey.keyG, mac: mac), l, mac: mac),
+                  onSend: (t) async => god != null && await desk.openAgent(god, firstMessage: t),
+                ),
+              ),
+              if (!narrow) ...[
+                const SizedBox(width: 14),
+                if (chat != null)
+                  MascotView(
+                    agentId: chat.id,
+                    spec: chat.mascot,
+                    state: app.live.mascotStateOf(chat.id),
+                    size: 26,
+                    label: l.mascotLabel(chat.name, stateWord(l, app.live.mascotStateOf(chat.id))),
+                  ),
+                const SizedBox(width: 8),
+                Expanded(
+                  flex: 3,
+                  child: HeroField(
+                    key: const Key('desk-chat-field'),
+                    dense: true,
+                    hint: l.deskChatHint,
+                    focus: desk.chatFocus,
+                    onSend: desk.startChat,
+                  ),
+                ),
+                const Spacer(flex: 1),
+                if (app.advanced)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: AdvancedPill(onTap: () => app.setAdvanced(false)),
+                  ),
+              ] else
+                const SizedBox(width: 10),
+              const ForYouHero(dense: true),
+            ],
           ),
-          const Spacer(flex: 1),
-          if (app.advanced)
-            Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: AdvancedPill(onTap: () => app.setAdvanced(false)),
-            ),
-          const ForYouHero(dense: true),
-        ],
-      ),
+        );
+      },
     );
   }
 }

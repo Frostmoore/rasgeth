@@ -27,9 +27,7 @@ class TermCell {
   final bool own;
   final String? command;
 
-  late final String key = own
-      ? 'own:$projectId:${identityHashCode(this)}'
-      : 'agent:$agentId';
+  late final String key = own ? 'own:$projectId:${identityHashCode(this)}' : 'agent:$agentId';
 }
 
 /// The terminals shown first: the agents at work, then the project's, at most [max].
@@ -197,7 +195,11 @@ class _TerminalsViewState extends State<TerminalsView> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: _Cell(key: ValueKey(cells[i].key), cell: cells[i], onClose: () => _remove(cells[i])),
+              child: _Cell(
+                key: ValueKey(cells[i].key),
+                cell: cells[i],
+                onClose: () => _remove(cells[i]),
+              ),
             ),
           ),
         ],
@@ -231,7 +233,9 @@ class _TerminalsViewState extends State<TerminalsView> {
       children: [
         Container(
           width: 240,
-          decoration: BoxDecoration(border: Border(right: BorderSide(color: c.line))),
+          decoration: BoxDecoration(
+            border: Border(right: BorderSide(color: c.line)),
+          ),
           child: left,
         ),
         Expanded(
@@ -248,9 +252,8 @@ class _TerminalsViewState extends State<TerminalsView> {
   }
 }
 
-String _title(AppController app, AppLocalizations l, TermCell x) => x.own
-    ? l.deskYourTerminal
-    : app.agents.where((a) => a.id == x.agentId).firstOrNull?.name ?? '';
+String _title(AppController app, AppLocalizations l, TermCell x) =>
+    x.own ? l.deskYourTerminal : app.agents.where((a) => a.id == x.agentId).firstOrNull?.name ?? '';
 
 class _AgentRow extends StatelessWidget {
   const _AgentRow({required this.agent, required this.shown, required this.onTap});
@@ -360,10 +363,16 @@ class _Cell extends StatelessWidget {
                     children: [
                       Text(
                         a?.name ?? l.deskYourTerminal,
-                        style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600, color: c.text),
+                        style: TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w600,
+                          color: c.text,
+                        ),
                       ),
                       Text(
-                        a == null ? '${p.name} · ${l.deskInContainer}' : '${stateWord(l, state)} · ${p.name}',
+                        a == null
+                            ? '${p.name} · ${l.deskInContainer}'
+                            : '${stateWord(l, state)} · ${p.name}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 11.5, color: c.dim),

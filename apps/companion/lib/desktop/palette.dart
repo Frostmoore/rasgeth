@@ -91,7 +91,16 @@ PaletteQuery parsePaletteQuery(String raw, {required bool advanced}) {
 }
 
 const _plain = {
-  'à': 'a', 'á': 'a', 'è': 'e', 'é': 'e', 'ì': 'i', 'í': 'i', 'ò': 'o', 'ó': 'o', 'ù': 'u', 'ú': 'u',
+  'à': 'a',
+  'á': 'a',
+  'è': 'e',
+  'é': 'e',
+  'ì': 'i',
+  'í': 'i',
+  'ò': 'o',
+  'ó': 'o',
+  'ù': 'u',
+  'ú': 'u',
 };
 
 String _fold(String s) {
@@ -131,7 +140,8 @@ List<PaletteItem> filterPalette(List<PaletteItem> items, PaletteQuery q, {int pe
     final scored = <(int, int, PaletteItem)>[];
     for (final (i, it) in items.indexed) {
       if (it.section != s) continue;
-      final always = s == PaletteSection.terminal ||
+      final always =
+          s == PaletteSection.terminal ||
           s == PaletteSection.events ||
           s == PaletteSection.lines ||
           (s == PaletteSection.files && q.text.isNotEmpty);
@@ -174,8 +184,10 @@ Future<void> showPalette(
   barrierLabel: AppLocalizations.of(context).deskPaletteTitle,
   barrierColor: Colors.black.withValues(alpha: .28),
   transitionDuration: const Duration(milliseconds: 120),
-  pageBuilder: (ctx, _, _) =>
-      DeskScope(desk: desk, child: CommandPalette(commands: commands, initial: initial)),
+  pageBuilder: (ctx, _, _) => DeskScope(
+    desk: desk,
+    child: CommandPalette(commands: commands, initial: initial),
+  ),
 );
 
 class CommandPalette extends StatefulWidget {
@@ -240,10 +252,7 @@ class _CommandPaletteState extends State<CommandPalette> {
         final hits = await app.client?.searchFiles('project:$pid', q.text) ?? const [];
         if (!mounted) return;
         setState(
-          () => _hits = [
-            for (final h in hits.take(40))
-              SearchHitRow(pid, h.path, h.line, h.text),
-          ],
+          () => _hits = [for (final h in hits.take(40)) SearchHitRow(pid, h.path, h.line, h.text)],
         );
       } on ApiException {
         // Nothing found, as far as the palette knows.
@@ -423,9 +432,7 @@ class _CommandPaletteState extends State<CommandPalette> {
     final l = AppLocalizations.of(context);
     Navigator.of(context).pop();
     final ok = await desk.askQuietly(a, text.trim());
-    messenger?.showSnackBar(
-      SnackBar(content: Text(ok ? l.deskAsked(a.name) : l.openFailed)),
-    );
+    messenger?.showSnackBar(SnackBar(content: Text(ok ? l.deskAsked(a.name) : l.openFailed)));
   }
 
   KeyEventResult _key(List<PaletteItem> items, KeyEvent e) {
@@ -481,7 +488,8 @@ class _CommandPaletteState extends State<CommandPalette> {
     final y = _sel * 40.0;
     final view = _list.position.viewportDimension;
     if (y < _list.offset) _list.jumpTo(y);
-    if (y + 40 > _list.offset + view) _list.jumpTo((y + 40 - view).clamp(0, _list.position.maxScrollExtent));
+    if (y + 40 > _list.offset + view)
+      _list.jumpTo((y + 40 - view).clamp(0, _list.position.maxScrollExtent));
   }
 
   @override

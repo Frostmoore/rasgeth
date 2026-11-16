@@ -27,7 +27,11 @@ SessionRow? todaysChat(AppController app, {DateTime? now}) {
   return rows.firstOrNull;
 }
 
-Future<void> showQuickChat(BuildContext context, {required DeskController desk, String? shortcut}) async {
+Future<void> showQuickChat(
+  BuildContext context, {
+  required DeskController desk,
+  String? shortcut,
+}) async {
   final app = desk.app;
   final l = AppLocalizations.of(context);
   final messenger = ScaffoldMessenger.maybeOf(context);

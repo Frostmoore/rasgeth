@@ -503,9 +503,7 @@ class _DesktopShellState extends State<DesktopShell> {
               ],
             ),
           ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.deskClose)),
-          ],
+          actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.deskClose))],
         );
       },
     );
@@ -622,9 +620,10 @@ class _TopBar extends StatelessWidget {
     final c = RgColors.of(context);
     final mac = isMacLike(app);
     final m = menus;
-    final title = app.connected
-        ? '${viewLabel(l, desk.view)} · ${app.displayName}'
-        : 'RGCompanion';
+    final title = app.connected ? '${viewLabel(l, desk.view)} · ${app.displayName}' : 'RGCompanion';
+    // Narrow windows: the views' tabs show their icons, the chosen one its name too.
+    final width = MediaQuery.sizeOf(context).width;
+    final compact = width < (app.advanced ? 1680 : 1180);
     return Container(
       height: 44,
       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -635,12 +634,30 @@ class _TopBar extends StatelessWidget {
       child: Row(
         children: [
           if (m != null) ...[
-            DrawnMenuBar(menus: m),
-            const SizedBox(width: 12),
+            Flexible(
+              flex: 5,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DrawnMenuBar(menus: m),
+              ),
+            ),
+            const SizedBox(width: 10),
           ],
           if (app.connected)
-            _ViewTabs(views: desk.views, selected: desk.view, onSelect: desk.setView),
+            Flexible(
+              flex: 5,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: _ViewTabs(
+                  views: desk.views,
+                  selected: desk.view,
+                  onSelect: desk.setView,
+                  compact: compact,
+                ),
+              ),
+            ),
           Expanded(
+            flex: 2,
             child: Text(
               title,
               key: const Key('desk-title'),
@@ -668,11 +685,11 @@ class _TopBar extends StatelessWidget {
                     children: [
                       RgIcon(RgIcons.search, size: 14, color: c.dim),
                       const SizedBox(width: 6),
-                      Text(l.deskSearchShort, style: TextStyle(fontSize: 12.5, color: c.dim)),
-                      const SizedBox(width: 8),
-                      KeyCap(
-                        shortcutLabel(cmdKey(LogicalKeyboardKey.keyK, mac: mac), l, mac: mac),
-                      ),
+                      if (!compact) ...[
+                        Text(l.deskSearchShort, style: TextStyle(fontSize: 12.5, color: c.dim)),
+                        const SizedBox(width: 8),
+                      ],
+                      KeyCap(shortcutLabel(cmdKey(LogicalKeyboardKey.keyK, mac: mac), l, mac: mac)),
                     ],
                   ),
                 ),
@@ -685,8 +702,14 @@ class _TopBar extends StatelessWidget {
 }
 
 class _ViewTabs extends StatelessWidget {
-  const _ViewTabs({required this.views, required this.selected, required this.onSelect});
+  const _ViewTabs({
+    required this.views,
+    required this.selected,
+    required this.onSelect,
+    this.compact = false,
+  });
 
+  final bool compact;
   final List<DeskView> views;
   final DeskView selected;
   final ValueChanged<DeskView> onSelect;
@@ -697,10 +720,7 @@ class _ViewTabs extends StatelessWidget {
     final c = RgColors.of(context);
     return Container(
       padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: c.panel2,
-        borderRadius: BorderRadius.circular(9),
-      ),
+      decoration: BoxDecoration(color: c.panel2, borderRadius: BorderRadius.circular(9)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -708,6 +728,7 @@ class _ViewTabs extends StatelessWidget {
             Semantics(
               button: true,
               selected: v == selected,
+              label: viewLabel(l, v),
               child: Material(
                 color: v == selected ? c.bg : Colors.transparent,
                 borderRadius: BorderRadius.circular(7),
@@ -720,15 +741,17 @@ class _ViewTabs extends StatelessWidget {
                     child: Row(
                       children: [
                         RgIcon(viewIcon(v), size: 14, color: v == selected ? c.text : c.dim),
-                        const SizedBox(width: 6),
-                        Text(
-                          viewLabel(l, v),
-                          style: TextStyle(
-                            fontSize: 12.5,
-                            color: v == selected ? c.text : c.dim,
-                            fontWeight: v == selected ? FontWeight.w600 : FontWeight.w500,
+                        if (!compact || v == selected) ...[
+                          const SizedBox(width: 6),
+                          Text(
+                            viewLabel(l, v),
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              color: v == selected ? c.text : c.dim,
+                              fontWeight: v == selected ? FontWeight.w600 : FontWeight.w500,
+                            ),
                           ),
-                        ),
+                        ],
                       ],
                     ),
                   ),
@@ -751,24 +774,29 @@ class _StatusBar extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
     final mac = isMacLike(app);
-    final working = app.live.sessions.where((s) => s.running && !s.archived).map((s) => s.agentId).toSet().length;
+    final working = app.live.sessions
+        .where((s) => s.running && !s.archived)
+        .map((s) => s.agentId)
+        .toSet()
+        .length;
     final reconnecting = app.isLive && app.liveStatus != LiveStatus.open;
     final style = TextStyle(fontSize: 12, color: c.dim);
-    Widget item(RgIcons icon, String text, {Key? key, VoidCallback? onTap, Color? color}) => InkWell(
-      key: key,
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RgIcon(icon, size: 13, color: color ?? c.dim),
-            const SizedBox(width: 5),
-            Text(text, style: style.copyWith(color: color)),
-          ],
-        ),
-      ),
-    );
+    Widget item(RgIcons icon, String text, {Key? key, VoidCallback? onTap, Color? color}) =>
+        InkWell(
+          key: key,
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RgIcon(icon, size: 13, color: color ?? c.dim),
+                const SizedBox(width: 5),
+                Text(text, style: style.copyWith(color: color)),
+              ],
+            ),
+          ),
+        );
     return Container(
       key: const Key('desk-status'),
       height: 28,
@@ -779,46 +807,51 @@ class _StatusBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: Dot(!app.connected ? c.dim : (reconnecting ? c.warn : c.ok)),
-          ),
-          Text(
-            !app.connected
-                ? l.statusUnreachable
-                : reconnecting
-                ? l.statusReconnecting
-                : app.displayName,
-            style: style,
-          ),
-          if (app.connected) ...[
-            const SizedBox(width: 6),
-            item(
-              RgIcons.bell,
-              l.deskForYouCount(app.live.forYou),
-              key: const Key('status-foryou'),
-              color: app.live.forYou > 0 ? c.accent : null,
-              onTap: () => desk.show(const PanelPage(PanelScreen.inbox)),
-            ),
-            item(RgIcons.users, l.deskWorkingCount(working)),
-            if (app.advanced) ProjectStatusItem(desk: desk),
-          ],
-          const Spacer(),
-          if (desk.floating.isNotEmpty)
-            item(
-              RgIcons.external,
-              l.deskFloatingCount(desk.floating.length),
-              onTap: desk.dockAll,
-            ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              l.deskStatusPalette(
-                shortcutLabel(cmdKey(LogicalKeyboardKey.keyK, mac: mac), l, mac: mac),
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    child: Dot(!app.connected ? c.dim : (reconnecting ? c.warn : c.ok)),
+                  ),
+                  Text(
+                    !app.connected
+                        ? l.statusUnreachable
+                        : reconnecting
+                        ? l.statusReconnecting
+                        : app.displayName,
+                    style: style,
+                  ),
+                  if (app.connected) ...[
+                    const SizedBox(width: 6),
+                    item(
+                      RgIcons.bell,
+                      l.deskForYouCount(app.live.forYou),
+                      key: const Key('status-foryou'),
+                      color: app.live.forYou > 0 ? c.accent : null,
+                      onTap: () => desk.show(const PanelPage(PanelScreen.inbox)),
+                    ),
+                    item(RgIcons.users, l.deskWorkingCount(working)),
+                    if (app.advanced) ProjectStatusItem(desk: desk),
+                  ],
+                ],
               ),
-              style: style,
             ),
           ),
+          if (desk.floating.isNotEmpty)
+            item(RgIcons.external, l.deskFloatingCount(desk.floating.length), onTap: desk.dockAll),
+          if (MediaQuery.sizeOf(context).width >= 1200)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                l.deskStatusPalette(
+                  shortcutLabel(cmdKey(LogicalKeyboardKey.keyK, mac: mac), l, mac: mac),
+                ),
+                style: style,
+              ),
+            ),
           if (app.connected)
             AdvancedPill(on: app.advanced, onTap: () => app.setAdvanced(!app.advanced)),
         ],

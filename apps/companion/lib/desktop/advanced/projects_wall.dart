@@ -37,9 +37,8 @@ String ageOf(AppLocalizations l, String iso, {DateTime? now}) {
 }
 
 /// The agents of a project (first level).
-List<Agent> projectAgents(AppController app, String projectId) => app.agents
-    .where((a) => a.projectId == projectId && a.kind != AgentKind.subagent)
-    .toList();
+List<Agent> projectAgents(AppController app, String projectId) =>
+    app.agents.where((a) => a.projectId == projectId && a.kind != AgentKind.subagent).toList();
 
 enum ProjectFilter { all, changes, waiting }
 
@@ -66,9 +65,8 @@ class _ProjectsWallState extends State<ProjectsWall> {
       listenable: Listenable.merge([app.live, feed]),
       builder: (context, _) {
         final all = app.projects.where((p) => !p.archived).toList();
-        bool waits(Project p) => app.live.requests.any(
-          (r) => projectAgents(app, p.id).any((a) => a.id == r.agentId),
-        );
+        bool waits(Project p) =>
+            app.live.requests.any((r) => projectAgents(app, p.id).any((a) => a.id == r.agentId));
         bool changed(Project p) => feed.status[p.id]?.git?.clean == false;
         final shown = all.where((p) {
           return switch (_filter) {
@@ -162,17 +160,23 @@ class _ProjectsWallState extends State<ProjectsWall> {
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
           ],
         );
-        if (!app.advanced || MediaQuery.sizeOf(context).width < 1180) return wall;
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(child: wall),
-            Container(
-              width: 340,
-              decoration: BoxDecoration(border: Border(left: BorderSide(color: c.line))),
-              child: EventStream(feed: feed),
-            ),
-          ],
+        if (!app.advanced) return wall;
+        return LayoutBuilder(
+          builder: (context, box) => box.maxWidth < 980
+              ? wall
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(child: wall),
+                    Container(
+                      width: 340,
+                      decoration: BoxDecoration(
+                        border: Border(left: BorderSide(color: c.line)),
+                      ),
+                      child: EventStream(feed: feed),
+                    ),
+                  ],
+                ),
         );
       },
     );
@@ -202,7 +206,8 @@ class ProjectTile extends StatelessWidget {
     final s = feed.status[p.id];
     final git = s?.git;
     final lines = feed.projectLines(p.id);
-    final lead = agents.where((a) => a.kind == AgentKind.orchestrator).firstOrNull ??
+    final lead =
+        agents.where((a) => a.kind == AgentKind.orchestrator).firstOrNull ??
         working.firstOrNull ??
         agents.firstOrNull;
     final mono = TextStyle(
@@ -222,11 +227,13 @@ class ProjectTile extends StatelessWidget {
         ],
       ),
     );
-    final task = s?.open
-        .where((t) => t.verifier != null)
-        .firstOrNull ?? s?.open.firstOrNull;
+    final task = s?.open.where((t) => t.verifier != null).firstOrNull ?? s?.open.firstOrNull;
     final who = working.isNotEmpty
-        ? l.deskProjectWorking(working.first.name, stateWord(l, states[working.first.id]!), working.length)
+        ? l.deskProjectWorking(
+            working.first.name,
+            stateWord(l, states[working.first.id]!),
+            working.length,
+          )
         : agents.isEmpty
         ? l.deskNoAgents
         : l.deskAgentsCount(agents.length);
@@ -316,7 +323,10 @@ class ProjectTile extends StatelessWidget {
                 ),
                 if (app.advanced) ...[
                   if (git?.repo == false)
-                    row(l.deskFiles, Text(l.deskNoGit, style: TextStyle(fontSize: 12.5, color: c.text)))
+                    row(
+                      l.deskFiles,
+                      Text(l.deskNoGit, style: TextStyle(fontSize: 12.5, color: c.text)),
+                    )
                   else
                     row(
                       l.deskChanges,
@@ -363,7 +373,11 @@ class ProjectTile extends StatelessWidget {
                               const SizedBox(width: 5),
                               Expanded(
                                 child: Text(
-                                  '«${task.title}»: ${task.verifier == null ? l.deskTaskRunning : task.verified == true ? l.deskTaskPassed : l.deskTaskFailed}',
+                                  '«${task.title}»: ${task.verifier == null
+                                      ? l.deskTaskRunning
+                                      : task.verified == true
+                                      ? l.deskTaskPassed
+                                      : l.deskTaskFailed}',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(fontSize: 12.5, color: c.text),
@@ -392,8 +406,7 @@ class ProjectTile extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: mono.copyWith(color: e.error ? c.err : c.text),
                             ),
-                          if (lines.isEmpty)
-                            Text(l.deskNoActions, style: mono),
+                          if (lines.isEmpty) Text(l.deskNoActions, style: mono),
                         ],
                       ),
                     ),
@@ -544,16 +557,32 @@ class _OpenTasks extends StatelessWidget {
                 }
               },
               child: Container(
-                decoration: BoxDecoration(border: Border(top: BorderSide(color: c.line))),
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: c.line)),
+                ),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 child: Row(
                   children: [
-                    Expanded(flex: 4, child: Text(t.title, maxLines: 1, overflow: TextOverflow.ellipsis)),
-                    Expanded(flex: 3, child: Text(t.agentName, style: TextStyle(color: c.text))),
-                    Expanded(flex: 3, child: Text(p.name, style: TextStyle(color: c.dim))),
                     Expanded(
                       flex: 4,
-                      child: Text(t.verifier ?? '—', maxLines: 1, overflow: TextOverflow.ellipsis, style: mono),
+                      child: Text(t.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Text(t.agentName, style: TextStyle(color: c.text)),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Text(p.name, style: TextStyle(color: c.dim)),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Text(
+                        t.verifier ?? '—',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: mono,
+                      ),
                     ),
                     Expanded(
                       flex: 2,
@@ -613,20 +642,26 @@ class _EventStreamState extends State<EventStream> {
             children: [
               RgIcon(RgIcons.zap, size: 16, color: c.text),
               const SizedBox(width: 8),
-              Text(
-                l.deskEventStream,
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14.5, color: c.text),
+              Flexible(
+                child: Text(
+                  l.deskEventStream,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14.5, color: c.text),
+                ),
               ),
               const SizedBox(width: 6),
               Expanded(
-                child: Text(l.deskAllProjectsLower, style: TextStyle(fontSize: 12, color: c.dim)),
+                child: Text(
+                  l.deskAllProjectsLower,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 12, color: c.dim),
+                ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: c.panel2,
-                  borderRadius: BorderRadius.circular(99),
-                ),
+                decoration: BoxDecoration(color: c.panel2, borderRadius: BorderRadius.circular(99)),
                 child: Row(
                   children: [
                     Dot(_frozen == null ? c.ok : c.warn),

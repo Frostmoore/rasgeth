@@ -160,9 +160,8 @@ class WallFeed extends ChangeNotifier {
 
   /// Every project's actions, newest first (the advanced wall's «stream of events»).
   List<ProjectEvent> recent({int max = 60}) {
-    final out = <ProjectEvent>[
-      for (final list in _events.values) ...list.where(isAction),
-    ]..sort((a, b) => b.ts.compareTo(a.ts));
+    final out = <ProjectEvent>[for (final list in _events.values) ...list.where(isAction)]
+      ..sort((a, b) => b.ts.compareTo(a.ts));
     return out.take(max).toList();
   }
 

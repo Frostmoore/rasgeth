@@ -465,11 +465,17 @@ class _DiffTabState extends State<DiffTab> with AutomaticKeepAliveClientMixin {
           TextSpan(
             style: mono,
             children: [
-              TextSpan(text: ' ${'${no ?? ''}'.padLeft(4)}  ', style: TextStyle(color: c.dim)),
+              TextSpan(
+                text: ' ${'${no ?? ''}'.padLeft(4)}  ',
+                style: TextStyle(color: c.dim),
+              ),
               if (line == null)
                 const TextSpan(text: '')
               else if (kind == DiffLineKind.note)
-                TextSpan(text: line.text, style: TextStyle(color: c.dim))
+                TextSpan(
+                  text: line.text,
+                  style: TextStyle(color: c.dim),
+                )
               else
                 ...highlightLine(line.text, ext, c),
             ],

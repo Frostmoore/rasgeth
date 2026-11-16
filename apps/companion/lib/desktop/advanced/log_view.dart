@@ -124,13 +124,11 @@ LogQuery parseLogQuery(String raw) {
 String formatLogQuery(LogQuery q, {bool italian = true}) {
   String quote(String s) => s.contains(RegExp(r'[\s,]')) ? '"$s"' : s;
   final parts = <String>[
-    if (q.agents.isNotEmpty) '${italian ? 'agente' : 'agent'}:${q.agents.map((a) => '"$a"').join(',')}',
+    if (q.agents.isNotEmpty)
+      '${italian ? 'agente' : 'agent'}:${q.agents.map((a) => '"$a"').join(',')}',
     if (q.types.isNotEmpty) '${italian ? 'tipo' : 'type'}:${q.types.map(quote).join(',')}',
     if (q.errors || q.requests)
-      '${italian ? 'solo' : 'only'}:${[
-        if (q.errors) italian ? 'errori' : 'errors',
-        if (q.requests) italian ? 'richieste' : 'requests',
-      ].join(',')}',
+      '${italian ? 'solo' : 'only'}:${[if (q.errors) italian ? 'errori' : 'errors', if (q.requests) italian ? 'richieste' : 'requests'].join(',')}',
     if (q.when != LogWhen.all)
       '${italian ? 'quando' : 'when'}:${switch (q.when) {
         LogWhen.hour => italian ? 'ora' : 'hour',
@@ -154,7 +152,10 @@ bool logMatches(ProjectEvent e, LogQuery q, {DateTime? now}) {
   }
   if (q.types.isNotEmpty && !q.types.any((t) => _typeMatches(e.type, t))) return false;
   if (q.errors && !e.error) return false;
-  if (q.requests && !(e.type.startsWith('approval.') || e.type.startsWith('permission.') || e.type.startsWith('question.'))) {
+  if (q.requests &&
+      !(e.type.startsWith('approval.') ||
+          e.type.startsWith('permission.') ||
+          e.type.startsWith('question.'))) {
     return false;
   }
   if (q.when != LogWhen.all) {
@@ -261,7 +262,9 @@ class _LogViewState extends State<LogView> {
       _sel = null;
       unawaited(_load(p.id));
     }
-    final events = (_page?.events ?? const <ProjectEvent>[]).where((e) => logMatches(e, _q)).toList();
+    final events = (_page?.events ?? const <ProjectEvent>[])
+        .where((e) => logMatches(e, _q))
+        .toList();
     final mono = TextStyle(
       fontFamily: monoFamily,
       fontFamilyFallback: monoFallback,
@@ -297,7 +300,9 @@ class _LogViewState extends State<LogView> {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
         child: Row(
           children: [
-            Expanded(child: Text(label, style: TextStyle(fontSize: 13, color: c.text))),
+            Expanded(
+              child: Text(label, style: TextStyle(fontSize: 13, color: c.text)),
+            ),
             RgSwitch(on: on),
           ],
         ),
@@ -374,7 +379,12 @@ class _LogViewState extends State<LogView> {
                 (LogWhen.week, l.deskWhenWeek),
                 (LogWhen.all, l.deskWhenAll),
               ])
-                chip(label, _q.when == w, () => _set(_q.copy(when: w)), key: Key('log-when-${w.name}')),
+                chip(
+                  label,
+                  _q.when == w,
+                  () => _set(_q.copy(when: w)),
+                  key: Key('log-when-${w.name}'),
+                ),
             ],
           ),
         ),
@@ -399,7 +409,12 @@ class _LogViewState extends State<LogView> {
         ),
       ),
     );
-    final head = TextStyle(fontSize: 11, letterSpacing: .5, fontWeight: FontWeight.w700, color: c.dim);
+    final head = TextStyle(
+      fontSize: 11,
+      letterSpacing: .5,
+      fontWeight: FontWeight.w700,
+      color: c.dim,
+    );
     Widget table;
     if (_page == null) {
       table = _error == null
@@ -417,7 +432,9 @@ class _LogViewState extends State<LogView> {
           final a = app.agents.where((x) => x.id == e.agentId).firstOrNull;
           final sel = _sel?.seq == e.seq;
           final dur = e.payload is Map ? (e.payload! as Map)['output'] : null;
-          final ms = dur is Map && dur['durationMs'] is num ? (dur['durationMs'] as num) / 1000 : null;
+          final ms = dur is Map && dur['durationMs'] is num
+              ? (dur['durationMs'] as num) / 1000
+              : null;
           return Material(
             color: sel ? c.accentSoft : (e.error ? c.criticalSoft : Colors.transparent),
             child: InkWell(
@@ -425,7 +442,9 @@ class _LogViewState extends State<LogView> {
               onTap: () => setState(() => _sel = e),
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border(left: BorderSide(color: sel ? c.accent : Colors.transparent, width: 3)),
+                  border: Border(
+                    left: BorderSide(color: sel ? c.accent : Colors.transparent, width: 3),
+                  ),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
@@ -486,7 +505,9 @@ class _LogViewState extends State<LogView> {
         search,
         Container(
           padding: const EdgeInsets.fromLTRB(13, 4, 10, 6),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: c.line))),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: c.line)),
+          ),
           child: Row(
             children: [
               SizedBox(width: 72, child: Text(l.deskColTime, style: head)),
@@ -494,7 +515,10 @@ class _LogViewState extends State<LogView> {
               SizedBox(width: 140, child: Text(l.deskColAgent, style: head)),
               SizedBox(width: 150, child: Text(l.deskColType, style: head)),
               Expanded(child: Text(l.deskColSummary, style: head)),
-              SizedBox(width: 60, child: Text(l.deskColDuration, style: head, textAlign: TextAlign.right)),
+              SizedBox(
+                width: 60,
+                child: Text(l.deskColDuration, style: head, textAlign: TextAlign.right),
+              ),
             ],
           ),
         ),
@@ -505,7 +529,12 @@ class _LogViewState extends State<LogView> {
     final turn = sel == null
         ? const <ProjectEvent>[]
         : (_page?.events ?? const <ProjectEvent>[])
-              .where((e) => e.sessionId == sel.sessionId && e.seq != sel.seq && (e.seq - sel.seq).abs() <= 12)
+              .where(
+                (e) =>
+                    e.sessionId == sel.sessionId &&
+                    e.seq != sel.seq &&
+                    (e.seq - sel.seq).abs() <= 12,
+              )
               .take(6)
               .toList();
     final right = sel == null
@@ -614,13 +643,17 @@ class _LogViewState extends State<LogView> {
       children: [
         Container(
           width: 220,
-          decoration: BoxDecoration(border: Border(right: BorderSide(color: c.line))),
+          decoration: BoxDecoration(
+            border: Border(right: BorderSide(color: c.line)),
+          ),
           child: left,
         ),
         Expanded(child: center),
         Container(
           width: 380,
-          decoration: BoxDecoration(border: Border(left: BorderSide(color: c.line))),
+          decoration: BoxDecoration(
+            border: Border(left: BorderSide(color: c.line)),
+          ),
           child: right,
         ),
       ],

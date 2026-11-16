@@ -246,12 +246,7 @@ class _CodeViewState extends State<CodeView> {
           child: InkWell(
             key: const Key('code-goto-file'),
             borderRadius: BorderRadius.circular(8),
-            onTap: () => showPalette(
-              context,
-              desk: desk,
-              commands: const [],
-              initial: '# ',
-            ),
+            onTap: () => showPalette(context, desk: desk, commands: const [], initial: '# '),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
               decoration: BoxDecoration(
@@ -315,7 +310,9 @@ class _CodeViewState extends State<CodeView> {
     final doc = _docs.isEmpty ? null : _docs[_open.clamp(0, _docs.length - 1)];
     final tabs = Container(
       height: 38,
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: c.line))),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: c.line)),
+      ),
       child: Row(
         children: [
           Expanded(
@@ -394,7 +391,9 @@ class _CodeViewState extends State<CodeView> {
       children: [
         Container(
           width: 250,
-          decoration: BoxDecoration(border: Border(right: BorderSide(color: c.line))),
+          decoration: BoxDecoration(
+            border: Border(right: BorderSide(color: c.line)),
+          ),
           child: left,
         ),
         Expanded(
@@ -408,7 +407,9 @@ class _CodeViewState extends State<CodeView> {
         if (wide)
           Container(
             width: 360,
-            decoration: BoxDecoration(border: Border(left: BorderSide(color: c.line))),
+            decoration: BoxDecoration(
+              border: Border(left: BorderSide(color: c.line)),
+            ),
             child: right,
           ),
       ],
@@ -454,10 +455,7 @@ class _DocTab extends StatelessWidget {
             children: [
               RgIcon(icon, size: 14, color: on ? c.text : c.dim),
               const SizedBox(width: 6),
-              Text(
-                label,
-                style: TextStyle(fontSize: 13, color: on ? c.text : c.dim),
-              ),
+              Text(label, style: TextStyle(fontSize: 13, color: on ? c.text : c.dim)),
               IconButton(
                 tooltip: l.deskClose,
                 visualDensity: VisualDensity.compact,
