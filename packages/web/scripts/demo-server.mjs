@@ -6,6 +6,7 @@ import { copyFile, mkdir, mkdtemp, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { hostname, tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import { PassThrough } from "node:stream";
 import { fileURLToPath } from "node:url";
 import { PGlite } from "@electric-sql/pglite";
 import { FakeProvider, ProviderError, ProviderRegistry } from "@redgiant/providers";
@@ -1094,8 +1095,64 @@ if (process.env.DEMO_SSH) {
   await mkdir(join(sshHome, "releases"), { recursive: true });
   await writeFile(join(sshHome, "app.log"), "12:00:01 started on :8080\n12:00:02 ready\n");
 }
+/**
+ * G41.0: local MCP servers' containers made up for the demo (never a real program): each answers
+ * MCP with one tool. DEMO_NO_DOCKER=1 shows the page of a RedGiant without Docker instead.
+ */
+const demoMcpSandbox = {
+  kind: "docker",
+  async create(spec) {
+    return {
+      id: spec.id,
+      workspace: () => ({
+        root: spec.localPath,
+        execFile: async () => ({ stdout: "", stderr: "", exitCode: 0, timedOut: false }),
+        spawn: async () => {
+          const stdin = new PassThrough();
+          const stdout = new PassThrough();
+          let done;
+          const exited = new Promise((ok) => {
+            done = ok;
+          });
+          let buf = "";
+          stdin.on("data", (d) => {
+            buf += d.toString();
+            for (let i = buf.indexOf("\n"); i >= 0; i = buf.indexOf("\n")) {
+              const m = JSON.parse(buf.slice(0, i));
+              buf = buf.slice(i + 1);
+              const reply = (result) =>
+                stdout.write(`${JSON.stringify({ jsonrpc: "2.0", id: m.id, result })}\n`);
+              if (m.method === "initialize")
+                reply({
+                  protocolVersion: m.params.protocolVersion,
+                  capabilities: { tools: {} },
+                  serverInfo: { name: "demo", version: "1" },
+                });
+              else if (m.method === "tools/list")
+                reply({ tools: [{ name: "search_docs", inputSchema: { type: "object" } }] });
+            }
+          });
+          return {
+            stdin,
+            stdout,
+            stderr: new PassThrough(),
+            cwd: "/workspace",
+            exited,
+            kill: () => done(null),
+          };
+        },
+      }),
+      destroy: async () => {},
+    };
+  },
+};
+
 const core = await RedGiantCore.create({
   db: wrap(pg),
+  ...(!process.env.DEMO_NO_DOCKER && {
+    mcpSandbox: { provider: demoMcpSandbox, settleMs: 0 },
+  }),
+  mcpLatest: async (_runner, pkg) => (pkg === "@shopify/dev-mcp" ? "1.19.0" : "0.5.6"),
   providers: new ProviderRegistry()
     .register(
       new FakeProvider(brain, {
@@ -1310,6 +1367,43 @@ await core.setMcp("local", {
   name: "docs",
   projectId: null,
   transport: { type: "http", url: "https://mcp.example.com/mcp", oauth: true },
+});
+// G41.0: local servers in their sandbox: one working, one waiting for the person's yes (its key in
+// its variables), one added by hand with a path of this computer (stopped, with the reason).
+await core.setMcp("local", {
+  name: "shopify-dev",
+  projectId: null,
+  transport: {
+    type: "stdio",
+    command: "npx",
+    args: ["-y", "@shopify/dev-mcp@1.18.0"],
+    hosts: ["shopify.dev", "cdn.shopify.com"],
+  },
+});
+await core.setMcp(
+  "local",
+  {
+    name: "wordpress",
+    projectId: null,
+    transport: {
+      type: "stdio",
+      command: "npx",
+      args: ["-y", "@automattic/mcp-wordpress-remote@0.5.5"],
+      hosts: ["blog.example.com"],
+    },
+  },
+  {
+    env: {
+      WP_API_URL: "https://blog.example.com/wp-json/mcp",
+      WP_API_USERNAME: "demo",
+      WP_API_PASSWORD: "demo-app-password",
+    },
+  },
+);
+await core.setMcp("local", {
+  name: "desk",
+  projectId: null,
+  transport: { type: "stdio", command: "node", args: ["/home/demo/desk-mcp/index.js"] },
 });
 const sid = await core.startSession("local", orch.id);
 await (await core.send("local", sid, "Give me a quick tour of the project.")).done;

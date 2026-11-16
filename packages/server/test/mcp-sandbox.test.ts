@@ -39,8 +39,7 @@ function fakeServer(): SpawnedProcess {
         });
       else if (m.method === "tools/list")
         reply({ tools: [{ name: "ping", inputSchema: { type: "object" } }] });
-      else if (m.method === "tools/call")
-        reply({ content: [{ type: "text", text: "pong" }] });
+      else if (m.method === "tools/call") reply({ content: [{ type: "text", text: "pong" }] });
     }
   });
   return { stdin, stdout, stderr, cwd: "/workspace", exited, kill: () => done(null) };
@@ -127,7 +126,9 @@ describe("local MCP servers' sandboxes (G41.0)", () => {
         env: { UV_OFFLINE: "1" },
       },
     });
-    expect(stdioPlan({ command: "uvx", args: ["--from", "tools==1.0.0", "mcp-git", "-v"] }).run).toEqual({
+    expect(
+      stdioPlan({ command: "uvx", args: ["--from", "tools==1.0.0", "mcp-git", "-v"] }).run,
+    ).toEqual({
       file: "/workspace/.local/bin/mcp-git",
       args: ["-v"],
       env: { UV_OFFLINE: "1" },
@@ -174,7 +175,10 @@ describe("local MCP servers' sandboxes (G41.0)", () => {
     });
     // Its keys are never the container's: only the started program's.
     expect(JSON.stringify(spec.env)).not.toContain('"K"');
-    expect(provider.spawns.map((x) => x.o.env)).toContainEqual({ K: "v", npm_config_offline: "true" });
+    expect(provider.spawns.map((x) => x.o.env)).toContainEqual({
+      K: "v",
+      npm_config_offline: "true",
+    });
     expect(provider.execs).toEqual([
       {
         id: "mcp-me-shopify-dev",
@@ -268,14 +272,21 @@ describe("local MCP servers in the core (G41.0)", () => {
     );
     const db = s.core.db;
     const put = (name: string, transport: unknown) =>
-      db.query("INSERT INTO rg_mcp_servers (owner_id, name, project_id, transport) VALUES ($1, $2, NULL, $3)", [
-        "me",
-        name,
-        JSON.stringify(transport),
-      ]);
+      db.query(
+        "INSERT INTO rg_mcp_servers (owner_id, name, project_id, transport) VALUES ($1, $2, NULL, $3)",
+        ["me", name, JSON.stringify(transport)],
+      );
     // Rows as 3.8 kept them.
-    await put("shopify-dev", { type: "stdio", command: "npx", args: ["-y", "@shopify/dev-mcp@latest"] });
-    await put("wordpress", { type: "stdio", command: "npx", args: ["-y", "@automattic/mcp-wordpress-remote"] });
+    await put("shopify-dev", {
+      type: "stdio",
+      command: "npx",
+      args: ["-y", "@shopify/dev-mcp@latest"],
+    });
+    await put("wordpress", {
+      type: "stdio",
+      command: "npx",
+      args: ["-y", "@automattic/mcp-wordpress-remote"],
+    });
     await s.core.mcpCredentials.save("me", "wordpress", {
       env: { WP_API_URL: "https://blog.example.com/wp-json/mcp", WP_API_PASSWORD: "app-pass-xyz" },
     });
@@ -331,7 +342,12 @@ describe("local MCP servers in the core (G41.0)", () => {
     await s.api("PUT", "/api/extensions/mcp", {
       name: "shopify-dev",
       projectId: null,
-      transport: { type: "stdio", command: "npx", args: ["-y", "@shopify/dev-mcp@1.18.0"], hosts: ["shopify.dev"] },
+      transport: {
+        type: "stdio",
+        command: "npx",
+        args: ["-y", "@shopify/dev-mcp@1.18.0"],
+        hosts: ["shopify.dev"],
+      },
     });
     await s.api("GET", "/api/extensions/mcp/status");
     const check = await s.api("GET", "/api/extensions/mcp/shopify-dev/update");
@@ -341,8 +357,12 @@ describe("local MCP servers in the core (G41.0)", () => {
       version: "1.18.0",
       latest: "1.19.0",
     });
-    expect((await s.api("POST", "/api/extensions/mcp/shopify-dev/update", { version: "latest" })).status).toBe(400);
-    expect((await s.api("POST", "/api/extensions/mcp/shopify-dev/update", { version: "1.19.0" })).status).toBe(200);
+    expect(
+      (await s.api("POST", "/api/extensions/mcp/shopify-dev/update", { version: "latest" })).status,
+    ).toBe(400);
+    expect(
+      (await s.api("POST", "/api/extensions/mcp/shopify-dev/update", { version: "1.19.0" })).status,
+    ).toBe(200);
     // Its container stops; the next start installs the new version in a new one.
     expect(provider.destroyed).toEqual(["mcp-me-shopify-dev"]);
     const st = (await s.api<St[]>("GET", "/api/extensions/mcp/status")).body[0];

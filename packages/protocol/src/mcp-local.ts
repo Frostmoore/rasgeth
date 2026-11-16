@@ -111,7 +111,11 @@ function pinned(
 
 /** `npx`, `npx.cmd`, `/usr/bin/npx` → npx. */
 function runnerOf(command: string): McpRunner | undefined {
-  const base = command.split(/[\\/]/).pop()?.toLowerCase().replace(/\.(cmd|exe)$/, "");
+  const base = command
+    .split(/[\\/]/)
+    .pop()
+    ?.toLowerCase()
+    .replace(/\.(cmd|exe)$/, "");
   return base === "npx" || base === "uvx" ? base : undefined;
 }
 
@@ -154,7 +158,12 @@ export function stdioProblem(t: {
   args?: readonly string[];
   cwd?: string;
 }): McpStdioProblem | undefined {
-  const base = t.command.split(/[\\/]/).pop()?.toLowerCase().replace(/\.(cmd|exe)$/, "") ?? "";
+  const base =
+    t.command
+      .split(/[\\/]/)
+      .pop()
+      ?.toLowerCase()
+      .replace(/\.(cmd|exe)$/, "") ?? "";
   if (base === "docker" || base === "podman") return "docker";
   const hostPath = (p: string) =>
     /^[A-Za-z]:[\\/]/.test(p) ||
@@ -187,7 +196,8 @@ export function hostOf(address: string): string | undefined {
 }
 
 /** A host name or `*.domain` the person may give for a server's way out. */
-export const HOST_PATTERN = /^(\*\.)?[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/;
+export const HOST_PATTERN =
+  /^(\*\.)?[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/;
 
 /** The hosts the person typed (spaces, commas or lines), cleaned; the wrong ones apart. */
 export function parseHosts(text: string): { hosts: string[]; wrong: string[] } {

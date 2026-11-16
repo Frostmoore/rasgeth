@@ -40,7 +40,8 @@ describe("MCP catalog", () => {
         for (const h of e.hosts ?? []) expect(h, e.id).toMatch(HOST_PATTERN);
         // A key in an environment variable is declared, so adding it warns the person.
         const secretEnv =
-          e.auth.type === "env" || (e.auth.type === "fields" && e.auth.fields.some((f) => f.secret));
+          e.auth.type === "env" ||
+          (e.auth.type === "fields" && e.auth.fields.some((f) => f.secret));
         expect(e.keyInEnv === true, e.id).toBe(secretEnv);
       }
       if (e.auth.type === "header" || e.auth.type === "env")
@@ -101,12 +102,23 @@ describe("MCP catalog", () => {
     const env: McpCatalogEntry = {
       ...base,
       id: "y",
-      transport: { type: "stdio", command: "npx", package: "y-mcp", version: "1.0.0", args: ["-q"] },
+      transport: {
+        type: "stdio",
+        command: "npx",
+        package: "y-mcp",
+        version: "1.0.0",
+        args: ["-q"],
+      },
       hosts: ["api.y.example"],
       auth: { type: "env", env: "Y_KEY", keyUrl: "https://k" },
     };
     expect(catalogConfig(env, "k2")).toEqual({
-      transport: { type: "stdio", command: "npx", args: ["-y", "y-mcp@1.0.0", "-q"], hosts: ["api.y.example"] },
+      transport: {
+        type: "stdio",
+        command: "npx",
+        args: ["-y", "y-mcp@1.0.0", "-q"],
+        hosts: ["api.y.example"],
+      },
       secrets: { env: { Y_KEY: "k2" } },
     });
   });
@@ -138,7 +150,11 @@ describe("MCP catalog", () => {
     // The person's own site is where WordPress's server goes, even at a private address.
     expect(
       catalogConfig(wp, {
-        fields: { WP_API_URL: "https://blog.lan/wp-json/mcp", WP_API_USERNAME: "m", WP_API_PASSWORD: "p" },
+        fields: {
+          WP_API_URL: "https://blog.lan/wp-json/mcp",
+          WP_API_USERNAME: "m",
+          WP_API_PASSWORD: "p",
+        },
       }).transport,
     ).toEqual({
       type: "stdio",
@@ -159,22 +175,55 @@ describe("MCP catalog", () => {
   });
 
   it("moves the local servers added before G41.0 to their pinned command line", () => {
-    const table: [string, { type: string; command?: string; args?: string[] }, Record<string, string>, unknown][] = [
-      ["shopify-dev", { type: "stdio", command: "npx", args: ["-y", "@shopify/dev-mcp@latest"] }, {}, {
-        type: "stdio", command: "npx", args: ["-y", "@shopify/dev-mcp@1.18.0"], hosts: ["shopify.dev", "cdn.shopify.com"],
-      }],
-      ["wordpress", { type: "stdio", command: "npx", args: ["-y", "@automattic/mcp-wordpress-remote"] },
-        { WP_API_URL: "https://blog.example.com/wp-json/mcp/x", WP_API_PASSWORD: "p" }, {
-        type: "stdio", command: "npx", args: ["-y", "@automattic/mcp-wordpress-remote@0.5.5"],
-        hosts: ["blog.example.com"], privateHosts: ["blog.example.com"],
-      }],
-      ["postgres", { type: "stdio", command: "uvx", args: ["postgres-mcp", "--access-mode=restricted"] },
-        { DATABASE_URI: "postgresql://u:p@db.lan:5432/x" }, {
-        type: "stdio", command: "uvx", args: ["postgres-mcp@0.3.0", "--access-mode=restricted"],
-        hosts: ["db.lan"], privateHosts: ["db.lan"], overrides: ["pglast==7.20", "mcp[cli]<2"],
-      }],
+    const table: [
+      string,
+      { type: string; command?: string; args?: string[] },
+      Record<string, string>,
+      unknown,
+    ][] = [
+      [
+        "shopify-dev",
+        { type: "stdio", command: "npx", args: ["-y", "@shopify/dev-mcp@latest"] },
+        {},
+        {
+          type: "stdio",
+          command: "npx",
+          args: ["-y", "@shopify/dev-mcp@1.18.0"],
+          hosts: ["shopify.dev", "cdn.shopify.com"],
+        },
+      ],
+      [
+        "wordpress",
+        { type: "stdio", command: "npx", args: ["-y", "@automattic/mcp-wordpress-remote"] },
+        { WP_API_URL: "https://blog.example.com/wp-json/mcp/x", WP_API_PASSWORD: "p" },
+        {
+          type: "stdio",
+          command: "npx",
+          args: ["-y", "@automattic/mcp-wordpress-remote@0.5.5"],
+          hosts: ["blog.example.com"],
+          privateHosts: ["blog.example.com"],
+        },
+      ],
+      [
+        "postgres",
+        { type: "stdio", command: "uvx", args: ["postgres-mcp", "--access-mode=restricted"] },
+        { DATABASE_URI: "postgresql://u:p@db.lan:5432/x" },
+        {
+          type: "stdio",
+          command: "uvx",
+          args: ["postgres-mcp@0.3.0", "--access-mode=restricted"],
+          hosts: ["db.lan"],
+          privateHosts: ["db.lan"],
+          overrides: ["pglast==7.20", "mcp[cli]<2"],
+        },
+      ],
       // Already pinned, not a catalog entry, another package under the same name, remote.
-      ["shopify-dev", { type: "stdio", command: "npx", args: ["-y", "@shopify/dev-mcp@1.17.0"] }, {}, undefined],
+      [
+        "shopify-dev",
+        { type: "stdio", command: "npx", args: ["-y", "@shopify/dev-mcp@1.17.0"] },
+        {},
+        undefined,
+      ],
       ["mine", { type: "stdio", command: "npx", args: ["-y", "mine"] }, {}, undefined],
       ["postgres", { type: "stdio", command: "node", args: ["pg.js"] }, {}, undefined],
       ["notion", { type: "http" }, {}, undefined],

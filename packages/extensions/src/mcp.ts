@@ -102,7 +102,8 @@ export class McpConnection {
         await c.connect(t);
       } catch (err) {
         // What a local server wrote before stopping says why (the caller hides its keys).
-        const tail = t instanceof SpawnTransport ? t.stderr.trim().split("\n").slice(-3).join(" ") : "";
+        const tail =
+          t instanceof SpawnTransport ? t.stderr.trim().split("\n").slice(-3).join(" ") : "";
         await t.close().catch(() => {});
         if (tail && !(err as Error).message.includes(tail.slice(-60)))
           throw new Error(`${(err as Error).message}: ${tail.slice(-300)}`);

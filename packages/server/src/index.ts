@@ -15,7 +15,6 @@ export { debugLog } from "./debug-log.js";
 export * from "./devices.js";
 export * from "./discovery.js";
 export * from "./egress-routes.js";
-export * from "./mcp-sandbox.js";
 export * from "./email.js";
 export * from "./engine-errors.js";
 export * from "./export.js";
@@ -42,6 +41,7 @@ export {
 export * from "./local-models.js";
 export * from "./login.js";
 export * from "./machines.js";
+export * from "./mcp-sandbox.js";
 export * from "./models-catalog.js";
 export * from "./net-detect.js";
 export * from "./notes.js";

@@ -84,10 +84,10 @@ import {
   type McpRunner,
   type McpServerStatus,
   type MediaChoice,
-  migrateCatalogStdio,
   type MediaKind,
   type MessageQuote,
   type ModelSpec,
+  migrateCatalogStdio,
   type NotifyReport,
   nativePaths,
   notedText,
@@ -253,6 +253,12 @@ import {
 } from "./mail/client.js";
 import { MailService, SendLimiter } from "./mail/service.js";
 import { MAIL_GUIDANCE, mailSendHook, mailTools } from "./mail/tools.js";
+import {
+  latestVersion,
+  McpBlockedError,
+  McpSandboxes,
+  type McpSandboxOptions,
+} from "./mcp-sandbox.js";
 import { MediaError, type MediaRequest, type MediaResult, makeMedia } from "./media.js";
 import type { CatalogWatcher } from "./models-catalog.js";
 import {
@@ -289,7 +295,6 @@ import {
 } from "./platform.js";
 import { PRODUCTS_GUIDANCE, type ProductsToolHost, showProductsTool } from "./product-cards.js";
 import { ProductImages, type ProductImagesOptions } from "./product-images.js";
-import { latestVersion, McpBlockedError, McpSandboxes, type McpSandboxOptions } from "./mcp-sandbox.js";
 import { migrateProjects, ProjectStore, type Subproject, slug } from "./projects.js";
 import { kindLabel, PromptRefiner, RefineError, type RefineJob } from "./prompt-refiner.js";
 import {
@@ -3017,8 +3022,9 @@ export class RedGiantCore implements OrchestrationHost {
           local.package = pin.package;
           if (pin.version) local.version = pin.version;
         }
-        const env = (await this.mcpCredentials.load(ownerId, r.name).catch(() => ({}) as McpSecrets))
-          .env;
+        const env = (
+          await this.mcpCredentials.load(ownerId, r.name).catch(() => ({}) as McpSecrets)
+        ).env;
         if (Object.values(env ?? {}).some((v) => v !== "")) local.keyInEnv = true;
         if (r.env_ok) local.envConfirmed = r.env_ok;
       }

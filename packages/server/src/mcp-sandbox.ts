@@ -210,7 +210,8 @@ export class McpSandboxes {
     let job = this.installing.get(key);
     if (!job) {
       job = (async () => {
-        if (t.overrides?.length) await writeFile(join(dir, OVERRIDES), `${t.overrides.join("\n")}\n`);
+        if (t.overrides?.length)
+          await writeFile(join(dir, OVERRIDES), `${t.overrides.join("\n")}\n`);
         await this.allow(b, sb, `mcp:${key}`, [...MCP_INSTALL_HOSTS[pin.runner]]);
         const ws = sb.workspace();
         const r = await ws.execFile(install.file, install.args, {

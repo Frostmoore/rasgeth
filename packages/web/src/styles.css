@@ -8662,6 +8662,11 @@ button.pick-tile.on {
   justify-content: center;
   padding: 16px;
 }
+/* Our questions (askConfirm, askText) come over the window that asked them, the settings' own
+   windows (80) included (G41.0). */
+.dlg-host.wz-look .ui-modal-back {
+  z-index: 90;
+}
 .ui-modal-veil {
   position: absolute;
   inset: 0;

@@ -1958,7 +1958,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     // A private address only for a host the server may reach at all.
     if (config.transport.type === "stdio" && config.transport.privateHosts) {
       const hosts = config.transport.hosts ?? [];
-      config.transport.privateHosts = config.transport.privateHosts.filter((h) => hosts.includes(h));
+      config.transport.privateHosts = config.transport.privateHosts.filter((h) =>
+        hosts.includes(h),
+      );
     }
     await core.setMcp(
       owner(c),
@@ -3275,9 +3277,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.get("/api/extensions/mcp/status", async (c) => c.json(await core.mcpStatus(owner(c)), 200));
   // Local MCP servers in their own sandbox (G41.0): whether they can run here, the person's yes to
   // keys in a server's variables, and "Update" to a version the person chose.
-  app.get("/api/extensions/mcp/local", (c) =>
-    c.json({ available: core.mcpLocalAvailable }, 200),
-  );
+  app.get("/api/extensions/mcp/local", (c) => c.json({ available: core.mcpLocalAvailable }, 200));
   app.post("/api/extensions/mcp/:name/confirm-env", async (c) => {
     await core.confirmMcpEnv(owner(c), c.req.param("name"), owner(c));
     return c.json({ ok: true as const }, 200);

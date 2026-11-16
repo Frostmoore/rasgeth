@@ -42,6 +42,7 @@ import {
   type MagicExtKind,
   type Mailbox as MailboxInfo,
   type MascotSpec,
+  type McpServerStatus,
   type ModelsCatalogStatus,
   type NameProbe,
   type NetDetected,
@@ -574,7 +575,15 @@ export interface McpEntry {
   name: string;
   project_id: string | null;
   transport:
-    | { type: "stdio"; command: string; args?: string[] }
+    | {
+        type: "stdio";
+        command: string;
+        args?: string[];
+        /** G41.0: where its sandbox may go, and which of those may be private. */
+        hosts?: string[];
+        privateHosts?: string[];
+        overrides?: string[];
+      }
     | { type: "http"; url: string; oauth?: boolean };
 }
 
@@ -597,13 +606,8 @@ export interface Room {
   answering: string[];
 }
 
-export interface McpStatus {
-  name: string;
-  projectId: string | null;
-  state: "connected" | "login" | "error";
-  tools: number;
-  error?: string;
-}
+/** A server's state (G41.0 adds confirm, unavailable and blocked for local servers). */
+export type McpStatus = McpServerStatus;
 
 /** Where backups may go without mounting anything (p3.7.2). */
 export interface BackupTargets {
@@ -912,7 +916,20 @@ export class Api {
     projectId: string | null;
     transport: McpEntry["transport"];
     secrets?: { headers?: Record<string, string>; env?: Record<string, string> };
+    /** G41.0: the person confirmed that its keys go in its variables, in its sandbox. */
+    confirmKeyInEnv?: true;
   }) => this.call("PUT", "/api/extensions/mcp", m);
+  /** Whether local MCP servers can run here (Docker, G41.0). */
+  mcpLocal = () => this.call<{ available: boolean }>("GET", "/api/extensions/mcp/local");
+  confirmMcpEnv = (name: string) =>
+    this.call("POST", `/api/extensions/mcp/${encodeURIComponent(name)}/confirm-env`);
+  mcpUpdateCheck = (name: string) =>
+    this.call<{ package: string; runner: "npx" | "uvx"; version?: string; latest: string }>(
+      "GET",
+      `/api/extensions/mcp/${encodeURIComponent(name)}/update`,
+    );
+  updateMcp = (name: string, version: string) =>
+    this.call("POST", `/api/extensions/mcp/${encodeURIComponent(name)}/update`, { version });
   subprojects = (projectId: string) =>
     this.call<Subproject[]>("GET", `/api/projects/${projectId}/subprojects`);
   /** An existing project goes into this one as a subproject, with its history (G24.14c). */

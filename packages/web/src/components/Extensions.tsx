@@ -9,12 +9,14 @@ import {
   type Guide,
   type MagicExtension,
   MCP_CATALOG,
+  type McpBlockReason,
   type McpCatalogEntry,
   type McpCategory,
   MEDIA_KINDS,
   MEDIA_PROVIDERS,
   type MediaKind,
   mediaProvider,
+  parseHosts,
 } from "@redgiant/protocol";
 import type { JSX } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
@@ -253,10 +255,13 @@ function GuideSteps({ guide }: { guide: Guide }) {
 /** Adding one entry: where it works and what it needs from the person (a key, their app…). */
 function AddForm({
   entry,
+  local,
   onDone,
   onCancel,
 }: {
   entry: McpCatalogEntry;
+  /** Local servers can run here (Docker, G41.0). */
+  local: boolean | undefined;
   onDone: (signingIn: boolean) => void;
   onCancel: () => void;
 }) {
@@ -276,8 +281,19 @@ function AddForm({
     (!entry.userUrl || url.trim() !== "") &&
     (a.type !== "app" || (clientId.trim() !== "" && (!a.secret || clientSecret.trim() !== ""))) &&
     (a.type !== "fields" || a.fields.every((f) => f.optional || (fields[f.env] ?? "").trim()));
+  const noDocker = entry.transport.type === "stdio" && local === false;
   const add = async (e: Event) => {
     e.preventDefault();
+    // G41.0: a key in an environment variable reaches the program in clear: the person says yes.
+    if (
+      entry.keyInEnv &&
+      !(await askConfirm(t("extKeyInEnvTitle"), {
+        text: t("extKeyInEnvText", { name: entry.name }),
+        yes: t("extKeyInEnvYes"),
+        danger: true,
+      }))
+    )
+      return;
     setBusy(true);
     setError(undefined);
     try {
@@ -290,6 +306,7 @@ function AddForm({
           fields,
           app: { clientId, ...(clientSecret.trim() && { clientSecret }) },
         }),
+        ...(entry.keyInEnv && { confirmKeyInEnv: true as const }),
       });
       onDone(signsIn && !(await signIn(entry.id)));
     } catch (err) {
@@ -301,6 +318,7 @@ function AddForm({
   const guide = "guide" in a ? a.guide : undefined;
   return (
     <form class="xw-form" onSubmit={(e) => void add(e)}>
+      {noDocker && <p class="notice warn">{t("extNoDocker")}</p>}
       {entry.note && <p class="notice warn">{entry.note[lang.value]}</p>}
       {entry.unverified && <p class="ui-help">{t("extUnverified")}</p>}
       {guide && (
@@ -396,7 +414,7 @@ function AddForm({
         <button type="button" class="wz-btn quiet" onClick={onCancel}>
           {t("cancel")}
         </button>
-        <button type="submit" class="wz-btn primary" disabled={busy || !ready}>
+        <button type="submit" class="wz-btn primary" disabled={busy || !ready || noDocker}>
           {signsIn ? t("extAddAndConnect") : t("extAdd")}
         </button>
       </Acts>
@@ -430,11 +448,19 @@ const serviceIcon = (e: { id: string; category: McpCategory }) =>
  * The catalog: a search, the kinds as chips, one square per service; each opens its window. On a
  * phone one kind at a time (the first at the start), or what the search finds among all of them.
  */
+/** Where a local server goes, in words (its hosts, and the address the person gives). */
+const localHosts = (e: McpCatalogEntry) => {
+  const hosts = [...(e.hosts ?? []), ...(e.hostsFrom?.length ? [t("extHostOwn")] : [])];
+  return hosts.length ? hosts.join(", ") : t("extLocalNoHosts");
+};
+
 function Catalog({
   added,
+  local,
   onAdded,
 }: {
   added: Set<string>;
+  local: boolean | undefined;
   onAdded: (signingIn: boolean) => void;
 }) {
   const [q, setQ] = useState("");
@@ -489,7 +515,13 @@ function Catalog({
             title={e.name}
             badge={e.official ? t("extOfficial") : undefined}
             text={e.description[lang.value]}
-            state={added.has(e.id) ? t("extAdded") : undefined}
+            state={
+              added.has(e.id)
+                ? t("extAdded")
+                : e.transport.type === "stdio" && local === false
+                  ? t("extNoDockerShort")
+                  : undefined
+            }
             onClick={() => setOpen(e)}
           />
         ))}
@@ -505,8 +537,17 @@ function Catalog({
                   t("xwSignIn"),
                   `${t(authLabel(open.auth.type))}${open.unverified ? ` · ${t("extUnverifiedShort")}` : ""}`,
                 ],
+                ...(open.transport.type === "stdio"
+                  ? ([
+                      [t("xwRuns"), t("xwRunsSandbox")],
+                      [t("extLocalVersion"), `${open.transport.package} ${open.transport.version}`],
+                    ] as [string, string][])
+                  : []),
               ]}
             />
+            {open.transport.type === "stdio" && (
+              <p class="ui-help">{t("extLocalSandbox", { hosts: localHosts(open) })}</p>
+            )}
             <a class="wz-link inl" href={open.homepage} target="_blank" rel="noreferrer">
               {t("extMore")}
             </a>
@@ -522,6 +563,7 @@ function Catalog({
             ) : (
               <AddForm
                 entry={open}
+                local={local}
                 onCancel={() => setOpen(undefined)}
                 onDone={(signingIn) => {
                   setOpen(undefined);
@@ -541,8 +583,15 @@ function serviceState(s: McpStatus | undefined): string {
   if (!s) return t("extChecking");
   if (s.state === "connected") return t("extWorks", { n: String(s.tools) });
   if (s.state === "login") return t("extNeedsLogin");
+  if (s.state === "confirm") return t("extConfirmState");
+  if (s.state === "unavailable") return t("extNoDockerShort");
+  if (s.state === "blocked") return t("extBlocked");
   return t("extBroken");
 }
+
+/** What a stopped local server needs, in words (G41.0). */
+const blockedHelp = (reason: McpBlockReason | undefined) =>
+  reason ? t(`extBlocked_${reason}` as never) : t("extBrokenHelp");
 
 /** The servers added: lit when they work; each window signs in or removes it. */
 function Connected({
@@ -555,6 +604,7 @@ function Connected({
   onChange: (signingIn?: boolean) => void;
 }) {
   const [error, setError] = useState<string>();
+  const [note, setNote] = useState<string>();
   const [open, setOpen] = useState<string>();
   if (mcp.length === 0) return null;
   const connect = async (name: string) => {
@@ -571,6 +621,42 @@ function Connected({
   const close = () => {
     setOpen(undefined);
     setError(undefined);
+    setNote(undefined);
+  };
+  /** G41.0: the person reads that its keys go in its variables, and says yes. */
+  const confirmEnv = async (name: string, shown: string) => {
+    if (
+      !(await askConfirm(t("extKeyInEnvTitle"), {
+        text: t("extKeyInEnvText", { name: shown }),
+        yes: t("extKeyInEnvStart"),
+        danger: true,
+      }))
+    )
+      return;
+    if (await attempt(() => getApi().confirmMcpEnv(name))) onChange();
+  };
+  /** "Update": the newest version, shown, then installed once the person confirms. */
+  const update = async (name: string) => {
+    setError(undefined);
+    setNote(undefined);
+    try {
+      const u = await getApi().mcpUpdateCheck(name);
+      if (u.version === u.latest) {
+        setNote(t("extUpToDate", { pkg: u.package, v: u.latest }));
+        return;
+      }
+      if (
+        !(await askConfirm(
+          t("extUpdateAsk", { pkg: u.package, from: u.version ?? "?", to: u.latest }),
+          { text: t("extUpdateText"), yes: t("extUpdateYes") },
+        ))
+      )
+        return;
+      await getApi().updateMcp(name, u.latest);
+      onChange();
+    } catch (err) {
+      setError(explain(err));
+    }
   };
   return (
     <>
@@ -585,7 +671,13 @@ function Connected({
               on={st?.state === "connected"}
               icon={e ? serviceIcon(e) : <IconServer />}
               title={e?.name ?? x.name}
-              badge={st?.state === "error" ? t("extBroken") : undefined}
+              badge={
+                st?.state === "error"
+                  ? t("extBroken")
+                  : st?.state === "blocked"
+                    ? t("extBlocked")
+                    : undefined
+              }
               text={scopeLabel(x.project_id)}
               state={serviceState(st)}
               onClick={() => setOpen(x.name)}
@@ -594,6 +686,9 @@ function Connected({
         })}
       </div>
       {status?.some((x) => x.state === "error") && <p class="wz-subl">{t("extBrokenHelp")}</p>}
+      {status?.some((x) => x.state === "unavailable") && (
+        <p class="notice warn">{t("extNoDocker")}</p>
+      )}
       {m && (
         <Modal title={entry?.name ?? m.name} onClose={close}>
           <div class="wz-panel-in">
@@ -609,10 +704,38 @@ function Connected({
                       : [m.transport.command, ...(m.transport.args ?? [])].join(" ")}
                   </code>,
                 ],
+                ...(m.transport.type === "stdio"
+                  ? ([
+                      [t("xwRuns"), t("xwRunsSandbox")],
+                      [
+                        t("extHosts"),
+                        m.transport.hosts?.length
+                          ? m.transport.hosts.join(", ")
+                          : t("extLocalNoHosts"),
+                      ],
+                    ] as [string, string][])
+                  : []),
+                ...(s?.version
+                  ? ([[t("extLocalVersion"), `${s.package ?? ""} ${s.version}`]] as [
+                      string,
+                      string,
+                    ][])
+                  : []),
               ]}
             />
-            {s?.state === "error" && s.error && <p class="notice error">{s.error}</p>}
+            {s?.envConfirmed && (
+              <p class="ui-help">
+                {t("extEnvConfirmed", { when: new Date(s.envConfirmed.at).toLocaleString() })}
+              </p>
+            )}
+            {s?.state === "confirm" && <p class="notice warn">{t("extConfirmHelp")}</p>}
+            {s?.state === "unavailable" && <p class="notice warn">{t("extNoDocker")}</p>}
+            {s?.state === "blocked" && <p class="notice warn">{blockedHelp(s.reason)}</p>}
+            {(s?.state === "error" || s?.state === "blocked") && s.error && (
+              <p class="notice error">{s.error}</p>
+            )}
             {s?.state === "error" && <p class="ui-help">{t("extBrokenHelp")}</p>}
+            {note && <p class="notice ok">{note}</p>}
             {error && <p class="notice error">{error}</p>}
           </div>
           <Acts>
@@ -628,7 +751,20 @@ function Connected({
             >
               {t("remove")}
             </button>
-            {s?.state === "login" ? (
+            {s?.package && s.state !== "unavailable" && (
+              <button type="button" class="wz-btn quiet" onClick={() => void update(m.name)}>
+                {t("extUpdate")}
+              </button>
+            )}
+            {s?.state === "confirm" ? (
+              <button
+                type="button"
+                class="wz-btn primary"
+                onClick={() => void confirmEnv(m.name, entry?.name ?? m.name)}
+              >
+                {t("extConfirmBtn")}
+              </button>
+            ) : s?.state === "login" ? (
               <button type="button" class="wz-btn primary" onClick={() => void connect(m.name)}>
                 {t("extConnect")}
               </button>
@@ -782,8 +918,34 @@ function NewSkill({ onDone, onCancel }: { onDone: () => void; onCancel: () => vo
 }
 
 /** A server not in the catalog: its address (or command), and how it signs in. */
-function McpForm({ onDone, onCancel }: { onDone: () => void; onCancel: () => void }) {
+/** `NAME=value` lines (a local server's keys); the wrong lines apart. */
+function parseEnv(text: string): { env: Record<string, string>; wrong: boolean } {
+  const env: Record<string, string> = {};
+  let wrong = false;
+  for (const line of text.split("\n")) {
+    const l = line.trim();
+    if (!l) continue;
+    const m = l.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
+    if (m?.[1] && m[2] !== undefined) env[m[1]] = m[2];
+    else wrong = true;
+  }
+  return { env, wrong };
+}
+
+function McpForm({
+  local,
+  onDone,
+  onCancel,
+}: {
+  local: boolean | undefined;
+  onDone: () => void;
+  onCancel: () => void;
+}) {
   const [name, setName] = useState("");
+  const [hosts, setHosts] = useState("");
+  const [home, setHome] = useState(false);
+  const [envText, setEnvText] = useState("");
+  const [problem, setProblem] = useState<string>();
   const [type, setType] = useState<"stdio" | "http">("http");
   const [command, setCommand] = useState("");
   const [args, setArgs] = useState("");
@@ -793,17 +955,53 @@ function McpForm({ onDone, onCancel }: { onDone: () => void; onCancel: () => voi
   const [scope, setScope] = useState("");
   const submit = async (e: Event) => {
     e.preventDefault();
+    setProblem(undefined);
+    const h = parseHosts(hosts);
+    const keys = parseEnv(envText);
+    if (type === "stdio" && h.wrong.length) {
+      setProblem(t("extHostsWrong", { list: h.wrong.join(", ") }));
+      return;
+    }
+    if (type === "stdio" && keys.wrong) {
+      setProblem(t("extEnvWrong"));
+      return;
+    }
+    const keyed = type === "stdio" && Object.keys(keys.env).length > 0;
+    // G41.0: keys in its variables reach the program in clear, inside its sandbox.
+    if (
+      keyed &&
+      !(await askConfirm(t("extKeyInEnvTitle"), {
+        text: t("extKeyInEnvText", { name: name || command }),
+        yes: t("extKeyInEnvYes"),
+        danger: true,
+      }))
+    )
+      return;
     const transport =
       type === "http"
         ? { type, url, ...(oauth && { oauth }) }
-        : { type, command, args: args.split(" ").filter(Boolean) };
+        : {
+            type,
+            command,
+            args: args.split(" ").filter(Boolean),
+            ...(h.hosts.length && { hosts: h.hosts }),
+            ...(home && h.hosts.length && { privateHosts: h.hosts }),
+          };
     const secrets =
       type === "http" && !oauth && token.trim()
         ? { headers: { Authorization: `Bearer ${token.trim()}` } }
-        : undefined;
+        : keyed
+          ? { env: keys.env }
+          : undefined;
     if (
       await attempt(() =>
-        getApi().setMcp({ name, projectId: scope || null, transport, ...(secrets && { secrets }) }),
+        getApi().setMcp({
+          name,
+          projectId: scope || null,
+          transport,
+          ...(secrets && { secrets }),
+          ...(keyed && { confirmKeyInEnv: true as const }),
+        }),
       )
     )
       onDone();
@@ -875,8 +1073,34 @@ function McpForm({ onDone, onCancel }: { onDone: () => void; onCancel: () => voi
           <Field label={t("args")}>
             <input class="wz-field mono" value={args} onInput={(e) => setArgs(value(e))} />
           </Field>
+          <Field label={t("extHosts")} help={t("extHostsHelp")}>
+            <textarea
+              class="wz-field mono"
+              rows={2}
+              value={hosts}
+              onInput={(e) => setHosts((e.target as HTMLTextAreaElement).value)}
+            />
+          </Field>
+          <SwitchRow title={t("extHostsPrivate")} on={home} onChange={setHome} />
+          <Field label={t("extEnvVars")} help={t("extEnvVarsHelp")}>
+            <textarea
+              class="wz-field mono"
+              rows={2}
+              autocomplete="off"
+              spellcheck={false}
+              value={envText}
+              onInput={(e) => setEnvText((e.target as HTMLTextAreaElement).value)}
+            />
+          </Field>
+          <p class="ui-help">
+            {t("extLocalSandbox", {
+              hosts: parseHosts(hosts).hosts.join(", ") || t("extLocalNoHosts"),
+            })}
+          </p>
+          {local === false && <p class="notice warn">{t("extNoDocker")}</p>}
         </>
       )}
+      {problem && <p class="notice error">{problem}</p>}
       <Acts>
         <button type="button" class="wz-btn quiet" onClick={onCancel}>
           {t("cancel")}
@@ -1013,6 +1237,8 @@ export function Extensions() {
   const [installed, setInstalled] = useState<Installed[]>([]);
   const [mcp, setMcp] = useState<McpEntry[]>([]);
   const [status, setStatus] = useState<McpStatus[]>();
+  /** Local servers can run here (Docker, G41.0). */
+  const [local, setLocal] = useState<boolean>();
   const [version, setVersion] = useState(0);
   const [open, setOpen] = useState<Open | null>(null);
   /** Until when to look again for a sign-in finished in the other tab. */
@@ -1032,6 +1258,10 @@ export function Extensions() {
       },
     );
     void api.mcpStatus().then(setStatus, () => setStatus([]));
+    void api.mcpLocal().then(
+      (r) => setLocal(r.available),
+      () => setLocal(undefined),
+    );
     void api.magicExts().then(
       (l) => setMagic(Array.isArray(l) ? l : []),
       () => setMagic([]),
@@ -1112,7 +1342,7 @@ export function Extensions() {
           )}
           {open === "server" && (
             <Modal title={t("addServer")} onClose={close}>
-              <McpForm onDone={doneAndClose} onCancel={close} />
+              <McpForm local={local} onDone={doneAndClose} onCancel={close} />
             </Modal>
           )}
           {open === "failed" && (
@@ -1192,7 +1422,7 @@ export function Extensions() {
 
       <Connected mcp={mcp} status={status} onChange={reload} />
       <MediaTiles />
-      <Catalog added={new Set(mcp.map((m) => m.name))} onAdded={reload} />
+      <Catalog added={new Set(mcp.map((m) => m.name))} local={local} onAdded={reload} />
 
       {installed.length > 0 && (
         <>

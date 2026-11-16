@@ -2389,9 +2389,56 @@ const en = {
     "A service that does not work: check the key, or remove it and add it again. Hover over the label to see the error.",
   extTransport: "How it runs",
   extTransportHttp: "Online (address)",
-  extTransportStdio: "On this server (command)",
+  extTransportStdio: "In a sandbox of its own (command)",
   extManualOauth: "It signs in on its own page (OAuth)",
   extManualToken: "Key (optional, sent as Bearer)",
+  extLocalSandbox:
+    "It runs in a sandbox of its own: it sees none of RedGiant's files, and goes only to: {hosts}.",
+  extLocalNoHosts: "no site (no network)",
+  extHostOwn: "the address you give",
+  extLocalVersion: "Version",
+  extNoDocker:
+    "Local servers run in a sandbox of their own, and this RedGiant has no Docker: they cannot start here. Install Docker (or RedGiant's Docker version), then restart RedGiant.",
+  extNoDockerShort: "Needs Docker",
+  extKeyInEnvTitle: "The key goes to the program in clear",
+  extKeyInEnvText:
+    "{name} wants its key in an environment variable. RedGiant keeps it in the keychain and gives it only to this server's program, inside its own sandbox: never to the agents, a log or an answer. The program itself reads it in clear: go on only if you trust it.",
+  extKeyInEnvYes: "I understand, add it",
+  extKeyInEnvStart: "I understand, start it",
+  extConfirmState: "Waiting for your yes",
+  extConfirmHelp:
+    "Its keys go to its program in clear, inside its sandbox. It starts once you confirm.",
+  extConfirmBtn: "Read and confirm",
+  extEnvConfirmed: "Keys in its variables: confirmed on {when}",
+  extBlocked: "Stopped",
+  extBlocked_docker:
+    "This server starts Docker itself, which its sandbox has not got. Look for the same server as an npx or uvx package, or online (an address).",
+  extBlocked_command:
+    "Its program is not in the sandbox (it has npx, uvx, node and python3). Use npx or uvx with its package, or remove it.",
+  "extBlocked_host-path":
+    "It uses a path of the server's computer, which its sandbox cannot see. Use its npx or uvx package instead, or remove it.",
+  extBlocked_unpinned:
+    "Its package has no exact version and its newest could not be read: check the network, or give the version (package@1.2.3).",
+  extBlocked_install:
+    "Its package did not install (the error is below). Try again later, or choose another version with Update.",
+  "extBlocked_no-docker": "No Docker here: local servers cannot start.",
+  extUpdate: "Update",
+  extUpToDate: "{pkg} {v} is the newest version.",
+  extUpdateAsk: "Update {pkg} from {from} to {to}?",
+  extUpdateText:
+    "The new version installs in its sandbox at its next start. Read what changed on its page first.",
+  extUpdateYes: "Update",
+  extHosts: "Sites it may reach",
+  extHostsHelp:
+    "Names, one per line or separated by commas (*.example.com for its subdomains). Nothing else: its sandbox has no other way out.",
+  extHostsWrong: "Not site names: {list}",
+  extHostsPrivate: "Also on my home network (a private address)",
+  extEnvVars: "Keys in its variables (optional)",
+  extEnvVarsHelp:
+    "One per line: NAME=value. They stay in the keychain and reach only this server's program.",
+  extEnvWrong: "Write each line as NAME=value",
+  xwRuns: "Where it runs",
+  xwRunsSandbox: "In a sandbox of its own",
   extProposals: "Waiting for you",
   extProposalsHelp:
     "Abilities written by the agents and already tested: nothing is installed until you approve it.",
@@ -8960,9 +9007,56 @@ const it: Record<Key, string> = {
     "Un servizio non funziona: controlla la chiave, oppure toglilo e aggiungilo di nuovo. Passa sopra l'etichetta per vedere l'errore.",
   extTransport: "Come gira",
   extTransportHttp: "Online (indirizzo)",
-  extTransportStdio: "Su questo server (comando)",
+  extTransportStdio: "In una sandbox sua (comando)",
   extManualOauth: "Si accede sulla sua pagina (OAuth)",
   extManualToken: "Chiave (facoltativa, inviata come Bearer)",
+  extLocalSandbox:
+    "Gira in una sandbox sua: non vede i file di RedGiant ed esce solo verso: {hosts}.",
+  extLocalNoHosts: "nessun sito (niente rete)",
+  extHostOwn: "l'indirizzo che scrivi tu",
+  extLocalVersion: "Versione",
+  extNoDocker:
+    "I server locali girano in una sandbox loro, e questo RedGiant non ha Docker: qui non possono partire. Installa Docker (o la versione Docker di RedGiant), poi riavvia RedGiant.",
+  extNoDockerShort: "Serve Docker",
+  extKeyInEnvTitle: "La chiave passa in chiaro al programma",
+  extKeyInEnvText:
+    "{name} vuole la chiave in una variabile d'ambiente. RedGiant la tiene nel Portachiavi e la dà solo al programma di questo server, dentro la sua sandbox: mai agli agenti, a un log o a una risposta. Il programma però la legge in chiaro: vai avanti solo se ti fidi.",
+  extKeyInEnvYes: "Ho capito, aggiungi",
+  extKeyInEnvStart: "Ho capito, avvialo",
+  extConfirmState: "Aspetta il tuo sì",
+  extConfirmHelp:
+    "Le sue chiavi passano in chiaro al suo programma, dentro la sua sandbox. Parte quando confermi.",
+  extConfirmBtn: "Leggi e conferma",
+  extEnvConfirmed: "Chiavi nelle sue variabili: confermato il {when}",
+  extBlocked: "Fermo",
+  extBlocked_docker:
+    "Questo server avvia Docker da sé, e la sua sandbox non ce l'ha. Cerca lo stesso server come pacchetto npx o uvx, oppure online (un indirizzo).",
+  extBlocked_command:
+    "Il suo programma non c'è nella sandbox (ci sono npx, uvx, node e python3). Usa npx o uvx con il suo pacchetto, oppure toglilo.",
+  "extBlocked_host-path":
+    "Usa un percorso del computer del server, che la sua sandbox non vede. Usa invece il suo pacchetto npx o uvx, oppure toglilo.",
+  extBlocked_unpinned:
+    "Il suo pacchetto non ha una versione esatta e non si è potuta leggere l'ultima: controlla la rete, oppure scrivi la versione (pacchetto@1.2.3).",
+  extBlocked_install:
+    "Il suo pacchetto non si è installato (l'errore è qui sotto). Riprova più tardi, o scegli un'altra versione con Aggiorna.",
+  "extBlocked_no-docker": "Qui non c'è Docker: i server locali non possono partire.",
+  extUpdate: "Aggiorna",
+  extUpToDate: "{pkg} {v} è l'ultima versione.",
+  extUpdateAsk: "Aggiornare {pkg} da {from} a {to}?",
+  extUpdateText:
+    "La versione nuova si installa nella sua sandbox alla prossima partenza. Prima leggi cosa è cambiato sulla sua pagina.",
+  extUpdateYes: "Aggiorna",
+  extHosts: "Siti che può raggiungere",
+  extHostsHelp:
+    "Nomi, uno per riga o separati da virgole (*.example.com per i sottodomini). Nient'altro: la sua sandbox non ha altre uscite.",
+  extHostsWrong: "Non sono nomi di siti: {list}",
+  extHostsPrivate: "Anche nella mia rete di casa (un indirizzo privato)",
+  extEnvVars: "Chiavi nelle sue variabili (facoltative)",
+  extEnvVarsHelp:
+    "Una per riga: NOME=valore. Restano nel Portachiavi e arrivano solo al programma di questo server.",
+  extEnvWrong: "Scrivi ogni riga come NOME=valore",
+  xwRuns: "Dove gira",
+  xwRunsSandbox: "In una sandbox sua",
   extProposals: "Aspettano te",
   extProposalsHelp:
     "Capacità scritte dagli agenti e già provate: niente viene installato finché non approvi.",
