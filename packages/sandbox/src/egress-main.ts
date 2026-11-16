@@ -2,13 +2,14 @@
 // Runs the egress proxy as its own process/container:
 //   redgiant-egress <policy.json> [port] [routes.json]
 // routes.json holds the credential routes the server writes while running (GitHub, Gitea) and,
-// under "$vault", the keychain's credentials bound to tools (G33.4); it is read again whenever it
-// changes.
+// under "$vault", the keychain's credentials bound to tools (G33.4), under "$sources" the local MCP
+// servers' sandboxes with their own hosts (G41.0); it is read again whenever it changes.
 import { readFile, stat } from "node:fs/promises";
 import {
   type CredentialRoute,
   type EgressPolicy,
   EgressProxy,
+  type SourceRule,
   type VaultProxyRoute,
 } from "./egress.js";
 
@@ -37,13 +38,16 @@ if (routesFile) {
           .then((t) => JSON.parse(t) as Record<string, unknown>)
           .catch(() => null)) ?? {})
       : {};
-    const { $vault, ...routes } = all as Record<string, CredentialRoute> & {
+    const { $vault, $sources, ...routes } = all as Record<string, CredentialRoute> & {
       $vault?: VaultProxyRoute[];
+      $sources?: SourceRule[];
     };
     proxy.setRoutes(routes);
     proxy.setVault(Array.isArray($vault) ? $vault : []);
+    // The local MCP servers' sandboxes (G41.0), each with its own hosts.
+    proxy.setSources(Array.isArray($sources) ? $sources : []);
     console.log(
-      `redgiant-egress: ${Object.keys(routes).length} credential routes, ${Array.isArray($vault) ? $vault.length : 0} keychain credentials from ${routesFile}`,
+      `redgiant-egress: ${Object.keys(routes).length} credential routes, ${Array.isArray($vault) ? $vault.length : 0} keychain credentials, ${Array.isArray($sources) ? $sources.length : 0} MCP sandboxes from ${routesFile}`,
     );
   };
   await reload();

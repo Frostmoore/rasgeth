@@ -1,8 +1,6 @@
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import type { CompletionRequest } from "@redgiant/providers";
 import { afterEach, describe, expect, it } from "vitest";
-import { startServer } from "./helpers.js";
+import { echoServer, startServer } from "./helpers.js";
 
 type Server = Awaited<ReturnType<typeof startServer>>;
 let s: Server | undefined;
@@ -10,7 +8,6 @@ afterEach(async () => {
   await s?.close();
   s = undefined;
 });
-const here = dirname(fileURLToPath(import.meta.url));
 
 const toolNames = (req: CompletionRequest) => req.tools.map((t) => t.name);
 const results = (req: CompletionRequest) =>
@@ -128,11 +125,7 @@ describe("extensions end to end", () => {
         await s.api("PUT", "/api/extensions/mcp", {
           name: "echo",
           projectId: null,
-          transport: {
-            type: "stdio",
-            command: process.execPath,
-            args: [join(here, "../../extensions/test/mcp-server.mjs")],
-          },
+          transport: await echoServer(s.core, "me", "echo"),
         })
       ).status,
     ).toBe(200);
@@ -149,22 +142,49 @@ describe("extensions end to end", () => {
 
   it("keeps a server's keys out of its configuration, and refuses unknown sign-ins", async () => {
     s = await startServer(() => ({ text: "ok" }));
-    const server = join(here, "../../extensions/test/mcp-server.mjs");
     const saved = await s.api("PUT", "/api/extensions/mcp", {
       name: "echo",
       projectId: null,
-      transport: { type: "stdio", command: process.execPath, args: [server] },
+      transport: await echoServer(s.core, "me", "echo"),
       secrets: { env: { ECHO_KEY: "secret-value-123" } },
     });
     expect(saved.status).toBe(200);
     const list = await s.api("GET", "/api/extensions/mcp");
     expect(JSON.stringify(list.body)).not.toContain("secret-value-123");
-    const status = await s.api<{ name: string; state: string; tools: number }[]>(
+    type St = { name: string; state: string; tools: number; keyInEnv?: boolean };
+    // G41.0: a key in its variables waits for the person's yes, said once and kept.
+    const waiting = await s.api<St[]>("GET", "/api/extensions/mcp/status");
+    expect(waiting.body).toEqual([
+      expect.objectContaining({ name: "echo", state: "confirm", keyInEnv: true, tools: 0 }),
+    ]);
+    expect((await s.api("POST", "/api/extensions/mcp/echo/confirm-env")).status).toBe(200);
+    expect((await s.api("POST", "/api/extensions/mcp/nope/confirm-env")).status).toBe(404);
+    const status = await s.api<St & { envConfirmed?: { by: string; at: string } }>(
       "GET",
       "/api/extensions/mcp/status",
     );
-    expect(status.body).toEqual([expect.objectContaining({ name: "echo", state: "connected" })]);
-    expect(status.body[0]?.tools).toBeGreaterThan(0);
+    const echo = (status.body as unknown as (St & { envConfirmed?: { by: string } })[])[0];
+    expect(echo).toMatchObject({ name: "echo", state: "connected", envConfirmed: { by: "me" } });
+    expect(echo?.tools).toBeGreaterThan(0);
+    expect(JSON.stringify(status.body)).not.toContain("secret-value-123");
+    // New keys need a new yes; the page's own confirmation comes with the keys.
+    await s.api("PUT", "/api/extensions/mcp", {
+      name: "echo",
+      projectId: null,
+      transport: await echoServer(s.core, "me", "echo"),
+      secrets: { env: { ECHO_KEY: "secret-value-456" } },
+    });
+    expect((await s.api<St[]>("GET", "/api/extensions/mcp/status")).body[0]?.state).toBe("confirm");
+    await s.api("PUT", "/api/extensions/mcp", {
+      name: "echo",
+      projectId: null,
+      transport: await echoServer(s.core, "me", "echo"),
+      secrets: { env: { ECHO_KEY: "secret-value-456" } },
+      confirmKeyInEnv: true,
+    });
+    expect((await s.api<St[]>("GET", "/api/extensions/mcp/status")).body[0]?.state).toBe(
+      "connected",
+    );
 
     // Only servers that sign in with OAuth have a sign-in.
     const login = await s.api("POST", "/api/extensions/mcp/echo/login", { origin: s.url });

@@ -1,6 +1,7 @@
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import { PassThrough } from "node:stream";
 import { fileURLToPath } from "node:url";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -16,6 +17,7 @@ import {
   loadSkills,
   McpConnection,
   migrateExtensions,
+  NoSandboxError,
   proposeTool,
   skillsIndex,
   skillTools,
@@ -58,15 +60,97 @@ describe("MCP", () => {
     await conn.close();
   });
 
-  it("starts a stdio MCP server as a process", async () => {
-    const conn = new McpConnection({
-      name: "echo",
-      transport: { type: "stdio", command: process.execPath, args: [join(here, "mcp-server.mjs")] },
-    });
+  it("starts a stdio MCP server only through its sandbox's spawn (G41.0)", async () => {
+    const ws = new LocalWorkspace(dir);
+    const seen: Record<string, string>[] = [];
+    const conn = new McpConnection(
+      {
+        name: "echo",
+        transport: {
+          type: "stdio",
+          command: process.execPath,
+          args: [join(here, "mcp-server.mjs")],
+          env: { PLAIN: "1" },
+        },
+      },
+      undefined,
+      {
+        secrets: { env: { ECHO_KEY: "k-1" } },
+        spawn: (env) => {
+          seen.push(env);
+          return ws.spawn(process.execPath, [join(here, "mcp-server.mjs")], { env });
+        },
+      },
+    );
     const [shout] = await conn.tools();
     expect(shout?.def.name).toBe("mcp__echo__shout");
     expect(text(await shout?.run({ text: "red giant" }, ctx))).toBe("RED GIANT");
+    // The key reaches that process's own variables, with the plain ones.
+    expect(seen).toEqual([{ PLAIN: "1", ECHO_KEY: "k-1" }]);
     await conn.close();
+    // No sandbox, no start: never a process of the server instead.
+    const none = new McpConnection({
+      name: "echo",
+      transport: { type: "stdio", command: process.execPath, args: [join(here, "mcp-server.mjs")] },
+    });
+    await expect(none.tools()).rejects.toBeInstanceOf(NoSandboxError);
+  });
+
+  it("speaks MCP over a spawned program's pipes, and says why it stopped", async () => {
+    // A made-up program: answers initialize and tools/list over its pipes, like a sandboxed one.
+    const fake = (behaviour: "ok" | "dies") => {
+      const stdin = new PassThrough();
+      const stdout = new PassThrough();
+      const stderr = new PassThrough();
+      let done!: (code: number | null) => void;
+      const exited = new Promise<number | null>((ok) => {
+        done = ok;
+      });
+      let buf = "";
+      stdin.on("data", (d: Buffer) => {
+        buf += d.toString();
+        for (let i = buf.indexOf("\n"); i >= 0; i = buf.indexOf("\n")) {
+          const m = JSON.parse(buf.slice(0, i));
+          buf = buf.slice(i + 1);
+          if (behaviour === "dies") {
+            stderr.write("Error: WP_API_URL is not set\n");
+            setTimeout(() => done(1), 5);
+            return;
+          }
+          const reply = (result: unknown) =>
+            stdout.write(`${JSON.stringify({ jsonrpc: "2.0", id: m.id, result })}\n`);
+          if (m.method === "initialize")
+            reply({
+              protocolVersion: m.params.protocolVersion,
+              capabilities: { tools: {} },
+              serverInfo: { name: "fake", version: "1" },
+            });
+          else if (m.method === "tools/list")
+            reply({ tools: [{ name: "ping", inputSchema: { type: "object" } }] });
+        }
+      });
+      return {
+        stdin,
+        stdout,
+        stderr,
+        cwd: "/workspace",
+        exited,
+        kill: () => done(null),
+      };
+    };
+    const ok = new McpConnection(
+      { name: "fake", transport: { type: "stdio", command: "npx", args: ["-y", "fake@1.0.0"] } },
+      undefined,
+      { spawn: async () => fake("ok") },
+    );
+    expect((await ok.tools()).map((t) => t.def.name)).toEqual(["mcp__fake__ping"]);
+    await ok.close();
+    const dies = new McpConnection(
+      { name: "fake", transport: { type: "stdio", command: "npx", args: ["-y", "fake@1.0.0"] } },
+      undefined,
+      { spawn: async () => fake("dies") },
+    );
+    await expect(dies.tools()).rejects.toThrow(/WP_API_URL is not set/);
   });
 });
 

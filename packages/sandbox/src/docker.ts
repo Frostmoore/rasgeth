@@ -172,7 +172,11 @@ export class DockerSandboxProvider implements SandboxProvider {
     };
     const container: Docker.Container = await this.docker.createContainer(options);
     await container.start();
-    return new DockerSandbox(spec, container, name);
+    const address = await container
+      .inspect()
+      .then((i) => i.NetworkSettings?.Networks?.[this.o.network]?.IPAddress || undefined)
+      .catch(() => undefined);
+    return new DockerSandbox(spec, container, name, address);
   }
 
   /** Removes every sandbox container this provider created (e.g. at shutdown). */
@@ -198,6 +202,7 @@ class DockerSandbox implements Sandbox {
     readonly container: Docker.Container,
     /** Its name: the server reaches it by name on the sandboxes' network. */
     readonly host: string,
+    readonly address?: string,
   ) {
     this.id = spec.id;
   }

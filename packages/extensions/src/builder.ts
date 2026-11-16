@@ -96,6 +96,8 @@ export async function migrateExtensions(db: SqlClient): Promise<void> {
       transport  jsonb NOT NULL,
       PRIMARY KEY (owner_id, name)
     )`);
+  // G41.0: who confirmed that a local server's keys go in its variables, and when.
+  await db.query("ALTER TABLE rg_mcp_servers ADD COLUMN IF NOT EXISTS env_ok jsonb");
   // G36.8: the installed skill an update replaces, kept for the person's comparison.
   await db.query("ALTER TABLE rg_proposals ADD COLUMN IF NOT EXISTS previous jsonb");
 }

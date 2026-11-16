@@ -26,6 +26,8 @@ export interface Sandbox {
   readonly id: string;
   /** How the server reaches a program listening inside it (the canvas's bridge, G25.1). */
   readonly host?: string;
+  /** Its address on the sandboxes' network (the egress proxy's source rules, G41.0). */
+  readonly address?: string | undefined;
   /** A workspace rooted at `subdir` (e.g. an agent's worktree). */
   workspace(subdir?: string): Workspace;
   destroy(): Promise<void>;

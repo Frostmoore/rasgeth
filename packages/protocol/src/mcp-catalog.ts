@@ -1,3 +1,5 @@
+import { hostOf, pinOf, stdioArgs } from "./mcp-local.js";
+
 /**
  * MCP servers people can add with a click (G24.9): the services' own servers first, then
  * community ones, marked as such. Each says how it signs in: nothing, the service's sign-in
@@ -61,7 +63,36 @@ export interface McpCatalogEntry {
   official: boolean;
   category: McpCategory;
   description: { it: string; en: string };
-  transport: { type: "http"; url: string } | { type: "stdio"; command: string; args: string[] };
+  /**
+   * A local server (G41.0) names its package at an exact version: `npx -y <package>@<version>` or
+   * `uvx <package>@<version>`, never `@latest` nor a package without its version.
+   */
+  transport:
+    | { type: "http"; url: string }
+    | {
+        type: "stdio";
+        command: "npx" | "uvx";
+        package: string;
+        version: string;
+        args: string[];
+        /**
+         * uvx only: versions for dependencies the package leaves open and that broke it
+         * (uv's `--overrides`), checked by installing it.
+         */
+        overrides?: string[];
+      };
+  /**
+   * A local server's way out (G41.0): the hosts its sandbox may reach (`*.example.com` for the
+   * subdomains). `hostsFrom` names the fields whose address joins them (the person's own site or
+   * database); a private address is allowed only for those.
+   */
+  hosts?: string[];
+  hostsFrom?: string[];
+  /**
+   * The server wants its key in an environment variable (G41.0): the key reaches the program in
+   * clear inside its own sandbox, so adding it shows a warning the person confirms.
+   */
+  keyInEnv?: boolean;
   auth: McpCatalogAuth;
   homepage: string;
   /**
@@ -877,7 +908,15 @@ export const MCP_CATALOG: readonly McpCatalogEntry[] = [
       it: "Il tuo sito WordPress: articoli, pagine, media (e WooCommerce, se c'è).",
       en: "Your WordPress site: posts, pages, media (and WooCommerce, if present).",
     },
-    transport: { type: "stdio", command: "npx", args: ["-y", "@automattic/mcp-wordpress-remote"] },
+    transport: {
+      type: "stdio",
+      command: "npx",
+      package: "@automattic/mcp-wordpress-remote",
+      version: "0.5.5",
+      args: [],
+    },
+    hostsFrom: ["WP_API_URL"],
+    keyInEnv: true,
     auth: {
       type: "fields",
       fields: [
@@ -938,7 +977,14 @@ export const MCP_CATALOG: readonly McpCatalogEntry[] = [
       it: "La documentazione di Shopify e la verifica di GraphQL e Liquid, per chi sviluppa app e temi (non i dati del negozio).",
       en: "Shopify's documentation and GraphQL/Liquid checks, for building apps and themes (not your store's data).",
     },
-    transport: { type: "stdio", command: "npx", args: ["-y", "@shopify/dev-mcp@latest"] },
+    transport: {
+      type: "stdio",
+      command: "npx",
+      package: "@shopify/dev-mcp",
+      version: "1.18.0",
+      args: [],
+    },
+    hosts: ["shopify.dev", "cdn.shopify.com"],
     auth: { type: "none" },
     homepage: "https://shopify.dev/docs/apps/build/devmcp",
   },
@@ -954,8 +1000,15 @@ export const MCP_CATALOG: readonly McpCatalogEntry[] = [
     transport: {
       type: "stdio",
       command: "uvx",
-      args: ["postgres-mcp", "--access-mode=restricted"],
+      package: "postgres-mcp",
+      version: "0.3.0",
+      args: ["--access-mode=restricted"],
+      // Checked on 2026-11-16: 0.3.0 asks for pglast==7.2.0, gone from PyPI (7.20 is there), and
+      // for mcp>=1.5, where mcp 2.x renamed FastMCP: it installs and starts only with these.
+      overrides: ["pglast==7.20", "mcp[cli]<2"],
     },
+    hostsFrom: ["DATABASE_URI"],
+    keyInEnv: true,
     auth: {
       type: "env",
       env: "DATABASE_URI",
@@ -985,7 +1038,16 @@ export function catalogConfig(
 ): {
   transport:
     | { type: "http"; url: string; oauth?: boolean }
-    | { type: "stdio"; command: string; args: string[] };
+    | {
+        type: "stdio";
+        command: string;
+        args: string[];
+        /** Where its sandbox may go (G41.0). */
+        hosts?: string[];
+        /** Of those, the ones that may be at a private address (the person's own database). */
+        privateHosts?: string[];
+        overrides?: string[];
+      };
   secrets?: {
     headers?: Record<string, string>;
     env?: Record<string, string>;
@@ -1001,7 +1063,22 @@ export function catalogConfig(
   const a = entry.auth;
   const k = given.key?.trim() ?? "";
   if ((a.type === "header" || a.type === "env") && !k) throw new Error(`${entry.name} needs a key`);
-  let transport: ReturnType<typeof catalogConfig>["transport"] = entry.transport;
+  let transport: ReturnType<typeof catalogConfig>["transport"];
+  if (entry.transport.type === "stdio") {
+    // The hosts of the person's own site or database join the entry's own.
+    const typed = (env: string) =>
+      a.type === "env" && a.env === env ? k : (given.fields?.[env]?.trim() ?? "");
+    const own = (entry.hostsFrom ?? []).flatMap((f) => hostOf(typed(f)) ?? []);
+    const hosts = [...new Set([...(entry.hosts ?? []), ...own])];
+    transport = {
+      type: "stdio",
+      command: entry.transport.command,
+      args: stdioArgs(entry.transport),
+      ...(hosts.length && { hosts }),
+      ...(own.length && { privateHosts: [...new Set(own)] }),
+      ...(entry.transport.overrides?.length && { overrides: [...entry.transport.overrides] }),
+    };
+  } else transport = entry.transport;
   if (entry.userUrl && entry.transport.type === "http") {
     const base = given.url?.trim().replace(/\/+$/, "") ?? "";
     if (!/^https?:\/\/[^\s]+$/.test(base)) throw new Error(`${entry.name} needs its address`);
@@ -1039,5 +1116,32 @@ export function catalogConfig(
     transport,
     ...(a.type === "header" && { secrets: { headers: { [a.header]: `${a.prefix ?? ""}${k}` } } }),
     ...(a.type === "env" && { secrets: { env: { [a.env]: k } } }),
+  };
+}
+
+/**
+ * A local server added from the catalog before G41.0 (`npx -y @shopify/dev-mcp@latest`, a package
+ * without its version): its entry's pinned command line, with its hosts (the person's own address
+ * read from its saved variables). Nothing when the server is not such an entry, or already pinned.
+ */
+export function migrateCatalogStdio(
+  name: string,
+  transport: { type: string; command?: string; args?: string[] },
+  env: Record<string, string> = {},
+): Extract<ReturnType<typeof catalogConfig>["transport"], { type: "stdio" }> | undefined {
+  const entry = MCP_CATALOG.find((e) => e.id === name);
+  if (!entry || entry.transport.type !== "stdio" || transport.type !== "stdio") return undefined;
+  const pin = pinOf(transport.command ?? "", transport.args ?? []);
+  if (!pin || pin.package !== entry.transport.package || pin.version) return undefined;
+  const typed = (f: string) => env[f] ?? "";
+  const own = (entry.hostsFrom ?? []).flatMap((f) => hostOf(typed(f)) ?? []);
+  const hosts = [...new Set([...(entry.hosts ?? []), ...own])];
+  return {
+    type: "stdio",
+    command: entry.transport.command,
+    args: stdioArgs(entry.transport),
+    ...(hosts.length && { hosts }),
+    ...(own.length && { privateHosts: [...new Set(own)] }),
+    ...(entry.transport.overrides?.length && { overrides: [...entry.transport.overrides] }),
   };
 }

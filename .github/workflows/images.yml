@@ -1,4 +1,4 @@
-# The Docker images (3.7.4): ghcr.io/frostmoore/redgiant2, -sandbox, -engine (cpu, cuda, vulkan) and
+# The Docker images (3.7.4): ghcr.io/frostmoore/redgiant2, -sandbox, -mcp (G41.0), -engine (cpu, cuda, vulkan) and
 # -postgres. Every processor is built on its own runner (arm64 on GitHub's arm64 machines, no
 # emulation), pushed by digest, then one index per image gets its tags.
 # - tags "ci" (os.yml on a version branch): only ci-<version>-<sha>[-<suffix>], never a released
@@ -81,7 +81,7 @@ jobs:
               action=build; why="reuse not asked"
               if [ "$REUSE" = true ]; then
                 missing=""
-                for ref in redgiant2:$ci_tag redgiant2-sandbox:$ci_tag redgiant2-engine:$ci_tag-cpu \
+                for ref in redgiant2:$ci_tag redgiant2-sandbox:$ci_tag redgiant2-mcp:$ci_tag redgiant2-engine:$ci_tag-cpu \
                            redgiant2-engine:$ci_tag-cuda redgiant2-engine:$ci_tag-vulkan redgiant2-postgres:$ci_tag; do
                   docker buildx imagetools inspect "$REGISTRY/$ref" >/dev/null 2>&1 || missing="$missing $ref"
                 done
@@ -94,7 +94,7 @@ jobs:
           {
             echo "| Docker images | Version | Commit | Decision | Why |"
             echo "| --- | --- | --- | --- | --- |"
-            echo "| redgiant2, -sandbox, -engine, -postgres | $VERSION | \`${SHA:0:7}\` | $action | $why |"
+            echo "| redgiant2, -sandbox, -mcp, -engine, -postgres | $VERSION | \`${SHA:0:7}\` | $action | $why |"
           } >> "$GITHUB_STEP_SUMMARY"
           echo "action=$action" >> "$GITHUB_OUTPUT"
           echo "ci_tag=$ci_tag" >> "$GITHUB_OUTPUT"
@@ -133,6 +133,21 @@ jobs:
               key: sandbox,
               name: redgiant2-sandbox,
               file: docker/sandbox.Dockerfile,
+              context: docker,
+              arch: arm64,
+            }
+          # Local MCP servers' sandbox (G41.0): npx and uvx, nothing of RedGiant's data.
+          - {
+              key: mcp,
+              name: redgiant2-mcp,
+              file: docker/mcp.Dockerfile,
+              context: docker,
+              arch: amd64,
+            }
+          - {
+              key: mcp,
+              name: redgiant2-mcp,
+              file: docker/mcp.Dockerfile,
               context: docker,
               arch: arm64,
             }
@@ -242,6 +257,7 @@ jobs:
         include:
           - { key: redgiant2, name: redgiant2, suffix: "" }
           - { key: sandbox, name: redgiant2-sandbox, suffix: "" }
+          - { key: mcp, name: redgiant2-mcp, suffix: "" }
           - { key: engine-cpu, name: redgiant2-engine, suffix: cpu }
           - { key: engine-cuda, name: redgiant2-engine, suffix: cuda }
           - { key: engine-vulkan, name: redgiant2-engine, suffix: vulkan }

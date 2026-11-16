@@ -1,8 +1,6 @@
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import type { CompletionRequest } from "@redgiant/providers";
 import { afterEach, describe, expect, it } from "vitest";
-import { startServer } from "./helpers.js";
+import { echoServer, startServer } from "./helpers.js";
 
 type Server = Awaited<ReturnType<typeof startServer>>;
 let s: Server | undefined;
@@ -10,7 +8,6 @@ afterEach(async () => {
   await s?.close();
   s = undefined;
 });
-const here = dirname(fileURLToPath(import.meta.url));
 
 const lastUserText = (req: CompletionRequest) => {
   const m = [...req.messages]
@@ -55,11 +52,7 @@ describe("personal assistants (G24.11)", () => {
     await s.api("PUT", "/api/extensions/mcp", {
       name: "echo",
       projectId: null,
-      transport: {
-        type: "stdio",
-        command: process.execPath,
-        args: [join(here, "../../extensions/test/mcp-server.mjs")],
-      },
+      transport: await echoServer(s.core, "me", "echo"),
     });
     const a = await s.api<{ id: string; kind: string; connections: string[] }>(
       "POST",

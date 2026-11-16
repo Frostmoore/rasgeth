@@ -20,7 +20,7 @@ import {
   ensureRepo,
   HostSandboxProvider,
 } from "@redgiant/sandbox";
-import { RedGiantCore } from "@redgiant/server";
+import { MCP_IMAGE, RedGiantCore } from "@redgiant/server";
 import Docker from "dockerode";
 
 export type AgentRecord = NonNullable<ReturnType<RedGiantCore["registry"]["get"]>>;
@@ -114,6 +114,19 @@ export class ScenarioContext {
             ...(await sshDocker()),
           })
         : new HostSandboxProvider(),
+      // Local MCP servers (G41.0) in a sandbox of their own: on this machine for the harness
+      // (it runs throwaway servers of its own), the agents' Docker when asked.
+      mcpSandbox: {
+        provider: this.o.docker
+          ? new DockerSandboxProvider({
+              image: MCP_IMAGE,
+              network: "rg-eval-sandbox",
+              prefix: "rg-eval-mcp",
+              ...(await sshDocker()),
+            })
+          : new HostSandboxProvider(),
+        settleMs: 0,
+      },
       defaultModel: this.o.model,
       // A child's question goes to the person, who is this scenario.
       askAgent: async () => "escalate",

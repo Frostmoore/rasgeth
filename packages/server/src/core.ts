@@ -80,7 +80,11 @@ import {
   type ImagePart,
   isCriticalId,
   MCP_CATALOG,
+  type McpBlockReason,
+  type McpRunner,
+  type McpServerStatus,
   type MediaChoice,
+  migrateCatalogStdio,
   type MediaKind,
   type MessageQuote,
   type ModelSpec,
@@ -88,6 +92,7 @@ import {
   nativePaths,
   notedText,
   ownWords,
+  pinOf,
   type Recipe,
   type RefineEstimate,
   type RefineRequest,
@@ -96,6 +101,7 @@ import {
   replyLanguageLine,
   type ServerMessage,
   type SharedMemoryView,
+  stdioProblem,
   type ToolChoice,
   type ToolsView,
   textLanguage,
@@ -109,6 +115,7 @@ import {
   voiceProvider,
   voicesForModel,
   widgetOf,
+  withVersion,
 } from "@redgiant/protocol";
 import {
   complete,
@@ -282,6 +289,7 @@ import {
 } from "./platform.js";
 import { PRODUCTS_GUIDANCE, type ProductsToolHost, showProductsTool } from "./product-cards.js";
 import { ProductImages, type ProductImagesOptions } from "./product-images.js";
+import { latestVersion, McpBlockedError, McpSandboxes, type McpSandboxOptions } from "./mcp-sandbox.js";
 import { migrateProjects, ProjectStore, type Subproject, slug } from "./projects.js";
 import { kindLabel, PromptRefiner, RefineError, type RefineJob } from "./prompt-refiner.js";
 import {
@@ -430,6 +438,14 @@ export interface CoreOptions {
   projectFoldersInside?: string;
   /** Where the MCP servers' sign-ins and keys are kept (default: next to the workspaces). */
   mcpCredentialsDir?: string;
+  /**
+   * Local MCP servers' sandboxes (G41.0): containers (Docker). Without it local servers do not
+   * start and the page says so; never a process on this computer instead. `dir` defaults to
+   * `mcp-servers` next to the workspaces.
+   */
+  mcpSandbox?: Omit<McpSandboxOptions, "dir"> & { dir?: string };
+  /** The newest version of a package (npm or PyPI): "Update", and pinning a server added by hand. */
+  mcpLatest?: (runner: McpRunner, pkg: string) => Promise<string>;
   /** God's own workspace (the platform). */
   platformDir: string;
   sandbox?: SandboxProvider;
@@ -870,6 +886,8 @@ export class RedGiantCore implements OrchestrationHost {
   private readonly mcp = new Map<string, McpConnection>();
   /** Sign-ins and keys of MCP servers (G24.9): private files, never the database. */
   readonly mcpCredentials: McpCredentialStore;
+  /** Local MCP servers' sandboxes (G41.0); none without Docker. */
+  readonly mcpSandboxes: McpSandboxes | undefined;
   /** Sign-ins in progress, by OAuth state. */
   private readonly mcpPending = new Map<
     string,
@@ -898,6 +916,12 @@ export class RedGiantCore implements OrchestrationHost {
       kind: "mcp" as const,
       what: "sign-in",
     });
+    this.mcpSandboxes = o.mcpSandbox
+      ? new McpSandboxes({
+          ...o.mcpSandbox,
+          dir: o.mcpSandbox.dir ?? join(dirname(o.workspacesDir), "mcp-servers"),
+        })
+      : undefined;
     this.mcpCredentials = new McpCredentialStore(
       o.mcpCredentialsDir ?? join(dirname(o.workspacesDir), "mcp-credentials"),
       {
@@ -2780,11 +2804,18 @@ export class RedGiantCore implements OrchestrationHost {
   ): Promise<McpConnection> {
     const secrets = await this.mcpCredentials.load(ownerId, name);
     const back = redirect ?? secrets.redirect;
+    // Never in a log, an event or an answer, after a restart too.
+    for (const v of [...Object.values(secrets.env ?? {}), ...Object.values(secrets.headers ?? {})])
+      if (v.length >= 4) this.o.redactor?.addSecret(`mcp-${name}`, v);
+    const boxes = this.mcpSandboxes;
     return new McpConnection({ name, transport }, undefined, {
       secrets: {
         ...(secrets.headers && { headers: secrets.headers }),
         ...(secrets.env && { env: secrets.env }),
       },
+      // A local server in its own sandbox (G41.0); its keys only in that process's variables.
+      ...(transport.type === "stdio" &&
+        boxes && { spawn: (env) => boxes.spawn(ownerId, name, transport, env) }),
       ...(transport.type === "http" &&
         transport.oauth &&
         back && {
@@ -2806,10 +2837,11 @@ export class RedGiantCore implements OrchestrationHost {
       name: string;
       project_id: string | null;
       transport: McpServerConfig["transport"] | string;
+      env_ok: { by: string; at: string } | string | null;
     }>(
       projectId === undefined
-        ? "SELECT name, project_id, transport FROM rg_mcp_servers WHERE owner_id = $1 ORDER BY name"
-        : "SELECT name, project_id, transport FROM rg_mcp_servers WHERE owner_id = $1 AND (project_id IS NULL OR project_id = $2) ORDER BY name",
+        ? "SELECT name, project_id, transport, env_ok FROM rg_mcp_servers WHERE owner_id = $1 ORDER BY name"
+        : "SELECT name, project_id, transport, env_ok FROM rg_mcp_servers WHERE owner_id = $1 AND (project_id IS NULL OR project_id = $2) ORDER BY name",
       projectId === undefined ? [ownerId] : [ownerId, projectId ?? ""],
     );
     return rows.map((r) => ({
@@ -2817,7 +2849,78 @@ export class RedGiantCore implements OrchestrationHost {
       transport: (typeof r.transport === "string"
         ? JSON.parse(r.transport)
         : r.transport) as McpServerConfig["transport"],
+      env_ok: (typeof r.env_ok === "string" ? JSON.parse(r.env_ok) : r.env_ok) as {
+        by: string;
+        at: string;
+      } | null,
     }));
+  }
+
+  /**
+   * Whether a local server may start (G41.0), after moving it to its pinned form when it came from
+   * the catalog before, or pinning a package added by hand at its newest version: nothing for a
+   * remote server; otherwise why it waits.
+   */
+  private async mcpGate(
+    ownerId: string,
+    r: Awaited<ReturnType<RedGiantCore["mcpRows"]>>[number],
+  ): Promise<
+    | { ok: McpServerConfig["transport"] }
+    | {
+        state: "confirm" | "unavailable" | "blocked";
+        reason?: McpBlockReason;
+        error?: string;
+        /** Its configuration as moved or pinned so far. */
+        transport?: McpServerConfig["transport"];
+      }
+  > {
+    if (r.transport.type !== "stdio") return { ok: r.transport };
+    let t: Extract<McpServerConfig["transport"], { type: "stdio" }> = r.transport;
+    if (!this.mcpSandboxes) return { state: "unavailable", reason: "no-docker" };
+    const secrets = await this.mcpCredentials.load(ownerId, r.name).catch(() => ({}) as McpSecrets);
+    const moved = migrateCatalogStdio(r.name, t, secrets.env);
+    if (moved) t = await this.saveMcpTransport(ownerId, r.name, { ...moved });
+    const problem = stdioProblem(t);
+    if (problem) return { state: "blocked", reason: problem, transport: t };
+    const pin = pinOf(t.command, t.args ?? []);
+    if (pin && !pin.version) {
+      const latest = await this.mcpLatestOf(pin.runner, pin.package).catch(() => undefined);
+      if (!latest)
+        return {
+          state: "blocked",
+          reason: "unpinned",
+          error: `${pin.package} has no exact version, and its newest could not be read`,
+          transport: t,
+        };
+      t = await this.saveMcpTransport(ownerId, r.name, {
+        ...t,
+        args: withVersion(t.command, t.args ?? [], latest),
+      });
+    }
+    const keyed = Object.values(secrets.env ?? {}).some((v) => v !== "");
+    if (keyed && !r.env_ok) return { state: "confirm", transport: t };
+    return { ok: t };
+  }
+
+  private async saveMcpTransport<T extends McpServerConfig["transport"]>(
+    ownerId: string,
+    name: string,
+    t: T,
+  ): Promise<T> {
+    await this.o.db.query(
+      "UPDATE rg_mcp_servers SET transport = $3 WHERE owner_id = $1 AND name = $2",
+      [ownerId, name, JSON.stringify(t)],
+    );
+    return t;
+  }
+
+  private mcpLatestOf(runner: McpRunner, pkg: string): Promise<string> {
+    return (this.o.mcpLatest ?? latestVersion)(runner, pkg);
+  }
+
+  /** A server's message without its keys (they may be in what a local program printed). */
+  private hideMcpKeys(text: string): string {
+    return this.o.redactor ? this.o.redactor.redactText(text).text : text;
   }
 
   /** MCP servers configured by the owner: global ones and the project's. Failing servers are skipped. */
@@ -2835,19 +2938,56 @@ export class RedGiantCore implements OrchestrationHost {
         const s = await this.mcpCredentials.load(ownerId, r.name);
         if (!s.tokens) continue;
       }
+      const gate = await this.mcpGate(ownerId, r);
+      if (!("ok" in gate)) continue;
       let conn = this.mcp.get(key);
       if (!conn) {
-        conn = await this.mcpConnection(ownerId, r.name, r.transport);
+        conn = await this.mcpConnection(ownerId, r.name, gate.ok);
         this.mcp.set(key, conn);
       }
       try {
-        out.push(...(await conn.tools()));
+        const boxes = this.mcpSandboxes;
+        const local = gate.ok.type === "stdio";
+        for (const tool of await conn.tools())
+          out.push(
+            local && boxes
+              ? {
+                  ...tool,
+                  run: (input, ctx) => {
+                    boxes.used(ownerId, r.name);
+                    return tool.run(input, ctx);
+                  },
+                }
+              : tool,
+          );
       } catch (err) {
-        console.warn(`MCP server "${r.name}" unavailable: ${(err as Error).message}`);
+        console.warn(
+          `MCP server "${r.name}" unavailable: ${this.hideMcpKeys((err as Error).message)}`,
+        );
         this.mcp.delete(key);
       }
     }
     return out;
+  }
+
+  /** Local servers nobody used for a while: their connection closes and their sandbox stops. */
+  async stopIdleMcp(): Promise<string[]> {
+    const boxes = this.mcpSandboxes;
+    if (!boxes) return [];
+    const stopped: string[] = [];
+    for (const { owner, name } of boxes.idle()) {
+      const key = `${owner}/${name}`;
+      await this.mcp.get(key)?.close();
+      this.mcp.delete(key);
+      await boxes.stop(owner, name).catch(() => {});
+      stopped.push(key);
+    }
+    return stopped;
+  }
+
+  /** Whether local MCP servers can run here (a sandbox provider with containers). */
+  get mcpLocalAvailable(): boolean {
+    return this.mcpSandboxes !== undefined;
   }
 
   async listMcp(ownerId: string) {
@@ -2858,22 +2998,8 @@ export class RedGiantCore implements OrchestrationHost {
   }
 
   /** Each server and whether it works: connected (with its tools), waiting to sign in, failing. */
-  async mcpStatus(ownerId: string): Promise<
-    {
-      name: string;
-      projectId: string | null;
-      state: "connected" | "login" | "error";
-      tools: number;
-      error?: string;
-    }[]
-  > {
-    const out: {
-      name: string;
-      projectId: string | null;
-      state: "connected" | "login" | "error";
-      tools: number;
-      error?: string;
-    }[] = [];
+  async mcpStatus(ownerId: string): Promise<McpServerStatus[]> {
+    const out: McpServerStatus[] = [];
     for (const r of await this.mcpRows(ownerId)) {
       if (r.transport.type === "http" && r.transport.oauth) {
         const s = await this.mcpCredentials.load(ownerId, r.name);
@@ -2882,34 +3008,71 @@ export class RedGiantCore implements OrchestrationHost {
           continue;
         }
       }
+      const gate = await this.mcpGate(ownerId, r);
+      const t = "ok" in gate ? gate.ok : (gate.transport ?? r.transport);
+      const local: Partial<McpServerStatus> = {};
+      if (t.type === "stdio") {
+        const pin = pinOf(t.command, t.args ?? []);
+        if (pin) {
+          local.package = pin.package;
+          if (pin.version) local.version = pin.version;
+        }
+        const env = (await this.mcpCredentials.load(ownerId, r.name).catch(() => ({}) as McpSecrets))
+          .env;
+        if (Object.values(env ?? {}).some((v) => v !== "")) local.keyInEnv = true;
+        if (r.env_ok) local.envConfirmed = r.env_ok;
+      }
+      if (!("ok" in gate)) {
+        out.push({
+          name: r.name,
+          projectId: r.project_id,
+          tools: 0,
+          ...local,
+          state: gate.state,
+          ...(gate.reason && { reason: gate.reason }),
+          ...(gate.error && { error: this.hideMcpKeys(gate.error).slice(0, 300) }),
+        });
+        continue;
+      }
       const key = `${ownerId}/${r.name}`;
       try {
         let conn = this.mcp.get(key);
         if (!conn) {
-          conn = await this.mcpConnection(ownerId, r.name, r.transport);
+          conn = await this.mcpConnection(ownerId, r.name, t);
           this.mcp.set(key, conn);
         }
         out.push({
           name: r.name,
           projectId: r.project_id,
+          ...local,
           state: "connected",
-          // A first start (a package still downloading) must not hold the whole page.
+          // A first start (a package still installing) must not hold the whole page.
           tools: (
             await Promise.race([
               conn.tools(),
               new Promise<never>((_, no) =>
-                setTimeout(() => no(new Error("No answer within 30 seconds")), 30_000).unref(),
+                setTimeout(
+                  () => no(new Error("No answer within 30 seconds")),
+                  t.type === "stdio" ? 120_000 : 30_000,
+                ).unref(),
               ),
             ])
           ).length,
         });
       } catch (err) {
         this.mcp.delete(key);
-        const message = (err as Error).message;
+        const message = this.hideMcpKeys((err as Error).message);
+        const blocked = err instanceof McpBlockedError;
         out.push({
           name: r.name,
           projectId: r.project_id,
-          state: /unauthori[sz]ed|401|invalid_token/i.test(message) ? "login" : "error",
+          ...local,
+          state: blocked
+            ? "blocked"
+            : /unauthori[sz]ed|401|invalid_token/i.test(message)
+              ? "login"
+              : "error",
+          ...(blocked && { reason: err.reason }),
           tools: 0,
           error: message.slice(0, 300),
         });
@@ -2923,6 +3086,11 @@ export class RedGiantCore implements OrchestrationHost {
     config: McpServerConfig & { projectId: string | null },
     /** Keys kept in a private file, not with the configuration. */
     secrets?: { headers?: Record<string, string>; env?: Record<string, string>; app?: McpApp },
+    /**
+     * The person read that a local server's keys go in its variables, and confirmed (G41.0). New
+     * keys in its variables without it wait for that confirmation.
+     */
+    confirm?: { keyInEnv: true; by: string },
   ): Promise<void> {
     await this.o.db.query(
       `INSERT INTO rg_mcp_servers (owner_id, name, project_id, transport) VALUES ($1, $2, $3, $4)
@@ -2942,8 +3110,69 @@ export class RedGiantCore implements OrchestrationHost {
         ...(secrets.app && { tokens: undefined, client: undefined, verifier: undefined }),
       });
     }
+    if (confirm) await this.confirmMcpEnv(ownerId, config.name, confirm.by);
+    else if (Object.values(secrets?.env ?? {}).some((v) => v !== ""))
+      await this.o.db.query(
+        "UPDATE rg_mcp_servers SET env_ok = NULL WHERE owner_id = $1 AND name = $2",
+        [ownerId, config.name],
+      );
     await this.mcp.get(`${ownerId}/${config.name}`)?.close();
     this.mcp.delete(`${ownerId}/${config.name}`);
+  }
+
+  /**
+   * The person confirmed that a local server's keys go in its variables, inside its sandbox
+   * (G41.0): kept with who and when (never the keys).
+   */
+  async confirmMcpEnv(ownerId: string, name: string, by: string): Promise<void> {
+    const at = new Date().toISOString();
+    const r = await this.o.db.query<{ name: string }>(
+      "UPDATE rg_mcp_servers SET env_ok = $3 WHERE owner_id = $1 AND name = $2 RETURNING name",
+      [ownerId, name, JSON.stringify({ by, at })],
+    );
+    if (r.length === 0) throw new NotFoundError(`No MCP server "${name}"`);
+    console.log(`mcp: ${by} confirmed that "${name}" gets its keys in its variables (${at})`);
+    await this.mcp.get(`${ownerId}/${name}`)?.close();
+    this.mcp.delete(`${ownerId}/${name}`);
+  }
+
+  /** A local server's package, its version and the newest one ("Update", G41.0). */
+  async mcpUpdateCheck(
+    ownerId: string,
+    name: string,
+  ): Promise<{ package: string; runner: McpRunner; version?: string; latest: string }> {
+    const r = (await this.mcpRows(ownerId)).find((x) => x.name === name);
+    if (!r) throw new NotFoundError(`No MCP server "${name}"`);
+    const pin =
+      r.transport.type === "stdio" ? pinOf(r.transport.command, r.transport.args ?? []) : undefined;
+    if (!pin) throw new BadRequestError(`"${name}" does not run a package through npx or uvx`);
+    const latest = await this.mcpLatestOf(pin.runner, pin.package).catch((err: Error) => {
+      throw new BadRequestError(`Could not read ${pin.package}'s newest version: ${err.message}`);
+    });
+    return {
+      package: pin.package,
+      runner: pin.runner,
+      ...(pin.version && { version: pin.version }),
+      latest,
+    };
+  }
+
+  /** The person chose a version: kept, then installed in the server's sandbox at its next start. */
+  async updateMcp(ownerId: string, name: string, version: string): Promise<void> {
+    const r = (await this.mcpRows(ownerId)).find((x) => x.name === name);
+    if (!r) throw new NotFoundError(`No MCP server "${name}"`);
+    if (r.transport.type !== "stdio")
+      throw new BadRequestError(`"${name}" does not run a package through npx or uvx`);
+    let args: string[];
+    try {
+      args = withVersion(r.transport.command, r.transport.args ?? [], version);
+    } catch (err) {
+      throw new BadRequestError((err as Error).message);
+    }
+    await this.saveMcpTransport(ownerId, name, { ...r.transport, args });
+    await this.mcp.get(`${ownerId}/${name}`)?.close();
+    this.mcp.delete(`${ownerId}/${name}`);
+    await this.mcpSandboxes?.stop(ownerId, name);
   }
 
   async removeMcp(ownerId: string, name: string): Promise<void> {
@@ -2953,6 +3182,7 @@ export class RedGiantCore implements OrchestrationHost {
     ]);
     await this.mcp.get(`${ownerId}/${name}`)?.close();
     this.mcp.delete(`${ownerId}/${name}`);
+    await this.mcpSandboxes?.stop(ownerId, name);
     await this.mcpCredentials.remove(ownerId, name);
   }
 
@@ -4919,6 +5149,7 @@ export class RedGiantCore implements OrchestrationHost {
 
   /** Drops live sessions idle for longer than `idleMs` that nobody follows; returns how many. */
   closeIdle(idleMs = 30 * 60_000): number {
+    void this.stopIdleMcp();
     let closed = 0;
     for (const [id, l] of this.live) {
       if (l.running || this.followers.has(l.id) || Date.now() - l.usedAt < idleMs) continue;
@@ -7308,5 +7539,6 @@ export class RedGiantCore implements OrchestrationHost {
     this.sandboxes.clear();
     for (const c of this.mcp.values()) await c.close();
     this.mcp.clear();
+    await this.mcpSandboxes?.stopAll();
   }
 }

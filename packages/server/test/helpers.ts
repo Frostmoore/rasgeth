@@ -1,6 +1,7 @@
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { PROTOCOL_VERSION, type ServerMessage } from "@redgiant/protocol";
 import {
   FakeProvider,
@@ -8,6 +9,7 @@ import {
   type FakeScript,
   ProviderRegistry,
 } from "@redgiant/providers";
+import { HostSandboxProvider } from "@redgiant/sandbox";
 import { migrateTelegram, TelegramGateway } from "@redgiant/telegram";
 import {
   type AppOptions,
@@ -54,6 +56,9 @@ export async function startServer(
     platformDir: join(dir, "platform"),
     defaultModel: { provider: "fake", model: "m" },
     askAgent: async () => "escalate",
+    // Local MCP servers (G41.0) need a sandbox: in tests one on this computer stands in for the
+    // container (the product never runs them outside one; Docker tests use the real thing).
+    mcpSandbox: { provider: new HostSandboxProvider(), settleMs: 0 },
     ...core,
   });
   let gateway: TelegramGateway | undefined;
@@ -159,4 +164,24 @@ export async function wsClient(url: string, token = TOKEN, hello: Record<string,
     });
   send({ type: "hello", protocolVersion: PROTOCOL_VERSION, token, ...hello });
   return { ws, messages, send, waitFor, closed: () => closed, close: () => ws.close() };
+}
+
+const testDir = dirname(fileURLToPath(import.meta.url));
+
+/**
+ * The test MCP server (extensions/test/mcp-server.mjs) placed in a local server's own folder, as
+ * a command its sandbox can run (`node server.mjs`, no path of this computer).
+ */
+export async function echoServer(
+  core: RedGiantCore,
+  owner: string,
+  name: string,
+): Promise<{ type: "stdio"; command: string; args: string[] }> {
+  const boxes = core.mcpSandboxes;
+  if (!boxes) throw new Error("No MCP sandboxes in this test's core");
+  const dir = boxes.folder(owner, name);
+  await mkdir(dir, { recursive: true });
+  const real = pathToFileURL(join(testDir, "../../extensions/test/mcp-server.mjs")).href;
+  await writeFile(join(dir, "server.mjs"), `import ${JSON.stringify(real)};\n`);
+  return { type: "stdio", command: "node", args: ["server.mjs"] };
 }

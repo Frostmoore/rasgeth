@@ -40,7 +40,26 @@ export interface EgressDecision {
   host: string;
   allowed: boolean;
   reason?: string;
+  /** The source's label when a source rule decided (an MCP server's sandbox, G41.0). */
+  source?: string;
 }
+
+/**
+ * A policy of its own for one source address (G41.0): a local MCP server's sandbox goes only to
+ * its own hosts (and, while its package installs, to the registries), never by the policy every
+ * other sandbox shares, and never through the git credential routes. The address is the
+ * container's on the sandboxes' network, which a container without capabilities cannot forge.
+ */
+export interface SourceRule {
+  address: string;
+  allow: string[];
+  allowPrivate?: string[];
+  /** Who it is, for the decisions' log (`mcp:<owner>/<server>`). */
+  label?: string;
+}
+
+/** `::ffff:10.0.0.2` → `10.0.0.2`. */
+const plainAddress = (a: string | undefined) => (a ?? "").replace(/^::ffff:/i, "").toLowerCase();
 
 export function hostAllowed(host: string, patterns: string[]): boolean {
   const h = host.toLowerCase().replace(/\.$/, "");
@@ -113,6 +132,17 @@ export class EgressProxy {
 
   private vault = new Map<string, VaultProxyRoute>();
 
+  /** The sources with a policy of their own (G41.0), by address. */
+  setSources(rules: SourceRule[]): void {
+    this.sources = new Map(rules.map((r) => [plainAddress(r.address), r]));
+  }
+
+  private sources = new Map<string, SourceRule>();
+
+  private sourceOf(req: IncomingMessage): SourceRule | undefined {
+    return this.sources.get(plainAddress(req.socket.remoteAddress));
+  }
+
   listen(port: number, host = "0.0.0.0"): Promise<number> {
     return new Promise((ok) =>
       this.server.listen(port, host, () => {
@@ -128,14 +158,25 @@ export class EgressProxy {
   }
 
   /** Checks the policy, including where the name actually resolves (no SSRF via DNS). */
-  private async check(kind: EgressDecision["kind"], host: string): Promise<EgressDecision> {
+  private async check(
+    kind: EgressDecision["kind"],
+    host: string,
+    source?: SourceRule,
+  ): Promise<EgressDecision> {
     const decide = (allowed: boolean, reason?: string): EgressDecision => {
-      const d = { kind, host, allowed, ...(reason && { reason }) };
+      const d = {
+        kind,
+        host,
+        allowed,
+        ...(reason && { reason }),
+        ...(source?.label && { source: source.label }),
+      };
       this.onDecision(d);
       return d;
     };
-    if (!hostAllowed(host, this.policy.allow)) return decide(false, "host not in the allow list");
-    if (!hostAllowed(host, this.policy.allowPrivate ?? [])) {
+    const policy = source ?? this.policy;
+    if (!hostAllowed(host, policy.allow)) return decide(false, "host not in the allow list");
+    if (!hostAllowed(host, policy.allowPrivate ?? [])) {
       const addresses = isIP(host)
         ? [{ address: host }]
         : await lookup(host, { all: true }).catch(() => []);
@@ -149,7 +190,7 @@ export class EgressProxy {
   private async handleConnect(req: IncomingMessage, socket: Socket, head: Buffer) {
     socket.on("error", () => socket.destroy());
     const [host = "", portText = "443"] = (req.url ?? "").split(":");
-    const d = await this.check("connect", host);
+    const d = await this.check("connect", host, this.sourceOf(req));
     if (!d.allowed) {
       socket.end(
         `HTTP/1.1 403 Forbidden\r\ncontent-type: text/plain\r\n\r\nRedGiant egress: ${host} blocked (${d.reason})\n`,
@@ -170,6 +211,18 @@ export class EgressProxy {
     req.on("error", () => res.destroy());
     res.on("error", () => {});
     const url = req.url ?? "/";
+    const source = this.sourceOf(req);
+    // The git routes are the agents' (G24.5): an MCP server's sandbox has its own hosts only.
+    if (url.startsWith("/route/") && source) {
+      this.onDecision({
+        kind: "route",
+        host: "route",
+        allowed: false,
+        reason: "no credential routes for this source",
+        ...(source.label && { source: source.label }),
+      });
+      return deny(res, 403, "RedGiant egress: no credential routes here");
+    }
     if (url.startsWith("/route/")) return this.handleRoute(req, res, url);
     if (url.startsWith("/vault/")) return this.handleVault(req, res, url);
     let target: URL;
@@ -182,7 +235,7 @@ export class EgressProxy {
         "Use this server as an HTTP proxy, or /route/<name>/... for credential routes.",
       );
     }
-    const d = await this.check("http", target.hostname);
+    const d = await this.check("http", target.hostname, source);
     if (!d.allowed)
       return deny(res, 403, `RedGiant egress: ${target.hostname} blocked (${d.reason})`);
     forward(req, res, target, {});

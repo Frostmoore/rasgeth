@@ -27,6 +27,7 @@ import {
   Automation,
   AutomationRun,
   Effort,
+  HOST_PATTERN,
   ImagePart,
   LOCAL_OWNER_ID,
   MachineAccess,
@@ -769,6 +770,12 @@ const routes = {
                   command: z.string().min(1),
                   args: z.array(z.string()).optional(),
                   env: z.record(z.string(), z.string()).optional(),
+                  /** G41.0: inside its sandbox, under its own folder. */
+                  cwd: z.string().max(500).optional(),
+                  /** G41.0: where its sandbox may go, and which of those may be private. */
+                  hosts: z.array(z.string().regex(HOST_PATTERN).max(253)).max(50).optional(),
+                  privateHosts: z.array(z.string().regex(HOST_PATTERN).max(253)).max(50).optional(),
+                  overrides: z.array(z.string().min(1).max(200)).max(20).optional(),
                 }),
                 z.object({
                   type: z.literal("http"),
@@ -793,6 +800,11 @@ const routes = {
                     .optional(),
                 })
                 .optional(),
+              /**
+               * G41.0: the person read that a local server's keys go in its variables, inside its
+               * sandbox, and confirmed.
+               */
+              confirmKeyInEnv: z.literal(true).optional(),
             }),
           },
         },
@@ -1942,8 +1954,18 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.openapi(routes.setMcp, async (c) => {
     const b = c.req.valid("json");
     if (!(await ownsProject(c, b.projectId))) return c.json({ error: "Project not found" }, 404);
-    const { secrets, ...config } = b;
-    await core.setMcp(owner(c), config as never, secrets as never);
+    const { secrets, confirmKeyInEnv, ...config } = b;
+    // A private address only for a host the server may reach at all.
+    if (config.transport.type === "stdio" && config.transport.privateHosts) {
+      const hosts = config.transport.hosts ?? [];
+      config.transport.privateHosts = config.transport.privateHosts.filter((h) => hosts.includes(h));
+    }
+    await core.setMcp(
+      owner(c),
+      config as never,
+      secrets as never,
+      confirmKeyInEnv ? { keyInEnv: true, by: owner(c) } : undefined,
+    );
     return c.json({ ok: true as const }, 200);
   });
   app.openapi(routes.deleteMcp, async (c) => {
@@ -3251,6 +3273,26 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   });
   // MCP servers that sign in with OAuth (G24.9): the service's page, then back here.
   app.get("/api/extensions/mcp/status", async (c) => c.json(await core.mcpStatus(owner(c)), 200));
+  // Local MCP servers in their own sandbox (G41.0): whether they can run here, the person's yes to
+  // keys in a server's variables, and "Update" to a version the person chose.
+  app.get("/api/extensions/mcp/local", (c) =>
+    c.json({ available: core.mcpLocalAvailable }, 200),
+  );
+  app.post("/api/extensions/mcp/:name/confirm-env", async (c) => {
+    await core.confirmMcpEnv(owner(c), c.req.param("name"), owner(c));
+    return c.json({ ok: true as const }, 200);
+  });
+  app.get("/api/extensions/mcp/:name/update", async (c) =>
+    c.json(await core.mcpUpdateCheck(owner(c), c.req.param("name")), 200),
+  );
+  app.post("/api/extensions/mcp/:name/update", async (c) => {
+    const b = z
+      .object({ version: z.string().min(1).max(100) })
+      .safeParse(await c.req.json().catch(() => ({})));
+    if (!b.success) return c.json({ error: "A version is needed" }, 400);
+    await core.updateMcp(owner(c), c.req.param("name"), b.data.version);
+    return c.json({ ok: true as const }, 200);
+  });
   app.post("/api/extensions/mcp/:name/login", async (c) => {
     const b = z.object({ origin: z.url() }).safeParse(await c.req.json().catch(() => ({})));
     if (!b.success) return c.json({ error: "RedGiant's address (origin) is needed" }, 400);

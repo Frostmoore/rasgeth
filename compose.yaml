@@ -65,6 +65,8 @@ services:
       REDGIANT_WIN_HOST: ${REDGIANT_WIN_HOST:-}
       REDGIANT_WIN_ENGINE_DIR: /winengine
       REDGIANT_SANDBOX_IMAGE: ${REDGIANT_SANDBOX_IMAGE:-ghcr.io/frostmoore/redgiant2-sandbox:latest}
+      # Local MCP servers (G41.0), one container each on the sandboxes' network, behind the egress proxy.
+      REDGIANT_MCP_IMAGE: ${REDGIANT_MCP_IMAGE:-ghcr.io/frostmoore/redgiant2-mcp:latest}
       REDGIANT_SANDBOX_NETWORK: redgiant-sandbox
       REDGIANT_EGRESS_URL: http://egress:3128
       # Sandboxes mount their workspaces from the same volume (no host paths).

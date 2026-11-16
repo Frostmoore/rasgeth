@@ -152,6 +152,31 @@ describe("EgressProxy", () => {
   });
 });
 
+describe("a source with its own hosts (G41.0, a local MCP server's sandbox)", () => {
+  it("goes only to its hosts, never through the git routes, until its rule is gone", async () => {
+    // Every client here comes from 127.0.0.1: that address is the MCP sandbox.
+    proxy.setSources([
+      { address: "::ffff:127.0.0.1", allow: ["localhost"], allowPrivate: ["localhost"], label: "mcp:me/x" },
+    ]);
+    try {
+      // Allowed by the shared policy, not by its own.
+      const shared = await viaProxy(`http://127.0.0.1:${upPort}/x`);
+      expect(shared.status).toBe(403);
+      expect(decisions.at(-1)).toMatchObject({ host: "127.0.0.1", allowed: false, source: "mcp:me/x" });
+      const own = await viaProxy(`http://localhost:${upPort}/y`);
+      expect(own.status).toBe(200);
+      expect(JSON.parse(own.body).path).toBe("/y");
+      expect(await connectVia(`127.0.0.1:${upPort}`)).toMatch(/403/);
+      const route = await viaProxy("/route/github/user");
+      expect(route.status).toBe(403);
+      expect(route.body).not.toContain("real-secret");
+    } finally {
+      proxy.setSources([]);
+    }
+    expect((await viaProxy(`http://127.0.0.1:${upPort}/x`)).status).toBe(200);
+  });
+});
+
 describe("policy helpers", () => {
   it("matches exact names and subdomain wildcards", () => {
     expect(hostAllowed("api.example.org", ["*.example.org"])).toBe(true);

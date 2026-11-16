@@ -32,6 +32,7 @@ export * from "./magic-extensions.js";
 export * from "./mail.js";
 export * from "./mascot.js";
 export * from "./mcp-catalog.js";
+export * from "./mcp-local.js";
 export * from "./media.js";
 export * from "./memory.js";
 export * from "./messages.js";

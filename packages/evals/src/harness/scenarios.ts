@@ -4,7 +4,7 @@
 // apart: the outcome (hidden checks, written after the agents finish) and the harness (its log:
 // what it allowed, refused, kept, reused, closed). A model can fail the outcome; the harness
 // checks are about the program.
-import { readdir, readFile, stat, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { type Python, python } from "../python.js";
 import { type AgentRecord, HUMAN, OWNER, runCheck, type ScenarioContext } from "./context.js";
@@ -418,13 +418,15 @@ print("ok")`,
     timeoutMin: 12,
     plannedUsd: 1,
     async run(ctx, deadline) {
-      const server = join(ctx.o.dir, "notes-mcp.cjs");
-      const store = join(ctx.o.dir, "notes.json");
-      await writeFile(server, NOTES_MCP);
+      // In the server's own folder (G41.0): its sandbox sees nothing else.
+      const folder = ctx.core.mcpSandboxes?.folder(OWNER, "notes") ?? ctx.o.dir;
+      await mkdir(folder, { recursive: true });
+      const store = join(folder, "notes.json");
+      await writeFile(join(folder, "notes-mcp.cjs"), NOTES_MCP);
       await ctx.core.setMcp(OWNER, {
         name: "notes",
         projectId: null,
-        transport: { type: "stdio", command: process.execPath, args: [server, store] },
+        transport: { type: "stdio", command: "node", args: ["notes-mcp.cjs", "notes.json"] },
       });
       await ctx.core.registry.create(HUMAN, {
         kind: "assistant",

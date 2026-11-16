@@ -1,9 +1,15 @@
-// The egress proxy's routes file (G24.5, G33.4): GitHub's and Gitea's routes and the keychain's
-// credentials bound to tools ("$vault") live in one file the proxy reads again when it changes.
+// The egress proxy's routes file (G24.5, G33.4, G41.0): GitHub's and Gitea's routes, the keychain's
+// credentials bound to tools ("$vault") and the local MCP servers' sandboxes ("$sources") live in
+// one file the proxy reads again when it changes.
 // Each part is set on its own; the file is always written whole, then renamed, one write at a time.
 import { mkdir, rename, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
-import { type CredentialRoute, EgressProxy, type VaultProxyRoute } from "@redgiant/sandbox";
+import {
+  type CredentialRoute,
+  EgressProxy,
+  type SourceRule,
+  type VaultProxyRoute,
+} from "@redgiant/sandbox";
 import type { VaultEgress } from "./vault.js";
 
 const files = new Map<string, RoutesFile>();
@@ -21,6 +27,7 @@ export class RoutesFile {
 
   private git: Record<string, CredentialRoute> = {};
   private vault: VaultProxyRoute[] = [];
+  private sources: SourceRule[] = [];
   private writing: Promise<void> = Promise.resolve();
 
   private constructor(readonly path: string) {}
@@ -35,8 +42,18 @@ export class RoutesFile {
     return this.write();
   }
 
+  /** The local MCP servers' sandboxes and their hosts (G41.0). */
+  setSources(rules: SourceRule[]): Promise<void> {
+    this.sources = rules;
+    return this.write();
+  }
+
   private write(): Promise<void> {
-    const body = JSON.stringify({ ...this.git, ...(this.vault.length && { $vault: this.vault }) });
+    const body = JSON.stringify({
+      ...this.git,
+      ...(this.vault.length && { $vault: this.vault }),
+      ...(this.sources.length && { $sources: this.sources }),
+    });
     const job = this.writing.then(async () => {
       await mkdir(dirname(this.path), { recursive: true });
       const tmp = `${this.path}.tmp`;

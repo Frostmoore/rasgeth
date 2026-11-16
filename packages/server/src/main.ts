@@ -14,7 +14,7 @@ import {
   ProviderRegistry,
   setStallLog,
 } from "@redgiant/providers";
-import { DockerSandboxProvider, HostSandboxProvider } from "@redgiant/sandbox";
+import { DockerSandboxProvider, HostSandboxProvider, type SourceRule } from "@redgiant/sandbox";
 import { RESTART_EXIT_CODE } from "@redgiant/supervisor";
 import type { TelegramGateway } from "@redgiant/telegram";
 import { SearxngSearch } from "@redgiant/tools";
@@ -25,7 +25,8 @@ import { Browsers, DockerBrowserLauncher, findBrowser, LocalBrowserLauncher } fr
 import { ChatHub, Outlets } from "./chats.js";
 import { RedGiantCore } from "./core.js";
 import { debugLog } from "./debug-log.js";
-import { localVaultEgress, routesFileEgress } from "./egress-routes.js";
+import { localVaultEgress, RoutesFile, routesFileEgress } from "./egress-routes.js";
+import { MCP_IMAGE } from "./mcp-sandbox.js";
 import { startEmbeddedDatabase } from "./embedded-db.js";
 import { firstAccessFromEnv, setupCodeRequired } from "./first-access.js";
 import { FirstBoot } from "./firstboot.js";
@@ -152,6 +153,36 @@ const sandbox =
       })
     : new HostSandboxProvider();
 
+// Local MCP servers (G41.0), each in a container of its own on the sandboxes' network, behind the
+// egress proxy: with Docker only (the Docker install, or REDGIANT_MCP_SANDBOX=docker); without it
+// they do not start and Extensions says so. REDGIANT_MCP_SANDBOX=off turns them off.
+const mcpDocker =
+  env.REDGIANT_MCP_SANDBOX !== "off" &&
+  (env.REDGIANT_SANDBOX === "docker" ||
+    Boolean(env.REDGIANT_ENGINE_NETWORK) ||
+    env.REDGIANT_MCP_SANDBOX === "docker");
+const mcpSandbox = mcpDocker
+  ? {
+      provider: new DockerSandboxProvider({
+        image: env.REDGIANT_MCP_IMAGE ?? MCP_IMAGE,
+        pull: (image: string) => pullInBackground(image, "sandbox"),
+        network: env.REDGIANT_SANDBOX_NETWORK ?? "redgiant-sandbox",
+        prefix: "rg-mcp",
+        ...(env.REDGIANT_EGRESS_URL && { egressProxyUrl: env.REDGIANT_EGRESS_URL }),
+        ...(env.REDGIANT_SANDBOX_USER && { user: env.REDGIANT_SANDBOX_USER }),
+        ...(env.REDGIANT_DATA_VOLUME && {
+          dataVolume: { name: env.REDGIANT_DATA_VOLUME, mountPoint: dataDir },
+        }),
+      }),
+      image: env.REDGIANT_MCP_IMAGE ?? MCP_IMAGE,
+      // Each server's hosts reach the egress proxy through its routes file.
+      ...(env.REDGIANT_EGRESS_ROUTES && {
+        sources: (rules: SourceRule[]) =>
+          RoutesFile.for(env.REDGIANT_EGRESS_ROUTES as string).setSources(rules),
+      }),
+    }
+  : undefined;
+
 // `memory:` is an in-process Postgres that vanishes on exit: for trial copies (G14) and demos.
 const databaseUrl = need("DATABASE_URL");
 // God on the real system (G14.3) and God's changes to RedGiant's own code (G14.2).
@@ -204,6 +235,7 @@ const core = await RedGiantCore.create({
     env.REDGIANT_DATA_VOLUME && { projectFoldersInside: join(dataDir, "workspaces") }),
   platformDir: join(dataDir, "platform"),
   sandbox,
+  ...(mcpSandbox && { mcpSandbox }),
   redactor,
   ...(defaultModel && { defaultModel }),
   ...(env.REDGIANT_SEARXNG_URL && { search: new SearxngSearch(env.REDGIANT_SEARXNG_URL) }),

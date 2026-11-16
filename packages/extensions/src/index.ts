@@ -1,6 +1,7 @@
 export * from "./builder.js";
 export * from "./customtools.js";
 export * from "./mcp.js";
+export * from "./mcp-transport.js";
 export * from "./oauth.js";
 export * from "./propose.js";
 export * from "./share.js";
