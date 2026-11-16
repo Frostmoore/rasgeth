@@ -53,7 +53,7 @@ export function playerMediaOf(media: VideoMediaInfo[] | undefined): PlayerMediaM
 }
 
 /** The server's Inter for texts and subtitles, as in the render (once per page). */
-function useFonts(fonts: { regular: string; bold: string } | undefined) {
+export function useFonts(fonts: { regular: string; bold: string } | undefined) {
   useEffect(() => {
     if (!fonts || document.getElementById("vp-fonts")) return;
     const s = document.createElement("style");
@@ -63,8 +63,63 @@ function useFonts(fonts: { regular: string; bold: string } | undefined) {
   }, [fonts?.regular]);
 }
 
+/**
+ * The files a timeline uses (and `extra` ones about to go in), prepared on the server: jobs the
+ * first time (proxy, strip, wave), then asked again for the links; a failure is not retried in
+ * a loop. The answer goes into `videoMedia` (state.ts).
+ */
+export function usePrepared(file: File, doc: RgVideo | undefined, extra: readonly string[] = []) {
+  const key = videoViewKey(file);
+  const prepared = videoMedia.value[key];
+  const [pending, setPending] = useState<string[]>([]);
+  const [rounds, setRounds] = useState(0);
+  const ended = useRef({ n: 0, ok: false });
+  const names = useMemo(
+    () =>
+      JSON.stringify(
+        [
+          ...new Set([
+            ...(doc?.clips.flatMap((c) => (isMediaRef(c.ref) ? [c.ref.media] : [])) ?? []),
+            ...extra,
+          ]),
+        ].sort(),
+      ),
+    [doc, extra.join("\n")],
+  );
+  useEffect(() => {
+    if (!doc) return;
+    let live = true;
+    const api = getApi();
+    void (
+      extra.length
+        ? api.videoPrepare(file.scope, file.path, [...extra])
+        : api.videoPrepare(file.scope, file.path)
+    ).then(
+      (r) => {
+        if (!live) return;
+        setVideoMedia(key, r);
+        ended.current = { n: 0, ok: false };
+        setPending(r.media.flatMap((m) => m.jobs));
+      },
+      () => {},
+    );
+    return () => {
+      live = false;
+    };
+  }, [key, names, rounds, !!doc]);
+  const jobEnded = (ok: boolean) => {
+    const e = ended.current;
+    e.n++;
+    e.ok ||= ok;
+    // All done: ask again (the next files, the links); a failure is not retried in a loop.
+    if (e.n >= pending.length && e.ok && rounds < 6) setRounds((n) => n + 1);
+  };
+  const preparing = pending.length > 0 && ended.current.n < pending.length;
+  return { prepared, pending, preparing, jobEnded, again: () => setRounds((n) => n + 1) };
+}
+
 /** One job preparing a file: its words and bar; `onEnd` when it stops. */
-function PrepJob({ id, onEnd }: { id: string; onEnd: (ok: boolean) => void }) {
+export function PrepJob({ id, onEnd }: { id: string; onEnd: (ok: boolean) => void }) {
   const job = useJob(id);
   useEffect(() => {
     if (job && job.state !== "running") onEnd(job.state === "done");
@@ -81,7 +136,7 @@ function PrepJob({ id, onEnd }: { id: string; onEnd: (ok: boolean) => void }) {
 }
 
 /** The exact preview's job; when done, its link goes into the view. */
-function ExactJob({ id, view, from }: { id: string; view: string; from: number }) {
+export function ExactJob({ id, view, from }: { id: string; view: string; from: number }) {
   const job = useJob(id);
   useEffect(() => {
     if (job?.state !== "done") return;
@@ -216,15 +271,11 @@ function Tracks({
 export function VideoPreview({ file }: { file: File }) {
   const key = videoViewKey(file);
   const view = videoViewOf(key);
-  const prepared = videoMedia.value[key];
   const [doc, setDoc] = useState<RgVideo>();
   const [error, setError] = useState<string>();
-  const [pending, setPending] = useState<string[]>([]);
-  const [rounds, setRounds] = useState(0);
   const stage = useRef<HTMLDivElement>(null);
   const audioBox = useRef<HTMLDivElement>(null);
   const player = useRef<TimelinePlayer | undefined>(undefined);
-  const ended = useRef({ n: 0, ok: false });
 
   // The timeline as saved; read again when the file changes.
   useEffect(() => {
@@ -265,42 +316,7 @@ export function VideoPreview({ file }: { file: File }) {
     };
   }, [key]);
 
-  // The files it uses, prepared on the server (jobs the first time).
-  const names = useMemo(
-    () =>
-      JSON.stringify(
-        [
-          ...new Set(doc?.clips.flatMap((c) => (isMediaRef(c.ref) ? [c.ref.media] : [])) ?? []),
-        ].sort(),
-      ),
-    [doc],
-  );
-  useEffect(() => {
-    if (!doc) return;
-    let live = true;
-    void getApi()
-      .videoPrepare(file.scope, file.path)
-      .then(
-        (r) => {
-          if (!live) return;
-          setVideoMedia(key, r);
-          ended.current = { n: 0, ok: false };
-          setPending(r.media.flatMap((m) => m.jobs));
-        },
-        () => {},
-      );
-    return () => {
-      live = false;
-    };
-  }, [key, names, rounds]);
-  const jobEnded = (ok: boolean) => {
-    const e = ended.current;
-    e.n++;
-    e.ok ||= ok;
-    // All done: ask again (the next files, the links); a failure is not retried in a loop.
-    if (e.n >= pending.length && e.ok && rounds < 6) setRounds((n) => n + 1);
-  };
-
+  const { prepared, pending, preparing, jobEnded } = usePrepared(file, doc);
   const mediaMap = useMemo(() => playerMediaOf(prepared?.media), [prepared]);
   const byName = useMemo(
     () => Object.fromEntries((prepared?.media ?? []).map((m) => [m.media, m])),
@@ -404,7 +420,6 @@ export function VideoPreview({ file }: { file: File }) {
     el.addEventListener("pointerup", up);
   };
   const missing = (prepared?.media ?? []).filter((m) => m.missing).map((m) => m.media);
-  const preparing = pending.length > 0 && ended.current.n < pending.length;
   const { width: W, height: H } = doc.format;
 
   return (

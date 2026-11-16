@@ -38,6 +38,7 @@ export const VIEWERS: Record<ViewerKind, () => Promise<View>> = {
   font: () => import("./FontView.js").then((m) => m.FontView),
   tree: () => import("./TreeView.js").then((m) => m.TreeView),
   layers: () => import("./OraView.js").then((m) => m.OraView),
+  timeline: () => import("./TreeView.js").then((m) => m.TreeView),
   unknown: async () => UnknownView,
 };
 

@@ -1094,3 +1094,95 @@ export const IconKeyboard = ({ size = 15 }: P) => (
     <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10" />
   </Svg>
 );
+
+// ---- G41.5b: the timeline editor ---------------------------------------------------------------
+
+/** The blade (B): a razor cutting a clip. */
+export const IconBlade = ({ size = 15 }: P) => (
+  <Svg size={size}>
+    <path d="M4 20L14 10" />
+    <path d="M14 10l3-7 4 4-7 3z" />
+    <path d="M3 14h5M16 20h5" />
+  </Svg>
+);
+/** Ripple trim (T): an edge with arrows both ways. */
+export const IconRippleTrim = ({ size = 15 }: P) => (
+  <Svg size={size}>
+    <path d="M12 3v18" />
+    <path d="M7 8l-4 4 4 4M17 8l4 4-4 4" />
+  </Svg>
+);
+/** Snapping (N): a magnet. */
+export const IconMagnet = ({ size = 15 }: P) => (
+  <Svg size={size}>
+    <path d="M6 3v8a6 6 0 0 0 12 0V3" />
+    <path d="M6 7h4M14 7h4M10 3v8a2 2 0 0 0 4 0V3" />
+  </Svg>
+);
+/** Linked clips: two rings of a chain. */
+export const IconLink = ({ size = 15 }: P) => (
+  <Svg size={size}>
+    <path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7" />
+    <path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7" />
+  </Svg>
+);
+/** A marker: a small flag. */
+export const IconFlag = ({ size = 15 }: P) => (
+  <Svg size={size}>
+    <path d="M5 21V4" />
+    <path d="M5 4h11l-2 4 2 4H5" />
+  </Svg>
+);
+export const IconEyeOff = ({ size = 14 }: P) => (
+  <Svg size={size}>
+    <path d="M17.9 17.9A10.4 10.4 0 0 1 12 20c-7 0-11-8-11-8a19 19 0 0 1 5.1-5.9M9.9 4.2A9.9 9.9 0 0 1 12 4c7 0 11 8 11 8a19 19 0 0 1-2.2 3.2" />
+    <path d="M14.1 14.1a3 3 0 1 1-4.2-4.2M1 1l22 22" />
+  </Svg>
+);
+export const IconSpeakerOff = ({ size = 14 }: P) => (
+  <Svg size={size}>
+    <path d="M11 5L6 9H2v6h4l5 4z" />
+    <path d="M23 9l-6 6M17 9l6 6" />
+  </Svg>
+);
+export const IconUnlock = ({ size = 14 }: P) => (
+  <Svg size={size}>
+    <rect x="3" y="11" width="18" height="11" rx="2" />
+    <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+  </Svg>
+);
+/** The source's In: a bracket opening. */
+export const IconMarkIn = ({ size = 14 }: P) => (
+  <Svg size={size}>
+    <path d="M10 4H6v16h4" />
+    <path d="M14 12h6M17 9l3 3-3 3" />
+  </Svg>
+);
+/** The source's Out: a bracket closing. */
+export const IconMarkOut = ({ size = 14 }: P) => (
+  <Svg size={size}>
+    <path d="M14 4h4v16h-4" />
+    <path d="M4 12h6M7 9l3 3-3 3" />
+  </Svg>
+);
+/** Insert (F9): a clip pushing the others apart. */
+export const IconInsert = ({ size = 15 }: P) => (
+  <Svg size={size}>
+    <rect x="9" y="7" width="6" height="10" rx="1" />
+    <path d="M2 12h4M18 12h4M4 10l2 2-2 2M20 10l-2 2 2 2" />
+  </Svg>
+);
+/** Overwrite (F10): a clip laid over the others. */
+export const IconOverwrite = ({ size = 15 }: P) => (
+  <Svg size={size}>
+    <rect x="3" y="10" width="18" height="8" rx="1" />
+    <path d="M12 2v6M9 5l3 3 3-3" />
+  </Svg>
+);
+/** Append (Shift+F12): a clip added at the end. */
+export const IconAppend = ({ size = 15 }: P) => (
+  <Svg size={size}>
+    <rect x="2" y="8" width="10" height="8" rx="1" />
+    <path d="M16 12h6M19 9v6" />
+  </Svg>
+);

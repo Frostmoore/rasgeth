@@ -114,6 +114,17 @@ function Folder({
             {...(e.type === "dir" && { "aria-expanded": open.has(e.path) })}
             class={`tree-row${selected === e.path ? " selected" : ""}`}
             style={{ paddingLeft: `${depth * 14 + 8}px` }}
+            // A file goes where it is dropped (G41.5b: a video, a picture or a sound into a timeline).
+            {...(e.type === "file" && {
+              draggable: true,
+              onDragStart: (ev: DragEvent) => {
+                ev.dataTransfer?.setData(
+                  "application/x-redgiant-file",
+                  JSON.stringify({ scope, path: e.path }),
+                );
+                if (ev.dataTransfer) ev.dataTransfer.effectAllowed = "copy";
+              },
+            })}
             {...(e.type === "dir" && {
               onDragOver: (ev: DragEvent) => {
                 ev.preventDefault();

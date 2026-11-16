@@ -1,6 +1,7 @@
 // The video editor's routes (G41.5a): what the page needs to play a timeline on proxies, and the
 // exact preview of a stretch made by ffmpeg.
-//   POST /api/editor/video/prepare {scope, path}   every file the timeline uses: its probe, signed
+//   POST /api/editor/video/prepare {scope, path, extra?}  every file the timeline uses (and the
+//                                                  `extra` ones, about to go in): its probe, signed
 //                                                  links (`/preview/…`, served with Range) to the
 //                                                  proxy, strip of frames, waveform and the file
 //                                                  itself, and the jobs started for what is missing
@@ -125,6 +126,8 @@ export function videoRoutes<E extends { Variables: any }>(
   /** The timeline as saved, and its files' paths on this machine. */
   const timeline = async (ownerId: string, scope: string, path: string) => {
     if (extname(path).toLowerCase() !== ".rgvideo") throw new BadRequestError("Not a .rgvideo");
+    // The editor's latest edits first (G41.5b: the host writes after a pause).
+    await core.editor.writeNow(ownerId, { scope, path });
     const abs = await core.docAbs(ownerId, { scope, path }).catch(() => {
       throw new NotFoundError(`No such file "${path}"`);
     });
@@ -135,14 +138,17 @@ export function videoRoutes<E extends { Variables: any }>(
   };
 
   app.post("/api/editor/video/prepare", async (c) => {
-    const b = FileBody.safeParse(await c.req.json().catch(() => ({})));
+    const b = FileBody.extend({
+      /** Files not in the timeline yet (G41.5b: dragged from the project's files). */
+      extra: z.array(z.string().min(1).max(4000)).max(50).optional(),
+    }).safeParse(await c.req.json().catch(() => ({})));
     if (!b.success) return c.json({ error: b.error.message }, 400);
     const o = owner(c);
     const t = await timeline(o, b.data.scope, b.data.path);
     const media = await prepareMedia({
       analysis: core.videoAnalysis,
       owner: o,
-      media: t.media,
+      media: [...new Set([...t.media, ...(b.data.extra ?? [])])],
       abs: t.mediaAbs,
       link: link(o),
       fingerprint: (abs) => fingerprints.of(abs),

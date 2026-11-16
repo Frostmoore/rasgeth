@@ -1890,10 +1890,11 @@ export class Api {
     fresh?: boolean;
   }) => this.call<{ added: number }>("POST", "/api/artifacts/errors", body);
   /** A timeline's files for the page's playback (G41.5a): links, and the jobs started. */
-  videoPrepare = (scope: string, path: string) =>
+  videoPrepare = (scope: string, path: string, extra?: string[]) =>
     this.call<import("@redgiant/protocol").VideoPrepared>("POST", "/api/editor/video/prepare", {
       scope,
       path,
+      ...(extra?.length && { extra }),
     });
   /** The exact preview of frames [from, to) of a timeline, made by ffmpeg: a job to follow. */
   videoExact = (scope: string, path: string, from: number, to: number) =>

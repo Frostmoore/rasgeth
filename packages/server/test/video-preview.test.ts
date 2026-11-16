@@ -6,7 +6,7 @@ import { mkdir, mkdtemp, readdir, readFile, rm, stat, utimes, writeFile } from "
 import { tmpdir } from "node:os";
 import { isAbsolute, join } from "node:path";
 import { newRgVideo, type RgVideo, type VideoClip } from "@redgiant/protocol";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { VideoAnalysis } from "../src/editor/video/analysis.js";
 import type { MediaRunner, RunOptions } from "../src/editor/video/media-run.js";
 import { pruneCache, VideoPreviews } from "../src/editor/video/preview.js";
@@ -284,6 +284,21 @@ describe("video routes", () => {
       expect(ready.filmstrip).toMatchObject({ tiles: 30 });
       expect(ready.waveform).toMatchObject({ width: 1200 });
       expect(three.fonts.regular).toMatch(/Inter-Regular\.ttf$/);
+      // G41.5b: files about to go in (dragged from the project) are prepared too, and the
+      // editor's latest edits are written first.
+      const written = vi.spyOn(s.core.editor, "writeNow");
+      const extra = await s.api<{ media: Info[] }>("POST", "/api/editor/video/prepare", {
+        ...file,
+        extra: ["foto.jpg", "nuova.mp4"],
+      });
+      expect(written).toHaveBeenCalledWith("me", file);
+      expect(extra.body.media.map((m) => m.media).sort()).toEqual([
+        "foto.jpg",
+        "nuova.mp4",
+        "riprese/clip.mp4",
+        "via.mp4",
+      ]);
+      expect(extra.body.media.find((m) => m.media === "nuova.mp4")?.missing).toBe(true);
       // a signed link plays in a <video>: no sign-in header, ranges answered
       const ranged = await fetch(`${s.url}${ready.proxy}`, { headers: { range: "bytes=0-3" } });
       expect(ranged.status).toBe(206);

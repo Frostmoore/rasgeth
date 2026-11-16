@@ -78,7 +78,7 @@ const clockOf = (s: number) => {
   return `${m}:${String(r).padStart(2, "0")}`;
 };
 
-/** A timeline (`.rgvideo`, G41.5a): played in the page on the proxies, loaded when first shown. */
+/** A timeline (`.rgvideo`): edited in DocEditor (G41.5b); played only when the host cannot open it. */
 const VideoPreview = lazy(() => import("./viewers/VideoPreview.js").then((m) => m.VideoPreview));
 const isTimeline = (path: string) => /\.rgvideo$/i.test(path);
 
@@ -457,26 +457,26 @@ export function Canvas({ title, target }: { title: string; target: CanvasTarget 
               onErrors={setArtErrors}
             />
           )
-        ) : target.kind === "file" && target.scope !== "outside" && isTimeline(target.path) ? (
-          <CanvasTab.Provider value={id}>
-            <VideoPreview file={{ scope: target.scope, path: target.path }} />
-          </CanvasTab.Provider>
         ) : editable && target.kind === "file" ? (
           <CanvasTab.Provider value={id}>
             <DocEditor
               file={{ scope: target.scope, path: target.path }}
               line={target.at?.line}
               page={target.at?.page}
-              fallback={() => (
-                <CanvasFile
-                  scope={target.scope}
-                  path={target.path}
-                  name={name}
-                  url={url}
-                  onKind={setShown}
-                  {...(target.at && { at: target.at })}
-                />
-              )}
+              fallback={() =>
+                isTimeline(target.path) ? (
+                  <VideoPreview file={{ scope: target.scope, path: target.path }} />
+                ) : (
+                  <CanvasFile
+                    scope={target.scope}
+                    path={target.path}
+                    name={name}
+                    url={url}
+                    onKind={setShown}
+                    {...(target.at && { at: target.at })}
+                  />
+                )
+              }
             />
           </CanvasTab.Provider>
         ) : site ? (
