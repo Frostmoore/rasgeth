@@ -95,10 +95,15 @@ void main() {
     await shot(t, '$p-07-diff');
     if (!_tablet) {
       final comment = find.byWidgetPredicate(
-        (w) => w.key is ValueKey<String> && '${(w.key! as ValueKey<String>).value}'.startsWith('hunk-comment-@@'),
+        (w) =>
+            w.key is ValueKey<String> &&
+            (w.key! as ValueKey<String>).value.startsWith('hunk-comment-@@'),
       );
       await tap(t, comment.first);
-      await t.enterText(find.byKey(const Key('hunk-comment-text')), 'Mostra anche un esempio nel README');
+      await t.enterText(
+        find.byKey(const Key('hunk-comment-text')),
+        'Mostra anche un esempio nel README',
+      );
       await frames(t, 600);
       await shot(t, '$p-08-diff-commenta');
       // Not through ensureVisible: it would slide the project's pages too.
@@ -121,7 +126,9 @@ void main() {
       await shot(t, '$p-11-log');
       await tap(t, find.byKey(const Key('log-errors')), 2500);
       final first = find.byWidgetPredicate(
-        (w) => w.key is ValueKey<String> && RegExp(r'^log-\d+$').hasMatch('${(w.key! as ValueKey<String>).value}'),
+        (w) =>
+            w.key is ValueKey<String> &&
+            RegExp(r'^log-\d+$').hasMatch((w.key! as ValueKey<String>).value),
       );
       await tap(t, first.first, 1200);
       await shot(t, '$p-12-log-errori-json');
@@ -133,7 +140,9 @@ void main() {
       await frames(t, 1000);
 
       // ---- The agent's sheet ----
-      final coder = app.agents.firstWhere((a) => a.projectId == 'demo' && a.kind == AgentKind.agent);
+      final coder = app.agents.firstWhere(
+        (a) => a.projectId == 'demo' && a.kind == AgentKind.agent,
+      );
       await tap(t, find.byKey(const Key('tab-team')), 1500);
       final nav = t.state<NavigatorState>(find.byType(Navigator).first);
       unawaited(showAgentSheet(nav.context, coder));
