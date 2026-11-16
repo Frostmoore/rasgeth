@@ -22208,6 +22208,7 @@ fieldset.saved-filter legend {
 .ve-text-edit {
   z-index: 3;
   pointer-events: none;
+  font-family: "RG Inter", Inter, system-ui, sans-serif;
 }
 .ve-text-edit > span {
   pointer-events: auto;
@@ -22215,6 +22216,10 @@ fieldset.saved-filter legend {
   outline-offset: 3px;
   caret-color: #fff;
   cursor: text;
+}
+/* The inspector's switches keep their drawn size on a touch screen: their words are the target. */
+.side-content .ve button.ui-switch {
+  min-height: 0;
 }
 /* A phone: short headers, one video and one audio track, big targets for fingers. */
 .ve.phone {

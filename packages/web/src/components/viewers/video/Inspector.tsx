@@ -82,7 +82,36 @@ export function Dial({
   const v = live ?? value;
   const span = max - min || 1;
   return (
-    <label class="ve-dial">
+    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: the label only keeps its slider's keys
+    <label
+      class="ve-dial"
+      onKeyDown={(e) => {
+        // One press, one step, one edit (Shift: ten); the editor's keys stay out of it.
+        const k = e.key;
+        const by =
+          k === "ArrowRight" || k === "ArrowUp"
+            ? 1
+            : k === "ArrowLeft" || k === "ArrowDown"
+              ? -1
+              : k === "PageUp"
+                ? 10
+                : k === "PageDown"
+                  ? -10
+                  : 0;
+        if (!by && k !== "Home" && k !== "End") return;
+        e.preventDefault();
+        e.stopPropagation();
+        const n =
+          k === "Home"
+            ? min
+            : k === "End"
+              ? max
+              : Math.max(min, Math.min(max, v + by * step * (e.shiftKey ? 10 : 1)));
+        const r = Math.round(n / step) * step;
+        setLive(undefined);
+        if (r !== value) onCommit(r);
+      }}
+    >
       <span class="ve-dial-hd">
         <span>{label}</span>
         <output>{format(v)}</output>

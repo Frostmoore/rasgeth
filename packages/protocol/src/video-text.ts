@@ -3,7 +3,7 @@
 // shows wraps where the render wraps. Subtitles' SRT and WebVTT are here too (the page offers
 // them as files). Pure: text in, numbers and text out.
 
-import type { VideoCaption, VideoCaptionWord, VideoRate, VideoTextRef } from "./doc-video.js";
+import type { VideoCaption, VideoRate, VideoTextRef } from "./doc-video.js";
 import { framesToSeconds } from "./video-timeline.js";
 
 /** How a text style is drawn: its share of the short side, its font, a box or a shadow. */
@@ -150,26 +150,7 @@ export function fitText(
 }
 
 // -------------------------------------------------------------------------------------------
-// Subtitles' words and files
-
-/**
- * A subtitle's words with their frames: its own (G41.4, from the transcription) or, for a line
- * typed by hand, spread over its time by their length (as G41.4's interpolated words).
- */
-export function captionWords(c: Pick<VideoCaption, "start" | "end" | "text" | "words">) {
-  if (c.words?.length) return c.words.map((w) => ({ ...w }));
-  const parts = c.text.split(/\s+/).filter(Boolean);
-  const total = parts.reduce((n, p) => n + p.length + 1, 0);
-  const out: VideoCaptionWord[] = [];
-  let at = 0;
-  for (const p of parts) {
-    const s = c.start + Math.round(((c.end - c.start) * at) / total);
-    at += p.length + 1;
-    const e = c.start + Math.round(((c.end - c.start) * at) / total);
-    out.push({ start: s, end: Math.max(e, s + 1), text: p });
-  }
-  return out;
-}
+// Subtitles' files (their words, `captionWords`, are in video-timeline.ts: the ripples use them)
 
 function clock(seconds: number, sep: "," | "."): string {
   const ms = Math.max(0, Math.round(seconds * 1000));

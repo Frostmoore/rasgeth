@@ -1211,6 +1211,13 @@ describe("cutTimeRange: the speech cut from its text", () => {
     expect(d.markers.map((m) => m.frame)).toEqual([10, 34, 104]);
   });
 
+  it("a line typed by hand loses the words cut, spread by their length", () => {
+    const d = cutTimeRange(addCaption(doc(), 200, 240, "alfa beta"), 200, 220);
+    expect(d.captions.segments.map((c) => [c.start, c.end, c.text, c.words])).toEqual([
+      [200, 220, "beta", undefined],
+    ]);
+  });
+
   it("a locked track stays; nothing to cut gives the same timeline", () => {
     const d0 = setTrack(withTimed(doc()), "V2", { locked: true });
     const d = cutTimeRange(d0, 100, 120);

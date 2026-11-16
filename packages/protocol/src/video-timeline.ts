@@ -403,6 +403,25 @@ function shiftAfter(
  */
 const timedFollow = (only?: ReadonlySet<string>) => !only || only.has("V1") || only.has("A1");
 
+/**
+ * A subtitle's words with their frames: its own (G41.4, from the transcription) or, for a line
+ * typed by hand, spread over its time by their length (as G41.4's interpolated words).
+ */
+export function captionWords(c: Pick<VideoCaption, "start" | "end" | "text" | "words">) {
+  if (c.words?.length) return c.words.map((w) => ({ ...w }));
+  const parts = c.text.split(/\s+/).filter(Boolean);
+  const total = parts.reduce((n, p) => n + p.length + 1, 0);
+  const out: VideoCaptionWord[] = [];
+  let at = 0;
+  for (const p of parts) {
+    const s = c.start + Math.round(((c.end - c.start) * at) / total);
+    at += p.length + 1;
+    const e = c.start + Math.round(((c.end - c.start) * at) / total);
+    out.push({ start: s, end: Math.max(e, s + 1), text: p });
+  }
+  return out;
+}
+
 /** Everything timed from `from` on moves by `delta` (a space opened, F9). */
 function shiftTimed(doc: RgVideo, from: number, delta: number) {
   for (const m of doc.markers) if (m.frame >= from) m.frame = Math.max(0, m.frame + delta);
@@ -417,8 +436,8 @@ function shiftTimed(doc: RgVideo, from: number, delta: number) {
 
 /**
  * Frames [s, e) left the timeline: markers inside go to `s`, those after move back; a subtitle
- * inside goes, one across an edge loses the part (and the words) that went, the rest moves back.
- * A subtitle keeps its text unless its words say what is left.
+ * inside goes, one across an edge loses the part (and the words) that went, the rest moves back;
+ * its text becomes the words left (its own, or spread by length for a line typed by hand).
  */
 function cutTimed(doc: RgVideo, s: number, e: number) {
   const len = e - s;
@@ -442,14 +461,14 @@ function cutTimed(doc: RgVideo, s: number, e: number) {
     const end = at(c.end);
     if (end - start < 1) continue;
     const n: VideoCaption = { ...c, start, end };
-    if (c.words) {
-      const words = c.words
-        .filter((w) => (w.start + w.end) / 2 < s || (w.start + w.end) / 2 >= e)
-        .map((w) => ({ ...w, start: at(w.start), end: Math.max(at(w.start) + 1, at(w.end)) }));
-      if (!words.length) continue;
-      if (words.length !== c.words.length) n.text = words.map((w) => w.text).join(" ");
-      n.words = words;
-    }
+    // A line typed by hand has no words of its own: spread by length, as the transcript shows it.
+    const all = c.words ?? captionWords(c);
+    const words = all
+      .filter((w) => (w.start + w.end) / 2 < s || (w.start + w.end) / 2 >= e)
+      .map((w) => ({ ...w, start: at(w.start), end: Math.max(at(w.start) + 1, at(w.end)) }));
+    if (all.length && !words.length) continue;
+    if (words.length !== all.length) n.text = words.map((w) => w.text).join(" ");
+    if (c.words) n.words = words;
     out.push(n);
   }
   doc.captions.segments = out;

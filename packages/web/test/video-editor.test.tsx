@@ -908,11 +908,13 @@ describe("G41.5c: the page's pure parts", () => {
     expect(cutNear(timeline(), "V1", 100, 60)).toBeUndefined(); // a gap, not a cut
   });
 
+  type FamDir = [
+    (typeof TRANSITION_FAMILIES)[number],
+    (typeof TRANSITION_DIRS)[number] | undefined,
+  ];
   it.each(
-    TRANSITION_FAMILIES.flatMap((f) =>
-      f === "wipe" || f === "slide"
-        ? TRANSITION_DIRS.map((d) => [f, d] as const)
-        : [[f, undefined] as const],
+    TRANSITION_FAMILIES.flatMap((f): FamDir[] =>
+      f === "wipe" || f === "slide" ? TRANSITION_DIRS.map((d): FamDir => [f, d]) : [[f, undefined]],
     ),
   )("the transition %s %s, and back", (f, d) => {
     const k = transitionKind(f, d);
@@ -970,7 +972,13 @@ describe("G41.5c: the page's pure parts", () => {
     const { fitText } = await import("@redgiant/protocol");
     const { textStyle } = await import("../src/components/viewers/video/player.js");
     const vars: Record<string, string> = {};
-    const el = { style: { setProperty: (k: string, v: string) => void (vars[k] = v) } };
+    const el = {
+      style: {
+        setProperty: (k: string, v: string) => {
+          vars[k] = v;
+        },
+      },
+    };
     const ref = {
       text: "Marta Rossi, regista del documentario sulla costa ligure",
       style: "lower_third",
@@ -1038,6 +1046,13 @@ describe("G41.5c: the editor", () => {
     const vol = dialOf(insp, "Volume");
     setDial(vol, -6);
     expect(find(host.doc, "m").volume).toBe(-6);
+    // The arrows: one step each, Shift ten; the playhead stays where it is.
+    fireEvent.keyDown(dialOf(insp, "Volume"), { key: "ArrowLeft" });
+    expect(find(host.doc, "m").volume).toBe(-6.5);
+    await waitFor(() => expect(dialOf(insp, "Volume").value).toBe("-6.5"));
+    fireEvent.keyDown(dialOf(insp, "Volume"), { key: "ArrowRight", shiftKey: true });
+    expect(find(host.doc, "m").volume).toBe(-1.5);
+    expect(state.videoViewOf(KEY).frame).toBe(0);
     fireEvent.click(switchOf(insp, "Audio attivo"));
     expect(find(host.doc, "m").enabled).toBe(false);
     fireEvent.click(switchOf(insp, "Abbassa sotto la voce"));
