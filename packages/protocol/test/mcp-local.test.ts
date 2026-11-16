@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   hostOf,
   isExactVersion,
+  mcpPlace,
   parseHosts,
   pinOf,
   stdioProblem,
@@ -120,5 +121,35 @@ describe("local MCP servers (G41.0)", () => {
       hosts: ["api.example.com", "*.cdn.example.com", "x.org"],
       wrong: ["bad_host!"],
     });
+  });
+
+  it("decides where a local server runs: sandbox, computer, or waiting (a table)", () => {
+    const table: [Parameters<typeof mcpPlace>[0], ReturnType<typeof mcpPlace>][] = [
+      // Docker here: always the sandbox, never the computer, whatever was accepted.
+      [{ docker: true, hostOk: false, keyed: false, envOk: false }, { run: "sandbox" }],
+      [{ docker: true, hostOk: true, keyed: false, envOk: false }, { run: "sandbox" }],
+      [{ docker: true, hostOk: false, keyed: true, envOk: false }, { wait: "key" }],
+      [{ docker: true, hostOk: false, keyed: true, envOk: true }, { run: "sandbox" }],
+      [
+        { docker: true, hostOk: true, keyed: false, envOk: false, problem: "host-path" },
+        { wait: "host-path" },
+      ],
+      [
+        { docker: true, hostOk: true, keyed: false, envOk: false, problem: "docker" },
+        { wait: "docker" },
+      ],
+      // No Docker: on the computer only with the person's yes for that server.
+      [{ docker: false, hostOk: false, keyed: false, envOk: false }, { wait: "host" }],
+      [{ docker: false, hostOk: false, keyed: true, envOk: true }, { wait: "host" }],
+      [{ docker: false, hostOk: true, keyed: false, envOk: false }, { run: "host" }],
+      [{ docker: false, hostOk: true, keyed: true, envOk: false }, { wait: "key" }],
+      [{ docker: false, hostOk: true, keyed: true, envOk: true }, { run: "host" }],
+      // What a sandbox could not run still runs on the computer once accepted.
+      [
+        { docker: false, hostOk: true, keyed: false, envOk: false, problem: "host-path" },
+        { run: "host" },
+      ],
+    ];
+    for (const [o, want] of table) expect(mcpPlace(o), JSON.stringify(o)).toEqual(want);
   });
 });

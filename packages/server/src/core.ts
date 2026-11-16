@@ -87,6 +87,7 @@ import {
   type MediaKind,
   type MessageQuote,
   type ModelSpec,
+  mcpPlace,
   migrateCatalogStdio,
   type NotifyReport,
   nativePaths,
@@ -147,6 +148,7 @@ import {
   parseLog,
   queryLog,
   type ShowFileRequest,
+  type SpawnedProcess,
   SubprojectWorkspace,
   shellPath,
   startFolder,
@@ -258,6 +260,7 @@ import {
   McpBlockedError,
   McpSandboxes,
   type McpSandboxOptions,
+  mcpFolder,
 } from "./mcp-sandbox.js";
 import { MediaError, type MediaRequest, type MediaResult, makeMedia } from "./media.js";
 import type { CatalogWatcher } from "./models-catalog.js";
@@ -893,6 +896,8 @@ export class RedGiantCore implements OrchestrationHost {
   readonly mcpCredentials: McpCredentialStore;
   /** Local MCP servers' sandboxes (G41.0); none without Docker. */
   readonly mcpSandboxes: McpSandboxes | undefined;
+  /** Each local server's own folder lives here (`mcpFolder`), in a sandbox or not. */
+  private readonly mcpDir: string;
   /** Sign-ins in progress, by OAuth state. */
   private readonly mcpPending = new Map<
     string,
@@ -921,11 +926,9 @@ export class RedGiantCore implements OrchestrationHost {
       kind: "mcp" as const,
       what: "sign-in",
     });
+    this.mcpDir = o.mcpSandbox?.dir ?? join(dirname(o.workspacesDir), "mcp-servers");
     this.mcpSandboxes = o.mcpSandbox
-      ? new McpSandboxes({
-          ...o.mcpSandbox,
-          dir: o.mcpSandbox.dir ?? join(dirname(o.workspacesDir), "mcp-servers"),
-        })
+      ? new McpSandboxes({ ...o.mcpSandbox, dir: this.mcpDir })
       : undefined;
     this.mcpCredentials = new McpCredentialStore(
       o.mcpCredentialsDir ?? join(dirname(o.workspacesDir), "mcp-credentials"),
@@ -2819,8 +2822,13 @@ export class RedGiantCore implements OrchestrationHost {
         ...(secrets.env && { env: secrets.env }),
       },
       // A local server in its own sandbox (G41.0); its keys only in that process's variables.
-      ...(transport.type === "stdio" &&
-        boxes && { spawn: (env) => boxes.spawn(ownerId, name, transport, env) }),
+      // Without Docker, on the computer: `mcpGate` let it start only with the person's yes.
+      ...(transport.type === "stdio" && {
+        spawn: (env: Record<string, string>) =>
+          boxes
+            ? boxes.spawn(ownerId, name, transport, env)
+            : this.hostSpawn(ownerId, name, transport, env),
+      }),
       ...(transport.type === "http" &&
         transport.oauth &&
         back && {
@@ -2843,10 +2851,11 @@ export class RedGiantCore implements OrchestrationHost {
       project_id: string | null;
       transport: McpServerConfig["transport"] | string;
       env_ok: { by: string; at: string } | string | null;
+      host_ok: { by: string; at: string } | string | null;
     }>(
       projectId === undefined
-        ? "SELECT name, project_id, transport, env_ok FROM rg_mcp_servers WHERE owner_id = $1 ORDER BY name"
-        : "SELECT name, project_id, transport, env_ok FROM rg_mcp_servers WHERE owner_id = $1 AND (project_id IS NULL OR project_id = $2) ORDER BY name",
+        ? "SELECT name, project_id, transport, env_ok, host_ok FROM rg_mcp_servers WHERE owner_id = $1 ORDER BY name"
+        : "SELECT name, project_id, transport, env_ok, host_ok FROM rg_mcp_servers WHERE owner_id = $1 AND (project_id IS NULL OR project_id = $2) ORDER BY name",
       projectId === undefined ? [ownerId] : [ownerId, projectId ?? ""],
     );
     return rows.map((r) => ({
@@ -2858,13 +2867,18 @@ export class RedGiantCore implements OrchestrationHost {
         by: string;
         at: string;
       } | null,
+      host_ok: (typeof r.host_ok === "string" ? JSON.parse(r.host_ok) : r.host_ok) as {
+        by: string;
+        at: string;
+      } | null,
     }));
   }
 
   /**
    * Whether a local server may start (G41.0), after moving it to its pinned form when it came from
    * the catalog before, or pinning a package added by hand at its newest version: nothing for a
-   * remote server; otherwise why it waits.
+   * remote server; otherwise why it waits. Where it runs is `mcpPlace` (with Docker its sandbox,
+   * without it the computer once the person accepted it, 2026-11-16).
    */
   private async mcpGate(
     ownerId: string,
@@ -2872,7 +2886,7 @@ export class RedGiantCore implements OrchestrationHost {
   ): Promise<
     | { ok: McpServerConfig["transport"] }
     | {
-        state: "confirm" | "unavailable" | "blocked";
+        state: "confirm" | "blocked";
         reason?: McpBlockReason;
         error?: string;
         /** Its configuration as moved or pinned so far. */
@@ -2881,11 +2895,11 @@ export class RedGiantCore implements OrchestrationHost {
   > {
     if (r.transport.type !== "stdio") return { ok: r.transport };
     let t: Extract<McpServerConfig["transport"], { type: "stdio" }> = r.transport;
-    if (!this.mcpSandboxes) return { state: "unavailable", reason: "no-docker" };
+    const docker = this.mcpSandboxes !== undefined;
     const secrets = await this.mcpCredentials.load(ownerId, r.name).catch(() => ({}) as McpSecrets);
     const moved = migrateCatalogStdio(r.name, t, secrets.env);
     if (moved) t = await this.saveMcpTransport(ownerId, r.name, { ...moved });
-    const problem = stdioProblem(t);
+    const problem = docker ? stdioProblem(t) : undefined;
     if (problem) return { state: "blocked", reason: problem, transport: t };
     const pin = pinOf(t.command, t.args ?? []);
     if (pin && !pin.version) {
@@ -2902,9 +2916,39 @@ export class RedGiantCore implements OrchestrationHost {
         args: withVersion(t.command, t.args ?? [], latest),
       });
     }
-    const keyed = Object.values(secrets.env ?? {}).some((v) => v !== "");
-    if (keyed && !r.env_ok) return { state: "confirm", transport: t };
+    const place = mcpPlace({
+      docker,
+      hostOk: r.host_ok !== null,
+      keyed: Object.values(secrets.env ?? {}).some((v) => v !== ""),
+      envOk: r.env_ok !== null,
+    });
+    if ("wait" in place)
+      return place.wait === "key"
+        ? { state: "confirm", transport: t }
+        : { state: "blocked", reason: place.wait, transport: t };
     return { ok: t };
+  }
+
+  /**
+   * Without Docker (2026-11-16, «Ok per la 2»): a local server the person accepted runs on this
+   * computer, as before G41.0, in its own folder; its version stays pinned (uvx with its overrides).
+   */
+  private async hostSpawn(
+    ownerId: string,
+    name: string,
+    t: Extract<McpServerConfig["transport"], { type: "stdio" }>,
+    env: Record<string, string>,
+  ): Promise<SpawnedProcess> {
+    const dir = mcpFolder(this.mcpDir, ownerId, name);
+    await mkdir(dir, { recursive: true });
+    const cwd = t.cwd ? (isAbsolute(t.cwd) ? t.cwd : join(dir, t.cwd)) : dir;
+    let args = t.args ?? [];
+    if (t.overrides?.length && pinOf(t.command, args)?.runner === "uvx") {
+      const file = join(dir, ".redgiant-overrides.txt");
+      await writeFile(file, `${t.overrides.join("\n")}\n`);
+      args = ["--overrides", file, ...args];
+    }
+    return new LocalWorkspace(cwd).spawn(t.command, args, { env });
   }
 
   private async saveMcpTransport<T extends McpServerConfig["transport"]>(
@@ -2990,6 +3034,11 @@ export class RedGiantCore implements OrchestrationHost {
     return stopped;
   }
 
+  /** A local server's own folder (its sandbox's /workspace, or its folder on the computer). */
+  mcpServerFolder(ownerId: string, name: string): string {
+    return mcpFolder(this.mcpDir, ownerId, name);
+  }
+
   /** Whether local MCP servers can run here (a sandbox provider with containers). */
   get mcpLocalAvailable(): boolean {
     return this.mcpSandboxes !== undefined;
@@ -3027,6 +3076,8 @@ export class RedGiantCore implements OrchestrationHost {
         ).env;
         if (Object.values(env ?? {}).some((v) => v !== "")) local.keyInEnv = true;
         if (r.env_ok) local.envConfirmed = r.env_ok;
+        local.place = this.mcpSandboxes ? "sandbox" : "host";
+        if (r.host_ok) local.hostConfirmed = r.host_ok;
       }
       if (!("ok" in gate)) {
         out.push({
@@ -3096,7 +3147,7 @@ export class RedGiantCore implements OrchestrationHost {
      * The person read that a local server's keys go in its variables, and confirmed (G41.0). New
      * keys in its variables without it wait for that confirmation.
      */
-    confirm?: { keyInEnv: true; by: string },
+    confirm?: { keyInEnv?: boolean; host?: boolean; by: string },
   ): Promise<void> {
     await this.o.db.query(
       `INSERT INTO rg_mcp_servers (owner_id, name, project_id, transport) VALUES ($1, $2, $3, $4)
@@ -3116,7 +3167,8 @@ export class RedGiantCore implements OrchestrationHost {
         ...(secrets.app && { tokens: undefined, client: undefined, verifier: undefined }),
       });
     }
-    if (confirm) await this.confirmMcpEnv(ownerId, config.name, confirm.by);
+    if (confirm?.host) await this.confirmMcpHost(ownerId, config.name, confirm.by);
+    if (confirm?.keyInEnv) await this.confirmMcpEnv(ownerId, config.name, confirm.by);
     else if (Object.values(secrets?.env ?? {}).some((v) => v !== ""))
       await this.o.db.query(
         "UPDATE rg_mcp_servers SET env_ok = NULL WHERE owner_id = $1 AND name = $2",
@@ -3138,6 +3190,24 @@ export class RedGiantCore implements OrchestrationHost {
     );
     if (r.length === 0) throw new NotFoundError(`No MCP server "${name}"`);
     console.log(`mcp: ${by} confirmed that "${name}" gets its keys in its variables (${at})`);
+    await this.mcp.get(`${ownerId}/${name}`)?.close();
+    this.mcp.delete(`${ownerId}/${name}`);
+  }
+
+  /**
+   * The person accepted that a local server runs on this computer without protection (no Docker,
+   * 2026-11-16): kept with who and when, apart from the yes to its keys.
+   */
+  async confirmMcpHost(ownerId: string, name: string, by: string): Promise<void> {
+    const at = new Date().toISOString();
+    const r = await this.o.db.query<{ name: string }>(
+      "UPDATE rg_mcp_servers SET host_ok = $3 WHERE owner_id = $1 AND name = $2 RETURNING name",
+      [ownerId, name, JSON.stringify({ by, at })],
+    );
+    if (r.length === 0) throw new NotFoundError(`No MCP server "${name}"`);
+    console.log(
+      `mcp: ${by} accepted that "${name}" runs on this computer without protection (${at})`,
+    );
     await this.mcp.get(`${ownerId}/${name}`)?.close();
     this.mcp.delete(`${ownerId}/${name}`);
   }

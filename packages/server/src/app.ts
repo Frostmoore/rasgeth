@@ -805,6 +805,11 @@ const routes = {
                * sandbox, and confirmed.
                */
               confirmKeyInEnv: z.literal(true).optional(),
+              /**
+               * 2026-11-16: no Docker here, and the person read that this local server runs on the
+               * computer without protection, and confirmed.
+               */
+              confirmHost: z.literal(true).optional(),
             }),
           },
         },
@@ -1954,7 +1959,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.openapi(routes.setMcp, async (c) => {
     const b = c.req.valid("json");
     if (!(await ownsProject(c, b.projectId))) return c.json({ error: "Project not found" }, 404);
-    const { secrets, confirmKeyInEnv, ...config } = b;
+    const { secrets, confirmKeyInEnv, confirmHost, ...config } = b;
     // A private address only for a host the server may reach at all.
     if (config.transport.type === "stdio" && config.transport.privateHosts) {
       const hosts = config.transport.hosts ?? [];
@@ -1966,7 +1971,13 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       owner(c),
       config as never,
       secrets as never,
-      confirmKeyInEnv ? { keyInEnv: true, by: owner(c) } : undefined,
+      confirmKeyInEnv || confirmHost
+        ? {
+            ...(confirmKeyInEnv && { keyInEnv: true }),
+            ...(confirmHost && { host: true }),
+            by: owner(c),
+          }
+        : undefined,
     );
     return c.json({ ok: true as const }, 200);
   });
@@ -3280,6 +3291,10 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.get("/api/extensions/mcp/local", (c) => c.json({ available: core.mcpLocalAvailable }, 200));
   app.post("/api/extensions/mcp/:name/confirm-env", async (c) => {
     await core.confirmMcpEnv(owner(c), c.req.param("name"), owner(c));
+    return c.json({ ok: true as const }, 200);
+  });
+  app.post("/api/extensions/mcp/:name/confirm-host", async (c) => {
+    await core.confirmMcpHost(owner(c), c.req.param("name"), owner(c));
     return c.json({ ok: true as const }, 200);
   });
   app.get("/api/extensions/mcp/:name/update", async (c) =>

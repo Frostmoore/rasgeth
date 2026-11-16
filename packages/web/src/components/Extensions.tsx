@@ -189,6 +189,17 @@ function ProposalView({
 }
 
 /**
+ * No Docker here (2026-11-16, «Ok per la 2»): a local server runs on the computer without
+ * protection, so the person reads it and says yes, for each server.
+ */
+const askHost = (name: string) =>
+  askConfirm(t("extHostTitle"), {
+    text: t("extHostText", { name }),
+    yes: t("extHostYes"),
+    danger: true,
+  });
+
+/**
  * Opens the service's sign-in page in a new tab. The tab is opened before asking the server,
  * while the click still counts, or the browser would block it.
  */
@@ -284,11 +295,12 @@ function AddForm({
   const noDocker = entry.transport.type === "stdio" && local === false;
   const add = async (e: Event) => {
     e.preventDefault();
+    if (noDocker && !(await askHost(entry.name))) return;
     // G41.0: a key in an environment variable reaches the program in clear: the person says yes.
     if (
       entry.keyInEnv &&
       !(await askConfirm(t("extKeyInEnvTitle"), {
-        text: t("extKeyInEnvText", { name: entry.name }),
+        text: t(noDocker ? "extKeyInEnvTextHost" : "extKeyInEnvText", { name: entry.name }),
         yes: t("extKeyInEnvYes"),
         danger: true,
       }))
@@ -307,6 +319,7 @@ function AddForm({
           app: { clientId, ...(clientSecret.trim() && { clientSecret }) },
         }),
         ...(entry.keyInEnv && { confirmKeyInEnv: true as const }),
+        ...(noDocker && { confirmHost: true as const }),
       });
       onDone(signsIn && !(await signIn(entry.id)));
     } catch (err) {
@@ -414,7 +427,7 @@ function AddForm({
         <button type="button" class="wz-btn quiet" onClick={onCancel}>
           {t("cancel")}
         </button>
-        <button type="submit" class="wz-btn primary" disabled={busy || !ready || noDocker}>
+        <button type="submit" class="wz-btn primary" disabled={busy || !ready}>
           {signsIn ? t("extAddAndConnect") : t("extAdd")}
         </button>
       </Acts>
@@ -539,13 +552,13 @@ function Catalog({
                 ],
                 ...(open.transport.type === "stdio"
                   ? ([
-                      [t("xwRuns"), t("xwRunsSandbox")],
+                      [t("xwRuns"), t(local === false ? "xwRunsHost" : "xwRunsSandbox")],
                       [t("extLocalVersion"), `${open.transport.package} ${open.transport.version}`],
                     ] as [string, string][])
                   : []),
               ]}
             />
-            {open.transport.type === "stdio" && (
+            {open.transport.type === "stdio" && local !== false && (
               <p class="ui-help">{t("extLocalSandbox", { hosts: localHosts(open) })}</p>
             )}
             <a class="wz-link inl" href={open.homepage} target="_blank" rel="noreferrer">
@@ -584,7 +597,6 @@ function serviceState(s: McpStatus | undefined): string {
   if (s.state === "connected") return t("extWorks", { n: String(s.tools) });
   if (s.state === "login") return t("extNeedsLogin");
   if (s.state === "confirm") return t("extConfirmState");
-  if (s.state === "unavailable") return t("extNoDockerShort");
   if (s.state === "blocked") return t("extBlocked");
   return t("extBroken");
 }
@@ -624,16 +636,20 @@ function Connected({
     setNote(undefined);
   };
   /** G41.0: the person reads that its keys go in its variables, and says yes. */
-  const confirmEnv = async (name: string, shown: string) => {
+  const confirmEnv = async (name: string, shown: string, host: boolean) => {
     if (
       !(await askConfirm(t("extKeyInEnvTitle"), {
-        text: t("extKeyInEnvText", { name: shown }),
+        text: t(host ? "extKeyInEnvTextHost" : "extKeyInEnvText", { name: shown }),
         yes: t("extKeyInEnvStart"),
         danger: true,
       }))
     )
       return;
     if (await attempt(() => getApi().confirmMcpEnv(name))) onChange();
+  };
+  const confirmHost = async (name: string, shown: string) => {
+    if (!(await askHost(shown))) return;
+    if (await attempt(() => getApi().confirmMcpHost(name))) onChange();
   };
   /** "Update": the newest version, shown, then installed once the person confirms. */
   const update = async (name: string) => {
@@ -686,9 +702,7 @@ function Connected({
         })}
       </div>
       {status?.some((x) => x.state === "error") && <p class="wz-subl">{t("extBrokenHelp")}</p>}
-      {status?.some((x) => x.state === "unavailable") && (
-        <p class="notice warn">{t("extNoDocker")}</p>
-      )}
+      {status?.some((x) => x.place === "host") && <p class="notice warn">{t("extNoDocker")}</p>}
       {m && (
         <Modal title={entry?.name ?? m.name} onClose={close}>
           <div class="wz-panel-in">
@@ -706,13 +720,18 @@ function Connected({
                 ],
                 ...(m.transport.type === "stdio"
                   ? ([
-                      [t("xwRuns"), t("xwRunsSandbox")],
-                      [
-                        t("extHosts"),
-                        m.transport.hosts?.length
-                          ? m.transport.hosts.join(", ")
-                          : t("extLocalNoHosts"),
-                      ],
+                      [t("xwRuns"), t(s?.place === "host" ? "xwRunsHost" : "xwRunsSandbox")],
+                      // On the computer nothing holds it to its sites: the row would say otherwise.
+                      ...(s?.place === "host"
+                        ? []
+                        : [
+                            [
+                              t("extHosts"),
+                              m.transport.hosts?.length
+                                ? m.transport.hosts.join(", ")
+                                : t("extLocalNoHosts"),
+                            ],
+                          ]),
                     ] as [string, string][])
                   : []),
                 ...(s?.version
@@ -723,13 +742,21 @@ function Connected({
                   : []),
               ]}
             />
+            {s?.hostConfirmed && (
+              <p class="ui-help">
+                {t("extHostConfirmed", { when: new Date(s.hostConfirmed.at).toLocaleString() })}
+              </p>
+            )}
             {s?.envConfirmed && (
               <p class="ui-help">
                 {t("extEnvConfirmed", { when: new Date(s.envConfirmed.at).toLocaleString() })}
               </p>
             )}
-            {s?.state === "confirm" && <p class="notice warn">{t("extConfirmHelp")}</p>}
-            {s?.state === "unavailable" && <p class="notice warn">{t("extNoDocker")}</p>}
+            {s?.state === "confirm" && (
+              <p class="notice warn">
+                {t(s.place === "host" ? "extConfirmHelpHost" : "extConfirmHelp")}
+              </p>
+            )}
             {s?.state === "blocked" && <p class="notice warn">{blockedHelp(s.reason)}</p>}
             {(s?.state === "error" || s?.state === "blocked") && s.error && (
               <p class="notice error">{s.error}</p>
@@ -751,16 +778,24 @@ function Connected({
             >
               {t("remove")}
             </button>
-            {s?.package && s.state !== "unavailable" && (
+            {s?.package && (
               <button type="button" class="wz-btn quiet" onClick={() => void update(m.name)}>
                 {t("extUpdate")}
               </button>
             )}
-            {s?.state === "confirm" ? (
+            {s?.state === "blocked" && s.reason === "host" ? (
               <button
                 type="button"
                 class="wz-btn primary"
-                onClick={() => void confirmEnv(m.name, entry?.name ?? m.name)}
+                onClick={() => void confirmHost(m.name, entry?.name ?? m.name)}
+              >
+                {t("extConfirmBtn")}
+              </button>
+            ) : s?.state === "confirm" ? (
+              <button
+                type="button"
+                class="wz-btn primary"
+                onClick={() => void confirmEnv(m.name, entry?.name ?? m.name, s.place === "host")}
               >
                 {t("extConfirmBtn")}
               </button>
@@ -967,11 +1002,13 @@ function McpForm({
       return;
     }
     const keyed = type === "stdio" && Object.keys(keys.env).length > 0;
+    const onHost = type === "stdio" && local === false;
+    if (onHost && !(await askHost(name || command))) return;
     // G41.0: keys in its variables reach the program in clear, inside its sandbox.
     if (
       keyed &&
       !(await askConfirm(t("extKeyInEnvTitle"), {
-        text: t("extKeyInEnvText", { name: name || command }),
+        text: t(onHost ? "extKeyInEnvTextHost" : "extKeyInEnvText", { name: name || command }),
         yes: t("extKeyInEnvYes"),
         danger: true,
       }))
@@ -1001,6 +1038,7 @@ function McpForm({
           transport,
           ...(secrets && { secrets }),
           ...(keyed && { confirmKeyInEnv: true as const }),
+          ...(onHost && { confirmHost: true as const }),
         }),
       )
     )
@@ -1092,12 +1130,15 @@ function McpForm({
               onInput={(e) => setEnvText((e.target as HTMLTextAreaElement).value)}
             />
           </Field>
-          <p class="ui-help">
-            {t("extLocalSandbox", {
-              hosts: parseHosts(hosts).hosts.join(", ") || t("extLocalNoHosts"),
-            })}
-          </p>
-          {local === false && <p class="notice warn">{t("extNoDocker")}</p>}
+          {local === false ? (
+            <p class="notice warn">{t("extNoDocker")}</p>
+          ) : (
+            <p class="ui-help">
+              {t("extLocalSandbox", {
+                hosts: parseHosts(hosts).hosts.join(", ") || t("extLocalNoHosts"),
+              })}
+            </p>
+          )}
         </>
       )}
       {problem && <p class="notice error">{problem}</p>}

@@ -918,7 +918,11 @@ export class Api {
     secrets?: { headers?: Record<string, string>; env?: Record<string, string> };
     /** G41.0: the person confirmed that its keys go in its variables, in its sandbox. */
     confirmKeyInEnv?: true;
+    /** No Docker here: the person accepted that it runs on the computer without protection. */
+    confirmHost?: true;
   }) => this.call("PUT", "/api/extensions/mcp", m);
+  confirmMcpHost = (name: string) =>
+    this.call("POST", `/api/extensions/mcp/${encodeURIComponent(name)}/confirm-host`);
   /** Whether local MCP servers can run here (Docker, G41.0). */
   mcpLocal = () => this.call<{ available: boolean }>("GET", "/api/extensions/mcp/local");
   confirmMcpEnv = (name: string) =>

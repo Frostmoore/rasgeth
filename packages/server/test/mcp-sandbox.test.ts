@@ -12,7 +12,7 @@ import {
 } from "@redgiant/tools";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { McpBlockedError, McpSandboxes, stdioPlan } from "../src/mcp-sandbox.js";
-import { startServer } from "./helpers.js";
+import { echoServer, startServer } from "./helpers.js";
 
 /** A made-up MCP program: answers initialize and tools/list (one tool, `ping`). */
 function fakeServer(): SpawnedProcess {
@@ -373,16 +373,40 @@ describe("local MCP servers in the core (G41.0)", () => {
     ]);
   });
 
-  it("without Docker local servers wait, and say so", async () => {
+  it("without Docker a local server runs on the computer only after the person's yes (2026-11-16)", async () => {
     s = await startServer(() => ({ text: "ok" }), {}, { mcpSandbox: undefined });
     expect((await s.api("GET", "/api/extensions/mcp/local")).body).toEqual({ available: false });
+    // Saved before, or by someone else than the page: stopped, waiting for the yes.
     await s.api("PUT", "/api/extensions/mcp", {
-      name: "shopify-dev",
+      name: "echo",
       projectId: null,
-      transport: { type: "stdio", command: "npx", args: ["-y", "@shopify/dev-mcp@1.18.0"] },
+      transport: await echoServer(s.core, "me", "echo"),
+      secrets: { env: { ECHO_KEY: "host-key-123" } },
     });
-    expect((await s.api<St[]>("GET", "/api/extensions/mcp/status")).body).toEqual([
-      expect.objectContaining({ name: "shopify-dev", state: "unavailable", reason: "no-docker" }),
-    ]);
+    type Full = St & { place?: string; hostConfirmed?: { by: string } };
+    const status = async () => (await s?.api<Full[]>("GET", "/api/extensions/mcp/status"))?.body[0];
+    expect(await status()).toMatchObject({ state: "blocked", reason: "host", place: "host" });
+    expect((await s.api("POST", "/api/extensions/mcp/nope/confirm-host")).status).toBe(404);
+    // Running on the computer and the key in its variables are two different yeses.
+    await s.api("POST", "/api/extensions/mcp/echo/confirm-host");
+    expect(await status()).toMatchObject({ state: "confirm", hostConfirmed: { by: "me" } });
+    await s.api("POST", "/api/extensions/mcp/echo/confirm-env");
+    const running = await status();
+    expect(running).toMatchObject({ state: "connected", place: "host" });
+    expect(running?.tools).toBeGreaterThan(0);
+    // The page's own add carries both yeses; a path of the computer is fine there.
+    await s.api("PUT", "/api/extensions/mcp", {
+      name: "echo",
+      projectId: null,
+      transport: {
+        ...(await echoServer(s.core, "me", "echo")),
+        cwd: s.core.mcpServerFolder("me", "echo"),
+      },
+      secrets: { env: { ECHO_KEY: "host-key-456" } },
+      confirmKeyInEnv: true,
+      confirmHost: true,
+    });
+    expect(await status()).toMatchObject({ state: "connected" });
+    expect(JSON.stringify(await status())).not.toContain("host-key");
   });
 });

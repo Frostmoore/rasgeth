@@ -61,6 +61,10 @@ export interface McpSandboxOptions {
   installMs?: number;
 }
 
+/** A local server's own folder, in a sandbox or (no Docker) on the computer. */
+export const mcpFolder = (dir: string, owner: string, name: string) =>
+  join(dir, slug(owner) || "owner", name);
+
 const MARKER = ".redgiant-installed.json";
 const OVERRIDES = ".redgiant-overrides.txt";
 
@@ -129,7 +133,7 @@ export class McpSandboxes {
 
   /** The server's own folder (its /workspace). */
   folder(owner: string, name: string): string {
-    return join(this.o.dir, slug(owner) || "owner", name);
+    return mcpFolder(this.o.dir, owner, name);
   }
 
   /** The id of its sandbox (and its container's name). */

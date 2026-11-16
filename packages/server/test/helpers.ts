@@ -177,9 +177,7 @@ export async function echoServer(
   owner: string,
   name: string,
 ): Promise<{ type: "stdio"; command: string; args: string[] }> {
-  const boxes = core.mcpSandboxes;
-  if (!boxes) throw new Error("No MCP sandboxes in this test's core");
-  const dir = boxes.folder(owner, name);
+  const dir = core.mcpServerFolder(owner, name);
   await mkdir(dir, { recursive: true });
   const real = pathToFileURL(join(testDir, "../../extensions/test/mcp-server.mjs")).href;
   await writeFile(join(dir, "server.mjs"), `import ${JSON.stringify(real)};\n`);

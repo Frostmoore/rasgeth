@@ -98,6 +98,8 @@ export async function migrateExtensions(db: SqlClient): Promise<void> {
     )`);
   // G41.0: who confirmed that a local server's keys go in its variables, and when.
   await db.query("ALTER TABLE rg_mcp_servers ADD COLUMN IF NOT EXISTS env_ok jsonb");
+  // 2026-11-16: who accepted that a local server runs on the computer without Docker, and when.
+  await db.query("ALTER TABLE rg_mcp_servers ADD COLUMN IF NOT EXISTS host_ok jsonb");
   // G36.8: the installed skill an update replaces, kept for the person's comparison.
   await db.query("ALTER TABLE rg_proposals ADD COLUMN IF NOT EXISTS previous jsonb");
 }

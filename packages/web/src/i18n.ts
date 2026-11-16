@@ -2398,11 +2398,21 @@ const en = {
   extHostOwn: "the address you give",
   extLocalVersion: "Version",
   extNoDocker:
-    "Local servers run in a sandbox of their own, and this RedGiant has no Docker: they cannot start here. Install Docker (or RedGiant's Docker version), then restart RedGiant.",
-  extNoDockerShort: "Needs Docker",
+    "There is no Docker here: local servers run on this computer without a sandbox, each only after you confirm it. With Docker (or RedGiant's Docker version) they would run in a sandbox of their own.",
+  extNoDockerShort: "On this computer",
+  extHostTitle: "This program runs without protection",
+  extHostText:
+    "{name} runs on this computer, not in a sandbox (there is no Docker here): it can see RedGiant's data, your files and the network. Go on only if you trust it.",
+  extHostYes: "I understand, run it here",
+  extHostConfirmed: "Runs on this computer: confirmed on {when}",
+  xwRunsHost: "On this computer (no Docker)",
   extKeyInEnvTitle: "The key goes to the program in clear",
   extKeyInEnvText:
     "{name} wants its key in an environment variable. RedGiant keeps it in the keychain and gives it only to this server's program, inside its own sandbox: never to the agents, a log or an answer. The program itself reads it in clear: go on only if you trust it.",
+  extKeyInEnvTextHost:
+    "{name} wants its key in an environment variable. RedGiant keeps it in the keychain and gives it only to this server's program, which runs on this computer: never to the agents, a log or an answer. The program itself reads it in clear: go on only if you trust it.",
+  extConfirmHelpHost:
+    "Its keys go to its program in clear, on this computer. It starts once you confirm.",
   extKeyInEnvYes: "I understand, add it",
   extKeyInEnvStart: "I understand, start it",
   extConfirmState: "Waiting for your yes",
@@ -2421,7 +2431,8 @@ const en = {
     "Its package has no exact version and its newest could not be read: check the network, or give the version (package@1.2.3).",
   extBlocked_install:
     "Its package did not install (the error is below). Try again later, or choose another version with Update.",
-  "extBlocked_no-docker": "No Docker here: local servers cannot start.",
+  extBlocked_host:
+    "There is no Docker here: it would run on this computer without protection, and waits for your yes.",
   extUpdate: "Update",
   extUpToDate: "{pkg} {v} is the newest version.",
   extUpdateAsk: "Update {pkg} from {from} to {to}?",
@@ -9016,11 +9027,21 @@ const it: Record<Key, string> = {
   extHostOwn: "l'indirizzo che scrivi tu",
   extLocalVersion: "Versione",
   extNoDocker:
-    "I server locali girano in una sandbox loro, e questo RedGiant non ha Docker: qui non possono partire. Installa Docker (o la versione Docker di RedGiant), poi riavvia RedGiant.",
-  extNoDockerShort: "Serve Docker",
+    "Qui non c'è Docker: i server locali girano su questo computer senza sandbox, ognuno solo dopo la tua conferma. Con Docker (o la versione Docker di RedGiant) girerebbero in una sandbox loro.",
+  extNoDockerShort: "Su questo computer",
+  extHostTitle: "Questo programma gira senza protezione",
+  extHostText:
+    "{name} gira su questo computer, non in una sandbox (qui non c'è Docker): può vedere i dati di RedGiant, i tuoi file e la rete. Vai avanti solo se ti fidi.",
+  extHostYes: "Ho capito, fallo girare qui",
+  extHostConfirmed: "Gira su questo computer: confermato il {when}",
+  xwRunsHost: "Su questo computer (senza Docker)",
   extKeyInEnvTitle: "La chiave passa in chiaro al programma",
   extKeyInEnvText:
     "{name} vuole la chiave in una variabile d'ambiente. RedGiant la tiene nel Portachiavi e la dà solo al programma di questo server, dentro la sua sandbox: mai agli agenti, a un log o a una risposta. Il programma però la legge in chiaro: vai avanti solo se ti fidi.",
+  extKeyInEnvTextHost:
+    "{name} vuole la chiave in una variabile d'ambiente. RedGiant la tiene nel Portachiavi e la dà solo al programma di questo server, che gira su questo computer: mai agli agenti, a un log o a una risposta. Il programma però la legge in chiaro: vai avanti solo se ti fidi.",
+  extConfirmHelpHost:
+    "Le sue chiavi passano in chiaro al suo programma, su questo computer. Parte quando confermi.",
   extKeyInEnvYes: "Ho capito, aggiungi",
   extKeyInEnvStart: "Ho capito, avvialo",
   extConfirmState: "Aspetta il tuo sì",
@@ -9039,7 +9060,8 @@ const it: Record<Key, string> = {
     "Il suo pacchetto non ha una versione esatta e non si è potuta leggere l'ultima: controlla la rete, oppure scrivi la versione (pacchetto@1.2.3).",
   extBlocked_install:
     "Il suo pacchetto non si è installato (l'errore è qui sotto). Riprova più tardi, o scegli un'altra versione con Aggiorna.",
-  "extBlocked_no-docker": "Qui non c'è Docker: i server locali non possono partire.",
+  extBlocked_host:
+    "Qui non c'è Docker: girerebbe su questo computer senza protezione, e aspetta il tuo sì.",
   extUpdate: "Aggiorna",
   extUpToDate: "{pkg} {v} è l'ultima versione.",
   extUpdateAsk: "Aggiornare {pkg} da {from} a {to}?",

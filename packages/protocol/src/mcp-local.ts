@@ -66,7 +66,16 @@ function splitPy(spec: string): { name: string; version?: string } {
 
 /** npx flags that take a value (the value is not the package). */
 const NPX_VALUED = new Set(["--package", "-p", "--call", "-c", "--registry", "--cache"]);
-const UVX_VALUED = new Set(["--with", "--python", "-p", "--index", "--index-url", "--from"]);
+const UVX_VALUED = new Set([
+  "--with",
+  "--python",
+  "-p",
+  "--index",
+  "--index-url",
+  "--from",
+  "--overrides",
+  "--constraints",
+]);
 
 /** The package a local server's command runs, if it runs one through npx or uvx. */
 export function pinOf(command: string, args: readonly string[]): McpPin | undefined {
@@ -216,14 +225,44 @@ export function parseHosts(text: string): { hosts: string[]; wrong: string[] } {
 
 /**
  * A server's state for the page: connected, waiting to sign in, failing; for local servers also
- * `confirm` (its keys go in its variables: the person has not confirmed yet), `unavailable` (no
- * Docker: local servers do not start here) and `blocked` (it cannot run in its sandbox as it is:
- * `reason` says why).
+ * `confirm` (its keys go in its variables: the person has not confirmed yet) and `blocked` (it
+ * waits: `reason` says why, `host` = no Docker here and the person has not yet accepted that it
+ * runs on the computer without protection).
  */
-export type McpState = "connected" | "login" | "error" | "confirm" | "unavailable" | "blocked";
+export type McpState = "connected" | "login" | "error" | "confirm" | "blocked";
 
 /** Why a local server waits: what its window says and what to do. */
-export type McpBlockReason = McpStdioProblem | "unpinned" | "install" | "no-docker";
+export type McpBlockReason = McpStdioProblem | "unpinned" | "install" | "host";
+
+/**
+ * Where a local server runs (decision of 2026-11-16, «Ok per la 2»): with Docker always in its
+ * sandbox, never on the computer; without Docker on the computer as before, but only once the
+ * person accepted, for that server, that it runs without protection and can see RedGiant's data.
+ * Keys in its variables wait for their own yes, in both places. A pure rule, tested as a table.
+ */
+export type McpPlace = { run: "sandbox" | "host" } | { wait: "host" | "key" | McpStdioProblem };
+
+export function mcpPlace(o: {
+  /** Docker is here (a sandbox provider with containers). */
+  docker: boolean;
+  /** The person accepted that this server runs on the computer (`host_ok`). */
+  hostOk: boolean;
+  /** It has keys in its variables. */
+  keyed: boolean;
+  /** The person accepted that its keys reach its program in clear (`env_ok`). */
+  envOk: boolean;
+  /** Why it could not run in a sandbox (only asked with Docker). */
+  problem?: McpStdioProblem | undefined;
+}): McpPlace {
+  if (o.docker) {
+    if (o.problem) return { wait: o.problem };
+    if (o.keyed && !o.envOk) return { wait: "key" };
+    return { run: "sandbox" };
+  }
+  if (!o.hostOk) return { wait: "host" };
+  if (o.keyed && !o.envOk) return { wait: "key" };
+  return { run: "host" };
+}
 
 export interface McpServerStatus {
   name: string;
@@ -239,4 +278,8 @@ export interface McpServerStatus {
   keyInEnv?: boolean;
   /** Who confirmed that, and when. */
   envConfirmed?: { by: string; at: string };
+  /** Where it runs or would run: in its sandbox, or on the computer (no Docker here). */
+  place?: "sandbox" | "host";
+  /** Who accepted that it runs on the computer without protection, and when. */
+  hostConfirmed?: { by: string; at: string };
 }
