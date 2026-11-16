@@ -2407,6 +2407,9 @@ const en = {
   news383Limits: "Spending and limits in the app's conversations",
   news383LimitsText:
     "At the top of every conversation RGCompanion shows what the page shows: your subscription's windows, or the total and the project's and agent's budgets, green, yellow from 70% and red from 90%, updated at the end of every turn. On the phone the bars stand one above the other next to the agent's name.",
+  news383Paste: "Paste files and screenshots",
+  news383PasteText:
+    "In the app's conversations Ctrl+V (Cmd+V on the Mac) attaches what you copied: files from Explorer, the Finder or a file manager, or a screenshot. Plain text is pasted as before. On the phone, images from the keyboard's clipboard are attached the same way.",
   news383Send: "Ctrl+Enter sends",
   news383SendText:
     "In every field of the app's conversations Ctrl+Enter (Cmd+Enter on the Mac) sends the message; Enter alone does what it did before. It is listed with the other shortcuts (Ctrl+/).",
@@ -8987,6 +8990,9 @@ const it: Record<Key, string> = {
   news383Limits: "Consumo e limiti nelle conversazioni dell'app",
   news383LimitsText:
     "In cima a ogni conversazione RGCompanion mostra quello che mostra la pagina: le finestre del tuo abbonamento, oppure il totale e i budget del progetto e dell'agente, verdi, gialli dal 70% e rossi dal 90%, aggiornati alla fine di ogni turno. Sul telefono le barre stanno una sopra l'altra accanto al nome dell'agente.",
+  news383Paste: "Incolla file e screenshot",
+  news383PasteText:
+    "Nelle conversazioni dell'app Ctrl+V (Cmd+V sul Mac) allega quello che hai copiato: file da Esplora risorse, dal Finder o da un file manager, oppure uno screenshot. Il testo semplice si incolla come prima. Sul telefono le immagini dagli appunti della tastiera si allegano allo stesso modo.",
   news383Send: "Ctrl+Invio invia",
   news383SendText:
     "In ogni campo delle conversazioni dell'app Ctrl+Invio (Cmd+Invio sul Mac) invia il messaggio; Invio da solo fa quello che faceva prima. È nell'elenco delle scorciatoie (Ctrl+/).",
