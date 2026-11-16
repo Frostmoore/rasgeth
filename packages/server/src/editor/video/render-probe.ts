@@ -38,7 +38,11 @@ export const PROBE_ARGS = [
 const IMAGE_CODECS = new Set(["mjpeg", "png", "webp", "bmp", "tiff", "jpegxl", "jpeg2000", "qoi"]);
 
 /** ffprobe's JSON made into what the timeline uses; `frames` null = a picture (no length). */
-export function probeFromJson(json: unknown, rate: VideoRate, fingerprint?: string): RenderMediaProbe {
+export function probeFromJson(
+  json: unknown,
+  rate: VideoRate,
+  fingerprint?: string,
+): RenderMediaProbe {
   const j = (json && typeof json === "object" ? json : {}) as {
     streams?: ProbeStream[];
     format?: { format_name?: string; duration?: string };

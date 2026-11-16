@@ -20,8 +20,8 @@ import {
 } from "@redgiant/protocol";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { compileVideo, type RenderTarget } from "../src/editor/video/compile.js";
-import { type RenderMediaProbe, probeMedia } from "../src/editor/video/render-probe.js";
 import { ffmpegRunner, renderVideo } from "../src/editor/video/render.js";
+import { probeMedia, type RenderMediaProbe } from "../src/editor/video/render-probe.js";
 
 const ffmpeg = process.env.REDGIANT_FFMPEG ?? "";
 const ffprobe =
