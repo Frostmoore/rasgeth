@@ -2604,6 +2604,18 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.get("/api/setup/pihole/password", (c) =>
     wizard(c, async () => ({ password: (setup as SetupService).piholePassword() })),
   );
+  // Product pictures (G40.16): what show_products' cards show, downloaded and kept by the server;
+  // the person's sign-in is needed, and the bytes are served as the picture they were checked to be.
+  app.get("/api/products/images/:id", async (c) => {
+    const found = await core.productImages.read(c.req.param("id"));
+    if (!found) return c.json({ error: "Picture not found" }, 404);
+    return c.body(new Uint8Array(found.bytes), 200, {
+      "Content-Type": found.type,
+      "Cache-Control": "private, max-age=86400",
+      "X-Content-Type-Options": "nosniff",
+      "Content-Security-Policy": "default-src 'none'",
+    });
+  });
   // The canvas (G25.1): signed links to what agents show, and when it last changed.
   app.post("/api/canvas/link", async (c) => {
     const body = z

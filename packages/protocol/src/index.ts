@@ -41,6 +41,7 @@ export * from "./models-catalog.js";
 export * from "./nodes.js";
 export * from "./paths.js";
 export * from "./person-settings.js";
+export * from "./products.js";
 export * from "./prompt-refine.js";
 export * from "./providers.js";
 export * from "./push.js";

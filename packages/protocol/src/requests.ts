@@ -376,6 +376,12 @@ const SENTENCES: Record<string, Record<Lang, Sentence>> = {
     it: ({ i }) => `Ti manda il file ${str(i.path) ?? "?"} nelle chat collegate`,
     en: ({ i }) => `Sends you the file ${str(i.path) ?? "?"} in the linked chats`,
   },
+  show_products: {
+    it: ({ i }) =>
+      `Ti mostra ${Array.isArray(i.products) ? i.products.length : "alcuni"} prodotti in schede`,
+    en: ({ i }) =>
+      `Shows you ${Array.isArray(i.products) ? i.products.length : "some"} products as cards`,
+  },
   publish_board: {
     it: ({ i, q }) => `Pubblica la tavola ${q(str(i.title) ?? "?")}`,
     en: ({ i, q }) => `Publishes the board ${q(str(i.title) ?? "?")}`,
