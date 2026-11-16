@@ -133,6 +133,30 @@ describe("the routes", () => {
     expect((await server.api("GET", "/api/projects/shop/git/diff?commit=HEAD;rm")).status).toBe(
       400,
     );
+    // G40.17: every commit with its parents, and every branch with ?all=1 (the app's graph).
+    await git(p.path, "checkout", "-qb", "side");
+    await git(
+      p.path,
+      "-c",
+      "user.name=T",
+      "-c",
+      "user.email=t@x",
+      "commit",
+      "-q",
+      "--allow-empty",
+      "-m",
+      "Side",
+    );
+    await git(p.path, "checkout", "-q", "main");
+    const graph = await server.api<{ subject: string; hash: string; parents: string[] }[]>(
+      "GET",
+      "/api/projects/shop/git/log?all=1",
+    );
+    expect(graph.body.map((c) => c.subject)).toEqual(["Side", "Files"]);
+    expect(graph.body[0]?.parents).toEqual([graph.body[1]?.hash]);
+    expect(graph.body[1]?.parents).toEqual([]);
+    const only = await server.api<{ subject: string }[]>("GET", "/api/projects/shop/git/log");
+    expect(only.body.map((c) => c.subject)).toEqual(["Files"]);
     expect((await server.api("GET", "/api/projects/ghost/git")).status).toBe(404);
   });
 

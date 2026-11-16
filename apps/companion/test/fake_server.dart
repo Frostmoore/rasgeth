@@ -755,7 +755,19 @@ class FakeRedGiant {
           'date': '2026-11-15T10:00:00Z',
           'refs': 'HEAD -> p2.4.0',
           'subject': 'Prices 2026',
+          'parents': ['0001111ffff'],
         },
+        if (q['all'] == '1') ...[
+          {
+            'hash': '0001111ffff',
+            'short': '0001111',
+            'author': 'Tu',
+            'date': '2026-11-14T10:00:00Z',
+            'refs': 'origin/main, main, tag: v2.3.2',
+            'subject': 'First commit',
+            'parents': <String>[],
+          },
+        ],
       ]);
     }
     if (get && path == '/api/projects/demo/git/branches') {

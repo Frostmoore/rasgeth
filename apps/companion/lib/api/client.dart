@@ -841,9 +841,18 @@ class RedGiantClient {
   Future<GitState> gitState(String projectId) async =>
       GitState.fromJson(_object(await _get('${_proj(projectId)}/git')));
 
-  Future<List<GitCommit>> gitLog(String projectId, {String? agent, int limit = 30}) async => [
+  Future<List<GitCommit>> gitLog(
+    String projectId, {
+    String? agent,
+    int limit = 30,
+    bool all = false,
+  }) async => [
     for (final c in _array(
-      await _get('${_proj(projectId)}/git/log', {'limit': '$limit', 'agent': ?agent}),
+      await _get('${_proj(projectId)}/git/log', {
+        'limit': '$limit',
+        'agent': ?agent,
+        if (all) 'all': '1',
+      }),
     ))
       GitCommit.fromJson(c),
   ];

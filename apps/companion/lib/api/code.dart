@@ -67,6 +67,7 @@ class GitCommit {
     required this.date,
     required this.refs,
     required this.subject,
+    this.parents = const [],
   });
 
   factory GitCommit.fromJson(Map<String, dynamic> j) => GitCommit(
@@ -76,7 +77,14 @@ class GitCommit {
     date: _s(j['date']) ?? '',
     refs: _s(j['refs']) ?? '',
     subject: _s(j['subject']) ?? '',
+    parents: [
+      for (final p in (j['parents'] is List ? j['parents'] as List : const []))
+        if (p is String) p,
+    ],
   );
+
+  /// The parents' full hashes (the graph on computers, G40.17); empty from older servers.
+  final List<String> parents;
 
   final String hash;
   final String short;
@@ -213,6 +221,41 @@ List<DiffFile> parsePatch(String patch) {
     }
   }
   return files;
+}
+
+/// A hunk as two columns (the computers' side-by-side diff, G40.17): context on both sides, a
+/// run of removed lines next to the run of added lines that follows it, a blank where one side
+/// has fewer.
+List<(DiffLine?, DiffLine?)> sideBySideRows(DiffHunk h) {
+  final out = <(DiffLine?, DiffLine?)>[];
+  final removed = <DiffLine>[];
+  final added = <DiffLine>[];
+  void flush() {
+    final n = removed.length > added.length ? removed.length : added.length;
+    for (var i = 0; i < n; i++) {
+      out.add((i < removed.length ? removed[i] : null, i < added.length ? added[i] : null));
+    }
+    removed.clear();
+    added.clear();
+  }
+
+  for (final line in h.lines) {
+    switch (line.kind) {
+      case DiffLineKind.removed:
+        if (added.isNotEmpty) flush();
+        removed.add(line);
+      case DiffLineKind.added:
+        added.add(line);
+      case DiffLineKind.context:
+        flush();
+        out.add((line, line));
+      case DiffLineKind.note:
+        flush();
+        out.add((line, null));
+    }
+  }
+  flush();
+  return out;
 }
 
 /// One hunk as a patch of its own (its file's header and the hunk): what `git apply` takes.

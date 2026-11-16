@@ -36,6 +36,10 @@ import 'share/share_intake.dart';
 import 'voice/audio.dart';
 import 'voice/voice_controller.dart';
 
+/// The computers' layout from this width (G40.17): a 1024-pixel window still gets it, a window
+/// made as narrow as a phone gets the phone's.
+const int kDesktopFrom = 900;
+
 /// The five places of proposal A, in the bar's order.
 /// The bar's places; [projects] only with the advanced interface on (G40.11).
 enum AppTab { team, chat, inbox, activity, projects, you }
@@ -316,6 +320,7 @@ class AppController extends ChangeNotifier {
     locale = lang == null ? null : Locale(lang);
     reduceMotion = await prefs.get('reduceMotion') == '1';
     desktopNotify = await prefs.get('desktopNotify') != '0';
+    desktopFrom = int.tryParse(await prefs.get('desktopFrom') ?? '') ?? kDesktopFrom;
     servers = await book.load();
     notifyListeners();
     if (handoff != null && await adoptHandoff(handoff)) return;
@@ -1207,6 +1212,18 @@ class AppController extends ChangeNotifier {
   void setForeground(bool v) {
     if (foreground == v) return;
     foreground = v;
+  }
+
+  /// G40.17: from which window width (logical pixels) a computer uses its own layout, the
+  /// «control room»; 0 always, -1 never (the phone's, as before). Phones and tablets never do.
+  int desktopFrom = kDesktopFrom;
+
+  bool desktopLayoutFor(double width) => desktop && desktopFrom >= 0 && width >= desktopFrom;
+
+  void setDesktopFrom(int v) {
+    desktopFrom = v;
+    unawaited(prefs.set('desktopFrom', v == kDesktopFrom ? null : '$v'));
+    notifyListeners();
   }
 
   void setDesktopNotify(bool v) {
