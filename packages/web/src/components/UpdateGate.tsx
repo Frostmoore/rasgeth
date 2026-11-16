@@ -18,7 +18,9 @@ import {
   IconRefresh,
   IconUpload,
 } from "../icons.js";
-import { attempt, getApi } from "../state.js";
+import { attempt, getApi, status } from "../state.js";
+import { OsUpdateLive } from "./OsUpdateRun.js";
+import { pendingUpdated, reloadAsUpdated, UpdatedNotice } from "./Updated.js";
 import { Field, JobView, Modal, useJob } from "./ui.js";
 
 /** The last look, for every part of the page. */
@@ -53,43 +55,68 @@ const later = (version: string | null) => {
   }
 };
 
+/** The version this page was loaded with (the server's, at the first answer). */
+let pageVersion: string | null | undefined;
+
+/**
+ * RedGiant answers as another version than the page's (it was updated meanwhile: Windows' launcher,
+ * `docker compose pull`, RedGiant OS): the page is the old one, so it reloads and says it (3.8.1).
+ */
+export function noticeVersion(installed: string | null): void {
+  if (pageVersion === undefined) {
+    pageVersion = installed;
+    return;
+  }
+  if (installed && pageVersion && installed !== pageVersion && !pendingUpdated())
+    reloadAsUpdated(installed, pageVersion, 500);
+}
+
 export function UpdateGate() {
   const s = updateStatus.value;
   const [hidden, setHidden] = useState(false);
+  const online = status.value === "online";
+  const load = () =>
+    void getApi()
+      .updateStatus()
+      .then(
+        (x) => {
+          noticeVersion(x.installed);
+          updateStatus.value = x;
+        },
+        () => {},
+      );
   useEffect(() => {
-    const load = () =>
-      void getApi()
-        .updateStatus()
-        .then(
-          (x) => (updateStatus.value = x),
-          () => {},
-        );
-    load();
     // The server looks at GitHub every few hours; the page asks it often (cheap, local).
     const timer = setInterval(load, 5 * 60_000);
     return () => clearInterval(timer);
   }, []);
-  if (!s) return null;
-  if (s.gate === "mandatory") return <Mandatory s={s} />;
-  if (s.gate === "breaking" && !hidden && !later(s.latest))
-    return (
-      <Breaking
-        s={s}
-        onLater={() => {
-          localStorage.setItem(
-            LATER,
-            JSON.stringify({ v: s.latest, until: Date.now() + 86_400_000 }),
-          );
-          setHidden(true);
-        }}
-      />
-    );
-  return null;
+  // At the start and whenever the connection comes back (RedGiant restarted, maybe updated).
+  useEffect(() => {
+    if (online) load();
+  }, [online]);
+  return (
+    <>
+      <UpdatedNotice />
+      {s && s.gate === "mandatory" && <Mandatory s={s} />}
+      {s && s.gate === "breaking" && !hidden && !later(s.latest) && (
+        <Breaking
+          s={s}
+          onLater={() => {
+            localStorage.setItem(
+              LATER,
+              JSON.stringify({ v: s.latest, until: Date.now() + 86_400_000 }),
+            );
+            setHidden(true);
+          }}
+        />
+      )}
+    </>
+  );
 }
 
 const noteOf = (s: UpdateStatus) => (s.note ? (lang.value === "it" ? s.note.it : s.note.en) : null);
 
-function Command({ text }: { text: string }) {
+export function Command({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   return (
     <div class="upd-cmd">
@@ -201,7 +228,7 @@ function Mandatory({ s }: { s: UpdateStatus }) {
             </a>
           </p>
         )}
-        {said && <p class="notice ok">{said}</p>}
+        {said && s.install === "os" ? <OsUpdateLive /> : said && <p class="notice ok">{said}</p>}
       </div>
     </Modal>
   );

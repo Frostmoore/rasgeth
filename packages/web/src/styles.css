@@ -20721,3 +20721,144 @@ fieldset.saved-filter legend {
   padding: 0;
   margin-right: 6px;
 }
+
+/* An update under way (3.8.1, `StepList` and RedGiant OS's update): the steps one under the other,
+   the ones done ticked, the running one lit by border and background with its bar, a failed one in
+   red, the rest numbered; one step of room between the pieces (the Settings' scale). */
+.st-run {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+.st-run-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 10px 14px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+}
+.st-run-n {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--panel-2);
+  color: var(--dim);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.st-run-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1 1 auto;
+  padding-top: 2px;
+}
+.st-run-body > b {
+  font-size: 15.5px;
+  line-height: 1.35;
+  font-weight: 600;
+}
+.st-run-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--dim);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.st-run-text p {
+  margin: 0;
+}
+.st-run-step.todo .st-run-body > b {
+  color: var(--dim);
+  font-weight: 500;
+}
+.st-run-step.done .st-run-n {
+  background: color-mix(in srgb, var(--ok) 18%, transparent);
+  color: var(--ok);
+}
+.st-run-step.now {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  background: var(--accent-soft);
+}
+.st-run-step.now .st-run-n {
+  background: var(--accent);
+  color: #fff;
+}
+.st-run-step.now .st-run-n svg {
+  animation: spin 1s linear infinite;
+}
+.st-run-step.failed {
+  border-color: color-mix(in srgb, var(--err) 45%, var(--line));
+  background: color-mix(in srgb, var(--err) 9%, transparent);
+}
+.st-run-step.failed .st-run-n {
+  background: var(--err);
+  color: #fff;
+}
+.os-run {
+  display: flex;
+  flex-direction: column;
+  gap: var(--st-gap-in, 16px);
+  text-align: left;
+}
+.os-run > p {
+  margin: 0;
+}
+.os-run-hd {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.os-run-hd > b {
+  font-size: 17px;
+  line-height: 1.35;
+}
+.os-run-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.os-run-items > li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  color: var(--text);
+}
+.os-run-stop > .wz-note,
+.os-run-done.wz-note {
+  margin: 0;
+  border-radius: 14px;
+  align-items: flex-start;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.os-run-stop > .wz-note {
+  color: var(--text);
+  background: color-mix(in srgb, var(--err) 9%, transparent);
+  border-color: color-mix(in srgb, var(--err) 40%, transparent);
+}
+.os-run-stop > .wz-note .icon {
+  color: var(--err);
+}
+.os-run-stop > .wz-btn {
+  align-self: flex-start;
+}
+.os-run-done .link {
+  padding: 0;
+  font: inherit;
+}

@@ -66,6 +66,12 @@ export function checkStack(s) {
         throw new Error(`stack: bad image reference ${i.ref}`);
       if (!digest.test(i.digest ?? "") || !digest.test(i.id ?? ""))
         throw new Error(`stack: ${i.ref} needs its digest and id`);
+      if (
+        i.layers !== undefined &&
+        (!Array.isArray(i.layers) ||
+          !i.layers.every((l) => digest.test(l?.digest ?? "") && Number.isSafeInteger(l?.size)))
+      )
+        throw new Error(`stack: ${i.ref} has bad layers`);
     }
   }
   for (const f of Object.keys(s.files ?? {}))
@@ -103,6 +109,8 @@ export async function resolveStack(version, tag = version, sourceTag = "") {
         digest,
         id: manifest.config.digest,
         bytes: manifest.layers.reduce((n, l) => n + l.size, 0),
+        // 3.8.1: each layer's size, so the machine knows the whole download from the start.
+        layers: manifest.layers.map((l) => ({ digest: l.digest, size: l.size })),
       });
     }
   }

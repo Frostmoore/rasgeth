@@ -295,7 +295,11 @@ os_update_reply() {
   u=$(jq -c . "$OS_STATE/os-update.json" 2>/dev/null) || u=null
   [ -n "$u" ] || u=null
   running=false
+  # A oneshot unit is «activating» for as long as it runs (is-active says no until it ends).
   systemctl is-active --quiet redgiant-os-update.service 2>/dev/null && running=true
+  case "$(systemctl show -P ActiveState redgiant-os-update.service 2>/dev/null)" in
+    activating | active | reloading) running=true ;;
+  esac
   # Debian's security updates (unattended-upgrades, run by apt-daily-upgrade.service).
   last=$(systemctl show -P ExecMainExitTimestamp --timestamp=unix apt-daily-upgrade.service 2>/dev/null | tr -cd '0-9') || last=""
   result=$(systemctl show -P Result apt-daily-upgrade.service 2>/dev/null | tr -cd 'a-z-') || result=""

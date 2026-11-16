@@ -312,6 +312,9 @@ static class Updates
      */
     public static void Watch(Control owner, string folder)
     {
+        // The page's copy of the update's progress (3.8.1): what a previous run left goes.
+        progressFile = Path.Combine(folder, "update-progress.json");
+        try { File.Delete(progressFile); } catch (Exception) { }
         // A state written for another version (before an update, or a rollback) goes at once.
         string status = Path.Combine(folder, "update-status.json");
         try
@@ -615,6 +618,47 @@ static class Updates
         }
     }
 
+    /**
+     * The page follows the update too (3.8.1, the person: «si deve capire che sta aggiornando»):
+     * the phase and how far it is go to update-progress.json in the engine's folder, at most once
+     * a second (a new phase at once), with the speed of the last seconds and the seconds left. The
+     * server reads it (WinEngine.updateProgress) and the page shows the same bar as this window.
+     */
+    static string progressFile;
+    static readonly object progressLock = new object();
+    static string progressPhase;
+    static DateTime progressAt = DateTime.MinValue;
+    static readonly Queue<KeyValuePair<DateTime, long>> progressSamples = new Queue<KeyValuePair<DateTime, long>>();
+
+    static void Report(string phase, string version, long done, long total)
+    {
+        if (progressFile == null) return;
+        lock (progressLock)
+        {
+            var now = DateTime.UtcNow;
+            bool same = phase == progressPhase;
+            if (same && (now - progressAt).TotalMilliseconds < 1000 && (total <= 0 || done < total)) return;
+            if (!same) progressSamples.Clear();
+            progressPhase = phase;
+            progressAt = now;
+            progressSamples.Enqueue(new KeyValuePair<DateTime, long>(now, done));
+            while (progressSamples.Count > 1 && (now - progressSamples.Peek().Key).TotalSeconds > 10) progressSamples.Dequeue();
+            var first = progressSamples.Peek();
+            double secs = (now - first.Key).TotalSeconds;
+            long bps = secs >= 1.5 && done > first.Value ? (long)((done - first.Value) / secs) : 0;
+            string eta = bps > 0 && total > done ? ((total - done + bps - 1) / bps).ToString(CultureInfo.InvariantCulture) : "null";
+            string json = "{\"version\":\"" + version + "\",\"phase\":\"" + phase + "\",\"done\":" + Math.Max(0, done).ToString(CultureInfo.InvariantCulture) +
+                ",\"total\":" + Math.Max(0, total).ToString(CultureInfo.InvariantCulture) + ",\"bps\":" + bps.ToString(CultureInfo.InvariantCulture) +
+                ",\"eta\":" + eta + ",\"at\":\"" + now.ToString("o", CultureInfo.InvariantCulture) + "\"}";
+            try
+            {
+                File.WriteAllText(progressFile + ".tmp", json);
+                File.Copy(progressFile + ".tmp", progressFile, true);
+            }
+            catch (Exception e) { Diag.Log("update", "update-progress.json not written: " + e.Message); }
+        }
+    }
+
     /** The bar's line while the installed files are compared: how many of how many, time left. */
     static string ScanLine(int done, int total, double seconds)
     {
@@ -797,6 +841,7 @@ static class Updates
                     }
                     string line = ScanLine(done, total, (DateTime.Now - scanStarted).TotalSeconds);
                     int value = total > 0 ? (int)Math.Min(1000, (long)done * 1000 / total) : 1000;
+                    Report("scan", r.Version, done, total);
                     ui(() => { detail.Text = line; bar.Value = value; });
                 };
                 int threads = Delta.HashThreads;
@@ -823,6 +868,7 @@ static class Updates
                     string line = speed.Line(done, total);
                     int value = total > 0 ? (int)Math.Min(1000, done * 1000 / total) : 1000;
                     ui(() => { detail.Text = line; bar.Value = value; });
+                    Report("download", r.Version, done, total);
                 };
                 // A file that is not what the manifest says is downloaded once more, then given up.
                 try { Delta.Fetch(plan, new HttpRangeSource(r.ArchiveUrl), staging, progress, null); }
@@ -832,8 +878,10 @@ static class Updates
                     Delta.Fetch(plan, new HttpRangeSource(r.ArchiveUrl), staging, progress, null);
                 }
                 ui(() => { detail.Text = It ? "Metto insieme la versione nuova…" : "Putting the new version together…"; bar.Style = ProgressBarStyle.Marquee; });
+                Report("build", r.Version, 0, 0);
                 Delta.Build(m, plan, AppDir, staging);
                 Diag.Log("update", "downloaded and checked in " + (int)(DateTime.Now - started).TotalSeconds + " s");
+                Report("restart", r.Version, 0, 0);
                 ui(() =>
                 {
                     detail.Text = It ? "Riavvio RedGiant con la versione nuova…" : "Restarting RedGiant as the new version…";
@@ -856,6 +904,7 @@ static class Updates
     static void Network(Release r, Form f, Exception e)
     {
         Diag.Log("update", "download stopped: " + e.Message);
+        Report("failed", r.Version, 0, 0);
         Set("UpdatePending", r.Version);
         try
         {
@@ -1076,12 +1125,14 @@ static class Updates
             long total = e.TotalBytesToReceive > 0 ? e.TotalBytesToReceive : r.Size;
             detail.Text = speed.Line(e.BytesReceived, total);
             if (total > 0) bar.Value = (int)Math.Min(1000, e.BytesReceived * 1000 / total);
+            Report("installer", r.Version, e.BytesReceived, total);
         };
         w.DownloadFileCompleted += (s, e) =>
         {
             if (e.Error != null || e.Cancelled)
             {
                 Diag.Log("update", "download failed: " + (e.Error != null ? e.Error.Message : "cancelled"));
+                Report("failed", r.Version, 0, 0);
                 f.Close();
                 MessageBox.Show((It ? "Non sono riuscito a scaricare l'aggiornamento. Riprovo la prossima volta.\n\n" : "The update could not be downloaded. It is tried again next time.\n\n") + (e.Error != null ? e.Error.Message : ""), "RedGiant", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Set("UpdatePending", r.Version);
@@ -1090,6 +1141,7 @@ static class Updates
             }
             Diag.Log("update", "downloaded in " + (int) (DateTime.Now - downloadStarted).TotalSeconds + " s, starting the installer");
             detail.Text = It ? "Apro l'installazione…" : "Opening the installer…";
+            Report("restart", r.Version, 0, 0);
             // The installer closes this RedGiant, updates without questions and opens it again
             // (--after-update: a page still open comes back by itself, otherwise it opens one).
             Process.Start(new ProcessStartInfo(file, "/SILENT /SUPPRESSMSGBOXES /NORESTART") { UseShellExecute = true });

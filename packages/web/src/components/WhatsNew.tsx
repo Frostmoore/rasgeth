@@ -140,6 +140,8 @@ export function wasUpdated(
 export function WhatsNew() {
   const [groups, setGroups] = useState<ReturnType<typeof newsSince>>([]);
   useEffect(() => {
+    // Just updated from a page that followed it: its own window (Updated.tsx) offers the news.
+    if (sessionStorage.getItem("rg.updatedTo")) return;
     const seen = localStorage.getItem(SEEN);
     const news = newsSince(seen);
     // Nothing newer than what this browser saw (also after going back to an older release).

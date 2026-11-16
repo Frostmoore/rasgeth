@@ -550,6 +550,7 @@ if (sandbox.kind === "host")
     ...(env.REDGIANT_UPDATE_FEED && { feed: env.REDGIANT_UPDATE_FEED }),
     ...(env.REDGIANT_HOME && { composeDir: env.REDGIANT_HOME }),
     launcher: nativeWindows && !!winEngine,
+    ...(nativeWindows && winEngine && { progress: () => winEngine.updateProgress() }),
     osUpdater: install === "os" && !!osHelper,
     act: async (action) => {
       if (nativeWindows && winEngine) {

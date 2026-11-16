@@ -27,6 +27,7 @@ import {
 } from "../icons.js";
 import { attempt, getApi } from "../state.js";
 import { askConfirm } from "./dialogs.js";
+import { OsRunResult, OsRunView, useOsUpdateFollow } from "./OsUpdateRun.js";
 import { Acts, Facts, SCard, Seg, Sub, SwitchRow } from "./SettingsKit.js";
 import { refreshUpdateStatus, updateStatus } from "./UpdateGate.js";
 import { Field, Qr } from "./ui.js";
@@ -420,55 +421,19 @@ async function backUp(limitMs: number): Promise<boolean> {
 
 /** RedGiant OS's updates: RedGiant's (applied by the machine) and the system's security ones. */
 export function OsUpdatesPanel({ initial }: { initial?: OsUpdates | undefined } = {}) {
-  const [u, setU] = useState<OsUpdates | null>(initial ?? null);
+  // An update already under way (the page opened during it) is followed at once.
+  const f = useOsUpdateFollow(initial ?? null);
   const [busy, setBusy] = useState(false);
-  const [following, setFollowing] = useState(false);
   const [said, setSaid] = useState<{ ok: boolean; text: string }>();
-  const live = useRef(true);
-  useEffect(() => {
-    live.current = true;
-    if (!initial) void attempt(() => getApi().setupOsUpdates()).then((x) => x && setU(x));
-    return () => {
-      live.current = false;
-    };
-  }, []);
+  const u = f.u;
   if (!u || !u.available) return null;
   const look = async () => {
     setBusy(true);
     setSaid(undefined);
     const r = await attempt(() => getApi().setupOsUpdatesCheck());
     setBusy(false);
-    if (r) setU(r);
+    if (r) f.setU(r);
     void refreshUpdateStatus();
-  };
-  /** Follows the update: the state every few seconds, through the server's own restart. */
-  const follow = async () => {
-    setFollowing(true);
-    const until = Date.now() + 45 * 60_000;
-    let lost = false;
-    while (live.current && Date.now() < until) {
-      await new Promise((r) => setTimeout(r, 3000));
-      const r = await getApi()
-        .setupOsUpdates()
-        .catch(() => null);
-      if (!r) {
-        lost = true;
-        setSaid({ ok: true, text: t("osUpdRestarting") });
-        continue;
-      }
-      setU(r);
-      const st = r.update?.state;
-      if (!r.running && st !== "applying") {
-        setFollowing(false);
-        if (st === "latest")
-          setSaid({ ok: true, text: t("osUpdDone", { version: r.update?.installed ?? "" }) });
-        else setSaid({ ok: false, text: r.update?.note ?? t("osUpdFailed") });
-        if (lost && st === "latest") setTimeout(() => location.reload(), 4000);
-        void refreshUpdateStatus();
-        return;
-      }
-    }
-    setFollowing(false);
   };
   const apply = async () => {
     const yes = await askConfirm(t("osUpdApplyQ", { version: u.update?.latest ?? "" }), {
@@ -478,8 +443,18 @@ export function OsUpdatesPanel({ initial }: { initial?: OsUpdates | undefined } 
     if (!yes) return;
     setSaid(undefined);
     const r = await tryApi(() => getApi().updateAct("update"));
-    if ("ok" in r) void follow();
-    else setSaid({ ok: false, text: errorText(r.code) });
+    if (!("ok" in r)) {
+      setSaid({ ok: false, text: errorText(r.code) });
+      return;
+    }
+    // The steps show at once; the machine's own state follows in a moment.
+    const before = u.update?.installed ?? null;
+    f.setU({
+      ...u,
+      running: true,
+      ...(u.update && { update: { ...u.update, state: "applying", step: "check", run: null } }),
+    });
+    void f.follow(before, 15_000);
   };
   const restart = async () => {
     const yes = await askConfirm(t("osRebootQ"), {
@@ -498,29 +473,30 @@ export function OsUpdatesPanel({ initial }: { initial?: OsUpdates | undefined } 
   };
   const up = u.update;
   const gate = updateStatus.value?.gate;
-  const state: string = following ? "applying" : (up?.state ?? "unknown");
+  const state: string = f.active ? "applying" : (up?.state ?? "unknown");
   const sec = u.security;
   return (
     <>
       <SCard icon={<IconDownload size={22} />} title={t("osUpdTitle")} q={t("osUpdQ")}>
-        <Facts
-          rows={[
-            [t("osUpdInstalled"), up?.installed ?? updateStatus.value?.installed ?? "…"],
-            [
-              t("osUpdState"),
-              t(`osUpd_${state}` as Key, {
-                version: up?.latest ?? "",
-                step: up?.step ? t(`osUpdStep_${up.step}` as Key) : "…",
-              }),
-            ],
-            ...(up?.checkedAt
-              ? ([[t("osUpdChecked"), new Date(up.checkedAt).toLocaleString()]] as [
-                  string,
-                  string,
-                ][])
-              : []),
-          ]}
-        />
+        {f.active ? (
+          <OsRunView u={u} lost={f.lost} reloading={f.reloading} now={f.now} />
+        ) : (
+          <>
+            <Facts
+              rows={[
+                [t("osUpdInstalled"), up?.installed ?? updateStatus.value?.installed ?? "…"],
+                [t("osUpdState"), t(`osUpd_${state}` as Key, { version: up?.latest ?? "" })],
+                ...(up?.checkedAt
+                  ? ([[t("osUpdChecked"), new Date(up.checkedAt).toLocaleString()]] as [
+                      string,
+                      string,
+                    ][])
+                  : []),
+              ]}
+            />
+            <OsRunResult u={u} onRetry={() => void apply()} />
+          </>
+        )}
         {(up?.gate === "breaking" || gate === "breaking") && (
           <div class="wz-note warn">
             <IconAlert size={18} />
@@ -528,26 +504,18 @@ export function OsUpdatesPanel({ initial }: { initial?: OsUpdates | undefined } 
           </div>
         )}
         {said && <p class={`notice ${said.ok ? "ok" : "error"}`}>{said.text}</p>}
-        <Acts>
-          <button
-            type="button"
-            class="wz-btn"
-            disabled={busy || following}
-            onClick={() => void look()}
-          >
-            <IconRefresh size={18} /> {busy ? t("updLooking") : t("updLook")}
-          </button>
-          {up?.state === "available" && up.gate !== "breaking" && gate !== "breaking" && (
-            <button
-              type="button"
-              class="wz-btn primary"
-              disabled={following}
-              onClick={() => void apply()}
-            >
-              <IconDownload size={18} /> {t("osUpdApply", { version: up.latest ?? "" })}
+        {!f.active && (
+          <Acts>
+            <button type="button" class="wz-btn" disabled={busy} onClick={() => void look()}>
+              <IconRefresh size={18} /> {busy ? t("updLooking") : t("updLook")}
             </button>
-          )}
-        </Acts>
+            {up?.state === "available" && up.gate !== "breaking" && gate !== "breaking" && (
+              <button type="button" class="wz-btn primary" onClick={() => void apply()}>
+                <IconDownload size={18} /> {t("osUpdApply", { version: up.latest ?? "" })}
+              </button>
+            )}
+          </Acts>
+        )}
       </SCard>
       {sec && (
         <SCard icon={<IconShield size={22} />} title={t("osSecTitle")} q={t("osSecQ")}>

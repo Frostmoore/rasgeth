@@ -89,3 +89,33 @@ helper() { printf '%s\n' "$1" | /usr/lib/redgiant/redgiant-helper --stdin 2>/dev
 
 # A Wi-Fi card is there (iwd sees it).
 has_wifi() { ls /sys/class/net/*/wireless >/dev/null 2>&1 || ls -d /sys/class/net/*/phy80211 >/dev/null 2>&1; }
+
+# A download's progress (3.8.1, the person's rule: every download has a real bar, its speed and the
+# time left), written atomically into <file> at every call (about once a second): bytes done and in
+# all, the speed over the last ten seconds, the seconds left and the items (JSON array).
+PROGRESS_T=()
+PROGRESS_D=()
+progress_reset() {
+  PROGRESS_T=()
+  PROGRESS_D=()
+}
+progress_write() { # file done total [items-json]
+  local now span bps=0 eta=null tmp done=${2%.*} total=${3%.*}
+  set -- "$1" "${done:-0}" "${total:-0}" "${4:-[]}"
+  now=$(date +%s)
+  PROGRESS_T+=("$now")
+  PROGRESS_D+=("$2")
+  while [ "${#PROGRESS_T[@]}" -gt 2 ] && [ $((now - PROGRESS_T[0])) -gt 10 ]; do
+    PROGRESS_T=("${PROGRESS_T[@]:1}")
+    PROGRESS_D=("${PROGRESS_D[@]:1}")
+  done
+  span=$((now - PROGRESS_T[0]))
+  if [ "$span" -ge 2 ] && [ "$2" -gt "${PROGRESS_D[0]}" ]; then bps=$((($2 - PROGRESS_D[0]) / span)); fi
+  if [ "$bps" -gt 0 ] && [ "$3" -gt "$2" ]; then eta=$((($3 - $2 + bps - 1) / bps)); fi
+  tmp=$(mktemp "$1.XXXXXX")
+  jq -n --argjson d "$2" --argjson t "$3" --argjson b "$bps" --argjson e "$eta" \
+    --argjson i "${4:-[]}" --arg at "$(date -u +%FT%TZ)" \
+    '{done: $d, total: $t, bps: $b, eta: $e, items: $i, at: $at}' >"$tmp"
+  chmod 644 "$tmp"
+  mv -f "$tmp" "$1"
+}

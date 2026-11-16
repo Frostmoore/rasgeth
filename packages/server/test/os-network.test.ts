@@ -357,6 +357,7 @@ describe("RedGiant OS's updates", () => {
         note: null,
         step: "restart",
         checkedAt: null,
+        run: null,
       },
       running: true,
       security: {
@@ -371,6 +372,84 @@ describe("RedGiant OS's updates", () => {
       parseOsUpdates({ ok: true, update: { state: "rm -rf" }, running: false, security: null })
         .update?.state,
     ).toBe("error");
+  });
+
+  it("reads an update in progress (3.8.1): steps, what comes down, how far it is", () => {
+    const u = parseOsUpdates({
+      ok: true,
+      running: true,
+      security: null,
+      update: {
+        state: "applying",
+        installed: "3.8.0",
+        latest: "3.8.1",
+        gate: "normal",
+        step: "download",
+        from: "3.8.0",
+        startedAt: "2026-11-15T10:00:00Z",
+        finishedAt: null,
+        reason: "$(reboot)",
+        steps: ["check", "download", "files", "install", "restart", "wait", "rm -rf /"],
+        stepAt: { check: "2026-11-15T10:00:00Z", download: "2026-11-15T10:00:04Z", "x y": "z" },
+        plan: {
+          images: [
+            {
+              name: "redgiant",
+              ref: "ghcr.io/frostmoore/redgiant2:3.8.1",
+              bytes: 512e6,
+              here: false,
+            },
+            {
+              name: "postgres",
+              ref: "ghcr.io/frostmoore/redgiant2-postgres:17",
+              bytes: -1,
+              here: true,
+            },
+            "junk",
+          ],
+          files: { name: "redgiant-os-files-3.8.1.tar.zst", bytes: 2.5e6 },
+        },
+        progress: {
+          done: 128e6,
+          total: 400e6,
+          bps: 8.4e6,
+          eta: 33,
+          items: [{ name: "redgiant", done: 128e6, total: 400e6, state: "down" }],
+        },
+      },
+    }).update?.run;
+    expect(u).toEqual({
+      from: "3.8.0",
+      startedAt: "2026-11-15T10:00:00Z",
+      finishedAt: null,
+      reason: null,
+      steps: ["check", "download", "files", "install", "restart", "wait"],
+      stepAt: { check: "2026-11-15T10:00:00Z", download: "2026-11-15T10:00:04Z" },
+      plan: {
+        images: [
+          {
+            name: "redgiant",
+            ref: "ghcr.io/frostmoore/redgiant2:3.8.1",
+            bytes: 512e6,
+            here: false,
+          },
+          {
+            name: "postgres",
+            ref: "ghcr.io/frostmoore/redgiant2-postgres:17",
+            bytes: 0,
+            here: true,
+          },
+        ],
+        files: { name: "redgiant-os-files-3.8.1.tar.zst", bytes: 2.5e6 },
+      },
+      progress: {
+        done: 128e6,
+        total: 400e6,
+        bps: 8.4e6,
+        eta: 33,
+        items: [{ name: "redgiant", done: 128e6, total: 400e6, state: "down" }],
+      },
+    });
   });
 });
 
