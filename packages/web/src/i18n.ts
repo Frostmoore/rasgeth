@@ -2404,6 +2404,9 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news386Sync: "Phone and computer stay in step",
+  news386SyncText:
+    "A message written in RGCompanion on one device now appears live on the others with the same conversation open, and so do the agent's answer, the requests you already answered elsewhere and the conversations' state. The app also notices a connection that looks open but is dead (after the phone sleeps or the computer wakes up) and reconnects by itself.",
   news385Composer: "A new place to write in the app",
   news385ComposerText:
     "In RGCompanion the message is written in one rounded box as wide as the screen, with the attachments, the options, the microphone and the send button inside it, under the text. It grows up to eight lines. Same on the phone and on the computer.",
@@ -8999,6 +9002,9 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news386Sync: "Telefono e computer allineati",
+  news386SyncText:
+    "Un messaggio scritto in RGCompanion su un dispositivo compare adesso dal vivo sugli altri con la stessa conversazione aperta, e così la risposta dell'agente, le richieste a cui hai già risposto altrove e lo stato delle conversazioni. L'app si accorge anche di un collegamento che sembra aperto ma è morto (dopo che il telefono dorme o il computer si risveglia) e si ricollega da sola.",
   news385Composer: "Un posto nuovo per scrivere nell'app",
   news385ComposerText:
     "In RGCompanion il messaggio si scrive in un riquadro arrotondato largo quanto lo schermo, con allegati, opzioni, microfono e invio dentro, sotto il testo. Cresce fino a otto righe. Uguale sul telefono e sul computer.",
