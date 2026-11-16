@@ -61,7 +61,8 @@ describe("MCP", () => {
   });
 
   it("starts a stdio MCP server only through its sandbox's spawn (G41.0)", async () => {
-    const ws = new LocalWorkspace(dir);
+    // Started from the tests' folder: on Windows a program still closing keeps its folder busy.
+    const ws = new LocalWorkspace(here);
     const seen: Record<string, string>[] = [];
     const conn = new McpConnection(
       {
