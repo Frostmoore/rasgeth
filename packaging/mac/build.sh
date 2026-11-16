@@ -9,6 +9,9 @@
 # Store Connect API key file, .p8), MAC_NOTARY_KEY_ID and MAC_NOTARY_ISSUER_ID are set.
 # pgvector (G36.1) goes into Resources/server/pgvector, signed with the rest: from PGVECTOR_ZIP (the
 # release's pgvector job), otherwise built here with engine/pgvector/build-mac.sh (a minute or two).
+# RGCompanion (G40.12): COMPANION_APP names the Flutter build (RGCompanion.app, or the CI's
+# rgcompanion-macos.zip); it goes into Contents/Helpers and is signed again with the same identity
+# (its own entitlements: the sandbox), inside out. Without it «Open RedGiant» opens the browser.
 set -euo pipefail
 
 version="${1:-0.0.0}"
@@ -80,6 +83,30 @@ sign() {
     codesign --force --timestamp --options runtime --sign "$identity" "$@"
   fi
 }
+
+companion="${COMPANION_APP:-}"
+if [ -n "$companion" ]; then
+  echo "== RGCompanion's window (G40.12), from $companion"
+  mkdir -p "$app/Contents/Helpers"
+  case "$companion" in
+    *.zip) ditto -x -k "$companion" "$app/Contents/Helpers" ;;
+    *) ditto "$companion" "$app/Contents/Helpers/RGCompanion.app" ;;
+  esac
+  helper="$app/Contents/Helpers/RGCompanion.app"
+  [ -x "$helper/Contents/MacOS/RGCompanion" ] || { echo "no RGCompanion.app in $companion"; exit 1; }
+  # The entitlements Flutter's build signed it with (the sandbox, network, microphone).
+  ents="$dist/rgcompanion.entitlements"
+  codesign -d --entitlements - --xml "$helper" > "$ents" 2>/dev/null || true
+  [ -s "$ents" ] || cp "$root/apps/companion/macos/Runner/Release.entitlements" "$ents"
+  # Inside out: the frameworks' libraries, the frameworks, then the app with its entitlements.
+  while IFS= read -r -d '' f; do
+    if file -b "$f" | grep -q "Mach-O"; then sign "$f"; fi
+  done < <(find "$helper/Contents/Frameworks" -type f \( -name "*.dylib" -o -perm -u+x \) ! -path "*.framework/*" -print0 2>/dev/null)
+  while IFS= read -r -d '' fw; do sign "$fw"; done < <(find "$helper/Contents/Frameworks" -maxdepth 1 -name "*.framework" -print0 2>/dev/null)
+  sign --entitlements "$ents" "$helper"
+  codesign --verify --deep --strict "$helper"
+  echo "RGCompanion.app signed: $(du -sh "$helper" | cut -f1)"
+fi
 # Every program and library inside, deepest first: Node, Postgres, native modules.
 count=0
 while IFS= read -r -d '' f; do
