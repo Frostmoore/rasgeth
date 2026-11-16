@@ -201,14 +201,15 @@ describe("RedGiant OS's update in the page", () => {
   });
 
   it("tells the reloaded page it is the new version, with the version's notes", () => {
-    sessionStorage.setItem("rg.updatedTo", JSON.stringify({ to: "3.8.1", from: "3.8.0" }));
+    // A version that brought no items of its own (independent of what's new in this release).
+    sessionStorage.setItem("rg.updatedTo", JSON.stringify({ to: "99.0.1", from: "99.0.0" }));
     const r = render(<UpdatedNotice />);
     expect(r.getByText("RedGiant è aggiornato")).toBeTruthy();
     expect(r.container.ownerDocument.body.textContent).toContain(
-      "Ora è la 3.8.1 (prima era la 3.8.0)",
+      "Ora è la 99.0.1 (prima era la 99.0.0)",
     );
     const notes = r.getByText(/Le note della versione su GitHub/).closest("a");
-    expect(notes?.getAttribute("href")).toMatch(/releases\/tag\/v3\.8\.1$/);
+    expect(notes?.getAttribute("href")).toMatch(/releases\/tag\/v99\.0\.1$/);
     fireEvent.click(r.getByText("Ok"));
     expect(sessionStorage.getItem("rg.updatedTo")).toBeNull();
     expect(r.queryByText("RedGiant è aggiornato")).toBeNull();
