@@ -626,7 +626,7 @@ export class TimelinePlayer {
 /** A text in a box's inner span (its background is a box behind each line, as drawtext's). */
 function setText(el: HTMLElement, text: string): void {
   let span = el.firstElementChild as HTMLElement | null;
-  if (!span || span.tagName !== "SPAN") {
+  if (span?.tagName !== "SPAN") {
     el.textContent = "";
     span = document.createElement("span");
     el.appendChild(span);
