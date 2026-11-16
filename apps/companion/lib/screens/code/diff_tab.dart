@@ -19,9 +19,22 @@ import '../conversation_screen.dart';
 import 'project_screen.dart';
 
 class DiffTab extends StatefulWidget {
-  const DiffTab({super.key, required this.ctx, required this.source, this.startFile});
+  const DiffTab({
+    super.key,
+    required this.ctx,
+    required this.source,
+    this.startFile,
+    this.sideBySide = false,
+    this.onReader,
+  });
 
   final ProjectCtx ctx;
+
+  /// Computers (G40.17): before and after in two columns.
+  final bool sideBySide;
+
+  /// Tells who reads the comments (the computers' code view shows that agent's conversation).
+  final ValueChanged<Agent?>? onReader;
   final DiffSource source;
   final String? startFile;
 
@@ -76,6 +89,7 @@ class _DiffTabState extends State<DiffTab> with AutomaticKeepAliveClientMixin {
         _page = start;
         _pages = PageController(initialPage: start);
       });
+      widget.onReader?.call(_reader);
     } on ApiException catch (e) {
       if (mounted) setState(() => _error = e);
     }
@@ -360,6 +374,7 @@ class _DiffTabState extends State<DiffTab> with AutomaticKeepAliveClientMixin {
       return EmptyState(icon: RgIcons.file, text: f.binary ? l.codeDiffBinary : l.codeDiffNoHunks);
     }
     final readOnly = widget.ctx.readOnly;
+    if (widget.sideBySide) return _sideBySide(l, c, f, mono, ext, readOnly);
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 4, 0, 24),
       children: [
@@ -419,6 +434,80 @@ class _DiffTabState extends State<DiffTab> with AutomaticKeepAliveClientMixin {
               ],
             ),
           ),
+          _hunkActions(l, c, f, h, readOnly),
+        ],
+      ],
+    );
+  }
+
+  /// Before (left) and after (right), line by line.
+  Widget _sideBySide(
+    AppLocalizations l,
+    RgColors c,
+    DiffFile f,
+    TextStyle mono,
+    String? ext,
+    bool readOnly,
+  ) {
+    Widget cell(DiffLine? line, {required bool left}) {
+      final kind = line?.kind;
+      final no = line == null ? null : (left ? line.oldNo : line.newNo);
+      final bg = switch (kind) {
+        DiffLineKind.added when !left => c.ok.withValues(alpha: .14),
+        DiffLineKind.removed when left => c.err.withValues(alpha: .14),
+        null => c.panel2.withValues(alpha: .5),
+        _ => null,
+      };
+      return Container(
+        color: bg,
+        padding: const EdgeInsets.only(right: 12),
+        child: Text.rich(
+          TextSpan(
+            style: mono,
+            children: [
+              TextSpan(
+                text: ' ${'${no ?? ''}'.padLeft(4)}  ',
+                style: TextStyle(color: c.dim),
+              ),
+              if (line == null)
+                const TextSpan(text: '')
+              else if (kind == DiffLineKind.note)
+                TextSpan(
+                  text: line.text,
+                  style: TextStyle(color: c.dim),
+                )
+              else
+                ...highlightLine(line.text, ext, c),
+            ],
+          ),
+          maxLines: 1,
+          softWrap: false,
+          overflow: TextOverflow.clip,
+        ),
+      );
+    }
+
+    return ListView(
+      key: const Key('diff-side-by-side'),
+      padding: const EdgeInsets.fromLTRB(0, 4, 0, 24),
+      children: [
+        for (final h in f.hunks) ...[
+          Container(
+            color: c.panel2,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+            child: Text(h.header, style: mono.copyWith(color: c.dim)),
+          ),
+          for (final (a, b) in sideBySideRows(h))
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(child: cell(a, left: true)),
+                  VerticalDivider(width: 1, color: c.line),
+                  Expanded(child: cell(b == a ? a : b, left: false)),
+                ],
+              ),
+            ),
           _hunkActions(l, c, f, h, readOnly),
         ],
       ],

@@ -4526,6 +4526,1152 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear the search'**
   String get savedSearchClear;
+
+  /// No description provided for @deskAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About RGCompanion'**
+  String get deskAbout;
+
+  /// No description provided for @deskAdvancedOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off the advanced interface'**
+  String get deskAdvancedOff;
+
+  /// No description provided for @deskAdvancedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on the advanced interface'**
+  String get deskAdvancedOn;
+
+  /// No description provided for @deskAdvancedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'advanced'**
+  String get deskAdvancedShort;
+
+  /// No description provided for @deskAgeDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} d'**
+  String deskAgeDays(int n);
+
+  /// No description provided for @deskAgeHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} h'**
+  String deskAgeHours(int n);
+
+  /// No description provided for @deskAgeMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} min'**
+  String deskAgeMinutes(int n);
+
+  /// No description provided for @deskAgeNow.
+  ///
+  /// In en, this message translates to:
+  /// **'now'**
+  String get deskAgeNow;
+
+  /// No description provided for @deskAgeYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'yesterday'**
+  String get deskAgeYesterday;
+
+  /// No description provided for @deskAgentAsks.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} asks: {what}'**
+  String deskAgentAsks(String name, String what);
+
+  /// No description provided for @deskAgentsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 agent} other{{n} agents}}'**
+  String deskAgentsCount(int n);
+
+  /// No description provided for @deskAgentsHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get deskAgentsHead;
+
+  /// No description provided for @deskAgentsTerminals.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents\''**
+  String get deskAgentsTerminals;
+
+  /// No description provided for @deskAllProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'All projects'**
+  String get deskAllProjects;
+
+  /// No description provided for @deskAllProjectsLower.
+  ///
+  /// In en, this message translates to:
+  /// **'all projects'**
+  String get deskAllProjectsLower;
+
+  /// No description provided for @deskAskChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the Chat'**
+  String get deskAskChat;
+
+  /// No description provided for @deskAskGod.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask God'**
+  String get deskAskGod;
+
+  /// No description provided for @deskAskHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask {name} without opening the conversation…'**
+  String deskAskHint(String name);
+
+  /// No description provided for @deskAskInConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask in its conversation'**
+  String get deskAskInConversation;
+
+  /// No description provided for @deskAskTag.
+  ///
+  /// In en, this message translates to:
+  /// **'To {name}'**
+  String deskAskTag(String name);
+
+  /// No description provided for @deskAsked.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to {name}'**
+  String deskAsked(String name);
+
+  /// No description provided for @deskAsks.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks: {what}'**
+  String deskAsks(String what);
+
+  /// No description provided for @deskByProject.
+  ///
+  /// In en, this message translates to:
+  /// **'By project'**
+  String get deskByProject;
+
+  /// No description provided for @deskByState.
+  ///
+  /// In en, this message translates to:
+  /// **'By state'**
+  String get deskByState;
+
+  /// No description provided for @deskChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes'**
+  String get deskChanges;
+
+  /// No description provided for @deskChatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me anything…'**
+  String get deskChatHint;
+
+  /// No description provided for @deskChatSub.
+  ///
+  /// In en, this message translates to:
+  /// **'for every day'**
+  String get deskChatSub;
+
+  /// No description provided for @deskChosenCommit.
+  ///
+  /// In en, this message translates to:
+  /// **'Chosen commit'**
+  String get deskChosenCommit;
+
+  /// No description provided for @deskClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get deskClose;
+
+  /// No description provided for @deskCloseFloating.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the floating panels'**
+  String get deskCloseFloating;
+
+  /// No description provided for @deskColAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent'**
+  String get deskColAgent;
+
+  /// No description provided for @deskColDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get deskColDuration;
+
+  /// No description provided for @deskColSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get deskColSummary;
+
+  /// No description provided for @deskColTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get deskColTime;
+
+  /// No description provided for @deskColType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get deskColType;
+
+  /// No description provided for @deskCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get deskCopy;
+
+  /// No description provided for @deskCopyJson.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy JSON'**
+  String get deskCopyJson;
+
+  /// No description provided for @deskCriticalCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 critical} other{{n} critical}}'**
+  String deskCriticalCount(int n);
+
+  /// No description provided for @deskCriticalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Critical request'**
+  String get deskCriticalTitle;
+
+  /// No description provided for @deskCut.
+  ///
+  /// In en, this message translates to:
+  /// **'Cut'**
+  String get deskCut;
+
+  /// No description provided for @deskDiffWord.
+  ///
+  /// In en, this message translates to:
+  /// **'diff'**
+  String get deskDiffWord;
+
+  /// No description provided for @deskDockAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Put the floating panels back'**
+  String get deskDockAll;
+
+  /// No description provided for @deskDropHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop to attach'**
+  String get deskDropHere;
+
+  /// No description provided for @deskEventN.
+  ///
+  /// In en, this message translates to:
+  /// **'Event {n}'**
+  String deskEventN(int n);
+
+  /// No description provided for @deskEventStream.
+  ///
+  /// In en, this message translates to:
+  /// **'Stream of events'**
+  String get deskEventStream;
+
+  /// No description provided for @deskFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get deskFiles;
+
+  /// No description provided for @deskFilesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 file} other{{n} files}}'**
+  String deskFilesCount(int n);
+
+  /// No description provided for @deskFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get deskFilterAll;
+
+  /// No description provided for @deskFilterBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked'**
+  String get deskFilterBlocked;
+
+  /// No description provided for @deskFilterWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you'**
+  String get deskFilterWaiting;
+
+  /// No description provided for @deskFilterWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Working'**
+  String get deskFilterWorking;
+
+  /// No description provided for @deskFindAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Find an agent…'**
+  String get deskFindAgent;
+
+  /// No description provided for @deskFloatingCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 floating panel} other{{n} floating panels}}'**
+  String deskFloatingCount(int n);
+
+  /// No description provided for @deskForYouCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} for you'**
+  String deskForYouCount(int n);
+
+  /// No description provided for @deskForYouPush.
+  ///
+  /// In en, this message translates to:
+  /// **'For you: a push'**
+  String get deskForYouPush;
+
+  /// No description provided for @deskForYouShort.
+  ///
+  /// In en, this message translates to:
+  /// **'for you'**
+  String get deskForYouShort;
+
+  /// No description provided for @deskFrozen.
+  ///
+  /// In en, this message translates to:
+  /// **'paused'**
+  String get deskFrozen;
+
+  /// No description provided for @deskGitCommit.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a commit…'**
+  String get deskGitCommit;
+
+  /// No description provided for @deskGitCommitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Commit everything in the working tree'**
+  String get deskGitCommitTitle;
+
+  /// No description provided for @deskGitHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the history'**
+  String get deskGitHistory;
+
+  /// No description provided for @deskGitPush.
+  ///
+  /// In en, this message translates to:
+  /// **'Send…'**
+  String get deskGitPush;
+
+  /// No description provided for @deskGoToFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to file…'**
+  String get deskGoToFile;
+
+  /// No description provided for @deskGodHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask God to organise something…'**
+  String get deskGodHint;
+
+  /// No description provided for @deskGrid.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid'**
+  String get deskGrid;
+
+  /// No description provided for @deskHintAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'ask now'**
+  String get deskHintAsk;
+
+  /// No description provided for @deskHintChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'choose'**
+  String get deskHintChoose;
+
+  /// No description provided for @deskHintFloat.
+  ///
+  /// In en, this message translates to:
+  /// **'in a floating panel'**
+  String get deskHintFloat;
+
+  /// No description provided for @deskHintOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'open'**
+  String get deskHintOpen;
+
+  /// No description provided for @deskHintPrefixes.
+  ///
+  /// In en, this message translates to:
+  /// **'type @ for agents, / for commands'**
+  String get deskHintPrefixes;
+
+  /// No description provided for @deskHintPrefixesAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'no prefix searches everything'**
+  String get deskHintPrefixesAdvanced;
+
+  /// No description provided for @deskInContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'in the project\'s container'**
+  String get deskInContainer;
+
+  /// No description provided for @deskInConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'In the conversation'**
+  String get deskInConversation;
+
+  /// No description provided for @deskInline.
+  ///
+  /// In en, this message translates to:
+  /// **'Inline'**
+  String get deskInline;
+
+  /// No description provided for @deskKeyDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Down'**
+  String get deskKeyDown;
+
+  /// No description provided for @deskKeyEnter.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter'**
+  String get deskKeyEnter;
+
+  /// No description provided for @deskKeyEsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Esc'**
+  String get deskKeyEsc;
+
+  /// No description provided for @deskKeyOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Opt'**
+  String get deskKeyOption;
+
+  /// No description provided for @deskKeyShift.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift'**
+  String get deskKeyShift;
+
+  /// No description provided for @deskKeySpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Space'**
+  String get deskKeySpace;
+
+  /// No description provided for @deskKeyTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Tab'**
+  String get deskKeyTab;
+
+  /// No description provided for @deskKeyUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Up'**
+  String get deskKeyUp;
+
+  /// No description provided for @deskLayoutAlways.
+  ///
+  /// In en, this message translates to:
+  /// **'Always'**
+  String get deskLayoutAlways;
+
+  /// No description provided for @deskLayoutFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From {n} px'**
+  String deskLayoutFrom(int n);
+
+  /// No description provided for @deskLayoutHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The control room when the window is at least this wide; narrower, the phone\'s screens.'**
+  String get deskLayoutHint;
+
+  /// No description provided for @deskLayoutNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get deskLayoutNever;
+
+  /// No description provided for @deskLayoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Computer\'s layout'**
+  String get deskLayoutTitle;
+
+  /// No description provided for @deskList.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get deskList;
+
+  /// No description provided for @deskLive.
+  ///
+  /// In en, this message translates to:
+  /// **'live'**
+  String get deskLive;
+
+  /// No description provided for @deskLogSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'agente:\"Coder Web\" tipo:tool.* text'**
+  String get deskLogSearchHint;
+
+  /// No description provided for @deskMenuAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get deskMenuAgents;
+
+  /// No description provided for @deskMenuConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation'**
+  String get deskMenuConversation;
+
+  /// No description provided for @deskMenuEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get deskMenuEdit;
+
+  /// No description provided for @deskMenuFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get deskMenuFile;
+
+  /// No description provided for @deskMenuHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get deskMenuHelp;
+
+  /// No description provided for @deskMenuView.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get deskMenuView;
+
+  /// No description provided for @deskMenuWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Window'**
+  String get deskMenuWindow;
+
+  /// No description provided for @deskNewAgentNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'New agent «{name}»…'**
+  String deskNewAgentNamed(String name);
+
+  /// No description provided for @deskNewConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'New conversation with the open agent'**
+  String get deskNewConversation;
+
+  /// No description provided for @deskNewTerminal.
+  ///
+  /// In en, this message translates to:
+  /// **'New terminal'**
+  String get deskNewTerminal;
+
+  /// No description provided for @deskNoActions.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent actions'**
+  String get deskNoActions;
+
+  /// No description provided for @deskNoAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'No agents'**
+  String get deskNoAgents;
+
+  /// No description provided for @deskNoChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'none, everything is committed'**
+  String get deskNoChanges;
+
+  /// No description provided for @deskNoGit.
+  ///
+  /// In en, this message translates to:
+  /// **'no repository: files only'**
+  String get deskNoGit;
+
+  /// No description provided for @deskNoGitShort.
+  ///
+  /// In en, this message translates to:
+  /// **'no git'**
+  String get deskNoGitShort;
+
+  /// No description provided for @deskNoKeysHere.
+  ///
+  /// In en, this message translates to:
+  /// **'No keys here: credentials stay on the egress routes'**
+  String get deskNoKeysHere;
+
+  /// No description provided for @deskNoProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Without a project'**
+  String get deskNoProject;
+
+  /// No description provided for @deskNoProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'No projects yet'**
+  String get deskNoProjects;
+
+  /// No description provided for @deskNoTask.
+  ///
+  /// In en, this message translates to:
+  /// **'no open task'**
+  String get deskNoTask;
+
+  /// No description provided for @deskNoTerminals.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a terminal on the left'**
+  String get deskNoTerminals;
+
+  /// No description provided for @deskNoneHere.
+  ///
+  /// In en, this message translates to:
+  /// **'No agent in this filter'**
+  String get deskNoneHere;
+
+  /// No description provided for @deskNothingForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'nothing to answer'**
+  String get deskNothingForYou;
+
+  /// No description provided for @deskOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} of {total}'**
+  String deskOfTotal(int n, int total);
+
+  /// No description provided for @deskOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only'**
+  String get deskOnly;
+
+  /// No description provided for @deskOnlyErrors.
+  ///
+  /// In en, this message translates to:
+  /// **'errors and failures'**
+  String get deskOnlyErrors;
+
+  /// No description provided for @deskOnlyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'requests to you'**
+  String get deskOnlyRequests;
+
+  /// No description provided for @deskOpenDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the detail'**
+  String get deskOpenDetail;
+
+  /// No description provided for @deskOpenInPanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in the side panel'**
+  String get deskOpenInPanel;
+
+  /// No description provided for @deskOpenTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Open tasks'**
+  String get deskOpenTasks;
+
+  /// No description provided for @deskPaletteAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get deskPaletteAgents;
+
+  /// No description provided for @deskPaletteAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer: {what}'**
+  String deskPaletteAnswer(String what);
+
+  /// No description provided for @deskPaletteCommands.
+  ///
+  /// In en, this message translates to:
+  /// **'Commands'**
+  String get deskPaletteCommands;
+
+  /// No description provided for @deskPaletteConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations'**
+  String get deskPaletteConversations;
+
+  /// No description provided for @deskPaletteEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Log events'**
+  String get deskPaletteEvents;
+
+  /// No description provided for @deskPaletteFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get deskPaletteFiles;
+
+  /// No description provided for @deskPaletteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents, conversations, commands, files…'**
+  String get deskPaletteHint;
+
+  /// No description provided for @deskPaletteLines.
+  ///
+  /// In en, this message translates to:
+  /// **'Lines'**
+  String get deskPaletteLines;
+
+  /// No description provided for @deskPaletteNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing found'**
+  String get deskPaletteNothing;
+
+  /// No description provided for @deskPaletteOpenFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Open {path}'**
+  String deskPaletteOpenFile(String path);
+
+  /// No description provided for @deskPaletteRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'For you'**
+  String get deskPaletteRequests;
+
+  /// No description provided for @deskPaletteTerminal.
+  ///
+  /// In en, this message translates to:
+  /// **'Terminal'**
+  String get deskPaletteTerminal;
+
+  /// No description provided for @deskPaletteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Command palette'**
+  String get deskPaletteTitle;
+
+  /// No description provided for @deskPanelClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the panel'**
+  String get deskPanelClose;
+
+  /// No description provided for @deskPanelDetach.
+  ///
+  /// In en, this message translates to:
+  /// **'Take out of the panel'**
+  String get deskPanelDetach;
+
+  /// No description provided for @deskPanelDock.
+  ///
+  /// In en, this message translates to:
+  /// **'Back into the side panel'**
+  String get deskPanelDock;
+
+  /// No description provided for @deskPanelResize.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel width'**
+  String get deskPanelResize;
+
+  /// No description provided for @deskPaste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get deskPaste;
+
+  /// No description provided for @deskPickEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an event to see it whole'**
+  String get deskPickEvent;
+
+  /// No description provided for @deskProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get deskProject;
+
+  /// No description provided for @deskProjectWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} {state} · {n} working'**
+  String deskProjectWorking(String name, String state, int n);
+
+  /// No description provided for @deskPushAsked.
+  ///
+  /// In en, this message translates to:
+  /// **'Asked in «For you»: the push goes once you say yes'**
+  String get deskPushAsked;
+
+  /// No description provided for @deskQuickChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Chat'**
+  String get deskQuickChat;
+
+  /// No description provided for @deskQuickChatExpand.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in the side panel'**
+  String get deskQuickChatExpand;
+
+  /// No description provided for @deskQuickChatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{keys} calls it inside the app'**
+  String deskQuickChatHint(String keys);
+
+  /// No description provided for @deskReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'read only'**
+  String get deskReadOnly;
+
+  /// No description provided for @deskRedo.
+  ///
+  /// In en, this message translates to:
+  /// **'Redo'**
+  String get deskRedo;
+
+  /// No description provided for @deskRemotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Remotes'**
+  String get deskRemotes;
+
+  /// No description provided for @deskRequestsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 request} other{{n} requests}}'**
+  String deskRequestsCount(int n);
+
+  /// No description provided for @deskRunInTerminal.
+  ///
+  /// In en, this message translates to:
+  /// **'Run «{cmd}» in your terminal of {project}'**
+  String deskRunInTerminal(String cmd, String project);
+
+  /// No description provided for @deskRunInTerminalDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'In a terminal of yours, in the project\'s container. Your commands ask no permission: it is you.'**
+  String get deskRunInTerminalDetail;
+
+  /// No description provided for @deskSameTurn.
+  ///
+  /// In en, this message translates to:
+  /// **'In the same turn'**
+  String get deskSameTurn;
+
+  /// No description provided for @deskSearchCommits.
+  ///
+  /// In en, this message translates to:
+  /// **'Search the commits'**
+  String get deskSearchCommits;
+
+  /// No description provided for @deskSearchEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Events with «{q}» in the Log'**
+  String deskSearchEvents(String q);
+
+  /// No description provided for @deskSearchShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get deskSearchShort;
+
+  /// No description provided for @deskSelectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get deskSelectAll;
+
+  /// No description provided for @deskSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get deskSettings;
+
+  /// No description provided for @deskShortcuts.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard shortcuts'**
+  String get deskShortcuts;
+
+  /// No description provided for @deskSideBySide.
+  ///
+  /// In en, this message translates to:
+  /// **'Side by side'**
+  String get deskSideBySide;
+
+  /// No description provided for @deskStatusPalette.
+  ///
+  /// In en, this message translates to:
+  /// **'{keys} palette'**
+  String deskStatusPalette(String keys);
+
+  /// No description provided for @deskStill.
+  ///
+  /// In en, this message translates to:
+  /// **'Still'**
+  String get deskStill;
+
+  /// No description provided for @deskStopAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop {name}'**
+  String deskStopAgent(String name);
+
+  /// No description provided for @deskStopOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop the open agent'**
+  String get deskStopOpen;
+
+  /// No description provided for @deskStreamHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused under the pointer · a click opens the Log'**
+  String get deskStreamHint;
+
+  /// No description provided for @deskSubagents.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 subagent} other{{n} subagents}}'**
+  String deskSubagents(int n);
+
+  /// No description provided for @deskTabs.
+  ///
+  /// In en, this message translates to:
+  /// **'Tabs'**
+  String get deskTabs;
+
+  /// No description provided for @deskTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get deskTags;
+
+  /// No description provided for @deskTaskChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'The task\'s changes'**
+  String get deskTaskChanges;
+
+  /// No description provided for @deskTaskFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'failing'**
+  String get deskTaskFailed;
+
+  /// No description provided for @deskTaskPassed.
+  ///
+  /// In en, this message translates to:
+  /// **'passing'**
+  String get deskTaskPassed;
+
+  /// No description provided for @deskTaskRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'in progress'**
+  String get deskTaskRunning;
+
+  /// No description provided for @deskTasksRule.
+  ///
+  /// In en, this message translates to:
+  /// **'they close only with a verifier that exits 0'**
+  String get deskTasksRule;
+
+  /// No description provided for @deskTermAskHint.
+  ///
+  /// In en, this message translates to:
+  /// **'To ask it something write in its conversation'**
+  String get deskTermAskHint;
+
+  /// No description provided for @deskTerminalsShown.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 terminal} other{{n} terminals}}'**
+  String deskTerminalsShown(int n);
+
+  /// No description provided for @deskTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme: {name}'**
+  String deskTheme(String name);
+
+  /// No description provided for @deskTiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Tiles'**
+  String get deskTiles;
+
+  /// No description provided for @deskToSend.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =0{nothing to send} =1{1 commit to send} other{{n} commits to send}}'**
+  String deskToSend(int n);
+
+  /// No description provided for @deskTogglePanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Side panel'**
+  String get deskTogglePanel;
+
+  /// No description provided for @deskTypeHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get deskTypeHead;
+
+  /// No description provided for @deskUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get deskUndo;
+
+  /// No description provided for @deskVerifier.
+  ///
+  /// In en, this message translates to:
+  /// **'Verifier'**
+  String get deskVerifier;
+
+  /// No description provided for @deskViewCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get deskViewCode;
+
+  /// No description provided for @deskViewTerminals.
+  ///
+  /// In en, this message translates to:
+  /// **'Terminals'**
+  String get deskViewTerminals;
+
+  /// No description provided for @deskWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get deskWhen;
+
+  /// No description provided for @deskWhenAll.
+  ///
+  /// In en, this message translates to:
+  /// **'all'**
+  String get deskWhenAll;
+
+  /// No description provided for @deskWhenHour.
+  ///
+  /// In en, this message translates to:
+  /// **'1 hour'**
+  String get deskWhenHour;
+
+  /// No description provided for @deskWhenToday.
+  ///
+  /// In en, this message translates to:
+  /// **'today'**
+  String get deskWhenToday;
+
+  /// No description provided for @deskWhenWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'7 days'**
+  String get deskWhenWeek;
+
+  /// No description provided for @deskWithChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'With changes'**
+  String get deskWithChanges;
+
+  /// No description provided for @deskWorkingCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 agent working} other{{n} agents working}}'**
+  String deskWorkingCount(int n);
+
+  /// No description provided for @deskYouWrite.
+  ///
+  /// In en, this message translates to:
+  /// **'you can write'**
+  String get deskYouWrite;
+
+  /// No description provided for @deskYourTerminal.
+  ///
+  /// In en, this message translates to:
+  /// **'Your terminal'**
+  String get deskYourTerminal;
+
+  /// No description provided for @deskYourTerminals.
+  ///
+  /// In en, this message translates to:
+  /// **'Yours'**
+  String get deskYourTerminals;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

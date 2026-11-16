@@ -21,6 +21,7 @@ import '../api/live_model.dart';
 import '../api/saved.dart';
 import '../api/types.dart';
 import '../app_state.dart';
+import '../desktop/drops.dart';
 import '../l10n/app_localizations.dart';
 import '../mascot/mascot_view.dart';
 import '../theme/colors.dart';
@@ -67,7 +68,15 @@ class ConversationScreen extends StatefulWidget {
     this.draft,
     this.jump,
     this.embedded = false,
+    this.headerActions = const [],
+    this.drops,
   });
+
+  /// On computers (G40.17): the panel's own buttons (take out, close) in the header.
+  final List<Widget> headerActions;
+
+  /// Files dropped from the computer onto the conversation, for the composer.
+  final FileDrops? drops;
 
   final String sessionId;
   final Agent? agent;
@@ -114,6 +123,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) => _tryJump());
     }
     if (widget.draft != null) _text.text = widget.draft!;
+    widget.drops?.addListener(_dropped);
     final first = widget.firstMessage;
     if (first != null && first.trim().isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _send(text: first));
@@ -123,6 +133,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   @override
   void dispose() {
     view.removeListener(_tryJump);
+    widget.drops?.removeListener(_dropped);
     _litTimer?.cancel();
     _scroll.dispose();
     app.unfollow(widget.sessionId);
@@ -288,6 +299,20 @@ class _ConversationScreenState extends State<ConversationScreen> {
     });
   }
 
+  /// Files dropped on the conversation (computers): the same rules as «Attach».
+  void _dropped() {
+    final l = AppLocalizations.of(context);
+    for (final (name, bytes) in widget.drops?.take() ?? const <(String, Uint8List)>[]) {
+      if (_attached.length >= kMaxAttached) break;
+      final a = classify(name, bytes);
+      if (a == null) {
+        setState(() => _note = l.attachmentTooBig(name));
+        continue;
+      }
+      setState(() => _attached.add(a));
+    }
+  }
+
   Future<void> _attach() async {
     final l = AppLocalizations.of(context);
     final files = await FilePicker.pickFiles();
@@ -348,6 +373,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   state: state,
                   running: view.running,
                   onStop: () => app.interrupt(widget.sessionId),
+                  actions: widget.headerActions,
                 );
               },
             ),
@@ -505,8 +531,10 @@ class _Header extends StatelessWidget {
     required this.state,
     required this.running,
     required this.onStop,
+    this.actions = const [],
   });
 
+  final List<Widget> actions;
   final bool embedded;
   final Agent? agent;
   final MascotState state;
@@ -564,6 +592,7 @@ class _Header extends StatelessWidget {
               icon: RgIcon(RgIcons.stop, size: 16, color: c.err),
               label: Text(l.stop, style: TextStyle(color: c.err)),
             ),
+          ...actions,
         ],
       ),
     );

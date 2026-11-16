@@ -120,6 +120,38 @@ class YouScreen extends StatelessWidget {
             onSelectionChanged: (s) => app.setLocale(s.first.isEmpty ? null : Locale(s.first)),
           ),
         ),
+        // G40.17: on computers, from which width the window is the control room.
+        if (app.desktop)
+          _Row(
+            label: l.deskLayoutTitle,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SegmentedButton<int>(
+                  key: const Key('desktop-layout'),
+                  showSelectedIcon: false,
+                  segments: [
+                    ButtonSegment(value: 0, label: Text(l.deskLayoutAlways)),
+                    ButtonSegment(value: kDesktopFrom, label: Text(l.deskLayoutFrom(kDesktopFrom))),
+                    ButtonSegment(value: 1200, label: Text(l.deskLayoutFrom(1200))),
+                    ButtonSegment(value: -1, label: Text(l.deskLayoutNever)),
+                  ],
+                  selected: {
+                    if ([0, kDesktopFrom, 1200, -1].contains(app.desktopFrom))
+                      app.desktopFrom
+                    else
+                      kDesktopFrom,
+                  },
+                  onSelectionChanged: (s) => app.setDesktopFrom(s.first),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  l.deskLayoutHint,
+                  style: TextStyle(color: RgColors.of(context).dim, fontSize: 12.5),
+                ),
+              ],
+            ),
+          ),
         // G40.11: the advanced interface, kept for the RedGiant in use.
         if (app.connected) ...[
           _Section(l.sectionCoders),

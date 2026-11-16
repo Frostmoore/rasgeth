@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app_state.dart';
+import 'desktop/desktop_shell.dart';
 import 'l10n/app_localizations.dart';
 import 'mascot/mascot_source.dart';
 import 'screens/home_shell.dart';
@@ -41,8 +42,23 @@ class RGCompanionApp extends StatelessWidget {
           reduceMotion: controller.reduceMotion,
           child: child!,
         ),
-        home: const HomeShell(),
+        home: const AppHome(),
       ),
     ),
   );
+}
+
+/// The phone's shell, or the computers' control room (G40.17) when the app runs on a computer
+/// and its window is at least as wide as the person chose (Tu › Aspetto).
+class AppHome extends StatelessWidget {
+  const AppHome({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final app = AppScope.of(context);
+    return LayoutBuilder(
+      builder: (context, box) =>
+          app.desktopLayoutFor(box.maxWidth) ? const DesktopShell() : const HomeShell(),
+    );
+  }
 }
