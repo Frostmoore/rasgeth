@@ -56,6 +56,7 @@ export * from "./secrets.js";
 export * from "./setup-network.js";
 export * from "./tools.js";
 export * from "./vault.js";
+export * from "./video-analysis.js";
 export * from "./video-patch.js";
 export * from "./video-timeline.js";
 export * from "./voice.js";
