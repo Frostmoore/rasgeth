@@ -2538,4 +2538,691 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get savedSearchClear => 'Clear the search';
+
+  @override
+  String get deskAbout => 'About RGCompanion';
+
+  @override
+  String get deskAdvancedOff => 'Turn off the advanced interface';
+
+  @override
+  String get deskAdvancedOn => 'Turn on the advanced interface';
+
+  @override
+  String get deskAdvancedShort => 'advanced';
+
+  @override
+  String deskAgeDays(int n) {
+    return '$n d';
+  }
+
+  @override
+  String deskAgeHours(int n) {
+    return '$n h';
+  }
+
+  @override
+  String deskAgeMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String get deskAgeNow => 'now';
+
+  @override
+  String get deskAgeYesterday => 'yesterday';
+
+  @override
+  String deskAgentAsks(String name, String what) {
+    return '$name asks: $what';
+  }
+
+  @override
+  String deskAgentsCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n agents',
+      one: '1 agent',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deskAgentsHead => 'Agents';
+
+  @override
+  String get deskAgentsTerminals => 'Agents\'';
+
+  @override
+  String get deskAllProjects => 'All projects';
+
+  @override
+  String get deskAllProjectsLower => 'all projects';
+
+  @override
+  String get deskAskChat => 'Ask the Chat';
+
+  @override
+  String get deskAskGod => 'Ask God';
+
+  @override
+  String deskAskHint(String name) {
+    return 'Ask $name without opening the conversation…';
+  }
+
+  @override
+  String get deskAskInConversation => 'Ask in its conversation';
+
+  @override
+  String deskAskTag(String name) {
+    return 'To $name';
+  }
+
+  @override
+  String deskAsked(String name) {
+    return 'Sent to $name';
+  }
+
+  @override
+  String deskAsks(String what) {
+    return 'Asks: $what';
+  }
+
+  @override
+  String get deskByProject => 'By project';
+
+  @override
+  String get deskByState => 'By state';
+
+  @override
+  String get deskChanges => 'Changes';
+
+  @override
+  String get deskChatHint => 'Ask me anything…';
+
+  @override
+  String get deskChatSub => 'for every day';
+
+  @override
+  String get deskChosenCommit => 'Chosen commit';
+
+  @override
+  String get deskClose => 'Close';
+
+  @override
+  String get deskCloseFloating => 'Close the floating panels';
+
+  @override
+  String get deskColAgent => 'Agent';
+
+  @override
+  String get deskColDuration => 'Duration';
+
+  @override
+  String get deskColSummary => 'Summary';
+
+  @override
+  String get deskColTime => 'Time';
+
+  @override
+  String get deskColType => 'Type';
+
+  @override
+  String get deskCopy => 'Copy';
+
+  @override
+  String get deskCopyJson => 'Copy JSON';
+
+  @override
+  String deskCriticalCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n critical',
+      one: '1 critical',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deskCriticalTitle => 'Critical request';
+
+  @override
+  String get deskCut => 'Cut';
+
+  @override
+  String get deskDiffWord => 'diff';
+
+  @override
+  String get deskDockAll => 'Put the floating panels back';
+
+  @override
+  String get deskDropHere => 'Drop to attach';
+
+  @override
+  String deskEventN(int n) {
+    return 'Event $n';
+  }
+
+  @override
+  String get deskEventStream => 'Stream of events';
+
+  @override
+  String get deskFiles => 'Files';
+
+  @override
+  String deskFilesCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$n files', one: '1 file');
+    return '$_temp0';
+  }
+
+  @override
+  String get deskFilterAll => 'All';
+
+  @override
+  String get deskFilterBlocked => 'Blocked';
+
+  @override
+  String get deskFilterWaiting => 'Waiting for you';
+
+  @override
+  String get deskFilterWorking => 'Working';
+
+  @override
+  String get deskFindAgent => 'Find an agent…';
+
+  @override
+  String deskFloatingCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n floating panels',
+      one: '1 floating panel',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deskForYouCount(int n) {
+    return '$n for you';
+  }
+
+  @override
+  String get deskForYouPush => 'For you: a push';
+
+  @override
+  String get deskForYouShort => 'for you';
+
+  @override
+  String get deskFrozen => 'paused';
+
+  @override
+  String get deskGitCommit => 'Make a commit…';
+
+  @override
+  String get deskGitCommitTitle => 'Commit everything in the working tree';
+
+  @override
+  String get deskGitHistory => 'Show the history';
+
+  @override
+  String get deskGitPush => 'Send…';
+
+  @override
+  String get deskGoToFile => 'Go to file…';
+
+  @override
+  String get deskGodHint => 'Ask God to organise something…';
+
+  @override
+  String get deskGrid => 'Grid';
+
+  @override
+  String get deskHintAsk => 'ask now';
+
+  @override
+  String get deskHintChoose => 'choose';
+
+  @override
+  String get deskHintFloat => 'in a floating panel';
+
+  @override
+  String get deskHintOpen => 'open';
+
+  @override
+  String get deskHintPrefixes => 'type @ for agents, / for commands';
+
+  @override
+  String get deskHintPrefixesAdvanced => 'no prefix searches everything';
+
+  @override
+  String get deskInContainer => 'in the project\'s container';
+
+  @override
+  String get deskInConversation => 'In the conversation';
+
+  @override
+  String get deskInline => 'Inline';
+
+  @override
+  String get deskKeyDown => 'Down';
+
+  @override
+  String get deskKeyEnter => 'Enter';
+
+  @override
+  String get deskKeyEsc => 'Esc';
+
+  @override
+  String get deskKeyOption => 'Opt';
+
+  @override
+  String get deskKeyShift => 'Shift';
+
+  @override
+  String get deskKeySpace => 'Space';
+
+  @override
+  String get deskKeyTab => 'Tab';
+
+  @override
+  String get deskKeyUp => 'Up';
+
+  @override
+  String get deskLayoutAlways => 'Always';
+
+  @override
+  String deskLayoutFrom(int n) {
+    return 'From $n px';
+  }
+
+  @override
+  String get deskLayoutHint =>
+      'The control room when the window is at least this wide; narrower, the phone\'s screens.';
+
+  @override
+  String get deskLayoutNever => 'Never';
+
+  @override
+  String get deskLayoutTitle => 'Computer\'s layout';
+
+  @override
+  String get deskList => 'List';
+
+  @override
+  String get deskLive => 'live';
+
+  @override
+  String get deskLogSearchHint => 'agente:\"Coder Web\" tipo:tool.* text';
+
+  @override
+  String get deskMenuAgents => 'Agents';
+
+  @override
+  String get deskMenuConversation => 'Conversation';
+
+  @override
+  String get deskMenuEdit => 'Edit';
+
+  @override
+  String get deskMenuFile => 'File';
+
+  @override
+  String get deskMenuHelp => 'Help';
+
+  @override
+  String get deskMenuView => 'View';
+
+  @override
+  String get deskMenuWindow => 'Window';
+
+  @override
+  String deskNewAgentNamed(String name) {
+    return 'New agent «$name»…';
+  }
+
+  @override
+  String get deskNewConversation => 'New conversation with the open agent';
+
+  @override
+  String get deskNewTerminal => 'New terminal';
+
+  @override
+  String get deskNoActions => 'No recent actions';
+
+  @override
+  String get deskNoAgents => 'No agents';
+
+  @override
+  String get deskNoChanges => 'none, everything is committed';
+
+  @override
+  String get deskNoGit => 'no repository: files only';
+
+  @override
+  String get deskNoGitShort => 'no git';
+
+  @override
+  String get deskNoKeysHere => 'No keys here: credentials stay on the egress routes';
+
+  @override
+  String get deskNoProject => 'Without a project';
+
+  @override
+  String get deskNoProjects => 'No projects yet';
+
+  @override
+  String get deskNoTask => 'no open task';
+
+  @override
+  String get deskNoTerminals => 'Choose a terminal on the left';
+
+  @override
+  String get deskNoneHere => 'No agent in this filter';
+
+  @override
+  String get deskNothingForYou => 'nothing to answer';
+
+  @override
+  String deskOfTotal(int n, int total) {
+    return '$n of $total';
+  }
+
+  @override
+  String get deskOnly => 'Only';
+
+  @override
+  String get deskOnlyErrors => 'errors and failures';
+
+  @override
+  String get deskOnlyRequests => 'requests to you';
+
+  @override
+  String get deskOpenDetail => 'Open the detail';
+
+  @override
+  String get deskOpenInPanel => 'Open in the side panel';
+
+  @override
+  String get deskOpenTasks => 'Open tasks';
+
+  @override
+  String get deskPaletteAgents => 'Agents';
+
+  @override
+  String deskPaletteAnswer(String what) {
+    return 'Answer: $what';
+  }
+
+  @override
+  String get deskPaletteCommands => 'Commands';
+
+  @override
+  String get deskPaletteConversations => 'Conversations';
+
+  @override
+  String get deskPaletteEvents => 'Log events';
+
+  @override
+  String get deskPaletteFiles => 'Files';
+
+  @override
+  String get deskPaletteHint => 'Agents, conversations, commands, files…';
+
+  @override
+  String get deskPaletteLines => 'Lines';
+
+  @override
+  String get deskPaletteNothing => 'Nothing found';
+
+  @override
+  String deskPaletteOpenFile(String path) {
+    return 'Open $path';
+  }
+
+  @override
+  String get deskPaletteRequests => 'For you';
+
+  @override
+  String get deskPaletteTerminal => 'Terminal';
+
+  @override
+  String get deskPaletteTitle => 'Command palette';
+
+  @override
+  String get deskPanelClose => 'Close the panel';
+
+  @override
+  String get deskPanelDetach => 'Take out of the panel';
+
+  @override
+  String get deskPanelDock => 'Back into the side panel';
+
+  @override
+  String get deskPanelResize => 'Panel width';
+
+  @override
+  String get deskPaste => 'Paste';
+
+  @override
+  String get deskPickEvent => 'Choose an event to see it whole';
+
+  @override
+  String get deskProject => 'Project';
+
+  @override
+  String deskProjectWorking(String name, String state, int n) {
+    return '$name $state · $n working';
+  }
+
+  @override
+  String get deskPushAsked => 'Asked in «For you»: the push goes once you say yes';
+
+  @override
+  String get deskQuickChat => 'Quick Chat';
+
+  @override
+  String get deskQuickChatExpand => 'Open in the side panel';
+
+  @override
+  String deskQuickChatHint(String keys) {
+    return '$keys calls it inside the app';
+  }
+
+  @override
+  String get deskReadOnly => 'read only';
+
+  @override
+  String get deskRedo => 'Redo';
+
+  @override
+  String get deskRemotes => 'Remotes';
+
+  @override
+  String deskRequestsCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n requests',
+      one: '1 request',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deskRunInTerminal(String cmd, String project) {
+    return 'Run «$cmd» in your terminal of $project';
+  }
+
+  @override
+  String get deskRunInTerminalDetail =>
+      'In a terminal of yours, in the project\'s container. Your commands ask no permission: it is you.';
+
+  @override
+  String get deskSameTurn => 'In the same turn';
+
+  @override
+  String get deskSearchCommits => 'Search the commits';
+
+  @override
+  String deskSearchEvents(String q) {
+    return 'Events with «$q» in the Log';
+  }
+
+  @override
+  String get deskSearchShort => 'Search';
+
+  @override
+  String get deskSelectAll => 'Select all';
+
+  @override
+  String get deskSettings => 'Settings';
+
+  @override
+  String get deskShortcuts => 'Keyboard shortcuts';
+
+  @override
+  String get deskSideBySide => 'Side by side';
+
+  @override
+  String deskStatusPalette(String keys) {
+    return '$keys palette';
+  }
+
+  @override
+  String get deskStill => 'Still';
+
+  @override
+  String deskStopAgent(String name) {
+    return 'Stop $name';
+  }
+
+  @override
+  String get deskStopOpen => 'Stop the open agent';
+
+  @override
+  String get deskStreamHint => 'Paused under the pointer · a click opens the Log';
+
+  @override
+  String deskSubagents(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n subagents',
+      one: '1 subagent',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deskTabs => 'Tabs';
+
+  @override
+  String get deskTags => 'Tags';
+
+  @override
+  String get deskTaskChanges => 'The task\'s changes';
+
+  @override
+  String get deskTaskFailed => 'failing';
+
+  @override
+  String get deskTaskPassed => 'passing';
+
+  @override
+  String get deskTaskRunning => 'in progress';
+
+  @override
+  String get deskTasksRule => 'they close only with a verifier that exits 0';
+
+  @override
+  String get deskTermAskHint => 'To ask it something write in its conversation';
+
+  @override
+  String deskTerminalsShown(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n terminals',
+      one: '1 terminal',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deskTheme(String name) {
+    return 'Theme: $name';
+  }
+
+  @override
+  String get deskTiles => 'Tiles';
+
+  @override
+  String deskToSend(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n commits to send',
+      one: '1 commit to send',
+      zero: 'nothing to send',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deskTogglePanel => 'Side panel';
+
+  @override
+  String get deskTypeHead => 'Type';
+
+  @override
+  String get deskUndo => 'Undo';
+
+  @override
+  String get deskVerifier => 'Verifier';
+
+  @override
+  String get deskViewCode => 'Code';
+
+  @override
+  String get deskViewTerminals => 'Terminals';
+
+  @override
+  String get deskWhen => 'When';
+
+  @override
+  String get deskWhenAll => 'all';
+
+  @override
+  String get deskWhenHour => '1 hour';
+
+  @override
+  String get deskWhenToday => 'today';
+
+  @override
+  String get deskWhenWeek => '7 days';
+
+  @override
+  String get deskWithChanges => 'With changes';
+
+  @override
+  String deskWorkingCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n agents working',
+      one: '1 agent working',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deskYouWrite => 'you can write';
+
+  @override
+  String get deskYourTerminal => 'Your terminal';
+
+  @override
+  String get deskYourTerminals => 'Yours';
 }

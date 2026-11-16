@@ -5,7 +5,8 @@
 // without a shell (`runGit`, arguments checked).
 //
 //   GET  /api/projects/:id/git            → branch, upstream, ahead/behind, the changed files
-//   GET  /api/projects/:id/git/log        → the latest commits (?limit=)
+//   GET  /api/projects/:id/git/log        → the latest commits (?limit=, ?all=1 for every branch),
+//                                           each with its parents (the app's graph, G40.17)
 //   GET  /api/projects/:id/git/branches   → the branches with their upstream and ahead/behind
 //   GET  /api/projects/:id/git/diff       → a unified patch: the working tree, ?commit=, ?task=
 //                                           or ?agent= (the agent's worktree against its base)
@@ -187,10 +188,12 @@ export function codeRoutes<E extends { Variables: any }>(
     const { dir } = await where(owner(c), c.req.param("id"), c.req.query("agent"));
     if (!(await head(dir))) return c.json([], 200);
     const limit = Math.min(200, Math.max(1, Number(c.req.query("limit") ?? 30) || 30));
+    const all = c.req.query("all") === "1";
     const r = await git(dir, [
       "log",
       `-n${limit}`,
-      "--format=%H%x1f%h%x1f%an%x1f%aI%x1f%D%x1f%s%x1e",
+      ...(all ? ["--all", "--date-order"] : []),
+      "--format=%H%x1f%h%x1f%an%x1f%aI%x1f%D%x1f%s%x1f%P%x1e",
     ]);
     return c.json(
       r.stdout
@@ -198,9 +201,10 @@ export function codeRoutes<E extends { Variables: any }>(
         .map((x) => x.trim())
         .filter(Boolean)
         .map((x) => {
-          const [hash = "", short = "", author = "", date = "", refs = "", subject = ""] =
+          const [hash = "", short = "", author = "", date = "", refs = "", subject = "", p = ""] =
             x.split("\x1f");
-          return { hash, short, author, date, refs, subject };
+          const parents = p.split(" ").filter(Boolean);
+          return { hash, short, author, date, refs, subject, parents };
         }),
       200,
     );

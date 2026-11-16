@@ -1536,5 +1536,428 @@
   "productPrevious": "Previous products",
   "productNext": "Next products",
   "quoteReplyShort": "Reply",
-  "savedSearchClear": "Clear the search"
+  "savedSearchClear": "Clear the search",
+  "deskAbout": "About RGCompanion",
+  "deskAdvancedOff": "Turn off the advanced interface",
+  "deskAdvancedOn": "Turn on the advanced interface",
+  "deskAdvancedShort": "advanced",
+  "deskAgeDays": "{n} d",
+  "@deskAgeDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskAgeHours": "{n} h",
+  "@deskAgeHours": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskAgeMinutes": "{n} min",
+  "@deskAgeMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskAgeNow": "now",
+  "deskAgeYesterday": "yesterday",
+  "deskAgentAsks": "{name} asks: {what}",
+  "@deskAgentAsks": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "deskAgentsCount": "{n, plural, =1{1 agent} other{{n} agents}}",
+  "@deskAgentsCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskAgentsHead": "Agents",
+  "deskAgentsTerminals": "Agents'",
+  "deskAllProjects": "All projects",
+  "deskAllProjectsLower": "all projects",
+  "deskAskChat": "Ask the Chat",
+  "deskAskGod": "Ask God",
+  "deskAskHint": "Ask {name} without opening the conversation…",
+  "@deskAskHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deskAskInConversation": "Ask in its conversation",
+  "deskAskTag": "To {name}",
+  "@deskAskTag": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deskAsked": "Sent to {name}",
+  "@deskAsked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deskAsks": "Asks: {what}",
+  "@deskAsks": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "deskByProject": "By project",
+  "deskByState": "By state",
+  "deskChanges": "Changes",
+  "deskChatHint": "Ask me anything…",
+  "deskChatSub": "for every day",
+  "deskChosenCommit": "Chosen commit",
+  "deskClose": "Close",
+  "deskCloseFloating": "Close the floating panels",
+  "deskColAgent": "Agent",
+  "deskColDuration": "Duration",
+  "deskColSummary": "Summary",
+  "deskColTime": "Time",
+  "deskColType": "Type",
+  "deskCopy": "Copy",
+  "deskCopyJson": "Copy JSON",
+  "deskCriticalCount": "{n, plural, =1{1 critical} other{{n} critical}}",
+  "@deskCriticalCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskCriticalTitle": "Critical request",
+  "deskCut": "Cut",
+  "deskDiffWord": "diff",
+  "deskDockAll": "Put the floating panels back",
+  "deskDropHere": "Drop to attach",
+  "deskEventN": "Event {n}",
+  "@deskEventN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskEventStream": "Stream of events",
+  "deskFiles": "Files",
+  "deskFilesCount": "{n, plural, =1{1 file} other{{n} files}}",
+  "@deskFilesCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskFilterAll": "All",
+  "deskFilterBlocked": "Blocked",
+  "deskFilterWaiting": "Waiting for you",
+  "deskFilterWorking": "Working",
+  "deskFindAgent": "Find an agent…",
+  "deskFloatingCount": "{n, plural, =1{1 floating panel} other{{n} floating panels}}",
+  "@deskFloatingCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskForYouCount": "{n} for you",
+  "@deskForYouCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskForYouPush": "For you: a push",
+  "deskForYouShort": "for you",
+  "deskFrozen": "paused",
+  "deskGitCommit": "Make a commit…",
+  "deskGitCommitTitle": "Commit everything in the working tree",
+  "deskGitHistory": "Show the history",
+  "deskGitPush": "Send…",
+  "deskGoToFile": "Go to file…",
+  "deskGodHint": "Ask God to organise something…",
+  "deskGrid": "Grid",
+  "deskHintAsk": "ask now",
+  "deskHintChoose": "choose",
+  "deskHintFloat": "in a floating panel",
+  "deskHintOpen": "open",
+  "deskHintPrefixes": "type @ for agents, / for commands",
+  "deskHintPrefixesAdvanced": "no prefix searches everything",
+  "deskInContainer": "in the project's container",
+  "deskInConversation": "In the conversation",
+  "deskInline": "Inline",
+  "deskKeyDown": "Down",
+  "deskKeyEnter": "Enter",
+  "deskKeyEsc": "Esc",
+  "deskKeyOption": "Opt",
+  "deskKeyShift": "Shift",
+  "deskKeySpace": "Space",
+  "deskKeyTab": "Tab",
+  "deskKeyUp": "Up",
+  "deskLayoutAlways": "Always",
+  "deskLayoutFrom": "From {n} px",
+  "@deskLayoutFrom": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskLayoutHint": "The control room when the window is at least this wide; narrower, the phone's screens.",
+  "deskLayoutNever": "Never",
+  "deskLayoutTitle": "Computer's layout",
+  "deskList": "List",
+  "deskLive": "live",
+  "deskLogSearchHint": "agente:\"Coder Web\" tipo:tool.* text",
+  "deskMenuAgents": "Agents",
+  "deskMenuConversation": "Conversation",
+  "deskMenuEdit": "Edit",
+  "deskMenuFile": "File",
+  "deskMenuHelp": "Help",
+  "deskMenuView": "View",
+  "deskMenuWindow": "Window",
+  "deskNewAgentNamed": "New agent «{name}»…",
+  "@deskNewAgentNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deskNewConversation": "New conversation with the open agent",
+  "deskNewTerminal": "New terminal",
+  "deskNoActions": "No recent actions",
+  "deskNoAgents": "No agents",
+  "deskNoChanges": "none, everything is committed",
+  "deskNoGit": "no repository: files only",
+  "deskNoGitShort": "no git",
+  "deskNoKeysHere": "No keys here: credentials stay on the egress routes",
+  "deskNoProject": "Without a project",
+  "deskNoProjects": "No projects yet",
+  "deskNoTask": "no open task",
+  "deskNoTerminals": "Choose a terminal on the left",
+  "deskNoneHere": "No agent in this filter",
+  "deskNothingForYou": "nothing to answer",
+  "deskOfTotal": "{n} of {total}",
+  "@deskOfTotal": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "deskOnly": "Only",
+  "deskOnlyErrors": "errors and failures",
+  "deskOnlyRequests": "requests to you",
+  "deskOpenDetail": "Open the detail",
+  "deskOpenInPanel": "Open in the side panel",
+  "deskOpenTasks": "Open tasks",
+  "deskPaletteAgents": "Agents",
+  "deskPaletteAnswer": "Answer: {what}",
+  "@deskPaletteAnswer": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "deskPaletteCommands": "Commands",
+  "deskPaletteConversations": "Conversations",
+  "deskPaletteEvents": "Log events",
+  "deskPaletteFiles": "Files",
+  "deskPaletteHint": "Agents, conversations, commands, files…",
+  "deskPaletteLines": "Lines",
+  "deskPaletteNothing": "Nothing found",
+  "deskPaletteOpenFile": "Open {path}",
+  "@deskPaletteOpenFile": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "deskPaletteRequests": "For you",
+  "deskPaletteTerminal": "Terminal",
+  "deskPaletteTitle": "Command palette",
+  "deskPanelClose": "Close the panel",
+  "deskPanelDetach": "Take out of the panel",
+  "deskPanelDock": "Back into the side panel",
+  "deskPanelResize": "Panel width",
+  "deskPaste": "Paste",
+  "deskPickEvent": "Choose an event to see it whole",
+  "deskProject": "Project",
+  "deskProjectWorking": "{name} {state} · {n} working",
+  "@deskProjectWorking": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskPushAsked": "Asked in «For you»: the push goes once you say yes",
+  "deskQuickChat": "Quick Chat",
+  "deskQuickChatExpand": "Open in the side panel",
+  "deskQuickChatHint": "{keys} calls it inside the app",
+  "@deskQuickChatHint": {
+    "placeholders": {
+      "keys": {
+        "type": "String"
+      }
+    }
+  },
+  "deskReadOnly": "read only",
+  "deskRedo": "Redo",
+  "deskRemotes": "Remotes",
+  "deskRequestsCount": "{n, plural, =1{1 request} other{{n} requests}}",
+  "@deskRequestsCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskRunInTerminal": "Run «{cmd}» in your terminal of {project}",
+  "@deskRunInTerminal": {
+    "placeholders": {
+      "cmd": {
+        "type": "String"
+      },
+      "project": {
+        "type": "String"
+      }
+    }
+  },
+  "deskRunInTerminalDetail": "In a terminal of yours, in the project's container. Your commands ask no permission: it is you.",
+  "deskSameTurn": "In the same turn",
+  "deskSearchCommits": "Search the commits",
+  "deskSearchEvents": "Events with «{q}» in the Log",
+  "@deskSearchEvents": {
+    "placeholders": {
+      "q": {
+        "type": "String"
+      }
+    }
+  },
+  "deskSearchShort": "Search",
+  "deskSelectAll": "Select all",
+  "deskSettings": "Settings",
+  "deskShortcuts": "Keyboard shortcuts",
+  "deskSideBySide": "Side by side",
+  "deskStatusPalette": "{keys} palette",
+  "@deskStatusPalette": {
+    "placeholders": {
+      "keys": {
+        "type": "String"
+      }
+    }
+  },
+  "deskStill": "Still",
+  "deskStopAgent": "Stop {name}",
+  "@deskStopAgent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deskStopOpen": "Stop the open agent",
+  "deskStreamHint": "Paused under the pointer · a click opens the Log",
+  "deskSubagents": "{n, plural, =1{1 subagent} other{{n} subagents}}",
+  "@deskSubagents": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskTabs": "Tabs",
+  "deskTags": "Tags",
+  "deskTaskChanges": "The task's changes",
+  "deskTaskFailed": "failing",
+  "deskTaskPassed": "passing",
+  "deskTaskRunning": "in progress",
+  "deskTasksRule": "they close only with a verifier that exits 0",
+  "deskTermAskHint": "To ask it something write in its conversation",
+  "deskTerminalsShown": "{n, plural, =1{1 terminal} other{{n} terminals}}",
+  "@deskTerminalsShown": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskTheme": "Theme: {name}",
+  "@deskTheme": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deskTiles": "Tiles",
+  "deskToSend": "{n, plural, =0{nothing to send} =1{1 commit to send} other{{n} commits to send}}",
+  "@deskToSend": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskTogglePanel": "Side panel",
+  "deskTypeHead": "Type",
+  "deskUndo": "Undo",
+  "deskVerifier": "Verifier",
+  "deskViewCode": "Code",
+  "deskViewTerminals": "Terminals",
+  "deskWhen": "When",
+  "deskWhenAll": "all",
+  "deskWhenHour": "1 hour",
+  "deskWhenToday": "today",
+  "deskWhenWeek": "7 days",
+  "deskWithChanges": "With changes",
+  "deskWorkingCount": "{n, plural, =1{1 agent working} other{{n} agents working}}",
+  "@deskWorkingCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deskYouWrite": "you can write",
+  "deskYourTerminal": "Your terminal",
+  "deskYourTerminals": "Yours"
 }

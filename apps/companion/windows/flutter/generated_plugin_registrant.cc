@@ -8,6 +8,7 @@
 
 #include <audioplayers_windows/audioplayers_windows_plugin.h>
 #include <bonsoir_windows/bonsoir_windows_plugin_c_api.h>
+#include <desktop_drop/desktop_drop_plugin.h>
 #include <flutter_secure_storage_windows/flutter_secure_storage_windows_plugin.h>
 #include <pdfx/pdfx_plugin.h>
 #include <record_windows/record_windows_plugin_c_api.h>
@@ -18,6 +19,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("AudioplayersWindowsPlugin"));
   BonsoirWindowsPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("BonsoirWindowsPluginCApi"));
+  DesktopDropPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("DesktopDropPlugin"));
   FlutterSecureStorageWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterSecureStorageWindowsPlugin"));
   PdfxPluginRegisterWithRegistrar(

@@ -90,8 +90,8 @@ class _TerminalTabState extends State<TerminalTab> with AutomaticKeepAliveClient
               setState(() => _font = (_pinchFrom * d.scale).clamp(8, 28));
             },
             child: _agent == null
-                ? _OwnShell(key: const Key('own-shell'), ctx: widget.ctx, font: _font)
-                : _AgentCommands(
+                ? OwnShell(key: const Key('own-shell'), ctx: widget.ctx, font: _font)
+                : AgentCommands(
                     key: ValueKey(_agent),
                     ctx: widget.ctx,
                     agentId: _agent!,
@@ -116,25 +116,47 @@ const _termBg = Color(0xFF120F10);
 const _termFg = Color(0xFFE8DFDC);
 
 /// An agent's commands, read only.
-class _AgentCommands extends StatefulWidget {
-  const _AgentCommands({super.key, required this.ctx, required this.agentId, required this.font});
+class AgentCommands extends StatefulWidget {
+  const AgentCommands({
+    super.key,
+    required this.ctx,
+    required this.agentId,
+    required this.font,
+    this.every,
+    this.compact = false,
+  });
 
   final ProjectCtx ctx;
   final String agentId;
   final double font;
 
+  /// Computers (G40.17): read again this often, as the agent works.
+  final Duration? every;
+
+  /// Without the line over the commands (the computers' grid has its own header).
+  final bool compact;
+
   @override
-  State<_AgentCommands> createState() => _AgentCommandsState();
+  State<AgentCommands> createState() => _AgentCommandsState();
 }
 
-class _AgentCommandsState extends State<_AgentCommands> {
+class _AgentCommandsState extends State<AgentCommands> {
   List<AgentCommand>? _cmds;
   Object? _error;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     _load();
+    final every = widget.every;
+    if (every != null) _timer = Timer.periodic(every, (_) => _load());
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   Future<void> _load() async {
@@ -167,6 +189,7 @@ class _AgentCommandsState extends State<_AgentCommands> {
     }
     return Column(
       children: [
+        if (!widget.compact)
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 0, 6, 4),
           child: Row(
@@ -230,17 +253,33 @@ class _AgentCommandsState extends State<_AgentCommands> {
 }
 
 /// The person's own shell, with the keys over the keyboard.
-class _OwnShell extends StatefulWidget {
-  const _OwnShell({super.key, required this.ctx, required this.font});
+class OwnShell extends StatefulWidget {
+  const OwnShell({
+    super.key,
+    required this.ctx,
+    required this.font,
+    this.compact = false,
+    this.autoOpen = false,
+    this.command,
+  });
 
   final ProjectCtx ctx;
   final double font;
 
+  /// Computers (G40.17): a real keyboard, no row of extra keys.
+  final bool compact;
+
+  /// Opened at once, without its button.
+  final bool autoOpen;
+
+  /// Run as soon as it opens (the palette's «!»).
+  final String? command;
+
   @override
-  State<_OwnShell> createState() => _OwnShellState();
+  State<OwnShell> createState() => _OwnShellState();
 }
 
-class _OwnShellState extends State<_OwnShell> {
+class _OwnShellState extends State<OwnShell> {
   TermSession? _term;
   StreamSubscription<String>? _sub;
   final _buf = TermBuffer();
@@ -258,6 +297,11 @@ class _OwnShellState extends State<_OwnShell> {
   void initState() {
     super.initState();
     unawaited(_loadRecent());
+    if (widget.autoOpen && !widget.ctx.readOnly) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(_open());
+      });
+    }
   }
 
   Future<void> _loadRecent() async {
@@ -296,6 +340,8 @@ class _OwnShellState extends State<_OwnShell> {
         },
       );
       setState(() => _term = t);
+      final first = widget.command;
+      if (first != null && first.trim().isNotEmpty) _submit(first);
     } on Object catch (e) {
       if (mounted) setState(() => _error = e is ApiException ? e.message : '$e');
     } finally {
@@ -407,6 +453,7 @@ class _OwnShellState extends State<_OwnShell> {
               ],
             ),
           ),
+        if (!widget.compact)
         SingleChildScrollView(
           key: const Key('term-keys'),
           scrollDirection: Axis.horizontal,
