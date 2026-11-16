@@ -17,6 +17,7 @@ import {
   encoderArgs,
   filterPath,
   filterValue,
+  fitText,
   joinArgs,
   loudnormApplyArgs,
   outputSize,
@@ -24,7 +25,8 @@ import {
   type RenderProbe,
   type RenderTarget,
   stepArgs,
-  wrapText,
+  TITLE_SAFE,
+  textWidth,
 } from "../src/editor/video/compile.js";
 import { probeFromJson } from "../src/editor/video/render-probe.js";
 import {
@@ -420,10 +422,126 @@ describe("texts and captions", () => {
     const s = title("Una frase lunga che non entra in un quadro verticale stretto", {}, 360, 640);
     expect(s.script).toContain("fontsize=31");
     expect(Object.values(s.files)[0]).toBe(
-      "Una frase lunga che\nnon entra in un\nquadro verticale\nstretto",
+      "Una frase lunga\nche non entra in un\nquadro verticale\nstretto",
     );
-    expect(wrapText("uno due\ntre quattro cinque", 9)).toBe("uno due\ntre\nquattro\ncinque");
-    expect(wrapText("supercalifragilistico", 5)).toBe("supercalifragilistico");
+  });
+
+  // Every text inside the title-safe area (5% from each side), whatever the shape.
+  const SHAPES = [
+    ["16:9", 640, 360],
+    ["9:16", 360, 640],
+    ["1:1", 360, 360],
+    ["9:16 4K", 2160, 3840],
+  ] as const;
+  const TEXTS = [
+    ["title", "center", "Titolo di prova"],
+    ["title", "top", "Un titolo abbastanza lungo da andare a capo almeno una volta"],
+    ["lower_third", "lower_third", "Mario Rossi, montatore"],
+    ["lower_third", "lower_third", "Dottoressa Maria Margherita Bellavista, direttrice del museo"],
+    ["subtitle", "bottom", "Supercalifragilistichespiralidoso"],
+    ["title", "center", "Precipitevolissimevolmente"],
+    ["caption", "bottom", "MMMMMMMMMMMMMMMMMMMM WWWWWWWWWWWWWW"],
+    ["plain", "center", Array.from({ length: 12 }, (_, i) => `riga${i}`).join("\n")],
+  ] as const;
+  it.each(
+    SHAPES.flatMap(([shape, w, h]) =>
+      TEXTS.map(([style, pos, text]) => [shape, style, pos, text, w, h] as const),
+    ),
+  )("%s %s %s: «%s» stays inside", (_, style, pos, text, w, h) => {
+    const f = fitText(text, style, pos, w, h);
+    const bold = style === "title" || style === "lower_third";
+    const mx = Math.ceil(w * TITLE_SAFE);
+    const widest = Math.max(...f.lines.map((l) => textWidth(l, f.size, bold)));
+    // the box's border included
+    expect(widest + 2 * f.border).toBeLessThanOrEqual(w - 2 * mx);
+    if (pos === "lower_third") expect(Number(f.x) - f.border).toBeGreaterThanOrEqual(mx);
+    expect(f.lines.length * f.size * 1.25).toBeLessThanOrEqual(h * (1 - 2 * TITLE_SAFE));
+    expect(f.lines.join(" ")).toBe(text.replace(/\s+/g, " "));
+  });
+
+  it.each([
+    ["a short title keeps its size", "title", "center", "Titolo di prova", 640, 360, 31],
+    ["the same title in 9:16 too", "title", "center", "Titolo di prova", 360, 640, 31],
+    [
+      "a word too long for 9:16: smaller, never cut",
+      "title",
+      "center",
+      "Precipitevolissimevolmente",
+      360,
+      640,
+      21,
+    ],
+    [
+      "a word that fits in 16:9 keeps the size",
+      "title",
+      "center",
+      "Precipitevolissimevolmente",
+      640,
+      360,
+      31,
+    ],
+    [
+      "the lower third in 9:16 (one line, inside)",
+      "lower_third",
+      "lower_third",
+      "Mario Rossi, montatore",
+      360,
+      640,
+      18,
+    ],
+    [
+      "the lower third in 1:1",
+      "lower_third",
+      "lower_third",
+      "Mario Rossi, montatore",
+      360,
+      360,
+      18,
+    ],
+  ] as const)("%s", (_, style, pos, text, w, h, size) => {
+    const f = fitText(text, style, pos, w, h);
+    expect(f.size).toBe(size);
+    expect(f.lines).toEqual([text]);
+  });
+
+  it("a long lower third in 9:16 wraps inside its box, starting at the safe margin", () => {
+    const f = fitText(
+      "Dottoressa Maria Margherita Bellavista, direttrice del museo",
+      "lower_third",
+      "lower_third",
+      360,
+      640,
+    );
+    expect(f.lines.length).toBeGreaterThan(1);
+    expect([f.x, f.border]).toEqual(["23", 5]);
+    expect(f.y).toBe("min(448\\,h-32-5-text_h)");
+  });
+
+  it("the estimate is never narrower than Inter (ffmpeg's bbox at 100 px)", () => {
+    const measured = [
+      ["Titolo di prova", 665, 691],
+      ["Mario Rossi, montatore", 1077, 1124],
+      ["MMMMWWWW", 744, 778],
+      ["iiiilll", 156, 177],
+      ["Supercalifragilistichespiralidoso", 1494, 1578],
+      ["0123456789", 581, 612],
+      ["Il secondo attraversa più segmenti", 1612, 1672],
+    ] as const;
+    for (const [text, regular, bold] of measured) {
+      expect(textWidth(text, 100)).toBeGreaterThanOrEqual(regular);
+      expect(textWidth(text, 100, true)).toBeGreaterThanOrEqual(bold);
+    }
+  });
+
+  it("a subtitle word wider than the frame gets a smaller size; libass wraps the rest", () => {
+    const long = [
+      { id: "s", start: 0, end: 25, text: "Supercalifragilistichespiralidosissimamente" },
+    ];
+    const look = { style: "boxed", position: "bottom" } as const;
+    const size = { width: 360, height: 640 };
+    expect(captionsAss(long, look, R, size, 0, 25)).toMatch(/,,\{\\fs\d+\}Supercali/);
+    const short = [{ id: "s", start: 0, end: 25, text: "Due parole" }];
+    expect(captionsAss(short, look, R, size, 0, 25)).toContain(",,Due parole");
   });
 
   it("a text fades in alpha over what is below", () => {

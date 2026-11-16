@@ -73,6 +73,24 @@ function assText(text: string): string {
     .replace(/\n+/g, "\\N");
 }
 
+/**
+ * A text's width in pixels at `size`, estimated from Inter's glyphs (measured with ffmpeg's
+ * bbox at 100 px: lowercase 0.44-0.58 em, "MMMMWWWW" 0.93, "iiiilll" 0.22, digits 0.58; bold
+ * about 5% wider). The classes are rounded up: the estimate is never narrower than the text.
+ */
+export function textWidth(text: string, size: number, bold = false): number {
+  let em = 0;
+  for (const ch of text) {
+    if (/[iljI.,:;'!|ìíïî`]/.test(ch)) em += 0.3;
+    else if (/[\sfrt()[\]/\-"]/.test(ch)) em += 0.4;
+    else if (/[mwMW@%]/.test(ch)) em += 0.95;
+    else if (/\p{Lu}/u.test(ch)) em += 0.72;
+    else if (/[0-9]/.test(ch)) em += 0.62;
+    else em += 0.58;
+  }
+  return em * size * (bold ? 1.05 : 1);
+}
+
 /** The font libass uses: the family of the server's `Inter-*.ttf` (fontsdir). */
 export const SUBTITLE_FONT = "Inter";
 
@@ -119,11 +137,18 @@ export function captionsAss(
     "[Events]",
     "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",
   ];
+  // libass wraps, but never inside a word: a word wider than the safe area gets a smaller size.
+  const room = w - 2 * marginLR - 2 * outline;
   for (const c of shown) {
+    const widest = Math.max(
+      0,
+      ...c.text.split(/\s+/).map((x) => textWidth(x, fontSize, bold === -1)),
+    );
+    const fs = widest > room ? `{\\fs${Math.max(8, Math.floor((fontSize * room) / widest))}}` : "";
     const start = framesToSeconds(Math.max(0, c.start - from), rate);
     const end = framesToSeconds(Math.min(to, c.end) - from, rate);
     lines.push(
-      `Dialogue: 0,${assClock(start)},${assClock(end)},Default,,0,0,0,,${assText(c.text)}`,
+      `Dialogue: 0,${assClock(start)},${assClock(end)},Default,,0,0,0,,${fs}${assText(c.text)}`,
     );
   }
   return `${lines.join("\n")}\n`;

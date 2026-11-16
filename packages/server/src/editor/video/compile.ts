@@ -49,7 +49,15 @@ import {
   type VideoRect,
   type VideoTransition,
 } from "@redgiant/protocol";
-import { captionsAss, captionsSrt, captionsVtt, subtitleLanguage } from "./render-subtitles.js";
+import {
+  captionsAss,
+  captionsSrt,
+  captionsVtt,
+  subtitleLanguage,
+  textWidth,
+} from "./render-subtitles.js";
+
+export { textWidth };
 
 /** Changes when the graphs change: cached segments of another version are not reused. */
 export const VIDEO_COMPILER_VERSION = "1";
@@ -443,69 +451,118 @@ const TEXT_LOOK = {
   plain: { font: "Inter-Regular.ttf", size: 0.05, box: false, shadow: false },
 } as const;
 
-const TEXT_PLACE = {
-  center: { x: "(w-text_w)/2", y: "(h-text_h)/2", align: "C" },
-  top: { x: "(w-text_w)/2", y: "h*0.08", align: "C" },
-  bottom: { x: "(w-text_w)/2", y: "h-text_h-h*0.08", align: "C" },
-  lower_third: { x: "w*0.06", y: "h*0.70", align: "L" },
-} as const;
+/** The title-safe margin: every text stays this far (a share of the side) from each edge. */
+export const TITLE_SAFE = 0.05;
+
+/** Words on lines no wider than `room` pixels (a word wider than that stays whole). */
+export function wrapToWidth(text: string, room: number, size: number, bold = false): string[] {
+  const lines: string[] = [];
+  for (const para of text.replace(/\r\n?/g, "\n").split("\n")) {
+    let cur = "";
+    for (const word of para.split(/\s+/).filter(Boolean)) {
+      const next = cur ? `${cur} ${word}` : word;
+      if (cur && textWidth(next, size, bold) > room) {
+        lines.push(cur);
+        cur = word;
+      } else cur = next;
+    }
+    lines.push(cur);
+  }
+  return lines;
+}
+
+export interface FittedText {
+  size: number;
+  lines: string[];
+  /** The box's border around a lower third (0 without a box). */
+  border: number;
+  x: string;
+  y: string;
+  align: "C" | "L";
+}
 
 /**
- * Words put on lines of at most `max` characters (a word longer than a line stays whole):
- * drawtext does not wrap, and a title must stay inside a vertical frame.
+ * A text placed inside the title-safe area (5% from each side): its size follows the short
+ * side (the same title fits 16:9, 9:16 and 1:1), its words go on new lines when a line is too
+ * wide, and when a single word or the lines' height still do not fit the size goes down. A
+ * lower third's box is inside the area too: it grows to the left edge of the area and wraps,
+ * it is never cut.
  */
-export function wrapText(text: string, max: number): string {
-  return text
-    .replace(/\r\n?/g, "\n")
-    .split("\n")
-    .map((line) => {
-      const out: string[] = [];
-      let cur = "";
-      for (const word of line.split(/\s+/).filter(Boolean)) {
-        if (cur && cur.length + 1 + word.length > max) {
-          out.push(cur);
-          cur = word;
-        } else cur = cur ? `${cur} ${word}` : word;
-      }
-      out.push(cur);
-      return out.join("\n");
-    })
-    .join("\n");
+export function fitText(
+  text: string,
+  style: keyof typeof TEXT_LOOK,
+  position: "center" | "top" | "bottom" | "lower_third",
+  w: number,
+  h: number,
+): FittedText {
+  const look = TEXT_LOOK[style];
+  const bold = look.font.includes("Bold");
+  const side = Math.min(w, h);
+  const border = look.box ? Math.max(2, Math.round(side * 0.015)) : 0;
+  const shadow = look.shadow ? Math.max(1, Math.round(side / 360)) : 0;
+  const mx = Math.ceil(w * TITLE_SAFE);
+  const my = Math.ceil(h * TITLE_SAFE);
+  const room = w - 2 * mx - 2 * border - shadow;
+  // Lines take 1.25 of the size (line_spacing 0.25); top, bottom and the lower third start
+  // lower than the area's edge, so they have less height.
+  const top = {
+    center: my,
+    top: Math.round(h * 0.08),
+    bottom: my,
+    lower_third: Math.round(h * 0.7),
+  }[position];
+  const height = position === "lower_third" ? h - my - top : h - 2 * my;
+  let size = Math.max(8, Math.round(side * look.size));
+  let lines = wrapToWidth(text, room, size, bold);
+  const fits = () =>
+    Math.max(...lines.map((l) => textWidth(l, size, bold))) <= room &&
+    lines.length * size * 1.25 + 2 * border <= Math.max(height, size * 1.25 + 2 * border);
+  while (!fits() && size > 8) {
+    size = Math.max(8, Math.floor(size * 0.92));
+    lines = wrapToWidth(text, room, size, bold);
+  }
+  const lo = `h-${my}-${border}-text_h`;
+  const y = {
+    center: "(h-text_h)/2",
+    top: `${Math.max(top, my + border)}`,
+    bottom: `h-text_h-${Math.round(h * 0.08) + border}`,
+    // Moved up when its lines would go past the bottom of the area.
+    lower_third: `min(${top}\\,${lo})`,
+  }[position];
+  return {
+    size,
+    lines,
+    border,
+    x: position === "lower_third" ? `${mx + border}` : "(w-text_w)/2",
+    y,
+    align: position === "lower_third" ? "L" : "C",
+  };
 }
 
 /** A text clip: drawtext over a transparent frame, the text read from a file (no escaping). */
 function textFilter(g: Graph, ctx: Ctx, c: VideoClip): string {
   const ref = c.ref as Extract<VideoClip["ref"], { generator: "text" }>;
   const look = TEXT_LOOK[ref.style];
-  const at = TEXT_PLACE[ref.position];
-  // Sizes follow the short side: the same title fits 16:9, 9:16 and 1:1.
+  const fit = fitText(ref.text, ref.style, ref.position, ctx.w, ctx.h);
   const side = Math.min(ctx.w, ctx.h);
-  const size = Math.max(8, Math.round(side * look.size));
-  const room = ref.position === "lower_third" ? 0.86 : 0.9;
-  const max = Math.max(8, Math.floor((ctx.w * room) / (size * 0.55)));
-  const textFile = contentFile(g.files, "txt", wrapText(ref.text, max));
+  const textFile = contentFile(g.files, "txt", fit.lines.join("\n"));
   const font = `${ctx.fontsDir.replace(/[\\/]+$/, "")}/${look.font}`;
   const opts = [
     `fontfile=${filterPath(font)}`,
     `textfile=${textFile}`,
     "expansion=none",
-    `text_align=${at.align}`,
-    `fontsize=${size}`,
+    `text_align=${fit.align}`,
+    `fontsize=${fit.size}`,
     "fontcolor=white",
-    `line_spacing=${Math.round(size * 0.25)}`,
-    `x=${at.x}`,
-    `y=${at.y}`,
+    `line_spacing=${Math.round(fit.size * 0.25)}`,
+    `x=${fit.x}`,
+    `y=${fit.y}`,
   ];
   if (look.shadow) {
     const d = Math.max(1, Math.round(side / 360));
     opts.push("shadowcolor=black@0.6", `shadowx=${d}`, `shadowy=${d}`);
   }
-  if (look.box)
-    opts.push(
-      "box=1",
-      "boxcolor=black@0.55",
-      `boxborderw=${Math.max(2, Math.round(side * 0.015))}`,
-    );
+  if (look.box) opts.push("box=1", "boxcolor=black@0.55", `boxborderw=${fit.border}`);
   return `drawtext=${opts.join(":")}`;
 }
 
