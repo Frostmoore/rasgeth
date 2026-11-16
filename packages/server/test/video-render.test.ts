@@ -4,7 +4,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { isAbsolute, join } from "node:path";
 import { newRgVideo, type RgVideo, type VideoClip } from "@redgiant/protocol";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { compileVideo, type RenderPlan } from "../src/editor/video/compile.js";
@@ -81,7 +81,7 @@ function fake(opts: { failAt?: number; onCall?: () => void } = {}) {
     if (args.includes("null"))
       return '{ "input_i" : "-20.0", "input_tp" : "-2.0", "input_lra" : "3.0", "input_thresh" : "-30.0", "target_offset" : "0.1" }';
     const out = args.at(-1) as string;
-    await writeFile(out.startsWith("/") ? out : join(o.cwd, out), `out of call ${calls.length}`);
+    await writeFile(isAbsolute(out) ? out : join(o.cwd, out), `out of call ${calls.length}`);
     return "";
   };
   return { run, calls };
