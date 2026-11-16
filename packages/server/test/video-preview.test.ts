@@ -301,7 +301,7 @@ describe("video routes", () => {
       });
       const end = await s.core.jobs.settled(r.body.job.id, 20);
       expect(end?.state, JSON.stringify(end?.error)).toBe("done");
-      const id = (end?.result as { id: string }).id;
+      const id = (end?.result as { id: string } | undefined)?.id ?? "";
       const got = await s.api<{ url: string }>("GET", `/api/editor/video/exact/${id}`);
       expect(got.body.url).toMatch(/^\/preview\/.+\.mp4$/);
       const video = await fetch(`${s.url}${got.body.url}`, { headers: { range: "bytes=0-" } });
