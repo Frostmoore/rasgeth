@@ -1,7 +1,7 @@
 // Chat (decision D9, variant 3): the everyday conversations with Chat (the `assistant` agent the
 // server makes the first time, `GET /api/chat/agent`), day by day. The field over the bar opens
 // a new one at once, with its text as the first message, which also names it (G40.9) unless the
-// server has a title for it already.
+// server has a title for it already. «Salvati» (G40.14) opens from its header.
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -12,6 +12,7 @@ import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/icons.dart';
 import 'conversation_screen.dart';
+import 'saved_screen.dart';
 
 /// Conversations grouped by their local day, the latest day first.
 List<({DateTime day, List<SessionRow> rows})> byDay(List<SessionRow> rows) {
@@ -103,11 +104,24 @@ class _ChatScreenState extends State<ChatScreen> {
             ScreenHeader(
               title: l.tabChat,
               trailing: app.connected
-                  ? TextButton.icon(
-                      key: const Key('chat-new'),
-                      onPressed: _opening ? null : () => _openNew(null),
-                      icon: RgIcon(RgIcons.plus, size: 18, color: c.accent),
-                      label: Text(l.chatNew),
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // G40.14: the passages kept from the conversations.
+                        IconButton(
+                          key: const Key('chat-saved'),
+                          tooltip: l.savedTitle,
+                          onPressed: () => Navigator.of(context)
+                              .push(MaterialPageRoute<void>(builder: (_) => const SavedScreen())),
+                          icon: RgIcon(RgIcons.bookmark, size: 20, color: c.text),
+                        ),
+                        TextButton.icon(
+                          key: const Key('chat-new'),
+                          onPressed: _opening ? null : () => _openNew(null),
+                          icon: RgIcon(RgIcons.plus, size: 18, color: c.accent),
+                          label: Text(l.chatNew),
+                        ),
+                      ],
                     )
                   : null,
             ),

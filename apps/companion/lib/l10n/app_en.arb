@@ -1451,5 +1451,88 @@
       }
     }
   },
-  "codeNoRemote": "The project has no remote repository to push to."
+  "codeNoRemote": "The project has no remote repository to push to.",
+  "savedSave": "Save",
+  "savedSaveTitle": "Save this passage",
+  "savedSaveMessageTitle": "Save this message",
+  "savedNote": "Note (optional)",
+  "savedNotePlaceholder": "Why you keep it, what to do with it…",
+  "savedTags": "Tags (optional)",
+  "savedTagsPlaceholder": "New tags, separated by commas",
+  "savedDone": "Saved: it is in your saved items, with the conversation it comes from.",
+  "savedOpenArchive": "Open",
+  "savedFailed": "Not saved: {error}",
+  "@savedFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "savedTitle": "Saved",
+  "savedHint": "Passages and messages you kept from your conversations: only you see them. Select a part of an answer and pick «Save», or use «Save» in a message's menu.",
+  "savedSearch": "Search in the saved items",
+  "savedAllTags": "All tags",
+  "savedAllAgents": "All agents",
+  "savedEmpty": "Nothing saved yet.",
+  "savedNoMatch": "Nothing saved matches.",
+  "savedMore": "Show older",
+  "savedWhole": "Whole message",
+  "savedOn": "Saved {when}",
+  "@savedOn": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "savedOpen": "Open in the conversation",
+  "savedEdit": "Edit note and tags",
+  "savedDelete": "Delete",
+  "savedDeleteTitle": "Delete this saved item?",
+  "savedDeleteText": "The passage leaves your saved items; the conversation stays as it is.",
+  "savedUnknownOrigin": "A conversation",
+  "savedFromDailyChat": "It comes from the daily chat of the page: open it there.",
+  "savedNotThere": "The message is not in the conversation any more.",
+  "savedExport": "Export as Markdown",
+  "savedExportFile": "Save the file",
+  "savedExportCopy": "Copy the Markdown",
+  "savedExportSaved": "File saved.",
+  "savedExportCopied": "Markdown copied: paste it where you like.",
+  "savedExportFailed": "Export failed: {error}",
+  "@savedExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "savedFileName": "saved.md",
+  "quoteReply": "Reply to this",
+  "quoteReplyingTo": "You are replying to this passage",
+  "quoteRemove": "Remove this passage",
+  "quoteJump": "Go to the passage in the conversation",
+  "quoteTooMany": "At most {n} passages in one message.",
+  "@quoteTooMany": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "messageMenu": "Message options",
+  "messageCopied": "Copied.",
+  "messageSaveHint": "Keep this whole message in your saved items",
+  "productOpen": "Open",
+  "productSource": "Source {n} of the answer",
+  "@productSource": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "productNoPicture": "No picture",
+  "productPrevious": "Previous products",
+  "productNext": "Next products"
 }

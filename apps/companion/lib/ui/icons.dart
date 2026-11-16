@@ -118,7 +118,16 @@ enum RgIcons {
   arrowUp('<path d="M12 19V5M5 12l7-7 7 7"/>'),
   arrowDown('<path d="M12 5v14M19 12l-7 7-7-7"/>'),
   arrowRight('<path d="M5 12h14M12 5l7 7-7 7"/>'),
-  activity('<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>');
+  activity('<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'),
+  bookmark('<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>'),
+  reply('<path d="M9 17l-5-5 5-5"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/>'),
+  tag(
+    '<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
+  ),
+  bag(
+    '<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+  ),
+  chevronLeft('<path d="M15 18l-6-6 6-6"/>');
 
   const RgIcons(this.paths);
   final String paths;

@@ -2382,4 +2382,160 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get codeNoRemote => 'Il progetto non ha un repository remoto dove mandare il push.';
+
+  @override
+  String get savedSave => 'Salva';
+
+  @override
+  String get savedSaveTitle => 'Salva questo passaggio';
+
+  @override
+  String get savedSaveMessageTitle => 'Salva questo messaggio';
+
+  @override
+  String get savedNote => 'Nota (facoltativa)';
+
+  @override
+  String get savedNotePlaceholder => 'Perché lo tieni, che cosa farne…';
+
+  @override
+  String get savedTags => 'Etichette (facoltative)';
+
+  @override
+  String get savedTagsPlaceholder => 'Etichette nuove, separate da virgole';
+
+  @override
+  String get savedDone => 'Salvato: è nei tuoi Salvati, con la conversazione da cui viene.';
+
+  @override
+  String get savedOpenArchive => 'Apri';
+
+  @override
+  String savedFailed(String error) {
+    return 'Non salvato: $error';
+  }
+
+  @override
+  String get savedTitle => 'Salvati';
+
+  @override
+  String get savedHint =>
+      'I passaggi e i messaggi che hai tenuto dalle tue conversazioni: li vedi solo tu. Seleziona una parte di una risposta e scegli «Salva», oppure usa «Salva» nel menu di un messaggio.';
+
+  @override
+  String get savedSearch => 'Cerca nei Salvati';
+
+  @override
+  String get savedAllTags => 'Tutte le etichette';
+
+  @override
+  String get savedAllAgents => 'Tutti gli agenti';
+
+  @override
+  String get savedEmpty => 'Non hai ancora salvato niente.';
+
+  @override
+  String get savedNoMatch => 'Nessun salvato corrisponde.';
+
+  @override
+  String get savedMore => 'Mostra i più vecchi';
+
+  @override
+  String get savedWhole => 'Messaggio intero';
+
+  @override
+  String savedOn(String when) {
+    return 'Salvato $when';
+  }
+
+  @override
+  String get savedOpen => 'Apri nella conversazione';
+
+  @override
+  String get savedEdit => 'Modifica nota ed etichette';
+
+  @override
+  String get savedDelete => 'Elimina';
+
+  @override
+  String get savedDeleteTitle => 'Eliminare questo salvato?';
+
+  @override
+  String get savedDeleteText =>
+      'Il passaggio esce dai tuoi Salvati; la conversazione resta com\'è.';
+
+  @override
+  String get savedUnknownOrigin => 'Una conversazione';
+
+  @override
+  String get savedFromDailyChat => 'Viene dalla chat di ogni giorno della pagina: aprila da lì.';
+
+  @override
+  String get savedNotThere => 'Il messaggio non è più nella conversazione.';
+
+  @override
+  String get savedExport => 'Esporta in Markdown';
+
+  @override
+  String get savedExportFile => 'Salva il file';
+
+  @override
+  String get savedExportCopy => 'Copia il Markdown';
+
+  @override
+  String get savedExportSaved => 'File salvato.';
+
+  @override
+  String get savedExportCopied => 'Markdown copiato: incollalo dove vuoi.';
+
+  @override
+  String savedExportFailed(String error) {
+    return 'Esportazione non riuscita: $error';
+  }
+
+  @override
+  String get savedFileName => 'salvati.md';
+
+  @override
+  String get quoteReply => 'Rispondi a questo';
+
+  @override
+  String get quoteReplyingTo => 'Stai rispondendo a questo passaggio';
+
+  @override
+  String get quoteRemove => 'Togli questo passaggio';
+
+  @override
+  String get quoteJump => 'Vai al passaggio nella conversazione';
+
+  @override
+  String quoteTooMany(int n) {
+    return 'Al massimo $n passaggi in un messaggio.';
+  }
+
+  @override
+  String get messageMenu => 'Opzioni del messaggio';
+
+  @override
+  String get messageCopied => 'Copiato.';
+
+  @override
+  String get messageSaveHint => 'Tieni tutto il messaggio nei tuoi Salvati';
+
+  @override
+  String get productOpen => 'Apri';
+
+  @override
+  String productSource(int n) {
+    return 'Fonte $n della risposta';
+  }
+
+  @override
+  String get productNoPicture => 'Nessuna foto';
+
+  @override
+  String get productPrevious => 'Prodotti precedenti';
+
+  @override
+  String get productNext => 'Prodotti successivi';
 }

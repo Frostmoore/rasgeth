@@ -2376,4 +2376,160 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get codeNoRemote => 'The project has no remote repository to push to.';
+
+  @override
+  String get savedSave => 'Save';
+
+  @override
+  String get savedSaveTitle => 'Save this passage';
+
+  @override
+  String get savedSaveMessageTitle => 'Save this message';
+
+  @override
+  String get savedNote => 'Note (optional)';
+
+  @override
+  String get savedNotePlaceholder => 'Why you keep it, what to do with it…';
+
+  @override
+  String get savedTags => 'Tags (optional)';
+
+  @override
+  String get savedTagsPlaceholder => 'New tags, separated by commas';
+
+  @override
+  String get savedDone => 'Saved: it is in your saved items, with the conversation it comes from.';
+
+  @override
+  String get savedOpenArchive => 'Open';
+
+  @override
+  String savedFailed(String error) {
+    return 'Not saved: $error';
+  }
+
+  @override
+  String get savedTitle => 'Saved';
+
+  @override
+  String get savedHint =>
+      'Passages and messages you kept from your conversations: only you see them. Select a part of an answer and pick «Save», or use «Save» in a message\'s menu.';
+
+  @override
+  String get savedSearch => 'Search in the saved items';
+
+  @override
+  String get savedAllTags => 'All tags';
+
+  @override
+  String get savedAllAgents => 'All agents';
+
+  @override
+  String get savedEmpty => 'Nothing saved yet.';
+
+  @override
+  String get savedNoMatch => 'Nothing saved matches.';
+
+  @override
+  String get savedMore => 'Show older';
+
+  @override
+  String get savedWhole => 'Whole message';
+
+  @override
+  String savedOn(String when) {
+    return 'Saved $when';
+  }
+
+  @override
+  String get savedOpen => 'Open in the conversation';
+
+  @override
+  String get savedEdit => 'Edit note and tags';
+
+  @override
+  String get savedDelete => 'Delete';
+
+  @override
+  String get savedDeleteTitle => 'Delete this saved item?';
+
+  @override
+  String get savedDeleteText =>
+      'The passage leaves your saved items; the conversation stays as it is.';
+
+  @override
+  String get savedUnknownOrigin => 'A conversation';
+
+  @override
+  String get savedFromDailyChat => 'It comes from the daily chat of the page: open it there.';
+
+  @override
+  String get savedNotThere => 'The message is not in the conversation any more.';
+
+  @override
+  String get savedExport => 'Export as Markdown';
+
+  @override
+  String get savedExportFile => 'Save the file';
+
+  @override
+  String get savedExportCopy => 'Copy the Markdown';
+
+  @override
+  String get savedExportSaved => 'File saved.';
+
+  @override
+  String get savedExportCopied => 'Markdown copied: paste it where you like.';
+
+  @override
+  String savedExportFailed(String error) {
+    return 'Export failed: $error';
+  }
+
+  @override
+  String get savedFileName => 'saved.md';
+
+  @override
+  String get quoteReply => 'Reply to this';
+
+  @override
+  String get quoteReplyingTo => 'You are replying to this passage';
+
+  @override
+  String get quoteRemove => 'Remove this passage';
+
+  @override
+  String get quoteJump => 'Go to the passage in the conversation';
+
+  @override
+  String quoteTooMany(int n) {
+    return 'At most $n passages in one message.';
+  }
+
+  @override
+  String get messageMenu => 'Message options';
+
+  @override
+  String get messageCopied => 'Copied.';
+
+  @override
+  String get messageSaveHint => 'Keep this whole message in your saved items';
+
+  @override
+  String get productOpen => 'Open';
+
+  @override
+  String productSource(int n) {
+    return 'Source $n of the answer';
+  }
+
+  @override
+  String get productNoPicture => 'No picture';
+
+  @override
+  String get productPrevious => 'Previous products';
+
+  @override
+  String get productNext => 'Next products';
 }

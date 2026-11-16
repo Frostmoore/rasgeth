@@ -4226,6 +4226,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The project has no remote repository to push to.'**
   String get codeNoRemote;
+
+  /// No description provided for @savedSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get savedSave;
+
+  /// No description provided for @savedSaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this passage'**
+  String get savedSaveTitle;
+
+  /// No description provided for @savedSaveMessageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this message'**
+  String get savedSaveMessageTitle;
+
+  /// No description provided for @savedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get savedNote;
+
+  /// No description provided for @savedNotePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Why you keep it, what to do with it…'**
+  String get savedNotePlaceholder;
+
+  /// No description provided for @savedTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags (optional)'**
+  String get savedTags;
+
+  /// No description provided for @savedTagsPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'New tags, separated by commas'**
+  String get savedTagsPlaceholder;
+
+  /// No description provided for @savedDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: it is in your saved items, with the conversation it comes from.'**
+  String get savedDone;
+
+  /// No description provided for @savedOpenArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get savedOpenArchive;
+
+  /// No description provided for @savedFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not saved: {error}'**
+  String savedFailed(String error);
+
+  /// No description provided for @savedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get savedTitle;
+
+  /// No description provided for @savedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Passages and messages you kept from your conversations: only you see them. Select a part of an answer and pick «Save», or use «Save» in a message\'s menu.'**
+  String get savedHint;
+
+  /// No description provided for @savedSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search in the saved items'**
+  String get savedSearch;
+
+  /// No description provided for @savedAllTags.
+  ///
+  /// In en, this message translates to:
+  /// **'All tags'**
+  String get savedAllTags;
+
+  /// No description provided for @savedAllAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'All agents'**
+  String get savedAllAgents;
+
+  /// No description provided for @savedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing saved yet.'**
+  String get savedEmpty;
+
+  /// No description provided for @savedNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing saved matches.'**
+  String get savedNoMatch;
+
+  /// No description provided for @savedMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show older'**
+  String get savedMore;
+
+  /// No description provided for @savedWhole.
+  ///
+  /// In en, this message translates to:
+  /// **'Whole message'**
+  String get savedWhole;
+
+  /// No description provided for @savedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved {when}'**
+  String savedOn(String when);
+
+  /// No description provided for @savedOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in the conversation'**
+  String get savedOpen;
+
+  /// No description provided for @savedEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit note and tags'**
+  String get savedEdit;
+
+  /// No description provided for @savedDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get savedDelete;
+
+  /// No description provided for @savedDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this saved item?'**
+  String get savedDeleteTitle;
+
+  /// No description provided for @savedDeleteText.
+  ///
+  /// In en, this message translates to:
+  /// **'The passage leaves your saved items; the conversation stays as it is.'**
+  String get savedDeleteText;
+
+  /// No description provided for @savedUnknownOrigin.
+  ///
+  /// In en, this message translates to:
+  /// **'A conversation'**
+  String get savedUnknownOrigin;
+
+  /// No description provided for @savedFromDailyChat.
+  ///
+  /// In en, this message translates to:
+  /// **'It comes from the daily chat of the page: open it there.'**
+  String get savedFromDailyChat;
+
+  /// No description provided for @savedNotThere.
+  ///
+  /// In en, this message translates to:
+  /// **'The message is not in the conversation any more.'**
+  String get savedNotThere;
+
+  /// No description provided for @savedExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export as Markdown'**
+  String get savedExport;
+
+  /// No description provided for @savedExportFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the file'**
+  String get savedExportFile;
+
+  /// No description provided for @savedExportCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the Markdown'**
+  String get savedExportCopy;
+
+  /// No description provided for @savedExportSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'File saved.'**
+  String get savedExportSaved;
+
+  /// No description provided for @savedExportCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Markdown copied: paste it where you like.'**
+  String get savedExportCopied;
+
+  /// No description provided for @savedExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Export failed: {error}'**
+  String savedExportFailed(String error);
+
+  /// No description provided for @savedFileName.
+  ///
+  /// In en, this message translates to:
+  /// **'saved.md'**
+  String get savedFileName;
+
+  /// No description provided for @quoteReply.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply to this'**
+  String get quoteReply;
+
+  /// No description provided for @quoteReplyingTo.
+  ///
+  /// In en, this message translates to:
+  /// **'You are replying to this passage'**
+  String get quoteReplyingTo;
+
+  /// No description provided for @quoteRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this passage'**
+  String get quoteRemove;
+
+  /// No description provided for @quoteJump.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to the passage in the conversation'**
+  String get quoteJump;
+
+  /// No description provided for @quoteTooMany.
+  ///
+  /// In en, this message translates to:
+  /// **'At most {n} passages in one message.'**
+  String quoteTooMany(int n);
+
+  /// No description provided for @messageMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Message options'**
+  String get messageMenu;
+
+  /// No description provided for @messageCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied.'**
+  String get messageCopied;
+
+  /// No description provided for @messageSaveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep this whole message in your saved items'**
+  String get messageSaveHint;
+
+  /// No description provided for @productOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get productOpen;
+
+  /// No description provided for @productSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source {n} of the answer'**
+  String productSource(int n);
+
+  /// No description provided for @productNoPicture.
+  ///
+  /// In en, this message translates to:
+  /// **'No picture'**
+  String get productNoPicture;
+
+  /// No description provided for @productPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous products'**
+  String get productPrevious;
+
+  /// No description provided for @productNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next products'**
+  String get productNext;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

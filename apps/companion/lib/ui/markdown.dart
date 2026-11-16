@@ -2,12 +2,14 @@
 // ever interpreted (a tag shows as the text it is), no image is fetched from the network (the
 // alt text shows instead: nothing leaks where the person reads), links open outside the app only
 // for http(s) and mailto, after the person says yes. Task lists use our drawn marks, never the
-// system's checkboxes.
+// system's checkboxes. A passage between `markOpen` and `markClose` (api/saved.dart) is lit up:
+// a saved passage or a quote, found again in its message.
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../api/saved.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import 'dialogs.dart';
@@ -18,6 +20,36 @@ final md.ExtensionSet safeExtensions = md.ExtensionSet(
   md.ExtensionSet.gitHubFlavored.blockSyntaxes,
   md.ExtensionSet.gitHubFlavored.inlineSyntaxes.where((s) => s is! md.InlineHtmlSyntax).toList(),
 );
+
+/// The words of a lit passage: `markOpen` … `markClose`, never with Markdown marks inside.
+class _MarkSyntax extends md.InlineSyntax {
+  _MarkSyntax() : super('$markOpen([^$markOpen$markClose]*)$markClose');
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    parser.addNode(md.Element.text('rgmark', match[1]!));
+    return true;
+  }
+}
+
+class _MarkBuilder extends MarkdownElementBuilder {
+  _MarkBuilder(this.color);
+
+  final Color color;
+
+  @override
+  Widget? visitElementAfterWithContext(
+    BuildContext context,
+    md.Element element,
+    TextStyle? preferredStyle,
+    TextStyle? parentStyle,
+  ) => Text.rich(
+    TextSpan(
+      text: element.textContent,
+      style: (parentStyle ?? const TextStyle()).copyWith(backgroundColor: color),
+    ),
+  );
+}
 
 /// The links the app may open (outside, in the system's browser or mail app).
 bool openableLink(String? href) {
@@ -47,6 +79,8 @@ class SafeMarkdown extends StatelessWidget {
       data: data,
       selectable: selectable,
       extensionSet: safeExtensions,
+      inlineSyntaxes: data.contains(markOpen) ? [_MarkSyntax()] : null,
+      builders: data.contains(markOpen) ? {'rgmark': _MarkBuilder(c.accentDim)} : const {},
       onTapLink: (text, href, title) => _open(context, href),
       imageBuilder: (uri, title, alt) => Container(
         margin: const EdgeInsets.symmetric(vertical: 2),

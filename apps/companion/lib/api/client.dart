@@ -8,6 +8,7 @@ import 'dart:typed_data';
 
 import 'code.dart';
 import 'conversation.dart';
+import 'saved.dart';
 import 'settings_types.dart';
 import 'transport.dart';
 import 'types.dart';
@@ -428,16 +429,118 @@ class RedGiantClient {
   /// `GET /api/chat/agent`: the everyday Chat (made the first time it is asked for).
   Future<Agent> chatAgent() async => Agent.fromJson(_object(await _get('/api/chat/agent')));
 
-  /// `POST /api/sessions/:id/messages`: without the live socket (inside the setup channel).
+  /// `POST /api/sessions/:id/messages`: without the live socket (inside the setup channel). The
+  /// route takes no quotes: they go before the text as Markdown quotes.
   Future<void> sendMessage(
     String sessionId,
     String text, {
     List<Map<String, Object?>>? images,
+    List<Quote> quotes = const [],
   }) async {
     await _post('/api/sessions/${Uri.encodeComponent(sessionId)}/messages', {
-      'text': text,
+      'text': withQuotesInText(text, quotes),
       if (images != null && images.isNotEmpty) 'images': images,
     });
+  }
+
+  // ---- saved passages (G40.14) and product pictures (G40.16) ----
+
+  /// `GET /api/saved`: newest first, with the filters' tags and agents.
+  Future<SavedList> savedList({
+    String? q,
+    String? tag,
+    String? agentId,
+    String? before,
+    int? limit,
+  }) async => SavedList.fromJson(
+    _object(
+      await _get('/api/saved', {
+        if (q != null && q.trim().isNotEmpty) 'q': q.trim(),
+        'tag': ?tag,
+        'agentId': ?agentId,
+        'before': ?before,
+        if (limit != null) 'limit': '$limit',
+      }),
+    ),
+  );
+
+  /// `POST /api/saved`: a passage (with [text]) or the whole message (without), from an agent's
+  /// conversation.
+  Future<SavedItem> saveItem({
+    required String sessionId,
+    required int seq,
+    int? start,
+    int? end,
+    String? text,
+    String? markdown,
+    String? note,
+    List<String> tags = const [],
+  }) async => SavedItem.fromJson(
+    _object(
+      await _post('/api/saved', {
+        'source': {
+          'kind': 'session',
+          'sessionId': sessionId,
+          'seq': seq,
+          'start': ?start,
+          'end': ?end,
+        },
+        if (text != null && text.trim().isNotEmpty)
+          'text': text.length > savedTextMax ? '${text.substring(0, savedTextMax - 1)}…' : text,
+        if (markdown != null && markdown.trim().isNotEmpty)
+          'markdown': markdown.length > savedMarkdownMax
+              ? markdown.substring(0, savedMarkdownMax)
+              : markdown,
+        if (note != null && note.trim().isNotEmpty) 'note': note.trim(),
+        if (tags.isNotEmpty) 'tags': tags,
+      }),
+    ),
+  );
+
+  /// `PATCH /api/saved/:id`: the note and the tags.
+  Future<SavedItem> updateSaved(
+    String id, {
+    required String note,
+    required List<String> tags,
+  }) async => SavedItem.fromJson(
+    _object(
+      await _call('PATCH', '/api/saved/${Uri.encodeComponent(id)}', {'note': note, 'tags': tags}),
+    ),
+  );
+
+  Future<void> deleteSaved(String id) => _call('DELETE', '/api/saved/${Uri.encodeComponent(id)}');
+
+  /// `GET /api/saved/export`: every match as one Markdown file, in the person's language.
+  Future<String> savedExport({
+    String? q,
+    String? tag,
+    String? agentId,
+    required String lang,
+  }) async {
+    final r = await _send(
+      'GET',
+      '/api/saved/export',
+      query: {
+        if (q != null && q.trim().isNotEmpty) 'q': q.trim(),
+        'tag': ?tag,
+        'agentId': ?agentId,
+        'lang': lang == 'it' ? 'it' : 'en',
+      },
+      accept: 'text/markdown',
+    );
+    if (r.status != 200) _decode(r);
+    return r.text;
+  }
+
+  /// `GET /api/products/images/:id`: a product's picture as the server keeps it.
+  Future<Uint8List> productImage(String id) async {
+    final r = await _send(
+      'GET',
+      '/api/products/images/${Uri.encodeComponent(id)}',
+      accept: 'image/*',
+    );
+    if (r.status != 200) _decode(r);
+    return r.bytes;
   }
 
   /// `GET /api/permissions`: the requests waiting for the person.

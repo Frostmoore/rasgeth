@@ -336,7 +336,12 @@ class _DiffTabState extends State<DiffTab> with AutomaticKeepAliveClientMixin {
           flex: 2,
           child: sid == null
               ? EmptyState(icon: RgIcons.chat, text: l.codeNoChat)
-              : ConversationScreen(key: ValueKey(sid), sessionId: sid, agent: _reader),
+              : ConversationScreen(
+                  key: ValueKey(sid),
+                  sessionId: sid,
+                  agent: _reader,
+                  embedded: true,
+                ),
         ),
       ],
     );

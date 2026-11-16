@@ -3,6 +3,7 @@
 // and `QuestionRequestInfo` (wire.ts, questions.ts), `GET /api/projects/:id/tasks`. Read
 // leniently. [buildItems] is the app's `buildItems` (packages/web/src/state.ts): pure, events in,
 // chat items out.
+import 'products.dart';
 import 'types.dart';
 
 Map<String, dynamic> _map(Object? o) => o is Map<String, dynamic> ? o : const {};
@@ -102,12 +103,58 @@ sealed class ChatItem {
   const ChatItem();
 }
 
+/// A passage of an earlier message a message answers (G36.22, `MessageQuote`).
+class Quote {
+  const Quote({required this.text, this.seq, this.at, this.start, this.end, this.reply});
+
+  static Quote? fromJson(Object? o) {
+    if (o is! Map<String, dynamic>) return null;
+    final text = _str(o['text']);
+    if (text == null || text.isEmpty) return null;
+    int? n(Object? v) => v is num ? v.toInt() : null;
+    return Quote(
+      text: text,
+      seq: n(o['seq']),
+      at: _str(o['at']),
+      start: n(o['start']),
+      end: n(o['end']),
+      reply: _str(o['reply']),
+    );
+  }
+
+  final String text;
+  final int? seq;
+  final String? at;
+  final int? start;
+  final int? end;
+  final String? reply;
+
+  /// As `session.send` carries it.
+  Map<String, Object?> toJson() => {
+    'text': text,
+    'seq': ?seq,
+    'at': ?at,
+    'start': ?start,
+    'end': ?end,
+    if (reply != null && reply!.trim().isNotEmpty) 'reply': reply!.trim(),
+  };
+}
+
 class UserItem extends ChatItem {
-  const UserItem({required this.text, required this.ts, this.images = 0, this.from});
+  const UserItem({
+    required this.text,
+    required this.ts,
+    this.images = 0,
+    this.from,
+    this.quotes = const [],
+  });
 
   final String text;
   final String ts;
   final int images;
+
+  /// The passages it answers.
+  final List<Quote> quotes;
 
   /// Another agent, an automation, a chat platform (null: the person).
   final String? from;
@@ -118,12 +165,16 @@ class AssistantItem extends ChatItem {
     required this.text,
     required this.thinking,
     required this.ts,
+    this.seq,
     this.live = false,
   });
 
   final String text;
   final String thinking;
   final String ts;
+
+  /// The `message.assistant` event (null while it streams): what «Salva» and quotes point at.
+  final int? seq;
 
   /// Still being written (the deltas not persisted yet).
   final bool live;
@@ -179,7 +230,17 @@ class FileItem extends ChatItem {
   final String? caption;
 }
 
-const _hiddenTools = {'ask_user', 'propose_plan'};
+/// `products.shown` (G40.16): a carousel of product cards.
+class ProductsItem extends ChatItem {
+  const ProductsItem({required this.seq, required this.products, this.title});
+
+  final int seq;
+  final String? title;
+  final List<ProductCard> products;
+}
+
+/// Their calls are shown by what they make (questions, plans, cards), not as tools.
+const _hiddenTools = {'ask_user', 'propose_plan', 'show_products'};
 
 /// The page's `buildItems`, the parts the app shows: events in order, plus the text and
 /// reasoning still streaming.
@@ -202,6 +263,7 @@ List<ChatItem> buildItems(List<RgEvent> events, {String liveText = '', String li
             ts: e.ts,
             images: _list(p['images']).length,
             from: from,
+            quotes: [for (final q in _list(p['quotes'])) ?Quote.fromJson(q)],
           ),
         );
       case 'message.assistant':
@@ -213,7 +275,7 @@ List<ChatItem> buildItems(List<RgEvent> events, {String liveText = '', String li
         final t = text.join('\n\n').trim();
         final th = thinking.join('\n\n').trim();
         if (t.isNotEmpty || th.isNotEmpty) {
-          out.add(AssistantItem(text: t, thinking: th, ts: e.ts));
+          out.add(AssistantItem(text: t, thinking: th, ts: e.ts, seq: e.seq));
         }
         if (p['stopReason'] != 'tool_use') {
           for (final c in open.values) {
@@ -233,6 +295,11 @@ List<ChatItem> buildItems(List<RgEvent> events, {String liveText = '', String li
         if (c != null) {
           c.ok = p['ok'] == true;
           c.output = _str(p['output']) ?? '';
+        }
+      case 'products.shown':
+        final cards = [for (final c in _list(p['products'])) ?ProductCard.fromJson(c)];
+        if (cards.isNotEmpty) {
+          out.add(ProductsItem(seq: e.seq, title: _str(p['title']), products: cards));
         }
       case 'canvas.show':
         out.add(CanvasItem(title: _str(p['title']) ?? '', target: _map(p['target'])));
@@ -557,3 +624,35 @@ class FileContent {
   final String? base64;
   final int size;
 }
+
+/// The most passages one message answers (`MAX_QUOTES`).
+const maxQuotes = 10;
+
+/// A message with quotes for a route that takes none: each passage as a Markdown quote first.
+String withQuotesInText(String text, List<Quote> quotes) {
+  if (quotes.isEmpty) return text;
+  final parts = [
+    for (final q in quotes) ...[
+      q.text.split('\n').map((l) => '> $l').join('\n'),
+      if (q.reply != null && q.reply!.trim().isNotEmpty) q.reply!.trim(),
+    ],
+    if (text.trim().isNotEmpty) text.trim(),
+  ];
+  return parts.join('\n\n');
+}
+
+/// `session.send` as the page sends it (wire.ts), with the passages it answers (G36.22).
+Map<String, Object?> sessionSendMessage(
+  String sessionId,
+  String text, {
+  List<Map<String, Object?>>? images,
+  List<Quote> quotes = const [],
+  String? clientId,
+}) => {
+  'type': 'session.send',
+  'sessionId': sessionId,
+  'text': text,
+  if (images != null && images.isNotEmpty) 'images': images,
+  if (quotes.isNotEmpty) 'quotes': [for (final q in quotes.take(maxQuotes)) q.toJson()],
+  'clientId': ?clientId,
+};

@@ -918,7 +918,12 @@ class AppController extends ChangeNotifier {
   void unfollow(String sessionId) => socket?.unfollow(sessionId);
 
   /// Sends a message: over the socket (queued while the agent works), else by REST.
-  Future<bool> send(String sessionId, String text, {List<Map<String, Object?>>? images}) async {
+  Future<bool> send(
+    String sessionId,
+    String text, {
+    List<Map<String, Object?>>? images,
+    List<Quote> quotes = const [],
+  }) async {
     // A Chat conversation's first message names it (G40.9), unless the server named it already.
     final row = live.sessions.where((r) => r.id == sessionId).firstOrNull;
     final first =
@@ -926,25 +931,32 @@ class AppController extends ChangeNotifier {
         row.agentId == chatAgentId &&
         row.title?.isNotEmpty != true &&
         !(live.views[sessionId]?.events.any((e) => e.type == 'message.user') ?? false);
-    final sent = await _send(sessionId, text, images: images);
+    final sent = await _send(sessionId, text, images: images, quotes: quotes);
     if (sent && first) unawaited(nameNewChat(sessionId, text));
     return sent;
   }
 
-  Future<bool> _send(String sessionId, String text, {List<Map<String, Object?>>? images}) async {
+  Future<bool> _send(
+    String sessionId,
+    String text, {
+    List<Map<String, Object?>>? images,
+    List<Quote> quotes = const [],
+  }) async {
     final s = socket;
     if (s != null &&
-        s.send({
-          'type': 'session.send',
-          'sessionId': sessionId,
-          'text': text,
-          if (images != null && images.isNotEmpty) 'images': images,
-          'clientId': 'app-${DateTime.now().microsecondsSinceEpoch}',
-        })) {
+        s.send(
+          sessionSendMessage(
+            sessionId,
+            text,
+            images: images,
+            quotes: quotes,
+            clientId: 'app-${DateTime.now().microsecondsSinceEpoch}',
+          ),
+        )) {
       return true;
     }
     try {
-      await client?.sendMessage(sessionId, text, images: images);
+      await client?.sendMessage(sessionId, text, images: images, quotes: quotes);
       return true;
     } on ApiException {
       return false;
