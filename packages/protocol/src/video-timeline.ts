@@ -222,8 +222,7 @@ function room(c: VideoClip): { left: number; right: number } {
 
 const trackRank = (doc: RgVideo) => {
   const rank = new Map<string, number>();
-  for (const t of doc.tracks)
-    rank.set(t.id, (t.kind === "Video" ? 0 : 1000) + trackNumber(t.id));
+  for (const t of doc.tracks) rank.set(t.id, (t.kind === "Video" ? 0 : 1000) + trackNumber(t.id));
   return (id: string) => rank.get(id) ?? 9999;
 };
 const byStr = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
@@ -382,9 +381,16 @@ function shiftAfter(
   from: number,
   delta: number,
   except: ReadonlySet<string> = new Set(),
+  only?: ReadonlySet<string>,
 ) {
   for (const c of doc.clips)
-    if (!except.has(c.id) && c.start >= from && !isLocked(doc, c.track)) c.start += delta;
+    if (
+      !except.has(c.id) &&
+      c.start >= from &&
+      !isLocked(doc, c.track) &&
+      (!only || only.has(c.track))
+    )
+      c.start += delta;
 }
 
 /**
@@ -436,7 +442,19 @@ export function trimClip(
       };
     } else c.sourceRange = { start: c.sourceRange.start, duration: c.sourceRange.duration + d };
   }
-  if (ripple) shiftAfter(doc, oldEnd, edge === "in" ? -d : d, new Set(group.map((c) => c.id)));
+  if (ripple) {
+    const shift = edge === "in" ? -d : d;
+    const moved = new Set(group.map((c) => c.id));
+    // Closing: when a clip of another track crosses the frames freed, only the trimmed clips'
+    // tracks close up (as a ripple delete does), or what follows would run over it.
+    let only: Set<string> | undefined;
+    if (shift < 0) {
+      const own = new Set(group.map((c) => c.track));
+      const [s0, e0] = [oldEnd + shift, oldEnd];
+      if (doc.clips.some((c) => !own.has(c.track) && c.start < e0 && clipEnd(c) > s0)) only = own;
+    }
+    shiftAfter(doc, oldEnd, shift, moved, only);
+  }
   return settle(doc);
 }
 
@@ -648,7 +666,12 @@ export function placeClip(
   if (withVideo && vt) {
     if (o.mode !== "insert") carve(doc, vt.id, at, at + dur, gen);
     const fade = Math.max(0, Math.round(o.fade ?? 0));
-    const kb = o.kenBurns === undefined ? (media && still ? kenBurnsPreset("in", "right") : undefined) : o.kenBurns;
+    const kb =
+      o.kenBurns === undefined
+        ? media && still
+          ? kenBurnsPreset("in", "right")
+          : undefined
+        : o.kenBurns;
     doc.clips.push({
       id: gen("c"),
       track: vt.id,
@@ -817,7 +840,7 @@ export function setGenerator(
   const n = clipOf(doc, id) as VideoClip;
   if (isTextRef(n.ref)) {
     const r: VideoTextRef = { ...n.ref };
-    if (patch.text !== undefined && patch.text.length) r.text = patch.text;
+    if (patch.text?.length) r.text = patch.text;
     if (patch.style !== undefined) r.style = patch.style;
     if (patch.position !== undefined) r.position = patch.position;
     n.ref = r;
@@ -1008,7 +1031,7 @@ export function addGenerator(
   let track = o.track;
   if (track) {
     const t = trackOf(doc0, track);
-    if (!t || t.kind !== "Video" || t.locked) return doc0;
+    if (t?.kind !== "Video" || t.locked) return doc0;
   } else {
     const free = lanes(doc0, "Video")
       .reverse()
@@ -1036,10 +1059,7 @@ export function addGenerator(
 // -------------------------------------------------------------------------------------------
 // Captions
 
-export function setCaptionSettings(
-  doc0: RgVideo,
-  props: Partial<VideoCaptionSettings>,
-): RgVideo {
+export function setCaptionSettings(doc0: RgVideo, props: Partial<VideoCaptionSettings>): RgVideo {
   const doc = clone(doc0);
   const c = doc.captions;
   if (props.language !== undefined) c.language = props.language.slice(0, 20);
@@ -1053,7 +1073,11 @@ const cleanWords = (w: readonly VideoCaptionWord[] | undefined) =>
   w
     ?.filter((x) => x.end >= x.start)
     .slice(0, 500)
-    .map((x) => ({ start: Math.round(x.start), end: Math.round(x.end), text: x.text.slice(0, 200) }));
+    .map((x) => ({
+      start: Math.round(x.start),
+      end: Math.round(x.end),
+      text: x.text.slice(0, 200),
+    }));
 
 /** Every subtitle replaced (G41.4 writes them from the transcription). */
 export function setCaptionSegments(
@@ -1180,7 +1204,12 @@ export function setFormat(doc0: RgVideo, props: Partial<VideoFormat>): RgVideo {
   let doc = props.rate ? retimeTimeline(doc0, props.rate) : doc0;
   const f = doc.format;
   let next: VideoFormat = { ...f };
-  if (props.aspect && props.aspect !== "free" && props.width === undefined && props.height === undefined)
+  if (
+    props.aspect &&
+    props.aspect !== "free" &&
+    props.width === undefined &&
+    props.height === undefined
+  )
     next = formatFor(props.aspect, Math.min(f.width, f.height), f.rate);
   else if (props.aspect) next.aspect = props.aspect;
   if (props.width !== undefined) next.width = even(props.width);
@@ -1251,7 +1280,8 @@ export function timelineProblems(doc: RgVideo): string[] {
   for (const t of doc.tracks) {
     if (seen.has(`track:${t.id}`)) out.push(`track ${t.id} is there twice`);
     seen.add(`track:${t.id}`);
-    if ((t.id[0] === "V") !== (t.kind === "Video")) out.push(`track ${t.id} is not of kind ${t.kind}`);
+    if ((t.id[0] === "V") !== (t.kind === "Video"))
+      out.push(`track ${t.id} is not of kind ${t.kind}`);
     for (const u of t.duck?.under ?? [])
       if (kinds.get(u) !== "Audio") out.push(`track ${t.id} ducks under ${u}, not an audio track`);
   }
@@ -1268,16 +1298,24 @@ export function timelineProblems(doc: RgVideo): string[] {
       continue;
     }
     if (kind === "Audio") {
-      if (!isMediaRef(c.ref)) out.push(`clip ${c.id} is a ${c.ref.generator} on audio track ${c.track}`);
+      if (!isMediaRef(c.ref))
+        out.push(`clip ${c.id} is a ${c.ref.generator} on audio track ${c.track}`);
       else if (c.ref.still) out.push(`clip ${c.id} is a picture on audio track ${c.track}`);
-      else if (c.ref.audio === false) out.push(`clip ${c.id} has no sound, on audio track ${c.track}`);
+      else if (c.ref.audio === false)
+        out.push(`clip ${c.id} has no sound, on audio track ${c.track}`);
     }
-    if (isMediaRef(c.ref) && !c.ref.still && c.ref.frames !== undefined && clipEnd({ ...c, start: c.sourceRange.start }) > c.ref.frames)
+    if (
+      isMediaRef(c.ref) &&
+      !c.ref.still &&
+      c.ref.frames !== undefined &&
+      clipEnd({ ...c, start: c.sourceRange.start }) > c.ref.frames
+    )
       out.push(`clip ${c.id} goes past the end of ${c.ref.media}`);
     const half = Math.floor(clipLength(c) / 2);
     if (c.fadeIn > half || c.fadeOut > half) out.push(`clip ${c.id} fades longer than half of it`);
     const prev = ends.get(c.track);
-    if (prev && clipEnd(prev) > c.start) out.push(`clips ${prev.id} and ${c.id} overlap on ${c.track}`);
+    if (prev && clipEnd(prev) > c.start)
+      out.push(`clips ${prev.id} and ${c.id} overlap on ${c.track}`);
     ends.set(c.track, c);
   }
   const links = new Map<string, number>();
@@ -1288,7 +1326,9 @@ export function timelineProblems(doc: RgVideo): string[] {
     if (tids.has(t.id)) out.push(`transition ${t.id} is there twice`);
     tids.add(t.id);
     if (!valid.has(t.id))
-      out.push(`transition ${t.id} is not between two adjacent clips of ${t.track} (${t.from}, ${t.to})`);
+      out.push(
+        `transition ${t.id} is not between two adjacent clips of ${t.track} (${t.from}, ${t.to})`,
+      );
   }
   const mids = new Set<string>();
   for (const m of doc.markers) {
@@ -1319,7 +1359,9 @@ type Raw = Record<string, unknown>;
 const isObj = (v: unknown): v is Raw => !!v && typeof v === "object" && !Array.isArray(v);
 const intOf = (v: unknown, min: number, max: number, def: number): number => {
   const n = typeof v === "string" && v.trim() !== "" ? Number(v) : v;
-  return typeof n === "number" && Number.isFinite(n) ? Math.max(min, Math.min(max, Math.round(n))) : def;
+  return typeof n === "number" && Number.isFinite(n)
+    ? Math.max(min, Math.min(max, Math.round(n)))
+    : def;
 };
 const numOf = (v: unknown, min: number, max: number, def: number): number =>
   typeof v === "number" && Number.isFinite(v) ? Math.max(min, Math.min(max, v)) : def;
@@ -1427,7 +1469,9 @@ function trackFrom(id: string, t: Raw): VideoTrack {
     track.muted = t.muted === true;
     const d = t.duck;
     if (isObj(d) && Array.isArray(d.under)) {
-      const under = d.under.filter((u): u is string => typeof u === "string" && /^A[1-9]\d?$/.test(u));
+      const under = d.under.filter(
+        (u): u is string => typeof u === "string" && /^A[1-9]\d?$/.test(u),
+      );
       if (under.length)
         track.duck = {
           under: [...new Set(under)].slice(0, 20),
@@ -1566,7 +1610,11 @@ export function cleanTimeline(raw: unknown, probes?: Record<string, VideoProbe>)
     const mk: VideoMarker = {
       id,
       frame: intOf(m.frame, 0, F, 0),
-      color: oneOf(typeof m.color === "string" ? m.color.toUpperCase() : m.color, VIDEO_MARKER_COLORS, "BLUE"),
+      color: oneOf(
+        typeof m.color === "string" ? m.color.toUpperCase() : m.color,
+        VIDEO_MARKER_COLORS,
+        "BLUE",
+      ),
       note: strOf(m.note, 500),
     };
     if (m.duration !== undefined) mk.duration = intOf(m.duration, 0, F, 0);
@@ -1586,9 +1634,11 @@ export function cleanTimeline(raw: unknown, probes?: Record<string, VideoProbe>)
     const seg: VideoCaption = { id, start, end: endF, text: strOf(s.text, 2000) };
     if (Array.isArray(s.words)) {
       const words = cleanWords(
-        s.words
-          .filter(isObj)
-          .map((w) => ({ start: intOf(w.start, 0, F, 0), end: intOf(w.end, 0, F, 0), text: strOf(w.text, 200) })),
+        s.words.filter(isObj).map((w) => ({
+          start: intOf(w.start, 0, F, 0),
+          end: intOf(w.end, 0, F, 0),
+          text: strOf(w.text, 200),
+        })),
       );
       if (words?.length) seg.words = words;
     }
@@ -1720,7 +1770,8 @@ export function rgvideoVersionPath(path: string, name: string, stamp: string): s
   const base = p.slice(slash + 1).replace(/\.rgvideo$/i, "");
   const safe = (s: string) =>
     s
-      .replace(/[\\/:*?"<>|\u0000-\u001f]/g, " ")
+      .replace(/[\\/:*?"<>|]/g, " ")
+      .replace(/\p{Cc}/gu, " ")
       .replace(/\s+/g, " ")
       .trim()
       .slice(0, 80);

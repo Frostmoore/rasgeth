@@ -199,6 +199,7 @@ import { PdfFamily } from "./editor/pdf-family.js";
 import { sheetCopyOfOriginal, sheetFamily } from "./editor/sheet-family.js";
 import { svgCopyOfOriginal, svgFamily } from "./editor/svg-family.js";
 import { textFamily } from "./editor/text-family.js";
+import { videoFamily } from "./editor/video-family.js";
 import { type CanvasEditHost, canvasEditTool } from "./editor/tool.js";
 import { ZetaOffice } from "./editor/zeta.js";
 import { EditorLinks } from "./editor-links.js";
@@ -1057,6 +1058,7 @@ export class RedGiantCore implements OrchestrationHost {
         this.pdf,
         this.pictures,
         modelFamily,
+        videoFamily,
       ],
       ...o.editor,
     });

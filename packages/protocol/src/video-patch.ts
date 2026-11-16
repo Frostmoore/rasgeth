@@ -8,6 +8,7 @@
 import {
   type RgVideo,
   type VideoAction,
+  VideoAssembled,
   VideoCaption,
   VideoCaptionSettings,
   type VideoChange,
@@ -19,7 +20,6 @@ import {
   type VideoPlainAction,
   VideoTrack,
   VideoTransition,
-  VideoAssembled,
   VideoVersionInfo,
 } from "./doc-video.js";
 import {
@@ -145,7 +145,8 @@ export function checkVideoAction(doc: RgVideo, a: VideoAction): string | undefin
         return `the value of ${p.key} is not valid`;
       }
     } else {
-      if (p.value && p.value.id !== p.id) return `the ${p.t} ${p.id} is given with id ${p.value.id}`;
+      if (p.value && p.value.id !== p.id)
+        return `the ${p.t} ${p.id} is given with id ${p.value.id}`;
       if (p.value) {
         const r = (SCHEMAS[p.t] as { safeParse(x: unknown): { success: boolean } }).safeParse(
           p.value,
@@ -260,8 +261,7 @@ export function diffTimeline(
   for (const key of ["format", "name", "captions", "assembled", "version", "metadata"] as const) {
     const b = metaOf(before, key);
     const a = metaOf(after, key);
-    if (stableJson(a) !== stableJson(b))
-      ops.push({ t: "meta", key, value: structuredClone(a) });
+    if (stableJson(a) !== stableJson(b)) ops.push({ t: "meta", key, value: structuredClone(a) });
   }
   for (const k of ["track", "clip", "transition", "marker", "caption"] as const) {
     const was = new Map(listOf(before, k).map((e) => [e.id, e]));

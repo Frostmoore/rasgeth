@@ -4,11 +4,11 @@
 import { describe, expect, it } from "vitest";
 import {
   addCaption,
+  addedClips,
   addGenerator,
   addMarker,
   addTrack,
   addTransition,
-  addedClips,
   appendClip,
   applyVideoAction,
   bladeAt,
@@ -35,7 +35,6 @@ import {
   prevEdit,
   type RgVideo,
   readRgVideo,
-  removeMarker,
   removeTrack,
   retimeTimeline,
   rgvideoVersionPath,
@@ -147,9 +146,27 @@ describe("montatore's 14 cases", () => {
 
   it.each<[string, (d: RgVideo) => unknown, unknown]>([
     // 2. moving a linked clip moves its audio too, and overwrites where it lands
-    ["move linked: V1", (d) => on(moveClips(d, ["v1"], 200), "V1"), [[100, 300, 100], [200, 0, 100]]],
-    ["move linked: A1", (d) => on(moveClips(d, ["v1"], 200), "A1"), [[100, 300, 100], [200, 0, 100]]],
-    ["move unlinked", (d) => on(moveClips(d, ["v1"], 300, 0, { linked: false }), "A1")[0], [0, 0, 100]],
+    [
+      "move linked: V1",
+      (d) => on(moveClips(d, ["v1"], 200), "V1"),
+      [
+        [100, 300, 100],
+        [200, 0, 100],
+      ],
+    ],
+    [
+      "move linked: A1",
+      (d) => on(moveClips(d, ["v1"], 200), "A1"),
+      [
+        [100, 300, 100],
+        [200, 0, 100],
+      ],
+    ],
+    [
+      "move unlinked",
+      (d) => on(moveClips(d, ["v1"], 300, 0, { linked: false }), "A1")[0],
+      [0, 0, 100],
+    ],
     ["never before zero", (d) => get(moveClips(d, ["b"], -500), "b")?.start, 0],
     // 3. to another track: only the grabbed kind changes track
     ["video up a track", (d) => get(moveClips(d, ["v1"], 0, 1), "v1")?.track, "V2"],
@@ -158,12 +175,20 @@ describe("montatore's 14 cases", () => {
     ["audio down a track", (d) => get(moveClips(d, ["a1"], 0, 1), "a1")?.track, "A2"],
     ["its video stays", (d) => get(moveClips(d, ["a1"], 0, 1), "v1")?.track, "V1"],
     // 5. trim without ripple: never over the neighbours nor out of the file
-    ["out edge blocked by the next", (d) => get(trimClip(d, "v1", "out", 50), "v1")?.sourceRange.duration, 100],
+    [
+      "out edge blocked by the next",
+      (d) => get(trimClip(d, "v1", "out", 50), "v1")?.sourceRange.duration,
+      100,
+    ],
     [
       "shorter leaves a gap, audio too",
       (d) => {
         const x = trimClip(d, "v1", "out", -30);
-        return [get(x, "v1")?.sourceRange.duration, get(x, "a1")?.sourceRange.duration, get(x, "v2")?.start];
+        return [
+          get(x, "v1")?.sourceRange.duration,
+          get(x, "a1")?.sourceRange.duration,
+          get(x, "v2")?.start,
+        ];
       },
       [70, 70, 100],
     ],
@@ -173,13 +198,57 @@ describe("montatore's 14 cases", () => {
       [70, 270, 180],
     ],
     ["in edge not before the file", (d) => on(trimClip(d, "b", "in", -40), "V2"), [[30, 0, 60]]],
-    ["out edge not past the file", (d) => get(trimClip(d, "b", "out", 9999), "b")?.sourceRange.duration, 290],
+    [
+      "out edge not past the file",
+      (d) => get(trimClip(d, "b", "out", 9999), "b")?.sourceRange.duration,
+      290,
+    ],
     ["at least one frame", (d) => get(trimClip(d, "b", "out", -999), "b")?.sourceRange.duration, 1],
     // 6. ripple trim (T): what follows moves
-    ["ripple out: V1", (d) => on(trimClip(d, "v1", "out", -30, { ripple: true }), "V1"), [[0, 0, 70], [70, 300, 150]]],
-    ["ripple out: A1", (d) => on(trimClip(d, "v1", "out", -30, { ripple: true }), "A1"), [[0, 0, 70], [70, 300, 150]]],
-    ["ripple in: the clip stays", (d) => on(trimClip(d, "v2", "in", 20, { ripple: true }), "V1")[1], [100, 320, 130]],
-    ["ripple in: the B before stays", (d) => get(trimClip(d, "v2", "in", 20, { ripple: true }), "b")?.start, 40],
+    [
+      "ripple out: V1",
+      (d) => on(trimClip(d, "v1", "out", -30, { ripple: true }), "V1"),
+      [
+        [0, 0, 70],
+        [70, 300, 150],
+      ],
+    ],
+    [
+      "ripple out: A1",
+      (d) => on(trimClip(d, "v1", "out", -30, { ripple: true }), "A1"),
+      [
+        [0, 0, 70],
+        [70, 300, 150],
+      ],
+    ],
+    [
+      "ripple out with a clip across the gap on another track: only its own tracks close",
+      (d) => {
+        const x = placeClip(d, MUTA, 0, 30, 100, { targets: { video: "V2" } });
+        const y = trimClip(x, "v1", "out", -30, { ripple: true });
+        return [on(y, "V1"), on(y, "V2")];
+      },
+      [
+        [
+          [0, 0, 70],
+          [70, 300, 150],
+        ],
+        [
+          [40, 10, 50],
+          [100, 0, 30],
+        ],
+      ],
+    ],
+    [
+      "ripple in: the clip stays",
+      (d) => on(trimClip(d, "v2", "in", 20, { ripple: true }), "V1")[1],
+      [100, 320, 130],
+    ],
+    [
+      "ripple in: the B before stays",
+      (d) => get(trimClip(d, "v2", "in", 20, { ripple: true }), "b")?.start,
+      40,
+    ],
     [
       "a picture has no limit",
       (d) => {
@@ -190,8 +259,23 @@ describe("montatore's 14 cases", () => {
       450,
     ],
     // 7. blade
-    ["blade: V1", (d) => on(bladeAt(d, 60), "V1"), [[0, 0, 60], [60, 60, 40], [100, 300, 150]]],
-    ["blade: V2", (d) => on(bladeAt(d, 60), "V2"), [[40, 10, 20], [60, 30, 30]]],
+    [
+      "blade: V1",
+      (d) => on(bladeAt(d, 60), "V1"),
+      [
+        [0, 0, 60],
+        [60, 60, 40],
+        [100, 300, 150],
+      ],
+    ],
+    [
+      "blade: V2",
+      (d) => on(bladeAt(d, 60), "V2"),
+      [
+        [40, 10, 20],
+        [60, 30, 30],
+      ],
+    ],
     [
       "blade: right halves linked to each other",
       (d) => {
@@ -202,17 +286,32 @@ describe("montatore's 14 cases", () => {
       },
       [true, true],
     ],
-    ["blade only the chosen", (d) => [trackClips(bladeAt(d, 60, ["b"]), "V1").length, trackClips(bladeAt(d, 60, ["b"]), "V2").length], [2, 2]],
+    [
+      "blade only the chosen",
+      (d) => [
+        trackClips(bladeAt(d, 60, ["b"]), "V1").length,
+        trackClips(bladeAt(d, 60, ["b"]), "V2").length,
+      ],
+      [2, 2],
+    ],
     ["blade on an edge cuts nothing", (d) => bladeAt(d, 100, ["v1"]).clips.length, 5],
     // 8. Backspace leaves the gap, Delete closes it
     ["lift: V1", (d) => on(liftClips(d, ["v1"]), "V1"), [[100, 300, 150]]],
     ["lift: A1", (d) => on(liftClips(d, ["v1"]), "A1"), [[100, 300, 150]]],
     ["ripple delete: V1", (d) => on(rippleDeleteClips(d, ["v1"]), "V1"), [[0, 300, 150]]],
     ["ripple delete: A1", (d) => on(rippleDeleteClips(d, ["v1"]), "A1"), [[0, 300, 150]]],
-    ["ripple delete: the B over it stays", (d) => on(rippleDeleteClips(d, ["v1"]), "V2"), [[40, 10, 50]]],
+    [
+      "ripple delete: the B over it stays",
+      (d) => on(rippleDeleteClips(d, ["v1"]), "V2"),
+      [[40, 10, 50]],
+    ],
     [
       "ripple delete over every track",
-      (d) => on(rippleDeleteClips(placeClip(d, MUTA, 0, 30, 300, { targets: { video: "V2" } }), ["v2"]), "V2").at(-1),
+      (d) =>
+        on(
+          rippleDeleteClips(placeClip(d, MUTA, 0, 30, 300, { targets: { video: "V2" } }), ["v2"]),
+          "V2",
+        ).at(-1),
       [150, 0, 30],
     ],
     // 9. closing a clicked gap
@@ -226,7 +325,16 @@ describe("montatore's 14 cases", () => {
       true,
     ],
     // 10. overwrite, insert, append from the media pool
-    ["overwrite: V1", (d) => on(placeClip(d, B, 100, 130, 50), "V1"), [[0, 0, 50], [50, 100, 30], [80, 80, 20], [100, 300, 150]]],
+    [
+      "overwrite: V1",
+      (d) => on(placeClip(d, B, 100, 130, 50), "V1"),
+      [
+        [0, 0, 50],
+        [50, 100, 30],
+        [80, 80, 20],
+        [100, 300, 150],
+      ],
+    ],
     [
       "overwrite: linked",
       (d) => {
@@ -235,10 +343,37 @@ describe("montatore's 14 cases", () => {
       },
       true,
     ],
-    ["insert: V1", (d) => on(placeClip(d, B, 100, 130, 50, { mode: "insert" }), "V1"), [[0, 0, 50], [50, 100, 30], [80, 50, 50], [130, 300, 150]]],
-    ["insert: V2 cut and moved", (d) => on(placeClip(d, B, 100, 130, 50, { mode: "insert" }), "V2"), [[40, 10, 10], [80, 20, 40]]],
-    ["a silent B puts nothing on the audio", (d) => added(d, placeClip(d, MUTA, 0, 20, 500, { targets: { video: "V2", audio: "A2" } })).length, 1],
-    ["a picture gets Ken Burns", (d) => added(d, placeClip(d, FOTO, 0, 75, 500, { targets: { video: "V2", audio: "A2" } }))[0]?.kenBurns, kenBurnsPreset("in", "right")],
+    [
+      "insert: V1",
+      (d) => on(placeClip(d, B, 100, 130, 50, { mode: "insert" }), "V1"),
+      [
+        [0, 0, 50],
+        [50, 100, 30],
+        [80, 50, 50],
+        [130, 300, 150],
+      ],
+    ],
+    [
+      "insert: V2 cut and moved",
+      (d) => on(placeClip(d, B, 100, 130, 50, { mode: "insert" }), "V2"),
+      [
+        [40, 10, 10],
+        [80, 20, 40],
+      ],
+    ],
+    [
+      "a silent B puts nothing on the audio",
+      (d) =>
+        added(d, placeClip(d, MUTA, 0, 20, 500, { targets: { video: "V2", audio: "A2" } })).length,
+      1,
+    ],
+    [
+      "a picture gets Ken Burns",
+      (d) =>
+        added(d, placeClip(d, FOTO, 0, 75, 500, { targets: { video: "V2", audio: "A2" } }))[0]
+          ?.kenBurns,
+      kenBurnsPreset("in", "right"),
+    ],
     ["append after the last clip", (d) => on(appendClip(d, B, 0, 40), "V1").at(-1), [250, 0, 40]],
     // 11. copy and paste
     ["copy takes the linked", (d) => copyClips(d, ["v1"]).length, 2],
@@ -252,7 +387,11 @@ describe("montatore's 14 cases", () => {
       [true, true],
     ],
     // 12. link, unlink, properties
-    ["unlink both", (d) => [get(unlinkClips(d, ["v1"]), "v1")?.link, get(unlinkClips(d, ["v1"]), "a1")?.link], [undefined, undefined]],
+    [
+      "unlink both",
+      (d) => [get(unlinkClips(d, ["v1"]), "v1")?.link, get(unlinkClips(d, ["v1"]), "a1")?.link],
+      [undefined, undefined],
+    ],
     [
       "link again",
       (d) => {
@@ -270,12 +409,46 @@ describe("montatore's 14 cases", () => {
       [-6, 50, false],
     ],
     // 13. tracks and markers
-    ["add a track", (d) => addTrack(d, "Video").tracks.map((t) => t.id), ["V1", "V2", "V3", "A1", "A2"]],
-    ["not a full track", (d) => { const x = addTrack(d, "Video"); return removeTrack(x, "V2") === x; }, true],
-    ["an empty track goes", (d) => removeTrack(addTrack(d, "Video"), "V3").tracks.map((t) => t.id), ["V1", "V2", "A1", "A2"]],
-    ["V1 always stays", (d) => { const x = addTrack(d, "Video"); return removeTrack(x, "V1") === x; }, true],
-    ["markers in order", (d) => addMarker(addMarker(d, 120, { color: "RED", note: "qui" }), 30).markers.map((m) => m.frame), [30, 120]],
-    ["one marker per frame", (d) => { const x = addMarker(d, 30); return addMarker(x, 30) === x; }, true],
+    [
+      "add a track",
+      (d) => addTrack(d, "Video").tracks.map((t) => t.id),
+      ["V1", "V2", "V3", "A1", "A2"],
+    ],
+    [
+      "not a full track",
+      (d) => {
+        const x = addTrack(d, "Video");
+        return removeTrack(x, "V2") === x;
+      },
+      true,
+    ],
+    [
+      "an empty track goes",
+      (d) => removeTrack(addTrack(d, "Video"), "V3").tracks.map((t) => t.id),
+      ["V1", "V2", "A1", "A2"],
+    ],
+    [
+      "V1 always stays",
+      (d) => {
+        const x = addTrack(d, "Video");
+        return removeTrack(x, "V1") === x;
+      },
+      true,
+    ],
+    [
+      "markers in order",
+      (d) =>
+        addMarker(addMarker(d, 120, { color: "RED", note: "qui" }), 30).markers.map((m) => m.frame),
+      [30, 120],
+    ],
+    [
+      "one marker per frame",
+      (d) => {
+        const x = addMarker(d, 30);
+        return addMarker(x, 30) === x;
+      },
+      true,
+    ],
     [
       "a marker moved",
       (d) => {
@@ -324,14 +497,42 @@ const EDITS: [VideoEdit, (d: RgVideo) => RgVideo][] = [
   ["append", (d) => appendClip(d, FOTO, 0, 90, { targets: { video: "V2" } })],
   ["paste", (d) => pasteClips(d, copyClips(d, ["v1"]), 300)],
   ["unlink", (d) => unlinkClips(d, ["v1"])],
-  ["props", (d) => setClipProps(d, ["b"], { kenBurns: kenBurnsPreset("out", "up"), fit: "fit", background: "blur", crop: { x: 0.3, y: 0, w: 0.4, h: 1 } })],
+  [
+    "props",
+    (d) =>
+      setClipProps(d, ["b"], {
+        kenBurns: kenBurnsPreset("out", "up"),
+        fit: "fit",
+        background: "blur",
+        crop: { x: 0.3, y: 0, w: 0.4, h: 1 },
+      }),
+  ],
   ["add_track", (d) => addTrack(d, "Audio", "Musica")],
   ["remove_track", (d) => removeTrack(d, "A2")],
-  ["track", (d) => setTrack(d, "A2", { duck: { under: ["A1"], amountDb: -15, attackMs: 100, releaseMs: 400 } })],
+  [
+    "track",
+    (d) =>
+      setTrack(d, "A2", { duck: { under: ["A1"], amountDb: -15, attackMs: 100, releaseMs: 400 } }),
+  ],
   ["marker", (d) => addMarker(d, 12, { color: "GREEN", note: "inizio" })],
   ["transition", (d) => addTransition(d, "v1", "dissolve", 20)],
-  ["text", (d) => addGenerator(d, { generator: "text", text: "Titolo", style: "title", position: "center" }, 0, 90)],
-  ["caption", (d) => setCaptionSegments(d, [{ start: 0, end: 30, text: "Ciao", words: [{ start: 0, end: 10, text: "Ciao" }] }])],
+  [
+    "text",
+    (d) =>
+      addGenerator(
+        d,
+        { generator: "text", text: "Titolo", style: "title", position: "center" },
+        0,
+        90,
+      ),
+  ],
+  [
+    "caption",
+    (d) =>
+      setCaptionSegments(d, [
+        { start: 0, end: 30, text: "Ciao", words: [{ start: 0, end: 10, text: "Ciao" }] },
+      ]),
+  ],
   ["format", (d) => setFormat(d, { aspect: "9:16" })],
   ["format", (d) => retimeTimeline(d, { num: 60, den: 1 })],
 ];
@@ -380,13 +581,29 @@ describe("every edit as actions, with its exact inverse", () => {
     expect(checkVideoAction(d, { t: "clip", id: "x", value: { ...b, id: "x", start: 60 } })).toBe(
       "clips b and x overlap on V2",
     );
-    expect(checkVideoAction(d, { t: "clip", id: "x", value: { ...b, id: "y" } })).toMatch(/given with id y/);
-    expect(checkVideoAction(d, { t: "clip", id: "nope", value: null })).toBe("there is no clip «nope»");
-    expect(checkVideoAction(d, { t: "clip", id: "z", value: { ...b, id: "z", track: "A2", start: 500 } })).toBeUndefined();
-    expect(checkVideoAction(d, { t: "clip", id: "z", value: { ...b, id: "z", track: "A2", start: 500, ref: FOTO } })).toBe(
-      "clip z is a picture on audio track A2",
+    expect(checkVideoAction(d, { t: "clip", id: "x", value: { ...b, id: "y" } })).toMatch(
+      /given with id y/,
     );
-    expect(checkVideoAction(d, { t: "meta", key: "format", value: { width: 1 } })).toMatch(/format is not valid/);
+    expect(checkVideoAction(d, { t: "clip", id: "nope", value: null })).toBe(
+      "there is no clip «nope»",
+    );
+    expect(
+      checkVideoAction(d, {
+        t: "clip",
+        id: "z",
+        value: { ...b, id: "z", track: "A2", start: 500 },
+      }),
+    ).toBeUndefined();
+    expect(
+      checkVideoAction(d, {
+        t: "clip",
+        id: "z",
+        value: { ...b, id: "z", track: "A2", start: 500, ref: FOTO },
+      }),
+    ).toBe("clip z is a picture on audio track A2");
+    expect(checkVideoAction(d, { t: "meta", key: "format", value: { width: 1 } })).toMatch(
+      /format is not valid/,
+    );
   });
 });
 
@@ -394,19 +611,84 @@ describe("every edit as actions, with its exact inverse", () => {
 
 describe("conflicts between two edits on the same revision", () => {
   const d = doc();
-  const act = (f: (x: RgVideo) => RgVideo, what?: VideoEdit) => diffTimeline(d, f(d), what) as VideoAction;
+  const act = (f: (x: RgVideo) => RgVideo, what?: VideoEdit) =>
+    diffTimeline(d, f(d), what) as VideoAction;
   /** Another author's ids (the page's own prefix): new clips never share an id. */
   const other = { ids: (p: string) => `p${p}1` };
   it.each<[string, () => [VideoAction, VideoAction], boolean]>([
-    ["the same clip", () => [act((x) => moveClips(x, ["b"], 10)), act((x) => setClipProps(x, ["b"], { volume: -3 }))], true],
-    ["two clips far apart", () => [act((x) => moveClips(x, ["b"], 10)), act((x) => setClipProps(x, ["v2"], { volume: -3 }))], false],
-    ["clips landing on the same frames of one track", () => [act((x) => placeClip(x, MUTA, 0, 50, 400, { targets: { video: "V2" } })), act((x) => placeClip(x, FOTO, 0, 50, 420, { targets: { video: "V2" } }))], true],
-    ["the same frames on two tracks", () => [act((x) => placeClip(x, MUTA, 0, 50, 400, { targets: { video: "V2" } })), act((x) => addGenerator(x, { generator: "color", color: "#000000" }, 400, 50, { track: "V1", ...other }))], false],
-    ["two new clips with the same id", () => [act((x) => placeClip(x, MUTA, 0, 50, 400, { targets: { video: "V2" } })), act((x) => addGenerator(x, { generator: "color", color: "#000000" }, 400, 50, { track: "V1" }))], true],
-    ["a track locked while a clip lands on it", () => [act((x) => setTrack(x, "V2", { locked: true })), act((x) => placeClip(x, MUTA, 0, 50, 400, { targets: { video: "V2" } }))], true],
-    ["a transition on a clip the other moves", () => [act((x) => addTransition(x, "v1", "dissolve", 10)), act((x) => trimClip(x, "v2", "out", -10, { linked: false }))], true],
-    ["a marker and a clip", () => [act((x) => addMarker(x, 10)), act((x) => moveClips(x, ["b"], 10))], false],
-    ["the format and anything", () => [act((x) => setFormat(x, { aspect: "1:1" })), act((x) => addMarker(x, 10))], true],
+    [
+      "the same clip",
+      () => [
+        act((x) => moveClips(x, ["b"], 10)),
+        act((x) => setClipProps(x, ["b"], { volume: -3 })),
+      ],
+      true,
+    ],
+    [
+      "two clips far apart",
+      () => [
+        act((x) => moveClips(x, ["b"], 10)),
+        act((x) => setClipProps(x, ["v2"], { volume: -3 })),
+      ],
+      false,
+    ],
+    [
+      "clips landing on the same frames of one track",
+      () => [
+        act((x) => placeClip(x, MUTA, 0, 50, 400, { targets: { video: "V2" } })),
+        act((x) => placeClip(x, FOTO, 0, 50, 420, { targets: { video: "V2" } })),
+      ],
+      true,
+    ],
+    [
+      "the same frames on two tracks",
+      () => [
+        act((x) => placeClip(x, MUTA, 0, 50, 400, { targets: { video: "V2" } })),
+        act((x) =>
+          addGenerator(x, { generator: "color", color: "#000000" }, 400, 50, {
+            track: "V1",
+            ...other,
+          }),
+        ),
+      ],
+      false,
+    ],
+    [
+      "two new clips with the same id",
+      () => [
+        act((x) => placeClip(x, MUTA, 0, 50, 400, { targets: { video: "V2" } })),
+        act((x) =>
+          addGenerator(x, { generator: "color", color: "#000000" }, 400, 50, { track: "V1" }),
+        ),
+      ],
+      true,
+    ],
+    [
+      "a track locked while a clip lands on it",
+      () => [
+        act((x) => setTrack(x, "V2", { locked: true })),
+        act((x) => placeClip(x, MUTA, 0, 50, 400, { targets: { video: "V2" } })),
+      ],
+      true,
+    ],
+    [
+      "a transition on a clip the other moves",
+      () => [
+        act((x) => addTransition(x, "v1", "dissolve", 10)),
+        act((x) => trimClip(x, "v2", "out", -10, { linked: false })),
+      ],
+      true,
+    ],
+    [
+      "a marker and a clip",
+      () => [act((x) => addMarker(x, 10)), act((x) => moveClips(x, ["b"], 10))],
+      false,
+    ],
+    [
+      "the format and anything",
+      () => [act((x) => setFormat(x, { aspect: "1:1" })), act((x) => addMarker(x, 10))],
+      true,
+    ],
   ])("%s → %s", (_n, make, want) => {
     const [a, b] = make();
     expect(videoActionsConflict(a, b)).toBe(want);
@@ -429,14 +711,24 @@ describe("transitions, texts, captions and the format", () => {
   it("a transition sits on the cut, follows a blade, goes when the clips part", () => {
     const d = addTransition(doc(), "v1", "dissolve", 21);
     expect(d.transitions).toEqual([
-      { id: "t1", track: "V1", from: "v1", to: "v2", kind: "dissolve", inOffset: 10, outOffset: 11 },
+      {
+        id: "t1",
+        track: "V1",
+        from: "v1",
+        to: "v2",
+        kind: "dissolve",
+        inOffset: 10,
+        outOffset: 11,
+      },
     ]);
     expect(addTransition(doc(), "v2", "dissolve", 10).transitions).toEqual([]); // nothing after v2
     const cut = bladeAt(d, 50, ["v1"]);
     const right = trackClips(cut, "V1")[1] as VideoClip;
     expect(cut.transitions[0]).toMatchObject({ from: right.id, to: "v2", inOffset: 10 });
     expect(moveClips(d, ["v2"], 5).transitions).toEqual([]);
-    expect(setTransition(d, "t1", { kind: "wipe_left", outOffset: 999 }).transitions[0]).toMatchObject({
+    expect(
+      setTransition(d, "t1", { kind: "wipe_left", outOffset: 999 }).transitions[0],
+    ).toMatchObject({
       kind: "wipe_left",
       outOffset: 150,
     });
@@ -479,7 +771,10 @@ describe("transitions, texts, captions and the format", () => {
 
   it("another rate retimes every frame", () => {
     const d = retimeTimeline(addMarker(doc(), 15), { num: 60, den: 1 });
-    expect(on(d, "V1")).toEqual([[0, 0, 200], [200, 600, 300]]);
+    expect(on(d, "V1")).toEqual([
+      [0, 0, 200],
+      [200, 600, 300],
+    ]);
     expect(get(d, "v1")?.ref).toMatchObject({ frames: 2000 });
     expect(d.markers[0]?.frame).toBe(30);
     expect(get(d, "b")?.fadeIn).toBe(12);
@@ -524,44 +819,160 @@ describe("times", () => {
 
 describe("cleanTimeline: a valid timeline from anything, never an exception", () => {
   const base = (clips: unknown[], extra: Record<string, unknown> = {}) =>
-    cleanTimeline({ formatVersion: 1, tracks: [{ id: "V1" }, { id: "V2" }, { id: "A1" }], clips, ...extra });
-  const c = (o: Record<string, unknown>) => ({ id: "x", track: "V1", start: 0, sourceRange: { start: 0, duration: 50 }, ref: A, ...o });
+    cleanTimeline({
+      formatVersion: 1,
+      tracks: [{ id: "V1" }, { id: "V2" }, { id: "A1" }],
+      clips,
+      ...extra,
+    });
+  const c = (o: Record<string, unknown>) => ({
+    id: "x",
+    track: "V1",
+    start: 0,
+    sourceRange: { start: 0, duration: 50 },
+    ref: A,
+    ...o,
+  });
 
   it.each<[string, () => unknown, unknown]>([
-    ["garbage gives an empty timeline", () => [null, [], "x", 5, { clips: 5 }].map((r) => writeRgVideo(cleanTimeline(r))), Array(5).fill(writeRgVideo(newRgVideo()))],
-    ["V1 and A1 always there", () => cleanTimeline({ tracks: [{ id: "A3" }, { id: "Z1" }] }).tracks.map((t) => t.id), ["V1", "A1", "A3"]],
-    ["the kind comes from the id", () => cleanTimeline({ tracks: [{ id: "V2", kind: "Audio" }] }).tracks[1], { id: "V2", kind: "Video", name: "V2", locked: false, hidden: false }],
+    [
+      "garbage gives an empty timeline",
+      () => [null, [], "x", 5, { clips: 5 }].map((r) => writeRgVideo(cleanTimeline(r))),
+      Array(5).fill(writeRgVideo(newRgVideo())),
+    ],
+    [
+      "V1 and A1 always there",
+      () => cleanTimeline({ tracks: [{ id: "A3" }, { id: "Z1" }] }).tracks.map((t) => t.id),
+      ["V1", "A1", "A3"],
+    ],
+    [
+      "the kind comes from the id",
+      () => cleanTimeline({ tracks: [{ id: "V2", kind: "Audio" }] }).tracks[1],
+      { id: "V2", kind: "Video", name: "V2", locked: false, hidden: false },
+    ],
     [
       "overlaps cut at the later clip's head",
-      () => base([c({ id: "p", start: 0 }), c({ id: "q", start: 30, sourceRange: { start: 100, duration: 50 } })]).clips.map((x) => [x.id, x.start, x.sourceRange.start, x.sourceRange.duration]),
-      [["p", 0, 0, 50], ["q", 50, 120, 30]],
+      () =>
+        base([
+          c({ id: "p", start: 0 }),
+          c({ id: "q", start: 30, sourceRange: { start: 100, duration: 50 } }),
+        ]).clips.map((x) => [x.id, x.start, x.sourceRange.start, x.sourceRange.duration]),
+      [
+        ["p", 0, 0, 50],
+        ["q", 50, 120, 30],
+      ],
     ],
-    ["a clip swallowed goes", () => base([c({ id: "p" }), c({ id: "q", start: 10, sourceRange: { start: 0, duration: 20 } })]).clips.map((x) => x.id), ["p"]],
-    ["inside its file", () => base([c({ sourceRange: { start: 990, duration: 50 } })]).clips[0]?.sourceRange, { start: 990, duration: 10 }],
-    ["a picture without limit", () => base([c({ ref: FOTO, sourceRange: { start: 7, duration: 5000 } })]).clips[0]?.sourceRange, { start: 0, duration: 5000 }],
+    [
+      "a clip swallowed goes",
+      () =>
+        base([
+          c({ id: "p" }),
+          c({ id: "q", start: 10, sourceRange: { start: 0, duration: 20 } }),
+        ]).clips.map((x) => x.id),
+      ["p"],
+    ],
+    [
+      "inside its file",
+      () => base([c({ sourceRange: { start: 990, duration: 50 } })]).clips[0]?.sourceRange,
+      { start: 990, duration: 10 },
+    ],
+    [
+      "a picture without limit",
+      () =>
+        base([c({ ref: FOTO, sourceRange: { start: 7, duration: 5000 } })]).clips[0]?.sourceRange,
+      { start: 0, duration: 5000 },
+    ],
     ["no picture on an audio track", () => base([c({ track: "A1", ref: FOTO })]).clips, []],
     ["no silent file on an audio track", () => base([c({ track: "A1", ref: MUTA })]).clips, []],
-    ["no text on an audio track", () => base([c({ track: "A1", ref: { generator: "text", text: "x" } })]).clips, []],
+    [
+      "no text on an audio track",
+      () => base([c({ track: "A1", ref: { generator: "text", text: "x" } })]).clips,
+      [],
+    ],
     ["unknown track: left out", () => base([c({ track: "V9" })]).clips, []],
     ["a link of one clip goes", () => base([c({ link: "g1" })]).clips[0]?.link, undefined],
-    ["fades at most half, volume within", () => { const x = base([c({ fadeIn: 99, volume: 40 })]).clips[0]; return [x?.fadeIn, x?.volume]; }, [25, 12]],
-    ["duplicate ids: the first", () => base([c({}), c({ start: 200 })]).clips.map((x) => x.start), [0]],
+    [
+      "fades at most half, volume within",
+      () => {
+        const x = base([c({ fadeIn: 99, volume: 40 })]).clips[0];
+        return [x?.fadeIn, x?.volume];
+      },
+      [25, 12],
+    ],
+    [
+      "duplicate ids: the first",
+      () => base([c({}), c({ start: 200 })]).clips.map((x) => x.start),
+      [0],
+    ],
     [
       "transitions only between adjacent clips",
       () =>
         base([c({ id: "p" }), c({ id: "q", start: 50 }), c({ id: "r", start: 200 })], {
           transitions: [
-            { id: "t1", track: "V1", from: "p", to: "q", kind: "dissolve", inOffset: 5, outOffset: 500 },
-            { id: "t2", track: "V1", from: "q", to: "r", kind: "dissolve", inOffset: 5, outOffset: 5 },
+            {
+              id: "t1",
+              track: "V1",
+              from: "p",
+              to: "q",
+              kind: "dissolve",
+              inOffset: 5,
+              outOffset: 500,
+            },
+            {
+              id: "t2",
+              track: "V1",
+              from: "q",
+              to: "r",
+              kind: "dissolve",
+              inOffset: 5,
+              outOffset: 5,
+            },
             { id: "t3", track: "V1", from: "p", to: "q", kind: "bogus", inOffset: 1, outOffset: 1 },
           ],
         }).transitions,
       [{ id: "t1", track: "V1", from: "p", to: "q", kind: "dissolve", inOffset: 5, outOffset: 50 }],
     ],
-    ["marker colours as OTIO's", () => cleanTimeline({ markers: [{ id: "m1", frame: 5, color: "red" }, { id: "m2", frame: 1, color: "fuchsia" }] }).markers.map((m) => [m.id, m.color]), [["m2", "BLUE"], ["m1", "RED"]]],
-    ["subtitles that end before they start go", () => cleanTimeline({ captions: { segments: [{ id: "s1", start: 10, end: 5, text: "x" }, { id: "s2", start: 0, end: 5, text: "ok" }] } }).captions.segments.map((s) => s.id), ["s2"]],
-    ["probes correct the files", () => cleanTimeline({ clips: [c({ sourceRange: { start: 0, duration: 999 } })] }, { "a.mp4": { frames: 100, audio: false } }).clips[0]?.ref, { media: "a.mp4", frames: 100, audio: false }],
-    ["a rate as a number", () => cleanTimeline({ format: { width: 1920, height: 1080, rate: 29.97 } }).format.rate, { num: 30000, den: 1001 }],
+    [
+      "marker colours as OTIO's",
+      () =>
+        cleanTimeline({
+          markers: [
+            { id: "m1", frame: 5, color: "red" },
+            { id: "m2", frame: 1, color: "fuchsia" },
+          ],
+        }).markers.map((m) => [m.id, m.color]),
+      [
+        ["m2", "BLUE"],
+        ["m1", "RED"],
+      ],
+    ],
+    [
+      "subtitles that end before they start go",
+      () =>
+        cleanTimeline({
+          captions: {
+            segments: [
+              { id: "s1", start: 10, end: 5, text: "x" },
+              { id: "s2", start: 0, end: 5, text: "ok" },
+            ],
+          },
+        }).captions.segments.map((s) => s.id),
+      ["s2"],
+    ],
+    [
+      "probes correct the files",
+      () =>
+        cleanTimeline(
+          { clips: [c({ sourceRange: { start: 0, duration: 999 } })] },
+          { "a.mp4": { frames: 100, audio: false } },
+        ).clips[0]?.ref,
+      { media: "a.mp4", frames: 100, audio: false },
+    ],
+    [
+      "a rate as a number",
+      () => cleanTimeline({ format: { width: 1920, height: 1080, rate: 29.97 } }).format.rate,
+      { num: 30000, den: 1001 },
+    ],
   ])("%s", (_n, f, want) => {
     expect(f()).toEqual(want);
   });
@@ -593,9 +1004,44 @@ describe("the .rgvideo file, old and new", () => {
         { id: "A1", type: "audio", name: "A1", locked: false, muted: true },
       ],
       clips: [
-        { id: "c1", track: "V1", media: 1, start: 0, in: 10, dur: 100, link: "g1", enabled: true, fadeIn: 0, fadeOut: 0 },
-        { id: "c2", track: "A1", media: 1, start: 0, in: 10, dur: 100, link: "g1", enabled: true, volume: -3, fadeIn: 0, fadeOut: 0 },
-        { id: "c3", track: "V2", media: 3, start: 20, in: 0, dur: 75, link: null, enabled: true, fadeIn: 6, fadeOut: 6, motion: { zoom: "out", pan: "left" } },
+        {
+          id: "c1",
+          track: "V1",
+          media: 1,
+          start: 0,
+          in: 10,
+          dur: 100,
+          link: "g1",
+          enabled: true,
+          fadeIn: 0,
+          fadeOut: 0,
+        },
+        {
+          id: "c2",
+          track: "A1",
+          media: 1,
+          start: 0,
+          in: 10,
+          dur: 100,
+          link: "g1",
+          enabled: true,
+          volume: -3,
+          fadeIn: 0,
+          fadeOut: 0,
+        },
+        {
+          id: "c3",
+          track: "V2",
+          media: 3,
+          start: 20,
+          in: 0,
+          dur: 75,
+          link: null,
+          enabled: true,
+          fadeIn: 6,
+          fadeOut: 6,
+          motion: { zoom: "out", pan: "left" },
+        },
       ],
       markers: [{ id: "m1", frame: 30, color: "red", note: "qui" }],
       next: 7,
@@ -624,8 +1070,22 @@ describe("the .rgvideo file, old and new", () => {
     expect(rgvideoVersionPath("video/gita.rgvideo", "Prima del montaggio", "2026-11-16 1530")).toBe(
       "video/gita.versions/2026-11-16 1530 Prima del montaggio.rgvideo",
     );
-    expect(rgvideoVersionPath("gita.rgvideo", 'a/b:"c"', "x")).toBe("gita.versions/x a b c .rgvideo".replace(" .", "."));
-    const v = cleanTimeline({ version: { name: "Bozza", at: "2026-11-16T15:30:00Z", of: "video/gita.rgvideo", reason: "before_assemble" } });
-    expect(v.version).toEqual({ name: "Bozza", at: "2026-11-16T15:30:00Z", of: "video/gita.rgvideo", reason: "before_assemble" });
+    expect(rgvideoVersionPath("gita.rgvideo", 'a/b:"c"', "x")).toBe(
+      "gita.versions/x a b c .rgvideo".replace(" .", "."),
+    );
+    const v = cleanTimeline({
+      version: {
+        name: "Bozza",
+        at: "2026-11-16T15:30:00Z",
+        of: "video/gita.rgvideo",
+        reason: "before_assemble",
+      },
+    });
+    expect(v.version).toEqual({
+      name: "Bozza",
+      at: "2026-11-16T15:30:00Z",
+      of: "video/gita.rgvideo",
+      reason: "before_assemble",
+    });
   });
 });
