@@ -33,8 +33,11 @@
   a server that wants its key in an environment variable (catalog `keyInEnv`, or keys in `env` added by hand) gets it
   only after the person confirmed a warning (`askConfirm`, kept as `env_ok`: who and when), and only in that
   process's own variables (`docker exec` Env), never the container's, an agent's sandbox, a log, an event or an
-  answer; the key stays in the keychain. Without Docker local MCP servers do not start (never on the host). Docker
-  tests: `*.docker.test.ts`, run with `REDGIANT_DOCKER_TESTS=1 pnpm test:docker`.
+  answer; the key stays in the keychain. Where Docker is, always the sandbox, never the host; without Docker (Windows
+  or Mac native) a local server runs on the computer only after the person confirmed, per server, a warning that it
+  runs without protection and can see RedGiant's data (`host_ok`, apart from `env_ok`; the rule is `mcpPlace`, a pure
+  function tested as a table). Docker tests: `*.docker.test.ts`, run with
+  `REDGIANT_DOCKER_TESTS=1 pnpm test:docker`.
 - After `pnpm format` lines move: edit JSON with a parser and check that every text replacement happened.
 - Scope rules live in one pure function (`can` in `packages/hierarchy/src/scopes.ts`) and are tested as a table;
   change the table first. Approvals never resolve to "allow" on a failure or timeout. The one "allow" not
