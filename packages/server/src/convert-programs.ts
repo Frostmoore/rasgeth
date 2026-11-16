@@ -26,7 +26,7 @@ import { delimiter, dirname, join, posix, relative, win32 } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { agentEnv, shareProgramDir } from "@redgiant/tools";
-import { ensureFfmpeg, findFfmpeg } from "./ffmpeg.js";
+import { ensureFfmpeg, ensureFfprobe, ffmpegBuild, findFfmpeg } from "./ffmpeg.js";
 import type { JobHandle, Jobs } from "./jobs.js";
 import { installOfficeLaunchers } from "./lo-agents.js";
 
@@ -128,8 +128,8 @@ export const PROGRAMS: Record<
   },
   ffmpeg: {
     name: "ffmpeg",
-    license: "GPL-3.0 (static build)",
-    size: "about 30-80 MB",
+    license: "GPL-3.0 (static build, with ffprobe)",
+    size: "about 60-200 MB",
     install: {
       win32: "it downloads by itself",
       darwin: "it downloads by itself",
@@ -674,6 +674,33 @@ function shareProgram(id: ProgramId, exe: string, dataDir: string): void {
 export class Programs {
   private readonly pending = new Map<ProgramId, Promise<string>>();
 
+  /** How ffmpeg's download runs here (tests: the fake fetch and runner). */
+  private ffmpegOptions(into?: JobHandle) {
+    const d = this.o.download;
+    return {
+      ...(into && { into }),
+      ...(d && {
+        deps: {
+          ...(d.fetch && { fetch: d.fetch }),
+          ...(d.run && { run: d.run }),
+          ...(d.platform && { platform: d.platform }),
+          ...(d.arch && { arch: d.arch }),
+        },
+      }),
+    };
+  }
+
+  /**
+   * ffprobe, the one beside the ffmpeg found or RedGiant's own (downloaded with ffmpeg, as one
+   * job): the video editor reads durations, streams and rotation with it (G41.1).
+   */
+  async ffprobe(owner: string, into?: JobHandle): Promise<string> {
+    const p = await ensureFfprobe(this.o.jobs, owner, this.o.dataDir, this.ffmpegOptions(into));
+    if (!p) throw new MissingProgramError("ffmpeg", this.platform);
+    if (this.o.share) shareProgram("ffmpeg", p, this.o.dataDir);
+    return p;
+  }
+
   constructor(
     private readonly o: {
       jobs: Jobs;
@@ -713,9 +740,9 @@ export class Programs {
 
   canDownload(id: ProgramId): boolean {
     if (id === "ghostscript") return false;
-    if (id === "ffmpeg") return true;
     const platform = this.platform;
     const arch = this.o.download?.arch ?? process.arch;
+    if (id === "ffmpeg") return ffmpegBuild(platform, arch) !== undefined;
     if (id === "libreoffice") return libreOfficeAsset("0", platform, arch) !== undefined;
     if (id === "scribus") return scribusAsset("0", platform, arch) !== undefined;
     return blenderAsset("0", platform, arch) !== undefined;
@@ -731,11 +758,13 @@ export class Programs {
     if (id === "ghostscript")
       return Promise.reject(new MissingProgramError("ghostscript", this.platform));
     if (id === "ffmpeg")
-      return ensureFfmpeg(this.o.jobs, owner, this.o.dataDir).then((p) => {
-        if (!p) throw new MissingProgramError("ffmpeg", this.platform);
-        if (this.o.share) shareProgram(id, p, this.o.dataDir);
-        return p;
-      });
+      return ensureFfmpeg(this.o.jobs, owner, this.o.dataDir, this.ffmpegOptions(into)).then(
+        (p) => {
+          if (!p) throw new MissingProgramError("ffmpeg", this.platform);
+          if (this.o.share) shareProgram(id, p, this.o.dataDir);
+          return p;
+        },
+      );
     if (!DOWNLOADABLE.includes(id) || !this.canDownload(id))
       return Promise.reject(new MissingProgramError(id, this.platform));
     const running = this.pending.get(id);

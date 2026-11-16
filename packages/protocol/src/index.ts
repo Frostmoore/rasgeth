@@ -17,6 +17,7 @@ export * from "./doc-office.js";
 export * from "./doc-pdf.js";
 export * from "./doc-svg.js";
 export * from "./events.js";
+export * from "./ffmpeg.js";
 export * from "./find-timing.js";
 export * from "./firstboot.js";
 export * from "./image-filters.js";
