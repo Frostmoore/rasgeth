@@ -2404,6 +2404,9 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news384Fixes: "Two fixes in the app",
+  news384FixesText:
+    "A chat opened from the «Chat» card of the control room now has its full header: full window, detach and close. And the update screen says the version it really goes to (it could say «from 3.8.1 to 3.8.1» at the start).",
   news383Full: "Conversations in the whole window",
   news383FullText:
     "On a computer a conversation can fill the whole window (the button next to «Detach», the View menu or Ctrl/Cmd+Shift+F), with a bar of your agents' mascots on the left to move from one conversation to another, their state and the requests waiting for you. Esc goes back to the panel; the app remembers your choice.",
@@ -8990,6 +8993,9 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news384Fixes: "Due correzioni nell'app",
+  news384FixesText:
+    "Una chat aperta dalla scheda «Chat» della Sala di controllo ha adesso la sua intestazione completa: a tutta finestra, stacca e chiudi. E la schermata dell'aggiornamento dice la versione a cui va davvero (all'inizio poteva dire «dalla 3.8.1 alla 3.8.1»).",
   news383Full: "Conversazioni a tutta finestra",
   news383FullText:
     "Sul computer una conversazione può occupare tutta la finestra (il pulsante accanto a «Stacca», il menu Vista o Ctrl/Cmd+Maiusc+F), con a sinistra una barra con le mascotte dei tuoi agenti per passare da una conversazione all'altra, il loro stato e le richieste che ti aspettano. Esc torna al pannello; l'app ricorda la tua scelta.",
