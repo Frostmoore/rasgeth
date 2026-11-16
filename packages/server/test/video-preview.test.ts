@@ -214,6 +214,62 @@ describe("VideoPreviews.exact", () => {
 });
 
 describe("video routes", () => {
+  it("captions: the jobs analysing the sounds, then the subtitles from their words (G41.5c)", async () => {
+    const s = await startServer([]);
+    try {
+      const fake = fakeMedia();
+      const core = s.core as unknown as Record<string, unknown>;
+      const analysis = new VideoAnalysis({
+        dataDir: join(s.dir, "data"),
+        jobs: s.core.jobs,
+        tools: async () => ({ ffmpeg: "ffmpeg", ffprobe: "ffprobe" }),
+        transcriber: async () => undefined,
+        run: fake.run,
+      });
+      core.videoAnalysisCache = analysis;
+      const root = await s.core.scopeFolder("me", "platform");
+      await mkdir(root, { recursive: true });
+      await writeFile(join(root, "clip.mp4"), Buffer.alloc(4096, 3));
+      await writeFile(join(root, "film.rgvideo"), JSON.stringify(timeline()));
+      const file = { scope: "platform", path: "film.rgvideo" };
+      const cached = vi.spyOn(analysis, "cached").mockResolvedValue(undefined);
+      const analyze = vi
+        .spyOn(analysis, "analyze")
+        .mockResolvedValue({ id: "job-1" } as Awaited<ReturnType<VideoAnalysis["analyze"]>>);
+      const first = await s.api<{ jobs: string[]; captions?: unknown }>(
+        "POST",
+        "/api/editor/video/captions",
+        file,
+      );
+      expect(first.body).toEqual({ jobs: ["job-1"], silent: [] });
+      expect(analyze).toHaveBeenCalledWith("me", join(root, "clip.mp4"), "clip.mp4");
+      cached.mockResolvedValue({
+        transcript: {
+          words: [
+            { start: 0.2, end: 0.6, text: "Ciao" },
+            { start: 0.7, end: 1.2, text: "a tutti" },
+          ],
+        },
+      } as never);
+      const second = await s.api<{ captions: { start: number; end: number; text: string }[] }>(
+        "POST",
+        "/api/editor/video/captions",
+        file,
+      );
+      expect(second.body.captions.map((c) => c.text)).toEqual(["Ciao a tutti"]);
+      expect(second.body.captions[0]?.start).toBe(5);
+      cached.mockResolvedValue({} as never);
+      const none = await s.api<{ silent: string[]; captions: unknown[] }>(
+        "POST",
+        "/api/editor/video/captions",
+        file,
+      );
+      expect(none.body).toEqual({ jobs: [], silent: ["clip.mp4"], captions: [] });
+    } finally {
+      await s.close();
+    }
+  });
+
   it("prepare: proxy first, then strip and waveform; links served with Range; the exact preview", async () => {
     const s = await startServer([]);
     try {

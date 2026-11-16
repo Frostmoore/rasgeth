@@ -12,19 +12,25 @@ import {
   appendClip,
   applyVideoAction,
   bladeAt,
+  captionsToSrt,
+  captionsToVtt,
+  captionWords,
   checkVideoAction,
   cleanTimeline,
   closeGap,
   composeVideoActions,
   copyClips,
+  cutTimeRange,
   describeVideo,
   diffTimeline,
   editPoints,
+  fitText,
   invertVideoAction,
   kenBurnsPreset,
   liftClips,
   linkClips,
   mapVideoAction,
+  moveCaption,
   moveClips,
   NewerVideoFormat,
   newRgVideo,
@@ -49,6 +55,8 @@ import {
   snap,
   snapPoints,
   stableJson,
+  TITLE_SAFE,
+  textWidth,
   timecode,
   timelineDuration,
   timelineProblems,
@@ -483,6 +491,27 @@ describe("montatore's 14 cases", () => {
 
 // ---- every edit through its actions, undone exactly -----------------------------------------
 
+/** doc() with markers at 10, 50, 120 and three subtitles with words. */
+function withTimed(d: RgVideo): RgVideo {
+  let x = addMarker(d, 10);
+  x = addMarker(x, 50);
+  x = addMarker(x, 120);
+  return setCaptionSegments(x, [
+    {
+      start: 0,
+      end: 40,
+      text: "uno due tre",
+      words: [
+        { start: 0, end: 10, text: "uno" },
+        { start: 15, end: 25, text: "due" },
+        { start: 30, end: 40, text: "tre" },
+      ],
+    },
+    { start: 45, end: 55, text: "quattro" },
+    { start: 130, end: 160, text: "cinque" },
+  ]);
+}
+
 const EDITS: [VideoEdit, (d: RgVideo) => RgVideo][] = [
   ["move", (d) => moveClips(d, ["v1"], 200)],
   ["move", (d) => moveClips(d, ["v1"], 0, 1)],
@@ -533,6 +562,8 @@ const EDITS: [VideoEdit, (d: RgVideo) => RgVideo][] = [
         { start: 0, end: 30, text: "Ciao", words: [{ start: 0, end: 10, text: "Ciao" }] },
       ]),
   ],
+  ["ripple_delete", (d) => cutTimeRange(withTimed(d), 20, 60)],
+  ["caption", (d) => moveCaption(withTimed(d), "s1", 12)],
   ["format", (d) => setFormat(d, { aspect: "9:16" })],
   ["format", (d) => retimeTimeline(d, { num: 60, den: 1 })],
 ];
@@ -1087,5 +1118,170 @@ describe("the .rgvideo file, old and new", () => {
       of: "video/gita.rgvideo",
       reason: "before_assemble",
     });
+  });
+});
+
+// ---- G41.5c: markers and subtitles follow the ripples; the speech cut from its text --------
+
+describe("markers and subtitles follow the ripples", () => {
+  const timed = (d: RgVideo) => ({
+    markers: d.markers.map((m) => m.frame),
+    caps: d.captions.segments.map((c) => [c.start, c.end, c.text]),
+  });
+  it.each<[string, (d: RgVideo) => RgVideo, ReturnType<typeof timed>]>([
+    [
+      "ripple delete of the first clip (every track closes)",
+      (d) => rippleDeleteClips(liftClips(d, ["b"]), ["v1"]),
+      { markers: [0, 20], caps: [[30, 60, "cinque"]] },
+    ],
+    [
+      "a ripple trim closing 30 frames at 100",
+      (d) => trimClip(d, "v1", "out", -30, { ripple: true }),
+      {
+        markers: [10, 50, 90],
+        caps: [
+          [0, 40, "uno due tre"],
+          [45, 55, "quattro"],
+          [100, 130, "cinque"],
+        ],
+      },
+    ],
+    [
+      "a ripple trim opening 20 frames at 100",
+      (d) => trimClip(trimClip(d, "v1", "out", -40), "v1", "out", 20, { ripple: true }),
+      {
+        markers: [10, 50, 140],
+        caps: [
+          [0, 40, "uno due tre"],
+          [45, 55, "quattro"],
+          [150, 180, "cinque"],
+        ],
+      },
+    ],
+    [
+      "an insert (F9) at 45 opens 30 frames",
+      (d) => placeClip(d, B, 0, 30, 45, { mode: "insert" }),
+      {
+        markers: [10, 80, 150],
+        caps: [
+          [0, 40, "uno due tre"],
+          [75, 85, "quattro"],
+          [160, 190, "cinque"],
+        ],
+      },
+    ],
+    [
+      "a gap closed on a side track alone: they stay",
+      (d) => closeGap(liftClips(d, ["a1"], { linked: false }), "A2", 10),
+      {
+        markers: [10, 50, 120],
+        caps: [
+          [0, 40, "uno due tre"],
+          [45, 55, "quattro"],
+          [130, 160, "cinque"],
+        ],
+      },
+    ],
+  ])("%s", (_n, f, want) => {
+    expect(timed(f(withTimed(doc())))).toEqual(want);
+  });
+
+  it("a ripple delete on V2 alone, with V1 under it, leaves them where they are", () => {
+    const d = rippleDeleteClips(withTimed(doc()), ["b"]);
+    expect(timed(d).markers).toEqual([10, 50, 120]);
+  });
+});
+
+describe("cutTimeRange: the speech cut from its text", () => {
+  it("cuts every unlocked track, closes up, the subtitles lose the words that went", () => {
+    const d = cutTimeRange(withTimed(doc()), 12, 28);
+    expect(on(d, "V1")).toEqual([
+      [0, 0, 12],
+      [12, 28, 72],
+      [84, 300, 150],
+    ]);
+    expect(on(d, "A1")).toEqual(on(d, "V1"));
+    expect(on(d, "V2")).toEqual([[24, 10, 50]]);
+    const first = d.captions.segments[0];
+    expect([first?.start, first?.end, first?.text]).toEqual([0, 24, "uno tre"]);
+    expect(first?.words).toEqual([
+      { start: 0, end: 10, text: "uno" },
+      { start: 14, end: 24, text: "tre" },
+    ]);
+    expect(d.markers.map((m) => m.frame)).toEqual([10, 34, 104]);
+  });
+
+  it("a line typed by hand loses the words cut, spread by their length", () => {
+    const d = cutTimeRange(addCaption(doc(), 200, 240, "alfa beta"), 200, 220);
+    expect(d.captions.segments.map((c) => [c.start, c.end, c.text, c.words])).toEqual([
+      [200, 220, "beta", undefined],
+    ]);
+  });
+
+  it("a locked track stays; nothing to cut gives the same timeline", () => {
+    const d0 = setTrack(withTimed(doc()), "V2", { locked: true });
+    const d = cutTimeRange(d0, 100, 120);
+    expect(on(d, "V2")).toEqual([[40, 10, 50]]);
+    expect(on(d, "V1")).toEqual([
+      [0, 0, 100],
+      [100, 320, 130],
+    ]);
+    expect(cutTimeRange(d0, 30, 30)).toBe(d0);
+    const empty = newRgVideo();
+    expect(cutTimeRange(empty, 0, 10)).toBe(empty);
+  });
+});
+
+describe("texts measured once, for the page and the render", () => {
+  it.each<
+    [string, "title" | "lower_third", "center" | "top" | "bottom" | "lower_third", number, number]
+  >([
+    ["Il giro di Red Giant", "title", "center", 1280, 720],
+    ["Marta Rossi, regista del documentario sulla costa", "lower_third", "lower_third", 1280, 720],
+    ["Un titolo molto lungo che deve andare a capo in verticale", "title", "top", 1080, 1920],
+    ["In fondo", "title", "bottom", 1080, 1080],
+  ])("%s (%s, %s, %dx%d) stays in the safe area", (text, style, pos, w, h) => {
+    const f = fitText(text, style, pos, w, h);
+    const bold = style !== "plain";
+    expect(Math.max(...f.lines.map((l) => textWidth(l, f.size, bold)))).toBeLessThanOrEqual(
+      w - 2 * Math.ceil(w * TITLE_SAFE),
+    );
+    expect(f.lines.join(" ")).toBe(text);
+    if (pos === "center")
+      expect([f.top, f.bottom, f.left]).toEqual([undefined, undefined, undefined]);
+    if (pos === "top") expect(f.top).toBe(Math.max(Math.round(h * 0.08), f.my + f.border));
+    if (pos === "bottom") expect(f.bottom).toBe(Math.round(h * 0.08) + f.border);
+    if (pos === "lower_third") {
+      expect(f.left).toBe(f.mx + f.border);
+      expect(f.top).toBeLessThanOrEqual(Math.round(h * 0.7));
+    }
+  });
+
+  it("a subtitle moves with its words, never before 0", () => {
+    const d = withTimed(doc());
+    const id = d.captions.segments[0]?.id as string;
+    const m = moveCaption(d, id, -50).captions.segments.find((x) => x.id === id);
+    expect([m?.start, m?.end, m?.words?.[1]]).toEqual([0, 40, { start: 15, end: 25, text: "due" }]);
+    const r = moveCaption(d, id, 5).captions.segments.find((x) => x.id === id);
+    expect([r?.start, r?.words?.[2]?.start]).toEqual([5, 35]);
+  });
+
+  it("a subtitle's words: its own, or spread over its time by their length", () => {
+    const own = { start: 0, end: 10, text: "a b", words: [{ start: 2, end: 4, text: "a" }] };
+    expect(captionWords(own)).toEqual(own.words);
+    expect(captionWords({ start: 100, end: 120, text: "uno  due" })).toEqual([
+      { start: 100, end: 110, text: "uno" },
+      { start: 110, end: 120, text: "due" },
+    ]);
+  });
+
+  it("SRT and WebVTT in protocol (the page writes them too)", () => {
+    const list = [{ start: 25, end: 50, text: "a <b>" }];
+    expect(captionsToSrt(list, { num: 25, den: 1 })).toBe(
+      "1\n00:00:01,000 --> 00:00:02,000\na <b>\n",
+    );
+    expect(captionsToVtt(list, { num: 25, den: 1 })).toBe(
+      "WEBVTT\n\n00:00:01.000 --> 00:00:02.000\na &lt;b&gt;\n",
+    );
   });
 });

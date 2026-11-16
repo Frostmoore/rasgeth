@@ -9,9 +9,7 @@ import {
   type RgVideo,
   type Transcript,
   type TranscriptWord,
-  type VideoCaption,
   type VideoCaptionWord,
-  type VideoRate,
 } from "@redgiant/protocol";
 
 export interface CaptionOptions {
@@ -215,47 +213,5 @@ export function captionsForTimeline(
   }));
 }
 
-function clock(seconds: number, sep: "," | "."): string {
-  const ms = Math.max(0, Math.round(seconds * 1000));
-  const p = (n: number, w = 2) => String(n).padStart(w, "0");
-  const h = Math.floor(ms / 3_600_000);
-  const m = Math.floor(ms / 60_000) % 60;
-  const s = Math.floor(ms / 1000) % 60;
-  return `${p(h)}:${p(m)}:${p(s)}${sep}${p(ms % 1000, 3)}`;
-}
-
-type Timed = Pick<VideoCaption, "start" | "end" | "text">;
-
-function ordered<T extends Timed>(captions: readonly T[]): T[] {
-  return captions.filter((c) => c.end > c.start && c.text.trim()).sort((a, b) => a.start - b.start);
-}
-
-/** A cue's text: trimmed, one line break at most between lines (a blank line ends a cue). */
-function cueText(text: string): string {
-  return text
-    .trim()
-    .replace(/\r\n?/g, "\n")
-    .replace(/\n{2,}/g, "\n");
-}
-
-/** The timeline's captions (frames at `rate`) as SubRip: the render's sidecar and text track. */
-export function captionsToSrt(captions: readonly Timed[], rate: VideoRate): string {
-  return ordered(captions)
-    .map(
-      (c, i) =>
-        `${i + 1}\n${clock(framesToSeconds(c.start, rate), ",")} --> ${clock(framesToSeconds(c.end, rate), ",")}\n${cueText(c.text)}\n`,
-    )
-    .join("\n");
-}
-
-/**
- * The timeline's captions as WebVTT (the browser's `<track>`, the render's sidecar). The text is
- * escaped (& < >), so a "-->" inside a cue cannot end its timing line.
- */
-export function captionsToVtt(captions: readonly Timed[], rate: VideoRate): string {
-  const cues = ordered(captions).map((c) => {
-    const text = cueText(c.text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    return `${clock(framesToSeconds(c.start, rate), ".")} --> ${clock(framesToSeconds(c.end, rate), ".")}\n${text}\n`;
-  });
-  return `WEBVTT\n\n${cues.join("\n")}`;
-}
+// SRT and WebVTT live in protocol (G41.5c: the page writes them too).
+export { captionsToSrt, captionsToVtt } from "@redgiant/protocol";

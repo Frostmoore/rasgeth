@@ -8,6 +8,10 @@
 //   POST /api/editor/video/exact {scope, path, from, to}  the exact preview of frames [from, to):
 //                                                  a job `video_preview` (its result's `id`)
 //   GET  /api/editor/video/exact/:id               the finished preview's signed link
+//   POST /api/editor/video/captions {scope, path}  the subtitles from what the timeline plays
+//                                                  (G41.5c, G41.4's transcripts): `captions`
+//                                                  once every sound is analysed, else the jobs
+//                                                  analysing them; `silent` files without words
 // The derived files are a cache of each file (`VideoAnalysis`, by fingerprint), never written
 // into the project: an archived project's timeline still plays.
 
@@ -24,6 +28,7 @@ import type { Context, Hono } from "hono";
 import { z } from "zod";
 import { BadRequestError, NotFoundError, type RedGiantCore } from "../core.js";
 import { mediaFingerprint, type VideoAnalysis } from "./video/analysis.js";
+import { captionsForTimeline } from "./video/captions.js";
 import { filmstripTiles, waveformWidth } from "./video/derived.js";
 import { RENDER_FONTS_DIR } from "./video/render.js";
 
@@ -178,6 +183,35 @@ export function videoRoutes<E extends { Variables: any }>(
       mediaPath: t.mediaAbs,
     });
     return c.json({ job }, 200);
+  });
+
+  app.post("/api/editor/video/captions", async (c) => {
+    const b = FileBody.safeParse(await c.req.json().catch(() => ({})));
+    if (!b.success) return c.json({ error: b.error.message }, 400);
+    const o = owner(c);
+    const t = await timeline(o, b.data.scope, b.data.path);
+    const audible = new Set(t.doc.tracks.filter((x) => x.kind === "Audio").map((x) => x.id));
+    const sounds = [
+      ...new Set(
+        t.doc.clips.flatMap((x) =>
+          audible.has(x.track) && isMediaRef(x.ref) ? [x.ref.media] : [],
+        ),
+      ),
+    ];
+    const transcripts: Record<string, { words: { start: number; end: number; text: string }[] }> =
+      {};
+    const jobs: string[] = [];
+    const silent: string[] = [];
+    for (const m of sounds) {
+      const abs = await t.mediaAbs(m);
+      if (!abs || !(await stat(abs).catch(() => undefined))?.isFile()) continue;
+      const done = await core.videoAnalysis.cached(abs);
+      if (!done) jobs.push((await core.videoAnalysis.analyze(o, abs, m)).id);
+      else if (done.transcript?.words.length) transcripts[m] = done.transcript;
+      else silent.push(m);
+    }
+    if (jobs.length) return c.json({ jobs, silent }, 200);
+    return c.json({ jobs, silent, captions: captionsForTimeline(t.doc, transcripts) }, 200);
   });
 
   app.get("/api/editor/video/exact/:id", async (c) => {

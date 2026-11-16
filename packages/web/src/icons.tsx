@@ -1185,3 +1185,17 @@ export const IconAppend = ({ size = 15 }: P) => (
     <path d="M16 12h6M19 9v6" />
   </Svg>
 );
+/** A transition (G41.5c): two frames crossing. */
+export const IconTransition = ({ size = 15 }: P) => (
+  <Svg size={size}>
+    <rect x="3" y="6" width="11" height="12" rx="1.5" />
+    <rect x="10" y="6" width="11" height="12" rx="1.5" />
+  </Svg>
+);
+/** Subtitles (G41.5c): a frame with two lines of words at its foot. */
+export const IconCaption = ({ size = 15 }: P) => (
+  <Svg size={size}>
+    <rect x="3" y="5" width="18" height="14" rx="2" />
+    <path d="M7 12.5h6M15 12.5h2M7 15.5h3M12 15.5h5" />
+  </Svg>
+);
