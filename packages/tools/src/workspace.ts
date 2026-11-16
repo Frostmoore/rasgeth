@@ -44,7 +44,10 @@ export interface ExecOptions {
 export interface SpawnOptions {
   /** Relative to the root; the root when absent. */
   cwd?: string | undefined;
-  /** Extra variables, joined to `agentEnv()`. Never a secret (CLAUDE.md). */
+  /**
+   * Extra variables, joined to `agentEnv()`. Never a secret (CLAUDE.md), but for the one exception:
+   * a local MCP server's keys the person confirmed, in its own sandbox (G41.0).
+   */
   env?: Record<string, string> | undefined;
 }
 

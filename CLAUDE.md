@@ -27,8 +27,14 @@
   while the keychain cannot open, and move in at the next start (written, read back, then shredded). Keys from the
   environment stay locked sources («set by the administrator»).
 - Sandboxes: file tools work on the shared directory, commands run in the container (`ContainerWorkspace`).
-  Secrets never go into sandbox env: credentials belong to egress routes. Docker tests: `*.docker.test.ts`,
-  run with `REDGIANT_DOCKER_TESTS=1 pnpm test:docker`.
+  Secrets never go into sandbox env: credentials belong to egress routes. One limited exception (G41.0): a local
+  MCP server runs in a sandbox of its own (`McpSandboxes`, one container per person and server, only its folder
+  mounted, network open only to its `hosts` through the egress proxy's source rules, package at an exact version);
+  a server that wants its key in an environment variable (catalog `keyInEnv`, or keys in `env` added by hand) gets it
+  only after the person confirmed a warning (`askConfirm`, kept as `env_ok`: who and when), and only in that
+  process's own variables (`docker exec` Env), never the container's, an agent's sandbox, a log, an event or an
+  answer; the key stays in the keychain. Without Docker local MCP servers do not start (never on the host). Docker
+  tests: `*.docker.test.ts`, run with `REDGIANT_DOCKER_TESTS=1 pnpm test:docker`.
 - After `pnpm format` lines move: edit JSON with a parser and check that every text replacement happened.
 - Scope rules live in one pure function (`can` in `packages/hierarchy/src/scopes.ts`) and are tested as a table;
   change the table first. Approvals never resolve to "allow" on a failure or timeout. The one "allow" not
