@@ -1985,4 +1985,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceErrOther => 'The voice did not work: try again.';
+
+  @override
+  String get notifyTestFailed =>
+      'The system did not show it: are notifications on for RGCompanion in its settings?';
 }

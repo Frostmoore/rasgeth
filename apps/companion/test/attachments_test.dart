@@ -74,4 +74,15 @@ void main() {
     expect(sharedText('Leggi', items), 'Leggi\n\nhttps://example.com/a\n\nun pezzo di testo');
     expect(sharedText('', items.sublist(2)), '');
   });
+
+  test('a bubble shows the attachments by name, as the page does', () {
+    final s = splitAttachments(
+      'Guarda\n\n<attachment name="n.txt">\nriga\n</attachment>\n\n'
+      '<attachment name="r.pdf" path=".attachments/2026-11-16/x-r.pdf" size="5" />',
+    );
+    expect(s.text, 'Guarda');
+    expect(s.files.map((f) => f.name), ['n.txt', 'r.pdf']);
+    expect(s.files.last.path, '.attachments/2026-11-16/x-r.pdf');
+    expect(splitAttachments('solo testo').files, isEmpty);
+  });
 }

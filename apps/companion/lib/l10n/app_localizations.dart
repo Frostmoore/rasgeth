@@ -3554,6 +3554,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The voice did not work: try again.'**
   String get voiceErrOther;
+
+  /// No description provided for @notifyTestFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The system did not show it: are notifications on for RGCompanion in its settings?'**
+  String get notifyTestFailed;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1184,5 +1184,6 @@
   },
   "voiceErrProvider": "This provider cannot do it: choose another one.",
   "voiceErrServer": "RedGiant cannot be reached: check the connection.",
-  "voiceErrOther": "The voice did not work: try again."
+  "voiceErrOther": "The voice did not work: try again.",
+  "notifyTestFailed": "The system did not show it: are notifications on for RGCompanion in its settings?"
 }

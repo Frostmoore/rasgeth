@@ -157,22 +157,27 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Future<void> _desktopTest() async {
     final l = AppLocalizations.of(context);
     final sid = app.server?.id ?? '-';
-    await app.notifier.apply(
-      ShowNotification(
-        notificationIdOf(sid, 'test:desktop'),
-        title: l.notifyTestTitle,
-        body: l.notifyTestBody(app.displayName),
-        server: app.displayName,
-        channel: NoticeChannel.updates,
-        answers: const [],
-        payload: NoticeTap(
-          serverId: sid,
-          noticeId: 'test:desktop',
-          kind: NoticeKind.test,
-        ).toPayload(),
-      ),
-      l,
-    );
+    try {
+      await app.notifier.apply(
+        ShowNotification(
+          notificationIdOf(sid, 'test:desktop'),
+          title: l.notifyTestTitle,
+          body: l.notifyTestBody(app.displayName),
+          server: app.displayName,
+          channel: NoticeChannel.updates,
+          answers: const [],
+          payload: NoticeTap(
+            serverId: sid,
+            noticeId: 'test:desktop',
+            kind: NoticeKind.test,
+          ).toPayload(),
+        ),
+        l,
+      );
+    } on Object {
+      if (mounted) _say(l.notifyTestFailed, error: true);
+      return;
+    }
     if (mounted) _say(l.notifyTestShown);
   }
 
@@ -198,7 +203,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           SectionHead(l.pushAboutHead),
           SettingsCard(
             children: [
-              NoteLine(icon: RgIcons.lock, text: l.pushAboutSealed),
+              if (app.mobile) NoteLine(icon: RgIcons.lock, text: l.pushAboutSealed),
               NoteLine(icon: RgIcons.shield, text: l.pushAboutCritical),
               NoteLine(icon: RgIcons.check, text: l.pushAboutWithdrawn),
             ],

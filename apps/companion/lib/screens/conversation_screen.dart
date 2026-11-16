@@ -59,6 +59,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
   @override
   void dispose() {
     app.unfollow(widget.sessionId);
+    // A voice failure belongs to this conversation (told after the tree is unlocked).
+    final v = app.voice;
+    scheduleMicrotask(() {
+      v.clearProblem();
+      unawaited(v.stopSpeaking());
+    });
     _text.dispose();
     super.dispose();
   }
@@ -489,8 +495,12 @@ class ChatItemView extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = RgColors.of(context);
     final l = AppLocalizations.of(context);
+    final split = switch (item) {
+      UserItem(:final text) => splitAttachments(text),
+      _ => (text: '', files: const <({String name, String? path})>[]),
+    };
     return switch (item) {
-      UserItem(:final text, :final images, :final from) => Align(
+      UserItem(:final images, :final from) => Align(
         alignment: Alignment.centerRight,
         child: Container(
           constraints: const BoxConstraints(maxWidth: 560),
@@ -501,7 +511,26 @@ class ChatItemView extends StatelessWidget {
             children: [
               if (from != null)
                 Text(l.fromSomeone(from), style: TextStyle(color: c.dim, fontSize: 12)),
-              SelectableText(text, style: TextStyle(color: c.text, fontSize: 15)),
+              if (split.text.trim().isNotEmpty)
+                SelectableText(split.text, style: TextStyle(color: c.text, fontSize: 15)),
+              for (final f in split.files)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      RgIcon(RgIcons.file, size: 14, color: c.dim),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          f.name,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: c.dim, fontSize: 12.5),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               if (images > 0)
                 Padding(
                   padding: const EdgeInsets.only(top: 4),

@@ -125,19 +125,17 @@ void main() {
       // notification shown for it.
       final answered = waiting.firstWhere((r) => !r.isCritical, orElse: () => waiting.first);
       final shownId = notificationIdOf(sid, 'req:${answered.requestId}');
-      notes.shown[shownId] =
-          planFor(
-                PushNotice(
-                  id: 'req:${answered.requestId}',
-                  kind: NoticeKind.request,
-                  server: 'x',
-                  title: 't',
-                  body: 'b',
-                  requestId: answered.requestId,
-                ),
-                sid,
-              )
-              as ShowNotification;
+      notes.shown[shownId] = planFor(
+        PushNotice(
+          id: 'req:${answered.requestId}',
+          kind: NoticeKind.request,
+          server: 'x',
+          title: 't',
+          body: 'b',
+          requestId: answered.requestId,
+        ),
+        sid,
+      ) as ShowNotification;
       await c.answerRequest(answered.requestId, allow: false);
       expect(await within(messages.moveNext()), isTrue);
       final w = await app.pushCenter.onMessage(sid, messages.current.body);

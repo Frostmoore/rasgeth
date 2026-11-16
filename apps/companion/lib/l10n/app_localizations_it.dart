@@ -1989,4 +1989,8 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get voiceErrOther => 'La voce non ha funzionato: riprova.';
+
+  @override
+  String get notifyTestFailed =>
+      'Il sistema non l\'ha mostrata: le notifiche per RGCompanion sono attive nelle sue impostazioni?';
 }

@@ -124,3 +124,17 @@ Future<({String text, List<Map<String, Object?>> images})> packMessage(
   }
   return (text: out.toString(), images: images);
 }
+
+/// The attachments travel inside the text; a bubble shows their names instead (the page's
+/// `splitAttachments`), with the path of those saved in the workspace.
+({String text, List<({String name, String? path})> files}) splitAttachments(String text) {
+  final cut = text.indexOf('\n\n<attachment name="');
+  if (cut < 0) return (text: text, files: const []);
+  final files = [
+    for (final m in RegExp(
+      r'<attachment name="([^"]*)"(?: path="([^"]*)")?',
+    ).allMatches(text.substring(cut)))
+      (name: m[1] ?? '', path: m[2]),
+  ];
+  return (text: text.substring(0, cut), files: files);
+}

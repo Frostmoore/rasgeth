@@ -576,5 +576,6 @@
   "voiceErrServiceError": "{name} ha risposto con un errore ({status}).",
   "voiceErrProvider": "Questo fornitore non lo sa fare: scegline un altro.",
   "voiceErrServer": "RedGiant non si raggiunge: controlla la connessione.",
-  "voiceErrOther": "La voce non ha funzionato: riprova."
+  "voiceErrOther": "La voce non ha funzionato: riprova.",
+  "notifyTestFailed": "Il sistema non l'ha mostrata: le notifiche per RGCompanion sono attive nelle sue impostazioni?"
 }
