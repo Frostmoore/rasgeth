@@ -27,6 +27,7 @@ import 'advanced/projects_wall.dart';
 import 'advanced/terminals_view.dart';
 import 'desk_controller.dart';
 import 'desk_menu.dart';
+import 'mascot_rail.dart';
 import 'palette.dart';
 import 'quick_chat.dart';
 import 'side_panel.dart';
@@ -101,7 +102,8 @@ class _DesktopShellState extends State<DesktopShell> {
 
   /// The wall's feed runs while a wall is in sight.
   void _deskChanged() {
-    final wall = _desk.view == DeskView.team || _desk.view == DeskView.projects;
+    final wall =
+        !_desk.showingFull && (_desk.view == DeskView.team || _desk.view == DeskView.projects);
     _feed.withStatus = _app.advanced;
     if (wall && _app.connected) {
       _feed.start();
@@ -176,6 +178,17 @@ class _DesktopShellState extends State<DesktopShell> {
       return;
     }
     await _desk.openAgent(a, fresh: true);
+  }
+
+  /// Ctrl/Cmd+Shift+F: the open conversation full window and back. Without a conversation open,
+  /// the last one comes back (the mode is kept for the next ones anyway).
+  void _toggleFull() {
+    final on = !_desk.full;
+    _desk.setFull(on);
+    if (on && _desk.panel is! PanelConversation) {
+      final last = _desk.lastConversation;
+      if (last != null) _desk.show(last);
+    }
   }
 
   void _stopOpen() {
@@ -309,6 +322,15 @@ class _DesktopShellState extends State<DesktopShell> {
           group: l.deskMenuView,
           shortcut: _k(LogicalKeyboardKey.backslash),
           run: _desk.togglePanel,
+        ),
+        DeskCommand(
+          id: 'full-window',
+          label: l.deskFullWindow,
+          group: l.deskMenuView,
+          icon: RgIcons.maximize,
+          checked: _desk.full,
+          shortcut: _k(LogicalKeyboardKey.keyF, shift: true),
+          run: _toggleFull,
         ),
         DeskCommand(
           id: 'advanced',
@@ -502,6 +524,25 @@ class _DesktopShellState extends State<DesktopShell> {
                     ],
                   ),
                 ),
+                // Not a menu command either: Esc leaves the full window (3.8.3).
+                Padding(
+                  key: const Key('shortcut-full-escape'),
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 170,
+                        child: Align(alignment: Alignment.centerLeft, child: KeyCap(l.deskKeyEsc)),
+                      ),
+                      Expanded(
+                        child: Text(
+                          '${l.deskFullWindowOff} (${l.deskFullWindow})',
+                          style: TextStyle(color: c.text),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 for (final m in menus)
                   for (final it in m.items.whereType<DeskCommand>())
                     if (it.shortcut != null)
@@ -559,7 +600,17 @@ class _DesktopShellState extends State<DesktopShell> {
         listenable: Listenable.merge([_desk, app.live]),
         builder: (context, _) {
           final menus = _menus(l);
-          final bindings = deskBindings(menus, const [], mac: _mac);
+          final bindings = deskBindings(menus, [
+            if (_desk.showingFull)
+              DeskCommand(
+                id: 'full-escape',
+                label: l.deskFullWindowOff,
+                shortcut: const SingleActivator(LogicalKeyboardKey.escape),
+                run: () {
+                  if (!writingNow()) _desk.setFull(false);
+                },
+              ),
+          ], mac: _mac);
           final size = MediaQuery.sizeOf(context);
           final connected = app.connected;
           final v = _desk.view;
@@ -582,18 +633,25 @@ class _DesktopShellState extends State<DesktopShell> {
               ],
             );
           }
+          final full = connected && _desk.showingFull;
           final body = Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(child: main),
-              if (panel != null && connected) ...[
+              if (full) ...[
+                const MascotRail(),
+                Expanded(
+                  child: SidePanel(key: _desk.panelKey, content: panel!, full: true),
+                ),
+              ] else
+                Expanded(child: main),
+              if (panel != null && connected && !full) ...[
                 PanelResizer(
                   onDrag: (dx) => _desk.setPanelWidth(_desk.panelWidth - dx, size.width),
                   onKey: (dir) => _desk.setPanelWidth(_desk.panelWidth + dir * 24, size.width),
                 ),
                 SizedBox(
                   width: _desk.panelWidth.clamp(DeskController.minPanel, size.width * .6),
-                  child: SidePanel(content: panel),
+                  child: SidePanel(key: _desk.panelKey, content: panel),
                 ),
               ],
             ],

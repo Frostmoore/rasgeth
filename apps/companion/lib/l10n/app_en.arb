@@ -2257,5 +2257,17 @@
   "limitsSpent": "Spent",
   "limitsContext": "Context",
   "limitsWeekShort": "7d",
-  "deskSendMessage": "Send the message (in the conversations' fields)"
+  "deskSendMessage": "Send the message (in the conversations' fields)",
+  "deskFullWindow": "Full window",
+  "deskFullWindowOff": "Back to the panel",
+  "deskBackToRoom": "Back to the room",
+  "deskRailLabel": "Agents",
+  "deskRailWaiting": "{count, plural, =1{1 request for you} other{{count} requests for you}}",
+  "@deskRailWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }
