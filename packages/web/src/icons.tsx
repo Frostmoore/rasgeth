@@ -318,6 +318,11 @@ export const IconPlay = ({ size = 13 }: P) => (
     <path d="M7 4l13 8-13 8z" />
   </Svg>
 );
+export const IconPause = ({ size = 13 }: P) => (
+  <Svg size={size} fill>
+    <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
+  </Svg>
+);
 export const IconDollar = ({ size = 14 }: P) => (
   <Svg size={size}>
     <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />

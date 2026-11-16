@@ -12,7 +12,13 @@
 
 import { readFile, stat } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
-import { isMediaRef, type Job, type MediaProbe, readRgVideo } from "@redgiant/protocol";
+import {
+  isMediaRef,
+  type Job,
+  readRgVideo,
+  type VideoMediaInfo,
+  type VideoPrepared,
+} from "@redgiant/protocol";
 import type { Context, Hono } from "hono";
 import { z } from "zod";
 import { BadRequestError, NotFoundError, type RedGiantCore } from "../core.js";
@@ -22,22 +28,6 @@ import { RENDER_FONTS_DIR } from "./video/render.js";
 
 const PICTURE = /\.(png|jpe?g|webp|gif|bmp|tiff?|avif|heic|heif)$/i;
 const SOUND = /\.(mp3|wav|m4a|aac|flac|ogg|oga|opus|weba|wma|aiff?)$/i;
-
-/** What the page knows of one file of the timeline. */
-export interface VideoMediaInfo {
-  media: string;
-  /** Not in the project (moved or deleted): the timeline shows a gap. */
-  missing?: true;
-  kind?: MediaProbe["kind"];
-  probe?: MediaProbe;
-  /** The file itself (pictures are shown as they are; a sound file plays as it is). */
-  file?: string;
-  proxy?: string;
-  filmstrip?: { url: string; tiles: number };
-  waveform?: { url: string; width: number };
-  /** Jobs making what is missing (the page follows them and asks again). */
-  jobs: string[];
-}
 
 /** A file's fingerprint, read again only when its size or date change. */
 class Fingerprints {
@@ -162,7 +152,7 @@ export function videoRoutes<E extends { Variables: any }>(
       regular: link(o)(join(RENDER_FONTS_DIR, "Inter-Regular.ttf")),
       bold: link(o)(join(RENDER_FONTS_DIR, "Inter-Bold.ttf")),
     };
-    return c.json({ media, fonts }, 200);
+    return c.json({ media, fonts } satisfies VideoPrepared, 200);
   });
 
   app.post("/api/editor/video/exact", async (c) => {

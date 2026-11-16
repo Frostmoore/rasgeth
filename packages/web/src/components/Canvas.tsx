@@ -40,6 +40,7 @@ import { CanvasTab, lastMove, report, setTabKind } from "../viewers/live.js";
 import { copyQuestion, hasOfficeCopy, isOfficeFile } from "../viewers/office-bridge.js";
 import { bytesText, download, type ViewerSource } from "../viewers/source.js";
 import { ArtifactFrame } from "./ArtifactFrame.js";
+import { lazy } from "./lazy.js";
 import { shortcutsOpen } from "./Shortcuts.js";
 import { CopyStale } from "./viewers/CopyBar.js";
 import { DocEditor, editableInCanvas } from "./viewers/DocEditor.js";
@@ -76,6 +77,10 @@ const clockOf = (s: number) => {
   const r = Math.floor(s % 60);
   return `${m}:${String(r).padStart(2, "0")}`;
 };
+
+/** A timeline (`.rgvideo`, G41.5a): played in the page on the proxies, loaded when first shown. */
+const VideoPreview = lazy(() => import("./viewers/VideoPreview.js").then((m) => m.VideoPreview));
+const isTimeline = (path: string) => /\.rgvideo$/i.test(path);
 
 /** The file's own name, from its path in the workspace (or on the computer). */
 export const fileName = (path: string) => path.split(/[\\/]/).filter(Boolean).pop() ?? path;
@@ -452,6 +457,10 @@ export function Canvas({ title, target }: { title: string; target: CanvasTarget 
               onErrors={setArtErrors}
             />
           )
+        ) : target.kind === "file" && target.scope !== "outside" && isTimeline(target.path) ? (
+          <CanvasTab.Provider value={id}>
+            <VideoPreview file={{ scope: target.scope, path: target.path }} />
+          </CanvasTab.Provider>
         ) : editable && target.kind === "file" ? (
           <CanvasTab.Provider value={id}>
             <DocEditor

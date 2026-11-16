@@ -9,7 +9,7 @@
 import { createHash } from "node:crypto";
 import { mkdir, readdir, rm, stat, utimes } from "node:fs/promises";
 import { join } from "node:path";
-import { isMediaRef, type Job, type RgVideo } from "@redgiant/protocol";
+import { isMediaRef, type Job, type RgVideo, type VideoPreviewResult } from "@redgiant/protocol";
 import { JobFailure, type JobHandle, type Jobs } from "../../jobs.js";
 import { mediaFingerprint, type VideoAnalysis, type VideoTools } from "./analysis.js";
 import { compileVideo, EmptyTimeline, type RenderProbe } from "./compile.js";
@@ -28,16 +28,7 @@ export const PREVIEWS_KEPT = 12;
 
 export const PREVIEW_STEPS = ["tool_download", "tool_unpack", "video_probe", "video_render"];
 
-export interface PreviewResult {
-  /** The preview's name: `previewPath(owner, id)`. */
-  id: string;
-  start: number;
-  frames: number;
-  seconds: number;
-  width: number;
-  height: number;
-  warnings: string[];
-}
+export type PreviewResult = VideoPreviewResult;
 
 /**
  * Cleans a cache folder: files least recently used (their modification time, touched when used)

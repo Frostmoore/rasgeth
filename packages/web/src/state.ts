@@ -2303,3 +2303,44 @@ export function dismissOfficeDownloaded(): void {
   const v = officeLoad.value;
   if (v?.downloaded) officeLoad.value = { ...v, downloaded: false };
 }
+
+// ---- G41.5a: the preview of a timeline ------------------------------------------------------
+
+/** The exact preview's lengths offered (seconds from the cursor). */
+export const EXACT_LENGTHS = ["5", "10", "30"] as const;
+export type ExactLength = (typeof EXACT_LENGTHS)[number];
+
+/** One open timeline's preview: the cursor, playing or not, the exact preview asked. */
+export interface VideoViewState {
+  frame: number;
+  playing: boolean;
+  exactLength: ExactLength;
+  /** The job making an exact preview, then its link and where it starts. */
+  exactJob?: string;
+  exact?: { url: string; from: number; frames: number; warnings: string[] };
+}
+
+const VIDEO_VIEW: VideoViewState = { frame: 0, playing: false, exactLength: "5" };
+
+/** By `scope:path`: the preview of every timeline opened in the canvas. */
+export const videoViews = signal<Record<string, VideoViewState>>({});
+
+export const videoViewKey = (file: { scope: string; path: string }) => `${file.scope}:${file.path}`;
+
+export const videoViewOf = (key: string): VideoViewState => videoViews.value[key] ?? VIDEO_VIEW;
+
+export function setVideoView(key: string, patch: Partial<VideoViewState>): void {
+  const now = videoViewOf(key);
+  const next = { ...now, ...patch };
+  // Dropping a field: `undefined` in the patch takes it away.
+  for (const [k, v] of Object.entries(patch))
+    if (v === undefined) delete (next as Record<string, unknown>)[k];
+  videoViews.value = { ...videoViews.value, [key]: next };
+}
+
+/** The timeline's files as the server made them (links, probes, jobs), by `scope:path`. */
+export const videoMedia = signal<Record<string, import("@redgiant/protocol").VideoPrepared>>({});
+
+export function setVideoMedia(key: string, prepared: import("@redgiant/protocol").VideoPrepared) {
+  videoMedia.value = { ...videoMedia.value, [key]: prepared };
+}
