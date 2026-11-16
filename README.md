@@ -46,6 +46,11 @@ already signed in and stays next to the clock; updates download only the files t
 installer is not code-signed yet: if SmartScreen says "Windows protected your PC", click **More info**,
 then **Run anyway**. Windows 10 2004 or newer, x64.
 
+Why not signed? A code-signing certificate costs money every year, and RedGiant is made by one person
+who, for now, would rather spend it on the project. Every release is still signed with RedGiant's own
+update key, so RedGiant only installs updates that really come from here. Donations are welcome: where
+to send them is coming soon.
+
 ### macOS
 
 Download **[RedGiant-mac-arm64.dmg](https://github.com/Frostmoore/redgiant2/releases/latest/download/RedGiant-mac-arm64.dmg)**,
