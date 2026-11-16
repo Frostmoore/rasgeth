@@ -552,6 +552,48 @@ jobs:
           if (Test-Path "$app\server\dist\main.js") { "the uninstaller left the server"; exit 1 }
           if (-not (Test-Path "$app\data\postgres")) { "the uninstaller removed the data"; exit 1 }
           "uninstalled, data kept"
+      # RGCompanion on its own (3.8.2, RGCompanion-Setup.exe): the real app on a version branch, the
+      # stand-in elsewhere. Installed silently for this user (folder, Start menu, Windows' list),
+      # installed again over a running copy (it is closed first, the update goes through), and
+      # uninstalled with nothing left.
+      - if: runner.os == 'Windows'
+        shell: pwsh
+        working-directory: packaging/windows
+        run: |
+          $src = "app"
+          if (-not (Test-Path app\rgcompanion.exe)) {
+            $src = "$env:RUNNER_TEMP\stub-app"
+            New-Item -ItemType Directory -Force $src | Out-Null
+            Copy-Item AppStub.exe "$src\rgcompanion.exe"
+          }
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=0.0.0-ci" "/DAppSource=$src" RGCompanion.iss
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          Get-Item dist\RGCompanion-Setup.exe | Format-List Name, Length
+          $dir = "$env:LOCALAPPDATA\Programs\RGCompanion"
+          $link = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\RGCompanion.lnk"
+          $key = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\{392CA02E-DEB6-43FE-8337-B46107CC5051}_is1"
+          function Setup([string]$exe, [string[]]$arguments) {
+            $p = Start-Process $exe -ArgumentList $arguments -PassThru
+            if (-not $p.WaitForExit(300000)) { "$exe did not finish"; exit 1 }
+            return $p.ExitCode
+          }
+          if ((Setup dist\RGCompanion-Setup.exe "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LANG=en") -ne 0) { "the setup failed"; exit 1 }
+          if (-not (Test-Path "$dir\rgcompanion.exe")) { "the app was not installed in $dir"; exit 1 }
+          if (-not (Test-Path $link)) { "no Start menu entry"; exit 1 }
+          if ((Get-ItemProperty $key).DisplayVersion -ne "0.0.0-ci") { "not in Windows' list of programs"; exit 1 }
+          # An update while the app runs: closed first, replaced, nothing refused.
+          $running = Start-Process "$dir\rgcompanion.exe" -ArgumentList "--stubborn" -PassThru
+          Start-Sleep 2
+          if ((Setup dist\RGCompanion-Setup.exe "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LANG=en") -ne 0) { "the setup failed"; exit 1 }
+          if (-not $running.HasExited) { "the setup did not close the running app"; exit 1 }
+          if (-not (Test-Path "$dir\rgcompanion.exe")) { "the update lost the app"; exit 1 }
+          [void](Setup "$dir\unins000.exe" "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART")
+          # The uninstaller goes on from a temporary copy: wait for the folder to empty, with a limit.
+          for ($i = 0; $i -lt 60 -and (Test-Path "$dir\rgcompanion.exe"); $i++) { Start-Sleep 2 }
+          if (Test-Path "$dir\rgcompanion.exe") { "the uninstaller left the app"; exit 1 }
+          if (Test-Path $link) { "the uninstaller left the Start menu entry"; exit 1 }
+          if (Test-Path $key) { "still in Windows' list of programs"; exit 1 }
+          "RGCompanion-Setup.exe: installed, updated over a running app, uninstalled ($(if ($src -eq 'app') { 'RGCompanion' } else { 'stand-in' }))"
       # The release's installer and update files (3.5.9), from the very folders tested above, with
       # the release's version: release.yml on the tag signs the manifest and attaches them. The test
       # above needs 0.0.0-ci (its updates go to 0.0.1), so Inno Setup runs once more.
@@ -562,6 +604,10 @@ jobs:
         run: |
           Push-Location packaging/windows
           & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=$env:VERSION" RedGiant.iss
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          # RGCompanion on its own (3.8.2), from the same app\ RedGiant-Setup.exe carries.
+          if (-not (Test-Path app\rgcompanion.exe)) { "no app\rgcompanion.exe for RGCompanion-Setup.exe"; exit 1 }
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=$env:VERSION" RGCompanion.iss
           if ($LASTEXITCODE -ne 0) { exit 1 }
           Pop-Location
           $out = "$env:RUNNER_TEMP\release-windows"
@@ -576,6 +622,7 @@ jobs:
           node packaging/update/pack.mjs --tree $tree --version $env:VERSION --platform win-x64 --out "$out\update" --installer packaging/windows/dist/RedGiant-Setup.exe
           if ($LASTEXITCODE -ne 0) { exit 1 }
           Copy-Item packaging\windows\dist\RedGiant-Setup.exe $out
+          Copy-Item packaging\windows\dist\RGCompanion-Setup.exe $out
           @{ version = $env:VERSION; sha = $env:GITHUB_SHA; run = $env:GITHUB_RUN_ID; ref = $env:GITHUB_REF_NAME } | ConvertTo-Json | Set-Content "$out\build.json"
           Get-ChildItem -Recurse $out | Format-Table FullName, Length
       - if: runner.os == 'Windows' && needs.plan.outputs.release == 'true'

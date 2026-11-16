@@ -484,7 +484,11 @@ jobs:
           $version = "${{ github.ref_name }}".TrimStart("v")
           & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=$version" RedGiant.iss
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          Get-Item dist\RedGiant-Setup.exe | Format-List Name, Length
+          # RGCompanion on its own (3.8.2), from the same app\ RedGiant-Setup.exe carries.
+          if (-not (Test-Path app\rgcompanion.exe)) { "no app\rgcompanion.exe for RGCompanion-Setup.exe"; exit 1 }
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=$version" RGCompanion.iss
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          Get-Item dist\RedGiant-Setup.exe, dist\RGCompanion-Setup.exe | Format-List Name, Length
       # Differential updates (G36.18): the same files as a zip whose entries the launcher fetches
       # one by one (HTTP Range), and the manifest of their sizes and sha256. Signed with
       # UPDATE_SIGNING_KEY when the secret is there; once UpdateKey.cs holds a public key the
@@ -516,6 +520,23 @@ jobs:
             "::warning::manifest not signed (no UPDATE_SIGNING_KEY): the launcher checks it against GitHub's digest only"
           }
           Get-ChildItem packaging/windows/update | Format-Table Name, Length
+      # RGCompanion's own packages (3.8.2), listed with their sha256 in SHA256SUMS-companion and
+      # signed with the update key when the secret is there (as SHA256SUMS-os).
+      - name: RGCompanion's checksums
+        shell: pwsh
+        env:
+          UPDATE_SIGNING_KEY: ${{ secrets.UPDATE_SIGNING_KEY }}
+        run: |
+          New-Item -ItemType Directory -Force companion-sums | Out-Null
+          $lines = foreach ($f in "packaging/windows/dist/RGCompanion-Setup.exe", "companion-linux/rgcompanion-linux-x64.tar.gz") {
+            "{0}  {1}" -f (Get-FileHash -Algorithm SHA256 $f).Hash.ToLowerInvariant(), (Split-Path $f -Leaf)
+          }
+          [IO.File]::WriteAllText("$PWD/companion-sums/SHA256SUMS-companion", (($lines -join "`n") + "`n"))
+          if ($env:UPDATE_SIGNING_KEY) {
+            node packaging/update/sign.mjs companion-sums/SHA256SUMS-companion
+            if ($LASTEXITCODE -ne 0) { exit 1 }
+          } else { "::warning::SHA256SUMS-companion not signed (no UPDATE_SIGNING_KEY)" }
+          Get-Content companion-sums/SHA256SUMS-companion
       - uses: actions/upload-artifact@v4
         with:
           name: RedGiant-win-x64-update
@@ -527,6 +548,9 @@ jobs:
         with:
           files: |
             packaging/windows/dist/RedGiant-Setup.exe
+            packaging/windows/dist/RGCompanion-Setup.exe
+            companion-sums/SHA256SUMS-companion
+            companion-sums/SHA256SUMS-companion.sig
             packaging/windows/update/RedGiant-win-x64.zip
             packaging/windows/update/RedGiant-win-x64.manifest.json
             packaging/windows/update/RedGiant-win-x64.manifest.json.gz
@@ -648,6 +672,9 @@ jobs:
           cmp <(gzip -dc "$m.gz") "$m"
           ls ci/mac/RedGiant-mac-*.dmg
           tar -tzf ci/linux/rgcompanion-linux-x64.tar.gz | grep -qx "rgcompanion-linux-x64/bundle/rgcompanion" || { echo "the Linux tar has no app"; exit 1; }
+          # RGCompanion on its own for Windows (3.8.2): an Inno Setup installer from the same run.
+          [ -s ci/windows/RGCompanion-Setup.exe ] || { echo "CI's Windows packages have no RGCompanion-Setup.exe"; exit 1; }
+          head -c 2 ci/windows/RGCompanion-Setup.exe | grep -q MZ || { echo "RGCompanion-Setup.exe is not a Windows program"; exit 1; }
           notarized=$(node -p 'require("./ci/mac/build.json").notarized')
           if [ "$notarized" != true ] && [ "$NOTARY" = true ]; then
             echo "the Mac app from CI is not notarized, but this repository can notarize: not attached"; exit 1
@@ -666,6 +693,14 @@ jobs:
           else
             echo "UpdateKey.cs holds a public key but the UPDATE_SIGNING_KEY secret is missing: the launchers would refuse this release's manifest"; exit 1
           fi
+          # RGCompanion's own packages (3.8.2): their sha256 in SHA256SUMS-companion, signed with
+          # the update key when the secret is there (as SHA256SUMS-os).
+          mkdir -p ci/companion
+          cp ci/windows/RGCompanion-Setup.exe ci/linux/rgcompanion-linux-x64.tar.gz ci/companion/
+          (cd ci/companion && sha256sum RGCompanion-Setup.exe rgcompanion-linux-x64.tar.gz > SHA256SUMS-companion)
+          if [ -n "$UPDATE_SIGNING_KEY" ]; then node packaging/update/sign.mjs ci/companion/SHA256SUMS-companion
+          else echo "::warning::SHA256SUMS-companion not signed (no UPDATE_SIGNING_KEY)"; fi
+          cat ci/companion/SHA256SUMS-companion
           {
             echo "### CI's packages for $VERSION"
             echo '```'
@@ -687,6 +722,9 @@ jobs:
         with:
           files: |
             ci/windows/RedGiant-Setup.exe
+            ci/windows/RGCompanion-Setup.exe
+            ci/companion/SHA256SUMS-companion
+            ci/companion/SHA256SUMS-companion.sig
             ci/windows/update/RedGiant-win-x64.zip
             ci/windows/update/RedGiant-win-x64.manifest.json
             ci/windows/update/RedGiant-win-x64.manifest.json.gz
