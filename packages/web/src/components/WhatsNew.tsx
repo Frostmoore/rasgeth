@@ -22,6 +22,7 @@ export interface NewsItem {
 }
 
 export const ITEMS: NewsItem[] = [
+  { version: "3.8.3", title: "news383Full", text: "news383FullText" },
   { version: "3.8.3", title: "news383Limits", text: "news383LimitsText" },
   { version: "3.8.3", title: "news383Paste", text: "news383PasteText" },
   { version: "3.8.3", title: "news383Send", text: "news383SendText" },

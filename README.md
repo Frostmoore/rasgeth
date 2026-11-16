@@ -349,7 +349,7 @@ RedGiant is in pre-alpha. What comes next, in order:
   3.8.2 (released) gives the computers an interface of their own, the control room (the wall of agents, the
   Ctrl/Cmd+K search, projects with diffs, terminals, git as a graph, the log), every answer's figures in the app,
   updates followed from the app, RedGiant's icon, RGCompanion on its own for Windows and a site for the downloads.
-  3.8.3 (released) shows spending and limits at the top of the app's conversations, sends with Ctrl/Cmd+Enter, attaches files and
+  3.8.3 (released) opens conversations in the whole window with the mascots' bar, shows spending and limits at the top of the app's conversations, sends with Ctrl/Cmd+Enter, attaches files and
   screenshots with Ctrl/Cmd+V and puts «New project» and «New agent» on the control room's walls.
 - **3.9 and 3.10 — Video and 3D generation**: a video editor shared by you and the agent, and 3D
   generation with local or cloud engines, finished in Blender.

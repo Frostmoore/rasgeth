@@ -2404,6 +2404,9 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news383Full: "Conversations in the whole window",
+  news383FullText:
+    "On a computer a conversation can fill the whole window (the button next to «Detach», the View menu or Ctrl/Cmd+Shift+F), with a bar of your agents' mascots on the left to move from one conversation to another, their state and the requests waiting for you. Esc goes back to the panel; the app remembers your choice.",
   news383Limits: "Spending and limits in the app's conversations",
   news383LimitsText:
     "At the top of every conversation RGCompanion shows what the page shows: your subscription's windows, or the total and the project's and agent's budgets, green, yellow from 70% and red from 90%, updated at the end of every turn. On the phone the bars stand one above the other next to the agent's name.",
@@ -8987,6 +8990,9 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news383Full: "Conversazioni a tutta finestra",
+  news383FullText:
+    "Sul computer una conversazione può occupare tutta la finestra (il pulsante accanto a «Stacca», il menu Vista o Ctrl/Cmd+Maiusc+F), con a sinistra una barra con le mascotte dei tuoi agenti per passare da una conversazione all'altra, il loro stato e le richieste che ti aspettano. Esc torna al pannello; l'app ricorda la tua scelta.",
   news383Limits: "Consumo e limiti nelle conversazioni dell'app",
   news383LimitsText:
     "In cima a ogni conversazione RGCompanion mostra quello che mostra la pagina: le finestre del tuo abbonamento, oppure il totale e i budget del progetto e dell'agente, verdi, gialli dal 70% e rossi dal 90%, aggiornati alla fine di ogni turno. Sul telefono le barre stanno una sopra l'altra accanto al nome dell'agente.",
