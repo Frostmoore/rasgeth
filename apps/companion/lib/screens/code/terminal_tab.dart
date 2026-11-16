@@ -378,35 +378,37 @@ class _OwnShellState extends State<OwnShell> {
     final term = _term;
     if (term == null) {
       return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              RgIcon(RgIcons.terminal, size: 40, color: c.dim),
-              const SizedBox(height: 10),
-              Text(
-                l.codeTermIntro,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: c.dim),
-              ),
-              if (_error != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    _error!,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: c.err),
-                  ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RgIcon(RgIcons.terminal, size: 40, color: c.dim),
+                const SizedBox(height: 10),
+                Text(
+                  l.codeTermIntro,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: c.dim),
                 ),
-              const SizedBox(height: 14),
-              FilledButton.icon(
-                key: const Key('term-open'),
-                onPressed: _opening || widget.ctx.readOnly ? null : _open,
-                icon: const RgIcon(RgIcons.terminal, size: 18, color: Colors.white),
-                label: Text(l.codeTermOpen),
-              ),
-            ],
+                if (_error != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      _error!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: c.err),
+                    ),
+                  ),
+                const SizedBox(height: 14),
+                FilledButton.icon(
+                  key: const Key('term-open'),
+                  onPressed: _opening || widget.ctx.readOnly ? null : _open,
+                  icon: const RgIcon(RgIcons.terminal, size: 18, color: Colors.white),
+                  label: Text(l.codeTermOpen),
+                ),
+              ],
+            ),
           ),
         ),
       );

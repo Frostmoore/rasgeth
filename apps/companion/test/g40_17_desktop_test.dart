@@ -451,6 +451,8 @@ void main() {
 
   testWidgets('the advanced views: projects, code, terminals, git, log', (tester) async {
     await start(tester, advanced: true);
+    await tester.ensureVisible(find.byKey(const Key('view-projects')));
+    await tester.pump();
     await tester.tap(find.byKey(const Key('view-projects')));
     await _settle(tester);
     expect(find.byKey(const Key('project-tile-demo')), findsOneWidget);
@@ -471,6 +473,8 @@ void main() {
     await _settle(tester, 8);
     expect(find.byKey(const Key('doc-tab-1')), findsOneWidget);
     // Terminals: the agents' read only, a shell of one's own.
+    await tester.ensureVisible(find.byKey(const Key('view-terminals')));
+    await tester.pump();
     await tester.tap(find.byKey(const Key('view-terminals')));
     await _settle(tester, 10);
     // The project's agents are there at first; their row takes them away and back.
@@ -486,6 +490,8 @@ void main() {
     expect(find.byKey(const Key('term-cell-own-demo')), findsOneWidget);
     expect(find.text('sola lettura'), findsWidgets);
     // Git: the graph of every branch, the chosen commit with its files.
+    await tester.ensureVisible(find.byKey(const Key('view-git')));
+    await tester.pump();
     await tester.tap(find.byKey(const Key('view-git')));
     await _settle(tester, 14);
     expect(find.byKey(const Key('git-graph')), findsOneWidget);
@@ -494,6 +500,8 @@ void main() {
     expect(find.text('Commit scelto'.toUpperCase()), findsOneWidget);
     expect(server.requests.any((r) => r.contains('/git/log') && r.contains('all=1')), isTrue);
     // Log: the table, a search, the event as JSON.
+    await tester.ensureVisible(find.byKey(const Key('view-log')));
+    await tester.pump();
     await tester.tap(find.byKey(const Key('view-log')));
     await _settle(tester, 10);
     expect(find.byKey(const Key('log-row-1')), findsOneWidget);

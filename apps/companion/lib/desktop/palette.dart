@@ -727,26 +727,30 @@ class _Row extends StatelessWidget {
                 else
                   RgIcon(item.icon ?? RgIcons.chevronRight, size: 17, color: c.dim),
                 const SizedBox(width: 10),
-                Flexible(
-                  child: Text(
-                    item.title,
+                Expanded(
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: item.title,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: c.text,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        if (item.subtitle != null && item.subtitle!.isNotEmpty)
+                          TextSpan(
+                            text: '   ${item.subtitle}',
+                            style: TextStyle(fontSize: 12.5, color: c.dim),
+                          ),
+                      ],
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 14, color: c.text, fontWeight: FontWeight.w500),
                   ),
                 ),
-                if (item.subtitle != null && item.subtitle!.isNotEmpty) ...[
-                  const SizedBox(width: 10),
-                  Flexible(
-                    child: Text(
-                      item.subtitle!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 12.5, color: c.dim),
-                    ),
-                  ),
-                ],
-                const Spacer(),
+                const SizedBox(width: 8),
                 if (item.hint != null) KeyCap(item.hint!),
               ],
             ),

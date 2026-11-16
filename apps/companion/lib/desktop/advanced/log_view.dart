@@ -648,7 +648,7 @@ class _LogViewState extends State<LogView> {
           ),
           child: left,
         ),
-        Expanded(child: center),
+        Expanded(child: MinWidth(min: 760, child: center)),
         Container(
           width: 380,
           decoration: BoxDecoration(

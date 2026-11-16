@@ -424,10 +424,22 @@ class _GitViewState extends State<GitView> {
                     )
                   else
                     const SizedBox(width: 12),
-                  for (final r in refNames(x.refs).take(3))
-                    Padding(
-                      padding: const EdgeInsets.only(right: 5),
-                      child: _RefPill(name: r),
+                  if (x.refs.isNotEmpty)
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 260),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        physics: const NeverScrollableScrollPhysics(),
+                        child: Row(
+                          children: [
+                            for (final r in refNames(x.refs).take(4))
+                              Padding(
+                                padding: const EdgeInsets.only(right: 5),
+                                child: _RefPill(name: r),
+                              ),
+                          ],
+                        ),
+                      ),
                     ),
                   Expanded(
                     child: Text(
@@ -595,7 +607,7 @@ class _GitViewState extends State<GitView> {
             children: [
               toolbar,
               Divider(height: 1, color: c.line),
-              Expanded(child: center),
+              Expanded(child: MinWidth(min: 700, child: center)),
             ],
           ),
         ),

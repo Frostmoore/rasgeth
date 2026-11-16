@@ -3,6 +3,7 @@
 // computer yet, Linux above all). It opens today's Chat conversation, or a new one; «expand» moves
 // it to the side panel.
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../api/conversation.dart';
 import '../app_state.dart';
@@ -81,71 +82,77 @@ class _QuickChatState extends State<QuickChat> {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
     final size = MediaQuery.sizeOf(context);
-    return Center(
-      child: Material(
-        key: const Key('quick-chat'),
-        color: c.bg,
-        elevation: 20,
-        shadowColor: Colors.black54,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: BorderSide(color: c.line),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: SizedBox(
-          width: (size.width - 60).clamp(360, 720),
-          height: (size.height - 120).clamp(360, 560),
-          child: Column(
-            children: [
-              if (widget.shortcut != null)
-                Container(
-                  width: double.infinity,
-                  color: c.panel2,
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-                  child: Text(
-                    l.deskQuickChatHint(widget.shortcut!),
-                    textAlign: TextAlign.right,
-                    style: TextStyle(fontSize: 11.5, color: c.dim),
+    return CallbackShortcuts(
+      // Esc closes it from anywhere inside (its own navigator would keep the key otherwise).
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.escape): () => Navigator.of(context).pop(),
+      },
+      child: Center(
+        child: Material(
+          key: const Key('quick-chat'),
+          color: c.bg,
+          elevation: 20,
+          shadowColor: Colors.black54,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+            side: BorderSide(color: c.line),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: SizedBox(
+            width: (size.width - 60).clamp(360, 720),
+            height: (size.height - 120).clamp(360, 560),
+            child: Column(
+              children: [
+                if (widget.shortcut != null)
+                  Container(
+                    width: double.infinity,
+                    color: c.panel2,
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                    child: Text(
+                      l.deskQuickChatHint(widget.shortcut!),
+                      textAlign: TextAlign.right,
+                      style: TextStyle(fontSize: 11.5, color: c.dim),
+                    ),
                   ),
-                ),
-              Expanded(
-                child: FileDropZone(
-                  drops: _drops,
-                  child: Navigator(
-                    onGenerateRoute: (_) => PageRouteBuilder<void>(
-                      pageBuilder: (_, _, _) => Material(
-                        color: c.bg,
-                        child: ConversationScreen(
-                          sessionId: widget.sessionId,
-                          agent: app.chatAgent,
-                          embedded: true,
-                          drops: _drops,
-                          headerActions: [
-                            PanelButton(
-                              key: const Key('quick-chat-expand'),
-                              icon: RgIcons.minimize,
-                              tooltip: l.deskQuickChatExpand,
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                desk.show(
-                                  PanelConversation(widget.sessionId, agent: app.chatAgent),
-                                );
-                              },
-                            ),
-                            PanelButton(
-                              key: const Key('quick-chat-close'),
-                              icon: RgIcons.x,
-                              tooltip: l.deskPanelClose,
-                              onTap: () => Navigator.of(context).pop(),
-                            ),
-                          ],
+                Expanded(
+                  child: FileDropZone(
+                    drops: _drops,
+                    child: Navigator(
+                      onGenerateRoute: (_) => PageRouteBuilder<void>(
+                        pageBuilder: (_, _, _) => Material(
+                          color: c.bg,
+                          child: ConversationScreen(
+                            sessionId: widget.sessionId,
+                            agent: app.chatAgent,
+                            embedded: true,
+                            drops: _drops,
+                            headerActions: [
+                              PanelButton(
+                                key: const Key('quick-chat-expand'),
+                                icon: RgIcons.minimize,
+                                tooltip: l.deskQuickChatExpand,
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  desk.show(
+                                    PanelConversation(widget.sessionId, agent: app.chatAgent),
+                                  );
+                                },
+                              ),
+                              PanelButton(
+                                key: const Key('quick-chat-close'),
+                                icon: RgIcons.x,
+                                tooltip: l.deskPanelClose,
+                                onTap: () => Navigator.of(context).pop(),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

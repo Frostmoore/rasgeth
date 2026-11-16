@@ -169,3 +169,22 @@ class NoProject extends StatelessWidget {
   Widget build(BuildContext context) =>
       EmptyState(icon: RgIcons.folder, text: AppLocalizations.of(context).deskNoProjects);
 }
+
+/// A table that needs [min] pixels: it scrolls sideways in a narrower room (the side panel open)
+/// instead of squeezing its columns.
+class MinWidth extends StatelessWidget {
+  const MinWidth({super.key, required this.min, required this.child});
+
+  final double min;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, box) => box.maxWidth >= min
+        ? child
+        : SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SizedBox(width: min, height: box.maxHeight, child: child),
+          ),
+  );
+}
