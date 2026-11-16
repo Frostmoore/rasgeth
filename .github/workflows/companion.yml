@@ -4,16 +4,27 @@ name: RGCompanion
 # systems, as artifacts (unsigned: signing comes with G40.13). It runs on its own, only when the
 # app or this file changes, so it never slows the main CI down. Work-in-progress branches
 # (wip/...) start nothing.
+# G40.12: ci.yml (a version branch) and release.yml (when it builds the installers itself) call it
+# with `desktop: true`: only the Windows, macOS and Linux builds, whose artifacts the installers
+# carry (packaging/windows app\, RedGiant.app's Helpers) and the release attaches (Linux's tar).
 on:
   push:
     branches: ["p[0-9]*", "a[0-9]*", "b[0-9]*", "main"]
-    paths: ["apps/companion/**", ".github/workflows/companion.yml"]
+    paths: ["apps/companion/**", "packaging/linux-app/**", ".github/workflows/companion.yml"]
   pull_request:
-    paths: ["apps/companion/**", ".github/workflows/companion.yml"]
+    paths: ["apps/companion/**", "packaging/linux-app/**", ".github/workflows/companion.yml"]
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      desktop:
+        description: "Only the computers' builds (no checks, Android or iOS): the installers' app"
+        type: boolean
+        default: false
 
 concurrency:
-  group: companion-${{ github.event_name }}-${{ github.ref }}
+  # Called by ci.yml or release.yml it runs inside their run: a group of its own, so it never
+  # cancels (or is cancelled by) this workflow's own run of the same push.
+  group: companion-${{ inputs.desktop && 'desktop' || 'all' }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -29,6 +40,7 @@ defaults:
 
 jobs:
   check:
+    if: ${{ !inputs.desktop }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -50,6 +62,7 @@ jobs:
 
   android:
     needs: check
+    if: ${{ !inputs.desktop }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -72,6 +85,7 @@ jobs:
 
   linux:
     needs: check
+    if: ${{ !cancelled() && (needs.check.result == 'success' || needs.check.result == 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -86,7 +100,14 @@ jobs:
           channel: stable
           cache: true
       - run: flutter build linux --release
-      - run: tar -czf rgcompanion-linux-x64.tar.gz -C build/linux/x64/release bundle
+      # The bundle with its menu entry and a per-user installer (packaging/linux-app, G40.12).
+      - run: |
+          stage=rgcompanion-linux-x64
+          mkdir -p "$stage"
+          cp -R build/linux/x64/release/bundle "$stage/bundle"
+          cp ../../packaging/linux-app/install-app.sh ../../packaging/linux-app/rgcompanion.desktop "$stage/"
+          cp ../../packages/web/public/icon-512.png "$stage/rgcompanion.png"
+          tar -czf rgcompanion-linux-x64.tar.gz "$stage"
       - uses: actions/upload-artifact@v4
         with:
           name: rgcompanion-linux-x64
@@ -95,6 +116,7 @@ jobs:
 
   windows:
     needs: check
+    if: ${{ !cancelled() && (needs.check.result == 'success' || needs.check.result == 'skipped') }}
     runs-on: windows-latest
     timeout-minutes: 30
     steps:
@@ -113,6 +135,7 @@ jobs:
 
   macos:
     needs: check
+    if: ${{ !cancelled() && (needs.check.result == 'success' || needs.check.result == 'skipped') }}
     runs-on: macos-latest
     timeout-minutes: 45
     steps:
@@ -133,6 +156,7 @@ jobs:
 
   ios:
     needs: check
+    if: ${{ !inputs.desktop }}
     runs-on: macos-latest
     timeout-minutes: 45
     steps:

@@ -1,6 +1,7 @@
 // Tests of AppWindow.cs (G40.12), a console program built like the others (ci.yml):
 //
 //   csc /out:AppWindowTests.exe /r:System.Web.Extensions.dll test\AppWindowTests.cs AppWindow.cs
+//   AppWindowTests.exe [AppStub.exe]   with the stand-in app: the whole opening, end to end
 //
 // The device's name and body, the server's answer, the handoff (a file only this user opens,
 // never over another), the old ones cleaned up, and the two calls to a stand-in server.
@@ -24,21 +25,23 @@ static class AppWindowTests
         else { failed++; Console.WriteLine("FAIL " + what); }
     }
 
-    /** A stand-in for the server: one request, its first line, headers and body kept; [answer] back. */
+    /** A stand-in for the server: one request per answer, the last one's line, headers and body kept. */
     sealed class OneRequest
     {
         public readonly int Port;
         public string Line, Headers, Body;
+        public readonly List<string> Lines = new List<string>();
         readonly TcpListener listener;
         readonly Thread thread;
 
-        public OneRequest(string answer)
+        public OneRequest(params string[] answers)
         {
             listener = new TcpListener(IPAddress.Loopback, 0);
             listener.Start();
             Port = ((IPEndPoint)listener.LocalEndpoint).Port;
             thread = new Thread(() =>
             {
+                foreach (var answer in answers)
                 using (var c = listener.AcceptTcpClient())
                 using (var s = c.GetStream())
                 {
@@ -51,6 +54,7 @@ static class AppWindowTests
                     }
                     string h = head.ToString();
                     Line = h.Substring(0, h.IndexOf("\r\n", StringComparison.Ordinal));
+                    Lines.Add(Line);
                     Headers = h;
                     int length = 0;
                     foreach (var l in h.Split(new[] { "\r\n" }, StringSplitOptions.None))
@@ -71,7 +75,7 @@ static class AppWindowTests
         public void Done() { thread.Join(10000); }
     }
 
-    static int Main()
+    static int Main(string[] args)
     {
         // The device's name: what Settings › Devices shows, within the server's 60 characters.
         Check(AppWindow.DeviceName("RIG") == "RGCompanion (RIG)", "the computer's name");
@@ -145,6 +149,34 @@ static class AppWindowTests
         Directory.CreateDirectory(empty);
         Check(!AppWindow.Present(empty) && !AppWindow.Open(empty, none, "t"), "no app: the browser");
         Directory.Delete(empty, true);
+
+        // The whole opening with the stand-in app (AppStub.cs): a device made, the handoff taken and
+        // deleted by the app, which signs in with it; a second opening only brings it forward.
+        if (args.Length > 0)
+        {
+            string root = Path.Combine(Path.GetTempPath(), "rg-open-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(Path.Combine(root, "app"));
+            File.Copy(args[0], AppWindow.Exe(root));
+            string seen = Path.Combine(root, "hello.json");
+            Environment.SetEnvironmentVariable("RG_STUB_OUT", seen);
+            var both = new OneRequest(
+                "{\"token\":\"rgd_fromtheserver_0123\",\"device\":{\"id\":\"d8\"}}",
+                "{\"app\":\"redgiant\",\"signedIn\":true}");
+            Check(AppWindow.Open(root, both.Port, "installation-token-0123456789abcdef"), "opened");
+            both.Done();
+            for (int i = 0; i < 100 && !File.Exists(seen); i++) Thread.Sleep(100);
+            Check(both.Lines.Count == 2 && both.Lines[0].StartsWith("POST /api/devices") && both.Lines[1].StartsWith("GET /api/app/hello"),
+                "the device, then the app signing in: " + string.Join(" | ", both.Lines.ToArray()));
+            Check(both.Headers.Contains("Authorization: Bearer rgd_fromtheserver_0123"), "the app used its own token");
+            Check(File.Exists(seen) && File.ReadAllText(seen).Contains("signedIn"), "the app signed in");
+            Check(Directory.GetFiles(AppWindow.HandoffDir, "*.json").Length == 0, "the handoff was deleted by the app");
+            var p = AppWindow.Running(AppWindow.Exe(root));
+            Check(p != null, "the app runs");
+            // Nobody listening now: a second opening must not ask for a token.
+            Check(AppWindow.Open(root, none, "t"), "a second opening: brought to the front, no token");
+            if (p != null) { p.Kill(); p.WaitForExit(5000); }
+            Directory.Delete(root, true);
+        }
 
         Console.WriteLine(passed + " passed, " + failed + " failed");
         return failed == 0 ? 0 : 1;
