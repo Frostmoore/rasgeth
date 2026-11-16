@@ -138,11 +138,23 @@
   }
 
   async function loadLatest() {
-    if (!document.getElementById("latest")) return;
+    const links = $$("[data-dl]");
+    if (!document.getElementById("latest") && !links.length) return;
     const r = await getJson("/releases/latest", "rg-site-latest");
     if (r && typeof r.tag_name === "string" && /^v?\d+\.\d+\.\d+/.test(r.tag_name)) {
       latest = r;
       renderLatest();
+      // A file the latest release does not carry yet (RGCompanion alone arrives with 3.8.2):
+      // «coming soon» instead of a link that would answer 404. It turns on by itself later.
+      const names = new Set((r.assets ?? []).map((a) => a.name));
+      for (const a of links) {
+        const name = cfg.files[a.dataset.dl];
+        if (!name || names.has(name)) continue;
+        a.removeAttribute("href");
+        a.setAttribute("aria-disabled", "true");
+        a.classList.add("soon");
+        a.textContent = d.lang === "it" ? "In arrivo" : "Coming soon";
+      }
     }
   }
 
