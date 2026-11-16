@@ -5,7 +5,8 @@
 ;
 ; Built in CI: iscc /DAppVersion=3.0.0 RedGiant.iss, next to RedGiant.exe (launcher),
 ; redgiant.ico, redgiant.cmd, node\node.exe, server\ (pnpm deploy of @redgiant/server, with the
-; command line in server\cli, packaging/cli/stage.mjs) and web\ (the page).
+; command line in server\cli, packaging/cli/stage.mjs), web\ (the page) and, when the CI built it,
+; app\ (RGCompanion's window, the Flutter build for Windows, G40.12: RedGiant.exe opens it).
 
 #ifndef AppVersion
   #define AppVersion "0.0.0"
@@ -87,11 +88,14 @@ Source: "redgiant.cmd"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "node\node.exe"; DestDir: "{app}\node"; Flags: ignoreversion
 Source: "server\*"; DestDir: "{app}\server"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
+; RGCompanion (G40.12): without it RedGiant.exe opens the browser, as before.
+Source: "app\*"; DestDir: "{app}\app"; Flags: ignoreversion recursesubdirs createallsubdirs skipifsourcedoesntexist
 
 [InstallDelete]
 ; An update replaces the server whole: modules removed in the new version must not linger.
 Type: filesandordirs; Name: "{app}\server"
 Type: filesandordirs; Name: "{app}\web"
+Type: filesandordirs; Name: "{app}\app"
 ; A differential update half done (G36.18): the installer replaces everything anyway.
 Type: filesandordirs; Name: "{app}\update"
 
@@ -100,8 +104,11 @@ Type: filesandordirs; Name: "{app}\update"
 Type: filesandordirs; Name: "{app}\server"
 Type: filesandordirs; Name: "{app}\web"
 Type: filesandordirs; Name: "{app}\node"
+Type: filesandordirs; Name: "{app}\app"
 Type: filesandordirs; Name: "{app}\update"
 Type: filesandordirs; Name: "{app}\bin"
+; Handoffs to the app not taken yet (AppWindow.cs): a minute old at most.
+Type: filesandordirs; Name: "{localappdata}\RedGiant\handoff"
 
 [Icons]
 Name: "{userprograms}\RedGiant"; Filename: "{app}\RedGiant.exe"; IconFilename: "{app}\redgiant.ico"
