@@ -7,6 +7,7 @@
 import { spawn } from "node:child_process";
 import { copyFile, mkdir, mkdtemp, rename, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   concatLine,
   joinArgs,
@@ -17,6 +18,9 @@ import {
   type RenderStep,
   stepArgs,
 } from "./compile.js";
+
+/** The server's fonts (p3.5.8, `packages/server/fonts`): Inter for texts and subtitles. */
+export const RENDER_FONTS_DIR = fileURLToPath(new URL("../../../fonts/", import.meta.url));
 
 /**
  * Runs ffmpeg in `cwd`; `onTime` gets the seconds written so far (from `-progress`). Resolves
