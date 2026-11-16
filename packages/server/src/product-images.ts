@@ -324,7 +324,8 @@ export class ProductImages {
 
   /** The bytes at an address, following up to three redirects, each one checked again. */
   private async download(raw: string): Promise<Uint8Array> {
-    const deadline = this.now() + (this.o.timeoutMs ?? PRODUCT_IMAGE_TIMEOUT_MS);
+    // Real time, whatever the cache's clock.
+    const deadline = Date.now() + (this.o.timeoutMs ?? PRODUCT_IMAGE_TIMEOUT_MS);
     let address = raw;
     for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
       const verdict = checkImageUrl(address, this.o.allowHosts);
@@ -368,7 +369,7 @@ export class ProductImages {
       );
     };
     return new Promise((resolve, reject) => {
-      const left = deadline - this.now();
+      const left = deadline - Date.now();
       if (left <= 0) return reject(new FetchError("took too long"));
       const lib = url.protocol === "https:" ? https : http;
       const req = lib.get(
