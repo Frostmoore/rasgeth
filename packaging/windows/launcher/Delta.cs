@@ -469,10 +469,11 @@ public static class Delta
     }
 
     /**
-     * What the installer puts in RedGiant's folder (redgiant.iss [Files], pack.mjs's roots): the
+     * What the installer puts in RedGiant's folder (redgiant.iss [Files], pack.mjs's roots; app\ is
+     * RGCompanion's window, G40.12, when the release carries it): the
      * files the next update compares. Never data, the engine, update\ or the uninstaller.
      */
-    public static readonly string[] InstalledRoots = { "RedGiant.exe", "redgiant.ico", "bin", "node", "server", "web" };
+    public static readonly string[] InstalledRoots = { "RedGiant.exe", "redgiant.ico", "app", "bin", "node", "server", "web" };
 
     /** The installed files under InstalledRoots, as manifest paths ("server/dist/main.js"). */
     public static List<string> InstalledFiles(string appDir)

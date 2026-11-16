@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=RGCompanion
+GenericName=RedGiant
+Comment=The RedGiant app
+Comment[it]=L'app di RedGiant
+Exec="@EXEC@"
+Icon=rgcompanion
+Terminal=false
+Categories=Utility;Development;
+StartupWMClass=rgcompanion

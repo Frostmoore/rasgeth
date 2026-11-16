@@ -8,6 +8,7 @@ import 'api/discovery.dart';
 import 'api/servers.dart';
 import 'app.dart';
 import 'app_state.dart';
+import 'desktop/handoff.dart';
 import 'push/background.dart';
 import 'push/distributors.dart';
 import 'push/system_notifier.dart';
@@ -28,8 +29,11 @@ Future<void> main(List<String> args) async {
   AppLifecycleListener(
     onStateChange: (s) => controller.setForeground(s == AppLifecycleState.resumed),
   );
+  // Opened by RedGiant.exe or RedGiant.app (G40.12): the local server and a token for it, read
+  // (and its file deleted) before anything else.
+  final handoff = await takeLaunchHandoff();
   runApp(RGCompanionApp(controller: controller));
   await controller.startSystems();
-  await controller.restore();
+  await controller.restore(handoff: handoff);
   unawaited(controller.takeLaunch());
 }

@@ -124,12 +124,13 @@ jobs:
           else
             for id in $(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$sha&status=success&per_page=50" --jq '.workflow_runs[].id'); do
               names=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id/artifacts?per_page=100" --jq '.artifacts[] | select(.expired | not) | .name')
-              if grep -qxF "release-windows-$version" <<<"$names" && grep -qxF "release-mac-$version" <<<"$names"; then
+              # RGCompanion's Linux tar (G40.12) rides with the same run (ci.yml's companion job).
+              if grep -qxF "release-windows-$version" <<<"$names" && grep -qxF "release-mac-$version" <<<"$names" && grep -qxF "rgcompanion-linux-x64" <<<"$names"; then
                 reuse=true; run_id=$id; break
               fi
             done
-            if [ "$reuse" = true ]; then why="CI run $run_id (green) kept release-windows-$version and release-mac-$version"
-            else why="no green CI run of $sha kept release-windows-$version and release-mac-$version"; fi
+            if [ "$reuse" = true ]; then why="CI run $run_id (green) kept release-windows-$version, release-mac-$version and rgcompanion-linux-x64"
+            else why="no green CI run of $sha kept release-windows-$version, release-mac-$version and rgcompanion-linux-x64"; fi
           fi
           # Never a release without green CI (3.7.4): a run of this commit whose checks ran and passed
           # (a run on main that only saw the commit had passed already counts through that one).
@@ -404,11 +405,23 @@ jobs:
           files: packages/browser-extension/dist/*.zip
           fail_on_unmatched_files: true
 
+  # RGCompanion for the computers (G40.12), when the installers are built here: the Windows and
+  # macOS builds go into them, Linux's tar is attached by windows-installer.
+  companion:
+    if: ${{ !inputs.only && !inputs.dry_run && needs.ci-build.outputs.reuse != 'true' }}
+    needs: ci-build
+    permissions:
+      contents: read
+    uses: ./.github/workflows/companion.yml
+    with:
+      desktop: true
+
   # RedGiant-Setup.exe (G22; 3.0, G30.2): the launcher, Node, the server built for Windows and the
   # web page, attached to the tag's GitHub Release. No WSL: everything runs on Windows itself.
+  # With RGCompanion's window in app\ (G40.12).
   windows-installer:
     if: ${{ !inputs.only && !inputs.dry_run && needs.ci-build.outputs.reuse != 'true' }}
-    needs: [ci-build, pgvector, release-info]
+    needs: [ci-build, pgvector, release-info, companion]
     runs-on: windows-latest
     permissions:
       contents: write
@@ -428,6 +441,14 @@ jobs:
         with:
           name: pgvector-windows-x64
           path: pgv
+      - uses: actions/download-artifact@v4
+        with:
+          name: rgcompanion-windows-x64
+          path: packaging/windows/app
+      - uses: actions/download-artifact@v4
+        with:
+          name: rgcompanion-linux-x64
+          path: companion-linux
       - name: Stage what the installer carries (server with its production modules, page, Node)
         shell: pwsh
         run: |
@@ -453,7 +474,7 @@ jobs:
         shell: pwsh
         working-directory: packaging/windows
         run: |
-          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /target:winexe /out:RedGiant.exe /win32icon:redgiant.ico /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.IO.Compression.dll /r:System.IO.Compression.FileSystem.dll /r:System.Management.dll /r:System.Web.Extensions.dll launcher\RedGiant.cs launcher\Updates.cs launcher\Moves.cs launcher\Memory.cs launcher\Diag.cs launcher\Delta.cs launcher\UpdateKey.cs launcher\ReleaseInfo.cs launcher\PageGate.cs launcher\AskGate.cs
+          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /target:winexe /out:RedGiant.exe /win32icon:redgiant.ico /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.IO.Compression.dll /r:System.IO.Compression.FileSystem.dll /r:System.Management.dll /r:System.Web.Extensions.dll launcher\RedGiant.cs launcher\Updates.cs launcher\Moves.cs launcher\Memory.cs launcher\Diag.cs launcher\Delta.cs launcher\UpdateKey.cs launcher\ReleaseInfo.cs launcher\PageGate.cs launcher\AskGate.cs launcher\AppWindow.cs
           if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Build the installer (Inno Setup)
         shell: pwsh
@@ -477,7 +498,8 @@ jobs:
           if ($version -notmatch '^\d+\.\d+\.\d+$') { $version = "0.0.0-dispatch" }
           $app = "$env:RUNNER_TEMP\app"
           New-Item -ItemType Directory -Force $app | Out-Null
-          foreach ($d in "server", "web", "node") { Copy-Item -Recurse "packaging\windows\$d" "$app\$d" }
+          if (-not (Test-Path packaging\windows\app\rgcompanion.exe)) { "no app\rgcompanion.exe to carry"; exit 1 }
+          foreach ($d in "server", "web", "node", "app") { Copy-Item -Recurse "packaging\windows\$d" "$app\$d" }
           Copy-Item packaging\windows\RedGiant.exe, packaging\windows\redgiant.ico $app
           New-Item -ItemType Directory -Force "$app\bin" | Out-Null
           Copy-Item packaging\windows\redgiant.cmd "$app\bin"
@@ -509,6 +531,7 @@ jobs:
             packaging/windows/update/RedGiant-win-x64.manifest.json
             packaging/windows/update/RedGiant-win-x64.manifest.json.gz
             packaging/windows/update/RedGiant-win-x64.manifest.json.sig
+            companion-linux/rgcompanion-linux-x64.tar.gz
           fail_on_unmatched_files: false
           generate_release_notes: true
 
@@ -518,7 +541,7 @@ jobs:
   # Connect API key, the .p8 file in base64), MAC_NOTARY_KEY_ID, MAC_NOTARY_ISSUER_ID.
   mac-app:
     if: ${{ !inputs.only && !inputs.dry_run && needs.ci-build.outputs.reuse != 'true' }}
-    needs: [ci-build, pgvector, release-info]
+    needs: [ci-build, pgvector, release-info, companion]
     runs-on: macos-latest
     permissions:
       contents: write
@@ -539,11 +562,16 @@ jobs:
         with:
           name: pgvector-macos-universal
           path: pgv
+      # RGCompanion's window (G40.12): into Contents/Helpers, signed and notarized with the rest.
+      - uses: actions/download-artifact@v4
+        with:
+          name: rgcompanion-macos
+          path: companion
       - name: Build, sign, notarize
         env:
           MAC_NOTARY_KEY_ID: ${{ secrets.MAC_NOTARY_KEY_ID }}
           MAC_NOTARY_ISSUER_ID: ${{ secrets.MAC_NOTARY_ISSUER_ID }}
-        run: PGVECTOR_ZIP="$(ls "$PWD"/pgv/pgvector-*-macos-universal.zip)" bash packaging/mac/build.sh "${GITHUB_REF_NAME#v}"
+        run: COMPANION_APP="$PWD/companion/rgcompanion-macos.zip" PGVECTOR_ZIP="$(ls "$PWD"/pgv/pgvector-*-macos-universal.zip)" bash packaging/mac/build.sh "${GITHUB_REF_NAME#v}"
       - uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
@@ -582,6 +610,13 @@ jobs:
           path: ci/mac
           run-id: ${{ needs.ci-build.outputs.run_id }}
           github-token: ${{ github.token }}
+      # RGCompanion for Linux (G40.12), built by the same CI run (its companion job).
+      - uses: actions/download-artifact@v4
+        with:
+          name: rgcompanion-linux-x64
+          path: ci/linux
+          run-id: ${{ needs.ci-build.outputs.run_id }}
+          github-token: ${{ github.token }}
       - name: The packages are this release's
         env:
           SHA: ${{ needs.ci-build.outputs.sha }}
@@ -607,9 +642,12 @@ jobs:
             if (!m.installer || m.installer.sha256 !== sha || m.installer.size !== data.length) { console.error("the manifest does not describe this RedGiant-Setup.exe"); process.exit(1); }
             const zip = fs.statSync(file.replace(".manifest.json", ".zip")).size;
             if (m.archive.size !== zip) { console.error("the zip does not match the manifest"); process.exit(1); }
+            // The app window (G40.12): updates carry it like the rest.
+            if (!m.files.some((f) => f.path === "app/rgcompanion.exe")) { console.error("the manifest has no app/rgcompanion.exe"); process.exit(1); }
             console.log("manifest " + m.version + ": " + m.files.length + " files, installer sha256 " + sha);' "$m" "$VERSION" ci/windows/RedGiant-Setup.exe
           cmp <(gzip -dc "$m.gz") "$m"
           ls ci/mac/RedGiant-mac-*.dmg
+          tar -tzf ci/linux/rgcompanion-linux-x64.tar.gz | grep -qx "rgcompanion-linux-x64/bundle/rgcompanion" || { echo "the Linux tar has no app"; exit 1; }
           notarized=$(node -p 'require("./ci/mac/build.json").notarized')
           if [ "$notarized" != true ] && [ "$NOTARY" = true ]; then
             echo "the Mac app from CI is not notarized, but this repository can notarize: not attached"; exit 1
@@ -654,6 +692,7 @@ jobs:
             ci/windows/update/RedGiant-win-x64.manifest.json.gz
             ci/windows/update/RedGiant-win-x64.manifest.json.sig
             ci/mac/RedGiant-mac-*.dmg
+            ci/linux/rgcompanion-linux-x64.tar.gz
           fail_on_unmatched_files: false
           generate_release_notes: true
 

@@ -8,6 +8,14 @@
 //   RedGiant.app/Contents/Resources/node/node     Node
 //   RedGiant.app/Contents/Resources/server        the server, with its production modules
 //   RedGiant.app/Contents/Resources/web           the web page
+//   RedGiant.app/Contents/Helpers/RGCompanion.app the app's window (G40.12), when the CI built it
+//
+// «Open RedGiant» opens RGCompanion's window when it is there, signed in with a device token the
+// launcher makes for it (POST /api/devices with the installation's token) and hands over in the
+// app's own environment (RGCOMPANION_HANDOFF: the sandboxed app cannot read this program's
+// files; only this user's processes see another's environment, never the command line). An app
+// already open is only brought to the front; without it, or on a failure, the browser as before.
+// «Open in the browser» stays in the menu.
 //
 // Arguments (for the CI and for whoever helps): --background (no browser), --quit (asks a running
 // RedGiant to stop, and waits).
@@ -27,6 +35,7 @@ func say(_ key: String) -> String {
   let it = Locale.preferredLanguages.first?.hasPrefix("it") ?? false
   let texts: [String: (String, String)] = [
     "open": ("Apri RedGiant", "Open RedGiant"),
+    "browser": ("Apri nel browser", "Open in the browser"),
     "login": ("Avvia al login", "Start at login"),
     "uninstall": ("Disinstalla RedGiant…", "Uninstall RedGiant…"),
     "quit": ("Esci da RedGiant", "Quit RedGiant"),
@@ -101,6 +110,66 @@ func freePort() -> Int {
   return 7600
 }
 
+// RGCompanion (G40.12): the Flutter app inside this one, and how it is handed this RedGiant.
+let companionApp = Bundle.main.bundleURL.appendingPathComponent("Contents/Helpers/RGCompanion.app")
+let companionID = "com.redgiant.companion"
+
+/** The device's name in Settings › Devices: "RGCompanion (<this Mac>)", 60 characters at most. */
+func companionDeviceName() -> String {
+  let mac = (Host.current().localizedName ?? "")
+    .unicodeScalars.filter { $0.value >= 32 && $0.value != 127 }
+    .map(String.init).joined().trimmingCharacters(in: .whitespaces)
+  let name = mac.isEmpty ? "Mac" : String(mac.prefix(60 - "RGCompanion ()".count))
+  return "RGCompanion (\(name))"
+}
+
+/** One call to this RedGiant with the installation's token; the answer's JSON, nil on a failure. */
+func callServer(_ method: String, _ path: String, port: Int, token: String, body: [String: Any]? = nil)
+  -> [String: Any]?
+{
+  guard let url = URL(string: "http://127.0.0.1:\(port)\(path)") else { return nil }
+  var req = URLRequest(url: url)
+  req.httpMethod = method
+  req.timeoutInterval = 5
+  req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+  if let body {
+    req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    req.httpBody = try? JSONSerialization.data(withJSONObject: body)
+  }
+  let done = DispatchSemaphore(value: 0)
+  var result: [String: Any]?
+  URLSession.shared.dataTask(with: req) { data, res, _ in
+    if (res as? HTTPURLResponse)?.statusCode == 200, let data {
+      result = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
+    }
+    done.signal()
+  }.resume()
+  _ = done.wait(timeout: .now() + 6)
+  return result
+}
+
+/** What the app reads (lib/desktop/handoff.dart): this computer's server, a device token for it. */
+func companionHandoff(port: Int, installationToken: String) -> (json: String, deviceId: String)? {
+  guard
+    let made = callServer(
+      "POST", "/api/devices", port: port, token: installationToken,
+      body: ["name": companionDeviceName(), "platform": "macos"]),
+    let token = made["token"] as? String, token.count >= 16,
+    let id = (made["device"] as? [String: Any])?["id"] as? String
+  else { return nil }
+  let handoff: [String: Any] = [
+    "v": 1, "address": "http://127.0.0.1:\(port)", "token": token, "deviceId": id,
+    "machine": Host.current().localizedName ?? "Mac",
+  ]
+  guard let data = try? JSONSerialization.data(withJSONObject: handoff),
+    let json = String(data: data, encoding: .utf8)
+  else {
+    _ = callServer("DELETE", "/api/devices/\(id)", port: port, token: installationToken)
+    return nil
+  }
+  return (json, id)
+}
+
 func healthy(_ port: Int) -> Bool {
   guard let url = URL(string: "http://127.0.0.1:\(port)/api/health") else { return false }
   var req = URLRequest(url: url)
@@ -137,7 +206,10 @@ final class App: NSObject, NSApplicationDelegate {
     }
     item.button?.toolTip = say("starting")
     let menu = NSMenu()
-    menu.addItem(withTitle: say("open"), action: #selector(openPage), keyEquivalent: "o")
+    menu.addItem(withTitle: say("open"), action: #selector(openWindow), keyEquivalent: "o")
+    if fm.fileExists(atPath: companionApp.path) {
+      menu.addItem(withTitle: say("browser"), action: #selector(openPage), keyEquivalent: "")
+    }
     let login = menu.addItem(withTitle: say("login"), action: #selector(toggleLogin), keyEquivalent: "")
     login.state = SMAppService.mainApp.status == .enabled ? .on : .off
     menu.addItem(.separator())
@@ -148,9 +220,9 @@ final class App: NSObject, NSApplicationDelegate {
     start()
   }
 
-  /** Opening RedGiant again (Dock, Spotlight, Applications): the page. */
+  /** Opening RedGiant again (Dock, Spotlight, Applications): the app's window, or the page. */
   func applicationShouldHandleReopen(_ s: NSApplication, hasVisibleWindows: Bool) -> Bool {
-    openPage()
+    openWindow()
     return false
   }
 
@@ -213,7 +285,8 @@ final class App: NSObject, NSApplicationDelegate {
         if healthy(self.port) {
           DispatchQueue.main.async {
             self.item.button?.toolTip = say("ready")
-            if !self.background { self.openPage() }
+            self.ready = true
+            if !self.background { self.openWindow() }
           }
           return
         }
@@ -298,6 +371,43 @@ final class App: NSObject, NSApplicationDelegate {
 
   @objc func openPage() {
     if let url { NSWorkspace.shared.open(url) }
+  }
+
+  var ready = false
+
+  /**
+   * «Open RedGiant» (G40.12): RGCompanion's window when this app carries it (an open one comes to
+   * the front, no new token), the page otherwise or when the app cannot be opened.
+   */
+  @objc func openWindow() {
+    guard ready, fm.fileExists(atPath: companionApp.path) else { return openPage() }
+    if let open = NSRunningApplication.runningApplications(withBundleIdentifier: companionID).first {
+      open.activate(options: [.activateAllWindows])
+      return
+    }
+    let port = self.port
+    let installation = token()
+    DispatchQueue.global().async {
+      guard let handoff = companionHandoff(port: port, installationToken: installation) else {
+        DispatchQueue.main.async { self.openPage() }
+        return
+      }
+      DispatchQueue.main.async {
+        let config = NSWorkspace.OpenConfiguration()
+        config.environment = ["RGCOMPANION_HANDOFF": handoff.json]
+        config.activates = true
+        config.createsNewApplicationInstance = false
+        NSWorkspace.shared.openApplication(at: companionApp, configuration: config) { _, error in
+          guard error != nil else { return }
+          // Not opened: its device goes, the page opens instead.
+          DispatchQueue.global().async {
+            _ = callServer(
+              "DELETE", "/api/devices/\(handoff.deviceId)", port: port, token: installation)
+          }
+          DispatchQueue.main.async { self.openPage() }
+        }
+      }
+    }
   }
 
   @objc func toggleLogin(_ sender: NSMenuItem) {

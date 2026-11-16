@@ -110,9 +110,21 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-  installers:
+  # RGCompanion for the computers (G40.12, companion.yml with desktop): on a version branch the
+  # installers carry the app's window (Windows: app\, the Mac: Contents/Helpers) and keep the
+  # Linux tar for the release. Elsewhere the installers are made without it (the browser opens).
+  companion:
     needs: plan
-    if: needs.plan.outputs.run == 'true'
+    if: needs.plan.outputs.run == 'true' && needs.plan.outputs.release == 'true'
+    permissions:
+      contents: read
+    uses: ./.github/workflows/companion.yml
+    with:
+      desktop: true
+
+  installers:
+    needs: [plan, companion]
+    if: ${{ !cancelled() && needs.plan.outputs.run == 'true' && (needs.companion.result == 'success' || needs.companion.result == 'skipped') }}
     runs-on: ${{ matrix.os }}
     # A hung installer or launcher must fail the run, not hold it for hours.
     timeout-minutes: 30
@@ -131,6 +143,12 @@ jobs:
           sha=$(printf 'redgiant' | sha256sum | cut -d' ' -f1)
           node packaging/stores/stores.mjs --version 3.4.0 --dmg-sha256 "$sha" --setup-sha256 "$sha" --out "$RUNNER_TEMP/stores"
           ruby -c "$RUNNER_TEMP/stores/homebrew/Casks/redgiant.rb"
+      # The app's window for this installer (G40.12), when companion built it.
+      - if: runner.os == 'Windows' && needs.companion.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: rgcompanion-windows-x64
+          path: packaging/windows/app
       - if: runner.os == 'Windows'
         shell: pwsh
         run: |
@@ -142,7 +160,7 @@ jobs:
         shell: pwsh
         working-directory: packaging/windows
         run: |
-          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /target:winexe /out:RedGiant.exe /win32icon:redgiant.ico /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.IO.Compression.dll /r:System.IO.Compression.FileSystem.dll /r:System.Management.dll /r:System.Web.Extensions.dll launcher\RedGiant.cs launcher\Updates.cs launcher\Moves.cs launcher\Memory.cs launcher\Diag.cs launcher\Delta.cs launcher\UpdateKey.cs launcher\ReleaseInfo.cs launcher\PageGate.cs launcher\AskGate.cs
+          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /target:winexe /out:RedGiant.exe /win32icon:redgiant.ico /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.IO.Compression.dll /r:System.IO.Compression.FileSystem.dll /r:System.Management.dll /r:System.Web.Extensions.dll launcher\RedGiant.cs launcher\Updates.cs launcher\Moves.cs launcher\Memory.cs launcher\Diag.cs launcher\Delta.cs launcher\UpdateKey.cs launcher\ReleaseInfo.cs launcher\PageGate.cs launcher\AskGate.cs launcher\AppWindow.cs
           if ($LASTEXITCODE -ne 0) { exit 1 }
           # Differential updates (G36.18): Delta.cs's tests and the tool the checks below use.
           & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:DeltaTests.exe /r:System.IO.Compression.dll /r:System.Web.Extensions.dll /r:System.Core.dll launcher\test\DeltaTests.cs launcher\Delta.cs
@@ -165,6 +183,14 @@ jobs:
           & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:AskGateTests.exe launcher\test\AskGateTests.cs launcher\AskGate.cs
           if ($LASTEXITCODE -ne 0) { exit 1 }
           .\AskGateTests.exe
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          # RGCompanion's window (G40.12): the device token, the handoff only this user opens, and
+          # the whole opening with a stand-in app (AppStub.exe, also used after the install below).
+          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:AppStub.exe /r:System.Web.Extensions.dll launcher\test\AppStub.cs
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:AppWindowTests.exe /r:System.Web.Extensions.dll launcher\test\AppWindowTests.cs launcher\AppWindow.cs
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          .\AppWindowTests.exe (Resolve-Path .\AppStub.exe).Path
           if ($LASTEXITCODE -ne 0) { exit 1 }
           # «Looking at what changed» timed on 27,374 files (3.5.4): one thread, HashThreads, hashes.txt.
           .\DeltaTests.exe --bench
@@ -207,6 +233,7 @@ jobs:
         # signed with the repository's secret (pushes only; elsewhere the differential part is skipped).
         env:
           UPDATE_SIGNING_KEY: ${{ secrets.UPDATE_SIGNING_KEY }}
+          RELEASE: ${{ needs.plan.outputs.release }}
         run: |
           corepack enable
           pnpm install --frozen-lockfile
@@ -246,6 +273,8 @@ jobs:
           # Debug mode on: RedGiant.exe writes its own log and the server's output there.
           New-Item -ItemType Directory -Force "$app\engine" | Out-Null
           New-Item -ItemType File -Force "$app\engine\debug.on" | Out-Null
+          # The stand-in app (G40.12) writes what it saw here; RedGiant.exe passes its environment on.
+          $env:RG_STUB_OUT = "$env:RUNNER_TEMP\stub-hello.json"
           Start-Process "$app\RedGiant.exe" -ArgumentList "--background"
           $up = $false
           for ($i = 0; $i -lt 120; $i++) {
@@ -273,6 +302,40 @@ jobs:
           $userPath = (Get-ItemProperty HKCU:\Environment -ErrorAction SilentlyContinue).Path
           if ("$userPath" -like "*RedGiant\bin*") { "the PATH was changed without the clipath task"; exit 1 }
           "redgiant command: $rg"
+          # RGCompanion's window (G40.12): RedGiant.exe clicked again opens the app (the real one on a
+          # version branch, the stand-in elsewhere) with a device token of its own, handed over in a
+          # file the app deletes; a second click while it runs makes no other device.
+          $real = Test-Path "$app\app\rgcompanion.exe"
+          if ($env:RELEASE -eq 'true' -and -not $real) { "a release installer without the app"; exit 1 }
+          if (-not $real) { New-Item -ItemType Directory -Force "$app\app" | Out-Null; Copy-Item packaging\windows\AppStub.exe "$app\app\rgcompanion.exe" }
+          $installToken = (Get-Content "$app\data\token.txt" -Raw).Trim()
+          function App-Devices { @((Invoke-RestMethod -Headers @{ Authorization = "Bearer $installToken" } http://127.0.0.1:7600/api/devices) | Where-Object { $_.name -like "RGCompanion (*" }) }
+          & "$app\RedGiant.exe"
+          $running = $null
+          for ($i = 0; $i -lt 60 -and -not $running; $i++) {
+            Start-Sleep 1
+            $running = Get-Process rgcompanion -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$app\app\*" }
+          }
+          if (-not $running) { "RedGiant.exe did not open the app"; Get-Content "$app\engine\launcher-*.log" -ErrorAction SilentlyContinue | Select-String "\[app\]"; exit 1 }
+          $handoffs = "$env:LOCALAPPDATA\RedGiant\handoff"
+          for ($i = 0; $i -lt 30 -and @(Get-ChildItem $handoffs -Filter *.json -ErrorAction SilentlyContinue).Count -gt 0; $i++) { Start-Sleep 1 }
+          if (@(Get-ChildItem $handoffs -Filter *.json -ErrorAction SilentlyContinue).Count -gt 0) { "the app did not take its handoff"; exit 1 }
+          $devices = App-Devices
+          if ($devices.Count -ne 1) { "one device for the app expected, $($devices.Count) found"; exit 1 }
+          if ($real) {
+            for ($i = 0; $i -lt 30 -and -not (App-Devices)[0].lastUsedAt; $i++) { Start-Sleep 1 }
+            if (-not (App-Devices)[0].lastUsedAt) { "the app never used its token"; exit 1 }
+          } else {
+            for ($i = 0; $i -lt 20 -and -not (Test-Path $env:RG_STUB_OUT); $i++) { Start-Sleep 1 }
+            $hello = Get-Content $env:RG_STUB_OUT -Raw -ErrorAction SilentlyContinue | ConvertFrom-Json
+            if (-not $hello.signedIn) { "the stand-in app did not sign in with its token"; exit 1 }
+          }
+          & "$app\RedGiant.exe"
+          Start-Sleep 5
+          if ((App-Devices).Count -ne 1) { "a second click made another device"; exit 1 }
+          "the app opened signed in ($(if ($real) { 'RGCompanion' } else { 'stand-in' })), one device: $($devices[0].name)"
+          Get-Process rgcompanion -ErrorAction SilentlyContinue | Stop-Process -Force
+          if (-not $real) { Remove-Item -Recurse -Force "$app\app" }
           # pgvector from the installed folder (G36.1): the embedded Postgres loads it from outside
           # its installation (redgiant.conf), and CREATE EXTENSION works in RedGiant's database.
           if (-not (Test-Path "$app\server\pgvector\lib\vector.dll")) { "pgvector was not installed"; exit 1 }
@@ -369,7 +432,7 @@ jobs:
           function Pack-Version($v, [scriptblock]$change) {
             Remove-Item -Recurse -Force $next, $feed -ErrorAction SilentlyContinue
             New-Item -ItemType Directory -Force $next, $feed | Out-Null
-            foreach ($d in "server", "web", "node") { Copy-Item -Recurse "packaging\windows\$d" "$next\$d" }
+            foreach ($d in "server", "web", "node", "app") { if (Test-Path "packaging\windows\$d") { Copy-Item -Recurse "packaging\windows\$d" "$next\$d" } }
             Copy-Item packaging\windows\RedGiant.exe, packaging\windows\redgiant.ico $next
             New-Item -ItemType Directory -Force "$next\bin" | Out-Null
             Copy-Item packaging\windows\redgiant.cmd "$next\bin"
@@ -504,7 +567,9 @@ jobs:
           $out = "$env:RUNNER_TEMP\release-windows"
           $tree = "$env:RUNNER_TEMP\release-tree"
           New-Item -ItemType Directory -Force "$out\update", $tree | Out-Null
-          foreach ($d in "server", "web", "node") { Copy-Item -Recurse "packaging\windows\$d" "$tree\$d" }
+          # The release's tree carries the app's window (G40.12): companion ran on this version branch.
+          if (-not (Test-Path packaging\windows\app\rgcompanion.exe)) { "the release's tree has no app\rgcompanion.exe"; exit 1 }
+          foreach ($d in "server", "web", "node", "app") { Copy-Item -Recurse "packaging\windows\$d" "$tree\$d" }
           Copy-Item packaging\windows\RedGiant.exe, packaging\windows\redgiant.ico $tree
           New-Item -ItemType Directory -Force "$tree\bin" | Out-Null
           Copy-Item packaging\windows\redgiant.cmd "$tree\bin"
@@ -525,8 +590,8 @@ jobs:
   # RedGiant for macOS (2026-11-05): the app built (signed ad-hoc here), started from its disk
   # image, answering, stopped the proper way with nothing left running, its data where it belongs.
   mac-app:
-    needs: plan
-    if: needs.plan.outputs.run == 'true'
+    needs: [plan, companion]
+    if: ${{ !cancelled() && needs.plan.outputs.run == 'true' && (needs.companion.result == 'success' || needs.companion.result == 'skipped') }}
     runs-on: macos-latest
     timeout-minutes: 40
     steps:
@@ -545,12 +610,19 @@ jobs:
           MAC_CERTIFICATE_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}
           MAC_NOTARY_KEY: ${{ needs.plan.outputs.release == 'true' && secrets.MAC_NOTARY_KEY || '' }}
         run: bash packaging/mac/keychain.sh
+      # The app's window (G40.12), when companion built it: into Contents/Helpers, signed with the rest.
+      - if: needs.companion.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: rgcompanion-macos
+          path: ${{ runner.temp }}/companion
       - name: Build (and, for a release, notarize)
         env:
           MAC_NOTARY_KEY_ID: ${{ secrets.MAC_NOTARY_KEY_ID }}
           MAC_NOTARY_ISSUER_ID: ${{ secrets.MAC_NOTARY_ISSUER_ID }}
           VERSION: ${{ needs.plan.outputs.release == 'true' && needs.plan.outputs.version || '0.0.0-ci' }}
-        run: bash packaging/mac/build.sh "$VERSION"
+          COMPANION_ZIP: ${{ needs.companion.result == 'success' && format('{0}/companion/rgcompanion-macos.zip', runner.temp) || '' }}
+        run: COMPANION_APP="$COMPANION_ZIP" bash packaging/mac/build.sh "$VERSION"
       - name: Install from the disk image, start, stop
         run: |
           set -euo pipefail
@@ -592,6 +664,24 @@ jobs:
               console.log("pgvector " + v + ", cosine distance " + d);
               await c.end();
             })().catch((e) => { console.error(e.message); process.exit(1); });'
+          # RGCompanion's window (G40.12): opening RedGiant again opens the app with a device token
+          # of its own. Not tried on a Mac before this run: said as a warning, not a failure, until
+          # it has passed once.
+          if [ -d /tmp/RedGiant.app/Contents/Helpers/RGCompanion.app ]; then
+            codesign --verify --deep --strict /tmp/RedGiant.app/Contents/Helpers/RGCompanion.app
+            open -a /tmp/RedGiant.app
+            seen=""
+            for i in $(seq 1 30); do
+              seen=$(curl -sf -H "Authorization: Bearer $token" http://127.0.0.1:7600/api/devices | grep -o '"name":"RGCompanion ([^"]*' || true)
+              if [ -n "$seen" ] && pgrep -f "RGCompanion.app/Contents/MacOS" >/dev/null; then break; fi
+              sleep 2
+            done
+            if [ -n "$seen" ] && pgrep -f "RGCompanion.app/Contents/MacOS" >/dev/null; then echo "the app opened with its device: ${seen#*:}"
+            else echo "::warning title=RGCompanion on the Mac::RedGiant.app did not open its app window with a device token (device: ${seen:-none})"; fi
+            pkill -f "RGCompanion.app/Contents/MacOS" || true
+          elif [ "${{ needs.plan.outputs.release }}" = true ]; then
+            echo "a release's Mac app without RGCompanion"; exit 1
+          fi
           /tmp/RedGiant.app/Contents/MacOS/RedGiant --quit
           sleep 3
           if pgrep -fl "RedGiant.app/Contents/Resources" ; then echo "processes left after --quit"; exit 1; fi

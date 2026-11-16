@@ -1,10 +1,11 @@
 // RedGiant.exe (G22; RedGiant 3.0, G30.2: no WSL): what the desktop icon opens on Windows. It
 // starts RedGiant's server with the Node that came with the installer (the server starts its own
 // Postgres), waits until it answers, opens the browser already signed in, and stays next to the
-// clock with "Open RedGiant" and "Quit". Built with the C# compiler of .NET Framework 4, which
+// clock with "Open RedGiant" and "Quit". With RGCompanion in the installation (app\, G40.12) the
+// app's window opens instead of the browser (AppWindow.cs); "Open in the browser" stays. Built with the C# compiler of .NET Framework 4, which
 // every Windows has: no runtime to install.
 //
-//   RedGiant.exe               start (or, if already running, just open the browser)
+//   RedGiant.exe               start (or, if already running, just open the app or the browser)
 //   RedGiant.exe --background  start without opening the browser (start with Windows)
 //   RedGiant.exe --engine-only only the engine on Windows (G24.3b), without the server
 //   RedGiant.exe --quit        asks the running RedGiant to stop (server and database), and waits
@@ -33,6 +34,7 @@ static class Texts
     public static string Title { get { return "RedGiant"; } }
     public static string Starting { get { return It ? "Avvio di RedGiant…" : "Starting RedGiant…"; } }
     public static string Open { get { return It ? "Apri RedGiant" : "Open RedGiant"; } }
+    public static string OpenInBrowser { get { return It ? "Apri nel browser" : "Open in the browser"; } }
     public static string Restart { get { return It ? "Riavvia" : "Restart"; } }
     public static string Quit { get { return It ? "Esci" : "Quit"; } }
     public static string Running { get { return It ? "RedGiant è acceso" : "RedGiant is running"; } }
@@ -90,6 +92,8 @@ sealed class Launcher : ApplicationContext
         new Queue<KeyValuePair<DateTime, long>>();
     Process engine;
     string url;
+    // The server's port while it answers (the app's handoff, G40.12).
+    int serverPort;
     readonly StringBuilder log = new StringBuilder();
 
     public Launcher(bool background, bool updateNow, string rolledBack, bool handover)
@@ -124,12 +128,15 @@ sealed class Launcher : ApplicationContext
         };
 
         var menu = new ContextMenuStrip();
-        menu.Items.Add(Texts.Open, null, (s, e) => OpenBrowser());
+        menu.Items.Add(Texts.Open, null, (s, e) => OpenWindow());
+        // The app's window is what «Open RedGiant» opens (G40.12): the page stays one click away.
+        if (AppWindow.Present(AppDir)) menu.Items.Add(Texts.OpenInBrowser, null, (s, e) => OpenBrowser());
         menu.Items.Add(Texts.Restart, null, (s, e) => { StopEngine(); StartEngine(); });
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add(Texts.Quit, null, (s, e) => Quit());
         tray = new NotifyIcon { Icon = icon, Text = Texts.Title, ContextMenuStrip = menu, Visible = true };
-        tray.DoubleClick += (s, e) => OpenBrowser();
+        tray.DoubleClick += (s, e) => OpenWindow();
+        AppWindow.Log = (line) => Diag.Log("app", line);
 
         if (!File.Exists(NodeExe) || !File.Exists(ServerMain))
         {
@@ -185,7 +192,8 @@ sealed class Launcher : ApplicationContext
             }
             catch (Exception) { }
         }
-        string[] dirs = { Path.Combine(AppDir, "server") + "\\", Path.Combine(AppDir, "node") + "\\" };
+        // The app's window too (G40.12): its files are swapped like the server's.
+        string[] dirs = { Path.Combine(AppDir, "server") + "\\", Path.Combine(AppDir, "node") + "\\", Path.Combine(AppDir, "app") + "\\" };
         foreach (var p in Process.GetProcesses())
         {
             try
@@ -405,6 +413,7 @@ sealed class Launcher : ApplicationContext
                         {
                             Diag.Log("server", "ready after " + (int)(DateTime.Now - startedAt).TotalMilliseconds + " ms");
                             url = "http://localhost:" + port + "/#token=" + token;
+                            serverPort = port;
                             Updates.Healthy();
                             Ui(() =>
                             {
@@ -485,7 +494,7 @@ sealed class Launcher : ApplicationContext
         // Skip stays open too: a breaking release's guide may still ask for the page (OpenPage).
         if (step == PageGate.Step.Wait || step == PageGate.Step.Skip) return;
         firstOpenDone = true;
-        if (step == PageGate.Step.Open) { Diag.Log("page", "opening the page"); OpenBrowser(); return; }
+        if (step == PageGate.Step.Open) { Diag.Log("page", "opening the page"); OpenWindow(); return; }
         string pagesUrl = url.Substring(0, url.IndexOf("/#", StringComparison.Ordinal)).Replace("localhost", "127.0.0.1") + "/api/pages";
         string token = url.Substring(url.IndexOf("#token=", StringComparison.Ordinal) + 7);
         var t = new Thread(() =>
@@ -498,7 +507,7 @@ sealed class Launcher : ApplicationContext
                 if (pages <= 0) Thread.Sleep(500);
             }
             Diag.Log("page", pages > 0 ? "a page came back by itself: no other one" : "no page came back: opening one");
-            if (PageGate.OpenAfterWait(pages)) Ui(OpenBrowser);
+            if (PageGate.OpenAfterWait(pages)) Ui(OpenWindow);
         }) { IsBackground = true };
         t.Start();
     }
@@ -519,6 +528,24 @@ sealed class Launcher : ApplicationContext
             }
         }
         catch (Exception) { return -1; }
+    }
+
+    /**
+     * «Open RedGiant» (G40.12): the app's window when the installation has it, signed in with a
+     * device token of its own (AppWindow.Open, off the UI thread: it asks the server); the browser
+     * when there is no app or it could not open.
+     */
+    void OpenWindow()
+    {
+        if (url == null || !AppWindow.Present(AppDir)) { OpenBrowser(); return; }
+        firstOpenDone = true;
+        int port = serverPort;
+        string token = Token();
+        var t = new Thread(() =>
+        {
+            if (!AppWindow.Open(AppDir, port, token)) { Diag.Log("app", "the app did not open: the browser instead"); Ui(OpenBrowser); }
+        }) { IsBackground = true };
+        t.Start();
     }
 
     void OpenBrowser()
@@ -599,7 +626,7 @@ sealed class Launcher : ApplicationContext
             }
             if (!first)
             {
-                // Already running: the icon just opens the browser through the running one.
+                // Already running: the icon just opens the app (or the browser) through the running one.
                 if (!background) Signal();
                 return;
             }
@@ -625,7 +652,7 @@ sealed class Launcher : ApplicationContext
         var e = new EventWaitHandle(false, EventResetMode.AutoReset, "RedGiant.Launcher.Open");
         var t = new Thread(() =>
         {
-            while (true) { e.WaitOne(); l.Ui(() => l.OpenBrowser()); }
+            while (true) { e.WaitOne(); l.Ui(() => l.OpenWindow()); }
         }) { IsBackground = true };
         t.Start();
         var quit = new EventWaitHandle(false, EventResetMode.AutoReset, "RedGiant.Launcher.Quit");

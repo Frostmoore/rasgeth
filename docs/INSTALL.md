@@ -49,13 +49,24 @@ first, and needs `sudo`). It creates `~/redgiant`, writes the settings in `~/red
 opens the web UI already signed in, where the setup wizard asks for the rest (models, a local model from
 Hugging Face, names, Telegram, safety and costs).
 
+With Docker RedGiant is used from the browser: there is no launcher on Linux, so nothing opens the
+app's window for you. The **RGCompanion** app (since 3.8.1) is something more, never needed: download
+`rgcompanion-linux-x64.tar.gz` from the release, unpack it and run `./install-app.sh` inside (for your
+user only: `~/.local/share/rgcompanion` and an entry in the desktop's menu; `--uninstall` removes it).
+It signs in like on a phone: the address (`http://127.0.0.1:7600` for RedGiant on this computer, or
+another RedGiant on the network) and your password.
+
 ## macOS
 
 Download `RedGiant-mac-arm64.dmg` from the [latest release](https://github.com/Frostmoore/redgiant2/releases/latest)
 (Apple silicon, macOS 13 or newer), open it and drag RedGiant into Applications. It is signed and
 notarized by Apple: it opens without warnings. RedGiant lives in the menu bar (next to the clock):
-it starts its server, opens the browser already signed in, and offers "Open RedGiant", "Start at
-login", "Uninstall RedGiant…" (keeping or deleting the data) and "Quit". Everything it keeps is in
+it starts its server, opens RedGiant already signed in, and offers "Open RedGiant", "Open in the
+browser", "Start at login", "Uninstall RedGiant…" (keeping or deleting the data) and "Quit". Since
+3.8.1 "Open RedGiant" opens the **RGCompanion** app's window, which comes inside RedGiant.app (signed
+and notarized with it): the menu bar program makes it a device token of its own (it shows in Settings
+› Devices) and hands it over without the command line; without the app, or if it cannot open, the
+browser opens as before. Everything it keeps is in
 `~/Library/Application Support/RedGiant`, its logs in `~/Library/Logs/RedGiant`. The local engine
 uses the GPU through Metal (llama.cpp's macOS build, downloaded the first time) and voice messages
 are transcribed on the Mac (whisper with Metal).
@@ -109,8 +120,12 @@ installer brings its own Node and database (data in `%LOCALAPPDATA%\RedGiant\dat
 icon to the desktop and the Start menu, optionally starting with Windows. The local engine (llama.cpp,
 CUDA or Vulkan) runs on Windows too, reachable only from this computer; Codex, Claude Code, Git (when it
 is missing) and local voice transcription are downloaded the first time they are needed. A version
-before 3.0 (the one with WSL) must be uninstalled first. The icon starts RedGiant, opens the browser signed in and stays next to the clock
-("Open RedGiant", "Quit"). Running the setup again updates RedGiant and keeps its data; uninstalling asks
+before 3.0 (the one with WSL) must be uninstalled first. The icon starts RedGiant, opens it signed in and stays next to the clock
+("Open RedGiant", "Open in the browser", "Quit"). Since 3.8.1 the installer carries the **RGCompanion**
+app and "Open RedGiant" opens its window instead of the browser, signed in with a device token the
+launcher makes for it (Settings › Devices lists it; it is handed over in a file only your user can
+open, read once and deleted by the app, never on the command line). Updates bring the app with
+the rest, signed like the rest. Without the app, or if it cannot open, the browser opens as before. Running the setup again updates RedGiant and keeps its data; uninstalling asks
 whether to keep conversations, projects and settings. The installer is not code-signed yet: if SmartScreen
 says "Windows protected your PC", click "More info", then "Run anyway". Windows 10 2004 or newer, x64.
 
