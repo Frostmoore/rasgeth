@@ -199,6 +199,47 @@ static class AppWindow
         return null;
     }
 
+    /**
+     * Before an update replaces (or a rollback puts back) app\ (3.8.2): every program started from
+     * the installation's app\ folder is asked to close (its window's close, so it can save what it
+     * keeps), stopped by force after [graceMs], and waited for, so no file of app\ stays open and
+     * the folder can be moved. This user's processes only; an app installed on its own
+     * (RGCompanion-Setup.exe, another folder) is left alone. Returns how many were running.
+     */
+    public static int CloseAll(string appDir, int graceMs)
+    {
+        string dir = Path.Combine(appDir, "app") + "\\";
+        int self = Process.GetCurrentProcess().Id;
+        var mine = new List<Process>();
+        foreach (var p in Process.GetProcesses())
+        {
+            try
+            {
+                if (p.Id != self && p.MainModule.FileName.StartsWith(dir, StringComparison.OrdinalIgnoreCase)) mine.Add(p);
+            }
+            catch (Exception) { }
+        }
+        if (mine.Count == 0) return 0;
+        foreach (var p in mine)
+        {
+            try { if (!p.HasExited) p.CloseMainWindow(); } catch (Exception) { }
+        }
+        var until = DateTime.UtcNow.AddMilliseconds(graceMs);
+        foreach (var p in mine)
+        {
+            try
+            {
+                int left = (int)Math.Max(0, (until - DateTime.UtcNow).TotalMilliseconds);
+                if (p.WaitForExit(left)) { Log("closed before the update: " + p.ProcessName); continue; }
+                p.Kill();
+                p.WaitForExit(10000);
+                Log("stopped before the update (it did not close in time): " + p.ProcessName);
+            }
+            catch (Exception e) { Log("the app could not be stopped: " + e.Message); }
+        }
+        return mine.Count;
+    }
+
     [DllImport("user32.dll")] static extern bool SetForegroundWindow(IntPtr hWnd);
     [DllImport("user32.dll")] static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
     [DllImport("user32.dll")] static extern bool IsIconic(IntPtr hWnd);

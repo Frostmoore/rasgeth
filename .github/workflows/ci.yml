@@ -186,7 +186,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit 1 }
           # RGCompanion's window (G40.12): the device token, the handoff only this user opens, and
           # the whole opening with a stand-in app (AppStub.exe, also used after the install below).
-          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:AppStub.exe /r:System.Web.Extensions.dll launcher\test\AppStub.cs
+          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:AppStub.exe /r:System.Web.Extensions.dll /r:System.Windows.Forms.dll launcher\test\AppStub.cs
           if ($LASTEXITCODE -ne 0) { exit 1 }
           & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:AppWindowTests.exe /r:System.Web.Extensions.dll launcher\test\AppWindowTests.cs launcher\AppWindow.cs
           if ($LASTEXITCODE -ne 0) { exit 1 }

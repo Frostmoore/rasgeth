@@ -1005,6 +1005,9 @@ static class Updates
             return true;
         }
         Diag.Log("update", s["phase"] == "trial" ? "the new version did not start twice: rolling back" : "a swap was interrupted: undoing it");
+        // The app the version on trial opened holds app\ (3.8.2): closed before app\ goes back.
+        int closed = AppWindow.CloseAll(AppDir, 5000);
+        if (closed > 0) Diag.Log("update", "closed the app (" + closed + ") before the rollback");
         try { Delta.Rollback(AppDir, staging); }
         catch (Exception e) { Diag.Log("update", "rollback failed: " + e.Message); return true; }
         Set("Version", s["from"]);

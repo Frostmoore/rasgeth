@@ -155,8 +155,10 @@ sealed class Launcher : ApplicationContext
         // asked on the splash's thread, whose handle exists even when the splash stays hidden.
         if (!splash.IsHandleCreated) { var unused = splash.Handle; }
         // A differential update (G36.18) stops everything that holds the program's files, then
-        // starts the new RedGiant and leaves.
-        Updates.StopAll = () => { WinEngine.Shutdown(); StopEngine(); StopLeftovers(); };
+        // starts the new RedGiant and leaves. RGCompanion's window first (3.8.2): asked to close,
+        // stopped if it does not, so app\ is free to move; it opens again with the new version
+        // (PageGate: no page came back by itself).
+        Updates.StopAll = () => { AppWindow.CloseAll(AppDir, 5000); WinEngine.Shutdown(); StopEngine(); StopLeftovers(); };
         Updates.Exit = () => { tray.Visible = false; ExitThread(); };
         // A mandatory update's «Close RedGiant», and a breaking one's guide in the page (G36.19).
         Updates.Quit = () => Ui(Quit);

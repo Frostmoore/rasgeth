@@ -8,6 +8,7 @@
 // Exit code 0 when all pass.
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -176,9 +177,73 @@ static class AppWindowTests
             Check(AppWindow.Open(root, none, "t"), "a second opening: brought to the front, no token");
             if (p != null) { p.Kill(); p.WaitForExit(5000); }
             Directory.Delete(root, true);
+
+            CloseBeforeUpdate(args[0]);
         }
 
         Console.WriteLine(passed + " passed, " + failed + " failed");
         return failed == 0 ? 0 : 1;
+    }
+
+    static Process Start(string exe, string args)
+    {
+        return Process.Start(new ProcessStartInfo(exe, args) { UseShellExecute = false, WorkingDirectory = Path.GetDirectoryName(exe) });
+    }
+
+    /**
+     * Before an update replaces app\ (3.8.2): the app is asked to close and closes (its window
+     * gets the close), one that does not is stopped, and app\ can then be moved; the same program
+     * in another folder (RGCompanion installed on its own) is left running.
+     */
+    static void CloseBeforeUpdate(string stub)
+    {
+        string root = Path.Combine(Path.GetTempPath(), "rg-close-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(Path.Combine(root, "app"));
+        string exe = AppWindow.Exe(root);
+        File.Copy(stub, exe);
+        Check(AppWindow.CloseAll(root, 1000) == 0, "nothing running: nothing closed");
+
+        // With a window: closed the proper way, not stopped.
+        string closedFile = Path.Combine(root, "closed.txt");
+        var polite = Start(exe, "--window \"" + closedFile + "\"");
+        for (int i = 0; i < 100; i++)
+        {
+            polite.Refresh();
+            if (polite.MainWindowHandle != IntPtr.Zero) break;
+            Thread.Sleep(100);
+        }
+        // Without a desktop (a service, an SSH session) windows get no handle: nothing to ask, so
+        // the app is stopped like one without a window, and that is what is checked then.
+        bool desktop = polite.MainWindowHandle != IntPtr.Zero;
+        if (!desktop) Console.WriteLine("no desktop here: the proper close is not tried, only the stop");
+        Check(!polite.HasExited, "the stand-in with a window runs");
+        Check(AppWindow.CloseAll(root, desktop ? 10000 : 500) == 1, "one app closed");
+        Check(polite.HasExited, "the app with a window has left");
+        if (desktop) Check(File.Exists(closedFile), "it closed by itself (its window was closed, it was not stopped)");
+
+        // Without a window it cannot be asked: stopped after the grace time. Elsewhere: left alone.
+        string other = Path.Combine(root, "other", "rgcompanion.exe");
+        Directory.CreateDirectory(Path.GetDirectoryName(other));
+        File.Copy(stub, other);
+        var stubborn = Start(exe, "--stubborn");
+        var alone = Start(other, "--stubborn");
+        for (int i = 0; i < 50 && AppWindow.Running(exe) == null; i++) Thread.Sleep(100);
+        var started = DateTime.UtcNow;
+        Check(AppWindow.CloseAll(root, 500) == 1, "only the app in app\\ counts");
+        Check(stubborn.HasExited, "the app that would not close was stopped");
+        Check((DateTime.UtcNow - started).TotalSeconds < 15, "within the grace time and the wait");
+        Check(!alone.HasExited, "the app installed elsewhere still runs");
+
+        // Nothing holds app\ now: the update can move it.
+        bool moved = false;
+        try { Directory.Move(Path.Combine(root, "app"), Path.Combine(root, "app-old")); moved = true; }
+        catch (Exception e) { Console.WriteLine("move: " + e.Message); }
+        Check(moved, "app\\ can be moved once the app is closed");
+
+        try { alone.Kill(); alone.WaitForExit(5000); } catch (Exception) { }
+        for (int i = 0; i < 20; i++)
+        {
+            try { Directory.Delete(root, true); break; } catch (Exception) { Thread.Sleep(250); }
+        }
     }
 }
