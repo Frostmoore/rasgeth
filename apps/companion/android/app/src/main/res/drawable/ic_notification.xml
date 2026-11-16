@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The notifications' small icon (G40.10): a white silhouette, as Android wants it; the
+     RedGiant mark of assets/icon/rgcompanion.svg reduced to a disc with its eyes. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M12,2.5a9.5,9.5 0,1 1,0 19a9.5,9.5 0,1 1,0 -19zM9,9.2a1.6,1.6 0,1 0,0 3.2a1.6,1.6 0,1 0,0 -3.2zM15,9.2a1.6,1.6 0,1 0,0 3.2a1.6,1.6 0,1 0,0 -3.2zM8.4,15.2a4.6,3 0,0 0,7.2 0z"/>
+</vector>

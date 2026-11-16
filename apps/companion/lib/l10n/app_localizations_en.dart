@@ -172,14 +172,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appVersion => 'App version';
 
   @override
-  String get attachmentOnly => '(images)';
+  String get attachmentOnly => '(attachments)';
 
   @override
   String get sendFailed => 'The message did not leave: try again.';
 
   @override
   String attachmentTooBig(String name) {
-    return '$name is over 5 MB.';
+    return '$name is too big to send (over 25 MB).';
   }
 
   @override
@@ -884,7 +884,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get outsideOwnName => 'Your own name (Caddy)';
 
   @override
-  String get pushOff => 'Not on for this device yet.';
+  String get pushOff => 'Not on yet for this device: turn them on in You, Notifications.';
 
   @override
   String pushOn(String target) {
@@ -1663,4 +1663,326 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get refineErr_removed_parts =>
       'The model left out parts that must stay (tools, names). Nothing changed: try again or choose another model.';
+
+  @override
+  String get attachmentNotSent => 'not sent';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationsSub => 'How this device hears from RedGiant when the app is closed';
+
+  @override
+  String get voiceTitle => 'Voice';
+
+  @override
+  String get voiceSub => 'Who reads the answers aloud, and how loud';
+
+  @override
+  String get notifyAllow => 'Yes';
+
+  @override
+  String get notifyDeny => 'No';
+
+  @override
+  String get notifyOpen => 'Open';
+
+  @override
+  String get notifyChannelRequests => 'Requests for you';
+
+  @override
+  String get notifyChannelUpdates => 'Messages and tasks';
+
+  @override
+  String get notifyAnswerFailedTitle => 'The answer did not go';
+
+  @override
+  String get notifyAnswerFailedBody => 'Open the app to answer: the request is still waiting.';
+
+  @override
+  String notifyAsksPermission(String name) {
+    return '$name asks for permission';
+  }
+
+  @override
+  String notifyAsksYou(String name) {
+    return '$name asks you';
+  }
+
+  @override
+  String get notifyCriticalTitle => 'A truly dangerous request: open it to decide';
+
+  @override
+  String get notifyTestTitle => 'Notification test';
+
+  @override
+  String notifyTestBody(String server) {
+    return 'Notifications from $server reach this computer.';
+  }
+
+  @override
+  String get notifyTestShown => 'A test notification is on the screen.';
+
+  @override
+  String get pushStateHead => 'On this device';
+
+  @override
+  String pushOnVia(String via) {
+    return 'On, through $via';
+  }
+
+  @override
+  String get pushOffHere =>
+      'Off on this device: RedGiant cannot tell you anything while the app is closed.';
+
+  @override
+  String get pushWaiting => 'Waiting for the distributor\'s address…';
+
+  @override
+  String pushWaitingEndpoint(String name) {
+    return '$name is preparing this phone\'s address: it takes a few seconds.';
+  }
+
+  @override
+  String get pushNowOn => 'Notifications are on: send a test to see one.';
+
+  @override
+  String get pushNowOff => 'Notifications are off on this device.';
+
+  @override
+  String get pushEndpointNotSent =>
+      'The distributor gave an address, but RedGiant could not be reached: the app tries again at the next start.';
+
+  @override
+  String get pushFailedNetwork => 'The distributor has no network now: try again in a moment.';
+
+  @override
+  String get pushFailedVapid =>
+      'The distributor wants RedGiant\'s VAPID key, which is in the keychain: open the keychain on RedGiant and try again.';
+
+  @override
+  String get pushFailedAction =>
+      'The distributor needs something from you: open it (for example ntfy) and follow what it says.';
+
+  @override
+  String get pushFailedOther =>
+      'Notifications could not be turned on: try again, or choose another distributor.';
+
+  @override
+  String get pushDistributorDropped =>
+      'The distributor stopped this registration: turn notifications on again.';
+
+  @override
+  String pushTurnOn(String name) {
+    return 'Turn on through $name';
+  }
+
+  @override
+  String get pushTurnOff => 'Turn off';
+
+  @override
+  String pushLastError(String error) {
+    return 'The last notification did not go: $error';
+  }
+
+  @override
+  String get pushDistributorHead => 'Distributor (UnifiedPush)';
+
+  @override
+  String get pushDistributorHint =>
+      'The distributor brings RedGiant\'s notifications to this phone, encrypted: you choose it (ntfy, your own ntfy, Sunup…), no Google or RedGiant cloud in between.';
+
+  @override
+  String get pushNoDistributor => 'There is no UnifiedPush distributor on this phone.';
+
+  @override
+  String get pushNoDistributorMeans =>
+      'Without one, RedGiant cannot reach you while the app is closed: you see requests and answers only by opening the app (or in a linked chat, like Telegram).';
+
+  @override
+  String get pushNoDistributorHow =>
+      'To have them: install ntfy (from F-Droid or the Play Store) or another UnifiedPush distributor, then come back here and press «Look again».';
+
+  @override
+  String get pushLookAgain => 'Look again';
+
+  @override
+  String get pushIosLater =>
+      'On iPhone, notifications come with the published app (Apple\'s push service, prepared and switched off until then).';
+
+  @override
+  String get pushIosMeanwhile =>
+      'Meanwhile you see requests with the app open, or in a linked chat (Telegram…).';
+
+  @override
+  String get pushDesktopWhat =>
+      'While the app is open, even behind other windows, requests and questions show as the system\'s notifications, with Yes and No for ordinary requests.';
+
+  @override
+  String get pushDesktopOn => 'System notifications on';
+
+  @override
+  String get pushDesktopOff => 'System notifications off';
+
+  @override
+  String get pushDesktopClosed =>
+      'With the app closed this computer gets nothing: RedGiant\'s page and the linked chats still do.';
+
+  @override
+  String get pushNotHere => 'This system has no notifications for the app.';
+
+  @override
+  String get pushAboutHead => 'How they work';
+
+  @override
+  String get pushAboutSealed =>
+      'Each notification is encrypted for this device with keys made here: the distributor only carries it.';
+
+  @override
+  String get pushAboutCritical =>
+      'A truly dangerous request never has the quick Yes: the notification opens it in the app, on its own screen.';
+
+  @override
+  String get pushAboutWithdrawn =>
+      'A request answered somewhere else (the page, a chat) disappears from here too.';
+
+  @override
+  String get shareTitle => 'Share to RedGiant';
+
+  @override
+  String get shareWhat => 'What you are sharing';
+
+  @override
+  String get shareTo => 'To whom';
+
+  @override
+  String get shareToChatHint => 'A new conversation';
+
+  @override
+  String get shareNoteHint => 'Add a note…';
+
+  @override
+  String get voiceReaderHead => 'Who reads the answers';
+
+  @override
+  String get voiceModelHead => 'Model';
+
+  @override
+  String get voiceVoiceHead => 'Voice';
+
+  @override
+  String get voiceAccountVoice => 'The voice is the one of the account with the key.';
+
+  @override
+  String get voiceVolumeHead => 'Volume';
+
+  @override
+  String get voiceVolumeHint =>
+      'Up to the system\'s full volume: the phone\'s own buttons make it louder.';
+
+  @override
+  String get voiceTry => 'Try the voice';
+
+  @override
+  String get voiceStop => 'Stop';
+
+  @override
+  String get voiceReadAloud => 'Read aloud';
+
+  @override
+  String get voiceTrySentence => 'Hello, this is how I read the answers.';
+
+  @override
+  String get voiceNoReader => 'RedGiant has no voice to read with yet.';
+
+  @override
+  String get voiceNoReaderHow =>
+      'Add a key for OpenAI, ElevenLabs or Google Gemini in RedGiant\'s Settings, Voice: then choose it here.';
+
+  @override
+  String get voiceTalkHead => 'Press and talk';
+
+  @override
+  String get voiceTalkWhat =>
+      'In a conversation, hold the microphone down while you speak: let go and what you said is written in the field, to read before sending.';
+
+  @override
+  String get voiceTalkWhere =>
+      'It is written down by RedGiant\'s transcription (Settings, Voice, Transcription), the same as the page\'s.';
+
+  @override
+  String get voiceHoldToTalk => 'Hold down to talk';
+
+  @override
+  String get voiceListening => 'Listening… let go to finish';
+
+  @override
+  String get voiceWriting => 'Writing down what you said…';
+
+  @override
+  String get voiceTooShort => 'Too short: hold the microphone down while you speak.';
+
+  @override
+  String get voiceHeardNothing => 'I did not hear any words: try again closer to the phone.';
+
+  @override
+  String get voiceMicDenied =>
+      'The microphone is not allowed: allow it in the system\'s settings for RGCompanion.';
+
+  @override
+  String get voiceMicFailed => 'The microphone did not start: is another app using it?';
+
+  @override
+  String get voiceErrNoService =>
+      'RedGiant has no transcription service: choose one in Settings, Voice, Transcription.';
+
+  @override
+  String voiceErrNoKey(String name) {
+    return '$name has no key yet: add it in Settings, Voice.';
+  }
+
+  @override
+  String get voiceErrEmpty => 'The recording is empty.';
+
+  @override
+  String get voiceErrTooLong => 'The recording is too long.';
+
+  @override
+  String get voiceErrConvert =>
+      'The recording could not be converted for whisper on RedGiant\'s computer.';
+
+  @override
+  String voiceErrTimeout(String name) {
+    return '$name took too long to answer.';
+  }
+
+  @override
+  String voiceErrUnreachable(String name) {
+    return '$name cannot be reached: check that it is on and its address.';
+  }
+
+  @override
+  String voiceErrKeyRefused(String name) {
+    return '$name refused the key: check it in Settings, Voice.';
+  }
+
+  @override
+  String voiceErrRateLimited(String name) {
+    return '$name says too many requests or no credit left.';
+  }
+
+  @override
+  String voiceErrServiceError(String name, String status) {
+    return '$name answered with an error ($status).';
+  }
+
+  @override
+  String get voiceErrProvider => 'This provider cannot do it: choose another one.';
+
+  @override
+  String get voiceErrServer => 'RedGiant cannot be reached: check the connection.';
+
+  @override
+  String get voiceErrOther => 'The voice did not work: try again.';
 }

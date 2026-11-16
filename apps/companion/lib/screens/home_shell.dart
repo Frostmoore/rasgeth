@@ -1,6 +1,8 @@
 // Proposal A «La squadra» (study G40 section 4.1, decision D9): the bar at the bottom
 // (Team | Chat | For you | Activity | You) and, right over it, the Chat's field, always there: it
 // starts a new conversation with Chat at once.
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../app_state.dart';
@@ -9,12 +11,62 @@ import '../theme/colors.dart';
 import '../ui/icons.dart';
 import 'activity_screen.dart';
 import 'chat_screen.dart';
+import 'conversation_screen.dart';
 import 'inbox_screen.dart';
+import 'share_screen.dart';
 import 'team_screen.dart';
 import 'you_screen.dart';
 
-class HomeShell extends StatelessWidget {
+class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
+
+  @override
+  State<HomeShell> createState() => _HomeShellState();
+}
+
+class _HomeShellState extends State<HomeShell> {
+  late final AppController _app;
+  bool _sharing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _app = AppScope.read(context);
+    _app.addListener(_opens);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _opens());
+  }
+
+  @override
+  void dispose() {
+    _app.removeListener(_opens);
+    super.dispose();
+  }
+
+  /// What came from outside: something shared from another app (G40.10), or a notification's
+  /// conversation.
+  void _opens() {
+    if (!mounted || !_app.connected) return;
+    final items = _app.pendingShare;
+    if (items != null && !_sharing) {
+      _sharing = true;
+      unawaited(
+        Navigator.of(context)
+            .push(MaterialPageRoute<void>(builder: (_) => ShareScreen(items: items)))
+            .whenComplete(() {
+              _sharing = false;
+              // Gone back without sending: put aside.
+              if (identical(_app.pendingShare, items)) _app.shareHandled();
+            }),
+      );
+    }
+    final sid = _app.takePendingSession();
+    if (sid != null) {
+      unawaited(
+        Navigator.of(context)
+            .push(MaterialPageRoute<void>(builder: (_) => ConversationScreen(sessionId: sid))),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

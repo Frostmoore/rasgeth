@@ -125,6 +125,17 @@ class FakeRedGiant {
     },
   ];
   final pushTests = <String>[];
+
+  // G40.10: notifications, voice and the files the composer writes.
+  String? vapidPublicKey = 'BPvapid-public-key';
+  final pushRegistrations = <String, Map<String, dynamic>>{};
+  final pushDeletes = <String>[];
+  final transcribed = <({String mime, String lang, int bytes})>[];
+  String transcription = 'che ore sono a Roma';
+  Map<String, dynamic>? transcribeError;
+  final speeches = <Map<String, dynamic>>[];
+  Map<String, dynamic>? speechError;
+  final written = <Map<String, dynamic>>[];
   Map<String, dynamic> setup = {
     'config': {
       'completed': true,
@@ -492,6 +503,53 @@ class FakeRedGiant {
       return _json(r, 200, {'ok': true});
     }
     if (r.method == 'GET' && path == '/api/setup') return _json(r, 200, setup);
+    if (r.method == 'GET' && path == '/api/app/push') {
+      return _json(r, 200, {'vapidPublicKey': vapidPublicKey, 'apns': false});
+    }
+    final pr = RegExp(r'^/api/devices/([^/]+)/push$').firstMatch(path);
+    if (pr != null && r.method == 'PUT') {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      pushRegistrations[pr.group(1)!] = b;
+      return _json(r, 200, {
+        'kind': b['kind'],
+        'registeredAt': '2026-11-16T10:00:00.000Z',
+        'target': b['kind'] == 'webpush' ? Uri.parse(b['endpoint'] as String).host : 'APNs',
+        'lastSentAt': null,
+        'lastError': null,
+      });
+    }
+    if (pr != null && r.method == 'DELETE') {
+      pushDeletes.add(pr.group(1)!);
+      if (pushRegistrations.remove(pr.group(1)) == null) {
+        return _json(r, 404, {'error': 'No notifications registered'});
+      }
+      return _json(r, 200, {'ok': true});
+    }
+    if (r.method == 'POST' && path == '/api/transcribe') {
+      final bytes = await r.fold<List<int>>([], (a, b) => a..addAll(b));
+      transcribed.add((
+        mime: r.headers.contentType?.mimeType ?? '',
+        lang: r.uri.queryParameters['lang'] ?? '',
+        bytes: bytes.length,
+      ));
+      final e = transcribeError;
+      if (e != null) return _json(r, 502, e);
+      return _json(r, 200, {'text': transcription});
+    }
+    if (r.method == 'POST' && path == '/api/voice/speech') {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      speeches.add(b);
+      final e = speechError;
+      if (e != null) return _json(r, 400, e);
+      r.response.headers.contentType = ContentType('audio', 'mpeg');
+      r.response.add(List<int>.filled(64, 7));
+      return r.response.close();
+    }
+    if (r.method == 'PUT' && path == '/api/files/content') {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      written.add(b);
+      return _json(r, 200, {'path': b['path'], 'modifiedAt': '2026-11-16T10:00:00.000Z'});
+    }
     if (r.method == 'GET' && path == '/api/models') {
       return _json(r, 200, [
         // The same model through the subscription and the API key (G40.9b).

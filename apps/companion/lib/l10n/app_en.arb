@@ -76,9 +76,9 @@
     }
   },
   "appVersion": "App version",
-  "attachmentOnly": "(images)",
+  "attachmentOnly": "(attachments)",
   "sendFailed": "The message did not leave: try again.",
-  "attachmentTooBig": "{name} is over 5 MB.",
+  "attachmentTooBig": "{name} is too big to send (over 25 MB).",
   "@attachmentTooBig": {
     "placeholders": {
       "name": {
@@ -446,7 +446,7 @@
   "outsideNone": "Only from the home network. Tailscale, Cloudflare or your own name: in «All settings».",
   "outsideOwn": "Your own way in",
   "outsideOwnName": "Your own name (Caddy)",
-  "pushOff": "Not on for this device yet.",
+  "pushOff": "Not on yet for this device: turn them on in You, Notifications.",
   "pushOn": "On, through {target}",
   "@pushOn": {
     "placeholders": {
@@ -999,5 +999,190 @@
   "refineErr_budget": "The budget is used up: raise it in Settings, Budget.",
   "refineErr_no_model": "No model is connected: connect one in Settings, Models.",
   "refineErr_no_answer": "The model gave no usable text. Try again or choose another model.",
-  "refineErr_removed_parts": "The model left out parts that must stay (tools, names). Nothing changed: try again or choose another model."
+  "refineErr_removed_parts": "The model left out parts that must stay (tools, names). Nothing changed: try again or choose another model.",
+  "attachmentNotSent": "not sent",
+  "notificationsTitle": "Notifications",
+  "notificationsSub": "How this device hears from RedGiant when the app is closed",
+  "voiceTitle": "Voice",
+  "voiceSub": "Who reads the answers aloud, and how loud",
+  "notifyAllow": "Yes",
+  "notifyDeny": "No",
+  "notifyOpen": "Open",
+  "notifyChannelRequests": "Requests for you",
+  "notifyChannelUpdates": "Messages and tasks",
+  "notifyAnswerFailedTitle": "The answer did not go",
+  "notifyAnswerFailedBody": "Open the app to answer: the request is still waiting.",
+  "notifyAsksPermission": "{name} asks for permission",
+  "@notifyAsksPermission": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notifyAsksYou": "{name} asks you",
+  "@notifyAsksYou": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notifyCriticalTitle": "A truly dangerous request: open it to decide",
+  "notifyTestTitle": "Notification test",
+  "notifyTestBody": "Notifications from {server} reach this computer.",
+  "@notifyTestBody": {
+    "placeholders": {
+      "server": {
+        "type": "String"
+      }
+    }
+  },
+  "notifyTestShown": "A test notification is on the screen.",
+  "pushStateHead": "On this device",
+  "pushOnVia": "On, through {via}",
+  "@pushOnVia": {
+    "placeholders": {
+      "via": {
+        "type": "String"
+      }
+    }
+  },
+  "pushOffHere": "Off on this device: RedGiant cannot tell you anything while the app is closed.",
+  "pushWaiting": "Waiting for the distributor's address…",
+  "pushWaitingEndpoint": "{name} is preparing this phone's address: it takes a few seconds.",
+  "@pushWaitingEndpoint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pushNowOn": "Notifications are on: send a test to see one.",
+  "pushNowOff": "Notifications are off on this device.",
+  "pushEndpointNotSent": "The distributor gave an address, but RedGiant could not be reached: the app tries again at the next start.",
+  "pushFailedNetwork": "The distributor has no network now: try again in a moment.",
+  "pushFailedVapid": "The distributor wants RedGiant's VAPID key, which is in the keychain: open the keychain on RedGiant and try again.",
+  "pushFailedAction": "The distributor needs something from you: open it (for example ntfy) and follow what it says.",
+  "pushFailedOther": "Notifications could not be turned on: try again, or choose another distributor.",
+  "pushDistributorDropped": "The distributor stopped this registration: turn notifications on again.",
+  "pushTurnOn": "Turn on through {name}",
+  "@pushTurnOn": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pushTurnOff": "Turn off",
+  "pushLastError": "The last notification did not go: {error}",
+  "@pushLastError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pushDistributorHead": "Distributor (UnifiedPush)",
+  "pushDistributorHint": "The distributor brings RedGiant's notifications to this phone, encrypted: you choose it (ntfy, your own ntfy, Sunup…), no Google or RedGiant cloud in between.",
+  "pushNoDistributor": "There is no UnifiedPush distributor on this phone.",
+  "pushNoDistributorMeans": "Without one, RedGiant cannot reach you while the app is closed: you see requests and answers only by opening the app (or in a linked chat, like Telegram).",
+  "pushNoDistributorHow": "To have them: install ntfy (from F-Droid or the Play Store) or another UnifiedPush distributor, then come back here and press «Look again».",
+  "pushLookAgain": "Look again",
+  "pushIosLater": "On iPhone, notifications come with the published app (Apple's push service, prepared and switched off until then).",
+  "pushIosMeanwhile": "Meanwhile you see requests with the app open, or in a linked chat (Telegram…).",
+  "pushDesktopWhat": "While the app is open, even behind other windows, requests and questions show as the system's notifications, with Yes and No for ordinary requests.",
+  "pushDesktopOn": "System notifications on",
+  "pushDesktopOff": "System notifications off",
+  "pushDesktopClosed": "With the app closed this computer gets nothing: RedGiant's page and the linked chats still do.",
+  "pushNotHere": "This system has no notifications for the app.",
+  "pushAboutHead": "How they work",
+  "pushAboutSealed": "Each notification is encrypted for this device with keys made here: the distributor only carries it.",
+  "pushAboutCritical": "A truly dangerous request never has the quick Yes: the notification opens it in the app, on its own screen.",
+  "pushAboutWithdrawn": "A request answered somewhere else (the page, a chat) disappears from here too.",
+  "shareTitle": "Share to RedGiant",
+  "shareWhat": "What you are sharing",
+  "shareTo": "To whom",
+  "shareToChatHint": "A new conversation",
+  "shareNoteHint": "Add a note…",
+  "voiceReaderHead": "Who reads the answers",
+  "voiceModelHead": "Model",
+  "voiceVoiceHead": "Voice",
+  "voiceAccountVoice": "The voice is the one of the account with the key.",
+  "voiceVolumeHead": "Volume",
+  "voiceVolumeHint": "Up to the system's full volume: the phone's own buttons make it louder.",
+  "voiceTry": "Try the voice",
+  "voiceStop": "Stop",
+  "voiceReadAloud": "Read aloud",
+  "voiceTrySentence": "Hello, this is how I read the answers.",
+  "voiceNoReader": "RedGiant has no voice to read with yet.",
+  "voiceNoReaderHow": "Add a key for OpenAI, ElevenLabs or Google Gemini in RedGiant's Settings, Voice: then choose it here.",
+  "voiceTalkHead": "Press and talk",
+  "voiceTalkWhat": "In a conversation, hold the microphone down while you speak: let go and what you said is written in the field, to read before sending.",
+  "voiceTalkWhere": "It is written down by RedGiant's transcription (Settings, Voice, Transcription), the same as the page's.",
+  "voiceHoldToTalk": "Hold down to talk",
+  "voiceListening": "Listening… let go to finish",
+  "voiceWriting": "Writing down what you said…",
+  "voiceTooShort": "Too short: hold the microphone down while you speak.",
+  "voiceHeardNothing": "I did not hear any words: try again closer to the phone.",
+  "voiceMicDenied": "The microphone is not allowed: allow it in the system's settings for RGCompanion.",
+  "voiceMicFailed": "The microphone did not start: is another app using it?",
+  "voiceErrNoService": "RedGiant has no transcription service: choose one in Settings, Voice, Transcription.",
+  "voiceErrNoKey": "{name} has no key yet: add it in Settings, Voice.",
+  "@voiceErrNoKey": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceErrEmpty": "The recording is empty.",
+  "voiceErrTooLong": "The recording is too long.",
+  "voiceErrConvert": "The recording could not be converted for whisper on RedGiant's computer.",
+  "voiceErrTimeout": "{name} took too long to answer.",
+  "@voiceErrTimeout": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceErrUnreachable": "{name} cannot be reached: check that it is on and its address.",
+  "@voiceErrUnreachable": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceErrKeyRefused": "{name} refused the key: check it in Settings, Voice.",
+  "@voiceErrKeyRefused": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceErrRateLimited": "{name} says too many requests or no credit left.",
+  "@voiceErrRateLimited": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceErrServiceError": "{name} answered with an error ({status}).",
+  "@voiceErrServiceError": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceErrProvider": "This provider cannot do it: choose another one.",
+  "voiceErrServer": "RedGiant cannot be reached: check the connection.",
+  "voiceErrOther": "The voice did not work: try again."
 }

@@ -408,7 +408,7 @@ abstract class AppLocalizations {
   /// No description provided for @attachmentOnly.
   ///
   /// In en, this message translates to:
-  /// **'(images)'**
+  /// **'(attachments)'**
   String get attachmentOnly;
 
   /// No description provided for @sendFailed.
@@ -420,7 +420,7 @@ abstract class AppLocalizations {
   /// No description provided for @attachmentTooBig.
   ///
   /// In en, this message translates to:
-  /// **'{name} is over 5 MB.'**
+  /// **'{name} is too big to send (over 25 MB).'**
   String attachmentTooBig(String name);
 
   /// No description provided for @notLive.
@@ -1668,7 +1668,7 @@ abstract class AppLocalizations {
   /// No description provided for @pushOff.
   ///
   /// In en, this message translates to:
-  /// **'Not on for this device yet.'**
+  /// **'Not on yet for this device: turn them on in You, Notifications.'**
   String get pushOff;
 
   /// No description provided for @pushOn.
@@ -3008,6 +3008,552 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The model left out parts that must stay (tools, names). Nothing changed: try again or choose another model.'**
   String get refineErr_removed_parts;
+
+  /// No description provided for @attachmentNotSent.
+  ///
+  /// In en, this message translates to:
+  /// **'not sent'**
+  String get attachmentNotSent;
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationsTitle;
+
+  /// No description provided for @notificationsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'How this device hears from RedGiant when the app is closed'**
+  String get notificationsSub;
+
+  /// No description provided for @voiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get voiceTitle;
+
+  /// No description provided for @voiceSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Who reads the answers aloud, and how loud'**
+  String get voiceSub;
+
+  /// No description provided for @notifyAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get notifyAllow;
+
+  /// No description provided for @notifyDeny.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get notifyDeny;
+
+  /// No description provided for @notifyOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get notifyOpen;
+
+  /// No description provided for @notifyChannelRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests for you'**
+  String get notifyChannelRequests;
+
+  /// No description provided for @notifyChannelUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages and tasks'**
+  String get notifyChannelUpdates;
+
+  /// No description provided for @notifyAnswerFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The answer did not go'**
+  String get notifyAnswerFailedTitle;
+
+  /// No description provided for @notifyAnswerFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the app to answer: the request is still waiting.'**
+  String get notifyAnswerFailedBody;
+
+  /// No description provided for @notifyAsksPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} asks for permission'**
+  String notifyAsksPermission(String name);
+
+  /// No description provided for @notifyAsksYou.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} asks you'**
+  String notifyAsksYou(String name);
+
+  /// No description provided for @notifyCriticalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A truly dangerous request: open it to decide'**
+  String get notifyCriticalTitle;
+
+  /// No description provided for @notifyTestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification test'**
+  String get notifyTestTitle;
+
+  /// No description provided for @notifyTestBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications from {server} reach this computer.'**
+  String notifyTestBody(String server);
+
+  /// No description provided for @notifyTestShown.
+  ///
+  /// In en, this message translates to:
+  /// **'A test notification is on the screen.'**
+  String get notifyTestShown;
+
+  /// No description provided for @pushStateHead.
+  ///
+  /// In en, this message translates to:
+  /// **'On this device'**
+  String get pushStateHead;
+
+  /// No description provided for @pushOnVia.
+  ///
+  /// In en, this message translates to:
+  /// **'On, through {via}'**
+  String pushOnVia(String via);
+
+  /// No description provided for @pushOffHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Off on this device: RedGiant cannot tell you anything while the app is closed.'**
+  String get pushOffHere;
+
+  /// No description provided for @pushWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the distributor\'s address…'**
+  String get pushWaiting;
+
+  /// No description provided for @pushWaitingEndpoint.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is preparing this phone\'s address: it takes a few seconds.'**
+  String pushWaitingEndpoint(String name);
+
+  /// No description provided for @pushNowOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are on: send a test to see one.'**
+  String get pushNowOn;
+
+  /// No description provided for @pushNowOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are off on this device.'**
+  String get pushNowOff;
+
+  /// No description provided for @pushEndpointNotSent.
+  ///
+  /// In en, this message translates to:
+  /// **'The distributor gave an address, but RedGiant could not be reached: the app tries again at the next start.'**
+  String get pushEndpointNotSent;
+
+  /// No description provided for @pushFailedNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'The distributor has no network now: try again in a moment.'**
+  String get pushFailedNetwork;
+
+  /// No description provided for @pushFailedVapid.
+  ///
+  /// In en, this message translates to:
+  /// **'The distributor wants RedGiant\'s VAPID key, which is in the keychain: open the keychain on RedGiant and try again.'**
+  String get pushFailedVapid;
+
+  /// No description provided for @pushFailedAction.
+  ///
+  /// In en, this message translates to:
+  /// **'The distributor needs something from you: open it (for example ntfy) and follow what it says.'**
+  String get pushFailedAction;
+
+  /// No description provided for @pushFailedOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications could not be turned on: try again, or choose another distributor.'**
+  String get pushFailedOther;
+
+  /// No description provided for @pushDistributorDropped.
+  ///
+  /// In en, this message translates to:
+  /// **'The distributor stopped this registration: turn notifications on again.'**
+  String get pushDistributorDropped;
+
+  /// No description provided for @pushTurnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on through {name}'**
+  String pushTurnOn(String name);
+
+  /// No description provided for @pushTurnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get pushTurnOff;
+
+  /// No description provided for @pushLastError.
+  ///
+  /// In en, this message translates to:
+  /// **'The last notification did not go: {error}'**
+  String pushLastError(String error);
+
+  /// No description provided for @pushDistributorHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Distributor (UnifiedPush)'**
+  String get pushDistributorHead;
+
+  /// No description provided for @pushDistributorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The distributor brings RedGiant\'s notifications to this phone, encrypted: you choose it (ntfy, your own ntfy, Sunup…), no Google or RedGiant cloud in between.'**
+  String get pushDistributorHint;
+
+  /// No description provided for @pushNoDistributor.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no UnifiedPush distributor on this phone.'**
+  String get pushNoDistributor;
+
+  /// No description provided for @pushNoDistributorMeans.
+  ///
+  /// In en, this message translates to:
+  /// **'Without one, RedGiant cannot reach you while the app is closed: you see requests and answers only by opening the app (or in a linked chat, like Telegram).'**
+  String get pushNoDistributorMeans;
+
+  /// No description provided for @pushNoDistributorHow.
+  ///
+  /// In en, this message translates to:
+  /// **'To have them: install ntfy (from F-Droid or the Play Store) or another UnifiedPush distributor, then come back here and press «Look again».'**
+  String get pushNoDistributorHow;
+
+  /// No description provided for @pushLookAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Look again'**
+  String get pushLookAgain;
+
+  /// No description provided for @pushIosLater.
+  ///
+  /// In en, this message translates to:
+  /// **'On iPhone, notifications come with the published app (Apple\'s push service, prepared and switched off until then).'**
+  String get pushIosLater;
+
+  /// No description provided for @pushIosMeanwhile.
+  ///
+  /// In en, this message translates to:
+  /// **'Meanwhile you see requests with the app open, or in a linked chat (Telegram…).'**
+  String get pushIosMeanwhile;
+
+  /// No description provided for @pushDesktopWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'While the app is open, even behind other windows, requests and questions show as the system\'s notifications, with Yes and No for ordinary requests.'**
+  String get pushDesktopWhat;
+
+  /// No description provided for @pushDesktopOn.
+  ///
+  /// In en, this message translates to:
+  /// **'System notifications on'**
+  String get pushDesktopOn;
+
+  /// No description provided for @pushDesktopOff.
+  ///
+  /// In en, this message translates to:
+  /// **'System notifications off'**
+  String get pushDesktopOff;
+
+  /// No description provided for @pushDesktopClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'With the app closed this computer gets nothing: RedGiant\'s page and the linked chats still do.'**
+  String get pushDesktopClosed;
+
+  /// No description provided for @pushNotHere.
+  ///
+  /// In en, this message translates to:
+  /// **'This system has no notifications for the app.'**
+  String get pushNotHere;
+
+  /// No description provided for @pushAboutHead.
+  ///
+  /// In en, this message translates to:
+  /// **'How they work'**
+  String get pushAboutHead;
+
+  /// No description provided for @pushAboutSealed.
+  ///
+  /// In en, this message translates to:
+  /// **'Each notification is encrypted for this device with keys made here: the distributor only carries it.'**
+  String get pushAboutSealed;
+
+  /// No description provided for @pushAboutCritical.
+  ///
+  /// In en, this message translates to:
+  /// **'A truly dangerous request never has the quick Yes: the notification opens it in the app, on its own screen.'**
+  String get pushAboutCritical;
+
+  /// No description provided for @pushAboutWithdrawn.
+  ///
+  /// In en, this message translates to:
+  /// **'A request answered somewhere else (the page, a chat) disappears from here too.'**
+  String get pushAboutWithdrawn;
+
+  /// No description provided for @shareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share to RedGiant'**
+  String get shareTitle;
+
+  /// No description provided for @shareWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'What you are sharing'**
+  String get shareWhat;
+
+  /// No description provided for @shareTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To whom'**
+  String get shareTo;
+
+  /// No description provided for @shareToChatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A new conversation'**
+  String get shareToChatHint;
+
+  /// No description provided for @shareNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a note…'**
+  String get shareNoteHint;
+
+  /// No description provided for @voiceReaderHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Who reads the answers'**
+  String get voiceReaderHead;
+
+  /// No description provided for @voiceModelHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get voiceModelHead;
+
+  /// No description provided for @voiceVoiceHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get voiceVoiceHead;
+
+  /// No description provided for @voiceAccountVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'The voice is the one of the account with the key.'**
+  String get voiceAccountVoice;
+
+  /// No description provided for @voiceVolumeHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get voiceVolumeHead;
+
+  /// No description provided for @voiceVolumeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to the system\'s full volume: the phone\'s own buttons make it louder.'**
+  String get voiceVolumeHint;
+
+  /// No description provided for @voiceTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try the voice'**
+  String get voiceTry;
+
+  /// No description provided for @voiceStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get voiceStop;
+
+  /// No description provided for @voiceReadAloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Read aloud'**
+  String get voiceReadAloud;
+
+  /// No description provided for @voiceTrySentence.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello, this is how I read the answers.'**
+  String get voiceTrySentence;
+
+  /// No description provided for @voiceNoReader.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant has no voice to read with yet.'**
+  String get voiceNoReader;
+
+  /// No description provided for @voiceNoReaderHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a key for OpenAI, ElevenLabs or Google Gemini in RedGiant\'s Settings, Voice: then choose it here.'**
+  String get voiceNoReaderHow;
+
+  /// No description provided for @voiceTalkHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Press and talk'**
+  String get voiceTalkHead;
+
+  /// No description provided for @voiceTalkWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'In a conversation, hold the microphone down while you speak: let go and what you said is written in the field, to read before sending.'**
+  String get voiceTalkWhat;
+
+  /// No description provided for @voiceTalkWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'It is written down by RedGiant\'s transcription (Settings, Voice, Transcription), the same as the page\'s.'**
+  String get voiceTalkWhere;
+
+  /// No description provided for @voiceHoldToTalk.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold down to talk'**
+  String get voiceHoldToTalk;
+
+  /// No description provided for @voiceListening.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening… let go to finish'**
+  String get voiceListening;
+
+  /// No description provided for @voiceWriting.
+  ///
+  /// In en, this message translates to:
+  /// **'Writing down what you said…'**
+  String get voiceWriting;
+
+  /// No description provided for @voiceTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Too short: hold the microphone down while you speak.'**
+  String get voiceTooShort;
+
+  /// No description provided for @voiceHeardNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'I did not hear any words: try again closer to the phone.'**
+  String get voiceHeardNothing;
+
+  /// No description provided for @voiceMicDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'The microphone is not allowed: allow it in the system\'s settings for RGCompanion.'**
+  String get voiceMicDenied;
+
+  /// No description provided for @voiceMicFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The microphone did not start: is another app using it?'**
+  String get voiceMicFailed;
+
+  /// No description provided for @voiceErrNoService.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant has no transcription service: choose one in Settings, Voice, Transcription.'**
+  String get voiceErrNoService;
+
+  /// No description provided for @voiceErrNoKey.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has no key yet: add it in Settings, Voice.'**
+  String voiceErrNoKey(String name);
+
+  /// No description provided for @voiceErrEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The recording is empty.'**
+  String get voiceErrEmpty;
+
+  /// No description provided for @voiceErrTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'The recording is too long.'**
+  String get voiceErrTooLong;
+
+  /// No description provided for @voiceErrConvert.
+  ///
+  /// In en, this message translates to:
+  /// **'The recording could not be converted for whisper on RedGiant\'s computer.'**
+  String get voiceErrConvert;
+
+  /// No description provided for @voiceErrTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} took too long to answer.'**
+  String voiceErrTimeout(String name);
+
+  /// No description provided for @voiceErrUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} cannot be reached: check that it is on and its address.'**
+  String voiceErrUnreachable(String name);
+
+  /// No description provided for @voiceErrKeyRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} refused the key: check it in Settings, Voice.'**
+  String voiceErrKeyRefused(String name);
+
+  /// No description provided for @voiceErrRateLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} says too many requests or no credit left.'**
+  String voiceErrRateLimited(String name);
+
+  /// No description provided for @voiceErrServiceError.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} answered with an error ({status}).'**
+  String voiceErrServiceError(String name, String status);
+
+  /// No description provided for @voiceErrProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'This provider cannot do it: choose another one.'**
+  String get voiceErrProvider;
+
+  /// No description provided for @voiceErrServer.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant cannot be reached: check the connection.'**
+  String get voiceErrServer;
+
+  /// No description provided for @voiceErrOther.
+  ///
+  /// In en, this message translates to:
+  /// **'The voice did not work: try again.'**
+  String get voiceErrOther;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

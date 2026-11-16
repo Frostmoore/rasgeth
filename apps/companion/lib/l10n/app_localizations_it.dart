@@ -173,14 +173,14 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appVersion => 'Versione dell\'app';
 
   @override
-  String get attachmentOnly => '(immagini)';
+  String get attachmentOnly => '(allegati)';
 
   @override
   String get sendFailed => 'Il messaggio non è partito: riprova.';
 
   @override
   String attachmentTooBig(String name) {
-    return '$name supera i 5 MB.';
+    return '$name è troppo grande da inviare (oltre 25 MB).';
   }
 
   @override
@@ -888,7 +888,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get outsideOwnName => 'Un tuo nome (Caddy)';
 
   @override
-  String get pushOff => 'Non ancora attive per questo dispositivo.';
+  String get pushOff => 'Non ancora attive per questo dispositivo: attivale in Tu, Notifiche.';
 
   @override
   String pushOn(String target) {
@@ -1667,4 +1667,326 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get refineErr_removed_parts =>
       'Il modello ha tolto parti che devono restare (strumenti, nomi). Non è cambiato niente: riprova o scegli un altro modello.';
+
+  @override
+  String get attachmentNotSent => 'non inviato';
+
+  @override
+  String get notificationsTitle => 'Notifiche';
+
+  @override
+  String get notificationsSub => 'Come questo dispositivo sa da RedGiant quando l\'app è chiusa';
+
+  @override
+  String get voiceTitle => 'Voce';
+
+  @override
+  String get voiceSub => 'Chi legge le risposte ad alta voce, e quanto forte';
+
+  @override
+  String get notifyAllow => 'Sì';
+
+  @override
+  String get notifyDeny => 'No';
+
+  @override
+  String get notifyOpen => 'Apri';
+
+  @override
+  String get notifyChannelRequests => 'Richieste per te';
+
+  @override
+  String get notifyChannelUpdates => 'Messaggi e compiti';
+
+  @override
+  String get notifyAnswerFailedTitle => 'La risposta non è partita';
+
+  @override
+  String get notifyAnswerFailedBody => 'Apri l\'app per rispondere: la richiesta aspetta ancora.';
+
+  @override
+  String notifyAsksPermission(String name) {
+    return '$name chiede il permesso';
+  }
+
+  @override
+  String notifyAsksYou(String name) {
+    return '$name ti chiede';
+  }
+
+  @override
+  String get notifyCriticalTitle => 'Una richiesta davvero pericolosa: aprila per decidere';
+
+  @override
+  String get notifyTestTitle => 'Prova delle notifiche';
+
+  @override
+  String notifyTestBody(String server) {
+    return 'Le notifiche di $server arrivano su questo computer.';
+  }
+
+  @override
+  String get notifyTestShown => 'Una notifica di prova è sullo schermo.';
+
+  @override
+  String get pushStateHead => 'Su questo dispositivo';
+
+  @override
+  String pushOnVia(String via) {
+    return 'Attive, attraverso $via';
+  }
+
+  @override
+  String get pushOffHere =>
+      'Spente su questo dispositivo: con l\'app chiusa RedGiant non può avvisarti.';
+
+  @override
+  String get pushWaiting => 'Aspetto l\'indirizzo dal distributore…';
+
+  @override
+  String pushWaitingEndpoint(String name) {
+    return '$name sta preparando l\'indirizzo di questo telefono: ci vuole qualche secondo.';
+  }
+
+  @override
+  String get pushNowOn => 'Le notifiche sono attive: manda una prova per vederne una.';
+
+  @override
+  String get pushNowOff => 'Notifiche spente su questo dispositivo.';
+
+  @override
+  String get pushEndpointNotSent =>
+      'Il distributore ha dato un indirizzo, ma RedGiant non si raggiunge: l\'app riprova al prossimo avvio.';
+
+  @override
+  String get pushFailedNetwork => 'Il distributore adesso non ha rete: riprova fra poco.';
+
+  @override
+  String get pushFailedVapid =>
+      'Il distributore vuole la chiave VAPID di RedGiant, che sta nel portachiavi: apri il portachiavi su RedGiant e riprova.';
+
+  @override
+  String get pushFailedAction =>
+      'Il distributore ha bisogno di te: aprilo (per esempio ntfy) e segui quello che dice.';
+
+  @override
+  String get pushFailedOther =>
+      'Non sono riuscito ad attivare le notifiche: riprova, o scegli un altro distributore.';
+
+  @override
+  String get pushDistributorDropped =>
+      'Il distributore ha chiuso questa registrazione: riattiva le notifiche.';
+
+  @override
+  String pushTurnOn(String name) {
+    return 'Attiva con $name';
+  }
+
+  @override
+  String get pushTurnOff => 'Spegni';
+
+  @override
+  String pushLastError(String error) {
+    return 'L\'ultima notifica non è partita: $error';
+  }
+
+  @override
+  String get pushDistributorHead => 'Distributore (UnifiedPush)';
+
+  @override
+  String get pushDistributorHint =>
+      'Il distributore porta le notifiche di RedGiant su questo telefono, cifrate: lo scegli tu (ntfy, il tuo ntfy, Sunup…), senza il cloud di Google né di RedGiant in mezzo.';
+
+  @override
+  String get pushNoDistributor => 'Su questo telefono non c\'è un distributore UnifiedPush.';
+
+  @override
+  String get pushNoDistributorMeans =>
+      'Senza, RedGiant non può raggiungerti con l\'app chiusa: richieste e risposte le vedi solo aprendo l\'app (o in una chat collegata, come Telegram).';
+
+  @override
+  String get pushNoDistributorHow =>
+      'Per averle: installa ntfy (da F-Droid o dal Play Store) o un altro distributore UnifiedPush, poi torna qui e premi «Cerca di nuovo».';
+
+  @override
+  String get pushLookAgain => 'Cerca di nuovo';
+
+  @override
+  String get pushIosLater =>
+      'Su iPhone le notifiche arrivano con l\'app pubblicata (il servizio push di Apple, predisposto e spento fino ad allora).';
+
+  @override
+  String get pushIosMeanwhile =>
+      'Intanto vedi le richieste con l\'app aperta, o in una chat collegata (Telegram…).';
+
+  @override
+  String get pushDesktopWhat =>
+      'Mentre l\'app è aperta, anche dietro altre finestre, richieste e domande arrivano come notifiche del sistema, con Sì e No per le richieste normali.';
+
+  @override
+  String get pushDesktopOn => 'Notifiche del sistema attive';
+
+  @override
+  String get pushDesktopOff => 'Notifiche del sistema spente';
+
+  @override
+  String get pushDesktopClosed =>
+      'Con l\'app chiusa questo computer non riceve niente: la pagina di RedGiant e le chat collegate sì.';
+
+  @override
+  String get pushNotHere => 'Questo sistema non ha notifiche per l\'app.';
+
+  @override
+  String get pushAboutHead => 'Come funzionano';
+
+  @override
+  String get pushAboutSealed =>
+      'Ogni notifica è cifrata per questo dispositivo con chiavi fatte qui: il distributore la porta e basta.';
+
+  @override
+  String get pushAboutCritical =>
+      'Una richiesta davvero pericolosa non ha mai il Sì rapido: la notifica la apre nell\'app, nella sua schermata.';
+
+  @override
+  String get pushAboutWithdrawn =>
+      'Una richiesta risposta altrove (la pagina, una chat) sparisce anche da qui.';
+
+  @override
+  String get shareTitle => 'Condividi con RedGiant';
+
+  @override
+  String get shareWhat => 'Cosa condividi';
+
+  @override
+  String get shareTo => 'A chi';
+
+  @override
+  String get shareToChatHint => 'Una conversazione nuova';
+
+  @override
+  String get shareNoteHint => 'Aggiungi una nota…';
+
+  @override
+  String get voiceReaderHead => 'Chi legge le risposte';
+
+  @override
+  String get voiceModelHead => 'Modello';
+
+  @override
+  String get voiceVoiceHead => 'Voce';
+
+  @override
+  String get voiceAccountVoice => 'La voce è quella dell\'account con la chiave.';
+
+  @override
+  String get voiceVolumeHead => 'Volume';
+
+  @override
+  String get voiceVolumeHint =>
+      'Fino al volume pieno del sistema: i tasti del telefono lo alzano ancora.';
+
+  @override
+  String get voiceTry => 'Prova la voce';
+
+  @override
+  String get voiceStop => 'Ferma';
+
+  @override
+  String get voiceReadAloud => 'Leggi ad alta voce';
+
+  @override
+  String get voiceTrySentence => 'Ciao, ecco come leggo le risposte.';
+
+  @override
+  String get voiceNoReader => 'RedGiant non ha ancora una voce per leggere.';
+
+  @override
+  String get voiceNoReaderHow =>
+      'Aggiungi una chiave di OpenAI, ElevenLabs o Google Gemini nelle Impostazioni di RedGiant, Voce: poi sceglila qui.';
+
+  @override
+  String get voiceTalkHead => 'Premi e parla';
+
+  @override
+  String get voiceTalkWhat =>
+      'In una conversazione tieni premuto il microfono mentre parli: lascia e quello che hai detto è scritto nel campo, da rileggere prima di inviare.';
+
+  @override
+  String get voiceTalkWhere =>
+      'Lo scrive la trascrizione di RedGiant (Impostazioni, Voce, Trascrizione), la stessa della pagina.';
+
+  @override
+  String get voiceHoldToTalk => 'Tieni premuto per parlare';
+
+  @override
+  String get voiceListening => 'Ti ascolto… lascia per finire';
+
+  @override
+  String get voiceWriting => 'Scrivo quello che hai detto…';
+
+  @override
+  String get voiceTooShort => 'Troppo breve: tieni premuto il microfono mentre parli.';
+
+  @override
+  String get voiceHeardNothing => 'Non ho sentito parole: riprova più vicino al telefono.';
+
+  @override
+  String get voiceMicDenied =>
+      'Il microfono non è permesso: permettilo nelle impostazioni del sistema per RGCompanion.';
+
+  @override
+  String get voiceMicFailed => 'Il microfono non è partito: lo sta usando un\'altra app?';
+
+  @override
+  String get voiceErrNoService =>
+      'RedGiant non ha un servizio di trascrizione: scegline uno in Impostazioni, Voce, Trascrizione.';
+
+  @override
+  String voiceErrNoKey(String name) {
+    return '$name non ha ancora una chiave: aggiungila in Impostazioni, Voce.';
+  }
+
+  @override
+  String get voiceErrEmpty => 'La registrazione è vuota.';
+
+  @override
+  String get voiceErrTooLong => 'La registrazione è troppo lunga.';
+
+  @override
+  String get voiceErrConvert =>
+      'Non sono riuscito a convertire la registrazione per whisper sul computer di RedGiant.';
+
+  @override
+  String voiceErrTimeout(String name) {
+    return '$name ci ha messo troppo a rispondere.';
+  }
+
+  @override
+  String voiceErrUnreachable(String name) {
+    return '$name non si raggiunge: controlla che sia acceso e il suo indirizzo.';
+  }
+
+  @override
+  String voiceErrKeyRefused(String name) {
+    return '$name ha rifiutato la chiave: controllala in Impostazioni, Voce.';
+  }
+
+  @override
+  String voiceErrRateLimited(String name) {
+    return '$name dice troppe richieste o credito finito.';
+  }
+
+  @override
+  String voiceErrServiceError(String name, String status) {
+    return '$name ha risposto con un errore ($status).';
+  }
+
+  @override
+  String get voiceErrProvider => 'Questo fornitore non lo sa fare: scegline un altro.';
+
+  @override
+  String get voiceErrServer => 'RedGiant non si raggiunge: controlla la connessione.';
+
+  @override
+  String get voiceErrOther => 'La voce non ha funzionato: riprova.';
 }

@@ -31,6 +31,14 @@ class ApiException implements Exception {
   String toString() => 'ApiException($status${code == null ? '' : ', $code'}): $message';
 }
 
+/// A voice route's refusal, with the code the page explains (`voice_no_service`, `voice_no_key`…)
+/// and its words (`name`, `status`).
+class VoiceException extends ApiException {
+  const VoiceException(super.status, super.message, {super.code, this.vars = const {}});
+
+  final Map<String, String> vars;
+}
+
 class RedGiantClient {
   RedGiantClient(Uri base, {Transport? transport, this.token, String? caPem})
     : base = normalizeBase(base),
@@ -595,6 +603,106 @@ class RedGiantClient {
     );
     return r['ok'] == true ? null : '${r['error'] ?? 'failed'}';
   }
+
+  // ---- notifications (G40.4 on the server, G40.10 here) ----
+
+  /// `GET /api/app/push`: the server's VAPID public key (null while the keychain is locked) and
+  /// whether APNs goes anywhere (its relay is switched off until the app is published).
+  Future<({String? vapidPublicKey, bool apns})> pushInfo() async {
+    final j = _object(await _get('/api/app/push'));
+    return (
+      vapidPublicKey: j['vapidPublicKey'] is String ? j['vapidPublicKey'] as String : null,
+      apns: j['apns'] == true,
+    );
+  }
+
+  /// `PUT /api/devices/:id/push`: where this device's notifications go (`webpush` with the
+  /// distributor's endpoint, or `apns`), with the device's public key and secret.
+  Future<Map<String, dynamic>> registerPush(String deviceId, Map<String, Object?> body) async =>
+      _object(await _call('PUT', '/api/devices/${Uri.encodeComponent(deviceId)}/push', body));
+
+  /// `DELETE /api/devices/:id/push`; a 404 (nothing registered) is fine.
+  Future<void> unregisterPush(String deviceId) async {
+    try {
+      await _call('DELETE', '/api/devices/${Uri.encodeComponent(deviceId)}/push');
+    } on ApiException catch (e) {
+      if (e.status != 404) rethrow;
+    }
+  }
+
+  // ---- voice (the page's own routes) ----
+
+  /// `POST /api/transcribe?lang=`: a recording to text, with the server's transcription.
+  Future<String> transcribe(List<int> audio, String mimeType, String lang) async {
+    final ApiResponse r;
+    try {
+      r = await transport.send(
+        'POST',
+        _path('/api/transcribe', {'lang': lang}),
+        headers: {..._headers(), 'content-type': mimeType},
+        body: audio,
+        timeout: const Duration(seconds: 120),
+      );
+    } on TransportException catch (e) {
+      throw ApiException(0, e.message, certificate: e.certificate);
+    }
+    final j = _voiceDecode(r);
+    return j['text'] is String ? j['text'] as String : '';
+  }
+
+  /// `POST /api/voice/speech`: [text] read by the provider chosen, as audio bytes.
+  Future<({Uint8List bytes, String mimeType})> speech({
+    required String provider,
+    required String model,
+    String? voice,
+    required String text,
+  }) async {
+    final ApiResponse r;
+    try {
+      r = await transport.send(
+        'POST',
+        '/api/voice/speech',
+        headers: _headers(json: true, accept: '*/*'),
+        body: utf8.encode(
+          jsonEncode({'provider': provider, 'model': model, 'voice': ?voice, 'text': text}),
+        ),
+        timeout: const Duration(seconds: 90),
+      );
+    } on TransportException catch (e) {
+      throw ApiException(0, e.message, certificate: e.certificate);
+    }
+    if (r.status == 200 && !r.contentType.contains('json')) {
+      return (bytes: r.bytes, mimeType: r.contentType);
+    }
+    _voiceDecode(r);
+    throw const ApiException(0, 'Not audio');
+  }
+
+  /// A voice answer: its JSON, or a [VoiceException] with the server's code and words.
+  Map<String, dynamic> _voiceDecode(ApiResponse r) {
+    Object? body;
+    try {
+      body = r.bytes.isEmpty ? null : jsonDecode(r.text);
+    } on FormatException {
+      body = null;
+    }
+    final m = body is Map<String, dynamic> ? body : const <String, dynamic>{};
+    if (r.status >= 200 && r.status < 300 && body != null) return m;
+    final vars = m['vars'] is Map ? (m['vars'] as Map) : const {};
+    throw VoiceException(
+      r.status,
+      m['error'] is String ? m['error'] as String : 'HTTP ${r.status}',
+      code: m['code'] is String ? m['code'] as String : null,
+      vars: {for (final e in vars.entries) '${e.key}': '${e.value}'},
+    );
+  }
+
+  /// `PUT /api/files/content` (base64): a file the composer attaches, in the agent's workspace.
+  Future<void> writeFile(String scope, String path, List<int> bytes) => _call(
+    'PUT',
+    '/api/files/content',
+    {'scope': scope, 'path': path, 'content': base64.encode(bytes), 'encoding': 'base64'},
+  );
 
   /// `GET /api/update/status`: the last look for a new version.
   Future<UpdateStatus> updateStatus() async =>

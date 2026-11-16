@@ -20,7 +20,19 @@ import 'api/setup_channel.dart';
 import 'api/token_store.dart';
 import 'api/transport.dart';
 import 'api/types.dart';
+import 'l10n/app_localizations.dart';
 import 'mascot/mascot_source.dart';
+import 'push/apns.dart';
+import 'push/background.dart' show quickAnswerOf;
+import 'push/distributors.dart';
+import 'push/live_notices.dart';
+import 'push/notice.dart';
+import 'push/push_center.dart';
+import 'push/registrar.dart';
+import 'push/system_notifier.dart';
+import 'share/share_intake.dart';
+import 'voice/audio.dart';
+import 'voice/voice_controller.dart';
 
 /// The five places of proposal A, in the bar's order.
 enum AppTab { team, chat, inbox, activity, you }
@@ -73,15 +85,45 @@ class AppController extends ChangeNotifier {
     DevicePlatform? platform,
     this.discovery,
     this.liveEnabled = true,
+    SystemNotifier? notifier,
+    Future<Distributors> Function(PushCenter center)? distributors,
+    ShareIntake? share,
+    VoiceRecorder? recorder,
+    VoicePlayer? player,
   }) : tokens = tokens ?? SecureTokenStore(),
        prefs = prefs ?? MemoryAppPrefs(),
        platform = platform ?? currentPlatform(),
+       notifier = notifier ?? MemoryNotifier(),
+       share = share ?? NoShareIntake(),
+       _startDistributors = distributors,
+       _recorder = recorder,
+       _player = player,
        _clientFactory = clientFactory,
        _dial =
            dialChannel ?? ((b, id, expect) => SetupChannel.dial(b, identity: id, expect: expect)) {
     book = ServerBook(this.prefs);
     live.onUnknownSession = _soonReloadSessions;
+    live.addListener(_onLiveChanged);
   }
+
+  // The notifications, the voice and the Share sheet (G40.10).
+  final SystemNotifier notifier;
+  final ShareIntake share;
+  final Future<Distributors> Function(PushCenter center)? _startDistributors;
+  final VoiceRecorder? _recorder;
+  final VoicePlayer? _player;
+  late final PushCenter pushCenter = PushCenter(
+    prefs: prefs,
+    tokens: tokens,
+    notifier: notifier,
+    clients: _clientFactory == null ? null : (s, t) => _clientFor(s, t),
+  );
+  Distributors distributors = NoDistributors();
+  late final VoiceController voice = VoiceController(
+    prefs: prefs,
+    recorder: _recorder,
+    player: _player,
+  );
 
   final TokenStore tokens;
   final AppPrefs prefs;
@@ -134,6 +176,18 @@ class AppController extends ChangeNotifier {
 
   /// Team's filter: [TeamFilter.all], [TeamFilter.favourites] or a project's id.
   String teamFilter = TeamFilter.all;
+
+  /// The window is in front (the computers notify only when it is not).
+  bool foreground = true;
+
+  /// The computers' notifications while the app is open behind other windows (Tu › Notifiche).
+  bool desktopNotify = true;
+
+  /// What another app shared, waiting for the Share screen (G40.10).
+  List<SharedItem>? pendingShare;
+
+  /// A conversation a notification asked to open (the shell opens it).
+  String? pendingSession;
 
   bool get connected => client != null && hello?.signedIn == true;
 
@@ -230,6 +284,7 @@ class AppController extends ChangeNotifier {
     final lang = await prefs.get('locale');
     locale = lang == null ? null : Locale(lang);
     reduceMotion = await prefs.get('reduceMotion') == '1';
+    desktopNotify = await prefs.get('desktopNotify') != '0';
     servers = await book.load();
     notifyListeners();
     final current = await prefs.get('current');
@@ -491,6 +546,8 @@ class AppController extends ChangeNotifier {
     await _loadTeamPrefs();
     await _loadLists();
     _startLive();
+    unawaited(voice.attach(c, s?.id));
+    unawaited(_renewPush());
   }
 
   // ---- Team: favourites and the project filter (G40.9) ----
@@ -936,12 +993,196 @@ class AppController extends ChangeNotifier {
       socket?.send({'type': 'question.answer', 'requestId': q.requestId, 'answers': answers}) ??
       false;
 
+  // ---- notifications, voice and sharing (G40.10) ----
+
+  bool get desktop =>
+      platform == DevicePlatform.windows ||
+      platform == DevicePlatform.macos ||
+      platform == DevicePlatform.linux;
+
+  /// Once at start, before [restore]: the system's notifications and the distributor's events.
+  Future<void> startSystems() async {
+    try {
+      await notifier.init(onResponse: _onNoticeResponse);
+    } on Object {
+      // A system without notifications: the app works without them.
+    }
+    final start = _startDistributors;
+    if (start != null) {
+      try {
+        distributors = await start(pushCenter);
+      } on Object {
+        // No UnifiedPush here.
+      }
+    }
+    try {
+      share.incoming.listen(_shared, onError: (_) {});
+    } on Object {
+      // No Share sheet here.
+    }
+  }
+
+  /// After [restore]: a tap that started the app, and what another app shared.
+  Future<void> takeLaunch() async {
+    final tap = await notifier.launchTap().catchError((_) => null);
+    if (tap != null) await openTap(tap);
+    try {
+      final first = await share.initial();
+      if (first.isNotEmpty) _shared(first);
+    } on Object {
+      // No Share sheet here.
+    }
+  }
+
+  void _shared(List<SharedItem> items) {
+    if (items.isEmpty) return;
+    pendingShare = items;
+    notifyListeners();
+  }
+
+  /// The Share screen took it (sent or put aside).
+  void shareHandled() {
+    pendingShare = null;
+    unawaited(share.done().catchError((_) {}));
+    notifyListeners();
+  }
+
+  String? takePendingSession() {
+    final s = pendingSession;
+    pendingSession = null;
+    return s;
+  }
+
+  void setForeground(bool v) {
+    if (foreground == v) return;
+    foreground = v;
+  }
+
+  void setDesktopNotify(bool v) {
+    desktopNotify = v;
+    unawaited(prefs.set('desktopNotify', v ? null : '0'));
+    notifyListeners();
+  }
+
+  AppLocalizations get _words => wordsFor(locale?.languageCode);
+
+  /// A tap on a notification (or on one of its answers) while the app runs.
+  void _onNoticeResponse(NoticeTap tap, String? action) {
+    final a = quickAnswerOf(action);
+    if (a == null) {
+      unawaited(openTap(tap));
+      return;
+    }
+    final here = tap.serverId == server?.id;
+    final r = live.approvals.where((x) => x.requestId == tap.requestId).firstOrNull;
+    if (here && r != null && socket != null) {
+      // Over the live connection, with the same rule: never a quick yes to a critical request.
+      unawaited(resolvePermission(r, allow: a == QuickAnswer.allow));
+      return;
+    }
+    unawaited(pushCenter.answer(tap, a));
+  }
+
+  /// Opens what a notification is about: its RedGiant, then For you or the conversation.
+  Future<void> openTap(NoticeTap tap) async {
+    if (tap.serverId != server?.id) {
+      final s = servers.where((x) => x.id == tap.serverId).firstOrNull;
+      if (s != null) await useServer(s);
+    }
+    if (tap.kind == NoticeKind.request || tap.kind == NoticeKind.question) {
+      tab = AppTab.inbox;
+    } else if (tap.sessionId != null) {
+      pendingSession = tap.sessionId;
+    }
+    notifyListeners();
+  }
+
+  Set<String> _seenRequests = const {};
+
+  /// Requests that come and go on the live connection: the notification of one answered
+  /// anywhere is withdrawn; on a computer behind other windows a new one is notified.
+  void _onLiveChanged() {
+    final sid = server?.id;
+    final all = <PersonRequest>[...live.approvals, ...live.questions];
+    final now = {for (final r in all) r.requestId};
+    if (sid == null) {
+      _seenRequests = now;
+      return;
+    }
+    for (final gone in _seenRequests.difference(now)) {
+      unawaited(notifier.cancel(notificationIdOf(sid, 'req:$gone')).catchError((_) {}));
+    }
+    if (desktop && desktopNotify && !foreground) {
+      final l = _words;
+      for (final r in all.where((r) => !_seenRequests.contains(r.requestId))) {
+        final n = liveNoticeFor(r, displayName, l);
+        unawaited(notifier.apply(planFor(n, sid), l).catchError((_) {}));
+      }
+    }
+    _seenRequests = now;
+  }
+
+  /// What the person sees in Tu › Notifiche for the RedGiant in use.
+  Future<PushChannelState?> pushState() async {
+    final s = server;
+    return s == null ? null : pushCenter.registrar.stateOf(s.id);
+  }
+
+  String? get _deviceId => hello?.deviceId ?? server?.deviceId;
+
+  /// Turns on this phone's notifications for the RedGiant in use through [distributor]. The
+  /// endpoint arrives later ([Distributors.events]).
+  Future<bool> enablePush(String distributor) async {
+    final s = server;
+    final c = client;
+    if (s == null || c == null || _deviceId == null) return false;
+    await notifier.askPermission().catchError((_) => false);
+    await distributors.choose(distributor);
+    final vapid = (await c.pushInfo()).vapidPublicKey;
+    await distributors.register(s.id, vapid: vapid);
+    return true;
+  }
+
+  /// No more notifications from the RedGiant in use on this device.
+  Future<void> disablePush() async {
+    final s = server;
+    if (s == null) return;
+    await distributors.unregister(s.id).catchError((_) {});
+    try {
+      await pushCenter.registrar.unregister(client, s.id, _deviceId);
+    } on ApiException {
+      await pushCenter.registrar.forget(s.id);
+    }
+    notifyListeners();
+  }
+
+  /// UnifiedPush wants `register` at every start with the same distributor; iOS registers once
+  /// APNs is on (prepared, off).
+  Future<void> _renewPush() async {
+    final s = server;
+    final c = client;
+    final id = _deviceId;
+    if (s == null || c == null || id == null) return;
+    try {
+      final st = await pushCenter.registrar.stateOf(s.id);
+      if (st?.kind == 'webpush' && distributors.supported && await distributors.current() != null) {
+        await distributors.register(s.id, vapid: (await c.pushInfo()).vapidPublicKey);
+      } else if (st?.kind == 'apns' && ApnsRegistration.available) {
+        await ApnsRegistration.register(pushCenter, c, s.id, id);
+      }
+    } on Object {
+      // The next start tries again.
+    }
+  }
+
   // ---- servers ----
 
   Future<void> disconnect() async {
     final s = server;
     await _drop();
     if (s != null) {
+      unawaited(distributors.unregister(s.id).catchError((_) {}));
+      unawaited(pushCenter.registrar.forget(s.id).catchError((_) {}));
       await tokens.delete(s.id);
       servers = await book.remove(s.id);
     }
@@ -977,7 +1218,9 @@ class AppController extends ChangeNotifier {
     teamFilter = TeamFilter.all;
     chatAgentId = null;
     _models = null;
+    _seenRequests = const {};
     live.clear();
+    unawaited(voice.attach(null, null));
   }
 
   bool _fail(ConnectError e, [String? message]) {
@@ -1021,6 +1264,10 @@ class AppScope extends InheritedNotifier<AppController> {
   /// Without depending on it (initState, callbacks).
   static AppController read(BuildContext context) =>
       context.getInheritedWidgetOfExactType<AppScope>()!.notifier!;
+
+  /// Null outside the app (a piece shown alone, as the tests do).
+  static AppController? maybeRead(BuildContext context) =>
+      context.getInheritedWidgetOfExactType<AppScope>()?.notifier;
 }
 
 /// The tasks of every project, for Activity.

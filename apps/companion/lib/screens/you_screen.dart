@@ -16,7 +16,9 @@ import '../ui/common.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import 'first_start_screen.dart';
+import 'notifications_screen.dart';
 import 'server_settings_screen.dart';
+import 'voice_screen.dart';
 
 class YouScreen extends StatelessWidget {
   const YouScreen({super.key});
@@ -51,6 +53,22 @@ class YouScreen extends StatelessWidget {
               ),
             ),
           ),
+        if (app.connected) ...[
+          _DeviceRow(
+            key: const Key('open-notifications'),
+            icon: RgIcons.bell,
+            title: l.notificationsTitle,
+            subtitle: l.notificationsSub,
+            open: () => const NotificationsScreen(),
+          ),
+          _DeviceRow(
+            key: const Key('open-voice'),
+            icon: RgIcons.volume,
+            title: l.voiceTitle,
+            subtitle: l.voiceSub,
+            open: () => const VoiceScreen(),
+          ),
+        ],
         // Keyed: the settings' row above them comes and goes without remaking their state.
         const ServersList(key: Key('servers-list')),
         const AddServer(key: Key('add-server')),
@@ -115,6 +133,34 @@ class YouScreen extends StatelessWidget {
         ),
         const SizedBox(height: 24),
       ],
+    );
+  }
+}
+
+/// One of this device's settings for the RedGiant in use (Notifiche, Voce).
+class _DeviceRow extends StatelessWidget {
+  const _DeviceRow({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.open,
+  });
+
+  final RgIcons icon;
+  final String title;
+  final String subtitle;
+  final Widget Function() open;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    return ListTile(
+      leading: RgIcon(icon, color: c.accent),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+      subtitle: Text(subtitle),
+      trailing: RgIcon(RgIcons.chevronRight, color: c.dim),
+      onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => open())),
     );
   }
 }

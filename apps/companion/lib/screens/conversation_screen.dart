@@ -1,12 +1,16 @@
 // One conversation (G40.7): its history, the answer streaming in, the reasoning folded, the
-// tools' calls, the files and canvases the agent showed, and the composer with base
-// attachments (images). The same messages as the page: `session.follow` (history in one go),
-// `session.send`, `session.interrupt`.
+// tools' calls, the files and canvases the agent showed, and the composer with attachments as
+// the page's (photos, text files, the rest saved in the workspace), «press and talk» and the
+// answers read aloud (G40.10). The same messages as the page: `session.follow` (history in one
+// go), `session.send`, `session.interrupt`.
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import '../api/attachments.dart';
+import '../api/client.dart';
 import '../api/conversation.dart';
 import '../api/live_model.dart';
 import '../api/types.dart';
@@ -19,35 +23,6 @@ import '../ui/markdown.dart';
 import '../ui/words.dart';
 import 'canvas_screen.dart';
 import 'conversation_more.dart';
-
-/// An image ready to go with the message (`ImagePart`).
-class Attachment {
-  const Attachment(this.name, this.mediaType, this.bytes);
-
-  final String name;
-  final String mediaType;
-  final List<int> bytes;
-
-  Map<String, Object?> toPart() => {
-    'type': 'image',
-    'mediaType': mediaType,
-    'data': base64.encode(bytes),
-    'name': name,
-  };
-}
-
-/// The image types the server takes, from the file's extension.
-String? imageTypeOf(String name) => switch (name.split('.').last.toLowerCase()) {
-  'png' => 'image/png',
-  'jpg' || 'jpeg' => 'image/jpeg',
-  'gif' => 'image/gif',
-  'webp' => 'image/webp',
-  _ => null,
-};
-
-/// Up to 10 images of up to 5 MB each (the socket takes 32 MB in all).
-const int kMaxAttachments = 10;
-const int kMaxAttachmentBytes = 5 * 1024 * 1024;
 
 class ConversationScreen extends StatefulWidget {
   const ConversationScreen({super.key, required this.sessionId, this.agent, this.firstMessage});
@@ -66,7 +41,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   late final AppController app;
   late final SessionView view;
   final _text = TextEditingController();
-  final _attached = <Attachment>[];
+  final _attached = <Attached>[];
   bool _sending = false;
   String? _note;
 
@@ -88,16 +63,36 @@ class _ConversationScreenState extends State<ConversationScreen> {
     super.dispose();
   }
 
+  Agent? get _agent =>
+      widget.agent ??
+      app.agents
+          .where(
+            (a) =>
+                a.id ==
+                app.live.sessions.where((s) => s.id == widget.sessionId).firstOrNull?.agentId,
+          )
+          .firstOrNull;
+
   Future<void> _send({String? text}) async {
     final l = AppLocalizations.of(context);
     final t = (text ?? _text.text).trim();
     if (t.isEmpty && _attached.isEmpty) return;
     setState(() => _sending = true);
-    final ok = await app.send(
-      widget.sessionId,
-      t.isEmpty ? l.attachmentOnly : t,
-      images: [for (final a in _attached) a.toPart()],
-    );
+    final c = app.client;
+    var ok = false;
+    try {
+      final packed = await packMessage(
+        t.isEmpty ? l.attachmentOnly : t,
+        List.of(_attached),
+        upload: c == null
+            ? null
+            : (path, bytes) => c.writeFile(attachmentScope(_agent), path, bytes),
+        notSent: l.attachmentNotSent,
+      );
+      ok = await app.send(widget.sessionId, packed.text, images: packed.images);
+    } on ApiException {
+      ok = false;
+    }
     if (!mounted) return;
     setState(() {
       _sending = false;
@@ -113,17 +108,35 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   Future<void> _attach() async {
     final l = AppLocalizations.of(context);
-    final files = await FilePicker.pickFiles(type: FileType.image);
+    final files = await FilePicker.pickFiles();
     for (final f in files) {
-      final type = imageTypeOf(f.name);
-      if (type == null || _attached.length >= kMaxAttachments) continue;
-      final bytes = await f.readAsBytes();
-      if (bytes.length > kMaxAttachmentBytes) {
+      if (_attached.length >= kMaxAttached) break;
+      final a = classify(f.name, await f.readAsBytes());
+      if (a == null) {
         setState(() => _note = l.attachmentTooBig(f.name));
         continue;
       }
-      setState(() => _attached.add(Attachment(f.name, type, bytes)));
+      setState(() => _attached.add(a));
     }
+  }
+
+  // ---- press and talk (G40.10) ----
+
+  String get _lang => app.locale?.languageCode ?? Localizations.localeOf(context).languageCode;
+
+  Future<void> _talkStart() async {
+    final l = AppLocalizations.of(context);
+    setState(() => _note = null);
+    await app.voice.startRecording(l);
+  }
+
+  Future<void> _talkEnd() async {
+    final l = AppLocalizations.of(context);
+    final text = await app.voice.stopAndTranscribe(l, _lang);
+    if (!mounted || text == null) return;
+    final now = _text.text.trimRight();
+    _text.text = now.isEmpty ? text : '$now $text';
+    _text.selection = TextSelection.collapsed(offset: _text.text.length);
   }
 
   @override
@@ -193,6 +206,47 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Text(_note!, style: TextStyle(color: c.err, fontSize: 13)),
               ),
+            ListenableBuilder(
+              listenable: app.voice,
+              builder: (context, _) {
+                final v = app.voice;
+                final text = v.recording
+                    ? l.voiceListening
+                    : v.transcribing
+                    ? l.voiceWriting
+                    : v.problem;
+                if (text == null) return const SizedBox.shrink();
+                return Padding(
+                  key: const Key('voice-line'),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  child: Row(
+                    children: [
+                      RgIcon(
+                        v.recording
+                            ? RgIcons.mic
+                            : (v.transcribing ? RgIcons.spinner : RgIcons.alert),
+                        size: 15,
+                        color: v.recording
+                            ? c.err
+                            : (v.problem != null && !v.transcribing ? c.err : c.dim),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          text,
+                          style: TextStyle(
+                            color: v.problem != null && !v.recording && !v.transcribing
+                                ? c.err
+                                : c.dim,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
             if (_attached.isNotEmpty)
               SizedBox(
                 height: 44,
@@ -204,7 +258,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       Padding(
                         padding: const EdgeInsets.only(right: 6),
                         child: InputChip(
-                          avatar: RgIcon(RgIcons.image, size: 16, color: c.dim),
+                          avatar: RgIcon(
+                            a is AttachedImage ? RgIcons.image : RgIcons.file,
+                            size: 16,
+                            color: c.dim,
+                          ),
                           label: Text(a.name, overflow: TextOverflow.ellipsis),
                           deleteButtonTooltipMessage: l.attachmentRemove,
                           deleteIcon: RgIcon(RgIcons.x, size: 14, color: c.dim),
@@ -221,6 +279,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 sending: _sending,
                 onAttach: _attach,
                 onSend: _send,
+                onTalkStart: _talkStart,
+                onTalkEnd: _talkEnd,
+                onTalkCancel: () => unawaited(app.voice.cancelRecording()),
+                onTalkTap: () =>
+                    setState(() => _note = AppLocalizations.of(context).voiceHoldToTalk),
                 changed: moreChanged(app, widget.sessionId, agent),
                 onMore: () =>
                     showMoreSheet(context, sessionId: widget.sessionId, agent: agent, view: view),
@@ -308,8 +371,20 @@ class _Composer extends StatelessWidget {
     required this.onAttach,
     required this.onSend,
     required this.onMore,
+    required this.onTalkStart,
+    required this.onTalkEnd,
+    required this.onTalkCancel,
+    required this.onTalkTap,
     this.changed = false,
   });
+
+  /// «Press and talk»: held down it records, let go it writes down (G40.10).
+  final VoidCallback onTalkStart;
+  final VoidCallback onTalkEnd;
+  final VoidCallback onTalkCancel;
+
+  /// A short tap: how to use it.
+  final VoidCallback onTalkTap;
 
   /// The «…»: mode, model, meanwhile, summarise, add an agent.
   final VoidCallback onMore;
@@ -351,6 +426,12 @@ class _Composer extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 2),
+          _TalkButton(
+            onStart: onTalkStart,
+            onEnd: onTalkEnd,
+            onCancel: onTalkCancel,
+            onTap: onTalkTap,
+          ),
           Stack(
             clipBehavior: Clip.none,
             children: [
@@ -535,6 +616,7 @@ class _AssistantViewState extends State<AssistantView> {
             padding: const EdgeInsets.only(top: 2),
             child: Text(l.writing, style: TextStyle(color: c.dim, fontSize: 12)),
           ),
+        if (!it.live && it.text.trim().isNotEmpty) _ReadAloud(id: 'a-${it.ts}', text: it.text),
       ],
     );
   }
@@ -631,6 +713,100 @@ class _FileCard extends StatelessWidget {
         trailing: onOpen == null ? null : Text(l.open, style: TextStyle(color: c.accent)),
         onTap: onOpen,
       ),
+    );
+  }
+}
+
+/// «Press and talk»: the microphone, held down while speaking.
+class _TalkButton extends StatelessWidget {
+  const _TalkButton({
+    required this.onStart,
+    required this.onEnd,
+    required this.onCancel,
+    required this.onTap,
+  });
+
+  final VoidCallback onStart;
+  final VoidCallback onEnd;
+  final VoidCallback onCancel;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final v = AppScope.of(context).voice;
+    return ListenableBuilder(
+      listenable: v,
+      builder: (context, _) => Semantics(
+        button: true,
+        label: l.voiceHoldToTalk,
+        child: Tooltip(
+          message: l.voiceHoldToTalk,
+          child: GestureDetector(
+            key: const Key('composer-talk'),
+            onTap: onTap,
+            onLongPressStart: (_) => onStart(),
+            onLongPressEnd: (_) => onEnd(),
+            onLongPressCancel: onCancel,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: v.recording ? c.err.withValues(alpha: .14) : Colors.transparent,
+              ),
+              child: Center(
+                child: RgIcon(
+                  v.transcribing ? RgIcons.spinner : RgIcons.mic,
+                  size: 20,
+                  color: v.recording ? c.err : c.dim,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Reads an answer aloud with the voice chosen for RedGiant (Tu › Voce); again to stop.
+class _ReadAloud extends StatelessWidget {
+  const _ReadAloud({required this.id, required this.text});
+
+  final String id;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final v = AppScope.maybeRead(context)?.voice;
+    if (v == null) return const SizedBox.shrink();
+    return ListenableBuilder(
+      listenable: v,
+      builder: (context, _) {
+        final on = v.speaking == id;
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            key: Key('read-aloud-$id'),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              minimumSize: const Size(0, 30),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            onPressed: () => unawaited(v.speak(id, text, l)),
+            icon: RgIcon(on ? RgIcons.stop : RgIcons.volume, size: 15, color: c.dim),
+            label: Text(
+              on ? l.voiceStop : l.voiceReadAloud,
+              style: TextStyle(color: c.dim, fontSize: 12.5),
+            ),
+          ),
+        );
+      },
     );
   }
 }
