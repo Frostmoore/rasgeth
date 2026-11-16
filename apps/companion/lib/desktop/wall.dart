@@ -3,6 +3,8 @@
 // grouped by project (or by state), with the living mascots, what each one is doing and its
 // latest actions scrolling by. A click opens the conversation in the side panel; a right click
 // (or a long press) the agent's sheet. A truly dangerous request takes the top of the room.
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -18,6 +20,7 @@ import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/highlight.dart';
 import '../ui/icons.dart';
+import '../ui/send_keys.dart';
 import '../ui/words.dart';
 import 'desk_controller.dart';
 import 'desk_menu.dart';
@@ -361,20 +364,23 @@ class _HeroFieldState extends State<HeroField> {
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              controller: _text,
-              focusNode: widget.focus,
-              onSubmitted: (_) => _send(),
-              textInputAction: TextInputAction.send,
-              style: TextStyle(fontSize: 13.5, color: c.text),
-              decoration: InputDecoration(
-                isCollapsed: true,
-                filled: false,
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                hintText: widget.hint,
-                hintStyle: TextStyle(color: c.dim, fontSize: 13.5),
+            child: SendKeys(
+              onSend: _busy ? null : () => unawaited(_send()),
+              child: TextField(
+                controller: _text,
+                focusNode: widget.focus,
+                onSubmitted: (_) => _send(),
+                textInputAction: TextInputAction.send,
+                style: TextStyle(fontSize: 13.5, color: c.text),
+                decoration: InputDecoration(
+                  isCollapsed: true,
+                  filled: false,
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  hintText: widget.hint,
+                  hintStyle: TextStyle(color: c.dim, fontSize: 13.5),
+                ),
               ),
             ),
           ),

@@ -1032,5 +1032,10 @@
   "deskProjectMade": "Progetto «{name}» creato, con il suo orchestratore.",
   "deskProjectFailed": "Non sono riuscito a creare il progetto: {why}",
   "deskProjectNoGit": "Progetto «{name}» creato, ma senza repository git: {why}. Crealo da Impostazioni › Progetti («Inizializza git») appena git funziona.",
-  "deskGitMissing": "git non è ancora installato su questo computer"
+  "deskGitMissing": "git non è ancora installato su questo computer",
+  "limitsTotal": "Totale",
+  "limitsSpent": "Speso",
+  "limitsContext": "Contesto",
+  "limitsWeekShort": "7g",
+  "deskSendMessage": "Invia il messaggio (nei campi delle conversazioni)"
 }

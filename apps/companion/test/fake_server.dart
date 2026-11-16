@@ -71,6 +71,11 @@ class FakeRedGiant {
   final asides = <String>[];
   final rooms = <Map<String, dynamic>>[];
   final sent = <Map<String, dynamic>>[];
+
+  /// `GET /api/budgets` and `GET /api/limits` (the conversations' header bars, 3.9.0): empty
+  /// unless a test fills them.
+  List<Map<String, dynamic>> budgets = [];
+  List<Map<String, dynamic>> planLimits = [];
   final previews = <String>[];
   final prompts = <String, String>{};
   final promptPuts = <Map<String, dynamic>>[];
@@ -317,6 +322,8 @@ class FakeRedGiant {
     if (path == '/term' && WebSocketTransformer.isUpgradeRequest(r)) return _term(r);
     if (!tokens.contains(token)) return _json(r, 401, {'error': 'Unauthorized'});
     if (r.method == 'GET' && path == '/api/agents') return _json(r, 200, agents);
+    if (r.method == 'GET' && path == '/api/budgets') return _json(r, 200, budgets);
+    if (r.method == 'GET' && path == '/api/limits') return _json(r, 200, planLimits);
     if (r.method == 'GET' && path == '/api/sessions') {
       final a = r.uri.queryParameters['agentId'];
       return _json(r, 200, [

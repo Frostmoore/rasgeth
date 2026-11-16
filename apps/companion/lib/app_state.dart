@@ -8,6 +8,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'api/budgets.dart';
 import 'api/client.dart';
 import 'api/conversation.dart';
 import 'api/discovery.dart';
@@ -110,6 +111,7 @@ class AppController extends ChangeNotifier {
            dialChannel ?? ((b, id, expect) => SetupChannel.dial(b, identity: id, expect: expect)) {
     book = ServerBook(this.prefs);
     live.onUnknownSession = _soonReloadSessions;
+    live.onTurnEnded = () => spend.refreshSoon(client);
     live.addListener(_onLiveChanged);
   }
 
@@ -170,6 +172,9 @@ class AppController extends ChangeNotifier {
   String? seenFingerprint;
 
   final LiveModel live = LiveModel();
+
+  /// Spending and limits for the conversations' header (3.9.0).
+  final SpendModel spend = SpendModel();
   LiveSocket? socket;
   LiveStatus? liveStatus;
   StreamSubscription<Map<String, dynamic>>? _liveSub;
@@ -928,6 +933,7 @@ class AppController extends ChangeNotifier {
   Future<void> _loadLists() async {
     final c = client;
     if (c == null) return;
+    unawaited(spend.refresh(c));
     try {
       projects = [
         for (final p in await c.projects())
@@ -1391,6 +1397,7 @@ class AppController extends ChangeNotifier {
     _models = null;
     _seenRequests = const {};
     live.clear();
+    spend.clear();
     unawaited(voice.attach(null, null));
   }
 

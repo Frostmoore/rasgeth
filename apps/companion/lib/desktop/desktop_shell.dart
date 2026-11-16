@@ -18,6 +18,7 @@ import '../screens/you_screen.dart';
 import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/icons.dart';
+import '../ui/send_keys.dart';
 import 'advanced/code_view.dart';
 import 'advanced/common.dart';
 import 'advanced/git_view.dart';
@@ -480,6 +481,27 @@ class _DesktopShellState extends State<DesktopShell> {
             child: ListView(
               shrinkWrap: true,
               children: [
+                // Not a menu command: it works inside the conversations' fields (3.9.0).
+                Padding(
+                  key: const Key('shortcut-send'),
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 170,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: KeyCap(
+                            shortcutLabel(sendActivators(mac: _mac).first, l, mac: _mac),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(l.deskSendMessage, style: TextStyle(color: c.text)),
+                      ),
+                    ],
+                  ),
+                ),
                 for (final m in menus)
                   for (final it in m.items.whereType<DeskCommand>())
                     if (it.shortcut != null)

@@ -65,6 +65,9 @@ class LiveModel extends ChangeNotifier {
   /// A conversation the app did not list: the caller reloads the rows.
   VoidCallback? onUnknownSession;
 
+  /// A turn ended (`session.state` not running): the header's spending is read again.
+  VoidCallback? onTurnEnded;
+
   int get forYou => approvals.length + questions.length;
   int get inProgress => sessions.where((s) => s.running && !s.archived).length;
 
@@ -166,6 +169,7 @@ class LiveModel extends ChangeNotifier {
         }
         sessions = [for (final s in sessions) s.id == sid ? s.withRunning(v.running) : s];
         v.changed();
+        if (!running) onTurnEnded?.call();
       default:
         return;
     }

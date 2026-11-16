@@ -6290,6 +6290,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'git is not installed on this computer yet'**
   String get deskGitMissing;
+
+  /// No description provided for @limitsTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get limitsTotal;
+
+  /// No description provided for @limitsSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent'**
+  String get limitsSpent;
+
+  /// No description provided for @limitsContext.
+  ///
+  /// In en, this message translates to:
+  /// **'Context'**
+  String get limitsContext;
+
+  /// No description provided for @limitsWeekShort.
+  ///
+  /// In en, this message translates to:
+  /// **'7d'**
+  String get limitsWeekShort;
+
+  /// No description provided for @deskSendMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the message (in the conversations\' fields)'**
+  String get deskSendMessage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

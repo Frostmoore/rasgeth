@@ -26,10 +26,12 @@ import '../l10n/app_localizations.dart';
 import '../mascot/mascot_view.dart';
 import '../theme/colors.dart';
 import '../ui/icons.dart';
+import '../ui/limits_bar.dart';
 import '../ui/markdown.dart';
 import '../ui/metrics_line.dart';
 import '../ui/passage_selection.dart';
 import '../ui/product_cards.dart';
+import '../ui/send_keys.dart';
 import '../ui/words.dart';
 import 'canvas_screen.dart';
 import 'conversation_more.dart';
@@ -379,6 +381,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
               builder: (context, _) {
                 final state = agent == null ? MascotState.idle : app.live.mascotStateOf(agent.id);
                 return _Header(
+                  sessionId: widget.sessionId,
                   embedded: widget.embedded,
                   agent: agent,
                   state: state,
@@ -538,6 +541,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
 class _Header extends StatelessWidget {
   const _Header({
+    required this.sessionId,
     required this.embedded,
     required this.agent,
     required this.state,
@@ -547,6 +551,7 @@ class _Header extends StatelessWidget {
   });
 
   final List<Widget> actions;
+  final String sessionId;
   final bool embedded;
   final Agent? agent;
   final MascotState state;
@@ -564,48 +569,67 @@ class _Header extends StatelessWidget {
         border: Border(bottom: BorderSide(color: c.line)),
       ),
       padding: EdgeInsets.fromLTRB(embedded ? 12 : 4, 6, 10, 6),
-      child: Row(
-        children: [
-          // Beside the diff the conversation is a panel: «back» would close the project.
-          if (!embedded)
-            IconButton(
-              key: const Key('conversation-back'),
-              tooltip: l.back,
-              onPressed: () => Navigator.maybePop(context),
-              icon: RgIcon(RgIcons.arrowLeft, color: c.text),
-            ),
-          if (a != null)
-            MascotView(
-              agentId: a.id,
-              spec: a.mascot,
-              state: state,
-              size: 36,
-              label: l.mascotLabel(a.name, word),
-            ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  a?.name ?? l.tabChat,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16.5, color: c.text),
+      child: LayoutBuilder(
+        builder: (context, box) {
+          // What the bars may take: the header less the buttons, the mascot and a name's room.
+          final room =
+              box.maxWidth -
+              (embedded ? 0 : 48) -
+              (a != null ? 46 : 10) -
+              (running ? 100 : 0) -
+              44.0 * actions.length -
+              12 -
+              100;
+          return Row(
+            children: [
+              // Beside the diff the conversation is a panel: «back» would close the project.
+              if (!embedded)
+                IconButton(
+                  key: const Key('conversation-back'),
+                  tooltip: l.back,
+                  onPressed: () => Navigator.maybePop(context),
+                  icon: RgIcon(RgIcons.arrowLeft, color: c.text),
                 ),
-                Text(word, style: TextStyle(fontSize: 12.5, color: c.dim)),
-              ],
-            ),
-          ),
-          if (running)
-            TextButton.icon(
-              key: const Key('conversation-stop'),
-              onPressed: onStop,
-              icon: RgIcon(RgIcons.stop, size: 16, color: c.err),
-              label: Text(l.stop, style: TextStyle(color: c.err)),
-            ),
-          ...actions,
-        ],
+              if (a != null)
+                MascotView(
+                  agentId: a.id,
+                  spec: a.mascot,
+                  state: state,
+                  size: 36,
+                  label: l.mascotLabel(a.name, word),
+                ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      a?.name ?? l.tabChat,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16.5, color: c.text),
+                    ),
+                    Text(word, style: TextStyle(fontSize: 12.5, color: c.dim)),
+                  ],
+                ),
+              ),
+              // Spending and limits, as the page's header (3.9.0): what the rest leaves, keeping
+              // room for the name.
+              Padding(
+                padding: const EdgeInsets.only(left: 8, right: 4),
+                child: HeaderLimits(sessionId: sessionId, agent: a, room: room),
+              ),
+              if (running)
+                TextButton.icon(
+                  key: const Key('conversation-stop'),
+                  onPressed: onStop,
+                  icon: RgIcon(RgIcons.stop, size: 16, color: c.err),
+                  label: Text(l.stop, style: TextStyle(color: c.err)),
+                ),
+              ...actions,
+            ],
+          );
+        },
       ),
     );
   }
@@ -663,13 +687,16 @@ class _Composer extends StatelessWidget {
             icon: RgIcon(RgIcons.paperclip, size: 20, color: c.dim),
           ),
           Expanded(
-            child: TextField(
-              key: const Key('composer-text'),
-              controller: controller,
-              minLines: 1,
-              maxLines: 6,
-              textInputAction: TextInputAction.newline,
-              decoration: InputDecoration(hintText: l.composerAgentHint, isDense: true),
+            child: SendKeys(
+              onSend: sending ? null : onSend,
+              child: TextField(
+                key: const Key('composer-text'),
+                controller: controller,
+                minLines: 1,
+                maxLines: 6,
+                textInputAction: TextInputAction.newline,
+                decoration: InputDecoration(hintText: l.composerAgentHint, isDense: true),
+              ),
             ),
           ),
           const SizedBox(width: 2),
