@@ -11,6 +11,7 @@ import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/icons.dart';
+import '../desktop/desk_controller.dart';
 import 'conversation_screen.dart';
 import 'saved_screen.dart';
 
@@ -77,6 +78,13 @@ class _ChatScreenState extends State<ChatScreen> {
       return;
     }
     final agent = app.agents.where((a) => a.id == app.chatAgentId).firstOrNull;
+    // In the control room the conversation takes the panel, with its own header (full window, detach,
+    // close), instead of being pushed over the list without them (3.8.4).
+    final desk = mounted ? DeskScope.maybeRead(context) : null;
+    if (desk != null) {
+      desk.show(PanelConversation(id, agent: agent, firstMessage: first));
+      return;
+    }
     await nav.push(
       MaterialPageRoute<void>(
         builder: (_) => ConversationScreen(sessionId: id, agent: agent, firstMessage: first),
@@ -167,11 +175,19 @@ class _ChatScreenState extends State<ChatScreen> {
                                 DateFormat.Hm(l.localeName)
                                     .format(DateTime.tryParse(r.when)?.toLocal() ?? d.day),
                               ),
-                              onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) => ConversationScreen(sessionId: r.id, agent: agent),
-                                ),
-                              ),
+                              onTap: () {
+                                final desk = DeskScope.maybeRead(context);
+                                if (desk != null) {
+                                  desk.show(PanelConversation(r.id, agent: agent));
+                                  return;
+                                }
+                                Navigator.of(context).push(
+                                  MaterialPageRoute<void>(
+                                    builder: (_) =>
+                                        ConversationScreen(sessionId: r.id, agent: agent),
+                                  ),
+                                );
+                              },
                             ),
                         ],
                       ],

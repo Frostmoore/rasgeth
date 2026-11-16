@@ -32,6 +32,7 @@ import '../ui/metrics_line.dart';
 import '../ui/passage_selection.dart';
 import '../ui/product_cards.dart';
 import '../ui/send_keys.dart';
+import '../ui/paste_files.dart';
 import '../ui/words.dart';
 import 'canvas_screen.dart';
 import 'conversation_more.dart';
@@ -313,9 +314,13 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 
   /// Files dropped on the conversation (computers): the same rules as «Attach».
-  void _dropped() {
+  void _dropped() => _take(widget.drops?.take() ?? const <(String, Uint8List)>[]);
+
+  /// Files dropped or pasted (Ctrl/Cmd+V): the same rules as «Attach».
+  void _take(List<(String, Uint8List)> files) {
+    if (!mounted) return;
     final l = AppLocalizations.of(context);
-    for (final (name, bytes) in widget.drops?.take() ?? const <(String, Uint8List)>[]) {
+    for (final (name, bytes) in files) {
       if (_attached.length >= kMaxAttached) break;
       final a = classify(name, bytes);
       if (a == null) {
@@ -521,6 +526,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 controller: _text,
                 sending: _sending,
                 onAttach: _attach,
+                onFiles: _take,
                 onSend: _send,
                 onTalkStart: _talkStart,
                 onTalkEnd: _talkEnd,
@@ -640,6 +646,7 @@ class _Composer extends StatelessWidget {
     required this.controller,
     required this.sending,
     required this.onAttach,
+    required this.onFiles,
     required this.onSend,
     required this.onMore,
     required this.onTalkStart,
@@ -666,6 +673,9 @@ class _Composer extends StatelessWidget {
   final TextEditingController controller;
   final bool sending;
   final VoidCallback onAttach;
+
+  /// Files or an image pasted into the field.
+  final ValueChanged<List<(String, Uint8List)>> onFiles;
   final VoidCallback onSend;
 
   @override
@@ -689,13 +699,17 @@ class _Composer extends StatelessWidget {
           Expanded(
             child: SendKeys(
               onSend: sending ? null : onSend,
-              child: TextField(
-                key: const Key('composer-text'),
-                controller: controller,
-                minLines: 1,
-                maxLines: 6,
-                textInputAction: TextInputAction.newline,
-                decoration: InputDecoration(hintText: l.composerAgentHint, isDense: true),
+              child: PasteFiles(
+                onFiles: onFiles,
+                child: TextField(
+                  key: const Key('composer-text'),
+                  controller: controller,
+                  minLines: 1,
+                  maxLines: 6,
+                  textInputAction: TextInputAction.newline,
+                  contentInsertionConfiguration: contentInsertion(onFiles),
+                  decoration: InputDecoration(hintText: l.composerAgentHint, isDense: true),
+                ),
               ),
             ),
           ),

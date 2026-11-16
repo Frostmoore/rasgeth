@@ -46,6 +46,11 @@ already signed in and stays next to the clock; updates download only the files t
 installer is not code-signed yet: if SmartScreen says "Windows protected your PC", click **More info**,
 then **Run anyway**. Windows 10 2004 or newer, x64.
 
+Why not signed? A code-signing certificate costs money every year, and RedGiant is made by one person
+who, for now, would rather spend it on the project. Every release is still signed with RedGiant's own
+update key, so RedGiant only installs updates that really come from here. Donations are welcome: where
+to send them is coming soon.
+
 ### macOS
 
 Download **[RedGiant-mac-arm64.dmg](https://github.com/Frostmoore/redgiant2/releases/latest/download/RedGiant-mac-arm64.dmg)**,
@@ -344,6 +349,9 @@ RedGiant is in pre-alpha. What comes next, in order:
   3.8.2 (released) gives the computers an interface of their own, the control room (the wall of agents, the
   Ctrl/Cmd+K search, projects with diffs, terminals, git as a graph, the log), every answer's figures in the app,
   updates followed from the app, RedGiant's icon, RGCompanion on its own for Windows and a site for the downloads.
+  3.8.3 (released) opens conversations in the whole window with the mascots' bar, shows spending and limits at the top of the app's conversations, sends with Ctrl/Cmd+Enter, attaches files and
+  screenshots with Ctrl/Cmd+V and puts «New project» and «New agent» on the control room's walls. 3.8.4 (released) fixes the header of a chat
+  opened from the Chat card and the version the update screen announces.
 - **3.9 and 3.10 — Video and 3D generation**: a video editor shared by you and the agent, and 3D
   generation with local or cloud engines, finished in Blender.
 - **3.11 — Emulators in the Canvas**: an Android emulator or the iOS simulator found on the computer

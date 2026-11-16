@@ -52,9 +52,12 @@ class PanelButton extends StatelessWidget {
 }
 
 class SidePanel extends StatefulWidget {
-  const SidePanel({super.key, required this.content});
+  const SidePanel({super.key, required this.content, this.full = false});
 
   final PanelContent content;
+
+  /// The conversation «full window» (3.8.3), beside the mascots' bar.
+  final bool full;
 
   @override
   State<SidePanel> createState() => _SidePanelState();
@@ -92,6 +95,7 @@ class _SidePanelState extends State<SidePanel> {
           embedded: true,
           drops: _drops,
           headerActions: [
+            const _FullButton(),
             PanelButton(
               key: const Key('panel-detach'),
               icon: RgIcons.external,
@@ -113,7 +117,7 @@ class _SidePanelState extends State<SidePanel> {
       key: const Key('desk-panel'),
       decoration: BoxDecoration(
         color: c.bg,
-        border: Border(left: BorderSide(color: c.line)),
+        border: widget.full ? null : Border(left: BorderSide(color: c.line)),
       ),
       child: ClipRect(
         child: Navigator(
@@ -123,6 +127,31 @@ class _SidePanelState extends State<SidePanel> {
         ),
       ),
     );
+  }
+}
+
+/// «Full window» and back (3.8.3). Reads the room itself: the panel's page is built once, and
+/// keeps its state when the conversation goes full.
+class _FullButton extends StatelessWidget {
+  const _FullButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final desk = DeskScope.of(context);
+    final l = AppLocalizations.of(context);
+    return desk.full
+        ? PanelButton(
+            key: const Key('panel-unfull'),
+            icon: RgIcons.minimize,
+            tooltip: l.deskFullWindowOff,
+            onTap: () => desk.setFull(false),
+          )
+        : PanelButton(
+            key: const Key('panel-full'),
+            icon: RgIcons.maximize,
+            tooltip: l.deskFullWindow,
+            onTap: () => desk.setFull(true),
+          );
   }
 }
 
