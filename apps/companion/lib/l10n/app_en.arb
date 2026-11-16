@@ -2221,5 +2221,36 @@
   },
   "deskYouWrite": "you can write",
   "deskYourTerminal": "Your terminal",
-  "deskYourTerminals": "Yours"
+  "deskYourTerminals": "Yours",
+  "deskNewProject": "New project",
+  "deskProjectName": "Project name",
+  "deskProjectCreate": "Create",
+  "deskProjectMade": "Project «{name}» created, with its orchestrator.",
+  "@deskProjectMade": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deskProjectFailed": "I could not make the project: {why}",
+  "@deskProjectFailed": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "deskProjectNoGit": "Project «{name}» created, but without a git repository: {why}. Create it from Settings › Projects («Initialise git») once git works.",
+  "@deskProjectNoGit": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "deskGitMissing": "git is not installed on this computer yet"
 }

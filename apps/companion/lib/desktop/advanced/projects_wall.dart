@@ -20,6 +20,7 @@ import '../../ui/highlight.dart';
 import '../../ui/icons.dart';
 import '../../ui/words.dart';
 import '../desk_controller.dart';
+import '../new_project.dart';
 import '../palette.dart' show requestLine;
 import '../wall.dart';
 import '../wall_feed.dart';
@@ -133,8 +134,13 @@ class _ProjectsWallState extends State<ProjectsWall> {
             if (shown.isEmpty)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(40),
-                  child: EmptyState(icon: RgIcons.folder, text: l.deskNoProjects),
+                  padding: const EdgeInsets.fromLTRB(40, 28, 40, 0),
+                  child: Column(
+                    children: [
+                      EmptyState(icon: RgIcons.folder, text: l.deskNoProjects),
+                      const SizedBox(width: 360, height: 178, child: NewProjectTile()),
+                    ],
+                  ),
                 ),
               )
             else
@@ -147,8 +153,11 @@ class _ProjectsWallState extends State<ProjectsWall> {
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 10,
                   ),
-                  itemCount: shown.length,
-                  itemBuilder: (context, i) => ProjectTile(project: shown[i], feed: feed),
+                  // «New project» is the last tile, right after the last project.
+                  itemCount: shown.length + 1,
+                  itemBuilder: (context, i) => i == shown.length
+                      ? const NewProjectTile()
+                      : ProjectTile(project: shown[i], feed: feed),
                 ),
               ),
             if (app.advanced && tasks.isNotEmpty)
@@ -181,6 +190,19 @@ class _ProjectsWallState extends State<ProjectsWall> {
       },
     );
   }
+}
+
+/// «New project» as a tile of the wall: the last one after the projects, or under «no projects».
+class NewProjectTile extends StatelessWidget {
+  const NewProjectTile({super.key});
+
+  @override
+  Widget build(BuildContext context) => NewTile(
+    key: const Key('desk-new-project'),
+    icon: RgIcons.plus,
+    label: AppLocalizations.of(context).deskNewProject,
+    onTap: () => openNewProject(context),
+  );
 }
 
 class ProjectTile extends StatelessWidget {

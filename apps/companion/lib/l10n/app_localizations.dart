@@ -6248,6 +6248,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yours'**
   String get deskYourTerminals;
+
+  /// No description provided for @deskNewProject.
+  ///
+  /// In en, this message translates to:
+  /// **'New project'**
+  String get deskNewProject;
+
+  /// No description provided for @deskProjectName.
+  ///
+  /// In en, this message translates to:
+  /// **'Project name'**
+  String get deskProjectName;
+
+  /// No description provided for @deskProjectCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get deskProjectCreate;
+
+  /// No description provided for @deskProjectMade.
+  ///
+  /// In en, this message translates to:
+  /// **'Project «{name}» created, with its orchestrator.'**
+  String deskProjectMade(String name);
+
+  /// No description provided for @deskProjectFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'I could not make the project: {why}'**
+  String deskProjectFailed(String why);
+
+  /// No description provided for @deskProjectNoGit.
+  ///
+  /// In en, this message translates to:
+  /// **'Project «{name}» created, but without a git repository: {why}. Create it from Settings › Projects («Initialise git») once git works.'**
+  String deskProjectNoGit(String name, String why);
+
+  /// No description provided for @deskGitMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'git is not installed on this computer yet'**
+  String get deskGitMissing;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
