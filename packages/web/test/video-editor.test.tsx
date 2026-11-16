@@ -25,21 +25,33 @@ import { videoFamily } from "../../server/src/editor/video-family.js";
 import { lang } from "../src/i18n.js";
 import type { DocPeer } from "../src/state.js";
 import {
+  cutNear,
+  dbText,
   edgeAt,
   editAction,
   gapAt,
+  KB_PRESETS,
+  kbPresetOf,
   keyWords,
   mediaRefOf,
   PageIds,
+  phoneTracks,
   rulerTicks,
+  secText,
   shuttleRate,
   snapBlock,
+  TRANSITION_DIRS,
+  TRANSITION_FAMILIES,
   touchedIds,
+  transcriptOf,
+  transitionFamily,
+  transitionKind,
   VIDEO_KEYS,
   VideoCollab,
   type VideoOutgoing,
   videoChangeText,
   videoKey,
+  wordsSpan,
 } from "../src/viewers/video-ops.js";
 
 // jsdom has no PointerEvent: a mouse event with a pointer's id is enough here.
@@ -420,7 +432,9 @@ vi.mock("../src/state.js", async (orig) => ({
   },
   saveDoc: () => {},
 }));
-const { VideoEditor, HEAD_W, FILE_TYPE } = await import("../src/components/viewers/VideoEditor.js");
+const { VideoEditor, HEAD_W, FILE_TYPE, TRANSITION_TYPE } = await import(
+  "../src/components/viewers/VideoEditor.js"
+);
 const state = await import("../src/state.js");
 
 const file = { scope: "p1", path: "video/film.rgvideo" };
@@ -501,6 +515,13 @@ async function open(d = timeline()) {
     help: false,
     gap: undefined,
     source: undefined,
+    trans: undefined,
+    cap: undefined,
+    inspOpen: undefined,
+    transcript: undefined,
+    words: undefined,
+    allTracks: undefined,
+    editText: undefined,
   });
   state.setVideoView(KEY, { frame: 0, playing: false });
   const r = render(<VideoEditor file={file} />);
@@ -850,3 +871,359 @@ describe("VideoEditor", () => {
 });
 
 const isNew = (c: VideoClip) => "media" in c.ref && c.ref.media === "v/new.mp4";
+
+// ---- G41.5c: the inspector, transitions, texts, subtitles, the transcript, the phone --------
+
+/** timeline() with the two pictures touching (a cut at 100), a title on V2 and two subtitles. */
+function cutTimeline(): RgVideo {
+  const d = timeline();
+  for (const c of d.clips) if (c.id === "b" || c.id === "vb") c.start = 100;
+  d.clips.push(
+    clip("t", "V2", 20, 60, "", {
+      ref: { generator: "text", text: "Il giro", style: "title", position: "center" },
+    }),
+  );
+  d.captions.segments = [
+    {
+      id: "s1",
+      start: 10,
+      end: 60,
+      text: "uno due tre",
+      words: [
+        { start: 10, end: 20, text: "uno" },
+        { start: 25, end: 35, text: "due" },
+        { start: 40, end: 60, text: "tre" },
+      ],
+    },
+    { id: "s2", start: 120, end: 160, text: "quattro cinque" },
+  ];
+  return d;
+}
+
+describe("G41.5c: the page's pure parts", () => {
+  it("the cut nearest a frame, only where two clips touch", () => {
+    const d = cutTimeline();
+    expect(cutNear(d, "V1", 104, 10)).toEqual({ from: "a", to: "b", at: 100 });
+    expect(cutNear(d, "V1", 130, 10)).toBeUndefined();
+    expect(cutNear(timeline(), "V1", 100, 60)).toBeUndefined(); // a gap, not a cut
+  });
+
+  it.each(
+    TRANSITION_FAMILIES.flatMap((f) =>
+      f === "wipe" || f === "slide"
+        ? TRANSITION_DIRS.map((d) => [f, d] as const)
+        : [[f, undefined] as const],
+    ),
+  )("the transition %s %s, and back", (f, d) => {
+    const k = transitionKind(f, d);
+    expect(transitionFamily(k)).toEqual(d ? { family: f, dir: d } : { family: f });
+  });
+
+  it("Ken Burns' presets are recognised; none, or one of its own", async () => {
+    const { kenBurnsPreset } = await import("@redgiant/protocol");
+    for (const [z, p] of KB_PRESETS)
+      expect(kbPresetOf(kenBurnsPreset(z, p), kenBurnsPreset)).toBe(`${z}-${p}`);
+    expect(kbPresetOf(undefined, kenBurnsPreset)).toBe("none");
+    const own = { from: { x: 0, y: 0, w: 1, h: 1 }, to: { x: 0.1, y: 0.1, w: 0.5, h: 0.5 } };
+    expect(kbPresetOf(own, kenBurnsPreset)).toBe("custom");
+  });
+
+  it.each<[number, boolean, string]>([
+    [0, true, "0 dB"],
+    [-6, true, "\u22126 dB"],
+    [3.5, true, "+3,5 dB"],
+    [3.5, false, "+3.5 dB"],
+    [-12.26, false, "\u221212.3 dB"],
+  ])("dB %d (it %s): %s", (v, it, want) => expect(dbText(v, it)).toBe(want));
+
+  it.each<[number, boolean, string]>([
+    [25, true, "1 s"],
+    [12, true, "0,5 s"],
+    [37, false, "1.5 s"],
+  ])("%d frames at 25 fps (it %s): %s", (f, it, want) => expect(secText(f, R, it)).toBe(want));
+
+  it("the transcript: the subtitles' words in order; a run of them and the pause after", () => {
+    const words = transcriptOf(cutTimeline());
+    expect(words.map((w) => [w.cap, w.text, w.start, w.end])).toEqual([
+      ["s1", "uno", 10, 20],
+      ["s1", "due", 25, 35],
+      ["s1", "tre", 40, 60],
+      ["s2", "quattro", 120, 141],
+      ["s2", "cinque", 141, 160],
+    ]);
+    // «due» alone: up to «tre», which comes within a second.
+    expect(wordsSpan(words, 1, 1, R)).toEqual([25, 40]);
+    // «tre» to «uno», backwards: the last word's own end (no word within a second after it).
+    expect(wordsSpan(words, 2, 0, R)).toEqual([10, 60]);
+    expect(wordsSpan([], 0, 0, R)).toBeUndefined();
+  });
+
+  it("a phone shows V1 and A1, the tracks of the chosen clips, or all", () => {
+    const d = timeline();
+    const ids = (sel: string[], all = false) => phoneTracks(d, sel, all).map((t) => t.id);
+    expect(ids([])).toEqual(["V1", "A1"]);
+    expect(ids(["m"])).toEqual(["V1", "A1", "A2"]);
+    expect(ids([], true)).toEqual(["V1", "V2", "A1", "A2"]);
+  });
+
+  it("the page's texts have the render's sizes and lines (fitText)", async () => {
+    const { fitText } = await import("@redgiant/protocol");
+    const { textStyle } = await import("../src/components/viewers/video/player.js");
+    const vars: Record<string, string> = {};
+    const el = { style: { setProperty: (k: string, v: string) => void (vars[k] = v) } };
+    const ref = {
+      text: "Marta Rossi, regista del documentario sulla costa ligure",
+      style: "lower_third",
+      position: "lower_third",
+    } as const;
+    const lines = textStyle(el, ref, 1280, 720);
+    const f = fitText(ref.text, ref.style, ref.position, 1280, 720);
+    expect(lines).toBe(f.lines.join("\n"));
+    expect(Number(vars["--size"])).toBeCloseTo(f.size / 720, 3);
+    expect(Number(vars["--pl"])).toBeCloseTo((f.left as number) / 720, 3);
+    expect(Number(vars["--pt"])).toBeCloseTo((f.top as number) / 720, 3);
+  });
+});
+
+const tdata = (family: string) => ({
+  types: [TRANSITION_TYPE],
+  getData: (k: string) => (k === TRANSITION_TYPE ? family : ""),
+  dropEffect: "none",
+});
+const byText = (root: ParentNode, sel: string, text: string) =>
+  [...root.querySelectorAll<HTMLElement>(sel)].find(
+    (b) => b.textContent?.trim() === text,
+  ) as HTMLElement;
+const switchOf = (root: ParentNode, label: string) => {
+  const l = [...root.querySelectorAll("label.ui-toggle-label")].find(
+    (x) => x.textContent === label,
+  );
+  return document.getElementById(l?.getAttribute("for") ?? "") as HTMLElement;
+};
+const dialOf = (root: ParentNode, label: string) =>
+  [...root.querySelectorAll(".ve-dial")]
+    .find((x) => x.querySelector(".ve-dial-hd span")?.textContent === label)
+    ?.querySelector("input") as HTMLInputElement;
+const setDial = (input: HTMLInputElement, v: number) => {
+  fireEvent.input(input, { target: { value: String(v) } });
+  fireEvent.change(input, { target: { value: String(v) } });
+};
+
+describe("G41.5c: the editor", () => {
+  it("the inspector of a picture: on/off, fades, fit, Ken Burns, all as edits of the host", async () => {
+    const { r, host } = await open();
+    await act(async () => state.setVideoEdit(KEY, { sel: ["a"] }));
+    const insp = r.container.querySelector(".ve-inspector") as HTMLElement;
+    fireEvent.click(switchOf(insp, "Clip attiva"));
+    expect(whatOf(lastOps())).toBe("props");
+    expect(find(host.doc, "a").enabled).toBe(false);
+    setDial(dialOf(insp, "Dissolvenza dal nero"), 12);
+    expect(find(host.doc, "a").fadeIn).toBe(12);
+    fireEvent.click(byText(insp, ".wz-seg button", "Adatta (tutta l'immagine)"));
+    expect(find(host.doc, "a").fit).toBe("fit");
+    fireEvent.click(insp.querySelector('[aria-label="Allontana dall\'alto"]') as HTMLElement);
+    const { kenBurnsPreset } = await import("@redgiant/protocol");
+    expect(find(host.doc, "a").kenBurns).toEqual(kenBurnsPreset("out", "up"));
+    fireEvent.click(byText(insp, ".ve-kb-opt", "Nessuno"));
+    expect(find(host.doc, "a").kenBurns).toBeUndefined();
+    // No checkbox, no radio, no select anywhere in it.
+    expect(insp.querySelector("input[type=checkbox], input[type=radio], select")).toBeNull();
+  });
+
+  it("the inspector of a sound: volume in dB, audio on, the music ducked under the voice", async () => {
+    const { r, host } = await open();
+    await act(async () => state.setVideoEdit(KEY, { sel: ["m"] }));
+    const insp = r.container.querySelector(".ve-inspector") as HTMLElement;
+    expect(insp.textContent).toContain("Traccia Musica");
+    const vol = dialOf(insp, "Volume");
+    setDial(vol, -6);
+    expect(find(host.doc, "m").volume).toBe(-6);
+    fireEvent.click(switchOf(insp, "Audio attivo"));
+    expect(find(host.doc, "m").enabled).toBe(false);
+    fireEvent.click(switchOf(insp, "Abbassa sotto la voce"));
+    expect(host.doc.tracks.find((t) => t.id === "A2")?.duck).toEqual({
+      under: ["A1"],
+      amountDb: -12,
+      attackMs: 200,
+      releaseMs: 600,
+    });
+    await waitFor(() => expect(dialOf(insp, "Quanto abbassare")).toBeTruthy());
+    setDial(dialOf(insp, "Quanto abbassare"), -20);
+    expect(host.doc.tracks.find((t) => t.id === "A2")?.duck?.amountDb).toBe(-20);
+    fireEvent.click(switchOf(insp, "Abbassa sotto la voce"));
+    expect(host.doc.tracks.find((t) => t.id === "A2")?.duck).toBeUndefined();
+  });
+
+  it("a transition dragged onto a cut, its kind and direction chosen, its handle dragged, deleted", async () => {
+    const { r, el, host } = await open(cutTimeline());
+    const lane = el("[data-lane=V1]");
+    fireEvent.dragOver(lane, { clientX: x(97), dataTransfer: tdata("wipe") });
+    expect(r.container.querySelector(".ve-drop")).toBeTruthy();
+    fireEvent.drop(lane, { clientX: x(97), dataTransfer: tdata("wipe") });
+    expect(whatOf(lastOps())).toBe("transition");
+    expect(host.doc.transitions).toMatchObject([
+      { from: "a", to: "b", kind: "wipe_left", inOffset: 12, outOffset: 13 },
+    ]);
+    const id = host.doc.transitions[0]?.id as string;
+    await waitFor(() => expect(state.videoEditOf(KEY).trans).toBe(id));
+    const insp = r.container.querySelector(".ve-inspector") as HTMLElement;
+    expect(insp.textContent).toContain("Transizione: Tendina");
+    fireEvent.click(byText(insp, ".wz-seg button", "destra"));
+    expect(host.doc.transitions[0]?.kind).toBe("wipe_right");
+    fireEvent.click(byText(insp, ".wz-seg button", "Dissolvenza"));
+    expect(host.doc.transitions[0]?.kind).toBe("dissolve");
+    // The out handle 10 frames to the right: 10 more into «b».
+    const out = el(`[data-trans="${id}"] .ve-trans-h.out`);
+    press(out, x(113));
+    moveTo(x(123));
+    release(x(123));
+    expect(host.doc.transitions[0]).toMatchObject({ inOffset: 12, outOffset: 23 });
+    key(r.container.querySelector(".ve") as Element, "Delete");
+    expect(host.doc.transitions).toEqual([]);
+  });
+
+  it("a transition's tile pressed puts it on the cut nearest the playhead (keys, touch)", async () => {
+    const { r, host } = await open(cutTimeline());
+    await act(async () => state.setVideoView(KEY, { frame: 95 }));
+    fireEvent.click(byText(r.container, ".ve-fx-item", "Al nero"));
+    expect(host.doc.transitions).toMatchObject([{ from: "a", kind: "dip_to_black" }]);
+    await act(async () => state.setVideoView(KEY, { frame: 400 }));
+    fireEvent.click(byText(r.container, ".ve-fx-item", "Scorrimento"));
+    expect(r.container.querySelector(".ve-notice")?.textContent).toBe(
+      "Nessun taglio fra due clip qui vicino.",
+    );
+  });
+
+  it("a title added at the playhead is typed on the picture; style and place in the inspector", async () => {
+    const { r, host } = await open();
+    await act(async () => state.setVideoView(KEY, { frame: 200 }));
+    fireEvent.click(
+      r.container.querySelector('[aria-label="Aggiungi un titolo al cursore"]') as HTMLElement,
+    );
+    expect(whatOf(lastOps())).toBe("text");
+    const made = host.doc.clips.find((c) => "text" in c.ref) as VideoClip;
+    expect([made.track, made.start, made.sourceRange.duration]).toEqual(["V2", 200, 75]);
+    const box = await waitFor(() => {
+      const b = r.container.querySelector(".ve-text-edit [role=textbox]") as HTMLElement;
+      expect(b).toBeTruthy();
+      return b;
+    });
+    expect(box.textContent).toBe("Titolo");
+    box.textContent = "Una giornata al mare";
+    fireEvent.blur(box);
+    expect((find(host.doc, made.id).ref as { text: string }).text).toBe("Una giornata al mare");
+    expect(r.container.querySelector(".ve-text-edit")).toBeNull();
+    const insp = r.container.querySelector(".ve-inspector") as HTMLElement;
+    fireEvent.click(byText(insp, ".wz-seg button", "Terzo inferiore"));
+    expect(find(host.doc, made.id).ref).toMatchObject({ style: "lower_third" });
+    // Esc gives the words back.
+    fireEvent.click(byText(insp, ".vw-btn", "Modifica sull'immagine"));
+    const again = r.container.querySelector(".ve-text-edit [role=textbox]") as HTMLElement;
+    again.textContent = "via";
+    fireEvent.keyDown(again, { key: "Escape" });
+    expect((find(host.doc, made.id).ref as { text: string }).text).toBe("Una giornata al mare");
+  });
+
+  it("the subtitles' lane: chosen, its words edited, moved with the mouse, burnt in or not", async () => {
+    const { r, el, host } = await open(cutTimeline());
+    press(el("[data-cap=s2]"), x(125));
+    moveTo(x(135));
+    release(x(135));
+    expect(whatOf(lastOps())).toBe("caption");
+    expect(host.doc.captions.segments.find((c) => c.id === "s2")).toMatchObject({
+      start: 130,
+      end: 170,
+    });
+    expect(state.videoEditOf(KEY).cap).toBe("s2");
+    const insp = r.container.querySelector(".ve-inspector") as HTMLElement;
+    const area = insp.querySelector("#ve-caption-text") as HTMLTextAreaElement;
+    fireEvent.input(area, { target: { value: "quattro e cinque" } });
+    fireEvent.blur(area);
+    expect(host.doc.captions.segments.find((c) => c.id === "s2")?.text).toBe("quattro e cinque");
+    fireEvent.click(switchOf(insp, "Impressi nell'immagine"));
+    expect(host.doc.captions.burnIn).toBe(true);
+    key(r.container.querySelector(".ve") as Element, "Backspace");
+    expect(host.doc.captions.segments.map((c) => c.id)).toEqual(["s1"]);
+    // A new one at the playhead.
+    await act(async () => state.setVideoView(KEY, { frame: 300 }));
+    fireEvent.click(r.container.querySelector(".ve-cap-head [aria-label]") as HTMLElement);
+    expect(host.doc.captions.segments.at(-1)).toMatchObject({ start: 300, end: 350 });
+  });
+
+  it("«Trascrizione»: words chosen with a click and Shift+click are cut from every track", async () => {
+    const { r, host } = await open(cutTimeline());
+    fireEvent.click(r.container.querySelector('[aria-label="Trascrizione"]') as HTMLElement);
+    const words = [...r.container.querySelectorAll<HTMLElement>(".ve-word")];
+    expect(words.map((w) => w.textContent)).toEqual(["uno", "due", "tre", "quattro", "cinque"]);
+    fireEvent.click(words[1] as HTMLElement);
+    expect(state.videoViewOf(KEY).frame).toBe(25);
+    fireEvent.click(words[2] as HTMLElement, { shiftKey: true });
+    const cut = byText(r.container, ".ve-transcript .vw-btn", "Taglia (2)");
+    fireEvent.click(cut);
+    expect(whatOf(lastOps())).toBe("ripple_delete");
+    // [25, 60) went: a is cut and closed up, b follows, the subtitle keeps «uno».
+    expect(find(host.doc, "a").sourceRange.duration).toBe(25);
+    expect(find(host.doc, "b").start).toBe(65);
+    expect(host.doc.captions.segments[0]).toMatchObject({ start: 10, end: 25, text: "uno" });
+    expect(host.doc.captions.segments[1]).toMatchObject({ start: 85, end: 125 });
+  });
+
+  it("subtitles from the speech: the server's words become the timeline's subtitles", async () => {
+    const d = cutTimeline();
+    d.captions.segments = [];
+    const { r, host } = await open(d);
+    handlers.videoCaptions = () => ({
+      jobs: [],
+      silent: [],
+      captions: [
+        { start: 5, end: 40, text: "Ciao a tutti", words: [{ start: 5, end: 15, text: "Ciao" }] },
+      ],
+    });
+    fireEvent.click(r.container.querySelector('[aria-label="Trascrizione"]') as HTMLElement);
+    fireEvent.click(byText(r.container, ".ve-transcript .vw-btn", "Sottotitoli dal parlato"));
+    await waitFor(() => expect(host.doc.captions.segments).toHaveLength(1));
+    expect(host.doc.captions.segments[0]).toMatchObject({
+      start: 5,
+      end: 40,
+      text: "Ciao a tutti",
+    });
+    expect(calls.some(([n]) => n === "videoCaptions")).toBe(true);
+  });
+
+  it("a phone: one video and one audio track, the others a tap away; the inspector a panel", async () => {
+    const RO = (window as { ResizeObserver?: unknown }).ResizeObserver;
+    class FakeRO {
+      constructor(private cb: () => void) {}
+      observe() {
+        this.cb();
+      }
+      disconnect() {}
+    }
+    Object.assign(window, { ResizeObserver: FakeRO });
+    Object.assign(globalThis, { ResizeObserver: FakeRO });
+    const w = vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(390);
+    try {
+      const { r } = await open();
+      await waitFor(() => expect(r.container.querySelector(".ve.phone")).toBeTruthy());
+      const heads = () => [...r.container.querySelectorAll(".ve-target")].map((b) => b.textContent);
+      expect(heads()).toEqual(["V1", "A1"]);
+      expect(r.container.querySelector(".ve-inspector")).toBeNull();
+      fireEvent.click(
+        r.container.querySelector(
+          '[aria-label="Mostra tutte le tracce (2 in più)"]',
+        ) as HTMLElement,
+      );
+      expect(heads()).toEqual(["V2", "V1", "A1", "A2"]);
+      fireEvent.click(r.container.querySelector('[aria-label="Ispettore"]') as HTMLElement);
+      expect(r.container.querySelector(".ve-inspector.panel")).toBeTruthy();
+      fireEvent.click(
+        r.container.querySelector('[aria-label="Chiudi l\'ispettore"]') as HTMLElement,
+      );
+      expect(r.container.querySelector(".ve-inspector")).toBeNull();
+    } finally {
+      w.mockRestore();
+      Object.assign(window, { ResizeObserver: RO });
+      Object.assign(globalThis, { ResizeObserver: RO });
+    }
+  });
+});
