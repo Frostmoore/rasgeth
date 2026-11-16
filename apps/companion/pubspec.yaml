@@ -17,7 +17,8 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_local_notifications: ^23.0.2
+  # 22.x: compileSdk 36, which the project's AGP finds (23 asks for 37).
+  flutter_local_notifications: ^22.3.3
   flutter_markdown_plus: ^1.0.12
   flutter_secure_storage: ^11.2.0
   flutter_svg: ^2.4.0
@@ -28,7 +29,8 @@ dependencies:
   path_provider: ^2.1.6
   pdfx: ^2.11.0
   pointycastle: ^4.0.0
-  receive_sharing_intent: ^1.9.0
+  # 1.8.x: compileSdk 34 (1.9 asks for 37, see above).
+  receive_sharing_intent: ">=1.8.1 <1.9.0"
   record: ^7.2.0
   shared_preferences: ^2.5.6
   unifiedpush: ">=6.1.0 <6.2.0"
