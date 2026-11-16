@@ -83,10 +83,16 @@ export function captionLines(
   const words = words0.filter((w) => w.text.trim() !== "").sort((a, b) => a.start - b.start);
   const out: CaptionLine[] = [];
   let cur: TranscriptWord[] = [];
-  const flush = () => {
+  /** Ends the subtitle; `upTo` keeps the words after it for the next one. */
+  const flush = (upTo = cur.length) => {
+    const rest = cur.slice(upTo);
+    cur = cur.slice(0, upTo);
     const first = cur[0];
     const last = cur.at(-1);
-    if (!first || !last) return;
+    if (!first || !last) {
+      cur = rest;
+      return;
+    }
     const lines = breakLines(
       cur.map((w) => w.text.trim()),
       o.maxChars,
@@ -98,7 +104,7 @@ export function captionLines(
       text: lines.join("\n"),
       words: cur,
     });
-    cur = [];
+    cur = rest;
   };
   for (const w of words) {
     const prev = cur.at(-1);
@@ -108,7 +114,16 @@ export function captionLines(
       const pause = w.start - prev.end >= o.gapSec;
       const long = w.end - (cur[0]?.start ?? w.start) > o.maxSec;
       const sentence = ENDS_SENTENCE.test(prev.text.trim()) && cur.length >= 2;
-      if (!fits || pause || long || sentence) flush();
+      if (!fits && !pause && !long && !sentence) {
+        // Full: end at the last comma of its second half if there is one, the rest goes on.
+        let at = -1;
+        for (let i = cur.length - 1; i >= Math.ceil(cur.length / 2) - 1 && i >= 0; i--)
+          if (/[,;:]$/.test(cur[i]?.text.trim() ?? "")) {
+            at = i;
+            break;
+          }
+        flush(at >= 0 && at < cur.length - 1 ? at + 1 : cur.length);
+      } else if (!fits || pause || long || sentence) flush();
     }
     cur.push(w);
   }

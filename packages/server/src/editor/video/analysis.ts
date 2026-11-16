@@ -496,7 +496,8 @@ export class VideoAnalysis {
       throw new JobFailure("video_no_picture", "This file has no picture");
     h.step("video_derive");
     await mkdir(this.dirOf(fp), { recursive: true });
-    const part = `${dst}.${randomUUID().slice(0, 8)}.part`;
+    // The extension stays last: ffmpeg and the cache both read it.
+    const part = dst.replace(/(\.\w+)$/, `.${randomUUID().slice(0, 8)}.part$1`);
     try {
       // The strip reads the proxy when there is one: light, and every tenth frame a keyframe.
       const proxy = this.derivedPath(fp, "proxy");

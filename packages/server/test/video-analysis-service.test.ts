@@ -33,7 +33,7 @@ function fakeRunner(o: { hangOn?: (c: Call) => boolean; probe?: string } = {}) {
     if (o.hangOn?.(c)) {
       // Writes half its output, then waits to be cancelled.
       const out = args.at(-1) ?? "";
-      if (out.includes(".part")) await writeFile(out, "half");
+      if (out.includes(".part.")) await writeFile(out, "half");
       await new Promise<void>((resolve, reject) => {
         release = resolve;
         opts.signal?.addEventListener("abort", () => {
@@ -290,7 +290,7 @@ describe("VideoAnalysis.derive", () => {
     expect(await readFile(proxy.path, "utf8")).toBe("made by ffmpeg");
     const args = fake.calls.at(-1)?.args ?? [];
     expect(args).toEqual(expect.arrayContaining(["-crf", "28", "-g", "10", "-b:a", "96k"]));
-    expect(args.at(-1)).toMatch(/proxy\.mp4\.[0-9a-f]{8}\.part$/);
+    expect(args.at(-1)).toMatch(/proxy\.[0-9a-f]{8}\.part\.mp4$/);
     const strip = await service.derived("u1", file, "clip.mp4", "filmstrip");
     expect(strip.tiles).toBe(30);
     expect(fake.calls.at(-1)?.args).toContain(proxy.path);

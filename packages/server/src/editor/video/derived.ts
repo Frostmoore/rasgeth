@@ -73,6 +73,8 @@ export function filmstripArgs(src: string, dst: string, duration: number): strin
     `fps=${tiles}/${Math.max(duration, 0.1).toFixed(3)},scale=${w}:${h}:force_original_aspect_ratio=increase,crop=${w}:${h},tile=${tiles}x1`,
     "-frames:v",
     "1",
+    "-c:v",
+    "mjpeg",
     "-q:v",
     "5",
     "-f",
@@ -99,6 +101,9 @@ export function waveformArgs(src: string, dst: string, duration: number): string
     `[0:a:0]aformat=channel_layouts=mono,showwavespic=s=${waveformWidth(duration)}x${WAVEFORM_HEIGHT}:colors=#ffffff:scale=sqrt`,
     "-frames:v",
     "1",
+    // Named: the temporary file's name does not tell image2 the format.
+    "-c:v",
+    "png",
     "-f",
     "image2",
     dst,

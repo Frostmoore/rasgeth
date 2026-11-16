@@ -797,6 +797,9 @@ describe("captions", () => {
       t.words.map((x) => x.text).join(" "),
     );
     expect(lines[0]?.text).toBe("Buongiorno a tutti.");
+    // Full at "della": it ends at the comma instead, the rest goes on with the next words.
+    expect(lines[1]?.text).toBe("Oggi vi mostro come si\nmonta un video con Redjunt,");
+    expect(lines[2]?.text).toBe("partendo dalle riprese\ndella settimana scorsa.");
     // Nothing spans the 4 s pause.
     expect(lines.some((c) => c.start < 10 && c.end > 14)).toBe(false);
   });
