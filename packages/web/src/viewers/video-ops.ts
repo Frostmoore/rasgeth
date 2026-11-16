@@ -295,6 +295,23 @@ export const VIDEO_KEYS: readonly { keys: string; what: Key }[] = [
   { keys: "?", what: "veKeyHelp" },
 ];
 
+/**
+ * Keys as the person's keyboard writes them: Italian names (Maiusc, Canc, Fine…) and Cmd for
+ * Ctrl on macOS. Pure: the list and the buttons' titles go through it.
+ */
+export function keyWords(keys: string, o: { it: boolean; mac: boolean }): string {
+  let s = keys;
+  if (o.mac) s = s.replace(/\bCtrl\b/g, "Cmd").replace(/\bAlt\b/g, "Option");
+  if (o.it)
+    s = s
+      .replace(/\bShift\b/g, "Maiusc")
+      .replace(/\bSpace\b/g, "Spazio")
+      .replace(/\bDelete\b/g, "Canc")
+      .replace(/\bEnd\b/g, "Fine")
+      .replace(/\bHome\b/g, "Inizio");
+  return s;
+}
+
 /** J/K/L: J backwards, L forwards, again doubles up to 8×; K stops (0). */
 export function shuttleRate(playing: boolean, rate: number, key: "reverse" | "forward"): number {
   const dir = key === "forward" ? 1 : -1;

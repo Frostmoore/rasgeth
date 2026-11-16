@@ -2362,6 +2362,8 @@ export interface VideoEditState {
   linkedSel: boolean;
   /** Pixels per frame; undefined until the first fit. */
   ppf?: number;
+  /** The zoom follows the width (fitted, not zoomed by hand since): a wider canvas fits again. */
+  fitted?: boolean;
   /** Where F9/F10/Shift+F12 place: a video and an audio track (null: none). */
   targets: { video: string | null; audio: string | null };
   /** The source viewer: a file, its In and Out, where it is (frames at the timeline's rate). */

@@ -58,7 +58,7 @@ import {
 import type { JSX } from "preact";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { announce, typingIn } from "../../a11y.js";
-import { t } from "../../i18n.js";
+import { lang, t } from "../../i18n.js";
 import {
   IconAppend,
   IconBlade,
@@ -116,6 +116,7 @@ import {
   fitPpf,
   gapAt,
   isTimelineMedia,
+  keyWords,
   mediaRefOf,
   PageIds,
   rulerTicks,
@@ -205,6 +206,10 @@ const kindIcon = (info: VideoMediaInfo | undefined, media: string) =>
     <IconFilm size={13} />
   );
 
+const isMac = () => typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform);
+/** Keys in the person's language and system (Maiusc, Canc; Cmd on macOS). */
+const keysText = (k: string) => keyWords(k, { it: lang.value === "it", mac: isMac() });
+
 /** A button of the editor's bars: a drawn icon, its words as title and label. */
 function Tool({
   label,
@@ -223,7 +228,7 @@ function Tool({
   children: JSX.Element | JSX.Element[];
   class?: string;
 }) {
-  const title = keys ? `${label} (${keys})` : label;
+  const title = keys ? `${label} (${keysText(keys)})` : label;
   return (
     <button
       type="button"
@@ -634,11 +639,35 @@ export function VideoEditor({
     place(p.media, p.in, p.out, p.frame, p.targets, p.mode);
   }, [byName]);
 
-  // The first fit, once the timeline and its width are known.
+  // The first fit, once the timeline and its width are known; again when the canvas changes
+  // width (maximized, the panel closed) as long as the person has not zoomed by hand.
+  const docNow = useRef(doc);
+  docNow.current = doc;
   useEffect(() => {
-    if (!doc || ed.ppf !== undefined) return;
-    const w = scroller.current?.clientWidth ?? 900;
-    edit({ ppf: fitPpf(w - HEAD_W, timelineDuration(doc), doc.format.rate) });
+    const sc = scroller.current;
+    if (!doc || !sc) return;
+    const refit = () => {
+      const d = docNow.current;
+      const e = videoEditOf(key);
+      if (!d || (e.ppf !== undefined && e.fitted === false)) return;
+      const ppf = fitPpf(sc.clientWidth - HEAD_W, timelineDuration(d), d.format.rate);
+      if (e.ppf !== undefined && Math.abs(ppf - e.ppf) / e.ppf <= 0.02) return;
+      setVideoEdit(key, { ppf, fitted: true });
+      // Fitted: the whole timeline is in view from its start.
+      requestAnimationFrame(() => {
+        sc.scrollLeft = 0;
+      });
+    };
+    if (videoEditOf(key).ppf === undefined) refit();
+    if (typeof ResizeObserver === "undefined") return;
+    let last = sc.clientWidth;
+    const ro = new ResizeObserver(() => {
+      if (Math.abs(sc.clientWidth - last) < 8) return;
+      last = sc.clientWidth;
+      refit();
+    });
+    ro.observe(sc);
+    return () => ro.disconnect();
   }, [!!doc]);
 
   // «Show» in the changes' panel: the clip the change was about, chosen and in view.
@@ -719,14 +748,14 @@ export function VideoEditor({
     const sc = scroller.current;
     const next = clampPpf(ppf * factor);
     const before = anchor * ppf - (sc?.scrollLeft ?? 0);
-    edit({ ppf: next });
+    edit({ ppf: next, fitted: false });
     requestAnimationFrame(() => {
       if (sc) sc.scrollLeft = Math.max(0, anchor * next - before);
     });
   };
   const fit = () => {
     const w = scroller.current?.clientWidth ?? 900;
-    edit({ ppf: fitPpf(w - HEAD_W, timelineDuration(doc), rate) });
+    edit({ ppf: fitPpf(w - HEAD_W, timelineDuration(doc), rate), fitted: true });
     requestAnimationFrame(() => {
       if (scroller.current) scroller.current.scrollLeft = 0;
     });
@@ -794,6 +823,11 @@ export function VideoEditor({
   const setSource = (patch: Partial<NonNullable<VideoEditState["source"]>>) => {
     const s = videoEditOf(key).source;
     if (s) edit({ source: { ...s, ...patch } });
+  };
+  const renameTrack = async (tr: VideoTrack) => {
+    const name = await askText(t("veRenameTrack"), tr.name, { label: t("veTrackName") });
+    if (name?.trim() && name.trim() !== tr.name)
+      commit(setTrack(doc, tr.id, { name: name.trim() }), "track");
   };
   const toggleTrack = (tr: VideoTrack, prop: "locked" | "hidden" | "muted") =>
     commit(setTrack(doc, tr.id, { [prop]: !tr[prop] }), "track");
@@ -1371,11 +1405,15 @@ export function VideoEditor({
           <button
             type="button"
             class="ve-track-name"
-            title={t("veRenameTrack")}
-            onClick={async () => {
-              const name = await askText(t("veRenameTrack"), tr.name, { label: t("veTrackName") });
-              if (name?.trim() && name.trim() !== tr.name)
-                commit(setTrack(doc, tr.id, { name: name.trim() }), "track");
+            title={t("veRenameHint")}
+            // As in Resolve: a double click renames (a single one on a crowded header never does);
+            // from the keys, Enter or F2.
+            onDblClick={() => renameTrack(tr)}
+            onKeyDown={(e) => {
+              if (e.key !== "Enter" && e.key !== "F2") return;
+              e.preventDefault();
+              e.stopPropagation();
+              renameTrack(tr);
             }}
           >
             {tr.name}
@@ -1563,34 +1601,38 @@ export function VideoEditor({
           </div>
           {view.exactJob && <ExactJob id={view.exactJob} view={key} from={playhead} />}
         </section>
-        {one && (
-          <aside class="ve-inspector" aria-label={t("veInspector")}>
-            <h4>{clipLabel(one)}</h4>
-            <dl>
-              <dt>{t("veTrack")}</dt>
-              <dd>{one.track}</dd>
-              <dt>{t("veStart")}</dt>
-              <dd>{timecode(one.start, rate)}</dd>
-              <dt>{t("veLength")}</dt>
-              <dd>{timecode(one.sourceRange.duration, rate)}</dd>
-              {isMediaRef(one.ref) && !one.ref.still && (
-                <>
-                  <dt>{t("veSourceInOut")}</dt>
-                  <dd>
-                    {timecode(one.sourceRange.start, rate)} -{" "}
-                    {timecode(one.sourceRange.start + one.sourceRange.duration, rate)}
-                  </dd>
-                </>
-              )}
-              <dt>{t("veState")}</dt>
-              <dd>
-                {one.enabled ? t("veOn") : t("veOff")}
-                {one.link ? ` · ${t("veIsLinked")}` : ""}
-              </dd>
-            </dl>
-            {sel.length > 1 && <p class="dim">{t("veSelected", { n: String(sel.length) })}</p>}
-          </aside>
-        )}
+        <aside class="ve-inspector" aria-label={t("veInspector")}>
+          {one ? (
+            <>
+              <h4>{clipLabel(one)}</h4>
+              <dl>
+                <dt>{t("veTrack")}</dt>
+                <dd>{one.track}</dd>
+                <dt>{t("veStart")}</dt>
+                <dd>{timecode(one.start, rate)}</dd>
+                <dt>{t("veLength")}</dt>
+                <dd>{timecode(one.sourceRange.duration, rate)}</dd>
+                {isMediaRef(one.ref) && !one.ref.still && (
+                  <>
+                    <dt>{t("veSourceInOut")}</dt>
+                    <dd>
+                      {timecode(one.sourceRange.start, rate)} -{" "}
+                      {timecode(one.sourceRange.start + one.sourceRange.duration, rate)}
+                    </dd>
+                  </>
+                )}
+                <dt>{t("veState")}</dt>
+                <dd>
+                  {one.enabled ? t("veOn") : t("veOff")}
+                  {one.link ? ` · ${t("veIsLinked")}` : ""}
+                </dd>
+              </dl>
+              {sel.length > 1 && <p class="dim">{t("veSelected", { n: String(sel.length) })}</p>}
+            </>
+          ) : (
+            <p class="dim">{t("veInspectorNone")}</p>
+          )}
+        </aside>
       </div>
 
       <div class="vw-bar ve-bar" role="toolbar" aria-label={t("veTools")}>
@@ -1834,12 +1876,13 @@ export function VideoEditor({
           title={t("veHelpTitle")}
           onClose={() => edit({ help: false })}
           icon={<IconKeyboard />}
+          wide
         >
           <dl class="ve-keys">
             {VIDEO_KEYS.map((k) => (
               <div key={k.keys}>
                 <dt>
-                  <kbd>{k.keys}</kbd>
+                  <kbd>{keysText(k.keys)}</kbd>
                 </dt>
                 <dd>{t(k.what)}</dd>
               </div>

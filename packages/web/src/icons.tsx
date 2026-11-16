@@ -1097,12 +1097,11 @@ export const IconKeyboard = ({ size = 15 }: P) => (
 
 // ---- G41.5b: the timeline editor ---------------------------------------------------------------
 
-/** The blade (B): a razor cutting a clip. */
+/** The blade (B): a straight razor, its blade and its handle. */
 export const IconBlade = ({ size = 15 }: P) => (
   <Svg size={size}>
-    <path d="M4 20L14 10" />
-    <path d="M14 10l3-7 4 4-7 3z" />
-    <path d="M3 14h5M16 20h5" />
+    <path d="M13 4l7 7-7 4-4-4z" />
+    <path d="M9 11l-6 9" />
   </Svg>
 );
 /** Ripple trim (T): an edge with arrows both ways. */
@@ -1112,11 +1111,11 @@ export const IconRippleTrim = ({ size = 15 }: P) => (
     <path d="M7 8l-4 4 4 4M17 8l4 4-4 4" />
   </Svg>
 );
-/** Snapping (N): a magnet. */
+/** Snapping (N): a horseshoe magnet. */
 export const IconMagnet = ({ size = 15 }: P) => (
   <Svg size={size}>
-    <path d="M6 3v8a6 6 0 0 0 12 0V3" />
-    <path d="M6 7h4M14 7h4M10 3v8a2 2 0 0 0 4 0V3" />
+    <path d="M5 3h4v8a3 3 0 0 0 6 0V3h4v8a7 7 0 0 1-14 0z" />
+    <path d="M5 7h4M15 7h4" />
   </Svg>
 );
 /** Linked clips: two rings of a chain. */

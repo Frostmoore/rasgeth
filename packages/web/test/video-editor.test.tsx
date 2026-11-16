@@ -28,6 +28,7 @@ import {
   edgeAt,
   editAction,
   gapAt,
+  keyWords,
   mediaRefOf,
   PageIds,
   rulerTicks,
@@ -201,6 +202,15 @@ describe("Resolve's keys", () => {
       expect(dictionaries.it[k.what]).toBeTruthy();
       expect(dictionaries.en[k.what]).toBeTruthy();
     }
+  });
+
+  it("keys in the person's words: Maiusc, Canc, Fine; Cmd and Option on macOS", () => {
+    expect(keyWords("Shift+F12", { it: true, mac: false })).toBe("Maiusc+F12");
+    expect(keyWords("Delete", { it: true, mac: false })).toBe("Canc");
+    expect(keyWords("Home / End", { it: true, mac: false })).toBe("Inizio / Fine");
+    expect(keyWords("Ctrl+Alt+L", { it: false, mac: true })).toBe("Cmd+Option+L");
+    expect(keyWords("Ctrl+Shift+Z", { it: true, mac: true })).toBe("Cmd+Maiusc+Z");
+    expect(keyWords("Space", { it: false, mac: false })).toBe("Space");
   });
 
   it("J/K/L: again doubles up to 8×, the other way starts over", () => {
