@@ -2404,6 +2404,23 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news382Room: "The control room on your computer",
+  news382RoomText:
+    "On Windows, macOS and Linux RGCompanion has its own interface when the window is wide enough: the wall of your agents with their mascots and latest actions, a side panel with the conversations, the Ctrl/Cmd+K search over agents, conversations, commands and files, keyboard shortcuts and a status bar. The advanced interface adds projects with their changes, side-by-side diffs, terminals in a grid, git as a graph and the log. The phone keeps its own screens.",
+  news382Figures: "Every answer's figures in the app",
+  news382FiguresText:
+    "Under every answer the app shows what the page shows: read, cache, generated, context, reading and generation time, tokens per second and the time. Whole on a computer, short on the phone until you touch it.",
+  news382Update: "Updates you follow from the app",
+  news382UpdateText:
+    "Update RedGiant from RGCompanion and follow it to the end: numbered steps, a real bar with speed and time left, the restart, and the app reconnecting by itself to the new version, with the news at the end. On Windows the app closes by itself before its files are replaced and opens again afterwards.",
+  news382Standalone: "RGCompanion on its own for Windows",
+  news382StandaloneText:
+    "RGCompanion-Setup.exe installs only the app, for your user and without administrator rights, with its Start menu entry and its uninstallation: for a computer that reaches a RedGiant elsewhere. RedGiant's installer still carries the app.",
+  news382Site: "A site for the downloads",
+  news382SiteText:
+    "smpdigital.it/redgiant gathers what to download for every system: RedGiant, the app alone and RedGiant OS, always from the latest release.",
+  news382Icon: "One icon everywhere",
+  news382IconText: "RGCompanion now has RedGiant's own icon on every system.",
   news381App: "RGCompanion, the app",
   news381AppText:
     "RedGiant on your phone and as a window on your computer: your team with live mascots, chats with the «…» options, requests to answer with a swipe, tasks, the Canvas, notifications, voice and sharing to RedGiant. The advanced mode adds projects, files, diffs, the terminal and git.",
@@ -8958,6 +8975,23 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news382Room: "La Sala di controllo sul computer",
+  news382RoomText:
+    "Su Windows, macOS e Linux RGCompanion ha un'interfaccia sua quando la finestra è abbastanza larga: la parete dei tuoi agenti con le mascotte e le ultime azioni, un pannello laterale con le conversazioni, la ricerca Ctrl/Cmd+K di agenti, conversazioni, comandi e file, le scorciatoie da tastiera e una barra di stato. L'interfaccia avanzata aggiunge i progetti con le loro modifiche, i diff affiancati, i terminali a griglia, git come grafo e il registro. Il telefono tiene le sue schermate.",
+  news382Figures: "I numeri di ogni risposta nell'app",
+  news382FiguresText:
+    "Sotto ogni risposta l'app mostra quello che mostra la pagina: letti, cache, generati, contesto, tempi di lettura e generazione, token al secondo e l'ora. Interi sul computer, in breve sul telefono finché non li tocchi.",
+  news382Update: "Aggiornamenti da seguire nell'app",
+  news382UpdateText:
+    "Aggiorna RedGiant da RGCompanion e seguilo fino alla fine: passi numerati, una barra vera con velocità e tempo che manca, il riavvio e l'app che si ricollega da sola alla versione nuova, con le novità alla fine. Su Windows l'app si chiude da sola prima che i suoi file vengano sostituiti e si riapre dopo.",
+  news382Standalone: "RGCompanion da sola per Windows",
+  news382StandaloneText:
+    "RGCompanion-Setup.exe installa solo l'app, per il tuo utente e senza diritti di amministratore, con la sua voce nel menu Start e la sua disinstallazione: per un computer che raggiunge un RedGiant altrove. L'installazione di RedGiant continua a portare anche l'app.",
+  news382Site: "Un sito per i download",
+  news382SiteText:
+    "smpdigital.it/redgiant raccoglie quello che si scarica per ogni sistema: RedGiant, l'app da sola e RedGiant OS, sempre dall'ultima versione.",
+  news382Icon: "Un'icona sola, ovunque",
+  news382IconText: "RGCompanion ha adesso l'icona di RedGiant su tutti i sistemi.",
   news381App: "RGCompanion, l'app",
   news381AppText:
     "RedGiant sul telefono e come finestra sul computer: la tua squadra con le mascotte vive, le conversazioni con le opzioni del «…», le richieste a cui rispondi con uno scorrimento, i compiti, il Canvas, le notifiche, la voce e la condivisione verso RedGiant. L'interfaccia avanzata aggiunge progetti, file, diff, terminale e git.",

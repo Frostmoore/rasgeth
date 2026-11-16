@@ -746,6 +746,9 @@ void main() {
       t,
     ) async {
       final app = _app(platform: DevicePlatform.windows);
+      // The phone's screens on this computer (Tu › Aspetto: never the control room, G40.17), so
+      // the update starts from Tu › server settings as on every device; the window is the same.
+      app.desktopFrom = -1;
       server.update = windowsStatus();
       server.onUpdateAct = () {
         server.update = windowsStatus(

@@ -32,7 +32,8 @@
 
 ## Install
 
-Native on Windows and macOS, Docker on Linux.
+Native on Windows and macOS, Docker on Linux. Every download, for every system, is also on
+**[smpdigital.it/redgiant](https://smpdigital.it/redgiant/)**.
 
 ### Windows
 
@@ -67,6 +68,19 @@ USB stick, Proxmox, Hyper-V, VirtualBox, VMware, clouds, a Raspberry Pi: see
 they sit on the latest release that carries them: the [latest release](https://github.com/Frostmoore/redgiant2/releases/latest)'s
 notes link it, and the Proxmox script finds it by itself. A new machine updates itself to the latest
 RedGiant at its first start.
+
+### Only the app
+
+RGCompanion, the app, for a computer or a phone that reaches a RedGiant running somewhere else (a server,
+RedGiant OS, another PC). RedGiant's own installers already carry it.
+
+- **Windows**: [RGCompanion-Setup.exe](https://github.com/Frostmoore/redgiant2/releases/latest/download/RGCompanion-Setup.exe),
+  for your user only, no administrator rights, with a Start menu entry and its own uninstallation.
+- **Linux**: [rgcompanion-linux-x64.tar.gz](https://github.com/Frostmoore/redgiant2/releases/latest/download/rgcompanion-linux-x64.tar.gz):
+  unpack it and run `./install-app.sh` (your user only, with a menu entry).
+
+Their sha256 are listed in the release's `SHA256SUMS-companion`. The [site](https://smpdigital.it/redgiant/)
+says what is ready for each system.
 
 ### First run
 
@@ -327,6 +341,9 @@ RedGiant is in pre-alpha. What comes next, in order:
   page. 3.8.1 (released) brings the app itself: RGCompanion for the phone (Android; iOS prepared) and, through the
   launchers, for Windows, macOS and Linux — the team with live mascots, chats, requests, tasks, the Canvas, notifications,
   voice, sharing, Saved passages and the advanced mode — plus product cards with pictures and clearer updates.
+  3.8.2 (released) gives the computers an interface of their own, the control room (the wall of agents, the
+  Ctrl/Cmd+K search, projects with diffs, terminals, git as a graph, the log), every answer's figures in the app,
+  updates followed from the app, RedGiant's icon, RGCompanion on its own for Windows and a site for the downloads.
 - **3.9 and 3.10 — Video and 3D generation**: a video editor shared by you and the agent, and 3D
   generation with local or cloud engines, finished in Blender.
 - **3.11 — Emulators in the Canvas**: an Android emulator or the iOS simulator found on the computer
