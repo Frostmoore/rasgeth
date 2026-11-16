@@ -27,20 +27,33 @@ interface Call {
 function fakeRunner(o: { hangOn?: (c: Call) => boolean; probe?: string } = {}) {
   const calls: Call[] = [];
   let release: (() => void) | undefined;
+  /** Resolved once the hanging program has written its half file (or failed to). */
+  let started!: (what: string) => void;
+  const hanging = new Promise<string>((r) => {
+    started = r;
+  });
   const run: MediaRunner = async (program, args, opts: RunOptions = {}) => {
     const c = { program, args };
     calls.push(c);
     if (o.hangOn?.(c)) {
       // Writes half its output, then waits to be cancelled.
       const out = args.at(-1) ?? "";
-      if (out.includes(".part.")) await writeFile(out, "half");
+      if (out.includes(".part."))
+        await writeFile(out, "half").then(
+          () => started(out),
+          (e: Error) => started(`write failed: ${e.message}`),
+        );
+      else started(out);
       await new Promise<void>((resolve, reject) => {
         release = resolve;
-        opts.signal?.addEventListener("abort", () => {
+        const stop = () => {
           const e = new Error("cancelled");
           e.name = "AbortError";
           reject(e);
-        });
+        };
+        // Cancelled before it listens (the test may be quicker than this): as runMedia does.
+        if (opts.signal?.aborted) stop();
+        else opts.signal?.addEventListener("abort", stop);
       });
     }
     if (program === "ffprobe" && o.probe === "broken")
@@ -67,7 +80,7 @@ function fakeRunner(o: { hangOn?: (c: Call) => boolean; probe?: string } = {}) {
     opts.onStdoutLine?.("progress=end");
     return { stdout: "", stderr: "" };
   };
-  return { run, calls, release: () => release?.() };
+  return { run, calls, hanging, release: () => release?.() };
 }
 
 let dir: string;
@@ -335,11 +348,10 @@ describe("VideoAnalysis.derive", () => {
   it("«Cancel» halfway removes the half-written proxy", async () => {
     const { jobs, fake, service, file } = await setup({ hangOn: (c) => c.args.includes("-crf") });
     const job = await service.derive("u1", file, "clip.mp4", "proxy");
-    while (!fake.calls.some((c) => c.args.includes("-crf")))
-      await new Promise((r) => setTimeout(r, 5));
-    const part = fake.calls.at(-1)?.args.at(-1) ?? "";
-    while (!existsSync(part)) await new Promise((r) => setTimeout(r, 5));
-    jobs.cancel("u1", job.id);
+    const part = await fake.hanging;
+    expect(part).toMatch(/\.part\.mp4$/);
+    expect(existsSync(part)).toBe(true);
+    expect(jobs.cancel("u1", job.id)).toBe(true);
     expect((await jobs.settled(job.id))?.state).toBe("cancelled");
     expect(existsSync(part)).toBe(false);
     const fp = await mediaFingerprint(file);
