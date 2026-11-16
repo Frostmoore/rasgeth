@@ -2297,6 +2297,15 @@ export class Api {
     });
   }
 
+  /** A product card's picture (G40.16), downloaded by the server: the page never calls the shop. */
+  async productImage(id: string): Promise<Blob> {
+    const r = await fetch(`/api/products/images/${encodeURIComponent(id)}`, {
+      headers: { authorization: `Bearer ${this.token}` },
+    });
+    if (!r.ok) throw new ApiError(r.status, `HTTP ${r.status}`);
+    return r.blob();
+  }
+
   async download(scope: string, path: string): Promise<Blob> {
     const r = await fetch(
       `/api/files/raw?scope=${encodeURIComponent(scope)}&path=${encodeURIComponent(path)}`,

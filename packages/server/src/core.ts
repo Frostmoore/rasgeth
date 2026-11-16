@@ -165,8 +165,6 @@ import {
   keptWidget,
 } from "./artifact-engine.js";
 import { ARTIFACT_GUIDANCE } from "./artifact-guidance.js";
-import { PRODUCTS_GUIDANCE, type ProductsToolHost, showProductsTool } from "./product-cards.js";
-import { ProductImages, type ProductImagesOptions } from "./product-images.js";
 import { type ReapDeps, reapOrphan } from "./background-reap.js";
 import type { BackupDeps } from "./backup.js";
 import { type Browsers, browserTools } from "./browser.js";
@@ -282,6 +280,8 @@ import {
   PolicyStore,
   platformConfigTools,
 } from "./platform.js";
+import { PRODUCTS_GUIDANCE, type ProductsToolHost, showProductsTool } from "./product-cards.js";
+import { ProductImages, type ProductImagesOptions } from "./product-images.js";
 import { migrateProjects, ProjectStore, type Subproject, slug } from "./projects.js";
 import { kindLabel, PromptRefiner, RefineError, type RefineJob } from "./prompt-refiner.js";
 import {

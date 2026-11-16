@@ -89,6 +89,7 @@ import { MailRequestPreview, MailToolCard, mailSummary } from "./MailCards.js";
 import { Mascot } from "./Mascot.js";
 import { MetricsBar } from "./MetricsBar.js";
 import { ModelMenu, modelName } from "./ModelMenu.js";
+import { ProductCards } from "./ProductCards.js";
 import { ArchivedNotice } from "./ProjectArchive.js";
 import { QuestionCard } from "./QuestionCard.js";
 import { ToolRequestCard } from "./ToolRequestCard.js";
@@ -929,6 +930,8 @@ function Item({
       );
     case "file":
       return <FileCard item={item} />;
+    case "products":
+      return <ProductCards title={item.title} products={item.products} />;
     case "widget":
       return (
         <WidgetCard

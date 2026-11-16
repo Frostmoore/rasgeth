@@ -10,6 +10,7 @@ import type {
   MessageMetrics,
   MessageQuote,
   PermissionRequestInfo,
+  ProductCard,
   Question,
   QuestionRequestInfo,
   ServerMessage,
@@ -132,6 +133,8 @@ export type ChatItem =
       mime: string;
       caption?: string;
     }
+  /** Product cards an agent showed (G40.16): a carousel with the server's pictures. */
+  | { kind: "products"; key: string; title?: string; products: ProductCard[] }
   /** A board of variants (G25.4): a card that opens it, with what the person said. */
   | {
       kind: "variants";
@@ -479,6 +482,14 @@ export function buildItems(events: Event[]): ChatItem[] {
       }
       case "file.sent":
         items.push({ kind: "file", key, ...e.payload });
+        break;
+      case "products.shown":
+        items.push({
+          kind: "products",
+          key,
+          ...(e.payload.title && { title: e.payload.title }),
+          products: e.payload.products,
+        });
         break;
       case "canvas.show":
         items.push({ kind: "canvas", key, title: e.payload.title, target: e.payload.target });
