@@ -2,7 +2,15 @@
 // (redgiant-os-update, bash) checked against assessRelease, the rule it mirrors.
 import { execFileSync, spawnSync } from "node:child_process";
 import { generateKeyPairSync } from "node:crypto";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -782,5 +790,38 @@ describe("redgiant-os-update files: signed, checked, put back on a failure", () 
     expect(c).toContain("systemctl disable b.timer");
     // systemd reads the old files again.
     expect(c.filter((l) => l === "systemctl daemon-reload")).toHaveLength(2);
+  });
+});
+
+// common.sh is bash (arrays since 3.8.1): sourced by sh (dash on Debian) it stops at a syntax
+// error and every value read through it comes out empty ("the machine runs , not 3.8.1").
+describe("common.sh is only ever sourced by bash", () => {
+  const sources = (text: string) =>
+    text
+      .split("\n")
+      .filter((l) => /(^|[\s;'"(])\.\s+.*common\.sh/.test(l) && !l.trimStart().startsWith("#"));
+  const os = fileURLToPath(new URL("..", import.meta.url));
+  it("the OS's scripts that source it run with bash", () => {
+    const dir = join(os, "rootfs/usr/lib/redgiant-os");
+    const users = readdirSync(dir).filter(
+      (f) => sources(readFileSync(join(dir, f), "utf8")).length,
+    );
+    expect(users).toContain("redgiant-os-update");
+    for (const f of users) {
+      expect(readFileSync(join(dir, f), "utf8").split("\n")[0], f).toBe("#!/usr/bin/env bash");
+    }
+  });
+  it("the tests and the workflow call it through bash -c, never sh -c", () => {
+    const files = [
+      ...readdirSync(join(os, "test"))
+        .filter((f) => f.endsWith(".sh"))
+        .map((f) => join(os, "test", f)),
+      fileURLToPath(new URL("../../../.github/workflows/os.yml", import.meta.url)),
+    ];
+    const lines = files.flatMap((f) => sources(readFileSync(f, "utf8")).map((l) => `${f}: ${l}`));
+    expect(lines.length).toBeGreaterThan(0);
+    for (const l of lines) {
+      if (/\bsh -c\b/.test(l)) expect(l, l).toMatch(/\bbash -c '\.\s+\S*common\.sh/);
+    }
   });
 });

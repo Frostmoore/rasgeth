@@ -66,7 +66,7 @@ wait_until() { # what seconds command…
 }
 healthy() { T=15 in_ct curl -fsS --max-time 5 http://127.0.0.1:7600/api/health; }
 wait_until "RedGiant answering" "$TIMEOUT" healthy || fail "RedGiant did not answer within $TIMEOUT s"
-old=$(T=15 in_ct sh -c '. /usr/lib/redgiant-os/common.sh; installed_version')
+old=$(T=15 in_ct bash -c '. /usr/lib/redgiant-os/common.sh; installed_version')
 new=$(jq -r .tag_name "$FEED/release-api.json")
 new=${new#v}
 echo "the machine runs RedGiant $old; the feed brings $new"
@@ -89,13 +89,13 @@ else
 fi
 
 ok=1
-now=$(T=15 in_ct sh -c '. /usr/lib/redgiant-os/common.sh; installed_version')
+now=$(T=15 in_ct bash -c '. /usr/lib/redgiant-os/common.sh; installed_version')
 [ "$now" = "$new" ] || { echo "::error::the machine runs $now, not $new"; ok=0; }
 state=$(T=15 in_ct jq -r .state /var/lib/redgiant/os-update.json)
 [ "$state" = latest ] || { echo "::error::the updater says $state"; ok=0; }
 healthy >/dev/null || { echo "::error::RedGiant does not answer after the update"; ok=0; }
 # The containers run the stack's pinned images (the id Docker reports is the stack's).
-arch=$(T=15 in_ct sh -c '. /usr/lib/redgiant-os/common.sh; arch')
+arch=$(T=15 in_ct bash -c '. /usr/lib/redgiant-os/common.sh; arch')
 for id in $(jq -r --arg a "$arch" '.images[$a][].id' "$FEED/redgiant-os-stack.json"); do
   T=30 in_ct sh -c "docker ps -q | xargs docker inspect -f '{{.Image}}'" | grep -qx "$id" ||
     { echo "::error::no container runs $id"; ok=0; }
