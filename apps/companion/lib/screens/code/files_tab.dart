@@ -358,7 +358,7 @@ class _FileViewState extends State<FileView> {
       });
       e.dispose();
       unawaited(widget.ctx.reloadGit());
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.codeSaved)));
+      say(context, l.codeSaved);
     } on ApiException catch (err) {
       if (mounted) showApiError(context, err);
     } finally {
@@ -443,7 +443,7 @@ class _FileViewState extends State<FileView> {
             label: l.codeCopyPath,
             onTap: () {
               unawaited(Clipboard.setData(ClipboardData(text: widget.path)));
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.codePathCopied)));
+              say(context, l.codePathCopied);
             },
           ),
         ],

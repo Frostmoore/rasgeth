@@ -67,6 +67,11 @@ class ProjectCtx {
   }
 }
 
+/// A short note at the bottom, in place of the one showing (never a queue of old ones).
+void say(BuildContext context, String text) => ScaffoldMessenger.of(context)
+  ..hideCurrentSnackBar()
+  ..showSnackBar(SnackBar(content: Text(text)));
+
 /// The error of a request, in the person's words.
 void showApiError(BuildContext context, Object e) {
   final l = AppLocalizations.of(context);
@@ -77,7 +82,7 @@ void showApiError(BuildContext context, Object e) {
     ApiException(:final message) => message,
     _ => '$e',
   };
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+  say(context, text);
 }
 
 String tabLabel(AppLocalizations l, ProjectTab t) => switch (t) {

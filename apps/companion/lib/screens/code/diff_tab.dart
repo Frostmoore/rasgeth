@@ -156,8 +156,7 @@ class _DiffTabState extends State<DiffTab> with AutomaticKeepAliveClientMixin {
       );
       if (!mounted) return;
       setState(() => _done[key] = keep ? 'keep' : 'discard');
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(keep ? l.codeKept : l.codeDiscarded)));
+      say(context, keep ? l.codeKept : l.codeDiscarded);
       unawaited(widget.ctx.reloadGit());
       if (!keep && !commit) await _load(keepPage: true);
     } on ApiException catch (e) {
@@ -188,9 +187,7 @@ class _DiffTabState extends State<DiffTab> with AutomaticKeepAliveClientMixin {
         _comment.clear();
       }
     });
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(ok ? l.codeCommentSent(a.name) : l.codeCommentFailed)));
+    say(context, ok ? l.codeCommentSent(a.name) : l.codeCommentFailed);
   }
 
   @override

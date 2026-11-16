@@ -126,6 +126,32 @@ class FakeRedGiant {
   ];
   final pushTests = <String>[];
 
+  // G40.11: the advanced interface.
+  bool archived = false;
+  final hunks = <Map<String, dynamic>>[];
+  final commits = <String>[];
+  int pushes = 0;
+  final jobs = <String, String>{};
+  final termHellos = <Map<String, dynamic>>[];
+  final termInput = <String>[];
+  String patch =
+      'diff --git a/src/prices.ts b/src/prices.ts\n'
+      'index 1111111..2222222 100644\n'
+      '--- a/src/prices.ts\n'
+      '+++ b/src/prices.ts\n'
+      '@@ -12,3 +12,4 @@ export function prices()\n'
+      '   const list = useList();\n'
+      '-  const year = 2025;\n'
+      '+  const year = 2026;\n'
+      '+  const vat = list.vat ?? 22;\n'
+      '   return list;\n'
+      'diff --git a/README.md b/README.md\n'
+      '--- a/README.md\n'
+      '+++ b/README.md\n'
+      '@@ -1 +1 @@\n'
+      '-# Demo\n'
+      '+# Demo shop\n';
+
   // G40.10: notifications, voice and the files the composer writes.
   String? vapidPublicKey = 'BPvapid-public-key';
   final pushRegistrations = <String, Map<String, dynamic>>{};
@@ -242,6 +268,7 @@ class FakeRedGiant {
       });
     }
     if (path == '/ws' && WebSocketTransformer.isUpgradeRequest(r)) return _socket(r);
+    if (path == '/term' && WebSocketTransformer.isUpgradeRequest(r)) return _term(r);
     if (!tokens.contains(token)) return _json(r, 401, {'error': 'Unauthorized'});
     if (r.method == 'GET' && path == '/api/agents') return _json(r, 200, agents);
     if (r.method == 'GET' && path == '/api/sessions') {
@@ -585,7 +612,13 @@ class FakeRedGiant {
     }
     if (r.method == 'GET' && path == '/api/projects') {
       return _json(r, 200, [
-        {'id': 'demo', 'name': 'Demo', 'path': '/p', 'createdAt': '2026-11-01T00:00:00.000Z'},
+        {
+          'id': 'demo',
+          'name': 'Demo',
+          'path': '/p',
+          'createdAt': '2026-11-01T00:00:00.000Z',
+          if (archived) 'archivedAt': '2026-11-16T00:00:00.000Z',
+        },
       ]);
     }
     if (r.method == 'GET' && path == '/api/projects/demo/tasks') {
@@ -598,6 +631,19 @@ class FakeRedGiant {
           'sessionId': 's1',
           'outcome': 'open',
           'openedAt': '2026-11-15T09:00:00.000Z',
+          'verifier': {'command': 'npm test', 'passed': false},
+          'note': null,
+        },
+        {
+          'id': 'task_2',
+          'title': 'Prices page',
+          'agentId': 'a1',
+          'agentName': 'Coder Web',
+          'sessionId': null,
+          'outcome': 'open',
+          'openedAt': '2026-11-15T10:00:00.000Z',
+          'verifier': null,
+          'note': null,
         },
         {
           'id': 'task_0',
@@ -620,6 +666,7 @@ class FakeRedGiant {
         'modifiedAt': '2026-11-15T10:00:00.000Z',
       });
     }
+    if (await _code(r, path)) return;
     final m = RegExp(r'^/api/agents/a(\d+)/mascot$').firstMatch(path);
     if (r.method == 'GET' && m != null) {
       final i = int.parse(m.group(1)!);
@@ -633,6 +680,217 @@ class FakeRedGiant {
       return r.response.close();
     }
     return _json(r, 404, {'error': 'Not found'});
+  }
+
+  /// The advanced interface's routes (code-routes.ts, the Explorer's), for the demo project.
+  Future<bool> _code(HttpRequest r, String path) async {
+    Future<Map<String, dynamic>> body() async =>
+        jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+    Future<bool> json(int status, Object b) async {
+      await _json(r, status, b);
+      return true;
+    }
+
+    final q = r.uri.queryParameters;
+    final get = r.method == 'GET';
+    if (get && path == '/api/projects/demo/git') {
+      return json(200, {
+        'repo': true,
+        'branch': 'p2.4.0',
+        'upstream': 'origin/p2.4.0',
+        'ahead': 2,
+        'behind': 0,
+        'changes': [
+          {'path': 'src/prices.ts', 'status': 'M', 'staged': false},
+          {'path': 'README.md', 'status': 'M', 'staged': false},
+          {'path': 'notes.txt', 'status': '?', 'staged': false},
+        ],
+      });
+    }
+    if (get && path == '/api/projects/demo/git/log') {
+      return json(200, [
+        {
+          'hash': 'abc1234ffff',
+          'short': 'abc1234',
+          'author': 'Coder Web',
+          'date': '2026-11-15T10:00:00Z',
+          'refs': 'HEAD -> p2.4.0',
+          'subject': 'Prices 2026',
+        },
+      ]);
+    }
+    if (get && path == '/api/projects/demo/git/branches') {
+      return json(200, [
+        {'name': 'p2.4.0', 'current': true, 'upstream': 'origin/p2.4.0', 'ahead': 2, 'behind': 0},
+        {'name': 'main', 'current': false, 'upstream': null, 'ahead': 0, 'behind': 0},
+      ]);
+    }
+    if (get && path == '/api/projects/demo/git/diff') {
+      return json(200, {
+        'kind': q['commit'] != null
+            ? 'commit'
+            : (q['agent'] != null || q['task'] != null ? 'agent' : 'working'),
+        'title': q['task'] != null ? 'Add the --json flag' : '',
+        'agentId': q['task'] != null ? 'a1' : q['agent'],
+        'patch': patch,
+        'truncated': false,
+      });
+    }
+    if (r.method == 'POST' && path == '/api/projects/demo/git/hunk') {
+      if (archived) return json(423, {'error': 'archived', 'code': 'project_archived'});
+      final b = await body();
+      hunks.add(b);
+      return json(200, {
+        'ok': true,
+        'backup': b['action'] == 'discard' ? '.trash/diffs/x.patch' : null,
+      });
+    }
+    if (r.method == 'POST' && path == '/api/projects/demo/git/commit') {
+      final b = await body();
+      commits.add(b['message'] as String);
+      return json(200, {'commit': 'def5678'});
+    }
+    if (r.method == 'POST' && path == '/api/projects/demo/git/push') {
+      pushes++;
+      jobs['job1'] = 'running';
+      return json(202, {
+        'id': 'job1',
+        'kind': 'git_push',
+        'state': 'running',
+        'steps': [],
+        'vars': {},
+      });
+    }
+    final job = RegExp(r'^/api/jobs/([^/]+)$').firstMatch(path);
+    if (get && job != null) {
+      final state = jobs[job.group(1)] ?? 'done';
+      return json(200, {
+        'id': job.group(1),
+        'state': state,
+        if (state == 'failed') 'error': {'code': 'denied', 'message': 'Not pushed'},
+      });
+    }
+    if (get && path == '/api/projects/demo/events') {
+      final all = [
+        {
+          'seq': 3,
+          'ts': '2026-11-15T09:31:05.000Z',
+          'type': 'agent.blocked',
+          'agentId': 'a1',
+          'agentName': 'Coder Web',
+          'sessionId': 's1',
+          'error': true,
+          'payload': {'reason': 'I need a new bank access'},
+        },
+        {
+          'seq': 2,
+          'ts': '2026-11-15T09:31:04.000Z',
+          'type': 'tool.result',
+          'agentId': 'a1',
+          'agentName': 'Coder Web',
+          'sessionId': 's1',
+          'error': true,
+          'payload': {'callId': 'c1', 'ok': false, 'output': 'token expired'},
+        },
+        {
+          'seq': 1,
+          'ts': '2026-11-15T09:31:02.000Z',
+          'type': 'tool.call',
+          'agentId': 'a1',
+          'agentName': 'Coder Web',
+          'sessionId': 's1',
+          'error': false,
+          'payload': {
+            'callId': 'c1',
+            'tool': 'bash',
+            'input': {'command': 'npm test'},
+          },
+        },
+      ];
+      return json(200, {
+        'events': [
+          for (final e in all)
+            if ((q['errors'] != '1' || e['error'] == true) &&
+                (q['type'] == null || e['type'] == q['type']))
+              e,
+        ],
+        'types': ['agent.blocked', 'tool.call', 'tool.result'],
+        'agents': [
+          {'id': 'a1', 'name': 'Coder Web'},
+        ],
+      });
+    }
+    final ev = RegExp(r'^/api/sessions/([^/]+)/events$').firstMatch(path);
+    if (get && ev != null) {
+      return json(200, [
+        _event(1, 'tool.call', {
+          'callId': 'c1',
+          'tool': 'bash',
+          'input': {'command': 'git status -s'},
+        }),
+        _event(2, 'tool.result', {'callId': 'c1', 'ok': true, 'output': ' M src/prices.ts'}),
+      ]);
+    }
+    if (get && path == '/api/files/search') {
+      return json(200, [
+        {'path': 'src/prices.ts', 'line': 13, 'text': 'const year = 2026;'},
+      ]);
+    }
+    if (get && path == '/api/files/list') {
+      final dir = q['path'] ?? '.';
+      return json(
+        200,
+        dir == 'src'
+            ? [
+                {
+                  'name': 'prices.ts',
+                  'path': 'src/prices.ts',
+                  'type': 'file',
+                  'size': 4200,
+                  'modifiedAt': '2026-11-15T10:00:00.000Z',
+                },
+              ]
+            : [
+                {
+                  'name': 'src',
+                  'path': 'src',
+                  'type': 'dir',
+                  'size': 0,
+                  'modifiedAt': '2026-11-15T10:00:00.000Z',
+                },
+                {
+                  'name': 'README.md',
+                  'path': 'README.md',
+                  'type': 'file',
+                  'size': 1100,
+                  'modifiedAt': '2026-11-15T10:00:00.000Z',
+                },
+              ],
+      );
+    }
+    return false;
+  }
+
+  /// `/term` as terminal.ts: hello, ready, then input echoed back as output.
+  Future<void> _term(HttpRequest r) async {
+    final ws = await WebSocketTransformer.upgrade(r);
+    ws.listen((data) {
+      final m = jsonDecode(data as String) as Map<String, dynamic>;
+      if (m['type'] == 'hello') {
+        termHellos.add(m);
+        if (!tokens.contains(m['token'])) {
+          ws.close(4003, 'unauthorized');
+          return;
+        }
+        ws.add(jsonEncode({'type': 'ready', 'terminalId': 'term_1'}));
+        ws.add(jsonEncode({'type': 'output', 'data': '\x1b[32mdemo\x1b[0m \$ '}));
+      } else if (m['type'] == 'input') {
+        termInput.add(m['data'] as String);
+        ws.add(
+          jsonEncode({'type': 'output', 'data': (m['data'] as String).replaceAll('\r', '\r\n')}),
+        );
+      }
+    });
   }
 
   /// `/ws` as ws.ts: hello with a token, welcome, the waiting requests, follow and send.

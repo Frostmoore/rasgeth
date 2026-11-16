@@ -76,14 +76,13 @@ class _GitTabState extends State<GitTab> with AutomaticKeepAliveClientMixin {
       final h = await widget.ctx.client.gitCommit(widget.ctx.project.id, m);
       _message.clear();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.codeCommitted(h))));
+        say(context, l.codeCommitted(h));
       }
       await _load();
     } on ApiException catch (e) {
       if (mounted) {
         if (e.code == 'nothing') {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(l.codeNothingToCommit)));
+          say(context, l.codeNothingToCommit);
         } else {
           showApiError(context, e);
         }
@@ -105,7 +104,7 @@ class _GitTabState extends State<GitTab> with AutomaticKeepAliveClientMixin {
     } on ApiException catch (e) {
       if (!mounted) return;
       if (e.code == 'no_remote') {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.codeNoRemote)));
+        say(context, l.codeNoRemote);
       } else {
         showApiError(context, e);
       }
@@ -128,7 +127,7 @@ class _GitTabState extends State<GitTab> with AutomaticKeepAliveClientMixin {
           : j.errorCode == 'denied'
           ? l.codePushDenied
           : l.codePushFailed(j.errorMessage ?? j.state);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+      say(context, text);
       await _load();
     } on ApiException {
       // Tried again at the next tick.

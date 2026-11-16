@@ -272,7 +272,7 @@ void main() {
       final app = make(MemoryTokenStore(), MemoryAppPrefs(), live: false);
       expect(await app.connect(server.base.toString(), 'secret'), isTrue);
       final tasks = await allTasks(app.client!);
-      expect(tasks.map((t) => t.title), ['Add the --json flag', 'Fix the README']);
+      expect(tasks.map((t) => t.title), ['Add the --json flag', 'Prices page', 'Fix the README']);
       expect(tasks.first.done, isFalse);
       expect(tasks.last.outcome, TaskOutcome.verified);
     });
