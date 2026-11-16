@@ -70,6 +70,7 @@ import {
 import { ChatError } from "./chat.js";
 import { type ChatHub, ChatSettings, PLATFORMS } from "./chats.js";
 import { CodeChangeError } from "./code.js";
+import { codeRoutes } from "./code-routes.js";
 import { convertRoutes } from "./convert-routes.js";
 import {
   BadRequestError,
@@ -1611,6 +1612,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   artifactRoutes(app, core, owner);
   // Commands' limits and requests to the person (G36.16, G36.17).
   personRoutes(app, core, owner);
+  codeRoutes(app, core, owner);
   acpRoutes(app, core, owner);
   sheetRoutes(app, core, owner);
   svgRoutes(app, core, owner);

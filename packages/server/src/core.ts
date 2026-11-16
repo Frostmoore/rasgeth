@@ -6453,16 +6453,38 @@ export class RedGiantCore implements OrchestrationHost {
       sessionId: string | null;
       outcome: "open" | "verified" | "not_testable" | "abandoned";
       openedAt: string;
+      /** The last verifier run (G40.11: the app's board shows it with its result). */
+      verifier: { command: string; passed: boolean } | null;
+      /** Why it closed without a verifier, or was given up on. */
+      note: string | null;
     }[]
   > {
     if (!(await this.projects.get(ownerId, projectId)))
       throw new NotFoundError(`Project "${projectId}" not found`);
     const events = (
-      await this.store.list({ projectId, types: ["task.opened", "task.closed"] })
+      await this.store.list({
+        projectId,
+        types: ["task.opened", "task.verified", "task.closed"],
+      })
     ).filter((e) => e.ownerId === ownerId);
     const closed = new Map<string, "verified" | "not_testable" | "abandoned">();
-    for (const e of events)
-      if (e.type === "task.closed" && e.payload) closed.set(e.payload.taskId, e.payload.outcome);
+    const notes = new Map<string, string>();
+    const verifiers = new Map<string, { command: string; passed: boolean }>();
+    for (const e of events) {
+      if (e.type === "task.closed" && e.payload) {
+        closed.set(e.payload.taskId, e.payload.outcome);
+        const p = e.payload;
+        const why =
+          p.outcome === "not_testable"
+            ? p.justification
+            : p.outcome === "abandoned"
+              ? p.reason
+              : null;
+        if (why) notes.set(p.taskId, why);
+      }
+      if (e.type === "task.verified" && e.payload)
+        verifiers.set(e.payload.taskId, { command: e.payload.verifier, passed: e.payload.passed });
+    }
     return events
       .flatMap((e) =>
         e.type === "task.opened" && e.payload
@@ -6475,6 +6497,8 @@ export class RedGiantCore implements OrchestrationHost {
                 sessionId: e.sessionId,
                 outcome: closed.get(e.payload.taskId) ?? ("open" as const),
                 openedAt: e.ts,
+                verifier: verifiers.get(e.payload.taskId) ?? null,
+                note: notes.get(e.payload.taskId) ?? null,
               },
             ]
           : [],
