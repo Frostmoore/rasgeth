@@ -381,6 +381,29 @@ describe("the ffmpeg already on the computer", () => {
         const distro = join(dir, "distro");
         await fakeTools(distro, { version: "ffmpeg version 7.1.1-1+b1\n", filters: F9.filters });
         expect(findFfmpeg(data, distro)).toBe(realpathSync(join(distro, "ffmpeg")));
+        // A WinGet-like link on the PATH (Rig, 2026-11-16: starting the link itself fails with
+        // «untrusted mount point»): the real file is what runs and what is returned.
+        const pkgs = join(dir, "winget", "Packages", "Gyan.FFmpeg", "bin");
+        const links = join(dir, "winget", "Links");
+        await fakeTools(pkgs, F9);
+        await mkdir(links, { recursive: true });
+        await symlink(join(pkgs, "ffmpeg"), join(links, "ffmpeg"));
+        await symlink(join(pkgs, "ffprobe"), join(links, "ffprobe"));
+        expect(locateFfmpeg(data, links)).toEqual({
+          ffmpeg: realpathSync(join(pkgs, "ffmpeg")),
+          ffprobe: realpathSync(join(pkgs, "ffprobe")),
+          source: "path",
+        });
+        // One that does not start: not used, RedGiant downloads its own instead of breaking.
+        const broken = join(dir, "broken");
+        await fakeTools(broken, F9);
+        await writeFile(join(broken, "ffmpeg"), "#!/bin/sh\nexit 1\n");
+        const brokenLinks = join(dir, "broken-links");
+        await mkdir(brokenLinks);
+        await symlink(join(broken, "ffmpeg"), join(brokenLinks, "ffmpeg"));
+        await symlink(join(broken, "ffprobe"), join(brokenLinks, "ffprobe"));
+        expect(findFfmpeg(data, brokenLinks)).toBeUndefined();
+        expect(findFfmpeg(data, join(links, "nothing"))).toBeUndefined();
         // RedGiant's own wins over the PATH's.
         await mkdir(dirname(ffmpegPath(data)), { recursive: true });
         await writeFile(ffmpegPath(data), "");
