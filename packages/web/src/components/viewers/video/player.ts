@@ -562,7 +562,7 @@ export class TimelinePlayer {
           el.className = `vp-box vp-text pos-${ref.position}${look_.box ? " boxed" : ""}${look_.shadow ? " shadow" : ""}${look_.bold ? " bold" : ""}`;
           el.style.background = "";
           el.style.setProperty("--size", String(look_.size));
-          if (el.textContent !== ref.text) el.textContent = ref.text;
+          setText(el, ref.text);
         }
       }
     }
@@ -619,7 +619,17 @@ export class TimelinePlayer {
     const s = doc.captions;
     el.className = `vp-caption ${s.style} ${s.position}`;
     el.style.opacity = c ? "1" : "0";
-    const text = c?.text.trim() ?? "";
-    if (el.textContent !== text) el.textContent = text;
+    setText(el, c?.text.trim() ?? "");
   }
+}
+
+/** A text in a box's inner span (its background is a box behind each line, as drawtext's). */
+function setText(el: HTMLElement, text: string): void {
+  let span = el.firstElementChild as HTMLElement | null;
+  if (!span || span.tagName !== "SPAN") {
+    el.textContent = "";
+    span = document.createElement("span");
+    el.appendChild(span);
+  }
+  if (span.textContent !== text) span.textContent = text;
 }

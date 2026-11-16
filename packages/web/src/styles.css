@@ -20930,26 +20930,27 @@ fieldset.saved-filter legend {
 .vp-text.shadow {
   text-shadow: 0 calc(var(--side) / 360) calc(var(--side) / 360) rgb(0 0 0 / 0.8);
 }
+/* compile.ts's places: the title-safe 5%, the top at 8% of the height, the lower third at 70%
+   (padding in % follows the width: the height is the width over --arn). */
 .vp-text.pos-top {
   align-items: flex-start;
-  padding-top: 8%;
+  padding-top: calc(8% / var(--arn, 1.7778));
 }
 .vp-text.pos-bottom {
   align-items: flex-end;
-  padding-bottom: 8%;
+  padding-bottom: calc(8% / var(--arn, 1.7778));
 }
 .vp-text.pos-lower_third {
-  align-items: flex-start;
-  justify-content: flex-start;
+  display: block;
   text-align: left;
-  padding-top: 70%;
-  padding-top: calc(70% * 9 / 16);
+  padding: calc(70% / var(--arn, 1.7778)) 5% 0;
 }
-.vp-text.boxed {
-  background: none;
-}
-.vp-text.boxed::first-line {
-  background: rgb(0 0 0 / 0.6);
+.vp-text.boxed > span,
+.vp-caption.boxed > span {
+  background: rgb(0 0 0 / 0.55);
+  padding: 0.08em 0.3em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 .vp-caption {
   position: absolute;
@@ -20973,15 +20974,7 @@ fieldset.saved-filter legend {
 }
 .vp-caption.boxed {
   text-shadow: none;
-}
-.vp-caption.boxed:not(:empty) {
-  justify-self: center;
-}
-.vp-caption.boxed {
-  background: none;
-}
-.vp-caption.boxed::first-line {
-  background: rgb(0 0 0 / 0.38);
+  line-height: 1.45;
 }
 .vp-caption.bold {
   font-weight: 700;
@@ -21010,6 +21003,12 @@ fieldset.saved-filter legend {
   background: #000;
 }
 .vp-exact-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  opacity: 0.92;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -21022,9 +21021,8 @@ fieldset.saved-filter legend {
   flex: 1;
 }
 .vp-exact video {
-  flex: 1;
-  min-height: 0;
   width: 100%;
+  height: 100%;
   background: #000;
 }
 .vp-transport {
