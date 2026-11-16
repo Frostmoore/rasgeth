@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en" data-theme="system">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title data-it="Scarica RedGiant" data-en="Download RedGiant">Download RedGiant</title>
+<meta name="description" data-i18n data-content-it="Un assistente che parli dal browser, dal telefono o dalle chat, e una squadra di agenti dietro che programma, automatizza e crea. MIT, senza account, senza versione a pagamento." data-content-en="One assistant you talk to from the browser, your phone or your chats, and a team of agents behind it that codes, automates and creates. MIT, no account, no paid tier." content="One assistant you talk to from the browser, your phone or your chats, and a team of agents behind it that codes, automates and creates. MIT, no account, no paid tier." />
+<meta name="theme-color" content="#d23a2c" />
+<meta name="color-scheme" content="light dark" />
+<meta name="referrer" content="no-referrer" />
+<link rel="icon" href="assets/img/favicon.png" type="image/png" />
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+<script src="assets/boot.js"></script>
+<link rel="stylesheet" href="assets/site.css" />
+</head>
+<body>
+<a class="skip" href="#main"><span lang="it">Vai al contenuto</span><span lang="en">Skip to content</span></a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="assets/img/logo.png" alt="" width="32" height="32" /><span>RedGiant</span></a>
+    <nav class="nav" data-i18n data-aria-label-it="Principale" data-aria-label-en="Main" aria-label="Main">
+      <a class="hide-s" href="index.html#highlights"><span lang="it">Funzioni</span><span lang="en">Features</span></a>
+      <a href="download.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-download" /></svg>Download</a>
+      <a href="https://github.com/Frostmoore/redgiant2" data-i18n data-aria-label-it="RedGiant su GitHub" data-aria-label-en="RedGiant on GitHub" aria-label="RedGiant on GitHub"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#b-github" /></svg><span class="hide-s">GitHub</span></a>
+    </nav>
+    <div class="prefs">
+      <div class="seg" role="group" data-i18n data-aria-label-it="Lingua" data-aria-label-en="Language" aria-label="Language">
+        <button type="button" data-set-lang="it" aria-pressed="false" data-i18n data-title-it="Italiano" data-title-en="Italiano" title="Italiano">IT</button>
+        <button type="button" data-set-lang="en" aria-pressed="false" data-i18n data-title-it="English" data-title-en="English" title="English">EN</button>
+      </div>
+      <div class="seg" role="group" data-i18n data-aria-label-it="Tema" data-aria-label-en="Theme" aria-label="Theme">
+        <button type="button" data-set-theme="system" aria-pressed="true" data-i18n data-title-it="Tema del sistema" data-title-en="System theme" data-aria-label-it="Tema del sistema" data-aria-label-en="System theme" aria-label="System theme"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-monitor" /></svg></button>
+        <button type="button" data-set-theme="light" aria-pressed="false" data-i18n data-title-it="Tema chiaro" data-title-en="Light theme" data-aria-label-it="Tema chiaro" data-aria-label-en="Light theme" aria-label="Light theme"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-sun" /></svg></button>
+        <button type="button" data-set-theme="dark" aria-pressed="false" data-i18n data-title-it="Tema scuro" data-title-en="Dark theme" data-aria-label-it="Tema scuro" data-aria-label-en="Dark theme" aria-label="Dark theme"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-moon" /></svg></button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <div class="page-head wrap">
+    <h1><span lang="it">Scarica RedGiant</span><span lang="en">Download RedGiant</span></h1>
+    <p class="lead"><span lang="it">Gratis e open source. Ogni pulsante scarica sempre l'ultima versione, direttamente da GitHub.</span><span lang="en">Free and open source. Every button always downloads the latest version, straight from GitHub.</span></p>
+    <p id="latest" class="latest" hidden>
+      <span class="dot" aria-hidden="true"></span>
+      <span><span lang="it">Versione più recente</span><span lang="en">Latest version</span> <strong data-v></strong></span>
+      <time></time>
+      <a data-notes href="https://github.com/Frostmoore/redgiant2/releases/latest"><span lang="it">Le novità</span><span lang="en">What's new</span></a>
+    </p>
+  </div>
+
+  <section class="dl-group wrap" id="redgiant" aria-labelledby="h-full">
+    <h2 id="h-full"><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-monitor" /></svg></span><span lang="it">RedGiant completo</span><span lang="en">The whole RedGiant</span></h2>
+    <p><span lang="it">Il server, la pagina, i modelli locali e la squadra di agenti sul tuo computer. Su Windows e Mac c'è già anche la finestra di RGCompanion.</span><span lang="en">The server, the page, local models and the team of agents on your computer. On Windows and the Mac it already includes RGCompanion's window.</span></p>
+    <div class="dl-grid">
+      <article class="dl feature-card" aria-labelledby="h-win">
+        <header><span class="os"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#b-windows" /></svg></span><div><h3 id="h-win">Windows</h3><small><span lang="it">Windows 10 2004 o più recente, x64</span><span lang="en">Windows 10 2004 or newer, x64</span></small></div></header>
+        <p><span lang="it">Avanti, avanti, fine. Tutto gira direttamente su Windows: niente WSL, niente Docker. L'installatore non è ancora firmato: se SmartScreen avvisa, «Ulteriori informazioni» e poi «Esegui comunque».</span><span lang="en">Next, next, finish. Everything runs directly on Windows: no WSL, no Docker. The installer is not code-signed yet: if SmartScreen warns, click «More info», then «Run anyway».</span></p>
+        <span class="file" data-dl-name="redgiantWindows"></span>
+        <a class="btn primary big" data-dl="redgiantWindows" href="https://github.com/Frostmoore/redgiant2/releases/latest"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-download" /></svg><span lang="it">Scarica per Windows</span><span lang="en">Download for Windows</span></a>
+      </article>
+      <article class="dl feature-card" aria-labelledby="h-mac">
+        <header><span class="os"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#b-apple" /></svg></span><div><h3 id="h-mac">Mac</h3><small><span lang="it">Apple silicon, macOS 13 o più recente</span><span lang="en">Apple silicon, macOS 13 or newer</span></small></div></header>
+        <p><span lang="it">Apri il file e trascina RedGiant in Applicazioni. Firmato e autenticato da Apple, vive nella barra dei menu e usa la GPU con Metal.</span><span lang="en">Open it and drag RedGiant into Applications. Signed and notarized by Apple, it lives in the menu bar and runs local models on the GPU through Metal.</span></p>
+        <span class="file" data-dl-name="redgiantMac"></span>
+        <a class="btn primary big" data-dl="redgiantMac" href="https://github.com/Frostmoore/redgiant2/releases/latest"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-download" /></svg><span lang="it">Scarica per Mac</span><span lang="en">Download for Mac</span></a>
+      </article>
+      <article class="dl" aria-labelledby="h-linux">
+        <header><span class="os"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#b-linux" /></svg></span><div><h3 id="h-linux"><span lang="it">Linux e server</span><span lang="en">Linux and servers</span></h3><small><span lang="it">Docker Engine 26 o più recente</span><span lang="en">Docker Engine 26 or newer</span></small></div></header>
+        <p><span lang="it">Un comando: RedGiant gira in Docker (lo script si offre di installarlo), tutto in <code>~/redgiant</code>, e apre il browser con l'accesso già fatto.</span><span lang="en">One command: RedGiant runs in Docker (the script offers to install it), everything in <code>~/redgiant</code>, and opens the browser already signed in.</span></p>
+        <div class="cmd"><code>curl -fsSL https://raw.githubusercontent.com/Frostmoore/redgiant2/main/install.sh | bash</code><button type="button" data-copy data-i18n data-aria-label-it="Copia il comando" data-aria-label-en="Copy the command" aria-label="Copy the command"><svg class="i cp" aria-hidden="true"><use href="assets/icons.svg#i-copy" /></svg><svg class="i ok" aria-hidden="true"><use href="assets/icons.svg#i-check" /></svg></button></div>
+        <a class="btn" href="https://github.com/Frostmoore/redgiant2/blob/main/docs/INSTALL.md"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#b-docker" /></svg><span lang="it">Istruzioni per Linux e Docker</span><span lang="en">Linux and Docker instructions</span></a>
+      </article>
+    </div>
+  </section>
+
+  <section class="dl-group wrap" id="os" aria-labelledby="h-os">
+    <h2 id="h-os"><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-server" /></svg></span>RedGiant OS</h2>
+    <p><span lang="it">Un sistema che fa solo RedGiant, per un PC dedicato, un mini PC, una macchina virtuale o un Raspberry Pi. Le immagini si rifanno solo quando cambia il sistema: al primo avvio la macchina si porta da sola all'ultima versione di RedGiant.</span><span lang="en">A system that only runs RedGiant, for a dedicated PC, a mini PC, a virtual machine or a Raspberry Pi. The images are made only when the OS changes: at its first start the machine brings itself to the latest RedGiant.</span></p>
+    <div class="os-table">
+      <div class="os-row">
+        <svg class="i" aria-hidden="true"><use href="assets/icons.svg#b-proxmox" /></svg>
+        <div><strong><span lang="it">Proxmox, con lo script</span><span lang="en">Proxmox, with the script</span></strong><small><span lang="it">Nella shell dell'host Proxmox, come root: crea un contenitore o una macchina virtuale e trova da solo le immagini.</span><span lang="en">In the Proxmox host's shell, as root: it makes a container or a virtual machine and finds the images by itself.</span></small></div>
+        <div class="cmd"><code>bash -c "$(curl -fsSL https://raw.githubusercontent.com/Frostmoore/redgiant2/main/packaging/os/proxmox/redgiant-proxmox.sh)"</code><button type="button" data-copy data-i18n data-aria-label-it="Copia il comando" data-aria-label-en="Copy the command" aria-label="Copy the command"><svg class="i cp" aria-hidden="true"><use href="assets/icons.svg#i-copy" /></svg><svg class="i ok" aria-hidden="true"><use href="assets/icons.svg#i-check" /></svg></button></div>
+      </div>
+      <div class="os-row">
+        <svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-disk" /></svg>
+        <div><strong><span lang="it">Chiavetta USB, per un PC</span><span lang="en">USB stick, for a PC</span></strong><small><span lang="it">Scrivila con balenaEtcher o Rufus (modalità DD), poi avvia il PC dalla chiavetta.</span><span lang="en">Write it with balenaEtcher or Rufus (DD mode), then start the PC from the stick.</span></small><span class="file">redgiant-os-&lt;version&gt;-x86_64.iso</span></div>
+        <a class="btn" data-os="iso" href="https://github.com/Frostmoore/redgiant2/releases/latest"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-download" /></svg>ISO</a>
+      </div>
+      <div class="os-row">
+        <svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-layers" /></svg>
+        <div><strong><span lang="it">Macchina virtuale: Proxmox, KVM, UTM, cloud</span><span lang="en">Virtual machine: Proxmox, KVM, UTM, clouds</span></strong><small>x86_64</small><span class="file">redgiant-os-&lt;version&gt;-x86_64.qcow2</span></div>
+        <a class="btn" data-os="qcow2" href="https://github.com/Frostmoore/redgiant2/releases/latest"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-download" /></svg>qcow2</a>
+      </div>
+      <div class="os-row">
+        <svg class="i" aria-hidden="true"><use href="assets/icons.svg#b-windows" /></svg>
+        <div><strong>Hyper-V</strong><small><span lang="it">Windows; estrai lo zip e collega il disco a una VM di generazione 2</span><span lang="en">Windows; unzip it and attach the disk to a Generation 2 VM</span></small><span class="file">redgiant-os-&lt;version&gt;-x86_64.vhdx.zip</span></div>
+        <a class="btn" data-os="vhdx" href="https://github.com/Frostmoore/redgiant2/releases/latest"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-download" /></svg>VHDX</a>
+      </div>
+      <div class="os-row">
+        <svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-box" /></svg>
+        <div><strong>VirtualBox, VMware</strong><small><span lang="it">Importa l'appliance</span><span lang="en">Import the appliance</span></small><span class="file">redgiant-os-&lt;version&gt;-x86_64.ova</span></div>
+        <a class="btn" data-os="ova" href="https://github.com/Frostmoore/redgiant2/releases/latest"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-download" /></svg>OVA</a>
+      </div>
+      <div class="os-row">
+        <svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-server" /></svg>
+        <div><strong><span lang="it">Contenitore: Proxmox LXC, Incus</span><span lang="en">Container: Proxmox LXC, Incus</span></strong><small>x86_64</small><span class="file">redgiant-os-&lt;version&gt;-x86_64-lxc.tar.zst</span></div>
+        <a class="btn" data-os="lxc" href="https://github.com/Frostmoore/redgiant2/releases/latest"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-download" /></svg>LXC</a>
+      </div>
+      <div class="os-row">
+        <svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-cpu" /></svg>
+        <div><strong><span lang="it">Macchina virtuale arm64</span><span lang="en">arm64 virtual machine</span></strong><small>Ampere, Graviton, <span lang="it">UTM sui Mac Apple silicon</span><span lang="en">UTM on Apple silicon Macs</span></small><span class="file">redgiant-os-&lt;version&gt;-arm64.qcow2</span></div>
+        <a class="btn" data-os="arm64" href="https://github.com/Frostmoore/redgiant2/releases/latest"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-download" /></svg>arm64</a>
+      </div>
+      <div class="os-row">
+        <svg class="i" aria-hidden="true"><use href="assets/icons.svg#b-raspberrypi" /></svg>
+        <div><strong>Raspberry Pi 4, 400, CM4</strong><small><span lang="it">Con Raspberry Pi Imager, «Use custom»</span><span lang="en">With Raspberry Pi Imager, «Use custom»</span></small><span class="file">redgiant-os-&lt;version&gt;-arm64-raspi.img.xz</span></div>
+        <a class="btn" data-os="raspi" href="https://github.com/Frostmoore/redgiant2/releases/latest"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-download" /></svg>Raspberry Pi</a>
+      </div>
+    </div>
+    <p class="note" id="os-release" hidden><span lang="it">Le immagini sono nella versione <strong data-os-v></strong> (<a data-os-link href="https://github.com/Frostmoore/redgiant2/releases/latest">tutti i file e le somme di controllo</a>).</span><span lang="en">The images are in release <strong data-os-v></strong> (<a data-os-link href="https://github.com/Frostmoore/redgiant2/releases/latest">every file and the checksums</a>).</span></p>
+    <p class="note"><span lang="it">Ogni modo di installarlo, passo per passo:</span><span lang="en">Every way to install it, step by step:</span> <a href="https://github.com/Frostmoore/redgiant2/blob/main/docs/INSTALL-OS.md"><span lang="it">guida di RedGiant OS</span><span lang="en">the RedGiant OS guide</span></a>.</p>
+  </section>
+
+  <section class="dl-group wrap" id="companion" aria-labelledby="h-comp">
+    <h2 id="h-comp"><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-phone" /></svg></span><span lang="it">Solo l'app RGCompanion</span><span lang="en">Just the RGCompanion app</span></h2>
+    <p><span lang="it">L'app senza il server, per collegarti a un RedGiant che hai già: su un altro computer, su RedGiant OS o su un server.</span><span lang="en">The app without the server, to connect to a RedGiant you already have: on another computer, on RedGiant OS or on a server.</span></p>
+    <div class="dl-grid">
+      <article class="dl feature-card" aria-labelledby="h-cwin">
+        <header><span class="os"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#b-windows" /></svg></span><div><h3 id="h-cwin">Windows</h3><small>x64</small></div></header>
+        <p><span lang="it">La squadra con le mascotte, le conversazioni, le richieste e le notifiche in una finestra.</span><span lang="en">The team with its mascots, chats, requests and notifications in a window.</span></p>
+        <span class="file" data-dl-name="companionWindows"></span>
+        <a class="btn primary big" data-dl="companionWindows" href="https://github.com/Frostmoore/redgiant2/releases/latest"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-download" /></svg><span lang="it">Scarica per Windows</span><span lang="en">Download for Windows</span></a>
+      </article>
+      <article class="dl feature-card" aria-labelledby="h-clinux">
+        <header><span class="os"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#b-linux" /></svg></span><div><h3 id="h-clinux">Linux</h3><small>x64</small></div></header>
+        <p><span lang="it">Estrai l'archivio e avvia <code>install-app.sh</code>: l'app va in <code>~/.local/share/rgcompanion</code>, con la sua voce nel menu.</span><span lang="en">Extract the archive and run <code>install-app.sh</code>: the app goes into <code>~/.local/share/rgcompanion</code>, with its own menu entry.</span></p>
+        <div class="cmd"><code>tar -xzf <span data-dl-name="companionLinux">rgcompanion-linux-x64.tar.gz</span> &amp;&amp; ./rgcompanion-linux-x64/install-app.sh</code><button type="button" data-copy data-i18n data-aria-label-it="Copia il comando" data-aria-label-en="Copy the command" aria-label="Copy the command"><svg class="i cp" aria-hidden="true"><use href="assets/icons.svg#i-copy" /></svg><svg class="i ok" aria-hidden="true"><use href="assets/icons.svg#i-check" /></svg></button></div>
+        <a class="btn primary big" data-dl="companionLinux" href="https://github.com/Frostmoore/redgiant2/releases/latest"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-download" /></svg><span lang="it">Scarica per Linux</span><span lang="en">Download for Linux</span></a>
+      </article>
+    </div>
+    <div class="soon">
+      <div><svg class="i" aria-hidden="true"><use href="assets/icons.svg#b-android" /></svg><span><strong>Android</strong><span lang="it">in arrivo</span><span lang="en">coming soon</span></span></div>
+      <div><svg class="i" aria-hidden="true"><use href="assets/icons.svg#b-apple" /></svg><span><strong>iPhone</strong><span lang="it">in arrivo</span><span lang="en">coming soon</span></span></div>
+      <div><svg class="i" aria-hidden="true"><use href="assets/icons.svg#b-apple" /></svg><span><strong>Mac</strong><span lang="it">in arrivo (la finestra c'è già in RedGiant per Mac)</span><span lang="en">coming soon (the window is already in RedGiant for Mac)</span></span></div>
+    </div>
+
+    <h3 style="margin-top:36px;font-size:1.3rem"><span lang="it">Collegare l'app al tuo RedGiant</span><span lang="en">Connecting the app to your RedGiant</span></h3>
+    <ol class="steps">
+      <li><span lang="it">Al primo avvio l'app cerca i RedGiant della tua rete; se non lo trova, scrivi l'indirizzo che mostra la pagina di RedGiant (per esempio <code>https://redgiant.local</code>, o quello di Tailscale o del tuo dominio da fuori casa).</span><span lang="en">At its first start the app looks for the RedGiants on your network; if it does not find yours, type the address RedGiant's page shows (for example <code>https://redgiant.local</code>, or your Tailscale or domain address away from home).</span></li>
+      <li><span lang="it">Entra con la password del tuo accesso a RedGiant: il dispositivo riceve un accesso suo, che puoi revocare quando vuoi dalle Impostazioni.</span><span lang="en">Sign in with your RedGiant password: the device gets an access of its own, which you can revoke any time from Settings.</span></li>
+    </ol>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span><span lang="it">RedGiant è open source, licenza MIT. Questo sito non usa cookie né tracciamenti.</span><span lang="en">RedGiant is open source, MIT license. This site uses no cookies and no tracking.</span></span>
+    <nav data-i18n data-aria-label-it="Collegamenti" data-aria-label-en="Links" aria-label="Links">
+      <a href="download.html">Download</a>
+      <a href="https://github.com/Frostmoore/redgiant2/blob/main/docs/INSTALL.md"><span lang="it">Documentazione</span><span lang="en">Documentation</span></a>
+      <a href="https://github.com/Frostmoore/redgiant2/releases"><span lang="it">Versioni</span><span lang="en">Releases</span></a>
+      <a href="https://github.com/Frostmoore/redgiant2">GitHub</a>
+    </nav>
+  </div>
+</footer>
+<div id="live" class="sr" aria-live="polite"></div>
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

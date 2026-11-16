@@ -9,7 +9,8 @@
       "!**/*.tsbuildinfo",
       "!packages/web/public/zeta/zeta.js",
       "!**/test/fixtures/**/*.svg",
-      "!apps/companion"
+      "!apps/companion",
+      "!site"
     ]
   },
   "formatter": {
