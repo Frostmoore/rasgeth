@@ -11,7 +11,7 @@ import { getApi } from "../state.js";
 import { Modal } from "./ui.js";
 
 /** Bump with every big update, and write its items below with that version. */
-export const NEWS_VERSION = "3.8.2";
+export const NEWS_VERSION = "3.8.3";
 const SEEN = "rg.newsSeen";
 
 export interface NewsItem {
@@ -22,6 +22,9 @@ export interface NewsItem {
 }
 
 export const ITEMS: NewsItem[] = [
+  { version: "3.8.3", title: "news383Limits", text: "news383LimitsText" },
+  { version: "3.8.3", title: "news383Send", text: "news383SendText" },
+  { version: "3.8.3", title: "news383New", text: "news383NewText" },
   { version: "3.8.2", title: "news382Room", text: "news382RoomText" },
   { version: "3.8.2", title: "news382Figures", text: "news382FiguresText" },
   { version: "3.8.2", title: "news382Update", text: "news382UpdateText" },

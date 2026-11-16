@@ -2404,6 +2404,15 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news383Limits: "Spending and limits in the app's conversations",
+  news383LimitsText:
+    "At the top of every conversation RGCompanion shows what the page shows: your subscription's windows, or the total and the project's and agent's budgets, green, yellow from 70% and red from 90%, updated at the end of every turn. On the phone the bars stand one above the other next to the agent's name.",
+  news383Send: "Ctrl+Enter sends",
+  news383SendText:
+    "In every field of the app's conversations Ctrl+Enter (Cmd+Enter on the Mac) sends the message; Enter alone does what it did before. It is listed with the other shortcuts (Ctrl+/).",
+  news383New: "New project, new agent",
+  news383NewText:
+    "In the control room «New project» and «New agent» are the last tiles of their walls, right after the last project or agent, or under the line that says there are none yet. A new project gets its orchestrator, as in the page.",
   news382Room: "The control room on your computer",
   news382RoomText:
     "On Windows, macOS and Linux RGCompanion has its own interface when the window is wide enough: the wall of your agents with their mascots and latest actions, a side panel with the conversations, the Ctrl/Cmd+K search over agents, conversations, commands and files, keyboard shortcuts and a status bar. The advanced interface adds projects with their changes, side-by-side diffs, terminals in a grid, git as a graph and the log. The phone keeps its own screens.",
@@ -8975,6 +8984,15 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news383Limits: "Consumo e limiti nelle conversazioni dell'app",
+  news383LimitsText:
+    "In cima a ogni conversazione RGCompanion mostra quello che mostra la pagina: le finestre del tuo abbonamento, oppure il totale e i budget del progetto e dell'agente, verdi, gialli dal 70% e rossi dal 90%, aggiornati alla fine di ogni turno. Sul telefono le barre stanno una sopra l'altra accanto al nome dell'agente.",
+  news383Send: "Ctrl+Invio invia",
+  news383SendText:
+    "In ogni campo delle conversazioni dell'app Ctrl+Invio (Cmd+Invio sul Mac) invia il messaggio; Invio da solo fa quello che faceva prima. È nell'elenco delle scorciatoie (Ctrl+/).",
+  news383New: "Nuovo progetto, nuovo agente",
+  news383NewText:
+    "Nella Sala di controllo «Nuovo progetto» e «Nuovo agente» sono le ultime tessere delle loro pareti, subito dopo l'ultimo progetto o agente, oppure sotto la scritta che dice che non ce ne sono ancora. Un progetto nuovo ha il suo orchestratore, come nella pagina.",
   news382Room: "La Sala di controllo sul computer",
   news382RoomText:
     "Su Windows, macOS e Linux RGCompanion ha un'interfaccia sua quando la finestra è abbastanza larga: la parete dei tuoi agenti con le mascotte e le ultime azioni, un pannello laterale con le conversazioni, la ricerca Ctrl/Cmd+K di agenti, conversazioni, comandi e file, le scorciatoie da tastiera e una barra di stato. L'interfaccia avanzata aggiunge i progetti con le loro modifiche, i diff affiancati, i terminali a griglia, git come grafo e il registro. Il telefono tiene le sue schermate.",
