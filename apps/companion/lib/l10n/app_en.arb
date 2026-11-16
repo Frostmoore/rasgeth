@@ -1185,5 +1185,271 @@
   "voiceErrProvider": "This provider cannot do it: choose another one.",
   "voiceErrServer": "RedGiant cannot be reached: check the connection.",
   "voiceErrOther": "The voice did not work: try again.",
-  "notifyTestFailed": "The system did not show it: are notifications on for RGCompanion in its settings?"
+  "notifyTestFailed": "The system did not show it: are notifications on for RGCompanion in its settings?",
+  "tabProjects": "Projects",
+  "sectionCoders": "For those who code",
+  "sectionMascots": "Mascots",
+  "advancedTitle": "Advanced interface",
+  "advancedNew": "new",
+  "advancedHint": "Adds Projects to the bar and, in every agent's sheet, Files, Diff and Terminal.",
+  "advancedTerminals": "My agents' terminals",
+  "advancedTerminalsHint": "Read only; my own terminal has the row of extra keys.",
+  "codeTabTasks": "Tasks",
+  "codeTabFiles": "Files",
+  "codeTabDiff": "Diff",
+  "codeTabTerminal": "Terminal",
+  "codeTabLog": "Log",
+  "codeTabGit": "Git",
+  "codeArchived": "Archived project: read only until you restore it.",
+  "codeArchivedShort": "archived",
+  "codeChangedMeanwhile": "The file changed since you opened it: open it again.",
+  "codeUnreachable": "RedGiant cannot be reached: check the connection.",
+  "codeLoadFailed": "It did not load: pull down to try again.",
+  "codeNoRepo": "no repository",
+  "codeDetached": "no branch",
+  "codeClean": "clean",
+  "codeChanges": "{count, plural, =1{1 change} other{{count} changes}}",
+  "@codeChanges": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "codeAheadBehind": "{ahead} ahead, {behind} behind",
+  "@codeAheadBehind": {
+    "placeholders": {
+      "ahead": {
+        "type": "int"
+      },
+      "behind": {
+        "type": "int"
+      }
+    }
+  },
+  "codeNoProjects": "No projects yet.",
+  "codeOpenTasks": "{count, plural, =1{1 task in progress} other{{count} tasks in progress}}",
+  "@codeOpenTasks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "codeNoOpenTasks": "no task in progress",
+  "codeNoTasks": "No tasks in this project.",
+  "codeColRunning": "In progress",
+  "codeColToVerify": "To verify",
+  "codeColDone": "Done",
+  "codeTaskVerified": "verified · exit 0",
+  "codeTaskNotTestable": "«not testable»: {why}",
+  "@codeTaskNotTestable": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "codeTaskAbandoned": "given up: {why}",
+  "@codeTaskAbandoned": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "codeTaskNoVerifier": "verifier not run yet",
+  "codeTaskVerifier": "verifier: {command} · {result}",
+  "@codeTaskVerifier": {
+    "placeholders": {
+      "command": {
+        "type": "String"
+      },
+      "result": {
+        "type": "String"
+      }
+    }
+  },
+  "codeTaskPassed": "passed",
+  "codeTaskFailed": "not passed",
+  "codeTaskDiff": "The task's diff",
+  "codeSearchHint": "Search names and text",
+  "codeNoHits": "Nothing found.",
+  "codeEmptyFolder": "Empty folder.",
+  "codePickFile": "Choose a file on the left.",
+  "codeSmallEdit": "Small edit",
+  "codeSave": "Save",
+  "codeSaving": "Saving…",
+  "codeSaved": "Saved.",
+  "codeAsk": "Ask…",
+  "codeAskWho": "Ask which agent?",
+  "codeAskDraft": "About the file `{path}`: ",
+  "@codeAskDraft": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "codeSeeDiff": "See the diff",
+  "codeCopyPath": "Copy the path",
+  "codePathCopied": "Path copied.",
+  "codeNotText": "Not a text file: open it from the page.",
+  "codeModifiedAt": "changed {when}",
+  "@codeModifiedAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "codeDiffWorking": "Uncommitted changes",
+  "codeDiffTask": "Task «{title}»",
+  "@codeDiffTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "codeDiffCommit": "Commit {hash} {subject}",
+  "@codeDiffCommit": {
+    "placeholders": {
+      "hash": {
+        "type": "String"
+      },
+      "subject": {
+        "type": "String"
+      }
+    }
+  },
+  "codeDiffAgent": "{name}'s work",
+  "@codeDiffAgent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "codeDiffWhich": "Which diff?",
+  "codeDiffEmpty": "No differences.",
+  "codeDiffTruncated": "Too long: only the first part is shown.",
+  "codeDiffBinary": "A binary file: nothing to read here.",
+  "codeDiffNoHunks": "Renamed or mode changed only.",
+  "codeFileOf": "{n} of {total}",
+  "@codeFileOf": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "codePrevFile": "Previous file",
+  "codeNextFile": "Next file",
+  "codeKeep": "Keep",
+  "codeKept": "Kept",
+  "codeDiscard": "Discard",
+  "codeDiscarded": "Discarded",
+  "codeDiscardTitle": "Discard this change?",
+  "codeDiscardBody": "The change to {path} is removed from the files. A copy stays in the project's trash (.trash/diffs) to put back.",
+  "@codeDiscardBody": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "codeDiscardCommitBody": "This change of the commit is undone in {path} (as a new uncommitted change). A copy stays in the project's trash (.trash/diffs).",
+  "@codeDiscardCommitBody": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "codeComment": "Comment",
+  "codeCommentHint": "A note for {name}",
+  "@codeCommentHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "codeCommentIntro": "A comment on `{path}`, at {hunk}:",
+  "@codeCommentIntro": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      },
+      "hunk": {
+        "type": "String"
+      }
+    }
+  },
+  "codeCommentSent": "Sent to {name}.",
+  "@codeCommentSent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "codeCommentFailed": "Not sent: try again.",
+  "codeNoChat": "No conversation with this agent yet.",
+  "codeTermMine": "Mine",
+  "codeTextSmaller": "Smaller text",
+  "codeTextBigger": "Bigger text",
+  "codeTermReadOnly": "Read only: the commands the agent ran and what they printed.",
+  "codeTermNoCommands": "No commands yet.",
+  "codeReload": "Load again",
+  "codeTermIntro": "A shell in the project's sandbox, like the page's terminal.",
+  "codeTermOpen": "Open the terminal",
+  "codeTermHint": "A command",
+  "codeTermClosed": "The terminal closed.",
+  "codeLogAgent": "Which agent?",
+  "codeLogAllAgents": "Every agent",
+  "codeLogType": "Which type?",
+  "codeLogAllTypes": "Every type",
+  "codeLogErrors": "Errors only",
+  "codeLogEmpty": "Nothing in the log.",
+  "codeLogOpenChat": "Open the conversation",
+  "codeBranches": "Branches",
+  "codeCommits": "Commits",
+  "codeUpstream": "follows {name}",
+  "@codeUpstream": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "codeNoUpstream": "not sent anywhere yet",
+  "codeCommitHint": "What changed (the commit's message)",
+  "codeCommit": "Commit",
+  "codeCommitted": "Commit {hash} made.",
+  "@codeCommitted": {
+    "placeholders": {
+      "hash": {
+        "type": "String"
+      }
+    }
+  },
+  "codeNothingToCommit": "Nothing to commit.",
+  "codePush": "Push",
+  "codePushAsked": "Push asked: answer it from «For you» (it is a request to you, like an agent's).",
+  "codePushDone": "Pushed.",
+  "codePushDenied": "Not pushed: the answer was no.",
+  "codePushFailed": "The push did not work: {error}",
+  "@codePushFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "codeNoRemote": "The project has no remote repository to push to."
 }

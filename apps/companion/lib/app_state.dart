@@ -35,7 +35,8 @@ import 'voice/audio.dart';
 import 'voice/voice_controller.dart';
 
 /// The five places of proposal A, in the bar's order.
-enum AppTab { team, chat, inbox, activity, you }
+/// The bar's places; [projects] only with the advanced interface on (G40.11).
+enum AppTab { team, chat, inbox, activity, projects, you }
 
 /// Why connecting did not work, for the person (translated by the screens).
 enum ConnectError {
@@ -142,6 +143,10 @@ class AppController extends ChangeNotifier {
   Locale? locale;
   bool reduceMotion = false;
 
+  /// The advanced interface (G40.11, Tu › Interfaccia), per RedGiant: Projects in the bar and
+  /// Files, Diff and Terminal in every agent's sheet.
+  bool advanced = false;
+
   AppTab tab = AppTab.team;
 
   List<SavedServer> servers = const [];
@@ -218,6 +223,21 @@ class AppController extends ChangeNotifier {
     unawaited(prefs.set('locale', l?.languageCode));
     notifyListeners();
   }
+
+  String get _advancedKey => 'advanced:${server?.id ?? '-'}';
+
+  void setAdvanced(bool v) {
+    advanced = v;
+    if (!v && tab == AppTab.projects) tab = AppTab.you;
+    unawaited(prefs.set(_advancedKey, v ? '1' : null));
+    notifyListeners();
+  }
+
+  /// The places in the bar now.
+  List<AppTab> get tabs => [
+    for (final t in AppTab.values)
+      if (t != AppTab.projects || advanced) t,
+  ];
 
   void setReduceMotion(bool v) {
     reduceMotion = v;
@@ -558,6 +578,8 @@ class AppController extends ChangeNotifier {
     final raw = await prefs.get(_favKey);
     favourites = raw == null || raw.isEmpty ? <String>{} : raw.split(',').toSet();
     teamFilter = await prefs.get('teamFilter:${server?.id ?? '-'}') ?? TeamFilter.all;
+    advanced = await prefs.get(_advancedKey) == '1';
+    if (!advanced && tab == AppTab.projects) tab = AppTab.team;
   }
 
   bool isFavourite(String agentId) => favourites.contains(agentId);

@@ -43,11 +43,9 @@ void main() {
     final app = _controller();
     await _pump(tester, app);
     final labels = ['Squadra', 'Chat', 'Da te', 'Attività', 'Tu'];
-    final xs = [
-      for (final t in AppTab.values) tester.getCenter(find.byKey(Key('tab-${t.name}'))).dx,
-    ];
+    final xs = [for (final t in app.tabs) tester.getCenter(find.byKey(Key('tab-${t.name}'))).dx];
     expect(xs, orderedEquals([...xs]..sort()));
-    for (final (i, t) in AppTab.values.indexed) {
+    for (final (i, t) in app.tabs.indexed) {
       expect(
         find.descendant(of: find.byKey(Key('tab-${t.name}')), matching: find.text(labels[i])),
         findsOneWidget,

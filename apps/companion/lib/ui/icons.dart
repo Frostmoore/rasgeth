@@ -104,7 +104,21 @@ enum RgIcons {
   ),
   link(
     '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
-  );
+  ),
+  // G40.11: the advanced interface.
+  code('<path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/>'),
+  gitBranch(
+    '<circle cx="6" cy="5.5" r="2.5"/><circle cx="6" cy="18.5" r="2.5"/><circle cx="18" cy="7.5" r="2.5"/><path d="M6 8v8M18 10c0 4.5-6 3.5-11 6.5"/>',
+  ),
+  gitCommit('<circle cx="12" cy="12" r="3.5"/><path d="M2 12h6.5M15.5 12H22"/>'),
+  terminal('<rect x="2" y="3" width="20" height="18" rx="2"/><path d="M6 9l4 3-4 3M12 15h6"/>'),
+  diff('<path d="M12 3v8M8 7h8M8 17h8"/><rect x="3" y="2" width="18" height="20" rx="2"/>'),
+  upload('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>'),
+  minus('<path d="M5 12h14"/>'),
+  arrowUp('<path d="M12 19V5M5 12l7-7 7 7"/>'),
+  arrowDown('<path d="M12 5v14M19 12l-7 7-7-7"/>'),
+  arrowRight('<path d="M5 12h14M12 5l7 7-7 7"/>'),
+  activity('<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>');
 
   const RgIcons(this.paths);
   final String paths;

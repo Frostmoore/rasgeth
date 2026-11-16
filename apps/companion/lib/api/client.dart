@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'code.dart';
 import 'conversation.dart';
 import 'settings_types.dart';
 import 'transport.dart';
@@ -727,6 +728,115 @@ class RedGiantClient {
       if (e.status == 400 || e.status == 404) return null;
       rethrow;
     }
+  }
+
+  // ---- the advanced interface (G40.11): code-routes.ts and the page's Explorer ----
+
+  String _proj(String id) => '/api/projects/${Uri.encodeComponent(id)}';
+
+  /// `GET /api/projects/:id/git`: branch, upstream, ahead/behind, the changes.
+  Future<GitState> gitState(String projectId) async =>
+      GitState.fromJson(_object(await _get('${_proj(projectId)}/git')));
+
+  Future<List<GitCommit>> gitLog(String projectId, {String? agent, int limit = 30}) async => [
+    for (final c in _array(
+      await _get('${_proj(projectId)}/git/log', {'limit': '$limit', 'agent': ?agent}),
+    ))
+      GitCommit.fromJson(c),
+  ];
+
+  Future<List<GitBranch>> gitBranches(String projectId) async => [
+    for (final b in _array(await _get('${_proj(projectId)}/git/branches'))) GitBranch.fromJson(b),
+  ];
+
+  Future<DiffView> gitDiff(String projectId, DiffSource source) async =>
+      DiffView.fromJson(_object(await _get('${_proj(projectId)}/git/diff', source.query)));
+
+  /// `POST /api/projects/:id/git/hunk`: keep (stage) or discard one hunk; the backup's path.
+  Future<String?> gitHunk(
+    String projectId, {
+    required String patch,
+    required bool keep,
+    String? agent,
+  }) async {
+    final r = await _call('POST', '${_proj(projectId)}/git/hunk', {
+      'patch': patch,
+      'action': keep ? 'keep' : 'discard',
+      'agent': ?agent,
+    });
+    return r is Map && r['backup'] is String ? r['backup'] as String : null;
+  }
+
+  /// `POST /api/projects/:id/git/commit`: the new commit's short hash.
+  Future<String> gitCommit(String projectId, String message, {String? agent}) async {
+    final r = _object(
+      await _post('${_proj(projectId)}/git/commit', {'message': message, 'agent': ?agent}),
+    );
+    return '${r['commit'] ?? ''}';
+  }
+
+  /// `POST /api/projects/:id/git/push`: a job that waits for the person's yes («For you»).
+  Future<JobView> gitPush(String projectId, {String? agent}) async =>
+      JobView.fromJson(_object(await _post('${_proj(projectId)}/git/push', {'agent': ?agent})));
+
+  Future<JobView> job(String id) async =>
+      JobView.fromJson(_object(await _get('/api/jobs/${Uri.encodeComponent(id)}')));
+
+  /// `GET /api/projects/:id/events`: the project's log, newest first.
+  Future<EventsPage> projectEvents(
+    String projectId, {
+    String? agent,
+    String? type,
+    bool errors = false,
+    int limit = 150,
+  }) async => EventsPage.fromJson(
+    _object(
+      await _get('${_proj(projectId)}/events', {
+        'agent': ?agent,
+        'type': ?type,
+        if (errors) 'errors': '1',
+        'limit': '$limit',
+      }),
+    ),
+  );
+
+  /// `GET /api/sessions/:id/events`: a conversation's events (an agent's commands).
+  Future<List<Map<String, dynamic>>> sessionEvents(String sessionId) async =>
+      _array(await _get('/api/sessions/${Uri.encodeComponent(sessionId)}/events'));
+
+  Future<List<SearchHit>> searchFiles(String scope, String q) async => [
+    for (final h in _array(await _get('/api/files/search', {'scope': scope, 'q': q})))
+      SearchHit.fromJson(h),
+  ];
+
+  /// `GET /api/files/list`: a folder, folders first.
+  Future<List<FileEntry>> listFiles(String scope, [String path = '.']) async => [
+    for (final e in _array(await _get('/api/files/list', {'scope': scope, 'path': path})))
+      FileEntry.fromJson(e),
+  ];
+
+  Future<FileText> fileText(String scope, String path) async =>
+      FileText.fromJson(_object(await _get('/api/files/content', {'scope': scope, 'path': path})));
+
+  /// `PUT /api/files/content`: a small edit, refused (409) if the file changed since it was read.
+  Future<String> saveText(String scope, String path, String text, {String? expected}) async {
+    final r = _object(
+      await _call('PUT', '/api/files/content', {
+        'scope': scope,
+        'path': path,
+        'content': text,
+        'encoding': 'utf8',
+        'expectedModifiedAt': ?expected,
+      }),
+    );
+    return '${r['modifiedAt'] ?? ''}';
+  }
+
+  /// A shell in [scope]'s sandbox over `/term`.
+  Future<TermSession> openTerminal(String scope, {int cols = 80, int rows = 24}) {
+    final t = token;
+    if (t == null) throw const ApiException(401, 'Not signed in');
+    return TermSession.open(transport, token: t, scope: scope, cols: cols, rows: rows);
   }
 
   void close() => transport.close();

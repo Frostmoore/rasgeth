@@ -1989,4 +1989,391 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get notifyTestFailed =>
       'The system did not show it: are notifications on for RGCompanion in its settings?';
+
+  @override
+  String get tabProjects => 'Projects';
+
+  @override
+  String get sectionCoders => 'For those who code';
+
+  @override
+  String get sectionMascots => 'Mascots';
+
+  @override
+  String get advancedTitle => 'Advanced interface';
+
+  @override
+  String get advancedNew => 'new';
+
+  @override
+  String get advancedHint =>
+      'Adds Projects to the bar and, in every agent\'s sheet, Files, Diff and Terminal.';
+
+  @override
+  String get advancedTerminals => 'My agents\' terminals';
+
+  @override
+  String get advancedTerminalsHint => 'Read only; my own terminal has the row of extra keys.';
+
+  @override
+  String get codeTabTasks => 'Tasks';
+
+  @override
+  String get codeTabFiles => 'Files';
+
+  @override
+  String get codeTabDiff => 'Diff';
+
+  @override
+  String get codeTabTerminal => 'Terminal';
+
+  @override
+  String get codeTabLog => 'Log';
+
+  @override
+  String get codeTabGit => 'Git';
+
+  @override
+  String get codeArchived => 'Archived project: read only until you restore it.';
+
+  @override
+  String get codeArchivedShort => 'archived';
+
+  @override
+  String get codeChangedMeanwhile => 'The file changed since you opened it: open it again.';
+
+  @override
+  String get codeUnreachable => 'RedGiant cannot be reached: check the connection.';
+
+  @override
+  String get codeLoadFailed => 'It did not load: pull down to try again.';
+
+  @override
+  String get codeNoRepo => 'no repository';
+
+  @override
+  String get codeDetached => 'no branch';
+
+  @override
+  String get codeClean => 'clean';
+
+  @override
+  String codeChanges(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count changes',
+      one: '1 change',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String codeAheadBehind(int ahead, int behind) {
+    return '$ahead ahead, $behind behind';
+  }
+
+  @override
+  String get codeNoProjects => 'No projects yet.';
+
+  @override
+  String codeOpenTasks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tasks in progress',
+      one: '1 task in progress',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get codeNoOpenTasks => 'no task in progress';
+
+  @override
+  String get codeNoTasks => 'No tasks in this project.';
+
+  @override
+  String get codeColRunning => 'In progress';
+
+  @override
+  String get codeColToVerify => 'To verify';
+
+  @override
+  String get codeColDone => 'Done';
+
+  @override
+  String get codeTaskVerified => 'verified · exit 0';
+
+  @override
+  String codeTaskNotTestable(String why) {
+    return '«not testable»: $why';
+  }
+
+  @override
+  String codeTaskAbandoned(String why) {
+    return 'given up: $why';
+  }
+
+  @override
+  String get codeTaskNoVerifier => 'verifier not run yet';
+
+  @override
+  String codeTaskVerifier(String command, String result) {
+    return 'verifier: $command · $result';
+  }
+
+  @override
+  String get codeTaskPassed => 'passed';
+
+  @override
+  String get codeTaskFailed => 'not passed';
+
+  @override
+  String get codeTaskDiff => 'The task\'s diff';
+
+  @override
+  String get codeSearchHint => 'Search names and text';
+
+  @override
+  String get codeNoHits => 'Nothing found.';
+
+  @override
+  String get codeEmptyFolder => 'Empty folder.';
+
+  @override
+  String get codePickFile => 'Choose a file on the left.';
+
+  @override
+  String get codeSmallEdit => 'Small edit';
+
+  @override
+  String get codeSave => 'Save';
+
+  @override
+  String get codeSaving => 'Saving…';
+
+  @override
+  String get codeSaved => 'Saved.';
+
+  @override
+  String get codeAsk => 'Ask…';
+
+  @override
+  String get codeAskWho => 'Ask which agent?';
+
+  @override
+  String codeAskDraft(String path) {
+    return 'About the file `$path`: ';
+  }
+
+  @override
+  String get codeSeeDiff => 'See the diff';
+
+  @override
+  String get codeCopyPath => 'Copy the path';
+
+  @override
+  String get codePathCopied => 'Path copied.';
+
+  @override
+  String get codeNotText => 'Not a text file: open it from the page.';
+
+  @override
+  String codeModifiedAt(String when) {
+    return 'changed $when';
+  }
+
+  @override
+  String get codeDiffWorking => 'Uncommitted changes';
+
+  @override
+  String codeDiffTask(String title) {
+    return 'Task «$title»';
+  }
+
+  @override
+  String codeDiffCommit(String hash, String subject) {
+    return 'Commit $hash $subject';
+  }
+
+  @override
+  String codeDiffAgent(String name) {
+    return '$name\'s work';
+  }
+
+  @override
+  String get codeDiffWhich => 'Which diff?';
+
+  @override
+  String get codeDiffEmpty => 'No differences.';
+
+  @override
+  String get codeDiffTruncated => 'Too long: only the first part is shown.';
+
+  @override
+  String get codeDiffBinary => 'A binary file: nothing to read here.';
+
+  @override
+  String get codeDiffNoHunks => 'Renamed or mode changed only.';
+
+  @override
+  String codeFileOf(int n, int total) {
+    return '$n of $total';
+  }
+
+  @override
+  String get codePrevFile => 'Previous file';
+
+  @override
+  String get codeNextFile => 'Next file';
+
+  @override
+  String get codeKeep => 'Keep';
+
+  @override
+  String get codeKept => 'Kept';
+
+  @override
+  String get codeDiscard => 'Discard';
+
+  @override
+  String get codeDiscarded => 'Discarded';
+
+  @override
+  String get codeDiscardTitle => 'Discard this change?';
+
+  @override
+  String codeDiscardBody(String path) {
+    return 'The change to $path is removed from the files. A copy stays in the project\'s trash (.trash/diffs) to put back.';
+  }
+
+  @override
+  String codeDiscardCommitBody(String path) {
+    return 'This change of the commit is undone in $path (as a new uncommitted change). A copy stays in the project\'s trash (.trash/diffs).';
+  }
+
+  @override
+  String get codeComment => 'Comment';
+
+  @override
+  String codeCommentHint(String name) {
+    return 'A note for $name';
+  }
+
+  @override
+  String codeCommentIntro(String path, String hunk) {
+    return 'A comment on `$path`, at $hunk:';
+  }
+
+  @override
+  String codeCommentSent(String name) {
+    return 'Sent to $name.';
+  }
+
+  @override
+  String get codeCommentFailed => 'Not sent: try again.';
+
+  @override
+  String get codeNoChat => 'No conversation with this agent yet.';
+
+  @override
+  String get codeTermMine => 'Mine';
+
+  @override
+  String get codeTextSmaller => 'Smaller text';
+
+  @override
+  String get codeTextBigger => 'Bigger text';
+
+  @override
+  String get codeTermReadOnly => 'Read only: the commands the agent ran and what they printed.';
+
+  @override
+  String get codeTermNoCommands => 'No commands yet.';
+
+  @override
+  String get codeReload => 'Load again';
+
+  @override
+  String get codeTermIntro => 'A shell in the project\'s sandbox, like the page\'s terminal.';
+
+  @override
+  String get codeTermOpen => 'Open the terminal';
+
+  @override
+  String get codeTermHint => 'A command';
+
+  @override
+  String get codeTermClosed => 'The terminal closed.';
+
+  @override
+  String get codeLogAgent => 'Which agent?';
+
+  @override
+  String get codeLogAllAgents => 'Every agent';
+
+  @override
+  String get codeLogType => 'Which type?';
+
+  @override
+  String get codeLogAllTypes => 'Every type';
+
+  @override
+  String get codeLogErrors => 'Errors only';
+
+  @override
+  String get codeLogEmpty => 'Nothing in the log.';
+
+  @override
+  String get codeLogOpenChat => 'Open the conversation';
+
+  @override
+  String get codeBranches => 'Branches';
+
+  @override
+  String get codeCommits => 'Commits';
+
+  @override
+  String codeUpstream(String name) {
+    return 'follows $name';
+  }
+
+  @override
+  String get codeNoUpstream => 'not sent anywhere yet';
+
+  @override
+  String get codeCommitHint => 'What changed (the commit\'s message)';
+
+  @override
+  String get codeCommit => 'Commit';
+
+  @override
+  String codeCommitted(String hash) {
+    return 'Commit $hash made.';
+  }
+
+  @override
+  String get codeNothingToCommit => 'Nothing to commit.';
+
+  @override
+  String get codePush => 'Push';
+
+  @override
+  String get codePushAsked =>
+      'Push asked: answer it from «For you» (it is a request to you, like an agent\'s).';
+
+  @override
+  String get codePushDone => 'Pushed.';
+
+  @override
+  String get codePushDenied => 'Not pushed: the answer was no.';
+
+  @override
+  String codePushFailed(String error) {
+    return 'The push did not work: $error';
+  }
+
+  @override
+  String get codeNoRemote => 'The project has no remote repository to push to.';
 }

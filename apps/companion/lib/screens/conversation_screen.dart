@@ -25,13 +25,22 @@ import 'canvas_screen.dart';
 import 'conversation_more.dart';
 
 class ConversationScreen extends StatefulWidget {
-  const ConversationScreen({super.key, required this.sessionId, this.agent, this.firstMessage});
+  const ConversationScreen({
+    super.key,
+    required this.sessionId,
+    this.agent,
+    this.firstMessage,
+    this.draft,
+  });
 
   final String sessionId;
   final Agent? agent;
 
   /// Sent as soon as the conversation opens (the Chat's field over the bar).
   final String? firstMessage;
+
+  /// Written in the field, for the person to finish (the advanced interface's «Ask…»).
+  final String? draft;
 
   @override
   State<ConversationScreen> createState() => _ConversationScreenState();
@@ -50,6 +59,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     super.initState();
     app = AppScope.read(context);
     view = app.follow(widget.sessionId);
+    if (widget.draft != null) _text.text = widget.draft!;
     final first = widget.firstMessage;
     if (first != null && first.trim().isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _send(text: first));

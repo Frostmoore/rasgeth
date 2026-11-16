@@ -1,5 +1,6 @@
 // Proposal A «La squadra» (study G40 section 4.1, decision D9): the bar at the bottom
-// (Team | Chat | For you | Activity | You) and, right over it, the Chat's field, always there: it
+// (Team | Chat | For you | Activity | You, with Projects before You when the advanced interface
+// is on, G40.11) and, right over it, the Chat's field, always there: it
 // starts a new conversation with Chat at once.
 import 'dart:async';
 
@@ -13,6 +14,7 @@ import 'activity_screen.dart';
 import 'chat_screen.dart';
 import 'conversation_screen.dart';
 import 'inbox_screen.dart';
+import 'projects_screen.dart';
 import 'share_screen.dart';
 import 'team_screen.dart';
 import 'you_screen.dart';
@@ -79,12 +81,14 @@ class _HomeShellState extends State<HomeShell> {
             Expanded(
               child: IndexedStack(
                 index: app.tab.index,
-                children: const [
-                  TeamScreen(),
-                  ChatScreen(),
-                  InboxScreen(),
-                  ActivityScreen(),
-                  YouScreen(),
+                children: [
+                  const TeamScreen(),
+                  const ChatScreen(),
+                  const InboxScreen(),
+                  const ActivityScreen(),
+                  // Made only when the advanced interface is on (G40.11).
+                  if (app.advanced) const ProjectsScreen() else const SizedBox.shrink(),
+                  const YouScreen(),
                 ],
               ),
             ),
@@ -179,6 +183,7 @@ class TabBarA extends StatelessWidget {
       (AppTab.chat, RgIcons.chat, l.tabChat),
       (AppTab.inbox, RgIcons.bell, l.tabInbox),
       (AppTab.activity, RgIcons.list, l.tabActivity),
+      if (app.advanced) (AppTab.projects, RgIcons.code, l.tabProjects),
       (AppTab.you, RgIcons.user, l.tabYou),
     ];
     return DecoratedBox(

@@ -1,0 +1,219 @@
+// Projects (G40.11, the advanced interface): every project with its git state (branch, changes,
+// commits ahead and behind) and its lead with what it is doing; a tap opens the project's tabs.
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+
+import '../api/client.dart';
+import '../api/code.dart';
+import '../api/conversation.dart';
+import '../api/types.dart';
+import '../app_state.dart';
+import '../l10n/app_localizations.dart';
+import '../theme/colors.dart';
+import '../ui/common.dart';
+import '../ui/icons.dart';
+import '../ui/words.dart';
+import 'code/git_tab.dart' show AheadBehind;
+import 'code/project_screen.dart';
+
+class ProjectsScreen extends StatefulWidget {
+  const ProjectsScreen({super.key});
+
+  @override
+  State<ProjectsScreen> createState() => _ProjectsScreenState();
+}
+
+class _ProjectsScreenState extends State<ProjectsScreen> {
+  List<Project>? _projects;
+  final _git = <String, GitState>{};
+  final _open = <String, int>{};
+  bool _failed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_load());
+  }
+
+  Future<void> _load() async {
+    final c = AppScope.read(context).client;
+    if (c == null) return;
+    try {
+      final list = await c.projects();
+      if (!mounted) return;
+      setState(() {
+        _projects = list;
+        _failed = false;
+      });
+      await Future.wait([
+        for (final p in list)
+          () async {
+            try {
+              final g = await c.gitState(p.id);
+              final t = await c.tasks(p.id);
+              if (!mounted) return;
+              setState(() {
+                _git[p.id] = g;
+                _open[p.id] = t.where((x) => !x.done).length;
+              });
+            } on ApiException {
+              // That project's card stays without its state.
+            }
+          }(),
+      ]);
+    } on ApiException {
+      if (mounted) setState(() => _failed = true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final list = _projects;
+    return Column(
+      children: [
+        ScreenHeader(title: l.tabProjects),
+        Expanded(
+          child: list == null
+              ? (_failed
+                    ? EmptyState(icon: RgIcons.alert, text: l.codeLoadFailed)
+                    : const Center(child: CircularProgressIndicator()))
+              : list.isEmpty
+              ? EmptyState(icon: RgIcons.folder, text: l.codeNoProjects)
+              : RefreshIndicator(
+                  onRefresh: _load,
+                  child: ListView(
+                    key: const Key('projects-list'),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                    children: [
+                      for (final p in list)
+                        _ProjectCard(project: p, git: _git[p.id], open: _open[p.id]),
+                    ],
+                  ),
+                ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProjectCard extends StatelessWidget {
+  const _ProjectCard({required this.project, this.git, this.open});
+
+  final Project project;
+  final GitState? git;
+  final int? open;
+
+  @override
+  Widget build(BuildContext context) {
+    final app = AppScope.of(context);
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final lead = app.agents
+        .where((a) => a.projectId == project.id && a.kind == AgentKind.orchestrator)
+        .firstOrNull;
+    final state = lead == null ? null : app.live.mascotStateOf(lead.id);
+    final g = git;
+    final who = [
+      if (lead != null) lead.name,
+      if (project.archived)
+        l.codeArchivedShort
+      else if (state == MascotState.error)
+        stateWord(l, state!)
+      else if (open != null)
+        open == 0 ? l.codeNoOpenTasks : l.codeOpenTasks(open!),
+    ].join(' · ');
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Material(
+        color: c.panel,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: c.line),
+        ),
+        child: InkWell(
+          key: Key('project-${project.id}'),
+          borderRadius: BorderRadius.circular(16),
+          onTap: () =>
+              Navigator.of(context)
+                  .push(MaterialPageRoute<void>(builder: (_) => ProjectScreen(project: project))),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        project.name,
+                        style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: c.text),
+                      ),
+                    ),
+                    if (project.archived) RgIcon(RgIcons.lock, size: 16, color: c.dim),
+                  ],
+                ),
+                if (who.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      who,
+                      style: TextStyle(
+                        color: state == MascotState.error ? c.err : c.dim,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 8),
+                if (g == null)
+                  const SizedBox(height: 18)
+                else if (!g.repo)
+                  Text(l.codeNoRepo, style: TextStyle(color: c.dim, fontSize: 12.5))
+                else
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: c.panel2,
+                          borderRadius: BorderRadius.circular(99),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            RgIcon(RgIcons.gitBranch, size: 13, color: c.dim),
+                            const SizedBox(width: 4),
+                            Text(
+                              g.branch ?? l.codeDetached,
+                              style: TextStyle(
+                                fontSize: 12.5,
+                                fontWeight: FontWeight.w700,
+                                color: c.text,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          g.clean ? l.codeClean : l.codeChanges(g.changes.length),
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            color: g.clean ? c.dim : c.warnText,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      AheadBehind(ahead: g.ahead, behind: g.behind),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

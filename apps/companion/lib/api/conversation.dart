@@ -468,6 +468,8 @@ class Project {
 
 enum TaskOutcome { open, verified, notTestable, abandoned }
 
+enum TaskColumn { running, toVerify, done }
+
 TaskOutcome taskOutcomeFrom(String? s) => switch (s) {
   'verified' => TaskOutcome.verified,
   'not_testable' => TaskOutcome.notTestable,
@@ -486,6 +488,9 @@ class TaskRow {
     this.agentId,
     this.sessionId,
     this.projectId,
+    this.verifier,
+    this.verified,
+    this.note,
   });
 
   factory TaskRow.fromJson(Map<String, dynamic> j, {String? projectId}) => TaskRow(
@@ -497,6 +502,9 @@ class TaskRow {
     outcome: taskOutcomeFrom(_str(j['outcome'])),
     openedAt: _str(j['openedAt']) ?? '',
     projectId: projectId,
+    verifier: j['verifier'] is Map ? _str((j['verifier'] as Map)['command']) : null,
+    verified: j['verifier'] is Map ? (j['verifier'] as Map)['passed'] == true : null,
+    note: _str(j['note']),
   );
 
   final String id;
@@ -508,7 +516,21 @@ class TaskRow {
   final String openedAt;
   final String? projectId;
 
+  /// The last verifier run (G40.11) and its result; null when none ran yet.
+  final String? verifier;
+  final bool? verified;
+
+  /// Why it closed without a verifier, or was given up on.
+  final String? note;
+
   bool get done => outcome != TaskOutcome.open;
+
+  /// The board's column: in progress, to verify (a verifier ran and did not pass yet), done.
+  TaskColumn get column => done
+      ? TaskColumn.done
+      : verifier != null
+      ? TaskColumn.toVerify
+      : TaskColumn.running;
 }
 
 /// `GET /api/files/content`.

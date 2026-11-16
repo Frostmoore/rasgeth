@@ -3560,6 +3560,672 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The system did not show it: are notifications on for RGCompanion in its settings?'**
   String get notifyTestFailed;
+
+  /// No description provided for @tabProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get tabProjects;
+
+  /// No description provided for @sectionCoders.
+  ///
+  /// In en, this message translates to:
+  /// **'For those who code'**
+  String get sectionCoders;
+
+  /// No description provided for @sectionMascots.
+  ///
+  /// In en, this message translates to:
+  /// **'Mascots'**
+  String get sectionMascots;
+
+  /// No description provided for @advancedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced interface'**
+  String get advancedTitle;
+
+  /// No description provided for @advancedNew.
+  ///
+  /// In en, this message translates to:
+  /// **'new'**
+  String get advancedNew;
+
+  /// No description provided for @advancedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Adds Projects to the bar and, in every agent\'s sheet, Files, Diff and Terminal.'**
+  String get advancedHint;
+
+  /// No description provided for @advancedTerminals.
+  ///
+  /// In en, this message translates to:
+  /// **'My agents\' terminals'**
+  String get advancedTerminals;
+
+  /// No description provided for @advancedTerminalsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Read only; my own terminal has the row of extra keys.'**
+  String get advancedTerminalsHint;
+
+  /// No description provided for @codeTabTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks'**
+  String get codeTabTasks;
+
+  /// No description provided for @codeTabFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get codeTabFiles;
+
+  /// No description provided for @codeTabDiff.
+  ///
+  /// In en, this message translates to:
+  /// **'Diff'**
+  String get codeTabDiff;
+
+  /// No description provided for @codeTabTerminal.
+  ///
+  /// In en, this message translates to:
+  /// **'Terminal'**
+  String get codeTabTerminal;
+
+  /// No description provided for @codeTabLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Log'**
+  String get codeTabLog;
+
+  /// No description provided for @codeTabGit.
+  ///
+  /// In en, this message translates to:
+  /// **'Git'**
+  String get codeTabGit;
+
+  /// No description provided for @codeArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived project: read only until you restore it.'**
+  String get codeArchived;
+
+  /// No description provided for @codeArchivedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'archived'**
+  String get codeArchivedShort;
+
+  /// No description provided for @codeChangedMeanwhile.
+  ///
+  /// In en, this message translates to:
+  /// **'The file changed since you opened it: open it again.'**
+  String get codeChangedMeanwhile;
+
+  /// No description provided for @codeUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant cannot be reached: check the connection.'**
+  String get codeUnreachable;
+
+  /// No description provided for @codeLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'It did not load: pull down to try again.'**
+  String get codeLoadFailed;
+
+  /// No description provided for @codeNoRepo.
+  ///
+  /// In en, this message translates to:
+  /// **'no repository'**
+  String get codeNoRepo;
+
+  /// No description provided for @codeDetached.
+  ///
+  /// In en, this message translates to:
+  /// **'no branch'**
+  String get codeDetached;
+
+  /// No description provided for @codeClean.
+  ///
+  /// In en, this message translates to:
+  /// **'clean'**
+  String get codeClean;
+
+  /// No description provided for @codeChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 change} other{{count} changes}}'**
+  String codeChanges(int count);
+
+  /// No description provided for @codeAheadBehind.
+  ///
+  /// In en, this message translates to:
+  /// **'{ahead} ahead, {behind} behind'**
+  String codeAheadBehind(int ahead, int behind);
+
+  /// No description provided for @codeNoProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'No projects yet.'**
+  String get codeNoProjects;
+
+  /// No description provided for @codeOpenTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 task in progress} other{{count} tasks in progress}}'**
+  String codeOpenTasks(int count);
+
+  /// No description provided for @codeNoOpenTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'no task in progress'**
+  String get codeNoOpenTasks;
+
+  /// No description provided for @codeNoTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks in this project.'**
+  String get codeNoTasks;
+
+  /// No description provided for @codeColRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get codeColRunning;
+
+  /// No description provided for @codeColToVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'To verify'**
+  String get codeColToVerify;
+
+  /// No description provided for @codeColDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get codeColDone;
+
+  /// No description provided for @codeTaskVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'verified · exit 0'**
+  String get codeTaskVerified;
+
+  /// No description provided for @codeTaskNotTestable.
+  ///
+  /// In en, this message translates to:
+  /// **'«not testable»: {why}'**
+  String codeTaskNotTestable(String why);
+
+  /// No description provided for @codeTaskAbandoned.
+  ///
+  /// In en, this message translates to:
+  /// **'given up: {why}'**
+  String codeTaskAbandoned(String why);
+
+  /// No description provided for @codeTaskNoVerifier.
+  ///
+  /// In en, this message translates to:
+  /// **'verifier not run yet'**
+  String get codeTaskNoVerifier;
+
+  /// No description provided for @codeTaskVerifier.
+  ///
+  /// In en, this message translates to:
+  /// **'verifier: {command} · {result}'**
+  String codeTaskVerifier(String command, String result);
+
+  /// No description provided for @codeTaskPassed.
+  ///
+  /// In en, this message translates to:
+  /// **'passed'**
+  String get codeTaskPassed;
+
+  /// No description provided for @codeTaskFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'not passed'**
+  String get codeTaskFailed;
+
+  /// No description provided for @codeTaskDiff.
+  ///
+  /// In en, this message translates to:
+  /// **'The task\'s diff'**
+  String get codeTaskDiff;
+
+  /// No description provided for @codeSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search names and text'**
+  String get codeSearchHint;
+
+  /// No description provided for @codeNoHits.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing found.'**
+  String get codeNoHits;
+
+  /// No description provided for @codeEmptyFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty folder.'**
+  String get codeEmptyFolder;
+
+  /// No description provided for @codePickFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a file on the left.'**
+  String get codePickFile;
+
+  /// No description provided for @codeSmallEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Small edit'**
+  String get codeSmallEdit;
+
+  /// No description provided for @codeSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get codeSave;
+
+  /// No description provided for @codeSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get codeSaving;
+
+  /// No description provided for @codeSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved.'**
+  String get codeSaved;
+
+  /// No description provided for @codeAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask…'**
+  String get codeAsk;
+
+  /// No description provided for @codeAskWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask which agent?'**
+  String get codeAskWho;
+
+  /// No description provided for @codeAskDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'About the file `{path}`: '**
+  String codeAskDraft(String path);
+
+  /// No description provided for @codeSeeDiff.
+  ///
+  /// In en, this message translates to:
+  /// **'See the diff'**
+  String get codeSeeDiff;
+
+  /// No description provided for @codeCopyPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the path'**
+  String get codeCopyPath;
+
+  /// No description provided for @codePathCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Path copied.'**
+  String get codePathCopied;
+
+  /// No description provided for @codeNotText.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a text file: open it from the page.'**
+  String get codeNotText;
+
+  /// No description provided for @codeModifiedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'changed {when}'**
+  String codeModifiedAt(String when);
+
+  /// No description provided for @codeDiffWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Uncommitted changes'**
+  String get codeDiffWorking;
+
+  /// No description provided for @codeDiffTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Task «{title}»'**
+  String codeDiffTask(String title);
+
+  /// No description provided for @codeDiffCommit.
+  ///
+  /// In en, this message translates to:
+  /// **'Commit {hash} {subject}'**
+  String codeDiffCommit(String hash, String subject);
+
+  /// No description provided for @codeDiffAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\'s work'**
+  String codeDiffAgent(String name);
+
+  /// No description provided for @codeDiffWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Which diff?'**
+  String get codeDiffWhich;
+
+  /// No description provided for @codeDiffEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No differences.'**
+  String get codeDiffEmpty;
+
+  /// No description provided for @codeDiffTruncated.
+  ///
+  /// In en, this message translates to:
+  /// **'Too long: only the first part is shown.'**
+  String get codeDiffTruncated;
+
+  /// No description provided for @codeDiffBinary.
+  ///
+  /// In en, this message translates to:
+  /// **'A binary file: nothing to read here.'**
+  String get codeDiffBinary;
+
+  /// No description provided for @codeDiffNoHunks.
+  ///
+  /// In en, this message translates to:
+  /// **'Renamed or mode changed only.'**
+  String get codeDiffNoHunks;
+
+  /// No description provided for @codeFileOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} of {total}'**
+  String codeFileOf(int n, int total);
+
+  /// No description provided for @codePrevFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous file'**
+  String get codePrevFile;
+
+  /// No description provided for @codeNextFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Next file'**
+  String get codeNextFile;
+
+  /// No description provided for @codeKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep'**
+  String get codeKeep;
+
+  /// No description provided for @codeKept.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept'**
+  String get codeKept;
+
+  /// No description provided for @codeDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get codeDiscard;
+
+  /// No description provided for @codeDiscarded.
+  ///
+  /// In en, this message translates to:
+  /// **'Discarded'**
+  String get codeDiscarded;
+
+  /// No description provided for @codeDiscardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard this change?'**
+  String get codeDiscardTitle;
+
+  /// No description provided for @codeDiscardBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The change to {path} is removed from the files. A copy stays in the project\'s trash (.trash/diffs) to put back.'**
+  String codeDiscardBody(String path);
+
+  /// No description provided for @codeDiscardCommitBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This change of the commit is undone in {path} (as a new uncommitted change). A copy stays in the project\'s trash (.trash/diffs).'**
+  String codeDiscardCommitBody(String path);
+
+  /// No description provided for @codeComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment'**
+  String get codeComment;
+
+  /// No description provided for @codeCommentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A note for {name}'**
+  String codeCommentHint(String name);
+
+  /// No description provided for @codeCommentIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'A comment on `{path}`, at {hunk}:'**
+  String codeCommentIntro(String path, String hunk);
+
+  /// No description provided for @codeCommentSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to {name}.'**
+  String codeCommentSent(String name);
+
+  /// No description provided for @codeCommentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sent: try again.'**
+  String get codeCommentFailed;
+
+  /// No description provided for @codeNoChat.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversation with this agent yet.'**
+  String get codeNoChat;
+
+  /// No description provided for @codeTermMine.
+  ///
+  /// In en, this message translates to:
+  /// **'Mine'**
+  String get codeTermMine;
+
+  /// No description provided for @codeTextSmaller.
+  ///
+  /// In en, this message translates to:
+  /// **'Smaller text'**
+  String get codeTextSmaller;
+
+  /// No description provided for @codeTextBigger.
+  ///
+  /// In en, this message translates to:
+  /// **'Bigger text'**
+  String get codeTextBigger;
+
+  /// No description provided for @codeTermReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Read only: the commands the agent ran and what they printed.'**
+  String get codeTermReadOnly;
+
+  /// No description provided for @codeTermNoCommands.
+  ///
+  /// In en, this message translates to:
+  /// **'No commands yet.'**
+  String get codeTermNoCommands;
+
+  /// No description provided for @codeReload.
+  ///
+  /// In en, this message translates to:
+  /// **'Load again'**
+  String get codeReload;
+
+  /// No description provided for @codeTermIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'A shell in the project\'s sandbox, like the page\'s terminal.'**
+  String get codeTermIntro;
+
+  /// No description provided for @codeTermOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the terminal'**
+  String get codeTermOpen;
+
+  /// No description provided for @codeTermHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A command'**
+  String get codeTermHint;
+
+  /// No description provided for @codeTermClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'The terminal closed.'**
+  String get codeTermClosed;
+
+  /// No description provided for @codeLogAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Which agent?'**
+  String get codeLogAgent;
+
+  /// No description provided for @codeLogAllAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent'**
+  String get codeLogAllAgents;
+
+  /// No description provided for @codeLogType.
+  ///
+  /// In en, this message translates to:
+  /// **'Which type?'**
+  String get codeLogType;
+
+  /// No description provided for @codeLogAllTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'Every type'**
+  String get codeLogAllTypes;
+
+  /// No description provided for @codeLogErrors.
+  ///
+  /// In en, this message translates to:
+  /// **'Errors only'**
+  String get codeLogErrors;
+
+  /// No description provided for @codeLogEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in the log.'**
+  String get codeLogEmpty;
+
+  /// No description provided for @codeLogOpenChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the conversation'**
+  String get codeLogOpenChat;
+
+  /// No description provided for @codeBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches'**
+  String get codeBranches;
+
+  /// No description provided for @codeCommits.
+  ///
+  /// In en, this message translates to:
+  /// **'Commits'**
+  String get codeCommits;
+
+  /// No description provided for @codeUpstream.
+  ///
+  /// In en, this message translates to:
+  /// **'follows {name}'**
+  String codeUpstream(String name);
+
+  /// No description provided for @codeNoUpstream.
+  ///
+  /// In en, this message translates to:
+  /// **'not sent anywhere yet'**
+  String get codeNoUpstream;
+
+  /// No description provided for @codeCommitHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What changed (the commit\'s message)'**
+  String get codeCommitHint;
+
+  /// No description provided for @codeCommit.
+  ///
+  /// In en, this message translates to:
+  /// **'Commit'**
+  String get codeCommit;
+
+  /// No description provided for @codeCommitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Commit {hash} made.'**
+  String codeCommitted(String hash);
+
+  /// No description provided for @codeNothingToCommit.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to commit.'**
+  String get codeNothingToCommit;
+
+  /// No description provided for @codePush.
+  ///
+  /// In en, this message translates to:
+  /// **'Push'**
+  String get codePush;
+
+  /// No description provided for @codePushAsked.
+  ///
+  /// In en, this message translates to:
+  /// **'Push asked: answer it from «For you» (it is a request to you, like an agent\'s).'**
+  String get codePushAsked;
+
+  /// No description provided for @codePushDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Pushed.'**
+  String get codePushDone;
+
+  /// No description provided for @codePushDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Not pushed: the answer was no.'**
+  String get codePushDenied;
+
+  /// No description provided for @codePushFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The push did not work: {error}'**
+  String codePushFailed(String error);
+
+  /// No description provided for @codeNoRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'The project has no remote repository to push to.'**
+  String get codeNoRemote;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1,6 +1,6 @@
 // You: the app's settings (theme, language, motion; kept between starts) and the RedGiants it
 // knows (G40.7): home, work…, each with its pinned key; the ones found on the network
-// (`_redgiant._tcp`) and an address typed by hand. The advanced interface comes with G40.11.
+// (`_redgiant._tcp`) and an address typed by hand; the advanced interface (G40.11).
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -16,6 +16,7 @@ import '../ui/common.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import 'first_start_screen.dart';
+import 'new_agent_screen.dart' show RgSwitch;
 import 'notifications_screen.dart';
 import 'server_settings_screen.dart';
 import 'voice_screen.dart';
@@ -119,15 +120,38 @@ class YouScreen extends StatelessWidget {
             onSelectionChanged: (s) => app.setLocale(s.first.isEmpty ? null : Locale(s.first)),
           ),
         ),
+        // G40.11: the advanced interface, kept for the RedGiant in use.
+        if (app.connected) ...[
+          _Section(l.sectionCoders),
+          MergeSemantics(
+            child: ListTile(
+              key: const Key('advanced-toggle'),
+              title: Row(
+                children: [
+                  Flexible(child: Text(l.advancedTitle)),
+                  const SizedBox(width: 8),
+                  _NewTag(l.advancedNew),
+                ],
+              ),
+              subtitle: Text(l.advancedHint),
+              trailing: RgSwitch(on: app.advanced),
+              onTap: () => app.setAdvanced(!app.advanced),
+            ),
+          ),
+          if (app.advanced)
+            ListTile(
+              key: const Key('advanced-terminals'),
+              title: Text(l.advancedTerminals),
+              subtitle: Text(l.advancedTerminalsHint),
+              trailing: RgIcon(RgIcons.lock, size: 18, color: RgColors.of(context).dim),
+            ),
+          _Section(l.sectionMascots),
+        ],
         MergeSemantics(
           child: ListTile(
             title: Text(l.reduceMotion),
             subtitle: Text(l.reduceMotionHint),
-            trailing: Switch(
-              key: const Key('reduce-motion'),
-              value: app.reduceMotion,
-              onChanged: app.setReduceMotion,
-            ),
+            trailing: RgSwitch(key: const Key('reduce-motion'), on: app.reduceMotion),
             onTap: () => app.setReduceMotion(!app.reduceMotion),
           ),
         ),
@@ -505,6 +529,26 @@ class _AddServerState extends State<AddServer> {
             Text(l.pairingNote, style: TextStyle(color: c.dim, fontSize: 12.5)),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// «new» next to a setting just arrived.
+class _NewTag extends StatelessWidget {
+  const _NewTag(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
+      decoration: BoxDecoration(color: c.accentSoft, borderRadius: BorderRadius.circular(99)),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: c.accent),
       ),
     );
   }

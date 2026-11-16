@@ -259,11 +259,7 @@ class DiffSource {
   /// For hunks and comments: the agent's worktree, when the diff is an agent's.
   bool get working => task == null && agent == null && commit == null;
 
-  Map<String, String> get query => {
-    'task': ?task,
-    'agent': ?agent,
-    'commit': ?commit,
-  };
+  Map<String, String> get query => {'task': ?task, 'agent': ?agent, 'commit': ?commit};
 
   @override
   bool operator ==(Object other) =>
@@ -567,7 +563,9 @@ class TermSession {
   }) async {
     final ws = await transport.socket('/term');
     final t = TermSession._(ws);
-    ws.add(jsonEncode({'type': 'hello', 'token': token, 'scope': scope, 'cols': cols, 'rows': rows}));
+    ws.add(
+      jsonEncode({'type': 'hello', 'token': token, 'scope': scope, 'cols': cols, 'rows': rows}),
+    );
     ws.listen(
       (data) {
         if (data is! String) return;

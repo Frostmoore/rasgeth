@@ -20,6 +20,7 @@ import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/model_sheet.dart';
 import '../ui/words.dart';
+import 'code/project_screen.dart';
 import 'conversation_screen.dart';
 import 'first_start_screen.dart';
 import 'instructions_screen.dart';
@@ -655,6 +656,48 @@ class AgentSheet extends StatelessWidget {
                     openInstructions(parent, a);
                   },
                 ),
+                // G40.11: the agent's files, diff and terminal (the advanced interface).
+                if (app.advanced && a.projectId != null) ...[
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      for (final (tab, icon, label, k) in [
+                        (ProjectTab.files, RgIcons.folder, l.codeTabFiles, 'files'),
+                        (ProjectTab.diff, RgIcons.diff, l.codeTabDiff, 'diff'),
+                        (ProjectTab.terminal, RgIcons.terminal, l.codeTabTerminal, 'terminal'),
+                      ])
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(right: tab == ProjectTab.terminal ? 0 : 8),
+                            child: OutlinedButton.icon(
+                              key: Key('agent-code-$k'),
+                              style: OutlinedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(44),
+                                padding: const EdgeInsets.symmetric(horizontal: 6),
+                              ),
+                              onPressed: () {
+                                close();
+                                final project =
+                                    app.projects.where((p) => p.id == a.projectId).firstOrNull ??
+                                    Project(id: a.projectId!, name: a.projectId!);
+                                Navigator.of(parent).push(
+                                  MaterialPageRoute<void>(
+                                    builder: (_) => ProjectScreen(
+                                      project: project,
+                                      initial: tab,
+                                      agentId: a.id,
+                                    ),
+                                  ),
+                                );
+                              },
+                              icon: RgIcon(icon, size: 16, color: c.text),
+                              label: Text(label, overflow: TextOverflow.ellipsis),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
                 const SizedBox(height: 14),
                 if (running.isNotEmpty)
                   Padding(
