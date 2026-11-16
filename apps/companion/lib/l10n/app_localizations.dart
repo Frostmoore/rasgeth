@@ -4520,6 +4520,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reply'**
   String get quoteReplyShort;
+
+  /// No description provided for @savedSearchClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear the search'**
+  String get savedSearchClear;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

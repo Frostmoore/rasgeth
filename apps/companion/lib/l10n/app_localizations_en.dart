@@ -2535,4 +2535,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quoteReplyShort => 'Reply';
+
+  @override
+  String get savedSearchClear => 'Clear the search';
 }

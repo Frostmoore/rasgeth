@@ -1535,5 +1535,6 @@
   "productNoPicture": "No picture",
   "productPrevious": "Previous products",
   "productNext": "Next products",
-  "quoteReplyShort": "Reply"
+  "quoteReplyShort": "Reply",
+  "savedSearchClear": "Clear the search"
 }

@@ -481,6 +481,8 @@ class _SavedScreenState extends State<SavedScreen> {
   }
 
   void _typed(String v) {
+    // The clear button comes and goes with the text.
+    if (v.isEmpty != _query.isEmpty) setState(() {});
     _timer?.cancel();
     _timer = Timer(const Duration(milliseconds: 300), () {
       if (!mounted || v.trim() == _query) return;
@@ -596,6 +598,18 @@ class _SavedScreenState extends State<SavedScreen> {
                       child: RgIcon(RgIcons.search, size: 18, color: c.dim),
                     ),
                     prefixIconConstraints: const BoxConstraints(minWidth: 40),
+                    suffixIcon: _search.text.isEmpty
+                        ? null
+                        : IconButton(
+                            key: const Key('saved-search-clear'),
+                            tooltip: l.savedSearchClear,
+                            onPressed: () {
+                              _search.clear();
+                              _typed('');
+                              setState(() {});
+                            },
+                            icon: RgIcon(RgIcons.x, size: 16, color: c.dim),
+                          ),
                   ),
                 ),
                 if (tags.isNotEmpty) ...[

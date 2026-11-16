@@ -2541,4 +2541,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get quoteReplyShort => 'Rispondi';
+
+  @override
+  String get savedSearchClear => 'Svuota la ricerca';
 }

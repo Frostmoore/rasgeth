@@ -737,5 +737,6 @@
   "productNoPicture": "Nessuna foto",
   "productPrevious": "Prodotti precedenti",
   "productNext": "Prodotti successivi",
-  "quoteReplyShort": "Rispondi"
+  "quoteReplyShort": "Rispondi",
+  "savedSearchClear": "Svuota la ricerca"
 }
