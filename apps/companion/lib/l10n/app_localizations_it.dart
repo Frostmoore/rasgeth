@@ -3576,4 +3576,31 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get deskYourTerminals => 'Tuoi';
+
+  @override
+  String get deskNewProject => 'Nuovo progetto';
+
+  @override
+  String get deskProjectName => 'Nome del progetto';
+
+  @override
+  String get deskProjectCreate => 'Crea';
+
+  @override
+  String deskProjectMade(String name) {
+    return 'Progetto «$name» creato, con il suo orchestratore.';
+  }
+
+  @override
+  String deskProjectFailed(String why) {
+    return 'Non sono riuscito a creare il progetto: $why';
+  }
+
+  @override
+  String deskProjectNoGit(String name, String why) {
+    return 'Progetto «$name» creato, ma senza repository git: $why. Crealo da Impostazioni › Progetti («Inizializza git») appena git funziona.';
+  }
+
+  @override
+  String get deskGitMissing => 'git non è ancora installato su questo computer';
 }

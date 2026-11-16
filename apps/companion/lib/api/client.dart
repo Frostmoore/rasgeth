@@ -556,6 +556,10 @@ class RedGiantClient {
     });
   }
 
+  /// `POST /api/projects`: a new project (as the page's «New project»: only its name).
+  Future<Project> createProject(String name) async =>
+      Project.fromJson(_object(await _post('/api/projects', {'name': name})));
+
   Future<List<Project>> projects() async => [
     for (final p in _array(await _get('/api/projects'))) Project.fromJson(p),
   ];

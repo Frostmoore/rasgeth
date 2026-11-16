@@ -41,19 +41,30 @@ Future<String?> askText(
   required String title,
   String initial = '',
   required String yes,
+  String? hint,
+  Key? fieldKey,
 }) => showDialog<String>(
   context: context,
-  builder: (context) => _TextDialog(title: title, initial: initial, yes: yes),
+  builder: (context) =>
+      _TextDialog(title: title, initial: initial, yes: yes, hint: hint, fieldKey: fieldKey),
 );
 
 /// The dialog owns its field: the controller lives as long as the dialog (its closing animation
 /// included), never disposed under it.
 class _TextDialog extends StatefulWidget {
-  const _TextDialog({required this.title, required this.initial, required this.yes});
+  const _TextDialog({
+    required this.title,
+    required this.initial,
+    required this.yes,
+    this.hint,
+    this.fieldKey,
+  });
 
   final String title;
   final String initial;
   final String yes;
+  final String? hint;
+  final Key? fieldKey;
 
   @override
   State<_TextDialog> createState() => _TextDialogState();
@@ -74,9 +85,10 @@ class _TextDialogState extends State<_TextDialog> {
     return AlertDialog(
       title: Text(widget.title),
       content: TextField(
-        key: const Key('dialog-text'),
+        key: widget.fieldKey ?? const Key('dialog-text'),
         controller: _t,
         autofocus: true,
+        decoration: widget.hint == null ? null : InputDecoration(hintText: widget.hint),
         onSubmitted: (v) => Navigator.pop(context, v),
       ),
       actions: [

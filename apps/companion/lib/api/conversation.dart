@@ -554,17 +554,31 @@ class QuestionRequest extends PersonRequest {
 }
 
 class Project {
-  const Project({required this.id, required this.name, this.archived = false});
+  const Project({
+    required this.id,
+    required this.name,
+    this.archived = false,
+    this.git,
+    this.gitError,
+  });
 
   factory Project.fromJson(Map<String, dynamic> j) => Project(
     id: _str(j['id']) ?? '',
     name: _str(j['name']) ?? '',
     archived: j['archivedAt'] != null,
+    git: j['git'] is bool ? j['git'] as bool : null,
+    gitError: _str(j['gitError']),
   );
 
   final String id;
   final String name;
   final bool archived;
+
+  /// Whether its folder has a git repository (3.5.12); null from servers that do not say.
+  final bool? git;
+
+  /// Why the repository could not be made, when [git] is false on a new folder.
+  final String? gitError;
 }
 
 enum TaskOutcome { open, verified, notTestable, abandoned }

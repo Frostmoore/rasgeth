@@ -147,6 +147,15 @@ class FakeRedGiant {
 
   // G40.11: the advanced interface.
   bool archived = false;
+
+  /// The control room's «new» tiles (3.9.0): without the demo project, without any agent but
+  /// God and Demi-God, the projects made with `POST /api/projects` (and their bodies), and a
+  /// server where git is missing (the new project has no repository).
+  bool noProjects = false;
+  bool onlyLeaders = false;
+  bool gitMissing = false;
+  final madeProjects = <Map<String, dynamic>>[];
+  final projectPosts = <Map<String, dynamic>>[];
   final hunks = <Map<String, dynamic>>[];
   final commits = <String>[];
   int pushes = 0;
@@ -234,19 +243,20 @@ class FakeRedGiant {
 
   List<Map<String, dynamic>> get agents => [
     for (final (i, m) in mascots.indexed)
-      {
-        'id': 'a$i',
-        'kind': m.kind,
-        'parentId': i == 0 ? null : 'a0',
-        'projectId': null,
-        'persistent': true,
-        'name': m.seed,
-        'mascotSeed': m.seed,
-        'mascot': m.raw,
-        'status': 'active',
-        'futureField': {'ignored': true},
-        ...?agentOverrides['a$i'],
-      },
+      if (!onlyLeaders || m.kind == 'god' || m.kind == 'demigod')
+        {
+          'id': 'a$i',
+          'kind': m.kind,
+          'parentId': i == 0 ? null : 'a0',
+          'projectId': null,
+          'persistent': true,
+          'name': m.seed,
+          'mascotSeed': m.seed,
+          'mascot': m.raw,
+          'status': 'active',
+          'futureField': {'ignored': true},
+          ...?agentOverrides['a$i'],
+        },
     ...created,
   ];
 
@@ -650,14 +660,32 @@ class FakeRedGiant {
     }
     if (r.method == 'GET' && path == '/api/projects') {
       return _json(r, 200, [
-        {
-          'id': 'demo',
-          'name': 'Demo',
-          'path': '/p',
-          'createdAt': '2026-11-01T00:00:00.000Z',
-          if (archived) 'archivedAt': '2026-11-16T00:00:00.000Z',
-        },
+        if (!noProjects)
+          {
+            'id': 'demo',
+            'name': 'Demo',
+            'path': '/p',
+            'createdAt': '2026-11-01T00:00:00.000Z',
+            if (archived) 'archivedAt': '2026-11-16T00:00:00.000Z',
+          },
+        ...madeProjects,
       ]);
+    }
+    if (r.method == 'POST' && path == '/api/projects') {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      projectPosts.add(b);
+      final name = (b['name'] as String? ?? '').trim();
+      if (name.isEmpty) return _json(r, 400, {'error': 'A name is needed'});
+      final made = {
+        'id': 'proj_${madeProjects.length + 1}',
+        'name': name,
+        'path': '/projects/$name',
+        'createdAt': '2026-11-16T10:00:00.000Z',
+        'git': !gitMissing,
+        if (gitMissing) 'gitError': 'git is not installed',
+      };
+      madeProjects.add(made);
+      return _json(r, 201, made);
     }
     if (r.method == 'GET' && path == '/api/projects/demo/tasks') {
       return _json(r, 200, [

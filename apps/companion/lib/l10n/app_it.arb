@@ -1025,5 +1025,12 @@
   "deskWorkingCount": "{n, plural, =1{1 agente al lavoro} other{{n} agenti al lavoro}}",
   "deskYouWrite": "puoi scrivere",
   "deskYourTerminal": "Il tuo terminale",
-  "deskYourTerminals": "Tuoi"
+  "deskYourTerminals": "Tuoi",
+  "deskNewProject": "Nuovo progetto",
+  "deskProjectName": "Nome del progetto",
+  "deskProjectCreate": "Crea",
+  "deskProjectMade": "Progetto «{name}» creato, con il suo orchestratore.",
+  "deskProjectFailed": "Non sono riuscito a creare il progetto: {why}",
+  "deskProjectNoGit": "Progetto «{name}» creato, ma senza repository git: {why}. Crealo da Impostazioni › Progetti («Inizializza git») appena git funziona.",
+  "deskGitMissing": "git non è ancora installato su questo computer"
 }

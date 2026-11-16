@@ -168,14 +168,19 @@ class TeamWall extends StatelessWidget {
             if (sections.isEmpty)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(40),
-                  child: EmptyState(
-                    icon: RgIcons.users,
-                    text: everyone.isEmpty ? l.teamNoAgents : l.deskNoneHere,
+                  padding: const EdgeInsets.fromLTRB(40, 28, 40, 20),
+                  child: Column(
+                    children: [
+                      EmptyState(
+                        icon: RgIcons.users,
+                        text: everyone.isEmpty ? l.teamNoAgents : l.deskNoneHere,
+                      ),
+                      const SizedBox(width: 330, height: 168, child: NewAgentTile()),
+                    ],
                   ),
                 ),
               ),
-            for (final s in sections) ...[
+            for (final (si, s) in sections.indexed) ...[
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(18, 14, 16, 8),
                 sliver: SliverToBoxAdapter(
@@ -208,20 +213,15 @@ class TeamWall extends StatelessWidget {
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 10,
                   ),
-                  itemCount: s.agents.length,
-                  itemBuilder: (context, i) => AgentTile(agent: s.agents[i], feed: feed),
+                  // «New agent» is the last tile, right after the last agent.
+                  itemCount: s.agents.length + (si == sections.length - 1 ? 1 : 0),
+                  itemBuilder: (context, i) => i == s.agents.length
+                      ? const NewAgentTile()
+                      : AgentTile(agent: s.agents[i], feed: feed),
                 ),
               ),
             ],
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
-              sliver: SliverToBoxAdapter(
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: SizedBox(width: 330, height: 64, child: const _NewAgentTile()),
-                ),
-              ),
-            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 20)),
           ],
         );
       },
@@ -946,38 +946,102 @@ class AgentTile extends StatelessWidget {
   }
 }
 
-class _NewAgentTile extends StatelessWidget {
-  const _NewAgentTile();
+/// «New agent» as a tile of the wall: the last one after the agents, or under «no agents».
+class NewAgentTile extends StatelessWidget {
+  const NewAgentTile({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final mac = isMacLike(AppScope.of(context));
+    return NewTile(
+      key: const Key('desk-new-agent'),
+      icon: RgIcons.plus,
+      label: l.teamNewAgent,
+      shortcut: shortcutLabel(cmdKey(LogicalKeyboardKey.keyN, mac: mac), l, mac: mac),
+      onTap: () => openNewAgent(context),
+    );
+  }
+}
+
+/// A tile that makes something new (an agent, a project): as big as its neighbours, with a
+/// drawn icon in the place of the mascot, the words and, when there is one, the shortcut.
+class NewTile extends StatefulWidget {
+  const NewTile({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.shortcut,
+  });
+
+  final RgIcons icon;
+  final String label;
+  final String? shortcut;
+  final VoidCallback onTap;
+
+  @override
+  State<NewTile> createState() => _NewTileState();
+}
+
+class _NewTileState extends State<NewTile> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) {
     final c = RgColors.of(context);
-    final app = AppScope.of(context);
-    final mac = isMacLike(app);
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        key: const Key('desk-new-agent'),
-        borderRadius: BorderRadius.circular(12),
-        onTap: () => openNewAgent(context),
-        child: Ink(
-          decoration: BoxDecoration(
+    final shortcut = widget.shortcut;
+    return Semantics(
+      button: true,
+      label: widget.label,
+      excludeSemantics: true,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _hover = true),
+        onExit: (_) => setState(() => _hover = false),
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: c.line),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RgIcon(RgIcons.plus, size: 18, color: c.dim),
-              const SizedBox(width: 8),
-              Text(
-                l.teamNewAgent,
-                style: TextStyle(color: c.dim, fontWeight: FontWeight.w600),
+            onTap: widget.onTap,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              decoration: BoxDecoration(
+                color: _hover ? c.panel : c.panel.withValues(alpha: .55),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: _hover ? c.accentDim : c.line),
               ),
-              const SizedBox(width: 10),
-              KeyCap(shortcutLabel(cmdKey(LogicalKeyboardKey.keyN, mac: mac), l, mac: mac)),
-            ],
+              padding: const EdgeInsets.all(12),
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 42,
+                      height: 42,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: _hover ? c.accentSoft : Colors.transparent,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: _hover ? c.accent : c.line, width: 1.5),
+                      ),
+                      child: RgIcon(widget.icon, size: 20, color: _hover ? c.accent : c.dim),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      widget.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14.5,
+                        color: _hover ? c.text : c.dim,
+                      ),
+                    ),
+                    if (shortcut != null) ...[const SizedBox(height: 8), KeyCap(shortcut)],
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
