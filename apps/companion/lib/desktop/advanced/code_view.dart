@@ -24,6 +24,7 @@ import '../desk_controller.dart';
 import '../desk_menu.dart';
 import '../palette.dart';
 import 'common.dart';
+import '../side_panel.dart' show PanelSurface;
 import 'projects_wall.dart' show BranchPill;
 
 /// An open document: a diff (with the file to start from) or a file.
@@ -366,8 +367,7 @@ class _CodeViewState extends State<CodeView> {
         : Navigator(
             key: ValueKey('code-chat:$sid'),
             onGenerateRoute: (_) => PageRouteBuilder<void>(
-              pageBuilder: (_, _, _) => Material(
-                color: c.bg,
+              pageBuilder: (_, _, _) => PanelSurface(
                 child: ConversationScreen(
                   key: ValueKey(sid),
                   sessionId: sid,

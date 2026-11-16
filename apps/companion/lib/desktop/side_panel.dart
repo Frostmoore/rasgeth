@@ -134,9 +134,8 @@ class _SidePanelState extends State<SidePanel> {
       child: ClipRect(
         child: Navigator(
           key: ValueKey(content.id),
-          onGenerateRoute: (_) => PageRouteBuilder<void>(
-            pageBuilder: (_, _, _) => Material(color: c.bg, child: body),
-          ),
+          onGenerateRoute: (_) =>
+              PageRouteBuilder<void>(pageBuilder: (_, _, _) => PanelSurface(child: body)),
         ),
       ),
     );
@@ -296,8 +295,7 @@ class _FloatingState extends State<_Floating> {
                       child: Navigator(
                         key: ValueKey('floating:${f.content.sessionId}'),
                         onGenerateRoute: (_) => PageRouteBuilder<void>(
-                          pageBuilder: (_, _, _) => Material(
-                            color: c.bg,
+                          pageBuilder: (_, _, _) => PanelSurface(
                             child: ConversationScreen(
                               key: ValueKey(f.content.sessionId),
                               sessionId: f.content.sessionId,
@@ -382,4 +380,15 @@ class _Grip extends CustomPainter {
 
   @override
   bool shouldRepaint(_Grip old) => old.color != color;
+}
+
+/// A page inside the room's own navigators, in the theme's background: read when it paints, so
+/// switching between light and dark repaints it (the route keeps the page it built first).
+class PanelSurface extends StatelessWidget {
+  const PanelSurface({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Material(color: RgColors.of(context).bg, child: child);
 }

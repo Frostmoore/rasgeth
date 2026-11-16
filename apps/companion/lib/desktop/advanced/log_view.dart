@@ -638,25 +638,30 @@ class _LogViewState extends State<LogView> {
               ],
             ],
           );
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          width: 220,
-          decoration: BoxDecoration(
-            border: Border(right: BorderSide(color: c.line)),
+    // A narrow room: the filters go first (the search line says the same), then the detail
+    // narrows.
+    return LayoutBuilder(
+      builder: (context, box) => Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (box.maxWidth >= 1000)
+            Container(
+              width: 220,
+              decoration: BoxDecoration(
+                border: Border(right: BorderSide(color: c.line)),
+              ),
+              child: left,
+            ),
+          Expanded(child: MinWidth(min: 760, child: center)),
+          Container(
+            width: box.maxWidth >= 760 ? 380 : 290,
+            decoration: BoxDecoration(
+              border: Border(left: BorderSide(color: c.line)),
+            ),
+            child: right,
           ),
-          child: left,
-        ),
-        Expanded(child: MinWidth(min: 760, child: center)),
-        Container(
-          width: 380,
-          decoration: BoxDecoration(
-            border: Border(left: BorderSide(color: c.line)),
-          ),
-          child: right,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

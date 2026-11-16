@@ -623,7 +623,7 @@ class _TopBar extends StatelessWidget {
     final title = app.connected ? '${viewLabel(l, desk.view)} · ${app.displayName}' : 'RGCompanion';
     // Narrow windows: the views' tabs show their icons, the chosen one its name too.
     final width = MediaQuery.sizeOf(context).width;
-    final compact = width < (app.advanced ? 1440 : 1100);
+    final compact = width < (app.advanced ? 1560 : 1100);
     return Container(
       height: 44,
       padding: const EdgeInsets.symmetric(horizontal: 8),

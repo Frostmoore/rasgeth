@@ -592,33 +592,38 @@ class _GitViewState extends State<GitView> {
         ],
       ],
     );
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          width: 230,
-          decoration: BoxDecoration(
-            border: Border(right: BorderSide(color: c.line)),
+    // A narrow room (a small window with the side panel open): the branches go first, then
+    // the chosen commit's column narrows.
+    return LayoutBuilder(
+      builder: (context, box) => Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (box.maxWidth >= 1000)
+            Container(
+              width: 230,
+              decoration: BoxDecoration(
+                border: Border(right: BorderSide(color: c.line)),
+              ),
+              child: left,
+            ),
+          Expanded(
+            child: Column(
+              children: [
+                toolbar,
+                Divider(height: 1, color: c.line),
+                Expanded(child: MinWidth(min: 700, child: center)),
+              ],
+            ),
           ),
-          child: left,
-        ),
-        Expanded(
-          child: Column(
-            children: [
-              toolbar,
-              Divider(height: 1, color: c.line),
-              Expanded(child: MinWidth(min: 700, child: center)),
-            ],
+          Container(
+            width: box.maxWidth >= 760 ? 360 : 280,
+            decoration: BoxDecoration(
+              border: Border(left: BorderSide(color: c.line)),
+            ),
+            child: right,
           ),
-        ),
-        Container(
-          width: 360,
-          decoration: BoxDecoration(
-            border: Border(left: BorderSide(color: c.line)),
-          ),
-          child: right,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

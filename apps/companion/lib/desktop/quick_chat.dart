@@ -119,8 +119,7 @@ class _QuickChatState extends State<QuickChat> {
                     drops: _drops,
                     child: Navigator(
                       onGenerateRoute: (_) => PageRouteBuilder<void>(
-                        pageBuilder: (_, _, _) => Material(
-                          color: c.bg,
+                        pageBuilder: (_, _, _) => PanelSurface(
                           child: ConversationScreen(
                             sessionId: widget.sessionId,
                             agent: app.chatAgent,

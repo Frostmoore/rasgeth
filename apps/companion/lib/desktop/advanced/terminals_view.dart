@@ -151,9 +151,15 @@ class _TerminalsViewState extends State<TerminalsView> {
             onSelect: (i) => setState(() => _tabs = i == 1),
           ),
           const SizedBox(width: 12),
-          Text(l.deskTerminalsShown(cells.length), style: TextStyle(color: c.dim, fontSize: 12.5)),
-          const Spacer(),
-          const ProjectPicker(),
+          Expanded(
+            child: Text(
+              l.deskTerminalsShown(cells.length),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: c.dim, fontSize: 12.5),
+            ),
+          ),
+          const Flexible(child: ProjectPicker()),
         ],
       ),
     );
@@ -209,7 +215,7 @@ class _TerminalsViewState extends State<TerminalsView> {
         builder: (context, box) {
           final cols = cells.length == 1 ? 1 : (box.maxWidth >= 1100 && cells.length > 4 ? 3 : 2);
           final rows = (cells.length / cols).ceil();
-          final h = ((box.maxHeight - 8) / rows).clamp(220.0, 2000.0);
+          final h = ((box.maxHeight - 8) / rows).clamp(260.0, 2000.0);
           return SingleChildScrollView(
             padding: const EdgeInsets.all(8),
             child: Wrap(
@@ -228,26 +234,29 @@ class _TerminalsViewState extends State<TerminalsView> {
         },
       );
     }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          width: 240,
-          decoration: BoxDecoration(
-            border: Border(right: BorderSide(color: c.line)),
+    return LayoutBuilder(
+      builder: (context, box) => Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (box.maxWidth >= 820)
+            Container(
+              width: 240,
+              decoration: BoxDecoration(
+                border: Border(right: BorderSide(color: c.line)),
+              ),
+              child: left,
+            ),
+          Expanded(
+            child: Column(
+              children: [
+                toolbar,
+                Divider(height: 1, color: c.line),
+                Expanded(child: area),
+              ],
+            ),
           ),
-          child: left,
-        ),
-        Expanded(
-          child: Column(
-            children: [
-              toolbar,
-              Divider(height: 1, color: c.line),
-              Expanded(child: area),
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -363,6 +372,8 @@ class _Cell extends StatelessWidget {
                     children: [
                       Text(
                         a?.name ?? l.deskYourTerminal,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 13.5,
                           fontWeight: FontWeight.w600,
@@ -380,25 +391,31 @@ class _Cell extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(99),
-                    border: Border.all(color: a == null ? c.accentDim : c.line),
-                    color: a == null ? c.accentSoft : null,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (a != null) ...[
-                        RgIcon(RgIcons.lock, size: 11, color: c.dim),
-                        const SizedBox(width: 4),
+                Flexible(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(99),
+                      border: Border.all(color: a == null ? c.accentDim : c.line),
+                      color: a == null ? c.accentSoft : null,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (a != null) ...[
+                          RgIcon(RgIcons.lock, size: 11, color: c.dim),
+                          const SizedBox(width: 4),
+                        ],
+                        Flexible(
+                          child: Text(
+                            a == null ? l.deskYouWrite : l.deskReadOnly,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 11.5, color: a == null ? c.accent : c.dim),
+                          ),
+                        ),
                       ],
-                      Text(
-                        a == null ? l.deskYouWrite : l.deskReadOnly,
-                        style: TextStyle(fontSize: 11.5, color: a == null ? c.accent : c.dim),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
                 if (a != null)
