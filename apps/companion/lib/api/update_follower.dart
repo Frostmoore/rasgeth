@@ -242,7 +242,10 @@ class UpdateFollower extends ChangeNotifier {
     lostSince = null;
     status = s;
     if (o != null) os = o;
-    to ??= o?.latest ?? s.latest;
+    // The updater's first «applying» still carries the previous check's latest (the installed version when that
+    // check found nothing): the version it goes to is the one it says now.
+    final latest = o?.latest ?? s.latest;
+    if (latest != null && latest.isNotEmpty && stage != UpdateStage.done) to = latest;
     final p = s.progress;
     if (p != null && s.phase != null) {
       _phase = s.phase;
