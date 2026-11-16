@@ -665,14 +665,15 @@ jobs:
               await c.end();
             })().catch((e) => { console.error(e.message); process.exit(1); });'
           # RGCompanion's window (G40.12): opening RedGiant again opens the app with a device token
-          # of its own. Not tried on a Mac before this run: said as a warning, not a failure, until
-          # it has passed once.
+          # of its own, which the app keeps in the keychain and then uses (lastUsedAt: a device made
+          # but never used is an app that could not keep its token, -34018 before 3.8.1). Tried on
+          # a Mac by hand (2026-11-16); still said as a warning, not a failure, until a CI run passes.
           if [ -d /tmp/RedGiant.app/Contents/Helpers/RGCompanion.app ]; then
             codesign --verify --deep --strict /tmp/RedGiant.app/Contents/Helpers/RGCompanion.app
             open -a /tmp/RedGiant.app
             seen=""
             for i in $(seq 1 30); do
-              seen=$(curl -sf -H "Authorization: Bearer $token" http://127.0.0.1:7600/api/devices | grep -o '"name":"RGCompanion ([^"]*' || true)
+              seen=$(curl -sf -H "Authorization: Bearer $token" http://127.0.0.1:7600/api/devices | grep -o '"name":"RGCompanion ([^"]*)","platform":"macos","createdAt":"[^"]*","lastUsedAt":"[^"]*"' || true)
               if [ -n "$seen" ] && pgrep -f "RGCompanion.app/Contents/MacOS" >/dev/null; then break; fi
               sleep 2
             done

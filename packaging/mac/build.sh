@@ -98,6 +98,9 @@ if [ -n "$companion" ]; then
   ents="$dist/rgcompanion.entitlements"
   codesign -d --entitlements - --xml "$helper" > "$ents" 2>/dev/null || true
   [ -s "$ents" ] || cp "$root/apps/companion/macos/Runner/Release.entitlements" "$ents"
+  # Flutter's ad-hoc signature ("sign to run locally") adds get-task-allow, which lets a
+  # debugger attach: never in what ships, and Apple's notarization refuses it.
+  /usr/libexec/PlistBuddy -c "Delete :com.apple.security.get-task-allow" "$ents" 2>/dev/null || true
   # Inside out: the frameworks' libraries, the frameworks, then the app with its entitlements.
   while IFS= read -r -d '' f; do
     if file -b "$f" | grep -q "Mach-O"; then sign "$f"; fi

@@ -11,9 +11,17 @@ abstract class TokenStore {
 
 String _key(String server) => 'rgcompanion.token.$server';
 
+/// macOS: the login keychain, not the data protection keychain (the plugin's default). That one
+/// needs `keychain-access-groups`, an entitlement only a provisioning profile grants: without
+/// it every write fails with -34018 (errSecMissingEntitlement), as the ad-hoc and Developer ID
+/// builds of RedGiant.app's window are signed. The login keychain keeps the item for this app
+/// alone (its access list names the app's signature), inside the sandbox too.
+const kSecureStorage = FlutterSecureStorage(
+  mOptions: MacOsOptions(usesDataProtectionKeychain: false),
+);
+
 class SecureTokenStore implements TokenStore {
-  SecureTokenStore([FlutterSecureStorage? storage])
-    : _storage = storage ?? const FlutterSecureStorage();
+  SecureTokenStore([FlutterSecureStorage? storage]) : _storage = storage ?? kSecureStorage;
 
   final FlutterSecureStorage _storage;
 
