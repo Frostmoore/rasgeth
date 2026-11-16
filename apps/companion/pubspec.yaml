@@ -38,7 +38,7 @@ dependencies:
   webview_flutter: ^4.14.1
   desktop_drop: ^0.8.0
   # Pasted images and copied files (Ctrl/Cmd+V in the composer); pinned.
-  pasteboard: 0.6.1
+  pasteboard: 0.6.0
 
 dev_dependencies:
   flutter_test:
