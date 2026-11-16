@@ -12,7 +12,7 @@ import {
   VideoAnalysis,
   type VideoTranscriber,
 } from "../src/editor/video/analysis.js";
-import type { MediaRunner, RunOptions } from "../src/editor/video/media-run.js";
+import { MediaRunError, type MediaRunner, type RunOptions } from "../src/editor/video/media-run.js";
 import { Jobs } from "../src/jobs.js";
 
 const FX = join(import.meta.dirname, "fixtures", "video");
@@ -43,6 +43,8 @@ function fakeRunner(o: { hangOn?: (c: Call) => boolean; probe?: string } = {}) {
         });
       });
     }
+    if (program === "ffprobe" && o.probe === "broken")
+      throw new MediaRunError("ffprobe", 1, "clip.mp4: Invalid data found when processing input");
     if (program === "ffprobe")
       return { stdout: await fixture(o.probe ?? "probe-clip30.json"), stderr: "" };
     if (program === "whisper-cli") {
@@ -276,6 +278,34 @@ describe("VideoAnalysis.analyze", () => {
       ["mid", "long_pause"],
       ["tail", "silence"],
     ]);
+  });
+});
+
+describe("VideoAnalysis errors the page can say", () => {
+  it("a file ffprobe cannot read", async () => {
+    const { jobs, service, file } = await setup({ probe: "broken" });
+    const end = await jobs.settled((await service.analyze("u1", file, "clip.mp4")).id);
+    expect(end).toMatchObject({ state: "failed", error: { code: "video_unreadable" } });
+    expect(end?.error?.message).toContain("Invalid data");
+  });
+
+  it("a service that refuses the key: the voice notes' words, the job's code", async () => {
+    const f = (async () => new Response("bad key", { status: 401 })) as unknown as typeof fetch;
+    const { jobs, service, file } = await setup({
+      transcriber: {
+        kind: "service",
+        config: { api: "openai", url: "https://x/v1", key: "k", name: "Groq" },
+      },
+      fetch: f,
+    });
+    const end = await jobs.settled((await service.analyze("u1", file, "clip.mp4")).id);
+    expect(end).toMatchObject({
+      state: "failed",
+      error: { code: "video_transcribe", message: "Groq refused the key" },
+    });
+    // What was learnt before stays for the next try.
+    const files = await readdir(service.dirOf(await mediaFingerprint(file)));
+    expect(files.sort()).toEqual(["probe.json", "silent--35-0.8.json"]);
   });
 });
 

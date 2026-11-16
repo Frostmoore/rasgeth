@@ -31,7 +31,7 @@ import {
   waveformArgs,
   waveformWidth,
 } from "./derived.js";
-import { type MediaRunner, progressSeconds, runMedia } from "./media-run.js";
+import { MediaRunError, type MediaRunner, progressSeconds, runMedia } from "./media-run.js";
 import { parseProbe, probeArgs } from "./probe.js";
 import { parseSilenceDetect, silenceArgs, silenceCuts, soundSpans } from "./silences.js";
 import { speechRatio } from "./speech.js";
@@ -161,14 +161,17 @@ export class VideoAnalysis {
     const r = await this.run(tools.ffprobe, probeArgs(file), {
       stdout: true,
       ...(signal && { signal }),
+    }).catch((e: unknown) => {
+      if (e instanceof MediaRunError)
+        throw new JobFailure("video_unreadable", `ffprobe cannot read the file: ${e.message}`);
+      throw e;
     });
-    let json: unknown;
+    let p: MediaProbe;
     try {
-      json = JSON.parse(r.stdout);
-    } catch {
-      throw new JobFailure("video_unreadable", "ffprobe answered something unreadable");
+      p = parseProbe(JSON.parse(r.stdout), size);
+    } catch (e) {
+      throw new JobFailure("video_unreadable", `ffprobe: ${(e as Error).message}`);
     }
-    const p = parseProbe(json, size);
     await mkdir(this.dirOf(fp), { recursive: true });
     await writeAtomic(cached, JSON.stringify(p));
     return p;
@@ -324,7 +327,11 @@ export class VideoAnalysis {
             sound,
             language,
             h,
-          );
+          ).catch((e: unknown) => {
+            // The service's or whisper.cpp's words, with the job's code for the page.
+            if (h.signal.aborted || e instanceof JobFailure) throw e;
+            throw new JobFailure("video_transcribe", (e as Error).message);
+          });
           Transcript.parse(transcript);
           await writeAtomic(tFile, JSON.stringify(transcript));
         }
