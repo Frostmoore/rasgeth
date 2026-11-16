@@ -199,8 +199,9 @@ import { PdfFamily } from "./editor/pdf-family.js";
 import { sheetCopyOfOriginal, sheetFamily } from "./editor/sheet-family.js";
 import { svgCopyOfOriginal, svgFamily } from "./editor/svg-family.js";
 import { textFamily } from "./editor/text-family.js";
-import { videoFamily } from "./editor/video-family.js";
 import { type CanvasEditHost, canvasEditTool } from "./editor/tool.js";
+import { VideoAnalysis } from "./editor/video/analysis.js";
+import { videoFamily } from "./editor/video-family.js";
 import { ZetaOffice } from "./editor/zeta.js";
 import { EditorLinks } from "./editor-links.js";
 import {
@@ -223,6 +224,7 @@ import type {
   KnowledgeService,
 } from "./knowledge/service.js";
 import { knowledgeSection, searchKnowledgeTool } from "./knowledge/tool.js";
+import { LocalWhisper } from "./local-voice.js";
 import { LoginStore, migrateLogin } from "./login.js";
 import { type MachineOptions, Machines } from "./machines.js";
 import {
@@ -4986,6 +4988,34 @@ export class RedGiantCore implements OrchestrationHost {
    * necessarily the interface's: that is the hint given to the service (its two letters, «zh» for
    * «zh-Hant»); without one, the language the caller passed.
    */
+  /**
+   * The analysis of video files (G41.4): probe, words with their times, silences, speech or
+   * coverage, proxies, strips and waveforms, cached by file. The words come from whisper.cpp's
+   * own program when the transcription is local (DTW word times), else from the service chosen.
+   */
+  get videoAnalysis(): VideoAnalysis {
+    this.videoAnalysisCache ??= new VideoAnalysis({
+      dataDir: dirname(this.o.workspacesDir),
+      jobs: this.jobs,
+      tools: async (owner, into) => ({
+        ffmpeg: await this.programs.ensure(owner, "ffmpeg", into),
+        ffprobe: await this.programs.ffprobe(owner, into),
+      }),
+      transcriber: async () => {
+        const cfg = this.o.transcription;
+        if (!cfg) return undefined;
+        if (cfg.api === "local") {
+          const cli = await new LocalWhisper(dirname(this.o.workspacesDir)).cli();
+          if (cli) return { kind: "cli", ...cli };
+        }
+        return { kind: "service", config: cfg };
+      },
+      language: () => this.agentLang?.split("-")[0],
+    });
+    return this.videoAnalysisCache;
+  }
+  private videoAnalysisCache: VideoAnalysis | undefined;
+
   /** The hands-free voice's wake-word models (G38.4), in the data folder. */
   get wakeModels(): WakeModels {
     this.wakeModelsCache ??= new WakeModels(dirname(this.o.workspacesDir));

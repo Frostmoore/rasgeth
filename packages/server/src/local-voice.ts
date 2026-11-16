@@ -121,6 +121,16 @@ export class LocalWhisper {
     return join(this.dataDir, "tools", "whisper", WHISPER_MODEL);
   }
 
+  /**
+   * whisper.cpp's command-line program beside its server, with the model (G41.4: the video
+   * editor's transcripts, with DTW word times); none on a Mac (the binding has no program).
+   */
+  async cli(): Promise<{ program: string; model: string } | undefined> {
+    if (this.binding || !existsSync(this.dir) || !existsSync(this.model)) return undefined;
+    const program = await find(this.dir, `whisper-cli${exe}`);
+    return program ? { program, model: this.model } : undefined;
+  }
+
   /** Program and model here already: nothing to download. */
   async ready(): Promise<boolean> {
     return Boolean(await this.program()) && existsSync(this.model);
