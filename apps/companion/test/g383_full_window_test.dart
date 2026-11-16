@@ -157,4 +157,21 @@ void main() {
     expect(desk(tester).panelAgentId, 'a3');
     await done(tester);
   });
+
+  // 3.8.4: from the «Chat» card the list opens in the panel; a chat opened from there is the panel's
+  // conversation, with «full window» in its header, not a page pushed over the list without it.
+  testWidgets('a chat opened from the Chat card has the full window button', (tester) async {
+    final prefs = MemoryAppPrefs();
+    await start(tester, prefs);
+    await tester.tap(find.byKey(const Key('desk-chat')));
+    await _settle(tester);
+    expect(find.byKey(const Key('panel-full')), findsNothing);
+    await tester.tap(find.byKey(const Key('chat-new')));
+    await _settle(tester);
+    expect(find.byKey(const Key('panel-full')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('panel-full')));
+    await _settle(tester);
+    expect(find.byKey(const Key('panel-unfull')), findsOneWidget);
+    await done(tester);
+  });
 }
