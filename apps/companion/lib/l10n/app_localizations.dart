@@ -5096,6 +5096,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'RedGiant said: {error}'**
   String upd2WhySaid(String error);
+
+  /// No description provided for @upd2ScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant\'s update'**
+  String get upd2ScreenTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

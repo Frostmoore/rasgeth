@@ -2886,4 +2886,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String upd2WhySaid(String error) {
     return 'RedGiant ha detto: $error';
   }
+
+  @override
+  String get upd2ScreenTitle => 'Aggiornamento di RedGiant';
 }

@@ -193,8 +193,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      l.sectionUpdates,
-                      style: TextStyle(color: c.dim, fontWeight: FontWeight.w700, fontSize: 13),
+                      l.upd2ScreenTitle,
+                      style: TextStyle(color: c.dim, fontWeight: FontWeight.w700, fontSize: 13.5),
                     ),
                   ),
                   close,
@@ -207,7 +207,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
       );
     }
     return Scaffold(
-      appBar: AppBar(leading: close, title: Text(l.sectionUpdates)),
+      appBar: AppBar(leading: close, title: Text(l.upd2ScreenTitle)),
       body: SafeArea(top: false, child: body),
     );
   }
@@ -251,13 +251,20 @@ class _Body extends StatelessWidget {
     // The time: how long it still needs and in all, how long it has been running.
     final left = f.left;
     final elapsed = clock(f.elapsed);
+    // The bar's own line says the time gone by unless it says the bytes or the tries.
+    final p = f.progress;
+    final barSaysTime = stage != UpdateStage.restarting && !(p != null && p.total > 0);
+    final total = f.elapsed.inSeconds + (left ?? 0);
     final time = <String>[
-      if (stage == UpdateStage.starting) l.upd2Starting,
       if (!f.finished && stage != UpdateStage.starting)
         left != null
-            ? '${l.upd2Left(_leftWords(l, left))} · ${l.upd2Total(tookWords(l, f.elapsed.inSeconds + left))}'
+            ? [
+                l.upd2Left(_leftWords(l, left)),
+                // «In all» once it differs from what is left.
+                if (f.elapsed.inSeconds >= 60) l.upd2Total(tookWords(l, total)),
+              ].join(' · ')
             : l.upd2LeftUnknown,
-      if (!f.finished) l.upd2Elapsed(elapsed),
+      if (!f.finished && !barSaysTime) l.upd2Elapsed(elapsed),
       if (!f.finished && f.totalBytes > 0 && (current == 'check' || current == 'download'))
         l.upd2ToDownload(_mb(f.totalBytes)),
     ];
@@ -324,7 +331,7 @@ class _Body extends StatelessWidget {
     // ---- what to know ----
     if (!f.finished) {
       children.add(const SizedBox(height: 14));
-      if (f.local) {
+      if (f.byLauncher) {
         children.add(
           _Note(key: const Key('update-local'), icon: RgIcons.monitor, text: l.upd2Local),
         );
@@ -589,7 +596,8 @@ class _StepRow extends StatelessWidget {
       StepMark.todo => l.upd2StepTodo,
       StepMark.failed => l.upd2StepFailed,
     };
-    final text = now || failed ? stepText(l, step.id) : null;
+    // Under the running step what it does; a stop is said in the card above.
+    final text = now ? stepText(l, step.id) : null;
     final images = step.id == 'download' && (now || mark == StepMark.done)
         ? f.os?.run?.images ?? const []
         : const <({String name, double bytes, bool here})>[];

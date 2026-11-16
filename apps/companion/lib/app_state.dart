@@ -176,8 +176,9 @@ class AppController extends ChangeNotifier {
   UpdateFollower? updateRun;
   bool _updateToOpen = false;
 
-  /// How often an update is read (tests shorten it).
+  /// How often an update is read, and the clock it counts the time with (tests put theirs).
   Duration updateEvery = const Duration(seconds: 1);
+  DateTime Function() updateClock = DateTime.now;
 
   /// The Chat's new conversation, started from the field over the bar: opened by the Chat screen.
   String? chatDraft;
@@ -620,6 +621,7 @@ class AppController extends ChangeNotifier {
       note: note,
       local: localRedGiant,
       every: updateEvery,
+      now: updateClock,
       onBack: _afterUpdate,
     );
   }

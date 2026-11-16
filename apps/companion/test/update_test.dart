@@ -602,6 +602,7 @@ void main() {
         );
         return null;
       };
+      app.updateClock = () => t.binding.clock.now();
       await t.runAsync(() => app.connect(server.base.toString(), 'secret'));
       await _pump(t, app);
       await _openSettings(t);
@@ -615,7 +616,8 @@ void main() {
       expect(t.widget<LinearProgressIndicator>(find.byKey(const Key('update-bar'))).value, .25);
       expect(find.text('85.0 MB di 340 MB · 4.0 MB/s · mancano 2 min'), findsOneWidget);
       expect(find.textContaining('mancano circa'), findsOneWidget);
-      expect(find.textContaining('in tutto circa'), findsOneWidget);
+      // The bar says the bytes: the time gone by goes with the time left, above.
+      expect(find.textContaining('in corso da'), findsOneWidget);
       expect(find.text('Il database (Postgres)'), findsOneWidget);
       expect(find.text('già qui'), findsOneWidget);
       expect(find.byKey(const Key('update-older')), findsNothing);
@@ -659,6 +661,7 @@ void main() {
         );
         return null;
       };
+      app.updateClock = () => t.binding.clock.now();
       await t.runAsync(() => app.connect(server.base.toString(), 'secret'));
       await _pump(t, app);
       await _openSettings(t);
@@ -726,6 +729,7 @@ void main() {
     ) async {
       final app = _app();
       server.osUpdates = osJson(running: true, state: 'applying', step: 'download');
+      app.updateClock = () => t.binding.clock.now();
       await t.runAsync(() => app.connect(server.base.toString(), 'secret'));
       await _pump(t, app);
       expect(find.byKey(const Key('update-screen')), findsOneWidget);
@@ -755,6 +759,7 @@ void main() {
         );
         return null;
       };
+      app.updateClock = () => t.binding.clock.now();
       await t.runAsync(() => app.connect(server.base.toString(), 'secret'));
       await _pump(t, app, size: const Size(1280, 800), dpr: 1);
       await _openSettings(t);

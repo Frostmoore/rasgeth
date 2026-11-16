@@ -151,7 +151,9 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
       context,
       title: l.updNowTitle,
       // Only what really happens: on this computer RedGiant's own window does it.
-      body: app.localRedGiant ? l.updNowBodyLocal(to) : l.updNowBody(to),
+      body: app.localRedGiant && (_update?.install == 'windows' || _update?.install == 'mac')
+          ? l.updNowBodyLocal(to)
+          : l.updNowBody(to),
       yes: l.updNow,
     );
     if (!ok || !mounted) return;
@@ -277,7 +279,8 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
             constraints: const BoxConstraints(maxWidth: 680),
             child: ListView(
               key: const Key('server-settings'),
-              padding: const EdgeInsets.only(bottom: 24),
+              // Room above the first card (or the notice): never stuck to the bar.
+              padding: const EdgeInsets.only(top: 8, bottom: 24),
               children: [
                 if (_error != null) _Banner(text: l.errGeneric(_error!), error: true),
                 if (_said != null) _Banner(text: _said!),

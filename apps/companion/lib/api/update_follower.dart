@@ -138,6 +138,9 @@ class UpdateFollower extends ChangeNotifier {
   bool get finished => stage == UpdateStage.done || stage == UpdateStage.failed;
   bool get isOs => os != null || status?.install == 'os';
 
+  /// This computer's RedGiant.exe or Mac app: its launcher does the update in its own window.
+  bool get byLauncher => local && (status?.install == 'windows' || status?.install == 'mac');
+
   /// The server said every step (3.8.1): otherwise the steps come from a state and a step.
   bool get detailed => os?.run != null || _phases.isNotEmpty;
 

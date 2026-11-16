@@ -833,5 +833,6 @@
   "upd2WhyText_gone": "Dopo il riavvio non è tornato. Controlla che la macchina sia accesa e in rete, poi premi «Riprova»: l'app lo cerca di nuovo.",
   "upd2Why_start": "L'aggiornamento non è partito.",
   "upd2WhyText_start": "Non è cambiato niente: RedGiant {from} continua a funzionare. Riprova tra un po'.",
-  "upd2WhySaid": "RedGiant ha detto: {error}"
+  "upd2WhySaid": "RedGiant ha detto: {error}",
+  "upd2ScreenTitle": "Aggiornamento di RedGiant"
 }
