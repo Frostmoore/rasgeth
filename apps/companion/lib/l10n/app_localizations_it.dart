@@ -2544,4 +2544,50 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get savedSearchClear => 'Svuota la ricerca';
+
+  @override
+  String get metricsInput => 'letti';
+
+  @override
+  String get metricsCache => 'cache';
+
+  @override
+  String get metricsOutput => 'generati';
+
+  @override
+  String get metricsContext => 'contesto';
+
+  @override
+  String get metricsPrefill => 'lettura';
+
+  @override
+  String get metricsGeneration => 'generazione';
+
+  @override
+  String get metricsTimedByClient => 'tempi misurati dal client';
+
+  @override
+  String get metricsServerTimings => 'tempi del server';
+
+  @override
+  String get metricsStart => 'inizio';
+
+  @override
+  String get metricsFirstToken => 'primo token';
+
+  @override
+  String get metricsEnd => 'fine';
+
+  @override
+  String get metricsRestoredFromDisk => 'KV cache ripristinata dall\'SSD prima di questa richiesta';
+
+  @override
+  String get metricsCostUnknown => 'costo non noto';
+
+  @override
+  String get metricsCostUnknownHint =>
+      'Questo modello non è ancora nel catalogo dei modelli: i prezzi non sono noti, quindi il costo non è contato.';
+
+  @override
+  String get metricsShowAll => 'Mostra tutti i dati del messaggio';
 }

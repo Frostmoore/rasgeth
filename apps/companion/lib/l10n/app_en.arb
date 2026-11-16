@@ -1536,5 +1536,20 @@
   "productPrevious": "Previous products",
   "productNext": "Next products",
   "quoteReplyShort": "Reply",
-  "savedSearchClear": "Clear the search"
+  "savedSearchClear": "Clear the search",
+  "metricsInput": "in",
+  "metricsCache": "cache",
+  "metricsOutput": "out",
+  "metricsContext": "context",
+  "metricsPrefill": "prefill",
+  "metricsGeneration": "generation",
+  "metricsTimedByClient": "timed by the client",
+  "metricsServerTimings": "server timings",
+  "metricsStart": "start",
+  "metricsFirstToken": "first token",
+  "metricsEnd": "end",
+  "metricsRestoredFromDisk": "KV cache restored from the SSD before this request",
+  "metricsCostUnknown": "cost not known",
+  "metricsCostUnknownHint": "This model is not in the models catalog yet: its prices are not known, so its cost is not counted.",
+  "metricsShowAll": "Show all the message's figures"
 }

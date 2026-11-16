@@ -284,6 +284,7 @@ class Agent {
     this.model,
     this.mode,
     this.mascotSeed,
+    this.compactAt,
   });
 
   factory Agent.fromJson(Map<String, dynamic> j) {
@@ -300,6 +301,7 @@ class Agent {
       model: AgentModel.fromJson(j['model']),
       mode: _str(j['mode']),
       mascotSeed: _str(j['mascotSeed']),
+      compactAt: ((j['compaction'] as Map?)?['at'] as num?)?.toDouble(),
     );
   }
 
@@ -321,6 +323,9 @@ class Agent {
   final String? mode;
   final String? mascotSeed;
 
+  /// Where its conversations are summarised (G24.14c, `compaction.at`; null: the default 0.8).
+  final double? compactAt;
+
   Agent withModel(AgentModel? m) => Agent(
     id: id,
     kind: kind,
@@ -333,6 +338,7 @@ class Agent {
     model: m,
     mode: mode,
     mascotSeed: mascotSeed,
+    compactAt: compactAt,
   );
 }
 

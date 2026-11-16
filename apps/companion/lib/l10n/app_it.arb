@@ -738,5 +738,20 @@
   "productPrevious": "Prodotti precedenti",
   "productNext": "Prodotti successivi",
   "quoteReplyShort": "Rispondi",
-  "savedSearchClear": "Svuota la ricerca"
+  "savedSearchClear": "Svuota la ricerca",
+  "metricsInput": "letti",
+  "metricsCache": "cache",
+  "metricsOutput": "generati",
+  "metricsContext": "contesto",
+  "metricsPrefill": "lettura",
+  "metricsGeneration": "generazione",
+  "metricsTimedByClient": "tempi misurati dal client",
+  "metricsServerTimings": "tempi del server",
+  "metricsStart": "inizio",
+  "metricsFirstToken": "primo token",
+  "metricsEnd": "fine",
+  "metricsRestoredFromDisk": "KV cache ripristinata dall'SSD prima di questa richiesta",
+  "metricsCostUnknown": "costo non noto",
+  "metricsCostUnknownHint": "Questo modello non è ancora nel catalogo dei modelli: i prezzi non sono noti, quindi il costo non è contato.",
+  "metricsShowAll": "Mostra tutti i dati del messaggio"
 }

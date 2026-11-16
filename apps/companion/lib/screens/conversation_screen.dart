@@ -26,6 +26,7 @@ import '../mascot/mascot_view.dart';
 import '../theme/colors.dart';
 import '../ui/icons.dart';
 import '../ui/markdown.dart';
+import '../ui/metrics_line.dart';
 import '../ui/passage_selection.dart';
 import '../ui/product_cards.dart';
 import '../ui/words.dart';
@@ -45,7 +46,14 @@ class PassageJump {
 
 /// What the person can do with the items: reply to a passage, save one, go to a quoted one.
 class ChatActions {
-  const ChatActions({this.reply, this.save, this.jump, this.lit, this.flashSeq});
+  const ChatActions({
+    this.reply,
+    this.save,
+    this.jump,
+    this.lit,
+    this.flashSeq,
+    this.compactAt = 0.8,
+  });
 
   final void Function(AssistantItem item, PickedPassage passage)? reply;
 
@@ -56,6 +64,9 @@ class ChatActions {
   /// The passage lit up now, and the message flashing (the passage was not found in it).
   final PassageJump? lit;
   final int? flashSeq;
+
+  /// The agent's summary threshold (G24.14c): the mark on each message's figures (G40.17).
+  final double compactAt;
 }
 
 class ConversationScreen extends StatefulWidget {
@@ -377,6 +388,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     jump: _jumpQuote,
                     lit: _lit,
                     flashSeq: _flash,
+                    compactAt: agent?.compactAt ?? 0.8,
                   );
                   return ListView.builder(
                     key: const Key('conversation-items'),
@@ -853,6 +865,14 @@ class _AssistantViewState extends State<AssistantView> {
           Padding(
             padding: const EdgeInsets.only(top: 2),
             child: Text(l.writing, style: TextStyle(color: c.dim, fontSize: 12)),
+          ),
+        if (!it.live && it.metrics != null)
+          MetricsLine(
+            metrics: it.metrics!,
+            model: it.model,
+            costUsd: it.costUsd,
+            costUnknown: it.costUnknown,
+            compactAt: widget.actions.compactAt,
           ),
         if (!it.live && it.text.trim().isNotEmpty)
           Row(

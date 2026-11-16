@@ -1,0 +1,430 @@
+{
+  "vectors": [
+    {
+      "event": {
+        "type": "message.assistant",
+        "payload": {
+          "parts": [],
+          "stopReason": "end_turn",
+          "provider": "anthropic",
+          "model": "claude-opus-4-1",
+          "costUsd": 0.0123,
+          "metrics": {
+            "startedAt": "2026-11-16T01:49:31.000Z",
+            "firstTokenAt": "2026-11-16T01:49:33.000Z",
+            "endedAt": "2026-11-16T01:49:36.000Z",
+            "inputTokens": 30412,
+            "cachedReadTokens": 30101,
+            "cacheWriteTokens": 311,
+            "outputTokens": 53,
+            "contextUsed": 30465,
+            "contextWindow": 475000,
+            "source": "client",
+            "prefillMs": 0,
+            "decodeMs": 0
+          }
+        }
+      },
+      "page": {
+        "input": "30k",
+        "cache": "30k",
+        "output": "53",
+        "context": "6.4% / 475k",
+        "prefill": "0ms",
+        "generation": "0ms",
+        "ssd": null,
+        "cost": "$0.01",
+        "model": "claude-opus-4-1",
+        "clockIt": "01:49:36",
+        "clockEn": "1:49:36 AM",
+        "bar": {
+          "cached": 6.337052631578947,
+          "fresh": 0.06547368421052632,
+          "out": 0.011157894736842104
+        }
+      }
+    },
+    {
+      "event": {
+        "type": "message.assistant",
+        "payload": {
+          "parts": [],
+          "stopReason": "end_turn",
+          "provider": "llamacpp",
+          "model": "C:\\models\\GLM-4.5-Air-Q4_K_S-00001-of-00002.gguf",
+          "costUsd": 0,
+          "metrics": {
+            "startedAt": "2026-11-16T13:02:07.000Z",
+            "firstTokenAt": "2026-11-16T13:02:09.000Z",
+            "endedAt": "2026-11-16T13:02:41.000Z",
+            "inputTokens": 18750,
+            "cachedReadTokens": 17200,
+            "cacheWriteTokens": 0,
+            "outputTokens": 1250,
+            "contextUsed": 20000,
+            "contextWindow": 131072,
+            "prefillMs": 1834.6,
+            "decodeMs": 31250,
+            "tokPerSec": 40.5,
+            "kvRestoredTokens": 17200,
+            "kvRestoreMs": 412.4,
+            "source": "server"
+          }
+        }
+      },
+      "page": {
+        "input": "19k",
+        "cache": "17k",
+        "output": "1.3k",
+        "context": "15.3% / 131k",
+        "prefill": "1.8s",
+        "generation": "31.3s · 41 tok/s",
+        "ssd": "SSD 17k (412ms)",
+        "cost": null,
+        "model": "GLM-4.5 Air Q4_K_S",
+        "clockIt": "13:02:41",
+        "clockEn": "1:02:41 PM",
+        "bar": {
+          "cached": 13.12255859375,
+          "fresh": 1.18255615234375,
+          "out": 0.95367431640625
+        }
+      }
+    },
+    {
+      "event": {
+        "type": "message.assistant",
+        "payload": {
+          "parts": [],
+          "stopReason": "end_turn",
+          "provider": "openai",
+          "model": "gpt-5",
+          "costUsd": 0.0042,
+          "metrics": {
+            "startedAt": "2026-11-16T23:59:58.000Z",
+            "inputTokens": 950,
+            "cachedReadTokens": 0,
+            "cacheWriteTokens": 0,
+            "outputTokens": 1999,
+            "contextUsed": 2949,
+            "contextWindow": 400000,
+            "prefillMs": 999.4,
+            "decodeMs": 125000,
+            "tokPerSec": 15.99,
+            "source": "client"
+          }
+        }
+      },
+      "page": {
+        "input": "950",
+        "cache": null,
+        "output": "2.0k",
+        "context": "0.7% / 400k",
+        "prefill": "999ms",
+        "generation": "2m5s · 16 tok/s",
+        "ssd": null,
+        "cost": "$0.0042",
+        "model": "gpt-5",
+        "clockIt": "23:59:58",
+        "clockEn": "11:59:58 PM",
+        "bar": {
+          "cached": 0,
+          "fresh": 0.2375,
+          "out": 0.49975
+        }
+      }
+    },
+    {
+      "event": {
+        "type": "message.assistant",
+        "payload": {
+          "parts": [],
+          "stopReason": "end_turn",
+          "provider": "anthropic",
+          "model": "claude-sonnet-4-5",
+          "costUsd": 2.5,
+          "costUnknown": false,
+          "metrics": {
+            "startedAt": "2026-11-16T08:00:00.000Z",
+            "endedAt": "2026-11-16T08:01:05.000Z",
+            "inputTokens": 1234567,
+            "cachedReadTokens": 1000000,
+            "cacheWriteTokens": 0,
+            "outputTokens": 10500,
+            "contextUsed": 1245067,
+            "contextWindow": 1000000,
+            "prefillMs": 59999,
+            "decodeMs": 61500,
+            "tokPerSec": 0,
+            "source": "server"
+          }
+        }
+      },
+      "page": {
+        "input": "1.2M",
+        "cache": "1.0M",
+        "output": "11k",
+        "context": "124.5% / 1.0M",
+        "prefill": "60.0s",
+        "generation": "1m2s",
+        "ssd": null,
+        "cost": "$2.50",
+        "model": "claude-sonnet-4-5",
+        "clockIt": "08:01:05",
+        "clockEn": "8:01:05 AM",
+        "bar": {
+          "cached": 100,
+          "fresh": 23.4567,
+          "out": 1.05
+        }
+      }
+    },
+    {
+      "event": {
+        "type": "message.assistant",
+        "payload": {
+          "parts": [],
+          "stopReason": "end_turn",
+          "provider": "ollama",
+          "model": "qwen3:8b",
+          "costUsd": 0,
+          "costUnknown": true,
+          "metrics": {
+            "startedAt": "2026-11-16T12:00:00.000Z",
+            "endedAt": "2026-11-16T12:00:01.000Z",
+            "inputTokens": 0,
+            "cachedReadTokens": 0,
+            "cacheWriteTokens": 0,
+            "outputTokens": 7,
+            "contextUsed": 7,
+            "contextWindow": 32768,
+            "prefillMs": 0.4,
+            "decodeMs": 999.5,
+            "tokPerSec": 7.5,
+            "source": "server"
+          }
+        }
+      },
+      "page": {
+        "input": "0",
+        "cache": null,
+        "output": "7",
+        "context": "0% / 33k",
+        "prefill": "0ms",
+        "generation": "1000ms · 8 tok/s",
+        "ssd": null,
+        "cost": "unknown",
+        "model": "qwen3:8b",
+        "clockIt": "12:00:01",
+        "clockEn": "12:00:01 PM",
+        "bar": {
+          "cached": 0,
+          "fresh": 0,
+          "out": 0.0213623046875
+        }
+      }
+    }
+  ],
+  "kTokens": [
+    [
+      0,
+      "0"
+    ],
+    [
+      1,
+      "1"
+    ],
+    [
+      999,
+      "999"
+    ],
+    [
+      1000,
+      "1.0k"
+    ],
+    [
+      1049,
+      "1.0k"
+    ],
+    [
+      1050,
+      "1.1k"
+    ],
+    [
+      1250,
+      "1.3k"
+    ],
+    [
+      1950,
+      "1.9k"
+    ],
+    [
+      9949,
+      "9.9k"
+    ],
+    [
+      9950,
+      "9.9k"
+    ],
+    [
+      9999,
+      "10.0k"
+    ],
+    [
+      10000,
+      "10k"
+    ],
+    [
+      10499,
+      "10k"
+    ],
+    [
+      10500,
+      "11k"
+    ],
+    [
+      99500,
+      "100k"
+    ],
+    [
+      999499,
+      "999k"
+    ],
+    [
+      999500,
+      "1000k"
+    ],
+    [
+      1000000,
+      "1.0M"
+    ],
+    [
+      1049999,
+      "1.0M"
+    ],
+    [
+      1050000,
+      "1.1M"
+    ],
+    [
+      12345678,
+      "12.3M"
+    ]
+  ],
+  "duration": [
+    [
+      0,
+      "0ms"
+    ],
+    [
+      0.4,
+      "0ms"
+    ],
+    [
+      0.5,
+      "1ms"
+    ],
+    [
+      1.5,
+      "2ms"
+    ],
+    [
+      999,
+      "999ms"
+    ],
+    [
+      999.4,
+      "999ms"
+    ],
+    [
+      999.5,
+      "1000ms"
+    ],
+    [
+      1000,
+      "1.0s"
+    ],
+    [
+      1049,
+      "1.0s"
+    ],
+    [
+      1050,
+      "1.1s"
+    ],
+    [
+      1250,
+      "1.3s"
+    ],
+    [
+      59949,
+      "59.9s"
+    ],
+    [
+      59950,
+      "60.0s"
+    ],
+    [
+      60000,
+      "1m0s"
+    ],
+    [
+      61499,
+      "1m1s"
+    ],
+    [
+      61500,
+      "1m2s"
+    ],
+    [
+      119500,
+      "1m60s"
+    ],
+    [
+      3600000,
+      "60m0s"
+    ]
+  ],
+  "usd": [
+    [
+      0,
+      "$0"
+    ],
+    [
+      0.0001,
+      "$0.0001"
+    ],
+    [
+      0.00125,
+      "$0.0013"
+    ],
+    [
+      0.0042,
+      "$0.0042"
+    ],
+    [
+      0.00999,
+      "$0.0100"
+    ],
+    [
+      0.01,
+      "$0.01"
+    ],
+    [
+      0.125,
+      "$0.13"
+    ],
+    [
+      1.005,
+      "$1.00"
+    ],
+    [
+      2.5,
+      "$2.50"
+    ],
+    [
+      1234.567,
+      "$1234.57"
+    ]
+  ]
+}

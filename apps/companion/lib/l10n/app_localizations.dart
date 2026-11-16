@@ -4526,6 +4526,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear the search'**
   String get savedSearchClear;
+
+  /// No description provided for @metricsInput.
+  ///
+  /// In en, this message translates to:
+  /// **'in'**
+  String get metricsInput;
+
+  /// No description provided for @metricsCache.
+  ///
+  /// In en, this message translates to:
+  /// **'cache'**
+  String get metricsCache;
+
+  /// No description provided for @metricsOutput.
+  ///
+  /// In en, this message translates to:
+  /// **'out'**
+  String get metricsOutput;
+
+  /// No description provided for @metricsContext.
+  ///
+  /// In en, this message translates to:
+  /// **'context'**
+  String get metricsContext;
+
+  /// No description provided for @metricsPrefill.
+  ///
+  /// In en, this message translates to:
+  /// **'prefill'**
+  String get metricsPrefill;
+
+  /// No description provided for @metricsGeneration.
+  ///
+  /// In en, this message translates to:
+  /// **'generation'**
+  String get metricsGeneration;
+
+  /// No description provided for @metricsTimedByClient.
+  ///
+  /// In en, this message translates to:
+  /// **'timed by the client'**
+  String get metricsTimedByClient;
+
+  /// No description provided for @metricsServerTimings.
+  ///
+  /// In en, this message translates to:
+  /// **'server timings'**
+  String get metricsServerTimings;
+
+  /// No description provided for @metricsStart.
+  ///
+  /// In en, this message translates to:
+  /// **'start'**
+  String get metricsStart;
+
+  /// No description provided for @metricsFirstToken.
+  ///
+  /// In en, this message translates to:
+  /// **'first token'**
+  String get metricsFirstToken;
+
+  /// No description provided for @metricsEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'end'**
+  String get metricsEnd;
+
+  /// No description provided for @metricsRestoredFromDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'KV cache restored from the SSD before this request'**
+  String get metricsRestoredFromDisk;
+
+  /// No description provided for @metricsCostUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'cost not known'**
+  String get metricsCostUnknown;
+
+  /// No description provided for @metricsCostUnknownHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This model is not in the models catalog yet: its prices are not known, so its cost is not counted.'**
+  String get metricsCostUnknownHint;
+
+  /// No description provided for @metricsShowAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all the message\'s figures'**
+  String get metricsShowAll;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

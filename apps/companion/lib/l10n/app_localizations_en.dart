@@ -2538,4 +2538,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get savedSearchClear => 'Clear the search';
+
+  @override
+  String get metricsInput => 'in';
+
+  @override
+  String get metricsCache => 'cache';
+
+  @override
+  String get metricsOutput => 'out';
+
+  @override
+  String get metricsContext => 'context';
+
+  @override
+  String get metricsPrefill => 'prefill';
+
+  @override
+  String get metricsGeneration => 'generation';
+
+  @override
+  String get metricsTimedByClient => 'timed by the client';
+
+  @override
+  String get metricsServerTimings => 'server timings';
+
+  @override
+  String get metricsStart => 'start';
+
+  @override
+  String get metricsFirstToken => 'first token';
+
+  @override
+  String get metricsEnd => 'end';
+
+  @override
+  String get metricsRestoredFromDisk => 'KV cache restored from the SSD before this request';
+
+  @override
+  String get metricsCostUnknown => 'cost not known';
+
+  @override
+  String get metricsCostUnknownHint =>
+      'This model is not in the models catalog yet: its prices are not known, so its cost is not counted.';
+
+  @override
+  String get metricsShowAll => 'Show all the message\'s figures';
 }

@@ -3,8 +3,11 @@
 // and `QuestionRequestInfo` (wire.ts, questions.ts), `GET /api/projects/:id/tasks`. Read
 // leniently. [buildItems] is the app's `buildItems` (packages/web/src/state.ts): pure, events in,
 // chat items out.
+import 'metrics.dart';
 import 'products.dart';
 import 'types.dart';
+
+export 'metrics.dart' show MessageMetrics;
 
 Map<String, dynamic> _map(Object? o) => o is Map<String, dynamic> ? o : const {};
 String? _str(Object? o) => o is String ? o : null;
@@ -167,11 +170,24 @@ class AssistantItem extends ChatItem {
     required this.ts,
     this.seq,
     this.live = false,
+    this.metrics,
+    this.model,
+    this.costUsd,
+    this.costUnknown = false,
   });
 
   final String text;
   final String thinking;
   final String ts;
+
+  /// The message's figures as the page shows them under it (G40.17): null while it streams and for
+  /// imported or external (ACP) agents' messages, which RedGiant did not count.
+  final MessageMetrics? metrics;
+  final String? model;
+  final double? costUsd;
+
+  /// The model's price is not known (3.5.4).
+  final bool costUnknown;
 
   /// The `message.assistant` event (null while it streams): what «Salva» and quotes point at.
   final int? seq;
@@ -274,8 +290,26 @@ List<ChatItem> buildItems(List<RgEvent> events, {String liveText = '', String li
             .map((x) => _str(x['text']) ?? '');
         final t = text.join('\n\n').trim();
         final th = thinking.join('\n\n').trim();
-        if (t.isNotEmpty || th.isNotEmpty) {
-          out.add(AssistantItem(text: t, thinking: th, ts: e.ts, seq: e.seq));
+        // The page's figures (G40.17), unless the message was imported or came from an external
+        // agent (ACP), whose program counts nothing RedGiant could show.
+        final provider = _str(p['provider']) ?? '';
+        final metrics = provider.startsWith('import:') || provider == 'acp'
+            ? null
+            : MessageMetrics.fromJson(p['metrics']);
+        // Like the page, a message that only asked for tools still shows its figures.
+        if (t.isNotEmpty || th.isNotEmpty || metrics != null) {
+          out.add(
+            AssistantItem(
+              text: t,
+              thinking: th,
+              ts: e.ts,
+              seq: e.seq,
+              metrics: metrics,
+              model: _str(p['model']),
+              costUsd: (p['costUsd'] as num?)?.toDouble(),
+              costUnknown: p['costUnknown'] == true,
+            ),
+          );
         }
         if (p['stopReason'] != 'tool_use') {
           for (final c in open.values) {
