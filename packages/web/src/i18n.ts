@@ -2404,6 +2404,12 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news385Composer: "A new place to write in the app",
+  news385ComposerText:
+    "In RGCompanion the message is written in one rounded box as wide as the screen, with the attachments, the options, the microphone and the send button inside it, under the text. It grows up to eight lines. Same on the phone and on the computer.",
+  news385Cursor: "The cursor that writes",
+  news385CursorText:
+    "While an agent writes its answer, a small red cursor with a light flame follows the last letter, in paragraphs, lists, tables, quotes and code, and goes away when the answer is done. With «Reduce motion» it stays still.",
   news384Fixes: "Two fixes in the app",
   news384FixesText:
     "A chat opened from the «Chat» card of the control room now has its full header: full window, detach and close. And the update screen says the version it really goes to (it could say «from 3.8.1 to 3.8.1» at the start).",
@@ -8993,6 +8999,12 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news385Composer: "Un posto nuovo per scrivere nell'app",
+  news385ComposerText:
+    "In RGCompanion il messaggio si scrive in un riquadro arrotondato largo quanto lo schermo, con allegati, opzioni, microfono e invio dentro, sotto il testo. Cresce fino a otto righe. Uguale sul telefono e sul computer.",
+  news385Cursor: "Il cursore che scrive",
+  news385CursorText:
+    "Mentre un agente scrive la risposta, un piccolo cursore rosso con una fiammella leggera segue l'ultima lettera, in paragrafi, elenchi, tabelle, citazioni e codice, e sparisce quando la risposta è finita. Con «Riduci movimento» resta fermo.",
   news384Fixes: "Due correzioni nell'app",
   news384FixesText:
     "Una chat aperta dalla scheda «Chat» della Sala di controllo ha adesso la sua intestazione completa: a tutta finestra, stacca e chiudi. E la schermata dell'aggiornamento dice la versione a cui va davvero (all'inizio poteva dire «dalla 3.8.1 alla 3.8.1»).",

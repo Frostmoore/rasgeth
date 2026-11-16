@@ -351,7 +351,8 @@ RedGiant is in pre-alpha. What comes next, in order:
   updates followed from the app, RedGiant's icon, RGCompanion on its own for Windows and a site for the downloads.
   3.8.3 (released) opens conversations in the whole window with the mascots' bar, shows spending and limits at the top of the app's conversations, sends with Ctrl/Cmd+Enter, attaches files and
   screenshots with Ctrl/Cmd+V and puts «New project» and «New agent» on the control room's walls. 3.8.4 (released) fixes the header of a chat
-  opened from the Chat card and the version the update screen announces.
+  opened from the Chat card and the version the update screen announces. 3.8.5 (released) gives the app
+  a full-width place to write, with its buttons inside, and a red cursor that follows the answer being written.
 - **3.9 and 3.10 — Video and 3D generation**: a video editor shared by you and the agent, and 3D
   generation with local or cloud engines, finished in Blender.
 - **3.11 — Emulators in the Canvas**: an Android emulator or the iOS simulator found on the computer
