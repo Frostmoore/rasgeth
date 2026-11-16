@@ -20,10 +20,14 @@ import 'package:rgcompanion/app_state.dart';
 final _url = Platform.environment['RG_LIVE_URL'];
 final _password = Platform.environment['RG_LIVE_PASSWORD'] ?? 'companion-test-1';
 
-Future<void> until(bool Function() ok, {Duration within = const Duration(seconds: 20)}) async {
+Future<void> until(
+  bool Function() ok, {
+  Duration within = const Duration(seconds: 20),
+  String what = 'condition',
+}) async {
   final end = DateTime.now().add(within);
   while (!ok()) {
-    if (DateTime.now().isAfter(end)) throw TimeoutException('condition not met');
+    if (DateTime.now().isAfter(end)) throw TimeoutException('$what not met');
     await Future<void>.delayed(const Duration(milliseconds: 50));
   }
 }
@@ -112,6 +116,62 @@ void main() {
     },
     skip: skip,
     timeout: const Timeout(Duration(minutes: 2)),
+  );
+
+  test(
+    'two devices on one RedGiant: what one writes, and the answer, show live on the other',
+    () async {
+      Future<AppController> device(DevicePlatform p) async {
+        final a = AppController(tokens: MemoryTokenStore(), prefs: MemoryAppPrefs(), platform: p);
+        expect(await a.connect(base.toString(), _password), isTrue, reason: '${a.error}');
+        await until(() => a.liveStatus == LiveStatus.open);
+        return a;
+      }
+
+      final phone = await device(DevicePlatform.android);
+      final pc = await device(DevicePlatform.linux);
+      final sid = await phone.newChatSession();
+      expect(sid, isNotNull);
+      final onPhone = phone.follow(sid!);
+      final onPc = pc.follow(sid);
+      // A second screen on it closes (the panel's floating copy): the first one stays live.
+      pc.follow(sid);
+      pc.unfollow(sid);
+      await until(() => onPhone.synced && onPc.synced, what: 'synced');
+
+      expect(await phone.send(sid, 'Written on the phone'), isTrue);
+      await until(
+        () => onPc.events.any((e) => e.type == 'message.user'),
+        within: const Duration(seconds: 30),
+        what: 'user on pc',
+      );
+      await until(
+        () => onPc.events.any((e) => e.type == 'message.assistant') && !onPc.running,
+        within: const Duration(seconds: 60),
+        what: 'answer on pc',
+      );
+      final users = onPc.events.where((e) => e.type == 'message.user').length;
+      // The other device lists the new conversation by itself.
+      await until(() => pc.live.sessions.any((s) => s.id == sid), what: 'listed on the other');
+
+      expect(await pc.send(sid, 'Written on the computer'), isTrue);
+      await until(
+        () => onPhone.events.where((e) => e.type == 'message.user').length > users,
+        within: const Duration(seconds: 30),
+        what: 'user on phone',
+      );
+      await until(
+        () =>
+            onPhone.events.where((e) => e.type == 'message.assistant').length >= 2 &&
+            !onPhone.running,
+        within: const Duration(seconds: 60),
+        what: 'answer on phone',
+      );
+      await phone.disconnect();
+      await pc.disconnect();
+    },
+    skip: skip,
+    timeout: const Timeout(Duration(minutes: 3)),
   );
 
   test('pairing through the setup channel: the API rides it when there is no https', () async {

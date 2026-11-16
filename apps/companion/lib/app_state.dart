@@ -960,7 +960,13 @@ class AppController extends ChangeNotifier {
     if (!liveEnabled || c == null || t == null || !c.transport.live) return;
     final s = socket = LiveSocket.over(c.transport, t);
     _liveSub = s.messages.listen(live.apply);
+    var opened = false;
     _statusSub = s.statuses.listen((st) {
+      // Back after a drop: what changed meanwhile (conversations started or ended elsewhere).
+      if (st == LiveStatus.open) {
+        if (opened) _soonReloadSessions(fresh: true);
+        opened = true;
+      }
       liveStatus = st;
       if (st == LiveStatus.refused) error = ConnectError.signInAgain;
       notifyListeners();
@@ -968,13 +974,13 @@ class AppController extends ChangeNotifier {
     unawaited(s.start());
   }
 
-  void _soonReloadSessions() {
+  void _soonReloadSessions({bool fresh = false}) {
     _reloadTimer?.cancel();
     _reloadTimer = Timer(const Duration(milliseconds: 250), () async {
       final c = client;
       if (c == null) return;
       try {
-        live.setSessions(await c.sessions());
+        live.setSessions(await c.sessions(), fresh: fresh);
       } on ApiException {
         // Next time.
       }
@@ -1218,6 +1224,8 @@ class AppController extends ChangeNotifier {
   void setForeground(bool v) {
     if (foreground == v) return;
     foreground = v;
+    // Back from the background the socket may look open and be dead: asked at once.
+    if (v) socket?.checkNow();
   }
 
   /// G40.17: from which window width (logical pixels) a computer uses its own layout, the

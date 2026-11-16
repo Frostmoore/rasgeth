@@ -19,6 +19,78 @@ class FakeRedGiant {
   /// What the live socket received, and the sockets open.
   final received = <Map<String, dynamic>>[];
   final sockets = <WebSocket>[];
+
+  /// As ws.ts and core.follow: who follows which conversation (a socket's follows end with it),
+  /// and each conversation's log (seq grows over the whole log, as the event store's).
+  final follows = <WebSocket, Set<String>>{};
+  final logs = <String, List<Map<String, dynamic>>>{};
+  int _seq = 1;
+
+  /// Links that look open and are dead (a phone back from the background, a computer back from
+  /// sleep): nothing answered on them, nothing sent. New connections work.
+  final _dead = <WebSocket>{};
+  void deaden() => _dead.addAll(sockets);
+
+  /// A message written elsewhere (another device): stored, to every follower, then its answer.
+  void say(String sid, String text) => _turn(sid, text);
+
+  /// The followers of [sid] (the socket that wrote only if it follows too, as the real server).
+  Iterable<WebSocket> followersOf(String sid) => [
+    for (final e in follows.entries)
+      if (e.value.contains(sid)) e.key,
+  ];
+
+  List<Map<String, dynamic>> _logOf(String sid) =>
+      logs.putIfAbsent(sid, () => [_event(1, 'session.started', {}, sid: sid)]);
+
+  /// A stored event: to every follower of its conversation.
+  void _store(String sid, String type, Map<String, dynamic> payload) {
+    final e = _event(++_seq, type, payload, sid: sid);
+    _logOf(sid).add(e);
+    _toFollowers(sid, {'type': 'event', 'sessionId': sid, 'event': e});
+  }
+
+  void _toFollowers(String sid, Map<String, dynamic> m) {
+    for (final ws in followersOf(sid)) {
+      if (!_dead.contains(ws)) ws.add(jsonEncode(m));
+    }
+  }
+
+  /// `core.onOwnerActivity`: to every connection of the owner, followed or not.
+  void _toAll(Map<String, dynamic> m) {
+    for (final ws in sockets) {
+      if (!_dead.contains(ws)) ws.add(jsonEncode(m));
+    }
+  }
+
+  /// A turn of the scripted agent: the person's message, the streamed answer, the end.
+  void _turn(String sid, String text) {
+    _store(sid, 'message.user', {'text': text});
+    _toAll({'type': 'session.activity', 'sessionId': sid, 'state': 'running'});
+    _toFollowers(sid, {'type': 'session.state', 'sessionId': sid, 'state': 'running'});
+    _toFollowers(sid, {
+      'type': 'delta',
+      'sessionId': sid,
+      'kind': 'thinking',
+      'text': 'Let me see',
+    });
+    _toFollowers(sid, {'type': 'delta', 'sessionId': sid, 'kind': 'text', 'text': 'Hello'});
+    _store(sid, 'message.assistant', {
+      'parts': [
+        {'type': 'thinking', 'text': 'Let me see'},
+        {'type': 'text', 'text': 'Hello **there**'},
+      ],
+      'stopReason': 'end_turn',
+    });
+    _toFollowers(sid, {
+      'type': 'session.state',
+      'sessionId': sid,
+      'state': 'idle',
+      'stopReason': 'end_turn',
+    });
+    _toAll({'type': 'session.activity', 'sessionId': sid, 'state': 'idle'});
+  }
+
   final sessions = <Map<String, dynamic>>[
     {
       'id': 's1',
@@ -1178,79 +1250,81 @@ class FakeRedGiant {
   Future<void> _socket(HttpRequest r) async {
     final ws = await WebSocketTransformer.upgrade(r);
     sockets.add(ws);
-    void send(Map<String, dynamic> m) => ws.add(jsonEncode(m));
-    ws.listen((data) {
-      final m = jsonDecode(data as String) as Map<String, dynamic>;
-      received.add(m);
-      switch (m['type']) {
-        case 'hello':
-          if (!tokens.contains(m['token'])) {
-            ws.close(4003, 'unauthorized');
-            return;
-          }
-          send({'type': 'welcome', 'protocolVersion': 2, 'ownerId': 'me', 'version': version});
-          for (final p in permissions) {
-            send({'type': 'permission.request', 'request': p});
-          }
-        case 'session.follow':
-          send({
-            'type': 'session.history',
-            'sessionId': m['sessionId'],
-            'events': [_event(1, 'session.started', {})],
-            'lastSeq': 1,
-            'incremental': false,
-          });
-          send({'type': 'session.state', 'sessionId': m['sessionId'], 'state': 'idle'});
-        case 'session.send':
-          final sid = m['sessionId'];
-          send({
-            'type': 'event',
-            'sessionId': sid,
-            'event': _event(2, 'message.user', {'text': m['text']}),
-          });
-          send({'type': 'session.state', 'sessionId': sid, 'state': 'running'});
-          send({'type': 'delta', 'sessionId': sid, 'kind': 'thinking', 'text': 'Let me see'});
-          send({'type': 'delta', 'sessionId': sid, 'kind': 'text', 'text': 'Hello'});
-          send({
-            'type': 'event',
-            'sessionId': sid,
-            'event': _event(3, 'message.assistant', {
-              'parts': [
-                {'type': 'thinking', 'text': 'Let me see'},
-                {'type': 'text', 'text': 'Hello **there**'},
-              ],
-              'stopReason': 'end_turn',
-            }),
-          });
-          send({
-            'type': 'session.state',
-            'sessionId': sid,
-            'state': 'idle',
-            'stopReason': 'end_turn',
-          });
-        case 'permission.resolve':
-          permissions.removeWhere((p) => p['requestId'] == m['requestId']);
-          answered[m['requestId'] as String] = m['decision'] as String;
-          send({
-            'type': 'permission.closed',
-            'requestId': m['requestId'],
-            'decision': m['decision'],
-            'via': 'app (test)',
-          });
-        case 'ping':
-          send({'type': 'pong'});
-      }
-    });
+    void send(Map<String, dynamic> m) {
+      if (!_dead.contains(ws)) ws.add(jsonEncode(m));
+    }
+
+    ws.listen(
+      (data) {
+        final m = jsonDecode(data as String) as Map<String, dynamic>;
+        received.add(m);
+        if (_dead.contains(ws)) return;
+        switch (m['type']) {
+          case 'hello':
+            if (!tokens.contains(m['token'])) {
+              ws.close(4003, 'unauthorized');
+              return;
+            }
+            send({'type': 'welcome', 'protocolVersion': 2, 'ownerId': 'me', 'version': version});
+            for (final p in permissions) {
+              send({'type': 'permission.request', 'request': p});
+            }
+          case 'session.follow':
+            final sid = m['sessionId'] as String;
+            // Twice on one connection: the second does nothing (ws.ts `follows.has`).
+            if (!(follows[ws] ??= {}).add(sid)) return;
+            final after = m['afterSeq'] is num ? (m['afterSeq'] as num).toInt() : null;
+            final past = [
+              for (final e in _logOf(sid))
+                if (after == null || (e['seq'] as int) > after) e,
+            ];
+            send({
+              'type': 'session.history',
+              'sessionId': sid,
+              'events': past,
+              'lastSeq': past.isEmpty ? (after ?? -1) : past.last['seq'],
+              'incremental': after != null,
+            });
+            send({'type': 'session.state', 'sessionId': sid, 'state': 'idle'});
+          case 'session.unfollow':
+            follows[ws]?.remove(m['sessionId']);
+          case 'session.send':
+            _turn(m['sessionId'] as String, m['text'] as String);
+          case 'permission.resolve':
+            permissions.removeWhere((p) => p['requestId'] == m['requestId']);
+            answered[m['requestId'] as String] = m['decision'] as String;
+            // To every connection of the owner (approvals' `closed`).
+            _toAll({
+              'type': 'permission.closed',
+              'requestId': m['requestId'],
+              'decision': m['decision'],
+              'via': 'app (test)',
+            });
+          case 'ping':
+            send({'type': 'pong'});
+        }
+      },
+      onDone: () {
+        sockets.remove(ws);
+        follows.remove(ws);
+        _dead.remove(ws);
+      },
+    );
   }
 
-  Map<String, dynamic> _event(int seq, String type, Map<String, dynamic> payload) => {
+  Map<String, dynamic> _event(
+    int seq,
+    String type,
+    Map<String, dynamic> payload, {
+    String sid = 's1',
+  }) => {
     'id': 'e$seq',
     'seq': seq,
     'ts': '2026-11-15T10:00:0$seq.000Z',
     'ownerId': 'me',
     'projectId': null,
     'agentId': 'a0',
-    'sessionId': 's1',
+    'sessionId': sid,
     'erased': false,
     'type': type,
     'payload': payload,

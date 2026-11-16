@@ -76,9 +76,10 @@ class LiveModel extends ChangeNotifier {
 
   SessionView view(String sessionId) => views.putIfAbsent(sessionId, () => SessionView(sessionId));
 
-  void setSessions(List<SessionRow> rows) {
-    // A conversation the socket said runs keeps running until it says otherwise.
-    final live = {for (final s in sessions) s.id: s.running};
+  void setSessions(List<SessionRow> rows, {bool fresh = false}) {
+    // A conversation the socket said runs keeps running until it says otherwise; [fresh] rows
+    // (read after the link came back: the socket may have missed the end) are taken as they are.
+    final live = fresh ? const <String, bool>{} : {for (final s in sessions) s.id: s.running};
     sessions = [for (final r in rows) live[r.id] == true && !r.running ? r.withRunning(true) : r];
     notifyListeners();
   }
@@ -104,6 +105,21 @@ class LiveModel extends ChangeNotifier {
     final type = m['type'];
     final sid = m['sessionId'] is String ? m['sessionId'] as String : null;
     switch (type) {
+      // A new link (the first or after a drop): the server sends every waiting request again right
+      // after it, so the ones answered meanwhile elsewhere go; a followed conversation's
+      // `session.state` comes again too (the rows are read again by the caller, [setSessions]).
+      case 'welcome':
+        approvals = const [];
+        questions = const [];
+        for (final v in views.values) {
+          if (v.running) {
+            v.running = false;
+            v.calling = false;
+            v.liveText = '';
+            v.liveThinking = '';
+            v.changed();
+          }
+        }
       case 'permission.request':
         final r = PermissionRequest.fromJson(_map(m['request']));
         approvals = [...approvals.where((a) => a.requestId != r.requestId), r];

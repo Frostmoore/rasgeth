@@ -2,8 +2,12 @@
 // page (packages/protocol/src/wire.ts). The server sends the waiting requests right after
 // `welcome`, then every page of the owner gets `permission.*`, `question.*` and
 // `session.activity`; a followed conversation gets its history (`session.history`), its events,
-// the streaming `delta`s and `session.state`. A heartbeat every 25 s; when the link drops it comes
-// back by itself and follows the same conversations again from the last event it had.
+// the streaming `delta`s and `session.state`. A heartbeat every 25 s: with nothing at all from the
+// server within [LiveSocket.answerWithin] the link counts as dead (a phone back from the background,
+// a computer back from sleep: the socket looks open and nothing arrives). When the link drops it
+// comes back by itself and follows the same conversations again from the last event it had.
+// Several screens may follow one conversation (the panel and its floating copy, a task's detail):
+// the server hears only the first follow and the last unfollow, as the page's `Live` (p3.5.4).
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -22,6 +26,7 @@ class LiveSocket {
     required SocketOpener open,
     required this.token,
     this.heartbeat = const Duration(seconds: 25),
+    this.answerWithin = const Duration(seconds: 10),
   }) : _open = open;
 
   factory LiveSocket.over(Transport t, String token) =>
@@ -31,6 +36,9 @@ class LiveSocket {
   final String token;
   final Duration heartbeat;
 
+  /// How long the server may stay silent after a ping before the link counts as dead.
+  final Duration answerWithin;
+
   final _messages = StreamController<Map<String, dynamic>>.broadcast();
   final _status = StreamController<LiveStatus>.broadcast();
   LiveStatus status = LiveStatus.connecting;
@@ -38,8 +46,12 @@ class LiveSocket {
   /// The conversations followed, with the last event's seq each one has.
   final followed = <String, int?>{};
 
+  /// How many screens follow each conversation.
+  final _followers = <String, int>{};
+
   WebSocket? _ws;
   Timer? _ping;
+  Timer? _deadline;
   Timer? _retry;
   int _attempt = 0;
   int _tries = 0;
@@ -74,6 +86,8 @@ class LiveSocket {
       return;
     }
     _ws = ws;
+    _deadline?.cancel();
+    _deadline = null;
     ws.add(jsonEncode({'type': 'hello', 'protocolVersion': kWireProtocolVersion, 'token': token}));
     ws.listen(
       (data) {
@@ -85,22 +99,30 @@ class LiveSocket {
           return;
         }
         if (m is! Map<String, dynamic>) return;
+        if (!identical(_ws, ws)) return;
+        // Anything from the server counts as life.
+        _deadline?.cancel();
+        _deadline = null;
         if (m['type'] == 'welcome') {
           _attempt = 0;
           ownerId = m['ownerId'] as String?;
           serverVersion = m['version'] as String?;
           _set(LiveStatus.open);
           _ping?.cancel();
-          _ping = Timer.periodic(heartbeat, (_) => send({'type': 'ping'}));
+          _ping = Timer.periodic(heartbeat, (_) => _beat());
           for (final e in followed.entries) {
             _follow(e.key, e.value);
           }
         }
         if (m['type'] == 'session.history' || m['type'] == 'event') _track(m);
+        if (m['type'] == 'pong') return;
         _messages.add(m);
       },
       onDone: () {
+        // A socket already dropped as dead: its end changes nothing.
+        if (!identical(_ws, ws)) return;
         _ping?.cancel();
+        _deadline?.cancel();
         _ws = null;
         // 4003: the token was refused or the device revoked; 4002: another protocol.
         if (ws.closeCode == 4003 || ws.closeCode == 4002) {
@@ -126,13 +148,42 @@ class LiveSocket {
     }
   }
 
-  void _later() {
+  /// A ping; silence until [answerWithin] drops the link and comes back.
+  void _beat() {
+    final ws = _ws;
+    if (ws == null || status != LiveStatus.open || !send({'type': 'ping'})) return;
+    _deadline ??= Timer(answerWithin, () => _drop(ws));
+  }
+
+  /// The link looks open and is not: dropped without waiting for its end, and tried again now.
+  void _drop(WebSocket ws) {
+    if (_stopped || !identical(_ws, ws)) return;
+    _ping?.cancel();
+    _deadline = null;
+    _ws = null;
+    unawaited(ws.close(1000).catchError((_) {}));
+    _attempt = 0;
+    _later(immediately: true);
+  }
+
+  /// The app came back to the foreground: an open link is asked whether it still lives, a down one
+  /// is tried again at once.
+  void checkNow() {
+    if (_stopped) return;
+    if (status == LiveStatus.open) {
+      _beat();
+    } else {
+      retryNow();
+    }
+  }
+
+  void _later({bool immediately = false}) {
     if (_stopped) return;
     _set(LiveStatus.down);
     final s = [1, 2, 4, 8, 15, 30][_attempt.clamp(0, 5)];
     _attempt++;
     _retry?.cancel();
-    _retry = Timer(Duration(seconds: s), _connect);
+    _retry = Timer(immediately ? Duration.zero : Duration(seconds: s), _connect);
   }
 
   /// Right now, even while a try hangs on a server that went away (RedGiant answers again after
@@ -167,12 +218,22 @@ class LiveSocket {
   });
 
   void follow(String sessionId) {
-    if (followed.containsKey(sessionId)) return;
+    final n = _followers[sessionId] ?? 0;
+    _followers[sessionId] = n + 1;
+    if (n > 0) return;
     followed[sessionId] = null;
     _follow(sessionId, null);
   }
 
+  /// One screen less: the server stops sending only when no screen follows it any more.
   void unfollow(String sessionId) {
+    final n = _followers[sessionId] ?? 0;
+    if (n > 1) {
+      _followers[sessionId] = n - 1;
+      return;
+    }
+    if (n == 0) return;
+    _followers.remove(sessionId);
     followed.remove(sessionId);
     send({'type': 'session.unfollow', 'sessionId': sessionId});
   }
@@ -180,6 +241,7 @@ class LiveSocket {
   Future<void> close() async {
     _stopped = true;
     _ping?.cancel();
+    _deadline?.cancel();
     _retry?.cancel();
     await _ws?.close(1000);
     _ws = null;
