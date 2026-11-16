@@ -20,6 +20,7 @@ import 'api/setup_channel.dart';
 import 'api/token_store.dart';
 import 'api/transport.dart';
 import 'api/types.dart';
+import 'desktop/handoff.dart';
 import 'l10n/app_localizations.dart';
 import 'mascot/mascot_source.dart';
 import 'push/apns.dart';
@@ -278,7 +279,8 @@ class AppController extends ChangeNotifier {
   // ---- start ----
 
   /// At start: the settings, the RedGiants, the last one in use if its token still works.
-  Future<void> restore() async {
+  /// [handoff]: the local RedGiant a computer's launcher opened this window for (G40.12).
+  Future<void> restore({LaunchHandoff? handoff}) async {
     final theme = await prefs.get('theme');
     themeMode = ThemeMode.values.firstWhere((m) => m.name == theme, orElse: () => ThemeMode.system);
     final lang = await prefs.get('locale');
@@ -287,6 +289,7 @@ class AppController extends ChangeNotifier {
     desktopNotify = await prefs.get('desktopNotify') != '0';
     servers = await book.load();
     notifyListeners();
+    if (handoff != null && await adoptHandoff(handoff)) return;
     final current = await prefs.get('current');
     final s = servers.where((x) => x.id == current).firstOrNull ?? servers.firstOrNull;
     if (s != null) await useServer(s);
@@ -319,6 +322,30 @@ class AppController extends ChangeNotifier {
       connecting = false;
       notifyListeners();
     }
+  }
+
+  /// The launcher's local RedGiant (G40.12): its token replaces the one kept for that address,
+  /// and the device the app had there before is revoked (one entry per app in Settings ›
+  /// Devices). The launcher hands a token over only when this window was not open, so no running
+  /// connection uses the old one.
+  Future<bool> adoptHandoff(LaunchHandoff h) async {
+    final known = servers.where((s) => s.address == h.address).firstOrNull;
+    final old = known?.deviceId;
+    final saved = known != null
+        ? known.copyWith(deviceId: h.deviceId)
+        : SavedServer(
+            id: _newId(),
+            label: h.machine ?? Uri.parse(h.address).host,
+            address: h.address,
+            deviceId: h.deviceId,
+          );
+    await _keep(saved, h.token);
+    notifyListeners();
+    final ok = await useServer(saved);
+    if (ok && old != null && old != h.deviceId) {
+      unawaited(client?.revokeDevice(old).catchError((Object _) {}));
+    }
+    return ok;
   }
 
   // ---- pairing ----
