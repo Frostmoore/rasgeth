@@ -9,7 +9,7 @@ import { stat } from "node:fs/promises";
 import type { VideoRate } from "@redgiant/protocol";
 import type { RenderProbe } from "./compile.js";
 
-export interface MediaProbe extends RenderProbe {
+export interface RenderMediaProbe extends RenderProbe {
   width?: number;
   height?: number;
   /** Seconds, as ffprobe says (absent for a picture). */
@@ -38,7 +38,7 @@ export const PROBE_ARGS = [
 const IMAGE_CODECS = new Set(["mjpeg", "png", "webp", "bmp", "tiff", "jpegxl", "jpeg2000", "qoi"]);
 
 /** ffprobe's JSON made into what the timeline uses; `frames` null = a picture (no length). */
-export function probeFromJson(json: unknown, rate: VideoRate, fingerprint?: string): MediaProbe {
+export function probeFromJson(json: unknown, rate: VideoRate, fingerprint?: string): RenderMediaProbe {
   const j = (json && typeof json === "object" ? json : {}) as {
     streams?: ProbeStream[];
     format?: { format_name?: string; duration?: string };
@@ -75,7 +75,7 @@ export async function probeMedia(
   ffprobe: string,
   file: string,
   rate: VideoRate,
-): Promise<MediaProbe> {
+): Promise<RenderMediaProbe> {
   const st = await stat(file);
   const out = await new Promise<string>((resolve, reject) =>
     execFile(
