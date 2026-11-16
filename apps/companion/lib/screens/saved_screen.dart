@@ -155,15 +155,16 @@ class _SaveSheetState extends State<_SaveSheet> {
               ],
             ),
             const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            Wrap(
+              alignment: WrapAlignment.end,
+              spacing: 8,
+              runSpacing: 6,
               children: [
                 TextButton(
                   key: const Key('save-close'),
                   onPressed: () => Navigator.pop(context),
                   child: Text(l.close),
                 ),
-                const SizedBox(width: 8),
                 FilledButton.icon(
                   key: const Key('save-open-archive'),
                   onPressed: () {
@@ -194,9 +195,11 @@ class _SaveSheetState extends State<_SaveSheet> {
               children: [
                 RgIcon(RgIcons.bookmark, size: 19, color: c.accent),
                 const SizedBox(width: 8),
-                Text(
-                  widget.text == null ? l.savedSaveMessageTitle : l.savedSaveTitle,
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: c.text),
+                Expanded(
+                  child: Text(
+                    widget.text == null ? l.savedSaveMessageTitle : l.savedSaveTitle,
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: c.text),
+                  ),
                 ),
               ],
             ),

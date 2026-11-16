@@ -1205,7 +1205,9 @@ class _QuoteDrafts extends StatelessWidget {
             children: [
               RgIcon(RgIcons.reply, size: 14, color: c.dim),
               const SizedBox(width: 6),
-              Text(l.quoteReplyingTo, style: TextStyle(color: c.dim, fontSize: 12.5)),
+              Expanded(
+                child: Text(l.quoteReplyingTo, style: TextStyle(color: c.dim, fontSize: 12.5)),
+              ),
             ],
           ),
           for (final (i, q) in quotes.indexed)

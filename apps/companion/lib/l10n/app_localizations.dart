@@ -4514,6 +4514,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next products'**
   String get productNext;
+
+  /// No description provided for @quoteReplyShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply'**
+  String get quoteReplyShort;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

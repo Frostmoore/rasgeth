@@ -2538,4 +2538,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get productNext => 'Prodotti successivi';
+
+  @override
+  String get quoteReplyShort => 'Rispondi';
 }

@@ -218,6 +218,7 @@ class _Card extends StatelessWidget {
               children: [
                 if (p.source != null)
                   Semantics(
+                    container: true,
                     label: l.productSource(p.source!),
                     child: Tooltip(
                       message: l.productSource(p.source!),

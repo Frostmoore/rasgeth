@@ -119,7 +119,11 @@ class _ChatScreenState extends State<ChatScreen> {
                           key: const Key('chat-new'),
                           onPressed: _opening ? null : () => _openNew(null),
                           icon: RgIcon(RgIcons.plus, size: 18, color: c.accent),
-                          label: Text(l.chatNew),
+                          // Room for «Salvati» beside it on a narrow phone.
+                          label: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 120),
+                            child: Text(l.chatNew, maxLines: 1, overflow: TextOverflow.ellipsis),
+                          ),
                         ),
                       ],
                     )

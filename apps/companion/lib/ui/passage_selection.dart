@@ -133,25 +133,49 @@ class PassageMenu extends StatelessWidget {
         ),
       ),
     );
-    return TextSelectionToolbar(
-      anchorAbove: anchors.primaryAnchor,
-      anchorBelow: anchors.secondaryAnchor ?? anchors.primaryAnchor,
-      toolbarBuilder: (context, child) => Material(
-        key: const Key('passage-menu'),
-        color: c.panel,
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: c.line),
+    // Placed as the system's menu is (above the selection, below when there is no room), but
+    // all ours: one row that shrinks to fit, never an overflow «more» of the system.
+    final media = MediaQuery.of(context);
+    const gap = 8.0;
+    const height = 44.0;
+    final above = anchors.primaryAnchor;
+    final below = anchors.secondaryAnchor ?? anchors.primaryAnchor;
+    final top = media.padding.top + gap;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(gap, top, gap, gap),
+      child: CustomSingleChildLayout(
+        delegate: TextSelectionToolbarLayoutDelegate(
+          anchorAbove: above - Offset(gap, top + gap),
+          anchorBelow: below - Offset(gap, top - gap),
+          fitsAbove: above.dy - top - gap >= height,
         ),
-        clipBehavior: Clip.antiAlias,
-        child: Padding(padding: const EdgeInsets.all(3), child: child),
+        child: Material(
+          key: const Key('passage-menu'),
+          color: c.panel,
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(color: c.line),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Padding(
+            padding: const EdgeInsets.all(3),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  button(const Key('sel-copy'), RgIcons.copy, l.copy, onCopy),
+                  if (onReply != null)
+                    button(const Key('sel-reply'), RgIcons.reply, l.quoteReplyShort, onReply!),
+                  if (onSave != null)
+                    button(const Key('sel-save'), RgIcons.bookmark, l.savedSave, onSave!),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
-      children: [
-        button(const Key('sel-copy'), RgIcons.copy, l.copy, onCopy),
-        if (onReply != null) button(const Key('sel-reply'), RgIcons.reply, l.quoteReply, onReply!),
-        if (onSave != null) button(const Key('sel-save'), RgIcons.bookmark, l.savedSave, onSave!),
-      ],
     );
   }
 }

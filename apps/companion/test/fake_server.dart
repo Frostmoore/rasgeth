@@ -176,6 +176,17 @@ class FakeRedGiant {
     'locked': {},
     'names': {'god': 'God', 'demigod': 'Demi-God'},
   };
+  // G40.14 and G40.16: the saved passages, the bodies the app sent, the product pictures.
+  final saved = <Map<String, dynamic>>[];
+  final savedPosts = <Map<String, dynamic>>[];
+  final savedPatches = <Map<String, dynamic>>[];
+  final savedDeletes = <String>[];
+  final savedExports = <Map<String, String>>[];
+
+  /// The most items a page gives, whatever the app asks.
+  int savedPage = 200;
+  final productImages = <String, List<int>>{};
+  int _savedSeq = 0;
   int _sessionSeq = 1;
   late final mascots = loadMascots();
 
@@ -667,6 +678,7 @@ class FakeRedGiant {
       });
     }
     if (await _code(r, path)) return;
+    if (await _saved(r, path)) return;
     final m = RegExp(r'^/api/agents/a(\d+)/mascot$').firstMatch(path);
     if (r.method == 'GET' && m != null) {
       final i = int.parse(m.group(1)!);
@@ -891,6 +903,167 @@ class FakeRedGiant {
         );
       }
     });
+  }
+
+  /// A saved item as `SavedItem` (protocol/saved.ts).
+  Map<String, dynamic> savedItem({
+    required String id,
+    required String text,
+    String? markdown,
+    bool whole = false,
+    String note = '',
+    List<String> tags = const [],
+    String sessionId = 's1',
+    int seq = 3,
+    int? start,
+    int? end,
+    String agentId = 'a0',
+    String agentName = 'God',
+    String? title = 'Ieri',
+    required String createdAt,
+  }) => {
+    'id': id,
+    'text': text,
+    'markdown': markdown,
+    'whole': whole,
+    'note': note,
+    'tags': tags,
+    'source': {
+      'kind': 'session',
+      'sessionId': sessionId,
+      'seq': seq,
+      'start': ?start,
+      'end': ?end,
+      'agentId': agentId,
+      'agentName': agentName,
+      'title': title,
+      'messageAt': createdAt,
+    },
+    'createdAt': createdAt,
+    'updatedAt': createdAt,
+  };
+
+  List<Map<String, dynamic>> _savedMatching(Map<String, String> q) {
+    final text = q['q']?.toLowerCase();
+    final tag = q['tag']?.toLowerCase();
+    final agent = q['agentId'];
+    final before = q['before'];
+    final list = saved.where((i) {
+      if (text != null && !('${i['text']} ${i['note']}').toLowerCase().contains(text)) {
+        return false;
+      }
+      if (tag != null && !(i['tags'] as List).any((t) => '$t'.toLowerCase() == tag)) return false;
+      if (agent != null && (i['source'] as Map)['agentId'] != agent) return false;
+      if (before != null && (i['createdAt'] as String).compareTo(before) >= 0) return false;
+      return true;
+    }).toList()..sort((a, b) => (b['createdAt'] as String).compareTo(a['createdAt'] as String));
+    return list;
+  }
+
+  /// `/api/saved` (saved-routes.ts) and `/api/products/images/:id` (app.ts).
+  Future<bool> _saved(HttpRequest r, String path) async {
+    Future<bool> json(int status, Object b) async {
+      await _json(r, status, b);
+      return true;
+    }
+
+    Future<Map<String, dynamic>> body() async =>
+        jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+    final img = RegExp(r'^/api/products/images/([0-9a-f]{64})$').firstMatch(path);
+    if (r.method == 'GET' && img != null) {
+      final bytes = productImages[img.group(1)];
+      if (bytes == null) return json(404, {'error': 'Picture not found'});
+      r.response.statusCode = 200;
+      r.response.headers.contentType = ContentType('image', 'png');
+      r.response.add(bytes);
+      await r.response.close();
+      return true;
+    }
+    if (r.method == 'GET' && path == '/api/saved') {
+      final q = r.uri.queryParameters;
+      final all = _savedMatching(q);
+      final limit = [
+        int.tryParse(q['limit'] ?? '') ?? 50,
+        savedPage,
+      ].reduce((a, b) => a < b ? a : b);
+      final tags = <String, int>{};
+      final agents = <String, ({String name, int count})>{};
+      for (final i in saved) {
+        for (final t in i['tags'] as List) {
+          tags['$t'] = (tags['$t'] ?? 0) + 1;
+        }
+        final s = i['source'] as Map;
+        final a = agents[s['agentId']];
+        agents[s['agentId'] as String] = (
+          name: s['agentName'] as String,
+          count: (a?.count ?? 0) + 1,
+        );
+      }
+      return json(200, {
+        'items': all.take(limit).toList(),
+        'more': all.length > limit,
+        'tags': [
+          for (final e in tags.entries) {'tag': e.key, 'count': e.value},
+        ],
+        'agents': [
+          for (final e in agents.entries)
+            {'id': e.key, 'name': e.value.name, 'count': e.value.count},
+        ],
+      });
+    }
+    if (r.method == 'GET' && path == '/api/saved/export') {
+      final q = r.uri.queryParameters;
+      savedExports.add(q);
+      final items = _savedMatching(q);
+      r.response.statusCode = 200;
+      r.response.headers.contentType = ContentType('text', 'markdown', charset: 'utf-8');
+      r.response.write(
+        '# ${q['lang'] == 'it' ? 'Salvati' : 'Saved'}\n\n'
+        '${items.map((i) => i['text']).join('\n\n---\n\n')}\n',
+      );
+      await r.response.close();
+      return true;
+    }
+    if (r.method == 'POST' && path == '/api/saved') {
+      final b = await body();
+      savedPosts.add(b);
+      final src = b['source'] as Map<String, dynamic>;
+      final item = savedItem(
+        id: 'sv${++_savedSeq}',
+        text: (b['text'] as String?) ?? 'The whole message',
+        markdown: b['markdown'] as String?,
+        whole: b['text'] == null,
+        note: (b['note'] as String?) ?? '',
+        tags: [for (final t in (b['tags'] as List? ?? const [])) '$t'],
+        sessionId: src['sessionId'] as String,
+        seq: src['seq'] as int,
+        start: src['start'] as int?,
+        end: src['end'] as int?,
+        createdAt: '2026-11-16T12:00:${_savedSeq.toString().padLeft(2, '0')}.000Z',
+      );
+      saved.add(item);
+      return json(201, item);
+    }
+    final one = RegExp(r'^/api/saved/([^/]+)$').firstMatch(path);
+    if (one != null) {
+      final id = one.group(1)!;
+      final item = saved.where((i) => i['id'] == id).firstOrNull;
+      if (item == null) return json(404, {'error': 'Saved item not found'});
+      if (r.method == 'PATCH') {
+        final b = await body();
+        savedPatches.add({'id': id, ...b});
+        if (b['note'] != null) item['note'] = b['note'];
+        if (b['tags'] != null) item['tags'] = [for (final t in b['tags'] as List) '$t'];
+        return json(200, item);
+      }
+      if (r.method == 'DELETE') {
+        savedDeletes.add(id);
+        saved.remove(item);
+        return json(200, {'ok': true});
+      }
+      if (r.method == 'GET') return json(200, item);
+    }
+    return false;
   }
 
   /// `/ws` as ws.ts: hello with a token, welcome, the waiting requests, follow and send.

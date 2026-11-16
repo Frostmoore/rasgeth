@@ -736,5 +736,6 @@
   "productSource": "Fonte {n} della risposta",
   "productNoPicture": "Nessuna foto",
   "productPrevious": "Prodotti precedenti",
-  "productNext": "Prodotti successivi"
+  "productNext": "Prodotti successivi",
+  "quoteReplyShort": "Rispondi"
 }

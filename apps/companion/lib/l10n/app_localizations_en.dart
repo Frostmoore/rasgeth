@@ -2532,4 +2532,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get productNext => 'Next products';
+
+  @override
+  String get quoteReplyShort => 'Reply';
 }
