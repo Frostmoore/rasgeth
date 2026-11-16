@@ -1,9 +1,13 @@
 // What RedGiant downloads on its own (the agents' computer, their browser): a card in the corner
-// with the bar, the speed and the time left, until it is done (decision 2026-11-02).
+// with the bar, the speed and the time left, until it is done (decision 2026-11-02); some of them
+// with «Cancel» (G41.1).
 import type { Job } from "@redgiant/protocol";
 import { useEffect, useState } from "preact/hooks";
 import { getApi } from "../state.js";
 import { JobView } from "./ui.js";
+
+/** Downloads people can stop from the card (G41.1: ffmpeg, whose half-done files are removed). */
+const CANCELLABLE = new Set(["download_ffmpeg"]);
 
 export function Downloads() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -33,7 +37,7 @@ export function Downloads() {
   return (
     <div class="downloads" role="status">
       {jobs.map((j) => (
-        <JobView key={j.id} job={j} />
+        <JobView key={j.id} job={j} cancellable={CANCELLABLE.has(j.kind)} />
       ))}
     </div>
   );

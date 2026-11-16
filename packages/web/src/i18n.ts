@@ -2737,7 +2737,7 @@ const en = {
   voiceLocalHint:
     "No account and nothing leaves this computer. RedGiant downloads whisper.cpp and a multilingual model once (about 560 MB, with its bar in the corner) and runs them itself.",
   job_download_whisper: "Downloading whisper.cpp for voice messages (only once)",
-  job_download_ffmpeg: "Downloading ffmpeg, to read every kind of voice message (only once)",
+  job_download_ffmpeg: "Downloading ffmpeg and ffprobe, for voice messages and videos (only once)",
   job_download_libreoffice:
     "Downloading LibreOffice, to turn Office and other closed files into open ones (only once)",
   job_download_zetaoffice:
@@ -9366,7 +9366,7 @@ const it: Record<Key, string> = {
   voiceLocalHint:
     "Nessun account e niente esce da questo computer. RedGiant scarica una volta whisper.cpp e un modello multilingue (circa 560 MB, con la barra nell'angolo) e li fa girare lui.",
   job_download_whisper: "Scarico whisper.cpp per i vocali (una volta sola)",
-  job_download_ffmpeg: "Scarico ffmpeg, per leggere ogni tipo di vocale (una volta sola)",
+  job_download_ffmpeg: "Scarico ffmpeg e ffprobe, per i vocali e i video (una volta sola)",
   job_download_libreoffice:
     "Scarico LibreOffice, per trasformare i file di Office e altri formati chiusi in formati aperti (una volta sola)",
   job_download_zetaoffice:
