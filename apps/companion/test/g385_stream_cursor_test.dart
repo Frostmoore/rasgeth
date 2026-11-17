@@ -157,6 +157,14 @@ void main() {
       server.streamPiece('s1', 'Fermo');
       await _settle(tester);
       expect(tester.widget<StreamCursor>(find.byType(StreamCursor)).still, isTrue);
+      // The screen follows the turn as it starts (3.8.9: the Stop button appears, the rows read
+      // again a moment later), with Material's short transitions; once they end nothing keeps
+      // moving, the cursor least of all. Time goes in steps so that a transition started on the
+      // way also ends.
+      for (var i = 0; i < 15; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      expect(tester.widget<StreamCursor>(find.byType(StreamCursor)).still, isTrue);
       expect(tester.hasRunningAnimations, isFalse);
       await done(tester);
     });
