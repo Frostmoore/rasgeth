@@ -8,9 +8,41 @@ import 'package:flutter/foundation.dart';
 import 'conversation.dart';
 import 'types.dart';
 
+/// One model request seen live (the page's `ModelCall` in state.ts): when it started, how far the
+/// prompt was read (local engines report it with `prefill`), when the first word came and how much
+/// has been written since.
+class ModelCall {
+  ModelCall(this.since);
+
+  final DateTime since;
+  PrefillProgress? prefill;
+  DateTime? firstToken;
+  int chars = 0;
+
+  /// What the latest `delta` was: `text` or `thinking`.
+  String? writing;
+}
+
+/// The reading of the context as the engine reports it (`prefill`: total, cached, processed, ms).
+class PrefillProgress {
+  const PrefillProgress({
+    required this.total,
+    required this.cached,
+    required this.processed,
+    required this.ms,
+  });
+
+  final int total;
+  final int cached;
+  final int processed;
+  final int ms;
+}
+
 /// A followed conversation: its stored events, what is streaming, whether it runs.
 class SessionView extends ChangeNotifier {
-  SessionView(this.sessionId);
+  SessionView(this.sessionId, {DateTime Function()? now}) : _now = now ?? DateTime.now;
+
+  final DateTime Function() _now;
 
   final String sessionId;
   final List<RgEvent> events = [];
@@ -20,9 +52,16 @@ class SessionView extends ChangeNotifier {
   bool synced = false;
   String? stopReason;
 
-  /// A model call is under way (the page's `v.call`): from the turn's start, and again after the
-  /// tools' results, until the model's message is stored.
-  bool calling = false;
+  /// The model call under way (the page's `v.call`): from the turn's start, and again after the
+  /// tools' results or a person's message, until the model's message is stored.
+  ModelCall? call;
+
+  /// A summary is being made while the person waits (`session.compacting`).
+  bool compacting = false;
+
+  bool get calling => call != null;
+
+  void _newCall() => call = ModelCall(_now());
 
   List<ChatItem> get items => buildItems(events, liveText: liveText, liveThinking: liveThinking);
 
@@ -35,9 +74,9 @@ class SessionView extends ChangeNotifier {
     if (e.type == 'message.assistant') {
       liveText = '';
       liveThinking = '';
-      calling = false;
+      call = null;
     }
-    if (e.type == 'tool.result' && running) calling = true;
+    if ((e.type == 'tool.result' || e.type == 'message.user') && running) _newCall();
   }
 
   void changed() => notifyListeners();
@@ -74,7 +113,8 @@ class LiveModel extends ChangeNotifier {
   List<PersonRequest> get requests =>
       [...approvals, ...questions]..sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
-  SessionView view(String sessionId) => views.putIfAbsent(sessionId, () => SessionView(sessionId));
+  SessionView view(String sessionId) =>
+      views.putIfAbsent(sessionId, () => SessionView(sessionId, now: now));
 
   void setSessions(List<SessionRow> rows, {bool fresh = false}) {
     // A conversation the socket said runs keeps running until it says otherwise; [fresh] rows
@@ -114,7 +154,8 @@ class LiveModel extends ChangeNotifier {
         for (final v in views.values) {
           if (v.running) {
             v.running = false;
-            v.calling = false;
+            v.call = null;
+            v.compacting = false;
             v.liveText = '';
             v.liveThinking = '';
             v.changed();
@@ -143,7 +184,7 @@ class LiveModel extends ChangeNotifier {
         ];
         final v = views[sid];
         if (v != null) {
-          if (running && !v.running) v.calling = true;
+          if (running && !v.running) v._newCall();
           v.running = running;
         }
       case 'session.history':
@@ -164,19 +205,45 @@ class LiveModel extends ChangeNotifier {
         if (sid == null) break;
         final v = view(sid);
         final text = m['text'] is String ? m['text'] as String : '';
-        v.calling = true;
+        final c = v.call ?? ModelCall(now());
+        c.firstToken ??= now();
+        c.chars += text.length;
+        c.writing = m['kind'] == 'thinking' ? 'thinking' : 'text';
+        v.call = c;
         if (m['kind'] == 'thinking') {
           v.liveThinking += text;
         } else {
           v.liveText += text;
         }
         v.changed();
+      case 'prefill':
+        if (sid == null) break;
+        final v = view(sid);
+        int n(String k) => (m[k] as num?)?.round() ?? 0;
+        (v.call ??= ModelCall(now())).prefill = PrefillProgress(
+          total: n('total'),
+          cached: n('cached'),
+          processed: n('processed'),
+          ms: n('ms'),
+        );
+        v.changed();
+      case 'session.compacting':
+        if (sid == null) break;
+        final v = view(sid);
+        v.compacting = m['busy'] == true;
+        v.changed();
       case 'session.state':
         if (sid == null) break;
         final v = view(sid);
         final running = m['state'] == 'running';
-        if (running && !v.running) v.calling = true;
-        if (!running) v.calling = false;
+        // As the page: a turn that starts running starts a new call, idle ends it
+        // (a `session.state` running again for the same turn, as after a follow, keeps it).
+        if (running) {
+          if (!v.running || v.call == null) v._newCall();
+        } else {
+          v.call = null;
+          v.compacting = false;
+        }
         v.running = running;
         v.stopReason = m['stopReason'] as String?;
         if (!v.running) {

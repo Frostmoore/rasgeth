@@ -6350,6 +6350,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 request for you} other{{count} requests for you}}'**
   String deskRailWaiting(int count);
+
+  /// No description provided for @tpReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the context'**
+  String get tpReading;
+
+  /// No description provided for @tpTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} tokens'**
+  String tpTokens(String done, String total);
+
+  /// No description provided for @tpRate.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} tokens/s'**
+  String tpRate(String n);
+
+  /// No description provided for @tpCache.
+  ///
+  /// In en, this message translates to:
+  /// **'{pct} from the cache'**
+  String tpCache(String pct);
+
+  /// No description provided for @tpWaitingFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'The provider does not say how far it is: waiting for the first token'**
+  String get tpWaitingFirst;
+
+  /// No description provided for @tpThinking.
+  ///
+  /// In en, this message translates to:
+  /// **'Reasoning'**
+  String get tpThinking;
+
+  /// No description provided for @tpWriting.
+  ///
+  /// In en, this message translates to:
+  /// **'Writing'**
+  String get tpWriting;
+
+  /// No description provided for @tpWritten.
+  ///
+  /// In en, this message translates to:
+  /// **'about {n} tokens'**
+  String tpWritten(String n);
+
+  /// No description provided for @tpGenRate.
+  ///
+  /// In en, this message translates to:
+  /// **'about {n} tokens/s'**
+  String tpGenRate(String n);
+
+  /// No description provided for @tpReadIn.
+  ///
+  /// In en, this message translates to:
+  /// **'context of {total} read in {time}, {pct} from the cache'**
+  String tpReadIn(String total, String time, String pct);
+
+  /// No description provided for @tpFirstAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'first token after {time}'**
+  String tpFirstAfter(String time);
+
+  /// No description provided for @compactingNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Summarising the conversation…'**
+  String get compactingNow;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

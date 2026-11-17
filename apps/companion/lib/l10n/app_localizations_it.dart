@@ -3641,4 +3641,54 @@ class AppLocalizationsIt extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get tpReading => 'Legge il contesto';
+
+  @override
+  String tpTokens(String done, String total) {
+    return '$done di $total token';
+  }
+
+  @override
+  String tpRate(String n) {
+    return '$n token/s';
+  }
+
+  @override
+  String tpCache(String pct) {
+    return '$pct dalla cache';
+  }
+
+  @override
+  String get tpWaitingFirst => 'Il fornitore non dice a che punto è: aspetto il primo token';
+
+  @override
+  String get tpThinking => 'Ragiona';
+
+  @override
+  String get tpWriting => 'Scrive';
+
+  @override
+  String tpWritten(String n) {
+    return 'circa $n token';
+  }
+
+  @override
+  String tpGenRate(String n) {
+    return 'circa $n token/s';
+  }
+
+  @override
+  String tpReadIn(String total, String time, String pct) {
+    return 'contesto di $total letto in $time, $pct dalla cache';
+  }
+
+  @override
+  String tpFirstAfter(String time) {
+    return 'primo token dopo $time';
+  }
+
+  @override
+  String get compactingNow => 'Sto riassumendo la conversazione…';
 }

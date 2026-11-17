@@ -68,6 +68,15 @@ class FakeRedGiant {
     _store(sid, 'message.user', {'text': text});
     _toAll({'type': 'session.activity', 'sessionId': sid, 'state': 'running'});
     _toFollowers(sid, {'type': 'session.state', 'sessionId': sid, 'state': 'running'});
+    // As a local engine reports it (core.ts `live`: `prefill_progress` ⇒ `prefill`).
+    _toFollowers(sid, {
+      'type': 'prefill',
+      'sessionId': sid,
+      'total': 18400,
+      'cached': 14200,
+      'processed': 18400,
+      'ms': 3000,
+    });
     _toFollowers(sid, {
       'type': 'delta',
       'sessionId': sid,
@@ -143,6 +152,84 @@ class FakeRedGiant {
   final asides = <String>[];
   final rooms = <Map<String, dynamic>>[];
   final sent = <Map<String, dynamic>>[];
+
+  /// 3.8.7: a turn step by step, in the real server's order (core.ts: `session.state` running once,
+  /// `prefill` as the engine reads, `delta` thinking then text, the stored `message.assistant`,
+  /// `session.state` idle), to every follower of [sid].
+  void turnStart(String sid) {
+    _toAll({'type': 'session.activity', 'sessionId': sid, 'state': 'running'});
+    _toFollowers(sid, {'type': 'session.state', 'sessionId': sid, 'state': 'running'});
+  }
+
+  void turnPrefill(
+    String sid, {
+    required int total,
+    required int cached,
+    required int processed,
+    required int ms,
+  }) => _toFollowers(sid, {
+    'type': 'prefill',
+    'sessionId': sid,
+    'total': total,
+    'cached': cached,
+    'processed': processed,
+    'ms': ms,
+  });
+
+  void turnDelta(String sid, String kind, String text) =>
+      _toFollowers(sid, {'type': 'delta', 'sessionId': sid, 'kind': kind, 'text': text});
+
+  void turnCompacting(String sid, bool busy) =>
+      _toFollowers(sid, {'type': 'session.compacting', 'sessionId': sid, 'busy': busy});
+
+  /// A tool's call and result inside the turn: the model's message with the call, then its result
+  /// (the next model call starts there).
+  void turnTool(
+    String sid, {
+    required String name,
+    required Map<String, dynamic> input,
+    required String output,
+    String thinking = '',
+    String text = '',
+  }) {
+    final id = 'call_${_seq + 1}';
+    _store(sid, 'message.assistant', {
+      'parts': [
+        if (thinking.isNotEmpty) {'type': 'thinking', 'text': thinking},
+        if (text.isNotEmpty) {'type': 'text', 'text': text},
+        {'type': 'tool_call', 'callId': id, 'name': name, 'input': input},
+      ],
+      'stopReason': 'tool_use',
+    });
+    _store(sid, 'tool.call', {'callId': id, 'tool': name, 'input': input});
+    _store(sid, 'tool.result', {'callId': id, 'tool': name, 'output': output, 'ok': true});
+  }
+
+  /// The person's message, stored (as `session.send` does before the turn starts).
+  void userMessage(String sid, String text) => _store(sid, 'message.user', {'text': text});
+
+  void turnEnd(
+    String sid, {
+    String thinking = '',
+    required String text,
+    Map<String, dynamic>? metrics,
+  }) {
+    _store(sid, 'message.assistant', {
+      'parts': [
+        if (thinking.isNotEmpty) {'type': 'thinking', 'text': thinking},
+        {'type': 'text', 'text': text},
+      ],
+      'stopReason': 'end_turn',
+      'metrics': ?metrics,
+    });
+    _toFollowers(sid, {
+      'type': 'session.state',
+      'sessionId': sid,
+      'state': 'idle',
+      'stopReason': 'end_turn',
+    });
+    _toAll({'type': 'session.activity', 'sessionId': sid, 'state': 'idle'});
+  }
 
   /// 3.8.5: an answer streaming in, piece by piece, on every open live socket (the stream
   /// cursor's tests), and its end.

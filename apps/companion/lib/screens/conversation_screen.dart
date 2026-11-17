@@ -32,6 +32,7 @@ import '../ui/metrics_line.dart';
 import '../ui/passage_selection.dart';
 import '../ui/product_cards.dart';
 import '../ui/send_keys.dart';
+import '../ui/turn_progress.dart';
 import '../ui/paste_files.dart';
 import '../ui/words.dart';
 import 'canvas_screen.dart';
@@ -408,7 +409,28 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 listenable: view,
                 builder: (context, _) {
                   final items = view.items;
-                  if (items.isEmpty) {
+                  // As the page: the stored items, then the summary being made or the card of the
+                  // model call under way, then the answer streaming in.
+                  final last = items.isEmpty ? null : items.last;
+                  final live = last is AssistantItem && last.live ? last : null;
+                  final stored = live == null ? items : items.sublist(0, items.length - 1);
+                  final still = app.reduceMotion || MediaQuery.disableAnimationsOf(context);
+                  final call = view.call;
+                  final extras = <Widget>[
+                    if (view.compacting)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          l.compactingNow,
+                          key: const Key('compacting'),
+                          style: TextStyle(color: c.dim, fontSize: 13.5),
+                        ),
+                      ),
+                    if (view.running && call != null && !view.compacting)
+                      TurnProgress(call: call, now: app.live.now, still: still),
+                  ];
+                  final total = stored.length + extras.length + (live == null ? 0 : 1);
+                  if (total == 0) {
                     return Center(
                       child: Text(
                         view.synced || !app.isLive ? l.conversationEmpty : l.loading,
@@ -429,9 +451,16 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     controller: _scroll,
                     reverse: true,
                     padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-                    itemCount: items.length,
+                    itemCount: total,
                     itemBuilder: (context, i) {
-                      final item = items[items.length - 1 - i];
+                      final at = total - 1 - i;
+                      if (at >= stored.length && at < stored.length + extras.length) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: extras[at - stored.length],
+                        );
+                      }
+                      final item = at < stored.length ? stored[at] : live!;
                       final seq = item is AssistantItem ? item.seq : null;
                       return Padding(
                         key: seq == null ? null : _keys.putIfAbsent(seq, GlobalKey.new),
@@ -960,10 +989,35 @@ class _AssistantViewState extends State<AssistantView> {
     final c = RgColors.of(context);
     final l = AppLocalizations.of(context);
     final it = widget.item;
+    // The reasoning as it comes, open (the page's `details.thinking.live`): its last 4000
+    // characters, until the answer starts; then it waits folded in the stored message.
+    if (it.live && it.text.isEmpty) {
+      final tail = it.thinking.length > 4000
+          ? it.thinking.substring(it.thinking.length - 4000)
+          : it.thinking;
+      return Column(
+        key: const Key('thinking-live'),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RgIcon(RgIcons.chevronDown, size: 16, color: c.dim),
+                const SizedBox(width: 4),
+                Text('${l.reasoning}…', style: TextStyle(color: c.dim, fontSize: 13)),
+              ],
+            ),
+          ),
+          Text(tail, style: TextStyle(color: c.dim, fontSize: 15)),
+        ],
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (it.thinking.isNotEmpty)
+        if (it.thinking.isNotEmpty && !it.live)
           Semantics(
             button: true,
             expanded: _open,
@@ -983,7 +1037,7 @@ class _AssistantViewState extends State<AssistantView> {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      it.live && it.text.isEmpty ? l.reasoningNow : l.reasoning,
+                      l.reasoning,
                       style: TextStyle(color: c.dim, fontSize: 13, fontStyle: FontStyle.italic),
                     ),
                   ],
@@ -991,7 +1045,7 @@ class _AssistantViewState extends State<AssistantView> {
               ),
             ),
           ),
-        if (_open && it.thinking.isNotEmpty)
+        if (_open && it.thinking.isNotEmpty && !it.live)
           Container(
             key: const Key('thinking-text'),
             margin: const EdgeInsets.only(bottom: 6),
@@ -1002,11 +1056,6 @@ class _AssistantViewState extends State<AssistantView> {
             child: SelectableText(it.thinking, style: TextStyle(color: c.dim, fontSize: 13.5)),
           ),
         if (it.text.isNotEmpty) _body(c),
-        if (it.live && it.text.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 2),
-            child: Text(l.writing, style: TextStyle(color: c.dim, fontSize: 12)),
-          ),
         if (!it.live && it.metrics != null)
           MetricsLine(
             metrics: it.metrics!,

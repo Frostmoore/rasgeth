@@ -1042,5 +1042,17 @@
   "deskFullWindowOff": "Torna al pannello",
   "deskBackToRoom": "Torna alla Sala",
   "deskRailLabel": "Agenti",
-  "deskRailWaiting": "{count, plural, =1{1 richiesta per te} other{{count} richieste per te}}"
+  "deskRailWaiting": "{count, plural, =1{1 richiesta per te} other{{count} richieste per te}}",
+  "tpReading": "Legge il contesto",
+  "tpTokens": "{done} di {total} token",
+  "tpRate": "{n} token/s",
+  "tpCache": "{pct} dalla cache",
+  "tpWaitingFirst": "Il fornitore non dice a che punto è: aspetto il primo token",
+  "tpThinking": "Ragiona",
+  "tpWriting": "Scrive",
+  "tpWritten": "circa {n} token",
+  "tpGenRate": "circa {n} token/s",
+  "tpReadIn": "contesto di {total} letto in {time}, {pct} dalla cache",
+  "tpFirstAfter": "primo token dopo {time}",
+  "compactingNow": "Sto riassumendo la conversazione…"
 }

@@ -2269,5 +2269,75 @@
         "type": "int"
       }
     }
-  }
+  },
+  "tpReading": "Reading the context",
+  "tpTokens": "{done} of {total} tokens",
+  "@tpTokens": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "tpRate": "{n} tokens/s",
+  "@tpRate": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tpCache": "{pct} from the cache",
+  "@tpCache": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "tpWaitingFirst": "The provider does not say how far it is: waiting for the first token",
+  "tpThinking": "Reasoning",
+  "tpWriting": "Writing",
+  "tpWritten": "about {n} tokens",
+  "@tpWritten": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tpGenRate": "about {n} tokens/s",
+  "@tpGenRate": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tpReadIn": "context of {total} read in {time}, {pct} from the cache",
+  "@tpReadIn": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "tpFirstAfter": "first token after {time}",
+  "@tpFirstAfter": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "compactingNow": "Summarising the conversation…"
 }
