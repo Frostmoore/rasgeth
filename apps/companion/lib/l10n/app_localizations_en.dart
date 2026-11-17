@@ -4646,4 +4646,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get embedProbeOpen => 'Web view test';
+
+  @override
+  String get requestAnswerAllowed => 'allowed';
+
+  @override
+  String get requestAnswerDenied => 'denied';
+
+  @override
+  String requestDoneHere(String answer) {
+    return 'You already answered from the page or another window: $answer.';
+  }
+
+  @override
+  String requestDoneChat(String chat, String answer) {
+    return 'You already answered from $chat: $answer.';
+  }
+
+  @override
+  String requestDoneTimeout(String answer) {
+    return 'Nobody answered in time: $answer.';
+  }
+
+  @override
+  String requestDoneElsewhere(String answer) {
+    return 'Already decided elsewhere: $answer.';
+  }
+
+  @override
+  String get requestDoneClosing => 'This screen closes by itself in a few seconds.';
+
+  @override
+  String get requestCloseHint => 'Close (Esc)';
+
+  @override
+  String get requestTechDetails => 'Technical details';
 }
