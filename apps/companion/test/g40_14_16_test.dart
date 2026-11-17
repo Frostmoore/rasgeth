@@ -582,6 +582,13 @@ void main() {
     await push(tester, ConversationScreen(sessionId: 's1', agent: app.agents.first));
     history(app);
     await _settle(tester);
+    // Further up than the screen now that every message has its actions (G42.1).
+    await tester.dragUntilVisible(
+      find.byKey(const Key('products-4')),
+      find.byKey(const Key('conversation-items')),
+      const Offset(0, 200),
+    );
+    await _settle(tester);
     expect(find.byKey(const Key('products-4')), findsOneWidget);
     expect(find.text('Moka da 3-4 tazze'), findsOneWidget);
     expect(find.text('Bialetti Moka Express 3 tazze'), findsOneWidget);
@@ -593,8 +600,8 @@ void main() {
     expect(asked, contains('GET /api/products/images/$_imgA'));
     expect(find.byKey(const Key('product-picture')), findsOneWidget);
     expect(find.byKey(const Key('product-no-picture')), findsWidgets);
-    // No tool row for show_products.
-    expect(find.text('show_products'), findsNothing);
+    // As the page (G42.1): show_products has its tool line too, above its cards.
+    expect(find.text('show_products'), findsOneWidget);
     await done(tester);
   });
 
