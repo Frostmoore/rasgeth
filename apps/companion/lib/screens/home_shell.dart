@@ -91,7 +91,8 @@ class _HomeShellState extends State<HomeShell> {
                   const InboxScreen(),
                   const ActivityScreen(),
                   // G42.5: always, as the page's projects in its bar (git with the advanced one).
-                  const ProjectsScreen(),
+                  // Its spinner never ticks out of sight.
+                  TickerMode(enabled: app.tab == AppTab.projects, child: const ProjectsScreen()),
                   const YouScreen(),
                 ],
               ),

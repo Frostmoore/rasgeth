@@ -42,7 +42,9 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final v = AppScope.of(context).projectsVersion;
+    final app = AppScope.of(context);
+    // The advanced interface switched on: the git state too.
+    final v = app.projectsVersion * 2 + (app.advanced ? 1 : 0);
     if (v == _version) return;
     _version = v;
     unawaited(_load());
@@ -51,7 +53,12 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   Future<void> _load() async {
     final app = AppScope.read(context);
     final c = app.client;
-    if (c == null) return;
+    if (c == null) {
+      // No RedGiant yet: nothing to wait for.
+      // (Called from didChangeDependencies: the build that follows shows it.)
+      _projects ??= const [];
+      return;
+    }
     final advanced = app.advanced;
     try {
       final list = await c.projects();

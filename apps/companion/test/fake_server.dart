@@ -1,5 +1,6 @@
 // A fake RedGiant on localhost, answering like `device-routes.ts` and `app.ts` do for the routes
 // the app uses. Real HTTP, so the client is tested end to end.
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -606,6 +607,46 @@ class FakeRedGiant {
   final jobs = <String, String>{};
   final termHellos = <Map<String, dynamic>>[];
   final termInput = <String>[];
+
+  // G42.5: subprojects (as projects.ts), where the code lives (setup.ts's git), the terminal's
+  // resizes and a recorded session (vim, htop, exit) as a real shell would answer.
+  final subprojects = <Map<String, dynamic>>[];
+  final subprojectImages = <String, String?>{};
+  final adopted = <String>[];
+  final termResizes = <Map<String, dynamic>>[];
+  final gitCalls = <String>[];
+  int giteaPolls = 0;
+  String setupGiteaUser = '';
+
+  /// Gitea starting (runtime.ts): the image comes down with its progress, then it starts; done
+  /// at the third reading.
+  Map<String, dynamic> giteaJob() {
+    final n = giteaPolls;
+    final done = n >= 3;
+    return {
+      'id': 'gitea1',
+      'kind': 'gitea',
+      'vars': <String, String>{},
+      'state': done ? 'done' : 'running',
+      'startedAt': '2026-11-17T10:00:00.000Z',
+      'steps': [
+        {
+          'id': 'gitea_image',
+          'state': n < 2 ? 'running' : 'done',
+          if (n < 2)
+            'progress': {
+              'done': 41943040 + n * 20971520,
+              'total': 104857600,
+              'rate': 5242880,
+              'secondsLeft': 12 - n * 4,
+            },
+        },
+        {'id': 'gitea_start', 'state': n < 2 ? 'waiting' : (done ? 'done' : 'running')},
+        {'id': 'account', 'state': done ? 'done' : 'waiting'},
+      ],
+    };
+  }
+
   String patch =
       'diff --git a/src/prices.ts b/src/prices.ts\n'
       'index 1111111..2222222 100644\n'
@@ -1343,6 +1384,66 @@ class FakeRedGiant {
       pushTests.add(pt.group(1)!);
       return _json(r, 200, {'ok': true});
     }
+    // Where the code lives (G24.5, app.ts's `wizard`: errors are 400 with their code).
+    if (path.startsWith('/api/setup/git')) {
+      final config = setup['config'] as Map<String, dynamic>;
+      final git = (config['git'] as Map<String, dynamic>?) ?? <String, dynamic>{};
+      config['git'] = git;
+      final b = r.method == 'GET' || r.method == 'DELETE'
+          ? const <String, dynamic>{}
+          : jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      gitCalls.add('${r.method} $path');
+      if (path == '/api/setup/github' && r.method == 'PUT') {
+        final t = '${b['token'] ?? ''}'.trim();
+        if (t.length < 20) return _json(r, 400, {'error': 'token: Too small'});
+        if (!t.startsWith('github_pat_')) {
+          return _json(r, 400, {'error': 'GitHub did not accept the token'});
+        }
+        git['github'] = {'login': 'severino'};
+        return _json(r, 200, {'login': 'severino'});
+      }
+      if (path == '/api/setup/github' && r.method == 'DELETE') {
+        git.remove('github');
+        return _json(r, 200, {'ok': true});
+      }
+      if (path == '/api/setup/gitea' && r.method == 'POST') {
+        if ('${b['password']}'.length < 10) return _json(r, 400, {'error': 'password: Too small'});
+        giteaPolls = 0;
+        jobs['gitea1'] = 'running';
+        setupGiteaUser = '${b['user']}';
+        return _json(r, 200, giteaJob());
+      }
+      if (path == '/api/setup/gitea/external' && r.method == 'PUT') {
+        final url = '${b['url']}';
+        if (url.contains('nowhere')) {
+          return _json(r, 400, {'error': 'getaddrinfo ENOTFOUND', 'code': 'name_not_found'});
+        }
+        git['gitea'] = {'user': b['user'], 'publicUrl': url, 'external': true};
+        return _json(r, 200, {'user': b['user'], 'url': url});
+      }
+      if (path == '/api/setup/gitea' && r.method == 'DELETE') {
+        git.remove('gitea');
+        return _json(r, 200, {'ok': true});
+      }
+      if (path == '/api/setup/git/sync' && r.method == 'POST') {
+        return _json(r, 200, [
+          {'project': 'Demo', 'ok': true},
+          {'project': 'Shop', 'ok': false, 'error': 'GitHub answered 403'},
+        ]);
+      }
+    }
+    if (r.method == 'GET' && path == '/api/jobs/gitea1') {
+      giteaPolls++;
+      final j = giteaJob();
+      if (j['state'] == 'done') {
+        final config = setup['config'] as Map<String, dynamic>;
+        ((config['git'] ??= <String, dynamic>{}) as Map<String, dynamic>)['gitea'] = {
+          'user': setupGiteaUser,
+          'publicUrl': 'http://192.168.1.13:3300',
+        };
+      }
+      return _json(r, 200, j);
+    }
     if (r.method == 'GET' && path == '/api/setup') return _json(r, 200, setup);
     if (r.method == 'GET' && path == '/api/app/push') {
       return _json(r, 200, {'vapidPublicKey': vapidPublicKey, 'apns': false});
@@ -1436,6 +1537,58 @@ class FakeRedGiant {
           },
         ...madeProjects,
       ]);
+    }
+    // Subprojects (G24.13, app.ts): list, new, an existing project brought in, its image.
+    final sp = RegExp(r'^/api/projects/([^/]+)/(subprojects|adopt)$').firstMatch(path);
+    if (sp != null) {
+      final id = sp.group(1)!;
+      if (r.method == 'GET' && sp.group(2) == 'subprojects') {
+        return _json(r, 200, [
+          for (final x in subprojects)
+            if (x['projectId'] == id) x,
+        ]);
+      }
+      if (r.method == 'POST') {
+        final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+        String? name;
+        if (sp.group(2) == 'adopt') {
+          final from = madeProjects.where((m) => m['id'] == b['project']).firstOrNull;
+          if (from == null) return _json(r, 400, {'error': 'Project "${b['project']}" not found'});
+          madeProjects.remove(from);
+          adopted.add(from['id'] as String);
+          name = from['name'] as String;
+        } else {
+          name = (b['name'] as String? ?? '').trim();
+          if (name.isEmpty) return _json(r, 400, {'error': 'A name is needed'});
+        }
+        final dir = (b['dir'] as String? ?? '').trim();
+        final slug = name.toLowerCase().replaceAll(RegExp('[^a-z0-9]+'), '-');
+        if (subprojects.any(
+          (x) => x['projectId'] == id && x['dir'] == (dir.isEmpty ? slug : dir),
+        )) {
+          return _json(r, 400, {'error': 'The folder ${dir.isEmpty ? slug : dir} is taken'});
+        }
+        final made = {
+          'id': 'sub_${subprojects.length + 1}',
+          'projectId': id,
+          'name': name,
+          'dir': dir.isEmpty ? slug : dir,
+          'createdAt': '2026-11-17T10:00:00.000Z',
+        };
+        subprojects.add(made);
+        listsChanged(['projects', 'agents']);
+        return _json(r, 201, made);
+      }
+    }
+    final si = RegExp(r'^/api/projects/([^/]+)/subprojects/([^/]+)$').firstMatch(path);
+    if (r.method == 'PATCH' && si != null) {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      final sub = Uri.decodeComponent(si.group(2)!);
+      if (!subprojects.any((x) => x['id'] == sub && x['projectId'] == si.group(1))) {
+        return _json(r, 404, {'error': 'Subproject not found'});
+      }
+      subprojectImages[sub] = b['image'] as String?;
+      return _json(r, 200, {'ok': true});
     }
     // Archiving a whole project (p3.5.3, app.ts): `/work` first, then archive or restore.
     final pw = RegExp(r'^/api/projects/([^/]+)/(work|archive|restore|git)$').firstMatch(path);
@@ -1755,7 +1908,35 @@ class FakeRedGiant {
     return false;
   }
 
-  /// `/term` as terminal.ts: hello, ready, then input echoed back as output.
+  final _typed = StringBuffer();
+  bool _termAlt = false;
+
+  /// What the recorded shell prints for a command (G42.5): colours, a full-screen program in the
+  /// other buffer (vim, htop: `ESC[?1049h`), the cursor moved and the screen cleared.
+  final termAnswers = <String, String>{
+    'ls --color':
+        '\x1b[1;34msrc\x1b[0m  \x1b[1;32mbuild.sh\x1b[0m  README.md\r\n'
+        '\x1b[32mdemo\x1b[0m \$ ',
+    'vim README.md':
+        '\x1b[?1049h\x1b[H\x1b[2J'
+        '# Demo shop\r\n'
+        '\x1b[34m~\x1b[0m\r\n\x1b[34m~\x1b[0m\r\n\x1b[34m~\x1b[0m\r\n'
+        '\x1b[24;1H\x1b[7m"README.md" 1L, 12B\x1b[0m\x1b[1;1H',
+    ':q': '\x1b[?1049l\x1b[32mdemo\x1b[0m \$ ',
+    'htop':
+        '\x1b[?1049h\x1b[H\x1b[2J'
+        '  \x1b[36mCPU\x1b[0m[\x1b[32m||||||||\x1b[31m||\x1b[0m        23.4%]   '
+        '\x1b[36mTasks:\x1b[0m 41, 2 running\r\n'
+        '  \x1b[36mMem\x1b[0m[\x1b[32m||||||\x1b[34m||\x1b[33m|\x1b[0m   1.21G/7.65G]   '
+        '\x1b[36mLoad average:\x1b[0m 0.42 0.37 0.30\r\n\r\n'
+        '\x1b[30;42m  PID USER      CPU% MEM%  Command                \x1b[0m\r\n'
+        '    1 node       2.0  4.1  node server.js\r\n'
+        '   77 node       0.7  0.3  bash\r\n'
+        '\x1b[24;1H\x1b[30;46mF1\x1b[0mHelp \x1b[30;46mF10\x1b[0mQuit',
+  };
+
+  /// `/term` as terminal.ts: hello, ready, then input echoed back as output; a few recorded
+  /// commands answer as a real shell (G42.5).
   Future<void> _term(HttpRequest r) async {
     final ws = await WebSocketTransformer.upgrade(r);
     ws.listen((data) {
@@ -1769,10 +1950,44 @@ class FakeRedGiant {
         ws.add(jsonEncode({'type': 'ready', 'terminalId': 'term_1'}));
         ws.add(jsonEncode({'type': 'output', 'data': '\x1b[32mdemo\x1b[0m \$ '}));
       } else if (m['type'] == 'input') {
-        termInput.add(m['data'] as String);
-        ws.add(
-          jsonEncode({'type': 'output', 'data': (m['data'] as String).replaceAll('\r', '\r\n')}),
-        );
+        final d = m['data'] as String;
+        termInput.add(d);
+        _typed.write(d);
+        // A full-screen program draws itself: what is typed is not echoed there.
+        if (!_termAlt) {
+          ws.add(jsonEncode({'type': 'output', 'data': d.replaceAll('\r', '\r\n')}));
+        }
+        // Ctrl+C ends htop: back to the shell's own screen.
+        if (d.contains('\x03') && _termAlt) {
+          _termAlt = false;
+          _typed.clear();
+          ws.add(jsonEncode({'type': 'output', 'data': '\x1b[?1049l\x1b[32mdemo\x1b[0m \$ '}));
+          return;
+        }
+        if (!d.contains('\r')) return;
+        // The line as a shell reads it: keys' escape sequences (arrows, Esc) left out.
+        final line = _typed
+            .toString()
+            .split('\r')
+            .first
+            .replaceAll(RegExp(r'\x1b(\[[0-9;?]*[A-Za-z~]|O[A-Za-z]|)'), '')
+            // Ctrl+C drops what was typed before it.
+            .split('\x03')
+            .last
+            .trim();
+        _typed.clear();
+        final answer = termAnswers[line];
+        if (answer != null) {
+          ws.add(jsonEncode({'type': 'output', 'data': answer}));
+          if (answer.contains('\x1b[?1049h')) _termAlt = true;
+          if (answer.contains('\x1b[?1049l')) _termAlt = false;
+        }
+        if (line == 'exit') {
+          ws.add(jsonEncode({'type': 'exit', 'code': 0}));
+          unawaited(ws.close(1000));
+        }
+      } else if (m['type'] == 'resize') {
+        termResizes.add(m);
       }
     });
   }

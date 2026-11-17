@@ -17,6 +17,9 @@ import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/screens/code/project_screen.dart';
 import 'package:rgcompanion/screens/team_screen.dart';
 
+import 'package:rgcompanion/terminal/rg_terminal.dart';
+import 'package:xterm/xterm.dart' show TerminalView;
+
 import 'fake_server.dart';
 
 Future<void> _settle(WidgetTester tester, [int rounds = 12]) async {
@@ -191,12 +194,13 @@ void main() {
     await tester.pump(const Duration(minutes: 3));
   }
 
-  testWidgets('Tu › Interfaccia: the switch adds Projects to the bar, kept per RedGiant', (
+  testWidgets('Tu › Interfaccia: the switch adds the git state to Projects, kept per RedGiant', (
     tester,
   ) async {
     final prefs = MemoryAppPrefs();
     final app = await start(tester, advanced: false, prefs: prefs);
-    expect(find.byKey(const Key('tab-projects')), findsNothing);
+    // G42.5: Projects is in the bar for everyone, as the page's projects.
+    expect(find.byKey(const Key('tab-projects')), findsOneWidget);
     await tester.tap(find.byKey(const Key('tab-you')));
     await _settle(tester);
     await tester.scrollUntilVisible(
@@ -226,11 +230,11 @@ void main() {
     expect(find.textContaining('Coder Web'), findsOneWidget);
     expect(find.textContaining('2 compiti in corso'), findsOneWidget);
 
-    // Off again: the bar loses Projects and the app goes back to You.
+    // Off again: Projects stays, the switch is kept off.
     app.setAdvanced(false);
     await _settle(tester);
-    expect(find.byKey(const Key('tab-projects')), findsNothing);
-    expect(app.tab, AppTab.you);
+    expect(find.byKey(const Key('tab-projects')), findsOneWidget);
+    expect(app.tab, AppTab.projects);
     expect(await prefs.get('advanced:${app.server!.id}'), isNull);
     await done(tester);
   });
@@ -373,7 +377,7 @@ void main() {
     await done(tester);
   });
 
-  testWidgets('Terminal: my shell over /term with the extra keys and the recent commands', (
+  testWidgets('Terminal: my shell over /term, a real terminal with the extra keys (G42.5)', (
     tester,
   ) async {
     final app = await start(tester);
@@ -382,32 +386,30 @@ void main() {
     await _settle(tester);
     expect(server.termHellos.single['scope'], 'project:demo');
     expect(server.termHellos.single['token'], app.client!.token);
-    expect(find.textContaining(r'demo $'), findsOneWidget);
+    final term = tester.state<RgTerminalState>(find.byType(RgTerminal));
+    expect(term.terminal.buffer.getText(), contains(r'demo $'));
     await tester.tap(find.byKey(const Key('key-esc')));
     await tester.tap(find.byKey(const Key('key-tab')));
     await tester.tap(find.byKey(const Key('key-up')));
     await tester.tap(find.byKey(const Key('key-ctrl')));
     await _settle(tester);
-    await tester.enterText(find.byKey(const Key('term-input')), 'c');
+    // The phone's keyboard types into the terminal (xterm's own text field).
+    await tester.tap(find.byType(TerminalView));
     await _settle(tester);
-    await tester.enterText(find.byKey(const Key('term-input')), 'git status -s');
-    await tester.testTextInput.receiveAction(TextInputAction.send);
+    tester.testTextInput.updateEditingValue(
+      const TextEditingValue(text: '  c', selection: TextSelection.collapsed(offset: 3)),
+    );
+    await _settle(tester);
+    term.terminal.textInput('git status -s\r');
     await _settle(tester);
     expect(server.termInput, ['\x1b', '\t', '\x1b[A', '\x03', 'git status -s\r']);
-    expect(
-      find.descendant(
-        of: find.byKey(const Key('term-recent')),
-        matching: find.text('git status -s'),
-      ),
-      findsOneWidget,
-    );
     await tester.tap(find.byKey(const Key('term-bigger')));
     await _settle(tester);
     // An agent's: read only.
     await tester.tap(find.byKey(const Key('term-agent-a1')));
     await _settle(tester);
     expect(find.textContaining('M src/prices.ts', findRichText: true), findsOneWidget);
-    expect(find.byKey(const Key('term-input')), findsNothing);
+    expect(find.byType(RgTerminal), findsNothing);
     await done(tester);
   });
 
