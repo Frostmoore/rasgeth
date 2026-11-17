@@ -11,6 +11,7 @@ import 'dart:io';
 import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rgcompanion/api/client.dart';
+import 'package:rgcompanion/api/conversation.dart' show PermissionRequest;
 import 'package:rgcompanion/api/live.dart';
 import 'package:rgcompanion/api/servers.dart';
 import 'package:rgcompanion/api/setup_channel.dart';
@@ -91,9 +92,15 @@ void main() {
       await until(() => app.liveStatus == LiveStatus.open);
       // ignore: avoid_print
       print('live open; approvals ${app.live.approvals.length}');
-      // DEMO_REQUESTS: the waiting requests, critical ones among them.
-      await until(() => app.live.approvals.isNotEmpty);
-      expect(app.live.forYou, greaterThan(0));
+      // DEMO_REQUESTS: the waiting requests, critical ones among them, the same the server has
+      // now (p3.8.9: the demo's requests run out after a while, so their number is not fixed;
+      // what must hold is that the app shows exactly the server's).
+      Set<String> ids(Iterable<PermissionRequest> rs) => {for (final r in rs) r.requestId};
+      var onServer = ids(await app.client!.permissions());
+      await until(() => ids(app.live.approvals).containsAll(onServer));
+      onServer = ids(await app.client!.permissions());
+      expect(ids(app.live.approvals), onServer);
+      expect(app.live.forYou, app.live.approvals.length + app.live.questions.length);
 
       // The everyday Chat (outside the demo's project, which is over its budget on purpose).
       final sid = await app.newChatSession();
