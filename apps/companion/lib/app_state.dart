@@ -111,6 +111,7 @@ class AppController extends ChangeNotifier {
            dialChannel ?? ((b, id, expect) => SetupChannel.dial(b, identity: id, expect: expect)) {
     book = ServerBook(this.prefs);
     live.onUnknownSession = _soonReloadSessions;
+    live.onAgentsChanged = _reloadTeam;
     live.onTurnEnded = () => spend.refreshSoon(client);
     live.addListener(_onLiveChanged);
   }
@@ -903,6 +904,68 @@ class AppController extends ChangeNotifier {
       return null;
     } on ApiException catch (e) {
       return e.message;
+    }
+  }
+
+  /// What removing [a] takes with it (3.8.9): null when the server cannot say.
+  Future<RemovePreview?> removePreview(Agent a) async {
+    try {
+      return await client?.removePreview(a.id);
+    } on ApiException {
+      return null;
+    }
+  }
+
+  /// «Remove» (3.8.9, `POST /api/agents/:id/remove`): the agent and those below it leave the
+  /// team; their history stays and «Removed agents» restores them. Null when done, else why not.
+  Future<String?> removeAgent(Agent a) async {
+    final c = client;
+    if (c == null) return 'offline';
+    try {
+      final gone = (await c.removeAgent(a.id)).toSet()..add(a.id);
+      agents = agents.where((x) => !gone.contains(x.id)).toList();
+      notifyListeners();
+      _reloadTeam();
+      return null;
+    } on ApiException catch (e) {
+      return e.message;
+    }
+  }
+
+  /// The removed agents (3.8.9), the latest first; empty when the server cannot say.
+  Future<List<RemovedAgent>> removedAgents() async {
+    try {
+      return await client?.removedAgents() ?? const [];
+    } on ApiException {
+      return const [];
+    }
+  }
+
+  /// «Restore» (3.8.9): [a] back in the team with those removed with it. Null when done.
+  Future<String?> restoreAgent(Agent a) async {
+    final c = client;
+    if (c == null) return 'offline';
+    try {
+      await c.restoreAgent(a.id);
+      await _reloadTeamNow();
+      return null;
+    } on ApiException catch (e) {
+      return e.message;
+    }
+  }
+
+  /// The team and the conversations again (an agent removed or restored, here or elsewhere).
+  void _reloadTeam() => unawaited(_reloadTeamNow());
+
+  Future<void> _reloadTeamNow() async {
+    final c = client;
+    if (c == null) return;
+    try {
+      agents = await c.agents();
+      live.setSessions(await c.sessions());
+      notifyListeners();
+    } on ApiException {
+      // Next time.
     }
   }
 

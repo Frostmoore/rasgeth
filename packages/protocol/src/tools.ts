@@ -116,6 +116,9 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   one("list_agents", "agents"),
   one("read_agent", "agents"),
   one("stop_agent", "agents"),
+  // Removing an agent from the team, and bringing it back (p3.8.9): nothing of its history goes.
+  one("remove_agent", "agents"),
+  one("restore_agent", "agents"),
   { id: "subagents", group: "agents", tools: ["run_subagent", "run_subagents"] },
   one("ask_inspector", "agents"),
   // A magic automation's conversation exists to propose one.

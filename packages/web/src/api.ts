@@ -426,13 +426,47 @@ export interface Agent {
   compaction?: { at?: number; keep?: number };
   /** Other projects it is assigned to, under their orchestrators (2026-11-03). */
   projects?: string[];
-  status: "active" | "stopped";
+  /** "removed" only in `GET /api/agents/removed` (p3.8.9): never in the team's list. */
+  status: "active" | "stopped" | "removed";
   /** An external ACP agent (G38.6): its program runs its turns, without RedGiant's figures. */
   external?: "acp";
   /** Its mascot's seed, fixed at creation (G40.2). */
   mascotSeed?: string;
   /** Its mascot (G40.2), from the server: the same face everywhere. */
   mascot?: MascotSpec;
+}
+
+/** An agent named in a removal (p3.8.9). */
+export interface AgentBrief {
+  id: string;
+  name: string;
+  kind: Agent["kind"];
+}
+
+/** What removing an agent would do (p3.8.9), for the confirmation. */
+export interface RemovePreview {
+  agent: AgentBrief;
+  /** The agents below it, removed with it. */
+  with: AgentBrief[];
+  /** Open tasks that close («agent removed»). */
+  tasks: number;
+  /** Turns that stop. */
+  running: number;
+  /** False for God, Demi-God and the Chat: nobody removes them. */
+  allowed: boolean;
+  why?: string;
+}
+
+/** A removed agent (p3.8.9): its history stays; «Restore» brings it back with those removed with it. */
+export interface RemovedAgent extends Agent {
+  removed: {
+    at: string;
+    /** "person", or the name of the agent that removed it. */
+    by: string;
+    reason: string;
+    with: AgentBrief[];
+    sessions: number;
+  };
 }
 
 export interface SessionInfo {
@@ -813,6 +847,15 @@ export class Api {
     this.call<{ stopped: string[] }>("POST", `/api/agents/${id}/stop`, {
       reason: "stopped from the web UI",
     });
+  /** What removing it would do (p3.8.9): who goes with it, tasks, turns, whether it may. */
+  removePreview = (id: string) =>
+    this.call<RemovePreview>("GET", `/api/agents/${id}/remove-preview`);
+  /** Removes it from the team with everything below it; its history stays (p3.8.9). */
+  removeAgent = (id: string, reason = "removed by the person") =>
+    this.call<{ removed: string[] }>("POST", `/api/agents/${id}/remove`, { reason });
+  removedAgents = () => this.call<RemovedAgent[]>("GET", "/api/agents/removed");
+  restoreAgent = (id: string) =>
+    this.call<{ restored: string[] }>("POST", `/api/agents/${id}/restore`);
   /** The Chat's agent (2026-11-03), made on first use. */
   chatAgent = () => this.call<Agent>("GET", "/api/chat/agent");
   /** Its id if it exists already (nothing is made). */

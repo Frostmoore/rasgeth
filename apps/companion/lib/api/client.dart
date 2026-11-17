@@ -309,6 +309,41 @@ class RedGiantClient {
     const {'reason': 'stopped from RGCompanion'},
   );
 
+  /// `GET /api/agents/:id/remove-preview` (3.8.9): who goes with it, tasks and turns that end.
+  Future<RemovePreview> removePreview(String agentId) async => RemovePreview.fromJson(
+    _object(await _get('/api/agents/${Uri.encodeComponent(agentId)}/remove-preview')),
+  );
+
+  /// `POST /api/agents/:id/remove` (3.8.9): out of the team with those below it; its history
+  /// stays and it can be restored. The ids removed.
+  Future<List<String>> removeAgent(String agentId, {String? reason}) async => [
+    for (final id
+        in (_object(
+                  await _post('/api/agents/${Uri.encodeComponent(agentId)}/remove', {
+                    'reason': reason ?? 'removed from RGCompanion',
+                  }),
+                )['removed']
+                as List?) ??
+            const <Object?>[])
+      if (id is String) id,
+  ];
+
+  /// `GET /api/agents/removed` (3.8.9): the removed agents, the latest first.
+  Future<List<RemovedAgent>> removedAgents() async => [
+    for (final a in _array(await _get('/api/agents/removed'))) RemovedAgent.fromJson(a),
+  ];
+
+  /// `POST /api/agents/:id/restore` (3.8.9): back in the team with those removed with it.
+  Future<List<String>> restoreAgent(String agentId) async => [
+    for (final id
+        in (_object(
+                  await _post('/api/agents/${Uri.encodeComponent(agentId)}/restore', const {}),
+                )['restored']
+                as List?) ??
+            const <Object?>[])
+      if (id is String) id,
+  ];
+
   /// `GET /api/agents/:id/compaction-defaults`: what its summaries do when it sets nothing.
   Future<({double at, double keep})> compactionDefaults(String agentId) async {
     final o = _object(

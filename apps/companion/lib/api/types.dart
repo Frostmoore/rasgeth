@@ -295,7 +295,8 @@ class Agent {
       id: _str(j['id']) ?? '',
       kind: agentKindFrom(_str(j['kind'])),
       name: _str(j['name']) ?? '',
-      active: j['status'] != 'stopped',
+      // Stopped, or removed from the team (3.8.9: only the «Removed agents» list has those).
+      active: j['status'] != 'stopped' && j['status'] != 'removed',
       parentId: _str(j['parentId']),
       projectId: _str(j['projectId']),
       role: _str(j['role']),
@@ -355,6 +356,100 @@ class Agent {
     compactKeep: compactKeep,
     projects: projects,
   );
+}
+
+/// Who goes with an agent when it is removed (3.8.9): an id, a name, a kind.
+class AgentBrief {
+  const AgentBrief({required this.id, required this.name, required this.kind});
+
+  factory AgentBrief.fromJson(Map<String, dynamic> j) => AgentBrief(
+    id: _str(j['id']) ?? '',
+    name: _str(j['name']) ?? '',
+    kind: agentKindFrom(_str(j['kind'])),
+  );
+
+  final String id;
+  final String name;
+  final AgentKind kind;
+}
+
+/// `GET /api/agents/:id/remove-preview` (3.8.9): what removing the agent takes with it.
+class RemovePreview {
+  const RemovePreview({
+    required this.agent,
+    this.others = const [],
+    this.tasks = 0,
+    this.running = 0,
+    this.allowed = true,
+    this.why,
+  });
+
+  factory RemovePreview.fromJson(Map<String, dynamic> j) => RemovePreview(
+    agent: AgentBrief.fromJson(_map(j['agent'])),
+    others: [
+      for (final w in (j['with'] as List?) ?? const <Object?>[])
+        if (w is Map<String, dynamic>) AgentBrief.fromJson(w),
+    ],
+    tasks: (j['tasks'] as num?)?.toInt() ?? 0,
+    running: (j['running'] as num?)?.toInt() ?? 0,
+    allowed: j['allowed'] != false,
+    why: _str(j['why']),
+  );
+
+  final AgentBrief agent;
+
+  /// The agents below it, removed with it (the server's `with`).
+  final List<AgentBrief> others;
+
+  /// Open tasks that close («agent removed») and turns that stop.
+  final int tasks;
+  final int running;
+
+  /// False for God, Demi-God and the Chat: nobody removes them.
+  final bool allowed;
+  final String? why;
+}
+
+/// One entry of `GET /api/agents/removed` (3.8.9): the agent as it was, and its removal.
+class RemovedAgent {
+  const RemovedAgent({
+    required this.agent,
+    required this.at,
+    required this.by,
+    this.reason = '',
+    this.others = const [],
+    this.sessions = 0,
+  });
+
+  factory RemovedAgent.fromJson(Map<String, dynamic> j) {
+    final r = _map(j['removed']);
+    return RemovedAgent(
+      agent: Agent.fromJson(j),
+      at: _str(r['at']) ?? '',
+      by: _str(r['by']) ?? 'person',
+      reason: _str(r['reason']) ?? '',
+      others: [
+        for (final w in (r['with'] as List?) ?? const <Object?>[])
+          if (w is Map<String, dynamic>) AgentBrief.fromJson(w),
+      ],
+      sessions: (r['sessions'] as num?)?.toInt() ?? 0,
+    );
+  }
+
+  final Agent agent;
+
+  /// When (ISO), and by whom: `person`, or the name of the agent that did it.
+  final String at;
+  final String by;
+  final String reason;
+
+  /// Removed together with it (restored together too).
+  final List<AgentBrief> others;
+
+  /// Its conversations, still readable.
+  final int sessions;
+
+  bool get byPerson => by == 'person';
 }
 
 /// One entry of the tools' catalog (`GET /api/tools`).

@@ -412,6 +412,16 @@ const SENTENCES: Record<string, Record<Lang, Sentence>> = {
     it: ({ i, name }) => `Ferma l'agente ${name(i.agent_id)}`,
     en: ({ i, name }) => `Stops the agent ${name(i.agent_id)}`,
   },
+  remove_agent: {
+    it: ({ i, name }) =>
+      `Rimuove l'agente ${name(i.agent_id)} dalla squadra (con chi è sotto di lui; si può ripristinare)`,
+    en: ({ i, name }) =>
+      `Removes the agent ${name(i.agent_id)} from the team (with those below it; it can be restored)`,
+  },
+  restore_agent: {
+    it: ({ i, name }) => `Riporta nella squadra l'agente rimosso ${name(i.agent_id)}`,
+    en: ({ i, name }) => `Brings the removed agent ${name(i.agent_id)} back into the team`,
+  },
   merge_work: {
     it: ({ i, name }) => `Porta qui il lavoro dell'agente ${name(i.agent_id)}`,
     en: ({ i, name }) => `Brings in the work of the agent ${name(i.agent_id)}`,

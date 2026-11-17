@@ -3398,5 +3398,138 @@
   "embedProbeTitle": "Web view test",
   "embedSaving": "Saving…",
   "embedSavedState": "Saved",
-  "embedProbeOpen": "Web view test"
+  "embedProbeOpen": "Web view test",
+  "raMenu": "Remove…",
+  "raTitle": "Remove {name}?",
+  "@raTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "raBody": "{name} leaves the team: its turns stop and nobody gives it work any more. Nothing is deleted: its conversations and its history stay, readable in «Removed agents», where you can restore it.",
+  "@raBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "raWith": "Removed with it: {names}",
+  "@raWith": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "raTasks": "Open tasks that close («agent removed»): {count}",
+  "@raTasks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "raRunning": "Conversations at work that stop now: {count}",
+  "@raRunning": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "raYes": "Remove {name}",
+  "@raYes": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "raDone": "{name} removed: «Removed agents» brings it back.",
+  "@raDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "raFailed": "Not removed: {why}",
+  "@raFailed": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "raProtected": "{name} cannot be removed.",
+  "@raProtected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "raHelp": "It leaves the team with the agents below it; its history stays and you can restore it from «Removed agents».",
+  "raListTitle": "Removed agents",
+  "raListRow": "Read their conversations, bring them back",
+  "raListHelp": "Agents removed from the team, by you or by God. Nothing was deleted: their conversations stay readable, and «Restore» brings each back with those removed with it.",
+  "raNone": "No removed agents.",
+  "raWhen": "Removed {when} by {by}",
+  "@raWhen": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "by": {
+        "type": "String"
+      }
+    }
+  },
+  "raByYou": "you",
+  "raReason": "Why: {reason}",
+  "@raReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "raRestore": "Restore",
+  "raRestored": "{name} is back in the team.",
+  "@raRestored": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "raRestoreFailed": "Not restored: {why}",
+  "@raRestoreFailed": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "raConversations": "Conversations ({count})",
+  "@raConversations": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "raNoConversations": "No conversations.",
+  "raReadOnly": "{name} was removed: this conversation is read only.",
+  "@raReadOnly": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "raBadge": "Removed"
 }

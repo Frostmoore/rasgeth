@@ -20,6 +20,11 @@ export interface AgentNode {
    * gives it work, configures it or creates agents under it, and it does nothing itself.
    */
   archived?: boolean | undefined;
+  /**
+   * It is the person's Chat (p3.8.9): the everyday assistant the Chat screen talks to. Like God
+   * and Demi-God it is never removed, by anyone.
+   */
+  chat?: boolean | undefined;
 }
 
 /** The human owner acts as itself; agents act through their node. */
@@ -55,6 +60,16 @@ export type Action =
    * itself. Agents create only sub-agents, whose model follows theirs.
    */
   | "model";
+  /**
+   * Remove the target from the team (p3.8.9), with everything below it, and restore it: nothing of
+   * its history goes. God for every agent, an orchestrator for its own project's agents (not those
+   * assigned to it), the human for every one of theirs; never God, Demi-God or the Chat, never
+   * oneself. Agents do not: their sub-agents end with their task.
+   */
+  | "remove";
+
+/** God, Demi-God and the Chat are never removed (p3.8.9), by anyone. */
+const removable = (t: AgentNode) => t.kind !== "god" && t.kind !== "demigod" && !t.chat;
 
 /** Lookup used to walk up the tree. */
 export type Resolve = (id: string) => AgentNode | undefined;
@@ -87,8 +102,10 @@ const isAncestor = (maybe: AgentNode, of: AgentNode, resolve: Resolve) =>
  *   messages God; sees no project and creates nobody.
  * Changing permissions ("configure") is reserved to God and the human; nobody configures
  * God but the human.
- * An archived project (2026-11-09): its agents are only read (the human may also stop them);
- * none of them acts.
+ * An archived project (2026-11-09): its agents are only read (the human may also stop or remove
+ * them); none of them acts.
+ * Removing (p3.8.9): God every agent, an orchestrator its project's own; never God, Demi-God, the
+ * Chat or oneself.
  */
 export function can(
   actor: Actor,
@@ -97,10 +114,11 @@ export function can(
   // Today every rule is decided by direct parentage and project; kept for deeper trees.
   _resolve: Resolve,
 ): boolean {
+  if (action === "remove" && !removable(target)) return false;
   if (actor.type === "human")
     return (
       actor.ownerId === target.ownerId &&
-      (!target.archived || action === "read" || action === "stop") &&
+      (!target.archived || action === "read" || action === "stop" || action === "remove") &&
       (action !== "join" || (target.kind !== "demigod" && target.kind !== "subagent"))
     );
   const a = actor.agent;
@@ -133,7 +151,13 @@ export function can(
     case "agent": {
       if (self) return action === "read" || action === "spawn";
       const child = target.kind === "subagent" && target.parentId === a.id;
-      return child && action !== "configure" && action !== "spawn" && action !== "model";
+      return (
+        child &&
+        action !== "configure" &&
+        action !== "spawn" &&
+        action !== "model" &&
+        action !== "remove"
+      );
     }
     case "subagent":
       return self && action === "read";

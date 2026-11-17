@@ -68,6 +68,10 @@ const en: Record<string, Words> = {
     name: "Sending, publishing, paying or deleting in the browser",
     hint: "An agent clicks a button like Send, Publish, Pay, Buy or Delete on a web page.",
   },
+  "remove-agent": {
+    name: "Removing an agent from the team",
+    hint: "God or an orchestrator removes an agent and those below it: their turns stop, their tasks close; the history stays and they can be restored.",
+  },
 };
 
 const it: Record<string, Words> = {
@@ -130,6 +134,10 @@ const it: Record<string, Words> = {
   "outgoing-browser": {
     name: "Inviare, pubblicare, pagare o cancellare nel browser",
     hint: "Un agente clicca un pulsante come Invia, Pubblica, Paga, Acquista o Elimina su una pagina web.",
+  },
+  "remove-agent": {
+    name: "Rimuovere un agente dalla squadra",
+    hint: "God o un orchestratore rimuove un agente e chi è sotto di lui: i turni si fermano, i compiti si chiudono; la storia resta e si possono ripristinare.",
   },
 };
 

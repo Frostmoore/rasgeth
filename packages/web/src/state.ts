@@ -749,6 +749,10 @@ export function applyMessage(m: ServerMessage): void {
       if (!agents.value.some((a) => a.id === m.agentId)) refreshSoon(true);
       return;
     }
+    // Agents removed or restored (p3.8.9), by the person or by God: the lists again.
+    case "agents.changed":
+      void refreshTeam().catch(() => {});
+      return;
     case "image.progress": {
       const v = sessionView(m.sessionId);
       v.value = {
@@ -902,6 +906,29 @@ function setProjects(all: Project[]): void {
   archivedProjects.value = all.filter((p) => p.archivedAt);
 }
 export const agents = signal<Agent[]>([]);
+/**
+ * The removed agents (p3.8.9), one entry per removal (those removed with it in `with`): their
+ * history stays readable, «Restore» brings them back.
+ */
+export const removedAgents = signal<import("./api.js").RemovedAgent[]>([]);
+export async function refreshRemovedAgents(): Promise<void> {
+  removedAgents.value = await getApi().removedAgents();
+}
+/** The removal an agent went with (it, or the one above it removed with it), if it is removed. */
+export function removalOf(agentId: string): import("./api.js").RemovedAgent | undefined {
+  return removedAgents.value.find(
+    (r) => r.id === agentId || r.removed.with.some((w) => w.id === agentId),
+  );
+}
+/** Agents, conversations and removed agents again (after a removal or a restore). */
+export async function refreshTeam(): Promise<void> {
+  const [list] = await Promise.all([
+    getApi().agents(),
+    refreshConversations().catch(() => {}),
+    refreshRemovedAgents().catch(() => {}),
+  ]);
+  agents.value = list;
+}
 export const approvals = signal<PermissionRequestInfo[]>([]);
 /** Automation messages sent to the web page, newest first, until the person dismisses them. */
 export const notices = signal<
@@ -993,6 +1020,7 @@ export async function refresh(): Promise<void> {
   // trips before the page showed (seconds on a slow phone network).
   await Promise.all([
     refreshConversations().catch(() => {}),
+    refreshRemovedAgents().catch(() => {}),
     a
       .chatAgentIdOf()
       .catch(() => ({ id: null }))

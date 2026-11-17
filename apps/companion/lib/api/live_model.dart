@@ -137,6 +137,9 @@ class LiveModel extends ChangeNotifier {
   /// A conversation the app did not list: the caller reloads the rows.
   VoidCallback? onUnknownSession;
 
+  /// Agents removed or restored (3.8.9, `agents.changed`): the caller reads the team again.
+  VoidCallback? onAgentsChanged;
+
   /// A turn ended (`session.state` not running): the header's spending is read again.
   VoidCallback? onTurnEnded;
 
@@ -207,6 +210,8 @@ class LiveModel extends ChangeNotifier {
       case 'question.closed':
         questions = questions.where((a) => a.requestId != m['requestId']).toList();
         lastClosedVia = m['via'] as String?;
+      case 'agents.changed':
+        onAgentsChanged?.call();
       case 'session.activity':
         final running = m['state'] == 'running';
         if (sid == null) break;

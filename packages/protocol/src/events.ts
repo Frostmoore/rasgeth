@@ -442,6 +442,27 @@ export const EventBody = z.discriminatedUnion("type", [
     payload: z.object({ agentId: z.string(), reason: z.string() }),
   }),
   /**
+   * An agent left the team (p3.8.9): with everything below it (`with`), gone from every list,
+   * its turns stopped and its open tasks closed; its log and conversations stay, readable, and
+   * it can be restored (`agent.restored`). `by`: "person" or the agent that removed it. `was`:
+   * the status it had, given back on restore.
+   */
+  z.object({
+    type: z.literal("agent.removed"),
+    payload: z.object({
+      agentId: z.string(),
+      reason: z.string(),
+      by: z.string(),
+      with: z.array(z.string()),
+      was: z.enum(["active", "stopped"]),
+    }),
+  }),
+  /** A removed agent back in the team, with the agents removed together with it (p3.8.9). */
+  z.object({
+    type: z.literal("agent.restored"),
+    payload: z.object({ agentId: z.string(), by: z.string(), with: z.array(z.string()) }),
+  }),
+  /**
    * An agent's mascot seed (G40.2): given once to the agents made before mascots ("migrated"), or
    * a new face the person asked for ("changed"). New agents carry theirs in `agent.spawned`.
    */

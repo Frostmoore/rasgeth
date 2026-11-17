@@ -31,7 +31,8 @@ import { Mascot } from "./Mascot.js";
 import { modelName } from "./ModelMenu.js";
 import { ModelSelect, useModels } from "./ModelSelect.js";
 import { PromptEditor } from "./PromptEditor.js";
-import { Acts, Head, Seg, Switch } from "./SettingsKit.js";
+import { RemoveAgentDialog, RemovedAgentsList, removable } from "./RemovedAgents.js";
+import { Acts, Head, Seg, Sub, Switch } from "./SettingsKit.js";
 import { Modal } from "./ui.js";
 
 const CHILDREN: Record<Agent["kind"], Agent["kind"][]> = {
@@ -383,11 +384,18 @@ export function AgentPanel({
   onAdd: (a: Agent) => void;
 }) {
   const [tab, setTab] = useState<PanelTab>("general");
+  const [removing, setRemoving] = useState(false);
   const active = agent.status === "active";
   const tabs: PanelTab[] =
     agent.kind === "demigod"
       ? ["general", "model", "limits", "behaviour", "tools"]
       : ["general", "model", "limits", "behaviour", "memory", "knowledge", "tools"];
+  // «Remove» (p3.8.9): for a stopped agent too; never God, Demi-God or the Chat.
+  const remove = removable(agent) && (
+    <button type="button" class="wz-btn quiet st-danger" onClick={() => setRemoving(true)}>
+      {t("agentRemove")}
+    </button>
+  );
   const foot = active ? (
     <>
       {agent.kind !== "god" && (
@@ -402,6 +410,7 @@ export function AgentPanel({
           {t("stop")}
         </button>
       )}
+      {remove}
       <span class="spacer" />
       {canAddUnder(agent) && (
         <button type="button" class="wz-btn" onClick={() => onAdd(agent)}>
@@ -415,6 +424,11 @@ export function AgentPanel({
       >
         {t("agentOpenChat")}
       </button>
+    </>
+  ) : remove ? (
+    <>
+      {remove}
+      <span class="spacer" />
     </>
   ) : undefined;
   return (
@@ -460,6 +474,15 @@ export function AgentPanel({
         {tab === "knowledge" && <AgentKnowledge agent={agent} />}
         {tab === "tools" && <AgentTools agent={agent} />}
       </div>
+      {removing && (
+        <RemoveAgentDialog
+          agent={agent}
+          onClose={(removed) => {
+            setRemoving(false);
+            if (removed) onClose();
+          }}
+        />
+      )}
     </Modal>
   );
 }
@@ -886,6 +909,11 @@ function AgentsPage({ projectId = null }: { projectId?: string | null }) {
           ) : (
             <CardsView list={list} projectId={scope} selected={selectedId} select={select} />
           )}
+          {/* Out of the team, with their history (p3.8.9): read them or bring them back. */}
+          <section class="ra-section">
+            <Sub title={t("raTitle")} lead={t("raLead")} />
+            <RemovedAgentsList projectId={scope} />
+          </section>
         </div>
       </div>
     </div>
