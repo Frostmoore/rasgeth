@@ -20,7 +20,13 @@ import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/words.dart';
 import '../embed/embed_screen.dart';
-import 'at_work_screen.dart';
+import '../settings/agents/agent_tree.dart';
+import '../settings/budgets_screen.dart';
+import '../settings/commands_screen.dart';
+import '../settings/general_screen.dart';
+import '../settings/requests_screen.dart';
+import '../settings/safety_screen.dart';
+import '../settings/tools_screen.dart';
 import 'artifacts_screen.dart';
 import 'first_start_screen.dart' show openExternal;
 import 'full_settings_screen.dart';
@@ -196,6 +202,31 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
     if (mounted && list != null) setState(() => _devices = list);
   }
 
+  Future<void> _renameDevice(DeviceRow d) async {
+    final l = AppLocalizations.of(context);
+    final t = await askText(
+      context,
+      title: l.g4DvRenameQ(d.name),
+      initial: d.name,
+      yes: l.rename,
+      fieldKey: const Key('device-name'),
+    );
+    final name = t?.trim() ?? '';
+    final cut = name.length > 60 ? name.substring(0, 60) : name;
+    if (cut.isEmpty || cut == d.name || !mounted) return;
+    final ok = await _try<bool>(() async {
+      await _c!.renameDevice(d.id, cut);
+      return true;
+    });
+    if (ok != true) return;
+    final list = await _try(_c!.devices);
+    if (!mounted) return;
+    setState(() {
+      if (list != null) _devices = list;
+      _said = l.g4DvRenamed(cut);
+    });
+  }
+
   Future<void> _pushTest(DeviceRow d) async {
     final l = AppLocalizations.of(context);
     final r = await _try(() => _c!.pushTest(d.id));
@@ -314,6 +345,74 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       _Fact(icon: RgIcons.lock, text: l.pinnedKey(s!.fingerprint!), mono: true),
                   ],
                 ),
+                // ---- the settings of every day (G42.4, native as the page's sections) ----
+                _Head(l.g4HubTitle),
+                _Card(
+                  key: const Key('settings-hub'),
+                  children: [
+                    _hub(
+                      c,
+                      'general',
+                      RgIcons.settings,
+                      l.g4GenTitle,
+                      l.g4HubGeneral,
+                      () => openGeneralSettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'agents',
+                      RgIcons.users,
+                      l.g4AgTreeTitle,
+                      l.g4HubAgents,
+                      () => openAgentTree(context),
+                    ),
+                    _hub(
+                      c,
+                      'tools',
+                      RgIcons.tool,
+                      l.g4TlSection,
+                      l.g4HubTools,
+                      () => openToolsSettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'commands',
+                      RgIcons.terminal,
+                      l.g4CmSection,
+                      [
+                        l.g4HubCommands,
+                        atWorkSummary(l, app.live.turns.limit),
+                        if (app.live.turns.queued.isNotEmpty)
+                          l.statusQueued(app.live.turns.queued.length),
+                      ].join(' · '),
+                      () => openCommandsSettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'requests',
+                      RgIcons.bell,
+                      l.g4RqSection,
+                      l.g4HubRequests,
+                      () => openRequestsSettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'safety',
+                      RgIcons.shield,
+                      l.g4SfTitle,
+                      l.g4HubSafety,
+                      () => openSafetySettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'budgets',
+                      RgIcons.dollar,
+                      l.g4BuTitle,
+                      l.g4BuRowHint,
+                      () => openBudgetsSettings(context),
+                    ),
+                  ],
+                ),
                 // ---- updates ----
                 _Head(l.sectionUpdates),
                 _Card(key: const Key('settings-updates'), children: _updates(l, c)),
@@ -344,14 +443,24 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                                       ? l.devNeverUsed
                                       : l.devLastUsed(_when(d.lastUsedAt!))),
                           ),
-                          trailing: d.current
-                              ? null
-                              : IconButton(
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                key: Key('rename-${d.id}'),
+                                tooltip: l.rename,
+                                onPressed: () => _renameDevice(d),
+                                icon: RgIcon(RgIcons.edit, size: 18, color: c.dim),
+                              ),
+                              if (!d.current)
+                                IconButton(
                                   key: Key('revoke-${d.id}'),
                                   tooltip: l.devRevoke,
                                   onPressed: () => _revoke(d),
                                   icon: RgIcon(RgIcons.trash, size: 18, color: c.err),
                                 ),
+                            ],
+                          ),
                         ),
                   ],
                 ),
@@ -415,26 +524,6 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                     ),
                   ],
                 ),
-                // ---- agents at work together (3.8.10) ----
-                _Head(l.atWorkTitle),
-                _Card(
-                  children: [
-                    ListTile(
-                      key: const Key('settings-at-work'),
-                      leading: RgIcon(RgIcons.users, color: c.accent),
-                      title: Text(l.atWorkAtMost),
-                      subtitle: Text(
-                        [
-                          atWorkSummary(l, app.live.turns.limit),
-                          if (app.live.turns.queued.isNotEmpty)
-                            l.statusQueued(app.live.turns.queued.length),
-                        ].join(' · '),
-                      ),
-                      trailing: RgIcon(RgIcons.chevronRight, color: c.dim),
-                      onTap: () => openAtWork(context),
-                    ),
-                  ],
-                ),
                 // ---- artifacts (G42.2: native, as the page's Settings › Artifacts) ----
                 _Head(l.sectionArtifacts),
                 _Card(
@@ -491,6 +580,16 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
       ),
     );
   }
+
+  Widget _hub(RgColors c, String id, RgIcons icon, String title, String sub, VoidCallback onTap) =>
+      ListTile(
+        key: Key('settings-$id'),
+        leading: RgIcon(icon, color: c.accent),
+        title: Text(title),
+        subtitle: Text(sub),
+        trailing: RgIcon(RgIcons.chevronRight, color: c.dim),
+        onTap: onTap,
+      );
 
   String? _modelName() {
     final m = _setup?.defaultModel;

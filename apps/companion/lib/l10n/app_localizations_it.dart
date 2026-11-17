@@ -7036,4 +7036,133 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get g4AgJobHint_custom => 'Descrivi tu il lavoro.';
+
+  @override
+  String get g4BuTitle => 'Budget';
+
+  @override
+  String g4BuThisMonth(String month) {
+    return 'Speso a $month';
+  }
+
+  @override
+  String get g4BuLead => 'Quanto spendono progetti e agenti, e fin dove possono arrivare.';
+
+  @override
+  String get g4BuChart => 'Spesa giorno per giorno di questo mese';
+
+  @override
+  String get g4BuHowLink => 'Come funzionano i limiti';
+
+  @override
+  String get g4BuHow =>
+      'I limiti contano tutto quello che è stato speso da quando li hai messi, non mese per mese. Quando una riga arriva al limite, i suoi agenti si fermano prima della richiesta successiva, e Telegram ti avvisa quando ci si avvicina. Alza o togli il limite per farli ripartire. Gli abbonamenti (Claude, ChatGPT) e i modelli sul tuo computer qui non costano niente.';
+
+  @override
+  String get g4BuUnderstood => 'Ho capito';
+
+  @override
+  String get g4BuTotal => 'Totale';
+
+  @override
+  String get g4BuEverything => 'Tutto';
+
+  @override
+  String get g4BuNothingYet => 'Ancora nessuna spesa.';
+
+  @override
+  String get g4BuProjects => 'Progetti';
+
+  @override
+  String get g4BuAgents => 'Agenti';
+
+  @override
+  String g4BuLimitFor(String name) {
+    return 'Limite per $name';
+  }
+
+  @override
+  String g4BuLimitNow(String limit) {
+    return 'Ora: $limit';
+  }
+
+  @override
+  String g4BuLimitSay(String usd) {
+    return 'A \$$usd i suoi agenti si fermano e te lo dicono; lo alzi quando vuoi.';
+  }
+
+  @override
+  String get g4BuLimitPick => 'Scegli una cifra, o scrivine un\'altra.';
+
+  @override
+  String get g4BuRemoveLimit => 'Nessun limite';
+
+  @override
+  String g4BuMonth(String usd) {
+    return '$usd questo mese';
+  }
+
+  @override
+  String g4BuEver(String usd) {
+    return '$usd dall\'inizio';
+  }
+
+  @override
+  String get g4BuStopped => 'Limite raggiunto: fermo';
+
+  @override
+  String get g4BuChange => 'Cambia';
+
+  @override
+  String g4BuLimitIs(String limit) {
+    return 'Limite $limit';
+  }
+
+  @override
+  String get g4BuNoLimit => 'nessun limite';
+
+  @override
+  String get g4BuOther => 'altro';
+
+  @override
+  String get g4BuLimitLabel => 'Limite';
+
+  @override
+  String g4BuTokens(String n) {
+    return '$n token';
+  }
+
+  @override
+  String get g4BuRowHint => 'Questo mese, ogni progetto e agente, con i loro limiti';
+
+  @override
+  String g4DvRenameQ(String name) {
+    return 'Un nome nuovo per «$name»';
+  }
+
+  @override
+  String g4DvRenamed(String name) {
+    return 'Rinominato: $name';
+  }
+
+  @override
+  String get g4HubTitle => 'Impostazioni';
+
+  @override
+  String get g4HubGeneral => 'Lingua, istruzioni degli agenti, ricerca, immagini, novità';
+
+  @override
+  String get g4HubAgents => 'L\'albero degli agenti, nuovi agenti, assistenti';
+
+  @override
+  String get g4HubTools => 'Cosa può usare ogni agente';
+
+  @override
+  String get g4HubCommands => 'Comandi in background, agenti al lavoro insieme';
+
+  @override
+  String get g4HubRequests => 'Dove ti arrivano le richieste, quanto aspettano';
+
+  @override
+  String get g4HubSafety => 'Guardiano, chi approva, spesa, skill, conservazione';
 }

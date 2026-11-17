@@ -5252,5 +5252,111 @@
   "g4AgJobHint_tech": "Answers technical questions and fixes small things.",
   "g4AgJobText_tech": "Answer my technical questions simply, with the steps to follow, and fix small problems when I ask.",
   "g4AgJob_custom": "In my own words",
-  "g4AgJobHint_custom": "Describe the job yourself."
+  "g4AgJobHint_custom": "Describe the job yourself.",
+  "g4BuTitle": "Budgets",
+  "g4BuThisMonth": "Spent in {month}",
+  "@g4BuThisMonth": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "g4BuLead": "What projects and agents spend, and how far they may go.",
+  "g4BuChart": "Spending day by day this month",
+  "g4BuHowLink": "How limits work",
+  "g4BuHow": "Limits count everything spent since you set them, not month by month. When a row reaches its limit, its agents stop before their next request and Telegram warns you as it gets close. Raise or remove the limit to let them go on. Subscriptions (Claude, ChatGPT) and models on your computer cost nothing here.",
+  "g4BuUnderstood": "Got it",
+  "g4BuTotal": "Total",
+  "g4BuEverything": "Everything",
+  "g4BuNothingYet": "Nothing spent yet.",
+  "g4BuProjects": "Projects",
+  "g4BuAgents": "Agents",
+  "g4BuLimitFor": "Limit for {name}",
+  "@g4BuLimitFor": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "g4BuLimitNow": "Now: {limit}",
+  "@g4BuLimitNow": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "g4BuLimitSay": "At ${usd} its agents stop and tell you; you raise it whenever you like.",
+  "@g4BuLimitSay": {
+    "placeholders": {
+      "usd": {
+        "type": "String"
+      }
+    }
+  },
+  "g4BuLimitPick": "Choose an amount, or write another one.",
+  "g4BuRemoveLimit": "No limit",
+  "g4BuMonth": "{usd} this month",
+  "@g4BuMonth": {
+    "placeholders": {
+      "usd": {
+        "type": "String"
+      }
+    }
+  },
+  "g4BuEver": "{usd} since the start",
+  "@g4BuEver": {
+    "placeholders": {
+      "usd": {
+        "type": "String"
+      }
+    }
+  },
+  "g4BuStopped": "Limit reached: stopped",
+  "g4BuChange": "Change",
+  "g4BuLimitIs": "Limit {limit}",
+  "@g4BuLimitIs": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "g4BuNoLimit": "no limit",
+  "g4BuOther": "other",
+  "g4BuLimitLabel": "Limit",
+  "g4BuTokens": "{n} tokens",
+  "@g4BuTokens": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "g4BuRowHint": "This month, every project and agent, with their limits",
+  "g4DvRenameQ": "A new name for «{name}»",
+  "@g4DvRenameQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "g4DvRenamed": "Renamed: {name}",
+  "@g4DvRenamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "g4HubTitle": "Settings",
+  "g4HubGeneral": "Language, agents' instructions, search, images, what's new",
+  "g4HubAgents": "The tree of agents, new agents, assistants",
+  "g4HubTools": "What every agent may use",
+  "g4HubCommands": "Background commands, agents at work together",
+  "g4HubRequests": "Where requests reach you, how long they wait",
+  "g4HubSafety": "Guardian, who approves, spending, skills, retention"
 }

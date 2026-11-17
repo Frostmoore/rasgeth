@@ -862,8 +862,7 @@ class RedGiantClient {
   Future<Object?> getJson(String path, [Map<String, String>? query]) => _get(path, query);
 
   /// G42.4: any other request (its answer may be empty: null).
-  Future<Object?> callJson(String method, String path, [Object? body]) =>
-      _call(method, path, body);
+  Future<Object?> callJson(String method, String path, [Object? body]) => _call(method, path, body);
 
   /// G42.4: an answer that must be an object, or a list of objects.
   Map<String, dynamic> objectOf(Object? o) => _object(o);
@@ -976,6 +975,11 @@ class RedGiantClient {
   /// `DELETE /api/devices/:id`: that device is signed out at once.
   Future<void> revokeDevice(String id) =>
       _call('DELETE', '/api/devices/${Uri.encodeComponent(id)}');
+
+  /// `PATCH /api/devices/:id` (G42.4): a new name for a device (60 characters at most, as the
+  /// page cuts it).
+  Future<void> renameDevice(String id, String name) =>
+      _call('PATCH', '/api/devices/${Uri.encodeComponent(id)}', {'name': name});
 
   /// `POST /api/devices/:id/push/test`: a test notification; null when it went.
   Future<String?> pushTest(String id) async {

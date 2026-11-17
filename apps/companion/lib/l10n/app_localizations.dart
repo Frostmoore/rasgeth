@@ -12014,6 +12014,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Describe the job yourself.'**
   String get g4AgJobHint_custom;
+
+  /// No description provided for @g4BuTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Budgets'**
+  String get g4BuTitle;
+
+  /// No description provided for @g4BuThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent in {month}'**
+  String g4BuThisMonth(String month);
+
+  /// No description provided for @g4BuLead.
+  ///
+  /// In en, this message translates to:
+  /// **'What projects and agents spend, and how far they may go.'**
+  String get g4BuLead;
+
+  /// No description provided for @g4BuChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending day by day this month'**
+  String get g4BuChart;
+
+  /// No description provided for @g4BuHowLink.
+  ///
+  /// In en, this message translates to:
+  /// **'How limits work'**
+  String get g4BuHowLink;
+
+  /// No description provided for @g4BuHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Limits count everything spent since you set them, not month by month. When a row reaches its limit, its agents stop before their next request and Telegram warns you as it gets close. Raise or remove the limit to let them go on. Subscriptions (Claude, ChatGPT) and models on your computer cost nothing here.'**
+  String get g4BuHow;
+
+  /// No description provided for @g4BuUnderstood.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get g4BuUnderstood;
+
+  /// No description provided for @g4BuTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get g4BuTotal;
+
+  /// No description provided for @g4BuEverything.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything'**
+  String get g4BuEverything;
+
+  /// No description provided for @g4BuNothingYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing spent yet.'**
+  String get g4BuNothingYet;
+
+  /// No description provided for @g4BuProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get g4BuProjects;
+
+  /// No description provided for @g4BuAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get g4BuAgents;
+
+  /// No description provided for @g4BuLimitFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Limit for {name}'**
+  String g4BuLimitFor(String name);
+
+  /// No description provided for @g4BuLimitNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now: {limit}'**
+  String g4BuLimitNow(String limit);
+
+  /// No description provided for @g4BuLimitSay.
+  ///
+  /// In en, this message translates to:
+  /// **'At \${usd} its agents stop and tell you; you raise it whenever you like.'**
+  String g4BuLimitSay(String usd);
+
+  /// No description provided for @g4BuLimitPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an amount, or write another one.'**
+  String get g4BuLimitPick;
+
+  /// No description provided for @g4BuRemoveLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit'**
+  String get g4BuRemoveLimit;
+
+  /// No description provided for @g4BuMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'{usd} this month'**
+  String g4BuMonth(String usd);
+
+  /// No description provided for @g4BuEver.
+  ///
+  /// In en, this message translates to:
+  /// **'{usd} since the start'**
+  String g4BuEver(String usd);
+
+  /// No description provided for @g4BuStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Limit reached: stopped'**
+  String get g4BuStopped;
+
+  /// No description provided for @g4BuChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get g4BuChange;
+
+  /// No description provided for @g4BuLimitIs.
+  ///
+  /// In en, this message translates to:
+  /// **'Limit {limit}'**
+  String g4BuLimitIs(String limit);
+
+  /// No description provided for @g4BuNoLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'no limit'**
+  String get g4BuNoLimit;
+
+  /// No description provided for @g4BuOther.
+  ///
+  /// In en, this message translates to:
+  /// **'other'**
+  String get g4BuOther;
+
+  /// No description provided for @g4BuLimitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Limit'**
+  String get g4BuLimitLabel;
+
+  /// No description provided for @g4BuTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} tokens'**
+  String g4BuTokens(String n);
+
+  /// No description provided for @g4BuRowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This month, every project and agent, with their limits'**
+  String get g4BuRowHint;
+
+  /// No description provided for @g4DvRenameQ.
+  ///
+  /// In en, this message translates to:
+  /// **'A new name for «{name}»'**
+  String g4DvRenameQ(String name);
+
+  /// No description provided for @g4DvRenamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Renamed: {name}'**
+  String g4DvRenamed(String name);
+
+  /// No description provided for @g4HubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get g4HubTitle;
+
+  /// No description provided for @g4HubGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'Language, agents\' instructions, search, images, what\'s new'**
+  String get g4HubGeneral;
+
+  /// No description provided for @g4HubAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'The tree of agents, new agents, assistants'**
+  String get g4HubAgents;
+
+  /// No description provided for @g4HubTools.
+  ///
+  /// In en, this message translates to:
+  /// **'What every agent may use'**
+  String get g4HubTools;
+
+  /// No description provided for @g4HubCommands.
+  ///
+  /// In en, this message translates to:
+  /// **'Background commands, agents at work together'**
+  String get g4HubCommands;
+
+  /// No description provided for @g4HubRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Where requests reach you, how long they wait'**
+  String get g4HubRequests;
+
+  /// No description provided for @g4HubSafety.
+  ///
+  /// In en, this message translates to:
+  /// **'Guardian, who approves, spending, skills, retention'**
+  String get g4HubSafety;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

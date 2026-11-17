@@ -157,6 +157,7 @@ enum RgIcons {
   restore('<path d="M21 8v13H3V8M1 3h22v5H1zM12 19v-7M9 15l3-3 3 3"/>'),
   board('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h6"/>'),
   // 3.8.10: a turn waiting for a place (the page's IconClock).
+  dollar('<path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'),
   clock('<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>');
 
   const RgIcons(this.paths);
