@@ -362,6 +362,29 @@ const brain = (req) => {
     last.parts.every((p) => p.type === "tool_result" || p.type === "image");
   turn++;
   const said = last?.parts.find((p) => p.type === "text")?.text ?? "";
+  // p3.8.9 (the person's Coder): God makes an orchestrator with create_agent while the app is
+  // open; the app must show it live (apps/companion/test/live_server_test.dart).
+  const makeOrch = said.match(/^Crea l'orchestratore (.+) nel progetto ([\w-]+)$/);
+  if (makeOrch && !results)
+    return {
+      text: "Lo creo.",
+      toolCalls: [
+        {
+          name: "create_agent",
+          input: {
+            kind: "orchestrator",
+            name: makeOrch[1],
+            role: "Coordina il progetto",
+            project_id: makeOrch[2],
+          },
+        },
+      ],
+    };
+  if (
+    results &&
+    last.parts.some((p) => p.type === "tool_result" && /\(orchestrator_[0-9a-f]+\)/.test(String(p.content)))
+  )
+    return { text: "Fatto: l'orchestratore è pronto." };
   // G40.16, DEMO_PRODUCTS=1: the Chat shows four moka pots as cards, then picks one.
   if (productShop && said.startsWith("Mi consigli una moka") && !results)
     return {

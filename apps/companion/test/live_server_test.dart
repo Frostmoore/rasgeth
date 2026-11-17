@@ -8,6 +8,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rgcompanion/api/client.dart';
 import 'package:rgcompanion/api/live.dart';
@@ -17,6 +18,9 @@ import 'package:rgcompanion/api/token_store.dart';
 import 'package:rgcompanion/api/transport.dart';
 import 'package:rgcompanion/api/types.dart';
 import 'package:rgcompanion/app_state.dart';
+import 'package:rgcompanion/desktop/desk_controller.dart' show WallFilter;
+import 'package:rgcompanion/desktop/wall.dart' show wallSections;
+import 'package:rgcompanion/l10n/app_localizations.dart';
 
 final _url = Platform.environment['RG_LIVE_URL'];
 final _password = Platform.environment['RG_LIVE_PASSWORD'] ?? 'companion-test-1';
@@ -241,6 +245,80 @@ void main() {
         what: 'lists.changed on the page',
       );
       await until(() => other.agents.any((a) => a.id == made.id), what: 'on the other device');
+      await page.close();
+      await pc.disconnect();
+      await other.disconnect();
+    },
+    skip: skip,
+    timeout: const Timeout(Duration(minutes: 2)),
+  );
+
+  test(
+    "p3.8.9, the person's case: God makes an orchestrator with create_agent while the app is open",
+    () async {
+      Future<AppController> device(DevicePlatform p) async {
+        final a = AppController(tokens: MemoryTokenStore(), prefs: MemoryAppPrefs(), platform: p)
+          ..locale = const Locale('it');
+        expect(await a.connect(base.toString(), _password), isTrue, reason: '${a.error}');
+        await until(() => a.liveStatus == LiveStatus.open);
+        return a;
+      }
+
+      // The Windows app open on the wall; the page (another device) talks to God.
+      final pc = await device(DevicePlatform.windows);
+      final other = await device(DevicePlatform.android);
+      final c = other.client!;
+      final stamp = DateTime.now().millisecondsSinceEpoch.toRadixString(36);
+      final project = await c.createProject('GAIA $stamp');
+      final god = pc.agents.firstWhere((a) => a.kind == AgentKind.god);
+      final sid = await c.newSession(god.id);
+      final name = 'Orchestratore GAIA $stamp';
+      final page = await WebSocket.connect('${base.toString().replaceFirst('http', 'ws')}/ws');
+      final heard = <Map<String, dynamic>>[];
+      page.listen((d) => heard.add(jsonDecode(d as String) as Map<String, dynamic>));
+      page.add(
+        jsonEncode({'type': 'hello', 'protocolVersion': kWireProtocolVersion, 'token': c.token}),
+      );
+      await until(() => heard.any((m) => m['type'] == 'welcome'), what: 'page welcome');
+      page.add(
+        jsonEncode({
+          'type': 'session.send',
+          'sessionId': sid,
+          'text': "Crea l'orchestratore $name nel progetto ${project.id}",
+        }),
+      );
+      // Whatever the turn asks the person is allowed from the page, as she would.
+      final answered = <String>{};
+      await until(() {
+        for (final m in heard.toList()) {
+          final r = m['request'];
+          if (m['type'] == 'permission.request' && r is Map && answered.add('${r['requestId']}')) {
+            page.add(
+              jsonEncode({
+                'type': 'permission.resolve',
+                'requestId': r['requestId'],
+                'decision': 'allow',
+              }),
+            );
+          }
+        }
+        return pc.agents.any((a) => a.name == name);
+      }, what: 'the orchestrator in the app, without opening it again');
+      final orch = pc.agents.firstWhere((a) => a.name == name);
+      expect(orch.projectId, project.id);
+      // On the wall and in the mascots' bar (both draw wallSections), under its project.
+      final l = lookupAppLocalizations(const Locale('it'));
+      final sections = wallSections(pc, l, byProject: true, filter: WallFilter.all);
+      expect(
+        sections.any((x) => x.title == project.name && x.agents.any((a) => a.id == orch.id)),
+        isTrue,
+      );
+      expect(pc.projects.any((p) => p.id == project.id), isTrue);
+      // God's new conversation, named by its first message, is in the lists.
+      await until(
+        () => pc.live.sessions.any((s) => s.id == sid && (s.title ?? '').startsWith('Crea')),
+        what: "God's conversation with its title",
+      );
       await page.close();
       await pc.disconnect();
       await other.disconnect();

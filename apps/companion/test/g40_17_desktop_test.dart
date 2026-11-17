@@ -553,4 +553,54 @@ void main() {
     expect(find.byType(DesktopShell), findsOneWidget);
     await done(tester);
   });
+
+  // 3.8.9 (the person's Coder): the status bar said «0 da te» while the wall showed the agent
+  // waiting for a real request. The bar is a const piece under the room's builder: it must draw
+  // again when a request comes or goes on the live connection, and so must «al lavoro».
+  testWidgets('the status bar follows the requests and the work that come live', (tester) async {
+    final app = await start(tester);
+    expect(find.text('2 da te'), findsOneWidget);
+    app.live.apply({
+      'type': 'permission.request',
+      'request': {
+        'requestId': 'r-live',
+        'sessionId': 's1',
+        'agentId': 'a3',
+        'agentName': 'Coder Web',
+        'projectId': null,
+        'tool': 'run_command',
+        'input': {'command': 'ls'},
+        'reasons': ['lists files'],
+        'danger': <String>[],
+        'createdAt': '2026-11-17T10:00:00.000Z',
+      },
+    });
+    await _settle(tester, 3);
+    expect(find.text('3 da te'), findsOneWidget);
+    app.live.apply({'type': 'permission.closed', 'requestId': 'r-live', 'via': 'web'});
+    await _settle(tester, 3);
+    expect(find.text('2 da te'), findsOneWidget);
+    int agentsAtWork() => app.live.sessions
+        .where((r) => r.running && !r.archived)
+        .map((r) => r.agentId)
+        .toSet()
+        .length;
+    String words(int n) => n == 1 ? '1 agente al lavoro' : '$n agenti al lavoro';
+    final before = agentsAtWork();
+    expect(find.text(words(before)), findsOneWidget);
+    final busy = {for (final r in app.live.sessions) if (r.running) r.agentId};
+    final idle = app.live.sessions.firstWhere(
+      (r) => !r.running && !r.archived && !busy.contains(r.agentId),
+    );
+    app.live.apply({
+      'type': 'session.activity',
+      'sessionId': idle.id,
+      'agentId': idle.agentId,
+      'state': 'running',
+    });
+    await _settle(tester, 3);
+    expect(agentsAtWork(), before + 1);
+    expect(find.text(words(before + 1)), findsOneWidget);
+    await done(tester);
+  });
 }

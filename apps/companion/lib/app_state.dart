@@ -204,6 +204,10 @@ class AppController extends ChangeNotifier {
   /// The archived projects (p3.5.3): their conversations are read only (G42.1).
   List<Project> archivedProjects = const [];
 
+  List<SessionRow>? _seenSessions;
+  List<PermissionRequest>? _seenApprovals;
+  List<QuestionRequest>? _seenQuestions;
+
   /// Moves every time the projects are read again (p3.8.9): screens with their own copy of the
   /// projects (Projects, with git and tasks) read theirs again.
   int projectsVersion = 0;
@@ -1015,8 +1019,12 @@ class AppController extends ChangeNotifier {
     } on ApiException {
       // Shown empty; the next refresh tries again.
     }
+    // With the link open the requests are the ones the server sent after `welcome` and since:
+    // a list read a moment earlier would drop one just asked (p3.8.9, «0 da te»).
+    if (socket?.status == LiveStatus.open) return;
     try {
-      live.setApprovals(await c.permissions());
+      final list = await c.permissions();
+      if (socket?.status != LiveStatus.open) live.setApprovals(list);
     } on ApiException {
       // Idem.
     }
@@ -1495,6 +1503,18 @@ class AppController extends ChangeNotifier {
   /// Requests that come and go on the live connection: the notification of one answered
   /// anywhere is withdrawn; on a computer behind other windows a new one is notified.
   void _onLiveChanged() {
+    // The conversations, the requests and the questions are new lists whenever they change (a
+    // stream's delta changes none of them): every screen that reads them through [AppScope]
+    // draws again (p3.8.9: the status bar said «0 da te» while the wall showed the agent
+    // waiting, being a const piece under a builder that listened to the live model only).
+    if (!identical(live.sessions, _seenSessions) ||
+        !identical(live.approvals, _seenApprovals) ||
+        !identical(live.questions, _seenQuestions)) {
+      _seenSessions = live.sessions;
+      _seenApprovals = live.approvals;
+      _seenQuestions = live.questions;
+      notifyListeners();
+    }
     final sid = server?.id;
     final all = <PersonRequest>[...live.approvals, ...live.questions];
     final now = {for (final r in all) r.requestId};
