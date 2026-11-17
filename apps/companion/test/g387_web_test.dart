@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rgcompanion/api/artifact_frame.dart';
 import 'package:rgcompanion/api/conversation.dart';
@@ -473,6 +474,25 @@ void main() {
           reason: '${e.key}',
         );
       }
+      // 3.8.11, Linux: WebKitGTK says «main frame» for every navigation; the wrapper or the
+      // preview's pages pass whoever asks, nothing else does.
+      final anyFrame = <String, bool>{
+        'http://127.0.0.1:5000/rg-frame/F': true,
+        'http://127.0.0.1:5000/preview/TOK/widget.html': true,
+        'http://127.0.0.1:5000/preview/TOK/lib/x.js': true,
+        'http://127.0.0.1:5000/rg-frame/G': false,
+        'http://127.0.0.1:5000/preview/OTHER/widget.html': false,
+        'http://127.0.0.1:5001/preview/TOK/widget.html': false,
+        'https://example.com/': false,
+        'about:blank': false,
+      };
+      for (final e in anyFrame.entries) {
+        expect(
+          frameNavigationAllowedAnyFrame(Uri.parse(e.key), wrapper: wrapper, preview: preview),
+          e.value,
+          reason: e.key,
+        );
+      }
     });
     test('preview links', () {
       expect(previewTokenOf('/preview/abc/widget.html'), 'abc');
@@ -936,6 +956,28 @@ void main() {
       await settle(tester);
       expect(find.byKey(const Key('widget-fallback')), findsNothing);
       expect(host.loaded?.wrapper.toString(), 'http://127.0.0.1:1/rg-frame/F');
+      // 3.8.11: WebKitGTK's native view follows rectangles and rounded rectangles only; under a
+      // path clip touching it (the decoration's clip of a Container) the plugin hides it, and the
+      // widget showed an empty frame.
+      final paths = <String>[];
+      for (
+        RenderObject? r = tester.renderObject(find.byKey(const Key('artifact-frame-view')));
+        r != null;
+        r = r.parent
+      ) {
+        if (r is RenderClipPath || r is RenderClipRSuperellipse || r is RenderPhysicalShape) {
+          paths.add(r.runtimeType.toString());
+        }
+      }
+      expect(paths, isEmpty, reason: 'no path clip above the widget on Linux');
+      expect(
+        find.ancestor(
+          of: find.byKey(const Key('artifact-frame-view')),
+          matching: find.byType(ClipRRect),
+        ),
+        findsWidgets,
+        reason: 'the frame keeps its rounded corners with a clip the native view follows',
+      );
       await done(tester);
     });
 

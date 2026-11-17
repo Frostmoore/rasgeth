@@ -115,14 +115,9 @@ class _LinuxHost implements FrameHost {
     final nav = gtk.LinuxNavigationDelegate(const gtkp.PlatformNavigationDelegateCreationParams());
     await nav.setOnNavigationRequest((r) {
       final u = Uri.tryParse(r.url);
+      // `r.isMainFrame` is always true here (WebKitGTK does not say which frame navigates).
       final ok =
-          u != null &&
-          frameNavigationAllowed(
-            u,
-            mainFrame: r.isMainFrame,
-            wrapper: f.wrapper,
-            preview: f.preview,
-          );
+          u != null && frameNavigationAllowedAnyFrame(u, wrapper: f.wrapper, preview: f.preview);
       return ok ? gtkp.NavigationDecision.navigate : gtkp.NavigationDecision.prevent;
     });
     await _c.setPlatformNavigationDelegate(nav);
@@ -686,76 +681,82 @@ class _WidgetCardState extends State<WidgetCard> with AutomaticKeepAliveClientMi
         },
       );
     }
-    return Container(
+    // A ClipRRect, never the decoration's clip (Container's clipBehavior): that one is a ClipPath,
+    // which WebKitGTK's native view on Linux cannot follow, so the plugin hid the widget (3.8.11).
+    return ConstrainedBox(
       key: Key('widget-${it.seq}.${it.index}'),
       constraints: const BoxConstraints(maxWidth: 720),
-      decoration: BoxDecoration(
-        color: c.panel,
+      child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: c.line),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 2, 4, 0),
-            child: Row(
-              children: [
-                RgIcon(RgIcons.canvas, size: 12, color: c.dim),
-                const SizedBox(width: 6),
-                Flexible(
-                  child: Text(name, overflow: TextOverflow.ellipsis, style: small),
-                ),
-                if (_errors.isNotEmpty) ...[
-                  const SizedBox(width: 8),
-                  Tooltip(
-                    message: _errors.map((e) => e.message).join('\n'),
-                    child: Row(
-                      key: const Key('widget-errors'),
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        RgIcon(RgIcons.alert, size: 12, color: c.warnText),
-                        const SizedBox(width: 3),
-                        Text(
-                          _errors.length == 1 ? l.artError1 : l.artErrors(_errors.length),
-                          style: TextStyle(color: c.warnText, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-                const Spacer(),
-                act(
-                  const Key('widget-open-canvas'),
-                  RgIcons.maximize,
-                  l.widgetOpenCanvas,
-                  _busy || widget.openCanvas == null ? null : _open,
-                ),
-                act(
-                  const Key('widget-keep'),
-                  kept != null ? RgIcons.check : RgIcons.pin,
-                  kept != null ? l.widgetKeptShort : l.widgetKeep,
-                  _busy || kept != null || widget.openCanvas == null ? null : _open,
-                  tip: kept != null ? l.widgetKept(kept.path) : l.widgetKeepHint,
-                ),
-              ],
-            ),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: c.panel,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: c.line),
           ),
-          body,
-          if (kept != null)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 6),
-              child: Row(
-                children: [
-                  RgIcon(RgIcons.check, size: 11, color: c.ok),
-                  const SizedBox(width: 4),
-                  Flexible(child: Text(l.widgetKept(kept.path), style: small)),
-                ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 2, 4, 0),
+                child: Row(
+                  children: [
+                    RgIcon(RgIcons.canvas, size: 12, color: c.dim),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(name, overflow: TextOverflow.ellipsis, style: small),
+                    ),
+                    if (_errors.isNotEmpty) ...[
+                      const SizedBox(width: 8),
+                      Tooltip(
+                        message: _errors.map((e) => e.message).join('\n'),
+                        child: Row(
+                          key: const Key('widget-errors'),
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            RgIcon(RgIcons.alert, size: 12, color: c.warnText),
+                            const SizedBox(width: 3),
+                            Text(
+                              _errors.length == 1 ? l.artError1 : l.artErrors(_errors.length),
+                              style: TextStyle(color: c.warnText, fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    const Spacer(),
+                    act(
+                      const Key('widget-open-canvas'),
+                      RgIcons.maximize,
+                      l.widgetOpenCanvas,
+                      _busy || widget.openCanvas == null ? null : _open,
+                    ),
+                    act(
+                      const Key('widget-keep'),
+                      kept != null ? RgIcons.check : RgIcons.pin,
+                      kept != null ? l.widgetKeptShort : l.widgetKeep,
+                      _busy || kept != null || widget.openCanvas == null ? null : _open,
+                      tip: kept != null ? l.widgetKept(kept.path) : l.widgetKeepHint,
+                    ),
+                  ],
+                ),
               ),
-            ),
-        ],
+              body,
+              if (kept != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 6),
+                  child: Row(
+                    children: [
+                      RgIcon(RgIcons.check, size: 11, color: c.ok),
+                      const SizedBox(width: 4),
+                      Flexible(child: Text(l.widgetKept(kept.path), style: small)),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

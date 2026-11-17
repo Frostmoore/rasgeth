@@ -440,6 +440,14 @@ bool frameNavigationAllowed(
   return sameOrigin(url, preview) && url.path.startsWith('/${p[0]}/${p[1]}/');
 }
 
+/// WebKitGTK (Linux, 3.8.11): its plugin calls every navigation the main frame's, the iframe's
+/// too, so [frameNavigationAllowed] refused the preview and the widget stayed empty. There the
+/// wrapper or the preview's own pages pass, whichever frame asks; the frame's sandbox (no
+/// `allow-top-navigation`) keeps the preview from taking the wrapper's place.
+bool frameNavigationAllowedAnyFrame(Uri url, {required Uri wrapper, required Uri preview}) =>
+    frameNavigationAllowed(url, mainFrame: true, wrapper: wrapper, preview: preview) ||
+    frameNavigationAllowed(url, mainFrame: false, wrapper: wrapper, preview: preview);
+
 /// What the app does with the frame's messages: the page's `ArtifactFrame` listener, without a
 /// browser. The screen gives it the ways out; [handle] takes the wrapper's raw messages.
 class FrameSession {
