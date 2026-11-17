@@ -1352,7 +1352,12 @@ class AppController extends ChangeNotifier {
     if (scope != 'once' || capUsd != null || (why != null && why.isNotEmpty)) return false;
     try {
       await client?.answerRequest(r.requestId, allow: allow);
-      live.apply({'type': 'permission.closed', 'requestId': r.requestId, 'via': 'app'});
+      live.apply({
+        'type': 'permission.closed',
+        'requestId': r.requestId,
+        'decision': allow ? 'allow' : 'deny',
+        'via': 'app',
+      });
       return true;
     } on ApiException {
       return false;

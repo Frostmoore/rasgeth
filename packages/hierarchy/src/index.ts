@@ -7,3 +7,4 @@ export * from "./nodes.js";
 export * from "./policy.js";
 export * from "./registry.js";
 export * from "./scopes.js";
+export { commandsRun } from "./shell-view.js";
