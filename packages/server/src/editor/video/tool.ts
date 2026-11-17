@@ -28,6 +28,8 @@ import {
   type MediaAnalysis,
   type MediaProbe,
   parseTime,
+  type RenderMachine,
+  type RenderWhere,
   type RgVideo,
   readRgVideo,
   setCaptionSegments,
@@ -80,6 +82,15 @@ export interface VideoToolHost {
   show(abs: string, title: string, ctx: ToolContext): Promise<void>;
   /** The person's language, for the track names and the question. */
   lang(owner: string): string;
+  /** G41.7: where a render in `scope` goes (the person's choice, remembered when it changes). */
+  place(
+    owner: string,
+    scope: string,
+    asked: string | undefined,
+    byPerson: boolean,
+  ): Promise<{ where: RenderWhere; machines: RenderMachine[] }>;
+  /** Asks the person to pick one of `options` (every channel, their rules): the label, or none. */
+  choose(ctx: ToolContext, question: string, options: string[]): Promise<string | undefined>;
 }
 
 export const VIDEO_TOOL_DESCRIPTION = `Video projects: look at, analyse, assemble and render videos. Edits of a timeline (.rgvideo) are canvas_edit's (help: true lists them); canvas_look view "structure" reads it.
@@ -89,7 +100,7 @@ Recommended flow: inspect → analyze → assemble → look at the B clips (fram
 - {"action":"assemble","path":"montaggio.rgvideo","files":["riprese/"],"aspect":"9:16","target_seconds":60,"music":"musica/base.mp3","roles":{"riprese/drone.mp4":"B"},"inserts":[{"media":"riprese/porto.mp4","start":12.4,"end":17,"in":3,"reason":"«il porto»"}]}: a repeatable draft: speech on V1/A1 in shooting order with its silences cut, coverage and pictures on V2 with fades and Ken Burns, music ducked on A3, a voice-over covered by the B clips. "inserts" (seconds of the program, from the words this action returns) places the B clips where you say; they are moved to keep the rules (2–7 s, nothing in the first 5 s, 3 s of speaker between, no word split). Roles: A, B, music, voice, skip. Replacing a timeline the person edited asks them first, and a version of it is kept.
 - {"action":"captions","path":"montaggio.rgvideo","burn_in":true,"style":"boxed"}: subtitles from the speech the timeline plays.
 - {"action":"frame","file":"riprese/porto.mp4","at":["2s","00:00:07:12"]} or "every":"2s": exact frames to look at (at most ${FRAMES_MAX}); on a timeline, the finished picture at that time.
-- {"action":"render","path":"montaggio.rgvideo","aspect":"16:9|9:16|1:1","height":1080,"quality":"draft|good|best"}: the MP4 made here (minutes; the person sees the bar and can cancel), saved as renders/<name>-v<n>.mp4 and shown. One render at a time per project.`;
+- {"action":"render","path":"montaggio.rgvideo","aspect":"16:9|9:16|1:1","height":1080,"quality":"draft|good|best"}: the MP4 (minutes; the person sees the bar and can cancel), saved as renders/<name>-v<n>.mp4 and shown. One render at a time per project. It is made on the machine the person chose for the project (this one or a node, asked at the first render); "where" only suggests one then, it cannot change their choice.`;
 
 const Insert = z.object({
   media: z.string().min(1),
@@ -138,6 +149,7 @@ const Input = z.object({
   width: z.number().int().min(256).max(1600).optional(),
   height: z.number().int().min(144).max(4320).optional(),
   quality: z.enum(["draft", "good", "best"]).optional(),
+  where: z.string().min(1).max(100).optional(),
 });
 type In = z.infer<typeof Input>;
 
@@ -802,9 +814,48 @@ export function videoTool(
     const tl = await timeline(i.path);
     if (host.readOnly(owner, tl.file.scope))
       bad(`${basename(tl.file.path)} belongs to an archived project.`);
+    // G41.7: the machine the person chose (asked at the project's first render).
+    let place = await host.place(owner, tl.file.scope, i.where, false);
+    if (place.where.kind === "ask") {
+      const ok = place.machines.filter((m) => m.ok);
+      const label = (m: RenderMachine) =>
+        `${m.id === "here" ? "This machine" : m.name}${m.gpu ? ` (${m.gpu}${m.nvenc ? ", NVENC" : ""})` : m.id === "here" ? "" : " (CPU only)"}`;
+      const suggested = place.where.suggested;
+      const options = [...ok].sort(
+        (a, b) => Number(b.id === suggested) - Number(a.id === suggested),
+      );
+      const picked = await host.choose(
+        ctx,
+        `Where should the videos of this project be made? The choice stays for the project (you can change it in «Make the video» or Settings > Nodes).`,
+        options.map(label),
+      );
+      const m = options.find((x) => label(x) === picked);
+      if (!m)
+        return {
+          content: "The person did not choose where to make the video: nothing was rendered.",
+          isError: true,
+        };
+      place = await host.place(owner, tl.file.scope, m.id, true);
+    }
+    if (place.where.kind === "refuse") {
+      const w = place.where;
+      const chosen = place.machines.find((m) => m.id === w.id);
+      return {
+        content:
+          w.reason === "person-chose"
+            ? `The person chose to make this project's videos on ${chosen?.id === "here" ? "this machine" : chosen?.name}: only they change it. Render without "where".`
+            : w.reason === "unknown"
+              ? `There is no machine "${i.where}". Machines: ${place.machines.map((m) => (m.id === "here" ? "here" : m.name)).join(", ")}.`
+              : `${chosen?.id === "here" ? "This machine" : (chosen?.name ?? "That machine")} cannot render now (${w.reason}).`,
+        isError: true,
+      };
+    }
+    const target = place.where.kind === "use" ? place.where.id : "here";
+    const node = target === "here" ? undefined : place.machines.find((m) => m.id === target);
     const queue = `${owner}\n${tl.file.scope}`;
     const waited = host.renders().busy(queue);
     const job = host.renders().start(owner, {
+      ...(node && { node: { fingerprint: node.id, name: node.name } }),
       doc: tl.doc,
       name: basename(tl.file.path),
       queue,
@@ -829,7 +880,7 @@ export function videoTool(
     const r = end.result as VideoRenderResult;
     const abs = join(tl.root, r.path);
     await host.show(abs, basename(r.path), ctx).catch(() => {});
-    return `Rendered ${r.path}: ${r.width}×${r.height}, ${s1(r.seconds)}${r.reused ? ` (${r.reused} segments from the cache)` : ""}${waited ? ", after the render that was running" : ""}; shown to the person.${r.sidecars.length ? ` Subtitles beside it: ${r.sidecars.join(", ")}.` : ""}${r.warnings.length ? `\nWarnings: ${r.warnings.join("; ")}` : ""}`;
+    return `Rendered ${r.path}${r.node ? ` on ${r.node}` : ""}${r.encoder === "h264_nvenc" ? " with NVENC" : ""}: ${r.width}×${r.height}, ${s1(r.seconds)}${r.reused ? ` (${r.reused} segments from the cache)` : ""}${waited ? ", after the render that was running" : ""}; shown to the person.${r.sidecars.length ? ` Subtitles beside it: ${r.sidecars.join(", ")}.` : ""}${r.warnings.length ? `\nWarnings: ${r.warnings.join("; ")}` : ""}`;
   };
 
   const t: Tool<In> = {
@@ -884,6 +935,10 @@ export function videoTool(
           every: { description: 'frame: one every so long ("2s")' },
           height: { type: "number", description: "render: the short side in pixels (1080, 720…)" },
           quality: { type: "string", enum: ["draft", "good", "best"] },
+          where: {
+            type: "string",
+            description: 'render: "here" or a node\'s name (a suggestion at the first render)',
+          },
         },
         required: ["action"],
       },

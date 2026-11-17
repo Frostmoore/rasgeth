@@ -9,6 +9,7 @@
 import { mkdir, readdir, statfs } from "node:fs/promises";
 import { basename, join, posix } from "node:path";
 import {
+  type H264Encoder,
   isMediaRef,
   type Job,
   type RgVideo,
@@ -21,6 +22,7 @@ import { mediaFingerprint, type VideoAnalysis, type VideoTools } from "./analysi
 import { compileVideo, EmptyTimeline, type RenderProbe } from "./compile.js";
 import type { MediaRunner } from "./media-run.js";
 import { renderProbeOf } from "./probe.js";
+import { type NodeMediaCall, REMOTE_RENDER_STEPS, renderOnNode } from "./remote-render.js";
 import { ffmpegRunner, RENDER_FONTS_DIR, renderVideo } from "./render.js";
 
 export const RENDER_STEPS = [
@@ -61,6 +63,10 @@ export interface VideoRendersOptions {
   fontsDir?: string;
   /** Free bytes where the render is written (tests). */
   free?: (dir: string) => Promise<number>;
+  /** The encoder a render here uses (G41.7: NVENC when it really works; default libx264). */
+  encoder?: () => Promise<H264Encoder>;
+  /** G41.7: `media` requests to a node of this person. */
+  node?: (owner: string, fingerprint: string) => NodeMediaCall;
 }
 
 export interface RenderRequest extends VideoRenderAsk {
@@ -73,6 +79,8 @@ export interface RenderRequest extends VideoRenderAsk {
   root: string;
   path: string;
   mediaPath: (media: string) => Promise<string | undefined>;
+  /** G41.7: made on this node instead of here (the person's choice). */
+  node?: { fingerprint: string; name: string };
 }
 
 export class VideoRenders {
@@ -94,14 +102,15 @@ export class VideoRenders {
       release = ok;
     });
     this.lanes.set(r.queue, mine);
+    const node = r.node;
     return this.o.jobs.start(
       owner,
       "video_render",
-      RENDER_STEPS,
+      node ? REMOTE_RENDER_STEPS : RENDER_STEPS,
       async (h) => {
         try {
-          const tools = await this.o.tools(owner, h);
-          for (const s of ["tool_download", "tool_unpack"]) h.skip(s);
+          const tools = node ? undefined : await this.o.tools(owner, h);
+          if (!node) for (const s of ["tool_download", "tool_unpack"]) h.skip(s);
           if (before) {
             h.step("video_wait");
             // The one before ends (done, failed or cancelled) before this one starts.
@@ -113,14 +122,55 @@ export class VideoRenders {
             ]);
             h.signal.throwIfAborted();
           } else h.skip("video_wait");
-          return await this.renderIn(h, tools, r);
+          if (node) return await this.renderThere(h, owner, node, r);
+          return await this.renderIn(h, tools as VideoTools, r);
         } finally {
           release();
           if (this.lanes.get(r.queue) === mine) this.lanes.delete(r.queue);
         }
       },
-      { name: r.name },
+      { name: r.name, ...(node && { node: node.name }) },
     );
+  }
+
+  /** G41.7: the same render on a node; the MP4 comes back into the project. */
+  private async renderThere(
+    h: JobHandle,
+    owner: string,
+    node: { fingerprint: string; name: string },
+    r: RenderRequest,
+  ): Promise<VideoRenderResult> {
+    if (!this.o.node) throw new JobFailure("video_node", "Nodes are not available here");
+    const doc =
+      r.aspect && r.aspect !== r.doc.format.aspect ? setFormat(r.doc, { aspect: r.aspect }) : r.doc;
+    const outDir = join(r.root, "renders");
+    await mkdir(outDir, { recursive: true });
+    const stem = basename(r.path).replace(/\.rgvideo$/i, "");
+    const done = await renderOnNode(h, this.o.node(owner, node.fingerprint), {
+      node,
+      doc,
+      ...(r.height && { height: renderHeight(doc, r.height) as number }),
+      quality: r.quality ?? "good",
+      mediaPath: r.mediaPath,
+      out: async () => {
+        const out = join(outDir, nextRenderName(stem, await readdir(outDir).catch(() => [])));
+        // The disk here holds the video coming back.
+        return out;
+      },
+    });
+    const rel = (abs: string) => posix.join("renders", basename(abs));
+    return {
+      path: rel(done.path),
+      sidecars: done.sidecars.map(rel),
+      seconds: done.seconds,
+      width: done.width,
+      height: done.height,
+      frames: done.frames,
+      reused: done.reused,
+      warnings: done.warnings,
+      node: node.name,
+      encoder: done.encoder,
+    };
   }
 
   private async renderIn(
@@ -148,10 +198,11 @@ export class VideoRenders {
       }
       h.progress(i + 1, media.length);
     }
+    const encoder = (await this.o.encoder?.().catch(() => undefined)) ?? "libx264";
     let plan: ReturnType<typeof compileVideo>;
     try {
       plan = compileVideo(doc, probes, {
-        encoder: "libx264",
+        encoder,
         ...(r.height && { height: renderHeight(doc, r.height) as number }),
         quality: r.quality ?? "good",
         fontsDir: this.o.fontsDir ?? RENDER_FONTS_DIR,
@@ -196,6 +247,7 @@ export class VideoRenders {
       frames: done.frames,
       reused: done.reused,
       warnings: done.warnings,
+      encoder,
     };
   }
 }

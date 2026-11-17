@@ -12,6 +12,7 @@ import {
   type NodeGraph,
   nodeCan,
   nodeCommands,
+  nodeMedia,
   nodeRoute,
   subtreeOf,
 } from "../src/index.js";
@@ -133,6 +134,26 @@ const commands: CommandRow[] = [
 describe("nodeCommands (p3.7.2)", () => {
   it.each(commands)("%s", (_name, rights, container, expected) => {
     expect(nodeCommands(new Set(rights), container)).toEqual(expected);
+  });
+});
+
+// G41.7, R1: a render on a node needs «use» alone, with or without a container. ffmpeg runs on
+// the machine itself (a GPU is not in a container), started by the node with arguments it builds
+// from a timeline it compiles there, every file inside the asker's folder.
+type MediaRow = [string, NodeRight[], boolean, ReturnType<typeof nodeMedia>];
+const media: MediaRow[] = [
+  ["use, in a container", ["use"], true, { ok: true, where: "machine" }],
+  ["use, no container (Windows, metal)", ["use"], false, { ok: true, where: "machine" }],
+  ["manage, in a container", ["use", "admin"], true, { ok: true, where: "machine" }],
+  ["manage, no container", ["use", "admin"], false, { ok: true, where: "machine" }],
+  ["manage alone, no container", ["admin"], false, { ok: true, where: "machine" }],
+  ["nothing, in a container", [], true, { ok: false, reason: "no-right" }],
+  ["nothing, no container", [], false, { ok: false, reason: "no-right" }],
+];
+
+describe("nodeMedia (G41.7)", () => {
+  it.each(media)("%s", (_name, rights, container, expected) => {
+    expect(nodeMedia(new Set(rights), container)).toEqual(expected);
   });
 });
 

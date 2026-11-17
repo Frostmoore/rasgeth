@@ -92,7 +92,11 @@ import {
   type RefineEstimate,
   type RefineRequest,
   type RefineResult,
+  type RenderMachine,
+  type RenderWhere,
   RequestSettings,
+  renderMachines,
+  renderWhere,
   replyLanguageLine,
   type ServerMessage,
   type SharedMemoryView,
@@ -201,6 +205,7 @@ import { svgCopyOfOriginal, svgFamily } from "./editor/svg-family.js";
 import { textFamily } from "./editor/text-family.js";
 import { type CanvasEditHost, canvasEditTool } from "./editor/tool.js";
 import { VideoAnalysis } from "./editor/video/analysis.js";
+import { fixedMachine, MediaMachine, type MediaMachineLike } from "./editor/video/machine.js";
 import { type MediaRunner, runMedia } from "./editor/video/media-run.js";
 import { VideoPreviews } from "./editor/video/preview.js";
 import { VideoRenders } from "./editor/video/renders.js";
@@ -397,6 +402,8 @@ export interface CoreOptions {
   videoMedia?: {
     tools?: (owner: string) => Promise<{ ffmpeg: string; ffprobe: string }>;
     run?: MediaRunner;
+    /** G41.7: this machine's ffmpeg, cards and NVENC (tests: `fixedMachine`). */
+    machine?: MediaMachineLike;
   };
   /** The editor's timings (G37.1): tests save at once and hold the person's place briefly. */
   editor?: Pick<EditorHostOptions, "saveDelayMs" | "lockMs" | "watchMs" | "now">;
@@ -1238,12 +1245,23 @@ export class RedGiantCore implements OrchestrationHost {
       vault: () => this.vault,
       ...o.machines,
     });
+    // G41.7: what this machine renders with (here and for its nodes' askers). With a fake
+    // ffmpeg (tests) and no machine given: no NVENC, nothing to download.
+    this.mediaMachine =
+      o.videoMedia?.machine ??
+      (o.videoMedia?.tools
+        ? fixedMachine(undefined, { download: false, nvenc: false, encoder: "libx264" })
+        : new MediaMachine({ dataDir: dirname(o.workspacesDir) }));
     this.nodes = new Nodes({
       db: o.db,
       vault: () => this.vault,
       store: this.store,
       handlers: nodeHandlers({
         dataDir: join(dirname(o.workspacesDir), "nodes"),
+        media: {
+          machine: this.mediaMachine,
+          ...(o.videoMedia?.run && { run: o.videoMedia.run }),
+        },
         providers: o.providers,
         sandboxKind: this.sandbox.kind,
         sandbox: async (_ownerId, key, dir) =>
@@ -5047,10 +5065,65 @@ export class RedGiantCore implements OrchestrationHost {
       jobs: this.jobs,
       tools: (owner, into) => this.videoProgramsFor(owner, into),
       ...(this.o.videoMedia?.run && { run: this.o.videoMedia.run }),
+      // NVENC here when it really works (G41.7).
+      encoder: () => this.mediaMachine.encoder(),
+      node: (owner, fingerprint) => (body, o) =>
+        this.nodes.request(owner, fingerprint, "media", body, {
+          signal: o.signal,
+          ...(o.onChunk && { onChunk: o.onChunk }),
+          ...(o.timeoutMs && { timeoutMs: o.timeoutMs }),
+          ...(o.waitMs !== undefined && { waitMs: o.waitMs }),
+          ...(o.what && { log: { what: o.what } }),
+        }),
     });
     return this.videoRendersCache;
   }
   private videoRendersCache: VideoRenders | undefined;
+  /** G41.7: this machine's ffmpeg, cards and encoder. */
+  readonly mediaMachine: MediaMachineLike;
+
+  /** The machines a video can be rendered on (G41.7): this one first, then the nodes. */
+  async renderMachines(owner: string): Promise<RenderMachine[]> {
+    const known = await this.nodes.known(owner).catch(() => []);
+    return renderMachines(
+      {
+        name: "this machine",
+        gpus: await this.mediaMachine.gpus(),
+        media: await this.mediaMachine.media(),
+      },
+      known.map((k) => ({
+        fingerprint: k.fingerprint,
+        name: k.name,
+        online: k.online,
+        ...(k.rights && { rights: k.rights }),
+        ...(k.view?.capabilities && { capabilities: k.view.capabilities }),
+      })),
+    );
+  }
+
+  /**
+   * Where a render of a timeline in `scope` goes (G41.7, R2): the person's choice for the project,
+   * remembered when it changes (only for projects: other scopes ask nothing and render here).
+   */
+  async renderPlace(
+    owner: string,
+    scope: string,
+    asked: string | undefined,
+    byPerson: boolean,
+  ): Promise<{ where: RenderWhere; machines: RenderMachine[] }> {
+    const machines = await this.renderMachines(owner);
+    const project = /^project:[A-Za-z0-9_-]{1,80}$/.test(scope);
+    const remembered = project ? await this.nodes.renderPlacement(owner, scope) : undefined;
+    const where = renderWhere({
+      machines: project ? machines : machines.slice(0, 1),
+      remembered,
+      asked: project ? asked : asked && "here",
+      byPerson,
+    });
+    if (where.kind === "use" && where.remember && project)
+      await this.nodes.setPlacement(owner, scope, { render: where.id });
+    return { where, machines };
+  }
 
   /** ffmpeg and ffprobe for the video editor (downloaded inside `into`'s job when missing). */
   private async videoProgramsFor(owner: string, into?: JobHandle) {
@@ -5075,6 +5148,32 @@ export class RedGiantCore implements OrchestrationHost {
       scopeRoot: (ownerId, scope) => this.scopeRoot(ownerId, scope),
       readOnly: (ownerId, scope) => this.readOnlyScope(ownerId, scope),
       lang: (ownerId) => this.language(ownerId),
+      place: (ownerId, scope, asked, byPerson) => this.renderPlace(ownerId, scope, asked, byPerson),
+      // G41.7, R2: where the project's videos are made, asked once; their rules, every channel.
+      choose: async (ctx, question, options) => {
+        const outcome = await askHuman(
+          {
+            store: this.store,
+            questions: this.questions,
+            modeOf: (id) => this.registry.get(id)?.mode ?? "auto",
+            leavePlanMode: async () => {},
+            ask: (a, info, signal, kind) => this.person.ask(a, info, signal, kind),
+          },
+          agent,
+          ctx,
+          [
+            {
+              question,
+              header: "Video",
+              options: options.map((label) => ({ label })),
+              multiSelect: false,
+            },
+          ],
+        );
+        if (outcome.by !== "human" && outcome.by !== "classifier") return undefined;
+        const a = outcome.answers[0]?.[0];
+        return a && options.includes(a) ? a : undefined;
+      },
       // The person's yes before a timeline they edited is replaced: their rules, every channel.
       confirm: async (ctx, question, yes, no) => {
         const outcome = await askHuman(

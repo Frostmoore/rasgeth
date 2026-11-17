@@ -16,6 +16,11 @@
 //                                                  this machine (G41.6): a job `video_render`
 //                                                  whose result is a `VideoRenderResult`
 //                                                  (`renders/<name>-v<n>.mp4` in the project)
+//                                                  G41.7: `where` (`here` or a node), the
+//                                                  person's choice, remembered for the project;
+//                                                  409 {ask, machines} when none was made yet
+//   GET  /api/editor/video/machines?scope=         where a render can go and the project's
+//                                                  choice (`RenderMachine[]`, `chosen`)
 //   POST /api/editor/video/captions {scope, path}  the subtitles from what the timeline plays
 //                                                  (G41.5c, G41.4's transcripts): `captions`
 //                                                  once every sound is analysed, else the jobs
@@ -242,12 +247,26 @@ export function videoRoutes<E extends { Variables: any }>(
       aspect: z.enum(["16:9", "9:16", "1:1"]).optional(),
       height: z.number().int().min(144).max(4320).optional(),
       quality: z.enum(VIDEO_RENDER_QUALITIES).optional(),
+      where: z.string().min(1).max(100).optional(),
     }).safeParse(await c.req.json().catch(() => ({})));
     if (!b.success) return c.json({ error: b.error.message }, 400);
     const o = owner(c);
     // An archived project makes nothing new.
     core.assertWritable(o, b.data.scope);
     const t = await timeline(o, b.data.scope, b.data.path);
+    // G41.7, R2: the person's choice, remembered; asked when there is none yet.
+    const place = await core.renderPlace(o, b.data.scope, b.data.where, true);
+    if (place.where.kind === "ask") return c.json({ ask: true, machines: place.machines }, 409);
+    if (place.where.kind === "refuse")
+      return c.json(
+        {
+          error: `That machine cannot render now (${place.where.reason})`,
+          code: place.where.reason,
+        },
+        400,
+      );
+    const id = place.where.id;
+    const node = place.machines.find((m) => m.id === id && id !== "here");
     const job: Job = core.videoRenders.start(o, {
       doc: t.doc,
       name: t.name,
@@ -258,8 +277,19 @@ export function videoRoutes<E extends { Variables: any }>(
       ...(b.data.aspect && { aspect: b.data.aspect }),
       ...(b.data.height && { height: b.data.height }),
       ...(b.data.quality && { quality: b.data.quality }),
+      ...(node && { node: { fingerprint: node.id, name: node.name } }),
     });
     return c.json({ job }, 200);
+  });
+
+  app.get("/api/editor/video/machines", async (c) => {
+    const scope = c.req.query("scope") ?? "";
+    const o = owner(c);
+    const machines = await core.renderMachines(o);
+    const chosen = /^project:[A-Za-z0-9_-]{1,80}$/.test(scope)
+      ? await core.nodes.renderPlacement(o, scope)
+      : undefined;
+    return c.json({ machines, ...(chosen && { chosen }) }, 200);
   });
 
   app.post("/api/editor/video/captions", async (c) => {

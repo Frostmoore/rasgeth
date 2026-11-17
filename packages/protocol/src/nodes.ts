@@ -6,6 +6,7 @@
 // a separate grant the person gives, kept by the machine it is about. No secret ever crosses:
 // a node's keys, its keychain and its providers' keys stay there.
 import { z } from "zod";
+import type { FfmpegInfo, H264Encoder } from "./ffmpeg.js";
 
 /** `use`: its capabilities (sandbox commands, models, storage); `admin`: also who may command it. */
 export const NodeRight = z.enum(["use", "admin"]);
@@ -85,6 +86,29 @@ export interface NodeCapabilities {
   /** How busy it is now. */
   load?: { cpu?: number; memoryUsedPct?: number };
   system?: string;
+  /** Its graphics cards (G41.7), as `detectHardware` found them. */
+  gpus?: NodeGpu[];
+  /** What it offers to render video (G41.7); absent before 3.9 (no `media` operation there). */
+  media?: NodeMedia;
+}
+
+export interface NodeGpu {
+  vendor: "nvidia" | "amd" | "intel" | "apple" | "other";
+  name: string;
+  vramGb: number;
+  integrated?: boolean;
+}
+
+/** A machine's ffmpeg for renders (G41.7): the one it has, or that it can download. */
+export interface NodeMedia {
+  /** The ffmpeg found there (none yet: `download` says whether it can get RedGiant's own). */
+  ffmpeg?: FfmpegInfo;
+  /** It can download the pinned build (G41.1) when it has none. */
+  download: boolean;
+  /** NVENC really encodes there (`nvencWorks`: a frame tried, not just listed by the build). */
+  nvenc: boolean;
+  /** The encoder a render uses there (`pickEncoder`); unknown until it has an ffmpeg. */
+  encoder?: H264Encoder;
 }
 
 export type NodeStatus = "online" | "offline" | "pending" | "connecting" | "refused";
@@ -127,13 +151,96 @@ export interface NodePlacement {
   commands?: string;
   /** The node backups are copied to. */
   backups?: string;
+  /**
+   * Where videos are rendered (G41.7, R2): `here` or a node. Asked at a project's first render,
+   * then remembered; unset means not asked yet.
+   */
+  render?: string;
 }
 
 export const PlacementBody = z.object({
   scope: z.string().regex(/^(project|agent):[A-Za-z0-9_-]{1,80}$/),
   commands: z.string().min(10).max(100).nullable().optional(),
   backups: z.string().min(10).max(100).nullable().optional(),
+  render: z
+    .union([z.literal("here"), z.string().min(10).max(100)])
+    .nullable()
+    .optional(),
 });
+
+/** A machine a video can be rendered on (G41.7), as the panel and the `video` tool show it. */
+export interface RenderMachine {
+  /** `here` or the node's fingerprint. */
+  id: string;
+  name: string;
+  /** It can render now. */
+  ok: boolean;
+  /** Why not (the page has its words for each). */
+  reason?: "offline" | "no-right" | "no-media" | "no-ffmpeg";
+  /** Its best graphics card's name (a dedicated one first). */
+  gpu?: string;
+  nvenc: boolean;
+  /** ffmpeg's version there, or that it is downloaded at the first render. */
+  ffmpeg?: string;
+  download?: boolean;
+}
+
+/** One machine the person may render on: what `Nodes.known` says of it. */
+export interface RenderMachineSource {
+  fingerprint: string;
+  name: string;
+  online: boolean;
+  rights?: readonly NodeRight[];
+  capabilities?: NodeCapabilities;
+}
+
+const bestGpu = (gpus: readonly NodeGpu[] | undefined) =>
+  [...(gpus ?? [])].sort(
+    (a, b) => Number(a.integrated ?? false) - Number(b.integrated ?? false) || b.vramGb - a.vramGb,
+  )[0]?.name;
+
+/**
+ * The machines a render can go to: this one first, then the nodes with what each offers. A node
+ * renders when it is online, this machine may use it (rights unknown: it is tried, the node
+ * decides), it is 3.9 or later (`media` reported) and it has or can download ffmpeg.
+ */
+export function renderMachines(
+  here: { name: string; gpus?: readonly NodeGpu[]; media?: NodeMedia },
+  nodes: readonly RenderMachineSource[],
+): RenderMachine[] {
+  const one = (
+    id: string,
+    name: string,
+    gpus: readonly NodeGpu[] | undefined,
+    media: NodeMedia | undefined,
+    reason?: RenderMachine["reason"],
+  ): RenderMachine => {
+    const gpu = bestGpu(gpus);
+    const why =
+      reason ?? (!media ? "no-media" : !media.ffmpeg && !media.download ? "no-ffmpeg" : undefined);
+    return {
+      id,
+      name,
+      ok: why === undefined,
+      ...(why && { reason: why }),
+      ...(gpu && { gpu }),
+      nvenc: media?.nvenc ?? false,
+      ...(media?.ffmpeg && { ffmpeg: media.ffmpeg.version.replace(/^n/, "").split("-")[0] }),
+      ...(media && !media.ffmpeg && media.download && { download: true }),
+    };
+  };
+  const out = [one("here", here.name, here.gpus, here.media ?? { download: true, nvenc: false })];
+  for (const n of nodes) {
+    const caps = n.capabilities;
+    const reason: RenderMachine["reason"] = !n.online
+      ? "offline"
+      : n.rights !== undefined && !n.rights.includes("use") && !n.rights.includes("admin")
+        ? "no-right"
+        : undefined;
+    out.push(one(n.fingerprint, n.name, caps?.gpus, caps?.media, reason));
+  }
+  return out;
+}
 
 export interface NodesState {
   self: { fingerprint?: string; name: string; ready: boolean; reason?: string };
@@ -152,4 +259,51 @@ export interface NodesState {
 export function shortFingerprint(fp: string): string {
   const body = fp.replace(/^SHA256:/, "");
   return `SHA256:${body.slice(0, 16)}`;
+}
+
+/** What a render does about where it goes (G41.7, R2). */
+export type RenderWhere =
+  | { kind: "use"; id: string; remember: boolean }
+  | { kind: "ask"; suggested?: string }
+  | {
+      kind: "refuse";
+      reason: "unknown" | "person-chose" | NonNullable<RenderMachine["reason"]>;
+      id?: string;
+    };
+
+/**
+ * Where a render goes (pure, tested as a table). `asked` is `here`, a node's fingerprint or name;
+ * `remembered` the project's choice (`NodePlacement.render`). The person (the page) chooses and
+ * the choice is remembered; an agent follows the person's choice and never picks another machine
+ * by itself: with no choice yet and more than this machine to choose from, the person is asked
+ * (the agent's pick only suggested); with this machine alone it renders here without asking.
+ */
+export function renderWhere(o: {
+  machines: readonly RenderMachine[];
+  remembered?: string | undefined;
+  asked?: string | undefined;
+  byPerson: boolean;
+}): RenderWhere {
+  const find = (x: string) =>
+    o.machines.find((m) => m.id === x) ??
+    o.machines.find((m) => m.name.toLowerCase() === x.trim().toLowerCase()) ??
+    (["here", "this machine", "local"].includes(x.trim().toLowerCase())
+      ? o.machines.find((m) => m.id === "here")
+      : undefined);
+  const usable = (m: RenderMachine, remember: boolean): RenderWhere =>
+    m.ok
+      ? { kind: "use", id: m.id, remember }
+      : { kind: "refuse", reason: m.reason ?? "offline", id: m.id };
+  const asked = o.asked?.trim() ? find(o.asked) : undefined;
+  if (o.asked?.trim() && !asked) return { kind: "refuse", reason: "unknown" };
+  const remembered = o.remembered ? find(o.remembered) : undefined;
+  if (o.byPerson && asked) return usable(asked, asked.id !== o.remembered);
+  if (remembered) {
+    if (asked && asked.id !== remembered.id)
+      return { kind: "refuse", reason: "person-chose", id: remembered.id };
+    return usable(remembered, false);
+  }
+  // Nothing chosen yet (or the machine chosen is gone).
+  if (o.machines.length <= 1) return { kind: "use", id: "here", remember: false };
+  return { kind: "ask", ...(asked && { suggested: asked.id }) };
 }

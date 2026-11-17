@@ -183,6 +183,11 @@ export interface VideoRenderAsk {
   /** The short side's pixels (never more than the timeline's). */
   height?: number;
   quality?: VideoRenderQuality;
+  /**
+   * Where it is made (G41.7): `here` or a node's fingerprint. Unset: the machine the person chose
+   * for the project (asked at its first render, then remembered).
+   */
+  where?: string;
 }
 
 /** The result of a `video_render` job: the MP4 in the project (`renders/<name>-v<n>.mp4`). */
@@ -198,4 +203,7 @@ export interface VideoRenderResult {
   /** Segments taken from the cache instead of encoded again. */
   reused: number;
   warnings: string[];
+  /** Where it was made (G41.7): the node's name, unset here; and with which encoder. */
+  node?: string;
+  encoder?: "h264_nvenc" | "libx264";
 }

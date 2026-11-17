@@ -13,16 +13,15 @@
 //    that (its own critical check asked them), else it is refused here;
 //  - models: this machine's providers answer with their own keys, which never leave;
 //  - storage: files in a folder of this machine kept for the asker, nowhere else.
-import { createHash } from "node:crypto";
-import { createReadStream } from "node:fs";
-import { mkdir, open, readdir, rm, stat, statfs } from "node:fs/promises";
+import { mkdir, readdir, rm, stat, statfs } from "node:fs/promises";
 import { arch, cpus, freemem, homedir, loadavg, type as osType, release, totalmem } from "node:os";
 import { join, resolve, sep } from "node:path";
-import { pipeline } from "node:stream/promises";
 import { bashOutsideWrites, criticalOf, nodeCommands } from "@redgiant/hierarchy";
 import type { NodeCapabilities } from "@redgiant/protocol";
 import type { CompletionRequest, ProviderRegistry } from "@redgiant/providers";
 import type { Workspace } from "@redgiant/tools";
+import { type NodeMediaOptions, nodeMediaHandler } from "./media.js";
+import { fileHash, putPiece, readPiece } from "./pieces.js";
 import type { NodeCaller, NodeHandlers } from "./service.js";
 import { NodeError } from "./service.js";
 
@@ -42,6 +41,8 @@ export interface NodeServeOptions {
   offers?: (ownerId: string) => { sandbox: boolean; models: boolean; storage: boolean };
   /** The models a node offers: its own providers, never another node's (no loops). */
   offersProvider?: (id: string) => boolean;
+  /** G41.7: this machine's ffmpeg and cards, for renders asked by other machines. */
+  media?: Omit<NodeMediaOptions, "dataDir" | "container" | "lends">;
 }
 
 const safe = (fp: string) =>
@@ -52,7 +53,6 @@ const safe = (fp: string) =>
 const SANDBOX_ID = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$/;
 const STORAGE_NAME =
   /^[A-Za-z0-9][A-Za-z0-9_. -]{0,119}(\/[A-Za-z0-9][A-Za-z0-9_. -]{0,119}){0,3}$/;
-const CHUNK = 4 * 1024 * 1024;
 
 const q = (a: string) => (/^[A-Za-z0-9_./=:-]+$/.test(a) ? a : `'${a.replace(/'/g, "'\\''")}'`);
 
@@ -69,8 +69,17 @@ export function nodeHandlers(o: NodeServeOptions): NodeHandlers {
   };
   const offered = (id: string) => !id.startsWith("node-") && (o.offersProvider?.(id) ?? true);
   const container = o.container ?? o.sandboxKind === "docker";
+  const media =
+    o.media &&
+    nodeMediaHandler({
+      ...o.media,
+      dataDir: o.dataDir,
+      container,
+      lends: (ownerId) => offers(ownerId).sandbox,
+    });
 
   return {
+    ...(media && { media }),
     async capabilities(ownerId) {
       const cores = cpus().length;
       let storage: NodeCapabilities["storage"] = { ok: false };
@@ -104,6 +113,10 @@ export function nodeHandlers(o: NodeServeOptions): NodeHandlers {
           memoryUsedPct: Math.round((1 - freemem() / totalmem()) * 100),
         },
         system: `${osType()} ${release()} ${arch()}`,
+        ...(o.media && {
+          gpus: await o.media.machine.gpus(),
+          ...(offers(ownerId).sandbox && { media: await o.media.machine.media() }),
+        }),
       };
     },
 
@@ -280,45 +293,10 @@ export function nodeHandlers(o: NodeServeOptions): NodeHandlers {
         return join(base, ...name.split("/"));
       };
       switch (b.action) {
-        case "put": {
-          const file = at(b.name);
-          const part = `${file}.part`;
-          await mkdir(join(file, ".."), { recursive: true });
-          const data = Buffer.from(String(b.data ?? ""), "base64");
-          const offset = Number(b.offset) || 0;
-          if (offset === 0) await rm(part, { force: true });
-          const size = await stat(part).then(
-            (s) => s.size,
-            () => 0,
-          );
-          // Pieces in order: one asked again after a reconnect is not written twice.
-          if (offset < size) return { size };
-          if (offset > size)
-            throw new NodeError("invalid", `Piece out of order (at ${offset}, have ${size})`);
-          const h = await open(part, "a");
-          try {
-            await h.write(data);
-          } finally {
-            await h.close();
-          }
-          const now = size + data.length;
-          // The whole file appears only once complete: never a half-written copy.
-          if (b.last) await import("node:fs/promises").then((f) => f.rename(part, file));
-          return { size: now };
-        }
-        case "get": {
-          const file = at(b.name);
-          const offset = Number(b.offset) || 0;
-          const total = (await stat(file)).size;
-          const buf = await new Promise<Buffer>((ok, no) => {
-            const parts: Buffer[] = [];
-            createReadStream(file, { start: offset, end: Math.min(total, offset + CHUNK) - 1 })
-              .on("data", (d) => parts.push(d as Buffer))
-              .on("end", () => ok(Buffer.concat(parts)))
-              .on("error", no);
-          });
-          return { data: buf.toString("base64"), size: total, done: offset + buf.length >= total };
-        }
+        case "put":
+          return putPiece(at(b.name), b);
+        case "get":
+          return readPiece(at(b.name), Number(b.offset) || 0);
         case "list": {
           const out: { name: string; size: number; at: string }[] = [];
           const walk = async (dir: string, prefix: string) => {
@@ -338,11 +316,8 @@ export function nodeHandlers(o: NodeServeOptions): NodeHandlers {
           await rm(at(b.name), { force: true });
           return { ok: true };
         // A file's SHA-256 (p3.7.2): the asker checks a backup arrived whole before keeping it.
-        case "hash": {
-          const h = createHash("sha256");
-          await pipeline(createReadStream(at(b.name)), h);
-          return { sha256: h.digest("hex"), size: (await stat(at(b.name))).size };
-        }
+        case "hash":
+          return fileHash(at(b.name));
         default:
           throw new NodeError("invalid", "Unknown storage action");
       }
