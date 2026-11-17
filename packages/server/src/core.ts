@@ -304,6 +304,7 @@ import {
 import { migrateRooms, Rooms } from "./rooms.js";
 import { migrateSaved, SavedStore } from "./saved.js";
 import { scriptTool } from "./script.js";
+import { settingValue } from "./setting-value.js";
 import { SharedMemory } from "./shared-memory.js";
 import { SKILL_PROMPT, SkillNudge } from "./skill-nudge.js";
 import { type SshToolsHost, sshTools } from "./ssh-tools.js";
@@ -620,16 +621,6 @@ const PRIORITY: Record<AgentRecord["kind"], number> = {
   agent: 50,
   subagent: 30,
 };
-
-/** A value of rg_settings: JSON text or already parsed, as the driver gives it. */
-function settingValue(v: unknown): unknown {
-  if (typeof v !== "string") return v;
-  try {
-    return JSON.parse(v);
-  } catch {
-    return v;
-  }
-}
 
 /** Composition root: storage, hierarchy, approvals and live sessions. */
 /**
@@ -5270,7 +5261,7 @@ export class RedGiantCore implements OrchestrationHost {
           "SELECT value FROM rg_settings WHERE owner_id = $1 AND key = $2",
           [agent.ownerId, key],
         );
-    const keptId = kept && (typeof kept.value === "string" ? JSON.parse(kept.value) : kept.value);
+    const keptId = kept && settingValue(kept.value);
     if (typeof keptId === "string") {
       const [row] = await this.o.db.query<{ id: string }>(
         "SELECT id FROM rg_sessions WHERE id = $1 AND agent_id = $2",
@@ -6083,7 +6074,7 @@ export class RedGiantCore implements OrchestrationHost {
       [ownerId, like, limit],
     );
     const text = (payload: unknown): string => {
-      const p = (typeof payload === "string" ? JSON.parse(payload) : payload) as {
+      const p = settingValue(payload) as {
         text?: string;
         parts?: { type: string; text?: string }[];
       } | null;
