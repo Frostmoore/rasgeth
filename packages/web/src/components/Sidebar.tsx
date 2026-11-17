@@ -30,6 +30,7 @@ import {
   openOrchestrator,
   openSession,
   openTab,
+  projectLead,
   projects,
   refresh,
   refreshConversations,
@@ -679,9 +680,7 @@ export function Sidebar() {
             {projects.value.length === 0 && !adding && <div class="empty">{t("noProjects")}</div>}
             {projects.value.map((p) => {
               const key = `p:${p.id}`;
-              const orchestrator = agents.value.find(
-                (a) => a.kind === "orchestrator" && a.projectId === p.id,
-              );
+              const orchestrator = projectLead(p.id);
               const running = sessionRows.value.some((r) => r.projectId === p.id && r.running);
               // The name opens the orchestrator's chat and shows the conversations (p3.5.4);
               // the arrow only folds and unfolds.
