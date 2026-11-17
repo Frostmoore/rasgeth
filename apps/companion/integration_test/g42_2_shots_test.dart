@@ -82,7 +82,7 @@ void main() {
           .ignore();
       await waitFor(t, () => find.byKey(const Key('variants-$_board')).evaluate().isNotEmpty);
       await shot(t, 'g42-2-chat-tavola-$_tag-$theme', wait: 1500);
-      await t.tap(find.byKey(const Key('variants-$_board')));
+      await t.tap(find.text("The site's home page").last);
       await waitFor(t, () => find.byKey(const Key('board-variant-1')).evaluate().isNotEmpty);
       await shot(t, 'g42-2-tavola-$_tag-$theme', wait: 12000);
       await t.tap(find.byKey(const Key('board-screen-phone')));
