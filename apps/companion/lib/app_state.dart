@@ -111,12 +111,6 @@ class AppController extends ChangeNotifier {
            dialChannel ?? ((b, id, expect) => SetupChannel.dial(b, identity: id, expect: expect)) {
     book = ServerBook(this.prefs);
     live.onUnknownSession = _soonReloadSessions;
-    live.onListsChanged = (lists) => _soonReload(
-      agents: lists.contains('agents'),
-      projects: lists.contains('projects'),
-      sessions: lists.contains('sessions'),
-    );
-    live.knowsAgent = (id) => agents.any((a) => a.id == id);
     live.onTurnEnded = () => spend.refreshSoon(client);
     live.addListener(_onLiveChanged);
   }
@@ -203,10 +197,6 @@ class AppController extends ChangeNotifier {
 
   /// The archived projects (p3.5.3): their conversations are read only (G42.1).
   List<Project> archivedProjects = const [];
-
-  /// Moves every time the projects are read again (p3.8.9): screens with their own copy of the
-  /// projects (Projects, with git and tasks) read theirs again.
-  int projectsVersion = 0;
 
   /// The archived project a conversation belongs to (its own, or its agent's), if any.
   Project? archivedProjectOf(String sessionId) {
@@ -1009,7 +999,19 @@ class AppController extends ChangeNotifier {
     final c = client;
     if (c == null) return;
     unawaited(spend.refresh(c));
-    await _loadProjects(c);
+    try {
+      final all = await c.projects();
+      projects = [
+        for (final p in all)
+          if (!p.archived) p,
+      ];
+      archivedProjects = [
+        for (final p in all)
+          if (p.archived) p,
+      ];
+    } on ApiException {
+      // The filter shows no projects.
+    }
     try {
       live.setSessions(await c.sessions());
     } on ApiException {
@@ -1022,36 +1024,6 @@ class AppController extends ChangeNotifier {
     }
   }
 
-  Future<void> _loadProjects(RedGiantClient c) async {
-    try {
-      final all = await c.projects();
-      projects = [
-        for (final p in all)
-          if (!p.archived) p,
-      ];
-      archivedProjects = [
-        for (final p in all)
-          if (p.archived) p,
-      ];
-      projectsVersion++;
-    } on ApiException {
-      // The filter shows no projects.
-    }
-  }
-
-  /// The team read again: a face changed elsewhere («Change mascot» on the page) is drawn again.
-  Future<void> _loadAgents(RedGiantClient c) async {
-    final list = await c.agents();
-    final m = mascots;
-    if (m is ClientMascotSource) {
-      final seeds = {for (final a in agents) a.id: a.mascotSeed};
-      for (final a in list) {
-        if (seeds.containsKey(a.id) && seeds[a.id] != a.mascotSeed) m.forget(a.id);
-      }
-    }
-    agents = list;
-  }
-
   void _startLive() {
     final c = client;
     final t = c?.token;
@@ -1061,10 +1033,8 @@ class AppController extends ChangeNotifier {
     var opened = false;
     _statusSub = s.statuses.listen((st) {
       // Back after a drop: what changed meanwhile (conversations started or ended elsewhere).
-      // The team and the projects too: what was made, renamed or archived while the link was
-      // down never reaches the app as a message (p3.8.9).
       if (st == LiveStatus.open) {
-        if (opened) _soonReload(agents: true, projects: true, sessions: true, fresh: true);
+        if (opened) _soonReloadSessions(fresh: true);
         opened = true;
         // «Stop» pressed while the link was down.
         for (final id in _stopWhenBack.toList()) {
@@ -1078,43 +1048,16 @@ class AppController extends ChangeNotifier {
     unawaited(s.start());
   }
 
-  void _soonReloadSessions({bool fresh = false}) => _soonReload(sessions: true, fresh: fresh);
-
-  // What the next reload reads: a burst of news (God making a project and its agents) is read
-  // once, with every list any of it named.
-  bool _reloadAgents = false;
-  bool _reloadProjects = false;
-  bool _reloadSessions = false;
-  bool _reloadFresh = false;
-
-  /// The lists named, read again soon (once for a burst) and shown: the wall, the mascots' bar,
-  /// the conversations, the projects, «working» and the counters all follow from them.
-  void _soonReload({
-    bool agents = false,
-    bool projects = false,
-    bool sessions = false,
-    bool fresh = false,
-  }) {
-    _reloadAgents |= agents;
-    _reloadProjects |= projects;
-    _reloadSessions |= sessions;
-    _reloadFresh |= fresh;
+  void _soonReloadSessions({bool fresh = false}) {
     _reloadTimer?.cancel();
     _reloadTimer = Timer(const Duration(milliseconds: 250), () async {
       final c = client;
       if (c == null) return;
-      final a = _reloadAgents, p = _reloadProjects, s = _reloadSessions, f = _reloadFresh;
-      _reloadAgents = _reloadProjects = _reloadSessions = _reloadFresh = false;
       try {
-        await Future.wait([
-          if (a) _loadAgents(c),
-          if (p) _loadProjects(c),
-          if (s) c.sessions().then((rows) => live.setSessions(rows, fresh: f)),
-        ]);
-      } on Object {
-        // Next time: the next news or the next refresh reads them.
+        live.setSessions(await c.sessions(), fresh: fresh);
+      } on ApiException {
+        // Next time.
       }
-      if (identical(client, c) && (a || p)) notifyListeners();
     });
   }
 

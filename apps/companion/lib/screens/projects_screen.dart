@@ -30,16 +30,9 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   final _open = <String, int>{};
   bool _failed = false;
 
-  int? _version;
-
-  // Its own copy of the projects (with git and tasks): read again whenever the app read the
-  // projects again (p3.8.9: one made, archived or merged elsewhere), the first time included.
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final v = AppScope.of(context).projectsVersion;
-    if (v == _version) return;
-    _version = v;
+  void initState() {
+    super.initState();
     unawaited(_load());
   }
 
