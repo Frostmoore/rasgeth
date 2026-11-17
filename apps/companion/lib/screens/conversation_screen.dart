@@ -439,7 +439,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
     final now = _text.text;
     final before = _before;
     _before = now;
-    if (now.length - before.length <= kPasteChars ~/ 2) return;
+    // Only a big insertion (many characters or many lines) can be a long paste.
+    if (now.length - before.length < 2 || now.length - before.length < kPasteLines) return;
     var start = 0;
     while (start < before.length && start < now.length && before[start] == now[start]) {
       start++;
@@ -667,7 +668,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
               ),
             Expanded(
               child: ListenableBuilder(
-                listenable: view,
+                // The requests and the work elsewhere come from the live model.
+                listenable: Listenable.merge([view, app.live]),
                 builder: (context, _) {
                   final items = view.items
                       .where((i) => i is! AssistantItem || showsSomething(i))
