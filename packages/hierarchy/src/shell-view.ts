@@ -23,7 +23,7 @@ import {
   simpleCommands,
   substitutions,
   takeHeredocs,
-} from "./critical.js";
+} from "@redgiant/protocol";
 
 const SHELLS = new Set(["bash", "sh", "zsh", "dash", "ksh"]);
 /** Commands whose arguments are only words: they run nothing and read no file. */

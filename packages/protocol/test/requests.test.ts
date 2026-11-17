@@ -170,32 +170,32 @@ const TABLE: Row[] = [
   [
     "bash",
     { command: "git push origin main" },
-    "Esegue il comando: git push origin main",
-    "Runs the command: git push origin main",
+    "Manda i commit a origin (main)",
+    "Pushes the commits to origin (main)",
   ],
   [
     "bash",
     { command: "npm run dev", background: true },
-    "Esegue in sottofondo: npm run dev",
-    "Runs in the background: npm run dev",
+    "In sottofondo: esegue lo script dev del progetto",
+    "In the background: runs the project's script dev",
   ],
   [
     "bash",
     { command: "rm -rf build" },
-    "Cancella con il comando: rm -rf build",
-    "Deletes with the command: rm -rf build",
+    "Cancella build",
+    "Deletes build",
   ],
   [
     "bash",
     { command: "rm -rf build && npm run build" },
-    "Esegue il comando: rm -rf build && npm run build",
-    "Runs the command: rm -rf build && npm run build",
+    "Cancella build, poi compila il progetto",
+    "Deletes build, then builds the project",
   ],
   [
     "bash",
     { command: "cd app\nnpm test" },
-    "Esegue il comando: cd app; npm test",
-    "Runs the command: cd app; npm test",
+    "Esegue i test",
+    "Runs the tests",
   ],
   // Files: write, edit, delete.
   [
@@ -300,7 +300,7 @@ describe("requestSentence (3.5.6): what a request does, in words", () => {
       (id) => (id === "x" ? "Sito" : undefined),
     );
     expect(s).toMatch(/^Ripristina il progetto «Sito»/);
-    const long = requestSentence("en", "bash", { command: `echo ${"a".repeat(400)}` });
+    const long = requestSentence("en", "bash", { command: `${"a".repeat(400)} x` });
     expect(long.length).toBeLessThan(200);
     expect(long.endsWith("…")).toBe(true);
   });

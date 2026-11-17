@@ -10,6 +10,7 @@
 import { ARTIFACT_GRANT_TOOL, grantSentence } from "./artifact-bridge.js";
 import { preparedMailOf } from "./mail.js";
 import { routePhrase } from "./model-routes.js";
+import { shellSummary } from "./shell-summary.js";
 
 type Lang = "it" | "en";
 const lng = (lang: string): Lang => (lang === "it" ? "it" : "en");
@@ -146,20 +147,9 @@ function mcpSentence({ l, i, name, q }: Ctx): string {
     : `Adds the connected service ${q(str(i.catalog_id) ?? "?")}${where}`;
 }
 
-/** A command that only deletes (rm, del, Remove-Item): said as a deletion. */
-const DELETES = /^\s*(sudo\s+)?(rm|rmdir|del|erase|rd|Remove-Item)\b/i;
-
+/** A shell command in a line (p3.8.9): what it does, by program (`shellSummary`). */
 function bashSentence({ l, i }: Ctx): string {
-  const it = l === "it";
-  const cmd = str(i.command) ?? "";
-  const bg = i.background === true;
-  if (DELETES.test(cmd) && !/[;&|]/.test(cmd))
-    return it
-      ? `Cancella con il comando: ${short(cmd)}`
-      : `Deletes with the command: ${short(cmd)}`;
-  if (bg)
-    return it ? `Esegue in sottofondo: ${short(cmd)}` : `Runs in the background: ${short(cmd)}`;
-  return it ? `Esegue il comando: ${short(cmd)}` : `Runs the command: ${short(cmd)}`;
+  return shellSummary(l, str(i.command) ?? "", { background: i.background === true });
 }
 
 /** The services' own tools (`mcp__<server>__<tool>`): the action and the service. */
