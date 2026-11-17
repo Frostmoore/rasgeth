@@ -903,24 +903,33 @@
       "note": "Used by the ACP bridge inside editors (packages/acp), not by the page."
     },
     "command.stop": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/app_state.dart",
+        "lib/ui/chat/command_strip.dart"
+      ],
       "phase": "G42.3",
       "rows": [
         67
       ]
     },
     "command.close": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/app_state.dart",
+        "lib/ui/chat/command_strip.dart"
+      ],
       "phase": "G42.3",
       "rows": [
         67
       ]
     },
     "subagent.close": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/app_state.dart",
+        "lib/ui/chat/subagent_tabs.dart"
+      ],
       "phase": "G42.3",
       "rows": [
         68,
@@ -995,48 +1004,66 @@
       "note": "The page inside embed answers canvas.query as a page tab."
     },
     "browser.watch": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/app_state.dart",
+        "lib/screens/browser_screen.dart"
+      ],
       "phase": "G42.3",
       "rows": [
         79
       ]
     },
     "browser.unwatch": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/app_state.dart",
+        "lib/screens/browser_screen.dart"
+      ],
       "phase": "G42.3",
       "rows": [
         79
       ]
     },
     "browser.control": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/app_state.dart",
+        "lib/screens/browser_screen.dart"
+      ],
       "phase": "G42.3",
       "rows": [
         79
       ]
     },
     "browser.goto": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/app_state.dart",
+        "lib/screens/browser_screen.dart"
+      ],
       "phase": "G42.3",
       "rows": [
         79
       ]
     },
     "browser.teach": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/app_state.dart",
+        "lib/screens/browser_screen.dart"
+      ],
       "phase": "G42.3",
       "rows": [
         79
       ]
     },
     "browser.input": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/app_state.dart",
+        "lib/screens/browser_screen.dart"
+      ],
       "phase": "G42.3",
       "rows": [
         79
@@ -1267,8 +1294,11 @@
       ]
     },
     "board.changed": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/screens/board_screen.dart"
+      ],
       "phase": "G42.3",
       "rows": [
         78
@@ -1292,24 +1322,34 @@
       ]
     },
     "browser.frame": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/screens/browser_screen.dart"
+      ],
       "phase": "G42.3",
       "rows": [
         79
       ]
     },
     "browser.state": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/screens/browser_screen.dart"
+      ],
       "phase": "G42.3",
       "rows": [
         79
       ]
     },
     "room.changed": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/screens/room_screen.dart",
+        "lib/screens/chat_screen.dart"
+      ],
       "phase": "G42.3",
       "rows": [
         80

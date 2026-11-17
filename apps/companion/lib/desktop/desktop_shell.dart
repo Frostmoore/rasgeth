@@ -14,6 +14,7 @@ import '../api/live.dart';
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../screens/activity_screen.dart';
+import '../screens/browser_screen.dart';
 import '../screens/new_agent_screen.dart';
 import '../screens/share_screen.dart';
 import '../screens/you_screen.dart';
@@ -403,6 +404,15 @@ class _DesktopShellState extends State<DesktopShell> {
           icon: RgIcons.bell,
           shortcut: _k(LogicalKeyboardKey.keyD, shift: true),
           run: () => unawaited(_bell()),
+        ),
+        // G42.3: the agents' shared browser (the page's «Schermo»).
+        DeskCommand(
+          id: 'agents-browser',
+          label: l.cvScreenTitle,
+          group: l.deskMenuAgents,
+          icon: RgIcons.monitor,
+          enabled: _app.connected,
+          run: () => unawaited(openBrowserScreen(context)),
         ),
         null,
         DeskCommand(

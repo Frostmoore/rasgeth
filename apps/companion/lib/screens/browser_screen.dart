@@ -383,6 +383,20 @@ class _BrowserScreenState extends State<BrowserScreen> {
           autofocus: mine,
           onKeyEvent: (node, e) {
             if (!mine) return KeyEventResult.ignored;
+            // Paste goes in as text (the page's `onPaste`).
+            final keys = HardwareKeyboard.instance;
+            if (e is KeyDownEvent &&
+                e.logicalKey == LogicalKeyboardKey.keyV &&
+                (keys.isControlPressed || keys.isMetaPressed)) {
+              unawaited(
+                Clipboard.getData(Clipboard.kTextPlain).then((d) {
+                  final t = d?.text ?? '';
+                  if (t.isNotEmpty)
+                    _input({'kind': 'text', 'text': t.length > 2000 ? t.substring(0, 2000) : t});
+                }),
+              );
+              return KeyEventResult.handled;
+            }
             final k = browserKey(e);
             if (k == null) return KeyEventResult.ignored;
             _input(k);
