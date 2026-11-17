@@ -8,7 +8,11 @@ applyTheme();
 listenPreviewLinks();
 
 const root = document.getElementById("app");
-if (root && location.hash === "#ui-gallery")
+// The page inside RGCompanion has an entry of its own (embed.html, G42.0): a link to `/#embed=…`
+// goes there with its fragment.
+if (new URLSearchParams(location.hash.slice(1)).has("embed"))
+  location.replace(`/embed.html${location.hash}`);
+else if (root && location.hash === "#ui-gallery")
   void import("./dev/Gallery.js").then(({ Gallery }) => render(<Gallery />, root));
 else if (root) render(<App />, root);
 

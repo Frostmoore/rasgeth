@@ -4,11 +4,13 @@
 // proposal) around the family's own editor. Text and code are the first (TextEditor.tsx, G37.2):
 // code, Markdown, JSON/YAML/XML and plain text. Nothing is saved from here: the host writes the file
 // after a pause, or at once on Ctrl+S (Cmd+S), and the bar says «Salvato» (p3.5.1).
+
 import type { EditorView } from "@codemirror/view";
 import type { DocChange, DocFile, DocSummary } from "@redgiant/protocol";
 import { PERSON } from "@redgiant/protocol";
 import type { ComponentChildren } from "preact";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { reportSave } from "../../embed.js";
 import { type Key, t } from "../../i18n.js";
 import {
   IconAlert,
@@ -420,6 +422,8 @@ export function DocEditor({
   );
   const people = v.presence.filter((p) => p.who === PERSON).length;
   const save = saveState(v);
+  // Inside RGCompanion the app's bar says it (G42.0).
+  useEffect(() => reportSave(save), [save]);
   // «As set for the agent» says what that is (p3.5.3): right away, or which agents propose.
   const proposing = (v.agentsPropose ?? []).map(
     (id) => agents.value.find((a) => a.id === id)?.name ?? id,

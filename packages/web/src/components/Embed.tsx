@@ -1,0 +1,138 @@
+// The page inside RGCompanion (G42.0): one thing only, with no bar, tab or menu of the page (the
+// frame around it is the app's). Signed in with the device's token from the fragment, kept in
+// memory only; theme, language and font are the app's and are not saved. Its own live connection,
+// so collaboration, the agent's marks, proposals and `canvas.query`/`canvas.act` work as in the page.
+import type { AppToEmbed, EmbedParams } from "@redgiant/protocol";
+import { lazy, Suspense } from "preact/compat";
+import { useEffect, useState } from "preact/hooks";
+import { handleAppInput, installEmbedWays, onApp, toApp } from "../embed.js";
+import { lang, t } from "../i18n.js";
+import { type CanvasTarget, signIn } from "../state.js";
+import { asking, Dialogs } from "./dialogs.js";
+import { shortcutsOpen } from "./Shortcuts.js";
+
+// Each content comes only when asked for: the test page does not carry the editors.
+const Canvas = lazy(() => import("./Canvas.js").then((m) => ({ default: m.Canvas })));
+const Variants = lazy(() => import("./Variants.js").then((m) => ({ default: m.Variants })));
+const fileName = (path: string) => path.split(/[\\/]/).filter(Boolean).pop() ?? path;
+const EmbedProbe = lazy(() => import("./EmbedProbe.js").then((m) => ({ default: m.EmbedProbe })));
+
+/** The app's look, applied without touching the page's own choices (`rg.theme`, `rg.lang`). */
+export function applyEmbedLook(o: { theme?: "light" | "dark"; lang?: "it" | "en"; font?: string }) {
+  if (o.theme) document.documentElement.dataset.theme = o.theme;
+  if (o.lang) {
+    lang.value = o.lang;
+    document.documentElement.lang = o.lang;
+  }
+  if (o.font) document.body.style.fontFamily = o.font;
+}
+
+/**
+ * The app's «back»: the page closes its own things first (a question, the shortcuts, the whole
+ * screen), then says whether it did; when it did not, the app goes back itself.
+ */
+export function embedBack(): boolean {
+  const a = asking.value[0];
+  if (a) {
+    asking.value = asking.value.slice(1);
+    if (a.kind === "confirm") a.done(false);
+    else a.done(null);
+    return true;
+  }
+  if (shortcutsOpen.value) {
+    shortcutsOpen.value = false;
+    return true;
+  }
+  if (document.fullscreenElement) {
+    void document.exitFullscreen?.().catch(() => {});
+    return true;
+  }
+  return false;
+}
+
+/** What the embed shows, from its parameters. */
+export function embedTarget(p: EmbedParams): CanvasTarget | undefined {
+  if (p.embed === "canvas" && p.scope && p.path) {
+    const at =
+      p.line !== undefined || p.page !== undefined ? { line: p.line, page: p.page } : undefined;
+    return { kind: "file", scope: p.scope, path: p.path, ...(at && { at }) };
+  }
+  if (p.embed === "port" && p.agent && p.port !== undefined)
+    return { kind: "port", agentId: p.agent, port: p.port, ...(p.path && { path: p.path }) };
+  return undefined;
+}
+
+/** Mounted once its lazy siblings are: the content is drawn, the app takes its indicator away. */
+function Ready() {
+  useEffect(() => {
+    const id = requestAnimationFrame(() => toApp({ t: "ready" }));
+    return () => cancelAnimationFrame(id);
+  }, []);
+  return null;
+}
+
+export function EmbedRoot({ params }: { params: EmbedParams }) {
+  const [state, setState] = useState<"wait" | "ok" | "error">("wait");
+  useEffect(() => {
+    applyEmbedLook(params);
+    const undo = installEmbedWays();
+    const off = onApp((m: AppToEmbed) => {
+      if (m.t === "theme") applyEmbedLook({ theme: m.theme });
+      else if (m.t === "lang") applyEmbedLook({ lang: m.lang });
+      else if (m.t === "font") applyEmbedLook({ font: m.family });
+      else if (m.t === "back") toApp({ t: "back", handled: embedBack() });
+      else handleAppInput(m);
+    });
+    void signIn(params.token, { keep: false }).then(
+      () => setState("ok"),
+      () => setState("error"),
+    );
+    return () => {
+      off();
+      undo();
+    };
+  }, []);
+  const target = embedTarget(params);
+  const name =
+    target?.kind === "file"
+      ? fileName(target.path)
+      : target?.kind === "port"
+        ? t("embedPort", { port: String(target.port) })
+        : params.embed === "board"
+          ? t("boardTab")
+          : t("embedProbeTitle");
+  useEffect(() => {
+    if (state === "ok") toApp({ t: "title", name });
+  }, [state]);
+  const [session, proposal] = params.board?.split(".") ?? [];
+  const content =
+    state === "error" ? (
+      <p class="notice error embed-error" role="alert">
+        {t("embedSignInFailed")}
+      </p>
+    ) : target ? (
+      <Canvas
+        bare
+        title={name}
+        target={target}
+        onShown={(s) => toApp({ t: "title", name, kind: s.kind, size: s.size })}
+      />
+    ) : session && proposal ? (
+      <Variants sessionId={session} proposalId={proposal} />
+    ) : (
+      <EmbedProbe />
+    );
+  return (
+    <div class="embed-root" data-embed={params.embed}>
+      {state === "wait" ? (
+        <div class="empty" />
+      ) : (
+        <Suspense fallback={<div class="empty" />}>
+          {content}
+          <Ready />
+        </Suspense>
+      )}
+      <Dialogs />
+    </div>
+  );
+}

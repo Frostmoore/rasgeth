@@ -1,7 +1,9 @@
 // What every viewer of the canvas is given (G34.2): the file's name and a URL it reads from
 // (a signed preview link, or a blob of a file taken out of an archive). Nothing leaves the
 // computer: every viewer reads that URL and draws in the page.
+
 import { useEffect, useState } from "preact/hooks";
+import { embedded, saveThroughApp } from "../embed.js";
 import type { ViewerChoice } from "./kind.js";
 
 export interface ViewerSource extends ViewerChoice {
@@ -87,6 +89,11 @@ export function bytesText(n: number | undefined): string {
 
 /** Saves a URL under a name (the browser's own download). */
 export function download(url: string, name: string): void {
+  // Inside RGCompanion «Save as…» is the app's (G42.0).
+  if (embedded()) {
+    void saveThroughApp(url, name);
+    return;
+  }
   const a = document.createElement("a");
   a.href = url;
   a.download = name;

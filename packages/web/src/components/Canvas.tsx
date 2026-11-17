@@ -80,7 +80,19 @@ const clockOf = (s: number) => {
 /** The file's own name, from its path in the workspace (or on the computer). */
 export const fileName = (path: string) => path.split(/[\\/]/).filter(Boolean).pop() ?? path;
 
-export function Canvas({ title, target }: { title: string; target: CanvasTarget }) {
+export function Canvas({
+  title,
+  target,
+  bare = false,
+  onShown,
+}: {
+  title: string;
+  target: CanvasTarget;
+  /** Inside RGCompanion (G42.0): no bar of the page, the app's frame is around it. */
+  bare?: boolean;
+  /** What is shown (its kind and weight), for the app's bar. */
+  onShown?: (s: { kind: string; size?: number }) => void;
+}) {
   /** Whether the path is a folder (its site): a name with no extension can be either. */
   const [folder, setFolder] = useState<boolean>();
   /** An artifact (3.5.9): the server says so (its folder or its header). */
@@ -139,6 +151,10 @@ export function Canvas({ title, target }: { title: string; target: CanvasTarget 
       ),
     [id, site, artifact, editable, shown?.kind],
   );
+  useEffect(() => {
+    if (shown)
+      onShown?.({ kind: shown.kind, ...(shown.size !== undefined && { size: shown.size }) });
+  }, [shown?.kind, shown?.size]);
   // The agent's move, said for a few seconds in the head.
   const move = lastMove.value?.id === id ? lastMove.value : undefined;
   const [moveShown, setMoveShown] = useState<number>();
@@ -236,8 +252,8 @@ export function Canvas({ title, target }: { title: string; target: CanvasTarget 
   const url = link && `${link}${link.includes("?") ? "&" : "?"}v=${version}-${reloads}`;
   const name = target.kind === "file" ? fileName(target.path) : title;
   return (
-    <div class="canvas" ref={box}>
-      <div class="canvas-head">
+    <div class={bare ? "canvas canvas-bare" : "canvas"} ref={box}>
+      <div class="canvas-head" hidden={bare}>
         <span class="canvas-title">
           <strong title={target.kind === "file" ? target.path : title}>{title}</strong>
           {shown && !site && (

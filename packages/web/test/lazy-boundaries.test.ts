@@ -24,10 +24,10 @@ function resolveLocal(from: string, spec: string): string | undefined {
 }
 
 /** Every file and package the first load reaches, with the chain that reaches it. */
-function firstLoad() {
+function firstLoad(entry = "main.tsx") {
   const parent = new Map<string, string | null>();
   const packages = new Map<string, string>();
-  const queue: [string, string | null][] = [[resolve(src, "main.tsx"), null]];
+  const queue: [string, string | null][] = [[resolve(src, entry), null]];
   while (queue.length) {
     const [file, from] = queue.shift() as [string, string | null];
     if (parent.has(file)) continue;
@@ -105,5 +105,30 @@ describe("first load (3.5.11)", () => {
     expect(app).toMatch(/import\("\.\/Settings\.js"\)/);
     expect(side).toMatch(/import\("\.\/Canvas\.js"\)/);
     expect(side).toMatch(/import\("\.\/TerminalView\.js"\)/);
+  });
+});
+
+describe("the page inside RGCompanion (G42.0)", () => {
+  it("has its own entry that never reaches the page's App, Settings or the chat", () => {
+    const { files, chain } = firstLoad("embed-main.tsx");
+    const page = [
+      "components/App.tsx",
+      "components/Settings.tsx",
+      "components/Sidebar.tsx",
+      "components/Chat.tsx",
+      "components/Setup.tsx",
+      "components/Login.tsx",
+    ];
+    expect(files.filter((f) => page.includes(relative(src, f))).map(chain)).toEqual([]);
+    // The editors stay behind import() there too.
+    const { packages } = firstLoad("embed-main.tsx");
+    expect([...packages.keys()].filter((p) => HEAVY_PACKAGES.test(p))).toEqual([]);
+    expect(files.filter((f) => /-island\.ts$/.test(relative(src, f))).map(chain)).toEqual([]);
+  });
+
+  it("the page sends a `#embed=` link to it, and the build has both entries", () => {
+    expect(readFileSync(resolve(src, "main.tsx"), "utf8")).toMatch(/\/embed\.html/);
+    const vite = readFileSync(resolve(src, "../vite.config.ts"), "utf8");
+    expect(vite).toMatch(/embed: here\("\.\/embed\.html"\)/);
   });
 });

@@ -39,6 +39,7 @@ import {
   type Subproject,
 } from "./api.js";
 import { bridgeResult } from "./artifact-bridge.js";
+import { embedParams } from "./embed.js";
 import { t, tOptional } from "./i18n.js";
 import { coversNow } from "./phone.js";
 import {
@@ -224,7 +225,8 @@ export function streamingWithoutWidgets(text: string): string {
 /** The conversation open in front of the person, if the active tab is one. */
 export function frontSession(): string | undefined {
   const tab = tabs.value.find((x) => x.id === activeTab.value);
-  return tab?.type === "chat" ? tab.sessionId : undefined;
+  // Inside RGCompanion the conversation is the one the app opened the Canvas from (G42.0).
+  return tab?.type === "chat" ? tab.sessionId : embedParams()?.session;
 }
 
 /** Their question card stands for these calls: no tool line for them. */
@@ -1028,10 +1030,11 @@ export function takeFromLink(): { token?: string; board?: string; open?: "settin
   return { ...(token && { token }), ...(board && { board }), ...(open && { open }) };
 }
 
-export async function signIn(t: string): Promise<void> {
+/** Signs in with [t]; `keep: false` (the page inside RGCompanion, G42.0): the token stays in memory. */
+export async function signIn(t: string, o: { keep?: boolean } = {}): Promise<void> {
   api = new Api(t);
   await api.projects(); // throws on a wrong token
-  localStorage.setItem("rg.token", t);
+  if (o.keep !== false) localStorage.setItem("rg.token", t);
   token.value = t;
   live?.close();
   live = new Live(t, applyMessage, (s) => {

@@ -43,10 +43,12 @@ export default defineConfig({
     // The first load and every chunk, read by scripts/bundle-report.mjs (3.5.11).
     manifest: true,
     chunkSizeWarningLimit: 1500,
+    // Two entries: the page, and the page inside RGCompanion (G42.0), which never loads App.
+    rolldownOptions: {
+      input: { main: here("./index.html"), embed: here("./embed.html") },
+      ...(process.env.REDGIANT_KEEP_EXPORTS && { output: { minifyInternalExports: false } }),
+    },
     // REDGIANT_KEEP_EXPORTS=1: shared chunks keep their exports' names, so the memory measures
     // (scripts/perf-memory.mjs) can drive the page's own modules. Never for a release.
-    ...(process.env.REDGIANT_KEEP_EXPORTS && {
-      rolldownOptions: { output: { minifyInternalExports: false } },
-    }),
   },
 });

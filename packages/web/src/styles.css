@@ -20862,3 +20862,78 @@ fieldset.saved-filter legend {
   padding: 0;
   font: inherit;
 }
+
+/* G42.0: the page inside RGCompanion. One thing on the whole web view, the app's frame around it,
+   the same background as the app so nothing flashes while it loads. */
+.embed-root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+.embed-root > .canvas,
+.embed-root > .board {
+  flex: 1;
+  min-height: 0;
+}
+.canvas-bare > .canvas-head {
+  display: none;
+}
+.embed-error {
+  margin: 16px;
+}
+.embed-probe {
+  padding: 16px;
+  overflow: auto;
+}
+.embed-probe h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+.embed-probe > .dim {
+  font-size: 12px;
+  margin: 0 0 12px;
+  word-break: break-all;
+}
+.embed-probe-table {
+  border-collapse: collapse;
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.embed-probe-table th,
+.embed-probe-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+  font-size: 14px;
+}
+.embed-probe-table tr:first-child > * {
+  border-top: 0;
+}
+.embed-probe-table th {
+  font-weight: 600;
+  width: 40%;
+}
+.embed-probe-table td.dim {
+  color: var(--dim);
+  font-size: 12.5px;
+  word-break: break-word;
+}
+.embed-probe-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background: var(--dim);
+}
+.embed-probe-dot.ok {
+  background: var(--ok);
+}
+.embed-probe-dot.ko {
+  background: var(--err);
+}

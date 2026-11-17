@@ -350,6 +350,13 @@ function View({ tab }: { tab: Tab }) {
   }
 }
 
+/** What a link asked to open once signed in (`#open=settings`), used once (G42.0). */
+export function takeOpenIntent(): "settings" | undefined {
+  const open = sessionStorage.getItem("rg.open");
+  sessionStorage.removeItem("rg.open");
+  return open === "settings" ? "settings" : undefined;
+}
+
 export function App() {
   const [ready, setReady] = useState(false);
   const [search, setSearch] = useState(false);
@@ -365,13 +372,11 @@ export function App() {
     const link = takeFromLink();
     if (link.token) token.value = link.token;
     if (link.board) sessionStorage.setItem("rg.tavola", link.board);
+    // RGCompanion's «All settings» (G40.8): the page opens on Settings, even after the password
+    // page (G42.0: the intention waits in the tab's storage and is used once).
+    if (link.open) sessionStorage.setItem("rg.open", link.open);
     if (token.value)
       void signIn(token.value)
-        // RGCompanion's «All settings» (G40.8): the page opens on Settings.
-        .then(() => {
-          if (link.open === "settings")
-            openTab({ id: "settings", type: "settings", title: t("settings") });
-        })
         .catch(() => signOut())
         .finally(() => setReady(true));
     else setReady(true);
@@ -381,6 +386,12 @@ export function App() {
   useEffect(() => {
     if (explorerOpen.value) preloadCanvas();
   }, [explorerOpen.value]);
+
+  useEffect(() => {
+    if (!ready || !token.value) return;
+    if (takeOpenIntent() === "settings")
+      openTab({ id: "settings", type: "settings", title: t("settings") });
+  }, [ready, token.value]);
 
   useEffect(() => {
     if (!ready || !token.value) return;
