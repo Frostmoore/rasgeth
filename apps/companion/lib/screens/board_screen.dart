@@ -488,9 +488,6 @@ class _List extends StatelessWidget {
   }
 }
 
-TextStyle _strong(RgColors c) =>
-    TextStyle(color: c.text, fontWeight: FontWeight.w700, fontSize: 14);
-
 class _Empty extends StatelessWidget {
   const _Empty(this.text);
 

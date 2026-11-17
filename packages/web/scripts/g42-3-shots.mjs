@@ -28,12 +28,22 @@ const views = [
   ["06-chat", { id: "chats", type: "chats", title: "Chat" }],
   [
     "08-chat-di-prima",
-    { id: `daily:${chats[0]?.id}`, type: "dailychat", title: chats[0]?.title, chatId: chats[0]?.id },
+    {
+      id: `daily:${chats[0]?.id}`,
+      type: "dailychat",
+      title: chats[0]?.title,
+      chatId: chats[0]?.id,
+    },
   ],
   ["09-bacheca", { id: "board:demo", type: "board", title: "Bacheca · Demo", projectId: "demo" }],
   [
     "11-browser",
-    { id: `assistant:${assistant?.id}`, type: "assistant", title: assistant?.name, agentId: assistant?.id },
+    {
+      id: `assistant:${assistant?.id}`,
+      type: "assistant",
+      title: assistant?.name,
+      agentId: assistant?.id,
+    },
   ],
 ];
 
@@ -60,8 +70,7 @@ for (const [device, viewport] of [
         await page.keyboard.press("Escape");
         await page.waitForTimeout(400);
       }
-      const shot = (what) =>
-        page.screenshot({ path: `${out}/web-${device}-${theme}-${what}.png` });
+      const shot = (what) => page.screenshot({ path: `${out}/web-${device}-${theme}-${what}.png` });
       await shot(name);
       if (name === "01-linguette") {
         const output = page.locator(".cmd-row button.link", { hasText: "Output" }).first();
