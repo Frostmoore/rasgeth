@@ -19,3 +19,21 @@ RedGiant dresses plain HTML in its own look, light and dark: write no design CSS
 - The answer: .rg-stats > .rg-stat (<span class="rg-label">, <strong>number</strong>, <span class="rg-delta up|down">); .rg-result ok|warn|bad|info (<span class="rg-title">, then a line; icon and tint included); .rg-chip ok|warn|bad|info; .rg-tabs (buttons; aria-controls switches panels); .rg-muted for notes. Tables align numbers by themselves.
 - One .rg-primary button for the main action; .rg-ghost for minor ones. Compute as the person types (no "Calculate" button); keep a widget small: a few labelled fields with units, then the answer.
 - A colour of your own (a chart) only through the variables: var(--rg-accent), var(--rg-ok), var(--rg-warn), var(--rg-err), var(--rg-text), var(--rg-dim), var(--rg-line).`;
+
+/** The sentence that keeps other agents from widgets when text would do. */
+const NO_WIDGET_FOR_TEXT =
+  "Never make a widget or an artifact when a few lines of text answer the question.";
+
+/**
+ * The rule as the everyday Chat reads it (2026-11-17, "Chat più ricca, come ChatGPT"): its own
+ * instructions ask for widgets even when text alone would answer, so the sentence against them
+ * gives way to a pointer there. Every other agent keeps `ARTIFACT_GUIDANCE` as it is.
+ */
+export const CHAT_ARTIFACT_GUIDANCE = ARTIFACT_GUIDANCE.replace(
+  NO_WIDGET_FOR_TEXT,
+  "In this chat widgets are welcome even when text alone would answer: your instructions above say when to add one, and an artifact still only when the person will use it again.",
+);
+
+/** Which rule an agent gets: decided when its conversation starts, fixed for the session. */
+export const artifactGuidanceFor = (isChat: boolean): string =>
+  isChat ? CHAT_ARTIFACT_GUIDANCE : ARTIFACT_GUIDANCE;
