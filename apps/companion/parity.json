@@ -71,7 +71,8 @@
         "lib/desktop/wall.dart",
         "lib/screens/agent_conversations_screen.dart",
         "lib/ui/conversation_menu.dart",
-        "lib/ui/rg_menu.dart"
+        "lib/ui/rg_menu.dart",
+        "lib/desktop/mascot_rail.dart"
       ],
       "phase": "G42.4",
       "rows": [
@@ -86,7 +87,7 @@
         197,
         198
       ],
-      "note": "Agent settings from the menu (3.8.7), new agent and instructions are native; 3.8.8: a click on any agent (God included) shows its conversations (pinned, folders, «Archived (n)», new), every conversation has the page's row actions (pin, folder, archive and back, export); the tree beyond the first level, the advanced wizard and assistants' services are not."
+      "note": "Agent settings from the menu (3.8.7), new agent and instructions are native; 3.8.8: a click on any agent (God included) shows its conversations (pinned, folders, «Archived (n)», new), every conversation has the page's row actions (pin, folder, archive and back, export), the full window's bar shows each project's agents under its lead, collapsible; the tree beyond the first level, the advanced wizard and assistants' services are not."
     },
     "memory": {
       "app": "partial",

@@ -153,6 +153,26 @@ void main() {
       await tap(t, find.byKey(const Key('desk-bell')), 1500);
       await shot(t, n(6, 'campanella-aperta'));
       await esc(t);
+      // The full window's bar: the agents under their project's lead, a group closed.
+      if (tile.evaluate().isNotEmpty) {
+        await tap(t, tile.first, 1500);
+        await tap(t, find.byKey(const Key('agent-conv-new')), 2500);
+        if (find.byKey(const Key('panel-full')).evaluate().isNotEmpty) {
+          await tap(t, find.byKey(const Key('panel-full')), 2000);
+        }
+        await shot(t, n(10, 'barra-albero'));
+        final fold = find.byWidgetPredicate(
+          (w) =>
+              w.key is ValueKey<String> &&
+              (w.key! as ValueKey<String>).value.startsWith('rail-fold-'),
+        );
+        if (fold.evaluate().isNotEmpty) {
+          await tap(t, fold.first, 1200);
+          await shot(t, n(11, 'barra-gruppo-chiuso'));
+          await tap(t, fold.first, 1200);
+        }
+        await tap(t, find.byKey(const Key('panel-unfull')), 1500);
+      }
       if (project != null) {
         await tap(t, find.byKey(const Key('view-projects')), 2000);
         final pt = find.byKey(Key('project-tile-${project.id}'));
