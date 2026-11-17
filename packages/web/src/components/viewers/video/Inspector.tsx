@@ -301,7 +301,7 @@ const CROP_STEP = 0.01;
 /**
  * The crop (A1): the miniature with the part kept as a frame to move (the mouse, a finger, the
  * arrows; the edit is made on letting go), «Al centro» and «Togli». Without a crop a filled clip
- * shows its centre: the frame starts there.
+ * shows its centre: the frame starts there (a fitted one shows whole: no frame until there is a crop).
  */
 export function CropBox({
   clip,
@@ -321,7 +321,8 @@ export function CropBox({
     undefined,
   );
   const has = !wholeCrop(clip.crop);
-  if (!src || (!has && !needsReframe(src, out))) return null;
+  // A fitted picture shows whole: a crop there only when one was set (by an agent, or before).
+  if (!src || (!has && (clip.fit === "fit" || !needsReframe(src, out)))) return null;
   const base = has ? (clip.crop as VideoRect) : reframeCrop(src, out);
   const r = live ?? base;
   const still = isMediaRef(clip.ref) && !!clip.ref.still;
@@ -351,7 +352,11 @@ export function CropBox({
         onPointerUp={(e) => {
           const p = press.current;
           press.current = undefined;
-          (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
+          try {
+            (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
+          } catch {
+            // not captured (a pointer the browser no longer tracks)
+          }
           if (p?.moved && live) done(live);
           else setLive(undefined);
         }}
@@ -371,7 +376,11 @@ export function CropBox({
           onPointerDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            box.current?.setPointerCapture?.(e.pointerId);
+            try {
+              box.current?.setPointerCapture?.(e.pointerId);
+            } catch {
+              // a pointer the browser does not track (some touch screens): the moves still come
+            }
             press.current = { x: e.clientX, y: e.clientY, from: base, moved: false };
           }}
           onKeyDown={(e) => {

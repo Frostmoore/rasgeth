@@ -530,6 +530,10 @@ describe("G41.5d: the editor", () => {
     expect(find(host.doc, "a")).toMatchObject({ fit: "fit", background: "blur" });
     fireEvent.click(byText(insp, ".wz-seg button", "Niente"));
     expect(find(host.doc, "a").background).toBeUndefined();
+    // fitted it shows whole: the crop's frame only while there is a crop
+    expect(insp.querySelector(".ve-crop-rect")).toBeTruthy();
+    fireEvent.click(byText(insp, "button", "Togli il ritaglio"));
+    await waitFor(() => expect(insp.querySelector(".ve-crop-rect")).toBeNull());
   });
 
   it("the crop dragged on the miniature: one edit when let go", async () => {
