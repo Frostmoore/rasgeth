@@ -187,6 +187,62 @@ const TABLE: Row[] = [
     "Deletes build, then builds the project",
   ],
   ["bash", { command: "cd app\nnpm test" }, "Esegue i test", "Runs the tests"],
+  // Other machines and nodes (p3.8.9): the command in words, and where.
+  [
+    "ssh_run",
+    { machine: "web", command: "sudo systemctl restart nginx" },
+    "Su web: riavvia il servizio nginx, come amministratore",
+    "On web: restarts the service nginx, as administrator",
+  ],
+  [
+    "node_run",
+    { node: "rig", command: "pnpm test" },
+    "Su rig: esegue i test",
+    "On rig: runs the tests",
+  ],
+  [
+    "ssh_copy",
+    { machine: "web", direction: "upload", local: "dist/app.zip", remote: "/srv/app.zip" },
+    "Copia dist/app.zip su web in /srv/app.zip",
+    "Copies dist/app.zip to web at /srv/app.zip",
+  ],
+  [
+    "ssh_copy",
+    { machine: "web", direction: "download", local: "logs/", remote: "/var/log/app.log" },
+    "Copia /var/log/app.log da web in logs/",
+    "Copies /var/log/app.log from web to logs/",
+  ],
+  [
+    "browser_open",
+    { url: "https://shop.example.com/cart" },
+    "Apre shop.example.com nel browser",
+    "Opens shop.example.com in the browser",
+  ],
+  [
+    "request_tool",
+    { tool: "bash", why: "to run the tests" },
+    "Chiede di riaccendere lo strumento bash: to run the tests",
+    "Asks to switch the tool bash back on: to run the tests",
+  ],
+  [
+    "request_connection",
+    { service: "github", why: "open a pull request" },
+    "Chiede di collegare il servizio «github»: open a pull request",
+    "Asks to connect the service “github”: open a pull request",
+  ],
+  [
+    "ffmpeg",
+    { args: ["-i", "a.mp4", "b.webm"] },
+    "Converte o modifica un video o un audio con ffmpeg",
+    "Converts or edits a video or audio with ffmpeg",
+  ],
+  ["blender", { file: "scene.blend" }, "Usa Blender su scene.blend", "Uses Blender on scene.blend"],
+  [
+    "propose_automation",
+    { summary: "Every morning, a digest of the mail" },
+    "Propone un'automazione: Every morning, a digest of the mail",
+    "Proposes an automation: Every morning, a digest of the mail",
+  ],
   // Files: write, edit, delete.
   [
     "write_file",
