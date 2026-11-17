@@ -26,10 +26,27 @@ for (const [device, viewport] of [
     await page.evaluate(() => localStorage.clear());
     await page.goto(`${url}/#token=${token}`);
     await page.waitForTimeout(2500);
-    for (let i = 0; i < 3 && (await page.locator(".ui-modal-veil").count()) > 0; i++) {
-      await page.keyboard.press("Escape");
-      await page.waitForTimeout(400);
-    }
+    // A window opened by itself (what's new, a request): put away, before every step.
+    const calm = async () => {
+      for (let i = 0; i < 4 && (await page.locator(".ui-modal-veil").count()) > 0; i++) {
+        await page.keyboard.press("Escape");
+        await page.waitForTimeout(400);
+        if ((await page.locator(".ui-modal-veil").count()) > 0)
+          await page.locator(".ui-modal-veil").first().click({ force: true }).catch(() => {});
+        await page.waitForTimeout(300);
+      }
+      if ((await page.locator(".ui-modal-veil").count()) > 0) {
+        // One that will not close (a request waiting for the person): seen once, then set aside.
+        await page.screenshot({ path: `${out}/debug-${device}-${theme}-window.png` });
+        const yes = page.locator(".ui-modal button", { hasText: /Più tardi|Chiudi|Annulla|Nega/ });
+        if (await yes.count()) await yes.first().click({ force: true }).catch(() => {});
+        await page.waitForTimeout(400);
+        await page.evaluate(() => {
+          for (const e of document.querySelectorAll(".ui-modal-back")) e.remove();
+        });
+      }
+    };
+    await calm();
     const openConversation = async (project, title) => {
       if (device === "telefono") {
         for (const sel of [".menu-button", "[aria-label='Menu']", ".icon-button.menu"]) {
@@ -41,9 +58,12 @@ for (const [device, viewport] of [
         }
         await page.waitForTimeout(600);
       }
-      const p = page.locator(".bar-item", { hasText: project }).first();
-      if (await p.isVisible().catch(() => false)) await p.click();
-      await page.waitForTimeout(600);
+      await calm();
+      const row = page.locator(".session-row", { hasText: title }).first();
+      if (!(await row.isVisible().catch(() => false))) {
+        await page.getByText(project, { exact: true }).first().click();
+        await page.waitForTimeout(800);
+      }
       await page
         .locator(".session-row", { hasText: title })
         .first()
@@ -52,8 +72,10 @@ for (const [device, viewport] of [
       await page.waitForTimeout(1500);
     };
     await openConversation("Demo", "Give me a quick tour of the project");
+    await calm();
     await shot(1, "conversazione");
     const folder = page.locator(".top .icon-button[aria-label='File del progetto e terminale']");
+    await calm();
     await folder.first().click();
     await page.waitForSelector(".explorer .tree-row");
     await page.waitForTimeout(600);
@@ -66,8 +88,10 @@ for (const [device, viewport] of [
     await page.locator(".explorer-head .icon-button[title='Mostra i file nascosti']").click();
     await page.waitForTimeout(600);
     await shot(4, "nascosti");
+    await calm();
     // The archived project (DEMO_ARCHIVE=1): its page, «Mostra i file», read only.
     try {
+      await calm();
       if (device === "telefono") {
         await page.locator(".icon-button.menu").first().click();
         await page.waitForTimeout(600);
