@@ -63,10 +63,82 @@ class FakeRedGiant {
     }
   }
 
+  /// `session.activity` as core.ts sends it: with the conversation's agent.
+  void _activity(String sid, String state) => _toAll({
+    'type': 'session.activity',
+    'sessionId': sid,
+    'agentId': sessions.where((x) => x['id'] == sid).firstOrNull?['agentId'] ?? 'a0',
+    'state': state,
+  });
+
+  /// `core.listsChanged` (p3.8.9): the registry, the projects or the conversation rows changed,
+  /// to every connection of the owner. Sent by every route below that changes them, as the real
+  /// server does from `AgentRegistry`, `ProjectStore` and the core's session writes.
+  void listsChanged(List<String> lists) => _toAll({'type': 'lists.changed', 'lists': lists});
+
+  /// What God or the page did elsewhere (p3.8.9): a project, an agent, a conversation made there.
+  Map<String, dynamic> projectMadeElsewhere(String id, String name) {
+    final made = {
+      'id': id,
+      'name': name,
+      'path': '/projects/$id',
+      'createdAt': '2026-11-17T10:00:00.000Z',
+      'git': true,
+    };
+    madeProjects.add(made);
+    listsChanged(['projects', 'agents']);
+    return made;
+  }
+
+  Map<String, dynamic> agentMadeElsewhere(
+    String id,
+    String name, {
+    String kind = 'agent',
+    String? projectId,
+    String parentId = 'a0',
+  }) {
+    final made = {
+      'id': id,
+      'kind': kind,
+      'parentId': parentId,
+      'projectId': projectId,
+      'persistent': true,
+      'name': name,
+      'mascotSeed': name,
+      'mascot': mascots[3].raw,
+      'status': 'active',
+    };
+    created.add(made);
+    listsChanged(['agents']);
+    return made;
+  }
+
+  String sessionMadeElsewhere(String agentId, {String? title}) {
+    final id = 's${++_sessionSeq}';
+    sessions.add({
+      'id': id,
+      'agentId': agentId,
+      'projectId': null,
+      'createdAt': DateTime.now().toUtc().toIso8601String(),
+      'lastAt': DateTime.now().toUtc().toIso8601String(),
+      'title': title,
+      'archived': false,
+      'running': false,
+    });
+    listsChanged(['sessions']);
+    return id;
+  }
+
+  /// A conversation renamed, pinned or archived elsewhere.
+  void sessionChangedElsewhere(String sid, Map<String, dynamic> change) {
+    sessions.where((x) => x['id'] == sid).firstOrNull?.addAll(change);
+    listsChanged(['sessions']);
+  }
+
   /// A turn of the scripted agent: the person's message, the streamed answer, the end.
   void _turn(String sid, String text) {
     _store(sid, 'message.user', {'text': text});
-    _toAll({'type': 'session.activity', 'sessionId': sid, 'state': 'running'});
+    _activity(sid, 'running');
     _toFollowers(sid, {'type': 'session.state', 'sessionId': sid, 'state': 'running'});
     // As a local engine reports it (core.ts `live`: `prefill_progress` ⇒ `prefill`).
     _toFollowers(sid, {
@@ -97,7 +169,7 @@ class FakeRedGiant {
       'state': 'idle',
       'stopReason': 'end_turn',
     });
-    _toAll({'type': 'session.activity', 'sessionId': sid, 'state': 'idle'});
+    _activity(sid, 'idle');
   }
 
   final sessions = <Map<String, dynamic>>[
@@ -180,7 +252,7 @@ class FakeRedGiant {
   /// The agent of [sid] works: [turnStart] and messages wait.
   void hold(String sid) {
     busy.add(sid);
-    _toAll({'type': 'session.activity', 'sessionId': sid, 'state': 'running'});
+    _activity(sid, 'running');
     _toFollowers(sid, {'type': 'session.state', 'sessionId': sid, 'state': 'running'});
   }
 
@@ -191,7 +263,7 @@ class FakeRedGiant {
       _store(sid, 'message.user', {'text': m['text']});
     }
     _toFollowers(sid, {'type': 'session.state', 'sessionId': sid, 'state': 'idle'});
-    _toAll({'type': 'session.activity', 'sessionId': sid, 'state': 'idle'});
+    _activity(sid, 'idle');
   }
 
   // 3.8.1: what the app changed, for the tests to look at.
@@ -272,7 +344,7 @@ class FakeRedGiant {
   /// `prefill` as the engine reads, `delta` thinking then text, the stored `message.assistant`,
   /// `session.state` idle), to every follower of [sid].
   void turnStart(String sid) {
-    _toAll({'type': 'session.activity', 'sessionId': sid, 'state': 'running'});
+    _activity(sid, 'running');
     _toFollowers(sid, {'type': 'session.state', 'sessionId': sid, 'state': 'running'});
   }
 
@@ -343,7 +415,7 @@ class FakeRedGiant {
       'state': 'idle',
       'stopReason': 'end_turn',
     });
-    _toAll({'type': 'session.activity', 'sessionId': sid, 'state': 'idle'});
+    _activity(sid, 'idle');
   }
 
   /// 3.8.7: JSON answers set by a test, by «METHOD /path».
@@ -689,6 +761,7 @@ class FakeRedGiant {
         'archived': false,
         'running': false,
       });
+      listsChanged(['sessions']);
       return _json(r, 201, {'sessionId': id});
     }
     // An agent's model and mode (PATCH), the Chat's settings, new agents, tools, mascots (3.8.1).
@@ -704,6 +777,7 @@ class FakeRedGiant {
       if (b['name'] is String) b['name'] = (b['name'] as String).trim();
       final own = agentOverrides.putIfAbsent(agentOne.group(1)!, () => {});
       own.addAll(b);
+      listsChanged(['agents']);
       return _json(r, 200, {...base, ...own});
     }
     // G38.7: the rest of Settings › Agents, with the real server's rules.
@@ -720,6 +794,7 @@ class FakeRedGiant {
       for (final x in under) {
         agentOverrides.putIfAbsent(x, () => {})['status'] = 'stopped';
       }
+      listsChanged(['agents']);
       return _json(r, 200, {'stopped': under});
     }
     final compactOf = RegExp(r'^/api/agents/([^/]+)/compaction-defaults$').firstMatch(path);
@@ -833,6 +908,7 @@ class FakeRedGiant {
       };
       created.add(made);
       newAgents.add(b);
+      listsChanged(['agents']);
       return _json(r, 201, made);
     }
     final promptOf = RegExp(r'^/api/agents/([^/]+)/prompt$').firstMatch(path);
@@ -943,6 +1019,7 @@ class FakeRedGiant {
       if (a == null) return _json(r, 404, {'error': 'Agent not found'});
       a['mascot'] = mascots[4].raw;
       a['mascotSeed'] = '${a['name']}~abc123';
+      listsChanged(['agents']);
       return _json(r, 200, a);
     }
     final aside = RegExp(r'^/api/sessions/([^/]+)/aside$').firstMatch(path);
@@ -988,6 +1065,7 @@ class FakeRedGiant {
         'archived': false,
         'running': false,
       });
+      listsChanged(['sessions']);
       return _json(r, 200, {'sessionId': id});
     }
     final one = RegExp(r'^/api/sessions/([^/]+)(/messages|/interrupt)?$').firstMatch(path);
@@ -997,6 +1075,7 @@ class FakeRedGiant {
       final body = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
       if (r.method == 'PATCH' && one.group(2) == null) {
         row.addAll(body);
+        listsChanged(['sessions']);
         return _json(r, 200, {'ok': true});
       }
       if (r.method == 'POST' && one.group(2) == '/messages') {
@@ -1157,6 +1236,7 @@ class FakeRedGiant {
         if (gitMissing) 'gitError': 'git is not installed',
       };
       madeProjects.add(made);
+      listsChanged(['projects', 'agents']);
       return _json(r, 201, made);
     }
     if (r.method == 'GET' && path == '/api/projects/demo/tasks') {
