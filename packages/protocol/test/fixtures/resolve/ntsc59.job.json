@@ -1,0 +1,131 @@
+{
+  "name": "Prova \"59,94\" è",
+  "fps_num": 60000,
+  "fps_den": 1001,
+  "width": 3840,
+  "height": 2160,
+  "media": {
+    "a": {
+      "url": "/srv/riprese/scena #1 50%?.mp4",
+      "name": "scena #1 50%?.mp4",
+      "frames": 3000,
+      "timecode": "00:59:59;28",
+      "width": 3840,
+      "height": 2160,
+      "audio": {
+        "channels": 1,
+        "sample_rate": 44100
+      }
+    },
+    "b": {
+      "url": "\\\\nas\\video\\Ripresa é ü.mov",
+      "name": "Ripresa é ü.mov",
+      "frames": 900,
+      "timecode": "12:12:33.23",
+      "width": 1280,
+      "height": 720,
+      "audio": {
+        "channels": 2,
+        "sample_rate": 48000
+      }
+    },
+    "c": {
+      "url": "file:///già/così.mp4",
+      "name": "così.mp4",
+      "frames": 600,
+      "timecode": "1:02:03:04",
+      "width": 0,
+      "height": 0,
+      "audio": {
+        "channels": 2,
+        "sample_rate": 48000
+      }
+    }
+  },
+  "tracks": [
+    {
+      "id": "V1",
+      "type": "video",
+      "enabled": true,
+      "clips": [
+        {
+          "media": "a",
+          "start": 0,
+          "in": 0,
+          "dur": 600,
+          "enabled": true
+        },
+        {
+          "media": "b",
+          "start": 600,
+          "in": 120,
+          "dur": 300,
+          "enabled": true
+        },
+        {
+          "media": "c",
+          "start": 900,
+          "in": 5,
+          "dur": 10,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "V2",
+      "type": "video",
+      "enabled": true,
+      "clips": [
+        {
+          "media": "a",
+          "start": 100,
+          "in": 0,
+          "dur": 600,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "A1",
+      "type": "audio",
+      "enabled": true,
+      "clips": [
+        {
+          "media": "a",
+          "start": 0,
+          "in": 0,
+          "dur": 600,
+          "enabled": true
+        },
+        {
+          "media": "b",
+          "start": 600,
+          "in": 120,
+          "dur": 300,
+          "enabled": true
+        },
+        {
+          "media": "c",
+          "start": 900,
+          "in": 5,
+          "dur": 10,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "A2",
+      "type": "audio",
+      "enabled": true,
+      "clips": [
+        {
+          "media": "a",
+          "start": 100,
+          "in": 0,
+          "dur": 600,
+          "enabled": false
+        }
+      ]
+    }
+  ]
+}

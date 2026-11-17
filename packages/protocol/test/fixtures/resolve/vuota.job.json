@@ -1,0 +1,22 @@
+{
+  "name": "Vuota",
+  "fps_num": 30,
+  "fps_den": 1,
+  "width": 1280,
+  "height": 720,
+  "media": {},
+  "tracks": [
+    {
+      "id": "V1",
+      "type": "video",
+      "enabled": true,
+      "clips": []
+    },
+    {
+      "id": "A1",
+      "type": "audio",
+      "enabled": true,
+      "clips": []
+    }
+  ]
+}

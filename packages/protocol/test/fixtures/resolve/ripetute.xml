@@ -1,0 +1,267 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xmeml version="4">
+    <project>
+        <name>Ripetute</name>
+        <children>
+            <sequence id="sequence-1">
+                <name>Ripetute</name>
+                <duration>150</duration>
+                <rate>
+                    <timebase>30</timebase>
+                    <ntsc>TRUE</ntsc>
+                </rate>
+                <media>
+                    <video>
+                        <format />
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-1">
+                                <file id="file-1">
+                                    <pathurl>file://localhost/C%3a/Users/Pixel/Videos/x.mp4</pathurl>
+                                    <name>x.mp4</name>
+                                    <rate>
+                                        <timebase>30</timebase>
+                                        <ntsc>TRUE</ntsc>
+                                    </rate>
+                                    <duration>900</duration>
+                                    <timecode>
+                                        <rate>
+                                            <timebase>30</timebase>
+                                            <ntsc>TRUE</ntsc>
+                                        </rate>
+                                        <string>00:10:00;00</string>
+                                        <frame>17982</frame>
+                                        <displayformat>DF</displayformat>
+                                    </timecode>
+                                    <media>
+                                        <video><samplecharacteristics><width>1920</width><height>1080</height></samplecharacteristics></video><audio><samplecharacteristics><depth>16</depth><samplerate>48000</samplerate></samplecharacteristics><channelcount>2</channelcount></audio></media>
+                                </file>
+                                <name>x.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>30</duration>
+                                <start>0</start>
+                                <end>30</end>
+                                <in>0</in>
+                                <out>30</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-2">
+                                <file id="file-1" />
+                                <name>x.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>30</duration>
+                                <start>30</start>
+                                <end>60</end>
+                                <in>0</in>
+                                <out>30</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-3">
+                                <file id="file-1" />
+                                <name>x.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>30</duration>
+                                <start>60</start>
+                                <end>90</end>
+                                <in>0</in>
+                                <out>30</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-4">
+                                <file id="file-2">
+                                    <pathurl>file://localhost/C%3a/Users/Pixel/Pictures/f.png</pathurl>
+                                    <name>f.png</name>
+                                    <rate>
+                                        <timebase>30</timebase>
+                                        <ntsc>TRUE</ntsc>
+                                    </rate>
+                                    <duration>107892</duration>
+                                    <timecode>
+                                        <rate>
+                                            <timebase>30</timebase>
+                                            <ntsc>TRUE</ntsc>
+                                        </rate>
+                                        <string>00:00:00:00</string>
+                                        <frame>0</frame>
+                                        <displayformat>NDF</displayformat>
+                                    </timecode>
+                                    <media>
+                                        <video><samplecharacteristics><width>800</width><height>800</height></samplecharacteristics></video></media>
+                                </file>
+                                <name>f.png</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>30</duration>
+                                <start>90</start>
+                                <end>120</end>
+                                <in>0</in>
+                                <out>30</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-5">
+                                <file id="file-2" />
+                                <name>f.png</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>30</duration>
+                                <start>120</start>
+                                <end>150</end>
+                                <in>0</in>
+                                <out>30</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                        </track>
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-6">
+                                <file id="file-1" />
+                                <name>x.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>30</duration>
+                                <start>0</start>
+                                <end>30</end>
+                                <in>0</in>
+                                <out>30</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                        </track>
+                    </video>
+                    <audio>
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-7">
+                                <file id="file-1" />
+                                <name>x.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>30</duration>
+                                <start>0</start>
+                                <end>30</end>
+                                <in>0</in>
+                                <out>30</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-8">
+                                <file id="file-1" />
+                                <name>x.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>30</duration>
+                                <start>30</start>
+                                <end>60</end>
+                                <in>0</in>
+                                <out>30</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-9">
+                                <file id="file-1" />
+                                <name>x.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>30</duration>
+                                <start>60</start>
+                                <end>90</end>
+                                <in>0</in>
+                                <out>30</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                        </track>
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-10">
+                                <file id="file-1" />
+                                <name>x.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>30</duration>
+                                <start>0</start>
+                                <end>30</end>
+                                <in>0</in>
+                                <out>30</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                        </track>
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-11">
+                                <file id="file-1" />
+                                <name>x.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>30</duration>
+                                <start>0</start>
+                                <end>30</end>
+                                <in>0</in>
+                                <out>30</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack><enabled>FALSE</enabled></clipitem>
+                        </track>
+                    </audio>
+                </media>
+                <timecode>
+                    <rate>
+                        <timebase>30</timebase>
+                        <ntsc>TRUE</ntsc>
+                    </rate>
+                    <string>00:00:00:00</string>
+                    <frame>0</frame>
+                    <displayformat>NDF</displayformat>
+                </timecode>
+            </sequence>
+        </children>
+    </project>
+</xmeml>

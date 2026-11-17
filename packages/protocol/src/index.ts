@@ -61,6 +61,7 @@ export * from "./video-assemble.js";
 export * from "./video-broll.js";
 export * from "./video-frame.js";
 export * from "./video-patch.js";
+export * from "./video-resolve.js";
 export * from "./video-text.js";
 export * from "./video-timeline.js";
 export * from "./voice.js";

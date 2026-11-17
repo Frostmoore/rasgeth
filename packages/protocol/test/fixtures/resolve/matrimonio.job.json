@@ -1,0 +1,134 @@
+{
+  "name": "Sposi & amici <2026>",
+  "fps_num": 25,
+  "fps_den": 1,
+  "width": 1920,
+  "height": 1080,
+  "media": {
+    "10": {
+      "url": "E:\\Montaggi\\Sposi & amici\\Città 01.MOV",
+      "name": "Città 01.MOV",
+      "frames": 1500,
+      "timecode": "10:00:00:00",
+      "width": 1920,
+      "height": 1080,
+      "audio": {
+        "channels": 2,
+        "sample_rate": 48000
+      }
+    },
+    "11": {
+      "url": "E:\\Montaggi\\Sposi & amici\\chiesa (2).mp4",
+      "name": "chiesa (2).mp4",
+      "frames": 750,
+      "timecode": "09:30:15:12",
+      "width": 3840,
+      "height": 2160,
+      "audio": {
+        "channels": 1,
+        "sample_rate": 44100
+      }
+    },
+    "12": {
+      "url": "E:\\Montaggi\\Sposi & amici\\Torta è.jpg",
+      "name": "Torta è.jpg",
+      "frames": null,
+      "timecode": null,
+      "width": 4000,
+      "height": 3000,
+      "audio": null
+    }
+  },
+  "tracks": [
+    {
+      "id": "V1",
+      "type": "video",
+      "enabled": true,
+      "clips": [
+        {
+          "media": 10,
+          "start": 50,
+          "in": 100,
+          "dur": 200,
+          "enabled": true
+        },
+        {
+          "media": 11,
+          "start": 250,
+          "in": 0,
+          "dur": 125,
+          "enabled": false
+        },
+        {
+          "media": 10,
+          "start": 375,
+          "in": 700,
+          "dur": 300,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "V2",
+      "type": "video",
+      "enabled": true,
+      "clips": [
+        {
+          "media": 12,
+          "start": 100,
+          "in": 33,
+          "dur": 75,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "V3",
+      "type": "video",
+      "enabled": true,
+      "clips": []
+    },
+    {
+      "id": "A1",
+      "type": "audio",
+      "enabled": true,
+      "clips": [
+        {
+          "media": 10,
+          "start": 50,
+          "in": 100,
+          "dur": 200,
+          "enabled": true
+        },
+        {
+          "media": 11,
+          "start": 250,
+          "in": 0,
+          "dur": 125,
+          "enabled": true
+        },
+        {
+          "media": 10,
+          "start": 375,
+          "in": 700,
+          "dur": 300,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "A2",
+      "type": "audio",
+      "enabled": false,
+      "clips": [
+        {
+          "media": 11,
+          "start": 0,
+          "in": 10,
+          "dur": 40,
+          "enabled": true
+        }
+      ]
+    }
+  ]
+}

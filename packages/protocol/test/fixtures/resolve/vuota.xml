@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xmeml version="4">
+    <project>
+        <name>Vuota</name>
+        <children>
+            <sequence id="sequence-1">
+                <name>Vuota</name>
+                <duration>0</duration>
+                <rate>
+                    <timebase>30</timebase>
+                    <ntsc>FALSE</ntsc>
+                </rate>
+                <media>
+                    <video>
+                        <format />
+                        <track />
+                    </video>
+                    <audio>
+                        <track />
+                    </audio>
+                </media>
+                <timecode>
+                    <rate>
+                        <timebase>30</timebase>
+                        <ntsc>FALSE</ntsc>
+                    </rate>
+                    <string>00:00:00:00</string>
+                    <frame>0</frame>
+                    <displayformat>NDF</displayformat>
+                </timecode>
+            </sequence>
+        </children>
+    </project>
+</xmeml>

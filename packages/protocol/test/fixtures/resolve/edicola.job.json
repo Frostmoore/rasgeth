@@ -1,0 +1,121 @@
+{
+  "name": "Edicola",
+  "fps_num": 30000,
+  "fps_den": 1001,
+  "width": 3840,
+  "height": 2160,
+  "media": {
+    "1": {
+      "url": "/mnt/media/a 1.mp4",
+      "name": "a 1.mp4",
+      "frames": 600,
+      "timecode": "12:12:33;23",
+      "width": 3840,
+      "height": 2160,
+      "audio": {
+        "channels": 2,
+        "sample_rate": 48000
+      }
+    },
+    "2": {
+      "url": "E:\\video\\porto.mp4",
+      "name": "porto.mp4",
+      "frames": 360,
+      "timecode": null,
+      "width": 1920,
+      "height": 1080,
+      "audio": {
+        "channels": 2,
+        "sample_rate": 48000
+      }
+    },
+    "3": {
+      "url": "/mnt/media/foto.jpg",
+      "name": "foto.jpg",
+      "frames": null,
+      "timecode": null,
+      "width": 1200,
+      "height": 800,
+      "audio": null
+    }
+  },
+  "tracks": [
+    {
+      "id": "V1",
+      "type": "video",
+      "enabled": true,
+      "clips": [
+        {
+          "media": 1,
+          "start": 0,
+          "in": 0,
+          "dur": 240,
+          "enabled": true
+        },
+        {
+          "media": 1,
+          "start": 250,
+          "in": 300,
+          "dur": 100,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "V2",
+      "type": "video",
+      "enabled": true,
+      "clips": [
+        {
+          "media": 2,
+          "start": 60,
+          "in": 90,
+          "dur": 120,
+          "enabled": true
+        },
+        {
+          "media": 3,
+          "start": 300,
+          "in": 0,
+          "dur": 90,
+          "enabled": false
+        }
+      ]
+    },
+    {
+      "id": "A1",
+      "type": "audio",
+      "enabled": true,
+      "clips": [
+        {
+          "media": 1,
+          "start": 0,
+          "in": 0,
+          "dur": 240,
+          "enabled": true
+        },
+        {
+          "media": 1,
+          "start": 250,
+          "in": 300,
+          "dur": 100,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "A2",
+      "type": "audio",
+      "enabled": false,
+      "clips": [
+        {
+          "media": 2,
+          "start": 60,
+          "in": 90,
+          "dur": 120,
+          "enabled": false
+        }
+      ]
+    }
+  ]
+}

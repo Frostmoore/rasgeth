@@ -1,0 +1,234 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xmeml version="4">
+    <project>
+        <name>Sposi &amp; amici &lt;2026&gt;</name>
+        <children>
+            <sequence id="sequence-1">
+                <name>Sposi &amp; amici &lt;2026&gt;</name>
+                <duration>675</duration>
+                <rate>
+                    <timebase>25</timebase>
+                    <ntsc>FALSE</ntsc>
+                </rate>
+                <media>
+                    <video>
+                        <format />
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-1">
+                                <file id="file-1">
+                                    <pathurl>file://localhost/E%3a/Montaggi/Sposi%20%26%20amici/Citt%C3%A0%2001.MOV</pathurl>
+                                    <name>Città 01.MOV</name>
+                                    <rate>
+                                        <timebase>25</timebase>
+                                        <ntsc>FALSE</ntsc>
+                                    </rate>
+                                    <duration>1500</duration>
+                                    <timecode>
+                                        <rate>
+                                            <timebase>25</timebase>
+                                            <ntsc>FALSE</ntsc>
+                                        </rate>
+                                        <string>10:00:00:00</string>
+                                        <frame>900000</frame>
+                                        <displayformat>NDF</displayformat>
+                                    </timecode>
+                                    <media>
+                                        <video><samplecharacteristics><width>1920</width><height>1080</height></samplecharacteristics></video><audio><samplecharacteristics><depth>16</depth><samplerate>48000</samplerate></samplecharacteristics><channelcount>2</channelcount></audio></media>
+                                </file>
+                                <name>Città 01.MOV</name>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <duration>200</duration>
+                                <start>50</start>
+                                <end>250</end>
+                                <in>100</in>
+                                <out>300</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-2">
+                                <file id="file-2">
+                                    <pathurl>file://localhost/E%3a/Montaggi/Sposi%20%26%20amici/chiesa%20%282%29.mp4</pathurl>
+                                    <name>chiesa (2).mp4</name>
+                                    <rate>
+                                        <timebase>25</timebase>
+                                        <ntsc>FALSE</ntsc>
+                                    </rate>
+                                    <duration>750</duration>
+                                    <timecode>
+                                        <rate>
+                                            <timebase>25</timebase>
+                                            <ntsc>FALSE</ntsc>
+                                        </rate>
+                                        <string>09:30:15:12</string>
+                                        <frame>855387</frame>
+                                        <displayformat>NDF</displayformat>
+                                    </timecode>
+                                    <media>
+                                        <video><samplecharacteristics><width>3840</width><height>2160</height></samplecharacteristics></video><audio><samplecharacteristics><depth>16</depth><samplerate>44100</samplerate></samplecharacteristics><channelcount>1</channelcount></audio></media>
+                                </file>
+                                <name>chiesa (2).mp4</name>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <duration>125</duration>
+                                <start>250</start>
+                                <end>375</end>
+                                <in>0</in>
+                                <out>125</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack><enabled>FALSE</enabled></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-3">
+                                <file id="file-1" />
+                                <name>Città 01.MOV</name>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <duration>300</duration>
+                                <start>375</start>
+                                <end>675</end>
+                                <in>700</in>
+                                <out>1000</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                        </track>
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-4">
+                                <file id="file-3">
+                                    <pathurl>file://localhost/E%3a/Montaggi/Sposi%20%26%20amici/Torta%20%C3%A8.jpg</pathurl>
+                                    <name>Torta è.jpg</name>
+                                    <rate>
+                                        <timebase>25</timebase>
+                                        <ntsc>FALSE</ntsc>
+                                    </rate>
+                                    <duration>90000</duration>
+                                    <timecode>
+                                        <rate>
+                                            <timebase>25</timebase>
+                                            <ntsc>FALSE</ntsc>
+                                        </rate>
+                                        <string>00:00:00:00</string>
+                                        <frame>0</frame>
+                                        <displayformat>NDF</displayformat>
+                                    </timecode>
+                                    <media>
+                                        <video><samplecharacteristics><width>4000</width><height>3000</height></samplecharacteristics></video></media>
+                                </file>
+                                <name>Torta è.jpg</name>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <duration>75</duration>
+                                <start>100</start>
+                                <end>175</end>
+                                <in>0</in>
+                                <out>75</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                        </track>
+                        <track />
+                    </video>
+                    <audio>
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-5">
+                                <file id="file-1" />
+                                <name>Città 01.MOV</name>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <duration>200</duration>
+                                <start>50</start>
+                                <end>250</end>
+                                <in>100</in>
+                                <out>300</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-6">
+                                <file id="file-2" />
+                                <name>chiesa (2).mp4</name>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <duration>125</duration>
+                                <start>250</start>
+                                <end>375</end>
+                                <in>0</in>
+                                <out>125</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-7">
+                                <file id="file-1" />
+                                <name>Città 01.MOV</name>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <duration>300</duration>
+                                <start>375</start>
+                                <end>675</end>
+                                <in>700</in>
+                                <out>1000</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                        </track>
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-8">
+                                <file id="file-2" />
+                                <name>chiesa (2).mp4</name>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>25</timebase>
+                                    <ntsc>FALSE</ntsc>
+                                </rate>
+                                <duration>40</duration>
+                                <start>0</start>
+                                <end>40</end>
+                                <in>10</in>
+                                <out>50</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                        <enabled>FALSE</enabled></track>
+                    </audio>
+                </media>
+                <timecode>
+                    <rate>
+                        <timebase>25</timebase>
+                        <ntsc>FALSE</ntsc>
+                    </rate>
+                    <string>00:00:00:00</string>
+                    <frame>0</frame>
+                    <displayformat>NDF</displayformat>
+                </timecode>
+            </sequence>
+        </children>
+    </project>
+</xmeml>

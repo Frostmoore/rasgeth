@@ -1,0 +1,93 @@
+{
+  "name": "Film",
+  "fps_num": 24000,
+  "fps_den": 1001,
+  "width": 4096,
+  "height": 1716,
+  "media": {
+    "1": {
+      "url": "D:/Film/rulli/R01.mov",
+      "name": "R01.mov",
+      "frames": 20000,
+      "timecode": "01:00:00:00",
+      "width": 4096,
+      "height": 1716,
+      "audio": {
+        "channels": 2,
+        "sample_rate": 48000
+      }
+    },
+    "2": {
+      "url": "D:/Film/rulli/R02.mov",
+      "name": "R02.mov",
+      "frames": 20000,
+      "timecode": "00:00:00:29",
+      "width": 4096,
+      "height": 1716,
+      "audio": {
+        "channels": 2,
+        "sample_rate": 48000
+      }
+    },
+    "3": {
+      "url": "D:/Film/rulli/R03.mov",
+      "name": "R03.mov",
+      "frames": 20000,
+      "timecode": "12:12:33;23",
+      "width": 4096,
+      "height": 1716,
+      "audio": null
+    }
+  },
+  "tracks": [
+    {
+      "id": "V1",
+      "type": "video",
+      "enabled": true,
+      "clips": [
+        {
+          "media": "1",
+          "start": 0,
+          "in": 1000,
+          "dur": 2400,
+          "enabled": true
+        },
+        {
+          "media": "2",
+          "start": 2400,
+          "in": 0,
+          "dur": 100,
+          "enabled": true
+        },
+        {
+          "media": "3",
+          "start": 2600,
+          "in": 19000,
+          "dur": 999,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "A1",
+      "type": "audio",
+      "enabled": true,
+      "clips": [
+        {
+          "media": "1",
+          "start": 0,
+          "in": 1000,
+          "dur": 2400,
+          "enabled": true
+        },
+        {
+          "media": "2",
+          "start": 2400,
+          "in": 0,
+          "dur": 100,
+          "enabled": true
+        }
+      ]
+    }
+  ]
+}
