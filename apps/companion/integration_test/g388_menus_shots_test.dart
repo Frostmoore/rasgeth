@@ -46,6 +46,13 @@ void main() {
     await frames(t, ms);
   }
 
+  /// Closes the sheet on top (as the system's back).
+  Future<void> closeSheet(WidgetTester t) async {
+    final f = find.byType(BottomSheet);
+    if (f.evaluate().isNotEmpty) Navigator.of(t.element(f.last)).pop();
+    await frames(t, 1000);
+  }
+
   Future<void> esc(WidgetTester t) async {
     await t.sendKeyEvent(LogicalKeyboardKey.escape);
     await frames(t, 700);
@@ -74,20 +81,21 @@ void main() {
         await frames(t, 1500);
         await shot(t, n(1, 'squadra'));
         final card = find.byKey(const Key('team-god'));
-        await t.longPress(card);
-        await frames(t, 1500);
+        // As G38.7's shots: right after a page closes the first press can go astray here.
+        for (var i = 0; i < 3 && find.byKey(const Key('agent-list')).evaluate().isEmpty; i++) {
+          await t.longPress(card);
+          await frames(t, 1500);
+        }
         await shot(t, n(2, 'god-pressione-lunga'));
-        await t.tapAt(const Offset(200, 60));
-        await frames(t, 1000);
-        await tap(t, card, 2000);
+        // The sheet's «Conversations with God» (the card's tap does the same).
+        await tap(t, find.byKey(const Key('agent-list')), 2500);
         await shot(t, n(3, 'god-conversazioni'));
         final row = find.byType(SessionTile);
         if (row.evaluate().isNotEmpty) {
           await t.longPress(row.first);
           await frames(t, 1500);
           await shot(t, n(4, 'conversazione-pressione-lunga'));
-          await t.tapAt(const Offset(200, 60));
-          await frames(t, 1000);
+          await closeSheet(t);
         }
         await tap(t, find.byKey(const Key('agent-convs-back')));
         app.setTab(AppTab.chat);
@@ -97,12 +105,17 @@ void main() {
           app.setAdvanced(true);
           app.setTab(AppTab.projects);
           await frames(t, 2500);
-          await t.longPress(find.byKey(Key('project-${project.id}')));
-          await frames(t, 1500);
+          for (
+            var i = 0;
+            i < 3 && find.byKey(const Key('proj-menu-open')).evaluate().isEmpty;
+            i++
+          ) {
+            await t.longPress(find.byKey(Key('project-${project.id}')));
+            await frames(t, 1500);
+          }
           await shot(t, n(6, 'progetto-pressione-lunga'));
-          await t.tapAt(const Offset(200, 60));
-          await frames(t, 1000);
-          await tap(t, find.byKey(Key('project-${project.id}')), 2000);
+          // The sheet's «Open» (the card's tap does the same).
+          await tap(t, find.byKey(const Key('proj-menu-open')), 2500);
           await shot(t, n(7, 'progetto-conversazioni'));
           await tap(t, find.byKey(const Key('proj-more')));
           await tap(t, find.byKey(const Key('proj-menu-archive')), 2000);
