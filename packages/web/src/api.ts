@@ -1912,6 +1912,9 @@ export class Api {
         words: import("@redgiant/protocol").VideoCaptionWord[];
       }[];
     }>("POST", "/api/editor/video/captions", { scope, path });
+  /** G41.6: the video made on this machine, a job `video_render` (its result: the MP4's path). */
+  videoRender = (scope: string, path: string, ask: import("@redgiant/protocol").VideoRenderAsk) =>
+    this.call<{ job: Job }>("POST", "/api/editor/video/render", { scope, path, ...ask });
   /** A5: a timeline's named versions, the newest first. */
   videoVersions = (scope: string, path: string) =>
     this.call<{ versions: import("@redgiant/protocol").VideoVersionEntry[] }>(

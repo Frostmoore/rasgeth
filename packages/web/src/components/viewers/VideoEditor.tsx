@@ -178,6 +178,7 @@ import { Modal } from "../ui.js";
 import { ExactJob, PrepJob, playerMediaOf, useFonts, usePrepared } from "./VideoPreview.js";
 import { Inspector, TranscriptPanel } from "./video/Inspector.js";
 import { type PlayerMediaMap, TimelinePlayer, textStyle } from "./video/player.js";
+import { RenderPanel } from "./video/RenderPanel.js";
 
 export const TIMELINE_EDITABLE = /\.rgvideo$/i;
 
@@ -570,6 +571,8 @@ export function VideoEditor({
     busy?: boolean;
     error?: string;
   }>();
+  /** «Crea il video» (G41.6): the render's panel. */
+  const [renderOpen, setRenderOpen] = useState(false);
   const capJobs = useRef<string[]>([]);
   const root = useRef<HTMLElement>(null);
   const rows = useRef<HTMLDivElement>(null);
@@ -2245,6 +2248,9 @@ export function VideoEditor({
           >
             <IconBookmark size={14} />
           </Tool>
+          <Tool label={t("veRender")} pressed={renderOpen} on={() => setRenderOpen(!renderOpen)}>
+            <IconFilm size={14} />
+          </Tool>
           {size !== "wide" && (
             <Tool
               label={t("veInspectorOpen")}
@@ -2502,6 +2508,7 @@ export function VideoEditor({
           </div>
         </section>
       )}
+      {renderOpen && <RenderPanel file={file} doc={doc} onClose={() => setRenderOpen(false)} />}
       {versions && (
         <section class="ve-versions" aria-label={t("veVersionsTitle")}>
           <div class="ve-transcript-bar">

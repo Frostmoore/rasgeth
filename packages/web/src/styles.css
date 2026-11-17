@@ -22213,6 +22213,7 @@ fieldset.saved-filter legend {
 /* G41.5d: «Chiedi all'agente qui» (A4) and the versions (A5), panels like the transcript. */
 .ve-ask,
 .ve-versions,
+.ve-render,
 .ve-transcript {
   flex: none;
   border: 1px solid var(--line);
@@ -22376,4 +22377,25 @@ fieldset.saved-filter legend {
   .ve-keys {
     grid-template-columns: 1fr;
   }
+}
+
+/* G41.6: «Crea il video», the render's panel: the choices in rows, then the job and the result. */
+.ve-render-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ve-render-row > .ve-small:first-child {
+  min-width: 64px;
+}
+.ve-render .ui-job {
+  margin: 0;
+}
+.ve-render-done {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
