@@ -258,14 +258,14 @@ const TEXTS = {
     yes: "Replace it",
     no: "Keep it",
     header: "Assembly",
-    music: "A3 · Music",
+    music: "Music",
   },
   it: {
     ask: "Sostituisco la timeline «{name}» con un nuovo montaggio automatico? È stata cambiata dopo; una copia resta in Versioni.",
     yes: "Sostituisci",
     no: "Tienila",
     header: "Montaggio",
-    music: "A3 · Musica",
+    music: "Musica",
   },
 } as const;
 const textsOf = (lang: string) => (lang.startsWith("it") ? TEXTS.it : TEXTS.en);

@@ -311,10 +311,10 @@ export function autoAssemble(
   const duration = round3(at);
 
   const tracks: VideoTrack[] = [
-    { id: "V1", kind: "Video", name: brief.names?.a ?? "V1 · A", locked: false, hidden: false },
-    { id: "V2", kind: "Video", name: brief.names?.b ?? "V2 · B", locked: false, hidden: false },
-    { id: "A1", kind: "Audio", name: brief.names?.aAudio ?? "A1 · A", locked: false, muted: false },
-    { id: "A2", kind: "Audio", name: brief.names?.bAudio ?? "A2 · B", locked: false, muted: false },
+    { id: "V1", kind: "Video", name: brief.names?.a ?? "A", locked: false, hidden: false },
+    { id: "V2", kind: "Video", name: brief.names?.b ?? "B", locked: false, hidden: false },
+    { id: "A1", kind: "Audio", name: brief.names?.aAudio ?? "A", locked: false, muted: false },
+    { id: "A2", kind: "Audio", name: brief.names?.bAudio ?? "B", locked: false, muted: false },
   ];
   const clips: Partial<VideoClip>[] = [];
   let next = 1;
@@ -508,7 +508,7 @@ export function autoAssemble(
     tracks.push({
       id: "A3",
       kind: "Audio",
-      name: brief.names?.music ?? "A3 · Music",
+      name: brief.names?.music ?? "Music",
       locked: false,
       muted: false,
       duck: { under: ["A1"], amountDb: -12, attackMs: 200, releaseMs: 600 },

@@ -130,7 +130,9 @@ describe("«Crea il video» in the editor", () => {
     fireEvent.click(button("9:16"));
     fireEvent.click(button("720p"));
     fireEvent.click(button("Prova veloce"));
-    await act(async () => fireEvent.click(button("Crea il video")));
+    await act(async () => {
+      fireEvent.click(button("Crea il video"));
+    });
     expect(calls.find(([n]) => n === "videoRender")?.[1]).toEqual([
       "p1",
       "video/gita.rgvideo",
