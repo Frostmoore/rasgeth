@@ -110,10 +110,17 @@ void main() {
       await waitFor(t, () => line.evaluate().isNotEmpty);
       await shot(t, 'g42-2-chat-porta-$_tag-$theme', wait: 1200);
       await t.tap(line.last);
-      await waitFor(t, () => find.byType(EmbedScreen).evaluate().isNotEmpty);
+      // The page's rule: beside the conversation where it is wide, the whole screen on a phone.
+      final panel = find.byKey(const Key('canvas-panel'));
+      await waitFor(
+        t,
+        () => find.byType(EmbedScreen).evaluate().isNotEmpty || panel.evaluate().isNotEmpty,
+      );
       await shot(t, 'g42-2-porta-$_tag-$theme', wait: 9000);
-      nav.pop();
-      await frames(t, 600);
+      if (panel.evaluate().isEmpty) {
+        nav.pop();
+        await frames(t, 600);
+      }
       nav.pop();
       await frames(t, 800);
 
