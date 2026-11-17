@@ -1,0 +1,592 @@
+{
+  "three": {
+    "events": [
+      {
+        "id": "evt_0001",
+        "seq": 1,
+        "ts": "2026-11-17T09:00:01.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "session.started",
+        "payload": {
+          "agentId": "agent_god"
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0002",
+        "seq": 2,
+        "ts": "2026-11-17T09:00:02.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "message.user",
+        "payload": {
+          "text": "Prepara il rilascio"
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0003",
+        "seq": 3,
+        "ts": "2026-11-17T09:00:03.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "subagent.started",
+        "payload": {
+          "childSessionId": "sess_a",
+          "childAgentId": "agent_tester",
+          "callId": "call_sess_a",
+          "via": "run_subagent",
+          "title": "Prove",
+          "task": "Il compito di Prove."
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0004",
+        "seq": 4,
+        "ts": "2026-11-17T09:00:04.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "subagent.started",
+        "payload": {
+          "childSessionId": "sess_b",
+          "childAgentId": "agent_dev",
+          "callId": "call_sess_b",
+          "via": "delegate",
+          "title": "Login",
+          "task": "Il compito di Login."
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0005",
+        "seq": 5,
+        "ts": "2026-11-17T09:00:05.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "subagent.started",
+        "payload": {
+          "childSessionId": "sess_c",
+          "childAgentId": "agent_research",
+          "callId": "call_sess_c",
+          "via": "run_subagents",
+          "title": "Ricerca",
+          "task": "Il compito di Ricerca."
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0006",
+        "seq": 6,
+        "ts": "2026-11-17T09:00:06.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "subagent.ended",
+        "payload": {
+          "childSessionId": "sess_b",
+          "status": "done",
+          "summary": "Fatto: il login funziona."
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0007",
+        "seq": 7,
+        "ts": "2026-11-17T09:00:07.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "subagent.ended",
+        "payload": {
+          "childSessionId": "sess_c",
+          "status": "failed"
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0008",
+        "seq": 8,
+        "ts": "2026-11-17T09:00:08.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "subagent.closed",
+        "payload": {
+          "childSessionId": "sess_c"
+        },
+        "erased": false
+      }
+    ],
+    "tabs": [
+      {
+        "childSessionId": "sess_a",
+        "childAgentId": "agent_tester",
+        "callId": "call_sess_a",
+        "via": "run_subagent",
+        "title": "Prove",
+        "task": "Il compito di Prove.",
+        "fromSeq": 0,
+        "startedAt": "2026-11-17T09:00:03.000Z",
+        "closed": false
+      },
+      {
+        "childSessionId": "sess_b",
+        "childAgentId": "agent_dev",
+        "callId": "call_sess_b",
+        "via": "delegate",
+        "title": "Login",
+        "task": "Il compito di Login.",
+        "fromSeq": 4,
+        "startedAt": "2026-11-17T09:00:04.000Z",
+        "closed": false,
+        "ended": "done",
+        "endedAt": "2026-11-17T09:00:06.000Z",
+        "summary": "Fatto: il login funziona."
+      },
+      {
+        "childSessionId": "sess_c",
+        "childAgentId": "agent_research",
+        "callId": "call_sess_c",
+        "via": "run_subagents",
+        "title": "Ricerca",
+        "task": "Il compito di Ricerca.",
+        "fromSeq": 0,
+        "startedAt": "2026-11-17T09:00:05.000Z",
+        "closed": true,
+        "ended": "failed",
+        "endedAt": "2026-11-17T09:00:07.000Z"
+      }
+    ],
+    "status": [
+      [
+        "stopped",
+        "running",
+        "running"
+      ],
+      [
+        "done",
+        "done",
+        "done"
+      ],
+      [
+        "failed",
+        "failed",
+        "failed"
+      ]
+    ],
+    "commands": []
+  },
+  "reused": {
+    "events": [
+      {
+        "id": "evt_0001",
+        "seq": 1,
+        "ts": "2026-11-17T09:00:01.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "subagent.started",
+        "payload": {
+          "childSessionId": "sess_p",
+          "childAgentId": "agent_dev",
+          "callId": "call_sess_p",
+          "via": "delegate",
+          "title": "Prima",
+          "task": "Il compito di Prima."
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0002",
+        "seq": 2,
+        "ts": "2026-11-17T09:00:02.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "subagent.ended",
+        "payload": {
+          "childSessionId": "sess_p",
+          "status": "done",
+          "summary": "ok"
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0003",
+        "seq": 3,
+        "ts": "2026-11-17T09:00:03.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "subagent.closed",
+        "payload": {
+          "childSessionId": "sess_p"
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0004",
+        "seq": 4,
+        "ts": "2026-11-17T09:00:04.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "subagent.started",
+        "payload": {
+          "childSessionId": "sess_p",
+          "childAgentId": "agent_dev",
+          "callId": "call_sess_p",
+          "via": "delegate",
+          "title": "Seconda",
+          "task": "Il compito di Seconda."
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0005",
+        "seq": 5,
+        "ts": "2026-11-17T09:00:05.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "subagent.ended",
+        "payload": {
+          "childSessionId": "sess_other",
+          "status": "stopped"
+        },
+        "erased": false
+      }
+    ],
+    "tabs": [
+      {
+        "childSessionId": "sess_p",
+        "childAgentId": "agent_dev",
+        "callId": "call_sess_p",
+        "via": "delegate",
+        "title": "Seconda",
+        "task": "Il compito di Seconda.",
+        "fromSeq": 4,
+        "startedAt": "2026-11-17T09:00:04.000Z",
+        "closed": false
+      }
+    ],
+    "status": [
+      [
+        "stopped",
+        "running",
+        "running"
+      ]
+    ],
+    "commands": []
+  },
+  "quiet": {
+    "events": [
+      {
+        "id": "evt_0001",
+        "seq": 1,
+        "ts": "2026-11-17T09:00:01.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "subagent.started",
+        "payload": null,
+        "erased": true
+      },
+      {
+        "id": "evt_0002",
+        "seq": 2,
+        "ts": "2026-11-17T09:00:02.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "subagent.ended",
+        "payload": {
+          "childSessionId": "sess_none",
+          "status": "done"
+        },
+        "erased": false
+      }
+    ],
+    "tabs": [],
+    "status": [],
+    "commands": []
+  },
+  "commands": {
+    "events": [
+      {
+        "id": "evt_0001",
+        "seq": 1,
+        "ts": "2026-11-17T09:00:01.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "command.started",
+        "payload": {
+          "id": "c1",
+          "command": "npm run dev",
+          "file": "/data/c1.log",
+          "path": "/workspace",
+          "cwd": "/workspace/app",
+          "by": "Coder"
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0002",
+        "seq": 2,
+        "ts": "2026-11-17T09:00:02.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "command.started",
+        "payload": {
+          "id": "c2",
+          "command": "pnpm test",
+          "file": "/data/c2.log",
+          "path": "/workspace",
+          "cwd": "/workspace/app",
+          "by": "Coder"
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0003",
+        "seq": 3,
+        "ts": "2026-11-17T09:00:03.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "command.started",
+        "payload": {
+          "id": "c3",
+          "command": "pnpm build --filter web",
+          "file": "/data/c3.log",
+          "path": "/workspace",
+          "cwd": "/workspace/app",
+          "by": "Coder"
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0004",
+        "seq": 4,
+        "ts": "2026-11-17T09:00:04.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "command.started",
+        "payload": {
+          "id": "c4",
+          "command": "python -m http.server 8000",
+          "file": "/data/c4.log",
+          "path": "/workspace",
+          "cwd": "/workspace/app",
+          "by": "Coder"
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0005",
+        "seq": 5,
+        "ts": "2026-11-17T09:00:05.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "command.started",
+        "payload": {
+          "id": "c5",
+          "command": "make long",
+          "file": "/data/c5.log",
+          "path": "/workspace",
+          "cwd": "/workspace/app",
+          "by": "Coder"
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0006",
+        "seq": 6,
+        "ts": "2026-11-17T09:00:06.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "command.ended",
+        "payload": {
+          "id": "c2",
+          "status": "done",
+          "exitCode": 0
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0007",
+        "seq": 7,
+        "ts": "2026-11-17T09:00:07.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "command.ended",
+        "payload": {
+          "id": "c3",
+          "status": "failed",
+          "exitCode": 2
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0008",
+        "seq": 8,
+        "ts": "2026-11-17T09:00:08.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "command.ended",
+        "payload": {
+          "id": "c4",
+          "status": "stopped",
+          "exitCode": null
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0009",
+        "seq": 9,
+        "ts": "2026-11-17T09:00:09.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "command.ended",
+        "payload": {
+          "id": "c5",
+          "status": "interrupted",
+          "exitCode": null
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0010",
+        "seq": 10,
+        "ts": "2026-11-17T09:00:10.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "command.closed",
+        "payload": {
+          "id": "c4"
+        },
+        "erased": false
+      },
+      {
+        "id": "evt_0011",
+        "seq": 11,
+        "ts": "2026-11-17T09:00:11.000Z",
+        "ownerId": "local",
+        "projectId": "demo",
+        "agentId": "agent_god",
+        "sessionId": "sess_main",
+        "type": "command.ended",
+        "payload": {
+          "id": "c9",
+          "status": "done",
+          "exitCode": 0
+        },
+        "erased": false
+      }
+    ],
+    "tabs": [],
+    "status": [],
+    "commands": [
+      {
+        "id": "c1",
+        "command": "npm run dev",
+        "by": "Coder",
+        "cwd": "/workspace/app",
+        "path": "/workspace",
+        "startedAt": "2026-11-17T09:00:01.000Z",
+        "status": "running",
+        "exitCode": null,
+        "closed": false
+      },
+      {
+        "id": "c2",
+        "command": "pnpm test",
+        "by": "Coder",
+        "cwd": "/workspace/app",
+        "path": "/workspace",
+        "startedAt": "2026-11-17T09:00:02.000Z",
+        "status": "done",
+        "exitCode": 0,
+        "closed": false,
+        "endedAt": "2026-11-17T09:00:06.000Z"
+      },
+      {
+        "id": "c3",
+        "command": "pnpm build --filter web",
+        "by": "Coder",
+        "cwd": "/workspace/app",
+        "path": "/workspace",
+        "startedAt": "2026-11-17T09:00:03.000Z",
+        "status": "failed",
+        "exitCode": 2,
+        "closed": false,
+        "endedAt": "2026-11-17T09:00:07.000Z"
+      },
+      {
+        "id": "c4",
+        "command": "python -m http.server 8000",
+        "by": "Coder",
+        "cwd": "/workspace/app",
+        "path": "/workspace",
+        "startedAt": "2026-11-17T09:00:04.000Z",
+        "status": "stopped",
+        "exitCode": null,
+        "closed": true,
+        "endedAt": "2026-11-17T09:00:08.000Z"
+      },
+      {
+        "id": "c5",
+        "command": "make long",
+        "by": "Coder",
+        "cwd": "/workspace/app",
+        "path": "/workspace",
+        "startedAt": "2026-11-17T09:00:05.000Z",
+        "status": "interrupted",
+        "exitCode": null,
+        "closed": false,
+        "endedAt": "2026-11-17T09:00:09.000Z"
+      }
+    ]
+  }
+}

@@ -129,7 +129,7 @@ class _BrowserScreenState extends State<BrowserScreen> {
       yes: l.cvTeachDone,
       fieldKey: const Key('teach-title'),
     );
-    if (title == null) return;
+    // Closed without a name: it stops all the same, without one (the page's `?? ""`).
     app.browserTeach(who, start: false, title: title);
   }
 
@@ -208,18 +208,33 @@ class _BrowserScreenState extends State<BrowserScreen> {
                             ),
                     ),
                     const SizedBox(width: 10),
+                    // The button may shrink on a phone: its words then end with «…».
                     if (teaching == null)
-                      b.mine
-                          ? OutlinedButton(
-                              key: const Key('browser-give-back'),
-                              onPressed: () => app.browserControl(false),
-                              child: Text(l.cvScreenGiveBack),
-                            )
-                          : FilledButton(
-                              key: const Key('browser-take'),
-                              onPressed: () => app.browserControl(true),
-                              child: Text(l.cvScreenTake),
-                            ),
+                      Flexible(
+                        flex: 0,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: narrow ? 170 : 320),
+                          child: b.mine
+                              ? OutlinedButton(
+                                  key: const Key('browser-give-back'),
+                                  onPressed: () => app.browserControl(false),
+                                  child: Text(
+                                    l.cvScreenGiveBack,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                )
+                              : FilledButton(
+                                  key: const Key('browser-take'),
+                                  onPressed: () => app.browserControl(true),
+                                  child: Text(
+                                    l.cvScreenTake,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                        ),
+                      ),
                   ],
                 ),
               ),

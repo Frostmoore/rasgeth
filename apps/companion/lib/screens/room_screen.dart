@@ -329,11 +329,28 @@ class _Members extends StatelessWidget {
                         else
                           RgIcon(RgIcons.user, size: 14, color: c.dim),
                         const SizedBox(width: 6),
-                        Text(a?.name ?? m.agentId, style: TextStyle(color: c.text, fontSize: 13)),
-                        if (i == 0)
-                          Text(' · ${l.cvRoomFirst}', style: TextStyle(color: c.dim, fontSize: 12)),
-                        if (usage.isNotEmpty)
-                          Text(' · $usage', style: TextStyle(color: c.dim, fontSize: 12)),
+                        Flexible(
+                          child: Text.rich(
+                            TextSpan(
+                              text: a?.name ?? m.agentId,
+                              style: TextStyle(color: c.text, fontSize: 13),
+                              children: [
+                                if (i == 0)
+                                  TextSpan(
+                                    text: ' · ${l.cvRoomFirst}',
+                                    style: TextStyle(color: c.dim, fontSize: 12),
+                                  ),
+                                if (usage.isNotEmpty)
+                                  TextSpan(
+                                    text: ' · $usage',
+                                    style: TextStyle(color: c.dim, fontSize: 12),
+                                  ),
+                              ],
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                         if (room.members.length > 1)
                           Tooltip(
                             message: l.cvRoomRemove(a?.name ?? ''),

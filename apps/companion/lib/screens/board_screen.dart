@@ -745,7 +745,10 @@ class _BoardComposerState extends State<BoardComposer> {
           maxLines: 8,
           decoration: const InputDecoration(isDense: true),
         ),
-        Row(
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          spacing: 8,
+          runSpacing: 6,
           children: [
             Builder(
               builder: (context) => OutlinedButton.icon(
@@ -758,7 +761,6 @@ class _BoardComposerState extends State<BoardComposer> {
                 ),
               ),
             ),
-            const Spacer(),
             FilledButton(
               key: Key('$pre-send'),
               onPressed: _busy ? null : _send,

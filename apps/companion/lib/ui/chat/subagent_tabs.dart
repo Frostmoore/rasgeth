@@ -343,39 +343,75 @@ class _TabShape extends StatelessWidget {
     return Semantics(
       selected: on,
       button: true,
-      child: Container(
-        constraints: BoxConstraints(maxWidth: narrow ? 180 : 240),
-        decoration: BoxDecoration(
-          color: on ? c.panel : c.panel2,
-          borderRadius: radius,
-          border: Border(
-            top: BorderSide(color: on ? c.accent : c.line, width: on ? 2 : 1),
-            left: BorderSide(color: c.line),
-            right: BorderSide(color: c.line),
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(
-              child: InkWell(
-                onTap: onTap,
-                borderRadius: radius,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(10, on ? 6 : 7, trailing == null ? 10 : 4, 6),
-                  child: DefaultTextStyle.merge(
-                    style: TextStyle(fontSize: 13, color: on ? c.text : c.dim),
-                    child: child,
+      child: CustomPaint(
+        foregroundPainter: _TabEdge(line: c.line, accent: on ? c.accent : null),
+        child: Container(
+          constraints: BoxConstraints(maxWidth: narrow ? 180 : 240),
+          decoration: BoxDecoration(color: on ? c.panel : c.panel2, borderRadius: radius),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: InkWell(
+                  onTap: onTap,
+                  borderRadius: radius,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(10, on ? 6 : 7, trailing == null ? 10 : 4, 6),
+                    child: DefaultTextStyle.merge(
+                      style: TextStyle(fontSize: 13, color: on ? c.text : c.dim),
+                      child: child,
+                    ),
                   ),
                 ),
               ),
-            ),
-            ?trailing,
-          ],
+              ?trailing,
+            ],
+          ),
         ),
       ),
     );
   }
+}
+
+/// The tab's edge (the page's `.sub-tab`): left, top and right in the line's colour, rounded on
+/// top, open at the bottom; the chosen one with a line of accent inside its top.
+class _TabEdge extends CustomPainter {
+  _TabEdge({required this.line, this.accent});
+
+  final Color line;
+  final Color? accent;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const r = 8.0;
+    final p = Paint()
+      ..color = line
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    final path = Path()
+      ..moveTo(.5, size.height)
+      ..lineTo(.5, r)
+      ..arcToPoint(const Offset(r, .5), radius: const Radius.circular(r - .5))
+      ..lineTo(size.width - r, .5)
+      ..arcToPoint(Offset(size.width - .5, r), radius: const Radius.circular(r - .5))
+      ..lineTo(size.width - .5, size.height);
+    canvas.drawPath(path, p);
+    if (accent != null) {
+      canvas.save();
+      canvas.clipRRect(
+        RRect.fromRectAndCorners(
+          Offset.zero & size,
+          topLeft: const Radius.circular(r),
+          topRight: const Radius.circular(r),
+        ),
+      );
+      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 2), Paint()..color = accent!);
+      canvas.restore();
+    }
+  }
+
+  @override
+  bool shouldRepaint(_TabEdge old) => old.line != line || old.accent != accent;
 }
 
 class _SubTabButton extends StatelessWidget {

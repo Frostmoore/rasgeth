@@ -38,6 +38,12 @@ String commandStatusWords(AppLocalizations l, CommandRow r) {
   };
 }
 
+/// How long since [iso] (null when it cannot be read).
+int? _since(String iso, DateTime now) {
+  final t = DateTime.tryParse(iso);
+  return t == null ? null : now.difference(t).inMilliseconds;
+}
+
 int _ms(String a, String b) {
   final x = DateTime.tryParse(a);
   final y = DateTime.tryParse(b);
@@ -165,7 +171,7 @@ class _CommandStripState extends State<CommandStrip> {
                     dot: 'running',
                     command: r.command,
                     time: Text(
-                      '${hms(r.startedAt)} · ${duration(now.difference(DateTime.parse(r.startedAt)).inMilliseconds)}',
+                      '${hms(r.startedAt)} · ${duration(_since(r.startedAt, now))}',
                       style: small,
                     ),
                     actions: [
@@ -180,7 +186,10 @@ class _CommandStripState extends State<CommandStrip> {
                   _Dashed(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      child: Row(
+                      child: Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 10,
                         children: [
                           InkWell(
                             key: const Key('cmd-done-toggle'),
@@ -204,7 +213,6 @@ class _CommandStripState extends State<CommandStrip> {
                               ),
                             ),
                           ),
-                          const Spacer(),
                           _Link(
                             key: const Key('cmd-remove-finished'),
                             text: l.cvCmdRemoveFinished,
@@ -633,7 +641,10 @@ class _CommandOutputWindowState extends State<CommandOutputWindow> {
                       meta(l.cvCmdBy, _head?.by ?? row.by),
                     ],
                     const SizedBox(height: 10),
-                    Row(
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 8,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         InkWell(
                           key: const Key('cmd-times'),
@@ -647,12 +658,10 @@ class _CommandOutputWindowState extends State<CommandOutputWindow> {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 12),
                         Text(
                           l.cvCmdLines('${_lines.length}'),
                           style: TextStyle(color: c.dim, fontSize: 13),
                         ),
-                        const Spacer(),
                         if (row?.running ?? false)
                           _StopButton(
                             key: const Key('cmd-output-stop'),
