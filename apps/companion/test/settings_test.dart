@@ -304,7 +304,11 @@ void main() {
       );
 
       // Signing another device out asks first.
+      // «Prova della vista web» (G42.0) sits under it: also there, then back up to the device.
+      expect(find.byKey(const Key('settings-embed-probe')), findsOneWidget);
       await see(find.byKey(const Key('revoke-d2')), -200);
+      await tester.ensureVisible(find.byKey(const Key('revoke-d2')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('revoke-d2')));
       await tester.pumpAndSettle();
       expect(find.textContaining('Telefono di Mario'), findsWidgets);
