@@ -288,12 +288,12 @@ export const ServerMessage = z.discriminatedUnion("type", [
   z.object({ type: z.literal("canvas.open"), sessionId: z.string(), event: Event }),
   /**
    * To every page and app of the owner (p3.8.9): agents left the team or came back (removed or
-   * restored, by the person or by an agent); the lists of agents and conversations are read again.
+   * restored), or were paused or resumed, by the person or by an agent; the lists of agents and conversations are read again.
    */
   z.object({
     type: z.literal("agents.changed"),
     agentIds: z.array(z.string()),
-    change: z.enum(["removed", "restored"]),
+    change: z.enum(["removed", "restored", "stopped", "resumed"]),
   }),
   /** Sent after a follow, once the stored history has been replayed. */
   z.object({ type: z.literal("session.synced"), sessionId: z.string(), lastSeq: z.number().int() }),

@@ -838,6 +838,12 @@ const TABLE: Case[] = [
   ["vercel --prod", ...bash("vercel --prod"), null],
   ["running the tests", ...bash("pnpm test && pnpm build"), null],
   ["a message on the board", "board_post", { text: `my key is ${KEY}` }, null],
+  // Removing an agent (p3.8.9) deletes nothing: its log stays and it can be restored. An ordinary
+  // request (danger remove-agent), never a critical one.
+  ["removing an agent", "remove_agent", { agent_id: "agent_1", reason: "not needed" }, null],
+  ["restoring an agent", "restore_agent", { agent_id: "agent_1" }, null],
+  ["resuming an agent", "resume_agent", { agent_id: "agent_1" }, null],
+  ["stopping an agent", "stop_agent", { agent_id: "agent_1", reason: "done" }, null],
 ];
 
 describe("criticalOf: the table", () => {

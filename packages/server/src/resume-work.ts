@@ -53,3 +53,18 @@ export function resumeNote(task: { id: string; title: string }): string {
     "Then go on with the task where it stopped.]"
   );
 }
+
+/**
+ * What a resumed agent reads in each conversation with an open task (p3.8.9): it was stopped (a
+ * pause, by the person or by an agent above it) and is working again. The GAIA collaudo of
+ * 2026-11-17: God paused the team near the week's limit, could not bring it back and made a third
+ * orchestrator; resuming in the same conversation keeps one team.
+ */
+export function pausedNote(task: { id: string; title: string }): string {
+  return (
+    `[You were stopped (paused) while working on task ${task.id} («${task.title}») and you are resumed now. ` +
+    "Your conversation above is everything that happened up to the stop; a call answered «Interrupted» did not return, and what it does may or may not have happened. " +
+    "Check what is already there before going on, do not do again what is done, and do not create again agents, projects or tasks that already exist. " +
+    "Then go on with the task where it stopped.]"
+  );
+}

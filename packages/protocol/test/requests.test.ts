@@ -278,6 +278,12 @@ const TABLE: Row[] = [
     "Removes the agent “Coder” from the team (with those below it; it can be restored)",
   ],
   [
+    "resume_agent",
+    { agent_id: "a1" },
+    "Riattiva l'agente fermato «Coder»",
+    "Resumes the stopped agent “Coder”",
+  ],
+  [
     "restore_agent",
     { agent_id: "a1" },
     "Riporta nella squadra l'agente rimosso «Coder»",

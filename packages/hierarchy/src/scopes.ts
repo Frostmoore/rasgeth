@@ -59,14 +59,19 @@ export type Action =
    * god, an orchestrator for its own project's agents (not those assigned to it); nobody for
    * itself. Agents create only sub-agents, whose model follows theirs.
    */
-  | "model";
+  | "model"
   /**
    * Remove the target from the team (p3.8.9), with everything below it, and restore it: nothing of
    * its history goes. God for every agent, an orchestrator for its own project's agents (not those
    * assigned to it), the human for every one of theirs; never God, Demi-God or the Chat, never
    * oneself. Agents do not: their sub-agents end with their task.
    */
-  | "remove";
+  | "remove"
+  /**
+   * Resume a stopped agent (p3.8.9): stopping is a pause, and whoever may stop an agent may bring
+   * it back (its open tasks go on); never inside an archived project, never oneself.
+   */
+  | "resume";
 
 /** God, Demi-God and the Chat are never removed (p3.8.9), by anyone. */
 const removable = (t: AgentNode) => t.kind !== "god" && t.kind !== "demigod" && !t.chat;
@@ -131,7 +136,7 @@ export function can(
     case "god":
       if (action === "model") return target.kind !== "god";
       if (action === "configure" && target.kind === "god") return false;
-      if (action === "stop" && self) return false;
+      if ((action === "stop" || action === "resume") && self) return false;
       if (action === "spawn") return target.kind !== "subagent" && target.kind !== "inspector";
       return true;
     case "demigod":
@@ -156,7 +161,8 @@ export function can(
         action !== "configure" &&
         action !== "spawn" &&
         action !== "model" &&
-        action !== "remove"
+        action !== "remove" &&
+        action !== "resume"
       );
     }
     case "subagent":

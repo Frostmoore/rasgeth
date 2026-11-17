@@ -94,6 +94,9 @@ O1 remove    A1 yes | O1 remove    S1 yes | O1 remove   A4 yes | O1 remove S4 ye
 O1 remove    A3 no  | O1 remove    A6 no  | O1 remove   P3 no  | O1 remove G  no  | O1 remove C no   | O2 remove A6 yes | O2 remove A1 no
 A1 remove    S1 no  | A1 remove    A1 no  | A1 remove   A2 no  | S1 remove S1 no  | I1 remove A1 no  | D remove A1 no | D remove D no
 P1 remove    P2 no  | P1 remove    C  no  | C  remove   C  no  | C  remove P1 no  | O9 remove A9 no  | A9 remove S9 no
+G  resume    O1 yes | G  resume    A1 yes | G  resume   P1 yes | G  resume  I1 yes | G  resume C yes  | G resume G no | G resume X no | G resume A9 no
+O1 resume    A1 yes | O1 resume    A4 yes | O1 resume   O1 no  | O1 resume A3 no  | O1 resume A6 no  | O2 resume A6 yes | O1 resume P3 no
+A1 resume    S1 no  | A1 resume    A1 no  | S1 resume   S1 no  | I1 resume A1 no  | D resume A1 no   | P1 resume P2 no | O9 resume A9 no
 `
   .trim()
   .split(/\s*[|\n]\s*/)
@@ -135,6 +138,8 @@ describe("scope table", () => {
       model: false,
       // Removing changes nothing of the project: it is a stop that also hides (p3.8.9).
       remove: true,
+      // Resuming would work in it: the project comes back first.
+      resume: false,
     };
     for (const id of ["O9", "A9", "S9", "I9"])
       for (const [action, ok] of Object.entries(want))
@@ -150,6 +155,13 @@ describe("scope table", () => {
       expect(can(me, "remove", byId.get(id) as AgentNode, resolve), id).toBe(true);
     for (const id of ["G", "D", "C", "X"])
       expect(can(me, "remove", byId.get(id) as AgentNode, resolve), id).toBe(false);
+  });
+
+  it("lets the human resume any of their stopped agents (p3.8.9), even the Chat", () => {
+    const me = { type: "human" as const, ownerId: "me" };
+    for (const id of ["O1", "A1", "I1", "P1", "C", "D"])
+      expect(can(me, "resume", byId.get(id) as AgentNode, resolve), id).toBe(true);
+    expect(can(me, "resume", byId.get("X") as AgentNode, resolve)).toBe(false);
   });
 
   it("lets the human do everything on their own agents only", () => {

@@ -457,6 +457,14 @@ export const EventBody = z.discriminatedUnion("type", [
       was: z.enum(["active", "stopped"]),
     }),
   }),
+  /**
+   * A stopped agent working again (p3.8.9: stopping is a pause), with the agents below it that
+   * were stopped; their open tasks go on.
+   */
+  z.object({
+    type: z.literal("agent.resumed"),
+    payload: z.object({ agentId: z.string(), by: z.string(), with: z.array(z.string()) }),
+  }),
   /** A removed agent back in the team, with the agents removed together with it (p3.8.9). */
   z.object({
     type: z.literal("agent.restored"),

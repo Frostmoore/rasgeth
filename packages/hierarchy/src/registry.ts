@@ -10,11 +10,29 @@ import {
 } from "@redgiant/protocol";
 import { type Actor, type AgentNode, CHILD_KINDS, can } from "./scopes.js";
 
+/**
+ * How an agent left the team (p3.8.9): when, by whom ("person" or the agent's name), why, the
+ * agent the removal started from (`root`: itself, or the one above it removed with it) and the
+ * status it had, given back on restore.
+ */
+export interface Removal {
+  at: string;
+  by: string;
+  byId?: string;
+  reason: string;
+  root: string;
+  was: "active" | "stopped";
+}
+
 export interface AgentRecord extends AgentSpec {
   ownerId: string;
-  status: "active" | "stopped";
+  /** "removed" (p3.8.9): out of the team, its history kept; `removed` says how. */
+  status: "active" | "stopped" | "removed";
+  removed?: Removal;
   /** Its project is archived (2026-11-09): read from the registry, never stored. */
   readonly archived?: boolean;
+  /** It is the person's Chat (p3.8.9): read from the registry, never stored. */
+  readonly chat?: boolean;
 }
 
 export interface NewAgent {
@@ -59,7 +77,8 @@ interface Row {
   skills: string | null;
   projects: string | null;
   mascot_seed: string | null;
-  status: "active" | "stopped";
+  status: "active" | "stopped" | "removed";
+  removed: string | null;
   created_at?: string | Date;
 }
 
@@ -92,6 +111,8 @@ export async function migrateHierarchy(db: SqlClient): Promise<void> {
   await db.query("ALTER TABLE rg_agents ADD COLUMN IF NOT EXISTS skills text");
   // Its mascot's seed (G40.2): fixed at creation; the agents made before get theirs at `load`.
   await db.query("ALTER TABLE rg_agents ADD COLUMN IF NOT EXISTS mascot_seed text");
+  // How a removed agent left the team (p3.8.9), given back on restore.
+  await db.query("ALTER TABLE rg_agents ADD COLUMN IF NOT EXISTS removed text");
   // One God and one Demi-God per owner, one orchestrator and one inspector per project.
   await db.query(
     "CREATE UNIQUE INDEX IF NOT EXISTS rg_agents_one_god ON rg_agents (owner_id, kind) WHERE kind IN ('god', 'demigod') AND status = 'active'",
@@ -145,6 +166,7 @@ const fromRow = (r: Row): AgentRecord => ({
     compaction: JSON.parse(r.compaction) as { at?: number; keep?: number },
   }),
   status: r.status,
+  ...(r.removed && { removed: JSON.parse(r.removed) as Removal }),
 });
 
 /**
@@ -157,6 +179,8 @@ export class AgentRegistry {
   private cache = new Map<string, AgentRecord>();
   /** Archived projects (2026-11-09), as `owner/project` (project ids are slugs): set by the server at start. */
   private readonly archivedProjects = new Set<string>();
+  /** Each owner's Chat agent (p3.8.9): set by the server; never removed. */
+  private readonly chats = new Map<string, string>();
 
   constructor(
     private readonly db: SqlClient,
@@ -206,7 +230,13 @@ export class AgentRegistry {
   private mascotBook(ownerId: string, except?: string): MascotBook {
     const book = new MascotBook();
     for (const a of this.cache.values())
-      if (a.ownerId === ownerId && a.status === "active" && a.mascotSeed && a.id !== except) {
+      // A removed agent keeps its face (p3.8.9): it may come back.
+      if (
+        a.ownerId === ownerId &&
+        a.status !== "stopped" &&
+        a.mascotSeed &&
+        a.id !== except
+      ) {
         const spec = this.mascotOf(a.id);
         if (spec) book.add(spec);
       }
@@ -280,7 +310,18 @@ export class AgentRegistry {
       enumerable: false,
       configurable: true,
     });
+    Object.defineProperty(record, "chat", {
+      get: () => this.chats.get(record.ownerId) === record.id,
+      enumerable: false,
+      configurable: true,
+    });
     return record;
+  }
+
+  /** The owner's Chat agent (p3.8.9): the scope rules never let anyone remove it. */
+  setChatAgent(ownerId: string, id: string | null): void {
+    if (id) this.chats.set(ownerId, id);
+    else this.chats.delete(ownerId);
   }
 
   /** A project archived or restored (2026-11-09): its agents only read until it comes back. */
@@ -297,15 +338,28 @@ export class AgentRegistry {
   /** Lookup for scope checks. */
   readonly resolve = (id: string): AgentNode | undefined => this.cache.get(id);
 
+  /**
+   * The team: removed agents (p3.8.9) are never in it, unless `removed` asks for them ("only":
+   * them alone, true: with the others).
+   */
   list(
-    filter: { ownerId?: string; projectId?: string; parentId?: string; activeOnly?: boolean } = {},
+    filter: {
+      ownerId?: string;
+      projectId?: string;
+      parentId?: string;
+      activeOnly?: boolean;
+      removed?: boolean | "only";
+    } = {},
   ): AgentRecord[] {
     return [...this.cache.values()].filter(
       (a) =>
         (filter.ownerId === undefined || a.ownerId === filter.ownerId) &&
         (filter.projectId === undefined || a.projectId === filter.projectId) &&
         (filter.parentId === undefined || a.parentId === filter.parentId) &&
-        (!filter.activeOnly || a.status === "active"),
+        (!filter.activeOnly || a.status === "active") &&
+        (filter.removed === "only"
+          ? a.status === "removed"
+          : filter.removed === true || a.status !== "removed"),
     );
   }
 
@@ -315,7 +369,9 @@ export class AgentRegistry {
     const parent = input.parentId ? this.cache.get(input.parentId) : undefined;
     if (input.parentId && !parent) throw new HierarchyError(`Unknown parent "${input.parentId}"`);
     if (parent && parent.status !== "active")
-      throw new HierarchyError("The parent agent is stopped");
+      throw new HierarchyError(
+        parent.status === "removed" ? "The parent agent is removed" : "The parent agent is stopped",
+      );
     if (parent && parent.ownerId !== ownerId)
       throw new HierarchyError("The parent belongs to another owner");
 
@@ -417,6 +473,7 @@ export class AgentRegistry {
     if (!target) throw new HierarchyError(`Unknown agent "${id}"`);
     if (!can(actor, "stop", target, this.resolve))
       throw new HierarchyError(`Not allowed to stop "${target.name}"`);
+    if (target.status === "removed") throw new HierarchyError(`"${target.name}" is removed`);
     const stopped: string[] = [];
     const walk = async (a: AgentRecord) => {
       for (const child of this.list({ parentId: a.id, activeOnly: true })) await walk(child);
@@ -433,6 +490,198 @@ export class AgentRegistry {
     };
     await walk(target);
     return stopped;
+  }
+
+  /**
+   * Resumes a stopped agent (p3.8.9: stopping is a pause), with the agents below it that were
+   * stopped (never sub-agents: they lived for one task). Refused while the agent above it is
+   * stopped or removed, and when its place is taken now (a project's new orchestrator): nothing
+   * half done. The core then lets their open tasks go on. Returns the ids, `id` first.
+   */
+  async resume(actor: Actor, id: string, by: string): Promise<{ resumed: AgentRecord[] }> {
+    const target = this.cache.get(id);
+    if (!target) throw new HierarchyError(`Unknown agent "${id}"`);
+    if (target.status === "removed")
+      throw new HierarchyError(`"${target.name}" is removed: restore it instead`);
+    if (target.status === "active") throw new HierarchyError(`"${target.name}" is not stopped`);
+    if (!can(actor, "resume", target, this.resolve))
+      throw new HierarchyError(`Not allowed to resume "${target.name}"`);
+    const parent = target.parentId ? this.cache.get(target.parentId) : undefined;
+    if (parent && parent.status !== "active")
+      throw new HierarchyError(`"${parent.name}" above it is ${parent.status}: bring it back first`);
+    const group: AgentRecord[] = [];
+    const walk = (a: AgentRecord) => {
+      group.push(a);
+      for (const child of this.list({ parentId: a.id }))
+        if (child.status === "stopped" && child.kind !== "subagent") walk(child);
+    };
+    walk(target);
+    try {
+      await this.db.transaction(async (tx) => {
+        for (const a of group)
+          await tx.query("UPDATE rg_agents SET status = 'active' WHERE id = $1", [a.id]);
+      });
+    } catch (err) {
+      if (/unique/i.test(String(err)))
+        throw new HierarchyError(
+          `The place of "${target.name}" is taken now (another ${target.kind} works there): stop or remove that one first`,
+        );
+      throw err;
+    }
+    for (const a of group) a.status = "active";
+    await this.store.append({
+      ownerId: target.ownerId,
+      projectId: target.projectId,
+      agentId: actor.type === "agent" ? actor.agent.id : null,
+      body: {
+        type: "agent.resumed",
+        payload: { agentId: id, by, with: group.slice(1).map((a) => a.id) },
+      },
+    });
+    return { resumed: group };
+  }
+
+  /**
+   * The agents a removal of `id` takes with it (p3.8.9): everything below it that is still in the
+   * team, deepest first, then `id` itself last. Nothing is checked or changed.
+   */
+  subtree(id: string): AgentRecord[] {
+    const out: AgentRecord[] = [];
+    const walk = (a: AgentRecord) => {
+      for (const child of this.list({ parentId: a.id })) walk(child);
+      out.push(a);
+    };
+    const a = this.cache.get(id);
+    if (a && a.status !== "removed") walk(a);
+    return out;
+  }
+
+  /**
+   * Removes an agent from the team (p3.8.9) with everything below it: they leave every list and
+   * take no turn; nothing of their history goes (rows, sessions and log stay) and `restore` brings
+   * them back as they were. The scope rules decide who may (`can` "remove"). Returns the ids,
+   * `id` first. The core stops their turns and closes their tasks.
+   */
+  async remove(
+    actor: Actor,
+    id: string,
+    reason: string,
+    by: string,
+  ): Promise<{ removed: AgentRecord[] }> {
+    const target = this.cache.get(id);
+    if (!target) throw new HierarchyError(`Unknown agent "${id}"`);
+    if (target.status === "removed") throw new HierarchyError(`"${target.name}" is removed already`);
+    if (!can(actor, "remove", target, this.resolve))
+      throw new HierarchyError(
+        target.kind === "god" || target.kind === "demigod" || target.chat
+          ? `"${target.name}" is never removed`
+          : `Not allowed to remove "${target.name}"`,
+      );
+    const group = this.subtree(id).reverse();
+    const at = new Date().toISOString();
+    for (const a of group) {
+      const removal: Removal = {
+        at,
+        by,
+        ...(actor.type === "agent" && { byId: actor.agent.id }),
+        reason,
+        root: id,
+        was: a.status === "stopped" ? "stopped" : "active",
+      };
+      await this.db.query("UPDATE rg_agents SET status = 'removed', removed = $2 WHERE id = $1", [
+        a.id,
+        JSON.stringify(removal),
+      ]);
+      a.status = "removed";
+      a.removed = removal;
+    }
+    await this.store.append({
+      ownerId: target.ownerId,
+      projectId: target.projectId,
+      agentId: actor.type === "agent" ? actor.agent.id : null,
+      body: {
+        type: "agent.removed",
+        payload: {
+          agentId: id,
+          reason,
+          by,
+          with: group.slice(1).map((a) => a.id),
+          was: group[0]?.removed?.was ?? "active",
+        },
+      },
+    });
+    return { removed: group };
+  }
+
+  /**
+   * Brings back a removal (p3.8.9): the agent and those removed with it, each with the status it
+   * had. Refused while the agent above it is removed (restore that one), and when the place it
+   * had is taken now (a project's new orchestrator or inspector): nothing half done.
+   */
+  async restore(actor: Actor, id: string, by: string): Promise<{ restored: AgentRecord[] }> {
+    const target = this.cache.get(id);
+    if (!target) throw new HierarchyError(`Unknown agent "${id}"`);
+    if (target.status !== "removed" || !target.removed)
+      throw new HierarchyError(`"${target.name}" is not removed`);
+    if (target.removed.root !== id) {
+      const root = this.cache.get(target.removed.root);
+      throw new HierarchyError(
+        `"${target.name}" was removed with "${root?.name ?? target.removed.root}": restore that one`,
+      );
+    }
+    if (!can(actor, "remove", target, this.resolve))
+      throw new HierarchyError(`Not allowed to restore "${target.name}"`);
+    const parent = target.parentId ? this.cache.get(target.parentId) : undefined;
+    if (parent?.status === "removed")
+      throw new HierarchyError(`"${parent.name}" above it is removed: restore it first`);
+    const group = [...this.cache.values()]
+      .filter((a) => a.status === "removed" && a.removed?.root === id)
+      // Parents before children, as they were made.
+      .sort((a, b) => (a.id === id ? -1 : b.id === id ? 1 : depth(this, a) - depth(this, b)));
+    const taken = group.find(
+      (a) =>
+        a.status === "removed" &&
+        a.removed?.was === "active" &&
+        ["god", "demigod", "orchestrator", "inspector"].includes(a.kind) &&
+        this.list({ ownerId: a.ownerId, activeOnly: true }).some(
+          (o) =>
+            o.kind === a.kind &&
+            o.projectId === a.projectId &&
+            (o.subprojectId ?? null) === (a.subprojectId ?? null),
+        ),
+    );
+    if (taken)
+      throw new HierarchyError(
+        `The project "${taken.projectId}" has another ${taken.kind} now: remove or stop it first`,
+      );
+    // All of the group or none (a unique place taken meanwhile fails the whole restore).
+    try {
+      await this.db.transaction(async (tx) => {
+        for (const a of group)
+          await tx.query("UPDATE rg_agents SET status = $2, removed = NULL WHERE id = $1", [
+            a.id,
+            a.removed?.was ?? "active",
+          ]);
+      });
+    } catch (err) {
+      if (/unique/i.test(String(err)))
+        throw new HierarchyError(`Its place is taken now: remove or stop the agent there first`);
+      throw err;
+    }
+    for (const a of group) {
+      a.status = a.removed?.was ?? "active";
+      delete a.removed;
+    }
+    await this.store.append({
+      ownerId: target.ownerId,
+      projectId: target.projectId,
+      agentId: actor.type === "agent" ? actor.agent.id : null,
+      body: {
+        type: "agent.restored",
+        payload: { agentId: id, by, with: group.slice(1).map((a) => a.id) },
+      },
+    });
+    return { restored: group };
   }
 
   /**
@@ -544,6 +793,17 @@ export class AgentRegistry {
     for (const a of chain.reverse()) if (a.model) merged = { ...merged, ...a.model };
     return merged.provider && merged.model ? (merged as ModelSpec) : undefined;
   }
+}
+
+/** How deep an agent sits in the tree (God is 0). */
+function depth(registry: AgentRegistry, a: AgentRecord): number {
+  let n = 0;
+  let cur = a.parentId ? registry.get(a.parentId) : undefined;
+  while (cur && n < 50) {
+    n++;
+    cur = cur.parentId ? registry.get(cur.parentId) : undefined;
+  }
+  return n;
 }
 
 export { LOCAL_OWNER_ID };

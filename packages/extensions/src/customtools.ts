@@ -47,6 +47,7 @@ export const RESERVED = new Set([
   "stop_agent",
   "remove_agent",
   "restore_agent",
+  "resume_agent",
   "run_subagent",
   "complete_task",
   "board_list",
