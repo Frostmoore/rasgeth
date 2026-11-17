@@ -140,6 +140,68 @@ class FakeRedGiant {
   final newAgents = <Map<String, dynamic>>[];
   final toolChoices = <String, Map<String, String>>{};
   final mascotChanges = <String>[];
+
+  // G38.7: Settings › Agents.
+  final stops = <String>[];
+  final notes = <String, String>{};
+  final budgetPuts = <Map<String, dynamic>>[];
+  final kbChoices = <String, Map<String, String>>{};
+  final agentToolState = <String, Map<String, String>>{};
+  Map<String, dynamic> editorSettings = {'agents': {}, 'files': {}, 'reexport': {}};
+  static const _essential = {'read_file', 'bash', 'ask_user'};
+
+  /// An agent's record, the Chat's included (the real registry has it).
+  Map<String, dynamic>? _agentRecord(String id) {
+    if (id == 'chat') {
+      return {
+        ...agents.first,
+        'id': 'chat',
+        'kind': 'assistant',
+        'name': 'Chat',
+        'parentId': 'a0',
+        ...?agentOverrides['chat'],
+      };
+    }
+    return agents.where((a) => a['id'] == id).firstOrNull;
+  }
+
+  /// The real `PATCH /api/agents/:id`'s refusals (its zod schema, then its rules).
+  String? _patchRefused(Map<String, dynamic> a, Map<String, dynamic> b) {
+    final name = b['name'];
+    if (name != null && (name is! String || name.trim().isEmpty || name.trim().length > 60)) {
+      return 'name: String must contain at least 1 character(s)';
+    }
+    final role = b['role'];
+    if (role != null && (role is! String || role.isEmpty)) {
+      return 'role: String must contain at least 1 character(s)';
+    }
+    final mode = b['mode'];
+    if (mode != null && !const ['manual', 'auto', 'plan', 'readonly'].contains(mode)) {
+      return 'mode: Invalid enum value';
+    }
+    final comp = b['compaction'];
+    if (comp is Map) {
+      final at = comp['at'];
+      final keep = comp['keep'];
+      if (at != null && (at is! num || at < .3 || at > .95)) {
+        return 'compaction.at: Number must be between 0.3 and 0.95';
+      }
+      if (keep != null && (keep is! num || keep < 0 || keep > .5)) {
+        return 'compaction.keep: Number must be between 0 and 0.5';
+      }
+    }
+    final projects = b['projects'];
+    if (projects is List && projects.isNotEmpty) {
+      if (a['kind'] != 'agent' && a['kind'] != 'assistant') {
+        return 'Only agents and personal agents can be assigned to projects';
+      }
+      for (final p in projects) {
+        if (p != 'demo' && !madeProjects.any((m) => m['id'] == p)) return 'No project "$p"';
+      }
+    }
+    return null;
+  }
+
   final asides = <String>[];
   final rooms = <Map<String, dynamic>>[];
   final sent = <Map<String, dynamic>>[];
@@ -456,14 +518,114 @@ class FakeRedGiant {
     if (r.method == 'PATCH' && agentOne != null) {
       final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
       patches.add({'agent': agentOne.group(1), ...b});
-      final base = [
-        ...agents,
-        ...created,
-      ].firstWhere((a) => a['id'] == agentOne.group(1), orElse: () => <String, dynamic>{});
-      if (base.isEmpty) return _json(r, 404, {'error': 'Agent not found'});
+      final base = _agentRecord(agentOne.group(1)!);
+      if (base == null) return _json(r, 404, {'error': 'Agent not found'});
+      // The real route's schema and rules (packages/server/src/app.ts, configureAgent).
+      final why = _patchRefused(base, b);
+      if (why != null) return _json(r, 400, {'error': why});
+      if (b['name'] is String) b['name'] = (b['name'] as String).trim();
       final own = agentOverrides.putIfAbsent(agentOne.group(1)!, () => {});
       own.addAll(b);
       return _json(r, 200, {...base, ...own});
+    }
+    // G38.7: the rest of Settings › Agents, with the real server's rules.
+    final stopOne = RegExp(r'^/api/agents/([^/]+)/stop$').firstMatch(path);
+    if (r.method == 'POST' && stopOne != null) {
+      final id = stopOne.group(1)!;
+      if (_agentRecord(id) == null) return _json(r, 404, {'error': 'Agent not found'});
+      stops.add(id);
+      final under = [
+        id,
+        for (final a in agents)
+          if (a['parentId'] == id) a['id'] as String,
+      ];
+      for (final x in under) {
+        agentOverrides.putIfAbsent(x, () => {})['status'] = 'stopped';
+      }
+      return _json(r, 200, {'stopped': under});
+    }
+    final compactOf = RegExp(r'^/api/agents/([^/]+)/compaction-defaults$').firstMatch(path);
+    if (r.method == 'GET' && compactOf != null) {
+      if (_agentRecord(compactOf.group(1)!) == null) {
+        return _json(r, 404, {'error': 'Agent not found'});
+      }
+      return _json(r, 200, {'at': .8, 'keep': .12});
+    }
+    if (path == '/api/notes') {
+      final q = r.uri.queryParameters;
+      final scope = q['scope'];
+      final who = switch (scope) {
+        'self' => q['agentId'] == null ? null : 'self:${q['agentId']}',
+        'project' => q['projectId'] == null ? null : 'project:${q['projectId']}',
+        'user' => 'user',
+        _ => null,
+      };
+      if (who == null) return _json(r, 400, {'error': 'scope is user, self or project'});
+      if (r.method == 'GET') return _json(r, 200, {'text': notes[who] ?? ''});
+      final b = jsonDecode(await utf8.decodeStream(r));
+      if (b is! Map || b['text'] is! String) {
+        return _json(r, 400, {'error': 'text is required'});
+      }
+      notes[who] = b['text'] as String;
+      return _json(r, 200, {'ok': true});
+    }
+    if (r.method == 'PUT' && path == '/api/budgets') {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      final usd = b['usd'];
+      if (usd != null && (usd is! num || usd <= 0)) {
+        return _json(r, 400, {'error': 'usd: Number must be greater than 0'});
+      }
+      budgetPuts.add(b);
+      budgets.removeWhere((x) => x['scope'] == b['scope'] && x['id'] == b['id']);
+      budgets.add({
+        'scope': b['scope'],
+        'id': b['id'],
+        'limit': {'usd': ?usd},
+        'used': {'usd': 1.25, 'tokens': 4000},
+      });
+      return _json(r, 200, {'ok': true});
+    }
+    final kbOf = RegExp(r'^/api/knowledge/agents/([^/]+)$').firstMatch(path);
+    if (kbOf != null) {
+      final id = kbOf.group(1)!;
+      if (r.method == 'PUT') {
+        final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+        final pick = b['pick'];
+        if (b['collection'] is! String || (pick != null && pick != 'on' && pick != 'off')) {
+          return _json(r, 400, {'error': 'collection and pick (on, off or null)'});
+        }
+        final own = kbChoices.putIfAbsent(id, () => {});
+        pick == null
+            ? own.remove(b['collection'])
+            : own[b['collection'] as String] = pick as String;
+      }
+      return _json(r, 200, {
+        'collections': [
+          for (final (cid, name, scope, byScope) in const [
+            ('manuali', 'Manuali', 'global', true),
+            ('contratti', 'Contratti', 'project', false),
+          ])
+            {
+              'id': cid,
+              'name': name,
+              'scope': scope,
+              'byScope': byScope,
+              'own': kbChoices[id]?[cid],
+              'on': switch (kbChoices[id]?[cid]) {
+                'on' => true,
+                'off' => false,
+                _ => byScope,
+              },
+              'chunks': 12,
+            },
+        ],
+      });
+    }
+    if (path == '/api/settings/editor') {
+      if (r.method == 'GET') return _json(r, 200, {'settings': editorSettings});
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      editorSettings = b;
+      return _json(r, 200, {'ok': true});
     }
     if (path == '/api/chat/settings') {
       if (r.method == 'GET') return _json(r, 200, {'model': ?chatModel});
@@ -541,12 +703,29 @@ class FakeRedGiant {
     final agentTools = RegExp(r'^/api/agents/([^/]+)/tools$').firstMatch(path);
     if (r.method == 'PUT' && agentTools != null) {
       final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
-      toolChoices[agentTools.group(1)!] = (b['tools'] as Map).cast<String, String>();
+      final tools = (b['tools'] as Map).cast<String, String>();
+      // As `Platform.setTools`: essential tools never switch off.
+      final essential = [
+        for (final e in tools.entries)
+          if (e.value == 'off' && _essential.contains(e.key)) e.key,
+      ];
+      if (essential.isNotEmpty) {
+        return _json(r, 400, {
+          'error': 'These tools are essential and cannot be switched off: ${essential.join(', ')}',
+        });
+      }
+      toolChoices[agentTools.group(1)!] = tools;
+      final own = agentToolState.putIfAbsent(agentTools.group(1)!, () => {});
+      for (final e in tools.entries) {
+        e.value == 'default' ? own.remove(e.key) : own[e.key] = e.value;
+      }
       return _json(r, 200, {'ok': true});
     }
     if (r.method == 'GET' && path == '/api/tools') {
+      final forAgent = r.uri.queryParameters['agentId'];
+      final own = forAgent == null ? null : agentToolState[forAgent];
       return _json(r, 200, {
-        'agentId': null,
+        'agentId': forAgent,
         'total': 1000,
         'saved': 0,
         'entries': [
@@ -565,6 +744,8 @@ class FakeRedGiant {
               'chars': 100,
               'tokens': 30,
               'global': true,
+              if (forAgent != null) 'own': essential ? null : own?[id],
+              if (forAgent != null) 'on': essential || own?[id] != 'off',
             },
         ],
       });

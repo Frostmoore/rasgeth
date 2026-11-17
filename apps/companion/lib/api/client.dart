@@ -277,6 +277,88 @@ class RedGiantClient {
     ),
   );
 
+  /// `PATCH /api/agents/:id` with any of the page's fields (name, role, mode, compaction,
+  /// projects…), the same body Settings › Agents sends; the server checks every rule.
+  Future<Agent> patchAgent(String agentId, Map<String, Object?> change) async => Agent.fromJson(
+    _object(await _call('PATCH', '/api/agents/${Uri.encodeComponent(agentId)}', change)),
+  );
+
+  /// `POST /api/agents/:id/stop`: the agent and those under it stop (the page's «Stop»).
+  Future<void> stopAgentForGood(String agentId) => _post(
+    '/api/agents/${Uri.encodeComponent(agentId)}/stop',
+    const {'reason': 'stopped from RGCompanion'},
+  );
+
+  /// `GET /api/agents/:id/compaction-defaults`: what its summaries do when it sets nothing.
+  Future<({double at, double keep})> compactionDefaults(String agentId) async {
+    final o = _object(
+      await _get('/api/agents/${Uri.encodeComponent(agentId)}/compaction-defaults'),
+    );
+    return (at: (o['at'] as num?)?.toDouble() ?? .8, keep: (o['keep'] as num?)?.toDouble() ?? .25);
+  }
+
+  /// `GET /api/notes?scope=self|project&agentId=…`: an agent's own notes, or its project's.
+  Future<String> notes(String scope, String agentId, {String? projectId}) async =>
+      _object(
+            await _get('/api/notes', {'scope': scope, 'agentId': agentId, 'projectId': ?projectId}),
+          )['text']
+          as String? ??
+      '';
+
+  /// `PUT /api/notes?…`: the notes' new text.
+  Future<void> setNotes(String scope, String agentId, String text, {String? projectId}) async {
+    final r = await _send(
+      'PUT',
+      '/api/notes',
+      query: {'scope': scope, 'agentId': agentId, 'projectId': ?projectId},
+      json: {'text': text},
+    );
+    if (r.status < 200 || r.status >= 300 || r.bytes.isNotEmpty) _decode(r);
+  }
+
+  /// `PUT /api/budgets`: an agent's (or a project's) limit; no amount removes it.
+  Future<void> setBudget(String scope, String id, {double? usd}) =>
+      _call('PUT', '/api/budgets', {'scope': scope, 'id': id, 'usd': ?usd});
+
+  /// `GET /api/tools?agentId=…`: every tool as this agent gets it (its own choice, the essential
+  /// ones locked).
+  Future<List<ToolEntry>> agentTools(String agentId) async => [
+    for (final e in _array(_object(await _get('/api/tools', {'agentId': agentId}))['entries']))
+      ToolEntry.fromJson(e),
+  ];
+
+  /// `GET /api/knowledge/agents/:id`: the collections this agent can read.
+  Future<List<AgentCollection>> agentKnowledge(String agentId) async => [
+    for (final c in _array(
+      _object(await _get('/api/knowledge/agents/${Uri.encodeComponent(agentId)}'))['collections'],
+    ))
+      AgentCollection.fromJson(c),
+  ];
+
+  /// `PUT /api/knowledge/agents/:id`: on, off, or null (by where the collection belongs).
+  Future<List<AgentCollection>> setAgentKnowledge(
+    String agentId,
+    String collection,
+    String? pick,
+  ) async => [
+    for (final c in _array(
+      _object(
+        await _call('PUT', '/api/knowledge/agents/${Uri.encodeComponent(agentId)}', {
+          'collection': collection,
+          'pick': pick,
+        }),
+      )['collections'],
+    ))
+      AgentCollection.fromJson(c),
+  ];
+
+  /// `GET /api/settings/editor`: the agents' edits of open files, at once or proposed.
+  Future<Map<String, dynamic>> editorSettings() async =>
+      _object(_object(await _get('/api/settings/editor'))['settings']);
+
+  /// `PUT /api/settings/editor`: the whole settings again (the page sends them so).
+  Future<void> setEditorSettings(Map<String, dynamic> s) => _call('PUT', '/api/settings/editor', s);
+
   /// `GET /api/budgets`: spending against the limits (the header's bars, 3.9.0).
   Future<List<Budget>> budgets() async => [
     for (final o in _array(await _get('/api/budgets'))) ?Budget.fromJson(o),

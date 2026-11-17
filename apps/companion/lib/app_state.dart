@@ -841,6 +841,57 @@ class AppController extends ChangeNotifier {
     }
   }
 
+  /// Saves a change to [a] with the page's own `PATCH /api/agents/:id` (Settings › Agents);
+  /// null when it went, else the server's own words.
+  Future<String?> saveAgent(Agent a, Map<String, Object?> change) async {
+    final c = client;
+    if (c == null) return 'offline';
+    try {
+      final updated = await c.patchAgent(a.id, change);
+      agents = [for (final x in agents) x.id == a.id ? updated : x];
+      notifyListeners();
+      return null;
+    } on ApiException catch (e) {
+      return e.message;
+    }
+  }
+
+  /// The page's «Stop» (`POST /api/agents/:id/stop`): the agent and those under it, for good.
+  /// Never God nor the Chat (their screens hide it).
+  Future<String?> stopAgentForGood(Agent a) async {
+    final c = client;
+    if (c == null) return 'offline';
+    try {
+      await c.stopAgentForGood(a.id);
+      try {
+        agents = await c.agents();
+      } on ApiException {
+        agents = [
+          for (final x in agents)
+            x.id == a.id
+                ? Agent(
+                    id: x.id,
+                    kind: x.kind,
+                    name: x.name,
+                    active: false,
+                    parentId: x.parentId,
+                    projectId: x.projectId,
+                    role: x.role,
+                    mascot: x.mascot,
+                    model: x.model,
+                    mode: x.mode,
+                    mascotSeed: x.mascotSeed,
+                  )
+                : x,
+        ];
+      }
+      notifyListeners();
+      return null;
+    } on ApiException catch (e) {
+      return e.message;
+    }
+  }
+
   /// One conversation's own model (null: its agent's), then the rows again.
   Future<String?> setSessionModel(String sessionId, AgentModel? model) async {
     final c = client;

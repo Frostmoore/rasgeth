@@ -6350,6 +6350,576 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 request for you} other{{count} requests for you}}'**
   String deskRailWaiting(int count);
+
+  /// No description provided for @asOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent settings…'**
+  String get asOpen;
+
+  /// No description provided for @asTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings of {name}'**
+  String asTitle(String name);
+
+  /// No description provided for @asClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get asClose;
+
+  /// No description provided for @asGroupGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get asGroupGeneral;
+
+  /// No description provided for @asGroupWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Model and way'**
+  String get asGroupWork;
+
+  /// No description provided for @asGroupMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory'**
+  String get asGroupMemory;
+
+  /// No description provided for @asGroupLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending'**
+  String get asGroupLimits;
+
+  /// No description provided for @asGroupTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get asGroupTools;
+
+  /// No description provided for @asGroupKnowledge.
+  ///
+  /// In en, this message translates to:
+  /// **'Knowledge'**
+  String get asGroupKnowledge;
+
+  /// No description provided for @asKind_god.
+  ///
+  /// In en, this message translates to:
+  /// **'God, leads everything'**
+  String get asKind_god;
+
+  /// No description provided for @asKind_demigod.
+  ///
+  /// In en, this message translates to:
+  /// **'Demi-God, the Telegram messenger'**
+  String get asKind_demigod;
+
+  /// No description provided for @asKind_orchestrator.
+  ///
+  /// In en, this message translates to:
+  /// **'Project lead'**
+  String get asKind_orchestrator;
+
+  /// No description provided for @asKind_agent.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent'**
+  String get asKind_agent;
+
+  /// No description provided for @asKind_subagent.
+  ///
+  /// In en, this message translates to:
+  /// **'Helper'**
+  String get asKind_subagent;
+
+  /// No description provided for @asKind_inspector.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspector, reads only'**
+  String get asKind_inspector;
+
+  /// No description provided for @asKind_assistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal assistant'**
+  String get asKind_assistant;
+
+  /// No description provided for @asKindChat.
+  ///
+  /// In en, this message translates to:
+  /// **'The everyday Chat'**
+  String get asKindChat;
+
+  /// No description provided for @asStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get asStopped;
+
+  /// No description provided for @asMascot.
+  ///
+  /// In en, this message translates to:
+  /// **'Mascot'**
+  String get asMascot;
+
+  /// No description provided for @asMascotHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Renaming it never changes its face: only you change it, here.'**
+  String get asMascotHelp;
+
+  /// No description provided for @asMascotGod.
+  ///
+  /// In en, this message translates to:
+  /// **'God\'s mascot is drawn by hand: it is always the red giant.'**
+  String get asMascotGod;
+
+  /// No description provided for @asName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get asName;
+
+  /// No description provided for @asRole.
+  ///
+  /// In en, this message translates to:
+  /// **'What it does'**
+  String get asRole;
+
+  /// No description provided for @asRoleHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'One or two lines: God and the orchestrators read it to decide what to hand over.'**
+  String get asRoleHelp;
+
+  /// No description provided for @asProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Also works for'**
+  String get asProjects;
+
+  /// No description provided for @asProjectsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the projects {name} also works for: there it sits under the project\'s orchestrator, which gives it tasks.'**
+  String asProjectsHelp(String name);
+
+  /// No description provided for @asSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved.'**
+  String get asSaved;
+
+  /// No description provided for @asSavedNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: it applies from new conversations.'**
+  String get asSavedNew;
+
+  /// No description provided for @asRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'The server did not accept it: {why}'**
+  String asRefused(String why);
+
+  /// No description provided for @asNoName.
+  ///
+  /// In en, this message translates to:
+  /// **'A name is needed.'**
+  String get asNoName;
+
+  /// No description provided for @asModelHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Without a model of its own it uses the one of the agent above it. It applies from new conversations: you change an open conversation\'s model from its composer.'**
+  String get asModelHelp;
+
+  /// No description provided for @asModelGodHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The model God uses; without one, the default model chosen in the setup. You change an open conversation\'s model from its composer.'**
+  String get asModelGodHelp;
+
+  /// No description provided for @asModelChatHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The Chat\'s model, as in its header on the page. You change an open conversation\'s model from its composer.'**
+  String get asModelChatHelp;
+
+  /// No description provided for @asMode.
+  ///
+  /// In en, this message translates to:
+  /// **'How freely it works'**
+  String get asMode;
+
+  /// No description provided for @asModeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Whatever sends, publishes, deletes or pays always waits for you.'**
+  String get asModeHelp;
+
+  /// No description provided for @asMode_auto.
+  ///
+  /// In en, this message translates to:
+  /// **'On its own'**
+  String get asMode_auto;
+
+  /// No description provided for @asMode_manual.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks permission'**
+  String get asMode_manual;
+
+  /// No description provided for @asMode_plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan first'**
+  String get asMode_plan;
+
+  /// No description provided for @asMode_readonly.
+  ///
+  /// In en, this message translates to:
+  /// **'Read only'**
+  String get asMode_readonly;
+
+  /// No description provided for @asModeExplain_auto.
+  ///
+  /// In en, this message translates to:
+  /// **'Works on its own and asks only for what is dangerous.'**
+  String get asModeExplain_auto;
+
+  /// No description provided for @asModeExplain_manual.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks you before every change to files or commands.'**
+  String get asModeExplain_manual;
+
+  /// No description provided for @asModeExplain_plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Writes a plan first and starts once you approve it.'**
+  String get asModeExplain_plan;
+
+  /// No description provided for @asModeExplain_readonly.
+  ///
+  /// In en, this message translates to:
+  /// **'Reads and answers, changes nothing.'**
+  String get asModeExplain_readonly;
+
+  /// No description provided for @asInstructionsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Its system prompt, its own or the built-in one: open conversations keep theirs.'**
+  String get asInstructionsHelp;
+
+  /// No description provided for @asMemOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory of {name}: only for this agent'**
+  String asMemOwn(String name);
+
+  /// No description provided for @asMemOwnHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {name} reads it, at the start of every conversation. {name} can also note here what it needs.'**
+  String asMemOwnHelp(String name);
+
+  /// No description provided for @asMemProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory of the project «{name}»'**
+  String asMemProject(String name);
+
+  /// No description provided for @asMemProjectHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent working on this project reads it.'**
+  String get asMemProjectHelp;
+
+  /// No description provided for @asMemNone.
+  ///
+  /// In en, this message translates to:
+  /// **'This agent keeps no memory of its own.'**
+  String get asMemNone;
+
+  /// No description provided for @asCompact.
+  ///
+  /// In en, this message translates to:
+  /// **'Summaries of long conversations'**
+  String get asCompact;
+
+  /// No description provided for @asCompactHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'When the conversation gets long, the agent writes a summary of the old parts, like someone taking notes. Here you choose when it does it, and how much of the latest part it keeps as it is.'**
+  String get asCompactHelp;
+
+  /// No description provided for @asCompactAt.
+  ///
+  /// In en, this message translates to:
+  /// **'When to write the summary'**
+  String get asCompactAt;
+
+  /// No description provided for @asCompactAtValue.
+  ///
+  /// In en, this message translates to:
+  /// **'when {n}% full'**
+  String asCompactAtValue(String n);
+
+  /// No description provided for @asCompactKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'How much of the latest part to keep as it is'**
+  String get asCompactKeep;
+
+  /// No description provided for @asCompactKeepValue.
+  ///
+  /// In en, this message translates to:
+  /// **'the last {n}%'**
+  String asCompactKeepValue(String n);
+
+  /// No description provided for @asCompactKeepNone.
+  ///
+  /// In en, this message translates to:
+  /// **'nothing'**
+  String get asCompactKeepNone;
+
+  /// No description provided for @asCompactDefaultIs.
+  ///
+  /// In en, this message translates to:
+  /// **'Default for this agent\'s model: at {at}%, keeping {keep}%.'**
+  String asCompactDefaultIs(String at, String keep);
+
+  /// No description provided for @asCompactDefaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the defaults'**
+  String get asCompactDefaults;
+
+  /// No description provided for @asLimitsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'When it reaches the limit it stops and asks you. The limit counts everything spent since it was set.'**
+  String get asLimitsHelp;
+
+  /// No description provided for @asSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent so far'**
+  String get asSpent;
+
+  /// No description provided for @asLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Limit in dollars'**
+  String get asLimit;
+
+  /// No description provided for @asNoLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit'**
+  String get asNoLimit;
+
+  /// No description provided for @asLimitTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Limit: {n} tokens'**
+  String asLimitTokens(String n);
+
+  /// No description provided for @asRemoveLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the limit'**
+  String get asRemoveLimit;
+
+  /// No description provided for @asLimitBad.
+  ///
+  /// In en, this message translates to:
+  /// **'Write an amount above zero.'**
+  String get asLimitBad;
+
+  /// No description provided for @asToolsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For each tool: as for every agent (Settings, Tools), always on for this agent, or off. The essential ones never switch off.'**
+  String get asToolsHelp;
+
+  /// No description provided for @asToolsNewOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes apply from new conversations: the ones already open keep their tools.'**
+  String get asToolsNewOnly;
+
+  /// No description provided for @asToolsTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: about {n} tokens in every message'**
+  String asToolsTotal(String name, String n);
+
+  /// No description provided for @asToolDefaultOn.
+  ///
+  /// In en, this message translates to:
+  /// **'As for everyone (on)'**
+  String get asToolDefaultOn;
+
+  /// No description provided for @asToolDefaultOff.
+  ///
+  /// In en, this message translates to:
+  /// **'As for everyone (off)'**
+  String get asToolDefaultOff;
+
+  /// No description provided for @asToolAlways.
+  ///
+  /// In en, this message translates to:
+  /// **'Always on'**
+  String get asToolAlways;
+
+  /// No description provided for @asToolOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get asToolOff;
+
+  /// No description provided for @asToolLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Essential: always on'**
+  String get asToolLocked;
+
+  /// No description provided for @asEditRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Edits in open files'**
+  String get asEditRule;
+
+  /// No description provided for @asEditRuleHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'When it edits a file open in the Canvas: right away (highlighted, undoable) or as proposals you accept. A file\'s own choice wins.'**
+  String get asEditRuleHelp;
+
+  /// No description provided for @asEditNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Right away'**
+  String get asEditNow;
+
+  /// No description provided for @asEditPropose.
+  ///
+  /// In en, this message translates to:
+  /// **'As proposals'**
+  String get asEditPropose;
+
+  /// No description provided for @asKbHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Which collections {name} can search. Each one says who may read it; here you can make an exception for this agent. It applies from its next conversation.'**
+  String asKbHelp(String name);
+
+  /// No description provided for @asKbNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No collections yet.'**
+  String get asKbNone;
+
+  /// No description provided for @asKbByScope.
+  ///
+  /// In en, this message translates to:
+  /// **'By where it belongs ({on})'**
+  String asKbByScope(String on);
+
+  /// No description provided for @asKbOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get asKbOn;
+
+  /// No description provided for @asKbOff.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get asKbOff;
+
+  /// No description provided for @asKbScope_global.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent'**
+  String get asKbScope_global;
+
+  /// No description provided for @asKbScope_agent.
+  ///
+  /// In en, this message translates to:
+  /// **'One agent'**
+  String get asKbScope_agent;
+
+  /// No description provided for @asKbScope_project.
+  ///
+  /// In en, this message translates to:
+  /// **'A project\'s agents'**
+  String get asKbScope_project;
+
+  /// No description provided for @asDanger.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopping it'**
+  String get asDanger;
+
+  /// No description provided for @asStopHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Its conversations stay; it does no more work, nor do those under it.'**
+  String get asStopHelp;
+
+  /// No description provided for @asStopAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop {name}? Its conversations stay; it does no more work.'**
+  String asStopAsk(String name);
+
+  /// No description provided for @asStopYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop {name}'**
+  String asStopYes(String name);
+
+  /// No description provided for @asStoppedNow.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is stopped.'**
+  String asStoppedNow(String name);
+
+  /// No description provided for @asLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'I could not read it from the server: {why}'**
+  String asLoadFailed(String why);
+
+  /// No description provided for @asMenuNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New conversation'**
+  String get asMenuNew;
+
+  /// No description provided for @asMenuModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model and effort…'**
+  String get asMenuModel;
+
+  /// No description provided for @asMenuInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions…'**
+  String get asMenuInstructions;
+
+  /// No description provided for @asMenuStopTurn.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop what it is doing'**
+  String get asMenuStopTurn;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -11,8 +11,9 @@ import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../mascot/mascot_view.dart';
 import '../screens/new_agent_screen.dart';
-import '../screens/team_screen.dart' show stateColor;
+import '../screens/team_screen.dart' show showAgentSheet, stateColor;
 import '../theme/colors.dart';
+import '../ui/agent_menu.dart';
 import '../ui/icons.dart';
 import '../ui/words.dart';
 import 'desk_controller.dart';
@@ -172,6 +173,8 @@ class _RailAgent extends StatelessWidget {
         excludeSemantics: true,
         child: InkWell(
           key: Key('rail-${a.id}'),
+          onSecondaryTapUp: (d) => showAgentMenu(context, a, d.globalPosition),
+          onLongPress: () => showAgentSheet(context, a),
           onTap: () async {
             if (open) return;
             if (!await desk.openAgent(a) && context.mounted) {

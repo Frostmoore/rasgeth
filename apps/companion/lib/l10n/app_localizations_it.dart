@@ -3641,4 +3641,333 @@ class AppLocalizationsIt extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get asOpen => 'Impostazioni dell\'agente…';
+
+  @override
+  String asTitle(String name) {
+    return 'Impostazioni di $name';
+  }
+
+  @override
+  String get asClose => 'Chiudi';
+
+  @override
+  String get asGroupGeneral => 'Generale';
+
+  @override
+  String get asGroupWork => 'Modello e modo';
+
+  @override
+  String get asGroupMemory => 'Memoria';
+
+  @override
+  String get asGroupLimits => 'Spesa';
+
+  @override
+  String get asGroupTools => 'Strumenti';
+
+  @override
+  String get asGroupKnowledge => 'Conoscenza';
+
+  @override
+  String get asKind_god => 'God, guida tutto';
+
+  @override
+  String get asKind_demigod => 'Demi-God, il messaggero su Telegram';
+
+  @override
+  String get asKind_orchestrator => 'Capo del progetto';
+
+  @override
+  String get asKind_agent => 'Agente';
+
+  @override
+  String get asKind_subagent => 'Aiutante';
+
+  @override
+  String get asKind_inspector => 'Ispettore, solo lettura';
+
+  @override
+  String get asKind_assistant => 'Assistente personale';
+
+  @override
+  String get asKindChat => 'La Chat di ogni giorno';
+
+  @override
+  String get asStopped => 'Fermato';
+
+  @override
+  String get asMascot => 'Mascotte';
+
+  @override
+  String get asMascotHelp => 'Rinominarlo non cambia la faccia: la cambi solo tu, da qui.';
+
+  @override
+  String get asMascotGod => 'La mascotte di God è disegnata a mano: è sempre il gigante rosso.';
+
+  @override
+  String get asName => 'Nome';
+
+  @override
+  String get asRole => 'Cosa fa';
+
+  @override
+  String get asRoleHelp =>
+      'Una o due righe: God e gli orchestratori le leggono per decidere cosa passargli.';
+
+  @override
+  String get asProjects => 'Lavora anche per';
+
+  @override
+  String asProjectsHelp(String name) {
+    return 'Scegli i progetti per cui lavora anche $name: lì sta sotto l\'orchestratore del progetto, che gli dà i compiti.';
+  }
+
+  @override
+  String get asSaved => 'Salvato.';
+
+  @override
+  String get asSavedNew => 'Salvato: vale dalle conversazioni nuove.';
+
+  @override
+  String asRefused(String why) {
+    return 'Il server non l\'ha accettato: $why';
+  }
+
+  @override
+  String get asNoName => 'Serve un nome.';
+
+  @override
+  String get asModelHelp =>
+      'Senza un modello suo usa quello dell\'agente sopra di lui. Vale dalle conversazioni nuove: il modello di una conversazione in corso lo cambi tu, dal suo campo di scrittura.';
+
+  @override
+  String get asModelGodHelp =>
+      'Il modello che usa God; senza, quello predefinito scelto nella configurazione. Il modello di una conversazione in corso lo cambi tu, dal suo campo di scrittura.';
+
+  @override
+  String get asModelChatHelp =>
+      'Il modello della Chat, come nella sua intestazione sulla pagina. Il modello di una conversazione in corso lo cambi tu, dal suo campo di scrittura.';
+
+  @override
+  String get asMode => 'Quanto fa da solo';
+
+  @override
+  String get asModeHelp => 'Quello che manda, pubblica, cancella o paga aspetta sempre te.';
+
+  @override
+  String get asMode_auto => 'In autonomia';
+
+  @override
+  String get asMode_manual => 'Chiede il permesso';
+
+  @override
+  String get asMode_plan => 'Prima propone un piano';
+
+  @override
+  String get asMode_readonly => 'Sola lettura';
+
+  @override
+  String get asModeExplain_auto => 'Lavora da solo e chiede solo per le cose pericolose.';
+
+  @override
+  String get asModeExplain_manual => 'Ti chiede prima di ogni modifica ai file o di ogni comando.';
+
+  @override
+  String get asModeExplain_plan => 'Prima scrive un piano e parte quando lo approvi.';
+
+  @override
+  String get asModeExplain_readonly => 'Legge e risponde, non cambia niente.';
+
+  @override
+  String get asInstructionsHelp =>
+      'Il suo system prompt, il suo o quello di serie: le conversazioni già aperte tengono il loro.';
+
+  @override
+  String asMemOwn(String name) {
+    return 'Memoria di $name: solo per questo agente';
+  }
+
+  @override
+  String asMemOwnHelp(String name) {
+    return 'La legge solo $name, all\'inizio di ogni conversazione. Anche $name ci può annotare quello che gli serve.';
+  }
+
+  @override
+  String asMemProject(String name) {
+    return 'Memoria del progetto «$name»';
+  }
+
+  @override
+  String get asMemProjectHelp => 'La leggono tutti gli agenti che lavorano a questo progetto.';
+
+  @override
+  String get asMemNone => 'Questo agente non tiene una memoria sua.';
+
+  @override
+  String get asCompact => 'Riassunti delle conversazioni lunghe';
+
+  @override
+  String get asCompactHelp =>
+      'Quando la conversazione diventa lunga, l\'agente fa un riassunto delle parti vecchie, come chi prende appunti. Qui scegli quando farlo e quanto dell\'ultima parte tenere com\'è.';
+
+  @override
+  String get asCompactAt => 'Quando fare il riassunto';
+
+  @override
+  String asCompactAtValue(String n) {
+    return 'piena al $n%';
+  }
+
+  @override
+  String get asCompactKeep => 'Quanto dell\'ultima parte tenere com\'è';
+
+  @override
+  String asCompactKeepValue(String n) {
+    return 'l\'ultimo $n%';
+  }
+
+  @override
+  String get asCompactKeepNone => 'niente';
+
+  @override
+  String asCompactDefaultIs(String at, String keep) {
+    return 'Predefinito per il modello di questo agente: al $at%, tenendo il $keep%.';
+  }
+
+  @override
+  String get asCompactDefaults => 'Torna ai valori predefiniti';
+
+  @override
+  String get asLimitsHelp =>
+      'Quando arriva al limite si ferma e ti chiede. Il limite conta tutto quello speso da quando l\'hai messo.';
+
+  @override
+  String get asSpent => 'Speso finora';
+
+  @override
+  String get asLimit => 'Limite in dollari';
+
+  @override
+  String get asNoLimit => 'Nessun limite';
+
+  @override
+  String asLimitTokens(String n) {
+    return 'Limite: $n token';
+  }
+
+  @override
+  String get asRemoveLimit => 'Togli il limite';
+
+  @override
+  String get asLimitBad => 'Scrivi un importo maggiore di zero.';
+
+  @override
+  String get asToolsHelp =>
+      'Per ogni strumento: come per tutti gli agenti (Impostazioni, Strumenti), sempre acceso per questo agente, oppure spento. Quelli essenziali non si spengono.';
+
+  @override
+  String get asToolsNewOnly =>
+      'Le modifiche valgono dalle conversazioni nuove: quelle già aperte tengono i loro strumenti.';
+
+  @override
+  String asToolsTotal(String name, String n) {
+    return '$name: circa $n token in ogni messaggio';
+  }
+
+  @override
+  String get asToolDefaultOn => 'Come per tutti (acceso)';
+
+  @override
+  String get asToolDefaultOff => 'Come per tutti (spento)';
+
+  @override
+  String get asToolAlways => 'Sempre acceso';
+
+  @override
+  String get asToolOff => 'Spento';
+
+  @override
+  String get asToolLocked => 'Essenziale: sempre acceso';
+
+  @override
+  String get asEditRule => 'Modifiche nei file aperti';
+
+  @override
+  String get asEditRuleHelp =>
+      'Quando modifica un file aperto nel Canvas: subito (evidenziato, annullabile) o come proposte che accetti tu. La scelta fatta sul file vince.';
+
+  @override
+  String get asEditNow => 'Subito';
+
+  @override
+  String get asEditPropose => 'Come proposte';
+
+  @override
+  String asKbHelp(String name) {
+    return 'Quali raccolte può cercare $name. Ognuna dice chi può leggerla; qui puoi fare un\'eccezione per questo agente. Vale dalla prossima conversazione.';
+  }
+
+  @override
+  String get asKbNone => 'Ancora nessuna raccolta.';
+
+  @override
+  String asKbByScope(String on) {
+    return 'Per dove sta ($on)';
+  }
+
+  @override
+  String get asKbOn => 'Sì';
+
+  @override
+  String get asKbOff => 'No';
+
+  @override
+  String get asKbScope_global => 'Tutti gli agenti';
+
+  @override
+  String get asKbScope_agent => 'Un agente';
+
+  @override
+  String get asKbScope_project => 'Gli agenti di un progetto';
+
+  @override
+  String get asDanger => 'Fermarlo';
+
+  @override
+  String get asStopHelp => 'Le sue conversazioni restano; non lavora più, e con lui chi sta sotto.';
+
+  @override
+  String asStopAsk(String name) {
+    return 'Fermare $name? Le sue conversazioni restano; non lavora più.';
+  }
+
+  @override
+  String asStopYes(String name) {
+    return 'Ferma $name';
+  }
+
+  @override
+  String asStoppedNow(String name) {
+    return '$name è fermo.';
+  }
+
+  @override
+  String asLoadFailed(String why) {
+    return 'Non sono riuscito a leggerlo dal server: $why';
+  }
+
+  @override
+  String get asMenuNew => 'Nuova conversazione';
+
+  @override
+  String get asMenuModel => 'Modello e sforzo…';
+
+  @override
+  String get asMenuInstructions => 'Istruzioni…';
+
+  @override
+  String get asMenuStopTurn => 'Ferma quello che sta facendo';
 }

@@ -25,6 +25,7 @@ import '../desktop/drops.dart';
 import '../l10n/app_localizations.dart';
 import '../mascot/mascot_view.dart';
 import '../theme/colors.dart';
+import '../ui/agent_menu.dart';
 import '../ui/icons.dart';
 import '../ui/limits_bar.dart';
 import '../ui/markdown.dart';
@@ -599,27 +600,39 @@ class _Header extends StatelessWidget {
                   onPressed: () => Navigator.maybePop(context),
                   icon: RgIcon(RgIcons.arrowLeft, color: c.text),
                 ),
+              // G38.7: right click or long press, the agent's actions and settings.
               if (a != null)
-                MascotView(
-                  agentId: a.id,
-                  spec: a.mascot,
-                  state: state,
-                  size: 36,
-                  label: l.mascotLabel(a.name, word),
+                AgentPress(
+                  key: const Key('conversation-agent'),
+                  agent: a,
+                  child: MascotView(
+                    agentId: a.id,
+                    spec: a.mascot,
+                    state: state,
+                    size: 36,
+                    label: l.mascotLabel(a.name, word),
+                  ),
                 ),
               const SizedBox(width: 10),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      a?.name ?? l.tabChat,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16.5, color: c.text),
-                    ),
-                    Text(word, style: TextStyle(fontSize: 12.5, color: c.dim)),
-                  ],
+                child: AgentPress(
+                  agent: a,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        a?.name ?? l.tabChat,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16.5,
+                          color: c.text,
+                        ),
+                      ),
+                      Text(word, style: TextStyle(fontSize: 12.5, color: c.dim)),
+                    ],
+                  ),
                 ),
               ),
               // Spending and limits, as the page's header (3.9.0): what the rest leaves, keeping
