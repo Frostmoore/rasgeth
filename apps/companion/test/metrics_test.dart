@@ -131,15 +131,19 @@ void main() {
           .single;
       expect(toolsOnly.text, isEmpty);
       expect(toolsOnly.metrics, isNotNull);
-      // ...but without figures it shows nothing.
-      expect(_items(as({...p, 'metrics': null})).whereType<AssistantItem>(), isEmpty);
+      // ...but without figures it shows nothing (the item is there, as on the page; the view
+      // leaves it out).
+      expect(
+        _items(as({...p, 'metrics': null})).whereType<AssistantItem>().where(showsSomething),
+        isEmpty,
+      );
       expect(
         _items(
           as({
             ...p,
             'metrics': {...p['metrics'] as Map<String, dynamic>, 'contextWindow': 0},
           }),
-        ).whereType<AssistantItem>(),
+        ).whereType<AssistantItem>().where(showsSomething),
         isEmpty,
       );
     });
@@ -237,7 +241,7 @@ void main() {
     testWidgets('nothing while the answer streams', (tester) async {
       await tester.pumpWidget(
         _app(
-          const ChatItemView(
+          ChatItemView(
             item: AssistantItem(text: 'Sto', thinking: '', ts: '', live: true),
           ),
         ),

@@ -195,6 +195,20 @@ class AppController extends ChangeNotifier {
   /// The projects of the RedGiant in use (Team's filter).
   List<Project> projects = const [];
 
+  /// The archived projects (p3.5.3): their conversations are read only (G42.1).
+  List<Project> archivedProjects = const [];
+
+  /// The archived project a conversation belongs to (its own, or its agent's), if any.
+  Project? archivedProjectOf(String sessionId) {
+    final row = live.sessions.where((r) => r.id == sessionId).firstOrNull;
+    final agent = agents.where((a) => a.id == row?.agentId).firstOrNull;
+    for (final id in [row?.projectId, agent?.projectId]) {
+      final p = archivedProjects.where((x) => x.id == id).firstOrNull;
+      if (p != null) return p;
+    }
+    return null;
+  }
+
   /// Team's favourites, per RedGiant (kept on this device).
   Set<String> favourites = const {};
 
@@ -935,9 +949,14 @@ class AppController extends ChangeNotifier {
     if (c == null) return;
     unawaited(spend.refresh(c));
     try {
+      final all = await c.projects();
       projects = [
-        for (final p in await c.projects())
+        for (final p in all)
           if (!p.archived) p,
+      ];
+      archivedProjects = [
+        for (final p in all)
+          if (p.archived) p,
       ];
     } on ApiException {
       // The filter shows no projects.
@@ -966,6 +985,10 @@ class AppController extends ChangeNotifier {
       if (st == LiveStatus.open) {
         if (opened) _soonReloadSessions(fresh: true);
         opened = true;
+        // «Stop» pressed while the link was down.
+        for (final id in _stopWhenBack.toList()) {
+          if (s.send({'type': 'session.interrupt', 'sessionId': id})) _stopWhenBack.remove(id);
+        }
       }
       liveStatus = st;
       if (st == LiveStatus.refused) error = ConnectError.signInAgain;
@@ -1024,12 +1047,15 @@ class AppController extends ChangeNotifier {
 
   void unfollow(String sessionId) => socket?.unfollow(sessionId);
 
-  /// Sends a message: over the socket (queued while the agent works), else by REST.
+  /// Sends a message: over the socket (queued while the agent works), else by REST. A message
+  /// sent while the agent works waits in line (`queued`, G42.1) until the log has it, and can be
+  /// taken back with [unqueue].
   Future<bool> send(
     String sessionId,
     String text, {
     List<Map<String, Object?>>? images,
     List<Quote> quotes = const [],
+    String? shown,
   }) async {
     // A Chat conversation's first message names it (G40.9), unless the server named it already.
     final row = live.sessions.where((r) => r.id == sessionId).firstOrNull;
@@ -1038,7 +1064,7 @@ class AppController extends ChangeNotifier {
         row.agentId == chatAgentId &&
         row.title?.isNotEmpty != true &&
         !(live.views[sessionId]?.events.any((e) => e.type == 'message.user') ?? false);
-    final sent = await _send(sessionId, text, images: images, quotes: quotes);
+    final sent = await _send(sessionId, text, images: images, quotes: quotes, shown: shown);
     if (sent && first) unawaited(nameNewChat(sessionId, text));
     return sent;
   }
@@ -1048,18 +1074,19 @@ class AppController extends ChangeNotifier {
     String text, {
     List<Map<String, Object?>>? images,
     List<Quote> quotes = const [],
+    String? shown,
   }) async {
     final s = socket;
+    final clientId = 'app-${DateTime.now().microsecondsSinceEpoch}';
+    final view = live.views[sessionId];
     if (s != null &&
         s.send(
-          sessionSendMessage(
-            sessionId,
-            text,
-            images: images,
-            quotes: quotes,
-            clientId: 'app-${DateTime.now().microsecondsSinceEpoch}',
-          ),
+          sessionSendMessage(sessionId, text, images: images, quotes: quotes, clientId: clientId),
         )) {
+      // Sent while it works (as the page): shown at once in line, until the log has it.
+      if (view != null && view.running) {
+        view.queue(QueuedMessage(clientId: clientId, text: shown ?? text, match: text));
+      }
       return true;
     }
     try {
@@ -1070,8 +1097,59 @@ class AppController extends ChangeNotifier {
     }
   }
 
-  void interrupt(String sessionId) =>
-      socket?.send({'type': 'session.interrupt', 'sessionId': sessionId});
+  /// Stops the turn. With the link down, «Stop» waits for it (the page's `stopWhenBack`): sent as
+  /// soon as the link is back; [interrupt] says so by returning false.
+  bool interrupt(String sessionId) {
+    final m = {'type': 'session.interrupt', 'sessionId': sessionId};
+    if (socket?.send(m) ?? false) return true;
+    _stopWhenBack.add(sessionId);
+    return false;
+  }
+
+  /// Conversations to stop as soon as the link is back.
+  final _stopWhenBack = <String>{};
+
+  /// Takes back a message still waiting in line (`session.unqueue`, 2026-11-05 in the page).
+  void unqueue(String sessionId, String clientId) {
+    socket?.send({'type': 'session.unqueue', 'sessionId': sessionId, 'clientId': clientId});
+    live.views[sessionId]?.unqueue(clientId);
+  }
+
+  /// «Continua da qui» or «Modifica» (G36.23): a new conversation from this message on, or up to
+  /// before it (the edited text is then sent there). Null when it failed.
+  Future<String?> forkSession(String sessionId, {int? fromSeq, int? beforeSeq}) async {
+    final c = client;
+    if (c == null) return null;
+    try {
+      final id = await c.forkSession(sessionId, fromSeq: fromSeq, beforeSeq: beforeSeq);
+      live.setSessions(await c.sessions());
+      return id;
+    } on ApiException {
+      return null;
+    }
+  }
+
+  /// «Ripristina» an archived project (from its conversation, read only until then).
+  Future<bool> restoreProject(String projectId) async {
+    try {
+      await client?.restoreProject(projectId);
+      await _loadLists();
+      notifyListeners();
+      return true;
+    } on ApiException {
+      return false;
+    }
+  }
+
+  /// Undoes the last summary asked by hand (G24.14): the `compaction.undone` event marks it.
+  Future<bool> undoCompaction(String sessionId) async {
+    try {
+      await client?.undoCompaction(sessionId);
+      return true;
+    } on ApiException {
+      return false;
+    }
+  }
 
   /// The conversation to open with [a]: God and Demi-God their shared one, the others their
   /// latest (or a new one with [fresh]).
@@ -1133,21 +1211,37 @@ class AppController extends ChangeNotifier {
 
   /// Yes or no to a permission. A critical request's yes only from its full screen
   /// ([fromFullScreen]), never the quick one.
+  ///
+  /// From the card in the conversation (G42.1, as the page's `ToolPermission`): [scope] `session`
+  /// allows it for this conversation, `always` for the agent (`remember`); [reason] is the «Nega e
+  /// spiega» the agent reads; [capUsd] an artifact's spending cap. Those go only over the socket.
   Future<bool> resolvePermission(
     PermissionRequest r, {
     required bool allow,
     bool fromFullScreen = false,
+    String scope = 'once',
+    String? reason,
+    double? capUsd,
   }) async {
     if (allow && r.isCritical && !fromFullScreen) return false;
     final s = socket;
+    final why = reason?.trim();
     if (s != null &&
         s.send({
           'type': 'permission.resolve',
           'requestId': r.requestId,
           'decision': allow ? 'allow' : 'deny',
+          if (scope != 'once' || why != null || capUsd != null) ...{
+            'remember': scope == 'always',
+            'scope': scope,
+          },
+          if (why != null && why.isNotEmpty) 'reason': why,
+          if (allow && capUsd != null) 'capUsd': capUsd,
         })) {
       return true;
     }
+    // Without the socket only the plain yes or no (the notification's route).
+    if (scope != 'once' || capUsd != null || (why != null && why.isNotEmpty)) return false;
     try {
       await client?.answerRequest(r.requestId, allow: allow);
       live.apply({'type': 'permission.closed', 'requestId': r.requestId, 'via': 'app'});
@@ -1158,7 +1252,11 @@ class AppController extends ChangeNotifier {
   }
 
   bool answerQuestion(QuestionRequest q, List<List<String>> answers) =>
-      socket?.send({'type': 'question.answer', 'requestId': q.requestId, 'answers': answers}) ??
+      answerQuestionId(q.requestId, answers);
+
+  /// `question.answer` (the card in the conversation answers by the request's id).
+  bool answerQuestionId(String requestId, List<List<String>> answers) =>
+      socket?.send({'type': 'question.answer', 'requestId': requestId, 'answers': answers}) ??
       false;
 
   // ---- notifications, voice and sharing (G40.10) ----

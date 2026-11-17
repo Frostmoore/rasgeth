@@ -7,7 +7,6 @@
 // menu saves it whole. Product cards (G40.16) show as a carousel. Opened from «Salvati», the
 // conversation goes to the message and lights the passage up.
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:file_picker/file_picker.dart';
@@ -18,6 +17,7 @@ import '../api/attachments.dart';
 import '../api/client.dart';
 import '../api/conversation.dart';
 import '../api/live_model.dart';
+import '../api/metrics.dart' show kTokens;
 import '../api/saved.dart';
 import '../api/types.dart';
 import '../app_state.dart';
@@ -35,6 +35,14 @@ import '../ui/send_keys.dart';
 import '../ui/turn_progress.dart';
 import '../ui/paste_files.dart';
 import '../ui/words.dart';
+import '../ui/chat/chat_parts.dart';
+import '../ui/chat/question_card.dart';
+import '../ui/chat/request_cards.dart';
+import '../ui/chat/tool_line.dart';
+import '../ui/dialogs.dart';
+import '../api/image_shrink.dart';
+import '../api/pasted.dart';
+import '../api/secrets.dart';
 import 'canvas_screen.dart';
 import 'conversation_more.dart';
 import 'saved_screen.dart';
@@ -58,7 +66,29 @@ class ChatActions {
     this.lit,
     this.flashSeq,
     this.compactAt = 0.8,
+    this.sessionId,
+    this.agent,
+    this.openSession,
+    this.editMessage,
+    this.continueFrom,
+    this.readOnly = false,
   });
+
+  /// The conversation shown (null: a preview without its actions).
+  final String? sessionId;
+  final Agent? agent;
+
+  /// Opens another conversation (a sub-agent's, the one a copy comes from).
+  final void Function(String sessionId, String? agentId)? openSession;
+
+  /// «Modifica» (G36.23): the edited text goes to a copy of the conversation up to that message.
+  final void Function(UserItem item, String text)? editMessage;
+
+  /// «Continua da qui»: a new conversation from this message on.
+  final void Function(int seq)? continueFrom;
+
+  /// An archived project's conversation: nothing to do but read.
+  final bool readOnly;
 
   final void Function(AssistantItem item, PickedPassage passage)? reply;
 
@@ -85,7 +115,11 @@ class ConversationScreen extends StatefulWidget {
     this.embedded = false,
     this.headerActions = const [],
     this.drops,
+    this.mentions,
   });
+
+  /// Names the composer suggests after «@» (a group chat's members; its screen comes with G42.3).
+  final List<String>? mentions;
 
   /// On computers (G40.17): the panel's own buttons (take out, close) in the header.
   final List<Widget> headerActions;
@@ -127,6 +161,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
   bool _sending = false;
   String? _note;
 
+  /// The text before the last change: a long paste becomes a file beside the message (p3.3.1).
+  String _before = '';
+
   @override
   void initState() {
     super.initState();
@@ -138,6 +175,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) => _tryJump());
     }
     if (widget.draft != null) _text.text = widget.draft!;
+    _before = _text.text;
+    _text.addListener(_pasted);
     widget.drops?.addListener(_dropped);
     final first = widget.firstMessage;
     if (first != null && first.trim().isNotEmpty) {
@@ -147,6 +186,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   @override
   void dispose() {
+    _text.removeListener(_pasted);
     view.removeListener(_tryJump);
     widget.drops?.removeListener(_dropped);
     _litTimer?.cancel();
@@ -281,8 +321,31 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   Future<void> _send({String? text}) async {
     final l = AppLocalizations.of(context);
-    final t = (text ?? _text.text).trim();
+    var t = (text ?? _text.text).trim();
     if (t.isEmpty && _attached.isEmpty && _quotes.isEmpty) return;
+    if (_readOnly) return;
+    // A secret in the message (G33.4): held back before it leaves the app, as the page does.
+    final found = findSecrets(t);
+    if (found.isNotEmpty) {
+      final kinds = {
+        for (final f in found)
+          switch (f.kind) {
+            SecretKind.key => l.cvChSecretKindKey,
+            SecretKind.password => l.cvChSecretKindPassword,
+            SecretKind.code => l.cvChSecretKindCode,
+            SecretKind.card => l.cvChSecretKindCard,
+            SecretKind.iban => l.cvChSecretKindIban,
+          },
+      };
+      final go = await askConfirm(
+        context,
+        title: l.cvChSecretTitle,
+        body: '${l.cvChSecretText}\n\n${l.cvChSecretFound(kinds.join(', '))}',
+        yes: l.cvChSecretSend,
+      );
+      if (!go || !mounted) return;
+      t = hideSecrets(t, '[secret removed]').text;
+    }
     setState(() => _sending = true);
     final c = app.client;
     var ok = false;
@@ -296,7 +359,13 @@ class _ConversationScreenState extends State<ConversationScreen> {
             : (path, bytes) => c.writeFile(attachmentScope(_agent), path, bytes),
         notSent: l.attachmentNotSent,
       );
-      ok = await app.send(widget.sessionId, packed.text, images: packed.images, quotes: quotes);
+      ok = await app.send(
+        widget.sessionId,
+        packed.text,
+        images: packed.images,
+        quotes: quotes,
+        shown: t.isEmpty ? l.attachmentOnly : t,
+      );
     } on ApiException {
       ok = false;
     }
@@ -320,30 +389,130 @@ class _ConversationScreenState extends State<ConversationScreen> {
   /// Files dropped or pasted (Ctrl/Cmd+V): the same rules as «Attach».
   void _take(List<(String, Uint8List)> files) {
     if (!mounted) return;
-    final l = AppLocalizations.of(context);
     for (final (name, bytes) in files) {
-      if (_attached.length >= kMaxAttached) break;
-      final a = classify(name, bytes);
-      if (a == null) {
-        setState(() => _note = l.attachmentTooBig(name));
-        continue;
-      }
-      setState(() => _attached.add(a));
+      unawaited(_add(name, bytes));
     }
   }
 
   Future<void> _attach() async {
-    final l = AppLocalizations.of(context);
     final files = await FilePicker.pickFiles();
     for (final f in files) {
-      if (_attached.length >= kMaxAttached) break;
-      final a = classify(f.name, await f.readAsBytes());
-      if (a == null) {
-        setState(() => _note = l.attachmentTooBig(f.name));
-        continue;
-      }
-      setState(() => _attached.add(a));
+      await _add(f.name, await f.readAsBytes());
     }
+  }
+
+  /// A file for the message, with the page's rules: a photo is redrawn with its long side at
+  /// 2000 px as JPEG when it is bigger (`asImage`); one that cannot be read goes as a file.
+  Future<void> _add(String name, Uint8List bytes) async {
+    final l = AppLocalizations.of(context);
+    if (_attached.length >= kMaxAttached) {
+      setState(() => _note = l.cvTooMany('$kMaxAttached'));
+      return;
+    }
+    Attached? a;
+    if (imageTypeOf(name) != null || _looksLikeImage(bytes)) {
+      final shrunk = await shrinkForModel(name, bytes);
+      a = shrunk == null
+          ? classify(name, bytes, mimeType: 'application/octet-stream')
+          : AttachedImage(shrunk.name, shrunk.mediaType, shrunk.bytes);
+    } else {
+      a = classify(name, bytes);
+    }
+    if (!mounted) return;
+    if (a == null) {
+      setState(() => _note = l.attachmentTooBig(name));
+      return;
+    }
+    if (_attached.length >= kMaxAttached) return;
+    setState(() => _attached.add(a!));
+  }
+
+  static bool _looksLikeImage(Uint8List b) =>
+      b.length > 3 &&
+      ((b[0] == 0x89 && b[1] == 0x50) ||
+          (b[0] == 0xFF && b[1] == 0xD8) ||
+          (b[0] == 0x42 && b[1] == 0x4D));
+
+  /// A long text pasted (or dropped) into the box becomes a card beside the message, as the page
+  /// does (`pastedAttachment`): the box keeps what was there.
+  void _pasted() {
+    final now = _text.text;
+    final before = _before;
+    _before = now;
+    if (now.length - before.length <= kPasteChars ~/ 2) return;
+    var start = 0;
+    while (start < before.length && start < now.length && before[start] == now[start]) {
+      start++;
+    }
+    var end = 0;
+    while (end < before.length - start &&
+        end < now.length - start &&
+        before[before.length - 1 - end] == now[now.length - 1 - end]) {
+      end++;
+    }
+    final inserted = now.substring(start, now.length - end);
+    if (before.length - end < start) return;
+    final card = pastedAttachment(inserted);
+    if (card == null) return;
+    if (_attached.length >= kMaxAttached) {
+      setState(() => _note = AppLocalizations.of(context).cvTooMany('$kMaxAttached'));
+      return;
+    }
+    _before = before;
+    _text.value = TextEditingValue(
+      text: before,
+      selection: TextSelection.collapsed(offset: start.clamp(0, before.length)),
+    );
+    setState(() => _attached.add(card));
+  }
+
+  bool get _readOnly => app.archivedProjectOf(widget.sessionId) != null;
+
+  /// «Stop»: with the link down it waits for it, and says so.
+  void _stop() {
+    if (!app.interrupt(widget.sessionId)) {
+      setState(() => _note = AppLocalizations.of(context).cvStopWhenBack);
+    }
+  }
+
+  void _openSession(String sessionId, String? agentId) {
+    final agent = app.agents.where((a) => a.id == agentId).firstOrNull;
+    unawaited(
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => ConversationScreen(sessionId: sessionId, agent: agent),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _continueFrom(int seq) async {
+    final id = await app.forkSession(widget.sessionId, fromSeq: seq);
+    if (!mounted) return;
+    if (id == null || id.isEmpty) {
+      setState(() => _note = AppLocalizations.of(context).sendFailed);
+      return;
+    }
+    _openSession(id, _agent?.id);
+  }
+
+  Future<void> _edit(UserItem item, String text) async {
+    final seq = item.seq;
+    if (seq == null) return;
+    final id = await app.forkSession(widget.sessionId, beforeSeq: seq);
+    if (!mounted) return;
+    if (id == null || id.isEmpty) {
+      setState(() => _note = AppLocalizations.of(context).sendFailed);
+      return;
+    }
+    final agent = _agent;
+    unawaited(
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => ConversationScreen(sessionId: id, agent: agent, firstMessage: text),
+        ),
+      ),
+    );
   }
 
   // ---- press and talk (G40.10) ----
@@ -363,6 +532,98 @@ class _ConversationScreenState extends State<ConversationScreen> {
     final now = _text.text.trimRight();
     _text.text = now.isEmpty ? text : '$now $text';
     _text.selection = TextSelection.collapsed(offset: _text.text.length);
+  }
+
+  /// The agents of this conversation's team: its agent and every agent under it (`teamOf`).
+  Set<String> _team(String agentId) {
+    final out = {agentId};
+    for (var grew = true; grew;) {
+      grew = false;
+      for (final a in app.agents) {
+        if (a.parentId != null && out.contains(a.parentId) && !out.contains(a.id)) {
+          out.add(a.id);
+          grew = true;
+        }
+      }
+    }
+    return out;
+  }
+
+  String _titleOf(String sessionId, AppLocalizations l) =>
+      app.live.sessions.where((r) => r.id == sessionId).firstOrNull?.title ?? l.cvElsewhereUntitled;
+
+  /// The requests of this conversation's agent, in the chat (the page's `waiting`): one asked in
+  /// another of its conversations says where.
+  List<Widget> _requestsHere(Agent? agent) {
+    if (agent == null) return const [];
+    final l = AppLocalizations.of(context);
+    return [
+      for (final r in app.live.approvals.where((r) => r.agentId == agent.id))
+        if (r.sessionId != null && r.sessionId != widget.sessionId)
+          _ElsewhereCard(
+            key: Key('elsewhere-request-${r.requestId}'),
+            line: ElsewhereLine(
+              agentName: agent.name,
+              title: _titleOf(r.sessionId!, l),
+              asks: true,
+              onOpen: () => _openSession(r.sessionId!, agent.id),
+            ),
+            child: ChatRequestCard(request: r),
+          )
+        else
+          ChatRequestCard(key: Key('request-card-${r.requestId}'), request: r),
+    ];
+  }
+
+  /// What the agent of this chat, and the agents under it, do in their other conversations
+  /// (`OtherWork`): their questions (answerable here, folded) and the ones working now.
+  List<Widget> _otherWork(Agent? agent) {
+    if (agent == null) return const [];
+    final l = AppLocalizations.of(context);
+    final mine = _team(agent.id);
+    final asked = app.live.questions
+        .where((q) => mine.contains(q.agentId) && q.sessionId != widget.sessionId)
+        .toList();
+    final asking = {
+      ...asked.map((q) => q.sessionId),
+      for (final r in app.live.approvals)
+        if (mine.contains(r.agentId) && r.sessionId != null) r.sessionId!,
+    };
+    final busy = app.live.sessions.where(
+      (r) =>
+          mine.contains(r.agentId) &&
+          r.id != widget.sessionId &&
+          r.running &&
+          !asking.contains(r.id),
+    );
+    String nameOf(String id) => app.agents.where((a) => a.id == id).firstOrNull?.name ?? '';
+    return [
+      for (final q in asked)
+        _ElsewhereCard(
+          key: Key('elsewhere-question-${q.requestId}'),
+          line: ElsewhereLine(
+            agentName: nameOf(q.agentId),
+            title: _titleOf(q.sessionId, l),
+            asks: true,
+            onOpen: () => _openSession(q.sessionId, q.agentId),
+          ),
+          folded: l.cvElsewhereAnswerHere,
+          child: ChatQuestionCard(
+            requestId: q.requestId,
+            questions: q.questions,
+            plan: q.plan,
+            open: true,
+          ),
+        ),
+      for (final r in busy)
+        ElsewhereLine(
+          key: Key('elsewhere-busy-${r.id}'),
+          agentName: nameOf(r.agentId),
+          title: r.title ?? l.cvElsewhereUntitled,
+          asks: false,
+          onOpen: () => _openSession(r.id, r.agentId),
+        ),
+    ];
   }
 
   @override
@@ -392,7 +653,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   agent: agent,
                   state: state,
                   running: view.running,
-                  onStop: () => app.interrupt(widget.sessionId),
+                  onStop: _stop,
                   actions: widget.headerActions,
                 );
               },
@@ -408,9 +669,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
               child: ListenableBuilder(
                 listenable: view,
                 builder: (context, _) {
-                  final items = view.items;
+                  final items = view.items
+                      .where((i) => i is! AssistantItem || showsSomething(i))
+                      .toList();
                   // As the page: the stored items, then the summary being made or the card of the
-                  // model call under way, then the answer streaming in.
+                  // model call under way, then the answer streaming in, then the messages waiting
+                  // in line, the requests of this agent and its work elsewhere.
                   final last = items.isEmpty ? null : items.last;
                   final live = last is AssistantItem && last.live ? last : null;
                   final stored = live == null ? items : items.sublist(0, items.length - 1);
@@ -429,7 +693,18 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     if (view.running && call != null && !view.compacting)
                       TurnProgress(call: call, now: app.live.now, still: still),
                   ];
-                  final total = stored.length + extras.length + (live == null ? 0 : 1);
+                  final after = <Widget>[
+                    for (final q in view.queued)
+                      QueuedBubble(
+                        key: Key('queued-${q.clientId}'),
+                        text: q.text,
+                        onRemove: () => app.unqueue(widget.sessionId, q.clientId),
+                      ),
+                    ..._requestsHere(agent),
+                    ..._otherWork(agent),
+                  ];
+                  final total =
+                      stored.length + extras.length + (live == null ? 0 : 1) + after.length;
                   if (total == 0) {
                     return Center(
                       child: Text(
@@ -445,7 +720,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     lit: _lit,
                     flashSeq: _flash,
                     compactAt: agent?.compactAt ?? 0.8,
+                    sessionId: widget.sessionId,
+                    agent: agent,
+                    openSession: _openSession,
+                    editMessage: _edit,
+                    continueFrom: (seq) => unawaited(_continueFrom(seq)),
+                    readOnly: _readOnly,
                   );
+                  final liveAt = stored.length + extras.length;
                   return ListView.builder(
                     key: const Key('conversation-items'),
                     controller: _scroll,
@@ -454,6 +736,13 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     itemCount: total,
                     itemBuilder: (context, i) {
                       final at = total - 1 - i;
+                      final afterAt = liveAt + (live == null ? 0 : 1);
+                      if (at >= afterAt) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: after[at - afterAt],
+                        );
+                      }
                       if (at >= stored.length && at < stored.length + extras.length) {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 10),
@@ -518,58 +807,95 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 );
               },
             ),
-            if (_quotes.isNotEmpty)
-              _QuoteDrafts(
-                quotes: _quotes,
-                onRemove: (q) => setState(() => _quotes.remove(q)),
-                onJump: _jumpQuote,
-              ),
             ListenableBuilder(
-              listenable: Listenable.merge([app, app.live]),
-              builder: (context, _) => _Composer(
-                controller: _text,
-                sending: _sending,
-                attachments: _attached.isEmpty
-                    ? null
-                    : SizedBox(
-                        key: const Key('composer-attachments'),
-                        height: 40,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 6),
-                          children: [
-                            for (final (i, a) in _attached.indexed)
-                              Padding(
-                                padding: const EdgeInsets.only(right: 6),
-                                child: InputChip(
-                                  visualDensity: VisualDensity.compact,
-                                  avatar: RgIcon(
-                                    a is AttachedImage ? RgIcons.image : RgIcons.file,
-                                    size: 16,
-                                    color: c.dim,
-                                  ),
-                                  label: Text(a.name, overflow: TextOverflow.ellipsis),
-                                  deleteButtonTooltipMessage: l.attachmentRemove,
-                                  deleteIcon: RgIcon(RgIcons.x, size: 14, color: c.dim),
-                                  onDeleted: () => setState(() => _attached.removeAt(i)),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                onAttach: _attach,
-                onFiles: _take,
-                onSend: _send,
-                onTalkStart: _talkStart,
-                onTalkEnd: _talkEnd,
-                onTalkCancel: () => unawaited(app.voice.cancelRecording()),
-                onTalkTap: () =>
-                    setState(() => _note = AppLocalizations.of(context).voiceHoldToTalk),
-                changed: moreChanged(app, widget.sessionId, agent),
-                onMore: () =>
-                    showMoreSheet(context, sessionId: widget.sessionId, agent: agent, view: view),
-              ),
+              listenable: view,
+              builder: (context, _) => TodosPanel(items: view.items, running: view.running),
             ),
+            if (app.archivedProjectOf(widget.sessionId) case final p?)
+              ArchivedNotice(project: p)
+            else ...[
+              if (_quotes.isNotEmpty)
+                _QuoteDrafts(
+                  quotes: _quotes,
+                  onRemove: (q) => setState(() => _quotes.remove(q)),
+                  onJump: _jumpQuote,
+                ),
+              ListenableBuilder(
+                listenable: Listenable.merge([app, app.live]),
+                builder: (context, _) => _Composer(
+                  controller: _text,
+                  sending: _sending,
+                  attachments: _attached.isEmpty
+                      ? null
+                      : SizedBox(
+                          key: const Key('composer-attachments'),
+                          height: 40,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            children: [
+                              for (final (i, a) in _attached.indexed)
+                                if (a is AttachedPasted)
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 6),
+                                    child: _PastedChip(
+                                      key: Key('pasted-$i'),
+                                      file: a,
+                                      onRemove: () => setState(() => _attached.removeAt(i)),
+                                      onAsText: () => setState(() {
+                                        _attached.removeAt(i);
+                                        final now = _text.text;
+                                        final text =
+                                            '$now${now.isNotEmpty && !now.endsWith('\n') ? '\n' : ''}${a.content}';
+                                        _before = text;
+                                        _text.value = TextEditingValue(
+                                          text: text,
+                                          selection: TextSelection.collapsed(offset: text.length),
+                                        );
+                                      }),
+                                    ),
+                                  )
+                                else
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 6),
+                                    child: InputChip(
+                                      visualDensity: VisualDensity.compact,
+                                      avatar: RgIcon(
+                                        a is AttachedImage ? RgIcons.image : RgIcons.file,
+                                        size: 16,
+                                        color: c.dim,
+                                      ),
+                                      label: Text(a.name, overflow: TextOverflow.ellipsis),
+                                      deleteButtonTooltipMessage: l.attachmentRemove,
+                                      deleteIcon: RgIcon(RgIcons.x, size: 14, color: c.dim),
+                                      onDeleted: () => setState(() => _attached.removeAt(i)),
+                                    ),
+                                  ),
+                            ],
+                          ),
+                        ),
+                  onAttach: _attach,
+                  onFiles: _take,
+                  onSend: _send,
+                  onTalkStart: _talkStart,
+                  onTalkEnd: _talkEnd,
+                  onTalkCancel: () => unawaited(app.voice.cancelRecording()),
+                  onTalkTap: () =>
+                      setState(() => _note = AppLocalizations.of(context).voiceHoldToTalk),
+                  changed: moreChanged(app, widget.sessionId, agent),
+                  onMore: () =>
+                      showMoreSheet(context, sessionId: widget.sessionId, agent: agent, view: view),
+                  running: view.running,
+                  onStop: _stop,
+                  mentions: widget.mentions,
+                  hint: agent == null
+                      ? null
+                      : view.running
+                      ? l.cvWriteWhileWorking(agent.name)
+                      : l.cvWriteTo(agent.name),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -691,7 +1017,21 @@ class _Composer extends StatefulWidget {
     required this.onTalkTap,
     this.attachments,
     this.changed = false,
+    this.running = false,
+    this.onStop,
+    this.hint,
+    this.mentions,
   });
+
+  /// The agent works: «Stop» beside «Send», and a message sent waits in line.
+  final bool running;
+  final VoidCallback? onStop;
+
+  /// «Scrivi a …» / «Scrivi a … mentre lavora» (the page's placeholder).
+  final String? hint;
+
+  /// Names to suggest after «@» (group chats).
+  final List<String>? mentions;
 
   /// «Press and talk»: held down it records, let go it writes down (G40.10).
   final VoidCallback onTalkStart;
@@ -729,15 +1069,47 @@ class _ComposerState extends State<_Composer> {
   void initState() {
     super.initState();
     _focus.addListener(_changed);
+    if (widget.mentions != null) widget.controller.addListener(_changed);
   }
 
   void _changed() => setState(() {});
 
   @override
+  void didUpdateWidget(_Composer old) {
+    super.didUpdateWidget(old);
+    if (old.controller != widget.controller) {
+      old.controller.removeListener(_changed);
+      widget.controller.addListener(_changed);
+    }
+  }
+
+  @override
   void dispose() {
     _focus.removeListener(_changed);
+    widget.controller.removeListener(_changed);
     _focus.dispose();
     super.dispose();
+  }
+
+  /// «@» then the start of a name: the participants it may be.
+  List<String> _mentionOptions() {
+    final names = widget.mentions;
+    if (names == null) return const [];
+    final m = RegExp(r'(?:^|\s)@([^@\n]{0,30})$').firstMatch(widget.controller.text);
+    if (m == null) return const [];
+    final part = m.group(1)!.toLowerCase();
+    return names.where((n) => n.toLowerCase().startsWith(part)).toList();
+  }
+
+  void _mention(String name) {
+    final t = widget.controller.text;
+    final m = RegExp(r'(?:^|\s)@([^@\n]{0,30})$').firstMatch(t)!;
+    final text = '${t.substring(0, t.length - m.group(1)!.length)}$name ';
+    widget.controller.value = TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
+    _focus.requestFocus();
   }
 
   @override
@@ -768,6 +1140,23 @@ class _ComposerState extends State<_Composer> {
             children: [
               if (w.attachments != null)
                 Padding(padding: const EdgeInsets.only(top: 4), child: w.attachments),
+              if (_mentionOptions() case final options when options.isNotEmpty)
+                Padding(
+                  key: const Key('mention-list'),
+                  padding: const EdgeInsets.fromLTRB(6, 4, 6, 0),
+                  child: Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    children: [
+                      for (final n in options)
+                        ActionChip(
+                          key: Key('mention-$n'),
+                          label: Text('@$n'),
+                          onPressed: () => _mention(n),
+                        ),
+                    ],
+                  ),
+                ),
               SendKeys(
                 onSend: w.sending ? null : w.onSend,
                 child: PasteFiles(
@@ -782,7 +1171,7 @@ class _ComposerState extends State<_Composer> {
                     contentInsertionConfiguration: contentInsertion(w.onFiles),
                     style: TextStyle(color: c.text, fontSize: 15.5, height: 1.35),
                     decoration: InputDecoration(
-                      hintText: l.composerAgentHint,
+                      hintText: w.hint ?? l.composerAgentHint,
                       isDense: true,
                       filled: false,
                       border: InputBorder.none,
@@ -834,11 +1223,34 @@ class _ComposerState extends State<_Composer> {
                     onTap: w.onTalkTap,
                   ),
                   const SizedBox(width: 6),
+                  if (w.running && w.onStop != null) ...[
+                    Tooltip(
+                      message: l.cvInterrupt,
+                      child: Material(
+                        color: c.panel,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: BorderSide(color: c.line),
+                        ),
+                        child: InkWell(
+                          key: const Key('composer-stop'),
+                          borderRadius: BorderRadius.circular(10),
+                          onTap: w.onStop,
+                          child: SizedBox(
+                            width: 38,
+                            height: 38,
+                            child: Center(child: RgIcon(RgIcons.stop, size: 16, color: c.text)),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                  ],
                   Semantics(
                     button: true,
-                    label: l.composerSend,
+                    label: w.running ? l.cvSendQueued : l.composerSend,
                     child: Tooltip(
-                      message: l.composerSend,
+                      message: w.running ? l.cvSendQueued : l.composerSend,
                       child: Material(
                         color: w.sending ? c.dim : c.accent,
                         borderRadius: BorderRadius.circular(10),
@@ -867,7 +1279,7 @@ class _ComposerState extends State<_Composer> {
   }
 }
 
-/// One item of a conversation.
+/// One item of a conversation, as the page's `Item` (Chat.tsx).
 class ChatItemView extends StatelessWidget {
   const ChatItemView({super.key, required this.item, this.actions = const ChatActions()});
 
@@ -876,97 +1288,472 @@ class ChatItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final app = AppScope.maybeRead(context);
+    final lang = Localizations.localeOf(context).languageCode;
+    final a = actions;
+    final it = item;
+    return switch (it) {
+      UserItem() => _UserBubble(item: it, actions: a),
+      AssistantItem() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AssistantView(item: it, actions: a),
+          if (it.stepLimit && a.sessionId != null && !a.readOnly)
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: GoOnButton(sessionId: a.sessionId!),
+            ),
+        ],
+      ),
+      ProductsItem(:final products, :final title) => ProductCarousel(
+        key: Key('products-${it.seq}'),
+        products: products,
+        title: title,
+      ),
+      ToolItem() => ToolLine(
+        item: it,
+        scope: a.agent == null ? null : attachmentScope(a.agent),
+        onOpenSession: a.openSession == null ? null : (s, ag) => a.openSession!(s, ag),
+      ),
+      QuestionItem() => ChatQuestionCard.of(
+        it,
+        key: Key('question-item-${it.requestId}'),
+        open:
+            !it.answered &&
+            !a.readOnly &&
+            (app?.live.questions.any((q) => q.requestId == it.requestId) ?? false),
+      ),
+      NoticeItem(:final level) => NoticeLine(level: level, text: noticeText(l, it, lang)),
+      CacheItem(:final cached, :final expected) => NoticeLine(
+        key: Key('cache-${it.key}'),
+        level: NoticeLevel.warn,
+        text: l.cvCacheMissed(kTokens(cached), kTokens(expected)),
+      ),
+      CanvasItem(:final title, :final scope, :final path, :final isFile) => CanvasLine(
+        key: Key('canvas-${it.key}'),
+        title: title.isEmpty ? (path ?? '') : title,
+        icon: isFile ? RgIcons.file : RgIcons.canvas,
+        onTap: isFile && scope != null && path != null
+            ? () => openCanvas(context, scope: scope, path: path, title: title)
+            : null,
+      ),
+      FileItem(:final scope, :final path, :final name, :final caption, :final size) => _FileCard(
+        title: name,
+        subtitle: [?caption, formatBytes(size)].join(' · '),
+        onOpen: () => openCanvas(context, scope: scope, path: path, title: name),
+      ),
+      VariantsItem() => VariantsCard(item: it),
+      ForkItem() => ForkMark(
+        item: it,
+        onOpen: a.openSession == null ? null : (s) => a.openSession!(s, a.agent?.id),
+      ),
+      CompactionItem() => CompactionMark(item: it, sessionId: a.sessionId ?? ''),
+    };
+  }
+}
+
+/// A size in words people read (`formatBytes`, Chat.tsx): 312 KB, 4.2 MB.
+String formatBytes(int n) => n < 1024
+    ? '$n B'
+    : n < 1048576
+    ? '${(n / 1024).round()} KB'
+    : '${(n / 1048576).toStringAsFixed(1)} MB';
+
+/// A message of the person's (the page's `UserItem`): who sent it when not the person, said by
+/// voice or by an artifact, the passages it answers, its pictures, its files (those saved in the
+/// workspace open in the canvas), the time, then «Modifica» (the edited text goes to a copy of
+/// the conversation up to that point) and «Continua da qui».
+class _UserBubble extends StatefulWidget {
+  const _UserBubble({required this.item, required this.actions});
+
+  final UserItem item;
+  final ChatActions actions;
+
+  @override
+  State<_UserBubble> createState() => _UserBubbleState();
+}
+
+class _UserBubbleState extends State<_UserBubble> {
+  TextEditingController? _editing;
+
+  @override
+  void dispose() {
+    _editing?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final c = RgColors.of(context);
     final l = AppLocalizations.of(context);
-    final split = switch (item) {
-      UserItem(:final text) => splitAttachments(text),
-      _ => (text: '', files: const <({String name, String? path})>[]),
-    };
-    return switch (item) {
-      UserItem(:final images, :final from, :final quotes) => Align(
+    final it = widget.item;
+    final a = widget.actions;
+    final split = splitAttachments(it.text);
+    final seq = it.seq;
+    final edit = _editing;
+    if (edit != null) {
+      return Align(
         alignment: Alignment.centerRight,
         child: Container(
+          key: Key('editing-${it.key}'),
+          constraints: const BoxConstraints(maxWidth: 560),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: c.user,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: c.accent),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                key: Key('edit-text-${it.key}'),
+                controller: edit,
+                autofocus: true,
+                minLines: 3,
+                maxLines: 10,
+                onChanged: (_) => setState(() {}),
+                style: TextStyle(color: c.text, fontSize: 15),
+              ),
+              const SizedBox(height: 6),
+              Wrap(
+                alignment: WrapAlignment.end,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8,
+                children: [
+                  Text(l.cvEditForks, style: TextStyle(color: c.dim, fontSize: 12)),
+                  TextButton(
+                    onPressed: () => setState(() {
+                      _editing?.dispose();
+                      _editing = null;
+                    }),
+                    child: Text(l.cvCancel),
+                  ),
+                  FilledButton(
+                    key: Key('edit-send-${it.key}'),
+                    onPressed: edit.text.trim().isEmpty
+                        ? null
+                        : () {
+                            a.editMessage?.call(it, edit.text.trim());
+                            setState(() {
+                              _editing?.dispose();
+                              _editing = null;
+                            });
+                          },
+                    child: Text(l.cvEditSend),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    final via = switch (it.via) {
+      'voice' => (RgIcons.mic, l.cvViaVoice, l.cvViaVoiceHint),
+      'artifact' => (RgIcons.canvas, l.cvViaArtifact, l.cvViaArtifactHint),
+      _ => null,
+    };
+    final scope = attachmentScope(a.agent);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (it.from != null)
+          Padding(
+            padding: const EdgeInsets.only(right: 4, bottom: 2),
+            child: Text(l.fromSomeone(it.from!), style: TextStyle(color: c.dim, fontSize: 11)),
+          ),
+        if (via != null)
+          Padding(
+            padding: const EdgeInsets.only(right: 4, bottom: 2),
+            child: Tooltip(
+              message: via.$3,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  RgIcon(via.$1, size: 11, color: c.dim),
+                  const SizedBox(width: 4),
+                  Text(via.$2, style: TextStyle(color: c.dim, fontSize: 11)),
+                ],
+              ),
+            ),
+          ),
+        Container(
           constraints: const BoxConstraints(maxWidth: 560),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(color: c.user, borderRadius: BorderRadius.circular(16)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              if (from != null)
-                Text(l.fromSomeone(from), style: TextStyle(color: c.dim, fontSize: 12)),
-              for (final q in quotes)
-                _QuoteBlock(quote: q, onJump: actions.jump == null ? null : () => actions.jump!(q)),
+              for (final q in it.quotes)
+                _QuoteBlock(quote: q, onJump: a.jump == null ? null : () => a.jump!(q)),
+              if (it.imageParts.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: ImageStrip(images: it.imageParts),
+                ),
               if (split.text.trim().isNotEmpty)
                 SelectableText(split.text, style: TextStyle(color: c.text, fontSize: 15)),
-              for (final f in split.files)
+              if (split.files.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    alignment: WrapAlignment.end,
                     children: [
-                      RgIcon(RgIcons.file, size: 14, color: c.dim),
-                      const SizedBox(width: 4),
-                      Flexible(
-                        child: Text(
-                          f.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: c.dim, fontSize: 12.5),
+                      for (final f in split.files)
+                        _AttachmentPill(
+                          name: f.name,
+                          onOpen: f.path == null
+                              ? null
+                              : () =>
+                                    openCanvas(context, scope: scope, path: f.path!, title: f.name),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              if (images > 0)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      RgIcon(RgIcons.image, size: 14, color: c.dim),
-                      const SizedBox(width: 4),
-                      Text(l.imagesCount(images), style: TextStyle(color: c.dim, fontSize: 12)),
                     ],
                   ),
                 ),
             ],
           ),
         ),
-      ),
-      AssistantItem() => AssistantView(item: item as AssistantItem, actions: actions),
-      ProductsItem(:final products, :final title) => ProductCarousel(
-        key: Key('products-${(item as ProductsItem).seq}'),
-        products: products,
-        title: title,
-      ),
-      ToolItem() => ToolView(item: item as ToolItem),
-      NoticeItem(:final level, :final text) => Center(
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 12.5,
-            color: switch (level) {
-              NoticeLevel.error => c.err,
-              NoticeLevel.warn => c.warnText,
-              NoticeLevel.ok => c.ok,
-              NoticeLevel.info => c.dim,
-            },
+        Padding(
+          padding: const EdgeInsets.only(top: 2, right: 4),
+          child: Text(chatClockOf(it.ts), style: TextStyle(color: c.dim, fontSize: 11)),
+        ),
+        if (seq != null && a.sessionId != null && !a.readOnly)
+          Wrap(
+            spacing: 4,
+            children: [
+              if (it.from == null && a.editMessage != null)
+                _MsgAction(
+                  key: Key('edit-${it.key}'),
+                  icon: RgIcons.edit,
+                  label: l.cvEditMessage,
+                  onTap: () => setState(() => _editing = TextEditingController(text: split.text)),
+                ),
+              if (a.continueFrom != null)
+                _MsgAction(
+                  key: Key('fork-here-${it.key}'),
+                  icon: RgIcons.branch,
+                  label: l.cvForkHere,
+                  tooltip: l.cvForkHereHint,
+                  onTap: () => a.continueFrom!(seq),
+                ),
+            ],
+          ),
+      ],
+    );
+  }
+}
+
+/// «2026-11-17T10:04:00Z» as the page's `time`: hours and minutes, local.
+String chatClockOf(String iso) {
+  final t = DateTime.tryParse(iso)?.toLocal();
+  if (t == null) return '';
+  String two(int n) => n.toString().padLeft(2, '0');
+  return '${two(t.hour)}:${two(t.minute)}';
+}
+
+class _AttachmentPill extends StatelessWidget {
+  const _AttachmentPill({required this.name, this.onOpen});
+
+  final String name;
+  final VoidCallback? onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    final l = AppLocalizations.of(context);
+    final pill = Material(
+      color: c.panel,
+      shape: StadiumBorder(side: BorderSide(color: c.line)),
+      child: InkWell(
+        customBorder: const StadiumBorder(),
+        onTap: onOpen,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RgIcon(RgIcons.file, size: 13, color: onOpen == null ? c.dim : c.accent),
+              const SizedBox(width: 4),
+              Flexible(
+                child: Text(
+                  name,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: c.text, fontSize: 12.5),
+                ),
+              ),
+            ],
           ),
         ),
       ),
-      CanvasItem(:final title, :final scope, :final path, :final isFile) => _FileCard(
-        title: title.isEmpty ? (path ?? '') : title,
-        subtitle: path ?? '',
-        onOpen: isFile && scope != null && path != null
-            ? () => openCanvas(context, scope: scope, path: path, title: title)
-            : null,
+    );
+    return onOpen == null ? pill : Tooltip(message: l.cvAttachmentOpen, child: pill);
+  }
+}
+
+/// A small action under a message (`.msg-action`): an icon and a word.
+class _MsgAction extends StatelessWidget {
+  const _MsgAction({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.tooltip,
+  });
+
+  final RgIcons icon;
+  final String label;
+  final String? tooltip;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    final b = TextButton.icon(
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 6),
+        minimumSize: const Size(0, 28),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
-      FileItem(:final scope, :final path, :final name, :final caption) => _FileCard(
-        title: name,
-        subtitle: caption ?? path,
-        onOpen: () => openCanvas(context, scope: scope, path: path, title: name),
+      onPressed: onTap,
+      icon: RgIcon(icon, size: 13, color: c.dim),
+      label: Text(label, style: TextStyle(color: c.dim, fontSize: 12.5)),
+    );
+    return tooltip == null ? b : Tooltip(message: tooltip, child: b);
+  }
+}
+
+/// A long paste beside the message (the page's `PastedCard`): its name, lines and characters;
+/// open it, put it back in the box as text, or take it away.
+class _PastedChip extends StatelessWidget {
+  const _PastedChip({
+    super.key,
+    required this.file,
+    required this.onRemove,
+    required this.onAsText,
+  });
+
+  final AttachedPasted file;
+  final VoidCallback onRemove;
+  final VoidCallback onAsText;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    final l = AppLocalizations.of(context);
+    final lines = file.content.replaceFirst(RegExp(r'\n$'), '').split('\n').length;
+    return Container(
+      padding: const EdgeInsets.only(left: 8),
+      decoration: BoxDecoration(
+        color: c.panel,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: c.line),
       ),
-    };
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          RgIcon(RgIcons.file, size: 15, color: c.accent),
+          const SizedBox(width: 6),
+          InkWell(
+            key: const Key('pasted-open'),
+            onTap: () => showDialog<void>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(file.name),
+                content: SizedBox(
+                  width: 640,
+                  child: SingleChildScrollView(
+                    child: SelectableText(
+                      file.content,
+                      style: TextStyle(fontFamily: 'monospace', fontSize: 12.5, color: c.text),
+                    ),
+                  ),
+                ),
+                actions: [
+                  TextButton(onPressed: () => Navigator.pop(context), child: Text(l.cvClose)),
+                ],
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  file.name,
+                  style: TextStyle(color: c.text, fontSize: 12, fontWeight: FontWeight.w600),
+                ),
+                Text(
+                  l.cvPastedSize('$lines', '${file.content.length}'),
+                  style: TextStyle(color: c.dim, fontSize: 11),
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            key: const Key('pasted-as-text'),
+            tooltip: l.cvPastedAsText,
+            visualDensity: VisualDensity.compact,
+            onPressed: onAsText,
+            icon: RgIcon(RgIcons.edit, size: 14, color: c.dim),
+          ),
+          IconButton(
+            key: const Key('pasted-remove'),
+            tooltip: l.cvRemove,
+            visualDensity: VisualDensity.compact,
+            onPressed: onRemove,
+            icon: RgIcon(RgIcons.x, size: 14, color: c.dim),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A box around a card asked in another conversation: the line saying where, then the card
+/// (folded under [folded] when given).
+class _ElsewhereCard extends StatefulWidget {
+  const _ElsewhereCard({super.key, required this.line, required this.child, this.folded});
+
+  final Widget line;
+  final Widget child;
+  final String? folded;
+
+  @override
+  State<_ElsewhereCard> createState() => _ElsewhereCardState();
+}
+
+class _ElsewhereCardState extends State<_ElsewhereCard> {
+  bool _open = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    final folded = widget.folded;
+    return Container(
+      padding: const EdgeInsets.only(left: 10),
+      decoration: BoxDecoration(
+        border: Border(left: BorderSide(color: c.accent, width: 3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          widget.line,
+          const SizedBox(height: 6),
+          if (folded == null)
+            widget.child
+          else ...[
+            InkWell(
+              onTap: () => setState(() => _open = !_open),
+              child: Text(folded, style: TextStyle(color: c.accent, fontSize: 13)),
+            ),
+            if (_open) Padding(padding: const EdgeInsets.only(top: 6), child: widget.child),
+          ],
+        ],
+      ),
+    );
   }
 }
 
@@ -1104,72 +1891,6 @@ class _AssistantViewState extends State<AssistantView> {
         data: marked ?? it.text,
         onReply: a.reply == null ? null : (p) => a.reply!(it, p),
         onSave: a.save == null ? null : (p) => a.save!(it, p),
-      ),
-    );
-  }
-}
-
-class ToolView extends StatefulWidget {
-  const ToolView({super.key, required this.item});
-
-  final ToolItem item;
-
-  @override
-  State<ToolView> createState() => _ToolViewState();
-}
-
-class _ToolViewState extends State<ToolView> {
-  bool _open = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = RgColors.of(context);
-    final l = AppLocalizations.of(context);
-    final it = widget.item;
-    final out = it.output ?? '';
-    return Container(
-      decoration: BoxDecoration(
-        color: c.panel,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: c.line),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          InkWell(
-            onTap: () => setState(() => _open = !_open),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-              child: Row(
-                children: [
-                  RgIcon(RgIcons.tool, size: 15, color: c.dim),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      it.tool,
-                      style: TextStyle(fontFamily: 'monospace', fontSize: 13, color: c.text),
-                    ),
-                  ),
-                  Text(
-                    it.ok == null ? l.toolRunning : (it.ok! ? l.toolOk : l.toolFailed),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: it.ok == null ? c.dim : (it.ok! ? c.ok : c.err),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          if (_open)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 8),
-              child: SelectableText(
-                '${const JsonEncoder.withIndent('  ').convert(it.input)}\n\n${out.length > 4000 ? '${out.substring(0, 4000)}…' : out}',
-                style: TextStyle(fontFamily: 'monospace', fontSize: 12, color: c.dim),
-              ),
-            ),
-        ],
       ),
     );
   }
@@ -1328,6 +2049,14 @@ class _MessageMenu extends StatelessWidget {
                   title: Text(l.copy),
                   onTap: () => Navigator.pop(context, 'copy'),
                 ),
+                if (actions.continueFrom != null && !actions.readOnly)
+                  ListTile(
+                    key: const Key('message-fork'),
+                    leading: RgIcon(RgIcons.branch, color: c.text),
+                    title: Text(l.cvForkHere),
+                    subtitle: Text(l.cvForkHereHint),
+                    onTap: () => Navigator.pop(context, 'fork'),
+                  ),
                 if (actions.save != null)
                   ListTile(
                     key: const Key('message-save'),
@@ -1345,6 +2074,8 @@ class _MessageMenu extends StatelessWidget {
           messenger.showSnackBar(SnackBar(content: Text(l.messageCopied)));
         } else if (what == 'save') {
           actions.save!(item, null);
+        } else if (what == 'fork' && item.seq != null) {
+          actions.continueFrom!(item.seq!);
         }
       },
       icon: RgIcon(RgIcons.more, size: 18, color: c.dim, filled: true),

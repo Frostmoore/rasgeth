@@ -3685,4 +3685,551 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get compactingNow => 'Summarising the conversation…';
+
+  @override
+  String cvPermAsks(String agent) {
+    return '$agent asks for your yes';
+  }
+
+  @override
+  String get cvPermWhy => 'Why it asks';
+
+  @override
+  String get cvPermDetails => 'Details';
+
+  @override
+  String get cvPermTool => 'Tool';
+
+  @override
+  String get cvPermRawReasons => 'Reasons in the log';
+
+  @override
+  String get cvShowLess => 'Show fewer';
+
+  @override
+  String get cvShowAllInput => 'Show the whole input';
+
+  @override
+  String get cvAllow => 'Allow';
+
+  @override
+  String get cvThisChat => 'In this conversation';
+
+  @override
+  String cvThisChatHint(String tool) {
+    return 'Allow $tool without asking again, in this conversation only';
+  }
+
+  @override
+  String get cvAlways => 'Always';
+
+  @override
+  String cvAlwaysHint(String tool) {
+    return 'Allow $tool from now on without asking (a rule you can undo in Settings, Platform)';
+  }
+
+  @override
+  String get cvDeny => 'Deny';
+
+  @override
+  String get cvDenyWhy => 'Deny and say why';
+
+  @override
+  String get cvDenyWhyPlaceholder => 'What to do instead (the agent reads it)';
+
+  @override
+  String get cvCriticalTitle => 'Danger: an action that cannot be undone';
+
+  @override
+  String get cvCriticalWhat => 'What happens if you allow it';
+
+  @override
+  String cvToolReqTitle(String name, String tool) {
+    return '$name asks to switch on «$tool»';
+  }
+
+  @override
+  String cvToolReqWhy(String why) {
+    return 'Why: $why';
+  }
+
+  @override
+  String cvToolReqHint(String name) {
+    return 'Without your yes it stays off. «Always» changes $name\'s tools (you can undo it in the history).';
+  }
+
+  @override
+  String get cvToolReqSession => 'Switch on for this conversation';
+
+  @override
+  String cvToolReqAlways(String name) {
+    return 'Always for $name';
+  }
+
+  @override
+  String get cvToolReqNo => 'No';
+
+  @override
+  String get cvAgTitle => 'An artifact asks for a permission';
+
+  @override
+  String get cvAgCap => 'Spending cap for this artifact:';
+
+  @override
+  String get cvAgCapHint =>
+      'Its questions stop when the cap is reached; you can change it in Settings › Artifacts.';
+
+  @override
+  String get cvAgHint =>
+      'It lasts until you take it back in Settings › Artifacts. A new version of the artifact keeps it; an imported copy starts with nothing.';
+
+  @override
+  String cvAgAllowCap(String cap) {
+    return 'Allow, up to $cap';
+  }
+
+  @override
+  String get cvAgAllow => 'Allow';
+
+  @override
+  String get cvAgDeny => 'No';
+
+  @override
+  String get cvManyAnswers => 'one or more';
+
+  @override
+  String get cvOtherAnswer => 'Other: write your answer';
+
+  @override
+  String get cvProposedPlan => 'Proposed plan';
+
+  @override
+  String get cvWaitingAnswer => 'waiting for an answer';
+
+  @override
+  String get cvNotAnswered => 'not answered';
+
+  @override
+  String get cvPlanFeedback => 'What should change? (optional)';
+
+  @override
+  String get cvPlanApprove => 'Approve and carry on';
+
+  @override
+  String get cvPlanRevise => 'Keep planning';
+
+  @override
+  String get cvSendFeedback => 'Send the feedback';
+
+  @override
+  String get cvAnswer => 'Answer';
+
+  @override
+  String cvTodosTitle(String done, String all) {
+    return 'Steps: $done of $all done';
+  }
+
+  @override
+  String get cvEditMessage => 'Edit';
+
+  @override
+  String get cvEditForks =>
+      'The edited message starts a copy of this conversation from here; this one stays as it is.';
+
+  @override
+  String get cvEditSend => 'Send';
+
+  @override
+  String get cvCancel => 'Cancel';
+
+  @override
+  String get cvForkHere => 'Continue from here';
+
+  @override
+  String get cvForkHereHint =>
+      'A new conversation with everything up to this message; this one stays as it is';
+
+  @override
+  String get cvForkStartsHere => 'The new conversation goes on from here.';
+
+  @override
+  String get cvForkEdited => 'The edited message goes on from here.';
+
+  @override
+  String cvForkBack(String title) {
+    return 'Back to «$title»';
+  }
+
+  @override
+  String get cvForkOrigin => 'the original conversation';
+
+  @override
+  String get cvCompactionAuto =>
+      'The conversation was summarised here (the earlier part, made ahead of time)';
+
+  @override
+  String get cvCompactionManual => 'The conversation was summarised here, as you asked';
+
+  @override
+  String get cvCompactionEmergency => 'The conversation was summarised here: the window was full';
+
+  @override
+  String get cvCompactionEngine =>
+      'The subscription\'s engine summarised its conversation here (by itself)';
+
+  @override
+  String get cvCompactionUndone => 'Summary undone: the whole conversation is back';
+
+  @override
+  String get cvUndo => 'Undo';
+
+  @override
+  String get cvStepLimitContinue => 'Continue';
+
+  @override
+  String get cvStepLimitContinueHint =>
+      'The agent reached the limit of steps: let it go on from where it stopped';
+
+  @override
+  String get cvStepLimitGoOn => 'Go on';
+
+  @override
+  String cvCacheMissed(String cached, String expected) {
+    return 'This answer read only $cached tokens from the cache instead of about $expected: something changed the beginning of the conversation, so it was computed again (slower and, online, more expensive).';
+  }
+
+  @override
+  String get cvToolNoResult =>
+      'No result: the call ended without one (the turn was cancelled or stopped).';
+
+  @override
+  String cvToolOnMachine(String name) {
+    return 'on $name';
+  }
+
+  @override
+  String cvToolOnNode(String name) {
+    return 'on the node $name';
+  }
+
+  @override
+  String get cvViaScript => 'from a script';
+
+  @override
+  String get cvToolSeen => 'What the agent saw';
+
+  @override
+  String cvOpenSubagentChat(String name) {
+    return 'Open the conversation of $name';
+  }
+
+  @override
+  String get cvKindSubagent => 'Helper';
+
+  @override
+  String cvElsewhereAsks(String name, String title) {
+    return '$name is asking you something in another conversation: «$title»';
+  }
+
+  @override
+  String cvElsewhereWorking(String name, String title) {
+    return '$name is working in another conversation: «$title»';
+  }
+
+  @override
+  String get cvElsewhereUntitled => 'untitled';
+
+  @override
+  String get cvElsewhereAnswerHere => 'Answer here';
+
+  @override
+  String get cvOpen => 'open';
+
+  @override
+  String get cvUnqueue => 'Take it back (if the agent has not read it yet)';
+
+  @override
+  String get cvSentWhileWorking => 'Sent while the agent works: it reads it as soon as it can';
+
+  @override
+  String cvWriteWhileWorking(String name) {
+    return '$name is working: write anyway, it reads it right after…';
+  }
+
+  @override
+  String cvWriteTo(String name) {
+    return 'Write to $name…';
+  }
+
+  @override
+  String get cvStopWhenBack => 'The connection is lost: «Stop» goes as soon as it is back.';
+
+  @override
+  String get cvSendQueued => 'Send: it is read as soon as the current work allows';
+
+  @override
+  String get cvInterrupt => 'Stop';
+
+  @override
+  String get cvPaBadge => 'Archived · read only';
+
+  @override
+  String cvPaChatReadOnly(String name) {
+    return 'The project «$name» is archived: this conversation is read only.';
+  }
+
+  @override
+  String get cvPaRestore => 'Restore';
+
+  @override
+  String cvImpChatNotice(String source, String date) {
+    return 'Conversation brought in from $source$date. You can go on with it here.';
+  }
+
+  @override
+  String get cvViaVoice => 'said by voice';
+
+  @override
+  String get cvViaVoiceHint => 'Said hands-free; the agent was asked for an answer to read aloud';
+
+  @override
+  String get cvViaArtifact => 'from a widget';
+
+  @override
+  String get cvViaArtifactHint => 'Sent by a button you clicked in an artifact or a widget';
+
+  @override
+  String cvCanvasOpened(String name) {
+    return 'Opened $name in the canvas';
+  }
+
+  @override
+  String get cvCanvasShown => 'In the canvas: press to open it again';
+
+  @override
+  String get cvBoardOpen => 'Open the board';
+
+  @override
+  String cvBoardWaiting(String n) {
+    return 'A board with $n variants: open it to choose or comment';
+  }
+
+  @override
+  String cvBoardDone(String n) {
+    return 'Board: you chose variant $n';
+  }
+
+  @override
+  String get cvFileSave => 'Save';
+
+  @override
+  String get cvCanvasOpen => 'Open it in the canvas';
+
+  @override
+  String get cvChSecretTitle => 'This message holds a secret';
+
+  @override
+  String get cvChSecretText =>
+      'It looks like a key, a password or a card number. Secrets never go in a chat: the model and the log would keep it. Put it in the keychain instead, and agents will use it by name without seeing it.';
+
+  @override
+  String cvChSecretFound(String list) {
+    return 'Found: $list';
+  }
+
+  @override
+  String get cvChSecretKindKey => 'a key';
+
+  @override
+  String get cvChSecretKindPassword => 'a password';
+
+  @override
+  String get cvChSecretKindCode => 'a PIN or code';
+
+  @override
+  String get cvChSecretKindCard => 'a card number';
+
+  @override
+  String get cvChSecretKindIban => 'an IBAN';
+
+  @override
+  String get cvChSecretBack => 'Back to writing';
+
+  @override
+  String get cvChSecretSend => 'Send without it';
+
+  @override
+  String get cvChSecretVault => 'Put it in the keychain';
+
+  @override
+  String get cvAttachmentOpen => 'Open in the canvas';
+
+  @override
+  String get cvToBottom => 'Go to the bottom';
+
+  @override
+  String get cvThinking => 'Reasoning';
+
+  @override
+  String get cvSeeAttachments => '(see the attachments)';
+
+  @override
+  String get cvPastedOpen => 'See the whole pasted text';
+
+  @override
+  String get cvPastedAsText => 'Paste as text';
+
+  @override
+  String get cvRemove => 'Remove';
+
+  @override
+  String get cvClose => 'Close';
+
+  @override
+  String get cvCopied => 'Copied';
+
+  @override
+  String cvStartConversation(String name) {
+    return 'Write to $name to start.';
+  }
+
+  @override
+  String cvSubAsks(String name) {
+    return 'The sub-agent «$name» asks for your permission.';
+  }
+
+  @override
+  String cvPastedSize(String lines, String chars) {
+    return '$lines lines · $chars characters';
+  }
+
+  @override
+  String get cvCopy => 'Copy';
+
+  @override
+  String get mailCardNone => 'No message found';
+
+  @override
+  String mailCardMore(int n) {
+    return '$n more';
+  }
+
+  @override
+  String mailCardAttachments(int n) {
+    return '$n attachments';
+  }
+
+  @override
+  String get mailCardAttachment => '1 attachment';
+
+  @override
+  String get mailCardSaved => 'saved';
+
+  @override
+  String get mailCardShowAll => 'Show all';
+
+  @override
+  String get mailCardShowLess => 'Show less';
+
+  @override
+  String mailCardFolder(String mailbox, String folder) {
+    return '$mailbox, $folder';
+  }
+
+  @override
+  String get mailCardDraft => 'Draft';
+
+  @override
+  String get mailCardTo => 'To';
+
+  @override
+  String get mailCardSubject => 'Subject';
+
+  @override
+  String get mailCardUnread => 'unread';
+
+  @override
+  String get mailCardPermTitle => 'The email, as it would leave';
+
+  @override
+  String get mailCardDraftSaved => 'Draft saved';
+
+  @override
+  String get mailCardDraftChanged => 'Draft changed';
+
+  @override
+  String mailCardSentFrom(String mailbox) {
+    return 'Sent from $mailbox';
+  }
+
+  @override
+  String get mailCardNobody => 'nobody yet';
+
+  @override
+  String get cvAcpKindRead => 'read';
+
+  @override
+  String get cvAcpKindEdit => 'edit';
+
+  @override
+  String get cvAcpKindDelete => 'delete';
+
+  @override
+  String get cvAcpKindMove => 'move';
+
+  @override
+  String get cvAcpKindSearch => 'search';
+
+  @override
+  String get cvAcpKindExecute => 'command';
+
+  @override
+  String get cvAcpKindThink => 'think';
+
+  @override
+  String get cvAcpKindFetch => 'fetch';
+
+  @override
+  String get cvAcpKindSwitchMode => 'mode';
+
+  @override
+  String get cvAcpKindOther => 'action';
+
+  @override
+  String get cvFindViaEverything => 'Everything\'s index';
+
+  @override
+  String get cvFindViaSpotlight => 'Spotlight\'s index';
+
+  @override
+  String get cvFindViaLocate => 'the locate database';
+
+  @override
+  String get cvFindViaWalk => 'searched the folders';
+
+  @override
+  String get cvFindViaPath => 'programs on the PATH';
+
+  @override
+  String get cvFindViaContainer => 'searched in the container';
+
+  @override
+  String cvFindTook(String via, String seconds) {
+    return '$via, $seconds s';
+  }
+
+  @override
+  String cvFindTookCut(String via, String seconds, String limit) {
+    return '$via, $seconds s (stopped at $limit s)';
+  }
+
+  @override
+  String cvFindTookInterrupted(String via, String seconds) {
+    return '$via, $seconds s (interrupted)';
+  }
+
+  @override
+  String cvTooMany(String n) {
+    return '$n attachments at most';
+  }
 }

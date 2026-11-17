@@ -84,26 +84,42 @@ class SessionRow {
 
 /// One stored event (the fields the app uses).
 class RgEvent {
-  const RgEvent({required this.seq, required this.ts, required this.type, this.payload});
+  const RgEvent({
+    required this.seq,
+    required this.ts,
+    required this.type,
+    this.payload,
+    this.sessionId,
+  });
 
   factory RgEvent.fromJson(Map<String, dynamic> j) => RgEvent(
     seq: (j['seq'] as num?)?.toInt() ?? 0,
     ts: _str(j['ts']) ?? '',
     type: _str(j['type']) ?? '',
-    payload: j['erased'] == true ? null : _map(j['payload']),
+    payload: j['erased'] == true || j['payload'] == null ? null : _map(j['payload']),
+    sessionId: _str(j['sessionId']),
   );
 
   final int seq;
   final String ts;
   final String type;
+  final String? sessionId;
 
   /// null when erased.
   final Map<String, dynamic>? payload;
 }
 
-/// What a conversation shows, one item after the other.
+/// What a conversation shows, one item after the other: the page's `ChatItem` (state.ts), with
+/// the same `key` (`e<seq>`) and the same fields. [toJson] writes them as the page's JSON, for the
+/// shared vectors (test/fixtures/items_vectors.json).
 sealed class ChatItem {
-  const ChatItem();
+  const ChatItem({this.key = ''});
+
+  final String key;
+
+  String get kind;
+
+  Map<String, Object?> toJson() => {'kind': kind, 'key': key};
 }
 
 /// A passage of an earlier message a message answers (G36.22, `MessageQuote`).
@@ -143,28 +159,89 @@ class Quote {
   };
 }
 
+/// An image of a message (`ImagePart`): base64 data and its type.
+class ImageData {
+  const ImageData({required this.mediaType, required this.data, this.name});
+
+  static ImageData? fromJson(Object? o) {
+    if (o is! Map<String, dynamic>) return null;
+    final data = _str(o['data']);
+    if (data == null || data.isEmpty) return null;
+    return ImageData(
+      mediaType: _str(o['mediaType']) ?? 'image/png',
+      data: data,
+      name: _str(o['name']),
+    );
+  }
+
+  final String mediaType;
+  final String data;
+  final String? name;
+
+  Map<String, Object?> toJson() => {
+    'type': 'image',
+    'mediaType': mediaType,
+    'data': data,
+    'name': ?name,
+  };
+}
+
+/// The voice note at the end of a message said by voice (G38.4, `stripVoiceHint`).
+String stripVoiceHint(String text) {
+  const open = '<voice-mode>';
+  const close = '</voice-mode>';
+  final at = text.lastIndexOf(open);
+  if (at < 0 || !text.trimRight().endsWith(close)) return text;
+  return text.substring(0, at).trimRight();
+}
+
 class UserItem extends ChatItem {
   const UserItem({
+    super.key,
     required this.text,
     required this.ts,
-    this.images = 0,
+    this.imageParts = const [],
     this.from,
     this.quotes = const [],
+    this.via,
   });
 
   final String text;
   final String ts;
-  final int images;
+  final List<ImageData> imageParts;
+
+  int get images => imageParts.length;
 
   /// The passages it answers.
   final List<Quote> quotes;
 
   /// Another agent, an automation, a chat platform (null: the person).
   final String? from;
+
+  /// Said by voice or sent by a button of an artifact or a widget (`voice`, `artifact`).
+  final String? via;
+
+  /// Its event (`e<seq>`): what «Modifica» and «Continua da qui» start from.
+  int? get seq => int.tryParse(key.replaceFirst('e', ''));
+
+  @override
+  String get kind => 'user';
+
+  @override
+  Map<String, Object?> toJson() => {
+    ...super.toJson(),
+    'text': text,
+    'ts': ts,
+    'images': [for (final i in imageParts) i.toJson()],
+    'from': ?from,
+    if (quotes.isNotEmpty) 'quotes': [for (final q in quotes) q.toJson()],
+    'via': ?via,
+  };
 }
 
 class AssistantItem extends ChatItem {
-  const AssistantItem({
+  AssistantItem({
+    super.key,
     required this.text,
     required this.thinking,
     required this.ts,
@@ -174,6 +251,9 @@ class AssistantItem extends ChatItem {
     this.model,
     this.costUsd,
     this.costUnknown = false,
+    this.stopReason = '',
+    this.imported = false,
+    this.stepLimit = false,
   });
 
   final String text;
@@ -194,30 +274,137 @@ class AssistantItem extends ChatItem {
 
   /// Still being written (the deltas not persisted yet).
   final bool live;
+  final String stopReason;
+
+  /// Brought in from another assistant or an external agent: no figures.
+  final bool imported;
+
+  /// The closing summary at the step limit, nothing written after it yet (3.5.6): «Continua».
+  bool stepLimit;
+
+  @override
+  String get kind => 'assistant';
+
+  @override
+  Map<String, Object?> toJson() => {
+    ...super.toJson(),
+    'seq': seq,
+    'text': text,
+    'thinking': thinking,
+    'stopReason': stopReason,
+    if (imported) 'imported': true,
+    if (stepLimit) 'stepLimit': true,
+  };
 }
 
 class ToolItem extends ChatItem {
-  ToolItem({required this.callId, required this.tool, required this.input});
+  ToolItem({
+    super.key,
+    required this.callId,
+    required this.tool,
+    required this.input,
+    this.viaScript = false,
+  });
 
   final String callId;
   final String tool;
   final Object? input;
+
+  /// Called by the agent's program (run_script), not by the model directly.
+  final bool viaScript;
   bool? ok;
   String? output;
+
+  /// The result never came (the model spoke again, the turn was stopped): the page's `toolNoResult`.
+  bool lost = false;
+
+  /// What canvas_look drew for the agent (G36.12): the person sees what it saw.
+  List<ImageData> images = const [];
+
+  @override
+  String get kind => 'tool';
+
+  @override
+  Map<String, Object?> toJson() => {
+    ...super.toJson(),
+    'callId': callId,
+    'tool': tool,
+    'input': input,
+    if (ok != null)
+      'result': {
+        'ok': ok,
+        'output': lost ? '<toolNoResult>' : output,
+        if (images.isNotEmpty) 'images': [for (final i in images) i.toJson()],
+      },
+    if (viaScript) 'viaScript': true,
+  };
+}
+
+/// A question (`ask_user`) or a plan (`propose_plan`) asked in the conversation.
+class QuestionItem extends ChatItem {
+  QuestionItem({super.key, required this.requestId, required this.questions, this.plan});
+
+  final String requestId;
+  final List<Question> questions;
+  final String? plan;
+
+  /// Answered (with [answers], or null: nobody answered); false while it waits.
+  bool answered = false;
+  List<List<String>>? answers;
+
+  @override
+  String get kind => 'question';
+
+  @override
+  Map<String, Object?> toJson() => {
+    ...super.toJson(),
+    'requestId': requestId,
+    'questions': [for (final q in questions) q.toJson()],
+    'plan': ?plan,
+    if (answered) 'answers': answers,
+  };
 }
 
 enum NoticeLevel { info, ok, warn, error }
 
 class NoticeItem extends ChatItem {
-  const NoticeItem(this.level, this.text);
+  const NoticeItem(this.level, this.text, {super.key, this.code, this.params = const {}});
 
   final NoticeLevel level;
   final String text;
+
+  /// A notice the view says in words (`imported`: brought in from ChatGPT or Claude).
+  final String? code;
+  final Map<String, String> params;
+
+  @override
+  String get kind => 'notice';
+
+  @override
+  Map<String, Object?> toJson() => {
+    ...super.toJson(),
+    'tone': level.name,
+    'text': code == null ? text : '<$code>',
+  };
+}
+
+/// A call that should have been in the cache was not (G24.14c).
+class CacheItem extends ChatItem {
+  const CacheItem({super.key, required this.expected, required this.cached});
+
+  final int expected;
+  final int cached;
+
+  @override
+  String get kind => 'cache';
+
+  @override
+  Map<String, Object?> toJson() => {...super.toJson(), 'expected': expected, 'cached': cached};
 }
 
 /// `canvas.show`: a file (or a port) the agent showed.
 class CanvasItem extends ChatItem {
-  const CanvasItem({required this.title, required this.target});
+  const CanvasItem({super.key, required this.title, required this.target});
 
   final String title;
   final Map<String, dynamic> target;
@@ -225,11 +412,18 @@ class CanvasItem extends ChatItem {
   String? get scope => _str(target['scope']);
   String? get path => _str(target['path']);
   bool get isFile => target['kind'] == 'file';
+
+  @override
+  String get kind => 'canvas';
+
+  @override
+  Map<String, Object?> toJson() => {...super.toJson(), 'title': title, 'target': target};
 }
 
 /// `file.sent`: a file the agent handed over.
 class FileItem extends ChatItem {
   const FileItem({
+    super.key,
     required this.scope,
     required this.path,
     required this.name,
@@ -244,102 +438,326 @@ class FileItem extends ChatItem {
   final String mime;
   final int size;
   final String? caption;
+
+  @override
+  String get kind => 'file';
+
+  @override
+  Map<String, Object?> toJson() => {
+    ...super.toJson(),
+    'scope': scope,
+    'path': path,
+    'name': name,
+    'size': size,
+    'mime': mime,
+    'caption': ?caption,
+  };
 }
 
 /// `products.shown` (G40.16): a carousel of product cards.
 class ProductsItem extends ChatItem {
-  const ProductsItem({required this.seq, required this.products, this.title});
+  const ProductsItem({super.key, required this.seq, required this.products, this.title});
 
   final int seq;
   final String? title;
   final List<ProductCard> products;
+
+  @override
+  String get kind => 'products';
+
+  @override
+  Map<String, Object?> toJson() => {...super.toJson(), 'title': ?title, 'count': products.length};
 }
 
-/// Their calls are shown by what they make (questions, plans, cards), not as tools.
-const _hiddenTools = {'ask_user', 'propose_plan', 'show_products'};
+/// A board of variants (G25.4): a card that opens it, with what the person said.
+class VariantsItem extends ChatItem {
+  VariantsItem({
+    super.key,
+    required this.sessionId,
+    required this.proposalId,
+    required this.title,
+    required this.count,
+  });
 
-/// The page's `buildItems`, the parts the app shows: events in order, plus the text and
-/// reasoning still streaming.
+  final String sessionId;
+  final String proposalId;
+  final String title;
+  final int count;
+  int? chosen;
+
+  @override
+  String get kind => 'variants';
+
+  @override
+  Map<String, Object?> toJson() => {
+    ...super.toJson(),
+    'sessionId': sessionId,
+    'proposalId': proposalId,
+    'title': title,
+    'count': count,
+    'chosen': chosen,
+  };
+}
+
+/// Where a conversation that goes on from another one starts its own part (G36.23).
+class ForkItem extends ChatItem {
+  const ForkItem({super.key, required this.fromSessionId, this.fromTitle, this.how = 'edit'});
+
+  final String fromSessionId;
+  final String? fromTitle;
+
+  /// `continue` («Continua da qui») or `edit` (a message sent again, edited).
+  final String how;
+
+  @override
+  String get kind => 'fork';
+
+  @override
+  Map<String, Object?> toJson() => {
+    ...super.toJson(),
+    'fromSessionId': fromSessionId,
+    'fromTitle': ?fromTitle,
+    'how': how,
+  };
+}
+
+/// The conversation was summarised here (G24.14).
+class CompactionItem extends ChatItem {
+  CompactionItem({super.key, required this.seq, required this.summary, required this.reason});
+
+  final int seq;
+  final String summary;
+
+  /// `auto`, `manual`, `emergency` or `engine`.
+  final String reason;
+  bool undone = false;
+
+  /// The last summary asked by hand, nothing said since: it can be undone.
+  bool undoable = false;
+
+  @override
+  String get kind => 'compaction';
+
+  @override
+  Map<String, Object?> toJson() => {
+    ...super.toJson(),
+    'seq': seq,
+    'summary': summary,
+    'reason': reason,
+    'undone': undone,
+    'undoable': undoable,
+  };
+}
+
+/// Their question card stands for these calls: no tool line for them. `show_products` shows as
+/// its cards (`products.shown`).
+const _hiddenTools = {'ask_user', 'propose_plan'};
+
+/// The page's `buildItems` (packages/web/src/state.ts): events in order, plus the text and
+/// reasoning still streaming. Pure; the same events give the same items as the page's
+/// (test/fixtures/items_vectors.json).
 List<ChatItem> buildItems(List<RgEvent> events, {String liveText = '', String liveThinking = ''}) {
   final out = <ChatItem>[];
-  final open = <String, ToolItem>{};
+  // Calls by id, oldest first: an id given twice still pairs each result with its own call.
+  final tools = <String, List<ToolItem>>{};
+  final open = <ToolItem>{};
+  final asked = <String, QuestionItem>{};
+  AssistantItem? limited;
   for (final e in events) {
+    final key = 'e${e.seq}';
     final p = e.payload;
     if (p == null) {
-      out.add(NoticeItem(NoticeLevel.warn, '${e.type} (erased)'));
+      out.add(NoticeItem(NoticeLevel.warn, '${e.type} (erased)', key: key));
       continue;
     }
     switch (e.type) {
       case 'message.user':
         final from = _str(p['from']);
+        // RedGiant's own note to the model (the step limit): the answer is what the person reads.
         if (from == 'redgiant') break;
+        limited?.stepLimit = false;
+        limited = null;
+        final via = _str(p['via']);
+        final text = _str(p['text']) ?? '';
         out.add(
           UserItem(
-            text: _str(p['text']) ?? '',
+            key: key,
+            text: via == 'voice' ? stripVoiceHint(text) : text,
             ts: e.ts,
-            images: _list(p['images']).length,
-            from: from,
+            imageParts: [for (final i in _list(p['images'])) ?ImageData.fromJson(i)],
+            from: from == null || from.isEmpty ? null : from,
             quotes: [for (final q in _list(p['quotes'])) ?Quote.fromJson(q)],
+            via: via,
+          ),
+        );
+      case 'session.forked':
+        final title = _str(p['fromTitle']);
+        out.add(
+          ForkItem(
+            key: key,
+            fromSessionId: _str(p['fromSessionId']) ?? '',
+            fromTitle: title == null || title.isEmpty ? null : title,
+            how: _str(p['how']) ?? 'edit',
           ),
         );
       case 'message.assistant':
+        // A final answer after these calls: whatever they were, they are over, their result lost.
+        if (p['stopReason'] != 'tool_use') {
+          for (final c in open) {
+            c.ok = false;
+            c.output = '';
+            c.lost = true;
+          }
+          open.clear();
+        }
         final parts = _list(p['parts']).whereType<Map<String, dynamic>>();
         final text = parts.where((x) => x['type'] == 'text').map((x) => _str(x['text']) ?? '');
         final thinking = parts
             .where((x) => x['type'] == 'thinking')
             .map((x) => _str(x['text']) ?? '');
-        final t = text.join('\n\n').trim();
-        final th = thinking.join('\n\n').trim();
-        // The page's figures (G40.17), unless the message was imported or came from an external
-        // agent (ACP), whose program counts nothing RedGiant could show.
         final provider = _str(p['provider']) ?? '';
-        final metrics = provider.startsWith('import:') || provider == 'acp'
-            ? null
-            : MessageMetrics.fromJson(p['metrics']);
-        // Like the page, a message that only asked for tools still shows its figures.
-        if (t.isNotEmpty || th.isNotEmpty || metrics != null) {
-          out.add(
-            AssistantItem(
-              text: t,
-              thinking: th,
-              ts: e.ts,
-              seq: e.seq,
-              metrics: metrics,
-              model: _str(p['model']),
-              costUsd: (p['costUsd'] as num?)?.toDouble(),
-              costUnknown: p['costUnknown'] == true,
-            ),
-          );
+        final imported = provider.startsWith('import:') || provider == 'acp';
+        final item = AssistantItem(
+          key: key,
+          text: text.join('\n\n').trim(),
+          thinking: thinking.where((x) => x.isNotEmpty).join('\n\n').trim(),
+          ts: e.ts,
+          seq: e.seq,
+          metrics: imported ? null : MessageMetrics.fromJson(p['metrics']),
+          model: _str(p['model']),
+          costUsd: (p['costUsd'] as num?)?.toDouble(),
+          costUnknown: p['costUnknown'] == true,
+          stopReason: _str(p['stopReason']) ?? '',
+          imported: imported,
+        );
+        out.add(item);
+        if (p['stepLimit'] == true) {
+          item.stepLimit = true;
+          limited = item;
         }
-        if (p['stopReason'] != 'tool_use') {
-          for (final c in open.values) {
-            c.ok ??= false;
-            c.output ??= '';
-          }
-          open.clear();
-        }
+      case 'session.imported':
+        final source = switch (_str(p['source'])) {
+          'chatgpt' => 'ChatGPT',
+          'claude' => 'Claude',
+          final s => s ?? '',
+        };
+        final at = DateTime.tryParse(_str(p['updatedAt']) ?? _str(p['createdAt']) ?? '');
+        out.add(
+          NoticeItem(
+            NoticeLevel.info,
+            source,
+            key: key,
+            code: 'imported',
+            params: {'source': source, if (at != null) 'date': at.toIso8601String()},
+          ),
+        );
       case 'tool.call':
         final tool = _str(p['tool']) ?? '';
         if (_hiddenTools.contains(tool)) break;
-        final item = ToolItem(callId: _str(p['callId']) ?? '', tool: tool, input: p['input']);
-        open[item.callId] = item;
+        final item = ToolItem(
+          key: key,
+          callId: _str(p['callId']) ?? '',
+          tool: tool,
+          input: p['input'],
+        );
+        (tools[item.callId] ??= []).add(item);
+        open.add(item);
         out.add(item);
       case 'tool.result':
-        final c = open.remove(_str(p['callId']));
-        if (c != null) {
-          c.ok = p['ok'] == true;
-          c.output = _str(p['output']) ?? '';
+        final same = tools[_str(p['callId'])] ?? const <ToolItem>[];
+        final call = same.where((c) => c.ok == null).firstOrNull ?? same.lastOrNull;
+        if (call != null) {
+          open.remove(call);
+          call.ok = p['ok'] == true;
+          call.output = _str(p['output']) ?? '';
+          call.lost = false;
+          if (call.tool == 'canvas_look') {
+            call.images = [for (final i in _list(p['images'])) ?ImageData.fromJson(i)];
+          }
         }
-      case 'products.shown':
-        final cards = [for (final c in _list(p['products'])) ?ProductCard.fromJson(c)];
-        if (cards.isNotEmpty) {
-          out.add(ProductsItem(seq: e.seq, title: _str(p['title']), products: cards));
+      case 'script.call':
+        out.add(
+          ToolItem(
+              key: key,
+              callId: key,
+              tool: _str(p['name']) ?? '',
+              input: p['input'],
+              viaScript: true,
+            )
+            ..ok = p['ok'] == true
+            ..output = _str(p['output']) ?? '',
+        );
+      case 'question.asked':
+        final item = QuestionItem(
+          key: key,
+          requestId: _str(p['requestId']) ?? '',
+          questions: [
+            for (final q in _list(p['questions']).whereType<Map<String, dynamic>>())
+              Question.fromJson(q),
+          ],
+          plan: _str(p['plan']),
+        );
+        asked[item.requestId] = item;
+        out.add(item);
+      case 'question.answered':
+        final item = asked[_str(p['requestId'])];
+        if (item != null) {
+          item.answered = true;
+          final a = p['answers'];
+          item.answers = a is List
+              ? [for (final x in a) x is List ? x.whereType<String>().toList() : <String>[]]
+              : null;
         }
-      case 'canvas.show':
-        out.add(CanvasItem(title: _str(p['title']) ?? '', target: _map(p['target'])));
+      case 'permission.requested':
+        out.add(NoticeItem(NoticeLevel.warn, '${p['reason']} (${p['askedTo']})', key: key));
+      case 'permission.resolved':
+        final d = p['decision'];
+        out.add(
+          NoticeItem(
+            d == 'allow'
+                ? NoticeLevel.ok
+                : d == 'deny'
+                ? NoticeLevel.error
+                : NoticeLevel.info,
+            '$d (${p['by']})',
+            key: key,
+          ),
+        );
+      case 'hook.blocked':
+        out.add(NoticeItem(NoticeLevel.error, _str(p['reason']) ?? '', key: key));
+      case 'compaction':
+        out.add(
+          CompactionItem(
+            key: key,
+            seq: e.seq,
+            summary: _str(p['summary']) ?? '',
+            reason: _str(p['reason']) ?? 'auto',
+          ),
+        );
+      case 'engine.compacted':
+        out.add(CompactionItem(key: key, seq: e.seq, summary: '', reason: 'engine'));
+      case 'variants.proposed':
+        out.add(
+          VariantsItem(
+            key: key,
+            sessionId: e.sessionId ?? '',
+            proposalId: _str(p['proposalId']) ?? '',
+            title: _str(p['title']) ?? '',
+            count: _list(p['variants']).length,
+          ),
+        );
+      case 'variants.answered':
+        final v = out
+            .whereType<VariantsItem>()
+            .where((i) => i.proposalId == _str(p['proposalId']))
+            .firstOrNull;
+        if (v != null && p['choice'] != null && p['choice'] != false) {
+          v.chosen = (p['variant'] as num?)?.toInt();
+        }
       case 'file.sent':
         out.add(
           FileItem(
+            key: key,
             scope: _str(p['scope']) ?? '',
             path: _str(p['path']) ?? '',
             name: _str(p['name']) ?? '',
@@ -348,33 +766,89 @@ List<ChatItem> buildItems(List<RgEvent> events, {String liveText = '', String li
             caption: _str(p['caption']),
           ),
         );
-      case 'hook.blocked':
-        out.add(NoticeItem(NoticeLevel.error, _str(p['reason']) ?? 'blocked'));
-      case 'budget.exceeded':
+      case 'products.shown':
+        final cards = [for (final c in _list(p['products'])) ?ProductCard.fromJson(c)];
+        out.add(ProductsItem(key: key, seq: e.seq, title: _str(p['title']), products: cards));
+      case 'canvas.show':
+        out.add(CanvasItem(key: key, title: _str(p['title']) ?? '', target: _map(p['target'])));
+      case 'cache.missed':
         out.add(
-          NoticeItem(
-            NoticeLevel.error,
-            r'$ '
-            '${p['scope']}: ${p['used']} / ${p['limit']}',
+          CacheItem(
+            key: key,
+            expected: (p['expected'] as num?)?.toInt() ?? 0,
+            cached: (p['cached'] as num?)?.toInt() ?? 0,
           ),
         );
+      case 'compaction.undone':
+        final c = out
+            .whereType<CompactionItem>()
+            .where((i) => i.seq == (p['compactionSeq'] as num?)?.toInt())
+            .firstOrNull;
+        c?.undone = true;
       case 'task.opened':
-        out.add(NoticeItem(NoticeLevel.info, _str(p['title']) ?? ''));
+        out.add(NoticeItem(NoticeLevel.info, '${p['taskId']}: ${p['title']}', key: key));
       case 'task.verified':
         out.add(
           NoticeItem(
             p['passed'] == true ? NoticeLevel.ok : NoticeLevel.error,
             _str(p['verifier']) ?? '',
+            key: key,
+          ),
+        );
+      case 'task.closed':
+        out.add(
+          NoticeItem(
+            p['outcome'] == 'abandoned' ? NoticeLevel.error : NoticeLevel.ok,
+            '${p['taskId']}: ${p['outcome']}',
+            key: key,
+          ),
+        );
+      case 'budget.exceeded':
+        out.add(
+          NoticeItem(
+            NoticeLevel.error,
+            '\$ budget ${p['scope']}: ${p['used']} / ${p['limit']}',
+            key: key,
           ),
         );
       default:
         break;
     }
   }
+  final last = out.reversed.whereType<CompactionItem>().where((i) => !i.undone).firstOrNull;
+  if (last != null && last.reason == 'manual') {
+    final after = out.sublist(out.indexOf(last) + 1);
+    last.undoable = !after.any((i) => i is UserItem || i is AssistantItem);
+  }
   if (liveText.isNotEmpty || liveThinking.isNotEmpty) {
     out.add(AssistantItem(text: liveText, thinking: liveThinking, ts: '', live: true));
   }
   return out;
+}
+
+/// What the view shows of an answer: its text or reasoning, or its figures. The page shows every
+/// `message.assistant` bubble; the app leaves out the ones with nothing at all to show.
+bool showsSomething(AssistantItem a) =>
+    a.live || a.text.isNotEmpty || a.thinking.isNotEmpty || a.metrics != null || a.stepLimit;
+
+/// The steps the panel above the composer shows (`latestTodos`, Chat.tsx): the latest
+/// `update_todos` call as soon as it is recorded; one the tool refused (or would refuse: two in
+/// progress) leaves the previous list.
+List<({String content, String status})> latestTodos(List<ChatItem> items) {
+  for (final it in items.reversed) {
+    if (it is! ToolItem || it.tool != 'update_todos') continue;
+    if (it.ok == false) continue;
+    final todos = it.input is Map ? (it.input as Map)['todos'] : null;
+    if (todos is! List) continue;
+    final steps = [
+      for (final x in todos)
+        if (x is Map && x['content'] is String && x['status'] is String)
+          (content: x['content'] as String, status: x['status'] as String),
+    ];
+    if (steps.where((x) => x.status == 'in_progress').length > 1) continue;
+    return steps;
+  }
+  return const [];
 }
 
 /// Events that leave a conversation blocked until the person does something.
@@ -439,6 +913,8 @@ class PermissionRequest extends PersonRequest {
     required this.critical,
     required this.createdAt,
     this.sessionId,
+    this.projectId,
+    this.words = const {},
   });
 
   factory PermissionRequest.fromJson(Map<String, dynamic> j) => PermissionRequest(
@@ -455,6 +931,11 @@ class PermissionRequest extends PersonRequest {
     ],
     createdAt: _str(j['createdAt']) ?? '',
     sessionId: _str(j['sessionId']),
+    projectId: _str(j['projectId']),
+    words: {
+      for (final e in _map(j['words']).entries)
+        if (e.value case final Map<String, dynamic> w) e.key: RequestWords.fromJson(w),
+    },
   );
 
   @override
@@ -471,10 +952,44 @@ class PermissionRequest extends PersonRequest {
   @override
   final String createdAt;
   final String? sessionId;
+  final String? projectId;
+
+  /// The request in words by language (`withRequestWords` on the server, G42.1).
+  final Map<String, RequestWords> words;
+
+  /// Its words in [lang] (the other language, else none from an older server).
+  RequestWords? wordsIn(String lang) => words[lang] ?? words['en'] ?? words.values.firstOrNull;
 
   /// Truly dangerous (G36.17b): a full screen of its own, never the quick yes. The server says
   /// so with `critical` (from `criticalOf`); the dangers' ids of `critical.ts` count too.
   bool get isCritical => critical.isNotEmpty || danger.any(criticalDangers.contains);
+}
+
+/// A request in one language, as the server says it (`RequestWordsLang` in
+/// packages/protocol/src/request-words.ts): what it does, its reasons, the red card's sentences,
+/// its dangers' names.
+class RequestWords {
+  const RequestWords({
+    required this.what,
+    this.reasons = const [],
+    this.critical = const [],
+    this.dangers = const [],
+  });
+
+  factory RequestWords.fromJson(Map<String, dynamic> j) => RequestWords(
+    what: _str(j['what']) ?? '',
+    reasons: _list(j['reasons']).whereType<String>().toList(),
+    critical: _list(j['critical']).whereType<String>().toList(),
+    dangers: [
+      for (final d in _list(j['dangers']).whereType<Map<String, dynamic>>())
+        (id: _str(d['id']) ?? '', name: _str(d['name']) ?? '', hint: _str(d['hint']) ?? ''),
+    ],
+  );
+
+  final String what;
+  final List<String> reasons;
+  final List<String> critical;
+  final List<({String id, String name, String hint})> dangers;
 }
 
 /// The critical dangers' ids (`CRITICAL_IDS` in packages/protocol/src/critical.ts).
@@ -515,6 +1030,15 @@ class Question {
   final String? header;
   final List<QuestionOption> options;
   final bool multiSelect;
+
+  Map<String, Object?> toJson() => {
+    'question': question,
+    'header': ?header,
+    'options': [
+      for (final o in options) {'label': o.label, 'description': ?o.description},
+    ],
+    'multiSelect': multiSelect,
+  };
 }
 
 class QuestionRequest extends PersonRequest {

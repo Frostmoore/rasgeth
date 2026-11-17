@@ -45,6 +45,14 @@ class AttachedFile extends Attached {
   final Uint8List bytes;
 }
 
+/// A long text pasted into the box (the page's `pasted` kind, lib/api/pasted.dart): saved as a
+/// file in the workspace, its text inside the message too unless it is too long.
+class AttachedPasted extends Attached {
+  const AttachedPasted(super.name, this.content);
+
+  final String content;
+}
+
 /// The image types the server takes, from the media type or the file's extension.
 String? imageTypeOf(String name, [String? mimeType]) {
   final m = mimeType?.toLowerCase().split(';').first.trim();
@@ -111,6 +119,24 @@ Future<({String text, List<Map<String, Object?>> images})> packMessage(
           'data': base64.encode(bytes),
           'name': name,
         });
+      case AttachedPasted(:final name, :final content):
+        // Saved as a file the agent can open; its text comes along too, unless it is too long
+        // to carry inside the message.
+        var where = '';
+        if (upload != null) {
+          final stamp = (at.millisecondsSinceEpoch + n++).toRadixString(36);
+          final path = '.attachments/$day/$stamp-${safeFileName(name)}';
+          final bytes = Uint8List.fromList(utf8.encode(content));
+          await upload(path, bytes);
+          where = ' path="$path" size="${bytes.length}"';
+        }
+        out.write(
+          content.length <= kMaxTextChars || where.isEmpty
+              ? '\n\n<attachment name="$name"$where pasted="true">\n'
+                    '${content.length > kMaxTextChars ? content.substring(0, kMaxTextChars) : content}'
+                    '\n</attachment>'
+              : '\n\n<attachment name="$name"$where pasted="true" />',
+        );
       case AttachedFile(:final name, :final bytes):
         if (upload != null) {
           final stamp = (at.millisecondsSinceEpoch + n++).toRadixString(36);

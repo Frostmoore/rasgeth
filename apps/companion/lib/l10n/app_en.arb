@@ -2339,5 +2339,797 @@
       }
     }
   },
-  "compactingNow": "Summarising the conversation…"
+  "compactingNow": "Summarising the conversation…",
+  "cvPermAsks": "{agent} asks for your yes",
+  "@cvPermAsks": {
+    "description": "The page's `permAsks` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "agent": {
+        "type": "String"
+      }
+    }
+  },
+  "cvPermWhy": "Why it asks",
+  "@cvPermWhy": {
+    "description": "The page's `permWhy` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPermDetails": "Details",
+  "@cvPermDetails": {
+    "description": "The page's `permDetails` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPermTool": "Tool",
+  "@cvPermTool": {
+    "description": "The page's `permTool` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPermRawReasons": "Reasons in the log",
+  "@cvPermRawReasons": {
+    "description": "The page's `permRawReasons` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvShowLess": "Show fewer",
+  "@cvShowLess": {
+    "description": "The page's `showLess` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvShowAllInput": "Show the whole input",
+  "@cvShowAllInput": {
+    "description": "The page's `showAllInput` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAllow": "Allow",
+  "@cvAllow": {
+    "description": "The page's `allow` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvThisChat": "In this conversation",
+  "@cvThisChat": {
+    "description": "The page's `thisChat` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvThisChatHint": "Allow {tool} without asking again, in this conversation only",
+  "@cvThisChatHint": {
+    "description": "The page's `thisChatHint` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "tool": {
+        "type": "String"
+      }
+    }
+  },
+  "cvAlways": "Always",
+  "@cvAlways": {
+    "description": "The page's `always` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAlwaysHint": "Allow {tool} from now on without asking (a rule you can undo in Settings, Platform)",
+  "@cvAlwaysHint": {
+    "description": "The page's `alwaysHint` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "tool": {
+        "type": "String"
+      }
+    }
+  },
+  "cvDeny": "Deny",
+  "@cvDeny": {
+    "description": "The page's `deny` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvDenyWhy": "Deny and say why",
+  "@cvDenyWhy": {
+    "description": "The page's `denyWhy` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvDenyWhyPlaceholder": "What to do instead (the agent reads it)",
+  "@cvDenyWhyPlaceholder": {
+    "description": "The page's `denyWhyPlaceholder` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCriticalTitle": "Danger: an action that cannot be undone",
+  "@cvCriticalTitle": {
+    "description": "The page's `criticalTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCriticalWhat": "What happens if you allow it",
+  "@cvCriticalWhat": {
+    "description": "The page's `criticalWhat` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvToolReqTitle": "{name} asks to switch on «{tool}»",
+  "@cvToolReqTitle": {
+    "description": "The page's `toolReqTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "tool": {
+        "type": "String"
+      }
+    }
+  },
+  "cvToolReqWhy": "Why: {why}",
+  "@cvToolReqWhy": {
+    "description": "The page's `toolReqWhy` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "cvToolReqHint": "Without your yes it stays off. «Always» changes {name}'s tools (you can undo it in the history).",
+  "@cvToolReqHint": {
+    "description": "The page's `toolReqHint` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvToolReqSession": "Switch on for this conversation",
+  "@cvToolReqSession": {
+    "description": "The page's `toolReqSession` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvToolReqAlways": "Always for {name}",
+  "@cvToolReqAlways": {
+    "description": "The page's `toolReqAlways` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvToolReqNo": "No",
+  "@cvToolReqNo": {
+    "description": "The page's `toolReqNo` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAgTitle": "An artifact asks for a permission",
+  "@cvAgTitle": {
+    "description": "The page's `agTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAgCap": "Spending cap for this artifact:",
+  "@cvAgCap": {
+    "description": "The page's `agCap` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAgCapHint": "Its questions stop when the cap is reached; you can change it in Settings › Artifacts.",
+  "@cvAgCapHint": {
+    "description": "The page's `agCapHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAgHint": "It lasts until you take it back in Settings › Artifacts. A new version of the artifact keeps it; an imported copy starts with nothing.",
+  "@cvAgHint": {
+    "description": "The page's `agHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAgAllowCap": "Allow, up to {cap}",
+  "@cvAgAllowCap": {
+    "description": "The page's `agAllowCap` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "cap": {
+        "type": "String"
+      }
+    }
+  },
+  "cvAgAllow": "Allow",
+  "@cvAgAllow": {
+    "description": "The page's `agAllow` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAgDeny": "No",
+  "@cvAgDeny": {
+    "description": "The page's `agDeny` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvManyAnswers": "one or more",
+  "@cvManyAnswers": {
+    "description": "The page's `manyAnswers` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvOtherAnswer": "Other: write your answer",
+  "@cvOtherAnswer": {
+    "description": "The page's `otherAnswer` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvProposedPlan": "Proposed plan",
+  "@cvProposedPlan": {
+    "description": "The page's `proposedPlan` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvWaitingAnswer": "waiting for an answer",
+  "@cvWaitingAnswer": {
+    "description": "The page's `waitingAnswer` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvNotAnswered": "not answered",
+  "@cvNotAnswered": {
+    "description": "The page's `notAnswered` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPlanFeedback": "What should change? (optional)",
+  "@cvPlanFeedback": {
+    "description": "The page's `planFeedback` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPlanApprove": "Approve and carry on",
+  "@cvPlanApprove": {
+    "description": "The page's `planApprove` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPlanRevise": "Keep planning",
+  "@cvPlanRevise": {
+    "description": "The page's `planRevise` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSendFeedback": "Send the feedback",
+  "@cvSendFeedback": {
+    "description": "The page's `sendFeedback` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAnswer": "Answer",
+  "@cvAnswer": {
+    "description": "The page's `answer` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvTodosTitle": "Steps: {done} of {all} done",
+  "@cvTodosTitle": {
+    "description": "The page's `todosTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "all": {
+        "type": "String"
+      }
+    }
+  },
+  "cvEditMessage": "Edit",
+  "@cvEditMessage": {
+    "description": "The page's `editMessage` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvEditForks": "The edited message starts a copy of this conversation from here; this one stays as it is.",
+  "@cvEditForks": {
+    "description": "The page's `editForks` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvEditSend": "Send",
+  "@cvEditSend": {
+    "description": "The page's `editSend` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCancel": "Cancel",
+  "@cvCancel": {
+    "description": "The page's `cancel` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvForkHere": "Continue from here",
+  "@cvForkHere": {
+    "description": "The page's `forkHere` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvForkHereHint": "A new conversation with everything up to this message; this one stays as it is",
+  "@cvForkHereHint": {
+    "description": "The page's `forkHereHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvForkStartsHere": "The new conversation goes on from here.",
+  "@cvForkStartsHere": {
+    "description": "The page's `forkStartsHere` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvForkEdited": "The edited message goes on from here.",
+  "@cvForkEdited": {
+    "description": "The page's `forkEdited` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvForkBack": "Back to «{title}»",
+  "@cvForkBack": {
+    "description": "The page's `forkBack` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "cvForkOrigin": "the original conversation",
+  "@cvForkOrigin": {
+    "description": "The page's `forkOrigin` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCompactionAuto": "The conversation was summarised here (the earlier part, made ahead of time)",
+  "@cvCompactionAuto": {
+    "description": "The page's `compaction_auto` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCompactionManual": "The conversation was summarised here, as you asked",
+  "@cvCompactionManual": {
+    "description": "The page's `compaction_manual` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCompactionEmergency": "The conversation was summarised here: the window was full",
+  "@cvCompactionEmergency": {
+    "description": "The page's `compaction_emergency` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCompactionEngine": "The subscription's engine summarised its conversation here (by itself)",
+  "@cvCompactionEngine": {
+    "description": "The page's `compaction_engine` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCompactionUndone": "Summary undone: the whole conversation is back",
+  "@cvCompactionUndone": {
+    "description": "The page's `compactionUndone` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvUndo": "Undo",
+  "@cvUndo": {
+    "description": "The page's `undo` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvStepLimitContinue": "Continue",
+  "@cvStepLimitContinue": {
+    "description": "The page's `stepLimitContinue` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvStepLimitContinueHint": "The agent reached the limit of steps: let it go on from where it stopped",
+  "@cvStepLimitContinueHint": {
+    "description": "The page's `stepLimitContinueHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvStepLimitGoOn": "Go on",
+  "@cvStepLimitGoOn": {
+    "description": "The page's `stepLimitGoOn` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCacheMissed": "This answer read only {cached} tokens from the cache instead of about {expected}: something changed the beginning of the conversation, so it was computed again (slower and, online, more expensive).",
+  "@cvCacheMissed": {
+    "description": "The page's `cacheMissed` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "cached": {
+        "type": "String"
+      },
+      "expected": {
+        "type": "String"
+      }
+    }
+  },
+  "cvToolNoResult": "No result: the call ended without one (the turn was cancelled or stopped).",
+  "@cvToolNoResult": {
+    "description": "The page's `toolNoResult` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvToolOnMachine": "on {name}",
+  "@cvToolOnMachine": {
+    "description": "The page's `toolOnMachine` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvToolOnNode": "on the node {name}",
+  "@cvToolOnNode": {
+    "description": "The page's `toolOnNode` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvViaScript": "from a script",
+  "@cvViaScript": {
+    "description": "The page's `viaScript` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvToolSeen": "What the agent saw",
+  "@cvToolSeen": {
+    "description": "The page's `toolSeen` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvOpenSubagentChat": "Open the conversation of {name}",
+  "@cvOpenSubagentChat": {
+    "description": "The page's `openSubagentChat` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvKindSubagent": "Helper",
+  "@cvKindSubagent": {
+    "description": "The page's `kind_subagent` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvElsewhereAsks": "{name} is asking you something in another conversation: «{title}»",
+  "@cvElsewhereAsks": {
+    "description": "The page's `elsewhereAsks` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "cvElsewhereWorking": "{name} is working in another conversation: «{title}»",
+  "@cvElsewhereWorking": {
+    "description": "The page's `elsewhereWorking` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "cvElsewhereUntitled": "untitled",
+  "@cvElsewhereUntitled": {
+    "description": "The page's `elsewhereUntitled` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvElsewhereAnswerHere": "Answer here",
+  "@cvElsewhereAnswerHere": {
+    "description": "The page's `elsewhereAnswerHere` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvOpen": "open",
+  "@cvOpen": {
+    "description": "The page's `open` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvUnqueue": "Take it back (if the agent has not read it yet)",
+  "@cvUnqueue": {
+    "description": "The page's `unqueue` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSentWhileWorking": "Sent while the agent works: it reads it as soon as it can",
+  "@cvSentWhileWorking": {
+    "description": "The page's `sentWhileWorking` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvWriteWhileWorking": "{name} is working: write anyway, it reads it right after…",
+  "@cvWriteWhileWorking": {
+    "description": "The page's `writeWhileWorking` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvWriteTo": "Write to {name}…",
+  "@cvWriteTo": {
+    "description": "The page's `writeTo` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvStopWhenBack": "The connection is lost: «Stop» goes as soon as it is back.",
+  "@cvStopWhenBack": {
+    "description": "The page's `stopWhenBack` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSendQueued": "Send: it is read as soon as the current work allows",
+  "@cvSendQueued": {
+    "description": "The page's `sendQueued` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvInterrupt": "Stop",
+  "@cvInterrupt": {
+    "description": "The page's `interrupt` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPaBadge": "Archived · read only",
+  "@cvPaBadge": {
+    "description": "The page's `paBadge` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPaChatReadOnly": "The project «{name}» is archived: this conversation is read only.",
+  "@cvPaChatReadOnly": {
+    "description": "The page's `paChatReadOnly` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvPaRestore": "Restore",
+  "@cvPaRestore": {
+    "description": "The page's `paRestore` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvImpChatNotice": "Conversation brought in from {source}{date}. You can go on with it here.",
+  "@cvImpChatNotice": {
+    "description": "The page's `impChatNotice` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cvViaVoice": "said by voice",
+  "@cvViaVoice": {
+    "description": "The page's `viaVoice` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvViaVoiceHint": "Said hands-free; the agent was asked for an answer to read aloud",
+  "@cvViaVoiceHint": {
+    "description": "The page's `viaVoiceHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvViaArtifact": "from a widget",
+  "@cvViaArtifact": {
+    "description": "The page's `viaArtifact` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvViaArtifactHint": "Sent by a button you clicked in an artifact or a widget",
+  "@cvViaArtifactHint": {
+    "description": "The page's `viaArtifactHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCanvasOpened": "Opened {name} in the canvas",
+  "@cvCanvasOpened": {
+    "description": "The page's `canvasOpened` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvCanvasShown": "In the canvas: press to open it again",
+  "@cvCanvasShown": {
+    "description": "The page's `canvasShown` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardOpen": "Open the board",
+  "@cvBoardOpen": {
+    "description": "The page's `boardOpen` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardWaiting": "A board with {n} variants: open it to choose or comment",
+  "@cvBoardWaiting": {
+    "description": "The page's `boardWaiting` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvBoardDone": "Board: you chose variant {n}",
+  "@cvBoardDone": {
+    "description": "The page's `boardDone` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvFileSave": "Save",
+  "@cvFileSave": {
+    "description": "The page's `fileSave` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCanvasOpen": "Open it in the canvas",
+  "@cvCanvasOpen": {
+    "description": "The page's `canvasOpen` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChSecretTitle": "This message holds a secret",
+  "@cvChSecretTitle": {
+    "description": "The page's `chSecretTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChSecretText": "It looks like a key, a password or a card number. Secrets never go in a chat: the model and the log would keep it. Put it in the keychain instead, and agents will use it by name without seeing it.",
+  "@cvChSecretText": {
+    "description": "The page's `chSecretText` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChSecretFound": "Found: {list}",
+  "@cvChSecretFound": {
+    "description": "The page's `chSecretFound` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "cvChSecretKindKey": "a key",
+  "@cvChSecretKindKey": {
+    "description": "The page's `chSecretKind_key` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChSecretKindPassword": "a password",
+  "@cvChSecretKindPassword": {
+    "description": "The page's `chSecretKind_password` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChSecretKindCode": "a PIN or code",
+  "@cvChSecretKindCode": {
+    "description": "The page's `chSecretKind_code` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChSecretKindCard": "a card number",
+  "@cvChSecretKindCard": {
+    "description": "The page's `chSecretKind_card` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChSecretKindIban": "an IBAN",
+  "@cvChSecretKindIban": {
+    "description": "The page's `chSecretKind_iban` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChSecretBack": "Back to writing",
+  "@cvChSecretBack": {
+    "description": "The page's `chSecretBack` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChSecretSend": "Send without it",
+  "@cvChSecretSend": {
+    "description": "The page's `chSecretSend` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChSecretVault": "Put it in the keychain",
+  "@cvChSecretVault": {
+    "description": "The page's `chSecretVault` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAttachmentOpen": "Open in the canvas",
+  "@cvAttachmentOpen": {
+    "description": "The page's `attachmentOpen` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvToBottom": "Go to the bottom",
+  "@cvToBottom": {
+    "description": "The page's `toBottom` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvThinking": "Reasoning",
+  "@cvThinking": {
+    "description": "The page's `thinking` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSeeAttachments": "(see the attachments)",
+  "@cvSeeAttachments": {
+    "description": "The page's `seeAttachments` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPastedOpen": "See the whole pasted text",
+  "@cvPastedOpen": {
+    "description": "The page's `pastedOpen` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPastedAsText": "Paste as text",
+  "@cvPastedAsText": {
+    "description": "The page's `pastedAsText` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvRemove": "Remove",
+  "@cvRemove": {
+    "description": "The page's `remove` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvClose": "Close",
+  "@cvClose": {
+    "description": "The page's `close` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCopied": "Copied",
+  "@cvCopied": {
+    "description": "The page's `copied` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvStartConversation": "Write to {name} to start.",
+  "@cvStartConversation": {
+    "description": "The page's `startConversation` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvSubAsks": "The sub-agent «{name}» asks for your permission.",
+  "@cvSubAsks": {
+    "description": "The page's `subAsks` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvPastedSize": "{lines} lines · {chars} characters",
+  "@cvPastedSize": {
+    "description": "The page's `pastedSize` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "lines": {
+        "type": "String"
+      },
+      "chars": {
+        "type": "String"
+      }
+    }
+  },
+  "cvCopy": "Copy",
+  "@cvCopy": {
+    "description": "The page's `copy` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "mailCardNone": "No message found",
+  "mailCardMore": "{n} more",
+  "@mailCardMore": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "mailCardAttachments": "{n} attachments",
+  "@mailCardAttachments": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "mailCardAttachment": "1 attachment",
+  "mailCardSaved": "saved",
+  "mailCardShowAll": "Show all",
+  "mailCardShowLess": "Show less",
+  "mailCardFolder": "{mailbox}, {folder}",
+  "@mailCardFolder": {
+    "placeholders": {
+      "mailbox": {
+        "type": "String"
+      },
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "mailCardDraft": "Draft",
+  "mailCardTo": "To",
+  "mailCardSubject": "Subject",
+  "mailCardUnread": "unread",
+  "mailCardPermTitle": "The email, as it would leave",
+  "mailCardDraftSaved": "Draft saved",
+  "mailCardDraftChanged": "Draft changed",
+  "mailCardSentFrom": "Sent from {mailbox}",
+  "@mailCardSentFrom": {
+    "placeholders": {
+      "mailbox": {
+        "type": "String"
+      }
+    }
+  },
+  "mailCardNobody": "nobody yet",
+  "cvAcpKindRead": "read",
+  "@cvAcpKindRead": {
+    "description": "The page's `acpKind_read` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAcpKindEdit": "edit",
+  "@cvAcpKindEdit": {
+    "description": "The page's `acpKind_edit` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAcpKindDelete": "delete",
+  "@cvAcpKindDelete": {
+    "description": "The page's `acpKind_delete` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAcpKindMove": "move",
+  "@cvAcpKindMove": {
+    "description": "The page's `acpKind_move` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAcpKindSearch": "search",
+  "@cvAcpKindSearch": {
+    "description": "The page's `acpKind_search` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAcpKindExecute": "command",
+  "@cvAcpKindExecute": {
+    "description": "The page's `acpKind_execute` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAcpKindThink": "think",
+  "@cvAcpKindThink": {
+    "description": "The page's `acpKind_think` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAcpKindFetch": "fetch",
+  "@cvAcpKindFetch": {
+    "description": "The page's `acpKind_fetch` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAcpKindSwitchMode": "mode",
+  "@cvAcpKindSwitchMode": {
+    "description": "The page's `acpKind_switch_mode` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAcpKindOther": "action",
+  "@cvAcpKindOther": {
+    "description": "The page's `acpKind_other` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFindViaEverything": "Everything's index",
+  "@cvFindViaEverything": {
+    "description": "The page's `findVia_everything` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFindViaSpotlight": "Spotlight's index",
+  "@cvFindViaSpotlight": {
+    "description": "The page's `findVia_spotlight` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFindViaLocate": "the locate database",
+  "@cvFindViaLocate": {
+    "description": "The page's `findVia_locate` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFindViaWalk": "searched the folders",
+  "@cvFindViaWalk": {
+    "description": "The page's `findVia_walk` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFindViaPath": "programs on the PATH",
+  "@cvFindViaPath": {
+    "description": "The page's `findVia_path` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFindViaContainer": "searched in the container",
+  "@cvFindViaContainer": {
+    "description": "The page's `findVia_container` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFindTook": "{via}, {seconds} s",
+  "@cvFindTook": {
+    "description": "The page's `findTook` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "via": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "cvFindTookCut": "{via}, {seconds} s (stopped at {limit} s)",
+  "@cvFindTookCut": {
+    "description": "The page's `findTookCut` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "via": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "cvFindTookInterrupted": "{via}, {seconds} s (interrupted)",
+  "@cvFindTookInterrupted": {
+    "description": "The page's `findTookInterrupted` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "via": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "cvTooMany": "{n} attachments at most",
+  "@cvTooMany": {
+    "description": "The page's `tooMany` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  }
 }
