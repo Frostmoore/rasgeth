@@ -1,9 +1,12 @@
 // The Canvas (G40.7): a file the agent showed or handed over. Images, SVG, PDF and Markdown are
-// shown natively; HTML (artifacts) in an isolated WebView with the page's rules (ArtifactFrame):
-// a document of ours whose Content-Security-Policy allows no network at all, holding the
-// artifact in an iframe with `sandbox="allow-scripts allow-forms"` (ARTIFACT_SANDBOX) through
-// `srcdoc`, so the policy is inherited and cannot be lost in the artifact's own markup; the
-// WebView navigates nowhere after it.
+// shown natively. An artifact (3.8.7: `artefatti/*.html`, or an HTML file with its header, as the
+// server says from `POST /api/canvas/link`) runs as in the page: the server's signed
+// `/preview/<token>/` in the frame of `ui/artifact_frame_view.dart` (no network, RedGiant's
+// libraries, its errors for the agent, «send to chat» with the click rule, the bridge); on Linux,
+// «Open in the page» above its source. Another HTML file, where there is a WebView, goes into an
+// isolated document of ours whose Content-Security-Policy allows no network at all, holding it in
+// an iframe with `sandbox="allow-scripts allow-forms"` through `srcdoc`; the WebView navigates
+// nowhere after it.
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -15,9 +18,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../api/client.dart';
+import '../api/widgets.dart';
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
+import '../ui/artifact_frame_view.dart';
 import '../ui/icons.dart';
 import '../ui/markdown.dart';
 
@@ -31,9 +36,6 @@ CanvasKind canvasKindOf(String path) => switch (path.split('.').last.toLowerCase
   'html' || 'htm' => CanvasKind.html,
   _ => CanvasKind.text,
 };
-
-/// The artifact's sandbox, the page's `ARTIFACT_SANDBOX` (packages/protocol/src/widget.ts).
-const String kArtifactSandbox = 'allow-scripts allow-forms';
 
 /// No network, no frames of its own, no workers, no forms sent anywhere (artifact-engine.ts).
 const String kArtifactCsp =
@@ -68,18 +70,28 @@ Future<void> openCanvas(
   required String scope,
   required String path,
   String? title,
+  String? sessionId,
 }) => Navigator.of(context).push(
   MaterialPageRoute<void>(
-    builder: (_) => CanvasScreen(scope: scope, path: path, title: title),
+    builder: (_) => CanvasScreen(scope: scope, path: path, title: title, sessionId: sessionId),
   ),
 );
 
 class CanvasScreen extends StatefulWidget {
-  const CanvasScreen({super.key, required this.scope, required this.path, this.title});
+  const CanvasScreen({
+    super.key,
+    required this.scope,
+    required this.path,
+    this.title,
+    this.sessionId,
+  });
 
   final String scope;
   final String path;
   final String? title;
+
+  /// The conversation it was opened from: where an artifact's «send to chat» goes.
+  final String? sessionId;
 
   @override
   State<CanvasScreen> createState() => _CanvasScreenState();
@@ -123,6 +135,26 @@ class _CanvasScreenState extends State<CanvasScreen> {
           child: SafeMarkdown(f.text ?? '', key: const Key('canvas-markdown')),
         );
       case CanvasKind.html:
+        // An artifact runs as in the page (3.8.7); the server says which HTML files are.
+        ({String url, bool artifact})? link;
+        try {
+          link = await c.canvasLink(widget.scope, widget.path);
+        } on ApiException {
+          link = null;
+        }
+        if (link != null && link.artifact) {
+          if (frameSupportOf(app) != FrameSupport.none) {
+            return ArtifactFrame(
+              key: const Key('canvas-artifact'),
+              src: link.url,
+              title: widget.title?.isNotEmpty == true ? widget.title! : widget.path.split('/').last,
+              ref: {'kind': 'file', 'scope': widget.scope, 'path': widget.path},
+              sessionId: widget.sessionId,
+            );
+          }
+          final f = await c.fileContent(widget.scope, widget.path);
+          return ArtifactInPage(previewPath: link.url, source: f.text ?? '');
+        }
         final f = await c.fileContent(widget.scope, widget.path);
         final html = f.text ?? '';
         if (webViewHere) return ArtifactView(html: html);

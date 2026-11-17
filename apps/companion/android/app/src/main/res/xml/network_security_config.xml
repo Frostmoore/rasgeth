@@ -13,5 +13,8 @@
     </base-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="false">10.42.0.1</domain>
+        <!-- 3.8.7: the app's own preview relay for widgets and artifacts, on this device only
+             (lib/api/preview_relay.dart): it reaches RedGiant with the app's own trust. -->
+        <domain includeSubdomains="false">127.0.0.1</domain>
     </domain-config>
 </network-security-config>

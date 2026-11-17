@@ -20,11 +20,13 @@ import '../api/conversation.dart';
 import '../api/live_model.dart';
 import '../api/saved.dart';
 import '../api/types.dart';
+import '../api/widgets.dart';
 import '../app_state.dart';
 import '../desktop/drops.dart';
 import '../l10n/app_localizations.dart';
 import '../mascot/mascot_view.dart';
 import '../theme/colors.dart';
+import '../ui/artifact_frame_view.dart';
 import '../ui/icons.dart';
 import '../ui/limits_bar.dart';
 import '../ui/markdown.dart';
@@ -57,6 +59,7 @@ class ChatActions {
     this.lit,
     this.flashSeq,
     this.compactAt = 0.8,
+    this.sessionId,
   });
 
   final void Function(AssistantItem item, PickedPassage passage)? reply;
@@ -71,6 +74,9 @@ class ChatActions {
 
   /// The agent's summary threshold (G24.14c): the mark on each message's figures (G40.17).
   final double compactAt;
+
+  /// The conversation shown (3.8.7): where its widgets and the artifacts it opens send to.
+  final String? sessionId;
 }
 
 class ConversationScreen extends StatefulWidget {
@@ -423,6 +429,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     lit: _lit,
                     flashSeq: _flash,
                     compactAt: agent?.compactAt ?? 0.8,
+                    sessionId: widget.sessionId,
                   );
                   return ListView.builder(
                     key: const Key('conversation-items'),
@@ -910,6 +917,16 @@ class ChatItemView extends StatelessWidget {
         title: title,
       ),
       ToolItem() => ToolView(item: item as ToolItem),
+      WidgetItem() => WidgetCard(
+        item: item as WidgetItem,
+        openCanvas: (scope, path, title) => openCanvas(
+          context,
+          scope: scope,
+          path: path,
+          title: title,
+          sessionId: actions.sessionId,
+        ),
+      ),
       NoticeItem(:final level, :final text) => Center(
         child: Text(
           text,
@@ -929,13 +946,25 @@ class ChatItemView extends StatelessWidget {
         title: title.isEmpty ? (path ?? '') : title,
         subtitle: path ?? '',
         onOpen: isFile && scope != null && path != null
-            ? () => openCanvas(context, scope: scope, path: path, title: title)
+            ? () => openCanvas(
+                context,
+                scope: scope,
+                path: path,
+                title: title,
+                sessionId: actions.sessionId,
+              )
             : null,
       ),
       FileItem(:final scope, :final path, :final name, :final caption) => _FileCard(
         title: name,
         subtitle: caption ?? path,
-        onOpen: () => openCanvas(context, scope: scope, path: path, title: name),
+        onOpen: () => openCanvas(
+          context,
+          scope: scope,
+          path: path,
+          title: name,
+          sessionId: actions.sessionId,
+        ),
       ),
     };
   }
@@ -1032,7 +1061,8 @@ class _AssistantViewState extends State<AssistantView> {
     if (it.live) {
       final app = AppScope.maybeRead(context);
       return SafeMarkdown(
-        it.text,
+        // A widget being written shows as a short line, never as its code (3.8.7).
+        streamingWithoutWidgets(it.text, AppLocalizations.of(context).widgetPreparing),
         cursor: true,
         cursorStill: (app?.reduceMotion ?? false) || MediaQuery.disableAnimationsOf(context),
       );

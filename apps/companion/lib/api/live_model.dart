@@ -24,7 +24,8 @@ class SessionView extends ChangeNotifier {
   /// tools' results, until the model's message is stored.
   bool calling = false;
 
-  List<ChatItem> get items => buildItems(events, liveText: liveText, liveThinking: liveThinking);
+  List<ChatItem> get items =>
+      buildItems(events, liveText: liveText, liveThinking: liveThinking, sessionId: sessionId);
 
   /// In a model call that has not written text yet (or is reasoning): the mascot «thinks».
   bool get thinking => running && calling && liveText.isEmpty;

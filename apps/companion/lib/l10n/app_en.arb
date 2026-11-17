@@ -2269,5 +2269,37 @@
         "type": "int"
       }
     }
-  }
+  },
+  "widgetTitle": "Widget",
+  "widgetPreparing": "Preparing a widget…",
+  "widgetOpenCanvas": "Open in the Canvas",
+  "widgetKeep": "Keep it",
+  "widgetKeepHint": "Saved as an artifact in artefatti/, and opened in the Canvas",
+  "widgetKeptShort": "Kept",
+  "widgetKept": "Kept as {path}",
+  "@widgetKept": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetAsks": "It wants to send to the chat:",
+  "widgetNoChat": "It wants to send to the chat (open a conversation first):",
+  "widgetSend": "Send",
+  "widgetDismiss": "Leave it",
+  "widgetLoading": "Loading…",
+  "widgetOpenInPage": "Open in the page",
+  "widgetNoFrameHere": "This system cannot run widgets and artifacts inside the app: open it in the page, in your browser.",
+  "artError1": "1 error",
+  "artErrors": "{n} errors",
+  "@artErrors": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "previewLinkTitle": "The page wants to open a link",
+  "previewLinkOpen": "Open"
 }

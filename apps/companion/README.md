@@ -54,15 +54,33 @@ the local server (start, updates, tray); the app is the window.
 - `lib/l10n`: Italian and English (ARB, `flutter gen-l10n`; the generated files are in git).
 - `lib/screens`: proposal A, «La squadra» (Team | Chat | For you | Activity | You, with the Chat's
   field over the bar); a conversation (`conversation_screen.dart`), the Canvas (images, SVG, PDF
-  with pdfx, Markdown natively; HTML in an isolated WebView: a document of ours with a CSP that
-  allows no network, the artifact in `<iframe sandbox="allow-scripts allow-forms" srcdoc>`;
-  Windows and Linux show the source until G40.12), a critical request's own screen; the first
+  with pdfx, Markdown natively; an artifact as in the page, see below; another HTML file in an
+  isolated WebView: a document of ours with a CSP that allows no network, the file in
+  `<iframe sandbox="allow-scripts allow-forms" srcdoc>`), a critical request's own screen; the first
   start (`first_start_screen.dart`) and «Settings of <name>» in You (`server_settings_screen.dart`,
   `full_settings_screen.dart`).
 - `lib/ui/markdown.dart`: Markdown without raw HTML nor remote images, links only http(s) and
   mailto after a yes, task lists with drawn marks.
-- Android: `res/xml/network_security_config.xml` allows clear text only to 10.42.0.1 (the platform's
-  stacks; the Dart connections follow `transportFor`).
+- Widgets and artifacts (3.8.7, as the page's 3.5.9-3.6): `lib/api/widgets.dart` splits an answer
+  around its ```widget blocks exactly as the page (`answerSegments`, `splitWidgets`,
+  `streamingWithoutWidgets`; `buildItems` puts a `WidgetItem` after its answer); the Canvas runs
+  `artefatti/*.html` (the server says which, `POST /api/canvas/link`). One frame for both
+  (`lib/ui/artifact_frame_view.dart`): a web view loads a page of ours from the app's preview
+  relay on 127.0.0.1 (`lib/api/preview_relay.dart`), which holds the server's signed
+  `/preview/<token>/…` in `<iframe sandbox="allow-scripts allow-forms">` and passes on to RedGiant
+  only those GETs, with the app's own trust (the local CA, or the system's roots), never the app's
+  token; the server's policy (no network, RedGiant's libraries) comes back with its origins moved
+  to the relay's. The frame's messages reach the app only through that page, with a nonce of its
+  load (`lib/api/artifact_frame.dart`: `FrameMessage`, the click rule `ClickGuard`,
+  `FrameSession`): height (a widget, at most 70% of the screen), theme and language, errors for
+  the agent (`POST /api/artifacts/errors`), «send to chat» at once only right after a click in
+  it (otherwise «Manda» / «Lascia stare» under it), links after a yes, the bridge for artifacts.
+  Android, iOS, macOS: webview_flutter 4.14.1; Windows: webview_flutter_windows 1.3.1 (WebView2
+  drawn into Flutter, BSD-3); Linux: no web view the app can trust in a scrolling chat, so the
+  widget's words and «Apri nella pagina» (the browser, on the same preview link), and in the Canvas
+  the artifact's source under the same button.
+- Android: `res/xml/network_security_config.xml` allows clear text only to 10.42.0.1 and to the
+  app's own relay on 127.0.0.1 (the platform's stacks; the Dart connections follow `transportFor`).
 
 ```sh
 flutter pub get
@@ -89,6 +107,15 @@ fails; no real network is touched, the Wi-Fi joining is a fake):
 DEMO_FRESH=1 DEMO_SETUP_AP=1 DEMO_HOST=127.0.0.1 node packages/web/scripts/demo-server.mjs 7652 &
 RG_SETUP_URL=http://127.0.0.1:7652 flutter test test/first_start_live_test.dart
 ```
+
+Widgets and artifacts (3.8.7): `test/g387_web_test.dart` (the split against
+`test/fixtures/widget_vectors.json`, written with the page's own functions by
+`node --experimental-strip-types apps/companion/tool/widget_fixtures.mjs`; the frame's protocol as
+tables; the relay on real sockets; the screens with a stand-in web view). In a real browser engine
+against the demo (`DEMO_ARTIFACTS=1`): `dart run tool/relay_probe.dart <demo log> <relay.json>` in
+the build image with `--network host`, then `tool/frame_probe.mjs` in the Playwright image
+`mcr.microsoft.com/playwright:v1.64.1-noble` (`PW_FROM` = a folder with `playwright-core`). On Linux,
+`integration_test/g387_web_shots_test.dart` (`RG_DEMO_LOG` = the demo's output).
 
 The Linux app driven through its screens against the demo, with screenshots, in the agents'
 Docker: `bash tool/linux_shots.sh <folder> [test]` (see the script; the first start with

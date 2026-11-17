@@ -128,7 +128,12 @@ enum RgIcons {
   bag(
     '<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
   ),
-  chevronLeft('<path d="M15 18l-6-6 6-6"/>');
+  chevronLeft('<path d="M15 18l-6-6 6-6"/>'),
+  // 3.8.7: widgets and artifacts (the page's IconCanvas and IconPin).
+  canvas(
+    '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="1.6"/><path d="M21 15l-4.5-4.5L7 20"/>',
+  ),
+  pin('<path d="M12 17v5M9 3h6l-1 6 4 4H6l4-4z"/>');
 
   const RgIcons(this.paths);
   final String paths;

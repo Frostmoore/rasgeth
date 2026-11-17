@@ -6,6 +6,7 @@
 import 'metrics.dart';
 import 'products.dart';
 import 'types.dart';
+import 'widgets.dart';
 
 export 'metrics.dart' show MessageMetrics;
 
@@ -255,12 +256,35 @@ class ProductsItem extends ChatItem {
   final List<ProductCard> products;
 }
 
+/// A ```widget block of an answer (3.8.7, the page's `widget` item): run in its frame after the
+/// answer, whose text keeps the rest. [html] only for the computers that cannot run it.
+class WidgetItem extends ChatItem {
+  const WidgetItem({
+    required this.sessionId,
+    required this.seq,
+    required this.index,
+    required this.title,
+    this.html = '',
+  });
+
+  final String sessionId;
+  final int seq;
+  final int index;
+  final String title;
+  final String html;
+}
+
 /// Their calls are shown by what they make (questions, plans, cards), not as tools.
 const _hiddenTools = {'ask_user', 'propose_plan', 'show_products'};
 
 /// The page's `buildItems`, the parts the app shows: events in order, plus the text and
-/// reasoning still streaming.
-List<ChatItem> buildItems(List<RgEvent> events, {String liveText = '', String liveThinking = ''}) {
+/// reasoning still streaming. With [sessionId] an answer's ```widget blocks become widgets after it.
+List<ChatItem> buildItems(
+  List<RgEvent> events, {
+  String liveText = '',
+  String liveThinking = '',
+  String? sessionId,
+}) {
   final out = <ChatItem>[];
   final open = <String, ToolItem>{};
   for (final e in events) {
@@ -284,7 +308,11 @@ List<ChatItem> buildItems(List<RgEvent> events, {String liveText = '', String li
         );
       case 'message.assistant':
         final parts = _list(p['parts']).whereType<Map<String, dynamic>>();
-        final text = parts.where((x) => x['type'] == 'text').map((x) => _str(x['text']) ?? '');
+        // Its ```widget blocks become widgets after it (3.8.7, the page's `splitWidgets`).
+        final split = splitWidgets([
+          for (final x in parts.where((x) => x['type'] == 'text')) _str(x['text']) ?? '',
+        ]);
+        final text = split.texts;
         final thinking = parts
             .where((x) => x['type'] == 'thinking')
             .map((x) => _str(x['text']) ?? '');
@@ -310,6 +338,19 @@ List<ChatItem> buildItems(List<RgEvent> events, {String liveText = '', String li
               costUnknown: p['costUnknown'] == true,
             ),
           );
+        }
+        if (sessionId != null) {
+          for (final w in split.widgets) {
+            out.add(
+              WidgetItem(
+                sessionId: sessionId,
+                seq: e.seq,
+                index: w.index,
+                title: w.title,
+                html: w.html,
+              ),
+            );
+          }
         }
         if (p['stopReason'] != 'tool_use') {
           for (final c in open.values) {

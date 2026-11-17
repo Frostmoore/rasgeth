@@ -966,5 +966,48 @@ class RedGiantClient {
     return TermSession.open(transport, token: t, scope: scope, cols: cols, rows: rows);
   }
 
+  // ---- widgets and artifacts (3.8.7, the page's 3.5.9): the same routes as the page ----
+
+  /// `GET /api/sessions/:id/widgets/:seq/:index/link`: the widget's signed `/preview/…` path.
+  Future<String> widgetLink(String sessionId, int seq, int index) async {
+    final url = _object(
+      await _get('/api/sessions/${Uri.encodeComponent(sessionId)}/widgets/$seq/$index/link'),
+    )['url'];
+    if (url is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    return url;
+  }
+
+  /// «Tienilo»: the widget becomes `artefatti/<name>.html`.
+  Future<({String scope, String path})> keepWidget(String sessionId, int seq, int index) async {
+    final r = _object(
+      await _post('/api/sessions/${Uri.encodeComponent(sessionId)}/widgets/$seq/$index/keep', {}),
+    );
+    return (scope: '${r['scope'] ?? ''}', path: '${r['path'] ?? ''}');
+  }
+
+  /// `POST /api/canvas/link` for a file: its signed `/preview/…` path, and whether it runs as an
+  /// artifact.
+  Future<({String url, bool artifact})> canvasLink(String scope, String path) async {
+    final r = _object(
+      await _post('/api/canvas/link', {'kind': 'file', 'scope': scope, 'path': path}),
+    );
+    final url = r['url'];
+    if (url is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    return (url: url, artifact: r['artifact'] == true);
+  }
+
+  /// `POST /api/artifacts/errors`: what an artifact or a widget met, for its agent.
+  Future<void> artifactErrors({
+    required Map<String, Object?> ref,
+    String? sessionId,
+    required List<Map<String, Object?>> errors,
+    bool fresh = false,
+  }) => _call('POST', '/api/artifacts/errors', {
+    'ref': ref,
+    'sessionId': ?sessionId,
+    'errors': errors,
+    if (fresh) 'fresh': true,
+  });
+
   void close() => transport.close();
 }
