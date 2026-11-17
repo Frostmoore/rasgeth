@@ -57,6 +57,8 @@ export * from "./setup-network.js";
 export * from "./tools.js";
 export * from "./vault.js";
 export * from "./video-analysis.js";
+export * from "./video-assemble.js";
+export * from "./video-broll.js";
 export * from "./video-frame.js";
 export * from "./video-patch.js";
 export * from "./video-text.js";
