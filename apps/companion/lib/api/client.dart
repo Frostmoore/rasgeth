@@ -811,6 +811,27 @@ class RedGiantClient {
     return r.bytes;
   }
 
+  /// `GET /api/files/raw` for a file saved from the chat (3.8.11, the page's `download`): the
+  /// same route, its bytes as they arrive ([onProgress]: arrived, size or null).
+  Future<Uint8List> fileDownload(
+    String scope,
+    String path, {
+    void Function(int got, int? total)? onProgress,
+  }) async {
+    final ApiResponse r;
+    try {
+      r = await transport.download(
+        _path('/api/files/raw', {'scope': scope, 'path': path}),
+        headers: _headers(accept: '*/*'),
+        onProgress: onProgress,
+      );
+    } on TransportException catch (e) {
+      throw ApiException(0, e.message, certificate: e.certificate);
+    }
+    if (r.status != 200) _decode(r);
+    return r.bytes;
+  }
+
   /// The bytes of a link of this server the page inside the app gave (`/…?…`, «Save as…», G42.0).
   Future<Uint8List> serverBytes(String link) async {
     final u = Uri.parse(link);

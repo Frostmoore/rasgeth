@@ -764,10 +764,13 @@
       "app": "native",
       "files": [
         "lib/api/conversation.dart",
-        "lib/screens/conversation_screen.dart"
+        "lib/screens/conversation_screen.dart",
+        "lib/ui/chat/file_download.dart",
+        "lib/api/client.dart",
+        "lib/api/transport.dart"
       ],
       "phase": "G42.1",
-      "note": "Opens the file in the app's Canvas."
+      "note": "Opens the file in the app's Canvas; «Download» as the page's «Save» (3.8.11): the same /api/files/raw, the system's «Save as» (a window on a computer, the system's picker on a phone), a bar with speed and time left past 1 MB. A message's attachment saved in the workspace downloads too."
     },
     "products": {
       "app": "native",

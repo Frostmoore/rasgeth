@@ -4349,5 +4349,62 @@
   "sideTabsLabel": "What the right column shows",
   "@sideTabsLabel": {
     "description": "Screen reader label of the right column tabs"
+  },
+  "chatFileDownload": "Download",
+  "@chatFileDownload": {
+    "description": "A file in the chat: save it on this device (3.8.11)"
+  },
+  "chatAttachmentDownload": "Download the attachment",
+  "chatFileDownloading": "Downloading {name}",
+  "@chatFileDownloading": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chatFileDownloadOf": "{done} of {total} · {speed}/s · {left} left",
+  "@chatFileDownloadOf": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "speed": {
+        "type": "String"
+      },
+      "left": {
+        "type": "String"
+      }
+    }
+  },
+  "chatFileDownloadSoFar": "{done} · {speed}/s",
+  "@chatFileDownloadSoFar": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "chatFileSaved": "Saved: {name}",
+  "@chatFileSaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chatFileDownloadFailed": "Could not download {name}",
+  "@chatFileDownloadFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

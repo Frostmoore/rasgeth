@@ -1471,6 +1471,8 @@ void (await core.send("local", godSid, "Plan the export feature for the reports.
         },
       },
     });
+  // The app's shots find this conversation by it (3.8.11, «Download» on a sent file).
+  console.log(JSON.stringify({ filesSession: shown, god: god.id }));
   // A board (G25.4): three pages to choose from, kept apart as Officina's.
   const boardId = "0a1b2c3d4e5f";
   // Where the server keeps boards: next to the platform folder, outside every workspace.

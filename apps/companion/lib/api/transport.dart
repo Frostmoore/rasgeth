@@ -80,6 +80,16 @@ abstract class Transport {
     Duration timeout = const Duration(seconds: 20),
   });
 
+  /// A GET that may be long (a file saved from the chat, 3.8.11): [onProgress] with the bytes
+  /// arrived and the size the server said (null: not said); it ends only after [idle] without
+  /// bytes, never after a fixed time.
+  Future<ApiResponse> download(
+    String pathAndQuery, {
+    Map<String, String> headers = const {},
+    void Function(int got, int? total)? onProgress,
+    Duration idle = const Duration(seconds: 30),
+  });
+
   /// A WebSocket at [path] (`/ws`), with the same trust as the requests.
   Future<WebSocket> socket(String path);
 
@@ -156,6 +166,40 @@ class HttpTransport implements Transport {
   }
 
   @override
+  Future<ApiResponse> download(
+    String pathAndQuery, {
+    Map<String, String> headers = const {},
+    void Function(int got, int? total)? onProgress,
+    Duration idle = const Duration(seconds: 30),
+  }) async {
+    final url = base.resolve(pathAndQuery);
+    try {
+      final req = await _client.getUrl(url).timeout(idle);
+      headers.forEach(req.headers.set);
+      final res = await req.close().timeout(idle);
+      final total = res.contentLength >= 0 ? res.contentLength : null;
+      final b = BytesBuilder(copy: false);
+      onProgress?.call(0, total);
+      await for (final chunk in res.timeout(idle)) {
+        b.add(chunk);
+        onProgress?.call(b.length, total);
+      }
+      return ApiResponse(res.statusCode, res.headers.contentType?.mimeType ?? '', b.takeBytes());
+    } on TimeoutException {
+      throw const TransportException('The server did not answer in time');
+    } on HandshakeException catch (e) {
+      throw TransportException(
+        '${e.message} ${e.osError?.message ?? ''}'.trim(),
+        certificate: true,
+      );
+    } on SocketException catch (e) {
+      throw TransportException(e.message);
+    } on HttpException catch (e) {
+      throw TransportException(e.message);
+    }
+  }
+
+  @override
   Future<WebSocket> socket(String path) {
     final u = base.replace(scheme: base.scheme == 'https' ? 'wss' : 'ws', path: path);
     return WebSocket.connect(u.toString(), customClient: _client);
@@ -204,6 +248,19 @@ class ChannelTransport implements Transport {
     } on SetupRequestException catch (e) {
       throw TransportException(e.message);
     }
+  }
+
+  /// The channel carries text only: a file comes whole, as any answer.
+  @override
+  Future<ApiResponse> download(
+    String pathAndQuery, {
+    Map<String, String> headers = const {},
+    void Function(int got, int? total)? onProgress,
+    Duration idle = const Duration(seconds: 30),
+  }) async {
+    final r = await send('GET', pathAndQuery, headers: headers);
+    onProgress?.call(r.bytes.length, r.bytes.length);
+    return r;
   }
 
   @override

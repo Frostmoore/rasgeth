@@ -5588,4 +5588,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sideTabsLabel => 'What the right column shows';
+
+  @override
+  String get chatFileDownload => 'Download';
+
+  @override
+  String get chatAttachmentDownload => 'Download the attachment';
+
+  @override
+  String chatFileDownloading(String name) {
+    return 'Downloading $name';
+  }
+
+  @override
+  String chatFileDownloadOf(String done, String total, String speed, String left) {
+    return '$done of $total · $speed/s · $left left';
+  }
+
+  @override
+  String chatFileDownloadSoFar(String done, String speed) {
+    return '$done · $speed/s';
+  }
+
+  @override
+  String chatFileSaved(String name) {
+    return 'Saved: $name';
+  }
+
+  @override
+  String chatFileDownloadFailed(String name) {
+    return 'Could not download $name';
+  }
 }

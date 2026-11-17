@@ -9578,6 +9578,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'What the right column shows'**
   String get sideTabsLabel;
+
+  /// A file in the chat: save it on this device (3.8.11)
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get chatFileDownload;
+
+  /// No description provided for @chatAttachmentDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the attachment'**
+  String get chatAttachmentDownload;
+
+  /// No description provided for @chatFileDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading {name}'**
+  String chatFileDownloading(String name);
+
+  /// No description provided for @chatFileDownloadOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} · {speed}/s · {left} left'**
+  String chatFileDownloadOf(String done, String total, String speed, String left);
+
+  /// No description provided for @chatFileDownloadSoFar.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} · {speed}/s'**
+  String chatFileDownloadSoFar(String done, String speed);
+
+  /// No description provided for @chatFileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: {name}'**
+  String chatFileSaved(String name);
+
+  /// No description provided for @chatFileDownloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not download {name}'**
+  String chatFileDownloadFailed(String name);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

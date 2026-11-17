@@ -5599,4 +5599,35 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get sideTabsLabel => 'Cosa mostra la colonna a destra';
+
+  @override
+  String get chatFileDownload => 'Scarica';
+
+  @override
+  String get chatAttachmentDownload => 'Scarica l\'allegato';
+
+  @override
+  String chatFileDownloading(String name) {
+    return 'Scarico $name';
+  }
+
+  @override
+  String chatFileDownloadOf(String done, String total, String speed, String left) {
+    return '$done di $total · $speed/s · ancora $left';
+  }
+
+  @override
+  String chatFileDownloadSoFar(String done, String speed) {
+    return '$done · $speed/s';
+  }
+
+  @override
+  String chatFileSaved(String name) {
+    return 'Salvato: $name';
+  }
+
+  @override
+  String chatFileDownloadFailed(String name) {
+    return 'Non sono riuscito a scaricare $name';
+  }
 }

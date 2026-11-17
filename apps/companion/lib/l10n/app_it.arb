@@ -1580,5 +1580,12 @@
   "cvVwToChat": "Chat",
   "sideTabFiles": "File",
   "sideTabCanvas": "Canvas",
-  "sideTabsLabel": "Cosa mostra la colonna a destra"
+  "sideTabsLabel": "Cosa mostra la colonna a destra",
+  "chatFileDownload": "Scarica",
+  "chatAttachmentDownload": "Scarica l'allegato",
+  "chatFileDownloading": "Scarico {name}",
+  "chatFileDownloadOf": "{done} di {total} · {speed}/s · ancora {left}",
+  "chatFileDownloadSoFar": "{done} · {speed}/s",
+  "chatFileSaved": "Salvato: {name}",
+  "chatFileDownloadFailed": "Non sono riuscito a scaricare {name}"
 }

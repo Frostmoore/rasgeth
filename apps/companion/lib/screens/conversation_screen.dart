@@ -56,6 +56,7 @@ import 'canvas_screen.dart';
 import 'conversation_more.dart';
 import 'files/files_explorer.dart';
 import 'saved_screen.dart';
+import '../ui/chat/file_download.dart';
 
 part 'conversation_files.dart';
 
@@ -1514,10 +1515,14 @@ class ChatItemView extends StatelessWidget {
                     : null,
               ),
       FileItem(:final scope, :final path, :final name, :final caption, :final size) => _FileCard(
+        path: path,
         title: name,
         subtitle: [?caption, formatBytes(size)].join(' · '),
         onOpen: () =>
             openCanvas(context, scope: scope, path: path, title: name, sessionId: a.sessionId),
+        // 3.8.11: «Download», as the page's «Save».
+        onDownload: () =>
+            unawaited(saveChatFile(context, scope: scope, path: path, name: name, size: size)),
       ),
       // 3.8.7: a widget after its answer, as the page's `widget` item.
       WidgetItem() => WidgetCard(
@@ -1703,6 +1708,11 @@ class _UserBubbleState extends State<_UserBubble> {
                                   title: f.name,
                                   sessionId: a.sessionId,
                                 ),
+                          onDownload: f.path == null
+                              ? null
+                              : () => unawaited(
+                                  saveChatFile(context, scope: scope, path: f.path!, name: f.name),
+                                ),
                         ),
                     ],
                   ),
@@ -1749,10 +1759,13 @@ String chatClockOf(String iso) {
 }
 
 class _AttachmentPill extends StatelessWidget {
-  const _AttachmentPill({required this.name, this.onOpen});
+  const _AttachmentPill({required this.name, this.onOpen, this.onDownload});
 
   final String name;
   final VoidCallback? onOpen;
+
+  /// 3.8.11: an attachment saved in the workspace downloads too.
+  final VoidCallback? onDownload;
 
   @override
   Widget build(BuildContext context) {
@@ -1783,7 +1796,31 @@ class _AttachmentPill extends StatelessWidget {
         ),
       ),
     );
-    return onOpen == null ? pill : Tooltip(message: l.cvAttachmentOpen, child: pill);
+    final shown = onOpen == null ? pill : Tooltip(message: l.cvAttachmentOpen, child: pill);
+    if (onDownload == null) return shown;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(child: shown),
+        const SizedBox(width: 2),
+        Tooltip(
+          message: l.chatAttachmentDownload,
+          child: Material(
+            color: c.panel,
+            shape: CircleBorder(side: BorderSide(color: c.line)),
+            child: InkWell(
+              key: Key('attachment-download-$name'),
+              customBorder: const CircleBorder(),
+              onTap: onDownload,
+              child: Padding(
+                padding: const EdgeInsets.all(5),
+                child: RgIcon(RgIcons.download, size: 13, color: c.accent),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -2091,11 +2128,19 @@ class _AssistantViewState extends State<AssistantView> {
 }
 
 class _FileCard extends StatelessWidget {
-  const _FileCard({required this.title, required this.subtitle, required this.onOpen});
+  const _FileCard({
+    required this.path,
+    required this.title,
+    required this.subtitle,
+    required this.onOpen,
+    this.onDownload,
+  });
 
+  final String path;
   final String title;
   final String subtitle;
   final VoidCallback? onOpen;
+  final VoidCallback? onDownload;
 
   @override
   Widget build(BuildContext context) {
@@ -2112,7 +2157,20 @@ class _FileCard extends StatelessWidget {
         leading: RgIcon(RgIcons.file, color: c.dim),
         title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
-        trailing: onOpen == null ? null : Text(l.open, style: TextStyle(color: c.accent)),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (onDownload != null)
+              TextButton.icon(
+                key: Key('file-download-$path'),
+                onPressed: onDownload,
+                icon: RgIcon(RgIcons.download, size: 15, color: c.accent),
+                label: Text(l.chatFileDownload),
+              ),
+            if (onOpen != null)
+              TextButton(key: Key('file-open-$path'), onPressed: onOpen, child: Text(l.open)),
+          ],
+        ),
         onTap: onOpen,
       ),
     );
