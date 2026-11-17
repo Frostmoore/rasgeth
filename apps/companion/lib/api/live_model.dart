@@ -137,6 +137,14 @@ class LiveModel extends ChangeNotifier {
   /// A conversation the app did not list: the caller reloads the rows.
   VoidCallback? onUnknownSession;
 
+  /// The server said the owner's agents, projects or conversation rows changed elsewhere
+  /// (`lists.changed`, p3.8.9: another page or device, God, an automation): the caller reads
+  /// those lists again. Also called with `agents` for an agent the app does not know yet.
+  void Function(Set<String> lists)? onListsChanged;
+
+  /// Whether the app knows this agent (the caller's team); null: never asked.
+  bool Function(String agentId)? knowsAgent;
+
   /// A turn ended (`session.state` not running): the header's spending is read again.
   VoidCallback? onTurnEnded;
 
@@ -207,10 +215,17 @@ class LiveModel extends ChangeNotifier {
       case 'question.closed':
         questions = questions.where((a) => a.requestId != m['requestId']).toList();
         lastClosedVia = m['via'] as String?;
+      case 'lists.changed':
+        final lists = {...(m['lists'] as List? ?? const []).whereType<String>()};
+        if (lists.isNotEmpty) onListsChanged?.call(lists);
+        return;
       case 'session.activity':
         final running = m['state'] == 'running';
         if (sid == null) break;
         if (!sessions.any((s) => s.id == sid)) onUnknownSession?.call();
+        // An agent made after the team was read (God's, from the page): the team again.
+        final agent = m['agentId'];
+        if (agent is String && knowsAgent?.call(agent) == false) onListsChanged?.call({'agents'});
         final replied = m['repliedAt'] is String ? m['repliedAt'] as String : null;
         sessions = [
           for (final s in sessions) s.id == sid ? s.copy(running: running, repliedAt: replied) : s,
