@@ -163,6 +163,19 @@ export class AgentRegistry {
     private readonly store: EventStore,
   ) {}
 
+  private readonly changeListeners = new Set<(ownerId: string) => void>();
+  /**
+   * Called after one of the owner's agents was made, stopped, configured, moved, renamed or got
+   * a new face (p3.8.9): the server tells every page and app of the owner to read the team again.
+   */
+  onChange(listener: (ownerId: string) => void): () => void {
+    this.changeListeners.add(listener);
+    return () => this.changeListeners.delete(listener);
+  }
+  private changed(ownerId: string): void {
+    for (const f of this.changeListeners) f(ownerId);
+  }
+
   /**
    * Loads every agent into memory (the tree is small). Agents made before mascots (G40.2) get
    * their seed now, once, in the order they were made: their name of today (or `name#1`… when
@@ -261,6 +274,7 @@ export class AgentRegistry {
       agentId: null,
       body: { type: "agent.mascot_changed", payload: { agentId: id, seed, reason: "changed" } },
     });
+    this.changed(a.ownerId);
     return updated;
   }
 
@@ -408,6 +422,7 @@ export class AgentRegistry {
       agentId: actor.type === "agent" ? actor.agent.id : null,
       body: { type: "agent.spawned", payload: { agent: spec } },
     });
+    this.changed(ownerId);
     return record;
   }
 
@@ -432,6 +447,7 @@ export class AgentRegistry {
       });
     };
     await walk(target);
+    if (stopped.length > 0) this.changed(target.ownerId);
     return stopped;
   }
 
@@ -494,6 +510,7 @@ export class AgentRegistry {
       else Object.assign(updated, { [key]: v });
     }
     this.cache.set(id, this.mark(updated));
+    this.changed(target.ownerId);
     return updated;
   }
 
@@ -519,6 +536,7 @@ export class AgentRegistry {
       ...(to.subprojectId && { subprojectId: to.subprojectId }),
     };
     this.cache.set(id, this.mark(moved));
+    this.changed(a.ownerId);
     return moved;
   }
 
@@ -529,6 +547,7 @@ export class AgentRegistry {
     await this.db.query("UPDATE rg_agents SET name = $2 WHERE id = $1", [id, name]);
     const updated = { ...a, name };
     this.cache.set(id, this.mark(updated));
+    this.changed(a.ownerId);
     return updated;
   }
 

@@ -257,6 +257,19 @@ export class ProjectStore {
   /** Called after a project is created (its repository, G24.5). */
   onCreate: ((project: Project) => Promise<void>) | undefined;
 
+  private readonly changeListeners = new Set<(ownerId: string) => void>();
+  /**
+   * Called after one of the owner's projects or subprojects was made, archived, restored, merged
+   * into another or changed (p3.8.9): every page and app of the owner reads the projects again.
+   */
+  onChange(listener: (ownerId: string) => void): () => void {
+    this.changeListeners.add(listener);
+    return () => this.changeListeners.delete(listener);
+  }
+  private changed(ownerId: string): void {
+    for (const f of this.changeListeners) f(ownerId);
+  }
+
   /**
    * A new project: a new folder under the workspaces, or (`folder`, G36.15) one that already
    * exists, which the project adopts as it is (no repository is created or rewired for it).
@@ -279,6 +292,7 @@ export class ProjectStore {
       throw err;
     }
     const project = (await this.get(ownerId, id)) as Project;
+    this.changed(ownerId);
     // An adopted folder keeps what it has; without a repository the page offers one.
     if (folder !== undefined) return { ...project, git: await hasOwnRepo(path) };
     await mkdir(path, { recursive: true });
@@ -385,12 +399,14 @@ export class ProjectStore {
       "INSERT INTO rg_subprojects (id, owner_id, project_id, name, dir) VALUES ($1, $2, $3, $4, $5)",
       [id, ownerId, projectId, name, folder],
     );
+    this.changed(ownerId);
     return (await this.subproject(ownerId, id)) as Subproject;
   }
 
   /** A project that went into another (G24.14c): its row goes, its code lives on there. */
   async forget(ownerId: string, id: string): Promise<void> {
     await this.db.query("DELETE FROM rg_projects WHERE owner_id = $1 AND id = $2", [ownerId, id]);
+    this.changed(ownerId);
   }
 
   /** Its own sandbox image, or the project's again (null). Takes effect for new sessions. */
@@ -402,6 +418,7 @@ export class ProjectStore {
       id,
       image,
     ]);
+    this.changed(ownerId);
   }
 
   async subprojects(ownerId: string, projectId?: string): Promise<Subproject[]> {
@@ -433,6 +450,7 @@ export class ProjectStore {
         : "UPDATE rg_projects SET archived_at = NULL, archived_state = NULL WHERE owner_id = $1 AND id = $2",
       state ? [ownerId, id, JSON.stringify(state)] : [ownerId, id],
     );
+    this.changed(ownerId);
   }
 
   /** What the archive of this project paused (none when it is not archived). */

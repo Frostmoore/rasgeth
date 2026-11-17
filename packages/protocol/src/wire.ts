@@ -227,6 +227,10 @@ export const ClientMessage = z.discriminatedUnion("type", [
 ]);
 export type ClientMessage = z.infer<typeof ClientMessage>;
 
+/** The lists a `lists.changed` message names (p3.8.9). */
+export const ListName = z.enum(["agents", "projects", "sessions"]);
+export type ListName = z.infer<typeof ListName>;
+
 export const ServerMessage = z.discriminatedUnion("type", [
   /** The answer to the page's heartbeat (p3.5.4). */
   z.object({ type: z.literal("pong") }),
@@ -286,6 +290,12 @@ export const ServerMessage = z.discriminatedUnion("type", [
    * file or acted on the canvas from there (a `canvas.show` or `canvas.act` event, live only).
    */
   z.object({ type: z.literal("canvas.open"), sessionId: z.string(), event: Event }),
+  /**
+   * To every page and app of the owner (p3.8.9): their agents, projects (and subprojects) or the
+   * rows of their conversations changed, wherever it happened (another page, another device, God,
+   * an automation). Clients read those lists again; nothing else is carried.
+   */
+  z.object({ type: z.literal("lists.changed"), lists: z.array(ListName).min(1) }),
   /** Sent after a follow, once the stored history has been replayed. */
   z.object({ type: z.literal("session.synced"), sessionId: z.string(), lastSeq: z.number().int() }),
   /**

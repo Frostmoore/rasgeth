@@ -749,6 +749,17 @@ export function applyMessage(m: ServerMessage): void {
       if (!agents.value.some((a) => a.id === m.agentId)) refreshSoon(true);
       return;
     }
+    // Agents, projects (with their subprojects) or conversations made or changed elsewhere
+    // (p3.8.9: another page, the app, God, an automation): read again at once, not at the next
+    // 15-second refresh.
+    case "lists.changed":
+      if (m.lists.includes("sessions") || m.lists.includes("agents"))
+        refreshSoon(m.lists.includes("agents"));
+      if (m.lists.includes("projects")) {
+        void refreshProjects().catch(() => {});
+        void refreshSubprojects().catch(() => {});
+      }
+      return;
     case "image.progress": {
       const v = sessionView(m.sessionId);
       v.value = {
