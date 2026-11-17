@@ -358,6 +358,8 @@ RedGiant is in pre-alpha. What comes next, in order:
   and a warmer Chat. 3.8.8 (released) makes widgets look like small apps and fixes writing to God after an
   update and the figures of the ChatGPT subscription. 3.8.9 (released) asks only for what is really dangerous, explains
   every request in one line and picks up interrupted work after a restart.
+  3.8.10 (released) keeps every list live everywhere, gives the app menus and conversations for every agent, pauses,
+  resumes, removes and restores agents, and lets you choose how many work at once.
 - **3.9 and 3.10 — Video and 3D generation**: a video editor shared by you and the agent, and 3D
   generation with local or cloud engines, finished in Blender.
 - **3.11 — Emulators in the Canvas**: an Android emulator or the iOS simulator found on the computer

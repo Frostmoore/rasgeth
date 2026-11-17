@@ -2457,6 +2457,18 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news3810Live: "Everything live, everywhere",
+  news3810LiveText:
+    "Agents, projects and conversations created or changed anywhere (by God, in the page, on another device) now appear at once in the app and in the page, and requests stay right after the server restarts.",
+  news3810Menus: "Menus and conversations for every agent",
+  news3810MenusText:
+    "In the app a click on God or any agent shows its conversations, and a right click (a long press on the phone) opens its menu. Conversations and projects have their menu too: pin, folder, archive and restore, export. On the computer a bell replaces the «For you» card, and the bar of a full-window conversation shows agents under their project's orchestrator.",
+  news3810Agents: "Pause, resume, remove and restore agents",
+  news3810AgentsText:
+    "Stop is now a pause: an agent's tasks wait and «Resume» picks them up in the same conversation. God, orchestrators and you can also remove an agent (with the ones under it) and restore it later from «Removed agents»; its history stays. God resumes a paused agent instead of making a new one.",
+  news3810Queue: "How many agents work at once",
+  news3810QueueText:
+    "In Settings › Agents (and in the app) you can choose how many agents work together. The others wait in line and start by themselves; your own messages never wait, and «Move ahead» puts a conversation first.",
   news389Asks: "Asked only for what is really dangerous",
   news389AsksText:
     "The dangers of a command are judged on the commands it really runs, not on words in the text: writing or changing files in the project, a temporary folder emptied, a check like «sudo -n true», a file called env.sh no longer ask you anything. Real dangers still do. Every request now starts with one plain line saying what the agent wants to do.",
@@ -9184,6 +9196,18 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news3810Live: "Tutto dal vivo, ovunque",
+  news3810LiveText:
+    "Agenti, progetti e conversazioni creati o cambiati da qualsiasi parte (da God, nella pagina, da un altro dispositivo) compaiono subito nell'app e nella pagina, e le richieste restano giuste anche dopo un riavvio del server.",
+  news3810Menus: "Menu e conversazioni per ogni agente",
+  news3810MenusText:
+    "Nell'app un clic su God o su un agente mostra le sue conversazioni, e il clic destro (sul telefono la pressione lunga) apre il suo menu. Anche conversazioni e progetti hanno il loro menu: fissa, cartella, archivia e ripristina, esporta. Sul computer una campanella sostituisce la card «Da te», e la barra di una conversazione a tutta finestra mostra gli agenti sotto l'orchestratore del loro progetto.",
+  news3810Agents: "Fermare, riattivare, rimuovere e ripristinare gli agenti",
+  news3810AgentsText:
+    "Ferma adesso è una pausa: i compiti dell'agente aspettano e «Riattiva» li riprende nella stessa conversazione. God, gli orchestratori e tu potete anche rimuovere un agente (con quelli sotto di lui) e ripristinarlo poi da «Agenti rimossi»; la sua storia resta. God riattiva un agente in pausa invece di crearne uno nuovo.",
+  news3810Queue: "Quanti agenti lavorano insieme",
+  news3810QueueText:
+    "In Impostazioni › Agenti (e nell'app) puoi scegliere quanti agenti lavorano insieme. Gli altri aspettano in coda e partono da soli; i tuoi messaggi non aspettano mai, e «Passa avanti» mette una conversazione in testa.",
   news389Asks: "Richieste solo per ciò che è davvero pericoloso",
   news389AsksText:
     "I pericoli di un comando si giudicano dai comandi che esegue davvero, non dalle parole nel testo: scrivere o cambiare file nel progetto, svuotare una cartella temporanea, una prova come «sudo -n true», un file che si chiama env.sh non ti chiedono più niente. I pericoli veri sì. Ogni richiesta comincia con una riga semplice che dice cosa vuole fare l'agente.",
