@@ -41,7 +41,7 @@ for (const [device, width, height] of [
     await menu();
     // The project's tree open: its agents' conversations with «queued (2nd of 3)».
     const demo = page.locator(".bar-item", { hasText: "Demo" }).first();
-    if (await demo.count()) await demo.click();
+    if (device !== "phone" && (await demo.count())) await demo.click();
     await page.waitForTimeout(400);
     await shot("01-bar");
     // The line in its window, from the meter.

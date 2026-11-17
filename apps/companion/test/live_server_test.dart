@@ -191,4 +191,34 @@ void main() {
     expect(app.server!.setupAddress, base.toString());
     await app.disconnect();
   }, skip: skip);
+
+  // 3.8.10, with the demo started with DEMO_QUEUE=1 too (RG_LIVE_QUEUE=1): agents at work together
+  // at most 2, four tasks handed over: the line comes on the live socket, «Passa avanti» moves one.
+  test(
+    'agents at work together: the real line, the limit and «move first»',
+    () async {
+      final app = AppController(
+        tokens: MemoryTokenStore(),
+        prefs: MemoryAppPrefs(),
+        platform: DevicePlatform.linux,
+      );
+      expect(await app.connect(base.toString(), _password), isTrue, reason: '${app.error}');
+      await until(() => app.liveStatus == LiveStatus.open);
+      // The demo's own turns may hold a place too: two waiting at least.
+      await until(() => app.live.turns.queued.length >= 2, what: 'two waiting');
+      expect(app.live.turns.limit, 2);
+      expect(app.live.turns.working, 2);
+      expect((await app.client!.commandSettings())['maxAtWork'], 2);
+      final ids = app.live.turns.queued.map((q) => q.sessionId).toList();
+      expect(app.live.turns.queued.first.first, isTrue, reason: 'the demo moved the fourth first');
+      expect(await app.moveFirst(ids.last), isTrue);
+      await until(() => app.live.turns.queued.first.sessionId == ids.last, what: 'moved first');
+      expect((await app.client!.turns()).queued.first.sessionId, ids.last);
+      // A conversation at work is not in line: nothing to move.
+      expect(await app.moveFirst(app.live.turns.running.first.sessionId), isFalse);
+      await app.disconnect();
+    },
+    skip: skip ?? (Platform.environment['RG_LIVE_QUEUE'] == null ? 'RG_LIVE_QUEUE not set' : null),
+    timeout: const Timeout(Duration(minutes: 2)),
+  );
 }

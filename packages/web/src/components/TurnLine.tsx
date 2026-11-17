@@ -254,7 +254,8 @@ export function AtWorkCard() {
     void getApi()
       .turns()
       .then((v) => {
-        turnQueue.value = v;
+        // An older server has no line: nothing to show.
+        if (Array.isArray(v?.queued)) turnQueue.value = v;
       })
       .catch(() => {});
   }, []);

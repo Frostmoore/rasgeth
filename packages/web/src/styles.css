@@ -21270,3 +21270,18 @@ html[data-theme="dark"] {
     justify-content: flex-end;
   }
 }
+.tq-acts .wz-btn,
+.tq-notice .wz-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .tq-card-text {
+    flex-basis: calc(100% - 54px);
+  }
+  .tq-card-now {
+    margin-left: 54px;
+  }
+}
