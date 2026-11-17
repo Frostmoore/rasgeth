@@ -2415,6 +2415,24 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news387Chat: "A warmer, fuller Chat",
+  news387ChatText:
+    "Chat now answers like a friend who knows a lot: the answer first, then why, an example with your numbers, what to do and an offer to go further. When you can play with the answer (a calculation, a comparison, a choice) it adds a widget to try.",
+  news387Turn: "The turn as the page shows it, in the app",
+  news387TurnText:
+    "After you send, RGCompanion shows what the page shows: reading the context with its bar, the cache, thinking, writing, tokens per second and times, then the answer's figures.",
+  news387Talk: "The whole conversation in the app",
+  news387TalkText:
+    "Requests in the chat with «In this conversation», «Always», «Deny» and «Deny and explain», questions and plans, the queue of messages, secrets held back, long pastes as cards, readable tools with diffs, coloured code, sources, «Continue from here» and «Edit».",
+  news387Widgets: "Widgets and artifacts in the app",
+  news387WidgetsText:
+    "Widgets in answers and artifacts in the Canvas now work in RGCompanion on every system, in the same protected frame as the page.",
+  news387Agents: "Agent settings from the agent",
+  news387AgentsText:
+    "Right-click an agent on the computer, or press and hold on the phone (God and Chat too): open its conversation, change model, instructions or mascot, or open all its settings: model and mode, memory, spending, tools and knowledge.",
+  news387Settings: "Every setting inside the app",
+  news387SettingsText:
+    "«All settings» now opens inside RGCompanion with the app's look, theme and language, on every system, instead of the browser.",
   news386Sync: "Phone and computer stay in step",
   news386SyncText:
     "A message written in RGCompanion on one device now appears live on the others with the same conversation open, and so do the agent's answer, the requests you already answered elsewhere and the conversations' state. The app also notices a connection that looks open but is dead (after the phone sleeps or the computer wakes up) and reconnects by itself.",
@@ -9024,6 +9042,24 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news387Chat: "Una Chat più calda e completa",
+  news387ChatText:
+    "Chat adesso risponde come un amico che sa tante cose: prima la risposta, poi il perché, un esempio con i tuoi numeri, cosa fare e una proposta per andare avanti. Quando con la risposta si può giocare (un calcolo, un confronto, una scelta) aggiunge un widget da provare.",
+  news387Turn: "Il turno come nella pagina, nell'app",
+  news387TurnText:
+    "Dopo l'invio RGCompanion mostra quello che mostra la pagina: la lettura del contesto con la sua barra, la cache, il ragionamento, la scrittura, i token al secondo e i tempi, poi i numeri della risposta.",
+  news387Talk: "La conversazione completa nell'app",
+  news387TalkText:
+    "Richieste in chat con «In questa conversazione», «Sempre», «Nega» e «Nega e spiega», domande e piani, la coda dei messaggi, i segreti trattenuti, i testi lunghi incollati come schede, strumenti leggibili con i diff, codice colorato, fonti, «Continua da qui» e «Modifica».",
+  news387Widgets: "Widget e artefatti nell'app",
+  news387WidgetsText:
+    "I widget nelle risposte e gli artefatti nel Canvas funzionano adesso in RGCompanion su ogni sistema, nello stesso riquadro protetto della pagina.",
+  news387Agents: "Le impostazioni dell'agente dall'agente",
+  news387AgentsText:
+    "Clic destro su un agente sul computer, o pressione lunga sul telefono (anche God e Chat): apri la sua conversazione, cambia modello, istruzioni o mascotte, oppure apri tutte le sue impostazioni: modello e modo, memoria, spesa, strumenti e conoscenza.",
+  news387Settings: "Tutte le impostazioni dentro l'app",
+  news387SettingsText:
+    "«Tutte le impostazioni» si apre adesso dentro RGCompanion con l'aspetto, il tema e la lingua dell'app, su ogni sistema, invece che nel browser.",
   news386Sync: "Telefono e computer allineati",
   news386SyncText:
     "Un messaggio scritto in RGCompanion su un dispositivo compare adesso dal vivo sugli altri con la stessa conversazione aperta, e così la risposta dell'agente, le richieste a cui hai già risposto altrove e lo stato delle conversazioni. L'app si accorge anche di un collegamento che sembra aperto ma è morto (dopo che il telefono dorme o il computer si risveglia) e si ricollega da sola.",

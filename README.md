@@ -353,7 +353,9 @@ RedGiant is in pre-alpha. What comes next, in order:
   screenshots with Ctrl/Cmd+V and puts «New project» and «New agent» on the control room's walls. 3.8.4 (released) fixes the header of a chat
   opened from the Chat card and the version the update screen announces. 3.8.5 (released) gives the app
   a full-width place to write, with its buttons inside, and a red cursor that follows the answer being written. 3.8.6 (released) keeps
-  the phone and the computer in step, live.
+  the phone and the computer in step, live. 3.8.7 (released) starts making the app do everything the page does: the
+  whole conversation, the turn, widgets and artifacts, agent settings from the agent, every setting inside the app,
+  and a warmer Chat.
 - **3.9 and 3.10 — Video and 3D generation**: a video editor shared by you and the agent, and 3D
   generation with local or cloud engines, finished in Blender.
 - **3.11 — Emulators in the Canvas**: an Android emulator or the iOS simulator found on the computer
