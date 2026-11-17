@@ -3,7 +3,24 @@
 // open or closed (and full window or not) between openings; narrower than [_sideFrom] it covers
 // the conversation until closed. On a phone a screen of its own. A file dragged from the panel
 // onto the conversation is attached to the message.
+//
+// The right column (3.8.11): the files and the Canvas (G42.2) share one column on the right of
+// the conversation, never two side by side (the window is narrower than the page's).
+// - One open: the column shows it, as before, with no tabs.
+// - Both open: two drawn tabs, Files and Canvas, on top of the column; the one in front is lit.
+//   Each keeps its own width (the files' is kept between openings, the Canvas's while the
+//   conversation is open) and its state (the tree's folders, the page in the web view).
+// - The folder button brings the files in front (opening them), or closes them when they are
+//   already in front. What an agent shows, a «… in the Canvas» line and a file opened from the
+//   files bring the Canvas in front: the file opens in a Canvas tab, the tree one tap away.
+// - Closing one leaves the other in front. The files full window cover the conversation and
+//   the Canvas until made small again.
+// - Narrow (below each one's width), as before: the files cover the conversation, the Canvas
+//   opens as a screen of its own.
 part of 'conversation_screen.dart';
+
+/// What the right column shows in front when both the files and the Canvas are open.
+enum _SideTab { files, canvas }
 
 mixin _ConversationFiles on State<ConversationScreen> {
   /// The conversation's own state (the composer, its attachments).
@@ -18,7 +35,13 @@ mixin _ConversationFiles on State<ConversationScreen> {
 
   /// Too narrow for a panel: the files cover the conversation until closed (not kept).
   bool _filesCover = false;
-  bool _wide = true;
+  bool _filesWide = true;
+
+  /// In front of the right column when both are open (3.8.11).
+  _SideTab _sideFront = _SideTab.files;
+
+  /// The Canvas is beside the conversation now (its panel, not a screen of its own).
+  bool get _canvasSide => _s._canvasBeside && _s._canvas.open && _s._canvas.current != null;
   Timer? _widthSave;
   final _filesKey = GlobalKey(debugLabel: 'conversation-files');
 
@@ -71,11 +94,18 @@ mixin _ConversationFiles on State<ConversationScreen> {
     openCanvas(context, scope: scope, path: path, title: name, sessionId: widget.sessionId),
   );
 
+  /// A file opened from the panel on a computer: in the Canvas beside the conversation (the
+  /// column brings it in front), or the Canvas screen where it is narrow.
+  void _openFileHere(String scope, String path, String name) =>
+      _s._showCanvas(name, {'kind': 'file', 'scope': scope, 'path': path}, force: true);
+
   /// The header's folder button.
   Widget _filesButton(BuildContext context, Agent? agent) {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
-    final on = _computer && (_wide ? _filesOpen : _filesCover);
+    final on =
+        _computer &&
+        (_filesWide ? _filesOpen && (_sideFront == _SideTab.files || !_canvasSide) : _filesCover);
     return IconButton(
       key: const Key('conversation-files'),
       tooltip: l.fxOpenFiles,
@@ -104,7 +134,13 @@ mixin _ConversationFiles on State<ConversationScreen> {
       );
       return;
     }
-    if (_wide) {
+    if (_filesWide) {
+      // Behind the Canvas: in front first; in front (or alone): open or closed.
+      if (_filesOpen && _canvasSide && _sideFront == _SideTab.canvas && !_filesFull) {
+        setState(() => _sideFront = _SideTab.files);
+        return;
+      }
+      if (!_filesOpen) _sideFront = _SideTab.files;
       _setFilesOpen(!_filesOpen);
     } else {
       setState(() => _filesCover = !_filesCover);
@@ -155,19 +191,108 @@ mixin _ConversationFiles on State<ConversationScreen> {
     }
   }
 
+  /// The right column's tabs, shown when both the files and the Canvas are open.
+  Widget _sideTabs(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    Widget tab(_SideTab t, String label, RgIcons icon) {
+      final on = _sideFront == t;
+      return Semantics(
+        button: true,
+        selected: on,
+        child: Material(
+          color: on ? c.bg : Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: BorderSide(color: on ? c.line : Colors.transparent),
+          ),
+          child: InkWell(
+            key: Key('side-tab-${t.name}'),
+            borderRadius: BorderRadius.circular(8),
+            onTap: () => setState(() => _sideFront = t),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  RgIcon(icon, size: 15, color: on ? c.accent : c.dim),
+                  const SizedBox(width: 6),
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: on ? c.text : c.dim,
+                      fontSize: 13,
+                      fontWeight: on ? FontWeight.w600 : FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Semantics(
+      label: l.sideTabsLabel,
+      container: true,
+      child: Container(
+        key: const Key('side-tabs'),
+        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        decoration: BoxDecoration(
+          color: c.panel2,
+          border: Border(bottom: BorderSide(color: c.line)),
+        ),
+        child: Row(
+          children: [
+            tab(_SideTab.files, l.sideTabFiles, RgIcons.folder),
+            const SizedBox(width: 4),
+            tab(_SideTab.canvas, l.sideTabCanvas, RgIcons.canvas),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final chat = _s._chat(context);
-    if (!_computer) return chat;
-    final agent = _s._agent;
     return LayoutBuilder(
       builder: (context, box) {
+        _s._canvasBeside = box.maxWidth >= canvasBesideFrom(Theme.of(context).platform);
+        final chat = _s._chat(context);
+        final canvasSide = _canvasSide;
+        if (!_computer) {
+          // A tablet: the Canvas alone on the right (the files are a screen of their own).
+          if (!canvasSide) return chat;
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(child: chat),
+              Material(
+                color: RgColors.of(context).bg,
+                child: SafeArea(
+                  left: false,
+                  child: CanvasPanel(
+                    model: _s._canvas,
+                    maxWidth: box.maxWidth,
+                    sessionId: widget.sessionId,
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+        final agent = _s._agent;
         final l = AppLocalizations.of(context);
         final c = RgColors.of(context);
-        _wide = box.maxWidth >= _sideFrom;
-        final wide = _wide;
+        _filesWide = box.maxWidth >= _sideFrom;
+        final wide = _filesWide;
         final cover = wide ? _filesOpen && _filesFull : _filesCover;
         final side = wide && _filesOpen && !_filesFull;
+        // One column on the right: both open, the tab in front shows (the other kept, hidden).
+        final both = side && canvasSide;
+        final front = both ? _sideFront : (side ? _SideTab.files : _SideTab.canvas);
         final most = math.max(_minWidth, box.maxWidth * .6);
         final width = _filesWidth.clamp(_minWidth, most).toDouble();
         final place = explorerPlaceFor(_s.app, widget.sessionId, agent);
@@ -176,7 +301,7 @@ mixin _ConversationFiles on State<ConversationScreen> {
                 key: _filesKey,
                 place: place,
                 computer: true,
-                onOpen: (path, name) => _openFile(context, place.scope, path, name),
+                onOpen: (path, name) => _openFileHere(place.scope, path, name),
                 onAsk: _s._readOnly ? null : _askAbout,
                 onClose: () => wide ? _setFilesOpen(false) : setState(() => _filesCover = false),
                 onFull: wide ? () => _setFilesFull(!_filesFull) : null,
@@ -228,25 +353,59 @@ mixin _ConversationFiles on State<ConversationScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(child: target),
-                  if (side && panel != null) ...[
-                    DecoratedBox(
-                      key: const Key('files-resizer'),
-                      decoration: BoxDecoration(
-                        color: c.panel,
-                        border: Border(left: BorderSide(color: c.line)),
+                  if (side && panel != null)
+                    Offstage(
+                      offstage: front != _SideTab.files,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          DecoratedBox(
+                            key: const Key('files-resizer'),
+                            decoration: BoxDecoration(
+                              color: c.panel,
+                              border: Border(left: BorderSide(color: c.line)),
+                            ),
+                            child: Semantics(
+                              label: l.fxResize,
+                              child: PanelResizer(
+                                onDrag: (dx) =>
+                                    _setFilesWidth((width - dx).clamp(_minWidth, most).toDouble()),
+                                onKey: (d) => _setFilesWidth(
+                                  (width + d * 24).clamp(_minWidth, most).toDouble(),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            key: const Key('conversation-files-side'),
+                            width: width,
+                            child: both
+                                ? Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      _sideTabs(context),
+                                      Expanded(child: panel),
+                                    ],
+                                  )
+                                : panel,
+                          ),
+                        ],
                       ),
-                      child: Semantics(
-                        label: l.fxResize,
-                        child: PanelResizer(
-                          onDrag: (dx) =>
-                              _setFilesWidth((width - dx).clamp(_minWidth, most).toDouble()),
-                          onKey: (d) =>
-                              _setFilesWidth((width + d * 24).clamp(_minWidth, most).toDouble()),
+                    ),
+                  if (canvasSide)
+                    Offstage(
+                      offstage: front != _SideTab.canvas,
+                      child: Material(
+                        color: c.bg,
+                        child: CanvasPanel(
+                          model: _s._canvas,
+                          maxWidth: box.maxWidth,
+                          sessionId: widget.sessionId,
+                          top: both ? _sideTabs(context) : null,
                         ),
                       ),
                     ),
-                    SizedBox(key: const Key('conversation-files-side'), width: width, child: panel),
-                  ],
                 ],
               ),
             ),

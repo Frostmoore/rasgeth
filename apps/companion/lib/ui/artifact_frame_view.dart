@@ -287,18 +287,6 @@ Future<RelayFrame> _openWithRelay(AppController app, String previewPath, String 
   return relay.open(previewPath, title: title);
 }
 
-/// Opens [url] outside the app after the person says yes (the page's `listenPreviewLinks`).
-Future<void> _askOpenLink(BuildContext context, Uri url) async {
-  final l = AppLocalizations.of(context);
-  final yes = await askConfirm(
-    context,
-    title: l.previewLinkTitle,
-    body: url.toString(),
-    yes: l.previewLinkOpen,
-  );
-  if (yes) await launchUrl(url, mode: LaunchMode.externalApplication);
-}
-
 /// The frame of an artifact (the Canvas) or a widget (in an answer, [auto] height).
 class ArtifactFrame extends StatefulWidget {
   const ArtifactFrame({
@@ -398,7 +386,7 @@ class _ArtifactFrameState extends State<ArtifactFrame> {
           if (_linkOpen || !mounted) return;
           _linkOpen = true;
           try {
-            await _askOpenLink(context, u);
+            await askOpenPreviewLink(context, u);
           } finally {
             _linkOpen = false;
           }

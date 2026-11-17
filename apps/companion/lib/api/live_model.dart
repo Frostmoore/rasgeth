@@ -74,6 +74,10 @@ class SessionView extends ChangeNotifier {
   /// A summary is being made while the person waits (`session.compacting`).
   bool compacting = false;
 
+  /// generate_image's picture as it forms (`image.progress`, the page's `drawing`): how far, and
+  /// the last preview (base64 PNG). Gone with the tool's result or a new history.
+  ({int percent, String? preview})? drawing;
+
   bool get calling => call != null;
 
   void _newCall() => call = ModelCall(_now());
@@ -105,6 +109,7 @@ class SessionView extends ChangeNotifier {
       final at = queued.indexWhere((q) => q.match.trim() == said);
       if (at >= 0) queued.removeAt(at);
     }
+    if (e.type == 'tool.result') drawing = null;
     if (e.type == 'message.assistant') {
       liveText = '';
       liveThinking = '';
@@ -114,6 +119,26 @@ class SessionView extends ChangeNotifier {
   }
 
   void changed() => notifyListeners();
+}
+
+/// An agent showed something in the Canvas, live (the page's `canvasEvent`, G42.2): a file or an
+/// agent's port to open (or, [keep], to bring forward as it is: the agent moving in it).
+class CanvasShown {
+  const CanvasShown({
+    required this.sessionId,
+    required this.seq,
+    required this.title,
+    required this.target,
+    this.keep = false,
+  });
+
+  final String sessionId;
+  final int seq;
+  final String title;
+
+  /// `{kind: file, scope, path}` or `{kind: port, agentId, port, path?}`.
+  final Map<String, dynamic> target;
+  final bool keep;
 }
 
 class LiveModel extends ChangeNotifier {
@@ -134,6 +159,33 @@ class LiveModel extends ChangeNotifier {
 
   /// The person's agents at work and the line of turns waiting for a place (3.8.10).
   TurnQueue turns = TurnQueue.empty;
+
+  /// What agents show in the Canvas while the person watches (G42.2): once per event, never when
+  /// the log replays. The conversation on screen opens its Canvas with it, as the page does.
+  final _canvasShown = StreamController<CanvasShown>.broadcast();
+  Stream<CanvasShown> get canvasShown => _canvasShown.stream;
+  final _canvasSeen = <String>{};
+
+  /// A `canvas.show` or `canvas.act` seen live (the page's `canvasEvent`): the followed copy and
+  /// the owner-wide one (`canvas.open`) may both come; the first one counts.
+  void _canvasEvent(String sid, Map<String, dynamic> e) {
+    final type = e['type'];
+    if (type != 'canvas.show' && type != 'canvas.act') return;
+    final p = e['payload'];
+    if (p is! Map<String, dynamic> || p['target'] is! Map<String, dynamic>) return;
+    final key = '$sid:${e['seq']}';
+    if (!_canvasSeen.add(key)) return;
+    if (_canvasSeen.length > 500) _canvasSeen.remove(_canvasSeen.first);
+    _canvasShown.add(
+      CanvasShown(
+        sessionId: sid,
+        seq: (e['seq'] as num?)?.toInt() ?? 0,
+        title: p['title'] is String ? p['title'] as String : '',
+        target: p['target'] as Map<String, dynamic>,
+        keep: type == 'canvas.act',
+      ),
+    );
+  }
 
   /// Where the last answered request was decided (`via`), for the person to see.
   String? lastClosedVia;
@@ -265,6 +317,8 @@ class LiveModel extends ChangeNotifier {
         if (sid == null) break;
         final v = view(sid);
         if (m['incremental'] != true) v.events.clear();
+        // As the page: a history (after a reconnection too) ends a picture forming.
+        v.drawing = null;
         for (final e in (m['events'] as List? ?? const []).whereType<Map<String, dynamic>>()) {
           v._add(RgEvent.fromJson(e));
         }
@@ -273,7 +327,24 @@ class LiveModel extends ChangeNotifier {
       case 'event':
         if (sid == null) break;
         final v = view(sid);
+        // Shown while the person watches: the Canvas opens by itself (not when the log replays).
+        if (v.synced && !v.events.any((e) => e.seq == (m['event'] as Map?)?['seq'])) {
+          _canvasEvent(sid, _map(m['event']));
+        }
         v._add(RgEvent.fromJson(_map(m['event'])));
+        v.changed();
+      // An agent showed something from a conversation the app does not follow (the server sends
+      // it to every connection of the person): the Canvas opens all the same.
+      case 'canvas.open':
+        if (sid != null) _canvasEvent(sid, _map(m['event']));
+      case 'image.progress':
+        if (sid == null) break;
+        final v = view(sid);
+        final preview = m['preview'] is String ? m['preview'] as String : null;
+        v.drawing = (
+          percent: (m['percent'] as num?)?.round().clamp(0, 100) ?? 0,
+          preview: preview ?? v.drawing?.preview,
+        );
         v.changed();
       case 'delta':
         if (sid == null) break;

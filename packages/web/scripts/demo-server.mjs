@@ -1711,6 +1711,46 @@ if (process.env.DEMO_ARTIFACTS === "1") {
     },
   });
 }
+// G42.2 (DEMO_PORT=1): a site God serves in its computer, shown in the Canvas on its port. The demo
+// has no containers: God's computer is 127.0.0.1, where a little server answers (the preview's
+// bridge reaches it as it reaches a container).
+if (process.env.DEMO_PORT === "1") {
+  const { createServer } = await import("node:http");
+  const site = createServer((_req, res) => {
+    res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+    res.end(
+      `<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><body style="margin:0;font-family:system-ui;background:#fbf7f2;color:#2b0f12"><header style="padding:18px 22px;background:linear-gradient(135deg,#2b0f12,#7a1e22 60%,#e0482e);color:#fff"><b style="font-size:20px">Prenotazioni</b><div style="opacity:.8;font-size:13px">vite · server di sviluppo</div></header><main style="padding:22px;display:grid;gap:12px;max-width:640px">${["Lunedì 18:30 · Sala A", "Martedì 20:00 · Sala B", "Giovedì 19:00 · Sala A"].map((x) => `<div style="background:#fff;border:1px solid #eadfd6;border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between"><span>${x}</span><a href="https://example.com/prenota" style="color:#c0392b">Prenota</a></div>`).join("")}</main></body></html>`,
+    );
+  });
+  await new Promise((ok) => site.listen(0, "127.0.0.1", () => ok(undefined)));
+  const sitePort = /** @type {import("node:net").AddressInfo} */ (site.address()).port;
+  const s = await core.startSession("local", god.id);
+  // God's computer (made by its conversation) answers on 127.0.0.1 here, as a container would.
+  // biome-ignore lint/complexity/useLiteralKeys: the core keeps it private; the demo points it.
+  const computer = await core["sandboxes"].get("local-platform");
+  if (computer) Object.defineProperty(computer, "host", { value: "127.0.0.1", configurable: true });
+  await core.store.append({
+    ownerId: "local",
+    projectId: null,
+    agentId: god.id,
+    sessionId: s,
+    body: { type: "message.user", payload: { text: "Fammi vedere il sito delle prenotazioni" } },
+  });
+  await core.store.append({
+    ownerId: "local",
+    projectId: null,
+    agentId: god.id,
+    sessionId: s,
+    body: {
+      type: "canvas.show",
+      payload: {
+        title: "Prenotazioni",
+        target: { kind: "port", agentId: god.id, port: sitePort },
+      },
+    },
+  });
+  console.log(JSON.stringify({ demoPort: sitePort, demoPortSession: s }));
+}
 
 // Archiving a whole project (2026-11-09, DEMO_ARCHIVE=1): an archived project with its
 // conversation, a task and a paused automation; and a shop whose orchestrator is working.

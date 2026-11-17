@@ -25,6 +25,8 @@ void main() {
     agent: j['agent'] as String?,
     port: j['port'] as int?,
     board: j['board'] as String?,
+    variant: j['variant'] as int?,
+    screen: j['screen'] as String?,
     font: j['font'] as String?,
   );
 
@@ -67,6 +69,16 @@ void main() {
       lang: 'it',
     );
     expect(() => embedHash(p), throwsArgumentError);
+  });
+
+  test('G42.2: the board\'s screens and its most variants are the page\'s', () {
+    final screens = (v['boardScreens'] as Map).cast<String, Object?>();
+    expect(boardScreens.keys, screens.keys);
+    for (final e in screens.entries) {
+      final s = (e.value! as Map).cast<String, Object?>();
+      expect((width: s['width'], height: s['height']), boardScreens[e.key], reason: e.key);
+    }
+    expect(boardVariantsMax, v['boardVariantsMax']);
   });
 
   test('a nonce the page takes', () {

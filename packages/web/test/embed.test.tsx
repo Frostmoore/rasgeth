@@ -7,16 +7,31 @@ import { cleanup, render, waitFor } from "@testing-library/preact";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const signIns: [string, unknown][] = [];
-vi.mock("../src/state.js", async (orig) => ({
-  ...(await orig<typeof import("../src/state.js")>()),
-  signIn: async (token: string, o: unknown) => {
-    signIns.push([token, o]);
-    if (token === "bad") throw new Error("401");
-  },
-}));
+const boardLinks: [string, string][] = [];
+vi.mock("../src/state.js", async (orig) => {
+  const real = await orig<typeof import("../src/state.js")>();
+  // G42.2: the board's signed link; everything else as the real api.
+  const boardLink = async (s: string, p: string) => {
+    boardLinks.push([s, p]);
+    return { base: "/preview/b0ard/" };
+  };
+  return {
+    ...real,
+    getApi: () =>
+      new Proxy({} as ReturnType<typeof real.getApi>, {
+        get: (_t, k) => (k === "boardLink" ? boardLink : Reflect.get(real.getApi(), k as string)),
+      }),
+    signIn: async (token: string, o: unknown) => {
+      signIns.push([token, o]);
+      if (token === "bad") throw new Error("401");
+    },
+  };
+});
 
 const embed = await import("../src/embed.js");
-const { EmbedRoot, embedBack, embedTarget } = await import("../src/components/Embed.js");
+const { EmbedRoot, embedBack, embedTarget, listenEmbedPreviewLinks } = await import(
+  "../src/components/Embed.js"
+);
 const { asking, askConfirm } = await import("../src/components/dialogs.js");
 const { lang } = await import("../src/i18n.js");
 const { takeOpenIntent } = await import("../src/components/App.js");
@@ -194,6 +209,88 @@ describe("the page's ways out go to the app", () => {
 
   it("back with nothing of the page's open is «not mine»", () => {
     expect(embedBack()).toBe(false);
+  });
+});
+
+describe("G42.2: a board's variant alone, and a preview's links", () => {
+  it("draws one variant at its screen's width, scaled to the web view, with no board around", async () => {
+    const p = open(
+      `token=t&embed=board&bridge=${NONCE}&board=s1.0123456789ab&variant=2&screen=phone&theme=dark&lang=it`,
+    );
+    if (!p) throw new Error("no embed");
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 195 });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 390 });
+    const r = render(<EmbedRoot params={p} />);
+    await waitFor(() => expect(r.container.querySelector(".tavola-alone iframe")).toBeTruthy());
+    const f = r.container.querySelector(".tavola-alone iframe") as HTMLIFrameElement;
+    expect(boardLinks).toContainEqual(["s1", "0123456789ab"]);
+    expect(f.getAttribute("src")).toBe("/preview/b0ard/2.html");
+    expect(f.getAttribute("sandbox")).toBe("allow-scripts allow-forms");
+    // 390 px of a phone in 195: half, and as tall as the web view at that scale.
+    expect(f.style.width).toBe("390px");
+    expect(f.style.height).toBe("780px");
+    expect(f.style.transform).toBe("scale(0.5)");
+    // The app's board says the rest: no choice, comment or title of the page's.
+    expect(r.container.querySelector(".tavola-head, .tavola-actions, textarea")).toBeNull();
+    await waitFor(() =>
+      expect(sent).toContainEqual({ rg: "embed", n: NONCE, m: { t: "title", name: "Tavola · 2" } }),
+    );
+  });
+
+  it("much wider than the screen, a computer's fills the width and is not scaled", async () => {
+    const p = open(
+      `token=t&embed=board&bridge=${NONCE}&board=s1.0123456789ab&variant=1&screen=computer&theme=dark&lang=it`,
+    );
+    if (!p) throw new Error("no embed");
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 2400 });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 900 });
+    const r = render(<EmbedRoot params={p} />);
+    await waitFor(() => expect(r.container.querySelector(".tavola-alone iframe")).toBeTruthy());
+    const f = r.container.querySelector(".tavola-alone iframe") as HTMLIFrameElement;
+    expect(f.style.width).toBe("2400px");
+    expect(f.style.transform).toBe("");
+  });
+
+  it("a column a little wider than the screen: scaled up, no bands at the sides", async () => {
+    const p = open(
+      `token=t&embed=board&bridge=${NONCE}&board=s1.0123456789ab&variant=1&screen=phone&theme=dark&lang=it`,
+    );
+    if (!p) throw new Error("no embed");
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 468 });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 936 });
+    const r = render(<EmbedRoot params={p} />);
+    await waitFor(() => expect(r.container.querySelector(".tavola-alone iframe")).toBeTruthy());
+    const f = r.container.querySelector(".tavola-alone iframe") as HTMLIFrameElement;
+    expect(f.style.width).toBe("390px");
+    expect(f.style.transform).toBe("scale(1.2)");
+  });
+
+  it("a link a /preview/ frame asks to open goes to the app to ask; other frames' do not", () => {
+    open(`token=t&embed=probe&bridge=${NONCE}&theme=dark&lang=it`);
+    const stop = listenEmbedPreviewLinks();
+    const preview = document.createElement("iframe");
+    preview.src = "/preview/abc/index.html";
+    const other = document.createElement("iframe");
+    other.src = "/zeta/probe.html";
+    document.body.append(preview, other);
+    try {
+      const ask = (from: HTMLIFrameElement, url: string) =>
+        window.dispatchEvent(
+          new MessageEvent("message", {
+            data: { redgiant: "open-link", url },
+            source: from.contentWindow,
+          }),
+        );
+      ask(preview, "https://example.com/doc");
+      ask(other, "https://example.org/");
+      ask(preview, "javascript:alert(1)");
+      const kinds = sent.map((m) => (m as { m: unknown }).m);
+      expect(kinds).toEqual([{ t: "previewLink", url: "https://example.com/doc" }]);
+    } finally {
+      stop();
+      preview.remove();
+      other.remove();
+    }
   });
 });
 

@@ -32,6 +32,7 @@ void main() {
         share: ({title, text, url}) => got.add('share $url'),
         askAgent: (t, r) => got.add('ask $t ${r['line']}'),
         external: (u) => got.add('external $u'),
+        previewLink: (u) => got.add('previewLink $u'),
         close: () => got.add('close'),
         back: (h) => got.add('back $h'),
       ),
@@ -54,6 +55,7 @@ void main() {
       'ask why this? 3',
       'ask page null',
       'external https://example.com',
+      'previewLink https://example.com/a?b=1',
       'close',
       'back false',
     ]);

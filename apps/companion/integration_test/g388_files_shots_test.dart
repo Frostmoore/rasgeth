@@ -73,7 +73,10 @@ void main() {
             )
             .ignore();
       } else {
+        // 3.8.10: the tile shows the agent's conversations; a new one is the panel's.
         await t.tap(find.byKey(Key('tile-${a.id}')));
+        await frames(t, 1500);
+        await t.tap(find.byKey(const Key('agent-conv-new')));
       }
       await frames(t, 3000);
     }

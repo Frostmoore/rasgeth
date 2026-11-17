@@ -5360,4 +5360,243 @@ class AppLocalizationsIt extends AppLocalizations {
   String fxAttachFailed(String name) {
     return 'Non sono riuscito ad allegare $name.';
   }
+
+  @override
+  String get cvBoardChoose => 'Scelgo questa';
+
+  @override
+  String get cvBoardChosen => 'Scelta';
+
+  @override
+  String get cvBoardChoiceWord => 'scelta';
+
+  @override
+  String get cvBoardCommentWord => 'commento';
+
+  @override
+  String get cvBoardWriteComment => 'Scrivi un commento';
+
+  @override
+  String get cvBoardSending => 'Invio…';
+
+  @override
+  String get cvBoardSent => 'Mandato all\'agente';
+
+  @override
+  String get cvBoardOneVariant => '1 variante';
+
+  @override
+  String cvBoardVariants(String n) {
+    return '$n varianti';
+  }
+
+  @override
+  String get cvBoardScreens => 'Larghezza delle anteprime';
+
+  @override
+  String get cvBoardScreenComputer => 'Computer';
+
+  @override
+  String get cvBoardScreenTablet => 'Tablet';
+
+  @override
+  String get cvBoardScreenPhone => 'Telefono';
+
+  @override
+  String get cvBoardFull => 'A tutto schermo';
+
+  @override
+  String get cvBoardCommentHere => 'Commento su questa variante (facoltativo con «Scelgo questa»)';
+
+  @override
+  String get cvBoardSendComment => 'Manda commento';
+
+  @override
+  String get cvBoardWhole => 'Commento sulla tavola intera';
+
+  @override
+  String get cvBoardWholeHint =>
+      'Per esempio: mi piace il colore della 2 con la disposizione della 3';
+
+  @override
+  String get cvBoardSendToAgent => 'Manda all\'agente';
+
+  @override
+  String get cvBoardTab => 'Tavola';
+
+  @override
+  String get cvBoardNotFound => 'Questa tavola non c\'è più';
+
+  @override
+  String get cvCanvasReload => 'Ricarica';
+
+  @override
+  String cvEmbedPort(String port) {
+    return 'Porta $port';
+  }
+
+  @override
+  String cvDrawing(String percent) {
+    return 'Disegno… $percent%';
+  }
+
+  @override
+  String get cvArSection => 'Artefatti';
+
+  @override
+  String get cvArLead =>
+      'Le piccole app in un file solo che gli agenti fanno per te. Si aprono nel Canvas, accanto alla chat.';
+
+  @override
+  String get cvArImport => 'Importa';
+
+  @override
+  String get cvArEmptyTitle => 'Ancora nessun artefatto';
+
+  @override
+  String get cvArEmpty1 =>
+      'Un artefatto è un\'app HTML in un file solo che un agente fa in un turno: un calcolatore, il tabellone di un torneo, un gioco, un visualizzatore per un CSV. Gira nel Canvas, in un riquadro isolato, senza installare nulla e senza andare in rete.';
+
+  @override
+  String get cvArEmpty2 =>
+      'Vive come file nella cartella artefatti/ di un progetto (o di God e degli assistenti), quindi lo trovi anche fra i file a destra. Per averne uno chiedi a un agente uno strumento da tenere e riusare; oppure importa un .rgartifact da un altro RedGiant.';
+
+  @override
+  String get cvArPlacePlatform => 'Cartella di God';
+
+  @override
+  String get cvArPlaceAssistants => 'Scrivania degli assistenti';
+
+  @override
+  String get cvArOpen => 'Apri';
+
+  @override
+  String get cvArExport => 'Esporta';
+
+  @override
+  String get cvArDelete => 'Elimina';
+
+  @override
+  String cvArVersion(String n) {
+    return 'versione $n';
+  }
+
+  @override
+  String get cvArNoHeader => 'senza intestazione';
+
+  @override
+  String cvArLibs(String libs) {
+    return 'librerie: $libs';
+  }
+
+  @override
+  String cvArFrom(String who) {
+    return 'da $who';
+  }
+
+  @override
+  String get cvArPending => 'Importato · non ancora eseguito';
+
+  @override
+  String get cvArReadOnly => 'sola lettura: il progetto è archiviato';
+
+  @override
+  String cvArDeleteQ(String name) {
+    return 'Eliminare «$name»?';
+  }
+
+  @override
+  String get cvArDeleteText =>
+      'Il file va nel cestino della sua cartella, come dall\'esplora file.';
+
+  @override
+  String cvArExportTitle(String name) {
+    return 'Esporta «$name»';
+  }
+
+  @override
+  String get cvArExportZip => 'Un file .rgartifact';
+
+  @override
+  String get cvArExportZipText =>
+      'Per importarlo in un altro RedGiant: l\'app, il suo manifesto e l\'impronta che controlla che arrivi intatta. Non porta con sé nessun permesso.';
+
+  @override
+  String get cvArExportHtml => 'Scarica come HTML';
+
+  @override
+  String get cvArExportHtmlText =>
+      'Per aprirlo altrove. Attenzione: fuori da RedGiant gira senza il riquadro isolato, con i permessi della pagina in cui lo apri.';
+
+  @override
+  String get cvArWhereQ => 'Dove lo metto?';
+
+  @override
+  String get cvArWhereLead =>
+      'Va nella cartella artefatti/ del posto che scegli. Parte senza permessi e la prima volta si apre sul sorgente, con «Esegui».';
+
+  @override
+  String cvArImported(String name, String place) {
+    return '«$name» importato in $place: la prima volta si apre sul sorgente, con «Esegui».';
+  }
+
+  @override
+  String get cvArDataIgnored => 'I dati salvati che porta con sé non sono stati importati.';
+
+  @override
+  String get cvArDataImported => 'Sono arrivati anche i suoi dati salvati.';
+
+  @override
+  String get cvArHasData => 'ha dati salvati';
+
+  @override
+  String get cvArExportData => 'Includi i dati salvati';
+
+  @override
+  String get cvArExportDataHint =>
+      'Ciò che l\'app ha tenuto su RedGiant (la sua memoria). Lascialo spento per una copia pulita, senza i tuoi dati.';
+
+  @override
+  String get cvArPerms => 'Permessi';
+
+  @override
+  String cvArWants(String what) {
+    return 'Chiede di $what';
+  }
+
+  @override
+  String get cvArPermGranted => 'concesso';
+
+  @override
+  String get cvArPermNot => 'non concesso';
+
+  @override
+  String get cvArGrant => 'Concedi';
+
+  @override
+  String get cvArRevoke => 'Togli';
+
+  @override
+  String cvArSpent(String spent, String cap) {
+    return 'spesi $spent di $cap';
+  }
+
+  @override
+  String get sectionArtifacts => 'ARTEFATTI';
+
+  @override
+  String get artifactsRowHint =>
+      'Le app fatte dagli agenti: apri, esporta, importa, elimina e i loro permessi';
+
+  @override
+  String get cvVwToChat => 'Chat';
+
+  @override
+  String get sideTabFiles => 'File';
+
+  @override
+  String get sideTabCanvas => 'Canvas';
+
+  @override
+  String get sideTabsLabel => 'Cosa mostra la colonna a destra';
 }

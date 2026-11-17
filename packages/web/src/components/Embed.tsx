@@ -7,6 +7,7 @@ import { lazy, Suspense } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
 import { handleAppInput, installEmbedWays, onApp, toApp } from "../embed.js";
 import { lang, t } from "../i18n.js";
+import { previewLink } from "../preview-links.js";
 import { type CanvasTarget, signIn } from "../state.js";
 import { asking, Dialogs } from "./dialogs.js";
 import { shortcutsOpen } from "./Shortcuts.js";
@@ -14,8 +15,33 @@ import { shortcutsOpen } from "./Shortcuts.js";
 // Each content comes only when asked for: the test page does not carry the editors.
 const Canvas = lazy(() => import("./Canvas.js").then((m) => ({ default: m.Canvas })));
 const Variants = lazy(() => import("./Variants.js").then((m) => ({ default: m.Variants })));
+const VariantPreview = lazy(() =>
+  import("./Variants.js").then((m) => ({ default: m.VariantPreview })),
+);
 const fileName = (path: string) => path.split(/[\\/]/).filter(Boolean).pop() ?? path;
 const EmbedProbe = lazy(() => import("./EmbedProbe.js").then((m) => ({ default: m.EmbedProbe })));
+
+let previewListeners = 0;
+const onPreviewLink = (e: MessageEvent) => {
+  const url = previewLink(e, document.querySelectorAll("iframe"));
+  if (url) toApp({ t: "previewLink", url: url.href });
+};
+
+/**
+ * Links an agent-made page inside wants to open (3.5.8, `preview-links.ts`): in an embed they go to
+ * the app, which asks the person natively (G42.2). Only from our own `/preview/` frames, as in the
+ * page. Returns how to stop.
+ */
+export function listenEmbedPreviewLinks(): () => void {
+  // One listener for the window, however many ask: the person is never asked twice for a link.
+  if (previewListeners++ === 0) window.addEventListener("message", onPreviewLink);
+  let done = false;
+  return () => {
+    if (done) return;
+    done = true;
+    if (--previewListeners === 0) window.removeEventListener("message", onPreviewLink);
+  };
+}
 
 /** The app's look, applied without touching the page's own choices (`rg.theme`, `rg.lang`). */
 export function applyEmbedLook(o: { theme?: "light" | "dark"; lang?: "it" | "en"; font?: string }) {
@@ -76,6 +102,7 @@ export function EmbedRoot({ params }: { params: EmbedParams }) {
   useEffect(() => {
     applyEmbedLook(params);
     const undo = installEmbedWays();
+    const unlisten = listenEmbedPreviewLinks();
     const off = onApp((m: AppToEmbed) => {
       if (m.t === "theme") applyEmbedLook({ theme: m.theme });
       else if (m.t === "lang") applyEmbedLook({ lang: m.lang });
@@ -90,6 +117,7 @@ export function EmbedRoot({ params }: { params: EmbedParams }) {
     return () => {
       off();
       undo();
+      unlisten();
     };
   }, []);
   const target = embedTarget(params);
@@ -99,7 +127,9 @@ export function EmbedRoot({ params }: { params: EmbedParams }) {
       : target?.kind === "port"
         ? t("embedPort", { port: String(target.port) })
         : params.embed === "board"
-          ? t("boardTab")
+          ? params.variant
+            ? `${t("boardTab")} · ${params.variant}`
+            : t("boardTab")
           : t("embedProbeTitle");
   useEffect(() => {
     if (state === "ok") toApp({ t: "title", name });
@@ -116,6 +146,13 @@ export function EmbedRoot({ params }: { params: EmbedParams }) {
         title={name}
         target={target}
         onShown={(s) => toApp({ t: "title", name, kind: s.kind, size: s.size })}
+      />
+    ) : session && proposal && params.variant ? (
+      <VariantPreview
+        sessionId={session}
+        proposalId={proposal}
+        variant={params.variant}
+        screen={params.screen ?? "computer"}
       />
     ) : session && proposal ? (
       <Variants sessionId={session} proposalId={proposal} />

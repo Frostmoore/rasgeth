@@ -2,9 +2,24 @@
 // app opens over a screen goes through this file (`showRgWindow`, `showRgOverlay`), as the page's
 // Modal: test/no_native_controls_test.dart fails on a `showDialog` anywhere else (G42.0).
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
+
+/// A link an agent-made page wants to open (the page's `listenPreviewLinks`, 3.5.8): opened
+/// outside the app only after the person says yes. Artifacts, widgets and every embed (G42.2).
+Future<void> askOpenPreviewLink(BuildContext context, Uri url) async {
+  if (url.scheme != 'http' && url.scheme != 'https') return;
+  final l = AppLocalizations.of(context);
+  final yes = await askConfirm(
+    context,
+    title: l.previewLinkTitle,
+    body: url.toString(),
+    yes: l.previewLinkOpen,
+  );
+  if (yes) await launchUrl(url, mode: LaunchMode.externalApplication);
+}
 
 Future<bool> askConfirm(
   BuildContext context, {

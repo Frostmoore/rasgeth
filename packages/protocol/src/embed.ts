@@ -36,10 +36,26 @@ export const EMBED_HASH_ORDER = [
   "agent",
   "port",
   "board",
+  "variant",
+  "screen",
   "theme",
   "lang",
   "font",
 ] as const;
+
+/**
+ * The real screens a board's variants are scaled down from (as in Officina, G25.4): the page's
+ * board and the app's draw a variant at one of these widths.
+ */
+export const BOARD_SCREENS = {
+  computer: { width: 1280, height: 800 },
+  tablet: { width: 820, height: 1100 },
+  phone: { width: 390, height: 780 },
+} as const;
+export type BoardScreen = keyof typeof BOARD_SCREENS;
+export const BOARD_SCREEN_NAMES = Object.keys(BOARD_SCREENS) as BoardScreen[];
+/** The most variants a board has (`publish_board`). */
+export const BOARD_VARIANTS_MAX = 8;
 
 const NUMBER = /^\d{1,9}$/;
 const count = z.number().int().min(0).max(999_999_999);
@@ -62,6 +78,12 @@ export const EmbedParams = z
     port: z.number().int().min(1).max(65535).optional(),
     /** `<sessionId>.<proposalId>`, as a board's link from Telegram. */
     board: z.string().regex(board).optional(),
+    /**
+     * One variant of the board only (1-based), drawn at a screen's width and scaled to the web
+     * view (G42.2): the app draws the board itself and holds each variant in a frame of its own.
+     */
+    variant: z.number().int().min(1).max(BOARD_VARIANTS_MAX).optional(),
+    screen: z.enum(BOARD_SCREEN_NAMES as [BoardScreen, ...BoardScreen[]]).optional(),
     theme: z.enum(["light", "dark"]),
     lang: z.enum(["it", "en"]),
     /** The app's font family, when it is not the system's. */
@@ -84,6 +106,8 @@ export const EmbedParams = z
       need(p.scope === undefined && p.line === undefined && p.page === undefined, "no file");
     if (p.embed !== "port") need(p.agent === undefined && p.port === undefined, "no port");
     if (p.embed !== "board") need(p.board === undefined, "no board");
+    if (p.embed !== "board" || p.variant === undefined)
+      need(p.variant === undefined && p.screen === undefined, "no variant");
   });
 export type EmbedParams = z.infer<typeof EmbedParams>;
 
@@ -121,7 +145,7 @@ export function parseEmbedHash(hash: string): EmbedParams | null {
   for (const [k, v] of h) {
     if (seen.has(k)) return null;
     seen.add(k);
-    if (k === "line" || k === "page" || k === "port") {
+    if (k === "line" || k === "page" || k === "port" || k === "variant") {
       if (!NUMBER.test(v)) return null;
       raw[k] = Number(v);
     } else raw[k] = v;
@@ -219,6 +243,11 @@ export const EmbedToApp = z.discriminatedUnion("t", [
     .strict(),
   /** A link to open outside the app. */
   z.object({ t: z.literal("external"), url: webLink }).strict(),
+  /**
+   * A link an agent-made page inside wants to open (the page's `preview-links.ts`, 3.5.8): the
+   * app asks the person, natively, before it opens anywhere (G42.2).
+   */
+  z.object({ t: z.literal("previewLink"), url: webLink }).strict(),
   z.object({ t: z.literal("close") }).strict(),
   /** The answer to the app's `back`: whether the page closed something of its own. */
   z.object({ t: z.literal("back"), handled: z.boolean() }).strict(),

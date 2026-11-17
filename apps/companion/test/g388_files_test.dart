@@ -18,6 +18,7 @@ import 'package:rgcompanion/api/types.dart';
 import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/desktop/desk_controller.dart';
+import 'package:rgcompanion/embed/web_host.dart';
 import 'package:rgcompanion/screens/canvas_screen.dart';
 import 'package:rgcompanion/screens/conversation_screen.dart';
 import 'package:rgcompanion/screens/files/files_explorer.dart';
@@ -35,6 +36,22 @@ Future<void> _settle(WidgetTester tester, [int rounds = 12]) async {
 }
 
 const _demo = 'project:demo';
+
+/// The Canvas's web view, drawn as nothing (the right column's tabs are what counts here).
+class _Web implements WebHost {
+  @override
+  Stream<String> get messages => const Stream.empty();
+  @override
+  Future<void> load(Uri url, WebRules r) async {}
+  @override
+  Future<void> run(String script) async {}
+  @override
+  Future<void> reload() async {}
+  @override
+  Widget view({required bool eager}) => const SizedBox.expand(key: Key('fake-web'));
+  @override
+  void dispose() {}
+}
 
 FakeFiles _workspace() => FakeFiles()
   ..put(_demo, 'README.md', '# Demo\n')
@@ -179,6 +196,12 @@ void main() {
     await _settle(tester, rounds);
   }
 
+  /// 3.8.10: the tile shows the agent's conversations; a new one is the panel's conversation.
+  Future<void> openA3(WidgetTester tester) async {
+    await tap(tester, find.byKey(const Key('tile-a3')));
+    await tap(tester, find.byKey(const Key('agent-conv-new')));
+  }
+
   DeskController desk(WidgetTester tester) =>
       DeskScope.read(tester.element(find.byKey(const Key('desk-panel'))));
 
@@ -189,7 +212,7 @@ void main() {
   ) async {
     final prefs = MemoryAppPrefs();
     await start(tester, prefs);
-    await tap(tester, find.byKey(const Key('tile-a3')));
+    await openA3(tester);
     // The side panel is narrow: the files cover the conversation, and close.
     await tap(tester, find.byKey(const Key('conversation-files')));
     expect(find.byKey(const Key('conversation-files-cover')), findsOneWidget);
@@ -268,14 +291,42 @@ void main() {
     );
     expect(int.parse(prefs.values['explorerWidth']!), greaterThan(before + 40));
 
-    // A file opens in the app's Canvas.
+    // 3.8.11: a file opens in the Canvas beside the conversation, in the same right column:
+    // two tabs, the Canvas in front, the tree kept behind its tab.
+    debugWebHost = (_) => _Web();
+    addTearDown(() => debugWebHost = null);
     await tap(tester, row('README.md'), 14);
-    expect(find.byType(CanvasScreen), findsOneWidget);
+    expect(find.byType(CanvasScreen), findsNothing);
+    expect(find.byKey(const Key('canvas-panel')), findsOneWidget);
+    expect(find.byKey(Key('canvas-tab-canvas:$_demo:README.md')), findsOneWidget);
+    expect(find.byKey(const Key('side-tabs')), findsOneWidget);
+    expect(find.byKey(const Key('conversation-files-side')), findsNothing, reason: 'behind');
+    await tap(tester, find.byKey(const Key('side-tab-files')));
+    expect(find.byKey(const Key('conversation-files-side')), findsOneWidget);
+    expect(find.byKey(const Key('canvas-panel')), findsNothing, reason: 'behind');
+    expect(row('src/app.ts'), findsOneWidget, reason: 'the tree keeps what was open');
+    // The folder button: behind the Canvas it brings the files in front, in front it closes them.
+    await tap(tester, find.byKey(const Key('side-tab-canvas')));
+    await tap(tester, find.byKey(const Key('conversation-files')));
+    expect(find.byKey(const Key('conversation-files-side')), findsOneWidget);
+    expect(prefs.values['explorerOpen'], '1');
+    await tap(tester, find.byKey(const Key('conversation-files')));
+    expect(find.byKey(const Key('conversation-files-side')), findsNothing);
+    expect(find.byKey(const Key('side-tabs')), findsNothing, reason: 'one open, no tabs');
+    expect(find.byKey(const Key('canvas-panel')), findsOneWidget, reason: 'the Canvas stays');
+    // Open again: the files in front; the Canvas closed, the files alone.
+    await tap(tester, find.byKey(const Key('conversation-files')));
+    expect(find.byKey(const Key('conversation-files-side')), findsOneWidget);
+    await tap(tester, find.byKey(const Key('side-tab-canvas')));
+    await tap(tester, find.byKey(const Key('canvas-panel-hide')));
+    expect(find.byKey(const Key('canvas-panel')), findsNothing);
+    expect(find.byKey(const Key('side-tabs')), findsNothing);
+    expect(find.byKey(const Key('conversation-files-side')), findsOneWidget);
     await done(tester);
 
     // The next conversation opens with its files.
     await start(tester, prefs);
-    await tap(tester, find.byKey(const Key('tile-a3')));
+    await openA3(tester);
     expect(desk(tester).full, isTrue);
     expect(find.byKey(const Key('conversation-files-side')), findsOneWidget);
     await tap(tester, find.byKey(const Key('conversation-files')));
@@ -289,7 +340,7 @@ void main() {
   ) async {
     final prefs = MemoryAppPrefs()..values['explorerOpen'] = '1';
     await start(tester, prefs);
-    await tap(tester, find.byKey(const Key('tile-a3')));
+    await openA3(tester);
     desk(tester).setFull(true);
     await _settle(tester);
     expect(find.byKey(const Key('conversation-files-side')), findsOneWidget);

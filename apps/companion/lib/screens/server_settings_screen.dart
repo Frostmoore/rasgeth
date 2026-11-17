@@ -21,6 +21,7 @@ import '../ui/icons.dart';
 import '../ui/words.dart';
 import '../embed/embed_screen.dart';
 import 'at_work_screen.dart';
+import 'artifacts_screen.dart';
 import 'first_start_screen.dart' show openExternal;
 import 'full_settings_screen.dart';
 import 'update_screen.dart';
@@ -431,6 +432,20 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       ),
                       trailing: RgIcon(RgIcons.chevronRight, color: c.dim),
                       onTap: () => openAtWork(context),
+                    ),
+                  ],
+                ),
+                // ---- artifacts (G42.2: native, as the page's Settings › Artifacts) ----
+                _Head(l.sectionArtifacts),
+                _Card(
+                  children: [
+                    ListTile(
+                      key: const Key('settings-artifacts'),
+                      leading: RgIcon(RgIcons.code, color: c.accent),
+                      title: Text(l.cvArSection),
+                      subtitle: Text(l.artifactsRowHint),
+                      trailing: RgIcon(RgIcons.chevronRight, color: c.dim),
+                      onTap: () => openArtifacts(context),
                     ),
                   ],
                 ),

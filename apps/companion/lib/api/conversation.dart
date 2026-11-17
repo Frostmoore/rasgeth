@@ -432,6 +432,11 @@ class CanvasItem extends ChatItem {
   String? get path => _str(target['path']);
   bool get isFile => target['kind'] == 'file';
 
+  /// An agent's port (G42.2): its agent, number and path.
+  bool get isPort => target['kind'] == 'port' && agentId != null && port != null;
+  String? get agentId => _str(target['agentId']);
+  int? get port => (target['port'] as num?)?.toInt();
+
   @override
   String get kind => 'canvas';
 

@@ -291,6 +291,9 @@ void main() {
         containsPair('provider', 'claude-subscription'),
       );
       expect(find.text('Claude Sonnet 5 · Abbonamento'), findsOneWidget);
+      // G42.2: Artifacts, native, between the model and «from outside».
+      await see(find.byKey(const Key('settings-artifacts')));
+      expect(find.text('Artefatti'), findsWidgets);
       await see(find.byKey(const Key('outside-link')));
       expect(find.text('https://casa.tail1234.ts.net'), findsOneWidget);
       // On a phone, the page's Settings inside the app.

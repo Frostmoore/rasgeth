@@ -360,15 +360,18 @@
       "note": "Project list with git state (advanced interface); 3.8.8: a click shows the project's conversations (its lead's and its team's; archived, read only with its tasks), its menu archives it (the page's window: who works, the automations that pause), restores it and initialises git; the full Settings › Projects page only in «All settings»."
     },
     "artifacts": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/screens/artifacts_screen.dart",
+        "lib/api/artifacts.dart",
+        "lib/screens/server_settings_screen.dart"
       ],
       "phase": "G42.2",
       "rows": [
-        152
+        152,
+        61
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native artifact list (export, delete, import, grants) in G42.2."
+      "note": "Settings of the server › Artifacts: by place, facts, permissions (grant with a cap, take back), open, export (.rgartifact with or without its data, or HTML), delete, import into a place; capability sentences from the protocol's vectors."
     },
     "acp": {
       "app": "partial",
@@ -623,10 +626,12 @@
     "site": {
       "app": "partial",
       "files": [
+        "lib/api/artifact_frame.dart",
+        "lib/api/preview_relay.dart",
+        "lib/embed/embed_screen.dart",
         "lib/screens/canvas_screen.dart",
         "lib/ui/artifact_frame_view.dart",
-        "lib/api/artifact_frame.dart",
-        "lib/api/preview_relay.dart"
+        "lib/ui/dialogs.dart"
       ],
       "phase": "G42.6",
       "rows": [
@@ -634,7 +639,7 @@
         109,
         110
       ],
-      "note": "Artifacts run on the signed /preview/ link with the bridge (3.8.7; Linux: «Open in the page»); other HTML in a sandboxed frame; the page's site view via embed in G42.6."
+      "note": "Artifacts run on the signed /preview/ link with the bridge (3.8.7); an agent's port is the page in embed=port (G42.2); a link an agent-made page wants to open is asked natively in every frame and embed (previewLink, G42.2); other HTML in a sandboxed frame; the page's site view for files via embed in G42.6."
     },
     "layers": {
       "app": "no",
@@ -775,30 +780,35 @@
       ]
     },
     "variants": {
-      "app": "partial",
-      "files": [
-        "lib/api/conversation.dart",
-        "lib/ui/chat/chat_parts.dart"
-      ],
-      "phase": "G42.2",
-      "rows": [
-        74
-      ],
-      "note": "The card says waiting or chosen, but does not open the board (embed=board, native comments and choice)."
-    },
-    "canvas": {
-      "app": "partial",
+      "app": "native",
       "files": [
         "lib/api/conversation.dart",
         "lib/ui/chat/chat_parts.dart",
-        "lib/screens/canvas_screen.dart"
+        "lib/screens/board_screen.dart",
+        "lib/api/board.dart"
+      ],
+      "phase": "G42.2",
+      "rows": [
+        74,
+        272
+      ],
+      "note": "The card opens the native board (screens, choose, full screen, comments, history); each variant is the page in embed=board&variant=n&screen=…; #tavola= links in the chat open it too."
+    },
+    "canvas": {
+      "app": "native",
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/embed/embed_screen.dart",
+        "lib/screens/canvas_panel.dart",
+        "lib/screens/canvas_screen.dart",
+        "lib/ui/chat/chat_parts.dart"
       ],
       "phase": "G42.2",
       "rows": [
         86,
         109
       ],
-      "note": "File targets open the Canvas; a port target does not open yet (embed=port)."
+      "note": "A line on a computer, a big card on a phone; a tap shows it again: the panel on the right (files and ports in embed), or the whole screen."
     },
     "widget": {
       "app": "embed",
@@ -1157,14 +1167,18 @@
       ]
     },
     "canvas.open": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.6",
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/screens/canvas_panel.dart",
+        "lib/screens/conversation_screen.dart"
+      ],
+      "phase": "G42.2",
       "rows": [
         86,
         300
       ],
-      "note": "An agent's canvas.show from another conversation does not bring the app's Canvas forward."
+      "note": "What an agent shows opens by itself while the person watches (never from the replayed log): a panel on the right of the conversation on a computer, with tabs; the whole screen on a phone. The same rule as the page's canvasEvent/openCanvas."
     },
     "session.synced": {
       "app": "n/a",
@@ -1234,13 +1248,17 @@
       ]
     },
     "image.progress": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/ui/chat/chat_parts.dart",
+        "lib/screens/conversation_screen.dart"
+      ],
       "phase": "G42.2",
       "rows": [
         45
       ],
-      "note": "generate_image's live preview is not drawn; the final image is (G42.1)."
+      "note": "generate_image's picture as it forms: the last preview, the bar and the percent, gone with the tool's result."
     },
     "question.request": {
       "app": "native",

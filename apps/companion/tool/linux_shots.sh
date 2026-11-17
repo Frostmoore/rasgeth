@@ -14,7 +14,8 @@ shots="${1:?a folder for the screenshots}"
 test="${2:-integration_test/shots_test.dart}"
 demo_env="${RG_DEMO_ENV:-DEMO_PASSWORD=companion-test-1 DEMO_REQUESTS=1 DEMO_CRITICAL=1}"
 rg=/mnt/archive1/officina-dati/rg-test
-export FLUTTER_ROOT="$rg/flutter" PUB_CACHE="$rg/pub-cache" PATH="$rg/flutter/bin:$PATH"
+# RG_PUB_CACHE: a pub cache of its own (another build on the shared one races on its lock).
+export FLUTTER_ROOT="$rg/flutter" PUB_CACHE="${RG_PUB_CACHE:-$rg/pub-cache}" PATH="$rg/flutter/bin:$PATH"
 node="${RG_NODE:-$rg/bin/node}"
 repo="$(cd ../.. && pwd)"
 mkdir -p "$shots"
@@ -27,7 +28,8 @@ eval "$(dbus-launch --sh-syntax)"
 # shellcheck disable=SC2086 # the variables are words on purpose
 env $demo_env DEMO_HOST=127.0.0.1 \
   "$node" "$repo/packages/web/scripts/demo-server.mjs" 7651 >/tmp/demo.log 2>&1 &
-for _ in $(seq 1 120); do grep -q '"url"' /tmp/demo.log && break; sleep 1; done
+# RG_DEMO_WAIT: seconds the demo may take to start (a busy Docker host needs more than 120).
+for _ in $(seq 1 "${RG_DEMO_WAIT:-120}"); do grep -q '"url"' /tmp/demo.log && break; sleep 1; done
 grep -q '"url"' /tmp/demo.log || { cat /tmp/demo.log; exit 1; }
 RG_LIVE_URL=http://127.0.0.1:7651 RG_SHOTS="$shots" \
   flutter test "$test" -d linux

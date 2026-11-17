@@ -67,7 +67,7 @@ Map<String, Object?>? embedToApp(Object? m) {
           (x['text'] != null || x['url'] != null),
     'askAgent' =>
       _only(x, {'t', 'text', 'ref'}) && _str(x['text'], min: 1, max: 20000) && _ref(x['ref']),
-    'external' =>
+    'external' || 'previewLink' =>
       _only(x, {'t', 'url'}) && _str(x['url'], max: 4000) && _webLink.hasMatch(x['url']! as String),
     'close' => _only(x, {'t'}),
     'back' => _only(x, {'t', 'handled'}) && x['handled'] is bool,
@@ -161,6 +161,7 @@ class EmbedHandlers {
     this.share,
     this.askAgent,
     this.external,
+    this.previewLink,
     this.close,
     this.back,
   });
@@ -174,6 +175,9 @@ class EmbedHandlers {
   final void Function({String? title, String? text, String? url})? share;
   final void Function(String text, Map<String, Object?> ref)? askAgent;
   final void Function(Uri url)? external;
+
+  /// A link an agent-made page inside wants to open: the app asks the person first (G42.2).
+  final void Function(Uri url)? previewLink;
   final void Function()? close;
   final void Function(bool handled)? back;
 }
@@ -223,6 +227,8 @@ class EmbedBridge {
         h.askAgent?.call(m['text']! as String, (m['ref']! as Map).cast<String, Object?>());
       case 'external':
         h.external?.call(Uri.parse(m['url']! as String));
+      case 'previewLink':
+        h.previewLink?.call(Uri.parse(m['url']! as String));
       case 'close':
         h.close?.call();
       case 'back':

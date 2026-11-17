@@ -47,6 +47,11 @@ const good: [string, EmbedParams, string][] = [
     "token=rgd_abc123&embed=board&bridge=n0nce-n0nce_n0nce&board=s_1.0123456789ab&theme=dark&lang=it",
   ],
   [
+    "one variant of a board, at a phone's width (G42.2)",
+    { ...base, embed: "board", board: "s_1.0123456789ab", variant: 2, screen: "phone" },
+    "token=rgd_abc123&embed=board&bridge=n0nce-n0nce_n0nce&board=s_1.0123456789ab&variant=2&screen=phone&theme=dark&lang=it",
+  ],
+  [
     "the test page with the app's font",
     { ...base, embed: "probe", font: "Inter, sans-serif" },
     "token=rgd_abc123&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&font=Inter%2C+sans-serif",
@@ -106,6 +111,22 @@ describe("the embed's fragment", () => {
       "a font that would break the style",
       "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&font=a%7Bb",
     ],
+    [
+      "a variant out of a board's range",
+      "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.0123456789ab&variant=9&theme=dark&lang=it",
+    ],
+    [
+      "a variant of no board",
+      "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&variant=1&theme=dark&lang=it",
+    ],
+    [
+      "a screen without its variant",
+      "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.0123456789ab&screen=phone&theme=dark&lang=it",
+    ],
+    [
+      "an unknown screen",
+      "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.0123456789ab&variant=1&screen=tv&theme=dark&lang=it",
+    ],
     ["a token with a space", "token=a+b&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it"],
   ];
   it.each(bad)("refuses %s", (_name, hash) => {
@@ -144,6 +165,7 @@ describe("the bridge", () => {
     { t: "copy", text: "x" },
     { t: "share", url: "https://example.com/a" },
     { t: "external", url: "https://example.com" },
+    { t: "previewLink", url: "https://example.com/a?b=1" },
     { t: "close" },
     { t: "back", handled: false },
   ];
@@ -157,6 +179,7 @@ describe("the bridge", () => {
     ["saveAs to another origin", { t: "saveAs", name: "a", url: "//evil.example/x" }],
     ["share with nothing", { t: "share", title: "x" }],
     ["an external javascript: link", { t: "external", url: "javascript:alert(1)" }],
+    ["a preview's link to a file", { t: "previewLink", url: "file:///etc/passwd" }],
     ["an empty question", { t: "askAgent", text: "", ref: {} }],
     ["an extra field", { t: "ready", x: 1 }],
   ];
