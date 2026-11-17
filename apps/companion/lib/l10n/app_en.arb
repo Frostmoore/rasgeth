@@ -627,7 +627,7 @@
     }
   },
   "agentStop": "Stop",
-  "agentStopped": "Stopped: {name}",
+  "agentStopped": "Interrupted: {name}",
   "@agentStopped": {
     "placeholders": {
       "name": {
@@ -2523,8 +2523,8 @@
   "asKbScope_agent": "One agent",
   "asKbScope_project": "A project's agents",
   "asDanger": "Stopping it",
-  "asStopHelp": "Its conversations stay; it does no more work, nor do those under it.",
-  "asStopAsk": "Stop {name}? Its conversations stay; it does no more work.",
+  "asStopHelp": "A pause: its turns stop now, with those under it, and its open tasks wait. «Resume» brings it back and the tasks go on in the same conversation. To take it out of the team, use «Remove…».",
+  "asStopAsk": "Stop {name}? It is a pause: its turns stop now and its open tasks wait; «Resume» brings it back and they go on where they were.",
   "@asStopAsk": {
     "placeholders": {
       "name": {
@@ -3571,5 +3571,72 @@
       }
     }
   },
-  "raBadge": "Removed"
+  "raBadge": "Removed",
+  "paMenu": "Stop…",
+  "paTitle": "Stop {name}?",
+  "@paTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paYes": "Stop {name}",
+  "@paYes": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paDone": "{name} is paused: «Resume» brings it back.",
+  "@paDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paResume": "Resume",
+  "paResumeHelp": "{name} is stopped (paused). «Resume» brings it back with those stopped under it, and its open tasks go on in the same conversation.",
+  "@paResumeHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paResumed": "{name} works again.",
+  "@paResumed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paResumedTasks": "{name} works again: its open tasks go on.",
+  "@paResumedTasks": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paResumeFailed": "Not resumed: {why}",
+  "@paResumeFailed": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "paReadOnly": "{name} is stopped (paused): resume it to write to it.",
+  "@paReadOnly": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paBadge": "Paused"
 }

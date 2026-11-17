@@ -5877,26 +5877,28 @@ export class RedGiantCore implements OrchestrationHost {
   }
 
   async listSessions(ownerId: string, agentId?: string) {
-    return this.o.db.query<{
-      id: string;
-      agent_id: string;
-      project_id: string | null;
-      created_at: Date;
-      title: string | null;
-      pinned: boolean;
-      archived: boolean;
-      last_at: Date | null;
-      replied_at: Date | null;
-      model: ModelSpec | string | null;
-      folder: string | null;
-      forked_from: string | null;
-    }>(
-      `SELECT id, agent_id, project_id, created_at, title, pinned, archived, last_at, replied_at, model, folder, forked_from FROM rg_sessions WHERE owner_id = $1${agentId ? " AND agent_id = $2" : ""} ORDER BY created_at`,
-      agentId ? [ownerId, agentId] : [ownerId],
-    ).then((rows) =>
-      // A removed agent's conversations (p3.8.9) are read from «Removed agents», by its id.
-      agentId ? rows : rows.filter((r) => this.registry.get(r.agent_id)?.status !== "removed"),
-    );
+    return this.o.db
+      .query<{
+        id: string;
+        agent_id: string;
+        project_id: string | null;
+        created_at: Date;
+        title: string | null;
+        pinned: boolean;
+        archived: boolean;
+        last_at: Date | null;
+        replied_at: Date | null;
+        model: ModelSpec | string | null;
+        folder: string | null;
+        forked_from: string | null;
+      }>(
+        `SELECT id, agent_id, project_id, created_at, title, pinned, archived, last_at, replied_at, model, folder, forked_from FROM rg_sessions WHERE owner_id = $1${agentId ? " AND agent_id = $2" : ""} ORDER BY created_at`,
+        agentId ? [ownerId, agentId] : [ownerId],
+      )
+      .then((rows) =>
+        // A removed agent's conversations (p3.8.9) are read from «Removed agents», by its id.
+        agentId ? rows : rows.filter((r) => this.registry.get(r.agent_id)?.status !== "removed"),
+      );
   }
 
   /** The list's own data: a title, pinned, archived (the session's log is never changed). */
@@ -6761,7 +6763,8 @@ export class RedGiantCore implements OrchestrationHost {
         picked.push(t);
       }
     const ownerId = resumed[0]?.ownerId;
-    if (ownerId) this.toOwner(ownerId, { type: "agents.changed", agentIds: ids, change: "resumed" });
+    if (ownerId)
+      this.toOwner(ownerId, { type: "agents.changed", agentIds: ids, change: "resumed" });
     const done = Promise.all(
       picked.map(async (t) => {
         try {
@@ -6831,7 +6834,8 @@ export class RedGiantCore implements OrchestrationHost {
     for (const sid of new Set(closed.map((t) => t.sessionId)))
       await this.reportTasks(sid).catch(() => {});
     const ownerId = removed[0]?.ownerId;
-    if (ownerId) this.toOwner(ownerId, { type: "agents.changed", agentIds: ids, change: "removed" });
+    if (ownerId)
+      this.toOwner(ownerId, { type: "agents.changed", agentIds: ids, change: "removed" });
     return { removed: ids, tasks: closed.map((t) => t.id), interrupted };
   }
 

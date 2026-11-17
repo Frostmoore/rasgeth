@@ -9,7 +9,7 @@
 import { useState } from "preact/hooks";
 import type { Agent, Budget } from "../api.js";
 import { roleText, t, tOptional } from "../i18n.js";
-import { IconPlus } from "../icons.js";
+import { IconPlay, IconPlus } from "../icons.js";
 import {
   agents,
   attempt,
@@ -31,7 +31,12 @@ import { Mascot } from "./Mascot.js";
 import { modelName } from "./ModelMenu.js";
 import { ModelSelect, useModels } from "./ModelSelect.js";
 import { PromptEditor } from "./PromptEditor.js";
-import { RemoveAgentDialog, RemovedAgentsList, removable } from "./RemovedAgents.js";
+import {
+  RemoveAgentDialog,
+  RemovedAgentsList,
+  removable,
+  resumeStopped,
+} from "./RemovedAgents.js";
 import { Acts, Head, Seg, Sub, Switch } from "./SettingsKit.js";
 import { Modal } from "./ui.js";
 
@@ -385,6 +390,9 @@ export function AgentPanel({
 }) {
   const [tab, setTab] = useState<PanelTab>("general");
   const [removing, setRemoving] = useState(false);
+  /** What «Stop» or «Resume» did (p3.8.9), in words. */
+  const [said, setSaid] = useState<{ ok: boolean; text: string }>();
+  const [busy, setBusy] = useState(false);
   const active = agent.status === "active";
   const tabs: PanelTab[] =
     agent.kind === "demigod"
@@ -403,8 +411,25 @@ export function AgentPanel({
           type="button"
           class="wz-btn quiet st-danger"
           onClick={async () => {
-            if (await askConfirm(t("agentStopConfirm", { name: agent.name }), { danger: true }))
-              void attempt(() => getApi().stopAgent(agent.id)).then(refresh);
+            // A pause (p3.8.9): the window says so, and that «Remove» is another thing.
+            if (
+              !(await askConfirm(t("agentStopAsk", { name: agent.name }), {
+                text: t("agentStopConfirm"),
+                danger: true,
+                yes: t("agentStopYes"),
+              }))
+            )
+              return;
+            const r = await attempt(() => getApi().stopAgent(agent.id));
+            if (r)
+              setSaid({
+                ok: true,
+                text:
+                  r.waiting > 0
+                    ? t("agentStoppedTasks", { name: agent.name, n: String(r.waiting) })
+                    : t("agentStoppedNone", { name: agent.name }),
+              });
+            await refresh();
           }}
         >
           {t("stop")}
@@ -425,12 +450,27 @@ export function AgentPanel({
         {t("agentOpenChat")}
       </button>
     </>
-  ) : remove ? (
+  ) : (
     <>
       {remove}
       <span class="spacer" />
+      {/* Stopped is a pause (p3.8.9): «Resume» brings it back, its open tasks go on. */}
+      <button
+        type="button"
+        class="wz-btn primary"
+        disabled={busy}
+        onClick={() => {
+          setBusy(true);
+          void resumeStopped(agent).then((r) => {
+            setBusy(false);
+            setSaid(r);
+          });
+        }}
+      >
+        <IconPlay size={14} /> {t("agentResume")}
+      </button>
     </>
-  ) : undefined;
+  );
   return (
     <>
       <Modal
@@ -448,6 +488,16 @@ export function AgentPanel({
         onClose={onClose}
         foot={foot}
       >
+        {said && (
+          <p class={`notice ${said.ok ? "ok" : "error"} st-said`} role="status">
+            {said.text}
+          </p>
+        )}
+        {!active && !said && (
+          <p class="notice st-paused" role="status">
+            {t("agentStoppedLead")}
+          </p>
+        )}
         <div
           class="agent-panel-tabs wz-seg st-tabs"
           role="tablist"

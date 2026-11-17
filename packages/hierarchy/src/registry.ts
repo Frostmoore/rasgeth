@@ -229,14 +229,9 @@ export class AgentRegistry {
   /** The faces the owner's working agents have now (all but `except`). */
   private mascotBook(ownerId: string, except?: string): MascotBook {
     const book = new MascotBook();
+    // A removed agent keeps its face (p3.8.9): it may come back.
     for (const a of this.cache.values())
-      // A removed agent keeps its face (p3.8.9): it may come back.
-      if (
-        a.ownerId === ownerId &&
-        a.status !== "stopped" &&
-        a.mascotSeed &&
-        a.id !== except
-      ) {
+      if (a.ownerId === ownerId && a.status !== "stopped" && a.mascotSeed && a.id !== except) {
         const spec = this.mascotOf(a.id);
         if (spec) book.add(spec);
       }
@@ -508,7 +503,9 @@ export class AgentRegistry {
       throw new HierarchyError(`Not allowed to resume "${target.name}"`);
     const parent = target.parentId ? this.cache.get(target.parentId) : undefined;
     if (parent && parent.status !== "active")
-      throw new HierarchyError(`"${parent.name}" above it is ${parent.status}: bring it back first`);
+      throw new HierarchyError(
+        `"${parent.name}" above it is ${parent.status}: bring it back first`,
+      );
     const group: AgentRecord[] = [];
     const walk = (a: AgentRecord) => {
       group.push(a);
@@ -570,7 +567,8 @@ export class AgentRegistry {
   ): Promise<{ removed: AgentRecord[] }> {
     const target = this.cache.get(id);
     if (!target) throw new HierarchyError(`Unknown agent "${id}"`);
-    if (target.status === "removed") throw new HierarchyError(`"${target.name}" is removed already`);
+    if (target.status === "removed")
+      throw new HierarchyError(`"${target.name}" is removed already`);
     if (!can(actor, "remove", target, this.resolve))
       throw new HierarchyError(
         target.kind === "god" || target.kind === "demigod" || target.chat

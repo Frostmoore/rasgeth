@@ -843,10 +843,14 @@ export class Api {
     this.call<RefineEstimate>("POST", "/api/prompts/refine/estimate", r);
   /** A revised text and what changed: never saved by itself. */
   refinePrompt = (r: RefineRequest) => this.call<RefineResult>("POST", "/api/prompts/refine", r);
+  /** A pause (p3.8.9): its turns stop, its open tasks wait (`waiting`) for «Resume». */
   stopAgent = (id: string) =>
-    this.call<{ stopped: string[] }>("POST", `/api/agents/${id}/stop`, {
+    this.call<{ stopped: string[]; waiting: number }>("POST", `/api/agents/${id}/stop`, {
       reason: "stopped from the web UI",
     });
+  /** A stopped agent back at work (p3.8.9): its open tasks go on in the same conversations. */
+  resumeAgent = (id: string) =>
+    this.call<{ resumed: string[]; tasks: string[] }>("POST", `/api/agents/${id}/resume`);
   /** What removing it would do (p3.8.9): who goes with it, tasks, turns, whether it may. */
   removePreview = (id: string) =>
     this.call<RemovePreview>("GET", `/api/agents/${id}/remove-preview`);

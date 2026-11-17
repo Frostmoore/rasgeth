@@ -2,10 +2,10 @@ import { randomUUID } from "node:crypto";
 import type { Hooks, SendResult, Tool, ToolContext } from "@redgiant/agent";
 import type { EventStore } from "@redgiant/events";
 import {
+  type Actor,
   type AgentAnswer,
   type AgentRecord,
   type AgentRegistry,
-  type Actor,
   type ApprovalRequest,
   budgetKeys,
   CHILD_KINDS,
@@ -46,7 +46,11 @@ export interface OrchestrationHost {
     id: string,
     reason: string,
   ): Promise<{ stopped: string[]; waiting: number }>;
-  resumeAgent?(actor: Actor, id: string, by: string): Promise<{ resumed: string[]; tasks: string[] }>;
+  resumeAgent?(
+    actor: Actor,
+    id: string,
+    by: string,
+  ): Promise<{ resumed: string[]; tasks: string[] }>;
   removeAgent?(
     actor: Actor,
     id: string,
@@ -942,20 +946,18 @@ export function orchestrationTools(
         }
         // A namesake out of work (p3.8.9) is never brought back in silence: a new agent is made,
         // and the creator learns the old one is there to resume or restore.
-        const namesake = host.registry
-          .list({ ownerId: self.ownerId, removed: true })
-          .find(
-            (x) =>
-              x.id !== a.id &&
-              x.status !== "active" &&
-              x.kind === a.kind &&
-              x.projectId === a.projectId &&
-              // A project has one lead (and one inspector): any name; the others by name.
-              ((x.kind === "orchestrator" || x.kind === "inspector") &&
-              (x.subprojectId ?? null) === (a.subprojectId ?? null)
-                ? true
-                : x.name.trim().toLowerCase() === a.name.trim().toLowerCase()),
-          );
+        const namesake = host.registry.list({ ownerId: self.ownerId, removed: true }).find(
+          (x) =>
+            x.id !== a.id &&
+            x.status !== "active" &&
+            x.kind === a.kind &&
+            x.projectId === a.projectId &&
+            // A project has one lead (and one inspector): any name; the others by name.
+            ((x.kind === "orchestrator" || x.kind === "inspector") &&
+            (x.subprojectId ?? null) === (a.subprojectId ?? null)
+              ? true
+              : x.name.trim().toLowerCase() === a.name.trim().toLowerCase()),
+        );
         const note = namesake
           ? ` Note: ${namesake.name} (${namesake.id}) is ${namesake.status} — ${namesake.status === "removed" ? "restore_agent" : "resume_agent"} brings that one back with its history; if it was what you needed, remove_agent the new one.`
           : "";

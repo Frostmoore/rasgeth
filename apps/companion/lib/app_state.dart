@@ -871,8 +871,8 @@ class AppController extends ChangeNotifier {
     }
   }
 
-  /// The page's «Stop» (`POST /api/agents/:id/stop`): the agent and those under it, for good.
-  /// Never God nor the Chat (their screens hide it).
+  /// The page's «Stop» (`POST /api/agents/:id/stop`, 3.8.9: a pause): the agent and those under
+  /// it stop working, their open tasks wait; «Resume» brings them back. Never God.
   Future<String?> stopAgentForGood(Agent a) async {
     final c = client;
     if (c == null) return 'offline';
@@ -904,6 +904,20 @@ class AppController extends ChangeNotifier {
       return null;
     } on ApiException catch (e) {
       return e.message;
+    }
+  }
+
+  /// «Resume» (3.8.9, `POST /api/agents/:id/resume`): a stopped agent works again and its open
+  /// tasks go on in their conversations. `why` null when done (with how many tasks go on).
+  Future<({String? why, int tasks})> resumeAgent(Agent a) async {
+    final c = client;
+    if (c == null) return (why: 'offline', tasks: 0);
+    try {
+      final tasks = await c.resumeAgent(a.id);
+      await _reloadTeamNow();
+      return (why: null, tasks: tasks.length);
+    } on ApiException catch (e) {
+      return (why: e.message, tasks: 0);
     }
   }
 

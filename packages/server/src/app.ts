@@ -74,11 +74,11 @@ import { CodeChangeError } from "./code.js";
 import { codeRoutes } from "./code-routes.js";
 import { convertRoutes } from "./convert-routes.js";
 import {
+  AgentInactiveError,
   BadRequestError,
   NoModelError,
   NotFoundError,
   ProjectArchivedError,
-  AgentInactiveError,
   type RedGiantCore,
   SessionBusyError,
 } from "./core.js";

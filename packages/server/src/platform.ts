@@ -7,11 +7,11 @@ import {
   type AgentRegistry,
   DEFAULT_DANGER_RULES,
   DEFAULT_POLICY,
-  REMOVE_AGENT,
   OUTSIDE_PROJECT,
   type PermissionRule,
   type PersistentBudget,
   type PolicySettings,
+  REMOVE_AGENT,
 } from "@redgiant/hierarchy";
 import {
   catalogConfig,

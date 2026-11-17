@@ -234,7 +234,12 @@ describe("removing an agent from the team (p3.8.9)", () => {
       running: number;
       allowed: boolean;
     }>("GET", `/api/agents/${t.orch}/remove-preview`);
-    expect(preview.body).toMatchObject({ with: [{ id: t.dev }], tasks: 1, running: 1, allowed: true });
+    expect(preview.body).toMatchObject({
+      with: [{ id: t.dev }],
+      tasks: 1,
+      running: 1,
+      allowed: true,
+    });
 
     const said = await say(
       srv,
@@ -304,12 +309,12 @@ describe("removing an agent from the team (p3.8.9)", () => {
 
     // God, Demi-God and the Chat are never removed.
     const chat = await srv.core.chatAgent("me");
-    expect(await say(srv, t.godSid, call("remove_agent", { agent_id: chat.id, reason: "x" }))).toContain(
-      "never removed",
-    );
-    expect(await say(srv, t.godSid, call("remove_agent", { agent_id: t.god, reason: "x" }))).toContain(
-      "never removed",
-    );
+    expect(
+      await say(srv, t.godSid, call("remove_agent", { agent_id: chat.id, reason: "x" })),
+    ).toContain("never removed");
+    expect(
+      await say(srv, t.godSid, call("remove_agent", { agent_id: t.god, reason: "x" })),
+    ).toContain("never removed");
     expect((await srv.api("POST", `/api/agents/${chat.id}/remove`, {})).status).toBe(403);
     expect((await srv.api("POST", `/api/agents/${t.god}/remove`, {})).status).toBe(403);
 

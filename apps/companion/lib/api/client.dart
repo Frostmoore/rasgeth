@@ -304,10 +304,23 @@ class RedGiantClient {
   );
 
   /// `POST /api/agents/:id/stop`: the agent and those under it stop (the page's «Stop»).
+  /// `POST /api/agents/:id/stop` (3.8.9: a pause): its turns stop, its open tasks wait.
   Future<void> stopAgentForGood(String agentId) => _post(
     '/api/agents/${Uri.encodeComponent(agentId)}/stop',
     const {'reason': 'stopped from RGCompanion'},
   );
+
+  /// `POST /api/agents/:id/resume` (3.8.9): a stopped agent works again (with those stopped under
+  /// it); the ids of its open tasks, which go on by themselves.
+  Future<List<String>> resumeAgent(String agentId) async {
+    final out = _object(
+      await _post('/api/agents/${Uri.encodeComponent(agentId)}/resume', const {}),
+    );
+    return [
+      for (final id in (out['tasks'] as List?) ?? const <Object?>[])
+        if (id is String) id,
+    ];
+  }
 
   /// `GET /api/agents/:id/remove-preview` (3.8.9): who goes with it, tasks and turns that end.
   Future<RemovePreview> removePreview(String agentId) async => RemovePreview.fromJson(

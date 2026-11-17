@@ -20,6 +20,7 @@ import '../ui/common.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/model_sheet.dart';
+import '../ui/pause_agent.dart';
 import '../ui/remove_agent.dart';
 import '../ui/words.dart';
 import 'agent_settings_screen.dart';
@@ -761,7 +762,8 @@ class AgentSheet extends StatelessWidget {
                         );
                       },
                       icon: const RgIcon(RgIcons.stop, size: 18, color: Colors.white),
-                      label: Text(l.agentStop),
+                      // Only what it is doing now (3.8.9: «Stop…» below is the pause).
+                      label: Text(l.asMenuStopTurn),
                     ),
                   ),
                 if (task != null)
@@ -804,6 +806,37 @@ class AgentSheet extends StatelessWidget {
                       },
                       icon: RgIcon(RgIcons.refresh, size: 18, color: c.text),
                       label: Text(l.mascotChange),
+                    ),
+                  ),
+                // 3.8.9: «Resume» for a stopped agent, «Stop…» (a pause) for a working one.
+                if (canResumeAgent(a))
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: FilledButton.icon(
+                      key: const Key('agent-resume'),
+                      style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(46)),
+                      onPressed: () async {
+                        if (await resumeAgentNow(context, a) && context.mounted) close();
+                      },
+                      icon: const RgIcon(RgIcons.play, size: 18, color: Colors.white),
+                      label: Text(l.paResume),
+                    ),
+                  ),
+                if (canPauseAgent(a))
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: OutlinedButton.icon(
+                      key: const Key('agent-pause'),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(46),
+                        foregroundColor: c.err,
+                        side: BorderSide(color: c.err.withValues(alpha: .5)),
+                      ),
+                      onPressed: () async {
+                        if (await confirmPauseAgent(context, a) && context.mounted) close();
+                      },
+                      icon: RgIcon(RgIcons.pause, size: 18, color: c.err),
+                      label: Text(l.paMenu),
                     ),
                   ),
                 // 3.8.9: out of the team; its history stays and «Removed agents» restores it.

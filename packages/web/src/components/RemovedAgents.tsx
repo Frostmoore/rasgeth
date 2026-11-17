@@ -6,8 +6,9 @@ import { useEffect, useState } from "preact/hooks";
 import type { Agent, RemovedAgent, RemovePreview, SessionInfo } from "../api.js";
 import { explain } from "../explain.js";
 import { t } from "../i18n.js";
-import { IconChat, IconRestore, IconTrash } from "../icons.js";
+import { IconChat, IconPlay, IconRestore, IconTrash } from "../icons.js";
 import {
+  agents,
   chatAgentId,
   getApi,
   openSession,
@@ -44,6 +45,57 @@ export async function restoreRemoved(r: { id: string }): Promise<string | undefi
   } catch (err) {
     return explain(err);
   }
+}
+
+/**
+ * «Resume» (p3.8.9): a stopped agent is paused, not gone; back at work, its open tasks go on by
+ * themselves in the same conversations. What happened in words, or the error.
+ */
+export async function resumeStopped(
+  a: Pick<Agent, "id" | "name">,
+): Promise<{ ok: true; text: string } | { ok: false; text: string }> {
+  try {
+    const r = await getApi().resumeAgent(a.id);
+    await refreshTeam();
+    return {
+      ok: true,
+      text:
+        r.tasks.length > 0
+          ? t("agentResumedTasks", { name: a.name, n: String(r.tasks.length) })
+          : t("agentResumedNone", { name: a.name }),
+    };
+  } catch (err) {
+    return { ok: false, text: explain(err) };
+  }
+}
+
+/** Where the composer was, in a conversation of a stopped agent: «Resume» brings it back. */
+export function StoppedNotice({ agentId }: { agentId: string }) {
+  const a = agents.value.find((x) => x.id === agentId);
+  const [error, setError] = useState<string>();
+  const [busy, setBusy] = useState(false);
+  if (!a || a.status !== "stopped") return null;
+  return (
+    <div class="pa-notice ra-notice st-notice" role="status">
+      <span class="pa-badge">{t("stBadge")}</span>
+      <span class="pa-notice-text">{t("stChatReadOnly", { name: a.name })}</span>
+      <button
+        type="button"
+        class="wz-btn primary small"
+        disabled={busy}
+        onClick={() => {
+          setBusy(true);
+          void resumeStopped(a).then((r) => {
+            setBusy(false);
+            setError(r.ok ? undefined : r.text);
+          });
+        }}
+      >
+        <IconPlay size={13} /> {t("agentResume")}
+      </button>
+      {error && <span class="notice error">{error}</span>}
+    </div>
+  );
 }
 
 /**
