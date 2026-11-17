@@ -2458,6 +2458,15 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news3811Canvas: "The Canvas opens by itself in the app",
+  news3811CanvasText:
+    "When an agent shows a site, a file or a page, the app opens the Canvas beside the conversation (on the phone, full screen), with reload and «Open in the browser». Pictures being drawn show their progress. Widgets now show on Linux too.",
+  news3811Files: "The project's files in the conversation",
+  news3811FilesText:
+    "The folder in a conversation's header opens its files in the app: new files and folders, upload, rename, download, delete, copy the path, ask the agent, search. On the computer drag files in and out; with the Canvas open too, Files and Canvas share one column with two tabs. Files the agent sends now have «Download» as well as «Open».",
+  news3811Boards: "Boards, ports and artifacts in the app",
+  news3811BoardsText:
+    "Variant boards to compare and choose from, the sites agents run on a port, and the artifacts with their permissions (in the server's settings) now work in RGCompanion as in the page.",
   news3810Live: "Everything live, everywhere",
   news3810LiveText:
     "Agents, projects and conversations created or changed anywhere (by God, in the page, on another device) now appear at once in the app and in the page, and requests stay right after the server restarts.",
@@ -9198,6 +9207,15 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news3811Canvas: "Il Canvas si apre da solo nell'app",
+  news3811CanvasText:
+    "Quando un agente mostra un sito, un file o una pagina, l'app apre il Canvas accanto alla conversazione (sul telefono a schermo intero), con ricarica e «Apri nel browser». Le immagini in preparazione mostrano l'avanzamento. I widget si vedono adesso anche su Linux.",
+  news3811Files: "I file del progetto nella conversazione",
+  news3811FilesText:
+    "La cartella nell'intestazione di una conversazione apre i suoi file nell'app: nuovi file e cartelle, carica, rinomina, scarica, elimina, copia il percorso, chiedi all'agente, cerca. Sul computer si trascinano dentro e fuori; con anche il Canvas aperto, File e Canvas stanno in una colonna con due schede. I file che l'agente manda hanno «Scarica» oltre ad «Apri».",
+  news3811Boards: "Tavole, porte e artefatti nell'app",
+  news3811BoardsText:
+    "Le tavole delle varianti da confrontare e scegliere, i siti che gli agenti avviano su una porta e gli artefatti con i loro permessi (nelle impostazioni del server) funzionano adesso in RGCompanion come nella pagina.",
   news3810Live: "Tutto dal vivo, ovunque",
   news3810LiveText:
     "Agenti, progetti e conversazioni creati o cambiati da qualsiasi parte (da God, nella pagina, da un altro dispositivo) compaiono subito nell'app e nella pagina, e le richieste restano giuste anche dopo un riavvio del server.",
