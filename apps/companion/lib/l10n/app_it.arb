@@ -1405,5 +1405,6 @@
   "cvArRevoke": "Togli",
   "cvArSpent": "spesi {spent} di {cap}",
   "sectionArtifacts": "ARTEFATTI",
-  "artifactsRowHint": "Le app fatte dagli agenti: apri, esporta, importa, elimina e i loro permessi"
+  "artifactsRowHint": "Le app fatte dagli agenti: apri, esporta, importa, elimina e i loro permessi",
+  "cvVwToChat": "Chat"
 }

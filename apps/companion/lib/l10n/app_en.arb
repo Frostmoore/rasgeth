@@ -3759,5 +3759,9 @@
   "artifactsRowHint": "The apps the agents made: open, export, import, delete and their permissions",
   "@artifactsRowHint": {
     "description": "Settings of the server: the Artifacts row (G42.2)."
+  },
+  "cvVwToChat": "Chat",
+  "@cvVwToChat": {
+    "description": "The page's `vwToChat` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   }
 }

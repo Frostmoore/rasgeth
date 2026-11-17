@@ -464,6 +464,94 @@ class CanvasLine extends StatelessWidget {
   }
 }
 
+/// On a phone (G42.2): what the agent showed in the Canvas as a card the size of a finger, the
+/// whole width: its name, what it is (a site on a port, or a file) and «Apri»; the Canvas whole.
+class CanvasCard extends StatelessWidget {
+  const CanvasCard({
+    super.key,
+    required this.title,
+    required this.onTap,
+    this.port,
+    this.path,
+  });
+
+  final String title;
+  final VoidCallback? onTap;
+
+  /// An agent's port (a site), or null for a file.
+  final int? port;
+  final String? path;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final what = port != null
+        ? [l.cvEmbedPort('$port'), if (path != null && path!.isNotEmpty) path!].join(' · ')
+        : (path ?? '');
+    return Material(
+      color: c.panel,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: c.line),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 10, 12),
+          child: Row(
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: c.accentDim,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: RgIcon(
+                    port != null ? RgIcons.globe : RgIcons.file,
+                    size: 20,
+                    color: c.accent,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: c.text, fontWeight: FontWeight.w700, fontSize: 15),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      what.isEmpty ? l.cvCanvasShown : what,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: c.dim, fontSize: 12.5),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                l.cvArOpen,
+                style: TextStyle(color: c.accent, fontWeight: FontWeight.w600),
+              ),
+              RgIcon(RgIcons.chevronRight, size: 16, color: c.accent),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// A board of variants (G25.4): what the person chose, or that it waits.
 class VariantsCard extends StatelessWidget {
   const VariantsCard({super.key, required this.item, this.onOpen});

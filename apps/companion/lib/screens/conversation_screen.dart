@@ -23,7 +23,6 @@ import '../api/types.dart';
 import '../api/widgets.dart';
 import '../app_state.dart';
 import '../desktop/drops.dart';
-import '../embed/embed_screen.dart' show openPortPreview;
 import '../l10n/app_localizations.dart';
 import '../mascot/mascot_view.dart';
 import '../theme/colors.dart';
@@ -48,6 +47,7 @@ import '../api/image_shrink.dart';
 import '../api/pasted.dart';
 import '../api/secrets.dart';
 import 'board_screen.dart';
+import 'canvas_panel.dart';
 import 'canvas_screen.dart';
 import 'conversation_more.dart';
 import 'saved_screen.dart';
@@ -77,7 +77,12 @@ class ChatActions {
     this.editMessage,
     this.continueFrom,
     this.readOnly = false,
+    this.showCanvas,
   });
+
+  /// G42.2: «Ha aperto … nel Canvas» tapped: the Canvas shows it again (beside the conversation,
+  /// or the whole screen where it is narrow).
+  final void Function(String title, Map<String, dynamic> target)? showCanvas;
 
   /// The conversation shown (null: a preview without its actions); 3.8.7: also where its widgets
   /// and the artifacts it opens send to.
@@ -173,11 +178,18 @@ class _ConversationScreenState extends State<ConversationScreen> {
   /// The text before the last change: a long paste becomes a file beside the message (p3.3.1).
   String _before = '';
 
+  /// G42.2: the Canvas beside the conversation (where it is wide enough), and what agents show.
+  final _canvas = CanvasPanelModel();
+  StreamSubscription<CanvasShown>? _shown;
+  bool _wide = false;
+
   @override
   void initState() {
     super.initState();
     app = AppScope.read(context);
     view = app.follow(widget.sessionId);
+    _shown = app.live.canvasShown.listen(_canvasShown);
+    _canvas.addListener(_canvasChanged);
     _pending = widget.jump;
     if (_pending != null) {
       view.addListener(_tryJump);
@@ -199,6 +211,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
     view.removeListener(_tryJump);
     widget.drops?.removeListener(_dropped);
     _litTimer?.cancel();
+    unawaited(_shown?.cancel());
+    _canvas.dispose();
     _scroll.dispose();
     app.unfollow(widget.sessionId);
     // A voice failure belongs to this conversation (told after the tree is unlocked).
@@ -209,6 +223,35 @@ class _ConversationScreenState extends State<ConversationScreen> {
     });
     _text.dispose();
     super.dispose();
+  }
+
+  void _canvasChanged() {
+    if (mounted) setState(() {});
+  }
+
+  /// An agent showed something while the person watches (the page's `canvasEvent`): the Canvas
+  /// opens by itself, here only while this conversation is the screen in front.
+  void _canvasShown(CanvasShown s) {
+    if (!mounted || !(ModalRoute.of(context)?.isCurrent ?? true)) return;
+    _showCanvas(s.title, s.target, keep: s.keep);
+  }
+
+  /// The page's `openCanvas`: beside the conversation when it is wide, the whole screen otherwise.
+  void _showCanvas(
+    String title,
+    Map<String, dynamic> target, {
+    bool keep = false,
+    bool force = false,
+  }) {
+    if (_wide) {
+      _canvas.show(title, target, keep: keep);
+      return;
+    }
+    final tab = CanvasTab(id: canvasTabId(target), title: title, target: target);
+    if (!tab.valid) return;
+    // An agent moving in what the person already looks at does not open it again.
+    if (keep && !force) return;
+    unawaited(openCanvasTab(context, tab, sessionId: widget.sessionId));
   }
 
   Agent? get _agent =>
@@ -651,7 +694,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
             .firstOrNull;
     return Scaffold(
       body: SafeArea(
-        child: Column(
+        child: LayoutBuilder(
+          builder: (context, box) {
+            // G42.2: wide enough, the Canvas sits on the right (the page's area); narrow, it
+            // covers the chat as a screen of its own.
+            _wide = box.maxWidth >= canvasBesideFrom(Theme.of(context).platform);
+            final chat = Column(
           children: [
             ListenableBuilder(
               listenable: Listenable.merge([app.live, view]),
@@ -740,6 +788,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     editMessage: _edit,
                     continueFrom: (seq) => unawaited(_continueFrom(seq)),
                     readOnly: _readOnly,
+                    showCanvas: (title, target) => _showCanvas(title, target, force: true),
                   );
                   final liveAt = stored.length + extras.length;
                   return ListView.builder(
@@ -930,6 +979,15 @@ class _ConversationScreenState extends State<ConversationScreen> {
               ),
             ],
           ],
+        );
+            if (!_wide || !_canvas.open || _canvas.current == null) return chat;
+            return Row(
+              children: [
+                Expanded(child: chat),
+                CanvasPanel(model: _canvas, maxWidth: box.maxWidth, sessionId: widget.sessionId),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -1391,30 +1449,26 @@ class ChatItemView extends StatelessWidget {
         level: NoticeLevel.warn,
         text: l.cvCacheMissed(kTokens(cached), kTokens(expected)),
       ),
-      CanvasItem(:final title, :final scope, :final path, :final isFile) => CanvasLine(
-        key: Key('canvas-${it.key}'),
-        title: title.isEmpty ? (path ?? '') : title,
-        icon: isFile ? RgIcons.file : RgIcons.canvas,
-        onTap: isFile && scope != null && path != null
-            ? () => openCanvas(
-                context,
-                scope: scope,
+      CanvasItem(:final title, :final scope, :final path, :final isFile) =>
+        // G42.2: a big card to tap on a phone, the page's line on a computer.
+        MediaQuery.sizeOf(context).width < 760
+            ? CanvasCard(
+                key: Key('canvas-${it.key}'),
+                title: title.isEmpty ? (path ?? '') : title,
+                port: it.isPort ? it.port : null,
                 path: path,
-                title: title,
-                sessionId: a.sessionId,
+                onTap: (isFile && scope != null && path != null) || it.isPort
+                    ? () => a.showCanvas?.call(title, it.target)
+                    : null,
               )
-            // G42.2: an agent's port, as the page's Canvas shows it.
-            : it.isPort
-            ? () => openPortPreview(
-                context,
-                agentId: it.agentId!,
-                port: it.port!,
-                path: path,
-                title: title,
-                sessionId: a.sessionId,
-              )
-            : null,
-      ),
+            : CanvasLine(
+                key: Key('canvas-${it.key}'),
+                title: title.isEmpty ? (path ?? '') : title,
+                icon: isFile ? RgIcons.file : RgIcons.canvas,
+                onTap: (isFile && scope != null && path != null) || it.isPort
+                    ? () => a.showCanvas?.call(title, it.target)
+                    : null,
+              ),
       FileItem(:final scope, :final path, :final name, :final caption, :final size) => _FileCard(
         title: name,
         subtitle: [?caption, formatBytes(size)].join(' · '),
