@@ -11,6 +11,11 @@
 // their length, texts edited on the picture, a lane of subtitles, the «Trascrizione» panel cutting
 // the speech from its words, and a narrow canvas or a phone: the inspector as a panel to open, one
 // video and one audio track shown (the others a tap away), big touch targets.
+// G41.5d: «Chiedi all'agente qui» (A4: what is chosen, with its times and ids, goes with the
+// person's question to the conversation they are in, or to the host's `onAsk` when embedded) and
+// the named versions (A5: saved beside the timeline, listed, brought back as one edit after the
+// present one is saved too). The editor needs nothing of the page around it: everything it shows
+// is inside its own section.
 
 import {
   addCaption,
@@ -31,6 +36,7 @@ import {
   type DocChange,
   type DocFile,
   fps,
+  fromVersion,
   isMediaRef,
   lanes,
   liftClips,
@@ -68,6 +74,7 @@ import {
   type VideoMediaInfo,
   type VideoTextRef,
   type VideoTrack,
+  type VideoVersionEntry,
   withLinked,
 } from "@redgiant/protocol";
 import type { JSX } from "preact";
@@ -77,7 +84,9 @@ import { lang, t } from "../../i18n.js";
 import {
   IconAppend,
   IconBlade,
+  IconBookmark,
   IconCaption,
+  IconChat,
   IconChevronLeft,
   IconChevronRight,
   IconClose,
@@ -104,6 +113,7 @@ import {
   IconPlay,
   IconPlus,
   IconRedo,
+  IconRestore,
   IconRippleTrim,
   IconSliders,
   IconSpeaker,
@@ -115,6 +125,7 @@ import {
   IconUnlock,
 } from "../../icons.js";
 import {
+  askAgentAbout,
   EXACT_LENGTHS,
   getApi,
   openDoc,
@@ -131,6 +142,8 @@ import {
 import { holdMark } from "../../viewers/agent-marks.js";
 import { OwnUndo } from "../../viewers/own-undo.js";
 import {
+  askHereContext,
+  askHereMessage,
   clampPpf,
   cutNear,
   edgeAt,
@@ -158,6 +171,7 @@ import {
   videoActionsOf,
   videoDocOp,
   videoKey,
+  wordsSpan,
 } from "../../viewers/video-ops.js";
 import { askConfirm, askText } from "../dialogs.js";
 import { Modal } from "../ui.js";
@@ -520,9 +534,15 @@ function TextOnPicture({
 export function VideoEditor({
   file,
   onReveal,
+  onAsk,
 }: {
   file: DocFile;
   onReveal?: (reveal: ((c: DocChange) => void) | undefined) => void;
+  /**
+   * Where «Chiedi all'agente qui» sends its message (an app embedding the editor gives its own):
+   * the page's conversation by default. Undefined back: nowhere to send it.
+   */
+  onAsk?: (text: string) => { to: string } | undefined;
 }) {
   const key = videoViewKey(file);
   const view = videoViewOf(key);
@@ -542,6 +562,14 @@ export function VideoEditor({
   /** The canvas's width class: a narrow one (inspector as a panel), a phone's. */
   const [size, setSize] = useState<"wide" | "narrow" | "phone">("wide");
   const [captionsJob, setCaptionsJob] = useState<string[]>();
+  /** «Chiedi all'agente qui»: what is pointed at (fixed when opened) and the question. */
+  const [ask, setAsk] = useState<{ ctx: ReturnType<typeof askHereContext>; question: string }>();
+  /** The versions' panel (A5): the list, while it loads, what went wrong. */
+  const [versions, setVersions] = useState<{
+    list?: VideoVersionEntry[];
+    busy?: boolean;
+    error?: string;
+  }>();
   const capJobs = useRef<string[]>([]);
   const root = useRef<HTMLElement>(null);
   const rows = useRef<HTMLDivElement>(null);
@@ -1632,6 +1660,78 @@ export function VideoEditor({
   const missing = (prepared?.media ?? []).filter((m) => m.missing).map((m) => m.media);
   const ticks = rulerTicks(ppf, rate, total + Math.round(f1 * 30));
   const one = sel.length ? clipOf(doc, sel[0] as string) : undefined;
+
+  // ---- «Chiedi all'agente qui» (A4) and the versions (A5) ---------------------------------
+  const openAsk = () => {
+    halt();
+    const ctx = askHereContext(tl, file.path, {
+      clips: sel,
+      transition: ed.trans,
+      caption: ed.cap,
+      marker: selMarker,
+      gap: ed.gap,
+      words: ed.words && words.length ? wordsSpan(words, ed.words.a, ed.words.b, rate) : undefined,
+      playhead,
+    });
+    setAsk({ ctx, question: ask?.question ?? "" });
+    setTimeout(() => document.getElementById("ve-ask-text")?.focus(), 30);
+  };
+  const sendAsk = () => {
+    if (!ask?.question.trim()) return;
+    const to = (onAsk ?? ((text: string) => askAgentAbout(file, text)))(
+      askHereMessage(ask.question, ask.ctx.text),
+    );
+    if (!to) return say(t("veAskNoChat"));
+    setAsk(undefined);
+    say(t("veAskSent", { to: to.to }));
+  };
+  const loadVersions = async () => {
+    setVersions((v) => ({ ...v, busy: true }));
+    try {
+      const r = await getApi().videoVersions(file.scope, file.path);
+      setVersions({ list: r.versions });
+    } catch (e) {
+      setVersions({ list: [], error: (e as Error).message });
+    }
+  };
+  const saveVersion = async () => {
+    const when = new Date().toLocaleString(lang.value === "it" ? "it-IT" : "en-GB", {
+      dateStyle: "short",
+      timeStyle: "short",
+    });
+    const name = await askText(t("veVersionSave"), t("veVersionNameDefault", { when }), {
+      label: t("veVersionName"),
+    });
+    if (!name?.trim()) return;
+    try {
+      await getApi().videoVersionSave(file.scope, file.path, name.trim());
+      say(t("veVersionSaved", { name: name.trim() }));
+    } catch (e) {
+      say(t("veVersionError", { error: (e as Error).message }));
+    }
+    await loadVersions();
+  };
+  const restoreVersion = async (v: VideoVersionEntry) => {
+    const yes = await askConfirm(t("veVersionRestoreAsk", { name: v.name }), {
+      text: t("veVersionRestoreText"),
+      yes: t("veVersionRestore"),
+    });
+    if (!yes) return;
+    try {
+      // What there is now is kept first: bringing a version back never loses the present one.
+      await getApi().videoVersionSave(
+        file.scope,
+        file.path,
+        t("veVersionBeforeRestore", { name: v.name }).slice(0, 120),
+      );
+      const r = await getApi().videoVersionRead(file.scope, file.path, v.path);
+      const next = fromVersion(r.doc);
+      if (host.current?.commit(next, "replace", [])) say(t("veVersionRestored", { name: v.name }));
+    } catch (e) {
+      say(t("veVersionError", { error: (e as Error).message }));
+    }
+    await loadVersions();
+  };
   const exactLen = Number(view.exactLength);
   const end = timelineDuration(doc);
   const askExact = () => {
@@ -2135,6 +2235,16 @@ export function VideoEditor({
           >
             <IconFileText size={14} />
           </Tool>
+          <Tool label={t("veAsk")} pressed={!!ask} on={() => (ask ? setAsk(undefined) : openAsk())}>
+            <IconChat size={14} />
+          </Tool>
+          <Tool
+            label={t("veVersions")}
+            pressed={!!versions}
+            on={() => (versions ? setVersions(undefined) : void loadVersions())}
+          >
+            <IconBookmark size={14} />
+          </Tool>
           {size !== "wide" && (
             <Tool
               label={t("veInspectorOpen")}
@@ -2341,6 +2451,116 @@ export function VideoEditor({
           onFromSpeech={() => void fromSpeech()}
           onClose={() => edit({ transcript: false, words: undefined })}
         />
+      )}
+      {ask && (
+        <section class="ve-ask" aria-label={t("veAskTitle")}>
+          <div class="ve-transcript-bar">
+            <strong>{t("veAskTitle")}</strong>
+            <div class="spacer" />
+            <button
+              type="button"
+              class="vw-icon"
+              title={t("veAskCancel")}
+              aria-label={t("veAskCancel")}
+              onClick={() => setAsk(undefined)}
+            >
+              <IconClose size={14} />
+            </button>
+          </div>
+          <pre class="ve-ask-ctx">{ask.ctx.text}</pre>
+          <textarea
+            id="ve-ask-text"
+            rows={2}
+            value={ask.question}
+            placeholder={t("veAskPlaceholder")}
+            aria-label={t("veAskPlaceholder")}
+            onInput={(e) => setAsk({ ...ask, question: (e.target as HTMLTextAreaElement).value })}
+            onKeyDown={(e) => {
+              // The editor's own keys stay out of what is written here.
+              e.stopPropagation();
+              if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                sendAsk();
+              } else if (e.key === "Escape") {
+                setAsk(undefined);
+                root.current?.focus({ preventScroll: true });
+              }
+            }}
+          />
+          <div class="ve-insp-row">
+            <button
+              type="button"
+              class="vw-btn small primary"
+              disabled={!ask.question.trim()}
+              onClick={sendAsk}
+            >
+              {t("veAskSend")}
+            </button>
+            <button type="button" class="vw-btn small" onClick={() => setAsk(undefined)}>
+              {t("veAskCancel")}
+            </button>
+          </div>
+        </section>
+      )}
+      {versions && (
+        <section class="ve-versions" aria-label={t("veVersionsTitle")}>
+          <div class="ve-transcript-bar">
+            <strong>{t("veVersionsTitle")}</strong>
+            <div class="spacer" />
+            <button
+              type="button"
+              class="vw-btn small primary"
+              disabled={versions.busy}
+              onClick={() => void saveVersion()}
+            >
+              <IconPlus size={12} /> {t("veVersionSave")}
+            </button>
+            <button
+              type="button"
+              class="vw-icon"
+              title={t("veVersionsClose")}
+              aria-label={t("veVersionsClose")}
+              onClick={() => setVersions(undefined)}
+            >
+              <IconClose size={14} />
+            </button>
+          </div>
+          {versions.error && <p class="notice">{versions.error}</p>}
+          {versions.list && !versions.list.length && !versions.error && (
+            <p class="dim ve-small">{t("veVersionsEmpty")}</p>
+          )}
+          {!!versions.list?.length && (
+            <ul class="ve-version-list">
+              {versions.list.map((v) => (
+                <li key={v.path} class="ve-version">
+                  <div class="ve-version-text">
+                    <strong>
+                      {v.reason === "before_assemble" ? t("veVersionBeforeAssemble") : v.name}
+                    </strong>
+                    <span class="dim ve-small">
+                      {Number.isNaN(Date.parse(v.at))
+                        ? v.at
+                        : new Date(v.at).toLocaleString(lang.value === "it" ? "it-IT" : "en-GB", {
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })}
+                      {" · "}
+                      {t("veVersionClips", { n: String(v.clips) })}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    class="vw-btn small"
+                    disabled={versions.busy}
+                    onClick={() => void restoreVersion(v)}
+                  >
+                    <IconRestore size={12} /> {t("veVersionRestore")}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       )}
       {!!captionsJob?.length && (
         <div class="vp-prep">

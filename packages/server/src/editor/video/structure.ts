@@ -108,6 +108,8 @@ export function videoStructure(
         `- ${s.id} ${tc(s.start)}–${tc(s.end)} «${s.text.replace(/\s+/g, " ").slice(0, 160)}»${s.words ? ` (${s.words.length} words timed)` : ""}`,
       );
   }
+  if (doc.normalize === false)
+    lines.push("The sound is rendered as mixed (no −14 LUFS normalization).");
   if (doc.assembled) lines.push(`Assembled automatically on ${doc.assembled.at}.`);
   if (doc.version)
     lines.push(

@@ -8,6 +8,10 @@
 //   POST /api/editor/video/exact {scope, path, from, to}  the exact preview of frames [from, to):
 //                                                  a job `video_preview` (its result's `id`)
 //   GET  /api/editor/video/exact/:id               the finished preview's signed link
+//   POST /api/editor/video/versions {scope, path}  its named versions (A5), the newest first
+//   POST /api/editor/video/versions/save {scope, path, name}  a version of it as it is now
+//   POST /api/editor/video/versions/read {scope, path, version}  a version's timeline (to bring
+//                                                  it back: the page commits it as one edit)
 //   POST /api/editor/video/captions {scope, path}  the subtitles from what the timeline plays
 //                                                  (G41.5c, G41.4's transcripts): `captions`
 //                                                  once every sound is analysed, else the jobs
@@ -21,6 +25,7 @@ import {
   isMediaRef,
   type Job,
   readRgVideo,
+  rgvideoVersionsDir,
   type VideoMediaInfo,
   type VideoPrepared,
 } from "@redgiant/protocol";
@@ -31,6 +36,7 @@ import { mediaFingerprint, type VideoAnalysis } from "./video/analysis.js";
 import { captionsForTimeline } from "./video/captions.js";
 import { filmstripTiles, waveformWidth } from "./video/derived.js";
 import { RENDER_FONTS_DIR } from "./video/render.js";
+import { listVideoVersions, saveVideoVersion } from "./video/versions.js";
 
 const PICTURE = /\.(png|jpe?g|webp|gif|bmp|tiff?|avif|heic|heif)$/i;
 const SOUND = /\.(mp3|wav|m4a|aac|flac|ogg|oga|opus|weba|wma|aiff?)$/i;
@@ -139,8 +145,49 @@ export function videoRoutes<E extends { Variables: any }>(
     const doc = readRgVideo(await readFile(abs, "utf8"));
     const media = [...new Set(doc.clips.flatMap((c) => (isMediaRef(c.ref) ? [c.ref.media] : [])))];
     const mediaAbs = (m: string) => core.docAbs(ownerId, { scope, path: m }).catch(() => undefined);
-    return { doc, media, mediaAbs, name: basename(abs) };
+    return { doc, media, mediaAbs, name: basename(abs), abs };
   };
+
+  app.post("/api/editor/video/versions", async (c) => {
+    const b = FileBody.safeParse(await c.req.json().catch(() => ({})));
+    if (!b.success) return c.json({ error: b.error.message }, 400);
+    const t = await timeline(owner(c), b.data.scope, b.data.path);
+    return c.json({ versions: await listVideoVersions(t.abs, b.data.path) }, 200);
+  });
+
+  app.post("/api/editor/video/versions/save", async (c) => {
+    const b = FileBody.extend({ name: z.string().trim().min(1).max(120) }).safeParse(
+      await c.req.json().catch(() => ({})),
+    );
+    if (!b.success) return c.json({ error: b.error.message }, 400);
+    const o = owner(c);
+    // An archived project's files stay as they are.
+    core.assertWritable(o, b.data.scope);
+    const t = await timeline(o, b.data.scope, b.data.path);
+    const version = await saveVideoVersion({
+      abs: t.abs,
+      path: b.data.path,
+      doc: t.doc,
+      name: b.data.name,
+      reason: "manual",
+    });
+    return c.json({ version }, 200);
+  });
+
+  app.post("/api/editor/video/versions/read", async (c) => {
+    const b = FileBody.extend({ version: z.string().min(1).max(4000) }).safeParse(
+      await c.req.json().catch(() => ({})),
+    );
+    if (!b.success) return c.json({ error: b.error.message }, 400);
+    const dir = `${rgvideoVersionsDir(b.data.path.replace(/\\/g, "/"))}/`;
+    const v = b.data.version.replace(/\\/g, "/");
+    if (!v.startsWith(dir) || v.slice(dir.length).includes("/") || !/\.rgvideo$/i.test(v))
+      return c.json({ error: "Not a version of this timeline" }, 400);
+    const abs = await core.docAbs(owner(c), { scope: b.data.scope, path: v }).catch(() => {
+      throw new NotFoundError(`No such version "${v}"`);
+    });
+    return c.json({ doc: readRgVideo(await readFile(abs, "utf8")) }, 200);
+  });
 
   app.post("/api/editor/video/prepare", async (c) => {
     const b = FileBody.extend({

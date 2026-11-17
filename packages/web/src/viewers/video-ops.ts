@@ -18,6 +18,7 @@ import {
   VIDEO_ENGINE,
   VIDEO_ENGINE_VERSION,
   type VideoAction,
+  type VideoClip,
   type VideoEdit,
   type VideoIdGen,
   type VideoKenBurns,
@@ -641,3 +642,119 @@ export function videoChangeText(s: DocSummary): string {
       return one ? t("veChEdit") : t("veChEditN", { n });
   }
 }
+
+// ---- «Chiedi all'agente qui» (G41.5d, A4) ---------------------------------------------------
+
+/** What the person points at in the timeline when asking the agent. */
+export interface AskHereSelection {
+  clips?: readonly string[];
+  transition?: string | undefined;
+  caption?: string | undefined;
+  marker?: string | undefined;
+  gap?: { track: string; frame: number } | undefined;
+  /** Words chosen in the transcript, as frames [from, to). */
+  words?: [number, number] | undefined;
+  playhead: number;
+}
+
+/**
+ * The part of the timeline a question is about, as words the agent reads and the person sees in
+ * the message: the file, the time span (timecode and frames), and every clip, transition,
+ * subtitle, marker or gap with its id, so the agent's canvas_edit can name them. Pure.
+ */
+export function askHereContext(
+  doc: RgVideo,
+  path: string,
+  s: AskHereSelection,
+): { from: number; to: number; text: string; items: number } {
+  const rate = doc.format.rate;
+  const tc = (f: number) => timecode(f, rate);
+  const lines: string[] = [];
+  const spans: [number, number][] = [];
+  const name = (c: VideoClip) =>
+    "text" in c.ref
+      ? t("veAskText", { text: c.ref.text.replace(/\s+/g, " ").slice(0, 80) })
+      : "media" in c.ref
+        ? c.ref.media
+        : t("veColour");
+  const chosen = new Set(s.clips ?? []);
+  for (const c of doc.clips.filter((x) => chosen.has(x.id))) {
+    spans.push([c.start, clipEnd(c)]);
+    const src =
+      "media" in c.ref && !c.ref.still
+        ? t("veAskSource", {
+            a: tc(c.sourceRange.start),
+            b: tc(c.sourceRange.start + c.sourceRange.duration),
+          })
+        : "";
+    lines.push(
+      t("veAskClip", {
+        id: c.id,
+        track: c.track,
+        what: name(c),
+        a: tc(c.start),
+        b: tc(clipEnd(c)),
+        src,
+      }),
+    );
+  }
+  const x = s.transition ? doc.transitions.find((v) => v.id === s.transition) : undefined;
+  if (x) {
+    const a = doc.clips.find((c) => c.id === x.from);
+    const cut = a ? clipEnd(a) : 0;
+    spans.push([cut - x.inOffset, cut + x.outOffset]);
+    lines.push(t("veAskTransition", { id: x.id, kind: x.kind, a: x.from, b: x.to, tc: tc(cut) }));
+  }
+  const cap = s.caption ? doc.captions.segments.find((v) => v.id === s.caption) : undefined;
+  if (cap) {
+    spans.push([cap.start, cap.end]);
+    lines.push(
+      t("veAskCaption", {
+        id: cap.id,
+        a: tc(cap.start),
+        b: tc(cap.end),
+        text: cap.text.replace(/\s+/g, " ").slice(0, 160),
+      }),
+    );
+  }
+  const m = s.marker ? doc.markers.find((v) => v.id === s.marker) : undefined;
+  if (m) {
+    spans.push([m.frame, m.frame + Math.max(1, m.duration ?? 0)]);
+    lines.push(t("veAskMarker", { id: m.id, tc: tc(m.frame), note: m.note || "-" }));
+  }
+  const g = s.gap ? gapAt(doc, s.gap.track, s.gap.frame) : undefined;
+  if (s.gap && g) {
+    spans.push(g);
+    lines.push(t("veAskGap", { track: s.gap.track, a: tc(g[0]), b: tc(g[1]) }));
+  }
+  if (s.words) {
+    spans.push(s.words);
+    const said = transcriptOf(doc)
+      .filter(
+        (w) =>
+          w.start >= (s.words as [number, number])[0] && w.end <= (s.words as [number, number])[1],
+      )
+      .map((w) => w.text)
+      .join(" ");
+    if (said) lines.push(t("veAskWords", { text: said.slice(0, 400) }));
+  }
+  const items = lines.length;
+  const from = spans.length ? Math.min(...spans.map((v) => v[0])) : s.playhead;
+  const to = spans.length ? Math.max(...spans.map((v) => v[1])) : s.playhead + 1;
+  const head =
+    to - from <= 1
+      ? t("veAskAt", { file: path, tc: tc(from), f: String(from) })
+      : t("veAskSpan", {
+          file: path,
+          a: tc(from),
+          b: tc(to),
+          fa: String(from),
+          fb: String(to),
+          fps: String(Math.round(fps(rate) * 1000) / 1000),
+        });
+  return { from, to, items, text: [head, ...lines.map((l) => `- ${l}`)].join("\n") };
+}
+
+/** The message sent: the person's words, then what they point at. */
+export const askHereMessage = (question: string, context: string): string =>
+  `${question.trim()}\n\n${context}`;

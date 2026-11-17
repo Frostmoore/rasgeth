@@ -1912,6 +1912,25 @@ export class Api {
         words: import("@redgiant/protocol").VideoCaptionWord[];
       }[];
     }>("POST", "/api/editor/video/captions", { scope, path });
+  /** A5: a timeline's named versions, the newest first. */
+  videoVersions = (scope: string, path: string) =>
+    this.call<{ versions: import("@redgiant/protocol").VideoVersionEntry[] }>(
+      "POST",
+      "/api/editor/video/versions",
+      { scope, path },
+    );
+  videoVersionSave = (scope: string, path: string, name: string) =>
+    this.call<{ version: import("@redgiant/protocol").VideoVersionEntry }>(
+      "POST",
+      "/api/editor/video/versions/save",
+      { scope, path, name },
+    );
+  videoVersionRead = (scope: string, path: string, version: string) =>
+    this.call<{ doc: import("@redgiant/protocol").RgVideo }>(
+      "POST",
+      "/api/editor/video/versions/read",
+      { scope, path, version },
+    );
   videoExactLink = (id: string) =>
     this.call<{ url: string }>("GET", `/api/editor/video/exact/${encodeURIComponent(id)}`);
   /** When what the canvas shows last changed (ms). */

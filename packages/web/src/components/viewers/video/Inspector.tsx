@@ -6,6 +6,10 @@
 // on the first, Shift+click on the last, «Cut» takes them out of the whole timeline. Every change
 // is one of video-timeline.ts's pure edits, handed to the editor's `commit`. Our own controls only:
 // switches, drawn choices, sliders; never a checkbox, a select or a native dialog.
+// G41.5d: the timeline's own settings with nothing chosen (its shape, 16:9 / 9:16 / 1:1, and the
+// sound at −14 LUFS, A2), and on a clip what shows around a fitted picture (nothing, black, a
+// blurred copy) and its crop, a frame on the miniature moved with the mouse, a finger or the
+// arrows (A1).
 
 import {
   captionsToSrt,
@@ -16,19 +20,25 @@ import {
   isTextRef,
   kenBurnsPreset,
   lanes,
+  moveCrop,
+  needsReframe,
   type RgVideo,
+  reframeCrop,
   removeCaptions,
   removeTransition,
   setCaption,
   setCaptionSettings,
   setClipProps,
+  setFormat,
   setGenerator,
+  setNormalize,
   setTrack,
   setTransition,
   timecode,
   trackOf,
   VIDEO_TEXT_POSITIONS,
   VIDEO_TEXT_STYLES,
+  type VideoAspect,
   type VideoCaption,
   type VideoClip,
   type VideoEdit,
@@ -38,6 +48,7 @@ import {
   type VideoRect,
   type VideoTextRef,
   type VideoTransition,
+  wholeCrop,
 } from "@redgiant/protocol";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { lang, t } from "../../../i18n.js";
@@ -263,6 +274,165 @@ function KenBurns({
       </fieldset>
       {now === "custom" && <p class="dim ve-small">{t("veKbCustom")}</p>}
     </div>
+  );
+}
+
+/** A picture's size: the probe's, or (a photo, never probed) read from the file itself. */
+function useSourceSize(info: VideoMediaInfo | undefined): { w: number; h: number } | undefined {
+  const probed =
+    info?.probe?.width && info.probe.height
+      ? { w: info.probe.width, h: info.probe.height }
+      : undefined;
+  const [read, setRead] = useState<{ w: number; h: number }>();
+  const file = !probed && info?.kind === "image" ? info.file : undefined;
+  useEffect(() => {
+    setRead(undefined);
+    if (!file || typeof Image === "undefined") return;
+    const img = new Image();
+    img.onload = () => img.naturalWidth && setRead({ w: img.naturalWidth, h: img.naturalHeight });
+    img.src = file;
+  }, [file]);
+  return probed ?? read;
+}
+
+/** One step of the arrows on the crop: a hundredth of the picture (Shift: a tenth). */
+const CROP_STEP = 0.01;
+
+/**
+ * The crop (A1): the miniature with the part kept as a frame to move (the mouse, a finger, the
+ * arrows; the edit is made on letting go), «Al centro» and «Togli». Without a crop a filled clip
+ * shows its centre: the frame starts there.
+ */
+export function CropBox({
+  clip,
+  info,
+  out,
+  onSet,
+}: {
+  clip: VideoClip;
+  info: VideoMediaInfo | undefined;
+  out: { w: number; h: number };
+  onSet: (crop: VideoRect | null) => void;
+}) {
+  const src = useSourceSize(info);
+  const [live, setLive] = useState<VideoRect>();
+  const box = useRef<HTMLDivElement>(null);
+  const press = useRef<{ x: number; y: number; from: VideoRect; moved: boolean } | undefined>(
+    undefined,
+  );
+  const has = !wholeCrop(clip.crop);
+  if (!src || (!has && !needsReframe(src, out))) return null;
+  const base = has ? (clip.crop as VideoRect) : reframeCrop(src, out);
+  const r = live ?? base;
+  const still = isMediaRef(clip.ref) && !!clip.ref.still;
+  const done = (next: VideoRect) => {
+    setLive(undefined);
+    if (JSON.stringify(next) !== JSON.stringify(clip.crop)) onSet(next);
+  };
+  return (
+    <div class="ve-crop">
+      <span class="ve-label">{t("veCrop")}</span>
+      <div
+        class="ve-thumb ve-crop-thumb"
+        ref={box}
+        style={{
+          aspectRatio: `${src.w} / ${src.h}`,
+          width: `min(100%, ${Math.round((180 * src.w) / src.h)}px)`,
+        }}
+        onPointerMove={(e) => {
+          const p = press.current;
+          const el = box.current;
+          if (!p || !el) return;
+          const dx = (e.clientX - p.x) / Math.max(1, el.clientWidth);
+          const dy = (e.clientY - p.y) / Math.max(1, el.clientHeight);
+          if (Math.abs(dx) + Math.abs(dy) > 0.002) p.moved = true;
+          setLive(moveCrop(p.from, dx, dy));
+        }}
+        onPointerUp={(e) => {
+          const p = press.current;
+          press.current = undefined;
+          (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
+          if (p?.moved && live) done(live);
+          else setLive(undefined);
+        }}
+        onPointerCancel={() => {
+          press.current = undefined;
+          setLive(undefined);
+        }}
+      >
+        <Thumb info={info} still={still} />
+        <span class="ve-crop-shade" aria-hidden="true" style={rectStyle(r)} />
+        <button
+          type="button"
+          class={`ve-crop-rect${has || live ? "" : " auto"}`}
+          style={rectStyle(r)}
+          aria-label={t("veCropMove")}
+          title={t("veCropMoveHint")}
+          onPointerDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            box.current?.setPointerCapture?.(e.pointerId);
+            press.current = { x: e.clientX, y: e.clientY, from: base, moved: false };
+          }}
+          onKeyDown={(e) => {
+            const k = e.key;
+            const by = (e.shiftKey ? 10 : 1) * CROP_STEP;
+            const d =
+              k === "ArrowLeft"
+                ? [-by, 0]
+                : k === "ArrowRight"
+                  ? [by, 0]
+                  : k === "ArrowUp"
+                    ? [0, -by]
+                    : k === "ArrowDown"
+                      ? [0, by]
+                      : undefined;
+            if (!d) return;
+            // The editor's own arrows (the playhead) stay out of it.
+            e.preventDefault();
+            e.stopPropagation();
+            done(moveCrop(base, d[0] as number, d[1] as number));
+          }}
+        />
+      </div>
+      <div class="ve-insp-row">
+        <button type="button" class="vw-btn small" onClick={() => done(reframeCrop(src, out))}>
+          {t("veCropCentre")}
+        </button>
+        <button type="button" class="vw-btn small" disabled={!has} onClick={() => onSet(null)}>
+          {t("veCropRemove")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** The timeline's own settings, with nothing chosen: its shape and the sound's loudness. */
+function TimelineSettings({ doc, commit }: { doc: RgVideo; commit: Commit }) {
+  const f = doc.format;
+  const aspects = [
+    ["16:9", "veAspect_16_9"],
+    ["9:16", "veAspect_9_16"],
+    ["1:1", "veAspect_1_1"],
+  ] as const satisfies readonly (readonly [VideoAspect, string])[];
+  return (
+    <section class="ve-insp-sec" aria-label={t("veTimelineSettings")}>
+      <h5>{t("veTimelineSettings")}</h5>
+      <span class="ve-label">{t("veAspect")}</span>
+      <Seg
+        label={t("veAspect")}
+        value={f.aspect}
+        options={aspects.map(([a, k]) => [a, t(k)])}
+        onChange={(aspect) => commit(setFormat(doc, { aspect }), "format")}
+      />
+      <p class="dim ve-small">{t("veFormatSize", { w: String(f.width), h: String(f.height) })}</p>
+      <Toggle
+        label={t("veNormalize")}
+        description={t("veNormalizeHelp")}
+        checked={doc.normalize !== false}
+        onChange={(on) => commit(setNormalize(doc, on), "format")}
+      />
+    </section>
   );
 }
 
@@ -557,6 +727,7 @@ export function Inspector(p: InspectorProps) {
       <div class="ve-insp-body">
         {head(t("veInspector"))}
         <p class="dim">{t("veInspectorNone")}</p>
+        <TimelineSettings doc={doc} commit={commit} />
         <CaptionSettings doc={doc} name={p.name} commit={commit} />
       </div>
     );
@@ -670,6 +841,27 @@ export function Inspector(p: InspectorProps) {
               ["fit", t("veFitIn")],
             ]}
             onChange={(fit) => props({ fit })}
+          />
+          {c.fit === "fit" && (
+            <>
+              <span class="ve-label">{t("veBackground")}</span>
+              <Seg
+                label={t("veBackground")}
+                value={c.background ?? "none"}
+                options={[
+                  ["none", t("veBg_none")],
+                  ["black", t("veBg_black")],
+                  ["blur", t("veBg_blur")],
+                ]}
+                onChange={(b) => props({ background: b === "none" ? null : b })}
+              />
+            </>
+          )}
+          <CropBox
+            clip={c}
+            info={p.info}
+            out={{ w: doc.format.width, h: doc.format.height }}
+            onSet={(crop) => props({ crop })}
           />
           <KenBurns
             clip={c}

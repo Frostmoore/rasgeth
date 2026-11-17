@@ -48,6 +48,7 @@ export function playerMediaOf(media: VideoMediaInfo[] | undefined): PlayerMediaM
       ...(m.file && { file: m.file }),
       ...(m.kind && { kind: m.kind }),
       ...(m.missing && { missing: true }),
+      ...(m.probe?.width && m.probe.height && { width: m.probe.width, height: m.probe.height }),
     };
   return out;
 }

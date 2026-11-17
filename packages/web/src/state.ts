@@ -2138,6 +2138,32 @@ export function openDoc(file: DocFile, peer: DocPeer): () => void {
   };
 }
 
+/**
+ * «Chiedi all'agente qui» (G41.5d, A4): a message about a part of an open file, sent to the
+ * conversation the person is in: the active chat, else the latest open chat with an agent of the
+ * file's project, else the latest open chat. That conversation comes to the front (on a phone the
+ * area on the right steps aside). Undefined when no conversation is open: the editor says so.
+ */
+export function askAgentAbout(file: DocFile, text: string): { to: string } | undefined {
+  const chats = tabs.value.filter((x): x is Extract<Tab, { type: "chat" }> => x.type === "chat");
+  const project = /^project:(.+)$/.exec(file.scope)?.[1];
+  const active = chats.find((x) => x.id === activeTab.value);
+  const ofProject = [...chats]
+    .reverse()
+    .find((x) => project && agents.value.find((a) => a.id === x.agentId)?.projectId === project);
+  const to = active ?? ofProject ?? chats.at(-1);
+  if (!to || !live) return undefined;
+  live.send({
+    type: "session.send",
+    sessionId: to.sessionId,
+    text,
+    clientId: `p${Date.now()}${Math.random().toString(36).slice(2, 6)}`,
+  });
+  activeTab.value = to.id;
+  sideAside.value = true;
+  return { to: to.title };
+}
+
 /** A message about an open file (operations, undo, presence, a proposal's answer). */
 export function sendDoc(m: Extract<ClientMessage, { file: DocFile }>): void {
   live?.send(m);

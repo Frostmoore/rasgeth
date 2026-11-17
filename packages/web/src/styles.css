@@ -20911,6 +20911,26 @@ fieldset.saved-filter legend {
 .vp-picture.fit {
   object-fit: contain;
 }
+/* A1: a moved crop: the file stretched over the stage, put in place by its transform. */
+.vp-video.framed,
+.vp-picture.framed {
+  object-fit: fill;
+}
+.vp-bgs {
+  display: contents;
+}
+.vp-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+.vp-bg.black {
+  background: #000;
+}
 .vp-text {
   display: flex;
   justify-content: center;
@@ -22005,6 +22025,46 @@ fieldset.saved-filter legend {
   border-style: dashed;
   border-color: var(--warn);
 }
+/* A1: the crop on the miniature, a frame to move; outside it the picture darkens. */
+.ve-crop {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ve-crop-thumb {
+  align-self: center;
+  touch-action: none;
+}
+.ve-crop-thumb .ve-thumb-pic {
+  opacity: 1;
+}
+.ve-crop-shade {
+  position: absolute;
+  pointer-events: none;
+  box-shadow: 0 0 0 999px rgb(0 0 0 / 0.55);
+}
+.ve-crop-rect {
+  position: absolute;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 2px solid #fff;
+  border-radius: 2px;
+  background: transparent;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.6);
+  cursor: grab;
+  touch-action: none;
+}
+.ve-crop-rect.auto {
+  border-style: dashed;
+}
+.ve-crop-rect:active {
+  cursor: grabbing;
+}
+.ve-crop-rect:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 .ve-kb-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -22150,6 +22210,9 @@ fieldset.saved-filter legend {
   box-shadow: inset -8px 0 0 rgb(0 0 0 / 0.25);
 }
 /* The transcript: words to choose, the one playing marked. */
+/* G41.5d: «Chiedi all'agente qui» (A4) and the versions (A5), panels like the transcript. */
+.ve-ask,
+.ve-versions,
 .ve-transcript {
   flex: none;
   border: 1px solid var(--line);
@@ -22159,6 +22222,59 @@ fieldset.saved-filter legend {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+.ve-ask-ctx {
+  margin: 0;
+  max-height: 18vh;
+  overflow: auto;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--dim);
+  font: 12px / 1.5 var(--mono);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.ve-ask textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 52px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+.ve-version-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 26vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ve-version {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--bg);
+}
+.ve-version-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.ve-version-text strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .ve-transcript-bar {
   display: flex;

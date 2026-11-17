@@ -770,6 +770,23 @@ describe("sound", () => {
     expect(parseLoudnorm('{ "input_i" : "-inf", "input_tp" : "-inf" }')).toBeUndefined();
     expect(loudnormApplyArgs("mix.flac", undefined, "a.m4a")).not.toContain("-af");
   });
+
+  it.each([
+    ["absent (on)", undefined, undefined, true],
+    ["switched off in the timeline", false, undefined, false],
+    ["switched on in the timeline", true, undefined, true],
+    ["off in the timeline, the target asks for it", false, true, true],
+    ["on in the timeline, the target leaves it out", undefined, false, false],
+  ] as const)("A2 switch: %s", (_w, normalize, loudnorm, want) => {
+    const d = montatore();
+    if (normalize !== undefined) d.normalize = normalize;
+    const plan = compileVideo(d, PROBES, {
+      ...TARGET,
+      ...(loudnorm !== undefined && { loudnorm }),
+    });
+    expect(plan.loudness).toBe(want);
+    expect(plan.audio.name.endsWith(want ? ".flac" : ".m4a")).toBe(true);
+  });
 });
 
 describe("encoding and hashes", () => {

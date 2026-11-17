@@ -83,6 +83,8 @@ function metaValue(key: VideoMetaKey, v: unknown): unknown {
       return VideoCaptionSettings.parse(v);
     case "assembled":
       return v === null ? null : VideoAssembled.parse(v);
+    case "normalize":
+      return v === null ? null : v === true;
     case "version":
       return v === null ? null : VideoVersionInfo.parse(v);
     case "metadata":
@@ -258,7 +260,15 @@ export function diffTimeline(
   what?: VideoEdit,
 ): VideoAction | undefined {
   const ops: VideoPlainAction[] = [];
-  for (const key of ["format", "name", "captions", "assembled", "version", "metadata"] as const) {
+  for (const key of [
+    "format",
+    "name",
+    "captions",
+    "assembled",
+    "normalize",
+    "version",
+    "metadata",
+  ] as const) {
     const b = metaOf(before, key);
     const a = metaOf(after, key);
     if (stableJson(a) !== stableJson(b)) ops.push({ t: "meta", key, value: structuredClone(a) });

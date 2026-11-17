@@ -38,6 +38,7 @@ import {
   setFormat,
   setGenerator,
   setMarker,
+  setNormalize,
   setTrack,
   setTransition,
   trackOf,
@@ -72,7 +73,7 @@ export const VIDEO_CATALOG = `Video timelines (.rgvideo, tracks as in DaVinci Re
 - {"op":"add_text","text":"Titolo","at":"0s","length":"4s","style":"${VIDEO_TEXT_STYLES.join("|")}","position":"${VIDEO_TEXT_POSITIONS.join("|")}","track":"V3","fade":"12f"}: a title clip on a video track (by default the top one if free there, otherwise a new track on top). {"op":"add_color","color":"#000000","at":…,"length":…}. {"op":"set_text","clip":"c9","text":"…"}.
 - {"op":"add_marker","at":…,"color":"${VIDEO_MARKER_COLORS.join("|")}","note":"…"} / {"op":"set_marker","id":"m1",…} / {"op":"remove_marker","id":"m1"}.
 - {"op":"captions","language":"it","burn_in":true,"style":"plain|boxed|bold","position":"bottom|top"} / {"op":"add_caption","start":…,"end":…,"text":"…"} / {"op":"set_caption","id":"s3","text":"…"} / {"op":"remove_captions","ids":["s3"]}.
-- {"op":"format","aspect":"16:9|9:16|1:1|free","width":1920,"height":1080,"rate":"30000/1001","name":"Gita"}: a shape alone takes its usual size; another rate retimes every clip.`;
+- {"op":"format","aspect":"16:9|9:16|1:1|free","width":1920,"height":1080,"rate":"30000/1001","name":"Gita","normalize":true}: a shape alone takes its usual size; another rate retimes every clip; "normalize" brings the finished sound to −14 LUFS (on unless false).`;
 
 type Plain = Record<string, unknown>;
 
@@ -602,6 +603,8 @@ function one(doc: RgVideo, o: Plain): [VideoEdit, RgVideo, string] {
         if (p[k] !== undefined && ((p[k] as number) < 16 || (p[k] as number) > 16_384))
           bad(`"${k}" is from 16 to 16384`);
       let after = setFormat(doc, p);
+      const normalize = boolOf(o.normalize, "normalize");
+      if (normalize !== undefined) after = setNormalize(after, normalize);
       if (typeof o.name === "string") {
         const name = o.name.trim().slice(0, 200);
         if (name !== (doc.name ?? "")) {

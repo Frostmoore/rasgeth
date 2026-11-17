@@ -35,6 +35,7 @@ import {
   type VideoTrackKind,
   type VideoTransition,
   type VideoTransitionKind,
+  type VideoVersionInfo,
 } from "./doc-video.js";
 
 /** Makes a new id with this prefix (c clip, g link, m marker, t transition, s caption). */
@@ -1350,6 +1351,15 @@ export function setFormat(doc0: RgVideo, props: Partial<VideoFormat>): RgVideo {
   return settle(doc);
 }
 
+/** A2: the finished sound at −14 LUFS (on: the setting goes, as on is the default) or as mixed. */
+export function setNormalize(doc: RgVideo, on: boolean): RgVideo {
+  if ((doc.normalize !== false) === on) return doc;
+  const next = clone(doc);
+  if (on) delete next.normalize;
+  else next.normalize = false;
+  return next;
+}
+
 // -------------------------------------------------------------------------------------------
 // Navigation and snapping
 
@@ -1797,6 +1807,7 @@ export function cleanTimeline(raw: unknown, probes?: Record<string, VideoProbe>)
       at: d.assembled.at.slice(0, 40),
       ...(typeof d.assembled.brief === "string" && { brief: d.assembled.brief.slice(0, 4000) }),
     };
+  if (typeof d.normalize === "boolean") doc.normalize = d.normalize;
   if (isObj(d.version) && strOf(d.version.name, 120) && typeof d.version.at === "string")
     doc.version = {
       name: strOf(d.version.name, 120),
@@ -1907,4 +1918,38 @@ export function rgvideoVersionPath(path: string, name: string, stamp: string): s
       .slice(0, 80);
   const n = safe(name) || "version";
   return `${dir}${base}.versions/${safe(stamp)} ${n}.rgvideo`;
+}
+
+/** A version's time in its file name: "2026-11-16 1530" (local time; sorts by time). */
+export function versionStamp(d: Date): string {
+  const p = (n: number, w = 2) => String(n).padStart(w, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}${p(d.getMinutes())}`;
+}
+
+/** The folder of a timeline's named versions (A5): `<name>.versions/` beside it. */
+export function rgvideoVersionsDir(path: string): string {
+  return rgvideoVersionPath(path, "x", "x").replace(/\/[^/]*$/, "");
+}
+
+/** A named version's copy of a timeline: the same timeline, with what it is a version of. */
+export function videoVersionOf(doc: RgVideo, info: VideoVersionInfo): RgVideo {
+  const copy = clone(doc);
+  copy.version = { ...info, name: info.name.trim().slice(0, 120) || "version" };
+  return canonicalTimeline(RgVideo.parse(copy));
+}
+
+/** A version brought back: its timeline without the version's own note. */
+export function fromVersion(version: RgVideo): RgVideo {
+  const copy = clone(version);
+  delete copy.version;
+  return copy;
+}
+
+/**
+ * A file of a timeline's versions folder, read from its name ("2026-11-16 1530 Prima bozza.rgvideo"):
+ * its stamp and its name; undefined for anything else.
+ */
+export function versionFileOf(file: string): { stamp: string; name: string } | undefined {
+  const m = /^(\d{4}-\d{2}-\d{2} \d{4}) (.+)\.rgvideo$/i.exec(file.split("/").pop() ?? "");
+  return m ? { stamp: m[1] as string, name: (m[2] as string).trim() } : undefined;
 }

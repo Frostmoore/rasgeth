@@ -86,7 +86,7 @@ export interface RenderTarget {
   height?: number;
   /** draft: the exact preview (G41.5a); good: the default; best: slower, smaller. */
   quality?: RenderQuality;
-  /** A2: the sound brought to −14 LUFS (on unless false). */
+  /** A2: the sound brought to −14 LUFS; unset follows the timeline's `normalize` (on unless false). */
   loudnorm?: boolean;
   /** Burnt into the picture, as the MP4's text track, or neither (SRT/VTT are always beside). */
   captions?: RenderCaptions;
@@ -875,7 +875,7 @@ export function compileVideo(
     }
     segments.push(segmentStep(ctx, a, b - a, layers, mode === "burn", enc));
   }
-  const loudness = target.loudnorm !== false;
+  const loudness = target.loudnorm ?? doc.normalize !== false;
   const audio = audioStep(ctx, total, loudness);
   return {
     width: w,

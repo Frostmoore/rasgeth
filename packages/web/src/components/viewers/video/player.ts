@@ -7,11 +7,16 @@
 // comes from the time gone by, and a player more than DRIFT away is moved back in line.
 // Dissolves are opacity, dips to black are brightness, wipes are clip-path, slides transform:
 // the effects of compile.ts (G41.3) in CSS. «Anteprima esatta» (ffmpeg) shows the exact render.
+// G41.5d (A1): a crop moved by the person (a horizontal shot in 9:16) is a transform of the
+// picture stretched to the stage (`framePicture`, the render's geometry) with the rest clipped
+// away, and a fitted picture shows on black or on a blurred, filled copy of itself (one more
+// element per player, under it).
 
 import {
   clipEnd,
   clipLength,
   fitText,
+  framePicture,
   framesToSeconds,
   isMediaRef,
   type RgVideo,
@@ -21,6 +26,7 @@ import {
   type VideoKenBurns,
   type VideoTextRef,
   type VideoTransition,
+  wholeCrop,
 } from "@redgiant/protocol";
 
 /** Seconds before a clip when its file starts loading in the free player. */
@@ -34,6 +40,9 @@ export interface PlayerMedia {
   file?: string;
   kind?: "video" | "image" | "audio";
   missing?: boolean;
+  /** The picture's size as shown (from the probe): needed to place a crop. */
+  width?: number;
+  height?: number;
 }
 export type PlayerMediaMap = Record<string, PlayerMedia>;
 
@@ -62,6 +71,54 @@ export function kenBurnsCss(kb: VideoKenBurns, p: number): string {
   const y = lerp(kb.from.y, kb.to.y);
   return `scale(${(1 / w).toFixed(4)}) translate(${(-x * 100).toFixed(3)}%, ${(-y * 100).toFixed(3)}%)`;
 }
+
+/** A stage inset (fractions of the frame), as CSS. */
+const insetCss = (i: { top: number; right: number; bottom: number; left: number }) =>
+  `inset(${[i.top, i.right, i.bottom, i.left].map((v) => `${(v * 100).toFixed(3)}%`).join(" ")})`;
+
+/** Reads `inset(a% b% c% d%)` (the wipes' clip-path) back into fractions. */
+function insetOf(css: string): { top: number; right: number; bottom: number; left: number } | null {
+  const m = /^inset\(([^)]*)\)$/.exec(css.trim());
+  if (!m) return null;
+  const v = (m[1] as string).split(/\s+/).map((x) => Number.parseFloat(x) / 100 || 0);
+  const [t = 0, r = t, b = t, l = r] = v;
+  return { top: t, right: r, bottom: b, left: l };
+}
+
+/**
+ * How a picture of a file sits on the stage (A1), for an element as big as the stage with the
+ * file stretched over it (`object-fit: fill`): a transform putting the file where the render puts
+ * it, and the clip keeping only the crop (with a wipe's, moved into the element's own measures).
+ * Null when the file's size is unknown or there is nothing to move: the element stays as it is
+ * (`cover` or `contain`, as before).
+ */
+export function pictureFrame(
+  c: Pick<VideoClip, "fit" | "crop">,
+  src: { w: number; h: number } | undefined,
+  out: { w: number; h: number },
+  wipe = "",
+  fit: VideoClip["fit"] = c.fit,
+): { transform: string; clipPath: string } | null {
+  if (!src || !(src.w > 0 && src.h > 0) || wholeCrop(c.crop)) return null;
+  const f = framePicture(src, out, fit, c.crop);
+  const n = (v: number) => v.toFixed(5);
+  const transform = `translate(${n(f.left * 100)}%, ${n(f.top * 100)}%) scale(${n(f.width)}, ${n(f.height)})`;
+  const clip = f.clip ?? { top: 0, right: 0, bottom: 0, left: 0 };
+  const w = insetOf(wipe);
+  if (w) {
+    // The wipe is on the stage; the element's own measures are the file's.
+    clip.left = Math.max(clip.left, (w.left - f.left) / f.width);
+    clip.right = Math.max(clip.right, 1 - (1 - w.right - f.left) / f.width);
+    clip.top = Math.max(clip.top, (w.top - f.top) / f.height);
+    clip.bottom = Math.max(clip.bottom, 1 - (1 - w.bottom - f.top) / f.height);
+  }
+  const any = clip.top > 0 || clip.right > 0 || clip.bottom > 0 || clip.left > 0;
+  return { transform, clipPath: any ? insetCss(clip) : "" };
+}
+
+/** What shows around a fitted picture: nothing, black, or a blurred filled copy (A1). */
+export const backdropOf = (c: Pick<VideoClip, "fit" | "background">): "none" | "black" | "blur" =>
+  c.fit === "fit" && c.background ? c.background : "none";
 
 /** One thing a video track shows at a frame. */
 export interface VideoLayer {
@@ -264,6 +321,8 @@ export interface MediaLike {
 
 interface Slot {
   el: MediaLike;
+  /** What shows around it when fitted (A1): black or a blurred copy; made when first needed. */
+  bg?: MediaLike;
   /** The file loaded (its URL). */
   src: string | null;
   /** The clip it shows now (or is loaded for). */
@@ -275,7 +334,11 @@ interface TrackEls {
   slots: [Slot, Slot];
   /** Pictures, texts and colours: one box each for the two layers of a transition. */
   imgs: [HTMLImageElement, HTMLImageElement];
+  /** The pictures' backdrops (A1), one for each. */
+  imgBgs: [HTMLImageElement, HTMLImageElement];
   boxes: [HTMLElement, HTMLElement];
+  /** Holds the backdrops (under their pictures, never counted as players). */
+  bgBox: HTMLElement | null;
   kind: "Video" | "Audio";
 }
 
@@ -367,7 +430,11 @@ export class TimelinePlayer {
     this.playing = false;
     if (this.timer !== null) this.o.cancel(this.timer);
     this.timer = null;
-    for (const t of this.tracks.values()) for (const s of t.slots) s.el.pause();
+    for (const t of this.tracks.values())
+      for (const s of t.slots) {
+        s.el.pause();
+        s.bg?.pause();
+      }
     this.render(this.frame, false);
   }
 
@@ -377,6 +444,7 @@ export class TimelinePlayer {
       for (const s of t.slots) {
         s.el.removeAttribute("src");
         s.el.load();
+        s.bg?.removeAttribute("src");
       }
       t.layer.remove();
     }
@@ -395,6 +463,7 @@ export class TimelinePlayer {
         for (const s of t.slots) {
           s.el.removeAttribute("src");
           s.el.load();
+          s.bg?.removeAttribute("src");
         }
         t.layer.remove();
         this.tracks.delete(id);
@@ -418,14 +487,21 @@ export class TimelinePlayer {
         layer.appendChild(el);
         return { el, src: null, clip: null };
       };
-      const img = () => {
+      const img = (into: HTMLElement | null = layer, cls = "vp-picture") => {
         const i = document.createElement("img");
-        i.className = "vp-picture";
+        i.className = cls;
         i.alt = "";
         i.style.opacity = "0";
-        layer.appendChild(i);
+        // Its size is known once loaded: a crop can be placed then.
+        i.addEventListener("load", () => this.render(this.frame, this.playing));
+        into?.appendChild(i);
         return i;
       };
+      const bgBox = t.kind === "Video" ? document.createElement("div") : null;
+      if (bgBox) {
+        bgBox.className = "vp-bgs";
+        layer.appendChild(bgBox);
+      }
       const box = () => {
         const b = document.createElement("div");
         b.className = "vp-box";
@@ -437,6 +513,11 @@ export class TimelinePlayer {
         layer,
         slots: [mk(), mk()],
         imgs: t.kind === "Video" ? [img(), img()] : ([] as unknown as TrackEls["imgs"]),
+        imgBgs:
+          t.kind === "Video"
+            ? [img(bgBox, "vp-bg"), img(bgBox, "vp-bg")]
+            : ([] as unknown as TrackEls["imgBgs"]),
+        bgBox,
         boxes: t.kind === "Video" ? [box(), box()] : ([] as unknown as TrackEls["boxes"]),
         kind: t.kind,
       };
@@ -506,39 +587,122 @@ export class TimelinePlayer {
     s.el.volume = 0;
   }
 
+  /** A backdrop for its player or picture, made the first time a fitted clip asks for one. */
+  private bgFor(e: TrackEls, slot: Slot): MediaLike {
+    if (!slot.bg) {
+      const el = this.o.media("video");
+      el.muted = true;
+      el.preload = "auto";
+      (el as unknown as HTMLVideoElement).playsInline = true;
+      el.className = "vp-bg";
+      el.style.opacity = "0";
+      e.bgBox?.appendChild(el);
+      slot.bg = el;
+    }
+    return slot.bg;
+  }
+
   private syncVideo(id: string, e: TrackEls, frame: number, playing: boolean): void {
     const doc = this.doc as RgVideo;
     const layers = videoLayers(doc, id, frame, this.media);
+    const out = { w: doc.format.width, h: doc.format.height };
+    // compile.ts blurs a quarter-size copy (boxblur 8, twice): about 28 pixels of the frame.
+    const blur = `blur(calc(var(--side) * ${(28 / Math.min(out.w, out.h)).toFixed(4)}))`;
     const taken = new Set<Slot>();
+    const bgsOn = new Set<MediaLike | HTMLImageElement>();
     let img = 0;
     let box = 0;
     for (const l of layers) {
-      const look = (el: { style: CSSStyleDeclaration | MediaLike["style"] }) => {
+      const bright = l.brightness < 1 ? `brightness(${l.brightness.toFixed(3)})` : "";
+      const look = (
+        el: { style: CSSStyleDeclaration | MediaLike["style"] },
+        frame?: { transform: string; clipPath: string } | null,
+        z = l.top ? "4" : "2",
+      ) => {
         el.style.opacity = String(l.opacity);
-        el.style.transform = l.transform;
-        el.style.clipPath = l.clipPath;
-        el.style.filter = l.brightness < 1 ? `brightness(${l.brightness.toFixed(3)})` : "";
-        el.style.zIndex = l.top ? "2" : "1";
+        el.style.transform = [l.transform, frame?.transform].filter(Boolean).join(" ");
+        el.style.clipPath = frame ? frame.clipPath : l.clipPath;
+        el.style.filter = bright;
+        el.style.zIndex = z;
+      };
+      /** The picture of a file: where its crop puts it, and what shows around it. */
+      const place = (
+        el: MediaLike | HTMLImageElement,
+        base: "vp-video" | "vp-picture",
+        size: { w: number; h: number } | undefined,
+        bg: () => MediaLike | HTMLImageElement,
+        src: string,
+        time?: number,
+      ) => {
+        const fr = pictureFrame(l.clip, size, out, l.clipPath);
+        (el as HTMLElement).className = fr
+          ? `${base} framed`
+          : `${base}${l.clip.fit === "fit" ? " fit" : ""}`;
+        look(el, fr);
+        const mode = backdropOf(l.clip);
+        if (mode === "none") return;
+        const b = bg();
+        bgsOn.add(b);
+        const cls = `vp-bg ${mode}`;
+        if ((b as HTMLElement).className !== cls) (b as HTMLElement).className = cls;
+        b.style.opacity = String(l.opacity);
+        b.style.transform = l.transform;
+        b.style.clipPath = l.clipPath;
+        b.style.zIndex = l.top ? "3" : "1";
+        // Black: whatever it held last, darkened to nothing over its black background.
+        b.style.filter = mode === "blur" ? `${blur} ${bright}`.trim() : "brightness(0)";
+        // The blurred copy fills the frame from the crop's centre (as the render's fill).
+        const c = l.clip.crop;
+        const pos = (lo: number, len: number) =>
+          len >= 1 ? 50 : Math.max(0, Math.min(100, (lo / (1 - len)) * 100));
+        (b as HTMLElement).style.objectPosition = c
+          ? `${pos(c.x, c.w).toFixed(2)}% ${pos(c.y, c.h).toFixed(2)}%`
+          : "";
+        if (mode !== "blur") return;
+        if (b instanceof HTMLImageElement) {
+          if (b.dataset.src !== src) {
+            b.src = src;
+            b.dataset.src = src;
+          }
+        } else {
+          if (b.src !== src) {
+            b.src = src;
+            b.load();
+          }
+          if (time !== undefined) this.drive(b, time, playing);
+        }
       };
       if (l.kind === "video" && isMediaRef(l.clip.ref)) {
-        const src = playSrc(this.media[l.clip.ref.media]);
+        const m = this.media[l.clip.ref.media];
+        const src = playSrc(m);
         if (!src) continue;
         const slot = this.slotFor(e, src, l.clip.id, taken);
         taken.add(slot);
-        (slot.el as unknown as HTMLElement).className =
-          `vp-video${l.clip.fit === "fit" ? " fit" : ""}`;
-        look(slot.el);
+        const v = slot.el as unknown as { videoWidth?: number; videoHeight?: number };
+        const size =
+          m?.width && m.height
+            ? { w: m.width, h: m.height }
+            : v.videoWidth && v.videoHeight
+              ? { w: v.videoWidth, h: v.videoHeight }
+              : undefined;
+        place(slot.el, "vp-video", size, () => this.bgFor(e, slot), src, l.time);
         this.drive(slot.el, l.time, playing);
       } else if (l.kind === "image" && isMediaRef(l.clip.ref)) {
         const m = this.media[l.clip.ref.media];
-        const el = e.imgs[img++] as HTMLImageElement;
+        const i = img++;
+        const el = e.imgs[i] as HTMLImageElement;
         const src = m && !m.missing ? (m.file ?? "") : "";
         if (el.dataset.src !== src) {
           el.src = src;
           el.dataset.src = src;
         }
-        el.className = `vp-picture${l.clip.fit === "fit" ? " fit" : ""}`;
-        look(el);
+        const size =
+          m?.width && m.height
+            ? { w: m.width, h: m.height }
+            : el.naturalWidth && el.naturalHeight
+              ? { w: el.naturalWidth, h: el.naturalHeight }
+              : undefined;
+        place(el, "vp-picture", size, () => e.imgBgs[i] as HTMLImageElement, src);
       } else {
         const el = e.boxes[box++] as HTMLElement;
         look(el);
@@ -555,7 +719,14 @@ export class TimelinePlayer {
         }
       }
     }
-    for (const s of e.slots) if (!taken.has(s)) this.idle(s);
+    for (const s of e.slots) {
+      if (!taken.has(s)) this.idle(s);
+      if (s.bg && !bgsOn.has(s.bg)) {
+        s.bg.style.opacity = "0";
+        if (!s.bg.paused) s.bg.pause();
+      }
+    }
+    for (const b of e.imgBgs) if (!bgsOn.has(b)) b.style.opacity = "0";
     for (let i = img; i < 2; i++) (e.imgs[i] as HTMLImageElement).style.opacity = "0";
     for (let i = box; i < 2; i++) (e.boxes[i] as HTMLElement).style.opacity = "0";
     this.preload(id, e, frame, playing, taken);

@@ -251,6 +251,17 @@ export const VideoVersionInfo = z.object({
 });
 export type VideoVersionInfo = z.infer<typeof VideoVersionInfo>;
 
+/** A named version as the editor lists it (A5, `POST /api/editor/video/versions`). */
+export interface VideoVersionEntry {
+  /** Its path in the project (in `<name>.versions/` beside the timeline). */
+  path: string;
+  name: string;
+  /** ISO 8601. */
+  at: string;
+  reason: VideoVersionInfo["reason"];
+  clips: number;
+}
+
 /** When the automatic assembly (G41.6) made it, and from what brief. */
 export const VideoAssembled = z.object({
   at: z.string().max(40),
@@ -268,6 +279,11 @@ export const RgVideo = z.object({
   markers: z.array(VideoMarker).max(10_000),
   captions: VideoCaptions,
   assembled: VideoAssembled.optional(),
+  /**
+   * A2: the finished video's sound brought to −14 LUFS (`loudnorm`, measured then corrected);
+   * absent means on, false leaves the mix as it is.
+   */
+  normalize: z.boolean().optional(),
   /** Set only in a named version's copy (A5). */
   version: VideoVersionInfo.optional(),
   metadata: Meta.optional(),
@@ -283,6 +299,7 @@ export const VIDEO_META_KEYS = [
   "format",
   "captions",
   "assembled",
+  "normalize",
   "version",
   "metadata",
 ] as const;
