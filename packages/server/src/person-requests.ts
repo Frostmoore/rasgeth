@@ -67,6 +67,9 @@ export class OwnerSettings<T> {
     return this.cache.get(ownerId) ?? this.defaults;
   }
 
+  /** Who hears of a saved change (undone ones too, they are saved again). */
+  readonly changed = new Set<(ownerId: string) => void>();
+
   /** Validates and saves; throws the schema's error on a bad value. */
   async set(ownerId: string, value: unknown): Promise<T> {
     const v = this.schema.parse(value);
@@ -76,6 +79,7 @@ export class OwnerSettings<T> {
       [ownerId, this.key, JSON.stringify(v)],
     );
     this.cache.set(ownerId, v);
+    for (const f of this.changed) f(ownerId);
     return v;
   }
 }

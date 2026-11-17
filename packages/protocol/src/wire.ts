@@ -227,6 +227,30 @@ export const ClientMessage = z.discriminatedUnion("type", [
 ]);
 export type ClientMessage = z.infer<typeof ClientMessage>;
 
+/** One turn waiting for a place (3.8.10). */
+export const QueuedTurnView = z.object({
+  sessionId: z.string(),
+  agentId: z.string(),
+  /** When it started waiting (ISO). */
+  since: z.string(),
+  /** Asked by a turn that waits for its answer (a sub-agent): it goes before the others. */
+  child: z.boolean().optional(),
+  /** The person moved it to the front. */
+  first: z.boolean().optional(),
+});
+export type QueuedTurnView = z.infer<typeof QueuedTurnView>;
+
+/** The person's agents at work and their line (3.8.10, `turns.queue` and `GET /api/turns`). */
+export const TurnQueueView = z.object({
+  /** The person's limit; null: no limit. */
+  limit: z.number().int().nullable(),
+  /** Turns holding a place. */
+  working: z.number().int(),
+  running: z.array(z.object({ sessionId: z.string(), agentId: z.string() })),
+  queued: z.array(QueuedTurnView),
+});
+export type TurnQueueView = z.infer<typeof TurnQueueView>;
+
 export const ServerMessage = z.discriminatedUnion("type", [
   /** The answer to the page's heartbeat (p3.5.4). */
   z.object({ type: z.literal("pong") }),
@@ -302,6 +326,13 @@ export const ServerMessage = z.discriminatedUnion("type", [
   }),
   /** A summary of the conversation is being made while the person waits (G24.14). */
   z.object({ type: z.literal("session.compacting"), sessionId: z.string(), busy: z.boolean() }),
+  /**
+   * The person's agents at work and the line of turns waiting for a place (3.8.10): to every page
+   * and app of the owner after the welcome and at every change. `queued` is in the order they
+   * will start; `working` counts the turns holding a place (the limit's), `running` every turn
+   * at work (the person's own and those lending their place to a sub-agent too).
+   */
+  z.object({ type: z.literal("turns.queue"), ...TurnQueueView.shape }),
   /**
    * A file of the agent's project read or written through the editor that shows the conversation
    * (G38.6, after `editor.attach`); answered with `editor.fs.reply`. `path` is absolute.

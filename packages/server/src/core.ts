@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from "node:async_hooks";
 import { execFile } from "node:child_process";
 import { randomBytes, randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, renameSync } from "node:fs";
@@ -98,6 +99,7 @@ import {
   type SharedMemoryView,
   type ToolChoice,
   type ToolsView,
+  type TurnQueueView,
   textLanguage,
   toolsSwitchedOff,
   type UiLanguage,
@@ -310,6 +312,7 @@ import { SharedMemory } from "./shared-memory.js";
 import { SKILL_PROMPT, SkillNudge } from "./skill-nudge.js";
 import { type SshToolsHost, sshTools } from "./ssh-tools.js";
 import { dryWorkspace, ToolChoiceStore, toolChars, toolsView } from "./tool-choice.js";
+import { type Seat, TurnSeats } from "./turn-seats.js";
 import { UpdateRequiredError, type UpdateWatcher } from "./updates.js";
 import {
   blankPastedSecrets,
@@ -514,6 +517,33 @@ export interface ProjectWork {
   automations: { id: string; name: string }[];
 }
 
+/** What a turn waiting for a place needs to start (3.8.10). */
+type TurnExtra = {
+  images?: ImagePart[];
+  quotes?: MessageQuote[];
+  from?: string;
+  watch?: boolean;
+  steer?: boolean;
+  clientId?: string;
+  human?: boolean;
+  taskReport?: boolean;
+  via?: "artifact" | "voice";
+};
+
+/** A turn waiting for a place (3.8.10): started by `TurnSeats` when its place comes. */
+interface WaitingTurn {
+  /** Its place in line, and the log's `queueId`. */
+  id: string;
+  ownerId: string;
+  live: Live;
+  text: string;
+  extra: TurnExtra;
+  /** Its `turn.queued` is in the log (the restart starts it again). */
+  logged: boolean;
+  resolve: (r: SendResult) => void;
+  reject: (e: unknown) => void;
+}
+
 interface Live {
   id: string;
   ownerId: string;
@@ -545,6 +575,8 @@ interface Live {
       taskReport?: boolean;
       via?: "artifact" | "voice";
     };
+    /** The running turn that waits for its answer (3.8.10): it lends its place. */
+    asker?: string;
     resolve: (r: SendResult) => void;
     reject: (e: unknown) => void;
   }[];
@@ -677,6 +709,13 @@ export class RedGiantCore implements OrchestrationHost {
   readonly questions = new HumanQuestions();
   /** Background commands' and bash's limits, per person (G36.16, Settings > Commands). */
   readonly commandSettings: OwnerSettings<CommandSettings>;
+  /** Agents at work together (3.8.10): the places and the line of every person. */
+  readonly seats: TurnSeats;
+  /** Turns waiting for a place, by conversation (3.8.10). */
+  private readonly waitingTurns = new Map<string, WaitingTurn>();
+  /** The turn whose tools are running now (3.8.10): a child it waits for takes its place. */
+  private readonly turnAsker = new AsyncLocalStorage<{ ownerId: string; sessionId: string }>();
+  private readonly queueNotices = new Set<string>();
   /** What reaches the person and what their classifier decides (G36.17, Settings > Requests). */
   readonly requestSettings: OwnerSettings<RequestSettings>;
   readonly person: PersonRequests;
@@ -995,6 +1034,11 @@ export class RedGiantCore implements OrchestrationHost {
       CommandSettings,
       DEFAULT_COMMAND_SETTINGS,
     );
+    this.seats = new TurnSeats({
+      limit: (ownerId) => this.commandSettings.get(ownerId).maxAtWork ?? null,
+      changed: (ownerId) => this.queueChanged(ownerId),
+    });
+    this.commandSettings.changed.add((ownerId) => this.seats.limitChanged(ownerId));
     this.requestSettings = new OwnerSettings(
       o.db,
       "requests",
@@ -4920,7 +4964,13 @@ export class RedGiantCore implements OrchestrationHost {
   closeIdle(idleMs = 30 * 60_000): number {
     let closed = 0;
     for (const [id, l] of this.live) {
-      if (l.running || this.followers.has(l.id) || Date.now() - l.usedAt < idleMs) continue;
+      if (
+        l.running ||
+        this.waitingTurns.has(l.id) ||
+        this.followers.has(l.id) ||
+        Date.now() - l.usedAt < idleMs
+      )
+        continue;
       this.live.delete(id);
       closed++;
     }
@@ -6162,8 +6212,15 @@ export class RedGiantCore implements OrchestrationHost {
       taskReport?: boolean;
       /** A button the person clicked in an artifact or a widget sent it (3.5.9). */
       via?: "artifact" | "voice";
+      /**
+       * The turn sending it waits for its answer (3.8.10: run_subagent, ask_god, ask_assistant):
+       * it takes that turn's place instead of waiting for one.
+       */
+      waits?: boolean;
+      /** Starting again after a restart a turn that waited (its `turn.queued`, 3.8.10). */
+      requeue?: string;
     } = {},
-  ): Promise<{ done: Promise<SendResult>; queued?: boolean }> {
+  ): Promise<{ done: Promise<SendResult>; queued?: boolean; waiting?: boolean }> {
     // A secret the person pasted (G33.4) never reaches the model nor the log: it is blanked here,
     // and the agent is told so it can point them to the keychain. The page asks first.
     const person = extra.watch === true || extra.human === true;
@@ -6171,13 +6228,18 @@ export class RedGiantCore implements OrchestrationHost {
     this.updateGate();
     const l = await this.open(ownerId, sessionId);
     this.liveGate(l);
-    const { queue, ...rest } = extra;
+    const { queue, waits, requeue, ...rest } = extra;
     // The replies under quoted passages are the person's words too.
     if (person && rest.quotes)
       rest.quotes = rest.quotes.map((q) =>
         q.reply ? { ...q, reply: blankPastedSecrets(q.reply) } : q,
       );
-    if (l.running || (l.queue?.length ?? 0) > 0) {
+    // Who waits for this answer (3.8.10): a turn of the same person whose tools run now.
+    const asking = waits ? this.turnAsker.getStore() : undefined;
+    const asker =
+      asking?.ownerId === ownerId && asking.sessionId !== sessionId ? asking.sessionId : undefined;
+    const waiting = this.waitingTurns.get(sessionId);
+    if (l.running || (l.queue?.length ?? 0) > 0 || waiting) {
       if (!queue) throw new SessionBusyError();
       let resolve!: (r: SendResult) => void;
       let reject!: (e: unknown) => void;
@@ -6186,10 +6248,241 @@ export class RedGiantCore implements OrchestrationHost {
         reject = ko;
       });
       l.queue ??= [];
-      l.queue.push({ text, extra: rest, resolve, reject });
+      l.queue.push({ text, extra: rest, resolve, reject, ...(asker && { asker }) });
+      // The person writes where a turn waits for a place: it starts now, as their messages do.
+      if (waiting && person) this.seats.admit(ownerId, sessionId);
       return { done, queued: true };
     }
-    return this.sendNow(ownerId, sessionId, l, text, rest);
+    return this.begin(ownerId, sessionId, l, text, rest, { asker, requeue });
+  }
+
+  /**
+   * A turn asks for a place (3.8.10): it starts now, or waits in line (`turn.queued` in the log)
+   * and starts when its place comes. Never waits for the turn itself.
+   */
+  private async begin(
+    ownerId: string,
+    sessionId: string,
+    l: Live,
+    text: string,
+    extra: TurnExtra,
+    o: { asker?: string | undefined; requeue?: string | undefined },
+  ): Promise<{ done: Promise<SendResult>; queued?: boolean; waiting?: boolean }> {
+    const id = o.requeue ?? randomUUID();
+    let resolve!: (r: SendResult) => void;
+    let reject!: (e: unknown) => void;
+    const done = new Promise<SendResult>((ok, ko) => {
+      resolve = ok;
+      reject = ko;
+    });
+    const w: WaitingTurn = {
+      id,
+      ownerId,
+      live: l,
+      text,
+      extra,
+      logged: o.requeue !== undefined,
+      resolve,
+      reject,
+    };
+    // In the map before asking: a free place may start it inside `ask`.
+    this.waitingTurns.set(sessionId, w);
+    const seat = this.seats.ask(
+      ownerId,
+      {
+        id,
+        sessionId,
+        agentId: l.agentId,
+        person: extra.watch === true || extra.human === true,
+        ...(o.asker && { parent: o.asker }),
+      },
+      (granted) => this.startWaiting(sessionId, id, granted),
+    );
+    if (seat) {
+      if (this.waitingTurns.get(sessionId) === w) this.waitingTurns.delete(sessionId);
+      if (w.logged) await this.logUnqueued(l, sessionId, id, "started").catch(() => {});
+      return this.seated(ownerId, sessionId, l, text, extra, seat);
+    }
+    if (this.waitingTurns.get(sessionId) === w && !w.logged) {
+      w.logged = true;
+      const images = extra.images?.length ?? 0;
+      await this.store
+        .append({
+          ownerId,
+          projectId: l.projectId,
+          agentId: l.agentId,
+          sessionId,
+          body: {
+            type: "turn.queued",
+            payload: {
+              queueId: id,
+              text,
+              ...(extra.from && { from: extra.from }),
+              ...(extra.taskReport && { taskReport: true }),
+              ...(extra.via && { via: extra.via }),
+              ...(extra.quotes?.length && { quotes: extra.quotes }),
+              ...(images > 0 && { images }),
+              ...(o.asker && { child: true }),
+            },
+          },
+        })
+        .catch(() => {
+          w.logged = false;
+        });
+    }
+    return { done, queued: true, waiting: true };
+  }
+
+  /** A turn that had a place given starts; one refused meanwhile (archived) is refused. */
+  private async seated(
+    ownerId: string,
+    sessionId: string,
+    l: Live,
+    text: string,
+    extra: TurnExtra,
+    seat: Seat,
+  ): Promise<{ done: Promise<SendResult> }> {
+    try {
+      return await this.sendNow(ownerId, sessionId, l, text, extra, seat);
+    } catch (err) {
+      seat.release();
+      throw err;
+    }
+  }
+
+  /** Its place came (3.8.10): the waiting turn starts, on the conversation as it is now. */
+  private startWaiting(sessionId: string, id: string, seat: Seat): void {
+    const w = this.waitingTurns.get(sessionId);
+    if (!w || w.id !== id) {
+      seat.release();
+      return;
+    }
+    this.waitingTurns.delete(sessionId);
+    void (async () => {
+      let l = w.live;
+      try {
+        // Taken out of memory meanwhile (a model change): rebuilt, with what waited behind it.
+        if (this.live.get(sessionId) !== l) {
+          const fresh = await this.open(w.ownerId, sessionId);
+          if (l.queue?.length) fresh.queue = [...l.queue.splice(0), ...(fresh.queue ?? [])];
+          l = fresh;
+        }
+        if (w.logged) await this.logUnqueued(l, sessionId, id, "started").catch(() => {});
+        const { done } = await this.seated(w.ownerId, sessionId, l, w.text, w.extra, seat);
+        done.then(w.resolve, w.reject);
+      } catch (err) {
+        seat.release();
+        if (w.logged) await this.logUnqueued(l, sessionId, id, "refused").catch(() => {});
+        w.reject(err);
+        this.drain(w.ownerId, sessionId, l);
+      }
+    })();
+  }
+
+  private async logUnqueued(
+    l: Live,
+    sessionId: string,
+    queueId: string,
+    outcome: "started" | "withdrawn" | "refused",
+  ): Promise<void> {
+    await this.store.append({
+      ownerId: l.ownerId,
+      projectId: l.projectId,
+      agentId: l.agentId,
+      sessionId,
+      body: { type: "turn.unqueued", payload: { queueId, outcome } },
+    });
+  }
+
+  /**
+   * A waiting turn leaves the line without starting (stopped, archived): answered `aborted`
+   * (or refused with `err`); what waited behind it in the conversation goes on unless refused.
+   */
+  private async dropWaiting(
+    sessionId: string,
+    outcome: "withdrawn" | "refused",
+    err?: unknown,
+  ): Promise<boolean> {
+    const w = this.waitingTurns.get(sessionId);
+    if (!w) return false;
+    this.waitingTurns.delete(sessionId);
+    this.seats.withdraw(w.ownerId, w.id);
+    if (w.logged) await this.logUnqueued(w.live, sessionId, w.id, outcome).catch(() => {});
+    if (err !== undefined) w.reject(err);
+    else w.resolve({ stopReason: "aborted", turns: 0 });
+    return true;
+  }
+
+  /** The person moves a waiting conversation to the front of the line (3.8.10). */
+  turnFirst(ownerId: string, sessionId: string): boolean {
+    return this.seats.first(ownerId, sessionId);
+  }
+
+  /** The person's agents at work and their line (3.8.10). */
+  turnQueue(ownerId: string): TurnQueueView {
+    return this.seats.view(ownerId);
+  }
+
+  /** Tells the person's pages and apps once per tick, however many changes it had. */
+  private queueChanged(ownerId: string): void {
+    if (this.queueNotices.has(ownerId)) return;
+    this.queueNotices.add(ownerId);
+    queueMicrotask(() => {
+      this.queueNotices.delete(ownerId);
+      this.toOwner(ownerId, { type: "turns.queue", ...this.seats.view(ownerId) });
+    });
+  }
+
+  /**
+   * After a restart (3.8.10): the turns that waited for a place when the server stopped wait again,
+   * in the order they had, from the log (`turn.queued` without its `turn.unqueued`). Their callers
+   * are gone: a task's report still reaches who handed it over (`reportTasks`).
+   */
+  async resumeQueued(): Promise<{ sessions: string[] }> {
+    const events = await this.store.list({ types: ["turn.queued", "turn.unqueued"] });
+    const left = new Set(
+      events.flatMap((e) => (e.type === "turn.unqueued" && e.payload ? [e.payload.queueId] : [])),
+    );
+    const sessions: string[] = [];
+    for (const e of events) {
+      if (e.type !== "turn.queued" || !e.payload || !e.sessionId || left.has(e.payload.queueId))
+        continue;
+      const p = e.payload;
+      const agent = e.agentId ? this.registry.get(e.agentId) : undefined;
+      const gone =
+        !agent ||
+        agent.status !== "active" ||
+        agent.archived ||
+        this.registry.isProjectArchived(e.ownerId, e.projectId ?? agent.projectId);
+      try {
+        if (gone) throw new Error("its agent or project is no longer active");
+        const text = p.images
+          ? `${p.text}\n\n[RedGiant restarted while this waited: its ${p.images} image(s) were not kept.]`
+          : p.text;
+        const { done } = await this.send(e.ownerId, e.sessionId, text, {
+          queue: true,
+          requeue: p.queueId,
+          ...(p.from && { from: p.from }),
+          ...(p.taskReport && { taskReport: true }),
+          ...(p.via && { via: p.via }),
+          ...(p.quotes && { quotes: p.quotes }),
+        });
+        done.catch(() => {});
+        sessions.push(e.sessionId);
+      } catch (err) {
+        console.warn(`queued turn ${e.sessionId}: ${(err as Error).message}`);
+        await this.store
+          .append({
+            ownerId: e.ownerId,
+            projectId: e.projectId,
+            agentId: e.agentId,
+            sessionId: e.sessionId,
+            body: { type: "turn.unqueued", payload: { queueId: p.queueId, outcome: "refused" } },
+          })
+          .catch(() => {});
+      }
+    }
+    return { sessions };
   }
 
   /**
@@ -6249,9 +6542,10 @@ export class RedGiantCore implements OrchestrationHost {
 
   /** The next message waiting for this conversation, if any, now that it is free. */
   private drain(ownerId: string, sessionId: string, l: Live): void {
+    if (l.running || this.waitingTurns.has(sessionId)) return;
     const next = l.queue?.shift();
     if (!next) return;
-    this.sendNow(ownerId, sessionId, l, next.text, next.extra).then(
+    this.begin(ownerId, sessionId, l, next.text, next.extra, { asker: next.asker }).then(
       ({ done }) => done.then(next.resolve, next.reject),
       (err) => {
         next.reject(err);
@@ -6276,6 +6570,7 @@ export class RedGiantCore implements OrchestrationHost {
       taskReport?: boolean;
       via?: "artifact" | "voice";
     },
+    seat: Seat,
   ): Promise<{ done: Promise<SendResult> }> {
     // Also for messages that waited in line: they are refused, not lost in the middle of a turn.
     this.updateGate();
@@ -6323,6 +6618,7 @@ export class RedGiantCore implements OrchestrationHost {
         .then((): SendResult => ({ stopReason: "end_turn", turns: 0 }))
         .finally(() => {
           l.running = null;
+          seat.release();
           this.sharedMemory.turnEnded(sessionId);
           notify("idle", "end_turn");
           this.turnOver(ownerId, sessionId, l);
@@ -6339,6 +6635,7 @@ export class RedGiantCore implements OrchestrationHost {
     const { watch, steer: _steer, clientId: _clientId, human: _human, ...message } = extra;
     const ended = (stopReason: string) => {
       l.running = null;
+      seat.release();
       this.sharedMemory.turnEnded(sessionId);
       // The agent answered the person (3.8.1): its mascot stays awake for a while.
       const repliedAt = human && stopReason === "end_turn" ? new Date().toISOString() : undefined;
@@ -6353,13 +6650,16 @@ export class RedGiantCore implements OrchestrationHost {
     // A new turn: one group of edits (G37.1); what the person changed meanwhile rides with it.
     this.editor.turnStarted(sessionId);
     const notes = [...this.editor.notesFor(sessionId), ...this.artifactErrors.take(sessionId)];
-    const done = l.session
-      .send(text, controller.signal, {
-        ...message,
-        ...(notes.length > 0 && { notes }),
-        // The person started it (3.5.6): no step limit unless they chose one.
-        ...(human && { person: true }),
-      })
+    // Its tools run as this turn (3.8.10): a child it waits for takes its place.
+    const done = this.turnAsker
+      .run({ ownerId, sessionId }, () =>
+        l.session.send(text, controller.signal, {
+          ...message,
+          ...(notes.length > 0 && { notes }),
+          // The person started it (3.5.6): no step limit unless they chose one.
+          ...(human && { person: true }),
+        }),
+      )
       .then(
         (r) => {
           ended(
@@ -6467,7 +6767,7 @@ export class RedGiantCore implements OrchestrationHost {
     if (!(await this.projects.get(ownerId, projectId)))
       throw new NotFoundError(`Project "${projectId}" not found`);
     const working = this.liveIn(ownerId, projectId).filter(
-      (l) => l.running || (l.queue?.length ?? 0) > 0,
+      (l) => l.running || (l.queue?.length ?? 0) > 0 || this.waitingTurns.has(l.id),
     );
     const titles = new Map((await this.listSessions(ownerId)).map((r) => [r.id, r.title] as const));
     return {
@@ -6589,6 +6889,7 @@ export class RedGiantCore implements OrchestrationHost {
         l.running.abort();
       }
       for (const q of l.queue?.splice(0) ?? []) q.reject(new ProjectArchivedError(projectId));
+      await this.dropWaiting(l.id, "refused", new ProjectArchivedError(projectId));
     }
     await Promise.race([
       Promise.all(lives.map((l) => l.turn)),
@@ -7085,12 +7386,17 @@ export class RedGiantCore implements OrchestrationHost {
   /** Conversations working or with messages waiting (the evals wait for none after delegating). */
   busySessions(): string[] {
     return [...this.live.values()]
-      .filter((l) => l.running || (l.queue?.length ?? 0) > 0)
+      .filter((l) => l.running || (l.queue?.length ?? 0) > 0 || this.waitingTurns.has(l.id))
       .map((l) => l.id);
   }
 
   async interrupt(ownerId: string, sessionId: string): Promise<boolean> {
     const l = await this.open(ownerId, sessionId);
+    // Waiting for a place (3.8.10): it leaves the line; what waited behind it goes on.
+    if (await this.dropWaiting(sessionId, "withdrawn")) {
+      this.drain(ownerId, sessionId, l);
+      return true;
+    }
     l.running?.abort();
     return l.running !== null;
   }

@@ -4,6 +4,9 @@
 //   GET  /api/settings/requests        → { settings, defaults, defaultModel, critical }
 //   PUT  /api/settings/requests        → PlatformChange
 //   GET  /api/unattended               → UnattendedDecision[] (decided without the person)
+//   GET  /api/turns                    → TurnQueueView (3.8.10: agents at work, the line)
+//   POST /api/turns/:sessionId/first   → TurnQueueView (moves a waiting conversation first; 404
+//                                        when it does not wait)
 //   GET  /api/settings/editor          → { settings } (G37.1: the agents' edits, at once or proposed)
 //   PUT  /api/settings/editor          → PlatformChange
 //   POST /api/editor/diff              → { before, after, from, to } (G37.2: a change, a turn or a
@@ -83,6 +86,14 @@ export function personRoutes<E extends { Variables: any }>(
     } catch (err) {
       return c.json({ error: (err as Error).message }, 400);
     }
+  });
+  // Agents at work together (3.8.10): who works, who waits for a place, and «move it first».
+  app.get("/api/turns", (c) => c.json(core.turnQueue(owner(c)), 200));
+  app.post("/api/turns/:sessionId/first", (c) => {
+    const ownerId = owner(c);
+    if (!core.turnFirst(ownerId, c.req.param("sessionId")))
+      return c.json({ error: "This conversation is not waiting for a place" }, 404);
+    return c.json(core.turnQueue(ownerId), 200);
   });
   app.get("/api/unattended", async (c) =>
     c.json(

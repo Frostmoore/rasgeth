@@ -54,8 +54,10 @@ export interface OrchestrationHost {
       from?: string;
       /** Busy: wait in line instead of failing. Only for whoever does not wait on the answer in a circle. */
       queue?: boolean;
+      /** The turn sending it waits for the answer (3.8.10): the answer takes its place. */
+      waits?: boolean;
     },
-  ): Promise<{ done: Promise<SendResult>; queued?: boolean }>;
+  ): Promise<{ done: Promise<SendResult>; queued?: boolean; waiting?: boolean }>;
   /** What came with the user's Telegram message (photos, saved files) for God, taken once. */
   takeRelay?(ownerId: string): { images: ImagePart[]; text: string } | undefined;
   projectWorkspaces(
@@ -402,14 +404,20 @@ export function orchestrationTools(
       `When it is done, verify the result and call complete_task (taskId "${t.id}").`;
     // The conversation is named after who gives the work and the latest task, not an id.
     await host.nameSession?.(sid, `${self.name}: ${title}`);
-    const { done, queued } = await host.send(self.ownerId, sid, text, { queue: true });
+    const { done, queued, waiting } = await host.send(self.ownerId, sid, text, { queue: true });
     // Its tab ends with the turn that works on the task.
     done.then(
       async (r) => close(endOf(r), lastAssistantText(await host.store.list({ sessionId: sid }))),
       (err: Error) => close("failed", err.message),
     );
     return (
-      `Task ${t.id} handed to ${to.name}${queued ? " (it is finishing something else first)" : ""}. ` +
+      `Task ${t.id} handed to ${to.name}${
+        waiting
+          ? " (it waits for a free place: the person's limit of agents at work together is reached; it starts by itself)"
+          : queued
+            ? " (it is finishing something else first)"
+            : ""
+      }. ` +
       "You do not need to wait: its report comes to you as a message when the task closes. " +
       "Meanwhile you can do other things, and read_agent shows how it is going."
     );
@@ -495,10 +503,12 @@ export function orchestrationTools(
       `Task from ${self.name}: «${title}»\n\n${task}\n\n` +
       `When it is done, verify the result and call complete_task (taskId "${t.id}").`;
     await host.nameSession?.(sid, `${self.name}: ${title}`);
-    const { done } = await host.send(self.ownerId, sid, text).catch(async (err: Error) => {
-      await close("failed", err.message);
-      throw err;
-    });
+    const { done } = await host
+      .send(self.ownerId, sid, text, { waits: true })
+      .catch(async (err: Error) => {
+        await close("failed", err.message);
+        throw err;
+      });
     /** A turn ended: a task it did not close is given up on (and maybe escalated) now. */
     const settle = async (task: typeof t, r: SendResult) => {
       if (!task.outcome)
@@ -566,6 +576,7 @@ export function orchestrationTools(
             from: "Telegram",
             // God may be answering something else: this waits its turn.
             queue: true,
+            waits: true,
             ...(relay?.images.length ? { images: relay.images } : {}),
           });
           const r = await done;
@@ -630,7 +641,7 @@ export function orchestrationTools(
             sid,
             `[Request from ${self.name}]\n${message}`,
             // God may be answering something else: this waits its turn.
-            { queue: true },
+            { queue: true, waits: true },
           );
           const r = await done;
           const answer = lastAssistantText(await host.store.list({ sessionId: sid }));
@@ -679,6 +690,7 @@ export function orchestrationTools(
             self.ownerId,
             sid,
             `[Request from ${self.name}]\n${request}`,
+            { waits: true },
           ));
         } catch (err) {
           await close("failed", (err as Error).message);
