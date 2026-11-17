@@ -323,20 +323,25 @@ class _ArtifactRow extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              RgIcon(RgIcons.code, size: 15, color: c.accent),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  a.name,
-                  style: TextStyle(color: c.text, fontWeight: FontWeight.w700, fontSize: 15),
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  RgIcon(RgIcons.code, size: 15, color: c.accent),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      a.name,
+                      style: TextStyle(color: c.text, fontWeight: FontWeight.w700, fontSize: 15),
+                    ),
+                  ),
+                ],
               ),
-              if (a.pendingRun) ...[
-                const SizedBox(width: 8),
-                _Chip(text: l.cvArPending, color: c.warn),
-              ],
+              if (a.pendingRun) _Chip(text: l.cvArPending, color: c.warn),
             ],
           ),
           const SizedBox(height: 4),

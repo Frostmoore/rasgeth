@@ -118,7 +118,7 @@ void main() {
       await frames(t, 800);
 
       nav.push(MaterialPageRoute<void>(builder: (_) => const ArtifactsScreen())).ignore();
-      await waitFor(t, () => find.textContaining('Calcolo preventivi').evaluate().isNotEmpty);
+      await waitFor(t, () => find.text('Cartella di God').evaluate().isNotEmpty);
       await shot(t, 'g42-2-artefatti-$_tag-$theme', wait: 1500);
       nav.pop();
       await frames(t, 800);
@@ -131,7 +131,7 @@ void main() {
             ),
           )
           .ignore();
-      await shot(t, 'g42-2-widget-$_tag-$theme', wait: 12000);
+      await shot(t, 'g42-2-widget-$_tag-$theme', wait: 20000);
       nav.pop();
       await frames(t, 800);
     }
