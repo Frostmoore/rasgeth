@@ -3,6 +3,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../mascot/mascot_source.dart' show MascotScope;
+
 enum RgIcons {
   users(
     '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20v-1a5.5 5.5 0 0 1 5.5-5.5h2a5.5 5.5 0 0 1 5.5 5.5v1"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 13.6a5.5 5.5 0 0 1 3.5 5.4v1"/>',
@@ -176,6 +178,65 @@ class RgIcon extends StatelessWidget {
       height: size,
       theme: SvgTheme(currentColor: c),
       excludeFromSemantics: true,
+    );
+  }
+}
+
+/// Something in progress (3.8.9, «the circle by the commands does not turn»): the spinner arc
+/// turning once a second. With reduced motion (the app's switch or the system's) it stays still
+/// and shows three dots instead, a clear «waiting» rather than an arc that looks stuck.
+class RgSpinner extends StatefulWidget {
+  const RgSpinner({super.key, this.size = 22, this.color});
+
+  final double size;
+
+  /// Default: the surrounding text colour.
+  final Color? color;
+
+  @override
+  State<RgSpinner> createState() => _RgSpinnerState();
+}
+
+class _RgSpinnerState extends State<RgSpinner> with SingleTickerProviderStateMixin {
+  late final AnimationController _turn = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 1),
+  );
+
+  bool get _still =>
+      (MediaQuery.maybeDisableAnimationsOf(context) ?? false) ||
+      (MascotScope.maybeOf(context)?.reduceMotion ?? false);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_still) {
+      _turn.stop();
+    } else if (!_turn.isAnimating) {
+      _turn.repeat();
+    }
+  }
+
+  @override
+  void dispose() {
+    _turn.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_still) {
+      return RgIcon(
+        RgIcons.more,
+        key: const Key('spinner-still'),
+        size: widget.size,
+        color: widget.color,
+      );
+    }
+    return RotationTransition(
+      key: const Key('spinner-turning'),
+      turns: _turn,
+      child: RgIcon(RgIcons.spinner, size: widget.size, color: widget.color),
     );
   }
 }
