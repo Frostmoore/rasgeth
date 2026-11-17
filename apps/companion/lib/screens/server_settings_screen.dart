@@ -20,6 +20,7 @@ import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/words.dart';
 import '../embed/embed_screen.dart';
+import 'at_work_screen.dart';
 import 'first_start_screen.dart' show openExternal;
 import 'full_settings_screen.dart';
 import 'update_screen.dart';
@@ -410,6 +411,26 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                         ].join('\n'),
                       ),
                       isThreeLine: true,
+                    ),
+                  ],
+                ),
+                // ---- agents at work together (3.8.10) ----
+                _Head(l.atWorkTitle),
+                _Card(
+                  children: [
+                    ListTile(
+                      key: const Key('settings-at-work'),
+                      leading: RgIcon(RgIcons.users, color: c.accent),
+                      title: Text(l.atWorkAtMost),
+                      subtitle: Text(
+                        [
+                          atWorkSummary(l, app.live.turns.limit),
+                          if (app.live.turns.queued.isNotEmpty)
+                            l.statusQueued(app.live.turns.queued.length),
+                        ].join(' · '),
+                      ),
+                      trailing: RgIcon(RgIcons.chevronRight, color: c.dim),
+                      onTap: () => openAtWork(context),
                     ),
                   ],
                 ),

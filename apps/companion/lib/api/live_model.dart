@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import 'conversation.dart';
+import 'turn_queue.dart';
 import 'types.dart';
 
 /// One model request seen live (the page's `ModelCall` in state.ts): when it started, how far the
@@ -131,6 +132,9 @@ class LiveModel extends ChangeNotifier {
   List<QuestionRequest> questions = const [];
   final Map<String, SessionView> views = {};
 
+  /// The person's agents at work and the line of turns waiting for a place (3.8.10).
+  TurnQueue turns = TurnQueue.empty;
+
   /// Where the last answered request was decided (`via`), for the person to see.
   String? lastClosedVia;
 
@@ -170,6 +174,9 @@ class LiveModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Something set from outside (the line after «Passa avanti»): the screens draw again.
+  void changed() => notifyListeners();
+
   void setApprovals(List<PermissionRequest> list) {
     approvals = list;
     notifyListeners();
@@ -179,6 +186,7 @@ class LiveModel extends ChangeNotifier {
     sessions = const [];
     approvals = const [];
     questions = const [];
+    turns = TurnQueue.empty;
     for (final v in views.values) {
       v.dispose();
     }
@@ -228,6 +236,8 @@ class LiveModel extends ChangeNotifier {
         final q = QuestionRequest.fromJson(_map(m['request']));
         questions = [...questions.where((a) => a.requestId != q.requestId), q];
         if (!sessions.any((s) => s.id == q.sessionId)) onUnknownSession?.call();
+      case 'turns.queue':
+        turns = TurnQueue.fromJson(m);
       case 'question.closed':
         questions = questions.where((a) => a.requestId != m['requestId']).toList();
         lastClosedVia = m['via'] as String?;

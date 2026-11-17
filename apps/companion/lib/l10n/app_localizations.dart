@@ -8780,6 +8780,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Paused'**
   String get paBadge;
+
+  /// No description provided for @atWorkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents at work together'**
+  String get atWorkTitle;
+
+  /// No description provided for @atWorkAtMost.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents at work together, at most'**
+  String get atWorkAtMost;
+
+  /// No description provided for @atWorkHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'How many agents can work at the same moment. The others wait in the queue and start by themselves, in order, as soon as a place is free. Your own messages never wait; a sub-agent takes the place of the one waiting for it. Lowering it stops nobody: it holds for the turns that come next.'**
+  String get atWorkHelp;
+
+  /// No description provided for @atWorkNoLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit'**
+  String get atWorkNoLimit;
+
+  /// No description provided for @atWorkSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{At most 1 agent at a time} other{At most {n} agents at a time}}'**
+  String atWorkSummary(int n);
+
+  /// No description provided for @atWorkNoLimitHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent with work starts at once.'**
+  String get atWorkNoLimitHint;
+
+  /// No description provided for @atWorkSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: it holds for the turns that start from now.'**
+  String get atWorkSaved;
+
+  /// No description provided for @atWorkNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get atWorkNow;
+
+  /// No description provided for @atWorkPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'{working} of {limit} places taken'**
+  String atWorkPlaces(int working, int limit);
+
+  /// No description provided for @atWorkPlacesNoLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =0{Nobody at work} =1{1 at work, no limit} other{{n} at work, no limit}}'**
+  String atWorkPlacesNoLimit(int n);
+
+  /// No description provided for @queueTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents\' queue'**
+  String get queueTitle;
+
+  /// No description provided for @queueEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody is waiting: every agent with work is working.'**
+  String get queueEmpty;
+
+  /// No description provided for @queuedNth.
+  ///
+  /// In en, this message translates to:
+  /// **'queued ({nth} of {of})'**
+  String queuedNth(String nth, int of);
+
+  /// No description provided for @queuedBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Queued ({nth} of {of}): waiting for a free place'**
+  String queuedBanner(String nth, int of);
+
+  /// No description provided for @queueWaitingDoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for a free place'**
+  String get queueWaitingDoing;
+
+  /// No description provided for @queueMoveFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Move ahead'**
+  String get queueMoveFirst;
+
+  /// No description provided for @queueSee.
+  ///
+  /// In en, this message translates to:
+  /// **'See the queue'**
+  String get queueSee;
+
+  /// No description provided for @queueNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get queueNext;
+
+  /// No description provided for @queueStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get queueStop;
+
+  /// No description provided for @queueWaited.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =0{waiting since just now} =1{waiting for 1 min} other{waiting for {n} min}}'**
+  String queueWaited(int n);
+
+  /// No description provided for @queueChild.
+  ///
+  /// In en, this message translates to:
+  /// **'asked by an agent waiting for it'**
+  String get queueChild;
+
+  /// No description provided for @queueMoved.
+  ///
+  /// In en, this message translates to:
+  /// **'moved ahead by you'**
+  String get queueMoved;
+
+  /// No description provided for @queueMoveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'It no longer waits: it may have just started.'**
+  String get queueMoveFailed;
+
+  /// No description provided for @statusAtWork.
+  ///
+  /// In en, this message translates to:
+  /// **'At work {working}/{limit}'**
+  String statusAtWork(int working, int limit);
+
+  /// No description provided for @statusAtWorkNoLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'At work {n}'**
+  String statusAtWorkNoLimit(int n);
+
+  /// No description provided for @statusQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'queued {n}'**
+  String statusQueued(int n);
+
+  /// No description provided for @queueOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the limit'**
+  String get queueOpenSettings;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

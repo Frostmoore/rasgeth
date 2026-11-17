@@ -99,6 +99,7 @@ import { QuestionCard } from "./QuestionCard.js";
 import { RemovedNotice, StoppedNotice } from "./RemovedAgents.js";
 import { SaveMessage, saveDraft } from "./Saved.js";
 import { ToolRequestCard } from "./ToolRequestCard.js";
+import { QueuedNotice } from "./TurnLine.js";
 import { TurnProgress } from "./TurnProgress.js";
 import { FileIcon } from "./viewers/FileIcon.js";
 
@@ -1655,6 +1656,7 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
       {archivedIn && <ArchivedNotice projectId={archivedIn} />}
       {removed && !archivedIn && <RemovedNotice agentId={agentId} />}
       {stopped && !archivedIn && <StoppedNotice agentId={agentId} />}
+      <QueuedNotice sessionId={sessionId} />
       <Composer
         top={<QuoteDrafts drafts={drafts} onChange={setDrafts} />}
         ready={drafts.length > 0}

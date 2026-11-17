@@ -3831,5 +3831,107 @@
       }
     }
   },
-  "paBadge": "Paused"
+  "paBadge": "Paused",
+  "atWorkTitle": "Agents at work together",
+  "atWorkAtMost": "Agents at work together, at most",
+  "atWorkHelp": "How many agents can work at the same moment. The others wait in the queue and start by themselves, in order, as soon as a place is free. Your own messages never wait; a sub-agent takes the place of the one waiting for it. Lowering it stops nobody: it holds for the turns that come next.",
+  "atWorkNoLimit": "No limit",
+  "atWorkSummary": "{n, plural, =1{At most 1 agent at a time} other{At most {n} agents at a time}}",
+  "@atWorkSummary": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "atWorkNoLimitHint": "Every agent with work starts at once.",
+  "atWorkSaved": "Saved: it holds for the turns that start from now.",
+  "atWorkNow": "Now",
+  "atWorkPlaces": "{working} of {limit} places taken",
+  "@atWorkPlaces": {
+    "placeholders": {
+      "working": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "atWorkPlacesNoLimit": "{n, plural, =0{Nobody at work} =1{1 at work, no limit} other{{n} at work, no limit}}",
+  "@atWorkPlacesNoLimit": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "queueTitle": "Agents' queue",
+  "queueEmpty": "Nobody is waiting: every agent with work is working.",
+  "queuedNth": "queued ({nth} of {of})",
+  "@queuedNth": {
+    "placeholders": {
+      "nth": {
+        "type": "String"
+      },
+      "of": {
+        "type": "int"
+      }
+    }
+  },
+  "queuedBanner": "Queued ({nth} of {of}): waiting for a free place",
+  "@queuedBanner": {
+    "placeholders": {
+      "nth": {
+        "type": "String"
+      },
+      "of": {
+        "type": "int"
+      }
+    }
+  },
+  "queueWaitingDoing": "Waiting for a free place",
+  "queueMoveFirst": "Move ahead",
+  "queueSee": "See the queue",
+  "queueNext": "Next",
+  "queueStop": "Stop",
+  "queueWaited": "{n, plural, =0{waiting since just now} =1{waiting for 1 min} other{waiting for {n} min}}",
+  "@queueWaited": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "queueChild": "asked by an agent waiting for it",
+  "queueMoved": "moved ahead by you",
+  "queueMoveFailed": "It no longer waits: it may have just started.",
+  "statusAtWork": "At work {working}/{limit}",
+  "@statusAtWork": {
+    "placeholders": {
+      "working": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "statusAtWorkNoLimit": "At work {n}",
+  "@statusAtWorkNoLimit": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "statusQueued": "queued {n}",
+  "@statusQueued": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "queueOpenSettings": "Change the limit"
 }

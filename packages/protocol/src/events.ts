@@ -810,6 +810,34 @@ export const EventBody = z.discriminatedUnion("type", [
       by: z.string(),
     }),
   }),
+  /**
+   * A turn waits for a free place (3.8.10): the person's limit of agents at work together was
+   * reached. Written only when it really waits; what it carries is enough to start it again after
+   * a restart (images are not kept: their count only). History never reads it.
+   */
+  z.object({
+    type: z.literal("turn.queued"),
+    payload: z.object({
+      queueId: z.string(),
+      text: z.string(),
+      from: z.string().optional(),
+      taskReport: z.boolean().optional(),
+      via: z.enum(["artifact", "voice"]).optional(),
+      quotes: z.array(MessageQuote).max(MAX_QUOTES).optional(),
+      /** Images the message had: not kept in the log, said to the agent if it starts again. */
+      images: z.number().int().optional(),
+      /** Asked by a turn that waits for its answer (a sub-agent, ask_god…). */
+      child: z.boolean().optional(),
+    }),
+  }),
+  /** The waiting turn left the line: it started, the person took it back, or it was refused. */
+  z.object({
+    type: z.literal("turn.unqueued"),
+    payload: z.object({
+      queueId: z.string(),
+      outcome: z.enum(["started", "withdrawn", "refused"]),
+    }),
+  }),
   z.object({
     type: z.literal("redaction"),
     payload: z.object({ targetSeq: z.number().int(), reason: z.string() }),

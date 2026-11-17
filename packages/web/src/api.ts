@@ -1456,6 +1456,14 @@ export class Api {
     }>("GET", "/api/settings/commands");
   setCommandSettings = (s: import("@redgiant/protocol").CommandSettings) =>
     this.call<PlatformChange>("PUT", "/api/settings/commands", s);
+  /** The agents at work and the line waiting for a place (3.8.10). */
+  turns = () => this.call<import("@redgiant/protocol").TurnQueueView>("GET", "/api/turns");
+  /** Moves a waiting conversation to the front of the line (3.8.10). */
+  turnFirst = (sessionId: string) =>
+    this.call<import("@redgiant/protocol").TurnQueueView>(
+      "POST",
+      `/api/turns/${encodeURIComponent(sessionId)}/first`,
+    );
   /** What reaches the person and what their classifier decides (G36.17, Settings > Requests). */
   requestSettings = () =>
     this.call<{

@@ -14,6 +14,7 @@ import type {
   Question,
   QuestionRequestInfo,
   ServerMessage,
+  TurnQueueView,
 } from "@redgiant/protocol";
 import {
   type AgentEditMode,
@@ -733,6 +734,11 @@ export function applyMessage(m: ServerMessage): void {
         // The picture is in the tool's result now: the live preview goes.
         ...(m.event.type === "tool.result" && { drawing: undefined }),
       };
+      return;
+    }
+    case "turns.queue": {
+      const { type: _type, ...view } = m;
+      turnQueue.value = view;
       return;
     }
     // An agent of the person's showed a file from a conversation this page does not follow
@@ -1651,6 +1657,24 @@ export interface SessionRow {
 }
 
 export const sessionRows = signal<SessionRow[]>([]);
+
+/**
+ * The person's agents at work and the line of turns waiting for a place (3.8.10, `turns.queue`):
+ * the order is the server's, the one they start in.
+ */
+export const turnQueue = signal<TurnQueueView>({
+  limit: null,
+  working: 0,
+  running: [],
+  queued: [],
+});
+
+/** A waiting conversation's place in line, 1-based, and the line's length («2nd of 3»). */
+export function queuePlace(sessionId: string): { place: number; of: number } | undefined {
+  const q = turnQueue.value.queued;
+  const i = q.findIndex((x) => x.sessionId === sessionId);
+  return i < 0 ? undefined : { place: i + 1, of: q.length };
+}
 /** The Chat's agent (2026-11-03): its conversations are the chats. */
 export const chatAgentId = signal<string | null>(null);
 export const chatRows = signal<import("./api.js").ChatSummary[]>([]);

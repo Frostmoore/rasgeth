@@ -309,6 +309,25 @@ class FakeRedGiant {
   final kbChoices = <String, Map<String, String>>{};
   final agentToolState = <String, Map<String, String>>{};
   Map<String, dynamic> editorSettings = {'agents': {}, 'files': {}, 'reexport': {}};
+
+  /// 3.8.10: the person's limits (`maxAtWork`) and the line of turns waiting for a place.
+  Map<String, dynamic> commandSettings = {
+    'maxPerSession': 4,
+    'maxMs': 86400000,
+    'maxLogBytes': 8388608,
+    'bashMaxMs': 600000,
+    'maxAtWork': null,
+  };
+  final commandPuts = <Map<String, dynamic>>[];
+  Map<String, dynamic> turnQueue = {'limit': null, 'working': 0, 'running': [], 'queued': []};
+  final turnFirsts = <String>[];
+
+  /// The line changed (`turns.queue` to every connection, as core.queueChanged).
+  void queue(Map<String, dynamic> view) {
+    turnQueue = view;
+    _toAll({'type': 'turns.queue', ...view});
+  }
+
   static const _essential = {'read_file', 'bash', 'ask_user'};
 
   /// An agent's record, the Chat's included (the real registry has it).
@@ -987,6 +1006,29 @@ class FakeRedGiant {
             },
         ],
       });
+    }
+    if (path == '/api/settings/commands') {
+      if (r.method == 'GET') return _json(r, 200, {'settings': commandSettings});
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      commandPuts.add(b);
+      commandSettings = b;
+      return _json(r, 200, {'id': 'chg1'});
+    }
+    if (r.method == 'GET' && path == '/api/turns') return _json(r, 200, turnQueue);
+    final first = RegExp(r'^/api/turns/([^/]+)/first$').firstMatch(path);
+    if (r.method == 'POST' && first != null) {
+      await utf8.decodeStream(r);
+      final sid = Uri.decodeComponent(first.group(1)!);
+      final queued = [...(turnQueue['queued'] as List)];
+      final at = queued.indexWhere((q) => (q as Map)['sessionId'] == sid);
+      if (at < 0) return _json(r, 404, {'error': 'This conversation is not waiting for a place'});
+      turnFirsts.add(sid);
+      final q = {...(queued.removeAt(at) as Map<String, dynamic>), 'first': true};
+      turnQueue = {
+        ...turnQueue,
+        'queued': [q, ...queued],
+      };
+      return _json(r, 200, turnQueue);
     }
     if (path == '/api/settings/editor') {
       if (r.method == 'GET') return _json(r, 200, {'settings': editorSettings});
@@ -1905,6 +1947,7 @@ class FakeRedGiant {
               return;
             }
             send({'type': 'welcome', 'protocolVersion': 2, 'ownerId': 'me', 'version': version});
+            send({'type': 'turns.queue', ...turnQueue});
             for (final p in permissions) {
               send({'type': 'permission.request', 'request': p});
             }

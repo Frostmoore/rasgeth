@@ -616,9 +616,13 @@ if (env.REDGIANT_RESUME_WORK !== "0")
     () =>
       void core
         .resumeInterrupted()
-        .then(({ sessions }) => {
+        .then(async ({ sessions }) => {
           if (sessions.length > 0)
             console.log(`Resumed ${sessions.length} task(s) cut by the last stop.`);
+          // Then the turns that waited for a place (3.8.10) wait again, in their order.
+          const queued = await core.resumeQueued();
+          if (queued.sessions.length > 0)
+            console.log(`${queued.sessions.length} turn(s) waiting for a place again.`);
         })
         .catch((err) => console.warn(`resume: ${(err as Error).message}`)),
     Number(env.REDGIANT_RESUME_DELAY_MS ?? 20_000),

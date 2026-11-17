@@ -1314,6 +1314,38 @@ class AppController extends ChangeNotifier {
   /// Conversations to stop as soon as the link is back.
   final _stopWhenBack = <String>{};
 
+  /// «Passa avanti» (3.8.10): a conversation waiting for a place goes to the front of the line.
+  /// Shown at once; the server's `turns.queue` follows. False when it no longer waits.
+  Future<bool> moveFirst(String sessionId) async {
+    final c = client;
+    if (c == null) return false;
+    final before = live.turns;
+    live.turns = before.withFirst(sessionId);
+    live.changed();
+    try {
+      live.turns = await c.turnFirst(sessionId);
+      live.changed();
+      return true;
+    } on ApiException {
+      live.turns = before;
+      live.changed();
+      await refreshTurns();
+      return false;
+    }
+  }
+
+  /// The line waiting for a place, read again (the screens that show it, on opening).
+  Future<void> refreshTurns() async {
+    final c = client;
+    if (c == null) return;
+    try {
+      live.turns = await c.turns();
+      live.changed();
+    } on ApiException {
+      // The socket's `turns.queue` keeps it up to date anyway.
+    }
+  }
+
   /// Takes back a message still waiting in line (`session.unqueue`, 2026-11-05 in the page).
   void unqueue(String sessionId, String clientId) {
     socket?.send({'type': 'session.unqueue', 'sessionId': sessionId, 'clientId': clientId});

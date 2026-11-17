@@ -43,6 +43,7 @@ import { askConfirm } from "./dialogs.js";
 import { FolderMenu } from "./FolderMenu.js";
 import { Mascot } from "./Mascot.js";
 import { ArchivedList, ArchiveProjectDialog, noGitNotice } from "./ProjectArchive.js";
+import { placeWords, TurnMeter } from "./TurnLine.js";
 
 const SHOWN = 8;
 
@@ -82,6 +83,8 @@ function SessionLine({
   who?: Agent | undefined;
 }) {
   const active = activeTab.value === `chat:${row.id}`;
+  // Waiting for a place (3.8.10): «queued (2nd of 3)» instead of the working dot.
+  const queued = placeWords(row.id);
   const origin = row.forkedFrom
     ? sessionRows.value.find((r) => r.id === row.forkedFrom)
     : undefined;
@@ -90,7 +93,7 @@ function SessionLine({
   return (
     <div class={`session-row ${active ? "active" : ""}${row.task ? " task" : ""}`}>
       <button type="button" class="open" onClick={() => openSession(row)}>
-        {row.running && (
+        {row.running && !queued && (
           <span
             class="dot running"
             role="img"
@@ -98,6 +101,7 @@ function SessionLine({
             title={t("barWorking")}
           />
         )}
+        {queued && <span class="dot queued" role="img" aria-label={queued} title={queued} />}
         {row.pinned && (
           <span class="pinned">
             <IconPin size={11} filled />
@@ -114,7 +118,11 @@ function SessionLine({
             {row.task ? t("barTask", { title: row.task }) : (row.title ?? t("newConversation"))}
           </span>
         </span>
-        <span class="date">{shortDate(row.lastAt ?? row.createdAt)}</span>
+        {queued ? (
+          <span class="tq-pill">{queued}</span>
+        ) : (
+          <span class="date">{shortDate(row.lastAt ?? row.createdAt)}</span>
+        )}
       </button>
       {origin && (
         // A conversation that goes on from another one (G36.23): the way back, one click.
@@ -613,6 +621,7 @@ export function Sidebar() {
   };
   return (
     <nav class="bar">
+      <TurnMeter />
       {god && (
         <div class="bar-god">
           <Entry

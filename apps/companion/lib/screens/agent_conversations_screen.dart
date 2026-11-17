@@ -17,6 +17,7 @@ import '../ui/agent_menu.dart';
 import '../ui/common.dart';
 import '../ui/conversation_menu.dart';
 import '../ui/icons.dart';
+import '../ui/turn_queue_view.dart';
 import '../ui/words.dart';
 import 'conversation_screen.dart';
 import 'team_screen.dart';
@@ -147,6 +148,12 @@ class SessionTile extends StatelessWidget {
                         l.stateWork,
                         style: TextStyle(fontSize: 12, color: c.ok, fontWeight: FontWeight.w600),
                       ),
+                    ),
+                  // Waiting for a place (3.8.10).
+                  if (app.live.turns.placeOf(r.id) case final p?)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 6),
+                      child: QueuePill(place: p, dense: true),
                     ),
                   if (r.pinned)
                     Padding(

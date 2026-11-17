@@ -263,6 +263,12 @@ export const IconClock = ({ size = 14 }: P) => (
     <path d="M12 6v6l4 2" />
   </Svg>
 );
+/** Move to the front of the line (3.8.10): two chevrons up. */
+export const IconToFront = ({ size = 14 }: P) => (
+  <Svg size={size}>
+    <path d="M17 11l-5-5-5 5M17 18l-5-5-5 5" />
+  </Svg>
+);
 export const IconArrowDown = ({ size = 18 }: P) => (
   <Svg size={size}>
     <path d="M12 5v14M19 12l-7 7-7-7" />

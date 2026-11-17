@@ -9,6 +9,9 @@ const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 const MB = 1024 * 1024;
 
+/** The highest limit of agents at work together the person can choose (3.8.10). */
+export const MAX_AT_WORK = 20;
+
 /** Background commands and `bash` (G36.16, the person: «devono poter essere infiniti»). */
 export const CommandSettings = z.object({
   /** Background commands running at once in one conversation; null: no limit. */
@@ -42,6 +45,12 @@ export const CommandSettings = z.object({
    * in one nobody started: automations, tasks, reminders); null: no limit (the budgets still hold).
    */
   maxTurns: z.number().int().min(5).max(10_000).nullable().optional(),
+  /**
+   * Agents at work together (3.8.10, «Agenti al lavoro insieme, al massimo»): turns running at
+   * once for this person; past it the next one waits in line. Null: no limit (the default: nothing
+   * changes for who never chose one). The person's own messages never wait.
+   */
+  maxAtWork: z.number().int().min(1).max(MAX_AT_WORK).nullable().default(null),
 });
 /**
  * Model calls in one turn nobody is watching (3.5.6, as Claude Code): automations, delegated

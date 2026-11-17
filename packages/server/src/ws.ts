@@ -285,6 +285,8 @@ export function attachWebSocket(
             ownerId: principal.ownerId,
             ...(live.version !== undefined && { version: live.version }),
           });
+          // The agents at work and the line of turns waiting for a place (3.8.10).
+          send({ type: "turns.queue", ...core.turnQueue(principal.ownerId) });
           for (const r of core.approvals.list(principal.ownerId))
             send({ type: "permission.request", request: withRequestWords(r) });
           for (const q of core.questions.list(principal.ownerId))

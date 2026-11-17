@@ -12,6 +12,7 @@ import 'conversation.dart';
 import 'saved.dart';
 import 'settings_types.dart';
 import 'transport.dart';
+import 'turn_queue.dart';
 import 'types.dart';
 
 /// An answer the app can explain: the server's message and its `code` when it gives one.
@@ -445,6 +446,23 @@ class RedGiantClient {
     ))
       AgentCollection.fromJson(c),
   ];
+
+  /// `GET /api/settings/commands`: the person's limits (3.8.10: `maxAtWork`, agents at work
+  /// together; the background commands' limits stay as they are).
+  Future<Map<String, dynamic>> commandSettings() async =>
+      _object(_object(await _get('/api/settings/commands'))['settings']);
+
+  /// `PUT /api/settings/commands`: the whole settings again (the page sends them so).
+  Future<void> setCommandSettings(Map<String, dynamic> s) =>
+      _call('PUT', '/api/settings/commands', s);
+
+  /// `GET /api/turns` (3.8.10): the agents at work and the line waiting for a place.
+  Future<TurnQueue> turns() async => TurnQueue.fromJson(_object(await _get('/api/turns')));
+
+  /// `POST /api/turns/:sessionId/first`: a waiting conversation goes to the front of the line.
+  Future<TurnQueue> turnFirst(String sessionId) async => TurnQueue.fromJson(
+    _object(await _post('/api/turns/${Uri.encodeComponent(sessionId)}/first', const {})),
+  );
 
   /// `GET /api/settings/editor`: the agents' edits of open files, at once or proposed.
   Future<Map<String, dynamic>> editorSettings() async =>

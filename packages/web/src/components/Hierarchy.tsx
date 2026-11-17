@@ -33,6 +33,7 @@ import { ModelSelect, useModels } from "./ModelSelect.js";
 import { PromptEditor } from "./PromptEditor.js";
 import { RemoveAgentDialog, RemovedAgentsList, removable, resumeStopped } from "./RemovedAgents.js";
 import { Acts, Head, Seg, Sub, Switch } from "./SettingsKit.js";
+import { AtWorkCard } from "./TurnLine.js";
 import { Modal } from "./ui.js";
 
 const CHILDREN: Record<Agent["kind"], Agent["kind"][]> = {
@@ -900,6 +901,8 @@ function AgentsPage({ projectId = null }: { projectId?: string | null }) {
           )}
         </div>
       </header>
+      {/* How many may work together (3.8.10): where the person sees the whole team. */}
+      {!projectId && hasGod && <AtWorkCard />}
       {/* Before the other windows: «Agent under it» opens on top of it. */}
       {selected && (
         <AgentPanel

@@ -41,7 +41,8 @@ export interface RoomHost {
     ownerId: string,
     sessionId: string,
     text: string,
-    extra?: { images?: ImagePart[] },
+    /** `waits`: the turn asking (ask_group) waits for the answer, which takes its place (3.8.10). */
+    extra?: { images?: ImagePart[]; waits?: boolean },
   ): Promise<{ done: Promise<SendResult> }>;
   /** Names a member's session after the room, in that agent's list of conversations. */
   titleSession(ownerId: string, sessionId: string, title: string): Promise<void>;
@@ -399,6 +400,7 @@ export class Rooms {
       );
       const { done } = await this.h.send(ownerId, member.sessionId, text, {
         ...(images.length > 0 && { images: images.slice(0, 10) }),
+        waits: true,
       });
       await done;
       // Only this turn's words: never an older answer again.
