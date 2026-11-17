@@ -12,6 +12,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { MediaProbe, VideoRate } from "@redgiant/protocol";
 import {
+  type AssembleFile,
+  autoAssemble,
   type H264Encoder,
   kenBurnsPreset,
   newRgVideo,
@@ -20,10 +22,13 @@ import {
   type VideoRef,
 } from "@redgiant/protocol";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { mediaFingerprint } from "../src/editor/video/analysis.js";
+import { mediaFingerprint, VideoAnalysis } from "../src/editor/video/analysis.js";
 import { compileVideo, type RenderTarget } from "../src/editor/video/compile.js";
 import { probeFile, renderProbeOf } from "../src/editor/video/probe.js";
 import { ffmpegRunner, renderVideo } from "../src/editor/video/render.js";
+import { VideoRenders } from "../src/editor/video/renders.js";
+import { cutsOf } from "../src/editor/video/tool.js";
+import { Jobs } from "../src/jobs.js";
 
 /** The analysis' probe (G41.4) and what the render reads of it. */
 async function probeMedia(ffprobe: string, file: string, rate: VideoRate) {
@@ -486,4 +491,100 @@ describe.skipIf(!on)("video render with ffmpeg", () => {
       nb_read_frames: "250",
     });
   });
+
+  it("G41.6: a speaker with pauses, coverage and music analysed, assembled and rendered as a job", async () => {
+    // A «speaker»: a tone with two pauses (0–1.5 s and 4–6.5 s quiet) over 10 s of picture.
+    const gen = (args: string[]) =>
+      execFileSync(ffmpeg, ["-v", "error", "-y", ...args], { cwd: media });
+    gen([
+      "-f",
+      "lavfi",
+      "-i",
+      "testsrc2=s=640x360:r=25:d=10",
+      "-f",
+      "lavfi",
+      "-i",
+      "sine=f=300:r=48000:d=10,volume='if(between(t,0,1.5)+between(t,4,6.5),0,1)':eval=frame",
+      "-c:v",
+      "libx264",
+      "-preset",
+      "ultrafast",
+      "-pix_fmt",
+      "yuv420p",
+      "-c:a",
+      "aac",
+      "-shortest",
+      "speaker.mp4",
+    ]);
+    gen([
+      "-f",
+      "lavfi",
+      "-i",
+      "smptebars=s=640x360:r=25:d=8",
+      "-c:v",
+      "libx264",
+      "-preset",
+      "ultrafast",
+      "-pix_fmt",
+      "yuv420p",
+      "cover.mp4",
+    ]);
+    const jobs = new Jobs();
+    const tools = async () => ({ ffmpeg, ffprobe });
+    const analysis = new VideoAnalysis({
+      dataDir: join(dir, "data"),
+      jobs,
+      tools,
+      transcriber: async () => undefined,
+    });
+    const files: AssembleFile[] = [];
+    for (const m of ["speaker.mp4", "cover.mp4", "photo.jpg", "music.m4a"]) {
+      const abs = join(media, m);
+      if (m.endsWith(".jpg")) {
+        files.push({ path: m, probe: await analysis.probe(abs, await tools()) });
+        continue;
+      }
+      const a = await analysis.analysis("me", abs, m, {});
+      files.push({ path: m, probe: a.probe, cuts: cutsOf(a), speech: a.speech });
+    }
+    const { doc, report } = autoAssemble(files, {
+      at: "2026-11-17T10:00:00Z",
+      rules: { introHold: 1, coverage: "high" },
+    });
+    expect(report.order).toEqual(["speaker.mp4"]);
+    expect(report.music).toBe("music.m4a");
+    expect(report.inserts).toHaveLength(1);
+    // The pauses are gone: about 10 − 1.5 − 2.2 (each kept 0.15 s from the sound) seconds.
+    expect(report.seconds).toBeGreaterThan(5.6);
+    expect(report.seconds).toBeLessThan(6.6);
+    const renders = new VideoRenders({ analysis, jobs, tools });
+    const root = join(dir, "project");
+    mkdirSync(root, { recursive: true });
+    const job = renders.start("me", {
+      doc,
+      name: "gita.rgvideo",
+      queue: "me\nproject",
+      root,
+      path: "gita.rgvideo",
+      mediaPath: async (m) => join(media, m),
+      quality: "draft",
+      height: 360,
+    });
+    const end = await jobs.settled(job.id, 50);
+    expect(end?.state, JSON.stringify(end?.error)).toBe("done");
+    const out = join(root, "renders", "gita-v1.mp4");
+    const info = probe(out);
+    const v = info.streams.find((x: { codec_type: string }) => x.codec_type === "video");
+    const a = info.streams.find((x: { codec_type: string }) => x.codec_type === "audio");
+    expect(v).toMatchObject({ codec_name: "h264", width: 640, height: 360, r_frame_rate: "25/1" });
+    expect(Number(v?.nb_read_frames)).toBe(
+      doc.clips
+        .filter((c) => c.track === "V1")
+        .reduce((n, c) => Math.max(n, c.start + c.sourceRange.duration), 0),
+    );
+    expect(a).toMatchObject({ codec_name: "aac", sample_rate: "48000" });
+    console.log(
+      `G41.6: ${report.seconds.toFixed(2)} s assembled (${report.cut.toFixed(2)} s cut), ${report.inserts.length} B, rendered ${v?.width}×${v?.height} ${v?.nb_read_frames} frames`,
+    );
+  }, 300_000);
 });
