@@ -146,7 +146,11 @@ enum RgIcons {
     '<path d="M5 18C8 6 16 18 19 6"/><rect x="3" y="16" width="4" height="4"/><rect x="17" y="4" width="4" height="4"/>',
   ),
   // 3.8.7: widgets and artifacts (the page's IconPin).
-  pin('<path d="M12 17v5M9 3h6l-1 6 4 4H6l4-4z"/>');
+  pin('<path d="M12 17v5M9 3h6l-1 6 4 4H6l4-4z"/>'),
+  // 3.8.8: a conversation or a project out of the archive, and a project's board (the page's
+  // IconRestore and IconBoard).
+  restore('<path d="M21 8v13H3V8M1 3h22v5H1zM12 19v-7M9 15l3-3 3 3"/>'),
+  board('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h6"/>');
 
   const RgIcons(this.paths);
   final String paths;

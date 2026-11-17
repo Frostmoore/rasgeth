@@ -8084,6 +8084,432 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Web view test'**
   String get embedProbeOpen;
+
+  /// No description provided for @cmOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get cmOpen;
+
+  /// No description provided for @cmPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin'**
+  String get cmPin;
+
+  /// No description provided for @cmUnpin.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get cmUnpin;
+
+  /// No description provided for @cmFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to a folder'**
+  String get cmFolder;
+
+  /// No description provided for @cmFolderNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New folder…'**
+  String get cmFolderNew;
+
+  /// No description provided for @cmFolderNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New folder'**
+  String get cmFolderNewTitle;
+
+  /// No description provided for @cmFolderNewYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Move'**
+  String get cmFolderNewYes;
+
+  /// No description provided for @cmFolderOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Take it out of the folder'**
+  String get cmFolderOut;
+
+  /// No description provided for @cmArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get cmArchive;
+
+  /// No description provided for @cmUnarchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring back'**
+  String get cmUnarchive;
+
+  /// No description provided for @cmExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export as Markdown'**
+  String get cmExport;
+
+  /// No description provided for @cmArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation archived.'**
+  String get cmArchived;
+
+  /// No description provided for @cmUnarchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation brought back.'**
+  String get cmUnarchived;
+
+  /// No description provided for @cmFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'It did not work: try again.'**
+  String get cmFailed;
+
+  /// No description provided for @cmExported.
+  ///
+  /// In en, this message translates to:
+  /// **'File saved.'**
+  String get cmExported;
+
+  /// No description provided for @cmForkOf.
+  ///
+  /// In en, this message translates to:
+  /// **'branch of «{title}»'**
+  String cmForkOf(String title);
+
+  /// No description provided for @cmArchivedN.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived ({n})'**
+  String cmArchivedN(int n);
+
+  /// No description provided for @cmBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the conversations'**
+  String get cmBack;
+
+  /// No description provided for @cmNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New conversation'**
+  String get cmNew;
+
+  /// No description provided for @cmEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations yet: start one.'**
+  String get cmEmpty;
+
+  /// No description provided for @cmEmptyArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'No archived conversations.'**
+  String get cmEmptyArchived;
+
+  /// No description provided for @cmPinned.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned'**
+  String get cmPinned;
+
+  /// No description provided for @cmConversationsOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations with {name}'**
+  String cmConversationsOf(String name);
+
+  /// No description provided for @cmTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Task: {title}'**
+  String cmTask(String title);
+
+  /// No description provided for @cmShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared conversation'**
+  String get cmShared;
+
+  /// No description provided for @pmOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get pmOpen;
+
+  /// No description provided for @pmTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks and files'**
+  String get pmTasks;
+
+  /// No description provided for @pmCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get pmCode;
+
+  /// No description provided for @pmAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents of {project}'**
+  String pmAgents(String project);
+
+  /// No description provided for @pmArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive the project'**
+  String get pmArchive;
+
+  /// No description provided for @pmRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get pmRestore;
+
+  /// No description provided for @pmInitGit.
+  ///
+  /// In en, this message translates to:
+  /// **'Initialise git'**
+  String get pmInitGit;
+
+  /// No description provided for @pmInitGitDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Git repository created for «{name}» (branch main).'**
+  String pmInitGitDone(String name);
+
+  /// No description provided for @pmAskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive «{name}»?'**
+  String pmAskTitle(String name);
+
+  /// No description provided for @pmAskLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The project leaves the lists and stays readable under «Archived». Nothing is deleted: restore it whenever you like and it comes back as it was.'**
+  String get pmAskLead;
+
+  /// No description provided for @pmWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 agent is working: it will be stopped} other{{n} agents are working: they will be stopped}}'**
+  String pmWorking(int n);
+
+  /// No description provided for @pmNobody.
+  ///
+  /// In en, this message translates to:
+  /// **'No agent is working in it now.'**
+  String get pmNobody;
+
+  /// No description provided for @pmAutos.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 automation will be paused ({names}); it runs again when you restore the project.} other{{n} automations will be paused ({names}); they run again when you restore the project.}}'**
+  String pmAutos(int n, String names);
+
+  /// No description provided for @pmFactTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Open tasks stay open.'**
+  String get pmFactTasks;
+
+  /// No description provided for @pmFactSandbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Its sandbox stops, and starts again on restore.'**
+  String get pmFactSandbox;
+
+  /// No description provided for @pmFactNobody.
+  ///
+  /// In en, this message translates to:
+  /// **'Until then no agent works in it or changes its files, and your linked chats do not use it.'**
+  String get pmFactNobody;
+
+  /// No description provided for @pmFactRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'God can archive and restore it too, always with your yes.'**
+  String get pmFactRestore;
+
+  /// No description provided for @pmStopAndArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop and archive'**
+  String get pmStopAndArchive;
+
+  /// No description provided for @pmArchiveYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get pmArchiveYes;
+
+  /// No description provided for @pmArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'«{name}» archived.'**
+  String pmArchived(String name);
+
+  /// No description provided for @pmRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'«{name}» restored.'**
+  String pmRestored(String name);
+
+  /// No description provided for @pmArchivedN.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived ({n})'**
+  String pmArchivedN(int n);
+
+  /// No description provided for @pmArchivedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'archived on {day}'**
+  String pmArchivedOn(String day);
+
+  /// No description provided for @pmBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived · read only'**
+  String get pmBadge;
+
+  /// No description provided for @pmViewLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived: you can read its conversations, tasks and files. Restore it to work in it again.'**
+  String get pmViewLead;
+
+  /// No description provided for @pmConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations'**
+  String get pmConversations;
+
+  /// No description provided for @pmTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'The team\'s conversations'**
+  String get pmTeam;
+
+  /// No description provided for @pmNoConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations.'**
+  String get pmNoConversations;
+
+  /// No description provided for @pmTasksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks'**
+  String get pmTasksTitle;
+
+  /// No description provided for @pmNoTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks.'**
+  String get pmNoTasks;
+
+  /// No description provided for @pmNoLead.
+  ///
+  /// In en, this message translates to:
+  /// **'This project has no lead agent.'**
+  String get pmNoLead;
+
+  /// No description provided for @pmNoGit.
+  ///
+  /// In en, this message translates to:
+  /// **'No git repository'**
+  String get pmNoGit;
+
+  /// No description provided for @bellTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you'**
+  String get bellTitle;
+
+  /// No description provided for @bellTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests and notifications'**
+  String get bellTooltip;
+
+  /// No description provided for @bellPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions ({n})'**
+  String bellPermissions(int n);
+
+  /// No description provided for @bellQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions ({n})'**
+  String bellQuestions(int n);
+
+  /// No description provided for @bellWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Working now ({n})'**
+  String bellWorking(int n);
+
+  /// No description provided for @bellNoApprovals.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing waiting for you.'**
+  String get bellNoApprovals;
+
+  /// No description provided for @bellNoQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'No questions.'**
+  String get bellNoQuestions;
+
+  /// No description provided for @bellNothingRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is running.'**
+  String get bellNothingRunning;
+
+  /// No description provided for @bellAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get bellAllow;
+
+  /// No description provided for @bellDeny.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny'**
+  String get bellDeny;
+
+  /// No description provided for @bellLook.
+  ///
+  /// In en, this message translates to:
+  /// **'Look and decide'**
+  String get bellLook;
+
+  /// No description provided for @bellAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer'**
+  String get bellAnswer;
+
+  /// No description provided for @bellSeeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get bellSeeAll;
+
+  /// No description provided for @pmConversationsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =0{no conversations} =1{1 conversation} other{{n} conversations}}'**
+  String pmConversationsCount(int n);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

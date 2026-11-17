@@ -28,6 +28,9 @@ class SessionRow {
     this.running = false,
     this.task,
     this.model,
+    this.pinned = false,
+    this.folder,
+    this.forkedFrom,
   });
 
   factory SessionRow.fromJson(Map<String, dynamic> j) => SessionRow(
@@ -42,6 +45,9 @@ class SessionRow {
     running: j['running'] == true,
     task: _str(j['task']),
     model: AgentModel.fromJson(j['model']),
+    pinned: j['pinned'] == true,
+    folder: _str(j['folder']),
+    forkedFrom: _str(j['forkedFrom']),
   );
 
   final String id;
@@ -62,6 +68,15 @@ class SessionRow {
   /// The conversation's own model (null: its agent's).
   final AgentModel? model;
 
+  /// Pinned on top of its agent's list (the page's pin).
+  final bool pinned;
+
+  /// The folder the person put it in (the page's «Move to folder»), if any.
+  final String? folder;
+
+  /// The conversation it goes on from (G36.23), if any.
+  final String? forkedFrom;
+
   String get when => lastAt ?? createdAt;
 
   SessionRow withTitle(String t) => copy(title: t);
@@ -80,6 +95,9 @@ class SessionRow {
     running: running ?? this.running,
     task: task,
     model: model,
+    pinned: pinned,
+    folder: folder,
+    forkedFrom: forkedFrom,
   );
 }
 
@@ -1141,12 +1159,14 @@ class Project {
     this.archived = false,
     this.git,
     this.gitError,
+    this.archivedAt,
   });
 
   factory Project.fromJson(Map<String, dynamic> j) => Project(
     id: _str(j['id']) ?? '',
     name: _str(j['name']) ?? '',
     archived: j['archivedAt'] != null,
+    archivedAt: _str(j['archivedAt']),
     git: j['git'] is bool ? j['git'] as bool : null,
     gitError: _str(j['gitError']),
   );
@@ -1155,11 +1175,37 @@ class Project {
   final String name;
   final bool archived;
 
+  /// When it was archived (p3.5.3), as the server says.
+  final String? archivedAt;
+
   /// Whether its folder has a git repository (3.5.12); null from servers that do not say.
   final bool? git;
 
   /// Why the repository could not be made, when [git] is false on a new folder.
   final String? gitError;
+}
+
+/// `GET /api/projects/:id/work` (p3.5.3): what «Archive» stops, said first.
+class ProjectWork {
+  const ProjectWork({this.working = const [], this.automations = const []});
+
+  factory ProjectWork.fromJson(Map<String, dynamic> j) => ProjectWork(
+    working: [
+      for (final w in (j['working'] as List? ?? const []).whereType<Map<String, dynamic>>())
+        (
+          sessionId: _str(w['sessionId']) ?? '',
+          agentName: _str(w['agentName']) ?? '',
+          title: _str(w['title']),
+        ),
+    ],
+    automations: [
+      for (final a in (j['automations'] as List? ?? const []).whereType<Map<String, dynamic>>())
+        _str(a['name']) ?? '',
+    ],
+  );
+
+  final List<({String sessionId, String agentName, String? title})> working;
+  final List<String> automations;
 }
 
 enum TaskOutcome { open, verified, notTestable, abandoned }

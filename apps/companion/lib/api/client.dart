@@ -274,6 +274,31 @@ class RedGiantClient {
   Future<void> renameSession(String sessionId, String title) =>
       _call('PATCH', '/api/sessions/${Uri.encodeComponent(sessionId)}', {'title': title});
 
+  /// `PATCH /api/sessions/:id` (the page's `updateSession`): pinned, archived, a folder (null takes
+  /// it out of any), as the page's conversation rows change them.
+  Future<void> updateSession(
+    String sessionId, {
+    bool? pinned,
+    bool? archived,
+    String? folder,
+    bool clearFolder = false,
+  }) => _call('PATCH', '/api/sessions/${Uri.encodeComponent(sessionId)}', {
+    'pinned': ?pinned,
+    'archived': ?archived,
+    if (folder != null || clearFolder) 'folder': folder,
+  });
+
+  /// `GET /api/sessions/:id/export`: the conversation as Markdown (the page's «Export»).
+  Future<Uint8List> exportSession(String sessionId) async {
+    final r = await _send(
+      'GET',
+      '/api/sessions/${Uri.encodeComponent(sessionId)}/export',
+      accept: 'text/markdown',
+    );
+    if (r.status != 200) _decode(r);
+    return r.bytes;
+  }
+
   /// `POST /api/sessions/:id/interrupt`: stops the turn running (without the live socket).
   Future<void> interruptSession(String sessionId) => _call(
     'POST',
@@ -668,6 +693,20 @@ class RedGiantClient {
       'decision': allow ? 'allow' : 'deny',
     });
   }
+
+  /// `GET /api/projects/:id/work` (p3.5.3): who works there now and which automations would pause,
+  /// said before «Archive».
+  Future<ProjectWork> projectWork(String projectId) async => ProjectWork.fromJson(
+    _object(await _get('/api/projects/${Uri.encodeComponent(projectId)}/work')),
+  );
+
+  /// `POST /api/projects/:id/archive` (p3.5.3): the project stops and becomes read only.
+  Future<void> archiveProject(String projectId) =>
+      _call('POST', '/api/projects/${Uri.encodeComponent(projectId)}/archive', const {});
+
+  /// `POST /api/projects/:id/git` (3.5.12): «Initialise git» for a project without a repository.
+  Future<void> initProjectGit(String projectId) =>
+      _call('POST', '/api/projects/${Uri.encodeComponent(projectId)}/git', const {});
 
   /// `POST /api/projects`: a new project (as the page's «New project»: only its name).
   Future<Project> createProject(String name) async =>

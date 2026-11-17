@@ -21,6 +21,7 @@ import '../ui/agent_menu.dart';
 import '../ui/common.dart';
 import '../ui/highlight.dart';
 import '../ui/icons.dart';
+import '../ui/project_menu.dart';
 import '../ui/send_keys.dart';
 import '../ui/words.dart';
 import 'desk_controller.dart';
@@ -55,7 +56,7 @@ List<Agent> wallAgents(AppController app) =>
 
 /// The wall's sections: by project (in the projects' order, the agents without one last) or by
 /// state (waiting first, then working, blocked, still). Empty sections are left out.
-List<({String title, List<Agent> agents})> wallSections(
+List<({String title, List<Agent> agents, Project? project})> wallSections(
   AppController app,
   AppLocalizations l, {
   required bool byProject,
@@ -65,14 +66,14 @@ List<({String title, List<Agent> agents})> wallSections(
       .where((a) => filter == WallFilter.all || filterOf(app.live.mascotStateOf(a.id)) == filter)
       .toList();
   if (byProject) {
-    final out = <({String title, List<Agent> agents})>[];
+    final out = <({String title, List<Agent> agents, Project? project})>[];
     for (final p in app.projects) {
       final list = agents.where((a) => a.projectId == p.id).toList();
-      if (list.isNotEmpty) out.add((title: p.name, agents: list));
+      if (list.isNotEmpty) out.add((title: p.name, agents: list, project: p));
     }
     final known = app.projects.map((p) => p.id).toSet();
     final rest = agents.where((a) => a.projectId == null || !known.contains(a.projectId)).toList();
-    if (rest.isNotEmpty) out.add((title: l.deskNoProject, agents: rest));
+    if (rest.isNotEmpty) out.add((title: l.deskNoProject, agents: rest, project: null));
     return out;
   }
   final order = [
@@ -85,7 +86,7 @@ List<({String title, List<Agent> agents})> wallSections(
     for (final (f, title) in order)
       if (agents.where((a) => filterOf(app.live.mascotStateOf(a.id)) == f).toList() case final list
           when list.isNotEmpty)
-        (title: title, agents: list),
+        (title: title, agents: list, project: null),
   ];
 }
 
@@ -190,18 +191,7 @@ class TeamWall extends StatelessWidget {
                 sliver: SliverToBoxAdapter(
                   child: Row(
                     children: [
-                      Semantics(
-                        header: true,
-                        child: Text(
-                          s.title.toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 12,
-                            letterSpacing: .7,
-                            fontWeight: FontWeight.w700,
-                            color: c.dim,
-                          ),
-                        ),
-                      ),
+                      _SectionTitle(title: s.title, project: s.project),
                       const SizedBox(width: 10),
                       Expanded(child: Divider(color: c.line, height: 1)),
                     ],
@@ -233,7 +223,55 @@ class TeamWall extends StatelessWidget {
   }
 }
 
-/// God, the Chat and «For you», side by side at the top of the wall.
+/// A section's title; a project's opens it (a click) and has its menu (right click, 3.8.8).
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({required this.title, this.project});
+
+  final String title;
+  final Project? project;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    final text = Semantics(
+      header: true,
+      child: Text(
+        title.toUpperCase(),
+        style: TextStyle(
+          fontSize: 12,
+          letterSpacing: .7,
+          fontWeight: FontWeight.w700,
+          color: c.dim,
+        ),
+      ),
+    );
+    final p = project;
+    if (p == null) return text;
+    return ProjectPress(
+      project: p,
+      child: InkWell(
+        key: Key('section-project-${p.id}'),
+        borderRadius: BorderRadius.circular(6),
+        onTap: () => DeskScope.read(context).showProject(p.id),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RgIcon(RgIcons.folder, size: 13, color: c.dim),
+              const SizedBox(width: 6),
+              text,
+              const SizedBox(width: 2),
+              RgIcon(RgIcons.chevronRight, size: 13, color: c.dim),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// God and the Chat, side by side at the top of the wall.
 class HeroRow extends StatelessWidget {
   const HeroRow({super.key});
 
@@ -245,22 +283,14 @@ class HeroRow extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, box) {
         // A narrow room (a small window with the panel open): God on its own line.
-        if (box.maxWidth < 860) {
+        // 3.8.8: «For you» left the wall for the bell in the bar at the top; God and the Chat
+        // share the row. A narrow room (a small window with the panel open): one over the other.
+        if (box.maxWidth < 700) {
           return const Column(
             children: [
               SizedBox(height: height, child: GodHero()),
               SizedBox(height: 10),
-              SizedBox(
-                height: height,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(child: ChatHero()),
-                    SizedBox(width: 10),
-                    Expanded(child: ForYouHero()),
-                  ],
-                ),
-              ),
+              SizedBox(height: height, child: ChatHero()),
             ],
           );
         }
@@ -269,11 +299,9 @@ class HeroRow extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(flex: 5, child: GodHero()),
+              Expanded(flex: 11, child: GodHero()),
               SizedBox(width: 12),
-              Expanded(flex: 4, child: ChatHero()),
-              SizedBox(width: 12),
-              Expanded(flex: 4, child: ForYouHero()),
+              Expanded(flex: 9, child: ChatHero()),
             ],
           ),
         );
@@ -426,68 +454,132 @@ class GodHero extends StatelessWidget {
     final god = app.god;
     final state = god == null ? MascotState.idle : app.live.mascotStateOf(god.id);
     final mac = isMacLike(app);
-    return Container(
-      key: const Key('desk-god'),
-      decoration: heroBox(c, lit: true),
-      padding: const EdgeInsets.fromLTRB(12, 12, 14, 12),
-      child: Row(
-        children: [
-          InkWell(
-            borderRadius: BorderRadius.circular(40),
-            onTap: god == null ? null : () => desk.openAgent(god),
-            onSecondaryTapUp: god == null
-                ? null
-                : (d) => showAgentMenu(context, god, d.globalPosition),
-            onLongPress: god == null ? null : () => showAgentSheet(context, god),
-            child: god == null
-                ? const SizedBox(width: 84, height: 84)
-                : MascotView(
-                    agentId: god.id,
-                    spec: god.mascot,
-                    state: state,
-                    size: 84,
-                    label: l.mascotLabel(god.name, stateWord(l, state)),
-                  ),
+    final open = god != null && desk.panelAgentId == god.id;
+    // 3.8.8: the whole card answers, as the Chat's: a click shows God's conversations in the
+    // panel, a right click (or a long press) its menu with God's rules.
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        key: const Key('desk-god'),
+        borderRadius: BorderRadius.circular(14),
+        onTap: god == null ? null : () => desk.showAgent(god),
+        onSecondaryTapUp: god == null ? null : (d) => showAgentMenu(context, god, d.globalPosition),
+        onLongPress: god == null ? null : () => showAgentSheet(context, god),
+        child: Ink(
+          decoration: heroBox(c, lit: true).copyWith(
+            border: Border.all(color: open ? c.accent : c.accentDim, width: open ? 1.5 : 1),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AgentPress(
-                  agent: god,
-                  child: Text(
-                    god?.name ?? 'God',
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: c.text),
-                  ),
+          padding: const EdgeInsets.fromLTRB(12, 12, 14, 12),
+          child: Row(
+            children: [
+              if (god == null)
+                const SizedBox(width: 84, height: 84)
+              else
+                MascotView(
+                  agentId: god.id,
+                  spec: god.mascot,
+                  state: state,
+                  size: 84,
+                  label: l.mascotLabel(god.name, stateWord(l, state)),
                 ),
-                const SizedBox(height: 2),
-                Row(
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Dot(stateColor(c, state)),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        god == null ? l.statusUnreachable : doingOf(l, app, god, state),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 12.5, color: c.dim),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            god?.name ?? 'God',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w800,
+                              color: c.text,
+                            ),
+                          ),
+                        ),
+                        if (god != null) Flexible(child: HeroCount(agentId: god.id)),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Dot(stateColor(c, state)),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            god == null ? l.statusUnreachable : doingOf(l, app, god, state),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 12.5, color: c.dim),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    HeroField(
+                      key: const Key('desk-god-field'),
+                      hint: l.deskGodHint,
+                      focus: desk.godFocus,
+                      shortcut: shortcutLabel(
+                        cmdKey(LogicalKeyboardKey.keyG, mac: mac),
+                        l,
+                        mac: mac,
                       ),
+                      onSend: (t) async =>
+                          god != null && await desk.openAgent(god, firstMessage: t),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                HeroField(
-                  key: const Key('desk-god-field'),
-                  hint: l.deskGodHint,
-                  focus: desk.godFocus,
-                  shortcut: shortcutLabel(cmdKey(LogicalKeyboardKey.keyG, mac: mac), l, mac: mac),
-                  onSend: (t) async => god != null && await desk.openAgent(god, firstMessage: t),
-                ),
-              ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// How many conversations an agent has (not archived), and that a click shows them.
+class HeroCount extends StatelessWidget {
+  const HeroCount({super.key, required this.agentId});
+
+  final String agentId;
+
+  @override
+  Widget build(BuildContext context) {
+    final app = AppScope.of(context);
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final n = app.live.sessions.where((s) => s.agentId == agentId && !s.archived).length;
+    // Nothing yet: nothing to say (the card's click shows the empty list anyway).
+    if (n == 0) return const SizedBox.shrink();
+    return Container(
+      key: Key('hero-count-$agentId'),
+      padding: const EdgeInsets.fromLTRB(8, 3, 4, 3),
+      decoration: BoxDecoration(
+        color: c.panel,
+        borderRadius: BorderRadius.circular(99),
+        border: Border.all(color: c.line),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          RgIcon(RgIcons.chat, size: 12, color: c.dim),
+          const SizedBox(width: 5),
+          Flexible(
+            child: Text(
+              l.pmConversationsCount(n),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 11.5, color: c.dim, fontWeight: FontWeight.w600),
             ),
           ),
+          RgIcon(RgIcons.chevronRight, size: 13, color: c.dim),
         ],
       ),
     );
@@ -536,11 +628,29 @@ class ChatHero extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      l.tabChat,
-                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: c.text),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            l.tabChat,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w800,
+                              color: c.text,
+                            ),
+                          ),
+                        ),
+                        if (chat != null) Flexible(child: HeroCount(agentId: chat.id)),
+                      ],
                     ),
-                    Text(l.deskChatSub, style: TextStyle(fontSize: 12.5, color: c.dim)),
+                    Text(
+                      l.deskChatSub,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 12.5, color: c.dim),
+                    ),
                     const SizedBox(height: 8),
                     HeroField(
                       key: const Key('desk-chat-field'),
@@ -553,113 +663,6 @@ class ChatHero extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class ForYouHero extends StatelessWidget {
-  const ForYouHero({super.key, this.dense = false});
-
-  final bool dense;
-
-  @override
-  Widget build(BuildContext context) {
-    final app = AppScope.of(context);
-    final desk = DeskScope.of(context);
-    final l = AppLocalizations.of(context);
-    final c = RgColors.of(context);
-    final reqs = app.live.requests;
-    final critical = app.live.approvals.where((r) => r.isCritical).length;
-    final who = <Agent>[
-      for (final id in {for (final r in reqs) r.agentId})
-        ?app.agents.where((a) => a.id == id).firstOrNull,
-    ];
-    final mascots = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (final a in who.take(dense ? 4 : 5))
-          Padding(
-            padding: const EdgeInsets.only(right: 2),
-            child: MascotView(
-              agentId: a.id,
-              spec: a.mascot,
-              state: MascotState.wait,
-              size: dense ? 22 : 34,
-              label: l.mascotLabel(a.name, l.stateWait),
-            ),
-          ),
-      ],
-    );
-    final number = Text(
-      '${reqs.length}',
-      style: TextStyle(
-        fontSize: dense ? 19 : 30,
-        height: 1,
-        fontWeight: FontWeight.w700,
-        color: reqs.isEmpty ? c.dim : c.accent,
-      ),
-    );
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        key: Key(dense ? 'desk-foryou-mini' : 'desk-foryou'),
-        borderRadius: BorderRadius.circular(dense ? 10 : 14),
-        onTap: () => desk.show(const PanelPage(PanelScreen.inbox)),
-        child: Ink(
-          decoration: heroBox(
-            c,
-            lit: reqs.isNotEmpty,
-          ).copyWith(borderRadius: BorderRadius.circular(dense ? 10 : 14)),
-          padding: dense
-              ? const EdgeInsets.symmetric(horizontal: 10, vertical: 4)
-              : const EdgeInsets.fromLTRB(16, 12, 14, 12),
-          child: dense
-              ? Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    number,
-                    const SizedBox(width: 6),
-                    Text(l.deskForYouShort, style: TextStyle(fontSize: 12.5, color: c.text)),
-                    const SizedBox(width: 6),
-                    mascots,
-                  ],
-                )
-              : Row(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        number,
-                        const SizedBox(height: 4),
-                        Text(l.deskForYouShort, style: TextStyle(fontSize: 13, color: c.text)),
-                      ],
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (who.isNotEmpty) mascots,
-                          const SizedBox(height: 6),
-                          Text(
-                            reqs.isEmpty
-                                ? l.deskNothingForYou
-                                : critical > 0
-                                ? l.deskCriticalCount(critical)
-                                : l.deskRequestsCount(reqs.length),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 12.5, color: critical > 0 ? c.err : c.dim),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
         ),
       ),
     );
@@ -949,12 +952,9 @@ class AgentTile extends StatelessWidget {
         child: InkWell(
           key: Key('tile-${a.id}'),
           borderRadius: BorderRadius.circular(12),
-          onTap: () async {
-            final messenger = ScaffoldMessenger.maybeOf(context);
-            if (!await desk.openAgent(a)) {
-              messenger?.showSnackBar(SnackBar(content: Text(l.openFailed)));
-            }
-          },
+          // 3.8.8: the agent's conversations in the panel (as the page's bar), not straight its
+          // latest one; the menu's «Open the conversation» still goes there at once.
+          onTap: () => desk.showAgent(a),
           onSecondaryTapUp: (d) => showAgentMenu(context, a, d.globalPosition),
           onLongPress: () => showAgentSheet(context, a),
           child: tile,
@@ -1203,7 +1203,9 @@ class HeroStrip extends StatelessWidget {
             children: [
               if (god != null)
                 AgentPress(
+                  key: const Key('strip-god'),
                   agent: god,
+                  onTap: () => desk.showAgent(god),
                   child: MascotView(
                     agentId: god.id,
                     spec: god.mascot,
@@ -1228,7 +1230,9 @@ class HeroStrip extends StatelessWidget {
                 const SizedBox(width: 14),
                 if (chat != null)
                   AgentPress(
+                    key: const Key('strip-chat'),
                     agent: chat,
+                    onTap: () => desk.show(const PanelPage(PanelScreen.chat)),
                     child: MascotView(
                       agentId: chat.id,
                       spec: chat.mascot,
@@ -1259,7 +1263,6 @@ class HeroStrip extends StatelessWidget {
                   ),
               ] else
                 const SizedBox(width: 10),
-              const ForYouHero(dense: true),
             ],
           ),
         );

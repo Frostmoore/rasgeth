@@ -68,7 +68,9 @@ void main() {
       (a) => a.projectId == 'demo' && a.kind == AgentKind.agent,
       orElse: () => app.agents.firstWhere((a) => a.projectId != null),
     );
-    await tap(t, find.byKey(Key('tile-${coder.id}')), 3000);
+    // 3.8.8: the tile shows the agent's conversations; a new one opens in the panel.
+    await tap(t, find.byKey(Key('tile-${coder.id}')), 2000);
+    await tap(t, find.byKey(const Key('agent-conv-new')), 3000);
     await shot(t, '$p-02-pannello-conversazione');
 
     // ---- The palette ----
@@ -91,9 +93,11 @@ void main() {
     await tap(t, find.byKey(const Key('menu-Finestra')), 600);
     await tap(t, find.byKey(const Key('menuitem-dock-all')), 1200);
 
-    // ---- «For you» in the panel, the menus ----
-    await tap(t, find.byKey(const Key('desk-foryou')), 2000);
+    // ---- The bell's drop-down (3.8.8, «For you» left the wall), the menus ----
+    await tap(t, find.byKey(const Key('desk-bell')), 2000);
     await shot(t, '$p-06-da-te');
+    await t.sendKeyEvent(LogicalKeyboardKey.escape);
+    await frames(t, 500);
     await tap(t, find.byKey(const Key('menu-Vista')), 800);
     await shot(t, '$p-07-menu-vista', wait: 400);
     await t.sendKeyEvent(LogicalKeyboardKey.escape);

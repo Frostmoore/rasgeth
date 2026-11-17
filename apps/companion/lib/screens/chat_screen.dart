@@ -10,7 +10,9 @@ import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../ui/common.dart';
+import '../ui/conversation_menu.dart';
 import '../ui/icons.dart';
+import 'agent_conversations_screen.dart';
 import '../desktop/desk_controller.dart';
 import 'conversation_screen.dart';
 import 'saved_screen.dart';
@@ -46,6 +48,9 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   bool _opening = false;
+
+  /// «Archived (n)» shown instead of the days (3.8.8, as the page's Chats).
+  bool _archived = false;
 
   @override
   void didChangeDependencies() {
@@ -101,10 +106,17 @@ class _ChatScreenState extends State<ChatScreen> {
       listenable: app.live,
       builder: (context, _) {
         final chatId = app.chatAgentId;
-        final rows = chatId == null
+        final all = chatId == null
             ? const <SessionRow>[]
-            : app.live.sessions.where((s) => s.agentId == chatId && !s.archived).toList();
+            : app.live.sessions.where((s) => s.agentId == chatId).toList();
+        final archivedCount = all.where((s) => s.archived).length;
+        final rows = all.where((s) => s.archived == _archived).toList();
         final days = byDay(rows);
+        final toggle = ArchivedToggle(
+          count: archivedCount,
+          on: _archived,
+          onTap: () => setState(() => _archived = !_archived),
+        );
         final agent = app.agents.where((a) => a.id == chatId).firstOrNull;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -139,7 +151,21 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
             Expanded(
               child: days.isEmpty
-                  ? EmptyState(icon: RgIcons.chat, text: _opening ? l.loading : l.chatEmpty)
+                  ? Column(
+                      children: [
+                        Expanded(
+                          child: EmptyState(
+                            icon: _archived ? RgIcons.archive : RgIcons.chat,
+                            text: _opening
+                                ? l.loading
+                                : _archived
+                                ? l.cmEmptyArchived
+                                : l.chatEmpty,
+                          ),
+                        ),
+                        toggle,
+                      ],
+                    )
                   : ListView(
                       key: const Key('chat-days'),
                       padding: const EdgeInsets.only(bottom: 12),
@@ -160,36 +186,13 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                           ),
                           for (final r in d.rows)
-                            ListTile(
-                              key: Key('chat-${r.id}'),
-                              leading: RgIcon(
-                                r.running ? RgIcons.spinner : RgIcons.chat,
-                                color: r.running ? c.ok : c.dim,
-                              ),
-                              title: Text(
-                                r.task ?? (r.title?.isNotEmpty == true ? r.title! : l.untitled),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              subtitle: Text(
-                                DateFormat.Hm(l.localeName)
-                                    .format(DateTime.tryParse(r.when)?.toLocal() ?? d.day),
-                              ),
-                              onTap: () {
-                                final desk = DeskScope.maybeRead(context);
-                                if (desk != null) {
-                                  desk.show(PanelConversation(r.id, agent: agent));
-                                  return;
-                                }
-                                Navigator.of(context).push(
-                                  MaterialPageRoute<void>(
-                                    builder: (_) =>
-                                        ConversationScreen(sessionId: r.id, agent: agent),
-                                  ),
-                                );
-                              },
+                            SessionTile(
+                              row: r,
+                              tileKey: Key('chat-${r.id}'),
+                              onTap: () => openSessionRow(context, r, agent: agent),
                             ),
                         ],
+                        toggle,
                       ],
                     ),
             ),

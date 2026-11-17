@@ -90,7 +90,7 @@ void main() {
     await _done(tester);
   });
 
-  testWidgets('a tap on God opens its conversation, on the Chat opens the Chat', (tester) async {
+  testWidgets('a tap on God shows its conversations, on the Chat opens the Chat', (tester) async {
     final app = _app();
     await tester.runAsync(() => app.connect(server.base.toString(), 'secret'));
     await _pump(tester, app);
@@ -100,7 +100,17 @@ void main() {
     expect(app.tab, AppTab.chat);
     await tester.tap(find.byKey(const Key('tab-team')));
     await tester.pumpAndSettle();
+    // 3.8.8: God's conversations first (the latest on top); «Open the conversation» from its
+    // sheet goes to the shared one.
     await tester.tap(find.byKey(const Key('team-god')));
+    await _settle(tester);
+    expect(find.byKey(const Key('agent-convs-screen-a0')), findsOneWidget);
+    expect(find.byKey(const Key('conv-s1')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('agent-convs-more')));
+    await _settle(tester);
+    await tester.ensureVisible(find.byKey(const Key('agent-open')));
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('agent-open')));
     await _settle(tester);
     expect(find.byType(ConversationScreen), findsOneWidget);
     expect(tester.widget<ConversationScreen>(find.byType(ConversationScreen)).agent?.name, 'God');

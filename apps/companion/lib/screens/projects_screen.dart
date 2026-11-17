@@ -13,9 +13,9 @@ import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/icons.dart';
+import '../ui/project_menu.dart';
 import '../ui/words.dart';
 import 'code/git_tab.dart' show AheadBehind;
-import 'code/project_screen.dart';
 
 class ProjectsScreen extends StatefulWidget {
   const ProjectsScreen({super.key});
@@ -70,7 +70,13 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final list = _projects;
+    final app = AppScope.of(context);
+    // The app's own lists once loaded: an archive or a restore from the menu shows at once.
+    final list = _projects == null
+        ? null
+        : app.projects.isEmpty && app.archivedProjects.isEmpty
+        ? _projects
+        : [...app.projects, ...app.archivedProjects];
     return Column(
       children: [
         ScreenHeader(title: l.tabProjects),
@@ -135,9 +141,11 @@ class _ProjectCard extends StatelessWidget {
         child: InkWell(
           key: Key('project-${project.id}'),
           borderRadius: BorderRadius.circular(16),
-          onTap: () =>
-              Navigator.of(context)
-                  .push(MaterialPageRoute<void>(builder: (_) => ProjectScreen(project: project))),
+          // 3.8.8: the project's conversations (and, archived, its tasks); its tasks and files from
+          // the menu (long press), with «Archive» and «Restore».
+          onTap: () => openProject(context, project),
+          onLongPress: () => showProjectMenu(context, project),
+          onSecondaryTapUp: (d) => showProjectMenu(context, project, at: d.globalPosition),
           child: Padding(
             padding: const EdgeInsets.all(14),
             child: Column(

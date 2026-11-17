@@ -3398,5 +3398,198 @@
   "embedProbeTitle": "Web view test",
   "embedSaving": "Saving…",
   "embedSavedState": "Saved",
-  "embedProbeOpen": "Web view test"
+  "embedProbeOpen": "Web view test",
+  "cmOpen": "Open",
+  "cmPin": "Pin",
+  "cmUnpin": "Unpin",
+  "cmFolder": "Move to a folder",
+  "cmFolderNew": "New folder…",
+  "cmFolderNewTitle": "New folder",
+  "cmFolderNewYes": "Move",
+  "cmFolderOut": "Take it out of the folder",
+  "cmArchive": "Archive",
+  "cmUnarchive": "Bring back",
+  "cmExport": "Export as Markdown",
+  "cmArchived": "Conversation archived.",
+  "cmUnarchived": "Conversation brought back.",
+  "cmFailed": "It did not work: try again.",
+  "cmExported": "File saved.",
+  "cmForkOf": "branch of «{title}»",
+  "@cmForkOf": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "cmArchivedN": "Archived ({n})",
+  "@cmArchivedN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "cmBack": "Back to the conversations",
+  "cmNew": "New conversation",
+  "cmEmpty": "No conversations yet: start one.",
+  "cmEmptyArchived": "No archived conversations.",
+  "cmPinned": "Pinned",
+  "cmConversationsOf": "Conversations with {name}",
+  "@cmConversationsOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cmTask": "Task: {title}",
+  "@cmTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "cmShared": "Shared conversation",
+  "pmOpen": "Open",
+  "pmTasks": "Tasks and files",
+  "pmCode": "Code",
+  "pmAgents": "Agents of {project}",
+  "@pmAgents": {
+    "placeholders": {
+      "project": {
+        "type": "String"
+      }
+    }
+  },
+  "pmArchive": "Archive the project",
+  "pmRestore": "Restore",
+  "pmInitGit": "Initialise git",
+  "pmInitGitDone": "Git repository created for «{name}» (branch main).",
+  "@pmInitGitDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pmAskTitle": "Archive «{name}»?",
+  "@pmAskTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pmAskLead": "The project leaves the lists and stays readable under «Archived». Nothing is deleted: restore it whenever you like and it comes back as it was.",
+  "pmWorking": "{n, plural, =1{1 agent is working: it will be stopped} other{{n} agents are working: they will be stopped}}",
+  "@pmWorking": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pmNobody": "No agent is working in it now.",
+  "pmAutos": "{n, plural, =1{1 automation will be paused ({names}); it runs again when you restore the project.} other{{n} automations will be paused ({names}); they run again when you restore the project.}}",
+  "@pmAutos": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "pmFactTasks": "Open tasks stay open.",
+  "pmFactSandbox": "Its sandbox stops, and starts again on restore.",
+  "pmFactNobody": "Until then no agent works in it or changes its files, and your linked chats do not use it.",
+  "pmFactRestore": "God can archive and restore it too, always with your yes.",
+  "pmStopAndArchive": "Stop and archive",
+  "pmArchiveYes": "Archive",
+  "pmArchived": "«{name}» archived.",
+  "@pmArchived": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pmRestored": "«{name}» restored.",
+  "@pmRestored": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pmArchivedN": "Archived ({n})",
+  "@pmArchivedN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pmArchivedOn": "archived on {day}",
+  "@pmArchivedOn": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "pmBadge": "Archived · read only",
+  "pmViewLead": "Archived: you can read its conversations, tasks and files. Restore it to work in it again.",
+  "pmConversations": "Conversations",
+  "pmTeam": "The team's conversations",
+  "pmNoConversations": "No conversations.",
+  "pmTasksTitle": "Tasks",
+  "pmNoTasks": "No tasks.",
+  "pmNoLead": "This project has no lead agent.",
+  "pmNoGit": "No git repository",
+  "bellTitle": "Waiting for you",
+  "bellTooltip": "Requests and notifications",
+  "bellPermissions": "Permissions ({n})",
+  "@bellPermissions": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bellQuestions": "Questions ({n})",
+  "@bellQuestions": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bellWorking": "Working now ({n})",
+  "@bellWorking": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bellNoApprovals": "Nothing waiting for you.",
+  "bellNoQuestions": "No questions.",
+  "bellNothingRunning": "Nothing is running.",
+  "bellAllow": "Allow",
+  "bellDeny": "Deny",
+  "bellLook": "Look and decide",
+  "bellAnswer": "Answer",
+  "bellSeeAll": "See all",
+  "pmConversationsCount": "{n, plural, =0{no conversations} =1{1 conversation} other{{n} conversations}}",
+  "@pmConversationsCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }
