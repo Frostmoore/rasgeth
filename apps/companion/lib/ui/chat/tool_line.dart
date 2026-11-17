@@ -185,7 +185,7 @@ class _ToolLineState extends State<ToolLine> {
                       width: 15,
                       child: Center(
                         child: switch (state) {
-                          'running' => RgIcon(RgIcons.spinner, size: 13, color: c.accent),
+                          'running' => RgSpinner(size: 13, color: c.accent),
                           'done' => Container(
                             key: const Key('tool-dot'),
                             width: 9,

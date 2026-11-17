@@ -1,9 +1,30 @@
 // A `codex app-server` in miniature for the tests: JSON-RPC lines on stdio, one scripted turn
-// that calls a dynamic tool, then answers with what the tool returned.
+// that calls a dynamic tool, then answers with what the tool returned. Like the real one, each
+// model request's usage (`thread/tokenUsage/updated`) comes after that request's items and tool
+// calls, while the tool still runs; its context window is the engine's own (475000).
 import { createInterface } from "node:readline";
 
 const send = (m) => process.stdout.write(`${JSON.stringify(m)}\n`);
 const log = [];
+const usage = (input, cached, output) => ({
+  method: "thread/tokenUsage/updated",
+  params: {
+    threadId: "th-1",
+    turnId: "tu-1",
+    tokenUsage: {
+      modelContextWindow: 475000,
+      total: {},
+      last: {
+        totalTokens: input + output,
+        inputTokens: input,
+        cachedInputTokens: cached,
+        cacheWriteInputTokens: 0,
+        outputTokens: output,
+        reasoningOutputTokens: 10,
+      },
+    },
+  },
+});
 let toolCall;
 let threads = 0;
 createInterface({ input: process.stdin }).on("line", (line) => {
@@ -21,25 +42,7 @@ createInterface({ input: process.stdin }).on("line", (line) => {
         item: { type: "agentMessage", id: "i2", text: `Tool said ${text} (${m.result.success})` },
       },
     });
-    send({
-      method: "thread/tokenUsage/updated",
-      params: {
-        threadId: "th-1",
-        turnId: "tu-1",
-        tokenUsage: {
-          modelContextWindow: 272000,
-          total: {},
-          last: {
-            totalTokens: 1500,
-            inputTokens: 1400,
-            cachedInputTokens: 1000,
-            cacheWriteInputTokens: 0,
-            outputTokens: 100,
-            reasoningOutputTokens: 10,
-          },
-        },
-      },
-    });
+    send(usage(1400, 1000, 100));
     send({
       method: "account/rateLimits/updated",
       params: {
@@ -105,7 +108,10 @@ createInterface({ input: process.stdin }).on("line", (line) => {
           arguments: { path: "a.txt" },
         },
       };
-      return send(toolCall);
+      send(toolCall);
+      // The first request's usage, once its stream has ended (the tool is still running).
+      send(usage(1200, 0, 40));
+      return;
     case "model/list":
       return send({
         id: m.id,

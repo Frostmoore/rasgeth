@@ -2416,6 +2416,21 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news389Asks: "Asked only for what is really dangerous",
+  news389AsksText:
+    "The dangers of a command are judged on the commands it really runs, not on words in the text: writing or changing files in the project, a temporary folder emptied, a check like «sudo -n true», a file called env.sh no longer ask you anything. Real dangers still do. Every request now starts with one plain line saying what the agent wants to do.",
+  news389Restart: "Work picks up after a restart",
+  news389RestartText:
+    "After a power cut or an update, the tasks that were interrupted start again by themselves in the same conversation, and agents, projects and tasks that already exist are never made twice.",
+  news389Small: "Smaller things",
+  news389SmallText:
+    "Spinners turn again (three still dots with «Reduce motion»); a request answered elsewhere closes its window in the app by itself; a project opens its active orchestrator.",
+  news388Widgets: "Beautiful widgets",
+  news388WidgetsText:
+    "Widgets now look like small apps: sliders with their value in a pill, the result in a large card with a coloured scale, before and after side by side, soft badges, in RedGiant's colours, light and dark, two columns on a wide screen and one on the phone.",
+  news388Fixes: "Two fixes",
+  news388FixesText:
+    "Writing to God from the app works again after an update (the server failed to reopen God's work conversation after a restart). With the ChatGPT subscription every answer now shows its own figures: the first one is no longer at zero and the others are no longer one step behind.",
   news387Chat: "A warmer, fuller Chat",
   news387ChatText:
     "Chat now answers like a friend who knows a lot: the answer first, then why, an example with your numbers, what to do and an offer to go further. When you can play with the answer (a calculation, a comparison, a choice) it adds a widget to try.",
@@ -9044,6 +9059,21 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news389Asks: "Richieste solo per ciò che è davvero pericoloso",
+  news389AsksText:
+    "I pericoli di un comando si giudicano dai comandi che esegue davvero, non dalle parole nel testo: scrivere o cambiare file nel progetto, svuotare una cartella temporanea, una prova come «sudo -n true», un file che si chiama env.sh non ti chiedono più niente. I pericoli veri sì. Ogni richiesta comincia con una riga semplice che dice cosa vuole fare l'agente.",
+  news389Restart: "Il lavoro riprende dopo un riavvio",
+  news389RestartText:
+    "Dopo un blackout o un aggiornamento, i compiti interrotti ripartono da soli nella stessa conversazione, e agenti, progetti e compiti che esistono già non vengono mai rifatti due volte.",
+  news389Small: "Cose più piccole",
+  news389SmallText:
+    "I cerchietti girano di nuovo (tre puntini fermi con «Riduci movimento»); una richiesta risolta altrove chiude da sola la sua finestra nell'app; un progetto apre il suo orchestratore attivo.",
+  news388Widgets: "Widget belli",
+  news388WidgetsText:
+    "I widget adesso sembrano piccole app: cursori con il valore in una pillola, il risultato in una card grande con una scala colorata, il prima e il dopo affiancati, badge morbidi, nei colori di RedGiant, in chiaro e in scuro, a due colonne sullo schermo largo e a una sul telefono.",
+  news388Fixes: "Due correzioni",
+  news388FixesText:
+    "Scrivere a God dall'app funziona di nuovo dopo un aggiornamento (il server non riapriva la conversazione di lavoro di God dopo un riavvio). Con l'abbonamento ChatGPT ogni risposta mostra i suoi numeri: la prima non è più a zero e le altre non sono più indietro di un passo.",
   news387Chat: "Una Chat più calda e completa",
   news387ChatText:
     "Chat adesso risponde come un amico che sa tante cose: prima la risposta, poi il perché, un esempio con i tuoi numeri, cosa fare e una proposta per andare avanti. Quando con la risposta si può giocare (un calcolo, un confronto, una scelta) aggiunge un widget da provare.",

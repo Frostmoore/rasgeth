@@ -100,7 +100,7 @@ describe("what the card says (3.5.6)", () => {
       <PermissionCard r={{ ...r, tool: "bash", input: { command: "git push origin main" } }} />,
     );
     expect(container.querySelector(".permission-what")?.textContent).toBe(
-      "Runs the command: git push origin main",
+      "Pushes the commits to origin (main)",
     );
     expect(container.querySelector(".permission-who")?.textContent).toBe("God asks for your yes");
   });

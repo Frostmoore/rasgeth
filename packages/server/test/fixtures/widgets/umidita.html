@@ -1,0 +1,63 @@
+<div class="rg-head">
+  <h3>Arieggiare asciuga la casa?</h3>
+  <p>Metti i tuoi valori: l'aria di fuori, scaldandosi in casa, cambia umidità.</p>
+</div>
+<div class="rg-split">
+  <div class="rg-controls">
+    <div class="rg-group">
+      <span class="rg-label">Dentro</span>
+      <label class="rg-range">Temperatura<input id="ti" type="range" min="10" max="30" step="0.5" value="19" data-unit="°C"></label>
+      <label class="rg-range">Umidità<input id="ui" type="range" min="20" max="100" value="68" data-unit="%"></label>
+    </div>
+    <div class="rg-group">
+      <span class="rg-label">Fuori</span>
+      <label class="rg-range">Temperatura<input id="te" type="range" min="-10" max="35" step="0.1" value="14.7" data-unit="°C"></label>
+      <label class="rg-range">Umidità<input id="ue" type="range" min="20" max="100" value="99" data-unit="%"></label>
+    </div>
+  </div>
+  <section class="rg-hero" id="res" aria-live="polite">
+    <span class="rg-label">Umidità dentro dopo il ricambio</span>
+    <strong class="rg-value"><span id="out">–</span><small>%</small></strong>
+    <span class="rg-badge" id="verdict">–</span>
+    <div class="rg-meter" id="scale" data-min="30" data-max="90" data-zones="60 70" data-unit="%" data-label="Umidità dopo il ricambio"></div>
+    <div class="rg-compare arrow">
+      <div><span>Rugiada ora</span><strong id="dpi">–</strong></div>
+      <div><span>Dopo il ricambio</span><strong id="dpe">–</strong></div>
+    </div>
+  </section>
+</div>
+<div class="rg-row">
+  <p class="rg-muted rg-grow">Ricambio completo, senza altre fonti di vapore. Sotto il 60% la condensa sui vetri sparisce.</p>
+  <button type="button" class="rg-sm" id="go">Chiedi cosa fare</button>
+</div>
+<script>
+const $ = (id) => document.getElementById(id);
+const v = (id) => Number($(id).value);
+// Water vapour (g/m³) at saturation, and the dew point (Magnus).
+const sat = (t) => (6.112 * Math.exp((17.62 * t) / (243.12 + t)) * 216.7) / (273.15 + t);
+const dew = (t, rh) => {
+  const g = Math.log(rh / 100) + (17.62 * t) / (243.12 + t);
+  return (243.12 * g) / (17.62 - g);
+};
+const after = () => Math.min(100, (sat(v("te")) * v("ue")) / sat(v("ti")));
+function update() {
+  const rh = after();
+  const tone = rh < 60 ? "ok" : rh < 70 ? "warn" : "bad";
+  $("res").className = `rg-hero ${tone}`;
+  $("verdict").className = `rg-badge ${tone}`;
+  $("verdict").textContent =
+    tone === "ok" ? "Asciuga: niente condensa" : tone === "warn" ? "Al limite" : rh > v("ui") ? "Non asciuga: più umida di ora" : "Asciuga poco";
+  $("out").textContent = redgiant.num(rh);
+  $("scale").dataset.value = rh.toFixed(1);
+  $("scale").dataset.from = v("ui");
+  $("dpi").innerHTML = `${redgiant.num(dew(v("ti"), v("ui")), 1)}<small>°C</small>`;
+  $("dpe").innerHTML = `${redgiant.num(dew(v("te"), v("ue")), 1)}<small>°C</small>`;
+}
+addEventListener("input", update);
+addEventListener("redgiant:theme", update);
+update();
+$("go").onclick = () =>
+  redgiant.sendMessage(
+    `Analizza la mia situazione: dentro ${v("ti")} °C e ${v("ui")}%, fuori ${v("te")} °C e ${v("ue")}%; dopo il ricambio l'umidità dentro arriva al ${redgiant.num(after())}%.`,
+  );
+</script>

@@ -2,7 +2,7 @@
 // Postgres and a scripted model. Usage: node packages/web/scripts/demo-server.mjs [port]
 import { execFileSync } from "node:child_process";
 import { appendFileSync } from "node:fs";
-import { copyFile, mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { hostname, tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -77,42 +77,16 @@ function demoPdf(line) {
 }
 
 /**
- * The widget of the humidity question (3.5.9), written with the design kit (3.5.12): four fields
- * with their units, the answer at once in a tinted result, one primary action.
+ * The widget of the humidity question (3.5.9), written with the design kit (3.5.12) and remade
+ * with its widget components (3.8.8): sliders with their values, the result in a big card with a
+ * scale, dew points before and after. The same file is the kit's reference in the server's tests.
  */
-const HUMIDITY_WIDGET = `<div class="rg-stack">
-  <div class="rg-grid" style="--rg-min:120px">
-    <label class="rg-field">Dentro<span class="rg-input"><input id="ti" type="number" value="20"><span>°C</span></span></label>
-    <label class="rg-field">Umidità dentro<span class="rg-input"><input id="ui" type="number" value="70"><span>%</span></span></label>
-    <label class="rg-field">Fuori<span class="rg-input"><input id="te" type="number" value="8"><span>°C</span></span></label>
-    <label class="rg-field">Umidità fuori<span class="rg-input"><input id="ue" type="number" value="85"><span>%</span></span></label>
-  </div>
-  <div class="rg-result" id="res">
-    <span class="rg-title" id="verdict">–</span>
-    <span class="rg-value" id="out">–</span>
-    <span class="rg-muted" id="note"></span>
-  </div>
-  <div class="rg-actions"><button class="rg-primary" id="go">Analizza la mia situazione</button></div>
-</div>
-<script>
-const sat = (t) => 6.112 * Math.exp((17.67 * t) / (t + 243.5)) * 2.1674 / (273.15 + t);
-const v = (id) => Number(document.getElementById(id).value);
-function calc() {
-  const rh = Math.min(100, (sat(v("te")) * v("ue")) / sat(v("ti")));
-  const tone = rh < 60 ? "ok" : rh < 70 ? "warn" : "bad";
-  document.getElementById("res").className = "rg-result " + tone;
-  document.getElementById("verdict").textContent =
-    tone === "ok" ? "Aria asciutta: niente condensa" : tone === "warn" ? "Al limite: arieggia più spesso" : "Ancora umida: la condensa resta";
-  document.getElementById("out").textContent = rh.toFixed(0) + "%";
-  document.getElementById("note").textContent =
-    "di umidità a " + v("ti") + " °C dopo il ricambio (prima " + v("ui") + "%)";
-  return rh;
-}
-document.querySelectorAll("input").forEach((i) => i.addEventListener("input", calc));
-calc();
-document.getElementById("go").onclick = () =>
-  redgiant.sendMessage(\`Analizza la mia situazione: dentro \${v("ti")} °C e \${v("ui")}%, fuori \${v("te")} °C e \${v("ue")}%; dopo il ricambio l'umidità scende a \${calc().toFixed(0)}%.\`);
-</script>`;
+const HUMIDITY_WIDGET = (
+  await readFile(
+    new URL("../../server/test/fixtures/widgets/umidita.html", import.meta.url),
+    "utf8",
+  )
+).trimEnd();
 
 /**
  * The same question as a model writes it without the design kit (3.5.12): plain elements, no CSS.
@@ -2726,6 +2700,51 @@ if (process.env.DEMO_CRITICAL) {
     [{ id: "critical-delete", action: "redact", target: "modulo.pdf" }],
   );
   wait(2, "bash", { command: "npm install" }, ["Runs a command"], []);
+}
+// p3.8.9, DEMO_REQWORDS=1: requests that say first, in plain words, what they do (a script written
+// and run, the WordPress server of 146.jpg), and a truly dangerous one with its red card.
+if (process.env.DEMO_REQWORDS) {
+  const sid = await core.startSession("local", researcher.id);
+  await core.store.append({
+    ownerId: "local",
+    projectId: null,
+    agentId: researcher.id,
+    sessionId: sid,
+    body: { type: "message.user", payload: { text: "Avvia il server WordPress di prova." } },
+  });
+  const ask = (n, input, reasons, danger, critical) =>
+    void core.person.approve(
+      {
+        requestId: `demo_words_${n}`,
+        requester: core.registry.get(researcher.id),
+        call: { callId: `cw${n}`, name: "bash", input },
+        reasons,
+        danger,
+        ...(critical && { critical }),
+        sessionId: sid,
+      },
+      new AbortController().signal,
+      { kind: "approval", critical: Boolean(critical), what: "bash" },
+    );
+  ask(
+    1,
+    {
+      command:
+        "cat > /tmp/gaia-shared/start-wp.sh <<'EOF'\n#!/bin/bash\nPIDF=$WP/logs/server.pid\ncase \"${1:-start}\" in\n  stop) kill \"$(cat $PIDF)\"; rm -f $PIDF ;;\n  start) nohup php -S 127.0.0.1:8088 -t $WP/htdocs >>$LOG 2>&1 &\n    echo $! > $PIDF ;;\nesac\nEOF\nchmod +x /tmp/gaia-shared/start-wp.sh && /tmp/gaia-shared/start-wp.sh start && curl -s http://127.0.0.1:8088/ | grep -o '<title>[^<]*'",
+    },
+    ["manual mode"],
+    [],
+  );
+  ask(
+    2,
+    { command: "cat > clean.sh <<'EOF'\nrm -rf \"$OUT/\"\nEOF\nbash clean.sh" },
+    [
+      "truly dangerous: deletes $OUT/ (if $OUT is empty or unset, the path becomes /: the whole disk)",
+    ],
+    ["critical-delete"],
+    [{ id: "critical-delete", action: "delete-variable", target: "$OUT/" }],
+  );
+  console.log(`DEMO_REQWORDS session ${sid}`);
 }
 // 3.5.6, DEMO_ASKS=1: ordinary requests that say what happens in words (God archiving a project,
 // a push, a file written), each waiting for the person, with the buttons off for a moment.
