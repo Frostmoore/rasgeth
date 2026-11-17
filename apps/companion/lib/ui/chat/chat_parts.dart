@@ -8,11 +8,13 @@
 import 'package:flutter/material.dart';
 
 import '../../api/conversation.dart';
+import '../../api/types.dart';
 import '../../app_state.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/colors.dart';
 import '../icons.dart';
 import '../markdown.dart';
+import '../pause_agent.dart';
 
 /// The agent's list of steps (update_todos), pinned above the composer until every step is done
 /// and the agent has stopped.
@@ -592,6 +594,94 @@ class ElsewhereLine extends StatelessWidget {
           InkWell(
             onTap: onOpen,
             child: Text(l.cvOpen, style: TextStyle(color: c.accent, fontSize: 13)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Where the composer was, in a removed agent's conversation (3.8.9): read only; «Removed agents»
+/// brings it back.
+class RemovedNotice extends StatelessWidget {
+  const RemovedNotice({super.key, required this.name});
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    return Container(
+      key: const Key('removed-notice'),
+      margin: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: c.panel,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: c.line),
+      ),
+      child: Row(
+        children: [
+          RgIcon(RgIcons.lock, size: 15, color: c.dim),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(l.raReadOnly(name), style: TextStyle(color: c.text, fontSize: 14)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Where the composer was, in a stopped agent's conversation (3.8.9, a pause): read only, with
+/// «Resume», which brings it back and lets its open tasks go on here.
+class StoppedNotice extends StatefulWidget {
+  const StoppedNotice({super.key, required this.agent});
+
+  final Agent agent;
+
+  @override
+  State<StoppedNotice> createState() => _StoppedNoticeState();
+}
+
+class _StoppedNoticeState extends State<StoppedNotice> {
+  bool _busy = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    return Container(
+      key: const Key('stopped-notice'),
+      margin: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: c.panel,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: c.line),
+      ),
+      child: Row(
+        children: [
+          RgIcon(RgIcons.pause, size: 15, color: c.dim),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              l.paReadOnly(widget.agent.name),
+              style: TextStyle(color: c.text, fontSize: 14),
+            ),
+          ),
+          const SizedBox(width: 8),
+          FilledButton(
+            key: const Key('stopped-resume'),
+            onPressed: _busy
+                ? null
+                : () async {
+                    setState(() => _busy = true);
+                    await resumeAgentNow(context, widget.agent);
+                    if (mounted) setState(() => _busy = false);
+                  },
+            child: Text(l.paResume),
           ),
         ],
       ),

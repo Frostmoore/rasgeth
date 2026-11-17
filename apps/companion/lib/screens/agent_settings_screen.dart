@@ -20,6 +20,8 @@ import '../mascot/mascot_view.dart';
 import '../theme/colors.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
+import '../ui/pause_agent.dart';
+import '../ui/remove_agent.dart';
 import '../ui/settings_kit.dart';
 import 'instructions_screen.dart';
 import 'new_agent_screen.dart' show RgSwitch;
@@ -519,15 +521,29 @@ class _GeneralState extends State<_General> {
     final a = widget.agent;
     final yes = await askConfirm(
       context,
-      title: l.agentStop,
+      title: l.paTitle(a.name),
       body: l.asStopAsk(a.name),
-      yes: l.asStopYes(a.name),
+      yes: l.paYes(a.name),
       danger: true,
     );
     if (!yes) return;
     final why = await app.stopAgentForGood(a);
     if (!mounted) return;
-    setState(() => why == null ? _out.ok(l.asStoppedNow(a.name)) : _out.fail(l.asRefused(why)));
+    setState(() => why == null ? _out.ok(l.paDone(a.name)) : _out.fail(l.asRefused(why)));
+  }
+
+  /// «Resume» (3.8.9): a stopped agent works again; its open tasks go on by themselves.
+  Future<void> _resume() async {
+    final l = AppLocalizations.of(context);
+    final a = widget.agent;
+    final r = await AppScope.read(context).resumeAgent(a);
+    if (!mounted) return;
+    final why = r.why;
+    setState(
+      () => why != null
+          ? _out.fail(l.paResumeFailed(why))
+          : _out.ok(r.tasks > 0 ? l.paResumedTasks(a.name) : l.paResumed(a.name)),
+    );
   }
 
   @override
@@ -641,8 +657,46 @@ class _GeneralState extends State<_General> {
                   side: BorderSide(color: c.err.withValues(alpha: .5)),
                 ),
                 onPressed: _stop,
-                icon: RgIcon(RgIcons.stop, size: 16, color: c.err),
-                label: Text(l.asStopYes(a.name)),
+                icon: RgIcon(RgIcons.pause, size: 16, color: c.err),
+                label: Text(l.paYes(a.name)),
+              ),
+            ],
+          ),
+        ],
+        // 3.8.9: stopped is a pause: «Resume» brings it back with its open tasks.
+        if (canResumeAgent(a)) ...[
+          SectionHead(l.paResume),
+          _help(context, l.paResumeHelp(a.name)),
+          _SaveRow(
+            children: [
+              FilledButton.icon(
+                key: const Key('as-resume'),
+                onPressed: _resume,
+                icon: const RgIcon(RgIcons.play, size: 16, color: Colors.white),
+                label: Text(l.paResume),
+              ),
+            ],
+          ),
+        ],
+        // 3.8.9: out of the team with those below it (stopped or not); «Removed agents» restores.
+        if (canRemoveAgent(app, a)) ...[
+          if (!a.active) SectionHead(l.asDanger),
+          _help(context, l.raHelp),
+          _SaveRow(
+            children: [
+              OutlinedButton.icon(
+                key: const Key('as-remove'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: c.err,
+                  side: BorderSide(color: c.err.withValues(alpha: .5)),
+                ),
+                onPressed: () async {
+                  if (await confirmRemoveAgent(context, a) && context.mounted) {
+                    Navigator.of(context).maybePop();
+                  }
+                },
+                icon: RgIcon(RgIcons.trash, size: 16, color: c.err),
+                label: Text(l.raYes(a.name)),
               ),
             ],
           ),

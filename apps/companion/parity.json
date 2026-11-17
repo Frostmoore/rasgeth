@@ -72,7 +72,10 @@
         "lib/screens/agent_conversations_screen.dart",
         "lib/ui/conversation_menu.dart",
         "lib/ui/rg_menu.dart",
-        "lib/desktop/mascot_rail.dart"
+        "lib/desktop/mascot_rail.dart",
+        "lib/ui/pause_agent.dart",
+        "lib/ui/remove_agent.dart",
+        "lib/screens/removed_agents_screen.dart"
       ],
       "phase": "G42.4",
       "rows": [
@@ -87,7 +90,7 @@
         197,
         198
       ],
-      "note": "Agent settings from the menu (3.8.7), new agent and instructions are native; 3.8.8: a click on any agent (God included) shows its conversations (pinned, folders, «Archived (n)», new), every conversation has the page's row actions (pin, folder, archive and back, export), the full window's bar shows each project's agents under its lead, collapsible; the tree beyond the first level, the advanced wizard and assistants' services are not."
+      "note": "Agent settings from the menu (3.8.7), new agent and instructions are native; 3.8.8: a click on any agent (God included) shows its conversations (pinned, folders, «Archived (n)», new), every conversation has the page's row actions (pin, folder, archive and back, export), the full window's bar shows each project's agents under its lead, collapsible; the tree beyond the first level, the advanced wizard and assistants' services are not. Removing an agent (menu, long press, agent settings) and «Removed agents» with «Restore» and the read-only conversations are native (3.8.9)."
     },
     "memory": {
       "app": "partial",

@@ -118,4 +118,47 @@ describe("lists.changed (p3.8.9)", () => {
     other.close();
     page.close();
   }, 60_000);
+
+  it("covers agents stopped, resumed, removed and restored (one message, no agents.changed)", async () => {
+    s = await startServer(() => ({ text: "ok" }));
+    const server = s;
+    await server.api("POST", "/api/projects", { name: "Shop" });
+    const make = async (body: Record<string, unknown>) =>
+      (await server.api<{ id: string }>("POST", "/api/agents", body)).body.id;
+    const god = await make({ kind: "god", parentId: null, name: "God" });
+    const orch = await make({
+      kind: "orchestrator",
+      parentId: god,
+      projectId: "shop",
+      name: "Orch",
+    });
+    const dev = await make({ kind: "agent", parentId: orch, projectId: "shop", name: "Dev" });
+    const app = await wsClient(server.url);
+    const other = await wsClient(server.url, OTHER);
+    await app.waitFor("welcome");
+    await other.waitFor("welcome");
+    const heard = async (want: string[], change: () => Promise<{ status: number }>) => {
+      const before = app.messages.length;
+      expect((await change()).status).toBe(200);
+      const end = Date.now() + 5000;
+      for (;;) {
+        const got = lists(app.messages.slice(before));
+        if (want.every((w) => got.has(w))) break;
+        if (Date.now() > end) throw new Error(`no lists.changed ${want.join(", ")}`);
+        await new Promise((r) => setTimeout(r, 20));
+      }
+    };
+    await heard(["agents"], () =>
+      server.api("POST", `/api/agents/${dev}/stop`, { reason: "pause" }),
+    );
+    await heard(["agents"], () => server.api("POST", `/api/agents/${dev}/resume`));
+    await heard(["agents", "sessions"], () =>
+      server.api("POST", `/api/agents/${dev}/remove`, { reason: "not needed" }),
+    );
+    await heard(["agents", "sessions"], () => server.api("POST", `/api/agents/${dev}/restore`));
+    expect(app.messages.some((m) => (m.type as string) === "agents.changed")).toBe(false);
+    expect(other.messages.some((m) => m.type === "lists.changed")).toBe(false);
+    app.close();
+    other.close();
+  }, 60_000);
 });

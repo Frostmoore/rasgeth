@@ -2022,7 +2022,7 @@ abstract class AppLocalizations {
   /// No description provided for @agentStopped.
   ///
   /// In en, this message translates to:
-  /// **'Stopped: {name}'**
+  /// **'Interrupted: {name}'**
   String agentStopped(String name);
 
   /// No description provided for @agentStopFailed.
@@ -6942,13 +6942,13 @@ abstract class AppLocalizations {
   /// No description provided for @asStopHelp.
   ///
   /// In en, this message translates to:
-  /// **'Its conversations stay; it does no more work, nor do those under it.'**
+  /// **'A pause: its turns stop now, with those under it, and its open tasks wait. «Resume» brings it back and the tasks go on in the same conversation. To take it out of the team, use «Remove…».'**
   String get asStopHelp;
 
   /// No description provided for @asStopAsk.
   ///
   /// In en, this message translates to:
-  /// **'Stop {name}? Its conversations stay; it does no more work.'**
+  /// **'Stop {name}? It is a pause: its turns stop now and its open tasks wait; «Resume» brings it back and they go on where they were.'**
   String asStopAsk(String name);
 
   /// No description provided for @asStopYes.
@@ -8564,6 +8564,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{n, plural, =0{no conversations} =1{1 conversation} other{{n} conversations}}'**
   String pmConversationsCount(int n);
+
+  /// No description provided for @raMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove…'**
+  String get raMenu;
+
+  /// No description provided for @raTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}?'**
+  String raTitle(String name);
+
+  /// No description provided for @raBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} leaves the team: its turns stop and nobody gives it work any more. Nothing is deleted: its conversations and its history stay, readable in «Removed agents», where you can restore it.'**
+  String raBody(String name);
+
+  /// No description provided for @raWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed with it: {names}'**
+  String raWith(String names);
+
+  /// No description provided for @raTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Open tasks that close («agent removed»): {count}'**
+  String raTasks(int count);
+
+  /// No description provided for @raRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations at work that stop now: {count}'**
+  String raRunning(int count);
+
+  /// No description provided for @raYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}'**
+  String raYes(String name);
+
+  /// No description provided for @raDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} removed: «Removed agents» brings it back.'**
+  String raDone(String name);
+
+  /// No description provided for @raFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not removed: {why}'**
+  String raFailed(String why);
+
+  /// No description provided for @raProtected.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} cannot be removed.'**
+  String raProtected(String name);
+
+  /// No description provided for @raHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It leaves the team with the agents below it; its history stays and you can restore it from «Removed agents».'**
+  String get raHelp;
+
+  /// No description provided for @raListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed agents'**
+  String get raListTitle;
+
+  /// No description provided for @raListRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Read their conversations, bring them back'**
+  String get raListRow;
+
+  /// No description provided for @raListHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents removed from the team, by you or by God. Nothing was deleted: their conversations stay readable, and «Restore» brings each back with those removed with it.'**
+  String get raListHelp;
+
+  /// No description provided for @raNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No removed agents.'**
+  String get raNone;
+
+  /// No description provided for @raWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed {when} by {by}'**
+  String raWhen(String when, String by);
+
+  /// No description provided for @raByYou.
+  ///
+  /// In en, this message translates to:
+  /// **'you'**
+  String get raByYou;
+
+  /// No description provided for @raReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Why: {reason}'**
+  String raReason(String reason);
+
+  /// No description provided for @raRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get raRestore;
+
+  /// No description provided for @raRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is back in the team.'**
+  String raRestored(String name);
+
+  /// No description provided for @raRestoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not restored: {why}'**
+  String raRestoreFailed(String why);
+
+  /// No description provided for @raConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations ({count})'**
+  String raConversations(int count);
+
+  /// No description provided for @raNoConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations.'**
+  String get raNoConversations;
+
+  /// No description provided for @raReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was removed: this conversation is read only.'**
+  String raReadOnly(String name);
+
+  /// No description provided for @raBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed'**
+  String get raBadge;
+
+  /// No description provided for @paMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop…'**
+  String get paMenu;
+
+  /// No description provided for @paTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop {name}?'**
+  String paTitle(String name);
+
+  /// No description provided for @paYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop {name}'**
+  String paYes(String name);
+
+  /// No description provided for @paDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is paused: «Resume» brings it back.'**
+  String paDone(String name);
+
+  /// No description provided for @paResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get paResume;
+
+  /// No description provided for @paResumeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is stopped (paused). «Resume» brings it back with those stopped under it, and its open tasks go on in the same conversation.'**
+  String paResumeHelp(String name);
+
+  /// No description provided for @paResumed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} works again.'**
+  String paResumed(String name);
+
+  /// No description provided for @paResumedTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} works again: its open tasks go on.'**
+  String paResumedTasks(String name);
+
+  /// No description provided for @paResumeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not resumed: {why}'**
+  String paResumeFailed(String why);
+
+  /// No description provided for @paReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is stopped (paused): resume it to write to it.'**
+  String paReadOnly(String name);
+
+  /// No description provided for @paBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get paBadge;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

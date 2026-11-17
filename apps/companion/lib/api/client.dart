@@ -329,10 +329,59 @@ class RedGiantClient {
   );
 
   /// `POST /api/agents/:id/stop`: the agent and those under it stop (the page's «Stop»).
+  /// `POST /api/agents/:id/stop` (3.8.9: a pause): its turns stop, its open tasks wait.
   Future<void> stopAgentForGood(String agentId) => _post(
     '/api/agents/${Uri.encodeComponent(agentId)}/stop',
     const {'reason': 'stopped from RGCompanion'},
   );
+
+  /// `POST /api/agents/:id/resume` (3.8.9): a stopped agent works again (with those stopped under
+  /// it); the ids of its open tasks, which go on by themselves.
+  Future<List<String>> resumeAgent(String agentId) async {
+    final out = _object(
+      await _post('/api/agents/${Uri.encodeComponent(agentId)}/resume', const {}),
+    );
+    return [
+      for (final id in (out['tasks'] as List?) ?? const <Object?>[])
+        if (id is String) id,
+    ];
+  }
+
+  /// `GET /api/agents/:id/remove-preview` (3.8.9): who goes with it, tasks and turns that end.
+  Future<RemovePreview> removePreview(String agentId) async => RemovePreview.fromJson(
+    _object(await _get('/api/agents/${Uri.encodeComponent(agentId)}/remove-preview')),
+  );
+
+  /// `POST /api/agents/:id/remove` (3.8.9): out of the team with those below it; its history
+  /// stays and it can be restored. The ids removed.
+  Future<List<String>> removeAgent(String agentId, {String? reason}) async => [
+    for (final id
+        in (_object(
+                  // No reason of its own: the server writes one in the person's language.
+                  await _post('/api/agents/${Uri.encodeComponent(agentId)}/remove', {
+                    'reason': ?reason,
+                  }),
+                )['removed']
+                as List?) ??
+            const <Object?>[])
+      if (id is String) id,
+  ];
+
+  /// `GET /api/agents/removed` (3.8.9): the removed agents, the latest first.
+  Future<List<RemovedAgent>> removedAgents() async => [
+    for (final a in _array(await _get('/api/agents/removed'))) RemovedAgent.fromJson(a),
+  ];
+
+  /// `POST /api/agents/:id/restore` (3.8.9): back in the team with those removed with it.
+  Future<List<String>> restoreAgent(String agentId) async => [
+    for (final id
+        in (_object(
+                  await _post('/api/agents/${Uri.encodeComponent(agentId)}/restore', const {}),
+                )['restored']
+                as List?) ??
+            const <Object?>[])
+      if (id is String) id,
+  ];
 
   /// `GET /api/agents/:id/compaction-defaults`: what its summaries do when it sets nothing.
   Future<({double at, double keep})> compactionDefaults(String agentId) async {

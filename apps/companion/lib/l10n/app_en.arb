@@ -627,7 +627,7 @@
     }
   },
   "agentStop": "Stop",
-  "agentStopped": "Stopped: {name}",
+  "agentStopped": "Interrupted: {name}",
   "@agentStopped": {
     "placeholders": {
       "name": {
@@ -2523,8 +2523,8 @@
   "asKbScope_agent": "One agent",
   "asKbScope_project": "A project's agents",
   "asDanger": "Stopping it",
-  "asStopHelp": "Its conversations stay; it does no more work, nor do those under it.",
-  "asStopAsk": "Stop {name}? Its conversations stay; it does no more work.",
+  "asStopHelp": "A pause: its turns stop now, with those under it, and its open tasks wait. «Resume» brings it back and the tasks go on in the same conversation. To take it out of the team, use «Remove…».",
+  "asStopAsk": "Stop {name}? It is a pause: its turns stop now and its open tasks wait; «Resume» brings it back and they go on where they were.",
   "@asStopAsk": {
     "placeholders": {
       "name": {
@@ -3631,5 +3631,205 @@
         "type": "int"
       }
     }
-  }
+  },
+  "raMenu": "Remove…",
+  "raTitle": "Remove {name}?",
+  "@raTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "raBody": "{name} leaves the team: its turns stop and nobody gives it work any more. Nothing is deleted: its conversations and its history stay, readable in «Removed agents», where you can restore it.",
+  "@raBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "raWith": "Removed with it: {names}",
+  "@raWith": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "raTasks": "Open tasks that close («agent removed»): {count}",
+  "@raTasks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "raRunning": "Conversations at work that stop now: {count}",
+  "@raRunning": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "raYes": "Remove {name}",
+  "@raYes": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "raDone": "{name} removed: «Removed agents» brings it back.",
+  "@raDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "raFailed": "Not removed: {why}",
+  "@raFailed": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "raProtected": "{name} cannot be removed.",
+  "@raProtected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "raHelp": "It leaves the team with the agents below it; its history stays and you can restore it from «Removed agents».",
+  "raListTitle": "Removed agents",
+  "raListRow": "Read their conversations, bring them back",
+  "raListHelp": "Agents removed from the team, by you or by God. Nothing was deleted: their conversations stay readable, and «Restore» brings each back with those removed with it.",
+  "raNone": "No removed agents.",
+  "raWhen": "Removed {when} by {by}",
+  "@raWhen": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "by": {
+        "type": "String"
+      }
+    }
+  },
+  "raByYou": "you",
+  "raReason": "Why: {reason}",
+  "@raReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "raRestore": "Restore",
+  "raRestored": "{name} is back in the team.",
+  "@raRestored": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "raRestoreFailed": "Not restored: {why}",
+  "@raRestoreFailed": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "raConversations": "Conversations ({count})",
+  "@raConversations": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "raNoConversations": "No conversations.",
+  "raReadOnly": "{name} was removed: this conversation is read only.",
+  "@raReadOnly": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "raBadge": "Removed",
+  "paMenu": "Stop…",
+  "paTitle": "Stop {name}?",
+  "@paTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paYes": "Stop {name}",
+  "@paYes": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paDone": "{name} is paused: «Resume» brings it back.",
+  "@paDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paResume": "Resume",
+  "paResumeHelp": "{name} is stopped (paused). «Resume» brings it back with those stopped under it, and its open tasks go on in the same conversation.",
+  "@paResumeHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paResumed": "{name} works again.",
+  "@paResumed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paResumedTasks": "{name} works again: its open tasks go on.",
+  "@paResumedTasks": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paResumeFailed": "Not resumed: {why}",
+  "@paResumeFailed": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "paReadOnly": "{name} is stopped (paused): resume it to write to it.",
+  "@paReadOnly": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paBadge": "Paused"
 }

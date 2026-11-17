@@ -45,6 +45,7 @@ import {
   skillTools,
 } from "@redgiant/extensions";
 import {
+  type Actor,
   type AgentAnswer,
   type AgentRecord,
   AgentRegistry,
@@ -302,7 +303,7 @@ import {
   requestTool,
   switchedOffSection,
 } from "./request-tool.js";
-import { lastTurnAt, resumeNote, turnCut } from "./resume-work.js";
+import { lastTurnAt, pausedNote, resumeNote, turnCut } from "./resume-work.js";
 import { migrateRooms, Rooms } from "./rooms.js";
 import { migrateSaved, SavedStore } from "./saved.js";
 import { scriptTool } from "./script.js";
@@ -506,6 +507,36 @@ export class ProjectArchivedError extends Error {
     super(`The project "${projectId}" is archived: restore it to work in it`);
     this.name = "ProjectArchivedError";
   }
+}
+
+/**
+ * The agent of a conversation is stopped or removed (p3.8.9): its conversations are read, never
+ * written, until it is resumed (stopped) or restored (removed). 423, like an archived project.
+ */
+export class AgentInactiveError extends Error {
+  readonly code: "agent_stopped" | "agent_removed";
+  constructor(
+    readonly agentName: string,
+    status: "stopped" | "removed",
+  ) {
+    super(
+      status === "removed"
+        ? `${agentName} was removed from the team: restore it (Removed agents) to work with it again`
+        : `${agentName} is stopped: resume it to work with it again`,
+    );
+    this.code = status === "removed" ? "agent_removed" : "agent_stopped";
+    this.name = "AgentInactiveError";
+  }
+}
+
+/** What removing an agent would do (p3.8.9): the page's and the app's confirmation. */
+export interface RemovePreview {
+  agent: { id: string; name: string; kind: string };
+  with: { id: string; name: string; kind: string }[];
+  tasks: number;
+  running: number;
+  allowed: boolean;
+  why?: string;
 }
 
 /** Who is working in a project now: what archiving it would stop (the page asks first). */
@@ -1481,6 +1512,7 @@ export class RedGiantCore implements OrchestrationHost {
     await core.vault.open();
     await core.browserLinks.load();
     await core.registry.load();
+    await core.markChatAgents();
     // Archived projects (2026-11-09): their agents only read, from the first request on.
     for (const p of await core.projects.archived()) {
       core.registry.setProjectArchived(p.ownerId, p.id, true);
@@ -2334,7 +2366,8 @@ export class RedGiantCore implements OrchestrationHost {
   listAcpWorkers(ownerId: string): AcpWorkerInfo[] {
     return Object.entries(this.acpWorkers.all(ownerId)).flatMap(([agentId, c]) => {
       const a = this.registry.get(agentId);
-      if (!a || a.ownerId !== ownerId) return [];
+      // A removed one (p3.8.9) is in «Removed agents», not here.
+      if (!a || a.ownerId !== ownerId || a.status === "removed") return [];
       return [{ agentId, name: a.name, projectId: a.projectId, status: a.status, ...c }];
     });
   }
@@ -2374,7 +2407,7 @@ export class RedGiantCore implements OrchestrationHost {
       agentId: agent.id,
       name: agent.name,
       projectId: agent.projectId,
-      status: agent.status,
+      status: agent.status === "active" ? "active" : "stopped",
       ...c,
     };
   }
@@ -2393,7 +2426,13 @@ export class RedGiantCore implements OrchestrationHost {
         this.acpEngines.delete(id);
         this.live.delete(id);
       }
-    return { agentId, name: a.name, projectId: a.projectId, status: a.status, ...c };
+    return {
+      agentId,
+      name: a.name,
+      projectId: a.projectId,
+      status: a.status === "active" ? "active" : "stopped",
+      ...c,
+    };
   }
 
   /** Stops an external agent (its conversations and log stay, as for any stopped agent). */
@@ -5346,6 +5385,7 @@ export class RedGiantCore implements OrchestrationHost {
        ON CONFLICT (owner_id, key) DO UPDATE SET value = EXCLUDED.value`,
       [ownerId, JSON.stringify(agent.id)],
     );
+    this.registry.setChatAgent(ownerId, agent.id);
     return agent;
   }
 
@@ -5724,6 +5764,8 @@ export class RedGiantCore implements OrchestrationHost {
       throw new NotFoundError(`Session "${sessionId}" not found`);
     // An archived project's conversations are read from the log, never built (no sandbox).
     this.assertActive(ownerId, row.project_id);
+    // So are a stopped or removed agent's (p3.8.9).
+    this.assertAgentActive(row.agent_id);
     this.assertActive(ownerId, this.registry.get(row.agent_id)?.projectId);
     const model = typeof row.model === "string" ? (JSON.parse(row.model) as ModelSpec) : row.model;
     // Opened without a model (none was chosen yet): nothing in its log, it starts now.
@@ -5853,23 +5895,28 @@ export class RedGiantCore implements OrchestrationHost {
   }
 
   async listSessions(ownerId: string, agentId?: string) {
-    return this.o.db.query<{
-      id: string;
-      agent_id: string;
-      project_id: string | null;
-      created_at: Date;
-      title: string | null;
-      pinned: boolean;
-      archived: boolean;
-      last_at: Date | null;
-      replied_at: Date | null;
-      model: ModelSpec | string | null;
-      folder: string | null;
-      forked_from: string | null;
-    }>(
-      `SELECT id, agent_id, project_id, created_at, title, pinned, archived, last_at, replied_at, model, folder, forked_from FROM rg_sessions WHERE owner_id = $1${agentId ? " AND agent_id = $2" : ""} ORDER BY created_at`,
-      agentId ? [ownerId, agentId] : [ownerId],
-    );
+    return this.o.db
+      .query<{
+        id: string;
+        agent_id: string;
+        project_id: string | null;
+        created_at: Date;
+        title: string | null;
+        pinned: boolean;
+        archived: boolean;
+        last_at: Date | null;
+        replied_at: Date | null;
+        model: ModelSpec | string | null;
+        folder: string | null;
+        forked_from: string | null;
+      }>(
+        `SELECT id, agent_id, project_id, created_at, title, pinned, archived, last_at, replied_at, model, folder, forked_from FROM rg_sessions WHERE owner_id = $1${agentId ? " AND agent_id = $2" : ""} ORDER BY created_at`,
+        agentId ? [ownerId, agentId] : [ownerId],
+      )
+      .then((rows) =>
+        // A removed agent's conversations (p3.8.9) are read from «Removed agents», by its id.
+        agentId ? rows : rows.filter((r) => this.registry.get(r.agent_id)?.status !== "removed"),
+      );
   }
 
   /** The list's own data: a title, pinned, archived (the session's log is never changed). */
@@ -6146,7 +6193,13 @@ export class RedGiantCore implements OrchestrationHost {
 
   async history(ownerId: string, sessionId: string): Promise<Event[]> {
     await this.open(ownerId, sessionId).catch((err) => {
-      if (!(err instanceof NoModelError) && !(err instanceof ProjectArchivedError)) throw err;
+      // Read only: no model yet, an archived project, a stopped or removed agent (p3.8.9).
+      if (
+        !(err instanceof NoModelError) &&
+        !(err instanceof ProjectArchivedError) &&
+        !(err instanceof AgentInactiveError)
+      )
+        throw err;
     });
     // A conversation that goes on from another one shows the origin's part too (G36.23).
     return sessionLog(this.store, sessionId);
@@ -6229,6 +6282,13 @@ export class RedGiantCore implements OrchestrationHost {
   private liveGate(l: Live): void {
     this.assertActive(l.ownerId, l.projectId);
     this.assertActive(l.ownerId, this.registry.get(l.agentId)?.projectId);
+    this.assertAgentActive(l.agentId);
+  }
+
+  /** A stopped or removed agent (p3.8.9) takes no turn: its conversations are only read. */
+  private assertAgentActive(agentId: string): void {
+    const a = this.registry.get(agentId);
+    if (a && a.status !== "active") throw new AgentInactiveError(a.name, a.status);
   }
 
   /** Archived projects' folders per owner (p3.5.3), as written and as they really are. */
@@ -6645,6 +6705,190 @@ export class RedGiantCore implements OrchestrationHost {
     return { interrupted, paused, sandboxes };
   }
 
+  /**
+   * The person's Chat agent is never removed (p3.8.9): the registry marks it for the scope rules,
+   * at start and when it is made.
+   */
+  private async markChatAgents(): Promise<void> {
+    const rows = await this.o.db.query<{ owner_id: string; value: unknown }>(
+      "SELECT owner_id, value FROM rg_settings WHERE key = 'chat_agent'",
+    );
+    for (const r of rows) {
+      const id = settingValue(r.value);
+      if (typeof id === "string") this.registry.setChatAgent(r.owner_id, id);
+    }
+  }
+
+  /** Stops the turns of these agents now (p3.8.9); what waits in line is refused with `err`. */
+  private async haltAgents(ids: readonly string[], err: () => Error, drop: boolean) {
+    const set = new Set(ids);
+    const lives = [...this.live.values()].filter((l) => set.has(l.agentId));
+    const interrupted: string[] = [];
+    for (const l of lives) {
+      if (l.running) {
+        interrupted.push(l.id);
+        l.running.abort();
+      }
+      for (const q of l.queue?.splice(0) ?? []) q.reject(err());
+    }
+    await Promise.race([
+      Promise.all(lives.map((l) => l.turn)),
+      new Promise((ok) => setTimeout(ok, 30_000).unref?.()),
+    ]);
+    for (const l of lives) {
+      await this.commands.stopSession(l.id).catch(() => {});
+      // Built again from the log when it works again.
+      if (drop) this.live.delete(l.id);
+    }
+    return interrupted;
+  }
+
+  /**
+   * Stops an agent and everything below it (p3.8.9: a pause, not an end). Their turns stop now
+   * as an interruption would; their open tasks stay open, waiting, and go on in the same
+   * conversation when `resumeAgent` brings them back. Nothing is closed as abandoned.
+   */
+  async stopAgent(
+    actor: Actor,
+    id: string,
+    reason: string,
+  ): Promise<{ stopped: string[]; interrupted: string[]; waiting: number }> {
+    const stopped = await this.registry.stop(actor, id, reason);
+    const interrupted = await this.haltAgents(
+      stopped,
+      () => new AgentInactiveError(this.registry.get(id)?.name ?? id, "stopped"),
+      true,
+    );
+    const waiting = stopped.reduce((n, a) => n + this.tasks.stillOpen(a).length, 0);
+    // Every page and app hears of it through the registry's own `lists.changed` (agents).
+    return { stopped, interrupted, waiting };
+  }
+
+  /**
+   * Resumes a stopped agent and the agents stopped below it (p3.8.9). Each open task goes on by
+   * itself in its own conversation, told it was paused (`pausedNote`): nothing is made again.
+   */
+  async resumeAgent(
+    actor: Actor,
+    id: string,
+    by: string,
+  ): Promise<{ resumed: string[]; tasks: string[]; done: Promise<void> }> {
+    const { resumed } = await this.registry.resume(actor, id, by);
+    const ids = resumed.map((a) => a.id);
+    const picked: Task[] = [];
+    for (const agentId of ids)
+      for (const t of this.tasks.stillOpen(agentId)) {
+        if (picked.some((p) => p.sessionId === t.sessionId)) continue;
+        if (this.isRunning(t.sessionId)) continue;
+        if (this.registry.isProjectArchived(t.ownerId, t.projectId)) continue;
+        picked.push(t);
+      }
+    const ownerId = resumed[0]?.ownerId;
+    if (ownerId) this.listsChanged(ownerId, "agents");
+    const done = Promise.all(
+      picked.map(async (t) => {
+        try {
+          const { done } = await this.send(t.ownerId, t.sessionId, pausedNote(t), {
+            from: "redgiant",
+            queue: true,
+          });
+          await done;
+        } catch (err) {
+          console.warn(`resume ${t.sessionId}: ${(err as Error).message}`);
+        }
+      }),
+    ).then(() => {});
+    return { resumed: ids, tasks: picked.map((t) => t.id), done };
+  }
+
+  /** What removing an agent would take with it (p3.8.9): nothing changes. */
+  removePreview(ownerId: string, id: string): RemovePreview {
+    const a = this.registry.get(id);
+    if (!a || a.ownerId !== ownerId || a.status === "removed")
+      throw new NotFoundError(`Agent "${id}" not found`);
+    const allowed = can({ type: "human", ownerId }, "remove", a, this.registry.resolve);
+    const group = this.registry.subtree(id);
+    const ids = new Set(group.map((g) => g.id));
+    const short = (x: AgentRecord) => ({ id: x.id, name: x.name, kind: x.kind });
+    return {
+      agent: short(a),
+      with: group.filter((g) => g.id !== id).map(short),
+      tasks: [...ids].reduce((n, x) => n + this.tasks.stillOpen(x).length, 0),
+      running: [...this.live.values()].filter((l) => ids.has(l.agentId) && l.running).length,
+      allowed,
+      ...(!allowed && { why: "God, Demi-God and the Chat are never removed" }),
+    };
+  }
+
+  /**
+   * Removes an agent from the team (p3.8.9) with everything below it: from the first moment they
+   * take no turn (the registry's mark), their open tasks close («agent removed», never handed to
+   * the backup model, the report going back to who handed them over), their turns stop and they
+   * leave every list. Nothing of their history goes; `restoreAgent` brings them back.
+   */
+  async removeAgent(
+    actor: Actor,
+    id: string,
+    reason: string,
+    by: string,
+  ): Promise<{ removed: string[]; tasks: string[]; interrupted: string[] }> {
+    const { removed } = await this.registry.remove(actor, id, reason, by);
+    const ids = removed.map((a) => a.id);
+    const closed: Task[] = [];
+    for (const agentId of ids)
+      for (const t of this.tasks.stillOpen(agentId)) {
+        await this.tasks.close(
+          t,
+          { outcome: "abandoned", reason: `agent removed: ${reason}` },
+          { escalate: false },
+        );
+        closed.push(t);
+      }
+    const name = removed[0]?.name ?? id;
+    const interrupted = await this.haltAgents(
+      ids,
+      () => new AgentInactiveError(name, "removed"),
+      true,
+    );
+    // The reports of the tasks closed go back to who handed them over, when still in the team.
+    for (const sid of new Set(closed.map((t) => t.sessionId)))
+      await this.reportTasks(sid).catch(() => {});
+    const ownerId = removed[0]?.ownerId;
+    // Out of the team and its conversations out of the lists, on every page and app.
+    if (ownerId) this.listsChanged(ownerId, "agents", "sessions");
+    return { removed: ids, tasks: closed.map((t) => t.id), interrupted };
+  }
+
+  /** A removed agent back in the team with those removed with it (p3.8.9), as they were. */
+  async restoreAgent(actor: Actor, id: string, by: string): Promise<{ restored: string[] }> {
+    const { restored } = await this.registry.restore(actor, id, by);
+    const ids = restored.map((a) => a.id);
+    const ownerId = restored[0]?.ownerId;
+    if (ownerId) this.listsChanged(ownerId, "agents", "sessions");
+    return { restored: ids };
+  }
+
+  /** The removed agents of an owner (p3.8.9), one per removal (its root), newest first. */
+  async removedAgents(ownerId: string) {
+    const all = this.registry.list({ ownerId, removed: "only" });
+    const counts = new Map<string, number>();
+    const rows = await this.o.db.query<{ agent_id: string; n: number | string }>(
+      "SELECT agent_id, count(*) AS n FROM rg_sessions WHERE owner_id = $1 GROUP BY agent_id",
+      [ownerId],
+    );
+    for (const r of rows) counts.set(r.agent_id, Number(r.n));
+    return all
+      .filter((a) => a.removed?.root === a.id)
+      .sort((a, b) => (b.removed?.at ?? "").localeCompare(a.removed?.at ?? ""))
+      .map((a) => ({
+        agent: a,
+        with: all
+          .filter((x) => x.id !== a.id && x.removed?.root === a.id)
+          .map((x) => ({ id: x.id, name: x.name, kind: x.kind })),
+        sessions: counts.get(a.id) ?? 0,
+      }));
+  }
+
   /** An archived project back exactly as it was: its automations as they were, its sandboxes. */
   async restoreProject(
     ownerId: string,
@@ -7009,10 +7253,13 @@ export class RedGiantCore implements OrchestrationHost {
     const own = [...this.tasksIn(sessionId)];
     // Stopped by an archive (2026-11-09): its open tasks stay open, as they were.
     const live = this.live.get(sessionId);
+    // Stopped (p3.8.9: a pause) or removed (its tasks are closed by the removal): not given up here.
+    const agentNow = live ? this.registry.get(live.agentId) : undefined;
     const archived =
       live !== undefined &&
       (this.registry.isProjectArchived(live.ownerId, live.projectId) ||
-        this.registry.get(live.agentId)?.archived === true);
+        agentNow?.archived === true ||
+        (agentNow !== undefined && agentNow.status !== "active"));
     // Cut by the server stopping, or a resume that will try again (3.8.9): the task stays open.
     if (
       !archived &&
@@ -7371,8 +7618,14 @@ export class RedGiantCore implements OrchestrationHost {
     try {
       l = await this.open(ownerId, sessionId);
     } catch (err) {
-      // No model yet, or an archived project (read only): the log, and live again once it runs.
-      if (!(err instanceof NoModelError) && !(err instanceof ProjectArchivedError)) throw err;
+      // No model yet, an archived project or an agent stopped or removed (read only): the log,
+      // and live again once it runs.
+      if (
+        !(err instanceof NoModelError) &&
+        !(err instanceof ProjectArchivedError) &&
+        !(err instanceof AgentInactiveError)
+      )
+        throw err;
       // No model yet: what was said, then everything once a model is chosen and it runs.
       l = undefined;
     }

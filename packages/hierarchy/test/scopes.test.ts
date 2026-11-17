@@ -56,6 +56,8 @@ const tree = [
   { ...n("S9", "subagent", "A9", "p9"), archived: true },
   { ...n("I9", "inspector", "G", "p9"), archived: true },
   n("A7", "agent", "O2", "p2", "me", null, ["p9"]),
+  // The Chat (p3.8.9): an assistant under God that nobody removes.
+  { ...n("C", "assistant", "G", null), chat: true },
 ];
 const byId = new Map(tree.map((a) => [a.id, a]));
 const resolve = (id: string) => byId.get(id);
@@ -86,6 +88,15 @@ O2 message   A7 yes | O2 stop     A7 yes | O9 message A7 no  | O9 read    A7 yes
 G  model     O1 yes | G  model     A1 yes | G  model    P1 yes | G  model   S1 yes | G  model G no | G model X no | G model A9 no
 O1 model     A1 yes | O1 model     A4 yes | O1 model   S1 yes | O1 model  O1 no  | O1 model A3 no | O1 model A6 no | O1 model P3 no | O2 model A6 yes
 A1 model     S1 no  | A1 model     A1 no  | S1 model   S1 no  | I1 model  A1 no  | D model G no | P1 model P2 no | P1 model P1 no | O9 model A9 no
+G  remove    A1 yes | G  remove    O1 yes | G  remove   S1 yes | G  remove  I1 yes | G  remove P1 yes | G remove P3 yes | G remove A6 yes
+G  remove    G  no  | G  remove    D  no  | G  remove   C  no  | G  remove  X  no  | G  remove A9 no  | G remove O9 no
+O1 remove    A1 yes | O1 remove    S1 yes | O1 remove   A4 yes | O1 remove S4 yes | O1 remove O1 no  | O1 remove I1 no | O1 remove I2 no
+O1 remove    A3 no  | O1 remove    A6 no  | O1 remove   P3 no  | O1 remove G  no  | O1 remove C no   | O2 remove A6 yes | O2 remove A1 no
+A1 remove    S1 no  | A1 remove    A1 no  | A1 remove   A2 no  | S1 remove S1 no  | I1 remove A1 no  | D remove A1 no | D remove D no
+P1 remove    P2 no  | P1 remove    C  no  | C  remove   C  no  | C  remove P1 no  | O9 remove A9 no  | A9 remove S9 no
+G  resume    O1 yes | G  resume    A1 yes | G  resume   P1 yes | G  resume  I1 yes | G  resume C yes  | G resume G no | G resume X no | G resume A9 no
+O1 resume    A1 yes | O1 resume    A4 yes | O1 resume   O1 no  | O1 resume A3 no  | O1 resume A6 no  | O2 resume A6 yes | O1 resume P3 no
+A1 resume    S1 no  | A1 resume    A1 no  | S1 resume   S1 no  | I1 resume A1 no  | D resume A1 no   | P1 resume P2 no | O9 resume A9 no
 `
   .trim()
   .split(/\s*[|\n]\s*/)
@@ -125,6 +136,10 @@ describe("scope table", () => {
       join: false,
       tools: false,
       model: false,
+      // Removing changes nothing of the project: it is a stop that also hides (p3.8.9).
+      remove: true,
+      // Resuming would work in it: the project comes back first.
+      resume: false,
     };
     for (const id of ["O9", "A9", "S9", "I9"])
       for (const [action, ok] of Object.entries(want))
@@ -132,6 +147,21 @@ describe("scope table", () => {
           can(me, action as Action, byId.get(id) as AgentNode, resolve),
           `${action} ${id}`,
         ).toBe(ok);
+  });
+
+  it("lets the human remove (and restore) any of their agents but God, Demi-God and the Chat", () => {
+    const me = { type: "human" as const, ownerId: "me" };
+    for (const id of ["O1", "A1", "S1", "I1", "P1", "P3", "A6"])
+      expect(can(me, "remove", byId.get(id) as AgentNode, resolve), id).toBe(true);
+    for (const id of ["G", "D", "C", "X"])
+      expect(can(me, "remove", byId.get(id) as AgentNode, resolve), id).toBe(false);
+  });
+
+  it("lets the human resume any of their stopped agents (p3.8.9), even the Chat", () => {
+    const me = { type: "human" as const, ownerId: "me" };
+    for (const id of ["O1", "A1", "I1", "P1", "C", "D"])
+      expect(can(me, "resume", byId.get(id) as AgentNode, resolve), id).toBe(true);
+    expect(can(me, "resume", byId.get("X") as AgentNode, resolve)).toBe(false);
   });
 
   it("lets the human do everything on their own agents only", () => {

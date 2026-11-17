@@ -15,6 +15,8 @@ import '../theme/colors.dart';
 import 'dialogs.dart';
 import 'icons.dart';
 import 'model_sheet.dart';
+import 'pause_agent.dart';
+import 'remove_agent.dart';
 
 /// Right click: the context menu at the pointer; long press: the sheet from below.
 class AgentPress extends StatelessWidget {
@@ -49,7 +51,20 @@ class AgentPress extends StatelessWidget {
   }
 }
 
-enum _Act { open, list, fresh, model, instructions, mascot, favourite, stopTurn, settings }
+enum _Act {
+  open,
+  list,
+  fresh,
+  model,
+  instructions,
+  mascot,
+  favourite,
+  stopTurn,
+  pause,
+  resume,
+  remove,
+  settings,
+}
 
 /// The computer's context menu for [a], at [at] (global coordinates).
 Future<void> showAgentMenu(BuildContext context, Agent a, Offset at, {VoidCallback? opened}) async {
@@ -97,6 +112,10 @@ Future<void> showAgentMenu(BuildContext context, Agent a, Offset at, {VoidCallba
       if (a.kind != AgentKind.god && a.active) item(_Act.mascot, RgIcons.refresh, l.mascotChange),
       item(_Act.favourite, RgIcons.star, fav ? l.favouriteRemove : l.favouriteAdd),
       if (running) item(_Act.stopTurn, RgIcons.stop, l.asMenuStopTurn, color: c.err),
+      // 3.8.9: «Stop…» is a pause («Resume» brings it back); «Remove…» takes it out of the team.
+      if (canResumeAgent(a)) item(_Act.resume, RgIcons.play, l.paResume),
+      if (canPauseAgent(a)) item(_Act.pause, RgIcons.pause, l.paMenu, color: c.err),
+      if (canRemoveAgent(app, a)) item(_Act.remove, RgIcons.trash, l.raMenu, color: c.err),
       const PopupMenuDivider(height: 8),
       item(_Act.settings, RgIcons.settings, l.asOpen),
     ],
@@ -145,6 +164,12 @@ Future<void> _run(BuildContext context, Agent a, _Act act) async {
       messenger?.showSnackBar(
         SnackBar(content: Text(ok ? l.agentStopped(a.name) : l.agentStopFailed)),
       );
+    case _Act.pause:
+      await confirmPauseAgent(context, a);
+    case _Act.resume:
+      await resumeAgentNow(context, a);
+    case _Act.remove:
+      await confirmRemoveAgent(context, a);
     case _Act.settings:
       await openAgentSettings(context, a);
   }

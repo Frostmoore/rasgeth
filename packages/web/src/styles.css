@@ -739,6 +739,90 @@ button.bar-settings {
 .chat.read-only > .composer {
   display: none;
 }
+/* --- removed agents (p3.8.9): the window, the section with «Restore», the chat's line --- */
+.ra-ask .ra-with {
+  display: block;
+  color: var(--warn-text);
+}
+.ra-ask .ra-with ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+.ra-section {
+  margin-top: 28px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.ra-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ra-item {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.ra-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ra-main {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+.ra-name {
+  color: var(--text);
+}
+.ra-when {
+  color: var(--text);
+}
+.ra-acts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.ra-sessions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+}
+.ra-session {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.ra-session:hover {
+  background: color-mix(in srgb, var(--accent) 8%, var(--panel));
+}
+.ra-session-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ra-none,
+.ra-empty {
+  margin: 4px 0;
+}
 .pa-head {
   display: flex;
   align-items: center;

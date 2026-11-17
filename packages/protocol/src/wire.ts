@@ -293,7 +293,8 @@ export const ServerMessage = z.discriminatedUnion("type", [
   /**
    * To every page and app of the owner (p3.8.9): their agents, projects (and subprojects) or the
    * rows of their conversations changed, wherever it happened (another page, another device, God,
-   * an automation). Clients read those lists again; nothing else is carried.
+   * an automation), agents removed, restored, stopped or resumed included. Clients read those
+   * lists again (the page and the app also «Removed agents» with `agents`); nothing else is carried.
    */
   z.object({ type: z.literal("lists.changed"), lists: z.array(ListName).min(1) }),
   /** Sent after a follow, once the stored history has been replayed. */

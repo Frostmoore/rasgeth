@@ -926,6 +926,30 @@ function setProjects(all: Project[]): void {
   archivedProjects.value = all.filter((p) => p.archivedAt);
 }
 export const agents = signal<Agent[]>([]);
+/**
+ * The removed agents (p3.8.9), one entry per removal (those removed with it in `with`): their
+ * history stays readable, «Restore» brings them back.
+ */
+export const removedAgents = signal<import("./api.js").RemovedAgent[]>([]);
+export async function refreshRemovedAgents(): Promise<void> {
+  const list = await getApi().removedAgents();
+  removedAgents.value = Array.isArray(list) ? list : [];
+}
+/** The removal an agent went with (it, or the one above it removed with it), if it is removed. */
+export function removalOf(agentId: string): import("./api.js").RemovedAgent | undefined {
+  return removedAgents.value.find(
+    (r) => r.id === agentId || r.removed.with.some((w) => w.id === agentId),
+  );
+}
+/** Agents, conversations and removed agents again (after a removal or a restore). */
+export async function refreshTeam(): Promise<void> {
+  const [list] = await Promise.all([
+    getApi().agents(),
+    refreshConversations().catch(() => {}),
+    refreshRemovedAgents().catch(() => {}),
+  ]);
+  agents.value = list;
+}
 
 /**
  * A project's orchestrator (3.8.9): the active one. One replaced after a stop stays in the list,
@@ -1028,6 +1052,7 @@ export async function refresh(): Promise<void> {
   // trips before the page showed (seconds on a slow phone network).
   await Promise.all([
     refreshConversations().catch(() => {}),
+    refreshRemovedAgents().catch(() => {}),
     a
       .chatAgentIdOf()
       .catch(() => ({ id: null }))
@@ -1649,13 +1674,16 @@ function refreshSoon(withAgents = false): void {
     const alsoAgents = refreshAgentsToo;
     refreshAgentsToo = false;
     void refreshConversations().catch(() => {});
-    if (alsoAgents)
+    if (alsoAgents) {
       void getApi()
         .agents()
         .then((list) => {
           agents.value = list;
         })
         .catch(() => {});
+      // Removed, restored, stopped or resumed elsewhere (p3.8.9): «Removed agents» follows too.
+      void refreshRemovedAgents().catch(() => {});
+    }
   }, 250);
 }
 

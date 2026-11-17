@@ -120,6 +120,28 @@ void main() {
     await until(() => pc.live.sessions.any((s) => s.id == sid), what: 'its conversation');
   });
 
+  test('removed, restored, stopped and resumed on another device: this one follows', () async {
+    // One message for all of it (`lists.changed`, no `agents.changed` any more).
+    final phone = await device(DevicePlatform.android);
+    final pc = await device(DevicePlatform.windows);
+    expect(pc.agents.any((a) => a.id == 'a3'), isTrue);
+    await phone.client!.removeAgent('a3', reason: 'not needed');
+    await until(() => !pc.agents.any((a) => a.id == 'a3'), what: 'removed on the computer');
+    expect((await pc.removedAgents()).any((r) => r.agent.id == 'a3'), isTrue);
+    await phone.client!.restoreAgent('a3');
+    await until(() => pc.agents.any((a) => a.id == 'a3'), what: 'back on the computer');
+    await phone.client!.stopAgentForGood('a3');
+    await until(
+      () => pc.agents.any((a) => a.id == 'a3' && !a.active),
+      what: 'stopped on the computer',
+    );
+    await phone.client!.resumeAgent('a3');
+    await until(
+      () => pc.agents.any((a) => a.id == 'a3' && a.active),
+      what: 'resumed on the computer',
+    );
+  });
+
   test('a conversation of an agent the app does not know reads the team again', () async {
     final pc = await device(DevicePlatform.windows);
     // An older server: no `lists.changed`, only the activity of a conversation of a new agent.

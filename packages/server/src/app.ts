@@ -17,7 +17,7 @@ import {
   SkillExistsError,
 } from "@redgiant/extensions";
 import { teamsAppPackage } from "@redgiant/gateway";
-import { HierarchyError } from "@redgiant/hierarchy";
+import { can, HierarchyError } from "@redgiant/hierarchy";
 import { mascotSvg } from "@redgiant/mascot";
 import {
   AgentKind,
@@ -74,6 +74,7 @@ import { CodeChangeError } from "./code.js";
 import { codeRoutes } from "./code-routes.js";
 import { convertRoutes } from "./convert-routes.js";
 import {
+  AgentInactiveError,
   BadRequestError,
   NoModelError,
   NotFoundError,
@@ -178,7 +179,8 @@ const Agent = z
     mascotSeed: z.string().optional(),
     /** Its mascot (G40.2): what the app paints, the same face everywhere. */
     mascot: MascotSpec.optional(),
-    status: z.enum(["active", "stopped"]),
+    /** "removed" only in `GET /api/agents/removed` (p3.8.9): never in the team's list. */
+    status: z.enum(["active", "stopped", "removed"]),
   })
   .openapi("Agent");
 const NewAgent = z
@@ -1002,6 +1004,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     // An archived project (2026-11-09): read only until the person restores it.
     if (err instanceof ProjectArchivedError)
       return c.json({ error: err.message, code: err.code }, 423);
+    // A stopped or removed agent (p3.8.9): its conversations read only until it is back.
+    if (err instanceof AgentInactiveError)
+      return c.json({ error: err.message, code: err.code }, 423);
     if (err instanceof SessionBusyError) return c.json({ error: err.message }, 409);
     if (err instanceof NoModelError) return c.json({ error: err.message, code: err.code }, 400);
     if (
@@ -1396,10 +1401,82 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     const id = c.req.valid("param").id;
     if (core.registry.get(id)?.ownerId !== owner(c))
       return c.json({ error: "Agent not found" }, 404);
-    return c.json(
-      { stopped: await core.registry.stop(human(c), id, c.req.valid("json").reason) },
+    // A pause (p3.8.9): its turns stop, its open tasks wait for «Resume».
+    const r = await core.stopAgent(human(c), id, c.req.valid("json").reason);
+    return c.json({ stopped: r.stopped, waiting: r.waiting }, 200);
+  });
+
+  // Stopping is a pause, removing takes an agent out of the team (p3.8.9); nothing is deleted.
+  const mine = (c: { req: { param: (k: "id") => string } }, ownerId: string) => {
+    const a = core.registry.get(c.req.param("id"));
+    return a && a.ownerId === ownerId ? a : undefined;
+  };
+  /** A refusal of the scope rules or of the tree: 403 when nobody may, else 409. */
+  const refused = (err: unknown, status: 403 | 409) => {
+    if (err instanceof HierarchyError) return { error: err.message, status };
+    throw err;
+  };
+  app.post("/api/agents/:id/resume", async (c) => {
+    const a = mine(c, owner(c));
+    if (!a) return c.json({ error: "Agent not found" }, 404);
+    try {
+      const r = await core.resumeAgent(human(c), a.id, "person");
+      return c.json({ resumed: r.resumed, tasks: r.tasks }, 200);
+    } catch (err) {
+      const r = refused(err, 409);
+      return c.json({ error: r.error }, r.status);
+    }
+  });
+  app.get("/api/agents/removed", async (c) =>
+    c.json(
+      (await core.removedAgents(owner(c))).map(({ agent, with: others, sessions }) => {
+        const { removed, ...rest } = agentOut(agent, core.registry);
+        return {
+          ...rest,
+          removed: {
+            at: removed?.at ?? "",
+            by: removed?.by ?? "person",
+            reason: removed?.reason ?? "",
+            with: others,
+            sessions,
+          },
+        };
+      }),
       200,
-    );
+    ),
+  );
+  app.get("/api/agents/:id/remove-preview", (c) => {
+    const a = mine(c, owner(c));
+    if (!a || a.status === "removed") return c.json({ error: "Agent not found" }, 404);
+    return c.json(core.removePreview(owner(c), a.id), 200);
+  });
+  app.post("/api/agents/:id/remove", async (c) => {
+    const a = mine(c, owner(c));
+    if (!a) return c.json({ error: "Agent not found" }, 404);
+    const body = (await c.req.json().catch(() => ({}))) as { reason?: unknown };
+    const reason =
+      typeof body.reason === "string" && body.reason.trim()
+        ? body.reason.trim().slice(0, 500)
+        : "removed by the person";
+    if (!can(human(c), "remove", a, core.registry.resolve))
+      return c.json({ error: `${a.name} is never removed` }, 403);
+    try {
+      const r = await core.removeAgent(human(c), a.id, reason, "person");
+      return c.json({ removed: r.removed, tasks: r.tasks }, 200);
+    } catch (err) {
+      const r = refused(err, 409);
+      return c.json({ error: r.error }, r.status);
+    }
+  });
+  app.post("/api/agents/:id/restore", async (c) => {
+    const a = mine(c, owner(c));
+    if (!a) return c.json({ error: "Agent not found" }, 404);
+    try {
+      return c.json(await core.restoreAgent(human(c), a.id, "person"), 200);
+    } catch (err) {
+      const r = refused(err, 409);
+      return c.json({ error: r.error }, r.status);
+    }
   });
 
   app.openapi(routes.listSessions, async (c) => {

@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import type { Hooks, SendResult, Tool, ToolContext } from "@redgiant/agent";
 import type { EventStore } from "@redgiant/events";
 import {
+  type Actor,
   type AgentAnswer,
   type AgentRecord,
   type AgentRegistry,
@@ -36,6 +37,27 @@ import type { Rooms } from "./rooms.js";
 /** What the orchestration tools need from the core. */
 export interface OrchestrationHost {
   registry: AgentRegistry;
+  /**
+   * Stopping (a pause), resuming, removing and restoring agents (p3.8.9), with their turns and
+   * tasks: the core's. Without them only the registry changes (tests of the tools alone).
+   */
+  stopAgent?(
+    actor: Actor,
+    id: string,
+    reason: string,
+  ): Promise<{ stopped: string[]; waiting: number }>;
+  resumeAgent?(
+    actor: Actor,
+    id: string,
+    by: string,
+  ): Promise<{ resumed: string[]; tasks: string[] }>;
+  removeAgent?(
+    actor: Actor,
+    id: string,
+    reason: string,
+    by: string,
+  ): Promise<{ removed: string[]; tasks: string[] }>;
+  restoreAgent?(actor: Actor, id: string, by: string): Promise<{ restored: string[] }>;
   projects: ProjectStore;
   store: EventStore;
   broker: PermissionBroker;
@@ -248,13 +270,20 @@ export class TaskTracker {
       | { outcome: "verified" }
       | { outcome: "not_testable"; justification: string }
       | { outcome: "abandoned"; reason: string },
+    /** false: never handed to the backup model (its agent was removed, p3.8.9). */
+    o: { escalate?: boolean } = {},
   ): Promise<void> {
     if (task.closing) return task.closing;
     task.outcome = how.outcome;
     task.closing = (async () => {
       await this.log(task, { type: "task.closed", payload: { taskId: task.id, ...how } });
       // Once only: a task the backup model gives up on too is reported as abandoned.
-      if (how.outcome === "abandoned" && !task.escalatedFrom && this.escalate) {
+      if (
+        how.outcome === "abandoned" &&
+        !task.escalatedFrom &&
+        this.escalate &&
+        o.escalate !== false
+      ) {
         // Its report waits for the backup model's attempt.
         task.reported = true;
         const next = await this.escalate(task, how.reason).catch(() => undefined);
@@ -362,6 +391,8 @@ export function orchestrationTools(
     if (!t || t.ownerId !== self.ownerId) throw new Error(`No agent "${id}"`);
     return t;
   };
+  const names = (ids: string[]) =>
+    ids.map((id) => `${host.registry.get(id)?.name ?? id} (${id})`).join(", ");
 
   /**
    * Hands a task over and returns at once (G24.14f): the agent works on it in its own
@@ -582,13 +613,21 @@ export function orchestrationTools(
     tools.push({
       def: {
         name: "list_agents",
-        description: "List the agents you can see, with id, kind, name, role, project and status.",
-        inputSchema: { type: "object", properties: { project_id: { type: "string" } } },
+        description:
+          "List the agents you can see, with id, kind, name, role, project and status (stopped: paused, resume_agent brings it back). removed true: the agents removed from the team instead.",
+        inputSchema: {
+          type: "object",
+          properties: { project_id: { type: "string" }, removed: { type: "boolean" } },
+        },
       },
-      schema: z.object({ project_id: z.string().optional() }),
-      async run({ project_id }) {
+      schema: z.object({ project_id: z.string().optional(), removed: z.boolean().optional() }),
+      async run({ project_id, removed }) {
         const visible = host.registry
-          .list({ ownerId: self.ownerId, ...(project_id && { projectId: project_id }) })
+          .list({
+            ownerId: self.ownerId,
+            ...(project_id && { projectId: project_id }),
+            ...(removed && { removed: "only" as const }),
+          })
           .filter((a) => a.id !== self.id && can(me, "read", a, host.registry.resolve));
         if (visible.length === 0) return "No agents.";
         return visible
@@ -865,6 +904,24 @@ export function orchestrationTools(
           );
         if (twin)
           return `${twin.name} (${twin.id}) already exists under you in project ${twin.projectId ?? "-"}: nothing was created again. Give it work with delegate.`;
+        // A project's lead or inspector that is only stopped (p3.8.9, the GAIA collaudo: three
+        // orchestrators in a day) is resumed, never replaced in silence.
+        if (i.kind === "orchestrator" || i.kind === "inspector") {
+          const paused = host.registry
+            .list({ ownerId: self.ownerId })
+            .filter((x) => x.projectId === (i.project_id ?? self.projectId ?? null))
+            .find(
+              (x) =>
+                x.kind === i.kind &&
+                x.status === "stopped" &&
+                (x.subprojectId ?? null) === (i.subproject_id ?? null),
+            );
+          if (paused)
+            return {
+              content: `${paused.name} (${paused.id}) is this project's ${i.kind}, stopped (paused): resume it with resume_agent and its open tasks go on. Nothing was created. Only if it must be replaced, remove_agent it first.`,
+              isError: true,
+            };
+        }
         const problem = i.model && (await host.modelProblem?.(i.model));
         if (problem) return { content: `${problem} The agent was not created.`, isError: true };
         const a = await host.registry.create(me, {
@@ -887,7 +944,24 @@ export function orchestrationTools(
           if (r.ignored.length)
             tools += ` Not switched off (unknown or essential): ${r.ignored.join(", ")}.`;
         }
-        return `Created ${a.kind} ${a.name} (${a.id}) in project ${a.projectId ?? "-"}.${tools}`;
+        // A namesake out of work (p3.8.9) is never brought back in silence: a new agent is made,
+        // and the creator learns the old one is there to resume or restore.
+        const namesake = host.registry.list({ ownerId: self.ownerId, removed: true }).find(
+          (x) =>
+            x.id !== a.id &&
+            x.status !== "active" &&
+            x.kind === a.kind &&
+            x.projectId === a.projectId &&
+            // A project has one lead (and one inspector): any name; the others by name.
+            ((x.kind === "orchestrator" || x.kind === "inspector") &&
+            (x.subprojectId ?? null) === (a.subprojectId ?? null)
+              ? true
+              : x.name.trim().toLowerCase() === a.name.trim().toLowerCase()),
+        );
+        const note = namesake
+          ? ` Note: ${namesake.name} (${namesake.id}) is ${namesake.status} — ${namesake.status === "removed" ? "restore_agent" : "resume_agent"} brings that one back with its history; if it was what you needed, remove_agent the new one.`
+          : "";
+        return `Created ${a.kind} ${a.name} (${a.id}) in project ${a.projectId ?? "-"}.${tools}${note}`;
       },
     } as Tool);
 
@@ -1113,7 +1187,7 @@ export function orchestrationTools(
         def: {
           name: "stop_agent",
           description:
-            "Stop for good an agent you manage, and everything below it: a stopped agent takes no more tasks. Not a way to restart one: after a restart RedGiant resumes the work that was cut by itself, and delegate gives an agent new work at any time.",
+            "Pause an agent you manage, and everything below it: its turns stop now and it takes no work until resume_agent brings it back; its open tasks wait and go on in the same conversation when it is resumed. Not a way to restart one: after a restart RedGiant resumes the work that was cut by itself, and delegate gives an agent new work at any time.",
           inputSchema: {
             type: "object",
             properties: { agent_id: { type: "string" }, reason: { type: "string" } },
@@ -1122,8 +1196,70 @@ export function orchestrationTools(
         },
         schema: z.object({ agent_id: z.string(), reason: z.string().min(1) }),
         async run({ agent_id, reason }) {
-          const stopped = await host.registry.stop(me, target(agent_id).id, reason);
-          return `Stopped: ${stopped.join(", ")}`;
+          const id = target(agent_id).id;
+          if (!host.stopAgent) {
+            const stopped = await host.registry.stop(me, id, reason);
+            return `Stopped: ${stopped.join(", ")}`;
+          }
+          const r = await host.stopAgent(me, id, reason);
+          return `Stopped (paused): ${names(r.stopped)}.${r.waiting ? ` ${r.waiting} open task(s) wait for it.` : ""} resume_agent brings it back.`;
+        },
+      } as Tool,
+      {
+        def: {
+          name: "resume_agent",
+          description:
+            "Bring back a stopped agent you manage (and the agents stopped below it): its open tasks go on by themselves in the same conversations. When an agent you need is stopped, resume it: never create a new one in its place.",
+          inputSchema: {
+            type: "object",
+            properties: { agent_id: { type: "string" } },
+            required: ["agent_id"],
+          },
+        },
+        schema: z.object({ agent_id: z.string() }),
+        async run({ agent_id }) {
+          const a = target(agent_id);
+          if (!host.resumeAgent) throw new Error("Resuming agents is not available here");
+          const r = await host.resumeAgent(me, a.id, self.name);
+          return `Resumed: ${names(r.resumed)}.${r.tasks.length ? ` Its open task(s) go on: ${r.tasks.join(", ")}.` : " No open task: delegate gives it work."}`;
+        },
+      } as Tool,
+      {
+        def: {
+          name: "remove_agent",
+          description:
+            "Remove an agent you manage from the team, with everything below it: it leaves every list, its turns stop and its open tasks close as «agent removed». Nothing of its history is deleted, and the user (or restore_agent) can bring it back. To pause an agent use stop_agent instead. God, Demi-God and the Chat are never removed. The user approves it.",
+          inputSchema: {
+            type: "object",
+            properties: { agent_id: { type: "string" }, reason: { type: "string" } },
+            required: ["agent_id", "reason"],
+          },
+        },
+        schema: z.object({ agent_id: z.string(), reason: z.string().min(1) }),
+        async run({ agent_id, reason }) {
+          const a = target(agent_id);
+          if (!host.removeAgent) throw new Error("Removing agents is not available here");
+          const r = await host.removeAgent(me, a.id, reason, self.name);
+          return `Removed from the team: ${names(r.removed)}.${r.tasks.length ? ` Closed as «agent removed»: ${r.tasks.join(", ")}.` : ""} Its history stays; restore_agent brings it back.`;
+        },
+      } as Tool,
+      {
+        def: {
+          name: "restore_agent",
+          description:
+            "Bring a removed agent back into the team, with the agents removed together with it, as they were. list_agents with removed true shows them.",
+          inputSchema: {
+            type: "object",
+            properties: { agent_id: { type: "string" } },
+            required: ["agent_id"],
+          },
+        },
+        schema: z.object({ agent_id: z.string() }),
+        async run({ agent_id }) {
+          const a = target(agent_id);
+          if (!host.restoreAgent) throw new Error("Restoring agents is not available here");
+          const r = await host.restoreAgent(me, a.id, self.name);
+          return `Back in the team: ${names(r.restored)}.`;
         },
       } as Tool,
     );

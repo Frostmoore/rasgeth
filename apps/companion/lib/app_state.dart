@@ -888,8 +888,8 @@ class AppController extends ChangeNotifier {
     }
   }
 
-  /// The page's «Stop» (`POST /api/agents/:id/stop`): the agent and those under it, for good.
-  /// Never God nor the Chat (their screens hide it).
+  /// The page's «Stop» (`POST /api/agents/:id/stop`, 3.8.9: a pause): the agent and those under
+  /// it stop working, their open tasks wait; «Resume» brings them back. Never God.
   Future<String?> stopAgentForGood(Agent a) async {
     final c = client;
     if (c == null) return 'offline';
@@ -921,6 +921,91 @@ class AppController extends ChangeNotifier {
       return null;
     } on ApiException catch (e) {
       return e.message;
+    }
+  }
+
+  /// «Resume» (3.8.9, `POST /api/agents/:id/resume`): a stopped agent works again and its open
+  /// tasks go on in their conversations. `why` null when done (with how many tasks go on).
+  Future<({String? why, int tasks})> resumeAgent(Agent a) async {
+    final c = client;
+    if (c == null) return (why: 'offline', tasks: 0);
+    try {
+      final tasks = await c.resumeAgent(a.id);
+      await _reloadTeamNow();
+      return (why: null, tasks: tasks.length);
+    } on ApiException catch (e) {
+      return (why: e.message, tasks: 0);
+    }
+  }
+
+  /// What removing [a] takes with it (3.8.9): null when the server cannot say.
+  Future<RemovePreview?> removePreview(Agent a) async {
+    try {
+      return await client?.removePreview(a.id);
+    } on ApiException {
+      return null;
+    }
+  }
+
+  /// «Remove» (3.8.9, `POST /api/agents/:id/remove`): the agent and those below it leave the
+  /// team; their history stays and «Removed agents» restores them. Null when done, else why not.
+  Future<String?> removeAgent(Agent a) async {
+    final c = client;
+    if (c == null) return 'offline';
+    try {
+      final gone = (await c.removeAgent(a.id)).toSet()..add(a.id);
+      agents = agents.where((x) => !gone.contains(x.id)).toList();
+      notifyListeners();
+      _reloadTeam();
+      return null;
+    } on ApiException catch (e) {
+      return e.message;
+    }
+  }
+
+  /// The removed agents (3.8.9), the latest first; empty when the server cannot say.
+  Future<List<RemovedAgent>> removedAgents() async {
+    try {
+      return await client?.removedAgents() ?? const [];
+    } on ApiException {
+      return const [];
+    }
+  }
+
+  /// A removed agent's conversations (3.8.9), the latest first: read only.
+  Future<List<SessionRow>> removedSessions(String agentId) async {
+    try {
+      return await client?.sessions(agentId: agentId) ?? const [];
+    } on ApiException {
+      return const [];
+    }
+  }
+
+  /// «Restore» (3.8.9): [a] back in the team with those removed with it. Null when done.
+  Future<String?> restoreAgent(Agent a) async {
+    final c = client;
+    if (c == null) return 'offline';
+    try {
+      await c.restoreAgent(a.id);
+      await _reloadTeamNow();
+      return null;
+    } on ApiException catch (e) {
+      return e.message;
+    }
+  }
+
+  /// The team and the conversations again (an agent removed or restored, here or elsewhere).
+  void _reloadTeam() => unawaited(_reloadTeamNow());
+
+  Future<void> _reloadTeamNow() async {
+    final c = client;
+    if (c == null) return;
+    try {
+      agents = await c.agents();
+      live.setSessions(await c.sessions());
+      notifyListeners();
+    } on ApiException {
+      // Next time.
     }
   }
 

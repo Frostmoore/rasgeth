@@ -272,6 +272,24 @@ const TABLE: Row[] = [
   ],
   ["stop_agent", { agent_id: "a1" }, "Ferma l'agente «Coder»", "Stops the agent “Coder”"],
   [
+    "remove_agent",
+    { agent_id: "a1", reason: "not needed" },
+    "Rimuove l'agente «Coder» dalla squadra (con chi è sotto di lui; si può ripristinare)",
+    "Removes the agent “Coder” from the team (with those below it; it can be restored)",
+  ],
+  [
+    "resume_agent",
+    { agent_id: "a1" },
+    "Riattiva l'agente fermato «Coder»",
+    "Resumes the stopped agent “Coder”",
+  ],
+  [
+    "restore_agent",
+    { agent_id: "a1" },
+    "Riporta nella squadra l'agente rimosso «Coder»",
+    "Brings the removed agent “Coder” back into the team",
+  ],
+  [
     "create_agent",
     { name: "Tester", kind: "agent", project_id: "p1" },
     "Crea l'agente «Tester» nel progetto «Collaudo 3.5.3»",

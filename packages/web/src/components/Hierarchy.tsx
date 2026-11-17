@@ -9,7 +9,7 @@
 import { useState } from "preact/hooks";
 import type { Agent, Budget } from "../api.js";
 import { roleText, t, tOptional } from "../i18n.js";
-import { IconPlus } from "../icons.js";
+import { IconPlay, IconPlus } from "../icons.js";
 import {
   agents,
   attempt,
@@ -31,7 +31,8 @@ import { Mascot } from "./Mascot.js";
 import { modelName } from "./ModelMenu.js";
 import { ModelSelect, useModels } from "./ModelSelect.js";
 import { PromptEditor } from "./PromptEditor.js";
-import { Acts, Head, Seg, Switch } from "./SettingsKit.js";
+import { RemoveAgentDialog, RemovedAgentsList, removable, resumeStopped } from "./RemovedAgents.js";
+import { Acts, Head, Seg, Sub, Switch } from "./SettingsKit.js";
 import { Modal } from "./ui.js";
 
 const CHILDREN: Record<Agent["kind"], Agent["kind"][]> = {
@@ -383,11 +384,21 @@ export function AgentPanel({
   onAdd: (a: Agent) => void;
 }) {
   const [tab, setTab] = useState<PanelTab>("general");
+  const [removing, setRemoving] = useState(false);
+  /** What «Stop» or «Resume» did (p3.8.9), in words. */
+  const [said, setSaid] = useState<{ ok: boolean; text: string }>();
+  const [busy, setBusy] = useState(false);
   const active = agent.status === "active";
   const tabs: PanelTab[] =
     agent.kind === "demigod"
       ? ["general", "model", "limits", "behaviour", "tools"]
       : ["general", "model", "limits", "behaviour", "memory", "knowledge", "tools"];
+  // «Remove» (p3.8.9): for a stopped agent too; never God, Demi-God or the Chat.
+  const remove = removable(agent) && (
+    <button type="button" class="wz-btn quiet st-danger" onClick={() => setRemoving(true)}>
+      {t("agentRemove")}
+    </button>
+  );
   const foot = active ? (
     <>
       {agent.kind !== "god" && (
@@ -395,13 +406,31 @@ export function AgentPanel({
           type="button"
           class="wz-btn quiet st-danger"
           onClick={async () => {
-            if (await askConfirm(t("agentStopConfirm", { name: agent.name }), { danger: true }))
-              void attempt(() => getApi().stopAgent(agent.id)).then(refresh);
+            // A pause (p3.8.9): the window says so, and that «Remove» is another thing.
+            if (
+              !(await askConfirm(t("agentStopAsk", { name: agent.name }), {
+                text: t("agentStopConfirm"),
+                danger: true,
+                yes: t("agentStopYes"),
+              }))
+            )
+              return;
+            const r = await attempt(() => getApi().stopAgent(agent.id));
+            if (r)
+              setSaid({
+                ok: true,
+                text:
+                  r.waiting > 0
+                    ? t("agentStoppedTasks", { name: agent.name, n: String(r.waiting) })
+                    : t("agentStoppedNone", { name: agent.name }),
+              });
+            await refresh();
           }}
         >
           {t("stop")}
         </button>
       )}
+      {remove}
       <span class="spacer" />
       {canAddUnder(agent) && (
         <button type="button" class="wz-btn" onClick={() => onAdd(agent)}>
@@ -416,51 +445,93 @@ export function AgentPanel({
         {t("agentOpenChat")}
       </button>
     </>
-  ) : undefined;
-  return (
-    <Modal
-      wide
-      class="agent-panel-modal"
-      title={agent.name}
-      icon={<Mascot agent={agent} size={48} />}
-      sub={
-        <>
-          {t(`kind_${agent.kind}`)}
-          {agent.projectId ? ` · ${projectName(agent.projectId)}` : ""}
-          {!active && <span class="chip muted">{t("stopped")}</span>}
-        </>
-      }
-      onClose={onClose}
-      foot={foot}
-    >
-      <div
-        class="agent-panel-tabs wz-seg st-tabs"
-        role="tablist"
-        aria-label={t("agentSettingsOf", { name: agent.name })}
+  ) : (
+    <>
+      {remove}
+      <span class="spacer" />
+      {/* Stopped is a pause (p3.8.9): «Resume» brings it back, its open tasks go on. */}
+      <button
+        type="button"
+        class="wz-btn primary"
+        disabled={busy}
+        onClick={() => {
+          setBusy(true);
+          void resumeStopped(agent).then((r) => {
+            setBusy(false);
+            setSaid(r);
+          });
+        }}
       >
-        {tabs.map((x) => (
-          <button
-            type="button"
-            role="tab"
-            key={x}
-            aria-selected={tab === x}
-            class={tab === x ? "on" : ""}
-            onClick={() => setTab(x)}
-          >
-            {t(`agentTab_${x}`)}
-          </button>
-        ))}
-      </div>
-      <div class="agent-panel-body" key={`${agent.id}-${tab}`}>
-        {tab === "general" && <GeneralTab agent={agent} />}
-        {tab === "model" && <ModelTab agent={agent} />}
-        {tab === "limits" && <LimitsTab agent={agent} />}
-        {tab === "behaviour" && <BehaviourTab agent={agent} />}
-        {tab === "memory" && <AgentMemory agent={agent} />}
-        {tab === "knowledge" && <AgentKnowledge agent={agent} />}
-        {tab === "tools" && <AgentTools agent={agent} />}
-      </div>
-    </Modal>
+        <IconPlay size={14} /> {t("agentResume")}
+      </button>
+    </>
+  );
+  return (
+    <>
+      <Modal
+        wide
+        class="agent-panel-modal"
+        title={agent.name}
+        icon={<Mascot agent={agent} size={48} />}
+        sub={
+          <>
+            {t(`kind_${agent.kind}`)}
+            {agent.projectId ? ` · ${projectName(agent.projectId)}` : ""}
+            {!active && <span class="chip muted">{t("stopped")}</span>}
+          </>
+        }
+        onClose={onClose}
+        foot={foot}
+      >
+        {said && (
+          <p class={`notice ${said.ok ? "ok" : "error"} st-said`} role="status">
+            {said.text}
+          </p>
+        )}
+        {!active && !said && (
+          <p class="notice st-paused" role="status">
+            {t("agentStoppedLead")}
+          </p>
+        )}
+        <div
+          class="agent-panel-tabs wz-seg st-tabs"
+          role="tablist"
+          aria-label={t("agentSettingsOf", { name: agent.name })}
+        >
+          {tabs.map((x) => (
+            <button
+              type="button"
+              role="tab"
+              key={x}
+              aria-selected={tab === x}
+              class={tab === x ? "on" : ""}
+              onClick={() => setTab(x)}
+            >
+              {t(`agentTab_${x}`)}
+            </button>
+          ))}
+        </div>
+        <div class="agent-panel-body" key={`${agent.id}-${tab}`}>
+          {tab === "general" && <GeneralTab agent={agent} />}
+          {tab === "model" && <ModelTab agent={agent} />}
+          {tab === "limits" && <LimitsTab agent={agent} />}
+          {tab === "behaviour" && <BehaviourTab agent={agent} />}
+          {tab === "memory" && <AgentMemory agent={agent} />}
+          {tab === "knowledge" && <AgentKnowledge agent={agent} />}
+          {tab === "tools" && <AgentTools agent={agent} />}
+        </div>
+      </Modal>
+      {/* After the panel, on top of it (a window of its own, never inside another). */}
+      {removing && (
+        <RemoveAgentDialog
+          agent={agent}
+          onClose={(removed) => {
+            setRemoving(false);
+            if (removed) onClose();
+          }}
+        />
+      )}
+    </>
   );
 }
 
@@ -886,6 +957,11 @@ function AgentsPage({ projectId = null }: { projectId?: string | null }) {
           ) : (
             <CardsView list={list} projectId={scope} selected={selectedId} select={select} />
           )}
+          {/* Out of the team, with their history (p3.8.9): read them or bring them back. */}
+          <section class="ra-section">
+            <Sub title={t("raTitle")} lead={t("raLead")} />
+            <RemovedAgentsList projectId={scope} />
+          </section>
         </div>
       </div>
     </div>

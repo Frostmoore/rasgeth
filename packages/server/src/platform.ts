@@ -11,6 +11,7 @@ import {
   type PermissionRule,
   type PersistentBudget,
   type PolicySettings,
+  REMOVE_AGENT,
 } from "@redgiant/hierarchy";
 import {
   catalogConfig,
@@ -154,7 +155,10 @@ export class PolicyStore {
         p.disabledDanger.includes(r.id) ? { ...r, enabled: false } : r,
       ),
       // The guardian's questions are always the person's, whatever the ready choice (2026-11-04).
-      humanOnly: [...new Set([OUTSIDE_PROJECT, ...(p.humanOnly ?? DEFAULT_POLICY.humanOnly)])],
+      // Removing an agent of their team is theirs too (p3.8.9), also with a list saved before it.
+      humanOnly: [
+        ...new Set([OUTSIDE_PROJECT, REMOVE_AGENT, ...(p.humanOnly ?? DEFAULT_POLICY.humanOnly)]),
+      ],
       guardian: p.guardian ?? "ask",
     };
   }

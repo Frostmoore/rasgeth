@@ -1103,7 +1103,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String agentStopped(String name) {
-    return 'Fermato: $name';
+    return 'Interrotto: $name';
   }
 
   @override
@@ -3987,11 +3987,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get asDanger => 'Fermarlo';
 
   @override
-  String get asStopHelp => 'Le sue conversazioni restano; non lavora più, e con lui chi sta sotto.';
+  String get asStopHelp =>
+      'Una pausa: i suoi turni si fermano subito, con chi sta sotto di lui, e i compiti aperti aspettano. «Riattiva» lo riporta e i compiti ripartono nella stessa conversazione. Per toglierlo dalla squadra usa «Rimuovi…».';
 
   @override
   String asStopAsk(String name) {
-    return 'Fermare $name? Le sue conversazioni restano; non lavora più.';
+    return 'Fermare $name? È una pausa: i suoi turni si fermano subito e i compiti aperti aspettano; «Riattiva» lo riporta e ripartono da dove erano.';
   }
 
   @override
@@ -4960,4 +4961,160 @@ class AppLocalizationsIt extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get raMenu => 'Rimuovi…';
+
+  @override
+  String raTitle(String name) {
+    return 'Rimuovere $name?';
+  }
+
+  @override
+  String raBody(String name) {
+    return '$name esce dalla squadra: i suoi turni si fermano e nessuno gli dà più lavoro. Non si cancella niente: le sue conversazioni e la sua storia restano, leggibili in «Agenti rimossi», da dove puoi ripristinarlo.';
+  }
+
+  @override
+  String raWith(String names) {
+    return 'Insieme a lui: $names';
+  }
+
+  @override
+  String raTasks(int count) {
+    return 'Compiti aperti che si chiudono («agente rimosso»): $count';
+  }
+
+  @override
+  String raRunning(int count) {
+    return 'Conversazioni al lavoro che si fermano ora: $count';
+  }
+
+  @override
+  String raYes(String name) {
+    return 'Rimuovi $name';
+  }
+
+  @override
+  String raDone(String name) {
+    return '$name rimosso: «Agenti rimossi» lo riporta indietro.';
+  }
+
+  @override
+  String raFailed(String why) {
+    return 'Non rimosso: $why';
+  }
+
+  @override
+  String raProtected(String name) {
+    return '$name non si può rimuovere.';
+  }
+
+  @override
+  String get raHelp =>
+      'Esce dalla squadra con gli agenti sotto di lui; la sua storia resta e lo ripristini da «Agenti rimossi».';
+
+  @override
+  String get raListTitle => 'Agenti rimossi';
+
+  @override
+  String get raListRow => 'Leggi le loro conversazioni, riportali indietro';
+
+  @override
+  String get raListHelp =>
+      'Agenti tolti dalla squadra, da te o da God. Non si è cancellato niente: le loro conversazioni restano leggibili e «Ripristina» riporta ciascuno indietro con chi è stato rimosso con lui.';
+
+  @override
+  String get raNone => 'Nessun agente rimosso.';
+
+  @override
+  String raWhen(String when, String by) {
+    return 'Rimosso il $when da $by';
+  }
+
+  @override
+  String get raByYou => 'te';
+
+  @override
+  String raReason(String reason) {
+    return 'Motivo: $reason';
+  }
+
+  @override
+  String get raRestore => 'Ripristina';
+
+  @override
+  String raRestored(String name) {
+    return '$name è di nuovo nella squadra.';
+  }
+
+  @override
+  String raRestoreFailed(String why) {
+    return 'Non ripristinato: $why';
+  }
+
+  @override
+  String raConversations(int count) {
+    return 'Conversazioni ($count)';
+  }
+
+  @override
+  String get raNoConversations => 'Nessuna conversazione.';
+
+  @override
+  String raReadOnly(String name) {
+    return '$name è stato rimosso: questa conversazione è in sola lettura.';
+  }
+
+  @override
+  String get raBadge => 'Rimosso';
+
+  @override
+  String get paMenu => 'Ferma…';
+
+  @override
+  String paTitle(String name) {
+    return 'Fermare $name?';
+  }
+
+  @override
+  String paYes(String name) {
+    return 'Ferma $name';
+  }
+
+  @override
+  String paDone(String name) {
+    return '$name è in pausa: «Riattiva» lo riporta.';
+  }
+
+  @override
+  String get paResume => 'Riattiva';
+
+  @override
+  String paResumeHelp(String name) {
+    return '$name è fermo (in pausa). «Riattiva» lo riporta con chi è fermo sotto di lui, e i compiti aperti ripartono nella stessa conversazione.';
+  }
+
+  @override
+  String paResumed(String name) {
+    return '$name lavora di nuovo.';
+  }
+
+  @override
+  String paResumedTasks(String name) {
+    return '$name lavora di nuovo: i compiti aperti ripartono.';
+  }
+
+  @override
+  String paResumeFailed(String why) {
+    return 'Non riattivato: $why';
+  }
+
+  @override
+  String paReadOnly(String name) {
+    return '$name è fermo (in pausa): riattivalo per scrivergli.';
+  }
+
+  @override
+  String get paBadge => 'In pausa';
 }

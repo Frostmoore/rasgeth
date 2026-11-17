@@ -27,6 +27,13 @@ export const OUTGOING_MAIL = "outgoing-mail";
  */
 export const AGENT_MODEL = "agent-model";
 
+/**
+ * Removing an agent from the team (p3.8.9): nothing is deleted (its log stays, it can be
+ * restored), so an ordinary request on the Safety page, the person's by default; their rules,
+ * modes and «don't ask me anything» apply to it. Never a critical one.
+ */
+export const REMOVE_AGENT = "remove-agent";
+
 /** Dangers only the person answers whatever their settings say (the broker reads this). */
 export const ALWAYS_HUMAN: readonly string[] = [OUTGOING_MAIL, AGENT_MODEL];
 
@@ -160,6 +167,12 @@ export const DEFAULT_DANGER_RULES: DangerRule[] = [
     except: ["repo_list"],
   },
   {
+    id: REMOVE_AGENT,
+    label: "Removes an agent from the team",
+    tool: "remove_agent",
+    pattern: ".*",
+  },
+  {
     id: "secrets-files",
     label: "Secret files",
     tool: "*",
@@ -223,6 +236,7 @@ export const DEFAULT_POLICY: PolicySettings = {
     "outgoing",
     "outgoing-browser",
     "git-publish",
+    REMOVE_AGENT,
   ],
   approverKinds: ["god", "orchestrator", "agent"],
 };

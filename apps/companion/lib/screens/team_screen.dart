@@ -20,6 +20,8 @@ import '../ui/common.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/model_sheet.dart';
+import '../ui/pause_agent.dart';
+import '../ui/remove_agent.dart';
 import '../ui/words.dart';
 import 'agent_conversations_screen.dart';
 import 'agent_settings_screen.dart';
@@ -28,6 +30,7 @@ import 'conversation_screen.dart';
 import 'first_start_screen.dart';
 import 'instructions_screen.dart';
 import 'new_agent_screen.dart';
+import 'removed_agents_screen.dart';
 
 class TeamScreen extends StatelessWidget {
   const TeamScreen({super.key});
@@ -224,6 +227,28 @@ class TeamScreen extends StatelessWidget {
                               ),
                             ),
                           ),
+                        // 3.8.9: the agents taken out of the team, to read and bring back.
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                            child: ListTile(
+                              key: const Key('team-removed'),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                side: BorderSide(color: c.line),
+                              ),
+                              tileColor: c.panel,
+                              leading: RgIcon(RgIcons.archive, size: 18, color: c.dim),
+                              title: Text(
+                                l.raListTitle,
+                                style: TextStyle(fontWeight: FontWeight.w700, color: c.text),
+                              ),
+                              subtitle: Text(l.raListRow, style: TextStyle(color: c.dim)),
+                              trailing: RgIcon(RgIcons.chevronRight, size: 18, color: c.dim),
+                              onTap: () => openRemovedAgents(context),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
             ),
@@ -738,7 +763,8 @@ class AgentSheet extends StatelessWidget {
                         );
                       },
                       icon: const RgIcon(RgIcons.stop, size: 18, color: Colors.white),
-                      label: Text(l.agentStop),
+                      // Only what it is doing now (3.8.9: «Stop…» below is the pause).
+                      label: Text(l.asMenuStopTurn),
                     ),
                   ),
                 if (task != null)
@@ -795,6 +821,55 @@ class AgentSheet extends StatelessWidget {
                       },
                       icon: RgIcon(RgIcons.list, size: 18, color: c.text),
                       label: Text(l.cmConversationsOf(a.name)),
+                    ),
+                  ),
+                // 3.8.9: «Resume» for a stopped agent, «Stop…» (a pause) for a working one.
+                if (canResumeAgent(a))
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: FilledButton.icon(
+                      key: const Key('agent-resume'),
+                      style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(46)),
+                      onPressed: () async {
+                        if (await resumeAgentNow(context, a) && context.mounted) close();
+                      },
+                      icon: const RgIcon(RgIcons.play, size: 18, color: Colors.white),
+                      label: Text(l.paResume),
+                    ),
+                  ),
+                if (canPauseAgent(a))
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: OutlinedButton.icon(
+                      key: const Key('agent-pause'),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(46),
+                        foregroundColor: c.err,
+                        side: BorderSide(color: c.err.withValues(alpha: .5)),
+                      ),
+                      onPressed: () async {
+                        if (await confirmPauseAgent(context, a) && context.mounted) close();
+                      },
+                      icon: RgIcon(RgIcons.pause, size: 18, color: c.err),
+                      label: Text(l.paMenu),
+                    ),
+                  ),
+                // 3.8.9: out of the team; its history stays and «Removed agents» restores it.
+                if (canRemoveAgent(app, a))
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: OutlinedButton.icon(
+                      key: const Key('agent-remove'),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(46),
+                        foregroundColor: c.err,
+                        side: BorderSide(color: c.err.withValues(alpha: .5)),
+                      ),
+                      onPressed: () async {
+                        if (await confirmRemoveAgent(context, a) && context.mounted) close();
+                      },
+                      icon: RgIcon(RgIcons.trash, size: 18, color: c.err),
+                      label: Text(l.raMenu),
                     ),
                   ),
                 OutlinedButton.icon(
