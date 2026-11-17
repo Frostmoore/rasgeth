@@ -6,7 +6,7 @@ import type { ToolGroup, ToolsView, ToolView } from "@redgiant/protocol";
 import type { JSX } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import type { Installed } from "../api.js";
-import { type Key, lang, t } from "../i18n.js";
+import { type Key, lang, t, tOptional } from "../i18n.js";
 import {
   IconBook,
   IconCanvas,
@@ -38,9 +38,11 @@ const GROUP_ICON: Record<ToolGroup, () => JSX.Element> = {
 };
 
 /** A tool's readable name, what it does and, if essential, why. */
-export const toolName = (id: string) => t(`tool_${id}` as Key);
-export const toolDoes = (id: string) => t(`toolDo_${id}` as Key);
-export const toolWhy = (id: string) => t(`toolWhy_${id}` as Key);
+// A name the page has no words for (an agent may ask request_tool for a tool that does not exist)
+// shows as it is, never an error that empties the page (G42.0).
+export const toolName = (id: string) => tOptional(`tool_${id}`) ?? id;
+export const toolDoes = (id: string) => tOptional(`toolDo_${id}`) ?? "";
+export const toolWhy = (id: string) => tOptional(`toolWhy_${id}`) ?? "";
 
 /** Tokens rounded as people say them («circa 320»), in the interface's language. */
 export const aboutTokens = (n: number) =>

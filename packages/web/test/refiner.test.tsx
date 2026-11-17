@@ -318,4 +318,21 @@ describe("an agent asks for a switched-off tool (G36.15)", () => {
       },
     ]);
   });
+  it("a tool that does not exist shows its name as it is, the page stays up (G42.0)", () => {
+    const req: PermissionRequestInfo = {
+      requestId: "tool_2",
+      agentId: "a1",
+      agentName: "Ada",
+      projectId: null,
+      tool: "request_tool",
+      input: { tool: "teleport_now", why: "no reason" },
+      reasons: [],
+      danger: [],
+      createdAt: new Date().toISOString(),
+      sessionId: "s1",
+    };
+    const r = render(<ToolRequestCard r={req} />);
+    expect(r.getByText(/teleport_now/)).toBeTruthy();
+    expect(r.getByRole("button", { name: "No" })).toBeTruthy();
+  });
 });

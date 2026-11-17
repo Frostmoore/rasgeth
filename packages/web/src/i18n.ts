@@ -13268,7 +13268,10 @@ export function findTimingText(output: string): string | undefined {
 
 /** Translates a key; `{name}` placeholders are filled from `vars`. */
 export function t(key: Key, vars: Record<string, string> = {}): string {
-  return dictionaries[lang.value][key].replace(/\{(\w+)\}/g, (_, k: string) => vars[k] ?? `{${k}}`);
+  // A key without words (a name made at run time) shows the English, then the key itself: never
+  // an error that empties the page (G42.0).
+  const words = dictionaries[lang.value][key] ?? dictionaries.en[key] ?? String(key);
+  return words.replace(/\{(\w+)\}/g, (_, k: string) => vars[k] ?? `{${k}}`);
 }
 
 /** Translates a key made at run time (a job's step, an error code); undefined if there is none. */
