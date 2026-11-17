@@ -128,7 +128,23 @@ enum RgIcons {
   bag(
     '<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
   ),
-  chevronLeft('<path d="M15 18l-6-6 6-6"/>');
+  chevronLeft('<path d="M15 18l-6-6 6-6"/>'),
+  info('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>'),
+  archive('<path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/>'),
+  canvas(
+    '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="1.6"/><path d="M21 15l-4.5-4.5L7 20"/>',
+  ),
+  play('<path d="M7 4l13 8-13 8z"/>'),
+  layers('<path d="M12 2L2 7l10 5 10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>'),
+  branch(
+    '<circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 7v10"/><path d="M18 10c0 4-6 3-11.3 7.4"/>',
+  ),
+  mail(
+    '<path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M22 6l-10 7L2 6"/>',
+  ),
+  nodes(
+    '<path d="M5 18C8 6 16 18 19 6"/><rect x="3" y="16" width="4" height="4"/><rect x="17" y="4" width="4" height="4"/>',
+  );
 
   const RgIcons(this.paths);
   final String paths;

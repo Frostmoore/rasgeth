@@ -23,7 +23,8 @@ PushNotice liveNoticeFor(PersonRequest r, String server, AppLocalizations l) => 
     kind: NoticeKind.request,
     server: server,
     title: _clip(r.isCritical ? l.notifyCriticalTitle : l.notifyAsksPermission(r.agentName), 80),
-    body: _clip('${r.tool}: ${requestSummary(r)}', 180),
+    // In words when the server says them (G42.1, `withRequestWords`), as the push does.
+    body: _clip(r.wordsIn(l.localeName)?.what ?? '${r.tool}: ${requestSummary(r)}', 180),
     requestId: r.requestId,
     sessionId: r.sessionId,
     actions: r.isCritical || r.tool == kArtifactGrantTool ? const [] : const ['allow', 'deny'],

@@ -130,7 +130,8 @@ void main() {
     await frames(t, 2500);
     const pieces = {
       'paragrafo': 'Ecco come la vedo: la settimana è andata bene, ma due cose sono ferme e ',
-      'elenco': 'aspettano te.\n\n- la bozza del preventivo\n- il rinnovo del dominio\n- la riunione di ',
+      'elenco':
+          'aspettano te.\n\n- la bozza del preventivo\n- il rinnovo del dominio\n- la riunione di ',
       'tabella':
           'giovedì\n\n| Giorno | Cosa | Chi |\n|---|---|---|\n| lun | spesa | tu |\n| mar | pale',
       'codice': 'stra | io |\n\n```bash\nrsync -av ~/foto/ /mnt/archivio/foto/\ndf -h /mnt/arch',

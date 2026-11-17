@@ -38,6 +38,20 @@ class PrefillProgress {
   final int ms;
 }
 
+/// A message sent while the agent works (the page's `pending`): shown in line at once, with
+/// «togli» (`session.unqueue` with its `clientId`), until the log has it.
+class QueuedMessage {
+  const QueuedMessage({required this.clientId, required this.text, required this.match});
+
+  final String clientId;
+
+  /// What the bubble shows (the person's words, without the attachments' text).
+  final String text;
+
+  /// The text as sent: the log's `message.user` with the same text takes it out of the line.
+  final String match;
+}
+
 /// A followed conversation: its stored events, what is streaming, whether it runs.
 class SessionView extends ChangeNotifier {
   SessionView(this.sessionId, {DateTime Function()? now}) : _now = now ?? DateTime.now;
@@ -65,12 +79,30 @@ class SessionView extends ChangeNotifier {
 
   List<ChatItem> get items => buildItems(events, liveText: liveText, liveThinking: liveThinking);
 
+  /// Messages waiting in line (sent while it works).
+  final List<QueuedMessage> queued = [];
+
+  void queue(QueuedMessage m) {
+    queued.add(m);
+    notifyListeners();
+  }
+
+  void unqueue(String clientId) {
+    queued.removeWhere((q) => q.clientId == clientId);
+    notifyListeners();
+  }
+
   /// In a model call that has not written text yet (or is reasoning): the mascot «thinks».
   bool get thinking => running && calling && liveText.isEmpty;
 
   void _add(RgEvent e) {
     if (events.isNotEmpty && e.seq <= events.last.seq) return;
     events.add(e);
+    if (e.type == 'message.user' && queued.isNotEmpty) {
+      final said = (e.payload?['text'] as String? ?? '').trim();
+      final at = queued.indexWhere((q) => q.match.trim() == said);
+      if (at >= 0) queued.removeAt(at);
+    }
     if (e.type == 'message.assistant') {
       liveText = '';
       liveThinking = '';

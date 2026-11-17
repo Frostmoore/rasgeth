@@ -2430,6 +2430,114 @@ if (process.env.DEMO_REQUESTS) {
   // A truly dangerous request: asked of the person even with «Non chiedermi niente» (not awaited).
   void ask("git push --force origin main", ["git-push", "git-history", "critical-delete"], true);
 }
+// G42.1, DEMO_CONV=1: one conversation with everything the chat shows (demo-conversation.mjs), a
+// fork of it, and live requests waiting in it: what RGCompanion must show exactly as the page.
+if (process.env.DEMO_CONV) {
+  const c = await import("./demo-conversation.mjs");
+  for (const [path, body] of Object.entries(c.conversationFiles())) {
+    await mkdir(dirname(join(project.path, path)), { recursive: true });
+    await writeFile(join(project.path, path), body);
+  }
+  const human = { type: "human", ownerId: "local" };
+  const model = { provider: "fake", model: "demo-model", effort: "high" };
+  const spec = (name, role) => ({
+    kind: "agent",
+    parentId: orch.id,
+    projectId: "demo",
+    name,
+    role,
+    model,
+  });
+  const dev = await core.registry.create(
+    human,
+    spec("Sviluppatore", "Sistema e migliora il codice"),
+  );
+  const tester = await core.registry.create(human, spec("Tester", "Prova le app sui telefoni"));
+  const at = (sessionId, agentId, body) =>
+    core.store.append({ ownerId: "local", projectId: "demo", agentId, sessionId, body });
+  const child = { sessionId: await core.startSession("local", tester.id), agentId: tester.id };
+  await at(child.sessionId, tester.id, {
+    type: "message.user",
+    payload: { text: "Prova il login dal telefono.", from: dev.id },
+  });
+  const sid = await core.startSession("local", dev.id);
+  const firstSeq = ((await core.store.list({ sessionId: sid })).at(-1)?.seq ?? -1) + 1;
+  const startAt = new Date(Date.now() - 2 * 3600_000).toISOString();
+  const events = c.conversationEvents({
+    agentId: dev.id,
+    sessionId: sid,
+    firstSeq,
+    startAt,
+    child,
+  });
+  const seqs = [];
+  for (const body of events) seqs.push((await at(sid, dev.id, body)).seq);
+  if (seqs.some((s, i) => s !== firstSeq + i))
+    console.warn("DEMO_CONV: seqs moved, summaries point elsewhere");
+  await core.updateSession("local", sid, { title: "Il login di Bottega non funziona" });
+  // The person edited their last message and sent it again: a fork before it.
+  const edited = seqs[events.findLastIndex((e) => e.type === "message.user" && !e.payload.from)];
+  const fork = await core.forkSession("local", sid, { beforeSeq: edited });
+  for (const body of c.forkEvents()) await at(fork, dev.id, body);
+  // Live requests in the first conversation (not awaited: they wait for the person).
+  const requester = core.registry.get(dev.id);
+  const wait = (n, name, input, reasons, kind = "approval") =>
+    void core.person.approve(
+      {
+        requestId: `conv_${n}`,
+        requester,
+        call: { callId: `conv_c${n}`, name, input },
+        reasons,
+        danger: [],
+        sessionId: sid,
+      },
+      new AbortController().signal,
+      { kind, critical: false, what: name },
+    );
+  wait(1, "bash", { command: "pnpm install --frozen-lockfile" }, ["Runs a command"]);
+  const why = "Per leggere la guida ufficiale dei cookie su MDN.";
+  wait(
+    2,
+    "request_tool",
+    { tool: "fetch", why },
+    [`Switch on fetch (fetch) for Sviluppatore: ${why}`],
+    "tool",
+  );
+  const grant = {
+    artifact: "Calcolatore prezzi",
+    scope: "project:demo",
+    path: "tools/prezzi.html",
+    capability: "ask",
+    agent: dev.name,
+  };
+  wait(3, c.ARTIFACT_GRANT_TOOL, grant, [
+    `The artifact ${grant.path} asks for "ask" the first time`,
+  ]);
+  wait(4, "mail_send", c.replyMail(), ["Sends an email"]);
+  const plan = {
+    question: "Approve this plan?",
+    options: [{ label: "Approve" }, { label: "Keep planning" }],
+    multiSelect: false,
+  };
+  void core.person.ask(
+    requester,
+    {
+      requestId: c.CONV_PLAN_REQUEST,
+      sessionId: sid,
+      agentId: dev.id,
+      agentName: dev.name,
+      projectId: "demo",
+      questions: [plan],
+      plan: c.CONV_PLAN,
+      createdAt: new Date().toISOString(),
+    },
+    undefined,
+    "plan",
+  );
+  console.log(
+    `DEMO_CONV session ${sid}, fork ${fork} (agent ${dev.id}), sub-agent ${child.sessionId}`,
+  );
+}
 // p3.5.4, DEMO_CRITICAL=1: a truly dangerous request (a PDF's redaction) next to an ordinary one,
 // both waiting for the person: the red card in the chat and in the bell.
 // G38.1, DEMO_MAIL=1: a mailbox in the process (Hoodiecrow IMAP and smtp-server, the tests' own),

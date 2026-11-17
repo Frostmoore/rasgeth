@@ -12,6 +12,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../api/saved.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
+import 'citations.dart';
+import 'code_block.dart';
 import 'dialogs.dart';
 import 'icons.dart';
 import 'stream_cursor.dart';
@@ -91,7 +93,8 @@ class SafeMarkdown extends StatelessWidget {
     final code = base.copyWith(fontFamily: 'monospace', fontSize: 13.5, backgroundColor: c.panel2);
     final marked = data.contains(markOpen);
     return MarkdownBody(
-      data: cursor ? withStreamCursor(data) : data,
+      // Sources as links once the answer is whole (the page's `renderAnswer`).
+      data: cursor ? withStreamCursor(data) : linkCitations(data),
       // The cursor is a widget inside the text: an answer being written is not selectable yet.
       selectable: selectable && !cursor,
       extensionSet: safeExtensions,
@@ -104,7 +107,9 @@ class SafeMarkdown extends StatelessWidget {
             still: cursorStill,
             style: code,
             padding: const EdgeInsets.all(8),
-          ),
+          )
+        else
+          'pre': CodeBlockBuilder(),
       },
       onTapLink: (text, href, title) => _open(context, href),
       imageBuilder: (uri, title, alt) => Container(

@@ -163,7 +163,7 @@ void main() {
       expect(card!.image, isNull);
     });
 
-    test('buildItems: product cards, quotes, the answer\'s seq; show_products hidden', () {
+    test('buildItems: product cards, quotes, the answer\'s seq; show_products a tool line', () {
       final items = buildItems([
         for (final e in _history()) RgEvent.fromJson(e),
         RgEvent.fromJson(
@@ -175,12 +175,13 @@ void main() {
           }),
         ),
       ]);
-      expect(items.whereType<ToolItem>(), isEmpty);
+      // As the page: show_products is a tool line too (only ask_user and propose_plan are not).
+      expect(items.whereType<ToolItem>().map((t) => t.tool), ['show_products']);
       final p = items.whereType<ProductsItem>().single;
       expect(p.seq, 4);
       expect(p.products, hasLength(3));
       expect(p.products.first.price, 32.9);
-      expect(items.whereType<AssistantItem>().single.seq, 5);
+      expect(items.whereType<AssistantItem>().where(showsSomething).single.seq, 5);
       final q = items.whereType<UserItem>().last.quotes.single;
       expect((q.seq, q.text, q.start, q.end), (5, 'Venus', 8, 13));
     });
@@ -261,6 +262,9 @@ void main() {
   }
 
   Future<void> selectWord(WidgetTester tester, String word) async {
+    // The messages' own actions (G42.1) make them taller: the word is brought into view first.
+    await tester.ensureVisible(find.text(word, findRichText: true).first);
+    await tester.pumpAndSettle();
     await tester.longPress(find.text(word, findRichText: true).first);
     await tester.pumpAndSettle();
   }
@@ -578,6 +582,13 @@ void main() {
     await push(tester, ConversationScreen(sessionId: 's1', agent: app.agents.first));
     history(app);
     await _settle(tester);
+    // Further up than the screen now that every message has its actions (G42.1).
+    await tester.dragUntilVisible(
+      find.byKey(const Key('products-4')),
+      find.byKey(const Key('conversation-items')),
+      const Offset(0, 200),
+    );
+    await _settle(tester);
     expect(find.byKey(const Key('products-4')), findsOneWidget);
     expect(find.text('Moka da 3-4 tazze'), findsOneWidget);
     expect(find.text('Bialetti Moka Express 3 tazze'), findsOneWidget);
@@ -589,8 +600,8 @@ void main() {
     expect(asked, contains('GET /api/products/images/$_imgA'));
     expect(find.byKey(const Key('product-picture')), findsOneWidget);
     expect(find.byKey(const Key('product-no-picture')), findsWidgets);
-    // No tool row for show_products.
-    expect(find.text('show_products'), findsNothing);
+    // As the page (G42.1): show_products has its tool line too, above its cards.
+    expect(find.text('show_products'), findsOneWidget);
     await done(tester);
   });
 

@@ -141,7 +141,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       _alone(
-        const ChatItemView(
+        ChatItemView(
           item: AssistantItem(
             text:
                 'Ecco **fatto**. <img src="https://tracker.example/x.png"> '

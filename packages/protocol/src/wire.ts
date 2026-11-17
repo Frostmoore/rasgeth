@@ -16,6 +16,7 @@ import {
 import { Event } from "./events.js";
 import { ImagePart } from "./messages.js";
 import { Answers, QuestionRequestInfo } from "./questions.js";
+import { RequestWords } from "./request-words.js";
 import { ARTIFACT_ERRORS_MAX, ArtifactError, ArtifactRef } from "./widget.js";
 
 /** Bumped on every breaking change of the client/server protocol. */
@@ -41,6 +42,11 @@ export const PermissionRequestInfo = z.object({
   createdAt: z.iso.datetime(),
   /** The conversation that asked, when there is one (allow for this conversation). */
   sessionId: z.string().optional(),
+  /**
+   * The request in words, Italian and English (G42.1, `withRequestWords`): for the channels that
+   * do not run `requestSentence` themselves (RGCompanion). Added by the server when it sends.
+   */
+  words: RequestWords.optional(),
 });
 export type PermissionRequestInfo = z.infer<typeof PermissionRequestInfo>;
 

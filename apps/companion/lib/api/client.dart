@@ -250,6 +250,26 @@ class RedGiantClient {
     return id;
   }
 
+  /// `POST /api/sessions/:id/fork` (G36.23): a new conversation going on from this one, from a
+  /// message (`fromSeq`, «Continua da qui») or before one (`beforeSeq`, to send it edited).
+  Future<String> forkSession(String sessionId, {int? fromSeq, int? beforeSeq}) async {
+    final r = _object(
+      await _post('/api/sessions/${Uri.encodeComponent(sessionId)}/fork', {
+        'fromSeq': ?fromSeq,
+        'beforeSeq': ?beforeSeq,
+      }),
+    );
+    return r['sessionId'] as String? ?? '';
+  }
+
+  /// `POST /api/projects/:id/restore` (p3.5.3): an archived project works again.
+  Future<void> restoreProject(String projectId) =>
+      _call('POST', '/api/projects/${Uri.encodeComponent(projectId)}/restore', const {});
+
+  /// `POST /api/sessions/:id/compaction/undo`: the last summary asked by hand is undone.
+  Future<void> undoCompaction(String sessionId) =>
+      _call('POST', '/api/sessions/${Uri.encodeComponent(sessionId)}/compaction/undo', const {});
+
   /// `PATCH /api/sessions/:id`: a conversation's title (the page shows the same).
   Future<void> renameSession(String sessionId, String title) =>
       _call('PATCH', '/api/sessions/${Uri.encodeComponent(sessionId)}', {'title': title});

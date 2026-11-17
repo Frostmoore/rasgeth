@@ -141,6 +141,59 @@ class FakeRedGiant {
   ];
   final answered = <String, String>{};
 
+  /// G42.1: questions waiting (`QuestionRequestInfo`), sent after `welcome` as ws.ts does; the
+  /// answers given (`question.answer`), the `permission.resolve` messages as they came.
+  final questions = <Map<String, dynamic>>[];
+  final questionAnswers = <String, List<dynamic>>{};
+  final resolves = <Map<String, dynamic>>[];
+
+  /// Conversations whose agent works: a message sent there waits in line (core's queue, by its
+  /// `clientId`) until [release]; `session.unqueue` takes it back.
+  final busy = <String>{};
+  final queued = <String, List<Map<String, dynamic>>>{};
+  final unqueued = <String>[];
+
+  /// The forks made (`POST /api/sessions/:id/fork`) and the summaries undone.
+  final forks = <Map<String, dynamic>>[];
+  final undone = <String>[];
+
+  /// Events written as the server would have stored them, to every follower.
+  void store(String sid, String type, Map<String, dynamic> payload) => _store(sid, type, payload);
+
+  /// A question asked of the person (`core.person.ask`): stored, then to every connection.
+  void ask(Map<String, dynamic> q) {
+    questions.add(q);
+    _store(q['sessionId'] as String, 'question.asked', {
+      'requestId': q['requestId'],
+      'questions': q['questions'],
+      'plan': ?q['plan'],
+    });
+    _toAll({'type': 'question.request', 'request': q});
+  }
+
+  /// A permission asked of the person while the app is connected.
+  void request(Map<String, dynamic> p) {
+    permissions.add(p);
+    _toAll({'type': 'permission.request', 'request': p});
+  }
+
+  /// The agent of [sid] works: [turnStart] and messages wait.
+  void hold(String sid) {
+    busy.add(sid);
+    _toAll({'type': 'session.activity', 'sessionId': sid, 'state': 'running'});
+    _toFollowers(sid, {'type': 'session.state', 'sessionId': sid, 'state': 'running'});
+  }
+
+  /// The turn ends: the messages in line are read (stored) in order.
+  void release(String sid) {
+    busy.remove(sid);
+    for (final m in queued.remove(sid) ?? const <Map<String, dynamic>>[]) {
+      _store(sid, 'message.user', {'text': m['text']});
+    }
+    _toFollowers(sid, {'type': 'session.state', 'sessionId': sid, 'state': 'idle'});
+    _toAll({'type': 'session.activity', 'sessionId': sid, 'state': 'idle'});
+  }
+
   // 3.8.1: what the app changed, for the tests to look at.
   final patches = <Map<String, dynamic>>[];
   final agentOverrides = <String, Map<String, dynamic>>{};
@@ -585,6 +638,41 @@ class FakeRedGiant {
         for (final x in sessions)
           if (a == null || x['agentId'] == a) x,
       ]);
+    }
+    // «Continua da qui» / «Modifica» (G36.23, app.ts `/fork`): a new conversation with the events
+    // up to the message (`fromSeq` included, `beforeSeq` not), then `session.forked`.
+    final fork = RegExp(r'^/api/sessions/([^/]+)/fork$').firstMatch(path);
+    if (r.method == 'POST' && fork != null) {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      final from = fork.group(1)!;
+      final row = sessions.where((x) => x['id'] == from).firstOrNull;
+      if (row == null) return _json(r, 404, {'error': 'No such session'});
+      final id = 's${++_sessionSeq}';
+      forks.add({'from': from, 'to': id, ...b});
+      sessions.add({...row, 'id': id, 'title': '${row['title'] ?? ''} (2)', 'running': false});
+      final upTo = b['fromSeq'] is num ? (b['fromSeq'] as num).toInt() : null;
+      final before = b['beforeSeq'] is num ? (b['beforeSeq'] as num).toInt() : null;
+      logs[id] = [
+        for (final e in _logOf(from))
+          if ((upTo == null || (e['seq'] as int) <= upTo) &&
+              (before == null || (e['seq'] as int) < before))
+            {...e, 'sessionId': id},
+      ];
+      _store(id, 'session.forked', {
+        'fromSessionId': from,
+        'fromTitle': row['title'],
+        'how': upTo != null ? 'continue' : 'edit',
+      });
+      return _json(r, 201, {'sessionId': id});
+    }
+    final undo = RegExp(r'^/api/sessions/([^/]+)/compaction/undo$').firstMatch(path);
+    if (r.method == 'POST' && undo != null) {
+      final sid = undo.group(1)!;
+      final last = _logOf(sid).reversed.where((e) => e['type'] == 'compaction').firstOrNull;
+      if (last == null) return _json(r, 409, {'error': 'Nothing to undo'});
+      undone.add(sid);
+      _store(sid, 'compaction.undone', {'compactionSeq': last['seq']});
+      return _json(r, 200, {'ok': true});
     }
     if (r.method == 'POST' && path == '/api/sessions') {
       final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
@@ -1537,6 +1625,9 @@ class FakeRedGiant {
             for (final p in permissions) {
               send({'type': 'permission.request', 'request': p});
             }
+            for (final q in questions) {
+              send({'type': 'question.request', 'request': q});
+            }
           case 'session.follow':
             final sid = m['sessionId'] as String;
             // Twice on one connection: the second does nothing (ws.ts `follows.has`).
@@ -1557,8 +1648,30 @@ class FakeRedGiant {
           case 'session.unfollow':
             follows[ws]?.remove(m['sessionId']);
           case 'session.send':
-            _turn(m['sessionId'] as String, m['text'] as String);
+            final sid = m['sessionId'] as String;
+            if (busy.contains(sid)) {
+              (queued[sid] ??= []).add(m);
+            } else {
+              _turn(sid, m['text'] as String);
+            }
+          case 'session.unqueue':
+            unqueued.add(m['clientId'] as String);
+            queued[m['sessionId']]?.removeWhere((q) => q['clientId'] == m['clientId']);
+          case 'question.answer':
+            final q = questions.where((x) => x['requestId'] == m['requestId']).firstOrNull;
+            if (q == null) {
+              send({'type': 'error', 'code': 'not_found', 'message': 'No such open question'});
+              return;
+            }
+            questions.remove(q);
+            questionAnswers[m['requestId'] as String] = m['answers'] as List<dynamic>;
+            _store(q['sessionId'] as String, 'question.answered', {
+              'requestId': m['requestId'],
+              'answers': m['answers'],
+            });
+            _toAll({'type': 'question.closed', 'requestId': m['requestId'], 'via': 'app (test)'});
           case 'permission.resolve':
+            resolves.add(m);
             permissions.removeWhere((p) => p['requestId'] == m['requestId']);
             answered[m['requestId'] as String] = m['decision'] as String;
             // To every connection of the owner (approvals' `closed`).
