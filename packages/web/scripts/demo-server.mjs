@@ -2,7 +2,7 @@
 // Postgres and a scripted model. Usage: node packages/web/scripts/demo-server.mjs [port]
 import { execFileSync } from "node:child_process";
 import { appendFileSync } from "node:fs";
-import { copyFile, mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { hostname, tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -77,42 +77,16 @@ function demoPdf(line) {
 }
 
 /**
- * The widget of the humidity question (3.5.9), written with the design kit (3.5.12): four fields
- * with their units, the answer at once in a tinted result, one primary action.
+ * The widget of the humidity question (3.5.9), written with the design kit (3.5.12) and remade
+ * with its widget components (3.8.8): sliders with their values, the result in a big card with a
+ * scale, dew points before and after. The same file is the kit's reference in the server's tests.
  */
-const HUMIDITY_WIDGET = `<div class="rg-stack">
-  <div class="rg-grid" style="--rg-min:120px">
-    <label class="rg-field">Dentro<span class="rg-input"><input id="ti" type="number" value="20"><span>°C</span></span></label>
-    <label class="rg-field">Umidità dentro<span class="rg-input"><input id="ui" type="number" value="70"><span>%</span></span></label>
-    <label class="rg-field">Fuori<span class="rg-input"><input id="te" type="number" value="8"><span>°C</span></span></label>
-    <label class="rg-field">Umidità fuori<span class="rg-input"><input id="ue" type="number" value="85"><span>%</span></span></label>
-  </div>
-  <div class="rg-result" id="res">
-    <span class="rg-title" id="verdict">–</span>
-    <span class="rg-value" id="out">–</span>
-    <span class="rg-muted" id="note"></span>
-  </div>
-  <div class="rg-actions"><button class="rg-primary" id="go">Analizza la mia situazione</button></div>
-</div>
-<script>
-const sat = (t) => 6.112 * Math.exp((17.67 * t) / (t + 243.5)) * 2.1674 / (273.15 + t);
-const v = (id) => Number(document.getElementById(id).value);
-function calc() {
-  const rh = Math.min(100, (sat(v("te")) * v("ue")) / sat(v("ti")));
-  const tone = rh < 60 ? "ok" : rh < 70 ? "warn" : "bad";
-  document.getElementById("res").className = "rg-result " + tone;
-  document.getElementById("verdict").textContent =
-    tone === "ok" ? "Aria asciutta: niente condensa" : tone === "warn" ? "Al limite: arieggia più spesso" : "Ancora umida: la condensa resta";
-  document.getElementById("out").textContent = rh.toFixed(0) + "%";
-  document.getElementById("note").textContent =
-    "di umidità a " + v("ti") + " °C dopo il ricambio (prima " + v("ui") + "%)";
-  return rh;
-}
-document.querySelectorAll("input").forEach((i) => i.addEventListener("input", calc));
-calc();
-document.getElementById("go").onclick = () =>
-  redgiant.sendMessage(\`Analizza la mia situazione: dentro \${v("ti")} °C e \${v("ui")}%, fuori \${v("te")} °C e \${v("ue")}%; dopo il ricambio l'umidità scende a \${calc().toFixed(0)}%.\`);
-</script>`;
+const HUMIDITY_WIDGET = (
+  await readFile(
+    new URL("../../server/test/fixtures/widgets/umidita.html", import.meta.url),
+    "utf8",
+  )
+).trimEnd();
 
 /**
  * The same question as a model writes it without the design kit (3.5.12): plain elements, no CSS.
