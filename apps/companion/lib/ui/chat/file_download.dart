@@ -67,7 +67,7 @@ String shortDuration(Duration d) {
 }
 
 /// «3,1 MB» in Italian, «3.1 MB» in English.
-String _bytes(int n, String lang) {
+String byteWords(int n, String lang) {
   final String text;
   if (n < 1024) {
     text = '$n B';
@@ -147,13 +147,13 @@ class DownloadBar extends StatelessWidget {
       builder: (context, _) {
         final p = progress;
         final f = p.fraction;
-        final speed = _bytes(p.perSecond.round(), lang);
+        final speed = byteWords(p.perSecond.round(), lang);
         final left = p.left;
         final words = p.total == null
-            ? l.chatFileDownloadSoFar(_bytes(p.got, lang), speed)
+            ? l.chatFileDownloadSoFar(byteWords(p.got, lang), speed)
             : l.chatFileDownloadOf(
-                _bytes(p.got, lang),
-                _bytes(p.total!, lang),
+                byteWords(p.got, lang),
+                byteWords(p.total!, lang),
                 speed,
                 left == null ? '…' : shortDuration(left),
               );

@@ -780,6 +780,72 @@ class RedGiantClient {
   Future<void> initProjectGit(String projectId) =>
       _call('POST', '/api/projects/${Uri.encodeComponent(projectId)}/git', const {});
 
+  // ---- subprojects (G24.13, G42.5): the page's routes ----
+
+  /// `GET /api/projects/:id/subprojects`.
+  Future<List<Subproject>> subprojects(String projectId) async => [
+    for (final j in _array(
+      await _get('/api/projects/${Uri.encodeComponent(projectId)}/subprojects'),
+    ))
+      Subproject.fromJson(j),
+  ];
+
+  /// `POST /api/projects/:id/subprojects`: a new one, in [dir] or a folder with its name.
+  Future<Subproject> createSubproject(String projectId, String name, {String? dir}) async =>
+      Subproject.fromJson(
+        _object(
+          await _post('/api/projects/${Uri.encodeComponent(projectId)}/subprojects', {
+            'name': name,
+            if (dir != null && dir.isNotEmpty) 'dir': dir,
+          }),
+        ),
+      );
+
+  /// `POST /api/projects/:id/adopt` (G24.14c): an existing project comes in as a subproject,
+  /// with its history.
+  Future<Subproject> adoptProject(String projectId, String project, {String? dir}) async =>
+      Subproject.fromJson(
+        _object(
+          await _post('/api/projects/${Uri.encodeComponent(projectId)}/adopt', {
+            'project': project,
+            if (dir != null && dir.isNotEmpty) 'dir': dir,
+          }),
+        ),
+      );
+
+  /// `PATCH /api/projects/:id/subprojects/:sub`: its own sandbox image; null the project's again.
+  Future<void> setSubprojectImage(String projectId, String sub, String? image) => _call(
+    'PATCH',
+    '/api/projects/${Uri.encodeComponent(projectId)}/subprojects/${Uri.encodeComponent(sub)}',
+    {'image': image},
+  );
+
+  // ---- where the code lives (G24.5, Settings › Code; G42.5): the page's GitCode.tsx ----
+
+  /// `PUT /api/setup/github`: the token tried and kept; the account's login.
+  Future<String> setupGithub(String token) async =>
+      '${_object(await _call('PUT', '/api/setup/github', {'token': token}))['login'] ?? ''}';
+
+  /// `DELETE /api/setup/github`.
+  Future<void> removeGithub() => _call('DELETE', '/api/setup/github');
+
+  /// `POST /api/setup/gitea`: Gitea started here; the job to follow.
+  Future<JobView> startGitea(String user, String password) async => JobView.fromJson(
+    _object(await _post('/api/setup/gitea', {'user': user, 'password': password})),
+  );
+
+  /// `DELETE /api/setup/gitea`: switched off (or, external, disconnected).
+  Future<void> stopGitea() => _call('DELETE', '/api/setup/gitea');
+
+  /// `PUT /api/setup/gitea/external` (p3.7.2): a Gitea the person already has.
+  Future<void> connectGitea(String url, String user, String token) =>
+      _call('PUT', '/api/setup/gitea/external', {'url': url, 'user': user, 'token': token});
+
+  /// `POST /api/setup/git/sync`: every project's repository, made where it is missing.
+  Future<List<GitSyncRow>> gitSync() async => [
+    for (final j in _array(await _post('/api/setup/git/sync', const {}))) GitSyncRow.fromJson(j),
+  ];
+
   /// `POST /api/projects`: a new project (as the page's «New project»: only its name).
   Future<Project> createProject(String name) async =>
       Project.fromJson(_object(await _post('/api/projects', {'name': name})));

@@ -5619,4 +5619,328 @@ class AppLocalizationsEn extends AppLocalizations {
   String chatFileDownloadFailed(String name) {
     return 'Could not download $name';
   }
+
+  @override
+  String get termOpenAgain => 'Open again';
+
+  @override
+  String get termKeyLeft => 'Left arrow';
+
+  @override
+  String get termKeyUp => 'Up arrow';
+
+  @override
+  String get termKeyDown => 'Down arrow';
+
+  @override
+  String get termKeyRight => 'Right arrow';
+
+  @override
+  String get termPaste => 'Paste';
+
+  @override
+  String get termShowKeyboard => 'Show the keyboard';
+
+  @override
+  String get termHideKeyboard => 'Hide the keyboard';
+
+  @override
+  String get spTitle => 'Subprojects';
+
+  @override
+  String get spNew => 'New subproject';
+
+  @override
+  String spNewTitle(String name) {
+    return 'New subproject in «$name»';
+  }
+
+  @override
+  String get spNoTeam => 'no agents';
+
+  @override
+  String spTeam(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n agents',
+      one: '1 agent',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get spNoAgents => 'No agents yet: create them from the project\'s agents.';
+
+  @override
+  String get spFiles => 'The subproject\'s files';
+
+  @override
+  String get spFrom => 'New or existing';
+
+  @override
+  String get spNewOne => 'A new subproject';
+
+  @override
+  String spBringInName(String name) {
+    return 'Bring in the project $name';
+  }
+
+  @override
+  String get spBringInTitle => 'Bring the project in?';
+
+  @override
+  String get spBringIn => 'Bring in';
+
+  @override
+  String get spAdoptConfirm =>
+      'The project goes into this one as a subproject: its code (with its history) into the folder, its agents under this project\'s lead, its board and conversations too. Its old folder stays as a copy. Go on?';
+
+  @override
+  String get spName => 'Subproject name';
+
+  @override
+  String get spDir => 'Folder (optional)';
+
+  @override
+  String get spDirHelp =>
+      'Inside the project, for example apps/shop. Empty: a new folder with the name. An existing folder works too.';
+
+  @override
+  String get spImage => 'Its own sandbox image (optional)';
+
+  @override
+  String get spImageHelp =>
+      'For tools the project\'s sandbox does not have, like ghcr.io/cirruslabs/flutter:stable. The image needs bash.';
+
+  @override
+  String get spCreate => 'Create';
+
+  @override
+  String get psSection => 'Projects and code';
+
+  @override
+  String get psTitle => 'Projects';
+
+  @override
+  String get psRowHint => 'Archive, restore, initialise git';
+
+  @override
+  String get psNewProject => 'New';
+
+  @override
+  String get psLead =>
+      'Archive a project you are not working on: it leaves the lists, nothing is deleted, and it comes back as it was.';
+
+  @override
+  String get psInUse => 'In use';
+
+  @override
+  String get psNone => 'No projects yet.';
+
+  @override
+  String get psArchived => 'Archived';
+
+  @override
+  String get psArchivedLead =>
+      'Read only. «Restore» puts the project back as it was, with its automations.';
+
+  @override
+  String get psNoneArchived => 'No archived projects.';
+
+  @override
+  String get csEyebrow => 'Code';
+
+  @override
+  String get csTitle => 'Where the code lives';
+
+  @override
+  String get csRowHint => 'GitHub, Gitea and the projects\' repositories';
+
+  @override
+  String get csQuestion => 'Where does the code live?';
+
+  @override
+  String get csPurpose =>
+      'Every project gets a private repository, ready for the agents to push to. Choose GitHub, a Gitea of your own on this computer, or both. Optional.';
+
+  @override
+  String get csGithubTile =>
+      'The repositories stay on your GitHub account. It needs a token allowed to make them.';
+
+  @override
+  String get csGiteaTitle => 'A Gitea of your own';
+
+  @override
+  String get csGiteaTile =>
+      'A small private GitHub on this computer, installed and started by RedGiant, or the Gitea you already have.';
+
+  @override
+  String get csLinked => 'connected';
+
+  @override
+  String get csBoth =>
+      'With both: the code lives on Gitea, and every change is copied to GitHub by itself.';
+
+  @override
+  String get csProjects => 'Projects you already have';
+
+  @override
+  String get csProjectsHint =>
+      'New projects get their repository by themselves. For the ones made before:';
+
+  @override
+  String get csSync => 'Create the repositories now';
+
+  @override
+  String get csSynced => 'repository ready';
+
+  @override
+  String get csDone => 'Done';
+
+  @override
+  String get csDisconnect => 'Disconnect';
+
+  @override
+  String get csTryAndSave => 'Try and save';
+
+  @override
+  String get csGithubHint =>
+      'With a token you make on GitHub: RedGiant creates the repositories and the agents push to them. The token stays with RedGiant, never in the agents\' boxes.';
+
+  @override
+  String csGithubLinked(String login) {
+    return 'Connected as @$login';
+  }
+
+  @override
+  String get csGithubStep1 => 'Open GitHub\'s page for a new token (sign in if asked):';
+
+  @override
+  String get csGithubOpen => 'New token on GitHub';
+
+  @override
+  String get csGithubStep2 => 'Fill it in like this:';
+
+  @override
+  String get csPermName => 'Token name: RedGiant';
+
+  @override
+  String get csPermExpiry => 'Expiration: one year (RedGiant reminds you before it ends)';
+
+  @override
+  String get csPermRepos => 'Repository access: All repositories';
+
+  @override
+  String get csPermList =>
+      'Permissions, Repositories: Administration, Contents, Issues and Pull requests set to Read and write';
+
+  @override
+  String get csGithubStep3 => 'Press Generate token at the bottom, copy it and paste it here';
+
+  @override
+  String get csGithubTokenHelp => 'It starts with github_pat_. GitHub shows it only once.';
+
+  @override
+  String get csGiteaHint =>
+      'A Git server of your own, on this computer: the repositories stay here, and you look at them in the browser like on GitHub. RedGiant starts it and keeps it updated. Or connect a Gitea you already have.';
+
+  @override
+  String get csGiteaKind => 'Which Gitea';
+
+  @override
+  String get csGiteaKindOwn => 'Start one here';
+
+  @override
+  String get csGiteaKindExisting => 'A Gitea you already have';
+
+  @override
+  String get csGiteaUrl => 'Your Gitea\'s address';
+
+  @override
+  String get csGiteaUrlHelp =>
+      'As you open it in the browser, for example https://git.example.org.';
+
+  @override
+  String get csGiteaExtUser => 'Your user name on it';
+
+  @override
+  String get csGiteaToken => 'An access token';
+
+  @override
+  String get csGiteaTokenHelp =>
+      'On Gitea: Settings › Applications › Generate token, with read and write on repository and user. It stays in the keychain, never in a file.';
+
+  @override
+  String get csGiteaConnect => 'Try and connect';
+
+  @override
+  String csGiteaLinked(String url, String user) {
+    return 'Connected to $url, user $user';
+  }
+
+  @override
+  String get csGiteaUser => 'Your Gitea user name';
+
+  @override
+  String get csGiteaUserHelp => 'Letters, digits, dots, dashes; for example mario.';
+
+  @override
+  String get csGiteaPassword => 'A password for Gitea';
+
+  @override
+  String get csGiteaPasswordHelp =>
+      'At least 10 characters. You use it to open Gitea in the browser.';
+
+  @override
+  String get csGiteaAgain => 'The same password again';
+
+  @override
+  String get csGiteaMismatch => 'The two passwords are different.';
+
+  @override
+  String get csGiteaCreate => 'Create my Gitea';
+
+  @override
+  String csGiteaReady(String user) {
+    return 'Gitea is ready, user $user';
+  }
+
+  @override
+  String get csGiteaOpen => 'Open Gitea';
+
+  @override
+  String get csGiteaStop => 'Switch off';
+
+  @override
+  String csGiteaNameNotFound(String host) {
+    return 'RedGiant cannot find $host: the DNS it uses does not know that name. The guide «Your home services» in Settings › Access from outside home says what to add, and lets you try the name.';
+  }
+
+  @override
+  String csGiteaHostUnreachable(String host) {
+    return 'RedGiant finds $host, but its address does not answer from here (a Tailscale address, another network?). The guide «Your home services» in Settings › Access from outside home says how to fix it.';
+  }
+
+  @override
+  String get csJobGitea => 'Starting Gitea';
+
+  @override
+  String get csJobGiteaImage => 'Downloading Gitea (only once)';
+
+  @override
+  String get csJobGiteaStart => 'Starting Gitea';
+
+  @override
+  String get csJobAccount => 'Creating your account';
+
+  @override
+  String get csNotNeeded => 'not needed';
+
+  @override
+  String get csJobDone => 'Done.';
+
+  @override
+  String get csJobFailed =>
+      'Something went wrong. Try again; if it happens again, the details below help whoever helps you.';
 }

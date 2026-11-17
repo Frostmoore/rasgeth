@@ -287,6 +287,7 @@ class Agent {
     this.compactAt,
     this.compactKeep,
     this.projects = const [],
+    this.subprojectId,
   });
 
   factory Agent.fromJson(Map<String, dynamic> j) {
@@ -310,6 +311,7 @@ class Agent {
         for (final p in (j['projects'] as List?) ?? const <Object?>[])
           if (p is String) p,
       ],
+      subprojectId: _str(j['subprojectId']),
     );
   }
 
@@ -340,6 +342,9 @@ class Agent {
   /// Other projects it is assigned to (agents and personal agents only).
   final List<String> projects;
 
+  /// The subproject it works in (G24.13): its files open on that folder.
+  final String? subprojectId;
+
   Agent withModel(AgentModel? m) => Agent(
     id: id,
     kind: kind,
@@ -355,6 +360,7 @@ class Agent {
     compactAt: compactAt,
     compactKeep: compactKeep,
     projects: projects,
+    subprojectId: subprojectId,
   );
 }
 

@@ -1,5 +1,8 @@
-// Projects (G40.11, the advanced interface): every project with its git state (branch, changes,
-// commits ahead and behind) and its lead with what it is doing; a tap opens the project's tabs.
+// Projects (G40.11; G42.5: in the bar for everyone, as the page's projects): every project with
+// its lead and what it is doing, its subprojects and, with the advanced interface, its git state
+// (branch, changes, commits ahead and behind); a tap opens the project. «New project» is the
+// page's own (the name, then its orchestrator), and Settings › Projects and › Code are one tap
+// away (archive, restore, initialise git; where the code lives).
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -15,6 +18,8 @@ import '../ui/common.dart';
 import '../ui/icons.dart';
 import '../ui/project_menu.dart';
 import '../ui/words.dart';
+import '../desktop/new_project.dart';
+import '../settings/projects_settings.dart';
 import 'code/git_tab.dart' show AheadBehind;
 
 class ProjectsScreen extends StatefulWidget {
@@ -44,8 +49,10 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   }
 
   Future<void> _load() async {
-    final c = AppScope.read(context).client;
+    final app = AppScope.read(context);
+    final c = app.client;
     if (c == null) return;
+    final advanced = app.advanced;
     try {
       final list = await c.projects();
       if (!mounted) return;
@@ -57,11 +64,11 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
         for (final p in list)
           () async {
             try {
-              final g = await c.gitState(p.id);
+              final g = advanced ? await c.gitState(p.id) : null;
               final t = await c.tasks(p.id);
               if (!mounted) return;
               setState(() {
-                _git[p.id] = g;
+                if (g != null) _git[p.id] = g;
                 _open[p.id] = t.where((x) => !x.done).length;
               });
             } on ApiException {
@@ -86,7 +93,30 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
         : [...app.projects, ...app.archivedProjects];
     return Column(
       children: [
-        ScreenHeader(title: l.tabProjects),
+        ScreenHeader(
+          title: l.tabProjects,
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                key: const Key('projects-settings'),
+                tooltip: l.psTitle,
+                onPressed: () => unawaited(openProjectsSettings(context)),
+                icon: RgIcon(RgIcons.settings, size: 20, color: RgColors.of(context).dim),
+              ),
+              const SizedBox(width: 4),
+              FilledButton.icon(
+                key: const Key('projects-new'),
+                onPressed: () async {
+                  final made = await openNewProject(context);
+                  if (made != null) await _load();
+                },
+                icon: const RgIcon(RgIcons.plus, size: 16, color: Colors.white),
+                label: Text(l.psNewProject),
+              ),
+            ],
+          ),
+        ),
         Expanded(
           child: list == null
               ? (_failed
@@ -124,8 +154,14 @@ class _ProjectCard extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
     final lead = app.agents
-        .where((a) => a.projectId == project.id && a.kind == AgentKind.orchestrator)
+        .where(
+          (a) =>
+              a.projectId == project.id &&
+              a.kind == AgentKind.orchestrator &&
+              a.subprojectId == null,
+        )
         .firstOrNull;
+    final subs = app.subprojectsOf(project.id);
     final state = lead == null ? null : app.live.mascotStateOf(lead.id);
     final g = git;
     final who = [
@@ -180,8 +216,53 @@ class _ProjectCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                const SizedBox(height: 8),
-                if (g == null)
+                if (subs.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Wrap(
+                      key: Key('project-subs-${project.id}'),
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        for (final x in subs)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: c.accentSoft,
+                              borderRadius: BorderRadius.circular(99),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                RgIcon(RgIcons.box, size: 12, color: c.accent),
+                                const SizedBox(width: 4),
+                                Text(
+                                  x.name,
+                                  style: TextStyle(
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: c.text,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                if (project.git == false && !project.archived)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      l.pmNoGit,
+                      key: Key('project-nogit-${project.id}'),
+                      style: TextStyle(color: c.warnText, fontSize: 12.5),
+                    ),
+                  ),
+                if (app.advanced) const SizedBox(height: 8),
+                if (!app.advanced)
+                  const SizedBox.shrink()
+                else if (g == null)
                   const SizedBox(height: 18)
                 else if (!g.repo)
                   Text(l.codeNoRepo, style: TextStyle(color: c.dim, fontSize: 12.5))

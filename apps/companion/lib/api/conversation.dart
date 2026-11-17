@@ -1165,6 +1165,7 @@ class Project {
     this.git,
     this.gitError,
     this.archivedAt,
+    this.path,
   });
 
   factory Project.fromJson(Map<String, dynamic> j) => Project(
@@ -1174,11 +1175,15 @@ class Project {
     archivedAt: _str(j['archivedAt']),
     git: j['git'] is bool ? j['git'] as bool : null,
     gitError: _str(j['gitError']),
+    path: _str(j['path']),
   );
 
   final String id;
   final String name;
   final bool archived;
+
+  /// Its folder on the server (Settings › Projects shows it).
+  final String? path;
 
   /// When it was archived (p3.5.3), as the server says.
   final String? archivedAt;
@@ -1188,6 +1193,33 @@ class Project {
 
   /// Why the repository could not be made, when [git] is false on a new folder.
   final String? gitError;
+}
+
+/// A part of a project in its own folder (G24.13, `Subproject` of the page's api.ts).
+class Subproject {
+  const Subproject({
+    required this.id,
+    required this.projectId,
+    required this.name,
+    required this.dir,
+    this.createdAt,
+  });
+
+  factory Subproject.fromJson(Map<String, dynamic> j) => Subproject(
+    id: _str(j['id']) ?? '',
+    projectId: _str(j['projectId']) ?? '',
+    name: _str(j['name']) ?? '',
+    dir: _str(j['dir']) ?? '',
+    createdAt: _str(j['createdAt']),
+  );
+
+  final String id;
+  final String projectId;
+  final String name;
+
+  /// Its folder inside the project (the explorer opens there).
+  final String dir;
+  final String? createdAt;
 }
 
 /// `GET /api/projects/:id/work` (p3.5.3): what «Archive» stops, said first.
