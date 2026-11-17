@@ -794,15 +794,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: Row(
                     children: [
-                      RgIcon(
-                        v.recording
-                            ? RgIcons.mic
-                            : (v.transcribing ? RgIcons.spinner : RgIcons.alert),
-                        size: 15,
-                        color: v.recording
-                            ? c.err
-                            : (v.problem != null && !v.transcribing ? c.err : c.dim),
-                      ),
+                      if (!v.recording && v.transcribing)
+                        RgSpinner(size: 15, color: c.dim)
+                      else
+                        RgIcon(
+                          v.recording ? RgIcons.mic : RgIcons.alert,
+                          size: 15,
+                          color: v.recording ? c.err : (v.problem != null ? c.err : c.dim),
+                        ),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
@@ -2043,11 +2042,9 @@ class _TalkButton extends StatelessWidget {
                 color: v.recording ? c.err.withValues(alpha: .14) : Colors.transparent,
               ),
               child: Center(
-                child: RgIcon(
-                  v.transcribing ? RgIcons.spinner : RgIcons.mic,
-                  size: 20,
-                  color: v.recording ? c.err : c.dim,
-                ),
+                child: v.transcribing
+                    ? RgSpinner(size: 20, color: v.recording ? c.err : c.dim)
+                    : RgIcon(RgIcons.mic, size: 20, color: v.recording ? c.err : c.dim),
               ),
             ),
           ),
