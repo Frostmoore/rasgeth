@@ -824,84 +824,93 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 ),
               ListenableBuilder(
                 listenable: Listenable.merge([app, app.live]),
-                builder: (context, _) => _Composer(
-                  controller: _text,
-                  sending: _sending,
-                  attachments: _attached.isEmpty
-                      ? null
-                      : SizedBox(
-                          key: const Key('composer-attachments'),
-                          height: 40,
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            padding: const EdgeInsets.symmetric(horizontal: 6),
-                            children: [
-                              for (final (i, a) in _attached.indexed)
-                                if (a is AttachedPasted)
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 6),
-                                    child: _PastedChip(
-                                      key: Key('pasted-$i'),
-                                      file: a,
-                                      onRemove: () => setState(() => _attached.removeAt(i)),
-                                      onAsText: () => setState(() {
-                                        _attached.removeAt(i);
-                                        final now = _text.text;
-                                        final text =
-                                            '$now${now.isNotEmpty && !now.endsWith('\n') ? '\n' : ''}${a.content}';
-                                        _before = text;
-                                        _text.value = TextEditingValue(
-                                          text: text,
-                                          selection: TextSelection.collapsed(offset: text.length),
-                                        );
-                                      }),
+                // At most 900 px wide and centred on a computer, as the page's composer.
+                builder: (context, _) => MaxWidthCenter(
+                  child: _Composer(
+                    controller: _text,
+                    sending: _sending,
+                    attachments: _attached.isEmpty
+                        ? null
+                        : SizedBox(
+                            key: const Key('composer-attachments'),
+                            height: 40,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              padding: const EdgeInsets.symmetric(horizontal: 6),
+                              children: [
+                                for (final (i, a) in _attached.indexed)
+                                  if (a is AttachedPasted)
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 6),
+                                      child: _PastedChip(
+                                        key: Key('pasted-$i'),
+                                        file: a,
+                                        onRemove: () => setState(() => _attached.removeAt(i)),
+                                        onAsText: () => setState(() {
+                                          _attached.removeAt(i);
+                                          final now = _text.text;
+                                          final text =
+                                              '$now${now.isNotEmpty && !now.endsWith('\n') ? '\n' : ''}${a.content}';
+                                          _before = text;
+                                          _text.value = TextEditingValue(
+                                            text: text,
+                                            selection: TextSelection.collapsed(offset: text.length),
+                                          );
+                                        }),
+                                      ),
+                                    )
+                                  else
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 6),
+                                      child: InputChip(
+                                        visualDensity: VisualDensity.compact,
+                                        avatar: a is AttachedImage
+                                            // A photo shows itself (the page's thumbnail).
+                                            ? ClipRRect(
+                                                borderRadius: BorderRadius.circular(4),
+                                                child: Image.memory(
+                                                  a.bytes,
+                                                  width: 22,
+                                                  height: 22,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (_, _, _) =>
+                                                      RgIcon(RgIcons.image, size: 16, color: c.dim),
+                                                ),
+                                              )
+                                            : RgIcon(RgIcons.file, size: 16, color: c.dim),
+                                        label: Text(a.name, overflow: TextOverflow.ellipsis),
+                                        deleteButtonTooltipMessage: l.attachmentRemove,
+                                        deleteIcon: RgIcon(RgIcons.x, size: 14, color: c.dim),
+                                        onDeleted: () => setState(() => _attached.removeAt(i)),
+                                      ),
                                     ),
-                                  )
-                                else
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 6),
-                                    child: InputChip(
-                                      visualDensity: VisualDensity.compact,
-                                      avatar: a is AttachedImage
-                                          // A photo shows itself (the page's thumbnail).
-                                          ? ClipRRect(
-                                              borderRadius: BorderRadius.circular(4),
-                                              child: Image.memory(
-                                                a.bytes,
-                                                width: 22,
-                                                height: 22,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            )
-                                          : RgIcon(RgIcons.file, size: 16, color: c.dim),
-                                      label: Text(a.name, overflow: TextOverflow.ellipsis),
-                                      deleteButtonTooltipMessage: l.attachmentRemove,
-                                      deleteIcon: RgIcon(RgIcons.x, size: 14, color: c.dim),
-                                      onDeleted: () => setState(() => _attached.removeAt(i)),
-                                    ),
-                                  ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                  onAttach: _attach,
-                  onFiles: _take,
-                  onSend: _send,
-                  onTalkStart: _talkStart,
-                  onTalkEnd: _talkEnd,
-                  onTalkCancel: () => unawaited(app.voice.cancelRecording()),
-                  onTalkTap: () =>
-                      setState(() => _note = AppLocalizations.of(context).voiceHoldToTalk),
-                  changed: moreChanged(app, widget.sessionId, agent),
-                  onMore: () =>
-                      showMoreSheet(context, sessionId: widget.sessionId, agent: agent, view: view),
-                  running: view.running,
-                  onStop: _stop,
-                  mentions: widget.mentions,
-                  hint: agent == null
-                      ? null
-                      : view.running
-                      ? l.cvWriteWhileWorking(agent.name)
-                      : l.cvWriteTo(agent.name),
+                    onAttach: _attach,
+                    onFiles: _take,
+                    onSend: _send,
+                    onTalkStart: _talkStart,
+                    onTalkEnd: _talkEnd,
+                    onTalkCancel: () => unawaited(app.voice.cancelRecording()),
+                    onTalkTap: () =>
+                        setState(() => _note = AppLocalizations.of(context).voiceHoldToTalk),
+                    changed: moreChanged(app, widget.sessionId, agent),
+                    onMore: () => showMoreSheet(
+                      context,
+                      sessionId: widget.sessionId,
+                      agent: agent,
+                      view: view,
+                    ),
+                    running: view.running,
+                    onStop: _stop,
+                    mentions: widget.mentions,
+                    hint: agent == null
+                        ? null
+                        : view.running
+                        ? l.cvWriteWhileWorking(agent.name)
+                        : l.cvWriteTo(agent.name),
+                  ),
                 ),
               ),
             ],
@@ -1286,6 +1295,22 @@ class _ComposerState extends State<_Composer> {
       ),
     );
   }
+}
+
+/// At most [width] wide, centred (the page's composer and steps: `width: min(100%, 900px)`).
+class MaxWidthCenter extends StatelessWidget {
+  const MaxWidthCenter({super.key, required this.child, this.width = 920});
+
+  final Widget child;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) => Center(
+    child: ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: width),
+      child: child,
+    ),
+  );
 }
 
 /// One item of a conversation, as the page's `Item` (Chat.tsx).
