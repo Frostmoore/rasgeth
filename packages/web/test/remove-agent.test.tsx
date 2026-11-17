@@ -70,7 +70,14 @@ const { RemoveAgentDialog, RemovedAgentsList, RemovedNotice } = await import(
 );
 const { agents, chatAgentId, removedAgents } = await import("../src/state.js");
 
-const god = { id: "g", kind: "god", name: "God", parentId: null, projectId: null, status: "active" };
+const god = {
+  id: "g",
+  kind: "god",
+  name: "God",
+  parentId: null,
+  projectId: null,
+  status: "active",
+};
 const demigod = { ...god, id: "d", kind: "demigod", name: "Demi-God", parentId: "g" };
 const chat = { ...god, id: "c", kind: "assistant", name: "Chat", parentId: "g" };
 const lead = {
@@ -135,7 +142,9 @@ describe("removing an agent (p3.8.9)", () => {
     const confirm = vi.spyOn(window, "confirm");
     const r = render(<Hierarchy />);
     footOf(r, "Shop lead");
-    fireEvent.click(r.getByText("Rimuovi", { selector: ".agent-panel-modal .ui-modal-foot button" }));
+    fireEvent.click(
+      r.getByText("Rimuovi", { selector: ".agent-panel-modal .ui-modal-foot button" }),
+    );
     await waitFor(() => expect(r.getByText("Rimuovere Shop lead dalla squadra?")).toBeTruthy());
     await waitFor(() =>
       expect(r.getByText("Rimossi insieme, perché lavorano sotto di lui:")).toBeTruthy(),
@@ -162,9 +171,7 @@ describe("removing an agent (p3.8.9)", () => {
     const r = render(<RemoveAgentDialog agent={chat as never} onClose={() => {}} />);
     await waitFor(() =>
       expect(
-        r.getByText(
-          "Chat non si può rimuovere: God, Demi-God e la Chat fanno parte di RedGiant.",
-        ),
+        r.getByText("Chat non si può rimuovere: God, Demi-God e la Chat fanno parte di RedGiant."),
       ).toBeTruthy(),
     );
     expect(r.queryByText("Rimuovi", { selector: "button" })).toBeNull();
