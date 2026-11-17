@@ -2415,6 +2415,12 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news388Widgets: "Beautiful widgets",
+  news388WidgetsText:
+    "Widgets now look like small apps: sliders with their value in a pill, the result in a large card with a coloured scale, before and after side by side, soft badges, in RedGiant's colours, light and dark, two columns on a wide screen and one on the phone.",
+  news388Fixes: "Two fixes",
+  news388FixesText:
+    "Writing to God from the app works again after an update (the server failed to reopen God's work conversation after a restart). With the ChatGPT subscription every answer now shows its own figures: the first one is no longer at zero and the others are no longer one step behind.",
   news387Chat: "A warmer, fuller Chat",
   news387ChatText:
     "Chat now answers like a friend who knows a lot: the answer first, then why, an example with your numbers, what to do and an offer to go further. When you can play with the answer (a calculation, a comparison, a choice) it adds a widget to try.",
@@ -9042,6 +9048,12 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news388Widgets: "Widget belli",
+  news388WidgetsText:
+    "I widget adesso sembrano piccole app: cursori con il valore in una pillola, il risultato in una card grande con una scala colorata, il prima e il dopo affiancati, badge morbidi, nei colori di RedGiant, in chiaro e in scuro, a due colonne sullo schermo largo e a una sul telefono.",
+  news388Fixes: "Due correzioni",
+  news388FixesText:
+    "Scrivere a God dall'app funziona di nuovo dopo un aggiornamento (il server non riapriva la conversazione di lavoro di God dopo un riavvio). Con l'abbonamento ChatGPT ogni risposta mostra i suoi numeri: la prima non è più a zero e le altre non sono più indietro di un passo.",
   news387Chat: "Una Chat più calda e completa",
   news387ChatText:
     "Chat adesso risponde come un amico che sa tante cose: prima la risposta, poi il perché, un esempio con i tuoi numeri, cosa fare e una proposta per andare avanti. Quando con la risposta si può giocare (un calcolo, un confronto, una scelta) aggiunge un widget da provare.",

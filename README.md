@@ -355,7 +355,8 @@ RedGiant is in pre-alpha. What comes next, in order:
   a full-width place to write, with its buttons inside, and a red cursor that follows the answer being written. 3.8.6 (released) keeps
   the phone and the computer in step, live. 3.8.7 (released) starts making the app do everything the page does: the
   whole conversation, the turn, widgets and artifacts, agent settings from the agent, every setting inside the app,
-  and a warmer Chat.
+  and a warmer Chat. 3.8.8 (released) makes widgets look like small apps and fixes writing to God after an
+  update and the figures of the ChatGPT subscription.
 - **3.9 and 3.10 — Video and 3D generation**: a video editor shared by you and the agent, and 3D
   generation with local or cloud engines, finished in Blender.
 - **3.11 — Emulators in the Canvas**: an Android emulator or the iOS simulator found on the computer
