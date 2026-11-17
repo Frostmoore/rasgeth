@@ -43,6 +43,7 @@ import '../ui/chat/question_card.dart';
 import '../ui/chat/request_cards.dart';
 import '../ui/chat/tool_line.dart';
 import '../ui/dialogs.dart';
+import '../ui/turn_queue_view.dart';
 import '../api/image_shrink.dart';
 import '../api/pasted.dart';
 import '../api/secrets.dart';
@@ -673,6 +674,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Text(l.notLive, style: TextStyle(color: c.dim, fontSize: 13)),
               ),
+            // Waiting for a place (3.8.10): what it waits for, «Passa avanti», «Vedi la coda».
+            ListenableBuilder(
+              listenable: app.live,
+              builder: (context, _) => QueueBanner(sessionId: widget.sessionId),
+            ),
             Expanded(
               child: ListenableBuilder(
                 // The requests and the work elsewhere come from the live model.

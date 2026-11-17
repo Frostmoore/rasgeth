@@ -11,6 +11,7 @@ import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/icons.dart';
+import '../ui/turn_queue_view.dart';
 import '../desktop/desk_controller.dart';
 import 'conversation_screen.dart';
 import 'saved_screen.dart';
@@ -174,6 +175,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                 DateFormat.Hm(l.localeName)
                                     .format(DateTime.tryParse(r.when)?.toLocal() ?? d.day),
                               ),
+                              // Waiting for a place (3.8.10).
+                              trailing: switch (app.live.turns.placeOf(r.id)) {
+                                final p? => QueuePill(place: p, dense: true),
+                                null => null,
+                              },
                               onTap: () {
                                 final desk = DeskScope.maybeRead(context);
                                 if (desk != null) {

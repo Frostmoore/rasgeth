@@ -21,6 +21,7 @@ import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/icons.dart';
 import '../ui/send_keys.dart';
+import '../ui/turn_queue_view.dart';
 import 'advanced/code_view.dart';
 import 'advanced/common.dart';
 import 'advanced/git_view.dart';
@@ -915,7 +916,24 @@ class _StatusBar extends StatelessWidget {
                       color: app.live.forYou > 0 ? c.accent : null,
                       onTap: () => desk.show(const PanelPage(PanelScreen.inbox)),
                     ),
-                    item(RgIcons.users, l.deskWorkingCount(working)),
+                    // Agents at work together (3.8.10): places and line, the queue on a click.
+                    if (app.live.turns.shown)
+                      item(
+                        app.live.turns.queued.isEmpty ? RgIcons.users : RgIcons.clock,
+                        [
+                          if (app.live.turns.limit case final limit?)
+                            l.statusAtWork(app.live.turns.working, limit)
+                          else
+                            l.statusAtWorkNoLimit(app.live.turns.working),
+                          if (app.live.turns.queued.isNotEmpty)
+                            l.statusQueued(app.live.turns.queued.length),
+                        ].join(' · '),
+                        key: const Key('status-queue'),
+                        color: app.live.turns.queued.isEmpty ? null : c.warnText,
+                        onTap: () => showTurnQueue(context),
+                      )
+                    else
+                      item(RgIcons.users, l.deskWorkingCount(working)),
                     if (app.advanced) ProjectStatusItem(desk: desk),
                   ],
                 ],

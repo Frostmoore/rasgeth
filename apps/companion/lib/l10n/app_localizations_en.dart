@@ -4681,4 +4681,124 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get requestTechDetails => 'Technical details';
+
+  @override
+  String get atWorkTitle => 'Agents at work together';
+
+  @override
+  String get atWorkAtMost => 'Agents at work together, at most';
+
+  @override
+  String get atWorkHelp =>
+      'How many agents can work at the same moment. The others wait in the queue and start by themselves, in order, as soon as a place is free. Your own messages never wait; a sub-agent takes the place of the one waiting for it. Lowering it stops nobody: it holds for the turns that come next.';
+
+  @override
+  String get atWorkNoLimit => 'No limit';
+
+  @override
+  String atWorkSummary(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'At most $n agents at a time',
+      one: 'At most 1 agent at a time',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get atWorkNoLimitHint => 'Every agent with work starts at once.';
+
+  @override
+  String get atWorkSaved => 'Saved: it holds for the turns that start from now.';
+
+  @override
+  String get atWorkNow => 'Now';
+
+  @override
+  String atWorkPlaces(int working, int limit) {
+    return '$working of $limit places taken';
+  }
+
+  @override
+  String atWorkPlacesNoLimit(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n at work, no limit',
+      one: '1 at work, no limit',
+      zero: 'Nobody at work',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get queueTitle => 'Agents\' queue';
+
+  @override
+  String get queueEmpty => 'Nobody is waiting: every agent with work is working.';
+
+  @override
+  String queuedNth(String nth, int of) {
+    return 'queued ($nth of $of)';
+  }
+
+  @override
+  String queuedBanner(String nth, int of) {
+    return 'Queued ($nth of $of): waiting for a free place';
+  }
+
+  @override
+  String get queueWaitingDoing => 'Waiting for a free place';
+
+  @override
+  String get queueMoveFirst => 'Move ahead';
+
+  @override
+  String get queueSee => 'See the queue';
+
+  @override
+  String get queueNext => 'Next';
+
+  @override
+  String get queueStop => 'Stop';
+
+  @override
+  String queueWaited(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'waiting for $n min',
+      one: 'waiting for 1 min',
+      zero: 'waiting since just now',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get queueChild => 'asked by an agent waiting for it';
+
+  @override
+  String get queueMoved => 'moved ahead by you';
+
+  @override
+  String get queueMoveFailed => 'It no longer waits: it may have just started.';
+
+  @override
+  String statusAtWork(int working, int limit) {
+    return 'At work $working/$limit';
+  }
+
+  @override
+  String statusAtWorkNoLimit(int n) {
+    return 'At work $n';
+  }
+
+  @override
+  String statusQueued(int n) {
+    return 'queued $n';
+  }
+
+  @override
+  String get queueOpenSettings => 'Change the limit';
 }

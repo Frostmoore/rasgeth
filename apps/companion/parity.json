@@ -306,13 +306,15 @@
     "commands": {
       "app": "partial",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/screens/at_work_screen.dart",
+        "lib/screens/full_settings_screen.dart",
+        "lib/screens/server_settings_screen.dart"
       ],
       "phase": "G42.4",
       "rows": [
         221
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native background command limits in G42.4."
+      "note": "Agents at work together is native (server settings, with the live queue); background command limits only in «All settings»."
     },
     "requests": {
       "app": "partial",
@@ -1415,6 +1417,19 @@
       "files": [],
       "phase": "G42.0",
       "note": "The live connection ignores the server's error messages (err_<code> words, browser unavailable)."
+    },
+    "turns.queue": {
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/api/turn_queue.dart",
+        "lib/ui/turn_queue_view.dart",
+        "lib/desktop/wall.dart",
+        "lib/desktop/desktop_shell.dart",
+        "lib/screens/conversation_screen.dart"
+      ],
+      "phase": "3.8.10",
+      "note": "The queue of agents waiting for a place: wall tiles, status bar, conversation banner, the queue window with «Move ahead»."
     }
   }
 }

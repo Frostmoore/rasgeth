@@ -4690,4 +4690,124 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get requestTechDetails => 'Dettagli tecnici';
+
+  @override
+  String get atWorkTitle => 'Agenti al lavoro insieme';
+
+  @override
+  String get atWorkAtMost => 'Agenti al lavoro insieme, al massimo';
+
+  @override
+  String get atWorkHelp =>
+      'Quanti agenti possono lavorare nello stesso momento. Gli altri aspettano in coda e partono da soli, in ordine, appena si libera un posto. I tuoi messaggi diretti non aspettano mai; un sotto-agente prende il posto di chi lo aspetta. Abbassarlo non ferma nessuno: vale per i turni dopo.';
+
+  @override
+  String get atWorkNoLimit => 'Nessun limite';
+
+  @override
+  String atWorkSummary(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Al massimo $n agenti alla volta',
+      one: 'Al massimo 1 agente alla volta',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get atWorkNoLimitHint => 'Ogni agente che ha lavoro parte subito.';
+
+  @override
+  String get atWorkSaved => 'Salvato: vale per i turni che partono da adesso.';
+
+  @override
+  String get atWorkNow => 'Adesso';
+
+  @override
+  String atWorkPlaces(int working, int limit) {
+    return '$working posti occupati su $limit';
+  }
+
+  @override
+  String atWorkPlacesNoLimit(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n al lavoro, senza limite',
+      one: '1 al lavoro, senza limite',
+      zero: 'Nessuno al lavoro',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get queueTitle => 'Coda degli agenti';
+
+  @override
+  String get queueEmpty => 'Nessuno aspetta: ogni agente che ha lavoro sta lavorando.';
+
+  @override
+  String queuedNth(String nth, int of) {
+    return 'in coda ($nth di $of)';
+  }
+
+  @override
+  String queuedBanner(String nth, int of) {
+    return 'In coda ($nth di $of): aspetta che si liberi un posto';
+  }
+
+  @override
+  String get queueWaitingDoing => 'Aspetta che si liberi un posto';
+
+  @override
+  String get queueMoveFirst => 'Passa avanti';
+
+  @override
+  String get queueSee => 'Vedi la coda';
+
+  @override
+  String get queueNext => 'Prossimo';
+
+  @override
+  String get queueStop => 'Ferma';
+
+  @override
+  String queueWaited(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'in coda da $n min',
+      one: 'in coda da 1 min',
+      zero: 'in coda da poco',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get queueChild => 'chiesto da un agente che lo aspetta';
+
+  @override
+  String get queueMoved => 'fatto passare avanti da te';
+
+  @override
+  String get queueMoveFailed => 'Non aspetta più: forse è appena partito.';
+
+  @override
+  String statusAtWork(int working, int limit) {
+    return 'Al lavoro $working/$limit';
+  }
+
+  @override
+  String statusAtWorkNoLimit(int n) {
+    return 'Al lavoro $n';
+  }
+
+  @override
+  String statusQueued(int n) {
+    return 'in coda $n';
+  }
+
+  @override
+  String get queueOpenSettings => 'Cambia il limite';
 }

@@ -32,6 +32,7 @@ import { modelName } from "./ModelMenu.js";
 import { ModelSelect, useModels } from "./ModelSelect.js";
 import { PromptEditor } from "./PromptEditor.js";
 import { Acts, Head, Seg, Switch } from "./SettingsKit.js";
+import { AtWorkCard } from "./TurnLine.js";
 import { Modal } from "./ui.js";
 
 const CHILDREN: Record<Agent["kind"], Agent["kind"][]> = {
@@ -829,6 +830,8 @@ function AgentsPage({ projectId = null }: { projectId?: string | null }) {
           )}
         </div>
       </header>
+      {/* How many may work together (3.8.10): where the person sees the whole team. */}
+      {!projectId && hasGod && <AtWorkCard />}
       {/* Before the other windows: «Agent under it» opens on top of it. */}
       {selected && (
         <AgentPanel

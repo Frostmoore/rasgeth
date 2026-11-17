@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 
 import '../api/conversation.dart';
 import '../api/live_model.dart';
+import '../api/turn_queue.dart';
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/icons.dart';
+import '../ui/turn_queue_view.dart';
 import 'conversation_screen.dart';
 
 /// Tasks grouped by agent, in progress first, the latest first.
@@ -126,6 +128,9 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                   todos: t.sessionId == null
                                       ? null
                                       : todosOf(app.live.views[t.sessionId]?.events ?? const []),
+                                  queued: t.sessionId == null || t.done
+                                      ? null
+                                      : app.live.turns.placeOf(t.sessionId!),
                                 ),
                             ],
                           ],
@@ -148,11 +153,14 @@ String outcomeWord(AppLocalizations l, TaskOutcome o, bool running) => switch (o
 };
 
 class TaskTile extends StatelessWidget {
-  const TaskTile({super.key, required this.task, required this.running, this.todos});
+  const TaskTile({super.key, required this.task, required this.running, this.todos, this.queued});
 
   final TaskRow task;
   final bool running;
   final ({int done, int total})? todos;
+
+  /// Its conversation waits for a place (3.8.10).
+  final LinePlace? queued;
 
   @override
   Widget build(BuildContext context) {
@@ -195,9 +203,19 @@ class TaskTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  t.title,
-                  style: TextStyle(fontWeight: FontWeight.w600, color: c.text),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        t.title,
+                        style: TextStyle(fontWeight: FontWeight.w600, color: c.text),
+                      ),
+                    ),
+                    if (queued != null) ...[
+                      const SizedBox(width: 8),
+                      QueuePill(key: Key('task-queued-${t.id}'), place: queued!, dense: true),
+                    ],
+                  ],
                 ),
                 const SizedBox(height: 8),
                 Semantics(

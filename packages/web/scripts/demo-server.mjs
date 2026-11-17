@@ -3510,6 +3510,46 @@ if (process.env.DEMO_SETUP_AP) {
   });
   setup.completedHooks.push(() => setupNetwork.done());
 }
+// DEMO_QUEUE=1 (3.8.10): agents at work together, at most 2: four tasks handed over, two work
+// (their model never ends) and two wait for a place, the fourth moved first by the person.
+let queueSessions;
+if (process.env.DEMO_QUEUE) {
+  core.providers.register(
+    new FakeProvider(() => ({ text: "Lavoro in corso, " + "passo dopo passo ".repeat(400) }), {
+      id: "slow",
+      tick: () => new Promise((r) => setTimeout(r, 4000)),
+    }),
+  );
+  await core.commandSettings.set("local", { maxAtWork: 2 });
+  const team = [
+    ["Frontend", "Scrive l'interfaccia", "Rifai la pagina di accesso"],
+    ["Backend", "Scrive le API", "Aggiungi l'esportazione in CSV"],
+    ["Tester", "Prova tutto", "Prova il pagamento su telefono"],
+    ["Documentazione", "Scrive le guide", "Aggiorna la guida d'installazione"],
+  ];
+  queueSessions = [];
+  for (const [name, role, task] of team) {
+    // Personal agents: the demo project's budget is spent on purpose.
+    const a = await core.registry.create(me, {
+      kind: "assistant",
+      parentId: god.id,
+      name,
+      role,
+      model: { provider: "slow", model: "demo-model" },
+    });
+    const s = await core.workSession(a);
+    await core.nameSession(s, `God: ${task}`);
+    const { done } = await core.send("local", s, `Task from God: «${task}»`, {
+      queue: true,
+    });
+    done.then(
+      (r) => console.log(`demo queue ${name}: ${r.stopReason} ${r.reason ?? ""}`),
+      (e) => console.log(`demo queue ${name}: ${e.message}`),
+    );
+    queueSessions.push(s);
+  }
+  core.turnFirst("local", queueSessions[3]);
+}
 const running = await serve(core, new TokenAuth({ [token]: "local" }), {
   port,
   host: process.env.DEMO_HOST ?? "0.0.0.0",
@@ -3535,5 +3575,6 @@ console.log(
     ...(acpSession && { acpSession }),
     ...(toolsSession && { toolsSession, branchSession }),
     ...(sshSession && { sshSession, sshAgent }),
+    ...(queueSessions && { queueSessions }),
   }),
 );

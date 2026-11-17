@@ -148,7 +148,8 @@ enum RgIcons {
     '<path d="M5 18C8 6 16 18 19 6"/><rect x="3" y="16" width="4" height="4"/><rect x="17" y="4" width="4" height="4"/>',
   ),
   // 3.8.7: widgets and artifacts (the page's IconPin).
-  pin('<path d="M12 17v5M9 3h6l-1 6 4 4H6l4-4z"/>');
+  pin('<path d="M12 17v5M9 3h6l-1 6 4 4H6l4-4z"/>'),
+  clock('<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>');
 
   const RgIcons(this.paths);
   final String paths;

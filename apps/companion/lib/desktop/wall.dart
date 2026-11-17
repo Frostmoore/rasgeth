@@ -22,6 +22,7 @@ import '../ui/common.dart';
 import '../ui/highlight.dart';
 import '../ui/icons.dart';
 import '../ui/send_keys.dart';
+import '../ui/turn_queue_view.dart';
 import '../ui/words.dart';
 import 'desk_controller.dart';
 import 'desk_menu.dart';
@@ -761,6 +762,8 @@ class AgentTile extends StatelessWidget {
     final project = app.projects.where((p) => p.id == a.projectId).firstOrNull?.name;
     final asks = app.live.requests.where((r) => r.agentId == a.id).toList();
     final running = state == MascotState.work || state == MascotState.think;
+    // Waiting for a place (3.8.10): its own look, distinct from working.
+    final queued = running ? null : app.live.turns.placeOfAgent(a.id);
     final lines = feed.linesOf(a.id);
     final subs = app.agents
         .where((x) => x.parentId == a.id && x.kind == AgentKind.subagent)
@@ -778,7 +781,13 @@ class AgentTile extends StatelessWidget {
         color: c.panel,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: open ? c.accent : (waiting ? c.accentDim : c.line),
+          color: open
+              ? c.accent
+              : (waiting
+                    ? c.accentDim
+                    : queued != null
+                    ? queueColor(c).withValues(alpha: .55)
+                    : c.line),
           width: open ? 2 : 1,
         ),
         gradient: waiting
@@ -816,11 +825,14 @@ class AgentTile extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        Dot(stateColor(c, state)),
+                        Dot(queued != null ? queueColor(c) : stateColor(c, state)),
                         const SizedBox(width: 5),
                         Flexible(
                           child: Text(
-                            [stateWord(l, state), ?project].join(' · '),
+                            [
+                              queued != null ? queuedWords(l, queued) : stateWord(l, state),
+                              ?project,
+                            ].join(' · '),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(fontSize: 12, color: c.dim),
@@ -855,14 +867,45 @@ class AgentTile extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
-          Text(
-            doingOf(l, app, a, state),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 13, color: c.text),
+          Row(
+            children: [
+              if (queued != null) ...[
+                RgIcon(RgIcons.clock, size: 13, color: c.warnText),
+                const SizedBox(width: 5),
+              ],
+              Expanded(
+                child: Text(
+                  queued != null ? l.queueWaitingDoing : doingOf(l, app, a, state),
+                  key: queued != null ? Key('tile-queued-${a.id}') : null,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: queued != null ? c.warnText : c.text,
+                    fontWeight: queued != null ? FontWeight.w600 : null,
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 5),
-          if (running)
+          if (queued != null)
+            Row(
+              children: [
+                for (var i = 0; i < 12; i++)
+                  Expanded(
+                    child: Container(
+                      height: 3,
+                      margin: const EdgeInsets.only(right: 3),
+                      decoration: BoxDecoration(
+                        color: queueColor(c).withValues(alpha: i.isEven ? .55 : .2),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+              ],
+            )
+          else if (running)
             ClipRRect(
               borderRadius: BorderRadius.circular(2),
               child: LinearProgressIndicator(
@@ -943,7 +986,7 @@ class AgentTile extends StatelessWidget {
     return Semantics(
       button: true,
       selected: open,
-      label: '${a.name}, ${stateWord(l, state)}',
+      label: '${a.name}, ${queued != null ? queuedWords(l, queued) : stateWord(l, state)}',
       child: Material(
         type: MaterialType.transparency,
         child: InkWell(

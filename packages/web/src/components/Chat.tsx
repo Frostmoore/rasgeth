@@ -97,6 +97,7 @@ import { ArchivedNotice } from "./ProjectArchive.js";
 import { QuestionCard } from "./QuestionCard.js";
 import { SaveMessage, saveDraft } from "./Saved.js";
 import { ToolRequestCard } from "./ToolRequestCard.js";
+import { QueuedNotice } from "./TurnLine.js";
 import { TurnProgress } from "./TurnProgress.js";
 import { FileIcon } from "./viewers/FileIcon.js";
 
@@ -1647,6 +1648,7 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
       </div>
       <Todos items={items.value} running={v.state === "running"} />
       {archivedIn && <ArchivedNotice projectId={archivedIn} />}
+      <QueuedNotice sessionId={sessionId} />
       <Composer
         top={<QuoteDrafts drafts={drafts} onChange={setDrafts} />}
         ready={drafts.length > 0}
