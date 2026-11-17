@@ -258,7 +258,7 @@ const SENTENCES: Record<Lang, Record<CriticalAction, Sentence>> = {
     "delete-git": (_, x) => `${x.del} the project's whole history (the .git folder): ${x.t}`,
     "delete-project": (_, x) => `${x.del} the whole project: ${x.t}`,
     "delete-variable": (_, x) =>
-      `${x.del} ${x.t}: if the variable is empty, that is the whole disk`,
+      `${x.del} ${x.t}: if the variable is empty or unset, the path becomes the disk's root and everything on it goes`,
     "delete-important": (_, x) => `${x.del} ${x.t}`,
     "delete-outside": (_, x) => `${x.del} a folder outside the project: ${x.t}`,
     "disk-write": (_, x) => `Writes straight onto a disk, erasing what is on it: ${x.t}`,
@@ -319,7 +319,8 @@ const SENTENCES: Record<Lang, Record<CriticalAction, Sentence>> = {
     "delete-disk": (_, x) => `${x.del} un disco intero: ${x.t}`,
     "delete-git": (_, x) => `${x.del} tutta la storia del progetto (la cartella .git): ${x.t}`,
     "delete-project": (_, x) => `${x.del} l'intero progetto: ${x.t}`,
-    "delete-variable": (_, x) => `${x.del} ${x.t}: se la variabile è vuota, è il disco intero`,
+    "delete-variable": (_, x) =>
+      `${x.del} ${x.t}: se la variabile è vuota o non c'è, il percorso diventa la radice del disco e se ne va tutto`,
     "delete-important": (_, x) => `${x.del} ${x.t}`,
     "delete-outside": (_, x) => `${x.del} una cartella fuori dal progetto: ${x.t}`,
     "disk-write": (_, x) => `Scrive direttamente su un disco, cancellando quello che c'è: ${x.t}`,

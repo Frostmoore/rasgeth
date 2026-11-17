@@ -930,6 +930,17 @@ export async function refreshTeam(): Promise<void> {
   ]);
   agents.value = list;
 }
+
+/**
+ * A project's orchestrator (3.8.9): the active one. One replaced after a stop stays in the list,
+ * stopped, and the project opened it with its old sub-agents instead of the working team.
+ */
+export function projectLead(projectId: string, list: Agent[] = agents.value): Agent | undefined {
+  const all = list.filter(
+    (a) => a.kind === "orchestrator" && a.projectId === projectId && !a.subprojectId,
+  );
+  return all.find((a) => a.status === "active") ?? all.at(-1);
+}
 export const approvals = signal<PermissionRequestInfo[]>([]);
 /** Automation messages sent to the web page, newest first, until the person dismisses them. */
 export const notices = signal<

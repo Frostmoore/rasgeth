@@ -162,10 +162,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           for (final r in d.rows)
                             ListTile(
                               key: Key('chat-${r.id}'),
-                              leading: RgIcon(
-                                r.running ? RgIcons.spinner : RgIcons.chat,
-                                color: r.running ? c.ok : c.dim,
-                              ),
+                              leading: r.running
+                                  ? RgSpinner(color: c.ok)
+                                  : RgIcon(RgIcons.chat, color: c.dim),
                               title: Text(
                                 r.task ?? (r.title?.isNotEmpty == true ? r.title! : l.untitled),
                                 maxLines: 1,

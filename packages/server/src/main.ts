@@ -609,6 +609,20 @@ core.email.start();
 core.files.start();
 // What the supervisor does (promotions, rollbacks) goes into the log and reaches the owner.
 core.code?.watch();
+// The work a stop cut (a power cut, a crash, an update) goes on by itself (3.8.9), once the
+// network and the providers had a moment to come up after the start.
+if (env.REDGIANT_RESUME_WORK !== "0")
+  setTimeout(
+    () =>
+      void core
+        .resumeInterrupted()
+        .then(({ sessions }) => {
+          if (sessions.length > 0)
+            console.log(`Resumed ${sessions.length} task(s) cut by the last stop.`);
+        })
+        .catch((err) => console.warn(`resume: ${(err as Error).message}`)),
+    Number(env.REDGIANT_RESUME_DELAY_MS ?? 20_000),
+  ).unref();
 /** At most `ms` waiting for `p`; then the stop goes on without it. */
 const within = (p: Promise<unknown>, ms: number) =>
   Promise.race([p, new Promise<void>((done) => setTimeout(done, ms).unref())]);

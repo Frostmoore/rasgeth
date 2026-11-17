@@ -170,32 +170,78 @@ const TABLE: Row[] = [
   [
     "bash",
     { command: "git push origin main" },
-    "Esegue il comando: git push origin main",
-    "Runs the command: git push origin main",
+    "Manda i commit a origin (main)",
+    "Pushes the commits to origin (main)",
   ],
   [
     "bash",
     { command: "npm run dev", background: true },
-    "Esegue in sottofondo: npm run dev",
-    "Runs in the background: npm run dev",
+    "In sottofondo: esegue lo script dev del progetto",
+    "In the background: runs the project's script dev",
   ],
-  [
-    "bash",
-    { command: "rm -rf build" },
-    "Cancella con il comando: rm -rf build",
-    "Deletes with the command: rm -rf build",
-  ],
+  ["bash", { command: "rm -rf build" }, "Cancella build", "Deletes build"],
   [
     "bash",
     { command: "rm -rf build && npm run build" },
-    "Esegue il comando: rm -rf build && npm run build",
-    "Runs the command: rm -rf build && npm run build",
+    "Cancella build, poi compila il progetto",
+    "Deletes build, then builds the project",
+  ],
+  ["bash", { command: "cd app\nnpm test" }, "Esegue i test", "Runs the tests"],
+  // Other machines and nodes (p3.8.9): the command in words, and where.
+  [
+    "ssh_run",
+    { machine: "web", command: "sudo systemctl restart nginx" },
+    "Su web: riavvia il servizio nginx, come amministratore",
+    "On web: restarts the service nginx, as administrator",
   ],
   [
-    "bash",
-    { command: "cd app\nnpm test" },
-    "Esegue il comando: cd app; npm test",
-    "Runs the command: cd app; npm test",
+    "node_run",
+    { node: "rig", command: "pnpm test" },
+    "Su rig: esegue i test",
+    "On rig: runs the tests",
+  ],
+  [
+    "ssh_copy",
+    { machine: "web", direction: "upload", local: "dist/app.zip", remote: "/srv/app.zip" },
+    "Copia dist/app.zip su web in /srv/app.zip",
+    "Copies dist/app.zip to web at /srv/app.zip",
+  ],
+  [
+    "ssh_copy",
+    { machine: "web", direction: "download", local: "logs/", remote: "/var/log/app.log" },
+    "Copia /var/log/app.log da web in logs/",
+    "Copies /var/log/app.log from web to logs/",
+  ],
+  [
+    "browser_open",
+    { url: "https://shop.example.com/cart" },
+    "Apre shop.example.com nel browser",
+    "Opens shop.example.com in the browser",
+  ],
+  [
+    "request_tool",
+    { tool: "bash", why: "to run the tests" },
+    "Chiede di riaccendere lo strumento bash: to run the tests",
+    "Asks to switch the tool bash back on: to run the tests",
+  ],
+  [
+    "request_connection",
+    { service: "github", why: "open a pull request" },
+    "Chiede di collegare il servizio «github»: open a pull request",
+    "Asks to connect the service “github”: open a pull request",
+  ],
+  [
+    "ffmpeg",
+    { args: ["-i", "a.mp4", "b.webm"] },
+    "Converte o modifica un video o un audio con ffmpeg",
+    "Converts or edits a video or audio with ffmpeg",
+  ],
+  ["blender", { file: "scene.blend" }, "Usa Blender su scene.blend", "Uses Blender on scene.blend"],
+  [
+    "propose_automation",
+    { summary: "Every morning, a digest of the mail" },
+    "Propone un'automazione: Every morning, a digest of the mail",
+    "Proposes an automation: Every morning, a digest of the mail",
   ],
   // Files: write, edit, delete.
   [
@@ -312,7 +358,7 @@ describe("requestSentence (3.5.6): what a request does, in words", () => {
       (id) => (id === "x" ? "Sito" : undefined),
     );
     expect(s).toMatch(/^Ripristina il progetto «Sito»/);
-    const long = requestSentence("en", "bash", { command: `echo ${"a".repeat(400)}` });
+    const long = requestSentence("en", "bash", { command: `${"a".repeat(400)} x` });
     expect(long.length).toBeLessThan(200);
     expect(long.endsWith("…")).toBe(true);
   });

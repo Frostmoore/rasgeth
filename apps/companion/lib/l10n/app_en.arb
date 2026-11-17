@@ -3399,6 +3399,46 @@
   "embedSaving": "Saving…",
   "embedSavedState": "Saved",
   "embedProbeOpen": "Web view test",
+  "requestAnswerAllowed": "allowed",
+  "requestAnswerDenied": "denied",
+  "requestDoneHere": "You already answered from the page or another window: {answer}.",
+  "@requestDoneHere": {
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "requestDoneChat": "You already answered from {chat}: {answer}.",
+  "@requestDoneChat": {
+    "placeholders": {
+      "chat": {
+        "type": "String"
+      },
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "requestDoneTimeout": "Nobody answered in time: {answer}.",
+  "@requestDoneTimeout": {
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "requestDoneElsewhere": "Already decided elsewhere: {answer}.",
+  "@requestDoneElsewhere": {
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "requestDoneClosing": "This screen closes by itself in a few seconds.",
+  "requestCloseHint": "Close (Esc)",
+  "requestTechDetails": "Technical details",
   "raMenu": "Remove…",
   "raTitle": "Remove {name}?",
   "@raTitle": {

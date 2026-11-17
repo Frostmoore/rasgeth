@@ -1117,6 +1117,27 @@ button.bar-settings {
     transform: rotate(360deg);
   }
 }
+/* Every «in progress» spinner turns (3.8.9: some stayed still); with reduced motion three still
+   dots instead. */
+.icon.spinner {
+  animation: spin 1s linear infinite;
+}
+.icon.spinner .spinner-dots {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .icon.spinner,
+  .icon.spinner * {
+    animation: none !important;
+  }
+  .icon.spinner .spinner-arc {
+    display: none;
+  }
+  .icon.spinner .spinner-dots {
+    display: inline;
+    fill: currentColor;
+  }
+}
 .welcome {
   margin: auto;
   text-align: center;

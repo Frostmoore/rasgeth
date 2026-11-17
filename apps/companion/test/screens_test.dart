@@ -93,8 +93,12 @@ void main() {
       'via': 'telegram',
     });
     await tester.pumpAndSettle();
-    expect(find.text('Già risposta (telegram).'), findsOneWidget);
+    expect(find.text('Hai già risposto da Telegram: negata.'), findsOneWidget);
     expect(find.byKey(const Key('critical-yes')), findsNothing);
+    // It closes by itself after a few seconds (p3.8.9).
+    await tester.pump(const Duration(seconds: 6));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('critical-screen')), findsNothing);
   });
 
   testWidgets('a question: its options, the answer only once each one has a choice', (

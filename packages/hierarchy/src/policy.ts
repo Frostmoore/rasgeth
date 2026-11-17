@@ -1,3 +1,4 @@
+import { posix } from "node:path";
 import type { ToolCallInfo } from "@redgiant/agent";
 import { criticalOf, type RemoteMachineInfo } from "./critical.js";
 import {
@@ -8,6 +9,7 @@ import {
   outsideWrites,
   readsIntoKnowledge,
 } from "./guardian.js";
+import { commandsRun } from "./shell-view.js";
 
 /** The guardian's danger: writing outside the agent's folders (only the human approves it). */
 export const OUTSIDE_PROJECT = "outside-project";
@@ -82,7 +84,8 @@ export const DEFAULT_DANGER_RULES: DangerRule[] = [
     label: "Download and run",
     tool: "bash",
     field: "command",
-    pattern: "(curl|wget)[^|]*\\|\\s*(sudo\\s+)?(ba|z)?sh\\b",
+    // On the commands run (`commandsRun`): one pipeline per line.
+    pattern: "(curl|wget)[^|\\n]*\\|\\s*(sudo\\s+)?(ba|z)?sh\\b",
   },
   {
     id: "privilege",
@@ -110,7 +113,8 @@ export const DEFAULT_DANGER_RULES: DangerRule[] = [
     label: "Destructive SQL",
     tool: "*",
     pattern:
-      "\\b(DROP\\s+(TABLE|DATABASE|SCHEMA)|TRUNCATE\\s+TABLE|DELETE\\s+FROM\\s+\\w+\\s*;?\\s*$)",
+      // DELETE without a WHERE; on the commands run and the call's own arguments (not file contents).
+      '\\b(DROP\\s+(TABLE|DATABASE|SCHEMA)|TRUNCATE\\s+TABLE|DELETE\\s+FROM\\s+[\\w."`]+\\s*(;|"|\\\\n|$))',
   },
   {
     id: "deploy",
@@ -159,7 +163,12 @@ export const DEFAULT_DANGER_RULES: DangerRule[] = [
     id: "secrets-files",
     label: "Secret files",
     tool: "*",
-    pattern: "(\\.env\\b|id_rsa|id_ed25519|\\.pem\\b|credentials\\.json|\\.netrc)",
+    // Files by name (p3.8.9): `.env` and its variants (not `.env.example`, not `process.env` nor
+    // `env.sh`), private keys (not `.pub`), `*.pem`, credentials, `.netrc`, `/etc/shadow`; a `*.key`
+    // only in a folder (`certs/server.key`), since `event.key` in code is no file. A backslash ends
+    // a name too: the input is JSON, where a new line is `\n`.
+    pattern:
+      "((^|[\\s\"'=:/\\\\(<>,\\[])(\\.env(?!\\.(example|sample|template|dist)\\b)(\\.[\\w-]+)?|id_(rsa|dsa|ecdsa|ed25519)|[\\w.-]+\\.pem|credentials\\.json|\\.netrc)|[/\\\\][\\w.-]+\\.key|/etc/shadow)(?=$|[\\s\"';|&)<>,\\]\\\\])",
   },
 ];
 
@@ -324,7 +333,74 @@ const toolWords = (name: string) =>
 const ruleApplies = (pattern: string, tool: string) =>
   toolMatches(pattern, tool) || (pattern === "bash" && (tool === "ssh_run" || tool === "node_run"));
 
-export function classify(call: ToolCallInfo, rules: DangerRule[]): DangerRule[] {
+/**
+ * What a call writes or says, never what it runs or reads (p3.8.9: a CSS file with «delete from»
+ * in a comment asked as «Destructive SQL», `process.env` in a script as «Secret files»): the
+ * danger rules do not read these fields.
+ */
+const DATA_FIELDS = new Set([
+  "content",
+  "new_string",
+  "old_string",
+  "body",
+  "text",
+  "ops",
+  "edits",
+  "yaml",
+  "summary",
+  "description",
+  "why",
+  "message",
+  "prompt",
+  "task",
+  "instructions",
+  "system_prompt",
+  "title",
+  "note",
+]);
+/** Tools that write a file at `path`: inside the project's folders that is ordinary work. */
+const FILE_WRITERS = new Set(["write_file", "edit_file", "edit_package", "canvas_edit"]);
+
+/** Where the danger rules look: the project's folders (p3.8.9). */
+export interface DangerContext {
+  roots?: readonly string[] | undefined;
+}
+
+/**
+ * The call as the danger rules read it (p3.8.9): a shell command becomes the commands it really
+ * runs (`commandsRun`: a word for `which`, a heredoc written into a file, `rm -rf` of a folder
+ * inside the project are not dangers); the other tools lose what they write (`DATA_FIELDS`), and a
+ * file written inside the project's folders loses its path too (creating or changing a file there
+ * is never a danger).
+ */
+function asRun(call: ToolCallInfo, ctx: DangerContext): ToolCallInfo {
+  const input = call.input as Record<string, unknown> | null | undefined;
+  if (!input || typeof input !== "object" || Array.isArray(input)) return call;
+  if (call.name === "bash" || call.name === "ssh_run" || call.name === "node_run") {
+    if (typeof input.command !== "string") return call;
+    // Another machine's folders are not the project's.
+    const place = call.name === "bash" ? { roots: ctx.roots } : {};
+    return { ...call, input: { ...input, command: commandsRun(input.command, place) } };
+  }
+  const kept: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(input)) if (!DATA_FIELDS.has(k)) kept[k] = v;
+  const path = typeof input.path === "string" ? input.path : undefined;
+  const roots = (ctx.roots ?? []).filter((r) => r.startsWith("/"));
+  if (FILE_WRITERS.has(call.name) && path && roots.length) {
+    const p = path.startsWith("/")
+      ? posix.normalize(path)
+      : posix.resolve(roots[0] as string, path);
+    if (roots.some((r) => p.startsWith(r.endsWith("/") ? r : `${r}/`))) delete kept.path;
+  }
+  return { ...call, input: kept };
+}
+
+export function classify(
+  raw: ToolCallInfo,
+  rules: DangerRule[],
+  ctx: DangerContext = {},
+): DangerRule[] {
+  const call = asRun(raw, ctx);
   return rules.filter(
     (r) =>
       r.enabled !== false &&
@@ -400,7 +476,7 @@ export function evaluate(mode: PermissionMode, call: ToolCallInfo, s: PolicySett
 }
 
 function evaluateRules(mode: PermissionMode, call: ToolCallInfo, s: PolicySettings): Evaluation {
-  const matched = classify(call, s.danger);
+  const matched = classify(call, s.danger, { roots: s.roots });
   const danger = matched.map((r) => r.id);
   // canvas_edit's catalog and dry runs only read (G37.1).
   const readOnly =

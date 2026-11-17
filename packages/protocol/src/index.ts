@@ -54,6 +54,8 @@ export * from "./saved.js";
 export * from "./search.js";
 export * from "./secrets.js";
 export * from "./setup-network.js";
+export * from "./shell-summary.js";
+export * from "./shell-words.js";
 export * from "./tools.js";
 export * from "./vault.js";
 export * from "./voice.js";

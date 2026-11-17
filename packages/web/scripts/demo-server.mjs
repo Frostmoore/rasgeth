@@ -2661,6 +2661,51 @@ if (process.env.DEMO_CRITICAL) {
   );
   wait(2, "bash", { command: "npm install" }, ["Runs a command"], []);
 }
+// p3.8.9, DEMO_REQWORDS=1: requests that say first, in plain words, what they do (a script written
+// and run, the WordPress server of 146.jpg), and a truly dangerous one with its red card.
+if (process.env.DEMO_REQWORDS) {
+  const sid = await core.startSession("local", researcher.id);
+  await core.store.append({
+    ownerId: "local",
+    projectId: null,
+    agentId: researcher.id,
+    sessionId: sid,
+    body: { type: "message.user", payload: { text: "Avvia il server WordPress di prova." } },
+  });
+  const ask = (n, input, reasons, danger, critical) =>
+    void core.person.approve(
+      {
+        requestId: `demo_words_${n}`,
+        requester: core.registry.get(researcher.id),
+        call: { callId: `cw${n}`, name: "bash", input },
+        reasons,
+        danger,
+        ...(critical && { critical }),
+        sessionId: sid,
+      },
+      new AbortController().signal,
+      { kind: "approval", critical: Boolean(critical), what: "bash" },
+    );
+  ask(
+    1,
+    {
+      command:
+        "cat > /tmp/gaia-shared/start-wp.sh <<'EOF'\n#!/bin/bash\nPIDF=$WP/logs/server.pid\ncase \"${1:-start}\" in\n  stop) kill \"$(cat $PIDF)\"; rm -f $PIDF ;;\n  start) nohup php -S 127.0.0.1:8088 -t $WP/htdocs >>$LOG 2>&1 &\n    echo $! > $PIDF ;;\nesac\nEOF\nchmod +x /tmp/gaia-shared/start-wp.sh && /tmp/gaia-shared/start-wp.sh start && curl -s http://127.0.0.1:8088/ | grep -o '<title>[^<]*'",
+    },
+    ["manual mode"],
+    [],
+  );
+  ask(
+    2,
+    { command: "cat > clean.sh <<'EOF'\nrm -rf \"$OUT/\"\nEOF\nbash clean.sh" },
+    [
+      "truly dangerous: deletes $OUT/ (if $OUT is empty or unset, the path becomes /: the whole disk)",
+    ],
+    ["critical-delete"],
+    [{ id: "critical-delete", action: "delete-variable", target: "$OUT/" }],
+  );
+  console.log(`DEMO_REQWORDS session ${sid}`);
+}
 // 3.5.6, DEMO_ASKS=1: ordinary requests that say what happens in words (God archiving a project,
 // a push, a file written), each waiting for the person, with the buttons off for a moment.
 if (process.env.DEMO_ASKS) {
