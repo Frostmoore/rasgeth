@@ -321,7 +321,10 @@ describe("rendering on a node (G41.7)", () => {
     const steps: Record<string, number[]> = {};
     const end = await follow(s, (go.body.job as Job).id, (j) => {
       for (const st of j.steps)
-        if (st.state === "running" && st.progress) (steps[st.id] ??= []).push(st.progress.done);
+        if (st.state === "running" && st.progress) {
+          steps[st.id] ??= [];
+          steps[st.id]?.push(st.progress.done);
+        }
     });
     expect(end.state, JSON.stringify(end.error)).toBe("done");
     expect(end.steps.map((x) => [x.id, x.state])).toEqual([
