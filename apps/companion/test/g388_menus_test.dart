@@ -16,6 +16,7 @@ import 'package:rgcompanion/api/token_store.dart';
 import 'package:rgcompanion/api/types.dart';
 import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
+import 'package:rgcompanion/desktop/mascot_rail.dart';
 import 'package:rgcompanion/screens/conversation_screen.dart';
 import 'package:rgcompanion/ui/conversation_menu.dart';
 
@@ -48,11 +49,12 @@ void main() {
     Size size = computer,
     DevicePlatform platform = DevicePlatform.linux,
     bool advanced = false,
+    MemoryAppPrefs? prefs,
   }) async {
     final app =
         AppController(
             tokens: MemoryTokenStore(),
-            prefs: MemoryAppPrefs(),
+            prefs: prefs ?? MemoryAppPrefs(),
             platform: platform,
             liveEnabled: false,
           )
@@ -451,6 +453,83 @@ void main() {
       await _settle(tester, 4);
       expect(find.text('Richieste e notifiche'), findsOneWidget);
       expect(find.text('Ctrl+Maiusc+D'), findsOneWidget);
+      await done(tester);
+    });
+  });
+
+  group('the full window\'s bar: agents under their lead', () {
+    testWidgets('the tree, open and closed, kept, what a closed group hides', (tester) async {
+      // A subagent of Coder Web in the project, with a request waiting.
+      server.agentOverrides['a7'] = {'projectId': 'demo', 'parentId': 'a3'};
+      server.permissions.add({
+        'requestId': 'r7',
+        'agentId': 'a7',
+        'agentName': 'Tester',
+        'projectId': 'demo',
+        'tool': 'run_command',
+        'input': {'command': 'pnpm test'},
+        'reasons': ['runs the tests'],
+        'danger': <String>[],
+        'createdAt': '2026-11-15T10:02:00.000Z',
+      });
+      final prefs = MemoryAppPrefs();
+      Future<void> full() async {
+        await tap(tester, 'tile-a3');
+        await tap(tester, 'agent-conv-new');
+        // The second time the room remembers «full window» (3.8.3).
+        if (find.byKey(const Key('panel-full')).evaluate().isNotEmpty) {
+          await tap(tester, 'panel-full');
+        }
+      }
+
+      await start(tester, prefs: prefs);
+      await full();
+      expect(find.byKey(const Key('desk-rail')), findsOneWidget);
+      // God on top; the project's lead, under it Coder Web, under that its subagent.
+      for (final id in ['a0', 'a2', 'a3', 'a7', 'a4']) {
+        expect(find.byKey(Key('rail-$id')), findsOneWidget, reason: id);
+      }
+      double x(String id) => tester.getTopLeft(find.byKey(Key('rail-$id'))).dx;
+      double y(String id) => tester.getTopLeft(find.byKey(Key('rail-$id'))).dy;
+      final lead = tester.getTopLeft(find.byKey(const Key('rail-a2')));
+      expect(find.byKey(const Key('rail-group-demo')), findsOneWidget);
+      expect(find.byKey(const Key('rail-group--')), findsOneWidget);
+      // The indents (the rows' inner boxes start further right) and the order.
+      double inner(String id) => tester
+          .getTopLeft(
+            find.descendant(of: find.byKey(Key('rail-$id')), matching: find.byType(Row)).first,
+          )
+          .dx;
+      expect(inner('a3'), greaterThan(inner('a2')));
+      expect(inner('a7'), greaterThan(inner('a3')));
+      expect(y('a2'), lessThan(y('a3')));
+      expect(y('a3'), lessThan(y('a7')));
+      expect(y('a7'), lessThan(y('a4')), reason: 'no project: last');
+      expect(x('a2'), lead.dx);
+      // Closed: its agents go, their request shows on the lead with a dot.
+      expect(find.byKey(const Key('rail-under-a2')), findsNothing);
+      await tap(tester, 'rail-fold-a2');
+      expect(find.byKey(const Key('rail-a3')), findsNothing);
+      expect(find.byKey(const Key('rail-a7')), findsNothing);
+      expect(find.byKey(const Key('rail-under-a2')), findsOneWidget);
+      expect(
+        find.descendant(of: find.byKey(const Key('rail-asks-a2')), matching: find.text('1')),
+        findsOneWidget,
+      );
+      expect(prefs.values[MascotRail.closedPref], 'a2');
+      // Its menu, as everywhere.
+      await right(tester, find.byKey(const Key('rail-a2')));
+      expect(find.byKey(const Key('agent-menu-settings')), findsOneWidget);
+      await away(tester);
+      await done(tester);
+      // Remembered at the next opening.
+      await start(tester, prefs: prefs);
+      await full();
+      expect(find.byKey(const Key('rail-a2')), findsOneWidget);
+      expect(find.byKey(const Key('rail-a3')), findsNothing);
+      await tap(tester, 'rail-fold-a2');
+      expect(find.byKey(const Key('rail-a7')), findsOneWidget);
+      expect(prefs.values[MascotRail.closedPref], isNull);
       await done(tester);
     });
   });
