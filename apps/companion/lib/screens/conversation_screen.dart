@@ -47,6 +47,9 @@ import '../ui/turn_queue_view.dart';
 import '../api/image_shrink.dart';
 import '../api/pasted.dart';
 import '../api/secrets.dart';
+import '../api/parallel.dart';
+import '../ui/chat/command_strip.dart';
+import '../ui/chat/subagent_tabs.dart';
 import 'canvas_screen.dart';
 import 'conversation_more.dart';
 import 'saved_screen.dart';
@@ -162,6 +165,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
   final _attached = <Attached>[];
   final _quotes = <Quote>[];
   final _scroll = ScrollController();
+
+  /// Near the newest message (the page's `atBottom`, within 120 px): else «Vai in fondo».
+  bool _atBottom = true;
   final _keys = <int, GlobalKey>{};
 
   /// 3.8.7: a widget keeps its frame (and what it counted) while messages arrive below it.
@@ -181,6 +187,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
     super.initState();
     app = AppScope.read(context);
     view = app.follow(widget.sessionId);
+    _scroll.addListener(() {
+      final at = !_scroll.hasClients || _scroll.offset < 120;
+      if (at != _atBottom && mounted) setState(() => _atBottom = at);
+    });
     _pending = widget.jump;
     if (_pending != null) {
       view.addListener(_tryJump);
@@ -623,13 +633,25 @@ class _ConversationScreenState extends State<ConversationScreen> {
       for (final r in app.live.approvals)
         if (mine.contains(r.agentId) && r.sessionId != null) r.sessionId!,
     };
-    final busy = app.live.sessions.where(
-      (r) =>
-          mine.contains(r.agentId) &&
-          r.id != widget.sessionId &&
-          r.running &&
-          !asking.contains(r.id),
-    );
+    final busy = <({String id, String agentId, String? title})>[
+      for (final r in app.live.sessions)
+        if (mine.contains(r.agentId) &&
+            r.id != widget.sessionId &&
+            r.running &&
+            !asking.contains(r.id))
+          (id: r.id, agentId: r.agentId, title: r.title),
+    ];
+    // A task this conversation just handed over: its tab here says it at once, while the list
+    // has not caught up yet (the page's `handedOver`).
+    for (final tab in handedOver(
+      view.events,
+      parentRunning: view.running,
+      runningOf: (id) => app.live.sessions.where((r) => r.id == id).firstOrNull?.running,
+    )) {
+      if (!busy.any((b) => b.id == tab.childSessionId) && !asking.contains(tab.childSessionId)) {
+        busy.add((id: tab.childSessionId, agentId: tab.childAgentId, title: tab.title));
+      }
+    }
     String nameOf(String id) => app.agents.where((a) => a.id == id).firstOrNull?.name ?? '';
     return [
       for (final q in asked)
@@ -705,260 +727,330 @@ class _ConversationScreenState extends State<ConversationScreen> {
               builder: (context, _) => QueueBanner(sessionId: widget.sessionId),
             ),
             Expanded(
-              child: ListenableBuilder(
-                // The requests and the work elsewhere come from the live model.
-                listenable: Listenable.merge([view, app.live]),
-                builder: (context, _) {
-                  final items = view.items
-                      .where((i) => i is! AssistantItem || showsSomething(i))
-                      .toList();
-                  // As the page: the stored items, then the summary being made or the card of the
-                  // model call under way, then the answer streaming in, then the messages waiting
-                  // in line, the requests of this agent and its work elsewhere.
-                  final last = items.isEmpty ? null : items.last;
-                  final live = last is AssistantItem && last.live ? last : null;
-                  final stored = live == null ? items : items.sublist(0, items.length - 1);
-                  final still = app.reduceMotion || MediaQuery.disableAnimationsOf(context);
-                  final call = view.call;
-                  final extras = <Widget>[
-                    if (view.compacting)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          l.compactingNow,
-                          key: const Key('compacting'),
-                          style: TextStyle(color: c.dim, fontSize: 13.5),
-                        ),
+              // The sub-agents' tabs on top when it started any (G42.3), else just the chat.
+              child: SubagentHost(
+                sessionId: widget.sessionId,
+                agentId: agent?.id ?? '',
+                main: Column(
+                  children: [
+                    CommandStrip(sessionId: widget.sessionId, view: view),
+                    Expanded(
+                      child: ListenableBuilder(
+                        // The requests and the work elsewhere come from the live model.
+                        listenable: Listenable.merge([view, app.live]),
+                        builder: (context, _) {
+                          final items = view.items
+                              .where((i) => i is! AssistantItem || showsSomething(i))
+                              .toList();
+                          // As the page: the stored items, then the summary being made or the card of the
+                          // model call under way, then the answer streaming in, then the messages waiting
+                          // in line, the requests of this agent and its work elsewhere.
+                          final last = items.isEmpty ? null : items.last;
+                          final live = last is AssistantItem && last.live ? last : null;
+                          final stored = live == null ? items : items.sublist(0, items.length - 1);
+                          final still = app.reduceMotion || MediaQuery.disableAnimationsOf(context);
+                          final call = view.call;
+                          final extras = <Widget>[
+                            if (view.compacting)
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  l.compactingNow,
+                                  key: const Key('compacting'),
+                                  style: TextStyle(color: c.dim, fontSize: 13.5),
+                                ),
+                              ),
+                            if (view.running && call != null && !view.compacting)
+                              TurnProgress(call: call, now: app.live.now, still: still),
+                          ];
+                          final after = <Widget>[
+                            for (final q in view.queued)
+                              QueuedBubble(
+                                key: Key('queued-${q.clientId}'),
+                                text: q.text,
+                                onRemove: () => app.unqueue(widget.sessionId, q.clientId),
+                              ),
+                            ..._requestsHere(agent),
+                            ..._otherWork(agent),
+                          ];
+                          final total =
+                              stored.length + extras.length + (live == null ? 0 : 1) + after.length;
+                          if (total == 0) {
+                            return Center(
+                              child: Text(
+                                view.synced || !app.isLive ? l.conversationEmpty : l.loading,
+                                style: TextStyle(color: c.dim),
+                              ),
+                            );
+                          }
+                          final actions = ChatActions(
+                            reply: _reply,
+                            save: _save,
+                            jump: _jumpQuote,
+                            lit: _lit,
+                            flashSeq: _flash,
+                            compactAt: agent?.compactAt ?? 0.8,
+                            sessionId: widget.sessionId,
+                            agent: agent,
+                            openSession: _openSession,
+                            editMessage: _edit,
+                            continueFrom: (seq) => unawaited(_continueFrom(seq)),
+                            readOnly: _readOnly,
+                          );
+                          final liveAt = stored.length + extras.length;
+                          final list = ListView.builder(
+                            key: const Key('conversation-items'),
+                            controller: _scroll,
+                            reverse: true,
+                            padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+                            itemCount: total,
+                            itemBuilder: (context, i) {
+                              final at = total - 1 - i;
+                              final afterAt = liveAt + (live == null ? 0 : 1);
+                              if (at >= afterAt) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: after[at - afterAt],
+                                );
+                              }
+                              if (at >= stored.length && at < stored.length + extras.length) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: extras[at - stored.length],
+                                );
+                              }
+                              final item = at < stored.length ? stored[at] : live!;
+                              final seq = item is AssistantItem ? item.seq : null;
+                              return Padding(
+                                key: seq != null
+                                    ? _keys.putIfAbsent(seq, GlobalKey.new)
+                                    : item is WidgetItem
+                                    ? _widgetKeys.putIfAbsent(item.key, GlobalKey.new)
+                                    : null,
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: ChatItemView(item: item, actions: actions),
+                              );
+                            },
+                          );
+                          // Scrolled up: «Vai in fondo» (the page's `.to-bottom`), centred low.
+                          return Stack(
+                            children: [
+                              list,
+                              if (!_atBottom)
+                                Positioned(
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 12,
+                                  child: Center(
+                                    child: Tooltip(
+                                      message: l.cvToBottom,
+                                      child: Material(
+                                        color: c.panel2,
+                                        shape: CircleBorder(side: BorderSide(color: c.line)),
+                                        elevation: 4,
+                                        shadowColor: Colors.black54,
+                                        child: InkWell(
+                                          key: const Key('to-bottom'),
+                                          customBorder: const CircleBorder(),
+                                          onTap: () => _scroll.animateTo(
+                                            0,
+                                            duration: const Duration(milliseconds: 220),
+                                            curve: Curves.easeOut,
+                                          ),
+                                          child: SizedBox(
+                                            width: 40,
+                                            height: 40,
+                                            child: Center(
+                                              child: RgIcon(
+                                                RgIcons.arrowDown,
+                                                size: 18,
+                                                color: c.text,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
                       ),
-                    if (view.running && call != null && !view.compacting)
-                      TurnProgress(call: call, now: app.live.now, still: still),
-                  ];
-                  final after = <Widget>[
-                    for (final q in view.queued)
-                      QueuedBubble(
-                        key: Key('queued-${q.clientId}'),
-                        text: q.text,
-                        onRemove: () => app.unqueue(widget.sessionId, q.clientId),
+                    ),
+                    if (_note != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        child: Text(_note!, style: TextStyle(color: c.err, fontSize: 13)),
                       ),
-                    ..._requestsHere(agent),
-                    ..._otherWork(agent),
-                  ];
-                  final total =
-                      stored.length + extras.length + (live == null ? 0 : 1) + after.length;
-                  if (total == 0) {
-                    return Center(
-                      child: Text(
-                        view.synced || !app.isLive ? l.conversationEmpty : l.loading,
-                        style: TextStyle(color: c.dim),
-                      ),
-                    );
-                  }
-                  final actions = ChatActions(
-                    reply: _reply,
-                    save: _save,
-                    jump: _jumpQuote,
-                    lit: _lit,
-                    flashSeq: _flash,
-                    compactAt: agent?.compactAt ?? 0.8,
-                    sessionId: widget.sessionId,
-                    agent: agent,
-                    openSession: _openSession,
-                    editMessage: _edit,
-                    continueFrom: (seq) => unawaited(_continueFrom(seq)),
-                    readOnly: _readOnly,
-                  );
-                  final liveAt = stored.length + extras.length;
-                  return ListView.builder(
-                    key: const Key('conversation-items'),
-                    controller: _scroll,
-                    reverse: true,
-                    padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-                    itemCount: total,
-                    itemBuilder: (context, i) {
-                      final at = total - 1 - i;
-                      final afterAt = liveAt + (live == null ? 0 : 1);
-                      if (at >= afterAt) {
+                    ListenableBuilder(
+                      listenable: app.voice,
+                      builder: (context, _) {
+                        final v = app.voice;
+                        final text = v.recording
+                            ? l.voiceListening
+                            : v.transcribing
+                            ? l.voiceWriting
+                            : v.problem;
+                        if (text == null) return const SizedBox.shrink();
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: after[at - afterAt],
+                          key: const Key('voice-line'),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                          child: Row(
+                            children: [
+                              if (!v.recording && v.transcribing)
+                                RgSpinner(size: 15, color: c.dim)
+                              else
+                                RgIcon(
+                                  v.recording ? RgIcons.mic : RgIcons.alert,
+                                  size: 15,
+                                  color: v.recording ? c.err : (v.problem != null ? c.err : c.dim),
+                                ),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  text,
+                                  style: TextStyle(
+                                    color: v.problem != null && !v.recording && !v.transcribing
+                                        ? c.err
+                                        : c.dim,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         );
-                      }
-                      if (at >= stored.length && at < stored.length + extras.length) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: extras[at - stored.length],
-                        );
-                      }
-                      final item = at < stored.length ? stored[at] : live!;
-                      final seq = item is AssistantItem ? item.seq : null;
-                      return Padding(
-                        key: seq != null
-                            ? _keys.putIfAbsent(seq, GlobalKey.new)
-                            : item is WidgetItem
-                            ? _widgetKeys.putIfAbsent(item.key, GlobalKey.new)
-                            : null,
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: ChatItemView(item: item, actions: actions),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-            if (_note != null)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: Text(_note!, style: TextStyle(color: c.err, fontSize: 13)),
-              ),
-            ListenableBuilder(
-              listenable: app.voice,
-              builder: (context, _) {
-                final v = app.voice;
-                final text = v.recording
-                    ? l.voiceListening
-                    : v.transcribing
-                    ? l.voiceWriting
-                    : v.problem;
-                if (text == null) return const SizedBox.shrink();
-                return Padding(
-                  key: const Key('voice-line'),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: Row(
-                    children: [
-                      if (!v.recording && v.transcribing)
-                        RgSpinner(size: 15, color: c.dim)
-                      else
-                        RgIcon(
-                          v.recording ? RgIcons.mic : RgIcons.alert,
-                          size: 15,
-                          color: v.recording ? c.err : (v.problem != null ? c.err : c.dim),
+                      },
+                    ),
+                    ListenableBuilder(
+                      listenable: view,
+                      builder: (context, _) => TodosPanel(items: view.items, running: view.running),
+                    ),
+                    if (widget.removed)
+                      RemovedNotice(name: widget.agent?.name ?? '')
+                    else if (_stoppedAgent() case final stopped?)
+                      StoppedNotice(agent: stopped)
+                    else if (app.archivedProjectOf(widget.sessionId) case final p?)
+                      ArchivedNotice(project: p)
+                    else ...[
+                      if (_quotes.isNotEmpty)
+                        _QuoteDrafts(
+                          quotes: _quotes,
+                          onRemove: (q) => setState(() => _quotes.remove(q)),
+                          onJump: _jumpQuote,
                         ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          text,
-                          style: TextStyle(
-                            color: v.problem != null && !v.recording && !v.transcribing
-                                ? c.err
-                                : c.dim,
-                            fontSize: 13,
+                      ListenableBuilder(
+                        listenable: Listenable.merge([app, app.live]),
+                        // At most 900 px wide and centred on a computer, as the page's composer.
+                        builder: (context, _) => MaxWidthCenter(
+                          child: _Composer(
+                            controller: _text,
+                            sending: _sending,
+                            attachments: _attached.isEmpty
+                                ? null
+                                : SizedBox(
+                                    key: const Key('composer-attachments'),
+                                    height: 40,
+                                    child: ListView(
+                                      scrollDirection: Axis.horizontal,
+                                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                                      children: [
+                                        for (final (i, a) in _attached.indexed)
+                                          if (a is AttachedPasted)
+                                            Padding(
+                                              padding: const EdgeInsets.only(right: 6),
+                                              child: _PastedChip(
+                                                key: Key('pasted-$i'),
+                                                file: a,
+                                                onRemove: () =>
+                                                    setState(() => _attached.removeAt(i)),
+                                                onAsText: () => setState(() {
+                                                  _attached.removeAt(i);
+                                                  final now = _text.text;
+                                                  final text =
+                                                      '$now${now.isNotEmpty && !now.endsWith('\n') ? '\n' : ''}${a.content}';
+                                                  _before = text;
+                                                  _text.value = TextEditingValue(
+                                                    text: text,
+                                                    selection: TextSelection.collapsed(
+                                                      offset: text.length,
+                                                    ),
+                                                  );
+                                                }),
+                                              ),
+                                            )
+                                          else
+                                            Padding(
+                                              padding: const EdgeInsets.only(right: 6),
+                                              child: InputChip(
+                                                visualDensity: VisualDensity.compact,
+                                                avatar: a is AttachedImage
+                                                    // A photo shows itself (the page's thumbnail).
+                                                    ? ClipRRect(
+                                                        borderRadius: BorderRadius.circular(4),
+                                                        child: Image.memory(
+                                                          a.bytes,
+                                                          width: 22,
+                                                          height: 22,
+                                                          fit: BoxFit.cover,
+                                                          errorBuilder: (_, _, _) => RgIcon(
+                                                            RgIcons.image,
+                                                            size: 16,
+                                                            color: c.dim,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : RgIcon(RgIcons.file, size: 16, color: c.dim),
+                                                label: Text(
+                                                  a.name,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                                deleteButtonTooltipMessage: l.attachmentRemove,
+                                                deleteIcon: RgIcon(
+                                                  RgIcons.x,
+                                                  size: 14,
+                                                  color: c.dim,
+                                                ),
+                                                onDeleted: () =>
+                                                    setState(() => _attached.removeAt(i)),
+                                              ),
+                                            ),
+                                      ],
+                                    ),
+                                  ),
+                            onAttach: _attach,
+                            onFiles: _take,
+                            onSend: _send,
+                            onTalkStart: _talkStart,
+                            onTalkEnd: _talkEnd,
+                            onTalkCancel: () => unawaited(app.voice.cancelRecording()),
+                            onTalkTap: () => setState(
+                              () => _note = AppLocalizations.of(context).voiceHoldToTalk,
+                            ),
+                            changed: moreChanged(app, widget.sessionId, agent),
+                            onMore: () => showMoreSheet(
+                              context,
+                              sessionId: widget.sessionId,
+                              agent: agent,
+                              view: view,
+                            ),
+                            running: view.running,
+                            onStop: _stop,
+                            mentions: widget.mentions,
+                            hint: agent == null
+                                ? null
+                                : view.running
+                                ? l.cvWriteWhileWorking(agent.name)
+                                : l.cvWriteTo(agent.name),
                           ),
                         ),
                       ),
                     ],
-                  ),
-                );
-              },
-            ),
-            ListenableBuilder(
-              listenable: view,
-              builder: (context, _) => TodosPanel(items: view.items, running: view.running),
-            ),
-            if (widget.removed)
-              RemovedNotice(name: widget.agent?.name ?? '')
-            else if (_stoppedAgent() case final stopped?)
-              StoppedNotice(agent: stopped)
-            else if (app.archivedProjectOf(widget.sessionId) case final p?)
-              ArchivedNotice(project: p)
-            else ...[
-              if (_quotes.isNotEmpty)
-                _QuoteDrafts(
-                  quotes: _quotes,
-                  onRemove: (q) => setState(() => _quotes.remove(q)),
-                  onJump: _jumpQuote,
-                ),
-              ListenableBuilder(
-                listenable: Listenable.merge([app, app.live]),
-                // At most 900 px wide and centred on a computer, as the page's composer.
-                builder: (context, _) => MaxWidthCenter(
-                  child: _Composer(
-                    controller: _text,
-                    sending: _sending,
-                    attachments: _attached.isEmpty
-                        ? null
-                        : SizedBox(
-                            key: const Key('composer-attachments'),
-                            height: 40,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.symmetric(horizontal: 6),
-                              children: [
-                                for (final (i, a) in _attached.indexed)
-                                  if (a is AttachedPasted)
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 6),
-                                      child: _PastedChip(
-                                        key: Key('pasted-$i'),
-                                        file: a,
-                                        onRemove: () => setState(() => _attached.removeAt(i)),
-                                        onAsText: () => setState(() {
-                                          _attached.removeAt(i);
-                                          final now = _text.text;
-                                          final text =
-                                              '$now${now.isNotEmpty && !now.endsWith('\n') ? '\n' : ''}${a.content}';
-                                          _before = text;
-                                          _text.value = TextEditingValue(
-                                            text: text,
-                                            selection: TextSelection.collapsed(offset: text.length),
-                                          );
-                                        }),
-                                      ),
-                                    )
-                                  else
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 6),
-                                      child: InputChip(
-                                        visualDensity: VisualDensity.compact,
-                                        avatar: a is AttachedImage
-                                            // A photo shows itself (the page's thumbnail).
-                                            ? ClipRRect(
-                                                borderRadius: BorderRadius.circular(4),
-                                                child: Image.memory(
-                                                  a.bytes,
-                                                  width: 22,
-                                                  height: 22,
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (_, _, _) =>
-                                                      RgIcon(RgIcons.image, size: 16, color: c.dim),
-                                                ),
-                                              )
-                                            : RgIcon(RgIcons.file, size: 16, color: c.dim),
-                                        label: Text(a.name, overflow: TextOverflow.ellipsis),
-                                        deleteButtonTooltipMessage: l.attachmentRemove,
-                                        deleteIcon: RgIcon(RgIcons.x, size: 14, color: c.dim),
-                                        onDeleted: () => setState(() => _attached.removeAt(i)),
-                                      ),
-                                    ),
-                              ],
-                            ),
-                          ),
-                    onAttach: _attach,
-                    onFiles: _take,
-                    onSend: _send,
-                    onTalkStart: _talkStart,
-                    onTalkEnd: _talkEnd,
-                    onTalkCancel: () => unawaited(app.voice.cancelRecording()),
-                    onTalkTap: () =>
-                        setState(() => _note = AppLocalizations.of(context).voiceHoldToTalk),
-                    changed: moreChanged(app, widget.sessionId, agent),
-                    onMore: () => showMoreSheet(
-                      context,
-                      sessionId: widget.sessionId,
-                      agent: agent,
-                      view: view,
-                    ),
-                    running: view.running,
-                    onStop: _stop,
-                    mentions: widget.mentions,
-                    hint: agent == null
-                        ? null
-                        : view.running
-                        ? l.cvWriteWhileWorking(agent.name)
-                        : l.cvWriteTo(agent.name),
-                  ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ],
         ),
       ),

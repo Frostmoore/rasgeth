@@ -2,6 +2,7 @@
 // requests waiting for the person and the counters «For you» and «In progress». [apply] takes one
 // server message, as the page's state.ts does; it is pure enough to test without a socket.
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
@@ -116,6 +117,57 @@ class SessionView extends ChangeNotifier {
   void changed() => notifyListeners();
 }
 
+/// The agents' shared browser as the app watches it (G42.3, the page's Screen.tsx): the latest
+/// frame (`browser.frame`, JPEG), who has control and where it is (`browser.state`).
+class BrowserView extends ChangeNotifier {
+  Uint8List? frame;
+  int width = 0;
+  int height = 0;
+
+  /// agents or person.
+  String control = 'agents';
+  String url = '';
+
+  /// The assistant being taught a task now, if any.
+  String? teaching;
+
+  /// The server has no browser (no Docker): `error` with `unavailable` while watching.
+  bool unavailable = false;
+  bool watching = false;
+
+  bool get mine => control == 'person';
+
+  void apply(Map<String, dynamic> m) {
+    switch (m['type']) {
+      case 'browser.frame':
+        try {
+          frame = base64Decode(m['data'] as String? ?? '');
+        } on FormatException {
+          return;
+        }
+        width = (m['width'] as num?)?.toInt() ?? width;
+        height = (m['height'] as num?)?.toInt() ?? height;
+      case 'browser.state':
+        control = m['control'] == 'person' ? 'person' : 'agents';
+        url = m['url'] as String? ?? '';
+        teaching = m['teaching'] as String?;
+      case 'error' when watching && m['code'] == 'unavailable':
+        unavailable = true;
+      default:
+        return;
+    }
+    notifyListeners();
+  }
+
+  void reset() {
+    frame = null;
+    unavailable = false;
+    control = 'agents';
+    url = '';
+    teaching = null;
+  }
+}
+
 class LiveModel extends ChangeNotifier {
   LiveModel({DateTime Function()? now}) : now = now ?? DateTime.now;
 
@@ -134,6 +186,17 @@ class LiveModel extends ChangeNotifier {
 
   /// The person's agents at work and the line of turns waiting for a place (3.8.10).
   TurnQueue turns = TurnQueue.empty;
+
+  /// Group chats changed (`room.changed`): the number goes up, [lastRoom] says which.
+  final roomsChanged = ValueNotifier<int>(0);
+  String? lastRoom;
+
+  /// A board changed (`board.changed`): the number goes up, [lastThread] says which thread.
+  final boardChanged = ValueNotifier<int>(0);
+  String? lastThread;
+
+  /// The shared browser, while a screen watches it.
+  final browser = BrowserView();
 
   /// Where the last answered request was decided (`via`), for the person to see.
   String? lastClosedVia;
@@ -236,6 +299,17 @@ class LiveModel extends ChangeNotifier {
         final q = QuestionRequest.fromJson(_map(m['request']));
         questions = [...questions.where((a) => a.requestId != q.requestId), q];
         if (!sessions.any((s) => s.id == q.sessionId)) onUnknownSession?.call();
+      case 'room.changed':
+        lastRoom = m['roomId'] as String?;
+        roomsChanged.value++;
+        return;
+      case 'board.changed':
+        lastThread = m['threadId'] as String?;
+        boardChanged.value++;
+        return;
+      case 'browser.frame' || 'browser.state' || 'error':
+        browser.apply(m);
+        return;
       case 'turns.queue':
         turns = TurnQueue.fromJson(m);
       case 'question.closed':

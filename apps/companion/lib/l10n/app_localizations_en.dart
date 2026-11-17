@@ -5227,4 +5227,409 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get queueOpenSettings => 'Change the limit';
+
+  @override
+  String get cvSubMain => 'Main agent';
+
+  @override
+  String get cvSubPath => 'Where you are';
+
+  @override
+  String get cvSubRow => 'Sub-agents';
+
+  @override
+  String get cvSubOpenTab => 'Open its tab';
+
+  @override
+  String get cvSubStatusRunning => 'Working';
+
+  @override
+  String get cvSubStatusDone => 'Finished';
+
+  @override
+  String get cvSubStatusFailed => 'Failed';
+
+  @override
+  String get cvSubStatusStopped => 'Stopped';
+
+  @override
+  String get cvSubFresh => 'Something new';
+
+  @override
+  String get cvSubWaits => 'Waits for your yes';
+
+  @override
+  String get cvSubClose => 'Close the tab';
+
+  @override
+  String get cvSubTask => 'Task received';
+
+  @override
+  String cvSubTaskFrom(String name) {
+    return 'Task from «$name»';
+  }
+
+  @override
+  String get cvSubEndedDone => 'It finished: its report went back to the agent that started it.';
+
+  @override
+  String get cvSubEndedFailed => 'It did not finish its task.';
+
+  @override
+  String get cvSubEndedStopped => 'It was stopped.';
+
+  @override
+  String get cvSubInterrupted => 'Interrupted: the server stopped while it worked.';
+
+  @override
+  String cvSubTime(String time) {
+    return '$time';
+  }
+
+  @override
+  String cvSubTools(String n) {
+    return '$n tools';
+  }
+
+  @override
+  String cvSubTokens(String n) {
+    return '$n tokens';
+  }
+
+  @override
+  String get cvSubNoWrite => 'It takes orders only from the agent that started it';
+
+  @override
+  String get cvSubStop => 'Stop';
+
+  @override
+  String get cvCmdStrip => 'Background commands';
+
+  @override
+  String cvCmdRunningN(String n) {
+    return '$n running';
+  }
+
+  @override
+  String cvCmdDoneN(String n) {
+    return '$n finished';
+  }
+
+  @override
+  String get cvCmdOpenStrip => 'Show the background commands';
+
+  @override
+  String get cvCmdShrinkStrip => 'Reduce to one line';
+
+  @override
+  String cvCmdStartedAt(String at) {
+    return 'Started at $at';
+  }
+
+  @override
+  String get cvCmdOutput => 'Output';
+
+  @override
+  String get cvCmdStop => 'Stop';
+
+  @override
+  String cvCmdFinishedN(String n) {
+    return '$n finished commands';
+  }
+
+  @override
+  String get cvCmdRemoveFinished => 'Remove all finished';
+
+  @override
+  String get cvCmdRemove => 'Remove';
+
+  @override
+  String get cvCmdStatusRunning => 'running';
+
+  @override
+  String cvCmdStatusDone(String code) {
+    return 'exit code $code';
+  }
+
+  @override
+  String cvCmdStatusFailed(String code) {
+    return 'failed, exit code $code';
+  }
+
+  @override
+  String get cvCmdStatusStopped => 'stopped';
+
+  @override
+  String get cvCmdStatusInterrupted => 'interrupted (RedGiant had stopped)';
+
+  @override
+  String get cvCmdOutputTitle => 'Background command';
+
+  @override
+  String get cvCmdStarted => 'Started';
+
+  @override
+  String get cvCmdEnded => 'Ended';
+
+  @override
+  String get cvCmdFolder => 'Folder';
+
+  @override
+  String get cvCmdBy => 'Started by';
+
+  @override
+  String get cvCmdShowTimes => 'Times of every line';
+
+  @override
+  String cvCmdLines(String n) {
+    return '$n lines';
+  }
+
+  @override
+  String get cvCmdNoLog => 'Its log is not there any more.';
+
+  @override
+  String get cvRoomAdd => 'Add an agent';
+
+  @override
+  String cvRoomAnswering(String names) {
+    return '$names is answering…';
+  }
+
+  @override
+  String get cvRoomEmpty =>
+      'Write to everyone: the first one answers, or call someone with @name. Adding an agent gives it no new access: what the others write reaches it as information.';
+
+  @override
+  String get cvRoomFirst => 'answers first';
+
+  @override
+  String get cvRoomGone => 'This group chat no longer exists.';
+
+  @override
+  String get cvRoomGroupPersonal => 'Yours';
+
+  @override
+  String cvRoomInspector(String project) {
+    return 'Inspector of $project';
+  }
+
+  @override
+  String cvRoomLead(String project) {
+    return 'Lead of $project';
+  }
+
+  @override
+  String get cvRoomPick => 'Who?';
+
+  @override
+  String cvRoomRemove(String name) {
+    return 'Remove $name from the chat';
+  }
+
+  @override
+  String get cvRoomUsageHint => 'What its answers here cost, and how full its context is';
+
+  @override
+  String get cvRoomWrite => 'Write to the group (@ to call someone)';
+
+  @override
+  String cvRoomJoined(String name) {
+    return '$name joined the chat';
+  }
+
+  @override
+  String cvRoomLeft(String name) {
+    return '$name left the chat';
+  }
+
+  @override
+  String get cvGroups => 'Groups';
+
+  @override
+  String get cvGroupsEmpty => 'Several agents in one chat: «Add an agent» in any conversation.';
+
+  @override
+  String get cvGroupNew => 'New group';
+
+  @override
+  String cvChatsArchived(String n) {
+    return 'Archived ($n)';
+  }
+
+  @override
+  String get cvChatsBefore => 'Earlier chats';
+
+  @override
+  String get cvArchive => 'Archive';
+
+  @override
+  String get cvUnarchive => 'Bring back';
+
+  @override
+  String get cvChatHint =>
+      'Ask anything: the Chat searches the web and cites its sources, makes files, pages and pictures and shows them to you, and proposes variants to choose from.';
+
+  @override
+  String get cvNewChat => 'New chat';
+
+  @override
+  String get cvDailyChat => 'Chat';
+
+  @override
+  String get cvDelete => 'Delete';
+
+  @override
+  String get cvDeleteChatConfirm => 'Delete this chat for good?';
+
+  @override
+  String get cvChatToGroup => 'Go on as a group: add an agent, which gets this chat as context';
+
+  @override
+  String get cvAgentModelDefault => 'The default model';
+
+  @override
+  String get cvInspector => 'Inspector';
+
+  @override
+  String get cvInspectorHint =>
+      'Ask the inspector about this project: it reads files, git, the activity log, tasks, the board and the budget, and changes nothing.';
+
+  @override
+  String get cvInspectorAlerts =>
+      'Tell me on Telegram when something goes wrong (abandoned task, budget exceeded, blocker, failed automation)';
+
+  @override
+  String get cvInspectorSummary => 'Daily summary at';
+
+  @override
+  String get cvFolderMove => 'Move to a folder';
+
+  @override
+  String get cvFolderNew => 'New folder…';
+
+  @override
+  String get cvFolderName => 'Folder name';
+
+  @override
+  String get cvFolderOut => 'Take it out of the folder';
+
+  @override
+  String get cvExportMd => 'Export as Markdown';
+
+  @override
+  String get cvBoard => 'Board';
+
+  @override
+  String get cvNewThread => 'New thread';
+
+  @override
+  String get cvTitle => 'Title';
+
+  @override
+  String get cvReply => 'Reply';
+
+  @override
+  String get cvSearch => 'Search';
+
+  @override
+  String get cvSummary => 'Summary';
+
+  @override
+  String get cvResolve => 'Resolve';
+
+  @override
+  String get cvBlock => 'Block';
+
+  @override
+  String get cvReopen => 'Reopen';
+
+  @override
+  String get cvPostKinds => 'task,result,question,decision,blocker,note';
+
+  @override
+  String get cvPostKindLabels => 'task,result,question,decision,blocker,note';
+
+  @override
+  String get cvStatusOpen => 'open';
+
+  @override
+  String get cvStatusResolved => 'resolved';
+
+  @override
+  String get cvStatusBlocked => 'blocked';
+
+  @override
+  String get cvEmptyBoard => 'No threads yet.';
+
+  @override
+  String get cvNoResults => 'No results.';
+
+  @override
+  String get cvAgentWholeProject => 'The whole project';
+
+  @override
+  String get cvBoardSub => 'Subproject';
+
+  @override
+  String get cvYou => 'You';
+
+  @override
+  String get cvScreenTitle => 'Agents\' browser';
+
+  @override
+  String get cvScreenOpen => 'Screen';
+
+  @override
+  String get cvScreenTake => 'Take control';
+
+  @override
+  String get cvScreenGiveBack => 'Give it back to the agents';
+
+  @override
+  String get cvScreenAddress => 'Web address';
+
+  @override
+  String get cvScreenShared =>
+      'The browser your personal agents share: sign in once and every one of them can use that site. Take control to sign in: what you type goes to the page only, never to an agent.';
+
+  @override
+  String get cvScreenYours =>
+      'You have control: the agents wait. Click and type on the screen; give it back when you are done.';
+
+  @override
+  String get cvScreenStarting => 'Starting the browser…';
+
+  @override
+  String get cvScreenUnavailable => 'The agents\' browser needs RedGiant\'s Docker installation.';
+
+  @override
+  String get cvTeachStart => 'Teach a task';
+
+  @override
+  String get cvTeachHint =>
+      'Do the task once yourself: every page, click and text is written down (never passwords), then the agent turns it into a skill you approve in Extensions';
+
+  @override
+  String get cvTeachWho => 'Which agent learns it';
+
+  @override
+  String cvTeachRecording(String name) {
+    return 'Recording for $name: do the task, then press Done. Passwords are never written down.';
+  }
+
+  @override
+  String get cvTeachDone => 'Done';
+
+  @override
+  String get cvTeachTitle => 'What is this task called? (optional)';
+
+  @override
+  String get cvChatPlaceholder => 'Write a message (Enter to send, Shift+Enter for a new line)';
+
+  @override
+  String get cvConversations => 'Conversations';
+
+  @override
+  String get cvChatInstructions => 'The Chat\'s instructions';
 }

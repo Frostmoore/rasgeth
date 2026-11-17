@@ -206,3 +206,51 @@ Future<void> _pickFolder(BuildContext context, SessionRow r, Offset? at) async {
     ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(content: Text(l.cmFailed)));
   }
 }
+
+/// «Move to a folder» for anything that has one (an old chat, G42.3): [folders] to choose from, a
+/// new one, or out of it. The folder picked, '' to take it out, null when nothing changes.
+Future<String?> askFolder(
+  BuildContext context, {
+  required List<String> folders,
+  String? current,
+  String? subtitle,
+}) async {
+  final l = AppLocalizations.of(context);
+  const fresh = '\u0000new';
+  const out = '\u0000out';
+  final entries = <RgMenuEntry<String>?>[
+    for (final f in folders)
+      RgMenuEntry(
+        f,
+        f == current ? RgIcons.check : RgIcons.folder,
+        f,
+        key: Key('conv-folder-$f'),
+        enabled: f != current,
+      ),
+    if (folders.isNotEmpty) null,
+    RgMenuEntry(fresh, RgIcons.plus, l.cmFolderNew, key: const Key('conv-folder-new')),
+    if (current != null)
+      RgMenuEntry(out, RgIcons.x, l.cmFolderOut, key: const Key('conv-folder-out')),
+  ];
+  final pick = await showRgSheet(
+    context,
+    head: RgSheetHead(
+      leading: RgIcon(RgIcons.folder, size: 22, color: RgColors.of(context).dim),
+      title: l.cmFolder,
+      subtitle: subtitle,
+    ),
+    entries: entries,
+  );
+  if (pick == null || !context.mounted) return null;
+  if (pick == out) return '';
+  if (pick != fresh) return pick;
+  final name = await askText(
+    context,
+    title: l.cmFolderNewTitle,
+    yes: l.cmFolderNewYes,
+    fieldKey: const Key('conv-folder-name'),
+  );
+  final n = name?.trim() ?? '';
+  if (n.isEmpty) return null;
+  return n.length > 60 ? n.substring(0, 60) : n;
+}
