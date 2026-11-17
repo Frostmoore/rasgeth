@@ -1,0 +1,374 @@
+{
+  "nonce": "n0nce-n0nce_n0nce",
+  "hashes": [
+    {
+      "params": {
+        "token": "rgd_abc123",
+        "bridge": "n0nce-n0nce_n0nce",
+        "theme": "dark",
+        "lang": "it",
+        "embed": "canvas",
+        "scope": "p1",
+        "path": "src/a b.ts",
+        "line": 12,
+        "session": "s1"
+      },
+      "hash": "token=rgd_abc123&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=p1&path=src%2Fa+b.ts&line=12&session=s1&theme=dark&lang=it"
+    },
+    {
+      "params": {
+        "token": "rgd_abc123",
+        "bridge": "n0nce-n0nce_n0nce",
+        "theme": "light",
+        "lang": "en",
+        "embed": "canvas",
+        "scope": "outside",
+        "path": "Doc/è.pdf",
+        "page": 3
+      },
+      "hash": "token=rgd_abc123&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=outside&path=Doc%2F%C3%A8.pdf&page=3&theme=light&lang=en"
+    },
+    {
+      "params": {
+        "token": "rgd_abc123",
+        "bridge": "n0nce-n0nce_n0nce",
+        "theme": "dark",
+        "lang": "it",
+        "embed": "canvas",
+        "scope": "p1",
+        "path": "日本/a+b%.md"
+      },
+      "hash": "token=rgd_abc123&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=p1&path=%E6%97%A5%E6%9C%AC%2Fa%2Bb%25.md&theme=dark&lang=it"
+    },
+    {
+      "params": {
+        "token": "rgd_abc123",
+        "bridge": "n0nce-n0nce_n0nce",
+        "theme": "dark",
+        "lang": "it",
+        "embed": "port",
+        "agent": "a-1",
+        "port": 5173,
+        "path": "/app?x=1"
+      },
+      "hash": "token=rgd_abc123&embed=port&bridge=n0nce-n0nce_n0nce&path=%2Fapp%3Fx%3D1&agent=a-1&port=5173&theme=dark&lang=it"
+    },
+    {
+      "params": {
+        "token": "rgd_abc123",
+        "bridge": "n0nce-n0nce_n0nce",
+        "theme": "dark",
+        "lang": "it",
+        "embed": "board",
+        "board": "s_1.0123456789ab"
+      },
+      "hash": "token=rgd_abc123&embed=board&bridge=n0nce-n0nce_n0nce&board=s_1.0123456789ab&theme=dark&lang=it"
+    },
+    {
+      "params": {
+        "token": "rgd_abc123",
+        "bridge": "n0nce-n0nce_n0nce",
+        "theme": "dark",
+        "lang": "it",
+        "embed": "probe",
+        "font": "Inter, sans-serif"
+      },
+      "hash": "token=rgd_abc123&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&font=Inter%2C+sans-serif"
+    },
+    {
+      "params": {
+        "token": "a~b!c'(d)*e",
+        "bridge": "n0nce-n0nce_n0nce",
+        "theme": "dark",
+        "lang": "it",
+        "embed": "probe"
+      },
+      "hash": "token=a%7Eb%21c%27%28d%29*e&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it"
+    }
+  ],
+  "badHashes": [
+    "token=x&open=settings",
+    "token=x&embed=shell&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it",
+    "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&extra=1",
+    "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&theme=light",
+    "embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it",
+    "token=x&embed=probe&bridge=short&theme=dark&lang=it",
+    "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=blue&lang=it",
+    "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=de",
+    "token=x&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=p&theme=dark&lang=it",
+    "token=x&embed=port&bridge=n0nce-n0nce_n0nce&agent=a&theme=dark&lang=it",
+    "token=x&embed=port&bridge=n0nce-n0nce_n0nce&agent=a&port=70000&theme=dark&lang=it",
+    "token=x&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=p&path=a&line=-1&theme=dark&lang=it",
+    "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.xyz&theme=dark&lang=it",
+    "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&scope=p&theme=dark&lang=it",
+    "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&font=a%7Bb",
+    "token=a+b&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it"
+  ],
+  "envelopes": [
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"ready\"}}",
+      "message": {
+        "t": "ready"
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"title\",\"name\":\"a.xlsx\",\"kind\":\"sheet\",\"size\":2048}}",
+      "message": {
+        "t": "title",
+        "name": "a.xlsx",
+        "kind": "sheet",
+        "size": 2048
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"title\",\"name\":\"b\"}}",
+      "message": {
+        "t": "title",
+        "name": "b"
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"saveState\",\"state\":\"saving\"}}",
+      "message": {
+        "t": "saveState",
+        "state": "saving"
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"saveState\",\"state\":\"error\",\"error\":\"disk full\"}}",
+      "message": {
+        "t": "saveState",
+        "state": "error",
+        "error": "disk full"
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"saveAs\",\"name\":\"a.pdf\",\"url\":\"/api/files/raw?x=1\"}}",
+      "message": {
+        "t": "saveAs",
+        "name": "a.pdf",
+        "url": "/api/files/raw?x=1"
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"saveAs\",\"name\":\"a.txt\",\"data\":\"aGVsbG8=\",\"mime\":\"text/plain\"}}",
+      "message": {
+        "t": "saveAs",
+        "name": "a.txt",
+        "data": "aGVsbG8=",
+        "mime": "text/plain"
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"openFile\",\"id\":\"f1\",\"accept\":[\".png\"],\"multiple\":true}}",
+      "message": {
+        "t": "openFile",
+        "id": "f1",
+        "accept": [
+          ".png"
+        ],
+        "multiple": true
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"copy\",\"text\":\"x\"}}",
+      "message": {
+        "t": "copy",
+        "text": "x"
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"share\",\"url\":\"https://example.com/a\"}}",
+      "message": {
+        "t": "share",
+        "url": "https://example.com/a"
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"share\",\"title\":\"t\",\"text\":\"words\"}}",
+      "message": {
+        "t": "share",
+        "title": "t",
+        "text": "words"
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"askAgent\",\"text\":\"why this?\",\"ref\":{\"scope\":\"p\",\"path\":\"a.ts\",\"line\":3,\"lineEnd\":5}}}",
+      "message": {
+        "t": "askAgent",
+        "text": "why this?",
+        "ref": {
+          "scope": "p",
+          "path": "a.ts",
+          "line": 3,
+          "lineEnd": 5
+        }
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"askAgent\",\"text\":\"page\",\"ref\":{\"page\":2}}}",
+      "message": {
+        "t": "askAgent",
+        "text": "page",
+        "ref": {
+          "page": 2
+        }
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"external\",\"url\":\"https://example.com\"}}",
+      "message": {
+        "t": "external",
+        "url": "https://example.com"
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"close\"}}",
+      "message": {
+        "t": "close"
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"back\",\"handled\":false}}",
+      "message": {
+        "t": "back",
+        "handled": false
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"saveAs\",\"name\":\"a\",\"url\":\"/x\",\"data\":\"AA==\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"saveAs\",\"name\":\"a\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"saveAs\",\"name\":\"a\",\"url\":\"//evil.example/x\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"saveAs\",\"name\":\"\",\"url\":\"/x\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"share\",\"title\":\"x\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"external\",\"url\":\"javascript:alert(1)\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"askAgent\",\"text\":\"\",\"ref\":{}}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"askAgent\",\"text\":\"x\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"ready\",\"x\":1}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"title\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"title\",\"name\":\"a\",\"size\":-1}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"saveState\",\"state\":\"lost\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"back\",\"handled\":\"no\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"shell\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":\"ready\"}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"another-nonce-123\",\"m\":{\"t\":\"ready\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"app\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"ready\"}}",
+      "message": null
+    },
+    {
+      "raw": "not json",
+      "message": null
+    },
+    {
+      "raw": "[1,2]",
+      "message": null
+    }
+  ],
+  "appMessages": [
+    {
+      "t": "theme",
+      "theme": "light"
+    },
+    {
+      "t": "lang",
+      "lang": "en"
+    },
+    {
+      "t": "font",
+      "family": "Inter, sans-serif"
+    },
+    {
+      "t": "back"
+    },
+    {
+      "t": "key",
+      "key": "save"
+    },
+    {
+      "t": "key",
+      "key": "redo"
+    },
+    {
+      "t": "files",
+      "id": "f1",
+      "files": [
+        {
+          "name": "a.png",
+          "type": "image/png",
+          "size": 3,
+          "data": "AAAA"
+        }
+      ]
+    },
+    {
+      "t": "paste",
+      "text": "hello"
+    }
+  ],
+  "encode": [
+    {
+      "s": "a b/c?d=e&f",
+      "e": "a+b%2Fc%3Fd%3De%26f"
+    },
+    {
+      "s": "è~!'()*-._",
+      "e": "%C3%A8%7E%21%27%28%29*-._"
+    },
+    {
+      "s": "日本",
+      "e": "%E6%97%A5%E6%9C%AC"
+    },
+    {
+      "s": "+%",
+      "e": "%2B%25"
+    }
+  ]
+}

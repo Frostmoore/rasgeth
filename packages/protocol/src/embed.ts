@@ -1,0 +1,311 @@
+// The page inside RGCompanion (G42.0, plan_g42_parita.md «Come funziona l'embed»): the server's own
+// page (`/`) opened by the app in a web view on one thing only (a Canvas file, an agent's port, a
+// board of variants, the test page), with everything after `#` and never in the query: a fragment
+// never reaches the server nor a log. The device's token is read and taken out of the address at
+// once and kept in memory only; theme and language come from the app and are not saved.
+//
+// The bridge: the page talks to the app through one channel (`EMBED_CHANNEL`, a JavaScript channel
+// of the web view; `chrome.webview` on Windows) with an envelope that carries the nonce the app put
+// in the fragment (`bridge`), so nothing else in the page (a sandboxed preview inside the Canvas)
+// can speak for it. The app answers by posting `{ rg: "app", m }` to the page's own window.
+// The app mirrors these rules in Dart (lib/embed/), checked against vectors made from here
+// (apps/companion/tool/embed_vectors.mjs).
+import { z } from "zod";
+
+/** What an embed shows. */
+export const EMBED_KINDS = ["canvas", "port", "board", "probe"] as const;
+export type EmbedKind = (typeof EMBED_KINDS)[number];
+
+/** The web view's channel to the app (page → app). */
+export const EMBED_CHANNEL = "RGEmbed";
+/** The most files one message carries (app → page). */
+export const EMBED_FILES_MAX = 20;
+/** The biggest file one message carries, before base64. */
+export const EMBED_FILE_MAX = 25 * 1024 * 1024;
+
+/** The fragment's keys, in the order `embedHash` writes them. */
+export const EMBED_HASH_ORDER = [
+  "token",
+  "embed",
+  "bridge",
+  "scope",
+  "path",
+  "line",
+  "page",
+  "session",
+  "agent",
+  "port",
+  "board",
+  "theme",
+  "lang",
+  "font",
+] as const;
+
+const NUMBER = /^\d{1,9}$/;
+const count = z.number().int().min(0).max(999_999_999);
+const board = /^[\w-]+\.[0-9a-f]{12}$/;
+
+export const EmbedParams = z
+  .object({
+    token: z
+      .string()
+      .min(1)
+      .max(1000)
+      .regex(/^\S+$/),
+    embed: z.enum(EMBED_KINDS),
+    /** The bridge's nonce: every message to the app carries it. */
+    bridge: z.string().regex(/^[A-Za-z0-9_-]{16,64}$/),
+    scope: z.string().min(1).max(200).optional(),
+    path: z.string().min(1).max(4000).optional(),
+    /** Where to open a file: a text's line, a PDF's page. */
+    line: count.optional(),
+    page: count.optional(),
+    /** The conversation the Canvas belongs to (its errors and «ask the agent» go there). */
+    session: z.string().min(1).max(200).optional(),
+    agent: z.string().min(1).max(200).optional(),
+    port: z.number().int().min(1).max(65535).optional(),
+    /** `<sessionId>.<proposalId>`, as a board's link from Telegram. */
+    board: z.string().regex(board).optional(),
+    theme: z.enum(["light", "dark"]),
+    lang: z.enum(["it", "en"]),
+    /** The app's font family, when it is not the system's. */
+    font: z
+      .string()
+      .min(1)
+      .max(200)
+      .regex(/^[^;{}<>]+$/)
+      .optional(),
+  })
+  .strict()
+  .superRefine((p, ctx) => {
+    const need = (ok: boolean, what: string) => {
+      if (!ok) ctx.addIssue({ code: "custom", message: `${p.embed} needs ${what}` });
+    };
+    if (p.embed === "canvas") need(!!p.scope && !!p.path, "scope and path");
+    if (p.embed === "port") need(!!p.agent && p.port !== undefined, "agent and port");
+    if (p.embed === "board") need(!!p.board, "board");
+    if (p.embed !== "canvas")
+      need(p.scope === undefined && p.line === undefined && p.page === undefined, "no file");
+    if (p.embed !== "port") need(p.agent === undefined && p.port === undefined, "no port");
+    if (p.embed !== "board") need(p.board === undefined, "no board");
+  });
+export type EmbedParams = z.infer<typeof EmbedParams>;
+
+/** `application/x-www-form-urlencoded`, as `URLSearchParams` writes it (the Dart side does the same). */
+export function formEncode(s: string): string {
+  let out = "";
+  for (const b of new TextEncoder().encode(s)) {
+    const c = String.fromCharCode(b);
+    if (/[A-Za-z0-9*\-._]/.test(c)) out += c;
+    else if (b === 0x20) out += "+";
+    else out += `%${b.toString(16).toUpperCase().padStart(2, "0")}`;
+  }
+  return out;
+}
+
+/** The fragment (without `#`) for [p]: its keys in `EMBED_HASH_ORDER`, the absent ones left out. */
+export function embedHash(p: EmbedParams): string {
+  const parsed = EmbedParams.parse(p);
+  const values = parsed as Record<string, string | number | undefined>;
+  return EMBED_HASH_ORDER.flatMap((k) => {
+    const v = values[k];
+    return v === undefined ? [] : [`${k}=${formEncode(String(v))}`];
+  }).join("&");
+}
+
+/**
+ * The embed a fragment asks for (with or without `#`), or null: not an embed, a key it does not
+ * know, a key twice, a value out of its rules.
+ */
+export function parseEmbedHash(hash: string): EmbedParams | null {
+  const h = new URLSearchParams(hash.startsWith("#") ? hash.slice(1) : hash);
+  if (!h.has("embed")) return null;
+  const seen = new Set<string>();
+  const raw: Record<string, string | number> = {};
+  for (const [k, v] of h) {
+    if (seen.has(k)) return null;
+    seen.add(k);
+    if (k === "line" || k === "page" || k === "port") {
+      if (!NUMBER.test(v)) return null;
+      raw[k] = Number(v);
+    } else raw[k] = v;
+  }
+  const r = EmbedParams.safeParse(raw);
+  return r.success ? r.data : null;
+}
+
+/** Whether a page's fragment asks for an embed at all (cheap, before the page picks its root). */
+export const isEmbedHash = (hash: string) =>
+  new URLSearchParams(hash.startsWith("#") ? hash.slice(1) : hash).has("embed");
+
+// ---------- The bridge ----------
+
+const text = (max: number) => z.string().max(max);
+/** Where «ask the agent» points: a file, its lines, a page. */
+export const EmbedRef = z
+  .object({
+    scope: text(200).optional(),
+    path: text(4000).optional(),
+    line: count.optional(),
+    lineEnd: count.optional(),
+    page: count.optional(),
+  })
+  .strict();
+export type EmbedRef = z.infer<typeof EmbedRef>;
+
+/** A link inside the server (a signed `/…` path), never another origin. */
+const serverPath = z
+  .string()
+  .max(4000)
+  .regex(/^\/(?!\/)/);
+const webLink = z
+  .string()
+  .max(4000)
+  .regex(/^https?:\/\/[^\s]+$/i);
+
+/** Page → app. */
+export const EmbedToApp = z.discriminatedUnion("t", [
+  /** The content is drawn: the app takes its own indicator away. */
+  z.object({ t: z.literal("ready") }).strict(),
+  /** What the app's bar shows: the name, its kind and weight. */
+  z
+    .object({
+      t: z.literal("title"),
+      name: text(300),
+      kind: text(40).optional(),
+      size: count.optional(),
+    })
+    .strict(),
+  z
+    .object({
+      t: z.literal("saveState"),
+      state: z.enum(["saved", "saving", "error"]),
+      error: text(500).optional(),
+    })
+    .strict(),
+  /** «Save as…»: a signed link of the server, or the bytes (base64). */
+  z
+    .object({
+      t: z.literal("saveAs"),
+      name: z.string().min(1).max(255),
+      url: serverPath.optional(),
+      data: z
+        .string()
+        .max(Math.ceil(EMBED_FILE_MAX / 3) * 4)
+        .regex(/^[A-Za-z0-9+/]*={0,2}$/)
+        .optional(),
+      mime: text(200).optional(),
+    })
+    .strict()
+    .refine((m) => (m.url === undefined) !== (m.data === undefined), "url or data"),
+  /** The page wants files: the app picks them and answers `files` with the same id. */
+  z
+    .object({
+      t: z.literal("openFile"),
+      id: z.string().min(1).max(64),
+      accept: z.array(text(100)).max(20).optional(),
+      multiple: z.boolean().optional(),
+    })
+    .strict(),
+  z.object({ t: z.literal("copy"), text: text(1_000_000) }).strict(),
+  z
+    .object({
+      t: z.literal("share"),
+      title: text(300).optional(),
+      text: text(100_000).optional(),
+      url: webLink.optional(),
+    })
+    .strict()
+    .refine((m) => m.text !== undefined || m.url !== undefined, "text or url"),
+  /** «Ask the agent»: the selection and where it is, to the app's own conversation. */
+  z
+    .object({ t: z.literal("askAgent"), text: z.string().min(1).max(20_000), ref: EmbedRef })
+    .strict(),
+  /** A link to open outside the app. */
+  z.object({ t: z.literal("external"), url: webLink }).strict(),
+  z.object({ t: z.literal("close") }).strict(),
+  /** The answer to the app's `back`: whether the page closed something of its own. */
+  z.object({ t: z.literal("back"), handled: z.boolean() }).strict(),
+]);
+export type EmbedToApp = z.infer<typeof EmbedToApp>;
+
+/** A file the app hands the page. */
+export const EmbedFile = z
+  .object({
+    name: z.string().min(1).max(255),
+    type: text(200),
+    size: z.number().int().min(0).max(EMBED_FILE_MAX),
+    data: z
+      .string()
+      .max(Math.ceil(EMBED_FILE_MAX / 3) * 4)
+      .regex(/^[A-Za-z0-9+/]*={0,2}$/),
+  })
+  .strict();
+export type EmbedFile = z.infer<typeof EmbedFile>;
+
+/** The keys the app passes on (Ctrl/Cmd+S, Z, Shift+Z, F) when the web view does not hold them. */
+export const EMBED_KEYS = ["save", "undo", "redo", "find"] as const;
+
+/** App → page. */
+export const AppToEmbed = z.discriminatedUnion("t", [
+  z.object({ t: z.literal("theme"), theme: z.enum(["light", "dark"]) }).strict(),
+  z.object({ t: z.literal("lang"), lang: z.enum(["it", "en"]) }).strict(),
+  z
+    .object({
+      t: z.literal("font"),
+      family: z
+        .string()
+        .min(1)
+        .max(200)
+        .regex(/^[^;{}<>]+$/),
+    })
+    .strict(),
+  /** The system's back: the page closes its own panel first, then answers `back`. */
+  z.object({ t: z.literal("back") }).strict(),
+  z.object({ t: z.literal("key"), key: z.enum(EMBED_KEYS) }).strict(),
+  /** Files picked (the answer to `openFile`, same id) or dropped on the app (no id). */
+  z
+    .object({
+      t: z.literal("files"),
+      id: z.string().min(1).max(64).optional(),
+      files: z.array(EmbedFile).max(EMBED_FILES_MAX),
+    })
+    .strict(),
+  z
+    .object({
+      t: z.literal("paste"),
+      text: text(1_000_000).optional(),
+      files: z.array(EmbedFile).max(EMBED_FILES_MAX).optional(),
+    })
+    .strict(),
+]);
+export type AppToEmbed = z.infer<typeof AppToEmbed>;
+
+/** What the page sends: `{ rg: "embed", n: nonce, m }` as JSON. */
+export function embedEnvelope(nonce: string, m: EmbedToApp): string {
+  return JSON.stringify({ rg: "embed", n: nonce, m: EmbedToApp.parse(m) });
+}
+
+/** A page's message as the app reads it: null unless it is the page's (its nonce) and well formed. */
+export function readEmbedEnvelope(raw: string, nonce: string): EmbedToApp | null {
+  let v: unknown;
+  try {
+    v = JSON.parse(raw);
+  } catch {
+    return null;
+  }
+  if (!v || typeof v !== "object") return null;
+  const e = v as { rg?: unknown; n?: unknown; m?: unknown };
+  if (e.rg !== "embed" || e.n !== nonce) return null;
+  const r = EmbedToApp.safeParse(e.m);
+  return r.success ? r.data : null;
+}
+
+/** An app's message as the page reads it (posted to its own window): null unless well formed. */
+export function readAppMessage(data: unknown): AppToEmbed | null {
+  if (!data || typeof data !== "object") return null;
+  const e = data as { rg?: unknown; m?: unknown };
+  if (e.rg !== "app") return null;
+  const r = AppToEmbed.safeParse(e.m);
+  return r.success ? r.data : null;
+}

@@ -11,6 +11,7 @@ export * from "./critical.js";
 export * from "./dangers.js";
 export * from "./devices.js";
 export * from "./doc.js";
+export * from "./embed.js";
 export * from "./doc-image.js";
 export * from "./doc-model.js";
 export * from "./doc-office.js";

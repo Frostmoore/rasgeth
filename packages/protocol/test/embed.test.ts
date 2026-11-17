@@ -1,0 +1,142 @@
+// The page inside RGCompanion (G42.0): the fragment as a table (parameters → fragment → back),
+// the token never in a query, unknown or wrong values refused, and the bridge's envelope.
+import { describe, expect, it } from "vitest";
+import {
+  AppToEmbed,
+  type EmbedParams,
+  EmbedToApp,
+  embedEnvelope,
+  embedHash,
+  formEncode,
+  isEmbedHash,
+  parseEmbedHash,
+  readAppMessage,
+  readEmbedEnvelope,
+} from "../src/index.js";
+
+const NONCE = "n0nce-n0nce_n0nce";
+const base = { token: "rgd_abc123", bridge: NONCE, theme: "dark", lang: "it" } as const;
+
+const good: [string, EmbedParams, string][] = [
+  [
+    "a file in the Canvas, at a line",
+    { ...base, embed: "canvas", scope: "p1", path: "src/a b.ts", line: 12, session: "s1" },
+    "token=rgd_abc123&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=p1&path=src%2Fa+b.ts&line=12&session=s1&theme=dark&lang=it",
+  ],
+  [
+    "a PDF at a page, light, in English",
+    { ...base, theme: "light", lang: "en", embed: "canvas", scope: "outside", path: "Doc/è.pdf", page: 3 },
+    "token=rgd_abc123&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=outside&path=Doc%2F%C3%A8.pdf&page=3&theme=light&lang=en",
+  ],
+  [
+    "an agent's port",
+    { ...base, embed: "port", agent: "a-1", port: 5173, path: "/app?x=1" },
+    "token=rgd_abc123&embed=port&bridge=n0nce-n0nce_n0nce&path=%2Fapp%3Fx%3D1&agent=a-1&port=5173&theme=dark&lang=it",
+  ],
+  [
+    "a board",
+    { ...base, embed: "board", board: "s_1.0123456789ab" },
+    "token=rgd_abc123&embed=board&bridge=n0nce-n0nce_n0nce&board=s_1.0123456789ab&theme=dark&lang=it",
+  ],
+  [
+    "the test page with the app's font",
+    { ...base, embed: "probe", font: "Inter, sans-serif" },
+    "token=rgd_abc123&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&font=Inter%2C+sans-serif",
+  ],
+];
+
+describe("the embed's fragment", () => {
+  it.each(good)("%s: written in order and read back", (_name, params, hash) => {
+    expect(embedHash(params)).toBe(hash);
+    expect(parseEmbedHash(hash)).toEqual(params);
+    expect(parseEmbedHash(`#${hash}`)).toEqual(params);
+    expect(isEmbedHash(`#${hash}`)).toBe(true);
+  });
+
+  it("is a fragment: a link built from it has no query, so the token never reaches the server", () => {
+    const [, params] = good[0] ?? [];
+    const u = new URL(`https://rg.local:7443/#${embedHash(params as EmbedParams)}`);
+    expect(u.search).toBe("");
+    expect(u.pathname).toBe("/");
+    expect(u.hash).toContain("token=");
+  });
+
+  const bad: [string, string][] = [
+    ["not an embed", "token=x&open=settings"],
+    ["an unknown kind", "token=x&embed=shell&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it"],
+    ["an unknown key", `${good[3]?.[2]}&extra=1`],
+    ["a key twice", `${good[3]?.[2]}&theme=light`],
+    ["no token", "embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it"],
+    ["a short nonce", "token=x&embed=probe&bridge=short&theme=dark&lang=it"],
+    ["an unknown theme", "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=blue&lang=it"],
+    ["an unknown language", "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=de"],
+    ["a canvas without a path", "token=x&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=p&theme=dark&lang=it"],
+    ["a port without its number", "token=x&embed=port&bridge=n0nce-n0nce_n0nce&agent=a&theme=dark&lang=it"],
+    ["a port out of range", "token=x&embed=port&bridge=n0nce-n0nce_n0nce&agent=a&port=70000&theme=dark&lang=it"],
+    ["a line that is not a number", "token=x&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=p&path=a&line=-1&theme=dark&lang=it"],
+    ["a board link of another shape", "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.xyz&theme=dark&lang=it"],
+    ["a file on the test page", "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&scope=p&theme=dark&lang=it"],
+    ["a font that would break the style", "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&font=a%7Bb"],
+    ["a token with a space", "token=a+b&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it"],
+  ];
+  it.each(bad)("refuses %s", (_name, hash) => {
+    expect(parseEmbedHash(hash)).toBeNull();
+  });
+
+  it("encodes as URLSearchParams does", () => {
+    for (const s of ["a b/c?d=e&f", "è~!'()*-._", "日本", "+%"])
+      expect(formEncode(s)).toBe(new URLSearchParams({ x: s }).toString().slice(2));
+  });
+});
+
+describe("the bridge", () => {
+  it("takes the page's messages only with the nonce, and only well formed", () => {
+    const m = { t: "askAgent", text: "why this?", ref: { scope: "p", path: "a.ts", line: 3, lineEnd: 5 } } as const;
+    const raw = embedEnvelope(NONCE, m);
+    expect(readEmbedEnvelope(raw, NONCE)).toEqual(m);
+    expect(readEmbedEnvelope(raw, "another-nonce-123")).toBeNull();
+    expect(readEmbedEnvelope("not json", NONCE)).toBeNull();
+    expect(readEmbedEnvelope(JSON.stringify({ rg: "embed", n: NONCE, m: { t: "shell" } }), NONCE)).toBeNull();
+  });
+
+  const pageGood: EmbedToApp[] = [
+    { t: "ready" },
+    { t: "title", name: "a.xlsx", kind: "sheet", size: 2048 },
+    { t: "saveState", state: "error", error: "disk full" },
+    { t: "saveAs", name: "a.pdf", url: "/api/files/raw?x=1" },
+    { t: "saveAs", name: "a.txt", data: "aGVsbG8=", mime: "text/plain" },
+    { t: "openFile", id: "f1", accept: [".png"], multiple: true },
+    { t: "copy", text: "x" },
+    { t: "share", url: "https://example.com/a" },
+    { t: "external", url: "https://example.com" },
+    { t: "close" },
+    { t: "back", handled: false },
+  ];
+  it.each(pageGood.map((m) => [m.t, m]))("page → app %s", (_t, m) => {
+    expect(EmbedToApp.safeParse(m).success).toBe(true);
+  });
+
+  const pageBad: [string, unknown][] = [
+    ["saveAs with both", { t: "saveAs", name: "a", url: "/x", data: "AA==" }],
+    ["saveAs with neither", { t: "saveAs", name: "a" }],
+    ["saveAs to another origin", { t: "saveAs", name: "a", url: "//evil.example/x" }],
+    ["share with nothing", { t: "share", title: "x" }],
+    ["an external javascript: link", { t: "external", url: "javascript:alert(1)" }],
+    ["an empty question", { t: "askAgent", text: "", ref: {} }],
+    ["an extra field", { t: "ready", x: 1 }],
+  ];
+  it.each(pageBad)("page → app refuses %s", (_n, m) => {
+    expect(EmbedToApp.safeParse(m).success).toBe(false);
+  });
+
+  it("app → page: only `{ rg: 'app', m }` with a known message", () => {
+    expect(readAppMessage({ rg: "app", m: { t: "key", key: "save" } })).toEqual({ t: "key", key: "save" });
+    expect(readAppMessage({ rg: "app", m: { t: "key", key: "quit" } })).toBeNull();
+    expect(readAppMessage({ rg: "embed", m: { t: "back" } })).toBeNull();
+    expect(readAppMessage("back")).toBeNull();
+    const file = { name: "a.png", type: "image/png", size: 3, data: "AAAA" };
+    expect(AppToEmbed.safeParse({ t: "files", id: "f1", files: [file] }).success).toBe(true);
+    expect(AppToEmbed.safeParse({ t: "files", files: Array(21).fill(file) }).success).toBe(false);
+    expect(AppToEmbed.safeParse({ t: "font", family: "x;}" }).success).toBe(false);
+  });
+});
