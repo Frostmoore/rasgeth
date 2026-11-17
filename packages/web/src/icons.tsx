@@ -8,10 +8,13 @@ function Svg({
   size = 18,
   children,
   fill = false,
+  extra,
 }: {
   size?: number;
   children: ComponentChildren;
   fill?: boolean;
+  /** Another class beside `icon`. */
+  extra?: string;
 }) {
   return (
     <svg
@@ -24,7 +27,7 @@ function Svg({
       stroke-linecap="round"
       stroke-linejoin="round"
       aria-hidden="true"
-      class="icon"
+      class={extra ? `icon ${extra}` : "icon"}
     >
       {children}
     </svg>
@@ -111,9 +114,16 @@ export const IconCheck = ({ size = 14 }: P) => (
   </Svg>
 );
 export const IconX = IconClose;
+/** Something in progress: the arc turns (styles.css `.icon.spinner`); with reduced motion it
+ * stays still and shows three dots instead of a frozen arc (3.8.9). */
 export const IconSpinner = ({ size = 14 }: P) => (
-  <Svg size={size}>
-    <path d="M21 12a9 9 0 1 1-6.2-8.6" />
+  <Svg size={size} extra="spinner">
+    <path class="spinner-arc" d="M21 12a9 9 0 1 1-6.2-8.6" />
+    <g class="spinner-dots">
+      <circle cx="5" cy="12" r="1.6" />
+      <circle cx="12" cy="12" r="1.6" />
+      <circle cx="19" cy="12" r="1.6" />
+    </g>
   </Svg>
 );
 export const IconAlert = ({ size = 15 }: P) => (

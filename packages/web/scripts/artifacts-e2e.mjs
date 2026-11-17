@@ -172,14 +172,16 @@ for (const scheme of ["light", "dark"]) {
   const h = await frame.evaluate((f) => f.getBoundingClientRect().height);
   check(h > 100 && h < 0.7 * 900, `${scheme}: the widget's height follows its content (${h}px)`);
   const result = await page.frameLocator(".widget-card iframe").locator("#out").textContent();
-  check(/%$/.test(result ?? ""), `${scheme}: the widget computes (${result})`);
+  check(/^\d+$/.test(result ?? ""), `${scheme}: the widget computes (${result}%)`);
   const bg = await page
     .frameLocator(".widget-card iframe")
     .locator("input#ti")
-    .evaluate((i) => getComputedStyle(i.closest(".rg-input") ?? i).backgroundColor);
-  console.log(`     ${scheme}: input background ${bg}`);
+    .evaluate(() =>
+      getComputedStyle(document.documentElement).getPropertyValue("--rg-panel").trim(),
+    );
+  console.log(`     ${scheme}: panel colour ${bg}`);
   check(
-    scheme === "dark" ? bg === "rgb(28, 31, 38)" : bg === "rgb(255, 255, 255)",
+    scheme === "dark" ? bg === "#1c1f26" : /^#fff(fff)?$/.test(bg),
     `${scheme}: the widget takes the page's theme`,
   );
   await page.screenshot({ path: join(out, `${scheme}-1-widget.png`) });
@@ -196,8 +198,10 @@ for (const scheme of ["light", "dark"]) {
     const bg2 = await page
       .frameLocator(".widget-card iframe")
       .locator("input#ti")
-      .evaluate((i) => getComputedStyle(i.closest(".rg-input") ?? i).backgroundColor);
-    check(bg2 === "rgb(28, 31, 38)", `the widget follows a theme switch (${bg2})`);
+      .evaluate(() =>
+        getComputedStyle(document.documentElement).getPropertyValue("--rg-panel").trim(),
+      );
+    check(bg2 === "#1c1f26", `the widget follows a theme switch (${bg2})`);
     await page.screenshot({ path: join(out, "light-1b-widget-after-switch.png") });
 
     // No click: a message the widget sends by itself waits in the strip.
@@ -220,7 +224,8 @@ for (const scheme of ["light", "dark"]) {
     check(afterNo === before, "«Lascia stare»: nothing sent");
 
     // A click on its button: sent at once, as the person's, marked.
-    await page.frameLocator(".widget-card iframe").locator("#te").fill("2");
+    // 3.8.8: the values are sliders; the keyboard moves them.
+    await page.frameLocator(".widget-card iframe").locator("#te").press("Home");
     await page.mouse.click(5, 5);
     await page.frameLocator(".widget-card iframe").locator("#go").click();
     await page.waitForTimeout(2500);
@@ -240,7 +245,7 @@ for (const scheme of ["light", "dark"]) {
     // Typing in it, then pressing the button a while later (focus already inside, no new blur
     // for the page): the browser's own activation from the click counts.
     await page.waitForTimeout(5500);
-    await page.frameLocator(".widget-card iframe").first().locator("#ui").fill("75");
+    await page.frameLocator(".widget-card iframe").first().locator("#ui").press("ArrowRight");
     await page.waitForTimeout(2000);
     await page.frameLocator(".widget-card iframe").first().locator("#go").click();
     await page.waitForTimeout(2500);

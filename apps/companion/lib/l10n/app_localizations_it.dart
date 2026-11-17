@@ -4657,6 +4657,41 @@ class AppLocalizationsIt extends AppLocalizations {
   String get embedProbeOpen => 'Prova della vista web';
 
   @override
+  String get requestAnswerAllowed => 'consentita';
+
+  @override
+  String get requestAnswerDenied => 'negata';
+
+  @override
+  String requestDoneHere(String answer) {
+    return 'Hai già risposto dalla pagina o da un\'altra finestra: $answer.';
+  }
+
+  @override
+  String requestDoneChat(String chat, String answer) {
+    return 'Hai già risposto da $chat: $answer.';
+  }
+
+  @override
+  String requestDoneTimeout(String answer) {
+    return 'Nessuno ha risposto in tempo: $answer.';
+  }
+
+  @override
+  String requestDoneElsewhere(String answer) {
+    return 'Già decisa altrove: $answer.';
+  }
+
+  @override
+  String get requestDoneClosing => 'Questa schermata si chiude da sola tra qualche secondo.';
+
+  @override
+  String get requestCloseHint => 'Chiudi (Esc)';
+
+  @override
+  String get requestTechDetails => 'Dettagli tecnici';
+
+  @override
   String get fxOpenFiles => 'File del progetto';
 
   @override

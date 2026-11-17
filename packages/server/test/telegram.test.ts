@@ -301,7 +301,7 @@ describe("Demi-God on Telegram", () => {
     const lines = String(first?.text).split("\n");
     expect(lines[0]).toBe("PERICOLO: azione che non si può annullare");
     expect(lines[1]).toBe("Riscrive per tutti la storia del ramo condiviso main.");
-    expect(lines).toContain("Esegue il comando: git push --force origin main.");
+    expect(lines).toContain("Manda i commit a origin (main).");
     expect(String(first?.text)).not.toMatch(/Why:|Perché: truly/);
     expect(String(first?.text)).not.toMatch(/\p{Extended_Pictographic}/u);
     // The page gets the same details for its red card.

@@ -301,9 +301,11 @@ import {
   requestTool,
   switchedOffSection,
 } from "./request-tool.js";
+import { lastTurnAt, resumeNote, turnCut } from "./resume-work.js";
 import { migrateRooms, Rooms } from "./rooms.js";
 import { migrateSaved, SavedStore } from "./saved.js";
 import { scriptTool } from "./script.js";
+import { settingValue } from "./setting-value.js";
 import { SharedMemory } from "./shared-memory.js";
 import { SKILL_PROMPT, SkillNudge } from "./skill-nudge.js";
 import { type SshToolsHost, sshTools } from "./ssh-tools.js";
@@ -621,16 +623,6 @@ const PRIORITY: Record<AgentRecord["kind"], number> = {
   subagent: 30,
 };
 
-/** A value of rg_settings: JSON text or already parsed, as the driver gives it. */
-function settingValue(v: unknown): unknown {
-  if (typeof v !== "string") return v;
-  try {
-    return JSON.parse(v);
-  } catch {
-    return v;
-  }
-}
-
 /** Composition root: storage, hierarchy, approvals and live sessions. */
 /**
  * What the model is and where it runs (2026-11-05: a local gpt-oss, asked where it ran, said
@@ -878,6 +870,10 @@ export class RedGiantCore implements OrchestrationHost {
   readonly summarizer: BoardSummarizer | undefined;
   /** Where each agent receives delegated work. */
   private readonly workSessions = new Map<string, string>();
+  /** The server is stopping (3.8.9): the turns it cuts keep their tasks open, to resume them. */
+  private closing = false;
+  /** Conversations resumed after a restart that may still try again: a failure keeps the task. */
+  private readonly resuming = new Set<string>();
   private readonly live = new Map<string, Live>();
   private readonly sandbox: SandboxProvider;
   /** One sandbox per workspace, shared by every session that works there. */
@@ -5270,7 +5266,7 @@ export class RedGiantCore implements OrchestrationHost {
           "SELECT value FROM rg_settings WHERE owner_id = $1 AND key = $2",
           [agent.ownerId, key],
         );
-    const keptId = kept && (typeof kept.value === "string" ? JSON.parse(kept.value) : kept.value);
+    const keptId = kept && settingValue(kept.value);
     if (typeof keptId === "string") {
       const [row] = await this.o.db.query<{ id: string }>(
         "SELECT id FROM rg_sessions WHERE id = $1 AND agent_id = $2",
@@ -6083,7 +6079,7 @@ export class RedGiantCore implements OrchestrationHost {
       [ownerId, like, limit],
     );
     const text = (payload: unknown): string => {
-      const p = (typeof payload === "string" ? JSON.parse(payload) : payload) as {
+      const p = settingValue(payload) as {
         text?: string;
         parts?: { type: string; text?: string }[];
       } | null;
@@ -6993,8 +6989,11 @@ export class RedGiantCore implements OrchestrationHost {
       live !== undefined &&
       (this.registry.isProjectArchived(live.ownerId, live.projectId) ||
         this.registry.get(live.agentId)?.archived === true);
+    // Cut by the server stopping, or a resume that will try again (3.8.9): the task stays open.
     if (
       !archived &&
+      !this.closing &&
+      !(err && this.resuming.has(sessionId)) &&
       (err || (r && r.stopReason !== "end_turn")) &&
       this.tasks.waitingIn(sessionId).length === 0
     )
@@ -7094,6 +7093,103 @@ export class RedGiantCore implements OrchestrationHost {
     const l = await this.open(ownerId, sessionId);
     l.running?.abort();
     return l.running !== null;
+  }
+
+  /**
+   * After a restart (3.8.9: the GAIA blackout of 2026-11-17): the turns that were working on an
+   * open task when the server stopped go on by themselves, in the same conversation, told what
+   * happened (`resumeNote`), so nobody makes the same agents, projects or tasks again. Only active
+   * agents outside archived projects, only cuts younger than `maxAgeMs`; a resume that fails
+   * tries again after each of `retryMs`, and only the last failure gives the task up (its report
+   * then tells who handed it over). The tab in the conversation that handed it over ends with it.
+   */
+  async resumeInterrupted(
+    o: { now?: number; maxAgeMs?: number; retryMs?: number[] } = {},
+  ): Promise<{ sessions: string[]; done: Promise<void> }> {
+    const now = o.now ?? Date.now();
+    const maxAge = o.maxAgeMs ?? 24 * 3_600_000;
+    const retries = o.retryMs ?? [120_000, 600_000];
+    const picked: Task[] = [];
+    for (const t of this.tasks.stillOpen()) {
+      if (picked.some((p) => p.sessionId === t.sessionId)) continue;
+      const agent = this.registry.get(t.agentId);
+      if (!agent || agent.status !== "active" || agent.archived) continue;
+      if (this.registry.isProjectArchived(t.ownerId, t.projectId)) continue;
+      if (this.isRunning(t.sessionId)) continue;
+      const events = await this.store.list({ sessionId: t.sessionId });
+      if (events.some((e) => e.type === "session.ended")) continue;
+      const at = lastTurnAt(events);
+      if (!turnCut(events) || at === undefined || now - at > maxAge) continue;
+      picked.push(t);
+    }
+    const one = async (t: Task) => {
+      let result: SendResult | undefined;
+      let failure: unknown;
+      for (let attempt = 0; attempt <= retries.length; attempt++) {
+        const last = attempt === retries.length;
+        if (last) this.resuming.delete(t.sessionId);
+        else this.resuming.add(t.sessionId);
+        failure = undefined;
+        try {
+          const { done } = await this.send(
+            t.ownerId,
+            t.sessionId,
+            attempt === 0
+              ? resumeNote(t)
+              : "[RedGiant: the resume after the restart failed; trying again.]",
+            { from: "redgiant", queue: true },
+          );
+          result = await done;
+          break;
+        } catch (err) {
+          failure = err;
+          console.warn(`resume ${t.sessionId}: ${(err as Error).message}`);
+          if (last || this.closing) break;
+          await new Promise((ok) => setTimeout(ok, retries[attempt]));
+        }
+      }
+      this.resuming.delete(t.sessionId);
+      await this.endResumedTab(t, result, failure).catch(() => {});
+    };
+    const done = Promise.all(picked.map((t) => one(t))).then(() => {});
+    return { sessions: picked.map((t) => t.sessionId), done };
+  }
+
+  /** The tab a restart left open in the conversation that handed the task over (3.8.9). */
+  private async endResumedTab(t: Task, r?: SendResult, err?: unknown): Promise<void> {
+    const from = t.from;
+    if (!from) return;
+    const tabs = await this.store.list({
+      sessionId: from.sessionId,
+      types: ["subagent.started", "subagent.ended"],
+    });
+    const last = tabs.findLast(
+      (e) =>
+        (e.type === "subagent.started" || e.type === "subagent.ended") &&
+        e.payload?.childSessionId === t.sessionId,
+    );
+    if (last?.type !== "subagent.started") return;
+    const status =
+      err !== undefined || r?.stopReason === "other" || r?.stopReason === "refusal"
+        ? "failed"
+        : r?.stopReason === "aborted"
+          ? "stopped"
+          : "done";
+    const summary = lastText(await this.store.list({ sessionId: t.sessionId }));
+    await this.store.append({
+      ownerId: last.ownerId,
+      projectId: last.projectId,
+      agentId: last.agentId,
+      sessionId: from.sessionId,
+      body: {
+        type: "subagent.ended",
+        payload: {
+          childSessionId: t.sessionId,
+          status,
+          ...(summary && { summary: summary.slice(0, 1000) }),
+        },
+      },
+    });
   }
 
   isRunning(sessionId: string): boolean {
@@ -7289,6 +7385,7 @@ export class RedGiantCore implements OrchestrationHost {
 
   /** Stops every running turn and denies every open approval (shutdown). */
   async close(): Promise<void> {
+    this.closing = true;
     await this.nodes.stop();
     await this.automations.stop();
     // Edits accepted are in the log already; the files are written before closing.

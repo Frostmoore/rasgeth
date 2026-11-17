@@ -5,7 +5,7 @@
 import { useEffect, useState } from "preact/hooks";
 import type { ModelChoice } from "../api.js";
 import { t } from "../i18n.js";
-import { agents, getApi, projects, refresh, subprojects } from "../state.js";
+import { getApi, projectLead, projects, refresh, subprojects } from "../state.js";
 import { explain, providerName } from "./Brain.js";
 import { modelName } from "./ModelMenu.js";
 import { ModelFamilySelect } from "./ModelSelect.js";
@@ -60,7 +60,7 @@ export function AgentWizard({ onDone }: { onDone: () => void }) {
     setRole(r);
     if (!named) setName(r === "custom" ? "" : t(`agentRole_${r}`));
   };
-  const lead = agents.value.find((a) => a.kind === "orchestrator" && a.projectId === project);
+  const lead = projectLead(project);
   if (projects.value.length === 0) return <p class="notice warn">{t("agentNeedsProject")}</p>;
   const job = role === "custom" ? own.trim() : ROLES[role];
   const draft: DraftTarget = {
