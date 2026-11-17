@@ -72,7 +72,8 @@ void main() {
     final god = app.god!;
     final project = app.projects.firstOrNull;
 
-    for (final theme in ['chiaro', 'scuro']) {
+    // One theme per run (RG_THEME): a fresh app for each, as a person opens it.
+    for (final theme in (Platform.environment['RG_THEME'] ?? 'chiaro scuro').split(' ')) {
       app.setThemeMode(theme == 'chiaro' ? ThemeMode.light : ThemeMode.dark);
       await frames(t, 1500);
       String n(int i, String what) => 'g388-$where-$theme-${i.toString().padLeft(2, '0')}-$what';
