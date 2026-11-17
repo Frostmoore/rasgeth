@@ -253,8 +253,39 @@ describe.skipIf(!on)("video render with ffmpeg", () => {
     ]);
     gen(["-f", "lavfi", "-i", "mandelbrot=s=600x900", "-frames:v", "1", "photo.jpg"]);
     gen(["-f", "lavfi", "-i", "sine=f=220:r=48000:d=12", "-c:a", "aac", "music.m4a"]);
+    // G41.5d: a wide shot red on the left, blue on the right; a quiet tone (about −30 LUFS).
+    gen([
+      "-f",
+      "lavfi",
+      "-i",
+      "color=c=red:s=320x360:r=25:d=4",
+      "-f",
+      "lavfi",
+      "-i",
+      "color=c=blue:s=320x360:r=25:d=4",
+      "-f",
+      "lavfi",
+      "-i",
+      "sine=f=500:r=48000:d=4,volume=0.03",
+      "-filter_complex",
+      "[0:v][1:v]hstack=inputs=2[v]",
+      "-map",
+      "[v]",
+      "-map",
+      "2:a",
+      "-c:v",
+      "libx264",
+      "-preset",
+      "ultrafast",
+      "-pix_fmt",
+      "yuv420p",
+      "-c:a",
+      "aac",
+      "-shortest",
+      "halves.mp4",
+    ]);
     probes = {};
-    for (const m of ["land.mp4", "port.mp4", "photo.jpg", "music.m4a"])
+    for (const m of ["land.mp4", "port.mp4", "photo.jpg", "music.m4a", "halves.mp4"])
       probes[m] = await probeMedia(ffprobe, join(media, m), R);
     // A fonts folder whose path needs escaping in the graph (not possible on Windows).
     fonts = process.platform === "win32" ? FONTS : join(dir, "font: l'Inter");
@@ -340,6 +371,97 @@ describe.skipIf(!on)("video render with ffmpeg", () => {
     expect(info.streams[0]).toMatchObject({ width: 360, height: 640, nb_read_frames: "250" });
     expect(info.streams[2]?.codec_name).toBe("mov_text");
     expect(res.sidecars.map((s) => s.slice(-4))).toEqual([".srt", ".vtt"]);
+  });
+
+  it("A1 and A2: a crop moved left and right, fitted on black and on blur; the switch for −14 LUFS", async () => {
+    const d = newRgVideo({ width: 360, height: 640, rate: R, aspect: "9:16" });
+    d.tracks = [
+      { id: "V1", kind: "Video", name: "V1", locked: false },
+      { id: "A1", kind: "Audio", name: "A1", locked: false },
+    ];
+    const h = { media: "halves.mp4" };
+    d.clips = [
+      clip("left", "V1", 0, 25, h, { crop: { x: 0, y: 0, w: 0.3164, h: 1 } }),
+      clip("right", "V1", 25, 25, h, { crop: { x: 0.6836, y: 0, w: 0.3164, h: 1 } }, 25),
+      clip("blur", "V1", 50, 25, h, { fit: "fit", background: "blur" }, 50),
+      clip("black", "V1", 75, 25, h, { fit: "fit", background: "black" }, 75),
+      clip("sound", "A1", 0, 100, h),
+    ];
+    // The pixel of a frame (rgb24) at (x, y).
+    const pixel = (file: string, n: number, x: number, y: number): [number, number, number] => {
+      const raw = execFileSync(ffmpeg, [
+        "-v",
+        "error",
+        "-i",
+        file,
+        "-vf",
+        `select=eq(n\\,${n})`,
+        "-frames:v",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "rgb24",
+        "-",
+      ]);
+      const i = (y * 360 + x) * 3;
+      return [raw[i] ?? 0, raw[i + 1] ?? 0, raw[i + 2] ?? 0];
+    };
+    const red = ([r, g, b]: number[]) =>
+      (r as number) > 180 && (g as number) < 60 && (b as number) < 60;
+    const blue = ([r, g, b]: number[]) =>
+      (r as number) < 60 && (g as number) < 60 && (b as number) > 180;
+    const dark = (p: number[]) => p.every((v) => v < 24);
+    // loudnorm's own measure of the file (input_i, LUFS).
+    const measured = (file: string): number => {
+      const r = spawnSync(ffmpeg, [
+        "-hide_banner",
+        "-nostats",
+        "-i",
+        file,
+        "-af",
+        "loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json",
+        "-f",
+        "null",
+        "-",
+      ]);
+      return Number(/"input_i" : "(-?[\d.]+)"/.exec(r.stderr.toString())?.[1]);
+    };
+    const render = async (doc: RgVideo, name: string) => {
+      const res = await renderVideo(compileVideo(doc, probes, target({ captions: "none" })), {
+        run: ffmpegRunner(ffmpeg),
+        mediaPath: (m) => join(media, m),
+        workDir: join(dir, "work"),
+        out: join(dir, "renders", name),
+      });
+      return res.path;
+    };
+    const on = await render(d, "a1-on.mp4");
+    expect(probe(on).streams[0]).toMatchObject({ width: 360, height: 640, nb_read_frames: "100" });
+    // the crop at the left edge: all red; at the right edge: all blue
+    for (const [x, y] of [
+      [10, 320],
+      [180, 320],
+      [350, 320],
+    ] as const) {
+      expect(red(pixel(on, 12, x, y))).toBe(true);
+      expect(blue(pixel(on, 37, x, y))).toBe(true);
+    }
+    // fitted: the whole picture in a band (red left, blue right); above it the blurred copy
+    // (purple where the halves meet, never black), or black
+    expect(red(pixel(on, 62, 40, 320))).toBe(true);
+    expect(blue(pixel(on, 62, 320, 320))).toBe(true);
+    const above = pixel(on, 62, 180, 40);
+    expect(dark(above)).toBe(false);
+    expect((above[0] as number) > 40 && (above[2] as number) > 40).toBe(true);
+    expect(dark(pixel(on, 87, 180, 40))).toBe(true);
+    expect(red(pixel(on, 87, 40, 320))).toBe(true);
+    // A2: on by default, −14 LUFS; switched off in the timeline, the quiet tone stays quiet
+    expect(Math.abs(measured(on) + 14)).toBeLessThan(1);
+    const off = await render({ ...d, normalize: false }, "a1-off.mp4");
+    const quiet = measured(off);
+    expect(quiet).toBeLessThan(-24);
+    console.log(`A2: ${measured(on).toFixed(1)} LUFS on, ${quiet.toFixed(1)} LUFS off`);
   });
 
   it("a smaller height and a timeline at 29.97 still give the exact frames", async () => {

@@ -728,12 +728,11 @@ export function askHereContext(
     lines.push(t("veAskGap", { track: s.gap.track, a: tc(g[0]), b: tc(g[1]) }));
   }
   if (s.words) {
+    const [wa, wb] = s.words;
     spans.push(s.words);
+    // The words the span touches (a chosen word may end past it).
     const said = transcriptOf(doc)
-      .filter(
-        (w) =>
-          w.start >= (s.words as [number, number])[0] && w.end <= (s.words as [number, number])[1],
-      )
+      .filter((w) => w.start < wb && w.end > wa)
       .map((w) => w.text)
       .join(" ");
     if (said) lines.push(t("veAskWords", { text: said.slice(0, 400) }));
