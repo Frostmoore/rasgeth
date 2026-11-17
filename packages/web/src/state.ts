@@ -912,7 +912,8 @@ export const agents = signal<Agent[]>([]);
  */
 export const removedAgents = signal<import("./api.js").RemovedAgent[]>([]);
 export async function refreshRemovedAgents(): Promise<void> {
-  removedAgents.value = await getApi().removedAgents();
+  const list = await getApi().removedAgents();
+  removedAgents.value = Array.isArray(list) ? list : [];
 }
 /** The removal an agent went with (it, or the one above it removed with it), if it is removed. */
 export function removalOf(agentId: string): import("./api.js").RemovedAgent | undefined {

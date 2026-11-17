@@ -58,6 +58,7 @@ import {
   questions,
   refresh,
   refreshRooms,
+  removalOf,
   type SubTab,
   sessionRows,
   sessionView,
@@ -95,6 +96,7 @@ import { ModelMenu, modelName } from "./ModelMenu.js";
 import { ProductCards } from "./ProductCards.js";
 import { ArchivedNotice } from "./ProjectArchive.js";
 import { QuestionCard } from "./QuestionCard.js";
+import { RemovedNotice } from "./RemovedAgents.js";
 import { SaveMessage, saveDraft } from "./Saved.js";
 import { ToolRequestCard } from "./ToolRequestCard.js";
 import { TurnProgress } from "./TurnProgress.js";
@@ -1522,8 +1524,10 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
     sessionRows.value.find((r) => r.id === sessionId)?.projectId,
     agent?.projectId,
   ].find((p): p is string => !!p && isArchived(p));
+  // A removed agent's conversation (p3.8.9): read only too, until the agent is restored.
+  const removed = !agent && !!removalOf(agentId);
   return (
-    <div class={`chat${archivedIn ? " read-only" : ""}`}>
+    <div class={`chat${archivedIn || removed ? " read-only" : ""}`}>
       {agent && (
         // Who the conversation is with, and what it is doing in words (G40.2).
         <div class="chat-agent">
@@ -1647,6 +1651,7 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
       </div>
       <Todos items={items.value} running={v.state === "running"} />
       {archivedIn && <ArchivedNotice projectId={archivedIn} />}
+      {removed && !archivedIn && <RemovedNotice agentId={agentId} />}
       <Composer
         top={<QuoteDrafts drafts={drafts} onChange={setDrafts} />}
         ready={drafts.length > 0}

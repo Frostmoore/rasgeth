@@ -4646,4 +4646,111 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get embedProbeOpen => 'Web view test';
+
+  @override
+  String get raMenu => 'Remove…';
+
+  @override
+  String raTitle(String name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String raBody(String name) {
+    return '$name leaves the team: its turns stop and nobody gives it work any more. Nothing is deleted: its conversations and its history stay, readable in «Removed agents», where you can restore it.';
+  }
+
+  @override
+  String raWith(String names) {
+    return 'Removed with it: $names';
+  }
+
+  @override
+  String raTasks(int count) {
+    return 'Open tasks that close («agent removed»): $count';
+  }
+
+  @override
+  String raRunning(int count) {
+    return 'Conversations at work that stop now: $count';
+  }
+
+  @override
+  String raYes(String name) {
+    return 'Remove $name';
+  }
+
+  @override
+  String raDone(String name) {
+    return '$name removed: «Removed agents» brings it back.';
+  }
+
+  @override
+  String raFailed(String why) {
+    return 'Not removed: $why';
+  }
+
+  @override
+  String raProtected(String name) {
+    return '$name cannot be removed.';
+  }
+
+  @override
+  String get raHelp =>
+      'It leaves the team with the agents below it; its history stays and you can restore it from «Removed agents».';
+
+  @override
+  String get raListTitle => 'Removed agents';
+
+  @override
+  String get raListRow => 'Read their conversations, bring them back';
+
+  @override
+  String get raListHelp =>
+      'Agents removed from the team, by you or by God. Nothing was deleted: their conversations stay readable, and «Restore» brings each back with those removed with it.';
+
+  @override
+  String get raNone => 'No removed agents.';
+
+  @override
+  String raWhen(String when, String by) {
+    return 'Removed $when by $by';
+  }
+
+  @override
+  String get raByYou => 'you';
+
+  @override
+  String raReason(String reason) {
+    return 'Why: $reason';
+  }
+
+  @override
+  String get raRestore => 'Restore';
+
+  @override
+  String raRestored(String name) {
+    return '$name is back in the team.';
+  }
+
+  @override
+  String raRestoreFailed(String why) {
+    return 'Not restored: $why';
+  }
+
+  @override
+  String raConversations(int count) {
+    return 'Conversations ($count)';
+  }
+
+  @override
+  String get raNoConversations => 'No conversations.';
+
+  @override
+  String raReadOnly(String name) {
+    return '$name was removed: this conversation is read only.';
+  }
+
+  @override
+  String get raBadge => 'Removed';
 }

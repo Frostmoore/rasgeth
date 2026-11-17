@@ -941,6 +941,15 @@ class AppController extends ChangeNotifier {
     }
   }
 
+  /// A removed agent's conversations (3.8.9), the latest first: read only.
+  Future<List<SessionRow>> removedSessions(String agentId) async {
+    try {
+      return await client?.sessions(agentId: agentId) ?? const [];
+    } on ApiException {
+      return const [];
+    }
+  }
+
   /// «Restore» (3.8.9): [a] back in the team with those removed with it. Null when done.
   Future<String?> restoreAgent(Agent a) async {
     final c = client;

@@ -20,6 +20,7 @@ import '../mascot/mascot_view.dart';
 import '../theme/colors.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
+import '../ui/remove_agent.dart';
 import '../ui/settings_kit.dart';
 import 'instructions_screen.dart';
 import 'new_agent_screen.dart' show RgSwitch;
@@ -643,6 +644,29 @@ class _GeneralState extends State<_General> {
                 onPressed: _stop,
                 icon: RgIcon(RgIcons.stop, size: 16, color: c.err),
                 label: Text(l.asStopYes(a.name)),
+              ),
+            ],
+          ),
+        ],
+        // 3.8.9: out of the team with those below it (stopped or not); «Removed agents» restores.
+        if (canRemoveAgent(app, a)) ...[
+          if (!a.active) SectionHead(l.asDanger),
+          _help(context, l.raHelp),
+          _SaveRow(
+            children: [
+              OutlinedButton.icon(
+                key: const Key('as-remove'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: c.err,
+                  side: BorderSide(color: c.err.withValues(alpha: .5)),
+                ),
+                onPressed: () async {
+                  if (await confirmRemoveAgent(context, a) && context.mounted) {
+                    Navigator.of(context).maybePop();
+                  }
+                },
+                icon: RgIcon(RgIcons.trash, size: 16, color: c.err),
+                label: Text(l.raYes(a.name)),
               ),
             ],
           ),

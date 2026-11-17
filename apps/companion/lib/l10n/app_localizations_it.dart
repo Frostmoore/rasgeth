@@ -4655,4 +4655,111 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get embedProbeOpen => 'Prova della vista web';
+
+  @override
+  String get raMenu => 'Rimuovi…';
+
+  @override
+  String raTitle(String name) {
+    return 'Rimuovere $name?';
+  }
+
+  @override
+  String raBody(String name) {
+    return '$name esce dalla squadra: i suoi turni si fermano e nessuno gli dà più lavoro. Non si cancella niente: le sue conversazioni e la sua storia restano, leggibili in «Agenti rimossi», da dove puoi ripristinarlo.';
+  }
+
+  @override
+  String raWith(String names) {
+    return 'Insieme a lui: $names';
+  }
+
+  @override
+  String raTasks(int count) {
+    return 'Compiti aperti che si chiudono («agente rimosso»): $count';
+  }
+
+  @override
+  String raRunning(int count) {
+    return 'Conversazioni al lavoro che si fermano ora: $count';
+  }
+
+  @override
+  String raYes(String name) {
+    return 'Rimuovi $name';
+  }
+
+  @override
+  String raDone(String name) {
+    return '$name rimosso: «Agenti rimossi» lo riporta indietro.';
+  }
+
+  @override
+  String raFailed(String why) {
+    return 'Non rimosso: $why';
+  }
+
+  @override
+  String raProtected(String name) {
+    return '$name non si può rimuovere.';
+  }
+
+  @override
+  String get raHelp =>
+      'Esce dalla squadra con gli agenti sotto di lui; la sua storia resta e lo ripristini da «Agenti rimossi».';
+
+  @override
+  String get raListTitle => 'Agenti rimossi';
+
+  @override
+  String get raListRow => 'Leggi le loro conversazioni, riportali indietro';
+
+  @override
+  String get raListHelp =>
+      'Agenti tolti dalla squadra, da te o da God. Non si è cancellato niente: le loro conversazioni restano leggibili e «Ripristina» riporta ciascuno indietro con chi è stato rimosso con lui.';
+
+  @override
+  String get raNone => 'Nessun agente rimosso.';
+
+  @override
+  String raWhen(String when, String by) {
+    return 'Rimosso il $when da $by';
+  }
+
+  @override
+  String get raByYou => 'te';
+
+  @override
+  String raReason(String reason) {
+    return 'Motivo: $reason';
+  }
+
+  @override
+  String get raRestore => 'Ripristina';
+
+  @override
+  String raRestored(String name) {
+    return '$name è di nuovo nella squadra.';
+  }
+
+  @override
+  String raRestoreFailed(String why) {
+    return 'Non ripristinato: $why';
+  }
+
+  @override
+  String raConversations(int count) {
+    return 'Conversazioni ($count)';
+  }
+
+  @override
+  String get raNoConversations => 'Nessuna conversazione.';
+
+  @override
+  String raReadOnly(String name) {
+    return '$name è stato rimosso: questa conversazione è in sola lettura.';
+  }
+
+  @override
+  String get raBadge => 'Rimosso';
 }

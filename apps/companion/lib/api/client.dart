@@ -319,8 +319,9 @@ class RedGiantClient {
   Future<List<String>> removeAgent(String agentId, {String? reason}) async => [
     for (final id
         in (_object(
+                  // No reason of its own: the server writes one in the person's language.
                   await _post('/api/agents/${Uri.encodeComponent(agentId)}/remove', {
-                    'reason': reason ?? 'removed from RGCompanion',
+                    'reason': ?reason,
                   }),
                 )['removed']
                 as List?) ??

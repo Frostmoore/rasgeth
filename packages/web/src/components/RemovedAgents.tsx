@@ -97,9 +97,7 @@ export function RemoveAgentDialog({
               onClick={() => void remove()}
             >
               <IconTrash size={16} />{" "}
-              {others.length > 0
-                ? t("raRemoveN", { n: String(others.length + 1) })
-                : t("raRemove")}
+              {others.length > 0 ? t("raRemoveN", { n: String(others.length + 1) }) : t("raRemove")}
             </button>
           )}
         </Acts>
@@ -212,9 +210,7 @@ export function RemovedAgentsList({ projectId = null }: { projectId?: string | n
               </small>
               <small class="ra-when">
                 {t("raWhen", { day: day(r.removed.at) })}{" "}
-                {r.removed.by === "person"
-                  ? t("raByYou")
-                  : t("raByAgent", { name: r.removed.by })}
+                {r.removed.by === "person" ? t("raByYou") : t("raByAgent", { name: r.removed.by })}
               </small>
               {r.removed.reason && (
                 <small class="dim ra-reason">{t("raReason", { reason: r.removed.reason })}</small>

@@ -20,6 +20,7 @@ import '../ui/common.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/model_sheet.dart';
+import '../ui/remove_agent.dart';
 import '../ui/words.dart';
 import 'agent_settings_screen.dart';
 import 'code/project_screen.dart';
@@ -27,6 +28,7 @@ import 'conversation_screen.dart';
 import 'first_start_screen.dart';
 import 'instructions_screen.dart';
 import 'new_agent_screen.dart';
+import 'removed_agents_screen.dart';
 
 class TeamScreen extends StatelessWidget {
   const TeamScreen({super.key});
@@ -223,6 +225,28 @@ class TeamScreen extends StatelessWidget {
                               ),
                             ),
                           ),
+                        // 3.8.9: the agents taken out of the team, to read and bring back.
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                            child: ListTile(
+                              key: const Key('team-removed'),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                side: BorderSide(color: c.line),
+                              ),
+                              tileColor: c.panel,
+                              leading: RgIcon(RgIcons.archive, size: 18, color: c.dim),
+                              title: Text(
+                                l.raListTitle,
+                                style: TextStyle(fontWeight: FontWeight.w700, color: c.text),
+                              ),
+                              subtitle: Text(l.raListRow, style: TextStyle(color: c.dim)),
+                              trailing: RgIcon(RgIcons.chevronRight, size: 18, color: c.dim),
+                              onTap: () => openRemovedAgents(context),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
             ),
@@ -780,6 +804,24 @@ class AgentSheet extends StatelessWidget {
                       },
                       icon: RgIcon(RgIcons.refresh, size: 18, color: c.text),
                       label: Text(l.mascotChange),
+                    ),
+                  ),
+                // 3.8.9: out of the team; its history stays and «Removed agents» restores it.
+                if (canRemoveAgent(app, a))
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: OutlinedButton.icon(
+                      key: const Key('agent-remove'),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(46),
+                        foregroundColor: c.err,
+                        side: BorderSide(color: c.err.withValues(alpha: .5)),
+                      ),
+                      onPressed: () async {
+                        if (await confirmRemoveAgent(context, a) && context.mounted) close();
+                      },
+                      icon: RgIcon(RgIcons.trash, size: 18, color: c.err),
+                      label: Text(l.raMenu),
                     ),
                   ),
                 OutlinedButton.icon(

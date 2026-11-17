@@ -68,7 +68,9 @@
         "lib/screens/new_agent_screen.dart",
         "lib/screens/instructions_screen.dart",
         "lib/ui/agent_menu.dart",
-        "lib/desktop/wall.dart"
+        "lib/desktop/wall.dart",
+        "lib/ui/remove_agent.dart",
+        "lib/screens/removed_agents_screen.dart"
       ],
       "phase": "G42.4",
       "rows": [
@@ -83,7 +85,7 @@
         197,
         198
       ],
-      "note": "Agent settings from the menu (3.8.7), new agent and instructions are native; the tree beyond the first level, the advanced wizard and assistants' services are not."
+      "note": "Agent settings from the menu (3.8.7), new agent and instructions are native; the tree beyond the first level, the advanced wizard and assistants' services are not. Removing an agent (menu, long press, agent settings) and «Removed agents» with «Restore» and the read-only conversations are native (3.8.9)."
     },
     "memory": {
       "app": "partial",
@@ -1137,6 +1139,13 @@
       "app": "native",
       "files": [
         "lib/api/live_model.dart"
+      ]
+    },
+    "agents.changed": {
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/app_state.dart"
       ]
     },
     "session.activity": {

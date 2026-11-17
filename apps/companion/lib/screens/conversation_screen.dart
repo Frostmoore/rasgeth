@@ -120,7 +120,11 @@ class ConversationScreen extends StatefulWidget {
     this.headerActions = const [],
     this.drops,
     this.mentions,
+    this.removed = false,
   });
+
+  /// A removed agent's conversation (3.8.9, from «Removed agents»): read only.
+  final bool removed;
 
   /// Names the composer suggests after «@» (a group chat's members; its screen comes with G42.3).
   final List<String>? mentions;
@@ -474,7 +478,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     setState(() => _attached.add(card));
   }
 
-  bool get _readOnly => app.archivedProjectOf(widget.sessionId) != null;
+  bool get _readOnly => widget.removed || app.archivedProjectOf(widget.sessionId) != null;
 
   /// «Stop»: with the link down it waits for it, and says so.
   void _stop() {
@@ -824,7 +828,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
               listenable: view,
               builder: (context, _) => TodosPanel(items: view.items, running: view.running),
             ),
-            if (app.archivedProjectOf(widget.sessionId) case final p?)
+            if (widget.removed)
+              RemovedNotice(name: widget.agent?.name ?? '')
+            else if (app.archivedProjectOf(widget.sessionId) case final p?)
               ArchivedNotice(project: p)
             else ...[
               if (_quotes.isNotEmpty)

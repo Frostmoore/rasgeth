@@ -205,6 +205,16 @@ class FakeRedGiant {
 
   // G38.7: Settings › Agents.
   final stops = <String>[];
+
+  /// 3.8.9: agents removed from the team (out of `GET /api/agents`), by root: when, by whom, why,
+  /// and those removed with it; `restores` the ids restored.
+  final removedRoots = <String, Map<String, dynamic>>{};
+  final removedIds = <String>{};
+  final restores = <String>[];
+
+  /// `remove-preview`'s open tasks and running turns (the page's numbers).
+  int previewTasks = 2;
+  int previewRunning = 1;
   final notes = <String, String>{};
   final budgetPuts = <Map<String, dynamic>>[];
   final kbChoices = <String, Map<String, String>>{};
@@ -558,6 +568,11 @@ class FakeRedGiant {
   }
 
   List<Map<String, dynamic>> get agents => [
+    for (final a in _everyAgent)
+      if (!removedIds.contains(a['id'])) a,
+  ];
+
+  List<Map<String, dynamic>> get _everyAgent => [
     for (final (i, m) in mascots.indexed)
       if (!onlyLeaders || m.kind == 'god' || m.kind == 'demigod')
         {
@@ -707,6 +722,68 @@ class FakeRedGiant {
       return _json(r, 200, {...base, ...own});
     }
     // G38.7: the rest of Settings › Agents, with the real server's rules.
+    // 3.8.9: removing an agent and the agents below it, «Removed agents», «Restore».
+    if (r.method == 'GET' && path == '/api/agents/removed') {
+      return _json(r, 200, [
+        for (final e in removedRoots.entries.toList().reversed)
+          {
+            ..._everyAgent.firstWhere((a) => a['id'] == e.key),
+            'status': 'removed',
+            'removed': e.value,
+          },
+      ]);
+    }
+    final removeOf = RegExp(r'^/api/agents/([^/]+)/(remove-preview|remove|restore)$')
+        .firstMatch(path);
+    if (removeOf != null) {
+      final id = removeOf.group(1)!;
+      final what = removeOf.group(2)!;
+      final a = _everyAgent.where((x) => x['id'] == id).firstOrNull ?? _agentRecord(id);
+      if (a == null) return _json(r, 404, {'error': 'Agent not found'});
+      List<Map<String, dynamic>> below(String of) => [
+        for (final x in agents)
+          if (x['parentId'] == of) ...[x, ...below(x['id'] as String)],
+      ];
+      Map<String, dynamic> brief(Map<String, dynamic> x) => {
+        'id': x['id'],
+        'name': x['name'],
+        'kind': x['kind'],
+      };
+      final protected = id == 'chat' || a['kind'] == 'god' || a['kind'] == 'demigod';
+      if (r.method == 'GET' && what == 'remove-preview') {
+        return _json(r, 200, {
+          'agent': brief(a),
+          'with': [for (final x in below(id)) brief(x)],
+          'tasks': previewTasks,
+          'running': previewRunning,
+          'allowed': !protected,
+          if (protected) 'why': 'protected',
+        });
+      }
+      if (r.method == 'POST' && what == 'remove') {
+        final body = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+        if (protected) return _json(r, 403, {'error': 'Not allowed to remove "${a['name']}"'});
+        final others = below(id);
+        removedRoots[id] = {
+          'at': '2026-11-17T09:30:00.000Z',
+          'by': 'person',
+          'reason': body['reason'] ?? '',
+          'with': [for (final x in others) brief(x)],
+          'sessions': 1,
+        };
+        final gone = [id, for (final x in others) x['id'] as String];
+        removedIds.addAll(gone);
+        return _json(r, 200, {'removed': gone});
+      }
+      if (r.method == 'POST' && what == 'restore') {
+        final root = removedRoots.remove(id);
+        if (root == null) return _json(r, 409, {'error': 'The agent is not removed'});
+        final back = [id, for (final x in (root['with'] as List)) (x as Map)['id'] as String];
+        removedIds.removeAll(back);
+        restores.add(id);
+        return _json(r, 200, {'restored': back});
+      }
+    }
     final stopOne = RegExp(r'^/api/agents/([^/]+)/stop$').firstMatch(path);
     if (r.method == 'POST' && stopOne != null) {
       final id = stopOne.group(1)!;

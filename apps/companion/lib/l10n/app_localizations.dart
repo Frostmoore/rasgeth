@@ -8084,6 +8084,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Web view test'**
   String get embedProbeOpen;
+
+  /// No description provided for @raMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove…'**
+  String get raMenu;
+
+  /// No description provided for @raTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}?'**
+  String raTitle(String name);
+
+  /// No description provided for @raBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} leaves the team: its turns stop and nobody gives it work any more. Nothing is deleted: its conversations and its history stay, readable in «Removed agents», where you can restore it.'**
+  String raBody(String name);
+
+  /// No description provided for @raWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed with it: {names}'**
+  String raWith(String names);
+
+  /// No description provided for @raTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Open tasks that close («agent removed»): {count}'**
+  String raTasks(int count);
+
+  /// No description provided for @raRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations at work that stop now: {count}'**
+  String raRunning(int count);
+
+  /// No description provided for @raYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}'**
+  String raYes(String name);
+
+  /// No description provided for @raDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} removed: «Removed agents» brings it back.'**
+  String raDone(String name);
+
+  /// No description provided for @raFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not removed: {why}'**
+  String raFailed(String why);
+
+  /// No description provided for @raProtected.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} cannot be removed.'**
+  String raProtected(String name);
+
+  /// No description provided for @raHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It leaves the team with the agents below it; its history stays and you can restore it from «Removed agents».'**
+  String get raHelp;
+
+  /// No description provided for @raListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed agents'**
+  String get raListTitle;
+
+  /// No description provided for @raListRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Read their conversations, bring them back'**
+  String get raListRow;
+
+  /// No description provided for @raListHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents removed from the team, by you or by God. Nothing was deleted: their conversations stay readable, and «Restore» brings each back with those removed with it.'**
+  String get raListHelp;
+
+  /// No description provided for @raNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No removed agents.'**
+  String get raNone;
+
+  /// No description provided for @raWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed {when} by {by}'**
+  String raWhen(String when, String by);
+
+  /// No description provided for @raByYou.
+  ///
+  /// In en, this message translates to:
+  /// **'you'**
+  String get raByYou;
+
+  /// No description provided for @raReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Why: {reason}'**
+  String raReason(String reason);
+
+  /// No description provided for @raRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get raRestore;
+
+  /// No description provided for @raRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is back in the team.'**
+  String raRestored(String name);
+
+  /// No description provided for @raRestoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not restored: {why}'**
+  String raRestoreFailed(String why);
+
+  /// No description provided for @raConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations ({count})'**
+  String raConversations(int count);
+
+  /// No description provided for @raNoConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations.'**
+  String get raNoConversations;
+
+  /// No description provided for @raReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was removed: this conversation is read only.'**
+  String raReadOnly(String name);
+
+  /// No description provided for @raBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed'**
+  String get raBadge;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

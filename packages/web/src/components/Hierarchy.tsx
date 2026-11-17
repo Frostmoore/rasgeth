@@ -432,48 +432,51 @@ export function AgentPanel({
     </>
   ) : undefined;
   return (
-    <Modal
-      wide
-      class="agent-panel-modal"
-      title={agent.name}
-      icon={<Mascot agent={agent} size={48} />}
-      sub={
-        <>
-          {t(`kind_${agent.kind}`)}
-          {agent.projectId ? ` · ${projectName(agent.projectId)}` : ""}
-          {!active && <span class="chip muted">{t("stopped")}</span>}
-        </>
-      }
-      onClose={onClose}
-      foot={foot}
-    >
-      <div
-        class="agent-panel-tabs wz-seg st-tabs"
-        role="tablist"
-        aria-label={t("agentSettingsOf", { name: agent.name })}
+    <>
+      <Modal
+        wide
+        class="agent-panel-modal"
+        title={agent.name}
+        icon={<Mascot agent={agent} size={48} />}
+        sub={
+          <>
+            {t(`kind_${agent.kind}`)}
+            {agent.projectId ? ` · ${projectName(agent.projectId)}` : ""}
+            {!active && <span class="chip muted">{t("stopped")}</span>}
+          </>
+        }
+        onClose={onClose}
+        foot={foot}
       >
-        {tabs.map((x) => (
-          <button
-            type="button"
-            role="tab"
-            key={x}
-            aria-selected={tab === x}
-            class={tab === x ? "on" : ""}
-            onClick={() => setTab(x)}
-          >
-            {t(`agentTab_${x}`)}
-          </button>
-        ))}
-      </div>
-      <div class="agent-panel-body" key={`${agent.id}-${tab}`}>
-        {tab === "general" && <GeneralTab agent={agent} />}
-        {tab === "model" && <ModelTab agent={agent} />}
-        {tab === "limits" && <LimitsTab agent={agent} />}
-        {tab === "behaviour" && <BehaviourTab agent={agent} />}
-        {tab === "memory" && <AgentMemory agent={agent} />}
-        {tab === "knowledge" && <AgentKnowledge agent={agent} />}
-        {tab === "tools" && <AgentTools agent={agent} />}
-      </div>
+        <div
+          class="agent-panel-tabs wz-seg st-tabs"
+          role="tablist"
+          aria-label={t("agentSettingsOf", { name: agent.name })}
+        >
+          {tabs.map((x) => (
+            <button
+              type="button"
+              role="tab"
+              key={x}
+              aria-selected={tab === x}
+              class={tab === x ? "on" : ""}
+              onClick={() => setTab(x)}
+            >
+              {t(`agentTab_${x}`)}
+            </button>
+          ))}
+        </div>
+        <div class="agent-panel-body" key={`${agent.id}-${tab}`}>
+          {tab === "general" && <GeneralTab agent={agent} />}
+          {tab === "model" && <ModelTab agent={agent} />}
+          {tab === "limits" && <LimitsTab agent={agent} />}
+          {tab === "behaviour" && <BehaviourTab agent={agent} />}
+          {tab === "memory" && <AgentMemory agent={agent} />}
+          {tab === "knowledge" && <AgentKnowledge agent={agent} />}
+          {tab === "tools" && <AgentTools agent={agent} />}
+        </div>
+      </Modal>
+      {/* After the panel, on top of it (a window of its own, never inside another). */}
       {removing && (
         <RemoveAgentDialog
           agent={agent}
@@ -483,7 +486,7 @@ export function AgentPanel({
           }}
         />
       )}
-    </Modal>
+    </>
   );
 }
 

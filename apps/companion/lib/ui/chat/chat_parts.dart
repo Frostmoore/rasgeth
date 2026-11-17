@@ -603,6 +603,39 @@ class ElsewhereLine extends StatelessWidget {
   }
 }
 
+/// Where the composer was, in a removed agent's conversation (3.8.9): read only; «Removed agents»
+/// brings it back.
+class RemovedNotice extends StatelessWidget {
+  const RemovedNotice({super.key, required this.name});
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    return Container(
+      key: const Key('removed-notice'),
+      margin: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: c.panel,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: c.line),
+      ),
+      child: Row(
+        children: [
+          RgIcon(RgIcons.lock, size: 15, color: c.dim),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(l.raReadOnly(name), style: TextStyle(color: c.text, fontSize: 14)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// Where the composer was, in a conversation of an archived project: read only, «Ripristina».
 class ArchivedNotice extends StatefulWidget {
   const ArchivedNotice({super.key, required this.project});
