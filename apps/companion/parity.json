@@ -3,198 +3,424 @@
   "settings": {
     "general": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart", "lib/screens/you_screen.dart", "lib/screens/server_settings_screen.dart", "lib/screens/notifications_screen.dart", "lib/screens/update_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart",
+        "lib/screens/you_screen.dart",
+        "lib/screens/server_settings_screen.dart",
+        "lib/screens/notifications_screen.dart",
+        "lib/screens/update_screen.dart"
+      ],
       "phase": "G42.4",
-      "rows": [203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 219],
+      "rows": [
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        219
+      ],
       "note": "Theme, language, notifications, updates and account are native; agents' language, instructions for all, backup model, search, images, debug log and What's new only in «All settings»."
     },
     "system": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart", "lib/screens/server_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart",
+        "lib/screens/server_settings_screen.dart"
+      ],
       "phase": "G42.14",
-      "rows": [240, 241, 242, 243, 284, 285],
+      "rows": [
+        240,
+        241,
+        242,
+        243,
+        284,
+        285
+      ],
       "note": "Native: the machine's name and state; role, storage, disks, SSH, Wi-Fi, HTTPS only in «All settings»."
     },
     "setup": {
       "app": "partial",
-      "files": ["lib/setup/first_start.dart", "lib/screens/first_start_screen.dart", "lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/setup/first_start.dart",
+        "lib/screens/first_start_screen.dart",
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.17",
-      "rows": [250, 262],
+      "rows": [
+        250,
+        262
+      ],
       "note": "The app's first start does about 4 of the wizard's 17 steps; «redo the setup» only in «All settings»."
     },
     "agents": {
       "app": "partial",
-      "files": ["lib/screens/team_screen.dart", "lib/screens/agent_settings_screen.dart", "lib/screens/new_agent_screen.dart", "lib/screens/instructions_screen.dart", "lib/ui/agent_menu.dart", "lib/desktop/wall.dart"],
+      "files": [
+        "lib/screens/team_screen.dart",
+        "lib/screens/agent_settings_screen.dart",
+        "lib/screens/new_agent_screen.dart",
+        "lib/screens/instructions_screen.dart",
+        "lib/ui/agent_menu.dart",
+        "lib/desktop/wall.dart"
+      ],
       "phase": "G42.4",
-      "rows": [185, 190, 191, 192, 193, 194, 195, 196, 197, 198],
+      "rows": [
+        185,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196,
+        197,
+        198
+      ],
       "note": "Agent settings from the menu (3.8.7), new agent and instructions are native; the tree beyond the first level, the advanced wizard and assistants' services are not."
     },
     "memory": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart", "lib/screens/agent_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart",
+        "lib/screens/agent_settings_screen.dart"
+      ],
       "phase": "G42.10",
-      "rows": [168, 169, 170],
+      "rows": [
+        168,
+        169,
+        170
+      ],
       "note": "An agent's own memory is in its settings; shared memory and automatic summaries only in «All settings»."
     },
     "knowledge": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart", "lib/screens/agent_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart",
+        "lib/screens/agent_settings_screen.dart"
+      ],
       "phase": "G42.10",
-      "rows": [160, 161, 162, 163, 164, 165, 166, 167],
+      "rows": [
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167
+      ],
       "note": "An agent's knowledge tab is native; the index, collections, sources and models only in «All settings»."
     },
     "automations": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.9",
-      "rows": [154, 155, 156, 157, 158, 159, 254],
+      "rows": [
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        254
+      ],
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native automations in G42.9."
     },
     "extensions": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.11",
-      "rows": [171, 172, 173, 174, 175, 176, 177, 253],
+      "rows": [
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        253
+      ],
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native extensions, MCP and skills in G42.11."
     },
     "keychain": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.12",
-      "rows": [178, 179, 180, 181, 182, 183, 184, 265, 12],
+      "rows": [
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        265,
+        12
+      ],
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native keychain in G42.12."
     },
     "telegram": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.13",
-      "rows": [231],
+      "rows": [
+        231
+      ],
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native Telegram setup in G42.13."
     },
     "chats": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.13",
-      "rows": [232, 233],
+      "rows": [
+        232,
+        233
+      ],
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native chat platforms and mailboxes in G42.13."
     },
     "budgets": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart", "lib/screens/agent_settings_screen.dart", "lib/api/budgets.dart", "lib/ui/limits_bar.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart",
+        "lib/screens/agent_settings_screen.dart",
+        "lib/api/budgets.dart",
+        "lib/ui/limits_bar.dart"
+      ],
       "phase": "G42.4",
-      "rows": [229, 230],
+      "rows": [
+        229,
+        230
+      ],
       "note": "Spending is shown (limits bar, an agent's limits); the budgets page itself only in «All settings»."
     },
     "subscriptions": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart", "lib/screens/server_settings_screen.dart", "lib/ui/model_sheet.dart", "lib/api/model_routes.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart",
+        "lib/screens/server_settings_screen.dart",
+        "lib/ui/model_sheet.dart",
+        "lib/api/model_routes.dart"
+      ],
       "phase": "G42.15",
-      "rows": [225, 226, 227, 228, 273, 289],
+      "rows": [
+        225,
+        226,
+        227,
+        228,
+        273,
+        289
+      ],
       "note": "Default model and model routes are native; subscriptions, keys, own server and local models only in «All settings»."
     },
     "code": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.5",
-      "rows": [150],
+      "rows": [
+        150
+      ],
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native GitCode (GitHub token, Gitea) in G42.5."
     },
     "remote": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart", "lib/screens/server_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart",
+        "lib/screens/server_settings_screen.dart"
+      ],
       "phase": "G42.14",
-      "rows": [236, 237, 279, 287],
+      "rows": [
+        236,
+        237,
+        279,
+        287
+      ],
       "note": "The access link from outside is shown read only; password, 2FA, sessions, Tailscale, Cloudflare only in «All settings»."
     },
     "backup": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.14",
-      "rows": [248, 249],
+      "rows": [
+        248,
+        249
+      ],
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native backup and targets in G42.14."
     },
     "platform": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.17",
-      "rows": [201],
+      "rows": [
+        201
+      ],
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native Platform history in G42.17."
     },
     "tools": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart", "lib/screens/agent_settings_screen.dart", "lib/screens/new_agent_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart",
+        "lib/screens/agent_settings_screen.dart",
+        "lib/screens/new_agent_screen.dart"
+      ],
       "phase": "G42.4",
-      "rows": [196, 220],
+      "rows": [
+        196,
+        220
+      ],
       "note": "One agent's tools are native; the common tools page only in «All settings»."
     },
     "import": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.17",
-      "rows": [151],
+      "rows": [
+        151
+      ],
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native import from other agents in G42.17."
     },
     "commands": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.4",
-      "rows": [221],
+      "rows": [
+        221
+      ],
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native background command limits in G42.4."
     },
     "requests": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart", "lib/screens/inbox_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart",
+        "lib/screens/inbox_screen.dart"
+      ],
       "phase": "G42.4",
-      "rows": [216, 217, 218],
+      "rows": [
+        216,
+        217,
+        218
+      ],
       "note": "Answering requests is native; where requests go, their timeout and the classifier's decisions only in «All settings»."
     },
     "projects": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart", "lib/screens/projects_screen.dart", "lib/desktop/advanced/projects_wall.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart",
+        "lib/screens/projects_screen.dart",
+        "lib/desktop/advanced/projects_wall.dart"
+      ],
       "phase": "G42.5",
-      "rows": [129, 130, 131, 132, 133, 134, 135, 136],
+      "rows": [
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136
+      ],
       "note": "Project list with git state (advanced interface); archive, restore and git init only in «All settings»."
     },
     "artifacts": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.2",
-      "rows": [152],
+      "rows": [
+        152
+      ],
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native artifact list (export, delete, import, grants) in G42.2."
     },
     "acp": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.17",
-      "rows": [199],
+      "rows": [
+        199
+      ],
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native external ACP agents in G42.17."
     },
     "machines": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.14",
-      "rows": [246],
+      "rows": [
+        246
+      ],
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native SSH machines in G42.14."
     },
     "nodes": {
       "app": "partial",
-      "files": ["lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.14",
-      "rows": [247],
+      "rows": [
+        247
+      ],
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native node pairing in G42.14."
     },
     "devices": {
       "app": "partial",
-      "files": ["lib/screens/server_settings_screen.dart", "lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/server_settings_screen.dart",
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.4",
-      "rows": [234, 235],
+      "rows": [
+        234,
+        235
+      ],
       "note": "List, revoke and push test are native; renaming a device is not."
     },
     "voice": {
       "app": "partial",
-      "files": ["lib/screens/voice_screen.dart", "lib/voice/voice_controller.dart", "lib/screens/full_settings_screen.dart"],
+      "files": [
+        "lib/screens/voice_screen.dart",
+        "lib/voice/voice_controller.dart",
+        "lib/screens/full_settings_screen.dart"
+      ],
       "phase": "G42.16",
-      "rows": [22, 23, 24, 25, 26, 27],
+      "rows": [
+        22,
+        23,
+        24,
+        25,
+        26,
+        27
+      ],
       "note": "Who reads aloud, volume and press-and-talk are native; hands-free, wake word and transcription service settings are not."
     }
   },
@@ -203,239 +429,452 @@
       "app": "no",
       "files": [],
       "phase": "G42.6",
-      "rows": [104],
+      "rows": [
+        104
+      ],
       "note": "MediaView through embed=canvas."
     },
     "audio": {
       "app": "no",
       "files": [],
       "phase": "G42.6",
-      "rows": [104],
+      "rows": [
+        104
+      ],
       "note": "MediaView through embed=canvas."
     },
     "image": {
       "app": "partial",
-      "files": ["lib/screens/canvas_screen.dart"],
+      "files": [
+        "lib/screens/canvas_screen.dart"
+      ],
       "phase": "G42.7",
-      "rows": [93, 94, 122, 123, 124],
+      "rows": [
+        93,
+        94,
+        122,
+        123,
+        124
+      ],
       "note": "Native fallback for png/jpg/gif/webp/bmp and SVG (flutter_svg); the page's viewer in G42.6, ImageEditor and SvgEditor in G42.7."
     },
     "pdf": {
       "app": "partial",
-      "files": ["lib/screens/canvas_screen.dart"],
+      "files": [
+        "lib/screens/canvas_screen.dart"
+      ],
       "phase": "G42.7",
-      "rows": [95, 127],
+      "rows": [
+        95,
+        127
+      ],
       "note": "Native fallback with pdfx (no search; Linux opens the system viewer); PdfView in G42.6, PdfEditor in G42.7."
     },
     "markdown": {
       "app": "partial",
-      "files": ["lib/screens/canvas_screen.dart", "lib/ui/markdown.dart"],
+      "files": [
+        "lib/screens/canvas_screen.dart",
+        "lib/ui/markdown.dart"
+      ],
       "phase": "G42.7",
-      "rows": [96, 117],
+      "rows": [
+        96,
+        117
+      ],
       "note": "Native Markdown as fallback; DocEditor in embed in G42.7."
     },
     "code": {
       "app": "partial",
-      "files": ["lib/screens/canvas_screen.dart", "lib/screens/code/files_tab.dart", "lib/ui/highlight.dart"],
+      "files": [
+        "lib/screens/canvas_screen.dart",
+        "lib/screens/code/files_tab.dart",
+        "lib/ui/highlight.dart"
+      ],
       "phase": "G42.7",
-      "rows": [97, 117],
+      "rows": [
+        97,
+        117
+      ],
       "note": "The Canvas shows plain source; the advanced Files tab highlights and edits a little; TextEditor in embed in G42.7."
     },
     "text": {
       "app": "partial",
-      "files": ["lib/screens/canvas_screen.dart"],
+      "files": [
+        "lib/screens/canvas_screen.dart"
+      ],
       "phase": "G42.7",
-      "rows": [97, 117],
+      "rows": [
+        97,
+        117
+      ],
       "note": "Plain source as fallback; TextEditor in embed in G42.7."
     },
     "table": {
       "app": "no",
       "files": [],
       "phase": "G42.8",
-      "rows": [100, 118],
+      "rows": [
+        100,
+        118
+      ],
       "note": "CSV falls back to plain source text; TableView in G42.6, SheetEditor in G42.8."
     },
     "sheet": {
       "app": "no",
       "files": [],
       "phase": "G42.8",
-      "rows": [100, 118, 119],
+      "rows": [
+        100,
+        118,
+        119
+      ],
       "note": "SheetEditor (Univer) through embed."
     },
     "document": {
       "app": "no",
       "files": [],
       "phase": "G42.8",
-      "rows": [101, 102, 103, 120, 121, 288, 304, 305],
-      "note": "DocView in G42.6, OfficeEditor (ZetaOffice) in G42.8."
+      "rows": [
+        101,
+        102,
+        103,
+        120,
+        121,
+        288,
+        304,
+        305
+      ],
+      "note": "DocView in G42.6, OfficeEditor (ZetaOffice) in G42.8. ZetaOffice needs a cross-origin isolated frame: Chromium (Android WebView, WebView2) has it through Document-Isolation-Policy, WebKit (WKWebView, WebKitGTK) does not (G42.0 probe); G42.8 decides between an isolated embed page and the browser.",
+      "systems": {
+        "android": "embed",
+        "windows": "embed",
+        "macos": "browser",
+        "ios": "no",
+        "linux": "browser"
+      }
     },
     "slides": {
       "app": "no",
       "files": [],
       "phase": "G42.8",
-      "rows": [101, 102, 120],
-      "note": "SlidesView in G42.6, OfficeEditor in G42.8."
+      "rows": [
+        101,
+        102,
+        120
+      ],
+      "note": "SlidesView in G42.6, OfficeEditor in G42.8. ZetaOffice needs a cross-origin isolated frame: Chromium (Android WebView, WebView2) has it through Document-Isolation-Policy, WebKit (WKWebView, WebKitGTK) does not (G42.0 probe); G42.8 decides between an isolated embed page and the browser.",
+      "systems": {
+        "android": "embed",
+        "windows": "embed",
+        "macos": "browser",
+        "ios": "no",
+        "linux": "browser"
+      }
     },
     "model": {
       "app": "no",
       "files": [],
       "phase": "G42.8",
-      "rows": [125, 126],
+      "rows": [
+        125,
+        126
+      ],
       "note": "ModelView and ModelEditor (three.js) through embed."
     },
     "archive": {
       "app": "no",
       "files": [],
       "phase": "G42.6",
-      "rows": [105],
+      "rows": [
+        105
+      ],
       "note": "ArchiveView through embed."
     },
     "font": {
       "app": "no",
       "files": [],
       "phase": "G42.6",
-      "rows": [106],
+      "rows": [
+        106
+      ],
       "note": "FontView through embed."
     },
     "tree": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [98, 99],
+      "rows": [
+        98,
+        99
+      ],
       "note": "JSON/YAML/XML fall back to plain source; TreeView in G42.6, editing in G42.7."
     },
     "site": {
       "app": "partial",
-      "files": ["lib/screens/canvas_screen.dart", "lib/ui/artifact_frame_view.dart", "lib/api/artifact_frame.dart", "lib/api/preview_relay.dart"],
+      "files": [
+        "lib/screens/canvas_screen.dart",
+        "lib/ui/artifact_frame_view.dart",
+        "lib/api/artifact_frame.dart",
+        "lib/api/preview_relay.dart"
+      ],
       "phase": "G42.6",
-      "rows": [108, 109, 110],
+      "rows": [
+        108,
+        109,
+        110
+      ],
       "note": "Artifacts run on the signed /preview/ link with the bridge (3.8.7; Linux: «Open in the page»); other HTML in a sandboxed frame; the page's site view via embed in G42.6."
     },
     "layers": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [107, 122],
+      "rows": [
+        107,
+        122
+      ],
       "note": "OraView and ImageEditor through embed."
     },
     "unknown": {
       "app": "partial",
-      "files": ["lib/screens/canvas_screen.dart"],
+      "files": [
+        "lib/screens/canvas_screen.dart"
+      ],
       "phase": "G42.6",
-      "rows": [91],
+      "rows": [
+        91
+      ],
       "note": "The app tries any other file as text; the page's byte sniffing (viewerFor) comes with embed."
     }
   },
   "chat": {
     "user": {
       "app": "native",
-      "files": ["lib/api/conversation.dart", "lib/screens/conversation_screen.dart"],
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/screens/conversation_screen.dart"
+      ],
       "phase": "G42.1",
-      "rows": [41, 69, 70]
+      "rows": [
+        41,
+        69,
+        70
+      ]
     },
     "assistant": {
       "app": "native",
-      "files": ["lib/api/conversation.dart", "lib/screens/conversation_screen.dart", "lib/ui/markdown.dart", "lib/ui/code_block.dart", "lib/ui/citations.dart", "lib/ui/metrics_line.dart"],
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/screens/conversation_screen.dart",
+        "lib/ui/markdown.dart",
+        "lib/ui/code_block.dart",
+        "lib/ui/citations.dart",
+        "lib/ui/metrics_line.dart"
+      ],
       "phase": "G42.1",
-      "rows": [28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 52]
+      "rows": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        52
+      ]
     },
     "tool": {
       "app": "native",
-      "files": ["lib/api/conversation.dart", "lib/ui/chat/tool_line.dart", "lib/ui/chat/mail_cards.dart"],
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/ui/chat/tool_line.dart",
+        "lib/ui/chat/mail_cards.dart"
+      ],
       "phase": "G42.1",
-      "rows": [42, 43, 44, 45, 46, 47, 48]
+      "rows": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ]
     },
     "question": {
       "app": "native",
-      "files": ["lib/api/conversation.dart", "lib/ui/chat/question_card.dart"],
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/ui/chat/question_card.dart"
+      ],
       "phase": "G42.1",
-      "rows": [63, 64, 65, 66]
+      "rows": [
+        63,
+        64,
+        65,
+        66
+      ]
     },
     "notice": {
       "app": "native",
-      "files": ["lib/api/conversation.dart", "lib/screens/conversation_screen.dart"],
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/screens/conversation_screen.dart"
+      ],
       "phase": "G42.1",
-      "rows": [50, 53, 54]
+      "rows": [
+        50,
+        53,
+        54
+      ]
     },
     "cache": {
       "app": "native",
-      "files": ["lib/api/conversation.dart", "lib/screens/conversation_screen.dart"],
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/screens/conversation_screen.dart"
+      ],
       "phase": "G42.1",
-      "rows": [51]
+      "rows": [
+        51
+      ]
     },
     "file": {
       "app": "native",
-      "files": ["lib/api/conversation.dart", "lib/screens/conversation_screen.dart"],
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/screens/conversation_screen.dart"
+      ],
       "phase": "G42.1",
       "note": "Opens the file in the app's Canvas."
     },
     "products": {
       "app": "native",
-      "files": ["lib/api/conversation.dart", "lib/ui/product_cards.dart"],
-      "rows": [77]
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/ui/product_cards.dart"
+      ],
+      "rows": [
+        77
+      ]
     },
     "variants": {
       "app": "partial",
-      "files": ["lib/api/conversation.dart", "lib/ui/chat/chat_parts.dart"],
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/ui/chat/chat_parts.dart"
+      ],
       "phase": "G42.2",
-      "rows": [74],
+      "rows": [
+        74
+      ],
       "note": "The card says waiting or chosen, but does not open the board (embed=board, native comments and choice)."
     },
     "canvas": {
       "app": "partial",
-      "files": ["lib/api/conversation.dart", "lib/ui/chat/chat_parts.dart", "lib/screens/canvas_screen.dart"],
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/ui/chat/chat_parts.dart",
+        "lib/screens/canvas_screen.dart"
+      ],
       "phase": "G42.2",
-      "rows": [86, 109],
+      "rows": [
+        86,
+        109
+      ],
       "note": "File targets open the Canvas; a port target does not open yet (embed=port)."
     },
     "widget": {
       "app": "embed",
-      "files": ["lib/api/conversation.dart", "lib/api/widgets.dart", "lib/api/artifact_frame.dart", "lib/ui/artifact_frame_view.dart"],
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/api/widgets.dart",
+        "lib/api/artifact_frame.dart",
+        "lib/ui/artifact_frame_view.dart"
+      ],
       "phase": "3.8.7",
-      "rows": [75, 76],
-      "note": "Linux has no web view yet: a card with «Open in the page» (G42.0)."
+      "rows": [
+        75,
+        76
+      ],
+      "note": "In a web view on all five systems (WebKitGTK on Linux since G42.0); «Open in the page» only without a safe way to the server."
     },
     "fork": {
       "app": "native",
-      "files": ["lib/api/conversation.dart", "lib/ui/chat/chat_parts.dart"],
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/ui/chat/chat_parts.dart"
+      ],
       "phase": "G42.1",
-      "rows": [69, 88]
+      "rows": [
+        69,
+        88
+      ]
     },
     "compaction": {
       "app": "native",
-      "files": ["lib/api/conversation.dart", "lib/ui/chat/chat_parts.dart"],
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/ui/chat/chat_parts.dart"
+      ],
       "phase": "G42.1",
-      "rows": [72, 274]
+      "rows": [
+        72,
+        274
+      ]
     }
   },
   "client": {
     "hello": {
       "app": "native",
-      "files": ["lib/api/live.dart"]
+      "files": [
+        "lib/api/live.dart"
+      ]
     },
     "session.follow": {
       "app": "native",
-      "files": ["lib/api/live.dart"],
+      "files": [
+        "lib/api/live.dart"
+      ],
       "note": "Always with history: true."
     },
     "ping": {
       "app": "native",
-      "files": ["lib/api/live.dart"]
+      "files": [
+        "lib/api/live.dart"
+      ]
     },
     "session.unfollow": {
       "app": "native",
-      "files": ["lib/api/live.dart"]
+      "files": [
+        "lib/api/live.dart"
+      ]
     },
     "session.send": {
       "app": "native",
-      "files": ["lib/api/conversation.dart", "lib/ui/artifact_frame_view.dart"],
-      "rows": [2]
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/ui/artifact_frame_view.dart"
+      ],
+      "rows": [
+        2
+      ]
     },
     "session.interrupt": {
       "app": "native",
-      "files": ["lib/app_state.dart"],
+      "files": [
+        "lib/app_state.dart"
+      ],
       "phase": "G42.1",
-      "rows": [3, 5]
+      "rows": [
+        3,
+        5
+      ]
     },
     "editor.attach": {
       "app": "n/a",
@@ -456,43 +895,79 @@
       "app": "no",
       "files": [],
       "phase": "G42.3",
-      "rows": [67]
+      "rows": [
+        67
+      ]
     },
     "command.close": {
       "app": "no",
       "files": [],
       "phase": "G42.3",
-      "rows": [67]
+      "rows": [
+        67
+      ]
     },
     "subagent.close": {
       "app": "no",
       "files": [],
       "phase": "G42.3",
-      "rows": [68, 276]
+      "rows": [
+        68,
+        276
+      ]
     },
     "session.unqueue": {
       "app": "native",
-      "files": ["lib/app_state.dart"],
+      "files": [
+        "lib/app_state.dart"
+      ],
       "phase": "G42.1",
-      "rows": [4]
+      "rows": [
+        4
+      ]
     },
     "question.answer": {
       "app": "native",
-      "files": ["lib/app_state.dart", "lib/ui/chat/question_card.dart"],
+      "files": [
+        "lib/app_state.dart",
+        "lib/ui/chat/question_card.dart"
+      ],
       "phase": "G42.1",
-      "rows": [63, 64, 65, 66]
+      "rows": [
+        63,
+        64,
+        65,
+        66
+      ]
     },
     "permission.resolve": {
       "app": "native",
-      "files": ["lib/app_state.dart", "lib/ui/chat/request_cards.dart"],
+      "files": [
+        "lib/app_state.dart",
+        "lib/ui/chat/request_cards.dart"
+      ],
       "phase": "G42.1",
-      "rows": [55, 56, 57, 58, 59, 60, 61, 62]
+      "rows": [
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62
+      ]
     },
     "artifact.bridge": {
       "app": "native",
-      "files": ["lib/api/artifact_frame.dart", "lib/ui/artifact_frame_view.dart"],
+      "files": [
+        "lib/api/artifact_frame.dart",
+        "lib/ui/artifact_frame_view.dart"
+      ],
       "phase": "3.8.7",
-      "rows": [76]
+      "rows": [
+        76
+      ]
     },
     "artifact.errors": {
       "app": "n/a",
@@ -503,130 +978,181 @@
       "app": "no",
       "files": [],
       "phase": "G42.6",
-      "rows": [87],
+      "rows": [
+        87
+      ],
       "note": "The page inside embed answers canvas.query as a page tab."
     },
     "browser.watch": {
       "app": "no",
       "files": [],
       "phase": "G42.3",
-      "rows": [79]
+      "rows": [
+        79
+      ]
     },
     "browser.unwatch": {
       "app": "no",
       "files": [],
       "phase": "G42.3",
-      "rows": [79]
+      "rows": [
+        79
+      ]
     },
     "browser.control": {
       "app": "no",
       "files": [],
       "phase": "G42.3",
-      "rows": [79]
+      "rows": [
+        79
+      ]
     },
     "browser.goto": {
       "app": "no",
       "files": [],
       "phase": "G42.3",
-      "rows": [79]
+      "rows": [
+        79
+      ]
     },
     "browser.teach": {
       "app": "no",
       "files": [],
       "phase": "G42.3",
-      "rows": [79]
+      "rows": [
+        79
+      ]
     },
     "browser.input": {
       "app": "no",
       "files": [],
       "phase": "G42.3",
-      "rows": [79]
+      "rows": [
+        79
+      ]
     },
     "doc.open": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [114],
+      "rows": [
+        114
+      ],
       "note": "Sent by the page's editors; in the app the page inside embed=canvas sends it over its own connection."
     },
     "doc.close": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [114],
+      "rows": [
+        114
+      ],
       "note": "Sent by the page's editors; in the app the page inside embed=canvas sends it over its own connection."
     },
     "doc.save": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [307],
+      "rows": [
+        307
+      ],
       "note": "Sent by the page's editors; in the app the page inside embed=canvas sends it over its own connection."
     },
     "doc.ops": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [114],
+      "rows": [
+        114
+      ],
       "note": "Sent by the page's editors; in the app the page inside embed=canvas sends it over its own connection."
     },
     "doc.undo": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [114, 115],
+      "rows": [
+        114,
+        115
+      ],
       "note": "Sent by the page's editors; in the app the page inside embed=canvas sends it over its own connection."
     },
     "doc.presence": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [114],
+      "rows": [
+        114
+      ],
       "note": "Sent by the page's editors; in the app the page inside embed=canvas sends it over its own connection."
     },
     "doc.decide": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [302],
+      "rows": [
+        302
+      ],
       "note": "Sent by the page's editors; in the app the page inside embed=canvas sends it over its own connection."
     }
   },
   "server": {
     "pong": {
       "app": "native",
-      "files": ["lib/api/live.dart"]
+      "files": [
+        "lib/api/live.dart"
+      ]
     },
     "welcome": {
       "app": "native",
-      "files": ["lib/api/live.dart", "lib/api/live_model.dart"]
+      "files": [
+        "lib/api/live.dart",
+        "lib/api/live_model.dart"
+      ]
     },
     "event": {
       "app": "native",
-      "files": ["lib/api/live.dart", "lib/api/live_model.dart"]
+      "files": [
+        "lib/api/live.dart",
+        "lib/api/live_model.dart"
+      ]
     },
     "delta": {
       "app": "native",
-      "files": ["lib/api/live_model.dart"],
-      "rows": [28, 32]
+      "files": [
+        "lib/api/live_model.dart"
+      ],
+      "rows": [
+        28,
+        32
+      ]
     },
     "prefill": {
       "app": "native",
-      "files": ["lib/api/live_model.dart"]
+      "files": [
+        "lib/api/live_model.dart"
+      ]
     },
     "session.state": {
       "app": "native",
-      "files": ["lib/api/live_model.dart"]
+      "files": [
+        "lib/api/live_model.dart"
+      ]
     },
     "session.activity": {
       "app": "native",
-      "files": ["lib/api/live_model.dart"]
+      "files": [
+        "lib/api/live_model.dart"
+      ]
     },
     "canvas.open": {
       "app": "no",
       "files": [],
       "phase": "G42.6",
-      "rows": [86, 300],
+      "rows": [
+        86,
+        300
+      ],
       "note": "An agent's canvas.show from another conversation does not bring the app's Canvas forward."
     },
     "session.synced": {
@@ -636,13 +1162,20 @@
     },
     "session.history": {
       "app": "native",
-      "files": ["lib/api/live.dart", "lib/api/live_model.dart"]
+      "files": [
+        "lib/api/live.dart",
+        "lib/api/live_model.dart"
+      ]
     },
     "session.compacting": {
       "app": "native",
-      "files": ["lib/api/live_model.dart"],
+      "files": [
+        "lib/api/live_model.dart"
+      ],
       "phase": "G42.1",
-      "rows": [73]
+      "rows": [
+        73
+      ]
     },
     "editor.fs": {
       "app": "n/a",
@@ -651,158 +1184,230 @@
     },
     "permission.request": {
       "app": "native",
-      "files": ["lib/api/live_model.dart"],
+      "files": [
+        "lib/api/live_model.dart"
+      ],
       "phase": "G42.1",
-      "rows": [55, 56, 57, 58, 59, 60, 61, 62]
+      "rows": [
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62
+      ]
     },
     "artifact.bridge.result": {
       "app": "native",
-      "files": ["lib/ui/artifact_frame_view.dart", "lib/api/artifact_frame.dart"],
+      "files": [
+        "lib/ui/artifact_frame_view.dart",
+        "lib/api/artifact_frame.dart"
+      ],
       "phase": "3.8.7",
-      "rows": [76]
+      "rows": [
+        76
+      ]
     },
     "permission.closed": {
       "app": "native",
-      "files": ["lib/api/live_model.dart", "lib/app_state.dart"],
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/app_state.dart"
+      ],
       "phase": "G42.1",
-      "rows": [55]
+      "rows": [
+        55
+      ]
     },
     "image.progress": {
       "app": "no",
       "files": [],
       "phase": "G42.2",
-      "rows": [45],
+      "rows": [
+        45
+      ],
       "note": "generate_image's live preview is not drawn; the final image is (G42.1)."
     },
     "question.request": {
       "app": "native",
-      "files": ["lib/api/live_model.dart"],
+      "files": [
+        "lib/api/live_model.dart"
+      ],
       "phase": "G42.1",
-      "rows": [63, 64, 65, 66]
+      "rows": [
+        63,
+        64,
+        65,
+        66
+      ]
     },
     "question.closed": {
       "app": "native",
-      "files": ["lib/api/live_model.dart"],
+      "files": [
+        "lib/api/live_model.dart"
+      ],
       "phase": "G42.1",
-      "rows": [66]
+      "rows": [
+        66
+      ]
     },
     "board.changed": {
       "app": "no",
       "files": [],
       "phase": "G42.3",
-      "rows": [78]
+      "rows": [
+        78
+      ]
     },
     "automations.changed": {
       "app": "no",
       "files": [],
       "phase": "G42.9",
-      "rows": [154]
+      "rows": [
+        154
+      ]
     },
     "automation.notice": {
       "app": "no",
       "files": [],
       "phase": "G42.9",
-      "rows": [159, 254]
+      "rows": [
+        159,
+        254
+      ]
     },
     "browser.frame": {
       "app": "no",
       "files": [],
       "phase": "G42.3",
-      "rows": [79]
+      "rows": [
+        79
+      ]
     },
     "browser.state": {
       "app": "no",
       "files": [],
       "phase": "G42.3",
-      "rows": [79]
+      "rows": [
+        79
+      ]
     },
     "room.changed": {
       "app": "no",
       "files": [],
       "phase": "G42.3",
-      "rows": [80]
+      "rows": [
+        80
+      ]
     },
     "platform.changed": {
       "app": "no",
       "files": [],
       "phase": "G42.17",
-      "rows": [201],
+      "rows": [
+        201
+      ],
       "note": "The page also refreshes projects on it (archived or restored)."
     },
     "canvas.query": {
       "app": "no",
       "files": [],
       "phase": "G42.6",
-      "rows": [87]
+      "rows": [
+        87
+      ]
     },
     "doc.opened": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [114],
+      "rows": [
+        114
+      ],
       "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
     },
     "doc.changed": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [114],
+      "rows": [
+        114
+      ],
       "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
     },
     "doc.ack": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [114],
+      "rows": [
+        114
+      ],
       "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
     },
     "doc.rejected": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [114, 306],
+      "rows": [
+        114,
+        306
+      ],
       "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
     },
     "doc.replaced": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [306],
+      "rows": [
+        306
+      ],
       "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
     },
     "doc.presence": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [114],
+      "rows": [
+        114
+      ],
       "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
     },
     "doc.held": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [114],
+      "rows": [
+        114
+      ],
       "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
     },
     "doc.proposals": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [302],
+      "rows": [
+        302
+      ],
       "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
     },
     "doc.mode": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [114],
+      "rows": [
+        114
+      ],
       "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
     },
     "doc.saved": {
       "app": "no",
       "files": [],
       "phase": "G42.7",
-      "rows": [307],
+      "rows": [
+        307
+      ],
       "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
     },
     "error": {

@@ -78,7 +78,12 @@ class _FullSettingsScreenState extends State<FullSettingsScreen> {
             Expanded(
               child: EmbedView(
                 key: _view,
-                url: fullSettingsUrl(widget.base, token: widget.token),
+                url: fullSettingsUrl(
+                  widget.base,
+                  token: widget.token,
+                  theme: Theme.of(context).brightness == Brightness.dark ? 'dark' : 'light',
+                  lang: Localizations.localeOf(context).languageCode,
+                ),
                 leaf: widget.leaf,
               ),
             ),

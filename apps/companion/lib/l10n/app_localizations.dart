@@ -8066,6 +8066,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Web view test'**
   String get embedProbeTitle;
+
+  /// No description provided for @embedSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get embedSaving;
+
+  /// No description provided for @embedSavedState.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get embedSavedState;
+
+  /// No description provided for @embedProbeOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Web view test'**
+  String get embedProbeOpen;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

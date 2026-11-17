@@ -1012,22 +1012,41 @@ export async function refresh(): Promise<void> {
  * out of the address bar at once, the rest of the fragment stays; the token is kept by `signIn`
  * when it works.
  */
-export function takeFromLink(): { token?: string; board?: string; open?: "settings" } {
+export function takeFromLink(): {
+  token?: string;
+  board?: string;
+  open?: "settings";
+  /** RGCompanion's theme and language (G42.0): for this page only, never saved. */
+  theme?: "light" | "dark";
+  lang?: "it" | "en";
+} {
   const hash = new URLSearchParams(location.hash.slice(1));
   const token = hash.get("token")?.trim() || undefined;
   const board = hash.get("tavola") || undefined;
   const open = hash.get("open") === "settings" ? "settings" : undefined;
+  const t = hash.get("theme");
+  const theme = t === "light" || t === "dark" ? t : undefined;
+  const l = hash.get("lang");
+  const lang = l === "it" || l === "en" ? l : undefined;
   if (!hash.has("token") && !hash.has("tavola") && !hash.has("open")) return {};
   hash.delete("token");
   hash.delete("tavola");
   hash.delete("open");
+  hash.delete("theme");
+  hash.delete("lang");
   const rest = hash.toString();
   history.replaceState(
     history.state,
     "",
     location.pathname + location.search + (rest ? `#${rest}` : ""),
   );
-  return { ...(token && { token }), ...(board && { board }), ...(open && { open }) };
+  return {
+    ...(token && { token }),
+    ...(board && { board }),
+    ...(open && { open }),
+    ...(open && theme && { theme }),
+    ...(open && lang && { lang }),
+  };
 }
 
 /** Signs in with [t]; `keep: false` (the page inside RGCompanion, G42.0): the token stays in memory. */

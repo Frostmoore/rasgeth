@@ -197,15 +197,15 @@ void main() {
     await show(tester);
     host.say({'t': 'ready'});
     await tester.pump();
-    await tester.pumpWidget(
-      wrap(
-        EmbedView(url: Uri.parse('https://rg.local:7443/embed.html#x'), nonce: host.nonce),
-        mode: ThemeMode.dark,
-        locale: const Locale('en'),
-      ),
+    final view = EmbedView(
+      url: Uri.parse('https://rg.local:7443/embed.html#token=t&embed=probe'),
+      nonce: host.nonce,
     );
-    await tester.pump();
+    await tester.pumpWidget(wrap(view, mode: ThemeMode.dark));
+    await tester.pump(const Duration(seconds: 1));
     expect(host.scripts, contains(contains('"t":"theme","theme":"dark"')));
+    await tester.pumpWidget(wrap(view, mode: ThemeMode.dark, locale: const Locale('en')));
+    await tester.pump(const Duration(seconds: 1));
     expect(host.scripts, contains(contains('"t":"lang","lang":"en"')));
   });
 
@@ -245,7 +245,10 @@ void main() {
       );
       await tester.pump();
       expect(asked, webEngineFor(p));
-      expect(host.loaded.toString(), 'https://rg.local:7443/#token=rgd_x&open=settings');
+      expect(
+        host.loaded.toString(),
+        'https://rg.local:7443/#token=rgd_x&open=settings&theme=light&lang=it',
+      );
       expect(host.loaded?.query, isEmpty);
       expect(find.text('Casa'), findsOneWidget);
     });

@@ -20,13 +20,19 @@ enum FullSettingsMode {
 FullSettingsMode fullSettingsMode(DevicePlatform p, TransportKind k) =>
     k == TransportKind.channel ? FullSettingsMode.unavailable : FullSettingsMode.webView;
 
-/// The page at [base] opening on Settings, signed in with [token] (null: as usual).
-Uri fullSettingsUrl(Uri base, {String? token}) => Uri(
+/// The page at [base] opening on Settings, signed in with [token] (null: as usual); [theme] and
+/// [lang] are the app's (G42.0), used by the page for this time only.
+Uri fullSettingsUrl(Uri base, {String? token, String? theme, String? lang}) => Uri(
   scheme: base.scheme,
   host: base.host,
   port: base.hasPort ? base.port : null,
   path: '/',
-  fragment: token == null ? 'open=settings' : 'token=${Uri.encodeComponent(token)}&open=settings',
+  fragment: [
+    if (token != null) 'token=${Uri.encodeComponent(token)}',
+    'open=settings',
+    if (theme == 'light' || theme == 'dark') 'theme=$theme',
+    if (lang == 'it' || lang == 'en') 'lang=$lang',
+  ].join('&'),
 );
 
 /// Whether the WebView may go on past a certificate the system does not trust: only when it is

@@ -3395,5 +3395,8 @@
     }
   },
   "embedOpenInBrowser": "Open in the browser",
-  "embedProbeTitle": "Web view test"
+  "embedProbeTitle": "Web view test",
+  "embedSaving": "Saving…",
+  "embedSavedState": "Saved",
+  "embedProbeOpen": "Web view test"
 }

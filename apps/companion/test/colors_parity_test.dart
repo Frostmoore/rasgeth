@@ -9,7 +9,7 @@ import 'package:rgcompanion/theme/colors.dart';
 
 Map<String, String> _block(String css, String selector) {
   final start = css.indexOf('$selector {');
-  expect(start, greaterThanOrEqualTo(0), reason: selector);
+  if (start < 0) throw StateError('no $selector in styles.css');
   final body = css.substring(start + selector.length + 2, css.indexOf('\n}', start));
   return {
     for (final m in RegExp(r'--([\w-]+):\s*(#[0-9a-fA-F]{6})\s*;').allMatches(body))

@@ -1328,5 +1328,8 @@
   "embedShareCopied": "Copiato: incollalo dove vuoi condividerlo",
   "embedSaved": "Salvato: {name}",
   "embedOpenInBrowser": "Apri nel browser",
-  "embedProbeTitle": "Prova della vista web"
+  "embedProbeTitle": "Prova della vista web",
+  "embedSaving": "Salvataggio…",
+  "embedSavedState": "Salvato",
+  "embedProbeOpen": "Prova della vista web"
 }

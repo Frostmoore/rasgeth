@@ -4637,4 +4637,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get embedProbeTitle => 'Web view test';
+
+  @override
+  String get embedSaving => 'Saving…';
+
+  @override
+  String get embedSavedState => 'Saved';
+
+  @override
+  String get embedProbeOpen => 'Web view test';
 }

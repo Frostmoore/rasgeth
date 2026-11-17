@@ -19,6 +19,7 @@ import '../theme/colors.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/words.dart';
+import '../embed/embed_screen.dart';
 import 'first_start_screen.dart' show openExternal;
 import 'full_settings_screen.dart';
 import 'update_screen.dart';
@@ -434,6 +435,19 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                     _ => l.allSettingsNoHttps,
                   }, style: TextStyle(color: c.dim, fontSize: 12.5)),
                 ),
+                if (mode == FullSettingsMode.webView)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: OutlinedButton.icon(
+                        key: const Key('settings-embed-probe'),
+                        onPressed: () => openEmbedProbe(context),
+                        icon: RgIcon(RgIcons.canvas, size: 16, color: c.text),
+                        label: Text(l.embedProbeOpen),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),

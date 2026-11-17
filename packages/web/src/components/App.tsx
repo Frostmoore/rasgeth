@@ -1,7 +1,7 @@
 import { OWN_SERVER_ID } from "@redgiant/protocol";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { usd } from "../format.js";
-import { t } from "../i18n.js";
+import { lang, t } from "../i18n.js";
 import {
   IconAlert,
   IconArchive,
@@ -375,6 +375,9 @@ export function App() {
     // RGCompanion's «All settings» (G40.8): the page opens on Settings, even after the password
     // page (G42.0: the intention waits in the tab's storage and is used once).
     if (link.open) sessionStorage.setItem("rg.open", link.open);
+    // The app's look for its «All settings», not saved as the page's own choice.
+    if (link.theme) document.documentElement.dataset.theme = link.theme;
+    if (link.lang) lang.value = link.lang;
     if (token.value)
       void signIn(token.value)
         .catch(() => signOut())

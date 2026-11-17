@@ -141,6 +141,17 @@ describe("links with #token= (G39.7)", () => {
   it("takes RGCompanion's #open=settings with its token (G40.8)", () => {
     history.replaceState(null, "", "/#token=rgd_dev&open=settings");
     expect(takeFromLink()).toEqual({ token: "rgd_dev", open: "settings" });
+    // RGCompanion's look comes with it (G42.0), and only with «All settings».
+    history.replaceState(null, "", "/#token=rgd_dev&open=settings&theme=dark&lang=en");
+    expect(takeFromLink()).toEqual({
+      token: "rgd_dev",
+      open: "settings",
+      theme: "dark",
+      lang: "en",
+    });
+    expect(location.hash).toBe("");
+    history.replaceState(null, "", "/#token=rgd_dev&theme=dark&lang=xx");
+    expect(takeFromLink()).toEqual({ token: "rgd_dev" });
     expect(location.href).not.toContain("rgd_dev");
     expect(location.hash).toBe("");
     history.replaceState(null, "", "/#open=elsewhere");
