@@ -10,7 +10,11 @@
  * - the arguments of `which`, `command -v`, `type` (unless they look like files: PowerShell's
  *   `type` is `cat`), `whereis`, `hash`, `echo`, `printf`, `true`, `false`, `:`;
  * - the pattern of `grep` and the script of `sed`/`awk` (their files stay);
- * - shell words (`for x in …`, `case … in`, `do`, `then`, `if`…) and `case` labels.
+ * - shell words (`for x in …`, `case … in`, `do`, `then`, `if`…) and `case` labels;
+ * - `sudo -n true`, `sudo -v`, `sudo -l`: they only test whether sudo would ask (p3.8.9);
+ * - `rm -r` of folders strictly inside the project's folders (or in /tmp), followed through `cd`:
+ *   no variable, no `~`, no `.git`, never the project's root itself (p3.8.9, Coder: `rm -rf x`
+ *   before extracting a zip again into x). Without the folders known, it stays.
  *
  * `$(…)` and backticks are commands of their own. Interpreters' inline code (`python -c`,
  * `node -e`) stays as it is: what it runs cannot be known, so its words still count. Pure.
@@ -37,6 +41,58 @@ const base = (w: string) => (w.split(/[\\/]/).at(-1) ?? "").toLowerCase();
 const isFileLike = (w: string) => /[./\\]/.test(w);
 const scriptKey = (w: string) => posix.basename(posix.normalize(w.replace(/\\/g, "/")));
 
+/** Where a line runs: the project's folders and the folder it starts in (the first one). */
+export interface ShellPlace {
+  roots?: readonly string[] | undefined;
+  cwd?: string | undefined;
+}
+
+const TMP = ["/tmp", "/var/tmp"];
+const strictlyIn = (p: string, base: string) =>
+  p.startsWith(base.endsWith("/") ? base : `${base}/`);
+
+/**
+ * Whether `rm -r` of these paths only drops work inside the project (or scratch in /tmp): each one
+ * strictly inside one of its folders, never the folder itself, never a `.git`, no variable or `~`
+ * (unknown places). Posix paths only; anything else stays a danger.
+ */
+function deletesOnlyWork(
+  args: string[],
+  cwd: string | undefined,
+  roots: readonly string[],
+): boolean {
+  const targets = args.filter((a) => !a.startsWith("-"));
+  if (targets.length === 0) return false;
+  return targets.every((t) => {
+    if (/[$`~\\]/.test(t)) return false;
+    if (!t.startsWith("/") && !cwd) return false;
+    const p = t.startsWith("/") ? posix.normalize(t) : posix.resolve(cwd as string, t);
+    if (p.split("/").includes(".git")) return false;
+    // A glob empties its folder: that folder must be strictly inside too.
+    const at = /[*?[]/.test(posix.basename(p)) ? posix.dirname(p) : p;
+    const inside = (base: string) => strictlyIn(at, posix.normalize(base).replace(/\/+$/, ""));
+    return TMP.some(inside) || roots.some((r) => r.startsWith("/") && inside(r));
+  });
+}
+
+/** sudo that only tests whether it would ask for a password: `sudo -n true`, `sudo -v`, `-l`. */
+function sudoProbe(args: string[]): boolean {
+  const opts = args.filter((a) => a.startsWith("-"));
+  const rest = args.filter((a) => !a.startsWith("-"));
+  if (
+    opts.some((o) =>
+      /^-[a-zA-Z]*[vlkK]|^--(validate|list|reset-timestamp|remove-timestamp)$/.test(o),
+    ) &&
+    rest.length === 0
+  )
+    return true;
+  return (
+    rest.length === 1 &&
+    (rest[0] === "true" || rest[0] === ":") &&
+    opts.every((o) => /^-[nS]+$/.test(o))
+  );
+}
+
 /** One simple command as the rules read it: its words without the ones that are only data. */
 function wordsRun(words: string[]): string[] {
   let ws = words;
@@ -46,6 +102,7 @@ function wordsRun(words: string[]): string[] {
   const name = base(first);
   if (!name || WHOLE.has(name)) return [];
   if (WORDS_ONLY.has(name)) return [first];
+  if ((name === "sudo" || name === "doas") && sudoProbe(args)) return [];
   if (name === "command" && args.some((a) => /^-[vV]+$/.test(a))) return [first];
   if (name === "type") return [first, ...args.filter(isFileLike)];
   if (name === "grep" || name === "egrep" || name === "fgrep" || name === "rg") {
@@ -86,15 +143,17 @@ function wordsRun(words: string[]): string[] {
  * The commands a shell line runs, one per line (a pipeline on one line, joined by ` | `), for the
  * danger rules' patterns. Pure.
  */
-export function commandsRun(command: string, depth = 0): string {
+export function commandsRun(command: string, place: ShellPlace = {}, depth = 0): string {
   if (depth > 3) return "";
+  const roots = place.roots ?? [];
+  let cwd = place.cwd ?? roots[0];
   const { text, docs } = takeHeredocs(command);
   const lines: string[] = [];
   let pipe: string[] = [];
   /** Scripts written here by a heredoc, by file name: run later in the line, they are read. */
   const written = new Map<string, string>();
   const more = (s: string) => {
-    const r = commandsRun(s, depth + 1);
+    const r = commandsRun(s, { roots, cwd }, depth + 1);
     if (r) lines.push(r);
   };
   for (const raw of simpleCommands(text)) {
@@ -132,7 +191,18 @@ export function commandsRun(command: string, depth = 0): string {
       const body = script !== undefined ? written.get(scriptKey(script)) : undefined;
       if (body !== undefined) more(body);
     }
-    if (ws.length) pipe.push(ws.join(" "));
+    // `cd` moves the line (an unknown place: a variable, ~, a folder relative to an unknown one).
+    if (name === "cd") {
+      const to = args.find((a) => !a.startsWith("-"));
+      cwd =
+        to === undefined || /[$`~\\]/.test(to)
+          ? undefined
+          : to.startsWith("/")
+            ? posix.normalize(to)
+            : cwd && posix.resolve(cwd, to);
+    }
+    const onlyWork = name === "rm" && deletesOnlyWork(args, cwd, roots);
+    if (ws.length && !onlyWork) pipe.push(ws.join(" "));
     if (c.sep !== "|" && pipe.length) {
       lines.push(pipe.join(" | "));
       pipe = [];

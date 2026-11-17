@@ -1,3 +1,4 @@
+import { posix } from "node:path";
 import type { ToolCallInfo } from "@redgiant/agent";
 import { criticalOf, type RemoteMachineInfo } from "./critical.js";
 import {
@@ -112,7 +113,8 @@ export const DEFAULT_DANGER_RULES: DangerRule[] = [
     label: "Destructive SQL",
     tool: "*",
     pattern:
-      "\\b(DROP\\s+(TABLE|DATABASE|SCHEMA)|TRUNCATE\\s+TABLE|DELETE\\s+FROM\\s+\\w+\\s*;?\\s*$)",
+      // DELETE without a WHERE; on the commands run and the call's own arguments (not file contents).
+      '\\b(DROP\\s+(TABLE|DATABASE|SCHEMA)|TRUNCATE\\s+TABLE|DELETE\\s+FROM\\s+[\\w."`]+\\s*(;|"|\\\\n|$))',
   },
   {
     id: "deploy",
@@ -332,24 +334,73 @@ const ruleApplies = (pattern: string, tool: string) =>
   toolMatches(pattern, tool) || (pattern === "bash" && (tool === "ssh_run" || tool === "node_run"));
 
 /**
- * The call as the danger rules read it (p3.8.9): a shell command becomes the commands it really
- * runs (`commandsRun`), so a word for `which`, a heredoc written into a file or `process.env` in a
- * script is not a danger. Other tools stay as they are.
+ * What a call writes or says, never what it runs or reads (p3.8.9: a CSS file with «delete from»
+ * in a comment asked as «Destructive SQL», `process.env` in a script as «Secret files»): the
+ * danger rules do not read these fields.
  */
-function asRun(call: ToolCallInfo): ToolCallInfo {
-  const input = call.input as Record<string, unknown> | null | undefined;
-  if (
-    (call.name === "bash" || call.name === "ssh_run" || call.name === "node_run") &&
-    input &&
-    typeof input === "object" &&
-    typeof input.command === "string"
-  )
-    return { ...call, input: { ...input, command: commandsRun(input.command) } };
-  return call;
+const DATA_FIELDS = new Set([
+  "content",
+  "new_string",
+  "old_string",
+  "body",
+  "text",
+  "ops",
+  "edits",
+  "yaml",
+  "summary",
+  "description",
+  "why",
+  "message",
+  "prompt",
+  "task",
+  "instructions",
+  "system_prompt",
+  "title",
+  "note",
+]);
+/** Tools that write a file at `path`: inside the project's folders that is ordinary work. */
+const FILE_WRITERS = new Set(["write_file", "edit_file", "edit_package", "canvas_edit"]);
+
+/** Where the danger rules look: the project's folders (p3.8.9). */
+export interface DangerContext {
+  roots?: readonly string[] | undefined;
 }
 
-export function classify(raw: ToolCallInfo, rules: DangerRule[]): DangerRule[] {
-  const call = asRun(raw);
+/**
+ * The call as the danger rules read it (p3.8.9): a shell command becomes the commands it really
+ * runs (`commandsRun`: a word for `which`, a heredoc written into a file, `rm -rf` of a folder
+ * inside the project are not dangers); the other tools lose what they write (`DATA_FIELDS`), and a
+ * file written inside the project's folders loses its path too (creating or changing a file there
+ * is never a danger).
+ */
+function asRun(call: ToolCallInfo, ctx: DangerContext): ToolCallInfo {
+  const input = call.input as Record<string, unknown> | null | undefined;
+  if (!input || typeof input !== "object" || Array.isArray(input)) return call;
+  if (call.name === "bash" || call.name === "ssh_run" || call.name === "node_run") {
+    if (typeof input.command !== "string") return call;
+    // Another machine's folders are not the project's.
+    const place = call.name === "bash" ? { roots: ctx.roots } : {};
+    return { ...call, input: { ...input, command: commandsRun(input.command, place) } };
+  }
+  const kept: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(input)) if (!DATA_FIELDS.has(k)) kept[k] = v;
+  const path = typeof input.path === "string" ? input.path : undefined;
+  const roots = (ctx.roots ?? []).filter((r) => r.startsWith("/"));
+  if (FILE_WRITERS.has(call.name) && path && roots.length) {
+    const p = path.startsWith("/")
+      ? posix.normalize(path)
+      : posix.resolve(roots[0] as string, path);
+    if (roots.some((r) => p.startsWith(r.endsWith("/") ? r : `${r}/`))) delete kept.path;
+  }
+  return { ...call, input: kept };
+}
+
+export function classify(
+  raw: ToolCallInfo,
+  rules: DangerRule[],
+  ctx: DangerContext = {},
+): DangerRule[] {
+  const call = asRun(raw, ctx);
   return rules.filter(
     (r) =>
       r.enabled !== false &&
@@ -425,7 +476,7 @@ export function evaluate(mode: PermissionMode, call: ToolCallInfo, s: PolicySett
 }
 
 function evaluateRules(mode: PermissionMode, call: ToolCallInfo, s: PolicySettings): Evaluation {
-  const matched = classify(call, s.danger);
+  const matched = classify(call, s.danger, { roots: s.roots });
   const danger = matched.map((r) => r.id);
   // canvas_edit's catalog and dry runs only read (G37.1).
   const readOnly =

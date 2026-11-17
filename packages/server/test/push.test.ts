@@ -151,7 +151,7 @@ describe("Web Push to a UnifiedPush endpoint", () => {
       actions: ["allow", "deny"],
       title: "God asks for permission",
     });
-    expect(notice.body).toContain("ls -la");
+    expect(notice.body).toContain("Looks at files (ls)");
 
     // The VAPID token: for the endpoint's origin, signed by the announced key.
     const m = String(hit.headers.authorization).match(/^vapid t=([^,]+), k=(.+)$/);

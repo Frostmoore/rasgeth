@@ -147,6 +147,18 @@ function mcpSentence({ l, i, name, q }: Ctx): string {
     : `Adds the connected service ${q(str(i.catalog_id) ?? "?")}${where}`;
 }
 
+const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+/** A web address as the person reads it: its host. */
+const siteOf = (v: unknown) => {
+  const u = str(v);
+  if (!u) return "?";
+  try {
+    return new URL(u).host || u;
+  } catch {
+    return short(u, 80);
+  }
+};
+
 /** A shell command in a line (p3.8.9): what it does, by program (`shellSummary`). */
 function bashSentence({ l, i }: Ctx): string {
   return shellSummary(l, str(i.command) ?? "", { background: i.background === true });
@@ -324,6 +336,59 @@ const SENTENCES: Record<string, Record<Lang, Sentence>> = {
     en: () => "Reads the latest changes to RedGiant",
   },
   bash: { it: bashSentence, en: bashSentence },
+  // Another machine (G38.2) or a node (G39.4): the command in words, and where (p3.8.9).
+  ssh_run: {
+    it: ({ i }) =>
+      `Su ${str(i.machine) ?? "?"}: ${lowerFirst(shellSummary("it", str(i.command) ?? ""))}`,
+    en: ({ i }) =>
+      `On ${str(i.machine) ?? "?"}: ${lowerFirst(shellSummary("en", str(i.command) ?? ""))}`,
+  },
+  node_run: {
+    it: ({ i }) =>
+      `Su ${str(i.node) ?? "?"}: ${lowerFirst(shellSummary("it", str(i.command) ?? ""))}`,
+    en: ({ i }) =>
+      `On ${str(i.node) ?? "?"}: ${lowerFirst(shellSummary("en", str(i.command) ?? ""))}`,
+  },
+  ssh_copy: {
+    it: ({ i }) =>
+      i.direction === "download"
+        ? `Copia ${str(i.remote) ?? "?"} da ${str(i.machine) ?? "?"} in ${str(i.local) ?? "?"}`
+        : `Copia ${str(i.local) ?? "?"} su ${str(i.machine) ?? "?"} in ${str(i.remote) ?? "?"}`,
+    en: ({ i }) =>
+      i.direction === "download"
+        ? `Copies ${str(i.remote) ?? "?"} from ${str(i.machine) ?? "?"} to ${str(i.local) ?? "?"}`
+        : `Copies ${str(i.local) ?? "?"} to ${str(i.machine) ?? "?"} at ${str(i.remote) ?? "?"}`,
+  },
+  browser_open: {
+    it: ({ i }) => `Apre ${siteOf(i.url)} nel browser`,
+    en: ({ i }) => `Opens ${siteOf(i.url)} in the browser`,
+  },
+  request_tool: {
+    it: ({ i }) =>
+      `Chiede di riaccendere lo strumento ${str(i.tool) ?? "?"}${str(i.why) ? `: ${short(str(i.why) ?? "", 120)}` : ""}`,
+    en: ({ i }) =>
+      `Asks to switch the tool ${str(i.tool) ?? "?"} back on${str(i.why) ? `: ${short(str(i.why) ?? "", 120)}` : ""}`,
+  },
+  request_connection: {
+    it: ({ i, q }) =>
+      `Chiede di collegare il servizio ${q(str(i.service) ?? "?")}${str(i.why) ? `: ${short(str(i.why) ?? "", 120)}` : ""}`,
+    en: ({ i, q }) =>
+      `Asks to connect the service ${q(str(i.service) ?? "?")}${str(i.why) ? `: ${short(str(i.why) ?? "", 120)}` : ""}`,
+  },
+  ffmpeg: {
+    it: () => "Converte o modifica un video o un audio con ffmpeg",
+    en: () => "Converts or edits a video or audio with ffmpeg",
+  },
+  blender: {
+    it: ({ i }) => `Usa Blender${str(i.file) ? ` su ${str(i.file)}` : ""}`,
+    en: ({ i }) => `Uses Blender${str(i.file) ? ` on ${str(i.file)}` : ""}`,
+  },
+  propose_automation: {
+    it: ({ i }) =>
+      `Propone un'automazione${str(i.summary) ? `: ${short(str(i.summary) ?? "", 120)}` : ""}`,
+    en: ({ i }) =>
+      `Proposes an automation${str(i.summary) ? `: ${short(str(i.summary) ?? "", 120)}` : ""}`,
+  },
   write_file: {
     it: ({ i }) => `Scrive il file ${str(i.path) ?? "?"}`,
     en: ({ i }) => `Writes the file ${str(i.path) ?? "?"}`,

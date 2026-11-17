@@ -179,24 +179,14 @@ const TABLE: Row[] = [
     "In sottofondo: esegue lo script dev del progetto",
     "In the background: runs the project's script dev",
   ],
-  [
-    "bash",
-    { command: "rm -rf build" },
-    "Cancella build",
-    "Deletes build",
-  ],
+  ["bash", { command: "rm -rf build" }, "Cancella build", "Deletes build"],
   [
     "bash",
     { command: "rm -rf build && npm run build" },
     "Cancella build, poi compila il progetto",
     "Deletes build, then builds the project",
   ],
-  [
-    "bash",
-    { command: "cd app\nnpm test" },
-    "Esegue i test",
-    "Runs the tests",
-  ],
+  ["bash", { command: "cd app\nnpm test" }, "Esegue i test", "Runs the tests"],
   // Files: write, edit, delete.
   [
     "write_file",
