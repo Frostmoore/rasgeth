@@ -118,6 +118,24 @@ class ActButton extends StatelessWidget {
   }
 }
 
+/// At most [width] wide, on the left (`.permission`: `align-self: stretch; max-width: 860px`): in
+/// a list the width is imposed, so the limit needs room to be smaller.
+class MaxWidthLeft extends StatelessWidget {
+  const MaxWidthLeft({super.key, required this.child, this.width = 860});
+
+  final Widget child;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) => Align(
+    alignment: Alignment.centerLeft,
+    child: ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: width),
+      child: child,
+    ),
+  );
+}
+
 /// The card's frame: accent border on the accent's soft colour (`.permission`), red for a truly
 /// dangerous one.
 class RequestFrame extends StatelessWidget {
@@ -130,8 +148,7 @@ class RequestFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = RgColors.of(context);
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 860),
+    return MaxWidthLeft(
       child: Container(
         key: id == null ? null : Key('chat-request-$id'),
         width: double.infinity,

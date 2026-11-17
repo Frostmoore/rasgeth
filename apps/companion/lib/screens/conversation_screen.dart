@@ -862,11 +862,18 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                     padding: const EdgeInsets.only(right: 6),
                                     child: InputChip(
                                       visualDensity: VisualDensity.compact,
-                                      avatar: RgIcon(
-                                        a is AttachedImage ? RgIcons.image : RgIcons.file,
-                                        size: 16,
-                                        color: c.dim,
-                                      ),
+                                      avatar: a is AttachedImage
+                                          // A photo shows itself (the page's thumbnail).
+                                          ? ClipRRect(
+                                              borderRadius: BorderRadius.circular(4),
+                                              child: Image.memory(
+                                                a.bytes,
+                                                width: 22,
+                                                height: 22,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            )
+                                          : RgIcon(RgIcons.file, size: 16, color: c.dim),
                                       label: Text(a.name, overflow: TextOverflow.ellipsis),
                                       deleteButtonTooltipMessage: l.attachmentRemove,
                                       deleteIcon: RgIcon(RgIcons.x, size: 14, color: c.dim),

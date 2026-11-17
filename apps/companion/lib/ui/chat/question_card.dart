@@ -11,7 +11,7 @@ import '../../l10n/app_localizations.dart';
 import '../../theme/colors.dart';
 import '../icons.dart';
 import '../markdown.dart';
-import 'request_cards.dart' show ActButton, ActKind;
+import 'request_cards.dart' show ActButton, ActKind, MaxWidthLeft;
 
 /// `PLAN_APPROVE`, `PLAN_REVISE` (packages/protocol/src/questions.ts): the answers sent.
 const planApprove = 'Approve';
@@ -217,8 +217,7 @@ class _ChatQuestionCardState extends State<ChatQuestionCard> {
       );
     }
     if (_failed) children.add(Text(l.notLive, style: TextStyle(color: c.err, fontSize: 13)));
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 860),
+    return MaxWidthLeft(
       child: Container(
         key: Key('chat-question-${w.requestId}'),
         width: double.infinity,
@@ -242,8 +241,7 @@ class _ChatQuestionCardState extends State<ChatQuestionCard> {
   Widget _done(AppLocalizations l, RgColors c) {
     final w = widget;
     final plan = w.plan;
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 860),
+    return MaxWidthLeft(
       child: Container(
         key: Key('chat-question-done-${w.requestId}'),
         width: double.infinity,
