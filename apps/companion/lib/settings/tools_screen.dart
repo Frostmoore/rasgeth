@@ -195,25 +195,27 @@ class _ToolsScreenState extends State<ToolsScreen> {
     } else {
       final on = v.entries.where((e) => e.global).length;
       children.addAll([
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 10,
-          children: [
-            Expanded(
-              child: _SumBox(
-                key: const Key('tl-total'),
-                strong: l.g4TlTotal(aboutTokens(l, v.total)),
-                small: l.g4TlHowMany('$on', '${v.entries.length}'),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: 10,
+            children: [
+              Expanded(
+                child: _SumBox(
+                  key: const Key('tl-total'),
+                  strong: l.g4TlTotal(aboutTokens(l, v.total)),
+                  small: l.g4TlHowMany('$on', '${v.entries.length}'),
+                ),
               ),
-            ),
-            Expanded(
-              child: _SumBox(
-                key: const Key('tl-saved'),
-                strong: v.saved > 0 ? l.g4TlSaved(aboutTokens(l, v.saved)) : l.g4TlNoneSaved,
-                lit: v.saved > 0,
+              Expanded(
+                child: _SumBox(
+                  key: const Key('tl-saved'),
+                  strong: v.saved > 0 ? l.g4TlSaved(aboutTokens(l, v.saved)) : l.g4TlNoneSaved,
+                  lit: v.saved > 0,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(4, 12, 4, 10),

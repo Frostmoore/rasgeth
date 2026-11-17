@@ -185,19 +185,6 @@ void main() {
     testWidgets('renaming a device, and the settings of every day', (tester) async {
       await start(tester);
       await push(tester, const ServerSettingsScreen());
-      for (final id in [
-        'general',
-        'agents',
-        'tools',
-        'commands',
-        'requests',
-        'safety',
-        'budgets',
-      ]) {
-        expect(find.byKey(Key('settings-$id')), findsOneWidget, reason: id);
-      }
-      // «Agents at work together» lives in Commands now: no second row.
-      expect(find.byKey(const Key('settings-at-work')), findsNothing);
       await tester.scrollUntilVisible(
         find.byKey(const Key('rename-d2')),
         300,
@@ -223,7 +210,7 @@ void main() {
       // A row opens its page.
       await tester.scrollUntilVisible(
         find.byKey(const Key('settings-budgets')),
-        -300,
+        300,
         scrollable: find
             .descendant(
               of: find.byKey(const Key('server-settings')),
@@ -231,6 +218,21 @@ void main() {
             )
             .first,
       );
+      for (final id in [
+        'general',
+        'agents',
+        'tools',
+        'commands',
+        'requests',
+        'safety',
+        'budgets',
+      ]) {
+        expect(find.byKey(Key('settings-$id')), findsOneWidget, reason: id);
+      }
+      // «Agents at work together» lives in Commands now: no second row.
+      expect(find.byKey(const Key('settings-at-work')), findsNothing);
+      await tester.ensureVisible(find.byKey(const Key('settings-budgets')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('settings-budgets')));
       await _settle(tester);
       expect(find.byKey(const Key('budgets-settings')), findsOneWidget);

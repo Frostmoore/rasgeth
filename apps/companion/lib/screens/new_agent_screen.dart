@@ -482,32 +482,37 @@ class _NewAgentScreenState extends State<NewAgentScreen> {
                 decoration: BoxDecoration(
                   border: Border(top: BorderSide(color: c.line)),
                 ),
-                child: Row(
-                  children: [
-                    if (n > 1)
-                      OutlinedButton(
-                        key: const Key('new-agent-back'),
-                        style: OutlinedButton.styleFrom(minimumSize: const Size(0, 48)),
-                        onPressed: _creating ? null : _back,
-                        child: Text(l.newAgentBack),
-                      ),
-                    if (n > 1) const SizedBox(width: 10),
-                    Expanded(
-                      child: FilledButton(
-                        key: const Key('new-agent-next'),
-                        style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
-                        onPressed: _canGoOn(app) && !_creating ? () => _next(app) : null,
-                        child: Text(
-                          _step == _Step.review
-                              ? (_creating ? l.newAgentCreating : l.newAgentCreate)
-                              : _step == _Step.mode
-                              ? l.g4AgDraftNext(god)
-                              : l.newAgentNext,
-                          overflow: TextOverflow.ellipsis,
+                // On a computer the buttons keep the steps' measure, in the middle.
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 680),
+                  child: Row(
+                    children: [
+                      if (n > 1)
+                        OutlinedButton(
+                          key: const Key('new-agent-back'),
+                          style: OutlinedButton.styleFrom(minimumSize: const Size(0, 48)),
+                          onPressed: _creating ? null : _back,
+                          child: Text(l.newAgentBack),
+                        ),
+                      if (n > 1) const SizedBox(width: 10),
+                      Expanded(
+                        child: FilledButton(
+                          key: const Key('new-agent-next'),
+                          style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                          onPressed: _canGoOn(app) && !_creating ? () => _next(app) : null,
+                          child: Text(
+                            _step == _Step.review
+                                ? (_creating ? l.newAgentCreating : l.newAgentCreate)
+                                : _step == _Step.mode
+                                ? l.g4AgDraftNext(god)
+                                : l.newAgentNext,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
           ],

@@ -439,18 +439,24 @@ class _Box extends StatelessWidget {
               ),
               if (limit != null) ...[
                 const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
-                  child: SizedBox(
-                    height: 6,
-                    child: Stack(
-                      children: [
-                        Positioned.fill(child: ColoredBox(color: c.line)),
-                        FractionallySizedBox(
-                          widthFactor: pct,
-                          child: ColoredBox(color: over ? c.err : c.accent),
+                Container(
+                  key: const Key('bu-meter'),
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: c.line,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: FractionallySizedBox(
+                      widthFactor: pct,
+                      heightFactor: 1,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: over ? c.err : c.accent,
+                          borderRadius: BorderRadius.circular(999),
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
