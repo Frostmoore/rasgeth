@@ -31,7 +31,8 @@ String nthWord(AppLocalizations l, int n) {
 /// «in coda (2° di 3)».
 String queuedWords(AppLocalizations l, LinePlace p) => l.queuedNth(nthWord(l, p.place), p.of);
 
-/// The colour of waiting: warm, distinct from the accent of working.
+/// The colour of waiting: the theme's warn (warnText for words), as the page's --queue
+/// (var(--warn), styles.css) and its other waits; distinct from the accent of working.
 Color queueColor(RgColors c) => c.warn;
 
 /// A small pill: the clock and «in coda (2° di 3)».

@@ -21055,20 +21055,13 @@ fieldset.saved-filter legend {
 }
 
 /* Agents at work together (3.8.10): the places, the line, the meter in the bar, the notice in a
-   conversation that waits. Waiting has its own colour (violet), apart from working (the accent)
-   and from asking the person (red). */
+   conversation that waits. Waiting has the theme's colour for waits (--warn, as «Waits for your
+   yes» and the paused badges; the app's warn and warnText), apart from working (the accent). */
 :root {
-  --queue: #6a55d8;
+  --queue: var(--warn);
+  --queue-text: var(--warn-text);
   --queue-soft: color-mix(in srgb, var(--queue) 11%, var(--panel));
   --queue-line: color-mix(in srgb, var(--queue) 38%, var(--line));
-}
-html[data-theme="dark"] {
-  --queue: #a596ff;
-}
-@media (prefers-color-scheme: dark) {
-  html[data-theme="system"] {
-    --queue: #a596ff;
-  }
 }
 .dot.queued {
   background: transparent;
@@ -21081,7 +21074,7 @@ html[data-theme="dark"] {
   flex: none;
   font-size: 11px;
   font-weight: 600;
-  color: var(--queue);
+  color: var(--queue-text);
   background: var(--queue-soft);
   border: 1px solid var(--queue-line);
   border-radius: 999px;
@@ -21136,7 +21129,7 @@ html[data-theme="dark"] {
   min-width: 0;
 }
 .tq-meter-wait {
-  color: var(--queue);
+  color: var(--queue-text);
 }
 .tq-notice {
   display: flex;
@@ -21155,7 +21148,7 @@ html[data-theme="dark"] {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  color: var(--queue);
+  color: var(--queue-text);
   background: color-mix(in srgb, var(--queue) 16%, var(--panel));
   flex: none;
 }
@@ -21180,7 +21173,7 @@ html[data-theme="dark"] {
   gap: 2px;
 }
 .tq-notice-text b {
-  color: var(--queue);
+  color: var(--queue-text);
   font-weight: 650;
 }
 .tq-notice-text span {
@@ -21227,7 +21220,7 @@ html[data-theme="dark"] {
   min-width: 28px;
   font-weight: 700;
   font-size: 13px;
-  color: var(--queue);
+  color: var(--queue-text);
   font-variant-numeric: tabular-nums;
 }
 .tq-who {
@@ -21270,7 +21263,7 @@ html[data-theme="dark"] {
   font-size: 11px;
 }
 .tq-tag.moved {
-  color: var(--queue);
+  color: var(--queue-text);
   background: color-mix(in srgb, var(--queue) 14%, var(--panel));
 }
 .tq-acts {
@@ -21282,7 +21275,7 @@ html[data-theme="dark"] {
 .tq-next {
   font-size: 12px;
   font-weight: 650;
-  color: var(--queue);
+  color: var(--queue-text);
   padding: 4px 10px;
   border-radius: 999px;
   border: 1px solid var(--queue-line);
@@ -21305,7 +21298,7 @@ html[data-theme="dark"] {
   height: 40px;
   border-radius: 12px;
   flex: none;
-  color: var(--queue);
+  color: var(--queue-text);
   background: var(--queue-soft);
 }
 .tq-card-text {
