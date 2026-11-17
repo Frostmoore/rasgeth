@@ -46,6 +46,9 @@ String? _extOf(String lang) => switch (lang) {
   final l => l,
 };
 
+/// The head's grey (`.code-head`).
+const _head = Color(0xFF8F96A3);
+
 class CodeBlock extends StatefulWidget {
   const CodeBlock({super.key, required this.code, this.lang = ''});
 
@@ -76,23 +79,23 @@ class _CodeBlockState extends State<CodeBlock> {
       key: const Key('code-block'),
       margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
-        color: c.panel2,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: c.line),
+        // Always dark, as the page's `.code` (`--code`), with the dark theme's colours inside.
+        color: c.code,
+        borderRadius: BorderRadius.circular(8),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(10, 2, 2, 2),
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: c.line)),
+            padding: const EdgeInsets.fromLTRB(12, 2, 4, 2),
+            decoration: const BoxDecoration(
+              border: Border(bottom: BorderSide(color: Color(0x14FFFFFF))),
             ),
             child: Row(
               children: [
                 Expanded(
-                  child: Text(widget.lang, style: TextStyle(color: c.dim, fontSize: 12)),
+                  child: Text(widget.lang, style: const TextStyle(color: _head, fontSize: 11)),
                 ),
                 TextButton(
                   key: const Key('code-copy'),
@@ -112,7 +115,7 @@ class _CodeBlockState extends State<CodeBlock> {
                   },
                   child: Text(
                     _copied ? l.cvCopied : l.cvCopy,
-                    style: TextStyle(color: c.dim, fontSize: 12),
+                    style: const TextStyle(color: _head, fontSize: 11.5),
                   ),
                 ),
               ],
@@ -123,11 +126,11 @@ class _CodeBlockState extends State<CodeBlock> {
             padding: const EdgeInsets.all(10),
             child: SelectableText.rich(
               TextSpan(
-                style: mono.copyWith(color: c.text),
+                style: mono.copyWith(color: RgColors.dark.text),
                 children: [
                   for (final (i, line) in widget.code.split('\n').indexed) ...[
                     if (i > 0) const TextSpan(text: '\n'),
-                    ...highlightLine(line, ext, c),
+                    ...highlightLine(line, ext, RgColors.dark),
                   ],
                 ],
               ),
