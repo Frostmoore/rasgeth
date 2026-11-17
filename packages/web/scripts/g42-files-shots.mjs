@@ -66,6 +66,24 @@ for (const [device, viewport] of [
     await page.locator(".explorer-head .icon-button[title='Mostra i file nascosti']").click();
     await page.waitForTimeout(600);
     await shot(4, "nascosti");
+    // The archived project (DEMO_ARCHIVE=1): its page, «Mostra i file», read only.
+    try {
+      if (device === "telefono") {
+        await page.locator(".icon-button.menu").first().click();
+        await page.waitForTimeout(600);
+      }
+      const arch = page.getByText(/^Archiviati/).first();
+      if (await arch.isVisible().catch(() => false)) await arch.click();
+      await page.waitForTimeout(400);
+      await page.getByText("Old site", { exact: true }).first().click();
+      await page.waitForTimeout(1200);
+      const show = page.locator("button", { hasText: "Mostra i file" }).first();
+      if (await show.isVisible().catch(() => false)) await show.click();
+      await page.waitForTimeout(1000);
+      await shot(5, "archiviato-sola-lettura");
+    } catch (e) {
+      console.error("archived:", e.message);
+    }
     await page.close();
   }
 await browser.close();

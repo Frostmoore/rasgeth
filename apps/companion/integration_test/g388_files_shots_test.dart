@@ -53,10 +53,13 @@ void main() {
     final demo = app.agents.firstWhere((a) => a.name == 'Demo orchestrator');
     // The archived project's conversation (its agent is archived too: opened by its session).
     final oldProject = app.archivedProjects.where((x) => x.name == 'Old site').firstOrNull;
-    final oldSession = app.live.sessions
-        .where((s) => s.projectId != null && s.projectId == oldProject?.id)
+    // Straight from the server (the live list may leave archived projects out).
+    final rows = await t.runAsync(() => app.client!.sessions()) ?? const [];
+    final oldSession = rows
+        .where((s) => oldProject != null && s.projectId == oldProject.id)
         .firstOrNull
         ?.id;
+    debugPrint('archived: ${oldProject?.id} $oldSession');
 
     Future<void> open(Agent a) async {
       if (_phone) {
