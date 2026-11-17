@@ -2339,5 +2339,225 @@
       }
     }
   },
-  "compactingNow": "Summarising the conversation…"
+  "compactingNow": "Summarising the conversation…",
+  "asOpen": "Agent settings…",
+  "asTitle": "Settings of {name}",
+  "@asTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asClose": "Close",
+  "asGroupGeneral": "General",
+  "asGroupWork": "Model and way",
+  "asGroupMemory": "Memory",
+  "asGroupLimits": "Spending",
+  "asGroupTools": "Tools",
+  "asGroupKnowledge": "Knowledge",
+  "asKind_god": "God, leads everything",
+  "asKind_demigod": "Demi-God, the Telegram messenger",
+  "asKind_orchestrator": "Project lead",
+  "asKind_agent": "Agent",
+  "asKind_subagent": "Helper",
+  "asKind_inspector": "Inspector, reads only",
+  "asKind_assistant": "Personal assistant",
+  "asKindChat": "The everyday Chat",
+  "asStopped": "Stopped",
+  "asMascot": "Mascot",
+  "asMascotHelp": "Renaming it never changes its face: only you change it, here.",
+  "asMascotGod": "God's mascot is drawn by hand: it is always the red giant.",
+  "asName": "Name",
+  "asRole": "What it does",
+  "asRoleHelp": "One or two lines: God and the orchestrators read it to decide what to hand over.",
+  "asProjects": "Also works for",
+  "asProjectsHelp": "Choose the projects {name} also works for: there it sits under the project's orchestrator, which gives it tasks.",
+  "@asProjectsHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asSaved": "Saved.",
+  "asSavedNew": "Saved: it applies from new conversations.",
+  "asRefused": "The server did not accept it: {why}",
+  "@asRefused": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "asNoName": "A name is needed.",
+  "asModelHelp": "Without a model of its own it uses the one of the agent above it. It applies from new conversations: you change an open conversation's model from its composer.",
+  "asModelGodHelp": "The model God uses; without one, the default model chosen in the setup. You change an open conversation's model from its composer.",
+  "asModelChatHelp": "The Chat's model, as in its header on the page. You change an open conversation's model from its composer.",
+  "asMode": "How freely it works",
+  "asModeHelp": "Whatever sends, publishes, deletes or pays always waits for you.",
+  "asMode_auto": "On its own",
+  "asMode_manual": "Asks permission",
+  "asMode_plan": "Plan first",
+  "asMode_readonly": "Read only",
+  "asModeExplain_auto": "Works on its own and asks only for what is dangerous.",
+  "asModeExplain_manual": "Asks you before every change to files or commands.",
+  "asModeExplain_plan": "Writes a plan first and starts once you approve it.",
+  "asModeExplain_readonly": "Reads and answers, changes nothing.",
+  "asInstructionsHelp": "Its system prompt, its own or the built-in one: open conversations keep theirs.",
+  "asMemOwn": "Memory of {name}: only for this agent",
+  "@asMemOwn": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asMemOwnHelp": "Only {name} reads it, at the start of every conversation. {name} can also note here what it needs.",
+  "@asMemOwnHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asMemProject": "Memory of the project «{name}»",
+  "@asMemProject": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asMemProjectHelp": "Every agent working on this project reads it.",
+  "asMemNone": "This agent keeps no memory of its own.",
+  "asCompact": "Summaries of long conversations",
+  "asCompactHelp": "When the conversation gets long, the agent writes a summary of the old parts, like someone taking notes. Here you choose when it does it, and how much of the latest part it keeps as it is.",
+  "asCompactAt": "When to write the summary",
+  "asCompactAtValue": "when {n}% full",
+  "@asCompactAtValue": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "asCompactKeep": "How much of the latest part to keep as it is",
+  "asCompactKeepValue": "the last {n}%",
+  "@asCompactKeepValue": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "asCompactKeepNone": "nothing",
+  "asCompactDefaultIs": "Default for this agent's model: at {at}%, keeping {keep}%.",
+  "@asCompactDefaultIs": {
+    "placeholders": {
+      "at": {
+        "type": "String"
+      },
+      "keep": {
+        "type": "String"
+      }
+    }
+  },
+  "asCompactDefaults": "Back to the defaults",
+  "asLimitsHelp": "When it reaches the limit it stops and asks you. The limit counts everything spent since it was set.",
+  "asSpent": "Spent so far",
+  "asLimit": "Limit in dollars",
+  "asNoLimit": "No limit",
+  "asLimitTokens": "Limit: {n} tokens",
+  "@asLimitTokens": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "asRemoveLimit": "Remove the limit",
+  "asLimitBad": "Write an amount above zero.",
+  "asToolsHelp": "For each tool: as for every agent (Settings, Tools), always on for this agent, or off. The essential ones never switch off.",
+  "asToolsNewOnly": "Changes apply from new conversations: the ones already open keep their tools.",
+  "asToolsTotal": "{name}: about {n} tokens in every message",
+  "@asToolsTotal": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "asToolDefaultOn": "As for everyone (on)",
+  "asToolDefaultOff": "As for everyone (off)",
+  "asToolAlways": "Always on",
+  "asToolOff": "Off",
+  "asToolLocked": "Essential: always on",
+  "asEditRule": "Edits in open files",
+  "asEditRuleHelp": "When it edits a file open in the Canvas: right away (highlighted, undoable) or as proposals you accept. A file's own choice wins.",
+  "asEditNow": "Right away",
+  "asEditPropose": "As proposals",
+  "asKbHelp": "Which collections {name} can search. Each one says who may read it; here you can make an exception for this agent. It applies from its next conversation.",
+  "@asKbHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asKbNone": "No collections yet.",
+  "asKbByScope": "By where it belongs ({on})",
+  "@asKbByScope": {
+    "placeholders": {
+      "on": {
+        "type": "String"
+      }
+    }
+  },
+  "asKbOn": "Yes",
+  "asKbOff": "No",
+  "asKbScope_global": "Every agent",
+  "asKbScope_agent": "One agent",
+  "asKbScope_project": "A project's agents",
+  "asDanger": "Stopping it",
+  "asStopHelp": "Its conversations stay; it does no more work, nor do those under it.",
+  "asStopAsk": "Stop {name}? Its conversations stay; it does no more work.",
+  "@asStopAsk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asStopYes": "Stop {name}",
+  "@asStopYes": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asStoppedNow": "{name} is stopped.",
+  "@asStoppedNow": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asLoadFailed": "I could not read it from the server: {why}",
+  "@asLoadFailed": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "asMenuNew": "New conversation",
+  "asMenuModel": "Model and effort…",
+  "asMenuInstructions": "Instructions…",
+  "asMenuStopTurn": "Stop what it is doing"
 }

@@ -15,11 +15,13 @@ import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../mascot/mascot_view.dart';
 import '../theme/colors.dart';
+import '../ui/agent_menu.dart';
 import '../ui/common.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/model_sheet.dart';
 import '../ui/words.dart';
+import 'agent_settings_screen.dart';
 import 'code/project_screen.dart';
 import 'conversation_screen.dart';
 import 'first_start_screen.dart';
@@ -111,30 +113,38 @@ class TeamScreen extends StatelessWidget {
                           SliverToBoxAdapter(
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-                              child: GodCard(
+                              child: AgentPress(
                                 agent: god,
-                                state: app.live.mascotStateOf(god.id),
-                                doing: doingOf(l, app, god, app.live.mascotStateOf(god.id)),
-                                onTap: () => openAgentConversation(context, god),
-                                onLongPress: () => showAgentSheet(context, god),
+                                longPress: false,
+                                child: GodCard(
+                                  agent: god,
+                                  state: app.live.mascotStateOf(god.id),
+                                  doing: doingOf(l, app, god, app.live.mascotStateOf(god.id)),
+                                  onTap: () => openAgentConversation(context, god),
+                                  onLongPress: () => showAgentSheet(context, god),
+                                ),
                               ),
                             ),
                           ),
                         SliverToBoxAdapter(
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-                            child: ChatCard(
+                            child: AgentPress(
                               agent: app.chatAgent,
-                              state: app.chatAgent == null
-                                  ? MascotState.idle
-                                  : app.live.mascotStateOf(app.chatAgent!.id),
-                              latest: app.chatAgent == null
-                                  ? null
-                                  : app.latestOf(app.chatAgent!.id),
-                              onTap: () => app.setTab(AppTab.chat),
-                              onLongPress: app.chatAgent == null
-                                  ? null
-                                  : () => showAgentSheet(context, app.chatAgent!),
+                              longPress: false,
+                              child: ChatCard(
+                                agent: app.chatAgent,
+                                state: app.chatAgent == null
+                                    ? MascotState.idle
+                                    : app.live.mascotStateOf(app.chatAgent!.id),
+                                latest: app.chatAgent == null
+                                    ? null
+                                    : app.latestOf(app.chatAgent!.id),
+                                onTap: () => app.setTab(AppTab.chat),
+                                onLongPress: app.chatAgent == null
+                                    ? null
+                                    : () => showAgentSheet(context, app.chatAgent!),
+                              ),
                             ),
                           ),
                         ),
@@ -200,12 +210,16 @@ class TeamScreen extends StatelessWidget {
                                 childAspectRatio: .95,
                               ),
                               itemCount: team.length,
-                              itemBuilder: (context, i) => AgentCard(
+                              itemBuilder: (context, i) => AgentPress(
                                 agent: team[i],
-                                state: app.live.mascotStateOf(team[i].id),
-                                favourite: app.isFavourite(team[i].id),
-                                onTap: () => openAgentConversation(context, team[i]),
-                                onLongPress: () => showAgentSheet(context, team[i]),
+                                longPress: false,
+                                child: AgentCard(
+                                  agent: team[i],
+                                  state: app.live.mascotStateOf(team[i].id),
+                                  favourite: app.isFavourite(team[i].id),
+                                  onTap: () => openAgentConversation(context, team[i]),
+                                  onLongPress: () => showAgentSheet(context, team[i]),
+                                ),
                               ),
                             ),
                           ),
@@ -654,6 +668,13 @@ class AgentSheet extends StatelessWidget {
                   onTap: () {
                     close();
                     openInstructions(parent, a);
+                  },
+                ),
+                const SizedBox(height: 8),
+                AgentSettingsRow(
+                  onTap: () {
+                    close();
+                    openAgentSettings(parent, a);
                   },
                 ),
                 // G40.11: the agent's files, diff and terminal (the advanced interface).

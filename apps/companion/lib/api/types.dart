@@ -285,6 +285,8 @@ class Agent {
     this.mode,
     this.mascotSeed,
     this.compactAt,
+    this.compactKeep,
+    this.projects = const [],
   });
 
   factory Agent.fromJson(Map<String, dynamic> j) {
@@ -302,6 +304,11 @@ class Agent {
       mode: _str(j['mode']),
       mascotSeed: _str(j['mascotSeed']),
       compactAt: ((j['compaction'] as Map?)?['at'] as num?)?.toDouble(),
+      compactKeep: ((j['compaction'] as Map?)?['keep'] as num?)?.toDouble(),
+      projects: [
+        for (final p in (j['projects'] as List?) ?? const <Object?>[])
+          if (p is String) p,
+      ],
     );
   }
 
@@ -326,6 +333,12 @@ class Agent {
   /// Where its conversations are summarised (G24.14c, `compaction.at`; null: the default 0.8).
   final double? compactAt;
 
+  /// How much of the end stays word for word (`compaction.keep`; null: the server's default).
+  final double? compactKeep;
+
+  /// Other projects it is assigned to (agents and personal agents only).
+  final List<String> projects;
+
   Agent withModel(AgentModel? m) => Agent(
     id: id,
     kind: kind,
@@ -339,6 +352,8 @@ class Agent {
     mode: mode,
     mascotSeed: mascotSeed,
     compactAt: compactAt,
+    compactKeep: compactKeep,
+    projects: projects,
   );
 }
 
@@ -349,14 +364,29 @@ class ToolEntry {
     required this.group,
     this.essential = false,
     this.globalOn = true,
-  });
+    this.own,
+    bool? on,
+    this.tokens = 0,
+  }) : on = on ?? globalOn;
 
   factory ToolEntry.fromJson(Map<String, dynamic> j) => ToolEntry(
     id: _str(j['id']) ?? '',
     group: _str(j['group']) ?? '',
     essential: j['essential'] == true,
     globalOn: j['global'] != false,
+    own: _str(j['own']),
+    on: j['on'] is bool ? j['on'] as bool : null,
+    tokens: (j['tokens'] as num?)?.toInt() ?? 0,
   );
+
+  /// One agent's own choice (`on` | `off`; null: as for every agent).
+  final String? own;
+
+  /// What the agent gets.
+  final bool on;
+
+  /// About what it weighs on every message.
+  final int tokens;
 
   final String id;
   final String group;
@@ -394,4 +424,41 @@ class RefineCost {
 
   final int tokens;
   final double? usd;
+}
+
+/// One collection as an agent reads it (`KnowledgeAgentCollection`).
+class AgentCollection {
+  const AgentCollection({
+    required this.id,
+    required this.name,
+    required this.scope,
+    required this.byScope,
+    required this.on,
+    this.own,
+    this.chunks = 0,
+  });
+
+  factory AgentCollection.fromJson(Map<String, dynamic> j) => AgentCollection(
+    id: _str(j['id']) ?? '',
+    name: _str(j['name']) ?? '',
+    scope: _str(j['scope']) ?? 'global',
+    byScope: j['byScope'] == true,
+    on: j['on'] == true,
+    own: _str(j['own']),
+    chunks: (j['chunks'] as num?)?.toInt() ?? 0,
+  );
+
+  final String id;
+  final String name;
+
+  /// global | agent | project.
+  final String scope;
+
+  /// Reachable by where it belongs alone.
+  final bool byScope;
+  final bool on;
+
+  /// The person's own choice for this agent (on | off; null: by where it belongs).
+  final String? own;
+  final int chunks;
 }

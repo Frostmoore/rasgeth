@@ -17,6 +17,7 @@ import '../screens/inbox_screen.dart';
 import '../screens/new_agent_screen.dart';
 import '../screens/team_screen.dart';
 import '../theme/colors.dart';
+import '../ui/agent_menu.dart';
 import '../ui/common.dart';
 import '../ui/highlight.dart';
 import '../ui/icons.dart';
@@ -434,6 +435,10 @@ class GodHero extends StatelessWidget {
           InkWell(
             borderRadius: BorderRadius.circular(40),
             onTap: god == null ? null : () => desk.openAgent(god),
+            onSecondaryTapUp: god == null
+                ? null
+                : (d) => showAgentMenu(context, god, d.globalPosition),
+            onLongPress: god == null ? null : () => showAgentSheet(context, god),
             child: god == null
                 ? const SizedBox(width: 84, height: 84)
                 : MascotView(
@@ -450,9 +455,12 @@ class GodHero extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  god?.name ?? 'God',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: c.text),
+                AgentPress(
+                  agent: god,
+                  child: Text(
+                    god?.name ?? 'God',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: c.text),
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Row(
@@ -503,6 +511,10 @@ class ChatHero extends StatelessWidget {
         key: const Key('desk-chat'),
         borderRadius: BorderRadius.circular(14),
         onTap: () => desk.show(const PanelPage(PanelScreen.chat)),
+        onSecondaryTapUp: chat == null
+            ? null
+            : (d) => showAgentMenu(context, chat, d.globalPosition),
+        onLongPress: chat == null ? null : () => showAgentSheet(context, chat),
         child: Ink(
           decoration: heroBox(c),
           padding: const EdgeInsets.fromLTRB(12, 12, 14, 12),
@@ -943,7 +955,7 @@ class AgentTile extends StatelessWidget {
               messenger?.showSnackBar(SnackBar(content: Text(l.openFailed)));
             }
           },
-          onSecondaryTap: () => showAgentSheet(context, a),
+          onSecondaryTapUp: (d) => showAgentMenu(context, a, d.globalPosition),
           onLongPress: () => showAgentSheet(context, a),
           child: tile,
         ),
@@ -1190,12 +1202,15 @@ class HeroStrip extends StatelessWidget {
           child: Row(
             children: [
               if (god != null)
-                MascotView(
-                  agentId: god.id,
-                  spec: god.mascot,
-                  state: app.live.mascotStateOf(god.id),
-                  size: 30,
-                  label: l.mascotLabel(god.name, stateWord(l, app.live.mascotStateOf(god.id))),
+                AgentPress(
+                  agent: god,
+                  child: MascotView(
+                    agentId: god.id,
+                    spec: god.mascot,
+                    state: app.live.mascotStateOf(god.id),
+                    size: 30,
+                    label: l.mascotLabel(god.name, stateWord(l, app.live.mascotStateOf(god.id))),
+                  ),
                 ),
               const SizedBox(width: 8),
               Expanded(
@@ -1212,12 +1227,18 @@ class HeroStrip extends StatelessWidget {
               if (!narrow) ...[
                 const SizedBox(width: 14),
                 if (chat != null)
-                  MascotView(
-                    agentId: chat.id,
-                    spec: chat.mascot,
-                    state: app.live.mascotStateOf(chat.id),
-                    size: 26,
-                    label: l.mascotLabel(chat.name, stateWord(l, app.live.mascotStateOf(chat.id))),
+                  AgentPress(
+                    agent: chat,
+                    child: MascotView(
+                      agentId: chat.id,
+                      spec: chat.mascot,
+                      state: app.live.mascotStateOf(chat.id),
+                      size: 26,
+                      label: l.mascotLabel(
+                        chat.name,
+                        stateWord(l, app.live.mascotStateOf(chat.id)),
+                      ),
+                    ),
                   ),
                 const SizedBox(width: 8),
                 Expanded(
