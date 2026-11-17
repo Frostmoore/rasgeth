@@ -25,7 +25,15 @@ const good: [string, EmbedParams, string][] = [
   ],
   [
     "a PDF at a page, light, in English",
-    { ...base, theme: "light", lang: "en", embed: "canvas", scope: "outside", path: "Doc/è.pdf", page: 3 },
+    {
+      ...base,
+      theme: "light",
+      lang: "en",
+      embed: "canvas",
+      scope: "outside",
+      path: "Doc/è.pdf",
+      page: 3,
+    },
     "token=rgd_abc123&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=outside&path=Doc%2F%C3%A8.pdf&page=3&theme=light&lang=en",
   ],
   [
@@ -70,13 +78,34 @@ describe("the embed's fragment", () => {
     ["a short nonce", "token=x&embed=probe&bridge=short&theme=dark&lang=it"],
     ["an unknown theme", "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=blue&lang=it"],
     ["an unknown language", "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=de"],
-    ["a canvas without a path", "token=x&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=p&theme=dark&lang=it"],
-    ["a port without its number", "token=x&embed=port&bridge=n0nce-n0nce_n0nce&agent=a&theme=dark&lang=it"],
-    ["a port out of range", "token=x&embed=port&bridge=n0nce-n0nce_n0nce&agent=a&port=70000&theme=dark&lang=it"],
-    ["a line that is not a number", "token=x&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=p&path=a&line=-1&theme=dark&lang=it"],
-    ["a board link of another shape", "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.xyz&theme=dark&lang=it"],
-    ["a file on the test page", "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&scope=p&theme=dark&lang=it"],
-    ["a font that would break the style", "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&font=a%7Bb"],
+    [
+      "a canvas without a path",
+      "token=x&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=p&theme=dark&lang=it",
+    ],
+    [
+      "a port without its number",
+      "token=x&embed=port&bridge=n0nce-n0nce_n0nce&agent=a&theme=dark&lang=it",
+    ],
+    [
+      "a port out of range",
+      "token=x&embed=port&bridge=n0nce-n0nce_n0nce&agent=a&port=70000&theme=dark&lang=it",
+    ],
+    [
+      "a line that is not a number",
+      "token=x&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=p&path=a&line=-1&theme=dark&lang=it",
+    ],
+    [
+      "a board link of another shape",
+      "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.xyz&theme=dark&lang=it",
+    ],
+    [
+      "a file on the test page",
+      "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&scope=p&theme=dark&lang=it",
+    ],
+    [
+      "a font that would break the style",
+      "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&font=a%7Bb",
+    ],
     ["a token with a space", "token=a+b&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it"],
   ];
   it.each(bad)("refuses %s", (_name, hash) => {
@@ -91,12 +120,18 @@ describe("the embed's fragment", () => {
 
 describe("the bridge", () => {
   it("takes the page's messages only with the nonce, and only well formed", () => {
-    const m = { t: "askAgent", text: "why this?", ref: { scope: "p", path: "a.ts", line: 3, lineEnd: 5 } } as const;
+    const m = {
+      t: "askAgent",
+      text: "why this?",
+      ref: { scope: "p", path: "a.ts", line: 3, lineEnd: 5 },
+    } as const;
     const raw = embedEnvelope(NONCE, m);
     expect(readEmbedEnvelope(raw, NONCE)).toEqual(m);
     expect(readEmbedEnvelope(raw, "another-nonce-123")).toBeNull();
     expect(readEmbedEnvelope("not json", NONCE)).toBeNull();
-    expect(readEmbedEnvelope(JSON.stringify({ rg: "embed", n: NONCE, m: { t: "shell" } }), NONCE)).toBeNull();
+    expect(
+      readEmbedEnvelope(JSON.stringify({ rg: "embed", n: NONCE, m: { t: "shell" } }), NONCE),
+    ).toBeNull();
   });
 
   const pageGood: EmbedToApp[] = [
@@ -130,7 +165,10 @@ describe("the bridge", () => {
   });
 
   it("app → page: only `{ rg: 'app', m }` with a known message", () => {
-    expect(readAppMessage({ rg: "app", m: { t: "key", key: "save" } })).toEqual({ t: "key", key: "save" });
+    expect(readAppMessage({ rg: "app", m: { t: "key", key: "save" } })).toEqual({
+      t: "key",
+      key: "save",
+    });
     expect(readAppMessage({ rg: "app", m: { t: "key", key: "quit" } })).toBeNull();
     expect(readAppMessage({ rg: "embed", m: { t: "back" } })).toBeNull();
     expect(readAppMessage("back")).toBeNull();

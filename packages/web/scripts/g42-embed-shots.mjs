@@ -64,7 +64,9 @@ for (const [engineName, engine] of [
         if (leaked.href.includes("token") || leaked.stored || leaked.bar)
           console.error("embed leaked:", name, JSON.stringify(leaked));
         sent[`${engineName}-${name}`] = await page.evaluate(() => window.__sent.map((m) => m.m));
-        await page.screenshot({ path: `${out}/${engineName === "webkit" ? "webkit-" : ""}embed-${name}-${device}-${theme}.png` });
+        await page.screenshot({
+          path: `${out}/${engineName === "webkit" ? "webkit-" : ""}embed-${name}-${device}-${theme}.png`,
+        });
       }
       if (engineName === "chromium") {
         await page.goto("about:blank");

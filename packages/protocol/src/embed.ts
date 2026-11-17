@@ -47,11 +47,7 @@ const board = /^[\w-]+\.[0-9a-f]{12}$/;
 
 export const EmbedParams = z
   .object({
-    token: z
-      .string()
-      .min(1)
-      .max(1000)
-      .regex(/^\S+$/),
+    token: z.string().min(1).max(1000).regex(/^\S+$/),
     embed: z.enum(EMBED_KINDS),
     /** The bridge's nonce: every message to the app carries it. */
     bridge: z.string().regex(/^[A-Za-z0-9_-]{16,64}$/),
