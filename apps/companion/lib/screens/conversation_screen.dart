@@ -961,7 +961,9 @@ class _Header extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
     final a = agent;
-    final word = stateWord(l, state);
+    // Waiting for a place (3.8.10): «in coda (2° di 3)», not «fermo».
+    final place = running ? null : AppScope.of(context).live.turns.placeOf(sessionId);
+    final word = place != null ? queuedWords(l, place) : stateWord(l, state);
     return Container(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: c.line)),

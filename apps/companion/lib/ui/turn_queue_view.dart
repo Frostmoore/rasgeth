@@ -95,10 +95,10 @@ class QueueBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: col.withValues(alpha: .40)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
+      // Wide: one line, the buttons at its end; narrow: the buttons under the words.
+      child: LayoutBuilder(
+        builder: (context, box) {
+          final words = Row(
             children: [
               Container(
                 width: 28,
@@ -118,28 +118,41 @@ class QueueBanner extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Wrap(
-              spacing: 4,
-              children: [
-                if (place.place > 1)
-                  TextButton.icon(
-                    key: const Key('queue-banner-first'),
-                    onPressed: () => _moveFirst(context, sessionId),
-                    icon: RgIcon(RgIcons.arrowUp, size: 15, color: c.accent),
-                    label: Text(l.queueMoveFirst),
-                  ),
-                TextButton(
-                  key: const Key('queue-banner-see'),
-                  onPressed: () => showTurnQueue(context),
-                  child: Text(l.queueSee),
+          );
+          final buttons = Wrap(
+            spacing: 4,
+            children: [
+              if (place.place > 1)
+                TextButton.icon(
+                  key: const Key('queue-banner-first'),
+                  onPressed: () => _moveFirst(context, sessionId),
+                  icon: RgIcon(RgIcons.arrowUp, size: 15, color: c.accent),
+                  label: Text(l.queueMoveFirst),
                 ),
+              TextButton(
+                key: const Key('queue-banner-see'),
+                onPressed: () => showTurnQueue(context),
+                child: Text(l.queueSee),
+              ),
+            ],
+          );
+          if (box.maxWidth >= 640) {
+            return Row(
+              children: [
+                Expanded(child: words),
+                const SizedBox(width: 8),
+                buttons,
               ],
-            ),
-          ),
-        ],
+            );
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              words,
+              Align(alignment: Alignment.centerRight, child: buttons),
+            ],
+          );
+        },
       ),
     );
   }
