@@ -787,16 +787,17 @@
       "app": "native",
       "files": [
         "lib/api/conversation.dart",
-        "lib/ui/chat/chat_parts.dart",
+        "lib/embed/embed_screen.dart",
+        "lib/screens/canvas_panel.dart",
         "lib/screens/canvas_screen.dart",
-        "lib/embed/embed_screen.dart"
+        "lib/ui/chat/chat_parts.dart"
       ],
       "phase": "G42.2",
       "rows": [
         86,
         109
       ],
-      "note": "File targets open the Canvas (its viewers in embed with G42.6); an agent's port opens embed=port under the app's bar (reload, open in the browser)."
+      "note": "A line on a computer, a big card on a phone; a tap shows it again: the panel on the right (files and ports in embed), or the whole screen."
     },
     "widget": {
       "app": "embed",
@@ -1155,14 +1156,18 @@
       ]
     },
     "canvas.open": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.6",
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/screens/canvas_panel.dart",
+        "lib/screens/conversation_screen.dart"
+      ],
+      "phase": "G42.2",
       "rows": [
         86,
         300
       ],
-      "note": "An agent's canvas.show from another conversation does not bring the app's Canvas forward."
+      "note": "What an agent shows opens by itself while the person watches (never from the replayed log): a panel on the right of the conversation on a computer, with tabs; the whole screen on a phone. The same rule as the page's canvasEvent/openCanvas."
     },
     "session.synced": {
       "app": "n/a",

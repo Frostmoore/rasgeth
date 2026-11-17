@@ -8528,6 +8528,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The apps the agents made: open, export, import, delete and their permissions'**
   String get artifactsRowHint;
+
+  /// The page's `vwToChat` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get cvVwToChat;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

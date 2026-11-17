@@ -4907,4 +4907,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get artifactsRowHint =>
       'The apps the agents made: open, export, import, delete and their permissions';
+
+  @override
+  String get cvVwToChat => 'Chat';
 }

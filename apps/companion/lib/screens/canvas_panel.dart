@@ -122,8 +122,7 @@ Future<void> openCanvasTab(BuildContext context, CanvasTab t, {String? sessionId
 }
 
 /// The address of the page for [t] (`embed=port` or `embed=canvas`).
-EmbedParams canvasEmbed(EmbedContext e, CanvasTab t, String nonce, {String? sessionId}) =>
-    t.isPort
+EmbedParams canvasEmbed(EmbedContext e, CanvasTab t, String nonce, {String? sessionId}) => t.isPort
     ? EmbedParams(
         token: e.token,
         embed: EmbedKind.port,
@@ -194,9 +193,8 @@ class _CanvasPanelState extends State<CanvasPanel> {
       await openExternal(c.base.resolve(link));
     } on Object catch (e) {
       if (mounted) {
-        ScaffoldMessenger.maybeOf(
-          context,
-        )?.showSnackBar(SnackBar(content: Text(l.errGeneric('$e'))));
+        ScaffoldMessenger.maybeOf(context)
+            ?.showSnackBar(SnackBar(content: Text(l.errGeneric('$e'))));
       }
     }
   }

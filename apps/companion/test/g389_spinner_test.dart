@@ -23,10 +23,8 @@ Widget _host(Widget child, {bool reduce = false, bool systemReduce = false}) => 
   ),
 );
 
-double _turns(WidgetTester tester) => tester
-    .widget<RotationTransition>(find.byKey(const Key('spinner-turning')))
-    .turns
-    .value;
+double _turns(WidgetTester tester) =>
+    tester.widget<RotationTransition>(find.byKey(const Key('spinner-turning'))).turns.value;
 
 void main() {
   testWidgets('it turns while running and stops once replaced by the done mark', (tester) async {

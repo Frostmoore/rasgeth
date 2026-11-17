@@ -700,286 +700,293 @@ class _ConversationScreenState extends State<ConversationScreen> {
             // covers the chat as a screen of its own.
             _wide = box.maxWidth >= canvasBesideFrom(Theme.of(context).platform);
             final chat = Column(
-          children: [
-            ListenableBuilder(
-              listenable: Listenable.merge([app.live, view]),
-              builder: (context, _) {
-                final state = agent == null ? MascotState.idle : app.live.mascotStateOf(agent.id);
-                return _Header(
-                  sessionId: widget.sessionId,
-                  embedded: widget.embedded,
-                  agent: agent,
-                  state: state,
-                  running: view.running,
-                  onStop: _stop,
-                  actions: widget.headerActions,
-                );
-              },
-            ),
-            if (!app.isLive)
-              Container(
-                width: double.infinity,
-                color: c.panel2,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text(l.notLive, style: TextStyle(color: c.dim, fontSize: 13)),
-              ),
-            Expanded(
-              child: ListenableBuilder(
-                // The requests and the work elsewhere come from the live model.
-                listenable: Listenable.merge([view, app.live]),
-                builder: (context, _) {
-                  final items = view.items
-                      .where((i) => i is! AssistantItem || showsSomething(i))
-                      .toList();
-                  // As the page: the stored items, then the summary being made or the card of the
-                  // model call under way, then the answer streaming in, then the messages waiting
-                  // in line, the requests of this agent and its work elsewhere.
-                  final last = items.isEmpty ? null : items.last;
-                  final live = last is AssistantItem && last.live ? last : null;
-                  final stored = live == null ? items : items.sublist(0, items.length - 1);
-                  final still = app.reduceMotion || MediaQuery.disableAnimationsOf(context);
-                  final call = view.call;
-                  final extras = <Widget>[
-                    if (view.compacting)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          l.compactingNow,
-                          key: const Key('compacting'),
-                          style: TextStyle(color: c.dim, fontSize: 13.5),
-                        ),
-                      ),
-                    if (view.running && call != null && !view.compacting)
-                      TurnProgress(call: call, now: app.live.now, still: still),
-                    // G42.2: generate_image's picture as it forms (`image.progress`).
-                    if (view.drawing case final d?)
-                      DrawingCard(percent: d.percent, preview: d.preview),
-                  ];
-                  final after = <Widget>[
-                    for (final q in view.queued)
-                      QueuedBubble(
-                        key: Key('queued-${q.clientId}'),
-                        text: q.text,
-                        onRemove: () => app.unqueue(widget.sessionId, q.clientId),
-                      ),
-                    ..._requestsHere(agent),
-                    ..._otherWork(agent),
-                  ];
-                  final total =
-                      stored.length + extras.length + (live == null ? 0 : 1) + after.length;
-                  if (total == 0) {
-                    return Center(
-                      child: Text(
-                        view.synced || !app.isLive ? l.conversationEmpty : l.loading,
-                        style: TextStyle(color: c.dim),
-                      ),
+              children: [
+                ListenableBuilder(
+                  listenable: Listenable.merge([app.live, view]),
+                  builder: (context, _) {
+                    final state = agent == null
+                        ? MascotState.idle
+                        : app.live.mascotStateOf(agent.id);
+                    return _Header(
+                      sessionId: widget.sessionId,
+                      embedded: widget.embedded,
+                      agent: agent,
+                      state: state,
+                      running: view.running,
+                      onStop: _stop,
+                      actions: widget.headerActions,
                     );
-                  }
-                  final actions = ChatActions(
-                    reply: _reply,
-                    save: _save,
-                    jump: _jumpQuote,
-                    lit: _lit,
-                    flashSeq: _flash,
-                    compactAt: agent?.compactAt ?? 0.8,
-                    sessionId: widget.sessionId,
-                    agent: agent,
-                    openSession: _openSession,
-                    editMessage: _edit,
-                    continueFrom: (seq) => unawaited(_continueFrom(seq)),
-                    readOnly: _readOnly,
-                    showCanvas: (title, target) => _showCanvas(title, target, force: true),
-                  );
-                  final liveAt = stored.length + extras.length;
-                  return ListView.builder(
-                    key: const Key('conversation-items'),
-                    controller: _scroll,
-                    reverse: true,
-                    padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-                    itemCount: total,
-                    itemBuilder: (context, i) {
-                      final at = total - 1 - i;
-                      final afterAt = liveAt + (live == null ? 0 : 1);
-                      if (at >= afterAt) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: after[at - afterAt],
-                        );
-                      }
-                      if (at >= stored.length && at < stored.length + extras.length) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: extras[at - stored.length],
-                        );
-                      }
-                      final item = at < stored.length ? stored[at] : live!;
-                      final seq = item is AssistantItem ? item.seq : null;
-                      return Padding(
-                        key: seq != null
-                            ? _keys.putIfAbsent(seq, GlobalKey.new)
-                            : item is WidgetItem
-                            ? _widgetKeys.putIfAbsent(item.key, GlobalKey.new)
-                            : null,
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: ChatItemView(item: item, actions: actions),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-            if (_note != null)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: Text(_note!, style: TextStyle(color: c.err, fontSize: 13)),
-              ),
-            ListenableBuilder(
-              listenable: app.voice,
-              builder: (context, _) {
-                final v = app.voice;
-                final text = v.recording
-                    ? l.voiceListening
-                    : v.transcribing
-                    ? l.voiceWriting
-                    : v.problem;
-                if (text == null) return const SizedBox.shrink();
-                return Padding(
-                  key: const Key('voice-line'),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: Row(
-                    children: [
-                      if (!v.recording && v.transcribing)
-                        RgSpinner(size: 15, color: c.dim)
-                      else
-                        RgIcon(
-                          v.recording ? RgIcons.mic : RgIcons.alert,
-                          size: 15,
-                          color: v.recording ? c.err : (v.problem != null ? c.err : c.dim),
-                        ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          text,
-                          style: TextStyle(
-                            color: v.problem != null && !v.recording && !v.transcribing
-                                ? c.err
-                                : c.dim,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-            ListenableBuilder(
-              listenable: view,
-              builder: (context, _) => TodosPanel(items: view.items, running: view.running),
-            ),
-            if (app.archivedProjectOf(widget.sessionId) case final p?)
-              ArchivedNotice(project: p)
-            else ...[
-              if (_quotes.isNotEmpty)
-                _QuoteDrafts(
-                  quotes: _quotes,
-                  onRemove: (q) => setState(() => _quotes.remove(q)),
-                  onJump: _jumpQuote,
+                  },
                 ),
-              ListenableBuilder(
-                listenable: Listenable.merge([app, app.live]),
-                // At most 900 px wide and centred on a computer, as the page's composer.
-                builder: (context, _) => MaxWidthCenter(
-                  child: _Composer(
-                    controller: _text,
-                    sending: _sending,
-                    attachments: _attached.isEmpty
-                        ? null
-                        : SizedBox(
-                            key: const Key('composer-attachments'),
-                            height: 40,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.symmetric(horizontal: 6),
-                              children: [
-                                for (final (i, a) in _attached.indexed)
-                                  if (a is AttachedPasted)
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 6),
-                                      child: _PastedChip(
-                                        key: Key('pasted-$i'),
-                                        file: a,
-                                        onRemove: () => setState(() => _attached.removeAt(i)),
-                                        onAsText: () => setState(() {
-                                          _attached.removeAt(i);
-                                          final now = _text.text;
-                                          final text =
-                                              '$now${now.isNotEmpty && !now.endsWith('\n') ? '\n' : ''}${a.content}';
-                                          _before = text;
-                                          _text.value = TextEditingValue(
-                                            text: text,
-                                            selection: TextSelection.collapsed(offset: text.length),
-                                          );
-                                        }),
-                                      ),
-                                    )
-                                  else
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 6),
-                                      child: InputChip(
-                                        visualDensity: VisualDensity.compact,
-                                        avatar: a is AttachedImage
-                                            // A photo shows itself (the page's thumbnail).
-                                            ? ClipRRect(
-                                                borderRadius: BorderRadius.circular(4),
-                                                child: Image.memory(
-                                                  a.bytes,
-                                                  width: 22,
-                                                  height: 22,
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (_, _, _) =>
-                                                      RgIcon(RgIcons.image, size: 16, color: c.dim),
-                                                ),
-                                              )
-                                            : RgIcon(RgIcons.file, size: 16, color: c.dim),
-                                        label: Text(a.name, overflow: TextOverflow.ellipsis),
-                                        deleteButtonTooltipMessage: l.attachmentRemove,
-                                        deleteIcon: RgIcon(RgIcons.x, size: 14, color: c.dim),
-                                        onDeleted: () => setState(() => _attached.removeAt(i)),
-                                      ),
-                                    ),
-                              ],
+                if (!app.isLive)
+                  Container(
+                    width: double.infinity,
+                    color: c.panel2,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Text(l.notLive, style: TextStyle(color: c.dim, fontSize: 13)),
+                  ),
+                Expanded(
+                  child: ListenableBuilder(
+                    // The requests and the work elsewhere come from the live model.
+                    listenable: Listenable.merge([view, app.live]),
+                    builder: (context, _) {
+                      final items = view.items
+                          .where((i) => i is! AssistantItem || showsSomething(i))
+                          .toList();
+                      // As the page: the stored items, then the summary being made or the card of the
+                      // model call under way, then the answer streaming in, then the messages waiting
+                      // in line, the requests of this agent and its work elsewhere.
+                      final last = items.isEmpty ? null : items.last;
+                      final live = last is AssistantItem && last.live ? last : null;
+                      final stored = live == null ? items : items.sublist(0, items.length - 1);
+                      final still = app.reduceMotion || MediaQuery.disableAnimationsOf(context);
+                      final call = view.call;
+                      final extras = <Widget>[
+                        if (view.compacting)
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              l.compactingNow,
+                              key: const Key('compacting'),
+                              style: TextStyle(color: c.dim, fontSize: 13.5),
                             ),
                           ),
-                    onAttach: _attach,
-                    onFiles: _take,
-                    onSend: _send,
-                    onTalkStart: _talkStart,
-                    onTalkEnd: _talkEnd,
-                    onTalkCancel: () => unawaited(app.voice.cancelRecording()),
-                    onTalkTap: () =>
-                        setState(() => _note = AppLocalizations.of(context).voiceHoldToTalk),
-                    changed: moreChanged(app, widget.sessionId, agent),
-                    onMore: () => showMoreSheet(
-                      context,
-                      sessionId: widget.sessionId,
-                      agent: agent,
-                      view: view,
-                    ),
-                    running: view.running,
-                    onStop: _stop,
-                    mentions: widget.mentions,
-                    hint: agent == null
-                        ? null
-                        : view.running
-                        ? l.cvWriteWhileWorking(agent.name)
-                        : l.cvWriteTo(agent.name),
+                        if (view.running && call != null && !view.compacting)
+                          TurnProgress(call: call, now: app.live.now, still: still),
+                        // G42.2: generate_image's picture as it forms (`image.progress`).
+                        if (view.drawing case final d?)
+                          DrawingCard(percent: d.percent, preview: d.preview),
+                      ];
+                      final after = <Widget>[
+                        for (final q in view.queued)
+                          QueuedBubble(
+                            key: Key('queued-${q.clientId}'),
+                            text: q.text,
+                            onRemove: () => app.unqueue(widget.sessionId, q.clientId),
+                          ),
+                        ..._requestsHere(agent),
+                        ..._otherWork(agent),
+                      ];
+                      final total =
+                          stored.length + extras.length + (live == null ? 0 : 1) + after.length;
+                      if (total == 0) {
+                        return Center(
+                          child: Text(
+                            view.synced || !app.isLive ? l.conversationEmpty : l.loading,
+                            style: TextStyle(color: c.dim),
+                          ),
+                        );
+                      }
+                      final actions = ChatActions(
+                        reply: _reply,
+                        save: _save,
+                        jump: _jumpQuote,
+                        lit: _lit,
+                        flashSeq: _flash,
+                        compactAt: agent?.compactAt ?? 0.8,
+                        sessionId: widget.sessionId,
+                        agent: agent,
+                        openSession: _openSession,
+                        editMessage: _edit,
+                        continueFrom: (seq) => unawaited(_continueFrom(seq)),
+                        readOnly: _readOnly,
+                        showCanvas: (title, target) => _showCanvas(title, target, force: true),
+                      );
+                      final liveAt = stored.length + extras.length;
+                      return ListView.builder(
+                        key: const Key('conversation-items'),
+                        controller: _scroll,
+                        reverse: true,
+                        padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+                        itemCount: total,
+                        itemBuilder: (context, i) {
+                          final at = total - 1 - i;
+                          final afterAt = liveAt + (live == null ? 0 : 1);
+                          if (at >= afterAt) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: after[at - afterAt],
+                            );
+                          }
+                          if (at >= stored.length && at < stored.length + extras.length) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: extras[at - stored.length],
+                            );
+                          }
+                          final item = at < stored.length ? stored[at] : live!;
+                          final seq = item is AssistantItem ? item.seq : null;
+                          return Padding(
+                            key: seq != null
+                                ? _keys.putIfAbsent(seq, GlobalKey.new)
+                                : item is WidgetItem
+                                ? _widgetKeys.putIfAbsent(item.key, GlobalKey.new)
+                                : null,
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: ChatItemView(item: item, actions: actions),
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
-              ),
-            ],
-          ],
-        );
+                if (_note != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    child: Text(_note!, style: TextStyle(color: c.err, fontSize: 13)),
+                  ),
+                ListenableBuilder(
+                  listenable: app.voice,
+                  builder: (context, _) {
+                    final v = app.voice;
+                    final text = v.recording
+                        ? l.voiceListening
+                        : v.transcribing
+                        ? l.voiceWriting
+                        : v.problem;
+                    if (text == null) return const SizedBox.shrink();
+                    return Padding(
+                      key: const Key('voice-line'),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      child: Row(
+                        children: [
+                          if (!v.recording && v.transcribing)
+                            RgSpinner(size: 15, color: c.dim)
+                          else
+                            RgIcon(
+                              v.recording ? RgIcons.mic : RgIcons.alert,
+                              size: 15,
+                              color: v.recording ? c.err : (v.problem != null ? c.err : c.dim),
+                            ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              text,
+                              style: TextStyle(
+                                color: v.problem != null && !v.recording && !v.transcribing
+                                    ? c.err
+                                    : c.dim,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                ListenableBuilder(
+                  listenable: view,
+                  builder: (context, _) => TodosPanel(items: view.items, running: view.running),
+                ),
+                if (app.archivedProjectOf(widget.sessionId) case final p?)
+                  ArchivedNotice(project: p)
+                else ...[
+                  if (_quotes.isNotEmpty)
+                    _QuoteDrafts(
+                      quotes: _quotes,
+                      onRemove: (q) => setState(() => _quotes.remove(q)),
+                      onJump: _jumpQuote,
+                    ),
+                  ListenableBuilder(
+                    listenable: Listenable.merge([app, app.live]),
+                    // At most 900 px wide and centred on a computer, as the page's composer.
+                    builder: (context, _) => MaxWidthCenter(
+                      child: _Composer(
+                        controller: _text,
+                        sending: _sending,
+                        attachments: _attached.isEmpty
+                            ? null
+                            : SizedBox(
+                                key: const Key('composer-attachments'),
+                                height: 40,
+                                child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                                  children: [
+                                    for (final (i, a) in _attached.indexed)
+                                      if (a is AttachedPasted)
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 6),
+                                          child: _PastedChip(
+                                            key: Key('pasted-$i'),
+                                            file: a,
+                                            onRemove: () => setState(() => _attached.removeAt(i)),
+                                            onAsText: () => setState(() {
+                                              _attached.removeAt(i);
+                                              final now = _text.text;
+                                              final text =
+                                                  '$now${now.isNotEmpty && !now.endsWith('\n') ? '\n' : ''}${a.content}';
+                                              _before = text;
+                                              _text.value = TextEditingValue(
+                                                text: text,
+                                                selection: TextSelection.collapsed(
+                                                  offset: text.length,
+                                                ),
+                                              );
+                                            }),
+                                          ),
+                                        )
+                                      else
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 6),
+                                          child: InputChip(
+                                            visualDensity: VisualDensity.compact,
+                                            avatar: a is AttachedImage
+                                                // A photo shows itself (the page's thumbnail).
+                                                ? ClipRRect(
+                                                    borderRadius: BorderRadius.circular(4),
+                                                    child: Image.memory(
+                                                      a.bytes,
+                                                      width: 22,
+                                                      height: 22,
+                                                      fit: BoxFit.cover,
+                                                      errorBuilder: (_, _, _) => RgIcon(
+                                                        RgIcons.image,
+                                                        size: 16,
+                                                        color: c.dim,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : RgIcon(RgIcons.file, size: 16, color: c.dim),
+                                            label: Text(a.name, overflow: TextOverflow.ellipsis),
+                                            deleteButtonTooltipMessage: l.attachmentRemove,
+                                            deleteIcon: RgIcon(RgIcons.x, size: 14, color: c.dim),
+                                            onDeleted: () => setState(() => _attached.removeAt(i)),
+                                          ),
+                                        ),
+                                  ],
+                                ),
+                              ),
+                        onAttach: _attach,
+                        onFiles: _take,
+                        onSend: _send,
+                        onTalkStart: _talkStart,
+                        onTalkEnd: _talkEnd,
+                        onTalkCancel: () => unawaited(app.voice.cancelRecording()),
+                        onTalkTap: () =>
+                            setState(() => _note = AppLocalizations.of(context).voiceHoldToTalk),
+                        changed: moreChanged(app, widget.sessionId, agent),
+                        onMore: () => showMoreSheet(
+                          context,
+                          sessionId: widget.sessionId,
+                          agent: agent,
+                          view: view,
+                        ),
+                        running: view.running,
+                        onStop: _stop,
+                        mentions: widget.mentions,
+                        hint: agent == null
+                            ? null
+                            : view.running
+                            ? l.cvWriteWhileWorking(agent.name)
+                            : l.cvWriteTo(agent.name),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            );
             if (!_wide || !_canvas.open || _canvas.current == null) return chat;
             return Row(
               children: [

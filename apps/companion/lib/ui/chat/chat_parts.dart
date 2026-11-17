@@ -92,10 +92,7 @@ class _TodosPanelState extends State<TodosPanel> {
                                     width: 12,
                                     child: switch (x.status) {
                                       'completed' => _Dot(filled: true, color: c.ok),
-                                      'in_progress' => RgSpinner(
-                                        size: 12,
-                                        color: c.text,
-                                      ),
+                                      'in_progress' => RgSpinner(size: 12, color: c.text),
                                       _ => _Dot(filled: false, color: c.dim),
                                     },
                                   ),
@@ -467,13 +464,7 @@ class CanvasLine extends StatelessWidget {
 /// On a phone (G42.2): what the agent showed in the Canvas as a card the size of a finger, the
 /// whole width: its name, what it is (a site on a port, or a file) and «Apri»; the Canvas whole.
 class CanvasCard extends StatelessWidget {
-  const CanvasCard({
-    super.key,
-    required this.title,
-    required this.onTap,
-    this.port,
-    this.path,
-  });
+  const CanvasCard({super.key, required this.title, required this.onTap, this.port, this.path});
 
   final String title;
   final VoidCallback? onTap;
