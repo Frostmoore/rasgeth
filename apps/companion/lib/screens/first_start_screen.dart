@@ -2,6 +2,8 @@
 // line at the top, one question per screen): the temporary network, the access, the home
 // network, the wait while RedGiant moves there, then the languages, a way of thinking and the
 // names. The logic is [FirstStartFlow]; this is only how it looks.
+import '../ui/dialogs.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -124,7 +126,7 @@ class _FirstStartScreenState extends State<FirstStartScreen> {
     final l = AppLocalizations.of(context);
     final s = flow.step;
     if (s != FsStep.done && s != FsStep.intro && s != FsStep.manual) {
-      final ok = await showDialog<bool>(
+      final ok = await showRgWindow<bool>(
         context: context,
         builder: (context) => AlertDialog(
           title: Text(l.fsLeaveTitle),

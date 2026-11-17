@@ -4629,4 +4629,21 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get previewLinkOpen => 'Apri';
+
+  @override
+  String get embedCopied => 'Copiato';
+
+  @override
+  String get embedShareCopied => 'Copiato: incollalo dove vuoi condividerlo';
+
+  @override
+  String embedSaved(String name) {
+    return 'Salvato: $name';
+  }
+
+  @override
+  String get embedOpenInBrowser => 'Apri nel browser';
+
+  @override
+  String get embedProbeTitle => 'Prova della vista web';
 }

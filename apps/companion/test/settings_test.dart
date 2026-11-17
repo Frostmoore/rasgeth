@@ -73,19 +73,23 @@ void main() {
       }
     });
 
-    test('«All settings»: a WebView where there is one, never over plain http on the network', () {
-      for (final (p, k, m) in [
-        (DevicePlatform.android, TransportKind.pinnedHttps, FullSettingsMode.webView),
-        (DevicePlatform.ios, TransportKind.publicHttps, FullSettingsMode.webView),
-        (DevicePlatform.macos, TransportKind.loopback, FullSettingsMode.webView),
-        (DevicePlatform.windows, TransportKind.loopback, FullSettingsMode.browser),
-        (DevicePlatform.linux, TransportKind.pinnedHttps, FullSettingsMode.browser),
-        (DevicePlatform.android, TransportKind.channel, FullSettingsMode.unavailable),
-        (DevicePlatform.linux, TransportKind.channel, FullSettingsMode.unavailable),
-      ]) {
-        expect(fullSettingsMode(p, k), m, reason: '$p $k');
-      }
-    });
+    test(
+      '«All settings»: inside the app on all five systems, never over plain http on the network',
+      () {
+        for (final (p, k, m) in [
+          (DevicePlatform.android, TransportKind.pinnedHttps, FullSettingsMode.webView),
+          (DevicePlatform.ios, TransportKind.publicHttps, FullSettingsMode.webView),
+          (DevicePlatform.macos, TransportKind.loopback, FullSettingsMode.webView),
+          (DevicePlatform.windows, TransportKind.loopback, FullSettingsMode.webView),
+          (DevicePlatform.linux, TransportKind.pinnedHttps, FullSettingsMode.webView),
+          (DevicePlatform.windows, TransportKind.channel, FullSettingsMode.unavailable),
+          (DevicePlatform.android, TransportKind.channel, FullSettingsMode.unavailable),
+          (DevicePlatform.linux, TransportKind.channel, FullSettingsMode.unavailable),
+        ]) {
+          expect(fullSettingsMode(p, k), m, reason: '$p $k');
+        }
+      },
+    );
 
     test('the token rides the fragment, never the query', () {
       final u = fullSettingsUrl(Uri.parse('https://redgiant.local:8443'), token: 'rgd_a+b/c');

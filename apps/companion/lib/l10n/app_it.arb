@@ -1323,5 +1323,10 @@
   "artError1": "1 errore",
   "artErrors": "{n} errori",
   "previewLinkTitle": "La pagina vuole aprire un link",
-  "previewLinkOpen": "Apri"
+  "previewLinkOpen": "Apri",
+  "embedCopied": "Copiato",
+  "embedShareCopied": "Copiato: incollalo dove vuoi condividerlo",
+  "embedSaved": "Salvato: {name}",
+  "embedOpenInBrowser": "Apri nel browser",
+  "embedProbeTitle": "Prova della vista web"
 }

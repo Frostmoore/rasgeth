@@ -3,6 +3,8 @@
 // title; then God, the Chat and «For you»; the view in the middle; the side panel with a
 // conversation; the status bar at the bottom. The palette (Ctrl/Cmd+K), the quick Chat and the
 // floating panels go over it. The phone keeps its own shell (HomeShell).
+import '../ui/dialogs.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -492,7 +494,7 @@ class _DesktopShellState extends State<DesktopShell> {
   Future<void> _showShortcuts() {
     final l = AppLocalizations.of(context);
     final menus = _menus(l);
-    return showDialog<void>(
+    return showRgWindow<void>(
       context: context,
       builder: (ctx) {
         final c = RgColors.of(ctx);

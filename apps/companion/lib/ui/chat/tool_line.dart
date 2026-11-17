@@ -5,6 +5,8 @@
 // what a file tool changed (+n −m). Under it what canvas_look saw, the mail cards, the diff, the
 // picture generate_image made, the sub-agents' conversations as links; a tap unfolds the input
 // and the result.
+import '../dialogs.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -439,7 +441,7 @@ class ImageStrip extends StatelessWidget {
               final b = bytes;
               return GestureDetector(
                 key: Key('image-thumb-$i'),
-                onTap: () => showDialog<void>(
+                onTap: () => showRgWindow<void>(
                   context: context,
                   builder: (_) => Dialog(
                     backgroundColor: c.panel,

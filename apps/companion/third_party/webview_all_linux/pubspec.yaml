@@ -1,0 +1,39 @@
+# RGCompanion (G42.0): a copy of webview_all_linux 1.5.1 (MIT, github.com/abandoft/webview_all) with one
+# change: the TLS error carries the certificate's DER bytes (linux/src/webview/linux_webview.cc,
+# lib/src/linux_webview_events.dart, lib/src/linux_webview_requests.dart), so the app goes on only
+# for the certificate it pinned. Back to the pub.dev package once it gives them.
+name: webview_all_linux
+description: A Flutter plugin that provides a WebView widget on Linux using WebKitGTK.
+repository: https://github.com/abandoft/webview_all
+homepage: https://github.com/abandoft/webview_all
+issue_tracker: https://github.com/abandoft/webview_all/issues
+version: 1.5.1
+
+environment:
+  sdk: ^3.9.0
+  flutter: ">=3.35.0"
+
+flutter:
+  plugin:
+    implements: webview_all
+    platforms:
+      linux:
+        pluginClass: WebviewAllLinuxPlugin
+        dartPluginClass: LinuxWebViewPlatform
+
+dependencies:
+  flutter:
+    sdk: flutter
+  path: ^1.9.1
+  webview_platform_interface: ^1.5.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+topics:
+  - webview
+  - webview-flutter
+  - linux
+  - browser
+  - webkitgtk

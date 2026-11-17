@@ -8036,6 +8036,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open'**
   String get previewLinkOpen;
+
+  /// No description provided for @embedCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get embedCopied;
+
+  /// No description provided for @embedShareCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied: paste it where you want to share it'**
+  String get embedShareCopied;
+
+  /// No description provided for @embedSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: {name}'**
+  String embedSaved(String name);
+
+  /// No description provided for @embedOpenInBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in the browser'**
+  String get embedOpenInBrowser;
+
+  /// No description provided for @embedProbeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Web view test'**
+  String get embedProbeTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

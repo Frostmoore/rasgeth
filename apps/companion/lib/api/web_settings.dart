@@ -9,26 +9,16 @@ import 'transport.dart';
 import 'types.dart';
 
 enum FullSettingsMode {
-  /// A WebView inside the app (Android, iOS, macOS), with the app's own trust.
+  /// The page inside the app (`EmbedView`), with the app's own trust: on all five systems since
+  /// G42.0 (WebView, WKWebView, WebView2, WebKitGTK).
   webView,
-
-  /// The system's browser, without the token (Windows and Linux have no WebView until G40.12):
-  /// the person signs in there as usual.
-  browser,
 
   /// Not over plain http on the network: the token would travel in clear.
   unavailable,
 }
 
-FullSettingsMode fullSettingsMode(DevicePlatform p, TransportKind k) {
-  if (k == TransportKind.channel) return FullSettingsMode.unavailable;
-  return switch (p) {
-    DevicePlatform.android ||
-    DevicePlatform.ios ||
-    DevicePlatform.macos => FullSettingsMode.webView,
-    _ => FullSettingsMode.browser,
-  };
-}
+FullSettingsMode fullSettingsMode(DevicePlatform p, TransportKind k) =>
+    k == TransportKind.channel ? FullSettingsMode.unavailable : FullSettingsMode.webView;
 
 /// The page at [base] opening on Settings, signed in with [token] (null: as usual).
 Uri fullSettingsUrl(Uri base, {String? token}) => Uri(

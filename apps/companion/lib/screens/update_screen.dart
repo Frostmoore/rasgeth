@@ -7,6 +7,8 @@
 // that moves with the time gone by when the server does not say (before 3.8.1); RedGiant's
 // restart with the tries the app makes to reach it, and the app reconnecting by itself as the
 // new version; at the end «Updated to x.y.z» with what is new, or why it stopped and what to do.
+import '../ui/dialogs.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -38,7 +40,7 @@ Future<void> openUpdateScreen(BuildContext context) async {
   try {
     final wide = MediaQuery.sizeOf(context).width >= 720;
     if (wide) {
-      await showDialog<void>(
+      await showRgWindow<void>(
         context: context,
         barrierDismissible: false,
         builder: (_) => Dialog(

@@ -6,8 +6,9 @@
 // in it; otherwise it waits in a strip under it for «Send» or «Leave it».
 //
 // Android, iOS and macOS: webview_flutter (WebView, WKWebView). Windows: webview_flutter_windows
-// (WebView2, drawn into Flutter). Linux has no web view the app can trust inside a scrolling chat:
-// a card with the widget's words and «Open in the page» (the browser, on the same preview link).
+// (WebView2, drawn into Flutter). Linux (G42.0): WebKitGTK (webview_all_linux), a native view over
+// Flutter clipped to its place. Without a safe way to the server (plain http over the network): a
+// card with the widget's words and «Open in the page» (the browser, on the same preview link).
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
@@ -17,7 +18,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_all_linux/webview_all_linux.dart' as gtk;
 import 'package:webview_flutter_windows/webview_flutter_windows.dart' as win;
+import 'package:webview_platform_interface/webview_platform_interface.dart' as gtkp;
 
 import '../api/artifact_frame.dart';
 import '../api/client.dart';
@@ -40,7 +43,10 @@ enum FrameSupport {
   /// WebView2: Windows.
   windows,
 
-  /// No web view (Linux), or no safe way to the server (plain http over the network).
+  /// WebKitGTK: Linux (G42.0).
+  linux,
+
+  /// No safe way to the server (plain http over the network).
   none,
 }
 
@@ -50,7 +56,8 @@ FrameSupport frameSupportFor(DevicePlatform p, TransportKind? k) {
   return switch (p) {
     DevicePlatform.android || DevicePlatform.ios || DevicePlatform.macos => FrameSupport.webView,
     DevicePlatform.windows => FrameSupport.windows,
-    _ => FrameSupport.none,
+    DevicePlatform.linux => FrameSupport.linux,
+    DevicePlatform.other => FrameSupport.none,
   };
 }
 
@@ -83,7 +90,61 @@ abstract class FrameHost {
 }
 
 FrameHost _hostFor(FrameSupport s) =>
-    debugFrameHost?.call(s) ?? (s == FrameSupport.windows ? _WindowsHost() : _FlutterHost());
+    debugFrameHost?.call(s) ??
+    switch (s) {
+      FrameSupport.windows => _WindowsHost(),
+      FrameSupport.linux => _LinuxHost(),
+      _ => _FlutterHost(),
+    };
+
+/// Linux: WebKitGTK over the Flutter view, clipped to the frame's place.
+class _LinuxHost implements FrameHost {
+  final _out = StreamController<String>.broadcast();
+  final _c = gtk.LinuxWebViewController(const gtkp.PlatformWebViewControllerCreationParams());
+
+  @override
+  Stream<String> get messages => _out.stream;
+
+  @override
+  Future<void> load(RelayFrame f) async {
+    await _c.setJavaScriptMode(gtkp.JavaScriptMode.unrestricted);
+    await _c.addJavaScriptChannel(
+      gtkp.JavaScriptChannelParams(name: 'RGHost', onMessageReceived: (m) => _out.add(m.message)),
+    );
+    await _c.setBackgroundColor(const Color(0x00000000));
+    final nav = gtk.LinuxNavigationDelegate(const gtkp.PlatformNavigationDelegateCreationParams());
+    await nav.setOnNavigationRequest((r) {
+      final u = Uri.tryParse(r.url);
+      final ok =
+          u != null &&
+          frameNavigationAllowed(
+            u,
+            mainFrame: r.isMainFrame,
+            wrapper: f.wrapper,
+            preview: f.preview,
+          );
+      return ok ? gtkp.NavigationDecision.navigate : gtkp.NavigationDecision.prevent;
+    });
+    await _c.setPlatformNavigationDelegate(nav);
+    await _c.loadRequest(gtkp.LoadRequestParams(uri: f.wrapper));
+  }
+
+  @override
+  Future<void> run(String script) => _c.runJavaScript(script);
+
+  @override
+  Widget view({required bool eager}) => Builder(
+    builder: (context) =>
+        gtk.LinuxWebViewWidget(gtkp.PlatformWebViewWidgetCreationParams(controller: _c))
+            .build(context),
+  );
+
+  @override
+  void dispose() {
+    unawaited(_out.close());
+    unawaited(_c.dispose());
+  }
+}
 
 /// Android, iOS, macOS.
 class _FlutterHost implements FrameHost {
@@ -712,7 +773,7 @@ class _WidgetCardState extends State<WidgetCard> with AutomaticKeepAliveClientMi
   }
 }
 
-/// The Canvas on a computer without a web view (Linux): «Open in the page» above the source.
+/// The Canvas without a safe way to the server: «Open in the page» above the source.
 class ArtifactInPage extends StatelessWidget {
   const ArtifactInPage({super.key, required this.previewPath, required this.source});
 

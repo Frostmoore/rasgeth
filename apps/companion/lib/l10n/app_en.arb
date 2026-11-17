@@ -3383,5 +3383,17 @@
     }
   },
   "previewLinkTitle": "The page wants to open a link",
-  "previewLinkOpen": "Open"
+  "previewLinkOpen": "Open",
+  "embedCopied": "Copied",
+  "embedShareCopied": "Copied: paste it where you want to share it",
+  "embedSaved": "Saved: {name}",
+  "@embedSaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "embedOpenInBrowser": "Open in the browser",
+  "embedProbeTitle": "Web view test"
 }

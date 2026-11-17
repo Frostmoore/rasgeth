@@ -4,6 +4,8 @@
 // prefixes narrow it: «>» commands, «@» agents, «#» files, «:» lines of code, «!» a command in
 // your terminal, «?» the Log's events («/» works as «>» everywhere). The ranking is pure
 // ([parsePaletteQuery], [filterPalette]) and tested as a table.
+import '../ui/dialogs.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -178,9 +180,8 @@ Future<void> showPalette(
   required DeskController desk,
   required List<DeskCommand> commands,
   String initial = '',
-}) => showGeneralDialog<void>(
+}) => showRgOverlay<void>(
   context: context,
-  barrierDismissible: true,
   barrierLabel: AppLocalizations.of(context).deskPaletteTitle,
   barrierColor: Colors.black.withValues(alpha: .28),
   transitionDuration: const Duration(milliseconds: 120),

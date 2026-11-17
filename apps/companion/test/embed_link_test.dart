@@ -29,13 +29,13 @@ void main() {
   );
 
   test('the page\'s encoding, byte for byte', () {
-    for (final e in (v['encode'] as List).cast<Map>()) {
+    for (final e in (v['encode'] as List).cast<Map<String, Object?>>()) {
       expect(formEncode(e['s'] as String), e['e'], reason: '${e['s']}');
     }
   });
 
   test('every fragment as the page writes it, and read back', () {
-    for (final h in (v['hashes'] as List).cast<Map>()) {
+    for (final h in (v['hashes'] as List).cast<Map<String, Object?>>()) {
       final p = fromJson((h['params'] as Map).cast<String, Object?>());
       expect(embedHash(p), h['hash']);
       expect(parseEmbedHash('#${h['hash']}')?.toJson(), h['params']);

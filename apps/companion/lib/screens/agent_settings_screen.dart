@@ -29,7 +29,7 @@ import 'team_screen.dart' show AgentModelRow;
 Future<void> openAgentSettings(BuildContext context, Agent a) {
   final size = MediaQuery.sizeOf(context);
   if (size.width >= 760) {
-    return showDialog<void>(
+    return showRgWindow<void>(
       context: context,
       builder: (_) => Dialog(
         insetPadding: const EdgeInsets.all(28),

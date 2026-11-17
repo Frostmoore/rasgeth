@@ -489,7 +489,8 @@ void main() {
         (DevicePlatform.macos, TransportKind.loopback): FrameSupport.webView,
         (DevicePlatform.windows, TransportKind.loopback): FrameSupport.windows,
         (DevicePlatform.windows, TransportKind.pinnedHttps): FrameSupport.windows,
-        (DevicePlatform.linux, TransportKind.loopback): FrameSupport.none,
+        (DevicePlatform.linux, TransportKind.loopback): FrameSupport.linux,
+        (DevicePlatform.linux, TransportKind.channel): FrameSupport.none,
         (DevicePlatform.android, TransportKind.channel): FrameSupport.none,
         (DevicePlatform.android, null): FrameSupport.none,
       };
@@ -929,7 +930,19 @@ void main() {
       await done(tester);
     });
 
-    testWidgets('Linux: the words and «Apri nella pagina», no frame', (tester) async {
+    testWidgets('Linux (G42.0): the widget in its frame, WebKitGTK', (tester) async {
+      await open(tester, platform: DevicePlatform.linux);
+      server.streamEnd('s1', answer);
+      await settle(tester);
+      expect(find.byKey(const Key('widget-fallback')), findsNothing);
+      expect(host.loaded?.wrapper.toString(), 'http://127.0.0.1:1/rg-frame/F');
+      await done(tester);
+    });
+
+    testWidgets('no safe way to the server: the words and «Apri nella pagina», no frame', (
+      tester,
+    ) async {
+      debugFrameSupport = (_) => FrameSupport.none;
       await open(tester, platform: DevicePlatform.linux);
       server.streamEnd('s1', answer);
       await settle(tester);
@@ -941,9 +954,10 @@ void main() {
       await done(tester);
     });
 
-    testWidgets('Linux Canvas: an artifact shows its source and «Apri nella pagina»', (
+    testWidgets('Canvas with no safe way: an artifact shows its source and «Apri nella pagina»', (
       tester,
     ) async {
+      debugFrameSupport = (_) => FrameSupport.none;
       await open(tester, platform: DevicePlatform.linux);
       unawaited(
         openCanvas(

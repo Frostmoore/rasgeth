@@ -2,6 +2,8 @@
 // with a shortcut (inside the app: a shortcut for the whole system is not reliable on every
 // computer yet, Linux above all). It opens today's Chat conversation, or a new one; «expand» moves
 // it to the side panel.
+import '../ui/dialogs.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -43,9 +45,8 @@ Future<void> showQuickChat(
     return;
   }
   if (!context.mounted) return;
-  await showGeneralDialog<void>(
+  await showRgOverlay<void>(
     context: context,
-    barrierDismissible: true,
     barrierLabel: l.deskQuickChat,
     barrierColor: Colors.black.withValues(alpha: .25),
     transitionDuration: const Duration(milliseconds: 140),

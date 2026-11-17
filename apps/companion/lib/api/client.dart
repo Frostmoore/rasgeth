@@ -700,6 +700,22 @@ class RedGiantClient {
     return r.bytes;
   }
 
+  /// The bytes of a link of this server the page inside the app gave (`/…?…`, «Save as…», G42.0).
+  Future<Uint8List> serverBytes(String link) async {
+    final u = Uri.parse(link);
+    if (u.hasScheme || u.hasAuthority || !u.path.startsWith('/')) {
+      throw ArgumentError.value(link, 'link', 'Not a link of this server');
+    }
+    final r = await _send(
+      'GET',
+      u.path,
+      query: u.hasQuery ? u.queryParameters : null,
+      accept: '*/*',
+    );
+    if (r.status != 200) _decode(r);
+    return r.bytes;
+  }
+
   // ---- the first start (G40.8) and the settings of this RedGiant ----
 
   /// A request whose answer may be empty (`{ok: true}`, nothing at all).

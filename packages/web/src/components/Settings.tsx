@@ -68,8 +68,9 @@ import { VoiceSettingsPage } from "./VoiceSettings.js";
 
 type Section = { id: SettingsSection; label: () => string; icon: ComponentChildren };
 
-/** The sections in groups, as the wizard groups its steps. */
-const GROUPS: { title: () => string; sections: Section[] }[] = [
+/** The sections in groups, as the wizard groups its steps (the parity table with RGCompanion reads
+ * them, G42.0). */
+export const GROUPS: { title: () => string; sections: Section[] }[] = [
   {
     title: () => t("stGrpBasics"),
     sections: [

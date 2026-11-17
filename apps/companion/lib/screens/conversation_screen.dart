@@ -1735,7 +1735,7 @@ class _PastedChip extends StatelessWidget {
           const SizedBox(width: 6),
           InkWell(
             key: const Key('pasted-open'),
-            onTap: () => showDialog<void>(
+            onTap: () => showRgWindow<void>(
               context: context,
               builder: (context) => AlertDialog(
                 title: Text(file.name),

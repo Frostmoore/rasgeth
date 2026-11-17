@@ -41,6 +41,12 @@ dependencies:
   webview_flutter: 4.14.1
   # WebView2 on Windows, drawn into Flutter (composition), pinned (BSD-3, tomars.tech).
   webview_flutter_windows: 1.3.1
+  # WebKitGTK on Linux (G42.0), drawn over the Flutter view and clipped to its place: a copy of
+  # webview_all_linux 1.5.1 (MIT) whose TLS errors carry the certificate (third_party/, see its
+  # pubspec), on webview_all's own platform interface (MIT), pinned.
+  webview_all_linux:
+    path: third_party/webview_all_linux
+  webview_platform_interface: 1.5.1
   desktop_drop: ^0.8.0
   # Pasted images and copied files (Ctrl/Cmd+V in the composer); pinned.
   pasteboard: 0.6.0

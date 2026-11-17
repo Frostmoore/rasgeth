@@ -12,7 +12,7 @@ void main() {
   final nonce = v['nonce'] as String;
 
   test('every envelope taken or refused as the page does', () {
-    for (final e in (v['envelopes'] as List).cast<Map>()) {
+    for (final e in (v['envelopes'] as List).cast<Map<String, Object?>>()) {
       expect(readEmbedEnvelope(e['raw'] as String, nonce), e['message'], reason: '${e['raw']}');
     }
   });
@@ -36,7 +36,7 @@ void main() {
         back: (h) => got.add('back $h'),
       ),
     );
-    for (final e in (v['envelopes'] as List).cast<Map>()) {
+    for (final e in (v['envelopes'] as List).cast<Map<String, Object?>>()) {
       b.handle(e['raw'] as String);
     }
     expect(got, [
@@ -60,7 +60,7 @@ void main() {
   });
 
   test('the app\'s messages: the ones the page takes, as a script posted to its own window', () {
-    for (final m in (v['appMessages'] as List).cast<Map>()) {
+    for (final m in (v['appMessages'] as List).cast<Map<String, Object?>>()) {
       final msg = m.cast<String, Object?>();
       expect(appToEmbedOk(msg), isTrue, reason: '$m');
       final s = appMessageScript(msg);
@@ -75,7 +75,11 @@ void main() {
 
   test('the helpers write what the page takes', () async {
     final sent = <String>[];
-    final b = EmbedBridge(nonce: nonce, run: (s) async => sent.add(s), handlers: const EmbedHandlers());
+    final b = EmbedBridge(
+      nonce: nonce,
+      run: (s) async => sent.add(s),
+      handlers: const EmbedHandlers(),
+    );
     await b.theme(dark: true);
     await b.lang('en');
     await b.key(EmbedKey.redo);

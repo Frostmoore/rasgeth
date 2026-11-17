@@ -18,7 +18,8 @@ final _font = RegExp(r'^[^;{}<>]+$');
 
 bool _str(Object? v, {int min = 0, required int max}) =>
     v is String && v.length >= min && v.length <= max;
-bool _optStr(Object? v, {int min = 0, required int max}) => v == null || _str(v, min: min, max: max);
+bool _optStr(Object? v, {int min = 0, required int max}) =>
+    v == null || _str(v, min: min, max: max);
 bool _count(Object? v) => v is int && v >= 0 && v <= 999999999;
 bool _optCount(Object? v) => v == null || _count(v);
 bool _only(Map<String, Object?> m, Set<String> keys) => m.keys.every(keys.contains);
@@ -67,9 +68,7 @@ Map<String, Object?>? embedToApp(Object? m) {
     'askAgent' =>
       _only(x, {'t', 'text', 'ref'}) && _str(x['text'], min: 1, max: 20000) && _ref(x['ref']),
     'external' =>
-      _only(x, {'t', 'url'}) &&
-          _str(x['url'], max: 4000) &&
-          _webLink.hasMatch(x['url']! as String),
+      _only(x, {'t', 'url'}) && _str(x['url'], max: 4000) && _webLink.hasMatch(x['url']! as String),
     'close' => _only(x, {'t'}),
     'back' => _only(x, {'t', 'handled'}) && x['handled'] is bool,
     _ => false,
@@ -209,11 +208,9 @@ class EmbedBridge {
           mime: m['mime'] as String?,
         );
       case 'openFile':
-        h.openFile?.call(
-          m['id']! as String,
-          [...(m['accept'] as List? ?? const []).cast<String>()],
-          m['multiple'] == true,
-        );
+        h.openFile?.call(m['id']! as String, [
+          ...(m['accept'] as List? ?? const []).cast<String>(),
+        ], m['multiple'] == true);
       case 'copy':
         h.copy?.call(m['text']! as String);
       case 'share':
@@ -236,7 +233,8 @@ class EmbedBridge {
 
   Future<void> send(Map<String, Object?> m) => run(appMessageScript(m));
 
-  Future<void> theme({required bool dark}) => send({'t': 'theme', 'theme': dark ? 'dark' : 'light'});
+  Future<void> theme({required bool dark}) =>
+      send({'t': 'theme', 'theme': dark ? 'dark' : 'light'});
   Future<void> lang(String lang) => send({'t': 'lang', 'lang': lang});
   Future<void> font(String family) => send({'t': 'font', 'family': family});
   Future<void> back() => send({'t': 'back'});

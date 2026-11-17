@@ -62,6 +62,15 @@
   on/off is our switch (`Toggle` in `ui.tsx`, `Switch`/`SwitchRow` in `SettingsKit.tsx`), choices are our drawn
   controls. Never the browser's native dialogs (alert, prompt, confirm): our Modal (`askConfirm`/`askText` in
   `src/components/dialogs.tsx`; `test/no-native-dialogs.test.tsx` fails if one comes back).
+- RGCompanion (`apps/companion`, G42, D1): every new page feature ships in RGCompanion in the same version;
+  `apps/companion/parity.json` says how (native or embed) and CI fails when the page has a Settings section, viewer
+  kind, chat item or wire message the table does not name (`packages/web/test/companion-parity.test.ts`). Native in
+  Flutter: the conversation and everything around it, requests and questions, agents, files, projects, Settings; a
+  web view only for the Canvas's editors and viewers, widgets, artifacts and previews, through the page's embed
+  (`/embed.html#token=…&embed=…`, `protocol/src/embed.ts`: fragment only, token in memory, the app's theme and
+  language, no bar of the page) and its bridge (`toApp`/`onApp` in `web/src/embed.ts`, `EmbedView`/`EmbedBridge` in
+  `lib/embed/`, vectors from `tool/embed_vectors.mjs`). Same colours (`colors_parity_test.dart`), fonts and drawn
+  icons as the page; no Checkbox/Radio, every window through `lib/ui/dialogs.dart`.
 - Local engines: llama.cpp must run with `--slot-save-path` (shared with the server) and `--swa-full` for
   sliding-window models (Gemma…), or prefixes beyond the window are recomputed every turn.
 - Extensions never install themselves: an agent's proposal is tested in a throwaway sandbox and waits for the

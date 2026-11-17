@@ -1,4 +1,6 @@
-// Our own dialogs (as the page's `askConfirm`/`askText`): never a system prompt.
+// Our own dialogs (as the page's `askConfirm`/`askText`): never a system prompt. Every window the
+// app opens over a screen goes through this file (`showRgWindow`, `showRgOverlay`), as the page's
+// Modal: test/no_native_controls_test.dart fails on a `showDialog` anywhere else (G42.0).
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
@@ -102,3 +104,26 @@ class _TextDialogState extends State<_TextDialog> {
     );
   }
 }
+
+/// A window over the screen (drawn by us: `AlertDialog`, `Dialog` with our colours).
+Future<T?> showRgWindow<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  bool barrierDismissible = true,
+}) => showDialog<T>(context: context, barrierDismissible: barrierDismissible, builder: builder);
+
+/// A layer over the screen with no frame of its own (the palette, the quick chat).
+Future<T?> showRgOverlay<T>({
+  required BuildContext context,
+  required RoutePageBuilder pageBuilder,
+  required String barrierLabel,
+  required Color barrierColor,
+  Duration transitionDuration = const Duration(milliseconds: 140),
+}) => showGeneralDialog<T>(
+  context: context,
+  barrierDismissible: true,
+  barrierLabel: barrierLabel,
+  barrierColor: barrierColor,
+  transitionDuration: transitionDuration,
+  pageBuilder: pageBuilder,
+);

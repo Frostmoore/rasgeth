@@ -229,8 +229,6 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
     switch (fullSettingsMode(app.platform, c.transport.kind)) {
       case FullSettingsMode.unavailable:
         setState(() => _said = l.allSettingsNoHttps);
-      case FullSettingsMode.browser:
-        await openExternal(fullSettingsUrl(c.base));
       case FullSettingsMode.webView:
         final leaf = s.caPem != null && c.transport.kind == TransportKind.pinnedHttps
             ? await pinnedLeaf(c.base, s.caPem!)
@@ -433,7 +431,6 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                   child: Text(switch (mode) {
                     FullSettingsMode.webView => l.allSettingsHint,
-                    FullSettingsMode.browser => l.allSettingsBrowser,
                     _ => l.allSettingsNoHttps,
                   }, style: TextStyle(color: c.dim, fontSize: 12.5)),
                 ),

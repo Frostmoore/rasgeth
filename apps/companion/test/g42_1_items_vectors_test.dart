@@ -138,10 +138,7 @@ void main() {
       final app = buildItems([
         for (final e in events.cast<Map<String, dynamic>>()) RgEvent.fromJson(e),
       ]);
-      final web = [
-        for (final i in items.cast<Map<String, dynamic>>())
-          _web(i),
-      ];
+      final web = [for (final i in items.cast<Map<String, dynamic>>()) _web(i)];
       // Notices the page says in words keep the page's text in the vectors.
       final webText = {for (final i in web) i['key']: i['text']};
       final mine = [
