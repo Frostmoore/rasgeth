@@ -9,7 +9,6 @@ import 'dart:io';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:rgcompanion/api/live.dart';
@@ -115,7 +114,8 @@ void main() {
         await t.tap(row('docs/report.pdf'), buttons: kSecondaryButton);
         await frames(t, 800);
         await shot(t, name(5, 'menu'));
-        await t.sendKeyEvent(LogicalKeyboardKey.escape);
+        // Away from the menu (Esc would also leave the full window).
+        await t.tapAt(const Offset(1300, 820));
         await frames(t, 600);
         // A file on its way to the conversation.
         final from = t.getCenter(row('src/app.py'));
