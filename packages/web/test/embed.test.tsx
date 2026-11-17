@@ -237,18 +237,32 @@ describe("G42.2: a board's variant alone, and a preview's links", () => {
     );
   });
 
-  it("wider than the screen, a computer's fills the width and is not scaled", async () => {
+  it("much wider than the screen, a computer's fills the width and is not scaled", async () => {
     const p = open(
       `token=t&embed=board&bridge=${NONCE}&board=s1.0123456789ab&variant=1&screen=computer&theme=dark&lang=it`,
     );
     if (!p) throw new Error("no embed");
-    Object.defineProperty(window, "innerWidth", { configurable: true, value: 1600 });
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 2400 });
     Object.defineProperty(window, "innerHeight", { configurable: true, value: 900 });
     const r = render(<EmbedRoot params={p} />);
     await waitFor(() => expect(r.container.querySelector(".tavola-alone iframe")).toBeTruthy());
     const f = r.container.querySelector(".tavola-alone iframe") as HTMLIFrameElement;
-    expect(f.style.width).toBe("1600px");
+    expect(f.style.width).toBe("2400px");
     expect(f.style.transform).toBe("");
+  });
+
+  it("a column a little wider than the screen: scaled up, no bands at the sides", async () => {
+    const p = open(
+      `token=t&embed=board&bridge=${NONCE}&board=s1.0123456789ab&variant=1&screen=phone&theme=dark&lang=it`,
+    );
+    if (!p) throw new Error("no embed");
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 468 });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 936 });
+    const r = render(<EmbedRoot params={p} />);
+    await waitFor(() => expect(r.container.querySelector(".tavola-alone iframe")).toBeTruthy());
+    const f = r.container.querySelector(".tavola-alone iframe") as HTMLIFrameElement;
+    expect(f.style.width).toBe("390px");
+    expect(f.style.transform).toBe("scale(1.2)");
   });
 
   it("a link a /preview/ frame asks to open goes to the app to ask; other frames' do not", () => {

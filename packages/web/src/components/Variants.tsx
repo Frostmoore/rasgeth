@@ -122,10 +122,13 @@ export function VariantPreview({
   if (failed) return <div class="empty">{t("boardNotFound")}</div>;
   if (!base) return <div class="empty" />;
   const s = SCREENS[screen];
-  const k = Math.min(1, box.w / s.width);
-  const width = k < 1 ? s.width : screen === "computer" ? box.w : s.width;
+  // Scaled to the frame as the page's board does (a little up too, so a column a bit wider than
+  // the screen has no bands); much wider (the whole screen), drawn as it is.
+  const fit = box.w / s.width;
+  const k = fit <= 1.5 ? fit : 1;
+  const width = k !== 1 ? s.width : screen === "computer" ? box.w : s.width;
   return (
-    <div class={`tavola-alone${k < 1 ? " scaled" : ""}`}>
+    <div class={`tavola-alone${k !== 1 ? " scaled" : ""}`}>
       <iframe
         title={`${variant}`}
         src={`${base}${variant}.html`}
@@ -133,7 +136,7 @@ export function VariantPreview({
         style={{
           width: `${width}px`,
           height: `${Math.ceil(box.h / k)}px`,
-          transform: k < 1 ? `scale(${k})` : undefined,
+          transform: k !== 1 ? `scale(${k})` : undefined,
         }}
       />
     </div>

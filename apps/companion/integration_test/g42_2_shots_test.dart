@@ -87,6 +87,8 @@ void main() {
       await shot(t, 'g42-2-tavola-$_tag-$theme', wait: 12000);
       await t.tap(find.byKey(const Key('board-screen-phone')));
       await shot(t, 'g42-2-tavola-telefono-$_tag-$theme', wait: 9000);
+      await t.ensureVisible(find.byKey(const Key('board-full-1')));
+      await frames(t, 300);
       await t.tap(find.byKey(const Key('board-full-1')));
       await shot(t, 'g42-2-tavola-intera-$_tag-$theme', wait: 9000);
       await t.tap(find.byKey(const Key('board-full-close')));
