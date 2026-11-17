@@ -18,8 +18,10 @@ void main() {
 
   test('every file it names exists in the app', () {
     final missing = <String>[];
-    for (final g in groups) {
+    // G42.5: the page's places outside the five lists (its top bar's folder…) too.
+    for (final g in [...groups, 'places']) {
       for (final e in (table[g]! as Map<String, Object?>).entries) {
+        if (e.key.startsWith(r'$')) continue;
         final row = e.value! as Map<String, Object?>;
         for (final f in (row['files'] as List? ?? const []).cast<String>()) {
           if (!File(f).existsSync()) missing.add('$g.${e.key}: $f');

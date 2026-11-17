@@ -28,6 +28,25 @@ class FileDrops extends ChangeNotifier {
   }
 }
 
+/// Places that take their own drops (the conversation's files panel, G42.5): a zone around them
+/// leaves the files dropped there alone (`desktop_drop` tells every target under the pointer).
+abstract final class DropClaims {
+  static final _keys = <GlobalKey>{};
+
+  static void add(GlobalKey k) => _keys.add(k);
+  static void remove(GlobalKey k) => _keys.remove(k);
+
+  /// Whether [global] falls on a place that takes its own drops.
+  static bool covers(Offset global) {
+    for (final k in _keys) {
+      final box = k.currentContext?.findRenderObject();
+      if (box is! RenderBox || !box.attached || !box.hasSize) continue;
+      if ((Offset.zero & box.size).contains(box.globalToLocal(global))) return true;
+    }
+    return false;
+  }
+}
+
 /// [child] takes files dropped from the computer into [drops], with a frame while they hover.
 class FileDropZone extends StatefulWidget {
   const FileDropZone({super.key, required this.drops, required this.child, this.enabled = true});
@@ -45,6 +64,7 @@ class _FileDropZoneState extends State<FileDropZone> {
 
   Future<void> _done(DropDoneDetails d) async {
     setState(() => _over = false);
+    if (DropClaims.covers(d.globalPosition)) return;
     for (final f in d.files) {
       if (f is DropItemDirectory) continue;
       final mark = f.extraAppleBookmark;
@@ -71,6 +91,10 @@ class _FileDropZoneState extends State<FileDropZone> {
       enable: widget.enabled,
       onDragEntered: (_) => setState(() => _over = true),
       onDragExited: (_) => setState(() => _over = false),
+      onDragUpdated: (d) {
+        final over = !DropClaims.covers(d.globalPosition);
+        if (over != _over) setState(() => _over = over);
+      },
       onDragDone: _done,
       child: Stack(
         children: [

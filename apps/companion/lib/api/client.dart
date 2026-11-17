@@ -80,13 +80,17 @@ class RedGiantClient {
     Map<String, String>? query,
     Object? json,
     String accept = 'application/json',
+    List<int>? raw,
   }) async {
     try {
       return await transport.send(
         method,
         _path(path, query),
-        headers: _headers(json: json != null, accept: accept),
-        body: json == null ? null : utf8.encode(jsonEncode(json)),
+        headers: {
+          ..._headers(json: json != null, accept: accept),
+          if (raw != null) 'content-type': 'application/octet-stream',
+        },
+        body: raw ?? (json == null ? null : utf8.encode(jsonEncode(json))),
       );
     } on TransportException catch (e) {
       throw ApiException(0, e.message, certificate: e.certificate);
@@ -1075,6 +1079,35 @@ class RedGiantClient {
       }),
     );
     return '${r['modifiedAt'] ?? ''}';
+  }
+
+  /// `PUT /api/files/content` (base64), as the page's Explorer uploads: [ifExists] `fail` (409
+  /// when the name is taken), `keep-both` or `replace`. The path written comes back («keep both»
+  /// adds « (2)»).
+  Future<String> uploadFile(String scope, String path, List<int> bytes, {String? ifExists}) async {
+    final r = _object(
+      await _call('PUT', '/api/files/content', {
+        'scope': scope,
+        'path': path,
+        'content': base64.encode(bytes),
+        'encoding': 'base64',
+        'ifExists': ?ifExists,
+      }),
+    );
+    return '${r['path'] ?? path}';
+  }
+
+  /// `POST /api/files/op`: `mkdir`, `rename` (with [to]) or `delete` (to `.trash`, for good
+  /// inside it). An archived project's files refuse them (423).
+  Future<void> fileOp(String op, String scope, String path, {String? to}) =>
+      _call('POST', '/api/files/op', {'op': op, 'scope': scope, 'path': path, 'to': ?to});
+
+  /// `POST /api/artifacts/import?scope=…` (3.5.9): a `.rgartifact` into the place's
+  /// `artefatti/`, checked on the server and never run there. Its path comes back.
+  Future<({String path, String name})> importArtifact(String scope, List<int> bytes) async {
+    final r = await _send('POST', '/api/artifacts/import', query: {'scope': scope}, raw: bytes);
+    final o = _object(_decode(r));
+    return (path: '${o['path'] ?? ''}', name: '${o['name'] ?? ''}');
   }
 
   /// A shell in [scope]'s sandbox over `/term`.

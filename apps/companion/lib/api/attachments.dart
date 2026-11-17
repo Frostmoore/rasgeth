@@ -45,6 +45,15 @@ class AttachedFile extends Attached {
   final Uint8List bytes;
 }
 
+/// A file already in the agent's workspace, dragged from the files panel (G42.5): the message
+/// names its path, nothing is written again.
+class AttachedPath extends Attached {
+  const AttachedPath(super.name, this.path, this.size);
+
+  final String path;
+  final int size;
+}
+
 /// A long text pasted into the box (the page's `pasted` kind, lib/api/pasted.dart): saved as a
 /// file in the workspace, its text inside the message too unless it is too long.
 class AttachedPasted extends Attached {
@@ -52,6 +61,9 @@ class AttachedPasted extends Attached {
 
   final String content;
 }
+
+/// A name the composer reads as text (its content goes inside the message).
+bool isTextName(String name) => _textNames.hasMatch(name);
 
 /// The image types the server takes, from the media type or the file's extension.
 String? imageTypeOf(String name, [String? mimeType]) {
@@ -137,6 +149,8 @@ Future<({String text, List<Map<String, Object?>> images})> packMessage(
                     '\n</attachment>'
               : '\n\n<attachment name="$name"$where pasted="true" />',
         );
+      case AttachedPath(:final name, :final path, :final size):
+        out.write('\n\n<attachment name="$name" path="$path" size="$size" />');
       case AttachedFile(:final name, :final bytes):
         if (upload != null) {
           final stamp = (at.millisecondsSinceEpoch + n++).toRadixString(36);

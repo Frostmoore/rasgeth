@@ -4646,4 +4646,127 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get embedProbeOpen => 'Web view test';
+
+  @override
+  String get fxOpenFiles => 'Project files';
+
+  @override
+  String get fxSubtitle => 'Files and folders';
+
+  @override
+  String get fxPlatform => 'Platform';
+
+  @override
+  String get fxAssistants => 'Personal agents';
+
+  @override
+  String get fxNewFile => 'New file';
+
+  @override
+  String get fxNewFolder => 'New folder';
+
+  @override
+  String get fxMake => 'Make';
+
+  @override
+  String get fxPathHint => 'Name, with its folder if you want one (docs/note.md)';
+
+  @override
+  String get fxUpload => 'Upload';
+
+  @override
+  String fxUploaded(int count) {
+    return 'Files uploaded: $count.';
+  }
+
+  @override
+  String get fxShowHidden => 'Show hidden files';
+
+  @override
+  String get fxHideHidden => 'Hide hidden files';
+
+  @override
+  String get fxRefresh => 'Refresh';
+
+  @override
+  String get fxTerminal => 'Terminal';
+
+  @override
+  String get fxFull => 'Full window';
+
+  @override
+  String get fxFullOff => 'Beside the conversation';
+
+  @override
+  String get fxClose => 'Close the files';
+
+  @override
+  String get fxSearchHint => 'Search the files';
+
+  @override
+  String get fxClearSearch => 'Clear the search';
+
+  @override
+  String get fxFolder => 'Folder';
+
+  @override
+  String get fxReadOnly => 'Read only: the project is archived';
+
+  @override
+  String get fxEmpty => 'Empty folder.';
+
+  @override
+  String get fxDropHere => 'Drop the files to upload them here';
+
+  @override
+  String fxExists(String name) {
+    return '$name already exists here.';
+  }
+
+  @override
+  String get fxKeepBoth => 'Keep both';
+
+  @override
+  String get fxReplace => 'Replace';
+
+  @override
+  String get fxOpen => 'Open in the Canvas';
+
+  @override
+  String get fxAsk => 'Ask the agent';
+
+  @override
+  String get fxRename => 'Rename';
+
+  @override
+  String get fxDownload => 'Download';
+
+  @override
+  String fxDownloaded(String name) {
+    return '$name saved.';
+  }
+
+  @override
+  String get fxDelete => 'Delete';
+
+  @override
+  String fxConfirmDelete(String path) {
+    return 'Move $path to the trash (.trash)?';
+  }
+
+  @override
+  String fxConfirmDeleteForGood(String path) {
+    return 'Delete $path for good?';
+  }
+
+  @override
+  String get fxMore => 'More actions';
+
+  @override
+  String get fxResize => 'Resize the files panel';
+
+  @override
+  String fxAttachFailed(String name) {
+    return '$name could not be attached.';
+  }
 }

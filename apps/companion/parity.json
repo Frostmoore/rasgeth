@@ -1416,5 +1416,29 @@
       "phase": "G42.0",
       "note": "The live connection ignores the server's error messages (err_<code> words, browser unavailable)."
     }
+  },
+  "places": {
+    "$comment": "Places of the page outside the five lists above (G42.5): its top bar's buttons and side areas.",
+    "explorer": {
+      "app": "native",
+      "files": [
+        "lib/screens/files/files_explorer.dart",
+        "lib/screens/conversation_files.dart",
+        "lib/screens/conversation_screen.dart",
+        "lib/ui/file_icons.dart",
+        "lib/desktop/drops.dart",
+        "lib/api/client.dart"
+      ],
+      "phase": "G42.5",
+      "rows": [
+        137,
+        138,
+        139,
+        140,
+        141,
+        142
+      ],
+      "note": "The top bar's folder (Explorer.tsx): the conversation's place (project, personal agents' desk or platform, as currentScope), new file and folder, upload with keep both / replace, .rgartifact import, hidden files, refresh, terminal, rename, download, delete to .trash, copy path, ask the agent, open in the Canvas, search; archived projects read only. Computer: a resizable panel beside the conversation (or full window), kept open; files dropped from the system go into the folder under the pointer, a file dragged onto the conversation is attached. Phone: a screen of its own. Subprojects' focus (G24.13) waits for the app's subprojects."
+    }
   }
 }
