@@ -31,12 +31,7 @@ import { Mascot } from "./Mascot.js";
 import { modelName } from "./ModelMenu.js";
 import { ModelSelect, useModels } from "./ModelSelect.js";
 import { PromptEditor } from "./PromptEditor.js";
-import {
-  RemoveAgentDialog,
-  RemovedAgentsList,
-  removable,
-  resumeStopped,
-} from "./RemovedAgents.js";
+import { RemoveAgentDialog, RemovedAgentsList, removable, resumeStopped } from "./RemovedAgents.js";
 import { Acts, Head, Seg, Sub, Switch } from "./SettingsKit.js";
 import { Modal } from "./ui.js";
 

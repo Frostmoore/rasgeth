@@ -8,6 +8,7 @@ import { lang } from "../src/i18n.js";
 
 const calls: [string, unknown[]][] = [];
 let restoreFails = false;
+let resumeFails = false;
 const fakeApi = new Proxy(
   {},
   {
@@ -37,6 +38,11 @@ const fakeApi = new Proxy(
                 },
           );
         if (name === "removeAgent") return Promise.resolve({ removed: ["o1", "a1", "a2"] });
+        if (name === "stopAgent") return Promise.resolve({ stopped: ["o1"], waiting: 2 });
+        if (name === "resumeAgent")
+          return resumeFails
+            ? Promise.reject(new Error("The project has another orchestrator now"))
+            : Promise.resolve({ resumed: ["o1"], tasks: ["t1", "t2"] });
         if (name === "restoreAgent")
           return restoreFails
             ? Promise.reject(new Error("The project already has an orchestrator"))
@@ -65,9 +71,11 @@ vi.mock("../src/state.js", async (orig) => ({
 }));
 
 const { Hierarchy } = await import("../src/components/Hierarchy.js");
-const { RemoveAgentDialog, RemovedAgentsList, RemovedNotice } = await import(
+const { RemoveAgentDialog, RemovedAgentsList, RemovedNotice, StoppedNotice } = await import(
   "../src/components/RemovedAgents.js"
 );
+const { Dialogs } = await import("../src/components/dialogs.js");
+const { t } = await import("../src/i18n.js");
 const { agents, chatAgentId, removedAgents } = await import("../src/state.js");
 
 const god = {
@@ -105,6 +113,7 @@ beforeEach(() => {
   calls.length = 0;
   opened.length = 0;
   restoreFails = false;
+  resumeFails = false;
   refreshTeam.mockClear();
   agents.value = [god, demigod, chat, lead] as never;
   chatAgentId.value = "c";
@@ -230,5 +239,89 @@ describe("removed agents (p3.8.9)", () => {
     cleanup();
     removedAgents.value = [];
     expect(render(<RemovedNotice agentId="a1" />).container.textContent).toBe("");
+  });
+});
+
+// Stopping is a pause (p3.8.9, the GAIA collaudo: a paused team could not come back): «Riattiva»
+// in the agent's window and in its conversation; «Ferma» says it is a pause, «Rimuovi» another thing.
+describe("stopping is a pause, «Riattiva» brings it back (p3.8.9)", () => {
+  const stopped = { ...lead, status: "stopped" };
+
+  it("a stopped agent's window says it is paused and offers «Riattiva» besides «Rimuovi»", async () => {
+    agents.value = [god, stopped] as never;
+    const r = render(<Hierarchy />);
+    fireEvent.click(r.getByLabelText("Anche quelli fermati"));
+    const foot = footOf(r, "Shop lead");
+    expect(foot).toContain("Riattiva");
+    expect(foot).toContain("Rimuovi");
+    expect(foot).not.toContain("Ferma");
+    expect(
+      r.getByText("In pausa: i suoi compiti aperti aspettano. «Riattiva» lo riporta al lavoro."),
+    ).toBeTruthy();
+    fireEvent.click(r.getByText("Riattiva"));
+    await waitFor(() =>
+      expect(
+        r.getByText(
+          "Shop lead è di nuovo al lavoro: 2 compiti aperti ripartono da dove si erano fermati.",
+        ),
+      ).toBeTruthy(),
+    );
+    expect(calls.find((c) => c[0] === "resumeAgent")?.[1]).toEqual(["o1"]);
+    expect(refreshTeam).toHaveBeenCalled();
+  });
+
+  it("says why it cannot come back", async () => {
+    resumeFails = true;
+    agents.value = [god, stopped] as never;
+    const r = render(<Hierarchy />);
+    fireEvent.click(r.getByLabelText("Anche quelli fermati"));
+    footOf(r, "Shop lead");
+    fireEvent.click(r.getByText("Riattiva"));
+    await waitFor(() =>
+      expect(r.getByText("The project has another orchestrator now")).toBeTruthy(),
+    );
+  });
+
+  it("«Ferma» asks in our window that it is a pause, and says the tasks wait", async () => {
+    const r = render(
+      <>
+        <Hierarchy />
+        <Dialogs />
+      </>,
+    );
+    footOf(r, "Shop lead");
+    fireEvent.click(r.getByText("Ferma"));
+    await waitFor(() => expect(r.getByText("Fermare Shop lead?")).toBeTruthy());
+    const ask = r.getByText(/È una pausa: i suoi turni si fermano ora/);
+    expect(ask.textContent).toContain("«Riattiva» lo riporta al lavoro");
+    expect(ask.textContent).toContain("«Rimuovi»");
+    fireEvent.click(r.getByText("Ferma (pausa)"));
+    await waitFor(() =>
+      expect(
+        r.getByText("Shop lead è fermato (in pausa): 2 compiti aperti aspettano «Riattiva»."),
+      ).toBeTruthy(),
+    );
+    expect(calls.some((c) => c[0] === "stopAgent")).toBe(true);
+  });
+
+  it("puts a line with «Riattiva» where the composer was, only while it is stopped", async () => {
+    agents.value = [god, stopped] as never;
+    const r = render(<StoppedNotice agentId="o1" />);
+    expect(r.getByText("Shop lead è fermato (in pausa): riattivalo per riprendere.")).toBeTruthy();
+    fireEvent.click(r.getByText("Riattiva"));
+    await waitFor(() => expect(calls.some((c) => c[0] === "resumeAgent")).toBe(true));
+    cleanup();
+    agents.value = [god, lead] as never;
+    expect(render(<StoppedNotice agentId="o1" />).container.textContent).toBe("");
+  });
+
+  it("names the tools apart: stop is a pause, remove takes it out of the team", () => {
+    expect(t("toolDo_stop_agent")).toBe("Mette in pausa un agente sotto di sé; si riattiva.");
+    expect(t("toolDo_resume_agent")).toContain("ripartono");
+    expect(t("toolDo_remove_agent")).toContain("squadra");
+    lang.value = "en";
+    expect(t("toolDo_stop_agent")).toBe("Pauses an agent under it; it can be resumed.");
+    expect(t("tool_resume_agent")).toBe("Resume agents");
+    expect(t("agentStopAsk", { name: "X" })).toBe("Stop X?");
   });
 });

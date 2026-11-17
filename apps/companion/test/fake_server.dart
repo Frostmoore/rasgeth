@@ -212,6 +212,9 @@ class FakeRedGiant {
   final removedIds = <String>{};
   final restores = <String>[];
 
+  /// Agents resumed (3.8.9, `POST /api/agents/:id/resume`).
+  final resumes = <String>[];
+
   /// `remove-preview`'s open tasks and running turns (the page's numbers).
   int previewTasks = 2;
   int previewRunning = 1;
@@ -784,6 +787,21 @@ class FakeRedGiant {
         return _json(r, 200, {'restored': back});
       }
     }
+    // 3.8.9: a stopped agent works again; its open tasks go on.
+    final resumeOne = RegExp(r'^/api/agents/([^/]+)/resume$').firstMatch(path);
+    if (r.method == 'POST' && resumeOne != null) {
+      final id = resumeOne.group(1)!;
+      final a = _agentRecord(id);
+      if (a == null) return _json(r, 404, {'error': 'Agent not found'});
+      if (a['status'] != 'stopped')
+        return _json(r, 409, {'error': '"${a['name']}" is not stopped'});
+      resumes.add(id);
+      agentOverrides.putIfAbsent(id, () => {})['status'] = 'active';
+      return _json(r, 200, {
+        'resumed': [id],
+        'tasks': ['task_1'],
+      });
+    }
     final stopOne = RegExp(r'^/api/agents/([^/]+)/stop$').firstMatch(path);
     if (r.method == 'POST' && stopOne != null) {
       final id = stopOne.group(1)!;
@@ -797,7 +815,7 @@ class FakeRedGiant {
       for (final x in under) {
         agentOverrides.putIfAbsent(x, () => {})['status'] = 'stopped';
       }
-      return _json(r, 200, {'stopped': under});
+      return _json(r, 200, {'stopped': under, 'waiting': 1});
     }
     final compactOf = RegExp(r'^/api/agents/([^/]+)/compaction-defaults$').firstMatch(path);
     if (r.method == 'GET' && compactOf != null) {

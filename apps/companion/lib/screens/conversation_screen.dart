@@ -189,6 +189,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
     _before = _text.text;
     _text.addListener(_pasted);
     widget.drops?.addListener(_dropped);
+    _paused = _stoppedAgent() != null;
+    app.addListener(_pauseChanged);
     final first = widget.firstMessage;
     if (first != null && first.trim().isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _send(text: first));
@@ -197,6 +199,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   @override
   void dispose() {
+    app.removeListener(_pauseChanged);
     _text.removeListener(_pasted);
     view.removeListener(_tryJump);
     widget.drops?.removeListener(_dropped);
@@ -478,7 +481,25 @@ class _ConversationScreenState extends State<ConversationScreen> {
     setState(() => _attached.add(card));
   }
 
-  bool get _readOnly => widget.removed || app.archivedProjectOf(widget.sessionId) != null;
+  bool get _readOnly =>
+      widget.removed || _paused || app.archivedProjectOf(widget.sessionId) != null;
+
+  /// Its agent is stopped (3.8.9, a pause): read only, with «Resume» where the composer was.
+  bool _paused = false;
+
+  Agent? _stoppedAgent() {
+    if (widget.removed) return null;
+    final id =
+        widget.agent?.id ??
+        app.live.sessions.where((s) => s.id == widget.sessionId).firstOrNull?.agentId;
+    final a = app.agents.where((x) => x.id == id).firstOrNull;
+    return a != null && !a.active ? a : null;
+  }
+
+  void _pauseChanged() {
+    final now = _stoppedAgent() != null;
+    if (now != _paused && mounted) setState(() => _paused = now);
+  }
 
   /// «Stop»: with the link down it waits for it, and says so.
   void _stop() {
@@ -829,6 +850,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
             ),
             if (widget.removed)
               RemovedNotice(name: widget.agent?.name ?? '')
+            else if (_stoppedAgent() case final stopped?)
+              StoppedNotice(agent: stopped)
             else if (app.archivedProjectOf(widget.sessionId) case final p?)
               ArchivedNotice(project: p)
             else ...[

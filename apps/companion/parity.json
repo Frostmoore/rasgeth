@@ -69,6 +69,7 @@
         "lib/screens/instructions_screen.dart",
         "lib/ui/agent_menu.dart",
         "lib/desktop/wall.dart",
+        "lib/ui/pause_agent.dart",
         "lib/ui/remove_agent.dart",
         "lib/screens/removed_agents_screen.dart"
       ],

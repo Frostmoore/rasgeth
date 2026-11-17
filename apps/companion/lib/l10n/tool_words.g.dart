@@ -64,6 +64,7 @@ const toolWords = <String, Map<String, String>>{
     'tool_request_connection': r"Chiedere un collegamento",
     'tool_request_tool': r"Chiedere uno strumento",
     'tool_restore_agent': r"Ripristinare agenti",
+    'tool_resume_agent': r"Riattivare agenti",
     'tool_run_script': r"Passi in fila",
     'tool_search_knowledge': r"Cerca nei documenti",
     'tool_send_file': r"Mandare file",
@@ -151,6 +152,8 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_request_tool':
         r"Ti chiede di accendere uno strumento spento per lui, spiegando perché.",
     'toolDo_restore_agent': r"Riporta nella squadra un agente rimosso.",
+    'toolDo_resume_agent':
+        r"Riattiva un agente fermato sotto di sé: i suoi compiti aperti ripartono.",
     'toolDo_run_script':
         r"Lancia un piccolo programma che usa i suoi strumenti tante volte di fila.",
     'toolDo_search_knowledge':
@@ -161,7 +164,7 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_show_file': r"Apre un file del progetto nel Canvas accanto alla chat.",
     'toolDo_show_products': r"Ti mostra cose da comprare o confrontare in schede con foto, prezzo, negozio e link; le foto le scarica RedGiant.",
     'toolDo_ssh': r"Lancia comandi, copia file e legge cartelle sulle macchine aggiunte in Impostazioni > Macchine, solo quelle che gli lasci usare.",
-    'toolDo_stop_agent': r"Ferma un agente sotto di sé.",
+    'toolDo_stop_agent': r"Mette in pausa un agente sotto di sé; si riattiva.",
     'toolDo_subagents': r"Avvia aiutanti di passaggio per un solo lavoro, anche più insieme.",
     'toolDo_update_todos': r"Tiene l'elenco dei passi di un lavoro lungo.",
     'toolDo_use_credential': r"Usa una password o una chiave del portachiavi senza mai vederla.",
@@ -241,6 +244,7 @@ const toolWords = <String, Map<String, String>>{
     'tool_request_connection': r"Ask for a connection",
     'tool_request_tool': r"Ask for a tool",
     'tool_restore_agent': r"Restore agents",
+    'tool_resume_agent': r"Resume agents",
     'tool_run_script': r"Chains of steps",
     'tool_search_knowledge': r"Search the documents",
     'tool_send_file': r"Send files",
@@ -328,6 +332,7 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_request_connection': r"Asks you to connect a service it needs (Notion, Linear…).",
     'toolDo_request_tool': r"Asks you to switch on a tool that is off for it, saying why.",
     'toolDo_restore_agent': r"Brings a removed agent back into the team.",
+    'toolDo_resume_agent': r"Resumes a stopped agent under it: its open tasks go on.",
     'toolDo_run_script': r"Runs a small program that uses its tools many times in a row.",
     'toolDo_search_knowledge':
         r"Looks up your documents (Settings > Knowledge) and cites where each answer comes from.",
@@ -338,7 +343,7 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_show_file': r"Opens a file of the project in the Canvas beside the chat.",
     'toolDo_show_products': r"Shows things to buy or compare as cards with picture, price, shop and link; RedGiant downloads the pictures itself.",
     'toolDo_ssh': r"Runs commands, copies files and reads folders on the machines you added in Settings > Machines, only those you let it use.",
-    'toolDo_stop_agent': r"Stops an agent under it.",
+    'toolDo_stop_agent': r"Pauses an agent under it; it can be resumed.",
     'toolDo_subagents': r"Starts short-lived helpers for a single job, also several at once.",
     'toolDo_update_todos': r"Keeps a list of the steps of a long piece of work.",
     'toolDo_use_credential': r"Uses a password or key of the keychain without ever seeing it.",

@@ -8085,7 +8085,8 @@ const it: Record<Key, string> = {
     "È una pausa: i suoi turni si fermano ora e i compiti aperti aspettano. «Riattiva» lo riporta al lavoro da dove si era fermato. Per toglierlo dalla squadra usa «Rimuovi».",
   agentStopYes: "Ferma (pausa)",
   agentResume: "Riattiva",
-  agentResumedTasks: "{name} è di nuovo al lavoro: {n} compiti aperti ripartono da dove si erano fermati.",
+  agentResumedTasks:
+    "{name} è di nuovo al lavoro: {n} compiti aperti ripartono da dove si erano fermati.",
   agentResumedNone: "{name} è di nuovo al lavoro.",
   agentStoppedTasks: "{name} è fermato (in pausa): {n} compiti aperti aspettano «Riattiva».",
   agentStoppedNone: "{name} è fermato (in pausa): «Riattiva» lo riporta al lavoro.",

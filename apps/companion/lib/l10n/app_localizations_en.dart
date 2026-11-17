@@ -1099,7 +1099,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String agentStopped(String name) {
-    return 'Stopped: $name';
+    return 'Interrupted: $name';
   }
 
   @override
@@ -3981,11 +3981,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asDanger => 'Stopping it';
 
   @override
-  String get asStopHelp => 'Its conversations stay; it does no more work, nor do those under it.';
+  String get asStopHelp =>
+      'A pause: its turns stop now, with those under it, and its open tasks wait. «Resume» brings it back and the tasks go on in the same conversation. To take it out of the team, use «Remove…».';
 
   @override
   String asStopAsk(String name) {
-    return 'Stop $name? Its conversations stay; it does no more work.';
+    return 'Stop $name? It is a pause: its turns stop now and its open tasks wait; «Resume» brings it back and they go on where they were.';
   }
 
   @override
@@ -4788,4 +4789,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get raBadge => 'Removed';
+
+  @override
+  String get paMenu => 'Stop…';
+
+  @override
+  String paTitle(String name) {
+    return 'Stop $name?';
+  }
+
+  @override
+  String paYes(String name) {
+    return 'Stop $name';
+  }
+
+  @override
+  String paDone(String name) {
+    return '$name is paused: «Resume» brings it back.';
+  }
+
+  @override
+  String get paResume => 'Resume';
+
+  @override
+  String paResumeHelp(String name) {
+    return '$name is stopped (paused). «Resume» brings it back with those stopped under it, and its open tasks go on in the same conversation.';
+  }
+
+  @override
+  String paResumed(String name) {
+    return '$name works again.';
+  }
+
+  @override
+  String paResumedTasks(String name) {
+    return '$name works again: its open tasks go on.';
+  }
+
+  @override
+  String paResumeFailed(String why) {
+    return 'Not resumed: $why';
+  }
+
+  @override
+  String paReadOnly(String name) {
+    return '$name is stopped (paused): resume it to write to it.';
+  }
+
+  @override
+  String get paBadge => 'Paused';
 }

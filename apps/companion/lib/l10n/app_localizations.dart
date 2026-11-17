@@ -2022,7 +2022,7 @@ abstract class AppLocalizations {
   /// No description provided for @agentStopped.
   ///
   /// In en, this message translates to:
-  /// **'Stopped: {name}'**
+  /// **'Interrupted: {name}'**
   String agentStopped(String name);
 
   /// No description provided for @agentStopFailed.
@@ -6942,13 +6942,13 @@ abstract class AppLocalizations {
   /// No description provided for @asStopHelp.
   ///
   /// In en, this message translates to:
-  /// **'Its conversations stay; it does no more work, nor do those under it.'**
+  /// **'A pause: its turns stop now, with those under it, and its open tasks wait. «Resume» brings it back and the tasks go on in the same conversation. To take it out of the team, use «Remove…».'**
   String get asStopHelp;
 
   /// No description provided for @asStopAsk.
   ///
   /// In en, this message translates to:
-  /// **'Stop {name}? Its conversations stay; it does no more work.'**
+  /// **'Stop {name}? It is a pause: its turns stop now and its open tasks wait; «Resume» brings it back and they go on where they were.'**
   String asStopAsk(String name);
 
   /// No description provided for @asStopYes.
@@ -8288,6 +8288,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Removed'**
   String get raBadge;
+
+  /// No description provided for @paMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop…'**
+  String get paMenu;
+
+  /// No description provided for @paTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop {name}?'**
+  String paTitle(String name);
+
+  /// No description provided for @paYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop {name}'**
+  String paYes(String name);
+
+  /// No description provided for @paDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is paused: «Resume» brings it back.'**
+  String paDone(String name);
+
+  /// No description provided for @paResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get paResume;
+
+  /// No description provided for @paResumeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is stopped (paused). «Resume» brings it back with those stopped under it, and its open tasks go on in the same conversation.'**
+  String paResumeHelp(String name);
+
+  /// No description provided for @paResumed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} works again.'**
+  String paResumed(String name);
+
+  /// No description provided for @paResumedTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} works again: its open tasks go on.'**
+  String paResumedTasks(String name);
+
+  /// No description provided for @paResumeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not resumed: {why}'**
+  String paResumeFailed(String why);
+
+  /// No description provided for @paReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is stopped (paused): resume it to write to it.'**
+  String paReadOnly(String name);
+
+  /// No description provided for @paBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get paBadge;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

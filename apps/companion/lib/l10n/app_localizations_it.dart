@@ -1103,7 +1103,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String agentStopped(String name) {
-    return 'Fermato: $name';
+    return 'Interrotto: $name';
   }
 
   @override
@@ -3987,11 +3987,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get asDanger => 'Fermarlo';
 
   @override
-  String get asStopHelp => 'Le sue conversazioni restano; non lavora più, e con lui chi sta sotto.';
+  String get asStopHelp =>
+      'Una pausa: i suoi turni si fermano subito, con chi sta sotto di lui, e i compiti aperti aspettano. «Riattiva» lo riporta e i compiti ripartono nella stessa conversazione. Per toglierlo dalla squadra usa «Rimuovi…».';
 
   @override
   String asStopAsk(String name) {
-    return 'Fermare $name? Le sue conversazioni restano; non lavora più.';
+    return 'Fermare $name? È una pausa: i suoi turni si fermano subito e i compiti aperti aspettano; «Riattiva» lo riporta e ripartono da dove erano.';
   }
 
   @override
@@ -4797,4 +4798,53 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get raBadge => 'Rimosso';
+
+  @override
+  String get paMenu => 'Ferma…';
+
+  @override
+  String paTitle(String name) {
+    return 'Fermare $name?';
+  }
+
+  @override
+  String paYes(String name) {
+    return 'Ferma $name';
+  }
+
+  @override
+  String paDone(String name) {
+    return '$name è in pausa: «Riattiva» lo riporta.';
+  }
+
+  @override
+  String get paResume => 'Riattiva';
+
+  @override
+  String paResumeHelp(String name) {
+    return '$name è fermo (in pausa). «Riattiva» lo riporta con chi è fermo sotto di lui, e i compiti aperti ripartono nella stessa conversazione.';
+  }
+
+  @override
+  String paResumed(String name) {
+    return '$name lavora di nuovo.';
+  }
+
+  @override
+  String paResumedTasks(String name) {
+    return '$name lavora di nuovo: i compiti aperti ripartono.';
+  }
+
+  @override
+  String paResumeFailed(String why) {
+    return 'Non riattivato: $why';
+  }
+
+  @override
+  String paReadOnly(String name) {
+    return '$name è fermo (in pausa): riattivalo per scrivergli.';
+  }
+
+  @override
+  String get paBadge => 'In pausa';
 }

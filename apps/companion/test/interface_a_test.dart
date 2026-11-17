@@ -138,7 +138,7 @@ void main() {
 
       await tester.tap(find.byKey(const Key('agent-stop')));
       await tester.pumpAndSettle();
-      expect(find.text('Fermato: Coder Web'), findsOneWidget);
+      expect(find.text('Interrotto: Coder Web'), findsOneWidget);
 
       // The favourite: first in the grid, with its star, kept for this RedGiant.
       await tester.tap(find.byKey(const Key('agent-favourite')));
