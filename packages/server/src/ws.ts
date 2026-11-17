@@ -12,6 +12,7 @@ import {
   type QuestionRequestInfo,
   SETUP_CHANNEL_PATH,
   type ServerMessage,
+  withRequestWords,
 } from "@redgiant/protocol";
 import { type WebSocket, WebSocketServer } from "ws";
 import { BridgeFailure } from "./artifact-bridge.js";
@@ -137,7 +138,8 @@ export function attachWebSocket(
       info: Parameters<Parameters<typeof core.approvals.on<"request">>[1]>[1],
     ) => {
       // A request asked of the person reaches every channel (G36.17), this page included.
-      if (principal?.ownerId === ownerId) send({ type: "permission.request", request: info });
+      if (principal?.ownerId === ownerId)
+        send({ type: "permission.request", request: withRequestWords(info) });
     };
     const onClosed = (
       ownerId: string,
@@ -284,7 +286,7 @@ export function attachWebSocket(
             ...(live.version !== undefined && { version: live.version }),
           });
           for (const r of core.approvals.list(principal.ownerId))
-            send({ type: "permission.request", request: r });
+            send({ type: "permission.request", request: withRequestWords(r) });
           for (const q of core.questions.list(principal.ownerId))
             send({ type: "question.request", request: q });
           return;

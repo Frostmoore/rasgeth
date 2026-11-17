@@ -23,6 +23,8 @@ dependencies:
   flutter_secure_storage: ^11.2.0
   flutter_svg: ^2.4.0
   http: ^1.6.0
+  # Photos for the model: redrawn with the long side at 2000 px as JPEG, as the page does.
+  image: ^4.5.4
   intl: ^0.20.3
   markdown: ^7.3.1
   path_drawing: ^1.0.1

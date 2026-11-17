@@ -40,6 +40,7 @@ import {
   PROTOCOL_VERSION,
   RefineRequest,
   SEARCH_PROVIDER_IDS,
+  withRequestWords,
 } from "@redgiant/protocol";
 import type { TelegramGateway } from "@redgiant/telegram";
 import { PathOutsideWorkspaceError } from "@redgiant/tools";
@@ -1544,7 +1545,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     c.json({ interrupted: await core.interrupt(owner(c), c.req.valid("param").id) }, 200),
   );
 
-  app.openapi(routes.listPermissions, (c) => c.json(core.approvals.list(owner(c)), 200));
+  app.openapi(routes.listPermissions, (c) =>
+    c.json(core.approvals.list(owner(c)).map(withRequestWords), 200),
+  );
   app.openapi(routes.decidePermission, (c) =>
     core.approvals.decide(
       owner(c),
