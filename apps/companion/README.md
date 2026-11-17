@@ -128,9 +128,14 @@ answers' figures (G40.17) are checked against the page's formatters with
 `test/fixtures/metrics_vectors.json`: `node --experimental-strip-types apps/companion/tool/metrics_fixtures.mjs`.
 
 Linux builds need `clang cmake ninja-build pkg-config libgtk-3-dev libsecret-1-dev
-libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev` (GStreamer for reading answers aloud; «press and talk»
-records with `parecord` from pulseaudio-utils at run time).
+libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libwebkit2gtk-4.1-dev` (GStreamer for reading answers aloud; «press and talk»
+records with `parecord` from pulseaudio-utils at run time; WebKitGTK for the web view, G42.0: the app needs
+`libwebkit2gtk-4.1-0` at run time, `install-app.sh` checks it). The web view on Linux is
+`third_party/webview_all_linux`, a copy of webview_all_linux 1.5.1 (MIT) whose TLS errors carry the certificate.
 On Severino the Linux build runs in the agents' Docker with the image
 `rgcompanion-linux-build:trixie` (Debian trixie with those packages; Flutter and the pub cache are
 mounted from `/mnt/archive1/officina-dati/rg-test`). GStreamer and parecord come from `tool/linux-audio.Dockerfile`, layered on it
-(G40.10).
+(G40.10); WebKitGTK, H.264 and Mesa from `tool/linux-webview.Dockerfile` (G42.0), layered the same way.
+The page inside the app (G42.0): `test/fixtures/embed_vectors.json` comes from the protocol's rules,
+`pnpm build && node apps/companion/tool/embed_vectors.mjs`; the Linux shots with WebKitGTK:
+`RG_DEMO_ENV="DEMO_PASSWORD=companion-test-1 DEMO_CANVAS=1" RG_SHOT_TAG=computer bash tool/linux_shots.sh <folder> integration_test/g42_0_shots_test.dart`.

@@ -21,6 +21,14 @@ if [ "${1:-}" = "--uninstall" ]; then
   exit 0
 fi
 [ -x "$here/bundle/rgcompanion" ] || { echo "No bundle/rgcompanion next to this script." >&2; exit 1; }
+# The Canvas's editors, widgets and «All settings» run in WebKitGTK (G42.0): the app needs it.
+if command -v ldconfig >/dev/null 2>&1 && ! ldconfig -p 2>/dev/null | grep -q 'libwebkit2gtk-4.1'; then
+  echo "RGCompanion needs WebKitGTK 4.1. Install it first, then run this again:" >&2
+  echo "  Debian, Ubuntu: sudo apt install libwebkit2gtk-4.1-0" >&2
+  echo "  Fedora:         sudo dnf install webkit2gtk4.1" >&2
+  echo "  Arch:           sudo pacman -S webkit2gtk-4.1" >&2
+  exit 1
+fi
 rm -rf "$dest.new"
 mkdir -p "$dest.new" "$data/applications" "$(dirname "$icon")"
 cp -R "$here/bundle/." "$dest.new/"

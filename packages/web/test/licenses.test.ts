@@ -190,7 +190,15 @@ describe("licenses of the web bundle (G37.1)", () => {
   it("the document editor's frame carries only zetajs (MIT) and our own scripts (G37.4)", () => {
     const dir = join(dirname(fileURLToPath(import.meta.url)), "..", "public", "zeta");
     const files = readdirSync(dir).sort();
-    expect(files).toEqual(["frame.html", "frame.js", "office-thread.js", "zeta.js"]);
+    // probe.*: the embed's isolation test (G42.0), our own.
+    expect(files).toEqual([
+      "frame.html",
+      "frame.js",
+      "office-thread.js",
+      "probe.html",
+      "probe.js",
+      "zeta.js",
+    ]);
     expect(readFileSync(join(dir, "zeta.js"), "utf8").slice(0, 200)).toContain(
       "SPDX-License-Identifier: MIT",
     );

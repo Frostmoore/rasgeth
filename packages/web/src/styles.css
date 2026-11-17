@@ -20937,3 +20937,14 @@ fieldset.saved-filter legend {
 .embed-probe-dot.ko {
   background: var(--err);
 }
+.embed-probe-table td:nth-child(2) {
+  white-space: nowrap;
+}
+@media (max-width: 560px) {
+  .embed-probe-table th {
+    width: auto;
+  }
+  .embed-probe-table td.dim {
+    display: none;
+  }
+}
