@@ -382,7 +382,9 @@ const brain = (req) => {
     };
   if (
     results &&
-    last.parts.some((p) => p.type === "tool_result" && /\(orchestrator_[0-9a-f]+\)/.test(String(p.content)))
+    last.parts.some(
+      (p) => p.type === "tool_result" && /\(orchestrator_[0-9a-f]+\)/.test(String(p.content)),
+    )
   )
     return { text: "Fatto: l'orchestratore è pronto." };
   // G40.16, DEMO_PRODUCTS=1: the Chat shows four moka pots as cards, then picks one.
