@@ -400,12 +400,8 @@ class _AnswerState extends State<_Answer> {
         key: Key('daily-answer-${e.id}'),
         margin: const EdgeInsets.only(bottom: 10),
         constraints: const BoxConstraints(maxWidth: 860),
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        decoration: BoxDecoration(
-          color: c.panel,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: c.line),
-        ),
+        padding: const EdgeInsets.symmetric(vertical: 4),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 6,

@@ -375,7 +375,9 @@ class _BrowserScreenState extends State<BrowserScreen> {
               );
             },
           );
-    return Center(
+    // At the top, under the bar (the page's `screen-view`), not lost in the middle of a phone.
+    return Align(
+      alignment: Alignment.topCenter,
       child: AspectRatio(
         aspectRatio: ratio,
         child: Focus(

@@ -433,12 +433,8 @@ class _Line extends StatelessWidget {
       child: Container(
         key: Key('room-msg-${line.seq}'),
         constraints: const BoxConstraints(maxWidth: 860),
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        decoration: BoxDecoration(
-          color: c.panel,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: c.line),
-        ),
+        padding: const EdgeInsets.symmetric(vertical: 4),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

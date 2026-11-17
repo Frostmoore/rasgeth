@@ -16,7 +16,7 @@ import '../../api/parallel.dart';
 import '../../app_state.dart';
 import '../../l10n/app_localizations.dart';
 import '../../mascot/mascot_view.dart';
-import '../../screens/conversation_screen.dart' show ChatActions, ChatItemView, MaxWidthCenter;
+import '../../screens/conversation_screen.dart' show ChatActions, ChatItemView;
 import '../../theme/colors.dart';
 import '../icons.dart';
 import '../turn_progress.dart';
@@ -234,12 +234,9 @@ class _SubRows extends StatelessWidget {
           for (final a in askers)
             Container(
               key: Key('sub-asks-${a.tab.childSessionId}'),
-              margin: const EdgeInsets.fromLTRB(10, 6, 10, 6),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              padding: const EdgeInsets.fromLTRB(12, 7, 12, 7),
               decoration: BoxDecoration(
-                color: c.warn.withValues(alpha: .12),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: c.warn.withValues(alpha: .45)),
+                border: Border(top: BorderSide(color: c.line)),
               ),
               child: Row(
                 children: [
@@ -248,7 +245,7 @@ class _SubRows extends StatelessWidget {
                   Expanded(
                     child: Text(
                       l.cvSubAsks(a.tab.title),
-                      style: TextStyle(color: c.text, fontSize: 13),
+                      style: TextStyle(color: c.warnText, fontSize: 13),
                     ),
                   ),
                   _Crumb(
@@ -659,7 +656,7 @@ class _SubagentViewState extends State<SubagentView> {
                 itemCount: body.length,
                 itemBuilder: (context, i) => Padding(
                   padding: const EdgeInsets.only(bottom: 10),
-                  child: MaxWidthCenter(child: body[body.length - 1 - i]),
+                  child: body[body.length - 1 - i],
                 ),
               ),
             ),
@@ -699,6 +696,7 @@ class _TaskCard extends StatelessWidget {
     final c = RgColors.of(context);
     return Container(
       key: const Key('sub-task'),
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: c.panel2,
@@ -823,15 +821,21 @@ class _SubBar extends StatelessWidget {
                   Text(l.cvSubTime(duration(ms)), style: dim),
                   Text(l.cvSubTools('$tools'), style: dim),
                   Text(l.cvSubTokens(kTokens(tokens)), style: dim),
-                  if (!narrow) Text(l.cvSubNoWrite, style: dim),
                 ],
               ),
             ),
+            // On the right, before «Ferma» (the page's `sub-no-write`, hidden on a phone).
+            if (!narrow) ...[Text(l.cvSubNoWrite, style: dim), const SizedBox(width: 14)],
             if (status == 'running')
               OutlinedButton.icon(
                 key: const Key('sub-stop'),
                 onPressed: onStop,
-                icon: RgIcon(RgIcons.stop, size: 13, color: c.text),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: c.text,
+                  backgroundColor: c.panel,
+                  side: BorderSide(color: c.line),
+                ),
+                icon: RgIcon(RgIcons.stop, size: 13, color: c.text, filled: true),
                 label: Text(l.cvSubStop),
               ),
           ],

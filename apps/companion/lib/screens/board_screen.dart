@@ -323,7 +323,8 @@ class _BoardThreadScreenState extends State<BoardThreadScreen> {
           onPressed: () => Navigator.of(context).pop(),
           icon: RgIcon(RgIcons.arrowLeft, color: c.text),
         ),
-        title: Text(d?.thread.title ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
+        // The thread's title is right under it, with its state: the bar says where it is.
+        title: Text(l.cvBoard, maxLines: 1, overflow: TextOverflow.ellipsis),
       ),
       body: Column(
         children: [
@@ -399,63 +400,89 @@ class _List extends StatelessWidget {
     String author(String id) =>
         id == 'human' ? l.cvYou : (app.agents.where((a) => a.id == id).firstOrNull?.name ?? id);
     final r = results;
-    return ListView(
-      key: const Key('board-list'),
-      padding: const EdgeInsets.all(12),
+    // The list, and the new thread's composer at the bottom (the page's `board-list`).
+    return Column(
       children: [
-        TextField(
-          key: const Key('board-search'),
-          controller: query,
-          textInputAction: TextInputAction.search,
-          onSubmitted: (_) => onSearch(),
-          decoration: InputDecoration(
-            isDense: true,
-            hintText: l.cvSearch,
-            prefixIcon: Padding(
-              padding: const EdgeInsets.all(10),
-              child: RgIcon(RgIcons.search, size: 16, color: c.dim),
-            ),
+        Expanded(
+          child: ListView(
+            key: const Key('board-list'),
+            padding: const EdgeInsets.all(12),
+            children: [
+              TextField(
+                key: const Key('board-search'),
+                controller: query,
+                textInputAction: TextInputAction.search,
+                onSubmitted: (_) => onSearch(),
+                decoration: InputDecoration(
+                  isDense: true,
+                  hintText: l.cvSearch,
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: RgIcon(RgIcons.search, size: 16, color: c.dim),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              if (r != null)
+                if (r.isEmpty)
+                  _Empty(l.cvNoResults)
+                else
+                  for (final p in r)
+                    _Item(
+                      key: Key('board-result-${p.id}'),
+                      selected: false,
+                      onTap: () => onOpen(p.threadId),
+                      children: [
+                        Text(
+                          p.title ?? '',
+                          style: TextStyle(
+                            color: c.text,
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          p.body.length > 120 ? p.body.substring(0, 120) : p.body,
+                          style: TextStyle(color: c.dim, fontSize: 12.5),
+                        ),
+                      ],
+                    )
+              else if (!loaded)
+                _Empty(l.loading)
+              else if (threads.isEmpty)
+                _Empty(l.cvEmptyBoard)
+              else
+                for (final th in threads)
+                  _Item(
+                    key: Key('board-thread-${th.id}'),
+                    selected: open == th.id,
+                    onTap: () => onOpen(th.id),
+                    children: [
+                      BoardChip(
+                        text: boardStatusLabel(l, th.status),
+                        color: boardColor(c, th.status),
+                      ),
+                      Text(
+                        th.title,
+                        style: TextStyle(
+                          color: c.text,
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        '${th.posts} · ${author(th.createdBy)} · ${localWhen(th.updatedAt, locale)}',
+                        style: TextStyle(color: c.dim, fontSize: 12.5),
+                      ),
+                    ],
+                  ),
+            ],
           ),
         ),
-        const SizedBox(height: 10),
-        if (r != null)
-          if (r.isEmpty)
-            _Empty(l.cvNoResults)
-          else
-            for (final p in r)
-              _Item(
-                key: Key('board-result-${p.id}'),
-                selected: false,
-                onTap: () => onOpen(p.threadId),
-                children: [
-                  Text(p.title ?? '', style: _strong(c)),
-                  Text(
-                    p.body.length > 120 ? p.body.substring(0, 120) : p.body,
-                    style: TextStyle(color: c.dim, fontSize: 12.5),
-                  ),
-                ],
-              )
-        else if (!loaded)
-          _Empty(l.loading)
-        else if (threads.isEmpty)
-          _Empty(l.cvEmptyBoard)
-        else
-          for (final th in threads)
-            _Item(
-              key: Key('board-thread-${th.id}'),
-              selected: open == th.id,
-              onTap: () => onOpen(th.id),
-              children: [
-                BoardChip(text: boardStatusLabel(l, th.status), color: boardColor(c, th.status)),
-                Text(th.title, style: _strong(c)),
-                Text(
-                  '${th.posts} · ${author(th.createdBy)} · ${localWhen(th.updatedAt, locale)}',
-                  style: TextStyle(color: c.dim, fontSize: 12.5),
-                ),
-              ],
-            ),
-        const SizedBox(height: 8),
-        BoardComposer(withTitle: true, onSend: (t, k, b) => onNew(t, k, b)),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+          child: BoardComposer(withTitle: true, onSend: (t, k, b) => onNew(t, k, b)),
+        ),
       ],
     );
   }
@@ -553,107 +580,129 @@ class _ThreadView extends StatelessWidget {
       'result' => Color.lerp(c.line, c.ok, .55)!,
       _ => c.line,
     };
-    return ListView(
+    return Column(
       key: Key('board-thread-view-${th.id}'),
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
       children: [
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Text(
-              th.title,
-              style: TextStyle(color: c.text, fontSize: 18, fontWeight: FontWeight.w700),
-            ),
-            BoardChip(text: boardStatusLabel(l, th.status), color: boardColor(c, th.status)),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          children: [
-            if (th.status != 'resolved')
-              OutlinedButton(
-                key: const Key('board-resolve'),
-                onPressed: () => onStatus('resolved'),
-                child: Text(l.cvResolve),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+            children: [
+              // The title and its state, the buttons on the right (they go under it when narrow).
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Wrap(
+                    spacing: 8,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        th.title,
+                        style: TextStyle(color: c.text, fontSize: 18, fontWeight: FontWeight.w600),
+                      ),
+                      BoardChip(
+                        text: boardStatusLabel(l, th.status),
+                        color: boardColor(c, th.status),
+                      ),
+                    ],
+                  ),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      if (th.status != 'resolved')
+                        OutlinedButton(
+                          key: const Key('board-resolve'),
+                          onPressed: () => onStatus('resolved'),
+                          child: Text(l.cvResolve),
+                        ),
+                      if (th.status == 'open')
+                        OutlinedButton(
+                          key: const Key('board-block'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: c.err,
+                            side: BorderSide(color: c.err.withValues(alpha: .6)),
+                          ),
+                          onPressed: () => onStatus('blocked'),
+                          child: Text(l.cvBlock),
+                        ),
+                      if (th.status != 'open')
+                        OutlinedButton(
+                          key: const Key('board-reopen'),
+                          onPressed: () => onStatus('open'),
+                          child: Text(l.cvReopen),
+                        ),
+                    ],
+                  ),
+                ],
               ),
-            if (th.status == 'open')
-              OutlinedButton(
-                key: const Key('board-block'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: c.err,
-                  side: BorderSide(color: c.err.withValues(alpha: .6)),
+              if (th.summary != null && th.summary!.isNotEmpty)
+                Container(
+                  key: const Key('board-summary'),
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: c.panel,
+                    border: Border(left: BorderSide(color: c.accent2, width: 2)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l.cvSummary,
+                        style: TextStyle(color: c.text, fontWeight: FontWeight.w700),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(th.summary!, style: TextStyle(color: c.dim)),
+                    ],
+                  ),
                 ),
-                onPressed: () => onStatus('blocked'),
-                child: Text(l.cvBlock),
-              ),
-            if (th.status != 'open')
-              OutlinedButton(
-                key: const Key('board-reopen'),
-                onPressed: () => onStatus('open'),
-                child: Text(l.cvReopen),
-              ),
-          ],
-        ),
-        if (th.summary != null && th.summary!.isNotEmpty)
-          Container(
-            key: const Key('board-summary'),
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: c.panel,
-              border: Border(left: BorderSide(color: c.accent2, width: 2)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l.cvSummary,
-                  style: TextStyle(color: c.text, fontWeight: FontWeight.w700),
+              const SizedBox(height: 10),
+              for (final p in detail.posts)
+                Container(
+                  key: Key('board-post-${p.id}'),
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                  decoration: BoxDecoration(
+                    color: c.panel,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: border(p.kind)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        spacing: 8,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          BoardChip(text: boardKindLabel(l, p.kind), color: boardColor(c, p.kind)),
+                          Text(
+                            author(p.author),
+                            style: TextStyle(
+                              color: c.text,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12.5,
+                            ),
+                          ),
+                          Text(
+                            localWhen(p.createdAt, locale),
+                            style: TextStyle(color: c.dim, fontSize: 12.5),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      SafeMarkdown(boardMentions(p.body, nameOf)),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 4),
-                Text(th.summary!, style: TextStyle(color: c.dim)),
-              ],
-            ),
+            ],
           ),
-        const SizedBox(height: 10),
-        for (final p in detail.posts)
-          Container(
-            key: Key('board-post-${p.id}'),
-            margin: const EdgeInsets.only(bottom: 8),
-            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-            decoration: BoxDecoration(
-              color: c.panel,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: border(p.kind)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Wrap(
-                  spacing: 8,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    BoardChip(text: boardKindLabel(l, p.kind), color: boardColor(c, p.kind)),
-                    Text(
-                      author(p.author),
-                      style: TextStyle(color: c.text, fontWeight: FontWeight.w700, fontSize: 12.5),
-                    ),
-                    Text(
-                      localWhen(p.createdAt, locale),
-                      style: TextStyle(color: c.dim, fontSize: 12.5),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                SafeMarkdown(boardMentions(p.body, nameOf)),
-              ],
-            ),
-          ),
-        const SizedBox(height: 6),
-        BoardComposer(withTitle: false, onSend: (_, k, b) => onReply(k, b)),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          child: BoardComposer(withTitle: false, onSend: (_, k, b) => onReply(k, b)),
+        ),
       ],
     );
   }

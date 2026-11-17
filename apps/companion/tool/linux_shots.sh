@@ -16,7 +16,8 @@ demo_env="${RG_DEMO_ENV:-DEMO_PASSWORD=companion-test-1 DEMO_REQUESTS=1 DEMO_CRI
 rg=/mnt/archive1/officina-dati/rg-test
 export FLUTTER_ROOT="$rg/flutter" PUB_CACHE="$rg/pub-cache" PATH="$rg/flutter/bin:$PATH"
 node="${RG_NODE:-$rg/bin/node}"
-repo="$(cd ../.. && pwd)"
+# The demo server from this repo, or from a built one ($RG_REPO: a worktree with node_modules).
+repo="${RG_REPO:-$(cd ../.. && pwd)}"
 mkdir -p "$shots"
 # RG_SCREEN=WxH: a phone-sized screen, and the app's window as big (default 1280x720).
 screen="${RG_SCREEN:-1280x720}"
