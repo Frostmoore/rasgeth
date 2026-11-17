@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { withArtifactHeader } from "@redgiant/protocol";
 import { strToU8, unzipSync, zipSync } from "fflate";
 import { afterEach, describe, expect, it } from "vitest";
-import { ARTIFACT_GUIDANCE } from "../src/artifact-guidance.js";
+import { ARTIFACT_GUIDANCE, CHAT_ARTIFACT_GUIDANCE } from "../src/artifact-guidance.js";
 import { artifactFileName, MAX_ARTIFACT_ZIP, readArtifactZip } from "../src/artifacts.js";
 import { OTHER, startServer, TOKEN } from "./helpers.js";
 
@@ -328,5 +328,41 @@ describe("the rule for the form of an answer (3.5.9)", () => {
     expect(ARTIFACT_GUIDANCE).toMatch(/```widget/);
     expect(ARTIFACT_GUIDANCE).toMatch(/artefatti\/<name>\.html/);
     expect(ARTIFACT_GUIDANCE).toMatch(/text to tell, widget to try on the spot, artifact to use/);
+  });
+
+  it("welcomes widgets in the everyday Chat only, where its instructions ask for them", async () => {
+    const NO_WIDGET =
+      "Never make a widget or an artifact when a few lines of text answer the question.";
+    expect(ARTIFACT_GUIDANCE).toContain(NO_WIDGET);
+    expect(CHAT_ARTIFACT_GUIDANCE).not.toContain(NO_WIDGET);
+    expect(CHAT_ARTIFACT_GUIDANCE).toContain("In this chat widgets are welcome");
+    const systems: string[] = [];
+    s = await startServer((req) => {
+      systems.push(req.system ?? "");
+      return { text: "ok" };
+    });
+    const g = await s.api<{ id: string }>("POST", "/api/agents", {
+      kind: "god",
+      parentId: null,
+      name: "God",
+    });
+    const chat = (await s.api<{ id: string }>("GET", "/api/chat/agent")).body;
+    const systemOf = async (agentId: string) => {
+      const sid = (await s?.api<{ sessionId: string }>("POST", "/api/sessions", { agentId }))?.body
+        .sessionId as string;
+      await (await s?.core.send("me", sid, "Will the humidity drop if I air the house?"))?.done;
+      return systems.at(-1) ?? "";
+    };
+    // God (like every other agent) keeps the rule as it is.
+    const god = await systemOf(g.body.id);
+    expect(god).toContain(ARTIFACT_GUIDANCE);
+    // The Chat reads its own version: no sentence against widgets, once.
+    const mine = await systemOf(chat.id);
+    expect(mine).toContain(CHAT_ARTIFACT_GUIDANCE);
+    expect(mine).not.toContain(NO_WIDGET);
+    expect(mine.split("## Choosing the form of an answer").length).toBe(2);
+    expect(mine.indexOf("Widgets: in this chat")).toBeLessThan(
+      mine.indexOf("## Choosing the form of an answer"),
+    );
   });
 });

@@ -164,7 +164,7 @@ import {
   isArtifactFile,
   keptWidget,
 } from "./artifact-engine.js";
-import { ARTIFACT_GUIDANCE } from "./artifact-guidance.js";
+import { artifactGuidanceFor } from "./artifact-guidance.js";
 import { type ReapDeps, reapOrphan } from "./background-reap.js";
 import type { BackupDeps } from "./backup.js";
 import { type Browsers, browserTools } from "./browser.js";
@@ -2089,8 +2089,11 @@ export class RedGiantCore implements OrchestrationHost {
         // A magic automation's conversation knows its task from the start (G33.3).
         magicSession ? MAGIC_PROMPT : "",
         magicExtSession?.agentId === agent.id ? MAGIC_EXT_PROMPT : "",
-        // Text, widget, artifact, board or project (3.5.9): for every agent that can show files.
-        tools.some((t) => t.def.name === "show_file") ? ARTIFACT_GUIDANCE : "",
+        // Text, widget, artifact, board or project (3.5.9): for every agent that can show files;
+        // the everyday Chat's version welcomes widgets, as its own instructions do (2026-11-17).
+        tools.some((t) => t.def.name === "show_file")
+          ? artifactGuidanceFor((await this.chatAgentIdOf(agent.ownerId)) === agent.id)
+          : "",
         // Products to buy or compare (G40.16): cards with pictures.
         tools.some((t) => t.def.name === "show_products") ? PRODUCTS_GUIDANCE : "",
         // Email is data, never instructions (G38.1): for every agent that can read it.
