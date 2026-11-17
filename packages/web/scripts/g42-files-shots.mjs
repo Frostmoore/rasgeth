@@ -21,7 +21,9 @@ for (const [device, viewport] of [
     const page = await browser.newPage({ viewport, colorScheme: scheme, locale: "it-IT" });
     page.on("pageerror", (e) => console.error("pageerror:", e.stack));
     const shot = (n, what) =>
-      page.screenshot({ path: `${out}/web-${device}-${theme}-${String(n).padStart(2, "0")}-${what}.png` });
+      page.screenshot({
+        path: `${out}/web-${device}-${theme}-${String(n).padStart(2, "0")}-${what}.png`,
+      });
     await page.goto(`${url}/#token=${token}`);
     await page.evaluate(() => localStorage.clear());
     await page.goto(`${url}/#token=${token}`);
@@ -32,14 +34,22 @@ for (const [device, viewport] of [
         await page.keyboard.press("Escape");
         await page.waitForTimeout(400);
         if ((await page.locator(".ui-modal-veil").count()) > 0)
-          await page.locator(".ui-modal-veil").first().click({ force: true }).catch(() => {});
+          await page
+            .locator(".ui-modal-veil")
+            .first()
+            .click({ force: true })
+            .catch(() => {});
         await page.waitForTimeout(300);
       }
       if ((await page.locator(".ui-modal-veil").count()) > 0) {
         // One that will not close (a request waiting for the person): seen once, then set aside.
         await page.screenshot({ path: `${out}/debug-${device}-${theme}-window.png` });
         const yes = page.locator(".ui-modal button", { hasText: /Più tardi|Chiudi|Annulla|Nega/ });
-        if (await yes.count()) await yes.first().click({ force: true }).catch(() => {});
+        if (await yes.count())
+          await yes
+            .first()
+            .click({ force: true })
+            .catch(() => {});
         await page.waitForTimeout(400);
         await page.evaluate(() => {
           for (const e of document.querySelectorAll(".ui-modal-back")) e.remove();
