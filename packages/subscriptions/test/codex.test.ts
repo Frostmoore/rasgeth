@@ -62,6 +62,30 @@ describe("ChatGPT on a subscription", () => {
     expect(await p.models()).toEqual(["gpt-6"]);
   });
 
+  it("gives every message, the first turn's too, its own request's usage and Codex's window", async () => {
+    const p = await provider();
+    expect(p.modelInfo("gpt-6").contextWindow).toBe(272_000);
+    const seen: string[] = [];
+    await p.engine.turn({
+      ...turn("What is in a.txt?", []),
+      onMessage: async (m) => {
+        const x = m.metrics;
+        seen.push(
+          `${m.parts[0]?.type} ${x.inputTokens}/${x.cachedReadTokens}/${x.outputTokens} ${x.contextUsed}/${x.contextWindow}`,
+        );
+      },
+    });
+    // Codex reports each request's usage after its items and tool calls: read at once, the first
+    // messages had none (all zeros, window 272000) and the answer the first request's numbers.
+    expect(seen).toEqual([
+      "thinking 1200/0/40 1240/475000",
+      "tool_call 1200/0/40 1240/475000",
+      "text 1400/1000/100 1500/475000",
+    ]);
+    // The window Codex said is the model's from now on, before any usage of a new thread.
+    expect(p.modelInfo("gpt-6").contextWindow).toBe(475_000);
+  });
+
   it("starts the thread with Codex's own shell off and a read-only sandbox", async () => {
     const p = await provider();
     // The fake echoes thread/start's parameters on stderr; read them through the protocol's own answer.
