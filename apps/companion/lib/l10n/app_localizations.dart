@@ -8942,6 +8942,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Change the limit'**
   String get queueOpenSettings;
+
+  /// No description provided for @fxOpenFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Project files'**
+  String get fxOpenFiles;
+
+  /// No description provided for @fxSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Files and folders'**
+  String get fxSubtitle;
+
+  /// No description provided for @fxPlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform'**
+  String get fxPlatform;
+
+  /// No description provided for @fxAssistants.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal agents'**
+  String get fxAssistants;
+
+  /// No description provided for @fxNewFile.
+  ///
+  /// In en, this message translates to:
+  /// **'New file'**
+  String get fxNewFile;
+
+  /// No description provided for @fxNewFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'New folder'**
+  String get fxNewFolder;
+
+  /// No description provided for @fxMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Make'**
+  String get fxMake;
+
+  /// No description provided for @fxPathHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name, with its folder if you want one (docs/note.md)'**
+  String get fxPathHint;
+
+  /// No description provided for @fxUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get fxUpload;
+
+  /// No description provided for @fxUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Files uploaded: {count}.'**
+  String fxUploaded(int count);
+
+  /// No description provided for @fxShowHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Show hidden files'**
+  String get fxShowHidden;
+
+  /// No description provided for @fxHideHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide hidden files'**
+  String get fxHideHidden;
+
+  /// No description provided for @fxRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get fxRefresh;
+
+  /// No description provided for @fxTerminal.
+  ///
+  /// In en, this message translates to:
+  /// **'Terminal'**
+  String get fxTerminal;
+
+  /// No description provided for @fxFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Full window'**
+  String get fxFull;
+
+  /// No description provided for @fxFullOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Beside the conversation'**
+  String get fxFullOff;
+
+  /// No description provided for @fxClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the files'**
+  String get fxClose;
+
+  /// No description provided for @fxSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search the files'**
+  String get fxSearchHint;
+
+  /// No description provided for @fxClearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear the search'**
+  String get fxClearSearch;
+
+  /// No description provided for @fxFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get fxFolder;
+
+  /// No description provided for @fxReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Read only: the project is archived'**
+  String get fxReadOnly;
+
+  /// No description provided for @fxEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty folder.'**
+  String get fxEmpty;
+
+  /// No description provided for @fxDropHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop the files to upload them here'**
+  String get fxDropHere;
+
+  /// No description provided for @fxExists.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} already exists here.'**
+  String fxExists(String name);
+
+  /// No description provided for @fxKeepBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep both'**
+  String get fxKeepBoth;
+
+  /// No description provided for @fxReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get fxReplace;
+
+  /// No description provided for @fxOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in the Canvas'**
+  String get fxOpen;
+
+  /// No description provided for @fxAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the agent'**
+  String get fxAsk;
+
+  /// No description provided for @fxRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get fxRename;
+
+  /// No description provided for @fxDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get fxDownload;
+
+  /// No description provided for @fxDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} saved.'**
+  String fxDownloaded(String name);
+
+  /// No description provided for @fxDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get fxDelete;
+
+  /// No description provided for @fxConfirmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Move {path} to the trash (.trash)?'**
+  String fxConfirmDelete(String path);
+
+  /// No description provided for @fxConfirmDeleteForGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {path} for good?'**
+  String fxConfirmDeleteForGood(String path);
+
+  /// No description provided for @fxMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More actions'**
+  String get fxMore;
+
+  /// No description provided for @fxResize.
+  ///
+  /// In en, this message translates to:
+  /// **'Resize the files panel'**
+  String get fxResize;
+
+  /// No description provided for @fxAttachFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} could not be attached.'**
+  String fxAttachFailed(String name);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

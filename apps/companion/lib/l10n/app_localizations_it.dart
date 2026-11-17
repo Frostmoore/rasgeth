@@ -5237,4 +5237,127 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get queueOpenSettings => 'Cambia il limite';
+
+  @override
+  String get fxOpenFiles => 'File del progetto';
+
+  @override
+  String get fxSubtitle => 'File e cartelle';
+
+  @override
+  String get fxPlatform => 'Piattaforma';
+
+  @override
+  String get fxAssistants => 'Agenti personali';
+
+  @override
+  String get fxNewFile => 'Nuovo file';
+
+  @override
+  String get fxNewFolder => 'Nuova cartella';
+
+  @override
+  String get fxMake => 'Crea';
+
+  @override
+  String get fxPathHint => 'Nome, con la cartella se ti serve (docs/nota.md)';
+
+  @override
+  String get fxUpload => 'Carica';
+
+  @override
+  String fxUploaded(int count) {
+    return 'File caricati: $count.';
+  }
+
+  @override
+  String get fxShowHidden => 'Mostra i file nascosti';
+
+  @override
+  String get fxHideHidden => 'Nascondi i file nascosti';
+
+  @override
+  String get fxRefresh => 'Aggiorna';
+
+  @override
+  String get fxTerminal => 'Terminale';
+
+  @override
+  String get fxFull => 'A tutta finestra';
+
+  @override
+  String get fxFullOff => 'Accanto alla conversazione';
+
+  @override
+  String get fxClose => 'Chiudi i file';
+
+  @override
+  String get fxSearchHint => 'Cerca nei file';
+
+  @override
+  String get fxClearSearch => 'Cancella la ricerca';
+
+  @override
+  String get fxFolder => 'Cartella';
+
+  @override
+  String get fxReadOnly => 'Sola lettura: il progetto è archiviato';
+
+  @override
+  String get fxEmpty => 'Cartella vuota.';
+
+  @override
+  String get fxDropHere => 'Rilascia i file per caricarli qui';
+
+  @override
+  String fxExists(String name) {
+    return '$name esiste già qui.';
+  }
+
+  @override
+  String get fxKeepBoth => 'Mantieni entrambi';
+
+  @override
+  String get fxReplace => 'Sostituisci';
+
+  @override
+  String get fxOpen => 'Apri nel Canvas';
+
+  @override
+  String get fxAsk => 'Chiedi all\'agente';
+
+  @override
+  String get fxRename => 'Rinomina';
+
+  @override
+  String get fxDownload => 'Scarica';
+
+  @override
+  String fxDownloaded(String name) {
+    return '$name salvato.';
+  }
+
+  @override
+  String get fxDelete => 'Elimina';
+
+  @override
+  String fxConfirmDelete(String path) {
+    return 'Spostare $path nel cestino (.trash)?';
+  }
+
+  @override
+  String fxConfirmDeleteForGood(String path) {
+    return 'Eliminare $path per sempre?';
+  }
+
+  @override
+  String get fxMore => 'Altre azioni';
+
+  @override
+  String get fxResize => 'Ridimensiona il pannello dei file';
+
+  @override
+  String fxAttachFailed(String name) {
+    return 'Non sono riuscito ad allegare $name.';
+  }
 }

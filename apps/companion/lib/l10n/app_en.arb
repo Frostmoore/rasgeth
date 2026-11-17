@@ -3933,5 +3933,84 @@
       }
     }
   },
-  "queueOpenSettings": "Change the limit"
+  "queueOpenSettings": "Change the limit",
+  "fxOpenFiles": "Project files",
+  "fxSubtitle": "Files and folders",
+  "fxPlatform": "Platform",
+  "fxAssistants": "Personal agents",
+  "fxNewFile": "New file",
+  "fxNewFolder": "New folder",
+  "fxMake": "Make",
+  "fxPathHint": "Name, with its folder if you want one (docs/note.md)",
+  "fxUpload": "Upload",
+  "fxUploaded": "Files uploaded: {count}.",
+  "@fxUploaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fxShowHidden": "Show hidden files",
+  "fxHideHidden": "Hide hidden files",
+  "fxRefresh": "Refresh",
+  "fxTerminal": "Terminal",
+  "fxFull": "Full window",
+  "fxFullOff": "Beside the conversation",
+  "fxClose": "Close the files",
+  "fxSearchHint": "Search the files",
+  "fxClearSearch": "Clear the search",
+  "fxFolder": "Folder",
+  "fxReadOnly": "Read only: the project is archived",
+  "fxEmpty": "Empty folder.",
+  "fxDropHere": "Drop the files to upload them here",
+  "fxExists": "{name} already exists here.",
+  "@fxExists": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fxKeepBoth": "Keep both",
+  "fxReplace": "Replace",
+  "fxOpen": "Open in the Canvas",
+  "fxAsk": "Ask the agent",
+  "fxRename": "Rename",
+  "fxDownload": "Download",
+  "fxDownloaded": "{name} saved.",
+  "@fxDownloaded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fxDelete": "Delete",
+  "fxConfirmDelete": "Move {path} to the trash (.trash)?",
+  "@fxConfirmDelete": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "fxConfirmDeleteForGood": "Delete {path} for good?",
+  "@fxConfirmDeleteForGood": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "fxMore": "More actions",
+  "fxResize": "Resize the files panel",
+  "fxAttachFailed": "{name} could not be attached.",
+  "@fxAttachFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

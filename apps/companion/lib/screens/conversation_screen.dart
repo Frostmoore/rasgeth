@@ -22,7 +22,10 @@ import '../api/saved.dart';
 import '../api/types.dart';
 import '../api/widgets.dart';
 import '../app_state.dart';
+import '../api/servers.dart' show AppPrefs;
+import '../desktop/desk_controller.dart' show DeskScope;
 import '../desktop/drops.dart';
+import '../desktop/side_panel.dart' show PanelResizer;
 import '../l10n/app_localizations.dart';
 import '../mascot/mascot_view.dart';
 import '../theme/colors.dart';
@@ -49,7 +52,10 @@ import '../api/pasted.dart';
 import '../api/secrets.dart';
 import 'canvas_screen.dart';
 import 'conversation_more.dart';
+import 'files/files_explorer.dart';
 import 'saved_screen.dart';
+
+part 'conversation_files.dart';
 
 /// A message to go to when the conversation opens (a saved passage, a quote), lit up a moment.
 class PassageJump {
@@ -155,7 +161,7 @@ class ConversationScreen extends StatefulWidget {
   State<ConversationScreen> createState() => _ConversationScreenState();
 }
 
-class _ConversationScreenState extends State<ConversationScreen> {
+class _ConversationScreenState extends State<ConversationScreen> with _ConversationFiles {
   late final AppController app;
   late final SessionView view;
   final _text = TextEditingController();
@@ -660,8 +666,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
     ];
   }
 
-  @override
-  Widget build(BuildContext context) {
+  /// The conversation itself; [build] puts its files beside it (G42.5).
+  Widget _chat(BuildContext context) {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
     final agent =
@@ -689,6 +695,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   running: view.running,
                   onStop: _stop,
                   actions: widget.headerActions,
+                  files: _filesButton(context, agent),
                 );
               },
             ),
@@ -975,9 +982,13 @@ class _Header extends StatelessWidget {
     required this.running,
     required this.onStop,
     this.actions = const [],
+    this.files,
   });
 
   final List<Widget> actions;
+
+  /// The folder button (G42.5): the conversation's files, as the page's top bar.
+  final Widget? files;
   final String sessionId;
   final bool embedded;
   final Agent? agent;
@@ -1049,7 +1060,12 @@ class _Header extends StatelessWidget {
                           color: c.text,
                         ),
                       ),
-                      Text(word, style: TextStyle(fontSize: 12.5, color: c.dim)),
+                      Text(
+                        word,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 12.5, color: c.dim),
+                      ),
                     ],
                   ),
                 ),
@@ -1060,6 +1076,7 @@ class _Header extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8, right: 4),
                 child: HeaderLimits(sessionId: sessionId, agent: a, room: room),
               ),
+              ?files,
               if (running)
                 TextButton.icon(
                   key: const Key('conversation-stop'),

@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'fake_files.dart';
 import 'helpers.dart';
 
 class FakeRedGiant {
@@ -10,6 +11,9 @@ class FakeRedGiant {
 
   final HttpServer _server;
   String password = 'secret';
+
+  /// G42.5: a workspace in memory for the files routes (null: the canned answers below).
+  FakeFiles? files;
   bool codeOn = false;
   int appProtocol = 1;
   int wrongTries = 0;
@@ -755,6 +759,7 @@ class FakeRedGiant {
     if (path == '/ws' && WebSocketTransformer.isUpgradeRequest(r)) return _socket(r);
     if (path == '/term' && WebSocketTransformer.isUpgradeRequest(r)) return _term(r);
     if (!tokens.contains(token)) return _json(r, 401, {'error': 'Unauthorized'});
+    if (files case final fs? when await fs.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (r.method == 'GET' && path == '/api/agents') return _json(r, 200, agents);
     if (r.method == 'GET' && path == '/api/budgets') return _json(r, 200, budgets);
     if (r.method == 'GET' && path == '/api/limits') return _json(r, 200, planLimits);
