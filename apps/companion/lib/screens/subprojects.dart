@@ -16,6 +16,7 @@ import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
+import '../ui/labeled_field.dart';
 import '../ui/settings_kit.dart';
 import 'agent_conversations_screen.dart';
 import 'canvas_screen.dart' show openCanvas;
@@ -314,18 +315,11 @@ class _NewSubprojectState extends State<_NewSubproject> {
     final c = RgColors.of(context);
     final others = app.projects.where((p) => p.id != widget.project.id).toList();
     final ok = !_busy && (_from != null || _name.text.trim().isNotEmpty);
-    Widget field(TextEditingController t, String label, String? help, Key key) => Padding(
-      padding: const EdgeInsets.only(top: 12),
-      child: TextField(
-        key: key,
-        controller: t,
-        enabled: !_busy,
-        autocorrect: false,
-        decoration: InputDecoration(labelText: label, helperText: help, helperMaxLines: 3),
-      ),
-    );
+    Widget field(TextEditingController t, String label, String? help, Key key) =>
+        LabeledField(label: label, controller: t, help: help, fieldKey: key, enabled: !_busy);
     return AlertDialog(
       key: const Key('sub-window'),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       title: Text(l.spNewTitle(widget.project.name)),
       content: SizedBox(
         width: 440,

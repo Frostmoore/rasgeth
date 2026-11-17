@@ -19,6 +19,7 @@ import '../theme/colors.dart';
 import '../ui/chat/file_download.dart' show byteWords, shortDuration;
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
+import '../ui/labeled_field.dart';
 import '../ui/settings_kit.dart';
 
 const _githubNewToken = 'https://github.com/settings/personal-access-tokens/new';
@@ -367,6 +368,7 @@ class _GitWindowState extends State<_GitWindow> {
     final l = AppLocalizations.of(context);
     return AlertDialog(
       key: Key(widget.github ? 'cs-window-github' : 'cs-window-gitea'),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       title: Text(widget.github ? 'GitHub' : l.csGiteaTitle),
       content: SizedBox(
         width: 480,
@@ -619,12 +621,10 @@ class _GithubPanelState extends State<GithubPanel> {
                   autocorrect: false,
                   enableSuggestions: false,
                   enabled: !_busy,
-                  decoration: InputDecoration(
-                    hintText: 'github_pat_…',
-                    helperText: l.csGithubTokenHelp,
-                    helperMaxLines: 2,
-                  ),
+                  decoration: fieldDecoration(c, hint: 'github_pat_…'),
                 ),
+                const SizedBox(height: 4),
+                Text(l.csGithubTokenHelp, style: TextStyle(fontSize: 12.5, color: c.dim)),
                 const SizedBox(height: 10),
                 Align(
                   alignment: Alignment.centerLeft,
@@ -786,23 +786,15 @@ class _GiteaPanelState extends State<GiteaPanel> {
       bool secret = false,
       required Key key,
       String? hint,
-    }) => Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: TextField(
-        key: key,
-        controller: t,
-        obscureText: secret,
-        autocorrect: false,
-        enableSuggestions: false,
-        enabled: !_busy,
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          helperText: help,
-          helperMaxLines: 3,
-          errorText: error,
-        ),
-      ),
+    }) => LabeledField(
+      label: label,
+      controller: t,
+      help: help,
+      error: error,
+      secret: secret,
+      fieldKey: key,
+      hint: hint,
+      enabled: !_busy,
     );
     final Widget body;
     if (g.gitea) {

@@ -17,7 +17,8 @@ rg=/mnt/archive1/officina-dati/rg-test
 # RG_PUB_CACHE: a pub cache of its own (another build on the shared one races on its lock).
 export FLUTTER_ROOT="$rg/flutter" PUB_CACHE="${RG_PUB_CACHE:-$rg/pub-cache}" PATH="$rg/flutter/bin:$PATH"
 node="${RG_NODE:-$rg/bin/node}"
-repo="$(cd ../.. && pwd)"
+# RG_REPO: the demo server of another worktree, already built (this one may have no node_modules).
+repo="${RG_REPO:-$(cd ../.. && pwd)}"
 mkdir -p "$shots"
 # RG_SCREEN=WxH: a phone-sized screen, and the app's window as big (default 1280x720).
 screen="${RG_SCREEN:-1280x720}"
