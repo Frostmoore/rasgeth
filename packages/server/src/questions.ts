@@ -112,7 +112,7 @@ export interface QuestionHost {
 }
 
 /** Asks, records the question and its answer in the session, and waits. */
-async function askHuman(
+export async function askHuman(
   host: QuestionHost,
   agent: AgentRecord,
   ctx: { ownerId: string; sessionId: string; signal?: AbortSignal | undefined },

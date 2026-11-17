@@ -45,7 +45,7 @@ export interface AssembleFile {
   cuts?: readonly Pick<SilenceCut, "start" | "end">[];
   /** The words said, seconds of the file. */
   words?: readonly Pick<TranscriptWord, "start" | "end" | "text">[];
-  speech?: Pick<SpeechInfo, "ratio" | "seconds" | "role">;
+  speech?: Pick<SpeechInfo, "ratio" | "seconds" | "role"> & Partial<Pick<SpeechInfo, "source">>;
   /** Chosen by the agent or the person: never guessed over. */
   role?: AssembleRole;
   /** A B's good stretches (seconds); absent: all of it. */
@@ -129,7 +129,8 @@ export function assembleRole(f: AssembleFile): Exclude<AssembleRole, "skip"> {
   const ratio = f.speech?.ratio ?? 0;
   const seconds = f.speech?.seconds ?? 0;
   const speaks = ratio >= 0.25 && seconds >= 3;
-  if (p.kind === "audio") return speaks ? "voice" : "music";
+  // A sound file is a voice-over only when words were heard: its level alone says nothing.
+  if (p.kind === "audio") return speaks && f.speech?.source !== "sound" ? "voice" : "music";
   return f.speech?.role ?? (speaks ? "A" : "B");
 }
 
@@ -165,6 +166,35 @@ export function keptSpans(
   return kept
     .map(([s, e]) => [round3(s), round3(e)] as [number, number])
     .filter(([s, e]) => e - s > 0.04);
+}
+
+/**
+ * The cuts when nothing was transcribed: the quiet stretches themselves (ffmpeg's
+ * `silencedetect`) longer than `minSec`, flush at the head and the tail, `padding` kept inside.
+ */
+export function cutsFromSilence(
+  silent: readonly (readonly [number, number])[],
+  duration: number,
+  minSec = 0.8,
+  padding = 0.15,
+): { start: number; end: number; where: "head" | "mid" | "tail" }[] {
+  const out: { start: number; end: number; where: "head" | "mid" | "tail" }[] = [];
+  for (const [s, e] of [...silent].sort((a, b) => a[0] - b[0])) {
+    const from = Math.max(0, s);
+    const to = Math.min(duration, e);
+    if (to - from < minSec - 1e-9) continue;
+    const head = from <= 0.01;
+    const tail = to >= duration - 0.01;
+    const cs = head ? from : from + padding;
+    const ce = tail ? to : to - padding;
+    if (ce - cs >= 0.3 - 1e-9)
+      out.push({
+        start: round3(cs),
+        end: round3(ce),
+        where: head ? "head" : tail ? "tail" : "mid",
+      });
+  }
+  return out;
 }
 
 const KB = [

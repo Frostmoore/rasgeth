@@ -8,6 +8,7 @@ import {
   autoAssemble,
   brollRules,
   clipEnd,
+  cutsFromSilence,
   keptSpans,
   type MediaProbe,
   timelineInserts,
@@ -76,6 +77,11 @@ describe("roles and order", () => {
       "voice",
     ],
     ["chosen by hand", { ...cover("b.mp4"), role: "A" }, "A"],
+    [
+      "loud music without a transcription",
+      { ...music("m.mp3"), speech: { ratio: 1, seconds: 20, role: "B", source: "sound" } },
+      "music",
+    ],
   ])("%s is %s", (_, f, role) => {
     expect(assembleRole(f)).toBe(role);
   });
@@ -131,6 +137,32 @@ describe("roles and order", () => {
     ["everything cut", 10, [{ start: 0, end: 10 }], []],
   ])("keptSpans: %s", (_, d, cuts, want) => {
     expect(keptSpans(d, cuts)).toEqual(want);
+  });
+});
+
+describe("cutsFromSilence", () => {
+  it.each<[string, [number, number][], { start: number; end: number; where: string }[]]>([
+    [
+      "head, middle and tail",
+      [
+        [0, 2.015],
+        [9.795, 14.199],
+        [21.386, 30],
+      ],
+      [
+        { start: 0, end: 1.865, where: "head" },
+        { start: 9.945, end: 14.049, where: "mid" },
+        { start: 21.536, end: 30, where: "tail" },
+      ],
+    ],
+    ["short pauses stay", [[5, 5.5]], []],
+    [
+      "a pause just long enough keeps its padding",
+      [[5, 5.8]],
+      [{ start: 5.15, end: 5.65, where: "mid" }],
+    ],
+  ])("%s", (_, silent, want) => {
+    expect(cutsFromSilence(silent, 30)).toEqual(want);
   });
 });
 

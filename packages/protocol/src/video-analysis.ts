@@ -170,3 +170,32 @@ export interface VideoPreviewResult {
   height: number;
   warnings: string[];
 }
+
+/** The render presets (G41.6): the shape, the height, the quality. */
+export const VIDEO_RENDER_QUALITIES = ["draft", "good", "best"] as const;
+export type VideoRenderQuality = (typeof VIDEO_RENDER_QUALITIES)[number];
+export const VIDEO_RENDER_HEIGHTS = [2160, 1440, 1080, 720, 480] as const;
+
+/** What the page or an agent asks of a render. */
+export interface VideoRenderAsk {
+  /** Another shape than the timeline's: reframed at the centre (crops and fits kept). */
+  aspect?: "16:9" | "9:16" | "1:1";
+  /** The short side's pixels (never more than the timeline's). */
+  height?: number;
+  quality?: VideoRenderQuality;
+}
+
+/** The result of a `video_render` job: the MP4 in the project (`renders/<name>-v<n>.mp4`). */
+export interface VideoRenderResult {
+  /** Its path in the project. */
+  path: string;
+  /** The subtitles beside it (SRT, WebVTT), paths in the project. */
+  sidecars: string[];
+  seconds: number;
+  width: number;
+  height: number;
+  frames: number;
+  /** Segments taken from the cache instead of encoded again. */
+  reused: number;
+  warnings: string[];
+}

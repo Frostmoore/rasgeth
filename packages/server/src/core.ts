@@ -201,7 +201,10 @@ import { svgCopyOfOriginal, svgFamily } from "./editor/svg-family.js";
 import { textFamily } from "./editor/text-family.js";
 import { type CanvasEditHost, canvasEditTool } from "./editor/tool.js";
 import { VideoAnalysis } from "./editor/video/analysis.js";
+import { type MediaRunner, runMedia } from "./editor/video/media-run.js";
 import { VideoPreviews } from "./editor/video/preview.js";
+import { VideoRenders } from "./editor/video/renders.js";
+import { type VideoToolHost, videoTool } from "./editor/video/tool.js";
 import { videoFamily } from "./editor/video-family.js";
 import { ZetaOffice } from "./editor/zeta.js";
 import { EditorLinks } from "./editor-links.js";
@@ -216,7 +219,7 @@ import { FileTriggers } from "./file-triggers.js";
 import type { GitHosts } from "./git-hosts.js";
 import { IMAGE_MODEL, imageFileName } from "./images.js";
 import { Inspector } from "./inspector.js";
-import { Jobs } from "./jobs.js";
+import { type JobHandle, Jobs } from "./jobs.js";
 import { knowledgeTools } from "./knowledge/agent-tools.js";
 import type {
   ChatSource,
@@ -297,7 +300,7 @@ import {
   toPlaceholders,
 } from "./prompts.js";
 import { migratePush, type PushOptions, PushService } from "./push/service.js";
-import { HumanQuestions, questionTools } from "./questions.js";
+import { askHuman, HumanQuestions, questionTools } from "./questions.js";
 import {
   REQUEST_TOOL_DRY,
   REQUEST_TOOL_TIMEOUT_MS,
@@ -387,6 +390,14 @@ function startsOn(r: Recipe): string {
 
 export interface CoreOptions {
   db: SqlClient;
+  /**
+   * Video projects (G41.4-G41.6): the programs and how they run (tests: a fake ffmpeg); by
+   * default ffmpeg and ffprobe found or downloaded, run without a shell.
+   */
+  videoMedia?: {
+    tools?: (owner: string) => Promise<{ ffmpeg: string; ffprobe: string }>;
+    run?: MediaRunner;
+  };
   /** The editor's timings (G37.1): tests save at once and hold the person's place briefly. */
   editor?: Pick<EditorHostOptions, "saveDelayMs" | "lockMs" | "watchMs" | "now">;
   /** What applies the document editor's actions on the server (tests: a fake; LibreOffice otherwise). */
@@ -1912,6 +1923,8 @@ export class RedGiantCore implements OrchestrationHost {
           ...canvasTools(agent, ws, this.canvasHost(agent)),
           // Editing an open file with the person (G37.1).
           canvasEditTool(agent, ws, this.canvasEditHost()),
+          // Video projects (G41.6): analysis, the automatic assembly, subtitles, frames, render.
+          videoTool(agent, ws, this.videoToolHost(agent)),
           this.sendFileTool(agent, ws),
           this.variantsTool(agent, ws),
           // Product cards with pictures (G40.16).
@@ -4998,10 +5011,8 @@ export class RedGiantCore implements OrchestrationHost {
     this.videoAnalysisCache ??= new VideoAnalysis({
       dataDir: dirname(this.o.workspacesDir),
       jobs: this.jobs,
-      tools: async (owner, into) => ({
-        ffmpeg: await this.programs.ensure(owner, "ffmpeg", into),
-        ffprobe: await this.programs.ffprobe(owner, into),
-      }),
+      tools: (owner, into) => this.videoProgramsFor(owner, into),
+      ...(this.o.videoMedia?.run && { run: this.o.videoMedia.run }),
       transcriber: async () => {
         const cfg = this.o.transcription;
         if (!cfg) return undefined;
@@ -5022,14 +5033,79 @@ export class RedGiantCore implements OrchestrationHost {
     this.videoPreviewsCache ??= new VideoPreviews({
       analysis: this.videoAnalysis,
       jobs: this.jobs,
-      tools: async (owner, into) => ({
-        ffmpeg: await this.programs.ensure(owner, "ffmpeg", into),
-        ffprobe: await this.programs.ffprobe(owner, into),
-      }),
+      tools: (owner, into) => this.videoProgramsFor(owner, into),
+      ...(this.o.videoMedia?.run && { run: this.o.videoMedia.run }),
     });
     return this.videoPreviewsCache;
   }
   private videoPreviewsCache: VideoPreviews | undefined;
+
+  /** The render of a timeline on this machine (G41.6): a job, one per project at a time. */
+  get videoRenders(): VideoRenders {
+    this.videoRendersCache ??= new VideoRenders({
+      analysis: this.videoAnalysis,
+      jobs: this.jobs,
+      tools: (owner, into) => this.videoProgramsFor(owner, into),
+      ...(this.o.videoMedia?.run && { run: this.o.videoMedia.run }),
+    });
+    return this.videoRendersCache;
+  }
+  private videoRendersCache: VideoRenders | undefined;
+
+  /** ffmpeg and ffprobe for the video editor (downloaded inside `into`'s job when missing). */
+  private async videoProgramsFor(owner: string, into?: JobHandle) {
+    if (this.o.videoMedia?.tools) return this.o.videoMedia.tools(owner);
+    return {
+      ffmpeg: await this.programs.ensure(owner, "ffmpeg", into),
+      ffprobe: await this.programs.ffprobe(owner, into),
+    };
+  }
+
+  /** The video tool's host (G41.6). */
+  private videoToolHost(agent: AgentRecord): VideoToolHost {
+    return {
+      analysis: () => this.videoAnalysis,
+      renders: () => this.videoRenders,
+      previews: () => this.videoPreviews,
+      tools: (owner) => this.videoProgramsFor(owner),
+      run: () => this.o.videoMedia?.run ?? runMedia,
+      jobs: this.jobs,
+      editor: this.editor,
+      docFileOf: (ownerId, abs) => this.docFileOf(ownerId, abs),
+      scopeRoot: (ownerId, scope) => this.scopeRoot(ownerId, scope),
+      readOnly: (ownerId, scope) => this.readOnlyScope(ownerId, scope),
+      lang: (ownerId) => this.language(ownerId),
+      // The person's yes before a timeline they edited is replaced: their rules, every channel.
+      confirm: async (ctx, question, yes, no) => {
+        const outcome = await askHuman(
+          {
+            store: this.store,
+            questions: this.questions,
+            modeOf: (id) => this.registry.get(id)?.mode ?? "auto",
+            leavePlanMode: async () => {},
+            ask: (a, info, signal, kind) => this.person.ask(a, info, signal, kind),
+          },
+          agent,
+          ctx,
+          [
+            {
+              question,
+              header: "Video",
+              options: [{ label: yes }, { label: no }],
+              multiSelect: false,
+            },
+          ],
+        );
+        return (
+          (outcome.by === "human" || outcome.by === "classifier") && outcome.answers[0]?.[0] === yes
+        );
+      },
+      show: async (abs, title, ctx) => {
+        const size = (await stat(abs).catch(() => undefined))?.size ?? 0;
+        await this.showFile(agent, { abs, path: abs, outside: false, title, size }, ctx);
+      },
+    };
+  }
 
   /** The hands-free voice's wake-word models (G38.4), in the data folder. */
   get wakeModels(): WakeModels {
