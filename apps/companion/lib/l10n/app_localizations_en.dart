@@ -4646,4 +4646,230 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get embedProbeOpen => 'Web view test';
+
+  @override
+  String get cvBoardChoose => 'I choose this';
+
+  @override
+  String get cvBoardChosen => 'Chosen';
+
+  @override
+  String get cvBoardChoiceWord => 'chosen';
+
+  @override
+  String get cvBoardCommentWord => 'comment';
+
+  @override
+  String get cvBoardWriteComment => 'Write a comment';
+
+  @override
+  String get cvBoardSending => 'Sending…';
+
+  @override
+  String get cvBoardSent => 'Sent to the agent';
+
+  @override
+  String get cvBoardOneVariant => '1 variant';
+
+  @override
+  String cvBoardVariants(String n) {
+    return '$n variants';
+  }
+
+  @override
+  String get cvBoardScreens => 'Width of the previews';
+
+  @override
+  String get cvBoardScreenComputer => 'Computer';
+
+  @override
+  String get cvBoardScreenTablet => 'Tablet';
+
+  @override
+  String get cvBoardScreenPhone => 'Phone';
+
+  @override
+  String get cvBoardFull => 'Full screen';
+
+  @override
+  String get cvBoardCommentHere => 'A comment on this variant (optional with «I choose this»)';
+
+  @override
+  String get cvBoardSendComment => 'Send comment';
+
+  @override
+  String get cvBoardWhole => 'A comment on the whole board';
+
+  @override
+  String get cvBoardWholeHint => 'For example: I like the colour of 2 with the layout of 3';
+
+  @override
+  String get cvBoardSendToAgent => 'Send to the agent';
+
+  @override
+  String get cvBoardTab => 'Board';
+
+  @override
+  String get cvBoardNotFound => 'This board is no longer here';
+
+  @override
+  String get cvCanvasReload => 'Reload';
+
+  @override
+  String cvEmbedPort(String port) {
+    return 'Port $port';
+  }
+
+  @override
+  String cvDrawing(String percent) {
+    return 'Drawing… $percent%';
+  }
+
+  @override
+  String get cvArSection => 'Artifacts';
+
+  @override
+  String get cvArLead =>
+      'The small apps in a single file your agents make for you. They open in the Canvas, next to the chat.';
+
+  @override
+  String get cvArImport => 'Import';
+
+  @override
+  String get cvArEmptyTitle => 'No artifacts yet';
+
+  @override
+  String get cvArEmpty1 =>
+      'An artifact is an HTML app in a single file that an agent makes in one turn: a calculator, a tournament board, a game, a viewer for a CSV. It runs in the Canvas, in an isolated frame, without installing anything and without going online.';
+
+  @override
+  String get cvArEmpty2 =>
+      'It lives as a file in the artefatti/ folder of a project (or of God and the assistants), so you also find it among the files on the right. To get one, ask an agent for a tool you want to keep and use again; or import a .rgartifact from another RedGiant.';
+
+  @override
+  String get cvArPlacePlatform => 'God\'s folder';
+
+  @override
+  String get cvArPlaceAssistants => 'The assistants\' desk';
+
+  @override
+  String get cvArOpen => 'Open';
+
+  @override
+  String get cvArExport => 'Export';
+
+  @override
+  String get cvArDelete => 'Delete';
+
+  @override
+  String cvArVersion(String n) {
+    return 'version $n';
+  }
+
+  @override
+  String get cvArNoHeader => 'no header';
+
+  @override
+  String cvArLibs(String libs) {
+    return 'libraries: $libs';
+  }
+
+  @override
+  String cvArFrom(String who) {
+    return 'by $who';
+  }
+
+  @override
+  String get cvArPending => 'Imported · not run yet';
+
+  @override
+  String get cvArReadOnly => 'read only: the project is archived';
+
+  @override
+  String cvArDeleteQ(String name) {
+    return 'Delete «$name»?';
+  }
+
+  @override
+  String get cvArDeleteText =>
+      'The file goes to the trash of its folder, as from the file explorer.';
+
+  @override
+  String cvArExportTitle(String name) {
+    return 'Export «$name»';
+  }
+
+  @override
+  String get cvArExportZip => 'A .rgartifact file';
+
+  @override
+  String get cvArExportZipText =>
+      'To import it into another RedGiant: the app, its manifest and the fingerprint that checks it arrived intact. It carries no permissions.';
+
+  @override
+  String get cvArExportHtml => 'Download as HTML';
+
+  @override
+  String get cvArExportHtmlText =>
+      'To open it elsewhere. Careful: outside RedGiant it runs without the isolated frame, with the rights of the page you open it in.';
+
+  @override
+  String get cvArWhereQ => 'Where should it go?';
+
+  @override
+  String get cvArWhereLead =>
+      'It goes into the artefatti/ folder of the place you choose. It starts with no permissions, and the first time it opens on its source with «Run».';
+
+  @override
+  String cvArImported(String name, String place) {
+    return '«$name» imported into $place: the first time it opens on its source, with «Run».';
+  }
+
+  @override
+  String get cvArDataIgnored => 'The saved data it carries was not imported.';
+
+  @override
+  String get cvArDataImported => 'Its saved data came along too.';
+
+  @override
+  String get cvArHasData => 'keeps saved data';
+
+  @override
+  String get cvArExportData => 'Include its saved data';
+
+  @override
+  String get cvArExportDataHint =>
+      'What the app kept on RedGiant (storage). Leave it off for a clean copy without your data.';
+
+  @override
+  String get cvArPerms => 'Permissions';
+
+  @override
+  String cvArWants(String what) {
+    return 'It asks to $what';
+  }
+
+  @override
+  String get cvArPermGranted => 'granted';
+
+  @override
+  String get cvArPermNot => 'not granted';
+
+  @override
+  String get cvArGrant => 'Allow';
+
+  @override
+  String get cvArRevoke => 'Take back';
+
+  @override
+  String cvArSpent(String spent, String cap) {
+    return '$spent spent of $cap';
+  }
+
+  @override
+  String get sectionArtifacts => 'ARTIFACTS';
+
+  @override
+  String get artifactsRowHint =>
+      'The apps the agents made: open, export, import, delete and their permissions';
 }

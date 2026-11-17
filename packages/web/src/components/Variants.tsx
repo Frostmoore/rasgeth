@@ -1,7 +1,7 @@
 // A board ("tavola", G25.4), laid out as Officina's: the variants side by side, scaled down from
 // a real screen width (computer, tablet, phone); each one chosen, opened full screen or commented
 // on, and a comment on the whole board. What the person says goes to the agent as a message.
-import type { Event } from "@redgiant/protocol";
+import { BOARD_SCREENS, type BoardScreen, type Event } from "@redgiant/protocol";
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { lang, t } from "../i18n.js";
 import { getApi, sessionView } from "../state.js";
@@ -10,13 +10,9 @@ type Proposed = Extract<Event, { type: "variants.proposed" }>["payload"] & objec
 type Answer = Extract<Event, { type: "variants.answered" }>["payload"] & object;
 type Said = Answer & { ts: string };
 
-/** Real widths the previews are scaled down from (as in Officina). */
-export const SCREENS = {
-  computer: { width: 1280, height: 800 },
-  tablet: { width: 820, height: 1100 },
-  phone: { width: 390, height: 780 },
-} as const;
-type Screen = keyof typeof SCREENS;
+/** Real widths the previews are scaled down from (as in Officina; the app's board uses the same). */
+export const SCREENS = BOARD_SCREENS;
+type Screen = BoardScreen;
 const COLUMN: Record<Screen, string> = { computer: "460px", tablet: "380px", phone: "280px" };
 
 /** The board, when it was published, and what was said about it, from the conversation's events. */
@@ -85,6 +81,60 @@ function Frame({ src, title, screen }: { src: string; title: string; screen: Scr
         loading="lazy"
         sandbox="allow-scripts allow-forms"
         style={{ width: `${s.width}px`, height: `${s.height}px`, transform: `scale(${k})` }}
+      />
+    </div>
+  );
+}
+
+/**
+ * One variant alone, for RGCompanion's board (G42.2): the app draws the board, its choices and
+ * comments natively and holds each variant in a web view of its own. The page is drawn at the
+ * screen's real width and scaled down to the web view's; wider than that, it is drawn as it is
+ * (a computer's at the whole width, a phone's centred), as the page's own «Full screen».
+ */
+export function VariantPreview({
+  sessionId,
+  proposalId,
+  variant,
+  screen,
+}: {
+  sessionId: string;
+  proposalId: string;
+  variant: number;
+  screen: Screen;
+}) {
+  const [base, setBase] = useState<string>();
+  const [failed, setFailed] = useState(false);
+  const [box, setBox] = useState({ w: window.innerWidth, h: window.innerHeight });
+  useEffect(() => {
+    void getApi()
+      .boardLink(sessionId, proposalId)
+      .then(
+        (r) => setBase(r.base),
+        () => setFailed(true),
+      );
+  }, [sessionId, proposalId]);
+  useEffect(() => {
+    const fit = () => setBox({ w: window.innerWidth, h: window.innerHeight });
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, []);
+  if (failed) return <div class="empty">{t("boardNotFound")}</div>;
+  if (!base) return <div class="empty" />;
+  const s = SCREENS[screen];
+  const k = Math.min(1, box.w / s.width);
+  const width = k < 1 ? s.width : screen === "computer" ? box.w : s.width;
+  return (
+    <div class={`tavola-alone${k < 1 ? " scaled" : ""}`}>
+      <iframe
+        title={`${variant}`}
+        src={`${base}${variant}.html`}
+        sandbox="allow-scripts allow-forms"
+        style={{
+          width: `${width}px`,
+          height: `${Math.ceil(box.h / k)}px`,
+          transform: k < 1 ? `scale(${k})` : undefined,
+        }}
       />
     </div>
   );

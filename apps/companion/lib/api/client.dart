@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'artifacts.dart';
 import 'budgets.dart';
 import 'code.dart';
 import 'conversation.dart';
@@ -1126,6 +1127,109 @@ class RedGiantClient {
     'errors': errors,
     if (fresh) 'fresh': true,
   });
+
+  // ---- G42.2: an agent's port, boards of variants, Settings › Artifacts (the page's routes) ----
+
+  /// `POST /api/canvas/link` for an agent's port: its signed `/preview/…` path (to open outside).
+  Future<String> portLink(String agentId, int port, {String? path}) async {
+    final url = _object(
+      await _post('/api/canvas/link', {
+        'kind': 'port',
+        'agentId': agentId,
+        'port': port,
+        'path': ?path,
+      }),
+    )['url'];
+    if (url is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    return url;
+  }
+
+  /// `POST /api/sessions/:id/variants`: the person chose a variant (1-based) or commented on one,
+  /// or on the whole board ([variant] null).
+  Future<void> answerVariants(
+    String sessionId, {
+    required String proposalId,
+    required int? variant,
+    bool choice = false,
+    String? comment,
+  }) => _call('POST', '/api/sessions/${Uri.encodeComponent(sessionId)}/variants', {
+    'proposalId': proposalId,
+    'variant': variant,
+    if (choice) 'choice': true,
+    if (comment != null && comment.isNotEmpty) 'comment': comment,
+  });
+
+  /// `GET /api/artifacts`: every artifact of the person, in every place they see.
+  Future<List<ArtifactInfo>> artifacts() async => [
+    for (final a in _array(await _get('/api/artifacts'))) ArtifactInfo.fromJson(a),
+  ];
+
+  /// `GET /api/artifacts/export`: a `.rgartifact` (with its saved data when [data]) or the HTML.
+  Future<Uint8List> artifactExport(
+    String scope,
+    String path, {
+    bool html = false,
+    bool data = false,
+  }) async {
+    final r = await _send(
+      'GET',
+      '/api/artifacts/export',
+      query: {
+        'scope': scope,
+        'path': path,
+        'as': html ? 'html' : 'zip',
+        if (data && !html) 'data': '1',
+      },
+      accept: '*/*',
+    );
+    if (r.status != 200) _decode(r);
+    return r.bytes;
+  }
+
+  /// `POST /api/artifacts/import`: a `.rgartifact` into [scope]; the server checks it, runs nothing.
+  Future<({String path, String name, bool dataIgnored, bool dataImported})> artifactImport(
+    String scope,
+    List<int> bytes,
+  ) async {
+    ApiResponse r;
+    try {
+      r = await transport.send(
+        'POST',
+        _path('/api/artifacts/import', {'scope': scope}),
+        headers: {..._headers(), 'content-type': 'application/octet-stream'},
+        body: bytes,
+      );
+    } on TransportException catch (e) {
+      throw ApiException(0, e.message, certificate: e.certificate);
+    }
+    final j = _object(_decode(r));
+    return (
+      path: '${j['path'] ?? ''}',
+      name: '${j['name'] ?? ''}',
+      dataIgnored: j['dataIgnored'] == true,
+      dataImported: j['dataImported'] == true,
+    );
+  }
+
+  /// `POST /api/artifacts/grant`: the person allows a capability (`ask` with its cap).
+  Future<void> artifactGrant(String scope, String path, String capability, {double? capUsd}) =>
+      _call('POST', '/api/artifacts/grant', {
+        'scope': scope,
+        'path': path,
+        'capability': capability,
+        'capUsd': ?capUsd,
+      });
+
+  /// `POST /api/artifacts/revoke`: the person takes a capability back.
+  Future<void> artifactRevoke(String scope, String path, String capability) => _call(
+    'POST',
+    '/api/artifacts/revoke',
+    {'scope': scope, 'path': path, 'capability': capability},
+  );
+
+  /// `POST /api/files/op` delete: the file explorer's own deletion (same trash, same permissions).
+  Future<void> deleteFile(String scope, String path) =>
+      _call('POST', '/api/files/op', {'op': 'delete', 'scope': scope, 'path': path});
 
   void close() => transport.close();
 }

@@ -3398,5 +3398,326 @@
   "embedProbeTitle": "Web view test",
   "embedSaving": "Saving…",
   "embedSavedState": "Saved",
-  "embedProbeOpen": "Web view test"
+  "embedProbeOpen": "Web view test",
+  "cvBoardChoose": "I choose this",
+  "@cvBoardChoose": {
+    "description": "The page's `boardChoose` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardChosen": "Chosen",
+  "@cvBoardChosen": {
+    "description": "The page's `boardChosen` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardChoiceWord": "chosen",
+  "@cvBoardChoiceWord": {
+    "description": "The page's `boardChoiceWord` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardCommentWord": "comment",
+  "@cvBoardCommentWord": {
+    "description": "The page's `boardCommentWord` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardWriteComment": "Write a comment",
+  "@cvBoardWriteComment": {
+    "description": "The page's `boardWriteComment` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardSending": "Sending…",
+  "@cvBoardSending": {
+    "description": "The page's `boardSending` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardSent": "Sent to the agent",
+  "@cvBoardSent": {
+    "description": "The page's `boardSent` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardOneVariant": "1 variant",
+  "@cvBoardOneVariant": {
+    "description": "The page's `boardOneVariant` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardVariants": "{n} variants",
+  "@cvBoardVariants": {
+    "description": "The page's `boardVariants` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvBoardScreens": "Width of the previews",
+  "@cvBoardScreens": {
+    "description": "The page's `boardScreens` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardScreenComputer": "Computer",
+  "@cvBoardScreenComputer": {
+    "description": "The page's `boardScreen_computer` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardScreenTablet": "Tablet",
+  "@cvBoardScreenTablet": {
+    "description": "The page's `boardScreen_tablet` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardScreenPhone": "Phone",
+  "@cvBoardScreenPhone": {
+    "description": "The page's `boardScreen_phone` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardFull": "Full screen",
+  "@cvBoardFull": {
+    "description": "The page's `boardFull` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardCommentHere": "A comment on this variant (optional with «I choose this»)",
+  "@cvBoardCommentHere": {
+    "description": "The page's `boardCommentHere` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardSendComment": "Send comment",
+  "@cvBoardSendComment": {
+    "description": "The page's `boardSendComment` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardWhole": "A comment on the whole board",
+  "@cvBoardWhole": {
+    "description": "The page's `boardWhole` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardWholeHint": "For example: I like the colour of 2 with the layout of 3",
+  "@cvBoardWholeHint": {
+    "description": "The page's `boardWholeHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardSendToAgent": "Send to the agent",
+  "@cvBoardSendToAgent": {
+    "description": "The page's `boardSendToAgent` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardTab": "Board",
+  "@cvBoardTab": {
+    "description": "The page's `boardTab` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardNotFound": "This board is no longer here",
+  "@cvBoardNotFound": {
+    "description": "The page's `boardNotFound` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCanvasReload": "Reload",
+  "@cvCanvasReload": {
+    "description": "The page's `canvasReload` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvEmbedPort": "Port {port}",
+  "@cvEmbedPort": {
+    "description": "The page's `embedPort` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "port": {
+        "type": "String"
+      }
+    }
+  },
+  "cvDrawing": "Drawing… {percent}%",
+  "@cvDrawing": {
+    "description": "The page's `drawing` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "cvArSection": "Artifacts",
+  "@cvArSection": {
+    "description": "The page's `arSection` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArLead": "The small apps in a single file your agents make for you. They open in the Canvas, next to the chat.",
+  "@cvArLead": {
+    "description": "The page's `arLead` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArImport": "Import",
+  "@cvArImport": {
+    "description": "The page's `arImport` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArEmptyTitle": "No artifacts yet",
+  "@cvArEmptyTitle": {
+    "description": "The page's `arEmptyTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArEmpty1": "An artifact is an HTML app in a single file that an agent makes in one turn: a calculator, a tournament board, a game, a viewer for a CSV. It runs in the Canvas, in an isolated frame, without installing anything and without going online.",
+  "@cvArEmpty1": {
+    "description": "The page's `arEmpty1` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArEmpty2": "It lives as a file in the artefatti/ folder of a project (or of God and the assistants), so you also find it among the files on the right. To get one, ask an agent for a tool you want to keep and use again; or import a .rgartifact from another RedGiant.",
+  "@cvArEmpty2": {
+    "description": "The page's `arEmpty2` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArPlacePlatform": "God's folder",
+  "@cvArPlacePlatform": {
+    "description": "The page's `arPlacePlatform` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArPlaceAssistants": "The assistants' desk",
+  "@cvArPlaceAssistants": {
+    "description": "The page's `arPlaceAssistants` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArOpen": "Open",
+  "@cvArOpen": {
+    "description": "The page's `arOpen` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArExport": "Export",
+  "@cvArExport": {
+    "description": "The page's `arExport` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArDelete": "Delete",
+  "@cvArDelete": {
+    "description": "The page's `arDelete` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArVersion": "version {n}",
+  "@cvArVersion": {
+    "description": "The page's `arVersion` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvArNoHeader": "no header",
+  "@cvArNoHeader": {
+    "description": "The page's `arNoHeader` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArLibs": "libraries: {libs}",
+  "@cvArLibs": {
+    "description": "The page's `arLibs` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "libs": {
+        "type": "String"
+      }
+    }
+  },
+  "cvArFrom": "by {who}",
+  "@cvArFrom": {
+    "description": "The page's `arFrom` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "cvArPending": "Imported · not run yet",
+  "@cvArPending": {
+    "description": "The page's `arPending` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArReadOnly": "read only: the project is archived",
+  "@cvArReadOnly": {
+    "description": "The page's `arReadOnly` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArDeleteQ": "Delete «{name}»?",
+  "@cvArDeleteQ": {
+    "description": "The page's `arDeleteQ` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvArDeleteText": "The file goes to the trash of its folder, as from the file explorer.",
+  "@cvArDeleteText": {
+    "description": "The page's `arDeleteText` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArExportTitle": "Export «{name}»",
+  "@cvArExportTitle": {
+    "description": "The page's `arExportTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvArExportZip": "A .rgartifact file",
+  "@cvArExportZip": {
+    "description": "The page's `arExportZip` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArExportZipText": "To import it into another RedGiant: the app, its manifest and the fingerprint that checks it arrived intact. It carries no permissions.",
+  "@cvArExportZipText": {
+    "description": "The page's `arExportZipText` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArExportHtml": "Download as HTML",
+  "@cvArExportHtml": {
+    "description": "The page's `arExportHtml` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArExportHtmlText": "To open it elsewhere. Careful: outside RedGiant it runs without the isolated frame, with the rights of the page you open it in.",
+  "@cvArExportHtmlText": {
+    "description": "The page's `arExportHtmlText` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArWhereQ": "Where should it go?",
+  "@cvArWhereQ": {
+    "description": "The page's `arWhereQ` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArWhereLead": "It goes into the artefatti/ folder of the place you choose. It starts with no permissions, and the first time it opens on its source with «Run».",
+  "@cvArWhereLead": {
+    "description": "The page's `arWhereLead` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArImported": "«{name}» imported into {place}: the first time it opens on its source, with «Run».",
+  "@cvArImported": {
+    "description": "The page's `arImported` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "cvArDataIgnored": "The saved data it carries was not imported.",
+  "@cvArDataIgnored": {
+    "description": "The page's `arDataIgnored` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArDataImported": "Its saved data came along too.",
+  "@cvArDataImported": {
+    "description": "The page's `arDataImported` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArHasData": "keeps saved data",
+  "@cvArHasData": {
+    "description": "The page's `arHasData` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArExportData": "Include its saved data",
+  "@cvArExportData": {
+    "description": "The page's `arExportData` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArExportDataHint": "What the app kept on RedGiant (storage). Leave it off for a clean copy without your data.",
+  "@cvArExportDataHint": {
+    "description": "The page's `arExportDataHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArPerms": "Permissions",
+  "@cvArPerms": {
+    "description": "The page's `arPerms` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArWants": "It asks to {what}",
+  "@cvArWants": {
+    "description": "The page's `arWants` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "cvArPermGranted": "granted",
+  "@cvArPermGranted": {
+    "description": "The page's `arPermGranted` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArPermNot": "not granted",
+  "@cvArPermNot": {
+    "description": "The page's `arPermNot` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArGrant": "Allow",
+  "@cvArGrant": {
+    "description": "The page's `arGrant` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArRevoke": "Take back",
+  "@cvArRevoke": {
+    "description": "The page's `arRevoke` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArSpent": "{spent} spent of {cap}",
+  "@cvArSpent": {
+    "description": "The page's `arSpent` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "spent": {
+        "type": "String"
+      },
+      "cap": {
+        "type": "String"
+      }
+    }
+  },
+  "sectionArtifacts": "ARTIFACTS",
+  "@sectionArtifacts": {
+    "description": "Settings of the server: the Artifacts row (G42.2)."
+  },
+  "artifactsRowHint": "The apps the agents made: open, export, import, delete and their permissions",
+  "@artifactsRowHint": {
+    "description": "Settings of the server: the Artifacts row (G42.2)."
+  }
 }

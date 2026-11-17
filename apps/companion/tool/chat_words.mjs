@@ -24,7 +24,15 @@ chSecretVault attachmentOpen toBottom thinking seeAttachments pastedOpen pastedA
 pastedSize copy copied startConversation subAsks tooMany acpKind_read acpKind_edit acpKind_delete
 acpKind_move acpKind_search acpKind_execute acpKind_think acpKind_fetch acpKind_switch_mode acpKind_other
 findVia_everything findVia_spotlight findVia_locate findVia_walk findVia_path findVia_container findTook
-findTookCut findTookInterrupted`
+findTookCut findTookInterrupted
+boardChoose boardChosen boardChoiceWord boardCommentWord boardWriteComment boardSending boardSent
+boardOneVariant boardVariants boardScreens boardScreen_computer boardScreen_tablet boardScreen_phone
+boardFull boardCommentHere boardSendComment boardWhole boardWholeHint boardSendToAgent boardTab
+boardNotFound canvasReload embedPort drawing arSection arLead arImport arEmptyTitle arEmpty1 arEmpty2
+arPlacePlatform arPlaceAssistants arOpen arExport arDelete arVersion arNoHeader arLibs arFrom arPending
+arReadOnly arDeleteQ arDeleteText arExportTitle arExportZip arExportZipText arExportHtml arExportHtmlText
+arWhereQ arWhereLead arImported arDataIgnored arDataImported arHasData arExportData arExportDataHint
+arPerms arWants arPermGranted arPermNot arGrant arRevoke arSpent`
   .split(/\s+/)
   .filter(Boolean);
 

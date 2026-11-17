@@ -349,6 +349,12 @@ class FakeRedGiant {
   /// 3.8.7: JSON answers set by a test, by «METHOD /path».
   final extraJson = <String, Object?>{};
 
+  /// G42.2: routes a test answers itself, by «METHOD /path», before every other (signed in).
+  final routes = <String, Future<void> Function(HttpRequest r)>{};
+
+  /// For [routes]: a JSON answer.
+  Future<void> answer(HttpRequest r, int status, Object body) => _json(r, status, body);
+
   /// 3.8.5: an answer streaming in, piece by piece, on every open live socket (the stream
   /// cursor's tests), and its end.
   void streamPiece(String sid, String text) {
@@ -632,6 +638,8 @@ class FakeRedGiant {
     if (path == '/ws' && WebSocketTransformer.isUpgradeRequest(r)) return _socket(r);
     if (path == '/term' && WebSocketTransformer.isUpgradeRequest(r)) return _term(r);
     if (!tokens.contains(token)) return _json(r, 401, {'error': 'Unauthorized'});
+    final own = routes['${r.method} $path'];
+    if (own != null) return own(r);
     if (r.method == 'GET' && path == '/api/agents') return _json(r, 200, agents);
     if (r.method == 'GET' && path == '/api/budgets') return _json(r, 200, budgets);
     if (r.method == 'GET' && path == '/api/limits') return _json(r, 200, planLimits);

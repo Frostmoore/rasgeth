@@ -8084,6 +8084,396 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Web view test'**
   String get embedProbeOpen;
+
+  /// The page's `boardChoose` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'I choose this'**
+  String get cvBoardChoose;
+
+  /// The page's `boardChosen` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Chosen'**
+  String get cvBoardChosen;
+
+  /// The page's `boardChoiceWord` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'chosen'**
+  String get cvBoardChoiceWord;
+
+  /// The page's `boardCommentWord` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'comment'**
+  String get cvBoardCommentWord;
+
+  /// The page's `boardWriteComment` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Write a comment'**
+  String get cvBoardWriteComment;
+
+  /// The page's `boardSending` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Sending…'**
+  String get cvBoardSending;
+
+  /// The page's `boardSent` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to the agent'**
+  String get cvBoardSent;
+
+  /// The page's `boardOneVariant` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'1 variant'**
+  String get cvBoardOneVariant;
+
+  /// The page's `boardVariants` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{n} variants'**
+  String cvBoardVariants(String n);
+
+  /// The page's `boardScreens` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Width of the previews'**
+  String get cvBoardScreens;
+
+  /// The page's `boardScreen_computer` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Computer'**
+  String get cvBoardScreenComputer;
+
+  /// The page's `boardScreen_tablet` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Tablet'**
+  String get cvBoardScreenTablet;
+
+  /// The page's `boardScreen_phone` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get cvBoardScreenPhone;
+
+  /// The page's `boardFull` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Full screen'**
+  String get cvBoardFull;
+
+  /// The page's `boardCommentHere` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'A comment on this variant (optional with «I choose this»)'**
+  String get cvBoardCommentHere;
+
+  /// The page's `boardSendComment` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Send comment'**
+  String get cvBoardSendComment;
+
+  /// The page's `boardWhole` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'A comment on the whole board'**
+  String get cvBoardWhole;
+
+  /// The page's `boardWholeHint` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'For example: I like the colour of 2 with the layout of 3'**
+  String get cvBoardWholeHint;
+
+  /// The page's `boardSendToAgent` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Send to the agent'**
+  String get cvBoardSendToAgent;
+
+  /// The page's `boardTab` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Board'**
+  String get cvBoardTab;
+
+  /// The page's `boardNotFound` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'This board is no longer here'**
+  String get cvBoardNotFound;
+
+  /// The page's `canvasReload` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Reload'**
+  String get cvCanvasReload;
+
+  /// The page's `embedPort` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Port {port}'**
+  String cvEmbedPort(String port);
+
+  /// The page's `drawing` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Drawing… {percent}%'**
+  String cvDrawing(String percent);
+
+  /// The page's `arSection` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Artifacts'**
+  String get cvArSection;
+
+  /// The page's `arLead` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'The small apps in a single file your agents make for you. They open in the Canvas, next to the chat.'**
+  String get cvArLead;
+
+  /// The page's `arImport` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get cvArImport;
+
+  /// The page's `arEmptyTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'No artifacts yet'**
+  String get cvArEmptyTitle;
+
+  /// The page's `arEmpty1` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'An artifact is an HTML app in a single file that an agent makes in one turn: a calculator, a tournament board, a game, a viewer for a CSV. It runs in the Canvas, in an isolated frame, without installing anything and without going online.'**
+  String get cvArEmpty1;
+
+  /// The page's `arEmpty2` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'It lives as a file in the artefatti/ folder of a project (or of God and the assistants), so you also find it among the files on the right. To get one, ask an agent for a tool you want to keep and use again; or import a .rgartifact from another RedGiant.'**
+  String get cvArEmpty2;
+
+  /// The page's `arPlacePlatform` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'God\'s folder'**
+  String get cvArPlacePlatform;
+
+  /// The page's `arPlaceAssistants` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'The assistants\' desk'**
+  String get cvArPlaceAssistants;
+
+  /// The page's `arOpen` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get cvArOpen;
+
+  /// The page's `arExport` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get cvArExport;
+
+  /// The page's `arDelete` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get cvArDelete;
+
+  /// The page's `arVersion` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'version {n}'**
+  String cvArVersion(String n);
+
+  /// The page's `arNoHeader` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'no header'**
+  String get cvArNoHeader;
+
+  /// The page's `arLibs` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'libraries: {libs}'**
+  String cvArLibs(String libs);
+
+  /// The page's `arFrom` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'by {who}'**
+  String cvArFrom(String who);
+
+  /// The page's `arPending` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Imported · not run yet'**
+  String get cvArPending;
+
+  /// The page's `arReadOnly` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'read only: the project is archived'**
+  String get cvArReadOnly;
+
+  /// The page's `arDeleteQ` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Delete «{name}»?'**
+  String cvArDeleteQ(String name);
+
+  /// The page's `arDeleteText` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'The file goes to the trash of its folder, as from the file explorer.'**
+  String get cvArDeleteText;
+
+  /// The page's `arExportTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Export «{name}»'**
+  String cvArExportTitle(String name);
+
+  /// The page's `arExportZip` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'A .rgartifact file'**
+  String get cvArExportZip;
+
+  /// The page's `arExportZipText` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'To import it into another RedGiant: the app, its manifest and the fingerprint that checks it arrived intact. It carries no permissions.'**
+  String get cvArExportZipText;
+
+  /// The page's `arExportHtml` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Download as HTML'**
+  String get cvArExportHtml;
+
+  /// The page's `arExportHtmlText` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'To open it elsewhere. Careful: outside RedGiant it runs without the isolated frame, with the rights of the page you open it in.'**
+  String get cvArExportHtmlText;
+
+  /// The page's `arWhereQ` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Where should it go?'**
+  String get cvArWhereQ;
+
+  /// The page's `arWhereLead` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'It goes into the artefatti/ folder of the place you choose. It starts with no permissions, and the first time it opens on its source with «Run».'**
+  String get cvArWhereLead;
+
+  /// The page's `arImported` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'«{name}» imported into {place}: the first time it opens on its source, with «Run».'**
+  String cvArImported(String name, String place);
+
+  /// The page's `arDataIgnored` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'The saved data it carries was not imported.'**
+  String get cvArDataIgnored;
+
+  /// The page's `arDataImported` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Its saved data came along too.'**
+  String get cvArDataImported;
+
+  /// The page's `arHasData` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'keeps saved data'**
+  String get cvArHasData;
+
+  /// The page's `arExportData` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Include its saved data'**
+  String get cvArExportData;
+
+  /// The page's `arExportDataHint` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'What the app kept on RedGiant (storage). Leave it off for a clean copy without your data.'**
+  String get cvArExportDataHint;
+
+  /// The page's `arPerms` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get cvArPerms;
+
+  /// The page's `arWants` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'It asks to {what}'**
+  String cvArWants(String what);
+
+  /// The page's `arPermGranted` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'granted'**
+  String get cvArPermGranted;
+
+  /// The page's `arPermNot` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'not granted'**
+  String get cvArPermNot;
+
+  /// The page's `arGrant` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get cvArGrant;
+
+  /// The page's `arRevoke` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Take back'**
+  String get cvArRevoke;
+
+  /// The page's `arSpent` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{spent} spent of {cap}'**
+  String cvArSpent(String spent, String cap);
+
+  /// Settings of the server: the Artifacts row (G42.2).
+  ///
+  /// In en, this message translates to:
+  /// **'ARTIFACTS'**
+  String get sectionArtifacts;
+
+  /// Settings of the server: the Artifacts row (G42.2).
+  ///
+  /// In en, this message translates to:
+  /// **'The apps the agents made: open, export, import, delete and their permissions'**
+  String get artifactsRowHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

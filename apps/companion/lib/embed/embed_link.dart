@@ -24,10 +24,22 @@ const embedHashOrder = [
   'agent',
   'port',
   'board',
+  'variant',
+  'screen',
   'theme',
   'lang',
   'font',
 ];
+
+/// The real screens a board's variants are drawn at (`BOARD_SCREENS`), width × height.
+const boardScreens = <String, ({int width, int height})>{
+  'computer': (width: 1280, height: 800),
+  'tablet': (width: 820, height: 1100),
+  'phone': (width: 390, height: 780),
+};
+
+/// The most variants a board has (`BOARD_VARIANTS_MAX`).
+const boardVariantsMax = 8;
 
 final _nonce = RegExp(r'^[A-Za-z0-9_-]{16,64}$');
 final _board = RegExp(r'^[\w-]+\.[0-9a-f]{12}$');
@@ -50,6 +62,8 @@ class EmbedParams {
     this.agent,
     this.port,
     this.board,
+    this.variant,
+    this.screen,
     this.font,
   });
 
@@ -72,6 +86,12 @@ class EmbedParams {
   final String? agent;
   final int? port;
   final String? board;
+
+  /// One variant of the board alone (1-based), at [screen]'s width (G42.2).
+  final int? variant;
+
+  /// `computer` | `tablet` | `phone` ([boardScreens]).
+  final String? screen;
   final String? font;
 
   Map<String, Object> toJson() => {
@@ -86,6 +106,8 @@ class EmbedParams {
     'agent': ?agent,
     'port': ?port,
     'board': ?board,
+    'variant': ?variant,
+    'screen': ?screen,
     'theme': theme,
     'lang': lang,
     'font': ?font,
@@ -105,6 +127,8 @@ class EmbedParams {
     if (!count(line) || !count(page)) return 'count';
     if (port != null && (port! < 1 || port! > 65535)) return 'port';
     if (board != null && !_board.hasMatch(board!)) return 'board';
+    if (variant != null && (variant! < 1 || variant! > boardVariantsMax)) return 'variant';
+    if (screen != null && !boardScreens.containsKey(screen)) return 'screen';
     if (font != null && (font!.isEmpty || font!.length > 200 || !_font.hasMatch(font!))) {
       return 'font';
     }
@@ -123,6 +147,9 @@ class EmbedParams {
     }
     if (embed != EmbedKind.port && (agent != null || port != null)) return 'port';
     if (embed != EmbedKind.board && board != null) return 'board';
+    if ((embed != EmbedKind.board || variant == null) && (variant != null || screen != null)) {
+      return 'variant';
+    }
     return null;
   }
 }
@@ -209,6 +236,8 @@ EmbedParams? parseEmbedHash(String hash) {
     agent: raw['agent'],
     port: n('port'),
     board: raw['board'],
+    variant: n('variant'),
+    screen: raw['screen'],
     font: raw['font'],
   );
   return p.problem == null ? p : null;

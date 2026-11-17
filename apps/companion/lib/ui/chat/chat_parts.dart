@@ -5,6 +5,10 @@
 // cache that was missed, the notices, a line for a file shown in the canvas, a board of
 // variants, a message waiting in line with «togli», the same agent at work elsewhere
 // (`Elsewhere`) and the archived project's line where the composer was (`ArchivedNotice`).
+import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 import '../../api/conversation.dart';
@@ -670,6 +674,131 @@ class _ArchivedNoticeState extends State<ArchivedNotice> {
             child: Text(l.cvPaRestore),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// generate_image's picture as it forms (G42.2, the page's `drawing`, `image.progress`): the last
+/// preview (or a frame that shimmers until there is one), a thin bar, «Sto disegnando… n%».
+class DrawingCard extends StatefulWidget {
+  const DrawingCard({super.key, required this.percent, this.preview});
+
+  final int percent;
+
+  /// The last preview, base64 PNG.
+  final String? preview;
+
+  @override
+  State<DrawingCard> createState() => _DrawingCardState();
+}
+
+class _DrawingCardState extends State<DrawingCard> with SingleTickerProviderStateMixin {
+  late final _shimmer = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1400),
+  );
+  Uint8List? _bytes;
+  String? _of;
+
+  Uint8List? get _picture {
+    final p = widget.preview;
+    if (p != _of) {
+      _of = p;
+      try {
+        _bytes = p == null ? null : base64Decode(p);
+      } on FormatException {
+        _bytes = null;
+      }
+    }
+    return _bytes;
+  }
+
+  /// The frame shimmers only while there is no preview, and never with «reduce motion».
+  void _sync() {
+    final run = _picture == null && !MediaQuery.disableAnimationsOf(context);
+    if (run && !_shimmer.isAnimating) unawaited(_shimmer.repeat());
+    if (!run && _shimmer.isAnimating) _shimmer.stop();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _sync();
+  }
+
+  @override
+  void didUpdateWidget(DrawingCard old) {
+    super.didUpdateWidget(old);
+    _sync();
+  }
+
+  @override
+  void dispose() {
+    _shimmer.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    final l = AppLocalizations.of(context);
+    final picture = _picture;
+    return Align(
+      key: const Key('drawing'),
+      alignment: Alignment.centerLeft,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: DecoratedBox(
+                position: DecorationPosition.foreground,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: c.line),
+                ),
+                child: picture != null
+                    ? Image.memory(
+                        picture,
+                        key: const Key('drawing-preview'),
+                        gaplessPlayback: true,
+                      )
+                    : AspectRatio(
+                        aspectRatio: 1,
+                        child: AnimatedBuilder(
+                          animation: _shimmer,
+                          builder: (context, _) => DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment(-1 - 2 * _shimmer.value + 1, -.3),
+                                end: Alignment(1 - 2 * _shimmer.value + 1, .3),
+                                colors: [c.panel2, c.line, c.panel2],
+                                stops: const [.4, .5, .6],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(2),
+              child: LinearProgressIndicator(
+                value: widget.percent / 100,
+                minHeight: 4,
+                color: c.accent,
+                backgroundColor: c.panel2,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(l.cvDrawing('${widget.percent}'), style: TextStyle(color: c.dim, fontSize: 13)),
+          ],
+        ),
       ),
     );
   }

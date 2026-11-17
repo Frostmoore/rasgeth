@@ -20879,6 +20879,26 @@ fieldset.saved-filter legend {
 .canvas-bare > .canvas-head {
   display: none;
 }
+/* G42.2: one variant of a board alone, in a web view of the app's: drawn at its screen's width,
+   scaled from the top left; the app draws the card around it. */
+.tavola-alone {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+}
+.tavola-alone iframe {
+  flex: none;
+  border: 0;
+  transform-origin: 0 0;
+  background: #fff;
+}
+.tavola-alone.scaled {
+  justify-content: flex-start;
+}
 .embed-error {
   margin: 16px;
 }

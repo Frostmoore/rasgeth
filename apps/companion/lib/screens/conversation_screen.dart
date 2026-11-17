@@ -23,6 +23,7 @@ import '../api/types.dart';
 import '../api/widgets.dart';
 import '../app_state.dart';
 import '../desktop/drops.dart';
+import '../embed/embed_screen.dart' show openPortPreview;
 import '../l10n/app_localizations.dart';
 import '../mascot/mascot_view.dart';
 import '../theme/colors.dart';
@@ -46,6 +47,7 @@ import '../ui/dialogs.dart';
 import '../api/image_shrink.dart';
 import '../api/pasted.dart';
 import '../api/secrets.dart';
+import 'board_screen.dart';
 import 'canvas_screen.dart';
 import 'conversation_more.dart';
 import 'saved_screen.dart';
@@ -701,6 +703,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       ),
                     if (view.running && call != null && !view.compacting)
                       TurnProgress(call: call, now: app.live.now, still: still),
+                    // G42.2: generate_image's picture as it forms (`image.progress`).
+                    if (view.drawing case final d?)
+                      DrawingCard(percent: d.percent, preview: d.preview),
                   ];
                   final after = <Widget>[
                     for (final q in view.queued)
@@ -1399,6 +1404,16 @@ class ChatItemView extends StatelessWidget {
                 title: title,
                 sessionId: a.sessionId,
               )
+            // G42.2: an agent's port, as the page's Canvas shows it.
+            : it.isPort
+            ? () => openPortPreview(
+                context,
+                agentId: it.agentId!,
+                port: it.port!,
+                path: path,
+                title: title,
+                sessionId: a.sessionId,
+              )
             : null,
       ),
       FileItem(:final scope, :final path, :final name, :final caption, :final size) => _FileCard(
@@ -1414,7 +1429,12 @@ class ChatItemView extends StatelessWidget {
         openCanvas: (scope, path, title) =>
             openCanvas(context, scope: scope, path: path, title: title, sessionId: a.sessionId),
       ),
-      VariantsItem() => VariantsCard(item: it),
+      VariantsItem() => VariantsCard(
+        key: Key('variants-${it.proposalId}'),
+        item: it,
+        onOpen: () =>
+            openBoard(context, sessionId: it.sessionId, proposalId: it.proposalId, title: it.title),
+      ),
       ForkItem() => ForkMark(
         item: it,
         onOpen: a.openSession == null ? null : (s) => a.openSession!(s, a.agent?.id),

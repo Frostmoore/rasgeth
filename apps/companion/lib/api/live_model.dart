@@ -73,6 +73,10 @@ class SessionView extends ChangeNotifier {
   /// A summary is being made while the person waits (`session.compacting`).
   bool compacting = false;
 
+  /// generate_image's picture as it forms (`image.progress`, the page's `drawing`): how far, and
+  /// the last preview (base64 PNG). Gone with the tool's result or a new history.
+  ({int percent, String? preview})? drawing;
+
   bool get calling => call != null;
 
   void _newCall() => call = ModelCall(_now());
@@ -104,6 +108,7 @@ class SessionView extends ChangeNotifier {
       final at = queued.indexWhere((q) => q.match.trim() == said);
       if (at >= 0) queued.removeAt(at);
     }
+    if (e.type == 'tool.result') drawing = null;
     if (e.type == 'message.assistant') {
       liveText = '';
       liveThinking = '';
@@ -224,6 +229,8 @@ class LiveModel extends ChangeNotifier {
         if (sid == null) break;
         final v = view(sid);
         if (m['incremental'] != true) v.events.clear();
+        // As the page: a history (after a reconnection too) ends a picture forming.
+        v.drawing = null;
         for (final e in (m['events'] as List? ?? const []).whereType<Map<String, dynamic>>()) {
           v._add(RgEvent.fromJson(e));
         }
@@ -233,6 +240,15 @@ class LiveModel extends ChangeNotifier {
         if (sid == null) break;
         final v = view(sid);
         v._add(RgEvent.fromJson(_map(m['event'])));
+        v.changed();
+      case 'image.progress':
+        if (sid == null) break;
+        final v = view(sid);
+        final preview = m['preview'] is String ? m['preview'] as String : null;
+        v.drawing = (
+          percent: (m['percent'] as num?)?.round().clamp(0, 100) ?? 0,
+          preview: preview ?? v.drawing?.preview,
+        );
         v.changed();
       case 'delta':
         if (sid == null) break;

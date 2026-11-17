@@ -1,0 +1,157 @@
+{
+  "caps": [
+    0.1,
+    0.5,
+    2,
+    5
+  ],
+  "capDefault": 0.5,
+  "words": [
+    {
+      "w": "ask",
+      "word": "ask"
+    },
+    {
+      "w": " storage ",
+      "word": "storage"
+    },
+    {
+      "w": "files:dati/",
+      "word": "files:dati/"
+    },
+    {
+      "w": "files:dati",
+      "word": "files:dati/"
+    },
+    {
+      "w": "files:dati//",
+      "word": "files:dati/"
+    },
+    {
+      "w": "files:a/b/c/",
+      "word": "files:a/b/c/"
+    },
+    {
+      "w": "files:../x/",
+      "word": null
+    },
+    {
+      "w": "files:.hidden/",
+      "word": null
+    },
+    {
+      "w": "files:a\\b/",
+      "word": null
+    },
+    {
+      "w": "files:",
+      "word": null
+    },
+    {
+      "w": "files: a/",
+      "word": null
+    },
+    {
+      "w": "files:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "word": null
+    },
+    {
+      "w": "network",
+      "word": null
+    },
+    {
+      "w": "",
+      "word": null
+    }
+  ],
+  "sentences": [
+    {
+      "lang": "it",
+      "c": "ask",
+      "s": "fare domande a l'agente che l'ha fatto, che risponde senza strumenti e spende dal tuo budget fino al tetto che scegli"
+    },
+    {
+      "lang": "it",
+      "c": "ask",
+      "agent": "Coder Web",
+      "s": "fare domande a «Coder Web», che risponde senza strumenti e spende dal tuo budget fino al tetto che scegli"
+    },
+    {
+      "lang": "en",
+      "c": "ask",
+      "s": "ask the agent that made it questions, answered with no tools and paid from your budget up to the cap you choose"
+    },
+    {
+      "lang": "en",
+      "c": "ask",
+      "agent": "Coder Web",
+      "s": "ask “Coder Web” questions, answered with no tools and paid from your budget up to the cap you choose"
+    },
+    {
+      "lang": "it",
+      "c": "storage",
+      "s": "tenere dati suoi su RedGiant (solo testo, fino a 5 MB)"
+    },
+    {
+      "lang": "it",
+      "c": "storage",
+      "agent": "Coder Web",
+      "s": "tenere dati suoi su RedGiant (solo testo, fino a 5 MB)"
+    },
+    {
+      "lang": "en",
+      "c": "storage",
+      "s": "keep data of its own on RedGiant (text only, up to 5 MB)"
+    },
+    {
+      "lang": "en",
+      "c": "storage",
+      "agent": "Coder Web",
+      "s": "keep data of its own on RedGiant (text only, up to 5 MB)"
+    },
+    {
+      "lang": "it",
+      "c": "files:dati/",
+      "s": "leggere i file della cartella dati/ del progetto (solo lettura)"
+    },
+    {
+      "lang": "it",
+      "c": "files:dati/",
+      "agent": "Coder Web",
+      "s": "leggere i file della cartella dati/ del progetto (solo lettura)"
+    },
+    {
+      "lang": "en",
+      "c": "files:dati/",
+      "s": "read the files in the project's folder dati/ (read only)"
+    },
+    {
+      "lang": "en",
+      "c": "files:dati/",
+      "agent": "Coder Web",
+      "s": "read the files in the project's folder dati/ (read only)"
+    },
+    {
+      "lang": "it",
+      "c": "network",
+      "s": "network"
+    },
+    {
+      "lang": "it",
+      "c": "network",
+      "agent": "Coder Web",
+      "s": "network"
+    },
+    {
+      "lang": "en",
+      "c": "network",
+      "s": "network"
+    },
+    {
+      "lang": "en",
+      "c": "network",
+      "agent": "Coder Web",
+      "s": "network"
+    }
+  ]
+}

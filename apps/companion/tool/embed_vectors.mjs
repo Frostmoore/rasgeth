@@ -22,6 +22,7 @@ const params = [
   { ...base, embed: "canvas", scope: "p1", path: "日本/a+b%.md" },
   { ...base, embed: "port", agent: "a-1", port: 5173, path: "/app?x=1" },
   { ...base, embed: "board", board: "s_1.0123456789ab" },
+  { ...base, embed: "board", board: "s_1.0123456789ab", variant: 3, screen: "tablet" },
   { ...base, embed: "probe", font: "Inter, sans-serif" },
   { ...base, token: "a~b!c'(d)*e", embed: "probe" },
 ];
@@ -42,6 +43,11 @@ const badHashes = [
   "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&scope=p&theme=dark&lang=it",
   "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&font=a%7Bb",
   "token=a+b&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it",
+  "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.0123456789ab&variant=9&theme=dark&lang=it",
+  "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.0123456789ab&variant=0&theme=dark&lang=it",
+  "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&variant=1&theme=dark&lang=it",
+  "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.0123456789ab&screen=phone&theme=dark&lang=it",
+  "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.0123456789ab&variant=1&screen=tv&theme=dark&lang=it",
 ];
 for (const h of badHashes) if (p.parseEmbedHash(h) !== null) throw new Error(`taken: ${h}`);
 
@@ -61,6 +67,7 @@ const pageMessages = [
   { t: "askAgent", text: "why this?", ref: { scope: "p", path: "a.ts", line: 3, lineEnd: 5 } },
   { t: "askAgent", text: "page", ref: { page: 2 } },
   { t: "external", url: "https://example.com" },
+  { t: "previewLink", url: "https://example.com/a?b=1" },
   { t: "close" },
   { t: "back", handled: false },
   // Refused:
@@ -70,6 +77,7 @@ const pageMessages = [
   { t: "saveAs", name: "", url: "/x" },
   { t: "share", title: "x" },
   { t: "external", url: "javascript:alert(1)" },
+  { t: "previewLink", url: "file:///etc/passwd" },
   { t: "askAgent", text: "", ref: {} },
   { t: "askAgent", text: "x" },
   { t: "ready", x: 1 },
@@ -106,6 +114,8 @@ const out = {
   badHashes,
   envelopes: envelopes.map((raw) => ({ raw, message: p.readEmbedEnvelope(raw, NONCE) })),
   appMessages,
+  boardScreens: p.BOARD_SCREENS,
+  boardVariantsMax: p.BOARD_VARIANTS_MAX,
   encode: ["a b/c?d=e&f", "è~!'()*-._", "日本", "+%"].map((s) => ({ s, e: p.formEncode(s) })),
 };
 writeFileSync(join(here, "../test/fixtures/embed_vectors.json"), `${JSON.stringify(out, null, 2)}\n`);

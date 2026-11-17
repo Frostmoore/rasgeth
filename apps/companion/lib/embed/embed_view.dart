@@ -16,6 +16,7 @@ import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../screens/first_start_screen.dart' show openExternal;
 import '../theme/colors.dart';
+import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import 'bridge.dart';
 import 'web_host.dart';
@@ -38,7 +39,9 @@ class EmbedView extends StatefulWidget {
     this.onSaveState,
     this.onAskAgent,
     this.onClose,
+    this.onReady,
     this.eager = true,
+    this.handleBack = true,
   });
 
   /// The page's address (`embedUrl`, or the whole page with its fragment).
@@ -55,7 +58,14 @@ class EmbedView extends StatefulWidget {
   /// «Ask the agent»: to the app's own conversation (the Canvas's, G42.6).
   final void Function(String text, Map<String, Object?> ref)? onAskAgent;
   final VoidCallback? onClose;
+
+  /// The page said it is drawn.
+  final VoidCallback? onReady;
   final bool eager;
+
+  /// Whether the system's back is asked to this page first. Off where a screen holds several
+  /// pages side by side (a board's variants, G42.2): the screen's own back goes back.
+  final bool handleBack;
 
   @override
   State<EmbedView> createState() => EmbedViewState();
@@ -94,6 +104,9 @@ class EmbedViewState extends State<EmbedView> {
           share: _share,
           askAgent: (t, r) => widget.onAskAgent?.call(t, r),
           external: (u) => unawaited(openExternal(u)),
+          previewLink: (u) {
+            if (mounted) unawaited(askOpenPreviewLink(context, u));
+          },
           close: () => widget.onClose?.call(),
           back: (handled) {
             final b = _back;
@@ -155,7 +168,20 @@ class EmbedViewState extends State<EmbedView> {
   }
 
   void _setReady() {
-    if (mounted && !_ready) setState(() => _ready = true);
+    if (mounted && !_ready) {
+      setState(() => _ready = true);
+      widget.onReady?.call();
+    }
+  }
+
+  /// Loads the page again (the bar's «Reload»): the indicator until it says it is drawn.
+  Future<void> reload() async {
+    if (!mounted) return;
+    setState(() {
+      _error = null;
+      _ready = false;
+    });
+    await _host.reload();
   }
 
   /// The system's back: the page's own panels first; true when the page took it.
@@ -265,7 +291,7 @@ class EmbedViewState extends State<EmbedView> {
     final l = AppLocalizations.of(context);
     final error = _error;
     return PopScope(
-      canPop: _bridge == null || !_ready,
+      canPop: !widget.handleBack || _bridge == null || !_ready,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
         final nav = Navigator.of(context);

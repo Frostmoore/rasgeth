@@ -9,8 +9,10 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../api/board.dart' show boardFromLink;
 import '../api/saved.dart';
 import '../l10n/app_localizations.dart';
+import '../screens/board_screen.dart' show openBoard;
 import '../theme/colors.dart';
 import 'citations.dart';
 import 'code_block.dart';
@@ -79,6 +81,12 @@ class SafeMarkdown extends StatelessWidget {
   final bool cursorStill;
 
   Future<void> _open(BuildContext context, String? href) async {
+    // A board's link (`#tavola=…`, as Telegram sends it): the board, here in the app (G42.2).
+    final board = boardFromLink(href);
+    if (board != null) {
+      await openBoard(context, sessionId: board.sessionId, proposalId: board.proposalId);
+      return;
+    }
     if (!openableLink(href)) return;
     final l = AppLocalizations.of(context);
     final ok = await askConfirm(context, title: l.linkOpenTitle, body: href!, yes: l.linkOpen);
