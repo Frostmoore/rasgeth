@@ -76,14 +76,12 @@ class _TodosPanelState extends State<TodosPanel> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        for (final (i, x) in todos.indexed)
+                        for (final x in todos)
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 2),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('${i + 1}.', style: TextStyle(color: c.dim, fontSize: 13)),
-                                const SizedBox(width: 6),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 3),
                                   child: SizedBox(
@@ -93,7 +91,7 @@ class _TodosPanelState extends State<TodosPanel> {
                                       'in_progress' => RgIcon(
                                         RgIcons.spinner,
                                         size: 12,
-                                        color: c.accent,
+                                        color: c.text,
                                       ),
                                       _ => _Dot(filled: false, color: c.dim),
                                     },
@@ -106,9 +104,6 @@ class _TodosPanelState extends State<TodosPanel> {
                                     style: TextStyle(
                                       fontSize: 13,
                                       color: x.status == 'completed' ? c.dim : c.text,
-                                      fontWeight: x.status == 'in_progress'
-                                          ? FontWeight.w600
-                                          : FontWeight.w400,
                                       decoration: x.status == 'completed'
                                           ? TextDecoration.lineThrough
                                           : null,
