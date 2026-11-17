@@ -9620,6 +9620,2400 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not download {name}'**
   String chatFileDownloadFailed(String name);
+
+  /// No description provided for @g4SfSkillsAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Show them to me first'**
+  String get g4SfSkillsAsk;
+
+  /// No description provided for @g4SfSkillsAskText.
+  ///
+  /// In en, this message translates to:
+  /// **'A tested skill waits in Settings › Extensions until you approve it.'**
+  String get g4SfSkillsAskText;
+
+  /// No description provided for @g4SfSkillsAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Install them once tested'**
+  String get g4SfSkillsAuto;
+
+  /// No description provided for @g4SfSkillsAutoText.
+  ///
+  /// In en, this message translates to:
+  /// **'A skill whose tests pass is ready at once; you can remove it from Extensions.'**
+  String get g4SfSkillsAutoText;
+
+  /// No description provided for @g4SfGuardianTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The guardian'**
+  String get g4SfGuardianTitle;
+
+  /// No description provided for @g4SfGuardianAskText.
+  ///
+  /// In en, this message translates to:
+  /// **'A file in your home, a system folder, another project: the agent stops and asks you, on the web or on Telegram. Reading is always free.'**
+  String get g4SfGuardianAskText;
+
+  /// No description provided for @g4SfGuardianAutoText.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents write wherever they need without asking. The other dangers you choose below still ask.'**
+  String get g4SfGuardianAutoText;
+
+  /// No description provided for @g4SfCareful.
+  ///
+  /// In en, this message translates to:
+  /// **'Careful'**
+  String get g4SfCareful;
+
+  /// No description provided for @g4SfCarefulText.
+  ///
+  /// In en, this message translates to:
+  /// **'Every risky action waits for you. The safest choice, also the slowest.'**
+  String get g4SfCarefulText;
+
+  /// No description provided for @g4SfBalanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Balanced'**
+  String get g4SfBalanced;
+
+  /// No description provided for @g4SfBalancedText.
+  ///
+  /// In en, this message translates to:
+  /// **'You approve what cannot be undone (publishing, history, disks, passwords, changes to RedGiant); the agents in charge approve the rest.'**
+  String get g4SfBalancedText;
+
+  /// No description provided for @g4SfFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get g4SfFree;
+
+  /// No description provided for @g4SfFreeText.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents in charge approve almost everything; you are asked only for passwords and changes to RedGiant itself.'**
+  String get g4SfFreeText;
+
+  /// No description provided for @g4SfPersonalize.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize'**
+  String get g4SfPersonalize;
+
+  /// No description provided for @g4SfNoLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'no limit'**
+  String get g4SfNoLimit;
+
+  /// No description provided for @g4SfNothingPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'You use only subscriptions or local models: nothing is paid per use, so there is no spending limit to set. With subscriptions the plan\'s own limits count (shown at the top).'**
+  String get g4SfNothingPaid;
+
+  /// No description provided for @g4SfKeepForever.
+  ///
+  /// In en, this message translates to:
+  /// **'always'**
+  String get g4SfKeepForever;
+
+  /// No description provided for @g4SfKeep365.
+  ///
+  /// In en, this message translates to:
+  /// **'one year'**
+  String get g4SfKeep365;
+
+  /// No description provided for @g4SfKeep90.
+  ///
+  /// In en, this message translates to:
+  /// **'three months'**
+  String get g4SfKeep90;
+
+  /// No description provided for @g4SfKeep30.
+  ///
+  /// In en, this message translates to:
+  /// **'one month'**
+  String get g4SfKeep30;
+
+  /// No description provided for @g4SfDoneBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get g4SfDoneBtn;
+
+  /// No description provided for @g4SfLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Four decisions, each on one card. You change everything whenever you like from Settings.'**
+  String get g4SfLead;
+
+  /// No description provided for @g4SfGuardQ.
+  ///
+  /// In en, this message translates to:
+  /// **'An agent wants to write outside its project. What happens?'**
+  String get g4SfGuardQ;
+
+  /// No description provided for @g4SfGuardAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'It asks me'**
+  String get g4SfGuardAsk;
+
+  /// No description provided for @g4SfGuardAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'I let it'**
+  String get g4SfGuardAuto;
+
+  /// No description provided for @g4SfApprTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The approvals'**
+  String get g4SfApprTitle;
+
+  /// No description provided for @g4SfApprQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Who says yes before a risky action, like deleting or publishing?'**
+  String get g4SfApprQ;
+
+  /// No description provided for @g4SfApprCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'A choice of your own: {n} things out of {of} only you approve.'**
+  String g4SfApprCustom(String n, String of);
+
+  /// No description provided for @g4SfCustomTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What only you approve'**
+  String get g4SfCustomTitle;
+
+  /// No description provided for @g4SfCustomLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Before these actions an agent asks. On: only you can approve it. Off: the agent guiding it can say yes too ({god} or the head of the project).'**
+  String g4SfCustomLead(String god);
+
+  /// No description provided for @g4SfBackTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to {preset}'**
+  String g4SfBackTo(String preset);
+
+  /// No description provided for @g4SfBudgetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The spending limit'**
+  String get g4SfBudgetTitle;
+
+  /// No description provided for @g4SfBudgetQ.
+  ///
+  /// In en, this message translates to:
+  /// **'How much can RedGiant spend at most with your API keys?'**
+  String get g4SfBudgetQ;
+
+  /// No description provided for @g4SfBudgetQFree.
+  ///
+  /// In en, this message translates to:
+  /// **'With API keys a limit stops the agents before they spend too much.'**
+  String get g4SfBudgetQFree;
+
+  /// No description provided for @g4SfBudgetOther.
+  ///
+  /// In en, this message translates to:
+  /// **'other'**
+  String get g4SfBudgetOther;
+
+  /// No description provided for @g4SfBudgetSay.
+  ///
+  /// In en, this message translates to:
+  /// **'At \${usd} the agents stop and tell you; you raise it whenever you like.'**
+  String g4SfBudgetSay(String usd);
+
+  /// No description provided for @g4SfBudgetNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit: mind the pay-per-use keys.'**
+  String get g4SfBudgetNone;
+
+  /// No description provided for @g4SfSkillsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents\' skills'**
+  String get g4SfSkillsTitle;
+
+  /// No description provided for @g4SfSkillsQ.
+  ///
+  /// In en, this message translates to:
+  /// **'After a hard problem an agent can save how it solved it, for everybody. Do I install them by myself?'**
+  String get g4SfSkillsQ;
+
+  /// No description provided for @g4SfSkillsTools.
+  ///
+  /// In en, this message translates to:
+  /// **'The tools that run code always wait for you.'**
+  String get g4SfSkillsTools;
+
+  /// No description provided for @g4SfWhereAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents work right on this computer, in the project\'s folder: the guardian checks every command that goes outside it.'**
+  String get g4SfWhereAgents;
+
+  /// No description provided for @g4SfKeepFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the conversations for'**
+  String get g4SfKeepFor;
+
+  /// No description provided for @g4TlSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get g4TlSection;
+
+  /// No description provided for @g4TlQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Which tools do the agents get?'**
+  String get g4TlQ;
+
+  /// No description provided for @g4TlLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Every tool is described to the model in every message, and that costs tokens. Switch off the ones you do not need: for every agent here, or for one agent from its window, tab Tools.'**
+  String get g4TlLead;
+
+  /// No description provided for @g4TlNewOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes apply from new conversations: the ones already open keep their tools.'**
+  String get g4TlNewOnly;
+
+  /// No description provided for @g4TlTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'About {n} tokens in every message'**
+  String g4TlTotal(String n);
+
+  /// No description provided for @g4TlSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Switched off: {n} tokens saved in every message'**
+  String g4TlSaved(String n);
+
+  /// No description provided for @g4TlNoneSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing switched off'**
+  String get g4TlNoneSaved;
+
+  /// No description provided for @g4TlWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'about {n} tokens in every message'**
+  String g4TlWeight(String n);
+
+  /// No description provided for @g4TlNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Always needed: {why}'**
+  String g4TlNeeded(String why);
+
+  /// No description provided for @g4TlLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Weighing the tools…'**
+  String get g4TlLoading;
+
+  /// No description provided for @g4TlSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a tool: name, command or what it does'**
+  String get g4TlSearch;
+
+  /// No description provided for @g4TlNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No tool for «{q}».'**
+  String g4TlNoMatch(String q);
+
+  /// No description provided for @g4TlError.
+  ///
+  /// In en, this message translates to:
+  /// **'The tools could not be read: {error}'**
+  String g4TlError(String error);
+
+  /// No description provided for @g4TlHowMany.
+  ///
+  /// In en, this message translates to:
+  /// **'{on} of {all} on'**
+  String g4TlHowMany(String all, String on);
+
+  /// No description provided for @g4TlExceptOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Still on for: {names} (their own choice)'**
+  String g4TlExceptOn(String names);
+
+  /// No description provided for @g4TlExceptOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off for: {names} (their own choice)'**
+  String g4TlExceptOff(String names);
+
+  /// No description provided for @g4TlExceptReset.
+  ///
+  /// In en, this message translates to:
+  /// **'As for every agent'**
+  String get g4TlExceptReset;
+
+  /// No description provided for @g4CmSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Commands'**
+  String get g4CmSection;
+
+  /// No description provided for @g4CmOneDay.
+  ///
+  /// In en, this message translates to:
+  /// **'1 day'**
+  String get g4CmOneDay;
+
+  /// No description provided for @g4CmDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} days'**
+  String g4CmDays(String n);
+
+  /// No description provided for @g4CmHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} h'**
+  String g4CmHours(String n);
+
+  /// No description provided for @g4CmOneHour.
+  ///
+  /// In en, this message translates to:
+  /// **'1 h'**
+  String get g4CmOneHour;
+
+  /// No description provided for @g4CmMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} min'**
+  String g4CmMinutes(String n);
+
+  /// No description provided for @g4CmNoLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit'**
+  String get g4CmNoLimit;
+
+  /// No description provided for @g4CmPageQ.
+  ///
+  /// In en, this message translates to:
+  /// **'How long can the agents\' commands run?'**
+  String get g4CmPageQ;
+
+  /// No description provided for @g4CmPageLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents run commands on this computer: some end at once, others (a development server, a watcher, a long build) keep going in the background while the agent does other things.'**
+  String get g4CmPageLead;
+
+  /// No description provided for @g4CmBgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Commands in the background'**
+  String get g4CmBgTitle;
+
+  /// No description provided for @g4CmBgLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Servers, watchers and long builds. You see them in the strip above the message box and can stop them there.'**
+  String get g4CmBgLead;
+
+  /// No description provided for @g4CmAtOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'At once in one conversation'**
+  String get g4CmAtOnce;
+
+  /// No description provided for @g4CmAtOnceHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'When the limit is reached, the agent has to stop one before starting another.'**
+  String get g4CmAtOnceHelp;
+
+  /// No description provided for @g4CmAtOnceWarn.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit: an agent can start as many as it likes. Each one uses processor and memory; if the computer slows down, stop some from the strip.'**
+  String get g4CmAtOnceWarn;
+
+  /// No description provided for @g4CmLong.
+  ///
+  /// In en, this message translates to:
+  /// **'How long one can run'**
+  String get g4CmLong;
+
+  /// No description provided for @g4CmLongHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Past this time the command is stopped by itself.'**
+  String get g4CmLongHelp;
+
+  /// No description provided for @g4CmLongWarn.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit: a command runs until you or the agent stop it, even for days. Good for a development server; remember to stop what you no longer need.'**
+  String get g4CmLongWarn;
+
+  /// No description provided for @g4CmLog.
+  ///
+  /// In en, this message translates to:
+  /// **'How big its log can grow'**
+  String get g4CmLog;
+
+  /// No description provided for @g4CmLogHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Every line is kept with its time. Past this size the oldest half goes.'**
+  String get g4CmLogHelp;
+
+  /// No description provided for @g4CmLogWarn.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit: a command that writes a lot can fill the disk over time. The logs are in the project\'s .redgiant/commands folder.'**
+  String get g4CmLogWarn;
+
+  /// No description provided for @g4CmBashTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ordinary commands'**
+  String get g4CmBashTitle;
+
+  /// No description provided for @g4CmBashLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Those the agent waits for before going on (tests, an install, a conversion).'**
+  String get g4CmBashLead;
+
+  /// No description provided for @g4CmBash.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest wait'**
+  String get g4CmBash;
+
+  /// No description provided for @g4CmBashHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The agent can ask for less; never for more. For longer work it uses the background.'**
+  String get g4CmBashHelp;
+
+  /// No description provided for @g4CmStepsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Steps in one turn'**
+  String get g4CmStepsTitle;
+
+  /// No description provided for @g4CmStepsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'In one turn an agent thinks, uses a tool, reads the result and goes on. Past the limit it stops and tells you where it got to; a «Continue» button under its message lets it go on.'**
+  String get g4CmStepsLead;
+
+  /// No description provided for @g4CmSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Steps at most'**
+  String get g4CmSteps;
+
+  /// No description provided for @g4CmStepsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'One step is one call to the model. Default: no limit in your conversations with the agents; {n} for automations and tasks, which nobody watches. A number or «No limit» counts for every turn.'**
+  String g4CmStepsHelp(String n);
+
+  /// No description provided for @g4CmStepsDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get g4CmStepsDefault;
+
+  /// No description provided for @g4CmStepsWarn.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit, automations and tasks included: an agent can work for hours in one turn. Only the budgets stop it, so keep one set (Settings, Budgets) if the model costs money.'**
+  String get g4CmStepsWarn;
+
+  /// No description provided for @g4CmDefaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the defaults'**
+  String get g4CmDefaults;
+
+  /// No description provided for @g4CmSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: it counts from the next command and the next message.'**
+  String get g4CmSaved;
+
+  /// No description provided for @g4CmUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get g4CmUndo;
+
+  /// No description provided for @g4CmUndone.
+  ///
+  /// In en, this message translates to:
+  /// **'Undone: the previous values are back.'**
+  String get g4CmUndone;
+
+  /// No description provided for @g4RqSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests to you'**
+  String get g4RqSection;
+
+  /// No description provided for @g4RqPageQ.
+  ///
+  /// In en, this message translates to:
+  /// **'When an agent needs you'**
+  String get g4RqPageQ;
+
+  /// No description provided for @g4RqPageLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents ask before risky actions, ask you questions, propose plans, ask for a tool or a key. Choose whether they ask you, and how long they wait for you.'**
+  String get g4RqPageLead;
+
+  /// No description provided for @g4RqModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me or not'**
+  String get g4RqModeTitle;
+
+  /// No description provided for @g4RqModeQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to answer the agents\' requests yourself?'**
+  String get g4RqModeQ;
+
+  /// No description provided for @g4RqModeAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me'**
+  String get g4RqModeAsk;
+
+  /// No description provided for @g4RqModeClassifier.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t ask me anything'**
+  String get g4RqModeClassifier;
+
+  /// No description provided for @g4RqAlwaysYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Even with «Don\'t ask me anything», the truly dangerous requests always reach you, everywhere: deletions for good, system files, secrets leaving, real payments and RedGiant\'s own protections.'**
+  String get g4RqAlwaysYou;
+
+  /// No description provided for @g4RqModeAskText.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests reach you everywhere: here and on the chats you connected. Answer where it suits you: the first answer counts, and the other copies close by themselves.'**
+  String get g4RqModeAskText;
+
+  /// No description provided for @g4RqModeClassifierText.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing reaches you: the classifier decides, a model you choose. It reads each request with the conversation and writes why it decided so. Only the truly dangerous things (listed below) still reach you, everywhere.'**
+  String get g4RqModeClassifierText;
+
+  /// No description provided for @g4RqModeClassifierWarn.
+  ///
+  /// In en, this message translates to:
+  /// **'The classifier can be wrong, and each decision costs a small request to its model.'**
+  String get g4RqModeClassifierWarn;
+
+  /// No description provided for @g4RqTimeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to answer'**
+  String get g4RqTimeTitle;
+
+  /// No description provided for @g4RqTimeQ.
+  ///
+  /// In en, this message translates to:
+  /// **'How long should an agent wait for your answer?'**
+  String get g4RqTimeQ;
+
+  /// No description provided for @g4RqTimeQSpecial.
+  ///
+  /// In en, this message translates to:
+  /// **'How long do the truly dangerous things wait for your answer?'**
+  String get g4RqTimeQSpecial;
+
+  /// No description provided for @g4RqAfterSpecialText.
+  ///
+  /// In en, this message translates to:
+  /// **'If you do not answer within {time}, it is a no.'**
+  String g4RqAfterSpecialText(String time);
+
+  /// No description provided for @g4RqTimeNoneSpecial.
+  ///
+  /// In en, this message translates to:
+  /// **'They wait as long as it takes: the agent stays still until you answer.'**
+  String get g4RqTimeNoneSpecial;
+
+  /// No description provided for @g4RqSpecialTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The truly dangerous things'**
+  String get g4RqSpecialTitle;
+
+  /// No description provided for @g4RqSpecialQ.
+  ///
+  /// In en, this message translates to:
+  /// **'What always reaches you, wherever you are?'**
+  String get g4RqSpecialQ;
+
+  /// No description provided for @g4RqSpecialText.
+  ///
+  /// In en, this message translates to:
+  /// **'Only these. When an agent is about to do one of them it stops and waits for you: the request reaches you here and on the chats you connected, also with «Don\'t ask me anything», and the classifier never decides it.'**
+  String get g4RqSpecialText;
+
+  /// No description provided for @g4RqSpecialNot.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyday work is not on this list: sending code with git push, an ordinary message or email, putting a site online, changing the project\'s files, using a key from the keychain for its own site. Those follow your choice above.'**
+  String get g4RqSpecialNot;
+
+  /// No description provided for @g4RqCriticalExamples.
+  ///
+  /// In en, this message translates to:
+  /// **'For example:'**
+  String get g4RqCriticalExamples;
+
+  /// No description provided for @g4RqTimeNone.
+  ///
+  /// In en, this message translates to:
+  /// **'The agent waits as long as it takes. Requests to switch on a tool or use a key still end after 15 and 10 minutes.'**
+  String get g4RqTimeNone;
+
+  /// No description provided for @g4RqAfterQ.
+  ///
+  /// In en, this message translates to:
+  /// **'If you do not answer within {time}:'**
+  String g4RqAfterQ(String time);
+
+  /// No description provided for @g4RqAfterNo.
+  ///
+  /// In en, this message translates to:
+  /// **'It is a no'**
+  String get g4RqAfterNo;
+
+  /// No description provided for @g4RqAfterClassifier.
+  ///
+  /// In en, this message translates to:
+  /// **'The classifier decides'**
+  String get g4RqAfterClassifier;
+
+  /// No description provided for @g4RqAfterNoText.
+  ///
+  /// In en, this message translates to:
+  /// **'An approval nobody gives is always a no. To a question the agent goes on with its best guess and tells you which.'**
+  String get g4RqAfterNoText;
+
+  /// No description provided for @g4RqAfterClassifierText.
+  ///
+  /// In en, this message translates to:
+  /// **'When the time runs out the classifier decides in your place, as with «Don\'t ask me anything». The truly dangerous things are a no instead.'**
+  String get g4RqAfterClassifierText;
+
+  /// No description provided for @g4RqClassifierTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The classifier'**
+  String get g4RqClassifierTitle;
+
+  /// No description provided for @g4RqClassifierQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Which model decides for you?'**
+  String get g4RqClassifierQ;
+
+  /// No description provided for @g4RqClassifierModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get g4RqClassifierModel;
+
+  /// No description provided for @g4RqClassifierDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'The light model ({model})'**
+  String g4RqClassifierDefault(String model);
+
+  /// No description provided for @g4RqClassifierHow.
+  ///
+  /// In en, this message translates to:
+  /// **'It reads what the agent asks, its job and the last messages of the conversation; it answers yes or no with a reason, or picks an answer to a question. When in doubt it says no; if it fails, it is a no.'**
+  String get g4RqClassifierHow;
+
+  /// No description provided for @g4RqNoModel.
+  ///
+  /// In en, this message translates to:
+  /// **'none connected'**
+  String get g4RqNoModel;
+
+  /// No description provided for @g4RqSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: it counts from the next request.'**
+  String get g4RqSaved;
+
+  /// No description provided for @g4RqDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Decided without you'**
+  String get g4RqDoneTitle;
+
+  /// No description provided for @g4RqDoneLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Every request the classifier decided, or that ended because nobody answered in time, newest first.'**
+  String get g4RqDoneLead;
+
+  /// No description provided for @g4RqDoneEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No decision taken without you yet.'**
+  String get g4RqDoneEmpty;
+
+  /// No description provided for @g4RqOpenChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the conversation'**
+  String get g4RqOpenChat;
+
+  /// No description provided for @g4RqByModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Classifier ({model}):'**
+  String g4RqByModel(String model);
+
+  /// No description provided for @g4RqByClassifier.
+  ///
+  /// In en, this message translates to:
+  /// **'Classifier:'**
+  String get g4RqByClassifier;
+
+  /// No description provided for @g4RqByTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Time ran out:'**
+  String get g4RqByTimeout;
+
+  /// No description provided for @g4RqDecisionAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get g4RqDecisionAllow;
+
+  /// No description provided for @g4RqDecisionDeny.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get g4RqDecisionDeny;
+
+  /// No description provided for @g4RqDecisionAnswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Answered'**
+  String get g4RqDecisionAnswered;
+
+  /// No description provided for @g4RqDecisionBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked'**
+  String get g4RqDecisionBlocked;
+
+  /// No description provided for @g4RqKindApproval.
+  ///
+  /// In en, this message translates to:
+  /// **'action'**
+  String get g4RqKindApproval;
+
+  /// No description provided for @g4RqKindQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'question'**
+  String get g4RqKindQuestion;
+
+  /// No description provided for @g4RqKindPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'plan'**
+  String get g4RqKindPlan;
+
+  /// No description provided for @g4RqKindTool.
+  ///
+  /// In en, this message translates to:
+  /// **'tool'**
+  String get g4RqKindTool;
+
+  /// No description provided for @g4RqKindCredential.
+  ///
+  /// In en, this message translates to:
+  /// **'key'**
+  String get g4RqKindCredential;
+
+  /// No description provided for @g4RqKindAutomation.
+  ///
+  /// In en, this message translates to:
+  /// **'automation'**
+  String get g4RqKindAutomation;
+
+  /// No description provided for @g4SfSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: it counts from the next action of the agents.'**
+  String get g4SfSaved;
+
+  /// No description provided for @g4SfCustomOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Only you approve it'**
+  String get g4SfCustomOn;
+
+  /// No description provided for @g4CmAtWorkLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved at once, for the turns that start from now.'**
+  String get g4CmAtWorkLead;
+
+  /// No description provided for @g4RulesHub.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules'**
+  String get g4RulesHub;
+
+  /// No description provided for @g4TlExtLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed from Extensions (magic integrations, agents\' proposals, your own): every agent has them. Change or remove them there.'**
+  String get g4TlExtLead;
+
+  /// No description provided for @g4TlExtTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools of the extensions'**
+  String get g4TlExtTitle;
+
+  /// No description provided for @g4SfTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety and costs'**
+  String get g4SfTitle;
+
+  /// No description provided for @g4GenAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get g4GenAccount;
+
+  /// No description provided for @g4GenAgentInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Its instructions'**
+  String get g4GenAgentInstructions;
+
+  /// No description provided for @g4GenAgentLangAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All languages'**
+  String get g4GenAgentLangAll;
+
+  /// No description provided for @g4GenAgentLangChange.
+  ///
+  /// In en, this message translates to:
+  /// **'change'**
+  String get g4GenAgentLangChange;
+
+  /// No description provided for @g4GenAgentLangCommon.
+  ///
+  /// In en, this message translates to:
+  /// **'Most common'**
+  String get g4GenAgentLangCommon;
+
+  /// No description provided for @g4GenAgentLangHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'What every agent, the Chat and the shared memory write in. New conversations use it; open ones keep theirs.'**
+  String get g4GenAgentLangHelp;
+
+  /// No description provided for @g4GenAgentLangNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No language matches «{q}».'**
+  String g4GenAgentLangNone(String q);
+
+  /// No description provided for @g4GenAgentLangSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search a language'**
+  String get g4GenAgentLangSearch;
+
+  /// No description provided for @g4GenAgentLangSub.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents reply in it from the next conversation.'**
+  String get g4GenAgentLangSub;
+
+  /// No description provided for @g4GenAgentLangTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents\' language'**
+  String get g4GenAgentLangTitle;
+
+  /// No description provided for @g4GenAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'For every agent'**
+  String get g4GenAgents;
+
+  /// No description provided for @g4GenAgentsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'What every agent reads, and who tries again a task an agent gives up on.'**
+  String get g4GenAgentsLead;
+
+  /// No description provided for @g4GenAlreadySet.
+  ///
+  /// In en, this message translates to:
+  /// **'already set'**
+  String get g4GenAlreadySet;
+
+  /// No description provided for @g4GenBackupNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None: a task given up on stays so'**
+  String get g4GenBackupNone;
+
+  /// No description provided for @g4GenBackupText.
+  ///
+  /// In en, this message translates to:
+  /// **'A task an agent gives up on is tried once more by this model, in a new conversation.'**
+  String get g4GenBackupText;
+
+  /// No description provided for @g4GenBackupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup model for tasks'**
+  String get g4GenBackupTitle;
+
+  /// No description provided for @g4GenCare.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates and diagnostics'**
+  String get g4GenCare;
+
+  /// No description provided for @g4GenCareLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Whether a newer RedGiant is out, and a log to send when something goes wrong.'**
+  String get g4GenCareLead;
+
+  /// No description provided for @g4GenCloudPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'With {name}, what you say after the wake word goes to {name} through RedGiant\'s server; the wake word itself is still heard only in this page.'**
+  String g4GenCloudPrivacy(String name);
+
+  /// No description provided for @g4GenDebugClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the logs'**
+  String get g4GenDebugClear;
+
+  /// No description provided for @g4GenDebugClearConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete every log kept?'**
+  String get g4GenDebugClearConfirm;
+
+  /// No description provided for @g4GenDebugDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the logs'**
+  String get g4GenDebugDownload;
+
+  /// No description provided for @g4GenDebugForced.
+  ///
+  /// In en, this message translates to:
+  /// **'Turned on by the server\'s settings (REDGIANT_DEBUG=1).'**
+  String get g4GenDebugForced;
+
+  /// No description provided for @g4GenDebugHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug mode keeps a detailed log of everything RedGiant does: each step of starting a model with its times, the local engine\'s own messages, the requests, what the Windows program does. Turn it on when something is slow or goes wrong, repeat it, then download the logs and send them. It writes a lot (at most 300 MB, the oldest go first) and never writes passwords or keys.'**
+  String get g4GenDebugHelp;
+
+  /// No description provided for @g4GenDebugSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Logs kept: {size} in {files} files.'**
+  String g4GenDebugSize(String size, String files);
+
+  /// No description provided for @g4GenDebugSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug mode'**
+  String get g4GenDebugSwitch;
+
+  /// No description provided for @g4GenDebugText.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything RedGiant does, written in a log you can download and send.'**
+  String get g4GenDebugText;
+
+  /// No description provided for @g4GenDebugTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnostics'**
+  String get g4GenDebugTitle;
+
+  /// No description provided for @g4GenDraftDefaultUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'These are the built-in instructions, with what you wrote. Every tool stays as for the other agents.'**
+  String get g4GenDraftDefaultUsed;
+
+  /// No description provided for @g4GenDraftFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'{god} could not write them ({why}). Here are the built-in ones, with what you wrote.'**
+  String g4GenDraftFailed(String god, String why);
+
+  /// No description provided for @g4GenDraftLead.
+  ///
+  /// In en, this message translates to:
+  /// **'{god} writes them from the built-in ones, fitted to what you wrote and to its settings, and chooses the tools it needs. Read, change what you like, then create it.'**
+  String g4GenDraftLead(String god);
+
+  /// No description provided for @g4GenDraftRegenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Write them again'**
+  String get g4GenDraftRegenerate;
+
+  /// No description provided for @g4GenDraftToolOnDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'useful for its job'**
+  String get g4GenDraftToolOnDefault;
+
+  /// No description provided for @g4GenDraftToolsAllOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Every tool on, as for the other agents.'**
+  String get g4GenDraftToolsAllOn;
+
+  /// No description provided for @g4GenDraftToolsLikeOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'All as for the other agents'**
+  String get g4GenDraftToolsLikeOthers;
+
+  /// No description provided for @g4GenDraftToolsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} switched off, saving about {tokens} tokens on every message. If it needs one later, it asks you.'**
+  String g4GenDraftToolsSaved(String n, String tokens);
+
+  /// No description provided for @g4GenDraftToolsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Its tools'**
+  String get g4GenDraftToolsTitle;
+
+  /// No description provided for @g4GenDraftToolTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'{tokens} tokens'**
+  String g4GenDraftToolTokens(String tokens);
+
+  /// No description provided for @g4GenDraftUseDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the built-in ones'**
+  String get g4GenDraftUseDefault;
+
+  /// No description provided for @g4GenDraftWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'{god} is writing its instructions...'**
+  String g4GenDraftWorking(String god);
+
+  /// No description provided for @g4GenHasKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Key ready'**
+  String get g4GenHasKey;
+
+  /// No description provided for @g4GenImagesHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'An OpenAI key lets agents draw pictures; it costs money for each picture.'**
+  String get g4GenImagesHelp;
+
+  /// No description provided for @g4GenImagesKey.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenAI key for pictures (generate_image)'**
+  String get g4GenImagesKey;
+
+  /// No description provided for @g4GenImagesModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Picture model'**
+  String get g4GenImagesModel;
+
+  /// No description provided for @g4GenImagesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pictures'**
+  String get g4GenImagesTitle;
+
+  /// No description provided for @g4GenInstrText.
+  ///
+  /// In en, this message translates to:
+  /// **'What every agent should know or do: how you like answers, your conventions, what to avoid.'**
+  String get g4GenInstrText;
+
+  /// No description provided for @g4GenInstructionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What every agent should know or do, whoever it is: how you like answers, your conventions, things to avoid. They are added to each agent\'s own instructions (those are in each agent\'s card under Agents).'**
+  String get g4GenInstructionsHint;
+
+  /// No description provided for @g4GenInstructionsPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: answer in Italian; code and comments in English; never push without asking.'**
+  String get g4GenInstructionsPlaceholder;
+
+  /// No description provided for @g4GenInstructionsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: conversations started from now on follow them.'**
+  String get g4GenInstructionsSaved;
+
+  /// No description provided for @g4GenInstructionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions for every agent'**
+  String get g4GenInstructionsTitle;
+
+  /// No description provided for @g4GenInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'in use'**
+  String get g4GenInUse;
+
+  /// No description provided for @g4GenKeyChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Use another key'**
+  String get g4GenKeyChange;
+
+  /// No description provided for @g4GenKeyGet.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a {name} key'**
+  String g4GenKeyGet(String name);
+
+  /// No description provided for @g4GenKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept in the keychain, encrypted; it never reaches this page again.'**
+  String get g4GenKeyHelp;
+
+  /// No description provided for @g4GenKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} key'**
+  String g4GenKeyLabel(String name);
+
+  /// No description provided for @g4GenKeyLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Uses the {name} key you already gave (chat, extensions or voice).'**
+  String g4GenKeyLinked(String name);
+
+  /// No description provided for @g4GenLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Its look and language, then what every agent shares and the extra services. Each square opens its window; the lit ones are set.'**
+  String get g4GenLead;
+
+  /// No description provided for @g4GenLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'set by the environment'**
+  String get g4GenLocked;
+
+  /// No description provided for @g4GenLogout.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get g4GenLogout;
+
+  /// No description provided for @g4GenModelCloses.
+  ///
+  /// In en, this message translates to:
+  /// **'The provider closes this model on {date}: choose another one before then.'**
+  String g4GenModelCloses(String date);
+
+  /// No description provided for @g4GenNews.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new'**
+  String get g4GenNews;
+
+  /// No description provided for @g4GenNewsText.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything each release brought, newest first: also what you missed.'**
+  String get g4GenNewsText;
+
+  /// No description provided for @g4GenNewsVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String g4GenNewsVersion(String version);
+
+  /// No description provided for @g4GenOn.
+  ///
+  /// In en, this message translates to:
+  /// **'on'**
+  String get g4GenOn;
+
+  /// No description provided for @g4GenOwnSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant can run its own search engine (SearXNG): free, no keys, and every model can search the web with it, local ones too.'**
+  String get g4GenOwnSearchHint;
+
+  /// No description provided for @g4GenOwnSearchOn.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant\'s search engine is on: every agent and the Chat search the web with it.'**
+  String get g4GenOwnSearchOn;
+
+  /// No description provided for @g4GenOwnSearchStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start RedGiant\'s search engine'**
+  String get g4GenOwnSearchStart;
+
+  /// No description provided for @g4GenOwnSearchStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch it off'**
+  String get g4GenOwnSearchStop;
+
+  /// No description provided for @g4GenPriceKchars.
+  ///
+  /// In en, this message translates to:
+  /// **'{usd} per 1000 characters'**
+  String g4GenPriceKchars(String usd);
+
+  /// No description provided for @g4GenPriceMinute.
+  ///
+  /// In en, this message translates to:
+  /// **'about {usd} a minute'**
+  String g4GenPriceMinute(String usd);
+
+  /// No description provided for @g4GenPriceMtokens.
+  ///
+  /// In en, this message translates to:
+  /// **'{usd} per million audio tokens'**
+  String g4GenPriceMtokens(String usd);
+
+  /// No description provided for @g4GenQ.
+  ///
+  /// In en, this message translates to:
+  /// **'How do you want RedGiant?'**
+  String get g4GenQ;
+
+  /// No description provided for @g4GenRefineAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'After'**
+  String get g4GenRefineAfter;
+
+  /// No description provided for @g4GenRefineBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Before'**
+  String get g4GenRefineBefore;
+
+  /// No description provided for @g4GenRefineCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{del} words out, {add} words in'**
+  String g4GenRefineCount(String del, String add);
+
+  /// No description provided for @g4GenRefineGodModel.
+  ///
+  /// In en, this message translates to:
+  /// **'{god}\'s model'**
+  String g4GenRefineGodModel(String god);
+
+  /// No description provided for @g4GenRefineLegendAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'what is new'**
+  String get g4GenRefineLegendAdd;
+
+  /// No description provided for @g4GenRefineLegendDel.
+  ///
+  /// In en, this message translates to:
+  /// **'what goes away'**
+  String get g4GenRefineLegendDel;
+
+  /// No description provided for @g4GenRefineModel.
+  ///
+  /// In en, this message translates to:
+  /// **'The model that writes'**
+  String get g4GenRefineModel;
+
+  /// No description provided for @g4GenRewriteGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite'**
+  String get g4GenRewriteGo;
+
+  /// No description provided for @g4GenRewriteLead.
+  ///
+  /// In en, this message translates to:
+  /// **'{god} starts from the instructions in the field and fits them to what the agent does now. You see the changes first.'**
+  String g4GenRewriteLead(String god);
+
+  /// No description provided for @g4GenRewriteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite for the new job'**
+  String get g4GenRewriteTitle;
+
+  /// No description provided for @g4GenRewriteYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, rewrite them'**
+  String get g4GenRewriteYes;
+
+  /// No description provided for @g4GenSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get g4GenSaved;
+
+  /// No description provided for @g4GenSearchDocs.
+  ///
+  /// In en, this message translates to:
+  /// **'How to install SearXNG yourself'**
+  String get g4GenSearchDocs;
+
+  /// No description provided for @g4GenSearchHowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to set up {name}'**
+  String g4GenSearchHowTitle(String name);
+
+  /// No description provided for @g4GenSearchKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Key'**
+  String get g4GenSearchKey;
+
+  /// No description provided for @g4GenSearchKeyKept.
+  ///
+  /// In en, this message translates to:
+  /// **'A key is saved: leave empty to keep it.'**
+  String get g4GenSearchKeyKept;
+
+  /// No description provided for @g4GenSearchKeyPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the page of {name}\'s keys'**
+  String g4GenSearchKeyPage(String name);
+
+  /// No description provided for @g4GenSearchSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'From now on the models that cannot search by themselves use {name}.'**
+  String g4GenSearchSaved(String name);
+
+  /// No description provided for @g4GenSearchText.
+  ///
+  /// In en, this message translates to:
+  /// **'Lets every agent and the Chat look things up on the web.'**
+  String get g4GenSearchText;
+
+  /// No description provided for @g4GenSearchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Web search'**
+  String get g4GenSearchTitle;
+
+  /// No description provided for @g4GenSearchTried.
+  ///
+  /// In en, this message translates to:
+  /// **'It works: {n} results, the first «{first}».'**
+  String g4GenSearchTried(String n, String first);
+
+  /// No description provided for @g4GenSearchTriedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'It answered, but with no results for the test search.'**
+  String get g4GenSearchTriedEmpty;
+
+  /// No description provided for @g4GenSearchTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try it'**
+  String get g4GenSearchTry;
+
+  /// No description provided for @g4GenSearchUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Address of the SearXNG server'**
+  String get g4GenSearchUrl;
+
+  /// No description provided for @g4GenSearchUrlHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The address where your SearXNG answers.'**
+  String get g4GenSearchUrlHelp;
+
+  /// No description provided for @g4GenSearchUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this'**
+  String get g4GenSearchUse;
+
+  /// No description provided for @g4GenSearchWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Claude and the subscriptions search by themselves. The others (local models, OpenAI-compatible keys) use the service chosen here.'**
+  String get g4GenSearchWho;
+
+  /// No description provided for @g4GenServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get g4GenServices;
+
+  /// No description provided for @g4GenServicesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Extras the agents can use. Each one works only if you set it; leaving a field empty switches it off.'**
+  String get g4GenServicesHint;
+
+  /// No description provided for @g4GenSttCloudHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'In the cloud: {models}. From {price}.'**
+  String g4GenSttCloudHelp(String models, String price);
+
+  /// No description provided for @g4GenSttCompatible.
+  ///
+  /// In en, this message translates to:
+  /// **'Another compatible service'**
+  String get g4GenSttCompatible;
+
+  /// No description provided for @g4GenSttCompatibleHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Any service with the OpenAI transcription API (speaches, whisper.cpp\'s server…), at its address.'**
+  String get g4GenSttCompatibleHelp;
+
+  /// No description provided for @g4GenSttLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'On this computer'**
+  String get g4GenSttLocal;
+
+  /// No description provided for @g4GenSttLocalHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'whisper.cpp, started by RedGiant: free, nothing leaves the house.'**
+  String get g4GenSttLocalHelp;
+
+  /// No description provided for @g4GenSttRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'whisper on another computer'**
+  String get g4GenSttRemote;
+
+  /// No description provided for @g4GenSttRemoteHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'whisper-asr-webservice at its address, for a computer with a graphics card.'**
+  String get g4GenSttRemoteHelp;
+
+  /// No description provided for @g4GenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get g4GenTitle;
+
+  /// No description provided for @g4GenTrying.
+  ///
+  /// In en, this message translates to:
+  /// **'Trying the model…'**
+  String get g4GenTrying;
+
+  /// No description provided for @g4GenUiLangHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The pages, the menus and the setup.'**
+  String get g4GenUiLangHelp;
+
+  /// No description provided for @g4GenUiLangTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface language'**
+  String get g4GenUiLangTitle;
+
+  /// No description provided for @g4GenUpdHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant looks for a new version by itself at the first start of each day. Here you can look now.'**
+  String get g4GenUpdHelp;
+
+  /// No description provided for @g4GenVoiceHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Turns voice messages (from Telegram or the microphone) into text.'**
+  String get g4GenVoiceHelp;
+
+  /// No description provided for @g4GenVoiceKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Transcription service key'**
+  String get g4GenVoiceKey;
+
+  /// No description provided for @g4GenVoiceLocalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No account and nothing leaves this computer. RedGiant downloads whisper.cpp and a multilingual model once (about 560 MB, with its bar in the corner) and runs them itself.'**
+  String get g4GenVoiceLocalHint;
+
+  /// No description provided for @g4GenVoiceModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Transcription model'**
+  String get g4GenVoiceModel;
+
+  /// No description provided for @g4GenVoiceModelHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get g4GenVoiceModelHead;
+
+  /// No description provided for @g4GenVoiceNeedsKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the {name} key first.'**
+  String g4GenVoiceNeedsKey(String name);
+
+  /// No description provided for @g4GenVoiceNeedsUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the service\'s address first.'**
+  String get g4GenVoiceNeedsUrl;
+
+  /// No description provided for @g4GenVoiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice messages'**
+  String get g4GenVoiceTitle;
+
+  /// No description provided for @g4GenVoiceUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Address of the transcription service'**
+  String get g4GenVoiceUrl;
+
+  /// No description provided for @g4GenWritten.
+  ///
+  /// In en, this message translates to:
+  /// **'written'**
+  String get g4GenWritten;
+
+  /// No description provided for @g4GenLook.
+  ///
+  /// In en, this message translates to:
+  /// **'Look and language'**
+  String get g4GenLook;
+
+  /// No description provided for @g4GenBackupSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: it applies to tasks given up on from now on.'**
+  String get g4GenBackupSaved;
+
+  /// No description provided for @g4GenDebugSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: {name}'**
+  String g4GenDebugSaved(String name);
+
+  /// No description provided for @g4GenNewsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What is new in RedGiant {version}'**
+  String g4GenNewsTitle(String version);
+
+  /// No description provided for @g4AgTreeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your team'**
+  String get g4AgTreeTitle;
+
+  /// No description provided for @g4AgTreeOf.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents of {project}'**
+  String g4AgTreeOf(String project);
+
+  /// No description provided for @g4AgTreeLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Who works for you. God leads everything; each project has its lead, who hands work to the project\'s agents. An agent sees only its own project; the inspector only reads.'**
+  String get g4AgTreeLead;
+
+  /// No description provided for @g4AgTreeProjectLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The project\'s lead, the agents it hands work to, and those of other places assigned to it.'**
+  String get g4AgTreeProjectLead;
+
+  /// No description provided for @g4AgAllProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'All projects'**
+  String get g4AgAllProjects;
+
+  /// No description provided for @g4AgShowStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Also the stopped ones'**
+  String get g4AgShowStopped;
+
+  /// No description provided for @g4AgNoLead.
+  ///
+  /// In en, this message translates to:
+  /// **'This project has no orchestrator yet.'**
+  String get g4AgNoLead;
+
+  /// No description provided for @g4AgNear.
+  ///
+  /// In en, this message translates to:
+  /// **'Demi-God and personal agents'**
+  String get g4AgNear;
+
+  /// No description provided for @g4AgAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'assigned'**
+  String get g4AgAssigned;
+
+  /// No description provided for @g4AgArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'archived'**
+  String get g4AgArchived;
+
+  /// No description provided for @g4AgOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get g4AgOpen;
+
+  /// No description provided for @g4AgClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get g4AgClose;
+
+  /// No description provided for @g4AgAddShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent under it'**
+  String get g4AgAddShort;
+
+  /// No description provided for @g4AgAddUnder.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an agent under {name}'**
+  String g4AgAddUnder(String name);
+
+  /// No description provided for @g4AgKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Kind'**
+  String get g4AgKind;
+
+  /// No description provided for @g4AgWhatItDoes.
+  ///
+  /// In en, this message translates to:
+  /// **'What it does'**
+  String get g4AgWhatItDoes;
+
+  /// No description provided for @g4AgModelDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'The default model'**
+  String get g4AgModelDefault;
+
+  /// No description provided for @g4AgOpenChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Open its conversation'**
+  String get g4AgOpenChat;
+
+  /// No description provided for @g4AgReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Its project is archived: you can read its settings, nothing changes until the project is restored.'**
+  String get g4AgReadOnly;
+
+  /// No description provided for @g4AgGroupAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Services and routines'**
+  String get g4AgGroupAssistant;
+
+  /// No description provided for @g4AgRewriteOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'You changed what {name} does. Do you want {god} to rewrite its instructions for the new job? You will see them before anything changes.'**
+  String g4AgRewriteOffer(String name, String god);
+
+  /// No description provided for @g4AgRewriteNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No, keep them'**
+  String get g4AgRewriteNo;
+
+  /// No description provided for @g4AgRewriteYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, rewrite them'**
+  String get g4AgRewriteYes;
+
+  /// No description provided for @g4AgServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get g4AgServices;
+
+  /// No description provided for @g4AgServicesHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The services it may use. Changes apply to its new conversations.'**
+  String get g4AgServicesHelp;
+
+  /// No description provided for @g4AgNoServices.
+  ///
+  /// In en, this message translates to:
+  /// **'No services added yet.'**
+  String get g4AgNoServices;
+
+  /// No description provided for @g4AgAddServiceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You add services (Notion, Linear, GitHub…) in Settings, Extensions.'**
+  String get g4AgAddServiceHint;
+
+  /// No description provided for @g4AgSvcChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking…'**
+  String get g4AgSvcChecking;
+
+  /// No description provided for @g4AgSvcWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'Works · {n} tools'**
+  String g4AgSvcWorks(int n);
+
+  /// No description provided for @g4AgSvcLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs you to sign in'**
+  String get g4AgSvcLogin;
+
+  /// No description provided for @g4AgSvcBroken.
+  ///
+  /// In en, this message translates to:
+  /// **'Not working'**
+  String get g4AgSvcBroken;
+
+  /// No description provided for @g4AgSavedNewChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: it applies to its new conversations.'**
+  String get g4AgSavedNewChats;
+
+  /// No description provided for @g4AgRoutines.
+  ///
+  /// In en, this message translates to:
+  /// **'Routines'**
+  String get g4AgRoutines;
+
+  /// No description provided for @g4AgRoutinesHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Work it does by itself at a set time or when something happens.'**
+  String get g4AgRoutinesHelp;
+
+  /// No description provided for @g4AgNoRoutines.
+  ///
+  /// In en, this message translates to:
+  /// **'No routines yet.'**
+  String get g4AgNoRoutines;
+
+  /// No description provided for @g4AgNewRoutine.
+  ///
+  /// In en, this message translates to:
+  /// **'New routine'**
+  String get g4AgNewRoutine;
+
+  /// No description provided for @g4AgNewRoutineOf.
+  ///
+  /// In en, this message translates to:
+  /// **'A new routine for {name}'**
+  String g4AgNewRoutineOf(String name);
+
+  /// No description provided for @g4AgOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get g4AgOn;
+
+  /// No description provided for @g4AgOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get g4AgOff;
+
+  /// No description provided for @g4AgRoutineWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'What should it do?'**
+  String get g4AgRoutineWhat;
+
+  /// No description provided for @g4AgRoutineWhatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: look at today\'s appointments and send me a summary.'**
+  String get g4AgRoutineWhatHint;
+
+  /// No description provided for @g4AgRoutineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Its title (optional)'**
+  String get g4AgRoutineTitle;
+
+  /// No description provided for @g4AgRoutineWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get g4AgRoutineWhen;
+
+  /// No description provided for @g4AgEvery_daily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day'**
+  String get g4AgEvery_daily;
+
+  /// No description provided for @g4AgEvery_weekdays.
+  ///
+  /// In en, this message translates to:
+  /// **'Monday to Friday'**
+  String get g4AgEvery_weekdays;
+
+  /// No description provided for @g4AgEvery_weekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every Monday'**
+  String get g4AgEvery_weekly;
+
+  /// No description provided for @g4AgEvery_hourly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every hour'**
+  String get g4AgEvery_hourly;
+
+  /// No description provided for @g4AgRoutineTime.
+  ///
+  /// In en, this message translates to:
+  /// **'At what time (HH:MM)'**
+  String get g4AgRoutineTime;
+
+  /// No description provided for @g4AgRoutineTimeBad.
+  ///
+  /// In en, this message translates to:
+  /// **'A time like 09:00'**
+  String get g4AgRoutineTimeBad;
+
+  /// No description provided for @g4AgRoutineSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the routine'**
+  String get g4AgRoutineSave;
+
+  /// No description provided for @g4AgRoutineOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'Once, {at}'**
+  String g4AgRoutineOnce(String at);
+
+  /// No description provided for @g4AgWhenDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day at {time}'**
+  String g4AgWhenDaily(String time);
+
+  /// No description provided for @g4AgWhenWeekdays.
+  ///
+  /// In en, this message translates to:
+  /// **'Monday to Friday at {time}'**
+  String g4AgWhenWeekdays(String time);
+
+  /// No description provided for @g4AgWhenWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every Monday at {time}'**
+  String g4AgWhenWeekly(String time);
+
+  /// No description provided for @g4AgSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get g4AgSkills;
+
+  /// No description provided for @g4AgSkillsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'After a job that went well, tell it «save this as a skill»: it writes the steps down and, once you approve them in Extensions, every agent can use them.'**
+  String get g4AgSkillsHelp;
+
+  /// No description provided for @g4AgShared.
+  ///
+  /// In en, this message translates to:
+  /// **'What every agent knows about you'**
+  String get g4AgShared;
+
+  /// No description provided for @g4AgSharedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Who you are, your work, your tools: shared by all your personal agents.'**
+  String get g4AgSharedHelp;
+
+  /// No description provided for @g4AgStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'What should it do?'**
+  String get g4AgStep1;
+
+  /// No description provided for @g4AgStep2Help.
+  ///
+  /// In en, this message translates to:
+  /// **'It works there, under the project\'s lead.'**
+  String get g4AgStep2Help;
+
+  /// No description provided for @g4AgStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Its name'**
+  String get g4AgStep3;
+
+  /// No description provided for @g4AgStep4Help.
+  ///
+  /// In en, this message translates to:
+  /// **'Usually the same as the project\'s lead; choose another for a cheaper or stronger one.'**
+  String get g4AgStep4Help;
+
+  /// No description provided for @g4AgStep5.
+  ///
+  /// In en, this message translates to:
+  /// **'How much it may do alone'**
+  String get g4AgStep5;
+
+  /// No description provided for @g4AgStep2Asst.
+  ///
+  /// In en, this message translates to:
+  /// **'Which services may it use?'**
+  String get g4AgStep2Asst;
+
+  /// No description provided for @g4AgStep2AsstHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It sees only the services you switch on here. Anything that sends, publishes, deletes or pays always asks you first.'**
+  String get g4AgStep2AsstHelp;
+
+  /// No description provided for @g4AgStep3Asst.
+  ///
+  /// In en, this message translates to:
+  /// **'How much may it do alone?'**
+  String get g4AgStep3Asst;
+
+  /// No description provided for @g4AgWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it works'**
+  String get g4AgWhere;
+
+  /// No description provided for @g4AgWhereHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'In a subproject it writes only in its folder; the rest of the project it can read, and changes there go through the lead.'**
+  String get g4AgWhereHelp;
+
+  /// No description provided for @g4AgWholeProject.
+  ///
+  /// In en, this message translates to:
+  /// **'The whole project'**
+  String get g4AgWholeProject;
+
+  /// No description provided for @g4AgOwnWords.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the job in your own words'**
+  String get g4AgOwnWords;
+
+  /// No description provided for @g4AgOwnWordsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: keeps the website\'s texts in Italian and English and checks the links.'**
+  String get g4AgOwnWordsHelp;
+
+  /// No description provided for @g4AgRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'recommended'**
+  String get g4AgRecommended;
+
+  /// No description provided for @g4AgModeText_auto.
+  ///
+  /// In en, this message translates to:
+  /// **'Works by itself; asks only for risky actions (as set in Safety).'**
+  String get g4AgModeText_auto;
+
+  /// No description provided for @g4AgModeText_manual.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks before every change to files or commands.'**
+  String get g4AgModeText_manual;
+
+  /// No description provided for @g4AgModeText_plan.
+  ///
+  /// In en, this message translates to:
+  /// **'First proposes a plan; works only once it is approved.'**
+  String get g4AgModeText_plan;
+
+  /// No description provided for @g4AgModeText_readonly.
+  ///
+  /// In en, this message translates to:
+  /// **'Reads and answers, changes nothing.'**
+  String get g4AgModeText_readonly;
+
+  /// No description provided for @g4AgAsstMode_auto.
+  ///
+  /// In en, this message translates to:
+  /// **'On its own'**
+  String get g4AgAsstMode_auto;
+
+  /// No description provided for @g4AgAsstMode_manual.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks first'**
+  String get g4AgAsstMode_manual;
+
+  /// No description provided for @g4AgAsstModeText_auto.
+  ///
+  /// In en, this message translates to:
+  /// **'Works by itself; asks you only before what leaves (sending, publishing, paying) or is risky.'**
+  String get g4AgAsstModeText_auto;
+
+  /// No description provided for @g4AgAsstModeText_manual.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks you before every change.'**
+  String get g4AgAsstModeText_manual;
+
+  /// No description provided for @g4AgAsstPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'A personal agent does one job for you, outside the projects. God hands it the work that is its own; you can also talk to it directly.'**
+  String get g4AgAsstPurpose;
+
+  /// No description provided for @g4AgAsstRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Its job'**
+  String get g4AgAsstRole;
+
+  /// No description provided for @g4AgAsstRoleHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'One or two sentences: God reads them to decide what to hand to it, so keep it narrow.'**
+  String get g4AgAsstRoleHelp;
+
+  /// No description provided for @g4AgOrAskGod.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sure which agents you need?'**
+  String get g4AgOrAskGod;
+
+  /// No description provided for @g4AgAskGod.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask {god}'**
+  String g4AgAskGod(String god);
+
+  /// No description provided for @g4AgAskGodMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Which personal agents would be useful to me? Look at what I do with you and suggest two or three, each with a narrow job and the services it needs. Create them only after I say yes.'**
+  String get g4AgAskGodMessage;
+
+  /// No description provided for @g4AgDraftNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: {god} writes its instructions'**
+  String g4AgDraftNext(String god);
+
+  /// No description provided for @g4AgDraftNextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{god} will write its instructions and choose its tools; you see them before it is created.'**
+  String g4AgDraftNextHint(String god);
+
+  /// No description provided for @g4AgDraftTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Its instructions and tools'**
+  String get g4AgDraftTitle;
+
+  /// No description provided for @g4AgReviewWritten.
+  ///
+  /// In en, this message translates to:
+  /// **'written for it'**
+  String get g4AgReviewWritten;
+
+  /// No description provided for @g4AgReviewBuiltIn.
+  ///
+  /// In en, this message translates to:
+  /// **'the built-in ones'**
+  String get g4AgReviewBuiltIn;
+
+  /// No description provided for @g4AgNoneChosen.
+  ///
+  /// In en, this message translates to:
+  /// **'none'**
+  String get g4AgNoneChosen;
+
+  /// No description provided for @g4AgRole_coder.
+  ///
+  /// In en, this message translates to:
+  /// **'Programmer'**
+  String get g4AgRole_coder;
+
+  /// No description provided for @g4AgRoleText_coder.
+  ///
+  /// In en, this message translates to:
+  /// **'Writes and changes the code, runs the tests.'**
+  String get g4AgRoleText_coder;
+
+  /// No description provided for @g4AgRole_reviewer.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviewer'**
+  String get g4AgRole_reviewer;
+
+  /// No description provided for @g4AgRoleText_reviewer.
+  ///
+  /// In en, this message translates to:
+  /// **'Checks changes for bugs and unclear code, says where and why.'**
+  String get g4AgRoleText_reviewer;
+
+  /// No description provided for @g4AgRole_researcher.
+  ///
+  /// In en, this message translates to:
+  /// **'Researcher'**
+  String get g4AgRole_researcher;
+
+  /// No description provided for @g4AgRoleText_researcher.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks things up on the web and in the files, with sources.'**
+  String get g4AgRoleText_researcher;
+
+  /// No description provided for @g4AgRole_writer.
+  ///
+  /// In en, this message translates to:
+  /// **'Writer'**
+  String get g4AgRole_writer;
+
+  /// No description provided for @g4AgRoleText_writer.
+  ///
+  /// In en, this message translates to:
+  /// **'Documentation, READMEs and texts, clear and up to date.'**
+  String get g4AgRoleText_writer;
+
+  /// No description provided for @g4AgRole_tester.
+  ///
+  /// In en, this message translates to:
+  /// **'Tester'**
+  String get g4AgRole_tester;
+
+  /// No description provided for @g4AgRoleText_tester.
+  ///
+  /// In en, this message translates to:
+  /// **'Writes and runs tests, reproduces bugs.'**
+  String get g4AgRoleText_tester;
+
+  /// No description provided for @g4AgRole_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Something else'**
+  String get g4AgRole_custom;
+
+  /// No description provided for @g4AgRoleText_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'You describe the job in your own words.'**
+  String get g4AgRoleText_custom;
+
+  /// No description provided for @g4AgJob_secretary.
+  ///
+  /// In en, this message translates to:
+  /// **'Secretary'**
+  String get g4AgJob_secretary;
+
+  /// No description provided for @g4AgJobHint_secretary.
+  ///
+  /// In en, this message translates to:
+  /// **'Your diary, your tasks and messages; a summary every morning.'**
+  String get g4AgJobHint_secretary;
+
+  /// No description provided for @g4AgJobText_secretary.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep my tasks and appointments in order, remind me of deadlines and give me a short summary of the day when I ask. Never send anything in my name without asking.'**
+  String get g4AgJobText_secretary;
+
+  /// No description provided for @g4AgJob_researcher.
+  ///
+  /// In en, this message translates to:
+  /// **'Researcher'**
+  String get g4AgJob_researcher;
+
+  /// No description provided for @g4AgJobHint_researcher.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks things up on the web and reports with sources.'**
+  String get g4AgJobHint_researcher;
+
+  /// No description provided for @g4AgJobText_researcher.
+  ///
+  /// In en, this message translates to:
+  /// **'Look things up on the web when I ask, compare the sources and report what you found with the links, saying what you could not confirm.'**
+  String get g4AgJobText_researcher;
+
+  /// No description provided for @g4AgJob_social.
+  ///
+  /// In en, this message translates to:
+  /// **'Social media'**
+  String get g4AgJob_social;
+
+  /// No description provided for @g4AgJobHint_social.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepares posts and keeps an eye on your pages.'**
+  String get g4AgJobHint_social;
+
+  /// No description provided for @g4AgJobText_social.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare posts for my pages in my style, propose them to me before publishing and tell me how the last ones went.'**
+  String get g4AgJobText_social;
+
+  /// No description provided for @g4AgJob_accounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get g4AgJob_accounts;
+
+  /// No description provided for @g4AgJobHint_accounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoices, payments and expenses, in order.'**
+  String get g4AgJobHint_accounts;
+
+  /// No description provided for @g4AgJobText_accounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep invoices, payments and expenses in order, tell me what is due and what is missing. Never pay or refund without my approval.'**
+  String get g4AgJobText_accounts;
+
+  /// No description provided for @g4AgJob_tech.
+  ///
+  /// In en, this message translates to:
+  /// **'Tech helper'**
+  String get g4AgJob_tech;
+
+  /// No description provided for @g4AgJobHint_tech.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers technical questions and fixes small things.'**
+  String get g4AgJobHint_tech;
+
+  /// No description provided for @g4AgJobText_tech.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer my technical questions simply, with the steps to follow, and fix small problems when I ask.'**
+  String get g4AgJobText_tech;
+
+  /// No description provided for @g4AgJob_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'In my own words'**
+  String get g4AgJob_custom;
+
+  /// No description provided for @g4AgJobHint_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the job yourself.'**
+  String get g4AgJobHint_custom;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

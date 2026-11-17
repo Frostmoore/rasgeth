@@ -5630,4 +5630,1410 @@ class AppLocalizationsIt extends AppLocalizations {
   String chatFileDownloadFailed(String name) {
     return 'Non sono riuscito a scaricare $name';
   }
+
+  @override
+  String get g4SfSkillsAsk => 'Fammele vedere prima';
+
+  @override
+  String get g4SfSkillsAskText =>
+      'Una skill provata aspetta in Impostazioni › Estensioni finché non la approvi.';
+
+  @override
+  String get g4SfSkillsAuto => 'Installale quando passano le prove';
+
+  @override
+  String get g4SfSkillsAutoText =>
+      'Una skill che passa le sue prove è subito pronta; puoi toglierla da Estensioni.';
+
+  @override
+  String get g4SfGuardianTitle => 'Il guardiano';
+
+  @override
+  String get g4SfGuardianAskText =>
+      'Un file nella tua home, una cartella di sistema, un altro progetto: l\'agente si ferma e te lo chiede, sul web o su Telegram. Leggere è sempre libero.';
+
+  @override
+  String get g4SfGuardianAutoText =>
+      'Gli agenti scrivono dove serve senza chiedere. Gli altri pericoli che scegli qui sotto chiedono comunque.';
+
+  @override
+  String get g4SfCareful => 'Prudente';
+
+  @override
+  String get g4SfCarefulText =>
+      'Ogni azione rischiosa aspetta te. La scelta più sicura, anche la più lenta.';
+
+  @override
+  String get g4SfBalanced => 'Equilibrata';
+
+  @override
+  String get g4SfBalancedText =>
+      'Approvi tu quello che non si può annullare (pubblicare, storia del codice, dischi, password, modifiche a RedGiant); il resto lo approvano gli agenti che guidano.';
+
+  @override
+  String get g4SfFree => 'Libera';
+
+  @override
+  String get g4SfFreeText =>
+      'Gli agenti che guidano approvano quasi tutto; a te chiedono solo per le password e per cambiare RedGiant stesso.';
+
+  @override
+  String get g4SfPersonalize => 'Personalizza';
+
+  @override
+  String get g4SfNoLimit => 'nessun limite';
+
+  @override
+  String get g4SfNothingPaid =>
+      'Usi solo abbonamenti o modelli locali: niente si paga a consumo, quindi non c\'è un limite di spesa da mettere. Con gli abbonamenti contano i limiti del piano (li vedi in alto).';
+
+  @override
+  String get g4SfKeepForever => 'sempre';
+
+  @override
+  String get g4SfKeep365 => 'un anno';
+
+  @override
+  String get g4SfKeep90 => 'tre mesi';
+
+  @override
+  String get g4SfKeep30 => 'un mese';
+
+  @override
+  String get g4SfDoneBtn => 'Fatto';
+
+  @override
+  String get g4SfLead =>
+      'Quattro decisioni, ognuna in una scheda. Cambi tutto quando vuoi dalle Impostazioni.';
+
+  @override
+  String get g4SfGuardQ => 'Un agente vuole scrivere fuori dal suo progetto. Cosa succede?';
+
+  @override
+  String get g4SfGuardAsk => 'Mi chiede';
+
+  @override
+  String get g4SfGuardAuto => 'Lo lascio fare';
+
+  @override
+  String get g4SfApprTitle => 'Le approvazioni';
+
+  @override
+  String get g4SfApprQ =>
+      'Chi dice sì prima di un\'azione rischiosa, come cancellare o pubblicare?';
+
+  @override
+  String g4SfApprCustom(String n, String of) {
+    return 'Una scelta tua: $n cose su $of le approvi solo tu.';
+  }
+
+  @override
+  String get g4SfCustomTitle => 'Cosa approvi solo tu';
+
+  @override
+  String g4SfCustomLead(String god) {
+    return 'Prima di queste azioni un agente chiede. Acceso: lo puoi approvare solo tu. Spento: può dire sì anche l\'agente che lo guida ($god o il capo del progetto).';
+  }
+
+  @override
+  String g4SfBackTo(String preset) {
+    return 'Torna a $preset';
+  }
+
+  @override
+  String get g4SfBudgetTitle => 'Il limite di spesa';
+
+  @override
+  String get g4SfBudgetQ => 'Quanto può spendere RedGiant al massimo con le tue chiavi API?';
+
+  @override
+  String get g4SfBudgetQFree =>
+      'Con le chiavi API un limite ferma gli agenti prima che spendano troppo.';
+
+  @override
+  String get g4SfBudgetOther => 'altro';
+
+  @override
+  String g4SfBudgetSay(String usd) {
+    return 'Arrivato a \$$usd, gli agenti si fermano e te lo dicono; lo alzi quando vuoi.';
+  }
+
+  @override
+  String get g4SfBudgetNone => 'Nessun limite: occhio alle chiavi a consumo.';
+
+  @override
+  String get g4SfSkillsTitle => 'Le skill degli agenti';
+
+  @override
+  String get g4SfSkillsQ =>
+      'Dopo un problema difficile un agente può salvare come l\'ha risolto, per tutti. Le installo da solo?';
+
+  @override
+  String get g4SfSkillsTools => 'Gli strumenti che eseguono codice aspettano sempre te.';
+
+  @override
+  String get g4SfWhereAgents =>
+      'Gli agenti lavorano direttamente su questo computer, nella cartella del progetto: il guardiano controlla ogni comando che esce da lì.';
+
+  @override
+  String get g4SfKeepFor => 'Tieni le conversazioni per';
+
+  @override
+  String get g4TlSection => 'Strumenti';
+
+  @override
+  String get g4TlQ => 'Quali strumenti hanno gli agenti?';
+
+  @override
+  String get g4TlLead =>
+      'Ogni strumento viene descritto al modello a ogni messaggio, e questo costa token. Spegni quelli che non ti servono: per tutti gli agenti qui, oppure per un agente solo dalla sua finestra, scheda Strumenti.';
+
+  @override
+  String get g4TlNewOnly =>
+      'Le modifiche valgono dalle conversazioni nuove: quelle già aperte tengono i loro strumenti.';
+
+  @override
+  String g4TlTotal(String n) {
+    return 'Circa $n token a ogni messaggio';
+  }
+
+  @override
+  String g4TlSaved(String n) {
+    return 'Spenti: $n token risparmiati a ogni messaggio';
+  }
+
+  @override
+  String get g4TlNoneSaved => 'Niente spento';
+
+  @override
+  String g4TlWeight(String n) {
+    return 'circa $n token a ogni messaggio';
+  }
+
+  @override
+  String g4TlNeeded(String why) {
+    return 'Serve sempre: $why';
+  }
+
+  @override
+  String get g4TlLoading => 'Peso gli strumenti…';
+
+  @override
+  String get g4TlSearch => 'Cerca uno strumento: nome, comando o cosa fa';
+
+  @override
+  String g4TlNoMatch(String q) {
+    return 'Nessuno strumento per «$q».';
+  }
+
+  @override
+  String g4TlError(String error) {
+    return 'Non riesco a leggere gli strumenti: $error';
+  }
+
+  @override
+  String g4TlHowMany(String all, String on) {
+    return '$on su $all accesi';
+  }
+
+  @override
+  String g4TlExceptOn(String names) {
+    return 'Acceso lo stesso per: $names (scelta loro)';
+  }
+
+  @override
+  String g4TlExceptOff(String names) {
+    return 'Spento per: $names (scelta loro)';
+  }
+
+  @override
+  String get g4TlExceptReset => 'Come per tutti';
+
+  @override
+  String get g4CmSection => 'Comandi';
+
+  @override
+  String get g4CmOneDay => '1 giorno';
+
+  @override
+  String g4CmDays(String n) {
+    return '$n giorni';
+  }
+
+  @override
+  String g4CmHours(String n) {
+    return '$n ore';
+  }
+
+  @override
+  String get g4CmOneHour => '1 ora';
+
+  @override
+  String g4CmMinutes(String n) {
+    return '$n min';
+  }
+
+  @override
+  String get g4CmNoLimit => 'Senza limite';
+
+  @override
+  String get g4CmPageQ => 'Quanto possono durare i comandi degli agenti?';
+
+  @override
+  String get g4CmPageLead =>
+      'Gli agenti lanciano comandi su questo computer: alcuni finiscono subito, altri (un server di sviluppo, un controllo dei file, una build lunga) restano accesi in sottofondo mentre l\'agente fa altro.';
+
+  @override
+  String get g4CmBgTitle => 'Comandi in sottofondo';
+
+  @override
+  String get g4CmBgLead =>
+      'Server, controlli dei file e build lunghe. Li vedi nella striscia sopra la casella del messaggio e lì puoi fermarli.';
+
+  @override
+  String get g4CmAtOnce => 'Insieme in una conversazione';
+
+  @override
+  String get g4CmAtOnceHelp =>
+      'Raggiunto il limite, l\'agente deve fermarne uno prima di avviarne un altro.';
+
+  @override
+  String get g4CmAtOnceWarn =>
+      'Senza limite: un agente può avviarne quanti vuole. Ognuno usa processore e memoria; se il computer rallenta, fermane qualcuno dalla striscia.';
+
+  @override
+  String get g4CmLong => 'Quanto può durare uno';
+
+  @override
+  String get g4CmLongHelp => 'Passato questo tempo il comando si ferma da solo.';
+
+  @override
+  String get g4CmLongWarn =>
+      'Senza limite: un comando resta acceso finché tu o l\'agente lo fermate, anche per giorni. Va bene per un server di sviluppo; ricordati di fermare quello che non ti serve più.';
+
+  @override
+  String get g4CmLog => 'Quanto può crescere il suo registro';
+
+  @override
+  String get g4CmLogHelp =>
+      'Ogni riga è tenuta con la sua ora. Oltre questa misura se ne va la metà più vecchia.';
+
+  @override
+  String get g4CmLogWarn =>
+      'Senza limite: un comando che scrive molto può riempire il disco col tempo. I registri sono nella cartella .redgiant/commands del progetto.';
+
+  @override
+  String get g4CmBashTitle => 'Comandi normali';
+
+  @override
+  String get g4CmBashLead =>
+      'Quelli che l\'agente aspetta prima di andare avanti (test, un\'installazione, una conversione).';
+
+  @override
+  String get g4CmBash => 'Attesa più lunga';
+
+  @override
+  String get g4CmBashHelp =>
+      'L\'agente può chiedere meno, mai di più. Per lavori più lunghi usa il sottofondo.';
+
+  @override
+  String get g4CmStepsTitle => 'Passi in un turno';
+
+  @override
+  String get g4CmStepsLead =>
+      'In un turno un agente ragiona, usa uno strumento, legge il risultato e va avanti. Oltre il limite si ferma e ti dice a che punto è; il pulsante «Continua» sotto il suo messaggio lo fa andare avanti.';
+
+  @override
+  String get g4CmSteps => 'Passi al massimo';
+
+  @override
+  String g4CmStepsHelp(String n) {
+    return 'Un passo è una chiamata al modello. Predefinito: nessun limite nelle conversazioni con te; $n per automazioni e compiti, che nessuno guarda. Un numero o «Nessun limite» vale per tutti i turni.';
+  }
+
+  @override
+  String get g4CmStepsDefault => 'Predefinito';
+
+  @override
+  String get g4CmStepsWarn =>
+      'Senza limite, anche per automazioni e compiti: un agente può lavorare per ore in un solo turno. Lo fermano solo i budget: tienine uno attivo (Impostazioni, Budget) se il modello costa.';
+
+  @override
+  String get g4CmDefaults => 'Torna ai predefiniti';
+
+  @override
+  String get g4CmSaved => 'Salvato: vale dal prossimo comando e dal prossimo messaggio.';
+
+  @override
+  String get g4CmUndo => 'Annulla';
+
+  @override
+  String get g4CmUndone => 'Annullato: sono tornati i valori di prima.';
+
+  @override
+  String get g4RqSection => 'Richieste a te';
+
+  @override
+  String get g4RqPageQ => 'Quando un agente ha bisogno di te';
+
+  @override
+  String get g4RqPageLead =>
+      'Gli agenti chiedono prima delle azioni rischiose, ti fanno domande, propongono piani, chiedono uno strumento o una chiave. Scegli se devono chiederlo a te, e quanto ti aspettano.';
+
+  @override
+  String get g4RqModeTitle => 'Chiedermelo o no';
+
+  @override
+  String get g4RqModeQ => 'Vuoi rispondere tu alle richieste degli agenti?';
+
+  @override
+  String get g4RqModeAsk => 'Chiedimelo';
+
+  @override
+  String get g4RqModeClassifier => 'Non chiedermi niente';
+
+  @override
+  String get g4RqAlwaysYou =>
+      'Anche con «Non chiedermi niente», le richieste davvero pericolose arrivano sempre a te, ovunque: cancellazioni definitive, file di sistema, segreti che escono, pagamenti veri e le protezioni di RedGiant.';
+
+  @override
+  String get g4RqModeAskText =>
+      'Le richieste ti arrivano ovunque: qui e sulle chat collegate. Rispondi dove ti è comodo: vale la prima risposta, e le altre copie si chiudono da sole.';
+
+  @override
+  String get g4RqModeClassifierText =>
+      'Non ti arriva niente: decide il classificatore, un modello che scegli tu. Legge ogni richiesta con la conversazione e scrive perché ha deciso così. Solo le cose davvero pericolose (quelle qui sotto) ti arrivano comunque, ovunque.';
+
+  @override
+  String get g4RqModeClassifierWarn =>
+      'Il classificatore può sbagliare, e ogni decisione costa una piccola richiesta al suo modello.';
+
+  @override
+  String get g4RqTimeTitle => 'Tempo per rispondere';
+
+  @override
+  String get g4RqTimeQ => 'Quanto deve aspettare un agente la tua risposta?';
+
+  @override
+  String get g4RqTimeQSpecial => 'Quanto aspettano la tua risposta le cose davvero pericolose?';
+
+  @override
+  String g4RqAfterSpecialText(String time) {
+    return 'Se non rispondi entro $time, è un no.';
+  }
+
+  @override
+  String get g4RqTimeNoneSpecial =>
+      'Aspettano quanto serve: l\'agente resta fermo finché non rispondi.';
+
+  @override
+  String get g4RqSpecialTitle => 'Le cose davvero pericolose';
+
+  @override
+  String get g4RqSpecialQ => 'Cosa ti arriva sempre, ovunque tu sia?';
+
+  @override
+  String get g4RqSpecialText =>
+      'Solo queste. Quando un agente sta per farne una si ferma e aspetta te: la richiesta ti arriva qui e sulle chat collegate, anche con «Non chiedermi niente», e il classificatore non la decide mai.';
+
+  @override
+  String get g4RqSpecialNot =>
+      'Il lavoro di tutti i giorni non è in questo elenco: mandare il codice con git push, un messaggio o una email normale, mettere online un sito, cambiare i file del progetto, usare una chiave del portachiavi per il suo sito. Questi seguono la tua scelta qui sopra.';
+
+  @override
+  String get g4RqCriticalExamples => 'Per esempio:';
+
+  @override
+  String get g4RqTimeNone =>
+      'L\'agente aspetta quanto serve. Le richieste di accendere uno strumento o di usare una chiave finiscono comunque dopo 15 e 10 minuti.';
+
+  @override
+  String g4RqAfterQ(String time) {
+    return 'Se non rispondi entro $time:';
+  }
+
+  @override
+  String get g4RqAfterNo => 'È un no';
+
+  @override
+  String get g4RqAfterClassifier => 'Decide il classificatore';
+
+  @override
+  String get g4RqAfterNoText =>
+      'Un\'approvazione che nessuno dà è sempre un no. A una domanda l\'agente va avanti con la sua ipotesi migliore e ti dice quale.';
+
+  @override
+  String get g4RqAfterClassifierText =>
+      'Allo scadere decide il classificatore al posto tuo, come con «Non chiedermi niente». Le cose davvero pericolose invece diventano un no.';
+
+  @override
+  String get g4RqClassifierTitle => 'Il classificatore';
+
+  @override
+  String get g4RqClassifierQ => 'Quale modello decide per te?';
+
+  @override
+  String get g4RqClassifierModel => 'Modello';
+
+  @override
+  String g4RqClassifierDefault(String model) {
+    return 'Il modello leggero ($model)';
+  }
+
+  @override
+  String get g4RqClassifierHow =>
+      'Legge cosa chiede l\'agente, il suo compito e gli ultimi messaggi della conversazione; risponde sì o no con un motivo, o sceglie una risposta a una domanda. Nel dubbio dice no; se non riesce, è un no.';
+
+  @override
+  String get g4RqNoModel => 'nessuno collegato';
+
+  @override
+  String get g4RqSaved => 'Salvato: vale dalla prossima richiesta.';
+
+  @override
+  String get g4RqDoneTitle => 'Decise senza di te';
+
+  @override
+  String get g4RqDoneLead =>
+      'Ogni richiesta decisa dal classificatore, o finita perché nessuno ha risposto in tempo, dalla più recente.';
+
+  @override
+  String get g4RqDoneEmpty => 'Ancora nessuna decisione presa senza di te.';
+
+  @override
+  String get g4RqOpenChat => 'Apri la conversazione';
+
+  @override
+  String g4RqByModel(String model) {
+    return 'Classificatore ($model):';
+  }
+
+  @override
+  String get g4RqByClassifier => 'Classificatore:';
+
+  @override
+  String get g4RqByTimeout => 'Tempo scaduto:';
+
+  @override
+  String get g4RqDecisionAllow => 'Sì';
+
+  @override
+  String get g4RqDecisionDeny => 'No';
+
+  @override
+  String get g4RqDecisionAnswered => 'Ha risposto';
+
+  @override
+  String get g4RqDecisionBlocked => 'Bloccata';
+
+  @override
+  String get g4RqKindApproval => 'azione';
+
+  @override
+  String get g4RqKindQuestion => 'domanda';
+
+  @override
+  String get g4RqKindPlan => 'piano';
+
+  @override
+  String get g4RqKindTool => 'strumento';
+
+  @override
+  String get g4RqKindCredential => 'chiave';
+
+  @override
+  String get g4RqKindAutomation => 'automazione';
+
+  @override
+  String get g4SfSaved => 'Salvato: vale dalla prossima azione degli agenti.';
+
+  @override
+  String get g4SfCustomOn => 'Lo approvi solo tu';
+
+  @override
+  String get g4CmAtWorkLead => 'Si salva subito, per i turni che partono da adesso.';
+
+  @override
+  String get g4RulesHub => 'Regole';
+
+  @override
+  String get g4TlExtLead =>
+      'Installati da Estensioni (integrazioni magiche, proposte degli agenti, i tuoi): li ha ogni agente. Si cambiano o si tolgono lì.';
+
+  @override
+  String get g4TlExtTitle => 'Strumenti delle estensioni';
+
+  @override
+  String get g4SfTitle => 'Sicurezza e costi';
+
+  @override
+  String get g4GenAccount => 'Account';
+
+  @override
+  String get g4GenAgentInstructions => 'Le sue istruzioni';
+
+  @override
+  String get g4GenAgentLangAll => 'Tutte le lingue';
+
+  @override
+  String get g4GenAgentLangChange => 'cambia';
+
+  @override
+  String get g4GenAgentLangCommon => 'Le più usate';
+
+  @override
+  String get g4GenAgentLangHelp =>
+      'La lingua in cui scrivono tutti gli agenti, la Chat e la memoria condivisa. Vale per le conversazioni nuove; quelle aperte tengono la loro.';
+
+  @override
+  String g4GenAgentLangNone(String q) {
+    return 'Nessuna lingua corrisponde a «$q».';
+  }
+
+  @override
+  String get g4GenAgentLangSearch => 'Cerca una lingua';
+
+  @override
+  String get g4GenAgentLangSub =>
+      'Gli agenti rispondono in questa lingua dalla prossima conversazione.';
+
+  @override
+  String get g4GenAgentLangTitle => 'Lingua degli agenti';
+
+  @override
+  String get g4GenAgents => 'Per tutti gli agenti';
+
+  @override
+  String get g4GenAgentsLead =>
+      'Quello che legge ogni agente, e chi riprova un task quando un agente si arrende.';
+
+  @override
+  String get g4GenAlreadySet => 'già impostata';
+
+  @override
+  String get g4GenBackupNone => 'Nessuno: un task abbandonato resta tale';
+
+  @override
+  String get g4GenBackupText =>
+      'Un task su cui un agente si arrende viene riprovato una volta da questo modello, in una conversazione nuova.';
+
+  @override
+  String get g4GenBackupTitle => 'Modello di riserva per i task';
+
+  @override
+  String get g4GenCare => 'Aggiornamenti e diagnostica';
+
+  @override
+  String get g4GenCareLead =>
+      'Se c\'è un RedGiant più nuovo, e un registro da mandare quando qualcosa non va.';
+
+  @override
+  String g4GenCloudPrivacy(String name) {
+    return 'Con $name, quello che dici dopo la parola di attivazione va a $name passando dal server di RedGiant; la parola di attivazione resta riconosciuta solo in questa pagina.';
+  }
+
+  @override
+  String get g4GenDebugClear => 'Cancella i registri';
+
+  @override
+  String get g4GenDebugClearConfirm => 'Cancellare tutti i registri tenuti?';
+
+  @override
+  String get g4GenDebugDownload => 'Scarica i registri';
+
+  @override
+  String get g4GenDebugForced => 'Accesa dalle impostazioni del server (REDGIANT_DEBUG=1).';
+
+  @override
+  String get g4GenDebugHelp =>
+      'La modalità di debug tiene un registro dettagliato di tutto quello che fa RedGiant: ogni passo dell\'avvio di un modello con i suoi tempi, i messaggi del motore locale, le richieste, quello che fa il programma di Windows. Accendila quando qualcosa è lento o va storto, ripeti l\'operazione, poi scarica i registri e mandali. Scrive tanto (al massimo 300 MB, i più vecchi se ne vanno) e non scrive mai password né chiavi.';
+
+  @override
+  String g4GenDebugSize(String size, String files) {
+    return 'Registri tenuti: $size in $files file.';
+  }
+
+  @override
+  String get g4GenDebugSwitch => 'Modalità di debug';
+
+  @override
+  String get g4GenDebugText =>
+      'Tutto quello che fa RedGiant, scritto in un registro da scaricare e mandare.';
+
+  @override
+  String get g4GenDebugTitle => 'Diagnostica';
+
+  @override
+  String get g4GenDraftDefaultUsed =>
+      'Queste sono le istruzioni predefinite, con quello che hai scritto. Gli strumenti restano come per gli altri agenti.';
+
+  @override
+  String g4GenDraftFailed(String god, String why) {
+    return '$god non è riuscito a scriverle ($why). Ecco quelle predefinite, con quello che hai scritto.';
+  }
+
+  @override
+  String g4GenDraftLead(String god) {
+    return '$god le scrive partendo da quelle predefinite, adattate a quello che hai scritto e alle sue impostazioni, e sceglie gli strumenti che gli servono. Leggi, cambia quello che vuoi, poi crealo.';
+  }
+
+  @override
+  String get g4GenDraftRegenerate => 'Rigenera';
+
+  @override
+  String get g4GenDraftToolOnDefault => 'utile per il suo lavoro';
+
+  @override
+  String get g4GenDraftToolsAllOn => 'Tutti gli strumenti accesi, come per gli altri agenti.';
+
+  @override
+  String get g4GenDraftToolsLikeOthers => 'Tutti come per gli altri agenti';
+
+  @override
+  String g4GenDraftToolsSaved(String n, String tokens) {
+    return '$n spenti: circa $tokens token risparmiati a ogni messaggio. Se più avanti gliene serve uno, te lo chiede.';
+  }
+
+  @override
+  String get g4GenDraftToolsTitle => 'I suoi strumenti';
+
+  @override
+  String g4GenDraftToolTokens(String tokens) {
+    return '$tokens token';
+  }
+
+  @override
+  String get g4GenDraftUseDefault => 'Usa le predefinite';
+
+  @override
+  String g4GenDraftWorking(String god) {
+    return '$god sta scrivendo le sue istruzioni...';
+  }
+
+  @override
+  String get g4GenHasKey => 'Chiave pronta';
+
+  @override
+  String get g4GenImagesHelp =>
+      'Una chiave OpenAI permette agli agenti di disegnare immagini; ogni immagine costa.';
+
+  @override
+  String get g4GenImagesKey => 'Chiave OpenAI per le immagini (generate_image)';
+
+  @override
+  String get g4GenImagesModel => 'Modello per le immagini';
+
+  @override
+  String get g4GenImagesTitle => 'Immagini';
+
+  @override
+  String get g4GenInstrText =>
+      'Quello che ogni agente deve sapere o fare: come vuoi le risposte, le tue convenzioni, cosa evitare.';
+
+  @override
+  String get g4GenInstructionsHint =>
+      'Quello che ogni agente deve sapere o fare, chiunque sia: come vuoi le risposte, le tue convenzioni, cosa evitare. Si aggiungono alle istruzioni proprie di ciascun agente (quelle sono nella sua scheda, in Agenti).';
+
+  @override
+  String get g4GenInstructionsPlaceholder =>
+      'Per esempio: rispondi in italiano; codice e commenti in inglese; mai fare push senza chiedere.';
+
+  @override
+  String get g4GenInstructionsSaved =>
+      'Salvate: le seguono le conversazioni che cominciano da adesso.';
+
+  @override
+  String get g4GenInstructionsTitle => 'Istruzioni per tutti gli agenti';
+
+  @override
+  String get g4GenInUse => 'in uso';
+
+  @override
+  String get g4GenKeyChange => 'Usa un\'altra chiave';
+
+  @override
+  String g4GenKeyGet(String name) {
+    return 'Prendi una chiave di $name';
+  }
+
+  @override
+  String get g4GenKeyHelp => 'Resta nel Portachiavi, cifrata; non torna mai in questa pagina.';
+
+  @override
+  String g4GenKeyLabel(String name) {
+    return 'Chiave di $name';
+  }
+
+  @override
+  String g4GenKeyLinked(String name) {
+    return 'Usa la chiave di $name che hai già dato (chat, estensioni o voce).';
+  }
+
+  @override
+  String get g4GenLead =>
+      'Aspetto e lingua, poi quello che vale per tutti gli agenti e i servizi in più. Ogni riquadro apre la sua finestra; quelli accesi sono impostati.';
+
+  @override
+  String get g4GenLocked => 'impostato dall\'ambiente';
+
+  @override
+  String get g4GenLogout => 'Esci';
+
+  @override
+  String g4GenModelCloses(String date) {
+    return 'Il fornitore chiude questo modello il $date: scegline un altro prima di allora.';
+  }
+
+  @override
+  String get g4GenNews => 'Le novità';
+
+  @override
+  String get g4GenNewsText =>
+      'Tutto quello che ha portato ogni versione, dalla più recente: anche quello che ti sei perso.';
+
+  @override
+  String g4GenNewsVersion(String version) {
+    return 'Versione $version';
+  }
+
+  @override
+  String get g4GenOn => 'acceso';
+
+  @override
+  String get g4GenOwnSearchHint =>
+      'RedGiant può avviare un suo motore di ricerca (SearXNG): gratuito, senza chiavi, e con lui ogni modello può cercare sul web, anche quelli locali.';
+
+  @override
+  String get g4GenOwnSearchOn =>
+      'Il motore di ricerca di RedGiant è acceso: tutti gli agenti e la Chat cercano sul web con lui.';
+
+  @override
+  String get g4GenOwnSearchStart => 'Avvia il motore di ricerca di RedGiant';
+
+  @override
+  String get g4GenOwnSearchStop => 'Spegnilo';
+
+  @override
+  String g4GenPriceKchars(String usd) {
+    return '$usd ogni 1000 caratteri';
+  }
+
+  @override
+  String g4GenPriceMinute(String usd) {
+    return 'circa $usd al minuto';
+  }
+
+  @override
+  String g4GenPriceMtokens(String usd) {
+    return '$usd per milione di token audio';
+  }
+
+  @override
+  String get g4GenQ => 'Come vuoi RedGiant?';
+
+  @override
+  String get g4GenRefineAfter => 'Dopo';
+
+  @override
+  String get g4GenRefineBefore => 'Prima';
+
+  @override
+  String g4GenRefineCount(String del, String add) {
+    return '$del parole tolte, $add aggiunte';
+  }
+
+  @override
+  String g4GenRefineGodModel(String god) {
+    return 'Il modello di $god';
+  }
+
+  @override
+  String get g4GenRefineLegendAdd => 'quello che arriva';
+
+  @override
+  String get g4GenRefineLegendDel => 'quello che va via';
+
+  @override
+  String get g4GenRefineModel => 'Il modello che scrive';
+
+  @override
+  String get g4GenRewriteGo => 'Riscrivi';
+
+  @override
+  String g4GenRewriteLead(String god) {
+    return '$god parte dalle istruzioni nel campo e le adatta a quello che l\'agente fa adesso. Prima vedi le modifiche.';
+  }
+
+  @override
+  String get g4GenRewriteTitle => 'Riscrivi per il nuovo compito';
+
+  @override
+  String get g4GenRewriteYes => 'Sì, falle riscrivere';
+
+  @override
+  String get g4GenSaved => 'Salvato';
+
+  @override
+  String get g4GenSearchDocs => 'Come installare SearXNG da solo';
+
+  @override
+  String g4GenSearchHowTitle(String name) {
+    return 'Come configurare $name';
+  }
+
+  @override
+  String get g4GenSearchKey => 'Chiave';
+
+  @override
+  String get g4GenSearchKeyKept => 'Una chiave è salvata: lascia vuoto per tenerla.';
+
+  @override
+  String g4GenSearchKeyPage(String name) {
+    return 'Apri la pagina delle chiavi di $name';
+  }
+
+  @override
+  String g4GenSearchSaved(String name) {
+    return 'Da ora i modelli che non sanno cercare da soli usano $name.';
+  }
+
+  @override
+  String get g4GenSearchText => 'Permette a ogni agente e alla Chat di cercare sul web.';
+
+  @override
+  String get g4GenSearchTitle => 'Ricerca sul web';
+
+  @override
+  String g4GenSearchTried(String n, String first) {
+    return 'Funziona: $n risultati, il primo «$first».';
+  }
+
+  @override
+  String get g4GenSearchTriedEmpty => 'Ha risposto, ma senza risultati per la ricerca di prova.';
+
+  @override
+  String get g4GenSearchTry => 'Prova';
+
+  @override
+  String get g4GenSearchUrl => 'Indirizzo del server SearXNG';
+
+  @override
+  String get g4GenSearchUrlHelp => 'L\'indirizzo a cui risponde il tuo SearXNG.';
+
+  @override
+  String get g4GenSearchUse => 'Usa questo';
+
+  @override
+  String get g4GenSearchWho =>
+      'Claude e gli abbonamenti cercano da soli. Gli altri (modelli locali, chiavi compatibili OpenAI) usano il servizio scelto qui.';
+
+  @override
+  String get g4GenServices => 'Servizi';
+
+  @override
+  String get g4GenServicesHint =>
+      'Cose in più che gli agenti possono usare. Ognuna funziona solo se la imposti; lasciare un campo vuoto la spegne.';
+
+  @override
+  String g4GenSttCloudHelp(String models, String price) {
+    return 'In cloud: $models. Da $price.';
+  }
+
+  @override
+  String get g4GenSttCompatible => 'Un altro servizio compatibile';
+
+  @override
+  String get g4GenSttCompatibleHelp =>
+      'Qualunque servizio con l\'API di trascrizione di OpenAI (speaches, il server di whisper.cpp…), al suo indirizzo.';
+
+  @override
+  String get g4GenSttLocal => 'Su questo computer';
+
+  @override
+  String get g4GenSttLocalHelp =>
+      'whisper.cpp, avviato da RedGiant: gratis, non esce niente di casa.';
+
+  @override
+  String get g4GenSttRemote => 'whisper su un altro computer';
+
+  @override
+  String get g4GenSttRemoteHelp =>
+      'whisper-asr-webservice al suo indirizzo, per un computer con la scheda video.';
+
+  @override
+  String get g4GenTitle => 'Generale';
+
+  @override
+  String get g4GenTrying => 'Provo il modello…';
+
+  @override
+  String get g4GenUiLangHelp => 'Le pagine, i menu e la configurazione.';
+
+  @override
+  String get g4GenUiLangTitle => 'Lingua dell\'interfaccia';
+
+  @override
+  String get g4GenUpdHelp =>
+      'RedGiant cerca da solo una versione nuova al primo avvio di ogni giorno. Qui puoi cercarla adesso.';
+
+  @override
+  String get g4GenVoiceHelp =>
+      'Trasforma in testo i messaggi vocali (da Telegram o dal microfono).';
+
+  @override
+  String get g4GenVoiceKey => 'Chiave del servizio di trascrizione';
+
+  @override
+  String get g4GenVoiceLocalHint =>
+      'Nessun account e niente esce da questo computer. RedGiant scarica una volta whisper.cpp e un modello multilingue (circa 560 MB, con la barra nell\'angolo) e li fa girare lui.';
+
+  @override
+  String get g4GenVoiceModel => 'Modello di trascrizione';
+
+  @override
+  String get g4GenVoiceModelHead => 'Modello';
+
+  @override
+  String g4GenVoiceNeedsKey(String name) {
+    return 'Incolla prima la chiave di $name.';
+  }
+
+  @override
+  String get g4GenVoiceNeedsUrl => 'Scrivi prima l\'indirizzo del servizio.';
+
+  @override
+  String get g4GenVoiceTitle => 'Messaggi vocali';
+
+  @override
+  String get g4GenVoiceUrl => 'Indirizzo del servizio di trascrizione';
+
+  @override
+  String get g4GenWritten => 'scritte';
+
+  @override
+  String get g4GenLook => 'Aspetto e lingua';
+
+  @override
+  String get g4GenBackupSaved => 'Salvato: vale per i task che si arrendono da adesso.';
+
+  @override
+  String g4GenDebugSaved(String name) {
+    return 'Salvato: $name';
+  }
+
+  @override
+  String g4GenNewsTitle(String version) {
+    return 'Le novità di RedGiant $version';
+  }
+
+  @override
+  String get g4AgTreeTitle => 'La tua squadra';
+
+  @override
+  String g4AgTreeOf(String project) {
+    return 'Gli agenti di $project';
+  }
+
+  @override
+  String get g4AgTreeLead =>
+      'Chi lavora per te. God guida tutto; ogni progetto ha il suo capo, che passa il lavoro agli agenti del progetto. Un agente vede solo il suo progetto; l\'ispettore legge soltanto.';
+
+  @override
+  String get g4AgTreeProjectLead =>
+      'Il capo del progetto, gli agenti a cui passa il lavoro e quelli di altri posti assegnati qui.';
+
+  @override
+  String get g4AgAllProjects => 'Tutti i progetti';
+
+  @override
+  String get g4AgShowStopped => 'Anche quelli fermati';
+
+  @override
+  String get g4AgNoLead => 'Questo progetto non ha ancora un orchestratore.';
+
+  @override
+  String get g4AgNear => 'Demi-God e agenti personali';
+
+  @override
+  String get g4AgAssigned => 'assegnato';
+
+  @override
+  String get g4AgArchived => 'archiviato';
+
+  @override
+  String get g4AgOpen => 'Apri';
+
+  @override
+  String get g4AgClose => 'Chiudi';
+
+  @override
+  String get g4AgAddShort => 'Agente sotto';
+
+  @override
+  String g4AgAddUnder(String name) {
+    return 'Aggiungi un agente sotto $name';
+  }
+
+  @override
+  String get g4AgKind => 'Tipo';
+
+  @override
+  String get g4AgWhatItDoes => 'Cosa fa';
+
+  @override
+  String get g4AgModelDefault => 'Il modello predefinito';
+
+  @override
+  String get g4AgOpenChat => 'Apri la sua conversazione';
+
+  @override
+  String get g4AgReadOnly =>
+      'Il suo progetto è archiviato: puoi leggere le impostazioni, non cambia niente finché il progetto non viene ripristinato.';
+
+  @override
+  String get g4AgGroupAssistant => 'Servizi e routine';
+
+  @override
+  String g4AgRewriteOffer(String name, String god) {
+    return 'Hai cambiato cosa fa $name. Vuoi che $god riscriva le sue istruzioni per il nuovo compito? Le vedi prima che cambi qualcosa.';
+  }
+
+  @override
+  String get g4AgRewriteNo => 'No, tienile';
+
+  @override
+  String get g4AgRewriteYes => 'Sì, falle riscrivere';
+
+  @override
+  String get g4AgServices => 'Servizi';
+
+  @override
+  String get g4AgServicesHelp =>
+      'I servizi che può usare. Le modifiche valgono per le sue conversazioni nuove.';
+
+  @override
+  String get g4AgNoServices => 'Ancora nessun servizio aggiunto.';
+
+  @override
+  String get g4AgAddServiceHint =>
+      'I servizi (Notion, Linear, GitHub…) si aggiungono in Impostazioni, Estensioni.';
+
+  @override
+  String get g4AgSvcChecking => 'Controllo…';
+
+  @override
+  String g4AgSvcWorks(int n) {
+    return 'Funziona · $n strumenti';
+  }
+
+  @override
+  String get g4AgSvcLogin => 'Devi accedere';
+
+  @override
+  String get g4AgSvcBroken => 'Non funziona';
+
+  @override
+  String get g4AgSavedNewChats => 'Salvato: vale per le sue conversazioni nuove.';
+
+  @override
+  String get g4AgRoutines => 'Routine';
+
+  @override
+  String get g4AgRoutinesHelp => 'Lavori che fa da solo a un\'ora fissa o quando succede qualcosa.';
+
+  @override
+  String get g4AgNoRoutines => 'Ancora nessuna routine.';
+
+  @override
+  String get g4AgNewRoutine => 'Nuova routine';
+
+  @override
+  String g4AgNewRoutineOf(String name) {
+    return 'Una nuova routine per $name';
+  }
+
+  @override
+  String get g4AgOn => 'Attiva';
+
+  @override
+  String get g4AgOff => 'Spenta';
+
+  @override
+  String get g4AgRoutineWhat => 'Cosa deve fare?';
+
+  @override
+  String get g4AgRoutineWhatHint =>
+      'Per esempio: guarda gli appuntamenti di oggi e mandami un riassunto.';
+
+  @override
+  String get g4AgRoutineTitle => 'Il suo titolo (facoltativo)';
+
+  @override
+  String get g4AgRoutineWhen => 'Quando';
+
+  @override
+  String get g4AgEvery_daily => 'Ogni giorno';
+
+  @override
+  String get g4AgEvery_weekdays => 'Dal lunedì al venerdì';
+
+  @override
+  String get g4AgEvery_weekly => 'Ogni lunedì';
+
+  @override
+  String get g4AgEvery_hourly => 'Ogni ora';
+
+  @override
+  String get g4AgRoutineTime => 'A che ora (HH:MM)';
+
+  @override
+  String get g4AgRoutineTimeBad => 'Un\'ora come 09:00';
+
+  @override
+  String get g4AgRoutineSave => 'Salva la routine';
+
+  @override
+  String g4AgRoutineOnce(String at) {
+    return 'Una volta, $at';
+  }
+
+  @override
+  String g4AgWhenDaily(String time) {
+    return 'Ogni giorno alle $time';
+  }
+
+  @override
+  String g4AgWhenWeekdays(String time) {
+    return 'Dal lunedì al venerdì alle $time';
+  }
+
+  @override
+  String g4AgWhenWeekly(String time) {
+    return 'Ogni lunedì alle $time';
+  }
+
+  @override
+  String get g4AgSkills => 'Skill';
+
+  @override
+  String get g4AgSkillsHelp =>
+      'Dopo un lavoro riuscito, digli «salva questo come skill»: scrive i passi e, quando li approvi in Estensioni, tutti gli agenti li possono usare.';
+
+  @override
+  String get g4AgShared => 'Cosa sanno di te tutti gli agenti';
+
+  @override
+  String get g4AgSharedHelp =>
+      'Chi sei, il tuo lavoro, i tuoi strumenti: in comune fra tutti i tuoi agenti personali.';
+
+  @override
+  String get g4AgStep1 => 'Cosa deve fare?';
+
+  @override
+  String get g4AgStep2Help => 'Lavora lì, sotto il capo del progetto.';
+
+  @override
+  String get g4AgStep3 => 'Il suo nome';
+
+  @override
+  String get g4AgStep4Help =>
+      'Di solito lo stesso del capo del progetto; scegline un altro per uno più economico o più bravo.';
+
+  @override
+  String get g4AgStep5 => 'Quanto può fare da solo';
+
+  @override
+  String get g4AgStep2Asst => 'Quali servizi può usare?';
+
+  @override
+  String get g4AgStep2AsstHelp =>
+      'Vede solo i servizi che accendi qui. Tutto ciò che invia, pubblica, cancella o paga ti chiede sempre prima il permesso.';
+
+  @override
+  String get g4AgStep3Asst => 'Quanto può fare da solo?';
+
+  @override
+  String get g4AgWhere => 'Dove lavora';
+
+  @override
+  String get g4AgWhereHelp =>
+      'In un sottoprogetto scrive solo nella sua cartella; il resto del progetto lo può leggere, e le modifiche lì passano dal capo.';
+
+  @override
+  String get g4AgWholeProject => 'Tutto il progetto';
+
+  @override
+  String get g4AgOwnWords => 'Descrivi il lavoro a parole tue';
+
+  @override
+  String get g4AgOwnWordsHelp =>
+      'Per esempio: tiene i testi del sito in italiano e in inglese e controlla i link.';
+
+  @override
+  String get g4AgRecommended => 'consigliato';
+
+  @override
+  String get g4AgModeText_auto =>
+      'Lavora da solo; chiede solo per le azioni rischiose (come deciso in Sicurezza).';
+
+  @override
+  String get g4AgModeText_manual => 'Chiede prima di ogni modifica ai file o di ogni comando.';
+
+  @override
+  String get g4AgModeText_plan => 'Prima propone un piano; lavora solo dopo che è stato approvato.';
+
+  @override
+  String get g4AgModeText_readonly => 'Legge e risponde, non cambia niente.';
+
+  @override
+  String get g4AgAsstMode_auto => 'Da solo';
+
+  @override
+  String get g4AgAsstMode_manual => 'Chiede prima';
+
+  @override
+  String get g4AgAsstModeText_auto =>
+      'Lavora da solo; ti chiede solo prima di ciò che esce (inviare, pubblicare, pagare) o è rischioso.';
+
+  @override
+  String get g4AgAsstModeText_manual => 'Ti chiede prima di ogni modifica.';
+
+  @override
+  String get g4AgAsstPurpose =>
+      'Un agente personale fa un lavoro per te, fuori dai progetti. God gli passa il lavoro che è suo; puoi anche parlarci direttamente.';
+
+  @override
+  String get g4AgAsstRole => 'Il suo lavoro';
+
+  @override
+  String get g4AgAsstRoleHelp =>
+      'Una o due frasi: God le legge per decidere cosa passargli, quindi tienilo preciso.';
+
+  @override
+  String get g4AgOrAskGod => 'Non sai quali agenti ti servono?';
+
+  @override
+  String g4AgAskGod(String god) {
+    return 'Chiedi a $god';
+  }
+
+  @override
+  String get g4AgAskGodMessage =>
+      'Quali agenti personali mi sarebbero utili? Guarda cosa faccio con te e proponimene due o tre, ognuno con un lavoro preciso e i servizi che gli servono. Creali solo dopo che ti ho detto di sì.';
+
+  @override
+  String g4AgDraftNext(String god) {
+    return 'Avanti: $god scrive le sue istruzioni';
+  }
+
+  @override
+  String g4AgDraftNextHint(String god) {
+    return '$god scriverà le sue istruzioni e sceglierà i suoi strumenti; li vedi prima che venga creato.';
+  }
+
+  @override
+  String get g4AgDraftTitle => 'Le sue istruzioni e i suoi strumenti';
+
+  @override
+  String get g4AgReviewWritten => 'scritte per lui';
+
+  @override
+  String get g4AgReviewBuiltIn => 'quelle predefinite';
+
+  @override
+  String get g4AgNoneChosen => 'nessuno';
+
+  @override
+  String get g4AgRole_coder => 'Programmatore';
+
+  @override
+  String get g4AgRoleText_coder => 'Scrive e cambia il codice, fa girare le prove.';
+
+  @override
+  String get g4AgRole_reviewer => 'Revisore';
+
+  @override
+  String get g4AgRoleText_reviewer =>
+      'Controlla le modifiche cercando errori e codice poco chiaro, dice dove e perché.';
+
+  @override
+  String get g4AgRole_researcher => 'Ricercatore';
+
+  @override
+  String get g4AgRoleText_researcher => 'Cerca sul web e nei file, con le fonti.';
+
+  @override
+  String get g4AgRole_writer => 'Scrittore';
+
+  @override
+  String get g4AgRoleText_writer => 'Documentazione, README e testi, chiari e aggiornati.';
+
+  @override
+  String get g4AgRole_tester => 'Tester';
+
+  @override
+  String get g4AgRoleText_tester => 'Scrive e fa girare le prove, riproduce i difetti.';
+
+  @override
+  String get g4AgRole_custom => 'Altro';
+
+  @override
+  String get g4AgRoleText_custom => 'Descrivi tu il lavoro a parole tue.';
+
+  @override
+  String get g4AgJob_secretary => 'Segretaria';
+
+  @override
+  String get g4AgJobHint_secretary =>
+      'Agenda, attività e messaggi; il punto della giornata ogni mattina.';
+
+  @override
+  String get g4AgJobText_secretary =>
+      'Tieni in ordine le mie attività e i miei appuntamenti, ricordami le scadenze e fammi il punto della giornata quando te lo chiedo. Non mandare mai niente a mio nome senza chiedermelo.';
+
+  @override
+  String get g4AgJob_researcher => 'Ricercatore';
+
+  @override
+  String get g4AgJobHint_researcher => 'Cerca sul web e ti riporta quello che trova, con le fonti.';
+
+  @override
+  String get g4AgJobText_researcher =>
+      'Cerca sul web quando te lo chiedo, confronta le fonti e riportami quello che hai trovato con i link, dicendo cosa non sei riuscito a confermare.';
+
+  @override
+  String get g4AgJob_social => 'Social';
+
+  @override
+  String get g4AgJobHint_social => 'Prepara i post e tiene d\'occhio le tue pagine.';
+
+  @override
+  String get g4AgJobText_social =>
+      'Prepara i post per le mie pagine nel mio stile, proponimeli prima di pubblicarli e dimmi come sono andati gli ultimi.';
+
+  @override
+  String get g4AgJob_accounts => 'Conti';
+
+  @override
+  String get g4AgJobHint_accounts => 'Fatture, pagamenti e spese, in ordine.';
+
+  @override
+  String get g4AgJobText_accounts =>
+      'Tieni in ordine fatture, pagamenti e spese, dimmi cosa scade e cosa manca. Non pagare né rimborsare mai senza la mia approvazione.';
+
+  @override
+  String get g4AgJob_tech => 'Aiuto tecnico';
+
+  @override
+  String get g4AgJobHint_tech => 'Risponde alle domande tecniche e sistema le piccole cose.';
+
+  @override
+  String get g4AgJobText_tech =>
+      'Rispondi alle mie domande tecniche in modo semplice, con i passi da seguire, e sistema i piccoli problemi quando te lo chiedo.';
+
+  @override
+  String get g4AgJob_custom => 'Con parole mie';
+
+  @override
+  String get g4AgJobHint_custom => 'Descrivi tu il lavoro.';
 }

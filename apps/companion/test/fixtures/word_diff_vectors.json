@@ -1,0 +1,166 @@
+[
+  {
+    "before": "You are kind.",
+    "after": "You are kind and brief.",
+    "parts": [
+      {
+        "kind": "same",
+        "text": "You are kind"
+      },
+      {
+        "kind": "add",
+        "text": " and brief"
+      },
+      {
+        "kind": "same",
+        "text": "."
+      }
+    ],
+    "counts": {
+      "del": 0,
+      "add": 2
+    }
+  },
+  {
+    "before": "Answer in Italian.\nNever push.",
+    "after": "Answer in English.\nNever push without asking.",
+    "parts": [
+      {
+        "kind": "same",
+        "text": "Answer in "
+      },
+      {
+        "kind": "add",
+        "text": "English"
+      },
+      {
+        "kind": "del",
+        "text": "Italian"
+      },
+      {
+        "kind": "same",
+        "text": ".\nNever push"
+      },
+      {
+        "kind": "add",
+        "text": " without asking"
+      },
+      {
+        "kind": "same",
+        "text": "."
+      }
+    ],
+    "counts": {
+      "del": 1,
+      "add": 3
+    }
+  },
+  {
+    "before": "",
+    "after": "Something new",
+    "parts": [
+      {
+        "kind": "add",
+        "text": "Something new"
+      }
+    ],
+    "counts": {
+      "del": 0,
+      "add": 2
+    }
+  },
+  {
+    "before": "Same text",
+    "after": "Same text",
+    "parts": [
+      {
+        "kind": "same",
+        "text": "Same text"
+      }
+    ],
+    "counts": {
+      "del": 0,
+      "add": 0
+    }
+  },
+  {
+    "before": "Use {god} for help, then «stop».",
+    "after": "Ask {god} first; then stop.",
+    "parts": [
+      {
+        "kind": "add",
+        "text": "Ask"
+      },
+      {
+        "kind": "del",
+        "text": "Use"
+      },
+      {
+        "kind": "same",
+        "text": " {god} "
+      },
+      {
+        "kind": "add",
+        "text": "first;"
+      },
+      {
+        "kind": "del",
+        "text": "for"
+      },
+      {
+        "kind": "same",
+        "text": " "
+      },
+      {
+        "kind": "del",
+        "text": "help, "
+      },
+      {
+        "kind": "same",
+        "text": "then "
+      },
+      {
+        "kind": "del",
+        "text": "«"
+      },
+      {
+        "kind": "same",
+        "text": "stop"
+      },
+      {
+        "kind": "del",
+        "text": "»"
+      },
+      {
+        "kind": "same",
+        "text": "."
+      }
+    ],
+    "counts": {
+      "del": 5,
+      "add": 2
+    }
+  },
+  {
+    "before": "Città è bella",
+    "after": "Città non è bella",
+    "parts": [
+      {
+        "kind": "same",
+        "text": "Città "
+      },
+      {
+        "kind": "add",
+        "text": "non "
+      },
+      {
+        "kind": "same",
+        "text": "è bella"
+      }
+    ],
+    "counts": {
+      "del": 0,
+      "add": 1
+    }
+  }
+]

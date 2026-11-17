@@ -274,17 +274,23 @@ void main() {
     await frames(t, 400);
     await t.tap(find.byKey(const Key('new-agent-next')));
     await frames(t, 800);
+    // G42.4: the page's ready jobs, then the name with the job's own words.
+    await t.tap(find.byKey(const Key('new-job-secretary')));
+    await frames(t, 400);
+    await t.tap(find.byKey(const Key('new-agent-next')));
+    await frames(t, 800);
     await t.enterText(find.byKey(const Key('new-agent-name')), 'Agenda');
-    await t.enterText(
-      find.byKey(const Key('new-agent-role')),
-      'tiene in ordine i miei appuntamenti',
-    );
     await frames(t, 2500);
     await shot(t, 'g40-squad-12-new-name');
+    await t.tap(find.byKey(const Key('new-agent-next')));
+    await frames(t, 1500);
     await t.tap(find.byKey(const Key('new-agent-next')));
     await frames(t, 800);
     await shot(t, 'g40-squad-13-new-model');
     await t.tap(find.byKey(const Key('new-agent-next')));
+    await frames(t, 1500);
+    await t.tap(find.byKey(const Key('new-agent-next')));
+    await waitFor(t, () => find.byKey(const Key('draft-working')).evaluate().isEmpty);
     await frames(t, 2500);
     await shot(t, 'g40-squad-14-new-tools');
     await t.tap(find.byKey(const Key('new-agent-next')));

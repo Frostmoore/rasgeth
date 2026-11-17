@@ -4406,5 +4406,851 @@
         "type": "String"
       }
     }
-  }
+  },
+  "g4SfSkillsAsk": "Show them to me first",
+  "g4SfSkillsAskText": "A tested skill waits in Settings › Extensions until you approve it.",
+  "g4SfSkillsAuto": "Install them once tested",
+  "g4SfSkillsAutoText": "A skill whose tests pass is ready at once; you can remove it from Extensions.",
+  "g4SfGuardianTitle": "The guardian",
+  "g4SfGuardianAskText": "A file in your home, a system folder, another project: the agent stops and asks you, on the web or on Telegram. Reading is always free.",
+  "g4SfGuardianAutoText": "Agents write wherever they need without asking. The other dangers you choose below still ask.",
+  "g4SfCareful": "Careful",
+  "g4SfCarefulText": "Every risky action waits for you. The safest choice, also the slowest.",
+  "g4SfBalanced": "Balanced",
+  "g4SfBalancedText": "You approve what cannot be undone (publishing, history, disks, passwords, changes to RedGiant); the agents in charge approve the rest.",
+  "g4SfFree": "Free",
+  "g4SfFreeText": "The agents in charge approve almost everything; you are asked only for passwords and changes to RedGiant itself.",
+  "g4SfPersonalize": "Customize",
+  "g4SfNoLimit": "no limit",
+  "g4SfNothingPaid": "You use only subscriptions or local models: nothing is paid per use, so there is no spending limit to set. With subscriptions the plan's own limits count (shown at the top).",
+  "g4SfKeepForever": "always",
+  "g4SfKeep365": "one year",
+  "g4SfKeep90": "three months",
+  "g4SfKeep30": "one month",
+  "g4SfDoneBtn": "Done",
+  "g4SfLead": "Four decisions, each on one card. You change everything whenever you like from Settings.",
+  "g4SfGuardQ": "An agent wants to write outside its project. What happens?",
+  "g4SfGuardAsk": "It asks me",
+  "g4SfGuardAuto": "I let it",
+  "g4SfApprTitle": "The approvals",
+  "g4SfApprQ": "Who says yes before a risky action, like deleting or publishing?",
+  "g4SfApprCustom": "A choice of your own: {n} things out of {of} only you approve.",
+  "@g4SfApprCustom": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "of": {
+        "type": "String"
+      }
+    }
+  },
+  "g4SfCustomTitle": "What only you approve",
+  "g4SfCustomLead": "Before these actions an agent asks. On: only you can approve it. Off: the agent guiding it can say yes too ({god} or the head of the project).",
+  "@g4SfCustomLead": {
+    "placeholders": {
+      "god": {
+        "type": "String"
+      }
+    }
+  },
+  "g4SfBackTo": "Back to {preset}",
+  "@g4SfBackTo": {
+    "placeholders": {
+      "preset": {
+        "type": "String"
+      }
+    }
+  },
+  "g4SfBudgetTitle": "The spending limit",
+  "g4SfBudgetQ": "How much can RedGiant spend at most with your API keys?",
+  "g4SfBudgetQFree": "With API keys a limit stops the agents before they spend too much.",
+  "g4SfBudgetOther": "other",
+  "g4SfBudgetSay": "At ${usd} the agents stop and tell you; you raise it whenever you like.",
+  "@g4SfBudgetSay": {
+    "placeholders": {
+      "usd": {
+        "type": "String"
+      }
+    }
+  },
+  "g4SfBudgetNone": "No limit: mind the pay-per-use keys.",
+  "g4SfSkillsTitle": "The agents' skills",
+  "g4SfSkillsQ": "After a hard problem an agent can save how it solved it, for everybody. Do I install them by myself?",
+  "g4SfSkillsTools": "The tools that run code always wait for you.",
+  "g4SfWhereAgents": "The agents work right on this computer, in the project's folder: the guardian checks every command that goes outside it.",
+  "g4SfKeepFor": "Keep the conversations for",
+  "g4TlSection": "Tools",
+  "g4TlQ": "Which tools do the agents get?",
+  "g4TlLead": "Every tool is described to the model in every message, and that costs tokens. Switch off the ones you do not need: for every agent here, or for one agent from its window, tab Tools.",
+  "g4TlNewOnly": "Changes apply from new conversations: the ones already open keep their tools.",
+  "g4TlTotal": "About {n} tokens in every message",
+  "@g4TlTotal": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "g4TlSaved": "Switched off: {n} tokens saved in every message",
+  "@g4TlSaved": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "g4TlNoneSaved": "Nothing switched off",
+  "g4TlWeight": "about {n} tokens in every message",
+  "@g4TlWeight": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "g4TlNeeded": "Always needed: {why}",
+  "@g4TlNeeded": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "g4TlLoading": "Weighing the tools…",
+  "g4TlSearch": "Find a tool: name, command or what it does",
+  "g4TlNoMatch": "No tool for «{q}».",
+  "@g4TlNoMatch": {
+    "placeholders": {
+      "q": {
+        "type": "String"
+      }
+    }
+  },
+  "g4TlError": "The tools could not be read: {error}",
+  "@g4TlError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "g4TlHowMany": "{on} of {all} on",
+  "@g4TlHowMany": {
+    "placeholders": {
+      "all": {
+        "type": "String"
+      },
+      "on": {
+        "type": "String"
+      }
+    }
+  },
+  "g4TlExceptOn": "Still on for: {names} (their own choice)",
+  "@g4TlExceptOn": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "g4TlExceptOff": "Off for: {names} (their own choice)",
+  "@g4TlExceptOff": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "g4TlExceptReset": "As for every agent",
+  "g4CmSection": "Commands",
+  "g4CmOneDay": "1 day",
+  "g4CmDays": "{n} days",
+  "@g4CmDays": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "g4CmHours": "{n} h",
+  "@g4CmHours": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "g4CmOneHour": "1 h",
+  "g4CmMinutes": "{n} min",
+  "@g4CmMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "g4CmNoLimit": "No limit",
+  "g4CmPageQ": "How long can the agents' commands run?",
+  "g4CmPageLead": "The agents run commands on this computer: some end at once, others (a development server, a watcher, a long build) keep going in the background while the agent does other things.",
+  "g4CmBgTitle": "Commands in the background",
+  "g4CmBgLead": "Servers, watchers and long builds. You see them in the strip above the message box and can stop them there.",
+  "g4CmAtOnce": "At once in one conversation",
+  "g4CmAtOnceHelp": "When the limit is reached, the agent has to stop one before starting another.",
+  "g4CmAtOnceWarn": "No limit: an agent can start as many as it likes. Each one uses processor and memory; if the computer slows down, stop some from the strip.",
+  "g4CmLong": "How long one can run",
+  "g4CmLongHelp": "Past this time the command is stopped by itself.",
+  "g4CmLongWarn": "No limit: a command runs until you or the agent stop it, even for days. Good for a development server; remember to stop what you no longer need.",
+  "g4CmLog": "How big its log can grow",
+  "g4CmLogHelp": "Every line is kept with its time. Past this size the oldest half goes.",
+  "g4CmLogWarn": "No limit: a command that writes a lot can fill the disk over time. The logs are in the project's .redgiant/commands folder.",
+  "g4CmBashTitle": "Ordinary commands",
+  "g4CmBashLead": "Those the agent waits for before going on (tests, an install, a conversion).",
+  "g4CmBash": "Longest wait",
+  "g4CmBashHelp": "The agent can ask for less; never for more. For longer work it uses the background.",
+  "g4CmStepsTitle": "Steps in one turn",
+  "g4CmStepsLead": "In one turn an agent thinks, uses a tool, reads the result and goes on. Past the limit it stops and tells you where it got to; a «Continue» button under its message lets it go on.",
+  "g4CmSteps": "Steps at most",
+  "g4CmStepsHelp": "One step is one call to the model. Default: no limit in your conversations with the agents; {n} for automations and tasks, which nobody watches. A number or «No limit» counts for every turn.",
+  "@g4CmStepsHelp": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "g4CmStepsDefault": "Default",
+  "g4CmStepsWarn": "No limit, automations and tasks included: an agent can work for hours in one turn. Only the budgets stop it, so keep one set (Settings, Budgets) if the model costs money.",
+  "g4CmDefaults": "Back to the defaults",
+  "g4CmSaved": "Saved: it counts from the next command and the next message.",
+  "g4CmUndo": "Undo",
+  "g4CmUndone": "Undone: the previous values are back.",
+  "g4RqSection": "Requests to you",
+  "g4RqPageQ": "When an agent needs you",
+  "g4RqPageLead": "Agents ask before risky actions, ask you questions, propose plans, ask for a tool or a key. Choose whether they ask you, and how long they wait for you.",
+  "g4RqModeTitle": "Ask me or not",
+  "g4RqModeQ": "Do you want to answer the agents' requests yourself?",
+  "g4RqModeAsk": "Ask me",
+  "g4RqModeClassifier": "Don't ask me anything",
+  "g4RqAlwaysYou": "Even with «Don't ask me anything», the truly dangerous requests always reach you, everywhere: deletions for good, system files, secrets leaving, real payments and RedGiant's own protections.",
+  "g4RqModeAskText": "Requests reach you everywhere: here and on the chats you connected. Answer where it suits you: the first answer counts, and the other copies close by themselves.",
+  "g4RqModeClassifierText": "Nothing reaches you: the classifier decides, a model you choose. It reads each request with the conversation and writes why it decided so. Only the truly dangerous things (listed below) still reach you, everywhere.",
+  "g4RqModeClassifierWarn": "The classifier can be wrong, and each decision costs a small request to its model.",
+  "g4RqTimeTitle": "Time to answer",
+  "g4RqTimeQ": "How long should an agent wait for your answer?",
+  "g4RqTimeQSpecial": "How long do the truly dangerous things wait for your answer?",
+  "g4RqAfterSpecialText": "If you do not answer within {time}, it is a no.",
+  "@g4RqAfterSpecialText": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "g4RqTimeNoneSpecial": "They wait as long as it takes: the agent stays still until you answer.",
+  "g4RqSpecialTitle": "The truly dangerous things",
+  "g4RqSpecialQ": "What always reaches you, wherever you are?",
+  "g4RqSpecialText": "Only these. When an agent is about to do one of them it stops and waits for you: the request reaches you here and on the chats you connected, also with «Don't ask me anything», and the classifier never decides it.",
+  "g4RqSpecialNot": "Everyday work is not on this list: sending code with git push, an ordinary message or email, putting a site online, changing the project's files, using a key from the keychain for its own site. Those follow your choice above.",
+  "g4RqCriticalExamples": "For example:",
+  "g4RqTimeNone": "The agent waits as long as it takes. Requests to switch on a tool or use a key still end after 15 and 10 minutes.",
+  "g4RqAfterQ": "If you do not answer within {time}:",
+  "@g4RqAfterQ": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "g4RqAfterNo": "It is a no",
+  "g4RqAfterClassifier": "The classifier decides",
+  "g4RqAfterNoText": "An approval nobody gives is always a no. To a question the agent goes on with its best guess and tells you which.",
+  "g4RqAfterClassifierText": "When the time runs out the classifier decides in your place, as with «Don't ask me anything». The truly dangerous things are a no instead.",
+  "g4RqClassifierTitle": "The classifier",
+  "g4RqClassifierQ": "Which model decides for you?",
+  "g4RqClassifierModel": "Model",
+  "g4RqClassifierDefault": "The light model ({model})",
+  "@g4RqClassifierDefault": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "g4RqClassifierHow": "It reads what the agent asks, its job and the last messages of the conversation; it answers yes or no with a reason, or picks an answer to a question. When in doubt it says no; if it fails, it is a no.",
+  "g4RqNoModel": "none connected",
+  "g4RqSaved": "Saved: it counts from the next request.",
+  "g4RqDoneTitle": "Decided without you",
+  "g4RqDoneLead": "Every request the classifier decided, or that ended because nobody answered in time, newest first.",
+  "g4RqDoneEmpty": "No decision taken without you yet.",
+  "g4RqOpenChat": "Open the conversation",
+  "g4RqByModel": "Classifier ({model}):",
+  "@g4RqByModel": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "g4RqByClassifier": "Classifier:",
+  "g4RqByTimeout": "Time ran out:",
+  "g4RqDecisionAllow": "Yes",
+  "g4RqDecisionDeny": "No",
+  "g4RqDecisionAnswered": "Answered",
+  "g4RqDecisionBlocked": "Blocked",
+  "g4RqKindApproval": "action",
+  "g4RqKindQuestion": "question",
+  "g4RqKindPlan": "plan",
+  "g4RqKindTool": "tool",
+  "g4RqKindCredential": "key",
+  "g4RqKindAutomation": "automation",
+  "g4SfSaved": "Saved: it counts from the next action of the agents.",
+  "g4SfCustomOn": "Only you approve it",
+  "g4CmAtWorkLead": "Saved at once, for the turns that start from now.",
+  "g4RulesHub": "Rules",
+  "g4TlExtLead": "Installed from Extensions (magic integrations, agents' proposals, your own): every agent has them. Change or remove them there.",
+  "g4TlExtTitle": "Tools of the extensions",
+  "g4SfTitle": "Safety and costs",
+  "g4GenAccount": "Account",
+  "g4GenAgentInstructions": "Its instructions",
+  "g4GenAgentLangAll": "All languages",
+  "g4GenAgentLangChange": "change",
+  "g4GenAgentLangCommon": "Most common",
+  "g4GenAgentLangHelp": "What every agent, the Chat and the shared memory write in. New conversations use it; open ones keep theirs.",
+  "g4GenAgentLangNone": "No language matches «{q}».",
+  "@g4GenAgentLangNone": {
+    "placeholders": {
+      "q": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenAgentLangSearch": "Search a language",
+  "g4GenAgentLangSub": "The agents reply in it from the next conversation.",
+  "g4GenAgentLangTitle": "Agents' language",
+  "g4GenAgents": "For every agent",
+  "g4GenAgentsLead": "What every agent reads, and who tries again a task an agent gives up on.",
+  "g4GenAlreadySet": "already set",
+  "g4GenBackupNone": "None: a task given up on stays so",
+  "g4GenBackupText": "A task an agent gives up on is tried once more by this model, in a new conversation.",
+  "g4GenBackupTitle": "Backup model for tasks",
+  "g4GenCare": "Updates and diagnostics",
+  "g4GenCareLead": "Whether a newer RedGiant is out, and a log to send when something goes wrong.",
+  "g4GenCloudPrivacy": "With {name}, what you say after the wake word goes to {name} through RedGiant's server; the wake word itself is still heard only in this page.",
+  "@g4GenCloudPrivacy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenDebugClear": "Delete the logs",
+  "g4GenDebugClearConfirm": "Delete every log kept?",
+  "g4GenDebugDownload": "Download the logs",
+  "g4GenDebugForced": "Turned on by the server's settings (REDGIANT_DEBUG=1).",
+  "g4GenDebugHelp": "Debug mode keeps a detailed log of everything RedGiant does: each step of starting a model with its times, the local engine's own messages, the requests, what the Windows program does. Turn it on when something is slow or goes wrong, repeat it, then download the logs and send them. It writes a lot (at most 300 MB, the oldest go first) and never writes passwords or keys.",
+  "g4GenDebugSize": "Logs kept: {size} in {files} files.",
+  "@g4GenDebugSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      },
+      "files": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenDebugSwitch": "Debug mode",
+  "g4GenDebugText": "Everything RedGiant does, written in a log you can download and send.",
+  "g4GenDebugTitle": "Diagnostics",
+  "g4GenDraftDefaultUsed": "These are the built-in instructions, with what you wrote. Every tool stays as for the other agents.",
+  "g4GenDraftFailed": "{god} could not write them ({why}). Here are the built-in ones, with what you wrote.",
+  "@g4GenDraftFailed": {
+    "placeholders": {
+      "god": {
+        "type": "String"
+      },
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenDraftLead": "{god} writes them from the built-in ones, fitted to what you wrote and to its settings, and chooses the tools it needs. Read, change what you like, then create it.",
+  "@g4GenDraftLead": {
+    "placeholders": {
+      "god": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenDraftRegenerate": "Write them again",
+  "g4GenDraftToolOnDefault": "useful for its job",
+  "g4GenDraftToolsAllOn": "Every tool on, as for the other agents.",
+  "g4GenDraftToolsLikeOthers": "All as for the other agents",
+  "g4GenDraftToolsSaved": "{n} switched off, saving about {tokens} tokens on every message. If it needs one later, it asks you.",
+  "@g4GenDraftToolsSaved": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "tokens": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenDraftToolsTitle": "Its tools",
+  "g4GenDraftToolTokens": "{tokens} tokens",
+  "@g4GenDraftToolTokens": {
+    "placeholders": {
+      "tokens": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenDraftUseDefault": "Use the built-in ones",
+  "g4GenDraftWorking": "{god} is writing its instructions...",
+  "@g4GenDraftWorking": {
+    "placeholders": {
+      "god": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenHasKey": "Key ready",
+  "g4GenImagesHelp": "An OpenAI key lets agents draw pictures; it costs money for each picture.",
+  "g4GenImagesKey": "OpenAI key for pictures (generate_image)",
+  "g4GenImagesModel": "Picture model",
+  "g4GenImagesTitle": "Pictures",
+  "g4GenInstrText": "What every agent should know or do: how you like answers, your conventions, what to avoid.",
+  "g4GenInstructionsHint": "What every agent should know or do, whoever it is: how you like answers, your conventions, things to avoid. They are added to each agent's own instructions (those are in each agent's card under Agents).",
+  "g4GenInstructionsPlaceholder": "For example: answer in Italian; code and comments in English; never push without asking.",
+  "g4GenInstructionsSaved": "Saved: conversations started from now on follow them.",
+  "g4GenInstructionsTitle": "Instructions for every agent",
+  "g4GenInUse": "in use",
+  "g4GenKeyChange": "Use another key",
+  "g4GenKeyGet": "Get a {name} key",
+  "@g4GenKeyGet": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenKeyHelp": "Kept in the keychain, encrypted; it never reaches this page again.",
+  "g4GenKeyLabel": "{name} key",
+  "@g4GenKeyLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenKeyLinked": "Uses the {name} key you already gave (chat, extensions or voice).",
+  "@g4GenKeyLinked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenLead": "Its look and language, then what every agent shares and the extra services. Each square opens its window; the lit ones are set.",
+  "g4GenLocked": "set by the environment",
+  "g4GenLogout": "Sign out",
+  "g4GenModelCloses": "The provider closes this model on {date}: choose another one before then.",
+  "@g4GenModelCloses": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenNews": "What's new",
+  "g4GenNewsText": "Everything each release brought, newest first: also what you missed.",
+  "g4GenNewsVersion": "Version {version}",
+  "@g4GenNewsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenOn": "on",
+  "g4GenOwnSearchHint": "RedGiant can run its own search engine (SearXNG): free, no keys, and every model can search the web with it, local ones too.",
+  "g4GenOwnSearchOn": "RedGiant's search engine is on: every agent and the Chat search the web with it.",
+  "g4GenOwnSearchStart": "Start RedGiant's search engine",
+  "g4GenOwnSearchStop": "Switch it off",
+  "g4GenPriceKchars": "{usd} per 1000 characters",
+  "@g4GenPriceKchars": {
+    "placeholders": {
+      "usd": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenPriceMinute": "about {usd} a minute",
+  "@g4GenPriceMinute": {
+    "placeholders": {
+      "usd": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenPriceMtokens": "{usd} per million audio tokens",
+  "@g4GenPriceMtokens": {
+    "placeholders": {
+      "usd": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenQ": "How do you want RedGiant?",
+  "g4GenRefineAfter": "After",
+  "g4GenRefineBefore": "Before",
+  "g4GenRefineCount": "{del} words out, {add} words in",
+  "@g4GenRefineCount": {
+    "placeholders": {
+      "del": {
+        "type": "String"
+      },
+      "add": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenRefineGodModel": "{god}'s model",
+  "@g4GenRefineGodModel": {
+    "placeholders": {
+      "god": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenRefineLegendAdd": "what is new",
+  "g4GenRefineLegendDel": "what goes away",
+  "g4GenRefineModel": "The model that writes",
+  "g4GenRewriteGo": "Rewrite",
+  "g4GenRewriteLead": "{god} starts from the instructions in the field and fits them to what the agent does now. You see the changes first.",
+  "@g4GenRewriteLead": {
+    "placeholders": {
+      "god": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenRewriteTitle": "Rewrite for the new job",
+  "g4GenRewriteYes": "Yes, rewrite them",
+  "g4GenSaved": "Saved",
+  "g4GenSearchDocs": "How to install SearXNG yourself",
+  "g4GenSearchHowTitle": "How to set up {name}",
+  "@g4GenSearchHowTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenSearchKey": "Key",
+  "g4GenSearchKeyKept": "A key is saved: leave empty to keep it.",
+  "g4GenSearchKeyPage": "Open the page of {name}'s keys",
+  "@g4GenSearchKeyPage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenSearchSaved": "From now on the models that cannot search by themselves use {name}.",
+  "@g4GenSearchSaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenSearchText": "Lets every agent and the Chat look things up on the web.",
+  "g4GenSearchTitle": "Web search",
+  "g4GenSearchTried": "It works: {n} results, the first «{first}».",
+  "@g4GenSearchTried": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "first": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenSearchTriedEmpty": "It answered, but with no results for the test search.",
+  "g4GenSearchTry": "Try it",
+  "g4GenSearchUrl": "Address of the SearXNG server",
+  "g4GenSearchUrlHelp": "The address where your SearXNG answers.",
+  "g4GenSearchUse": "Use this",
+  "g4GenSearchWho": "Claude and the subscriptions search by themselves. The others (local models, OpenAI-compatible keys) use the service chosen here.",
+  "g4GenServices": "Services",
+  "g4GenServicesHint": "Extras the agents can use. Each one works only if you set it; leaving a field empty switches it off.",
+  "g4GenSttCloudHelp": "In the cloud: {models}. From {price}.",
+  "@g4GenSttCloudHelp": {
+    "placeholders": {
+      "models": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenSttCompatible": "Another compatible service",
+  "g4GenSttCompatibleHelp": "Any service with the OpenAI transcription API (speaches, whisper.cpp's server…), at its address.",
+  "g4GenSttLocal": "On this computer",
+  "g4GenSttLocalHelp": "whisper.cpp, started by RedGiant: free, nothing leaves the house.",
+  "g4GenSttRemote": "whisper on another computer",
+  "g4GenSttRemoteHelp": "whisper-asr-webservice at its address, for a computer with a graphics card.",
+  "g4GenTitle": "General",
+  "g4GenTrying": "Trying the model…",
+  "g4GenUiLangHelp": "The pages, the menus and the setup.",
+  "g4GenUiLangTitle": "Interface language",
+  "g4GenUpdHelp": "RedGiant looks for a new version by itself at the first start of each day. Here you can look now.",
+  "g4GenVoiceHelp": "Turns voice messages (from Telegram or the microphone) into text.",
+  "g4GenVoiceKey": "Transcription service key",
+  "g4GenVoiceLocalHint": "No account and nothing leaves this computer. RedGiant downloads whisper.cpp and a multilingual model once (about 560 MB, with its bar in the corner) and runs them itself.",
+  "g4GenVoiceModel": "Transcription model",
+  "g4GenVoiceModelHead": "Model",
+  "g4GenVoiceNeedsKey": "Paste the {name} key first.",
+  "@g4GenVoiceNeedsKey": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenVoiceNeedsUrl": "Write the service's address first.",
+  "g4GenVoiceTitle": "Voice messages",
+  "g4GenVoiceUrl": "Address of the transcription service",
+  "g4GenWritten": "written",
+  "g4GenLook": "Look and language",
+  "g4GenBackupSaved": "Saved: it applies to tasks given up on from now on.",
+  "g4GenDebugSaved": "Saved: {name}",
+  "@g4GenDebugSaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "g4GenNewsTitle": "What is new in RedGiant {version}",
+  "@g4GenNewsTitle": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "g4AgTreeTitle": "Your team",
+  "g4AgTreeOf": "The agents of {project}",
+  "@g4AgTreeOf": {
+    "placeholders": {
+      "project": {
+        "type": "String"
+      }
+    }
+  },
+  "g4AgTreeLead": "Who works for you. God leads everything; each project has its lead, who hands work to the project's agents. An agent sees only its own project; the inspector only reads.",
+  "g4AgTreeProjectLead": "The project's lead, the agents it hands work to, and those of other places assigned to it.",
+  "g4AgAllProjects": "All projects",
+  "g4AgShowStopped": "Also the stopped ones",
+  "g4AgNoLead": "This project has no orchestrator yet.",
+  "g4AgNear": "Demi-God and personal agents",
+  "g4AgAssigned": "assigned",
+  "g4AgArchived": "archived",
+  "g4AgOpen": "Open",
+  "g4AgClose": "Close",
+  "g4AgAddShort": "Agent under it",
+  "g4AgAddUnder": "Add an agent under {name}",
+  "@g4AgAddUnder": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "g4AgKind": "Kind",
+  "g4AgWhatItDoes": "What it does",
+  "g4AgModelDefault": "The default model",
+  "g4AgOpenChat": "Open its conversation",
+  "g4AgReadOnly": "Its project is archived: you can read its settings, nothing changes until the project is restored.",
+  "g4AgGroupAssistant": "Services and routines",
+  "g4AgRewriteOffer": "You changed what {name} does. Do you want {god} to rewrite its instructions for the new job? You will see them before anything changes.",
+  "@g4AgRewriteOffer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "god": {
+        "type": "String"
+      }
+    }
+  },
+  "g4AgRewriteNo": "No, keep them",
+  "g4AgRewriteYes": "Yes, rewrite them",
+  "g4AgServices": "Services",
+  "g4AgServicesHelp": "The services it may use. Changes apply to its new conversations.",
+  "g4AgNoServices": "No services added yet.",
+  "g4AgAddServiceHint": "You add services (Notion, Linear, GitHub…) in Settings, Extensions.",
+  "g4AgSvcChecking": "Checking…",
+  "g4AgSvcWorks": "Works · {n} tools",
+  "@g4AgSvcWorks": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "g4AgSvcLogin": "Needs you to sign in",
+  "g4AgSvcBroken": "Not working",
+  "g4AgSavedNewChats": "Saved: it applies to its new conversations.",
+  "g4AgRoutines": "Routines",
+  "g4AgRoutinesHelp": "Work it does by itself at a set time or when something happens.",
+  "g4AgNoRoutines": "No routines yet.",
+  "g4AgNewRoutine": "New routine",
+  "g4AgNewRoutineOf": "A new routine for {name}",
+  "@g4AgNewRoutineOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "g4AgOn": "On",
+  "g4AgOff": "Off",
+  "g4AgRoutineWhat": "What should it do?",
+  "g4AgRoutineWhatHint": "For example: look at today's appointments and send me a summary.",
+  "g4AgRoutineTitle": "Its title (optional)",
+  "g4AgRoutineWhen": "When",
+  "g4AgEvery_daily": "Every day",
+  "g4AgEvery_weekdays": "Monday to Friday",
+  "g4AgEvery_weekly": "Every Monday",
+  "g4AgEvery_hourly": "Every hour",
+  "g4AgRoutineTime": "At what time (HH:MM)",
+  "g4AgRoutineTimeBad": "A time like 09:00",
+  "g4AgRoutineSave": "Save the routine",
+  "g4AgRoutineOnce": "Once, {at}",
+  "@g4AgRoutineOnce": {
+    "placeholders": {
+      "at": {
+        "type": "String"
+      }
+    }
+  },
+  "g4AgWhenDaily": "Every day at {time}",
+  "@g4AgWhenDaily": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "g4AgWhenWeekdays": "Monday to Friday at {time}",
+  "@g4AgWhenWeekdays": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "g4AgWhenWeekly": "Every Monday at {time}",
+  "@g4AgWhenWeekly": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "g4AgSkills": "Skills",
+  "g4AgSkillsHelp": "After a job that went well, tell it «save this as a skill»: it writes the steps down and, once you approve them in Extensions, every agent can use them.",
+  "g4AgShared": "What every agent knows about you",
+  "g4AgSharedHelp": "Who you are, your work, your tools: shared by all your personal agents.",
+  "g4AgStep1": "What should it do?",
+  "g4AgStep2Help": "It works there, under the project's lead.",
+  "g4AgStep3": "Its name",
+  "g4AgStep4Help": "Usually the same as the project's lead; choose another for a cheaper or stronger one.",
+  "g4AgStep5": "How much it may do alone",
+  "g4AgStep2Asst": "Which services may it use?",
+  "g4AgStep2AsstHelp": "It sees only the services you switch on here. Anything that sends, publishes, deletes or pays always asks you first.",
+  "g4AgStep3Asst": "How much may it do alone?",
+  "g4AgWhere": "Where it works",
+  "g4AgWhereHelp": "In a subproject it writes only in its folder; the rest of the project it can read, and changes there go through the lead.",
+  "g4AgWholeProject": "The whole project",
+  "g4AgOwnWords": "Describe the job in your own words",
+  "g4AgOwnWordsHelp": "For example: keeps the website's texts in Italian and English and checks the links.",
+  "g4AgRecommended": "recommended",
+  "g4AgModeText_auto": "Works by itself; asks only for risky actions (as set in Safety).",
+  "g4AgModeText_manual": "Asks before every change to files or commands.",
+  "g4AgModeText_plan": "First proposes a plan; works only once it is approved.",
+  "g4AgModeText_readonly": "Reads and answers, changes nothing.",
+  "g4AgAsstMode_auto": "On its own",
+  "g4AgAsstMode_manual": "Asks first",
+  "g4AgAsstModeText_auto": "Works by itself; asks you only before what leaves (sending, publishing, paying) or is risky.",
+  "g4AgAsstModeText_manual": "Asks you before every change.",
+  "g4AgAsstPurpose": "A personal agent does one job for you, outside the projects. God hands it the work that is its own; you can also talk to it directly.",
+  "g4AgAsstRole": "Its job",
+  "g4AgAsstRoleHelp": "One or two sentences: God reads them to decide what to hand to it, so keep it narrow.",
+  "g4AgOrAskGod": "Not sure which agents you need?",
+  "g4AgAskGod": "Ask {god}",
+  "@g4AgAskGod": {
+    "placeholders": {
+      "god": {
+        "type": "String"
+      }
+    }
+  },
+  "g4AgAskGodMessage": "Which personal agents would be useful to me? Look at what I do with you and suggest two or three, each with a narrow job and the services it needs. Create them only after I say yes.",
+  "g4AgDraftNext": "Next: {god} writes its instructions",
+  "@g4AgDraftNext": {
+    "placeholders": {
+      "god": {
+        "type": "String"
+      }
+    }
+  },
+  "g4AgDraftNextHint": "{god} will write its instructions and choose its tools; you see them before it is created.",
+  "@g4AgDraftNextHint": {
+    "placeholders": {
+      "god": {
+        "type": "String"
+      }
+    }
+  },
+  "g4AgDraftTitle": "Its instructions and tools",
+  "g4AgReviewWritten": "written for it",
+  "g4AgReviewBuiltIn": "the built-in ones",
+  "g4AgNoneChosen": "none",
+  "g4AgRole_coder": "Programmer",
+  "g4AgRoleText_coder": "Writes and changes the code, runs the tests.",
+  "g4AgRole_reviewer": "Reviewer",
+  "g4AgRoleText_reviewer": "Checks changes for bugs and unclear code, says where and why.",
+  "g4AgRole_researcher": "Researcher",
+  "g4AgRoleText_researcher": "Looks things up on the web and in the files, with sources.",
+  "g4AgRole_writer": "Writer",
+  "g4AgRoleText_writer": "Documentation, READMEs and texts, clear and up to date.",
+  "g4AgRole_tester": "Tester",
+  "g4AgRoleText_tester": "Writes and runs tests, reproduces bugs.",
+  "g4AgRole_custom": "Something else",
+  "g4AgRoleText_custom": "You describe the job in your own words.",
+  "g4AgJob_secretary": "Secretary",
+  "g4AgJobHint_secretary": "Your diary, your tasks and messages; a summary every morning.",
+  "g4AgJobText_secretary": "Keep my tasks and appointments in order, remind me of deadlines and give me a short summary of the day when I ask. Never send anything in my name without asking.",
+  "g4AgJob_researcher": "Researcher",
+  "g4AgJobHint_researcher": "Looks things up on the web and reports with sources.",
+  "g4AgJobText_researcher": "Look things up on the web when I ask, compare the sources and report what you found with the links, saying what you could not confirm.",
+  "g4AgJob_social": "Social media",
+  "g4AgJobHint_social": "Prepares posts and keeps an eye on your pages.",
+  "g4AgJobText_social": "Prepare posts for my pages in my style, propose them to me before publishing and tell me how the last ones went.",
+  "g4AgJob_accounts": "Accounts",
+  "g4AgJobHint_accounts": "Invoices, payments and expenses, in order.",
+  "g4AgJobText_accounts": "Keep invoices, payments and expenses in order, tell me what is due and what is missing. Never pay or refund without my approval.",
+  "g4AgJob_tech": "Tech helper",
+  "g4AgJobHint_tech": "Answers technical questions and fixes small things.",
+  "g4AgJobText_tech": "Answer my technical questions simply, with the steps to follow, and fix small problems when I ask.",
+  "g4AgJob_custom": "In my own words",
+  "g4AgJobHint_custom": "Describe the job yourself."
 }

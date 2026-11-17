@@ -71,7 +71,7 @@ void main() {
     await tester.tap(find.byKey(const Key('team-new-agent')));
     await tester.pumpAndSettle();
     expect(find.byType(NewAgentScreen), findsOneWidget);
-    expect(find.text('Passo 1 di 6'), findsOneWidget);
+    expect(find.text('Passo 1 di 8'), findsOneWidget);
     // Nothing chosen: no going on.
     expect(tester.widget<FilledButton>(find.byKey(const Key('new-agent-next'))).onPressed, isNull);
     await tester.tap(find.byKey(const Key('new-kind-agent')));
@@ -82,12 +82,17 @@ void main() {
     await tester.tap(find.byKey(const Key('new-project-demo')));
     await tester.pumpAndSettle();
     await next(tester);
-    // The name and job; the face it will get, from the server.
+    // What it does: a ready role, or the person's own words (G42.4).
+    await tester.ensureVisible(find.byKey(const Key('new-role-custom')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('new-role-custom')));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const Key('new-agent-own')));
+    await tester.enterText(find.byKey(const Key('new-agent-own')), 'scrive i test e li fa passare');
+    await tester.pumpAndSettle();
+    await next(tester);
+    // The name; the face it will get, from the server.
     await tester.enterText(find.byKey(const Key('new-agent-name')), 'Collaudatore');
-    await tester.enterText(
-      find.byKey(const Key('new-agent-role')),
-      'scrive i test e li fa passare',
-    );
     await tester.pump(const Duration(milliseconds: 400));
     await _settle(tester);
     expect(find.byKey(const Key('new-agent-mascot')), findsOneWidget);
@@ -103,9 +108,13 @@ void main() {
     await _settle(tester);
     expect(find.text('Claude Sonnet 5 · Abbonamento · Medio'), findsOneWidget);
     await next(tester);
-    // Tools: the essential ones are not there to switch off.
+    // How much it may do alone; then God writes its instructions (the fake God gives no tools).
+    await next(tester);
+    await _settle(tester);
+    // Tools by hand: the essential ones are not there to switch off.
     expect(find.byKey(const Key('new-tool-read_file')), findsNothing);
     expect(find.byKey(const Key('new-tool-ask_user')), findsNothing);
+    await tester.ensureVisible(find.byKey(const Key('new-tool-fetch')));
     await tester.tap(find.byKey(const Key('new-tool-fetch')));
     await tester.pumpAndSettle();
     await next(tester);
@@ -166,21 +175,28 @@ void main() {
     await tester.tap(find.byKey(const Key('new-kind-assistant')));
     await tester.pumpAndSettle();
     await next(tester);
-    expect(find.text('Passo 2 di 5'), findsOneWidget);
+    expect(find.text('Passo 2 di 8'), findsOneWidget);
+    await next(tester);
     await tester.enterText(find.byKey(const Key('new-agent-name')), 'Agenda');
     await tester.pumpAndSettle();
+    await next(tester);
+    // No services added for everyone.
+    expect(find.byKey(const Key('new-no-services')), findsOneWidget);
     await next(tester);
     expect(find.text('Lo stesso di God'), findsOneWidget);
     await next(tester);
     await next(tester);
+    await _settle(tester);
+    await next(tester);
     await next(tester);
     await _settle(tester);
-    expect(server.newAgents.single, {
-      'kind': 'assistant',
-      'parentId': 'a0',
-      'name': 'Agenda',
-      'mode': 'auto',
-    });
+    final made = server.newAgents.single;
+    expect(made['kind'], 'assistant');
+    expect(made['parentId'], 'a0');
+    expect(made['name'], 'Agenda');
+    expect(made['mode'], 'auto');
+    expect(made['connections'], isEmpty);
+    expect(made['role'], startsWith('Tieni in ordine'));
     expect(server.toolChoices, isEmpty);
     await _done(tester);
   });

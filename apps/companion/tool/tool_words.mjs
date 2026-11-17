@@ -1,5 +1,5 @@
 // Writes lib/l10n/tool_words.g.dart: the page's words for the tools (`tool_<id>`, `toolDo_<id>`,
-// `toolGrp_<group>` in packages/web/src/i18n.ts, it and en), so the app names them the same.
+// `toolGrp_<group>`, `toolWhy_<id>` in packages/web/src/i18n.ts, it and en), so the app names them the same.
 //
 //   node apps/companion/tool/tool_words.mjs
 import { readFileSync, writeFileSync } from "node:fs";
@@ -10,7 +10,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, "../../../packages/web/src/i18n.ts"), "utf8");
 const itAt = src.indexOf("\nconst it:");
 const parts = { en: src.slice(0, itAt), it: src.slice(itAt) };
-const re = /^ {2}(tool(?:Do|Grp)?_[A-Za-z0-9_]+):\s*\n?\s*"((?:[^"\\]|\\.)*)",?$/gm;
+const re = /^ {2}(tool(?:Do|Grp|Why)?_[A-Za-z0-9_]+):\s*\n?\s*"((?:[^"\\]|\\.)*)",?$/gm;
 const out = { it: {}, en: {} };
 for (const [lang, text] of Object.entries(parts))
   for (const m of text.matchAll(re)) out[lang][m[1]] = JSON.parse(`"${m[2]}"`);
