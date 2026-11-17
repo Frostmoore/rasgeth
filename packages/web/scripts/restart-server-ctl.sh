@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # restart-server-ctl.sh start|freeze|kill — drives restart-server.mjs (p3.8.9) for the app's
 # test of a server that goes away and comes back (apps/companion/test/restart_server_test.dart).
-#   start   starts it on RESTART_PORT (7652) with the data in RESTART_DIR (kept between starts)
+#   start   starts it on RESTART_PORT (7652) with the data in RESTART_DIR (kept between starts);
+#           run it detached or with its output to a file: read through a pipe, it never ends
 #   freeze  stops it answering with every link still open (SIGSTOP: a power cut, as the app sees it)
 #   kill    kills it with SIGKILL, no goodbye
 set -uo pipefail
