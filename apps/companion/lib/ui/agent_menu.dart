@@ -7,6 +7,7 @@ import '../api/types.dart';
 import '../app_state.dart';
 import '../desktop/desk_controller.dart';
 import '../l10n/app_localizations.dart';
+import '../screens/agent_conversations_screen.dart';
 import '../screens/agent_settings_screen.dart';
 import '../screens/instructions_screen.dart';
 import '../screens/team_screen.dart';
@@ -17,10 +18,19 @@ import 'model_sheet.dart';
 
 /// Right click: the context menu at the pointer; long press: the sheet from below.
 class AgentPress extends StatelessWidget {
-  const AgentPress({super.key, required this.agent, required this.child, this.longPress = true});
+  const AgentPress({
+    super.key,
+    required this.agent,
+    required this.child,
+    this.longPress = true,
+    this.onTap,
+  });
 
   final Agent? agent;
   final Widget child;
+
+  /// A plain click (a mascot that shows the agent's conversations).
+  final VoidCallback? onTap;
 
   /// False where the child keeps its own long press (it opens the same sheet).
   final bool longPress;
@@ -31,6 +41,7 @@ class AgentPress extends StatelessWidget {
     if (a == null) return child;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
+      onTap: onTap,
       onSecondaryTapUp: (d) => showAgentMenu(context, a, d.globalPosition),
       onLongPress: longPress ? () => showAgentSheet(context, a) : null,
       child: child,
@@ -38,10 +49,10 @@ class AgentPress extends StatelessWidget {
   }
 }
 
-enum _Act { open, fresh, model, instructions, mascot, favourite, stopTurn, settings }
+enum _Act { open, list, fresh, model, instructions, mascot, favourite, stopTurn, settings }
 
 /// The computer's context menu for [a], at [at] (global coordinates).
-Future<void> showAgentMenu(BuildContext context, Agent a, Offset at) async {
+Future<void> showAgentMenu(BuildContext context, Agent a, Offset at, {VoidCallback? opened}) async {
   final app = AppScope.read(context);
   final l = AppLocalizations.of(context);
   final c = RgColors.of(context);
@@ -78,6 +89,7 @@ Future<void> showAgentMenu(BuildContext context, Agent a, Offset at) async {
     ),
     items: [
       item(_Act.open, RgIcons.chat, l.agentOpenChat),
+      item(_Act.list, RgIcons.list, l.cmConversationsOf(a.name)),
       item(_Act.fresh, RgIcons.plus, l.asMenuNew),
       const PopupMenuDivider(height: 8),
       item(_Act.model, RgIcons.zap, l.asMenuModel),
@@ -91,6 +103,7 @@ Future<void> showAgentMenu(BuildContext context, Agent a, Offset at) async {
   );
   if (pick == null || !context.mounted) return;
   await _run(context, a, pick);
+  if (pick == _Act.open || pick == _Act.fresh || pick == _Act.list) opened?.call();
 }
 
 Future<void> _run(BuildContext context, Agent a, _Act act) async {
@@ -108,6 +121,8 @@ Future<void> _run(BuildContext context, Agent a, _Act act) async {
       } else {
         await openAgentConversation(context, a, fresh: fresh);
       }
+    case _Act.list:
+      await openAgentList(context, a);
     case _Act.model:
       await pickAgentModel(context, a);
     case _Act.instructions:
@@ -133,6 +148,22 @@ Future<void> _run(BuildContext context, Agent a, _Act act) async {
     case _Act.settings:
       await openAgentSettings(context, a);
   }
+}
+
+/// [a]'s conversations (3.8.8): the Chat's own screen for the Chat, the list for the others.
+Future<void> openAgentList(BuildContext context, Agent a) async {
+  final app = AppScope.read(context);
+  final desk = DeskScope.maybeRead(context);
+  if (app.isChat(a)) {
+    if (desk != null) {
+      desk.show(const PanelPage(PanelScreen.chat));
+    } else {
+      app.setTab(AppTab.chat);
+      Navigator.of(context).popUntil((r) => r.isFirst);
+    }
+    return;
+  }
+  await openAgentConversations(context, a);
 }
 
 /// The model sheet for [a] (the page's own API: the Chat through its settings), with a word on

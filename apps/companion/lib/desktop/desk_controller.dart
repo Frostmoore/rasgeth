@@ -44,6 +44,26 @@ class PanelConversation extends PanelContent {
       : 'conversation:$sessionId:${identityHashCode(this)}';
 }
 
+/// An agent's conversations (3.8.8): a click on its card shows them, as the page's bar does.
+class PanelAgent extends PanelContent {
+  const PanelAgent(this.agentId);
+
+  final String agentId;
+
+  @override
+  String get id => 'agent:$agentId';
+}
+
+/// A project: its conversations, its team's and, archived, its tasks (3.8.8).
+class PanelProject extends PanelContent {
+  const PanelProject(this.projectId);
+
+  final String projectId;
+
+  @override
+  String get id => 'project:$projectId';
+}
+
 /// The screens that open in the panel (the phone's, reused as they are).
 enum PanelScreen { inbox, chat, saved, you }
 
@@ -241,6 +261,7 @@ class DeskController extends ChangeNotifier {
   /// The agent whose conversation the panel shows (its tile is lit on the wall).
   String? get panelAgentId {
     final p = panel;
+    if (p is PanelAgent) return p.agentId;
     if (p is! PanelConversation) return null;
     return p.agent?.id ?? app.live.sessions.where((s) => s.id == p.sessionId).firstOrNull?.agentId;
   }
@@ -362,6 +383,12 @@ class DeskController extends ChangeNotifier {
 
   // ---- opening agents ----
 
+  /// [a]'s conversations in the panel (a click on its card, 3.8.8).
+  void showAgent(Agent a) => show(PanelAgent(a.id));
+
+  /// A project in the panel: its conversations and, archived, its tasks (3.8.8).
+  void showProject(String projectId) => show(PanelProject(projectId));
+
   /// [a]'s conversation in the panel (God's shared one, else the latest); false when it failed.
   Future<bool> openAgent(Agent a, {bool fresh = false, String? firstMessage}) async {
     final id = await app.openAgent(a, fresh: fresh);
@@ -395,6 +422,10 @@ class DeskScope extends InheritedNotifier<DeskController> {
 
   static DeskController read(BuildContext context) =>
       context.getInheritedWidgetOfExactType<DeskScope>()!.notifier!;
+
+  /// The room, rebuilt when it changes; null outside it (the phone).
+  static DeskController? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<DeskScope>()?.notifier;
 
   static DeskController? maybeRead(BuildContext context) =>
       context.getInheritedWidgetOfExactType<DeskScope>()?.notifier;

@@ -4690,4 +4690,274 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get requestTechDetails => 'Dettagli tecnici';
+
+  @override
+  String get cmOpen => 'Apri';
+
+  @override
+  String get cmPin => 'Fissa';
+
+  @override
+  String get cmUnpin => 'Togli dalle fissate';
+
+  @override
+  String get cmFolder => 'Sposta in una cartella';
+
+  @override
+  String get cmFolderNew => 'Nuova cartella…';
+
+  @override
+  String get cmFolderNewTitle => 'Nuova cartella';
+
+  @override
+  String get cmFolderNewYes => 'Sposta';
+
+  @override
+  String get cmFolderOut => 'Toglila dalla cartella';
+
+  @override
+  String get cmArchive => 'Archivia';
+
+  @override
+  String get cmUnarchive => 'Riporta';
+
+  @override
+  String get cmExport => 'Esporta in Markdown';
+
+  @override
+  String get cmArchived => 'Conversazione archiviata.';
+
+  @override
+  String get cmUnarchived => 'Conversazione riportata.';
+
+  @override
+  String get cmFailed => 'Non è riuscito: riprova.';
+
+  @override
+  String get cmExported => 'File salvato.';
+
+  @override
+  String cmForkOf(String title) {
+    return 'ramo di «$title»';
+  }
+
+  @override
+  String cmArchivedN(int n) {
+    return 'Archiviate ($n)';
+  }
+
+  @override
+  String get cmBack => 'Torna alle conversazioni';
+
+  @override
+  String get cmNew => 'Nuova conversazione';
+
+  @override
+  String get cmEmpty => 'Ancora nessuna conversazione: iniziane una.';
+
+  @override
+  String get cmEmptyArchived => 'Nessuna conversazione archiviata.';
+
+  @override
+  String get cmPinned => 'Fissate';
+
+  @override
+  String cmConversationsOf(String name) {
+    return 'Conversazioni con $name';
+  }
+
+  @override
+  String cmTask(String title) {
+    return 'Compito: $title';
+  }
+
+  @override
+  String get cmShared => 'Conversazione condivisa';
+
+  @override
+  String get pmOpen => 'Apri';
+
+  @override
+  String get pmTasks => 'Compiti e file';
+
+  @override
+  String get pmCode => 'Codice';
+
+  @override
+  String pmAgents(String project) {
+    return 'Agenti di $project';
+  }
+
+  @override
+  String get pmArchive => 'Archivia il progetto';
+
+  @override
+  String get pmRestore => 'Ripristina';
+
+  @override
+  String get pmInitGit => 'Inizializza git';
+
+  @override
+  String pmInitGitDone(String name) {
+    return 'Repository git creato per «$name» (branch main).';
+  }
+
+  @override
+  String pmAskTitle(String name) {
+    return 'Archiviare «$name»?';
+  }
+
+  @override
+  String get pmAskLead =>
+      'Il progetto esce dagli elenchi e resta leggibile in «Archiviati». Niente viene cancellato: lo ripristini quando vuoi e torna com\'era.';
+
+  @override
+  String pmWorking(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n agenti stanno lavorando: verranno fermati',
+      one: '1 agente sta lavorando: verrà fermato',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pmNobody => 'Nessun agente ci sta lavorando adesso.';
+
+  @override
+  String pmAutos(int n, String names) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other:
+          '$n automazioni verranno messe in pausa ($names); ripartono quando ripristini il progetto.',
+      one: '1 automazione verrà messa in pausa ($names); riparte quando ripristini il progetto.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pmFactTasks => 'I compiti aperti restano aperti.';
+
+  @override
+  String get pmFactSandbox => 'La sua sandbox si ferma e riparte al ripristino.';
+
+  @override
+  String get pmFactNobody =>
+      'Fino ad allora nessun agente ci lavora né cambia i suoi file, e le chat collegate non lo usano.';
+
+  @override
+  String get pmFactRestore => 'Anche God può archiviarlo e ripristinarlo, sempre con il tuo sì.';
+
+  @override
+  String get pmStopAndArchive => 'Ferma e archivia';
+
+  @override
+  String get pmArchiveYes => 'Archivia';
+
+  @override
+  String pmArchived(String name) {
+    return '«$name» archiviato.';
+  }
+
+  @override
+  String pmRestored(String name) {
+    return '«$name» ripristinato.';
+  }
+
+  @override
+  String pmArchivedN(int n) {
+    return 'Archiviati ($n)';
+  }
+
+  @override
+  String pmArchivedOn(String day) {
+    return 'archiviato il $day';
+  }
+
+  @override
+  String get pmBadge => 'Archiviato · sola lettura';
+
+  @override
+  String get pmViewLead =>
+      'Archiviato: puoi leggere le sue conversazioni, i compiti e i file. Ripristinalo per lavorarci di nuovo.';
+
+  @override
+  String get pmConversations => 'Conversazioni';
+
+  @override
+  String get pmTeam => 'Le conversazioni del gruppo';
+
+  @override
+  String get pmNoConversations => 'Nessuna conversazione.';
+
+  @override
+  String get pmTasksTitle => 'Compiti';
+
+  @override
+  String get pmNoTasks => 'Nessun compito.';
+
+  @override
+  String get pmNoLead => 'Questo progetto non ha un agente capo.';
+
+  @override
+  String get pmNoGit => 'Senza repository git';
+
+  @override
+  String get bellTitle => 'Da approvare';
+
+  @override
+  String get bellTooltip => 'Richieste e notifiche';
+
+  @override
+  String bellPermissions(int n) {
+    return 'Permessi ($n)';
+  }
+
+  @override
+  String bellQuestions(int n) {
+    return 'Domande ($n)';
+  }
+
+  @override
+  String bellWorking(int n) {
+    return 'Al lavoro adesso ($n)';
+  }
+
+  @override
+  String get bellNoApprovals => 'Niente che ti aspetta.';
+
+  @override
+  String get bellNoQuestions => 'Nessuna domanda.';
+
+  @override
+  String get bellNothingRunning => 'Niente in corso.';
+
+  @override
+  String get bellAllow => 'Consenti';
+
+  @override
+  String get bellDeny => 'Nega';
+
+  @override
+  String get bellLook => 'Guarda e decidi';
+
+  @override
+  String get bellAnswer => 'Rispondi';
+
+  @override
+  String get bellSeeAll => 'Vedi tutto';
+
+  @override
+  String pmConversationsCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n conversazioni',
+      one: '1 conversazione',
+      zero: 'nessuna conversazione',
+    );
+    return '$_temp0';
+  }
 }

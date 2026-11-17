@@ -21,6 +21,7 @@ import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/model_sheet.dart';
 import '../ui/words.dart';
+import 'agent_conversations_screen.dart';
 import 'agent_settings_screen.dart';
 import 'code/project_screen.dart';
 import 'conversation_screen.dart';
@@ -120,7 +121,7 @@ class TeamScreen extends StatelessWidget {
                                   agent: god,
                                   state: app.live.mascotStateOf(god.id),
                                   doing: doingOf(l, app, god, app.live.mascotStateOf(god.id)),
-                                  onTap: () => openAgentConversation(context, god),
+                                  onTap: () => openAgentConversations(context, god),
                                   onLongPress: () => showAgentSheet(context, god),
                                 ),
                               ),
@@ -217,7 +218,7 @@ class TeamScreen extends StatelessWidget {
                                   agent: team[i],
                                   state: app.live.mascotStateOf(team[i].id),
                                   favourite: app.isFavourite(team[i].id),
-                                  onTap: () => openAgentConversation(context, team[i]),
+                                  onTap: () => openAgentConversations(context, team[i]),
                                   onLongPress: () => showAgentSheet(context, team[i]),
                                 ),
                               ),
@@ -780,6 +781,20 @@ class AgentSheet extends StatelessWidget {
                       },
                       icon: RgIcon(RgIcons.refresh, size: 18, color: c.text),
                       label: Text(l.mascotChange),
+                    ),
+                  ),
+                if (!app.isChat(a))
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: OutlinedButton.icon(
+                      key: const Key('agent-list'),
+                      style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(46)),
+                      onPressed: () {
+                        close();
+                        openAgentConversations(parent, a);
+                      },
+                      icon: RgIcon(RgIcons.list, size: 18, color: c.text),
+                      label: Text(l.cmConversationsOf(a.name)),
                     ),
                   ),
                 OutlinedButton.icon(

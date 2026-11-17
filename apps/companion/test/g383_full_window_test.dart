@@ -76,7 +76,10 @@ void main() {
   ) async {
     final prefs = MemoryAppPrefs();
     await start(tester, prefs);
+    // 3.8.8: the tile shows the agent's conversations; a new one is the panel's conversation.
     await tester.tap(find.byKey(const Key('tile-a3')));
+    await _settle(tester);
+    await tester.tap(find.byKey(const Key('agent-conv-new')));
     await _settle(tester);
     expect(find.byKey(const Key('desk-rail')), findsNothing);
 
@@ -152,6 +155,10 @@ void main() {
     // Next opening: a conversation opens full window at once.
     await start(tester, prefs);
     await tester.tap(find.byKey(const Key('tile-a3')));
+    await _settle(tester);
+    // The list first (not a conversation: the room stays), then the conversation full window.
+    expect(find.byKey(const Key('desk-rail')), findsNothing);
+    await tester.tap(find.byKey(const Key('agent-conv-new')));
     await _settle(tester);
     expect(find.byKey(const Key('desk-rail')), findsOneWidget);
     expect(desk(tester).panelAgentId, 'a3');

@@ -20,6 +20,8 @@ import '../mascot/mascot_view.dart';
 import '../screens/inbox_screen.dart';
 import '../screens/new_agent_screen.dart';
 import '../theme/colors.dart';
+import '../ui/agent_menu.dart';
+import '../ui/conversation_menu.dart';
 import '../ui/highlight.dart';
 import '../ui/icons.dart';
 import '../ui/words.dart';
@@ -41,6 +43,7 @@ class PaletteItem {
     this.detail,
     this.ask,
     this.float,
+    this.session,
   });
 
   final String key;
@@ -64,6 +67,9 @@ class PaletteItem {
 
   /// Ctrl/Cmd+Enter: in a floating panel.
   final VoidCallback? float;
+
+  /// A conversation's row: its menu on a right click (3.8.8).
+  final SessionRow? session;
 }
 
 class PaletteQuery {
@@ -310,6 +316,7 @@ class _CommandPaletteState extends State<CommandPalette> {
           title: s.title!,
           subtitle: agent?.name,
           icon: RgIcons.chat,
+          session: s,
           run: () => desk.show(PanelConversation(s.id, agent: agent)),
           float: () => desk.showFloating(PanelConversation(s.id, agent: agent), size),
         ),
@@ -707,6 +714,22 @@ class _Row extends StatelessWidget {
         child: InkWell(
           key: Key('palette-${item.key}'),
           onTap: onTap,
+          // 3.8.8: the agent's or the conversation's menu, as everywhere; «Open» closes the palette.
+          onSecondaryTapUp: a == null && item.session == null
+              ? null
+              : (d) {
+                  void done() => Navigator.of(context).maybePop();
+                  if (a != null) {
+                    showAgentMenu(context, a, d.globalPosition, opened: done);
+                  } else {
+                    showConversationMenu(
+                      context,
+                      item.session!,
+                      at: d.globalPosition,
+                      opened: done,
+                    );
+                  }
+                },
           child: Container(
             height: 40,
             padding: const EdgeInsets.symmetric(horizontal: 16),

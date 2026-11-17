@@ -6,7 +6,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../app_state.dart';
 import '../l10n/app_localizations.dart';
+import '../screens/agent_conversations_screen.dart';
+import '../screens/project_overview_screen.dart';
+import '../ui/agent_menu.dart';
 import '../screens/chat_screen.dart';
 import '../screens/conversation_screen.dart';
 import '../screens/inbox_screen.dart';
@@ -110,6 +114,13 @@ class _SidePanelState extends State<SidePanel> {
         children: [
           _PageHead(screen: screen, close: close),
           Expanded(child: _screen(screen)),
+        ],
+      ),
+      PanelAgent(:final agentId) => _AgentPanel(agentId: agentId, close: close),
+      PanelProject(:final projectId) => Column(
+        children: [
+          ProjectPanelHead(projectId: projectId, close: close),
+          Expanded(child: ProjectOverview(projectId: projectId)),
         ],
       ),
     };
@@ -407,6 +418,67 @@ class PanelSurface extends StatelessWidget {
 }
 
 /// The title over a screen in the panel (its colours read when it paints, as [PanelSurface]).
+/// An agent's conversations in the panel (3.8.8): its head with the agent's menu, then the list.
+class _AgentPanel extends StatelessWidget {
+  const _AgentPanel({required this.agentId, required this.close});
+
+  final String agentId;
+  final Widget close;
+
+  @override
+  Widget build(BuildContext context) {
+    final app = AppScope.of(context);
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final a = app.agents.where((x) => x.id == agentId).firstOrNull;
+    return Column(
+      key: Key('panel-agent-$agentId'),
+      children: [
+        Container(
+          padding: const EdgeInsets.fromLTRB(14, 8, 6, 8),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: c.line)),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: a == null
+                    ? Text(l.statusUnreachable, style: TextStyle(color: c.dim))
+                    : AgentListHead(
+                        agent: a,
+                        trailing: [
+                          Builder(
+                            builder: (ctx) => PanelButton(
+                              key: const Key('panel-agent-more'),
+                              icon: RgIcons.more,
+                              tooltip: l.asOpen,
+                              onTap: () {
+                                final box = ctx.findRenderObject()! as RenderBox;
+                                showAgentMenu(
+                                  ctx,
+                                  a,
+                                  box.localToGlobal(box.size.bottomLeft(Offset.zero)),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+              ),
+              close,
+            ],
+          ),
+        ),
+        Expanded(
+          child: a == null
+              ? const SizedBox.shrink()
+              : AgentConversations(agent: a, readOnly: app.isAgentReadOnly(a)),
+        ),
+      ],
+    );
+  }
+}
+
 class _PageHead extends StatelessWidget {
   const _PageHead({required this.screen, required this.close});
 

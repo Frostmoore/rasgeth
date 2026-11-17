@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
@@ -222,6 +223,9 @@ class AppController extends ChangeNotifier {
     }
     return null;
   }
+
+  /// [a] belongs to an archived project (p3.5.3): its conversations are only read.
+  bool isAgentReadOnly(Agent a) => archivedProjects.any((p) => p.id == a.projectId);
 
   /// Team's favourites, per RedGiant (kept on this device).
   Set<String> favourites = const {};
@@ -1242,6 +1246,74 @@ class AppController extends ChangeNotifier {
       return id;
     } on ApiException {
       return null;
+    }
+  }
+
+  /// A conversation pinned, archived or moved to a folder (the page's row actions, the same
+  /// `PATCH /api/sessions/:id`); the rows are read again. False when it failed.
+  Future<bool> updateSession(
+    String sessionId, {
+    bool? pinned,
+    bool? archived,
+    String? folder,
+    bool clearFolder = false,
+  }) async {
+    final c = client;
+    if (c == null) return false;
+    try {
+      await c.updateSession(
+        sessionId,
+        pinned: pinned,
+        archived: archived,
+        folder: folder,
+        clearFolder: clearFolder,
+      );
+      live.setSessions(await c.sessions());
+      return true;
+    } on ApiException {
+      return false;
+    }
+  }
+
+  /// The conversation as Markdown (the page's «Export»); null when it failed.
+  Future<Uint8List?> exportSession(String sessionId) async {
+    try {
+      return await client?.exportSession(sessionId);
+    } on ApiException {
+      return null;
+    }
+  }
+
+  /// What «Archive» would stop in a project (said first, as the page does); null when it failed.
+  Future<ProjectWork?> projectWork(String projectId) async {
+    try {
+      return await client?.projectWork(projectId);
+    } on ApiException {
+      return null;
+    }
+  }
+
+  /// «Archive» a whole project (p3.5.3): its agents stop, its automations pause, read only.
+  Future<String?> archiveProject(String projectId) async {
+    try {
+      await client?.archiveProject(projectId);
+      await _loadLists();
+      notifyListeners();
+      return null;
+    } on ApiException catch (e) {
+      return e.message;
+    }
+  }
+
+  /// «Initialise git» (3.5.12) for a project made without its repository.
+  Future<bool> initProjectGit(String projectId) async {
+    try {
+      await client?.initProjectGit(projectId);
+      await _loadLists();
+      notifyListeners();
+      return true;
+    } on ApiException {
+      return false;
     }
   }
 

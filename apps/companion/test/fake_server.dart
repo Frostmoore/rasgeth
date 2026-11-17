@@ -183,10 +183,21 @@ class FakeRedGiant {
       'createdAt': '2026-11-14T09:00:00.000Z',
       'lastAt': '2026-11-14T09:05:00.000Z',
       'title': 'Ieri',
+      'pinned': false,
       'archived': false,
+      'folder': null,
       'running': false,
     },
   ];
+
+  /// 3.8.8: the conversations' `PATCH` bodies (the real zod schema checks them first), the
+  /// exports read, the projects archived and restored and what `/work` says is running.
+  final sessionPatches = <Map<String, dynamic>>[];
+  final exported = <String>[];
+  final projectActs = <String>[];
+  final gitInits = <String>[];
+  List<Map<String, dynamic>> projectWorking = [];
+  List<Map<String, dynamic>> projectAutomations = [];
   final permissions = <Map<String, dynamic>>[
     {
       'requestId': 'r1',
@@ -761,7 +772,9 @@ class FakeRedGiant {
         'createdAt': DateTime.now().toUtc().toIso8601String(),
         'lastAt': null,
         'title': null,
+        'pinned': false,
         'archived': false,
+        'folder': null,
         'running': false,
       });
       listsChanged(['sessions']);
@@ -1065,11 +1078,25 @@ class FakeRedGiant {
         'createdAt': DateTime.now().toUtc().toIso8601String(),
         'lastAt': null,
         'title': null,
+        'pinned': false,
         'archived': false,
+        'folder': null,
         'running': false,
       });
       listsChanged(['sessions']);
       return _json(r, 200, {'sessionId': id});
+    }
+    final export = RegExp(r'^/api/sessions/([^/]+)/export$').firstMatch(path);
+    if (r.method == 'GET' && export != null) {
+      final row = sessions.where((x) => x['id'] == export.group(1)).firstOrNull;
+      if (row == null) return _json(r, 404, {'error': 'Not found'});
+      exported.add(export.group(1)!);
+      r.response
+        ..statusCode = 200
+        ..headers.contentType = ContentType('text', 'markdown', charset: 'utf-8')
+        ..write('# ${row['title'] ?? 'Conversation'}\n\nHello.\n');
+      await r.response.close();
+      return;
     }
     final one = RegExp(r'^/api/sessions/([^/]+)(/messages|/interrupt)?$').firstMatch(path);
     if (one != null) {
@@ -1077,7 +1104,39 @@ class FakeRedGiant {
       if (row == null) return _json(r, 404, {'error': 'Not found'});
       final body = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
       if (r.method == 'PATCH' && one.group(2) == null) {
-        row.addAll(body);
+        // As app.ts's schema: a title of 1-120, booleans, a folder of 1-60 or null (trimmed);
+        // unknown fields are dropped.
+        final change = <String, dynamic>{};
+        String? bad;
+        if (body.containsKey('title')) {
+          final t = body['title'];
+          if (t is! String || t.trim().isEmpty || t.trim().length > 120) {
+            bad = 'title';
+          } else {
+            change['title'] = t.trim();
+          }
+        }
+        for (final k in ['pinned', 'archived']) {
+          if (body.containsKey(k)) {
+            if (body[k] is! bool) {
+              bad = k;
+            } else {
+              change[k] = body[k];
+            }
+          }
+        }
+        if (body.containsKey('model')) change['model'] = body['model'];
+        if (body.containsKey('folder')) {
+          final f = body['folder'];
+          if (f != null && (f is! String || f.trim().isEmpty || f.trim().length > 60)) {
+            bad = 'folder';
+          } else {
+            change['folder'] = f is String ? f.trim() : null;
+          }
+        }
+        if (bad != null) return _json(r, 400, {'error': 'Invalid $bad'});
+        sessionPatches.add({'id': one.group(1), ...change});
+        row.addAll(change);
         listsChanged(['sessions']);
         return _json(r, 200, {'ok': true});
       }
@@ -1224,6 +1283,41 @@ class FakeRedGiant {
           },
         ...madeProjects,
       ]);
+    }
+    // Archiving a whole project (p3.5.3, app.ts): `/work` first, then archive or restore.
+    final pw = RegExp(r'^/api/projects/([^/]+)/(work|archive|restore|git)$').firstMatch(path);
+    if (pw != null) {
+      final id = pw.group(1)!;
+      final known = (id == 'demo' && !noProjects) || madeProjects.any((m) => m['id'] == id);
+      if (pw.group(2) == 'work' && r.method == 'GET') {
+        if (!known) return _json(r, 404, {'error': 'Project "$id" not found'});
+        return _json(r, 200, {'working': projectWorking, 'automations': projectAutomations});
+      }
+      if (r.method == 'POST' && (pw.group(2) == 'archive' || pw.group(2) == 'restore')) {
+        if (!known) return _json(r, 400, {'error': 'Project "$id" not found'});
+        final on = pw.group(2) == 'archive';
+        projectActs.add('${pw.group(2)} $id');
+        if (id == 'demo') {
+          archived = on;
+        } else {
+          final m = madeProjects.firstWhere((m) => m['id'] == id);
+          if (on) {
+            m['archivedAt'] = '2026-11-17T10:00:00.000Z';
+          } else {
+            m.remove('archivedAt');
+          }
+        }
+        return _json(r, 200, {'id': 'chg_1', 'kind': 'config', 'stage': 'promoted'});
+      }
+      if (r.method == 'POST' && pw.group(2) == 'git') {
+        if (!known) return _json(r, 404, {'error': 'Project "$id" not found'});
+        gitInits.add(id);
+        for (final m in madeProjects.where((m) => m['id'] == id)) {
+          m['git'] = true;
+          m.remove('gitError');
+        }
+        return _json(r, 200, {'git': 'created'});
+      }
     }
     if (r.method == 'POST' && path == '/api/projects') {
       final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;

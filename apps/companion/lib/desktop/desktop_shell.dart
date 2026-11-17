@@ -27,6 +27,7 @@ import 'advanced/git_view.dart';
 import 'advanced/log_view.dart';
 import 'advanced/projects_wall.dart';
 import 'advanced/terminals_view.dart';
+import 'bell.dart';
 import 'desk_controller.dart';
 import 'desk_menu.dart';
 import 'mascot_rail.dart';
@@ -139,6 +140,20 @@ class _DesktopShellState extends State<DesktopShell> {
 
   SingleActivator _k(LogicalKeyboardKey k, {bool shift = false, bool alt = false}) =>
       cmdKey(k, mac: _mac, shift: shift, alt: alt);
+
+  /// The bell's drop-down (3.8.8): from the bell, the status bar and Ctrl/Cmd+Shift+D.
+  final _bellKey = GlobalKey(debugLabel: 'desk-bell');
+  bool _bellOpen = false;
+
+  Future<void> _bell() async {
+    if (_bellOpen) {
+      Navigator.of(context).maybePop();
+      return;
+    }
+    _bellOpen = true;
+    await showBellPopover(context, desk: _desk, anchor: _bellKey);
+    _bellOpen = false;
+  }
 
   void _palette([String initial = '']) {
     final menus = _menus(AppLocalizations.of(context));
@@ -382,11 +397,11 @@ class _DesktopShellState extends State<DesktopShell> {
         ),
         DeskCommand(
           id: 'for-you',
-          label: l.tabInbox,
+          label: l.bellTooltip,
           group: l.deskMenuAgents,
           icon: RgIcons.bell,
           shortcut: _k(LogicalKeyboardKey.keyD, shift: true),
-          run: () => _desk.show(const PanelPage(PanelScreen.inbox)),
+          run: () => unawaited(_bell()),
         ),
         null,
         DeskCommand(
@@ -662,7 +677,12 @@ class _DesktopShellState extends State<DesktopShell> {
             backgroundColor: c.bg,
             body: Column(
               children: [
-                _TopBar(menus: _mac ? null : menus, onPalette: _palette),
+                _TopBar(
+                  menus: _mac ? null : menus,
+                  onPalette: _palette,
+                  bellKey: _bellKey,
+                  onBell: () => unawaited(_bell()),
+                ),
                 Expanded(
                   child: Stack(
                     children: [
@@ -671,7 +691,7 @@ class _DesktopShellState extends State<DesktopShell> {
                     ],
                   ),
                 ),
-                const _StatusBar(),
+                _StatusBar(onBell: () => unawaited(_bell())),
               ],
             ),
           );
@@ -688,11 +708,18 @@ class _DesktopShellState extends State<DesktopShell> {
 }
 
 class _TopBar extends StatelessWidget {
-  const _TopBar({required this.menus, required this.onPalette});
+  const _TopBar({
+    required this.menus,
+    required this.onPalette,
+    required this.bellKey,
+    required this.onBell,
+  });
 
   /// null on macOS: the menus are in the system's bar.
   final List<DeskMenu>? menus;
   final VoidCallback onPalette;
+  final GlobalKey bellKey;
+  final VoidCallback onBell;
 
   @override
   Widget build(BuildContext context) {
@@ -777,6 +804,8 @@ class _TopBar extends StatelessWidget {
                 ),
               ),
             ),
+          // 3.8.8: where the page has it, right after the search.
+          if (app.connected) ...[const SizedBox(width: 6), DeskBell(key: bellKey, onTap: onBell)],
         ],
       ),
     );
@@ -847,7 +876,10 @@ class _ViewTabs extends StatelessWidget {
 }
 
 class _StatusBar extends StatelessWidget {
-  const _StatusBar();
+  const _StatusBar({required this.onBell});
+
+  /// «n for you» opens the bell's drop-down.
+  final VoidCallback onBell;
 
   @override
   Widget build(BuildContext context) {
@@ -913,7 +945,7 @@ class _StatusBar extends StatelessWidget {
                       l.deskForYouCount(app.live.forYou),
                       key: const Key('status-foryou'),
                       color: app.live.forYou > 0 ? c.accent : null,
-                      onTap: () => desk.show(const PanelPage(PanelScreen.inbox)),
+                      onTap: onBell,
                     ),
                     item(RgIcons.users, l.deskWorkingCount(working)),
                     if (app.advanced) ProjectStatusItem(desk: desk),

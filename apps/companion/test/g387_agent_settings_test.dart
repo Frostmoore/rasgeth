@@ -169,7 +169,10 @@ void main() {
 
   testWidgets('phone: the conversation\'s header has the sheet too', (tester) async {
     await start(tester, size: const Size(430, 932), platform: DevicePlatform.android);
+    // 3.8.8: a tap shows the agent's conversations; a new one opens from there.
     await tap(tester, 'agent-a3');
+    expect(find.byKey(const Key('agent-convs-screen-a3')), findsOneWidget);
+    await tap(tester, 'agent-conv-new');
     expect(find.byKey(const Key('conversation-agent')), findsOneWidget);
     await tester.longPress(find.byKey(const Key('conversation-agent')));
     await _settle(tester);

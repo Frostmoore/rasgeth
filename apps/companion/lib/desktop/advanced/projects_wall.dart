@@ -18,6 +18,7 @@ import '../../theme/colors.dart';
 import '../../ui/common.dart';
 import '../../ui/highlight.dart';
 import '../../ui/icons.dart';
+import '../../ui/project_menu.dart';
 import '../../ui/words.dart';
 import '../desk_controller.dart';
 import '../new_project.dart';
@@ -55,6 +56,9 @@ class ProjectsWall extends StatefulWidget {
 class _ProjectsWallState extends State<ProjectsWall> {
   ProjectFilter _filter = ProjectFilter.all;
   bool _list = false;
+
+  /// «Archived (n)» open under the wall (3.8.8, as the page's bar).
+  bool _showArchived = false;
 
   @override
   Widget build(BuildContext context) {
@@ -160,6 +164,16 @@ class _ProjectsWallState extends State<ProjectsWall> {
                       : ProjectTile(project: shown[i], feed: feed),
                 ),
               ),
+            if (app.archivedProjects.isNotEmpty)
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                sliver: SliverToBoxAdapter(
+                  child: ArchivedProjects(
+                    open: _showArchived,
+                    onToggle: () => setState(() => _showArchived = !_showArchived),
+                  ),
+                ),
+              ),
             if (app.advanced && tasks.isNotEmpty)
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
@@ -193,6 +207,93 @@ class _ProjectsWallState extends State<ProjectsWall> {
 }
 
 /// «New project» as a tile of the wall: the last one after the projects, or under «no projects».
+/// The archived projects under the wall: «Archived (n)», then each with «Restore» (the page's
+/// `ArchivedList`); a click opens one read only, a right click its menu.
+class ArchivedProjects extends StatelessWidget {
+  const ArchivedProjects({super.key, required this.open, required this.onToggle});
+
+  final bool open;
+  final VoidCallback onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    final app = AppScope.of(context);
+    final desk = DeskScope.of(context);
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final list = app.archivedProjects;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextButton.icon(
+          key: const Key('projects-archived-toggle'),
+          onPressed: onToggle,
+          icon: RgIcon(open ? RgIcons.chevronDown : RgIcons.chevronRight, size: 15, color: c.dim),
+          label: Text(
+            l.pmArchivedN(list.length),
+            style: TextStyle(color: c.dim, fontWeight: FontWeight.w700),
+          ),
+        ),
+        if (open)
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              for (final p in list)
+                ProjectPress(
+                  project: p,
+                  child: Material(
+                    color: c.panel,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(color: c.line),
+                    ),
+                    child: InkWell(
+                      key: Key('archived-project-${p.id}'),
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () => desk.showProject(p.id),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 8, 6, 8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            RgIcon(RgIcons.archive, size: 16, color: c.dim),
+                            const SizedBox(width: 8),
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 220),
+                              child: Text(
+                                p.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontWeight: FontWeight.w600, color: c.text),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            TextButton.icon(
+                              key: Key('archived-restore-${p.id}'),
+                              onPressed: () async {
+                                final messenger = ScaffoldMessenger.maybeOf(context);
+                                final ok = await app.restoreProject(p.id);
+                                messenger?.showSnackBar(
+                                  SnackBar(content: Text(ok ? l.pmRestored(p.name) : l.cmFailed)),
+                                );
+                              },
+                              icon: RgIcon(RgIcons.restore, size: 15, color: c.accent),
+                              label: Text(l.pmRestore),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+      ],
+    );
+  }
+}
+
 class NewProjectTile extends StatelessWidget {
   const NewProjectTile({super.key});
 
@@ -228,10 +329,6 @@ class ProjectTile extends StatelessWidget {
     final s = feed.status[p.id];
     final git = s?.git;
     final lines = feed.projectLines(p.id);
-    final lead =
-        agents.where((a) => a.kind == AgentKind.orchestrator).firstOrNull ??
-        working.firstOrNull ??
-        agents.firstOrNull;
     final mono = TextStyle(
       fontFamily: monoFamily,
       fontFamilyFallback: monoFallback,
@@ -267,14 +364,15 @@ class ProjectTile extends StatelessWidget {
         child: InkWell(
           key: Key('project-tile-${p.id}'),
           borderRadius: BorderRadius.circular(12),
+          // 3.8.8: the project's conversations in the panel (its lead's and its team's); the code
+          // view is in its menu (right click), with «Archive the project».
           onTap: () {
-            desk.setProject(p.id);
-            if (app.advanced) {
-              desk.setView(DeskView.code);
-            } else if (lead != null) {
-              unawaited(desk.openAgent(lead));
-            }
+            desk
+              ..setProject(p.id)
+              ..showProject(p.id);
           },
+          onSecondaryTapUp: (d) => showProjectMenu(context, p, at: d.globalPosition),
+          onLongPress: () => showProjectMenu(context, p),
           child: Container(
             decoration: BoxDecoration(
               color: c.panel,
@@ -566,8 +664,17 @@ class _OpenTasks extends StatelessWidget {
                     color: c.dim,
                   ),
                 ),
-                const Spacer(),
-                Text(l.deskTasksRule, style: TextStyle(fontSize: 12, color: c.dim)),
+                const SizedBox(width: 12),
+                // With the panel open the room is narrow: the rule gives way.
+                Expanded(
+                  child: Text(
+                    l.deskTasksRule,
+                    textAlign: TextAlign.right,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 12, color: c.dim),
+                  ),
+                ),
               ],
             ),
           ),

@@ -5,6 +5,7 @@
 // shortcuts, the floating panels, the quick Chat, the menus and the advanced views.
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,6 +17,7 @@ import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/desktop/advanced/git_view.dart';
 import 'package:rgcompanion/desktop/advanced/log_view.dart';
+import 'package:rgcompanion/desktop/desk_controller.dart';
 import 'package:rgcompanion/desktop/desk_menu.dart';
 import 'package:rgcompanion/desktop/desktop_shell.dart';
 import 'package:rgcompanion/desktop/palette.dart';
@@ -301,10 +303,12 @@ void main() {
       expect(find.byType(DesktopShell), findsOneWidget);
       expect(find.byType(HomeShell), findsNothing);
       expect(find.byType(TabBarA), findsNothing);
-      // God, the Chat and «For you» at the top; the menus drawn (Linux); the status bar.
+      // God and the Chat at the top, the bell in the bar (3.8.8: no «For you» card); the menus
+      // drawn (Linux); the status bar.
       expect(find.byKey(const Key('desk-god')), findsOneWidget);
       expect(find.byKey(const Key('desk-chat')), findsOneWidget);
-      expect(find.byKey(const Key('desk-foryou')), findsOneWidget);
+      expect(find.byKey(const Key('desk-foryou')), findsNothing);
+      expect(find.byKey(const Key('desk-bell')), findsOneWidget);
       expect(find.byKey(const Key('desk-menubar')), findsOneWidget);
       expect(find.byKey(const Key('desk-status')), findsOneWidget);
       expect(find.text('2 da te'), findsOneWidget);
@@ -317,8 +321,11 @@ void main() {
       await tester.tap(find.byKey(const Key('seg-Per stato')));
       await _settle(tester, 3);
       expect(find.text('DEMO'), findsNothing);
-      // A tile opens its agent's conversation in the side panel.
+      // A tile shows its agent's conversations in the side panel (3.8.8); a new one opens there.
       await tester.tap(find.byKey(const Key('tile-a3')));
+      await _settle(tester);
+      expect(find.byKey(const Key('panel-agent-a3')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('agent-conv-new')));
       await _settle(tester);
       expect(find.byKey(const Key('desk-panel')), findsOneWidget);
       expect(
@@ -339,15 +346,19 @@ void main() {
       await keys(tester, [ctrl], LogicalKeyboardKey.backslash);
       expect(find.byKey(const Key('desk-panel')), findsOneWidget);
       // Taken out: it floats; put back: it is in the panel again.
+      final sid =
+          (DeskScope.read(tester.element(find.byKey(const Key('desk-panel')))).panel!
+                  as PanelConversation)
+              .sessionId;
       await tester.tap(find.byKey(const Key('panel-detach')));
       await _settle(tester);
       expect(find.byKey(const Key('desk-panel')), findsNothing);
-      expect(find.byKey(const Key('floating-s9')), findsOneWidget);
-      await tester.drag(find.byKey(const Key('floating-title-s9')), const Offset(-60, 40));
+      expect(find.byKey(Key('floating-$sid')), findsOneWidget);
+      await tester.drag(find.byKey(Key('floating-title-$sid')), const Offset(-60, 40));
       await _settle(tester, 3);
-      await tester.tap(find.byKey(const Key('floating-dock-s9')));
+      await tester.tap(find.byKey(Key('floating-dock-$sid')));
       await _settle(tester);
-      expect(find.byKey(const Key('floating-s9')), findsNothing);
+      expect(find.byKey(Key('floating-$sid')), findsNothing);
       expect(find.byKey(const Key('desk-panel')), findsOneWidget);
       await done(tester);
     });
@@ -396,9 +407,12 @@ void main() {
 
   testWidgets('shortcuts: views, For you, the advanced switch, the quick Chat', (tester) async {
     final app = await start(tester);
+    // Ctrl+Shift+D: the bell's drop-down (3.8.8); Esc closes it.
     await keys(tester, [ctrl, shift], LogicalKeyboardKey.keyD);
-    expect(find.byKey(const Key('desk-panel')), findsOneWidget);
-    expect(find.text('Da te'), findsWidgets);
+    expect(find.byKey(const Key('bell-panel')), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await _settle(tester, 3);
+    expect(find.byKey(const Key('bell-panel')), findsNothing);
     await keys(tester, [ctrl], LogicalKeyboardKey.digit2);
     expect(find.byKey(const Key('desk-projects')), findsOneWidget);
     await keys(tester, [ctrl], LogicalKeyboardKey.digit3);
@@ -459,8 +473,14 @@ void main() {
     expect(find.text('p2.4.0'), findsWidgets);
     expect(find.byKey(const Key('desk-event-stream')), findsOneWidget);
     expect(find.byKey(const Key('desk-open-tasks')), findsOneWidget);
-    // A project's tile opens it in Code: changes, tree, the diff side by side.
+    // A project's tile shows its conversations (3.8.8); its menu opens it in Code: changes,
+    // tree, the diff side by side.
     await tester.tap(find.byKey(const Key('project-tile-demo')));
+    await _settle(tester);
+    expect(find.byKey(const Key('proj-overview-demo')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('project-tile-demo')), buttons: kSecondaryButton);
+    await _settle(tester, 4);
+    await tester.tap(find.byKey(const Key('proj-menu-code')));
     await _settle(tester, 16);
     expect(find.byKey(const Key('change-src/prices.ts')), findsOneWidget);
     expect(find.byKey(const Key('diff-side-by-side')), findsOneWidget);

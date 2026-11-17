@@ -4681,4 +4681,273 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get requestTechDetails => 'Technical details';
+
+  @override
+  String get cmOpen => 'Open';
+
+  @override
+  String get cmPin => 'Pin';
+
+  @override
+  String get cmUnpin => 'Unpin';
+
+  @override
+  String get cmFolder => 'Move to a folder';
+
+  @override
+  String get cmFolderNew => 'New folder…';
+
+  @override
+  String get cmFolderNewTitle => 'New folder';
+
+  @override
+  String get cmFolderNewYes => 'Move';
+
+  @override
+  String get cmFolderOut => 'Take it out of the folder';
+
+  @override
+  String get cmArchive => 'Archive';
+
+  @override
+  String get cmUnarchive => 'Bring back';
+
+  @override
+  String get cmExport => 'Export as Markdown';
+
+  @override
+  String get cmArchived => 'Conversation archived.';
+
+  @override
+  String get cmUnarchived => 'Conversation brought back.';
+
+  @override
+  String get cmFailed => 'It did not work: try again.';
+
+  @override
+  String get cmExported => 'File saved.';
+
+  @override
+  String cmForkOf(String title) {
+    return 'branch of «$title»';
+  }
+
+  @override
+  String cmArchivedN(int n) {
+    return 'Archived ($n)';
+  }
+
+  @override
+  String get cmBack => 'Back to the conversations';
+
+  @override
+  String get cmNew => 'New conversation';
+
+  @override
+  String get cmEmpty => 'No conversations yet: start one.';
+
+  @override
+  String get cmEmptyArchived => 'No archived conversations.';
+
+  @override
+  String get cmPinned => 'Pinned';
+
+  @override
+  String cmConversationsOf(String name) {
+    return 'Conversations with $name';
+  }
+
+  @override
+  String cmTask(String title) {
+    return 'Task: $title';
+  }
+
+  @override
+  String get cmShared => 'Shared conversation';
+
+  @override
+  String get pmOpen => 'Open';
+
+  @override
+  String get pmTasks => 'Tasks and files';
+
+  @override
+  String get pmCode => 'Code';
+
+  @override
+  String pmAgents(String project) {
+    return 'Agents of $project';
+  }
+
+  @override
+  String get pmArchive => 'Archive the project';
+
+  @override
+  String get pmRestore => 'Restore';
+
+  @override
+  String get pmInitGit => 'Initialise git';
+
+  @override
+  String pmInitGitDone(String name) {
+    return 'Git repository created for «$name» (branch main).';
+  }
+
+  @override
+  String pmAskTitle(String name) {
+    return 'Archive «$name»?';
+  }
+
+  @override
+  String get pmAskLead =>
+      'The project leaves the lists and stays readable under «Archived». Nothing is deleted: restore it whenever you like and it comes back as it was.';
+
+  @override
+  String pmWorking(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n agents are working: they will be stopped',
+      one: '1 agent is working: it will be stopped',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pmNobody => 'No agent is working in it now.';
+
+  @override
+  String pmAutos(int n, String names) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n automations will be paused ($names); they run again when you restore the project.',
+      one: '1 automation will be paused ($names); it runs again when you restore the project.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pmFactTasks => 'Open tasks stay open.';
+
+  @override
+  String get pmFactSandbox => 'Its sandbox stops, and starts again on restore.';
+
+  @override
+  String get pmFactNobody =>
+      'Until then no agent works in it or changes its files, and your linked chats do not use it.';
+
+  @override
+  String get pmFactRestore => 'God can archive and restore it too, always with your yes.';
+
+  @override
+  String get pmStopAndArchive => 'Stop and archive';
+
+  @override
+  String get pmArchiveYes => 'Archive';
+
+  @override
+  String pmArchived(String name) {
+    return '«$name» archived.';
+  }
+
+  @override
+  String pmRestored(String name) {
+    return '«$name» restored.';
+  }
+
+  @override
+  String pmArchivedN(int n) {
+    return 'Archived ($n)';
+  }
+
+  @override
+  String pmArchivedOn(String day) {
+    return 'archived on $day';
+  }
+
+  @override
+  String get pmBadge => 'Archived · read only';
+
+  @override
+  String get pmViewLead =>
+      'Archived: you can read its conversations, tasks and files. Restore it to work in it again.';
+
+  @override
+  String get pmConversations => 'Conversations';
+
+  @override
+  String get pmTeam => 'The team\'s conversations';
+
+  @override
+  String get pmNoConversations => 'No conversations.';
+
+  @override
+  String get pmTasksTitle => 'Tasks';
+
+  @override
+  String get pmNoTasks => 'No tasks.';
+
+  @override
+  String get pmNoLead => 'This project has no lead agent.';
+
+  @override
+  String get pmNoGit => 'No git repository';
+
+  @override
+  String get bellTitle => 'Waiting for you';
+
+  @override
+  String get bellTooltip => 'Requests and notifications';
+
+  @override
+  String bellPermissions(int n) {
+    return 'Permissions ($n)';
+  }
+
+  @override
+  String bellQuestions(int n) {
+    return 'Questions ($n)';
+  }
+
+  @override
+  String bellWorking(int n) {
+    return 'Working now ($n)';
+  }
+
+  @override
+  String get bellNoApprovals => 'Nothing waiting for you.';
+
+  @override
+  String get bellNoQuestions => 'No questions.';
+
+  @override
+  String get bellNothingRunning => 'Nothing is running.';
+
+  @override
+  String get bellAllow => 'Allow';
+
+  @override
+  String get bellDeny => 'Deny';
+
+  @override
+  String get bellLook => 'Look and decide';
+
+  @override
+  String get bellAnswer => 'Answer';
+
+  @override
+  String get bellSeeAll => 'See all';
+
+  @override
+  String pmConversationsCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n conversations',
+      one: '1 conversation',
+      zero: 'no conversations',
+    );
+    return '$_temp0';
+  }
 }
