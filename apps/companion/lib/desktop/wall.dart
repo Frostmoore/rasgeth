@@ -714,7 +714,7 @@ class CriticalBanner extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '${request.agentName}: ${requestLine(request)}',
+                      '${request.agentName}: ${requestLine(request, l.localeName)}',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -902,7 +902,7 @@ class AgentTile extends StatelessWidget {
                       ),
                     if (asks.isNotEmpty)
                       Text(
-                        l.deskAsks(requestLine(asks.first)),
+                        l.deskAsks(requestLine(asks.first, l.localeName)),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: mono.copyWith(color: c.accent, fontWeight: FontWeight.w600),

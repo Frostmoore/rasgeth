@@ -181,13 +181,22 @@ export function codexWindows(snapshot: unknown): SubscriptionWindow[] {
   return out;
 }
 
+/** The window assumed for a model before Codex has said its own (its first usage report). */
+const CODEX_WINDOW = 272_000;
+/** How long a tool call waits for its model request's usage before it is recorded without it. */
+const USAGE_WAIT_MS = 5_000;
+/** A message as the engine says it: metrics and model are added when it is recorded. */
+type Said = { parts: AssistantPart[]; stopReason: "end_turn" | "tool_use" };
+
 /** One turn on Codex: a thread per RedGiant session, RedGiant's tools as dynamic tools. */
 export class CodexEngine implements Engine {
   readonly id = CHATGPT_SUBSCRIPTION;
   onLimits: ((w: SubscriptionWindow[]) => void) | undefined;
   private readonly loaded = new Set<string>();
-  /** The turn waiting for each thread's dynamic tool calls. */
-  private readonly turns = new Map<string, EngineTurn>();
+  /** The turn waiting for each thread's dynamic tool calls, and how it records a message. */
+  private readonly turns = new Map<string, { t: EngineTurn; say: (m: Said) => Promise<void> }>();
+  /** Each model's context window as Codex last said it (the catalogue knows none of them). */
+  private readonly windows = new Map<string, number>();
 
   constructor(
     private readonly conn: CodexConnection,
@@ -195,16 +204,18 @@ export class CodexEngine implements Engine {
   ) {
     conn.onRequest = async (method, params) => {
       if (method !== "item/tool/call") throw new Error(`Not supported: ${method}`);
-      const t = this.turns.get(String(params.threadId));
-      if (!t)
+      const running = this.turns.get(String(params.threadId));
+      if (!running)
         return {
           success: false,
           contentItems: [{ type: "inputText", text: "No turn is running." }],
         };
       const callId = String(params.callId);
       const name = String(params.tool);
-      // The call is announced in the log before it runs, like any model's tool call.
-      await t.onMessage({
+      const { t, say } = running;
+      // The call is announced in the log before it runs, like any model's tool call, with its
+      // model request's usage (which Codex reports right after the call: `say` waits for it).
+      await say({
         parts: [
           {
             type: "tool_call",
@@ -214,9 +225,7 @@ export class CodexEngine implements Engine {
             rawInput: JSON.stringify(params.arguments ?? {}),
           },
         ],
-        metrics: this.metrics(String(params.threadId)),
         stopReason: "tool_use",
-        model: t.model.model,
       });
       const r = await t.runTool({ callId, name, input: params.arguments });
       return { success: !r.isError, contentItems: [{ type: "inputText", text: r.content }] };
@@ -224,7 +233,12 @@ export class CodexEngine implements Engine {
   }
 
   private readonly usage = new Map<string, { last: Json; window: number | null; at: number }>();
-  private metrics(threadId: string): MessageMetrics {
+  /** A model's context window as Codex said it, once it has (none before the first usage). */
+  windowOf(model: string): number | undefined {
+    return this.windows.get(model);
+  }
+
+  private metrics(threadId: string, model: string): MessageMetrics {
     const u = this.usage.get(threadId);
     const last = (u?.last ?? {}) as Record<string, number>;
     const at = new Date((this.o.now ?? Date.now)()).toISOString();
@@ -237,7 +251,7 @@ export class CodexEngine implements Engine {
       cacheWriteTokens: last.cacheWriteInputTokens ?? 0,
       outputTokens: last.outputTokens ?? 0,
       contextUsed: last.totalTokens ?? input + (last.outputTokens ?? 0),
-      contextWindow: u?.window ?? 272_000,
+      contextWindow: u?.window ?? this.windows.get(model) ?? CODEX_WINDOW,
       prefillMs: 0,
       decodeMs: 0,
       tokPerSec: 0,
@@ -282,7 +296,34 @@ export class CodexEngine implements Engine {
       this.loaded.add(threadId);
     }
     const id = threadId;
-    this.turns.set(id, t);
+    // Codex reports a model request's usage (`thread/tokenUsage/updated`) only after that
+    // request's items and tool calls: its messages wait for it, so each one carries its own
+    // request's numbers. Read at once, the first turn had none (all zeros) and every later message
+    // the request before. They are recorded in order; a tool call waits at most `USAGE_WAIT_MS`.
+    let held: { m: Said; recorded: () => void; failed: (e: unknown) => void }[] = [];
+    let recording: Promise<void> = Promise.resolve();
+    const record = () => {
+      const out = held;
+      held = [];
+      if (out.length === 0) return;
+      const metrics = this.metrics(id, t.model.model);
+      for (const h of out)
+        recording = recording.then(() =>
+          t
+            .onMessage({ ...h.m, metrics, model: t.model.model })
+            .then(h.recorded, (e: unknown) => h.failed(e)),
+        );
+    };
+    const say = (m: Said, wait?: number) =>
+      new Promise<void>((recorded, failed) => {
+        const h = { m, recorded, failed };
+        held.push(h);
+        if (wait !== undefined)
+          setTimeout(() => {
+            if (held.includes(h)) record();
+          }, wait).unref?.();
+      });
+    this.turns.set(id, { t, say: (m) => say(m, USAGE_WAIT_MS) });
     let turnId: string | undefined;
     let gaveUp: () => void = () => {};
     const done = new Promise<"end_turn" | "aborted">((ok, ko) => {
@@ -292,6 +333,8 @@ export class CodexEngine implements Engine {
         if (method === "thread/tokenUsage/updated") {
           const u = p.tokenUsage as { last: Json; modelContextWindow: number | null };
           this.usage.set(id, { last: u.last, window: u.modelContextWindow, at: Date.now() });
+          if (u.modelContextWindow) this.windows.set(t.model.model, u.modelContextWindow);
+          record();
         } else if (method === "thread/compacted") {
           // Codex summarised its own context.
           t.onCompaction?.({ trigger: "auto" });
@@ -310,18 +353,14 @@ export class CodexEngine implements Engine {
           } else if (item.type === "agentMessage" && typeof item.text === "string" && item.text) {
             parts.push({ type: "text", text: item.text });
           }
-          if (parts.length)
-            void t.onMessage({
-              parts,
-              metrics: this.metrics(id),
-              stopReason: "end_turn",
-              model: t.model.model,
-            });
+          if (parts.length) say({ parts, stopReason: "end_turn" }).catch(() => {});
         } else if (method === "account/rateLimits/updated") {
           const w = codexWindows(p.rateLimits);
           if (w.length) this.onLimits?.(w);
         } else if (method === "turn/completed") {
           this.conn.listeners.delete(listen);
+          // A request that ended without its usage (failed, interrupted): what is held goes now.
+          record();
           const turn = p.turn as { status?: string; error?: { message?: string } | null };
           if (turn.status === "interrupted") ok("aborted");
           else if (turn.status === "failed") {
@@ -341,6 +380,7 @@ export class CodexEngine implements Engine {
       // stopped, the turn ends as aborted, and the next one starts a fresh Codex.
       gaveUp = () => {
         this.conn.listeners.delete(listen);
+        record();
         this.loaded.clear();
         this.conn.stop();
         ok("aborted");
@@ -370,6 +410,7 @@ export class CodexEngine implements Engine {
       turnId = r.turn.id;
       if (t.signal?.aborted) interrupt();
       const stopReason = await done;
+      await recording;
       return { resume: id, stopReason };
     } finally {
       clearTimeout(giveUp);
@@ -412,7 +453,12 @@ export class ChatgptSubscriptionProvider implements Provider {
   }
 
   modelInfo(model: string): ModelInfo {
-    return { id: model, contextWindow: 272_000, maxOutputTokens: 128_000, supportsEffort: true };
+    return {
+      id: model,
+      contextWindow: this.engine.windowOf(model) ?? CODEX_WINDOW,
+      maxOutputTokens: 128_000,
+      supportsEffort: true,
+    };
   }
 
   // biome-ignore lint/correctness/useYield: a session on a subscription never streams here.

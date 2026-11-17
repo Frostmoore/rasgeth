@@ -100,18 +100,19 @@ class SessionTile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(9),
                     ),
                     alignment: Alignment.center,
-                    child: who != null && !r.running
+                    // 3.8.9: a conversation at work turns (RgSpinner), as everywhere.
+                    child: r.running
+                        ? RgSpinner(size: 16, color: c.ok)
+                        : who != null
                         ? MascotView(agentId: who!.id, spec: who!.mascot, size: 24)
                         : RgIcon(
-                            r.running
-                                ? RgIcons.spinner
-                                : r.task != null
+                            r.task != null
                                 ? RgIcons.checkSquare
                                 : r.archived
                                 ? RgIcons.archive
                                 : RgIcons.chat,
                             size: 16,
-                            color: r.running ? c.ok : c.dim,
+                            color: c.dim,
                           ),
                   ),
                   const SizedBox(width: 11),

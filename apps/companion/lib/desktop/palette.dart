@@ -175,8 +175,8 @@ String sectionLabel(AppLocalizations l, PaletteSection s) => switch (s) {
 };
 
 /// One line about a request for the person.
-String requestLine(PersonRequest r) => switch (r) {
-  PermissionRequest() => requestSummary(r),
+String requestLine(PersonRequest r, [String lang = 'en']) => switch (r) {
+  PermissionRequest() => requestLineFor(r, lang),
   QuestionRequest(:final questions) => questions.firstOrNull?.question ?? '',
 };
 
@@ -298,7 +298,7 @@ class _CommandPaletteState extends State<CommandPalette> {
         PaletteItem(
           key: 'request-${r.requestId}',
           section: PaletteSection.requests,
-          title: l.deskPaletteAnswer(requestLine(r)),
+          title: l.deskPaletteAnswer(requestLine(r, l.localeName)),
           subtitle: r.agentName,
           icon: r is PermissionRequest && r.isCritical ? RgIcons.shield : RgIcons.alert,
           run: () => desk.show(const PanelPage(PanelScreen.inbox)),

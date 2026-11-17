@@ -4,9 +4,11 @@
 // no). Truly dangerous ones (G36.17b) come first and never swipe: never the quick yes, they open a
 // full screen of their own, where the yes asks once more. Questions: their options, sent with
 // `question.answer`. «Later» puts the top card at the bottom of the stack.
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../api/conversation.dart';
 import '../app_state.dart';
@@ -338,6 +340,7 @@ class PermissionCard extends StatelessWidget {
     final c = RgColors.of(context);
     final r = request;
     final critical = r.isCritical;
+    final lang = Localizations.localeOf(context).languageCode;
     return Container(
       key: Key('request-${r.requestId}'),
       decoration: BoxDecoration(
@@ -369,18 +372,22 @@ class PermissionCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
+          // What it asks, in plain words first (p3.8.9); the command stays below, small.
           Text(
-            r.tool,
-            style: TextStyle(fontFamily: 'monospace', fontSize: 13, color: c.dim),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            requestSummary(r),
+            requestLineFor(r, lang),
+            key: Key('inbox-what-${r.requestId}'),
             maxLines: 4,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontFamily: 'monospace', fontSize: 13, color: c.text),
+            style: TextStyle(fontSize: 15, height: 1.3, color: c.text),
           ),
-          for (final reason in r.reasons.take(3))
+          const SizedBox(height: 4),
+          Text(
+            '${r.tool}: ${requestSummary(r)}',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontFamily: 'monospace', fontSize: 11.5, color: c.dim),
+          ),
+          for (final reason in (r.wordsIn(lang)?.reasons ?? r.reasons).take(3))
             Padding(
               padding: const EdgeInsets.only(top: 4),
               child: Text(reason, style: TextStyle(fontSize: 13, color: c.dim)),
@@ -421,119 +428,271 @@ class PermissionCard extends StatelessWidget {
   }
 }
 
-/// A truly dangerous request, full screen: what it does, then No (first) or a yes asked twice.
-class CriticalRequestScreen extends StatelessWidget {
-  const CriticalRequestScreen({super.key, required this.request});
+/// A request in one line the person reads (p3.8.9): the server's words in [lang] (G42.1,
+/// `withRequestWords`: «Writes the script x.sh and runs it…»), else the command or the path.
+String requestLineFor(PermissionRequest r, String lang) =>
+    r.wordsIn(lang)?.what ?? requestSummary(r);
+
+/// How a request was closed elsewhere, in a sentence (p3.8.9): «You already answered from the page
+/// or another window: allowed», «… from Telegram: denied», «Nobody answered in time: denied».
+String closedLine(AppLocalizations l, ({String decision, String? via}) d) {
+  final answer = d.decision == 'allow' ? l.requestAnswerAllowed : l.requestAnswerDenied;
+  final via = d.via;
+  if (via == null || via.isEmpty || via == 'classifier') return l.requestDoneElsewhere(answer);
+  if (via == 'web' || via.startsWith('app')) return l.requestDoneHere(answer);
+  if (via == 'timeout') return l.requestDoneTimeout(answer);
+  return l.requestDoneChat('${via[0].toUpperCase()}${via.substring(1)}', answer);
+}
+
+/// A truly dangerous request, full screen: what it does in a line, then No (first) or a yes asked
+/// twice. There is always a way out (p3.8.9, after a screen left with no exit once answered from
+/// the page): the close button at the top, Esc on a computer, back on a phone. Answered elsewhere
+/// (the page, a chat, another window), it says so with the answer and closes by itself after
+/// [autoClose], or with «Close».
+class CriticalRequestScreen extends StatefulWidget {
+  const CriticalRequestScreen({
+    super.key,
+    required this.request,
+    this.autoClose = const Duration(seconds: 5),
+  });
 
   final PermissionRequest request;
+  final Duration autoClose;
+
+  @override
+  State<CriticalRequestScreen> createState() => _CriticalRequestScreenState();
+}
+
+class _CriticalRequestScreenState extends State<CriticalRequestScreen> {
+  Timer? _timer;
+
+  /// Answered from this screen: it closes after the answer, without «already answered».
+  bool _answering = false;
+  bool _gone = false;
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _close() {
+    if (_gone || !mounted) return;
+    _gone = true;
+    _timer?.cancel();
+    Navigator.maybePop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
     final app = AppScope.of(context);
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
-    final r = request;
+    final r = widget.request;
+    final lang = Localizations.localeOf(context).languageCode;
+    final w = r.wordsIn(lang);
+    TextStyle strong(Color color) => TextStyle(fontWeight: FontWeight.w700, color: color);
     return Scaffold(
       backgroundColor: c.criticalSoft,
-      body: SafeArea(
-        child: ListenableBuilder(
-          listenable: app.live,
-          builder: (context, _) {
-            final open = app.live.approvals.any((a) => a.requestId == r.requestId);
-            return ListView(
-              key: const Key('critical-screen'),
-              padding: const EdgeInsets.all(20),
-              children: [
-                Row(
+      body: CallbackShortcuts(
+        bindings: {const SingleActivator(LogicalKeyboardKey.escape): _close},
+        child: Focus(
+          autofocus: true,
+          child: SafeArea(
+            child: ListenableBuilder(
+              listenable: app.live,
+              builder: (context, _) {
+                final open = app.live.approvals.any((a) => a.requestId == r.requestId);
+                final done = app.live.closedRequests[r.requestId];
+                if (!open && !_answering && _timer == null) {
+                  _timer = Timer(widget.autoClose, _close);
+                }
+                return ListView(
+                  key: const Key('critical-screen'),
+                  padding: const EdgeInsets.fromLTRB(20, 8, 8, 20),
                   children: [
-                    RgIcon(RgIcons.alert, size: 30, color: c.critical),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Semantics(
-                        header: true,
-                        child: Text(
-                          l.criticalTitle,
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
-                            color: c.criticalText,
+                    Row(
+                      children: [
+                        RgIcon(RgIcons.alert, size: 30, color: c.critical),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Semantics(
+                            header: true,
+                            child: Text(
+                              l.criticalTitle,
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                color: c.criticalText,
+                              ),
+                            ),
                           ),
                         ),
+                        IconButton(
+                          key: const Key('critical-close'),
+                          tooltip: l.requestCloseHint,
+                          onPressed: _close,
+                          icon: RgIcon(RgIcons.x, size: 22, color: c.text),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const SizedBox(height: 8),
+                          Text(
+                            l.criticalBody(r.agentName),
+                            style: TextStyle(fontSize: 15.5, color: c.text),
+                          ),
+                          const SizedBox(height: 14),
+                          // What it does, in plain words, before anything technical.
+                          Text(
+                            requestLineFor(r, lang),
+                            key: const Key('critical-what'),
+                            style: TextStyle(
+                              fontSize: 17,
+                              height: 1.35,
+                              fontWeight: FontWeight.w700,
+                              color: c.text,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          if (w != null && w.critical.isNotEmpty)
+                            for (final x in w.critical)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 6),
+                                child: Text(x, style: strong(c.criticalText)),
+                              )
+                          else
+                            for (final d in r.critical)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 6),
+                                child: Text(
+                                  '${criticalLabel(l, d.id)}'
+                                  '${d.target == null ? '' : ': ${d.target}'}',
+                                  style: strong(c.criticalText),
+                                ),
+                              ),
+                          for (final reason in w?.reasons ?? const <String>[])
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: Text(reason, style: TextStyle(color: c.dim)),
+                            ),
+                          const SizedBox(height: 18),
+                          if (!open)
+                            Container(
+                              key: const Key('critical-done'),
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                color: c.panel,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: c.line),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    done == null
+                                        ? l.requestClosed(app.live.lastClosedVia ?? '-')
+                                        : closedLine(l, done),
+                                    style: TextStyle(
+                                      color: c.text,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    l.requestDoneClosing,
+                                    style: TextStyle(color: c.dim, fontSize: 13.5),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  FilledButton(
+                                    key: const Key('critical-done-close'),
+                                    onPressed: _close,
+                                    child: Text(l.close),
+                                  ),
+                                ],
+                              ),
+                            )
+                          else ...[
+                            FilledButton(
+                              key: const Key('critical-no'),
+                              style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
+                              onPressed: () async {
+                                setState(() => _answering = true);
+                                await app.resolvePermission(r, allow: false);
+                                _close();
+                              },
+                              child: Text(l.criticalNo),
+                            ),
+                            const SizedBox(height: 12),
+                            OutlinedButton(
+                              key: const Key('critical-yes'),
+                              style: OutlinedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(48),
+                                foregroundColor: c.critical,
+                                side: BorderSide(color: c.critical),
+                              ),
+                              onPressed: () async {
+                                final sure = await askConfirm(
+                                  context,
+                                  title: l.criticalConfirmTitle,
+                                  body: l.criticalConfirmBody,
+                                  yes: l.criticalYes,
+                                  danger: true,
+                                );
+                                if (!sure || !mounted) return;
+                                setState(() => _answering = true);
+                                await app.resolvePermission(r, allow: true, fromFullScreen: true);
+                                _close();
+                              },
+                              child: Text(l.criticalYes),
+                            ),
+                          ],
+                          const SizedBox(height: 22),
+                          // The technical details, small, at the bottom.
+                          Text(
+                            l.requestTechDetails,
+                            style: TextStyle(color: c.dim, fontSize: 12.5),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 4),
+                            padding: const EdgeInsets.all(10),
+                            constraints: const BoxConstraints(maxHeight: 260),
+                            decoration: BoxDecoration(
+                              color: c.panel,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: c.line),
+                            ),
+                            child: SingleChildScrollView(
+                              child: SelectableText(
+                                '${r.tool}\n'
+                                '${const JsonEncoder.withIndent('  ').convert(r.input)}',
+                                key: const Key('critical-input'),
+                                style: TextStyle(
+                                  fontFamily: 'monospace',
+                                  fontSize: 12,
+                                  color: c.dim,
+                                ),
+                              ),
+                            ),
+                          ),
+                          for (final reason in r.reasons)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6),
+                              child: Text(reason, style: TextStyle(color: c.dim, fontSize: 12)),
+                            ),
+                        ],
                       ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 12),
-                Text(l.criticalBody(r.agentName), style: TextStyle(fontSize: 15.5, color: c.text)),
-                const SizedBox(height: 14),
-                for (final d in r.critical)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 6),
-                    child: Text(
-                      '${criticalLabel(l, d.id)}${d.target == null ? '' : ': ${d.target}'}',
-                      style: TextStyle(fontWeight: FontWeight.w700, color: c.criticalText),
-                    ),
-                  ),
-                Container(
-                  margin: const EdgeInsets.only(top: 6),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: c.panel,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: c.critical),
-                  ),
-                  child: SelectableText(
-                    '${r.tool}\n${const JsonEncoder.withIndent('  ').convert(r.input)}',
-                    style: TextStyle(fontFamily: 'monospace', fontSize: 13, color: c.text),
-                  ),
-                ),
-                for (final reason in r.reasons)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(reason, style: TextStyle(color: c.dim)),
-                  ),
-                const SizedBox(height: 24),
-                if (!open)
-                  Text(
-                    l.requestClosed(app.live.lastClosedVia ?? '-'),
-                    style: TextStyle(color: c.dim, fontSize: 15),
-                  )
-                else ...[
-                  FilledButton(
-                    key: const Key('critical-no'),
-                    style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
-                    onPressed: () async {
-                      await app.resolvePermission(r, allow: false);
-                      if (context.mounted) Navigator.maybePop(context);
-                    },
-                    child: Text(l.criticalNo),
-                  ),
-                  const SizedBox(height: 12),
-                  OutlinedButton(
-                    key: const Key('critical-yes'),
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(48),
-                      foregroundColor: c.critical,
-                      side: BorderSide(color: c.critical),
-                    ),
-                    onPressed: () async {
-                      final sure = await askConfirm(
-                        context,
-                        title: l.criticalConfirmTitle,
-                        body: l.criticalConfirmBody,
-                        yes: l.criticalYes,
-                        danger: true,
-                      );
-                      if (!sure) return;
-                      await app.resolvePermission(r, allow: true, fromFullScreen: true);
-                      if (context.mounted) Navigator.maybePop(context);
-                    },
-                    child: Text(l.criticalYes),
-                  ),
-                ],
-              ],
-            );
-          },
+                );
+              },
+            ),
+          ),
         ),
       ),
     );

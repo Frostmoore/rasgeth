@@ -112,7 +112,7 @@ describe("what is notified", () => {
     const o = pushFor({ type: "approval", info: request() }, "en", "Casa");
     expect(o).toMatchObject({ actions: ["allow", "deny"], title: "God asks for permission" });
     expect(o?.critical).toBeUndefined();
-    expect(o?.body).toMatch(/git push origin main/);
+    expect(o?.body).toMatch(/Pushes the commits to origin \(main\)/);
   });
 
   it("keeps the body short and on one line", () => {

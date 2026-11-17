@@ -177,7 +177,7 @@ describe("chat bridge (G29.5)", () => {
     // input last (3.5.6).
     expect(m?.text.split("\n")).toEqual([
       "Approval needed: Coder (demo) asks for your yes",
-      "Deletes with the command: rm -rf /srv/x.",
+      "Deletes /srv/x.",
       "Why: Writes outside the project's folder: /srv/x",
       "Danger: Writing outside the project",
       'Details: bash {"command":"rm -rf /srv/x"}',

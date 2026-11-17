@@ -30,7 +30,7 @@ import {
 import type { Workspace } from "@redgiant/tools";
 import { z } from "zod";
 import { type RepoState, repoSentence } from "./project-git.js";
-import type { ProjectStore } from "./projects.js";
+import { type ProjectStore, slug } from "./projects.js";
 import type { Rooms } from "./rooms.js";
 
 /** What the orchestration tools need from the core. */
@@ -216,6 +216,13 @@ export class TaskTracker {
       .find((t) => t.agentId === agentId && t.sessionId === sessionId && !t.outcome);
   }
 
+  /** Every task still open, oldest first (3.8.9: a restart resumes the ones it cut). */
+  stillOpen(agentId?: string): Task[] {
+    return [...this.tasks.values()].filter(
+      (t) => !t.outcome && (agentId === undefined || t.agentId === agentId),
+    );
+  }
+
   /** Tasks this conversation handed over and still waits for. */
   waitingIn(sessionId: string): Task[] {
     return [...this.tasks.values()].filter((t) => t.from?.sessionId === sessionId && !t.outcome);
@@ -373,6 +380,14 @@ export function orchestrationTools(
         ? self.projectId
         : undefined;
     const sid = await host.workSession(to, here);
+    // The same task handed over again from here while it is still open (3.8.9: a call repeated
+    // after a restart cut its result): nothing new is opened, the first one goes on.
+    const twin = tasks.openFor(to.id, sid);
+    if (twin && twin.from?.sessionId === ctx.sessionId && twin.title === title)
+      return (
+        `Task ${twin.id} («${title}») is already with ${to.name} and still open: nothing was handed over again. ` +
+        "Its report comes to you as a message when it closes; read_agent shows how it is going."
+      );
     const close = await openTab(ctx, { sessionId: sid, agentId: to.id }, "delegate", title, task);
     const t = await tasks.open(
       to,
@@ -761,6 +776,18 @@ export function orchestrationTools(
       },
       schema: z.object({ name: z.string().min(1) }),
       async run({ name }) {
+        // Already made (3.8.9: a call repeated after a restart cut its result): the same project.
+        const made = await host.projects.get(self.ownerId, slug(name));
+        if (made && !made.archivedAt) {
+          const lead = host.registry
+            .list({ ownerId: self.ownerId, projectId: made.id, activeOnly: true })
+            .find((a) => a.kind === "orchestrator");
+          return `Project ${made.id} already exists (folder ${made.path}): nothing was created again. ${
+            lead
+              ? `Its orchestrator is ${lead.name} (${lead.id}): give it work with delegate.`
+              : `Create its orchestrator with create_agent (kind "orchestrator", project_id "${made.id}").`
+          }`;
+        }
         const p = await host.projects.create(self.ownerId, name);
         const repo: RepoState =
           p.git === false
@@ -825,6 +852,19 @@ export function orchestrationTools(
         if (!creatable.includes(i.kind as AgentRecord["kind"])) {
           return { content: `You can create: ${creatable.join(", ")}.`, isError: true };
         }
+        // The same agent already under it (3.8.9: a call repeated after a restart cut its
+        // result): it is that one, not a second with the same name.
+        const projectId = i.project_id ?? self.projectId ?? null;
+        const twin = host.registry
+          .list({ ownerId: self.ownerId, parentId: self.id, activeOnly: true })
+          .find(
+            (a) =>
+              a.kind === i.kind &&
+              a.projectId === projectId &&
+              a.name.trim().toLowerCase() === i.name.trim().toLowerCase(),
+          );
+        if (twin)
+          return `${twin.name} (${twin.id}) already exists under you in project ${twin.projectId ?? "-"}: nothing was created again. Give it work with delegate.`;
         const problem = i.model && (await host.modelProblem?.(i.model));
         if (problem) return { content: `${problem} The agent was not created.`, isError: true };
         const a = await host.registry.create(me, {
@@ -995,7 +1035,15 @@ export function orchestrationTools(
                 return `✓ ${e.payload.taskId}: ${e.payload.outcome}`;
               return "";
             });
-          return lines.join("\n") || "Nothing yet.";
+          // Whether it works on its open tasks now (3.8.9): after a restart God read the last
+          // lines of agents cut in the middle and could not tell they had stopped.
+          const now = tasks
+            .stillOpen(a.id)
+            .map(
+              (t) =>
+                `Open task ${t.id} («${t.title}»): ${host.isRunning?.(t.sessionId) ? "working on it now" : "not working on it at this moment"}.`,
+            );
+          return [...now, ...lines].join("\n") || "Nothing yet.";
         },
       } as Tool,
       {
@@ -1064,7 +1112,8 @@ export function orchestrationTools(
       {
         def: {
           name: "stop_agent",
-          description: "Stop an agent you manage (and everything below it).",
+          description:
+            "Stop for good an agent you manage, and everything below it: a stopped agent takes no more tasks. Not a way to restart one: after a restart RedGiant resumes the work that was cut by itself, and delegate gives an agent new work at any time.",
           inputSchema: {
             type: "object",
             properties: { agent_id: { type: "string" }, reason: { type: "string" } },

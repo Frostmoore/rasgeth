@@ -88,11 +88,7 @@ class _TodosPanelState extends State<TodosPanel> {
                                     width: 12,
                                     child: switch (x.status) {
                                       'completed' => _Dot(filled: true, color: c.ok),
-                                      'in_progress' => RgIcon(
-                                        RgIcons.spinner,
-                                        size: 12,
-                                        color: c.text,
-                                      ),
+                                      'in_progress' => RgSpinner(size: 12, color: c.text),
                                       _ => _Dot(filled: false, color: c.dim),
                                     },
                                   ),

@@ -541,7 +541,10 @@ class ProjectTile extends StatelessWidget {
                         const SizedBox(width: 5),
                         Expanded(
                           child: Text(
-                            l.deskAgentAsks(asks.first.agentName, requestLine(asks.first)),
+                            l.deskAgentAsks(
+                              asks.first.agentName,
+                              requestLine(asks.first, l.localeName),
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(fontSize: 12.5, color: c.accent),

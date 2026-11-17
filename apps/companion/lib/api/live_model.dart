@@ -134,6 +134,11 @@ class LiveModel extends ChangeNotifier {
   /// Where the last answered request was decided (`via`), for the person to see.
   String? lastClosedVia;
 
+  /// How each request closed while the app watched (p3.8.9): the answer and where it was given,
+  /// for a request's screen still open in this window («You already answered from the page:
+  /// allowed»). The latest 100.
+  final Map<String, ({String decision, String? via})> closedRequests = {};
+
   /// A conversation the app did not list: the caller reloads the rows.
   VoidCallback? onUnknownSession;
 
@@ -200,6 +205,17 @@ class LiveModel extends ChangeNotifier {
       case 'permission.closed':
         approvals = approvals.where((a) => a.requestId != m['requestId']).toList();
         lastClosedVia = m['via'] as String?;
+        final id = m['requestId'];
+        if (id is String) {
+          closedRequests.remove(id);
+          closedRequests[id] = (
+            decision: m['decision'] == 'allow' ? 'allow' : 'deny',
+            via: m['via'] as String?,
+          );
+          while (closedRequests.length > 100) {
+            closedRequests.remove(closedRequests.keys.first);
+          }
+        }
       case 'question.request':
         final q = QuestionRequest.fromJson(_map(m['request']));
         questions = [...questions.where((a) => a.requestId != q.requestId), q];

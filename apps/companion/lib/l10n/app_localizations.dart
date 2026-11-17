@@ -8085,6 +8085,60 @@ abstract class AppLocalizations {
   /// **'Web view test'**
   String get embedProbeOpen;
 
+  /// No description provided for @requestAnswerAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'allowed'**
+  String get requestAnswerAllowed;
+
+  /// No description provided for @requestAnswerDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'denied'**
+  String get requestAnswerDenied;
+
+  /// No description provided for @requestDoneHere.
+  ///
+  /// In en, this message translates to:
+  /// **'You already answered from the page or another window: {answer}.'**
+  String requestDoneHere(String answer);
+
+  /// No description provided for @requestDoneChat.
+  ///
+  /// In en, this message translates to:
+  /// **'You already answered from {chat}: {answer}.'**
+  String requestDoneChat(String chat, String answer);
+
+  /// No description provided for @requestDoneTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody answered in time: {answer}.'**
+  String requestDoneTimeout(String answer);
+
+  /// No description provided for @requestDoneElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Already decided elsewhere: {answer}.'**
+  String requestDoneElsewhere(String answer);
+
+  /// No description provided for @requestDoneClosing.
+  ///
+  /// In en, this message translates to:
+  /// **'This screen closes by itself in a few seconds.'**
+  String get requestDoneClosing;
+
+  /// No description provided for @requestCloseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Close (Esc)'**
+  String get requestCloseHint;
+
+  /// No description provided for @requestTechDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical details'**
+  String get requestTechDetails;
+
   /// No description provided for @cmOpen.
   ///
   /// In en, this message translates to:
