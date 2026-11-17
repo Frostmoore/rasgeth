@@ -77,7 +77,8 @@ class SessionView extends ChangeNotifier {
 
   void _newCall() => call = ModelCall(_now());
 
-  List<ChatItem> get items => buildItems(events, liveText: liveText, liveThinking: liveThinking);
+  List<ChatItem> get items =>
+      buildItems(events, liveText: liveText, liveThinking: liveThinking, sessionId: sessionId);
 
   /// Messages waiting in line (sent while it works).
   final List<QueuedMessage> queued = [];

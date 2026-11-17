@@ -346,6 +346,9 @@ class FakeRedGiant {
     _toAll({'type': 'session.activity', 'sessionId': sid, 'state': 'idle'});
   }
 
+  /// 3.8.7: JSON answers set by a test, by «METHOD /path».
+  final extraJson = <String, Object?>{};
+
   /// 3.8.5: an answer streaming in, piece by piece, on every open live socket (the stream
   /// cursor's tests), and its end.
   void streamPiece(String sid, String text) {
@@ -1215,6 +1218,9 @@ class FakeRedGiant {
       r.response.write(size <= 20 ? fx.tiny : fx.svg[q['theme'] ?? 'light']![q['state'] ?? 'idle']);
       return r.response.close();
     }
+    // 3.8.7: answers a test sets by hand («GET /api/…» → JSON), widgets and artifacts.
+    final extra = extraJson['${r.method} $path'];
+    if (extra != null) return _json(r, 200, extra);
     return _json(r, 404, {'error': 'Not found'});
   }
 

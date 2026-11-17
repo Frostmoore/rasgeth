@@ -1,7 +1,7 @@
 // G42.1: the same events give the same chat items in the app as in the page. The vectors are the
 // page's own `buildItems` (packages/web/src/state.ts) run on the demo conversation and on small
-// cases (tool/items_fixtures.mjs → test/fixtures/items_vectors.json). Widgets (```widget blocks)
-// are G42.2's and are left out here.
+// cases (tool/items_fixtures.mjs → test/fixtures/items_vectors.json), widgets after their answer
+// included (3.8.7).
 import 'dart:convert';
 import 'dart:io';
 
@@ -140,7 +140,7 @@ void main() {
       ]);
       final web = [
         for (final i in items.cast<Map<String, dynamic>>())
-          if (i['kind'] != 'widget') _web(i),
+          _web(i),
       ];
       // Notices the page says in words keep the page's text in the vectors.
       final webText = {for (final i in web) i['key']: i['text']};

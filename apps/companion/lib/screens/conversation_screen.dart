@@ -20,12 +20,14 @@ import '../api/live_model.dart';
 import '../api/metrics.dart' show kTokens;
 import '../api/saved.dart';
 import '../api/types.dart';
+import '../api/widgets.dart';
 import '../app_state.dart';
 import '../desktop/drops.dart';
 import '../l10n/app_localizations.dart';
 import '../mascot/mascot_view.dart';
 import '../theme/colors.dart';
 import '../ui/agent_menu.dart';
+import '../ui/artifact_frame_view.dart';
 import '../ui/icons.dart';
 import '../ui/limits_bar.dart';
 import '../ui/markdown.dart';
@@ -75,7 +77,8 @@ class ChatActions {
     this.readOnly = false,
   });
 
-  /// The conversation shown (null: a preview without its actions).
+  /// The conversation shown (null: a preview without its actions); 3.8.7: also where its widgets
+  /// and the artifacts it opens send to.
   final String? sessionId;
   final Agent? agent;
 
@@ -155,6 +158,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
   final _quotes = <Quote>[];
   final _scroll = ScrollController();
   final _keys = <int, GlobalKey>{};
+
+  /// 3.8.7: a widget keeps its frame (and what it counted) while messages arrive below it.
+  final _widgetKeys = <String, GlobalKey>{};
   PassageJump? _pending;
   PassageJump? _lit;
   int? _flash;
@@ -755,7 +761,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       final item = at < stored.length ? stored[at] : live!;
                       final seq = item is AssistantItem ? item.seq : null;
                       return Padding(
-                        key: seq == null ? null : _keys.putIfAbsent(seq, GlobalKey.new),
+                        key: seq != null
+                            ? _keys.putIfAbsent(seq, GlobalKey.new)
+                            : item is WidgetItem
+                            ? _widgetKeys.putIfAbsent(item.key, GlobalKey.new)
+                            : null,
                         padding: const EdgeInsets.only(bottom: 10),
                         child: ChatItemView(item: item, actions: actions),
                       );
@@ -1382,13 +1392,27 @@ class ChatItemView extends StatelessWidget {
         title: title.isEmpty ? (path ?? '') : title,
         icon: isFile ? RgIcons.file : RgIcons.canvas,
         onTap: isFile && scope != null && path != null
-            ? () => openCanvas(context, scope: scope, path: path, title: title)
+            ? () => openCanvas(
+                context,
+                scope: scope,
+                path: path,
+                title: title,
+                sessionId: a.sessionId,
+              )
             : null,
       ),
       FileItem(:final scope, :final path, :final name, :final caption, :final size) => _FileCard(
         title: name,
         subtitle: [?caption, formatBytes(size)].join(' · '),
-        onOpen: () => openCanvas(context, scope: scope, path: path, title: name),
+        onOpen: () =>
+            openCanvas(context, scope: scope, path: path, title: name, sessionId: a.sessionId),
+      ),
+      // 3.8.7: a widget after its answer, as the page's `widget` item.
+      WidgetItem() => WidgetCard(
+        key: Key('widget-${it.key}'),
+        item: it,
+        openCanvas: (scope, path, title) =>
+            openCanvas(context, scope: scope, path: path, title: title, sessionId: a.sessionId),
       ),
       VariantsItem() => VariantsCard(item: it),
       ForkItem() => ForkMark(
@@ -1555,8 +1579,13 @@ class _UserBubbleState extends State<_UserBubble> {
                           name: f.name,
                           onOpen: f.path == null
                               ? null
-                              : () =>
-                                    openCanvas(context, scope: scope, path: f.path!, title: f.name),
+                              : () => openCanvas(
+                                  context,
+                                  scope: scope,
+                                  path: f.path!,
+                                  title: f.name,
+                                  sessionId: a.sessionId,
+                                ),
                         ),
                     ],
                   ),
@@ -1915,7 +1944,8 @@ class _AssistantViewState extends State<AssistantView> {
     if (it.live) {
       final app = AppScope.maybeRead(context);
       return SafeMarkdown(
-        it.text,
+        // A widget being written shows as a short line, never as its code (3.8.7).
+        streamingWithoutWidgets(it.text, AppLocalizations.of(context).widgetPreparing),
         cursor: true,
         cursorStill: (app?.reduceMotion ?? false) || MediaQuery.disableAnimationsOf(context),
       );

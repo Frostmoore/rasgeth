@@ -4561,4 +4561,63 @@ class AppLocalizationsEn extends AppLocalizations {
   String cvTooMany(String n) {
     return '$n attachments at most';
   }
+
+  @override
+  String get widgetTitle => 'Widget';
+
+  @override
+  String get widgetPreparing => 'Preparing a widget…';
+
+  @override
+  String get widgetOpenCanvas => 'Open in the Canvas';
+
+  @override
+  String get widgetKeep => 'Keep it';
+
+  @override
+  String get widgetKeepHint => 'Saved as an artifact in artefatti/, and opened in the Canvas';
+
+  @override
+  String get widgetKeptShort => 'Kept';
+
+  @override
+  String widgetKept(String path) {
+    return 'Kept as $path';
+  }
+
+  @override
+  String get widgetAsks => 'It wants to send to the chat:';
+
+  @override
+  String get widgetNoChat => 'It wants to send to the chat (open a conversation first):';
+
+  @override
+  String get widgetSend => 'Send';
+
+  @override
+  String get widgetDismiss => 'Leave it';
+
+  @override
+  String get widgetLoading => 'Loading…';
+
+  @override
+  String get widgetOpenInPage => 'Open in the page';
+
+  @override
+  String get widgetNoFrameHere =>
+      'This system cannot run widgets and artifacts inside the app: open it in the page, in your browser.';
+
+  @override
+  String get artError1 => '1 error';
+
+  @override
+  String artErrors(int n) {
+    return '$n errors';
+  }
+
+  @override
+  String get previewLinkTitle => 'The page wants to open a link';
+
+  @override
+  String get previewLinkOpen => 'Open';
 }

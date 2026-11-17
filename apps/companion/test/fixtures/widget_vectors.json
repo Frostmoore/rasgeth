@@ -1,0 +1,596 @@
+{
+ "segments": [
+  {
+   "text": "Solo testo, niente widget.",
+   "first": 0,
+   "out": [
+    {
+     "kind": "text",
+     "text": "Solo testo, niente widget."
+    }
+   ]
+  },
+  {
+   "text": "```widget Umidità\n<div>60%</div>\n```",
+   "first": 0,
+   "out": [
+    {
+     "kind": "widget",
+     "index": 0,
+     "title": "Umidità",
+     "html": "<div>60%</div>",
+     "closed": true,
+     "tooBig": false
+    }
+   ]
+  },
+  {
+   "text": "Prima\n\n```widget\n<b>1</b>\n```\n\nDopo",
+   "first": 0,
+   "out": [
+    {
+     "kind": "text",
+     "text": "Prima\n"
+    },
+    {
+     "kind": "widget",
+     "index": 0,
+     "title": "",
+     "html": "<b>1</b>",
+     "closed": true,
+     "tooBig": false
+    },
+    {
+     "kind": "text",
+     "text": "\nDopo"
+    }
+   ]
+  },
+  {
+   "text": "x\n~~~widget\n<i>2</i>\n~~~\n```widget C\n<p>never closed",
+   "first": 0,
+   "out": [
+    {
+     "kind": "text",
+     "text": "x"
+    },
+    {
+     "kind": "widget",
+     "index": 0,
+     "title": "",
+     "html": "<i>2</i>",
+     "closed": true,
+     "tooBig": false
+    },
+    {
+     "kind": "widget",
+     "index": 1,
+     "title": "C",
+     "html": "<p>never closed",
+     "closed": false,
+     "tooBig": false
+    }
+   ]
+  },
+  {
+   "text": "````widget Lungo\n<pre>```</pre>\n````\nfine",
+   "first": 0,
+   "out": [
+    {
+     "kind": "widget",
+     "index": 0,
+     "title": "Lungo",
+     "html": "<pre>```</pre>",
+     "closed": true,
+     "tooBig": false
+    },
+    {
+     "kind": "text",
+     "text": "fine"
+    }
+   ]
+  },
+  {
+   "text": "   ```WIDGET   Titolo con spazi  \n<p>a</p>\n   ```   ",
+   "first": 0,
+   "out": [
+    {
+     "kind": "widget",
+     "index": 0,
+     "title": "Titolo con spazi",
+     "html": "<p>a</p>",
+     "closed": true,
+     "tooBig": false
+    }
+   ]
+  },
+  {
+   "text": "    ```widget\n<p>rientro di 4: codice</p>\n```",
+   "first": 0,
+   "out": [
+    {
+     "kind": "text",
+     "text": "    ```widget\n<p>rientro di 4: codice</p>\n```"
+    }
+   ]
+  },
+  {
+   "text": "```html\n<p>x</p>\n```",
+   "first": 0,
+   "out": [
+    {
+     "kind": "text",
+     "text": "```html\n<p>x</p>\n```"
+    }
+   ]
+  },
+  {
+   "text": "```widgets\n<p>non è widget</p>\n```",
+   "first": 0,
+   "out": [
+    {
+     "kind": "text",
+     "text": "```widgets\n<p>non è widget</p>\n```"
+    }
+   ]
+  },
+  {
+   "text": "```widget\n```",
+   "first": 0,
+   "out": [
+    {
+     "kind": "widget",
+     "index": 0,
+     "title": "",
+     "html": "",
+     "closed": true,
+     "tooBig": false
+    }
+   ]
+  },
+  {
+   "text": "```widget A\n<p>1</p>\n```\n```widget B\n<p>2</p>\n```\n\n\n",
+   "first": 0,
+   "out": [
+    {
+     "kind": "widget",
+     "index": 0,
+     "title": "A",
+     "html": "<p>1</p>",
+     "closed": true,
+     "tooBig": false
+    },
+    {
+     "kind": "widget",
+     "index": 1,
+     "title": "B",
+     "html": "<p>2</p>",
+     "closed": true,
+     "tooBig": false
+    }
+   ]
+  },
+  {
+   "text": "testo\r\n```widget CR\r\n<p>r</p>\r\n```\r\ndopo",
+   "first": 0,
+   "out": [
+    {
+     "kind": "text",
+     "text": "testo\r\n```widget CR\r\n<p>r</p>\r\n```\r\ndopo"
+    }
+   ]
+  },
+  {
+   "text": "~~~widget T\n<p>tilde</p>\n```\nancora dentro\n~~~",
+   "first": 0,
+   "out": [
+    {
+     "kind": "widget",
+     "index": 0,
+     "title": "T",
+     "html": "<p>tilde</p>\n```\nancora dentro",
+     "closed": true,
+     "tooBig": false
+    }
+   ]
+  },
+  {
+   "text": "Ecco:\n```widget Umidità\n<script>let a=1",
+   "first": 0,
+   "out": [
+    {
+     "kind": "text",
+     "text": "Ecco:"
+    },
+    {
+     "kind": "widget",
+     "index": 0,
+     "title": "Umidità",
+     "html": "<script>let a=1",
+     "closed": false,
+     "tooBig": false
+    }
+   ]
+  },
+  {
+   "text": "\n\n```widget\n<p>solo</p>\n```\n\n",
+   "first": 0,
+   "out": [
+    {
+     "kind": "widget",
+     "index": 0,
+     "title": "",
+     "html": "<p>solo</p>",
+     "closed": true,
+     "tooBig": false
+    }
+   ]
+  }
+ ],
+ "segmentsFrom": [
+  {
+   "text": "Prima\n\n```widget\n<b>1</b>\n```\n\nDopo",
+   "first": 3,
+   "out": [
+    {
+     "kind": "text",
+     "text": "Prima\n"
+    },
+    {
+     "kind": "widget",
+     "index": 3,
+     "title": "",
+     "html": "<b>1</b>",
+     "closed": true,
+     "tooBig": false
+    },
+    {
+     "kind": "text",
+     "text": "\nDopo"
+    }
+   ]
+  }
+ ],
+ "split": [
+  {
+   "texts": [
+    "Solo testo, niente widget."
+   ],
+   "out": {
+    "texts": [
+     "Solo testo, niente widget."
+    ],
+    "widgets": []
+   }
+  },
+  {
+   "texts": [
+    "```widget Umidità\n<div>60%</div>\n```"
+   ],
+   "out": {
+    "texts": [
+     ""
+    ],
+    "widgets": [
+     {
+      "index": 0,
+      "title": "Umidità"
+     }
+    ]
+   }
+  },
+  {
+   "texts": [
+    "Prima\n\n```widget\n<b>1</b>\n```\n\nDopo"
+   ],
+   "out": {
+    "texts": [
+     "Prima\n\nDopo"
+    ],
+    "widgets": [
+     {
+      "index": 0,
+      "title": ""
+     }
+    ]
+   }
+  },
+  {
+   "texts": [
+    "x\n~~~widget\n<i>2</i>\n~~~\n```widget C\n<p>never closed"
+   ],
+   "out": {
+    "texts": [
+     "x\n\n```html\n<p>never closed"
+    ],
+    "widgets": [
+     {
+      "index": 0,
+      "title": ""
+     }
+    ]
+   }
+  },
+  {
+   "texts": [
+    "````widget Lungo\n<pre>```</pre>\n````\nfine"
+   ],
+   "out": {
+    "texts": [
+     "fine"
+    ],
+    "widgets": [
+     {
+      "index": 0,
+      "title": "Lungo"
+     }
+    ]
+   }
+  },
+  {
+   "texts": [
+    "   ```WIDGET   Titolo con spazi  \n<p>a</p>\n   ```   "
+   ],
+   "out": {
+    "texts": [
+     ""
+    ],
+    "widgets": [
+     {
+      "index": 0,
+      "title": "Titolo con spazi"
+     }
+    ]
+   }
+  },
+  {
+   "texts": [
+    "    ```widget\n<p>rientro di 4: codice</p>\n```"
+   ],
+   "out": {
+    "texts": [
+     "    ```widget\n<p>rientro di 4: codice</p>\n```"
+    ],
+    "widgets": []
+   }
+  },
+  {
+   "texts": [
+    "```html\n<p>x</p>\n```"
+   ],
+   "out": {
+    "texts": [
+     "```html\n<p>x</p>\n```"
+    ],
+    "widgets": []
+   }
+  },
+  {
+   "texts": [
+    "```widgets\n<p>non è widget</p>\n```"
+   ],
+   "out": {
+    "texts": [
+     "```widgets\n<p>non è widget</p>\n```"
+    ],
+    "widgets": []
+   }
+  },
+  {
+   "texts": [
+    "```widget\n```"
+   ],
+   "out": {
+    "texts": [
+     ""
+    ],
+    "widgets": [
+     {
+      "index": 0,
+      "title": ""
+     }
+    ]
+   }
+  },
+  {
+   "texts": [
+    "```widget A\n<p>1</p>\n```\n```widget B\n<p>2</p>\n```\n\n\n"
+   ],
+   "out": {
+    "texts": [
+     ""
+    ],
+    "widgets": [
+     {
+      "index": 0,
+      "title": "A"
+     },
+     {
+      "index": 1,
+      "title": "B"
+     }
+    ]
+   }
+  },
+  {
+   "texts": [
+    "testo\r\n```widget CR\r\n<p>r</p>\r\n```\r\ndopo"
+   ],
+   "out": {
+    "texts": [
+     "testo\r\n```widget CR\r\n<p>r</p>\r\n```\r\ndopo"
+    ],
+    "widgets": []
+   }
+  },
+  {
+   "texts": [
+    "~~~widget T\n<p>tilde</p>\n```\nancora dentro\n~~~"
+   ],
+   "out": {
+    "texts": [
+     ""
+    ],
+    "widgets": [
+     {
+      "index": 0,
+      "title": "T"
+     }
+    ]
+   }
+  },
+  {
+   "texts": [
+    "Ecco:\n```widget Umidità\n<script>let a=1"
+   ],
+   "out": {
+    "texts": [
+     "Ecco:\n\n```html\n<script>let a=1"
+    ],
+    "widgets": []
+   }
+  },
+  {
+   "texts": [
+    "\n\n```widget\n<p>solo</p>\n```\n\n"
+   ],
+   "out": {
+    "texts": [
+     ""
+    ],
+    "widgets": [
+     {
+      "index": 0,
+      "title": ""
+     }
+    ]
+   }
+  },
+  {
+   "texts": [
+    "```widget A\n<b>1</b>\n```",
+    "x\n~~~widget\n<i>2</i>\n~~~\n```widget C\n<p>never closed"
+   ],
+   "out": {
+    "texts": [
+     "",
+     "x\n\n```html\n<p>never closed"
+    ],
+    "widgets": [
+     {
+      "index": 0,
+      "title": "A"
+     },
+     {
+      "index": 1,
+      "title": ""
+     }
+    ]
+   }
+  },
+  {
+   "texts": [
+    "nessuno",
+    "```widget Z\n<p>z</p>\n```",
+    "dopo"
+   ],
+   "out": {
+    "texts": [
+     "nessuno",
+     "",
+     "dopo"
+    ],
+    "widgets": [
+     {
+      "index": 0,
+      "title": "Z"
+     }
+    ]
+   }
+  }
+ ],
+ "streaming": [
+  {
+   "text": "Solo testo, niente widget.",
+   "out": "Solo testo, niente widget."
+  },
+  {
+   "text": "```widget Umidità\n<div>60%</div>\n```",
+   "out": "\n_Sto preparando un widget…_\n"
+  },
+  {
+   "text": "Prima\n\n```widget\n<b>1</b>\n```\n\nDopo",
+   "out": "Prima\n\n\n\n_Sto preparando un widget…_\n\n\n\nDopo"
+  },
+  {
+   "text": "x\n~~~widget\n<i>2</i>\n~~~\n```widget C\n<p>never closed",
+   "out": "x\n\n\n_Sto preparando un widget…_\n\n\n\n_Sto preparando un widget…_\n"
+  },
+  {
+   "text": "````widget Lungo\n<pre>```</pre>\n````\nfine",
+   "out": "\n_Sto preparando un widget…_\n\n\nfine"
+  },
+  {
+   "text": "   ```WIDGET   Titolo con spazi  \n<p>a</p>\n   ```   ",
+   "out": "\n_Sto preparando un widget…_\n"
+  },
+  {
+   "text": "    ```widget\n<p>rientro di 4: codice</p>\n```",
+   "out": "    ```widget\n<p>rientro di 4: codice</p>\n```"
+  },
+  {
+   "text": "```html\n<p>x</p>\n```",
+   "out": "```html\n<p>x</p>\n```"
+  },
+  {
+   "text": "```widgets\n<p>non è widget</p>\n```",
+   "out": "```widgets\n<p>non è widget</p>\n```"
+  },
+  {
+   "text": "```widget\n```",
+   "out": "\n_Sto preparando un widget…_\n"
+  },
+  {
+   "text": "```widget A\n<p>1</p>\n```\n```widget B\n<p>2</p>\n```\n\n\n",
+   "out": "\n_Sto preparando un widget…_\n\n\n\n_Sto preparando un widget…_\n"
+  },
+  {
+   "text": "testo\r\n```widget CR\r\n<p>r</p>\r\n```\r\ndopo",
+   "out": "testo\r\n```widget CR\r\n<p>r</p>\r\n```\r\ndopo"
+  },
+  {
+   "text": "~~~widget T\n<p>tilde</p>\n```\nancora dentro\n~~~",
+   "out": "\n_Sto preparando un widget…_\n"
+  },
+  {
+   "text": "Ecco:\n```widget Umidità\n<script>let a=1",
+   "out": "Ecco:\n\n\n_Sto preparando un widget…_\n"
+  },
+  {
+   "text": "\n\n```widget\n<p>solo</p>\n```\n\n",
+   "out": "\n_Sto preparando un widget…_\n"
+  }
+ ],
+ "limit": [
+  {
+   "char": "a",
+   "times": 65537,
+   "tooBig": true
+  },
+  {
+   "char": "a",
+   "times": 65536,
+   "tooBig": false
+  },
+  {
+   "char": "é",
+   "times": 32768,
+   "tooBig": false
+  },
+  {
+   "char": "é",
+   "times": 32769,
+   "tooBig": true
+  }
+ ]
+}

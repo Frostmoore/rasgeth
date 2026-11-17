@@ -8198,6 +8198,234 @@
           "stopReason": "end_turn"
         }
       ]
+    },
+    {
+      "name": "widgets",
+      "events": [
+        {
+          "id": "evt_0001",
+          "seq": 1,
+          "ts": "2026-11-17T09:00:01.000Z",
+          "ownerId": "local",
+          "projectId": "demo",
+          "agentId": "agent_dev",
+          "sessionId": "sess_case_widgets",
+          "type": "message.user",
+          "payload": {
+            "text": "Fammi vedere l'umidità e la temperatura."
+          },
+          "erased": false
+        },
+        {
+          "id": "evt_0002",
+          "seq": 2,
+          "ts": "2026-11-17T09:00:02.000Z",
+          "ownerId": "local",
+          "projectId": "demo",
+          "agentId": "agent_dev",
+          "sessionId": "sess_case_widgets",
+          "type": "message.assistant",
+          "payload": {
+            "parts": [
+              {
+                "type": "text",
+                "text": "Leggo i sensori.\n```widget Sensori\n<p>in lettura</p>\n```"
+              },
+              {
+                "type": "tool_call",
+                "callId": "w1",
+                "name": "bash",
+                "input": {
+                  "command": "sensors"
+                },
+                "rawInput": "{\"command\":\"sensors\"}"
+              }
+            ],
+            "stopReason": "tool_use",
+            "provider": "anthropic",
+            "model": "claude-opus-5-5",
+            "metrics": {
+              "startedAt": "2026-11-17T09:00:00.000Z",
+              "endedAt": "2026-11-17T09:00:02.000Z",
+              "inputTokens": 1200,
+              "cachedReadTokens": 1000,
+              "cacheWriteTokens": 0,
+              "outputTokens": 40,
+              "contextUsed": 1240,
+              "contextWindow": 200000,
+              "source": "client"
+            },
+            "costUsd": 0.001
+          },
+          "erased": false
+        },
+        {
+          "id": "evt_0003",
+          "seq": 3,
+          "ts": "2026-11-17T09:00:03.000Z",
+          "ownerId": "local",
+          "projectId": "demo",
+          "agentId": "agent_dev",
+          "sessionId": "sess_case_widgets",
+          "type": "tool.call",
+          "payload": {
+            "callId": "w1",
+            "tool": "bash",
+            "input": {
+              "command": "sensors"
+            }
+          },
+          "erased": false
+        },
+        {
+          "id": "evt_0004",
+          "seq": 4,
+          "ts": "2026-11-17T09:00:04.000Z",
+          "ownerId": "local",
+          "projectId": "demo",
+          "agentId": "agent_dev",
+          "sessionId": "sess_case_widgets",
+          "type": "tool.result",
+          "payload": {
+            "callId": "w1",
+            "ok": true,
+            "output": "Exit code: 0\nstdout:\n60% 21C\n"
+          },
+          "erased": false
+        },
+        {
+          "id": "evt_0005",
+          "seq": 5,
+          "ts": "2026-11-17T09:00:05.000Z",
+          "ownerId": "local",
+          "projectId": "demo",
+          "agentId": "agent_dev",
+          "sessionId": "sess_case_widgets",
+          "type": "message.assistant",
+          "payload": {
+            "parts": [
+              {
+                "type": "text",
+                "text": "Ecco:\n```widget Umidità\n<b>60%</b>\n```\nE la temperatura:\n```widget\n<i>21</i>\n```\n```widget Aperto\n<p>non chiuso"
+              }
+            ],
+            "stopReason": "end_turn",
+            "provider": "anthropic",
+            "model": "claude-opus-5-5",
+            "metrics": {
+              "startedAt": "2026-11-17T09:00:00.000Z",
+              "endedAt": "2026-11-17T09:00:02.000Z",
+              "inputTokens": 1200,
+              "cachedReadTokens": 1000,
+              "cacheWriteTokens": 0,
+              "outputTokens": 40,
+              "contextUsed": 1240,
+              "contextWindow": 200000,
+              "source": "client"
+            },
+            "costUsd": 0.001
+          },
+          "erased": false
+        }
+      ],
+      "items": [
+        {
+          "kind": "user",
+          "key": "e1",
+          "text": "Fammi vedere l'umidità e la temperatura.",
+          "ts": "2026-11-17T09:00:01.000Z",
+          "images": []
+        },
+        {
+          "kind": "assistant",
+          "key": "e2",
+          "seq": 2,
+          "ts": "2026-11-17T09:00:02.000Z",
+          "parts": [
+            {
+              "type": "text",
+              "text": "Leggo i sensori."
+            }
+          ],
+          "metrics": {
+            "startedAt": "2026-11-17T09:00:00.000Z",
+            "endedAt": "2026-11-17T09:00:02.000Z",
+            "inputTokens": 1200,
+            "cachedReadTokens": 1000,
+            "cacheWriteTokens": 0,
+            "outputTokens": 40,
+            "contextUsed": 1240,
+            "contextWindow": 200000,
+            "source": "client"
+          },
+          "costUsd": 0.001,
+          "model": "claude-opus-5-5",
+          "stopReason": "tool_use"
+        },
+        {
+          "kind": "widget",
+          "key": "e2w0",
+          "sessionId": "sess_case_widgets",
+          "seq": 2,
+          "index": 0,
+          "title": "Sensori"
+        },
+        {
+          "kind": "tool",
+          "key": "e3",
+          "callId": "w1",
+          "tool": "bash",
+          "input": {
+            "command": "sensors"
+          },
+          "result": {
+            "ok": true,
+            "output": "Exit code: 0\nstdout:\n60% 21C\n"
+          }
+        },
+        {
+          "kind": "assistant",
+          "key": "e5",
+          "seq": 5,
+          "ts": "2026-11-17T09:00:05.000Z",
+          "parts": [
+            {
+              "type": "text",
+              "text": "Ecco:\n\nE la temperatura:\n\n```html\n<p>non chiuso"
+            }
+          ],
+          "metrics": {
+            "startedAt": "2026-11-17T09:00:00.000Z",
+            "endedAt": "2026-11-17T09:00:02.000Z",
+            "inputTokens": 1200,
+            "cachedReadTokens": 1000,
+            "cacheWriteTokens": 0,
+            "outputTokens": 40,
+            "contextUsed": 1240,
+            "contextWindow": 200000,
+            "source": "client"
+          },
+          "costUsd": 0.001,
+          "model": "claude-opus-5-5",
+          "stopReason": "end_turn"
+        },
+        {
+          "kind": "widget",
+          "key": "e5w0",
+          "sessionId": "sess_case_widgets",
+          "seq": 5,
+          "index": 0,
+          "title": "Umidità"
+        },
+        {
+          "kind": "widget",
+          "key": "e5w1",
+          "sessionId": "sess_case_widgets",
+          "seq": 5,
+          "index": 1,
+          "title": ""
+        }
+      ]
     }
   ]
 }

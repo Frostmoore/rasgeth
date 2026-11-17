@@ -6,6 +6,7 @@
 import 'metrics.dart';
 import 'products.dart';
 import 'types.dart';
+import 'widgets.dart';
 
 export 'metrics.dart' show MessageMetrics;
 
@@ -549,14 +550,51 @@ class CompactionItem extends ChatItem {
   };
 }
 
+/// A ```widget block of an answer (3.8.7, the page's `widget` item): run in its frame after the
+/// answer, whose text keeps the rest. [html] only for the computers that cannot run it.
+class WidgetItem extends ChatItem {
+  const WidgetItem({
+    super.key,
+    required this.sessionId,
+    required this.seq,
+    required this.index,
+    required this.title,
+    this.html = '',
+  });
+
+  final String sessionId;
+  final int seq;
+  final int index;
+  final String title;
+  final String html;
+
+  @override
+  String get kind => 'widget';
+
+  @override
+  Map<String, Object?> toJson() => {
+    ...super.toJson(),
+    'sessionId': sessionId,
+    'seq': seq,
+    'index': index,
+    'title': title,
+  };
+}
+
 /// Their question card stands for these calls: no tool line for them. `show_products` shows as
 /// its cards (`products.shown`).
 const _hiddenTools = {'ask_user', 'propose_plan'};
 
 /// The page's `buildItems` (packages/web/src/state.ts): events in order, plus the text and
-/// reasoning still streaming. Pure; the same events give the same items as the page's
+/// reasoning still streaming. With [sessionId] (or the events' own) an answer's ```widget blocks
+/// become widgets after it. Pure; the same events give the same items as the page's
 /// (test/fixtures/items_vectors.json).
-List<ChatItem> buildItems(List<RgEvent> events, {String liveText = '', String liveThinking = ''}) {
+List<ChatItem> buildItems(
+  List<RgEvent> events, {
+  String liveText = '',
+  String liveThinking = '',
+  String? sessionId,
+}) {
   final out = <ChatItem>[];
   // Calls by id, oldest first: an id given twice still pairs each result with its own call.
   final tools = <String, List<ToolItem>>{};
@@ -611,7 +649,11 @@ List<ChatItem> buildItems(List<RgEvent> events, {String liveText = '', String li
           open.clear();
         }
         final parts = _list(p['parts']).whereType<Map<String, dynamic>>();
-        final text = parts.where((x) => x['type'] == 'text').map((x) => _str(x['text']) ?? '');
+        // Its ```widget blocks become widgets after it (3.8.7, the page's `splitWidgets`).
+        final split = splitWidgets([
+          for (final x in parts.where((x) => x['type'] == 'text')) _str(x['text']) ?? '',
+        ]);
+        final text = split.texts;
         final thinking = parts
             .where((x) => x['type'] == 'thinking')
             .map((x) => _str(x['text']) ?? '');
@@ -634,6 +676,21 @@ List<ChatItem> buildItems(List<RgEvent> events, {String liveText = '', String li
         if (p['stepLimit'] == true) {
           item.stepLimit = true;
           limited = item;
+        }
+        final sid = sessionId ?? e.sessionId;
+        if (sid != null) {
+          for (final w in split.widgets) {
+            out.add(
+              WidgetItem(
+                key: '${key}w${w.index}',
+                sessionId: sid,
+                seq: e.seq,
+                index: w.index,
+                title: w.title,
+                html: w.html,
+              ),
+            );
+          }
         }
       case 'session.imported':
         final source = switch (_str(p['source'])) {

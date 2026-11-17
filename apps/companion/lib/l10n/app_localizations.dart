@@ -7928,6 +7928,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{n} attachments at most'**
   String cvTooMany(String n);
+
+  /// No description provided for @widgetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Widget'**
+  String get widgetTitle;
+
+  /// No description provided for @widgetPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing a widget…'**
+  String get widgetPreparing;
+
+  /// No description provided for @widgetOpenCanvas.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in the Canvas'**
+  String get widgetOpenCanvas;
+
+  /// No description provided for @widgetKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get widgetKeep;
+
+  /// No description provided for @widgetKeepHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved as an artifact in artefatti/, and opened in the Canvas'**
+  String get widgetKeepHint;
+
+  /// No description provided for @widgetKeptShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept'**
+  String get widgetKeptShort;
+
+  /// No description provided for @widgetKept.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept as {path}'**
+  String widgetKept(String path);
+
+  /// No description provided for @widgetAsks.
+  ///
+  /// In en, this message translates to:
+  /// **'It wants to send to the chat:'**
+  String get widgetAsks;
+
+  /// No description provided for @widgetNoChat.
+  ///
+  /// In en, this message translates to:
+  /// **'It wants to send to the chat (open a conversation first):'**
+  String get widgetNoChat;
+
+  /// No description provided for @widgetSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get widgetSend;
+
+  /// No description provided for @widgetDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave it'**
+  String get widgetDismiss;
+
+  /// No description provided for @widgetLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get widgetLoading;
+
+  /// No description provided for @widgetOpenInPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in the page'**
+  String get widgetOpenInPage;
+
+  /// No description provided for @widgetNoFrameHere.
+  ///
+  /// In en, this message translates to:
+  /// **'This system cannot run widgets and artifacts inside the app: open it in the page, in your browser.'**
+  String get widgetNoFrameHere;
+
+  /// No description provided for @artError1.
+  ///
+  /// In en, this message translates to:
+  /// **'1 error'**
+  String get artError1;
+
+  /// No description provided for @artErrors.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} errors'**
+  String artErrors(int n);
+
+  /// No description provided for @previewLinkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The page wants to open a link'**
+  String get previewLinkTitle;
+
+  /// No description provided for @previewLinkOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get previewLinkOpen;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

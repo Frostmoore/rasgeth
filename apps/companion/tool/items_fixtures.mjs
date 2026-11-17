@@ -262,6 +262,19 @@ const cases = [
     user(withVoiceHint("che ore sono a Roma adesso"), { via: "voice" }),
     said("Sono le 10:30."),
   ]),
+  // 3.8.7: an answer's ```widget blocks become widgets right after it (an open one stays code),
+  // also after an answer that asks for tools.
+  caseOf("widgets", [
+    user("Fammi vedere l'umidità e la temperatura."),
+    said("Leggo i sensori.\n```widget Sensori\n<p>in lettura</p>\n```", "tool_use", [
+      toolCall("w1", "bash", { command: "sensors" }),
+    ]),
+    { type: "tool.call", payload: { callId: "w1", tool: "bash", input: { command: "sensors" } } },
+    { type: "tool.result", payload: { callId: "w1", ok: true, output: "Exit code: 0\nstdout:\n60% 21C\n" } },
+    said(
+      "Ecco:\n```widget Umidità\n<b>60%</b>\n```\nE la temperatura:\n```widget\n<i>21</i>\n```\n```widget Aperto\n<p>non chiuso",
+    ),
+  ]),
 ];
 
 const out = {
