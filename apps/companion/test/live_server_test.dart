@@ -5,10 +5,13 @@
 //   RG_LIVE_URL=http://127.0.0.1:7651 RG_LIVE_PASSWORD=companion-test-1 flutter test test/live_server_test.dart
 // Skipped without RG_LIVE_URL (the CI runs the recorded vectors and the fake server instead).
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rgcompanion/api/client.dart';
+import 'package:rgcompanion/api/conversation.dart' show PermissionRequest;
 import 'package:rgcompanion/api/live.dart';
 import 'package:rgcompanion/api/servers.dart';
 import 'package:rgcompanion/api/setup_channel.dart';
@@ -16,6 +19,9 @@ import 'package:rgcompanion/api/token_store.dart';
 import 'package:rgcompanion/api/transport.dart';
 import 'package:rgcompanion/api/types.dart';
 import 'package:rgcompanion/app_state.dart';
+import 'package:rgcompanion/desktop/desk_controller.dart' show WallFilter;
+import 'package:rgcompanion/desktop/wall.dart' show wallSections;
+import 'package:rgcompanion/l10n/app_localizations.dart';
 
 final _url = Platform.environment['RG_LIVE_URL'];
 final _password = Platform.environment['RG_LIVE_PASSWORD'] ?? 'companion-test-1';
@@ -86,9 +92,15 @@ void main() {
       await until(() => app.liveStatus == LiveStatus.open);
       // ignore: avoid_print
       print('live open; approvals ${app.live.approvals.length}');
-      // DEMO_REQUESTS: the waiting requests, critical ones among them.
-      await until(() => app.live.approvals.isNotEmpty);
-      expect(app.live.forYou, greaterThan(0));
+      // DEMO_REQUESTS: the waiting requests, critical ones among them, the same the server has
+      // now (p3.8.9: the demo's requests run out after a while, so their number is not fixed;
+      // what must hold is that the app shows exactly the server's).
+      Set<String> ids(Iterable<PermissionRequest> rs) => {for (final r in rs) r.requestId};
+      var onServer = ids(await app.client!.permissions());
+      await until(() => ids(app.live.approvals).containsAll(onServer));
+      onServer = ids(await app.client!.permissions());
+      expect(ids(app.live.approvals), onServer);
+      expect(app.live.forYou, app.live.approvals.length + app.live.questions.length);
 
       // The everyday Chat (outside the demo's project, which is over its budget on purpose).
       final sid = await app.newChatSession();
@@ -172,6 +184,154 @@ void main() {
     },
     skip: skip,
     timeout: const Timeout(Duration(minutes: 3)),
+  );
+
+  test(
+    'p3.8.9: a project, its agents and a conversation made elsewhere show live in the app, and back',
+    () async {
+      Future<AppController> device(DevicePlatform p) async {
+        final a = AppController(tokens: MemoryTokenStore(), prefs: MemoryAppPrefs(), platform: p);
+        expect(await a.connect(base.toString(), _password), isTrue, reason: '${a.error}');
+        await until(() => a.liveStatus == LiveStatus.open);
+        return a;
+      }
+
+      // The Windows app, the wall in view; the other device makes things as the page does.
+      final pc = await device(DevicePlatform.windows);
+      final other = await device(DevicePlatform.android);
+      final c = other.client!;
+      // A page on the same RedGiant: a bare /ws, following nothing.
+      final page = await WebSocket.connect('${base.toString().replaceFirst('http', 'ws')}/ws');
+      final heard = <Map<String, dynamic>>[];
+      page.listen((d) => heard.add(jsonDecode(d as String) as Map<String, dynamic>));
+      page.add(
+        jsonEncode({'type': 'hello', 'protocolVersion': kWireProtocolVersion, 'token': c.token}),
+      );
+      await until(() => heard.any((m) => m['type'] == 'welcome'), what: 'page welcome');
+
+      final stamp = DateTime.now().millisecondsSinceEpoch.toRadixString(36);
+      final project = await c.createProject('GAIA $stamp');
+      await until(() => pc.projects.any((p) => p.id == project.id), what: 'the project in the app');
+      final god = pc.agents.firstWhere((a) => a.kind == AgentKind.god);
+      final orch = await c.createAgent(
+        kind: 'orchestrator',
+        parentId: god.id,
+        name: 'Orchestratore $stamp',
+        projectId: project.id,
+      );
+      final dev = await c.createAgent(
+        kind: 'agent',
+        parentId: orch.id,
+        name: 'Sviluppatore $stamp',
+        projectId: project.id,
+      );
+      await until(
+        () => pc.agents.any((a) => a.id == orch.id) && pc.agents.any((a) => a.id == dev.id),
+        what: 'the agents in the app',
+      );
+      final sid = await c.newSession(god.id);
+      await until(() => pc.live.sessions.any((s) => s.id == sid), what: "God's conversation");
+      await c.renameSession(sid, 'Rinominata $stamp');
+      await until(
+        () => pc.live.sessions.any((s) => s.id == sid && s.title == 'Rinominata $stamp'),
+        what: 'the new title',
+      );
+
+      // The other way: what the app makes reaches the page at once.
+      final before = heard.length;
+      final made = await pc.createAgent(
+        kind: 'agent',
+        parentId: orch.id,
+        name: 'Dalla app $stamp',
+        projectId: project.id,
+      );
+      await until(
+        () => heard
+            .skip(before)
+            .any((m) => m['type'] == 'lists.changed' && (m['lists'] as List).contains('agents')),
+        what: 'lists.changed on the page',
+      );
+      await until(() => other.agents.any((a) => a.id == made.id), what: 'on the other device');
+      await page.close();
+      await pc.disconnect();
+      await other.disconnect();
+    },
+    skip: skip,
+    timeout: const Timeout(Duration(minutes: 2)),
+  );
+
+  test(
+    "p3.8.9, the person's case: God makes an orchestrator with create_agent while the app is open",
+    () async {
+      Future<AppController> device(DevicePlatform p) async {
+        final a = AppController(tokens: MemoryTokenStore(), prefs: MemoryAppPrefs(), platform: p)
+          ..locale = const Locale('it');
+        expect(await a.connect(base.toString(), _password), isTrue, reason: '${a.error}');
+        await until(() => a.liveStatus == LiveStatus.open);
+        return a;
+      }
+
+      // The Windows app open on the wall; the page (another device) talks to God.
+      final pc = await device(DevicePlatform.windows);
+      final other = await device(DevicePlatform.android);
+      final c = other.client!;
+      final stamp = DateTime.now().millisecondsSinceEpoch.toRadixString(36);
+      final project = await c.createProject('GAIA $stamp');
+      final god = pc.agents.firstWhere((a) => a.kind == AgentKind.god);
+      final sid = await c.newSession(god.id);
+      final name = 'Orchestratore GAIA $stamp';
+      final page = await WebSocket.connect('${base.toString().replaceFirst('http', 'ws')}/ws');
+      final heard = <Map<String, dynamic>>[];
+      page.listen((d) => heard.add(jsonDecode(d as String) as Map<String, dynamic>));
+      page.add(
+        jsonEncode({'type': 'hello', 'protocolVersion': kWireProtocolVersion, 'token': c.token}),
+      );
+      await until(() => heard.any((m) => m['type'] == 'welcome'), what: 'page welcome');
+      page.add(
+        jsonEncode({
+          'type': 'session.send',
+          'sessionId': sid,
+          'text': "Crea l'orchestratore $name nel progetto ${project.id}",
+        }),
+      );
+      // Whatever the turn asks the person is allowed from the page, as she would.
+      final answered = <String>{};
+      await until(() {
+        for (final m in heard.toList()) {
+          final r = m['request'];
+          if (m['type'] == 'permission.request' && r is Map && answered.add('${r['requestId']}')) {
+            page.add(
+              jsonEncode({
+                'type': 'permission.resolve',
+                'requestId': r['requestId'],
+                'decision': 'allow',
+              }),
+            );
+          }
+        }
+        return pc.agents.any((a) => a.name == name);
+      }, what: 'the orchestrator in the app, without opening it again');
+      final orch = pc.agents.firstWhere((a) => a.name == name);
+      expect(orch.projectId, project.id);
+      // On the wall and in the mascots' bar (both draw wallSections), under its project.
+      final l = lookupAppLocalizations(const Locale('it'));
+      final sections = wallSections(pc, l, byProject: true, filter: WallFilter.all);
+      expect(
+        sections.any((x) => x.title == project.name && x.agents.any((a) => a.id == orch.id)),
+        isTrue,
+      );
+      expect(pc.projects.any((p) => p.id == project.id), isTrue);
+      // God's new conversation, named by its first message, is in the lists.
+      await until(
+        () => pc.live.sessions.any((s) => s.id == sid && (s.title ?? '').startsWith('Crea')),
+        what: "God's conversation with its title",
+      );
+      await page.close();
+      await pc.disconnect();
+      await other.disconnect();
+    },
+    skip: skip,
+    timeout: const Timeout(Duration(minutes: 2)),
   );
 
   test('pairing through the setup channel: the API rides it when there is no https', () async {

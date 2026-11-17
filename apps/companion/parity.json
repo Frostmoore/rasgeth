@@ -1415,6 +1415,13 @@
       "files": [],
       "phase": "G42.0",
       "note": "The live connection ignores the server's error messages (err_<code> words, browser unavailable)."
+    },
+    "lists.changed": {
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/app_state.dart"
+      ]
     }
   }
 }

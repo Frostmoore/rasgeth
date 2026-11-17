@@ -79,6 +79,7 @@ import {
   type Event,
   type ImagePart,
   isCriticalId,
+  type ListName,
   MCP_CATALOG,
   type MediaChoice,
   type MediaKind,
@@ -858,6 +859,13 @@ export class RedGiantCore implements OrchestrationHost {
   private toOwner(ownerId: string, m: ServerMessage): void {
     for (const f of this.ownerListeners) f(ownerId, m);
   }
+  /**
+   * The owner's agents, projects or conversation rows changed (p3.8.9), wherever it happened:
+   * every page and app of theirs reads those lists again (`lists.changed`).
+   */
+  private listsChanged(ownerId: string, ...lists: ListName[]): void {
+    this.toOwner(ownerId, { type: "lists.changed", lists });
+  }
   /** Connected MCP servers, by owner and name. */
   private readonly mcp = new Map<string, McpConnection>();
   /** Sign-ins and keys of MCP servers (G24.9): private files, never the database. */
@@ -924,6 +932,10 @@ export class RedGiantCore implements OrchestrationHost {
     });
     this.budget = new PersistentBudget(o.db, this.store);
     this.projects = new ProjectStore(o.db, o.workspacesDir, o.projectFoldersInside);
+    // Made, renamed, archived elsewhere (another page or device, God, an automation): every
+    // client of the owner hears it at once (p3.8.9). An archived project marks its agents too.
+    this.registry.onChange((ownerId) => this.listsChanged(ownerId, "agents"));
+    this.projects.onChange((ownerId) => this.listsChanged(ownerId, "projects", "agents"));
     // Requests say projects and agents by name on every channel (3.5.6).
     this.approvals.nameOf = async (ownerId, ids) => {
       const out: Record<string, string> = {};
@@ -5365,10 +5377,11 @@ export class RedGiantCore implements OrchestrationHost {
 
   /** Gives a conversation a name people read (the list on the left). */
   async nameSession(sessionId: string, title: string): Promise<void> {
-    await this.o.db.query("UPDATE rg_sessions SET title = $2 WHERE id = $1", [
-      sessionId,
-      title.slice(0, 80),
-    ]);
+    const [row] = await this.o.db.query<{ owner_id: string }>(
+      "UPDATE rg_sessions SET title = $2 WHERE id = $1 RETURNING owner_id",
+      [sessionId, title.slice(0, 80)],
+    );
+    if (row) this.listsChanged(row.owner_id, "sessions");
   }
 
   /**
@@ -5438,6 +5451,7 @@ export class RedGiantCore implements OrchestrationHost {
         sessionId,
       ],
     );
+    this.listsChanged(ownerId, "sessions");
     const first = log[0];
     await this.store.append({
       ownerId,
@@ -5485,6 +5499,7 @@ export class RedGiantCore implements OrchestrationHost {
       throw new BadRequestError("This question has no answer to bring");
     await l.session.adoptAside(a.payload);
     await this.o.db.query("UPDATE rg_sessions SET last_at = now() WHERE id = $1", [sessionId]);
+    this.listsChanged(l.ownerId, "sessions");
   }
 
   /**
@@ -5522,6 +5537,7 @@ export class RedGiantCore implements OrchestrationHost {
         last && !Number.isNaN(Date.parse(last)) ? new Date(last).toISOString() : null,
       ],
     );
+    this.listsChanged(ownerId, "sessions");
     const at = { ownerId, projectId: agent.projectId, agentId, sessionId: id };
     await this.store.append({
       ...at,
@@ -5606,6 +5622,7 @@ export class RedGiantCore implements OrchestrationHost {
       sessionId,
       ownerId,
     ]);
+    this.listsChanged(ownerId, "sessions");
     return true;
   }
 
@@ -5641,6 +5658,7 @@ export class RedGiantCore implements OrchestrationHost {
       "INSERT INTO rg_sessions (id, owner_id, agent_id, project_id, model) VALUES ($1, $2, $3, $4, $5)",
       [id, ownerId, agentId, project, opts.model ? JSON.stringify(opts.model) : null],
     );
+    this.listsChanged(ownerId, "sessions");
     await opts.before?.(id);
     try {
       this.live.set(id, await this.build(ownerId, agentId, id, false, opts.model, project));
@@ -6013,6 +6031,7 @@ export class RedGiantCore implements OrchestrationHost {
       sessionId,
       model ? JSON.stringify(model) : null,
     ]);
+    this.listsChanged(ownerId, "sessions");
     // A live session is rebuilt with the new model; whoever follows it keeps following (the
     // followers belong to the conversation).
     if (this.live.has(sessionId)) {
@@ -6040,6 +6059,7 @@ export class RedGiantCore implements OrchestrationHost {
         sessionId,
         change.folder,
       ]);
+    this.listsChanged(ownerId, "sessions");
   }
 
   /**
@@ -6281,8 +6301,10 @@ export class RedGiantCore implements OrchestrationHost {
     this.updateGate();
     this.liveGate(l);
     // The first message names the conversation in the list; every message moves it up.
-    await this.o.db.query(
-      "UPDATE rg_sessions SET title = COALESCE(title, $2), last_at = now() WHERE id = $1",
+    // The old title is read in the same statement: a conversation just named (its first
+    // message) is news for every client's list (p3.8.9).
+    const [named] = await this.o.db.query<{ named: boolean }>(
+      "UPDATE rg_sessions s SET title = COALESCE(s.title, $2), last_at = now() FROM (SELECT title FROM rg_sessions WHERE id = $1) o WHERE s.id = $1 RETURNING (o.title IS NULL AND s.title IS NOT NULL) AS named",
       [
         sessionId,
         text.trim().startsWith("/compact")
@@ -6290,6 +6312,7 @@ export class RedGiantCore implements OrchestrationHost {
           : ownWords(text, extra.quotes).split("\n")[0]?.slice(0, 80) || null,
       ],
     );
+    if (named?.named) this.listsChanged(l.ownerId, "sessions");
     const controller = new AbortController();
     l.running = controller;
     // The shared memory learns only from the person's own words, and only a turn they started
@@ -6734,6 +6757,7 @@ export class RedGiantCore implements OrchestrationHost {
       "UPDATE rg_sessions SET project_id = $2 WHERE owner_id = $1 AND project_id = $3",
       [ownerId, parentId, childId],
     );
+    this.listsChanged(ownerId, "sessions");
     await this.board.moveProject(ownerId, childId, parentId, sub.id);
     await this.o.db.query("UPDATE rg_budgets SET key = $1 WHERE scope = 'project' AND key = $2", [
       sub.id,

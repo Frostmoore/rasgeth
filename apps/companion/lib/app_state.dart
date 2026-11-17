@@ -111,6 +111,12 @@ class AppController extends ChangeNotifier {
            dialChannel ?? ((b, id, expect) => SetupChannel.dial(b, identity: id, expect: expect)) {
     book = ServerBook(this.prefs);
     live.onUnknownSession = _soonReloadSessions;
+    live.onListsChanged = (lists) => _soonReload(
+      agents: lists.contains('agents'),
+      projects: lists.contains('projects'),
+      sessions: lists.contains('sessions'),
+    );
+    live.knowsAgent = (id) => agents.any((a) => a.id == id);
     live.onTurnEnded = () => spend.refreshSoon(client);
     live.addListener(_onLiveChanged);
   }
@@ -197,6 +203,14 @@ class AppController extends ChangeNotifier {
 
   /// The archived projects (p3.5.3): their conversations are read only (G42.1).
   List<Project> archivedProjects = const [];
+
+  List<SessionRow>? _seenSessions;
+  List<PermissionRequest>? _seenApprovals;
+  List<QuestionRequest>? _seenQuestions;
+
+  /// Moves every time the projects are read again (p3.8.9): screens with their own copy of the
+  /// projects (Projects, with git and tasks) read theirs again.
+  int projectsVersion = 0;
 
   /// The archived project a conversation belongs to (its own, or its agent's), if any.
   Project? archivedProjectOf(String sessionId) {
@@ -999,6 +1013,24 @@ class AppController extends ChangeNotifier {
     final c = client;
     if (c == null) return;
     unawaited(spend.refresh(c));
+    await _loadProjects(c);
+    try {
+      live.setSessions(await c.sessions());
+    } on ApiException {
+      // Shown empty; the next refresh tries again.
+    }
+    // With the link open the requests are the ones the server sent after `welcome` and since:
+    // a list read a moment earlier would drop one just asked (p3.8.9, «0 da te»).
+    if (socket?.status == LiveStatus.open) return;
+    try {
+      final list = await c.permissions();
+      if (socket?.status != LiveStatus.open) live.setApprovals(list);
+    } on ApiException {
+      // Idem.
+    }
+  }
+
+  Future<void> _loadProjects(RedGiantClient c) async {
     try {
       final all = await c.projects();
       projects = [
@@ -1009,19 +1041,23 @@ class AppController extends ChangeNotifier {
         for (final p in all)
           if (p.archived) p,
       ];
+      projectsVersion++;
     } on ApiException {
       // The filter shows no projects.
     }
-    try {
-      live.setSessions(await c.sessions());
-    } on ApiException {
-      // Shown empty; the next refresh tries again.
+  }
+
+  /// The team read again: a face changed elsewhere («Change mascot» on the page) is drawn again.
+  Future<void> _loadAgents(RedGiantClient c) async {
+    final list = await c.agents();
+    final m = mascots;
+    if (m is ClientMascotSource) {
+      final seeds = {for (final a in agents) a.id: a.mascotSeed};
+      for (final a in list) {
+        if (seeds.containsKey(a.id) && seeds[a.id] != a.mascotSeed) m.forget(a.id);
+      }
     }
-    try {
-      live.setApprovals(await c.permissions());
-    } on ApiException {
-      // Idem.
-    }
+    agents = list;
   }
 
   void _startLive() {
@@ -1033,8 +1069,10 @@ class AppController extends ChangeNotifier {
     var opened = false;
     _statusSub = s.statuses.listen((st) {
       // Back after a drop: what changed meanwhile (conversations started or ended elsewhere).
+      // The team and the projects too: what was made, renamed or archived while the link was
+      // down never reaches the app as a message (p3.8.9).
       if (st == LiveStatus.open) {
-        if (opened) _soonReloadSessions(fresh: true);
+        if (opened) _soonReload(agents: true, projects: true, sessions: true, fresh: true);
         opened = true;
         // «Stop» pressed while the link was down.
         for (final id in _stopWhenBack.toList()) {
@@ -1048,16 +1086,43 @@ class AppController extends ChangeNotifier {
     unawaited(s.start());
   }
 
-  void _soonReloadSessions({bool fresh = false}) {
+  void _soonReloadSessions({bool fresh = false}) => _soonReload(sessions: true, fresh: fresh);
+
+  // What the next reload reads: a burst of news (God making a project and its agents) is read
+  // once, with every list any of it named.
+  bool _reloadAgents = false;
+  bool _reloadProjects = false;
+  bool _reloadSessions = false;
+  bool _reloadFresh = false;
+
+  /// The lists named, read again soon (once for a burst) and shown: the wall, the mascots' bar,
+  /// the conversations, the projects, «working» and the counters all follow from them.
+  void _soonReload({
+    bool agents = false,
+    bool projects = false,
+    bool sessions = false,
+    bool fresh = false,
+  }) {
+    _reloadAgents |= agents;
+    _reloadProjects |= projects;
+    _reloadSessions |= sessions;
+    _reloadFresh |= fresh;
     _reloadTimer?.cancel();
     _reloadTimer = Timer(const Duration(milliseconds: 250), () async {
       final c = client;
       if (c == null) return;
+      final a = _reloadAgents, p = _reloadProjects, s = _reloadSessions, f = _reloadFresh;
+      _reloadAgents = _reloadProjects = _reloadSessions = _reloadFresh = false;
       try {
-        live.setSessions(await c.sessions(), fresh: fresh);
-      } on ApiException {
-        // Next time.
+        await Future.wait([
+          if (a) _loadAgents(c),
+          if (p) _loadProjects(c),
+          if (s) c.sessions().then((rows) => live.setSessions(rows, fresh: f)),
+        ]);
+      } on Object {
+        // Next time: the next news or the next refresh reads them.
       }
+      if (identical(client, c) && (a || p)) notifyListeners();
     });
   }
 
@@ -1438,6 +1503,18 @@ class AppController extends ChangeNotifier {
   /// Requests that come and go on the live connection: the notification of one answered
   /// anywhere is withdrawn; on a computer behind other windows a new one is notified.
   void _onLiveChanged() {
+    // The conversations, the requests and the questions are new lists whenever they change (a
+    // stream's delta changes none of them): every screen that reads them through [AppScope]
+    // draws again (p3.8.9: the status bar said «0 da te» while the wall showed the agent
+    // waiting, being a const piece under a builder that listened to the live model only).
+    if (!identical(live.sessions, _seenSessions) ||
+        !identical(live.approvals, _seenApprovals) ||
+        !identical(live.questions, _seenQuestions)) {
+      _seenSessions = live.sessions;
+      _seenApprovals = live.approvals;
+      _seenQuestions = live.questions;
+      notifyListeners();
+    }
     final sid = server?.id;
     final all = <PersonRequest>[...live.approvals, ...live.questions];
     final now = {for (final r in all) r.requestId};
