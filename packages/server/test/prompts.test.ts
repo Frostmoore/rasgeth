@@ -179,45 +179,64 @@ describe("agents' instructions (2026-11-06)", () => {
     expect(s.core.registry.get(a.id)?.systemPrompt).toContain("{god}");
   });
 
-  it("is warm and practical, and brings an older built-in text up to date (G40.15)", async () => {
-    const seen: CompletionRequest[] = [];
-    s = await startServer((req) => {
-      seen.push(req);
-      return { text: "ok" };
+  // The built-in texts of older versions, as their Chat agents kept them.
+  const OLDER = {
+    "3.8.0":
+      "You are the user's everyday assistant. Answer clearly and briefly, in the user's language. Search the web when the answer depends on recent or specific facts, and read the pages you rely on. When you use web sources, cite them inline as [1], [2]… and end with a short list of those sources (title and URL). You have a folder of your own and every tool: files and commands, the canvas (show_file opens any file in a viewer, show a site) to show what you make, boards (publish_board) to propose variants to choose from, send_file, pictures, videos and sounds, web search and pages. Use them instead of describing what you would do. When a tool says it is not set up, tell the person plainly and where to set it up in RedGiant's Settings. For work that belongs to a project, suggest asking {god}, who hands it to the project's team.",
+    "3.8.6":
+      "You are the user's everyday companion: warm, curious and genuinely engaged. Talk like a thoughtful friend who knows a lot, in the user's language. Match the length to the question: a quick fact gets a quick answer, while ideas, advice, explanations and creative work get the depth, nuance and examples they deserve. Follow the thread of the conversation, ask a question back when it helps, offer your own view when asked, and use headings, lists or tables only when they make things clearer. Search the web when the answer depends on recent or specific facts, and read the pages you rely on. When you use web sources, cite them inline as [1], [2]… and end with a short list of those sources (title and URL).\n\nBe practical: when the person has a problem or a choice to make, search the web and bring concrete options (products, places, services, steps) with prices and links, not general advice. When the right answer depends on their preferences or situation, ask with ask_user (a few questions with options to tap) before going on. When a comparison or a number helps, put it in a widget: options side by side, a calculator, a slider to try. Keep plain text for what is just read. When the options are products to buy or compare, show them with show_products: cards with picture, price, shop and link.\n\nYou have a folder of your own and every tool: files and commands, the canvas (show_file opens any file in a viewer, show a site) to show what you make, boards (publish_board) to propose variants to choose from, send_file, pictures, videos and sounds, web search and pages. Use them instead of describing what you would do. When a tool says it is not set up, tell the person plainly and where to set it up in RedGiant's Settings. For work that belongs to a project, suggest asking {god}, who hands it to the project's team.",
+  };
+
+  for (const [version, before] of Object.entries(OLDER))
+    it(`is full, warm and practical, and brings the ${version} built-in text up to date`, async () => {
+      const seen: CompletionRequest[] = [];
+      s = await startServer((req) => {
+        seen.push(req);
+        return { text: "ok" };
+      });
+      await s.api("POST", "/api/agents", { kind: "god", parentId: null, name: "Zeus" });
+      const a = (await s.api<{ id: string }>("GET", "/api/chat/agent")).body;
+      // The Chat of an older version kept the built-in text of then on its agent.
+      const me = s.core.registry.get(a.id)?.ownerId as string;
+      await s.core.registry.configure({ type: "human", ownerId: me }, a.id, {
+        systemPrompt: before,
+      });
+      expect(s.core.registry.get(a.id)?.systemPrompt).toBe(before);
+      // The page opens the Chat: its agent gets the text of this version (new conversations).
+      await s.api("GET", "/api/chat/agent");
+      const view = (await s.api<PromptView>("GET", "/api/chat/prompt")).body;
+      expect(view.isDefault).toBe(true);
+      expect(view.text).toMatch(
+        /^You are the person's everyday companion: warm, curious and genuinely engaged, like a friend who knows a lot/,
+      );
+      const { sessionId } = (
+        await s.api<{ sessionId: string }>("POST", "/api/sessions", { agentId: a.id })
+      ).body;
+      await (await s.core.send(me, sessionId, "Ciao")).done;
+      const system = seen.at(-1)?.system ?? "";
+      expect(system).toMatch(/^You are the person's everyday companion/);
+      // Full answers by default: nothing the model reads as "be brief".
+      expect(system).not.toContain("Answer clearly and briefly");
+      expect(system).not.toContain("Match the length to the question");
+      expect(system).toContain("By default give a full, engaging answer");
+      expect(system).toContain("Keep it short only for dry facts");
+      // The answer, then the voice and web, the practical help, the widgets, the tools.
+      const order = [
+        "1. The direct answer first",
+        "5. A close that moves things on",
+        "cite them inline as [1], [2]",
+        "\n\nBe practical: when the person has a problem or a choice to make, search the web",
+        "ask with ask_user (a few questions with options to tap)",
+        "show them with show_products",
+        "\n\nWidgets: in this chat, add a widget whenever the person could play with the answer",
+        "humidity and dew point",
+        "A widget is a ```widget block in your answer",
+        "The widget goes with the text, never instead of it",
+        "\n\nYou have a folder of your own and every tool",
+        "suggest asking Zeus",
+      ].map((x) => system.indexOf(x));
+      expect(order.every((at) => at >= 0)).toBe(true);
+      expect([...order].sort((x, y) => x - y)).toEqual(order);
+      expect(s.core.registry.get(a.id)?.systemPrompt).not.toBe(before);
     });
-    await s.api("POST", "/api/agents", { kind: "god", parentId: null, name: "Zeus" });
-    const a = (await s.api<{ id: string }>("GET", "/api/chat/agent")).body;
-    // The Chat of an older version kept the built-in text of then on its agent.
-    const before =
-      "You are the user's everyday assistant. Answer clearly and briefly, in the user's language. Search the web when the answer depends on recent or specific facts, and read the pages you rely on. When you use web sources, cite them inline as [1], [2]… and end with a short list of those sources (title and URL). You have a folder of your own and every tool: files and commands, the canvas (show_file opens any file in a viewer, show a site) to show what you make, boards (publish_board) to propose variants to choose from, send_file, pictures, videos and sounds, web search and pages. Use them instead of describing what you would do. When a tool says it is not set up, tell the person plainly and where to set it up in RedGiant's Settings. For work that belongs to a project, suggest asking {god}, who hands it to the project's team.";
-    const me = s.core.registry.get(a.id)?.ownerId as string;
-    await s.core.registry.configure({ type: "human", ownerId: me }, a.id, { systemPrompt: before });
-    expect(s.core.registry.get(a.id)?.systemPrompt).toBe(before);
-    // The page opens the Chat: its agent gets the text of this version (new conversations).
-    await s.api("GET", "/api/chat/agent");
-    const view = (await s.api<PromptView>("GET", "/api/chat/prompt")).body;
-    expect(view.isDefault).toBe(true);
-    expect(view.text).toMatch(
-      /^You are the user's everyday companion: warm, curious and genuinely engaged\. Talk like a thoughtful friend who knows a lot, in the user's language\. Match the length to the question: /,
-    );
-    const { sessionId } = (
-      await s.api<{ sessionId: string }>("POST", "/api/sessions", { agentId: a.id })
-    ).body;
-    await (await s.core.send(me, sessionId, "Ciao")).done;
-    const system = seen.at(-1)?.system ?? "";
-    expect(system).toMatch(/^You are the user's everyday companion/);
-    expect(system).not.toContain("Answer clearly and briefly");
-    // Web and citations stay, then the practical paragraph, then the tools as before.
-    const order = [
-      "cite them inline as [1], [2]",
-      "\n\nBe practical: when the person has a problem or a choice to make, search the web",
-      "ask with ask_user (a few questions with options to tap)",
-      "show them with show_products",
-      "\n\nYou have a folder of your own and every tool",
-      "suggest asking Zeus",
-    ].map((x) => system.indexOf(x));
-    expect(order.every((at) => at >= 0)).toBe(true);
-    expect([...order].sort((x, y) => x - y)).toEqual(order);
-    expect(s.core.registry.get(a.id)?.systemPrompt).not.toBe(before);
-  });
 });
