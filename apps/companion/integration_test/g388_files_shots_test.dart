@@ -51,7 +51,12 @@ void main() {
     await frames(t, 2000);
     final p = _phone ? 'telefono' : 'computer';
     final demo = app.agents.firstWhere((a) => a.name == 'Demo orchestrator');
-    final old = app.agents.where((a) => a.name == 'Old site lead').firstOrNull;
+    // The archived project's conversation (its agent is archived too: opened by its session).
+    final oldProject = app.archivedProjects.where((x) => x.name == 'Old site').firstOrNull;
+    final oldSession = app.live.sessions
+        .where((s) => s.projectId != null && s.projectId == oldProject?.id)
+        .firstOrNull
+        ?.id;
 
     Future<void> open(Agent a) async {
       if (_phone) {
@@ -138,9 +143,21 @@ void main() {
         await tap(t, find.byKey(const Key('files-hidden')), 800);
       }
       await close();
-      if (old != null) {
-        await open(old);
-        if (_phone) await tap(t, find.byKey(const Key('conversation-files')), 2500);
+      if (oldSession != null) {
+        if (_phone) {
+          t
+              .state<NavigatorState>(find.byType(Navigator).first)
+              .push(
+                MaterialPageRoute<void>(builder: (_) => ConversationScreen(sessionId: oldSession)),
+              )
+              .ignore();
+          await frames(t, 3000);
+          await tap(t, find.byKey(const Key('conversation-files')), 2500);
+        } else {
+          DeskScope.read(t.element(find.byKey(const Key('view-team'))))
+              .show(PanelConversation(oldSession));
+          await frames(t, 3000);
+        }
         await shot(t, name(10, 'archiviato-sola-lettura'), wait: 1500);
         await close();
       }
