@@ -31,6 +31,9 @@ class FakeRedGiant {
   final _dead = <WebSocket>{};
   void deaden() => _dead.addAll(sockets);
 
+  /// While true, a new link opens and its hello is never answered.
+  bool mute = false;
+
   /// A message written elsewhere (another device): stored, to every follower, then its answer.
   void say(String sid, String text) => _turn(sid, text);
 
@@ -1703,6 +1706,8 @@ class FakeRedGiant {
         if (_dead.contains(ws)) return;
         switch (m['type']) {
           case 'hello':
+            // A server still starting (p3.8.9): the link opens, the hello gets no answer.
+            if (mute) return;
             if (!tokens.contains(m['token'])) {
               ws.close(4003, 'unauthorized');
               return;

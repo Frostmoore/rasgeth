@@ -27,6 +27,7 @@ class LiveSocket {
     required this.token,
     this.heartbeat = const Duration(seconds: 25),
     this.answerWithin = const Duration(seconds: 10),
+    this.welcomeWithin = const Duration(seconds: 15),
   }) : _open = open;
 
   factory LiveSocket.over(Transport t, String token) =>
@@ -38,6 +39,11 @@ class LiveSocket {
 
   /// How long the server may stay silent after a ping before the link counts as dead.
   final Duration answerWithin;
+
+  /// How long an opened link may wait for `welcome` (p3.8.9: a server still starting after a
+  /// blackout, a proxy that accepts and forwards nothing): then it is dropped and tried again
+  /// with the back-off, never left «connecting» for ever.
+  final Duration welcomeWithin;
 
   final _messages = StreamController<Map<String, dynamic>>.broadcast();
   final _status = StreamController<LiveStatus>.broadcast();
@@ -87,7 +93,7 @@ class LiveSocket {
     }
     _ws = ws;
     _deadline?.cancel();
-    _deadline = null;
+    _deadline = Timer(welcomeWithin, () => _noWelcome(ws));
     ws.add(jsonEncode({'type': 'hello', 'protocolVersion': kWireProtocolVersion, 'token': token}));
     ws.listen(
       (data) {
@@ -100,7 +106,7 @@ class LiveSocket {
         }
         if (m is! Map<String, dynamic>) return;
         if (!identical(_ws, ws)) return;
-        // Anything from the server counts as life.
+        // Anything from the server counts as life (`welcome` comes first: its wait ends too).
         _deadline?.cancel();
         _deadline = null;
         if (m['type'] == 'welcome') {
@@ -153,6 +159,15 @@ class LiveSocket {
     final ws = _ws;
     if (ws == null || status != LiveStatus.open || !send({'type': 'ping'})) return;
     _deadline ??= Timer(answerWithin, () => _drop(ws));
+  }
+
+  /// Opened, and no `welcome`: dropped, and tried again after the back-off.
+  void _noWelcome(WebSocket ws) {
+    if (_stopped || !identical(_ws, ws) || status == LiveStatus.open) return;
+    _deadline = null;
+    _ws = null;
+    unawaited(ws.close(1000).catchError((_) {}));
+    _later();
   }
 
   /// The link looks open and is not: dropped without waiting for its end, and tried again now.

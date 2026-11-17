@@ -8,6 +8,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rgcompanion/api/live.dart';
+import 'package:rgcompanion/api/live_model.dart';
 import 'package:rgcompanion/api/servers.dart';
 import 'package:rgcompanion/api/token_store.dart';
 import 'package:rgcompanion/api/types.dart';
@@ -145,4 +146,43 @@ void main() {
     await until(() => pc.agents.any((a) => a.id == 'agent_quiet'), what: 'the agent');
     await until(() => pc.live.sessions.any((s) => s.id == 'sq'), what: 'the conversation');
   });
+
+  test(
+    'a link that opens and never says welcome is tried again (a server still starting)',
+    () async {
+      server.tokens.add('rgd_wait');
+      server.mute = true;
+      final s = LiveSocket(
+        open: () => WebSocket.connect('ws://${server.base.authority}/ws'),
+        token: 'rgd_wait',
+        welcomeWithin: const Duration(milliseconds: 300),
+      );
+      addTearDown(s.close);
+      final model = LiveModel();
+      final sub = s.messages.listen(model.apply);
+      addTearDown(sub.cancel);
+      unawaited(s.start());
+      await until(() => s.status == LiveStatus.down, what: 'given up on the silent link');
+      // The server is ready now: the next try gets welcome and the waiting requests.
+      server.mute = false;
+      server.request({
+        'requestId': 'r-after',
+        'sessionId': 's1',
+        'agentId': 'a0',
+        'agentName': 'God',
+        'projectId': null,
+        'tool': 'run_command',
+        'input': {'command': 'ls'},
+        'reasons': ['lists files'],
+        'danger': <String>[],
+        'createdAt': '2026-11-17T10:00:00.000Z',
+      });
+      await until(
+        () => s.status == LiveStatus.open,
+        what: 'open',
+        within: const Duration(seconds: 10),
+      );
+      await until(() => model.approvals.any((r) => r.requestId == 'r-after'), what: 'the request');
+    },
+  );
 }

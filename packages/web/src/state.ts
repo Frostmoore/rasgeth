@@ -660,6 +660,18 @@ export const browserScreen = signal<{
 
 export function applyMessage(m: ServerMessage): void {
   switch (m.type) {
+    // A new link, the first or after a drop (p3.8.9: the person's server restarted after a
+    // blackout): the server sends every waiting request and question again right after it, so the
+    // ones answered elsewhere meanwhile, or gone with the old process, go from the page too.
+    // What changed in the lists meanwhile never came as a message: they are read again.
+    case "welcome":
+      approvals.value = [];
+      questions.value = [];
+      if (api) {
+        refreshSoon(true);
+        void refreshProjects().catch(() => {});
+      }
+      return;
     case "browser.frame":
       browserScreen.value = {
         ...browserScreen.value,
@@ -753,6 +765,7 @@ export function applyMessage(m: ServerMessage): void {
     // (p3.8.9: another page, the app, God, an automation): read again at once, not at the next
     // 15-second refresh.
     case "lists.changed":
+      if (!api) return;
       if (m.lists.includes("sessions") || m.lists.includes("agents"))
         refreshSoon(m.lists.includes("agents"));
       if (m.lists.includes("projects")) {

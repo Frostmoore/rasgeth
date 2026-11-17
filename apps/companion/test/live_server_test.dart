@@ -5,6 +5,7 @@
 //   RG_LIVE_URL=http://127.0.0.1:7651 RG_LIVE_PASSWORD=companion-test-1 flutter test test/live_server_test.dart
 // Skipped without RG_LIVE_URL (the CI runs the recorded vectors and the fake server instead).
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -172,6 +173,80 @@ void main() {
     },
     skip: skip,
     timeout: const Timeout(Duration(minutes: 3)),
+  );
+
+  test(
+    'p3.8.9: a project, its agents and a conversation made elsewhere show live in the app, and back',
+    () async {
+      Future<AppController> device(DevicePlatform p) async {
+        final a = AppController(tokens: MemoryTokenStore(), prefs: MemoryAppPrefs(), platform: p);
+        expect(await a.connect(base.toString(), _password), isTrue, reason: '${a.error}');
+        await until(() => a.liveStatus == LiveStatus.open);
+        return a;
+      }
+
+      // The Windows app, the wall in view; the other device makes things as the page does.
+      final pc = await device(DevicePlatform.windows);
+      final other = await device(DevicePlatform.android);
+      final c = other.client!;
+      // A page on the same RedGiant: a bare /ws, following nothing.
+      final page = await WebSocket.connect('${base.toString().replaceFirst('http', 'ws')}/ws');
+      final heard = <Map<String, dynamic>>[];
+      page.listen((d) => heard.add(jsonDecode(d as String) as Map<String, dynamic>));
+      page.add(
+        jsonEncode({'type': 'hello', 'protocolVersion': kWireProtocolVersion, 'token': c.token}),
+      );
+      await until(() => heard.any((m) => m['type'] == 'welcome'), what: 'page welcome');
+
+      final stamp = DateTime.now().millisecondsSinceEpoch.toRadixString(36);
+      final project = await c.createProject('GAIA $stamp');
+      await until(() => pc.projects.any((p) => p.id == project.id), what: 'the project in the app');
+      final god = pc.agents.firstWhere((a) => a.kind == AgentKind.god);
+      final orch = await c.createAgent(
+        kind: 'orchestrator',
+        parentId: god.id,
+        name: 'Orchestratore $stamp',
+        projectId: project.id,
+      );
+      final dev = await c.createAgent(
+        kind: 'agent',
+        parentId: orch.id,
+        name: 'Sviluppatore $stamp',
+        projectId: project.id,
+      );
+      await until(
+        () => pc.agents.any((a) => a.id == orch.id) && pc.agents.any((a) => a.id == dev.id),
+        what: 'the agents in the app',
+      );
+      final sid = await c.newSession(god.id);
+      await until(() => pc.live.sessions.any((s) => s.id == sid), what: "God's conversation");
+      await c.renameSession(sid, 'Rinominata $stamp');
+      await until(
+        () => pc.live.sessions.any((s) => s.id == sid && s.title == 'Rinominata $stamp'),
+        what: 'the new title',
+      );
+
+      // The other way: what the app makes reaches the page at once.
+      final before = heard.length;
+      final made = await pc.createAgent(
+        kind: 'agent',
+        parentId: orch.id,
+        name: 'Dalla app $stamp',
+        projectId: project.id,
+      );
+      await until(
+        () => heard
+            .skip(before)
+            .any((m) => m['type'] == 'lists.changed' && (m['lists'] as List).contains('agents')),
+        what: 'lists.changed on the page',
+      );
+      await until(() => other.agents.any((a) => a.id == made.id), what: 'on the other device');
+      await page.close();
+      await pc.disconnect();
+      await other.disconnect();
+    },
+    skip: skip,
+    timeout: const Timeout(Duration(minutes: 2)),
   );
 
   test('pairing through the setup channel: the API rides it when there is no https', () async {
