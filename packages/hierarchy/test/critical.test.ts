@@ -91,6 +91,77 @@ const TABLE: Case[] = [
   ["rm -rf $HOME/*", ...bash("rm -rf $HOME/*"), "critical-delete"],
   ["rm -rf /", ...bash("rm -rf --no-preserve-root /"), "critical-delete"],
   ["rm -rf an empty variable", ...bash('rm -rf "$TARGET/"'), "critical-delete"],
+  // A variable only matters when, empty or unset, the path becomes the disk's root (p3.8.9).
+  ["rm -rf $VAR/* (empty: /*)", ...bash("rm -rf $BUILD/*"), "critical-delete"],
+  ["rm -rf ${VAR}/ (empty: /)", ...bash("rm -rf ${OUT}/"), "critical-delete"],
+  ["rm -rf /$VAR (empty: /)", ...bash("rm -rf /$NAME"), "critical-delete"],
+  ["rm -rf $A/$B (both empty: /)", ...bash('rm -rf "$A/$B"'), "critical-delete"],
+  ["find $VAR/ -delete (empty: /)", ...bash("find $DIR/ -delete"), "critical-delete"],
+  // rm -f $VAR with the variable empty removes nothing: one file, wherever it points.
+  ["rm -f $VAR (one file)", ...bash("rm -f $PIDF"), null],
+  ['rm -f "$VAR" (one file)', ...bash('rm -f "$PIDF"'), null],
+  // Not recursive: empty, `rm -f /*` removes no folder (the guardian still asks if it wants).
+  ["rm -f $VAR/* (not recursive)", ...bash("rm -f $LOGS/*"), null],
+  // Recursive on the bare variable: empty, rm gets no path (or ''), and deletes nothing.
+  ["rm -rf $VAR (empty: no path)", ...bash('rm -rf "$WORKDIR"'), null],
+  ["rm -rf $VAR/sub (empty: /sub, unknown)", ...bash("rm -rf $WP/logs"), null],
+  // A here-document is data: written into a file now, not run now (146.jpg, p3.8.9).
+  [
+    "heredoc written into a file, rm -f $VAR inside",
+    ...bash(
+      "cat > /tmp/s/start-wp.sh <<'EOF'\n#!/bin/bash\nPIDF=$WP/logs/server.pid\nstop() { kill $(cat $PIDF); rm -f $PIDF; }\nEOF\nchmod +x /tmp/s/start-wp.sh",
+    ),
+    null,
+  ],
+  [
+    "heredoc written into a file, rm -rf $VAR/ inside, not run",
+    ...bash("cat > clean.sh <<'EOF'\nrm -rf \"$OUT/\"\nEOF\nchmod +x clean.sh"),
+    null,
+  ],
+  [
+    "heredoc with <<- and a quoted delimiter, rm -rf ~ inside",
+    ...bash('tee notes.md <<-"END"\n\trm -rf ~\n\tEND\necho done'),
+    null,
+  ],
+  // Prudence: the script just written and then run in the same command is read as run now
+  // (every branch of it: which one runs cannot be known).
+  [
+    "heredoc script written and run with bash",
+    ...bash("cat > clean.sh <<'EOF'\nrm -rf \"$OUT/\"\nEOF\nbash clean.sh"),
+    "critical-delete",
+  ],
+  [
+    "heredoc script written and run by its path",
+    ...bash(
+      "cat > /tmp/s/c.sh <<'EOF'\nrm -rf ~/Documents\nEOF\nchmod +x /tmp/s/c.sh && /tmp/s/c.sh start",
+    ),
+    "critical-delete",
+  ],
+  [
+    "heredoc script written and sourced",
+    ...bash("cat > c.sh <<'EOF'\nrm -rf ~\nEOF\n. ./c.sh"),
+    "critical-delete",
+  ],
+  [
+    "the WordPress script of 146.jpg, written and run (rm -f $PIDF only)",
+    ...bash(
+      "cat > /tmp/gaia-shared/start-wp.sh <<'EOF'\n#!/bin/bash\nPIDF=$WP/logs/server.pid\ncase \"${1:-start}\" in\n  stop) kill \"$(cat $PIDF)\"; sleep 1; rm -f $PIDF; echo stopped ;;\n  start) cd $WP/htdocs; nohup php -S 127.0.0.1:8088 >>$LOG 2>&1 &\n    echo $! > $PIDF ;;\nesac\nEOF\nchmod +x /tmp/gaia-shared/start-wp.sh && /tmp/gaia-shared/start-wp.sh start",
+    ),
+    null,
+  ],
+  // A heredoc fed to a shell is run now.
+  ["heredoc fed to bash", ...bash("bash <<'EOF'\nrm -rf ~\nEOF"), "critical-delete"],
+  ["heredoc fed to ssh", ...bash("ssh web <<'EOF'\nrm -rf /var/www\nEOF"), "critical-delete"],
+  // Unquoted delimiter: $(…) inside runs now, while the text is written.
+  ["heredoc with $(…) unquoted", ...bash("cat > x.txt <<EOF\n$(rm -rf ~)\nEOF"), "critical-delete"],
+  // A heredoc still carries secrets into a file.
+  [
+    "heredoc writes a key into a config file",
+    ...bash(`cat > config.js <<'EOF'\nconst key = "${KEY}";\nEOF`),
+    "critical-secret",
+  ],
+  // A here-string is not a heredoc.
+  ["here-string", ...bash("grep x <<< 'rm -rf ~'"), null],
   ["rm -rf ~/Documents", ...bash("rm -rf ~/Documents"), "critical-delete"],
   ["rm -rf outside the project", ...bash("rm -rf /srv/data/photos"), "critical-delete"],
   ["rm -rf .git", ...bash("rm -rf .git"), "critical-delete"],

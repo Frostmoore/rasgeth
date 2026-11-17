@@ -77,8 +77,12 @@ export interface CriticalHit extends CriticalDetail {
 
 type Loc =
   | { kind: "path"; path: string; win: boolean; glob: boolean }
-  /** A path that is only a variable (`rm -rf $DIR/`): if it is empty, it is the root. */
-  | { kind: "unknown"; raw: string };
+  /**
+   * A path made of variables and slashes only (`$DIR/`, `$DIR/*`, `/$NAME`, `$A/$B`): with the
+   * variables empty or unset it is the disk's root (`emptied`). A bare `$FILE` is not one: empty,
+   * `rm` gets no path at all (p3.8.9).
+   */
+  | { kind: "unknown"; raw: string; emptied: string };
 
 const isWinAbs = (p: string) => /^[A-Za-z]:([\\/]|$)/.test(p) || p.startsWith("\\\\");
 
@@ -198,13 +202,16 @@ function expand(t: string, w: Where): string {
   return s;
 }
 
+/** A variable as bash, PowerShell and cmd write it. */
+const VARIABLE = /\$\{?\w+\}?|\$env:\w+|%\w+%/gi;
+
 function locate(token: string, w: Where): Loc | undefined {
   if (!token || /^[a-z][\w+.-]*:\/\//i.test(token)) return undefined;
   // Git Bash's paths on Windows (/c/Windows/…, p3.5.4) as Windows names them.
   const raw = expand(nativePath(token, { windows: isWinAbs(w.cwd), home: w.home }), w);
-  // Only a variable, maybe with a slash or a star after it: empty, it is the root.
-  if (/^(\$\{?\w+\}?|\$env:\w+|%\w+%)([\\/]\*?|[\\/]?)$/i.test(raw))
-    return { kind: "unknown", raw };
+  // Only variables and slashes (maybe a star at the end): empty, it is the root.
+  const emptied = raw.replace(VARIABLE, "");
+  if (emptied !== raw && /^[\\/]+\*?$/.test(emptied)) return { kind: "unknown", raw, emptied };
   // Another variable in front: where it points cannot be known (not critical by itself).
   if (/^(\$|%\w+%)/.test(raw)) return undefined;
   const t = raw.replace(/\$\{?\w+\}?|\$env:\w+|%\w+%/gi, "__var__");
@@ -244,8 +251,13 @@ const isProtected = (l: Loc, w: Where) =>
 /** Whether losing this folder (or everything in it) is a disaster: what it is, and the action. */
 function isImportant(l: Loc, w: Where): { text: string; action: CriticalAction } | undefined {
   const is = (text: string, action: CriticalAction) => ({ text, action });
-  if (l.kind === "unknown")
-    return is(`${l.raw} (if the variable is empty, this is the whole disk)`, "delete-variable");
+  if (l.kind === "unknown") {
+    const names = [...l.raw.matchAll(VARIABLE)].map((m) => m[0]).join(", ");
+    return is(
+      `${showPath(l)} (if ${names} is empty or unset, the path becomes ${l.emptied}: the whole disk)`,
+      "delete-variable",
+    );
+  }
   const p = l.path;
   const name = (l.win ? win32.basename(p) : posix.basename(p)).toLowerCase();
   if (name === ".git") return is(`${p} (the project's whole history)`, "delete-git");
@@ -279,16 +291,18 @@ function isImportant(l: Loc, w: Where): { text: string; action: CriticalAction }
 // -------------------------------------------------------------------------------------------
 // Shell words
 
-interface Simple {
+export interface Simple {
   words: string[];
   /** Files the output goes to (> and >>). */
   redirects: string[];
   /** The text of this command, as written. */
   text: string;
+  /** What ends it: `|` sends its output to the next one (p3.8.9). */
+  sep?: string;
 }
 
 /** Splits a command line into simple commands, roughly as bash, PowerShell or cmd would. */
-function simpleCommands(command: string): Simple[] {
+export function simpleCommands(command: string): Simple[] {
   const out: Simple[] = [];
   let words: string[] = [];
   let redirects: string[] = [];
@@ -309,8 +323,9 @@ function simpleCommands(command: string): Simple[] {
   };
   const end = (i: number) => {
     push();
+    const sep = command.slice(i, i + 2) === "||" ? "||" : (command[i] ?? "");
     if (words.length || redirects.length)
-      out.push({ words, redirects, text: command.slice(start, i).trim() });
+      out.push({ words, redirects, text: command.slice(start, i).trim(), sep });
     words = [];
     redirects = [];
     start = i + 1;
@@ -465,7 +480,8 @@ const knownIn = (text: string, w: Where) =>
   (w.ctx.knownSecrets ?? []).filter((v) => v.length >= 8 && text.includes(v));
 
 const short = (s: string) => (s.length > 80 ? `${s.slice(0, 77)}…` : s);
-const showPath = (l: Loc) => (l.kind === "path" ? l.path : l.raw);
+const showPath = (l: Loc) =>
+  l.kind === "path" ? l.path : l.raw.replace(/\$\{(\w+)\}/g, (_, v: string) => `$${v}`);
 
 /** What the person reads besides the kind: the action and the call's own arguments. */
 type Say = Omit<CriticalDetail, "id">;
@@ -696,6 +712,9 @@ function deleteTarget(l: Loc, recursive: boolean, w: Where, add: Add, how: strin
       `${how} RedGiant's own files: ${showPath(l)}`,
       say("protect-delete", showPath(l)),
     );
+  // A path of variables only matters when it reaches into folders: `rm -f $X/*` with $X empty
+  // removes the root's loose files at most (none, usually), `rm -rf $X/*` everything (p3.8.9).
+  if (l.kind === "unknown" && !recursive) return;
   const important = isImportant(l, w);
   if (important)
     return add("critical-delete", `${how} ${important.text}`, say(important.action, showPath(l)));
@@ -892,12 +911,103 @@ const rejoin = (args: string[]) =>
     ? (args[0] as string)
     : args.map((a) => (/\s/.test(a) ? `"${a}"` : a)).join(" ");
 
+/** A here-document (`<<EOF … EOF`): its text, and whether `$(…)` in it runs (delimiter unquoted). */
+export interface Heredoc {
+  body: string;
+  quoted: boolean;
+}
+export const HEREDOC_MARK = /^__rg_heredoc_(\d+)__$/;
+
+/**
+ * Takes the here-documents out of a command (p3.8.9, 146.jpg): their text is data for the command
+ * that gets it, not commands run now. Each operator becomes a word `__rg_heredoc_N__` the command
+ * keeps, so the rules know who reads it (a shell runs it, `cat > file` writes it). Quotes are
+ * followed across lines, roughly: an operator inside quotes is text (`bash -c '…'` reads its own).
+ */
+export function takeHeredocs(command: string): { text: string; docs: Heredoc[] } {
+  const docs: Heredoc[] = [];
+  const out: string[] = [];
+  const lines = command.split("\n");
+  let quote: string | null = null;
+  for (let n = 0; n < lines.length; n++) {
+    const line = lines[n] as string;
+    const pending: { delim: string; strip: boolean; doc: Heredoc }[] = [];
+    let text = "";
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i] as string;
+      if (quote) {
+        if (c === quote) quote = null;
+        else if (c === "\\" && quote === '"') {
+          text += c + (line[i + 1] ?? "");
+          i++;
+          continue;
+        }
+        text += c;
+        continue;
+      }
+      if (c === "\\") {
+        text += c + (line[i + 1] ?? "");
+        i++;
+        continue;
+      }
+      if (c === "'" || c === '"') {
+        quote = c;
+        text += c;
+        continue;
+      }
+      const m = /^<<(-?)[ \t]*(?:'([^']*)'|"([^"]*)"|\\?([^\s;&|<>()'"]+))/.exec(line.slice(i));
+      if (m && line[i - 1] !== "<" && line[i + 2] !== "<") {
+        const doc: Heredoc = { body: "", quoted: m[2] !== undefined || m[3] !== undefined };
+        pending.push({ delim: m[2] ?? m[3] ?? m[4] ?? "", strip: m[1] === "-", doc });
+        text += ` __rg_heredoc_${docs.length}__ `;
+        docs.push(doc);
+        i += m[0].length - 1;
+        continue;
+      }
+      text += c;
+    }
+    out.push(text);
+    // The bodies follow the line, one after the other, each up to its delimiter alone on a line.
+    for (const p of pending) {
+      const body: string[] = [];
+      while (++n < lines.length) {
+        const l = p.strip ? (lines[n] as string).replace(/^\t+/, "") : (lines[n] as string);
+        if (l === p.delim) break;
+        body.push(l);
+      }
+      p.doc.body = body.join("\n");
+    }
+  }
+  return { text: out.join("\n"), docs };
+}
+
+/** What runs when an unquoted here-document is read: its `$(…)` and backticks. */
+export const substitutions = (body: string) =>
+  [...body.matchAll(/\$\(((?:[^()]|\([^()]*\))*)\)|`([^`]*)`/g)].map((m) => m[1] ?? m[2] ?? "");
+
 function shellRules(command: string, w: Where, add: Add, depth = 0): void {
   if (depth > 3) return;
   textRules(command, add);
+  const { text, docs } = takeHeredocs(command);
+  /** Scripts written by a here-document in this command, by path: run later, they are read too. */
+  const written = new Map<string, string>();
+  const runScript = (token: string | undefined, where: Where) => {
+    const l = token ? locate(token, where) : undefined;
+    const body = l?.kind === "path" ? written.get(l.path) : undefined;
+    if (body !== undefined) shellRules(body, where, add, depth + 1);
+  };
   let cwd = w.cwd;
-  for (const c of simpleCommands(command)) {
+  for (const raw of simpleCommands(text)) {
     const here: Where = { ...w, cwd };
+    const mine = raw.words.flatMap((x) => {
+      const m = HEREDOC_MARK.exec(x);
+      return m ? [docs[Number(m[1])] as Heredoc] : [];
+    });
+    const c: Simple = mine.length
+      ? { ...raw, words: raw.words.filter((x) => !HEREDOC_MARK.test(x)) }
+      : raw;
+    for (const d of mine)
+      if (!d.quoted) for (const s of substitutions(d.body)) shellRules(s, here, add, depth + 1);
     for (const r of c.redirects) {
       const l = locate(r, here);
       if (l?.kind === "path" && !l.win && /^\/dev\/(sd|nvme|hd|xvd|vd|mmcblk|disk)/.test(l.path))
@@ -912,6 +1022,29 @@ function shellRules(command: string, w: Where, add: Add, depth = 0): void {
     const name = baseName(first);
     if (!name) continue;
     const line = [name, ...args].join(" ").toLowerCase();
+    const SHELLS = ["bash", "sh", "zsh", "dash", "ksh"];
+    const scriptCall = SHELLS.includes(name) && !args.some((a) => /^-[a-z]*c$/.test(a));
+    if (mine.length) {
+      if (scriptCall && !args.some((a) => !a.startsWith("-"))) {
+        // `bash <<EOF`: the text is the commands.
+        for (const d of mine) shellRules(d.body, here, add, depth + 1);
+      } else if (name !== "ssh") {
+        // Data: what it carries still counts for secrets, and a script written now is kept.
+        const bodies = mine.map((d) => d.body).join("\n");
+        shellSecrets({ ...c, text: `${c.text}\n${bodies}` }, name, args, here, add);
+        const files = [...c.redirects, ...(name === "tee" ? pathArgs(args) : [])];
+        for (const f of files) {
+          const l = locate(f, here);
+          if (l?.kind === "path") written.set(l.path, bodies);
+        }
+      }
+    }
+    // A script written above and run now (with a shell, by its path, or sourced): read as run.
+    if (written.size) {
+      if (scriptCall) runScript(args.find((a) => !a.startsWith("-")), here);
+      else if (name === "source" || name === ".") runScript(args[0], here);
+      else if (/[\\/]/.test(first)) runScript(first, here);
+    }
     if (here.remote) {
       // As another user (sudo in front, or su itself), then what switches it off or changes its programs.
       const prefix = c.words.slice(0, c.words.length - ws.length).map(baseName);
@@ -930,7 +1063,7 @@ function shellRules(command: string, w: Where, add: Add, depth = 0): void {
           });
     }
     // Shells inside shells.
-    if (["bash", "sh", "zsh", "dash", "ksh"].includes(name)) {
+    if (SHELLS.includes(name)) {
       const i = args.findIndex((a) => /^-[a-z]*c$/.test(a));
       if (i >= 0 && args[i + 1]) shellRules(args[i + 1] as string, here, add, depth + 1);
       continue;
@@ -955,13 +1088,10 @@ function shellRules(command: string, w: Where, add: Add, depth = 0): void {
       while (i < args.length && (args[i] as string).startsWith("-"))
         i += /^-[bcDEeFIiJLlmOoPpRSWw]$/.test(args[i] as string) ? 2 : 1;
       const rest = args.slice(i + 1);
-      if (rest.length)
-        shellRules(
-          rejoin(rest),
-          { ...here, roots: [], cwd: "/__remote__", home: "/__remote_home__" },
-          add,
-          depth + 1,
-        );
+      const there: Where = { ...here, roots: [], cwd: "/__remote__", home: "/__remote_home__" };
+      if (rest.length) shellRules(rejoin(rest), there, add, depth + 1);
+      // `ssh host <<EOF`: the here-document is the commands run there.
+      else for (const d of mine) shellRules(d.body, there, add, depth + 1);
       continue;
     }
     if (
