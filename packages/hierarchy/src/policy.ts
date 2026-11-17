@@ -8,6 +8,7 @@ import {
   outsideWrites,
   readsIntoKnowledge,
 } from "./guardian.js";
+import { commandsRun } from "./shell-view.js";
 
 /** The guardian's danger: writing outside the agent's folders (only the human approves it). */
 export const OUTSIDE_PROJECT = "outside-project";
@@ -82,7 +83,8 @@ export const DEFAULT_DANGER_RULES: DangerRule[] = [
     label: "Download and run",
     tool: "bash",
     field: "command",
-    pattern: "(curl|wget)[^|]*\\|\\s*(sudo\\s+)?(ba|z)?sh\\b",
+    // On the commands run (`commandsRun`): one pipeline per line.
+    pattern: "(curl|wget)[^|\\n]*\\|\\s*(sudo\\s+)?(ba|z)?sh\\b",
   },
   {
     id: "privilege",
@@ -159,7 +161,12 @@ export const DEFAULT_DANGER_RULES: DangerRule[] = [
     id: "secrets-files",
     label: "Secret files",
     tool: "*",
-    pattern: "(\\.env\\b|id_rsa|id_ed25519|\\.pem\\b|credentials\\.json|\\.netrc)",
+    // Files by name (p3.8.9): `.env` and its variants (not `.env.example`, not `process.env` nor
+    // `env.sh`), private keys (not `.pub`), `*.pem`, credentials, `.netrc`, `/etc/shadow`; a `*.key`
+    // only in a folder (`certs/server.key`), since `event.key` in code is no file. A backslash ends
+    // a name too: the input is JSON, where a new line is `\n`.
+    pattern:
+      "((^|[\\s\"'=:/\\\\(<>,\\[])(\\.env(?!\\.(example|sample|template|dist)\\b)(\\.[\\w-]+)?|id_(rsa|dsa|ecdsa|ed25519)|[\\w.-]+\\.pem|credentials\\.json|\\.netrc)|[/\\\\][\\w.-]+\\.key|/etc/shadow)(?=$|[\\s\"';|&)<>,\\]\\\\])",
   },
 ];
 
@@ -324,7 +331,25 @@ const toolWords = (name: string) =>
 const ruleApplies = (pattern: string, tool: string) =>
   toolMatches(pattern, tool) || (pattern === "bash" && (tool === "ssh_run" || tool === "node_run"));
 
-export function classify(call: ToolCallInfo, rules: DangerRule[]): DangerRule[] {
+/**
+ * The call as the danger rules read it (p3.8.9): a shell command becomes the commands it really
+ * runs (`commandsRun`), so a word for `which`, a heredoc written into a file or `process.env` in a
+ * script is not a danger. Other tools stay as they are.
+ */
+function asRun(call: ToolCallInfo): ToolCallInfo {
+  const input = call.input as Record<string, unknown> | null | undefined;
+  if (
+    (call.name === "bash" || call.name === "ssh_run" || call.name === "node_run") &&
+    input &&
+    typeof input === "object" &&
+    typeof input.command === "string"
+  )
+    return { ...call, input: { ...input, command: commandsRun(input.command) } };
+  return call;
+}
+
+export function classify(raw: ToolCallInfo, rules: DangerRule[]): DangerRule[] {
+  const call = asRun(raw);
   return rules.filter(
     (r) =>
       r.enabled !== false &&

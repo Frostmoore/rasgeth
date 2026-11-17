@@ -145,7 +145,7 @@ const TABLE: Case[] = [
   [
     "the WordPress script of 146.jpg, written and run (rm -f $PIDF only)",
     ...bash(
-      "cat > /tmp/gaia-shared/start-wp.sh <<'EOF'\n#!/bin/bash\nPIDF=$WP/logs/server.pid\ncase \"${1:-start}\" in\n  stop) kill \"$(cat $PIDF)\"; sleep 1; rm -f $PIDF; echo stopped ;;\n  start) cd $WP/htdocs; nohup php -S 127.0.0.1:8088 >>$LOG 2>&1 &\n    echo $! > $PIDF ;;\nesac\nEOF\nchmod +x /tmp/gaia-shared/start-wp.sh && /tmp/gaia-shared/start-wp.sh start",
+      'cat > /tmp/gaia-shared/start-wp.sh <<\'EOF\'\n#!/bin/bash\nPIDF=$WP/logs/server.pid\ncase "${1:-start}" in\n  stop) kill "$(cat $PIDF)"; sleep 1; rm -f $PIDF; echo stopped ;;\n  start) cd $WP/htdocs; nohup php -S 127.0.0.1:8088 >>$LOG 2>&1 &\n    echo $! > $PIDF ;;\nesac\nEOF\nchmod +x /tmp/gaia-shared/start-wp.sh && /tmp/gaia-shared/start-wp.sh start',
     ),
     null,
   ],

@@ -114,7 +114,10 @@ export function commandsRun(command: string, depth = 0): string {
       if ((shell && !args.some((a) => !a.startsWith("-"))) || name === "ssh")
         for (const d of mine) more(d.body);
       else {
-        const files = [...c.redirects, ...(name === "tee" ? args.filter((a) => !a.startsWith("-")) : [])];
+        const files = [
+          ...c.redirects,
+          ...(name === "tee" ? args.filter((a) => !a.startsWith("-")) : []),
+        ];
         for (const f of files) written.set(scriptKey(f), mine.map((d) => d.body).join("\n"));
       }
     }

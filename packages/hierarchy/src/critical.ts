@@ -1041,7 +1041,11 @@ function shellRules(command: string, w: Where, add: Add, depth = 0): void {
     }
     // A script written above and run now (with a shell, by its path, or sourced): read as run.
     if (written.size) {
-      if (scriptCall) runScript(args.find((a) => !a.startsWith("-")), here);
+      if (scriptCall)
+        runScript(
+          args.find((a) => !a.startsWith("-")),
+          here,
+        );
       else if (name === "source" || name === ".") runScript(args[0], here);
       else if (/[\\/]/.test(first)) runScript(first, here);
     }

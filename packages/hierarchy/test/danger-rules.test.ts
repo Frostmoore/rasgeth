@@ -7,7 +7,7 @@ import { classify, commandsRun, DEFAULT_DANGER_RULES, evaluate } from "../src/in
 type Case = [label: string, command: string, expected: string[]];
 
 const WP_SCRIPT =
-  "cat > /tmp/gaia-shared/start-wp.sh <<'EOF'\n#!/bin/bash\n# Idempotent: starts the WordPress test server on 127.0.0.1:8088 if not already running.\nPHP=/tmp/gaia-shared/php\nWP=/tmp/gaia-wp\nPIDF=$WP/logs/server.pid\nLOG=$WP/logs/server.log\nmkdir -p $WP/logs\nrunning() { [ -f $PIDF ] && kill -0 \"$(cat $PIDF)\" 2>/dev/null; }\ncase \"${1:-start}\" in\n  stop)\n    if running; then kill \"$(cat $PIDF)\"; sleep 1; fi; rm -f $PIDF; echo \"stopped\" ;;\n  restart) \"$0\" stop; exec \"$0\" start ;;\n  status) if running; then echo \"running pid $(cat $PIDF)\"; else echo \"not running\"; exit 1; fi ;;\n  start)\n    if running; then echo \"already running\"; exit 0; fi\n    if curl -s -o /dev/null --max-time 3 http://127.0.0.1:8088/; then echo \"port 8088 busy\"; exit 0; fi\n    cd $WP/htdocs\n    PHP_CLI_SERVER_WORKERS=4 nohup setsid $PHP -d memory_limit=512M -S 127.0.0.1:8088 -t $WP/htdocs $WP/router.php >>$LOG 2>&1 < /dev/null &\n    echo $! > $PIDF\n    for i in $(seq 1 20); do curl -s -o /dev/null --max-time 2 http://127.0.0.1:8088/ && break; sleep 0.5; done\n    echo \"started pid $(cat $PIDF)\" ;;\nesac\nEOF\nchmod +x /tmp/gaia-shared/start-wp.sh && /tmp/gaia-shared/start-wp.sh start && for u in / /sample-page/ /wp-login.php; do echo \"$u $(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8088$u)\"; done; curl -s http://127.0.0.1:8088/ | grep -o '<title>[^<]*'; /tmp/gaia-wp/bin/wp post list --post_type=page --fields=ID,post_name";
+  'cat > /tmp/gaia-shared/start-wp.sh <<\'EOF\'\n#!/bin/bash\n# Idempotent: starts the WordPress test server on 127.0.0.1:8088 if not already running.\nPHP=/tmp/gaia-shared/php\nWP=/tmp/gaia-wp\nPIDF=$WP/logs/server.pid\nLOG=$WP/logs/server.log\nmkdir -p $WP/logs\nrunning() { [ -f $PIDF ] && kill -0 "$(cat $PIDF)" 2>/dev/null; }\ncase "${1:-start}" in\n  stop)\n    if running; then kill "$(cat $PIDF)"; sleep 1; fi; rm -f $PIDF; echo "stopped" ;;\n  restart) "$0" stop; exec "$0" start ;;\n  status) if running; then echo "running pid $(cat $PIDF)"; else echo "not running"; exit 1; fi ;;\n  start)\n    if running; then echo "already running"; exit 0; fi\n    if curl -s -o /dev/null --max-time 3 http://127.0.0.1:8088/; then echo "port 8088 busy"; exit 0; fi\n    cd $WP/htdocs\n    PHP_CLI_SERVER_WORKERS=4 nohup setsid $PHP -d memory_limit=512M -S 127.0.0.1:8088 -t $WP/htdocs $WP/router.php >>$LOG 2>&1 < /dev/null &\n    echo $! > $PIDF\n    for i in $(seq 1 20); do curl -s -o /dev/null --max-time 2 http://127.0.0.1:8088/ && break; sleep 0.5; done\n    echo "started pid $(cat $PIDF)" ;;\nesac\nEOF\nchmod +x /tmp/gaia-shared/start-wp.sh && /tmp/gaia-shared/start-wp.sh start && for u in / /sample-page/ /wp-login.php; do echo "$u $(curl -s -o /dev/null -w \'%{http_code}\' http://127.0.0.1:8088$u)"; done; curl -s http://127.0.0.1:8088/ | grep -o \'<title>[^<]*\'; /tmp/gaia-wp/bin/wp post list --post_type=page --fields=ID,post_name';
 
 const TABLE: Case[] = [
   // The GAIA project's requests on Coder (auto mode, 2026-11-17): none of them is a danger.
@@ -40,7 +40,11 @@ const TABLE: Case[] = [
   ["grep's pattern", "grep -rn docker README.md", []],
   ["sed's script", "sed -i 's/sudo //' install.sh", []],
   ["type of a command", "type docker kubectl", []],
-  ["a heredoc written into a file", "cat > notes.md <<'EOF'\nsudo docker run --privileged x\nEOF", []],
+  [
+    "a heredoc written into a file",
+    "cat > notes.md <<'EOF'\nsudo docker run --privileged x\nEOF",
+    [],
+  ],
   ["an example env file", "cp .env.example .env.sample", []],
   ["a public key", "cat ~/.ssh/id_ed25519.pub", []],
 
@@ -68,7 +72,11 @@ const TABLE: Case[] = [
     "cat > s.sh <<'EOF'\ndocker run x\nEOF\nbash s.sh",
     ["containers"],
   ],
-  ["inline code that runs sudo", "python3 -c \"import os; os.system('sudo reboot')\"", ["privilege", "disk"]],
+  [
+    "inline code that runs sudo",
+    "python3 -c \"import os; os.system('sudo reboot')\"",
+    ["privilege", "disk"],
+  ],
   ["a real .env read", "cat .env", ["secrets-files"]],
   ["grep in .env.local", "grep API_KEY .env.local", ["secrets-files"]],
   ["a private key copied", "cp ~/.ssh/id_rsa /tmp/k", ["secrets-files"]],
