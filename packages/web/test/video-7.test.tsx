@@ -73,10 +73,10 @@ const job: Job = {
       state: "running",
       progress: { done: 40_000_000, total: 120_000_000, rate: 9_000_000, secondsLeft: 9 },
     },
-    { id: "video_render", state: "pending" },
-    { id: "node_fetch", state: "pending" },
-    { id: "node_check", state: "pending" },
-    { id: "video_save", state: "pending" },
+    { id: "video_render", state: "waiting" },
+    { id: "node_fetch", state: "waiting" },
+    { id: "node_check", state: "waiting" },
+    { id: "video_save", state: "waiting" },
   ],
   startedAt: "2026-11-17T10:00:00Z",
 };
@@ -96,7 +96,7 @@ const panel = () =>
       onClose={() => {}}
     />,
   );
-const buttonOf = (c: HTMLElement, text: string) =>
+const buttonOf = (c: Element, text: string) =>
   [...c.querySelectorAll("button")].find((b) => b.textContent?.includes(text)) as HTMLButtonElement;
 
 describe("what each machine offers (it, en)", () => {
