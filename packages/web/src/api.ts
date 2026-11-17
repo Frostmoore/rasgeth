@@ -1557,8 +1557,12 @@ export class Api {
     this.call<NodeGrant>("POST", "/api/nodes/grants", b);
   revokeNodeGrant = (target: string, id: string) =>
     this.call("POST", "/api/nodes/grants/revoke", { target, id });
-  setNodePlacement = (b: { scope: string; commands?: string | null; backups?: string | null }) =>
-    this.call<{ placements: NodePlacement[] }>("PUT", "/api/nodes/placements", b);
+  setNodePlacement = (b: {
+    scope: string;
+    commands?: string | null;
+    backups?: string | null;
+    render?: string | null;
+  }) => this.call<{ placements: NodePlacement[] }>("PUT", "/api/nodes/placements", b);
   setNodeName = (name: string) => this.call("PUT", "/api/nodes/name", { name });
   nodeBackup = (projectId: string) =>
     this.call<{ name: string; bytes: number }>("POST", "/api/nodes/backup", { projectId });
@@ -1915,6 +1919,12 @@ export class Api {
   /** G41.6: the video made on this machine, a job `video_render` (its result: the MP4's path). */
   videoRender = (scope: string, path: string, ask: import("@redgiant/protocol").VideoRenderAsk) =>
     this.call<{ job: Job }>("POST", "/api/editor/video/render", { scope, path, ...ask });
+  /** G41.7: where a render can go, and the project's choice (unset: not asked yet). */
+  videoMachines = (scope: string) =>
+    this.call<{ machines: import("@redgiant/protocol").RenderMachine[]; chosen?: string }>(
+      "GET",
+      `/api/editor/video/machines?scope=${encodeURIComponent(scope)}`,
+    );
   /** A5: a timeline's named versions, the newest first. */
   videoVersions = (scope: string, path: string) =>
     this.call<{ versions: import("@redgiant/protocol").VideoVersionEntry[] }>(

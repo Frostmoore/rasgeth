@@ -1,19 +1,23 @@
-// «Crea il video» (G41.6): the render of the timeline on this machine, from the editor. The shape
-// (the timeline's, or another one reframed at the centre), the short side, the quality; then the
-// job `video_render` with its bar and «Cancel», and the finished MP4 opened in the canvas. The
-// same job an agent starts with `video render` also shows in the corner card (Downloads.tsx).
+// «Crea il video» (G41.6): the render of the timeline, from the editor. The shape (the timeline's,
+// or another one reframed at the centre), the short side, the quality; then the job
+// `video_render` with its bar and «Cancel», and the finished MP4 opened in the canvas. The same
+// job an agent starts with `video render` also shows in the corner card (Downloads.tsx).
+// G41.7: where it is made, this machine or a node, with what each offers («Rig — RTX 4080 SUPER,
+// NVENC», «Coder — CPU only»): asked at the project's first render (nothing chosen until the
+// person picks), then remembered; changed here or in Settings > Nodes.
 import {
   type DocFile,
   type Job,
+  type RenderMachine,
   type RgVideo,
   VIDEO_RENDER_HEIGHTS,
   type VideoRenderAsk,
   type VideoRenderQuality,
   type VideoRenderResult,
 } from "@redgiant/protocol";
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { t } from "../../../i18n.js";
-import { IconClose, IconFilm } from "../../../icons.js";
+import { IconClose, IconCpu, IconFilm, IconGpu, IconMonitor } from "../../../icons.js";
 import { getApi, openCanvas } from "../../../state.js";
 import { Seg } from "../../SettingsKit.js";
 import { JobView, useJob } from "../../ui.js";
@@ -42,6 +46,81 @@ export function renderAsk(
   };
 }
 
+/** What a machine offers, in a few words: its card and NVENC, or the CPU only. */
+export function machineDetail(m: RenderMachine): string {
+  const what = m.gpu
+    ? m.nvenc
+      ? t("veRenderGpuNvenc", { gpu: m.gpu.replace(/^NVIDIA (GeForce )?/, "") })
+      : m.gpu.replace(/^NVIDIA (GeForce )?/, "")
+    : t("veRenderCpuOnly");
+  const why = m.ok
+    ? m.download
+      ? t("veRenderDownloads")
+      : ""
+    : t(
+        (
+          {
+            offline: "veRenderWhyOffline",
+            "no-right": "veRenderWhyNoRight",
+            "no-media": "veRenderWhyNoMedia",
+            "no-ffmpeg": "veRenderWhyNoFfmpeg",
+          } as const
+        )[m.reason ?? "offline"],
+      );
+  return why ? `${what} · ${why}` : what;
+}
+
+/** The machine's name as the page says it. */
+export const machineName = (m: RenderMachine) =>
+  m.id === "here" ? t("veRenderThisMachine") : m.name;
+
+/** Where the project's videos go: the machines that can render now, the others said why not. */
+function Where({
+  machines,
+  value,
+  onChange,
+}: {
+  machines: RenderMachine[];
+  value: string | undefined;
+  onChange: (id: string) => void;
+}) {
+  const ok = machines.filter((m) => m.ok || m.id === value);
+  const off = machines.filter((m) => !m.ok && m.id !== value);
+  return (
+    <div class="ve-render-row ve-render-where">
+      <span class="ve-small dim">{t("veRenderWhere")}</span>
+      <Seg<string>
+        label={t("veRenderWhere")}
+        value={value}
+        onChange={onChange}
+        vertical
+        options={ok.map(
+          (m) =>
+            [
+              m.id,
+              <span class="ve-machine" key={m.id}>
+                {m.id === "here" ? (
+                  <IconMonitor size={13} />
+                ) : m.gpu ? (
+                  <IconGpu size={13} />
+                ) : (
+                  <IconCpu size={13} />
+                )}
+                <b>{machineName(m)}</b>
+                <span class="dim">{machineDetail(m)}</span>
+              </span>,
+            ] as const,
+        )}
+      />
+      {off.length > 0 && (
+        <p class="ve-small dim ve-render-off">
+          {off.map((m) => `${machineName(m)}: ${machineDetail(m)}`).join(" · ")}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function RenderPanel({
   file,
   doc,
@@ -59,22 +138,46 @@ export function RenderPanel({
   const [quality, setQuality] = useState<VideoRenderQuality>("good");
   const [jobId, setJobId] = useState<string>();
   const [error, setError] = useState<string>();
+  // G41.7: the machines, and the project's choice (none yet: the person picks before starting).
+  const [machines, setMachines] = useState<RenderMachine[]>();
+  const [where, setWhere] = useState<string>();
+  const [chosen, setChosen] = useState<string>();
+  useEffect(() => {
+    let live = true;
+    void getApi()
+      .videoMachines(file.scope)
+      .then((r) => {
+        if (!live) return;
+        const list = r.machines ?? [];
+        setMachines(list);
+        setChosen(r.chosen);
+        // A choice made before is used; with this machine alone there is nothing to choose.
+        setWhere(r.chosen ?? (list.length <= 1 ? "here" : undefined));
+      })
+      .catch(() => live && setMachines([]));
+    return () => {
+      live = false;
+    };
+  }, [file.scope]);
   const job = useJob(jobId);
   const result = job?.state === "done" ? (job.result as VideoRenderResult) : undefined;
   const start = async () => {
     setError(undefined);
     try {
-      const r = await getApi().videoRender(
-        file.scope,
-        file.path,
-        renderAsk(doc, shape, height, quality),
-      );
+      const r = await getApi().videoRender(file.scope, file.path, {
+        ...renderAsk(doc, shape, height, quality),
+        ...(where && { where }),
+      });
       setJobId(r.job.id);
+      if (where) setChosen(where);
     } catch (e) {
       setError((e as Error).message);
     }
   };
   const running = job?.state === "running";
+  const many = (machines?.length ?? 0) > 1;
+  const at = machines?.find((m) => m.id === (where ?? chosen));
+  const asking = many && where === undefined;
   const label = (h: number) =>
     h >= 2160
       ? "4K"
@@ -85,7 +188,9 @@ export function RenderPanel({
     <section class="ve-render" aria-label={t("veRenderTitle")}>
       <div class="ve-transcript-bar">
         <strong>{t("veRenderTitle")}</strong>
-        <span class="dim ve-small">{t("veRenderHere")}</span>
+        <span class="dim ve-small">
+          {at && at.id !== "here" ? t("veRenderOn", { name: at.name }) : t("veRenderHere")}
+        </span>
         <div class="spacer" />
         <button
           type="button"
@@ -97,6 +202,12 @@ export function RenderPanel({
           <IconClose size={14} />
         </button>
       </div>
+      {many && machines && (
+        <>
+          {asking && <p class="notice ve-render-ask">{t("veRenderWhereAsk")}</p>}
+          <Where machines={machines} value={where} onChange={setWhere} />
+        </>
+      )}
       <div class="ve-render-row">
         <span class="ve-small dim">{t("veRenderShape")}</span>
         <Seg<Shape>
@@ -145,7 +256,7 @@ export function RenderPanel({
         <button
           type="button"
           class="vw-btn small primary"
-          disabled={running}
+          disabled={running || asking}
           onClick={() => void start()}
         >
           <IconFilm size={13} /> {t(job && !running ? "veRenderAgain" : "veRenderStart")}

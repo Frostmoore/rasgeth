@@ -22403,6 +22403,47 @@ fieldset.saved-filter legend {
 .ve-render .ui-job {
   margin: 0;
 }
+/* G41.7: where the video is made, one machine a line with what it offers. */
+.ve-render-where {
+  align-items: flex-start;
+}
+.ve-render-where > .ve-small:first-child {
+  padding-top: 6px;
+}
+.ve-render .wz-seg.v {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.ve-render .wz-seg.v button {
+  text-align: left;
+}
+.ve-machine {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.ve-machine > svg {
+  flex: none;
+}
+.ve-machine .dim {
+  font-size: 11.5px;
+}
+.ve-render-off {
+  flex-basis: 100%;
+  margin: 0 0 0 74px;
+}
+.ve-render-ask {
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .ve-render-off {
+    margin-left: 0;
+  }
+}
 .ve-render-done {
   margin: 0;
   display: flex;
