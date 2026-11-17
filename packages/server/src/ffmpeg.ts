@@ -15,9 +15,9 @@
 
 import { execFile, spawnSync } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
-import { createWriteStream, existsSync, realpathSync, statSync } from "node:fs";
+import { createWriteStream, existsSync, readdirSync, realpathSync, statSync } from "node:fs";
 import { chmod, mkdir, rename, rm } from "node:fs/promises";
-import { delimiter, dirname, join } from "node:path";
+import { delimiter, dirname, join, win32 } from "node:path";
 import { Readable, Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import {
@@ -192,6 +192,46 @@ function onPath(name: FfmpegProgram, path: string): string | undefined {
       } catch {
         return p;
       }
+    }
+    // G41.7 on Rig: from a service or an ssh session the WinGet link cannot even be read
+    // (`existsSync` false, `realpath` UNKNOWN): the program it points to is in WinGet's packages.
+    const real = d && process.platform === "win32" ? wingetProgram(d, name) : undefined;
+    if (real) return real;
+  }
+  return undefined;
+}
+
+const listDir = (dir: string): string[] => {
+  try {
+    return readdirSync(dir);
+  } catch {
+    return [];
+  }
+};
+
+/**
+ * The real program behind a WinGet link: `…\WinGet\Links` → `…\WinGet\Packages\<id>\<folder>\bin\
+ * <name>.exe` (or `<id>\bin`), the newest folder first. Undefined for other folders.
+ */
+export function wingetProgram(
+  linksDir: string,
+  name: FfmpegProgram,
+  list: (dir: string) => string[] = listDir,
+  exists: (file: string) => boolean = existsSync,
+): string | undefined {
+  const w = win32;
+  if (!/[\\/]WinGet[\\/]Links[\\/]?$/i.test(linksDir)) return undefined;
+  const packages = w.join(linksDir, "..", "Packages");
+  const file = `${name}.exe`;
+  const byVersion = (a: string, b: string) => b.localeCompare(a, undefined, { numeric: true });
+  for (const pkg of list(packages)
+    .filter((x) => /ffmpeg/i.test(x))
+    .sort(byVersion)) {
+    const direct = w.join(packages, pkg, "bin", file);
+    if (exists(direct)) return direct;
+    for (const sub of list(w.join(packages, pkg)).sort(byVersion)) {
+      const p = w.join(packages, pkg, sub, "bin", file);
+      if (exists(p)) return p;
     }
   }
   return undefined;

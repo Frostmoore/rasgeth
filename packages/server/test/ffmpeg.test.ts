@@ -35,6 +35,7 @@ import {
   locateFfmpeg,
   nvencWorks,
   readFeatures,
+  wingetProgram,
 } from "../src/ffmpeg.js";
 import { Jobs } from "../src/jobs.js";
 import { forWhisperCpp, toWav16k } from "../src/local-voice.js";
@@ -669,5 +670,42 @@ describe.skipIf(!posix)("the download", () => {
       server.close();
       await rm(dir, { recursive: true, force: true });
     }
+  });
+});
+
+// G41.7 on Rig: from an ssh session (or a service) the WinGet link on the PATH cannot be read at all;
+// the program is found in WinGet's own packages folder instead (the newest first).
+describe("wingetProgram (G41.7)", () => {
+  const L = "C:\\Users\\Pixel\\AppData\\Local\\Microsoft\\WinGet\\Links";
+  const P = "C:\\Users\\Pixel\\AppData\\Local\\Microsoft\\WinGet\\Packages";
+  const gyan = "Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe";
+  const tree: Record<string, string[]> = {
+    [P]: ["Google.PlatformTools_x", gyan],
+    [`${P}\\${gyan}`]: ["ffmpeg-8.0-full_build", "ffmpeg-9.0.1-full_build"],
+  };
+  const files = new Set([
+    `${P}\\${gyan}\\ffmpeg-9.0.1-full_build\\bin\\ffmpeg.exe`,
+    `${P}\\${gyan}\\ffmpeg-9.0.1-full_build\\bin\\ffprobe.exe`,
+    `${P}\\${gyan}\\ffmpeg-8.0-full_build\\bin\\ffmpeg.exe`,
+  ]);
+  const list = (d: string) => tree[d] ?? [];
+  const exists = (f: string) => files.has(f);
+  it.each<[string, "ffmpeg" | "ffprobe", string | undefined]>([
+    [L, "ffmpeg", `${P}\\${gyan}\\ffmpeg-9.0.1-full_build\\bin\\ffmpeg.exe`],
+    [`${L}\\`, "ffprobe", `${P}\\${gyan}\\ffmpeg-9.0.1-full_build\\bin\\ffprobe.exe`],
+    ["C:\\Windows\\System32", "ffmpeg", undefined],
+    ["C:\\Tools\\WinGet\\Links-old", "ffmpeg", undefined],
+  ])("%s %s", (dir, name, want) => {
+    expect(wingetProgram(dir, name, list, exists)).toBe(want);
+  });
+  it("nothing installed: nothing found", () => {
+    expect(
+      wingetProgram(
+        L,
+        "ffmpeg",
+        () => [],
+        () => false,
+      ),
+    ).toBeUndefined();
   });
 });
