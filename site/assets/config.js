@@ -4,7 +4,7 @@
 window.RG_SITE = {
   // The repository keeps its old address until it is renamed to Frostmoore/rasgeth (plan 3.9.0,
   // N11); GitHub then redirects the old one.
-  repo: "Frostmoore/redgiant2",
+  repo: "Frostmoore/rasgeth",
   files: {
     rasgethWindows: "Rasgeth-Setup.exe",
     rasgethMac: "Rasgeth-mac-arm64.dmg",

@@ -5,4 +5,4 @@
 set -euo pipefail
 here=$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || true)
 if [ -n "$here" ] && [ -r "$here/rasgeth-proxmox.sh" ]; then exec bash "$here/rasgeth-proxmox.sh" "$@"; fi
-exec bash -c "$(curl -fsSL https://raw.githubusercontent.com/Frostmoore/redgiant2/main/packaging/os/proxmox/rasgeth-proxmox.sh)" rasgeth-proxmox.sh "$@"
+exec bash -c "$(curl -fsSL https://raw.githubusercontent.com/Frostmoore/rasgeth/main/packaging/os/proxmox/rasgeth-proxmox.sh)" rasgeth-proxmox.sh "$@"

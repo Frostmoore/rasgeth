@@ -16,9 +16,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Frostmoore/redgiant2/releases/latest"><img src="https://img.shields.io/github/v/release/Frostmoore/redgiant2?label=release" alt="Latest release" /></a>
+  <a href="https://github.com/Frostmoore/rasgeth/releases/latest"><img src="https://img.shields.io/github/v/release/Frostmoore/rasgeth?label=release" alt="Latest release" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license" /></a>
-  <a href="https://github.com/Frostmoore/redgiant2/actions/workflows/ci.yml"><img src="https://github.com/Frostmoore/redgiant2/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI" /></a>
+  <a href="https://github.com/Frostmoore/rasgeth/actions/workflows/ci.yml"><img src="https://github.com/Frostmoore/rasgeth/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI" /></a>
   <br />
   <a href="#windows">Windows</a> ·
   <a href="#macos">macOS</a> ·
@@ -46,7 +46,7 @@ Native on Windows and macOS, Docker on Linux. Every download, for every system, 
 
 ### Windows
 
-Download **[Rasgeth-Setup.exe](https://github.com/Frostmoore/redgiant2/releases/latest/download/Rasgeth-Setup.exe)**
+Download **[Rasgeth-Setup.exe](https://github.com/Frostmoore/rasgeth/releases/latest/download/Rasgeth-Setup.exe)**
 and run it: next, next, finish.
 
 Everything runs directly on Windows: no WSL, no virtualization, no Docker. The installer brings its own
@@ -62,14 +62,14 @@ to send them is coming soon (on [rasgeth.it](https://rasgeth.it/)).
 
 ### macOS
 
-Download **[Rasgeth-mac-arm64.dmg](https://github.com/Frostmoore/redgiant2/releases/latest/download/Rasgeth-mac-arm64.dmg)**,
+Download **[Rasgeth-mac-arm64.dmg](https://github.com/Frostmoore/rasgeth/releases/latest/download/Rasgeth-mac-arm64.dmg)**,
 open it and drag Rasgeth into Applications. It is signed and notarized by Apple, lives in the menu bar,
 and runs local models on the GPU through Metal. Apple silicon, macOS 13 or newer.
 
 ### Linux and servers
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Frostmoore/redgiant2/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Frostmoore/rasgeth/main/install.sh | bash
 ```
 
 It runs Rasgeth in Docker (Docker Engine 26+; the script offers to install it), everything in
@@ -79,7 +79,7 @@ It runs Rasgeth in Docker (Docker Engine 26+; the script offers to install it), 
 
 USB stick, Proxmox, Hyper-V, VirtualBox, VMware, clouds, a Raspberry Pi: see
 [docs/INSTALL-OS.md](docs/INSTALL-OS.md). The OS images are made only when the OS itself changes, so
-they sit on the latest release that carries them: the [latest release](https://github.com/Frostmoore/redgiant2/releases/latest)'s
+they sit on the latest release that carries them: the [latest release](https://github.com/Frostmoore/rasgeth/releases/latest)'s
 notes link it, and the Proxmox script finds it by itself. A new machine updates itself to the latest
 Rasgeth at its first start.
 
@@ -89,9 +89,9 @@ The Rasgeth app, for a computer or a phone that reaches a Rasgeth running somewh
 Rasgeth OS, another PC). Rasgeth's own installers already carry it. On a computer it is called
 **Rasgeth App**, so it is not mistaken for the whole Rasgeth installed beside it.
 
-- **Windows**: [Rasgeth-App-Setup.exe](https://github.com/Frostmoore/redgiant2/releases/latest/download/Rasgeth-App-Setup.exe),
+- **Windows**: [Rasgeth-App-Setup.exe](https://github.com/Frostmoore/rasgeth/releases/latest/download/Rasgeth-App-Setup.exe),
   for your user only, no administrator rights, with a Start menu entry and its own uninstallation.
-- **Linux**: [rasgeth-app-linux-x64.tar.gz](https://github.com/Frostmoore/redgiant2/releases/latest/download/rasgeth-app-linux-x64.tar.gz):
+- **Linux**: [rasgeth-app-linux-x64.tar.gz](https://github.com/Frostmoore/rasgeth/releases/latest/download/rasgeth-app-linux-x64.tar.gz):
   unpack it and run `./install-app.sh` (your user only, with a menu entry).
 
 Their sha256 are listed in the release's `SHA256SUMS-companion`. The [site](https://rasgeth.it/download.html)

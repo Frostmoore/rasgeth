@@ -27,7 +27,7 @@ AppVersion={#AppVersion}
 AppVerName=Rasgeth App {#AppVersion}
 AppPublisher=Rasgeth
 AppPublisherURL=https://rasgeth.it/
-AppSupportURL=https://github.com/Frostmoore/redgiant2
+AppSupportURL=https://github.com/Frostmoore/rasgeth
 ; A folder of its own, always the same (an update finds it, the uninstaller removes it whole); not
 ; the previous one, so an earlier RGCompanion's folder is left for [InstallDelete] to remove.
 DefaultDirName={localappdata}\Programs\Rasgeth App

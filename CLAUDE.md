@@ -5,8 +5,8 @@
   the page's `t()`, `kProductName`/`kDesktopAppName` (`apps/companion/lib/brand.dart`). Inside, the technical prefix
   stays `redgiant`/`rg`: `REDGIANT_*` variables, `@redgiant/*` packages, the Dart package `rgcompanion`, services,
   data folders, tables, `rg.*` keys. `node scripts/name-audit.mjs` finds old names a person would see; a name that
-  must stay goes in `scripts/name-keep.json` with its reason. Never again a repository `Frostmoore/redgiant2`: once
-  renamed to `Frostmoore/rasgeth`, GitHub's redirects from the old name keep old links working only while no
+  must stay goes in `scripts/name-keep.json` with its reason. Never again a repository `Frostmoore/redgiant2`: since
+  it was renamed to `Frostmoore/rasgeth` (3.9.0), GitHub's redirects from the old name keep old links working only while no
   repository takes that name back.
 - pnpm monorepo, TypeScript (strict, NodeNext). Packages in `packages/*`.
 - Commands: `pnpm build` (tsc -b), `pnpm test` (vitest), `pnpm lint` / `pnpm format` (Biome).

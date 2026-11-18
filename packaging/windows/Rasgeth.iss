@@ -23,7 +23,7 @@ AppId={{6F0E3B52-8D4A-4C1E-9B7A-2E1D5C9F4A10}
 AppName=Rasgeth
 AppVersion={#AppVersion}
 AppPublisher=Rasgeth
-AppPublisherURL=https://github.com/Frostmoore/redgiant2
+AppPublisherURL=https://github.com/Frostmoore/rasgeth
 DefaultDirName={localappdata}\Rasgeth
 ; Asked on a first installation only ("auto": an update keeps the folder it has).
 DisableDirPage=auto

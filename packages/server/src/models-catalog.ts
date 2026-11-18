@@ -24,7 +24,7 @@ import { debugLog } from "./debug-log.js";
 import { RELEASE_PUBLIC_KEY } from "./release-key.js";
 import { LATEST_RELEASE } from "./updates.js";
 
-const REPO_DOWNLOADS = "https://github.com/Frostmoore/redgiant2/releases/download";
+const REPO_DOWNLOADS = "https://github.com/Frostmoore/rasgeth/releases/download";
 /** The fixed pre-release's copy: updated without a release. */
 export const CATALOG_URL = `${REPO_DOWNLOADS}/${MODELS_CATALOG_TAG}/${MODELS_CATALOG_ASSET}`;
 export const CATALOG_EVERY_MS = 24 * 60 * 60 * 1000;

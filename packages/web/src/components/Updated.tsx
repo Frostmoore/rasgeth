@@ -9,7 +9,7 @@ import { Modal } from "./ui.js";
 import { NewsWindow, newsSince } from "./WhatsNew.js";
 
 const KEY = "rg.updatedTo";
-const RELEASES = "https://github.com/Frostmoore/redgiant2/releases/tag/v";
+const RELEASES = "https://github.com/Frostmoore/rasgeth/releases/tag/v";
 
 export interface Updated {
   to: string;

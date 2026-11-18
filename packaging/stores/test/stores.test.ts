@@ -23,7 +23,7 @@ describe("stores.mjs", () => {
     expect(cask).toContain('version "3.4.0"');
     expect(cask).toContain(`sha256 "${sha}"`);
     expect(cask).toContain(
-      'url "https://github.com/Frostmoore/redgiant2/releases/download/v#{version}/Rasgeth-mac-arm64.dmg"',
+      'url "https://github.com/Frostmoore/rasgeth/releases/download/v#{version}/Rasgeth-mac-arm64.dmg"',
     );
     expect(cask).toContain('cask "rasgeth" do');
     expect(cask).toContain('app "Rasgeth.app"');
@@ -74,7 +74,7 @@ describe("stores.mjs", () => {
         {
           Architecture: "x64",
           InstallerUrl:
-            "https://github.com/Frostmoore/redgiant2/releases/download/v3.4.0/Rasgeth-Setup.exe",
+            "https://github.com/Frostmoore/rasgeth/releases/download/v3.4.0/Rasgeth-Setup.exe",
           InstallerSha256: sha.toUpperCase(),
         },
       ],

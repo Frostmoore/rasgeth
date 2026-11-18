@@ -89,7 +89,7 @@ def descriptor(name, vmdk_name, vmdk_size, capacity, cpus, memory):
     <Name>{esc(name)}</Name>
     <AnnotationSection>
       <Info>About this machine</Info>
-      <Annotation>Rasgeth OS. Start it and open the address its screen shows (http://rasgeth.local:7600). https://github.com/Frostmoore/redgiant2/blob/main/docs/INSTALL-OS.md</Annotation>
+      <Annotation>Rasgeth OS. Start it and open the address its screen shows (http://rasgeth.local:7600). https://github.com/Frostmoore/rasgeth/blob/main/docs/INSTALL-OS.md</Annotation>
     </AnnotationSection>
     <OperatingSystemSection ovf:id="96" vmw:osType="debian10_64Guest">
       <Info>The guest operating system</Info>

@@ -44,7 +44,7 @@ static class Updates
 {
     const string Key = @"Software\RedGiant";
     const string UninstallKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\{6F0E3B52-8D4A-4C1E-9B7A-2E1D5C9F4A10}_is1";
-    const string Latest = "https://api.github.com/repos/Frostmoore/redgiant2/releases/latest";
+    const string Latest = "https://api.github.com/repos/Frostmoore/rasgeth/releases/latest";
     const string Platform = "win-x64";
     const string ManifestAsset = Brand.ManifestAsset;
     const string ArchiveAsset = Brand.ArchiveAsset;

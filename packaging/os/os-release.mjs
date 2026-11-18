@@ -81,7 +81,7 @@ if (process.argv[1]?.endsWith("os-release.mjs")) {
     const i = process.argv.indexOf(name);
     return i > 0 ? process.argv[i + 1] : fallback;
   };
-  const repo = arg("--repo", process.env.GITHUB_REPOSITORY || "Frostmoore/redgiant2");
+  const repo = arg("--repo", process.env.GITHUB_REPOSITORY || "Frostmoore/rasgeth");
   const sha = arg("--sha", "HEAD");
   const tag = latestOsRelease(await releases(repo), arg("--below", ""));
   const changed = tag ? osChanged(tag, sha) : true;

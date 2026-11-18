@@ -10,7 +10,7 @@ import { explain } from "./Brain.js";
 import { Acts, Seg, Sub } from "./SettingsKit.js";
 import { Modal } from "./ui.js";
 
-const RELEASES = "https://github.com/Frostmoore/redgiant2/releases/latest/download";
+const RELEASES = "https://github.com/Frostmoore/rasgeth/releases/latest/download";
 const ZIP = {
   chromium: "rasgeth-keychain-chromium.zip",
   firefox: "rasgeth-keychain-firefox.zip",

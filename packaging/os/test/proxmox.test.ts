@@ -41,7 +41,7 @@ esac`,
   // Downloads come from $STUB_DIR/release (a release's files); the rest of the network is not there.
   curl: `case "$*" in
   *api/health*) echo '{"ok":true}' ;;
-  *releases/latest*) echo "https://github.com/Frostmoore/redgiant2/releases/tag/v9.9.10" ;;
+  *releases/latest*) echo "https://github.com/Frostmoore/rasgeth/releases/tag/v9.9.10" ;;
   *releases/download/*) out=""; prev=""; for a in "$@"; do [ "$prev" = -o ] && out=$a; prev=$a; url=$a; done
     cp "$STUB_DIR/release/\${url##*/}" "$out" ;;
   *) echo "no network in tests" >&2; exit 7 ;;

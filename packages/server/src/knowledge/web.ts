@@ -149,7 +149,7 @@ export async function fetchPage(url: string, o: FetchPageOptions = {}): Promise<
       redirect: "manual",
       credentials: "omit",
       headers: {
-        "user-agent": `${PRODUCT_NAME}/3 (knowledge; +https://github.com/Frostmoore/redgiant2)`,
+        "user-agent": `${PRODUCT_NAME}/3 (knowledge; +https://github.com/Frostmoore/rasgeth)`,
         accept: "text/html,application/xhtml+xml,text/plain;q=0.9,application/pdf;q=0.9,*/*;q=0.5",
       },
       signal,

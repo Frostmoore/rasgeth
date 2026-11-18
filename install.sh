@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Rasgeth installer for Linux and macOS (Docker; the folder ~/redgiant, the service and the volumes keep their names).
-#   curl -fsSL https://raw.githubusercontent.com/Frostmoore/redgiant2/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/Frostmoore/rasgeth/main/install.sh | bash
 # Environment: REDGIANT_HOME (default ~/redgiant), REDGIANT_REF (git ref of the files, default main),
 # REDGIANT_IMAGE / REDGIANT_SANDBOX_IMAGE (images to use), REDGIANT_PORT (default 7600),
 # REDGIANT_YES=1 (answer yes, ask nothing), REDGIANT_NO_PULL=1 (use local images), REDGIANT_NO_BROWSER=1.
@@ -8,7 +8,7 @@ set -euo pipefail
 
 HOME_DIR=${REDGIANT_HOME:-$HOME/redgiant}
 REF=${REDGIANT_REF:-main}
-RAW="https://raw.githubusercontent.com/Frostmoore/redgiant2/$REF"
+RAW="https://raw.githubusercontent.com/Frostmoore/rasgeth/$REF"
 PORT=${REDGIANT_PORT:-7600}
 FILES=(compose.yaml docker/egress.json docker/searxng/settings.yml docker/postgres.Dockerfile .env.example)
 

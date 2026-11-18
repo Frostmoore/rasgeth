@@ -25,11 +25,11 @@ site/
 
 ## Downloads
 
-- Buttons point to `https://github.com/Frostmoore/redgiant2/releases/latest/download/<name>` (the
+- Buttons point to `https://github.com/Frostmoore/rasgeth/releases/latest/download/<name>` (the
   repository keeps that address until it is renamed `Frostmoore/rasgeth`; GitHub then redirects), with
   the names in `assets/config.js`: the site stays valid at every release without being uploaded
   again. Without JavaScript they open the latest release's page.
-- The "latest version" box reads `api.github.com/repos/Frostmoore/redgiant2/releases/latest`; if
+- The "latest version" box reads `api.github.com/repos/Frostmoore/rasgeth/releases/latest`; if
   the API does not answer (offline, rate limit) it simply stays hidden.
 - Rasgeth OS images carry their version in the name and sit on the latest release that has them
   (the one `rasgeth-os-release` names): the page looks through the latest releases for the first

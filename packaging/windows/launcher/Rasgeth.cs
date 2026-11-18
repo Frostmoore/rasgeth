@@ -1054,7 +1054,7 @@ static class WinEngine
         string base_ = "https://github.com/ggml-org/llama.cpp/releases/download/" + build + "/";
         // The patched build (G32.2) is one zip with CUDA's libraries inside.
         string url = flavor == "cuda-prefetch"
-            ? "https://github.com/Frostmoore/redgiant2/releases/download/v" + release + "/" + PrefetchZip
+            ? "https://github.com/Frostmoore/rasgeth/releases/download/v" + release + "/" + PrefetchZip
             : base_ + "llama-" + build + (flavor == "cuda" ? "-bin-win-cuda-12.4-x64.zip" : "-bin-win-vulkan-x64.zip");
         string fresh = Path.Combine(Dir, "bin", build + "-" + flavor);
         if (Directory.Exists(fresh)) Directory.Delete(fresh, true);

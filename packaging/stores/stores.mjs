@@ -4,7 +4,7 @@
 // (choice 16: neither store had the old names published, checked 2026-11-18).
 //
 //   node packaging/stores/stores.mjs --version 3.4.0 --dmg Rasgeth-mac-arm64.dmg \
-//     --setup Rasgeth-Setup.exe --out <dir> [--repo Frostmoore/redgiant2] [--date 2026-11-08]
+//     --setup Rasgeth-Setup.exe --out <dir> [--repo Frostmoore/rasgeth] [--date 2026-11-08]
 //   (or --dmg-sha256 / --setup-sha256 with the digests GitHub lists for the release's assets)
 //     → <dir>/homebrew/Casks/rasgeth.rb (for the tap Frostmoore/homebrew-rasgeth)
 //     → <dir>/winget/manifests/f/Frostmoore/Rasgeth/<version>/*.yaml (for microsoft/winget-pkgs)
@@ -18,7 +18,7 @@ import { parseArgs } from "node:util";
 /** The product's name (packages/protocol/src/brand.ts PRODUCT_NAME; this file has no dependencies). */
 export const PRODUCT = "Rasgeth";
 
-export const DEFAULT_REPO = "Frostmoore/redgiant2";
+export const DEFAULT_REPO = "Frostmoore/rasgeth";
 export const WINGET_ID = `Frostmoore.${PRODUCT}`;
 /** The cask's name and the tap's (Frostmoore/homebrew-rasgeth). */
 export const CASK = "rasgeth";

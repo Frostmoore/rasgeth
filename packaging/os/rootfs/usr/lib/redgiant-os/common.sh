@@ -12,7 +12,7 @@ BACKUPS=$STATE/backups
 SETUP_CODE=$STATE/docker/volumes/redgiant-data/_data/setup-code.txt
 PORT=7600
 # Overridable in /etc/redgiant-os/os.conf (the repository whose releases update this machine).
-REPO=Frostmoore/redgiant2
+REPO=Frostmoore/rasgeth
 # shellcheck disable=SC1091
 [ -r /etc/redgiant-os/os.conf ] && . /etc/redgiant-os/os.conf
 

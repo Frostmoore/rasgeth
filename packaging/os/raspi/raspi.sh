@@ -61,7 +61,7 @@ Wi-Fi instead of a cable: copy redgiant-wifi-example.txt to redgiant-wifi.txt on
 write your network's name and password in it, then start the Pi. The file is read once and erased.
 
 The files on this partition are written by the system: config.txt and cmdline.txt are rewritten at
-every kernel update. https://github.com/Frostmoore/redgiant2/blob/main/docs/INSTALL-OS.md
+every kernel update. https://github.com/Frostmoore/rasgeth/blob/main/docs/INSTALL-OS.md
 EOF
 printf 'Rasgeth OS %s\r\n' "$OS_VERSION" >"$ROOT/boot/firmware/redgiant-os-version.txt"
 # SD card, USB disk (through the PCIe USB controller) and the wired network, from the initramfs.

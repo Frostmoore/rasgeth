@@ -1,5 +1,5 @@
 # Rasgeth installer for Windows with Docker (PowerShell 5.1 or 7).
-#   irm https://raw.githubusercontent.com/Frostmoore/redgiant2/main/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/Frostmoore/rasgeth/main/install.ps1 | iex
 # or double-click install.cmd in a copy of the repository.
 # Environment: REDGIANT_HOME (default %USERPROFILE%\redgiant), REDGIANT_REF (default main),
 # REDGIANT_IMAGE / REDGIANT_SANDBOX_IMAGE, REDGIANT_PORT (default 7600), REDGIANT_YES=1,
@@ -9,7 +9,7 @@ Set-StrictMode -Version 3
 
 $HomeDir = if ($env:REDGIANT_HOME) { $env:REDGIANT_HOME } else { Join-Path $env:USERPROFILE "redgiant" }
 $Ref = if ($env:REDGIANT_REF) { $env:REDGIANT_REF } else { "main" }
-$Raw = "https://raw.githubusercontent.com/Frostmoore/redgiant2/$Ref"
+$Raw = "https://raw.githubusercontent.com/Frostmoore/rasgeth/$Ref"
 $Port = if ($env:REDGIANT_PORT) { $env:REDGIANT_PORT } else { "7600" }
 $Files = @("compose.yaml", "docker/egress.json", "docker/searxng/settings.yml", "docker/postgres.Dockerfile", ".env.example")
 $Yes = $env:REDGIANT_YES -eq "1"

@@ -13,7 +13,7 @@ local models). A subscription, an API key for a cloud model, or a GGUF model for
 ## Every way to install Rasgeth
 
 Pick the line that matches what you have. Every download is on the
-[latest release](https://github.com/Frostmoore/redgiant2/releases/latest), except Rasgeth OS's
+[latest release](https://github.com/Frostmoore/rasgeth/releases/latest), except Rasgeth OS's
 images: they are made only when the OS changes, so they are on the latest release that carries them
 (the latest release's notes link it; `rasgeth-proxmox.sh` finds it by itself), listed in
 `SHA256SUMS-os`, signed with Rasgeth's update key. A machine made from them updates itself to the
@@ -40,7 +40,7 @@ macOS) and **Docker** (Linux) put Rasgeth on a computer you already use for othe
 ## Linux
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Frostmoore/redgiant2/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Frostmoore/rasgeth/main/install.sh | bash
 ```
 
 If Docker is missing, the installer offers to install it with Docker's official script (it asks
@@ -59,7 +59,7 @@ another Rasgeth on the network) and your password.
 
 ## macOS
 
-Download `Rasgeth-mac-arm64.dmg` from the [latest release](https://github.com/Frostmoore/redgiant2/releases/latest)
+Download `Rasgeth-mac-arm64.dmg` from the [latest release](https://github.com/Frostmoore/rasgeth/releases/latest)
 (Apple silicon, macOS 13 or newer), open it and drag Rasgeth into Applications. It is signed and
 notarized by Apple: it opens without warnings. Rasgeth lives in the menu bar (next to the clock):
 it starts its server, opens Rasgeth already signed in, and offers "Open Rasgeth", "Open in the
@@ -95,7 +95,7 @@ It finds the Rasgeth running for you by itself (see [The command line](#the-comm
 From source instead, with Node.js 22+ and git:
 
 ```sh
-git clone https://github.com/Frostmoore/redgiant2.git && cd redgiant2
+git clone https://github.com/Frostmoore/rasgeth.git && cd rasgeth
 corepack enable && pnpm install --frozen-lockfile && pnpm build
 DATABASE_URL=embedded REDGIANT_TOKEN=$(openssl rand -hex 24) REDGIANT_HOST=127.0.0.1 \
   node packages/server/dist/main.js
@@ -108,7 +108,7 @@ Or in containers: install [Docker Desktop](https://www.docker.com/products/docke
 [OrbStack](https://orbstack.dev) (`brew install --cask orbstack`) and start it, then:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Frostmoore/redgiant2/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Frostmoore/rasgeth/main/install.sh | bash
 ```
 
 Apple silicon is supported (the images are built for arm64 too), but inside Docker the local engine
@@ -116,7 +116,7 @@ runs on the CPU only: for Metal, run Rasgeth on the Mac as above.
 
 ## Windows
 
-Download `Rasgeth-Setup.exe` from the [latest release](https://github.com/Frostmoore/redgiant2/releases/latest)
+Download `Rasgeth-Setup.exe` from the [latest release](https://github.com/Frostmoore/rasgeth/releases/latest)
 and run it. Since 3.0 everything runs directly on Windows: no WSL, no virtualization, no Docker. The
 installer brings its own Node and database (data in `%LOCALAPPDATA%\Rasgeth\data`; over an earlier
 RedGiant it proposes the data folder that one used, so nothing moves), and adds a Rasgeth
@@ -149,7 +149,7 @@ changes.
 Alternatively, in containers with Docker Desktop (which needs WSL 2), in PowerShell:
 
 ```powershell
-irm https://raw.githubusercontent.com/Frostmoore/redgiant2/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/Frostmoore/rasgeth/main/install.ps1 | iex
 ```
 
 or download the repository and double-click `install.cmd`. The installer checks WSL 2 and Docker

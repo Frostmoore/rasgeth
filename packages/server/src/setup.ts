@@ -2155,7 +2155,7 @@ export class SetupService {
     if (win && win.state !== "unreachable")
       return { state: win.state as "available" | "latest", version: win.version };
     try {
-      const r = await fetch("https://api.github.com/repos/Frostmoore/redgiant2/releases/latest", {
+      const r = await fetch("https://api.github.com/repos/Frostmoore/rasgeth/releases/latest", {
         headers: { "user-agent": PRODUCT_NAME, accept: "application/vnd.github+json" },
         signal: AbortSignal.timeout(15_000),
       });

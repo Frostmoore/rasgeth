@@ -2,7 +2,7 @@
 # Rasgeth OS on Proxmox VE (G39.2). Run it on the Proxmox host, as root, like the community helper
 # scripts:
 #
-#   bash -c "$(curl -fsSL https://raw.githubusercontent.com/Frostmoore/redgiant2/main/packaging/os/proxmox/rasgeth-proxmox.sh)"
+#   bash -c "$(curl -fsSL https://raw.githubusercontent.com/Frostmoore/rasgeth/main/packaging/os/proxmox/rasgeth-proxmox.sh)"
 #   bash rasgeth-proxmox.sh --lxc --storage local-zfs --bridge vmbr1 --disk 64 --yes
 #
 # It downloads Rasgeth OS from a release (the qcow2 for a virtual machine, the template for a
@@ -32,7 +32,7 @@
 #   --repo <owner/name>, --key <pem>   another repository's releases and its update key
 set -euo pipefail
 
-REPO=Frostmoore/redgiant2
+REPO=Frostmoore/rasgeth
 KIND=vm VERSION="" ID="" NAME=rasgeth STORAGE="" TSTORAGE="" BRIDGE=vmbr0 VLAN="" DISK=32
 MEMORY=4096 CORES=2 CPU=host FROM="" START=1 YES=0 DRY=0 KEY="" RELEASE="" BACKUPS="" BACKUPS_NAME=""
 PORT=7600

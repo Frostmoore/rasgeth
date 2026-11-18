@@ -774,7 +774,7 @@ describe("the setup wizard", () => {
     try {
       hooks.checkUpdate = async () => ({ state: "unreachable", version: "" });
       expect(await service.checkUpdates()).toEqual({ state: "manual", version: "9.9.9" });
-      expect(asked).toEqual(["https://api.github.com/repos/Frostmoore/redgiant2/releases/latest"]);
+      expect(asked).toEqual(["https://api.github.com/repos/Frostmoore/rasgeth/releases/latest"]);
       // RedGiant.exe answered: its answer, nothing asked again.
       hooks.checkUpdate = async () => ({ state: "latest", version: "3.0.1" });
       expect(await service.checkUpdates()).toEqual({ state: "latest", version: "3.0.1" });

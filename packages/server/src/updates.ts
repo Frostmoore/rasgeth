@@ -23,8 +23,8 @@ import {
 import { debugLog } from "./debug-log.js";
 import { RELEASE_PUBLIC_KEY } from "./release-key.js";
 
-export const LATEST_RELEASE = "https://api.github.com/repos/Frostmoore/redgiant2/releases/latest";
-const DOWNLOADS = "https://github.com/Frostmoore/redgiant2/releases/latest/download";
+export const LATEST_RELEASE = "https://api.github.com/repos/Frostmoore/rasgeth/releases/latest";
+const DOWNLOADS = "https://github.com/Frostmoore/rasgeth/releases/latest/download";
 export const RELEASE_INFO_ASSET = "release.json";
 /** Looked at again this often while RedGiant runs (and at every start). */
 export const CHECK_EVERY_MS = 6 * 60 * 60 * 1000;
@@ -188,7 +188,7 @@ export class UpdateWatcher {
           : o.install === "mac"
             ? `${DOWNLOADS}/${PRODUCT_NAME}-mac-${(o.arch ?? process.arch) === "x64" ? "x86_64" : "arm64"}.dmg`
             : o.install === "os"
-              ? "https://github.com/Frostmoore/redgiant2/releases/latest"
+              ? "https://github.com/Frostmoore/rasgeth/releases/latest"
               : null,
       command:
         o.install === "docker"

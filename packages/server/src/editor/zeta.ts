@@ -74,7 +74,7 @@ export interface ZetaSource {
 
 /** Our own copy: the pre-release `zetaoffice-cache` (workflow zetaoffice.yml), files never replaced. */
 export const ZETA_RELEASE =
-  "https://github.com/Frostmoore/redgiant2/releases/download/zetaoffice-cache";
+  "https://github.com/Frostmoore/rasgeth/releases/download/zetaoffice-cache";
 export const ZETA_CDN = "https://cdn.zetaoffice.net/zetaoffice_latest";
 
 /** The order: the administrator's mirror if set, our pre-release, then ZetaOffice's own CDN. */
@@ -126,7 +126,7 @@ export const ZETA_LICENSES = `LibreOffice in the browser (ZetaOffice), served by
 
 The files are the ones published at cdn.zetaoffice.net on 2025-05-13 (ZetaOffice is now by Collabora
 Productivity), kept unchanged by ${PRODUCT_NAME} in the pre-release zetaoffice-cache of
-https://github.com/Frostmoore/redgiant2 (the CDN is the second source), downloaded once, checked by
+https://github.com/Frostmoore/rasgeth (the CDN is the second source), downloaded once, checked by
 their sha256 and served from this computer.
 `;
 
@@ -146,7 +146,7 @@ function fetchOne(
       {
         headers: {
           "accept-encoding": req.encoding === "br" ? "br" : "identity",
-          "user-agent": `${PRODUCT_NAME} (zetaoffice; +https://github.com/Frostmoore/redgiant2)`,
+          "user-agent": `${PRODUCT_NAME} (zetaoffice; +https://github.com/Frostmoore/rasgeth)`,
         },
         signal,
       },

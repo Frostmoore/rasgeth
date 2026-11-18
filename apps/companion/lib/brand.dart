@@ -16,7 +16,7 @@ const kDesktopAppName = '$kProductName App';
 const kAppName = kProductName;
 
 /// Where the releases are (GitHub: `releases/latest`, `releases/tags/v<version>`).
-const kReleaseRepo = 'Frostmoore/redgiant2';
+const kReleaseRepo = 'Frostmoore/rasgeth';
 
 /// The list of the app's own packages with their sha256, signed with the update key
 /// (`<name>.sig`, packaging/update/sign.mjs), attached to every release.

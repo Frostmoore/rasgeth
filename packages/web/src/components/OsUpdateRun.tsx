@@ -294,7 +294,7 @@ export function OsRunResult({ u, onRetry }: { u: OsUpdates; onRetry?: () => void
           </button>
         ) : (
           <a
-            href={`https://github.com/Frostmoore/redgiant2/releases/tag/v${done.to}`}
+            href={`https://github.com/Frostmoore/rasgeth/releases/tag/v${done.to}`}
             target="_blank"
             rel="noreferrer"
           >

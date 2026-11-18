@@ -122,9 +122,9 @@ export function teamsManifest(o: TeamsAppOptions): Record<string, unknown> {
     id: o.appId,
     developer: {
       name: PRODUCT_NAME,
-      websiteUrl: "https://github.com/Frostmoore/redgiant2",
-      privacyUrl: "https://github.com/Frostmoore/redgiant2",
-      termsOfUseUrl: "https://github.com/Frostmoore/redgiant2",
+      websiteUrl: "https://github.com/Frostmoore/rasgeth",
+      privacyUrl: "https://github.com/Frostmoore/rasgeth",
+      termsOfUseUrl: "https://github.com/Frostmoore/rasgeth",
     },
     name: { short: name, full: `${name} (Demi-God)` },
     description: {

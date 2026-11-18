@@ -128,31 +128,13 @@
     "path": "packages/server/test/pulls.test.ts",
     "pattern": "frostmoore/redgiant2\\b",
     "group": "internal",
-    "why": "Docker images keep their names (choice 12): the registry path of ghcr.io/frostmoore/redgiant2"
+    "why": "the Docker images keep their names (choice 12): the registry paths of ghcr.io/frostmoore/redgiant2 in the pull tests"
   },
   {
     "path": "**/test/rename?notice*",
     "pattern": "RedGiant (?:ora si chiama|is now called) Rasgeth",
     "group": "rename-notice",
     "why": "the page's and the app's tests check that the one-time notice (choice 17) names the old name to say it changed"
-  },
-  {
-    "path": "README.md",
-    "pattern": "Frostmoore/redgiant2(?:\\.git)?\\b|\\bcd redgiant2\\b",
-    "group": "until-N11",
-    "why": "the repository keeps its address until N11 renames it Frostmoore/rasgeth (GitHub then redirects): these links change in N11, with the code's"
-  },
-  {
-    "path": "docs/*.md",
-    "pattern": "Frostmoore/redgiant2(?:\\.git)?\\b|\\bcd redgiant2\\b",
-    "group": "until-N11",
-    "why": "the repository keeps its address until N11 renames it Frostmoore/rasgeth (GitHub then redirects): these links change in N11, with the code's"
-  },
-  {
-    "path": "site/**",
-    "pattern": "Frostmoore/redgiant2(?:\\.git)?\\b|\\bcd redgiant2\\b",
-    "group": "until-N11",
-    "why": "the repository keeps its address until N11 renames it Frostmoore/rasgeth (GitHub then redirects): these links change in N11, with the code's"
   },
   {
     "path": "CLAUDE.md",

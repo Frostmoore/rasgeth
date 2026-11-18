@@ -21,7 +21,7 @@ export const PGVECTOR_VERSION = "0.8.7";
 /** The major of the embedded Postgres (`embedded-postgres` 18.6): the library is built for it. */
 export const PGVECTOR_PG_MAJOR = 18;
 
-const RELEASE_BASE = "https://github.com/Frostmoore/redgiant2/releases/download/pgvector-cache";
+const RELEASE_BASE = "https://github.com/Frostmoore/rasgeth/releases/download/pgvector-cache";
 
 /**
  * The published zips' sha256, by `<platform>-<arch>`. Filled in once the `pgvector` workflow has

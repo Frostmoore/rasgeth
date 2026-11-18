@@ -24,7 +24,7 @@ describe("«next layer ahead»: the patched llama.cpp (G32.2)", () => {
   it("is Rasgeth's release of the same version, one zip", () => {
     expect(MOE_PREFETCH_ASSET).toBe("llama-redgiant-win-cuda12.8-x64.zip");
     expect(moePrefetchUrl("3.2.0")).toBe(
-      "https://github.com/Frostmoore/redgiant2/releases/download/v3.2.0/llama-redgiant-win-cuda12.8-x64.zip",
+      "https://github.com/Frostmoore/rasgeth/releases/download/v3.2.0/llama-redgiant-win-cuda12.8-x64.zip",
     );
     expect(releaseVersion("v3.2.0")).toBe("3.2.0");
     expect(releaseVersion("dev")).toBeUndefined();

@@ -26,7 +26,7 @@ All the ways to install Rasgeth, Rasgeth OS and the others, are on one page:
 
 **Where the images are.** They are made only when the OS itself changes, not at every Rasgeth
 version, so they are on the latest release that carries them: the
-[latest release](https://github.com/Frostmoore/redgiant2/releases/latest)'s notes link it (a line
+[latest release](https://github.com/Frostmoore/rasgeth/releases/latest)'s notes link it (a line
 starting with "Rasgeth OS"), and its signed file `rasgeth-os-release` names it, which is how
 `rasgeth-proxmox.sh` finds it. An image may therefore carry an older Rasgeth: at its **first
 start** a new machine brings itself to the latest release by itself (once, never a release that
@@ -57,7 +57,7 @@ from your router, by cable; for Wi-Fi see [Wi-Fi](#wi-fi)).
 In the Proxmox host's shell (as root, the node's "Shell" button):
 
 ```sh
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/Frostmoore/redgiant2/main/packaging/os/proxmox/rasgeth-proxmox.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/Frostmoore/rasgeth/main/packaging/os/proxmox/rasgeth-proxmox.sh)"
 ```
 
 It asks for the id (the next free one by default), the storage, the network bridge and the disk
@@ -93,7 +93,7 @@ What it takes on the Proxmox host (as root, the node's "Shell"), with the defaul
 `local-lvm`, bridge `vmbr0`, a 32 GB disk, 2 cores, 4 GB of memory:
 
 ```sh
-curl -fsSLO https://raw.githubusercontent.com/Frostmoore/redgiant2/main/packaging/os/proxmox/rasgeth-proxmox.sh
+curl -fsSLO https://raw.githubusercontent.com/Frostmoore/rasgeth/main/packaging/os/proxmox/rasgeth-proxmox.sh
 bash rasgeth-proxmox.sh --lxc
 ```
 
@@ -101,7 +101,7 @@ Before 3.7.0 is released, take the preview instead (a pre-release of the reposit
 the same key; the script is attached to it too):
 
 ```sh
-curl -fsSLO https://github.com/Frostmoore/redgiant2/releases/download/os-preview/rasgeth-proxmox.sh
+curl -fsSLO https://github.com/Frostmoore/rasgeth/releases/download/os-preview/rasgeth-proxmox.sh
 bash rasgeth-proxmox.sh --lxc --release os-preview
 ```
 

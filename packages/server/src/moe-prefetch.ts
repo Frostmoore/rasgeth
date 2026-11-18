@@ -11,7 +11,7 @@ import { PRODUCT_NAME } from "@redgiant/protocol";
 /** The zip the release carries: llama-server.exe with its DLLs, cudart and cuBLAS. */
 export const MOE_PREFETCH_ASSET = "llama-redgiant-win-cuda12.8-x64.zip";
 
-const RELEASES = "https://github.com/Frostmoore/redgiant2/releases/download";
+const RELEASES = "https://github.com/Frostmoore/rasgeth/releases/download";
 
 /** A version RedGiant was released as (the installer's, "3.2.0"); anything else is not one. */
 export const releaseVersion = (v: string | undefined): string | undefined =>

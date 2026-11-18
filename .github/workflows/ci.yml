@@ -112,8 +112,8 @@ jobs:
 
   # The old names (plan 3.9.0, N1): scripts/name-audit.mjs lists every place a person would still
   # read RedGiant or RGCompanion, by phase, in the run's summary; a name that stays is in
-  # scripts/name-keep.json with its reason. While the rename goes phase by phase (N2-N7) it only
-  # lists; adding --strict makes it fail the run (memory/plan_rasgeth_3-8-13.md, N1).
+  # scripts/name-keep.json with its reason. Since 3.9.0 (all phases done) --strict makes a single
+  # visible occurrence fail the run (memory/plan_rasgeth_3-8-13.md, N1).
   names:
     needs: plan
     if: needs.plan.outputs.run == 'true'
@@ -123,7 +123,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: node scripts/name-audit.mjs
+      - run: node scripts/name-audit.mjs --strict
 
   # The app for the computers (G40.12, companion.yml with desktop): on a version branch the
   # installers carry the app's window (Windows: app\, the Mac: Contents/Helpers) and keep the
