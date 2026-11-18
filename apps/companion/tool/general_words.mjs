@@ -6,7 +6,8 @@
 // WhatsNew.tsx with their `news…` words, it and en), and the refiner's word diff on a few texts
 // (`wordDiff`/`diffCounts` of packages/web/src/word-diff.ts) for the Dart port's test.
 //
-//   node --experimental-strip-types apps/companion/tool/general_words.mjs
+//   pnpm build && node --experimental-strip-types apps/companion/tool/general_words.mjs
+// (the languages come from the built protocol: languages.ts imports brand.ts)
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -14,7 +15,7 @@ import { fillProduct } from "./product.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repo = join(here, "../../..");
-const { AGENT_LANGUAGES } = await import(join(repo, "packages/protocol/src/languages.ts"));
+const { AGENT_LANGUAGES } = await import(join(repo, "packages/protocol/dist/languages.js"));
 const { SEARCH_PROVIDERS } = await import(join(repo, "packages/protocol/src/search.ts"));
 const { VOICE_PROVIDERS } = await import(join(repo, "packages/protocol/src/voice.ts"));
 const { wordDiff, diffCounts } = await import(join(repo, "packages/web/src/word-diff.ts"));

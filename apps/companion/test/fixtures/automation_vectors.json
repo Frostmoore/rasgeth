@@ -723,12 +723,12 @@
       "yaml": "name: \"chat-words\"\ndescription: \"chat-words\"\non:\n  message:\n    platforms: [\"whatsapp\",\"telegram\"]\n    from: \"Anna\"\n    words: [\"spesa\"]\n    handle: true\n  after:\n    automation: \"morning\"\n    status: [\"failed\"]\n  task:\n    project: \"demo\"\n    outcome: [\"abandoned\"]\n  startup: true\nagent: \"orchestrator\"\nproject: \"demo\"\ninstructions: \"Aggiungi alla lista della spesa quello che scrive Anna, e avvisa se qualcosa non va per il verso giusto anche quando il messaggio è molto lungo e non sta in una riga.\"\nnotify:\n  when: \"never\"\n",
       "sentence": {
         "it": [
-          "Quando ti scrivono su WhatsApp, Telegram con «spesa» oppure dopo «Il punto del mattino» oppure quando finisce un lavoro oppure all'avvio di RedGiant.",
+          "Quando ti scrivono su WhatsApp, Telegram con «spesa» oppure dopo «Il punto del mattino» oppure quando finisce un lavoro oppure all'avvio di Rasgeth.",
           "Capo di demo fa: «Aggiungi alla lista della spesa quello che scrive Anna, e avvisa se qualcosa non va per i…».",
           "Non ti avvisa."
         ],
         "en": [
-          "When you get a message on WhatsApp, Telegram with «spesa» or after «Il punto del mattino» or when a task ends or when RedGiant starts.",
+          "When you get a message on WhatsApp, Telegram with «spesa» or after «Il punto del mattino» or when a task ends or when Rasgeth starts.",
           "Lead of demo does: «Aggiungi alla lista della spesa quello che scrive Anna, e avvisa se qualcosa non va per i…».",
           "It does not tell you."
         ]

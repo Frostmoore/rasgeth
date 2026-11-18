@@ -90,24 +90,24 @@
     {
       "lang": "it",
       "c": "storage",
-      "s": "tenere dati suoi su RedGiant (solo testo, fino a 5 MB)"
+      "s": "tenere dati suoi su Rasgeth (solo testo, fino a 5 MB)"
     },
     {
       "lang": "it",
       "c": "storage",
       "agent": "Coder Web",
-      "s": "tenere dati suoi su RedGiant (solo testo, fino a 5 MB)"
+      "s": "tenere dati suoi su Rasgeth (solo testo, fino a 5 MB)"
     },
     {
       "lang": "en",
       "c": "storage",
-      "s": "keep data of its own on RedGiant (text only, up to 5 MB)"
+      "s": "keep data of its own on Rasgeth (text only, up to 5 MB)"
     },
     {
       "lang": "en",
       "c": "storage",
       "agent": "Coder Web",
-      "s": "keep data of its own on RedGiant (text only, up to 5 MB)"
+      "s": "keep data of its own on Rasgeth (text only, up to 5 MB)"
     },
     {
       "lang": "it",
