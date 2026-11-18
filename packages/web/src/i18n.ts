@@ -2471,6 +2471,15 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news3814Editors: "Every editor in the app's Canvas",
+  news3814EditorsText:
+    "Text and code, PDF, SVG, images, sheets, documents, presentations and 3D models now open in the app's Canvas with the page's editors: the saving state in the app's bar, «Ask the agent» from a selection, paste an image, «Save as…» for exports, read only for archived projects.",
+  news3814Automations: "Automations in the app",
+  news3814AutomationsText:
+    "The list, the magic automation with God's proposal, the full editor with the next runs, «Run now», webhooks and the assistants' routines are now native in the app, with their alerts in the bell and in notifications.",
+  news3814Knowledge: "Knowledge and shared memory in the app",
+  news3814KnowledgeText:
+    "Collections with who may use them, sources, «Try a search», the index with its bar and the models; the shared memory with undo; and #kb: citations in a chat open the file in the app.",
   news3813Canvas: "The Canvas in the app, with the page's viewers",
   news3813CanvasText:
     "The app's Canvas has its own frame: tabs, a bar with the file's name, size and saving state, «Download», full screen and «Maximize». Inside, every kind of file opens with the same viewers as the page.",
@@ -9274,6 +9283,15 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news3814Editors: "Tutti gli editor nel Canvas dell'app",
+  news3814EditorsText:
+    "Testo e codice, PDF, SVG, immagini, fogli, documenti, presentazioni e modelli 3D si aprono adesso nel Canvas dell'app con gli editor della pagina: stato del salvataggio nella barra dell'app, «Chiedi all'agente» da una selezione, incolla un'immagine, «Salva come…» per gli export, sola lettura per i progetti archiviati.",
+  news3814Automations: "Le automazioni nell'app",
+  news3814AutomationsText:
+    "L'elenco, l'automazione magica con la proposta di God, l'editor completo con le prossime esecuzioni, «Esegui ora», i webhook e le routine degli assistenti sono adesso nativi nell'app, con i loro avvisi nella campanella e nelle notifiche.",
+  news3814Knowledge: "Conoscenza e memoria condivisa nell'app",
+  news3814KnowledgeText:
+    "Le raccolte con chi può usarle, le fonti, «Prova una ricerca», l'indice con la sua barra e i modelli; la memoria condivisa con «Annulla»; e le citazioni #kb: in chat aprono il file nell'app.",
   news3813Canvas: "Il Canvas nell'app, con i visori della pagina",
   news3813CanvasText:
     "Il Canvas dell'app ha la sua cornice: schede, una barra con nome, peso e stato del salvataggio del file, «Scarica», schermo intero e «Ingrandisci». Dentro, ogni tipo di file si apre con gli stessi visori della pagina.",

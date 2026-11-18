@@ -362,7 +362,8 @@ RedGiant is in pre-alpha. What comes next, in order:
   resumes, removes and restores agents, and lets you choose how many work at once. 3.8.11 (released) opens the Canvas by itself in the
   app, brings the project's files into the conversation and adds boards, ports and artifacts. 3.8.12 (released) brings the
   whole team, every-day settings, projects, sub-projects and the terminal into the app. 3.8.13 (released) gives the app's
-  Canvas the page's viewers, sets a sub-agent limit per project and lets the app update itself.
+  Canvas the page's viewers, sets a sub-agent limit per project and lets the app update itself. 3.8.14 (released) brings
+  every editor, automations, knowledge and shared memory into the app.
 - **3.9 and 3.10 — Video and 3D generation**: a video editor shared by you and the agent, and 3D
   generation with local or cloud engines, finished in Blender.
 - **3.11 — Emulators in the Canvas**: an Android emulator or the iOS simulator found on the computer
