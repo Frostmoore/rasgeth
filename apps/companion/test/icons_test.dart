@@ -17,7 +17,7 @@ Future<_Px> _pngBytes(Uint8List bytes) async {
   // The PNG signature, then IHDR: width, height, bit depth, colour type (2 RGB, 6 RGBA).
   expect(bytes.sublist(1, 4), 'PNG'.codeUnits);
   final img = await _decode(bytes);
-  final px = (await img.toByteData(format: ui.ImageByteFormat.rawRgba))!;
+  final px = (await img.toByteData(format: ui.ImageByteFormat.rawStraightRgba))!;
   final out = (w: img.width, h: img.height, px: px, colourType: bytes[25]);
   img.dispose();
   return out;
@@ -68,12 +68,16 @@ Future<List<_Px>> _ico(String path) async {
 
 int _bytes(String path) => File(path).lengthSync();
 
-/// The colours of the pixels that are not fully transparent (a silhouette has one).
-Set<(int, int, int)> _colours(_Px i) => {
-  for (var y = 0; y < i.h; y++)
-    for (var x = 0; x < i.w; x++)
-      if (_alpha(i, x, y) > 0) _rgb(i, x, y),
-};
+/// The colours of the pixels that are not fully transparent (a silhouette has one), each channel
+/// rounded to black or white: an edge pixel of alpha 1 keeps its colour only to a few levels.
+Set<(int, int, int)> _colours(_Px i) {
+  int bw(int v) => v <= 8 ? 0 : (v >= 247 ? 255 : v);
+  return {
+    for (var y = 0; y < i.h; y++)
+      for (var x = 0; x < i.w; x++)
+        if (_alpha(i, x, y) > 0) (bw(_rgb(i, x, y).$1), bw(_rgb(i, x, y).$2), bw(_rgb(i, x, y).$3)),
+  };
+}
 
 String _pathOf(String svg) => RegExp(r' d="([^"]+)"').firstMatch(svg)!.group(1)!;
 

@@ -153,7 +153,12 @@ Future<Uint8List> _rgbPng(ui.Image image) async {
 Future<ui.Image> _tile(_Masters m, int size, {double margin = 0}) => _draw(size, (canvas, s) {
   final r = Rect.fromLTWH(s * margin, s * margin, s * (1 - 2 * margin), s * (1 - 2 * margin));
   final src = m.tileFor(r.width);
-  canvas.drawImageRect(src, _whole(src), r, _paint);
+  if (r == _whole(src)) {
+    // A pixel-grid drawing at its own size: its pixels as they are, no resampling.
+    canvas.drawImage(src, Offset.zero, Paint());
+  } else {
+    canvas.drawImageRect(src, _whole(src), r, _paint);
+  }
 });
 
 /// The square, opaque picture (iOS, the page's touch icon).

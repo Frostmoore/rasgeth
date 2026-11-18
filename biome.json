@@ -9,6 +9,7 @@
       "!**/*.tsbuildinfo",
       "!packages/web/public/zeta/zeta.js",
       "!**/test/fixtures/**/*.svg",
+      "!packaging/icon/*.svg",
       "!apps/companion",
       "!site"
     ]
