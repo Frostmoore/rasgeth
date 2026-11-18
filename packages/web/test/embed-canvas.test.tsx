@@ -121,8 +121,8 @@ describe("every viewer kind, bare, with its bar sent to the app", () => {
     });
     type Bar = { actions: { id: string }[]; link?: string; download?: boolean };
     const last = () => of("bar").at(-1) as Bar | undefined;
-    await waitFor(() =>
-      expect(last()?.link).toMatch(new RegExp(`^/preview/T/${path}\\?v=\\d+-0$`)),
+    await waitFor(
+      () => expect(last()?.link).toMatch(new RegExp(`^/preview/T/${path}\\?v=\\d+-0$`)),
       { timeout: 5000 },
     );
     // The page's head is not there: the frame is the app's.
@@ -139,12 +139,13 @@ describe("every viewer kind, bare, with its bar sent to the app", () => {
   it("an artifact's «App» and «Source» are the bar's, and the app's action switches them", async () => {
     const p = open("p1", "artefatti/conti.html");
     render(<EmbedRoot params={p} />);
-    await waitFor(() =>
-      expect(
-        (of("bar").at(-1) as unknown as { actions: { id: string }[] } | undefined)?.actions.map(
-          (a) => a.id,
-        ),
-      ).toEqual(["art.app", "art.source", "art.project", "keys"]),
+    await waitFor(
+      () =>
+        expect(
+          (of("bar").at(-1) as unknown as { actions: { id: string }[] } | undefined)?.actions.map(
+            (a) => a.id,
+          ),
+        ).toEqual(["art.app", "art.source", "art.project", "keys"]),
       { timeout: 5000 },
     );
     const on = () =>
