@@ -183,6 +183,10 @@ enum RgIcons {
   ),
   fullscreenExit(
     '<path d="M9 4v4a1 1 0 0 1-1 1H4M20 9h-4a1 1 0 0 1-1-1V4M15 20v-4a1 1 0 0 1 1-1h4M4 15h4a1 1 0 0 1 1 1v4"/>',
+  ),
+  // G42.7: «Paste a picture» in the Canvas's bar (the system's clipboard).
+  clipboard(
+    '<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11v6M9 14l3 3 3-3"/>',
   );
 
   const RgIcons(this.paths);

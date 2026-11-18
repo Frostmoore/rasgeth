@@ -490,17 +490,27 @@
         "lib/canvas/canvas_model.dart",
         "lib/embed/embed_view.dart",
         "lib/embed/bridge.dart",
-        "lib/screens/canvas_screen.dart"
+        "lib/screens/canvas_screen.dart",
+        "lib/ui/paste_files.dart"
       ],
-      "phase": "G42.6",
+      "phase": "G42.7",
       "rows": [
         93,
         94,
+        115,
+        116,
         122,
         123,
-        124
+        124,
+        290,
+        299,
+        302,
+        303,
+        306,
+        307,
+        308
       ],
-      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside); the native viewer (png/jpg/gif/webp/bmp, SVG with flutter_svg) stays as the fallback. Editing (ImageEditor, SvgEditor) opens in the page already; its integration with the app (pen and touch, paste, export as «Save as…») is G42.7."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside); the native viewer (png/jpg/gif/webp/bmp, SVG with flutter_svg) stays as the fallback; editing in the page's editor inside the same embed (G42.7): collaboration, the agent's marks, «Changes», proposals and «changed outside» come with the page, the save state in the native bar (a failure with why and «Try saving again»), Ctrl/Cmd+S, Z, Shift+Z, F passed on when the focus is in the frame, «Ask the agent» about a selection into the conversation's composer (a phone goes back to the conversation), an archived project's file opened in its viewer and said read only; ImageEditor and SvgEditor: pen and touch reach the page's own pointer handling (the web view takes every gesture), «Paste a picture» and Ctrl/Cmd+V from the system's clipboard as a new layer, «Export as» through «Save as…», «Open in Krita» only where the server's computer is at hand (not from a phone)."
     },
     "pdf": {
       "app": "embed",
@@ -511,12 +521,22 @@
         "lib/embed/bridge.dart",
         "lib/screens/canvas_screen.dart"
       ],
-      "phase": "G42.6",
+      "phase": "G42.7",
       "rows": [
         95,
-        127
+        114,
+        115,
+        116,
+        127,
+        290,
+        299,
+        302,
+        303,
+        306,
+        307,
+        308
       ],
-      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside), search included; pdfx stays as the fallback. PdfEditor's integration is G42.7."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside), search included; pdfx stays as the fallback; editing in the page's editor inside the same embed (G42.7): collaboration, the agent's marks, «Changes», proposals and «changed outside» come with the page, the save state in the native bar (a failure with why and «Try saving again»), Ctrl/Cmd+S, Z, Shift+Z, F passed on when the focus is in the frame, «Ask the agent» about a selection into the conversation's composer (a phone goes back to the conversation), an archived project's file opened in its viewer and said read only; PdfEditor: the pictures for stamps and signatures from the app's picker, a kept version saved through «Save as…»."
     },
     "markdown": {
       "app": "embed",
@@ -527,12 +547,22 @@
         "lib/embed/bridge.dart",
         "lib/screens/canvas_screen.dart"
       ],
-      "phase": "G42.6",
+      "phase": "G42.7",
       "rows": [
         96,
-        117
+        114,
+        115,
+        116,
+        117,
+        290,
+        299,
+        302,
+        303,
+        306,
+        307,
+        308
       ],
-      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside); the native Markdown stays as the fallback. DocEditor's integration (save state, keys, «ask the agent») is G42.7."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside); the native Markdown stays as the fallback; editing in the page's editor inside the same embed (G42.7): collaboration, the agent's marks, «Changes», proposals and «changed outside» come with the page, the save state in the native bar (a failure with why and «Try saving again»), Ctrl/Cmd+S, Z, Shift+Z, F passed on when the focus is in the frame, «Ask the agent» about a selection into the conversation's composer (a phone goes back to the conversation), an archived project's file opened in its viewer and said read only; TextEditor (CodeMirror): the selection with its lines, and the line being typed kept above a phone's keyboard."
     },
     "code": {
       "app": "embed",
@@ -545,12 +575,22 @@
         "lib/ui/highlight.dart",
         "lib/screens/canvas_screen.dart"
       ],
-      "phase": "G42.6",
+      "phase": "G42.7",
       "rows": [
         97,
-        117
+        114,
+        115,
+        116,
+        117,
+        290,
+        299,
+        302,
+        303,
+        306,
+        307,
+        308
       ],
-      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside), highlighted; plain source as the fallback. TextEditor's integration is G42.7."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside), highlighted; plain source as the fallback; editing in the page's editor inside the same embed (G42.7): collaboration, the agent's marks, «Changes», proposals and «changed outside» come with the page, the save state in the native bar (a failure with why and «Try saving again»), Ctrl/Cmd+S, Z, Shift+Z, F passed on when the focus is in the frame, «Ask the agent» about a selection into the conversation's composer (a phone goes back to the conversation), an archived project's file opened in its viewer and said read only; TextEditor (CodeMirror): the selection with its lines, and the line being typed kept above a phone's keyboard."
     },
     "text": {
       "app": "embed",
@@ -561,12 +601,22 @@
         "lib/embed/bridge.dart",
         "lib/screens/canvas_screen.dart"
       ],
-      "phase": "G42.6",
+      "phase": "G42.7",
       "rows": [
         97,
-        117
+        114,
+        115,
+        116,
+        117,
+        290,
+        299,
+        302,
+        303,
+        306,
+        307,
+        308
       ],
-      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside); plain source as the fallback. TextEditor's integration is G42.7."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside); plain source as the fallback; editing in the page's editor inside the same embed (G42.7): collaboration, the agent's marks, «Changes», proposals and «changed outside» come with the page, the save state in the native bar (a failure with why and «Try saving again»), Ctrl/Cmd+S, Z, Shift+Z, F passed on when the focus is in the frame, «Ask the agent» about a selection into the conversation's composer (a phone goes back to the conversation), an archived project's file opened in its viewer and said read only; TextEditor (CodeMirror): the selection with its lines, and the line being typed kept above a phone's keyboard."
     },
     "table": {
       "app": "embed",
@@ -702,12 +752,23 @@
         "lib/embed/bridge.dart",
         "lib/screens/canvas_screen.dart"
       ],
-      "phase": "G42.6",
+      "phase": "G42.7",
       "rows": [
         98,
-        99
+        99,
+        114,
+        115,
+        116,
+        117,
+        290,
+        299,
+        302,
+        303,
+        306,
+        307,
+        308
       ],
-      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside), with the syntax check; plain source as the fallback. Editing's integration is G42.7."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside), with the syntax check; plain source as the fallback; editing in the page's editor inside the same embed (G42.7): collaboration, the agent's marks, «Changes», proposals and «changed outside» come with the page, the save state in the native bar (a failure with why and «Try saving again»), Ctrl/Cmd+S, Z, Shift+Z, F passed on when the focus is in the frame, «Ask the agent» about a selection into the conversation's composer (a phone goes back to the conversation), an archived project's file opened in its viewer and said read only; TextEditor (CodeMirror): the selection with its lines, and the line being typed kept above a phone's keyboard."
     },
     "site": {
       "app": "embed",
@@ -736,14 +797,25 @@
         "lib/canvas/canvas_shell.dart",
         "lib/canvas/canvas_model.dart",
         "lib/embed/embed_view.dart",
-        "lib/embed/bridge.dart"
+        "lib/embed/bridge.dart",
+        "lib/ui/paste_files.dart"
       ],
-      "phase": "G42.6",
+      "phase": "G42.7",
       "rows": [
         107,
-        122
+        115,
+        116,
+        122,
+        123,
+        290,
+        299,
+        302,
+        303,
+        306,
+        307,
+        308
       ],
-      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside) (OraView). ImageEditor's integration is G42.7."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside) (OraView); editing in the page's editor inside the same embed (G42.7): collaboration, the agent's marks, «Changes», proposals and «changed outside» come with the page, the save state in the native bar (a failure with why and «Try saving again»), Ctrl/Cmd+S, Z, Shift+Z, F passed on when the focus is in the frame, «Ask the agent» about a selection into the conversation's composer (a phone goes back to the conversation), an archived project's file opened in its viewer and said read only; ImageEditor: pen and touch, «Paste a picture» and Ctrl/Cmd+V as a new layer, PNG/JPEG/WebP/ORA/PSD export through «Save as…», «Open in Krita» not from a phone."
     },
     "unknown": {
       "app": "embed",

@@ -32,6 +32,7 @@ import '../ui/artifact_frame_view.dart' show FrameSupport, frameSupportOf;
 import '../ui/chat/file_download.dart' show saveChatFile;
 import '../ui/file_icons.dart';
 import '../ui/icons.dart';
+import '../ui/paste_files.dart' show clipboardReader, pastedImage, sniffImage;
 import 'canvas_model.dart';
 
 export 'canvas_model.dart';
@@ -255,6 +256,7 @@ RgIcons _actionIcon(String? icon) => switch (icon) {
   'brush' => RgIcons.brush,
   'alert' => RgIcons.alert,
   'keyboard' => RgIcons.keyboard,
+  'chat' => RgIcons.chat,
   _ => RgIcons.zap,
 };
 
@@ -463,6 +465,48 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
     if (id != null) unawaited(_views[id]?.currentState?.key(k) ?? Future<void>.value());
   }
 
+  /// «Ask the agent» from the page (G42.7): into the conversation's composer; on a screen of its
+  /// own (a phone) the conversation comes back, with the question in its composer.
+  void _askAgent(String text, Map<String, Object?> ref) {
+    final ask = widget.onAskAgent;
+    if (ask == null || !mounted) return;
+    ask(text, ref);
+    ScaffoldMessenger.maybeOf(context)
+        ?.showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).cvAskedAgent)));
+    // Not the system's back (the page would be asked about its own panels first): the screen goes.
+    if (widget.whole) Navigator.of(context).pop();
+  }
+
+  /// «Paste a picture» (G42.7): a picture from the system's clipboard (a file copied in the file
+  /// manager, or an image) to the tab's editor as `paste`.
+  Future<void> _paste(CanvasTab t) async {
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    final view = _views[t.id]?.currentState;
+    ({String name, String type, List<int> bytes})? pic;
+    try {
+      for (final f in await clipboardReader.files()) {
+        final type = sniffImage(f.$2);
+        if (type != null) {
+          pic = (name: f.$1, type: type, bytes: f.$2);
+          break;
+        }
+      }
+      if (pic == null) {
+        final img = await clipboardReader.image();
+        final p = img == null || img.isEmpty ? null : await pastedImage(img);
+        if (p != null) pic = (name: p.$1, type: sniffImage(p.$2) ?? 'image/png', bytes: p.$2);
+      }
+    } on Object {
+      pic = null;
+    }
+    if (pic == null || pic.bytes.length > embedFileMax) {
+      messenger?.showSnackBar(SnackBar(content: Text(l.cvPasteNone)));
+      return;
+    }
+    await view?.paste(files: [embedFile(pic.name, pic.type, pic.bytes)]);
+  }
+
   EmbedParams _params(EmbedContext e, CanvasTab t, String nonce) => t.isPort
       ? EmbedParams(
           token: e.token,
@@ -535,7 +579,7 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
       onSaveState: (s, err) => _m.tell(t.id, (was) => was.copyWith(save: s, saveError: err)),
       onBar: (b) => _m.tell(t.id, (was) => was.copyWith(bar: b)),
       onOpen: (title, target) => _m.show(title, target),
-      onAskAgent: widget.onAskAgent,
+      onAskAgent: widget.onAskAgent == null ? null : _askAgent,
     );
   }
 
@@ -558,6 +602,11 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
             _key(EmbedKey.redo),
         SingleActivator(LogicalKeyboardKey.keyF, control: !meta, meta: meta): () =>
             _key(EmbedKey.find),
+        // A picture from the system's clipboard, where the tab takes one (G42.7).
+        SingleActivator(LogicalKeyboardKey.keyV, control: !meta, meta: meta): () {
+          final tab = m.current;
+          if (tab != null && m.info[tab.id]?.bar?.paste == true) unawaited(_paste(tab));
+        },
         const SingleActivator(LogicalKeyboardKey.escape): () {
           if (m.full) {
             m.setFull(false);
@@ -600,6 +649,9 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
                 onDownload: t.isPort ? null : () => _download(t),
                 onFull: () => m.setFull(true),
                 onOutside: _embed == null && t.isPort ? null : () => _outside(t),
+                askable: widget.onAskAgent != null,
+                onRetrySave: () => _key(EmbedKey.save),
+                onPaste: () => unawaited(_paste(t)),
               ),
             Expanded(
               child: Stack(
@@ -711,6 +763,9 @@ class _CanvasBar extends StatelessWidget {
     required this.onFull,
     this.onDownload,
     this.onOutside,
+    this.askable = false,
+    this.onRetrySave,
+    this.onPaste,
   });
 
   final CanvasTab tab;
@@ -722,6 +777,15 @@ class _CanvasBar extends StatelessWidget {
   final VoidCallback? onDownload;
   final VoidCallback? onOutside;
 
+  /// Whether «Ask the agent» has a composer to go to (G42.7): the page's action shows only then.
+  final bool askable;
+
+  /// The save failed: Ctrl/Cmd+S to the page again (G42.7).
+  final VoidCallback? onRetrySave;
+
+  /// «Paste a picture», where the tab takes one (G42.7).
+  final VoidCallback? onPaste;
+
   @override
   Widget build(BuildContext context) {
     final c = RgColors.of(context);
@@ -732,19 +796,13 @@ class _CanvasBar extends StatelessWidget {
         ? AppScope.read(context).agents.where((a) => a.id == tab.agentId).firstOrNull?.name
         : null;
     final site = tab.isPort || i?.kind == null && bar != null && !bar.download;
-    final save = switch (i?.save) {
-      'saving' => l.embedSaving,
-      'saved' => l.embedSavedState,
-      'error' => l.errGeneric(i?.saveError ?? ''),
-      _ => null,
-    };
     final meta = [
       // A port: whose computer it is and its number (the agent's words are the title).
       if (tab.isPort) ?agent,
       if (tab.isPort && tab.title.isNotEmpty) l.cvEmbedPort('${tab.port}'),
       if (i?.kind != null && !site) viewerKindWord(l, i!.kind!),
       if (i?.size != null && !site) _bytes(i!.size!),
-      ?save,
+      if (bar?.readOnly == true) l.cvReadOnly,
     ].join(' · ');
     final name = tab.isPort
         ? (tab.title.isEmpty ? l.cvEmbedPort('${tab.port}') : tab.title)
@@ -754,7 +812,7 @@ class _CanvasBar extends StatelessWidget {
     final keys = all.where((a) => a.id == 'keys').firstOrNull;
     final actions = [
       for (final a in all)
-        if (a.id != 'keys') a,
+        if (a.id != 'keys' && (askable || a.id != embedAskAction)) a,
     ];
     final note = bar?.note;
     final download = onDownload != null && (bar?.download ?? true);
@@ -790,6 +848,12 @@ class _CanvasBar extends StatelessWidget {
           ),
         ),
       for (final a in actions) _ActionButton(action: a, onTap: () => onAction(a.id)),
+      if (bar?.paste == true && onPaste != null)
+        _ActionButton(
+          action: EmbedAction(id: 'paste', label: l.cvPastePicture),
+          icon: RgIcons.clipboard,
+          onTap: onPaste!,
+        ),
     ];
     final title = Row(
       children: [
@@ -809,16 +873,19 @@ class _CanvasBar extends StatelessWidget {
           ),
         ),
         if (meta.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Text(
-              meta,
-              key: const Key('canvas-meta'),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: c.dim, fontSize: 12),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(
+                meta,
+                key: const Key('canvas-meta'),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: c.dim, fontSize: 12),
+              ),
             ),
           ),
+        if (i?.save != null) _SaveState(state: i!.save!, error: i.saveError, onRetry: onRetrySave),
       ],
     );
     return LayoutBuilder(
@@ -874,10 +941,13 @@ class _CanvasBar extends StatelessWidget {
 
 /// One of the page's buttons, drawn the app's way.
 class _ActionButton extends StatelessWidget {
-  const _ActionButton({required this.action, required this.onTap});
+  const _ActionButton({required this.action, required this.onTap, this.icon});
 
   final EmbedAction action;
   final VoidCallback onTap;
+
+  /// The app's own icon (its own buttons, not the page's).
+  final RgIcons? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -896,8 +966,8 @@ class _ActionButton extends StatelessWidget {
     final child = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (a.icon != null) ...[
-          RgIcon(_actionIcon(a.icon), size: 13, color: fg),
+        if (icon != null || a.icon != null) ...[
+          RgIcon(icon ?? _actionIcon(a.icon), size: 13, color: fg),
           const SizedBox(width: 6),
         ],
         Text(
@@ -935,6 +1005,68 @@ class _ActionButton extends StatelessWidget {
     final hint = a.hint;
     return Center(
       child: hint == null || hint.isEmpty ? button : Tooltip(message: hint, child: button),
+    );
+  }
+}
+
+/// The editor's save state in the bar (G42.7, the page's `doc-save`): saved, saving, or not saved
+/// with why and «Try saving again».
+class _SaveState extends StatelessWidget {
+  const _SaveState({required this.state, this.error, this.onRetry});
+
+  final String state;
+  final String? error;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    final l = AppLocalizations.of(context);
+    final failed = state == 'error';
+    final color = failed ? c.err : (state == 'saved' ? c.ok : c.dim);
+    final words = switch (state) {
+      'saving' => l.embedSaving,
+      'saved' => l.embedSavedState,
+      _ => l.cvSaveFailedShort,
+    };
+    final chip = Container(
+      key: Key('canvas-save-$state'),
+      margin: const EdgeInsets.only(left: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      decoration: BoxDecoration(
+        color: failed ? c.err.withValues(alpha: .1) : Colors.transparent,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (state != 'saving') ...[
+            RgIcon(failed ? RgIcons.alert : RgIcons.check, size: 12, color: color),
+            const SizedBox(width: 4),
+          ],
+          Text(
+            words,
+            style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
+    );
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Tooltip(
+          message: failed && (error ?? '').isNotEmpty ? l.errGeneric(error!) : words,
+          child: Semantics(liveRegion: true, child: chip),
+        ),
+        if (failed && onRetry != null)
+          IconButton(
+            key: const Key('canvas-save-retry'),
+            tooltip: l.cvSaveRetry,
+            visualDensity: VisualDensity.compact,
+            onPressed: onRetry,
+            icon: RgIcon(RgIcons.refresh, size: 14, color: c.err),
+          ),
+      ],
     );
   }
 }

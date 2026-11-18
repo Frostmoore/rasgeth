@@ -3,11 +3,13 @@
 // talks to the app through one function, `toApp` (the web view's channel, with the nonce the app
 // gave), and hears it through `onApp` (messages the app posts to this window). In an embed some of
 // the page's own ways out go to the app instead: the clipboard, downloads, links to other sites.
+import { signal } from "@preact/signals";
 import {
   type AppToEmbed,
   EMBED_CHANNEL,
   type EmbedAction,
   type EmbedParams,
+  type EmbedRef,
   type EmbedTab,
   type EmbedToApp,
   embedEnvelope,
@@ -38,6 +40,28 @@ export function resetEmbed(): void {
   appCanvas = null;
   barSent = "";
   actions.clear();
+  embedSelection.value = undefined;
+}
+
+/**
+ * What the person selected in the embed's tab and where (G42.7): the Canvas offers «Ask the agent»
+ * in the app's bar while there is one, and sends it as `askAgent`.
+ */
+export const embedSelection = signal<{ text: string; ref: EmbedRef } | undefined>(undefined);
+
+/** A selection in the tab (or none): kept only in an embed. */
+export function setEmbedSelection(s: { text: string; ref: EmbedRef } | undefined): void {
+  if (!params) return;
+  const text = s?.text.trim().slice(0, 20_000);
+  const next = s && text ? { text, ref: s.ref } : undefined;
+  const was = embedSelection.value;
+  if (JSON.stringify(was) !== JSON.stringify(next)) embedSelection.value = next;
+}
+
+/** «Ask the agent» about the selection: to the app's composer. */
+export function askAgentAboutSelection(): boolean {
+  const s = embedSelection.value;
+  return !!s && toApp({ t: "askAgent", text: s.text, ref: s.ref });
 }
 
 /**
@@ -63,6 +87,8 @@ export function setEmbedBar(bar: {
   note?: string | undefined;
   link?: string | undefined;
   download?: boolean | undefined;
+  paste?: boolean | undefined;
+  readOnly?: boolean | undefined;
 }): void {
   actions.clear();
   for (const a of bar.actions) actions.set(a.id, a.run);
@@ -72,6 +98,8 @@ export function setEmbedBar(bar: {
     ...(bar.note ? { note: bar.note.slice(0, 300) } : {}),
     ...(bar.link ? { link: bar.link } : {}),
     ...(bar.download !== undefined && { download: bar.download }),
+    ...(bar.paste && { paste: true }),
+    ...(bar.readOnly && { readOnly: true }),
   };
   const key = JSON.stringify(m);
   if (key === barSent) return;
@@ -145,10 +173,14 @@ export async function saveThroughApp(url: string, name: string): Promise<boolean
   }
 }
 
-/** The editor's save state, for the app's bar. */
-export function reportSave(s: "saving" | "saved" | "unsaved" | "failed" | undefined): void {
+/** The editor's save state, for the app's bar (with why it failed, G42.7). */
+export function reportSave(
+  s: "saving" | "saved" | "unsaved" | "failed" | undefined,
+  error?: string,
+): void {
   if (s === "saving" || s === "saved") toApp({ t: "saveState", state: s });
-  else if (s === "failed") toApp({ t: "saveState", state: "error" });
+  else if (s === "failed")
+    toApp({ t: "saveState", state: "error", ...(error && { error: error.slice(0, 500) }) });
 }
 
 const waitingFiles = new Map<string, (files: File[]) => void>();
@@ -185,7 +217,15 @@ const KEYS = {
 export function handleAppInput(m: AppToEmbed): boolean {
   if (m.t === "key") {
     const mac = /Mac|iPhone|iPad/.test(navigator.platform);
-    const target = document.activeElement ?? document.body;
+    // The focus may be nowhere in the page (the app's bar had it): the editor's own keys
+    // (`data-embed-keys`), else its shell take it, as a key pressed inside the tab would.
+    const active = document.activeElement;
+    const target =
+      active && active !== document.body
+        ? active
+        : (document.querySelector("[data-embed-keys]") ??
+          document.querySelector(".doc-shell") ??
+          document.body);
     target.dispatchEvent(
       new KeyboardEvent("keydown", {
         ...KEYS[m.key],

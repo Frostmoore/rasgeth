@@ -85,6 +85,13 @@ const pageMessages = [
   { t: "open", title: "a.odt", target: { kind: "file", scope: "p1", path: "a.odt" } },
   { t: "open", title: "a.pdf", target: { kind: "file", scope: "p1", path: "a.pdf", at: { page: 2 } } },
   { t: "open", title: "Sito", target: { kind: "port", agentId: "a1", port: 5173, path: "/x" } },
+  // The editors (G42.7):
+  { t: "saveState", state: "saved" },
+  { t: "saveAs", name: "foto.png", data: "iVBORw0KGgo=", mime: "image/png" },
+  { t: "askAgent", text: "riga\naltra", ref: { scope: "project:p1", path: "src/a.ts", line: 4, lineEnd: 9 } },
+  { t: "bar", actions: [{ id: "ask", label: "Chiedi all'agente", icon: "chat", primary: true }] },
+  { t: "bar", actions: [], paste: true },
+  { t: "bar", actions: [], readOnly: true, download: true },
   // Refused:
   { t: "saveAs", name: "a", url: "/x", data: "AA==" },
   { t: "saveAs", name: "a" },
@@ -114,6 +121,15 @@ const pageMessages = [
   { t: "open", title: "x", target: { kind: "file", scope: "p" } },
   { t: "open", title: "x", target: { kind: "file", scope: "p", path: "a", at: { page: 0 } } },
   { t: "open", title: "x", target: { kind: "port", agentId: "a", port: "80" } },
+  { t: "saveState", state: "unsaved" },
+  { t: "saveState", state: "error", error: "x".repeat(501) },
+  { t: "askAgent", text: "x".repeat(20001), ref: {} },
+  { t: "askAgent", text: "x", ref: { line: -1 } },
+  { t: "askAgent", text: "x", ref: { file: "a" } },
+  { t: "saveAs", name: "a.png", data: "not base64!" },
+  { t: "saveAs", name: "x".repeat(256), url: "/x" },
+  { t: "bar", actions: [], paste: "yes" },
+  { t: "bar", actions: [], readOnly: 1 },
 ];
 const envelopes = [
   ...pageMessages.map((m) => env(NONCE, m)),
@@ -142,8 +158,26 @@ const appMessages = [
     ],
   },
   { t: "tabs", visible: false, tabs: [] },
+  // The editors (G42.7): a picture pasted from the system's clipboard, «Ask the agent».
+  { t: "paste", files: [{ name: "pasted-2026-11-18-101500.png", type: "image/png", size: 8, data: "iVBORw0KGgo=" }] },
+  { t: "paste", text: "hi", files: [] },
+  { t: "action", id: "ask" },
+  { t: "key", key: "undo" },
 ];
 for (const m of appMessages) if (!p.readAppMessage({ rg: "app", m })) throw new Error(`refused: ${JSON.stringify(m)}`);
+const png = { name: "a.png", type: "image/png", size: 3, data: "AAAA" };
+const badAppMessages = [
+  { t: "paste", files: [{ ...png, size: 25 * 1024 * 1024 + 1 }] },
+  { t: "paste", files: [{ ...png, data: "%%" }] },
+  { t: "paste", files: [{ ...png, name: "" }] },
+  { t: "paste", files: Array(21).fill(png) },
+  { t: "paste", image: "AAAA" },
+  { t: "paste", text: 3 },
+  { t: "key", key: "quit" },
+  { t: "action", id: "Ask" },
+  { t: "files", files: [{ ...png, extra: 1 }] },
+];
+for (const m of badAppMessages) if (p.readAppMessage({ rg: "app", m })) throw new Error(`taken: ${JSON.stringify(m)}`);
 
 const out = {
   nonce: NONCE,
@@ -151,6 +185,7 @@ const out = {
   badHashes,
   envelopes: envelopes.map((raw) => ({ raw, message: p.readEmbedEnvelope(raw, NONCE) })),
   appMessages,
+  badAppMessages,
   boardScreens: p.BOARD_SCREENS,
   boardVariantsMax: p.BOARD_VARIANTS_MAX,
   encode: ["a b/c?d=e&f", "è~!'()*-._", "日本", "+%"].map((s) => ({ s, e: p.formEncode(s) })),

@@ -244,8 +244,17 @@ class EmbedViewState extends State<EmbedView> {
     }
   }
 
+  /// Screenshots only (G42.7): a script run in the page, as a person's click there would be.
+  @visibleForTesting
+  Future<void> runForTest(String script) => _host.run(script);
+
   /// A key the web view did not hold (a Flutter shortcut), passed on to the page.
   Future<void> key(EmbedKey k) async => _bridge?.key(k);
+
+  /// A picture (or text) from the system's clipboard, for the page's editor (G42.7).
+  Future<void> paste({String? text, List<Map<String, Object?>>? files}) async {
+    if (_ready) await _bridge?.paste(text: text, files: files);
+  }
 
   /// Files dropped on the app over the page.
   Future<void> drop(List<({String name, String type, Uint8List bytes})> files) async =>

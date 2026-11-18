@@ -692,6 +692,7 @@ export function SvgEditor({
             role="application"
             aria-label={`${t("svgEditorLabel")}: ${name}`}
             aria-describedby={selId}
+            data-embed-keys=""
             onKeyDown={onKey}
           />
           {marks.length > 0 && (

@@ -2852,6 +2852,39 @@ export class ImageIsland {
     this.emit(async () => [{ t: "add", layer: { ...info }, above, png: null, mask: null }]);
   }
 
+  /**
+   * A picture pasted from the clipboard (G42.7: the system's, through RGCompanion, or the
+   * browser's): a new layer of its own size, in the middle of the picture, above the current one.
+   */
+  pasteImage(name: string, img: CanvasImageSource & { width: number; height: number }): void {
+    const w = Math.max(1, Math.round(img.width));
+    const h = Math.max(1, Math.round(img.height));
+    const c = canvas(w, h);
+    ctx2d(c).drawImage(img, 0, 0);
+    const info: ImageLayerInfo = {
+      id: newId(),
+      name,
+      x: Math.round((this.width - w) / 2),
+      y: Math.round((this.height - h) / 2),
+      w,
+      h,
+      opacity: 1,
+      visible: true,
+      blend: "svg:src-over",
+    };
+    const cur = this.currentLayer();
+    if (cur?.info.groups?.length) info.groups = cur.info.groups;
+    const above = cur?.info.id ?? this.layers.at(-1)?.info.id ?? null;
+    this.letGo();
+    this.place({ info, c }, above);
+    this.current = info.id;
+    this.render();
+    this.o.onLayers();
+    this.emit(async () => [
+      { t: "add", layer: { ...info }, above, png: await this.upload(c), mask: null },
+    ]);
+  }
+
   duplicateLayer(name: string): void {
     const l = this.currentLayer();
     if (!l) return;

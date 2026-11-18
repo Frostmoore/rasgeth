@@ -2302,5 +2302,11 @@
   "appUpdDone": "{app} adesso è la {version} (prima era la {from}).",
   "appUpdWentBack": "La {version} non è partita: {app} è tornata alla {current}. Non te la ripropongo finché non ne esce una più nuova.",
   "appUpdCarried": "Questa copia di {app} arriva con RedGiant: si aggiorna insieme a RedGiant.",
-  "appUpdDev": "Una build dalle sorgenti: non si aggiorna da sola."
+  "appUpdDev": "Una build dalle sorgenti: non si aggiorna da sola.",
+  "cvSaveFailedShort": "Non salvato",
+  "cvSaveRetry": "Riprova a salvare",
+  "cvReadOnly": "Sola lettura",
+  "cvPastePicture": "Incolla immagine",
+  "cvPasteNone": "Negli appunti non c'è un'immagine",
+  "cvAskedAgent": "Messo nel messaggio della conversazione"
 }

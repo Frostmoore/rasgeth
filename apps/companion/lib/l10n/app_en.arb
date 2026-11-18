@@ -6383,5 +6383,11 @@
       }
     }
   },
-  "appUpdDev": "A build from the sources: it does not update itself."
+  "appUpdDev": "A build from the sources: it does not update itself.",
+  "cvSaveFailedShort": "Not saved",
+  "cvSaveRetry": "Try saving again",
+  "cvReadOnly": "Read only",
+  "cvPastePicture": "Paste a picture",
+  "cvPasteNone": "There is no picture on the clipboard",
+  "cvAskedAgent": "Put in the conversation's message"
 }

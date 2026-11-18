@@ -8117,4 +8117,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appUpdDev => 'A build from the sources: it does not update itself.';
+
+  @override
+  String get cvSaveFailedShort => 'Not saved';
+
+  @override
+  String get cvSaveRetry => 'Try saving again';
+
+  @override
+  String get cvReadOnly => 'Read only';
+
+  @override
+  String get cvPastePicture => 'Paste a picture';
+
+  @override
+  String get cvPasteNone => 'There is no picture on the clipboard';
+
+  @override
+  String get cvAskedAgent => 'Put in the conversation\'s message';
 }

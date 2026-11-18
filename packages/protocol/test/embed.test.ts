@@ -3,6 +3,7 @@
 import { describe, expect, it } from "vitest";
 import {
   AppToEmbed,
+  EMBED_ASK_ACTION,
   type EmbedParams,
   EmbedToApp,
   embedEnvelope,
@@ -248,5 +249,38 @@ describe("the bridge", () => {
     expect(
       AppToEmbed.safeParse({ t: "tabs", visible: true, tabs: [{ ...tab, active: "yes" }] }).success,
     ).toBe(false);
+  });
+
+  it("the editors' messages (G42.7): saveState, askAgent, paste, saveAs, the bar's paste and read only", () => {
+    const ok = (m: unknown) => EmbedToApp.safeParse(m).success;
+    expect(ok({ t: "saveState", state: "saved" })).toBe(true);
+    expect(ok({ t: "saveState", state: "saving" })).toBe(true);
+    expect(ok({ t: "saveState", state: "error", error: "x".repeat(500) })).toBe(true);
+    expect(ok({ t: "saveState", state: "error", error: "x".repeat(501) })).toBe(false);
+    expect(ok({ t: "saveState", state: "unsaved" })).toBe(false);
+    expect(ok({ t: "saveState" })).toBe(false);
+    expect(ok({ t: "askAgent", text: "why?", ref: { scope: "p", path: "a.ts", line: 3 } })).toBe(
+      true,
+    );
+    expect(ok({ t: "askAgent", text: "x".repeat(20_001), ref: {} })).toBe(false);
+    expect(ok({ t: "askAgent", text: "x", ref: { line: -1 } })).toBe(false);
+    expect(ok({ t: "askAgent", text: "x", ref: { file: "a" } })).toBe(false);
+    expect(ok({ t: "saveAs", name: "a.png", data: "iVBORw0KGgo=", mime: "image/png" })).toBe(true);
+    expect(ok({ t: "saveAs", name: "a.png", data: "not base64!" })).toBe(false);
+    expect(ok({ t: "saveAs", name: "x".repeat(256), url: "/x" })).toBe(false);
+    expect(
+      ok({ t: "bar", actions: [{ id: EMBED_ASK_ACTION, label: "Chiedi", icon: "chat" }] }),
+    ).toBe(true);
+    expect(ok({ t: "bar", actions: [], paste: true, readOnly: true })).toBe(true);
+    expect(ok({ t: "bar", actions: [], paste: "yes" })).toBe(false);
+    expect(ok({ t: "bar", actions: [], readOnly: 1 })).toBe(false);
+    const app = (m: unknown) => AppToEmbed.safeParse(m).success;
+    const file = { name: "a.png", type: "image/png", size: 3, data: "AAAA" };
+    expect(app({ t: "paste", files: [file] })).toBe(true);
+    expect(app({ t: "paste", text: "hi", files: [] })).toBe(true);
+    expect(app({ t: "paste", files: [{ ...file, size: 25 * 1024 * 1024 + 1 }] })).toBe(false);
+    expect(app({ t: "paste", files: [{ ...file, data: "%%" }] })).toBe(false);
+    expect(app({ t: "paste", image: "AAAA" })).toBe(false);
+    expect(app({ t: "action", id: EMBED_ASK_ACTION })).toBe(true);
   });
 });
