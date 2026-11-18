@@ -275,7 +275,7 @@ begin
 end;
 
 { The engine's folder (llama.cpp, the models, the launcher's logs) as Rasgeth.cs's WinEngine finds
-  it: {localappdata}\Rasgeth\engine, or the one a version before 3.9.0 made when only that one is
+  it: %LOCALAPPDATA%\Rasgeth\engine, or the one a version before 3.9.0 made when only that one is
   there (3.9.0: models already downloaded are never thrown away by the new name). }
 function EngineDir(): String;
 begin
