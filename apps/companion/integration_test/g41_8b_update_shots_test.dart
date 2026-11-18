@@ -1,4 +1,4 @@
-// G41.8b: the window of the app's own update, on Linux over the room connected to a real RedGiant
+// G41.8b: the window of the app's own update, on Linux over the room connected to a real Rasgeth
 // (the demo), light and dark: a version found, the download with its bar, ready to restart, a
 // wrong signature, and the two words after a restart (updated, gone back). GitHub is a fake with
 // the throwaway key of tool/update_vectors.mjs; nothing is installed. RG_SHOTS names the folder.

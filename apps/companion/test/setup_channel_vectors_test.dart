@@ -82,14 +82,14 @@ void main() {
     }
   });
 
-  test('the channel\'s address from RedGiant\'s', () {
+  test('the channel\'s address from Rasgeth\'s', () {
     expect(
       setupChannelUrl(Uri.parse('http://10.42.0.1')).toString(),
       'ws://10.42.0.1/api/setup-channel',
     );
     expect(
-      setupChannelUrl(Uri.parse('https://redgiant.local:8787')).toString(),
-      'wss://redgiant.local:8787/api/setup-channel',
+      setupChannelUrl(Uri.parse('https://rasgeth.local:8787')).toString(),
+      'wss://rasgeth.local:8787/api/setup-channel',
     );
   });
 }

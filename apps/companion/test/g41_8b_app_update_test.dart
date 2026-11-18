@@ -134,22 +134,22 @@ void main() {
         const UpdateChoice(UpdateWhy.latest, '3.9.1'),
       ),
       (
-        'GitHub wins over the RedGiant',
+        'GitHub wins over the Rasgeth',
         {'current': '3.8.14', 'latest': 'v3.9.1', 'server': '3.9.0'},
         const UpdateChoice(UpdateWhy.latest, '3.9.1'),
       ),
       (
-        'GitHub unreadable: the RedGiant\'s newer version',
+        'GitHub unreadable: the Rasgeth\'s newer version',
         {'current': '3.8.14', 'server': '3.9.0'},
         const UpdateChoice(UpdateWhy.server, '3.9.0'),
       ),
       (
-        'GitHub unreadable, RedGiant older',
+        'GitHub unreadable, Rasgeth older',
         {'current': '3.9.0', 'server': '3.8.12'},
         const UpdateChoice(UpdateWhy.unknown),
       ),
       (
-        'GitHub unreadable, RedGiant from the sources',
+        'GitHub unreadable, Rasgeth from the sources',
         {'current': '3.9.0', 'server': null},
         const UpdateChoice(UpdateWhy.unknown),
       ),
@@ -159,7 +159,7 @@ void main() {
         const UpdateChoice(UpdateWhy.unknown),
       ),
       (
-        'the RedGiant\'s version, skipped',
+        'the Rasgeth\'s version, skipped',
         {'current': '3.8.14', 'server': '3.9.0', 'skipped': '3.9.0'},
         const UpdateChoice(UpdateWhy.skipped),
       ),
@@ -196,62 +196,62 @@ void main() {
   });
 
   test('which install updates itself (table)', () {
-    const win = r'C:\Users\Pixel\AppData\Local\Programs\RGCompanion';
-    const red = r'C:\Program Files\RedGiant';
+    const win = r'C:\Users\Pixel\AppData\Local\Programs\Rasgeth App';
+    const red = r'C:\Program Files\Rasgeth';
     const home = '/home/pixel';
     final rows = <(String, String, Map<String, String>, List<String>, InstallSpot?)>[
       (
         'windows',
-        '$win\\rgcompanion.exe',
+        '$win\\rasgeth-app.exe',
         {},
         ['$win\\unins000.exe'],
-        const InstallSpot(system: 'windows', dir: win, exe: '$win\\rgcompanion.exe'),
+        const InstallSpot(system: 'windows', dir: win, exe: '$win\\rasgeth-app.exe'),
       ),
-      // RedGiant-Setup.exe's copy: RedGiant.exe one folder up.
-      ('windows', '$red\\app\\rgcompanion.exe', {}, ['$red\\RedGiant.exe'], null),
+      // Rasgeth-Setup.exe's copy: Rasgeth.exe one folder up.
+      ('windows', '$red\\app\\rasgeth-app.exe', {}, ['$red\\Rasgeth.exe'], null),
       // A build somewhere else (no uninstaller): never replaced.
-      ('windows', r'D:\build\rgcompanion.exe', {}, [], null),
+      ('windows', r'D:\build\rasgeth-app.exe', {}, [], null),
       // Opened by the launcher.
       (
         'windows',
-        '$win\\rgcompanion.exe',
+        '$win\\rasgeth-app.exe',
         {'RGCOMPANION_HANDOFF_FILE': r'C:\t\h.json'},
         ['$win\\unins000.exe'],
         null,
       ),
       (
         'linux',
-        '$home/.local/share/rgcompanion/rgcompanion',
+        '$home/.local/share/rasgeth-app/rasgeth-app',
         {'HOME': home},
         [],
         const InstallSpot(
           system: 'linux',
-          dir: '$home/.local/share/rgcompanion',
-          exe: '$home/.local/share/rgcompanion/rgcompanion',
+          dir: '$home/.local/share/rasgeth-app',
+          exe: '$home/.local/share/rasgeth-app/rasgeth-app',
         ),
       ),
       (
         'linux',
-        '/data/x/rgcompanion/rgcompanion',
+        '/data/x/rasgeth-app/rasgeth-app',
         {'HOME': home, 'XDG_DATA_HOME': '/data/x/'},
         [],
         const InstallSpot(
           system: 'linux',
-          dir: '/data/x/rgcompanion',
-          exe: '/data/x/rgcompanion/rgcompanion',
+          dir: '/data/x/rasgeth-app',
+          exe: '/data/x/rasgeth-app/rasgeth-app',
         ),
       ),
       // Run from the unpacked archive, not installed.
       (
         'linux',
-        '$home/Downloads/rgcompanion-linux-x64/bundle/rgcompanion',
+        '$home/Downloads/rasgeth-app-linux-x64/bundle/rasgeth-app',
         {'HOME': home},
         [],
         null,
       ),
-      ('linux', '$home/.local/share/rgcompanion/rgcompanion', {}, [], null),
-      // The Mac's app comes only with RedGiant.
-      ('macos', '/Applications/RedGiant.app/Contents/Helpers/RGCompanion.app', {}, [], null),
+      ('linux', '$home/.local/share/rasgeth-app/rasgeth-app', {}, [], null),
+      // The Mac's app comes only with Rasgeth.
+      ('macos', '/Applications/Rasgeth.app/Contents/Helpers/Rasgeth App.app', {}, [], null),
       ('android', '/data/app/rgcompanion', {}, [], null),
     ];
     for (final (system, exe, env, files, want) in rows) {
@@ -329,9 +329,9 @@ void main() {
       processId: () => 4242,
       unpack: (archive, into) async {
         // The archive's bytes are the signed ones: a bundle stands for what tar would give.
-        Directory('$into/rgcompanion-linux-x64/bundle').createSync(recursive: true);
-        File('$into/rgcompanion-linux-x64/bundle/rgcompanion').writeAsStringSync('new');
-        return '$into/rgcompanion-linux-x64/bundle';
+        Directory('$into/rasgeth-app-linux-x64/bundle').createSync(recursive: true);
+        File('$into/rasgeth-app-linux-x64/bundle/rasgeth-app').writeAsStringSync('new');
+        return '$into/rasgeth-app-linux-x64/bundle';
       },
       swap: (plan, folder) async => plans?.add(plan),
       quit: () => quits?.add('quit'),
@@ -367,7 +367,7 @@ void main() {
       expect(u.error, AppUpdateError.signature);
     });
 
-    test('RedGiant\'s copy, a build from the sources: never asks anything', () async {
+    test('Rasgeth\'s copy, a build from the sources: never asks anything', () async {
       for (final u in [make(_Github(), noSpot: true), make(_Github(), current: '')]) {
         await u.check(asked: true);
         expect(u.enabled, isFalse);
@@ -375,7 +375,7 @@ void main() {
       }
     });
 
-    test('up to date, skipped, and GitHub offline with a newer RedGiant', () async {
+    test('up to date, skipped, and GitHub offline with a newer Rasgeth', () async {
       final same = make(_Github(), current: '3.9.0');
       await same.check();
       expect(same.stage, AppUpdateStage.upToDate);
@@ -478,7 +478,7 @@ void main() {
       expect(p.dir, '${tmp.path}/app');
       expect(p.fromVersion, '3.8.14');
       expect(p.toVersion, '3.9.0');
-      expect(_slash(p.package), endsWith('/unpacked/rgcompanion-linux-x64/bundle'));
+      expect(_slash(p.package), endsWith('/unpacked/rasgeth-app-linux-x64/bundle'));
       expect(quits, ['quit']);
 
       // The next start (new or old version) takes it once.
@@ -580,11 +580,11 @@ sleep 5''' : 'exit 1'}
       const SwapPlan(
         system: 'windows',
         pid: 7,
-        dir: r"C:\Users\O'Brien\AppData\Local\Programs\RGCompanion",
-        exe: r"C:\Users\O'Brien\AppData\Local\Programs\RGCompanion\rgcompanion.exe",
+        dir: r"C:\Users\O'Brien\AppData\Local\Programs\Rasgeth App",
+        exe: r"C:\Users\O'Brien\AppData\Local\Programs\Rasgeth App\rasgeth-app.exe",
         fromVersion: '3.8.14',
         toVersion: '3.9.0',
-        package: r"C:\Users\O'Brien\AppData\Roaming\RedGiant\RGCompanion\app-update\3.9.0\RGCompanion-Setup.exe",
+        package: r"C:\Users\O'Brien\AppData\Roaming\Rasgeth\Rasgeth\app-update\3.9.0\Rasgeth-App-Setup.exe",
         marker: r'C:\m',
         log: r'C:\l',
       ),
@@ -592,7 +592,7 @@ sleep 5''' : 'exit 1'}
     expect(s, contains("'/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART'"));
     expect(s, isNot(contains('/ALLUSERS')));
     expect(s, isNot(contains('RunAs')));
-    expect(s, contains(r"$dest = 'C:\Users\O''Brien\AppData\Local\Programs\RGCompanion'"));
+    expect(s, contains(r"$dest = 'C:\Users\O''Brien\AppData\Local\Programs\Rasgeth App'"));
     expect(s, contains(r'Copy-Item -LiteralPath $dest -Destination $prev'));
     expect(s, contains(r'Move-Item -LiteralPath $prev -Destination $dest'));
     expect(s, contains(kUpdateFailedArg));

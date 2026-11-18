@@ -12,6 +12,7 @@ import 'dart:math';
 
 import 'artifact_frame.dart';
 import 'transport.dart';
+import '../brand.dart';
 
 /// One frame the relay serves: the page the web view loads, the preview it holds, its nonce.
 class RelayFrame {
@@ -170,7 +171,7 @@ class PreviewRelay {
       await up.pipe(res);
     } on Object {
       try {
-        await say(502, 'RedGiant did not answer');
+        await say(502, '$kProductName did not answer');
       } on Object {
         // The answer had already started.
       }

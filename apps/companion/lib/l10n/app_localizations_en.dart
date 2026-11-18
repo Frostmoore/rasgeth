@@ -10,7 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'RGCompanion';
+  String get appTitle => 'Rasgeth';
 
   @override
   String get tabTeam => 'Team';
@@ -34,7 +34,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get composerSend => 'Send';
 
   @override
-  String get noServer => 'No RedGiant connected';
+  String get noServer => 'No Rasgeth connected';
 
   @override
   String get connectFromYou => 'Connect one from You.';
@@ -78,13 +78,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatNew => 'New conversation';
 
   @override
-  String get chatEmpty => 'Your conversations with Chat, day by day, show here.';
+  String get chatEmpty =>
+      'Your conversations with Chat, day by day, show here.';
 
   @override
-  String get inboxEmpty => 'Nothing to decide: when an agent asks you something, it shows here.';
+  String get inboxEmpty =>
+      'Nothing to decide: when an agent asks you something, it shows here.';
 
   @override
-  String get activityEmpty => 'Tasks in progress and done, grouped by agent, show here.';
+  String get activityEmpty =>
+      'Tasks in progress and done, grouped by agent, show here.';
 
   @override
   String get sectionAppearance => 'Appearance';
@@ -111,16 +114,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reduceMotion => 'Reduce motion';
 
   @override
-  String get reduceMotionHint => 'The mascots stay still; their state shows by its sign.';
+  String get reduceMotionHint =>
+      'The mascots stay still; their state shows by its sign.';
 
   @override
-  String get sectionServer => 'RedGiant';
+  String get sectionServer => 'Rasgeth';
 
   @override
   String get serverAddress => 'Address';
 
   @override
-  String get serverAddressHint => 'redgiant.local, https://…, 10.42.0.1';
+  String get serverAddressHint => 'rasgeth.local, https://…, 10.42.0.1';
 
   @override
   String get serverPassword => 'Password';
@@ -143,7 +147,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get errUnreachable => 'RedGiant does not answer at this address.';
+  String get errUnreachable => 'Rasgeth does not answer at this address.';
 
   @override
   String get errWrong => 'Wrong password or code.';
@@ -155,13 +159,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errTooMany => 'Too many tries: try again in a few minutes.';
 
   @override
-  String get errNoPassword => 'This RedGiant has no password yet: complete its first start.';
+  String get errNoPassword =>
+      'This Rasgeth has no password yet: complete its first start.';
 
   @override
-  String get errServerTooOld => 'This RedGiant is too old for the app: update it.';
+  String get errServerTooOld =>
+      'This Rasgeth is too old for the app: update it.';
 
   @override
-  String get errServerTooNew => 'This app is too old for this RedGiant: update the app.';
+  String get errServerTooNew =>
+      'This app is too old for this Rasgeth: update the app.';
 
   @override
   String errGeneric(String message) {
@@ -337,7 +344,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get criticalPayment => 'A real payment';
 
   @override
-  String get criticalProtections => 'RedGiant\'s own protections';
+  String get criticalProtections => 'Rasgeth\'s own protections';
 
   @override
   String questionFrom(String agent) {
@@ -392,7 +399,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reachChannel => 'encrypted setup channel';
 
   @override
-  String get noServers => 'No RedGiant yet.';
+  String get noServers => 'No Rasgeth yet.';
 
   @override
   String get useServer => 'Use';
@@ -403,7 +410,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get renameServer => 'Name of this RedGiant';
+  String get renameServer => 'Name of this Rasgeth';
 
   @override
   String get save => 'Save';
@@ -412,7 +419,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rename => 'Rename';
 
   @override
-  String get forgetServer => 'Disconnect this RedGiant?';
+  String get forgetServer => 'Disconnect this Rasgeth?';
 
   @override
   String forgetServerBody(String name) {
@@ -421,23 +428,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String errKeyChanged(String fingerprint) {
-    return 'DANGER: this RedGiant answered with another key ($fingerprint). Another computer may be in its place: nothing was sent.';
+    return 'DANGER: this Rasgeth answered with another key ($fingerprint). Another computer may be in its place: nothing was sent.';
   }
 
   @override
-  String get errCertificate => 'The certificate is not this RedGiant\'s: the app did not go on.';
+  String get errCertificate =>
+      'The certificate is not this Rasgeth\'s: the app did not go on.';
 
   @override
-  String get errBusy => 'Another device is setting this RedGiant up: one at a time.';
+  String get errBusy =>
+      'Another device is setting this Rasgeth up: one at a time.';
 
   @override
   String get errSignInAgain => 'Sign in again with the password.';
 
   @override
-  String get addServerFirst => 'Connect a RedGiant';
+  String get addServerFirst => 'Connect a Rasgeth';
 
   @override
-  String get addServer => 'Add another RedGiant';
+  String get addServer => 'Add another Rasgeth';
 
   @override
   String get foundOnNetwork => 'Found on this network';
@@ -451,10 +460,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get allSettingsHint =>
-      'RedGiant\'s whole Settings page, inside the app, signed in with this device.';
+      'Rasgeth\'s whole Settings page, inside the app, signed in with this device.';
 
   @override
-  String get allSettingsBrowser => 'Opens RedGiant\'s page in the browser: sign in there as usual.';
+  String get allSettingsBrowser =>
+      'Opens Rasgeth\'s page in the browser: sign in there as usual.';
 
   @override
   String get allSettingsNoHttps =>
@@ -467,21 +477,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copy => 'Copy';
 
   @override
-  String get connectExisting => 'Connect a RedGiant that runs already';
+  String get connectExisting => 'Connect a Rasgeth that runs already';
 
   @override
-  String get firstStepsTitle => 'No RedGiant yet';
+  String get firstStepsTitle => 'No Rasgeth yet';
 
   @override
   String get firstStepsLead =>
-      'Set up a new one from here (RedGiant OS opens its own Wi-Fi network at the first start), or connect one you already use.';
+      'Set up a new one from here (Rasgeth OS opens its own Wi-Fi network at the first start), or connect one you already use.';
 
   @override
-  String get setupNew => 'Set up a new RedGiant';
+  String get setupNew => 'Set up a new Rasgeth';
 
   @override
   String get setupNewHint =>
-      'A RedGiant OS machine turned on for the first time: the app joins its temporary network and does the whole first start.';
+      'A Rasgeth OS machine turned on for the first time: the app joins its temporary network and does the whole first start.';
 
   @override
   String get defaultModel => 'Default model';
@@ -528,25 +538,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fsLeaveBody =>
-      'What is done stays done; you can come back here, or finish from the browser, while the temporary network is open (30 minutes from when RedGiant was turned on).';
+      'What is done stays done; you can come back here, or finish from the browser, while the temporary network is open (30 minutes from when Rasgeth was turned on).';
 
   @override
-  String get fsIntroTitle => 'Set up a new RedGiant';
+  String get fsIntroTitle => 'Set up a new Rasgeth';
 
   @override
   String get fsIntroLead =>
-      'Turn your RedGiant on: for 30 minutes it opens the Wi-Fi network RedGiant-Setup-XXXX. The app joins it, you create the access and choose your home network, then RedGiant moves there and the app finds it again.';
+      'Turn your Rasgeth on: for 30 minutes it opens the Wi-Fi network Rasgeth-Setup-XXXX. The app joins it, you create the access and choose your home network, then Rasgeth moves there and the app finds it again.';
 
   @override
   String get fsIntroSafe =>
-      'Everything you type travels encrypted, with RedGiant\'s own key checked by the app: nobody on the temporary network reads it.';
+      'Everything you type travels encrypted, with Rasgeth\'s own key checked by the app: nobody on the temporary network reads it.';
 
   @override
   String get fsSeen => 'Temporary networks around';
 
   @override
   String get fsNoScan =>
-      'The system does not show the networks around: type the four characters after RedGiant-Setup- (you see them in the computer\'s Wi-Fi list).';
+      'The system does not show the networks around: type the four characters after Rasgeth-Setup- (you see them in the computer\'s Wi-Fi list).';
 
   @override
   String get fsLetters => 'The last four characters';
@@ -564,10 +574,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fsJoining => 'Joining the temporary network…';
 
   @override
-  String get fsJoiningSheet => 'Choose RedGiant-Setup in the window the system shows.';
+  String get fsJoiningSheet =>
+      'Choose Rasgeth-Setup in the window the system shows.';
 
   @override
-  String get fsConnecting => 'Looking for RedGiant on the network…';
+  String get fsConnecting => 'Looking for Rasgeth on the network…';
 
   @override
   String get fsManualTitle => 'Join by hand';
@@ -584,19 +595,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fsNetworkPassword => 'Password';
 
   @override
-  String get fsWhereAndroid => 'Settings › Network › Wi-Fi: tap RedGiant-Setup-…';
+  String get fsWhereAndroid =>
+      'Settings › Network › Wi-Fi: tap Rasgeth-Setup-…';
 
   @override
-  String get fsWhereIos => 'Settings › Wi-Fi: tap RedGiant-Setup-…';
+  String get fsWhereIos => 'Settings › Wi-Fi: tap Rasgeth-Setup-…';
 
   @override
-  String get fsWhereMac => 'The Wi-Fi menu at the top right of the screen: choose RedGiant-Setup-…';
+  String get fsWhereMac =>
+      'The Wi-Fi menu at the top right of the screen: choose Rasgeth-Setup-…';
 
   @override
-  String get fsWhereWindows => 'The Wi-Fi icon at the bottom right: choose RedGiant-Setup-…';
+  String get fsWhereWindows =>
+      'The Wi-Fi icon at the bottom right: choose Rasgeth-Setup-…';
 
   @override
-  String get fsWhereOther => 'The system\'s Wi-Fi list: choose RedGiant-Setup-…';
+  String get fsWhereOther => 'The system\'s Wi-Fi list: choose Rasgeth-Setup-…';
 
   @override
   String get fsManualNoInternet =>
@@ -607,31 +621,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fsErrNotFound =>
-      'RedGiant does not answer: are you on the RedGiant-Setup network? It stays open for 30 minutes after RedGiant is turned on.';
+      'Rasgeth does not answer: are you on the Rasgeth-Setup network? It stays open for 30 minutes after Rasgeth is turned on.';
 
   @override
   String get fsErrNotHere =>
-      'This RedGiant does not let a new access be created from here: finish from its page.';
+      'This Rasgeth does not let a new access be created from here: finish from its page.';
 
   @override
-  String get fsErrCancelled => 'The network was not joined. Try again, or join by hand.';
+  String get fsErrCancelled =>
+      'The network was not joined. Try again, or join by hand.';
 
   @override
   String get fsErrDenied =>
       'The app needs the permission for nearby devices to join the network: allow it, or join by hand.';
 
   @override
-  String get fsErrJoinFailed => 'The system could not join the network: join by hand.';
+  String get fsErrJoinFailed =>
+      'The system could not join the network: join by hand.';
 
   @override
-  String get fsErrNoName => 'Choose the network, or type its four last characters.';
+  String get fsErrNoName =>
+      'Choose the network, or type its four last characters.';
 
   @override
   String get fsAccessTitle => 'Create your access';
 
   @override
   String get fsAccessLead =>
-      'The password that opens RedGiant from every device. Keep it: it is also what opens its keychain.';
+      'The password that opens Rasgeth from every device. Keep it: it is also what opens its keychain.';
 
   @override
   String get fsPassword => 'Password';
@@ -650,7 +667,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fsAccessSafe =>
-      'It travels encrypted to RedGiant and stays only there; this device gets its own access, which you can sign out from Settings › Devices.';
+      'It travels encrypted to Rasgeth and stays only there; this device gets its own access, which you can sign out from Settings › Devices.';
 
   @override
   String get fsAccessGo => 'Create the access';
@@ -659,10 +676,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fsSignInTitle => 'Sign in';
 
   @override
-  String get fsSignInLead => 'This RedGiant has its password already: type it to go on.';
+  String get fsSignInLead =>
+      'This Rasgeth has its password already: type it to go on.';
 
   @override
-  String get fsMaintenanceTitle => 'RedGiant lost its network';
+  String get fsMaintenanceTitle => 'Rasgeth lost its network';
 
   @override
   String get fsMaintenanceLead =>
@@ -673,14 +691,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fsHomeLead =>
-      'Which network should RedGiant use at home? These are the ones it saw around it.';
+      'Which network should Rasgeth use at home? These are the ones it saw around it.';
 
   @override
   String get fsHomeNone =>
       'No network was seen around: use the cable, or type the name of a hidden network.';
 
   @override
-  String get fsHomeUnusable => 'RedGiant cannot join this kind of network';
+  String get fsHomeUnusable => 'Rasgeth cannot join this kind of network';
 
   @override
   String get fsHomeHidden => 'A hidden network';
@@ -694,7 +712,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get fsHomeSafe => 'The Wi-Fi password stays only in RedGiant.';
+  String get fsHomeSafe => 'The Wi-Fi password stays only in Rasgeth.';
 
   @override
   String fsHomeJoin(String name) {
@@ -706,18 +724,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String fsHomeWaitWifi(String name) {
-    return 'RedGiant is joining «$name»…';
+    return 'Rasgeth is joining «$name»…';
   }
 
   @override
-  String get fsHomeWaitCable => 'RedGiant moves to the home network…';
+  String get fsHomeWaitCable => 'Rasgeth moves to the home network…';
 
   @override
   String get fsHomeWaitSub =>
-      'The device goes back to its own network and finds RedGiant there (up to two minutes). If it does not work, RedGiant opens the temporary network again and says why.';
+      'The device goes back to its own network and finds Rasgeth there (up to two minutes). If it does not work, Rasgeth opens the temporary network again and says why.';
 
   @override
-  String get fsLostTitle => 'RedGiant is not found';
+  String get fsLostTitle => 'Rasgeth is not found';
 
   @override
   String fsLostLead(String ssid) {
@@ -747,7 +765,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fsLater => 'Later';
 
   @override
-  String get fsBrainTitle => 'How should RedGiant think?';
+  String get fsBrainTitle => 'How should Rasgeth think?';
 
   @override
   String get fsBrainLead =>
@@ -757,7 +775,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fsClaude => 'Claude Pro or Max';
 
   @override
-  String get fsClaudeText => 'Anthropic\'s page in the browser, then the code it shows';
+  String get fsClaudeText =>
+      'Anthropic\'s page in the browser, then the code it shows';
 
   @override
   String get fsClaudeOpen => 'Open Anthropic\'s page';
@@ -775,7 +794,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fsChatgptOpen => 'Open OpenAI\'s page';
 
   @override
-  String get fsChatgptCode => 'Type this code on the page; the app notices when it is done.';
+  String get fsChatgptCode =>
+      'Type this code on the page; the app notices when it is done.';
 
   @override
   String get fsChatgptOpenAgain => 'Open the page again';
@@ -784,7 +804,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fsKey => 'A key of a provider';
 
   @override
-  String get fsKeyText => 'Anthropic, OpenAI, Gemini, OpenRouter…: paid per use';
+  String get fsKeyText =>
+      'Anthropic, OpenAI, Gemini, OpenRouter…: paid per use';
 
   @override
   String fsKeyOf(String name) {
@@ -798,7 +819,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fsTerms =>
-      'I read the provider\'s terms: a subscription is used by me, on my own RedGiant.';
+      'I read the provider\'s terms: a subscription is used by me, on my own Rasgeth.';
 
   @override
   String get fsBrainLater =>
@@ -809,7 +830,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fsNamesLead =>
-      'Who runs your RedGiant, and who speaks for it in the chats. You can change them later.';
+      'Who runs your Rasgeth, and who speaks for it in the chats. You can change them later.';
 
   @override
   String get fsGodName => 'The chief';
@@ -830,19 +851,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fsFinishing => 'Completing the first start…';
 
   @override
-  String get fsDoneTitle => 'RedGiant is ready';
+  String get fsDoneTitle => 'Rasgeth is ready';
 
   @override
   String get fsDoneLead =>
-      'The temporary network is closed: RedGiant is on your home network, and this device is connected to it.';
+      'The temporary network is closed: Rasgeth is on your home network, and this device is connected to it.';
 
   @override
   String get fsDoneMaintenance =>
-      'RedGiant is on its new network again, and this device is connected to it.';
+      'Rasgeth is on its new network again, and this device is connected to it.';
 
   @override
   String get fsDoneMore =>
-      'The rest of the first start (backups, chats, access from outside…) is in the page, whenever you want: «Settings of RedGiant» › «All settings».';
+      'The rest of the first start (backups, chats, access from outside…) is in the page, whenever you want: «Settings of Rasgeth» › «All settings».';
 
   @override
   String get fsDoneGo => 'Open the team';
@@ -861,10 +882,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeErrBadSsid => 'A network\'s name has 1 to 32 characters.';
 
   @override
-  String get homeErrBusy => 'RedGiant is already joining a network: wait a moment.';
+  String get homeErrBusy =>
+      'Rasgeth is already joining a network: wait a moment.';
 
   @override
-  String get homeErrWifiOff => 'Wi-Fi is not running on RedGiant.';
+  String get homeErrWifiOff => 'Wi-Fi is not running on Rasgeth.';
 
   @override
   String get homeErrNoCable =>
@@ -884,7 +906,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get outsideOwnName => 'Your own name (Caddy)';
 
   @override
-  String get pushOff => 'Not on yet for this device: turn them on in You, Notifications.';
+  String get pushOff =>
+      'Not on yet for this device: turn them on in You, Notifications.';
 
   @override
   String pushOn(String target) {
@@ -967,11 +990,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updNow => 'Update';
 
   @override
-  String get updNowTitle => 'Update RedGiant?';
+  String get updNowTitle => 'Update Rasgeth?';
 
   @override
   String updNowBody(String version) {
-    return 'RedGiant downloads $version, then restarts: for a minute or two it does not answer. You see every step, and the app reconnects by itself as soon as RedGiant is back.';
+    return 'Rasgeth downloads $version, then restarts: for a minute or two it does not answer. You see every step, and the app reconnects by itself as soon as Rasgeth is back.';
   }
 
   @override
@@ -1024,7 +1047,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updStepRestart => 'Restarting';
 
   @override
-  String get updStepWait => 'Waiting for RedGiant to answer';
+  String get updStepWait => 'Waiting for Rasgeth to answer';
 
   @override
   String get updStepRollback => 'Going back to the version before';
@@ -1067,7 +1090,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get teamFilterLabel => 'Show';
 
   @override
-  String get teamNoFavourites => 'No favourites yet: press and hold an agent to add it.';
+  String get teamNoFavourites =>
+      'No favourites yet: press and hold an agent to add it.';
 
   @override
   String get teamNoneInProject => 'No agent has worked in this project.';
@@ -1126,7 +1150,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inboxSwipeHint => 'Swipe right to say yes, left to say no.';
 
   @override
-  String get inboxCriticalHint => 'Truly dangerous: no swiping, it opens full screen.';
+  String get inboxCriticalHint =>
+      'Truly dangerous: no swiping, it opens full screen.';
 
   @override
   String inboxSaidYes(String name) {
@@ -1162,10 +1187,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get modelWayOr => 'or';
 
   @override
-  String get modelHintSubscription => 'Within your plan\'s limits: nothing is paid per use.';
+  String get modelHintSubscription =>
+      'Within your plan\'s limits: nothing is paid per use.';
 
   @override
-  String get modelHintKey => 'Paid per use with your API key: it counts toward the spending cap.';
+  String get modelHintKey =>
+      'Paid per use with your API key: it counts toward the spending cap.';
 
   @override
   String modelHintNode(String node) {
@@ -1173,7 +1200,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get modelHintLocal => 'Runs on a computer of yours: nothing is paid per use.';
+  String get modelHintLocal =>
+      'Runs on a computer of yours: nothing is paid per use.';
 
   @override
   String get modelHintOther => 'Through a connected provider.';
@@ -1197,7 +1225,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get agentJustAnswered => 'It has just answered you.';
 
   @override
-  String get agentBlockedNow => 'It is blocked: open the conversation to see why.';
+  String get agentBlockedNow =>
+      'It is blocked: open the conversation to see why.';
 
   @override
   String get effortLow => 'Low';
@@ -1317,7 +1346,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sessionModelTitle => 'Model of this conversation';
 
   @override
-  String get sessionModelBusy => 'It is working: the model changes once it has finished.';
+  String get sessionModelBusy =>
+      'It is working: the model changes once it has finished.';
 
   @override
   String get asideChip => 'Meanwhile';
@@ -1451,14 +1481,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newAgentRole => 'Its job, in your own words';
 
   @override
-  String get newAgentRoleHint => 'For example: writes the tests and checks they pass';
+  String get newAgentRoleHint =>
+      'For example: writes the tests and checks they pass';
 
   @override
   String get newAgentMascotPreview => 'Its mascot';
 
   @override
   String get newAgentMascotLater =>
-      'RedGiant picks the face from the name; once it is made you can change it.';
+      'Rasgeth picks the face from the name; once it is made you can change it.';
 
   @override
   String get newAgentModelQ => 'Which model does it use? (optional)';
@@ -1512,7 +1543,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get newAgentNeedsGod => 'God is needed to make agents: finish the first start first.';
+  String get newAgentNeedsGod =>
+      'God is needed to make agents: finish the first start first.';
 
   @override
   String get mascotChange => 'Change mascot';
@@ -1581,7 +1613,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get promptReset => 'Restore the built-in ones';
 
   @override
-  String get promptResetConfirm => 'Go back to the built-in instructions? Your text will be lost.';
+  String get promptResetConfirm =>
+      'Go back to the built-in instructions? Your text will be lost.';
 
   @override
   String get promptUndo => 'Undo the changes';
@@ -1594,7 +1627,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'A model reads them again and proposes a clearer version. You see what changes before using it; nothing is saved until you save.';
 
   @override
-  String get refineWish => 'What do you want to change? (you can leave it empty)';
+  String get refineWish =>
+      'What do you want to change? (you can leave it empty)';
 
   @override
   String get refineWishPlaceholder =>
@@ -1606,7 +1640,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get refineNoEstimate => 'No estimate: check that the model is still connected.';
+  String get refineNoEstimate =>
+      'No estimate: check that the model is still connected.';
 
   @override
   String refineSpent(String what) {
@@ -1651,10 +1686,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get refineSame => 'The model left them as they were.';
 
   @override
-  String get refineErr_budget => 'The budget is used up: raise it in Settings, Budget.';
+  String get refineErr_budget =>
+      'The budget is used up: raise it in Settings, Budget.';
 
   @override
-  String get refineErr_no_model => 'No model is connected: connect one in Settings, Models.';
+  String get refineErr_no_model =>
+      'No model is connected: connect one in Settings, Models.';
 
   @override
   String get refineErr_no_answer =>
@@ -1671,7 +1708,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsTitle => 'Notifications';
 
   @override
-  String get notificationsSub => 'How this device hears from RedGiant when the app is closed';
+  String get notificationsSub =>
+      'How this device hears from Rasgeth when the app is closed';
 
   @override
   String get voiceTitle => 'Voice';
@@ -1698,7 +1736,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifyAnswerFailedTitle => 'The answer did not go';
 
   @override
-  String get notifyAnswerFailedBody => 'Open the app to answer: the request is still waiting.';
+  String get notifyAnswerFailedBody =>
+      'Open the app to answer: the request is still waiting.';
 
   @override
   String notifyAsksPermission(String name) {
@@ -1711,7 +1750,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get notifyCriticalTitle => 'A truly dangerous request: open it to decide';
+  String get notifyCriticalTitle =>
+      'A truly dangerous request: open it to decide';
 
   @override
   String get notifyTestTitle => 'Notification test';
@@ -1734,7 +1774,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pushOffHere =>
-      'Off on this device: RedGiant cannot tell you anything while the app is closed.';
+      'Off on this device: Rasgeth cannot tell you anything while the app is closed.';
 
   @override
   String get pushWaiting => 'Waiting for the distributor\'s address…';
@@ -1752,14 +1792,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pushEndpointNotSent =>
-      'The distributor gave an address, but RedGiant could not be reached: the app tries again at the next start.';
+      'The distributor gave an address, but Rasgeth could not be reached: the app tries again at the next start.';
 
   @override
-  String get pushFailedNetwork => 'The distributor has no network now: try again in a moment.';
+  String get pushFailedNetwork =>
+      'The distributor has no network now: try again in a moment.';
 
   @override
   String get pushFailedVapid =>
-      'The distributor wants RedGiant\'s VAPID key, which is in the keychain: open the keychain on RedGiant and try again.';
+      'The distributor wants Rasgeth\'s VAPID key, which is in the keychain: open the keychain on Rasgeth and try again.';
 
   @override
   String get pushFailedAction =>
@@ -1791,14 +1832,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pushDistributorHint =>
-      'The distributor brings RedGiant\'s notifications to this phone, encrypted: you choose it (ntfy, your own ntfy, Sunup…), no Google or RedGiant cloud in between.';
+      'The distributor brings Rasgeth\'s notifications to this phone, encrypted: you choose it (ntfy, your own ntfy, Sunup…), no Google or Rasgeth cloud in between.';
 
   @override
-  String get pushNoDistributor => 'There is no UnifiedPush distributor on this phone.';
+  String get pushNoDistributor =>
+      'There is no UnifiedPush distributor on this phone.';
 
   @override
   String get pushNoDistributorMeans =>
-      'Without one, RedGiant cannot reach you while the app is closed: you see requests and answers only by opening the app (or in a linked chat, like Telegram).';
+      'Without one, Rasgeth cannot reach you while the app is closed: you see requests and answers only by opening the app (or in a linked chat, like Telegram).';
 
   @override
   String get pushNoDistributorHow =>
@@ -1827,7 +1869,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pushDesktopClosed =>
-      'With the app closed this computer gets nothing: RedGiant\'s page and the linked chats still do.';
+      'With the app closed this computer gets nothing: Rasgeth\'s page and the linked chats still do.';
 
   @override
   String get pushNotHere => 'This system has no notifications for the app.';
@@ -1848,7 +1890,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'A request answered somewhere else (the page, a chat) disappears from here too.';
 
   @override
-  String get shareTitle => 'Share to RedGiant';
+  String get shareTitle => 'Share to Rasgeth';
 
   @override
   String get shareWhat => 'What you are sharing';
@@ -1872,7 +1914,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voiceVoiceHead => 'Voice';
 
   @override
-  String get voiceAccountVoice => 'The voice is the one of the account with the key.';
+  String get voiceAccountVoice =>
+      'The voice is the one of the account with the key.';
 
   @override
   String get voiceVolumeHead => 'Volume';
@@ -1894,11 +1937,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voiceTrySentence => 'Hello, this is how I read the answers.';
 
   @override
-  String get voiceNoReader => 'RedGiant has no voice to read with yet.';
+  String get voiceNoReader => 'Rasgeth has no voice to read with yet.';
 
   @override
   String get voiceNoReaderHow =>
-      'Add a key for OpenAI, ElevenLabs or Google Gemini in RedGiant\'s Settings, Voice: then choose it here.';
+      'Add a key for OpenAI, ElevenLabs or Google Gemini in Rasgeth\'s Settings, Voice: then choose it here.';
 
   @override
   String get voiceTalkHead => 'Press and talk';
@@ -1909,7 +1952,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceTalkWhere =>
-      'It is written down by RedGiant\'s transcription (Settings, Voice, Transcription), the same as the page\'s.';
+      'It is written down by Rasgeth\'s transcription (Settings, Voice, Transcription), the same as the page\'s.';
 
   @override
   String get voiceHoldToTalk => 'Hold down to talk';
@@ -1921,21 +1964,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voiceWriting => 'Writing down what you said…';
 
   @override
-  String get voiceTooShort => 'Too short: hold the microphone down while you speak.';
+  String get voiceTooShort =>
+      'Too short: hold the microphone down while you speak.';
 
   @override
-  String get voiceHeardNothing => 'I did not hear any words: try again closer to the phone.';
+  String get voiceHeardNothing =>
+      'I did not hear any words: try again closer to the phone.';
 
   @override
   String get voiceMicDenied =>
-      'The microphone is not allowed: allow it in the system\'s settings for RGCompanion.';
+      'The microphone is not allowed: allow it in the system\'s settings for Rasgeth.';
 
   @override
-  String get voiceMicFailed => 'The microphone did not start: is another app using it?';
+  String get voiceMicFailed =>
+      'The microphone did not start: is another app using it?';
 
   @override
   String get voiceErrNoService =>
-      'RedGiant has no transcription service: choose one in Settings, Voice, Transcription.';
+      'Rasgeth has no transcription service: choose one in Settings, Voice, Transcription.';
 
   @override
   String voiceErrNoKey(String name) {
@@ -1950,7 +1996,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceErrConvert =>
-      'The recording could not be converted for whisper on RedGiant\'s computer.';
+      'The recording could not be converted for whisper on Rasgeth\'s computer.';
 
   @override
   String voiceErrTimeout(String name) {
@@ -1978,17 +2024,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get voiceErrProvider => 'This provider cannot do it: choose another one.';
+  String get voiceErrProvider =>
+      'This provider cannot do it: choose another one.';
 
   @override
-  String get voiceErrServer => 'RedGiant cannot be reached: check the connection.';
+  String get voiceErrServer =>
+      'Rasgeth cannot be reached: check the connection.';
 
   @override
   String get voiceErrOther => 'The voice did not work: try again.';
 
   @override
   String get notifyTestFailed =>
-      'The system did not show it: are notifications on for RGCompanion in its settings?';
+      'The system did not show it: are notifications on for Rasgeth in its settings?';
 
   @override
   String get tabProjects => 'Projects';
@@ -2013,7 +2061,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get advancedTerminals => 'My agents\' terminals';
 
   @override
-  String get advancedTerminalsHint => 'Read only; my own terminal has the row of extra keys.';
+  String get advancedTerminalsHint =>
+      'Read only; my own terminal has the row of extra keys.';
 
   @override
   String get codeTabTasks => 'Tasks';
@@ -2034,16 +2083,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get codeTabGit => 'Git';
 
   @override
-  String get codeArchived => 'Archived project: read only until you restore it.';
+  String get codeArchived =>
+      'Archived project: read only until you restore it.';
 
   @override
   String get codeArchivedShort => 'archived';
 
   @override
-  String get codeChangedMeanwhile => 'The file changed since you opened it: open it again.';
+  String get codeChangedMeanwhile =>
+      'The file changed since you opened it: open it again.';
 
   @override
-  String get codeUnreachable => 'RedGiant cannot be reached: check the connection.';
+  String get codeUnreachable =>
+      'Rasgeth cannot be reached: check the connection.';
 
   @override
   String get codeLoadFailed => 'It did not load: pull down to try again.';
@@ -2287,7 +2339,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get codeTextBigger => 'Bigger text';
 
   @override
-  String get codeTermReadOnly => 'Read only: the commands the agent ran and what they printed.';
+  String get codeTermReadOnly =>
+      'Read only: the commands the agent ran and what they printed.';
 
   @override
   String get codeTermNoCommands => 'No commands yet.';
@@ -2296,7 +2349,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get codeReload => 'Load again';
 
   @override
-  String get codeTermIntro => 'A shell in the project\'s sandbox, like the page\'s terminal.';
+  String get codeTermIntro =>
+      'A shell in the project\'s sandbox, like the page\'s terminal.';
 
   @override
   String get codeTermOpen => 'Open the terminal';
@@ -2399,7 +2453,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get savedTagsPlaceholder => 'New tags, separated by commas';
 
   @override
-  String get savedDone => 'Saved: it is in your saved items, with the conversation it comes from.';
+  String get savedDone =>
+      'Saved: it is in your saved items, with the conversation it comes from.';
 
   @override
   String get savedOpenArchive => 'Open';
@@ -2462,10 +2517,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get savedUnknownOrigin => 'A conversation';
 
   @override
-  String get savedFromDailyChat => 'It comes from the daily chat of the page: open it there.';
+  String get savedFromDailyChat =>
+      'It comes from the daily chat of the page: open it there.';
 
   @override
-  String get savedNotThere => 'The message is not in the conversation any more.';
+  String get savedNotThere =>
+      'The message is not in the conversation any more.';
 
   @override
   String get savedExport => 'Export as Markdown';
@@ -2573,7 +2630,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get metricsEnd => 'end';
 
   @override
-  String get metricsRestoredFromDisk => 'KV cache restored from the SSD before this request';
+  String get metricsRestoredFromDisk =>
+      'KV cache restored from the SSD before this request';
 
   @override
   String get metricsCostUnknown => 'cost not known';
@@ -2587,7 +2645,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String updNowBodyLocal(String version) {
-    return 'On this computer RedGiant does the update to $version in its own window: it downloads, closes and starts again as the new version. Here you see the steps it reports.';
+    return 'On this computer Rasgeth does the update to $version in its own window: it downloads, closes and starts again as the new version. Here you see the steps it reports.';
   }
 
   @override
@@ -2595,12 +2653,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String upd2Title(String from, String to) {
-    return 'Updating RedGiant from $from to $to';
+    return 'Updating Rasgeth from $from to $to';
   }
 
   @override
   String upd2TitleTo(String to) {
-    return 'Updating RedGiant to $to';
+    return 'Updating Rasgeth to $to';
   }
 
   @override
@@ -2633,7 +2691,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upd2Steps => 'The update\'s steps';
 
   @override
-  String get upd2Restarting => 'RedGiant is restarting, reconnecting…';
+  String get upd2Restarting => 'Rasgeth is restarting, reconnecting…';
 
   @override
   String upd2Attempt(String n, String time) {
@@ -2641,23 +2699,23 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get upd2Back => 'RedGiant answers: checking it is the new version…';
+  String get upd2Back => 'Rasgeth answers: checking it is the new version…';
 
   @override
   String get upd2Keeps =>
-      'RedGiant keeps working while it downloads: it stops only for the restart, a minute or two.';
+      'Rasgeth keeps working while it downloads: it stops only for the restart, a minute or two.';
 
   @override
   String get upd2ComesBack =>
-      'Keep the app open: it reconnects by itself as soon as RedGiant answers as the new version.';
+      'Keep the app open: it reconnects by itself as soon as Rasgeth answers as the new version.';
 
   @override
   String get upd2Local =>
-      'On this computer RedGiant does the update in its own window, with the bar and the time: here you see the steps it reports, and if this window stays open it reconnects by itself when RedGiant is back.';
+      'On this computer Rasgeth does the update in its own window, with the bar and the time: here you see the steps it reports, and if this window stays open it reconnects by itself when Rasgeth is back.';
 
   @override
   String get upd2Older =>
-      'This RedGiant does not report each step\'s details yet (they come with 3.8.1): you see where it is and for how long.';
+      'This Rasgeth does not report each step\'s details yet (they come with 3.8.1): you see where it is and for how long.';
 
   @override
   String upd2Done(String version) {
@@ -2689,7 +2747,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upd2Notes => 'The version\'s notes on GitHub';
 
   @override
-  String get upd2BackHome => 'Back to RedGiant';
+  String get upd2BackHome => 'Back to Rasgeth';
 
   @override
   String get upd2Hide => 'Hide: the update goes on';
@@ -2747,10 +2805,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upd2Step_install => 'Install the system\'s files';
 
   @override
-  String get upd2Step_restart => 'Restart RedGiant as the new version';
+  String get upd2Step_restart => 'Restart Rasgeth as the new version';
 
   @override
-  String get upd2Step_wait => 'Check that RedGiant answers';
+  String get upd2Step_wait => 'Check that Rasgeth answers';
 
   @override
   String get upd2Step_rollback => 'Put the previous version back';
@@ -2765,13 +2823,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upd2Step_installer => 'Download the installer';
 
   @override
-  String get upd2StepText_check => 'Only a version signed by RedGiant is installed.';
+  String get upd2StepText_check =>
+      'Only a version signed by Rasgeth is installed.';
 
   @override
-  String get upd2StepText_download => 'RedGiant keeps working while it downloads.';
+  String get upd2StepText_download =>
+      'Rasgeth keeps working while it downloads.';
 
   @override
-  String get upd2StepText_files => 'The programs of the system around RedGiant.';
+  String get upd2StepText_files => 'The programs of the system around Rasgeth.';
 
   @override
   String get upd2StepText_install =>
@@ -2779,7 +2839,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get upd2StepText_restart =>
-      'For a minute or two RedGiant does not answer: the app reconnects by itself.';
+      'For a minute or two Rasgeth does not answer: the app reconnects by itself.';
 
   @override
   String get upd2StepText_wait =>
@@ -2793,17 +2853,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upd2StepText_scan => 'So only what changed is downloaded.';
 
   @override
-  String get upd2StepText_build => 'The new version is prepared beside the current one.';
+  String get upd2StepText_build =>
+      'The new version is prepared beside the current one.';
 
   @override
-  String get upd2StepText_installer => 'The whole program: it installs over the current one.';
+  String get upd2StepText_installer =>
+      'The whole program: it installs over the current one.';
 
   @override
   String get upd2Why_download => 'The new version could not be downloaded.';
 
   @override
   String upd2WhyText_download(String from) {
-    return 'Nothing changed: RedGiant $from keeps working. Check that the machine reaches the internet, then press «Try again»: what came down already is not downloaded twice.';
+    return 'Nothing changed: Rasgeth $from keeps working. Check that the machine reaches the internet, then press «Try again»: what came down already is not downloaded twice.';
   }
 
   @override
@@ -2811,7 +2873,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String upd2WhyText_files(String from) {
-    return 'Every file went back as it was and RedGiant $from keeps working. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.';
+    return 'Every file went back as it was and Rasgeth $from keeps working. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.';
   }
 
   @override
@@ -2819,23 +2881,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String upd2WhyText_not_up(String from) {
-    return 'RedGiant went back to $from by itself: nothing is lost. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.';
+    return 'Rasgeth went back to $from by itself: nothing is lost. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.';
   }
 
   @override
-  String get upd2Why_no_images => 'This version has nothing for this machine\'s processor.';
+  String get upd2Why_no_images =>
+      'This version has nothing for this machine\'s processor.';
 
   @override
   String upd2WhyText_no_images(String from) {
-    return 'Nothing changed: RedGiant $from keeps working. Wait for the next version.';
+    return 'Nothing changed: Rasgeth $from keeps working. Wait for the next version.';
   }
 
   @override
-  String get upd2Why_breaking => 'This version cannot be installed over the current one.';
+  String get upd2Why_breaking =>
+      'This version cannot be installed over the current one.';
 
   @override
   String upd2WhyText_breaking(String from) {
-    return 'Nothing changed: RedGiant $from keeps working. Open RedGiant\'s page from the computer: it guides you through the clean install.';
+    return 'Nothing changed: Rasgeth $from keeps working. Open Rasgeth\'s page from the computer: it guides you through the clean install.';
   }
 
   @override
@@ -2861,7 +2925,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get upd2Why_gone => 'RedGiant does not answer any more.';
+  String get upd2Why_gone => 'Rasgeth does not answer any more.';
 
   @override
   String get upd2WhyText_gone =>
@@ -2872,19 +2936,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String upd2WhyText_start(String from) {
-    return 'Nothing changed: RedGiant $from keeps working. Try again in a while.';
+    return 'Nothing changed: Rasgeth $from keeps working. Try again in a while.';
   }
 
   @override
   String upd2WhySaid(String error) {
-    return 'RedGiant said: $error';
+    return 'Rasgeth said: $error';
   }
 
   @override
-  String get upd2ScreenTitle => 'RedGiant\'s update';
+  String get upd2ScreenTitle => 'Rasgeth\'s update';
 
   @override
-  String get deskAbout => 'About RGCompanion';
+  String get deskAbout => 'About Rasgeth';
 
   @override
   String get deskAdvancedOff => 'Turn off the advanced interface';
@@ -3057,7 +3121,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String deskFilesCount(int n) {
-    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$n files', one: '1 file');
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n files',
+      one: '1 file',
+    );
     return '$_temp0';
   }
 
@@ -3248,7 +3317,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deskNoGitShort => 'no git';
 
   @override
-  String get deskNoKeysHere => 'No keys here: credentials stay on the egress routes';
+  String get deskNoKeysHere =>
+      'No keys here: credentials stay on the egress routes';
 
   @override
   String get deskNoProject => 'Without a project';
@@ -3361,7 +3431,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get deskPushAsked => 'Asked in «For you»: the push goes once you say yes';
+  String get deskPushAsked =>
+      'Asked in «For you»: the push goes once you say yes';
 
   @override
   String get deskQuickChat => 'Quick Chat';
@@ -3446,7 +3517,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deskStopOpen => 'Stop the open agent';
 
   @override
-  String get deskStreamHint => 'Paused under the pointer · a click opens the Log';
+  String get deskStreamHint =>
+      'Paused under the pointer · a click opens the Log';
 
   @override
   String deskSubagents(int n) {
@@ -3610,7 +3682,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get limitsWeekShort => '7d';
 
   @override
-  String get deskSendMessage => 'Send the message (in the conversations\' fields)';
+  String get deskSendMessage =>
+      'Send the message (in the conversations\' fields)';
 
   @override
   String get deskFullWindow => 'Full window';
@@ -3746,10 +3819,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asMascot => 'Mascot';
 
   @override
-  String get asMascotHelp => 'Renaming it never changes its face: only you change it, here.';
+  String get asMascotHelp =>
+      'Renaming it never changes its face: only you change it, here.';
 
   @override
-  String get asMascotGod => 'God\'s mascot is drawn by hand: it is always the red giant.';
+  String get asMascotGod =>
+      'God\'s mascot is drawn by hand: it is always the red giant.';
 
   @override
   String get asName => 'Name';
@@ -3799,7 +3874,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asMode => 'How freely it works';
 
   @override
-  String get asModeHelp => 'Whatever sends, publishes, deletes or pays always waits for you.';
+  String get asModeHelp =>
+      'Whatever sends, publishes, deletes or pays always waits for you.';
 
   @override
   String get asMode_auto => 'On its own';
@@ -3814,13 +3890,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asMode_readonly => 'Read only';
 
   @override
-  String get asModeExplain_auto => 'Works on its own and asks only for what is dangerous.';
+  String get asModeExplain_auto =>
+      'Works on its own and asks only for what is dangerous.';
 
   @override
-  String get asModeExplain_manual => 'Asks you before every change to files or commands.';
+  String get asModeExplain_manual =>
+      'Asks you before every change to files or commands.';
 
   @override
-  String get asModeExplain_plan => 'Writes a plan first and starts once you approve it.';
+  String get asModeExplain_plan =>
+      'Writes a plan first and starts once you approve it.';
 
   @override
   String get asModeExplain_readonly => 'Reads and answers, changes nothing.';
@@ -3845,7 +3924,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get asMemProjectHelp => 'Every agent working on this project reads it.';
+  String get asMemProjectHelp =>
+      'Every agent working on this project reads it.';
 
   @override
   String get asMemNone => 'This agent keeps no memory of its own.';
@@ -4198,17 +4278,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'The conversation was summarised here (the earlier part, made ahead of time)';
 
   @override
-  String get cvCompactionManual => 'The conversation was summarised here, as you asked';
+  String get cvCompactionManual =>
+      'The conversation was summarised here, as you asked';
 
   @override
-  String get cvCompactionEmergency => 'The conversation was summarised here: the window was full';
+  String get cvCompactionEmergency =>
+      'The conversation was summarised here: the window was full';
 
   @override
   String get cvCompactionEngine =>
       'The subscription\'s engine summarised its conversation here (by itself)';
 
   @override
-  String get cvCompactionUndone => 'Summary undone: the whole conversation is back';
+  String get cvCompactionUndone =>
+      'Summary undone: the whole conversation is back';
 
   @override
   String get cvUndo => 'Undo';
@@ -4279,7 +4362,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cvUnqueue => 'Take it back (if the agent has not read it yet)';
 
   @override
-  String get cvSentWhileWorking => 'Sent while the agent works: it reads it as soon as it can';
+  String get cvSentWhileWorking =>
+      'Sent while the agent works: it reads it as soon as it can';
 
   @override
   String cvWriteWhileWorking(String name) {
@@ -4292,10 +4376,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get cvStopWhenBack => 'The connection is lost: «Stop» goes as soon as it is back.';
+  String get cvStopWhenBack =>
+      'The connection is lost: «Stop» goes as soon as it is back.';
 
   @override
-  String get cvSendQueued => 'Send: it is read as soon as the current work allows';
+  String get cvSendQueued =>
+      'Send: it is read as soon as the current work allows';
 
   @override
   String get cvInterrupt => 'Stop';
@@ -4320,13 +4406,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cvViaVoice => 'said by voice';
 
   @override
-  String get cvViaVoiceHint => 'Said hands-free; the agent was asked for an answer to read aloud';
+  String get cvViaVoiceHint =>
+      'Said hands-free; the agent was asked for an answer to read aloud';
 
   @override
   String get cvViaArtifact => 'from a widget';
 
   @override
-  String get cvViaArtifactHint => 'Sent by a button you clicked in an artifact or a widget';
+  String get cvViaArtifactHint =>
+      'Sent by a button you clicked in an artifact or a widget';
 
   @override
   String cvCanvasOpened(String name) {
@@ -4576,7 +4664,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get widgetKeep => 'Keep it';
 
   @override
-  String get widgetKeepHint => 'Saved as an artifact in artefatti/, and opened in the Canvas';
+  String get widgetKeepHint =>
+      'Saved as an artifact in artefatti/, and opened in the Canvas';
 
   @override
   String get widgetKeptShort => 'Kept';
@@ -4590,7 +4679,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get widgetAsks => 'It wants to send to the chat:';
 
   @override
-  String get widgetNoChat => 'It wants to send to the chat (open a conversation first):';
+  String get widgetNoChat =>
+      'It wants to send to the chat (open a conversation first):';
 
   @override
   String get widgetSend => 'Send';
@@ -4675,7 +4765,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get requestDoneClosing => 'This screen closes by itself in a few seconds.';
+  String get requestDoneClosing =>
+      'This screen closes by itself in a few seconds.';
 
   @override
   String get requestCloseHint => 'Close (Esc)';
@@ -4822,8 +4913,10 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '$n automations will be paused ($names); they run again when you restore the project.',
-      one: '1 automation will be paused ($names); it runs again when you restore the project.',
+      other:
+          '$n automations will be paused ($names); they run again when you restore the project.',
+      one:
+          '1 automation will be paused ($names); it runs again when you restore the project.',
     );
     return '$_temp0';
   }
@@ -4839,7 +4932,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Until then no agent works in it or changes its files, and your linked chats do not use it.';
 
   @override
-  String get pmFactRestore => 'God can archive and restore it too, always with your yes.';
+  String get pmFactRestore =>
+      'God can archive and restore it too, always with your yes.';
 
   @override
   String get pmStopAndArchive => 'Stop and archive';
@@ -5136,7 +5230,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get atWorkNoLimitHint => 'Every agent with work starts at once.';
 
   @override
-  String get atWorkSaved => 'Saved: it holds for the turns that start from now.';
+  String get atWorkSaved =>
+      'Saved: it holds for the turns that start from now.';
 
   @override
   String get atWorkNow => 'Now';
@@ -5162,7 +5257,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get queueTitle => 'Agents\' queue';
 
   @override
-  String get queueEmpty => 'Nobody is waiting: every agent with work is working.';
+  String get queueEmpty =>
+      'Nobody is waiting: every agent with work is working.';
 
   @override
   String queuedNth(String nth, int of) {
@@ -5250,7 +5346,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fxMake => 'Make';
 
   @override
-  String get fxPathHint => 'Name, with its folder if you want one (docs/note.md)';
+  String get fxPathHint =>
+      'Name, with its folder if you want one (docs/note.md)';
 
   @override
   String get fxUpload => 'Upload';
@@ -5396,7 +5493,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cvBoardFull => 'Full screen';
 
   @override
-  String get cvBoardCommentHere => 'A comment on this variant (optional with «I choose this»)';
+  String get cvBoardCommentHere =>
+      'A comment on this variant (optional with «I choose this»)';
 
   @override
   String get cvBoardSendComment => 'Send comment';
@@ -5405,7 +5503,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cvBoardWhole => 'A comment on the whole board';
 
   @override
-  String get cvBoardWholeHint => 'For example: I like the colour of 2 with the layout of 3';
+  String get cvBoardWholeHint =>
+      'For example: I like the colour of 2 with the layout of 3';
 
   @override
   String get cvBoardSendToAgent => 'Send to the agent';
@@ -5448,7 +5547,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cvArEmpty2 =>
-      'It lives as a file in the artefatti/ folder of a project (or of God and the assistants), so you also find it among the files on the right. To get one, ask an agent for a tool you want to keep and use again; or import a .rgartifact from another RedGiant.';
+      'It lives as a file in the artefatti/ folder of a project (or of God and the assistants), so you also find it among the files on the right. To get one, ask an agent for a tool you want to keep and use again; or import a .rgartifact from another Rasgeth.';
 
   @override
   String get cvArPlacePlatform => 'God\'s folder';
@@ -5508,14 +5607,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cvArExportZipText =>
-      'To import it into another RedGiant: the app, its manifest and the fingerprint that checks it arrived intact. It carries no permissions.';
+      'To import it into another Rasgeth: the app, its manifest and the fingerprint that checks it arrived intact. It carries no permissions.';
 
   @override
   String get cvArExportHtml => 'Download as HTML';
 
   @override
   String get cvArExportHtmlText =>
-      'To open it elsewhere. Careful: outside RedGiant it runs without the isolated frame, with the rights of the page you open it in.';
+      'To open it elsewhere. Careful: outside Rasgeth it runs without the isolated frame, with the rights of the page you open it in.';
 
   @override
   String get cvArWhereQ => 'Where should it go?';
@@ -5543,7 +5642,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cvArExportDataHint =>
-      'What the app kept on RedGiant (storage). Leave it off for a clean copy without your data.';
+      'What the app kept on Rasgeth (storage). Leave it off for a clean copy without your data.';
 
   @override
   String get cvArPerms => 'Permissions';
@@ -5601,7 +5700,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String chatFileDownloadOf(String done, String total, String speed, String left) {
+  String chatFileDownloadOf(
+    String done,
+    String total,
+    String speed,
+    String left,
+  ) {
     return '$done of $total · $speed/s · $left left';
   }
 
@@ -5662,7 +5766,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get cvSubEndedDone => 'It finished: its report went back to the agent that started it.';
+  String get cvSubEndedDone =>
+      'It finished: its report went back to the agent that started it.';
 
   @override
   String get cvSubEndedFailed => 'It did not finish its task.';
@@ -5671,7 +5776,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cvSubEndedStopped => 'It was stopped.';
 
   @override
-  String get cvSubInterrupted => 'Interrupted: the server stopped while it worked.';
+  String get cvSubInterrupted =>
+      'Interrupted: the server stopped while it worked.';
 
   @override
   String cvSubTime(String time) {
@@ -5689,7 +5795,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get cvSubNoWrite => 'It takes orders only from the agent that started it';
+  String get cvSubNoWrite =>
+      'It takes orders only from the agent that started it';
 
   @override
   String get cvSubStop => 'Stop';
@@ -5752,7 +5859,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cvCmdStatusStopped => 'stopped';
 
   @override
-  String get cvCmdStatusInterrupted => 'interrupted (RedGiant had stopped)';
+  String get cvCmdStatusInterrupted => 'interrupted (Rasgeth had stopped)';
 
   @override
   String get cvCmdOutputTitle => 'Background command';
@@ -5820,7 +5927,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get cvRoomUsageHint => 'What its answers here cost, and how full its context is';
+  String get cvRoomUsageHint =>
+      'What its answers here cost, and how full its context is';
 
   @override
   String get cvRoomWrite => 'Write to the group (@ to call someone)';
@@ -5839,7 +5947,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cvGroups => 'Groups';
 
   @override
-  String get cvGroupsEmpty => 'Several agents in one chat: «Add an agent» in any conversation.';
+  String get cvGroupsEmpty =>
+      'Several agents in one chat: «Add an agent» in any conversation.';
 
   @override
   String get cvGroupNew => 'New group';
@@ -5875,7 +5984,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cvDeleteChatConfirm => 'Delete this chat for good?';
 
   @override
-  String get cvChatToGroup => 'Go on as a group: add an agent, which gets this chat as context';
+  String get cvChatToGroup =>
+      'Go on as a group: add an agent, which gets this chat as context';
 
   @override
   String get cvAgentModelDefault => 'The default model';
@@ -5993,7 +6103,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cvScreenStarting => 'Starting the browser…';
 
   @override
-  String get cvScreenUnavailable => 'The agents\' browser needs RedGiant\'s Docker installation.';
+  String get cvScreenUnavailable =>
+      'The agents\' browser needs Rasgeth\'s Docker installation.';
 
   @override
   String get cvTeachStart => 'Teach a task';
@@ -6017,7 +6128,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cvTeachTitle => 'What is this task called? (optional)';
 
   @override
-  String get cvChatPlaceholder => 'Write a message (Enter to send, Shift+Enter for a new line)';
+  String get cvChatPlaceholder =>
+      'Write a message (Enter to send, Shift+Enter for a new line)';
 
   @override
   String get cvConversations => 'Conversations';
@@ -6075,7 +6187,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get spNoAgents => 'No agents yet: create them from the project\'s agents.';
+  String get spNoAgents =>
+      'No agents yet: create them from the project\'s agents.';
 
   @override
   String get spFiles => 'The subproject\'s files';
@@ -6175,7 +6288,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get csGiteaTile =>
-      'A small private GitHub on this computer, installed and started by RedGiant, or the Gitea you already have.';
+      'A small private GitHub on this computer, installed and started by Rasgeth, or the Gitea you already have.';
 
   @override
   String get csLinked => 'connected';
@@ -6208,7 +6321,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get csGithubHint =>
-      'With a token you make on GitHub: RedGiant creates the repositories and the agents push to them. The token stays with RedGiant, never in the agents\' boxes.';
+      'With a token you make on GitHub: Rasgeth creates the repositories and the agents push to them. The token stays with Rasgeth, never in the agents\' boxes.';
 
   @override
   String csGithubLinked(String login) {
@@ -6216,7 +6329,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get csGithubStep1 => 'Open GitHub\'s page for a new token (sign in if asked):';
+  String get csGithubStep1 =>
+      'Open GitHub\'s page for a new token (sign in if asked):';
 
   @override
   String get csGithubOpen => 'New token on GitHub';
@@ -6225,10 +6339,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get csGithubStep2 => 'Fill it in like this:';
 
   @override
-  String get csPermName => 'Token name: RedGiant';
+  String get csPermName => 'Token name: Rasgeth';
 
   @override
-  String get csPermExpiry => 'Expiration: one year (RedGiant reminds you before it ends)';
+  String get csPermExpiry =>
+      'Expiration: one year (Rasgeth reminds you before it ends)';
 
   @override
   String get csPermRepos => 'Repository access: All repositories';
@@ -6238,14 +6353,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Permissions, Repositories: Administration, Contents, Issues and Pull requests set to Read and write';
 
   @override
-  String get csGithubStep3 => 'Press Generate token at the bottom, copy it and paste it here';
+  String get csGithubStep3 =>
+      'Press Generate token at the bottom, copy it and paste it here';
 
   @override
-  String get csGithubTokenHelp => 'It starts with github_pat_. GitHub shows it only once.';
+  String get csGithubTokenHelp =>
+      'It starts with github_pat_. GitHub shows it only once.';
 
   @override
   String get csGiteaHint =>
-      'A Git server of your own, on this computer: the repositories stay here, and you look at them in the browser like on GitHub. RedGiant starts it and keeps it updated. Or connect a Gitea you already have.';
+      'A Git server of your own, on this computer: the repositories stay here, and you look at them in the browser like on GitHub. Rasgeth starts it and keeps it updated. Or connect a Gitea you already have.';
 
   @override
   String get csGiteaKind => 'Which Gitea';
@@ -6285,7 +6402,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get csGiteaUser => 'Your Gitea user name';
 
   @override
-  String get csGiteaUserHelp => 'Letters, digits, dots, dashes; for example mario.';
+  String get csGiteaUserHelp =>
+      'Letters, digits, dots, dashes; for example mario.';
 
   @override
   String get csGiteaPassword => 'A password for Gitea';
@@ -6316,12 +6434,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String csGiteaNameNotFound(String host) {
-    return 'RedGiant cannot find $host: the DNS it uses does not know that name. The guide «Your home services» in Settings › Access from outside home says what to add, and lets you try the name.';
+    return 'Rasgeth cannot find $host: the DNS it uses does not know that name. The guide «Your home services» in Settings › Access from outside home says what to add, and lets you try the name.';
   }
 
   @override
   String csGiteaHostUnreachable(String host) {
-    return 'RedGiant finds $host, but its address does not answer from here (a Tailscale address, another network?). The guide «Your home services» in Settings › Access from outside home says how to fix it.';
+    return 'Rasgeth finds $host, but its address does not answer from here (a Tailscale address, another network?). The guide «Your home services» in Settings › Access from outside home says how to fix it.';
   }
 
   @override
@@ -6383,14 +6501,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get g4SfBalancedText =>
-      'You approve what cannot be undone (publishing, history, disks, passwords, changes to RedGiant); the agents in charge approve the rest.';
+      'You approve what cannot be undone (publishing, history, disks, passwords, changes to Rasgeth); the agents in charge approve the rest.';
 
   @override
   String get g4SfFree => 'Free';
 
   @override
   String get g4SfFreeText =>
-      'The agents in charge approve almost everything; you are asked only for passwords and changes to RedGiant itself.';
+      'The agents in charge approve almost everything; you are asked only for passwords and changes to Rasgeth itself.';
 
   @override
   String get g4SfPersonalize => 'Customize';
@@ -6422,7 +6540,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Four decisions, each on one card. You change everything whenever you like from Settings.';
 
   @override
-  String get g4SfGuardQ => 'An agent wants to write outside its project. What happens?';
+  String get g4SfGuardQ =>
+      'An agent wants to write outside its project. What happens?';
 
   @override
   String get g4SfGuardAsk => 'It asks me';
@@ -6434,7 +6553,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4SfApprTitle => 'The approvals';
 
   @override
-  String get g4SfApprQ => 'Who says yes before a risky action, like deleting or publishing?';
+  String get g4SfApprQ =>
+      'Who says yes before a risky action, like deleting or publishing?';
 
   @override
   String g4SfApprCustom(int n, String of) {
@@ -6464,7 +6584,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4SfBudgetTitle => 'The spending limit';
 
   @override
-  String get g4SfBudgetQ => 'How much can RedGiant spend at most with your API keys?';
+  String get g4SfBudgetQ =>
+      'How much can Rasgeth spend at most with your API keys?';
 
   @override
   String get g4SfBudgetQFree =>
@@ -6682,7 +6803,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4CmDefaults => 'Back to the defaults';
 
   @override
-  String get g4CmSaved => 'Saved: it counts from the next command and the next message.';
+  String get g4CmSaved =>
+      'Saved: it counts from the next command and the next message.';
 
   @override
   String get g4CmUndo => 'Undo';
@@ -6704,7 +6826,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4RqModeTitle => 'Ask me or not';
 
   @override
-  String get g4RqModeQ => 'Do you want to answer the agents\' requests yourself?';
+  String get g4RqModeQ =>
+      'Do you want to answer the agents\' requests yourself?';
 
   @override
   String get g4RqModeAsk => 'Ask me';
@@ -6714,7 +6837,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get g4RqAlwaysYou =>
-      'Even with «Don\'t ask me anything», the truly dangerous requests always reach you, everywhere: deletions for good, system files, secrets leaving, real payments and RedGiant\'s own protections.';
+      'Even with «Don\'t ask me anything», the truly dangerous requests always reach you, everywhere: deletions for good, system files, secrets leaving, real payments and Rasgeth\'s own protections.';
 
   @override
   String get g4RqModeAskText =>
@@ -6735,7 +6858,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4RqTimeQ => 'How long should an agent wait for your answer?';
 
   @override
-  String get g4RqTimeQSpecial => 'How long do the truly dangerous things wait for your answer?';
+  String get g4RqTimeQSpecial =>
+      'How long do the truly dangerous things wait for your answer?';
 
   @override
   String g4RqAfterSpecialText(String time) {
@@ -6865,13 +6989,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4RqKindAutomation => 'automation';
 
   @override
-  String get g4SfSaved => 'Saved: it counts from the next action of the agents.';
+  String get g4SfSaved =>
+      'Saved: it counts from the next action of the agents.';
 
   @override
   String get g4SfCustomOn => 'Only you approve it';
 
   @override
-  String get g4CmAtWorkLead => 'Saved at once, for the turns that start from now.';
+  String get g4CmAtWorkLead =>
+      'Saved at once, for the turns that start from now.';
 
   @override
   String get g4RulesHub => 'Rules';
@@ -6914,7 +7040,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4GenAgentLangSearch => 'Search a language';
 
   @override
-  String get g4GenAgentLangSub => 'The agents reply in it from the next conversation.';
+  String get g4GenAgentLangSub =>
+      'The agents reply in it from the next conversation.';
 
   @override
   String get g4GenAgentLangTitle => 'Agents\' language';
@@ -6944,11 +7071,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get g4GenCareLead =>
-      'Whether a newer RedGiant is out, and a log to send when something goes wrong.';
+      'Whether a newer Rasgeth is out, and a log to send when something goes wrong.';
 
   @override
   String g4GenCloudPrivacy(String name) {
-    return 'With $name, what you say after the wake word goes to $name through RedGiant\'s server; the wake word itself is still heard only in this page.';
+    return 'With $name, what you say after the wake word goes to $name through Rasgeth\'s server; the wake word itself is still heard only in this page.';
   }
 
   @override
@@ -6961,11 +7088,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4GenDebugDownload => 'Download the logs';
 
   @override
-  String get g4GenDebugForced => 'Turned on by the server\'s settings (REDGIANT_DEBUG=1).';
+  String get g4GenDebugForced =>
+      'Turned on by the server\'s settings (REDGIANT_DEBUG=1).';
 
   @override
   String get g4GenDebugHelp =>
-      'Debug mode keeps a detailed log of everything RedGiant does: each step of starting a model with its times, the local engine\'s own messages, the requests, what the Windows program does. Turn it on when something is slow or goes wrong, repeat it, then download the logs and send them. It writes a lot (at most 300 MB, the oldest go first) and never writes passwords or keys.';
+      'Debug mode keeps a detailed log of everything Rasgeth does: each step of starting a model with its times, the local engine\'s own messages, the requests, what the Windows program does. Turn it on when something is slow or goes wrong, repeat it, then download the logs and send them. It writes a lot (at most 300 MB, the oldest go first) and never writes passwords or keys.';
 
   @override
   String g4GenDebugSize(String size, String files) {
@@ -6977,7 +7105,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get g4GenDebugText =>
-      'Everything RedGiant does, written in a log you can download and send.';
+      'Everything Rasgeth does, written in a log you can download and send.';
 
   @override
   String get g4GenDebugTitle => 'Diagnostics';
@@ -7058,7 +7186,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'For example: answer in Italian; code and comments in English; never push without asking.';
 
   @override
-  String get g4GenInstructionsSaved => 'Saved: conversations started from now on follow them.';
+  String get g4GenInstructionsSaved =>
+      'Saved: conversations started from now on follow them.';
 
   @override
   String get g4GenInstructionsTitle => 'Instructions for every agent';
@@ -7075,7 +7204,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get g4GenKeyHelp => 'Kept in the keychain, encrypted; it never reaches this page again.';
+  String get g4GenKeyHelp =>
+      'Kept in the keychain, encrypted; it never reaches this page again.';
 
   @override
   String g4GenKeyLabel(String name) {
@@ -7119,14 +7249,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get g4GenOwnSearchHint =>
-      'RedGiant can run its own search engine (SearXNG): free, no keys, and every model can search the web with it, local ones too.';
+      'Rasgeth can run its own search engine (SearXNG): free, no keys, and every model can search the web with it, local ones too.';
 
   @override
   String get g4GenOwnSearchOn =>
-      'RedGiant\'s search engine is on: every agent and the Chat search the web with it.';
+      'Rasgeth\'s search engine is on: every agent and the Chat search the web with it.';
 
   @override
-  String get g4GenOwnSearchStart => 'Start RedGiant\'s search engine';
+  String get g4GenOwnSearchStart => 'Start Rasgeth\'s search engine';
 
   @override
   String get g4GenOwnSearchStop => 'Switch it off';
@@ -7147,7 +7277,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get g4GenQ => 'How do you want RedGiant?';
+  String get g4GenQ => 'How do you want Rasgeth?';
 
   @override
   String get g4GenRefineAfter => 'After';
@@ -7216,7 +7346,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get g4GenSearchText => 'Lets every agent and the Chat look things up on the web.';
+  String get g4GenSearchText =>
+      'Lets every agent and the Chat look things up on the web.';
 
   @override
   String get g4GenSearchTitle => 'Web search';
@@ -7227,7 +7358,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get g4GenSearchTriedEmpty => 'It answered, but with no results for the test search.';
+  String get g4GenSearchTriedEmpty =>
+      'It answered, but with no results for the test search.';
 
   @override
   String get g4GenSearchTry => 'Try it';
@@ -7269,7 +7401,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get g4GenSttLocalHelp =>
-      'whisper.cpp, started by RedGiant: free, nothing leaves the house.';
+      'whisper.cpp, started by Rasgeth: free, nothing leaves the house.';
 
   @override
   String get g4GenSttRemote => 'whisper on another computer';
@@ -7292,17 +7424,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get g4GenUpdHelp =>
-      'RedGiant looks for a new version by itself at the first start of each day. Here you can look now.';
+      'Rasgeth looks for a new version by itself at the first start of each day. Here you can look now.';
 
   @override
-  String get g4GenVoiceHelp => 'Turns voice messages (from Telegram or the microphone) into text.';
+  String get g4GenVoiceHelp =>
+      'Turns voice messages (from Telegram or the microphone) into text.';
 
   @override
   String get g4GenVoiceKey => 'Transcription service key';
 
   @override
   String get g4GenVoiceLocalHint =>
-      'No account and nothing leaves this computer. RedGiant downloads whisper.cpp and a multilingual model once (about 560 MB, with its bar in the corner) and runs them itself.';
+      'No account and nothing leaves this computer. Rasgeth downloads whisper.cpp and a multilingual model once (about 560 MB, with its bar in the corner) and runs them itself.';
 
   @override
   String get g4GenVoiceModel => 'Transcription model';
@@ -7331,7 +7464,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4GenLook => 'Look and language';
 
   @override
-  String get g4GenBackupSaved => 'Saved: it applies to tasks given up on from now on.';
+  String get g4GenBackupSaved =>
+      'Saved: it applies to tasks given up on from now on.';
 
   @override
   String g4GenDebugSaved(String name) {
@@ -7340,7 +7474,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String g4GenNewsTitle(String version) {
-    return 'What is new in RedGiant $version';
+    return 'What is new in Rasgeth $version';
   }
 
   @override
@@ -7425,7 +7559,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4AgServices => 'Services';
 
   @override
-  String get g4AgServicesHelp => 'The services it may use. Changes apply to its new conversations.';
+  String get g4AgServicesHelp =>
+      'The services it may use. Changes apply to its new conversations.';
 
   @override
   String get g4AgNoServices => 'No services added yet.';
@@ -7455,7 +7590,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4AgRoutines => 'Routines';
 
   @override
-  String get g4AgRoutinesHelp => 'Work it does by itself at a set time or when something happens.';
+  String get g4AgRoutinesHelp =>
+      'Work it does by itself at a set time or when something happens.';
 
   @override
   String get g4AgNoRoutines => 'No routines yet.';
@@ -7593,10 +7729,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Works by itself; asks only for risky actions (as set in Safety).';
 
   @override
-  String get g4AgModeText_manual => 'Asks before every change to files or commands.';
+  String get g4AgModeText_manual =>
+      'Asks before every change to files or commands.';
 
   @override
-  String get g4AgModeText_plan => 'First proposes a plan; works only once it is approved.';
+  String get g4AgModeText_plan =>
+      'First proposes a plan; works only once it is approved.';
 
   @override
   String get g4AgModeText_readonly => 'Reads and answers, changes nothing.';
@@ -7663,7 +7801,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4AgRole_coder => 'Programmer';
 
   @override
-  String get g4AgRoleText_coder => 'Writes and changes the code, runs the tests.';
+  String get g4AgRoleText_coder =>
+      'Writes and changes the code, runs the tests.';
 
   @override
   String get g4AgRole_reviewer => 'Reviewer';
@@ -7683,7 +7822,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4AgRole_writer => 'Writer';
 
   @override
-  String get g4AgRoleText_writer => 'Documentation, READMEs and texts, clear and up to date.';
+  String get g4AgRoleText_writer =>
+      'Documentation, READMEs and texts, clear and up to date.';
 
   @override
   String get g4AgRole_tester => 'Tester';
@@ -7712,7 +7852,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4AgJob_researcher => 'Researcher';
 
   @override
-  String get g4AgJobHint_researcher => 'Looks things up on the web and reports with sources.';
+  String get g4AgJobHint_researcher =>
+      'Looks things up on the web and reports with sources.';
 
   @override
   String get g4AgJobText_researcher =>
@@ -7722,7 +7863,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4AgJob_social => 'Social media';
 
   @override
-  String get g4AgJobHint_social => 'Prepares posts and keeps an eye on your pages.';
+  String get g4AgJobHint_social =>
+      'Prepares posts and keeps an eye on your pages.';
 
   @override
   String get g4AgJobText_social =>
@@ -7732,7 +7874,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4AgJob_accounts => 'Accounts';
 
   @override
-  String get g4AgJobHint_accounts => 'Invoices, payments and expenses, in order.';
+  String get g4AgJobHint_accounts =>
+      'Invoices, payments and expenses, in order.';
 
   @override
   String get g4AgJobText_accounts =>
@@ -7742,7 +7885,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4AgJob_tech => 'Tech helper';
 
   @override
-  String get g4AgJobHint_tech => 'Answers technical questions and fixes small things.';
+  String get g4AgJobHint_tech =>
+      'Answers technical questions and fixes small things.';
 
   @override
   String get g4AgJobText_tech =>
@@ -7763,7 +7907,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get g4BuLead => 'What projects and agents spend, and how far they may go.';
+  String get g4BuLead =>
+      'What projects and agents spend, and how far they may go.';
 
   @override
   String get g4BuChart => 'Spending day by day this month';
@@ -7850,7 +7995,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get g4BuRowHint => 'This month, every project and agent, with their limits';
+  String get g4BuRowHint =>
+      'This month, every project and agent, with their limits';
 
   @override
   String g4DvRenameQ(String name) {
@@ -7866,7 +8012,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4HubTitle => 'Settings';
 
   @override
-  String get g4HubGeneral => 'Language, agents\' instructions, search, images, what\'s new';
+  String get g4HubGeneral =>
+      'Language, agents\' instructions, search, images, what\'s new';
 
   @override
   String get g4HubAgents => 'The tree of agents, new agents, assistants';
@@ -7881,7 +8028,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4HubRequests => 'Where requests reach you, how long they wait';
 
   @override
-  String get g4HubSafety => 'Guardian, who approves, spending, skills, retention';
+  String get g4HubSafety =>
+      'Guardian, who approves, spending, skills, retention';
 
   @override
   String get cvCanvasFullscreen => 'Full screen';
@@ -7967,7 +8115,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cvVwKindVideo => 'Video';
 
   @override
-  String get embedFallbackNote => 'The page is not answering: this is the app\'s simple view.';
+  String get embedFallbackNote =>
+      'The page is not answering: this is the app\'s simple view.';
 
   @override
   String get palTitle => 'Agents at most in this project';
@@ -8001,7 +8150,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get palSaved => 'Saved. It is in the history of changes, where you can undo it.';
+  String get palSaved =>
+      'Saved. It is in the history of changes, where you can undo it.';
 
   @override
   String pmAgentLimit(String n) {
@@ -8038,7 +8188,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appUpdFromServer =>
-      'GitHub does not answer: this is the version of the RedGiant you are connected to.';
+      'GitHub does not answer: this is the version of the Rasgeth you are connected to.';
 
   @override
   String get appUpdDownload => 'Download';
@@ -8063,7 +8213,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get appUpdVerified => 'Signature and checksum checked with RedGiant\'s update key.';
+  String get appUpdVerified =>
+      'Signature and checksum checked with Rasgeth\'s update key.';
 
   @override
   String get appUpdRestart => 'Update and restart';
@@ -8080,7 +8231,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appUpdClose => 'Close';
 
   @override
-  String get appUpdErrNetwork => 'GitHub cannot be reached now. Try again later.';
+  String get appUpdErrNetwork =>
+      'GitHub cannot be reached now. Try again later.';
 
   @override
   String get appUpdErrSignature =>
@@ -8092,13 +8244,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get appUpdErrChecksum => 'The downloaded file is not the signed one: it was deleted.';
+  String get appUpdErrChecksum =>
+      'The downloaded file is not the signed one: it was deleted.';
 
   @override
-  String get appUpdErrDisk => 'The downloaded file could not be kept or opened.';
+  String get appUpdErrDisk =>
+      'The downloaded file could not be kept or opened.';
 
   @override
-  String get appUpdErrSwap => 'The replacement could not start: nothing changed.';
+  String get appUpdErrSwap =>
+      'The replacement could not start: nothing changed.';
 
   @override
   String appUpdDone(String app, String version, String from) {
@@ -8112,17 +8267,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String appUpdCarried(String app) {
-    return 'This copy of $app comes with RedGiant: it is updated with RedGiant.';
+    return 'This copy of $app comes with Rasgeth: it is updated with Rasgeth.';
   }
 
   @override
-  String get appUpdDev => 'A build from the sources: it does not update itself.';
+  String get appUpdDev =>
+      'A build from the sources: it does not update itself.';
 
   @override
   String get auAsstNewRoutine => 'New routine';
 
   @override
-  String get auAutoOff => 'Switched off: it does not run until you switch it on.';
+  String get auAutoOff =>
+      'Switched off: it does not run until you switch it on.';
 
   @override
   String get auAutoOn => 'Switched on';
@@ -8147,13 +8304,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auAutoWho => 'Who does it';
 
   @override
-  String get auAutoWhoHelp => 'God sees every project; a project\'s lead and agents only theirs.';
+  String get auAutoWhoHelp =>
+      'God sees every project; a project\'s lead and agents only theirs.';
 
   @override
   String get auAutoYaml => 'The recipe (for experts)';
 
   @override
-  String get auAutoYamlHint => 'What the form writes. Changed here, it is saved as it is.';
+  String get auAutoYamlHint =>
+      'What the form writes. Changed here, it is saved as it is.';
 
   @override
   String get auAutomationNotices => 'Automation messages';
@@ -8183,14 +8342,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'An agent does something for you: every morning, every week, on an email or a push.';
 
   @override
-  String get auAwQ => 'What should RedGiant do on its own?';
+  String get auAwQ => 'What should Rasgeth do on its own?';
 
   @override
   String get auAwReminderText =>
       'A message for you on the day and at the time you choose, as you wrote it.';
 
   @override
-  String get auAwSourcesLead => 'What automations can listen to besides the clock.';
+  String get auAwSourcesLead =>
+      'What automations can listen to besides the clock.';
 
   @override
   String get auAwSourcesTitle => 'Connections';
@@ -8294,7 +8454,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auAxDoesAgent => 'An agent works';
 
   @override
-  String get auAxDoesHelp => 'An agent does some work, or a plain message reaches you as written.';
+  String get auAxDoesHelp =>
+      'An agent does some work, or a plain message reaches you as written.';
 
   @override
   String get auAxDoesReminder => 'Just a message';
@@ -8330,7 +8491,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auAxFilesPath => 'Folder';
 
   @override
-  String get auAxFilesPathHelp => 'Inside the project; a dot is the whole project.';
+  String get auAxFilesPathHelp =>
+      'Inside the project; a dot is the whole project.';
 
   @override
   String get auAxFilesPattern => 'Only these files';
@@ -8339,7 +8501,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auAxFilesPatternHelp => 'For example *.pdf; empty: every file.';
 
   @override
-  String get auAxFilesProjectHelp => 'Make a project first: the folder is inside one.';
+  String get auAxFilesProjectHelp =>
+      'Make a project first: the folder is inside one.';
 
   @override
   String get auAxFiles_added => 'New files';
@@ -8419,13 +8582,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'Write what should happen, as you would say it to a person. God answers in a conversation of its own and builds the automation with you.';
 
   @override
-  String get auAxMagicListLead => 'Built with God: open one to go on with the conversation.';
+  String get auAxMagicListLead =>
+      'Built with God: open one to go on with the conversation.';
 
   @override
   String get auAxMagicListTitle => 'Magic automations';
 
   @override
-  String get auAxMagicMissing => 'Before you can approve, set up what is missing:';
+  String get auAxMagicMissing =>
+      'Before you can approve, set up what is missing:';
 
   @override
   String get auAxMagicNeeds => 'Still needed';
@@ -8438,7 +8603,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auAxMagicPromise1 => 'Nothing starts without your yes.';
 
   @override
-  String get auAxMagicPromise2 => 'New tools and skills are tried apart and wait for you.';
+  String get auAxMagicPromise2 =>
+      'New tools and skills are tried apart and wait for you.';
 
   @override
   String get auAxMagicPromise3 =>
@@ -8505,19 +8671,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auAxMessageChat => 'Only in this chat';
 
   @override
-  String get auAxMessageChatHelp => 'The chat\'s number, for a group; empty: any chat.';
+  String get auAxMessageChatHelp =>
+      'The chat\'s number, for a group; empty: any chat.';
 
   @override
   String get auAxMessageFrom => 'From whom';
 
   @override
-  String get auAxMessageFromHelp => 'Part of the name or the number; empty: anyone linked.';
+  String get auAxMessageFromHelp =>
+      'Part of the name or the number; empty: anyone linked.';
 
   @override
   String get auAxMessageHandle => 'The message is for the automation only';
 
   @override
-  String get auAxMessageHandleHelp => 'Demi-God does not answer it: the automation does.';
+  String get auAxMessageHandleHelp =>
+      'Demi-God does not answer it: the automation does.';
 
   @override
   String get auAxMessageWhere => 'On which chats (none chosen: all of them)';
@@ -8529,7 +8698,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auAxMessageWordsPlaceholder => 'shopping, /expense';
 
   @override
-  String get auAxMissed => 'If RedGiant was off at its time';
+  String get auAxMissed => 'If Rasgeth was off at its time';
 
   @override
   String get auAxMissedRun => 'Do it as soon as it is on';
@@ -8626,7 +8795,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auAxRunQueued => 'waiting';
 
   @override
-  String get auAxRunTriggers => 'email,chat message,files,another automation,task,startup,new try';
+  String get auAxRunTriggers =>
+      'email,chat message,files,another automation,task,startup,new try';
 
   @override
   String auAxSayAfter(String name) {
@@ -8709,7 +8879,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get auAxSayStartup => 'When RedGiant starts';
+  String get auAxSayStartup => 'When Rasgeth starts';
 
   @override
   String get auAxSayTask => 'When a task ends';
@@ -8772,7 +8942,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auAxStart_message => 'A message in a chat';
 
   @override
-  String get auAxStart_startup => 'When RedGiant starts';
+  String get auAxStart_startup => 'When Rasgeth starts';
 
   @override
   String get auAxStart_task => 'When a task ends';
@@ -8781,7 +8951,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auAxStart_time => 'At set times';
 
   @override
-  String get auAxStartupHelp => 'It starts every time RedGiant is switched on.';
+  String get auAxStartupHelp => 'It starts every time Rasgeth is switched on.';
 
   @override
   String get auAxTask_abandoned => 'Given up';
@@ -8820,7 +8990,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auAxTellNever => 'Never';
 
   @override
-  String get auAxTellReplyHelp => 'A run started by a chat message answers in that chat too.';
+  String get auAxTellReplyHelp =>
+      'A run started by a chat message answers in that chat too.';
 
   @override
   String get auAxTellSomeHelp => 'Only where you chose.';
@@ -8910,7 +9081,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auDelete => 'Delete';
 
   @override
-  String get auDeleteAutomationConfirm => 'Delete this automation and its history?';
+  String get auDeleteAutomationConfirm =>
+      'Delete this automation and its history?';
 
   @override
   String get auDeliveryDelivered => 'delivered';
@@ -8997,7 +9169,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get auReminderPurpose =>
-      'RedGiant sends you this text on Telegram at the time you choose, once. No agent, no cost.';
+      'Rasgeth sends you this text on Telegram at the time you choose, once. No agent, no cost.';
 
   @override
   String get auReminderSave => 'Save the reminder';
@@ -9042,10 +9214,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auTplDesc_blank => 'You choose when, who and what.';
 
   @override
-  String get auTplDesc_morning => 'Every working day at 8: what happened on every project.';
+  String get auTplDesc_morning =>
+      'Every working day at 8: what happened on every project.';
 
   @override
-  String get auTplDesc_spending => 'On the 1st of the month: what was spent and where.';
+  String get auTplDesc_spending =>
+      'On the 1st of the month: what was spent and where.';
 
   @override
   String get auTplDesc_weekly => 'Fridays at 17: the week in one message.';
@@ -9155,14 +9329,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get auWhenRepoHelp =>
-      'RedGiant adds the webhook to the project\'s repository by itself: on Gitea at once, on GitHub once access from outside home is on.';
+      'Rasgeth adds the webhook to the project\'s repository by itself: on Gitea at once, on GitHub once access from outside home is on.';
 
   @override
   String get auWhenWebhook => 'When a web call arrives (webhook)';
 
   @override
   String get auWhenWebhookHelp =>
-      'Another program (a site, a form, GitHub…) calls RedGiant\'s address; the address and its secret appear after saving.';
+      'Another program (a site, a form, GitHub…) calls Rasgeth\'s address; the address and its secret appear after saving.';
 
   @override
   String auWhenWeekdays(String time) {
@@ -9243,7 +9417,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Automations can be changed only by the person (not from a project\'s device).';
 
   @override
-  String get knAsstSavedNewChats => 'Saved: it applies to its new conversations.';
+  String get knAsstSavedNewChats =>
+      'Saved: it applies to its new conversations.';
 
   @override
   String get knCompactAtHint =>
@@ -9290,7 +9465,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knCompactKeepNone => 'nothing';
 
   @override
-  String get knCompactKeepTitle => 'How much of the latest part to keep as it is';
+  String get knCompactKeepTitle =>
+      'How much of the latest part to keep as it is';
 
   @override
   String knCompactKeepValue(String n) {
@@ -9301,19 +9477,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knErr_memory_empty => 'Write something to remember.';
 
   @override
-  String get knErr_memory_forgotten => 'A memory forgotten for good cannot come back.';
+  String get knErr_memory_forgotten =>
+      'A memory forgotten for good cannot come back.';
 
   @override
-  String get knErr_memory_full => 'The memory is full: delete or merge some old memories first.';
+  String get knErr_memory_full =>
+      'The memory is full: delete or merge some old memories first.';
 
   @override
   String get knErr_memory_gone => 'That memory is not there any more.';
 
   @override
-  String get knErr_memory_long => 'A memory is at most 400 characters: write it shorter.';
+  String get knErr_memory_long =>
+      'A memory is at most 400 characters: write it shorter.';
 
   @override
-  String get knErr_memory_moved => 'The memory changed again since: undo the newer change first.';
+  String get knErr_memory_moved =>
+      'The memory changed again since: undo the newer change first.';
 
   @override
   String get knErr_memory_same => 'Another memory already says the same.';
@@ -9337,7 +9517,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get knJob_download_pgvector =>
-      'Downloading pgvector, the search by meaning in RedGiant\'s database (only once)';
+      'Downloading pgvector, the search by meaning in Rasgeth\'s database (only once)';
 
   @override
   String get knJob_error_checksum =>
@@ -9388,7 +9568,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knKbAgentNever => 'Never';
 
   @override
-  String get knKbAgentNewOnly => 'It changes from the agent\'s next conversation.';
+  String get knKbAgentNewOnly =>
+      'It changes from the agent\'s next conversation.';
 
   @override
   String knKbAgentNone(String name) {
@@ -9449,7 +9630,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knKbCloudModelName => 'Model';
 
   @override
-  String get knKbCloudText => 'OpenAI, Voyage, Cohere, Gemini, Mistral, Jina or your own';
+  String get knKbCloudText =>
+      'OpenAI, Voyage, Cohere, Gemini, Mistral, Jina or your own';
 
   @override
   String get knKbCloudTitle => 'An online service';
@@ -9495,11 +9677,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'The agents that may read this collection will be able to find and quote what you wrote in your conversations and what the agents answered.';
 
   @override
-  String get knKbConsentChatsYes => 'Yes, the agents may read these conversations';
+  String get knKbConsentChatsYes =>
+      'Yes, the agents may read these conversations';
 
   @override
   String get knKbConsentMail =>
-      'The agents that may read this collection will be able to find and quote your mail. RedGiant only reads the inbox: it never marks, moves or deletes a message.';
+      'The agents that may read this collection will be able to find and quote your mail. Rasgeth only reads the inbox: it never marks, moves or deletes a message.';
 
   @override
   String get knKbConsentMailYes => 'Yes, the agents may read this mail';
@@ -9510,7 +9693,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get knKbDiskLead => 'What the knowledge takes, and whether the backup carries it.';
+  String get knKbDiskLead =>
+      'What the knowledge takes, and whether the backup carries it.';
 
   @override
   String get knKbDiskModels => 'Models';
@@ -9551,13 +9735,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knKbErr_bad_choice => 'That choice is not possible.';
 
   @override
-  String get knKbErr_bad_source => 'That source cannot be read: check the path or the address.';
+  String get knKbErr_bad_source =>
+      'That source cannot be read: check the path or the address.';
 
   @override
-  String get knKbErr_embedding_failed => 'The model did not answer: check the key and try again.';
+  String get knKbErr_embedding_failed =>
+      'The model did not answer: check the key and try again.';
 
   @override
-  String get knKbErr_no_vector => 'Searching by meaning is not ready on this computer yet.';
+  String get knKbErr_no_vector =>
+      'Searching by meaning is not ready on this computer yet.';
 
   @override
   String get knKbErr_not_found => 'It is not there any more.';
@@ -9569,16 +9756,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knKbFileExample => '/home/me/manual.pdf';
 
   @override
-  String get knKbFileHelp => 'Its full path on the computer where RedGiant runs.';
+  String get knKbFileHelp =>
+      'Its full path on the computer where Rasgeth runs.';
 
   @override
   String get knKbFilePath => 'The file';
 
   @override
-  String get knKbFolderExample => '/home/me/Documents or C:\\Users\\me\\Documents';
+  String get knKbFolderExample =>
+      '/home/me/Documents or C:\\Users\\me\\Documents';
 
   @override
-  String get knKbFolderHelp => 'Its full path on the computer where RedGiant runs.';
+  String get knKbFolderHelp =>
+      'Its full path on the computer where Rasgeth runs.';
 
   @override
   String get knKbFolderPath => 'The folder';
@@ -9643,7 +9833,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get knKbLead =>
-      'Choose folders, files and pages: RedGiant reads them, cuts them into pieces and finds them by what they mean. The agents say where each answer comes from, and one click opens the file at that point.';
+      'Choose folders, files and pages: Rasgeth reads them, cuts them into pieces and finds them by what they mean. The agents say where each answer comes from, and one click opens the file at that point.';
 
   @override
   String knKbLeftOut(String n) {
@@ -9685,7 +9875,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get knKbMeaningOffTitle => 'Searching by meaning is off: only by words';
+  String get knKbMeaningOffTitle =>
+      'Searching by meaning is off: only by words';
 
   @override
   String get knKbMeaningOff_downloading =>
@@ -9737,7 +9928,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knKbNoCols => 'No collection yet.';
 
   @override
-  String get knKbNoMailboxes => 'No mailbox is connected yet: add one in Automations.';
+  String get knKbNoMailboxes =>
+      'No mailbox is connected yet: add one in Automations.';
 
   @override
   String get knKbNoProjects => 'There is no project yet.';
@@ -9800,10 +9992,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get knKbPickFile => 'Choose a file in RedGiant';
+  String get knKbPickFile => 'Choose a file in Rasgeth';
 
   @override
-  String get knKbPickFolder => 'Choose a folder in RedGiant';
+  String get knKbPickFolder => 'Choose a folder in Rasgeth';
 
   @override
   String get knKbPickOther => 'Choose another';
@@ -9818,7 +10010,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knKbPickUp => 'Up one folder';
 
   @override
-  String get knKbPickWhere => 'Your projects and RedGiant\'s folders';
+  String get knKbPickWhere => 'Your projects and Rasgeth\'s folders';
 
   @override
   String get knKbPlaceAssistants => 'The assistants\' desk';
@@ -9859,7 +10051,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knKbRebuild => 'Rebuild';
 
   @override
-  String get knKbRebuildHelp => 'Reads everything again with the same model, from the start.';
+  String get knKbRebuildHelp =>
+      'Reads everything again with the same model, from the start.';
 
   @override
   String get knKbRebuildQ => 'Rebuild the index?';
@@ -9963,7 +10156,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knKbSrcState_waiting => 'Waiting';
 
   @override
-  String get knKbStateEmpty => 'Nothing to search yet: make a collection and add a folder.';
+  String get knKbStateEmpty =>
+      'Nothing to search yet: make a collection and add a folder.';
 
   @override
   String get knKbStateNoModel =>
@@ -9974,7 +10168,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Searching by meaning is not ready on this computer yet: for now it searches by words.';
 
   @override
-  String get knKbStatePaused => 'Paused: the searches work, nothing new is read.';
+  String get knKbStatePaused =>
+      'Paused: the searches work, nothing new is read.';
 
   @override
   String knKbStateReady(String n) {
@@ -9996,7 +10191,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knKbThreadsAuto => 'automatic';
 
   @override
-  String get knKbThreadsHelp => 'Automatic leaves most of the processor to you.';
+  String get knKbThreadsHelp =>
+      'Automatic leaves most of the processor to you.';
 
   @override
   String get knKbThreadsTitle => 'How much of the processor';
@@ -10028,7 +10224,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knKbTryTitle => 'Try a search';
 
   @override
-  String get knKbTryWordsOnly => 'Searched by words only (no model for the meaning yet).';
+  String get knKbTryWordsOnly =>
+      'Searched by words only (no model for the meaning yet).';
 
   @override
   String get knKbUploadFiles => 'Send files from this computer';
@@ -10073,7 +10270,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knKbWhy_encrypted => 'Protected by a password';
 
   @override
-  String get knKbWhy_needs_libreoffice => 'An old Office file: it needs LibreOffice.';
+  String get knKbWhy_needs_libreoffice =>
+      'An old Office file: it needs LibreOffice.';
 
   @override
   String get knKbWhy_needs_ocr =>
@@ -10089,18 +10287,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knMemAdd => 'Add';
 
   @override
-  String get knMemAddPlaceholder => 'Something to remember, e.g. I prefer short answers';
+  String get knMemAddPlaceholder =>
+      'Something to remember, e.g. I prefer short answers';
 
   @override
   String get knMemAlready => 'Already remembered.';
 
   @override
   String get knMemAutoOff =>
-      'Off: RedGiant learns nothing by itself. You can still add memories here, or ask an agent to remember something.';
+      'Off: Rasgeth learns nothing by itself. You can still add memories here, or ask an agent to remember something.';
 
   @override
   String get knMemAutoOn =>
-      'After you write, RedGiant notes what stays true about you: tastes, work, how you like answers. It reads only your own messages, never emails, web pages or automations, and never notes passwords.';
+      'After you write, Rasgeth notes what stays true about you: tastes, work, how you like answers. It reads only your own messages, never emails, web pages or automations, and never notes passwords.';
 
   @override
   String get knMemAutoTitle => 'Learn by itself from the conversations';
@@ -10150,7 +10349,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get knMemEmpty =>
-      'RedGiant knows nothing about you yet. Talk with an agent, or write here something to remember.';
+      'Rasgeth knows nothing about you yet. Talk with an agent, or write here something to remember.';
 
   @override
   String get knMemEyebrow => 'Shared memory';
@@ -10160,7 +10359,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get knMemForgetText =>
-      'RedGiant deletes it, and its words go from the list of changes too. It can never be brought back.';
+      'Rasgeth deletes it, and its words go from the list of changes too. It can never be brought back.';
 
   @override
   String get knMemForgetTitle => 'Forget it for good?';
@@ -10177,13 +10376,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knMemFromUntitled => 'from a conversation';
 
   @override
-  String get knMemGoShared => 'Shared memory: what RedGiant knows about you';
+  String get knMemGoShared => 'Shared memory: what Rasgeth knows about you';
 
   @override
   String get knMemGoSharedOpen => 'Open';
 
   @override
-  String get knMemGoSharedText => 'Used by every agent and updated by itself while you talk.';
+  String get knMemGoSharedText =>
+      'Used by every agent and updated by itself while you talk.';
 
   @override
   String get knMemHistory => 'Recent changes';
@@ -10236,7 +10436,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get knMemProjectHelp => 'Every agent working on this project reads it.';
+  String get knMemProjectHelp =>
+      'Every agent working on this project reads it.';
 
   @override
   String knMemProjectTitle(String name) {
@@ -10266,7 +10467,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knMemSummaryTitle => 'Summaries of long conversations';
 
   @override
-  String get knMemTitle => 'What RedGiant knows about you';
+  String get knMemTitle => 'What Rasgeth knows about you';
 
   @override
   String get knMemUndid_added => 'Brought back';
@@ -10321,10 +10522,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knWzDoneBtn => 'Done';
 
   @override
-  String get knHubKnowledge => 'Your documents the agents can search: collections, sources, models';
+  String get knHubKnowledge =>
+      'Your documents the agents can search: collections, sources, models';
 
   @override
-  String get knHubMemory => 'What every agent knows about you, with every change undoable';
+  String get knHubMemory =>
+      'What every agent knows about you, with every change undoable';
 
   @override
   String get cvSaveFailedShort => 'Not saved';
@@ -10343,4 +10546,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cvAskedAgent => 'Put in the conversation\'s message';
+
+  @override
+  String get renameNoticeTitle => 'RedGiant is now called Rasgeth';
+
+  @override
+  String get renameNoticeText =>
+      'The same program, with a new name and a new icon: your servers, conversations and settings are where they were.';
 }

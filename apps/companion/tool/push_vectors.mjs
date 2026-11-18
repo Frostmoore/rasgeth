@@ -28,7 +28,7 @@ const info = (over) => ({
 });
 
 const notices = {
-  request: pushFor({ type: "approval", info: info() }, "it", "RedGiant di casa"),
+  request: pushFor({ type: "approval", info: info() }, "it", "Rasgeth di casa"),
   critical: pushFor(
     {
       type: "approval",
@@ -42,8 +42,8 @@ const notices = {
     "en",
     "Home",
   ),
-  withdrawal: pushWithdrawal("r1", "app (Pixel)", "it", "RedGiant di casa"),
-  test: pushTest("it", "RedGiant di casa", "2026-11-16T10:00:00.000Z"),
+  withdrawal: pushWithdrawal("r1", "app (Pixel)", "it", "Rasgeth di casa"),
+  test: pushTest("it", "Rasgeth di casa", "2026-11-16T10:00:00.000Z"),
 };
 
 const out = {

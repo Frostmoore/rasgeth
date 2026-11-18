@@ -166,7 +166,7 @@ void main() {
     await done(tester);
   });
 
-  testWidgets('a RedGiant without the browser says so', (tester) async {
+  testWidgets('a Rasgeth without the browser says so', (tester) async {
     server.browserMissing = true;
     await open(tester);
     expect(find.byKey(const Key('browser-unavailable')), findsOneWidget);

@@ -2,7 +2,7 @@
 // the text in use (its own, or the built-in one as a starting point), Save, «Restore the built-in
 // ones», «Improve the instructions» with its estimate, and the line saying they apply to new
 // conversations; God's and every agent's through `/api/agents/:id/prompt`, the Chat's through
-// `/api/chat/prompt`. Against the fake RedGiant.
+// `/api/chat/prompt`. Against the fake Rasgeth.
 import 'dart:io';
 
 import 'package:flutter/material.dart';

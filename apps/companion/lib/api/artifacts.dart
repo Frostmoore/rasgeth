@@ -4,6 +4,8 @@
 // `capabilitySentence`), checked against `test/fixtures/artifact_vectors.json`
 // (tool/artifact_vectors.mjs).
 
+import '../brand.dart';
+
 /// The caps «ask» may have, and the one preselected (`ARTIFACT_ASK_CAPS`, `…_DEFAULT`).
 const artifactAskCaps = [0.1, 0.5, 2.0, 5.0];
 const artifactAskCapDefault = 0.5;
@@ -54,8 +56,8 @@ String capabilitySentence(String lang, String capability, [String? agent]) {
   }
   if (c.kind == 'storage') {
     return it
-        ? 'tenere dati suoi su RedGiant (solo testo, fino a 5 MB)'
-        : 'keep data of its own on RedGiant (text only, up to 5 MB)';
+        ? 'tenere dati suoi su $kProductName (solo testo, fino a 5 MB)'
+        : 'keep data of its own on $kProductName (text only, up to 5 MB)';
   }
   final who = agent != null && agent.isNotEmpty
       ? (it ? '«$agent»' : '“$agent”')

@@ -170,6 +170,11 @@ class AppController extends ChangeNotifier {
   Locale? locale;
   bool reduceMotion = false;
 
+  /// The one-time «RedGiant is now called Rasgeth» was closed on this device (plan 3.9.0,
+  /// choice 17; the page's `rg.renameSeen`). Read at [restore]: until then (and in a test that
+  /// never restores) nothing is shown.
+  bool renameSeen = true;
+
   /// The advanced interface (G40.11, Tu › Interfaccia), per RedGiant: the projects' git state
   /// and Files, Diff and Terminal in every agent's sheet (Projects is in the bar anyway, G42.5).
   bool advanced = false;
@@ -306,6 +311,12 @@ class AppController extends ChangeNotifier {
   /// The places in the bar now.
   List<AppTab> get tabs => AppTab.values;
 
+  void dismissRenameNotice() {
+    renameSeen = true;
+    unawaited(prefs.set('renameSeen', '1'));
+    notifyListeners();
+  }
+
   void setReduceMotion(bool v) {
     reduceMotion = v;
     unawaited(prefs.set('reduceMotion', v ? '1' : null));
@@ -372,6 +383,7 @@ class AppController extends ChangeNotifier {
     final lang = await prefs.get('locale');
     locale = lang == null ? null : Locale(lang);
     reduceMotion = await prefs.get('reduceMotion') == '1';
+    renameSeen = await prefs.get('renameSeen') == '1';
     commandStripMin = await prefs.get('cmdStrip') == 'min';
     try {
       final seen = jsonDecode(await prefs.get('subSeen') ?? '{}');

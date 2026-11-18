@@ -1,4 +1,4 @@
-// 3.8.6: two devices on one RedGiant see each other's messages live. The fake server sends a
+// 3.8.6: two devices on one Rasgeth see each other's messages live. The fake server sends a
 // conversation's events only to the connections that follow it and honours `session.unfollow`, as
 // core.follow and ws.ts do; before, it sent them to the writer only and hid the bugs below.
 import 'dart:async';

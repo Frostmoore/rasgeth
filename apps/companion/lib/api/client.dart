@@ -17,6 +17,7 @@ import 'settings_types.dart';
 import 'transport.dart';
 import 'turn_queue.dart';
 import 'types.dart';
+import '../brand.dart';
 
 /// An answer the app can explain: the server's message and its `code` when it gives one.
 class ApiException implements Exception {
@@ -118,7 +119,7 @@ class RedGiantClient {
       body = null;
     }
     if (r.status >= 200 && r.status < 300) {
-      if (body == null) throw ApiException(0, 'Not a RedGiant answer (${r.status})');
+      if (body == null) throw ApiException(0, 'Not a $kProductName answer (${r.status})');
       return body;
     }
     final m = body is Map<String, dynamic> ? body : const <String, dynamic>{};
@@ -136,12 +137,12 @@ class RedGiantClient {
 
   Map<String, dynamic> _object(Object? o) {
     if (o is Map<String, dynamic>) return o;
-    throw const ApiException(0, 'Not a RedGiant answer');
+    throw const ApiException(0, 'Not a $kProductName answer');
   }
 
   List<Map<String, dynamic>> _array(Object? o) {
     if (o is List) return o.whereType<Map<String, dynamic>>().toList();
-    throw const ApiException(0, 'Not a RedGiant answer');
+    throw const ApiException(0, 'Not a $kProductName answer');
   }
 
   Future<Object?> _get(String path, [Map<String, String>? query]) async =>
@@ -156,7 +157,7 @@ class RedGiantClient {
     try {
       return AppHello.fromJson(_object(r));
     } on FormatException {
-      throw const ApiException(0, 'Not a RedGiant');
+      throw const ApiException(0, 'Not a $kProductName');
     }
   }
 
@@ -179,7 +180,7 @@ class RedGiantClient {
       token = created.token;
       return created;
     } on FormatException {
-      throw const ApiException(0, 'Not a RedGiant answer');
+      throw const ApiException(0, 'Not a $kProductName answer');
     }
   }
 
@@ -257,7 +258,7 @@ class RedGiantClient {
   /// `POST /api/sessions`: a new conversation with [agentId].
   Future<String> newSession(String agentId) async {
     final id = _object(await _post('/api/sessions', {'agentId': agentId}))['sessionId'];
-    if (id is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    if (id is! String) throw const ApiException(0, 'Not a $kProductName answer');
     return id;
   }
 
@@ -266,7 +267,7 @@ class RedGiantClient {
     final id = _object(
       await _post('/api/agents/${Uri.encodeComponent(agentId)}/work-session', const {}),
     )['sessionId'];
-    if (id is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    if (id is! String) throw const ApiException(0, 'Not a $kProductName answer');
     return id;
   }
 
@@ -367,7 +368,7 @@ class RedGiantClient {
   /// `POST /api/agents/:id/stop` (3.8.9: a pause): its turns stop, its open tasks wait.
   Future<void> stopAgentForGood(String agentId) => _post(
     '/api/agents/${Uri.encodeComponent(agentId)}/stop',
-    const {'reason': 'stopped from RGCompanion'},
+    const {'reason': 'stopped from the $kProductName app'},
   );
 
   /// `POST /api/agents/:id/resume` (3.8.9): a stopped agent works again (with those stopped under
@@ -704,7 +705,7 @@ class RedGiantClient {
         'from': {'agentId': agentId, 'sessionId': sessionId},
       }),
     )['id'];
-    if (id is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    if (id is! String) throw const ApiException(0, 'Not a $kProductName answer');
     return id;
   }
 
@@ -1120,7 +1121,7 @@ class RedGiantClient {
   /// session it opens is the channel's own.
   Future<String> firstAccess(String password) async {
     final t = _object(await _post('/api/auth/first-access', {'password': password}))['token'];
-    if (t is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    if (t is! String) throw const ApiException(0, 'Not a $kProductName answer');
     return t;
   }
 
@@ -1132,7 +1133,7 @@ class RedGiantClient {
         if (code != null && code.isNotEmpty) 'code': code,
       }),
     )['token'];
-    if (t is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    if (t is! String) throw const ApiException(0, 'Not a $kProductName answer');
     return t;
   }
 
@@ -1175,7 +1176,7 @@ class RedGiantClient {
   /// `POST /api/subscriptions/claude/login`: Anthropic's page, to open in the browser.
   Future<String> claudeLogin({required bool ack}) async {
     final u = _object(await _post('/api/subscriptions/claude/login', {'ack': ack}))['url'];
-    if (u is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    if (u is! String) throw const ApiException(0, 'Not a $kProductName answer');
     return u;
   }
 
@@ -1513,7 +1514,7 @@ class RedGiantClient {
     final url = _object(
       await _get('/api/sessions/${Uri.encodeComponent(sessionId)}/widgets/$seq/$index/link'),
     )['url'];
-    if (url is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    if (url is! String) throw const ApiException(0, 'Not a $kProductName answer');
     return url;
   }
 
@@ -1532,7 +1533,7 @@ class RedGiantClient {
       await _post('/api/canvas/link', {'kind': 'file', 'scope': scope, 'path': path}),
     );
     final url = r['url'];
-    if (url is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    if (url is! String) throw const ApiException(0, 'Not a $kProductName answer');
     return (url: url, artifact: r['artifact'] == true);
   }
 
@@ -1561,7 +1562,7 @@ class RedGiantClient {
         'path': ?path,
       }),
     )['url'];
-    if (url is! String) throw const ApiException(0, 'Not a RedGiant answer');
+    if (url is! String) throw const ApiException(0, 'Not a $kProductName answer');
     return url;
   }
 

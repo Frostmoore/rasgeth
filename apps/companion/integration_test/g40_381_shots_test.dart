@@ -1,4 +1,4 @@
-// G40.14 and G40.16 in the real app against a real RedGiant (the demo server, FakeProvider): the
+// G40.14 and G40.16 in the real app against a real Rasgeth (the demo server, FakeProvider): the
 // Chat's product cards with the pictures the server downloaded, a passage selected with our menu
 // and saved with a note and tags, «Rispondi a questo» above the composer, the whole message saved
 // from its menu, «Salvati» (search, edit, export) and the way back to the passage lit up. Run by

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=Rasgeth App
+GenericName=Rasgeth
+Comment=The Rasgeth app
+Comment[it]=L'app di Rasgeth
+Exec="@EXEC@"
+Icon=rasgeth-app
+Terminal=false
+Categories=Utility;Development;
+StartupWMClass=rasgeth-app

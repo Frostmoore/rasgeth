@@ -1,4 +1,4 @@
-// G42.5: projects, files and terminal, native, against the fake RedGiant (which answers as
+// G42.5: projects, files and terminal, native, against the fake Rasgeth (which answers as
 // app.ts, projects.ts, setup.ts and terminal.ts). Projects in the phone's bar without the
 // advanced interface, «New project» there; subprojects (listed under the project, made new or
 // brought in, their image, their agents' conversations, their files opening on their folder);
@@ -433,7 +433,7 @@ void main() {
     await tester.enterText(find.byKey(const Key('cs-gitea-token')), 'token-1234567');
     await _settle(tester, 2);
     await tap(tester, find.byKey(const Key('cs-gitea-connect')), 10);
-    expect(find.textContaining('RedGiant non trova git.nowhere.lan'), findsOneWidget);
+    expect(find.textContaining('Rasgeth non trova git.nowhere.lan'), findsOneWidget);
     await tester.enterText(find.byKey(const Key('cs-gitea-url')), 'https://git.casa.lan');
     await tester.enterText(find.byKey(const Key('cs-gitea-token')), 'token-1234567');
     await _settle(tester, 2);

@@ -2,7 +2,7 @@
 // page's TreeView rules as one pure function, three levels, assigned agents, the stopped ones),
 // «Agent under it», the new agent's steps with God's proposal (instructions and tools, `tools_off`
 // never essential), a personal assistant's services, routines, skills and shared notes, the
-// server's refusals, and an archived project's agent read only. Against the fake RedGiant.
+// server's refusals, and an archived project's agent read only. Against the fake Rasgeth.
 import 'dart:convert';
 import 'dart:io';
 

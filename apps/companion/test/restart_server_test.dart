@@ -1,5 +1,5 @@
 // p3.8.9: the person's Coder came back after a blackout and «not even the requests sync any
-// more between the page and the app». A real RedGiant (packages/web/scripts/restart-server.mjs,
+// more between the page and the app». A real Rasgeth (packages/web/scripts/restart-server.mjs,
 // PGlite in a folder, a scripted model) is killed while the app and a page are connected, stays
 // down a while and starts again with the same database. The app must notice, come back, drop the
 // requests that died with the old process, and from there get the new ones and their answers

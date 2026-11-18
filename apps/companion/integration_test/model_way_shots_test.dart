@@ -1,4 +1,4 @@
-// Subscription or API key (G40.9b) in the real app against a real RedGiant whose demo has both a
+// Subscription or API key (G40.9b) in the real app against a real Rasgeth whose demo has both a
 // Claude subscription and an Anthropic key (FakeProvider): «Settings of <name>» › default model,
 // one entry per model with the way to choose and its line. Run by tool/linux_shots.sh with
 //   RG_DEMO_ENV="DEMO_PASSWORD=companion-test-1 DEMO_API_KEY=1" … integration_test/model_way_shots_test.dart

@@ -7,14 +7,19 @@
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { fillProduct } from "./product.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const src = join(here, "../../../packages/protocol/src");
 const tmp = join(here, "../build/rule-words");
 mkdirSync(tmp, { recursive: true });
-const fix = (s) => s.replace(/from "zod"/g, 'from "./zod.ts"').replace(/"\.\/critical\.js"/g, '"./critical.ts"');
-writeFileSync(join(tmp, "critical.ts"), fix(readFileSync(join(src, "critical.ts"), "utf8")));
-writeFileSync(join(tmp, "dangers.ts"), fix(readFileSync(join(src, "dangers.ts"), "utf8")));
+// brand.ts too: the words may name the product (`PRODUCT_NAME`, plan 3.9.0).
+const fix = (s) =>
+  s
+    .replace(/from "zod"/g, 'from "./zod.ts"')
+    .replace(/"\.\/(critical|brand)\.js"/g, '"./$1.ts"');
+for (const f of ["critical.ts", "dangers.ts", "brand.ts"])
+  writeFileSync(join(tmp, f), fix(readFileSync(join(src, f), "utf8")));
 writeFileSync(
   join(tmp, "zod.ts"),
   "const f: any = new Proxy(function () {}, { get: () => f, apply: () => f });\nexport const z = f;\n",
@@ -25,7 +30,7 @@ rmSync(tmp, { recursive: true, force: true });
 
 const fixed = ["outgoing-mail", "agent-model"];
 const ids = [...dangers.DANGER_IDS, ...fixed];
-const q = (s) => `r${JSON.stringify(s)}`;
+const q = (s) => `r${JSON.stringify(fillProduct(s))}`;
 const lang = (l) => {
   const d = ids
     .map((id) => {

@@ -9,6 +9,7 @@
 import 'dart:async';
 
 import 'package:bonsoir/bonsoir.dart';
+import '../brand.dart';
 
 const String kRedGiantServiceType = '_redgiant._tcp';
 
@@ -22,7 +23,7 @@ class FoundServer {
     this.proto,
   });
 
-  /// «RedGiant on» and the machine's name.
+  /// «Rasgeth on» and the machine's name.
   final String name;
 
   /// An address (or the `.local` name) to reach it.
@@ -34,8 +35,8 @@ class FoundServer {
   /// The plain-http address the setup channel rides on (`http://host:7600`).
   Uri get base => Uri(scheme: 'http', host: host, port: port);
 
-  /// Without the «RedGiant on » the record adds.
-  String get machine => name.replaceFirst(RegExp(r'^RedGiant on\s+'), '');
+  /// Without the «Rasgeth on » the record adds (a server older than 3.9.0 says the old name).
+  String get machine => name.replaceFirst(_announced, '');
 
   @override
   bool operator ==(Object other) =>
@@ -130,3 +131,6 @@ class BonsoirRedGiantDiscovery implements Discovery {
     _d = null;
   }
 }
+
+/// The product's name the record starts with: today's, or the one before 3.9.0.
+final _announced = RegExp('^(?:$kProductName|RedGiant) on\\s+');

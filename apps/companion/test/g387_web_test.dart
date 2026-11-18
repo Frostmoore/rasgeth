@@ -696,7 +696,7 @@ void main() {
           'params': {'op': 'storage.list'},
         }),
       );
-      expect((posted.last['error']! as Map)['message'], 'RedGiant is not connected');
+      expect((posted.last['error']! as Map)['message'], 'Rasgeth is not connected');
       a.close();
       b.close();
       s.close();

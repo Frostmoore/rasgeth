@@ -1,4 +1,4 @@
-// The fake RedGiant's files (G42.5): an in-memory workspace per scope answering the routes of
+// The fake Rasgeth's files (G42.5): an in-memory workspace per scope answering the routes of
 // the page's Explorer as `packages/server/src/files.ts` and `app.ts` do: list (folders first,
 // `.git` left out), content (text or base64, 5 MB), write (expectedModifiedAt, ifExists fail /
 // keep-both « (2)» / replace, parents made), op (mkdir, rename, delete to `.trash/<stamp>/…`, for

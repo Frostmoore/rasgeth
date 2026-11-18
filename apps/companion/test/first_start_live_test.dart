@@ -1,5 +1,5 @@
-// The first start from the app (G40.8) against a real RedGiant that has never been set up, with
-// RedGiant OS's temporary network acted out by the demo server (FakeProvider, no real model):
+// The first start from the app (G40.8) against a real Rasgeth that has never been set up, with
+// Rasgeth OS's temporary network acted out by the demo server (FakeProvider, no real model):
 //   DEMO_FRESH=1 DEMO_SETUP_AP=1 DEMO_HOST=127.0.0.1 node packages/web/scripts/demo-server.mjs 7652
 //   RG_SETUP_URL=http://127.0.0.1:7652 flutter test test/first_start_live_test.dart
 // Every address of this machine counts as the temporary network there; the Wi-Fi joining is the
@@ -32,7 +32,7 @@ void main() {
   final base = Uri.parse(_url ?? 'http://127.0.0.1:1');
 
   test(
-    'a new RedGiant set up from the app: access, home network, names, completed',
+    'a new Rasgeth set up from the app: access, home network, names, completed',
     () async {
       final app = AppController(
         tokens: MemoryTokenStore(),
@@ -63,7 +63,7 @@ void main() {
       expect(flow.saved?.fingerprint, flow.fingerprint);
       expect(app.servers, hasLength(1));
 
-      // A Wi-Fi network whose password does not work: RedGiant comes back and says so.
+      // A Wi-Fi network whose password does not work: Rasgeth comes back and says so.
       await flow.chooseWifi('Casa Rossi', 'sbagliata');
       await until(() => flow.step == FsStep.home && flow.error != null);
       expect(flow.error, FsError.homeFailed);

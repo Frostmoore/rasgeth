@@ -8,7 +8,7 @@
     "request": {
       "notice": {
         "v": 1,
-        "server": "RedGiant di casa",
+        "server": "Rasgeth di casa",
         "id": "req:r1",
         "kind": "request",
         "title": "God chiede il permesso",
@@ -20,7 +20,7 @@
           "deny"
         ]
       },
-      "body": "hHa06OIZXTcwiawvPXjgRwAAEABBBHp3ncVWunY4Qatl50cQGwCBtYjNjqmYOBROwDNuWafoY6oezip_brs9gtqEF_eXKfDQTUsC2VF_giDA1ENacKBodv65K_cyEzl7lQ9Z4ibIOnVp-DCFKpj-qOFY0RYU8MmaSUbcRfFE-L4JXqA1qiPRyA8TPizEbYxcxv4MITBtI7tOrTAhFIPrdqElBC2m8pIMvl1qlNi-oLSgACzl1fWjsXeDlbfq8NWwNFHJvLgFSLA-iw_pmrb7i9s4Qq9BaUAPvcg-28oQwJm6p6noHnW6xm-wQNYkbaQ8bd1w3QmjiGuQWsPWoGrS7bC_X6x-yn7WKvgIcUn6AyTQslMbvp3QNva5e_l5NtPf142ebBlDpgVwtVIxyw"
+      "body": "XO0ms5qlZUXBJOTVMaVyWQAAEABBBD7UaRAFnJo6WFj9mLYnNc_bs--oF3oARjwBFYJZ6wqM93bImVQhZCrjvadXogPzSd1stImy6MtdG1mv4-Xy6TXCI7Mxot67OH2TD4jq1Kkh5ep5uLaWCmTsAQa6HyeOgAhPsahwzlUHaErjMy-ZvA5F133kW3nqCwVzh2vbgBFGYBFeJb0KiJM3W1bWp0ptWo_dyV3k8LEj98IxskjG544Z8gZCs5jX6suzRlXRr9Rfe5CurI-fggRqzBf5gl08JFDS-KM0ho3r2ptBqcbEWFHaPDSg9roeRkNhPJ6_qxIv2c0BGTZozc9nveqIDnRG5wo-LEzo4f5-QAepK3ePxkHn9019rRN89mR_Kqu7ZnL9ER5q6rs6"
     },
     "critical": {
       "notice": {
@@ -35,12 +35,12 @@
         "actions": [],
         "critical": true
       },
-      "body": "5D-PpmuTBnfUPhMfQoZvZgAAEABBBFDUVPbqlFEuKPIG8JYXA1KiLB4MJUahFKBw8rNJHiQ2NtzPinxvVY6kvjKsdJNtd4JlQYHXBeTea6c7_j4nPst0BJgDX1_92koJf_Svmx1pkEGhapU_EdNM7U3CKV4rZ_Kgj4YEPHeHZPzenq3xxv98xR_qia_Yj6SLKIfHTL9V4ABVPrPdPK3VCfKHq090GAL3ZlkjmTWl8Qak3RUZnFQdZA3twzgWmEhBOyWW1pLTgIvGsuFIy_OR9ouaaljX96bn9nzLRj1Z_x1J62eHpeRrpsE8GWMXXnsYJzW4jpJETmlxZvVkUCGfRgWVaf5YO36vnOo6NyRlIzLSj9uGzieL1YVtCi-odd0-qWFnG31gd65U2VVnkVPUUyU"
+      "body": "6Vwpk9eCOCv0KHV4AGMoMwAAEABBBEmoIoo_bKWIwBGQ2qVWpJXoBHjRWLqZovjXjBNl6qVnp-RhwTL9jnarC07-1rGUUYcxnWaaAhZrfajHW_6FtrRXbnDcQV7NCau60xGarvu95ei5doalc4TGh_-tSyE5X-F2uoLbXy4uTjaI1TTOmpiOPgUqVgaDYMMfr_5T85K5zK54IlSVT-huRLV_3z8zHQSZfwYrQK1BGC4UkYJm_CrROzcLyyUa1JRDp8xK8-c-Lwo39dEhpW5aSfIAVJt_cRnn_8FmnLIYMIC8RPYQ8OAXRq6_OaTJSEPE90SuoTlVLT073vWfdhJk_ZUI6haZAN09e-buF4Zc_RIv0CnUjYWnb_bUpHPECk_R0h5AwIULr9_U6RT-UVUSYQo"
     },
     "withdrawal": {
       "notice": {
         "v": 1,
-        "server": "RedGiant di casa",
+        "server": "Rasgeth di casa",
         "id": "req:r1",
         "kind": "request",
         "title": "Richiesta chiusa",
@@ -50,18 +50,18 @@
           "via": "app (Pixel)"
         }
       },
-      "body": "CRKzT8ys0aCnPcRXGoOzNAAAEABBBFVkXanQI6cvJaR3-pshD3uA4Nk07O5l0LSZTibTbWuy71c5uHAl5aAOYImIvD-pPi0bVNCXXIfM_KvMQf-ZIZKty3Zgaanj5kaL0da84Y4awTDCUlzoGgMkKzpH3JJkWuqblrf_QPHHfYTy_mxUbj9H2z1el1nrE2nXYMUyVuSYizhqpqfSVk_gaO3SnxDTHljhuqM3wvhg42CqEriSdZtkn3PuFxBv6M2TqKQrwaUcZEFioJuj80aB8p8B39YJ8DGePtvvzpglTWTMAmS0xmmVUgv-k8Yazvsbja2B0DLRiyyiUAf9YqiYF3I6Fpjkvtxl2vyg"
+      "body": "Z1dEp_KiYht8apM4CyPdJwAAEABBBGNGXzyQIL_W7WoisR7U0tiVoGFh703W1CQ2OqHfUyiuO1BDgq6tjQCysaddX5b6siuNVYWUVWS-1jpyPryqRYASaYRz6Gcbb0iigPQ3tr2c3-MpU9lpqT92ym-Rta0XKs5-SR4NBXO0Qrolfvgx341O-2cerj5Gwr4i9zL1-sV18LruyMCJ3-m2YTlM-7Ii_31tuoPS0iLVDh-JjgIA6KY1kce4Y3m6GJdMG4IR11gHf9QpiNRQqCg9IrXf-IgSUOAh4zQPHANGP4Onlhl_tPY_yUKP8BwZqPkNaJ07WnAat9QJptxk-kJAo6e8x9Po04W_A-E"
     },
     "test": {
       "notice": {
         "v": 1,
-        "server": "RedGiant di casa",
+        "server": "Rasgeth di casa",
         "id": "test:2026-11-16T10:00:00.000Z",
         "kind": "test",
         "title": "Prova delle notifiche",
-        "body": "Le notifiche di RedGiant di casa arrivano su questo dispositivo."
+        "body": "Le notifiche di Rasgeth di casa arrivano su questo dispositivo."
       },
-      "body": "3GIYwfmlYf7rLPG8nYlsOwAAEABBBDMf32zftzeeP-gvL_zHC_VaLX97r7js08QX7QvVGpp68iZf_kOC-XoWNsHHHSdjWLQAZN8OuYiO56T80K0RBQRyZEFvgKPbn2vO2G8B77J3_ODFc3us5ITSqAr0IhRRIYBub575U6JMXvDJ8bcHRdGVVO4dHKP-po17nTi4TSRO9yShiPOqWwPXd3H8oRQMNmRN84rlqx0jRdtoPDgSFVvh4CDkwi5JDOSmAK3xTH5ZqyyzDSPyAdE7UBk_p_gK7Qk5To_WdnSLqd815MER3irPQrLefj10-KRzlnjYkIyFcFmJmsDCzXM5wVbOZj9hEtUYlcjHFHeJXqprbPNg05iCv8AUlWR7f7q7zz900M12Eg"
+      "body": "-347GS7-MOeUp985A_W1TAAAEABBBHRJJ4ukX1n3dBJ57Qy_TGRZY5qGWA_LZuINH4QyqcLihbIrMUskVWgE7YhTkmhNedQNk0FGwIA7wHyOl9qxQjHQOqyUSx9B-RHRcwLE-w7p-JPR22_2vCL_XEsnhWc3gYNXgtlDnNKrmUFC8N9RaNK7Ts0DSMCZHNI-l4lV2LWoAnH09topONebIa8rv0o8uWf_VJkO98P1osW9ZQQH_U-EIvmm9fG7fFPxzL9vucBRDRqndIhq5j3qi0xqTI3_rrHkraAeADkg0TyEVBQ9xQBMKA99k0FZqbZoMkQEcP5SVNgs0dPp-3XcuFCANlbTXasPugXymtY_KFxotPp6vte5tUXmDeopaZFBGbyKB2U"
     }
   }
 }

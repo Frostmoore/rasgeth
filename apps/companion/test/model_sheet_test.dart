@@ -1,7 +1,7 @@
 // «Model» in the agent's sheet (3.8.1): God's, the Chat's and every agent's long press shows its
 // model with the way (Subscription / API key, G40.9b) and changes it with the page's own API —
 // `PATCH /api/agents/:id` for God and the agents, `PUT /api/chat/settings` for the Chat — or goes
-// back to the one above. Against the fake RedGiant.
+// back to the one above. Against the fake Rasgeth.
 import 'dart:io';
 
 import 'package:flutter/material.dart';

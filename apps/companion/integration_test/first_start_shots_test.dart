@@ -1,9 +1,9 @@
 // The first start from the app (G40.8) on a desktop, driven through its own screens against a
-// real RedGiant that has never been set up (the demo server with DEMO_FRESH=1 DEMO_SETUP_AP=1:
-// RedGiant OS's temporary network acted out, FakeProvider, no real model). The Wi-Fi joining is
+// real Rasgeth that has never been set up (the demo server with DEMO_FRESH=1 DEMO_SETUP_AP=1:
+// Rasgeth OS's temporary network acted out, FakeProvider, no real model). The Wi-Fi joining is
 // a fake one (no real network is touched); everything else is the real app and the real server:
 // the setup channel, the access, the home network (a Wi-Fi password refused, then the cable),
-// RedGiant found again with the same key, the languages, a way of thinking, the names; then
+// Rasgeth found again with the same key, the languages, a way of thinking, the names; then
 // «Settings of <name>». With RG_SHOTS set, the screen is captured at each step. Run by
 // tool/linux_shots.sh in the agents' Docker.
 import 'dart:io';
@@ -31,11 +31,11 @@ class _ActedWifi implements SetupWifi {
   bool get needsName => true;
 
   @override
-  Future<List<SeenNetwork>> scan() async => const [SeenNetwork('RedGiant-Setup-D3M0', 82)];
+  Future<List<SeenNetwork>> scan() async => const [SeenNetwork('Rasgeth-Setup-D3M0', 82)];
 
   @override
   Future<JoinResult> join({String? ssid}) async =>
-      JoinResult(JoinState.joined, ssid: ssid ?? 'RedGiant-Setup-D3M0');
+      JoinResult(JoinState.joined, ssid: ssid ?? 'Rasgeth-Setup-D3M0');
 
   @override
   Future<void> leave() async {}
@@ -81,7 +81,7 @@ Future<void> scrollTo(WidgetTester t, Key list, Finder f) async {
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('RGCompanion sets a new RedGiant up', (t) async {
+  testWidgets('Rasgeth sets a new Rasgeth up', (t) async {
     final base = Uri.parse(_url);
     final app = AppController(tokens: MemoryTokenStore(), prefs: MemoryAppPrefs())
       ..locale = const Locale('it');

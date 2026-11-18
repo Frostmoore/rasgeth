@@ -19,12 +19,12 @@ import UIKit
   }
 }
 
-/// The first start from the app (G40.8): RedGiant OS's temporary network, RedGiant-Setup-XXXX,
+/// The first start from the app (G40.8): Rasgeth OS's temporary network, Rasgeth-Setup-XXXX,
 /// joined with NEHotspotConfiguration (the Hotspot Configuration entitlement). With the prefix
 /// the system asks the person and joins the strongest match; `joinOnce` keeps the network only
 /// while the app is in the foreground, and iOS keeps the phone's own connection for the rest.
 enum SetupWifi {
-  static let prefix = "RedGiant-Setup-"
+  static let prefix = "Rasgeth-Setup-"
   private static var channel: FlutterMethodChannel?
   private static var joined: String?
 
@@ -45,7 +45,7 @@ enum SetupWifi {
   }
 
   private static func isSetupSsid(_ s: String) -> Bool {
-    s.range(of: "^RedGiant-Setup-[A-Za-z0-9]{1,16}$", options: .regularExpression) != nil
+    s.range(of: "^Rasgeth-Setup-[A-Za-z0-9]{1,16}$", options: .regularExpression) != nil
   }
 
   private static func answer(_ result: @escaping FlutterResult, _ state: String, ssid: String? = nil, message: String? = nil) {

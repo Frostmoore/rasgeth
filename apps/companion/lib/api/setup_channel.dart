@@ -21,6 +21,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
+import '../brand.dart';
 
 const String kChannelVersion = 'rg-node-v1';
 
@@ -229,7 +230,7 @@ class SetupChannel {
     } on TimeoutException {
       throw const SetupChannelException(
         SetupChannelErrorCode.timeout,
-        'RedGiant did not answer in time',
+        '$kProductName did not answer in time',
       );
     } on Object catch (e) {
       throw SetupChannelException(SetupChannelErrorCode.unreachable, 'Cannot reach $url: $e');
@@ -253,7 +254,7 @@ class SetupChannel {
       if (w['t'] != 'welcome') {
         throw const SetupChannelException(
           SetupChannelErrorCode.protocol,
-          'Not a RedGiant setup channel',
+          'Not a $kProductName setup channel',
         );
       }
       final peerRaw = _b64(w['id']);
@@ -270,14 +271,14 @@ class SetupChannel {
       if (!await verifyEd25519(peerRaw, [...utf8.encode('listener'), ...th], _b64(w['sig']))) {
         throw const SetupChannelException(
           SetupChannelErrorCode.protocol,
-          "RedGiant's signature is wrong",
+          "$kProductName's signature is wrong",
         );
       }
       final fp = await fingerprintOf(peerRaw);
       if (expect != null && fp != expect) {
         throw SetupChannelException(
           SetupChannelErrorCode.fingerprintChanged,
-          'RedGiant answered with another key: another computer may be in its place',
+          '$kProductName answered with another key: another computer may be in its place',
           seen: fp,
         );
       }
@@ -362,7 +363,7 @@ class SetupChannel {
         _waiting.remove(id);
         throw const SetupChannelException(
           SetupChannelErrorCode.timeout,
-          'RedGiant did not answer in time',
+          '$kProductName did not answer in time',
         );
       },
     );
@@ -466,14 +467,14 @@ class StreamQueue {
           _closeCodes[code] ?? SetupChannelErrorCode.closed,
           ws.closeReason?.isNotEmpty == true
               ? ws.closeReason!
-              : 'RedGiant closed the channel ($code)',
+              : '$kProductName closed the channel ($code)',
         );
       }
       final left = deadline.difference(DateTime.now());
       if (left <= Duration.zero) {
         throw const SetupChannelException(
           SetupChannelErrorCode.timeout,
-          'RedGiant did not answer in time',
+          '$kProductName did not answer in time',
         );
       }
       final w = _wake = Completer<void>();

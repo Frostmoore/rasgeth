@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.redgiant.companion"
+    namespace = "it.rasgeth.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -17,8 +17,9 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.redgiant.companion"
+        // Rasgeth's own id (plan 3.9.0, choice 6): a new install, paired anew; the Kotlin package
+        // (src/main/kotlin/it/rasgeth/app) follows the namespace.
+        applicationId = "it.rasgeth.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

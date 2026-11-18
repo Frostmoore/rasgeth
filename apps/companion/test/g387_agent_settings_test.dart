@@ -1,7 +1,7 @@
 // G38.7: every setting of an agent from the app. A right click on a computer opens the context
 // menu (quick actions and «Agent settings…»), a long press on a phone the sheet with the same; the
 // settings are the page's Settings › Agents tabs, saved through the same routes against the fake
-// RedGiant, which refuses as the real server does. God and the Chat keep their rules.
+// Rasgeth, which refuses as the real server does. God and the Chat keep their rules.
 import 'dart:io';
 
 import 'package:flutter/gestures.dart';

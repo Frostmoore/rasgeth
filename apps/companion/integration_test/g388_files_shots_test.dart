@@ -1,4 +1,4 @@
-// 3.8.8 (G42.5) in the real app on Linux, against the demo server (a real RedGiant, FakeProvider):
+// 3.8.8 (G42.5) in the real app on Linux, against the demo server (a real Rasgeth, FakeProvider):
 // the conversation's files from the header's folder, light and dark. Computer (1440x900): the
 // panel beside the Demo orchestrator's conversation, folders open, the right click menu, a file
 // dragged onto the conversation, full window, an archived project read only. Phone (RG_SCREEN

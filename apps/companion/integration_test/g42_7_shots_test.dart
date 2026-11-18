@@ -1,4 +1,4 @@
-// G42.7: the page's editors inside the app's Canvas, on Linux (WebKitGTK) against a real RedGiant
+// G42.7: the page's editors inside the app's Canvas, on Linux (WebKitGTK) against a real Rasgeth
 // (the demo with DEMO_CANVAS=1, whose God edits the file open when asked: «Migliora il totale»,
 // «Prepara il modulo», «Aggiungi l'etichetta», «Metti il fiore come livello»). For each editor:
 // open, the page's «Modifiche» panel opened, the agent's edit arriving (its marks), the native bar

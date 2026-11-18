@@ -18,13 +18,13 @@ class FakeWifi implements SetupWifi {
   bool get needsName => name;
 
   @override
-  Future<List<SeenNetwork>> scan() async => const [SeenNetwork('RedGiant-Setup-D3M0', 80)];
+  Future<List<SeenNetwork>> scan() async => const [SeenNetwork('Rasgeth-Setup-D3M0', 80)];
 
   @override
   Future<JoinResult> join({String? ssid}) async {
     joins++;
     lastSsid = ssid;
-    return JoinResult(answer, ssid: ssid ?? 'RedGiant-Setup-D3M0');
+    return JoinResult(answer, ssid: ssid ?? 'Rasgeth-Setup-D3M0');
   }
 
   @override

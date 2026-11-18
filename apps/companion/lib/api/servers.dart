@@ -4,6 +4,7 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import '../brand.dart';
 
 class SavedServer {
   const SavedServer({
@@ -18,7 +19,7 @@ class SavedServer {
 
   factory SavedServer.fromJson(Map<String, dynamic> j) => SavedServer(
     id: j['id'] as String? ?? '',
-    label: j['label'] as String? ?? 'RedGiant',
+    label: j['label'] as String? ?? kProductName,
     address: j['address'] as String? ?? '',
     fingerprint: j['fingerprint'] as String?,
     caPem: j['caPem'] as String?,

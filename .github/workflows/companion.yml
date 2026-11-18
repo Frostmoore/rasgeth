@@ -1,4 +1,4 @@
-name: RGCompanion
+name: Rasgeth App
 
 # The Flutter app (apps/companion, G40.6): analysis, tests and a build for each of the five
 # systems, as artifacts (unsigned: signing comes with G40.13). It runs on its own, only when the
@@ -6,7 +6,10 @@ name: RGCompanion
 # (wip/...) start nothing.
 # G40.12: ci.yml (a version branch) and release.yml (when it builds the installers itself) call it
 # with `desktop: true`: only the Windows, macOS and Linux builds, whose artifacts the installers
-# carry (packaging/windows app\, RedGiant.app's Helpers) and the release attaches (Linux's tar).
+# carry (packaging/windows app\, Rasgeth.app's Helpers) and the release attaches (Linux's tar).
+# Artifacts (plan 3.9.0, N5; ci.yml and release.yml download them by these names):
+# rasgeth-app-windows-x64, rasgeth-app-linux-x64 (rasgeth-app-linux-x64.tar.gz), rasgeth-app-macos
+# (rasgeth-app-macos.zip), rasgeth-android-debug-apk, rasgeth-ios-unsigned.
 on:
   push:
     branches: ["p[0-9]*", "a[0-9]*", "b[0-9]*", "main"]
@@ -79,7 +82,7 @@ jobs:
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
         with:
-          name: rgcompanion-android-debug-apk
+          name: rasgeth-android-debug-apk
           path: apps/companion/build/app/outputs/flutter-apk/app-debug.apk
           retention-days: 14
 
@@ -107,16 +110,16 @@ jobs:
       - run: flutter build linux --release --dart-define=RG_APP_VERSION=${{ env.RG_APP_VERSION }}
       # The bundle with its menu entry and a per-user installer (packaging/linux-app, G40.12).
       - run: |
-          stage=rgcompanion-linux-x64
+          stage=rasgeth-app-linux-x64
           mkdir -p "$stage"
           cp -R build/linux/x64/release/bundle "$stage/bundle"
-          cp ../../packaging/linux-app/install-app.sh ../../packaging/linux-app/rgcompanion.desktop "$stage/"
-          cp ../../packages/web/public/icon-512.png "$stage/rgcompanion.png"
-          tar -czf rgcompanion-linux-x64.tar.gz "$stage"
+          cp ../../packaging/linux-app/install-app.sh ../../packaging/linux-app/rasgeth-app.desktop "$stage/"
+          cp ../../packages/web/public/icon-512.png "$stage/rasgeth-app.png"
+          tar -czf rasgeth-app-linux-x64.tar.gz "$stage"
       - uses: actions/upload-artifact@v4
         with:
-          name: rgcompanion-linux-x64
-          path: apps/companion/rgcompanion-linux-x64.tar.gz
+          name: rasgeth-app-linux-x64
+          path: apps/companion/rasgeth-app-linux-x64.tar.gz
           retention-days: 14
 
   windows:
@@ -139,7 +142,7 @@ jobs:
       - run: flutter build windows --release --dart-define=RG_APP_VERSION=${{ env.RG_APP_VERSION }}
       - uses: actions/upload-artifact@v4
         with:
-          name: rgcompanion-windows-x64
+          name: rasgeth-app-windows-x64
           path: apps/companion/build/windows/x64/runner/Release/
           retention-days: 14
 
@@ -162,11 +165,16 @@ jobs:
         shell: bash
         run: echo "RG_APP_VERSION=$(node -p "require('../../packaging/release-kind.json').version")" >> "$GITHUB_ENV"
       - run: flutter build macos --release --dart-define=RG_APP_VERSION=${{ env.RG_APP_VERSION }}
-      - run: ditto -c -k --keepParent build/macos/Build/Products/Release/RGCompanion.app rgcompanion-macos.zip
+      # The bundle is named by macos/Runner/Configs/AppInfo.xcconfig (`Rasgeth App.app`): the one
+      # .app the build makes, whatever its name.
+      - run: |
+          app=$(ls -d build/macos/Build/Products/Release/*.app)
+          [ "$(printf '%s\n' "$app" | wc -l)" -eq 1 ] || { echo "not one .app: $app"; exit 1; }
+          ditto -c -k --keepParent "$app" rasgeth-app-macos.zip
       - uses: actions/upload-artifact@v4
         with:
-          name: rgcompanion-macos
-          path: apps/companion/rgcompanion-macos.zip
+          name: rasgeth-app-macos
+          path: apps/companion/rasgeth-app-macos.zip
           retention-days: 14
 
   ios:
@@ -183,9 +191,9 @@ jobs:
           cache: true
       # Without signing: proves it builds; TestFlight comes with G40.13.
       - run: flutter build ios --release --no-codesign
-      - run: ditto -c -k --keepParent build/ios/iphoneos/Runner.app rgcompanion-ios-unsigned.zip
+      - run: ditto -c -k --keepParent build/ios/iphoneos/Runner.app rasgeth-ios-unsigned.zip
       - uses: actions/upload-artifact@v4
         with:
-          name: rgcompanion-ios-unsigned
-          path: apps/companion/rgcompanion-ios-unsigned.zip
+          name: rasgeth-ios-unsigned
+          path: apps/companion/rasgeth-ios-unsigned.zip
           retention-days: 14

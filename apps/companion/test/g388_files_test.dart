@@ -1,7 +1,7 @@
 // 3.8.8 (G42.5): the conversation's files, as the page's folder button and Explorer. The place of
 // a conversation (a table), the families' icons (a table), the panel beside the conversation on a
 // computer (kept open, full window, covering when narrow), every action against the fake
-// RedGiant's workspace (which answers as files.ts), an archived project read only, the phone's
+// Rasgeth's workspace (which answers as files.ts), an archived project read only, the phone's
 // screen, and a file dragged onto the conversation attached to the message.
 import 'dart:async';
 import 'dart:convert';

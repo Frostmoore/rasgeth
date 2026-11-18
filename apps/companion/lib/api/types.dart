@@ -2,6 +2,8 @@
 // (G40.1) and `packages/protocol/src/mascot.ts` (G40.2), read leniently (unknown fields are
 // ignored, so a newer server does not break an older app within the same `appProtocol`).
 
+import '../brand.dart';
+
 /// The app protocol this build speaks (`APP_PROTOCOL_VERSION` in `@redgiant/protocol`).
 const int kAppProtocolVersion = 1;
 
@@ -74,13 +76,13 @@ class AppHello {
   });
 
   factory AppHello.fromJson(Map<String, dynamic> j) {
-    if (j['app'] != 'redgiant') throw const FormatException('Not a RedGiant');
+    if (j['app'] != 'redgiant') throw const FormatException('Not a $kProductName');
     final device = _map(j['device']);
     return AppHello(
       version: _str(j['version']),
       appProtocol: _int(j['appProtocol']),
       protocolVersion: _int(j['protocolVersion']),
-      machine: _str(j['machine']) ?? 'RedGiant',
+      machine: _str(j['machine']) ?? kProductName,
       firstStartCompleted: j['firstStartCompleted'] == true,
       access: AppAccess.fromJson(_map(j['access'])),
       signedIn: j['signedIn'] == true,

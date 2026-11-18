@@ -1,7 +1,7 @@
-// G40.10 in the real app against a real RedGiant (the demo server, FakeProvider): Tu ›
+// G40.10 in the real app against a real Rasgeth (the demo server, FakeProvider): Tu ›
 // Notifiche on a computer and, drawn as on Android, without a distributor, choosing one and
 // on (the endpoint registered on the server, the test notification sealed by it and opened
-// here); Tu › Voce; «press and talk» and «read aloud» in a conversation; «Share to RedGiant».
+// here); Tu › Voce; «press and talk» and «read aloud» in a conversation; «Share to Rasgeth».
 // A phone-sized window. Run by tool/linux_shots.sh with
 //   RG_SCREEN=430x900 RG_DEMO_ENV="DEMO_PASSWORD=companion-test-1 DEMO_REQUESTS=1 DEMO_VOICE=1" \
 //     … integration_test/g40_10_shots_test.dart
@@ -228,14 +228,14 @@ void main() {
     back(t);
     await frames(t);
 
-    // ---- Share to RedGiant ----
+    // ---- Share to Rasgeth ----
     final dir = await t.runAsync(() => Directory.systemTemp.createTemp('rg-share'));
     final png = File('${dir!.path}/ricevuta.png');
     final pdf = File('${dir.path}/bolletta.pdf');
     await t.runAsync(() async {
       await png.writeAsBytes(
-        await File('assets/icon/rgcompanion-512.png').exists()
-            ? await File('assets/icon/rgcompanion-512.png').readAsBytes()
+        await File('assets/icon/rasgeth-512.png').exists()
+            ? await File('assets/icon/rasgeth-512.png').readAsBytes()
             : Uint8List(64),
       );
       await pdf.writeAsBytes(utf8.encode('%PDF-1.4\n% demo\n'));

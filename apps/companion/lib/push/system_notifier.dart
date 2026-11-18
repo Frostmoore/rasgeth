@@ -10,6 +10,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../l10n/app_localizations.dart';
 import 'notice.dart';
+import '../brand.dart';
 
 /// A tap on a notification or one of its answers ([action]: `allow`, `deny`, or null for the
 /// notification itself).
@@ -102,7 +103,7 @@ class LocalSystemNotifier implements SystemNotifier {
         ),
         linux: LinuxInitializationSettings(defaultActionName: l.notifyOpen),
         windows: const WindowsInitializationSettings(
-          appName: 'RGCompanion',
+          appName: kAppName,
           appUserModelId: 'RedGiant.RGCompanion',
           guid: '6b0f4f0e-3c2a-4b8e-9a51-2f8d6c1e7a40',
         ),

@@ -1,4 +1,4 @@
-// 3.8.10 in the real app on Linux, against the tests' fake RedGiant: agents at work together. Two
+// 3.8.10 in the real app on Linux, against the tests' fake Rasgeth: agents at work together. Two
 // places taken, three turns in line: the wall with the tiles in line, the status bar, the queue's
 // window, a conversation waiting and the setting, light and dark. With RG_SCREEN narrower than 600
 // the phone. Run with Xvfb (no demo server needed):

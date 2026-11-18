@@ -18,7 +18,7 @@ import 'push_center.dart';
 const bool kApnsEnabled = false;
 
 /// The keychain group shared with the Notification Service Extension.
-const String kApnsKeychainGroup = 'com.redgiant.companion.shared';
+const String kApnsKeychainGroup = 'it.rasgeth.app.shared';
 
 class ApnsRegistration {
   static const _channel = MethodChannel('rgcompanion/apns');

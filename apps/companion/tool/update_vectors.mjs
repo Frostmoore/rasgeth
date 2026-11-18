@@ -18,8 +18,8 @@ const part = (tag) => new RegExp(`<${tag}>([^<]*)</${tag}>`).exec(xml)[1];
 
 // The packages the fake release carries: their bytes are made by the test from these texts.
 const files = {
-  "RGCompanion-Setup.exe": "MZ fake installer 3.9.0\n",
-  "rgcompanion-linux-x64.tar.gz": "fake archive 3.9.0\n",
+  "Rasgeth-App-Setup.exe": "MZ fake installer 3.9.0\n",
+  "rasgeth-app-linux-x64.tar.gz": "fake archive 3.9.0\n",
 };
 const sha = (s) => createHash("sha256").update(s).digest("hex");
 const sums = `${Object.entries(files)

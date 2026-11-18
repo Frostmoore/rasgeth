@@ -24,6 +24,7 @@ import '../api/setup_channel.dart';
 import '../api/transport.dart';
 import '../app_state.dart';
 import 'wifi.dart';
+import '../brand.dart';
 
 /// Where RedGiant answers on its temporary network (Caddy on 80, the server itself on 7600).
 final List<Uri> kSetupBases = [Uri.parse('http://10.42.0.1'), Uri.parse('http://10.42.0.1:7600')];
@@ -366,7 +367,7 @@ class FirstStartFlow extends ChangeNotifier {
       final base = _base!.toString();
       final s = SavedServer(
         id: app.servers.where((x) => x.fingerprint == d.fingerprint).firstOrNull?.id ?? _newId(),
-        label: 'RedGiant',
+        label: kProductName,
         address: base,
         fingerprint: d.fingerprint,
         caPem: d.ca,
@@ -470,7 +471,7 @@ class FirstStartFlow extends ChangeNotifier {
     if (transportFor(base, hasCa: s.caPem != null) == TransportKind.channel) {
       final pw = _password;
       if (pw == null) return _set(FsStep.homeLost);
-      ok = await app.pairViaChannel(base, pw, label: 'RedGiant');
+      ok = await app.pairViaChannel(base, pw, label: kProductName);
       final now = app.server;
       if (ok && now != null && now.deviceId != s.deviceId) {
         // Paired again over the channel at home: the first token goes.
@@ -515,13 +516,13 @@ class FirstStartFlow extends ChangeNotifier {
     });
   }
 
-  /// The default way to find RedGiant at home: the address it said (the cable), what mDNS shows,
-  /// redgiant.local; each checked against the pinned key.
+  /// The default way to find Rasgeth at home: the address it said (the cable), what mDNS shows,
+  /// rasgeth.local; each checked against the pinned key.
   Future<Uri?> _defaultFindHome(SavedServer s, String? address) async {
     final hosts = <String>[
       ?address,
       for (final f in _found) '${f.host}:${f.port}',
-      'redgiant.local',
+      'rasgeth.local',
     ];
     for (final h in hosts) {
       final u = await probeHome(s, h);

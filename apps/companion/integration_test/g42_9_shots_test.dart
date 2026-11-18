@@ -1,4 +1,4 @@
-// G42.9: Settings › Automations, native, on Linux against a real RedGiant (the demo with
+// G42.9: Settings › Automations, native, on Linux against a real Rasgeth (the demo with
 // DEMO_MAGIC=1, no real model), light and dark: the list, an automation's window with its runs,
 // the editor (top, the parts, the advanced part with the YAML), a reminder, the magic start, the
 // magic conversation with God's proposal, an assistant's routines, the messages in For you. Run

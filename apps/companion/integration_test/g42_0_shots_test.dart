@@ -1,4 +1,4 @@
-// G42.0: the page inside the app on Linux (WebKitGTK), against a real RedGiant (the demo with
+// G42.0: the page inside the app on Linux (WebKitGTK), against a real Rasgeth (the demo with
 // DEMO_CANVAS=1). «All settings», the web view's test page and two Canvas files in an embed (a PDF
 // and a 3D room), light and dark. Run in the agents' Docker with tool/linux_shots.sh (RG_SCREEN for
 // the phone's size), RG_SHOTS the folder for the pictures.

@@ -1,4 +1,4 @@
-package com.redgiant.companion
+package it.rasgeth.app
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -17,11 +17,11 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 /**
- * The first start from the app (G40.8): RedGiant OS's temporary network, RedGiant-Setup-XXXX,
+ * The first start from the app (G40.8): Rasgeth OS's temporary network, Rasgeth-Setup-XXXX,
  * joined with WifiNetworkSpecifier (Android 10+). The system shows its own sheet with the
  * networks that match the prefix; the person picks one. The network has no internet and is
  * bound to this app only (bindProcessToNetwork): the phone's own connection stays the default
- * for everything else, and the app's sockets (Dart's included) go to RedGiant. Leaving releases
+ * for everything else, and the app's sockets (Dart's included) go to Rasgeth. Leaving releases
  * the request and the binding.
  *
  * Permissions: NEARBY_WIFI_DEVICES on Android 13+ (neverForLocation), the fine location before
@@ -169,8 +169,8 @@ class MainActivity : FlutterActivity() {
 
     companion object {
         private const val CHANNEL = "rgcompanion/setup_wifi"
-        private const val PREFIX = "RedGiant-Setup-"
-        private val SSID = Regex("^RedGiant-Setup-[A-Za-z0-9]{1,16}$")
+        private const val PREFIX = "Rasgeth-Setup-"
+        private val SSID = Regex("^Rasgeth-Setup-[A-Za-z0-9]{1,16}$")
         private const val PERMISSION_REQUEST = 4080
         private const val JOIN_TIMEOUT_MS = 120_000
     }

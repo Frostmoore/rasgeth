@@ -195,7 +195,7 @@ void main() {
         SavedServer(
           id: 'casa',
           label: 'Casa',
-          address: 'https://redgiant.local',
+          address: 'https://rasgeth.local',
           fingerprint: 'SHA256:abc',
           caPem: '-----BEGIN CERTIFICATE-----',
         ),

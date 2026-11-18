@@ -1,4 +1,4 @@
-// G38.7 in the real app on Linux against the demo server (a real RedGiant, FakeProvider): an
+// G38.7 in the real app on Linux against the demo server (a real Rasgeth, FakeProvider): an
 // agent's context menu (right click) and its settings panel on a computer, the long press's sheet
 // and the whole settings screen on a phone, light and dark. Run by tool/linux_shots.sh:
 //   RG_SCREEN=1440x900 … integration_test/g387_agent_settings_shots_test.dart

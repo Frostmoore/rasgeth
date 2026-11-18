@@ -1,4 +1,4 @@
-// G40.11 against the fake RedGiant: the switch in Tu › Interfaccia (kept per RedGiant), Projects
+// G40.11 against the fake Rasgeth: the switch in Tu › Interfaccia (kept per Rasgeth), Projects
 // with git, and every tab of a project (Tasks, Files, Diff, Terminal, Log, Git), the agent's
 // sheet with Files, Diff and Terminal, an archived project read only; and the pure parts (the
 // patch cut into hunks, the terminal's buffer, an agent's commands).
@@ -194,7 +194,7 @@ void main() {
     await tester.pump(const Duration(minutes: 3));
   }
 
-  testWidgets('Tu › Interfaccia: the switch adds the git state to Projects, kept per RedGiant', (
+  testWidgets('Tu › Interfaccia: the switch adds the git state to Projects, kept per Rasgeth', (
     tester,
   ) async {
     final prefs = MemoryAppPrefs();

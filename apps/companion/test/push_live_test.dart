@@ -1,4 +1,4 @@
-// G40.10 against a real RedGiant (the monorepo's demo server, FakeProvider, no real model): the
+// G40.10 against a real Rasgeth (the monorepo's demo server, FakeProvider, no real model): the
 // app registers an endpoint of its own (a local HTTP listener standing in for the distributor),
 // the server's own code seals the test notification and the withdrawal of a request for this
 // device's keys, the app opens them; a quick yes to a critical request is refused by the server;

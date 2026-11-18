@@ -1,4 +1,4 @@
-// G42.4: the settings of every day, native, on Linux against a real RedGiant (the demo, no real
+// G42.4: the settings of every day, native, on Linux against a real Rasgeth (the demo, no real
 // model), light and dark: «Settings of <name>» with its rows, General, Requests, Safety, Tools,
 // Commands, Budgets, the tree of agents, the new agent, an assistant's services and routines and
 // an agent's settings. Run in the agents' Docker with tool/linux_shots.sh (RG_SCREEN for the

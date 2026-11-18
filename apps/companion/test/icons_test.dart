@@ -115,7 +115,7 @@ void main() {
   );
 
   test('the app\'s icon is the page\'s logo', skip: _skip, () async {
-    final ours = await _png('assets/icon/rgcompanion-512.png');
+    final ours = await _png('assets/icon/rasgeth-512.png');
     final page = await _png('$_web/icon-512.png');
     expect((ours.w, ours.h), (512, 512));
     // The same picture: a few levels of difference from resampling, where another drawing is

@@ -62,7 +62,8 @@ import 'app_localizations_it.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -70,7 +71,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -91,12 +93,15 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('it')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('it'),
+  ];
 
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'RGCompanion'**
+  /// **'Rasgeth'**
   String get appTitle;
 
   /// No description provided for @tabTeam.
@@ -144,7 +149,7 @@ abstract class AppLocalizations {
   /// No description provided for @noServer.
   ///
   /// In en, this message translates to:
-  /// **'No RedGiant connected'**
+  /// **'No Rasgeth connected'**
   String get noServer;
 
   /// No description provided for @connectFromYou.
@@ -300,7 +305,7 @@ abstract class AppLocalizations {
   /// No description provided for @sectionServer.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant'**
+  /// **'Rasgeth'**
   String get sectionServer;
 
   /// No description provided for @serverAddress.
@@ -312,7 +317,7 @@ abstract class AppLocalizations {
   /// No description provided for @serverAddressHint.
   ///
   /// In en, this message translates to:
-  /// **'redgiant.local, https://…, 10.42.0.1'**
+  /// **'rasgeth.local, https://…, 10.42.0.1'**
   String get serverAddressHint;
 
   /// No description provided for @serverPassword.
@@ -354,7 +359,7 @@ abstract class AppLocalizations {
   /// No description provided for @errUnreachable.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant does not answer at this address.'**
+  /// **'Rasgeth does not answer at this address.'**
   String get errUnreachable;
 
   /// No description provided for @errWrong.
@@ -378,19 +383,19 @@ abstract class AppLocalizations {
   /// No description provided for @errNoPassword.
   ///
   /// In en, this message translates to:
-  /// **'This RedGiant has no password yet: complete its first start.'**
+  /// **'This Rasgeth has no password yet: complete its first start.'**
   String get errNoPassword;
 
   /// No description provided for @errServerTooOld.
   ///
   /// In en, this message translates to:
-  /// **'This RedGiant is too old for the app: update it.'**
+  /// **'This Rasgeth is too old for the app: update it.'**
   String get errServerTooOld;
 
   /// No description provided for @errServerTooNew.
   ///
   /// In en, this message translates to:
-  /// **'This app is too old for this RedGiant: update the app.'**
+  /// **'This app is too old for this Rasgeth: update the app.'**
   String get errServerTooNew;
 
   /// No description provided for @errGeneric.
@@ -690,7 +695,7 @@ abstract class AppLocalizations {
   /// No description provided for @criticalProtections.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant\'s own protections'**
+  /// **'Rasgeth\'s own protections'**
   String get criticalProtections;
 
   /// No description provided for @questionFrom.
@@ -792,7 +797,7 @@ abstract class AppLocalizations {
   /// No description provided for @noServers.
   ///
   /// In en, this message translates to:
-  /// **'No RedGiant yet.'**
+  /// **'No Rasgeth yet.'**
   String get noServers;
 
   /// No description provided for @useServer.
@@ -810,7 +815,7 @@ abstract class AppLocalizations {
   /// No description provided for @renameServer.
   ///
   /// In en, this message translates to:
-  /// **'Name of this RedGiant'**
+  /// **'Name of this Rasgeth'**
   String get renameServer;
 
   /// No description provided for @save.
@@ -828,7 +833,7 @@ abstract class AppLocalizations {
   /// No description provided for @forgetServer.
   ///
   /// In en, this message translates to:
-  /// **'Disconnect this RedGiant?'**
+  /// **'Disconnect this Rasgeth?'**
   String get forgetServer;
 
   /// No description provided for @forgetServerBody.
@@ -840,19 +845,19 @@ abstract class AppLocalizations {
   /// No description provided for @errKeyChanged.
   ///
   /// In en, this message translates to:
-  /// **'DANGER: this RedGiant answered with another key ({fingerprint}). Another computer may be in its place: nothing was sent.'**
+  /// **'DANGER: this Rasgeth answered with another key ({fingerprint}). Another computer may be in its place: nothing was sent.'**
   String errKeyChanged(String fingerprint);
 
   /// No description provided for @errCertificate.
   ///
   /// In en, this message translates to:
-  /// **'The certificate is not this RedGiant\'s: the app did not go on.'**
+  /// **'The certificate is not this Rasgeth\'s: the app did not go on.'**
   String get errCertificate;
 
   /// No description provided for @errBusy.
   ///
   /// In en, this message translates to:
-  /// **'Another device is setting this RedGiant up: one at a time.'**
+  /// **'Another device is setting this Rasgeth up: one at a time.'**
   String get errBusy;
 
   /// No description provided for @errSignInAgain.
@@ -864,13 +869,13 @@ abstract class AppLocalizations {
   /// No description provided for @addServerFirst.
   ///
   /// In en, this message translates to:
-  /// **'Connect a RedGiant'**
+  /// **'Connect a Rasgeth'**
   String get addServerFirst;
 
   /// No description provided for @addServer.
   ///
   /// In en, this message translates to:
-  /// **'Add another RedGiant'**
+  /// **'Add another Rasgeth'**
   String get addServer;
 
   /// No description provided for @foundOnNetwork.
@@ -894,13 +899,13 @@ abstract class AppLocalizations {
   /// No description provided for @allSettingsHint.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant\'s whole Settings page, inside the app, signed in with this device.'**
+  /// **'Rasgeth\'s whole Settings page, inside the app, signed in with this device.'**
   String get allSettingsHint;
 
   /// No description provided for @allSettingsBrowser.
   ///
   /// In en, this message translates to:
-  /// **'Opens RedGiant\'s page in the browser: sign in there as usual.'**
+  /// **'Opens Rasgeth\'s page in the browser: sign in there as usual.'**
   String get allSettingsBrowser;
 
   /// No description provided for @allSettingsNoHttps.
@@ -924,31 +929,31 @@ abstract class AppLocalizations {
   /// No description provided for @connectExisting.
   ///
   /// In en, this message translates to:
-  /// **'Connect a RedGiant that runs already'**
+  /// **'Connect a Rasgeth that runs already'**
   String get connectExisting;
 
   /// No description provided for @firstStepsTitle.
   ///
   /// In en, this message translates to:
-  /// **'No RedGiant yet'**
+  /// **'No Rasgeth yet'**
   String get firstStepsTitle;
 
   /// No description provided for @firstStepsLead.
   ///
   /// In en, this message translates to:
-  /// **'Set up a new one from here (RedGiant OS opens its own Wi-Fi network at the first start), or connect one you already use.'**
+  /// **'Set up a new one from here (Rasgeth OS opens its own Wi-Fi network at the first start), or connect one you already use.'**
   String get firstStepsLead;
 
   /// No description provided for @setupNew.
   ///
   /// In en, this message translates to:
-  /// **'Set up a new RedGiant'**
+  /// **'Set up a new Rasgeth'**
   String get setupNew;
 
   /// No description provided for @setupNewHint.
   ///
   /// In en, this message translates to:
-  /// **'A RedGiant OS machine turned on for the first time: the app joins its temporary network and does the whole first start.'**
+  /// **'A Rasgeth OS machine turned on for the first time: the app joins its temporary network and does the whole first start.'**
   String get setupNewHint;
 
   /// No description provided for @defaultModel.
@@ -1032,25 +1037,25 @@ abstract class AppLocalizations {
   /// No description provided for @fsLeaveBody.
   ///
   /// In en, this message translates to:
-  /// **'What is done stays done; you can come back here, or finish from the browser, while the temporary network is open (30 minutes from when RedGiant was turned on).'**
+  /// **'What is done stays done; you can come back here, or finish from the browser, while the temporary network is open (30 minutes from when Rasgeth was turned on).'**
   String get fsLeaveBody;
 
   /// No description provided for @fsIntroTitle.
   ///
   /// In en, this message translates to:
-  /// **'Set up a new RedGiant'**
+  /// **'Set up a new Rasgeth'**
   String get fsIntroTitle;
 
   /// No description provided for @fsIntroLead.
   ///
   /// In en, this message translates to:
-  /// **'Turn your RedGiant on: for 30 minutes it opens the Wi-Fi network RedGiant-Setup-XXXX. The app joins it, you create the access and choose your home network, then RedGiant moves there and the app finds it again.'**
+  /// **'Turn your Rasgeth on: for 30 minutes it opens the Wi-Fi network Rasgeth-Setup-XXXX. The app joins it, you create the access and choose your home network, then Rasgeth moves there and the app finds it again.'**
   String get fsIntroLead;
 
   /// No description provided for @fsIntroSafe.
   ///
   /// In en, this message translates to:
-  /// **'Everything you type travels encrypted, with RedGiant\'s own key checked by the app: nobody on the temporary network reads it.'**
+  /// **'Everything you type travels encrypted, with Rasgeth\'s own key checked by the app: nobody on the temporary network reads it.'**
   String get fsIntroSafe;
 
   /// No description provided for @fsSeen.
@@ -1062,7 +1067,7 @@ abstract class AppLocalizations {
   /// No description provided for @fsNoScan.
   ///
   /// In en, this message translates to:
-  /// **'The system does not show the networks around: type the four characters after RedGiant-Setup- (you see them in the computer\'s Wi-Fi list).'**
+  /// **'The system does not show the networks around: type the four characters after Rasgeth-Setup- (you see them in the computer\'s Wi-Fi list).'**
   String get fsNoScan;
 
   /// No description provided for @fsLetters.
@@ -1098,13 +1103,13 @@ abstract class AppLocalizations {
   /// No description provided for @fsJoiningSheet.
   ///
   /// In en, this message translates to:
-  /// **'Choose RedGiant-Setup in the window the system shows.'**
+  /// **'Choose Rasgeth-Setup in the window the system shows.'**
   String get fsJoiningSheet;
 
   /// No description provided for @fsConnecting.
   ///
   /// In en, this message translates to:
-  /// **'Looking for RedGiant on the network…'**
+  /// **'Looking for Rasgeth on the network…'**
   String get fsConnecting;
 
   /// No description provided for @fsManualTitle.
@@ -1134,31 +1139,31 @@ abstract class AppLocalizations {
   /// No description provided for @fsWhereAndroid.
   ///
   /// In en, this message translates to:
-  /// **'Settings › Network › Wi-Fi: tap RedGiant-Setup-…'**
+  /// **'Settings › Network › Wi-Fi: tap Rasgeth-Setup-…'**
   String get fsWhereAndroid;
 
   /// No description provided for @fsWhereIos.
   ///
   /// In en, this message translates to:
-  /// **'Settings › Wi-Fi: tap RedGiant-Setup-…'**
+  /// **'Settings › Wi-Fi: tap Rasgeth-Setup-…'**
   String get fsWhereIos;
 
   /// No description provided for @fsWhereMac.
   ///
   /// In en, this message translates to:
-  /// **'The Wi-Fi menu at the top right of the screen: choose RedGiant-Setup-…'**
+  /// **'The Wi-Fi menu at the top right of the screen: choose Rasgeth-Setup-…'**
   String get fsWhereMac;
 
   /// No description provided for @fsWhereWindows.
   ///
   /// In en, this message translates to:
-  /// **'The Wi-Fi icon at the bottom right: choose RedGiant-Setup-…'**
+  /// **'The Wi-Fi icon at the bottom right: choose Rasgeth-Setup-…'**
   String get fsWhereWindows;
 
   /// No description provided for @fsWhereOther.
   ///
   /// In en, this message translates to:
-  /// **'The system\'s Wi-Fi list: choose RedGiant-Setup-…'**
+  /// **'The system\'s Wi-Fi list: choose Rasgeth-Setup-…'**
   String get fsWhereOther;
 
   /// No description provided for @fsManualNoInternet.
@@ -1176,13 +1181,13 @@ abstract class AppLocalizations {
   /// No description provided for @fsErrNotFound.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant does not answer: are you on the RedGiant-Setup network? It stays open for 30 minutes after RedGiant is turned on.'**
+  /// **'Rasgeth does not answer: are you on the Rasgeth-Setup network? It stays open for 30 minutes after Rasgeth is turned on.'**
   String get fsErrNotFound;
 
   /// No description provided for @fsErrNotHere.
   ///
   /// In en, this message translates to:
-  /// **'This RedGiant does not let a new access be created from here: finish from its page.'**
+  /// **'This Rasgeth does not let a new access be created from here: finish from its page.'**
   String get fsErrNotHere;
 
   /// No description provided for @fsErrCancelled.
@@ -1218,7 +1223,7 @@ abstract class AppLocalizations {
   /// No description provided for @fsAccessLead.
   ///
   /// In en, this message translates to:
-  /// **'The password that opens RedGiant from every device. Keep it: it is also what opens its keychain.'**
+  /// **'The password that opens Rasgeth from every device. Keep it: it is also what opens its keychain.'**
   String get fsAccessLead;
 
   /// No description provided for @fsPassword.
@@ -1254,7 +1259,7 @@ abstract class AppLocalizations {
   /// No description provided for @fsAccessSafe.
   ///
   /// In en, this message translates to:
-  /// **'It travels encrypted to RedGiant and stays only there; this device gets its own access, which you can sign out from Settings › Devices.'**
+  /// **'It travels encrypted to Rasgeth and stays only there; this device gets its own access, which you can sign out from Settings › Devices.'**
   String get fsAccessSafe;
 
   /// No description provided for @fsAccessGo.
@@ -1272,13 +1277,13 @@ abstract class AppLocalizations {
   /// No description provided for @fsSignInLead.
   ///
   /// In en, this message translates to:
-  /// **'This RedGiant has its password already: type it to go on.'**
+  /// **'This Rasgeth has its password already: type it to go on.'**
   String get fsSignInLead;
 
   /// No description provided for @fsMaintenanceTitle.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant lost its network'**
+  /// **'Rasgeth lost its network'**
   String get fsMaintenanceTitle;
 
   /// No description provided for @fsMaintenanceLead.
@@ -1296,7 +1301,7 @@ abstract class AppLocalizations {
   /// No description provided for @fsHomeLead.
   ///
   /// In en, this message translates to:
-  /// **'Which network should RedGiant use at home? These are the ones it saw around it.'**
+  /// **'Which network should Rasgeth use at home? These are the ones it saw around it.'**
   String get fsHomeLead;
 
   /// No description provided for @fsHomeNone.
@@ -1308,7 +1313,7 @@ abstract class AppLocalizations {
   /// No description provided for @fsHomeUnusable.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant cannot join this kind of network'**
+  /// **'Rasgeth cannot join this kind of network'**
   String get fsHomeUnusable;
 
   /// No description provided for @fsHomeHidden.
@@ -1332,7 +1337,7 @@ abstract class AppLocalizations {
   /// No description provided for @fsHomeSafe.
   ///
   /// In en, this message translates to:
-  /// **'The Wi-Fi password stays only in RedGiant.'**
+  /// **'The Wi-Fi password stays only in Rasgeth.'**
   String get fsHomeSafe;
 
   /// No description provided for @fsHomeJoin.
@@ -1350,25 +1355,25 @@ abstract class AppLocalizations {
   /// No description provided for @fsHomeWaitWifi.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant is joining «{name}»…'**
+  /// **'Rasgeth is joining «{name}»…'**
   String fsHomeWaitWifi(String name);
 
   /// No description provided for @fsHomeWaitCable.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant moves to the home network…'**
+  /// **'Rasgeth moves to the home network…'**
   String get fsHomeWaitCable;
 
   /// No description provided for @fsHomeWaitSub.
   ///
   /// In en, this message translates to:
-  /// **'The device goes back to its own network and finds RedGiant there (up to two minutes). If it does not work, RedGiant opens the temporary network again and says why.'**
+  /// **'The device goes back to its own network and finds Rasgeth there (up to two minutes). If it does not work, Rasgeth opens the temporary network again and says why.'**
   String get fsHomeWaitSub;
 
   /// No description provided for @fsLostTitle.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant is not found'**
+  /// **'Rasgeth is not found'**
   String get fsLostTitle;
 
   /// No description provided for @fsLostLead.
@@ -1422,7 +1427,7 @@ abstract class AppLocalizations {
   /// No description provided for @fsBrainTitle.
   ///
   /// In en, this message translates to:
-  /// **'How should RedGiant think?'**
+  /// **'How should Rasgeth think?'**
   String get fsBrainTitle;
 
   /// No description provided for @fsBrainLead.
@@ -1512,7 +1517,7 @@ abstract class AppLocalizations {
   /// No description provided for @fsTerms.
   ///
   /// In en, this message translates to:
-  /// **'I read the provider\'s terms: a subscription is used by me, on my own RedGiant.'**
+  /// **'I read the provider\'s terms: a subscription is used by me, on my own Rasgeth.'**
   String get fsTerms;
 
   /// No description provided for @fsBrainLater.
@@ -1530,7 +1535,7 @@ abstract class AppLocalizations {
   /// No description provided for @fsNamesLead.
   ///
   /// In en, this message translates to:
-  /// **'Who runs your RedGiant, and who speaks for it in the chats. You can change them later.'**
+  /// **'Who runs your Rasgeth, and who speaks for it in the chats. You can change them later.'**
   String get fsNamesLead;
 
   /// No description provided for @fsGodName.
@@ -1572,25 +1577,25 @@ abstract class AppLocalizations {
   /// No description provided for @fsDoneTitle.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant is ready'**
+  /// **'Rasgeth is ready'**
   String get fsDoneTitle;
 
   /// No description provided for @fsDoneLead.
   ///
   /// In en, this message translates to:
-  /// **'The temporary network is closed: RedGiant is on your home network, and this device is connected to it.'**
+  /// **'The temporary network is closed: Rasgeth is on your home network, and this device is connected to it.'**
   String get fsDoneLead;
 
   /// No description provided for @fsDoneMaintenance.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant is on its new network again, and this device is connected to it.'**
+  /// **'Rasgeth is on its new network again, and this device is connected to it.'**
   String get fsDoneMaintenance;
 
   /// No description provided for @fsDoneMore.
   ///
   /// In en, this message translates to:
-  /// **'The rest of the first start (backups, chats, access from outside…) is in the page, whenever you want: «Settings of RedGiant» › «All settings».'**
+  /// **'The rest of the first start (backups, chats, access from outside…) is in the page, whenever you want: «Settings of Rasgeth» › «All settings».'**
   String get fsDoneMore;
 
   /// No description provided for @fsDoneGo.
@@ -1626,13 +1631,13 @@ abstract class AppLocalizations {
   /// No description provided for @homeErrBusy.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant is already joining a network: wait a moment.'**
+  /// **'Rasgeth is already joining a network: wait a moment.'**
   String get homeErrBusy;
 
   /// No description provided for @homeErrWifiOff.
   ///
   /// In en, this message translates to:
-  /// **'Wi-Fi is not running on RedGiant.'**
+  /// **'Wi-Fi is not running on Rasgeth.'**
   String get homeErrWifiOff;
 
   /// No description provided for @homeErrNoCable.
@@ -1800,13 +1805,13 @@ abstract class AppLocalizations {
   /// No description provided for @updNowTitle.
   ///
   /// In en, this message translates to:
-  /// **'Update RedGiant?'**
+  /// **'Update Rasgeth?'**
   String get updNowTitle;
 
   /// No description provided for @updNowBody.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant downloads {version}, then restarts: for a minute or two it does not answer. You see every step, and the app reconnects by itself as soon as RedGiant is back.'**
+  /// **'Rasgeth downloads {version}, then restarts: for a minute or two it does not answer. You see every step, and the app reconnects by itself as soon as Rasgeth is back.'**
   String updNowBody(String version);
 
   /// No description provided for @updStarted.
@@ -1890,7 +1895,7 @@ abstract class AppLocalizations {
   /// No description provided for @updStepWait.
   ///
   /// In en, this message translates to:
-  /// **'Waiting for RedGiant to answer'**
+  /// **'Waiting for Rasgeth to answer'**
   String get updStepWait;
 
   /// No description provided for @updStepRollback.
@@ -2658,7 +2663,7 @@ abstract class AppLocalizations {
   /// No description provided for @newAgentMascotLater.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant picks the face from the name; once it is made you can change it.'**
+  /// **'Rasgeth picks the face from the name; once it is made you can change it.'**
   String get newAgentMascotLater;
 
   /// No description provided for @newAgentModelQ.
@@ -3024,7 +3029,7 @@ abstract class AppLocalizations {
   /// No description provided for @notificationsSub.
   ///
   /// In en, this message translates to:
-  /// **'How this device hears from RedGiant when the app is closed'**
+  /// **'How this device hears from Rasgeth when the app is closed'**
   String get notificationsSub;
 
   /// No description provided for @voiceTitle.
@@ -3132,7 +3137,7 @@ abstract class AppLocalizations {
   /// No description provided for @pushOffHere.
   ///
   /// In en, this message translates to:
-  /// **'Off on this device: RedGiant cannot tell you anything while the app is closed.'**
+  /// **'Off on this device: Rasgeth cannot tell you anything while the app is closed.'**
   String get pushOffHere;
 
   /// No description provided for @pushWaiting.
@@ -3162,7 +3167,7 @@ abstract class AppLocalizations {
   /// No description provided for @pushEndpointNotSent.
   ///
   /// In en, this message translates to:
-  /// **'The distributor gave an address, but RedGiant could not be reached: the app tries again at the next start.'**
+  /// **'The distributor gave an address, but Rasgeth could not be reached: the app tries again at the next start.'**
   String get pushEndpointNotSent;
 
   /// No description provided for @pushFailedNetwork.
@@ -3174,7 +3179,7 @@ abstract class AppLocalizations {
   /// No description provided for @pushFailedVapid.
   ///
   /// In en, this message translates to:
-  /// **'The distributor wants RedGiant\'s VAPID key, which is in the keychain: open the keychain on RedGiant and try again.'**
+  /// **'The distributor wants Rasgeth\'s VAPID key, which is in the keychain: open the keychain on Rasgeth and try again.'**
   String get pushFailedVapid;
 
   /// No description provided for @pushFailedAction.
@@ -3222,7 +3227,7 @@ abstract class AppLocalizations {
   /// No description provided for @pushDistributorHint.
   ///
   /// In en, this message translates to:
-  /// **'The distributor brings RedGiant\'s notifications to this phone, encrypted: you choose it (ntfy, your own ntfy, Sunup…), no Google or RedGiant cloud in between.'**
+  /// **'The distributor brings Rasgeth\'s notifications to this phone, encrypted: you choose it (ntfy, your own ntfy, Sunup…), no Google or Rasgeth cloud in between.'**
   String get pushDistributorHint;
 
   /// No description provided for @pushNoDistributor.
@@ -3234,7 +3239,7 @@ abstract class AppLocalizations {
   /// No description provided for @pushNoDistributorMeans.
   ///
   /// In en, this message translates to:
-  /// **'Without one, RedGiant cannot reach you while the app is closed: you see requests and answers only by opening the app (or in a linked chat, like Telegram).'**
+  /// **'Without one, Rasgeth cannot reach you while the app is closed: you see requests and answers only by opening the app (or in a linked chat, like Telegram).'**
   String get pushNoDistributorMeans;
 
   /// No description provided for @pushNoDistributorHow.
@@ -3282,7 +3287,7 @@ abstract class AppLocalizations {
   /// No description provided for @pushDesktopClosed.
   ///
   /// In en, this message translates to:
-  /// **'With the app closed this computer gets nothing: RedGiant\'s page and the linked chats still do.'**
+  /// **'With the app closed this computer gets nothing: Rasgeth\'s page and the linked chats still do.'**
   String get pushDesktopClosed;
 
   /// No description provided for @pushNotHere.
@@ -3318,7 +3323,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareTitle.
   ///
   /// In en, this message translates to:
-  /// **'Share to RedGiant'**
+  /// **'Share to Rasgeth'**
   String get shareTitle;
 
   /// No description provided for @shareWhat.
@@ -3408,13 +3413,13 @@ abstract class AppLocalizations {
   /// No description provided for @voiceNoReader.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant has no voice to read with yet.'**
+  /// **'Rasgeth has no voice to read with yet.'**
   String get voiceNoReader;
 
   /// No description provided for @voiceNoReaderHow.
   ///
   /// In en, this message translates to:
-  /// **'Add a key for OpenAI, ElevenLabs or Google Gemini in RedGiant\'s Settings, Voice: then choose it here.'**
+  /// **'Add a key for OpenAI, ElevenLabs or Google Gemini in Rasgeth\'s Settings, Voice: then choose it here.'**
   String get voiceNoReaderHow;
 
   /// No description provided for @voiceTalkHead.
@@ -3432,7 +3437,7 @@ abstract class AppLocalizations {
   /// No description provided for @voiceTalkWhere.
   ///
   /// In en, this message translates to:
-  /// **'It is written down by RedGiant\'s transcription (Settings, Voice, Transcription), the same as the page\'s.'**
+  /// **'It is written down by Rasgeth\'s transcription (Settings, Voice, Transcription), the same as the page\'s.'**
   String get voiceTalkWhere;
 
   /// No description provided for @voiceHoldToTalk.
@@ -3468,7 +3473,7 @@ abstract class AppLocalizations {
   /// No description provided for @voiceMicDenied.
   ///
   /// In en, this message translates to:
-  /// **'The microphone is not allowed: allow it in the system\'s settings for RGCompanion.'**
+  /// **'The microphone is not allowed: allow it in the system\'s settings for Rasgeth.'**
   String get voiceMicDenied;
 
   /// No description provided for @voiceMicFailed.
@@ -3480,7 +3485,7 @@ abstract class AppLocalizations {
   /// No description provided for @voiceErrNoService.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant has no transcription service: choose one in Settings, Voice, Transcription.'**
+  /// **'Rasgeth has no transcription service: choose one in Settings, Voice, Transcription.'**
   String get voiceErrNoService;
 
   /// No description provided for @voiceErrNoKey.
@@ -3504,7 +3509,7 @@ abstract class AppLocalizations {
   /// No description provided for @voiceErrConvert.
   ///
   /// In en, this message translates to:
-  /// **'The recording could not be converted for whisper on RedGiant\'s computer.'**
+  /// **'The recording could not be converted for whisper on Rasgeth\'s computer.'**
   String get voiceErrConvert;
 
   /// No description provided for @voiceErrTimeout.
@@ -3546,7 +3551,7 @@ abstract class AppLocalizations {
   /// No description provided for @voiceErrServer.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant cannot be reached: check the connection.'**
+  /// **'Rasgeth cannot be reached: check the connection.'**
   String get voiceErrServer;
 
   /// No description provided for @voiceErrOther.
@@ -3558,7 +3563,7 @@ abstract class AppLocalizations {
   /// No description provided for @notifyTestFailed.
   ///
   /// In en, this message translates to:
-  /// **'The system did not show it: are notifications on for RGCompanion in its settings?'**
+  /// **'The system did not show it: are notifications on for Rasgeth in its settings?'**
   String get notifyTestFailed;
 
   /// No description provided for @tabProjects.
@@ -3666,7 +3671,7 @@ abstract class AppLocalizations {
   /// No description provided for @codeUnreachable.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant cannot be reached: check the connection.'**
+  /// **'Rasgeth cannot be reached: check the connection.'**
   String get codeUnreachable;
 
   /// No description provided for @codeLoadFailed.
@@ -4620,7 +4625,7 @@ abstract class AppLocalizations {
   /// No description provided for @updNowBodyLocal.
   ///
   /// In en, this message translates to:
-  /// **'On this computer RedGiant does the update to {version} in its own window: it downloads, closes and starts again as the new version. Here you see the steps it reports.'**
+  /// **'On this computer Rasgeth does the update to {version} in its own window: it downloads, closes and starts again as the new version. Here you see the steps it reports.'**
   String updNowBodyLocal(String version);
 
   /// No description provided for @updFollow.
@@ -4632,13 +4637,13 @@ abstract class AppLocalizations {
   /// No description provided for @upd2Title.
   ///
   /// In en, this message translates to:
-  /// **'Updating RedGiant from {from} to {to}'**
+  /// **'Updating Rasgeth from {from} to {to}'**
   String upd2Title(String from, String to);
 
   /// No description provided for @upd2TitleTo.
   ///
   /// In en, this message translates to:
-  /// **'Updating RedGiant to {to}'**
+  /// **'Updating Rasgeth to {to}'**
   String upd2TitleTo(String to);
 
   /// No description provided for @upd2Starting.
@@ -4686,7 +4691,7 @@ abstract class AppLocalizations {
   /// No description provided for @upd2Restarting.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant is restarting, reconnecting…'**
+  /// **'Rasgeth is restarting, reconnecting…'**
   String get upd2Restarting;
 
   /// No description provided for @upd2Attempt.
@@ -4698,31 +4703,31 @@ abstract class AppLocalizations {
   /// No description provided for @upd2Back.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant answers: checking it is the new version…'**
+  /// **'Rasgeth answers: checking it is the new version…'**
   String get upd2Back;
 
   /// No description provided for @upd2Keeps.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant keeps working while it downloads: it stops only for the restart, a minute or two.'**
+  /// **'Rasgeth keeps working while it downloads: it stops only for the restart, a minute or two.'**
   String get upd2Keeps;
 
   /// No description provided for @upd2ComesBack.
   ///
   /// In en, this message translates to:
-  /// **'Keep the app open: it reconnects by itself as soon as RedGiant answers as the new version.'**
+  /// **'Keep the app open: it reconnects by itself as soon as Rasgeth answers as the new version.'**
   String get upd2ComesBack;
 
   /// No description provided for @upd2Local.
   ///
   /// In en, this message translates to:
-  /// **'On this computer RedGiant does the update in its own window, with the bar and the time: here you see the steps it reports, and if this window stays open it reconnects by itself when RedGiant is back.'**
+  /// **'On this computer Rasgeth does the update in its own window, with the bar and the time: here you see the steps it reports, and if this window stays open it reconnects by itself when Rasgeth is back.'**
   String get upd2Local;
 
   /// No description provided for @upd2Older.
   ///
   /// In en, this message translates to:
-  /// **'This RedGiant does not report each step\'s details yet (they come with 3.8.1): you see where it is and for how long.'**
+  /// **'This Rasgeth does not report each step\'s details yet (they come with 3.8.1): you see where it is and for how long.'**
   String get upd2Older;
 
   /// No description provided for @upd2Done.
@@ -4770,7 +4775,7 @@ abstract class AppLocalizations {
   /// No description provided for @upd2BackHome.
   ///
   /// In en, this message translates to:
-  /// **'Back to RedGiant'**
+  /// **'Back to Rasgeth'**
   String get upd2BackHome;
 
   /// No description provided for @upd2Hide.
@@ -4878,13 +4883,13 @@ abstract class AppLocalizations {
   /// No description provided for @upd2Step_restart.
   ///
   /// In en, this message translates to:
-  /// **'Restart RedGiant as the new version'**
+  /// **'Restart Rasgeth as the new version'**
   String get upd2Step_restart;
 
   /// No description provided for @upd2Step_wait.
   ///
   /// In en, this message translates to:
-  /// **'Check that RedGiant answers'**
+  /// **'Check that Rasgeth answers'**
   String get upd2Step_wait;
 
   /// No description provided for @upd2Step_rollback.
@@ -4914,19 +4919,19 @@ abstract class AppLocalizations {
   /// No description provided for @upd2StepText_check.
   ///
   /// In en, this message translates to:
-  /// **'Only a version signed by RedGiant is installed.'**
+  /// **'Only a version signed by Rasgeth is installed.'**
   String get upd2StepText_check;
 
   /// No description provided for @upd2StepText_download.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant keeps working while it downloads.'**
+  /// **'Rasgeth keeps working while it downloads.'**
   String get upd2StepText_download;
 
   /// No description provided for @upd2StepText_files.
   ///
   /// In en, this message translates to:
-  /// **'The programs of the system around RedGiant.'**
+  /// **'The programs of the system around Rasgeth.'**
   String get upd2StepText_files;
 
   /// No description provided for @upd2StepText_install.
@@ -4938,7 +4943,7 @@ abstract class AppLocalizations {
   /// No description provided for @upd2StepText_restart.
   ///
   /// In en, this message translates to:
-  /// **'For a minute or two RedGiant does not answer: the app reconnects by itself.'**
+  /// **'For a minute or two Rasgeth does not answer: the app reconnects by itself.'**
   String get upd2StepText_restart;
 
   /// No description provided for @upd2StepText_wait.
@@ -4980,7 +4985,7 @@ abstract class AppLocalizations {
   /// No description provided for @upd2WhyText_download.
   ///
   /// In en, this message translates to:
-  /// **'Nothing changed: RedGiant {from} keeps working. Check that the machine reaches the internet, then press «Try again»: what came down already is not downloaded twice.'**
+  /// **'Nothing changed: Rasgeth {from} keeps working. Check that the machine reaches the internet, then press «Try again»: what came down already is not downloaded twice.'**
   String upd2WhyText_download(String from);
 
   /// No description provided for @upd2Why_files.
@@ -4992,7 +4997,7 @@ abstract class AppLocalizations {
   /// No description provided for @upd2WhyText_files.
   ///
   /// In en, this message translates to:
-  /// **'Every file went back as it was and RedGiant {from} keeps working. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.'**
+  /// **'Every file went back as it was and Rasgeth {from} keeps working. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.'**
   String upd2WhyText_files(String from);
 
   /// No description provided for @upd2Why_not_up.
@@ -5004,7 +5009,7 @@ abstract class AppLocalizations {
   /// No description provided for @upd2WhyText_not_up.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant went back to {from} by itself: nothing is lost. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.'**
+  /// **'Rasgeth went back to {from} by itself: nothing is lost. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.'**
   String upd2WhyText_not_up(String from);
 
   /// No description provided for @upd2Why_no_images.
@@ -5016,7 +5021,7 @@ abstract class AppLocalizations {
   /// No description provided for @upd2WhyText_no_images.
   ///
   /// In en, this message translates to:
-  /// **'Nothing changed: RedGiant {from} keeps working. Wait for the next version.'**
+  /// **'Nothing changed: Rasgeth {from} keeps working. Wait for the next version.'**
   String upd2WhyText_no_images(String from);
 
   /// No description provided for @upd2Why_breaking.
@@ -5028,7 +5033,7 @@ abstract class AppLocalizations {
   /// No description provided for @upd2WhyText_breaking.
   ///
   /// In en, this message translates to:
-  /// **'Nothing changed: RedGiant {from} keeps working. Open RedGiant\'s page from the computer: it guides you through the clean install.'**
+  /// **'Nothing changed: Rasgeth {from} keeps working. Open Rasgeth\'s page from the computer: it guides you through the clean install.'**
   String upd2WhyText_breaking(String from);
 
   /// No description provided for @upd2Why_unsigned.
@@ -5070,7 +5075,7 @@ abstract class AppLocalizations {
   /// No description provided for @upd2Why_gone.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant does not answer any more.'**
+  /// **'Rasgeth does not answer any more.'**
   String get upd2Why_gone;
 
   /// No description provided for @upd2WhyText_gone.
@@ -5088,25 +5093,25 @@ abstract class AppLocalizations {
   /// No description provided for @upd2WhyText_start.
   ///
   /// In en, this message translates to:
-  /// **'Nothing changed: RedGiant {from} keeps working. Try again in a while.'**
+  /// **'Nothing changed: Rasgeth {from} keeps working. Try again in a while.'**
   String upd2WhyText_start(String from);
 
   /// No description provided for @upd2WhySaid.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant said: {error}'**
+  /// **'Rasgeth said: {error}'**
   String upd2WhySaid(String error);
 
   /// No description provided for @upd2ScreenTitle.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant\'s update'**
+  /// **'Rasgeth\'s update'**
   String get upd2ScreenTitle;
 
   /// No description provided for @deskAbout.
   ///
   /// In en, this message translates to:
-  /// **'About RGCompanion'**
+  /// **'About Rasgeth'**
   String get deskAbout;
 
   /// No description provided for @deskAdvancedOff.
@@ -9342,7 +9347,7 @@ abstract class AppLocalizations {
   /// The page's `arEmpty2` (packages/web/src/i18n.ts, tool/chat_words.mjs).
   ///
   /// In en, this message translates to:
-  /// **'It lives as a file in the artefatti/ folder of a project (or of God and the assistants), so you also find it among the files on the right. To get one, ask an agent for a tool you want to keep and use again; or import a .rgartifact from another RedGiant.'**
+  /// **'It lives as a file in the artefatti/ folder of a project (or of God and the assistants), so you also find it among the files on the right. To get one, ask an agent for a tool you want to keep and use again; or import a .rgartifact from another Rasgeth.'**
   String get cvArEmpty2;
 
   /// The page's `arPlacePlatform` (packages/web/src/i18n.ts, tool/chat_words.mjs).
@@ -9438,7 +9443,7 @@ abstract class AppLocalizations {
   /// The page's `arExportZipText` (packages/web/src/i18n.ts, tool/chat_words.mjs).
   ///
   /// In en, this message translates to:
-  /// **'To import it into another RedGiant: the app, its manifest and the fingerprint that checks it arrived intact. It carries no permissions.'**
+  /// **'To import it into another Rasgeth: the app, its manifest and the fingerprint that checks it arrived intact. It carries no permissions.'**
   String get cvArExportZipText;
 
   /// The page's `arExportHtml` (packages/web/src/i18n.ts, tool/chat_words.mjs).
@@ -9450,7 +9455,7 @@ abstract class AppLocalizations {
   /// The page's `arExportHtmlText` (packages/web/src/i18n.ts, tool/chat_words.mjs).
   ///
   /// In en, this message translates to:
-  /// **'To open it elsewhere. Careful: outside RedGiant it runs without the isolated frame, with the rights of the page you open it in.'**
+  /// **'To open it elsewhere. Careful: outside Rasgeth it runs without the isolated frame, with the rights of the page you open it in.'**
   String get cvArExportHtmlText;
 
   /// The page's `arWhereQ` (packages/web/src/i18n.ts, tool/chat_words.mjs).
@@ -9498,7 +9503,7 @@ abstract class AppLocalizations {
   /// The page's `arExportDataHint` (packages/web/src/i18n.ts, tool/chat_words.mjs).
   ///
   /// In en, this message translates to:
-  /// **'What the app kept on RedGiant (storage). Leave it off for a clean copy without your data.'**
+  /// **'What the app kept on Rasgeth (storage). Leave it off for a clean copy without your data.'**
   String get cvArExportDataHint;
 
   /// The page's `arPerms` (packages/web/src/i18n.ts, tool/chat_words.mjs).
@@ -9601,7 +9606,12 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{done} of {total} · {speed}/s · {left} left'**
-  String chatFileDownloadOf(String done, String total, String speed, String left);
+  String chatFileDownloadOf(
+    String done,
+    String total,
+    String speed,
+    String left,
+  );
 
   /// No description provided for @chatFileDownloadSoFar.
   ///
@@ -9846,7 +9856,7 @@ abstract class AppLocalizations {
   /// The page's `cmdStatus_interrupted` (packages/web/src/i18n.ts, tool/chat_words.mjs).
   ///
   /// In en, this message translates to:
-  /// **'interrupted (RedGiant had stopped)'**
+  /// **'interrupted (Rasgeth had stopped)'**
   String get cvCmdStatusInterrupted;
 
   /// The page's `cmdOutputTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
@@ -10284,7 +10294,7 @@ abstract class AppLocalizations {
   /// The page's `screenUnavailable` (packages/web/src/i18n.ts, tool/chat_words.mjs).
   ///
   /// In en, this message translates to:
-  /// **'The agents\' browser needs RedGiant\'s Docker installation.'**
+  /// **'The agents\' browser needs Rasgeth\'s Docker installation.'**
   String get cvScreenUnavailable;
 
   /// The page's `teachStart` (packages/web/src/i18n.ts, tool/chat_words.mjs).
@@ -10602,7 +10612,7 @@ abstract class AppLocalizations {
   /// No description provided for @csGiteaTile.
   ///
   /// In en, this message translates to:
-  /// **'A small private GitHub on this computer, installed and started by RedGiant, or the Gitea you already have.'**
+  /// **'A small private GitHub on this computer, installed and started by Rasgeth, or the Gitea you already have.'**
   String get csGiteaTile;
 
   /// No description provided for @csLinked.
@@ -10662,7 +10672,7 @@ abstract class AppLocalizations {
   /// No description provided for @csGithubHint.
   ///
   /// In en, this message translates to:
-  /// **'With a token you make on GitHub: RedGiant creates the repositories and the agents push to them. The token stays with RedGiant, never in the agents\' boxes.'**
+  /// **'With a token you make on GitHub: Rasgeth creates the repositories and the agents push to them. The token stays with Rasgeth, never in the agents\' boxes.'**
   String get csGithubHint;
 
   /// No description provided for @csGithubLinked.
@@ -10692,13 +10702,13 @@ abstract class AppLocalizations {
   /// No description provided for @csPermName.
   ///
   /// In en, this message translates to:
-  /// **'Token name: RedGiant'**
+  /// **'Token name: Rasgeth'**
   String get csPermName;
 
   /// No description provided for @csPermExpiry.
   ///
   /// In en, this message translates to:
-  /// **'Expiration: one year (RedGiant reminds you before it ends)'**
+  /// **'Expiration: one year (Rasgeth reminds you before it ends)'**
   String get csPermExpiry;
 
   /// No description provided for @csPermRepos.
@@ -10728,7 +10738,7 @@ abstract class AppLocalizations {
   /// No description provided for @csGiteaHint.
   ///
   /// In en, this message translates to:
-  /// **'A Git server of your own, on this computer: the repositories stay here, and you look at them in the browser like on GitHub. RedGiant starts it and keeps it updated. Or connect a Gitea you already have.'**
+  /// **'A Git server of your own, on this computer: the repositories stay here, and you look at them in the browser like on GitHub. Rasgeth starts it and keeps it updated. Or connect a Gitea you already have.'**
   String get csGiteaHint;
 
   /// No description provided for @csGiteaKind.
@@ -10854,13 +10864,13 @@ abstract class AppLocalizations {
   /// No description provided for @csGiteaNameNotFound.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant cannot find {host}: the DNS it uses does not know that name. The guide «Your home services» in Settings › Access from outside home says what to add, and lets you try the name.'**
+  /// **'Rasgeth cannot find {host}: the DNS it uses does not know that name. The guide «Your home services» in Settings › Access from outside home says what to add, and lets you try the name.'**
   String csGiteaNameNotFound(String host);
 
   /// No description provided for @csGiteaHostUnreachable.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant finds {host}, but its address does not answer from here (a Tailscale address, another network?). The guide «Your home services» in Settings › Access from outside home says how to fix it.'**
+  /// **'Rasgeth finds {host}, but its address does not answer from here (a Tailscale address, another network?). The guide «Your home services» in Settings › Access from outside home says how to fix it.'**
   String csGiteaHostUnreachable(String host);
 
   /// No description provided for @csJobGitea.
@@ -10968,7 +10978,7 @@ abstract class AppLocalizations {
   /// No description provided for @g4SfBalancedText.
   ///
   /// In en, this message translates to:
-  /// **'You approve what cannot be undone (publishing, history, disks, passwords, changes to RedGiant); the agents in charge approve the rest.'**
+  /// **'You approve what cannot be undone (publishing, history, disks, passwords, changes to Rasgeth); the agents in charge approve the rest.'**
   String get g4SfBalancedText;
 
   /// No description provided for @g4SfFree.
@@ -10980,7 +10990,7 @@ abstract class AppLocalizations {
   /// No description provided for @g4SfFreeText.
   ///
   /// In en, this message translates to:
-  /// **'The agents in charge approve almost everything; you are asked only for passwords and changes to RedGiant itself.'**
+  /// **'The agents in charge approve almost everything; you are asked only for passwords and changes to Rasgeth itself.'**
   String get g4SfFreeText;
 
   /// No description provided for @g4SfPersonalize.
@@ -11100,7 +11110,7 @@ abstract class AppLocalizations {
   /// No description provided for @g4SfBudgetQ.
   ///
   /// In en, this message translates to:
-  /// **'How much can RedGiant spend at most with your API keys?'**
+  /// **'How much can Rasgeth spend at most with your API keys?'**
   String get g4SfBudgetQ;
 
   /// No description provided for @g4SfBudgetQFree.
@@ -11508,7 +11518,7 @@ abstract class AppLocalizations {
   /// No description provided for @g4RqAlwaysYou.
   ///
   /// In en, this message translates to:
-  /// **'Even with «Don\'t ask me anything», the truly dangerous requests always reach you, everywhere: deletions for good, system files, secrets leaving, real payments and RedGiant\'s own protections.'**
+  /// **'Even with «Don\'t ask me anything», the truly dangerous requests always reach you, everywhere: deletions for good, system files, secrets leaving, real payments and Rasgeth\'s own protections.'**
   String get g4RqAlwaysYou;
 
   /// No description provided for @g4RqModeAskText.
@@ -11916,13 +11926,13 @@ abstract class AppLocalizations {
   /// No description provided for @g4GenCareLead.
   ///
   /// In en, this message translates to:
-  /// **'Whether a newer RedGiant is out, and a log to send when something goes wrong.'**
+  /// **'Whether a newer Rasgeth is out, and a log to send when something goes wrong.'**
   String get g4GenCareLead;
 
   /// No description provided for @g4GenCloudPrivacy.
   ///
   /// In en, this message translates to:
-  /// **'With {name}, what you say after the wake word goes to {name} through RedGiant\'s server; the wake word itself is still heard only in this page.'**
+  /// **'With {name}, what you say after the wake word goes to {name} through Rasgeth\'s server; the wake word itself is still heard only in this page.'**
   String g4GenCloudPrivacy(String name);
 
   /// No description provided for @g4GenDebugClear.
@@ -11952,7 +11962,7 @@ abstract class AppLocalizations {
   /// No description provided for @g4GenDebugHelp.
   ///
   /// In en, this message translates to:
-  /// **'Debug mode keeps a detailed log of everything RedGiant does: each step of starting a model with its times, the local engine\'s own messages, the requests, what the Windows program does. Turn it on when something is slow or goes wrong, repeat it, then download the logs and send them. It writes a lot (at most 300 MB, the oldest go first) and never writes passwords or keys.'**
+  /// **'Debug mode keeps a detailed log of everything Rasgeth does: each step of starting a model with its times, the local engine\'s own messages, the requests, what the Windows program does. Turn it on when something is slow or goes wrong, repeat it, then download the logs and send them. It writes a lot (at most 300 MB, the oldest go first) and never writes passwords or keys.'**
   String get g4GenDebugHelp;
 
   /// No description provided for @g4GenDebugSize.
@@ -11970,7 +11980,7 @@ abstract class AppLocalizations {
   /// No description provided for @g4GenDebugText.
   ///
   /// In en, this message translates to:
-  /// **'Everything RedGiant does, written in a log you can download and send.'**
+  /// **'Everything Rasgeth does, written in a log you can download and send.'**
   String get g4GenDebugText;
 
   /// No description provided for @g4GenDebugTitle.
@@ -12198,19 +12208,19 @@ abstract class AppLocalizations {
   /// No description provided for @g4GenOwnSearchHint.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant can run its own search engine (SearXNG): free, no keys, and every model can search the web with it, local ones too.'**
+  /// **'Rasgeth can run its own search engine (SearXNG): free, no keys, and every model can search the web with it, local ones too.'**
   String get g4GenOwnSearchHint;
 
   /// No description provided for @g4GenOwnSearchOn.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant\'s search engine is on: every agent and the Chat search the web with it.'**
+  /// **'Rasgeth\'s search engine is on: every agent and the Chat search the web with it.'**
   String get g4GenOwnSearchOn;
 
   /// No description provided for @g4GenOwnSearchStart.
   ///
   /// In en, this message translates to:
-  /// **'Start RedGiant\'s search engine'**
+  /// **'Start Rasgeth\'s search engine'**
   String get g4GenOwnSearchStart;
 
   /// No description provided for @g4GenOwnSearchStop.
@@ -12240,7 +12250,7 @@ abstract class AppLocalizations {
   /// No description provided for @g4GenQ.
   ///
   /// In en, this message translates to:
-  /// **'How do you want RedGiant?'**
+  /// **'How do you want Rasgeth?'**
   String get g4GenQ;
 
   /// No description provided for @g4GenRefineAfter.
@@ -12444,7 +12454,7 @@ abstract class AppLocalizations {
   /// No description provided for @g4GenSttLocalHelp.
   ///
   /// In en, this message translates to:
-  /// **'whisper.cpp, started by RedGiant: free, nothing leaves the house.'**
+  /// **'whisper.cpp, started by Rasgeth: free, nothing leaves the house.'**
   String get g4GenSttLocalHelp;
 
   /// No description provided for @g4GenSttRemote.
@@ -12486,7 +12496,7 @@ abstract class AppLocalizations {
   /// No description provided for @g4GenUpdHelp.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant looks for a new version by itself at the first start of each day. Here you can look now.'**
+  /// **'Rasgeth looks for a new version by itself at the first start of each day. Here you can look now.'**
   String get g4GenUpdHelp;
 
   /// No description provided for @g4GenVoiceHelp.
@@ -12504,7 +12514,7 @@ abstract class AppLocalizations {
   /// No description provided for @g4GenVoiceLocalHint.
   ///
   /// In en, this message translates to:
-  /// **'No account and nothing leaves this computer. RedGiant downloads whisper.cpp and a multilingual model once (about 560 MB, with its bar in the corner) and runs them itself.'**
+  /// **'No account and nothing leaves this computer. Rasgeth downloads whisper.cpp and a multilingual model once (about 560 MB, with its bar in the corner) and runs them itself.'**
   String get g4GenVoiceLocalHint;
 
   /// No description provided for @g4GenVoiceModel.
@@ -12570,7 +12580,7 @@ abstract class AppLocalizations {
   /// No description provided for @g4GenNewsTitle.
   ///
   /// In en, this message translates to:
-  /// **'What is new in RedGiant {version}'**
+  /// **'What is new in Rasgeth {version}'**
   String g4GenNewsTitle(String version);
 
   /// No description provided for @g4AgTreeTitle.
@@ -13782,7 +13792,7 @@ abstract class AppLocalizations {
   /// No description provided for @appUpdFromServer.
   ///
   /// In en, this message translates to:
-  /// **'GitHub does not answer: this is the version of the RedGiant you are connected to.'**
+  /// **'GitHub does not answer: this is the version of the Rasgeth you are connected to.'**
   String get appUpdFromServer;
 
   /// No description provided for @appUpdDownload.
@@ -13824,7 +13834,7 @@ abstract class AppLocalizations {
   /// No description provided for @appUpdVerified.
   ///
   /// In en, this message translates to:
-  /// **'Signature and checksum checked with RedGiant\'s update key.'**
+  /// **'Signature and checksum checked with Rasgeth\'s update key.'**
   String get appUpdVerified;
 
   /// No description provided for @appUpdRestart.
@@ -13902,7 +13912,7 @@ abstract class AppLocalizations {
   /// No description provided for @appUpdCarried.
   ///
   /// In en, this message translates to:
-  /// **'This copy of {app} comes with RedGiant: it is updated with RedGiant.'**
+  /// **'This copy of {app} comes with Rasgeth: it is updated with Rasgeth.'**
   String appUpdCarried(String app);
 
   /// No description provided for @appUpdDev.
@@ -14034,7 +14044,7 @@ abstract class AppLocalizations {
   /// No description provided for @auAwQ.
   ///
   /// In en, this message translates to:
-  /// **'What should RedGiant do on its own?'**
+  /// **'What should Rasgeth do on its own?'**
   String get auAwQ;
 
   /// No description provided for @auAwReminderText.
@@ -14700,7 +14710,7 @@ abstract class AppLocalizations {
   /// No description provided for @auAxMissed.
   ///
   /// In en, this message translates to:
-  /// **'If RedGiant was off at its time'**
+  /// **'If Rasgeth was off at its time'**
   String get auAxMissed;
 
   /// No description provided for @auAxMissedRun.
@@ -14988,7 +14998,7 @@ abstract class AppLocalizations {
   /// No description provided for @auAxSayStartup.
   ///
   /// In en, this message translates to:
-  /// **'When RedGiant starts'**
+  /// **'When Rasgeth starts'**
   String get auAxSayStartup;
 
   /// No description provided for @auAxSayTask.
@@ -15090,7 +15100,7 @@ abstract class AppLocalizations {
   /// No description provided for @auAxStart_startup.
   ///
   /// In en, this message translates to:
-  /// **'When RedGiant starts'**
+  /// **'When Rasgeth starts'**
   String get auAxStart_startup;
 
   /// No description provided for @auAxStart_task.
@@ -15108,7 +15118,7 @@ abstract class AppLocalizations {
   /// No description provided for @auAxStartupHelp.
   ///
   /// In en, this message translates to:
-  /// **'It starts every time RedGiant is switched on.'**
+  /// **'It starts every time Rasgeth is switched on.'**
   String get auAxStartupHelp;
 
   /// No description provided for @auAxTask_abandoned.
@@ -15516,7 +15526,7 @@ abstract class AppLocalizations {
   /// No description provided for @auReminderPurpose.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant sends you this text on Telegram at the time you choose, once. No agent, no cost.'**
+  /// **'Rasgeth sends you this text on Telegram at the time you choose, once. No agent, no cost.'**
   String get auReminderPurpose;
 
   /// No description provided for @auReminderSave.
@@ -15792,7 +15802,7 @@ abstract class AppLocalizations {
   /// No description provided for @auWhenRepoHelp.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant adds the webhook to the project\'s repository by itself: on Gitea at once, on GitHub once access from outside home is on.'**
+  /// **'Rasgeth adds the webhook to the project\'s repository by itself: on Gitea at once, on GitHub once access from outside home is on.'**
   String get auWhenRepoHelp;
 
   /// No description provided for @auWhenWebhook.
@@ -15804,7 +15814,7 @@ abstract class AppLocalizations {
   /// No description provided for @auWhenWebhookHelp.
   ///
   /// In en, this message translates to:
-  /// **'Another program (a site, a form, GitHub…) calls RedGiant\'s address; the address and its secret appear after saving.'**
+  /// **'Another program (a site, a form, GitHub…) calls Rasgeth\'s address; the address and its secret appear after saving.'**
   String get auWhenWebhookHelp;
 
   /// No description provided for @auWhenWeekdays.
@@ -16086,7 +16096,7 @@ abstract class AppLocalizations {
   /// No description provided for @knJob_download_pgvector.
   ///
   /// In en, this message translates to:
-  /// **'Downloading pgvector, the search by meaning in RedGiant\'s database (only once)'**
+  /// **'Downloading pgvector, the search by meaning in Rasgeth\'s database (only once)'**
   String get knJob_download_pgvector;
 
   /// No description provided for @knJob_error_checksum.
@@ -16368,7 +16378,7 @@ abstract class AppLocalizations {
   /// No description provided for @knKbConsentMail.
   ///
   /// In en, this message translates to:
-  /// **'The agents that may read this collection will be able to find and quote your mail. RedGiant only reads the inbox: it never marks, moves or deletes a message.'**
+  /// **'The agents that may read this collection will be able to find and quote your mail. Rasgeth only reads the inbox: it never marks, moves or deletes a message.'**
   String get knKbConsentMail;
 
   /// No description provided for @knKbConsentMailYes.
@@ -16500,7 +16510,7 @@ abstract class AppLocalizations {
   /// No description provided for @knKbFileHelp.
   ///
   /// In en, this message translates to:
-  /// **'Its full path on the computer where RedGiant runs.'**
+  /// **'Its full path on the computer where Rasgeth runs.'**
   String get knKbFileHelp;
 
   /// No description provided for @knKbFilePath.
@@ -16518,7 +16528,7 @@ abstract class AppLocalizations {
   /// No description provided for @knKbFolderHelp.
   ///
   /// In en, this message translates to:
-  /// **'Its full path on the computer where RedGiant runs.'**
+  /// **'Its full path on the computer where Rasgeth runs.'**
   String get knKbFolderHelp;
 
   /// No description provided for @knKbFolderPath.
@@ -16638,7 +16648,7 @@ abstract class AppLocalizations {
   /// No description provided for @knKbLead.
   ///
   /// In en, this message translates to:
-  /// **'Choose folders, files and pages: RedGiant reads them, cuts them into pieces and finds them by what they mean. The agents say where each answer comes from, and one click opens the file at that point.'**
+  /// **'Choose folders, files and pages: Rasgeth reads them, cuts them into pieces and finds them by what they mean. The agents say where each answer comes from, and one click opens the file at that point.'**
   String get knKbLead;
 
   /// No description provided for @knKbLeftOut.
@@ -16884,13 +16894,13 @@ abstract class AppLocalizations {
   /// No description provided for @knKbPickFile.
   ///
   /// In en, this message translates to:
-  /// **'Choose a file in RedGiant'**
+  /// **'Choose a file in Rasgeth'**
   String get knKbPickFile;
 
   /// No description provided for @knKbPickFolder.
   ///
   /// In en, this message translates to:
-  /// **'Choose a folder in RedGiant'**
+  /// **'Choose a folder in Rasgeth'**
   String get knKbPickFolder;
 
   /// No description provided for @knKbPickOther.
@@ -16920,7 +16930,7 @@ abstract class AppLocalizations {
   /// No description provided for @knKbPickWhere.
   ///
   /// In en, this message translates to:
-  /// **'Your projects and RedGiant\'s folders'**
+  /// **'Your projects and Rasgeth\'s folders'**
   String get knKbPickWhere;
 
   /// No description provided for @knKbPlaceAssistants.
@@ -17406,13 +17416,13 @@ abstract class AppLocalizations {
   /// No description provided for @knMemAutoOff.
   ///
   /// In en, this message translates to:
-  /// **'Off: RedGiant learns nothing by itself. You can still add memories here, or ask an agent to remember something.'**
+  /// **'Off: Rasgeth learns nothing by itself. You can still add memories here, or ask an agent to remember something.'**
   String get knMemAutoOff;
 
   /// No description provided for @knMemAutoOn.
   ///
   /// In en, this message translates to:
-  /// **'After you write, RedGiant notes what stays true about you: tastes, work, how you like answers. It reads only your own messages, never emails, web pages or automations, and never notes passwords.'**
+  /// **'After you write, Rasgeth notes what stays true about you: tastes, work, how you like answers. It reads only your own messages, never emails, web pages or automations, and never notes passwords.'**
   String get knMemAutoOn;
 
   /// No description provided for @knMemAutoTitle.
@@ -17502,7 +17512,7 @@ abstract class AppLocalizations {
   /// No description provided for @knMemEmpty.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant knows nothing about you yet. Talk with an agent, or write here something to remember.'**
+  /// **'Rasgeth knows nothing about you yet. Talk with an agent, or write here something to remember.'**
   String get knMemEmpty;
 
   /// No description provided for @knMemEyebrow.
@@ -17520,7 +17530,7 @@ abstract class AppLocalizations {
   /// No description provided for @knMemForgetText.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant deletes it, and its words go from the list of changes too. It can never be brought back.'**
+  /// **'Rasgeth deletes it, and its words go from the list of changes too. It can never be brought back.'**
   String get knMemForgetText;
 
   /// No description provided for @knMemForgetTitle.
@@ -17550,7 +17560,7 @@ abstract class AppLocalizations {
   /// No description provided for @knMemGoShared.
   ///
   /// In en, this message translates to:
-  /// **'Shared memory: what RedGiant knows about you'**
+  /// **'Shared memory: what Rasgeth knows about you'**
   String get knMemGoShared;
 
   /// No description provided for @knMemGoSharedOpen.
@@ -17706,7 +17716,7 @@ abstract class AppLocalizations {
   /// No description provided for @knMemTitle.
   ///
   /// In en, this message translates to:
-  /// **'What RedGiant knows about you'**
+  /// **'What Rasgeth knows about you'**
   String get knMemTitle;
 
   /// No description provided for @knMemUndid_added.
@@ -17840,9 +17850,22 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Put in the conversation\'s message'**
   String get cvAskedAgent;
+
+  /// The one-time notice of the new name (plan 3.9.0, choice 17): it names the old one on purpose.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant is now called Rasgeth'**
+  String get renameNoticeTitle;
+
+  /// Under renameNoticeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The same program, with a new name and a new icon: your servers, conversations and settings are where they were.'**
+  String get renameNoticeText;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -17851,7 +17874,8 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'it'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'it'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;

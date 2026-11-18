@@ -1,4 +1,4 @@
-// The real app on a desktop, driven through its own screens against a real RedGiant started
+// The real app on a desktop, driven through its own screens against a real Rasgeth started
 // locally with FakeProvider (packages/web/scripts/demo-server.mjs with DEMO_PASSWORD): pairing
 // from You, the live team, For you with a critical request, a new Chat with its answer, Activity
 // and the Canvas. With RG_SHOTS set, the screen is captured at each step (ImageMagick `import`
@@ -51,7 +51,7 @@ Future<void> shot(WidgetTester t, String name, {int wait = 900}) async {
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('RGCompanion against a real RedGiant', (t) async {
+  testWidgets('Rasgeth against a real Rasgeth', (t) async {
     final app = AppController(tokens: MemoryTokenStore(), prefs: MemoryAppPrefs())
       ..locale = const Locale('it');
     await t.pumpWidget(RGCompanionApp(controller: app));

@@ -1,5 +1,5 @@
 // G42.6: the Canvas's native frame around the page's viewers, on Linux (WebKitGTK) against a real
-// RedGiant (the demo with DEMO_CANVAS=1 and DEMO_SAMPLES, one file for each viewer kind), light and
+// Rasgeth (the demo with DEMO_CANVAS=1 and DEMO_SAMPLES, one file for each viewer kind), light and
 // dark. Run in the agents' Docker with tool/linux_shots.sh (RG_SCREEN for the phone's size),
 // RG_SHOTS the folder for the pictures, RG_SHOT_TAG computer | telefono.
 import 'dart:io';

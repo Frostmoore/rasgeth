@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>RGCompanion</string>
+	<string>Rasgeth</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>RGCompanion</string>
+	<string>Rasgeth</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -72,9 +72,9 @@
 		<true/>
 	</dict>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Press and talk: what you say is written down by your RedGiant.</string>
+	<string>Press and talk: what you say is written down by Rasgeth.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>RGCompanion looks for your RedGiant on the local network.</string>
+	<string>Rasgeth looks for your server on the local network.</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_redgiant._tcp</string>

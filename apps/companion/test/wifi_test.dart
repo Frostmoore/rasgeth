@@ -28,19 +28,19 @@ void main() {
   group('names', () {
     test('only the temporary network\'s own names', () {
       for (final (s, ok) in [
-        ('RedGiant-Setup-A1B2', true),
-        ('RedGiant-Setup-D3M0', true),
-        ('RedGiant-Setup-', false),
-        ('RedGiant-Setup-A1 B2', false),
-        ('RedGiant-Setup-A1B2"; rm -rf /', false),
+        ('Rasgeth-Setup-A1B2', true),
+        ('Rasgeth-Setup-D3M0', true),
+        ('Rasgeth-Setup-', false),
+        ('Rasgeth-Setup-A1 B2', false),
+        ('Rasgeth-Setup-A1B2"; rm -rf /', false),
         ('Casa Rossi', false),
         ('redgiant-setup-a1b2', false),
-        ('RedGiant-Setup-${'A' * 17}', false),
+        ('Rasgeth-Setup-${'A' * 17}', false),
       ]) {
         expect(isSetupSsid(s), ok, reason: s);
       }
-      expect(setupSsidFrom('a1b2'), 'RedGiant-Setup-a1b2');
-      expect(setupSsidFrom(' RedGiant-Setup-Z9 '), 'RedGiant-Setup-Z9');
+      expect(setupSsidFrom('a1b2'), 'Rasgeth-Setup-a1b2');
+      expect(setupSsidFrom(' Rasgeth-Setup-Z9 '), 'Rasgeth-Setup-Z9');
       expect(setupSsidFrom('a b'), isNull);
       expect(setupSsidFrom(''), isNull);
     });
@@ -61,19 +61,19 @@ void main() {
       expect(nmcliFields(r'a\\b:c'), [r'a\b', 'c']);
       expect(
         parseNmcliWifiList(
-          'RedGiant-Setup-AB12:54\nCasa Rossi:90\nRedGiant-Setup-ZZ99:71\n'
-          'RedGiant-Setup-AB12:60\n:40\n',
+          'Rasgeth-Setup-AB12:54\nCasa Rossi:90\nRasgeth-Setup-ZZ99:71\n'
+          'Rasgeth-Setup-AB12:60\n:40\n',
         ),
         [
-          const SeenNetwork('RedGiant-Setup-ZZ99', 71),
-          const SeenNetwork('RedGiant-Setup-AB12', 60),
+          const SeenNetwork('Rasgeth-Setup-ZZ99', 71),
+          const SeenNetwork('Rasgeth-Setup-AB12', 60),
         ],
       );
       expect(
         parseNmcliActiveWifi('Wired connection 1:802-3-ethernet\nCasa\\: Rossi:802-11-wireless\n'),
         'Casa: Rossi',
       );
-      expect(parseNmcliActiveWifi('rgcompanion-setup:802-11-wireless\n'), isNull);
+      expect(parseNmcliActiveWifi('rasgeth-setup:802-11-wireless\n'), isNull);
     });
 
     test('a connection of our own: added, never the default route, deleted after; the one '
@@ -88,31 +88,31 @@ void main() {
       final w = LinuxNmcliWifi(run: run.call);
       expect(await w.join(ssid: 'Casa'), isA<JoinResult>().having((r) => r.ok, 'ok', false));
       expect(run.calls, isEmpty);
-      final r = await w.join(ssid: 'RedGiant-Setup-AB12');
+      final r = await w.join(ssid: 'Rasgeth-Setup-AB12');
       expect(r.ok, isTrue);
-      expect(r.ssid, 'RedGiant-Setup-AB12');
+      expect(r.ssid, 'Rasgeth-Setup-AB12');
       final add = run.calls.firstWhere((c) => c.startsWith('nmcli connection add'));
-      expect(add, contains('con-name rgcompanion-setup ssid RedGiant-Setup-AB12'));
+      expect(add, contains('con-name rasgeth-setup ssid Rasgeth-Setup-AB12'));
       expect(add, contains('wifi-sec.psk redgiant'));
       expect(add, contains('ipv4.never-default yes'));
       expect(add, contains('connection.autoconnect no'));
-      expect(run.calls, contains('nmcli --wait 30 connection up id rgcompanion-setup'));
+      expect(run.calls, contains('nmcli --wait 30 connection up id rasgeth-setup'));
       run.calls.clear();
       await w.leave();
       expect(run.calls, [
-        'nmcli connection delete id rgcompanion-setup',
+        'nmcli connection delete id rasgeth-setup',
         'nmcli connection up id Casa Rossi',
       ]);
       // Only our own name is ever deleted.
       expect(
-        run.calls.where((c) => c.contains('delete') && !c.endsWith('rgcompanion-setup')),
+        run.calls.where((c) => c.contains('delete') && !c.endsWith('rasgeth-setup')),
         isEmpty,
       );
     });
 
     test('without NetworkManager: by hand', () async {
       final run = FakeRunner({'nmcli': const CmdResult(127, '', 'not found')});
-      final r = await LinuxNmcliWifi(run: run.call).join(ssid: 'RedGiant-Setup-AB12');
+      final r = await LinuxNmcliWifi(run: run.call).join(ssid: 'Rasgeth-Setup-AB12');
       expect(r.state, JoinState.unsupported);
     });
 
@@ -121,9 +121,9 @@ void main() {
         'nmcli -t -f RUNNING general': const CmdResult(0, 'running\n'),
         'nmcli --wait 30 connection up': const CmdResult(4, '', 'Secrets were required'),
       });
-      final r = await LinuxNmcliWifi(run: run.call).join(ssid: 'RedGiant-Setup-AB12');
+      final r = await LinuxNmcliWifi(run: run.call).join(ssid: 'Rasgeth-Setup-AB12');
       expect(r.state, JoinState.failed);
-      expect(run.calls.last, 'nmcli connection delete id rgcompanion-setup');
+      expect(run.calls.last, 'nmcli connection delete id rasgeth-setup');
     });
   });
 
@@ -137,10 +137,10 @@ SSID 1 : Casa Rossi
     Tipo di rete            : Infrastruttura
     Autenticazione          : WPA2-Personal
 
-SSID 2 : RedGiant-Setup-AB12
+SSID 2 : Rasgeth-Setup-AB12
     Tipo di rete            : Infrastruttura
 
-SSID 3 : RedGiant-Setup-AB12
+SSID 3 : Rasgeth-Setup-AB12
 ''';
     const iface = '''
     Nome                   : Wi-Fi
@@ -151,14 +151,14 @@ SSID 3 : RedGiant-Setup-AB12
 ''';
 
     test('the networks and the one in use, in any language', () {
-      expect(parseNetshNetworks(networks), [const SeenNetwork('RedGiant-Setup-AB12', 0)]);
+      expect(parseNetshNetworks(networks), [const SeenNetwork('Rasgeth-Setup-AB12', 0)]);
       expect(parseNetshCurrentSsid(iface), 'Casa Rossi');
       expect(parseNetshCurrentSsid('    Stato : disconnessa\n'), isNull);
     });
 
     test('the profile: WPA2-PSK with AES, by hand only, escaped', () {
-      final x = windowsProfileXml('RedGiant-Setup-AB12');
-      expect(x, contains('<name>RedGiant-Setup-AB12</name>'));
+      final x = windowsProfileXml('Rasgeth-Setup-AB12');
+      expect(x, contains('<name>Rasgeth-Setup-AB12</name>'));
       expect(x, contains('<authentication>WPA2PSK</authentication>'));
       expect(x, contains('<encryption>AES</encryption>'));
       expect(x, contains('<connectionMode>manual</connectionMode>'));
@@ -178,31 +178,31 @@ SSID 3 : RedGiant-Setup-AB12
         if (line == 'netsh wlan show interfaces') {
           return CmdResult(
             0,
-            connected ? iface.replaceAll('Casa Rossi', 'RedGiant-Setup-AB12') : iface,
+            connected ? iface.replaceAll('Casa Rossi', 'Rasgeth-Setup-AB12') : iface,
           );
         }
         if (line.startsWith('netsh wlan show profiles')) return const CmdResult(1, 'not found');
         if (line.startsWith('netsh wlan add profile')) {
           final path = args.firstWhere((a) => a.startsWith('filename=')).substring(9);
-          expect(File(path).readAsStringSync(), contains('RedGiant-Setup-AB12'));
+          expect(File(path).readAsStringSync(), contains('Rasgeth-Setup-AB12'));
           return const CmdResult(0, 'added');
         }
-        if (line.startsWith('netsh wlan connect name=RedGiant')) connected = true;
+        if (line.startsWith('netsh wlan connect name=Rasgeth')) connected = true;
         return const CmdResult(0, '');
       }
 
       final w = WindowsNetshWifi(run: run, tempDir: temp, settle: Duration.zero);
-      final r = await w.join(ssid: 'RedGiant-Setup-AB12');
+      final r = await w.join(ssid: 'Rasgeth-Setup-AB12');
       expect(r.ok, isTrue, reason: '${r.message}');
       expect(calls.where((c) => c.startsWith('netsh wlan add profile')), hasLength(1));
       expect(
         calls,
-        contains('netsh wlan connect name=RedGiant-Setup-AB12 ssid=RedGiant-Setup-AB12'),
+        contains('netsh wlan connect name=Rasgeth-Setup-AB12 ssid=Rasgeth-Setup-AB12'),
       );
       calls.clear();
       await w.leave();
       expect(calls, [
-        'netsh wlan delete profile name=RedGiant-Setup-AB12',
+        'netsh wlan delete profile name=Rasgeth-Setup-AB12',
         'netsh wlan connect name=Casa Rossi',
       ]);
     });
@@ -216,15 +216,15 @@ SSID 3 : RedGiant-Setup-AB12
         if (line == 'netsh wlan show interfaces') {
           return CmdResult(
             0,
-            connected ? iface.replaceAll('Casa Rossi', 'RedGiant-Setup-AB12') : iface,
+            connected ? iface.replaceAll('Casa Rossi', 'Rasgeth-Setup-AB12') : iface,
           );
         }
-        if (line.startsWith('netsh wlan connect name=RedGiant')) connected = true;
+        if (line.startsWith('netsh wlan connect name=Rasgeth')) connected = true;
         return const CmdResult(0, '');
       }
 
       final w = WindowsNetshWifi(run: run, tempDir: temp, settle: Duration.zero);
-      expect((await w.join(ssid: 'RedGiant-Setup-AB12')).ok, isTrue);
+      expect((await w.join(ssid: 'Rasgeth-Setup-AB12')).ok, isTrue);
       await w.leave();
       expect(
         calls.where((c) => c.contains('add profile') || c.contains('delete profile')),
@@ -243,9 +243,9 @@ SSID 3 : RedGiant-Setup-AB12
       }
 
       final w = WindowsNetshWifi(run: run, tempDir: temp, settle: Duration.zero, tries: 3);
-      final r = await w.join(ssid: 'RedGiant-Setup-AB12');
+      final r = await w.join(ssid: 'Rasgeth-Setup-AB12');
       expect(r.state, JoinState.failed);
-      expect(calls, contains('netsh wlan delete profile name=RedGiant-Setup-AB12'));
+      expect(calls, contains('netsh wlan delete profile name=Rasgeth-Setup-AB12'));
     });
 
     test('a name that is not the temporary network\'s: nothing runs', () async {
@@ -267,7 +267,7 @@ SSID 3 : RedGiant-Setup-AB12
         (call) async {
           seen.add(call);
           if (call.method == 'join') {
-            return {'state': 'joined', 'ssid': 'RedGiant-Setup-AB12'};
+            return {'state': 'joined', 'ssid': 'Rasgeth-Setup-AB12'};
           }
           return null;
         },
@@ -275,8 +275,8 @@ SSID 3 : RedGiant-Setup-AB12
       final w = PlatformChannelWifi(channel: ch);
       final r = await w.join();
       expect(r.ok, isTrue);
-      expect(r.ssid, 'RedGiant-Setup-AB12');
-      expect(seen.single.arguments, {'prefix': 'RedGiant-Setup-', 'passphrase': 'redgiant'});
+      expect(r.ssid, 'Rasgeth-Setup-AB12');
+      expect(seen.single.arguments, {'prefix': 'Rasgeth-Setup-', 'passphrase': 'rasgeth'});
       await w.leave();
       expect(seen.last.method, 'leave');
     });

@@ -1,7 +1,7 @@
-// G40.17: RGCompanion's own interface on computers, the «control room» of board C. The pure parts
+// G40.17: Rasgeth's own interface on computers, the «control room» of board C. The pure parts
 // as tables (the palette's prefixes and ranking, the git graph's lanes, the side-by-side diff,
 // the Log's search line, shortcuts' words, the layout's threshold), then the room against the
-// fake RedGiant in windows of 1440x900 and 1024x700: the wall, the side panel, the palette, the
+// fake Rasgeth in windows of 1440x900 and 1024x700: the wall, the side panel, the palette, the
 // shortcuts, the floating panels, the quick Chat, the menus and the advanced views.
 import 'dart:io';
 

@@ -1,4 +1,4 @@
-// A fake RedGiant on localhost, answering like `device-routes.ts` and `app.ts` do for the routes
+// A fake Rasgeth on localhost, answering like `device-routes.ts` and `app.ts` do for the routes
 // the app uses. Real HTTP, so the client is tested end to end.
 import 'dart:async';
 import 'dart:convert';
@@ -661,8 +661,8 @@ class FakeRedGiant {
   final refines = <Map<String, dynamic>>[];
   String? refineFails;
 
-  // The settings of this RedGiant (G40.8).
-  String machine = 'RedGiant di casa';
+  // The settings of this Rasgeth (G40.8).
+  String machine = 'Rasgeth di casa';
   Map<String, dynamic> update = {
     'install': 'os',
     'installed': '3.8.0',
@@ -687,7 +687,7 @@ class FakeRedGiant {
   /// The version hello and the live socket say (changes when an update ends).
   String version = '3.8.0';
 
-  /// RedGiant restarting: every request and socket is cut off without an answer.
+  /// Rasgeth restarting: every request and socket is cut off without an answer.
   bool down = false;
 
   /// What `POST /api/update/act` does (a test's script of the update); null: just counted.
@@ -705,7 +705,7 @@ class FakeRedGiant {
   final devices = <Map<String, dynamic>>[
     {
       'id': 'd1',
-      'name': 'RGCompanion (Linux)',
+      'name': 'Rasgeth (Linux)',
       'platform': 'linux',
       'createdAt': '2026-11-15T10:00:00.000Z',
       'lastUsedAt': '2026-11-15T11:00:00.000Z',
@@ -914,7 +914,7 @@ class FakeRedGiant {
         'firstStartCompleted': true,
         'access': {'password': true, 'code': codeOn, 'token': true},
         'signedIn': tokens.contains(token),
-        if (tokens.contains(token)) 'device': {'id': 'd1', 'name': 'RGCompanion (Linux)'},
+        if (tokens.contains(token)) 'device': {'id': 'd1', 'name': 'Rasgeth (Linux)'},
       });
     }
     if (r.method == 'POST' && path == '/api/app/pair') {
@@ -1775,7 +1775,7 @@ class FakeRedGiant {
     }
     if (path == '/api/setup/os-updates' || path == '/api/setup/os-updates/check') {
       final os = osUpdates;
-      return os == null ? _json(r, 400, {'error': 'Not RedGiant OS'}) : _json(r, 200, os);
+      return os == null ? _json(r, 400, {'error': 'Not Rasgeth OS'}) : _json(r, 200, os);
     }
     if (r.method == 'GET' && path == '/api/devices') return _json(r, 200, devices);
     final dev = RegExp(r'^/api/devices/([^/]+)$').firstMatch(path);
