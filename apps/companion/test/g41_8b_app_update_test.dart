@@ -429,10 +429,19 @@ void main() {
       final going = u.download();
       await pumpEventQueue();
       expect(u.stage, AppUpdateStage.downloading);
+      // The download starts its clock when it listens: the fake clock moves only after that.
+      for (var n = 0; n < 50 && !gh.held!.hasListener; n++) {
+        await pumpEventQueue();
+      }
+      expect(gh.held!.hasListener, isTrue);
       for (var i = 0; i < 4; i++) {
         clock.t = clock.t.add(const Duration(seconds: 1));
         gh.held!.add(List.filled(100, 1));
-        await pumpEventQueue();
+        // Each chunk must reach the updater before the clock moves again, or the speed is measured
+        // over the wrong span (a slow CI runner delivers two chunks in one turn).
+        for (var n = 0; n < 50 && u.progress?.done != (i + 1) * 100; n++) {
+          await pumpEventQueue();
+        }
       }
       final p = u.progress!;
       expect(p.done, 400);
