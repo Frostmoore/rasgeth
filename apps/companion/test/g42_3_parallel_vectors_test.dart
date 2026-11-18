@@ -9,8 +9,9 @@ import 'package:rgcompanion/api/conversation.dart';
 import 'package:rgcompanion/api/parallel.dart';
 
 void main() {
-  final cases =
-      jsonDecode(File('test/fixtures/parallel_vectors.json').readAsStringSync()) as Map<String, dynamic>;
+  final cases = jsonDecode(
+    File('test/fixtures/parallel_vectors.json').readAsStringSync(),
+  ) as Map<String, dynamic>;
 
   for (final MapEntry(key: name, value: v as Map<String, dynamic>) in cases.entries) {
     test('$name: the same tabs, states and commands as the page', () {
@@ -31,22 +32,24 @@ void main() {
     });
   }
 
-  test('handedOver: unfinished tabs whose conversation runs (or, unknown, while the parent runs)', () {
-    final events = [
-      for (final e in ((cases['three'] as Map)['events'] as List).cast<Map<String, dynamic>>())
-        RgEvent.fromJson(e),
-    ];
-    expect(
-      handedOver(events, parentRunning: false, runningOf: (_) => null).map((t) => t.title),
-      isEmpty,
-    );
-    expect(
-      handedOver(events, parentRunning: true, runningOf: (_) => null).map((t) => t.title),
-      ['Prove'],
-    );
-    expect(
-      handedOver(events, parentRunning: true, runningOf: (id) => id == 'sess_a' ? false : null),
-      isEmpty,
-    );
-  });
+  test(
+    'handedOver: unfinished tabs whose conversation runs (or, unknown, while the parent runs)',
+    () {
+      final events = [
+        for (final e in ((cases['three'] as Map)['events'] as List).cast<Map<String, dynamic>>())
+          RgEvent.fromJson(e),
+      ];
+      expect(
+        handedOver(events, parentRunning: false, runningOf: (_) => null).map((t) => t.title),
+        isEmpty,
+      );
+      expect(handedOver(events, parentRunning: true, runningOf: (_) => null).map((t) => t.title), [
+        'Prove',
+      ]);
+      expect(
+        handedOver(events, parentRunning: true, runningOf: (id) => id == 'sess_a' ? false : null),
+        isEmpty,
+      );
+    },
+  );
 }

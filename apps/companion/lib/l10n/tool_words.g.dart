@@ -92,7 +92,8 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_blender': r"Fa girare Blender senza finestra: cambia i file 3D con uno script, li salva in .blend e glTF, fa un'immagine o un video a giro di 360°.",
     'toolDo_board': r"Legge e scrive la bacheca dove si parlano gli agenti di un progetto.",
     'toolDo_browser': r"Usa il tuo browser: apre siti, clicca, scrive, fa schermate.",
-    'toolDo_canvas_act': r"Apre schede, va a pagina, riga o tempo, seleziona e ingrandisce; non modifica i file.",
+    'toolDo_canvas_act':
+        r"Apre schede, va a pagina, riga o tempo, seleziona e ingrandisce; non modifica i file.",
     'toolDo_canvas_edit': r"Modifica un file aperto nello stesso editor che usi tu: modifiche evidenziate, annullabili, o proposte se lo scegli.",
     'toolDo_canvas_look': r"Vede le schede aperte dalla persona e un'immagine di ciò che mostrano.",
     'toolDo_complete_task': r"Chiude un compito, con una verifica che dimostra che è fatto.",
@@ -109,42 +110,54 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_grep': r"Trova i file che contengono una parola o un modello.",
     'toolDo_image_generation': r"Crea immagini con il servizio di immagini che hai impostato.",
     'toolDo_knowledge_add_source': r"Dà a una raccolta una cartella, un file, i file di un progetto o una pagina web; fuori dalle sue cartelle chiede a te.",
-    'toolDo_knowledge_create': r"Crea una raccolta di documenti da far cercare agli agenti, come fai tu in Conoscenza.",
-    'toolDo_knowledge_status': r"Dice quali raccolte ci sono, cosa è stato letto e se la ricerca va per significato.",
+    'toolDo_knowledge_create':
+        r"Crea una raccolta di documenti da far cercare agli agenti, come fai tu in Conoscenza.",
+    'toolDo_knowledge_status':
+        r"Dice quali raccolte ci sono, cosa è stato letto e se la ricerca va per significato.",
     'toolDo_list_agents': r"Elenca gli agenti che può vedere, con il loro ruolo.",
     'toolDo_mail_draft': r"Scrive una bozza, una risposta o un inoltro nelle tue Bozze, con file allegati; non invia niente.",
     'toolDo_mail_move': r"Segna come letta o da leggere, mette la stella, archivia, sposta nel cestino o in una cartella; cancellare per sempre lo chiede a te.",
     'toolDo_mail_read': r"Legge un'email come testo semplice ed elenca gli allegati; può salvarli nella sua cartella. Non segna niente come letto.",
     'toolDo_mail_search': r"Cerca nelle caselle che hai aperto agli agenti per mittente, oggetto, parole, date, non lette o allegati.",
-    'toolDo_mail_send': r"Invia un'email o una bozza; la vedi sempre intera e dici sì o no prima che parta.",
+    'toolDo_mail_send':
+        r"Invia un'email o una bozza; la vedi sempre intera e dici sì o no prima che parta.",
     'toolDo_memory': r"Si annota quello che deve ricordare nelle conversazioni dopo.",
     'toolDo_merge_work': r"Porta nel progetto il lavoro di un agente.",
     'toolDo_node': r"Fa girare comandi in una sandbox sulle altre macchine RedGiant abbinate in Impostazioni > Nodi, che ricontrollano ogni comando.",
     'toolDo_platform_automation': r"Crea e cambia le automazioni, con il tuo sì.",
     'toolDo_platform_changes': r"Legge le ultime modifiche alle impostazioni.",
     'toolDo_platform_code': r"Cambia RedGiant stesso, provato a parte prima che tu lo accetti.",
-    'toolDo_platform_configure_agent': r"Cambia modello, modalità o istruzioni di un agente, con il tuo sì.",
+    'toolDo_platform_configure_agent':
+        r"Cambia modello, modalità o istruzioni di un agente, con il tuo sì.",
     'toolDo_platform_mcp': r"Aggiunge o toglie un servizio collegato dal catalogo, con il tuo sì.",
     'toolDo_platform_policy': r"Cambia cosa gli agenti possono fare senza chiedere, con il tuo sì.",
     'toolDo_platform_project': r"Archivia un progetto o lo ripristina com'era, con il tuo sì.",
     'toolDo_platform_set_budget': r"Cambia i limiti di spesa, con il tuo sì.",
     'toolDo_platform_status': r"Legge come è impostato RedGiant: agenti, modelli, regole.",
     'toolDo_platform_undo': r"Annulla una modifica alle impostazioni, con il tuo sì.",
-    'toolDo_propose_automation': r"Nella conversazione di un'automazione magica propone l'automazione pronta.",
+    'toolDo_propose_automation':
+        r"Nella conversazione di un'automazione magica propone l'automazione pronta.",
     'toolDo_propose_extension': r"Propone uno strumento o un'abilità; aspetta il tuo sì.",
-    'toolDo_propose_magic_extension': r"Nella conversazione di un'integrazione o estensione magica propone il pacchetto provato.",
+    'toolDo_propose_magic_extension':
+        r"Nella conversazione di un'integrazione o estensione magica propone il pacchetto provato.",
     'toolDo_propose_plan': r"In modalità piano ti mostra il piano e aspetta il tuo sì.",
     'toolDo_publish_board': r"Pubblica alcune varianti grafiche su una pagina, perché tu scelga.",
     'toolDo_read_agent': r"Legge cosa ha fatto un altro agente nella sua conversazione.",
     'toolDo_read_file': r"Legge i file del suo progetto.",
-    'toolDo_remove_agent': r"Toglie un agente dalla squadra (la sua storia resta; puoi ripristinarlo).",
+    'toolDo_remove_agent':
+        r"Toglie un agente dalla squadra (la sua storia resta; puoi ripristinarlo).",
     'toolDo_repo': r"Apre richieste di modifica e segnalazioni sul repository del progetto.",
-    'toolDo_request_connection': r"Ti chiede di collegare un servizio che gli serve (Notion, Linear…).",
-    'toolDo_request_tool': r"Ti chiede di accendere uno strumento spento per lui, spiegando perché.",
+    'toolDo_request_connection':
+        r"Ti chiede di collegare un servizio che gli serve (Notion, Linear…).",
+    'toolDo_request_tool':
+        r"Ti chiede di accendere uno strumento spento per lui, spiegando perché.",
     'toolDo_restore_agent': r"Riporta nella squadra un agente rimosso.",
-    'toolDo_resume_agent': r"Riattiva un agente fermato sotto di sé: i suoi compiti aperti ripartono.",
-    'toolDo_run_script': r"Lancia un piccolo programma che usa i suoi strumenti tante volte di fila.",
-    'toolDo_search_knowledge': r"Cerca nei tuoi documenti (Impostazioni > Conoscenza) e cita da dove viene ogni risposta.",
+    'toolDo_resume_agent':
+        r"Riattiva un agente fermato sotto di sé: i suoi compiti aperti ripartono.",
+    'toolDo_run_script':
+        r"Lancia un piccolo programma che usa i suoi strumenti tante volte di fila.",
+    'toolDo_search_knowledge':
+        r"Cerca nei tuoi documenti (Impostazioni > Conoscenza) e cita da dove viene ogni risposta.",
     'toolDo_send_file': r"Ti manda un file nella chat (e su Telegram).",
     'toolDo_set_agent_model': r"Passa un agente sotto di sé al modello che hai indicato, solo se glielo chiedi e con il tuo sì.",
     'toolDo_show': r"Mostra nel Canvas un sito, un'immagine, un video o un programma avviato.",
@@ -169,8 +182,10 @@ const toolWords = <String, Map<String, String>>{
     'toolGrp_talk': r"Comunicazione",
     'toolGrp_web': r"Web e browser",
     'toolWhy_ask_god': r"è l'unica cosa che fa Demi-God",
-    'toolWhy_ask_user': r"per chiederti invece di tirare a indovinare; le automazioni magiche ti chiedono così",
-    'toolWhy_bash': r"per provare il lavoro: i compiti si chiudono solo con una verifica che riesce",
+    'toolWhy_ask_user':
+        r"per chiederti invece di tirare a indovinare; le automazioni magiche ti chiedono così",
+    'toolWhy_bash':
+        r"per provare il lavoro: i compiti si chiudono solo con una verifica che riesce",
     'toolWhy_bash_output': r"fa parte del lanciare comandi: ciò che gira in background si deve poter leggere e fermare",
     'toolWhy_complete_task': r"un compito si chiude solo così",
     'toolWhy_conversation_history': r"dopo un riassunto è l'unico modo di ritrovare i dettagli",
@@ -181,7 +196,8 @@ const toolWords = <String, Map<String, String>>{
     'toolWhy_propose_magic_extension': r"quella conversazione esiste per questo",
     'toolWhy_propose_plan': r"la modalità piano finisce solo così",
     'toolWhy_read_file': r"senza, non vede nemmeno il proprio lavoro",
-    'toolWhy_request_tool': r"perché un agente possa chiedere uno strumento spento invece di aggirarlo",
+    'toolWhy_request_tool':
+        r"perché un agente possa chiedere uno strumento spento invece di aggirarlo",
     'toolWhy_write_file': r"è il modo in cui consegna il lavoro che chiedi",
   },
   'en': {
@@ -274,12 +290,15 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_blender': r"Runs Blender without a window: changes 3D files with a script, saves them as .blend and glTF, renders a picture or a 360° video.",
     'toolDo_board': r"Reads and writes the board where the agents of a project talk.",
     'toolDo_browser': r"Uses your browser: opens sites, clicks, types, takes screenshots.",
-    'toolDo_canvas_act': r"Opens tabs, goes to a page, line or time, selects and zooms; changes no file.",
+    'toolDo_canvas_act':
+        r"Opens tabs, goes to a page, line or time, selects and zooms; changes no file.",
     'toolDo_canvas_edit': r"Edits an open file in the same editor as you: changes highlighted, undoable, or proposals if you choose so.",
     'toolDo_canvas_look': r"Sees the tabs the person has open and a picture of what they show.",
     'toolDo_complete_task': r"Closes a task, with a check that proves it is done.",
-    'toolDo_conversation_history': r"Reads back the parts of the conversation that were summarised.",
-    'toolDo_convert_file': r"Turns closed files (Photoshop, Office…) into open ones, leaving the original as it is.",
+    'toolDo_conversation_history':
+        r"Reads back the parts of the conversation that were summarised.",
+    'toolDo_convert_file':
+        r"Turns closed files (Photoshop, Office…) into open ones, leaving the original as it is.",
     'toolDo_create_agent': r"Adds an agent under itself.",
     'toolDo_create_project': r"Creates a new project with its own folder.",
     'toolDo_delegate': r"Gives a task to another agent and follows it.",
@@ -291,44 +310,53 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_grep': r"Finds the files that contain a word or a pattern.",
     'toolDo_image_generation': r"Creates pictures with the image service you set up.",
     'toolDo_knowledge_add_source': r"Gives a collection a folder, a file, a project's files or a web page; outside its folders it asks you.",
-    'toolDo_knowledge_create': r"Makes a collection of documents for the agents to search, as you do in Knowledge.",
-    'toolDo_knowledge_status': r"Tells which collections there are, what was read and whether the search goes by meaning.",
+    'toolDo_knowledge_create':
+        r"Makes a collection of documents for the agents to search, as you do in Knowledge.",
+    'toolDo_knowledge_status':
+        r"Tells which collections there are, what was read and whether the search goes by meaning.",
     'toolDo_list_agents': r"Lists the agents it can see, with their role.",
     'toolDo_mail_draft': r"Writes a draft, a reply or a forward in your Drafts, with files attached; nothing is sent.",
     'toolDo_mail_move': r"Marks read or unread, flags, archives, moves to the bin or a folder; deleting for good asks you.",
     'toolDo_mail_read': r"Reads one email as plain text and lists its attachments; it can save them in its folder. Nothing is marked as read.",
     'toolDo_mail_search': r"Searches the mailboxes you opened to the agents by sender, subject, words, dates, unread or attachments.",
-    'toolDo_mail_send': r"Sends an email or a draft; you always see it whole and say yes or no before it leaves.",
+    'toolDo_mail_send':
+        r"Sends an email or a draft; you always see it whole and say yes or no before it leaves.",
     'toolDo_memory': r"Notes what it should remember for the next conversations.",
     'toolDo_merge_work': r"Brings an agent's work into the project.",
     'toolDo_node': r"Runs commands in a sandbox on the other RedGiant machines paired in Settings > Nodes, which check every command again.",
     'toolDo_platform_automation': r"Creates and changes automations, with your yes.",
     'toolDo_platform_changes': r"Reads the latest changes to the settings.",
     'toolDo_platform_code': r"Changes RedGiant itself, tried apart before you accept it.",
-    'toolDo_platform_configure_agent': r"Changes an agent's model, mode or instructions, with your yes.",
+    'toolDo_platform_configure_agent':
+        r"Changes an agent's model, mode or instructions, with your yes.",
     'toolDo_platform_mcp': r"Adds or removes a connected service from the catalog, with your yes.",
     'toolDo_platform_policy': r"Changes what agents may do without asking, with your yes.",
     'toolDo_platform_project': r"Archives a project or restores it as it was, with your yes.",
     'toolDo_platform_set_budget': r"Changes the spending limits, with your yes.",
     'toolDo_platform_status': r"Reads how RedGiant is set up: agents, models, rules.",
     'toolDo_platform_undo': r"Undoes a change to the settings, with your yes.",
-    'toolDo_propose_automation': r"In a magic automation's conversation, proposes the finished automation.",
+    'toolDo_propose_automation':
+        r"In a magic automation's conversation, proposes the finished automation.",
     'toolDo_propose_extension': r"Proposes a tool or a skill; it waits for your yes.",
-    'toolDo_propose_magic_extension': r"In a magic integration's or extension's conversation, proposes the tested package.",
+    'toolDo_propose_magic_extension':
+        r"In a magic integration's or extension's conversation, proposes the tested package.",
     'toolDo_propose_plan': r"In plan mode, shows you the plan and waits for your yes.",
     'toolDo_publish_board': r"Publishes a few design variants on a page for you to choose.",
     'toolDo_read_agent': r"Reads what another agent did in its conversation.",
     'toolDo_read_file': r"Reads the files of its project.",
-    'toolDo_remove_agent': r"Removes an agent from the team (its history stays; you can restore it).",
+    'toolDo_remove_agent':
+        r"Removes an agent from the team (its history stays; you can restore it).",
     'toolDo_repo': r"Opens pull requests and issues on the project's repository.",
     'toolDo_request_connection': r"Asks you to connect a service it needs (Notion, Linear…).",
     'toolDo_request_tool': r"Asks you to switch on a tool that is off for it, saying why.",
     'toolDo_restore_agent': r"Brings a removed agent back into the team.",
     'toolDo_resume_agent': r"Resumes a stopped agent under it: its open tasks go on.",
     'toolDo_run_script': r"Runs a small program that uses its tools many times in a row.",
-    'toolDo_search_knowledge': r"Looks up your documents (Settings > Knowledge) and cites where each answer comes from.",
+    'toolDo_search_knowledge':
+        r"Looks up your documents (Settings > Knowledge) and cites where each answer comes from.",
     'toolDo_send_file': r"Sends you a file in the chat (and on Telegram).",
-    'toolDo_set_agent_model': r"Moves an agent under it to the model you named, only when you ask, and with your yes.",
+    'toolDo_set_agent_model':
+        r"Moves an agent under it to the model you named, only when you ask, and with your yes.",
     'toolDo_show': r"Shows a site, a picture, a video or a program it started in the Canvas.",
     'toolDo_show_file': r"Opens a file of the project in the Canvas beside the chat.",
     'toolDo_show_products': r"Shows things to buy or compare as cards with picture, price, shop and link; RedGiant downloads the pictures itself.",
@@ -363,7 +391,8 @@ const toolWords = <String, Map<String, String>>{
     'toolWhy_propose_magic_extension': r"that conversation exists for it",
     'toolWhy_propose_plan': r"plan mode ends only through it",
     'toolWhy_read_file': r"without it, it cannot see its own work",
-    'toolWhy_request_tool': r"so an agent can ask for a switched-off tool instead of working around it",
+    'toolWhy_request_tool':
+        r"so an agent can ask for a switched-off tool instead of working around it",
     'toolWhy_write_file': r"it is how it delivers the work you ask for",
   },
 };

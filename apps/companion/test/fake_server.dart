@@ -506,6 +506,7 @@ class FakeRedGiant {
       }
     }
   }
+
   final sent = <Map<String, dynamic>>[];
 
   /// 3.8.7: a turn step by step, in the real server's order (core.ts: `session.state` running once,
@@ -1368,7 +1369,12 @@ class FakeRedGiant {
       if (lines == null) return _json(r, 404, {'error': 'No such command'});
       final from = int.tryParse(r.uri.queryParameters['from'] ?? '');
       return _json(r, 200, {
-        'log': {'started': '15/11/2026, 10:00:01', 'folder': '/workspace', 'by': 'Coder', 'dropped': 0},
+        'log': {
+          'started': '15/11/2026, 10:00:01',
+          'folder': '/workspace',
+          'by': 'Coder',
+          'dropped': 0,
+        },
         'lines': [
           for (final l in lines)
             if (from == null || (l['n'] as int) >= from) l,
@@ -1389,7 +1395,11 @@ class FakeRedGiant {
       ];
       final room = {
         'id': id,
-        'title': b['title'] ?? (members.isEmpty ? 'New group' : members.map((m) => _nameOf(m['agentId'] as String)).join(', ')),
+        'title':
+            b['title'] ??
+            (members.isEmpty
+                ? 'New group'
+                : members.map((m) => _nameOf(m['agentId'] as String)).join(', ')),
         'members': members,
         'createdAt': '2026-11-15T10:00:00.000Z',
         'lastAt': null,
@@ -1416,10 +1426,16 @@ class FakeRedGiant {
       _roomEvent(id, 'room.message', {'from': 'human', 'name': 'You', 'text': text});
       // As rooms.ts `mentions`: the one called with @name answers, else the first member.
       final members = [for (final m in room['members'] as List) m['agentId'] as String];
-      final called = members.where((m) => text.toLowerCase().contains('@${_nameOf(m).toLowerCase()}'));
+      final called = members.where(
+        (m) => text.toLowerCase().contains('@${_nameOf(m).toLowerCase()}'),
+      );
       final who = called.firstOrNull ?? members.firstOrNull;
       if (who != null) {
-        _roomEvent(id, 'room.message', {'from': who, 'name': _nameOf(who), 'text': 'On it: **$text**'});
+        _roomEvent(id, 'room.message', {
+          'from': who,
+          'name': _nameOf(who),
+          'text': 'On it: **$text**',
+        });
       }
       room['lastAt'] = '2026-11-15T10:05:00.000Z';
       roomChanged(id);
@@ -1581,10 +1597,13 @@ class FakeRedGiant {
           'createdAt': '2026-11-15T10:00:01.000Z',
         };
         entries.add(answer);
-        if ((chat['title'] as String).isEmpty) chat['title'] = text.length > 40 ? text.substring(0, 40) : text;
+        if ((chat['title'] as String).isEmpty)
+          chat['title'] = text.length > 40 ? text.substring(0, 40) : text;
         r.response.statusCode = 200;
         r.response.headers.set('content-type', 'text/event-stream');
-        r.response.write('event: delta\ndata: ${jsonEncode({'kind': 'text', 'text': 'The answer'})}\n\n');
+        r.response.write(
+          'event: delta\ndata: ${jsonEncode({'kind': 'text', 'text': 'The answer'})}\n\n',
+        );
         r.response.write('event: entry\ndata: ${jsonEncode({'entry': answer})}\n\n');
         r.response.write('event: done\ndata: {}\n\n');
         await r.response.close();

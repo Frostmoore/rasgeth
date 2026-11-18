@@ -608,7 +608,10 @@ void main() {
     String words(int n) => n == 1 ? '1 agente al lavoro' : '$n agenti al lavoro';
     final before = agentsAtWork();
     expect(find.text(words(before)), findsOneWidget);
-    final busy = {for (final r in app.live.sessions) if (r.running) r.agentId};
+    final busy = {
+      for (final r in app.live.sessions)
+        if (r.running) r.agentId,
+    };
     final idle = app.live.sessions.firstWhere(
       (r) => !r.running && !r.archived && !busy.contains(r.agentId),
     );
