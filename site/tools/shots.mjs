@@ -4,7 +4,7 @@
 // `--live`), then writes <outdir>/<page>-<device>-<theme>-<lang>.png.
 // Needs a Chromium: run it in the Playwright image, for example
 //   docker run --rm -v "$PWD:$PWD" -w "$PWD" mcr.microsoft.com/playwright:v1.64.1-noble \
-//     node site/tools/shots.mjs /mnt/archive1/officina-dati/rg-test/site-redgiant
+//     node site/tools/shots.mjs /mnt/archive1/officina-dati/rg-test/site-rasgeth
 import { readFile } from "node:fs/promises";
 import { mkdirSync } from "node:fs";
 import { createServer } from "node:http";

@@ -1,8 +1,8 @@
-# Installing RedGiant
+# Installing Rasgeth
 
-On Windows and on the Mac RedGiant is a native app with its own database: download it, run it, done
+On Windows and on the Mac Rasgeth is a native app with its own database: download it, run it, done
 (see [macOS](#macos) and [Windows](#windows)). On Linux and on servers it runs in Docker: a Postgres
-database, the RedGiant server (with its supervisor, which rolls back broken updates by itself), an
+database, the Rasgeth server (with its supervisor, which rolls back broken updates by itself), an
 egress proxy that is the sandboxes' only way out, and one sandbox container per workspace, created on
 demand. Everything lives in Docker volumes; nothing is written to your system outside the installation
 folder.
@@ -10,32 +10,32 @@ folder.
 **You need (Docker):** Docker Engine 26 or newer with Compose v2, 4 GB of RAM, 10 GB of disk (more for
 local models). A subscription, an API key for a cloud model, or a GGUF model for the local engine.
 
-## Every way to install RedGiant
+## Every way to install Rasgeth
 
 Pick the line that matches what you have. Every download is on the
-[latest release](https://github.com/Frostmoore/redgiant2/releases/latest), except RedGiant OS's
+[latest release](https://github.com/Frostmoore/redgiant2/releases/latest), except Rasgeth OS's
 images: they are made only when the OS changes, so they are on the latest release that carries them
-(the latest release's notes link it; `redgiant-proxmox.sh` finds it by itself), listed in
-`SHA256SUMS-os`, signed with RedGiant's update key. A machine made from them updates itself to the
-latest RedGiant at its first start.
+(the latest release's notes link it; `rasgeth-proxmox.sh` finds it by itself), listed in
+`SHA256SUMS-os`, signed with Rasgeth's update key. A machine made from them updates itself to the
+latest Rasgeth at its first start.
 
 | You have                                             | Use                                                                  | How                                                              |
 | ---------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| A Windows PC                                         | `RedGiant-Setup.exe` (or `winget install Frostmoore.RedGiant`)       | [Windows](#windows)                                              |
-| A Mac (Apple silicon)                                | `RedGiant-mac-arm64.dmg` (or Homebrew)                               | [macOS](#macos)                                                  |
+| A Windows PC                                         | `Rasgeth-Setup.exe` (or `winget install Frostmoore.Rasgeth`)         | [Windows](#windows)                                              |
+| A Mac (Apple silicon)                                | `Rasgeth-mac-arm64.dmg` (or Homebrew)                                | [macOS](#macos)                                                  |
 | A Linux machine or a server with Docker              | `install.sh` (Docker Compose)                                        | [Linux](#linux)                                                  |
-| A spare PC or mini PC to dedicate to RedGiant        | RedGiant OS on a USB stick: `redgiant-os-<version>-x86_64.iso`       | [From a USB stick](INSTALL-OS.md#on-a-pc-from-a-usb-stick)       |
+| A spare PC or mini PC to dedicate to Rasgeth         | Rasgeth OS on a USB stick: `rasgeth-os-<version>-x86_64.iso`         | [From a USB stick](INSTALL-OS.md#on-a-pc-from-a-usb-stick)       |
 | Proxmox VE                                           | the helper script (a VM or a container), or the qcow2 / LXC template | [Proxmox](INSTALL-OS.md#on-proxmox)                              |
-| Hyper-V (Windows Pro, Server)                        | `redgiant-os-<version>-x86_64.vhdx.zip`                              | [Hyper-V](INSTALL-OS.md#on-hyper-v)                              |
-| VirtualBox, VMware Workstation, Fusion, ESXi         | `redgiant-os-<version>-x86_64.ova`                                   | [VirtualBox and VMware](INSTALL-OS.md#on-virtualbox-and-vmware)  |
-| KVM/libvirt, UTM, OpenStack and other clouds         | `redgiant-os-<version>-<x86_64 or arm64>.qcow2` (or `.raw.zst`)      | [KVM, UTM, clouds](INSTALL-OS.md#on-kvm--libvirt-utm-and-clouds) |
-| LXC or Incus                                         | `redgiant-os-<version>-x86_64-lxc.tar.zst`                           | [A container](INSTALL-OS.md#by-hand-a-container)                 |
-| A Raspberry Pi 4, 400 or CM4                         | `redgiant-os-<version>-arm64-raspi.img.xz`                           | [Raspberry Pi](INSTALL-OS.md#on-a-raspberry-pi)                  |
+| Hyper-V (Windows Pro, Server)                        | `rasgeth-os-<version>-x86_64.vhdx.zip`                               | [Hyper-V](INSTALL-OS.md#on-hyper-v)                              |
+| VirtualBox, VMware Workstation, Fusion, ESXi         | `rasgeth-os-<version>-x86_64.ova`                                    | [VirtualBox and VMware](INSTALL-OS.md#on-virtualbox-and-vmware)  |
+| KVM/libvirt, UTM, OpenStack and other clouds         | `rasgeth-os-<version>-<x86_64 or arm64>.qcow2` (or `.raw.zst`)       | [KVM, UTM, clouds](INSTALL-OS.md#on-kvm--libvirt-utm-and-clouds) |
+| LXC or Incus                                         | `rasgeth-os-<version>-x86_64-lxc.tar.zst`                            | [A container](INSTALL-OS.md#by-hand-a-container)                 |
+| A Raspberry Pi 4, 400 or CM4                         | `rasgeth-os-<version>-arm64-raspi.img.xz`                            | [Raspberry Pi](INSTALL-OS.md#on-a-raspberry-pi)                  |
 | A Raspberry Pi 5 (or another arm64 board with Linux) | Docker on its own Linux (Raspberry Pi OS 64-bit)                     | [Linux](#linux)                                                  |
 
-**RedGiant OS** ([INSTALL-OS.md](INSTALL-OS.md)) is a small Debian 13 system that only runs
-RedGiant: nothing to set up, it updates itself, its screen shows the address. The **apps** (Windows,
-macOS) and **Docker** (Linux) put RedGiant on a computer you already use for other things.
+**Rasgeth OS** ([INSTALL-OS.md](INSTALL-OS.md)) is a small Debian 13 system that only runs
+Rasgeth: nothing to set up, it updates itself, its screen shows the address. The **apps** (Windows,
+macOS) and **Docker** (Linux) put Rasgeth on a computer you already use for other things.
 
 ## Linux
 
@@ -45,50 +45,52 @@ curl -fsSL https://raw.githubusercontent.com/Frostmoore/redgiant2/main/install.s
 
 If Docker is missing, the installer offers to install it with Docker's official script (it asks
 first, and needs `sudo`). It creates `~/redgiant`, writes the settings in `~/redgiant/.env`
-(readable only by you), downloads the images, starts everything, waits until RedGiant answers and
+(readable only by you), downloads the images, starts everything, waits until Rasgeth answers and
 opens the web UI already signed in, where the setup wizard asks for the rest (models, a local model from
 Hugging Face, names, Telegram, safety and costs).
 
-With Docker RedGiant is used from the browser: there is no launcher on Linux, so nothing opens the
-app's window for you. The **RGCompanion** app (since 3.8.1) is something more, never needed: download
-`rgcompanion-linux-x64.tar.gz` from the release, unpack it and run `./install-app.sh` inside (for your
-user only: `~/.local/share/rgcompanion` and an entry in the desktop's menu; `--uninstall` removes it).
-It signs in like on a phone: the address (`http://127.0.0.1:7600` for RedGiant on this computer, or
-another RedGiant on the network) and your password.
+With Docker Rasgeth is used from the browser: there is no launcher on Linux, so nothing opens the
+app's window for you. The **Rasgeth App** (since 3.8.1) is something more, never needed: download
+`rasgeth-app-linux-x64.tar.gz` from the release, unpack it and run `./install-app.sh` inside (for your
+user only: `~/.local/share/rasgeth-app` and a «Rasgeth App» entry in the desktop's menu; `--uninstall`
+removes it; an app installed before 3.9.0 from `~/.local/share/rgcompanion` is replaced).
+It signs in like on a phone: the address (`http://127.0.0.1:7600` for Rasgeth on this computer, or
+another Rasgeth on the network) and your password.
 
 ## macOS
 
-Download `RedGiant-mac-arm64.dmg` from the [latest release](https://github.com/Frostmoore/redgiant2/releases/latest)
-(Apple silicon, macOS 13 or newer), open it and drag RedGiant into Applications. It is signed and
-notarized by Apple: it opens without warnings. RedGiant lives in the menu bar (next to the clock):
-it starts its server, opens RedGiant already signed in, and offers "Open RedGiant", "Open in the
-browser", "Start at login", "Uninstall RedGiant…" (keeping or deleting the data) and "Quit". Since
-3.8.1 "Open RedGiant" opens the **RGCompanion** app's window, which comes inside RedGiant.app (signed
+Download `Rasgeth-mac-arm64.dmg` from the [latest release](https://github.com/Frostmoore/redgiant2/releases/latest)
+(Apple silicon, macOS 13 or newer), open it and drag Rasgeth into Applications. It is signed and
+notarized by Apple: it opens without warnings. Rasgeth lives in the menu bar (next to the clock):
+it starts its server, opens Rasgeth already signed in, and offers "Open Rasgeth", "Open in the
+browser", "Start at login", "Uninstall Rasgeth…" (keeping or deleting the data) and "Quit". Since
+3.8.1 "Open Rasgeth" opens the app's window (**Rasgeth App**), which comes inside Rasgeth.app (signed
 and notarized with it): the menu bar program makes it a device token of its own (it shows in Settings
 › Devices) and hands it over without the command line; without the app, or if it cannot open, the
 browser opens as before. Everything it keeps is in
-`~/Library/Application Support/RedGiant`, its logs in `~/Library/Logs/RedGiant`. The local engine
+`~/Library/Application Support/RedGiant` (the folder keeps the name it had before 3.9.0, so nothing
+moves), its logs in `~/Library/Logs/Rasgeth`. The local engine
 uses the GPU through Metal (llama.cpp's macOS build, downloaded the first time) and voice messages
 are transcribed on the Mac (whisper with Metal).
 
-With [Homebrew](https://brew.sh), from RedGiant's tap:
+With [Homebrew](https://brew.sh), from Rasgeth's tap:
 
 ```sh
-brew install --cask frostmoore/redgiant/redgiant
+brew install --cask frostmoore/rasgeth/rasgeth
 ```
 
-`brew upgrade` brings new versions; `brew uninstall --cask redgiant` removes the app and keeps the
+`brew upgrade` brings new versions; `brew uninstall --cask rasgeth` removes the app and keeps the
 data, `--zap` deletes `~/Library/Application Support/RedGiant` and the logs too.
 
-The `redgiant` command line is inside the app, in `RedGiant.app/Contents/Resources/bin/redgiant`
-(Homebrew links it by itself). With the app from the disk image, to type just `redgiant` in the
+The `rasgeth` command line is inside the app, in `Rasgeth.app/Contents/Resources/bin/rasgeth`
+(Homebrew links it by itself). With the app from the disk image, to type just `rasgeth` in the
 Terminal, link it once (nothing is installed outside the app unless you do this):
 
 ```sh
-sudo mkdir -p /usr/local/bin && sudo ln -s /Applications/RedGiant.app/Contents/Resources/bin/redgiant /usr/local/bin/redgiant
+sudo mkdir -p /usr/local/bin && sudo ln -s /Applications/Rasgeth.app/Contents/Resources/bin/rasgeth /usr/local/bin/rasgeth
 ```
 
-It finds the RedGiant running for you by itself (see [The command line](#the-command-line)).
+It finds the Rasgeth running for you by itself (see [The command line](#the-command-line)).
 
 From source instead, with Node.js 22+ and git:
 
@@ -110,37 +112,38 @@ curl -fsSL https://raw.githubusercontent.com/Frostmoore/redgiant2/main/install.s
 ```
 
 Apple silicon is supported (the images are built for arm64 too), but inside Docker the local engine
-runs on the CPU only: for Metal, run RedGiant on the Mac as above.
+runs on the CPU only: for Metal, run Rasgeth on the Mac as above.
 
 ## Windows
 
-Download `RedGiant-Setup.exe` from the [latest release](https://github.com/Frostmoore/redgiant2/releases/latest)
+Download `Rasgeth-Setup.exe` from the [latest release](https://github.com/Frostmoore/redgiant2/releases/latest)
 and run it. Since 3.0 everything runs directly on Windows: no WSL, no virtualization, no Docker. The
-installer brings its own Node and database (data in `%LOCALAPPDATA%\RedGiant\data`), and adds a RedGiant
+installer brings its own Node and database (data in `%LOCALAPPDATA%\Rasgeth\data`; over an earlier
+RedGiant it proposes the data folder that one used, so nothing moves), and adds a Rasgeth
 icon to the desktop and the Start menu, optionally starting with Windows. The local engine (llama.cpp,
 CUDA or Vulkan) runs on Windows too, reachable only from this computer; Codex, Claude Code, Git (when it
 is missing) and local voice transcription are downloaded the first time they are needed. A version
-before 3.0 (the one with WSL) must be uninstalled first. The icon starts RedGiant, opens it signed in and stays next to the clock
-("Open RedGiant", "Open in the browser", "Quit"). Since 3.8.1 the installer carries the **RGCompanion**
-app and "Open RedGiant" opens its window instead of the browser, signed in with a device token the
+before 3.0 (the one with WSL) must be uninstalled first. The icon starts Rasgeth, opens it signed in and stays next to the clock
+("Open Rasgeth", "Open in the browser", "Quit"). Since 3.8.1 the installer carries the
+app (**Rasgeth App**) and "Open Rasgeth" opens its window instead of the browser, signed in with a device token the
 launcher makes for it (Settings › Devices lists it; it is handed over in a file only your user can
 open, read once and deleted by the app, never on the command line). Updates bring the app with
-the rest, signed like the rest. Without the app, or if it cannot open, the browser opens as before. Running the setup again updates RedGiant and keeps its data; uninstalling asks
+the rest, signed like the rest. Without the app, or if it cannot open, the browser opens as before. Running the setup again updates Rasgeth and keeps its data; uninstalling asks
 whether to keep conversations, projects and settings. The installer is not code-signed yet: if SmartScreen
 says "Windows protected your PC", click "More info", then "Run anyway". Windows 10 2004 or newer, x64.
 
-With winget (once RedGiant is in the winget catalog):
+With winget (once Rasgeth is in the winget catalog):
 
 ```powershell
-winget install Frostmoore.RedGiant
+winget install Frostmoore.Rasgeth
 ```
 
 It installs for your user only, silently, with the setup's usual choices; `winget upgrade
-Frostmoore.RedGiant` updates it and keeps the data.
+Frostmoore.Rasgeth` updates it and keeps the data.
 
-The `redgiant` command line comes with it, in `%LOCALAPPDATA%\RedGiant\bin\redgiant.cmd`. The setup
-offers "Add the «redgiant» command to the terminal" (off unless you tick it): it adds that folder to
-your user's PATH only, and uninstalling takes it out again. Nothing else outside RedGiant's folder
+The `rasgeth` command line comes with it, in `%LOCALAPPDATA%\Rasgeth\bin\rasgeth.cmd`. The setup
+offers "Add the «rasgeth» command to the terminal" (off unless you tick it): it adds that folder to
+your user's PATH only, and uninstalling takes it out again. Nothing else outside Rasgeth's folder
 changes.
 
 Alternatively, in containers with Docker Desktop (which needs WSL 2), in PowerShell:
@@ -151,28 +154,28 @@ irm https://raw.githubusercontent.com/Frostmoore/redgiant2/main/install.ps1 | ie
 
 or download the repository and double-click `install.cmd`. The installer checks WSL 2 and Docker
 Desktop and offers to install them (WSL 2 needs administrator rights and a restart; Docker Desktop
-comes from `winget`). It always asks before installing anything. RedGiant goes in
-`%USERPROFILE%\redgiant`.
+comes from `winget`). It always asks before installing anything. Rasgeth goes in
+`%USERPROFILE%\redgiant` (the folder keeps its name from before 3.9.0).
 
 ## The command line
 
-`redgiant` talks to a running RedGiant: projects, agents, a live chat with an agent, approvals.
+`rasgeth` talks to a running Rasgeth: projects, agents, a live chat with an agent, approvals.
 
 ```sh
-redgiant projects                                  # list
-redgiant projects create "Shop"                    # a new folder under RedGiant's workspaces
-redgiant projects create "Shop" --path ~/code/shop # a project on a folder that already exists
-redgiant chat <agentId>                            # talk to an agent
-redgiant help
+rasgeth projects                                  # list
+rasgeth projects create "Shop"                    # a new folder under Rasgeth's workspaces
+rasgeth projects create "Shop" --path ~/code/shop # a project on a folder that already exists
+rasgeth chat <agentId>                            # talk to an agent
+rasgeth help
 ```
 
 With the Windows or Mac app it needs nothing: the app keeps its token (`token.txt`) and the server
 its address (`address.txt`) in the data folder, and the command reads them. Elsewhere, or for
-another RedGiant, set `REDGIANT_URL` (default `http://127.0.0.1:7600`) and `REDGIANT_TOKEN`, or
+another Rasgeth, set `REDGIANT_URL` (default `http://127.0.0.1:7600`) and `REDGIANT_TOKEN`, or
 `REDGIANT_DATA_DIR` to the data folder. The same works over HTTP: `POST /api/projects` with
 `{"name": "Shop", "path": "/home/me/code/shop"}` adopts the folder as it is (no repository is
 created or rewired). The folder must exist and may not be a whole drive, the home folder itself, a
-system folder, RedGiant's own data, or overlap another project's folder; in the Docker image it must
+system folder, Rasgeth's own data, or overlap another project's folder; in the Docker image it must
 be inside the data volume's `workspaces`, the only place the sandboxes can see.
 
 **Steps in one turn.** In a conversation with the person (a turn started by their message) an agent
@@ -227,28 +230,28 @@ there. The main settings:
 
 ## Already have your own infrastructure
 
-If you already reach your machines through a reverse proxy, a VPN or a home DNS, RedGiant goes
+If you already reach your machines through a reverse proxy, a VPN or a home DNS, Rasgeth goes
 behind them like any other service: you do not need any of its own ways out (Tailscale, Cloudflare,
 its own domain). The same guide is in Settings › Access from outside home and in the first start,
-filled with RedGiant's name, address and port. When RedGiant sees the page arrive through a proxy of
+filled with Rasgeth's name, address and port. When Rasgeth sees the page arrive through a proxy of
 your network (`X-Forwarded-*` headers on a connection from a private address) or with a name
 instead of an address, it says **«You are reachable already as <host>»** and opens the guide.
-**«Skip: I am reachable already»** stops the invitations to set up RedGiant's own ways and makes
+**«Skip: I am reachable already»** stops the invitations to set up Rasgeth's own ways and makes
 its links (Telegram…) use your address.
 
-Set RedGiant's password first: from outside home it is the lock (the first page opened from your
-network asks for it anyway, «Create your access»). Below, `192.168.1.50:7600` is RedGiant's
-address and port in your network and `redgiant.example.com` the name you will open.
+Set Rasgeth's password first: from outside home it is the lock (the first page opened from your
+network asks for it anyway, «Create your access»). Below, `192.168.1.50:7600` is Rasgeth's
+address and port in your network and `rasgeth.example.com` the name you will open.
 
 ### A reverse proxy
 
-The proxy can run on another machine; it only needs to reach RedGiant's address. It gets the
+The proxy can run on another machine; it only needs to reach Rasgeth's address. It gets the
 certificate and passes everything on, including the WebSocket at `/ws` that keeps the page live.
 
 **Caddy**, a site of its own:
 
 ```caddyfile
-redgiant.example.com {
+rasgeth.example.com {
 	reverse_proxy 192.168.1.50:7600
 }
 ```
@@ -258,8 +261,8 @@ challenge):
 
 ```caddyfile
 *.home.example.com {
-	@redgiant host redgiant.home.example.com
-	handle @redgiant {
+	@rasgeth host rasgeth.home.example.com
+	handle @rasgeth {
 		reverse_proxy 192.168.1.50:7600
 	}
 	# … the other names of the wildcard
@@ -274,32 +277,32 @@ Then `caddy reload` (or restart its container).
 ```yaml
 http:
   routers:
-    redgiant:
-      rule: Host(`redgiant.example.com`)
+    rasgeth:
+      rule: Host(`rasgeth.example.com`)
       entryPoints: [websecure]
-      service: redgiant
+      service: rasgeth
       tls:
         certResolver: letsencrypt
   services:
-    redgiant:
+    rasgeth:
       loadBalancer:
         servers:
           - url: http://192.168.1.50:7600
 ```
 
-**Nginx Proxy Manager**: Hosts › Proxy Hosts › Add Proxy Host; Domain Names `redgiant.example.com`;
+**Nginx Proxy Manager**: Hosts › Proxy Hosts › Add Proxy Host; Domain Names `rasgeth.example.com`;
 Scheme `http`, Forward Hostname / IP `192.168.1.50`, Forward Port `7600`; switch on **Websockets
 Support** and Block Common Exploits; SSL: request a new certificate, Force SSL, HTTP/2. With plain
 Nginx, pass the `Upgrade` and `Connection` headers for `/ws`.
 
-**Forward auth (Authelia, Authentik…) in front?** Better not. RedGiant has its own password, with
+**Forward auth (Authelia, Authentik…) in front?** Better not. Rasgeth has its own password, with
 limited tries and an optional code from an authenticator app, and a sign-in in front of it blocks
 everything that comes in with its own token: the apps, the command line, ACP agents, the browser
 extension and the webhooks (Telegram, WhatsApp, automations). If you want it anyway, leave `/api/`
-and `/ws` out of it, so forward auth guards the page and RedGiant's password the rest:
+and `/ws` out of it, so forward auth guards the page and Rasgeth's password the rest:
 
 ```caddyfile
-redgiant.example.com {
+rasgeth.example.com {
 	@app path /api/* /ws
 	handle @app {
 		reverse_proxy 192.168.1.50:7600
@@ -316,8 +319,8 @@ redgiant.example.com {
 
 ### Tailscale, WireGuard, ZeroTier
 
-- **Tailscale on RedGiant's machine**: install it and sign in (`tailscale up`); from your devices in
-  the tailnet RedGiant opens at `http://<machine>:7600`. For HTTPS with a real certificate:
+- **Tailscale on Rasgeth's machine**: install it and sign in (`tailscale up`); from your devices in
+  the tailnet Rasgeth opens at `http://<machine>:7600`. For HTTPS with a real certificate:
   `tailscale serve --bg 7600`, then `https://<machine>.<tailnet>.ts.net`.
 - **Tailscale as a subnet router**, on another device of the house (the router, a Pi, the proxy's
   machine): `tailscale up --advertise-routes=192.168.1.0/24`, then approve the route in the admin
@@ -329,9 +332,9 @@ redgiant.example.com {
 
 ### A home DNS
 
-A name instead of an address: point it to the proxy when there is one, otherwise to RedGiant.
+A name instead of an address: point it to the proxy when there is one, otherwise to Rasgeth.
 
-- **Pi-hole**: Settings › Local DNS › DNS Records: `redgiant.example.com` → the address. Every name
+- **Pi-hole**: Settings › Local DNS › DNS Records: `rasgeth.example.com` → the address. Every name
   of a wildcard at once, in a file in `/etc/dnsmasq.d/` (Pi-hole 6: enable
   `misc.etc_dnsmasq_d`): `address=/home.example.com/192.168.1.2`.
 - **AdGuard Home**: Filters › DNS rewrites: `*.home.example.com` (or the single name) → the address.
@@ -342,23 +345,23 @@ A name instead of an address: point it to the proxy when there is one, otherwise
 From any computer:
 
 ```sh
-curl -s https://redgiant.example.com/api/health
+curl -s https://rasgeth.example.com/api/health
 ```
 
-RedGiant answers `{"ok":true,…}`. No answer: check the name in the DNS, the proxy's block and, from
+Rasgeth answers `{"ok":true,…}`. No answer: check the name in the DNS, the proxy's block and, from
 outside, the VPN. The page's «Check from here» button does the same from the browser.
 
-### Your home services (Gitea, NAS…) seen by RedGiant
+### Your home services (Gitea, NAS…) seen by Rasgeth
 
-RedGiant also reaches _your_ services by name: «A Gitea you already have» in Settings › Where the
+Rasgeth also reaches _your_ services by name: «A Gitea you already have» in Settings › Where the
 code lives, for instance. It asks the DNS of the machine it runs on (often the router), not the one
 your phone uses: a name that opens fine on your phone may be unknown there (`ENOTFOUND`), or point
-to an address RedGiant cannot reach. The guide's part **«Your home services»** says the same, fills
+to an address Rasgeth cannot reach. The guide's part **«Your home services»** says the same, fills
 the lines below and has **«Try a name»**: the server looks the name up and opens `https://<name>`
 (HEAD only, a few seconds at most) and says what it found, the address, whether something answered
 and the HTTP code, nothing else of the answer.
 
-- **Which DNS RedGiant uses**: on RedGiant OS, `resolvectl status` in the console or over SSH
+- **Which DNS Rasgeth uses**: on Rasgeth OS, `resolvectl status` in the console or over SSH
   («Current DNS Server»); elsewhere, the DNS of that computer (its network settings,
   `/etc/resolv.conf` on Linux). `resolvectl query git.home.example.com` shows what it answers.
 - **What to add there**: the service's name pointing to the address **in your network** of the
@@ -367,19 +370,19 @@ and the HTTP code, nothing else of the answer.
   (`192.168.1.12 git.home.example.com`) or `address=/git.home.example.com/192.168.1.12` in
   `/etc/dnsmasq.d/`, AdGuard Home's DNS rewrites.
 - **A Pi-hole that answers with Tailscale addresses (100.x)**: those work only for devices in
-  Tailscale. If RedGiant's machine is not in the tailnet, add a local record with the LAN address,
+  Tailscale. If Rasgeth's machine is not in the tailnet, add a local record with the LAN address,
   or let that machine use the router as DNS with the name there.
 - **A router that answers «does not exist» to the IPv6 (AAAA) question** for names added by hand
   (TIM's routers do): systemd-resolved then remembers it and hides the IPv4 answer too for a while.
-  RedGiant OS sets `Cache=no-negative` already (`/etc/systemd/resolved.conf.d/redgiant.conf`); on
+  Rasgeth OS sets `Cache=no-negative` already (`/etc/systemd/resolved.conf.d/redgiant.conf`); on
   another Linux with systemd-resolved, put the same `[Resolve]` setting in a file of
   `/etc/systemd/resolved.conf.d/` and restart `systemd-resolved`.
 
 ## Programs downloaded when needed
 
-Some file conversions need a free program. RedGiant never bundles them: each one is downloaded the
-first time a conversion asks for it, with a progress bar, and only unpacked into RedGiant's data folder
-(`tools/`), never installed system-wide. If the program is already on the computer, RedGiant uses it.
+Some file conversions need a free program. Rasgeth never bundles them: each one is downloaded the
+first time a conversion asks for it, with a progress bar, and only unpacked into Rasgeth's data folder
+(`tools/`), never installed system-wide. If the program is already on the computer, Rasgeth uses it.
 The Docker image for Linux carries the system libraries they need.
 
 | Program                     | Licence                        | Download size                                                      | Used for                                                       |
@@ -393,51 +396,51 @@ The Docker image for Linux carries the system libraries they need.
 Unpacked, LibreOffice takes about 1 GB and Blender about 1.2 GB. On a Linux server without a display,
 Scribus runs under Xvfb (`sudo apt install xvfb xauth fonts-dejavu-core`, already in the Docker image).
 
-**Ghostscript** (AGPL-3.0, 20-65 MB) is never downloaded by RedGiant: install it yourself if you want EPS
+**Ghostscript** (AGPL-3.0, 20-65 MB) is never downloaded by Rasgeth: install it yourself if you want EPS
 files converted (`winget install ArtifexSoftware.GhostScript` on Windows, `brew install ghostscript` on
 the Mac, `sudo apt install ghostscript` on Linux; the Docker image has it). Without it an EPS does not
 become a PDF; LibreOffice can still make an SVG of its first page.
 
 ### pgvector (the knowledge's vectors)
 
-The knowledge (search by meaning in your files) keeps its vectors in RedGiant's own Postgres with
+The knowledge (search by meaning in your files) keeps its vectors in Rasgeth's own Postgres with
 **pgvector** 0.8.7 (PostgreSQL licence, about 120-300 KB). It comes inside the Windows installer and
-the Mac app, and inside RedGiant's Postgres image for Docker
+the Mac app, and inside Rasgeth's Postgres image for Docker
 (`ghcr.io/frostmoore/redgiant2-postgres:17-pgvector0.8.7`: `postgres:17-alpine` with pgvector, so an
 existing database volume opens as it is). Running from source with `DATABASE_URL=embedded`, it is
 downloaded the first time it is needed (about 120 KB, checked against its sha256) into `tools/pgvector`;
 `REDGIANT_PGVECTOR_DIR` points to a folder of your own (`lib/` and `share/extension/`). It is never
 written into Postgres' own installation: the embedded Postgres loads it through `redgiant.conf` in its
 data folder. With your own Postgres (`DATABASE_URL=postgres://...`), install pgvector there
-(`CREATE EXTENSION vector` must work for RedGiant's user).
+(`CREATE EXTENSION vector` must work for Rasgeth's user).
 
 ## Updating
 
 Run the installer again: it keeps your `.env`, downloads the new images and restarts. The new
-version's code is merged with any change God made to RedGiant, built, and checked by the
+version's code is merged with any change God made to Rasgeth, built, and checked by the
 supervisor; if it does not come up, the previous version keeps running.
 
 ## The keychain in your browser
 
 The keychain's extension fills sign-in forms in Opera, Chrome, Edge, Brave and Firefox, also outside
-RedGiant, and saves the passwords you type there into the keychain. Every RedGiant serves it
-(`/redgiant-keychain-chromium.zip`, `/redgiant-keychain-firefox.zip`) and every release carries both zips.
+Rasgeth, and saves the passwords you type there into the keychain. Every Rasgeth serves it
+(`/rasgeth-keychain-chromium.zip`, `/rasgeth-keychain-firefox.zip`) and every release carries both zips.
 
-1. In RedGiant open Settings > Keychain > «Link a browser» and download the extension.
+1. In Rasgeth open Settings > Keychain > «Link a browser» and download the extension.
 2. Load it:
    - **Opera**: unzip it into a folder you keep, open `opera://extensions`, switch on «Developer mode» (top
      right), press «Load unpacked» and choose the folder (or drag the zip onto the page).
    - **Chrome, Edge, Brave**: the same from `chrome://extensions`, `edge://extensions`, `brave://extensions`.
    - **Firefox**: `about:debugging#/runtime/this-firefox` > «Load Temporary Add-on…» > the Firefox zip. Firefox
      keeps it until it closes; to keep it for good it must be signed by Mozilla (see below).
-3. In the same window press «Make a code»; in the extension (the key in the browser's bar) write RedGiant's
+3. In the same window press «Make a code»; in the extension (the key in the browser's bar) write Rasgeth's
    address and the code. The code works ten minutes for one browser. Away from home the address must be
    `https://` (remote access): `http://` is accepted only at home (this computer, the local network).
 
 What it may do, and what not:
 
 - The browser gets a device token of its own that opens only the extension's routes (`/api/browser-ext/*`),
-  never the rest of RedGiant; the server keeps only its hash. Settings > Keychain lists the linked browsers;
+  never the rest of Rasgeth; the server keeps only its hash. Settings > Keychain lists the linked browsers;
   «Unlink» stops a token at once.
 - The token stays in the browser's session memory; with «Stay linked» a copy is kept encrypted (AES-GCM, under
   a non-extractable key of the browser). Passwords are never stored in the extension.
@@ -451,19 +454,20 @@ What it may do, and what not:
   saved until you press it. Saved credentials are for you only (agents need your permission in the keychain).
 
 The Chrome Web Store (later) needs: a developer account (one-off fee), the zip with a privacy policy (the
-extension sends page addresses and the passwords you save only to your own RedGiant), screenshots, and the
+extension sends page addresses and the passwords you save only to your own Rasgeth), screenshots, and the
 reasons for each permission (`storage`, `alarms`, `scripting`, `clipboardWrite`, `offscreen`, and access to every
-site because RedGiant's address and the sign-in pages can be any). Firefox's add-ons site signs the Firefox zip
+site because Rasgeth's address and the sign-in pages can be any). Firefox's add-ons site signs the Firefox zip
 for a permanent install (it can stay unlisted). Opera's add-ons site and Edge's accept the same Chromium zip.
 
 ## Backups
 
 Settings > Backup makes one file with every project, agent and conversation, to import into another
-RedGiant (new or already in use). Keys and sign-ins stay out of it, except the keychain when you choose
+Rasgeth (new or already in use). Keys and sign-ins stay out of it, except the keychain when you choose
 to include it, sealed with a passphrase of yours.
 
-With Docker, the data is in two volumes: `redgiant_redgiant-db` (database: agents, the event log, the board…) and
-`redgiant-data` (projects, God's platform, RedGiant's own source). Back them up while RedGiant is
+With Docker (whose service, volumes and database keep the technical name `redgiant`), the data is in
+two volumes: `redgiant_redgiant-db` (database: agents, the event log, the board…) and
+`redgiant-data` (projects, God's platform, Rasgeth's own source). Back them up while Rasgeth is
 stopped, for example:
 
 ```sh
@@ -477,30 +481,30 @@ docker compose up -d
 ## Uninstalling
 
 ```sh
-cd ~/redgiant && docker compose down        # stops RedGiant, keeps the data
+cd ~/redgiant && docker compose down        # stops Rasgeth, keeps the data
 docker compose down -v                      # also deletes the database and the projects
 ```
 
 then delete the installation folder. The local engine started by the setup wizard is a container of its
 own: remove it first with `docker rm -f redgiant-engine`. The sandbox containers (`rg-sbx-*`) are removed by
-RedGiant; any left over can be removed with `docker rm -f`.
+Rasgeth; any left over can be removed with `docker rm -f`.
 
 ## Homebrew and winget (for maintainers)
 
 Each release makes the files for both stores from its own installers (`packaging/stores/stores.mjs`,
-job `stores` in `release.yml`): `redgiant.rb` (the cask) and `RedGiant-winget-<version>.zip` (the
+job `stores` in `release.yml`): `rasgeth.rb` (the cask) and `Rasgeth-winget-<version>.zip` (the
 three winget manifest files, schema 1.12.0) are attached to the release.
 
-- **Homebrew tap.** Create the public repository `Frostmoore/homebrew-redgiant` (empty, with a
+- **Homebrew tap.** Create the public repository `Frostmoore/homebrew-rasgeth` (empty, with a
   `Casks/` folder) and a fine-grained token that can push to it only, saved as the repository secret
-  `HOMEBREW_TAP_TOKEN`: from then on every release updates `Casks/redgiant.rb` there. Until then the
+  `HOMEBREW_TAP_TOKEN`: from then on every release updates `Casks/rasgeth.rb` there. Until then the
   cask is attached to the release and can be copied in by hand. (The official homebrew-cask catalog
   wants a well-known project first; the tap needs no approval.)
 - **winget, first time.** It needs a pull request to
   [microsoft/winget-pkgs](https://github.com/microsoft/winget-pkgs), made by the person: fork it, copy
-  the zip's `manifests/f/Frostmoore/RedGiant/<version>` folder into the fork, check it on Windows
+  the zip's `manifests/f/Frostmoore/Rasgeth/<version>` folder into the fork, check it on Windows
   with `winget validate --manifest <folder>` and `winget install --manifest <folder>`, then open the
-  pull request ("New package: Frostmoore.RedGiant version <version>"). A moderator reviews it; the
+  pull request ("New package: Frostmoore.Rasgeth version <version>"). A moderator reviews it; the
   installer is not code-signed yet, so the automatic scan may ask for a look by hand.
 - **winget, later.** Once the package is in the catalog, set the repository variable
   `WINGET_AUTO_SUBMIT` to `true` and the secret `WINGET_TOKEN` (a classic token with `public_repo`):
@@ -532,7 +536,7 @@ environment variables. Requirements: Node.js 22+ and pnpm (`corepack enable`).
 | `REDGIANT_WEB_DIR`                                                  | Built web UI to serve at `/` (default `packages/web/dist`)                                                                                                                                            |
 | `REDGIANT_TELEGRAM_TOKEN` / `REDGIANT_TELEGRAM_TOKEN_FILE`          | Bot token from BotFather: enables Demi-God on Telegram (polling by default)                                                                                                                           |
 | `REDGIANT_TELEGRAM_WEBHOOK_SECRET`                                  | Webhook mode instead of polling: Telegram must send this secret to `/api/telegram/webhook`                                                                                                            |
-| `REDGIANT_SOURCE_DIR`, `REDGIANT_STATE_DIR`                         | RedGiant's own source (a git checkout) and the supervisor's state: enables God's code changes; promotion needs `redgiant-supervisor`                                                                  |
+| `REDGIANT_SOURCE_DIR`, `REDGIANT_STATE_DIR`                         | Rasgeth's own source (a git checkout) and the supervisor's state: enables God's code changes; promotion needs `redgiant-supervisor`                                                                   |
 | `REDGIANT_BUILD_COMMAND`                                            | Supervisor: how to build the source (default `pnpm install --frozen-lockfile && pnpm build`)                                                                                                          |
 | `REDGIANT_METAL`                                                    | `1`: God works on the real system even with Docker sandboxes; every change it makes asks you                                                                                                          |
 | `REDGIANT_VAULT_DIR`                                                | The keychain's folder (default `keychain` in the data folder); it refuses to open inside a git repository                                                                                             |
@@ -542,7 +546,7 @@ environment variables. Requirements: Node.js 22+ and pnpm (`corepack enable`).
 ```sh
 pnpm build
 DATABASE_URL=postgres://... REDGIANT_TOKEN=... ANTHROPIC_API_KEY=... node packages/server/dist/main.js
-# Supervised, so God can change RedGiant itself (broken versions roll back by themselves):
+# Supervised, so God can change Rasgeth itself (broken versions roll back by themselves):
 REDGIANT_SOURCE_DIR=$PWD DATABASE_URL=... REDGIANT_TOKEN=... node packages/supervisor/dist/main.js
 REDGIANT_TOKEN=... node packages/cli/dist/main.js help
 ```
@@ -566,10 +570,10 @@ The repository is a pnpm monorepo; packages live in `packages/`.
 | `@redgiant/gateway`           | WhatsApp, Discord, Slack and Signal: one bridge for the chats beside Telegram, accounts linked with pairing codes, messages that can start automations                                                                                                                                                                                                                                                                                                                                                        |
 | `@redgiant/telegram`          | Demi-God on Telegram: polling or webhook (checked with Telegram's secret header), accounts linked with one-time pairing codes, Demi-God relays to God only, approvals with inline buttons                                                                                                                                                                                                                                                                                                                     |
 | `@redgiant/subscriptions`     | Flat subscriptions as providers: Claude through Anthropic's Claude Agent SDK, ChatGPT through OpenAI's Codex app server, with the plan's limits                                                                                                                                                                                                                                                                                                                                                               |
-| `@redgiant/supervisor`        | `redgiant-supervisor`: runs the server, rebuilds it when God promotes a change to RedGiant's own code, and rolls back to the last good version by itself when the new one fails to build, to come up healthy or to stay up                                                                                                                                                                                                                                                                                    |
+| `@redgiant/supervisor`        | `redgiant-supervisor`: runs the server, rebuilds it when God promotes a change to Rasgeth's own code, and rolls back to the last good version by itself when the new one fails to build, to come up healthy or to stay up                                                                                                                                                                                                                                                                                     |
 | `@redgiant/hierarchy`         | The agent tree (God, Demi-God, orchestrators, agents, sub-agents, inspectors) with scope rules, permission modes and user rules, a configurable danger classifier, approvals that escalate up the tree to the human, and persistent budgets                                                                                                                                                                                                                                                                   |
 | `@redgiant/server`            | The keychain (AES-256, credentials used by name through `use_credential` or the egress proxy), the shared memory, magic automations, the setup, local engines; HTTP API with OpenAPI (`/api/openapi.json`), WebSocket live channel (`/ws`), sessions that outlive clients, projects, approvals queue, token auth bound to owners; orchestration tools (create, delegate, merge, stop agents; ephemeral sub-agents), tasks that close only with a passing verifier, approvals decided by parent agents' models |
 | `@redgiant/evals`             | Evaluation suite: coding tasks with hidden verifiers (each checked to reject the starting files and accept a right answer), run by a real project orchestrator per model; Markdown report with pass rate, tokens, cost and time                                                                                                                                                                                                                                                                               |
-| `@redgiant/cli`               | `redgiant` command: projects, agents, live chat with an agent (with the per-message metrics line), approvals, log verification                                                                                                                                                                                                                                                                                                                                                                                |
+| `@redgiant/cli`               | `rasgeth` and `rasgeth-acp` commands: projects, agents, live chat with an agent (with the per-message metrics line), approvals, log verification                                                                                                                                                                                                                                                                                                                                                              |
 | `@redgiant/web`               | Web UI (Preact): tabs and up to three side-by-side panes, live chat with the per-message metrics bar, terminal (xterm.js) and file explorer with editor (CodeMirror) per project and for the platform, hierarchy, approvals, budgets; Italian and English; phone layout                                                                                                                                                                                                                                       |
-| `@redgiant/browser-extension` | The keychain in Opera, Chrome, Edge, Brave and Firefox (Manifest V3): sign-in forms filled only on their own site, new passwords saved, a generator; linked to RedGiant with a code                                                                                                                                                                                                                                                                                                                           |
+| `@redgiant/browser-extension` | The keychain in Opera, Chrome, Edge, Brave and Firefox (Manifest V3): sign-in forms filled only on their own site, new passwords saved, a generator; linked to Rasgeth with a code                                                                                                                                                                                                                                                                                                                            |

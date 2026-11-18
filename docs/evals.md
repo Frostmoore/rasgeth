@@ -1,6 +1,6 @@
 # Evaluations
 
-RedGiant 020b63c-dirty, 2026-11-01. Each task runs in a fresh project with its own orchestrator
+Rasgeth 020b63c-dirty, 2026-11-01. Each task runs in a fresh project with its own orchestrator
 (permission mode `auto`; requests that only a human may approve are denied). The verifier is
 written after the agents finish and decides alone. Cost and tokens are the project's budget.
 Run them yourself: `pnpm --filter @redgiant/evals start -- --models provider/model,…`.

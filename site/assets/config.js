@@ -2,15 +2,19 @@
 // Links are `releases/latest/download/<name>`, so the site stays valid at every release without
 // being published again. Without JavaScript the buttons open the latest release's page.
 window.RG_SITE = {
+  // The repository keeps its old address until it is renamed to Frostmoore/rasgeth (plan 3.9.0,
+  // N11); GitHub then redirects the old one.
   repo: "Frostmoore/redgiant2",
   files: {
-    redgiantWindows: "RedGiant-Setup.exe",
-    redgiantMac: "RedGiant-mac-arm64.dmg",
-    companionWindows: "RGCompanion-Setup.exe",
-    companionLinux: "rgcompanion-linux-x64.tar.gz",
+    rasgethWindows: "Rasgeth-Setup.exe",
+    rasgethMac: "Rasgeth-mac-arm64.dmg",
+    appWindows: "Rasgeth-App-Setup.exe",
+    appLinux: "rasgeth-app-linux-x64.tar.gz",
   },
-  // RedGiant OS images are made only when the OS changes and carry the version in their name
-  // (redgiant-os-<version>-<suffix>): the page looks for the latest release that has them.
+  // Rasgeth OS images are made only when the OS changes and carry the version in their name
+  // (rasgeth-os-<version>-<suffix>; redgiant-os-<version>-<suffix> before 3.9.0): the page looks
+  // for the latest release that has them.
+  osPrefixes: ["rasgeth-os-", "redgiant-os-"],
   osImages: {
     iso: "x86_64.iso",
     qcow2: "x86_64.qcow2",

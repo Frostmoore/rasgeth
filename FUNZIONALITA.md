@@ -1,8 +1,8 @@
-# RedGiant — cosa sa fare
+# Rasgeth — cosa sa fare
 
 **Una squadra di agenti AI tutta tua, che lavora sul tuo computer, sui tuoi progetti e con le tue regole.**
 
-RedGiant non è un chatbot: è un'organizzazione di agenti con ruoli diversi, che si dividono il lavoro, si controllano a
+Rasgeth non è un chatbot: è un'organizzazione di agenti con ruoli diversi, che si dividono il lavoro, si controllano a
 vicenda e ti chiedono il permesso solo quando serve davvero. Lo usi dal browser, dal telefono o dalla chat che usi già.
 
 ---
@@ -19,13 +19,13 @@ vicenda e ti chiedono il permesso solo quando serve davvero. Lo usi dal browser,
 - **Assistenti personali** per la vita di tutti i giorni, e una Chat sempre pronta per le domande veloci.
 - **Una bacheca condivisa** dove gli agenti si scambiano compiti, risultati, dubbi e decisioni, e **chat di gruppo** dove
   parli con più agenti insieme.
-- **Crei un agente nuovo in pochi passi**: dici cosa deve fare e RedGiant gli scrive le istruzioni migliori.
+- **Crei un agente nuovo in pochi passi**: dici cosa deve fare e Rasgeth gli scrive le istruzioni migliori.
 
 ## Il cervello che preferisci
 
 - **Tutti i grandi modelli**: Claude, GPT, Gemini, Mistral, DeepSeek, Grok e molti altri, con la tua chiave.
 - **Il tuo abbonamento**: usa Claude o ChatGPT che paghi già, senza costi extra per token.
-- **Modelli locali, gratis e privati**: RedGiant sceglie il modello adatto al tuo computer, lo scarica e lo fa girare,
+- **Modelli locali, gratis e privati**: Rasgeth sceglie il modello adatto al tuo computer, lo scarica e lo fa girare,
   anche modelli più grandi della memoria della tua scheda video.
 - **Un modello per ogni ruolo**: quello potente per chi decide, quello veloce ed economico per i lavori semplici.
 - **Mai bloccato**: se un modello non risponde, passa da solo a quello di riserva.
@@ -54,7 +54,7 @@ vicenda e ti chiedono il permesso solo quando serve davvero. Lo usi dal browser,
 
 ## La tua conoscenza, a portata di agente
 
-- **Dai agli agenti i tuoi documenti**: cartelle, progetti, PDF, pagine web. RedGiant li legge, li indicizza e li tiene
+- **Dai agli agenti i tuoi documenti**: cartelle, progetti, PDF, pagine web. Rasgeth li legge, li indicizza e li tiene
   aggiornati da solo.
 - **Risposte con le fonti**: ogni citazione apre il documento alla pagina o alla riga giusta.
 - **Una memoria che cresce con te**: ricorda le cose importanti che gli dici (le tue preferenze, i tuoi progetti), e tu
@@ -90,14 +90,14 @@ vicenda e ti chiedono il permesso solo quando serve davvero. Lo usi dal browser,
 - **Un portachiavi integrato**: password e chiavi restano chiuse e cifrate sul tuo computer. Gli agenti le usano senza mai
   vederle, solo verso i siti che hai scelto, e ogni uso è registrato. Importi le password da Bitwarden, 1Password, Chrome o
   Firefox.
-- **Se incolli una password per sbaglio**, RedGiant la ferma prima che parta.
+- **Se incolli una password per sbaglio**, Rasgeth la ferma prima che parta.
 - **Ambienti di lavoro separati**: gli agenti lavorano nei loro spazi e non escono senza permesso.
 - **Un registro completo e a prova di manomissione** di tutto quello che è successo.
 - **Tu scegli gli strumenti** di ogni agente: spegni quello che non serve e risparmi anche sui costi.
 
 ## Si migliora da solo, con il tuo permesso
 
-- **RedGiant può modificare sé stesso**: God propone cambiamenti alla configurazione e persino al codice, li prova in una
+- **Rasgeth può modificare sé stesso**: God propone cambiamenti alla configurazione e persino al codice, li prova in una
   copia separata e li applica solo con il tuo sì.
 - **Ogni modifica si può annullare**, e se una versione nuova non parte si torna da soli a quella di prima.
 
@@ -114,7 +114,7 @@ vicenda e ti chiedono il permesso solo quando serve davvero. Lo usi dal browser,
 
 ## In una frase per il pitch
 
-> **RedGiant è la tua squadra di agenti AI: lavorano sui tuoi progetti, con il modello che preferisci, anche mentre dormi,
+> **Rasgeth è la tua squadra di agenti AI: lavorano sui tuoi progetti, con il modello che preferisci, anche mentre dormi,
 > e ti chiedono il permesso solo per le cose che contano.**
 
 ### I punti di forza

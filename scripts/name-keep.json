@@ -135,5 +135,83 @@
     "pattern": "RedGiant (?:ora si chiama|is now called) Rasgeth",
     "group": "rename-notice",
     "why": "the test checks that the one-time notice (choice 17) names the old name to say it changed"
+  },
+  {
+    "path": "README.md",
+    "pattern": "Frostmoore/redgiant2(?:\\.git)?\\b|\\bcd redgiant2\\b",
+    "group": "until-N11",
+    "why": "the repository keeps its address until N11 renames it Frostmoore/rasgeth (GitHub then redirects): these links change in N11, with the code's"
+  },
+  {
+    "path": "docs/*.md",
+    "pattern": "Frostmoore/redgiant2(?:\\.git)?\\b|\\bcd redgiant2\\b",
+    "group": "until-N11",
+    "why": "the repository keeps its address until N11 renames it Frostmoore/rasgeth (GitHub then redirects): these links change in N11, with the code's"
+  },
+  {
+    "path": "site/**",
+    "pattern": "Frostmoore/redgiant2(?:\\.git)?\\b|\\bcd redgiant2\\b",
+    "group": "until-N11",
+    "why": "the repository keeps its address until N11 renames it Frostmoore/rasgeth (GitHub then redirects): these links change in N11, with the code's"
+  },
+  {
+    "path": "CLAUDE.md",
+    "pattern": "Frostmoore/redgiant2",
+    "group": "rule",
+    "why": "the rule names the repository that must never exist again (plan 3.9.0, choice 1)"
+  },
+  {
+    "path": "CLAUDE.md",
+    "pattern": "it was RedGiant, and the app RGCompanion|stays `redgiant`/`rg`|Dart package `rgcompanion`|`@redgiant/\\*`",
+    "group": "rule",
+    "why": "the notes for coding agents say which old names stay inside the code (plan 3.9.0, choice 9)"
+  },
+  {
+    "path": "docs/*.md",
+    "pattern": "redgiant-wifi(?:-example)?\\.txt|50-redgiant\\.issue|/redgiant-ca\\.crt|redgiant-os-update|redgiant-os-builder|(?:/usr/lib/redgiant/)?redgiant-helper|redgiant-tls|\\bredgiant\\.conf\\b|ssh redgiant@|`redgiant` user",
+    "group": "internal",
+    "why": "Rasgeth OS's own files, commands, served paths and SSH user keep their names (plan 3.9.0, N6 «OS, resta»): the guides name them as they are on the machine"
+  },
+  {
+    "path": "docs/*.md",
+    "pattern": "redgiant-(?:data|models|engine|supervisor|tailscale|cloudflared|caddy)\\b|redgiant_redgiant-db|docker compose stop redgiant\\b|pg_dump -U redgiant redgiant|http://redgiant:7600|%USERPROFILE%\\\\redgiant\\b|technical name `redgiant`",
+    "group": "internal",
+    "why": "Docker's service, volumes, database, containers and folder keep the technical name redgiant (plan 3.9.0, choices 5 and 9; packages/server/src/remote.ts): the guides name them as they are"
+  },
+  {
+    "path": "docs/*.md",
+    "pattern": "share/rgcompanion|^RedGiant it proposes|called `redgiant-acp`",
+    "group": "history",
+    "why": "says what an installation from before 3.9.0 had, so its owner recognises it (the app's old folder, the data folder found again, the old ACP command)"
+  },
+  {
+    "path": "README.md",
+    "pattern": "It was called RedGiant until 3\\.8|RedGiant and its app become Rasgeth",
+    "group": "history",
+    "why": "says once that RedGiant is now Rasgeth, so whoever knew the old name finds it (plan 3.9.0, choice 17)"
+  },
+  {
+    "path": "site/index.html",
+    "pattern": "si chiamava RedGiant|it was called RedGiant",
+    "group": "history",
+    "why": "says once that RedGiant is now Rasgeth, so whoever knew the old name finds it (plan 3.9.0, choice 17)"
+  },
+  {
+    "path": "site/README.md",
+    "pattern": "smpdigital\\.it/redgiant/|`redgiant-os-\\*`",
+    "group": "history",
+    "why": "the site's old address, to send to rasgeth.it, and the OS images' name before 3.9.0, still found in older releases"
+  },
+  {
+    "path": "README.md",
+    "pattern": "redgiant/sandbox:dev",
+    "group": "internal",
+    "why": "the sandbox image built for the Docker tests is tagged redgiant/sandbox:dev (packages/sandbox/test/docker/sandbox.docker.test.ts)"
+  },
+  {
+    "path": "recipes/README.md",
+    "pattern": "x-redgiant-secret",
+    "group": "internal",
+    "why": "the webhook's header keeps its name (plan 3.9.0, choice 9): recipes and senders already use it"
   }
 ]

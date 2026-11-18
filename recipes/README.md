@@ -20,7 +20,7 @@ _magic automation_ God builds with you), or send it to `POST /api/automations` a
 | `on.files`       | —        | Files changing in a project: `project`, `path`, `pattern`, `changes`                                                       |
 | `on.after`       | —        | Another automation ended: `automation` (its name), `status` (ok, failed, timeout)                                          |
 | `on.task`        | —        | An agent's task ended: `project`, `outcome` (verified, not_testable, abandoned)                                            |
-| `on.startup`     | `false`  | When RedGiant starts                                                                                                       |
+| `on.startup`     | `false`  | When Rasgeth starts                                                                                                        |
 | `only`           | —        | All must hold: `hours`, `days` (0 = Sunday), `dates`, `from`, `words` + `match`, `without`, `maxPerDay`, `cooldownMinutes` |
 | `agent`          | `god`    | `god`, `orchestrator` (needs `project`), or an agent's name or id                                                          |
 | `project`        | `null`   | Project id, for `orchestrator` or to pick an agent by name                                                                 |

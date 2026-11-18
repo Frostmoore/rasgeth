@@ -1,4 +1,13 @@
-<h1 align="center"><img src="packages/web/public/icon-512.png" alt="" width="44" height="44" /> RedGiant</h1>
+<p align="center">
+  <img src="docs/images/rasgeth-header.png" alt="Rasgeth: a crowned star smiling among its small stars, the agents" width="100%" />
+</p>
+
+<h1 align="center"><img src="packages/web/public/icon-512.png" alt="" width="44" height="44" /> Rasgeth</h1>
+
+<p align="center">
+  <em>Rasgeth</em> is pronounced <strong>«ràs-ghet»</strong> (RAHS-get, with a hard g), after
+  Rasalgethi, the star at the head of Hercules. It was called RedGiant until 3.8: same project, new name.
+</p>
 
 <p align="center">
   <strong>Your own AI team, on your own computer.</strong><br />
@@ -23,38 +32,38 @@
   <a href="docs/screenshots/team.png"><img src="docs/screenshots/team.png" alt="God split a release among three sub-agents: one of them waits for your permission, background commands run beside the chat" width="720" /></a>
 </p>
 
-|                                                                                                                                       |                                                                                                                                          |
-| ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| **Models bigger than your graphics card**<br />Bundled llama.cpp with RedGiant's own patches; what does not fit is read from the SSD. | **A team, not a chatbot**<br />God plans, agents and sub-agents work, and a task is done only when its verifier exits 0.                 |
-| **A keychain the agents use blind**<br />Agents use keys by name and never see them; it fills your passwords in the browser too.      | **Automations in plain words**<br />Say what you want: God builds it, asks for what is missing and waits for your yes.                   |
-| **Any file, in open formats**<br />Office, PDF, 3D and video open beside the chat; closed formats become open; agents drive Blender.  | **Talk with your documents**<br />Folders, PDFs, pages, mail and chats indexed on your computer; answers cite their sources.             |
-| **Safe by default**<br />A guardian asks before anything is written outside the project; every step goes to a tamper-evident log.     | **It improves itself, with a seatbelt**<br />God changes RedGiant's code with tests and your yes; a broken version rolls back by itself. |
+|                                                                                                                                      |                                                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **Models bigger than your graphics card**<br />Bundled llama.cpp with Rasgeth's own patches; what does not fit is read from the SSD. | **A team, not a chatbot**<br />God plans, agents and sub-agents work, and a task is done only when its verifier exits 0.                |
+| **A keychain the agents use blind**<br />Agents use keys by name and never see them; it fills your passwords in the browser too.     | **Automations in plain words**<br />Say what you want: God builds it, asks for what is missing and waits for your yes.                  |
+| **Any file, in open formats**<br />Office, PDF, 3D and video open beside the chat; closed formats become open; agents drive Blender. | **Talk with your documents**<br />Folders, PDFs, pages, mail and chats indexed on your computer; answers cite their sources.            |
+| **Safe by default**<br />A guardian asks before anything is written outside the project; every step goes to a tamper-evident log.    | **It improves itself, with a seatbelt**<br />God changes Rasgeth's code with tests and your yes; a broken version rolls back by itself. |
 
 ## Install
 
 Native on Windows and macOS, Docker on Linux. Every download, for every system, is also on
-**[smpdigital.it/redgiant](https://smpdigital.it/redgiant/)**.
+**[rasgeth.it](https://rasgeth.it/)**. Questions: [info@rasgeth.it](mailto:info@rasgeth.it).
 
 ### Windows
 
-Download **[RedGiant-Setup.exe](https://github.com/Frostmoore/redgiant2/releases/latest/download/RedGiant-Setup.exe)**
+Download **[Rasgeth-Setup.exe](https://github.com/Frostmoore/redgiant2/releases/latest/download/Rasgeth-Setup.exe)**
 and run it: next, next, finish.
 
 Everything runs directly on Windows: no WSL, no virtualization, no Docker. The installer brings its own
-Node and database; the local engine (llama.cpp, CUDA or Vulkan) runs natively. RedGiant opens the browser
+Node and database; the local engine (llama.cpp, CUDA or Vulkan) runs natively. Rasgeth opens the browser
 already signed in and stays next to the clock; updates download only the files that changed. The
 installer is not code-signed yet: if SmartScreen says "Windows protected your PC", click **More info**,
 then **Run anyway**. Windows 10 2004 or newer, x64.
 
-Why not signed? A code-signing certificate costs money every year, and RedGiant is made by one person
-who, for now, would rather spend it on the project. Every release is still signed with RedGiant's own
-update key, so RedGiant only installs updates that really come from here. Donations are welcome: where
-to send them is coming soon.
+Why not signed? A code-signing certificate costs money every year, and Rasgeth is made by one person
+who, for now, would rather spend it on the project. Every release is still signed with Rasgeth's own
+update key, so Rasgeth only installs updates that really come from here. Donations are welcome: where
+to send them is coming soon (on [rasgeth.it](https://rasgeth.it/)).
 
 ### macOS
 
-Download **[RedGiant-mac-arm64.dmg](https://github.com/Frostmoore/redgiant2/releases/latest/download/RedGiant-mac-arm64.dmg)**,
-open it and drag RedGiant into Applications. It is signed and notarized by Apple, lives in the menu bar,
+Download **[Rasgeth-mac-arm64.dmg](https://github.com/Frostmoore/redgiant2/releases/latest/download/Rasgeth-mac-arm64.dmg)**,
+open it and drag Rasgeth into Applications. It is signed and notarized by Apple, lives in the menu bar,
 and runs local models on the GPU through Metal. Apple silicon, macOS 13 or newer.
 
 ### Linux and servers
@@ -63,28 +72,29 @@ and runs local models on the GPU through Metal. Apple silicon, macOS 13 or newer
 curl -fsSL https://raw.githubusercontent.com/Frostmoore/redgiant2/main/install.sh | bash
 ```
 
-It runs RedGiant in Docker (Docker Engine 26+; the script offers to install it), everything in
-`~/redgiant`, and opens the browser already signed in.
+It runs Rasgeth in Docker (Docker Engine 26+; the script offers to install it), everything in
+`~/redgiant` (the folder keeps its technical name), and opens the browser already signed in.
 
-### RedGiant OS (a machine that only runs RedGiant)
+### Rasgeth OS (a machine that only runs Rasgeth)
 
 USB stick, Proxmox, Hyper-V, VirtualBox, VMware, clouds, a Raspberry Pi: see
 [docs/INSTALL-OS.md](docs/INSTALL-OS.md). The OS images are made only when the OS itself changes, so
 they sit on the latest release that carries them: the [latest release](https://github.com/Frostmoore/redgiant2/releases/latest)'s
 notes link it, and the Proxmox script finds it by itself. A new machine updates itself to the latest
-RedGiant at its first start.
+Rasgeth at its first start.
 
 ### Only the app
 
-RGCompanion, the app, for a computer or a phone that reaches a RedGiant running somewhere else (a server,
-RedGiant OS, another PC). RedGiant's own installers already carry it.
+The Rasgeth app, for a computer or a phone that reaches a Rasgeth running somewhere else (a server,
+Rasgeth OS, another PC). Rasgeth's own installers already carry it. On a computer it is called
+**Rasgeth App**, so it is not mistaken for the whole Rasgeth installed beside it.
 
-- **Windows**: [RGCompanion-Setup.exe](https://github.com/Frostmoore/redgiant2/releases/latest/download/RGCompanion-Setup.exe),
+- **Windows**: [Rasgeth-App-Setup.exe](https://github.com/Frostmoore/redgiant2/releases/latest/download/Rasgeth-App-Setup.exe),
   for your user only, no administrator rights, with a Start menu entry and its own uninstallation.
-- **Linux**: [rgcompanion-linux-x64.tar.gz](https://github.com/Frostmoore/redgiant2/releases/latest/download/rgcompanion-linux-x64.tar.gz):
+- **Linux**: [rasgeth-app-linux-x64.tar.gz](https://github.com/Frostmoore/redgiant2/releases/latest/download/rasgeth-app-linux-x64.tar.gz):
   unpack it and run `./install-app.sh` (your user only, with a menu entry).
 
-Their sha256 are listed in the release's `SHA256SUMS-companion`. The [site](https://smpdigital.it/redgiant/)
+Their sha256 are listed in the release's `SHA256SUMS-companion`. The [site](https://rasgeth.it/download.html)
 says what is ready for each system.
 
 ### First run
@@ -106,11 +116,11 @@ Options, updates, backups, uninstalling and every environment variable are in
 </p>
 
 - llama.cpp comes bundled and native: CUDA or Vulkan on Windows, Metal on the Mac. Pick a GGUF from
-  Hugging Face and RedGiant estimates how fast it will run on your computer before you download it.
+  Hugging Face and Rasgeth estimates how fast it will run on your computer before you download it.
 - **SSD stream**: a model bigger than the card keeps what is used most on the card and in RAM and reads
   the rest from the SSD; for a mixture of experts, the experts leave the card and the ones used lately
   are cached there.
-- RedGiant's own llama.cpp patch ([`engine/llama-patches`](engine/llama-patches)) copies the next
+- Rasgeth's own llama.cpp patch ([`engine/llama-patches`](engine/llama-patches)) copies the next
   layer's experts to the card while it computes the current one, and bigger passes speed up long
   prompts (both experimental, off by default).
 - The KV cache is saved on disk and restored by prefix, even after a restart (inspired by
@@ -139,8 +149,8 @@ Options, updates, backups, uninstalling and every environment variable are in
 
 - A password manager built in: API keys, tokens and passwords sealed with AES-256 on your computer (the
   master key protected by Windows or the Mac's Keychain), never inside a project or a git repository.
-  Every key RedGiant itself keeps (providers, chats, mailboxes) lives here too.
-- Agents use a credential by its name: RedGiant puts the value on the request on its way out, only
+  Every key Rasgeth itself keeps (providers, chats, mailboxes) lives here too.
+- Agents use a credential by its name: Rasgeth puts the value on the request on its way out, only
   towards the hosts you allowed, and hides it in the answer. You choose who may use each one and whether
   to be asked; every use is recorded. A secret pasted in a chat is held back before it reaches a model.
 - Import from Bitwarden, 1Password, Chrome, Edge and Firefox; a generator, expiry reminders, export
@@ -148,13 +158,13 @@ Options, updates, backups, uninstalling and every environment variable are in
 - [The browser extension](docs/INSTALL.md#the-keychain-in-your-browser) for Chrome, Edge, Brave, Opera
   and Firefox fills a sign-in form only on its own site, when you click, and saves new passwords.
 
-### Magic: say it, and RedGiant builds it
+### Magic: say it, and Rasgeth builds it
 
 <p align="center">
   <img src="docs/screenshots/magic-automation.png" alt="A magic automation: say what should happen, God builds it with you" width="440" />
 </p>
 
-You describe what you want in your own words. God, the agent that runs RedGiant, asks what it needs,
+You describe what you want in your own words. God, the agent that runs Rasgeth, asks what it needs,
 writes what is missing with its tests, tries it in a closed sandbox and shows you the result. Nothing
 starts and nothing installs until you say yes, and keys never go in the chat: they go into your
 Keychain and reach only the sites the new piece declared.
@@ -220,7 +230,7 @@ and its tests, with _Approve and install_ off until every test passes.
 </p>
 
 - Folders, files (scanned PDFs too, with OCR on your computer), web pages, and, if you want, mail and
-  chats are indexed in RedGiant's own Postgres (pgvector, with the embeddings you choose, local or
+  chats are indexed in Rasgeth's own Postgres (pgvector, with the embeddings you choose, local or
   cloud). Search goes by words, and by meaning too once you pick an embedding model; answers cite the
   file, page and line, and one click opens it there.
 - A collection belongs to one agent, a project or everyone. Agents can create collections and add
@@ -250,7 +260,7 @@ and its tests, with _Approve and install_ off until every test passes.
   deletions for good, secrets leaving, real payments) always reach you.
 - An append-only, hash-chained event log of everything agents do: the source for replay, audit and
   tests.
-- God can change RedGiant itself: code changes go through a git worktree, tests and a trial copy with no
+- God can change Rasgeth itself: code changes go through a git worktree, tests and a trial copy with no
   secrets, you approve them, and the supervisor rolls back by itself if the new version does not come
   up. Configuration changes are undoable.
 
@@ -260,7 +270,7 @@ and its tests, with _Approve and install_ off until every test passes.
 
 - Flat subscriptions: **Claude** (through Anthropic's Claude Agent SDK) and **ChatGPT** (through OpenAI's
   Codex app server), with the plan's 5-hour and 7-day limits in the header. Using a personal
-  subscription in a third-party tool may not be allowed by the provider's terms: RedGiant links them and
+  subscription in a third-party tool may not be allowed by the provider's terms: Rasgeth links them and
   asks you to read them before you turn it on.
 - API keys for Anthropic, OpenAI, Gemini, Mistral, DeepSeek, xAI, Groq, OpenRouter, Together, Fireworks
   and Cerebras, and any OpenAI-compatible server of your own (vLLM, Ollama, llama.cpp…).
@@ -268,9 +278,9 @@ and its tests, with _Approve and install_ off until every test passes.
   not yet tried on real accounts), with voice messages transcribed, pictures and files. On Telegram,
   questions and approvals come with buttons.
 - A phone layout installable as an app (PWA), reachable from outside home through Tailscale, Cloudflare
-  or your own domain. Web search through SearXNG (started by RedGiant on its own) or Brave, Tavily, Exa
+  or your own domain. Web search through SearXNG (started by Rasgeth on its own) or Brave, Tavily, Exa
   and Serper.
-- A shared memory of what RedGiant knows about you, learned from your own messages (never a secret,
+- A shared memory of what Rasgeth knows about you, learned from your own messages (never a secret,
   every change undoable), and a backup of everything in one file.
 
 <br clear="right" />
@@ -286,18 +296,19 @@ Telegram, WhatsApp… → Demi-God → God → projects → orchestrator → age
 ```
 
 _Demi-God_ is God's spokesperson on the chats: it relays to God and nothing else. _God_ is the platform
-agent: it creates projects, configures RedGiant and answers to you. Each project has an _orchestrator_
+agent: it creates projects, configures Rasgeth and answers to you. Each project has an _orchestrator_
 that creates persistent _agents_ and short-lived _sub-agents_, delegates tasks and merges their work.
 Beside the hierarchy there is the _Chat_, the everyday assistant, and personal assistants with the
 services you give them. Agents only see what their scope allows.
 
 Under the hood: a TypeScript server (HTTP + WebSocket, OpenAPI at `/api/openapi.json`), Postgres for the
 event log, the board and the state (its own, embedded, on Windows and the Mac), and a supervisor that
-rebuilds and rolls back. There is also a `redgiant` command-line client.
+rebuilds and rolls back. There is also a `rasgeth` command-line client (and `rasgeth-acp`, for editors that speak
+[ACP](docs/acp.md)).
 
 ## How well it works
 
-RedGiant ships an evaluation suite: coding tasks with hidden verifiers, each run by a real project
+Rasgeth ships an evaluation suite: coding tasks with hidden verifiers, each run by a real project
 orchestrator. On the current eight tasks, Claude Sonnet 5.5 and Claude Opus 5.5 both pass **8/8**
 (costs, tokens and times in [docs/evals.md](docs/evals.md)). Run it on your own models with
 `pnpm --filter @redgiant/evals start -- --models provider/model`.
@@ -306,23 +317,23 @@ Against other harnesses, with the same model (Claude Haiku 5.5) on the same task
 
 | Harness     | SWE-bench Verified (50) | Aider Polyglot (225) | Cost      |
 | ----------- | ----------------------- | -------------------- | --------- |
-| RedGiant    | 42/50                   | 220/225              | **$1.69** |
+| Rasgeth     | 42/50                   | 220/225              | **$1.69** |
 | OpenHands   | 44/50                   | 224/225              | $1.85     |
 | Claude Code | 42/50                   | 210/225              | $3.13     |
 
-RedGiant costs the least. One run, with caveats that matter (a network outage, three Windows fixes
+Rasgeth costs the least. One run, with caveats that matter (a network outage, three Windows fixes
 that came after it): [docs/benchmark.md](docs/benchmark.md).
 
 ## Privacy
 
-RedGiant sends no telemetry. It contacts GitHub to look for updates, downloads the free programs a
+Rasgeth sends no telemetry. It contacts GitHub to look for updates, downloads the free programs a
 feature needs the first time you use it, and the models you choose. Everything else goes only to the
 model providers, chats and services you connect yourself; with a local model, your conversations never
 leave your computer.
 
 ## Roadmap
 
-RedGiant is in pre-alpha. What comes next, in order:
+Rasgeth is in pre-alpha. What comes next, in order:
 
 - **3.4 — Knowledge** (released): talk with your documents with citations; import from Claude Code,
   Codex, Cursor and exported chats; skills that write themselves; Matrix, Teams and iMessage; the
@@ -332,23 +343,23 @@ RedGiant is in pre-alpha. What comes next, in order:
   every file it can open, with the agent working in the same editor as you, on a computer, a tablet or a
   phone, by mouse, touch or keyboard.
 - **3.6 — Long arms** (released): SSH to other machines, integrations and extensions created on request, email
-  for the agents, hands-free voice, ACP both ways (RedGiant inside editors, other
+  for the agents, hands-free voice, ACP both ways (Rasgeth inside editors, other
   agents as workers), and artifacts that can ask the agent, keep their data and read project files.
-- **3.7 — RedGiant everywhere** (released): RedGiant OS, a ready-made system for any machine — a USB stick
+- **3.7 — Rasgeth everywhere** (released): Rasgeth OS, a ready-made system for any machine — a USB stick
   installer, Proxmox (a container or a virtual machine, with a one-line script), Hyper-V, VirtualBox and VMware,
-  Raspberry Pi — headless, with Wi-Fi, HTTPS at home and updates from the page; your RedGiants joined as nodes;
+  Raspberry Pi — headless, with Wi-Fi, HTTPS at home and updates from the page; your Rasgeths joined as nodes;
   the first sign-in is just «create your access»; and a guide for those who already have a proxy, a VPN and a
   home DNS.
-- **3.8 — Native apps**: RGCompanion, one Flutter app for Android, iOS, Windows, macOS and Linux, with its
+- **3.8 — Native apps**: the app, one Flutter app for Android, iOS, Windows, macOS and Linux, with its
   own agent-first look (every agent has its own mascot) and an advanced mode for coders. 3.8.0 (released) lays the
-  ground: RedGiant OS opens its own temporary Wi-Fi at the first start, so a mini PC with no screen is set up from
+  ground: Rasgeth OS opens its own temporary Wi-Fi at the first start, so a mini PC with no screen is set up from
   a phone or a laptop; devices with their own revocable access; push notifications; the mascots, already in the
-  page. 3.8.1 (released) brings the app itself: RGCompanion for the phone (Android; iOS prepared) and, through the
+  page. 3.8.1 (released) brings the app itself: for the phone (Android; iOS prepared) and, through the
   launchers, for Windows, macOS and Linux — the team with live mascots, chats, requests, tasks, the Canvas, notifications,
   voice, sharing, Saved passages and the advanced mode — plus product cards with pictures and clearer updates.
   3.8.2 (released) gives the computers an interface of their own, the control room (the wall of agents, the
   Ctrl/Cmd+K search, projects with diffs, terminals, git as a graph, the log), every answer's figures in the app,
-  updates followed from the app, RedGiant's icon, RGCompanion on its own for Windows and a site for the downloads.
+  updates followed from the app, an icon, the app on its own for Windows and a site for the downloads.
   3.8.3 (released) opens conversations in the whole window with the mascots' bar, shows spending and limits at the top of the app's conversations, sends with Ctrl/Cmd+Enter, attaches files and
   screenshots with Ctrl/Cmd+V and puts «New project» and «New agent» on the control room's walls. 3.8.4 (released) fixes the header of a chat
   opened from the Chat card and the version the update screen announces. 3.8.5 (released) gives the app
@@ -364,7 +375,12 @@ RedGiant is in pre-alpha. What comes next, in order:
   whole team, every-day settings, projects, sub-projects and the terminal into the app. 3.8.13 (released) gives the app's
   Canvas the page's viewers, sets a sub-agent limit per project and lets the app update itself. 3.8.14 (released) brings
   every editor, automations, knowledge and shared memory into the app.
-- **3.9 and 3.10 — Video and 3D generation**: a video editor shared by you and the agent, and 3D
+- **3.9 — Rasgeth**: RedGiant and its app become Rasgeth. A new name, a new icon (a crowned star in
+  the night sky) at every size on every system, the app called Rasgeth too («Rasgeth App» on a computer,
+  beside the whole Rasgeth), new file names for every download, the `rasgeth` command and the site
+  [rasgeth.it](https://rasgeth.it/). The data stay where they are; moving over is a clean install that the
+  page guides, with a checked backup first.
+- **3.10 — Video and 3D generation**: a video editor shared by you and the agent, and 3D
   generation with local or cloud engines, finished in Blender.
 - **3.11 — Emulators in the Canvas**: an Android emulator or the iOS simulator found on the computer
   opens in the Canvas, for you and for the agents trying the apps they build.
@@ -373,14 +389,14 @@ RedGiant is in pre-alpha. What comes next, in order:
 
 ## Documentation
 
-| Goal                                                                         | Start here                                                      |
-| ---------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Install, options, environment variables, updates, backups                    | [docs/INSTALL.md](docs/INSTALL.md)                              |
-| The Keychain in your browser                                                 | [docs/INSTALL.md](docs/INSTALL.md#the-keychain-in-your-browser) |
-| Running from source, the packages                                            | [docs/INSTALL.md](docs/INSTALL.md#running-from-source)          |
-| Evaluation results and tasks                                                 | [docs/evals.md](docs/evals.md)                                  |
-| RedGiant, Claude Code and OpenHands on SWE-bench Verified and Aider Polyglot | [docs/benchmark.md](docs/benchmark.md)                          |
-| Writing automations                                                          | [recipes/README.md](recipes/README.md)                          |
+| Goal                                                                        | Start here                                                      |
+| --------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Install, options, environment variables, updates, backups                   | [docs/INSTALL.md](docs/INSTALL.md)                              |
+| The Keychain in your browser                                                | [docs/INSTALL.md](docs/INSTALL.md#the-keychain-in-your-browser) |
+| Running from source, the packages                                           | [docs/INSTALL.md](docs/INSTALL.md#running-from-source)          |
+| Evaluation results and tasks                                                | [docs/evals.md](docs/evals.md)                                  |
+| Rasgeth, Claude Code and OpenHands on SWE-bench Verified and Aider Polyglot | [docs/benchmark.md](docs/benchmark.md)                          |
+| Writing automations                                                         | [recipes/README.md](recipes/README.md)                          |
 
 ## Contributing
 

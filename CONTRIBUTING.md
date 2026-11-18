@@ -1,4 +1,4 @@
-# Contributing to RedGiant 2
+# Contributing to Rasgeth
 
 Thanks for your interest! The project is in early development; the architecture is still moving.
 
