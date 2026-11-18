@@ -131,10 +131,10 @@
     "why": "Docker images keep their names (choice 12): the registry path of ghcr.io/frostmoore/redgiant2"
   },
   {
-    "path": "packages/web/test/rename-notice.test.tsx",
+    "path": "**/test/rename?notice*",
     "pattern": "RedGiant (?:ora si chiama|is now called) Rasgeth",
     "group": "rename-notice",
-    "why": "the test checks that the one-time notice (choice 17) names the old name to say it changed"
+    "why": "the page's and the app's tests check that the one-time notice (choice 17) names the old name to say it changed"
   },
   {
     "path": "README.md",
