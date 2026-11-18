@@ -62,9 +62,11 @@ export function RenameNotice() {
   };
   return (
     <div class="banner rename-notice" role="status">
-      <IconSpark />
+      <span class="rename-notice-icon">
+        <IconSpark />
+      </span>
       <span>
-        <b>{t("renameTitle")}</b> {t("renameText")}
+        <span class="rename-notice-title">{t("renameTitle")}</span> {t("renameText")}
       </span>
       <button type="button" class="link" onClick={close}>
         {t("renameOk")}

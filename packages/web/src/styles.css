@@ -334,24 +334,6 @@ pre {
 .banner .icon-button {
   margin-left: auto;
 }
-/* The new name, said once (RenameNotice.tsx, plan 3.9.0 choice 17). */
-.banner.rename-notice {
-  background: color-mix(in srgb, var(--accent) 10%, var(--panel));
-}
-.banner.rename-notice > svg {
-  flex: none;
-  color: var(--accent);
-}
-.banner.rename-notice b {
-  font-weight: 700;
-}
-.banner.rename-notice .link {
-  margin-left: auto;
-  white-space: nowrap;
-}
-.banner.rename-notice .icon-button {
-  margin-left: 0;
-}
 
 /* Budget bars in the header, like Officina's limits. */
 .limits {
@@ -21470,4 +21452,24 @@ fieldset.saved-filter legend {
   margin: 0;
   color: var(--dim);
   font-size: 13.5px;
+}
+
+/* The new name, said once (RenameNotice.tsx, plan 3.9.0 choice 17). */
+.banner.rename-notice {
+  background: color-mix(in srgb, var(--accent) 10%, var(--panel));
+}
+.rename-notice-icon {
+  display: flex;
+  flex: none;
+  color: var(--accent);
+}
+.rename-notice-title {
+  font-weight: 700;
+}
+.banner.rename-notice .link {
+  margin-left: auto;
+  white-space: nowrap;
+}
+.banner.rename-notice .icon-button {
+  margin-left: 0;
 }
