@@ -11,7 +11,7 @@ import '../screens/server_settings_screen.dart' show progressText;
 import '../theme/colors.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
-import 'brand.dart';
+import '../brand.dart';
 import 'choice.dart';
 import 'updater.dart';
 

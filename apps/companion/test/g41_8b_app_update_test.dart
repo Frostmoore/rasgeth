@@ -13,7 +13,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:rgcompanion/api/servers.dart';
-import 'package:rgcompanion/app_update/brand.dart';
+import 'package:rgcompanion/brand.dart';
 import 'package:rgcompanion/app_update/choice.dart';
 import 'package:rgcompanion/app_update/install.dart';
 import 'package:rgcompanion/app_update/signature.dart';

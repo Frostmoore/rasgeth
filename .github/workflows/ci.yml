@@ -110,6 +110,21 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  # The old names (plan 3.9.0, N1): scripts/name-audit.mjs lists every place a person would still
+  # read RedGiant or RGCompanion, by phase, in the run's summary; a name that stays is in
+  # scripts/name-keep.json with its reason. While the rename goes phase by phase (N2-N7) it only
+  # lists; adding --strict makes it fail the run (memory/plan_rasgeth_3-8-13.md, N1).
+  names:
+    needs: plan
+    if: needs.plan.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node scripts/name-audit.mjs
+
   # RGCompanion for the computers (G40.12, companion.yml with desktop): on a version branch the
   # installers carry the app's window (Windows: app\, the Mac: Contents/Helpers) and keep the
   # Linux tar for the release. Elsewhere the installers are made without it (the browser opens).

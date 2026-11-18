@@ -3,7 +3,7 @@
 // no RedGiant.exe above it) and Linux's install-app.sh (`$XDG_DATA_HOME/rgcompanion`). The copy a
 // launcher carries (RedGiant-Setup.exe's app\, RedGiant.app's Helpers) is updated with RedGiant,
 // never here; the Mac's app comes only with RedGiant; phones update from their stores.
-import 'brand.dart';
+import '../brand.dart';
 
 class InstallSpot {
   const InstallSpot({required this.system, required this.dir, required this.exe});

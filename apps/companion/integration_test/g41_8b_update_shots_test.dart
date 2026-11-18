@@ -17,7 +17,7 @@ import 'package:rgcompanion/api/servers.dart';
 import 'package:rgcompanion/api/token_store.dart';
 import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
-import 'package:rgcompanion/app_update/brand.dart';
+import 'package:rgcompanion/brand.dart';
 import 'package:rgcompanion/app_update/install.dart';
 import 'package:rgcompanion/app_update/signature.dart';
 import 'package:rgcompanion/app_update/swap.dart';

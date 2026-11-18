@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dictionaries } from "../src/i18n.js";
+import { dictionaries, fill } from "../src/i18n.js";
 
 // The components' source, read by Vite.
 const sources = Object.entries(
@@ -32,6 +32,14 @@ const NAMES = new Set([
 const placeholders = (s: string) => [...s.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort();
 
 describe("translations", () => {
+  it("fills {product} with the product's name, unless the caller names another (plan 3.9.0, N1)", () => {
+    expect(fill("What is new in {product} {version}", { version: "3.9.0" })).toBe(
+      "What is new in Rasgeth 3.9.0",
+    );
+    expect(fill("{product}", { product: "Other" })).toBe("Other");
+    expect(fill("{missing} stays")).toBe("{missing} stays");
+  });
+
   it("has every text in both languages, with the same placeholders", () => {
     for (const [key, en] of Object.entries(dictionaries.en)) {
       const it = dictionaries.it[key as keyof typeof dictionaries.it];

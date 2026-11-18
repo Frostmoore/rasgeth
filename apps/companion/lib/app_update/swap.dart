@@ -7,7 +7,7 @@
 // which one failed. Every step goes into the helper's log next to it.
 import 'dart:io';
 
-import 'brand.dart';
+import '../brand.dart';
 
 /// What the helper needs, all paths absolute.
 class SwapPlan {

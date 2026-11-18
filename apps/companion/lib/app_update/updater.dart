@@ -19,7 +19,7 @@ import 'package:http/http.dart' as http;
 
 import '../api/servers.dart';
 import '../api/settings_types.dart';
-import 'brand.dart';
+import '../brand.dart';
 import 'choice.dart';
 import 'install.dart';
 import 'signature.dart';

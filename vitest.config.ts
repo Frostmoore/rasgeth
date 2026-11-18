@@ -15,6 +15,8 @@ export default defineConfig({
       "packaging/os/test/*.test.ts",
       // The blind push relay for APNs (G40.4).
       "packaging/push-relay/test/*.test.ts",
+      // The name guard (plan 3.9.0, N1).
+      "scripts/test/*.test.ts",
     ],
     // In-process Postgres and git worktrees make some integration tests take seconds.
     testTimeout: 30_000,

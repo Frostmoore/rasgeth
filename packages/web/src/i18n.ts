@@ -1,5 +1,5 @@
 import { signal } from "@preact/signals";
-import { dangerWords, parseFindTiming } from "@redgiant/protocol";
+import { dangerWords, PRODUCT_NAME, parseFindTiming } from "@redgiant/protocol";
 
 export type Lang = "it" | "en";
 
@@ -13697,8 +13697,16 @@ export function findTimingText(output: string): string | undefined {
 export function t(key: Key, vars: Record<string, string> = {}): string {
   // A key without words (a name made at run time) shows the English, then the key itself: never
   // an error that empties the page (G42.0).
-  const words = dictionaries[lang.value][key] ?? dictionaries.en[key] ?? String(key);
-  return words.replace(/\{(\w+)\}/g, (_, k: string) => vars[k] ?? `{${k}}`);
+  return fill(dictionaries[lang.value][key] ?? dictionaries.en[key] ?? String(key), vars);
+}
+
+/** A text's {placeholders} filled; {product} is the product's name (`PRODUCT_NAME`, plan 3.9.0
+ * N1) unless the caller gives another, so a text never writes the name by hand. */
+export function fill(words: string, vars: Record<string, string> = {}): string {
+  return words.replace(
+    /\{(\w+)\}/g,
+    (_, k: string) => vars[k] ?? (k === "product" ? PRODUCT_NAME : `{${k}}`),
+  );
 }
 
 /** Translates a key made at run time (a job's step, an error code); undefined if there is none. */

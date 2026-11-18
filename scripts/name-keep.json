@@ -1,0 +1,38 @@
+[
+  {
+    "path": "scripts/name-audit.mjs",
+    "group": "guard",
+    "why": "the guard names the old names to find them"
+  },
+  {
+    "path": "scripts/test/name-audit.test.ts",
+    "group": "guard",
+    "why": "the guard's table names the old names to judge them"
+  },
+  {
+    "path": "packages/web/src/i18n.ts",
+    "key": "^news\\d",
+    "group": "history",
+    "why": "the news of past releases (news3814…, news323…) tell what that release brought, with the name it had then"
+  },
+  {
+    "path": "apps/companion/lib/l10n/app_localizations*.dart",
+    "group": "generated",
+    "why": "written by flutter gen-l10n from app_it.arb and app_en.arb, which the guard reads"
+  },
+  {
+    "path": "apps/companion/lib/**/*.g.dart",
+    "group": "generated",
+    "why": "written by apps/companion/tool/*.mjs from the protocol and the page (i18n.ts), which the guard reads"
+  },
+  {
+    "path": "apps/companion/test/fixtures/*.json",
+    "group": "generated",
+    "why": "test vectors written by apps/companion/tool/*.mjs from the page's and the server's code, which the guard reads"
+  },
+  {
+    "path": "research/**",
+    "group": "history",
+    "why": "studies and measurements of the past, not shipped with the product (research/sparsity/README.md)"
+  }
+]

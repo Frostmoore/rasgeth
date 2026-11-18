@@ -10,7 +10,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 import 'api/budgets.dart';
-import 'app_update/brand.dart';
+import 'brand.dart';
 import 'app_update/updater.dart';
 import 'api/client.dart';
 import 'api/conversation.dart';

@@ -5,6 +5,7 @@ export * from "./artifact-bridge.js";
 export * from "./automations.js";
 export * from "./backup.js";
 export * from "./backup-host.js";
+export * from "./brand.js";
 export * from "./canvas.js";
 export * from "./chat-tools.js";
 export * from "./critical.js";

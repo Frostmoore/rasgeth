@@ -1,8 +1,18 @@
-// The app's name as people see it and the names of the files a release carries for it (G41.8b):
-// one place, so that a new name (3.8.13: «Rasgeth») is a change here and nowhere else. The inside
-// (the package, the executable `rgcompanion`, the settings' keys) keeps its name.
+// The product's name as a person sees it, and the names of the files a release carries for the
+// app (G41.8b; plan 3.9.0, N1): one place, the app's twin of packages/protocol/src/brand.ts
+// (test/brand_test.dart keeps them equal). The inside (the package `rgcompanion`, the executable,
+// the settings' keys, the ids nobody sees) keeps its name. scripts/name-audit.mjs guards the old
+// names.
 
-/// The name in the windows, the menus and the update's texts.
+/// The product's name, everywhere a person reads it (protocol `PRODUCT_NAME`).
+const kProductName = 'Rasgeth';
+
+/// The app alone on a computer, next to which the whole installation may sit (protocol
+/// `DESKTOP_APP_NAME`, plan 3.9.0 choice 4); on the phones the app is just [kProductName].
+const kDesktopAppName = '$kProductName App';
+
+/// The name in the windows, the menus and the update's texts. Still the old one until the app's
+/// texts move to the new name (plan 3.9.0, N2 and N5), then [kProductName].
 const kAppName = 'RGCompanion';
 
 /// Where the releases are (GitHub: `releases/latest`, `releases/tags/v<version>`).

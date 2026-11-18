@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app_state.dart';
-import 'app_update/brand.dart';
+import 'brand.dart';
 import 'app_update/update_window.dart';
 import 'desktop/desktop_shell.dart';
 import 'l10n/app_localizations.dart';

@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 
 import '../api/live.dart';
 import '../app_state.dart';
-import '../app_update/brand.dart';
+import '../brand.dart';
 import '../app_update/choice.dart';
 import '../app_update/update_window.dart';
 import '../l10n/app_localizations.dart';
