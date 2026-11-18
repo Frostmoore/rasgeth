@@ -20,6 +20,7 @@ import { PERSON } from "@redgiant/protocol";
 import type { PDFDocumentProxy } from "pdfjs-dist";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { announce } from "../../a11y.js";
+import { embedded, filesFromApp } from "../../embed.js";
 import { type Key, t } from "../../i18n.js";
 import {
   IconAlert,
@@ -43,6 +44,7 @@ import {
 import { type Pt, pinchStep } from "../../phone.js";
 import { attempt, docView, getApi, openDoc, sendDoc } from "../../state.js";
 import { useOrders, useReport } from "../../viewers/live.js";
+import { download } from "../../viewers/source.js";
 import { Modal } from "../ui.js";
 
 type PdfJs = typeof import("pdfjs-dist");
@@ -328,6 +330,14 @@ export function PdfEditor({
     };
   }, []);
   const pickRef = useRef<HTMLInputElement>(null);
+  // A web view inside RGCompanion may not open the page's own file picker: the app's (G42.7).
+  const choosePicture = () => {
+    if (!embedded()) return pickRef.current?.click();
+    void filesFromApp([".png", ".jpg", ".jpeg"]).then((files) => {
+      const f = files[0];
+      if (f) void attempt(async () => setPicture(await pickPicture(f)));
+    });
+  };
   const report = useReport();
 
   const setTool = (next: Tool) => {
@@ -341,7 +351,7 @@ export function PdfEditor({
       } catch {
         // The editor is not ready yet: the mode is set when the document is shown.
       }
-    if (next === "stamp" && !picture) pickRef.current?.click();
+    if (next === "stamp" && !picture) choosePicture();
     if (next === "sign" && !signature) setAsk({ kind: "sign" });
   };
 
@@ -800,7 +810,7 @@ export function PdfEditor({
         setRedactions((r) => [...r, { page, rect }]);
     } else if (tool === "stamp" || tool === "sign") {
       const what = tool === "stamp" ? picture : signature;
-      if (!what) return tool === "stamp" ? pickRef.current?.click() : setAsk({ kind: "sign" });
+      if (!what) return tool === "stamp" ? choosePicture() : setAsk({ kind: "sign" });
       const w0 = tool === "sign" ? 160 : 180;
       const h0 = (w0 * what.h) / Math.max(1, what.w);
       const r: PdfRect = rect ?? [x - w0 / 2, y - h0 / 2, x + w0 / 2, y + h0 / 2];
@@ -1008,7 +1018,7 @@ export function PdfEditor({
           ) : null}
           {hint && tool !== "select" && <span>{t(hint)}</span>}
           {tool === "stamp" && picture && (
-            <button type="button" class="link" onClick={() => pickRef.current?.click()}>
+            <button type="button" class="link" onClick={choosePicture}>
               {t("pdfPickPicture")}
             </button>
           )}
@@ -1037,6 +1047,7 @@ export function PdfEditor({
           <div
             class="pdfed-scroll"
             ref={scroller}
+            data-embed-keys=""
             // biome-ignore lint/a11y/noNoninteractiveTabindex: the pages take the keyboard (Page Down, Home, End)
             tabIndex={0}
             // pdf.js wants a div as the pages' container: a document with its name, not a section.
@@ -1209,10 +1220,8 @@ export function PdfEditor({
                           const url = URL.createObjectURL(
                             new Blob([b as BlobPart], { type: "application/pdf" }),
                           );
-                          const link = document.createElement("a");
-                          link.href = url;
-                          link.download = x.name;
-                          link.click();
+                          // Inside RGCompanion it is the app's «Save as…» (G42.7).
+                          download(url, x.name);
                           setTimeout(() => URL.revokeObjectURL(url), 30_000);
                         })
                       }
@@ -1510,6 +1519,21 @@ function SignAsk({
           height={H}
           aria-label={t("pdfSignDraw")}
         />
+      ) : embedded() ? (
+        // Inside RGCompanion the app's picker (G42.7).
+        <button
+          type="button"
+          class="vw-btn pdfed-sign-pick"
+          onClick={() =>
+            void filesFromApp([".png", ".jpg", ".jpeg"]).then((files) => {
+              const f = files[0];
+              if (f) void attempt(() => onPicture(f));
+            })
+          }
+        >
+          <IconImage size={14} />
+          {t("pdfPickPicture")}
+        </button>
       ) : (
         <label class="vw-btn pdfed-sign-pick">
           <IconImage size={14} />

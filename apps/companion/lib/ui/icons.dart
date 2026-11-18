@@ -199,6 +199,10 @@ enum RgIcons {
   // G42.10: the knowledge's index (the page's IconDatabase).
   database(
     '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>',
+  ),
+  // G42.7: «Paste a picture» in the Canvas's bar (the system's clipboard).
+  clipboard(
+    '<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11v6M9 14l3 3 3-3"/>',
   );
 
   const RgIcons(this.paths);

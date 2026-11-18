@@ -232,6 +232,8 @@ void main() {
       await until(() => app.liveStatus == LiveStatus.open);
       expect(server.received.first['type'], 'hello');
       expect(server.received.first['token'], startsWith('rgd_'));
+      // The server's lists come after its answer to hello: waited for, not raced.
+      await until(() => app.live.forYou == 2);
       expect(app.live.forYou, 2);
       final quick = app.live.approvals.firstWhere((r) => r.requestId == 'r1');
       final critical = app.live.approvals.firstWhere((r) => r.requestId == 'r2');

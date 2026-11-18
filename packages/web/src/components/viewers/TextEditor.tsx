@@ -25,6 +25,7 @@ import { PERSON, textDigest } from "@redgiant/protocol";
 import { basicSetup } from "codemirror";
 import { render } from "preact";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { embedded, setEmbedSelection } from "../../embed.js";
 import { t } from "../../i18n.js";
 import { IconAlert, IconCheck, IconUndo } from "../../icons.js";
 import { renderMarkdown } from "../../markdown.js";
@@ -329,6 +330,35 @@ export function TextEditor({
         });
       }, DERIVE_MS);
     };
+    // Inside RGCompanion the selection, with its lines, is for «Ask the agent» (G42.7).
+    const tellSelection = () => {
+      const v = view;
+      if (!v || !embedded()) return;
+      const sel = v.state.selection.main;
+      if (sel.empty) return setEmbedSelection(undefined);
+      setEmbedSelection({
+        text: v.state.sliceDoc(sel.from, sel.to),
+        ref: {
+          scope: file.scope,
+          path: file.path,
+          line: v.state.doc.lineAt(sel.from).number,
+          lineEnd: v.state.doc.lineAt(sel.to).number,
+        },
+      });
+    };
+    // A phone's keyboard opening (or any shrinking of the view) keeps the line being typed in
+    // sight: the web view gets smaller, the caret's line scrolls back above the keyboard.
+    const keepCaret = () => {
+      const v = view;
+      if (!v?.hasFocus) return;
+      v.dispatch({
+        effects: EditorView.scrollIntoView(v.state.selection.main.head, {
+          y: "nearest",
+          yMargin: 48,
+        }),
+      });
+    };
+    window.visualViewport?.addEventListener("resize", keepCaret);
     const tellPlace = () => {
       const v = view;
       if (!v) return;
@@ -353,7 +383,12 @@ export function TextEditor({
               ...(syntax ? [lintGutter()] : []),
               marks,
               undoTip,
-              EditorView.contentAttributes.of({ "aria-label": t("docEditorLabel"), tabindex: "0" }),
+              EditorView.contentAttributes.of({
+                "aria-label": t("docEditorLabel"),
+                tabindex: "0",
+                // The keys RGCompanion passes on reach the text (G42.7).
+                "data-embed-keys": "",
+              }),
               EditorView.updateListener.of((u) => {
                 const own = u.transactions.filter(
                   (tr) => tr.docChanged && !tr.annotation(Transaction.remote),
@@ -375,6 +410,7 @@ export function TextEditor({
                 }
                 if (u.docChanged) derive();
                 if (u.docChanged || u.viewportChanged) tellPlace();
+                if (u.selectionSet || u.docChanged) tellSelection();
               }),
               // Leaving the text (to ask an agent in the chat, p3.5.3) sends what was typed at
               // once and keeps the place held a moment more: the agent asked right away does
@@ -526,6 +562,7 @@ export function TextEditor({
     });
     return () => {
       live = false;
+      window.visualViewport?.removeEventListener("resize", keepCaret);
       clearInterval(watchdog);
       if (sendTimer) clearTimeout(sendTimer);
       if (presenceTimer) clearTimeout(presenceTimer);

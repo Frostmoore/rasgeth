@@ -7766,5 +7766,11 @@
   "knUiDetails": "Details for whoever helps you",
   "knWzDoneBtn": "Done",
   "knHubKnowledge": "Your documents the agents can search: collections, sources, models",
-  "knHubMemory": "What every agent knows about you, with every change undoable"
+  "knHubMemory": "What every agent knows about you, with every change undoable",
+  "cvSaveFailedShort": "Not saved",
+  "cvSaveRetry": "Try saving again",
+  "cvReadOnly": "Read only",
+  "cvPastePicture": "Paste a picture",
+  "cvPasteNone": "There is no picture on the clipboard",
+  "cvAskedAgent": "Put in the conversation's message"
 }

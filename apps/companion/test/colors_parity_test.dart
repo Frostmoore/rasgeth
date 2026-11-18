@@ -1,11 +1,12 @@
 // G42.0: the app's colours are the page's. Reads packages/web/src/styles.css (`:root` and
 // `html[data-theme="dark"]`, the first of each) and checks every variable against `RgColors`;
 // the dark theme takes the light one's where it does not set its own (as CSS does).
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rgcompanion/theme/colors.dart';
+
+import 'repo_files.dart';
 
 Map<String, String> _block(String css, String selector) {
   final start = css.indexOf('$selector {');
@@ -42,8 +43,15 @@ Map<String, Color> _vars(RgColors c) => {
   'code': c.code,
 };
 
+const _styles = 'packages/web/src/styles.css';
+
 void main() {
-  final css = File('../../packages/web/src/styles.css').readAsStringSync();
+  final file = repoFile(_styles);
+  if (file == null) {
+    test('the page\'s colours', () {}, skip: repoSkip(_styles));
+    return;
+  }
+  final css = file.readAsStringSync();
   final light = _block(css, ':root');
   final dark = {...light, ..._block(css, 'html[data-theme="dark"]')};
 

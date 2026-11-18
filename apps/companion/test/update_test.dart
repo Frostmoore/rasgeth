@@ -514,6 +514,8 @@ void main() {
       'a 3.8.0 server: steps from the state, a bar that moves with the time, the restart, back',
       (t) async {
         final app = _app();
+        // The time gone by is the test's own clock (it moves with each tick), never the wall's.
+        app.updateClock = () => t.binding.clock.now();
         server.osUpdates = osJson();
         server.onUpdateAct = () {
           server.osUpdates = osJson(running: true, state: 'applying', step: 'check');

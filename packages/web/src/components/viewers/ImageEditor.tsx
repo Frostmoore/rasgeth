@@ -18,6 +18,7 @@ import {
 } from "@redgiant/protocol";
 import type { ComponentChildren } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
+import { embedded } from "../../embed.js";
 import { t, tOptional } from "../../i18n.js";
 import {
   IconBrush,
@@ -48,7 +49,7 @@ import {
   IconX,
   IconZoom,
 } from "../../icons.js";
-import { useCompact } from "../../phone.js";
+import { phoneScreen, useCompact } from "../../phone.js";
 import { attempt, getApi, openCanvas, openDoc, sendDoc } from "../../state.js";
 import { holdMark } from "../../viewers/agent-marks.js";
 import type {
@@ -505,6 +506,45 @@ export function ImageEditor({ file }: { file: DocFile }) {
     if (isl.current) isl.current.brush = { ...brush };
   }, [brush]);
 
+  // A picture pasted (G42.7): the browser's own paste, or the system's clipboard through
+  // RGCompanion (its `paste`). A new layer, above the current one.
+  useEffect(() => {
+    const put = async (f: File) => {
+      const x = isl.current;
+      if (!x) return;
+      try {
+        const bmp = await createImageBitmap(f);
+        x.pasteImage(t("imgPastedLayer"), bmp);
+        bmp.close();
+        setNote(t("imgPasted"));
+      } catch (e) {
+        setNote(t("imgPasteFailed", { reason: (e as Error).message }));
+      }
+    };
+    const picture = (files: Iterable<File>) => [...files].find((f) => f.type.startsWith("image/"));
+    const onPaste = (e: ClipboardEvent) => {
+      const at = e.target as Node | null;
+      const el = at instanceof HTMLElement ? at : at?.parentElement;
+      if (el?.closest("input, textarea, select, [contenteditable]")) return;
+      if (at && at !== document.body && !root.current?.contains(at)) return;
+      const f = picture(e.clipboardData?.files ?? []);
+      if (!f) return;
+      e.preventDefault();
+      void put(f);
+    };
+    const onApp = (e: Event) => {
+      const f = picture((e as CustomEvent<{ files: File[] }>).detail?.files ?? []);
+      if (f) void put(f);
+      else setNote(t("imgPasteNone"));
+    };
+    document.addEventListener("paste", onPaste);
+    window.addEventListener("rg-embed-paste", onApp);
+    return () => {
+      document.removeEventListener("paste", onPaste);
+      window.removeEventListener("rg-embed-paste", onApp);
+    };
+  }, []);
+
   const onKey = (e: KeyboardEvent) => {
     const x = isl.current;
     if (!x || (e.target as HTMLElement).closest("input, select, textarea")) return;
@@ -767,7 +807,8 @@ export function ImageEditor({ file }: { file: DocFile }) {
             <option value="psd">{t("imgExportPsd")}</option>
           </select>
         </label>
-        {info?.krita && (
+        {/* Krita opens on the server's computer: not from a phone (G42.7). */}
+        {info?.krita && !(embedded() && phoneScreen()) && (
           <button
             type="button"
             class="vw-btn small"
@@ -897,6 +938,7 @@ export function ImageEditor({ file }: { file: DocFile }) {
             aria-label={`${t("imgEditorLabel")}: ${name}`}
             aria-describedby={nowId}
             aria-keyshortcuts="?"
+            data-embed-keys=""
             onKeyDown={onKey}
             onKeyUp={onKeyUp}
           />

@@ -196,6 +196,8 @@ export const EMBED_ACTION_ICONS = [
   "brush",
   "alert",
   "keyboard",
+  /** «Ask the agent» (G42.7). */
+  "chat",
 ] as const;
 export type EmbedActionIcon = (typeof EMBED_ACTION_ICONS)[number];
 
@@ -227,6 +229,11 @@ export const EmbedAction = z
 export type EmbedAction = z.infer<typeof EmbedAction>;
 /** The most actions one bar carries. */
 export const EMBED_ACTIONS_MAX = 12;
+/**
+ * The action «Ask the agent» about what is selected (G42.7): the app shows it only where it has a
+ * conversation's composer to put it in, and the page answers its `action` with `askAgent`.
+ */
+export const EMBED_ASK_ACTION = "ask";
 
 /** One of the app's Canvas tabs, as the page's `canvas.state` names them (G42.6). */
 export const EmbedTab = z
@@ -314,6 +321,13 @@ export const EmbedToApp = z.discriminatedUnion("t", [
       note: text(300).optional(),
       link: serverPath.optional(),
       download: z.boolean().optional(),
+      /**
+       * The tab takes a picture from the system's clipboard (the image editor, G42.7): the app
+       * offers «Paste a picture» and passes Ctrl/Cmd+V on as `paste`.
+       */
+      paste: z.boolean().optional(),
+      /** An archived project's file (G42.7): only looked at, the app's bar says so. */
+      readOnly: z.boolean().optional(),
     })
     .strict(),
   /** Something to open in another tab of the app's Canvas (an open copy made, a file inside). */

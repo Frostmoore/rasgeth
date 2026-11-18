@@ -58,6 +58,10 @@ void main() {
       'previewLink https://example.com/a?b=1',
       'close',
       'back false',
+      // The editors (G42.7).
+      'save saved null',
+      'saveAs foto.png null iVBORw0KGgo=',
+      'ask riga\naltra 4',
     ]);
   });
 
@@ -91,4 +95,63 @@ void main() {
     expect(sent, hasLength(6));
     expect(sent[3], contains('"data":"aGk="'));
   });
+
+  test('G42.7: the app\'s messages the page refuses, the app refuses too', () {
+    for (final m in (v['badAppMessages'] as List).cast<Map<String, Object?>>()) {
+      expect(appToEmbedOk(m.cast<String, Object?>()), isFalse, reason: '$m');
+    }
+  });
+
+  test(
+    'G42.7: the editors\' bar (paste, read only, «Ask the agent») and the pasted picture',
+    () async {
+      final bars = <EmbedBar>[];
+      final asked = <String>[];
+      final b = EmbedBridge(
+        nonce: nonce,
+        run: (_) async {},
+        handlers: EmbedHandlers(
+          bar: bars.add,
+          askAgent: (t, r) =>
+              asked.add('$t|${r['scope']}|${r['path']}|${r['line']}-${r['lineEnd']}'),
+        ),
+      );
+      for (final e in (v['envelopes'] as List).cast<Map<String, Object?>>()) {
+        b.handle(e['raw'] as String);
+      }
+      final ask = bars.where((x) => x.actions.any((a) => a.id == embedAskAction)).single;
+      expect(ask.actions.single.icon, 'chat');
+      expect(ask.actions.single.primary, isTrue);
+      expect(bars.where((x) => x.paste).length, 1);
+      final ro = bars.where((x) => x.readOnly).single;
+      expect(ro.download, isTrue);
+      expect(ro.paste, isFalse);
+      expect(asked, contains('riga\naltra|project:p1|src/a.ts|4-9'));
+
+      final sent = <String>[];
+      final out = EmbedBridge(
+        nonce: nonce,
+        run: (s) async => sent.add(s),
+        handlers: const EmbedHandlers(),
+      );
+      final png = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+      await out.paste(files: [embedFile('pasted.png', 'image/png', png)]);
+      await out.action(embedAskAction);
+      final m = jsonDecode(
+        sent[0].substring('window.postMessage('.length, sent[0].lastIndexOf(', location.origin);')),
+      ) as Map;
+      expect(m['m'], {
+        't': 'paste',
+        'files': [
+          {'name': 'pasted.png', 'type': 'image/png', 'size': 8, 'data': 'iVBORw0KGgo='},
+        ],
+      });
+      // The page's own vector carries the same bytes, as the app encodes them.
+      final vec = (v['appMessages'] as List).cast<Map<String, dynamic>>().firstWhere(
+        (x) => x['t'] == 'paste' && ((x['files'] as List?) ?? const []).isNotEmpty,
+      );
+      expect(((vec['files'] as List).single as Map)['data'], 'iVBORw0KGgo=');
+      expect(sent[1], contains('"t":"action","id":"ask"'));
+    },
+  );
 }

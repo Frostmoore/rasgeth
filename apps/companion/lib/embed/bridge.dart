@@ -12,10 +12,23 @@ const embedFileMax = 25 * 1024 * 1024;
 enum EmbedKey { save, undo, redo, find }
 
 /// The drawn icons a Canvas action may carry (`EMBED_ACTION_ICONS`, G42.6).
-const embedActionIcons = ['play', 'code', 'folderPlus', 'pencil', 'brush', 'alert', 'keyboard'];
+const embedActionIcons = [
+  'play',
+  'code',
+  'folderPlus',
+  'pencil',
+  'brush',
+  'alert',
+  'keyboard',
+  'chat',
+];
 
 /// The most actions one bar carries (`EMBED_ACTIONS_MAX`).
 const embedActionsMax = 12;
+
+/// «Ask the agent» about what is selected (`EMBED_ASK_ACTION`, G42.7): shown only where the app
+/// has a conversation's composer for it.
+const embedAskAction = 'ask';
 
 final _actionId = RegExp(r'^[a-z][a-z0-9.-]*$');
 
@@ -115,14 +128,16 @@ Map<String, Object?>? embedToApp(Object? m) {
     'close' => _only(x, {'t'}),
     'back' => _only(x, {'t', 'handled'}) && x['handled'] is bool,
     'bar' =>
-      _only(x, {'t', 'actions', 'note', 'link', 'download'}) &&
+      _only(x, {'t', 'actions', 'note', 'link', 'download', 'paste', 'readOnly'}) &&
           x['actions'] is List &&
           (x['actions']! as List).length <= embedActionsMax &&
           (x['actions']! as List).every(_action) &&
           _optStr(x['note'], max: 300) &&
           (x['link'] == null ||
               (_str(x['link'], max: 4000) && _serverPath.hasMatch(x['link']! as String))) &&
-          _optBool(x['download']),
+          _optBool(x['download']) &&
+          _optBool(x['paste']) &&
+          _optBool(x['readOnly']),
     'open' =>
       _only(x, {'t', 'title', 'target'}) &&
           _str(x['title'], max: 300) &&
@@ -176,8 +191,10 @@ bool appToEmbedOk(Map<String, Object?> m) {
             _str(e['name'], min: 1, max: 255) &&
             _str(e['type'], max: 200) &&
             e['size'] is int &&
+            (e['size'] as int) >= 0 &&
             (e['size'] as int) <= embedFileMax &&
-            e['data'] is String,
+            _str(e['data'], max: (embedFileMax / 3).ceil() * 4) &&
+            _base64.hasMatch(e['data']! as String),
       );
   return switch (m['t']) {
     'theme' => _only(m, {'t', 'theme'}) && const ['light', 'dark'].contains(m['theme']),
@@ -293,7 +310,14 @@ class EmbedAction {
 
 /// The Canvas's bar as the page said it last (`bar`).
 class EmbedBar {
-  const EmbedBar({this.actions = const [], this.note, this.link, this.download = false});
+  const EmbedBar({
+    this.actions = const [],
+    this.note,
+    this.link,
+    this.download = false,
+    this.paste = false,
+    this.readOnly = false,
+  });
 
   factory EmbedBar.fromJson(Map<String, Object?> m) => EmbedBar(
     actions: [
@@ -303,6 +327,8 @@ class EmbedBar {
     note: m['note'] as String?,
     link: m['link'] as String?,
     download: m['download'] == true,
+    paste: m['paste'] == true,
+    readOnly: m['readOnly'] == true,
   );
 
   final List<EmbedAction> actions;
@@ -311,6 +337,12 @@ class EmbedBar {
   /// The signed link of what is shown (a path of the server).
   final String? link;
   final bool download;
+
+  /// The tab takes a picture from the system's clipboard (G42.7): «Paste a picture», Ctrl/Cmd+V.
+  final bool paste;
+
+  /// An archived project's file: only looked at (G42.7).
+  final bool readOnly;
 }
 
 /// One page's bridge: its nonce, the page's messages to [handlers], the app's out through [run].

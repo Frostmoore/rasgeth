@@ -154,7 +154,13 @@ class AppUpdater extends ChangeNotifier {
   String? _ready;
   StreamSubscription<List<int>>? _sub;
   Completer<void>? _download;
-  bool _cancelled = false;
+
+  /// The download in flight: cancelled by [cancel], done once its file is closed and cleaned
+  /// (Windows cannot delete a file that is still open).
+  _Run? _run;
+
+  /// A download is running or still closing and cleaning its file.
+  bool get busy => _run != null;
 
   /// Whether this app can update itself at all.
   bool get enabled => spot != null && parseVersion(current) != null;
@@ -284,7 +290,9 @@ class AppUpdater extends ChangeNotifier {
   Future<void> download() async {
     final f = found;
     if (f == null || stage == AppUpdateStage.downloading) return;
-    _cancelled = false;
+    final run = _Run();
+    final previous = _run;
+    _run = run;
     final dir = Directory('${await folder()}${Platform.pathSeparator}${f.version}');
     final sep = Platform.pathSeparator;
     final part = File('${dir.path}$sep${f.asset}.part');
@@ -293,16 +301,23 @@ class AppUpdater extends ChangeNotifier {
     _set(AppUpdateStage.downloading);
     IOSink? out;
     try {
+      // A cancelled download still closing its part: wait, it deletes the same file.
+      await previous?.done.future;
       await dir.create(recursive: true);
       // Downloaded before (the person chose «Later»): used again only with the signed sha256.
       if (await file.exists()) {
         final h = Sha256Sink();
         await file.openRead().forEach(h.add);
+        if (run.cancelled) return;
         if (h.close() == f.sha256) return await _prepare(file, dir, await file.length());
         await file.delete();
       }
       final req = http.Request('GET', f.url)..headers['user-agent'] = kExeName;
       final res = await _client.send(req).timeout(const Duration(seconds: 30));
+      if (run.cancelled) {
+        unawaited(res.stream.listen(null).cancel());
+        return;
+      }
       if (res.statusCode != 200) throw const HttpException('status');
       final total = (res.contentLength ?? 0) > 0
           ? res.contentLength!.toDouble()
@@ -352,7 +367,7 @@ class AppUpdater extends ChangeNotifier {
       _sub = null;
       await out.close();
       out = null;
-      if (_cancelled) return await _delete(part);
+      if (run.cancelled) return await _delete(part);
       if (hash.close() != f.sha256) {
         await _delete(part);
         return _set(AppUpdateStage.failed, err: AppUpdateError.checksum);
@@ -364,10 +379,12 @@ class AppUpdater extends ChangeNotifier {
       _sub = null;
       await out?.close().catchError((Object _) {});
       await _delete(part);
-      if (_cancelled) return;
+      if (run.cancelled) return;
       _set(AppUpdateStage.failed, err: AppUpdateError.network);
     } finally {
       _download = null;
+      run.done.complete();
+      if (identical(_run, run)) _run = null;
     }
   }
 
@@ -386,18 +403,16 @@ class AppUpdater extends ChangeNotifier {
   /// Stops the download; the part is deleted and the version stays offered.
   Future<void> cancel() async {
     if (stage != AppUpdateStage.downloading) return;
-    _cancelled = true;
+    final run = _run;
+    run?.cancelled = true;
     await _sub?.cancel();
     _sub = null;
     final d = _download;
     if (d != null && !d.isCompleted) d.complete();
-    final f = found;
-    if (f != null) {
-      final sep = Platform.pathSeparator;
-      await _delete(File('${await folder()}$sep${f.version}$sep${f.asset}.part'));
-    }
     progress = null;
     _set(AppUpdateStage.available);
+    // The download closes its part and deletes it (in that order: Windows keeps open files).
+    await run?.done.future;
   }
 
   /// «Skip this version»: not offered again until a newer one, or the person asks.
@@ -536,4 +551,9 @@ Future<String?> unpackLinux(String archive, String into) async {
   final r = await Process.run('tar', ['-xzf', archive, '-C', into, '--no-same-owner']);
   if (r.exitCode != 0) return null;
   return findLinuxBundle(into);
+}
+
+class _Run {
+  bool cancelled = false;
+  final done = Completer<void>();
 }

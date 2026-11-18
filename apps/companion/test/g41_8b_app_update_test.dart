@@ -23,6 +23,8 @@ import 'package:rgcompanion/app_update/updater.dart';
 import 'package:rgcompanion/l10n/app_localizations.dart';
 import 'package:rgcompanion/theme/theme.dart';
 
+import 'repo_files.dart';
+
 final _v = jsonDecode(
   File('test/fixtures/update_vectors.json').readAsStringSync(),
 ) as Map<String, dynamic>;
@@ -85,6 +87,11 @@ class _Clock {
   DateTime t = DateTime(2026, 11, 18, 3);
   DateTime now() => t;
 }
+
+/// Paths compared whatever the separator (the app joins with Windows' `\\`, the test writes `/`).
+String _slash(String path) => path.replaceAll(r'\', '/');
+
+const _updateKey = 'packaging/windows/launcher/UpdateKey.cs';
 
 void main() {
   group('the version offered (table)', () {
@@ -275,8 +282,8 @@ void main() {
     test('the built-in key is the real one: it refuses the throwaway key\'s signature', () {
       expect(signedSums(_sums, _v['sig'] as String), isNull);
     });
-    test('the built-in key is the launcher\'s (UpdateKey.cs)', () {
-      final cs = File('../../packaging/windows/launcher/UpdateKey.cs').readAsStringSync();
+    test('the built-in key is the launcher\'s (UpdateKey.cs)', skip: repoSkip(_updateKey), () {
+      final cs = repoFile(_updateKey)!.readAsStringSync();
       expect(RegExp('<Modulus>([^<]*)</Modulus>').firstMatch(cs)!.group(1), kUpdateKeyModulus);
       expect(RegExp('<Exponent>([^<]*)</Exponent>').firstMatch(cs)!.group(1), kUpdateKeyExponent);
     });
@@ -409,7 +416,7 @@ void main() {
       await w.download();
       expect(w.stage, AppUpdateStage.ready);
       await w.apply(const ResumeState());
-      expect(plans.single.package, '${tmp.path}/updates/3.9.0/$kWindowsSetupAsset');
+      expect(_slash(plans.single.package), _slash('${tmp.path}/updates/3.9.0/$kWindowsSetupAsset'));
     });
 
     test('a file that is not the signed one: deleted, never used', () async {
@@ -471,7 +478,7 @@ void main() {
       expect(p.dir, '${tmp.path}/app');
       expect(p.fromVersion, '3.8.14');
       expect(p.toVersion, '3.9.0');
-      expect(p.package, endsWith('/unpacked/rgcompanion-linux-x64/bundle'));
+      expect(_slash(p.package), endsWith('/unpacked/rgcompanion-linux-x64/bundle'));
       expect(quits, ['quit']);
 
       // The next start (new or old version) takes it once.
@@ -640,6 +647,14 @@ sleep 5''' : 'exit 1'}
       await t.pump();
       expect(u.stage, AppUpdateStage.available);
       expect(find.byKey(const Key('app-update-download')), findsOneWidget);
+      // The part is closed, then deleted (real I/O: Windows cannot delete an open file).
+      final part = File('${tmp.path}/updates/3.9.0/$kWindowsSetupAsset.part');
+      for (var i = 0; i < 50 && (u.busy || part.existsSync()); i++) {
+        await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 20)));
+        await t.pump();
+      }
+      expect(part.existsSync(), isFalse);
+      expect(u.busy, isFalse);
       unawaited(gh.held!.close());
 
       gh.held = null;

@@ -7,9 +7,14 @@
 // opens (p3.5.1): the list of files and the Extensions open the same tab an agent would.
 
 import type { ArtifactError, CanvasDo } from "@redgiant/protocol";
-import { FILES_SANDBOX, PROGRAM_SANDBOX } from "@redgiant/protocol";
+import { EMBED_ASK_ACTION, FILES_SANDBOX, PROGRAM_SANDBOX } from "@redgiant/protocol";
 import { useEffect, useRef, useState } from "preact/hooks";
-import { setEmbedBar } from "../embed.js";
+import {
+  askAgentAboutSelection,
+  embedSelection,
+  setEmbedBar,
+  setEmbedSelection,
+} from "../embed.js";
 import { t } from "../i18n.js";
 import {
   IconAlert,
@@ -31,13 +36,14 @@ import {
   canvasViewId,
   frontSession,
   getApi,
+  isArchived,
   lastError,
   openCanvas,
   retargetCanvas,
 } from "../state.js";
 import { canvasKind } from "../viewers/canvas-kind.js";
 import { extensionOf, viewerFor } from "../viewers/kind.js";
-import { CanvasTab, lastMove, report, setTabKind } from "../viewers/live.js";
+import { CanvasTab, lastMove, placeOf, report, setTabKind } from "../viewers/live.js";
 import { copyQuestion, hasOfficeCopy, isOfficeFile } from "../viewers/office-bridge.js";
 import { bytesText, download, type ViewerSource } from "../viewers/source.js";
 import { ArtifactFrame } from "./ArtifactFrame.js";
@@ -112,8 +118,12 @@ export function Canvas({
     !artifact &&
     canvasKind(target) === "site" &&
     (target.kind === "port" || extensionOf(target.path) !== "" || folder === true);
+  // An archived project's file is only looked at (G42.7): its viewer, never its editor.
+  const archived =
+    target.kind === "file" && isArchived(target.scope.match(/^project:([a-z0-9-]+)$/)?.[1]);
   // A file the editor knows opens editable (G37.1): the host keeps it, no reloading here.
-  const editable = target.kind === "file" && folder === false && editableInCanvas(target);
+  const editable =
+    target.kind === "file" && folder === false && !archived && editableInCanvas(target);
   const id = canvasViewId(target);
   const [link, setLink] = useState<string>();
   const [error, setError] = useState<string>();
@@ -138,7 +148,24 @@ export function Canvas({
       const sel = document.getSelection();
       const el = box.current;
       if (!sel || !el || !sel.anchorNode || !el.contains(sel.anchorNode)) return;
-      report(id, { selection: sel.toString().trim().slice(0, 2000) || undefined });
+      const text = sel.toString().trim();
+      report(id, { selection: text.slice(0, 2000) || undefined });
+      // Inside RGCompanion «Ask the agent» takes it (G42.7); the text editor says its own, with
+      // its lines.
+      const inText = sel.anchorNode.parentElement?.closest(".cm-editor");
+      if (bare && !inText && target.kind === "file")
+        setEmbedSelection(
+          text
+            ? {
+                text,
+                ref: {
+                  scope: target.scope,
+                  path: target.path,
+                  ...(placeOf(id)?.page && { page: placeOf(id)?.page }),
+                },
+              }
+            : undefined,
+        );
     };
     document.addEventListener("selectionchange", change);
     return () => document.removeEventListener("selectionchange", change);
@@ -289,6 +316,8 @@ export function Canvas({
   const own = target.kind === "file" && target.scope !== "outside";
   const copy = useEditCopy(own ? target.scope : "", own ? target.path : "");
   // Inside RGCompanion (G42.6) the head's buttons are the app's bar: sent as data, done here.
+  // What is selected (read here: the bar follows it).
+  const asked = bare ? embedSelection.value : undefined;
   const errorsHint = artErrors
     .map((e) => `${e.message}${e.where ? ` (${e.where})` : ""}`)
     .join("\n");
@@ -297,7 +326,16 @@ export function Canvas({
     const file = target.kind === "file" ? target : undefined;
     const ownFile = file && file.scope !== "outside" ? file : undefined;
     const actions: Parameters<typeof setEmbedBar>[0]["actions"] = [];
-    if (ownFile && hasOfficeCopy(ownFile.path))
+    // A selection: «Ask the agent» about it, in the app's composer (G42.7).
+    if (asked && file && asked.ref.path === file.path && asked.ref.scope === file.scope)
+      actions.push({
+        id: EMBED_ASK_ACTION,
+        label: t("canvasAskAgent"),
+        icon: "chat",
+        hint: t("canvasAskAgentHint").slice(0, 300),
+        run: () => void askAgentAboutSelection(),
+      });
+    if (ownFile && !archived && hasOfficeCopy(ownFile.path))
       actions.push({
         id: "copy.edit",
         label: copy.label,
@@ -306,7 +344,13 @@ export function Canvas({
         ...(copy.busy && { disabled: true }),
         run: copy.start,
       });
-    if (ownFile && folder === false && IMAGE_FLAT.test(ownFile.path) && !pictureEditable(ownFile))
+    if (
+      ownFile &&
+      !archived &&
+      folder === false &&
+      IMAGE_FLAT.test(ownFile.path) &&
+      !pictureEditable(ownFile)
+    )
       actions.push({
         id: "picture.edit",
         label: t("imgEdit"),
@@ -380,6 +424,9 @@ export function Canvas({
       note: move && moveShown === move.n ? moveText(move.do) : undefined,
       link: signed,
       download: !!url && !site && !artifact,
+      // The picture editor takes a picture from the system's clipboard (G42.7).
+      paste: editable && !!ownFile && pictureEditable(ownFile),
+      readOnly: archived,
     });
   });
   return (
@@ -395,11 +442,13 @@ export function Canvas({
           )}
         </span>
         <div class="spacer" />
-        {target.kind === "file" && target.scope !== "outside" && hasOfficeCopy(target.path) && (
-          <EditCopyButton scope={target.scope} path={target.path} />
-        )}
         {target.kind === "file" &&
           target.scope !== "outside" &&
+          !archived &&
+          hasOfficeCopy(target.path) && <EditCopyButton scope={target.scope} path={target.path} />}
+        {target.kind === "file" &&
+          target.scope !== "outside" &&
+          !archived &&
           folder === false &&
           IMAGE_FLAT.test(target.path) &&
           !pictureEditable(target) && <EditPictureButton scope={target.scope} path={target.path} />}
@@ -520,6 +569,12 @@ export function Canvas({
           </a>
         )}
       </div>
+      {archived && (
+        <div class="canvas-edit-strip canvas-archived-note" role="note">
+          <IconInfo size={13} />
+          <span class="canvas-edit-text">{t("canvasArchivedNote")}</span>
+        </div>
+      )}
       {phoneNote ? (
         <div class="canvas-edit-strip canvas-phone-note" role="note">
           <IconInfo size={13} />

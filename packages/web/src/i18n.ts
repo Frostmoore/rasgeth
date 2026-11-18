@@ -6744,6 +6744,15 @@ const en = {
   loginNoPasswordTitle: "No password yet",
   loginNoPassword:
     "This RedGiant has no password yet. Open it from the computer it is installed on (its icon or the installer's link) and choose one in Settings › Access from outside home.",
+  // G42.7: the editors inside RGCompanion.
+  canvasAskAgent: "Ask the agent",
+  canvasAskAgentHint: "Puts what you selected, and where it is, in the conversation's message",
+  canvasArchivedNote:
+    "The project is archived: this file can only be looked at. Restore the project to change it.",
+  imgPastedLayer: "Pasted",
+  imgPasted: "Picture pasted as a new layer",
+  imgPasteFailed: "Cannot paste the picture: {reason}",
+  imgPasteNone: "There is no picture on the clipboard",
 } as const;
 
 export type Key = keyof typeof en;
@@ -13584,6 +13593,16 @@ const it: Record<Key, string> = {
   loginNoPasswordTitle: "Ancora nessuna password",
   loginNoPassword:
     "Questo RedGiant non ha ancora una password. Aprilo dal computer dove è installato (dalla sua icona o dal link dell'installazione) e sceglila in Impostazioni › Accesso da fuori casa.",
+  // G42.7: gli editor dentro RGCompanion.
+  canvasAskAgent: "Chiedi all'agente",
+  canvasAskAgentHint:
+    "Mette nel messaggio della conversazione quello che hai selezionato e dove si trova",
+  canvasArchivedNote:
+    "Il progetto è archiviato: questo file si può solo guardare. Ripristina il progetto per cambiarlo.",
+  imgPastedLayer: "Incollata",
+  imgPasted: "Immagine incollata in un livello nuovo",
+  imgPasteFailed: "Non riesco a incollare l'immagine: {reason}",
+  imgPasteNone: "Negli appunti non c'è un'immagine",
 };
 
 export const dictionaries: Record<Lang, Record<Key, string>> = { en, it };

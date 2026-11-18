@@ -2951,5 +2951,11 @@
   "knUiDetails": "Dettagli per chi ti aiuta",
   "knWzDoneBtn": "Fatto",
   "knHubKnowledge": "I tuoi documenti in cui gli agenti cercano: collezioni, fonti, modelli",
-  "knHubMemory": "Cosa sanno di te tutti gli agenti, ogni modifica annullabile"
+  "knHubMemory": "Cosa sanno di te tutti gli agenti, ogni modifica annullabile",
+  "cvSaveFailedShort": "Non salvato",
+  "cvSaveRetry": "Riprova a salvare",
+  "cvReadOnly": "Sola lettura",
+  "cvPastePicture": "Incolla immagine",
+  "cvPasteNone": "Negli appunti non c'è un'immagine",
+  "cvAskedAgent": "Messo nel messaggio della conversazione"
 }

@@ -3,6 +3,7 @@
 // computer (kept open, full window, covering when narrow), every action against the fake
 // RedGiant's workspace (which answers as files.ts), an archived project read only, the phone's
 // screen, and a file dragged onto the conversation attached to the message.
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -577,15 +578,32 @@ void main() {
     fs.readOnly.add(_demo);
     final app = await start(tester, MemoryAppPrefs());
     final client = app.client!;
-    await tester.runAsync(() async {
-      for (final f in <Future<void> Function()>[
-        () => client.fileOp('delete', _demo, 'README.md'),
-        () => client.uploadFile(_demo, 'x.txt', [1]),
-        () => client.importArtifact(_demo, [0x50, 0x4b, 3, 4]),
-      ]) {
-        await expectLater(f(), throwsA(isA<Object>().having((e) => '$e', 'e', contains('423'))));
+    // The app's client may reuse a connection it opened while the widgets ran on the test's
+    // clock: each request is sent here and both clocks are let run until it is answered (inside
+    // `runAsync` alone, a reused connection's body waited for a pump that never came).
+    for (final f in <Future<void> Function()>[
+      () => client.fileOp('delete', _demo, 'README.md'),
+      () => client.uploadFile(_demo, 'x.txt', [1]),
+      () => client.importArtifact(_demo, [0x50, 0x4b, 3, 4]),
+    ]) {
+      Object? error;
+      var answered = false;
+      unawaited(
+        f().then(
+          (_) => answered = true,
+          onError: (Object e) {
+            error = e;
+            answered = true;
+          },
+        ),
+      );
+      for (var i = 0; i < 250 && !answered; i++) {
+        await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 20)));
+        await tester.pump();
       }
-    });
+      expect(answered, isTrue);
+      expect('$error', contains('423'));
+    }
     expect(fs.isFile(_demo, 'README.md'), isTrue);
     await done(tester);
   });

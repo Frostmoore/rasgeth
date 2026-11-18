@@ -423,7 +423,7 @@ export function DocEditor({
   const people = v.presence.filter((p) => p.who === PERSON).length;
   const save = saveState(v);
   // Inside RGCompanion the app's bar says it (G42.0).
-  useEffect(() => reportSave(save), [save]);
+  useEffect(() => reportSave(save, v.saved?.error), [save, v.saved?.error]);
   // «As set for the agent» says what that is (p3.5.3): right away, or which agents propose.
   const proposing = (v.agentsPropose ?? []).map(
     (id) => agents.value.find((a) => a.id === id)?.name ?? id,
