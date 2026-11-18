@@ -6086,5 +6086,650 @@
   "g4HubTools": "What every agent may use",
   "g4HubCommands": "Background commands, agents at work together",
   "g4HubRequests": "Where requests reach you, how long they wait",
-  "g4HubSafety": "Guardian, who approves, spending, skills, retention"
+  "g4HubSafety": "Guardian, who approves, spending, skills, retention",
+  "auAsstNewRoutine": "New routine",
+  "auAutoOff": "Switched off: it does not run until you switch it on.",
+  "auAutoOn": "Switched on",
+  "auAutoStart": "Start from",
+  "auAutoTitle": "What it is called",
+  "auAutoTitleHelp": "A short name, for you.",
+  "auAutoWhat": "What to ask",
+  "auAutoWhatHelp": "As you would write it in a chat. The answer reaches you on Telegram.",
+  "auAutoWho": "Who does it",
+  "auAutoWhoHelp": "God sees every project; a project's lead and agents only theirs.",
+  "auAutoYaml": "The recipe (for experts)",
+  "auAutoYamlHint": "What the form writes. Changed here, it is saved as it is.",
+  "auAutomationNotices": "Automation messages",
+  "auAutomations": "Automations",
+  "auAwChange": "Change",
+  "auAwLastRun": "Last run",
+  "auAwLead": "An automation asks an agent to do something at a time or when something happens; a reminder sends you a message on a day. The lit squares are switched on.",
+  "auAwListLead": "Open one to switch it on or off, run it now, change it or read how it went.",
+  "auAwListTitle": "Your automations",
+  "auAwNewText": "An agent does something for you: every morning, every week, on an email or a push.",
+  "auAwQ": "What should RedGiant do on its own?",
+  "auAwReminderText": "A message for you on the day and at the time you choose, as you wrote it.",
+  "auAwSourcesLead": "What automations can listen to besides the clock.",
+  "auAwSourcesTitle": "Connections",
+  "auAwStarted": "Started: its run appears below in a moment.",
+  "auAxAdvanced": "Advanced",
+  "auAxAfterWhich": "Which automation",
+  "auAxAfter_failed": "When it failed",
+  "auAxAfter_ok": "When it went well",
+  "auAxAfter_timeout": "When it took too long",
+  "auAxAgentOwn": "The agent's own",
+  "auAxAnyChat": "any chat",
+  "auAxAnyProject": "Any project",
+  "auAxApprove": "Ask me before acting",
+  "auAxApproveHelp": "You get a question here and on your chats; without your yes it does not start.",
+  "auAxBudget": "A spending limit each time",
+  "auAxBudgetHelp": "Past it, the agent stops.",
+  "auAxBudgetUsd": "Dollars at most",
+  "auAxCat_other": "Other",
+  "auAxCat_personal": "Personal",
+  "auAxCat_social": "Social",
+  "auAxCat_work": "Work",
+  "auAxCondCooldown": "A pause between one time and the next",
+  "auAxCondDates": "Only in a period",
+  "auAxCondDays": "Only on certain days",
+  "auAxCondFrom": "Only from certain senders",
+  "auAxCondFromHelp": "For emails and chat messages.",
+  "auAxCondHours": "Only at certain hours",
+  "auAxCondMax": "Not too many times a day",
+  "auAxCondWithout": "Never with certain words",
+  "auAxCondWords": "Only with certain words",
+  "auAxCooldown": "Minutes of pause",
+  "auAxCron": "Cron expression",
+  "auAxCronHelp": "Minute, hour, day of the month, month, day of the week: 0 9 * * 1-5 is 9:00 on working days.",
+  "auAxDoes": "What it does",
+  "auAxDoesAgent": "An agent works",
+  "auAxDoesHelp": "An agent does some work, or a plain message reaches you as written.",
+  "auAxDoesReminder": "Just a message",
+  "auAxEffort": "Effort",
+  "auAxEmailAll": "All",
+  "auAxEmailByBox": "Some mailboxes",
+  "auAxEmailByCategory": "A category",
+  "auAxEmailText": "The text contains",
+  "auAxEmailTextPlaceholder": "A word in the email (optional)",
+  "auAxEmailWhich": "Which mailboxes",
+  "auAxEveryMinutes": "Every how many minutes",
+  "auAxFallback": "Then start",
+  "auAxFilesPath": "Folder",
+  "auAxFilesPathHelp": "Inside the project; a dot is the whole project.",
+  "auAxFilesPattern": "Only these files",
+  "auAxFilesPatternHelp": "For example *.pdf; empty: every file.",
+  "auAxFilesProjectHelp": "Make a project first: the folder is inside one.",
+  "auAxFiles_added": "New files",
+  "auAxFiles_changed": "Changed files",
+  "auAxFiles_removed": "Deleted files",
+  "auAxFirstBox": "The first mailbox",
+  "auAxFrom": "From",
+  "auAxFromDay": "From the day",
+  "auAxIfFails": "If it fails",
+  "auAxKind_custom": "Written by hand (cron)",
+  "auAxKind_minutes": "Every few minutes",
+  "auAxKind_once": "Once, on a day",
+  "auAxMagic": "Magic automation",
+  "auAxMagicAllSet": "Everything it needs is there.",
+  "auAxMagicApprove": "Approve and create",
+  "auAxMagicAsk": "What should happen?",
+  "auAxMagicBuilding": "God is building it with you: answer its questions in the conversation.",
+  "auAxMagicDismiss": "Put it away",
+  "auAxMagicDone": "Approved: it is among your automations now.",
+  "auAxMagicEdit": "Change it first",
+  "auAxMagicEx1": "Every day at 3 check my Revolut account and tell me on WhatsApp if I received or paid money",
+  "auAxMagicEx2": "When an invoice arrives in my work mailbox, save it in the project and tell me the amount",
+  "auAxMagicEx3": "When I write «shopping:» on Telegram, add it to the shopping list and send me the list on Saturday",
+  "auAxMagicExamples": "Or start from an example",
+  "auAxMagicGo": "Ask God",
+  "auAxMagicLead": "Write what should happen, as you would say it to a person. God answers in a conversation of its own and builds the automation with you.",
+  "auAxMagicListLead": "Built with God: open one to go on with the conversation.",
+  "auAxMagicListTitle": "Magic automations",
+  "auAxMagicMissing": "Before you can approve, set up what is missing:",
+  "auAxMagicNeeds": "Still needed",
+  "auAxMagicPlaceholder": "Every day at 3 check my bank account and tell me on WhatsApp what came in and what went out",
+  "auAxMagicPromise1": "Nothing starts without your yes.",
+  "auAxMagicPromise2": "New tools and skills are tried apart and wait for you.",
+  "auAxMagicPromise3": "Keys and passwords never go in the chat: God tells you where to put them.",
+  "auAxMagicProposal": "God's proposal",
+  "auAxMagicReadyBadge": "To approve",
+  "auAxMagicReject": "Not like this",
+  "auAxMagicSendNo": "Send to God",
+  "auAxMagicStarting": "Calling God…",
+  "auAxMagicState_building": "Being built",
+  "auAxMagicState_dismissed": "Put away",
+  "auAxMagicState_done": "Approved and created",
+  "auAxMagicState_ready": "Ready: God waits for your yes",
+  "auAxMagicStep1": "You say what you want",
+  "auAxMagicStep2": "God proposes it",
+  "auAxMagicStep3": "You approve it",
+  "auAxMagicTile": "Tell God what you want, in your words: it asks what it needs, builds what is missing and shows it to you before anything starts.",
+  "auAxMagicWhy": "What is wrong? God reads it and tries again",
+  "auAxMailboxesWatching": "{n} mailboxes connected: {names}.",
+  "@auAxMailboxesWatching": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxMatchAll": "All of them",
+  "auAxMatchAny": "At least one",
+  "auAxMaxPerDay": "At most, times a day",
+  "auAxMessageChat": "Only in this chat",
+  "auAxMessageChatHelp": "The chat's number, for a group; empty: any chat.",
+  "auAxMessageFrom": "From whom",
+  "auAxMessageFromHelp": "Part of the name or the number; empty: anyone linked.",
+  "auAxMessageHandle": "The message is for the automation only",
+  "auAxMessageHandleHelp": "Demi-God does not answer it: the automation does.",
+  "auAxMessageWhere": "On which chats (none chosen: all of them)",
+  "auAxMessageWords": "With which words",
+  "auAxMessageWordsPlaceholder": "shopping, /expense",
+  "auAxMissed": "If RedGiant was off at its time",
+  "auAxMissedRun": "Do it as soon as it is on",
+  "auAxMissedSkip": "Skip it",
+  "auAxModel": "Model",
+  "auAxModelHelp": "Empty: the agent's own.",
+  "auAxNeedMissing": "Missing",
+  "auAxNeedOpen": "Set it up",
+  "auAxNeedReady": "Ready",
+  "auAxNeedVault": "Add to the keychain",
+  "auAxNeed_chat": "The chat {what}",
+  "@auAxNeed_chat": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxNeed_credential": "The key for {what}",
+  "@auAxNeed_credential": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxNeed_email": "A mailbox",
+  "auAxNeed_extension": "The extension {what}",
+  "@auAxNeed_extension": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxNeed_other": "{what}",
+  "@auAxNeed_other": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxNextNone": "With these conditions it never starts at its times: check the hours and the days.",
+  "auAxNextTimes": "Next times",
+  "auAxNightHours": "At night",
+  "auAxNone": "Nothing",
+  "auAxOnceAt": "Day and time",
+  "auAxOnly": "Only if",
+  "auAxOnlyHelp": "Conditions it must meet to start; all the ones you switch on, together. Starting it by hand ignores them.",
+  "auAxOr": "or",
+  "auAxOverlap": "If it is still working when it should start again",
+  "auAxOverlapQueue": "Wait, then start",
+  "auAxOverlapSkip": "Skip that time",
+  "auAxPick": "Choose…",
+  "auAxRetries": "Try again, how many times",
+  "auAxRetryMinutes": "Minutes between tries",
+  "auAxRunQueued": "waiting",
+  "auAxRunTriggers": "email,chat message,files,another automation,task,startup,new try",
+  "auAxSayAfter": "After «{name}»",
+  "@auAxSayAfter": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayApprove": "First it asks for your yes.",
+  "auAxSayBudget": "It spends at most ${usd} each time.",
+  "@auAxSayBudget": {
+    "placeholders": {
+      "usd": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayCooldown": "at least {n} minutes apart",
+  "@auAxSayCooldown": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayDates": "from {from} to {to}",
+  "@auAxSayDates": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayDays": "on {days}",
+  "@auAxSayDays": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayDoes": "{who} does: «{what}».",
+  "@auAxSayDoes": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayEmail": "When an email arrives ({filter})",
+  "@auAxSayEmail": {
+    "placeholders": {
+      "filter": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayFiles": "When files change in {path}",
+  "@auAxSayFiles": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayFilesAll": "When files change in the project",
+  "auAxSayFrom": "from {from}",
+  "@auAxSayFrom": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayHours": "between {from} and {to}",
+  "@auAxSayHours": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayMax": "at most {n} times a day",
+  "@auAxSayMax": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayMessage": "When you get a message on {where}",
+  "@auAxSayMessage": {
+    "placeholders": {
+      "where": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayNever": "Choose when it starts.",
+  "auAxSayOnly": "Only",
+  "auAxSayQuiet": "It does not tell you.",
+  "auAxSayReminder": "You get the message: «{text}».",
+  "@auAxSayReminder": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayStartup": "When RedGiant starts",
+  "auAxSayTask": "When a task ends",
+  "auAxSayTell": "It tells you on {where}.",
+  "@auAxSayTell": {
+    "placeholders": {
+      "where": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayTellFailure": "It tells you on {where}, only if something goes wrong.",
+  "@auAxSayTellFailure": {
+    "placeholders": {
+      "where": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayWith": "with «{words}»",
+  "@auAxSayWith": {
+    "placeholders": {
+      "words": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayWithout": "never with «{words}»",
+  "@auAxSayWithout": {
+    "placeholders": {
+      "words": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayWordsAll": "with all of «{words}»",
+  "@auAxSayWordsAll": {
+    "placeholders": {
+      "words": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSayWordsAny": "with one of «{words}»",
+  "@auAxSayWordsAny": {
+    "placeholders": {
+      "words": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxSenders": "Senders",
+  "auAxSendersPlaceholder": "bank, anna@example.com, +39 333",
+  "auAxServerSays": "Not right yet:",
+  "auAxSession": "Each time",
+  "auAxSessionContinue": "The same one, remembering",
+  "auAxSessionNew": "A new conversation",
+  "auAxStart_after": "After another automation",
+  "auAxStart_files": "Files that change",
+  "auAxStart_message": "A message in a chat",
+  "auAxStart_startup": "When RedGiant starts",
+  "auAxStart_task": "When a task ends",
+  "auAxStart_time": "At set times",
+  "auAxStartupHelp": "It starts every time RedGiant is switched on.",
+  "auAxTask_abandoned": "Given up",
+  "auAxTask_not_testable": "Done, not testable",
+  "auAxTask_verified": "Done and checked",
+  "auAxTell": "Where it tells you",
+  "auAxTellAllHelp": "None chosen: on every chat you linked.",
+  "auAxTellAlways": "Every time",
+  "auAxTellEmailFrom": "Sent from",
+  "auAxTellEmailTo": "Email to",
+  "auAxTellEmailToHelp": "Empty: to the mailbox itself.",
+  "auAxTellFailure": "Only if something goes wrong",
+  "auAxTellHelp": "When it is done, where the answer goes.",
+  "auAxTellNever": "Never",
+  "auAxTellReplyHelp": "A run started by a chat message answers in that chat too.",
+  "auAxTellSomeHelp": "Only where you chose.",
+  "auAxTellWhere": "Where",
+  "auAxTimeout": "Longest time, in minutes",
+  "auAxTo": "To",
+  "auAxToAllChats": "all your chats",
+  "auAxToDay": "To the day",
+  "auAxToEmail": "Email",
+  "auAxToWeb": "A notice here",
+  "auAxWhen": "When",
+  "auAxWhenHelp": "What starts it. You can pick more than one: it starts on each of them.",
+  "auAxWhenMinutes": "Every {n} minutes",
+  "@auAxWhenMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "auAxWithout": "Words that stop it",
+  "auAxWithoutPlaceholder": "newsletter, advertising",
+  "auAxWords": "Words",
+  "auAxWordsHelp": "Separated by commas.",
+  "auAxWordsPlaceholder": "urgent, invoice",
+  "auAxWorkHours": "Office hours",
+  "auAxYamlBack": "Go back to the choices above",
+  "auCancel": "Cancel",
+  "auCreate": "Create",
+  "auDay_0": "Sunday",
+  "auDay_1": "Monday",
+  "auDay_2": "Tuesday",
+  "auDay_3": "Wednesday",
+  "auDay_4": "Thursday",
+  "auDay_5": "Friday",
+  "auDay_6": "Saturday",
+  "auDelete": "Delete",
+  "auDeleteAutomationConfirm": "Delete this automation and its history?",
+  "auDeliveryDelivered": "delivered",
+  "auDeliveryDeliveredTo": "delivered: {to}",
+  "@auDeliveryDeliveredTo": {
+    "placeholders": {
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "auDeliveryFailed": "not delivered: {reason}",
+  "@auDeliveryFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "auDeliveryNoChat": "not delivered: no chat linked",
+  "auDisabled": "Off",
+  "auDismiss": "Dismiss",
+  "auEmailAny": "any",
+  "auEmailFrom": "from",
+  "auEmailFromPlaceholder": "From (part of the address, optional)",
+  "auEmailNeedFirst": "Connect the mailbox first: until then this automation never starts.",
+  "auEmailSubject": "Subject contains",
+  "auEmailSubjectPlaceholder": "The subject contains (optional)",
+  "auEmailWatching": "Watching {user} on {host}.",
+  "@auEmailWatching": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      },
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "auEnabled": "On",
+  "auNewAutomation": "New automation",
+  "auNewReminder": "New reminder",
+  "auNewSecret": "New secret",
+  "auNextRun": "next",
+  "auNoAutomations": "No automations yet. Write a recipe: when it runs, which agent works, what it is asked.",
+  "auNoRuns": "No runs yet.",
+  "auOpen": "open",
+  "auOpenSession": "Open the session",
+  "auProjects": "Projects",
+  "auRecipeBroken": "The recipe no longer reads: open it to fix it",
+  "auReminderDay": "Day",
+  "auReminderPurpose": "RedGiant sends you this text on Telegram at the time you choose, once. No agent, no cost.",
+  "auReminderSave": "Save the reminder",
+  "auReminderWhat": "What to remind you of",
+  "auRepoEvent_issue_comment": "Comments",
+  "auRepoEvent_issues": "Issues",
+  "auRepoEvent_pull_request": "Pull requests",
+  "auRepoEvent_push": "New commits",
+  "auRepoEvent_release": "Releases",
+  "auRunNow": "Run now",
+  "auRunStatus": "running,done,failed,timeout,skipped",
+  "auRunTriggers": "schedule,webhook,by hand,missed run",
+  "auRuns": "Runs",
+  "auSave": "Save",
+  "auSettings": "Settings",
+  "auTplDesc_blank": "You choose when, who and what.",
+  "auTplDesc_morning": "Every working day at 8: what happened on every project.",
+  "auTplDesc_spending": "On the 1st of the month: what was spent and where.",
+  "auTplDesc_weekly": "Fridays at 17: the week in one message.",
+  "auTplText_morning": "Tell me in a few lines what happened yesterday on every project: work finished, problems still open, decisions to take.",
+  "auTplText_spending": "Tell me how much was spent last month, per project and per agent, and whether anything looks out of the ordinary.",
+  "auTplText_weekly": "Summarise this week on every project: what was finished, what is late, what is planned for next week.",
+  "auTplTitle_blank": "From scratch",
+  "auTplTitle_morning": "Morning briefing",
+  "auTplTitle_spending": "Monthly spending",
+  "auTplTitle_weekly": "The week's news",
+  "auWebhookSecretOnce": "Secret (shown only now; send it in the x-redgiant-secret header):",
+  "auWebhookUrl": "Webhook",
+  "auWhenAt": "Once, on {at}",
+  "@auWhenAt": {
+    "placeholders": {
+      "at": {
+        "type": "String"
+      }
+    }
+  },
+  "auWhenAtTime": "at",
+  "auWhenCustom": "On a schedule of its own ({cron})",
+  "@auWhenCustom": {
+    "placeholders": {
+      "cron": {
+        "type": "String"
+      }
+    }
+  },
+  "auWhenDaily": "Every day at {time}",
+  "@auWhenDaily": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "auWhenDayOfMonth": "on day",
+  "auWhenEmail": "When an email arrives ({filter})",
+  "@auWhenEmail": {
+    "placeholders": {
+      "filter": {
+        "type": "String"
+      }
+    }
+  },
+  "auWhenEmailHelp": "The mailbox is set once, here or in Settings › Automations › Mailbox. The email reaches the agent as information, never as instructions.",
+  "auWhenEveryHours": "every (hours)",
+  "auWhenHours": "Every {n} hours",
+  "@auWhenHours": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "auWhenKind_daily": "Every day",
+  "auWhenKind_email": "On an email",
+  "auWhenKind_hours": "Every few hours",
+  "auWhenKind_monthly": "Once a month",
+  "auWhenKind_repo": "On the repository",
+  "auWhenKind_webhook": "On a web call",
+  "auWhenKind_weekdays": "Working days",
+  "auWhenKind_weekly": "Some days of the week",
+  "auWhenMonthly": "Every month on day {day} at {time}",
+  "@auWhenMonthly": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "auWhenRepo": "When something happens in the repository ({events})",
+  "@auWhenRepo": {
+    "placeholders": {
+      "events": {
+        "type": "String"
+      }
+    }
+  },
+  "auWhenRepoHelp": "RedGiant adds the webhook to the project's repository by itself: on Gitea at once, on GitHub once access from outside home is on.",
+  "auWhenWebhook": "When a web call arrives (webhook)",
+  "auWhenWebhookHelp": "Another program (a site, a form, GitHub…) calls RedGiant's address; the address and its secret appear after saving.",
+  "auWhenWeekdays": "Monday to Friday at {time}",
+  "@auWhenWeekdays": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "auWhenWeekly": "Every week on {days} at {time}",
+  "@auWhenWeekly": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "auWhoLead": "Lead of {project}",
+  "@auWhoLead": {
+    "placeholders": {
+      "project": {
+        "type": "String"
+      }
+    }
+  },
+  "auOwnHubHint": "When things happen by themselves: schedules, emails, chats, files, reminders",
+  "auOwnOpenChat": "Open the conversation",
+  "auOwnTalkGod": "Talk with God",
+  "auOwnMailboxesElsewhere": "Mailboxes are added and changed in Settings › Channels and mailboxes.",
+  "auOwnNoMailboxes": "No mailbox connected yet.",
+  "auOwnCopied": "Copied",
+  "auOwnCopy": "Copy",
+  "auOwnYamlLabel": "The recipe in YAML",
+  "auOwnRoutineOpen": "Open the routine",
+  "auOwnNoticeOpen": "Open",
+  "auOwnNoticeFailed": "{name}: not done",
+  "@auOwnNoticeFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "auOwnPickTitle": "Choose",
+  "auOwnNeedOpenWhere": "Open it in Settings › {where}",
+  "@auOwnNeedOpenWhere": {
+    "placeholders": {
+      "where": {
+        "type": "String"
+      }
+    }
+  },
+  "auOwnWhereChats": "Channels and mailboxes",
+  "auOwnWhereExtensions": "Extensions",
+  "auOwnWhereKeychain": "Keychain",
+  "auOwnLoadFailed": "Could not read: {why}",
+  "@auOwnLoadFailed": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "auOwnReadOnly": "Automations can be changed only by the person (not from a project's device)."
 }

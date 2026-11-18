@@ -34,6 +34,7 @@ class Routine {
     this.cron,
     this.at,
     this.agent,
+    this.raw = const {},
   });
 
   factory Routine.fromJson(Map<String, dynamic> j) {
@@ -53,8 +54,12 @@ class Routine {
       cron: on['cron'] as String?,
       at: on['at'] as String?,
       agent: recipe['agent'] as String?,
+      raw: j,
     );
   }
+
+  /// The automation as the server sent it (its window and its words read it).
+  final Map<String, dynamic> raw;
 
   final String id;
   final String name;

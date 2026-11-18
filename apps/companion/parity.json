@@ -97,7 +97,7 @@
         197,
         198
       ],
-      "note": "Native (G42.4): the tree at every level (open and close, projects, assigned, stopped, «Agent under»), the new agent with every step of the page's wizards and God's instructions and tools, assistants' services, routines and skills, the whole agent's settings (read only for an archived project); pause, resume, remove, «Removed agents» (3.8.9). A new routine has the four ready schedules (the full editor with G42.9); adding a service goes to Extensions (G42.11)."
+      "note": "Native (G42.4): the tree at every level (open and close, projects, assigned, stopped, «Agent under»), the new agent with every step of the page's wizards and God's instructions and tools, assistants' services, routines and skills, the whole agent's settings (read only for an archived project); pause, resume, remove, «Removed agents» (3.8.9). A new routine opens the whole automation editor with the assistant chosen (G42.9); adding a service goes to Extensions (G42.11)."
     },
     "memory": {
       "app": "partial",
@@ -133,9 +133,18 @@
       "note": "An agent's knowledge tab is native; the index, collections, sources and models only in «All settings»."
     },
     "automations": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/automations/automations_screen.dart",
+        "lib/settings/automations/automation_editor.dart",
+        "lib/settings/automations/automation_draft.dart",
+        "lib/settings/automations/automation_kit.dart",
+        "lib/settings/automations/magic_automation.dart",
+        "lib/settings/automations/automation_notices.dart",
+        "lib/settings/automations/automation_types.dart",
+        "lib/settings/automations/time_zone.dart",
+        "lib/settings/api/automations_api.dart",
+        "lib/settings/agents/assistant_parts.dart"
       ],
       "phase": "G42.9",
       "rows": [
@@ -147,7 +156,7 @@
         159,
         254
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native automations in G42.9."
+      "note": "Native (G42.9): the list with its switch, runs, run now, the webhook's secret shown once, delete; a new automation or reminder; the whole editor (When, Only if, What it does, Where it tells you, Advanced, the YAML in a coloured field, the next times from the server), ported from AutomationEditor.tsx and checked with the page's vectors; the magic automation with God (proposal beside the conversation, needs, approve, change, reject); an assistant's routines with the same editor; the messages in For you, the bell and the system's notifications (push kind automation). The mailboxes are only listed (added in Channels and mailboxes, G42.13)."
     },
     "extensions": {
       "app": "partial",
@@ -1340,16 +1349,24 @@
       ]
     },
     "automations.changed": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/settings/automations/automations_screen.dart"
+      ],
       "phase": "G42.9",
       "rows": [
         154
       ]
     },
     "automation.notice": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/settings/automations/automation_notices.dart",
+        "lib/desktop/bell.dart",
+        "lib/push/live_notices.dart"
+      ],
       "phase": "G42.9",
       "rows": [
         159,

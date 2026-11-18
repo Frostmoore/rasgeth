@@ -17,6 +17,7 @@ import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
+import '../settings/automations/automation_notices.dart';
 
 /// What a permission asks to do, in one line (the command, the path, else the input).
 String requestSummary(PermissionRequest r) {
@@ -98,6 +99,15 @@ class _InboxScreenState extends State<InboxScreen> {
                       ],
                     ),
             ),
+            // G42.9: the automations' messages (`automation.notice`), as the page's bell.
+            if (app.live.notices.isNotEmpty && top == null)
+              Expanded(child: AutomationNotices(notices: app.live.notices))
+            else if (app.live.notices.isNotEmpty)
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * .4),
+                child: AutomationNotices(notices: app.live.notices, shrink: true),
+              ),
+            if (top != null || app.live.notices.isEmpty)
             Expanded(
               child: top == null
                   ? EmptyState(icon: RgIcons.bell, text: l.inboxEmpty)

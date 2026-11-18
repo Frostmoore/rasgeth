@@ -89,6 +89,18 @@ describe("what is notified", () => {
     stopReason: "end_turn",
     ...o,
   });
+  const automation = (
+    o: Partial<Extract<PushTrigger, { type: "automation" }>> = {},
+  ): PushTrigger => ({
+    type: "automation",
+    automationId: "au1",
+    runId: "run1",
+    name: "Il punto del mattino",
+    status: "ok",
+    sessionId: "s9",
+    text: "Ieri: due lavori finiti.",
+    ...o,
+  });
   const rows: [string, PushTrigger, string | null][] = [
     ["a request", { type: "approval", info: request() }, "request"],
     ["a critical request", { type: "approval", info: critical }, "request"],
@@ -103,6 +115,8 @@ describe("what is notified", () => {
     ["a turn stopped by the person", message({ stopReason: "aborted" }), null],
     ["a turn that failed", message({ stopReason: "error" }), null],
     ["a turn without words", message({ text: "  " }), null],
+    ["an automation's message for the person (G42.9)", automation(), "automation"],
+    ["an automation's message without words", automation({ text: " " }), null],
   ];
   it.each(rows)("%s", (_n, t, kind) => expect(pushFor(t, "it", "Casa")?.kind ?? null).toBe(kind));
 
@@ -129,6 +143,23 @@ describe("what is notified", () => {
     });
     expect(pushFor(task(), "en", "Casa")?.title).toBe("Task done");
     expect(pushTest("it", "Casa", "x").body).toMatch(/Casa/);
+  });
+
+  it("an automation's message: its name, its words, its conversation; a failure says so", () => {
+    expect(pushFor(automation(), "it", "Casa")).toMatchObject({
+      id: "auto:run1",
+      kind: "automation",
+      title: "Il punto del mattino",
+      body: "Ieri: due lavori finiti.",
+      sessionId: "s9",
+    });
+    expect(pushFor(automation({ status: "failed" }), "it", "Casa")?.title).toBe(
+      "Il punto del mattino: non riuscita",
+    );
+    expect(pushFor(automation({ status: "timeout" }), "en", "Casa")?.title).toBe(
+      "Il punto del mattino: not done",
+    );
+    expect(pushFor(automation({ sessionId: null }), "en", "Casa")?.sessionId).toBeUndefined();
   });
 
   it("withdraws with the same id as the request's notification", () => {

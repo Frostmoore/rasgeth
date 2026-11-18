@@ -1256,6 +1256,9 @@ export class RedGiantCore implements OrchestrationHost {
       notice: (ownerId, text, info) => {
         let shown = false;
         for (const l of this.noticeListeners) shown = l(ownerId, text, info) || shown;
+        // No page or app open: the person's devices get it as a notification (G42.9); the web
+        // target still counts as not delivered, as before.
+        if (!shown) this.push.automationNotice(ownerId, text, info);
         if (!shown) throw new Error("no web page open");
       },
       // Asked as any other permission (web page and chats); only "allow" goes on (G33.3).

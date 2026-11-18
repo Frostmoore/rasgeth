@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'fake_automations.dart';
 import 'fake_files.dart';
 import 'helpers.dart';
 
@@ -590,6 +591,22 @@ class FakeRedGiant {
   /// 3.8.7: JSON answers set by a test, by «METHOD /path».
   final extraJson = <String, Object?>{};
 
+  /// G42.9: the automations, as the server's (`fake_automations.dart`).
+  late final automations = FakeAutomations(
+    broadcast: (m) {
+      for (final ws in sockets) {
+        ws.add(jsonEncode(m));
+      }
+    },
+  );
+
+  /// G42.9: an automation's message for the person on every live socket (`automation.notice`).
+  void automationNotice(Map<String, Object?> info) {
+    for (final ws in sockets) {
+      ws.add(jsonEncode({'type': 'automation.notice', ...info}));
+    }
+  }
+
   /// G42.2: routes a test answers itself, by «METHOD /path», before every other (signed in).
   final routes = <String, Future<void> Function(HttpRequest r)>{};
 
@@ -927,6 +944,7 @@ class FakeRedGiant {
     if (files case final fs? when await fs.handle(r, path, (s, b) => _json(r, s, b))) return;
     final own = routes['${r.method} $path'];
     if (own != null) return own(r);
+    if (await automations.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (r.method == 'GET' && path == '/api/agents') return _json(r, 200, agents);
     if (r.method == 'GET' && path == '/api/budgets') return _json(r, 200, budgets);
     if (r.method == 'GET' && path == '/api/limits') return _json(r, 200, planLimits);

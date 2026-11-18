@@ -97,7 +97,7 @@ class TeamScreen extends StatelessWidget {
                     child: _Pill(
                       icon: RgIcons.bell,
                       label: l.pillInbox,
-                      count: app.live.forYou,
+                      count: app.live.waiting,
                       hot: true,
                       onTap: () => app.setTab(AppTab.inbox),
                     ),

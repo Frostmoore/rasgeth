@@ -51,6 +51,10 @@ class MainActivity : FlutterActivity() {
                 else -> result.notImplemented()
             }
         }
+        // G42.9: the phone's time zone by its IANA name, for the automations' recipes.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "rgcompanion/timezone").setMethodCallHandler { call, result ->
+            if (call.method == "zone") result.success(java.util.TimeZone.getDefault().id) else result.notImplemented()
+        }
     }
 
     private fun answer(result: MethodChannel.Result, state: String, ssid: String? = null, message: String? = null) {

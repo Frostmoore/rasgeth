@@ -19,9 +19,9 @@ import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import 'desk_controller.dart';
 
-/// The bell's count: what waits for the person (the page's `waiting`, without the automations'
-/// notices, which the app does not receive yet).
-int bellCount(AppController app) => app.live.forYou;
+/// The bell's count: what waits for the person (the page's `waiting`, the automations' notices
+/// included, G42.9).
+int bellCount(AppController app) => app.live.waiting;
 
 /// Whether a truly dangerous request waits (G36.17b).
 bool bellCritical(AppController app) => app.live.approvals.any((r) => r.isCritical);
@@ -241,6 +241,23 @@ class BellPanel extends StatelessWidget {
                   shrinkWrap: true,
                   padding: const EdgeInsets.fromLTRB(10, 6, 10, 10),
                   children: [
+                    if (app.live.notices.isNotEmpty) ...[
+                      _Head('${l.auAutomationNotices} (${app.live.notices.length})'),
+                      for (final n in app.live.notices)
+                        _NoticeLine(
+                          key: Key('bell-notice-${n.runId}'),
+                          name: n.name,
+                          text: n.text,
+                          bad: n.status != 'ok',
+                          onTap: n.sessionId == null
+                              ? null
+                              : () {
+                                  close();
+                                  desk.show(PanelConversation(n.sessionId!));
+                                },
+                          onDismiss: () => app.live.dismissNotice(n.runId),
+                        ),
+                    ],
                     _Head(l.bellPermissions(asks.length)),
                     if (asks.isEmpty) _Dim(l.bellNoApprovals),
                     for (final r in asks) _AskRow(request: r, close: close),
@@ -538,6 +555,78 @@ class _Line extends StatelessWidget {
                 onPressed: onAction,
                 child: Text(action!),
               ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// An automation's message (G42.9): its name, the message, «Dismiss».
+class _NoticeLine extends StatelessWidget {
+  const _NoticeLine({
+    super.key,
+    required this.name,
+    required this.text,
+    required this.bad,
+    required this.onTap,
+    required this.onDismiss,
+  });
+
+  final String name;
+  final String text;
+  final bool bad;
+  final VoidCallback? onTap;
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    final l = AppLocalizations.of(context);
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(6, 6, 0, 6),
+        child: Row(
+          children: [
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: (bad ? c.err : c.accent).withValues(alpha: .12),
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: RgIcon(RgIcons.clock, size: 15, color: bad ? c.err : c.accent),
+              ),
+            ),
+            const SizedBox(width: 9),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: c.text),
+                  ),
+                  Text(
+                    text,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 12.5, color: c.dim),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              tooltip: l.auDismiss,
+              visualDensity: VisualDensity.compact,
+              onPressed: onDismiss,
+              icon: RgIcon(RgIcons.x, size: 14, color: c.dim),
+            ),
           ],
         ),
       ),

@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import '../settings/automations/automation_types.dart' show AutomationNotice;
 import 'conversation.dart';
 import 'turn_queue.dart';
 import 'types.dart';
@@ -247,6 +248,20 @@ class LiveModel extends ChangeNotifier {
   final boardChanged = ValueNotifier<int>(0);
   String? lastThread;
 
+  /// An automation was edited or one of its runs started or ended (`automations.changed`, G42.9):
+  /// the number goes up, Settings › Automations reads its list again.
+  final automationsChanged = ValueNotifier<int>(0);
+
+  /// The automations' messages for the person (`automation.notice`, `notify.to: [web]`), newest
+  /// first, the latest 50 (the page's bell keeps the same).
+  List<AutomationNotice> notices = const [];
+
+  /// «Dismiss» on one of [notices].
+  void dismissNotice(String runId) {
+    notices = notices.where((n) => n.runId != runId).toList();
+    notifyListeners();
+  }
+
   /// The shared browser, while a screen watches it.
   final browser = BrowserView();
 
@@ -273,6 +288,9 @@ class LiveModel extends ChangeNotifier {
   VoidCallback? onTurnEnded;
 
   int get forYou => approvals.length + questions.length;
+
+  /// What «For you» counts: the requests and the automations' messages (G42.9, the page's `waiting`).
+  int get waiting => forYou + notices.length;
   int get inProgress => sessions.where((s) => s.running && !s.archived).length;
 
   List<PersonRequest> get requests =>
@@ -359,6 +377,13 @@ class LiveModel extends ChangeNotifier {
         lastThread = m['threadId'] as String?;
         boardChanged.value++;
         return;
+      case 'automations.changed':
+        automationsChanged.value++;
+        return;
+      case 'automation.notice':
+        final n = AutomationNotice.fromWire(m);
+        if (n == null || notices.any((x) => x.runId == n.runId)) return;
+        notices = [n, ...notices].take(50).toList();
       case 'browser.frame' || 'browser.state' || 'error':
         browser.apply(m);
         return;

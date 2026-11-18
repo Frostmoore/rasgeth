@@ -67,7 +67,7 @@ export const PushNotice = z.object({
   v: z.literal(1),
   /** The same id for the update that withdraws it. */
   id: z.string(),
-  kind: z.enum(["request", "question", "task", "message", "test"]),
+  kind: z.enum(["request", "question", "task", "message", "automation", "test"]),
   /** Which RedGiant it comes from (the machine's name). */
   server: z.string(),
   title: z.string(),
@@ -121,6 +121,16 @@ export type PushTrigger =
       /** A page or an app has this conversation open now. */
       watched: boolean;
       stopReason: string;
+    }
+  | {
+      /** An automation's message for the person (`notify.to: [web]`) no page or app showed (G42.9). */
+      type: "automation";
+      automationId: string;
+      runId: string;
+      name: string;
+      status: string;
+      sessionId: string | null;
+      text: string;
     };
 
 /** The quick answers a request's notification offers. */
@@ -208,6 +218,21 @@ export function pushFor(t: PushTrigger, lang: string, server: string): PushNotic
         title: clip(t.agentName, PUSH_TITLE_MAX),
         body: clip(t.text, PUSH_BODY_MAX),
         sessionId: t.sessionId,
+      };
+    }
+    case "automation": {
+      if (!t.text.trim()) return null;
+      const failed = t.status !== "ok";
+      return {
+        ...base,
+        id: `auto:${t.runId}`,
+        kind: "automation",
+        title: clip(
+          failed ? `${t.name}: ${it(lang) ? "non riuscita" : "not done"}` : t.name,
+          PUSH_TITLE_MAX,
+        ),
+        body: clip(t.text, PUSH_BODY_MAX),
+        ...(t.sessionId && { sessionId: t.sessionId }),
       };
     }
   }

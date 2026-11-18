@@ -953,9 +953,9 @@ class _StatusBar extends StatelessWidget {
                     const SizedBox(width: 6),
                     item(
                       RgIcons.bell,
-                      l.deskForYouCount(app.live.forYou),
+                      l.deskForYouCount(app.live.waiting),
                       key: const Key('status-foryou'),
-                      color: app.live.forYou > 0 ? c.accent : null,
+                      color: app.live.waiting > 0 ? c.accent : null,
                       onTap: onBell,
                     ),
                     // Agents at work together (3.8.10): places and line, the queue on a click.

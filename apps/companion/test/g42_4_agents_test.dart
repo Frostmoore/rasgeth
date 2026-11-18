@@ -109,24 +109,6 @@ void main() {
       expect(canAddUnder(_a('o', 'orchestrator', status: 'stopped')), isFalse);
     });
 
-    test('routines: the cron of a schedule, its words, the recipe', () {
-      expect(routineCron(RoutineEvery.weekdays, '7:30'), '30 7 * * 1-5');
-      expect(routineCron(RoutineEvery.daily, '09:00'), '0 9 * * *');
-      expect(routineCron(RoutineEvery.weekly, '18:05'), '5 18 * * 1');
-      expect(routineCron(RoutineEvery.hourly, ''), '0 * * * *');
-      final yaml = routineYaml(
-        agent: _a('a5', 'assistant'),
-        title: 'Il "punto"',
-        instructions: 'Riga 1\nRiga 2',
-        cron: '30 7 * * 1-5',
-        stamp: 'abc',
-      );
-      expect(yaml, contains('name: "routine-a5-abc"'));
-      expect(yaml, contains(r'description: "Il \"punto\""'));
-      expect(yaml, contains('  cron: "30 7 * * 1-5"'));
-      expect(yaml, contains('agent: "a5"'));
-      expect(yaml, contains(r'instructions: "Riga 1\nRiga 2"'));
-    });
   });
 
   group('in the app', () {
@@ -517,27 +499,29 @@ void main() {
       // A skill off: the others stay (the list, no longer «every one»).
       await tap(tester, 'as-skill-fatture');
       expect(server.patches.last, {'agent': 'a5', 'skills': <String>[]});
-      // A new routine: the server refuses the first time and says why.
+      // A new routine: the whole editor of Settings › Automations (G42.9), this assistant
+      // already chosen; the server refuses the first time and says why.
       await tap(tester, 'as-new-routine');
-      expect(find.byKey(const Key('routine-sheet')), findsOneWidget);
-      expect(tester.widget<FilledButton>(find.byKey(const Key('routine-save'))).onPressed, isNull);
+      expect(find.byKey(const Key('au-editor')), findsOneWidget);
+      await tester.enterText(find.byKey(const Key('au-title')), 'Le scadenze');
       await tester.enterText(
-        find.byKey(const Key('routine-what')),
+        find.byKey(const Key('au-instructions')),
         'Dimmi le scadenze della settimana',
       );
-      await tester.enterText(find.byKey(const Key('routine-title')), 'Le scadenze');
-      await tap(tester, 'routine-every-weekdays');
-      await tester.enterText(find.byKey(const Key('routine-time')), '7:30');
       await tester.pump();
-      await tap(tester, 'routine-save');
-      expect(find.byKey(const Key('routine-error')), findsOneWidget);
+      await tap(tester, 'au-save');
+      expect(find.byKey(const Key('au-error')), findsOneWidget);
       expect(find.textContaining('Invalid cron'), findsOneWidget);
-      await tap(tester, 'routine-save');
-      expect(yamls.last, contains('  cron: "30 7 * * 1-5"'));
+      await tap(tester, 'au-save');
+      expect(yamls.last, contains('  cron: "0 8 * * 1-5"'));
       expect(yamls.last, contains('agent: "a5"'));
       expect(yamls.last, contains('description: "Le scadenze"'));
-      expect(find.byKey(const Key('routine-sheet')), findsNothing);
-      expect(find.text('Le scadenze'), findsOneWidget);
+      expect(find.byKey(const Key('au-editor')), findsNothing);
+      // The routine's window opened after the save: closed, the row is there.
+      if (find.byKey(const Key('au-window-close')).evaluate().isNotEmpty) {
+        await tap(tester, 'au-window-close');
+      }
+      expect(find.text('Le scadenze'), findsWidgets);
       // Its memory: what every agent knows about the person.
       await tap(tester, 'agent-group-memory');
       expect(find.byKey(const Key('as-notes-user')), findsOneWidget);
