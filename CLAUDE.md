@@ -1,5 +1,13 @@
-# RedGiant 2 — notes for coding agents
+# Rasgeth — notes for coding agents
 
+- The product is called **Rasgeth** (since 3.9.0; it was RedGiant, and the app RGCompanion). That is the only name a
+  person sees: write it through `PRODUCT_NAME`/`DESKTOP_APP_NAME` (`packages/protocol/src/brand.ts`), `{product}` in
+  the page's `t()`, `kProductName`/`kDesktopAppName` (`apps/companion/lib/brand.dart`). Inside, the technical prefix
+  stays `redgiant`/`rg`: `REDGIANT_*` variables, `@redgiant/*` packages, the Dart package `rgcompanion`, services,
+  data folders, tables, `rg.*` keys. `node scripts/name-audit.mjs` finds old names a person would see; a name that
+  must stay goes in `scripts/name-keep.json` with its reason. Never again a repository `Frostmoore/redgiant2`: once
+  renamed to `Frostmoore/rasgeth`, GitHub's redirects from the old name keep old links working only while no
+  repository takes that name back.
 - pnpm monorepo, TypeScript (strict, NodeNext). Packages in `packages/*`.
 - Commands: `pnpm build` (tsc -b), `pnpm test` (vitest), `pnpm lint` / `pnpm format` (Biome).
 - Shared types and zod schemas live **only** in `@redgiant/protocol`.
@@ -21,7 +29,7 @@
   just made (`create_agent` `tools_off`), never essential ones.
 - Cache discipline: reasoning is always sent back (Anthropic native blocks; `reasoning_content` for local servers),
   effort/thinking stay fixed for a session (only the human changes the model or effort, from the composer: `setSessionModel`), and compaction reuses the exact same request plus one message.
-- Keys (G36.20): every key RedGiant keeps (providers, chats, mailboxes, MCP sign-ins, GitHub/Gitea…) lives in the
+- Keys (G36.20): every key Rasgeth keeps (providers, chats, mailboxes, MCP sign-ins, GitHub/Gitea…) lives in the
   encrypted keychain as an entry with `usedBy` (`Vault.setSystem`/`syncSystem`/`systemValue`), held in memory by the
   server, never in a file in clear, a log, an event or an answer. `secrets.json` and the private files are used only
   while the keychain cannot open, and move in at the next start (written, read back, then shredded). Keys from the
@@ -38,7 +46,7 @@
   and every linked chat, no per-channel choice; the first answer closes the other copies and says where); "don't ask
   me anything" sends nothing anywhere, except the truly dangerous requests (G36.17b: `criticalOf` in
   `packages/hierarchy/src/critical.ts`, a pure function tested as a table, change the table first: system files,
-  deletions for good, secrets leaving, real payments, RedGiant's own protections). Those always ask the person,
+  deletions for good, secrets leaving, real payments, Rasgeth's own protections). Those always ask the person,
   whatever the rules and modes, reach every channel in both modes, and their time running out is a no. The
   policy's `humanOnly` dangers (a plain `git push`, deploys, ordinary messages, keychain use) are ordinary requests:
   they skip the parent agents and then follow the person's choice, classifier included.
@@ -62,7 +70,7 @@
   on/off is our switch (`Toggle` in `ui.tsx`, `Switch`/`SwitchRow` in `SettingsKit.tsx`), choices are our drawn
   controls. Never the browser's native dialogs (alert, prompt, confirm): our Modal (`askConfirm`/`askText` in
   `src/components/dialogs.tsx`; `test/no-native-dialogs.test.tsx` fails if one comes back).
-- RGCompanion (`apps/companion`, G42, D1): every new page feature ships in RGCompanion in the same version;
+- The app (`apps/companion`, G42, D1): every new page feature ships in the app in the same version;
   `apps/companion/parity.json` says how (native or embed) and CI fails when the page has a Settings section, viewer
   kind, chat item or wire message the table does not name (`packages/web/test/companion-parity.test.ts`). Native in
   Flutter: the conversation and everything around it, requests and questions, agents, files, projects, Settings; a
