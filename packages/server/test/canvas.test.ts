@@ -421,6 +421,25 @@ describe("agent-made pages reach no internet (3.5.8)", () => {
     expect(js.headers.get("content-security-policy")).toBeNull();
   });
 
+  it("serves the embed isolated as a whole only at its own address (G42.8)", async () => {
+    const web = await mkdtemp(join(tmpdir(), "rg-web-"));
+    await writeFile(join(web, "index.html"), "<div id=app></div>");
+    await writeFile(join(web, "embed.html"), "<div id=embed></div>");
+    s = await startServer(() => ({ text: "ok" }), {}, {}, web);
+    const iso = await fetch(`${s.url}/embed-isolated.html`);
+    expect(await iso.text()).toBe("<div id=embed></div>");
+    expect(iso.headers.get("cross-origin-opener-policy")).toBe("same-origin");
+    expect(iso.headers.get("cross-origin-embedder-policy")).toBe("require-corp");
+    expect(iso.headers.get("document-isolation-policy")).toBe("isolate-and-require-corp");
+    expect(iso.headers.get("content-security-policy")).toBe("frame-src 'self'");
+    // The usual embed and the page keep their own headers.
+    for (const path of ["/embed.html", "/"]) {
+      const r = await fetch(`${s.url}${path}`);
+      expect(r.headers.get("cross-origin-embedder-policy")).toBeNull();
+      expect(r.headers.get("cross-origin-opener-policy")).toBeNull();
+    }
+  });
+
   it("adds the link script only to agent-made pages", () => {
     expect(rewrite("<head></head>", "text/html", "/preview/t", true)).toContain("open-link");
     expect(rewrite("<head></head>", "text/html", "/preview/t")).not.toContain("open-link");

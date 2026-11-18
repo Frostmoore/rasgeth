@@ -17146,6 +17146,53 @@ fieldset.vw-seg {
   flex: none;
   margin-top: 2px;
 }
+/* G42.8: «Riprova» after a stopped or failed start, the original's kept versions. */
+.doc-office-why > span {
+  flex: 1;
+  min-width: 0;
+}
+.doc-office-retry {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.doc-office-versions-btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.doc-office-versions-btn.on {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.doc-office-versions {
+  padding: 6px 12px 8px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.doc-office-versions p {
+  margin: 0;
+}
+.doc-office-versions ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.doc-office-versions li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.doc-office-versions li .link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
 .doc-office-replace {
   display: flex;
   flex-wrap: wrap;

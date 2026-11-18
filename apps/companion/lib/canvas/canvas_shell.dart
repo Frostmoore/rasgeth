@@ -519,7 +519,7 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
     final fallback = _fallbackOf(t);
     return EmbedView(
       key: _views.putIfAbsent(t.id, GlobalKey<EmbedViewState>.new),
-      url: embedUrl(e.base, _params(e, t, nonce)),
+      url: embedUrl(e.base, _params(e, t, nonce), isolated: !t.isPort && embedIsolatedFor(t.path)),
       nonce: nonce,
       leaf: e.leaf,
       // The system's back asks the page in front first (its own panels), never one behind.

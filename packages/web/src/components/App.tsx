@@ -39,6 +39,7 @@ import {
   limits,
   notices,
   openBoard,
+  openCanvas,
   openTab,
   platformInfo,
   questions,
@@ -357,6 +358,20 @@ export function takeOpenIntent(): "settings" | undefined {
   return open === "settings" ? "settings" : undefined;
 }
 
+/** The file a link asked to show in the Canvas once signed in (`#open=canvas`, G42.8), once. */
+export function takeOpenFile(): { scope: string; path: string } | undefined {
+  const raw = sessionStorage.getItem("rg.openFile");
+  sessionStorage.removeItem("rg.openFile");
+  try {
+    const f = raw ? (JSON.parse(raw) as { scope?: unknown; path?: unknown }) : undefined;
+    return typeof f?.scope === "string" && typeof f.path === "string"
+      ? { scope: f.scope, path: f.path }
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export function App() {
   const [ready, setReady] = useState(false);
   const [search, setSearch] = useState(false);
@@ -375,6 +390,8 @@ export function App() {
     // RGCompanion's «All settings» (G40.8): the page opens on Settings, even after the password
     // page (G42.0: the intention waits in the tab's storage and is used once).
     if (link.open) sessionStorage.setItem("rg.open", link.open);
+    // RGCompanion's «Open in the browser» for a document (G42.8): shown once signed in.
+    if (link.file) sessionStorage.setItem("rg.openFile", JSON.stringify(link.file));
     // The app's look for its «All settings», not saved as the page's own choice.
     if (link.theme) document.documentElement.dataset.theme = link.theme;
     if (link.lang) lang.value = link.lang;
@@ -394,6 +411,8 @@ export function App() {
     if (!ready || !token.value) return;
     if (takeOpenIntent() === "settings")
       openTab({ id: "settings", type: "settings", title: t("settings") });
+    const file = takeOpenFile();
+    if (file) openCanvas(file.path.split(/[\\/]/).pop() ?? file.path, { kind: "file", ...file });
   }, [ready, token.value]);
 
   useEffect(() => {

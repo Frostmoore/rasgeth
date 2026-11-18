@@ -375,6 +375,10 @@ export function Canvas({
     } catch {
       signed = undefined;
     }
+    // A document or a presentation opens in the browser on RedGiant's page with this file in its
+    // Canvas, where the full editor runs (G42.8): the bare file would only download there.
+    if (ownFile && (isOfficeFile(ownFile.path) || hasOfficeCopy(ownFile.path)))
+      signed = `/#${new URLSearchParams({ open: "canvas", scope: ownFile.scope, path: ownFile.path })}`;
     setEmbedBar({
       actions,
       note: move && moveShown === move.n ? moveText(move.do) : undefined,

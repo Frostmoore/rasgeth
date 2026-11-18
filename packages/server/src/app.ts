@@ -91,6 +91,7 @@ import { modelRoutes } from "./editor/model-routes.js";
 import { officeRoutes } from "./editor/office-routes.js";
 import { pdfRoutes } from "./editor/pdf-routes.js";
 import { svgRoutes } from "./editor/svg-routes.js";
+import { ISOLATION_HEADERS } from "./editor/zeta.js";
 import { MailboxNotFoundError } from "./email.js";
 import { sessionMarkdown } from "./export.js";
 import { ConflictError, FileService } from "./files.js";
@@ -4094,7 +4095,12 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     const compressed = new CompressedFiles();
     app.get("*", async (c) => {
       if (c.req.path.startsWith("/api/")) return c.json({ error: "Not found" }, 404);
-      const rel = decodeURIComponent(c.req.path).replace(/^\/+/, "") || "index.html";
+      const asked = decodeURIComponent(c.req.path).replace(/^\/+/, "") || "index.html";
+      // The embed isolated as a whole (G42.8): the same page with LibreOffice's isolation headers,
+      // for the web views without Document-Isolation-Policy (WKWebView, WebKitGTK), where only a
+      // cross-origin isolated top page gives the /zeta/ frame its SharedArrayBuffer.
+      const isolated = asked === ISOLATED_EMBED;
+      const rel = isolated ? "embed.html" : asked;
       const file = resolve(root, rel);
       const inside = file.startsWith(resolve(root) + sep);
       const target =
@@ -4126,6 +4132,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
           ...(COMPRESSIBLE.test(target) && { vary: "accept-encoding" }),
           ...(enc && { "content-encoding": enc }),
           ...frames,
+          ...(isolated && ISOLATION_HEADERS),
         },
       });
     });
@@ -4133,6 +4140,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
 
   return app;
 }
+
+/** The embed page isolated as a whole (G42.8), asked by RGCompanion for documents and slides. */
+export const ISOLATED_EMBED = "embed-isolated.html";
 
 const MIME: Record<string, string> = {
   ".html": "text/html; charset=utf-8",

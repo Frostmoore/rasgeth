@@ -50,14 +50,35 @@ void main() {
     }
   });
 
-  test('the address: the page at /, no query, the token only in the fragment', () {
+  test('the address: the embed\'s entry, no query, the token only in the fragment', () {
     final p = fromJson(((v['hashes'] as List).first as Map)['params'] as Map<String, Object?>);
     final u = embedUrl(Uri.parse('https://rg.local:7443/some/where?x=1#y'), p);
-    expect(u.path, '/');
+    expect(u.path, '/embed.html');
     expect(u.hasQuery, isFalse);
     expect(u.query, isEmpty);
     expect(u.fragment, startsWith('token='));
-    expect(u.toString(), startsWith('https://rg.local:7443/#token='));
+    expect(u.toString(), startsWith('https://rg.local:7443/embed.html#token='));
+    // G42.8: isolated as a whole for documents and presentations, still nothing in the query.
+    final iso = embedUrl(Uri.parse('https://rg.local:7443/'), p, isolated: true);
+    expect(iso.path, '/embed-isolated.html');
+    expect(iso.hasQuery, isFalse);
+    expect(iso.fragment, u.fragment);
+  });
+
+  test('G42.8: documents and presentations open the isolated embed', () {
+    for (final path in [
+      'a/relazione.docx',
+      'piano.PPTX',
+      'x.docx.open/x.odt',
+      'slides.odp',
+      'old.doc',
+      'note.rtf',
+    ]) {
+      expect(embedIsolatedFor(path), isTrue, reason: path);
+    }
+    for (final path in [null, 'budget.xlsx', 'sedia.glb', 'readme.md', 'docx', 'a.odt.txt']) {
+      expect(embedIsolatedFor(path), isFalse, reason: '$path');
+    }
   });
 
   test('an embed the page would refuse is never written', () {
