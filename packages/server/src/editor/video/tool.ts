@@ -4,7 +4,9 @@
 // `autoAssemble`, written as one edit the person sees and can undo; a timeline already edited is
 // replaced only with the person's yes, and a version of it is kept first, A5), `captions` (the
 // subtitles from what the timeline plays), `frame` (exact frames to look at) and `render` (the
-// MP4 made on this machine as a job with its bar and «Cancel», put in the project and shown).
+// MP4 made on this machine as a job with its bar and «Cancel», put in the project and shown),
+// `export` (G41.6b: the XML for DaVinci Resolve or OpenTimelineIO beside the timeline) and
+// `import` (a new timeline from an .otio).
 // Every edit of a timeline is canvas_edit's.
 
 import { createHash, randomUUID } from "node:crypto";
@@ -38,6 +40,7 @@ import {
   timelineInserts,
   VIDEO_ENGINE,
   VIDEO_ENGINE_VERSION,
+  VIDEO_EXPORT_FORMATS,
   type VideoAction,
   type VideoDocOp,
   type VideoRenderResult,
@@ -51,6 +54,7 @@ import type { Jobs } from "../../jobs.js";
 import type { EditorHost } from "../host.js";
 import type { VideoAnalysis, VideoTools } from "./analysis.js";
 import { captionsForTimeline, timelineWords } from "./captions.js";
+import { exportText, exportTimeline, importOtio, VideoExportRateError } from "./export.js";
 import type { MediaRunner } from "./media-run.js";
 import type { VideoPreviews } from "./preview.js";
 import type { VideoRenders } from "./renders.js";
@@ -100,7 +104,9 @@ Recommended flow: inspect → analyze → assemble → look at the B clips (fram
 - {"action":"assemble","path":"montaggio.rgvideo","files":["riprese/"],"aspect":"9:16","target_seconds":60,"music":"musica/base.mp3","roles":{"riprese/drone.mp4":"B"},"inserts":[{"media":"riprese/porto.mp4","start":12.4,"end":17,"in":3,"reason":"«il porto»"}]}: a repeatable draft: speech on V1/A1 in shooting order with its silences cut, coverage and pictures on V2 with fades and Ken Burns, music ducked on A3, a voice-over covered by the B clips. "inserts" (seconds of the program, from the words this action returns) places the B clips where you say; they are moved to keep the rules (2–7 s, nothing in the first 5 s, 3 s of speaker between, no word split). Roles: A, B, music, voice, skip. Replacing a timeline the person edited asks them first, and a version of it is kept.
 - {"action":"captions","path":"montaggio.rgvideo","burn_in":true,"style":"boxed"}: subtitles from the speech the timeline plays.
 - {"action":"frame","file":"riprese/porto.mp4","at":["2s","00:00:07:12"]} or "every":"2s": exact frames to look at (at most ${FRAMES_MAX}); on a timeline, the finished picture at that time.
-- {"action":"render","path":"montaggio.rgvideo","aspect":"16:9|9:16|1:1","height":1080,"quality":"draft|good|best"}: the MP4 (minutes; the person sees the bar and can cancel), saved as renders/<name>-v<n>.mp4 and shown. One render at a time per project. It is made on the machine the person chose for the project (this one or a node, asked at the first render); "where" only suggests one then, it cannot change their choice.`;
+- {"action":"render","path":"montaggio.rgvideo","aspect":"16:9|9:16|1:1","height":1080,"quality":"draft|good|best"}: the MP4 (minutes; the person sees the bar and can cancel), saved as renders/<name>-v<n>.mp4 and shown. One render at a time per project. It is made on the machine the person chose for the project (this one or a node, asked at the first render); "where" only suggests one then, it cannot change their choice.
+- {"action":"export","path":"montaggio.rgvideo","format":"resolve|otio","media_root":"E:/Video/Sposi"}: the timeline for another editor, saved beside it: "resolve" an FCP7 XML for DaVinci Resolve (tracks, clips, off clips and tracks; fades, volumes, Ken Burns, titles and transitions are redone there), "otio" OpenTimelineIO (all of it). "media_root" is the folder of the original files on the computer that runs Resolve (ask the person); without it the files point to this machine.
+- {"action":"import","file":"da-resolve.otio","path":"montaggio.rgvideo"}: a new timeline from an .otio (its tracks, clips of the project's files, gaps, transitions, markers; the rest is listed as left out).`;
 
 const Insert = z.object({
   media: z.string().min(1),
@@ -111,7 +117,16 @@ const Insert = z.object({
 });
 
 const Input = z.object({
-  action: z.enum(["inspect", "analyze", "assemble", "captions", "frame", "render"]),
+  action: z.enum([
+    "inspect",
+    "analyze",
+    "assemble",
+    "captions",
+    "frame",
+    "render",
+    "export",
+    "import",
+  ]),
   files: z.array(z.string().min(1)).max(200).optional(),
   file: z.string().min(1).optional(),
   path: z.string().min(1).optional(),
@@ -150,6 +165,8 @@ const Input = z.object({
   height: z.number().int().min(144).max(4320).optional(),
   quality: z.enum(["draft", "good", "best"]).optional(),
   where: z.string().min(1).max(100).optional(),
+  format: z.enum(VIDEO_EXPORT_FORMATS).optional(),
+  media_root: z.string().max(1000).optional(),
 });
 type In = z.infer<typeof Input>;
 
@@ -883,6 +900,52 @@ export function videoTool(
     return `Rendered ${r.path}${r.node ? ` on ${r.node}` : ""}${r.encoder === "h264_nvenc" ? " with NVENC" : ""}: ${r.width}×${r.height}, ${s1(r.seconds)}${r.reused ? ` (${r.reused} segments from the cache)` : ""}${waited ? ", after the render that was running" : ""}; shown to the person.${r.sidecars.length ? ` Subtitles beside it: ${r.sidecars.join(", ")}.` : ""}${r.warnings.length ? `\nWarnings: ${r.warnings.join("; ")}` : ""}`;
   };
 
+  const exportAction = async (i: In, ctx: ToolContext) => {
+    const tl = await timeline(i.path);
+    if (host.readOnly(owner, tl.file.scope))
+      bad(`${basename(tl.file.path)} belongs to an archived project.`);
+    const format = i.format ?? bad('give "format": "resolve" (DaVinci Resolve) or "otio"');
+    try {
+      const r = await exportTimeline({
+        doc: tl.doc,
+        abs: tl.abs,
+        path: tl.file.path,
+        root: tl.root,
+        format,
+        ...(i.media_root && { mediaRoot: i.media_root }),
+        mediaAbs: tl.mediaPath,
+        probe: (abs) => probeOf(abs, ctx.signal).catch(() => undefined),
+      });
+      return exportText(r);
+    } catch (e) {
+      if (e instanceof VideoExportRateError) bad(e.message);
+      throw e;
+    }
+  };
+
+  const importAction = async (i: In, ctx: ToolContext) => {
+    const src = await where(i.file ?? bad('give "file", the .otio to read'));
+    if (extname(src.abs).toLowerCase() !== ".otio") bad(`"${i.file}" is not an .otio file`);
+    const path = (i.path ?? (i.file as string).replace(/\.otio$/i, ".rgvideo")).replace(/\\/g, "/");
+    if (extname(path).toLowerCase() !== ".rgvideo") bad(`"${path}" is not a timeline (.rgvideo)`);
+    const target = await where(path, false);
+    if (host.readOnly(owner, target.file.scope))
+      bad(`${basename(path)} belongs to an archived project.`);
+    if ((await stat(target.abs).catch(() => undefined))?.isFile())
+      bad(`${path} exists already: give another "path"`);
+    let read: Awaited<ReturnType<typeof importOtio>>;
+    try {
+      read = await importOtio(src.abs, await host.scopeRoot(owner, target.file.scope));
+    } catch (e) {
+      return bad(`${basename(src.abs)}: ${(e as Error).message}`);
+    }
+    await mkdir(dirname(target.abs), { recursive: true });
+    await writeFile(target.abs, writeRgVideo(read.doc), { flag: "wx" });
+    await host.show(target.abs, basename(path), ctx).catch(() => {});
+    const clips = read.doc.clips.length;
+    return `Read ${basename(src.abs)} into ${target.file.path}: ${read.doc.tracks.length} tracks, ${clips} clip(s); shown to the person.${read.warnings.length ? `\n${read.warnings.join("\n")}` : ""}`;
+  };
+
   const t: Tool<In> = {
     def: {
       name: "video",
@@ -892,7 +955,16 @@ export function videoTool(
         properties: {
           action: {
             type: "string",
-            enum: ["inspect", "analyze", "assemble", "captions", "frame", "render"],
+            enum: [
+              "inspect",
+              "analyze",
+              "assemble",
+              "captions",
+              "frame",
+              "render",
+              "export",
+              "import",
+            ],
           },
           files: {
             type: "array",
@@ -939,6 +1011,11 @@ export function videoTool(
             type: "string",
             description: 'render: "here" or a node\'s name (a suggestion at the first render)',
           },
+          format: { type: "string", enum: ["resolve", "otio"], description: "export: for whom" },
+          media_root: {
+            type: "string",
+            description: "export: the folder of the originals on the computer that runs Resolve",
+          },
         },
         required: ["action"],
       },
@@ -959,6 +1036,10 @@ export function videoTool(
             return await frame(i, ctx);
           case "render":
             return await render(i, ctx);
+          case "export":
+            return await exportAction(i, ctx);
+          case "import":
+            return await importAction(i, ctx);
         }
       } catch (e) {
         if (e instanceof Bad) return { content: `Nothing done: ${e.message}.`, isError: true };

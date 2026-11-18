@@ -557,3 +557,24 @@ export function resolveJob(
   };
   return { job, leftOut };
 }
+
+// -------------------------------------------------------------------------------------------
+// The export, as the page and the agents see it
+
+export const VIDEO_EXPORT_FORMATS = ["resolve", "otio"] as const;
+export type VideoExportFormat = (typeof VIDEO_EXPORT_FORMATS)[number];
+
+/** An exported timeline (`POST /api/editor/video/export`, the `video` tool's `export`). */
+export interface VideoExportResult {
+  /** The file written beside the timeline (its path in the project). */
+  path: string;
+  format: VideoExportFormat;
+  /** Clips of files written. */
+  clips: number;
+  files: number;
+  /** The folder the files point to (D21); absent: this machine. */
+  mediaRoot?: string;
+  /** Where the first file points: what the person checks. */
+  example?: string;
+  leftOut: ResolveLeftOut;
+}

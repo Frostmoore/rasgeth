@@ -21,6 +21,12 @@
 //                                                  409 {ask, machines} when none was made yet
 //   GET  /api/editor/video/machines?scope=         where a render can go and the project's
 //                                                  choice (`RenderMachine[]`, `chosen`)
+//   POST /api/editor/video/export {scope, path, format, mediaRoot?}  the timeline for another
+//                                                  editor (G41.6b): `resolve` (FCP7 XML, as
+//                                                  montatore writes it) or `otio`, saved beside
+//                                                  it; `mediaRoot` the folder of the originals
+//                                                  on the computer with Resolve (D21) →
+//                                                  {result: VideoExportResult}
 //   POST /api/editor/video/captions {scope, path}  the subtitles from what the timeline plays
 //                                                  (G41.5c, G41.4's transcripts): `captions`
 //                                                  once every sound is analysed, else the jobs
@@ -35,6 +41,7 @@ import {
   type Job,
   readRgVideo,
   rgvideoVersionsDir,
+  VIDEO_EXPORT_FORMATS,
   VIDEO_RENDER_QUALITIES,
   type VideoMediaInfo,
   type VideoPrepared,
@@ -45,6 +52,7 @@ import { BadRequestError, NotFoundError, type RedGiantCore } from "../core.js";
 import { mediaFingerprint, type VideoAnalysis } from "./video/analysis.js";
 import { captionsForTimeline } from "./video/captions.js";
 import { filmstripTiles, waveformWidth } from "./video/derived.js";
+import { exportTimeline, VideoExportRateError } from "./video/export.js";
 import { RENDER_FONTS_DIR } from "./video/render.js";
 import { listVideoVersions, saveVideoVersion } from "./video/versions.js";
 
@@ -280,6 +288,37 @@ export function videoRoutes<E extends { Variables: any }>(
       ...(node && { node: { fingerprint: node.id, name: node.name } }),
     });
     return c.json({ job }, 200);
+  });
+
+  app.post("/api/editor/video/export", async (c) => {
+    const b = FileBody.extend({
+      format: z.enum(VIDEO_EXPORT_FORMATS),
+      mediaRoot: z.string().max(1000).optional(),
+    }).safeParse(await c.req.json().catch(() => ({})));
+    if (!b.success) return c.json({ error: b.error.message }, 400);
+    const o = owner(c);
+    // An archived project's files stay as they are.
+    core.assertWritable(o, b.data.scope);
+    const t = await timeline(o, b.data.scope, b.data.path);
+    try {
+      const result = await exportTimeline({
+        doc: t.doc,
+        abs: t.abs,
+        path: b.data.path,
+        root: await core.scopeFolder(o, b.data.scope),
+        format: b.data.format,
+        ...(b.data.mediaRoot && { mediaRoot: b.data.mediaRoot }),
+        mediaAbs: async (m) => {
+          const abs = await t.mediaAbs(m);
+          return abs && (await stat(abs).catch(() => undefined))?.isFile() ? abs : undefined;
+        },
+        probe: (abs) => core.videoProbe(o, abs),
+      });
+      return c.json({ result }, 200);
+    } catch (e) {
+      if (e instanceof VideoExportRateError) return c.json({ error: e.message, code: e.code }, 400);
+      throw e;
+    }
   });
 
   app.get("/api/editor/video/machines", async (c) => {

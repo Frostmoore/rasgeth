@@ -82,6 +82,7 @@ import {
   MCP_CATALOG,
   type MediaChoice,
   type MediaKind,
+  type MediaProbe,
   type MessageQuote,
   type ModelSpec,
   type NotifyReport,
@@ -5123,6 +5124,11 @@ export class RedGiantCore implements OrchestrationHost {
     if (where.kind === "use" && where.remember && project)
       await this.nodes.setPlacement(owner, scope, { render: where.id });
     return { where, machines };
+  }
+
+  /** ffprobe's facts of a file (G41.6b's export; cached; undefined when it cannot be read). */
+  async videoProbe(owner: string, abs: string): Promise<MediaProbe | undefined> {
+    return this.videoAnalysis.probe(abs, await this.videoProgramsFor(owner)).catch(() => undefined);
   }
 
   /** ffmpeg and ffprobe for the video editor (downloaded inside `into`'s job when missing). */
