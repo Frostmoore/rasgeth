@@ -10,6 +10,11 @@
     "why": "the guard's table names the old names to judge them"
   },
   {
+    "path": "scripts/name-keep.json",
+    "group": "guard",
+    "why": "the list of names that stay quotes them in its patterns and reasons"
+  },
+  {
     "path": "packages/web/src/i18n.ts",
     "key": "^news\\d",
     "group": "history",

@@ -12,7 +12,7 @@ coverage/
 
 # Windows installer build outputs (G22)
 packaging/windows/dist/
-packaging/windows/RedGiant.exe
+packaging/windows/Rasgeth.exe
 packaging/windows/redgiant-rootfs.tar.gz
 
 # Local secrets: never in git
