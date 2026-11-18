@@ -389,9 +389,11 @@ class _Box extends StatelessWidget {
     final has = limit != null || row.limitTokens != null;
     final pct = limit != null && limit > 0 ? math.min(1.0, row.usedUsd / limit) : 0.0;
     final over = limit != null && row.usedUsd >= limit;
-    final tone = over ? c.err : (has ? c.accent : c.line);
+    final tone = over ? c.warn : (has ? c.accent : c.line);
     return Material(
-      color: has ? c.accentSoft.withValues(alpha: over ? 0 : .55) : c.panel,
+      color: over
+          ? c.warn.withValues(alpha: .10)
+          : (has ? c.accentSoft.withValues(alpha: .55) : c.panel),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14),
         side: BorderSide(color: tone, width: has ? 1.5 : 1),
@@ -418,7 +420,9 @@ class _Box extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: has ? c.accent.withValues(alpha: .14) : c.panel2,
+                      color: over
+                          ? c.warn.withValues(alpha: .18)
+                          : (has ? c.accent.withValues(alpha: .14) : c.panel2),
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(
@@ -426,7 +430,7 @@ class _Box extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11.5,
                         fontWeight: FontWeight.w700,
-                        color: has ? c.accent : c.dim,
+                        color: over ? c.warnText : (has ? c.accent : c.dim),
                       ),
                     ),
                   ),
@@ -453,7 +457,7 @@ class _Box extends StatelessWidget {
                       heightFactor: 1,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: over ? c.err : c.accent,
+                          color: over ? c.warn : c.accent,
                           borderRadius: BorderRadius.circular(999),
                         ),
                       ),
@@ -465,7 +469,7 @@ class _Box extends StatelessWidget {
               Text(
                 over ? l.g4BuStopped : l.g4BuChange,
                 style: TextStyle(
-                  color: over ? c.err : c.accent,
+                  color: over ? c.warnText : c.accent,
                   fontSize: 12.5,
                   fontWeight: FontWeight.w700,
                 ),

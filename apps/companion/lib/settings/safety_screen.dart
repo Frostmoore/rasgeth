@@ -348,7 +348,7 @@ class _SafetyScreenState extends State<SafetyScreen> {
               'careful' => l.g4SfCarefulText,
               'balanced' => l.g4SfBalancedText,
               'free' => l.g4SfFreeText,
-              _ => l.g4SfApprCustom('${_humanOnly.length}', '${_dangers.length}'),
+              _ => l.g4SfApprCustom(_humanOnly.length, '${_dangers.length}'),
             }),
             Align(
               alignment: Alignment.centerLeft,

@@ -5711,8 +5711,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get g4SfApprQ => 'Who says yes before a risky action, like deleting or publishing?';
 
   @override
-  String g4SfApprCustom(String n, String of) {
-    return 'A choice of your own: $n things out of $of only you approve.';
+  String g4SfApprCustom(int n, String of) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'A choice of your own: $n things out of $of only you approve.',
+      one: 'A choice of your own: 1 thing out of $of only you approve.',
+    );
+    return '$_temp0';
   }
 
   @override

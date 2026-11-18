@@ -1615,7 +1615,7 @@
   "g4SfGuardAuto": "Lo lascio fare",
   "g4SfApprTitle": "Le approvazioni",
   "g4SfApprQ": "Chi dice sì prima di un'azione rischiosa, come cancellare o pubblicare?",
-  "g4SfApprCustom": "Una scelta tua: {n} cose su {of} le approvi solo tu.",
+  "g4SfApprCustom": "{n, plural, =1{Una scelta tua: 1 cosa su {of} la approvi solo tu.} other{Una scelta tua: {n} cose su {of} le approvi solo tu.}}",
   "g4SfCustomTitle": "Cosa approvi solo tu",
   "g4SfCustomLead": "Prima di queste azioni un agente chiede. Acceso: lo puoi approvare solo tu. Spento: può dire sì anche l'agente che lo guida ({god} o il capo del progetto).",
   "g4SfBackTo": "Torna a {preset}",

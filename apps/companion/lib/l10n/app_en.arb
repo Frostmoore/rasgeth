@@ -4434,11 +4434,11 @@
   "g4SfGuardAuto": "I let it",
   "g4SfApprTitle": "The approvals",
   "g4SfApprQ": "Who says yes before a risky action, like deleting or publishing?",
-  "g4SfApprCustom": "A choice of your own: {n} things out of {of} only you approve.",
+  "g4SfApprCustom": "{n, plural, =1{A choice of your own: 1 thing out of {of} only you approve.} other{A choice of your own: {n} things out of {of} only you approve.}}",
   "@g4SfApprCustom": {
     "placeholders": {
       "n": {
-        "type": "String"
+        "type": "int"
       },
       "of": {
         "type": "String"

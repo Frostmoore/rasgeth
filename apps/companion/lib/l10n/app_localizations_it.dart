@@ -5723,8 +5723,14 @@ class AppLocalizationsIt extends AppLocalizations {
       'Chi dice sì prima di un\'azione rischiosa, come cancellare o pubblicare?';
 
   @override
-  String g4SfApprCustom(String n, String of) {
-    return 'Una scelta tua: $n cose su $of le approvi solo tu.';
+  String g4SfApprCustom(int n, String of) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Una scelta tua: $n cose su $of le approvi solo tu.',
+      one: 'Una scelta tua: 1 cosa su $of la approvi solo tu.',
+    );
+    return '$_temp0';
   }
 
   @override

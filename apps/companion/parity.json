@@ -2,13 +2,16 @@
   "$comment": "RGCompanion's parity with the page (G42.0). Every settings section, Canvas viewer kind, chat item and wire message of the page has a row: app = native | embed | partial | no | n/a, the app's files that do it (paths under apps/companion), the G42 phase that closes it, the study rows (memory/study_g42_parita.md). Checked by packages/web/test/companion-parity.test.ts and apps/companion/test/parity_test.dart.",
   "settings": {
     "general": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
+        "lib/settings/general_screen.dart",
+        "lib/settings/prompt_refiner.dart",
+        "lib/settings/api/general_api.dart",
+        "lib/settings/general_types.dart",
         "lib/screens/you_screen.dart",
-        "lib/screens/server_settings_screen.dart",
         "lib/screens/notifications_screen.dart",
-        "lib/screens/update_screen.dart"
+        "lib/screens/update_screen.dart",
+        "lib/settings/safety_screen.dart"
       ],
       "phase": "G42.4",
       "rows": [
@@ -27,7 +30,7 @@
         215,
         219
       ],
-      "note": "Theme, language, notifications, updates and account are native; agents' language, instructions for all, backup model, search, images, debug log and What's new only in «All settings»."
+      "note": "Native (G42.4): theme, interface language, agents' language, instructions for all with the PromptRefiner (diff, writer model, tools proposal), backup model, web search, voice messages, images, updates, What's new whenever, debug log, sign out; Safety (guardian, approvals, spending, skills, retention) in Settings › Safety."
     },
     "system": {
       "app": "partial",
@@ -61,12 +64,16 @@
       "note": "The app's first start does about 4 of the wizard's 17 steps; «redo the setup» only in «All settings»."
     },
     "agents": {
-      "app": "partial",
+      "app": "native",
       "files": [
         "lib/screens/team_screen.dart",
         "lib/screens/agent_settings_screen.dart",
         "lib/screens/new_agent_screen.dart",
         "lib/screens/instructions_screen.dart",
+        "lib/settings/agents/agent_tree.dart",
+        "lib/settings/agents/add_agent_under.dart",
+        "lib/settings/agents/assistant_parts.dart",
+        "lib/settings/api/agents_api.dart",
         "lib/ui/agent_menu.dart",
         "lib/desktop/wall.dart",
         "lib/screens/agent_conversations_screen.dart",
@@ -90,7 +97,7 @@
         197,
         198
       ],
-      "note": "Agent settings from the menu (3.8.7), new agent and instructions are native; 3.8.8: a click on any agent (God included) shows its conversations (pinned, folders, «Archived (n)», new), every conversation has the page's row actions (pin, folder, archive and back, export), the full window's bar shows each project's agents under its lead, collapsible; the tree beyond the first level, the advanced wizard and assistants' services are not. Removing an agent (menu, long press, agent settings) and «Removed agents» with «Restore» and the read-only conversations are native (3.8.9)."
+      "note": "Native (G42.4): the tree at every level (open and close, projects, assigned, stopped, «Agent under»), the new agent with every step of the page's wizards and God's instructions and tools, assistants' services, routines and skills, the whole agent's settings (read only for an archived project); pause, resume, remove, «Removed agents» (3.8.9). A new routine has the four ready schedules (the full editor with G42.9); adding a service goes to Extensions (G42.11)."
     },
     "memory": {
       "app": "partial",
@@ -203,11 +210,11 @@
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native chat platforms and mailboxes in G42.13."
     },
     "budgets": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
-        "lib/screens/agent_settings_screen.dart",
+        "lib/settings/budgets_screen.dart",
         "lib/api/budgets.dart",
+        "lib/screens/agent_settings_screen.dart",
         "lib/ui/limits_bar.dart"
       ],
       "phase": "G42.4",
@@ -215,7 +222,7 @@
         229,
         230
       ],
-      "note": "Spending is shown (limits bar, an agent's limits); the budgets page itself only in «All settings»."
+      "note": "Native (G42.4): this month's total with its days, everything, each project and agent with their limit; the limit's window with the wizard's amounts, another amount or no limit."
     },
     "subscriptions": {
       "app": "partial",
@@ -286,9 +293,10 @@
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native Platform history in G42.17."
     },
     "tools": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
+        "lib/settings/tools_screen.dart",
+        "lib/settings/api/rules_api.dart",
         "lib/screens/agent_settings_screen.dart",
         "lib/screens/new_agent_screen.dart"
       ],
@@ -297,7 +305,7 @@
         196,
         220
       ],
-      "note": "One agent's tools are native; the common tools page only in «All settings»."
+      "note": "Native (G42.4): the common tools with their cost, search, the essential ones locked, exceptions per agent back to «As for everyone», the extensions' tools; one agent's tools in its settings and when it is made."
     },
     "import": {
       "app": "partial",
@@ -311,22 +319,24 @@
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native import from other agents in G42.17."
     },
     "commands": {
-      "app": "partial",
+      "app": "native",
       "files": [
+        "lib/settings/commands_screen.dart",
+        "lib/settings/api/rules_api.dart",
         "lib/screens/at_work_screen.dart",
-        "lib/screens/full_settings_screen.dart",
         "lib/screens/server_settings_screen.dart"
       ],
       "phase": "G42.4",
       "rows": [
         221
       ],
-      "note": "Agents at work together is native (server settings, with the live queue); background command limits only in «All settings»."
+      "note": "Native (G42.4): one page as the page's Settings › Commands: agents at work together with the live queue, background commands, normal commands, steps."
     },
     "requests": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
+        "lib/settings/requests_screen.dart",
+        "lib/settings/api/rules_api.dart",
         "lib/screens/inbox_screen.dart"
       ],
       "phase": "G42.4",
@@ -335,7 +345,7 @@
         217,
         218
       ],
-      "note": "Answering requests is native; where requests go, their timeout and the classifier's decisions only in «All settings»."
+      "note": "Native (G42.4): ask me or don't ask me anything (the classifier and its model), the time to answer and what happens after it, the truly dangerous requests, the classifier's decisions; answering requests in Inbox."
     },
     "projects": {
       "app": "partial",
@@ -407,17 +417,16 @@
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native node pairing in G42.14."
     },
     "devices": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/server_settings_screen.dart",
-        "lib/screens/full_settings_screen.dart"
+        "lib/screens/server_settings_screen.dart"
       ],
       "phase": "G42.4",
       "rows": [
         234,
         235
       ],
-      "note": "List, revoke and push test are native; renaming a device is not."
+      "note": "Native: list, rename (G42.4), revoke and push test."
     },
     "voice": {
       "app": "partial",

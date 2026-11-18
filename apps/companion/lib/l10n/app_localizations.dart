@@ -9786,8 +9786,8 @@ abstract class AppLocalizations {
   /// No description provided for @g4SfApprCustom.
   ///
   /// In en, this message translates to:
-  /// **'A choice of your own: {n} things out of {of} only you approve.'**
-  String g4SfApprCustom(String n, String of);
+  /// **'{n, plural, =1{A choice of your own: 1 thing out of {of} only you approve.} other{A choice of your own: {n} things out of {of} only you approve.}}'**
+  String g4SfApprCustom(int n, String of);
 
   /// No description provided for @g4SfCustomTitle.
   ///
