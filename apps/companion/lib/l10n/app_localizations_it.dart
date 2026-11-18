@@ -7902,4 +7902,110 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get g4HubSafety => 'Guardiano, chi approva, spesa, skill, conservazione';
+
+  @override
+  String appUpdTitle(String app) {
+    return 'Aggiornamento di $app';
+  }
+
+  @override
+  String appUpdCheck(String app) {
+    return 'Cerca aggiornamenti di $app…';
+  }
+
+  @override
+  String get appUpdChecking => 'Cerco una versione nuova…';
+
+  @override
+  String appUpdUpToDate(String app, String current) {
+    return '$app $current è la versione più recente.';
+  }
+
+  @override
+  String appUpdAvailable(String version, String current) {
+    return 'È uscita la versione $version: hai la $current.';
+  }
+
+  @override
+  String get appUpdFromServer =>
+      'GitHub non risponde: è la versione del RedGiant a cui sei collegato.';
+
+  @override
+  String get appUpdDownload => 'Scarica';
+
+  @override
+  String appUpdDownloading(String version) {
+    return 'Scarico la $version';
+  }
+
+  @override
+  String get appUpdHide => 'Nascondi';
+
+  @override
+  String get appUpdLater => 'Più tardi';
+
+  @override
+  String get appUpdSkip => 'Salta questa versione';
+
+  @override
+  String appUpdReady(String version, String app) {
+    return 'La $version è pronta. $app si chiude, si aggiorna e si riapre dove sei.';
+  }
+
+  @override
+  String get appUpdVerified =>
+      'Firma e somma di controllo verificate con la chiave degli aggiornamenti di RedGiant.';
+
+  @override
+  String get appUpdRestart => 'Aggiorna e riavvia';
+
+  @override
+  String appUpdApplying(String app) {
+    return 'Chiudo $app per aggiornarla…';
+  }
+
+  @override
+  String get appUpdRetry => 'Riprova';
+
+  @override
+  String get appUpdClose => 'Chiudi';
+
+  @override
+  String get appUpdErrNetwork => 'Adesso GitHub non si raggiunge. Riprova più tardi.';
+
+  @override
+  String get appUpdErrSignature =>
+      'La firma della lista dei file di questa versione manca o non è valida: non uso niente di questa versione.';
+
+  @override
+  String appUpdErrNotListed(String app) {
+    return 'Questa versione non ha un pacchetto di $app per questo sistema.';
+  }
+
+  @override
+  String get appUpdErrChecksum => 'Il file scaricato non è quello firmato: l\'ho cancellato.';
+
+  @override
+  String get appUpdErrDisk => 'Non riesco a tenere o aprire il file scaricato.';
+
+  @override
+  String get appUpdErrSwap => 'La sostituzione non è partita: non è cambiato niente.';
+
+  @override
+  String appUpdDone(String app, String version, String from) {
+    return '$app adesso è la $version (prima era la $from).';
+  }
+
+  @override
+  String appUpdWentBack(String version, String app, String current) {
+    return 'La $version non è partita: $app è tornata alla $current. Non te la ripropongo finché non ne esce una più nuova.';
+  }
+
+  @override
+  String appUpdCarried(String app) {
+    return 'Questa copia di $app arriva con RedGiant: si aggiorna insieme a RedGiant.';
+  }
+
+  @override
+  String get appUpdDev => 'Una build dalle sorgenti: non si aggiorna da sola.';
 }

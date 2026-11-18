@@ -12,6 +12,9 @@ import 'package:flutter/services.dart';
 
 import '../api/live.dart';
 import '../app_state.dart';
+import '../app_update/brand.dart';
+import '../app_update/choice.dart';
+import '../app_update/update_window.dart';
 import '../l10n/app_localizations.dart';
 import '../screens/activity_screen.dart';
 import '../screens/browser_screen.dart';
@@ -79,6 +82,8 @@ class _DesktopShellState extends State<DesktopShell> {
     _advanced = _app.advanced;
     _app.addListener(_appChanged);
     _desk.addListener(_deskChanged);
+    // Where the person is, for an update's restart (G41.8b).
+    _app.resumeNow = _desk.resumeState;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _opens();
       _deskChanged();
@@ -87,6 +92,7 @@ class _DesktopShellState extends State<DesktopShell> {
 
   @override
   void dispose() {
+    if (_app.resumeNow == _desk.resumeState) _app.resumeNow = null;
     _app.removeListener(_appChanged);
     _desk.removeListener(_deskChanged);
     _feed.dispose();
@@ -103,6 +109,7 @@ class _DesktopShellState extends State<DesktopShell> {
     }
     _opens();
     _deskChanged();
+    _desk.resumeWhenConnected();
   }
 
   /// The wall's feed runs while a wall is in sight.
@@ -511,8 +518,21 @@ class _DesktopShellState extends State<DesktopShell> {
           id: 'about',
           label: l.deskAbout,
           group: l.deskMenuHelp,
-          run: () => showAboutDialog(context: context, applicationName: 'RGCompanion'),
+          run: () => showAboutDialog(
+            context: context,
+            applicationName: kAppName,
+            applicationVersion: kAppVersion.isEmpty ? null : kAppVersion,
+          ),
         ),
+        if (_app.appUpdater case final u?)
+          DeskCommand(
+            id: 'app-update',
+            label: l.appUpdCheck(kAppName),
+            group: l.deskMenuHelp,
+            icon: RgIcons.download,
+            run: () =>
+                unawaited(openAppUpdateWindow(context, u, asked: true, resume: _desk.resumeState)),
+          ),
       ]),
     ];
   }

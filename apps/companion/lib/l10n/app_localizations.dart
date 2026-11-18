@@ -13514,6 +13514,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Guardian, who approves, spending, skills, retention'**
   String get g4HubSafety;
+
+  /// No description provided for @appUpdTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{app} update'**
+  String appUpdTitle(String app);
+
+  /// No description provided for @appUpdCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for {app} updates…'**
+  String appUpdCheck(String app);
+
+  /// No description provided for @appUpdChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for a new version…'**
+  String get appUpdChecking;
+
+  /// No description provided for @appUpdUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'{app} {current} is the newest version.'**
+  String appUpdUpToDate(String app, String current);
+
+  /// No description provided for @appUpdAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} is out: you have {current}.'**
+  String appUpdAvailable(String version, String current);
+
+  /// No description provided for @appUpdFromServer.
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub does not answer: this is the version of the RedGiant you are connected to.'**
+  String get appUpdFromServer;
+
+  /// No description provided for @appUpdDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get appUpdDownload;
+
+  /// No description provided for @appUpdDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading {version}'**
+  String appUpdDownloading(String version);
+
+  /// No description provided for @appUpdHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get appUpdHide;
+
+  /// No description provided for @appUpdLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get appUpdLater;
+
+  /// No description provided for @appUpdSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip this version'**
+  String get appUpdSkip;
+
+  /// No description provided for @appUpdReady.
+  ///
+  /// In en, this message translates to:
+  /// **'{version} is ready. {app} closes, updates and opens again where you are.'**
+  String appUpdReady(String version, String app);
+
+  /// No description provided for @appUpdVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature and checksum checked with RedGiant\'s update key.'**
+  String get appUpdVerified;
+
+  /// No description provided for @appUpdRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Update and restart'**
+  String get appUpdRestart;
+
+  /// No description provided for @appUpdApplying.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing {app} to update it…'**
+  String appUpdApplying(String app);
+
+  /// No description provided for @appUpdRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get appUpdRetry;
+
+  /// No description provided for @appUpdClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get appUpdClose;
+
+  /// No description provided for @appUpdErrNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub cannot be reached now. Try again later.'**
+  String get appUpdErrNetwork;
+
+  /// No description provided for @appUpdErrSignature.
+  ///
+  /// In en, this message translates to:
+  /// **'The signature of this version\'s file list is missing or not valid: nothing of it is used.'**
+  String get appUpdErrSignature;
+
+  /// No description provided for @appUpdErrNotListed.
+  ///
+  /// In en, this message translates to:
+  /// **'This version has no {app} package for this system.'**
+  String appUpdErrNotListed(String app);
+
+  /// No description provided for @appUpdErrChecksum.
+  ///
+  /// In en, this message translates to:
+  /// **'The downloaded file is not the signed one: it was deleted.'**
+  String get appUpdErrChecksum;
+
+  /// No description provided for @appUpdErrDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'The downloaded file could not be kept or opened.'**
+  String get appUpdErrDisk;
+
+  /// No description provided for @appUpdErrSwap.
+  ///
+  /// In en, this message translates to:
+  /// **'The replacement could not start: nothing changed.'**
+  String get appUpdErrSwap;
+
+  /// No description provided for @appUpdDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{app} is now {version} (it was {from}).'**
+  String appUpdDone(String app, String version, String from);
+
+  /// No description provided for @appUpdWentBack.
+  ///
+  /// In en, this message translates to:
+  /// **'{version} did not start: {app} went back to {current}. It is not offered again until a newer one comes out.'**
+  String appUpdWentBack(String version, String app, String current);
+
+  /// No description provided for @appUpdCarried.
+  ///
+  /// In en, this message translates to:
+  /// **'This copy of {app} comes with RedGiant: it is updated with RedGiant.'**
+  String appUpdCarried(String app);
+
+  /// No description provided for @appUpdDev.
+  ///
+  /// In en, this message translates to:
+  /// **'A build from the sources: it does not update itself.'**
+  String get appUpdDev;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

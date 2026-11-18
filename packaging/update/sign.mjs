@@ -51,6 +51,20 @@ if (process.argv[1]?.endsWith("sign.mjs")) {
     console.error("UPDATE_SIGNING_KEY is not the key whose public half is in release-key.ts");
     process.exit(1);
   }
+  // And against RGCompanion's copy (G41.8b): the app on its own checks SHA256SUMS-companion with it.
+  const dart = readFileSync(
+    new URL("../../apps/companion/lib/app_update/signature.dart", import.meta.url),
+    "utf8",
+  );
+  const mod = /kUpdateKeyModulus =([^;]*);/.exec(dart)?.[1] ?? "";
+  const exp = /kUpdateKeyExponent = '([^']*)'/.exec(dart)?.[1] ?? "";
+  const dartXml = `<RSAKeyValue><Modulus>${[...mod.matchAll(/'([^']*)'/g)].map((m) => m[1]).join("")}</Modulus><Exponent>${exp}</Exponent></RSAKeyValue>`;
+  if (built !== "" && dartXml !== built) {
+    console.error(
+      "UPDATE_SIGNING_KEY is not the key whose public half is in the app's signature.dart",
+    );
+    process.exit(1);
+  }
   if ((built === "") !== (serverPem === "")) {
     console.error("UpdateKey.cs and release-key.ts must both hold the public key, or neither");
     process.exit(1);

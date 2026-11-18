@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import '../api/code.dart';
 import '../api/types.dart';
 import '../app_state.dart';
+import '../app_update/updater.dart';
 
 /// The places in the bar at the top. The last four only with the advanced interface.
 enum DeskView { team, projects, activity, code, terminals, git, log }
@@ -105,6 +106,40 @@ class PendingFile {
 class DeskController extends ChangeNotifier {
   DeskController(this.app) {
     unawaited(_loadFull());
+    // Opened again after an update (G41.8b): the view at once, the conversation once connected.
+    final r = app.resume;
+    if (r != null) {
+      app.resume = null;
+      _resume = r;
+      view = DeskView.values.where((v) => v.name == r.view).firstOrNull ?? view;
+      resumeWhenConnected();
+    }
+  }
+
+  ResumeState? _resume;
+
+  /// Where the person is, for an update's restart.
+  ResumeState resumeState() {
+    final p = panel;
+    final conversation = p is PanelConversation ? p : floating.lastOrNull?.content;
+    return ResumeState(sessionId: conversation?.sessionId, view: view.name, full: full);
+  }
+
+  /// The conversation the person had open before the update, once the RedGiant answers.
+  void resumeWhenConnected() {
+    final r = _resume;
+    if (r == null || !app.connected) return;
+    final id = r.sessionId;
+    if (id == null) {
+      _resume = null;
+      return;
+    }
+    final sessions = app.live.sessions;
+    if (sessions.isEmpty) return;
+    _resume = null;
+    final s = sessions.where((x) => x.id == id).firstOrNull;
+    if (s == null) return;
+    show(PanelConversation(id, agent: app.agents.where((a) => a.id == s.agentId).firstOrNull));
   }
 
   final AppController app;
