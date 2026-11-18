@@ -11,6 +11,8 @@
 //   while it works;
 // - «Add an agent»: the conversation becomes a group chat (`POST /api/rooms` from it, then
 //   `POST /api/rooms/:id/members`), not for Demi-God nor subagents, not while it works.
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../api/live_model.dart';
@@ -23,6 +25,7 @@ import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/model_sheet.dart';
 import '../ui/send_keys.dart';
+import 'room_screen.dart';
 
 String modeWord(AppLocalizations l, String mode) => switch (mode) {
   'manual' => l.mode_manual,
@@ -224,6 +227,7 @@ class _MoreSheetState extends State<MoreSheet> {
     final c = app.client;
     if (c == null) return;
     final messenger = ScaffoldMessenger.of(widget.parent);
+    final nav = Navigator.of(widget.parent);
     final others = app.agents
         .where(
           (x) =>
@@ -246,6 +250,8 @@ class _MoreSheetState extends State<MoreSheet> {
       if (!mounted) return;
       Navigator.of(context).pop();
       messenger.showSnackBar(SnackBar(content: Text(l.roomAdded(who.name))));
+      // The conversation is a group chat now: its screen opens, as the page opens its tab.
+      unawaited(nav.push(MaterialPageRoute<void>(builder: (_) => RoomScreen(roomId: room))));
     } on Exception {
       if (mounted) setState(() => _note = l.roomFailed);
     }

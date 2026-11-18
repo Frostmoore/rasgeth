@@ -10,6 +10,8 @@ import 'artifacts.dart';
 import 'budgets.dart';
 import 'code.dart';
 import 'conversation.dart';
+import 'groups.dart';
+import 'parallel.dart';
 import 'saved.dart';
 import 'settings_types.dart';
 import 'transport.dart';
@@ -305,6 +307,21 @@ class RedGiantClient {
     return r.bytes;
   }
 
+  /// `GET /api/sessions/:id/commands/:cmd/output`: a background command's log, from line [from]
+  /// on (the page's «Output», G42.3).
+  Future<CommandOutput> commandOutput(
+    String sessionId,
+    String id, {
+    int? from,
+  }) async => CommandOutput.fromJson(
+    _object(
+      await _get(
+        '/api/sessions/${Uri.encodeComponent(sessionId)}/commands/${Uri.encodeComponent(id)}/output',
+        from == null ? null : {'from': '$from'},
+      ),
+    ),
+  );
+
   /// `POST /api/sessions/:id/interrupt`: stops the turn running (without the live socket).
   Future<void> interruptSession(String sessionId) => _call(
     'POST',
@@ -524,6 +541,148 @@ class RedGiantClient {
     '/api/sessions/${Uri.encodeComponent(sessionId)}/asides/${Uri.encodeComponent(asideId)}/chat',
     const <String, Object?>{},
   );
+
+  // ---- Group work (G42.3): group chats, the board, the old everyday chats ----
+
+  /// `GET /api/rooms`: the person's group chats.
+  Future<List<Room>> rooms() async => [
+    for (final r in _array(await _get('/api/rooms'))) Room.fromJson(r),
+  ];
+
+  /// `POST /api/rooms`: a new group chat (empty, with members, or going on from a chat's [context]).
+  Future<Room> createRoom({
+    String? title,
+    List<String> members = const [],
+    String? context,
+  }) async => Room.fromJson(
+    _object(await _post('/api/rooms', {'title': ?title, 'members': members, 'context': ?context})),
+  );
+
+  /// `GET /api/rooms/:id/events`: its messages and who joined or left.
+  Future<List<RgEvent>> roomEvents(String roomId) async => [
+    for (final e in _array(await _get('/api/rooms/${Uri.encodeComponent(roomId)}/events')))
+      RgEvent.fromJson(e),
+  ];
+
+  /// `POST /api/rooms/:id/messages`: to the group; the answers come with `room.changed`.
+  Future<void> postRoom(String roomId, String text) =>
+      _call('POST', '/api/rooms/${Uri.encodeComponent(roomId)}/messages', {'text': text});
+
+  /// `DELETE /api/rooms/:id/members/:agentId`.
+  Future<void> removeRoomMember(String roomId, String agentId) => _call(
+    'DELETE',
+    '/api/rooms/${Uri.encodeComponent(roomId)}/members/${Uri.encodeComponent(agentId)}',
+  );
+
+  /// `GET /api/board/threads`: a project's board (null: the global one).
+  Future<List<BoardThread>> boardThreads({String? projectId, String? subprojectId}) async => [
+    for (final t in _array(
+      await _get('/api/board/threads', {'projectId': ?projectId, 'subprojectId': ?subprojectId}),
+    ))
+      BoardThread.fromJson(t),
+  ];
+
+  /// `GET /api/board/threads/:id`: a thread and its posts.
+  Future<({BoardThread thread, List<BoardPost> posts})> boardThread(String id) async {
+    final o = _object(await _get('/api/board/threads/${Uri.encodeComponent(id)}'));
+    return (
+      thread: BoardThread.fromJson(_object(o['thread'])),
+      posts: [for (final p in _array(o['posts'])) BoardPost.fromJson(p)],
+    );
+  }
+
+  /// `POST /api/board/posts`: a reply in a thread, or a new thread (with its title).
+  Future<String> boardPost({
+    String? threadId,
+    String? projectId,
+    String? subprojectId,
+    String? title,
+    required String kind,
+    required String body,
+  }) async {
+    final o = _object(
+      await _post('/api/board/posts', {
+        'threadId': ?threadId,
+        if (threadId == null) 'projectId': ?projectId,
+        if (threadId == null) 'subprojectId': ?subprojectId,
+        if (threadId == null) 'title': ?title,
+        'kind': kind,
+        'body': body,
+      }),
+    );
+    return o['threadId'] is String ? o['threadId'] as String : threadId ?? '';
+  }
+
+  /// `POST /api/board/threads/:id/status`: resolve, block or reopen.
+  Future<void> setBoardStatus(String id, String status) =>
+      _call('POST', '/api/board/threads/${Uri.encodeComponent(id)}/status', {'status': status});
+
+  /// `GET /api/board/search?q=`.
+  Future<List<BoardPost>> boardSearch(String q) async => [
+    for (final p in _array(await _get('/api/board/search', {'q': q}))) BoardPost.fromJson(p),
+  ];
+
+  /// `GET /api/chats` (or a project's inspector chats): the chats of the old everyday Chat.
+  Future<List<ChatSummary>> chats({String? projectId}) async => [
+    for (final c in _array(
+      await _get(
+        projectId == null
+            ? '/api/chats'
+            : '/api/projects/${Uri.encodeComponent(projectId)}/inspector/chats',
+      ),
+    ))
+      ChatSummary.fromJson(c),
+  ];
+
+  /// `POST /api/chats` (or the inspector's): a new one.
+  Future<ChatSummary> newChat({String? projectId}) async => ChatSummary.fromJson(
+    _object(
+      await _post(
+        projectId == null
+            ? '/api/chats'
+            : '/api/projects/${Uri.encodeComponent(projectId)}/inspector/chats',
+        const <String, Object?>{},
+      ),
+    ),
+  );
+
+  /// `GET /api/chats/:id`: its exchanges.
+  Future<List<ChatEntry>> chatEntries(String id) async => [
+    for (final e in _array(await _get('/api/chats/${Uri.encodeComponent(id)}')))
+      ChatEntry.fromJson(e),
+  ];
+
+  /// `POST /api/chats/:id/messages`: the answer comes as server-sent events (`delta`, `tool`,
+  /// `entry`, `done`, `error`), read here once the answer is over. Returns the error, if any.
+  Future<String?> sendChat(String id, String text) async {
+    final r = await _send(
+      'POST',
+      '/api/chats/${Uri.encodeComponent(id)}/messages',
+      json: {'text': text, 'attachments': const <Object>[]},
+      accept: 'text/event-stream',
+    );
+    if (r.status >= 400) _decode(r);
+    String? event;
+    for (final line in utf8.decode(r.bytes, allowMalformed: true).split('\n')) {
+      if (line.startsWith('event:')) event = line.substring(6).trim();
+      if (line.startsWith('data:') && event == 'error') {
+        try {
+          final d = jsonDecode(line.substring(5).trim());
+          return d is Map && d['error'] is String ? d['error'] as String : 'error';
+        } on FormatException {
+          return 'error';
+        }
+      }
+    }
+    return null;
+  }
+
+  /// `PATCH /api/chats/:id`: an old chat's folder (null: out of it).
+  Future<void> setChatFolder(String id, String? folder) =>
+      _call('PATCH', '/api/chats/${Uri.encodeComponent(id)}', {'folder': folder});
+
+  /// `DELETE /api/chats/:id`: for good.
+  Future<void> deleteChat(String id) => _call('DELETE', '/api/chats/${Uri.encodeComponent(id)}');
 
   /// `POST /api/rooms`: this conversation becomes a group chat (the page's «Add an agent»).
   Future<String> roomFrom(String agentId, String sessionId) async {

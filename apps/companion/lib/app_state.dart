@@ -356,6 +356,18 @@ class AppController extends ChangeNotifier {
     final lang = await prefs.get('locale');
     locale = lang == null ? null : Locale(lang);
     reduceMotion = await prefs.get('reduceMotion') == '1';
+    commandStripMin = await prefs.get('cmdStrip') == 'min';
+    try {
+      final seen = jsonDecode(await prefs.get('subSeen') ?? '{}');
+      if (seen is Map) {
+        subSeen = {
+          for (final e in seen.entries)
+            if (e.key is String && e.value is num) e.key as String: (e.value as num).toInt(),
+        };
+      }
+    } on FormatException {
+      subSeen = {};
+    }
     desktopNotify = await prefs.get('desktopNotify') != '0';
     desktopFrom = int.tryParse(await prefs.get('desktopFrom') ?? '') ?? kDesktopFrom;
     servers = await book.load();
@@ -1154,7 +1166,11 @@ class AppController extends ChangeNotifier {
     final t = c?.token;
     if (!liveEnabled || c == null || t == null || !c.transport.live) return;
     final s = socket = LiveSocket.over(c.transport, t);
-    _liveSub = s.messages.listen(live.apply);
+    _liveSub = s.messages.listen((m) {
+      live.apply(m);
+      // The shared browser watched again after a drop (the server forgets the watchers).
+      if (m['type'] == 'welcome' && live.browser.watching) s.send({'type': 'browser.watch'});
+    });
     var opened = false;
     _statusSub = s.statuses.listen((st) {
       // Back after a drop: what changed meanwhile (conversations started or ended elsewhere).
@@ -1345,6 +1361,74 @@ class AppController extends ChangeNotifier {
       // The socket's `turns.queue` keeps it up to date anyway.
     }
   }
+
+  /// The background commands' strip reduced to one line (the page's `rg.cmdStrip`, this device).
+  bool commandStripMin = false;
+
+  void setCommandStripMin(bool v) {
+    commandStripMin = v;
+    unawaited(prefs.set('cmdStrip', v ? 'min' : null));
+    notifyListeners();
+  }
+
+  /// «Ferma» a background command (`command.stop`, no confirmation, as the page).
+  void stopCommand(String sessionId, String id) =>
+      socket?.send({'type': 'command.stop', 'sessionId': sessionId, 'id': id});
+
+  /// Takes a finished command off the strip (`command.close`: off on every device).
+  void closeCommand(String sessionId, String id) =>
+      socket?.send({'type': 'command.close', 'sessionId': sessionId, 'id': id});
+
+  /// The last event of each sub-agent's conversation the person has seen (its «new» ring).
+  Map<String, int> subSeen = {};
+
+  void markSubSeen(String childSessionId, int seq) {
+    if ((subSeen[childSessionId] ?? 0) >= seq) return;
+    subSeen = {...subSeen, childSessionId: seq};
+    unawaited(prefs.set('subSeen', jsonEncode(subSeen)));
+  }
+
+  /// Which sub-agent's tab is open in each conversation, level by level (the page's `subPath`).
+  final Map<String, List<String>> subPath = {};
+
+  void openSubPath(String rootSessionId, List<String> path) {
+    subPath[rootSessionId] = List.unmodifiable(path);
+    notifyListeners();
+  }
+
+  /// Closes a finished sub-agent's tab (`subagent.close`): closed stays closed everywhere.
+  void closeSubagent(String parentSessionId, String childSessionId) => socket?.send({
+    'type': 'subagent.close',
+    'sessionId': parentSessionId,
+    'childSessionId': childSessionId,
+  });
+
+  /// Watches the agents' shared browser (`browser.watch`) or stops (`browser.unwatch`).
+  void watchBrowser(bool on) {
+    final b = live.browser;
+    if (b.watching == on) return;
+    b.watching = on;
+    if (on) b.reset();
+    socket?.send({'type': on ? 'browser.watch' : 'browser.unwatch'});
+  }
+
+  /// Takes control of the shared browser, or gives it back to the agents.
+  void browserControl(bool take) => socket?.send({'type': 'browser.control', 'take': take});
+
+  /// Goes to an address (only with the person's control; the server adds https://).
+  void browserGoto(String url) => socket?.send({'type': 'browser.goto', 'url': url});
+
+  /// A click, a scroll, text or a key on the shared browser (x, y between 0 and 1).
+  void browserInput(Map<String, Object?> event) =>
+      socket?.send({'type': 'browser.input', 'event': event});
+
+  /// Starts or ends teaching an assistant a task in the shared browser.
+  void browserTeach(String agentId, {required bool start, String? title}) => socket?.send({
+    'type': 'browser.teach',
+    'agentId': agentId,
+    'start': start,
+    if (title != null && title.trim().isNotEmpty) 'title': title.trim(),
+  });
 
   /// Takes back a message still waiting in line (`session.unqueue`, 2026-11-05 in the page).
   void unqueue(String sessionId, String clientId) {

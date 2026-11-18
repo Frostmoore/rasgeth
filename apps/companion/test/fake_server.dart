@@ -388,6 +388,123 @@ class FakeRedGiant {
 
   final asides = <String>[];
   final rooms = <Map<String, dynamic>>[];
+
+  // ---- G42.3: parallel work and groups, as the real server ----
+
+  /// Conversations the server says run (`session.state` on follow, as a sub-agent at work).
+  final runningSessions = <String>{};
+
+  /// What the person stopped or took off (`command.stop`, `command.close`, `subagent.close`,
+  /// `session.interrupt`), in order.
+  final parallelActs = <String>[];
+
+  /// A background command's log (`GET /api/sessions/:id/commands/:cmd/output`), by its id.
+  final commandLogs = <String, List<Map<String, dynamic>>>{};
+
+  /// A sub-agent given work from [parent]: the events the real orchestration writes.
+  void subagentStarted(
+    String parent,
+    String child, {
+    String agentId = 'a1',
+    String title = 'Sub-task',
+    String task = 'Do the thing.',
+    String via = 'delegate',
+  }) => _store(parent, 'subagent.started', {
+    'childSessionId': child,
+    'childAgentId': agentId,
+    'via': via,
+    'title': title,
+    'task': task,
+  });
+
+  void subagentEnded(String parent, String child, {String status = 'done', String? summary}) =>
+      _store(parent, 'subagent.ended', {
+        'childSessionId': child,
+        'status': status,
+        'summary': ?summary,
+      });
+
+  /// A background command started by bash in [sid].
+  void commandStarted(String sid, String id, String command) => _store(sid, 'command.started', {
+    'id': id,
+    'command': command,
+    'file': '/data/commands/$id.log',
+    'path': '/workspace',
+    'cwd': '/workspace',
+    'by': 'Coder',
+  });
+
+  void commandEnded(String sid, String id, {String status = 'done', int? exitCode = 0}) =>
+      _store(sid, 'command.ended', {'id': id, 'status': status, 'exitCode': exitCode});
+
+  /// The group chats (`Room` of api.ts) and their events.
+  final roomList = <Map<String, dynamic>>[];
+  final roomLogs = <String, List<Map<String, dynamic>>>{};
+  final roomPosts = <Map<String, dynamic>>[];
+
+  void _roomEvent(String id, String type, Map<String, dynamic> payload) {
+    final log = roomLogs.putIfAbsent(id, () => []);
+    log.add({..._event(log.length + 1, type, payload, sid: id)});
+  }
+
+  /// A room changed (`room.changed` to every connection).
+  void roomChanged(String id) => _toAll({'type': 'room.changed', 'roomId': id});
+
+  String _nameOf(String agentId) =>
+      agents.where((a) => a['id'] == agentId).firstOrNull?['name'] as String? ?? agentId;
+
+  /// The board (`BoardThread`, `BoardPost` of api.ts).
+  final boardThreads = <Map<String, dynamic>>[];
+  final boardPosts = <Map<String, dynamic>>[];
+  final boardActs = <String>[];
+
+  void boardChanged(String? projectId, String threadId) =>
+      _toAll({'type': 'board.changed', 'projectId': projectId, 'threadId': threadId});
+
+  /// The old everyday chats (`ChatSummary`) and their entries (`ChatEntry`).
+  final oldChats = <Map<String, dynamic>>[];
+  final chatEntries = <String, List<Map<String, dynamic>>>{};
+  final chatActs = <String>[];
+
+  /// The shared browser: who has control, where it is, the watchers, the input received.
+  String browserControl = 'agents';
+  String browserUrl = 'https://example.org/';
+  String? browserTeaching;
+  bool browserMissing = false;
+  final browserWatchers = <WebSocket>{};
+  final browserInputs = <Map<String, dynamic>>[];
+  final browserActs = <String>[];
+
+  void _browserState() {
+    for (final ws in browserWatchers) {
+      if (!_dead.contains(ws)) {
+        ws.add(
+          jsonEncode({
+            'type': 'browser.state',
+            'control': browserControl,
+            'url': browserUrl,
+            'teaching': ?browserTeaching,
+          }),
+        );
+      }
+    }
+  }
+
+  /// A picture of the browser's screen to every watcher (JPEG, base64).
+  void browserFrame(List<int> jpeg, {int width = 1280, int height = 800}) {
+    for (final ws in browserWatchers) {
+      if (!_dead.contains(ws)) {
+        ws.add(
+          jsonEncode({
+            'type': 'browser.frame',
+            'data': base64Encode(jpeg),
+            'width': width,
+            'height': height,
+          }),
+        );
+      }
+    }
+  }
   final sent = <Map<String, dynamic>>[];
 
   /// 3.8.7: a turn step by step, in the real server's order (core.ts: `session.state` running once,
@@ -1204,22 +1321,261 @@ class FakeRedGiant {
       asides.add('chat ${asideChat.group(2)}');
       return _json(r, 200, {'ok': true});
     }
+    final cmdOut = RegExp(r'^/api/sessions/([^/]+)/commands/([^/]+)/output$').firstMatch(path);
+    if (r.method == 'GET' && cmdOut != null) {
+      final lines = commandLogs[cmdOut.group(2)];
+      if (lines == null) return _json(r, 404, {'error': 'No such command'});
+      final from = int.tryParse(r.uri.queryParameters['from'] ?? '');
+      return _json(r, 200, {
+        'log': {'started': '15/11/2026, 10:00:01', 'folder': '/workspace', 'by': 'Coder', 'dropped': 0},
+        'lines': [
+          for (final l in lines)
+            if (from == null || (l['n'] as int) >= from) l,
+        ],
+        'running': false,
+      });
+    }
+    if (r.method == 'GET' && path == '/api/rooms') return _json(r, 200, roomList);
     if (r.method == 'POST' && path == '/api/rooms') {
       final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
       rooms.add(b);
-      return _json(r, 201, {
-        'id': 'room_1',
-        'title': 'Group',
-        'members': [b['from']],
+      final id = 'room_${roomList.length + 1}';
+      final from = b['from'] is Map ? b['from'] as Map : null;
+      final members = <Map<String, dynamic>>[
+        if (from != null) {'agentId': from['agentId'], 'sessionId': from['sessionId']},
+        for (final m in (b['members'] as List? ?? const []).whereType<String>())
+          {'agentId': m, 'sessionId': 's_${id}_$m'},
+      ];
+      final room = {
+        'id': id,
+        'title': b['title'] ?? (members.isEmpty ? 'New group' : members.map((m) => _nameOf(m['agentId'] as String)).join(', ')),
+        'members': members,
         'createdAt': '2026-11-15T10:00:00.000Z',
         'lastAt': null,
         'answering': <String>[],
+      };
+      roomList.add(room);
+      if (b['context'] is String) {
+        _roomEvent(id, 'room.message', {'from': 'context', 'name': 'Chat', 'text': b['context']});
+      }
+      return _json(r, 201, room);
+    }
+    final roomEvents = RegExp(r'^/api/rooms/([^/]+)/events$').firstMatch(path);
+    if (r.method == 'GET' && roomEvents != null) {
+      return _json(r, 200, roomLogs[roomEvents.group(1)] ?? const []);
+    }
+    final roomMsg = RegExp(r'^/api/rooms/([^/]+)/messages$').firstMatch(path);
+    if (r.method == 'POST' && roomMsg != null) {
+      final id = roomMsg.group(1)!;
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      roomPosts.add({'room': id, ...b});
+      final room = roomList.where((x) => x['id'] == id).firstOrNull;
+      if (room == null) return _json(r, 400, {'error': 'No such room'});
+      final text = b['text'] as String;
+      _roomEvent(id, 'room.message', {'from': 'human', 'name': 'You', 'text': text});
+      // As rooms.ts `mentions`: the one called with @name answers, else the first member.
+      final members = [for (final m in room['members'] as List) m['agentId'] as String];
+      final called = members.where((m) => text.toLowerCase().contains('@${_nameOf(m).toLowerCase()}'));
+      final who = called.firstOrNull ?? members.firstOrNull;
+      if (who != null) {
+        _roomEvent(id, 'room.message', {'from': who, 'name': _nameOf(who), 'text': 'On it: **$text**'});
+      }
+      room['lastAt'] = '2026-11-15T10:05:00.000Z';
+      roomChanged(id);
+      return _json(r, 202, {'ok': true});
+    }
+    final roomOut = RegExp(r'^/api/rooms/([^/]+)/members/([^/]+)$').firstMatch(path);
+    if (r.method == 'DELETE' && roomOut != null) {
+      final room = roomList.where((x) => x['id'] == roomOut.group(1)).firstOrNull;
+      if (room == null) return _json(r, 400, {'error': 'No such room'});
+      (room['members'] as List).removeWhere((m) => m['agentId'] == roomOut.group(2));
+      _roomEvent(room['id'] as String, 'room.member', {
+        'agentId': roomOut.group(2),
+        'name': _nameOf(roomOut.group(2)!),
+        'change': 'removed',
       });
+      roomChanged(room['id'] as String);
+      return _json(r, 200, room);
+    }
+    if (r.method == 'GET' && path == '/api/board/threads') {
+      final pid = r.uri.queryParameters['projectId'];
+      return _json(r, 200, [
+        for (final t in boardThreads)
+          if (t['projectId'] == pid) t,
+      ]);
+    }
+    final thread = RegExp(r'^/api/board/threads/([^/]+)$').firstMatch(path);
+    if (r.method == 'GET' && thread != null) {
+      final t = boardThreads.where((x) => x['id'] == thread.group(1)).firstOrNull;
+      if (t == null) return _json(r, 404, {'error': 'No such thread'});
+      return _json(r, 200, {
+        'thread': t,
+        'posts': [
+          for (final p in boardPosts)
+            if (p['threadId'] == t['id']) p,
+        ],
+      });
+    }
+    if (r.method == 'POST' && path == '/api/board/posts') {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      var tid = b['threadId'] as String?;
+      if (tid == null) {
+        tid = 'th${boardThreads.length + 1}';
+        boardThreads.add({
+          'id': tid,
+          'projectId': b['projectId'],
+          'title': b['title'],
+          'status': 'open',
+          'createdBy': 'human',
+          'updatedAt': '2026-11-15T10:00:00.000Z',
+          'posts': 0,
+          'summary': null,
+        });
+      }
+      final t = boardThreads.firstWhere((x) => x['id'] == tid);
+      t['posts'] = (t['posts'] as int) + 1;
+      final pid = 'po${boardPosts.length + 1}';
+      boardPosts.add({
+        'id': pid,
+        'threadId': tid,
+        'author': 'human',
+        'kind': b['kind'],
+        'body': b['body'],
+        'createdAt': '2026-11-15T10:01:00.000Z',
+      });
+      boardActs.add('post $tid ${b['kind']}');
+      boardChanged(t['projectId'] as String?, tid);
+      return _json(r, 201, {'threadId': tid, 'postId': pid});
+    }
+    final status = RegExp(r'^/api/board/threads/([^/]+)/status$').firstMatch(path);
+    if (r.method == 'POST' && status != null) {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      final t = boardThreads.where((x) => x['id'] == status.group(1)).firstOrNull;
+      if (t == null) return _json(r, 404, {'error': 'No such thread'});
+      t['status'] = b['status'];
+      boardActs.add('status ${t['id']} ${b['status']}');
+      boardChanged(t['projectId'] as String?, t['id'] as String);
+      return _json(r, 200, {'ok': true});
+    }
+    if (r.method == 'GET' && path == '/api/board/search') {
+      final q = (r.uri.queryParameters['q'] ?? '').toLowerCase();
+      return _json(r, 200, [
+        for (final p in boardPosts)
+          if ((p['body'] as String).toLowerCase().contains(q))
+            {
+              ...p,
+              'title': boardThreads.firstWhere((t) => t['id'] == p['threadId'])['title'],
+              'projectId': boardThreads.firstWhere((t) => t['id'] == p['threadId'])['projectId'],
+            },
+      ]);
+    }
+    final inspectorChats = RegExp(r'^/api/projects/([^/]+)/inspector/chats$').firstMatch(path);
+    if (path == '/api/chats' || inspectorChats != null) {
+      final pid = inspectorChats?.group(1);
+      if (r.method == 'GET') {
+        return _json(r, 200, [
+          for (final c in oldChats)
+            if (c['projectId'] == pid) c,
+        ]);
+      }
+      if (r.method == 'POST') {
+        final c = {
+          'id': 'ch${oldChats.length + 1}',
+          'title': '',
+          'projectId': pid,
+          'createdAt': '2026-11-15T10:00:00.000Z',
+          'updatedAt': '2026-11-15T10:00:00.000Z',
+        };
+        oldChats.add(c);
+        chatActs.add('new ${c['id']}');
+        return _json(r, 201, c);
+      }
+    }
+    final chatOne = RegExp(r'^/api/chats/([^/]+)(/messages)?$').firstMatch(path);
+    if (chatOne != null) {
+      final id = chatOne.group(1)!;
+      final chat = oldChats.where((x) => x['id'] == id).firstOrNull;
+      if (chat == null) return _json(r, 404, {'error': 'No such chat'});
+      final entries = chatEntries.putIfAbsent(id, () => []);
+      if (r.method == 'GET' && chatOne.group(2) == null) return _json(r, 200, entries);
+      if (r.method == 'POST' && chatOne.group(2) != null) {
+        final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+        final text = b['text'] as String;
+        chatActs.add('send $id $text');
+        entries.add({
+          'id': entries.length + 1,
+          'message': {
+            'role': 'user',
+            'parts': [
+              {'type': 'text', 'text': text},
+            ],
+          },
+          'shown': text,
+          'metrics': null,
+          'costUsd': null,
+          'model': null,
+          'createdAt': '2026-11-15T10:00:00.000Z',
+        });
+        final answer = {
+          'id': entries.length + 1,
+          'message': {
+            'role': 'assistant',
+            'parts': [
+              {'type': 'thinking', 'text': 'Looking it up'},
+              {
+                'type': 'tool_call',
+                'callId': 'c1',
+                'name': 'web_search',
+                'input': {'query': text},
+                'rawInput': '',
+              },
+              {'type': 'text', 'text': 'The answer to **$text**.'},
+            ],
+          },
+          'shown': null,
+          'metrics': null,
+          'costUsd': 0.001,
+          'model': 'fake',
+          'createdAt': '2026-11-15T10:00:01.000Z',
+        };
+        entries.add(answer);
+        if ((chat['title'] as String).isEmpty) chat['title'] = text.length > 40 ? text.substring(0, 40) : text;
+        r.response.statusCode = 200;
+        r.response.headers.set('content-type', 'text/event-stream');
+        r.response.write('event: delta\ndata: ${jsonEncode({'kind': 'text', 'text': 'The answer'})}\n\n');
+        r.response.write('event: entry\ndata: ${jsonEncode({'entry': answer})}\n\n');
+        r.response.write('event: done\ndata: {}\n\n');
+        await r.response.close();
+        return;
+      }
+      if (r.method == 'PATCH' && chatOne.group(2) == null) {
+        final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+        chat.addAll(b);
+        chatActs.add('folder $id ${b['folder']}');
+        return _json(r, 200, {'ok': true});
+      }
+      if (r.method == 'DELETE' && chatOne.group(2) == null) {
+        oldChats.remove(chat);
+        chatActs.add('delete $id');
+        return _json(r, 200, {'ok': true});
+      }
     }
     final roomMember = RegExp(r'^/api/rooms/([^/]+)/members$').firstMatch(path);
     if (r.method == 'POST' && roomMember != null) {
       final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
       rooms.add({'room': roomMember.group(1), ...b});
+      final room = roomList.where((x) => x['id'] == roomMember.group(1)).firstOrNull;
+      if (room != null) {
+        final who = b['agentId'] as String;
+        (room['members'] as List).add({'agentId': who, 'sessionId': 's_${room['id']}_$who'});
+        _roomEvent(room['id'] as String, 'room.member', {
+          'agentId': who,
+          'name': _nameOf(who),
+          'change': 'added',
+        });
+        roomChanged(room['id'] as String);
+        return _json(r, 200, room);
+      }
       return _json(r, 200, {'ok': true});
     }
     final work = RegExp(r'^/api/agents/([^/]+)/work-session$').firstMatch(path);
@@ -1983,7 +2339,11 @@ class FakeRedGiant {
               'lastSeq': past.isEmpty ? (after ?? -1) : past.last['seq'],
               'incremental': after != null,
             });
-            send({'type': 'session.state', 'sessionId': sid, 'state': 'idle'});
+            send({
+              'type': 'session.state',
+              'sessionId': sid,
+              'state': runningSessions.contains(sid) ? 'running' : 'idle',
+            });
           case 'session.unfollow':
             follows[ws]?.remove(m['sessionId']);
           case 'session.send':
@@ -2020,6 +2380,51 @@ class FakeRedGiant {
               'decision': m['decision'],
               'via': 'app (test)',
             });
+          case 'command.stop':
+            parallelActs.add('stop ${m['id']}');
+            _store(m['sessionId'] as String, 'command.ended', {
+              'id': m['id'],
+              'status': 'stopped',
+              'exitCode': null,
+            });
+          case 'command.close':
+            parallelActs.add('close ${m['id']}');
+            _store(m['sessionId'] as String, 'command.closed', {'id': m['id']});
+          case 'subagent.close':
+            parallelActs.add('subclose ${m['childSessionId']}');
+            _store(m['sessionId'] as String, 'subagent.closed', {
+              'childSessionId': m['childSessionId'],
+            });
+          case 'session.interrupt':
+            parallelActs.add('interrupt ${m['sessionId']}');
+          case 'browser.watch':
+            if (browserMissing) {
+              send({'type': 'error', 'code': 'unavailable', 'message': 'No browser'});
+              return;
+            }
+            browserWatchers.add(ws);
+            browserActs.add('watch');
+            _browserState();
+          case 'browser.unwatch':
+            browserWatchers.remove(ws);
+            browserActs.add('unwatch');
+          case 'browser.control':
+            browserControl = m['take'] == true ? 'person' : 'agents';
+            browserActs.add('control ${m['take']}');
+            _browserState();
+          case 'browser.goto':
+            if (browserControl != 'person') return;
+            final u = m['url'] as String;
+            browserUrl = u.contains('://') ? u : 'https://$u';
+            browserActs.add('goto $browserUrl');
+            _browserState();
+          case 'browser.input':
+            // The browser takes input only from the person who has control.
+            if (browserControl == 'person') browserInputs.add(m['event'] as Map<String, dynamic>);
+          case 'browser.teach':
+            browserActs.add('teach ${m['agentId']} ${m['start']} ${m['title'] ?? ''}'.trim());
+            browserTeaching = m['start'] == true ? m['agentId'] as String : null;
+            _browserState();
           case 'ping':
             send({'type': 'pong'});
         }
@@ -2027,6 +2432,7 @@ class FakeRedGiant {
       onDone: () {
         sockets.remove(ws);
         follows.remove(ws);
+        browserWatchers.remove(ws);
         _dead.remove(ws);
       },
     );

@@ -78,13 +78,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get chatNew => 'Nuova conversazione';
 
   @override
-  String get chatEmpty => 'Le conversazioni con la Chat, giorno per giorno, compaiono qui.';
+  String get chatEmpty =>
+      'Le conversazioni con la Chat, giorno per giorno, compaiono qui.';
 
   @override
-  String get inboxEmpty => 'Niente da decidere: quando un agente ti chiede qualcosa, lo trovi qui.';
+  String get inboxEmpty =>
+      'Niente da decidere: quando un agente ti chiede qualcosa, lo trovi qui.';
 
   @override
-  String get activityEmpty => 'I compiti in corso e finiti, raggruppati per agente, compaiono qui.';
+  String get activityEmpty =>
+      'I compiti in corso e finiti, raggruppati per agente, compaiono qui.';
 
   @override
   String get sectionAppearance => 'Aspetto';
@@ -111,7 +114,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get reduceMotion => 'Riduci movimento';
 
   @override
-  String get reduceMotionHint => 'Le mascotte restano ferme; lo stato si riconosce dal segno.';
+  String get reduceMotionHint =>
+      'Le mascotte restano ferme; lo stato si riconosce dal segno.';
 
   @override
   String get sectionServer => 'RedGiant';
@@ -149,7 +153,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get errWrong => 'Password o codice sbagliati.';
 
   @override
-  String get errCodeNeeded => 'Serve anche il codice dell\'app di autenticazione.';
+  String get errCodeNeeded =>
+      'Serve anche il codice dell\'app di autenticazione.';
 
   @override
   String get errTooMany => 'Troppi tentativi: riprova tra qualche minuto.';
@@ -159,10 +164,12 @@ class AppLocalizationsIt extends AppLocalizations {
       'Questo RedGiant non ha ancora una password: completa il primo avvio.';
 
   @override
-  String get errServerTooOld => 'Questo RedGiant è troppo vecchio per l\'app: aggiornalo.';
+  String get errServerTooOld =>
+      'Questo RedGiant è troppo vecchio per l\'app: aggiornalo.';
 
   @override
-  String get errServerTooNew => 'Questa app è troppo vecchia per questo RedGiant: aggiornala.';
+  String get errServerTooNew =>
+      'Questa app è troppo vecchia per questo RedGiant: aggiornala.';
 
   @override
   String errGeneric(String message) {
@@ -430,7 +437,8 @@ class AppLocalizationsIt extends AppLocalizations {
       'Il certificato non è di questo RedGiant: l\'app non è andata avanti.';
 
   @override
-  String get errBusy => 'Un altro dispositivo sta configurando questo RedGiant: uno alla volta.';
+  String get errBusy =>
+      'Un altro dispositivo sta configurando questo RedGiant: uno alla volta.';
 
   @override
   String get errSignInAgain => 'Entra di nuovo con la password.';
@@ -456,7 +464,8 @@ class AppLocalizationsIt extends AppLocalizations {
       'La pagina Impostazioni completa di RedGiant, dentro l\'app, con l\'accesso di questo dispositivo.';
 
   @override
-  String get allSettingsBrowser => 'Apre la pagina di RedGiant nel browser: lì entri come sempre.';
+  String get allSettingsBrowser =>
+      'Apre la pagina di RedGiant nel browser: lì entri come sempre.';
 
   @override
   String get allSettingsNoHttps =>
@@ -489,7 +498,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get defaultModel => 'Modello predefinito';
 
   @override
-  String get setModel => 'Il modello che usano gli agenti quando nessuno ne ha scelto un altro';
+  String get setModel =>
+      'Il modello che usano gli agenti quando nessuno ne ha scelto un altro';
 
   @override
   String get modelNone => 'Ancora nessuno: collega un modo di pensare';
@@ -566,7 +576,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get fsJoining => 'Mi collego alla rete temporanea…';
 
   @override
-  String get fsJoiningSheet => 'Scegli RedGiant-Setup nella finestra che mostra il sistema.';
+  String get fsJoiningSheet =>
+      'Scegli RedGiant-Setup nella finestra che mostra il sistema.';
 
   @override
   String get fsConnecting => 'Cerco RedGiant sulla rete…';
@@ -586,19 +597,23 @@ class AppLocalizationsIt extends AppLocalizations {
   String get fsNetworkPassword => 'Password';
 
   @override
-  String get fsWhereAndroid => 'Impostazioni › Rete › Wi-Fi: tocca RedGiant-Setup-…';
+  String get fsWhereAndroid =>
+      'Impostazioni › Rete › Wi-Fi: tocca RedGiant-Setup-…';
 
   @override
   String get fsWhereIos => 'Impostazioni › Wi-Fi: tocca RedGiant-Setup-…';
 
   @override
-  String get fsWhereMac => 'Il menu Wi-Fi in alto a destra dello schermo: scegli RedGiant-Setup-…';
+  String get fsWhereMac =>
+      'Il menu Wi-Fi in alto a destra dello schermo: scegli RedGiant-Setup-…';
 
   @override
-  String get fsWhereWindows => 'L\'icona Wi-Fi in basso a destra: scegli RedGiant-Setup-…';
+  String get fsWhereWindows =>
+      'L\'icona Wi-Fi in basso a destra: scegli RedGiant-Setup-…';
 
   @override
-  String get fsWhereOther => 'La lista Wi-Fi del sistema: scegli RedGiant-Setup-…';
+  String get fsWhereOther =>
+      'La lista Wi-Fi del sistema: scegli RedGiant-Setup-…';
 
   @override
   String get fsManualNoInternet =>
@@ -616,7 +631,8 @@ class AppLocalizationsIt extends AppLocalizations {
       'Questo RedGiant non lascia creare un accesso nuovo da qui: finisci dalla sua pagina.';
 
   @override
-  String get fsErrCancelled => 'La rete non è stata collegata. Riprova, oppure collegati a mano.';
+  String get fsErrCancelled =>
+      'La rete non è stata collegata. Riprova, oppure collegati a mano.';
 
   @override
   String get fsErrDenied =>
@@ -627,7 +643,8 @@ class AppLocalizationsIt extends AppLocalizations {
       'Il sistema non è riuscito a collegarsi alla rete: collegati a mano.';
 
   @override
-  String get fsErrNoName => 'Scegli la rete, oppure scrivi i suoi ultimi quattro caratteri.';
+  String get fsErrNoName =>
+      'Scegli la rete, oppure scrivi i suoi ultimi quattro caratteri.';
 
   @override
   String get fsAccessTitle => 'Crea l\'accesso';
@@ -662,7 +679,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get fsSignInTitle => 'Entra';
 
   @override
-  String get fsSignInLead => 'Questo RedGiant ha già la sua password: scrivila per continuare.';
+  String get fsSignInLead =>
+      'Questo RedGiant ha già la sua password: scrivila per continuare.';
 
   @override
   String get fsMaintenanceTitle => 'RedGiant ha perso la sua rete';
@@ -683,7 +701,8 @@ class AppLocalizationsIt extends AppLocalizations {
       'Non ha visto reti intorno: usa il cavo, oppure scrivi il nome di una rete nascosta.';
 
   @override
-  String get fsHomeUnusable => 'RedGiant non può collegarsi a questo tipo di rete';
+  String get fsHomeUnusable =>
+      'RedGiant non può collegarsi a questo tipo di rete';
 
   @override
   String get fsHomeHidden => 'Una rete nascosta';
@@ -760,7 +779,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get fsClaude => 'Claude Pro o Max';
 
   @override
-  String get fsClaudeText => 'La pagina di Anthropic nel browser, poi il codice che mostra';
+  String get fsClaudeText =>
+      'La pagina di Anthropic nel browser, poi il codice che mostra';
 
   @override
   String get fsClaudeOpen => 'Apri la pagina di Anthropic';
@@ -788,7 +808,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get fsKey => 'La chiave di un provider';
 
   @override
-  String get fsKeyText => 'Anthropic, OpenAI, Gemini, OpenRouter…: si paga a consumo';
+  String get fsKeyText =>
+      'Anthropic, OpenAI, Gemini, OpenRouter…: si paga a consumo';
 
   @override
   String fsKeyOf(String name) {
@@ -865,7 +886,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get homeErrBadSsid => 'Il nome di una rete ha da 1 a 32 caratteri.';
 
   @override
-  String get homeErrBusy => 'RedGiant si sta già collegando a una rete: aspetta un momento.';
+  String get homeErrBusy =>
+      'RedGiant si sta già collegando a una rete: aspetta un momento.';
 
   @override
   String get homeErrWifiOff => 'Il Wi-Fi non è attivo su RedGiant.';
@@ -888,7 +910,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get outsideOwnName => 'Un tuo nome (Caddy)';
 
   @override
-  String get pushOff => 'Non ancora attive per questo dispositivo: attivale in Tu, Notifiche.';
+  String get pushOff =>
+      'Non ancora attive per questo dispositivo: attivale in Tu, Notifiche.';
 
   @override
   String pushOn(String target) {
@@ -931,7 +954,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get serverSettingsSub => 'Nome, aggiornamenti, dispositivi, modello, voce';
+  String get serverSettingsSub =>
+      'Nome, aggiornamenti, dispositivi, modello, voce';
 
   @override
   String versionOf(String version) {
@@ -1071,10 +1095,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get teamFilterLabel => 'Mostra';
 
   @override
-  String get teamNoFavourites => 'Nessun preferito: tieni premuto un agente per aggiungerlo.';
+  String get teamNoFavourites =>
+      'Nessun preferito: tieni premuto un agente per aggiungerlo.';
 
   @override
-  String get teamNoneInProject => 'Nessun agente ha lavorato in questo progetto.';
+  String get teamNoneInProject =>
+      'Nessun agente ha lavorato in questo progetto.';
 
   @override
   String get favouriteMark => 'preferito';
@@ -1127,10 +1153,12 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get inboxSwipeHint => 'Scorri a destra per dire sì, a sinistra per dire no.';
+  String get inboxSwipeHint =>
+      'Scorri a destra per dire sì, a sinistra per dire no.';
 
   @override
-  String get inboxCriticalHint => 'Davvero pericolosa: non si scorre, si guarda a schermo intero.';
+  String get inboxCriticalHint =>
+      'Davvero pericolosa: non si scorre, si guarda a schermo intero.';
 
   @override
   String inboxSaidYes(String name) {
@@ -1166,10 +1194,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get modelWayOr => 'o';
 
   @override
-  String get modelHintSubscription => 'Nei limiti del tuo piano: non paghi a consumo.';
+  String get modelHintSubscription =>
+      'Nei limiti del tuo piano: non paghi a consumo.';
 
   @override
-  String get modelHintKey => 'A consumo con la tua chiave API: conta per il tetto di spesa.';
+  String get modelHintKey =>
+      'A consumo con la tua chiave API: conta per il tetto di spesa.';
 
   @override
   String modelHintNode(String node) {
@@ -1177,7 +1207,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get modelHintLocal => 'Gira su un computer tuo: niente costi a consumo.';
+  String get modelHintLocal =>
+      'Gira su un computer tuo: niente costi a consumo.';
 
   @override
   String get modelHintOther => 'Tramite un fornitore collegato.';
@@ -1192,7 +1223,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get teamNewAgent => 'Nuovo agente';
 
   @override
-  String get teamNoAgents => 'Nessun altro agente: creane uno con «Nuovo agente».';
+  String get teamNoAgents =>
+      'Nessun altro agente: creane uno con «Nuovo agente».';
 
   @override
   String get teamChatLead => 'Le tue conversazioni di ogni giorno';
@@ -1201,7 +1233,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get agentJustAnswered => 'Ti ha appena risposto.';
 
   @override
-  String get agentBlockedNow => 'È bloccato: apri la conversazione per vedere perché.';
+  String get agentBlockedNow =>
+      'È bloccato: apri la conversazione per vedere perché.';
 
   @override
   String get effortLow => 'Basso';
@@ -1254,7 +1287,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get noModels => 'Nessun modello collegato: collegane uno nelle impostazioni.';
+  String get noModels =>
+      'Nessun modello collegato: collegane uno nelle impostazioni.';
 
   @override
   String get more => 'Altri comandi';
@@ -1321,7 +1355,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get sessionModelTitle => 'Modello di questa conversazione';
 
   @override
-  String get sessionModelBusy => 'Sta lavorando: il modello si cambia quando ha finito.';
+  String get sessionModelBusy =>
+      'Sta lavorando: il modello si cambia quando ha finito.';
 
   @override
   String get asideChip => 'Intanto';
@@ -1344,7 +1379,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get asidePlaceholder => 'Una domanda al volo…';
 
   @override
-  String get asidePlaceholderBusy => 'Una domanda al volo, mentre l\'agente lavora…';
+  String get asidePlaceholderBusy =>
+      'Una domanda al volo, mentre l\'agente lavora…';
 
   @override
   String get asideAsk => 'Chiedi';
@@ -1430,13 +1466,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String get newAgentKindAsst => 'Assistente personale';
 
   @override
-  String get newAgentKindAsstText => 'Ti aiuta fuori dai progetti: posta, agenda, ricerche, conti.';
+  String get newAgentKindAsstText =>
+      'Ti aiuta fuori dai progetti: posta, agenda, ricerche, conti.';
 
   @override
   String get newAgentProjectQ => 'In quale progetto?';
 
   @override
-  String get newAgentNoOrch => 'Non ha ancora un orchestratore: creane prima uno.';
+  String get newAgentNoOrch =>
+      'Non ha ancora un orchestratore: creane prima uno.';
 
   @override
   String get newAgentHasOrch => 'Ha già un orchestratore.';
@@ -1454,7 +1492,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get newAgentRole => 'Il suo lavoro, in parole tue';
 
   @override
-  String get newAgentRoleHint => 'Per esempio: scrive i test e controlla che passino';
+  String get newAgentRoleHint =>
+      'Per esempio: scrive i test e controlla che passino';
 
   @override
   String get newAgentMascotPreview => 'La sua mascotte';
@@ -1515,7 +1554,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get newAgentNeedsGod => 'Serve God per creare agenti: completa prima il primo avvio.';
+  String get newAgentNeedsGod =>
+      'Serve God per creare agenti: completa prima il primo avvio.';
 
   @override
   String get mascotChange => 'Cambia mascotte';
@@ -1584,7 +1624,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get promptReset => 'Ripristina le predefinite';
 
   @override
-  String get promptResetConfirm => 'Tornare alle istruzioni predefinite? Il tuo testo andrà perso.';
+  String get promptResetConfirm =>
+      'Tornare alle istruzioni predefinite? Il tuo testo andrà perso.';
 
   @override
   String get promptUndo => 'Annulla le modifiche';
@@ -1609,7 +1650,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get refineNoEstimate => 'Nessuna stima: controlla che il modello sia ancora collegato.';
+  String get refineNoEstimate =>
+      'Nessuna stima: controlla che il modello sia ancora collegato.';
 
   @override
   String refineSpent(String what) {
@@ -1622,7 +1664,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get refineFree => 'nessuna spesa in denaro (modello locale o abbonamento)';
+  String get refineFree =>
+      'nessuna spesa in denaro (modello locale o abbonamento)';
 
   @override
   String refineCost(String usd) {
@@ -1654,7 +1697,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get refineSame => 'Il modello le ha lasciate com\'erano.';
 
   @override
-  String get refineErr_budget => 'Il budget è finito: alzalo in Impostazioni, Budget.';
+  String get refineErr_budget =>
+      'Il budget è finito: alzalo in Impostazioni, Budget.';
 
   @override
   String get refineErr_no_model =>
@@ -1675,7 +1719,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get notificationsTitle => 'Notifiche';
 
   @override
-  String get notificationsSub => 'Come questo dispositivo sa da RedGiant quando l\'app è chiusa';
+  String get notificationsSub =>
+      'Come questo dispositivo sa da RedGiant quando l\'app è chiusa';
 
   @override
   String get voiceTitle => 'Voce';
@@ -1702,7 +1747,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get notifyAnswerFailedTitle => 'La risposta non è partita';
 
   @override
-  String get notifyAnswerFailedBody => 'Apri l\'app per rispondere: la richiesta aspetta ancora.';
+  String get notifyAnswerFailedBody =>
+      'Apri l\'app per rispondere: la richiesta aspetta ancora.';
 
   @override
   String notifyAsksPermission(String name) {
@@ -1715,7 +1761,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get notifyCriticalTitle => 'Una richiesta davvero pericolosa: aprila per decidere';
+  String get notifyCriticalTitle =>
+      'Una richiesta davvero pericolosa: aprila per decidere';
 
   @override
   String get notifyTestTitle => 'Prova delle notifiche';
@@ -1749,7 +1796,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get pushNowOn => 'Le notifiche sono attive: manda una prova per vederne una.';
+  String get pushNowOn =>
+      'Le notifiche sono attive: manda una prova per vederne una.';
 
   @override
   String get pushNowOff => 'Notifiche spente su questo dispositivo.';
@@ -1759,7 +1807,8 @@ class AppLocalizationsIt extends AppLocalizations {
       'Il distributore ha dato un indirizzo, ma RedGiant non si raggiunge: l\'app riprova al prossimo avvio.';
 
   @override
-  String get pushFailedNetwork => 'Il distributore adesso non ha rete: riprova fra poco.';
+  String get pushFailedNetwork =>
+      'Il distributore adesso non ha rete: riprova fra poco.';
 
   @override
   String get pushFailedVapid =>
@@ -1798,7 +1847,8 @@ class AppLocalizationsIt extends AppLocalizations {
       'Il distributore porta le notifiche di RedGiant su questo telefono, cifrate: lo scegli tu (ntfy, il tuo ntfy, Sunup…), senza il cloud di Google né di RedGiant in mezzo.';
 
   @override
-  String get pushNoDistributor => 'Su questo telefono non c\'è un distributore UnifiedPush.';
+  String get pushNoDistributor =>
+      'Su questo telefono non c\'è un distributore UnifiedPush.';
 
   @override
   String get pushNoDistributorMeans =>
@@ -1876,7 +1926,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get voiceVoiceHead => 'Voce';
 
   @override
-  String get voiceAccountVoice => 'La voce è quella dell\'account con la chiave.';
+  String get voiceAccountVoice =>
+      'La voce è quella dell\'account con la chiave.';
 
   @override
   String get voiceVolumeHead => 'Volume';
@@ -1925,17 +1976,20 @@ class AppLocalizationsIt extends AppLocalizations {
   String get voiceWriting => 'Scrivo quello che hai detto…';
 
   @override
-  String get voiceTooShort => 'Troppo breve: tieni premuto il microfono mentre parli.';
+  String get voiceTooShort =>
+      'Troppo breve: tieni premuto il microfono mentre parli.';
 
   @override
-  String get voiceHeardNothing => 'Non ho sentito parole: riprova più vicino al telefono.';
+  String get voiceHeardNothing =>
+      'Non ho sentito parole: riprova più vicino al telefono.';
 
   @override
   String get voiceMicDenied =>
       'Il microfono non è permesso: permettilo nelle impostazioni del sistema per RGCompanion.';
 
   @override
-  String get voiceMicFailed => 'Il microfono non è partito: lo sta usando un\'altra app?';
+  String get voiceMicFailed =>
+      'Il microfono non è partito: lo sta usando un\'altra app?';
 
   @override
   String get voiceErrNoService =>
@@ -1982,10 +2036,12 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get voiceErrProvider => 'Questo fornitore non lo sa fare: scegline un altro.';
+  String get voiceErrProvider =>
+      'Questo fornitore non lo sa fare: scegline un altro.';
 
   @override
-  String get voiceErrServer => 'RedGiant non si raggiunge: controlla la connessione.';
+  String get voiceErrServer =>
+      'RedGiant non si raggiunge: controlla la connessione.';
 
   @override
   String get voiceErrOther => 'La voce non ha funzionato: riprova.';
@@ -2017,7 +2073,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get advancedTerminals => 'Terminale dei miei agenti';
 
   @override
-  String get advancedTerminalsHint => 'Solo lettura; il mio terminale ha la fila di tasti in più.';
+  String get advancedTerminalsHint =>
+      'Solo lettura; il mio terminale ha la fila di tasti in più.';
 
   @override
   String get codeTabTasks => 'Compiti';
@@ -2038,16 +2095,19 @@ class AppLocalizationsIt extends AppLocalizations {
   String get codeTabGit => 'Git';
 
   @override
-  String get codeArchived => 'Progetto archiviato: solo lettura finché non lo ripristini.';
+  String get codeArchived =>
+      'Progetto archiviato: solo lettura finché non lo ripristini.';
 
   @override
   String get codeArchivedShort => 'archiviato';
 
   @override
-  String get codeChangedMeanwhile => 'Il file è cambiato da quando l\'hai aperto: riaprilo.';
+  String get codeChangedMeanwhile =>
+      'Il file è cambiato da quando l\'hai aperto: riaprilo.';
 
   @override
-  String get codeUnreachable => 'RedGiant non si raggiunge: controlla la connessione.';
+  String get codeUnreachable =>
+      'RedGiant non si raggiunge: controlla la connessione.';
 
   @override
   String get codeLoadFailed => 'Non si è caricato: tira giù per riprovare.';
@@ -2216,7 +2276,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get codeDiffTruncated => 'Troppo lungo: si vede solo la prima parte.';
 
   @override
-  String get codeDiffBinary => 'Un file binario: qui non c\'è niente da leggere.';
+  String get codeDiffBinary =>
+      'Un file binario: qui non c\'è niente da leggere.';
 
   @override
   String get codeDiffNoHunks => 'Solo rinominato o cambiati i permessi.';
@@ -2381,7 +2442,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get codeNoRemote => 'Il progetto non ha un repository remoto dove mandare il push.';
+  String get codeNoRemote =>
+      'Il progetto non ha un repository remoto dove mandare il push.';
 
   @override
   String get savedSave => 'Salva';
@@ -2405,7 +2467,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get savedTagsPlaceholder => 'Etichette nuove, separate da virgole';
 
   @override
-  String get savedDone => 'Salvato: è nei tuoi Salvati, con la conversazione da cui viene.';
+  String get savedDone =>
+      'Salvato: è nei tuoi Salvati, con la conversazione da cui viene.';
 
   @override
   String get savedOpenArchive => 'Apri';
@@ -2468,7 +2531,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get savedUnknownOrigin => 'Una conversazione';
 
   @override
-  String get savedFromDailyChat => 'Viene dalla chat di ogni giorno della pagina: aprila da lì.';
+  String get savedFromDailyChat =>
+      'Viene dalla chat di ogni giorno della pagina: aprila da lì.';
 
   @override
   String get savedNotThere => 'Il messaggio non è più nella conversazione.';
@@ -2579,7 +2643,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get metricsEnd => 'fine';
 
   @override
-  String get metricsRestoredFromDisk => 'KV cache ripristinata dall\'SSD prima di questa richiesta';
+  String get metricsRestoredFromDisk =>
+      'KV cache ripristinata dall\'SSD prima di questa richiesta';
 
   @override
   String get metricsCostUnknown => 'costo non noto';
@@ -2647,7 +2712,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get upd2Back => 'RedGiant risponde: controllo che sia la versione nuova…';
+  String get upd2Back =>
+      'RedGiant risponde: controllo che sia la versione nuova…';
 
   @override
   String get upd2Keeps =>
@@ -2771,13 +2837,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get upd2Step_installer => 'Scarico il programma di installazione';
 
   @override
-  String get upd2StepText_check => 'Si installa solo una versione firmata da RedGiant.';
+  String get upd2StepText_check =>
+      'Si installa solo una versione firmata da RedGiant.';
 
   @override
-  String get upd2StepText_download => 'RedGiant continua a funzionare mentre scarica.';
+  String get upd2StepText_download =>
+      'RedGiant continua a funzionare mentre scarica.';
 
   @override
-  String get upd2StepText_files => 'I programmi del sistema intorno a RedGiant.';
+  String get upd2StepText_files =>
+      'I programmi del sistema intorno a RedGiant.';
 
   @override
   String get upd2StepText_install =>
@@ -2799,13 +2868,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get upd2StepText_scan => 'Così si scarica solo quello che è cambiato.';
 
   @override
-  String get upd2StepText_build => 'La versione nuova si prepara accanto a quella di adesso.';
+  String get upd2StepText_build =>
+      'La versione nuova si prepara accanto a quella di adesso.';
 
   @override
-  String get upd2StepText_installer => 'Il programma completo: si installa sopra quello di adesso.';
+  String get upd2StepText_installer =>
+      'Il programma completo: si installa sopra quello di adesso.';
 
   @override
-  String get upd2Why_download => 'Non sono riuscito a scaricare la versione nuova.';
+  String get upd2Why_download =>
+      'Non sono riuscito a scaricare la versione nuova.';
 
   @override
   String upd2WhyText_download(String from) {
@@ -2813,7 +2885,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get upd2Why_files => 'Non sono riuscito a installare i file di sistema nuovi.';
+  String get upd2Why_files =>
+      'Non sono riuscito a installare i file di sistema nuovi.';
 
   @override
   String upd2WhyText_files(String from) {
@@ -2838,7 +2911,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get upd2Why_breaking => 'Questa versione non si installa sopra quella di adesso.';
+  String get upd2Why_breaking =>
+      'Questa versione non si installa sopra quella di adesso.';
 
   @override
   String upd2WhyText_breaking(String from) {
@@ -3064,7 +3138,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String deskFilesCount(int n) {
-    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$n file', one: '1 file');
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n file',
+      one: '1 file',
+    );
     return '$_temp0';
   }
 
@@ -3255,7 +3334,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get deskNoGitShort => 'senza git';
 
   @override
-  String get deskNoKeysHere => 'Senza chiavi: le credenziali restano alle vie d\'uscita';
+  String get deskNoKeysHere =>
+      'Senza chiavi: le credenziali restano alle vie d\'uscita';
 
   @override
   String get deskNoProject => 'Senza progetto';
@@ -3453,7 +3533,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get deskStopOpen => 'Ferma l\'agente aperto';
 
   @override
-  String get deskStreamHint => 'Fermo al passaggio del mouse · un clic apre il Log';
+  String get deskStreamHint =>
+      'Fermo al passaggio del mouse · un clic apre il Log';
 
   @override
   String deskSubagents(int n) {
@@ -3485,10 +3566,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get deskTaskRunning => 'in corso';
 
   @override
-  String get deskTasksRule => 'si chiudono solo con un verificatore che esce con 0';
+  String get deskTasksRule =>
+      'si chiudono solo con un verificatore che esce con 0';
 
   @override
-  String get deskTermAskHint => 'Per chiedergli qualcosa scrivi nella sua conversazione';
+  String get deskTermAskHint =>
+      'Per chiedergli qualcosa scrivi nella sua conversazione';
 
   @override
   String deskTerminalsShown(int n) {
@@ -3617,7 +3700,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get limitsWeekShort => '7g';
 
   @override
-  String get deskSendMessage => 'Invia il messaggio (nei campi delle conversazioni)';
+  String get deskSendMessage =>
+      'Invia il messaggio (nei campi delle conversazioni)';
 
   @override
   String get deskFullWindow => 'A tutta finestra';
@@ -3661,7 +3745,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get tpWaitingFirst => 'Il fornitore non dice a che punto è: aspetto il primo token';
+  String get tpWaitingFirst =>
+      'Il fornitore non dice a che punto è: aspetto il primo token';
 
   @override
   String get tpThinking => 'Ragiona';
@@ -3752,10 +3837,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get asMascot => 'Mascotte';
 
   @override
-  String get asMascotHelp => 'Rinominarlo non cambia la faccia: la cambi solo tu, da qui.';
+  String get asMascotHelp =>
+      'Rinominarlo non cambia la faccia: la cambi solo tu, da qui.';
 
   @override
-  String get asMascotGod => 'La mascotte di God è disegnata a mano: è sempre il gigante rosso.';
+  String get asMascotGod =>
+      'La mascotte di God è disegnata a mano: è sempre il gigante rosso.';
 
   @override
   String get asName => 'Nome';
@@ -3805,7 +3892,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get asMode => 'Quanto fa da solo';
 
   @override
-  String get asModeHelp => 'Quello che manda, pubblica, cancella o paga aspetta sempre te.';
+  String get asModeHelp =>
+      'Quello che manda, pubblica, cancella o paga aspetta sempre te.';
 
   @override
   String get asMode_auto => 'In autonomia';
@@ -3820,13 +3908,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get asMode_readonly => 'Sola lettura';
 
   @override
-  String get asModeExplain_auto => 'Lavora da solo e chiede solo per le cose pericolose.';
+  String get asModeExplain_auto =>
+      'Lavora da solo e chiede solo per le cose pericolose.';
 
   @override
-  String get asModeExplain_manual => 'Ti chiede prima di ogni modifica ai file o di ogni comando.';
+  String get asModeExplain_manual =>
+      'Ti chiede prima di ogni modifica ai file o di ogni comando.';
 
   @override
-  String get asModeExplain_plan => 'Prima scrive un piano e parte quando lo approvi.';
+  String get asModeExplain_plan =>
+      'Prima scrive un piano e parte quando lo approvi.';
 
   @override
   String get asModeExplain_readonly => 'Legge e risponde, non cambia niente.';
@@ -3851,7 +3942,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get asMemProjectHelp => 'La leggono tutti gli agenti che lavorano a questo progetto.';
+  String get asMemProjectHelp =>
+      'La leggono tutti gli agenti che lavorano a questo progetto.';
 
   @override
   String get asMemNone => 'Questo agente non tiene una memoria sua.';
@@ -4204,7 +4296,8 @@ class AppLocalizationsIt extends AppLocalizations {
       'La conversazione è stata riassunta qui (la parte più vecchia, preparata in anticipo)';
 
   @override
-  String get cvCompactionManual => 'La conversazione è stata riassunta qui, come hai chiesto';
+  String get cvCompactionManual =>
+      'La conversazione è stata riassunta qui, come hai chiesto';
 
   @override
   String get cvCompactionEmergency =>
@@ -4215,7 +4308,8 @@ class AppLocalizationsIt extends AppLocalizations {
       'Il motore dell\'abbonamento ha riassunto la conversazione qui (da solo)';
 
   @override
-  String get cvCompactionUndone => 'Riassunto annullato: la conversazione intera è tornata';
+  String get cvCompactionUndone =>
+      'Riassunto annullato: la conversazione intera è tornata';
 
   @override
   String get cvUndo => 'Annulla';
@@ -4286,7 +4380,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get cvUnqueue => 'Ritira (se l\'agente non l\'ha ancora letto)';
 
   @override
-  String get cvSentWhileWorking => 'Mandato mentre l\'agente lavora: lo legge appena può';
+  String get cvSentWhileWorking =>
+      'Mandato mentre l\'agente lavora: lo legge appena può';
 
   @override
   String cvWriteWhileWorking(String name) {
@@ -4299,10 +4394,12 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get cvStopWhenBack => 'Il collegamento è perso: «Ferma» parte appena torna.';
+  String get cvStopWhenBack =>
+      'Il collegamento è perso: «Ferma» parte appena torna.';
 
   @override
-  String get cvSendQueued => 'Manda: lo legge appena il lavoro in corso lo permette';
+  String get cvSendQueued =>
+      'Manda: lo legge appena il lavoro in corso lo permette';
 
   @override
   String get cvInterrupt => 'Ferma';
@@ -4585,7 +4682,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get widgetKeep => 'Tienilo';
 
   @override
-  String get widgetKeepHint => 'Salvato come artefatto in artefatti/ e aperto nel Canvas';
+  String get widgetKeepHint =>
+      'Salvato come artefatto in artefatti/ e aperto nel Canvas';
 
   @override
   String get widgetKeptShort => 'Tenuto';
@@ -4599,7 +4697,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get widgetAsks => 'Vuole mandare in chat:';
 
   @override
-  String get widgetNoChat => 'Vuole mandare in chat (apri prima una conversazione):';
+  String get widgetNoChat =>
+      'Vuole mandare in chat (apri prima una conversazione):';
 
   @override
   String get widgetSend => 'Manda';
@@ -4684,7 +4783,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get requestDoneClosing => 'Questa schermata si chiude da sola tra qualche secondo.';
+  String get requestDoneClosing =>
+      'Questa schermata si chiude da sola tra qualche secondo.';
 
   @override
   String get requestCloseHint => 'Chiudi (Esc)';
@@ -4833,7 +4933,8 @@ class AppLocalizationsIt extends AppLocalizations {
       locale: localeName,
       other:
           '$n automazioni verranno messe in pausa ($names); ripartono quando ripristini il progetto.',
-      one: '1 automazione verrà messa in pausa ($names); riparte quando ripristini il progetto.',
+      one:
+          '1 automazione verrà messa in pausa ($names); riparte quando ripristini il progetto.',
     );
     return '$_temp0';
   }
@@ -4842,14 +4943,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pmFactTasks => 'I compiti aperti restano aperti.';
 
   @override
-  String get pmFactSandbox => 'La sua sandbox si ferma e riparte al ripristino.';
+  String get pmFactSandbox =>
+      'La sua sandbox si ferma e riparte al ripristino.';
 
   @override
   String get pmFactNobody =>
       'Fino ad allora nessun agente ci lavora né cambia i suoi file, e le chat collegate non lo usano.';
 
   @override
-  String get pmFactRestore => 'Anche God può archiviarlo e ripristinarlo, sempre con il tuo sì.';
+  String get pmFactRestore =>
+      'Anche God può archiviarlo e ripristinarlo, sempre con il tuo sì.';
 
   @override
   String get pmStopAndArchive => 'Ferma e archivia';
@@ -5172,7 +5275,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get queueTitle => 'Coda degli agenti';
 
   @override
-  String get queueEmpty => 'Nessuno aspetta: ogni agente che ha lavoro sta lavorando.';
+  String get queueEmpty =>
+      'Nessuno aspetta: ogni agente che ha lavoro sta lavorando.';
 
   @override
   String queuedNth(String nth, int of) {
@@ -5406,7 +5510,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get cvBoardFull => 'A tutto schermo';
 
   @override
-  String get cvBoardCommentHere => 'Commento su questa variante (facoltativo con «Scelgo questa»)';
+  String get cvBoardCommentHere =>
+      'Commento su questa variante (facoltativo con «Scelgo questa»)';
 
   @override
   String get cvBoardSendComment => 'Manda commento';
@@ -5541,7 +5646,8 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get cvArDataIgnored => 'I dati salvati che porta con sé non sono stati importati.';
+  String get cvArDataIgnored =>
+      'I dati salvati che porta con sé non sono stati importati.';
 
   @override
   String get cvArDataImported => 'Sono arrivati anche i suoi dati salvati.';
@@ -5612,7 +5718,12 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String chatFileDownloadOf(String done, String total, String speed, String left) {
+  String chatFileDownloadOf(
+    String done,
+    String total,
+    String speed,
+    String left,
+  ) {
     return '$done di $total · $speed/s · ancora $left';
   }
 
@@ -5630,4 +5741,417 @@ class AppLocalizationsIt extends AppLocalizations {
   String chatFileDownloadFailed(String name) {
     return 'Non sono riuscito a scaricare $name';
   }
+
+  @override
+  String get cvSubMain => 'Agente principale';
+
+  @override
+  String get cvSubPath => 'Dove sei';
+
+  @override
+  String get cvSubRow => 'Sotto-agenti';
+
+  @override
+  String get cvSubOpenTab => 'Apri la scheda';
+
+  @override
+  String get cvSubStatusRunning => 'Lavora';
+
+  @override
+  String get cvSubStatusDone => 'Finito';
+
+  @override
+  String get cvSubStatusFailed => 'Fallito';
+
+  @override
+  String get cvSubStatusStopped => 'Fermato';
+
+  @override
+  String get cvSubFresh => 'Novità';
+
+  @override
+  String get cvSubWaits => 'Aspetta il tuo sì';
+
+  @override
+  String get cvSubClose => 'Chiudi la scheda';
+
+  @override
+  String get cvSubTask => 'Compito ricevuto';
+
+  @override
+  String cvSubTaskFrom(String name) {
+    return 'Compito da «$name»';
+  }
+
+  @override
+  String get cvSubEndedDone =>
+      'Ha finito: il suo resoconto è tornato all\'agente che l\'ha lanciato.';
+
+  @override
+  String get cvSubEndedFailed => 'Non ha portato a termine il compito.';
+
+  @override
+  String get cvSubEndedStopped => 'È stato fermato.';
+
+  @override
+  String get cvSubInterrupted =>
+      'Interrotto: il server si è fermato mentre lavorava.';
+
+  @override
+  String cvSubTime(String time) {
+    return '$time';
+  }
+
+  @override
+  String cvSubTools(String n) {
+    return '$n strumenti';
+  }
+
+  @override
+  String cvSubTokens(String n) {
+    return '$n token';
+  }
+
+  @override
+  String get cvSubNoWrite =>
+      'Prende ordini solo dall\'agente che l\'ha lanciato';
+
+  @override
+  String get cvSubStop => 'Ferma';
+
+  @override
+  String get cvCmdStrip => 'Comandi in background';
+
+  @override
+  String cvCmdRunningN(String n) {
+    return '$n in corso';
+  }
+
+  @override
+  String cvCmdDoneN(String n) {
+    return '$n finiti';
+  }
+
+  @override
+  String get cvCmdOpenStrip => 'Mostra i comandi in background';
+
+  @override
+  String get cvCmdShrinkStrip => 'Riduci a una riga';
+
+  @override
+  String cvCmdStartedAt(String at) {
+    return 'Partito alle $at';
+  }
+
+  @override
+  String get cvCmdOutput => 'Output';
+
+  @override
+  String get cvCmdStop => 'Ferma';
+
+  @override
+  String cvCmdFinishedN(String n) {
+    return '$n comandi finiti';
+  }
+
+  @override
+  String get cvCmdRemoveFinished => 'Togli tutti i finiti';
+
+  @override
+  String get cvCmdRemove => 'Togli';
+
+  @override
+  String get cvCmdStatusRunning => 'in corso';
+
+  @override
+  String cvCmdStatusDone(String code) {
+    return 'codice d\'uscita $code';
+  }
+
+  @override
+  String cvCmdStatusFailed(String code) {
+    return 'fallito, codice d\'uscita $code';
+  }
+
+  @override
+  String get cvCmdStatusStopped => 'fermato';
+
+  @override
+  String get cvCmdStatusInterrupted => 'interrotto (RedGiant si era fermato)';
+
+  @override
+  String get cvCmdOutputTitle => 'Comando in background';
+
+  @override
+  String get cvCmdStarted => 'Partito';
+
+  @override
+  String get cvCmdEnded => 'Finito';
+
+  @override
+  String get cvCmdFolder => 'Cartella';
+
+  @override
+  String get cvCmdBy => 'Lanciato da';
+
+  @override
+  String get cvCmdShowTimes => 'Orario di ogni riga';
+
+  @override
+  String cvCmdLines(String n) {
+    return '$n righe';
+  }
+
+  @override
+  String get cvCmdNoLog => 'Il suo registro non c\'è più.';
+
+  @override
+  String get cvRoomAdd => 'Aggiungi un agente';
+
+  @override
+  String cvRoomAnswering(String names) {
+    return '$names sta rispondendo…';
+  }
+
+  @override
+  String get cvRoomEmpty =>
+      'Scrivi a tutti: risponde il primo, oppure chiama qualcuno con @nome. Aggiungere un agente non gli dà nessun accesso in più: quello che scrivono gli altri gli arriva come informazione.';
+
+  @override
+  String get cvRoomFirst => 'risponde per primo';
+
+  @override
+  String get cvRoomGone => 'Questa chat di gruppo non esiste più.';
+
+  @override
+  String get cvRoomGroupPersonal => 'Tuoi';
+
+  @override
+  String cvRoomInspector(String project) {
+    return 'Inspector di $project';
+  }
+
+  @override
+  String cvRoomLead(String project) {
+    return 'Capo di $project';
+  }
+
+  @override
+  String get cvRoomPick => 'Chi?';
+
+  @override
+  String cvRoomRemove(String name) {
+    return 'Togli $name dalla chat';
+  }
+
+  @override
+  String get cvRoomUsageHint =>
+      'Quanto sono costate le sue risposte qui, e quanto è pieno il suo contesto';
+
+  @override
+  String get cvRoomWrite => 'Scrivi al gruppo (@ per chiamare qualcuno)';
+
+  @override
+  String cvRoomJoined(String name) {
+    return '$name è entrato nella chat';
+  }
+
+  @override
+  String cvRoomLeft(String name) {
+    return '$name è uscito dalla chat';
+  }
+
+  @override
+  String get cvGroups => 'Gruppi';
+
+  @override
+  String get cvGroupsEmpty =>
+      'Più agenti in una chat: «Aggiungi un agente» in qualunque conversazione.';
+
+  @override
+  String get cvGroupNew => 'Nuovo gruppo';
+
+  @override
+  String cvChatsArchived(String n) {
+    return 'Archiviate ($n)';
+  }
+
+  @override
+  String get cvChatsBefore => 'Chat di prima';
+
+  @override
+  String get cvArchive => 'Archivia';
+
+  @override
+  String get cvUnarchive => 'Riporta';
+
+  @override
+  String get cvChatHint =>
+      'Chiedi quello che vuoi: la Chat cerca sul web e cita le fonti, crea file, pagine e immagini e te li mostra, e ti propone varianti tra cui scegliere.';
+
+  @override
+  String get cvNewChat => 'Nuova chat';
+
+  @override
+  String get cvDailyChat => 'Chat';
+
+  @override
+  String get cvDelete => 'Elimina';
+
+  @override
+  String get cvDeleteChatConfirm => 'Eliminare questa chat per sempre?';
+
+  @override
+  String get cvChatToGroup =>
+      'Continua in gruppo: aggiungi un agente, che riceve questa chat come contesto';
+
+  @override
+  String get cvAgentModelDefault => 'Il modello predefinito';
+
+  @override
+  String get cvInspector => 'Inspector';
+
+  @override
+  String get cvInspectorHint =>
+      'Chiedi all\'inspector di questo progetto: legge file, git, il log delle attività, i task, la bacheca e il budget, e non cambia niente.';
+
+  @override
+  String get cvInspectorAlerts =>
+      'Avvisami su Telegram quando qualcosa va storto (task abbandonato, budget superato, blocco, automazione fallita)';
+
+  @override
+  String get cvInspectorSummary => 'Riepilogo del giorno alle';
+
+  @override
+  String get cvFolderMove => 'Sposta in una cartella';
+
+  @override
+  String get cvFolderNew => 'Nuova cartella…';
+
+  @override
+  String get cvFolderName => 'Nome della cartella';
+
+  @override
+  String get cvFolderOut => 'Toglila dalla cartella';
+
+  @override
+  String get cvExportMd => 'Esporta in Markdown';
+
+  @override
+  String get cvBoard => 'Bacheca';
+
+  @override
+  String get cvNewThread => 'Nuovo thread';
+
+  @override
+  String get cvTitle => 'Titolo';
+
+  @override
+  String get cvReply => 'Rispondi';
+
+  @override
+  String get cvSearch => 'Cerca';
+
+  @override
+  String get cvSummary => 'Riassunto';
+
+  @override
+  String get cvResolve => 'Risolvi';
+
+  @override
+  String get cvBlock => 'Blocca';
+
+  @override
+  String get cvReopen => 'Riapri';
+
+  @override
+  String get cvPostKinds => 'task,result,question,decision,blocker,note';
+
+  @override
+  String get cvPostKindLabels => 'task,risultato,domanda,decisione,blocco,nota';
+
+  @override
+  String get cvStatusOpen => 'aperto';
+
+  @override
+  String get cvStatusResolved => 'risolto';
+
+  @override
+  String get cvStatusBlocked => 'bloccato';
+
+  @override
+  String get cvEmptyBoard => 'Ancora nessun thread.';
+
+  @override
+  String get cvNoResults => 'Nessun risultato.';
+
+  @override
+  String get cvAgentWholeProject => 'Tutto il progetto';
+
+  @override
+  String get cvBoardSub => 'Sottoprogetto';
+
+  @override
+  String get cvYou => 'Tu';
+
+  @override
+  String get cvScreenTitle => 'Browser degli agenti';
+
+  @override
+  String get cvScreenOpen => 'Schermo';
+
+  @override
+  String get cvScreenTake => 'Prendi il controllo';
+
+  @override
+  String get cvScreenGiveBack => 'Restituisci agli agenti';
+
+  @override
+  String get cvScreenAddress => 'Indirizzo web';
+
+  @override
+  String get cvScreenShared =>
+      'Il browser che i tuoi agenti personali condividono: accedi una volta e tutti possono usare quel sito. Prendi il controllo per accedere: quello che scrivi va solo alla pagina, mai a un agente.';
+
+  @override
+  String get cvScreenYours =>
+      'Ce l\'hai tu: gli agenti aspettano. Clicca e scrivi sullo schermo; restituiscilo quando hai finito.';
+
+  @override
+  String get cvScreenStarting => 'Avvio il browser…';
+
+  @override
+  String get cvScreenUnavailable =>
+      'Il browser degli agenti richiede l\'installazione di RedGiant con Docker.';
+
+  @override
+  String get cvTeachStart => 'Insegna un compito';
+
+  @override
+  String get cvTeachHint =>
+      'Fai tu il compito una volta: ogni pagina, clic e testo viene annotato (mai le password), poi l\'agente ne fa una skill che approvi in Estensioni';
+
+  @override
+  String get cvTeachWho => 'Quale agente lo impara';
+
+  @override
+  String cvTeachRecording(String name) {
+    return 'Registro per $name: fai il compito, poi premi Fine. Le password non vengono mai annotate.';
+  }
+
+  @override
+  String get cvTeachDone => 'Fine';
+
+  @override
+  String get cvTeachTitle => 'Come si chiama questo compito? (facoltativo)';
+
+  @override
+  String get cvChatPlaceholder =>
+      'Scrivi un messaggio (Invio per mandare, Maiusc+Invio per andare a capo)';
+
+  @override
+  String get cvConversations => 'Conversazioni';
+
+  @override
+  String get cvChatInstructions => 'Le istruzioni della Chat';
 }

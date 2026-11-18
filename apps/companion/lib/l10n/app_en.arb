@@ -4406,5 +4406,580 @@
         "type": "String"
       }
     }
+  },
+  "cvSubMain": "Main agent",
+  "@cvSubMain": {
+    "description": "The page's `subMain` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubPath": "Where you are",
+  "@cvSubPath": {
+    "description": "The page's `subPath` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubRow": "Sub-agents",
+  "@cvSubRow": {
+    "description": "The page's `subRow` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubOpenTab": "Open its tab",
+  "@cvSubOpenTab": {
+    "description": "The page's `subOpenTab` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubStatusRunning": "Working",
+  "@cvSubStatusRunning": {
+    "description": "The page's `subStatus_running` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubStatusDone": "Finished",
+  "@cvSubStatusDone": {
+    "description": "The page's `subStatus_done` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubStatusFailed": "Failed",
+  "@cvSubStatusFailed": {
+    "description": "The page's `subStatus_failed` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubStatusStopped": "Stopped",
+  "@cvSubStatusStopped": {
+    "description": "The page's `subStatus_stopped` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubFresh": "Something new",
+  "@cvSubFresh": {
+    "description": "The page's `subFresh` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubWaits": "Waits for your yes",
+  "@cvSubWaits": {
+    "description": "The page's `subWaits` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubClose": "Close the tab",
+  "@cvSubClose": {
+    "description": "The page's `subClose` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubTask": "Task received",
+  "@cvSubTask": {
+    "description": "The page's `subTask` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubTaskFrom": "Task from «{name}»",
+  "@cvSubTaskFrom": {
+    "description": "The page's `subTaskFrom` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvSubEndedDone": "It finished: its report went back to the agent that started it.",
+  "@cvSubEndedDone": {
+    "description": "The page's `subEnded_done` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubEndedFailed": "It did not finish its task.",
+  "@cvSubEndedFailed": {
+    "description": "The page's `subEnded_failed` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubEndedStopped": "It was stopped.",
+  "@cvSubEndedStopped": {
+    "description": "The page's `subEnded_stopped` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubInterrupted": "Interrupted: the server stopped while it worked.",
+  "@cvSubInterrupted": {
+    "description": "The page's `subInterrupted` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubTime": "{time}",
+  "@cvSubTime": {
+    "description": "The page's `subTime` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cvSubTools": "{n} tools",
+  "@cvSubTools": {
+    "description": "The page's `subTools` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvSubTokens": "{n} tokens",
+  "@cvSubTokens": {
+    "description": "The page's `subTokens` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvSubNoWrite": "It takes orders only from the agent that started it",
+  "@cvSubNoWrite": {
+    "description": "The page's `subNoWrite` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSubStop": "Stop",
+  "@cvSubStop": {
+    "description": "The page's `subStop` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdStrip": "Background commands",
+  "@cvCmdStrip": {
+    "description": "The page's `cmdStrip` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdRunningN": "{n} running",
+  "@cvCmdRunningN": {
+    "description": "The page's `cmdRunningN` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvCmdDoneN": "{n} finished",
+  "@cvCmdDoneN": {
+    "description": "The page's `cmdDoneN` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvCmdOpenStrip": "Show the background commands",
+  "@cvCmdOpenStrip": {
+    "description": "The page's `cmdOpenStrip` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdShrinkStrip": "Reduce to one line",
+  "@cvCmdShrinkStrip": {
+    "description": "The page's `cmdShrinkStrip` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdStartedAt": "Started at {at}",
+  "@cvCmdStartedAt": {
+    "description": "The page's `cmdStartedAt` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "at": {
+        "type": "String"
+      }
+    }
+  },
+  "cvCmdOutput": "Output",
+  "@cvCmdOutput": {
+    "description": "The page's `cmdOutput` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdStop": "Stop",
+  "@cvCmdStop": {
+    "description": "The page's `cmdStop` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdFinishedN": "{n} finished commands",
+  "@cvCmdFinishedN": {
+    "description": "The page's `cmdFinishedN` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvCmdRemoveFinished": "Remove all finished",
+  "@cvCmdRemoveFinished": {
+    "description": "The page's `cmdRemoveFinished` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdRemove": "Remove",
+  "@cvCmdRemove": {
+    "description": "The page's `cmdRemove` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdStatusRunning": "running",
+  "@cvCmdStatusRunning": {
+    "description": "The page's `cmdStatus_running` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdStatusDone": "exit code {code}",
+  "@cvCmdStatusDone": {
+    "description": "The page's `cmdStatus_done` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "cvCmdStatusFailed": "failed, exit code {code}",
+  "@cvCmdStatusFailed": {
+    "description": "The page's `cmdStatus_failed` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "cvCmdStatusStopped": "stopped",
+  "@cvCmdStatusStopped": {
+    "description": "The page's `cmdStatus_stopped` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdStatusInterrupted": "interrupted (RedGiant had stopped)",
+  "@cvCmdStatusInterrupted": {
+    "description": "The page's `cmdStatus_interrupted` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdOutputTitle": "Background command",
+  "@cvCmdOutputTitle": {
+    "description": "The page's `cmdOutputTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdStarted": "Started",
+  "@cvCmdStarted": {
+    "description": "The page's `cmdStarted` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdEnded": "Ended",
+  "@cvCmdEnded": {
+    "description": "The page's `cmdEnded` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdFolder": "Folder",
+  "@cvCmdFolder": {
+    "description": "The page's `cmdFolder` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdBy": "Started by",
+  "@cvCmdBy": {
+    "description": "The page's `cmdBy` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdShowTimes": "Times of every line",
+  "@cvCmdShowTimes": {
+    "description": "The page's `cmdShowTimes` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCmdLines": "{n} lines",
+  "@cvCmdLines": {
+    "description": "The page's `cmdLines` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvCmdNoLog": "Its log is not there any more.",
+  "@cvCmdNoLog": {
+    "description": "The page's `cmdNoLog` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvRoomAdd": "Add an agent",
+  "@cvRoomAdd": {
+    "description": "The page's `roomAdd` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvRoomAnswering": "{names} is answering…",
+  "@cvRoomAnswering": {
+    "description": "The page's `roomAnswering` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "cvRoomEmpty": "Write to everyone: the first one answers, or call someone with @name. Adding an agent gives it no new access: what the others write reaches it as information.",
+  "@cvRoomEmpty": {
+    "description": "The page's `roomEmpty` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvRoomFirst": "answers first",
+  "@cvRoomFirst": {
+    "description": "The page's `roomFirst` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvRoomGone": "This group chat no longer exists.",
+  "@cvRoomGone": {
+    "description": "The page's `roomGone` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvRoomGroupPersonal": "Yours",
+  "@cvRoomGroupPersonal": {
+    "description": "The page's `roomGroupPersonal` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvRoomInspector": "Inspector of {project}",
+  "@cvRoomInspector": {
+    "description": "The page's `roomInspector` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "project": {
+        "type": "String"
+      }
+    }
+  },
+  "cvRoomLead": "Lead of {project}",
+  "@cvRoomLead": {
+    "description": "The page's `roomLead` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "project": {
+        "type": "String"
+      }
+    }
+  },
+  "cvRoomPick": "Who?",
+  "@cvRoomPick": {
+    "description": "The page's `roomPick` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvRoomRemove": "Remove {name} from the chat",
+  "@cvRoomRemove": {
+    "description": "The page's `roomRemove` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvRoomUsageHint": "What its answers here cost, and how full its context is",
+  "@cvRoomUsageHint": {
+    "description": "The page's `roomUsageHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvRoomWrite": "Write to the group (@ to call someone)",
+  "@cvRoomWrite": {
+    "description": "The page's `roomWrite` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvRoomJoined": "{name} joined the chat",
+  "@cvRoomJoined": {
+    "description": "The page's `roomJoined` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvRoomLeft": "{name} left the chat",
+  "@cvRoomLeft": {
+    "description": "The page's `roomLeft` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvGroups": "Groups",
+  "@cvGroups": {
+    "description": "The page's `groups` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvGroupsEmpty": "Several agents in one chat: «Add an agent» in any conversation.",
+  "@cvGroupsEmpty": {
+    "description": "The page's `groupsEmpty` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvGroupNew": "New group",
+  "@cvGroupNew": {
+    "description": "The page's `groupNew` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChatsArchived": "Archived ({n})",
+  "@cvChatsArchived": {
+    "description": "The page's `chatsArchived` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvChatsBefore": "Earlier chats",
+  "@cvChatsBefore": {
+    "description": "The page's `chatsBefore` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvArchive": "Archive",
+  "@cvArchive": {
+    "description": "The page's `archive` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvUnarchive": "Bring back",
+  "@cvUnarchive": {
+    "description": "The page's `unarchive` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChatHint": "Ask anything: the Chat searches the web and cites its sources, makes files, pages and pictures and shows them to you, and proposes variants to choose from.",
+  "@cvChatHint": {
+    "description": "The page's `chatHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvNewChat": "New chat",
+  "@cvNewChat": {
+    "description": "The page's `newChat` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvDailyChat": "Chat",
+  "@cvDailyChat": {
+    "description": "The page's `dailyChat` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvDelete": "Delete",
+  "@cvDelete": {
+    "description": "The page's `delete` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvDeleteChatConfirm": "Delete this chat for good?",
+  "@cvDeleteChatConfirm": {
+    "description": "The page's `deleteChatConfirm` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChatToGroup": "Go on as a group: add an agent, which gets this chat as context",
+  "@cvChatToGroup": {
+    "description": "The page's `chatToGroup` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAgentModelDefault": "The default model",
+  "@cvAgentModelDefault": {
+    "description": "The page's `agentModelDefault` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvInspector": "Inspector",
+  "@cvInspector": {
+    "description": "The page's `inspector` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvInspectorHint": "Ask the inspector about this project: it reads files, git, the activity log, tasks, the board and the budget, and changes nothing.",
+  "@cvInspectorHint": {
+    "description": "The page's `inspectorHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvInspectorAlerts": "Tell me on Telegram when something goes wrong (abandoned task, budget exceeded, blocker, failed automation)",
+  "@cvInspectorAlerts": {
+    "description": "The page's `inspectorAlerts` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvInspectorSummary": "Daily summary at",
+  "@cvInspectorSummary": {
+    "description": "The page's `inspectorSummary` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFolderMove": "Move to a folder",
+  "@cvFolderMove": {
+    "description": "The page's `folderMove` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFolderNew": "New folder…",
+  "@cvFolderNew": {
+    "description": "The page's `folderNew` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFolderName": "Folder name",
+  "@cvFolderName": {
+    "description": "The page's `folderName` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFolderOut": "Take it out of the folder",
+  "@cvFolderOut": {
+    "description": "The page's `folderOut` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvExportMd": "Export as Markdown",
+  "@cvExportMd": {
+    "description": "The page's `exportMd` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoard": "Board",
+  "@cvBoard": {
+    "description": "The page's `board` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvNewThread": "New thread",
+  "@cvNewThread": {
+    "description": "The page's `newThread` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvTitle": "Title",
+  "@cvTitle": {
+    "description": "The page's `title` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvReply": "Reply",
+  "@cvReply": {
+    "description": "The page's `reply` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSearch": "Search",
+  "@cvSearch": {
+    "description": "The page's `search` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSummary": "Summary",
+  "@cvSummary": {
+    "description": "The page's `summary` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvResolve": "Resolve",
+  "@cvResolve": {
+    "description": "The page's `resolve` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBlock": "Block",
+  "@cvBlock": {
+    "description": "The page's `block` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvReopen": "Reopen",
+  "@cvReopen": {
+    "description": "The page's `reopen` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPostKinds": "task,result,question,decision,blocker,note",
+  "@cvPostKinds": {
+    "description": "The page's `postKinds` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPostKindLabels": "task,result,question,decision,blocker,note",
+  "@cvPostKindLabels": {
+    "description": "The page's `postKindLabels` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvStatusOpen": "open",
+  "@cvStatusOpen": {
+    "description": "The page's `statusOpen` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvStatusResolved": "resolved",
+  "@cvStatusResolved": {
+    "description": "The page's `statusResolved` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvStatusBlocked": "blocked",
+  "@cvStatusBlocked": {
+    "description": "The page's `statusBlocked` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvEmptyBoard": "No threads yet.",
+  "@cvEmptyBoard": {
+    "description": "The page's `emptyBoard` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvNoResults": "No results.",
+  "@cvNoResults": {
+    "description": "The page's `noResults` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAgentWholeProject": "The whole project",
+  "@cvAgentWholeProject": {
+    "description": "The page's `agentWholeProject` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvBoardSub": "Subproject",
+  "@cvBoardSub": {
+    "description": "The page's `boardSub` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvYou": "You",
+  "@cvYou": {
+    "description": "The page's `you` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvScreenTitle": "Agents' browser",
+  "@cvScreenTitle": {
+    "description": "The page's `screenTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvScreenOpen": "Screen",
+  "@cvScreenOpen": {
+    "description": "The page's `screenOpen` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvScreenTake": "Take control",
+  "@cvScreenTake": {
+    "description": "The page's `screenTake` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvScreenGiveBack": "Give it back to the agents",
+  "@cvScreenGiveBack": {
+    "description": "The page's `screenGiveBack` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvScreenAddress": "Web address",
+  "@cvScreenAddress": {
+    "description": "The page's `screenAddress` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvScreenShared": "The browser your personal agents share: sign in once and every one of them can use that site. Take control to sign in: what you type goes to the page only, never to an agent.",
+  "@cvScreenShared": {
+    "description": "The page's `screenShared` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvScreenYours": "You have control: the agents wait. Click and type on the screen; give it back when you are done.",
+  "@cvScreenYours": {
+    "description": "The page's `screenYours` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvScreenStarting": "Starting the browser…",
+  "@cvScreenStarting": {
+    "description": "The page's `screenStarting` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvScreenUnavailable": "The agents' browser needs RedGiant's Docker installation.",
+  "@cvScreenUnavailable": {
+    "description": "The page's `screenUnavailable` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvTeachStart": "Teach a task",
+  "@cvTeachStart": {
+    "description": "The page's `teachStart` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvTeachHint": "Do the task once yourself: every page, click and text is written down (never passwords), then the agent turns it into a skill you approve in Extensions",
+  "@cvTeachHint": {
+    "description": "The page's `teachHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvTeachWho": "Which agent learns it",
+  "@cvTeachWho": {
+    "description": "The page's `teachWho` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvTeachRecording": "Recording for {name}: do the task, then press Done. Passwords are never written down.",
+  "@cvTeachRecording": {
+    "description": "The page's `teachRecording` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvTeachDone": "Done",
+  "@cvTeachDone": {
+    "description": "The page's `teachDone` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvTeachTitle": "What is this task called? (optional)",
+  "@cvTeachTitle": {
+    "description": "The page's `teachTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChatPlaceholder": "Write a message (Enter to send, Shift+Enter for a new line)",
+  "@cvChatPlaceholder": {
+    "description": "The page's `chatPlaceholder` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvConversations": "Conversations",
+  "@cvConversations": {
+    "description": "The page's `conversations` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChatInstructions": "The Chat's instructions",
+  "@cvChatInstructions": {
+    "description": "The page's `chatInstructions` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   }
 }

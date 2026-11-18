@@ -9,7 +9,9 @@ import '../api/conversation.dart';
 import '../app_state.dart';
 import '../desktop/desk_controller.dart';
 import '../l10n/app_localizations.dart';
+import '../screens/project_board_screen.dart';
 import '../screens/code/project_screen.dart';
+import '../screens/daily_chat_screen.dart';
 import '../screens/project_overview_screen.dart';
 import '../theme/colors.dart';
 import 'dialogs.dart';
@@ -37,7 +39,7 @@ class ProjectPress extends StatelessWidget {
   );
 }
 
-enum _P { open, code, tasks, agents, git, archive, restore }
+enum _P { open, code, tasks, board, inspector, agents, git, archive, restore }
 
 /// [p]'s menu: at [at] on a computer, the sheet without it.
 Future<void> showProjectMenu(BuildContext context, Project p, {Offset? at}) async {
@@ -51,6 +53,10 @@ Future<void> showProjectMenu(BuildContext context, Project p, {Offset? at}) asyn
       RgMenuEntry(_P.code, RgIcons.code, l.pmCode, key: const Key('proj-menu-code')),
     if (desk == null)
       RgMenuEntry(_P.tasks, RgIcons.board, l.pmTasks, key: const Key('proj-menu-tasks')),
+    // G42.3: the project's board and its inspector, as the page's two buttons by the project.
+    RgMenuEntry(_P.board, RgIcons.board, l.cvBoard, key: const Key('proj-menu-board')),
+    if (!p.archived)
+      RgMenuEntry(_P.inspector, RgIcons.eye, l.cvInspector, key: const Key('proj-menu-inspector')),
     if (!p.archived)
       RgMenuEntry(_P.agents, RgIcons.users, l.pmAgents(p.name), key: const Key('proj-menu-agents')),
     if (p.git == false && !p.archived)
@@ -94,6 +100,10 @@ Future<void> showProjectMenu(BuildContext context, Project p, {Offset? at}) asyn
     case _P.tasks:
       await Navigator.of(context)
           .push(MaterialPageRoute<void>(builder: (_) => ProjectScreen(project: p)));
+    case _P.board:
+      await openProjectBoard(context, projectId: p.id, title: '${l.cvBoard} · ${p.name}');
+    case _P.inspector:
+      await openDailyChat(context, projectId: p.id, projectName: p.name);
     case _P.agents:
       app.setTeamFilter(p.id);
       if (desk != null) {

@@ -32,7 +32,20 @@ boardNotFound canvasReload embedPort drawing vwToChat canvasOpen arSection arLea
 arPlacePlatform arPlaceAssistants arOpen arExport arDelete arVersion arNoHeader arLibs arFrom arPending
 arReadOnly arDeleteQ arDeleteText arExportTitle arExportZip arExportZipText arExportHtml arExportHtmlText
 arWhereQ arWhereLead arImported arDataIgnored arDataImported arHasData arExportData arExportDataHint
-arPerms arWants arPermGranted arPermNot arGrant arRevoke arSpent`
+arPerms arWants arPermGranted arPermNot arGrant arRevoke arSpent
+subMain subPath subRow subOpenTab subStatus_running subStatus_done subStatus_failed subStatus_stopped subFresh
+subWaits subClose subTask subTaskFrom subEnded_done subEnded_failed subEnded_stopped subInterrupted subTime
+subTools subTokens subNoWrite subStop cmdStrip cmdRunningN cmdDoneN cmdOpenStrip cmdShrinkStrip cmdStartedAt
+cmdOutput cmdStop cmdFinishedN cmdRemoveFinished cmdRemove cmdStatus_running cmdStatus_done cmdStatus_failed
+cmdStatus_stopped cmdStatus_interrupted cmdOutputTitle cmdStarted cmdEnded cmdFolder cmdBy cmdShowTimes
+cmdLines cmdNoLog roomAdd roomAnswering roomEmpty roomFirst roomGone roomGroupPersonal roomInspector roomLead
+roomPick roomRemove roomUsageHint roomWrite roomJoined roomLeft groups groupsEmpty groupNew chatsArchived
+chatsBefore archive unarchive chatHint newChat dailyChat delete deleteChatConfirm chatToGroup
+agentModelDefault inspector inspectorHint inspectorAlerts inspectorSummary folderMove folderNew folderName
+folderOut exportMd board newThread title reply search summary resolve block reopen postKinds postKindLabels
+statusOpen statusResolved statusBlocked emptyBoard noResults agentWholeProject boardSub you screenTitle
+screenOpen screenTake screenGiveBack screenAddress screenShared screenYours screenStarting screenUnavailable
+teachStart teachHint teachWho teachRecording teachDone teachTitle chatPlaceholder conversations chatInstructions`
   .split(/\s+/)
   .filter(Boolean);
 

@@ -62,7 +62,8 @@ import 'app_localizations_it.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -70,7 +71,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -91,7 +93,10 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('it')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('it'),
+  ];
 
   /// No description provided for @appTitle.
   ///
@@ -9601,7 +9606,12 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{done} of {total} · {speed}/s · {left} left'**
-  String chatFileDownloadOf(String done, String total, String speed, String left);
+  String chatFileDownloadOf(
+    String done,
+    String total,
+    String speed,
+    String left,
+  );
 
   /// No description provided for @chatFileDownloadSoFar.
   ///
@@ -9620,9 +9630,730 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not download {name}'**
   String chatFileDownloadFailed(String name);
+
+  /// The page's `subMain` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Main agent'**
+  String get cvSubMain;
+
+  /// The page's `subPath` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Where you are'**
+  String get cvSubPath;
+
+  /// The page's `subRow` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Sub-agents'**
+  String get cvSubRow;
+
+  /// The page's `subOpenTab` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Open its tab'**
+  String get cvSubOpenTab;
+
+  /// The page's `subStatus_running` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Working'**
+  String get cvSubStatusRunning;
+
+  /// The page's `subStatus_done` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Finished'**
+  String get cvSubStatusDone;
+
+  /// The page's `subStatus_failed` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get cvSubStatusFailed;
+
+  /// The page's `subStatus_stopped` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get cvSubStatusStopped;
+
+  /// The page's `subFresh` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Something new'**
+  String get cvSubFresh;
+
+  /// The page's `subWaits` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Waits for your yes'**
+  String get cvSubWaits;
+
+  /// The page's `subClose` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Close the tab'**
+  String get cvSubClose;
+
+  /// The page's `subTask` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Task received'**
+  String get cvSubTask;
+
+  /// The page's `subTaskFrom` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Task from «{name}»'**
+  String cvSubTaskFrom(String name);
+
+  /// The page's `subEnded_done` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'It finished: its report went back to the agent that started it.'**
+  String get cvSubEndedDone;
+
+  /// The page's `subEnded_failed` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'It did not finish its task.'**
+  String get cvSubEndedFailed;
+
+  /// The page's `subEnded_stopped` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'It was stopped.'**
+  String get cvSubEndedStopped;
+
+  /// The page's `subInterrupted` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Interrupted: the server stopped while it worked.'**
+  String get cvSubInterrupted;
+
+  /// The page's `subTime` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{time}'**
+  String cvSubTime(String time);
+
+  /// The page's `subTools` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{n} tools'**
+  String cvSubTools(String n);
+
+  /// The page's `subTokens` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{n} tokens'**
+  String cvSubTokens(String n);
+
+  /// The page's `subNoWrite` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'It takes orders only from the agent that started it'**
+  String get cvSubNoWrite;
+
+  /// The page's `subStop` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get cvSubStop;
+
+  /// The page's `cmdStrip` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Background commands'**
+  String get cvCmdStrip;
+
+  /// The page's `cmdRunningN` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{n} running'**
+  String cvCmdRunningN(String n);
+
+  /// The page's `cmdDoneN` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{n} finished'**
+  String cvCmdDoneN(String n);
+
+  /// The page's `cmdOpenStrip` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Show the background commands'**
+  String get cvCmdOpenStrip;
+
+  /// The page's `cmdShrinkStrip` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Reduce to one line'**
+  String get cvCmdShrinkStrip;
+
+  /// The page's `cmdStartedAt` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Started at {at}'**
+  String cvCmdStartedAt(String at);
+
+  /// The page's `cmdOutput` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Output'**
+  String get cvCmdOutput;
+
+  /// The page's `cmdStop` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get cvCmdStop;
+
+  /// The page's `cmdFinishedN` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{n} finished commands'**
+  String cvCmdFinishedN(String n);
+
+  /// The page's `cmdRemoveFinished` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Remove all finished'**
+  String get cvCmdRemoveFinished;
+
+  /// The page's `cmdRemove` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get cvCmdRemove;
+
+  /// The page's `cmdStatus_running` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'running'**
+  String get cvCmdStatusRunning;
+
+  /// The page's `cmdStatus_done` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'exit code {code}'**
+  String cvCmdStatusDone(String code);
+
+  /// The page's `cmdStatus_failed` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'failed, exit code {code}'**
+  String cvCmdStatusFailed(String code);
+
+  /// The page's `cmdStatus_stopped` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'stopped'**
+  String get cvCmdStatusStopped;
+
+  /// The page's `cmdStatus_interrupted` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'interrupted (RedGiant had stopped)'**
+  String get cvCmdStatusInterrupted;
+
+  /// The page's `cmdOutputTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Background command'**
+  String get cvCmdOutputTitle;
+
+  /// The page's `cmdStarted` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Started'**
+  String get cvCmdStarted;
+
+  /// The page's `cmdEnded` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Ended'**
+  String get cvCmdEnded;
+
+  /// The page's `cmdFolder` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get cvCmdFolder;
+
+  /// The page's `cmdBy` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Started by'**
+  String get cvCmdBy;
+
+  /// The page's `cmdShowTimes` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Times of every line'**
+  String get cvCmdShowTimes;
+
+  /// The page's `cmdLines` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{n} lines'**
+  String cvCmdLines(String n);
+
+  /// The page's `cmdNoLog` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Its log is not there any more.'**
+  String get cvCmdNoLog;
+
+  /// The page's `roomAdd` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Add an agent'**
+  String get cvRoomAdd;
+
+  /// The page's `roomAnswering` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{names} is answering…'**
+  String cvRoomAnswering(String names);
+
+  /// The page's `roomEmpty` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Write to everyone: the first one answers, or call someone with @name. Adding an agent gives it no new access: what the others write reaches it as information.'**
+  String get cvRoomEmpty;
+
+  /// The page's `roomFirst` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'answers first'**
+  String get cvRoomFirst;
+
+  /// The page's `roomGone` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'This group chat no longer exists.'**
+  String get cvRoomGone;
+
+  /// The page's `roomGroupPersonal` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Yours'**
+  String get cvRoomGroupPersonal;
+
+  /// The page's `roomInspector` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Inspector of {project}'**
+  String cvRoomInspector(String project);
+
+  /// The page's `roomLead` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Lead of {project}'**
+  String cvRoomLead(String project);
+
+  /// The page's `roomPick` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Who?'**
+  String get cvRoomPick;
+
+  /// The page's `roomRemove` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name} from the chat'**
+  String cvRoomRemove(String name);
+
+  /// The page's `roomUsageHint` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'What its answers here cost, and how full its context is'**
+  String get cvRoomUsageHint;
+
+  /// The page's `roomWrite` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Write to the group (@ to call someone)'**
+  String get cvRoomWrite;
+
+  /// The page's `roomJoined` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{name} joined the chat'**
+  String cvRoomJoined(String name);
+
+  /// The page's `roomLeft` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{name} left the chat'**
+  String cvRoomLeft(String name);
+
+  /// The page's `groups` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Groups'**
+  String get cvGroups;
+
+  /// The page's `groupsEmpty` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Several agents in one chat: «Add an agent» in any conversation.'**
+  String get cvGroupsEmpty;
+
+  /// The page's `groupNew` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'New group'**
+  String get cvGroupNew;
+
+  /// The page's `chatsArchived` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Archived ({n})'**
+  String cvChatsArchived(String n);
+
+  /// The page's `chatsBefore` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier chats'**
+  String get cvChatsBefore;
+
+  /// The page's `archive` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get cvArchive;
+
+  /// The page's `unarchive` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Bring back'**
+  String get cvUnarchive;
+
+  /// The page's `chatHint` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Ask anything: the Chat searches the web and cites its sources, makes files, pages and pictures and shows them to you, and proposes variants to choose from.'**
+  String get cvChatHint;
+
+  /// The page's `newChat` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'New chat'**
+  String get cvNewChat;
+
+  /// The page's `dailyChat` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get cvDailyChat;
+
+  /// The page's `delete` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get cvDelete;
+
+  /// The page's `deleteChatConfirm` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this chat for good?'**
+  String get cvDeleteChatConfirm;
+
+  /// The page's `chatToGroup` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Go on as a group: add an agent, which gets this chat as context'**
+  String get cvChatToGroup;
+
+  /// The page's `agentModelDefault` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'The default model'**
+  String get cvAgentModelDefault;
+
+  /// The page's `inspector` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Inspector'**
+  String get cvInspector;
+
+  /// The page's `inspectorHint` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the inspector about this project: it reads files, git, the activity log, tasks, the board and the budget, and changes nothing.'**
+  String get cvInspectorHint;
+
+  /// The page's `inspectorAlerts` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Tell me on Telegram when something goes wrong (abandoned task, budget exceeded, blocker, failed automation)'**
+  String get cvInspectorAlerts;
+
+  /// The page's `inspectorSummary` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Daily summary at'**
+  String get cvInspectorSummary;
+
+  /// The page's `folderMove` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Move to a folder'**
+  String get cvFolderMove;
+
+  /// The page's `folderNew` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'New folder…'**
+  String get cvFolderNew;
+
+  /// The page's `folderName` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Folder name'**
+  String get cvFolderName;
+
+  /// The page's `folderOut` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Take it out of the folder'**
+  String get cvFolderOut;
+
+  /// The page's `exportMd` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Export as Markdown'**
+  String get cvExportMd;
+
+  /// The page's `board` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Board'**
+  String get cvBoard;
+
+  /// The page's `newThread` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'New thread'**
+  String get cvNewThread;
+
+  /// The page's `title` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get cvTitle;
+
+  /// The page's `reply` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Reply'**
+  String get cvReply;
+
+  /// The page's `search` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get cvSearch;
+
+  /// The page's `summary` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get cvSummary;
+
+  /// The page's `resolve` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Resolve'**
+  String get cvResolve;
+
+  /// The page's `block` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get cvBlock;
+
+  /// The page's `reopen` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen'**
+  String get cvReopen;
+
+  /// The page's `postKinds` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'task,result,question,decision,blocker,note'**
+  String get cvPostKinds;
+
+  /// The page's `postKindLabels` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'task,result,question,decision,blocker,note'**
+  String get cvPostKindLabels;
+
+  /// The page's `statusOpen` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'open'**
+  String get cvStatusOpen;
+
+  /// The page's `statusResolved` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'resolved'**
+  String get cvStatusResolved;
+
+  /// The page's `statusBlocked` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'blocked'**
+  String get cvStatusBlocked;
+
+  /// The page's `emptyBoard` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'No threads yet.'**
+  String get cvEmptyBoard;
+
+  /// The page's `noResults` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'No results.'**
+  String get cvNoResults;
+
+  /// The page's `agentWholeProject` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'The whole project'**
+  String get cvAgentWholeProject;
+
+  /// The page's `boardSub` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Subproject'**
+  String get cvBoardSub;
+
+  /// The page's `you` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get cvYou;
+
+  /// The page's `screenTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Agents\' browser'**
+  String get cvScreenTitle;
+
+  /// The page's `screenOpen` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Screen'**
+  String get cvScreenOpen;
+
+  /// The page's `screenTake` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Take control'**
+  String get cvScreenTake;
+
+  /// The page's `screenGiveBack` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Give it back to the agents'**
+  String get cvScreenGiveBack;
+
+  /// The page's `screenAddress` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Web address'**
+  String get cvScreenAddress;
+
+  /// The page's `screenShared` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'The browser your personal agents share: sign in once and every one of them can use that site. Take control to sign in: what you type goes to the page only, never to an agent.'**
+  String get cvScreenShared;
+
+  /// The page's `screenYours` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'You have control: the agents wait. Click and type on the screen; give it back when you are done.'**
+  String get cvScreenYours;
+
+  /// The page's `screenStarting` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Starting the browser…'**
+  String get cvScreenStarting;
+
+  /// The page's `screenUnavailable` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'The agents\' browser needs RedGiant\'s Docker installation.'**
+  String get cvScreenUnavailable;
+
+  /// The page's `teachStart` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Teach a task'**
+  String get cvTeachStart;
+
+  /// The page's `teachHint` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Do the task once yourself: every page, click and text is written down (never passwords), then the agent turns it into a skill you approve in Extensions'**
+  String get cvTeachHint;
+
+  /// The page's `teachWho` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Which agent learns it'**
+  String get cvTeachWho;
+
+  /// The page's `teachRecording` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Recording for {name}: do the task, then press Done. Passwords are never written down.'**
+  String cvTeachRecording(String name);
+
+  /// The page's `teachDone` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get cvTeachDone;
+
+  /// The page's `teachTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'What is this task called? (optional)'**
+  String get cvTeachTitle;
+
+  /// The page's `chatPlaceholder` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Write a message (Enter to send, Shift+Enter for a new line)'**
+  String get cvChatPlaceholder;
+
+  /// The page's `conversations` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations'**
+  String get cvConversations;
+
+  /// The page's `chatInstructions` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'The Chat\'s instructions'**
+  String get cvChatInstructions;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -9631,7 +10362,8 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'it'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'it'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
