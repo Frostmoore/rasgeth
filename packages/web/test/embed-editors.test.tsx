@@ -133,8 +133,7 @@ describe("the four editors, bare, in their shell", () => {
     expect(lastBar()?.readOnly).toBeUndefined();
     // The editor's own keys are marked for the app's (the PDF's at once; the text's, the
     // drawing's and the picture's once their content is there).
-    if (path === "report.pdf")
-      expect(r.container.querySelector("[data-embed-keys]")).toBeTruthy();
+    if (path === "report.pdf") expect(r.container.querySelector("[data-embed-keys]")).toBeTruthy();
   });
 });
 
