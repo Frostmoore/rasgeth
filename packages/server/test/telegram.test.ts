@@ -82,9 +82,7 @@ describe("Demi-God on Telegram", () => {
     s?.core.setDefaultModel(undefined);
     await s?.gateway?.handleUpdate(tg?.text(USER, "Hello") as never);
     await s?.gateway?.idle();
-    expect(tg?.sent(USER).at(-1)?.text).toMatch(
-      /^No model is chosen yet\. Open RedGiant, Settings/,
-    );
+    expect(tg?.sent(USER).at(-1)?.text).toMatch(/^No model is chosen yet\. Open Rasgeth, Settings/);
   });
 
   it("takes a second message while it still answers the first, and says so (G24.14f)", async () => {

@@ -95,7 +95,7 @@ describe("replying to a passage (G36.22)", () => {
     const update = tg.reply(4242, "not this one", 7) as {
       message: Record<string, unknown> & { reply_to_message: Record<string, unknown> };
     };
-    update.message.reply_to_message.from = { id: 1, is_bot: true, first_name: "RedGiant" };
+    update.message.reply_to_message.from = { id: 1, is_bot: true, first_name: "Rasgeth" };
     update.message.reply_to_message.text = "Option one. Option two.";
     update.message.quote = { text: "Option two.", position: 12 };
     await s.gateway?.handleUpdate(update as never);

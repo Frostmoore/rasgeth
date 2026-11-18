@@ -407,7 +407,7 @@ describe("agent-made pages reach no internet (3.5.8)", () => {
     expect(previewOrigins(req("[::1]:8080"))).toContain("https://[::1]:8080");
   });
 
-  it("frames only its own origin on RedGiant's page", async () => {
+  it("frames only its own origin on Rasgeth's page", async () => {
     const web = await mkdtemp(join(tmpdir(), "rg-web-"));
     await mkdir(join(web, "assets"));
     await writeFile(join(web, "index.html"), "<div id=app></div>");

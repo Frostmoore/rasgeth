@@ -91,7 +91,7 @@ describe.runIf(process.platform !== "win32")(
   "machines over SSH (G38.2)",
   { timeout: 30_000 },
   () => {
-    it("adds a machine with a key made by RedGiant: the private half only in the keychain", async () => {
+    it("adds a machine with a key made by Rasgeth: the private half only in the keychain", async () => {
       const { server, home, target } = await setup();
       const add = await server.api<MachineView>("POST", "/api/settings/machines", {
         name: "web",

@@ -268,7 +268,7 @@ describe.skipIf(process.platform === "win32")("bash", () => {
     });
   });
 
-  it("puts RedGiant's own programs on the agents' PATH: ffmpeg first, the others last (p3.3.1)", async () => {
+  it("puts Rasgeth's own programs on the agents' PATH: ffmpeg first, the others last (p3.3.1)", async () => {
     try {
       shareProgramDir("/rg/tools/ffmpeg", "first");
       shareProgramDir("/rg/tools/libreoffice/program");
@@ -299,7 +299,7 @@ describe.skipIf(process.platform === "win32")("bash", () => {
   it("tells the agent when the project has no git repository (3.5.12), never silently", async () => {
     const table: [string, boolean][] = [
       ["fatal: not a git repository (or any of the parent directories): .git", true],
-      ["Fatal: Not a git repository: '/c/Users/Me/RedGiant/workspaces/me/shop'", true],
+      ["Fatal: Not a git repository: '/c/Users/Me/Rasgeth/workspaces/me/shop'", true],
       ["fatal: pathspec 'x' did not match any files", false],
       ["", false],
     ];
@@ -314,7 +314,7 @@ describe.skipIf(process.platform === "win32")("bash", () => {
   });
 });
 
-describe.runIf(process.platform === "win32")("the terminal on Windows (RedGiant 3.0)", () => {
+describe.runIf(process.platform === "win32")("the terminal on Windows (Rasgeth 3.0)", () => {
   it("opens the agents' shell in a real console and runs what is typed", async () => {
     const term = await ws.openTerminal({ cols: 100, rows: 30 });
     let out = "";
@@ -370,17 +370,21 @@ describe("web tools", () => {
 
   it("searches with SearXNG and explains when search is not configured", async () => {
     const fake = (async (url: string) => {
-      expect(url).toBe("http://searx:8080/search?format=json&q=red%20giant");
+      expect(url).toBe("http://searx:8080/search?format=json&q=betelgeuse");
       return Response.json({
         results: [
-          { title: "Red giant", url: "https://en.wikipedia.org/wiki/Red_giant", content: "A star" },
+          {
+            title: "Betelgeuse",
+            url: "https://en.wikipedia.org/wiki/Betelgeuse",
+            content: "A star",
+          },
         ],
       });
     }) as unknown as typeof fetch;
-    const r = await run("web_search", { query: "red giant" }, [
+    const r = await run("web_search", { query: "betelgeuse" }, [
       webSearchTool(new SearxngSearch("http://searx:8080/", fake), "full"),
     ] as Tool[]);
-    expect(r.content).toBe("1. Red giant\n   https://en.wikipedia.org/wiki/Red_giant\n   A star");
+    expect(r.content).toBe("1. Betelgeuse\n   https://en.wikipedia.org/wiki/Betelgeuse\n   A star");
     expect((await run("web_search", { query: "x" })).isError).toBe(true);
   });
 

@@ -281,7 +281,7 @@ describe("the Proxmox host's commands (pure, p3.7.2)", () => {
 
 describe("shared folders over SMB (pure, p3.7.2)", () => {
   it.each([
-    ["\\\\nas\\backup\\RedGiant", { host: "nas", share: "backup", folder: "RedGiant" }],
+    ["\\\\nas\\backup\\Rasgeth", { host: "nas", share: "backup", folder: "Rasgeth" }],
     ["//NAS.home.lan/backup", { host: "nas.home.lan", share: "backup", folder: "" }],
     [
       "smb://192.168.1.20/Public/a b/c/",
@@ -439,7 +439,7 @@ describe("backups to an SMB share (a fake smbclient, p3.7.2)", () => {
       smbTarget({
         host: "nas",
         share: "backup",
-        folder: "RedGiant/casa",
+        folder: "Rasgeth/casa",
         user: "severino",
         password: PASSWORD,
         privateDir: priv,
@@ -451,7 +451,7 @@ describe("backups to an SMB share (a fake smbclient, p3.7.2)", () => {
         kind: "smb",
         host: "nas",
         share: "backup",
-        folder: "RedGiant/casa",
+        folder: "Rasgeth/casa",
         user: "severino",
       },
       schedule: { every: "daily", hour: 3, keep: 2 },
@@ -475,7 +475,7 @@ describe("backups to an SMB share (a fake smbclient, p3.7.2)", () => {
       now = new Date(`2026-11-${day}T03:01:00`).getTime();
       expect(await sch.tick()).toBe("ran");
     }
-    const base = join(share, "RedGiant", "casa");
+    const base = join(share, "Rasgeth", "casa");
     expect((await readdir(base)).sort()).toEqual([
       "RedGiant-backup-2026-11-14",
       "RedGiant-backup-2026-11-15",
@@ -614,8 +614,8 @@ const job = (server: Server, id: string) =>
 describe("backups to one of the person's machines over SFTP (p3.7.2)", () => {
   it("resolves the folder there: absolute, from the home, a Windows drive; never climbing", () => {
     expect(sftpFolder("/home/deploy", "~/backups/")).toBe("/home/deploy/backups");
-    expect(sftpFolder("/home/deploy", "/volume1/RedGiant")).toBe("/volume1/RedGiant");
-    expect(sftpFolder("/C:/Users/me", "E:\\Backup RedGiant")).toBe("/E:/Backup RedGiant");
+    expect(sftpFolder("/home/deploy", "/volume1/Rasgeth")).toBe("/volume1/Rasgeth");
+    expect(sftpFolder("/C:/Users/me", "E:\\Backup Rasgeth")).toBe("/E:/Backup Rasgeth");
     expect(sftpFolder("/home/deploy", "backups")).toBeNull();
     expect(sftpFolder("/home/deploy", "/volume1/../etc")).toBeNull();
   });
@@ -635,14 +635,14 @@ describe("backups to one of the person's machines over SFTP (p3.7.2)", () => {
     expect(bad.body.code).toBe("bad_path");
     const ok = await server.api<BackupSettings>("PUT", "/api/setup/backups/sftp", {
       machineId: m.id,
-      path: "~/RedGiant",
+      path: "~/Rasgeth",
     });
     expect(ok.status).toBe(200);
     expect(ok.body.destination).toEqual({
       kind: "sftp",
       machineId: m.id,
       machineName: "nas",
-      path: "~/RedGiant",
+      path: "~/Rasgeth",
     });
     const run = await server.api<{ started: boolean }>("POST", "/api/setup/backups/run");
     expect(run.body.started).toBe(true);
@@ -651,17 +651,17 @@ describe("backups to one of the person's machines over SFTP (p3.7.2)", () => {
       return st.body.backups.last;
     }, 60_000);
     expect(last).toMatchObject({ ok: true });
-    const folders = (await readdir(join(home, "RedGiant"))).sort();
+    const folders = (await readdir(join(home, "Rasgeth"))).sort();
     expect(folders).toEqual([
-      expect.stringMatching(/^RedGiant-backup-\d{4}-\d{2}-\d{2}$/),
+      expect.stringMatching(/^Rasgeth-backup-\d{4}-\d{2}-\d{2}$/),
       MADE_FILE,
     ]);
-    const inside = await readdir(join(home, "RedGiant", folders[0] as string));
+    const inside = await readdir(join(home, "Rasgeth", folders[0] as string));
     expect(inside).toEqual([expect.stringMatching(/^redgiant-3\.7\.2-\d{4}\.rgbackup$/)]);
     const list = await server.api<{ backups: BackupEntry[] }>("GET", "/api/setup/backups/list");
     expect(list.body.backups).toHaveLength(1);
     expect(list.body.backups[0]?.bytes).toBe(
-      (await stat(join(home, "RedGiant", folders[0] as string, inside[0] as string))).size,
+      (await stat(join(home, "Rasgeth", folders[0] as string, inside[0] as string))).size,
     );
     const r = await server.api<Job>("POST", "/api/setup/backups/restore", {
       id: list.body.backups[0]?.id,
@@ -677,7 +677,7 @@ describe("backups to one of the person's machines over SFTP (p3.7.2)", () => {
   it("a machine that is off: the backup fails with a clear message, nothing written here", async () => {
     const { server, home, target, setup } = await withServer();
     const { m } = await trustedMachine(server, target, home);
-    await server.api("PUT", "/api/setup/backups/sftp", { machineId: m.id, path: "~/RedGiant" });
+    await server.api("PUT", "/api/setup/backups/sftp", { machineId: m.id, path: "~/Rasgeth" });
     // Off: nothing listens on its port any more (refused at once, on every system).
     target.port = await freePort();
     expect(await setup.scheduler?.runNow()).toBe("failed");
@@ -703,7 +703,7 @@ describe("an SMB share chosen in the page (p3.7.2)", () => {
     });
     expect(bad.body.code).toBe("smb_address");
     const ok = await server.api<BackupSettings>("PUT", "/api/setup/backups/smb", {
-      address: "\\\\nas\\backup\\RedGiant",
+      address: "\\\\nas\\backup\\Rasgeth",
       user: "severino",
       password: PASSWORD,
     });
@@ -712,7 +712,7 @@ describe("an SMB share chosen in the page (p3.7.2)", () => {
       kind: "smb",
       host: "nas",
       share: "backup",
-      folder: "RedGiant",
+      folder: "Rasgeth",
       user: "severino",
     });
     expect(JSON.stringify(ok.body)).not.toContain(PASSWORD);

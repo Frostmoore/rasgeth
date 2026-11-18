@@ -26,7 +26,7 @@ const temp = async (name: string) => {
 const profileOf = (args: string[]) =>
   args.find((a) => a.startsWith("-env:UserInstallation="))?.slice("-env:UserInstallation=".length);
 
-describe("RedGiant's own LibreOffice runs", () => {
+describe("Rasgeth's own LibreOffice runs", () => {
   it("never share a profile, and never show a window", async () => {
     const root = await temp("rg-lo-");
     await mkdir(join(root, "docs"), { recursive: true });
@@ -193,7 +193,7 @@ describe("the agents' soffice", () => {
   it("on Windows: Git's bash script and the .cmd for PowerShell, paths with spaces quoted", () => {
     const files = officeLaunchers(
       "C:\\Program Files\\LibreOffice\\program\\soffice.com",
-      "C:\\Users\\Ana Rossi\\AppData\\Local\\RedGiant 100%\\tools\\libreoffice-agents",
+      "C:\\Users\\Ana Rossi\\AppData\\Local\\Rasgeth 100%\\tools\\libreoffice-agents",
       "win32",
     );
     expect(files.map((f) => f.name)).toEqual([
@@ -205,7 +205,7 @@ describe("the agents' soffice", () => {
     const sh = files[0]?.content ?? "";
     expect(sh).toContain("real='C:/Program Files/LibreOffice/program/soffice.com'");
     expect(sh).toContain(
-      "url='file:///C:/Users/Ana%20Rossi/AppData/Local/RedGiant%20100%25/tools/libreoffice-agents'",
+      "url='file:///C:/Users/Ana%20Rossi/AppData/Local/Rasgeth%20100%25/tools/libreoffice-agents'",
     );
     const cmd = files[2]?.content ?? "";
     expect(cmd.split("\r\n")).toContain(
@@ -213,9 +213,9 @@ describe("the agents' soffice", () => {
     );
     // Percent signs of the paths are doubled (a .cmd would expand them), the URL's too.
     expect(cmd).toContain(
-      'set "RG_BASE=C:\\Users\\Ana Rossi\\AppData\\Local\\RedGiant 100%%\\tools\\libreoffice-agents"',
+      'set "RG_BASE=C:\\Users\\Ana Rossi\\AppData\\Local\\Rasgeth 100%%\\tools\\libreoffice-agents"',
     );
-    expect(cmd).toContain("RedGiant%%20100%%25");
+    expect(cmd).toContain("Rasgeth%%20100%%25");
     // Never anything of the server's environment.
     expect(cmd).not.toMatch(/TOKEN|KEY|SECRET/i);
     expect(sh).not.toMatch(/TOKEN|KEY|SECRET/i);

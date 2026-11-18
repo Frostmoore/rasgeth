@@ -176,7 +176,7 @@ describe("the artifacts' bridge", () => {
     expect(seen[0]?.tool).toBe(ARTIFACT_GRANT_TOOL);
     expect(seen[0]?.danger).toEqual([]);
     expect(requestSentence("it", seen[0]?.tool ?? "", seen[0]?.input)).toBe(
-      "L'artefatto «Cruscotto» chiede di tenere dati suoi su RedGiant (solo testo, fino a 5 MB)",
+      "L'artefatto «Cruscotto» chiede di tenere dati suoi su Rasgeth (solo testo, fino a 5 MB)",
     );
     expect(
       await b.handle("me", ref("artefatti/cruscotto.html"), { op: "storage.get", key: "k" }),

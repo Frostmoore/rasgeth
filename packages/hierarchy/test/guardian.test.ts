@@ -240,13 +240,13 @@ describe("the archived projects' folders (p3.5.3)", () => {
 
   it("Windows: a bash command naming the folder with either slash, any case (CI on Windows)", () => {
     const win = {
-      roots: ["C:\\Users\\me\\RedGiant\\platform"],
-      locked: [{ path: "C:\\Users\\me\\RedGiant\\workspaces\\shop", project: "Shop" }],
+      roots: ["C:\\Users\\me\\Rasgeth\\platform"],
+      locked: [{ path: "C:\\Users\\me\\Rasgeth\\workspaces\\shop", project: "Shop" }],
     };
     for (const command of [
-      "cd C:\\Users\\me\\RedGiant\\workspaces\\shop && touch x",
+      "cd C:\\Users\\me\\Rasgeth\\workspaces\\shop && touch x",
       'cd "c:/users/me/redgiant/workspaces/Shop" && ls',
-      "rm C:/Users/me/RedGiant/workspaces/shop/a.txt",
+      "rm C:/Users/me/Rasgeth/workspaces/shop/a.txt",
     ])
       expect(
         lockedWrites({ callId: "c", name: "bash", input: { command } }, win),
@@ -257,7 +257,7 @@ describe("the archived projects' folders (p3.5.3)", () => {
         {
           callId: "c",
           name: "bash",
-          input: { command: "ls C:/Users/me/RedGiant/workspaces/shopping" },
+          input: { command: "ls C:/Users/me/Rasgeth/workspaces/shopping" },
         },
         win,
       ),
@@ -266,37 +266,37 @@ describe("the archived projects' folders (p3.5.3)", () => {
 
   // p3.5.4, the 3.5.3 test: `echo prova > …/collaudo-3-5-1/prova-archivio.txt` wrote (exit 0) with
   // Git Bash's path. Every way of naming the folder, and going into it, is refused.
-  const shop = "C:\\Users\\me\\RedGiant\\workspaces\\shop";
+  const shop = "C:\\Users\\me\\Rasgeth\\workspaces\\shop";
   const gitBash = {
-    roots: ["C:\\Users\\me\\RedGiant\\workspaces\\new"],
+    roots: ["C:\\Users\\me\\Rasgeth\\workspaces\\new"],
     home: "C:\\Users\\me",
     locked: [{ path: shop, project: "Shop" }],
   };
   const GIT_BASH: [string, string[]][] = [
     [
-      "echo prova > /c/Users/me/RedGiant/workspaces/shop/prova-archivio.txt",
+      "echo prova > /c/Users/me/Rasgeth/workspaces/shop/prova-archivio.txt",
       [`${shop}\\prova-archivio.txt`],
     ],
     [
       "echo prova > /C/users/me/redgiant/workspaces/Shop/a.txt",
       ["C:\\users\\me\\redgiant\\workspaces\\Shop\\a.txt"],
     ],
-    ["touch /cygdrive/c/Users/me/RedGiant/workspaces/shop/a", [`${shop}\\a`]],
-    ["rm /mnt/c/Users/me/RedGiant/workspaces/shop/a", [`${shop}\\a`]],
-    ["echo x > ~/RedGiant/workspaces/shop/a.txt", [`${shop}\\a.txt`]],
-    ["echo x > $HOME/RedGiant/workspaces/shop/a.txt", [`${shop}\\a.txt`]],
-    ['echo x > "${HOME}/RedGiant/workspaces/shop/a.txt"', [`${shop}\\a.txt`]],
-    ["echo x > $USERPROFILE/RedGiant/workspaces/shop/a.txt", [`${shop}\\a.txt`]],
+    ["touch /cygdrive/c/Users/me/Rasgeth/workspaces/shop/a", [`${shop}\\a`]],
+    ["rm /mnt/c/Users/me/Rasgeth/workspaces/shop/a", [`${shop}\\a`]],
+    ["echo x > ~/Rasgeth/workspaces/shop/a.txt", [`${shop}\\a.txt`]],
+    ["echo x > $HOME/Rasgeth/workspaces/shop/a.txt", [`${shop}\\a.txt`]],
+    ['echo x > "${HOME}/Rasgeth/workspaces/shop/a.txt"', [`${shop}\\a.txt`]],
+    ["echo x > $USERPROFILE/Rasgeth/workspaces/shop/a.txt", [`${shop}\\a.txt`]],
     // Going there first, then a plain name: the command must not even start there.
-    ["cd /c/Users/me/RedGiant/workspaces/shop && echo x > a.txt", [shop]],
+    ["cd /c/Users/me/Rasgeth/workspaces/shop && echo x > a.txt", [shop]],
     ["cd .. ; cd shop ; echo x > a.txt", [shop]],
     ["cd ../shop && echo x > a.txt", [shop]],
-    ["cd ~/RedGiant/workspaces && cd shop && touch a", [shop]],
-    ["pushd /c/Users/me/RedGiant/workspaces/shop && touch a", [shop]],
+    ["cd ~/Rasgeth/workspaces && cd shop && touch a", [shop]],
+    ["pushd /c/Users/me/Rasgeth/workspaces/shop && touch a", [shop]],
     // Elsewhere, and a folder with a longer name: free.
-    ["echo x > /c/Users/me/RedGiant/workspaces/new/a.txt", []],
+    ["echo x > /c/Users/me/Rasgeth/workspaces/new/a.txt", []],
     ["cd .. && cd shopping && touch a", []],
-    ["echo x > /c/Users/me/RedGiant/workspaces/shopping/a.txt", []],
+    ["echo x > /c/Users/me/Rasgeth/workspaces/shopping/a.txt", []],
   ];
   for (const [command, expected] of GIT_BASH)
     it(`Windows, Git Bash: ${command}`, () => {
@@ -307,9 +307,9 @@ describe("the archived projects' folders (p3.5.3)", () => {
 
   it("Windows, Git Bash: the file tools and the editor with such a path are refused too", () => {
     for (const [name, input] of [
-      ["write_file", { path: "/c/Users/me/RedGiant/workspaces/shop/a.txt", content: "x" }],
-      ["edit_file", { path: "~/RedGiant/workspaces/shop/a.txt" }],
-      ["canvas_edit", { path: "/c/Users/me/RedGiant/workspaces/shop/a.pdf", ops: [] }],
+      ["write_file", { path: "/c/Users/me/Rasgeth/workspaces/shop/a.txt", content: "x" }],
+      ["edit_file", { path: "~/Rasgeth/workspaces/shop/a.txt" }],
+      ["canvas_edit", { path: "/c/Users/me/Rasgeth/workspaces/shop/a.pdf", ops: [] }],
     ] as const)
       expect(lockedWrites({ callId: "c", name, input }, gitBash), name).not.toEqual([]);
   });

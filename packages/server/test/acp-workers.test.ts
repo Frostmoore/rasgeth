@@ -83,7 +83,7 @@ const said = (list: Event[]) =>
     .join("");
 
 describe("external ACP agents as workers (G38.6)", () => {
-  it("refuses secrets in its variables, and its program sees none of RedGiant's", async () => {
+  it("refuses secrets in its variables, and its program sees none of Rasgeth's", async () => {
     process.env.ANTHROPIC_API_KEY = "sk-ant-test-0000000000000000000000";
     process.env.REDGIANT_TOKEN = "server-token-never-for-agents";
     try {
@@ -101,7 +101,7 @@ describe("external ACP agents as workers (G38.6)", () => {
           env,
         });
         expect(bad.status).toBe(400);
-        expect(bad.body.error).toMatch(/keychain|RedGiant's own/);
+        expect(bad.body.error).toMatch(/keychain|Rasgeth's own/);
       }
       const list = (
         await api<{ workers: { agentId: string; env: Record<string, string> }[] }>(

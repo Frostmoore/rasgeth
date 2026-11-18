@@ -88,7 +88,7 @@ describe("seed and choices", () => {
     expect(MascotSpecSchema.parse(mascotSpec("Chat", "assistant"))).toBeTruthy();
   });
 
-  it("keeps 200 agents of one RedGiant all different, and gives them back the same seeds", () => {
+  it("keeps 200 agents of one Rasgeth all different, and gives them back the same seeds", () => {
     const names = Array.from(
       { length: 200 },
       (_, i) => `Agent ${i} ${["web", "mail", "data", "ops"][i % 4]}`,

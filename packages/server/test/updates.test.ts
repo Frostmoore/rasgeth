@@ -123,7 +123,7 @@ describe("the version an installation was born with (what is new after an update
   });
 });
 
-describe("RedGiant.exe's update in the page (3.8.1)", () => {
+describe("Rasgeth.exe's update in the page (3.8.1)", () => {
   const now = new Date("2026-11-15T10:00:30Z");
   const p = (o: Record<string, unknown> = {}) =>
     JSON.stringify({
@@ -179,7 +179,7 @@ describe("the update watcher", () => {
       note,
       canUpdateHere: true,
     });
-    expect(s.downloadUrl).toMatch(/RedGiant-Setup\.exe$/);
+    expect(s.downloadUrl).toMatch(/Rasgeth-Setup\.exe$/);
     expect(w.held).toBe(true);
     const forApp = JSON.parse(
       await readFile(join(w.status().backupDir as string, "..", "update-required.json"), "utf8"),
@@ -338,7 +338,7 @@ describe("the safety backup of a breaking update", () => {
     expect(job.state).toBe("done");
     expect(job.steps.map((s) => s.id)).toEqual(["data", "conversations", "files", "verify"]);
     const file = job.vars.path as string;
-    expect(file.startsWith(join(docs, "RedGiant-backup-"))).toBe(true);
+    expect(file.startsWith(join(docs, "Rasgeth-backup-"))).toBe(true);
     expect(file).toMatch(/redgiant-3\.4\.0-\d{4}\.rgbackup$/);
     expect(existsSync(join(job.vars.folder as string, "LEGGIMI-README.txt"))).toBe(true);
     const check = await verifyBackup(file);

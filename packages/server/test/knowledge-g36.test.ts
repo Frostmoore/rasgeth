@@ -404,10 +404,10 @@ describe("agents and the knowledge (G36.5)", () => {
   });
 
   it("tells a folder inside another, also across Windows drives", () => {
-    expect(within("C:\\RedGiant\\data", "C:\\RedGiant\\data\\x", win32)).toBe(true);
-    expect(within("C:\\RedGiant\\data", "C:\\RedGiant\\data", win32)).toBe(true);
-    expect(within("C:\\RedGiant\\data", "D:\\a\\docs", win32)).toBe(false);
-    expect(within("D:\\a\\docs", "C:\\RedGiant\\data", win32)).toBe(false);
+    expect(within("C:\\Rasgeth\\data", "C:\\Rasgeth\\data\\x", win32)).toBe(true);
+    expect(within("C:\\Rasgeth\\data", "C:\\Rasgeth\\data", win32)).toBe(true);
+    expect(within("C:\\Rasgeth\\data", "D:\\a\\docs", win32)).toBe(false);
+    expect(within("D:\\a\\docs", "C:\\Rasgeth\\data", win32)).toBe(false);
     expect(within("/data", "/data2", posix)).toBe(false);
     expect(within("/", "/data", posix)).toBe(true);
   });

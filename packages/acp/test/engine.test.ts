@@ -54,7 +54,7 @@ function turnOf(
   const t: EngineTurn = {
     text,
     images: [],
-    system: "RedGiant's system prompt",
+    system: "Rasgeth's system prompt",
     tools: (o.tools ?? []).map((name) => ({
       name,
       description: name,
@@ -94,7 +94,7 @@ async function until(f: () => boolean) {
   expect(f()).toBe(true);
 }
 
-describe("AcpEngine: an external ACP agent as a RedGiant engine (G38.6)", () => {
+describe("AcpEngine: an external ACP agent as a Rasgeth engine (G38.6)", () => {
   it("streams a turn: text, thinking, a tool call and its result, in order, then ends", async () => {
     const h = harness();
     h.agent.script = [
@@ -113,7 +113,7 @@ describe("AcpEngine: an external ACP agent as a RedGiant engine (G38.6)", () => 
     ]);
     // The first prompt carries the short prelude, then the task.
     expect(h.agent.prompts[0]?.text).toMatch(
-      /You work for RedGiant as "Claude Code"[\s\S]*---\n\nExplain a\.ts$/,
+      /You work for Rasgeth as "Claude Code"[\s\S]*---\n\nExplain a\.ts$/,
     );
     expect(log).toEqual([
       "message thinking:Let me look. | text:Reading the file. ",
@@ -134,7 +134,7 @@ describe("AcpEngine: an external ACP agent as a RedGiant engine (G38.6)", () => 
     expect(h.launches()).toBe(1);
   });
 
-  it("asks RedGiant's broker for every permission, never allowing by itself, and maps the answer", async () => {
+  it("asks Rasgeth's broker for every permission, never allowing by itself, and maps the answer", async () => {
     const h = harness({ allow: (c) => c.name === "bash" });
     h.agent.script = [
       { tool: "t1", kind: "execute", title: "npm test", rawInput: { command: "npm test" } },
@@ -213,7 +213,7 @@ describe("AcpEngine: an external ACP agent as a RedGiant engine (G38.6)", () => 
     ]);
     expect(h.agent.answers[0]).toBe("two\nthree");
     expect(String(h.agent.answers[1])).toMatch(/outside this agent's folder/);
-    expect(String(h.agent.answers[3])).toMatch(/RedGiant refused: the person said no/);
+    expect(String(h.agent.answers[3])).toMatch(/Rasgeth refused: the person said no/);
     expect(h.files.get("src/new.ts")).toBe("export {}");
     expect(h.files.has("locked.txt")).toBe(false);
     // Outside paths never reach the broker nor the disk.
@@ -261,7 +261,7 @@ describe("AcpEngine: an external ACP agent as a RedGiant engine (G38.6)", () => 
     expect(h.agent.prompts[0]?.text).toMatch(/earlier conversation could not be reopened/);
   });
 
-  it("closes its task through complete_task (RD17): the line becomes RedGiant's tool, retried on failure", async () => {
+  it("closes its task through complete_task (RD17): the line becomes Rasgeth's tool, retried on failure", async () => {
     const h = harness();
     const calls: unknown[] = [];
     let first = true;

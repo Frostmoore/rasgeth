@@ -164,7 +164,7 @@ describe("chat bridge (G29.5)", () => {
     };
     await send({ audio: { data: new Uint8Array([1]), mime: "audio/ogg" } });
     expect(t.texts().join("")).toBe(
-      "Groq ha rifiutato la chiave: controllala in RedGiant, Impostazioni, Voce.",
+      "Groq ha rifiutato la chiave: controllala in Rasgeth, Impostazioni, Voce.",
     );
   });
 
@@ -206,7 +206,7 @@ describe("chat bridge (G29.5)", () => {
     expect(t.sent.at(-1)?.text.split("\n")).toEqual([
       "Approval needed: God asks for your yes",
       "Archives the project “Collaudo 3.5.3”: its agents stop and nobody changes its files until you restore it.",
-      "Danger: Changing RedGiant itself",
+      "Danger: Changing Rasgeth itself",
       'Details: platform_project {"action":"archive","project_id":"proj_7"}',
     ]);
   });

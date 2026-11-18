@@ -1,5 +1,5 @@
 {
-  "about": "Known questions over docs/ (written for RedGiant, CC0). Each names the file that answers it. Some use the files' words, some say it otherwise or in the other language.",
+  "about": "Known questions over docs/ (written for Rasgeth, CC0). Each names the file that answers it. Some use the files' words, some say it otherwise or in the other language.",
   "questions": [
     { "q": "A che ora il guardiano accende la lampada?", "doc": "faro.md" },
     { "q": "When does the lighthouse keeper switch on the light?", "doc": "faro.md" },

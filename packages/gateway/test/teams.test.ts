@@ -178,10 +178,7 @@ describe("TeamsTransport", () => {
     await t.start(async (m) => {
       got.push(m);
     });
-    await t.webhook(
-      JSON.stringify(msg({ text: "<at>RedGiant</at> <p>/start 123456</p>" })),
-      good(),
-    );
+    await t.webhook(JSON.stringify(msg({ text: "<at>Rasgeth</at> <p>/start 123456</p>" })), good());
     await t.webhook(
       JSON.stringify(msg({ text: "", value: { rgButton: "perm:r1:allow" } })),
       good(),

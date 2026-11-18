@@ -23,7 +23,7 @@ describe.skipIf(!env.REDGIANT_LIVE_LLAMACPP_URL || !env.REDGIANT_LIVE_KV_DIR)(
         new LocalEngineProvider({ baseURL: url, kv: new KvStore(env.REDGIANT_LIVE_KV_DIR ?? "") });
       const doc = Array.from(
         { length: 110 },
-        (_, i) => `Line ${i}: RedGiant saves the KV cache on the SSD.`,
+        (_, i) => `Line ${i}: Rasgeth saves the KV cache on the SSD.`,
       ).join(" ");
       const base = {
         model: "default",

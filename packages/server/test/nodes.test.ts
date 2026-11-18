@@ -528,7 +528,7 @@ describe("using a node (G39.4)", () => {
     expect(list.body.files[0]?.size).toBe(b.body.bytes);
   }, 90_000);
 
-  it("scheduled backups of the whole RedGiant go to the node's storage, checked, and come back (p3.7.2)", async () => {
+  it("scheduled backups of the whole Rasgeth go to the node's storage, checked, and come back (p3.7.2)", async () => {
     const severino = await machine("severino");
     const rig = await machine("rig");
     const { n } = await pairUp(severino, rig, ["use"]);

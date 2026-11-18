@@ -490,13 +490,13 @@ const TABLE: Case[] = [
   // RedGiant's own protections.
   ["changing the permission policy", "platform_policy", { humanOnly: [] }, "critical-protections"],
   [
-    "promoting RedGiant's code",
+    "promoting Rasgeth's code",
     "platform_code_promote",
     { change_id: "c1" },
     "critical-protections",
   ],
   [
-    "writing RedGiant's settings file",
+    "writing Rasgeth's settings file",
     "write_file",
     { path: "/data/redgiant.yaml", content: "guardian: auto" },
     "critical-protections",
@@ -809,7 +809,7 @@ const TABLE: Case[] = [
     { ...LINUX, protectedPaths: ["/data/secrets.json", "/data/keychain", "/data/postgres"] },
   ],
   [
-    "artifact reads RedGiant's secrets.json",
+    "artifact reads Rasgeth's secrets.json",
     "artifact_read",
     { path: "/data/secrets.json" },
     "critical-secret",
@@ -909,7 +909,7 @@ describe("the policy and the critical requests", () => {
     expect(e.critical).toEqual(["critical-secret"]);
   });
 
-  it("the keychain's values and RedGiant's files come from the settings", () => {
+  it("the keychain's values and Rasgeth's files come from the settings", () => {
     const e = evaluate(
       "auto",
       call("echo correct-horse-battery"),
@@ -992,7 +992,7 @@ describe("what the person reads (p3.5.4)", () => {
       "Preme «Paga ora» nel browser: un pagamento con soldi veri",
     ]);
     expect(said("platform_policy", { rules: [] })).toEqual([
-      "Cambia le regole dei permessi di RedGiant",
+      "Cambia le regole dei permessi di Rasgeth",
     ]);
     expect(said("bash", { command: "sudo rm -rf /etc/nginx" }, "en")).toEqual([
       "Deletes for good files of the computer's system: /etc/nginx",

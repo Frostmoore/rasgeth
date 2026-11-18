@@ -65,7 +65,7 @@ describe("MCP", () => {
     });
     const [shout] = await conn.tools();
     expect(shout?.def.name).toBe("mcp__echo__shout");
-    expect(text(await shout?.run({ text: "red giant" }, ctx))).toBe("RED GIANT");
+    expect(text(await shout?.run({ text: "rasgeth" }, ctx))).toBe("RASGETH");
     await conn.close();
   });
 });

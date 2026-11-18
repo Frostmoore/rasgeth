@@ -70,7 +70,7 @@ const upload = async (s: Server, data: Buffer) => {
 };
 
 describe("backup (2026-11-03)", () => {
-  it("carries projects, files and conversations into a RedGiant already in use", async () => {
+  it("carries projects, files and conversations into a Rasgeth already in use", async () => {
     const a = await start();
     const from = await filled(a, "Zeus", "Sito", "<h1>from A</h1>");
     const exported = await finished(a, (await a.api<Job>("POST", "/api/backup/export")).body);

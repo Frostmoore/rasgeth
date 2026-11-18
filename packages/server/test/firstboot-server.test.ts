@@ -242,11 +242,11 @@ describe("where backups go (G39.3)", () => {
     ["relative", "Backups", "not_absolute"],
     ["a drive's root", "D:\\", "system"],
     ["Windows' folder", "C:\\Windows\\Temp\\x", "system"],
-    ["the programs", "c:/Program Files/RedGiant", "system"],
-    ["inside the data", "C:\\Users\\me\\RedGiant\\data\\b", "data"],
-    ["an external disk", "E:\\Backup RedGiant", null],
+    ["the programs", "c:/Program Files/Rasgeth", "system"],
+    ["inside the data", "C:\\Users\\me\\Rasgeth\\data\\b", "data"],
+    ["an external disk", "E:\\Backup Rasgeth", null],
   ])("a folder on Windows: %s", (_, path, want) => {
-    expect(folderRefusal(path, "C:\\Users\\Me\\RedGiant\\data", "win32")).toBe(want);
+    expect(folderRefusal(path, "C:\\Users\\Me\\Rasgeth\\data", "win32")).toBe(want);
   });
 
   it("mounts only the removable disk picked, through the helper, and never a system disk", async () => {
@@ -321,7 +321,7 @@ describe("where backups go (G39.3)", () => {
     ).toBe("cannot_ssh");
   });
 
-  it("in a container (RedGiant OS on Proxmox): no host disk, the host's mounted folders instead (p3.7.2)", async () => {
+  it("in a container (Rasgeth OS on Proxmox): no host disk, the host's mounted folders instead (p3.7.2)", async () => {
     const calls: string[] = [];
     const base = await mkdtemp(join(tmpdir(), "rg-backups-"));
     const place = join(base, "redgiant");
@@ -510,7 +510,7 @@ describe("scheduled backups (G39.3)", () => {
       expect(await sch.tick()).toBe("ran");
       expect(await sch.tick()).toBe("idle");
     }
-    const folders = (await readdir(dest)).filter((f) => f.startsWith("RedGiant-backup-")).sort();
+    const folders = (await readdir(dest)).filter((f) => f.startsWith("Rasgeth-backup-")).sort();
     expect(folders).toEqual(["RedGiant-backup-2026-11-15", "RedGiant-backup-2026-11-16"]);
     expect(await readdir(join(dest, "RedGiant-backup-2026-11-16"))).toEqual([
       "redgiant-3.7.0-0301.rgbackup",

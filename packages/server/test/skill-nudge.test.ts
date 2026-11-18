@@ -14,7 +14,7 @@ describe("the nudge to propose a skill (G36.8)", () => {
     const hook = n.hook();
     for (let i = 0; i < 3; i++) expect(await hook(call("bash"), bad, ctx)).toBeUndefined();
     const r = await hook(call("bash"), ok("tests pass"), ctx);
-    expect(r?.content).toMatch(/^tests pass\n\n\[RedGiant\] That worked after 3 failed attempts\./);
+    expect(r?.content).toMatch(/^tests pass\n\n\[Rasgeth\] That worked after 3 failed attempts\./);
     expect(r?.content).toMatch(/propose_extension/);
     // Never twice in the same conversation, even after another struggle.
     n.turnStarted("s1");

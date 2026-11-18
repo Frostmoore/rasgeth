@@ -420,7 +420,7 @@ describe("AutomationService without limits (G33.3)", () => {
     expect(fake.calls.length).toBe(6);
   });
 
-  it("starts on RedGiant's start and on the end of a task", async () => {
+  it("starts on Rasgeth's start and on the end of a task", async () => {
     const { svc, store, fake } = await setup();
     await svc.create(OWNER, "name: hello\non: {startup: true}\ninstructions: x");
     await svc.create(

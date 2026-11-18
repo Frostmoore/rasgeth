@@ -188,7 +188,7 @@ describe("the disks that may take backups (G39.3)", () => {
   });
   it.each([
     [
-      "holding RedGiant's data",
+      "holding Rasgeth's data",
       usb({ mountpoint: "/media/x" }),
       ["/media/x/redgiant"],
       "system_disk",
@@ -413,7 +413,7 @@ describe("what already reaches the machine (G39.3)", () => {
   });
 
   it.each([
-    ["redgiant.local:7600", "redgiant.local"],
+    ["rasgeth.local:7600", "rasgeth.local"],
     ["192.168.1.40:7600", null],
     ["[fe80::1]:7600", null],
     ["localhost:7600", null],

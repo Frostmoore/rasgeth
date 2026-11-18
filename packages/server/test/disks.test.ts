@@ -13,8 +13,8 @@ describe("the computer's disks (2026-11-03)", () => {
   });
 
   it("finds the drive of a Windows path and of WSL's view of it", () => {
-    expect(driveOf("D:\\RedGiant\\data")).toBe("D");
-    expect(driveOf("/mnt/c/Users/me/AppData/Local/RedGiant/engine")).toBe("C");
+    expect(driveOf("D:\\Rasgeth\\data")).toBe("D");
+    expect(driveOf("/mnt/c/Users/me/AppData/Local/Rasgeth/engine")).toBe("C");
     expect(driveOf("/data")).toBeUndefined();
     expect(driveOf(undefined)).toBeUndefined();
   });

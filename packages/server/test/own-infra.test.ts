@@ -61,10 +61,10 @@ describe("reached already (G39.8)", () => {
     ],
     // Not someone else's: an address, RedGiant's own mDNS name, RedGiant OS's own HTTPS.
     ["192.168.1.30", { host: "192.168.1.40:7600" }, null],
-    ["192.168.1.30", { host: "redgiant.local:7600" }, null],
+    ["192.168.1.30", { host: "rasgeth.local:7600" }, null],
     [
       "127.0.0.1",
-      { host: "redgiant.local", "x-forwarded-proto": "https", "x-redgiant-local-tls": "1" },
+      { host: "rasgeth.local", "x-forwarded-proto": "https", "x-redgiant-local-tls": "1" },
       null,
     ],
     // Forwarded headers on a connection from the internet: written by the client, not a proxy.
@@ -75,7 +75,7 @@ describe("reached already (G39.8)", () => {
     expect(reachedAs((n) => headers[n], socket)).toEqual(want),
   );
 
-  it("finds RedGiant's address and port for the blocks to copy", () => {
+  it("finds Rasgeth's address and port for the blocks to copy", () => {
     expect(lanEndpoint("192.168.1.40:7600", ["10.0.0.5"], 7600)).toEqual({
       address: "192.168.1.40",
       port: 7600,

@@ -154,15 +154,15 @@ describe("the rule for the agents' edits", () => {
   });
 });
 
-describe("RedGiant's notes after a message", () => {
+describe("Rasgeth's notes after a message", () => {
   it("one line, several lines, with quotes", () => {
     expect(notedText("hi", [])).toBe("hi");
     expect(notedText("hi", ["The person changed a.txt."])).toBe(
-      "hi\n\n[RedGiant: The person changed a.txt.]",
+      "hi\n\n[Rasgeth: The person changed a.txt.]",
     );
-    expect(notedText("", ["x", "y"])).toBe("[RedGiant: \n- x\n- y]");
+    expect(notedText("", ["x", "y"])).toBe("[Rasgeth: \n- x\n- y]");
     expect(quotedText("ok", [{ text: "earlier" }], ["n"])).toBe(
-      "[The person replies to this passage of your message. They received the whole message; this answers that passage specifically.]\n> earlier\n\nok\n\n[RedGiant: n]",
+      "[The person replies to this passage of your message. They received the whole message; this answers that passage specifically.]\n> earlier\n\nok\n\n[Rasgeth: n]",
     );
   });
 });

@@ -240,17 +240,17 @@ describe("http to https in the local network (lanRedirect)", () => {
     lanRedirect({
       redirect: true,
       path: "/",
-      host: "redgiant.local:7600",
+      host: "rasgeth.local:7600",
       forwardedProto: undefined,
       ...o,
     });
   it.each([
     ["off: nothing", { redirect: false }, null],
-    ["the name, direct on 7600", {}, "https://redgiant.local/"],
+    ["the name, direct on 7600", {}, "https://rasgeth.local/"],
     [
       "through Caddy's port 80",
-      { host: "redgiant.local", forwardedProto: "http" },
-      "https://redgiant.local/",
+      { host: "rasgeth.local", forwardedProto: "http" },
+      "https://rasgeth.local/",
     ],
     ["already https", { forwardedProto: "https" }, null],
     [
@@ -269,13 +269,11 @@ describe("http to https in the local network (lanRedirect)", () => {
   ])("%s", (_n, o, to) => expect(r(o)).toBe(to));
 
   it("HSTS only on https of the local network, once the redirect is on", () => {
-    expect(lanHsts({ redirect: true, host: "redgiant.local", forwardedProto: "https" })).toBe(
+    expect(lanHsts({ redirect: true, host: "rasgeth.local", forwardedProto: "https" })).toBe(
       "max-age=2592000",
     );
-    expect(
-      lanHsts({ redirect: false, host: "redgiant.local", forwardedProto: "https" }),
-    ).toBeNull();
-    expect(lanHsts({ redirect: true, host: "redgiant.local", forwardedProto: "http" })).toBeNull();
+    expect(lanHsts({ redirect: false, host: "rasgeth.local", forwardedProto: "https" })).toBeNull();
+    expect(lanHsts({ redirect: true, host: "rasgeth.local", forwardedProto: "http" })).toBeNull();
     expect(lanHsts({ redirect: true, host: "x.ts.net", forwardedProto: "https" })).toBeNull();
   });
 
@@ -294,8 +292,8 @@ describe("http to https in the local network (lanRedirect)", () => {
   });
 });
 
-describe("RedGiant OS's updates", () => {
-  it("is RedGiant OS when its compose file says so, and can update itself through the helper", () => {
+describe("Rasgeth OS's updates", () => {
+  it("is Rasgeth OS when its compose file says so, and can update itself through the helper", () => {
     expect(installKind({ REDGIANT_OS: "1" })).toBe("os");
     const w = new UpdateWatcher({
       install: "os",
@@ -407,7 +405,7 @@ describe("RedGiant OS's updates", () => {
             },
             "junk",
           ],
-          files: { name: "redgiant-os-files-3.8.1.tar.zst", bytes: 2.5e6 },
+          files: { name: "rasgeth-os-files-3.8.1.tar.zst", bytes: 2.5e6 },
         },
         progress: {
           done: 128e6,
@@ -440,7 +438,7 @@ describe("RedGiant OS's updates", () => {
             here: true,
           },
         ],
-        files: { name: "redgiant-os-files-3.8.1.tar.zst", bytes: 2.5e6 },
+        files: { name: "rasgeth-os-files-3.8.1.tar.zst", bytes: 2.5e6 },
       },
       progress: {
         done: 128e6,
@@ -495,7 +493,7 @@ function fake(lines: string[]): OsHelper {
             ca: Buffer.from(PEM).toString("base64"),
             fingerprint: "AA:BB",
             until: "Dec 14 00:00:00 2027 GMT",
-            names: ["redgiant.local", "192.168.1.20"],
+            names: ["rasgeth.local", "192.168.1.20"],
           };
         case "os-update-status":
         case "os-update-check":
@@ -582,7 +580,7 @@ describe("Settings › System › Network and Updates (routes)", () => {
         (resolve, reject) => {
           const req = request(
             `${sv.url}${path}`,
-            { headers: { host: "redgiant.local:7600", ...headers } },
+            { headers: { host: "rasgeth.local:7600", ...headers } },
             (res) => {
               res.resume();
               resolve({
@@ -603,7 +601,7 @@ describe("Settings › System › Network and Updates (routes)", () => {
     expect(yes.body.redirect).toBe(true);
     const r = await lan("/chat?x=1");
     expect(r.status).toBe(308);
-    expect(r.headers.get("location")).toBe("https://redgiant.local/chat?x=1");
+    expect(r.headers.get("location")).toBe("https://rasgeth.local/chat?x=1");
     expect((await lan("/api/health")).status).toBe(200);
     const tls = await lan("/api/health", {
       "x-forwarded-proto": "https",

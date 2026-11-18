@@ -51,35 +51,31 @@ describe("folderProblem (G36.15: a project on an existing folder)", () => {
     [
       "E:\\coding\\XAMPP\\htdocs\\site",
       true,
-      { dataDir: "C:\\Users\\Me\\AppData\\RedGiant", home: "C:\\Users\\Me" },
+      { dataDir: "C:\\Users\\Me\\AppData\\Rasgeth", home: "C:\\Users\\Me" },
     ],
     [
       "C:\\Users\\Me\\Desktop\\bench",
       true,
-      { dataDir: "C:\\Users\\Me\\AppData\\RedGiant", home: "C:\\Users\\Me" },
+      { dataDir: "C:\\Users\\Me\\AppData\\Rasgeth", home: "C:\\Users\\Me" },
     ],
-    ["C:\\", false, { dataDir: "C:\\Users\\Me\\AppData\\RedGiant", home: "C:\\Users\\Me" }],
-    ["E:", false, { dataDir: "C:\\Users\\Me\\AppData\\RedGiant", home: "C:\\Users\\Me" }],
-    ["C:\\Users", false, { dataDir: "C:\\Users\\Me\\AppData\\RedGiant", home: "C:\\Users\\Me" }],
-    [
-      "c:\\users\\me",
-      false,
-      { dataDir: "C:\\Users\\Me\\AppData\\RedGiant", home: "C:\\Users\\Me" },
-    ],
+    ["C:\\", false, { dataDir: "C:\\Users\\Me\\AppData\\Rasgeth", home: "C:\\Users\\Me" }],
+    ["E:", false, { dataDir: "C:\\Users\\Me\\AppData\\Rasgeth", home: "C:\\Users\\Me" }],
+    ["C:\\Users", false, { dataDir: "C:\\Users\\Me\\AppData\\Rasgeth", home: "C:\\Users\\Me" }],
+    ["c:\\users\\me", false, { dataDir: "C:\\Users\\Me\\AppData\\Rasgeth", home: "C:\\Users\\Me" }],
     [
       "C:\\Windows\\System32",
       false,
-      { dataDir: "C:\\Users\\Me\\AppData\\RedGiant", home: "C:\\Users\\Me" },
+      { dataDir: "C:\\Users\\Me\\AppData\\Rasgeth", home: "C:\\Users\\Me" },
     ],
     [
       "C:\\Program Files\\App",
       false,
-      { dataDir: "C:\\Users\\Me\\AppData\\RedGiant", home: "C:\\Users\\Me" },
+      { dataDir: "C:\\Users\\Me\\AppData\\Rasgeth", home: "C:\\Users\\Me" },
     ],
     [
       "c:/users/me/appdata/redgiant/keychain",
       false,
-      { dataDir: "C:\\Users\\Me\\AppData\\RedGiant", home: "C:\\Users\\Me" },
+      { dataDir: "C:\\Users\\Me\\AppData\\Rasgeth", home: "C:\\Users\\Me" },
     ],
   ];
   it.each(table)("%s -> allowed %s", (folder, allowed, r) => {

@@ -38,7 +38,7 @@ export async function fakeTelegram() {
         ? {
             id: 1,
             is_bot: true,
-            first_name: "RedGiant",
+            first_name: "Rasgeth",
             username: "redgiant_test_bot",
             can_join_groups: false,
             can_read_all_group_messages: false,

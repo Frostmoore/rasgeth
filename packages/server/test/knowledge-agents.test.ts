@@ -369,7 +369,7 @@ describe("the knowledge made by the agents (3.5.3)", () => {
     await mkdir(keychain, { recursive: true });
     const own = await add({ kind: "folder", path: keychain });
     expect(own.status).toBe(400);
-    expect(own.body.error).toContain("inside RedGiant's own data");
+    expect(own.body.error).toContain("inside Rasgeth's own data");
     const outside = await mkdtemp(join(tmpdir(), "rg-kb-out-"));
     cleanup.push(() => rm(outside, { recursive: true, force: true }));
     expect((await add({ kind: "folder", path: outside })).status).toBe(201);

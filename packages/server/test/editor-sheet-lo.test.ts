@@ -36,7 +36,7 @@ describe.skipIf(!SOFFICE)("the toppa with a real LibreOffice", () => {
         { op: "set", sheet: "Riepilogo", cell: "B4", formula: "=MAX(Vendite!F4:F16)" },
         { op: "format", range: "A17:F17", bold: true, background: "#ddebf7" },
         { op: "add_sheet", name: "Note" },
-        { op: "set", sheet: "Note", cell: "A1", value: "scritto da RedGiant" },
+        { op: "set", sheet: "Note", cell: "A1", value: "scritto da Rasgeth" },
       ]);
       if ("error" in made) throw new Error(made.error);
       let after: SheetModel = model;
@@ -69,7 +69,7 @@ describe.skipIf(!SOFFICE)("the toppa with a real LibreOffice", () => {
       // The sheets' ids kept in the file: the next load names them the same.
       const note = m.wb.sheetOrder[3] as string;
       expect(note).toBe(after.wb.sheetOrder[3]);
-      expect(cell(note, 0, 0)?.v).toBe("scritto da RedGiant");
+      expect(cell(note, 0, 0)?.v).toBe("scritto da Rasgeth");
       const riep = m.wb.sheetOrder[2] as string;
       expect(cell(riep, 3, 1)?.f).toBe("=MAX(Vendite!F4:F16)");
       const total = cell(v, 16, 0);

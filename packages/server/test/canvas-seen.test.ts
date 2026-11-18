@@ -57,7 +57,7 @@ describe("CanvasLive: a page slow to answer (p3.5.6)", () => {
     silent = true;
     expect(await live.see("me", times)).toEqual({ pages: 1 });
     expect(stateText({ pages: 1 })).toMatch(
-      /^The person has a RedGiant page open, but it did not answer in time/,
+      /^The person has a Rasgeth page open, but it did not answer in time/,
     );
     silent = false;
     expect(await live.see("me", times)).toEqual({ state: PDF_ON_2, pages: 1 });
@@ -78,7 +78,7 @@ describe("CanvasLive: a page slow to answer (p3.5.6)", () => {
     expect(await live.see("me")).toEqual({ pages: 0 });
     expect(Date.now() - started).toBeLessThan(100);
     expect(stateText({ pages: 0 })).toBe(
-      "The person has no RedGiant page open now: their canvas cannot be seen.",
+      "The person has no Rasgeth page open now: their canvas cannot be seen.",
     );
     // The page reloads: its connection goes, a new one comes 300 ms later and gets the question.
     const off = live.onQuery(() => true, "me");
@@ -224,7 +224,7 @@ describe("canvas_look on what the person has open (p3.5.6)", () => {
 
   it("a page too busy to answer: its last word, or that it is open; never «no page open»", async () => {
     const t = await tools({ pages: 1 }, async () => ({ kind: "text", text: "" }));
-    expect(await t.look({})).toMatch(/^The person has a RedGiant page open, but it did not answer/);
+    expect(await t.look({})).toMatch(/^The person has a Rasgeth page open, but it did not answer/);
     expect(await t.act({ page: 2 })).toMatch(/^The person's page did not answer in time/);
     const old = await tools({ state: PDF_ON_2, pages: 1, ageMs: 4000 }, async () => ({
       kind: "pdf",

@@ -8,7 +8,7 @@ export const apStatus = (o: Record<string, unknown> = {}) => ({
   mode: "setup",
   capable: "ok",
   pending: true,
-  ssid: "RedGiant-Setup-1A2B",
+  ssid: "Rasgeth-Setup-1A2B",
   passphrase: "redgiant",
   address: "10.42.0.1",
   subnet: "10.42.0.0/24",

@@ -128,7 +128,7 @@ describe("knowledge: schema, indexing and search", () => {
     expect(c.language).toBe("italian");
     const root = await folder({
       "install.md":
-        "# Installare\n\nScarica il programma.\n\n## Windows\n\nApri RedGiant-Setup.exe e segui i passi.\n\n## Mac\n\nTrascina l'app nella cartella Applicazioni.\n",
+        "# Installare\n\nScarica il programma.\n\n## Windows\n\nApri Rasgeth-Setup.exe e segui i passi.\n\n## Mac\n\nTrascina l'app nella cartella Applicazioni.\n",
       "src/db.ts":
         "import x from 'y';\n\nexport function startDatabase(port: number) {\n  return port + 1;\n}\n\nexport function stopDatabase() {\n  return 0;\n}\n",
       "node_modules/skip.js": "export const nothing = 1;\n",
@@ -322,14 +322,14 @@ describe("knowledge: schema, indexing and search", () => {
     });
   });
 
-  it("refuses RedGiant's own folders as sources", async () => {
+  it("refuses Rasgeth's own folders as sources", async () => {
     const { k } = await setup();
     const c = await k.createCollection("me", { name: "X" });
     await expect(
       k.addSource("me", c.id, { kind: "folder", path: join(dir, "data") }),
-    ).rejects.toThrow(/RedGiant's own data/);
+    ).rejects.toThrow(/Rasgeth's own data/);
     await expect(k.addSource("me", c.id, { kind: "folder", path: dir })).rejects.toThrow(
-      /RedGiant's own data/,
+      /Rasgeth's own data/,
     );
     await expect(k.addSource("me", c.id, { kind: "folder", path: "relative" })).rejects.toThrow(
       /full path/,

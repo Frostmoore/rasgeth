@@ -136,7 +136,7 @@ describe("what is notified", () => {
     expect(long?.body.endsWith("…")).toBe(true);
   });
 
-  it("names the RedGiant it comes from, in the person's language", () => {
+  it("names the Rasgeth it comes from, in the person's language", () => {
     expect(pushFor(task(), "it", "Casa")).toMatchObject({
       server: "Casa",
       title: "Compito finito",
