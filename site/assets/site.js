@@ -1,5 +1,5 @@
-// RedGiant's site: language and theme switches, download links from config.js, the latest
-// version and the RedGiant OS images read from GitHub's public API (silently skipped when it
+// Rasgeth's site: language and theme switches, download links from config.js, the latest
+// version and the Rasgeth OS images read from GitHub's public API (silently skipped when it
 // does not answer). No cookies, no tracking: only the two choices, kept in localStorage.
 (() => {
   const cfg = window.RG_SITE;
@@ -144,7 +144,7 @@
     if (r && typeof r.tag_name === "string" && /^v?\d+\.\d+\.\d+/.test(r.tag_name)) {
       latest = r;
       renderLatest();
-      // A file the latest release does not carry yet (RGCompanion alone arrives with 3.8.2):
+      // A file the latest release does not carry yet (a release from before the names it links):
       // «coming soon» instead of a link that would answer 404. It turns on by itself later.
       const names = new Set((r.assets ?? []).map((a) => a.name));
       for (const a of links) {
@@ -158,22 +158,27 @@
     }
   }
 
-  // RedGiant OS: the newest published release whose assets carry the images (the same release
-  // `redgiant-os-release` names for the Proxmox script).
+  // Rasgeth OS: the newest published release whose assets carry the images (the same release
+  // `rasgeth-os-release` names for the Proxmox script). Releases before 3.9.0 named their images
+  // redgiant-os-*: those still count, until a release with rasgeth-os-* images is the newest.
+  const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   async function loadOs() {
     const rows = $$("[data-os]");
     if (!rows.length) return;
     const list = await getJson("/releases?per_page=30", "rg-site-releases");
     if (!Array.isArray(list)) return;
-    const iso = new RegExp(`^redgiant-os-(.+)-${cfg.osImages.iso.replace(/\./g, "\\.")}$`);
+    const prefixes = cfg.osPrefixes ?? ["rasgeth-os-"];
+    const iso = new RegExp(
+      `^(${prefixes.map(escape).join("|")})(.+)-${escape(cfg.osImages.iso)}$`,
+    );
     const rel = list.find(
       (r) => !r.draft && !r.prerelease && r.assets?.some((a) => iso.test(a.name)),
     );
     if (!rel) return;
-    const version = rel.assets.map((a) => iso.exec(a.name)?.[1]).find(Boolean);
+    const [, prefix, version] = rel.assets.map((a) => iso.exec(a.name)).find(Boolean);
     for (const a of rows) {
       const suffix = cfg.osImages[a.dataset.os];
-      const name = `redgiant-os-${version}-${suffix}`;
+      const name = `${prefix}${version}-${suffix}`;
       const asset = rel.assets.find((x) => x.name === name);
       if (!asset || !/^https:\/\/github\.com\//.test(asset.browser_download_url)) continue;
       a.href = asset.browser_download_url;
@@ -190,7 +195,7 @@
     }
   }
 
-  // Mascots pause while the page is not in front (as in RedGiant's page).
+  // Mascots pause while the page is not in front (as in Rasgeth's page).
   const sync = () => d.classList.toggle("rg-hidden", document.hidden);
   document.addEventListener("visibilitychange", sync);
   sync();

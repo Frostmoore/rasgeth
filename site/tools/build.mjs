@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Rebuilds the generated parts of the site from the repository:
-//   - assets/img/: the logo and the README's screenshots (docs/screenshots), copied;
+//   - assets/img/: the logo and the README's screenshots (docs/screenshots), copied (wordmark.png and
+//     share.jpg are not generated: see site/README.md);
 //   - assets/icons.svg: the drawn icons, taken from packages/web/src/icons.tsx (the same shapes
-//     as RedGiant's page) plus a few platform logos from simple-icons (CC0), as one sprite;
+//     as Rasgeth's page) plus a few platform logos from simple-icons (CC0), as one sprite;
 //   - assets/mascot-motion.css and the mascots inside index.html (between `<!-- mascots:NAME -->`
 //     markers), drawn by @redgiant/mascot (needs `pnpm build` once, for packages/mascot/dist).
 // With `--tavola <file>` it also writes a self-contained copy of index.html (CSS, scripts, icons
@@ -18,7 +19,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const SITE = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const ROOT = resolve(SITE, "..");
 /** Where the site is published: the tavola's links to the other pages point here. */
-const PUBLIC_URL = "https://smpdigital.it/redgiant/";
+const PUBLIC_URL = "https://rasgeth.it/";
 
 // ---------- Images ----------
 
@@ -135,7 +136,7 @@ const agentSpec = mascot.mascotSpec("site-agent-ada", "agent");
 const MASCOTS = {
   hierarchy: [
     { spec: mascot.mascotSpec("site-demigod", "demigod"), state: "idle", it: ["Demi-God", "sulle chat"], en: ["Demi-God", "on the chats"] },
-    { spec: mascot.mascotSpec("site-god", "god"), state: "active", it: ["God", "guida RedGiant"], en: ["God", "runs RedGiant"] },
+    { spec: mascot.mascotSpec("site-god", "god"), state: "active", it: ["God", "guida Rasgeth"], en: ["God", "runs Rasgeth"] },
     { spec: mascot.mascotSpec("site-orchestrator", "orchestrator"), state: "think", it: ["Orchestratore", "uno per progetto"], en: ["Orchestrator", "one per project"] },
     { spec: agentSpec, state: "work", it: ["Agenti", "ognuno nel suo worktree"], en: ["Agents", "each in its own worktree"] },
     { spec: mascot.mascotSpec("site-sub-1", "subagent", agentSpec), state: "work", it: ["Sotto-agenti", "di breve durata"], en: ["Sub-agents", "short-lived"] },
