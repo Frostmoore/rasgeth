@@ -2458,6 +2458,15 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news3813Canvas: "The Canvas in the app, with the page's viewers",
+  news3813CanvasText:
+    "The app's Canvas has its own frame: tabs, a bar with the file's name, size and saving state, «Download», full screen and «Maximize». Inside, every kind of file opens with the same viewers as the page.",
+  news3813Limit: "How many sub-agents a project may have",
+  news3813LimitText:
+    "Every project has a limit of sub-agents (3 unless you change it; 0 means the orchestrator works alone), in the project's settings in the page and in the app.",
+  news3813Update: "The app updates itself",
+  news3813UpdateText:
+    "The app installed on its own, on Windows and Linux, finds new versions, checks their signature, downloads them with a progress bar and restarts where you were; if the new version does not start, it goes back to the previous one.",
   news3812Team: "The whole team in the app",
   news3812TeamText:
     "Sub-agents have their tabs in the conversation, running commands show in a strip with «Stop», rooms with @mentions, Chat with folders and groups, the project's Board and the shared browser now work in the app as in the page.",
@@ -9231,6 +9240,15 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news3813Canvas: "Il Canvas nell'app, con i visori della pagina",
+  news3813CanvasText:
+    "Il Canvas dell'app ha la sua cornice: schede, una barra con nome, peso e stato del salvataggio del file, «Scarica», schermo intero e «Ingrandisci». Dentro, ogni tipo di file si apre con gli stessi visori della pagina.",
+  news3813Limit: "Quanti sotto-agenti può avere un progetto",
+  news3813LimitText:
+    "Ogni progetto ha un limite di sotto-agenti (3 se non lo cambi; 0 vuol dire che l'orchestratore lavora da solo), nelle impostazioni del progetto nella pagina e nell'app.",
+  news3813Update: "L'app si aggiorna da sola",
+  news3813UpdateText:
+    "L'app installata da sola, su Windows e Linux, trova le versioni nuove, ne verifica la firma, le scarica con la barra e si riavvia dov'eri; se la versione nuova non parte, torna a quella di prima.",
   news3812Team: "Tutta la squadra nell'app",
   news3812TeamText:
     "I sotto-agenti hanno le loro linguette nella conversazione, i comandi in corso stanno in una striscia con «Ferma», le stanze con le menzioni @, la Chat con cartelle e gruppi, la Bacheca del progetto e il browser condiviso funzionano adesso nell'app come nella pagina.",
