@@ -62,7 +62,8 @@ import 'app_localizations_it.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -70,7 +71,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -91,7 +93,10 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('it')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('it'),
+  ];
 
   /// No description provided for @appTitle.
   ///
@@ -9601,7 +9606,12 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{done} of {total} · {speed}/s · {left} left'**
-  String chatFileDownloadOf(String done, String total, String speed, String left);
+  String chatFileDownloadOf(
+    String done,
+    String total,
+    String speed,
+    String left,
+  );
 
   /// No description provided for @chatFileDownloadSoFar.
   ///
@@ -13514,9 +13524,1834 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Guardian, who approves, spending, skills, retention'**
   String get g4HubSafety;
+
+  /// No description provided for @knAsstSavedNewChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: it applies to its new conversations.'**
+  String get knAsstSavedNewChats;
+
+  /// No description provided for @knCompactAtHint.
+  ///
+  /// In en, this message translates to:
+  /// **'An agent can keep only so much text in mind at once, like a notebook with a fixed number of pages. Further right: the summary comes later. Further left: it comes sooner and the conversation stays lighter.'**
+  String get knCompactAtHint;
+
+  /// No description provided for @knCompactAtTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When to write the summary'**
+  String get knCompactAtTitle;
+
+  /// No description provided for @knCompactAtValue.
+  ///
+  /// In en, this message translates to:
+  /// **'when {n}% full'**
+  String knCompactAtValue(String n);
+
+  /// No description provided for @knCompactDefaultIs.
+  ///
+  /// In en, this message translates to:
+  /// **'Default for this agent\'s model: at {at}%, keeping {keep}%.'**
+  String knCompactDefaultIs(String at, String keep);
+
+  /// No description provided for @knCompactDefaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the defaults'**
+  String get knCompactDefaults;
+
+  /// No description provided for @knCompactExample.
+  ///
+  /// In en, this message translates to:
+  /// **'if the agent can keep 100 pages in mind, when it reaches {at} it writes the summary: the last {keep} stay exactly as they were, the ones before become a few pages of notes.'**
+  String knCompactExample(String at, String keep);
+
+  /// No description provided for @knCompactExampleNone.
+  ///
+  /// In en, this message translates to:
+  /// **'if the agent can keep 100 pages in mind, when it reaches {at} it turns all of them into a few pages of notes.'**
+  String knCompactExampleNone(String at);
+
+  /// No description provided for @knCompactExampleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'For example:'**
+  String get knCompactExampleTitle;
+
+  /// No description provided for @knCompactExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'When the conversation gets long, the agent writes a summary of the old parts, like someone taking notes. Here you choose when it does it, and how much of the latest part it keeps as it is.'**
+  String get knCompactExplain;
+
+  /// No description provided for @knCompactKeepHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The most recent part stays word for word, everything before it becomes notes. More kept means the agent remembers the latest details better; on a model on your computer each kept word costs a little time once (12% is fine there).'**
+  String get knCompactKeepHint;
+
+  /// No description provided for @knCompactKeepNone.
+  ///
+  /// In en, this message translates to:
+  /// **'nothing'**
+  String get knCompactKeepNone;
+
+  /// No description provided for @knCompactKeepTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How much of the latest part to keep as it is'**
+  String get knCompactKeepTitle;
+
+  /// No description provided for @knCompactKeepValue.
+  ///
+  /// In en, this message translates to:
+  /// **'the last {n}%'**
+  String knCompactKeepValue(String n);
+
+  /// No description provided for @knErr_memory_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Write something to remember.'**
+  String get knErr_memory_empty;
+
+  /// No description provided for @knErr_memory_forgotten.
+  ///
+  /// In en, this message translates to:
+  /// **'A memory forgotten for good cannot come back.'**
+  String get knErr_memory_forgotten;
+
+  /// No description provided for @knErr_memory_full.
+  ///
+  /// In en, this message translates to:
+  /// **'The memory is full: delete or merge some old memories first.'**
+  String get knErr_memory_full;
+
+  /// No description provided for @knErr_memory_gone.
+  ///
+  /// In en, this message translates to:
+  /// **'That memory is not there any more.'**
+  String get knErr_memory_gone;
+
+  /// No description provided for @knErr_memory_long.
+  ///
+  /// In en, this message translates to:
+  /// **'A memory is at most 400 characters: write it shorter.'**
+  String get knErr_memory_long;
+
+  /// No description provided for @knErr_memory_moved.
+  ///
+  /// In en, this message translates to:
+  /// **'The memory changed again since: undo the newer change first.'**
+  String get knErr_memory_moved;
+
+  /// No description provided for @knErr_memory_same.
+  ///
+  /// In en, this message translates to:
+  /// **'Another memory already says the same.'**
+  String get knErr_memory_same;
+
+  /// No description provided for @knErr_memory_secret.
+  ///
+  /// In en, this message translates to:
+  /// **'That looks like a password, a code or a card number: secrets are never kept in memory.'**
+  String get knErr_memory_secret;
+
+  /// No description provided for @knErr_memory_undone.
+  ///
+  /// In en, this message translates to:
+  /// **'That change was already undone.'**
+  String get knErr_memory_undone;
+
+  /// No description provided for @knJob_download_knowledge_model.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading {model} ({size}) for the knowledge, to search your files on this computer (only once)'**
+  String knJob_download_knowledge_model(String model, String size);
+
+  /// No description provided for @knJob_download_ocr.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading the reading of text in pictures ({languages}, {size}), only once'**
+  String knJob_download_ocr(String languages, String size);
+
+  /// No description provided for @knJob_download_pgvector.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading pgvector, the search by meaning in RedGiant\'s database (only once)'**
+  String get knJob_download_pgvector;
+
+  /// No description provided for @knJob_error_checksum.
+  ///
+  /// In en, this message translates to:
+  /// **'The download arrived damaged (its fingerprint does not match): try again.'**
+  String get knJob_error_checksum;
+
+  /// No description provided for @knJob_error_pgvector_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'pgvector is not published for this computer yet: the knowledge searches by words only.'**
+  String get knJob_error_pgvector_unavailable;
+
+  /// No description provided for @knJob_step_model_download.
+  ///
+  /// In en, this message translates to:
+  /// **'The model'**
+  String get knJob_step_model_download;
+
+  /// No description provided for @knJob_step_ocr_languages.
+  ///
+  /// In en, this message translates to:
+  /// **'The languages'**
+  String get knJob_step_ocr_languages;
+
+  /// No description provided for @knJob_step_ocr_program.
+  ///
+  /// In en, this message translates to:
+  /// **'The program'**
+  String get knJob_step_ocr_program;
+
+  /// No description provided for @knJob_step_tool_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading'**
+  String get knJob_step_tool_download;
+
+  /// No description provided for @knKbAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get knKbAdd;
+
+  /// No description provided for @knKbAddSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a source'**
+  String get knKbAddSource;
+
+  /// No description provided for @knKbAddSourceTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a source to {name}'**
+  String knKbAddSourceTo(String name);
+
+  /// No description provided for @knKbAgentAlways.
+  ///
+  /// In en, this message translates to:
+  /// **'Always'**
+  String get knKbAgentAlways;
+
+  /// No description provided for @knKbAgentByScopeNo.
+  ///
+  /// In en, this message translates to:
+  /// **'As the collection says (no)'**
+  String get knKbAgentByScopeNo;
+
+  /// No description provided for @knKbAgentByScopeYes.
+  ///
+  /// In en, this message translates to:
+  /// **'As the collection says (yes)'**
+  String get knKbAgentByScopeYes;
+
+  /// No description provided for @knKbAgentLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Which collections {name} can search. Each one says who may read it; here you can make an exception for this agent.'**
+  String knKbAgentLead(String name);
+
+  /// No description provided for @knKbAgentNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get knKbAgentNever;
+
+  /// No description provided for @knKbAgentNewOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'It changes from the agent\'s next conversation.'**
+  String get knKbAgentNewOnly;
+
+  /// No description provided for @knKbAgentNone.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} reads no collection'**
+  String knKbAgentNone(String name);
+
+  /// No description provided for @knKbAgentOpenAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All the collections'**
+  String get knKbAgentOpenAll;
+
+  /// No description provided for @knKbAgentPieces.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} pieces'**
+  String knKbAgentPieces(String n);
+
+  /// No description provided for @knKbAgentReads.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} reads {n} collections'**
+  String knKbAgentReads(String n, String name);
+
+  /// No description provided for @knKbAgentTool.
+  ///
+  /// In en, this message translates to:
+  /// **'It searches them with «Search the documents», and cites where each answer comes from.'**
+  String get knKbAgentTool;
+
+  /// No description provided for @knKbAllChats.
+  ///
+  /// In en, this message translates to:
+  /// **'None chosen: the conversations with every agent.'**
+  String get knKbAllChats;
+
+  /// No description provided for @knKbBackupVectors.
+  ///
+  /// In en, this message translates to:
+  /// **'Put the knowledge in the backup too'**
+  String get knKbBackupVectors;
+
+  /// No description provided for @knKbBackupVectorsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A bigger backup, but on another computer the search is ready at once, without reading everything again.'**
+  String get knKbBackupVectorsHelp;
+
+  /// No description provided for @knKbChat.
+  ///
+  /// In en, this message translates to:
+  /// **'conversation'**
+  String get knKbChat;
+
+  /// No description provided for @knKbCiteFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'document'**
+  String get knKbCiteFallback;
+
+  /// No description provided for @knKbCloudKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Keychain entry with the key'**
+  String get knKbCloudKey;
+
+  /// No description provided for @knKbCloudKeyExample.
+  ///
+  /// In en, this message translates to:
+  /// **'voyage_key'**
+  String get knKbCloudKeyExample;
+
+  /// No description provided for @knKbCloudKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty: the key given in the setup, for OpenAI, Gemini and Mistral.'**
+  String get knKbCloudKeyHelp;
+
+  /// No description provided for @knKbCloudLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The pieces of your documents are sent to the service to be read. Its key stays in the keychain.'**
+  String get knKbCloudLead;
+
+  /// No description provided for @knKbCloudModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested models'**
+  String get knKbCloudModel;
+
+  /// No description provided for @knKbCloudModelName.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get knKbCloudModelName;
+
+  /// No description provided for @knKbCloudText.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenAI, Voyage, Cohere, Gemini, Mistral, Jina or your own'**
+  String get knKbCloudText;
+
+  /// No description provided for @knKbCloudTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An online service'**
+  String get knKbCloudTitle;
+
+  /// No description provided for @knKbCloudTrying.
+  ///
+  /// In en, this message translates to:
+  /// **'Trying the key…'**
+  String get knKbCloudTrying;
+
+  /// No description provided for @knKbCloudUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Address of the service'**
+  String get knKbCloudUrl;
+
+  /// No description provided for @knKbCloudUrlHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'One that speaks like OpenAI, ending in /v1.'**
+  String get knKbCloudUrlHelp;
+
+  /// No description provided for @knKbCloudUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use it'**
+  String get knKbCloudUse;
+
+  /// No description provided for @knKbCloudWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Which service'**
+  String get knKbCloudWho;
+
+  /// No description provided for @knKbColLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{docs} documents · {pieces} pieces'**
+  String knKbColLine(String docs, String pieces);
+
+  /// No description provided for @knKbColName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get knKbColName;
+
+  /// No description provided for @knKbColNameExample.
+  ///
+  /// In en, this message translates to:
+  /// **'Manuals, Contracts, Recipes…'**
+  String get knKbColNameExample;
+
+  /// No description provided for @knKbColNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'What it holds, in a few words.'**
+  String get knKbColNameHelp;
+
+  /// No description provided for @knKbColsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A collection groups the sources of one subject, and says which agents may read it.'**
+  String get knKbColsLead;
+
+  /// No description provided for @knKbColsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Collections'**
+  String get knKbColsTitle;
+
+  /// No description provided for @knKbConsentChats.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents that may read this collection will be able to find and quote what you wrote in your conversations and what the agents answered.'**
+  String get knKbConsentChats;
+
+  /// No description provided for @knKbConsentChatsYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, the agents may read these conversations'**
+  String get knKbConsentChatsYes;
+
+  /// No description provided for @knKbConsentMail.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents that may read this collection will be able to find and quote your mail. RedGiant only reads the inbox: it never marks, moves or deletes a message.'**
+  String get knKbConsentMail;
+
+  /// No description provided for @knKbConsentMailYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, the agents may read this mail'**
+  String get knKbConsentMailYes;
+
+  /// No description provided for @knKbDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} days'**
+  String knKbDays(String n);
+
+  /// No description provided for @knKbDiskLead.
+  ///
+  /// In en, this message translates to:
+  /// **'What the knowledge takes, and whether the backup carries it.'**
+  String get knKbDiskLead;
+
+  /// No description provided for @knKbDiskModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Models'**
+  String get knKbDiskModels;
+
+  /// No description provided for @knKbDiskOcr.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading pictures'**
+  String get knKbDiskOcr;
+
+  /// No description provided for @knKbDiskTexts.
+  ///
+  /// In en, this message translates to:
+  /// **'Pieces of text'**
+  String get knKbDiskTexts;
+
+  /// No description provided for @knKbDiskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Space on the disk'**
+  String get knKbDiskTitle;
+
+  /// No description provided for @knKbDiskTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'In all'**
+  String get knKbDiskTotal;
+
+  /// No description provided for @knKbDiskVectors.
+  ///
+  /// In en, this message translates to:
+  /// **'Index by meaning'**
+  String get knKbDiskVectors;
+
+  /// No description provided for @knKbDocsWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} documents still to read.'**
+  String knKbDocsWaiting(String n);
+
+  /// No description provided for @knKbDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading…'**
+  String get knKbDownloading;
+
+  /// No description provided for @knKbDropHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop to add them to the knowledge'**
+  String get knKbDropHere;
+
+  /// No description provided for @knKbDropOnCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop files on a collection to add them.'**
+  String get knKbDropOnCard;
+
+  /// No description provided for @knKbDropSay.
+  ///
+  /// In en, this message translates to:
+  /// **'You can also drop files on this window.'**
+  String get knKbDropSay;
+
+  /// No description provided for @knKbErr_bad_choice.
+  ///
+  /// In en, this message translates to:
+  /// **'That choice is not possible.'**
+  String get knKbErr_bad_choice;
+
+  /// No description provided for @knKbErr_bad_source.
+  ///
+  /// In en, this message translates to:
+  /// **'That source cannot be read: check the path or the address.'**
+  String get knKbErr_bad_source;
+
+  /// No description provided for @knKbErr_embedding_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The model did not answer: check the key and try again.'**
+  String get knKbErr_embedding_failed;
+
+  /// No description provided for @knKbErr_no_vector.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching by meaning is not ready on this computer yet.'**
+  String get knKbErr_no_vector;
+
+  /// No description provided for @knKbErr_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'It is not there any more.'**
+  String get knKbErr_not_found;
+
+  /// No description provided for @knKbEtaSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'The time left shows after the first minutes.'**
+  String get knKbEtaSoon;
+
+  /// No description provided for @knKbFileExample.
+  ///
+  /// In en, this message translates to:
+  /// **'/home/me/manual.pdf'**
+  String get knKbFileExample;
+
+  /// No description provided for @knKbFileHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Its full path on the computer where RedGiant runs.'**
+  String get knKbFileHelp;
+
+  /// No description provided for @knKbFilePath.
+  ///
+  /// In en, this message translates to:
+  /// **'The file'**
+  String get knKbFilePath;
+
+  /// No description provided for @knKbFolderExample.
+  ///
+  /// In en, this message translates to:
+  /// **'/home/me/Documents or C:\\Users\\me\\Documents'**
+  String get knKbFolderExample;
+
+  /// No description provided for @knKbFolderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Its full path on the computer where RedGiant runs.'**
+  String get knKbFolderHelp;
+
+  /// No description provided for @knKbFolderPath.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder'**
+  String get knKbFolderPath;
+
+  /// No description provided for @knKbForAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'For {name}'**
+  String knKbForAgent(String name);
+
+  /// No description provided for @knKbForAll.
+  ///
+  /// In en, this message translates to:
+  /// **'For every agent'**
+  String get knKbForAll;
+
+  /// No description provided for @knKbForProject.
+  ///
+  /// In en, this message translates to:
+  /// **'For the project {name}'**
+  String knKbForProject(String name);
+
+  /// No description provided for @knKbForWhom.
+  ///
+  /// In en, this message translates to:
+  /// **'Who may read it'**
+  String get knKbForWhom;
+
+  /// No description provided for @knKbHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded'**
+  String get knKbHere;
+
+  /// No description provided for @knKbHowFarBack.
+  ///
+  /// In en, this message translates to:
+  /// **'How far back'**
+  String get knKbHowFarBack;
+
+  /// No description provided for @knKbKindText_chats.
+  ///
+  /// In en, this message translates to:
+  /// **'What you said with the agents'**
+  String get knKbKindText_chats;
+
+  /// No description provided for @knKbKindText_file.
+  ///
+  /// In en, this message translates to:
+  /// **'One document'**
+  String get knKbKindText_file;
+
+  /// No description provided for @knKbKindText_folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything inside, kept up to date'**
+  String get knKbKindText_folder;
+
+  /// No description provided for @knKbKindText_mail.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if you want it'**
+  String get knKbKindText_mail;
+
+  /// No description provided for @knKbKindText_url.
+  ///
+  /// In en, this message translates to:
+  /// **'Read once, again when you ask'**
+  String get knKbKindText_url;
+
+  /// No description provided for @knKbKindText_workspace.
+  ///
+  /// In en, this message translates to:
+  /// **'The files of one of your projects'**
+  String get knKbKindText_workspace;
+
+  /// No description provided for @knKbKind_chats.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations'**
+  String get knKbKind_chats;
+
+  /// No description provided for @knKbKind_file.
+  ///
+  /// In en, this message translates to:
+  /// **'A file'**
+  String get knKbKind_file;
+
+  /// No description provided for @knKbKind_folder.
+  ///
+  /// In en, this message translates to:
+  /// **'A folder'**
+  String get knKbKind_folder;
+
+  /// No description provided for @knKbKind_mail.
+  ///
+  /// In en, this message translates to:
+  /// **'A mailbox'**
+  String get knKbKind_mail;
+
+  /// No description provided for @knKbKind_url.
+  ///
+  /// In en, this message translates to:
+  /// **'A web page'**
+  String get knKbKind_url;
+
+  /// No description provided for @knKbKind_workspace.
+  ///
+  /// In en, this message translates to:
+  /// **'A project'**
+  String get knKbKind_workspace;
+
+  /// No description provided for @knKbLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose folders, files and pages: RedGiant reads them, cuts them into pieces and finds them by what they mean. The agents say where each answer comes from, and one click opens the file at that point.'**
+  String get knKbLead;
+
+  /// No description provided for @knKbLeftOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Left out ({n})'**
+  String knKbLeftOut(String n);
+
+  /// No description provided for @knKbLine.
+  ///
+  /// In en, this message translates to:
+  /// **'line {n}'**
+  String knKbLine(String n);
+
+  /// No description provided for @knKbLines.
+  ///
+  /// In en, this message translates to:
+  /// **'lines {a}–{b}'**
+  String knKbLines(String a, String b);
+
+  /// No description provided for @knKbLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get knKbLoading;
+
+  /// No description provided for @knKbLocalText.
+  ///
+  /// In en, this message translates to:
+  /// **'On this computer · {size} MB · {dims} numbers per piece'**
+  String knKbLocalText(String dims, String size);
+
+  /// No description provided for @knKbMail.
+  ///
+  /// In en, this message translates to:
+  /// **'mail'**
+  String get knKbMail;
+
+  /// No description provided for @knKbMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Make it'**
+  String get knKbMake;
+
+  /// No description provided for @knKbMeaningBest.
+  ///
+  /// In en, this message translates to:
+  /// **'The recommended one is {name}: {size} MB, downloaded once, only now that you say so.'**
+  String knKbMeaningBest(String name, String size);
+
+  /// No description provided for @knKbMeaningDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download {name} ({size} MB) and turn it on'**
+  String knKbMeaningDownload(String name, String size);
+
+  /// No description provided for @knKbMeaningOffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching by meaning is off: only by words'**
+  String get knKbMeaningOffTitle;
+
+  /// No description provided for @knKbMeaningOff_downloading.
+  ///
+  /// In en, this message translates to:
+  /// **'The model you chose is not on this computer yet: until it arrives the search goes by words.'**
+  String get knKbMeaningOff_downloading;
+
+  /// No description provided for @knKbMeaningOff_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The model for the meaning does not answer: the search goes by words. Choose it again or another one.'**
+  String get knKbMeaningOff_failed;
+
+  /// No description provided for @knKbMeaningOff_no_model.
+  ///
+  /// In en, this message translates to:
+  /// **'No model reads your documents by meaning yet, so the agents find a piece only when it has the same words they ask with.'**
+  String get knKbMeaningOff_no_model;
+
+  /// No description provided for @knKbMeaningOff_no_vector.
+  ///
+  /// In en, this message translates to:
+  /// **'The part of the database that searches by meaning is missing on this computer: the search goes by words.'**
+  String get knKbMeaningOff_no_vector;
+
+  /// No description provided for @knKbMeaningOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose another model'**
+  String get knKbMeaningOther;
+
+  /// No description provided for @knKbMeaningTurnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on searching by meaning'**
+  String get knKbMeaningTurnOn;
+
+  /// No description provided for @knKbMeaningUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use {name}'**
+  String knKbMeaningUse(String name);
+
+  /// No description provided for @knKbMeaningWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'With a model that reads by meaning, «when does the warehouse open» also finds «it opens at 7:30». It runs on this computer: your documents do not leave it.'**
+  String get knKbMeaningWhy;
+
+  /// No description provided for @knKbModelLead.
+  ///
+  /// In en, this message translates to:
+  /// **'On this computer (downloaded once, nothing leaves the house) or an online service with your key. Changing it makes a new index in the background.'**
+  String get knKbModelLead;
+
+  /// No description provided for @knKbModelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The model that reads by meaning'**
+  String get knKbModelTitle;
+
+  /// No description provided for @knKbNewCollection.
+  ///
+  /// In en, this message translates to:
+  /// **'New collection'**
+  String get knKbNewCollection;
+
+  /// No description provided for @knKbNewIndex.
+  ///
+  /// In en, this message translates to:
+  /// **'A new index for {model} is being made; the searches use the old one until it is ready.'**
+  String knKbNewIndex(String model);
+
+  /// No description provided for @knKbNoCols.
+  ///
+  /// In en, this message translates to:
+  /// **'No collection yet.'**
+  String get knKbNoCols;
+
+  /// No description provided for @knKbNoMailboxes.
+  ///
+  /// In en, this message translates to:
+  /// **'No mailbox is connected yet: add one in Automations.'**
+  String get knKbNoMailboxes;
+
+  /// No description provided for @knKbNoProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no project yet.'**
+  String get knKbNoProjects;
+
+  /// No description provided for @knKbNoSources.
+  ///
+  /// In en, this message translates to:
+  /// **'No source yet: add a folder, a file or a page.'**
+  String get knKbNoSources;
+
+  /// No description provided for @knKbOcrDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download now'**
+  String get knKbOcrDownload;
+
+  /// No description provided for @knKbOcrLanguages.
+  ///
+  /// In en, this message translates to:
+  /// **'Languages of your documents'**
+  String get knKbOcrLanguages;
+
+  /// No description provided for @knKbOcrLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Reads photos of documents and scanned PDFs on this computer (Tesseract). Its program and languages come down the first time, a few MB.'**
+  String get knKbOcrLead;
+
+  /// No description provided for @knKbOcrOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Read the text in pictures and scans'**
+  String get knKbOcrOn;
+
+  /// No description provided for @knKbOcrOnHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Slower than text: about a second a page.'**
+  String get knKbOcrOnHelp;
+
+  /// No description provided for @knKbOcrReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready on this computer.'**
+  String get knKbOcrReady;
+
+  /// No description provided for @knKbOcrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Text in pictures and scans'**
+  String get knKbOcrTitle;
+
+  /// No description provided for @knKbOcrToDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'To download: about {size} MB.'**
+  String knKbOcrToDownload(String size);
+
+  /// No description provided for @knKbOcrWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} pictures and scans are waiting for it.'**
+  String knKbOcrWaiting(String n);
+
+  /// No description provided for @knKbOpenCollection.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the collection {name}'**
+  String knKbOpenCollection(String name);
+
+  /// No description provided for @knKbPage.
+  ///
+  /// In en, this message translates to:
+  /// **'page {n}'**
+  String knKbPage(String n);
+
+  /// No description provided for @knKbPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause the reading'**
+  String get knKbPause;
+
+  /// No description provided for @knKbPauseHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The searches keep working; nothing new is read until you turn this off.'**
+  String get knKbPauseHelp;
+
+  /// No description provided for @knKbPickEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here in {name}.'**
+  String knKbPickEmpty(String name);
+
+  /// No description provided for @knKbPickFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a file in RedGiant'**
+  String get knKbPickFile;
+
+  /// No description provided for @knKbPickFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a folder in RedGiant'**
+  String get knKbPickFolder;
+
+  /// No description provided for @knKbPickOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose another'**
+  String get knKbPickOther;
+
+  /// No description provided for @knKbPickPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the projects'**
+  String get knKbPickPlaces;
+
+  /// No description provided for @knKbPickThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose this folder'**
+  String get knKbPickThis;
+
+  /// No description provided for @knKbPickUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Up one folder'**
+  String get knKbPickUp;
+
+  /// No description provided for @knKbPickWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Your projects and RedGiant\'s folders'**
+  String get knKbPickWhere;
+
+  /// No description provided for @knKbPlaceAssistants.
+  ///
+  /// In en, this message translates to:
+  /// **'The assistants\' desk'**
+  String get knKbPlaceAssistants;
+
+  /// No description provided for @knKbPlacePlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'God\'s folder'**
+  String get knKbPlacePlatform;
+
+  /// No description provided for @knKbProv_cohere.
+  ///
+  /// In en, this message translates to:
+  /// **'Cohere'**
+  String get knKbProv_cohere;
+
+  /// No description provided for @knKbProv_compatible.
+  ///
+  /// In en, this message translates to:
+  /// **'Another (like OpenAI)'**
+  String get knKbProv_compatible;
+
+  /// No description provided for @knKbProv_gemini.
+  ///
+  /// In en, this message translates to:
+  /// **'Gemini'**
+  String get knKbProv_gemini;
+
+  /// No description provided for @knKbProv_jina.
+  ///
+  /// In en, this message translates to:
+  /// **'Jina'**
+  String get knKbProv_jina;
+
+  /// No description provided for @knKbProv_mistral.
+  ///
+  /// In en, this message translates to:
+  /// **'Mistral'**
+  String get knKbProv_mistral;
+
+  /// No description provided for @knKbProv_openai.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenAI'**
+  String get knKbProv_openai;
+
+  /// No description provided for @knKbProv_voyage.
+  ///
+  /// In en, this message translates to:
+  /// **'Voyage'**
+  String get knKbProv_voyage;
+
+  /// No description provided for @knKbQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Your documents, for the agents to look up'**
+  String get knKbQ;
+
+  /// No description provided for @knKbQueueError.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped for a problem: {error}'**
+  String knKbQueueError(String error);
+
+  /// No description provided for @knKbRebuild.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebuild'**
+  String get knKbRebuild;
+
+  /// No description provided for @knKbRebuildHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Reads everything again with the same model, from the start.'**
+  String get knKbRebuildHelp;
+
+  /// No description provided for @knKbRebuildQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebuild the index?'**
+  String get knKbRebuildQ;
+
+  /// No description provided for @knKbRebuildText.
+  ///
+  /// In en, this message translates to:
+  /// **'Every piece is read again. The searches keep using the index of now until the new one is ready.'**
+  String get knKbRebuildText;
+
+  /// No description provided for @knKbRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'recommended'**
+  String get knKbRecommended;
+
+  /// No description provided for @knKbRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the collection'**
+  String get knKbRemove;
+
+  /// No description provided for @knKbRemoveQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}?'**
+  String knKbRemoveQ(String name);
+
+  /// No description provided for @knKbRemoveSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this source'**
+  String get knKbRemoveSource;
+
+  /// No description provided for @knKbRemoveText.
+  ///
+  /// In en, this message translates to:
+  /// **'Its pieces leave the knowledge. Your files stay where they are: nothing on the disk is touched.'**
+  String get knKbRemoveText;
+
+  /// No description provided for @knKbRerankLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Reads the question with each piece found and reorders them: better answers, a little slower.'**
+  String get knKbRerankLead;
+
+  /// No description provided for @knKbRerankNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get knKbRerankNone;
+
+  /// No description provided for @knKbRerankNoneText.
+  ///
+  /// In en, this message translates to:
+  /// **'The order of the search itself'**
+  String get knKbRerankNoneText;
+
+  /// No description provided for @knKbRerankText.
+  ///
+  /// In en, this message translates to:
+  /// **'On this computer · {size} MB'**
+  String knKbRerankText(String size);
+
+  /// No description provided for @knKbRerankTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The one that puts the best first'**
+  String get knKbRerankTitle;
+
+  /// No description provided for @knKbRescan.
+  ///
+  /// In en, this message translates to:
+  /// **'Look again now'**
+  String get knKbRescan;
+
+  /// No description provided for @knKbSaveScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Save who may read it'**
+  String get knKbSaveScope;
+
+  /// No description provided for @knKbScopeAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'One agent'**
+  String get knKbScopeAgent;
+
+  /// No description provided for @knKbScopeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent'**
+  String get knKbScopeAll;
+
+  /// No description provided for @knKbScopeProject.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents of one project'**
+  String get knKbScopeProject;
+
+  /// No description provided for @knKbSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Knowledge'**
+  String get knKbSection;
+
+  /// No description provided for @knKbSources.
+  ///
+  /// In en, this message translates to:
+  /// **'Sources'**
+  String get knKbSources;
+
+  /// No description provided for @knKbSrcChatsAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Your conversations, last {days} days'**
+  String knKbSrcChatsAll(String days);
+
+  /// No description provided for @knKbSrcChatsOf.
+  ///
+  /// In en, this message translates to:
+  /// **'The conversations with {names}, last {days} days'**
+  String knKbSrcChatsOf(String days, String names);
+
+  /// No description provided for @knKbSrcDocs.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} documents'**
+  String knKbSrcDocs(String n);
+
+  /// No description provided for @knKbSrcMailOf.
+  ///
+  /// In en, this message translates to:
+  /// **'The mail of the last {days} days'**
+  String knKbSrcMailOf(String days);
+
+  /// No description provided for @knKbSrcProjectOf.
+  ///
+  /// In en, this message translates to:
+  /// **'The files of {name}'**
+  String knKbSrcProjectOf(String name);
+
+  /// No description provided for @knKbSrcState_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read it'**
+  String get knKbSrcState_failed;
+
+  /// No description provided for @knKbSrcState_ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get knKbSrcState_ready;
+
+  /// No description provided for @knKbSrcState_scanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking'**
+  String get knKbSrcState_scanning;
+
+  /// No description provided for @knKbSrcState_waiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get knKbSrcState_waiting;
+
+  /// No description provided for @knKbStateEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to search yet: make a collection and add a folder.'**
+  String get knKbStateEmpty;
+
+  /// No description provided for @knKbStateNoModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a model below to search by meaning; until then it searches by words.'**
+  String get knKbStateNoModel;
+
+  /// No description provided for @knKbStateNoVector.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching by meaning is not ready on this computer yet: for now it searches by words.'**
+  String get knKbStateNoVector;
+
+  /// No description provided for @knKbStatePaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused: the searches work, nothing new is read.'**
+  String get knKbStatePaused;
+
+  /// No description provided for @knKbStateReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready: {n} pieces can be searched'**
+  String knKbStateReady(String n);
+
+  /// No description provided for @knKbStateWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading your documents…'**
+  String get knKbStateWorking;
+
+  /// No description provided for @knKbStatusLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{cols} collections · {pieces} pieces'**
+  String knKbStatusLine(String cols, String pieces);
+
+  /// No description provided for @knKbThreads.
+  ///
+  /// In en, this message translates to:
+  /// **'Processor threads'**
+  String get knKbThreads;
+
+  /// No description provided for @knKbThreadsAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'automatic'**
+  String get knKbThreadsAuto;
+
+  /// No description provided for @knKbThreadsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic leaves most of the processor to you.'**
+  String get knKbThreadsHelp;
+
+  /// No description provided for @knKbThreadsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How much of the processor'**
+  String get knKbThreadsTitle;
+
+  /// No description provided for @knKbToDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'To download: {size} MB'**
+  String knKbToDownload(String size);
+
+  /// No description provided for @knKbTryExample.
+  ///
+  /// In en, this message translates to:
+  /// **'When does the warranty end?'**
+  String get knKbTryExample;
+
+  /// No description provided for @knKbTryHow.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} pieces in {ms} ms, by meaning and by words.'**
+  String knKbTryHow(String ms, String n);
+
+  /// No description provided for @knKbTryLead.
+  ///
+  /// In en, this message translates to:
+  /// **'What the agents would find for a question, best first. Click one to open it.'**
+  String get knKbTryLead;
+
+  /// No description provided for @knKbTryNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing found. Try other words.'**
+  String get knKbTryNothing;
+
+  /// No description provided for @knKbTrySearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get knKbTrySearch;
+
+  /// No description provided for @knKbTryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a search'**
+  String get knKbTryTitle;
+
+  /// No description provided for @knKbTryWordsOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Searched by words only (no model for the meaning yet).'**
+  String get knKbTryWordsOnly;
+
+  /// No description provided for @knKbUploadFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Send files from this computer'**
+  String get knKbUploadFiles;
+
+  /// No description provided for @knKbUploadFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a folder from this computer'**
+  String get knKbUploadFolder;
+
+  /// No description provided for @knKbUploadSay.
+  ///
+  /// In en, this message translates to:
+  /// **'Or drop files here. Sent files are kept in God\'s folder, under knowledge.'**
+  String get knKbUploadSay;
+
+  /// No description provided for @knKbUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending the files…'**
+  String get knKbUploading;
+
+  /// No description provided for @knKbUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'The address'**
+  String get knKbUrl;
+
+  /// No description provided for @knKbUrlHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Read without your logins: only public pages.'**
+  String get knKbUrlHelp;
+
+  /// No description provided for @knKbWhichChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Whose conversations'**
+  String get knKbWhichChats;
+
+  /// No description provided for @knKbWhichMailbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Which mailbox'**
+  String get knKbWhichMailbox;
+
+  /// No description provided for @knKbWhichProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Which project'**
+  String get knKbWhichProject;
+
+  /// No description provided for @knKbWhyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'It failed: {error}'**
+  String knKbWhyFailed(String error);
+
+  /// No description provided for @knKbWhy_binary.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a document (a program, an archive…)'**
+  String get knKbWhy_binary;
+
+  /// No description provided for @knKbWhy_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no text in it'**
+  String get knKbWhy_empty;
+
+  /// No description provided for @knKbWhy_encrypted.
+  ///
+  /// In en, this message translates to:
+  /// **'Protected by a password'**
+  String get knKbWhy_encrypted;
+
+  /// No description provided for @knKbWhy_needs_libreoffice.
+  ///
+  /// In en, this message translates to:
+  /// **'An old Office file: it needs LibreOffice.'**
+  String get knKbWhy_needs_libreoffice;
+
+  /// No description provided for @knKbWhy_needs_ocr.
+  ///
+  /// In en, this message translates to:
+  /// **'A picture or a scan: turn on reading the text in pictures, below.'**
+  String get knKbWhy_needs_ocr;
+
+  /// No description provided for @knKbWhy_too_big.
+  ///
+  /// In en, this message translates to:
+  /// **'Too big to read'**
+  String get knKbWhy_too_big;
+
+  /// No description provided for @knKbWhy_unsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'A kind of file it cannot read'**
+  String get knKbWhy_unsupported;
+
+  /// No description provided for @knMemAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get knMemAdd;
+
+  /// No description provided for @knMemAddPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Something to remember, e.g. I prefer short answers'**
+  String get knMemAddPlaceholder;
+
+  /// No description provided for @knMemAlready.
+  ///
+  /// In en, this message translates to:
+  /// **'Already remembered.'**
+  String get knMemAlready;
+
+  /// No description provided for @knMemAutoOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: RedGiant learns nothing by itself. You can still add memories here, or ask an agent to remember something.'**
+  String get knMemAutoOff;
+
+  /// No description provided for @knMemAutoOn.
+  ///
+  /// In en, this message translates to:
+  /// **'After you write, RedGiant notes what stays true about you: tastes, work, how you like answers. It reads only your own messages, never emails, web pages or automations, and never notes passwords.'**
+  String get knMemAutoOn;
+
+  /// No description provided for @knMemAutoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn by itself from the conversations'**
+  String get knMemAutoTitle;
+
+  /// No description provided for @knMemByAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved by {name}'**
+  String knMemByAgent(String name);
+
+  /// No description provided for @knMemByAgentUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved by an agent'**
+  String get knMemByAgentUnknown;
+
+  /// No description provided for @knMemByAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Learned by itself'**
+  String get knMemByAuto;
+
+  /// No description provided for @knMemByHuman.
+  ///
+  /// In en, this message translates to:
+  /// **'Written by you'**
+  String get knMemByHuman;
+
+  /// No description provided for @knMemByImport.
+  ///
+  /// In en, this message translates to:
+  /// **'From your old notes'**
+  String get knMemByImport;
+
+  /// No description provided for @knMemCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} memories'**
+  String knMemCount(String n);
+
+  /// No description provided for @knMemCountOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 memory'**
+  String get knMemCountOne;
+
+  /// No description provided for @knMemDid_added.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get knMemDid_added;
+
+  /// No description provided for @knMemDid_edited.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed'**
+  String get knMemDid_edited;
+
+  /// No description provided for @knMemDid_forgotten.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgotten for good'**
+  String get knMemDid_forgotten;
+
+  /// No description provided for @knMemDid_removed.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted'**
+  String get knMemDid_removed;
+
+  /// No description provided for @knMemEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get knMemEdit;
+
+  /// No description provided for @knMemEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the memory'**
+  String get knMemEditTitle;
+
+  /// No description provided for @knMemEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant knows nothing about you yet. Talk with an agent, or write here something to remember.'**
+  String get knMemEmpty;
+
+  /// No description provided for @knMemEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared memory'**
+  String get knMemEyebrow;
+
+  /// No description provided for @knMemForget.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget for good'**
+  String get knMemForget;
+
+  /// No description provided for @knMemForgetText.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant deletes it, and its words go from the list of changes too. It can never be brought back.'**
+  String get knMemForgetText;
+
+  /// No description provided for @knMemForgetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget it for good?'**
+  String get knMemForgetTitle;
+
+  /// No description provided for @knMemForgottenText.
+  ///
+  /// In en, this message translates to:
+  /// **'Its words are gone for good.'**
+  String get knMemForgottenText;
+
+  /// No description provided for @knMemFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'from «{title}»'**
+  String knMemFrom(String title);
+
+  /// No description provided for @knMemFromUntitled.
+  ///
+  /// In en, this message translates to:
+  /// **'from a conversation'**
+  String get knMemFromUntitled;
+
+  /// No description provided for @knMemGoShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared memory: what RedGiant knows about you'**
+  String get knMemGoShared;
+
+  /// No description provided for @knMemGoSharedOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get knMemGoSharedOpen;
+
+  /// No description provided for @knMemGoSharedText.
+  ///
+  /// In en, this message translates to:
+  /// **'Used by every agent and updated by itself while you talk.'**
+  String get knMemGoSharedText;
+
+  /// No description provided for @knMemHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent changes'**
+  String get knMemHistory;
+
+  /// No description provided for @knMemHistoryLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Every change is kept and you can take it back, except forgetting for good.'**
+  String get knMemHistoryLead;
+
+  /// No description provided for @knMemHistoryLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Show fewer'**
+  String get knMemHistoryLess;
+
+  /// No description provided for @knMemHistoryMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all changes'**
+  String get knMemHistoryMore;
+
+  /// No description provided for @knMemLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent uses this memory, and it updates by itself while you talk. Each agent also has a memory of its own, in the agent\'s Memory tab.'**
+  String get knMemLead;
+
+  /// No description provided for @knMemListLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes count from the next conversation: the ones already open go on as they were.'**
+  String get knMemListLead;
+
+  /// No description provided for @knMemListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What it remembers'**
+  String get knMemListTitle;
+
+  /// No description provided for @knMemNoOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'This agent keeps no memory of its own.'**
+  String get knMemNoOwn;
+
+  /// No description provided for @knMemOwnCard.
+  ///
+  /// In en, this message translates to:
+  /// **'An agent\'s own memory'**
+  String get knMemOwnCard;
+
+  /// No description provided for @knMemOwnCardQ.
+  ///
+  /// In en, this message translates to:
+  /// **'In each agent\'s Memory tab'**
+  String get knMemOwnCardQ;
+
+  /// No description provided for @knMemOwnCardText.
+  ///
+  /// In en, this message translates to:
+  /// **'Only that agent reads it. You write it, or the agent notes what it needs for its work.'**
+  String get knMemOwnCardText;
+
+  /// No description provided for @knMemOwnHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {name} reads it, at the start of every conversation. {name} can also note here what it needs.'**
+  String knMemOwnHelp(String name);
+
+  /// No description provided for @knMemOwnPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Always answer with a short list'**
+  String get knMemOwnPlaceholder;
+
+  /// No description provided for @knMemOwnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory of {name}: only for this agent'**
+  String knMemOwnTitle(String name);
+
+  /// No description provided for @knMemProjectHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent working on this project reads it.'**
+  String get knMemProjectHelp;
+
+  /// No description provided for @knMemProjectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory of the project «{name}»'**
+  String knMemProjectTitle(String name);
+
+  /// No description provided for @knMemRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get knMemRemove;
+
+  /// No description provided for @knMemRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory deleted.'**
+  String get knMemRemoved;
+
+  /// No description provided for @knMemSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get knMemSaved;
+
+  /// No description provided for @knMemSharedCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared memory'**
+  String get knMemSharedCard;
+
+  /// No description provided for @knMemSharedCardQ.
+  ///
+  /// In en, this message translates to:
+  /// **'This page'**
+  String get knMemSharedCardQ;
+
+  /// No description provided for @knMemSharedCardText.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent reads it. It fills up by itself from your conversations, and you can change it here.'**
+  String get knMemSharedCardText;
+
+  /// No description provided for @knMemSummaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Summaries of long conversations'**
+  String get knMemSummaryTitle;
+
+  /// No description provided for @knMemTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What RedGiant knows about you'**
+  String get knMemTitle;
+
+  /// No description provided for @knMemUndid_added.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought back'**
+  String get knMemUndid_added;
+
+  /// No description provided for @knMemUndid_edited.
+  ///
+  /// In en, this message translates to:
+  /// **'Back as it was'**
+  String get knMemUndid_edited;
+
+  /// No description provided for @knMemUndid_removed.
+  ///
+  /// In en, this message translates to:
+  /// **'Taken away again'**
+  String get knMemUndid_removed;
+
+  /// No description provided for @knMemUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get knMemUndo;
+
+  /// No description provided for @knMemUndone.
+  ///
+  /// In en, this message translates to:
+  /// **'Undone'**
+  String get knMemUndone;
+
+  /// No description provided for @knMemUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Space used: {used} of {limit} characters'**
+  String knMemUsed(String limit, String used);
+
+  /// No description provided for @knMemWith.
+  ///
+  /// In en, this message translates to:
+  /// **'with {name}'**
+  String knMemWith(String name);
+
+  /// No description provided for @knSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get knSettings;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -13525,7 +15360,8 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'it'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'it'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
