@@ -349,8 +349,16 @@ jobs:
           Start-Sleep 5
           if ((App-Devices).Count -ne 1) { "a second click made another device"; exit 1 }
           "the app opened signed in ($(if ($real) { 'the app' } else { 'stand-in' })), one device: $($devices[0].name)"
-          Get-Process rasgeth-app -ErrorAction SilentlyContinue | Stop-Process -Force
-          if (-not $real) { Remove-Item -Recurse -Force "$app\app" }
+          # Stopped, waited for (Stop-Process does not wait), then the stand-in's folder removed: a
+          # program just stopped (or Defender still reading a new exe) may hold it a few seconds.
+          Get-Process rasgeth-app -ErrorAction SilentlyContinue | ForEach-Object { $_.Kill(); [void]$_.WaitForExit(15000) }
+          if (-not $real) {
+            for ($i = 0; $i -lt 15 -and (Test-Path "$app\app"); $i++) {
+              try { Remove-Item -Recurse -Force "$app\app" -ErrorAction Stop } catch { Start-Sleep 2 }
+            }
+            if (Test-Path "$app\app") { "the stand-in app's folder could not be removed"; exit 1 }
+          }
+
           # pgvector from the installed folder (G36.1): the embedded Postgres loads it from outside
           # its installation (redgiant.conf), and CREATE EXTENSION works in the server's database.
           if (-not (Test-Path "$app\server\pgvector\lib\vector.dll")) { "pgvector was not installed"; exit 1 }
