@@ -7,6 +7,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'repo_files.dart';
+
 Future<ui.Image> _decode(Uint8List bytes) async =>
     (await (await ui.instantiateImageCodec(bytes)).getNextFrame()).image;
 
@@ -29,10 +31,12 @@ double _difference(({int w, int h, ByteData px}) a, ({int w, int h, ByteData px}
   return sum / a.px.lengthInBytes;
 }
 
+const _logo = 'packages/web/public/icon-512.png';
+
 void main() {
-  test('the app\'s icon is the page\'s logo', () async {
+  test('the app\'s icon is the page\'s logo', skip: repoSkip(_logo), () async {
     final ours = await _png('assets/icon/rgcompanion-512.png');
-    final page = await _png('../../packages/web/public/icon-512.png');
+    final page = await _png(repoFile(_logo)!.path);
     expect((ours.w, ours.h), (512, 512));
     // The same picture: a few levels of difference from resampling, where another drawing
     // (the provisional icon) is far off.

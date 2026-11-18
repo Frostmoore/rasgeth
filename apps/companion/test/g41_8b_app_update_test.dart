@@ -23,6 +23,8 @@ import 'package:rgcompanion/app_update/updater.dart';
 import 'package:rgcompanion/l10n/app_localizations.dart';
 import 'package:rgcompanion/theme/theme.dart';
 
+import 'repo_files.dart';
+
 final _v = jsonDecode(
   File('test/fixtures/update_vectors.json').readAsStringSync(),
 ) as Map<String, dynamic>;
@@ -89,22 +91,7 @@ class _Clock {
 /// Paths compared whatever the separator (the app joins with Windows' `\\`, the test writes `/`).
 String _slash(String path) => path.replaceAll(r'\', '/');
 
-/// A file of the repository, found going up from the app (`apps/companion`), or null.
-File? _repoFile(String rel) {
-  for (var d = Directory.current.absolute; ; d = d.parent) {
-    final f = File('${d.path}/$rel');
-    if (f.existsSync()) return f;
-    if (d.parent.path == d.path) return null;
-  }
-}
-
-/// Skipped only when the app was copied alone, outside the repository (Rig's build folder);
-/// inside the repository a missing UpdateKey.cs fails.
-final Object _updateKeySkip =
-    _repoFile('packaging/windows/launcher/UpdateKey.cs') == null &&
-        _repoFile('pnpm-workspace.yaml') == null
-    ? 'the app was copied without the repository: no packaging/ above it'
-    : false;
+const _updateKey = 'packaging/windows/launcher/UpdateKey.cs';
 
 void main() {
   group('the version offered (table)', () {
@@ -295,8 +282,8 @@ void main() {
     test('the built-in key is the real one: it refuses the throwaway key\'s signature', () {
       expect(signedSums(_sums, _v['sig'] as String), isNull);
     });
-    test('the built-in key is the launcher\'s (UpdateKey.cs)', skip: _updateKeySkip, () {
-      final cs = _repoFile('packaging/windows/launcher/UpdateKey.cs')!.readAsStringSync();
+    test('the built-in key is the launcher\'s (UpdateKey.cs)', skip: repoSkip(_updateKey), () {
+      final cs = repoFile(_updateKey)!.readAsStringSync();
       expect(RegExp('<Modulus>([^<]*)</Modulus>').firstMatch(cs)!.group(1), kUpdateKeyModulus);
       expect(RegExp('<Exponent>([^<]*)</Exponent>').firstMatch(cs)!.group(1), kUpdateKeyExponent);
     });

@@ -21,7 +21,8 @@ class SharedItem {
   final String? path;
   final String? mimeType;
 
-  String get name => path == null ? (text ?? '') : path!.split(Platform.pathSeparator).last;
+  /// The file's own name, whatever its path's separator (Windows: a backslash or a slash).
+  String get name => path == null ? (text ?? '') : path!.split(RegExp(r'[\\/]')).last;
 
   bool get isFile => kind == SharedKind.image || kind == SharedKind.file;
 }
