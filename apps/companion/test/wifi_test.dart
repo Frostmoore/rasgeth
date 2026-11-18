@@ -34,7 +34,7 @@ void main() {
         ('Rasgeth-Setup-A1 B2', false),
         ('Rasgeth-Setup-A1B2"; rm -rf /', false),
         ('Casa Rossi', false),
-        ('redgiant-setup-a1b2', false),
+        ('rasgeth-setup-a1b2', false),
         ('Rasgeth-Setup-${'A' * 17}', false),
       ]) {
         expect(isSetupSsid(s), ok, reason: s);
@@ -64,10 +64,7 @@ void main() {
           'Rasgeth-Setup-AB12:54\nCasa Rossi:90\nRasgeth-Setup-ZZ99:71\n'
           'Rasgeth-Setup-AB12:60\n:40\n',
         ),
-        [
-          const SeenNetwork('Rasgeth-Setup-ZZ99', 71),
-          const SeenNetwork('Rasgeth-Setup-AB12', 60),
-        ],
+        [const SeenNetwork('Rasgeth-Setup-ZZ99', 71), const SeenNetwork('Rasgeth-Setup-AB12', 60)],
       );
       expect(
         parseNmcliActiveWifi('Wired connection 1:802-3-ethernet\nCasa\\: Rossi:802-11-wireless\n'),
@@ -93,7 +90,7 @@ void main() {
       expect(r.ssid, 'Rasgeth-Setup-AB12');
       final add = run.calls.firstWhere((c) => c.startsWith('nmcli connection add'));
       expect(add, contains('con-name rasgeth-setup ssid Rasgeth-Setup-AB12'));
-      expect(add, contains('wifi-sec.psk redgiant'));
+      expect(add, contains('wifi-sec.psk rasgeth'));
       expect(add, contains('ipv4.never-default yes'));
       expect(add, contains('connection.autoconnect no'));
       expect(run.calls, contains('nmcli --wait 30 connection up id rasgeth-setup'));
@@ -104,10 +101,7 @@ void main() {
         'nmcli connection up id Casa Rossi',
       ]);
       // Only our own name is ever deleted.
-      expect(
-        run.calls.where((c) => c.contains('delete') && !c.endsWith('rasgeth-setup')),
-        isEmpty,
-      );
+      expect(run.calls.where((c) => c.contains('delete') && !c.endsWith('rasgeth-setup')), isEmpty);
     });
 
     test('without NetworkManager: by hand', () async {
@@ -162,7 +156,7 @@ SSID 3 : Rasgeth-Setup-AB12
       expect(x, contains('<authentication>WPA2PSK</authentication>'));
       expect(x, contains('<encryption>AES</encryption>'));
       expect(x, contains('<connectionMode>manual</connectionMode>'));
-      expect(x, contains('<keyMaterial>redgiant</keyMaterial>'));
+      expect(x, contains('<keyMaterial>rasgeth</keyMaterial>'));
       expect(windowsProfileXml('a<b>&"\''), contains('a&lt;b&gt;&amp;&quot;&apos;'));
     });
 
@@ -195,10 +189,7 @@ SSID 3 : Rasgeth-Setup-AB12
       final r = await w.join(ssid: 'Rasgeth-Setup-AB12');
       expect(r.ok, isTrue, reason: '${r.message}');
       expect(calls.where((c) => c.startsWith('netsh wlan add profile')), hasLength(1));
-      expect(
-        calls,
-        contains('netsh wlan connect name=Rasgeth-Setup-AB12 ssid=Rasgeth-Setup-AB12'),
-      );
+      expect(calls, contains('netsh wlan connect name=Rasgeth-Setup-AB12 ssid=Rasgeth-Setup-AB12'));
       calls.clear();
       await w.leave();
       expect(calls, [

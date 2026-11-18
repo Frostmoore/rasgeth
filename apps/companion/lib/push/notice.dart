@@ -4,6 +4,7 @@
 // offered them and the request is not truly dangerous; a critical one opens its own screen in
 // the app. The update with `closed` withdraws the notification shown (answered elsewhere).
 import 'dart:convert';
+
 import '../brand.dart';
 
 /// `automation` (G42.9): an automation's message for the person that no page or app showed.

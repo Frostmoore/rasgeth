@@ -21,6 +21,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
+
 import '../brand.dart';
 
 const String kChannelVersion = 'rg-node-v1';

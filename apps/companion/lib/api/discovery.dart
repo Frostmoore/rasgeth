@@ -9,6 +9,7 @@
 import 'dart:async';
 
 import 'package:bonsoir/bonsoir.dart';
+
 import '../brand.dart';
 
 const String kRedGiantServiceType = '_redgiant._tcp';
