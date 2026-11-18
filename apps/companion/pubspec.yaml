@@ -59,6 +59,8 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  # G42.9: the fake server reads automations' YAML as the real one does (already in the lock).
+  yaml: ^3.1.0
 
 flutter:
   generate: true

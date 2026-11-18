@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../api/client.dart';
+import '../../api/conversation.dart' show Project;
 import '../../api/types.dart';
 import '../../app_state.dart';
 import '../../l10n/app_localizations.dart';
@@ -14,6 +15,10 @@ import '../../screens/new_agent_screen.dart' show RgSwitch;
 import '../../theme/colors.dart';
 import '../../ui/icons.dart';
 import '../../ui/settings_kit.dart';
+import '../automations/automation_draft.dart' show WhoOption, whoOptions;
+import '../automations/automation_editor.dart';
+import '../automations/automation_types.dart';
+import '../automations/automations_screen.dart' show openAutomation, recipeWhen;
 import '../api/agents_api.dart';
 import 'service_names.g.dart';
 
@@ -28,79 +33,11 @@ String serviceState(AppLocalizations l, ServiceEntry s) => switch (s.state) {
 /// A service's name as the page's catalog says it (MCP_CATALOG); others as they are.
 String serviceName(String id) => serviceNames[id] ?? id;
 
-/// The kinds of schedule a routine made here may have (the page's editor has them all).
-enum RoutineEvery { daily, weekdays, weekly, hourly }
-
-/// The cron of a schedule (the page's `toCron`): «09:00» every day, on weekdays, on Mondays, or
-/// every hour on the hour.
-String routineCron(RoutineEvery e, String time) {
-  final m = RegExp(r'^(\d{1,2}):(\d{2})$').firstMatch(time.trim());
-  final h = m == null ? 9 : int.parse(m.group(1)!).clamp(0, 23);
-  final min = m == null ? 0 : int.parse(m.group(2)!).clamp(0, 59);
-  return switch (e) {
-    RoutineEvery.daily => '$min $h * * *',
-    RoutineEvery.weekdays => '$min $h * * 1-5',
-    RoutineEvery.weekly => '$min $h * * 1',
-    RoutineEvery.hourly => '0 * * * *',
-  };
-}
-
-String _q(String s) => _json(s);
-String _json(String s) {
-  final b = StringBuffer('"');
-  for (final r in s.runes) {
-    final ch = String.fromCharCode(r);
-    b.write(switch (ch) {
-      '"' => r'\"',
-      r'\' => r'\\',
-      '\n' => r'\n',
-      '\r' => r'\r',
-      '\t' => r'\t',
-      _ => r < 0x20 ? '\\u${r.toRadixString(16).padLeft(4, '0')}' : ch,
-    });
-  }
-  b.write('"');
-  return b.toString();
-}
-
-/// A routine's recipe as YAML, as the page's editor writes it (strings quoted as JSON).
-String routineYaml({
-  required Agent agent,
-  required String title,
-  required String instructions,
-  required String cron,
-  required String stamp,
-}) {
-  final slug = agent.name
-      .toLowerCase()
-      .replaceAll(RegExp('[^a-z0-9]+'), '-')
-      .replaceAll(RegExp(r'^-+|-+$'), '');
-  final name = 'routine-${slug.isEmpty ? 'agent' : slug}-$stamp';
-  return [
-    'name: ${_q(name)}',
-    'description: ${_q(title)}',
-    'on:',
-    '  cron: ${_q(cron)}',
-    'agent: ${_q(agent.id)}',
-    'instructions: ${_q(instructions)}',
-    '',
-  ].join('\n');
-}
-
-/// The cron of a routine in words, for the four schedules made here; others as they are.
-String routineWhen(AppLocalizations l, Routine r) {
-  final c = r.cron;
-  if (r.at != null) return l.g4AgRoutineOnce(r.at!.replaceFirst('T', ' '));
-  if (c == null) return '';
-  if (c == '0 * * * *') return l.g4AgEvery_hourly;
-  final m = RegExp(r'^(\d+) (\d+) \* \* (\*|1-5|1)$').firstMatch(c);
-  if (m == null) return c;
-  final t = '${m.group(2)!.padLeft(2, '0')}:${m.group(1)!.padLeft(2, '0')}';
-  return switch (m.group(3)) {
-    '*' => l.g4AgWhenDaily(t),
-    '1-5' => l.g4AgWhenWeekdays(t),
-    _ => l.g4AgWhenWeekly(t),
-  };
+/// A routine's schedule in words, as the page's `recipeWhen` (Automations.tsx), without the
+/// sentence's full stop (it is followed by «on» or «off» in the row).
+String routineWhen(AppLocalizations l, Routine r, List<WhoOption> who, List<Project> projects) {
+  final w = recipeWhen(l, Automation.fromJson(r.raw), who, projects);
+  return w.endsWith('.') ? w.substring(0, w.length - 1) : w;
 }
 
 class AssistantGroup extends StatefulWidget {
@@ -196,16 +133,29 @@ class _AssistantGroupState extends State<AssistantGroup> {
   }
 
   Future<void> _newRoutine() async {
-    final made = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (_) => RoutineSheet(agent: widget.agent),
+    final l = AppLocalizations.of(context);
+    // The same editor as Settings › Automations, with this assistant already chosen (G42.9).
+    final made = await openAutomationEditor(
+      context,
+      title: l.auAsstNewRoutine,
+      who: 'p:${widget.agent.id}',
     );
-    if (made == true) {
-      final list = await _c?.routinesOf(widget.agent);
-      if (mounted && list != null) setState(() => _routines = list);
-    }
+    if (made != null) await _reloadRoutines();
+  }
+
+  Future<void> _reloadRoutines() async {
+    final list = await _c?.routinesOf(widget.agent);
+    if (mounted && list != null) setState(() => _routines = list);
+  }
+
+  /// A routine's window: its switch, its runs, «Run now», change it, delete it.
+  Future<void> _openRoutine(Routine r) async {
+    await openAutomation(
+      context,
+      Automation.fromJson(r.raw),
+      onChanged: () => unawaited(_reloadRoutines()),
+    );
+    await _reloadRoutines();
   }
 
   @override
@@ -213,6 +163,8 @@ class _AssistantGroupState extends State<AssistantGroup> {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
     final ro = widget.readOnly;
+    final app = AppScope.of(context);
+    final who = whoOptions(l, app.agents);
     Widget wait() => const Padding(
       padding: EdgeInsets.all(16),
       child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
@@ -314,13 +266,19 @@ class _AssistantGroupState extends State<AssistantGroup> {
                               ),
                               Text(
                                 [
-                                  routineWhen(l, r),
+                                  routineWhen(l, r, who, app.projects),
                                   r.enabled ? l.g4AgOn : l.g4AgOff,
                                 ].where((x) => x.isNotEmpty).join(' · '),
                                 style: TextStyle(fontSize: 12.5, color: c.dim),
                               ),
                             ],
                           ),
+                        ),
+                        IconButton(
+                          key: Key('as-routine-open-${r.id}'),
+                          tooltip: l.auOwnRoutineOpen,
+                          onPressed: ro ? null : () => _openRoutine(r),
+                          icon: RgIcon(RgIcons.pencil, size: 17, color: c.dim),
                         ),
                         RgSwitch(on: r.enabled),
                       ],
@@ -386,182 +344,4 @@ Widget _help(BuildContext context, String text) {
     padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
     child: Text(text, style: TextStyle(color: c.dim, fontSize: 13, height: 1.35)),
   );
-}
-
-/// «New routine»: what it does, how often, at what time; then `POST /api/automations`.
-class RoutineSheet extends StatefulWidget {
-  const RoutineSheet({super.key, required this.agent});
-
-  final Agent agent;
-
-  @override
-  State<RoutineSheet> createState() => _RoutineSheetState();
-}
-
-class _RoutineSheetState extends State<RoutineSheet> {
-  final _title = TextEditingController();
-  final _what = TextEditingController();
-  final _time = TextEditingController(text: '09:00');
-  RoutineEvery _every = RoutineEvery.daily;
-  bool _busy = false;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    for (final t in [_title, _what, _time]) {
-      t.addListener(() => setState(() {}));
-    }
-  }
-
-  @override
-  void dispose() {
-    for (final t in [_title, _what, _time]) {
-      t.dispose();
-    }
-    super.dispose();
-  }
-
-  bool get _timeOk => RegExp(r'^([01]?\d|2[0-3]):[0-5]\d$').hasMatch(_time.text.trim());
-
-  bool get _ok =>
-      _what.text.trim().isNotEmpty && (_every == RoutineEvery.hourly || _timeOk) && !_busy;
-
-  Future<void> _save() async {
-    final l = AppLocalizations.of(context);
-    final c = AppScope.read(context).client;
-    if (c == null) return;
-    setState(() {
-      _busy = true;
-      _error = null;
-    });
-    final what = _what.text.trim();
-    final title = _title.text.trim().isEmpty
-        ? (what.split('\n').first.length > 80
-              ? what.split('\n').first.substring(0, 80)
-              : what.split('\n').first)
-        : _title.text.trim();
-    try {
-      await c.createRoutine(
-        routineYaml(
-          agent: widget.agent,
-          title: title,
-          instructions: what,
-          cron: routineCron(_every, _time.text),
-          stamp: DateTime.now().millisecondsSinceEpoch.toRadixString(36).substring(4),
-        ),
-      );
-      if (mounted) Navigator.of(context).pop(true);
-    } on ApiException catch (e) {
-      if (mounted) {
-        setState(() {
-          _busy = false;
-          _error = l.asRefused(e.message);
-        });
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    final c = RgColors.of(context);
-    return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-      child: SafeArea(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.sizeOf(context).height * .85,
-            maxWidth: 640,
-          ),
-          child: ListView(
-            key: const Key('routine-sheet'),
-            shrinkWrap: true,
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-                child: Text(
-                  l.g4AgNewRoutineOf(widget.agent.name),
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: c.text),
-                ),
-              ),
-              if (_error != null)
-                NoticeBanner(key: const Key('routine-error'), text: _error!, error: true),
-              SectionHead(l.g4AgRoutineWhat),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: TextField(
-                  key: const Key('routine-what'),
-                  controller: _what,
-                  minLines: 2,
-                  maxLines: 5,
-                  decoration: InputDecoration(hintText: l.g4AgRoutineWhatHint),
-                ),
-              ),
-              SectionHead(l.g4AgRoutineTitle),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: TextField(
-                  key: const Key('routine-title'),
-                  controller: _title,
-                  maxLength: 80,
-                ),
-              ),
-              SectionHead(l.g4AgRoutineWhen),
-              SettingsCard(
-                children: [
-                  for (final (e, t) in [
-                    (RoutineEvery.daily, l.g4AgEvery_daily),
-                    (RoutineEvery.weekdays, l.g4AgEvery_weekdays),
-                    (RoutineEvery.weekly, l.g4AgEvery_weekly),
-                    (RoutineEvery.hourly, l.g4AgEvery_hourly),
-                  ])
-                    PickRow(
-                      key: Key('routine-every-${e.name}'),
-                      title: t,
-                      selected: _every == e,
-                      onTap: () => setState(() => _every = e),
-                    ),
-                ],
-              ),
-              if (_every != RoutineEvery.hourly)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                  child: TextField(
-                    key: const Key('routine-time'),
-                    controller: _time,
-                    keyboardType: TextInputType.datetime,
-                    decoration: InputDecoration(
-                      labelText: l.g4AgRoutineTime,
-                      errorText: _timeOk ? null : l.g4AgRoutineTimeBad,
-                    ),
-                  ),
-                ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
-                child: Wrap(
-                  alignment: WrapAlignment.spaceBetween,
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    OutlinedButton(
-                      key: const Key('routine-cancel'),
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: Text(l.cancel),
-                    ),
-                    FilledButton(
-                      key: const Key('routine-save'),
-                      onPressed: _ok ? _save : null,
-                      child: Text(l.g4AgRoutineSave),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }

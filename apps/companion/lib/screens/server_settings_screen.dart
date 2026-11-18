@@ -31,6 +31,7 @@ import '../settings/safety_screen.dart';
 import '../settings/tools_screen.dart';
 import 'artifacts_screen.dart';
 import 'first_start_screen.dart' show openExternal;
+import '../settings/automations/automations_screen.dart';
 import 'full_settings_screen.dart';
 import 'update_screen.dart';
 import 'you_screen.dart' show reachWord;
@@ -487,6 +488,16 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       l.psTitle,
                       l.psRowHint,
                       () => openProjectsSettings(context),
+                    ),
+                    // G42.9: Settings › Automations, native, where the page has it (after the
+                    // projects and the knowledge).
+                    _hub(
+                      c,
+                      'automations',
+                      RgIcons.clock,
+                      l.auAutomations,
+                      l.auOwnHubHint,
+                      () => openAutomationsSettings(context),
                     ),
                     _hub(
                       c,

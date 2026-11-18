@@ -17,6 +17,7 @@ import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
+import '../settings/automations/automation_notices.dart';
 
 /// What a permission asks to do, in one line (the command, the path, else the input).
 String requestSummary(PermissionRequest r) {
@@ -98,59 +99,68 @@ class _InboxScreenState extends State<InboxScreen> {
                       ],
                     ),
             ),
-            Expanded(
-              child: top == null
-                  ? EmptyState(icon: RgIcons.bell, text: l.inboxEmpty)
-                  // One card at a time, never wider than a phone's on a computer (the room's
-                  // side panel is narrower than the window: its own width counts).
-                  : LayoutBuilder(
-                      builder: (context, box) => ListView(
-                        key: const Key('inbox-stack'),
-                        padding: EdgeInsets.fromLTRB(
-                          16 + ((box.maxWidth - 32 - 640) / 2).clamp(0, 9999),
-                          4,
-                          16 + ((box.maxWidth - 32 - 640) / 2).clamp(0, 9999),
-                          24,
-                        ),
-                        children: [
-                          Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              // The cards behind, peeking under the top one.
-                              for (var i = (list.length - 1).clamp(0, 2); i >= 1; i--)
-                                Positioned(
-                                  left: 10.0 * i,
-                                  right: 10.0 * i,
-                                  top: 12.0 * i,
-                                  bottom: -12.0 * i,
-                                  child: _Behind(depth: i, request: list[i]),
-                                ),
-                              SwipeCard(
-                                key: ValueKey(top.requestId),
-                                request: top,
-                                onAnswered: () => setState(() => _answered.add(top.requestId)),
-                                child: switch (top) {
-                                  final PermissionRequest p => PermissionCard(request: p),
-                                  final QuestionRequest q => QuestionCard(request: q),
-                                },
-                              ),
-                            ],
+            // G42.9: the automations' messages (`automation.notice`), as the page's bell.
+            if (app.live.notices.isNotEmpty && top == null)
+              Expanded(child: AutomationNotices(notices: app.live.notices))
+            else if (app.live.notices.isNotEmpty)
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * .4),
+                child: AutomationNotices(notices: app.live.notices, shrink: true),
+              ),
+            if (top != null || app.live.notices.isEmpty)
+              Expanded(
+                child: top == null
+                    ? EmptyState(icon: RgIcons.bell, text: l.inboxEmpty)
+                    // One card at a time, never wider than a phone's on a computer (the room's
+                    // side panel is narrower than the window: its own width counts).
+                    : LayoutBuilder(
+                        builder: (context, box) => ListView(
+                          key: const Key('inbox-stack'),
+                          padding: EdgeInsets.fromLTRB(
+                            16 + ((box.maxWidth - 32 - 640) / 2).clamp(0, 9999),
+                            4,
+                            16 + ((box.maxWidth - 32 - 640) / 2).clamp(0, 9999),
+                            24,
                           ),
-                          const SizedBox(height: 26),
-                          if (top is PermissionRequest)
-                            Text(
-                              critical ? l.inboxCriticalHint : l.inboxSwipeHint,
-                              key: const Key('inbox-hint'),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: critical ? c.criticalText : c.dim,
-                                fontSize: 13,
-                              ),
+                          children: [
+                            Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                // The cards behind, peeking under the top one.
+                                for (var i = (list.length - 1).clamp(0, 2); i >= 1; i--)
+                                  Positioned(
+                                    left: 10.0 * i,
+                                    right: 10.0 * i,
+                                    top: 12.0 * i,
+                                    bottom: -12.0 * i,
+                                    child: _Behind(depth: i, request: list[i]),
+                                  ),
+                                SwipeCard(
+                                  key: ValueKey(top.requestId),
+                                  request: top,
+                                  onAnswered: () => setState(() => _answered.add(top.requestId)),
+                                  child: switch (top) {
+                                    final PermissionRequest p => PermissionCard(request: p),
+                                    final QuestionRequest q => QuestionCard(request: q),
+                                  },
+                                ),
+                              ],
                             ),
-                        ],
+                            const SizedBox(height: 26),
+                            if (top is PermissionRequest)
+                              Text(
+                                critical ? l.inboxCriticalHint : l.inboxSwipeHint,
+                                key: const Key('inbox-hint'),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: critical ? c.criticalText : c.dim,
+                                  fontSize: 13,
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
-                    ),
-            ),
+              ),
           ],
         );
       },

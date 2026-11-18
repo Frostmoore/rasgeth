@@ -408,6 +408,53 @@ const brain = (req) => {
         "2. [Bialetti, Venus](https://www.bialetti.com/it_it/venus)\n" +
         "3. [Caffè e moka, prova della Brikka](https://www.example.com/brikka)",
     };
+  // G42.9 (DEMO_MAGIC_AUTOMATION): a magic automation's conversation ends in God's proposal, with a chat
+  // still to link, so the preview, its needs and the yes show (the app's and the page's shots).
+  if (/Revolut/.test(said) && !/^Magic (integration|extension): /.test(said) && !results)
+    return {
+      text: "Ho capito: ogni giorno alle 15 guardo il conto e ti scrivo su WhatsApp. Ecco la proposta.",
+      toolCalls: [
+        {
+          name: "propose_automation",
+          input: {
+            yaml: [
+              "name: revolut-daily",
+              'description: "Movimenti del conto Revolut"',
+              "on:",
+              '  cron: "0 15 * * *"',
+              "  timezone: Europe/Rome",
+              "agent: god",
+              'instructions: "Guarda i movimenti di oggi sul conto Revolut e dimmi entrate e uscite."',
+              "notify:",
+              "  to: [whatsapp]",
+              "",
+            ].join("\n"),
+            summary:
+              "Ogni giorno alle 15 guardo i movimenti del conto e ti scrivo su WhatsApp entrate e uscite.",
+            needs: [
+              { kind: "chat", what: "whatsapp", why: "Per scriverti il riepilogo" },
+              {
+                kind: "credential",
+                what: "revolut",
+                why: "Per leggere il conto",
+                service: "Revolut",
+              },
+            ],
+          },
+        },
+      ],
+    };
+  if (
+    results &&
+    last.parts.some(
+      (p) =>
+        p.type === "tool_result" &&
+        String(p.content).startsWith("Proposed. The person sees the preview"),
+    )
+  )
+    return {
+      text: "La proposta è qui accanto. Prima di approvarla collega WhatsApp e aggiungi la chiave di Revolut nel Portachiavi.",
+    };
   // G38.3: a magic integration's or extension's conversation ends in a package.
   if (/^Magic (integration|extension): /.test(said) && !results) {
     const demo = MAGIC_DEMO.find((d) => said.includes(d.when));
@@ -3497,6 +3544,17 @@ if (process.env.DEMO_MAGIC) {
   );
   await Promise.all([wait(notion.id, "ready"), wait(csv.id, "ready"), wait(piva.id, "ready")]);
   await core.magicExt.approve("local", piva.id);
+}
+// DEMO_MAGIC_AUTOMATION=1 (G42.9): a magic automation with God's proposal waiting for the person.
+if (process.env.DEMO_MAGIC_AUTOMATION) {
+  const revolut = await core.magic.create(
+    "local",
+    "Ogni giorno alle 15 controlla il mio conto Revolut e dimmi su WhatsApp se ho ricevuto o pagato soldi",
+  );
+  for (let i = 0; i < 400; i++) {
+    if ((await core.magic.get("local", revolut.id)).status === "ready") break;
+    await new Promise((r) => setTimeout(r, 50));
+  }
 }
 await debugLog.configure({ dir: join(dir, "logs") });
 await setup.applyAtStartup();

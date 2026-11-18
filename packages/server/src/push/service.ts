@@ -351,14 +351,34 @@ export class PushService {
     );
   }
 
+  private track(p: Promise<unknown>): void {
+    const q = p.catch(() => {});
+    this.inFlight.add(q);
+    void q.finally(() => this.inFlight.delete(q));
+  }
+
+  /**
+   * An automation's message for the person that no page or app showed (`notify.to: [web]`,
+   * G42.9): it reaches the devices as a notification, as the page's bell would show it.
+   */
+  automationNotice(
+    ownerId: string,
+    text: string,
+    info: {
+      automationId: string;
+      runId: string;
+      name: string;
+      status: string;
+      sessionId: string | null;
+    },
+  ): void {
+    this.track(this.notify(ownerId, { type: "automation", ...info, text }));
+  }
+
   /** Listens to the core: requests, questions, tasks and answers nobody watches. */
   attach(h: PushHost): void {
     this.host = h;
-    const run = (p: Promise<unknown>) => {
-      const q = p.catch(() => {});
-      this.inFlight.add(q);
-      void q.finally(() => this.inFlight.delete(q));
-    };
+    const run = (p: Promise<unknown>) => this.track(p);
     h.approvals.on("request", (owner, info) => run(this.notify(owner, { type: "approval", info })));
     h.approvals.on("closed", (owner, id, _d, via) => run(this.withdraw(owner, id, via)));
     h.questions.on("request", (owner, info) => run(this.notify(owner, { type: "question", info })));

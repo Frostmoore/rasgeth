@@ -6,6 +6,7 @@
 import '../api/conversation.dart';
 import '../l10n/app_localizations.dart';
 import '../screens/inbox_screen.dart' show requestSummary;
+import '../settings/automations/automation_types.dart';
 import 'notice.dart';
 
 /// `ARTIFACT_GRANT_TOOL` (packages/protocol/src/artifact-bridge.ts).
@@ -40,3 +41,14 @@ PushNotice liveNoticeFor(PersonRequest r, String server, AppLocalizations l) => 
     sessionId: r.sessionId,
   ),
 };
+
+/// The notice for an automation's message (G42.9), with the server's words (`pushFor`'s
+/// `automation`): its name, «not done» when it failed, the message.
+PushNotice automationNoticeFor(AutomationNotice n, String server, AppLocalizations l) => PushNotice(
+  id: 'auto:${n.runId}',
+  kind: NoticeKind.automation,
+  server: server,
+  title: _clip(n.status == 'ok' ? n.name : l.auOwnNoticeFailed(n.name), 80),
+  body: _clip(n.text, 180),
+  sessionId: n.sessionId,
+);

@@ -183,6 +183,18 @@ enum RgIcons {
   ),
   fullscreenExit(
     '<path d="M9 4v4a1 1 0 0 1-1 1H4M20 9h-4a1 1 0 0 1-1-1V4M15 20v-4a1 1 0 0 1 1-1h4M4 15h4a1 1 0 0 1 1 1v4"/>',
+  ),
+  // G42.9: automations (the page's IconSpark, IconSliders, IconPuzzle, IconKey, IconGit).
+  spark(
+    '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/>',
+  ),
+  sliders('<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>'),
+  puzzle(
+    '<path d="M20 13h-1.5a2 2 0 1 0 0 4H20v3a1 1 0 0 1-1 1h-3v-1.5a2 2 0 1 0-4 0V21H9a1 1 0 0 1-1-1v-3H6.5a2 2 0 1 1 0-4H8v-3a1 1 0 0 1 1-1h3V7.5a2 2 0 1 1 4 0V9h3a1 1 0 0 1 1 1z"/>',
+  ),
+  key('<circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3L21 2M17 6l3 3M14.5 8.5l2 2"/>'),
+  git(
+    '<circle cx="6" cy="5" r="2.5"/><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="8" r="2.5"/><path d="M6 7.5v9M18 10.5c0 4-4 4.5-9.5 6.5"/>',
   );
 
   const RgIcons(this.paths);

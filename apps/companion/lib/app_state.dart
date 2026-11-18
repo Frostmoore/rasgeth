@@ -1805,7 +1805,9 @@ class AppController extends ChangeNotifier {
       final s = servers.where((x) => x.id == tap.serverId).firstOrNull;
       if (s != null) await useServer(s);
     }
-    if (tap.kind == NoticeKind.request || tap.kind == NoticeKind.question) {
+    if (tap.kind == NoticeKind.request ||
+        tap.kind == NoticeKind.question ||
+        (tap.kind == NoticeKind.automation && tap.sessionId == null)) {
       tab = AppTab.inbox;
     } else if (tap.sessionId != null) {
       pendingSession = tap.sessionId;
@@ -1814,6 +1816,8 @@ class AppController extends ChangeNotifier {
   }
 
   Set<String> _seenRequests = const {};
+  Set<String> _seenNotices = const {};
+  Object? _seenNoticeList;
 
   /// Requests that come and go on the live connection: the notification of one answered
   /// anywhere is withdrawn; on a computer behind other windows a new one is notified.
@@ -1824,7 +1828,9 @@ class AppController extends ChangeNotifier {
     // waiting, being a const piece under a builder that listened to the live model only).
     if (!identical(live.sessions, _seenSessions) ||
         !identical(live.approvals, _seenApprovals) ||
-        !identical(live.questions, _seenQuestions)) {
+        !identical(live.questions, _seenQuestions) ||
+        !identical(live.notices, _seenNoticeList)) {
+      _seenNoticeList = live.notices;
       _seenSessions = live.sessions;
       _seenApprovals = live.approvals;
       _seenQuestions = live.questions;
@@ -1846,8 +1852,14 @@ class AppController extends ChangeNotifier {
         final n = liveNoticeFor(r, displayName, l);
         unawaited(notifier.apply(planFor(n, sid), l).catchError((_) {}));
       }
+      // G42.9: an automation's message, as the page's `notifyHidden`.
+      for (final n in live.notices.where((n) => !_seenNotices.contains(n.runId))) {
+        final p = automationNoticeFor(n, displayName, l);
+        unawaited(notifier.apply(planFor(p, sid), l).catchError((_) {}));
+      }
     }
     _seenRequests = now;
+    _seenNotices = {for (final n in live.notices) n.runId};
   }
 
   /// What the person sees in Tu › Notifiche for the RedGiant in use.
