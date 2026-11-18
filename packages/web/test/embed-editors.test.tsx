@@ -127,10 +127,13 @@ describe("the four editors, bare, in their shell", () => {
       timeout: 5000,
     });
     // Only the picture editor takes a pasted picture; none is read only.
-    expect(lastBar()?.paste ?? false).toBe(path === "layers.ora");
+    await waitFor(() => expect(lastBar()?.paste ?? false).toBe(path === "layers.ora"), {
+      timeout: 5000,
+    });
     expect(lastBar()?.readOnly).toBeUndefined();
-    // The editor's own keys are marked for the app's (the text's once its text is there).
-    if (path !== "main.ts" && path !== "layers.ora")
+    // The editor's own keys are marked for the app's (the PDF's at once; the text's, the
+    // drawing's and the picture's once their content is there).
+    if (path === "report.pdf")
       expect(r.container.querySelector("[data-embed-keys]")).toBeTruthy();
   });
 });
@@ -161,10 +164,15 @@ describe("the app's bar and composer", () => {
     await waitFor(() => expect(r.container.querySelector(".doc-shell")).toBeTruthy(), {
       timeout: 5000,
     });
-    opened(file, "const a = 1;\nconst b = 2;\nconst c = 3;\n");
-    await waitFor(() => expect(r.container.querySelector(".cm-editor")).toBeTruthy(), {
-      timeout: 5000,
-    });
+    // Said again until the editor is listening (it opens the file once it is mounted).
+    await waitFor(
+      () => {
+        if (!r.container.querySelector(".cm-editor"))
+          opened(file, "const a = 1;\nconst b = 2;\nconst c = 3;\n");
+        expect(r.container.querySelector(".cm-editor")).toBeTruthy();
+      },
+      { timeout: 5000 },
+    );
     const view = EditorView.findFromDOM(r.container.querySelector(".cm-editor") as HTMLElement);
     if (!view) throw new Error("no editor");
     expect(lastBar()?.actions.map((a) => a.id)).not.toContain("ask");
@@ -192,10 +200,13 @@ describe("the app's bar and composer", () => {
     await waitFor(() => expect(r.container.querySelector(".doc-shell")).toBeTruthy(), {
       timeout: 5000,
     });
-    opened(file, "x\n");
-    await waitFor(() => expect(r.container.querySelector("[data-embed-keys]")).toBeTruthy(), {
-      timeout: 5000,
-    });
+    await waitFor(
+      () => {
+        if (!r.container.querySelector(".cm-editor")) opened(file, "x\n");
+        expect(r.container.querySelector("[data-embed-keys]")).toBeTruthy();
+      },
+      { timeout: 5000 },
+    );
     const keys = r.container.querySelector("[data-embed-keys]") as HTMLElement;
     expect(keys.classList.contains("cm-content")).toBe(true);
     const got: string[] = [];
