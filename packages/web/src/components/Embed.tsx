@@ -137,7 +137,12 @@ export function EmbedRoot({ params }: { params: EmbedParams }) {
   const asked = embedTarget(params);
   const [tabId] = useState(() =>
     asked
-      ? embedTab(asked.kind === "file" ? fileName(asked.path) : t("embedPort", { port: String(asked.port) }), asked)
+      ? embedTab(
+          asked.kind === "file"
+            ? fileName(asked.path)
+            : t("embedPort", { port: String(asked.port) }),
+          asked,
+        )
       : undefined,
   );
   // What the tab shows now (an original's open copy replaces it in the same tab, p3.5.12).

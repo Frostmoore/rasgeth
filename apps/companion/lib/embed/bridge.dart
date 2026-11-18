@@ -47,7 +47,8 @@ bool embedTargetOk(Object? t) {
               (x['at'] is Map &&
                   _positive((x['at']! as Map)['page']) &&
                   _positive((x['at']! as Map)['line']))),
-    'port' => x['agentId'] is String && x['port'] is int && (x['path'] == null || x['path'] is String),
+    'port' =>
+      x['agentId'] is String && x['port'] is int && (x['path'] == null || x['path'] is String),
     _ => false,
   };
 }
@@ -123,7 +124,9 @@ Map<String, Object?>? embedToApp(Object? m) {
               (_str(x['link'], max: 4000) && _serverPath.hasMatch(x['link']! as String))) &&
           _optBool(x['download']),
     'open' =>
-      _only(x, {'t', 'title', 'target'}) && _str(x['title'], max: 300) && embedTargetOk(x['target']),
+      _only(x, {'t', 'title', 'target'}) &&
+          _str(x['title'], max: 300) &&
+          embedTargetOk(x['target']),
     _ => false,
   };
   return ok ? x : null;
@@ -294,7 +297,8 @@ class EmbedBar {
 
   factory EmbedBar.fromJson(Map<String, Object?> m) => EmbedBar(
     actions: [
-      for (final a in m['actions']! as List) EmbedAction.fromJson((a as Map).cast<String, Object?>()),
+      for (final a in m['actions']! as List)
+        EmbedAction.fromJson((a as Map).cast<String, Object?>()),
     ],
     note: m['note'] as String?,
     link: m['link'] as String?,
@@ -363,10 +367,7 @@ class EmbedBridge {
       case 'bar':
         h.bar?.call(EmbedBar.fromJson(m));
       case 'open':
-        h.open?.call(
-          m['title']! as String,
-          Map<String, dynamic>.from(m['target']! as Map),
-        );
+        h.open?.call(m['title']! as String, Map<String, dynamic>.from(m['target']! as Map));
     }
     return m;
   }

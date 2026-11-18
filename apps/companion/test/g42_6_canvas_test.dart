@@ -100,7 +100,10 @@ void main() {
 
     test('the app\'s tabs as the page\'s `tabs` names them; what the page said, per tab', () {
       final m = CanvasPanelModel()
-        ..show('Rapporto', {..._pdf, 'at': {'page': 3}})
+        ..show('Rapporto', {
+          ..._pdf,
+          'at': {'page': 3},
+        })
         ..show('Il sito', _port);
       expect(m.wireTabs(), [
         {
@@ -188,8 +191,10 @@ void main() {
       expect(find.byKey(const Key('canvas-panel')), findsOneWidget);
       expect(find.byKey(const Key('canvas-strip')), findsOneWidget);
       final h = hosts.last;
-      expect('${h.params.embed.name} ${h.params.scope} ${h.params.path} ${h.params.session}',
-          'canvas platform docs/report.pdf s1');
+      expect(
+        '${h.params.embed.name} ${h.params.scope} ${h.params.path} ${h.params.session}',
+        'canvas platform docs/report.pdf s1',
+      );
       // The page: drawn, its kind and weight, its bar.
       h
         ..say({'t': 'ready'})

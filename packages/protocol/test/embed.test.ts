@@ -195,9 +195,15 @@ describe("the bridge", () => {
     ["a preview's link to a file", { t: "previewLink", url: "file:///etc/passwd" }],
     ["an empty question", { t: "askAgent", text: "", ref: {} }],
     ["an extra field", { t: "ready", x: 1 }],
-    ["an action with an id of other characters", { t: "bar", actions: [{ id: "A b", label: "x" }] }],
+    [
+      "an action with an id of other characters",
+      { t: "bar", actions: [{ id: "A b", label: "x" }] },
+    ],
     ["an action with no words", { t: "bar", actions: [{ id: "a", label: "" }] }],
-    ["an icon the app does not draw", { t: "bar", actions: [{ id: "a", label: "x", icon: "bomb" }] }],
+    [
+      "an icon the app does not draw",
+      { t: "bar", actions: [{ id: "a", label: "x", icon: "bomb" }] },
+    ],
     [
       "too many actions",
       { t: "bar", actions: Array.from({ length: 13 }, (_, i) => ({ id: `a${i}`, label: "x" })) },
@@ -228,13 +234,17 @@ describe("the bridge", () => {
     expect(AppToEmbed.safeParse({ t: "action", id: "art.source" }).success).toBe(true);
     expect(AppToEmbed.safeParse({ t: "action", id: "" }).success).toBe(false);
     expect(AppToEmbed.safeParse({ t: "action", id: "x", more: 1 }).success).toBe(false);
-    const tab = { title: "a.pdf", target: { kind: "file", scope: "p1", path: "a.pdf" }, active: true };
+    const tab = {
+      title: "a.pdf",
+      target: { kind: "file", scope: "p1", path: "a.pdf" },
+      active: true,
+    };
     expect(AppToEmbed.safeParse({ t: "tabs", visible: true, tabs: [tab] }).success).toBe(true);
     expect(AppToEmbed.safeParse({ t: "tabs", visible: false, tabs: [] }).success).toBe(true);
     expect(AppToEmbed.safeParse({ t: "tabs", tabs: [tab] }).success).toBe(false);
-    expect(AppToEmbed.safeParse({ t: "tabs", visible: true, tabs: Array(51).fill(tab) }).success).toBe(
-      false,
-    );
+    expect(
+      AppToEmbed.safeParse({ t: "tabs", visible: true, tabs: Array(51).fill(tab) }).success,
+    ).toBe(false);
     expect(
       AppToEmbed.safeParse({ t: "tabs", visible: true, tabs: [{ ...tab, active: "yes" }] }).success,
     ).toBe(false);

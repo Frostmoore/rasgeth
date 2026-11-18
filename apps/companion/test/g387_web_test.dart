@@ -951,7 +951,10 @@ void main() {
       expect(server.requests, contains('POST /api/sessions/s1/widgets/3/0/keep'));
       expect(find.byKey(const Key('canvas-screen')), findsOneWidget);
       final p = parseEmbedHash(pages.last.fragment)!;
-      expect('${p.embed.name} ${p.scope} ${p.path} ${p.session}', 'canvas p1 artefatti/mutuo.html s1');
+      expect(
+        '${p.embed.name} ${p.scope} ${p.path} ${p.session}',
+        'canvas p1 artefatti/mutuo.html s1',
+      );
       expect(find.byKey(const Key('canvas-artifact')), findsNothing);
       await done(tester);
     });

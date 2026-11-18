@@ -34,7 +34,8 @@ class CanvasTab {
       : target['kind'] == 'file' && scope != null && path != null;
 
   /// The file's own name (the tab's words when it has none).
-  String get fileName => (path ?? '').split(RegExp(r'[\\/]')).where((s) => s.isNotEmpty).lastOrNull ?? '';
+  String get fileName =>
+      (path ?? '').split(RegExp(r'[\\/]')).where((s) => s.isNotEmpty).lastOrNull ?? '';
 
   /// The target as the protocol's `CanvasTargetSchema` has it (for the page's `tabs`).
   Map<String, Object?> get wireTarget => isPort

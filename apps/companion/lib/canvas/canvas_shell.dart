@@ -122,18 +122,25 @@ class CanvasScreenShell extends StatelessWidget {
     final c = RgColors.of(context);
     return ListenableBuilder(
       listenable: model,
-      builder: (context, _) => Scaffold(
-        key: const Key('canvas-screen'),
-        backgroundColor: c.bg,
-        body: SafeArea(
-          top: !model.full,
-          bottom: !model.full,
-          child: CanvasShell(
-            model: model,
-            sessionId: sessionId,
-            whole: true,
-            onAskAgent: onAskAgent,
-            onClose: () => Navigator.of(context).maybePop(),
+      // The whole screen ends first with back, then the Canvas goes.
+      builder: (context, _) => PopScope(
+        canPop: !model.full,
+        onPopInvokedWithResult: (didPop, _) {
+          if (!didPop && model.full) model.setFull(false);
+        },
+        child: Scaffold(
+          key: const Key('canvas-screen'),
+          backgroundColor: c.bg,
+          body: SafeArea(
+            top: !model.full,
+            bottom: !model.full,
+            child: CanvasShell(
+              model: model,
+              sessionId: sessionId,
+              whole: true,
+              onAskAgent: onAskAgent,
+              onClose: () => Navigator.of(context).maybePop(),
+            ),
           ),
         ),
       ),
@@ -302,8 +309,9 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
   }
 
   @override
-  void didUpdateWidget(CanvasShell old) {
-    super.didUpdateWidget(old);
+  void didUpdateWidget(CanvasShell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final old = oldWidget;
     if (old.model != widget.model) {
       old.model.removeListener(_changed);
       widget.model.addListener(_changed);
@@ -403,7 +411,8 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
       await openExternal(c.base.resolve(link));
     } on Object catch (e) {
       if (mounted) {
-        ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(content: Text(l.errGeneric('$e'))));
+        ScaffoldMessenger.maybeOf(context)
+            ?.showSnackBar(SnackBar(content: Text(l.errGeneric('$e'))));
       }
     }
   }
@@ -485,7 +494,8 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
       url: embedUrl(e.base, _params(e, t, nonce)),
       nonce: nonce,
       leaf: e.leaf,
-      handleBack: widget.whole,
+      // The system's back asks the page in front first (its own panels), never one behind.
+      handleBack: widget.whole && t.id == _m.active && !_m.full,
       fallback: fallback == null ? null : (_) => fallback,
       onReady: _tellTabs,
       onClose: widget.onClose,
@@ -534,16 +544,19 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
           children: [
             if (!m.full) ?widget.top,
             if (!m.full) _strip(context),
-            if (!m.full && t != null) _CanvasBar(
-              tab: t,
-              info: m.info[t.id],
-              phone: _phone,
-              onAction: (id) => unawaited(_views[t.id]?.currentState?.action(id) ?? Future<void>.value()),
-              onReload: () => unawaited(_views[t.id]?.currentState?.reload() ?? Future<void>.value()),
-              onDownload: t.isPort ? null : () => _download(t),
-              onFull: () => m.setFull(true),
-              onOutside: _embed == null && t.isPort ? null : () => _outside(t),
-            ),
+            if (!m.full && t != null)
+              _CanvasBar(
+                tab: t,
+                info: m.info[t.id],
+                phone: _phone,
+                onAction: (id) =>
+                    unawaited(_views[t.id]?.currentState?.action(id) ?? Future<void>.value()),
+                onReload: () =>
+                    unawaited(_views[t.id]?.currentState?.reload() ?? Future<void>.value()),
+                onDownload: t.isPort ? null : () => _download(t),
+                onFull: () => m.setFull(true),
+                onOutside: _embed == null && t.isPort ? null : () => _outside(t),
+              ),
             Expanded(
               child: Stack(
                 fit: StackFit.expand,
@@ -684,6 +697,9 @@ class _CanvasBar extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final i = info;
     final bar = i?.bar;
+    final agent = tab.isPort
+        ? AppScope.read(context).agents.where((a) => a.id == tab.agentId).firstOrNull?.name
+        : null;
     final site = tab.isPort || i?.kind == null && bar != null && !bar.download;
     final save = switch (i?.save) {
       'saving' => l.embedSaving,
@@ -692,6 +708,9 @@ class _CanvasBar extends StatelessWidget {
       _ => null,
     };
     final meta = [
+      // A port: whose computer it is and its number (the agent's words are the title).
+      if (tab.isPort) ?agent,
+      if (tab.isPort && tab.title.isNotEmpty) l.cvEmbedPort('${tab.port}'),
       if (i?.kind != null && !site) viewerKindWord(l, i!.kind!),
       if (i?.size != null && !site) _bytes(i!.size!),
       ?save,
@@ -711,7 +730,8 @@ class _CanvasBar extends StatelessWidget {
     );
     final buttons = <Widget>[
       icon(const Key('canvas-panel-reload'), RgIcons.refresh, l.cvCanvasReload, onReload),
-      if (download) icon(const Key('canvas-download'), RgIcons.download, l.cvVwDownload, onDownload),
+      if (download)
+        icon(const Key('canvas-download'), RgIcons.download, l.cvVwDownload, onDownload),
       icon(const Key('canvas-full'), RgIcons.fullscreen, l.cvCanvasFullscreen, onFull),
       if (onOutside != null)
         icon(const Key('canvas-panel-outside'), RgIcons.external, l.embedOpenInBrowser, onOutside),
@@ -722,10 +742,7 @@ class _CanvasBar extends StatelessWidget {
           key: const Key('canvas-agent-note'),
           margin: const EdgeInsets.only(right: 6),
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-          decoration: BoxDecoration(
-            color: c.accentSoft,
-            borderRadius: BorderRadius.circular(999),
-          ),
+          decoration: BoxDecoration(color: c.accentSoft, borderRadius: BorderRadius.circular(999)),
           child: Text(
             note,
             maxLines: 1,
@@ -925,7 +942,9 @@ class _Tab extends StatelessWidget {
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 180),
                   child: Text(
-                    tab.title.isEmpty ? (tab.isPort ? l.cvEmbedPort('${tab.port}') : tab.fileName) : tab.title,
+                    tab.title.isEmpty
+                        ? (tab.isPort ? l.cvEmbedPort('${tab.port}') : tab.fileName)
+                        : tab.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(

@@ -339,7 +339,8 @@ class EmbedViewState extends State<EmbedView> {
     return PopScope(
       canPop: !widget.handleBack || _bridge == null || !_ready,
       onPopInvokedWithResult: (didPop, _) async {
-        if (didPop) return;
+        // Only the page that holds back answers it (a Canvas keeps other tabs alive behind).
+        if (didPop || !widget.handleBack) return;
         final nav = Navigator.of(context);
         if (!await pageTookBack() && mounted) nav.pop();
       },

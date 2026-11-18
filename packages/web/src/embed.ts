@@ -58,14 +58,12 @@ let barSent = "";
  * The Canvas's own buttons, for the app's bar (G42.6): sent when they change, and what each does
  * kept here for the app's `action`.
  */
-export function setEmbedBar(
-  bar: {
-    actions: (EmbedAction & { run: () => void })[];
-    note?: string | undefined;
-    link?: string | undefined;
-    download?: boolean | undefined;
-  },
-): void {
+export function setEmbedBar(bar: {
+  actions: (EmbedAction & { run: () => void })[];
+  note?: string | undefined;
+  link?: string | undefined;
+  download?: boolean | undefined;
+}): void {
   actions.clear();
   for (const a of bar.actions) actions.set(a.id, a.run);
   const m: EmbedToApp = {

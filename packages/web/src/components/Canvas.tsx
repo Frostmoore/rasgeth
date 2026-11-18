@@ -9,6 +9,7 @@
 import type { ArtifactError, CanvasDo } from "@redgiant/protocol";
 import { FILES_SANDBOX, PROGRAM_SANDBOX } from "@redgiant/protocol";
 import { useEffect, useRef, useState } from "preact/hooks";
+import { setEmbedBar } from "../embed.js";
 import { t } from "../i18n.js";
 import {
   IconAlert,
@@ -24,7 +25,6 @@ import {
   IconPlay,
   IconRefresh,
 } from "../icons.js";
-import { setEmbedBar } from "../embed.js";
 import { phoneScreen, phoneViewNote } from "../phone.js";
 import {
   type CanvasTarget,
@@ -439,11 +439,7 @@ export function Canvas({
               </button>
             )}
             {artErrors.length > 0 && (
-              <span
-                class="artifact-errors"
-                role="status"
-                title={errorsHint}
-              >
+              <span class="artifact-errors" role="status" title={errorsHint}>
                 <IconAlert size={12} />
                 {artErrors.length === 1
                   ? t("artError1")

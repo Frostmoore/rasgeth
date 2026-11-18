@@ -43,6 +43,17 @@ vi.mock("../src/api.js", async (orig) => {
   return { ...real, Api, Live };
 });
 
+// The device's access works: what the stand-in API cannot answer after it is not this test's.
+vi.mock("../src/state.js", async (orig) => {
+  const real = await orig<typeof import("../src/state.js")>();
+  return {
+    ...real,
+    signIn: async (t: string, o: { keep?: boolean }) => {
+      await real.signIn(t, o).catch(() => {});
+    },
+  };
+});
+
 const embed = await import("../src/embed.js");
 const { EmbedRoot, embedTab } = await import("../src/components/Embed.js");
 const state = await import("../src/state.js");
@@ -107,7 +118,9 @@ describe("every viewer kind, bare, with its bar sent to the app", () => {
     await waitFor(() => expect(of("title")).toContainEqual({ t: "title", name: path }));
     type Bar = { actions: { id: string }[]; link?: string; download?: boolean };
     const last = () => of("bar").at(-1) as Bar | undefined;
-    await waitFor(() => expect(last()?.link).toMatch(new RegExp(`^/preview/T/${path}\\?v=\\d+-0$`)));
+    await waitFor(() =>
+      expect(last()?.link).toMatch(new RegExp(`^/preview/T/${path}\\?v=\\d+-0$`)),
+    );
     // The page's head is not there: the frame is the app's.
     expect(r.container.querySelector(".canvas-head:not([hidden])")).toBeNull();
     expect(r.container.querySelector(".canvas.canvas-bare")).toBeTruthy();
@@ -123,15 +136,12 @@ describe("every viewer kind, bare, with its bar sent to the app", () => {
     const p = open("p1", "artefatti/conti.html");
     render(<EmbedRoot params={p} />);
     await waitFor(() =>
-      expect((of("bar").at(-1) as { actions: { id: string }[] }).actions.map((a) => a.id)).toEqual([
-        "art.app",
-        "art.source",
-        "art.project",
-        "keys",
-      ]),
+      expect(
+        (of("bar").at(-1) as unknown as { actions: { id: string }[] }).actions.map((a) => a.id),
+      ).toEqual(["art.app", "art.source", "art.project", "keys"]),
     );
     const on = () =>
-      (of("bar").at(-1) as { actions: { id: string; on?: boolean }[] }).actions
+      (of("bar").at(-1) as unknown as { actions: { id: string; on?: boolean }[] }).actions
         .filter((a) => a.on)
         .map((a) => a.id);
     expect(on()).toEqual(["art.app"]);
@@ -167,7 +177,9 @@ describe("one tab of the app's Canvas", () => {
     // Before the app says: this tab only.
     expect(state.canvasSnapshot()).toEqual({
       visible: true,
-      tabs: [{ title: "a.pdf", target: own, active: true, kind: "pdf", place: { page: 2, pages: 5 } }],
+      tabs: [
+        { title: "a.pdf", target: own, active: true, kind: "pdf", place: { page: 2, pages: 5 } },
+      ],
     });
     embed.handleAppInput({
       t: "tabs",
@@ -198,7 +210,13 @@ describe("one tab of the app's Canvas", () => {
       ({
         type: "canvas.open",
         sessionId: "s9",
-        event: { seq, ts: "", sessionId: "s9", type, payload: { title: "x", target, do: { page: 3 } } },
+        event: {
+          seq,
+          ts: "",
+          sessionId: "s9",
+          type,
+          payload: { title: "x", target, do: { page: 3 } },
+        },
       }) as unknown as Parameters<typeof state.applyMessage>[0];
     state.applyMessage(ev(1, "canvas.act", own));
     expect(live.orders.value.get(id)?.do).toEqual({ page: 3 });
