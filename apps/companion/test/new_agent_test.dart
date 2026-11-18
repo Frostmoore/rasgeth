@@ -35,6 +35,21 @@ Future<void> _settle(WidgetTester tester, [int rounds = 12]) async {
   await tester.pumpAndSettle();
 }
 
+/// Real input and output (the fake server's HTTP) takes real time: under a loaded machine a fixed
+/// number of rounds is not enough, so wait for what the screen must show, up to [limit].
+Future<void> _until(
+  WidgetTester tester,
+  Finder finder, {
+  Duration limit = const Duration(seconds: 20),
+}) async {
+  final end = DateTime.now().add(limit);
+  while (finder.evaluate().isEmpty && DateTime.now().isBefore(end)) {
+    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 40)));
+    await tester.pump();
+  }
+  await tester.pumpAndSettle();
+}
+
 Future<void> _done(WidgetTester tester) async {
   await tester.pumpWidget(const SizedBox());
   await tester.pump(const Duration(minutes: 3));
@@ -110,7 +125,7 @@ void main() {
     await next(tester);
     // How much it may do alone; then God writes its instructions (the fake God gives no tools).
     await next(tester);
-    await _settle(tester);
+    await _until(tester, find.byKey(const Key('new-tool-fetch')));
     // Tools by hand: the essential ones are not there to switch off.
     expect(find.byKey(const Key('new-tool-read_file')), findsNothing);
     expect(find.byKey(const Key('new-tool-ask_user')), findsNothing);
@@ -123,7 +138,8 @@ void main() {
     expect(find.text('1 spenti'), findsOneWidget);
     expect(find.text('Crea'), findsOneWidget);
     await next(tester);
-    await _settle(tester);
+    // The agent is made through the server, then the screen says so.
+    await _until(tester, find.byKey(const Key('new-agent-done')));
     expect(server.newAgents.single, {
       'kind': 'agent',
       'parentId': 'a2',
@@ -186,10 +202,10 @@ void main() {
     expect(find.text('Lo stesso di God'), findsOneWidget);
     await next(tester);
     await next(tester);
-    await _settle(tester);
+    await _until(tester, find.byKey(const Key('new-tool-fetch')));
     await next(tester);
     await next(tester);
-    await _settle(tester);
+    await _until(tester, find.byKey(const Key('new-agent-done')));
     final made = server.newAgents.single;
     expect(made['kind'], 'assistant');
     expect(made['parentId'], 'a0');
