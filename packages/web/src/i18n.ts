@@ -2458,6 +2458,15 @@ const en = {
   newsTitle: "What is new in RedGiant {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  news3812Team: "The whole team in the app",
+  news3812TeamText:
+    "Sub-agents have their tabs in the conversation, running commands show in a strip with «Stop», rooms with @mentions, Chat with folders and groups, the project's Board and the shared browser now work in the app as in the page.",
+  news3812Settings: "Every-day settings in the app",
+  news3812SettingsText:
+    "General, requests, safety, tools, commands, budget, devices and agents (with the full agent sheet, new agent and assistants) are now native in the app, as are the instructions' refiner and the projects' and code settings.",
+  news3812Projects: "Projects, sub-projects and the terminal",
+  news3812ProjectsText:
+    "On the phone projects are always in the bar; projects have their sub-projects with folder and agents; and the project's terminal opens in the app, as a tab beside Files and Canvas on the computer and full screen with extra keys on the phone.",
   news3811Canvas: "The Canvas opens by itself in the app",
   news3811CanvasText:
     "When an agent shows a site, a file or a page, the app opens the Canvas beside the conversation (on the phone, full screen), with reload and «Open in the browser». Pictures being drawn show their progress. Widgets now show on Linux too.",
@@ -9207,6 +9216,15 @@ const it: Record<Key, string> = {
   newsTitle: "Le novità di RedGiant {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  news3812Team: "Tutta la squadra nell'app",
+  news3812TeamText:
+    "I sotto-agenti hanno le loro linguette nella conversazione, i comandi in corso stanno in una striscia con «Ferma», le stanze con le menzioni @, la Chat con cartelle e gruppi, la Bacheca del progetto e il browser condiviso funzionano adesso nell'app come nella pagina.",
+  news3812Settings: "Le impostazioni di ogni giorno nell'app",
+  news3812SettingsText:
+    "Generale, richieste, sicurezza, strumenti, comandi, budget, dispositivi e agenti (con la scheda completa dell'agente, il nuovo agente e gli assistenti) sono adesso native nell'app, come il raffinatore delle istruzioni e le impostazioni di progetti e codice.",
+  news3812Projects: "Progetti, sottoprogetti e terminale",
+  news3812ProjectsText:
+    "Sul telefono i progetti sono sempre nella barra; i progetti hanno i loro sottoprogetti con cartella e agenti; e il terminale del progetto si apre nell'app, come scheda accanto a File e Canvas sul computer e a tutto schermo con i tasti in più sul telefono.",
   news3811Canvas: "Il Canvas si apre da solo nell'app",
   news3811CanvasText:
     "Quando un agente mostra un sito, un file o una pagina, l'app apre il Canvas accanto alla conversazione (sul telefono a schermo intero), con ricarica e «Apri nel browser». Le immagini in preparazione mostrano l'avanzamento. I widget si vedono adesso anche su Linux.",
