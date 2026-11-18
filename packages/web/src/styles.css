@@ -342,6 +342,9 @@ pre {
   flex: none;
   color: var(--accent);
 }
+.banner.rename-notice b {
+  font-weight: 700;
+}
 .banner.rename-notice .link {
   margin-left: auto;
   white-space: nowrap;
