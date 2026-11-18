@@ -511,6 +511,10 @@ void main() {
       expect(find.byKey(const Key('au-error')), findsOneWidget);
       expect(find.textContaining('Invalid cron'), findsOneWidget);
       await tap(tester, 'au-save');
+      // A busy machine: the answer and the window's close may take a few more frames.
+      for (var i = 0; i < 30 && find.byKey(const Key('au-editor')).evaluate().isNotEmpty; i++) {
+        await _settle(tester, 2);
+      }
       expect(yamls.last, contains('  cron: "0 8 * * 1-5"'));
       expect(yamls.last, contains('agent: "a5"'));
       expect(yamls.last, contains('description: "Le scadenze"'));

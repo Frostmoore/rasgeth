@@ -433,7 +433,12 @@ const brain = (req) => {
               "Ogni giorno alle 15 guardo i movimenti del conto e ti scrivo su WhatsApp entrate e uscite.",
             needs: [
               { kind: "chat", what: "whatsapp", why: "Per scriverti il riepilogo" },
-              { kind: "credential", what: "revolut", why: "Per leggere il conto", service: "Revolut" },
+              {
+                kind: "credential",
+                what: "revolut",
+                why: "Per leggere il conto",
+                service: "Revolut",
+              },
             ],
           },
         },
@@ -442,7 +447,9 @@ const brain = (req) => {
   if (
     results &&
     last.parts.some(
-      (p) => p.type === "tool_result" && String(p.content).startsWith("Proposed. The person sees the preview"),
+      (p) =>
+        p.type === "tool_result" &&
+        String(p.content).startsWith("Proposed. The person sees the preview"),
     )
   )
     return {
