@@ -451,7 +451,7 @@ void main() {
 
     testWidgets('the messages of automations in For you, and the list read again', (tester) async {
       final app = await start(tester);
-      await push(tester, const InboxScreen());
+      await push(tester, const Scaffold(body: InboxScreen()));
       expect(find.byKey(const Key('au-notices')), findsNothing);
       app.live.apply({
         'type': 'automation.notice',

@@ -7,13 +7,14 @@
 // component is bundled for node with esbuild-wasm, as items_fixtures.mjs does. Deterministic.
 //
 //   node apps/companion/tool/automation_vectors.mjs
+// (RG_REPO: another worktree of the same version, with node_modules, to bundle the page from.)
 import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 process.env.TZ = "UTC";
 const here = dirname(fileURLToPath(import.meta.url));
-const root = join(here, "../../..");
+const root = process.env.RG_REPO ?? join(here, "../../..");
 const web = join(root, "packages/web");
 const tmp = "/mnt/archive1/officina-dati/rg-test/tmp/automation-vectors";
 mkdirSync(tmp, { recursive: true });
