@@ -1245,13 +1245,45 @@ export type OpenRequest =
       scope?: string;
     };
 
-const loadTabs = (): { tabs: Tab[]; active: string | null } => {
+/** The ids each kind of tab needs to be drawn (a chat without its conversation cannot follow it). */
+const TAB_NEEDS: Partial<Record<Tab["type"], string[]>> = {
+  chat: ["sessionId", "agentId"],
+  tavola: ["sessionId", "proposalId"],
+  inspector: ["projectId"],
+  agents: ["projectId"],
+  archived: ["projectId"],
+  room: ["roomId"],
+};
+
+/**
+ * Whether a tab kept in the page's storage can be shown again: an id, a type, a title and the ids
+ * its kind needs. One without them (written by hand, or by an older page) is left out: a chat tab
+ * with no conversation sent the server a `session.follow` it rejects («Invalid message»).
+ */
+export function keptTab(x: unknown): x is Tab {
+  if (!x || typeof x !== "object") return false;
+  const o = x as Record<string, unknown>;
+  if (typeof o.id !== "string" || typeof o.type !== "string" || typeof o.title !== "string")
+    return false;
+  return (TAB_NEEDS[o.type as Tab["type"]] ?? []).every(
+    (k) => typeof o[k] === "string" && o[k] !== "",
+  );
+}
+
+/** The middle's tabs as the page's storage kept them (`raw`), the ones that cannot be shown left out. */
+export const loadTabs = (
+  raw = localStorage.getItem("rg.tabs"),
+): { tabs: Tab[]; active: string | null } => {
   try {
-    const saved = JSON.parse(localStorage.getItem("rg.tabs") ?? "") as {
-      tabs: Tab[];
+    const saved = JSON.parse(raw ?? "") as {
+      tabs: unknown;
       active: string | null;
     };
-    if (Array.isArray(saved.tabs)) return saved;
+    if (Array.isArray(saved.tabs)) {
+      const kept = saved.tabs.filter(keptTab);
+      const active = kept.some((x) => x.id === saved.active) ? saved.active : (kept[0]?.id ?? null);
+      return { tabs: kept, active };
+    }
   } catch {
     // fresh layout
   }
@@ -1398,6 +1430,16 @@ export function toggleExplorer(open = !explorerOpen.value): void {
 }
 
 /**
+ * The area on the right brought forward (a terminal, a file, a screen). On a phone the project's
+ * files and the area both cover the chat, and the last one opened is the one on top: the files
+ * close, so what was just opened is seen and used (the files' button brings them back over it).
+ */
+export function showSideArea(): void {
+  sideAside.value = false;
+  if (explorerOpen.value && coversNow()) toggleExplorer(false);
+}
+
+/**
  * A credential waiting to be written in the keychain (G33.4): from a magic automation's need
  * (service and host filled in) or from a secret the person was about to send in a chat (its value
  * too, kept only here in the page until saved or dropped).
@@ -1431,7 +1473,7 @@ export function openTab(req: OpenRequest): void {
   if (req.type === "terminal" || req.type === "screen") {
     if (!sideViews.value.some((v) => v.id === req.id)) sideViews.value = [...sideViews.value, req];
     activeSide.value = req.id;
-    sideAside.value = false;
+    showSideArea();
     return;
   }
   if (req.type === "files") {
@@ -1513,7 +1555,7 @@ export function openCanvas(title: string, target: CanvasTarget, keep = false): s
       ? sideViews.value.map((v) => (v.id === id ? view : v))
       : [...sideViews.value, view];
   activeSide.value = id;
-  sideAside.value = false;
+  showSideArea();
   persistCanvas();
   return id;
 }

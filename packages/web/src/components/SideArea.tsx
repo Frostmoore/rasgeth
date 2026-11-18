@@ -19,6 +19,7 @@ import {
   resetSideWidth,
   SIDE_MIN,
   setSideWidth,
+  showSideArea,
   sideAside,
   sideMax,
   sideViews,
@@ -231,7 +232,7 @@ export function SideArea() {
       style={width && !max ? { flexBasis: `${width}px`, maxWidth: "none" } : undefined}
     >
       {/* On a phone the area covers the chat: this brings it back (G34.2). */}
-      <button type="button" class="side-pill" onClick={() => (sideAside.value = false)}>
+      <button type="button" class="side-pill" onClick={showSideArea}>
         <IconCanvas size={16} />
         {t("vwCanvasBack", { n: String(views.length) })}
       </button>
