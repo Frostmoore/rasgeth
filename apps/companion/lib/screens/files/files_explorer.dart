@@ -27,11 +27,12 @@ import '../../ui/file_icons.dart';
 import '../../ui/highlight.dart' show monoFallback, monoFamily;
 import '../../ui/icons.dart';
 import '../code/files_tab.dart' show sizeWords;
-import '../code/project_screen.dart' show ProjectScreen, ProjectTab, say, showApiError;
+import '../../terminal/terminal_screen.dart';
+import '../code/project_screen.dart' show say, showApiError;
 
 /// Where a conversation's files are: the page's `currentScope` for an agent's tab.
 class ExplorerPlace {
-  const ExplorerPlace({required this.scope, this.project, this.readOnly = false});
+  const ExplorerPlace({required this.scope, this.project, this.readOnly = false, this.focus});
 
   /// `project:<id>`, `assistants` or `platform` (the routes' scope).
   final String scope;
@@ -42,14 +43,28 @@ class ExplorerPlace {
   /// An archived project's files: shown, never changed.
   final bool readOnly;
 
+  /// A subproject's folder (G24.13): shown open, with the ones above it, as the page's `reveal`.
+  final String? focus;
+
   bool get assistants => scope == 'assistants';
 
   @override
   bool operator ==(Object other) =>
-      other is ExplorerPlace && other.scope == scope && other.readOnly == readOnly;
+      other is ExplorerPlace &&
+      other.scope == scope &&
+      other.readOnly == readOnly &&
+      other.focus == focus;
 
   @override
-  int get hashCode => Object.hash(scope, readOnly);
+  int get hashCode => Object.hash(scope, readOnly, focus);
+}
+
+/// The folders to open for [focus]: each one above it, then itself (`a`, `a/b`).
+List<String> foldersToReveal(String? focus) {
+  final f = focus?.replaceAll(RegExp(r'^/+|/+$'), '') ?? '';
+  if (f.isEmpty) return const [];
+  final parts = f.split('/');
+  return [for (var i = 1; i <= parts.length; i++) parts.take(i).join('/')];
 }
 
 /// The place of [agent]'s conversation: the personal agents' shared desk, its project (archived:
@@ -59,6 +74,7 @@ ExplorerPlace explorerPlaceOf({
   String? sessionProjectId,
   List<Project> projects = const [],
   List<Project> archived = const [],
+  List<Subproject> subprojects = const [],
 }) {
   if (agent?.kind == AgentKind.assistant) return const ExplorerPlace(scope: 'assistants');
   final id = agent?.projectId ?? sessionProjectId;
@@ -66,10 +82,15 @@ ExplorerPlace explorerPlaceOf({
   final open = projects.where((p) => p.id == id).firstOrNull;
   final old = archived.where((p) => p.id == id).firstOrNull;
   final p = open ?? old;
+  // A subproject's agent: the files open on its folder (G24.13, the page's `currentScope`).
+  final sub = agent?.subprojectId == null
+      ? null
+      : subprojects.where((x) => x.id == agent!.subprojectId).firstOrNull;
   return ExplorerPlace(
     scope: 'project:$id',
     project: p,
     readOnly: (p?.archived ?? false) || (open == null && old != null),
+    focus: sub?.dir,
   );
 }
 
@@ -81,6 +102,7 @@ ExplorerPlace explorerPlaceFor(AppController app, String sessionId, Agent? agent
     sessionProjectId: row?.projectId,
     projects: app.projects,
     archived: app.archivedProjects,
+    subprojects: app.subprojects,
   );
 }
 
@@ -130,9 +152,14 @@ class FilesExplorer extends StatefulWidget {
     this.computer = false,
     this.saveFile,
     this.pickFiles,
+    this.onTerminal,
   });
 
   final ExplorerPlace place;
+
+  /// «Terminal» (G42.5): on a computer the conversation's right column opens one in a tab; null:
+  /// the whole screen (a phone).
+  final void Function(String scope, String title)? onTerminal;
 
   /// A file opens in the Canvas (the same tab an agent showing it would open).
   final void Function(String path, String name) onOpen;
@@ -192,6 +219,17 @@ class _FilesExplorerState extends State<FilesExplorer> {
     DropClaims.add(_dropKey);
     unawaited(_loadHidden());
     unawaited(_load('.'));
+    _reveal();
+  }
+
+  /// A subproject's folder shown open, with the ones above it (the page's `reveal`).
+  void _reveal() {
+    final dirs = foldersToReveal(widget.place.focus);
+    if (dirs.isEmpty) return;
+    _open.addAll(dirs);
+    for (final d in dirs) {
+      unawaited(_load(d));
+    }
   }
 
   @override
@@ -204,6 +242,9 @@ class _FilesExplorerState extends State<FilesExplorer> {
       _hits = null;
       _query.clear();
       unawaited(_load('.'));
+      _reveal();
+    } else if (old.place.focus != widget.place.focus) {
+      _reveal();
     }
   }
 
@@ -393,16 +434,21 @@ class _FilesExplorerState extends State<FilesExplorer> {
     await app.prefs.set(_hiddenPref, v ? '1' : null);
   }
 
+  /// The page's terminal button: a shell in this place (project, personal agents' desk or
+  /// platform), titled «Terminal · the place»; never in an archived project.
   void _terminal() {
-    final p = widget.place.project;
-    if (p == null) return;
-    unawaited(
-      Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => ProjectScreen(project: p, initial: ProjectTab.terminal),
-        ),
-      ),
+    final l = AppLocalizations.of(context);
+    final p = widget.place;
+    final title = terminalTitle(
+      l,
+      p.project?.name ?? (p.assistants ? l.fxAssistants : l.fxPlatform),
     );
+    final beside = widget.onTerminal;
+    if (beside != null) {
+      beside(p.scope, title);
+      return;
+    }
+    unawaited(openTerminalScreen(context, scope: p.scope, title: title));
   }
 
   // ---- a row's actions ----
@@ -770,7 +816,7 @@ class _FilesExplorerState extends State<FilesExplorer> {
           l.fxRefresh,
           () => unawaited(_reload()),
         ),
-        if (widget.computer && p.project != null && !_readOnly)
+        if (!_readOnly)
           button(
             const Key('files-terminal'),
             RgIcon(RgIcons.terminal, size: iconSize, color: c.dim),

@@ -454,9 +454,17 @@ class FileText {
   final String modifiedAt;
 }
 
-/// A background action of the server (`/api/jobs/:id`): here, a push waiting for the person.
+/// A background action of the server (`/api/jobs/:id`): a push waiting for the person, Gitea
+/// starting (G42.5: with its steps, as the page's `JobView`).
 class JobView {
-  const JobView({required this.id, required this.state, this.errorCode, this.errorMessage});
+  const JobView({
+    required this.id,
+    required this.state,
+    this.errorCode,
+    this.errorMessage,
+    this.kind = '',
+    this.steps = const [],
+  });
 
   factory JobView.fromJson(Map<String, dynamic> j) {
     final e = j['error'];
@@ -465,10 +473,21 @@ class JobView {
       state: _s(j['state']) ?? 'running',
       errorCode: e is Map ? _s(e['code']) : null,
       errorMessage: e is Map ? _s(e['message']) : null,
+      kind: _s(j['kind']) ?? '',
+      steps: [
+        for (final s in (j['steps'] as List? ?? const []).whereType<Map<String, dynamic>>())
+          JobStepView.fromJson(s),
+      ],
     );
   }
 
   final String id;
+
+  /// What it does (`gitea`, `push`…).
+  final String kind;
+
+  /// Each step (`gitea_image`, `gitea_start`, `account`), with its progress when it counts.
+  final List<JobStepView> steps;
 
   /// running, done, failed, cancelled.
   final String state;
@@ -476,6 +495,51 @@ class JobView {
   final String? errorMessage;
 
   bool get running => state == 'running';
+}
+
+/// A job's step (protocol `JobStep`): waiting | running | done | failed | skipped, and for a
+/// download how much, of how much, how fast and how long still.
+class JobStepView {
+  const JobStepView({
+    required this.id,
+    required this.state,
+    this.done,
+    this.total,
+    this.rate,
+    this.secondsLeft,
+  });
+
+  factory JobStepView.fromJson(Map<String, dynamic> j) {
+    final p = j['progress'];
+    num? n(String k) => p is Map && p[k] is num ? p[k] as num : null;
+    return JobStepView(
+      id: _s(j['id']) ?? '',
+      state: _s(j['state']) ?? 'waiting',
+      done: n('done')?.toInt(),
+      total: n('total')?.toInt(),
+      rate: n('rate')?.toDouble(),
+      secondsLeft: n('secondsLeft')?.toInt(),
+    );
+  }
+
+  final String id;
+  final String state;
+  final int? done;
+  final int? total;
+  final double? rate;
+  final int? secondsLeft;
+}
+
+/// One line of «Create the repositories now» (`POST /api/setup/git/sync`).
+class GitSyncRow {
+  const GitSyncRow({required this.project, required this.ok, this.error});
+
+  factory GitSyncRow.fromJson(Map<String, dynamic> j) =>
+      GitSyncRow(project: _s(j['project']) ?? '', ok: j['ok'] == true, error: _s(j['error']));
+
+  final String project;
+  final bool ok;
+  final String? error;
 }
 
 /// A bash command an agent ran and what it printed: its terminal, read only.
@@ -595,6 +659,12 @@ class TermSession {
   String? error;
   bool closed = false;
 
+  /// The shell ended (`exit`), as the page's «terminal closed» line says.
+  bool exited = false;
+
+  /// Called once when the shell ends or the link goes (the terminal writes its line).
+  void Function()? onEnd;
+
   Stream<String> get output => _out.stream;
 
   static Future<TermSession> open(
@@ -620,19 +690,33 @@ class TermSession {
           case 'output':
             if (m['data'] is String) t._out.add(m['data'] as String);
           case 'error':
+            // As the page writes it: red, on a line of its own.
             t.error = _s(m['message']);
-            t._out.add('\n${t.error}\n');
+            t._out.add('\r\n\x1b[31m${t.error}\x1b[0m\r\n');
           case 'exit':
             t.closed = true;
+            t.exited = true;
+            t._end();
         }
       },
       onDone: () {
         t.closed = true;
+        t._end();
         if (!t._out.isClosed) unawaited(t._out.close());
       },
-      onError: (Object _) => t.closed = true,
+      onError: (Object _) {
+        t.closed = true;
+        t._end();
+      },
     );
     return t;
+  }
+
+  bool _ended = false;
+  void _end() {
+    if (_ended) return;
+    _ended = true;
+    onEnd?.call();
   }
 
   void input(String data) {

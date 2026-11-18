@@ -16,6 +16,7 @@ import '../ui/icons.dart';
 import '../ui/project_menu.dart';
 import 'activity_screen.dart' show outcomeWord;
 import 'agent_conversations_screen.dart';
+import 'subprojects.dart';
 
 /// The project's head: its name, its lead or the archived badge, its menu.
 class ProjectHead extends StatelessWidget {
@@ -112,7 +113,9 @@ class _ProjectOverviewState extends State<ProjectOverview> {
       _tasks = p.archived ? app.client?.tasks(p.id).catchError((_) => <TaskRow>[]) : null;
     }
     final team = app.agents.where((a) => a.projectId == p.id).toList();
-    final lead = team.where((a) => a.kind == AgentKind.orchestrator).firstOrNull;
+    final lead = team
+        .where((a) => a.kind == AgentKind.orchestrator && a.subprojectId == null)
+        .firstOrNull;
     final ids = {for (final a in team) a.id};
     Agent? agentOf(String id) => app.agents.where((a) => a.id == id).firstOrNull;
     final restore = p.archived
@@ -203,7 +206,11 @@ class _ProjectOverviewState extends State<ProjectOverview> {
                       r.projectId == p.id &&
                       r.agentId != lead?.id &&
                       !r.archived &&
-                      app.agents.any((a) => a.id == r.agentId),
+                      app.agents.any(
+                        // A subproject's agents stay under their subproject, unless at a task
+                        // (the page's `TeamSessions`).
+                        (a) => a.id == r.agentId && (a.subprojectId == null || r.task != null),
+                      ),
                 )
                 .toList()
               ..sort(
@@ -218,6 +225,8 @@ class _ProjectOverviewState extends State<ProjectOverview> {
             ListHeading(l.pmTeam, icon: RgIcons.users),
             for (final r in teamRows) SessionTile(row: r, who: agentOf(r.agentId)),
           ],
+          // G42.5: the project's subprojects, as under the project in the page's bar.
+          SubprojectsSection(project: p),
         ];
         if (lead == null) {
           return ListView(

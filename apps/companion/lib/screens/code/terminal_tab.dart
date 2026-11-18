@@ -1,7 +1,7 @@
 // Terminal (G40.11): the agents' commands read only (their `bash` calls and what they printed),
 // and the person's own shell over `/term`, as the page opens it (same token, scope and rules: an
-// archived project has none), with a row of keys over the keyboard (Esc, Tab, Ctrl, arrows, |, ~)
-// and the recent commands as pills. The text grows and shrinks with two fingers.
+// archived project has none). G42.5: the shell is a real terminal (`RgTerminal`, xterm: vim,
+// htop, colours), with the keys row on a phone. The text grows and shrinks with two fingers.
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -12,6 +12,7 @@ import '../../l10n/app_localizations.dart';
 import '../../theme/colors.dart';
 import '../../ui/common.dart';
 import '../../ui/highlight.dart';
+import '../../terminal/rg_terminal.dart';
 import '../../ui/icons.dart';
 import 'project_screen.dart';
 
@@ -252,7 +253,7 @@ class _AgentCommandsState extends State<AgentCommands> {
   }
 }
 
-/// The person's own shell, with the keys over the keyboard.
+/// The person's own shell (G42.5: a real terminal, `RgTerminal`), with the keys row on a phone.
 class OwnShell extends StatefulWidget {
   const OwnShell({
     super.key,
@@ -280,103 +281,13 @@ class OwnShell extends StatefulWidget {
 }
 
 class _OwnShellState extends State<OwnShell> {
-  TermSession? _term;
-  StreamSubscription<String>? _sub;
-  final _buf = TermBuffer();
-  final _input = TextEditingController();
-  final _scroll = ScrollController();
-  String? _error;
-  bool _ctrl = false;
-  bool _opening = false;
-  List<String> _recent = const [];
-
-  String get _recentKey =>
-      'recentCommands:${widget.ctx.app.server?.id ?? '-'}:${widget.ctx.project.id}';
-
-  @override
-  void initState() {
-    super.initState();
-    unawaited(_loadRecent());
-    if (widget.autoOpen && !widget.ctx.readOnly) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) unawaited(_open());
-      });
-    }
-  }
-
-  Future<void> _loadRecent() async {
-    final raw = await widget.ctx.app.prefs.get(_recentKey);
-    if (mounted && raw != null && raw.isNotEmpty) setState(() => _recent = raw.split('\n'));
-  }
-
-  @override
-  void dispose() {
-    unawaited(_sub?.cancel());
-    unawaited(_term?.close());
-    _input.dispose();
-    _scroll.dispose();
-    super.dispose();
-  }
-
-  Future<void> _open() async {
-    setState(() {
-      _opening = true;
-      _error = null;
-    });
-    try {
-      final t = await widget.ctx.client.openTerminal(widget.ctx.scope, cols: 60, rows: 30);
-      _sub = t.output.listen(
-        (d) {
-          _buf.write(d);
-          if (!mounted) return;
-          setState(() {});
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (_scroll.hasClients) _scroll.jumpTo(_scroll.position.maxScrollExtent);
-          });
-        },
-        onDone: () {
-          if (mounted)
-            setState(() => _error = _term?.error ?? AppLocalizations.of(context).codeTermClosed);
-        },
-      );
-      setState(() => _term = t);
-      final first = widget.command;
-      if (first != null && first.trim().isNotEmpty) _submit(first);
-    } on Object catch (e) {
-      if (mounted) setState(() => _error = e is ApiException ? e.message : '$e');
-    } finally {
-      if (mounted) setState(() => _opening = false);
-    }
-  }
-
-  void _key(String bytes) => _term?.input(bytes);
-
-  void _submit([String? text]) {
-    final t = text ?? _input.text;
-    _term?.input('$t${TermKeys.enter}');
-    _input.clear();
-    final cmd = t.trim();
-    if (cmd.isEmpty) return;
-    final list = [cmd, ..._recent.where((x) => x != cmd)].take(8).toList();
-    setState(() => _recent = list);
-    unawaited(widget.ctx.app.prefs.set(_recentKey, list.join('\n')));
-  }
-
-  void _changed(String v) {
-    // Ctrl held: the next letter typed goes as its control code (Ctrl+C).
-    if (_ctrl && v.isNotEmpty) {
-      _key(TermKeys.ctrl(v.substring(v.length - 1)));
-      _input.text = v.substring(0, v.length - 1);
-      setState(() => _ctrl = false);
-    }
-  }
+  late bool _open = widget.autoOpen && !widget.ctx.readOnly;
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
-    final term = _term;
-    if (term == null) {
+    if (!_open) {
       return Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -391,19 +302,10 @@ class _OwnShellState extends State<OwnShell> {
                   textAlign: TextAlign.center,
                   style: TextStyle(color: c.dim),
                 ),
-                if (_error != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      _error!,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: c.err),
-                    ),
-                  ),
                 const SizedBox(height: 14),
                 FilledButton.icon(
                   key: const Key('term-open'),
-                  onPressed: _opening || widget.ctx.readOnly ? null : _open,
+                  onPressed: widget.ctx.readOnly ? null : () => setState(() => _open = true),
                   icon: const RgIcon(RgIcons.terminal, size: 18, color: Colors.white),
                   label: Text(l.codeTermOpen),
                 ),
@@ -413,132 +315,13 @@ class _OwnShellState extends State<OwnShell> {
         ),
       );
     }
-    Widget key(String label, String bytes, {Key? k}) => Padding(
-      padding: const EdgeInsets.only(right: 6),
-      child: _Key(key: k, label: label, onTap: () => _key(bytes)),
-    );
-    Widget icon(RgIcons i, String bytes, String name) => Padding(
-      padding: const EdgeInsets.only(right: 6),
-      child: _Key(key: Key('key-$name'), icon: i, label: name, onTap: () => _key(bytes)),
-    );
-    return Column(
-      children: [
-        Expanded(
-          child: Container(
-            width: double.infinity,
-            color: _termBg,
-            child: SingleChildScrollView(
-              key: const Key('term-output'),
-              controller: _scroll,
-              padding: const EdgeInsets.all(12),
-              child: SelectableText(_buf.text, style: _mono(widget.font, _termFg)),
-            ),
-          ),
-        ),
-        if (_error != null)
-          Padding(
-            padding: const EdgeInsets.all(6),
-            child: Text(_error!, style: TextStyle(color: c.err, fontSize: 12.5)),
-          ),
-        if (_recent.isNotEmpty)
-          SingleChildScrollView(
-            key: const Key('term-recent'),
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
-            child: Row(
-              children: [
-                for (final r in _recent)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 6),
-                    child: PickChip(label: r, onTap: () => _submit(r)),
-                  ),
-              ],
-            ),
-          ),
-        if (!widget.compact)
-          SingleChildScrollView(
-            key: const Key('term-keys'),
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.fromLTRB(8, 6, 8, 4),
-            child: Row(
-              children: [
-                key('Esc', TermKeys.esc, k: const Key('key-esc')),
-                key('Tab', TermKeys.tab, k: const Key('key-tab')),
-                Padding(
-                  padding: const EdgeInsets.only(right: 6),
-                  child: _Key(
-                    key: const Key('key-ctrl'),
-                    label: 'Ctrl',
-                    on: _ctrl,
-                    onTap: () => setState(() => _ctrl = !_ctrl),
-                  ),
-                ),
-                icon(RgIcons.arrowLeft, TermKeys.left, 'left'),
-                icon(RgIcons.arrowUp, TermKeys.up, 'up'),
-                icon(RgIcons.arrowDown, TermKeys.down, 'down'),
-                icon(RgIcons.arrowRight, TermKeys.right, 'right'),
-                key('|', '|', k: const Key('key-pipe')),
-                key('~', '~', k: const Key('key-tilde')),
-              ],
-            ),
-          ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(8, 2, 8, 8),
-          child: TextField(
-            key: const Key('term-input'),
-            controller: _input,
-            onChanged: _changed,
-            onSubmitted: (_) => _submit(),
-            autocorrect: false,
-            enableSuggestions: false,
-            textInputAction: TextInputAction.send,
-            style: _mono(14, c.text),
-            decoration: InputDecoration(isDense: true, hintText: l.codeTermHint, prefixText: r'$ '),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _Key extends StatelessWidget {
-  const _Key({super.key, required this.label, required this.onTap, this.icon, this.on = false});
-
-  final String label;
-  final RgIcons? icon;
-  final bool on;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = RgColors.of(context);
-    return Semantics(
-      button: true,
-      toggled: on ? true : null,
-      label: label,
-      excludeSemantics: true,
-      child: Material(
-        color: on ? c.accent : c.panel2,
-        borderRadius: BorderRadius.circular(9),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(9),
-          onTap: onTap,
-          child: Container(
-            constraints: const BoxConstraints(minWidth: 44, minHeight: 36),
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: icon != null
-                ? RgIcon(icon!, size: 17, color: on ? Colors.white : c.text)
-                : Text(
-                    label,
-                    style: _mono(
-                      14,
-                      on ? Colors.white : c.text,
-                    ).copyWith(fontWeight: FontWeight.w700),
-                  ),
-          ),
-        ),
-      ),
+    return RgTerminal(
+      key: const Key('own-terminal'),
+      client: widget.ctx.client,
+      scope: widget.ctx.scope,
+      font: widget.font,
+      keys: !widget.compact,
+      command: widget.command,
     );
   }
 }

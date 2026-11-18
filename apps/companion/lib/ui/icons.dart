@@ -159,7 +159,14 @@ enum RgIcons {
   // G42.3: a project's inspector (the page's IconEye).
   eye('<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>'),
   // 3.8.10: a turn waiting for a place (the page's IconClock).
-  clock('<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>');
+  clock('<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>'),
+  // G42.5: the page's IconBox (a project, a subproject), IconCloud (GitHub), IconKeyboard (the
+  // terminal's keys on a phone).
+  box('<path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/>'),
+  cloud('<path d="M18 10h-1.3A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>'),
+  keyboard(
+    '<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/>',
+  );
 
   const RgIcons(this.paths);
   final String paths;

@@ -1,6 +1,6 @@
 // Proposal A «La squadra» (study G40 section 4.1, decision D9): the bar at the bottom
-// (Team | Chat | For you | Activity | You, with Projects before You when the advanced interface
-// is on, G40.11) and, right over it, the Chat's field, always there: it
+// (Team | Chat | For you | Activity | Projects | You; G42.5: Projects always, as the page's bar,
+// no longer only with the advanced interface) and, right over it, the Chat's field, always there: it
 // starts a new conversation with Chat at once.
 import 'dart:async';
 
@@ -90,8 +90,9 @@ class _HomeShellState extends State<HomeShell> {
                   const ChatScreen(),
                   const InboxScreen(),
                   const ActivityScreen(),
-                  // Made only when the advanced interface is on (G40.11).
-                  if (app.advanced) const ProjectsScreen() else const SizedBox.shrink(),
+                  // G42.5: always, as the page's projects in its bar (git with the advanced one).
+                  // Its spinner never ticks out of sight.
+                  TickerMode(enabled: app.tab == AppTab.projects, child: const ProjectsScreen()),
                   const YouScreen(),
                 ],
               ),
@@ -190,7 +191,7 @@ class TabBarA extends StatelessWidget {
       (AppTab.chat, RgIcons.chat, l.tabChat),
       (AppTab.inbox, RgIcons.bell, l.tabInbox),
       (AppTab.activity, RgIcons.list, l.tabActivity),
-      if (app.advanced) (AppTab.projects, RgIcons.code, l.tabProjects),
+      (AppTab.projects, RgIcons.box, l.tabProjects),
       (AppTab.you, RgIcons.user, l.tabYou),
     ];
     return DecoratedBox(

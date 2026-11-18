@@ -16,6 +16,8 @@ import '../api/web_settings.dart';
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
+import '../settings/code_settings.dart';
+import '../settings/projects_settings.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/words.dart';
@@ -432,6 +434,28 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       ),
                       trailing: RgIcon(RgIcons.chevronRight, color: c.dim),
                       onTap: () => openAtWork(context),
+                    ),
+                  ],
+                ),
+                // ---- projects and code (G42.5: native, Settings › Projects and › Code) ----
+                _Head(l.psSection),
+                _Card(
+                  children: [
+                    ListTile(
+                      key: const Key('settings-projects'),
+                      leading: RgIcon(RgIcons.box, color: c.accent),
+                      title: Text(l.psTitle),
+                      subtitle: Text(l.psRowHint),
+                      trailing: RgIcon(RgIcons.chevronRight, color: c.dim),
+                      onTap: () => openProjectsSettings(context),
+                    ),
+                    ListTile(
+                      key: const Key('settings-code'),
+                      leading: RgIcon(RgIcons.gitBranch, color: c.accent),
+                      title: Text(l.csTitle),
+                      subtitle: Text(l.csRowHint),
+                      trailing: RgIcon(RgIcons.chevronRight, color: c.dim),
+                      onTap: () => openCodeSettings(context),
                     ),
                   ],
                 ),

@@ -62,8 +62,7 @@ import 'app_localizations_it.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -93,10 +91,7 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('en'),
-    Locale('it'),
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('it')];
 
   /// No description provided for @appTitle.
   ///
@@ -9606,12 +9601,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{done} of {total} · {speed}/s · {left} left'**
-  String chatFileDownloadOf(
-    String done,
-    String total,
-    String speed,
-    String left,
-  );
+  String chatFileDownloadOf(String done, String total, String speed, String left);
 
   /// No description provided for @chatFileDownloadSoFar.
   ///
@@ -10350,10 +10340,579 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The Chat\'s instructions'**
   String get cvChatInstructions;
+
+  /// No description provided for @termOpenAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Open again'**
+  String get termOpenAgain;
+
+  /// No description provided for @termKeyLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Left arrow'**
+  String get termKeyLeft;
+
+  /// No description provided for @termKeyUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Up arrow'**
+  String get termKeyUp;
+
+  /// No description provided for @termKeyDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Down arrow'**
+  String get termKeyDown;
+
+  /// No description provided for @termKeyRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Right arrow'**
+  String get termKeyRight;
+
+  /// No description provided for @termPaste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get termPaste;
+
+  /// No description provided for @termShowKeyboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the keyboard'**
+  String get termShowKeyboard;
+
+  /// No description provided for @termHideKeyboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the keyboard'**
+  String get termHideKeyboard;
+
+  /// No description provided for @spTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subprojects'**
+  String get spTitle;
+
+  /// No description provided for @spNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New subproject'**
+  String get spNew;
+
+  /// No description provided for @spNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New subproject in «{name}»'**
+  String spNewTitle(String name);
+
+  /// No description provided for @spNoTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'no agents'**
+  String get spNoTeam;
+
+  /// No description provided for @spTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 agent} other{{n} agents}}'**
+  String spTeam(int n);
+
+  /// No description provided for @spNoAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'No agents yet: create them from the project\'s agents.'**
+  String get spNoAgents;
+
+  /// No description provided for @spFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'The subproject\'s files'**
+  String get spFiles;
+
+  /// No description provided for @spFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'New or existing'**
+  String get spFrom;
+
+  /// No description provided for @spNewOne.
+  ///
+  /// In en, this message translates to:
+  /// **'A new subproject'**
+  String get spNewOne;
+
+  /// No description provided for @spBringInName.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring in the project {name}'**
+  String spBringInName(String name);
+
+  /// No description provided for @spBringInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring the project in?'**
+  String get spBringInTitle;
+
+  /// No description provided for @spBringIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring in'**
+  String get spBringIn;
+
+  /// No description provided for @spAdoptConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'The project goes into this one as a subproject: its code (with its history) into the folder, its agents under this project\'s lead, its board and conversations too. Its old folder stays as a copy. Go on?'**
+  String get spAdoptConfirm;
+
+  /// No description provided for @spName.
+  ///
+  /// In en, this message translates to:
+  /// **'Subproject name'**
+  String get spName;
+
+  /// No description provided for @spDir.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder (optional)'**
+  String get spDir;
+
+  /// No description provided for @spDirHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Inside the project, for example apps/shop. Empty: a new folder with the name. An existing folder works too.'**
+  String get spDirHelp;
+
+  /// No description provided for @spImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Its own sandbox image (optional)'**
+  String get spImage;
+
+  /// No description provided for @spImageHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For tools the project\'s sandbox does not have, like ghcr.io/cirruslabs/flutter:stable. The image needs bash.'**
+  String get spImageHelp;
+
+  /// No description provided for @spCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get spCreate;
+
+  /// No description provided for @psSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects and code'**
+  String get psSection;
+
+  /// No description provided for @psTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get psTitle;
+
+  /// No description provided for @psRowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive, restore, initialise git'**
+  String get psRowHint;
+
+  /// No description provided for @psNewProject.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get psNewProject;
+
+  /// No description provided for @psLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive a project you are not working on: it leaves the lists, nothing is deleted, and it comes back as it was.'**
+  String get psLead;
+
+  /// No description provided for @psInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'In use'**
+  String get psInUse;
+
+  /// No description provided for @psNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No projects yet.'**
+  String get psNone;
+
+  /// No description provided for @psArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get psArchived;
+
+  /// No description provided for @psArchivedLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read only. «Restore» puts the project back as it was, with its automations.'**
+  String get psArchivedLead;
+
+  /// No description provided for @psNoneArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'No archived projects.'**
+  String get psNoneArchived;
+
+  /// No description provided for @csEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get csEyebrow;
+
+  /// No description provided for @csTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the code lives'**
+  String get csTitle;
+
+  /// No description provided for @csRowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub, Gitea and the projects\' repositories'**
+  String get csRowHint;
+
+  /// No description provided for @csQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Where does the code live?'**
+  String get csQuestion;
+
+  /// No description provided for @csPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Every project gets a private repository, ready for the agents to push to. Choose GitHub, a Gitea of your own on this computer, or both. Optional.'**
+  String get csPurpose;
+
+  /// No description provided for @csGithubTile.
+  ///
+  /// In en, this message translates to:
+  /// **'The repositories stay on your GitHub account. It needs a token allowed to make them.'**
+  String get csGithubTile;
+
+  /// No description provided for @csGiteaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A Gitea of your own'**
+  String get csGiteaTitle;
+
+  /// No description provided for @csGiteaTile.
+  ///
+  /// In en, this message translates to:
+  /// **'A small private GitHub on this computer, installed and started by RedGiant, or the Gitea you already have.'**
+  String get csGiteaTile;
+
+  /// No description provided for @csLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'connected'**
+  String get csLinked;
+
+  /// No description provided for @csBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'With both: the code lives on Gitea, and every change is copied to GitHub by itself.'**
+  String get csBoth;
+
+  /// No description provided for @csProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects you already have'**
+  String get csProjects;
+
+  /// No description provided for @csProjectsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'New projects get their repository by themselves. For the ones made before:'**
+  String get csProjectsHint;
+
+  /// No description provided for @csSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Create the repositories now'**
+  String get csSync;
+
+  /// No description provided for @csSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'repository ready'**
+  String get csSynced;
+
+  /// No description provided for @csDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get csDone;
+
+  /// No description provided for @csDisconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get csDisconnect;
+
+  /// No description provided for @csTryAndSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Try and save'**
+  String get csTryAndSave;
+
+  /// No description provided for @csGithubHint.
+  ///
+  /// In en, this message translates to:
+  /// **'With a token you make on GitHub: RedGiant creates the repositories and the agents push to them. The token stays with RedGiant, never in the agents\' boxes.'**
+  String get csGithubHint;
+
+  /// No description provided for @csGithubLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected as @{login}'**
+  String csGithubLinked(String login);
+
+  /// No description provided for @csGithubStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Open GitHub\'s page for a new token (sign in if asked):'**
+  String get csGithubStep1;
+
+  /// No description provided for @csGithubOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'New token on GitHub'**
+  String get csGithubOpen;
+
+  /// No description provided for @csGithubStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill it in like this:'**
+  String get csGithubStep2;
+
+  /// No description provided for @csPermName.
+  ///
+  /// In en, this message translates to:
+  /// **'Token name: RedGiant'**
+  String get csPermName;
+
+  /// No description provided for @csPermExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiration: one year (RedGiant reminds you before it ends)'**
+  String get csPermExpiry;
+
+  /// No description provided for @csPermRepos.
+  ///
+  /// In en, this message translates to:
+  /// **'Repository access: All repositories'**
+  String get csPermRepos;
+
+  /// No description provided for @csPermList.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions, Repositories: Administration, Contents, Issues and Pull requests set to Read and write'**
+  String get csPermList;
+
+  /// No description provided for @csGithubStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Press Generate token at the bottom, copy it and paste it here'**
+  String get csGithubStep3;
+
+  /// No description provided for @csGithubTokenHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It starts with github_pat_. GitHub shows it only once.'**
+  String get csGithubTokenHelp;
+
+  /// No description provided for @csGiteaHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A Git server of your own, on this computer: the repositories stay here, and you look at them in the browser like on GitHub. RedGiant starts it and keeps it updated. Or connect a Gitea you already have.'**
+  String get csGiteaHint;
+
+  /// No description provided for @csGiteaKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Which Gitea'**
+  String get csGiteaKind;
+
+  /// No description provided for @csGiteaKindOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'Start one here'**
+  String get csGiteaKindOwn;
+
+  /// No description provided for @csGiteaKindExisting.
+  ///
+  /// In en, this message translates to:
+  /// **'A Gitea you already have'**
+  String get csGiteaKindExisting;
+
+  /// No description provided for @csGiteaUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Gitea\'s address'**
+  String get csGiteaUrl;
+
+  /// No description provided for @csGiteaUrlHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'As you open it in the browser, for example https://git.example.org.'**
+  String get csGiteaUrlHelp;
+
+  /// No description provided for @csGiteaExtUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Your user name on it'**
+  String get csGiteaExtUser;
+
+  /// No description provided for @csGiteaToken.
+  ///
+  /// In en, this message translates to:
+  /// **'An access token'**
+  String get csGiteaToken;
+
+  /// No description provided for @csGiteaTokenHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On Gitea: Settings › Applications › Generate token, with read and write on repository and user. It stays in the keychain, never in a file.'**
+  String get csGiteaTokenHelp;
+
+  /// No description provided for @csGiteaConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Try and connect'**
+  String get csGiteaConnect;
+
+  /// No description provided for @csGiteaLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to {url}, user {user}'**
+  String csGiteaLinked(String url, String user);
+
+  /// No description provided for @csGiteaUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Gitea user name'**
+  String get csGiteaUser;
+
+  /// No description provided for @csGiteaUserHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Letters, digits, dots, dashes; for example mario.'**
+  String get csGiteaUserHelp;
+
+  /// No description provided for @csGiteaPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'A password for Gitea'**
+  String get csGiteaPassword;
+
+  /// No description provided for @csGiteaPasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 10 characters. You use it to open Gitea in the browser.'**
+  String get csGiteaPasswordHelp;
+
+  /// No description provided for @csGiteaAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'The same password again'**
+  String get csGiteaAgain;
+
+  /// No description provided for @csGiteaMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The two passwords are different.'**
+  String get csGiteaMismatch;
+
+  /// No description provided for @csGiteaCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create my Gitea'**
+  String get csGiteaCreate;
+
+  /// No description provided for @csGiteaReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Gitea is ready, user {user}'**
+  String csGiteaReady(String user);
+
+  /// No description provided for @csGiteaOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Gitea'**
+  String get csGiteaOpen;
+
+  /// No description provided for @csGiteaStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch off'**
+  String get csGiteaStop;
+
+  /// No description provided for @csGiteaNameNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant cannot find {host}: the DNS it uses does not know that name. The guide «Your home services» in Settings › Access from outside home says what to add, and lets you try the name.'**
+  String csGiteaNameNotFound(String host);
+
+  /// No description provided for @csGiteaHostUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant finds {host}, but its address does not answer from here (a Tailscale address, another network?). The guide «Your home services» in Settings › Access from outside home says how to fix it.'**
+  String csGiteaHostUnreachable(String host);
+
+  /// No description provided for @csJobGitea.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting Gitea'**
+  String get csJobGitea;
+
+  /// No description provided for @csJobGiteaImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading Gitea (only once)'**
+  String get csJobGiteaImage;
+
+  /// No description provided for @csJobGiteaStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting Gitea'**
+  String get csJobGiteaStart;
+
+  /// No description provided for @csJobAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating your account'**
+  String get csJobAccount;
+
+  /// No description provided for @csNotNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'not needed'**
+  String get csNotNeeded;
+
+  /// No description provided for @csJobDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done.'**
+  String get csJobDone;
+
+  /// No description provided for @csJobFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Try again; if it happens again, the details below help whoever helps you.'**
+  String get csJobFailed;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -10362,8 +10921,7 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'it'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'it'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;

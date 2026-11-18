@@ -4981,5 +4981,159 @@
   "cvChatInstructions": "The Chat's instructions",
   "@cvChatInstructions": {
     "description": "The page's `chatInstructions` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
-  }
+  },
+  "termOpenAgain": "Open again",
+  "termKeyLeft": "Left arrow",
+  "termKeyUp": "Up arrow",
+  "termKeyDown": "Down arrow",
+  "termKeyRight": "Right arrow",
+  "termPaste": "Paste",
+  "termShowKeyboard": "Show the keyboard",
+  "termHideKeyboard": "Hide the keyboard",
+  "spTitle": "Subprojects",
+  "spNew": "New subproject",
+  "spNewTitle": "New subproject in «{name}»",
+  "@spNewTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "spNoTeam": "no agents",
+  "spTeam": "{n, plural, =1{1 agent} other{{n} agents}}",
+  "@spTeam": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "spNoAgents": "No agents yet: create them from the project's agents.",
+  "spFiles": "The subproject's files",
+  "spFrom": "New or existing",
+  "spNewOne": "A new subproject",
+  "spBringInName": "Bring in the project {name}",
+  "@spBringInName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "spBringInTitle": "Bring the project in?",
+  "spBringIn": "Bring in",
+  "spAdoptConfirm": "The project goes into this one as a subproject: its code (with its history) into the folder, its agents under this project's lead, its board and conversations too. Its old folder stays as a copy. Go on?",
+  "spName": "Subproject name",
+  "spDir": "Folder (optional)",
+  "spDirHelp": "Inside the project, for example apps/shop. Empty: a new folder with the name. An existing folder works too.",
+  "spImage": "Its own sandbox image (optional)",
+  "spImageHelp": "For tools the project's sandbox does not have, like ghcr.io/cirruslabs/flutter:stable. The image needs bash.",
+  "spCreate": "Create",
+  "psSection": "Projects and code",
+  "psTitle": "Projects",
+  "psRowHint": "Archive, restore, initialise git",
+  "psNewProject": "New",
+  "psLead": "Archive a project you are not working on: it leaves the lists, nothing is deleted, and it comes back as it was.",
+  "psInUse": "In use",
+  "psNone": "No projects yet.",
+  "psArchived": "Archived",
+  "psArchivedLead": "Read only. «Restore» puts the project back as it was, with its automations.",
+  "psNoneArchived": "No archived projects.",
+  "csEyebrow": "Code",
+  "csTitle": "Where the code lives",
+  "csRowHint": "GitHub, Gitea and the projects' repositories",
+  "csQuestion": "Where does the code live?",
+  "csPurpose": "Every project gets a private repository, ready for the agents to push to. Choose GitHub, a Gitea of your own on this computer, or both. Optional.",
+  "csGithubTile": "The repositories stay on your GitHub account. It needs a token allowed to make them.",
+  "csGiteaTitle": "A Gitea of your own",
+  "csGiteaTile": "A small private GitHub on this computer, installed and started by RedGiant, or the Gitea you already have.",
+  "csLinked": "connected",
+  "csBoth": "With both: the code lives on Gitea, and every change is copied to GitHub by itself.",
+  "csProjects": "Projects you already have",
+  "csProjectsHint": "New projects get their repository by themselves. For the ones made before:",
+  "csSync": "Create the repositories now",
+  "csSynced": "repository ready",
+  "csDone": "Done",
+  "csDisconnect": "Disconnect",
+  "csTryAndSave": "Try and save",
+  "csGithubHint": "With a token you make on GitHub: RedGiant creates the repositories and the agents push to them. The token stays with RedGiant, never in the agents' boxes.",
+  "csGithubLinked": "Connected as @{login}",
+  "@csGithubLinked": {
+    "placeholders": {
+      "login": {
+        "type": "String"
+      }
+    }
+  },
+  "csGithubStep1": "Open GitHub's page for a new token (sign in if asked):",
+  "csGithubOpen": "New token on GitHub",
+  "csGithubStep2": "Fill it in like this:",
+  "csPermName": "Token name: RedGiant",
+  "csPermExpiry": "Expiration: one year (RedGiant reminds you before it ends)",
+  "csPermRepos": "Repository access: All repositories",
+  "csPermList": "Permissions, Repositories: Administration, Contents, Issues and Pull requests set to Read and write",
+  "csGithubStep3": "Press Generate token at the bottom, copy it and paste it here",
+  "csGithubTokenHelp": "It starts with github_pat_. GitHub shows it only once.",
+  "csGiteaHint": "A Git server of your own, on this computer: the repositories stay here, and you look at them in the browser like on GitHub. RedGiant starts it and keeps it updated. Or connect a Gitea you already have.",
+  "csGiteaKind": "Which Gitea",
+  "csGiteaKindOwn": "Start one here",
+  "csGiteaKindExisting": "A Gitea you already have",
+  "csGiteaUrl": "Your Gitea's address",
+  "csGiteaUrlHelp": "As you open it in the browser, for example https://git.example.org.",
+  "csGiteaExtUser": "Your user name on it",
+  "csGiteaToken": "An access token",
+  "csGiteaTokenHelp": "On Gitea: Settings › Applications › Generate token, with read and write on repository and user. It stays in the keychain, never in a file.",
+  "csGiteaConnect": "Try and connect",
+  "csGiteaLinked": "Connected to {url}, user {user}",
+  "@csGiteaLinked": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      },
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "csGiteaUser": "Your Gitea user name",
+  "csGiteaUserHelp": "Letters, digits, dots, dashes; for example mario.",
+  "csGiteaPassword": "A password for Gitea",
+  "csGiteaPasswordHelp": "At least 10 characters. You use it to open Gitea in the browser.",
+  "csGiteaAgain": "The same password again",
+  "csGiteaMismatch": "The two passwords are different.",
+  "csGiteaCreate": "Create my Gitea",
+  "csGiteaReady": "Gitea is ready, user {user}",
+  "@csGiteaReady": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "csGiteaOpen": "Open Gitea",
+  "csGiteaStop": "Switch off",
+  "csGiteaNameNotFound": "RedGiant cannot find {host}: the DNS it uses does not know that name. The guide «Your home services» in Settings › Access from outside home says what to add, and lets you try the name.",
+  "@csGiteaNameNotFound": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "csGiteaHostUnreachable": "RedGiant finds {host}, but its address does not answer from here (a Tailscale address, another network?). The guide «Your home services» in Settings › Access from outside home says how to fix it.",
+  "@csGiteaHostUnreachable": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "csJobGitea": "Starting Gitea",
+  "csJobGiteaImage": "Downloading Gitea (only once)",
+  "csJobGiteaStart": "Starting Gitea",
+  "csJobAccount": "Creating your account",
+  "csNotNeeded": "not needed",
+  "csJobDone": "Done.",
+  "csJobFailed": "Something went wrong. Try again; if it happens again, the details below help whoever helps you."
 }

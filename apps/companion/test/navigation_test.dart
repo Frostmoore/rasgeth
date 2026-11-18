@@ -39,10 +39,12 @@ Future<void> _pump(WidgetTester tester, AppController app) async {
 }
 
 void main() {
-  testWidgets('the five places, in order, in Italian', (tester) async {
+  testWidgets('the six places, in order, in Italian (Projects for everyone, G42.5)', (
+    tester,
+  ) async {
     final app = _controller();
     await _pump(tester, app);
-    final labels = ['Squadra', 'Chat', 'Da te', 'Attività', 'Tu'];
+    final labels = ['Squadra', 'Chat', 'Da te', 'Attività', 'Progetti', 'Tu'];
     final xs = [for (final t in app.tabs) tester.getCenter(find.byKey(Key('tab-${t.name}'))).dx];
     expect(xs, orderedEquals([...xs]..sort()));
     for (final (i, t) in app.tabs.indexed) {
@@ -107,7 +109,7 @@ void main() {
 
   testWidgets('in English', (tester) async {
     await _pump(tester, _controller(locale: const Locale('en')));
-    for (final l in ['Team', 'Chat', 'For you', 'Activity', 'You']) {
+    for (final l in ['Team', 'Chat', 'For you', 'Activity', 'Projects', 'You']) {
       expect(find.text(l), findsWidgets);
     }
     expect(find.text('No RedGiant connected'), findsOneWidget);

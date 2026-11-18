@@ -39,6 +39,8 @@ dependencies:
   url_launcher: ^6.3.3
   # Pinned (BSD-3, flutter.dev): Android, iOS, macOS (WKWebView).
   webview_flutter: 4.14.1
+  # The person's terminal (G42.5): the page's xterm.js drawn natively, pinned (MIT, TerminalStudio).
+  xterm: 4.0.0
   # WebView2 on Windows, drawn into Flutter (composition), pinned (BSD-3, tomars.tech).
   webview_flutter_windows: 1.3.1
   # WebKitGTK on Linux (G42.0), drawn over the Flutter view and clipped to its place: a copy of

@@ -332,4 +332,48 @@ void main() {
       await done(tester);
     });
   }
+
+  testWidgets('the board by subproject (G42.5): its threads and the whole project\'s', (
+    tester,
+  ) async {
+    Map<String, dynamic> thread(String id, String title, [String? sub]) => {
+      'id': id,
+      'projectId': 'demo',
+      'subprojectId': ?sub,
+      'title': title,
+      'status': 'open',
+      'createdBy': 'human',
+      'updatedAt': '2026-11-15T10:00:00.000Z',
+      'posts': 1,
+      'summary': null,
+    };
+    server.subprojects.addAll([
+      {'id': 'sub_1', 'projectId': 'demo', 'name': 'Sito', 'dir': 'sito'},
+      {'id': 'sub_2', 'projectId': 'demo', 'name': 'App', 'dir': 'app'},
+    ]);
+    server.boardThreads.addAll([
+      thread('th1', 'Per tutti'),
+      thread('th2', 'Del sito', 'sub_1'),
+      thread('th3', "Dell'app", 'sub_2'),
+    ]);
+    await start(tester);
+    push(tester, const ProjectBoardScreen(projectId: 'demo', title: 'Bacheca · Demo'));
+    await _settle(tester);
+    for (final id in ['th1', 'th2', 'th3']) {
+      expect(find.byKey(Key('board-thread-$id')), findsOneWidget);
+    }
+    await tester.tap(find.byKey(const Key('board-sub')));
+    await _settle(tester);
+    await tester.tap(find.byKey(const Key('board-sub-sub_1')).last);
+    await _settle(tester);
+    expect(find.byKey(const Key('board-thread-th1')), findsOneWidget);
+    expect(find.byKey(const Key('board-thread-th2')), findsOneWidget);
+    expect(find.byKey(const Key('board-thread-th3')), findsNothing);
+    await tester.enterText(find.byKey(const Key('board-new-title')), 'Nuova pagina');
+    await tester.enterText(find.byKey(const Key('board-new-body')), 'Serve la pagina dei prezzi');
+    await tester.tap(find.byKey(const Key('board-new-send')));
+    await _settle(tester, 8);
+    expect(server.boardThreads.last['subprojectId'], 'sub_1');
+    await done(tester);
+  });
 }

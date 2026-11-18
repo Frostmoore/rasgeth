@@ -43,7 +43,7 @@ import 'voice/voice_controller.dart';
 const int kDesktopFrom = 900;
 
 /// The five places of proposal A, in the bar's order.
-/// The bar's places; [projects] only with the advanced interface on (G40.11).
+/// The bar's places (G42.5: Projects always, as the page's bar has them).
 enum AppTab { team, chat, inbox, activity, projects, you }
 
 /// Why connecting did not work, for the person (translated by the screens).
@@ -158,8 +158,8 @@ class AppController extends ChangeNotifier {
   Locale? locale;
   bool reduceMotion = false;
 
-  /// The advanced interface (G40.11, Tu › Interfaccia), per RedGiant: Projects in the bar and
-  /// Files, Diff and Terminal in every agent's sheet.
+  /// The advanced interface (G40.11, Tu › Interfaccia), per RedGiant: the projects' git state
+  /// and Files, Diff and Terminal in every agent's sheet (Projects is in the bar anyway, G42.5).
   bool advanced = false;
 
   AppTab tab = AppTab.team;
@@ -212,6 +212,14 @@ class AppController extends ChangeNotifier {
   /// Moves every time the projects are read again (p3.8.9): screens with their own copy of the
   /// projects (Projects, with git and tasks) read theirs again.
   int projectsVersion = 0;
+
+  /// Every project's subprojects (G24.13), read with the projects.
+  List<Subproject> subprojects = const [];
+
+  List<Subproject> subprojectsOf(String projectId) => [
+    for (final x in subprojects)
+      if (x.projectId == projectId) x,
+  ];
 
   /// The archived project a conversation belongs to (its own, or its agent's), if any.
   Project? archivedProjectOf(String sessionId) {
@@ -279,16 +287,12 @@ class AppController extends ChangeNotifier {
 
   void setAdvanced(bool v) {
     advanced = v;
-    if (!v && tab == AppTab.projects) tab = AppTab.you;
     unawaited(prefs.set(_advancedKey, v ? '1' : null));
     notifyListeners();
   }
 
   /// The places in the bar now.
-  List<AppTab> get tabs => [
-    for (final t in AppTab.values)
-      if (t != AppTab.projects || advanced) t,
-  ];
+  List<AppTab> get tabs => AppTab.values;
 
   void setReduceMotion(bool v) {
     reduceMotion = v;
@@ -750,7 +754,6 @@ class AppController extends ChangeNotifier {
     favourites = raw == null || raw.isEmpty ? <String>{} : raw.split(',').toSet();
     teamFilter = await prefs.get('teamFilter:${server?.id ?? '-'}') ?? TeamFilter.all;
     advanced = await prefs.get(_advancedKey) == '1';
-    if (!advanced && tab == AppTab.projects) tab = AppTab.team;
   }
 
   bool isFavourite(String agentId) => favourites.contains(agentId);
@@ -1142,6 +1145,12 @@ class AppController extends ChangeNotifier {
         for (final p in all)
           if (p.archived) p,
       ];
+      // Each project's subprojects, as the page's `refreshSubprojects` (a project that cannot
+      // say has none).
+      final subs = await Future.wait([
+        for (final p in projects) c.subprojects(p.id).catchError((Object _) => <Subproject>[]),
+      ]);
+      subprojects = [for (final l in subs) ...l];
       projectsVersion++;
     } on ApiException {
       // The filter shows no projects.
@@ -1504,6 +1513,14 @@ class AppController extends ChangeNotifier {
     } on ApiException catch (e) {
       return e.message;
     }
+  }
+
+  /// The projects and their subprojects read again (a subproject made or brought in).
+  Future<void> reloadProjects() async {
+    final c = client;
+    if (c == null) return;
+    await _loadProjects(c);
+    notifyListeners();
   }
 
   /// «Initialise git» (3.5.12) for a project made without its repository.
@@ -1903,6 +1920,7 @@ class AppController extends ChangeNotifier {
     mascots = null;
     agents = const [];
     projects = const [];
+    subprojects = const [];
     favourites = const {};
     teamFilter = TeamFilter.all;
     chatAgentId = null;

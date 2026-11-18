@@ -71,6 +71,10 @@ class _ProjectBoardScreenState extends State<ProjectBoardScreen> {
   bool _loaded = false;
   String? _note;
 
+  /// A subproject's view (G24.14c, the page's `sub`): its threads and the whole project's; ''
+  /// is everything. New threads go to it.
+  String _sub = '';
+
   @override
   void initState() {
     super.initState();
@@ -146,6 +150,7 @@ class _ProjectBoardScreenState extends State<ProjectBoardScreen> {
       final id = await c.boardPost(
         threadId: title == null ? _open : null,
         projectId: widget.projectId,
+        subprojectId: title != null && _sub.isNotEmpty ? _sub : null,
         title: title,
         kind: kind,
         body: body,
@@ -185,6 +190,9 @@ class _ProjectBoardScreenState extends State<ProjectBoardScreen> {
     final c = RgColors.of(context);
     final wide = MediaQuery.sizeOf(context).width >= 820;
     final list = _List(
+      projectId: widget.projectId,
+      sub: _sub,
+      onSub: (id) => setState(() => _sub = id),
       threads: _threads,
       results: _results,
       open: _open,
@@ -373,6 +381,9 @@ class _BoardThreadScreenState extends State<BoardThreadScreen> {
 
 class _List extends StatelessWidget {
   const _List({
+    required this.projectId,
+    required this.sub,
+    required this.onSub,
     required this.threads,
     required this.results,
     required this.open,
@@ -383,6 +394,11 @@ class _List extends StatelessWidget {
     required this.onNew,
   });
 
+  final String? projectId;
+
+  /// The subproject shown ('' = the whole project) and the person picking another.
+  final String sub;
+  final ValueChanged<String> onSub;
   final List<BoardThread> threads;
   final List<BoardPost>? results;
   final String? open;
@@ -401,6 +417,49 @@ class _List extends StatelessWidget {
     String author(String id) =>
         id == 'human' ? l.cvYou : (app.agents.where((a) => a.id == id).firstOrNull?.name ?? id);
     final r = results;
+    // The project's subprojects (G42.5, `app.subprojectsOf`): with any, a choice on top; one
+    // chosen shows its threads and the whole project's (the page's `shown`).
+    final subs = [if (projectId case final id?) ...app.subprojectsOf(id)];
+    final current = subs.where((s) => s.id == sub).firstOrNull;
+    final shown = current == null
+        ? threads
+        : [
+            for (final th in threads)
+              if (th.subprojectId == null || th.subprojectId == current.id) th,
+          ];
+    String? subName(String? id) =>
+        id == null ? null : (subs.where((s) => s.id == id).firstOrNull?.name ?? id);
+    Future<void> pickSub(BuildContext context) async {
+      final box = context.findRenderObject() as RenderBox?;
+      final at = box?.localToGlobal(box.size.bottomLeft(Offset.zero));
+      final entries = [
+        RgMenuEntry(
+          '',
+          current == null ? RgIcons.check : RgIcons.layers,
+          l.cvAgentWholeProject,
+          key: const Key('board-sub-all'),
+        ),
+        for (final s in subs)
+          RgMenuEntry(
+            s.id,
+            s.id == current?.id ? RgIcons.check : RgIcons.layers,
+            s.name,
+            key: Key('board-sub-${s.id}'),
+          ),
+      ];
+      final pick = MediaQuery.sizeOf(context).width >= 700 && at != null
+          ? await showRgMenu<String>(context, at, entries)
+          : await showRgSheet<String>(
+              context,
+              head: RgSheetHead(
+                leading: RgIcon(RgIcons.layers, size: 22, color: c.dim),
+                title: l.cvBoardSub,
+              ),
+              entries: entries,
+            );
+      if (pick != null) onSub(pick);
+    }
+
     // The list, and the new thread's composer at the bottom (the page's `board-list`).
     return Column(
       children: [
@@ -409,6 +468,23 @@ class _List extends StatelessWidget {
             key: const Key('board-list'),
             padding: const EdgeInsets.all(12),
             children: [
+              if (subs.isNotEmpty) ...[
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Builder(
+                    builder: (context) => Tooltip(
+                      message: l.cvBoardSub,
+                      child: OutlinedButton.icon(
+                        key: const Key('board-sub'),
+                        onPressed: () => unawaited(pickSub(context)),
+                        icon: RgIcon(RgIcons.chevronDown, size: 14, color: c.dim),
+                        label: Text(current?.name ?? l.cvAgentWholeProject),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
               TextField(
                 key: const Key('board-search'),
                 controller: query,
@@ -450,10 +526,10 @@ class _List extends StatelessWidget {
                     )
               else if (!loaded)
                 _Empty(l.loading)
-              else if (threads.isEmpty)
+              else if (shown.isEmpty)
                 _Empty(l.cvEmptyBoard)
               else
-                for (final th in threads)
+                for (final th in shown)
                   _Item(
                     key: Key('board-thread-${th.id}'),
                     selected: open == th.id,
@@ -471,6 +547,8 @@ class _List extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
+                      if (subName(th.subprojectId) case final name?)
+                        BoardChip(text: name, color: c.dim),
                       Text(
                         '${th.posts} · ${author(th.createdBy)} · ${localWhen(th.updatedAt, locale)}',
                         style: TextStyle(color: c.dim, fontSize: 12.5),

@@ -60,6 +60,7 @@ import 'conversation_more.dart';
 import 'files/files_explorer.dart';
 import 'saved_screen.dart';
 import '../ui/chat/file_download.dart';
+import '../terminal/rg_terminal.dart';
 
 part 'conversation_files.dart';
 

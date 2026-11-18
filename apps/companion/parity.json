@@ -237,15 +237,17 @@
       "note": "Default model and model routes are native; subscriptions, keys, own server and local models only in «All settings»."
     },
     "code": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/code_settings.dart",
+        "lib/api/client.dart",
+        "lib/api/code.dart"
       ],
       "phase": "G42.5",
       "rows": [
         150
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native GitCode (GitHub token, Gitea) in G42.5."
+      "note": "G42.5: Settings › Code as the page's CodeSettings and GitCode.tsx: GitHub and Gitea as two tiles lit when linked, each with its window (GitHub's guide for a fine-grained token, «Try and save», «Disconnect»; Gitea started here with its job followed step by step and the image's download bar, or one the person has, with the page's words when its name or address does not answer; «Open Gitea», «Switch off»), and «Create the repositories now» with each project's outcome. Same routes; nothing kept in the app."
     },
     "remote": {
       "app": "partial",
@@ -338,13 +340,16 @@
       "note": "Answering requests is native; where requests go, their timeout and the classifier's decisions only in «All settings»."
     },
     "projects": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
+        "lib/settings/projects_settings.dart",
         "lib/screens/projects_screen.dart",
-        "lib/desktop/advanced/projects_wall.dart",
+        "lib/screens/project_overview_screen.dart",
+        "lib/screens/subprojects.dart",
         "lib/ui/project_menu.dart",
-        "lib/screens/project_overview_screen.dart"
+        "lib/desktop/new_project.dart",
+        "lib/desktop/advanced/projects_wall.dart",
+        "lib/app_state.dart"
       ],
       "phase": "G42.5",
       "rows": [
@@ -357,7 +362,7 @@
         135,
         136
       ],
-      "note": "Project list with git state (advanced interface); 3.8.8: a click shows the project's conversations (its lead's and its team's; archived, read only with its tasks), its menu archives it (the page's window: who works, the automations that pause), restores it and initialises git; the full Settings › Projects page only in «All settings»."
+      "note": "G42.5: Projects is in the phone's bar for everyone (git state with the advanced interface), with «New project» (the page's flow: the name, then its orchestrator). Each project shows its subprojects (the page's Subprojects under the project): folder, agents and their conversations, «New subproject» new or bringing an existing project in (asked first), its own sandbox image; a subproject's files open on its folder. Settings › Projects (ProjectsPage): in use with the folder and «No git repository» / «Initialise git», «Archive» with the page's window, the archived ones with «Restore». The 3.8.8 menus and archived view as they were. The project board's subproject filter waits for the app's board (G42.3, another branch)."
     },
     "artifacts": {
       "app": "native",
@@ -1521,7 +1526,8 @@
         "lib/screens/conversation_screen.dart",
         "lib/ui/file_icons.dart",
         "lib/desktop/drops.dart",
-        "lib/api/client.dart"
+        "lib/api/client.dart",
+        "lib/terminal/terminal_screen.dart"
       ],
       "phase": "G42.5",
       "rows": [
@@ -1532,7 +1538,24 @@
         141,
         142
       ],
-      "note": "The top bar's folder (Explorer.tsx): the conversation's place (project, personal agents' desk or platform, as currentScope), new file and folder, upload with keep both / replace, .rgartifact import, hidden files, refresh, terminal, rename, download, delete to .trash, copy path, ask the agent, open in the Canvas, search; archived projects read only. Computer: a resizable panel beside the conversation (or full window), kept open; files dropped from the system go into the folder under the pointer, a file dragged onto the conversation is attached. Phone: a screen of its own. Subprojects' focus (G24.13) waits for the app's subprojects."
+      "note": "The top bar's folder (Explorer.tsx): the conversation's place (project, personal agents' desk or platform, as currentScope), new file and folder, upload with keep both / replace, .rgartifact import, hidden files, refresh, terminal, rename, download, delete to .trash, copy path, ask the agent, open in the Canvas, search; archived projects read only. Computer: a resizable panel beside the conversation (or full window), kept open; files dropped from the system go into the folder under the pointer, a file dragged onto the conversation is attached. Phone: a screen of its own. A subproject's agent opens it on the subproject's folder (G24.13, the page's focus), and each subproject has its files button. «Terminal» (G42.5): any place but an archived project; on a computer a tab in the conversation's right column, on a phone the whole screen."
+    },
+    "terminal": {
+      "app": "native",
+      "files": [
+        "lib/terminal/rg_terminal.dart",
+        "lib/terminal/terminal_screen.dart",
+        "lib/screens/conversation_files.dart",
+        "lib/screens/code/terminal_tab.dart",
+        "lib/desktop/advanced/terminals_view.dart",
+        "lib/api/code.dart"
+      ],
+      "phase": "G42.5",
+      "rows": [
+        111,
+        146
+      ],
+      "note": "The page's TerminalView.tsx over /term, drawn natively by xterm 4.0.0 (MIT, pinned): full-screen programs, colours (the page's theme over xterm.js's palette), cursor and mouse modes, the size measured in hello and on resize, the page's red error and grey «closed» lines, «Open again». Computer: tabs in the conversation's right column beside the files and the Canvas (closed by their ×), Ctrl+Shift+C copies and Ctrl+V pastes, every other key to the program; also the advanced views. Phone: the whole screen with the keys row (Esc, Tab, Ctrl and Alt held for the next key, arrows, Home/End, PgUp/PgDn, | ~ / -, paste, keyboard) and text size."
     }
   }
 }
