@@ -86,6 +86,26 @@ class _Clock {
   DateTime now() => t;
 }
 
+/// Paths compared whatever the separator (the app joins with Windows' `\\`, the test writes `/`).
+String _slash(String path) => path.replaceAll(r'\', '/');
+
+/// A file of the repository, found going up from the app (`apps/companion`), or null.
+File? _repoFile(String rel) {
+  for (var d = Directory.current.absolute; ; d = d.parent) {
+    final f = File('${d.path}/$rel');
+    if (f.existsSync()) return f;
+    if (d.parent.path == d.path) return null;
+  }
+}
+
+/// Skipped only when the app was copied alone, outside the repository (Rig's build folder);
+/// inside the repository a missing UpdateKey.cs fails.
+final Object _updateKeySkip =
+    _repoFile('packaging/windows/launcher/UpdateKey.cs') == null &&
+        _repoFile('pnpm-workspace.yaml') == null
+    ? 'the app was copied without the repository: no packaging/ above it'
+    : false;
+
 void main() {
   group('the version offered (table)', () {
     final rows = <(String, Map<String, Object?>, UpdateChoice)>[
@@ -275,8 +295,8 @@ void main() {
     test('the built-in key is the real one: it refuses the throwaway key\'s signature', () {
       expect(signedSums(_sums, _v['sig'] as String), isNull);
     });
-    test('the built-in key is the launcher\'s (UpdateKey.cs)', () {
-      final cs = File('../../packaging/windows/launcher/UpdateKey.cs').readAsStringSync();
+    test('the built-in key is the launcher\'s (UpdateKey.cs)', skip: _updateKeySkip, () {
+      final cs = _repoFile('packaging/windows/launcher/UpdateKey.cs')!.readAsStringSync();
       expect(RegExp('<Modulus>([^<]*)</Modulus>').firstMatch(cs)!.group(1), kUpdateKeyModulus);
       expect(RegExp('<Exponent>([^<]*)</Exponent>').firstMatch(cs)!.group(1), kUpdateKeyExponent);
     });
@@ -409,7 +429,7 @@ void main() {
       await w.download();
       expect(w.stage, AppUpdateStage.ready);
       await w.apply(const ResumeState());
-      expect(plans.single.package, '${tmp.path}/updates/3.9.0/$kWindowsSetupAsset');
+      expect(_slash(plans.single.package), _slash('${tmp.path}/updates/3.9.0/$kWindowsSetupAsset'));
     });
 
     test('a file that is not the signed one: deleted, never used', () async {
@@ -471,7 +491,7 @@ void main() {
       expect(p.dir, '${tmp.path}/app');
       expect(p.fromVersion, '3.8.14');
       expect(p.toVersion, '3.9.0');
-      expect(p.package, endsWith('/unpacked/rgcompanion-linux-x64/bundle'));
+      expect(_slash(p.package), endsWith('/unpacked/rgcompanion-linux-x64/bundle'));
       expect(quits, ['quit']);
 
       // The next start (new or old version) takes it once.
@@ -640,6 +660,14 @@ sleep 5''' : 'exit 1'}
       await t.pump();
       expect(u.stage, AppUpdateStage.available);
       expect(find.byKey(const Key('app-update-download')), findsOneWidget);
+      // The part is closed, then deleted (real I/O: Windows cannot delete an open file).
+      final part = File('${tmp.path}/updates/3.9.0/$kWindowsSetupAsset.part');
+      for (var i = 0; i < 50 && (u.busy || part.existsSync()); i++) {
+        await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 20)));
+        await t.pump();
+      }
+      expect(part.existsSync(), isFalse);
+      expect(u.busy, isFalse);
       unawaited(gh.held!.close());
 
       gh.held = null;
