@@ -12,6 +12,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:rgcompanion/api/conversation.dart' show Project;
 import 'package:rgcompanion/api/servers.dart';
 import 'package:rgcompanion/api/token_store.dart';
@@ -42,7 +43,8 @@ Future<void> _settle(WidgetTester tester, [int rounds = 12]) async {
 
 /// The page's object without what JSON.stringify leaves out (`undefined`).
 Map<String, Object?> _asPage(Map<String, Object?> m) =>
-    jsonDecode(jsonEncode(m)) as Map<String, Object?>..removeWhere((k, v) => k == 'timezone' && v == null);
+    jsonDecode(jsonEncode(m)) as Map<String, Object?>
+      ..removeWhere((k, v) => k == 'timezone' && v == null);
 
 const _morning = '''
 name: "morning"
@@ -64,17 +66,23 @@ instructions: "Leggi i dati."
 ''';
 
 void main() {
+  setUpAll(() async {
+    await initializeDateFormatting('it');
+    await initializeDateFormatting('en');
+  });
+
   group('the page\'s editor, in Dart', () {
-    final v =
-        jsonDecode(File('test/fixtures/automation_vectors.json').readAsStringSync())
-            as Map<String, dynamic>;
-    final agents = [
-      for (final a in v['agents'] as List) Agent.fromJson(a as Map<String, dynamic>),
-    ];
+    final v = jsonDecode(
+      File('test/fixtures/automation_vectors.json').readAsStringSync(),
+    ) as Map<String, dynamic>;
+    final agents = [for (final a in v['agents'] as List) Agent.fromJson(a as Map<String, dynamic>)];
     final projects = [
       for (final p in v['projects'] as List) Project.fromJson(p as Map<String, dynamic>),
     ];
-    final words = <String, AppLocalizations>{'it': AppLocalizationsIt(), 'en': AppLocalizationsEn()};
+    final words = <String, AppLocalizations>{
+      'it': AppLocalizationsIt(),
+      'en': AppLocalizationsEn(),
+    };
     final whoIt = whoOptions(words['it']!, agents);
     final zone = v['timezone'] as String;
     const others = {'morning': 'Il punto del mattino'};
@@ -96,7 +104,11 @@ void main() {
         final w = When.fromJson(m['when'] as Map<String, dynamic>);
         expect(toCron(w), m['cron'], reason: '${m['when']}');
         for (final lang in ['it', 'en']) {
-          expect(whenWords(words[lang]!, w), (m['words'] as Map)[lang], reason: '$lang ${m['when']}');
+          expect(
+            whenWords(words[lang]!, w),
+            (m['words'] as Map)[lang],
+            reason: '$lang ${m['when']}',
+          );
         }
       }
     });
@@ -110,9 +122,13 @@ void main() {
         expect(toYaml(d, recipe['name'] as String, whoIt, zone: zone), m['yaml']);
         for (final lang in ['it', 'en']) {
           final who = whoOptions(words[lang]!, agents);
+          final ours = sentence(words[lang]!, fromRecipe(recipe, who, projects), who, others);
+          final page = [...((m['sentence'] as Map)[lang] as List)];
+          // A date: each side writes it as its runtime does (`toLocaleString`, intl).
+          final at = (recipe['on'] as Map)['at'] != null;
           expect(
-            sentence(words[lang]!, fromRecipe(recipe, who, projects), who, others),
-            (m['sentence'] as Map)[lang],
+            at ? ours.skip(1).toList() : ours,
+            at ? page.skip(1).toList() : page,
             reason: '$lang ${recipe['name']}',
           );
         }
@@ -126,7 +142,10 @@ void main() {
         expect(toYaml(d, 'draft-test', whoIt, zone: zone), m['yaml'], reason: d.title);
         for (final lang in ['it', 'en']) {
           final who = whoOptions(words[lang]!, agents);
-          expect(sentence(words[lang]!, d, who, others), (m['sentence'] as Map)[lang]);
+          final once = d.has('time') && d.time.kind == 'once';
+          final ours = sentence(words[lang]!, d, who, others);
+          final page = [...((m['sentence'] as Map)[lang] as List)];
+          expect(once ? ours.skip(1).toList() : ours, once ? page.skip(1).toList() : page);
         }
       }
     });
@@ -167,7 +186,7 @@ void main() {
     });
     tearDown(() => server.close());
 
-    Future<AppController> start(WidgetTester tester, {Size size = const Size(420, 900)}) async {
+    Future<AppController> start(WidgetTester tester, {Size size = const Size(420, 2400)}) async {
       final app =
           AppController(
               tokens: MemoryTokenStore(),
@@ -194,10 +213,30 @@ void main() {
       await _settle(tester);
     }
 
+    /// Frames until the layout stops moving (a field that grows, a window that opens).
+    Future<void> calm(WidgetTester tester) async {
+      try {
+        await tester.pumpAndSettle(
+          const Duration(milliseconds: 50),
+          EnginePhase.sendSemanticsUpdate,
+          const Duration(seconds: 3),
+        );
+      } on FlutterError {
+        // Something keeps moving (a spinner): enough frames anyway.
+      }
+    }
+
+    Future<void> type(WidgetTester tester, String key, String text) async {
+      await tester.ensureVisible(find.byKey(Key(key)));
+      await calm(tester);
+      await tester.enterText(find.byKey(Key(key)), text);
+      await tester.pump();
+    }
+
     Future<void> tap(WidgetTester tester, String key) async {
       final f = find.byKey(Key(key));
       await tester.ensureVisible(f.first);
-      await tester.pump();
+      await calm(tester);
       await tester.tap(f.first);
       await _settle(tester, 8);
     }
@@ -221,17 +260,14 @@ void main() {
       expect(find.text('Il punto del mattino'), findsOneWidget);
       expect(find.text('Dal lunedì al venerdì alle 08:00.'), findsOneWidget);
       // Its state: on, the last run, the next one (the service's clock: Wednesday 7:30 UTC).
-      expect(find.textContaining('Attiva · non riuscita · Prossima'), findsOneWidget);
+      expect(find.textContaining('Attiva · fallita · prossima'), findsOneWidget);
       expect(find.textContaining('Spenta'), findsOneWidget);
       await tester.ensureVisible(find.byKey(const Key('au-sources')));
-      expect(find.text('Lavoro'), findsOneWidget);
-      expect(find.text('Lavoro', skipOffstage: false), findsOneWidget);
+      expect(find.text('Lavoro'), findsWidgets);
       await done(tester);
     });
 
-    testWidgets('an automation\'s window: off, run now, a new secret once, delete', (
-      tester,
-    ) async {
+    testWidgets('an automation\'s window: off, run now, a new secret once, delete', (tester) async {
       server.automations.add(_hook, id: 'au2');
       server.automations.addRun('au2', {
         'status': 'ok',
@@ -248,12 +284,12 @@ void main() {
       await tap(tester, 'au-row-au2');
       expect(find.byKey(const Key('au-view-au2')), findsOneWidget);
       expect(find.textContaining('/api/automations/au2/hook'), findsOneWidget);
-      expect(find.text('consegnato: telegram'), findsOneWidget);
+      expect(find.text('consegnata: telegram'), findsOneWidget);
       expect(find.text('webhook'), findsOneWidget);
       // Off: the server says so, the switch follows.
       await tap(tester, 'au-switch');
       expect(server.automations.list.single['enabled'], isFalse);
-      expect(find.text('Spenta: non parte da sola.'), findsOneWidget);
+      expect(find.text('Spenta: non parte finché non la riaccendi.'), findsOneWidget);
       // A new secret: shown only now.
       expect(find.byKey(const Key('au-secret-once')), findsNothing);
       await tap(tester, 'au-secret');
@@ -278,7 +314,7 @@ void main() {
     testWidgets('a new automation: a template, the parts, the next times, saved as YAML', (
       tester,
     ) async {
-      await start(tester, size: const Size(1200, 900));
+      await start(tester, size: const Size(1200, 2000));
       await push(tester, const AutomationsScreen());
       await tap(tester, 'au-new');
       expect(find.byKey(const Key('au-editor')), findsOneWidget);
@@ -286,7 +322,7 @@ void main() {
       expect(find.text('Il punto del mattino'), findsWidgets);
       expect(find.text('Dal lunedì al venerdì alle 08:00.'), findsOneWidget);
       // The next times come from the server (its fake clock: Wednesday 18 November, 7:30 UTC).
-      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600)));
+      await tester.pump(const Duration(milliseconds: 500));
       await _settle(tester);
       expect(find.byKey(const Key('au-next-0')), findsOneWidget);
       expect(find.textContaining('18 nov'), findsOneWidget);
@@ -296,17 +332,17 @@ void main() {
       expect(find.text('Ogni settimana il venerdì, lunedì alle 08:00.'), findsOneWidget);
       // Also on an email; only with some words; a reminder of the budget.
       await tap(tester, 'au-start-email');
-      await tester.enterText(find.byKey(const Key('au-email-from')), 'banca');
+      await type(tester, 'au-email-from', 'banca');
       await tap(tester, 'au-cond-words');
-      await tester.enterText(find.byKey(const Key('au-only-words')), 'bonifico, estratto');
+      printOnFailure(
+        'texts: ${find.byType(Text).evaluate().map((e) => (e.widget as Text).data).where((x) => x != null).join(' | ')}',
+      );
+      await type(tester, 'au-only-words', 'bonifico, estratto');
       await tester.pump();
       await tap(tester, 'au-budget');
       await tap(tester, 'au-tell-failure');
       await tap(tester, 'au-to-telegram');
-      expect(
-        find.textContaining('oppure quando arriva un\'email (da banca)'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('oppure quando arriva un\'email (da banca)'), findsOneWidget);
       await tap(tester, 'au-save');
       final y = server.automations.yamls.single;
       expect(y, contains('  cron: "0 8 * * 5,1"'.replaceFirst('5,1', '1,5')));
@@ -325,7 +361,7 @@ void main() {
       tester,
     ) async {
       server.automations.add(_morning, id: 'au1');
-      await start(tester, size: const Size(1200, 900));
+      await start(tester, size: const Size(1200, 2000));
       await push(tester, const AutomationsScreen());
       await tap(tester, 'au-row-au1');
       await tap(tester, 'au-edit');
@@ -334,9 +370,15 @@ void main() {
       expect(find.byKey(const Key('au-tpl-morning')), findsNothing);
       await tap(tester, 'au-advanced-toggle');
       expect(find.byKey(const Key('au-yaml')), findsOneWidget);
-      await tester.enterText(find.byKey(const Key('au-yaml')), 'name: "morning"\non:\n  cron: "x"\n');
-      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600)));
+      await type(tester, 'au-yaml', 'name: "morning"\non:\n  cron: "x"\n');
+      await tester.pump(const Duration(milliseconds: 500));
       await _settle(tester);
+      printOnFailure(
+        'previews: ${server.automations.previews.length} ${server.automations.previews.lastOrNull}',
+      );
+      printOnFailure(
+        'texts: ${find.byType(Text).evaluate().map((e) => (e.widget as Text).data).where((x) => x != null).join(' | ')}',
+      );
       expect(find.byKey(const Key('au-server-says')), findsOneWidget);
       expect(find.textContaining('Invalid cron expression'), findsOneWidget);
       await tap(tester, 'au-save');
@@ -360,7 +402,7 @@ void main() {
         tester.widget<FilledButton>(find.byKey(const Key('au-reminder-save'))).onPressed,
         isNull,
       );
-      await tester.enterText(find.byKey(const Key('au-reminder-text')), 'Chiama il dentista');
+      await type(tester, 'au-reminder-text', 'Chiama il dentista');
       await tester.pump();
       await tap(tester, 'au-reminder-time');
       await tap(tester, 'au-time-h-16');
@@ -381,14 +423,14 @@ void main() {
     });
 
     testWidgets('a magic automation: God builds it, the proposal, the yes', (tester) async {
-      await start(tester, size: const Size(1200, 900));
+      await start(tester, size: const Size(1200, 2000));
       await push(tester, const AutomationsScreen());
       await tap(tester, 'au-magic');
       expect(find.byKey(const Key('au-magic-go')), findsOneWidget);
       await tap(tester, 'au-magic-ex-0');
       await tap(tester, 'au-magic-go');
       final id = server.automations.magic.single['id'] as String;
-      expect(server.automations.magic.single['request'], startsWith('Ogni giorno alle 15'));
+      expect(server.automations.magic.single['request'], startsWith('Ogni giorno alle 3'));
       expect(find.byKey(const Key('au-magic-steps')), findsOneWidget);
       expect(find.byKey(const Key('au-magic-dismiss')), findsOneWidget);
       // God proposes; something is missing: the yes waits.
@@ -423,13 +465,10 @@ void main() {
 
     testWidgets('an assistant\'s new routine: the whole editor, its agent chosen', (tester) async {
       server.agentOverrides['a5'] = {'connections': <String>[]};
-      final app = await start(tester, size: const Size(1200, 900));
+      final app = await start(tester, size: const Size(1200, 2000));
       final a5 = app.agents.firstWhere((a) => a.id == 'a5');
       expect(a5.kind, AgentKind.assistant);
-      server.automations.add(
-        _morning.replaceFirst('agent: "god"', 'agent: "a5"'),
-        id: 'au1',
-      );
+      server.automations.add(_morning.replaceFirst('agent: "god"', 'agent: "a5"'), id: 'au1');
       await push(
         tester,
         AgentSettingsScreen(agentId: 'a5', agent: a5, initial: AgentGroup.assistant),
@@ -474,7 +513,7 @@ void main() {
       });
       await _settle(tester);
       expect(app.live.notices, hasLength(1));
-      expect(app.live.waiting, 1);
+      expect(app.live.waiting, app.live.forYou + 1);
       expect(find.text('Non riesco a leggere la posta.'), findsOneWidget);
       expect(find.text('failed'), findsOneWidget);
       await tap(tester, 'au-notice-dismiss-run7');

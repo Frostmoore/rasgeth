@@ -96,11 +96,7 @@ class _NoticeCard extends StatelessWidget {
               if (n.sessionId != null)
                 TextButton(
                   key: Key('au-notice-open-${n.runId}'),
-                  onPressed: () => openRunConversation(
-                    context,
-                    n.sessionId!,
-                    null,
-                  ),
+                  onPressed: () => openRunConversation(context, n.sessionId!, null),
                   child: Text(l.auOwnNoticeOpen),
                 ),
               IconButton(

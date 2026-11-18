@@ -114,18 +114,15 @@ Future<void> openAutomation(
 }) async {
   var current = a;
   String? shown = secret;
-  while (context.mounted) {
+  while (true) {
+    if (!context.mounted) return;
     final next = await openAutoWindow<ViewNext>(
       context,
       title: current.title,
       wide: true,
       key: const Key('au-view'),
-      child: (ctx, close) => AutomationView(
-        automation: current,
-        secret: shown,
-        onClose: close,
-        onChanged: onChanged,
-      ),
+      child: (ctx, close) =>
+          AutomationView(automation: current, secret: shown, onClose: close, onChanged: onChanged),
     );
     if (next != ViewNext.edit || !context.mounted) return;
     final s = await openAutomationEditor(context, current: current, title: current.title);
@@ -380,7 +377,11 @@ class _MagicCta extends StatelessWidget {
                       children: [
                         Text(
                           l.auAxMagic,
-                          style: TextStyle(fontSize: 19, fontWeight: FontWeight.w800, color: c.text),
+                          style: TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.w800,
+                            color: c.text,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -621,10 +622,7 @@ class _AutomationViewState extends State<AutomationView> {
           Container(
             margin: const EdgeInsets.only(top: 12),
             padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: c.panel2,
-              borderRadius: BorderRadius.circular(14),
-            ),
+            decoration: BoxDecoration(color: c.panel2, borderRadius: BorderRadius.circular(14)),
             child: Text(a.reminder!, style: TextStyle(color: c.text, fontSize: 15, height: 1.45)),
           ),
         if (a.on['webhook'] == true)
@@ -698,7 +696,11 @@ class _AutomationViewState extends State<AutomationView> {
         if (_runs == null)
           Text(l.loading, style: TextStyle(color: c.dim))
         else if (_runs!.isEmpty)
-          Text(l.auNoRuns, key: const Key('au-no-runs'), style: TextStyle(color: c.dim))
+          Text(
+            l.auNoRuns,
+            key: const Key('au-no-runs'),
+            style: TextStyle(color: c.dim),
+          )
         else
           for (final r in _runs!) _RunCard(run: r, automation: a),
         const SizedBox(height: 18),
@@ -766,12 +768,7 @@ class _RunCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: c.panel,
         borderRadius: BorderRadius.circular(14),
-        border: Border(
-          left: BorderSide(color: tone, width: 4),
-          top: BorderSide(color: c.line),
-          right: BorderSide(color: c.line),
-          bottom: BorderSide(color: c.line),
-        ),
+        border: Border.all(color: r.status == 'ok' ? c.line : tone.withValues(alpha: .55)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -930,8 +927,9 @@ class _ReminderFormState extends State<ReminderForm> {
         ),
         if (_error != null) AutoNotice(_error!, error: true, key: const Key('au-error')),
         const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+        Wrap(
+          alignment: WrapAlignment.end,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             TextButton(onPressed: () => widget.onCancel(), child: Text(l.auCancel)),
             const SizedBox(width: 8),

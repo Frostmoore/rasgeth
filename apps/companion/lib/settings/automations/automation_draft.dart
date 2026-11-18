@@ -60,26 +60,20 @@ class When {
   /// Whether this kind has a time of day (the page's `"time" in w`).
   bool get hasTime => const ['daily', 'weekdays', 'weekly', 'monthly'].contains(kind);
 
-  When copy({
-    String? time,
-    List<int>? days,
-    int? every,
-    int? day,
-    String? at,
-    String? cron,
-  }) => When(
-    kind,
-    time: time ?? this.time,
-    days: days ?? this.days,
-    every: every ?? this.every,
-    day: day ?? this.day,
-    at: at ?? this.at,
-    cron: cron ?? this.cron,
-    project: project,
-    events: events,
-    from: from,
-    subject: subject,
-  );
+  When copy({String? time, List<int>? days, int? every, int? day, String? at, String? cron}) =>
+      When(
+        kind,
+        time: time ?? this.time,
+        days: days ?? this.days,
+        every: every ?? this.every,
+        day: day ?? this.day,
+        at: at ?? this.at,
+        cron: cron ?? this.cron,
+        project: project,
+        events: events,
+        from: from,
+        subject: subject,
+      );
 
   /// From the page's object (the vectors).
   factory When.fromJson(Map<String, dynamic> j) => When(
@@ -117,7 +111,10 @@ String _pad(int n) => n.toString().padLeft(2, '0');
 
 ({int h, int m}) _hm(String time) {
   final p = time.split(':');
-  return (h: int.tryParse(p.isNotEmpty ? p[0] : '8') ?? 0, m: int.tryParse(p.length > 1 ? p[1] : '0') ?? 0);
+  return (
+    h: int.tryParse(p.isNotEmpty ? p[0] : '8') ?? 0,
+    m: int.tryParse(p.length > 1 ? p[1] : '0') ?? 0,
+  );
 }
 
 /// The cron expression of a choice (null: no schedule).
@@ -239,17 +236,7 @@ String whenWords(AppLocalizations l, When w) => switch (w.kind) {
 // --- The draft ----------------------------------------------------------------------------
 
 /// What can start an automation (one or more of them).
-const starts = [
-  'time',
-  'email',
-  'message',
-  'files',
-  'repo',
-  'after',
-  'task',
-  'startup',
-  'webhook',
-];
+const starts = ['time', 'email', 'message', 'files', 'repo', 'after', 'task', 'startup', 'webhook'];
 
 const platforms = [
   'telegram',
@@ -784,10 +771,7 @@ String toYaml(Draft d, String name, List<WhoOption> who, {String? zone}) {
         'changes': _some(d.filesChanges),
       },
     if (d.has('after'))
-      'after': <String, Object?>{
-        'automation': d.afterAutomation,
-        'status': _some(d.afterStatus),
-      },
+      'after': <String, Object?>{'automation': d.afterAutomation, 'status': _some(d.afterStatus)},
     if (d.has('task'))
       'task': <String, Object?>{
         'project': _nonEmpty(d.taskProject),
@@ -798,7 +782,9 @@ String toYaml(Draft d, String name, List<WhoOption> who, {String? zone}) {
   final days = o.onlyDays;
   final only = <String, Object?>{
     'hours': o.onlyHours ? <String, Object?>{'from': o.onlyFrom, 'to': o.onlyTo} : null,
-    'days': days != null && days.isNotEmpty ? ([...days]..sort((a, b) => '$a'.compareTo('$b'))) : null,
+    'days': days != null && days.isNotEmpty
+        ? ([...days]..sort((a, b) => '$a'.compareTo('$b')))
+        : null,
     'dates': o.onlyDates && (o.onlyDateFrom.isNotEmpty || o.onlyDateTo.isNotEmpty)
         ? <String, Object?>{'from': _nonEmpty(o.onlyDateFrom), 'to': _nonEmpty(o.onlyDateTo)}
         : null,

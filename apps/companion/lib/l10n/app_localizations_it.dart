@@ -7902,4 +7902,1134 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get g4HubSafety => 'Guardiano, chi approva, spesa, skill, conservazione';
+
+  @override
+  String get auAsstNewRoutine => 'Nuova routine';
+
+  @override
+  String get auAutoOff => 'Spenta: non parte finché non la riaccendi.';
+
+  @override
+  String get auAutoOn => 'Accesa';
+
+  @override
+  String get auAutoStart => 'Parti da';
+
+  @override
+  String get auAutoTitle => 'Come si chiama';
+
+  @override
+  String get auAutoTitleHelp => 'Un nome breve, per te.';
+
+  @override
+  String get auAutoWhat => 'Cosa chiedere';
+
+  @override
+  String get auAutoWhatHelp =>
+      'Come lo scriveresti in una chat. La risposta ti arriva su Telegram.';
+
+  @override
+  String get auAutoWho => 'Chi lo fa';
+
+  @override
+  String get auAutoWhoHelp =>
+      'God vede tutti i progetti; il capo e gli agenti di un progetto solo il loro.';
+
+  @override
+  String get auAutoYaml => 'La ricetta (per esperti)';
+
+  @override
+  String get auAutoYamlHint => 'Quello che scrive il modulo. Se la cambi qui, viene salvata così.';
+
+  @override
+  String get auAutomationNotices => 'Messaggi delle automazioni';
+
+  @override
+  String get auAutomations => 'Automazioni';
+
+  @override
+  String get auAwChange => 'Cambia';
+
+  @override
+  String get auAwLastRun => 'Ultima volta';
+
+  @override
+  String get auAwLead =>
+      'Un\'automazione chiede a un agente di fare qualcosa a un\'ora o quando succede qualcosa; un promemoria ti manda un messaggio in un giorno. I riquadri accesi sono attivi.';
+
+  @override
+  String get auAwListLead =>
+      'Aprine una per accenderla o spegnerla, farla partire ora, cambiarla o vedere com\'è andata.';
+
+  @override
+  String get auAwListTitle => 'Le tue automazioni';
+
+  @override
+  String get auAwNewText =>
+      'Un agente fa qualcosa per te: ogni mattina, ogni settimana, a una mail o a un push.';
+
+  @override
+  String get auAwQ => 'Cosa deve fare RedGiant da solo?';
+
+  @override
+  String get auAwReminderText =>
+      'Un messaggio per te nel giorno e all\'ora che scegli, così come l\'hai scritto.';
+
+  @override
+  String get auAwSourcesLead => 'Cosa possono ascoltare le automazioni, oltre all\'orologio.';
+
+  @override
+  String get auAwSourcesTitle => 'Collegamenti';
+
+  @override
+  String get auAwStarted => 'Partita: tra un momento la vedi qui sotto.';
+
+  @override
+  String get auAxAdvanced => 'Avanzate';
+
+  @override
+  String get auAxAfterWhich => 'Quale automazione';
+
+  @override
+  String get auAxAfter_failed => 'Se è andata male';
+
+  @override
+  String get auAxAfter_ok => 'Se è andata bene';
+
+  @override
+  String get auAxAfter_timeout => 'Se ci ha messo troppo';
+
+  @override
+  String get auAxAgentOwn => 'Quello dell\'agente';
+
+  @override
+  String get auAxAnyChat => 'qualunque chat';
+
+  @override
+  String get auAxAnyProject => 'Qualunque progetto';
+
+  @override
+  String get auAxApprove => 'Chiedimi prima di agire';
+
+  @override
+  String get auAxApproveHelp =>
+      'Ti arriva una domanda qui e nelle chat; senza il tuo sì non parte.';
+
+  @override
+  String get auAxBudget => 'Un limite di spesa ogni volta';
+
+  @override
+  String get auAxBudgetHelp => 'Oltre il limite l\'agente si ferma.';
+
+  @override
+  String get auAxBudgetUsd => 'Dollari al massimo';
+
+  @override
+  String get auAxCat_other => 'Altro';
+
+  @override
+  String get auAxCat_personal => 'Personale';
+
+  @override
+  String get auAxCat_social => 'Social';
+
+  @override
+  String get auAxCat_work => 'Lavoro';
+
+  @override
+  String get auAxCondCooldown => 'Una pausa tra una volta e l\'altra';
+
+  @override
+  String get auAxCondDates => 'Solo in un periodo';
+
+  @override
+  String get auAxCondDays => 'Solo in certi giorni';
+
+  @override
+  String get auAxCondFrom => 'Solo da certi mittenti';
+
+  @override
+  String get auAxCondFromHelp => 'Per le email e i messaggi in chat.';
+
+  @override
+  String get auAxCondHours => 'Solo in certe ore';
+
+  @override
+  String get auAxCondMax => 'Non troppe volte al giorno';
+
+  @override
+  String get auAxCondWithout => 'Mai con certe parole';
+
+  @override
+  String get auAxCondWords => 'Solo con certe parole';
+
+  @override
+  String get auAxCooldown => 'Minuti di pausa';
+
+  @override
+  String get auAxCron => 'Espressione cron';
+
+  @override
+  String get auAxCronHelp =>
+      'Minuto, ora, giorno del mese, mese, giorno della settimana: 0 9 * * 1-5 vuol dire alle 9 nei giorni lavorativi.';
+
+  @override
+  String get auAxDoes => 'Cosa fa';
+
+  @override
+  String get auAxDoesAgent => 'Lavora un agente';
+
+  @override
+  String get auAxDoesHelp =>
+      'Un agente fa un lavoro, oppure ti arriva un messaggio così com\'è scritto.';
+
+  @override
+  String get auAxDoesReminder => 'Solo un messaggio';
+
+  @override
+  String get auAxEffort => 'Impegno';
+
+  @override
+  String get auAxEmailAll => 'Tutte';
+
+  @override
+  String get auAxEmailByBox => 'Alcune caselle';
+
+  @override
+  String get auAxEmailByCategory => 'Una categoria';
+
+  @override
+  String get auAxEmailText => 'Il testo contiene';
+
+  @override
+  String get auAxEmailTextPlaceholder => 'Una parola nell\'email (facoltativo)';
+
+  @override
+  String get auAxEmailWhich => 'Quali caselle';
+
+  @override
+  String get auAxEveryMinutes => 'Ogni quanti minuti';
+
+  @override
+  String get auAxFallback => 'Poi avvia';
+
+  @override
+  String get auAxFilesPath => 'Cartella';
+
+  @override
+  String get auAxFilesPathHelp => 'Dentro il progetto; un punto vuol dire tutto il progetto.';
+
+  @override
+  String get auAxFilesPattern => 'Solo questi file';
+
+  @override
+  String get auAxFilesPatternHelp => 'Per esempio *.pdf; vuoto: tutti i file.';
+
+  @override
+  String get auAxFilesProjectHelp => 'Prima crea un progetto: la cartella sta dentro un progetto.';
+
+  @override
+  String get auAxFiles_added => 'File nuovi';
+
+  @override
+  String get auAxFiles_changed => 'File cambiati';
+
+  @override
+  String get auAxFiles_removed => 'File cancellati';
+
+  @override
+  String get auAxFirstBox => 'La prima casella';
+
+  @override
+  String get auAxFrom => 'Dalle';
+
+  @override
+  String get auAxFromDay => 'Dal giorno';
+
+  @override
+  String get auAxIfFails => 'Se va male';
+
+  @override
+  String get auAxKind_custom => 'Scritto a mano (cron)';
+
+  @override
+  String get auAxKind_minutes => 'Ogni tot minuti';
+
+  @override
+  String get auAxKind_once => 'Una volta sola';
+
+  @override
+  String get auAxMagic => 'Automazione magica';
+
+  @override
+  String get auAxMagicAllSet => 'C\'è tutto quello che serve.';
+
+  @override
+  String get auAxMagicApprove => 'Approva e crea';
+
+  @override
+  String get auAxMagicAsk => 'Cosa deve succedere?';
+
+  @override
+  String get auAxMagicBuilding =>
+      'God la sta costruendo con te: rispondi alle sue domande nella conversazione.';
+
+  @override
+  String get auAxMagicDismiss => 'Metti da parte';
+
+  @override
+  String get auAxMagicDone => 'Approvata: ora è tra le tue automazioni.';
+
+  @override
+  String get auAxMagicEdit => 'Cambiala prima';
+
+  @override
+  String get auAxMagicEx1 =>
+      'Ogni giorno alle 3 controlla il mio conto Revolut e avvisami su WhatsApp se ho ricevuto o pagato soldi';
+
+  @override
+  String get auAxMagicEx2 =>
+      'Quando arriva una fattura nella casella del lavoro, salvala nel progetto e dimmi l\'importo';
+
+  @override
+  String get auAxMagicEx3 =>
+      'Quando scrivo «spesa:» su Telegram, aggiungilo alla lista e il sabato mandami la lista';
+
+  @override
+  String get auAxMagicExamples => 'Oppure parti da un esempio';
+
+  @override
+  String get auAxMagicGo => 'Chiedi a God';
+
+  @override
+  String get auAxMagicLead =>
+      'Scrivi cosa deve succedere, come lo diresti a una persona. God ti risponde in una conversazione tutta sua e costruisce l\'automazione insieme a te.';
+
+  @override
+  String get auAxMagicListLead => 'Costruite con God: aprine una per continuare la conversazione.';
+
+  @override
+  String get auAxMagicListTitle => 'Automazioni magiche';
+
+  @override
+  String get auAxMagicMissing => 'Prima di approvare, sistema quello che manca:';
+
+  @override
+  String get auAxMagicNeeds => 'Serve ancora';
+
+  @override
+  String get auAxMagicPlaceholder =>
+      'Ogni giorno alle 3 controlla il mio conto e scrivimi su WhatsApp cosa è entrato e cosa è uscito';
+
+  @override
+  String get auAxMagicPromise1 => 'Niente parte senza il tuo sì.';
+
+  @override
+  String get auAxMagicPromise2 =>
+      'Gli strumenti e le skill nuove si provano a parte e aspettano te.';
+
+  @override
+  String get auAxMagicPromise3 =>
+      'Chiavi e password non vanno mai nella chat: God ti dice dove metterle.';
+
+  @override
+  String get auAxMagicProposal => 'La proposta di God';
+
+  @override
+  String get auAxMagicReadyBadge => 'Da approvare';
+
+  @override
+  String get auAxMagicReject => 'Così no';
+
+  @override
+  String get auAxMagicSendNo => 'Manda a God';
+
+  @override
+  String get auAxMagicStarting => 'Chiamo God…';
+
+  @override
+  String get auAxMagicState_building => 'In costruzione';
+
+  @override
+  String get auAxMagicState_dismissed => 'Messa da parte';
+
+  @override
+  String get auAxMagicState_done => 'Approvata e creata';
+
+  @override
+  String get auAxMagicState_ready => 'Pronta: God aspetta il tuo sì';
+
+  @override
+  String get auAxMagicStep1 => 'Racconti cosa vuoi';
+
+  @override
+  String get auAxMagicStep2 => 'God te la propone';
+
+  @override
+  String get auAxMagicStep3 => 'La approvi';
+
+  @override
+  String get auAxMagicTile =>
+      'Di\' a God cosa vuoi, con parole tue: ti chiede quello che serve, prepara quello che manca e te lo fa vedere prima che parta qualcosa.';
+
+  @override
+  String get auAxMagicWhy => 'Cosa non va? God lo legge e riprova';
+
+  @override
+  String auAxMailboxesWatching(String n, String names) {
+    return '$n caselle collegate: $names.';
+  }
+
+  @override
+  String get auAxMatchAll => 'Tutte';
+
+  @override
+  String get auAxMatchAny => 'Almeno una';
+
+  @override
+  String get auAxMaxPerDay => 'Al massimo, volte al giorno';
+
+  @override
+  String get auAxMessageChat => 'Solo in questa chat';
+
+  @override
+  String get auAxMessageChatHelp => 'Il numero della chat, per un gruppo; vuoto: qualunque chat.';
+
+  @override
+  String get auAxMessageFrom => 'Da chi';
+
+  @override
+  String get auAxMessageFromHelp =>
+      'Una parte del nome o del numero; vuoto: chiunque sia collegato.';
+
+  @override
+  String get auAxMessageHandle => 'Il messaggio è solo per l\'automazione';
+
+  @override
+  String get auAxMessageHandleHelp => 'Demi-God non risponde: ci pensa l\'automazione.';
+
+  @override
+  String get auAxMessageWhere => 'Su quali chat (se non ne scegli nessuna: tutte)';
+
+  @override
+  String get auAxMessageWords => 'Con quali parole';
+
+  @override
+  String get auAxMessageWordsPlaceholder => 'spesa, /spese';
+
+  @override
+  String get auAxMissed => 'Se all\'ora giusta RedGiant era spento';
+
+  @override
+  String get auAxMissedRun => 'Falla appena si accende';
+
+  @override
+  String get auAxMissedSkip => 'Lascia perdere';
+
+  @override
+  String get auAxModel => 'Modello';
+
+  @override
+  String get auAxModelHelp => 'Vuoto: quello dell\'agente.';
+
+  @override
+  String get auAxNeedMissing => 'Manca';
+
+  @override
+  String get auAxNeedOpen => 'Sistemalo';
+
+  @override
+  String get auAxNeedReady => 'Pronto';
+
+  @override
+  String get auAxNeedVault => 'Aggiungi al portachiavi';
+
+  @override
+  String auAxNeed_chat(String what) {
+    return 'La chat $what';
+  }
+
+  @override
+  String auAxNeed_credential(String what) {
+    return 'La chiave per $what';
+  }
+
+  @override
+  String get auAxNeed_email => 'Una casella email';
+
+  @override
+  String auAxNeed_extension(String what) {
+    return 'L\'estensione $what';
+  }
+
+  @override
+  String auAxNeed_other(String what) {
+    return '$what';
+  }
+
+  @override
+  String get auAxNextNone =>
+      'Con queste condizioni a orario non parte mai: controlla le ore e i giorni.';
+
+  @override
+  String get auAxNextTimes => 'Le prossime volte';
+
+  @override
+  String get auAxNightHours => 'Di notte';
+
+  @override
+  String get auAxNone => 'Niente';
+
+  @override
+  String get auAxOnceAt => 'Giorno e ora';
+
+  @override
+  String get auAxOnly => 'Solo se';
+
+  @override
+  String get auAxOnlyHelp =>
+      'Le condizioni per partire: tutte quelle che accendi, insieme. Se la avvii tu a mano non contano.';
+
+  @override
+  String get auAxOr => 'oppure';
+
+  @override
+  String get auAxOverlap => 'Se lavora ancora quando dovrebbe ripartire';
+
+  @override
+  String get auAxOverlapQueue => 'Aspetta e poi parte';
+
+  @override
+  String get auAxOverlapSkip => 'Salta quella volta';
+
+  @override
+  String get auAxPick => 'Scegli…';
+
+  @override
+  String get auAxRetries => 'Riprova, quante volte';
+
+  @override
+  String get auAxRetryMinutes => 'Minuti tra un tentativo e l\'altro';
+
+  @override
+  String get auAxRunQueued => 'in attesa';
+
+  @override
+  String get auAxRunTriggers =>
+      'email,messaggio in chat,file,un\'altra automazione,lavoro,avvio,nuovo tentativo';
+
+  @override
+  String auAxSayAfter(String name) {
+    return 'Dopo «$name»';
+  }
+
+  @override
+  String get auAxSayApprove => 'Prima ti chiede il sì.';
+
+  @override
+  String auAxSayBudget(String usd) {
+    return 'Spende al massimo \$$usd ogni volta.';
+  }
+
+  @override
+  String auAxSayCooldown(String n) {
+    return 'a distanza di almeno $n minuti';
+  }
+
+  @override
+  String auAxSayDates(String from, String to) {
+    return 'dal $from al $to';
+  }
+
+  @override
+  String auAxSayDays(String days) {
+    return 'di $days';
+  }
+
+  @override
+  String auAxSayDoes(String who, String what) {
+    return '$who fa: «$what».';
+  }
+
+  @override
+  String auAxSayEmail(String filter) {
+    return 'Quando arriva un\'email ($filter)';
+  }
+
+  @override
+  String auAxSayFiles(String path) {
+    return 'Quando cambiano i file in $path';
+  }
+
+  @override
+  String get auAxSayFilesAll => 'Quando cambiano i file del progetto';
+
+  @override
+  String auAxSayFrom(String from) {
+    return 'da $from';
+  }
+
+  @override
+  String auAxSayHours(String from, String to) {
+    return 'tra le $from e le $to';
+  }
+
+  @override
+  String auAxSayMax(String n) {
+    return 'al massimo $n volte al giorno';
+  }
+
+  @override
+  String auAxSayMessage(String where) {
+    return 'Quando ti scrivono su $where';
+  }
+
+  @override
+  String get auAxSayNever => 'Scegli quando parte.';
+
+  @override
+  String get auAxSayOnly => 'Solo';
+
+  @override
+  String get auAxSayQuiet => 'Non ti avvisa.';
+
+  @override
+  String auAxSayReminder(String text) {
+    return 'Ti arriva il messaggio: «$text».';
+  }
+
+  @override
+  String get auAxSayStartup => 'All\'avvio di RedGiant';
+
+  @override
+  String get auAxSayTask => 'Quando finisce un lavoro';
+
+  @override
+  String auAxSayTell(String where) {
+    return 'Ti avvisa su $where.';
+  }
+
+  @override
+  String auAxSayTellFailure(String where) {
+    return 'Ti avvisa su $where, solo se va storto qualcosa.';
+  }
+
+  @override
+  String auAxSayWith(String words) {
+    return 'con «$words»';
+  }
+
+  @override
+  String auAxSayWithout(String words) {
+    return 'mai con «$words»';
+  }
+
+  @override
+  String auAxSayWordsAll(String words) {
+    return 'con tutte «$words»';
+  }
+
+  @override
+  String auAxSayWordsAny(String words) {
+    return 'con una di «$words»';
+  }
+
+  @override
+  String get auAxSenders => 'Mittenti';
+
+  @override
+  String get auAxSendersPlaceholder => 'banca, anna@esempio.it, +39 333';
+
+  @override
+  String get auAxServerSays => 'Non va ancora:';
+
+  @override
+  String get auAxSession => 'Ogni volta';
+
+  @override
+  String get auAxSessionContinue => 'La stessa, che si ricorda';
+
+  @override
+  String get auAxSessionNew => 'Una conversazione nuova';
+
+  @override
+  String get auAxStart_after => 'Dopo un\'altra automazione';
+
+  @override
+  String get auAxStart_files => 'File che cambiano';
+
+  @override
+  String get auAxStart_message => 'Un messaggio in chat';
+
+  @override
+  String get auAxStart_startup => 'All\'avvio di RedGiant';
+
+  @override
+  String get auAxStart_task => 'Quando finisce un lavoro';
+
+  @override
+  String get auAxStart_time => 'A un orario';
+
+  @override
+  String get auAxStartupHelp => 'Parte ogni volta che RedGiant si accende.';
+
+  @override
+  String get auAxTask_abandoned => 'Abbandonato';
+
+  @override
+  String get auAxTask_not_testable => 'Finito, senza prova';
+
+  @override
+  String get auAxTask_verified => 'Finito e controllato';
+
+  @override
+  String get auAxTell => 'Dove ti avvisa';
+
+  @override
+  String get auAxTellAllHelp => 'Se non scegli niente: su tutte le chat che hai collegato.';
+
+  @override
+  String get auAxTellAlways => 'Ogni volta';
+
+  @override
+  String get auAxTellEmailFrom => 'Mandata da';
+
+  @override
+  String get auAxTellEmailTo => 'Email a';
+
+  @override
+  String get auAxTellEmailToHelp => 'Vuoto: alla casella stessa.';
+
+  @override
+  String get auAxTellFailure => 'Solo se va storto qualcosa';
+
+  @override
+  String get auAxTellHelp => 'Quando ha finito, dove arriva la risposta.';
+
+  @override
+  String get auAxTellNever => 'Mai';
+
+  @override
+  String get auAxTellReplyHelp =>
+      'Quando parte da un messaggio in chat, risponde anche in quella chat.';
+
+  @override
+  String get auAxTellSomeHelp => 'Solo dove hai scelto.';
+
+  @override
+  String get auAxTellWhere => 'Dove';
+
+  @override
+  String get auAxTimeout => 'Tempo massimo, in minuti';
+
+  @override
+  String get auAxTo => 'Alle';
+
+  @override
+  String get auAxToAllChats => 'tutte le tue chat';
+
+  @override
+  String get auAxToDay => 'Al giorno';
+
+  @override
+  String get auAxToEmail => 'Email';
+
+  @override
+  String get auAxToWeb => 'Un avviso qui';
+
+  @override
+  String get auAxWhen => 'Quando';
+
+  @override
+  String get auAxWhenHelp => 'Che cosa la fa partire. Puoi sceglierne più d\'una: parte a ognuna.';
+
+  @override
+  String auAxWhenMinutes(String n) {
+    return 'Ogni $n minuti';
+  }
+
+  @override
+  String get auAxWithout => 'Parole che la fermano';
+
+  @override
+  String get auAxWithoutPlaceholder => 'newsletter, pubblicità';
+
+  @override
+  String get auAxWords => 'Parole';
+
+  @override
+  String get auAxWordsHelp => 'Separate da virgole.';
+
+  @override
+  String get auAxWordsPlaceholder => 'urgente, fattura';
+
+  @override
+  String get auAxWorkHours => 'Orario d\'ufficio';
+
+  @override
+  String get auAxYamlBack => 'Torna alle scelte qui sopra';
+
+  @override
+  String get auCancel => 'Annulla';
+
+  @override
+  String get auCreate => 'Crea';
+
+  @override
+  String get auDay_0 => 'domenica';
+
+  @override
+  String get auDay_1 => 'lunedì';
+
+  @override
+  String get auDay_2 => 'martedì';
+
+  @override
+  String get auDay_3 => 'mercoledì';
+
+  @override
+  String get auDay_4 => 'giovedì';
+
+  @override
+  String get auDay_5 => 'venerdì';
+
+  @override
+  String get auDay_6 => 'sabato';
+
+  @override
+  String get auDelete => 'Elimina';
+
+  @override
+  String get auDeleteAutomationConfirm => 'Eliminare questa automazione e il suo storico?';
+
+  @override
+  String get auDeliveryDelivered => 'consegnata';
+
+  @override
+  String auDeliveryDeliveredTo(String to) {
+    return 'consegnata: $to';
+  }
+
+  @override
+  String auDeliveryFailed(String reason) {
+    return 'non consegnata: $reason';
+  }
+
+  @override
+  String get auDeliveryNoChat => 'non consegnata: nessuna chat collegata';
+
+  @override
+  String get auDisabled => 'Spenta';
+
+  @override
+  String get auDismiss => 'Chiudi';
+
+  @override
+  String get auEmailAny => 'qualunque';
+
+  @override
+  String get auEmailFrom => 'da';
+
+  @override
+  String get auEmailFromPlaceholder => 'Mittente (parte dell\'indirizzo, facoltativo)';
+
+  @override
+  String get auEmailNeedFirst =>
+      'Prima collega la casella email: finché non è collegata, questa automazione non parte.';
+
+  @override
+  String get auEmailSubject => 'L\'oggetto contiene';
+
+  @override
+  String get auEmailSubjectPlaceholder => 'L\'oggetto contiene (facoltativo)';
+
+  @override
+  String auEmailWatching(String user, String host) {
+    return 'Guarda $user su $host.';
+  }
+
+  @override
+  String get auEnabled => 'Attiva';
+
+  @override
+  String get auNewAutomation => 'Nuova automazione';
+
+  @override
+  String get auNewReminder => 'Nuovo promemoria';
+
+  @override
+  String get auNewSecret => 'Nuovo segreto';
+
+  @override
+  String get auNextRun => 'prossima';
+
+  @override
+  String get auNoAutomations =>
+      'Ancora nessuna automazione. Scrivi una ricetta: quando parte, quale agente lavora, cosa gli si chiede.';
+
+  @override
+  String get auNoRuns => 'Nessuna esecuzione.';
+
+  @override
+  String get auOpen => 'apri';
+
+  @override
+  String get auOpenSession => 'Apri la sessione';
+
+  @override
+  String get auProjects => 'Progetti';
+
+  @override
+  String get auRecipeBroken => 'La ricetta non si legge più: aprila per correggerla';
+
+  @override
+  String get auReminderDay => 'Giorno';
+
+  @override
+  String get auReminderPurpose =>
+      'RedGiant ti manda questo testo su Telegram all\'ora che scegli, una volta sola. Nessun agente, nessun costo.';
+
+  @override
+  String get auReminderSave => 'Salva il promemoria';
+
+  @override
+  String get auReminderWhat => 'Cosa ricordarti';
+
+  @override
+  String get auRepoEvent_issue_comment => 'Commenti';
+
+  @override
+  String get auRepoEvent_issues => 'Issue';
+
+  @override
+  String get auRepoEvent_pull_request => 'Pull request';
+
+  @override
+  String get auRepoEvent_push => 'Nuovi commit';
+
+  @override
+  String get auRepoEvent_release => 'Rilasci';
+
+  @override
+  String get auRunNow => 'Esegui ora';
+
+  @override
+  String get auRunStatus => 'in corso,fatta,fallita,scaduta,saltata';
+
+  @override
+  String get auRunTriggers => 'orario,webhook,a mano,recuperata';
+
+  @override
+  String get auRuns => 'Esecuzioni';
+
+  @override
+  String get auSave => 'Salva';
+
+  @override
+  String get auSettings => 'Impostazioni';
+
+  @override
+  String get auTplDesc_blank => 'Scegli tu quando, chi e cosa.';
+
+  @override
+  String get auTplDesc_morning =>
+      'Ogni giorno lavorativo alle 8: cosa è successo in ogni progetto.';
+
+  @override
+  String get auTplDesc_spending => 'Il primo del mese: quanto si è speso e dove.';
+
+  @override
+  String get auTplDesc_weekly => 'Il venerdì alle 17: la settimana in un messaggio.';
+
+  @override
+  String get auTplText_morning =>
+      'Dimmi in poche righe cosa è successo ieri in ogni progetto: lavori finiti, problemi ancora aperti, decisioni da prendere.';
+
+  @override
+  String get auTplText_spending =>
+      'Dimmi quanto si è speso il mese scorso, per progetto e per agente, e se qualcosa sembra fuori dal normale.';
+
+  @override
+  String get auTplText_weekly =>
+      'Riassumi questa settimana in ogni progetto: cosa è stato finito, cosa è in ritardo, cosa è previsto per la prossima.';
+
+  @override
+  String get auTplTitle_blank => 'Da zero';
+
+  @override
+  String get auTplTitle_morning => 'Il punto del mattino';
+
+  @override
+  String get auTplTitle_spending => 'Le spese del mese';
+
+  @override
+  String get auTplTitle_weekly => 'Le novità della settimana';
+
+  @override
+  String get auWebhookSecretOnce =>
+      'Segreto (si vede solo ora; va mandato nell\'header x-redgiant-secret):';
+
+  @override
+  String get auWebhookUrl => 'Webhook';
+
+  @override
+  String auWhenAt(String at) {
+    return 'Una volta, il $at';
+  }
+
+  @override
+  String get auWhenAtTime => 'alle';
+
+  @override
+  String auWhenCustom(String cron) {
+    return 'Con un orario tutto suo ($cron)';
+  }
+
+  @override
+  String auWhenDaily(String time) {
+    return 'Ogni giorno alle $time';
+  }
+
+  @override
+  String get auWhenDayOfMonth => 'il giorno';
+
+  @override
+  String auWhenEmail(String filter) {
+    return 'Quando arriva una email ($filter)';
+  }
+
+  @override
+  String get auWhenEmailHelp =>
+      'La casella si imposta una volta, qui o in Impostazioni › Automazioni › Casella email. L\'email arriva all\'agente come informazione, mai come istruzioni.';
+
+  @override
+  String get auWhenEveryHours => 'ogni (ore)';
+
+  @override
+  String auWhenHours(String n) {
+    return 'Ogni $n ore';
+  }
+
+  @override
+  String get auWhenKind_daily => 'Ogni giorno';
+
+  @override
+  String get auWhenKind_email => 'A una email';
+
+  @override
+  String get auWhenKind_hours => 'Ogni tot ore';
+
+  @override
+  String get auWhenKind_monthly => 'Una volta al mese';
+
+  @override
+  String get auWhenKind_repo => 'Sul repository';
+
+  @override
+  String get auWhenKind_webhook => 'A una chiamata web';
+
+  @override
+  String get auWhenKind_weekdays => 'Giorni lavorativi';
+
+  @override
+  String get auWhenKind_weekly => 'Alcuni giorni della settimana';
+
+  @override
+  String auWhenMonthly(String day, String time) {
+    return 'Ogni mese il giorno $day alle $time';
+  }
+
+  @override
+  String auWhenRepo(String events) {
+    return 'Quando succede qualcosa nel repository ($events)';
+  }
+
+  @override
+  String get auWhenRepoHelp =>
+      'RedGiant aggiunge il webhook al repository del progetto da solo: su Gitea subito, su GitHub quando l\'accesso da fuori casa è attivo.';
+
+  @override
+  String get auWhenWebhook => 'Quando arriva una chiamata web (webhook)';
+
+  @override
+  String get auWhenWebhookHelp =>
+      'Un altro programma (un sito, un modulo, GitHub…) chiama l\'indirizzo di RedGiant; indirizzo e segreto compaiono dopo il salvataggio.';
+
+  @override
+  String auWhenWeekdays(String time) {
+    return 'Dal lunedì al venerdì alle $time';
+  }
+
+  @override
+  String auWhenWeekly(String days, String time) {
+    return 'Ogni settimana il $days alle $time';
+  }
+
+  @override
+  String auWhoLead(String project) {
+    return 'Capo di $project';
+  }
+
+  @override
+  String get auOwnHubHint =>
+      'Quando le cose succedono da sole: orari, email, chat, file, promemoria';
+
+  @override
+  String get auOwnOpenChat => 'Apri la conversazione';
+
+  @override
+  String get auOwnTalkGod => 'Parla con God';
+
+  @override
+  String get auOwnMailboxesElsewhere =>
+      'Le caselle si aggiungono e si cambiano in Impostazioni › Canali e caselle.';
+
+  @override
+  String get auOwnNoMailboxes => 'Ancora nessuna casella collegata.';
+
+  @override
+  String get auOwnCopied => 'Copiato';
+
+  @override
+  String get auOwnCopy => 'Copia';
+
+  @override
+  String get auOwnYamlLabel => 'La ricetta in YAML';
+
+  @override
+  String get auOwnRoutineOpen => 'Apri la routine';
+
+  @override
+  String get auOwnNoticeOpen => 'Apri';
+
+  @override
+  String auOwnNoticeFailed(String name) {
+    return '$name: non riuscita';
+  }
+
+  @override
+  String get auOwnPickTitle => 'Scegli';
+
+  @override
+  String auOwnNeedOpenWhere(String where) {
+    return 'Si fa in Impostazioni › $where';
+  }
+
+  @override
+  String get auOwnWhereChats => 'Canali e caselle';
+
+  @override
+  String get auOwnWhereExtensions => 'Estensioni';
+
+  @override
+  String get auOwnWhereKeychain => 'Portachiavi';
+
+  @override
+  String auOwnLoadFailed(String why) {
+    return 'Non riesco a leggere: $why';
+  }
+
+  @override
+  String get auOwnReadOnly =>
+      'Le automazioni le cambia solo la persona (non da un dispositivo di progetto).';
 }

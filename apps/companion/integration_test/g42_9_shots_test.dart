@@ -71,9 +71,7 @@ void main() {
       await shot(t, '02_elenco_sotto_$tag');
 
       // An automation's window with its runs.
-      unawaited(
-        openAutomation(ctx, digest, onChanged: () {}),
-      );
+      unawaited(openAutomation(ctx, digest, onChanged: () {}));
       await frames(t, 2500);
       await shot(t, '03_automazione_$tag');
       await closeTop();
@@ -143,7 +141,13 @@ void main() {
         'sessionId': null,
         'text': 'Ieri: due lavori finiti in Demo, un problema aperto sul login, nessuna decisione.',
       });
-      unawaited(nav.push(MaterialPageRoute<void>(builder: (_) => const Scaffold(body: SafeArea(child: InboxScreen())))));
+      unawaited(
+        nav.push(
+          MaterialPageRoute<void>(
+            builder: (_) => const Scaffold(body: SafeArea(child: InboxScreen())),
+          ),
+        ),
+      );
       await frames(t, 1500);
       await shot(t, '12_per_te_$tag');
       await closeTop();

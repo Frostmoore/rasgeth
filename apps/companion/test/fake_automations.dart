@@ -77,22 +77,18 @@ class FakeAutomations {
     if (on['files'] is Map<String, dynamic>) {
       on['files'] = {'path': '.', ...on['files'] as Map<String, dynamic>};
     }
-    final starts = [
-      'cron',
-      'at',
-      'email',
-      'message',
-      'files',
-      'after',
-      'task',
-    ].any((k) => on[k] != null) || on['webhook'] == true || on['startup'] == true;
+    final starts =
+        ['cron', 'at', 'email', 'message', 'files', 'after', 'task'].any((k) => on[k] != null) ||
+        on['webhook'] == true ||
+        on['startup'] == true;
     if (!starts) {
       throw RecipeError(
         'on: set a cron expression, a date (at), a webhook, an email, a chat message, files, '
         'another automation, a task or startup',
       );
     }
-    if (on['events'] != null && on['webhook'] != true) throw RecipeError('on: events need webhook: true');
+    if (on['events'] != null && on['webhook'] != true)
+      throw RecipeError('on: events need webhook: true');
     if (on['cron'] != null && on['at'] != null) throw RecipeError('on: cron or at, not both');
     if (on['cron'] is String && _cron(on['cron'] as String) == null) {
       throw RecipeError('on.cron: Invalid cron expression');
@@ -109,7 +105,7 @@ class FakeAutomations {
     r['on'] = on;
     r['description'] ??= '';
     r['agent'] ??= 'god';
-    r['project'] ??= null;
+    r.putIfAbsent('project', () => null);
     r['session'] ??= 'new';
     r['timeoutMinutes'] ??= 30;
     r['missed'] ??= 'skip';
@@ -135,9 +131,13 @@ class FakeAutomations {
     final c = _cron(cron);
     if (c == null) return const [];
     final out = <DateTime>[];
-    var t = DateTime.utc(now.year, now.month, now.day, now.hour, now.minute).add(
-      const Duration(minutes: 1),
-    );
+    var t = DateTime.utc(
+      now.year,
+      now.month,
+      now.day,
+      now.hour,
+      now.minute,
+    ).add(const Duration(minutes: 1));
     for (var i = 0; i < 60 * 24 * 400 && out.length < count; i++) {
       if (c[0].contains(t.minute) &&
           c[1].contains(t.hour) &&
@@ -196,7 +196,8 @@ class FakeAutomations {
   /// An automation for a test, from its YAML (read as the server would).
   Map<String, dynamic> add(String yaml, {bool enabled = true, String? id}) {
     final recipe = read(yaml);
-    final a = _row(id ?? 'au${++_n}', yaml, recipe, enabled);
+    final n = ++_n;
+    final a = _row(id ?? 'au$n', yaml, recipe, enabled);
     list.add(a);
     return a;
   }
@@ -222,11 +223,21 @@ class FakeAutomations {
     final i = list.indexWhere((a) => a['id'] == id);
     if (i < 0) return;
     final a = list[i];
-    list[i] = _row(id, a['yaml'] as String, a['recipe'] as Map<String, dynamic>, a['enabled'] == true);
+    list[i] = _row(
+      id,
+      a['yaml'] as String,
+      a['recipe'] as Map<String, dynamic>,
+      a['enabled'] == true,
+    );
   }
 
   /// God proposes a recipe in a magic automation (as `propose_automation` does).
-  void propose(String id, String yaml, {String summary = '', List<Map<String, dynamic>> needs = const []}) {
+  void propose(
+    String id,
+    String yaml, {
+    String summary = '',
+    List<Map<String, dynamic>> needs = const [],
+  }) {
     final m = magic.firstWhere((x) => x['id'] == id);
     m['status'] = 'ready';
     m['proposal'] = {
@@ -341,7 +352,12 @@ class FakeAutomations {
           await json(200, {'ok': true});
         case ('POST', 'enabled'):
           final on = (await _body(r))['enabled'] == true;
-          list[i] = _row(id, list[i]['yaml'] as String, list[i]['recipe'] as Map<String, dynamic>, on);
+          list[i] = _row(
+            id,
+            list[i]['yaml'] as String,
+            list[i]['recipe'] as Map<String, dynamic>,
+            on,
+          );
           _changed(id);
           await json(200, list[i]);
         case ('POST', 'run'):

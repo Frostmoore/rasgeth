@@ -965,10 +965,7 @@ class _AutomationEditorState extends State<AutomationEditor> {
                 _SmallHead(icon: RgIcons.globe, text: l.auAutoYaml),
                 AutoHelp(l.auAutoYamlHint),
                 const SizedBox(height: 6),
-                YamlField(
-                  controller: _yamlCtl,
-                  onChanged: (v) => setState(() => _yaml = v),
-                ),
+                YamlField(controller: _yamlCtl, onChanged: (v) => setState(() => _yaml = v)),
                 if (_yaml != null)
                   Align(
                     alignment: Alignment.centerLeft,
@@ -983,8 +980,9 @@ class _AutomationEditorState extends State<AutomationEditor> {
           ),
         if (_error != null) AutoNotice(_error!, error: true, key: const Key('au-error')),
         const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+        Wrap(
+          alignment: WrapAlignment.end,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             TextButton(
               key: const Key('au-cancel'),
@@ -1054,7 +1052,9 @@ class _TimeDetail extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         AutoChips<String>(
-          options: [for (final k in [...schedules, 'custom']) (k, label(k))],
+          options: [
+            for (final k in [...schedules, 'custom']) (k, label(k)),
+          ],
           value: [w.kind],
           keyOf: (k) => 'au-when-$k',
           onChanged: (v) => onChanged(scheduleOf(v.first, w)),
@@ -1253,7 +1253,10 @@ class _SmallHead extends StatelessWidget {
         children: [
           RgIcon(icon, size: 16, color: c.accent),
           const SizedBox(width: 8),
-          Text(text, style: TextStyle(fontWeight: FontWeight.w800, color: c.text)),
+          Text(
+            text,
+            style: TextStyle(fontWeight: FontWeight.w800, color: c.text),
+          ),
         ],
       ),
     );
@@ -1316,7 +1319,12 @@ class YamlController extends TextEditingController {
     for (final (i, raw) in lines.indexed) {
       final m = line.firstMatch(raw);
       if (raw.trimLeft().startsWith('#')) {
-        spans.add(TextSpan(text: raw, style: base.copyWith(color: c.dim)));
+        spans.add(
+          TextSpan(
+            text: raw,
+            style: base.copyWith(color: c.dim),
+          ),
+        );
       } else if (m != null) {
         spans
           ..add(TextSpan(text: m.group(1)))
@@ -1326,7 +1334,12 @@ class YamlController extends TextEditingController {
               style: base.copyWith(color: c.accent, fontWeight: FontWeight.w700),
             ),
           )
-          ..add(TextSpan(text: m.group(3), style: base.copyWith(color: c.dim)))
+          ..add(
+            TextSpan(
+              text: m.group(3),
+              style: base.copyWith(color: c.dim),
+            ),
+          )
           ..add(_value(m.group(4)!, base, c));
       } else {
         spans.add(TextSpan(text: raw));
@@ -1349,7 +1362,10 @@ class YamlController extends TextEditingController {
     } else {
       col = c.text;
     }
-    return TextSpan(text: v, style: base.copyWith(color: col));
+    return TextSpan(
+      text: v,
+      style: base.copyWith(color: col),
+    );
   }
 }
 

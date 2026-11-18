@@ -40,9 +40,7 @@ extension AutomationsApi on RedGiantClient {
 
   /// `POST /api/automations/:id/enabled`.
   Future<Automation> enableAutomation(String id, bool enabled) async => Automation.fromJson(
-    objectOf(
-      await callJson('POST', '/api/automations/${_id(id)}/enabled', {'enabled': enabled}),
-    ),
+    objectOf(await callJson('POST', '/api/automations/${_id(id)}/enabled', {'enabled': enabled})),
   );
 
   /// `POST /api/automations/:id/run`: started now (or skipped: one is running).
@@ -103,13 +101,13 @@ extension AutomationsApi on RedGiantClient {
       MagicAutomation.fromJson(objectOf(await getJson('/api/magic/${_id(id)}')));
 
   /// `POST /api/magic`: a conversation with God starts.
-  Future<MagicAutomation> startMagic(String request) async =>
-      MagicAutomation.fromJson(objectOf(await callJson('POST', '/api/magic', {'request': request})));
+  Future<MagicAutomation> startMagic(String request) async => MagicAutomation.fromJson(
+    objectOf(await callJson('POST', '/api/magic', {'request': request})),
+  );
 
   /// `POST /api/magic/:id/approve`, with the YAML changed in the editor first or as God wrote it.
-  Future<AutomationSaved> approveMagic(String id, [String? yaml]) async => _saved(
-    await callJson('POST', '/api/magic/${_id(id)}/approve', {'yaml': ?yaml}),
-  );
+  Future<AutomationSaved> approveMagic(String id, [String? yaml]) async =>
+      _saved(await callJson('POST', '/api/magic/${_id(id)}/approve', {'yaml': ?yaml}));
 
   /// `POST /api/magic/:id/reject`, with what is wrong.
   Future<void> rejectMagic(String id, [String? reason]) =>

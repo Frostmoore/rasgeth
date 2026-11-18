@@ -16,7 +16,6 @@ import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/screens/agent_settings_screen.dart';
 import 'package:rgcompanion/settings/agents/add_agent_under.dart';
 import 'package:rgcompanion/settings/agents/agent_tree.dart';
-import 'package:rgcompanion/settings/agents/assistant_parts.dart';
 
 import 'fake_server.dart';
 
@@ -108,7 +107,6 @@ void main() {
       expect(addableUnder(_a('x', 'agent')), isEmpty);
       expect(canAddUnder(_a('o', 'orchestrator', status: 'stopped')), isFalse);
     });
-
   });
 
   group('in the app', () {

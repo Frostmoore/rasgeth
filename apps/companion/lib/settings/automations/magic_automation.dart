@@ -135,8 +135,9 @@ class _MagicStartState extends State<_MagicStart> {
           ),
         if (_error != null) AutoNotice(_error!, error: true, key: const Key('au-error')),
         const SizedBox(height: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+        Wrap(
+          alignment: WrapAlignment.end,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             TextButton(onPressed: () => widget.onStarted(), child: Text(l.auCancel)),
             const SizedBox(width: 8),
@@ -307,10 +308,7 @@ class _Side extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(top: 10),
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: c.panel2,
-              borderRadius: BorderRadius.circular(14),
-            ),
+            decoration: BoxDecoration(color: c.panel2, borderRadius: BorderRadius.circular(14)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -488,7 +486,8 @@ class _ProposalState extends State<_Proposal> {
     final said = sentence(l, fromRecipe(p.recipe, who, app.projects), who);
     final missing = p.needs.where((n) => n.ready == false).toList();
     final others = p.needs.where((n) => n.ready != false).toList();
-    final title = p.recipe['description'] is String && (p.recipe['description'] as String).isNotEmpty
+    final title =
+        p.recipe['description'] is String && (p.recipe['description'] as String).isNotEmpty
         ? p.recipe['description'] as String
         : (p.recipe['name'] as String? ?? widget.magic.title);
     return Container(
@@ -507,9 +506,11 @@ class _ProposalState extends State<_Proposal> {
             children: [
               const GodOrb(size: 24),
               const SizedBox(width: 8),
-              Text(
-                l.auAxMagicProposal,
-                style: TextStyle(fontWeight: FontWeight.w800, color: c.text),
+              Expanded(
+                child: Text(
+                  l.auAxMagicProposal,
+                  style: TextStyle(fontWeight: FontWeight.w800, color: c.text),
+                ),
               ),
             ],
           ),
@@ -656,7 +657,10 @@ class _Need extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: TextStyle(fontWeight: FontWeight.w700, color: c.text)),
+                Text(
+                  title,
+                  style: TextStyle(fontWeight: FontWeight.w700, color: c.text),
+                ),
                 if (n.why.isNotEmpty)
                   Text(n.why, style: TextStyle(color: c.dim, fontSize: 12.5, height: 1.35)),
                 if (n.ready == false)

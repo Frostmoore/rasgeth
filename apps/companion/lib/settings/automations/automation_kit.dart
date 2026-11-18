@@ -16,10 +16,12 @@ import '../../ui/dialogs.dart';
 import '../../ui/icons.dart';
 
 /// God's gold, as the page's `--god` and `--god-line`.
-Color godColor(BuildContext context) =>
-    Theme.of(context).brightness == Brightness.dark ? const Color(0xFFF0C24E) : const Color(0xFFB8860B);
-Color godLine(BuildContext context) =>
-    Theme.of(context).brightness == Brightness.dark ? const Color(0xFF6B5418) : const Color(0xFFE7CF86);
+Color godColor(BuildContext context) => Theme.of(context).brightness == Brightness.dark
+    ? const Color(0xFFF0C24E)
+    : const Color(0xFFB8860B);
+Color godLine(BuildContext context) => Theme.of(context).brightness == Brightness.dark
+    ? const Color(0xFF6B5418)
+    : const Color(0xFFE7CF86);
 
 bool isWide(BuildContext context) => MediaQuery.sizeOf(context).width >= 760;
 
@@ -52,8 +54,7 @@ Future<T?> openAutoWindow<T>(
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: c.text),
               ),
-              if (sub != null)
-                Text(sub, style: TextStyle(fontSize: 13, color: c.dim)),
+              if (sub != null) Text(sub, style: TextStyle(fontSize: 13, color: c.dim)),
             ],
           ),
         ),
@@ -88,10 +89,7 @@ Future<T?> openAutoWindow<T>(
         backgroundColor: c.bg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: wide ? 880 : 540,
-            maxHeight: size.height * .92,
-          ),
+          constraints: BoxConstraints(maxWidth: wide ? 880 : 540, maxHeight: size.height * .92),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -170,7 +168,9 @@ class GodOrb extends StatelessWidget {
         ),
         boxShadow: [BoxShadow(color: god.withValues(alpha: .18), spreadRadius: 4)],
       ),
-      child: Center(child: RgIcon(RgIcons.spark, size: size * .5, color: Colors.white)),
+      child: Center(
+        child: RgIcon(RgIcons.spark, size: size * .5, color: Colors.white),
+      ),
     );
   }
 }
@@ -444,7 +444,10 @@ class SwitchLine extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              Opacity(opacity: onChanged == null ? .5 : 1, child: RgSwitch(on: on)),
+              Opacity(
+                opacity: onChanged == null ? .5 : 1,
+                child: RgSwitch(on: on),
+              ),
             ],
           ),
         ),

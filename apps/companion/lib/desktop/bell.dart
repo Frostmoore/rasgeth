@@ -597,9 +597,7 @@ class _NoticeLine extends StatelessWidget {
                 color: (bad ? c.err : c.accent).withValues(alpha: .12),
                 shape: BoxShape.circle,
               ),
-              child: Center(
-                child: RgIcon(RgIcons.clock, size: 15, color: bad ? c.err : c.accent),
-              ),
+              child: Center(child: RgIcon(RgIcons.clock, size: 15, color: bad ? c.err : c.accent)),
             ),
             const SizedBox(width: 9),
             Expanded(

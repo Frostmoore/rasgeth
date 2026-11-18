@@ -13514,6 +13514,2028 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Guardian, who approves, spending, skills, retention'**
   String get g4HubSafety;
+
+  /// No description provided for @auAsstNewRoutine.
+  ///
+  /// In en, this message translates to:
+  /// **'New routine'**
+  String get auAsstNewRoutine;
+
+  /// No description provided for @auAutoOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Switched off: it does not run until you switch it on.'**
+  String get auAutoOff;
+
+  /// No description provided for @auAutoOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Switched on'**
+  String get auAutoOn;
+
+  /// No description provided for @auAutoStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start from'**
+  String get auAutoStart;
+
+  /// No description provided for @auAutoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What it is called'**
+  String get auAutoTitle;
+
+  /// No description provided for @auAutoTitleHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A short name, for you.'**
+  String get auAutoTitleHelp;
+
+  /// No description provided for @auAutoWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'What to ask'**
+  String get auAutoWhat;
+
+  /// No description provided for @auAutoWhatHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'As you would write it in a chat. The answer reaches you on Telegram.'**
+  String get auAutoWhatHelp;
+
+  /// No description provided for @auAutoWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who does it'**
+  String get auAutoWho;
+
+  /// No description provided for @auAutoWhoHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'God sees every project; a project\'s lead and agents only theirs.'**
+  String get auAutoWhoHelp;
+
+  /// No description provided for @auAutoYaml.
+  ///
+  /// In en, this message translates to:
+  /// **'The recipe (for experts)'**
+  String get auAutoYaml;
+
+  /// No description provided for @auAutoYamlHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What the form writes. Changed here, it is saved as it is.'**
+  String get auAutoYamlHint;
+
+  /// No description provided for @auAutomationNotices.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation messages'**
+  String get auAutomationNotices;
+
+  /// No description provided for @auAutomations.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations'**
+  String get auAutomations;
+
+  /// No description provided for @auAwChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get auAwChange;
+
+  /// No description provided for @auAwLastRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Last run'**
+  String get auAwLastRun;
+
+  /// No description provided for @auAwLead.
+  ///
+  /// In en, this message translates to:
+  /// **'An automation asks an agent to do something at a time or when something happens; a reminder sends you a message on a day. The lit squares are switched on.'**
+  String get auAwLead;
+
+  /// No description provided for @auAwListLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Open one to switch it on or off, run it now, change it or read how it went.'**
+  String get auAwListLead;
+
+  /// No description provided for @auAwListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your automations'**
+  String get auAwListTitle;
+
+  /// No description provided for @auAwNewText.
+  ///
+  /// In en, this message translates to:
+  /// **'An agent does something for you: every morning, every week, on an email or a push.'**
+  String get auAwNewText;
+
+  /// No description provided for @auAwQ.
+  ///
+  /// In en, this message translates to:
+  /// **'What should RedGiant do on its own?'**
+  String get auAwQ;
+
+  /// No description provided for @auAwReminderText.
+  ///
+  /// In en, this message translates to:
+  /// **'A message for you on the day and at the time you choose, as you wrote it.'**
+  String get auAwReminderText;
+
+  /// No description provided for @auAwSourcesLead.
+  ///
+  /// In en, this message translates to:
+  /// **'What automations can listen to besides the clock.'**
+  String get auAwSourcesLead;
+
+  /// No description provided for @auAwSourcesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connections'**
+  String get auAwSourcesTitle;
+
+  /// No description provided for @auAwStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Started: its run appears below in a moment.'**
+  String get auAwStarted;
+
+  /// No description provided for @auAxAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get auAxAdvanced;
+
+  /// No description provided for @auAxAfterWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Which automation'**
+  String get auAxAfterWhich;
+
+  /// No description provided for @auAxAfter_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'When it failed'**
+  String get auAxAfter_failed;
+
+  /// No description provided for @auAxAfter_ok.
+  ///
+  /// In en, this message translates to:
+  /// **'When it went well'**
+  String get auAxAfter_ok;
+
+  /// No description provided for @auAxAfter_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'When it took too long'**
+  String get auAxAfter_timeout;
+
+  /// No description provided for @auAxAgentOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'The agent\'s own'**
+  String get auAxAgentOwn;
+
+  /// No description provided for @auAxAnyChat.
+  ///
+  /// In en, this message translates to:
+  /// **'any chat'**
+  String get auAxAnyChat;
+
+  /// No description provided for @auAxAnyProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Any project'**
+  String get auAxAnyProject;
+
+  /// No description provided for @auAxApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me before acting'**
+  String get auAxApprove;
+
+  /// No description provided for @auAxApproveHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'You get a question here and on your chats; without your yes it does not start.'**
+  String get auAxApproveHelp;
+
+  /// No description provided for @auAxBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'A spending limit each time'**
+  String get auAxBudget;
+
+  /// No description provided for @auAxBudgetHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Past it, the agent stops.'**
+  String get auAxBudgetHelp;
+
+  /// No description provided for @auAxBudgetUsd.
+  ///
+  /// In en, this message translates to:
+  /// **'Dollars at most'**
+  String get auAxBudgetUsd;
+
+  /// No description provided for @auAxCat_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get auAxCat_other;
+
+  /// No description provided for @auAxCat_personal.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal'**
+  String get auAxCat_personal;
+
+  /// No description provided for @auAxCat_social.
+  ///
+  /// In en, this message translates to:
+  /// **'Social'**
+  String get auAxCat_social;
+
+  /// No description provided for @auAxCat_work.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get auAxCat_work;
+
+  /// No description provided for @auAxCondCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'A pause between one time and the next'**
+  String get auAxCondCooldown;
+
+  /// No description provided for @auAxCondDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Only in a period'**
+  String get auAxCondDates;
+
+  /// No description provided for @auAxCondDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Only on certain days'**
+  String get auAxCondDays;
+
+  /// No description provided for @auAxCondFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Only from certain senders'**
+  String get auAxCondFrom;
+
+  /// No description provided for @auAxCondFromHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For emails and chat messages.'**
+  String get auAxCondFromHelp;
+
+  /// No description provided for @auAxCondHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Only at certain hours'**
+  String get auAxCondHours;
+
+  /// No description provided for @auAxCondMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Not too many times a day'**
+  String get auAxCondMax;
+
+  /// No description provided for @auAxCondWithout.
+  ///
+  /// In en, this message translates to:
+  /// **'Never with certain words'**
+  String get auAxCondWithout;
+
+  /// No description provided for @auAxCondWords.
+  ///
+  /// In en, this message translates to:
+  /// **'Only with certain words'**
+  String get auAxCondWords;
+
+  /// No description provided for @auAxCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes of pause'**
+  String get auAxCooldown;
+
+  /// No description provided for @auAxCron.
+  ///
+  /// In en, this message translates to:
+  /// **'Cron expression'**
+  String get auAxCron;
+
+  /// No description provided for @auAxCronHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Minute, hour, day of the month, month, day of the week: 0 9 * * 1-5 is 9:00 on working days.'**
+  String get auAxCronHelp;
+
+  /// No description provided for @auAxDoes.
+  ///
+  /// In en, this message translates to:
+  /// **'What it does'**
+  String get auAxDoes;
+
+  /// No description provided for @auAxDoesAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'An agent works'**
+  String get auAxDoesAgent;
+
+  /// No description provided for @auAxDoesHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'An agent does some work, or a plain message reaches you as written.'**
+  String get auAxDoesHelp;
+
+  /// No description provided for @auAxDoesReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Just a message'**
+  String get auAxDoesReminder;
+
+  /// No description provided for @auAxEffort.
+  ///
+  /// In en, this message translates to:
+  /// **'Effort'**
+  String get auAxEffort;
+
+  /// No description provided for @auAxEmailAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get auAxEmailAll;
+
+  /// No description provided for @auAxEmailByBox.
+  ///
+  /// In en, this message translates to:
+  /// **'Some mailboxes'**
+  String get auAxEmailByBox;
+
+  /// No description provided for @auAxEmailByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'A category'**
+  String get auAxEmailByCategory;
+
+  /// No description provided for @auAxEmailText.
+  ///
+  /// In en, this message translates to:
+  /// **'The text contains'**
+  String get auAxEmailText;
+
+  /// No description provided for @auAxEmailTextPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'A word in the email (optional)'**
+  String get auAxEmailTextPlaceholder;
+
+  /// No description provided for @auAxEmailWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Which mailboxes'**
+  String get auAxEmailWhich;
+
+  /// No description provided for @auAxEveryMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Every how many minutes'**
+  String get auAxEveryMinutes;
+
+  /// No description provided for @auAxFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Then start'**
+  String get auAxFallback;
+
+  /// No description provided for @auAxFilesPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get auAxFilesPath;
+
+  /// No description provided for @auAxFilesPathHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Inside the project; a dot is the whole project.'**
+  String get auAxFilesPathHelp;
+
+  /// No description provided for @auAxFilesPattern.
+  ///
+  /// In en, this message translates to:
+  /// **'Only these files'**
+  String get auAxFilesPattern;
+
+  /// No description provided for @auAxFilesPatternHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For example *.pdf; empty: every file.'**
+  String get auAxFilesPatternHelp;
+
+  /// No description provided for @auAxFilesProjectHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a project first: the folder is inside one.'**
+  String get auAxFilesProjectHelp;
+
+  /// No description provided for @auAxFiles_added.
+  ///
+  /// In en, this message translates to:
+  /// **'New files'**
+  String get auAxFiles_added;
+
+  /// No description provided for @auAxFiles_changed.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed files'**
+  String get auAxFiles_changed;
+
+  /// No description provided for @auAxFiles_removed.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted files'**
+  String get auAxFiles_removed;
+
+  /// No description provided for @auAxFirstBox.
+  ///
+  /// In en, this message translates to:
+  /// **'The first mailbox'**
+  String get auAxFirstBox;
+
+  /// No description provided for @auAxFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get auAxFrom;
+
+  /// No description provided for @auAxFromDay.
+  ///
+  /// In en, this message translates to:
+  /// **'From the day'**
+  String get auAxFromDay;
+
+  /// No description provided for @auAxIfFails.
+  ///
+  /// In en, this message translates to:
+  /// **'If it fails'**
+  String get auAxIfFails;
+
+  /// No description provided for @auAxKind_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Written by hand (cron)'**
+  String get auAxKind_custom;
+
+  /// No description provided for @auAxKind_minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Every few minutes'**
+  String get auAxKind_minutes;
+
+  /// No description provided for @auAxKind_once.
+  ///
+  /// In en, this message translates to:
+  /// **'Once, on a day'**
+  String get auAxKind_once;
+
+  /// No description provided for @auAxMagic.
+  ///
+  /// In en, this message translates to:
+  /// **'Magic automation'**
+  String get auAxMagic;
+
+  /// No description provided for @auAxMagicAllSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything it needs is there.'**
+  String get auAxMagicAllSet;
+
+  /// No description provided for @auAxMagicApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve and create'**
+  String get auAxMagicApprove;
+
+  /// No description provided for @auAxMagicAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'What should happen?'**
+  String get auAxMagicAsk;
+
+  /// No description provided for @auAxMagicBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'God is building it with you: answer its questions in the conversation.'**
+  String get auAxMagicBuilding;
+
+  /// No description provided for @auAxMagicDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Put it away'**
+  String get auAxMagicDismiss;
+
+  /// No description provided for @auAxMagicDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved: it is among your automations now.'**
+  String get auAxMagicDone;
+
+  /// No description provided for @auAxMagicEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Change it first'**
+  String get auAxMagicEdit;
+
+  /// No description provided for @auAxMagicEx1.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day at 3 check my Revolut account and tell me on WhatsApp if I received or paid money'**
+  String get auAxMagicEx1;
+
+  /// No description provided for @auAxMagicEx2.
+  ///
+  /// In en, this message translates to:
+  /// **'When an invoice arrives in my work mailbox, save it in the project and tell me the amount'**
+  String get auAxMagicEx2;
+
+  /// No description provided for @auAxMagicEx3.
+  ///
+  /// In en, this message translates to:
+  /// **'When I write «shopping:» on Telegram, add it to the shopping list and send me the list on Saturday'**
+  String get auAxMagicEx3;
+
+  /// No description provided for @auAxMagicExamples.
+  ///
+  /// In en, this message translates to:
+  /// **'Or start from an example'**
+  String get auAxMagicExamples;
+
+  /// No description provided for @auAxMagicGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask God'**
+  String get auAxMagicGo;
+
+  /// No description provided for @auAxMagicLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Write what should happen, as you would say it to a person. God answers in a conversation of its own and builds the automation with you.'**
+  String get auAxMagicLead;
+
+  /// No description provided for @auAxMagicListLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Built with God: open one to go on with the conversation.'**
+  String get auAxMagicListLead;
+
+  /// No description provided for @auAxMagicListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Magic automations'**
+  String get auAxMagicListTitle;
+
+  /// No description provided for @auAxMagicMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Before you can approve, set up what is missing:'**
+  String get auAxMagicMissing;
+
+  /// No description provided for @auAxMagicNeeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Still needed'**
+  String get auAxMagicNeeds;
+
+  /// No description provided for @auAxMagicPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day at 3 check my bank account and tell me on WhatsApp what came in and what went out'**
+  String get auAxMagicPlaceholder;
+
+  /// No description provided for @auAxMagicPromise1.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing starts without your yes.'**
+  String get auAxMagicPromise1;
+
+  /// No description provided for @auAxMagicPromise2.
+  ///
+  /// In en, this message translates to:
+  /// **'New tools and skills are tried apart and wait for you.'**
+  String get auAxMagicPromise2;
+
+  /// No description provided for @auAxMagicPromise3.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys and passwords never go in the chat: God tells you where to put them.'**
+  String get auAxMagicPromise3;
+
+  /// No description provided for @auAxMagicProposal.
+  ///
+  /// In en, this message translates to:
+  /// **'God\'s proposal'**
+  String get auAxMagicProposal;
+
+  /// No description provided for @auAxMagicReadyBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'To approve'**
+  String get auAxMagicReadyBadge;
+
+  /// No description provided for @auAxMagicReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Not like this'**
+  String get auAxMagicReject;
+
+  /// No description provided for @auAxMagicSendNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to God'**
+  String get auAxMagicSendNo;
+
+  /// No description provided for @auAxMagicStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Calling God…'**
+  String get auAxMagicStarting;
+
+  /// No description provided for @auAxMagicState_building.
+  ///
+  /// In en, this message translates to:
+  /// **'Being built'**
+  String get auAxMagicState_building;
+
+  /// No description provided for @auAxMagicState_dismissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Put away'**
+  String get auAxMagicState_dismissed;
+
+  /// No description provided for @auAxMagicState_done.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved and created'**
+  String get auAxMagicState_done;
+
+  /// No description provided for @auAxMagicState_ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready: God waits for your yes'**
+  String get auAxMagicState_ready;
+
+  /// No description provided for @auAxMagicStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'You say what you want'**
+  String get auAxMagicStep1;
+
+  /// No description provided for @auAxMagicStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'God proposes it'**
+  String get auAxMagicStep2;
+
+  /// No description provided for @auAxMagicStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'You approve it'**
+  String get auAxMagicStep3;
+
+  /// No description provided for @auAxMagicTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell God what you want, in your words: it asks what it needs, builds what is missing and shows it to you before anything starts.'**
+  String get auAxMagicTile;
+
+  /// No description provided for @auAxMagicWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'What is wrong? God reads it and tries again'**
+  String get auAxMagicWhy;
+
+  /// No description provided for @auAxMailboxesWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} mailboxes connected: {names}.'**
+  String auAxMailboxesWatching(String n, String names);
+
+  /// No description provided for @auAxMatchAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All of them'**
+  String get auAxMatchAll;
+
+  /// No description provided for @auAxMatchAny.
+  ///
+  /// In en, this message translates to:
+  /// **'At least one'**
+  String get auAxMatchAny;
+
+  /// No description provided for @auAxMaxPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'At most, times a day'**
+  String get auAxMaxPerDay;
+
+  /// No description provided for @auAxMessageChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Only in this chat'**
+  String get auAxMessageChat;
+
+  /// No description provided for @auAxMessageChatHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The chat\'s number, for a group; empty: any chat.'**
+  String get auAxMessageChatHelp;
+
+  /// No description provided for @auAxMessageFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From whom'**
+  String get auAxMessageFrom;
+
+  /// No description provided for @auAxMessageFromHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Part of the name or the number; empty: anyone linked.'**
+  String get auAxMessageFromHelp;
+
+  /// No description provided for @auAxMessageHandle.
+  ///
+  /// In en, this message translates to:
+  /// **'The message is for the automation only'**
+  String get auAxMessageHandle;
+
+  /// No description provided for @auAxMessageHandleHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Demi-God does not answer it: the automation does.'**
+  String get auAxMessageHandleHelp;
+
+  /// No description provided for @auAxMessageWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'On which chats (none chosen: all of them)'**
+  String get auAxMessageWhere;
+
+  /// No description provided for @auAxMessageWords.
+  ///
+  /// In en, this message translates to:
+  /// **'With which words'**
+  String get auAxMessageWords;
+
+  /// No description provided for @auAxMessageWordsPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'shopping, /expense'**
+  String get auAxMessageWordsPlaceholder;
+
+  /// No description provided for @auAxMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'If RedGiant was off at its time'**
+  String get auAxMissed;
+
+  /// No description provided for @auAxMissedRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Do it as soon as it is on'**
+  String get auAxMissedRun;
+
+  /// No description provided for @auAxMissedSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip it'**
+  String get auAxMissedSkip;
+
+  /// No description provided for @auAxModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get auAxModel;
+
+  /// No description provided for @auAxModelHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty: the agent\'s own.'**
+  String get auAxModelHelp;
+
+  /// No description provided for @auAxNeedMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing'**
+  String get auAxNeedMissing;
+
+  /// No description provided for @auAxNeedOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Set it up'**
+  String get auAxNeedOpen;
+
+  /// No description provided for @auAxNeedReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get auAxNeedReady;
+
+  /// No description provided for @auAxNeedVault.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to the keychain'**
+  String get auAxNeedVault;
+
+  /// No description provided for @auAxNeed_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'The chat {what}'**
+  String auAxNeed_chat(String what);
+
+  /// No description provided for @auAxNeed_credential.
+  ///
+  /// In en, this message translates to:
+  /// **'The key for {what}'**
+  String auAxNeed_credential(String what);
+
+  /// No description provided for @auAxNeed_email.
+  ///
+  /// In en, this message translates to:
+  /// **'A mailbox'**
+  String get auAxNeed_email;
+
+  /// No description provided for @auAxNeed_extension.
+  ///
+  /// In en, this message translates to:
+  /// **'The extension {what}'**
+  String auAxNeed_extension(String what);
+
+  /// No description provided for @auAxNeed_other.
+  ///
+  /// In en, this message translates to:
+  /// **'{what}'**
+  String auAxNeed_other(String what);
+
+  /// No description provided for @auAxNextNone.
+  ///
+  /// In en, this message translates to:
+  /// **'With these conditions it never starts at its times: check the hours and the days.'**
+  String get auAxNextNone;
+
+  /// No description provided for @auAxNextTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'Next times'**
+  String get auAxNextTimes;
+
+  /// No description provided for @auAxNightHours.
+  ///
+  /// In en, this message translates to:
+  /// **'At night'**
+  String get auAxNightHours;
+
+  /// No description provided for @auAxNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing'**
+  String get auAxNone;
+
+  /// No description provided for @auAxOnceAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Day and time'**
+  String get auAxOnceAt;
+
+  /// No description provided for @auAxOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if'**
+  String get auAxOnly;
+
+  /// No description provided for @auAxOnlyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Conditions it must meet to start; all the ones you switch on, together. Starting it by hand ignores them.'**
+  String get auAxOnlyHelp;
+
+  /// No description provided for @auAxOr.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get auAxOr;
+
+  /// No description provided for @auAxOverlap.
+  ///
+  /// In en, this message translates to:
+  /// **'If it is still working when it should start again'**
+  String get auAxOverlap;
+
+  /// No description provided for @auAxOverlapQueue.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait, then start'**
+  String get auAxOverlapQueue;
+
+  /// No description provided for @auAxOverlapSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip that time'**
+  String get auAxOverlapSkip;
+
+  /// No description provided for @auAxPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose…'**
+  String get auAxPick;
+
+  /// No description provided for @auAxRetries.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again, how many times'**
+  String get auAxRetries;
+
+  /// No description provided for @auAxRetryMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes between tries'**
+  String get auAxRetryMinutes;
+
+  /// No description provided for @auAxRunQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'waiting'**
+  String get auAxRunQueued;
+
+  /// No description provided for @auAxRunTriggers.
+  ///
+  /// In en, this message translates to:
+  /// **'email,chat message,files,another automation,task,startup,new try'**
+  String get auAxRunTriggers;
+
+  /// No description provided for @auAxSayAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'After «{name}»'**
+  String auAxSayAfter(String name);
+
+  /// No description provided for @auAxSayApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'First it asks for your yes.'**
+  String get auAxSayApprove;
+
+  /// No description provided for @auAxSayBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'It spends at most \${usd} each time.'**
+  String auAxSayBudget(String usd);
+
+  /// No description provided for @auAxSayCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'at least {n} minutes apart'**
+  String auAxSayCooldown(String n);
+
+  /// No description provided for @auAxSayDates.
+  ///
+  /// In en, this message translates to:
+  /// **'from {from} to {to}'**
+  String auAxSayDates(String from, String to);
+
+  /// No description provided for @auAxSayDays.
+  ///
+  /// In en, this message translates to:
+  /// **'on {days}'**
+  String auAxSayDays(String days);
+
+  /// No description provided for @auAxSayDoes.
+  ///
+  /// In en, this message translates to:
+  /// **'{who} does: «{what}».'**
+  String auAxSayDoes(String who, String what);
+
+  /// No description provided for @auAxSayEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'When an email arrives ({filter})'**
+  String auAxSayEmail(String filter);
+
+  /// No description provided for @auAxSayFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'When files change in {path}'**
+  String auAxSayFiles(String path);
+
+  /// No description provided for @auAxSayFilesAll.
+  ///
+  /// In en, this message translates to:
+  /// **'When files change in the project'**
+  String get auAxSayFilesAll;
+
+  /// No description provided for @auAxSayFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'from {from}'**
+  String auAxSayFrom(String from);
+
+  /// No description provided for @auAxSayHours.
+  ///
+  /// In en, this message translates to:
+  /// **'between {from} and {to}'**
+  String auAxSayHours(String from, String to);
+
+  /// No description provided for @auAxSayMax.
+  ///
+  /// In en, this message translates to:
+  /// **'at most {n} times a day'**
+  String auAxSayMax(String n);
+
+  /// No description provided for @auAxSayMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'When you get a message on {where}'**
+  String auAxSayMessage(String where);
+
+  /// No description provided for @auAxSayNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose when it starts.'**
+  String get auAxSayNever;
+
+  /// No description provided for @auAxSayOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only'**
+  String get auAxSayOnly;
+
+  /// No description provided for @auAxSayQuiet.
+  ///
+  /// In en, this message translates to:
+  /// **'It does not tell you.'**
+  String get auAxSayQuiet;
+
+  /// No description provided for @auAxSayReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'You get the message: «{text}».'**
+  String auAxSayReminder(String text);
+
+  /// No description provided for @auAxSayStartup.
+  ///
+  /// In en, this message translates to:
+  /// **'When RedGiant starts'**
+  String get auAxSayStartup;
+
+  /// No description provided for @auAxSayTask.
+  ///
+  /// In en, this message translates to:
+  /// **'When a task ends'**
+  String get auAxSayTask;
+
+  /// No description provided for @auAxSayTell.
+  ///
+  /// In en, this message translates to:
+  /// **'It tells you on {where}.'**
+  String auAxSayTell(String where);
+
+  /// No description provided for @auAxSayTellFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'It tells you on {where}, only if something goes wrong.'**
+  String auAxSayTellFailure(String where);
+
+  /// No description provided for @auAxSayWith.
+  ///
+  /// In en, this message translates to:
+  /// **'with «{words}»'**
+  String auAxSayWith(String words);
+
+  /// No description provided for @auAxSayWithout.
+  ///
+  /// In en, this message translates to:
+  /// **'never with «{words}»'**
+  String auAxSayWithout(String words);
+
+  /// No description provided for @auAxSayWordsAll.
+  ///
+  /// In en, this message translates to:
+  /// **'with all of «{words}»'**
+  String auAxSayWordsAll(String words);
+
+  /// No description provided for @auAxSayWordsAny.
+  ///
+  /// In en, this message translates to:
+  /// **'with one of «{words}»'**
+  String auAxSayWordsAny(String words);
+
+  /// No description provided for @auAxSenders.
+  ///
+  /// In en, this message translates to:
+  /// **'Senders'**
+  String get auAxSenders;
+
+  /// No description provided for @auAxSendersPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'bank, anna@example.com, +39 333'**
+  String get auAxSendersPlaceholder;
+
+  /// No description provided for @auAxServerSays.
+  ///
+  /// In en, this message translates to:
+  /// **'Not right yet:'**
+  String get auAxServerSays;
+
+  /// No description provided for @auAxSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Each time'**
+  String get auAxSession;
+
+  /// No description provided for @auAxSessionContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'The same one, remembering'**
+  String get auAxSessionContinue;
+
+  /// No description provided for @auAxSessionNew.
+  ///
+  /// In en, this message translates to:
+  /// **'A new conversation'**
+  String get auAxSessionNew;
+
+  /// No description provided for @auAxStart_after.
+  ///
+  /// In en, this message translates to:
+  /// **'After another automation'**
+  String get auAxStart_after;
+
+  /// No description provided for @auAxStart_files.
+  ///
+  /// In en, this message translates to:
+  /// **'Files that change'**
+  String get auAxStart_files;
+
+  /// No description provided for @auAxStart_message.
+  ///
+  /// In en, this message translates to:
+  /// **'A message in a chat'**
+  String get auAxStart_message;
+
+  /// No description provided for @auAxStart_startup.
+  ///
+  /// In en, this message translates to:
+  /// **'When RedGiant starts'**
+  String get auAxStart_startup;
+
+  /// No description provided for @auAxStart_task.
+  ///
+  /// In en, this message translates to:
+  /// **'When a task ends'**
+  String get auAxStart_task;
+
+  /// No description provided for @auAxStart_time.
+  ///
+  /// In en, this message translates to:
+  /// **'At set times'**
+  String get auAxStart_time;
+
+  /// No description provided for @auAxStartupHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It starts every time RedGiant is switched on.'**
+  String get auAxStartupHelp;
+
+  /// No description provided for @auAxTask_abandoned.
+  ///
+  /// In en, this message translates to:
+  /// **'Given up'**
+  String get auAxTask_abandoned;
+
+  /// No description provided for @auAxTask_not_testable.
+  ///
+  /// In en, this message translates to:
+  /// **'Done, not testable'**
+  String get auAxTask_not_testable;
+
+  /// No description provided for @auAxTask_verified.
+  ///
+  /// In en, this message translates to:
+  /// **'Done and checked'**
+  String get auAxTask_verified;
+
+  /// No description provided for @auAxTell.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it tells you'**
+  String get auAxTell;
+
+  /// No description provided for @auAxTellAllHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'None chosen: on every chat you linked.'**
+  String get auAxTellAllHelp;
+
+  /// No description provided for @auAxTellAlways.
+  ///
+  /// In en, this message translates to:
+  /// **'Every time'**
+  String get auAxTellAlways;
+
+  /// No description provided for @auAxTellEmailFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent from'**
+  String get auAxTellEmailFrom;
+
+  /// No description provided for @auAxTellEmailTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Email to'**
+  String get auAxTellEmailTo;
+
+  /// No description provided for @auAxTellEmailToHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty: to the mailbox itself.'**
+  String get auAxTellEmailToHelp;
+
+  /// No description provided for @auAxTellFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if something goes wrong'**
+  String get auAxTellFailure;
+
+  /// No description provided for @auAxTellHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'When it is done, where the answer goes.'**
+  String get auAxTellHelp;
+
+  /// No description provided for @auAxTellNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get auAxTellNever;
+
+  /// No description provided for @auAxTellReplyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A run started by a chat message answers in that chat too.'**
+  String get auAxTellReplyHelp;
+
+  /// No description provided for @auAxTellSomeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Only where you chose.'**
+  String get auAxTellSomeHelp;
+
+  /// No description provided for @auAxTellWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where'**
+  String get auAxTellWhere;
+
+  /// No description provided for @auAxTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest time, in minutes'**
+  String get auAxTimeout;
+
+  /// No description provided for @auAxTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get auAxTo;
+
+  /// No description provided for @auAxToAllChats.
+  ///
+  /// In en, this message translates to:
+  /// **'all your chats'**
+  String get auAxToAllChats;
+
+  /// No description provided for @auAxToDay.
+  ///
+  /// In en, this message translates to:
+  /// **'To the day'**
+  String get auAxToDay;
+
+  /// No description provided for @auAxToEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get auAxToEmail;
+
+  /// No description provided for @auAxToWeb.
+  ///
+  /// In en, this message translates to:
+  /// **'A notice here'**
+  String get auAxToWeb;
+
+  /// No description provided for @auAxWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get auAxWhen;
+
+  /// No description provided for @auAxWhenHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'What starts it. You can pick more than one: it starts on each of them.'**
+  String get auAxWhenHelp;
+
+  /// No description provided for @auAxWhenMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} minutes'**
+  String auAxWhenMinutes(String n);
+
+  /// No description provided for @auAxWithout.
+  ///
+  /// In en, this message translates to:
+  /// **'Words that stop it'**
+  String get auAxWithout;
+
+  /// No description provided for @auAxWithoutPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'newsletter, advertising'**
+  String get auAxWithoutPlaceholder;
+
+  /// No description provided for @auAxWords.
+  ///
+  /// In en, this message translates to:
+  /// **'Words'**
+  String get auAxWords;
+
+  /// No description provided for @auAxWordsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Separated by commas.'**
+  String get auAxWordsHelp;
+
+  /// No description provided for @auAxWordsPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'urgent, invoice'**
+  String get auAxWordsPlaceholder;
+
+  /// No description provided for @auAxWorkHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Office hours'**
+  String get auAxWorkHours;
+
+  /// No description provided for @auAxYamlBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back to the choices above'**
+  String get auAxYamlBack;
+
+  /// No description provided for @auCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get auCancel;
+
+  /// No description provided for @auCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get auCreate;
+
+  /// No description provided for @auDay_0.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunday'**
+  String get auDay_0;
+
+  /// No description provided for @auDay_1.
+  ///
+  /// In en, this message translates to:
+  /// **'Monday'**
+  String get auDay_1;
+
+  /// No description provided for @auDay_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuesday'**
+  String get auDay_2;
+
+  /// No description provided for @auDay_3.
+  ///
+  /// In en, this message translates to:
+  /// **'Wednesday'**
+  String get auDay_3;
+
+  /// No description provided for @auDay_4.
+  ///
+  /// In en, this message translates to:
+  /// **'Thursday'**
+  String get auDay_4;
+
+  /// No description provided for @auDay_5.
+  ///
+  /// In en, this message translates to:
+  /// **'Friday'**
+  String get auDay_5;
+
+  /// No description provided for @auDay_6.
+  ///
+  /// In en, this message translates to:
+  /// **'Saturday'**
+  String get auDay_6;
+
+  /// No description provided for @auDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get auDelete;
+
+  /// No description provided for @auDeleteAutomationConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this automation and its history?'**
+  String get auDeleteAutomationConfirm;
+
+  /// No description provided for @auDeliveryDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'delivered'**
+  String get auDeliveryDelivered;
+
+  /// No description provided for @auDeliveryDeliveredTo.
+  ///
+  /// In en, this message translates to:
+  /// **'delivered: {to}'**
+  String auDeliveryDeliveredTo(String to);
+
+  /// No description provided for @auDeliveryFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'not delivered: {reason}'**
+  String auDeliveryFailed(String reason);
+
+  /// No description provided for @auDeliveryNoChat.
+  ///
+  /// In en, this message translates to:
+  /// **'not delivered: no chat linked'**
+  String get auDeliveryNoChat;
+
+  /// No description provided for @auDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get auDisabled;
+
+  /// No description provided for @auDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get auDismiss;
+
+  /// No description provided for @auEmailAny.
+  ///
+  /// In en, this message translates to:
+  /// **'any'**
+  String get auEmailAny;
+
+  /// No description provided for @auEmailFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'from'**
+  String get auEmailFrom;
+
+  /// No description provided for @auEmailFromPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'From (part of the address, optional)'**
+  String get auEmailFromPlaceholder;
+
+  /// No description provided for @auEmailNeedFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect the mailbox first: until then this automation never starts.'**
+  String get auEmailNeedFirst;
+
+  /// No description provided for @auEmailSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject contains'**
+  String get auEmailSubject;
+
+  /// No description provided for @auEmailSubjectPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'The subject contains (optional)'**
+  String get auEmailSubjectPlaceholder;
+
+  /// No description provided for @auEmailWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Watching {user} on {host}.'**
+  String auEmailWatching(String user, String host);
+
+  /// No description provided for @auEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get auEnabled;
+
+  /// No description provided for @auNewAutomation.
+  ///
+  /// In en, this message translates to:
+  /// **'New automation'**
+  String get auNewAutomation;
+
+  /// No description provided for @auNewReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'New reminder'**
+  String get auNewReminder;
+
+  /// No description provided for @auNewSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'New secret'**
+  String get auNewSecret;
+
+  /// No description provided for @auNextRun.
+  ///
+  /// In en, this message translates to:
+  /// **'next'**
+  String get auNextRun;
+
+  /// No description provided for @auNoAutomations.
+  ///
+  /// In en, this message translates to:
+  /// **'No automations yet. Write a recipe: when it runs, which agent works, what it is asked.'**
+  String get auNoAutomations;
+
+  /// No description provided for @auNoRuns.
+  ///
+  /// In en, this message translates to:
+  /// **'No runs yet.'**
+  String get auNoRuns;
+
+  /// No description provided for @auOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'open'**
+  String get auOpen;
+
+  /// No description provided for @auOpenSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the session'**
+  String get auOpenSession;
+
+  /// No description provided for @auProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get auProjects;
+
+  /// No description provided for @auRecipeBroken.
+  ///
+  /// In en, this message translates to:
+  /// **'The recipe no longer reads: open it to fix it'**
+  String get auRecipeBroken;
+
+  /// No description provided for @auReminderDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get auReminderDay;
+
+  /// No description provided for @auReminderPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant sends you this text on Telegram at the time you choose, once. No agent, no cost.'**
+  String get auReminderPurpose;
+
+  /// No description provided for @auReminderSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the reminder'**
+  String get auReminderSave;
+
+  /// No description provided for @auReminderWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'What to remind you of'**
+  String get auReminderWhat;
+
+  /// No description provided for @auRepoEvent_issue_comment.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get auRepoEvent_issue_comment;
+
+  /// No description provided for @auRepoEvent_issues.
+  ///
+  /// In en, this message translates to:
+  /// **'Issues'**
+  String get auRepoEvent_issues;
+
+  /// No description provided for @auRepoEvent_pull_request.
+  ///
+  /// In en, this message translates to:
+  /// **'Pull requests'**
+  String get auRepoEvent_pull_request;
+
+  /// No description provided for @auRepoEvent_push.
+  ///
+  /// In en, this message translates to:
+  /// **'New commits'**
+  String get auRepoEvent_push;
+
+  /// No description provided for @auRepoEvent_release.
+  ///
+  /// In en, this message translates to:
+  /// **'Releases'**
+  String get auRepoEvent_release;
+
+  /// No description provided for @auRunNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Run now'**
+  String get auRunNow;
+
+  /// No description provided for @auRunStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'running,done,failed,timeout,skipped'**
+  String get auRunStatus;
+
+  /// No description provided for @auRunTriggers.
+  ///
+  /// In en, this message translates to:
+  /// **'schedule,webhook,by hand,missed run'**
+  String get auRunTriggers;
+
+  /// No description provided for @auRuns.
+  ///
+  /// In en, this message translates to:
+  /// **'Runs'**
+  String get auRuns;
+
+  /// No description provided for @auSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get auSave;
+
+  /// No description provided for @auSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get auSettings;
+
+  /// No description provided for @auTplDesc_blank.
+  ///
+  /// In en, this message translates to:
+  /// **'You choose when, who and what.'**
+  String get auTplDesc_blank;
+
+  /// No description provided for @auTplDesc_morning.
+  ///
+  /// In en, this message translates to:
+  /// **'Every working day at 8: what happened on every project.'**
+  String get auTplDesc_morning;
+
+  /// No description provided for @auTplDesc_spending.
+  ///
+  /// In en, this message translates to:
+  /// **'On the 1st of the month: what was spent and where.'**
+  String get auTplDesc_spending;
+
+  /// No description provided for @auTplDesc_weekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Fridays at 17: the week in one message.'**
+  String get auTplDesc_weekly;
+
+  /// No description provided for @auTplText_morning.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell me in a few lines what happened yesterday on every project: work finished, problems still open, decisions to take.'**
+  String get auTplText_morning;
+
+  /// No description provided for @auTplText_spending.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell me how much was spent last month, per project and per agent, and whether anything looks out of the ordinary.'**
+  String get auTplText_spending;
+
+  /// No description provided for @auTplText_weekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Summarise this week on every project: what was finished, what is late, what is planned for next week.'**
+  String get auTplText_weekly;
+
+  /// No description provided for @auTplTitle_blank.
+  ///
+  /// In en, this message translates to:
+  /// **'From scratch'**
+  String get auTplTitle_blank;
+
+  /// No description provided for @auTplTitle_morning.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning briefing'**
+  String get auTplTitle_morning;
+
+  /// No description provided for @auTplTitle_spending.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly spending'**
+  String get auTplTitle_spending;
+
+  /// No description provided for @auTplTitle_weekly.
+  ///
+  /// In en, this message translates to:
+  /// **'The week\'s news'**
+  String get auTplTitle_weekly;
+
+  /// No description provided for @auWebhookSecretOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'Secret (shown only now; send it in the x-redgiant-secret header):'**
+  String get auWebhookSecretOnce;
+
+  /// No description provided for @auWebhookUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Webhook'**
+  String get auWebhookUrl;
+
+  /// No description provided for @auWhenAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Once, on {at}'**
+  String auWhenAt(String at);
+
+  /// No description provided for @auWhenAtTime.
+  ///
+  /// In en, this message translates to:
+  /// **'at'**
+  String get auWhenAtTime;
+
+  /// No description provided for @auWhenCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'On a schedule of its own ({cron})'**
+  String auWhenCustom(String cron);
+
+  /// No description provided for @auWhenDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day at {time}'**
+  String auWhenDaily(String time);
+
+  /// No description provided for @auWhenDayOfMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'on day'**
+  String get auWhenDayOfMonth;
+
+  /// No description provided for @auWhenEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'When an email arrives ({filter})'**
+  String auWhenEmail(String filter);
+
+  /// No description provided for @auWhenEmailHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The mailbox is set once, here or in Settings › Automations › Mailbox. The email reaches the agent as information, never as instructions.'**
+  String get auWhenEmailHelp;
+
+  /// No description provided for @auWhenEveryHours.
+  ///
+  /// In en, this message translates to:
+  /// **'every (hours)'**
+  String get auWhenEveryHours;
+
+  /// No description provided for @auWhenHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} hours'**
+  String auWhenHours(String n);
+
+  /// No description provided for @auWhenKind_daily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day'**
+  String get auWhenKind_daily;
+
+  /// No description provided for @auWhenKind_email.
+  ///
+  /// In en, this message translates to:
+  /// **'On an email'**
+  String get auWhenKind_email;
+
+  /// No description provided for @auWhenKind_hours.
+  ///
+  /// In en, this message translates to:
+  /// **'Every few hours'**
+  String get auWhenKind_hours;
+
+  /// No description provided for @auWhenKind_monthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Once a month'**
+  String get auWhenKind_monthly;
+
+  /// No description provided for @auWhenKind_repo.
+  ///
+  /// In en, this message translates to:
+  /// **'On the repository'**
+  String get auWhenKind_repo;
+
+  /// No description provided for @auWhenKind_webhook.
+  ///
+  /// In en, this message translates to:
+  /// **'On a web call'**
+  String get auWhenKind_webhook;
+
+  /// No description provided for @auWhenKind_weekdays.
+  ///
+  /// In en, this message translates to:
+  /// **'Working days'**
+  String get auWhenKind_weekdays;
+
+  /// No description provided for @auWhenKind_weekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Some days of the week'**
+  String get auWhenKind_weekly;
+
+  /// No description provided for @auWhenMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every month on day {day} at {time}'**
+  String auWhenMonthly(String day, String time);
+
+  /// No description provided for @auWhenRepo.
+  ///
+  /// In en, this message translates to:
+  /// **'When something happens in the repository ({events})'**
+  String auWhenRepo(String events);
+
+  /// No description provided for @auWhenRepoHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant adds the webhook to the project\'s repository by itself: on Gitea at once, on GitHub once access from outside home is on.'**
+  String get auWhenRepoHelp;
+
+  /// No description provided for @auWhenWebhook.
+  ///
+  /// In en, this message translates to:
+  /// **'When a web call arrives (webhook)'**
+  String get auWhenWebhook;
+
+  /// No description provided for @auWhenWebhookHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Another program (a site, a form, GitHub…) calls RedGiant\'s address; the address and its secret appear after saving.'**
+  String get auWhenWebhookHelp;
+
+  /// No description provided for @auWhenWeekdays.
+  ///
+  /// In en, this message translates to:
+  /// **'Monday to Friday at {time}'**
+  String auWhenWeekdays(String time);
+
+  /// No description provided for @auWhenWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every week on {days} at {time}'**
+  String auWhenWeekly(String days, String time);
+
+  /// No description provided for @auWhoLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead of {project}'**
+  String auWhoLead(String project);
+
+  /// No description provided for @auOwnHubHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When things happen by themselves: schedules, emails, chats, files, reminders'**
+  String get auOwnHubHint;
+
+  /// No description provided for @auOwnOpenChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the conversation'**
+  String get auOwnOpenChat;
+
+  /// No description provided for @auOwnTalkGod.
+  ///
+  /// In en, this message translates to:
+  /// **'Talk with God'**
+  String get auOwnTalkGod;
+
+  /// No description provided for @auOwnMailboxesElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailboxes are added and changed in Settings › Channels and mailboxes.'**
+  String get auOwnMailboxesElsewhere;
+
+  /// No description provided for @auOwnNoMailboxes.
+  ///
+  /// In en, this message translates to:
+  /// **'No mailbox connected yet.'**
+  String get auOwnNoMailboxes;
+
+  /// No description provided for @auOwnCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get auOwnCopied;
+
+  /// No description provided for @auOwnCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get auOwnCopy;
+
+  /// No description provided for @auOwnYamlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'The recipe in YAML'**
+  String get auOwnYamlLabel;
+
+  /// No description provided for @auOwnRoutineOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the routine'**
+  String get auOwnRoutineOpen;
+
+  /// No description provided for @auOwnNoticeOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get auOwnNoticeOpen;
+
+  /// No description provided for @auOwnNoticeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: not done'**
+  String auOwnNoticeFailed(String name);
+
+  /// No description provided for @auOwnPickTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose'**
+  String get auOwnPickTitle;
+
+  /// No description provided for @auOwnNeedOpenWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Open it in Settings › {where}'**
+  String auOwnNeedOpenWhere(String where);
+
+  /// No description provided for @auOwnWhereChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels and mailboxes'**
+  String get auOwnWhereChats;
+
+  /// No description provided for @auOwnWhereExtensions.
+  ///
+  /// In en, this message translates to:
+  /// **'Extensions'**
+  String get auOwnWhereExtensions;
+
+  /// No description provided for @auOwnWhereKeychain.
+  ///
+  /// In en, this message translates to:
+  /// **'Keychain'**
+  String get auOwnWhereKeychain;
+
+  /// No description provided for @auOwnLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read: {why}'**
+  String auOwnLoadFailed(String why);
+
+  /// No description provided for @auOwnReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations can be changed only by the person (not from a project\'s device).'**
+  String get auOwnReadOnly;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
