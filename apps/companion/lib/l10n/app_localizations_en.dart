@@ -8117,4 +8117,2212 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appUpdDev => 'A build from the sources: it does not update itself.';
+
+  @override
+  String get auAsstNewRoutine => 'New routine';
+
+  @override
+  String get auAutoOff => 'Switched off: it does not run until you switch it on.';
+
+  @override
+  String get auAutoOn => 'Switched on';
+
+  @override
+  String get auAutoStart => 'Start from';
+
+  @override
+  String get auAutoTitle => 'What it is called';
+
+  @override
+  String get auAutoTitleHelp => 'A short name, for you.';
+
+  @override
+  String get auAutoWhat => 'What to ask';
+
+  @override
+  String get auAutoWhatHelp =>
+      'As you would write it in a chat. The answer reaches you on Telegram.';
+
+  @override
+  String get auAutoWho => 'Who does it';
+
+  @override
+  String get auAutoWhoHelp => 'God sees every project; a project\'s lead and agents only theirs.';
+
+  @override
+  String get auAutoYaml => 'The recipe (for experts)';
+
+  @override
+  String get auAutoYamlHint => 'What the form writes. Changed here, it is saved as it is.';
+
+  @override
+  String get auAutomationNotices => 'Automation messages';
+
+  @override
+  String get auAutomations => 'Automations';
+
+  @override
+  String get auAwChange => 'Change';
+
+  @override
+  String get auAwLastRun => 'Last run';
+
+  @override
+  String get auAwLead =>
+      'An automation asks an agent to do something at a time or when something happens; a reminder sends you a message on a day. The lit squares are switched on.';
+
+  @override
+  String get auAwListLead =>
+      'Open one to switch it on or off, run it now, change it or read how it went.';
+
+  @override
+  String get auAwListTitle => 'Your automations';
+
+  @override
+  String get auAwNewText =>
+      'An agent does something for you: every morning, every week, on an email or a push.';
+
+  @override
+  String get auAwQ => 'What should RedGiant do on its own?';
+
+  @override
+  String get auAwReminderText =>
+      'A message for you on the day and at the time you choose, as you wrote it.';
+
+  @override
+  String get auAwSourcesLead => 'What automations can listen to besides the clock.';
+
+  @override
+  String get auAwSourcesTitle => 'Connections';
+
+  @override
+  String get auAwStarted => 'Started: its run appears below in a moment.';
+
+  @override
+  String get auAxAdvanced => 'Advanced';
+
+  @override
+  String get auAxAfterWhich => 'Which automation';
+
+  @override
+  String get auAxAfter_failed => 'When it failed';
+
+  @override
+  String get auAxAfter_ok => 'When it went well';
+
+  @override
+  String get auAxAfter_timeout => 'When it took too long';
+
+  @override
+  String get auAxAgentOwn => 'The agent\'s own';
+
+  @override
+  String get auAxAnyChat => 'any chat';
+
+  @override
+  String get auAxAnyProject => 'Any project';
+
+  @override
+  String get auAxApprove => 'Ask me before acting';
+
+  @override
+  String get auAxApproveHelp =>
+      'You get a question here and on your chats; without your yes it does not start.';
+
+  @override
+  String get auAxBudget => 'A spending limit each time';
+
+  @override
+  String get auAxBudgetHelp => 'Past it, the agent stops.';
+
+  @override
+  String get auAxBudgetUsd => 'Dollars at most';
+
+  @override
+  String get auAxCat_other => 'Other';
+
+  @override
+  String get auAxCat_personal => 'Personal';
+
+  @override
+  String get auAxCat_social => 'Social';
+
+  @override
+  String get auAxCat_work => 'Work';
+
+  @override
+  String get auAxCondCooldown => 'A pause between one time and the next';
+
+  @override
+  String get auAxCondDates => 'Only in a period';
+
+  @override
+  String get auAxCondDays => 'Only on certain days';
+
+  @override
+  String get auAxCondFrom => 'Only from certain senders';
+
+  @override
+  String get auAxCondFromHelp => 'For emails and chat messages.';
+
+  @override
+  String get auAxCondHours => 'Only at certain hours';
+
+  @override
+  String get auAxCondMax => 'Not too many times a day';
+
+  @override
+  String get auAxCondWithout => 'Never with certain words';
+
+  @override
+  String get auAxCondWords => 'Only with certain words';
+
+  @override
+  String get auAxCooldown => 'Minutes of pause';
+
+  @override
+  String get auAxCron => 'Cron expression';
+
+  @override
+  String get auAxCronHelp =>
+      'Minute, hour, day of the month, month, day of the week: 0 9 * * 1-5 is 9:00 on working days.';
+
+  @override
+  String get auAxDoes => 'What it does';
+
+  @override
+  String get auAxDoesAgent => 'An agent works';
+
+  @override
+  String get auAxDoesHelp => 'An agent does some work, or a plain message reaches you as written.';
+
+  @override
+  String get auAxDoesReminder => 'Just a message';
+
+  @override
+  String get auAxEffort => 'Effort';
+
+  @override
+  String get auAxEmailAll => 'All';
+
+  @override
+  String get auAxEmailByBox => 'Some mailboxes';
+
+  @override
+  String get auAxEmailByCategory => 'A category';
+
+  @override
+  String get auAxEmailText => 'The text contains';
+
+  @override
+  String get auAxEmailTextPlaceholder => 'A word in the email (optional)';
+
+  @override
+  String get auAxEmailWhich => 'Which mailboxes';
+
+  @override
+  String get auAxEveryMinutes => 'Every how many minutes';
+
+  @override
+  String get auAxFallback => 'Then start';
+
+  @override
+  String get auAxFilesPath => 'Folder';
+
+  @override
+  String get auAxFilesPathHelp => 'Inside the project; a dot is the whole project.';
+
+  @override
+  String get auAxFilesPattern => 'Only these files';
+
+  @override
+  String get auAxFilesPatternHelp => 'For example *.pdf; empty: every file.';
+
+  @override
+  String get auAxFilesProjectHelp => 'Make a project first: the folder is inside one.';
+
+  @override
+  String get auAxFiles_added => 'New files';
+
+  @override
+  String get auAxFiles_changed => 'Changed files';
+
+  @override
+  String get auAxFiles_removed => 'Deleted files';
+
+  @override
+  String get auAxFirstBox => 'The first mailbox';
+
+  @override
+  String get auAxFrom => 'From';
+
+  @override
+  String get auAxFromDay => 'From the day';
+
+  @override
+  String get auAxIfFails => 'If it fails';
+
+  @override
+  String get auAxKind_custom => 'Written by hand (cron)';
+
+  @override
+  String get auAxKind_minutes => 'Every few minutes';
+
+  @override
+  String get auAxKind_once => 'Once, on a day';
+
+  @override
+  String get auAxMagic => 'Magic automation';
+
+  @override
+  String get auAxMagicAllSet => 'Everything it needs is there.';
+
+  @override
+  String get auAxMagicApprove => 'Approve and create';
+
+  @override
+  String get auAxMagicAsk => 'What should happen?';
+
+  @override
+  String get auAxMagicBuilding =>
+      'God is building it with you: answer its questions in the conversation.';
+
+  @override
+  String get auAxMagicDismiss => 'Put it away';
+
+  @override
+  String get auAxMagicDone => 'Approved: it is among your automations now.';
+
+  @override
+  String get auAxMagicEdit => 'Change it first';
+
+  @override
+  String get auAxMagicEx1 =>
+      'Every day at 3 check my Revolut account and tell me on WhatsApp if I received or paid money';
+
+  @override
+  String get auAxMagicEx2 =>
+      'When an invoice arrives in my work mailbox, save it in the project and tell me the amount';
+
+  @override
+  String get auAxMagicEx3 =>
+      'When I write «shopping:» on Telegram, add it to the shopping list and send me the list on Saturday';
+
+  @override
+  String get auAxMagicExamples => 'Or start from an example';
+
+  @override
+  String get auAxMagicGo => 'Ask God';
+
+  @override
+  String get auAxMagicLead =>
+      'Write what should happen, as you would say it to a person. God answers in a conversation of its own and builds the automation with you.';
+
+  @override
+  String get auAxMagicListLead => 'Built with God: open one to go on with the conversation.';
+
+  @override
+  String get auAxMagicListTitle => 'Magic automations';
+
+  @override
+  String get auAxMagicMissing => 'Before you can approve, set up what is missing:';
+
+  @override
+  String get auAxMagicNeeds => 'Still needed';
+
+  @override
+  String get auAxMagicPlaceholder =>
+      'Every day at 3 check my bank account and tell me on WhatsApp what came in and what went out';
+
+  @override
+  String get auAxMagicPromise1 => 'Nothing starts without your yes.';
+
+  @override
+  String get auAxMagicPromise2 => 'New tools and skills are tried apart and wait for you.';
+
+  @override
+  String get auAxMagicPromise3 =>
+      'Keys and passwords never go in the chat: God tells you where to put them.';
+
+  @override
+  String get auAxMagicProposal => 'God\'s proposal';
+
+  @override
+  String get auAxMagicReadyBadge => 'To approve';
+
+  @override
+  String get auAxMagicReject => 'Not like this';
+
+  @override
+  String get auAxMagicSendNo => 'Send to God';
+
+  @override
+  String get auAxMagicStarting => 'Calling God…';
+
+  @override
+  String get auAxMagicState_building => 'Being built';
+
+  @override
+  String get auAxMagicState_dismissed => 'Put away';
+
+  @override
+  String get auAxMagicState_done => 'Approved and created';
+
+  @override
+  String get auAxMagicState_ready => 'Ready: God waits for your yes';
+
+  @override
+  String get auAxMagicStep1 => 'You say what you want';
+
+  @override
+  String get auAxMagicStep2 => 'God proposes it';
+
+  @override
+  String get auAxMagicStep3 => 'You approve it';
+
+  @override
+  String get auAxMagicTile =>
+      'Tell God what you want, in your words: it asks what it needs, builds what is missing and shows it to you before anything starts.';
+
+  @override
+  String get auAxMagicWhy => 'What is wrong? God reads it and tries again';
+
+  @override
+  String auAxMailboxesWatching(String n, String names) {
+    return '$n mailboxes connected: $names.';
+  }
+
+  @override
+  String get auAxMatchAll => 'All of them';
+
+  @override
+  String get auAxMatchAny => 'At least one';
+
+  @override
+  String get auAxMaxPerDay => 'At most, times a day';
+
+  @override
+  String get auAxMessageChat => 'Only in this chat';
+
+  @override
+  String get auAxMessageChatHelp => 'The chat\'s number, for a group; empty: any chat.';
+
+  @override
+  String get auAxMessageFrom => 'From whom';
+
+  @override
+  String get auAxMessageFromHelp => 'Part of the name or the number; empty: anyone linked.';
+
+  @override
+  String get auAxMessageHandle => 'The message is for the automation only';
+
+  @override
+  String get auAxMessageHandleHelp => 'Demi-God does not answer it: the automation does.';
+
+  @override
+  String get auAxMessageWhere => 'On which chats (none chosen: all of them)';
+
+  @override
+  String get auAxMessageWords => 'With which words';
+
+  @override
+  String get auAxMessageWordsPlaceholder => 'shopping, /expense';
+
+  @override
+  String get auAxMissed => 'If RedGiant was off at its time';
+
+  @override
+  String get auAxMissedRun => 'Do it as soon as it is on';
+
+  @override
+  String get auAxMissedSkip => 'Skip it';
+
+  @override
+  String get auAxModel => 'Model';
+
+  @override
+  String get auAxModelHelp => 'Empty: the agent\'s own.';
+
+  @override
+  String get auAxNeedMissing => 'Missing';
+
+  @override
+  String get auAxNeedOpen => 'Set it up';
+
+  @override
+  String get auAxNeedReady => 'Ready';
+
+  @override
+  String get auAxNeedVault => 'Add to the keychain';
+
+  @override
+  String auAxNeed_chat(String what) {
+    return 'The chat $what';
+  }
+
+  @override
+  String auAxNeed_credential(String what) {
+    return 'The key for $what';
+  }
+
+  @override
+  String get auAxNeed_email => 'A mailbox';
+
+  @override
+  String auAxNeed_extension(String what) {
+    return 'The extension $what';
+  }
+
+  @override
+  String auAxNeed_other(String what) {
+    return '$what';
+  }
+
+  @override
+  String get auAxNextNone =>
+      'With these conditions it never starts at its times: check the hours and the days.';
+
+  @override
+  String get auAxNextTimes => 'Next times';
+
+  @override
+  String get auAxNightHours => 'At night';
+
+  @override
+  String get auAxNone => 'Nothing';
+
+  @override
+  String get auAxOnceAt => 'Day and time';
+
+  @override
+  String get auAxOnly => 'Only if';
+
+  @override
+  String get auAxOnlyHelp =>
+      'Conditions it must meet to start; all the ones you switch on, together. Starting it by hand ignores them.';
+
+  @override
+  String get auAxOr => 'or';
+
+  @override
+  String get auAxOverlap => 'If it is still working when it should start again';
+
+  @override
+  String get auAxOverlapQueue => 'Wait, then start';
+
+  @override
+  String get auAxOverlapSkip => 'Skip that time';
+
+  @override
+  String get auAxPick => 'Choose…';
+
+  @override
+  String get auAxRetries => 'Try again, how many times';
+
+  @override
+  String get auAxRetryMinutes => 'Minutes between tries';
+
+  @override
+  String get auAxRunQueued => 'waiting';
+
+  @override
+  String get auAxRunTriggers => 'email,chat message,files,another automation,task,startup,new try';
+
+  @override
+  String auAxSayAfter(String name) {
+    return 'After «$name»';
+  }
+
+  @override
+  String get auAxSayApprove => 'First it asks for your yes.';
+
+  @override
+  String auAxSayBudget(String usd) {
+    return 'It spends at most \$$usd each time.';
+  }
+
+  @override
+  String auAxSayCooldown(String n) {
+    return 'at least $n minutes apart';
+  }
+
+  @override
+  String auAxSayDates(String from, String to) {
+    return 'from $from to $to';
+  }
+
+  @override
+  String auAxSayDays(String days) {
+    return 'on $days';
+  }
+
+  @override
+  String auAxSayDoes(String who, String what) {
+    return '$who does: «$what».';
+  }
+
+  @override
+  String auAxSayEmail(String filter) {
+    return 'When an email arrives ($filter)';
+  }
+
+  @override
+  String auAxSayFiles(String path) {
+    return 'When files change in $path';
+  }
+
+  @override
+  String get auAxSayFilesAll => 'When files change in the project';
+
+  @override
+  String auAxSayFrom(String from) {
+    return 'from $from';
+  }
+
+  @override
+  String auAxSayHours(String from, String to) {
+    return 'between $from and $to';
+  }
+
+  @override
+  String auAxSayMax(String n) {
+    return 'at most $n times a day';
+  }
+
+  @override
+  String auAxSayMessage(String where) {
+    return 'When you get a message on $where';
+  }
+
+  @override
+  String get auAxSayNever => 'Choose when it starts.';
+
+  @override
+  String get auAxSayOnly => 'Only';
+
+  @override
+  String get auAxSayQuiet => 'It does not tell you.';
+
+  @override
+  String auAxSayReminder(String text) {
+    return 'You get the message: «$text».';
+  }
+
+  @override
+  String get auAxSayStartup => 'When RedGiant starts';
+
+  @override
+  String get auAxSayTask => 'When a task ends';
+
+  @override
+  String auAxSayTell(String where) {
+    return 'It tells you on $where.';
+  }
+
+  @override
+  String auAxSayTellFailure(String where) {
+    return 'It tells you on $where, only if something goes wrong.';
+  }
+
+  @override
+  String auAxSayWith(String words) {
+    return 'with «$words»';
+  }
+
+  @override
+  String auAxSayWithout(String words) {
+    return 'never with «$words»';
+  }
+
+  @override
+  String auAxSayWordsAll(String words) {
+    return 'with all of «$words»';
+  }
+
+  @override
+  String auAxSayWordsAny(String words) {
+    return 'with one of «$words»';
+  }
+
+  @override
+  String get auAxSenders => 'Senders';
+
+  @override
+  String get auAxSendersPlaceholder => 'bank, anna@example.com, +39 333';
+
+  @override
+  String get auAxServerSays => 'Not right yet:';
+
+  @override
+  String get auAxSession => 'Each time';
+
+  @override
+  String get auAxSessionContinue => 'The same one, remembering';
+
+  @override
+  String get auAxSessionNew => 'A new conversation';
+
+  @override
+  String get auAxStart_after => 'After another automation';
+
+  @override
+  String get auAxStart_files => 'Files that change';
+
+  @override
+  String get auAxStart_message => 'A message in a chat';
+
+  @override
+  String get auAxStart_startup => 'When RedGiant starts';
+
+  @override
+  String get auAxStart_task => 'When a task ends';
+
+  @override
+  String get auAxStart_time => 'At set times';
+
+  @override
+  String get auAxStartupHelp => 'It starts every time RedGiant is switched on.';
+
+  @override
+  String get auAxTask_abandoned => 'Given up';
+
+  @override
+  String get auAxTask_not_testable => 'Done, not testable';
+
+  @override
+  String get auAxTask_verified => 'Done and checked';
+
+  @override
+  String get auAxTell => 'Where it tells you';
+
+  @override
+  String get auAxTellAllHelp => 'None chosen: on every chat you linked.';
+
+  @override
+  String get auAxTellAlways => 'Every time';
+
+  @override
+  String get auAxTellEmailFrom => 'Sent from';
+
+  @override
+  String get auAxTellEmailTo => 'Email to';
+
+  @override
+  String get auAxTellEmailToHelp => 'Empty: to the mailbox itself.';
+
+  @override
+  String get auAxTellFailure => 'Only if something goes wrong';
+
+  @override
+  String get auAxTellHelp => 'When it is done, where the answer goes.';
+
+  @override
+  String get auAxTellNever => 'Never';
+
+  @override
+  String get auAxTellReplyHelp => 'A run started by a chat message answers in that chat too.';
+
+  @override
+  String get auAxTellSomeHelp => 'Only where you chose.';
+
+  @override
+  String get auAxTellWhere => 'Where';
+
+  @override
+  String get auAxTimeout => 'Longest time, in minutes';
+
+  @override
+  String get auAxTo => 'To';
+
+  @override
+  String get auAxToAllChats => 'all your chats';
+
+  @override
+  String get auAxToDay => 'To the day';
+
+  @override
+  String get auAxToEmail => 'Email';
+
+  @override
+  String get auAxToWeb => 'A notice here';
+
+  @override
+  String get auAxWhen => 'When';
+
+  @override
+  String get auAxWhenHelp =>
+      'What starts it. You can pick more than one: it starts on each of them.';
+
+  @override
+  String auAxWhenMinutes(String n) {
+    return 'Every $n minutes';
+  }
+
+  @override
+  String get auAxWithout => 'Words that stop it';
+
+  @override
+  String get auAxWithoutPlaceholder => 'newsletter, advertising';
+
+  @override
+  String get auAxWords => 'Words';
+
+  @override
+  String get auAxWordsHelp => 'Separated by commas.';
+
+  @override
+  String get auAxWordsPlaceholder => 'urgent, invoice';
+
+  @override
+  String get auAxWorkHours => 'Office hours';
+
+  @override
+  String get auAxYamlBack => 'Go back to the choices above';
+
+  @override
+  String get auCancel => 'Cancel';
+
+  @override
+  String get auCreate => 'Create';
+
+  @override
+  String get auDay_0 => 'Sunday';
+
+  @override
+  String get auDay_1 => 'Monday';
+
+  @override
+  String get auDay_2 => 'Tuesday';
+
+  @override
+  String get auDay_3 => 'Wednesday';
+
+  @override
+  String get auDay_4 => 'Thursday';
+
+  @override
+  String get auDay_5 => 'Friday';
+
+  @override
+  String get auDay_6 => 'Saturday';
+
+  @override
+  String get auDelete => 'Delete';
+
+  @override
+  String get auDeleteAutomationConfirm => 'Delete this automation and its history?';
+
+  @override
+  String get auDeliveryDelivered => 'delivered';
+
+  @override
+  String auDeliveryDeliveredTo(String to) {
+    return 'delivered: $to';
+  }
+
+  @override
+  String auDeliveryFailed(String reason) {
+    return 'not delivered: $reason';
+  }
+
+  @override
+  String get auDeliveryNoChat => 'not delivered: no chat linked';
+
+  @override
+  String get auDisabled => 'Off';
+
+  @override
+  String get auDismiss => 'Dismiss';
+
+  @override
+  String get auEmailAny => 'any';
+
+  @override
+  String get auEmailFrom => 'from';
+
+  @override
+  String get auEmailFromPlaceholder => 'From (part of the address, optional)';
+
+  @override
+  String get auEmailNeedFirst =>
+      'Connect the mailbox first: until then this automation never starts.';
+
+  @override
+  String get auEmailSubject => 'Subject contains';
+
+  @override
+  String get auEmailSubjectPlaceholder => 'The subject contains (optional)';
+
+  @override
+  String auEmailWatching(String user, String host) {
+    return 'Watching $user on $host.';
+  }
+
+  @override
+  String get auEnabled => 'On';
+
+  @override
+  String get auNewAutomation => 'New automation';
+
+  @override
+  String get auNewReminder => 'New reminder';
+
+  @override
+  String get auNewSecret => 'New secret';
+
+  @override
+  String get auNextRun => 'next';
+
+  @override
+  String get auNoAutomations =>
+      'No automations yet. Write a recipe: when it runs, which agent works, what it is asked.';
+
+  @override
+  String get auNoRuns => 'No runs yet.';
+
+  @override
+  String get auOpen => 'open';
+
+  @override
+  String get auOpenSession => 'Open the session';
+
+  @override
+  String get auProjects => 'Projects';
+
+  @override
+  String get auRecipeBroken => 'The recipe no longer reads: open it to fix it';
+
+  @override
+  String get auReminderDay => 'Day';
+
+  @override
+  String get auReminderPurpose =>
+      'RedGiant sends you this text on Telegram at the time you choose, once. No agent, no cost.';
+
+  @override
+  String get auReminderSave => 'Save the reminder';
+
+  @override
+  String get auReminderWhat => 'What to remind you of';
+
+  @override
+  String get auRepoEvent_issue_comment => 'Comments';
+
+  @override
+  String get auRepoEvent_issues => 'Issues';
+
+  @override
+  String get auRepoEvent_pull_request => 'Pull requests';
+
+  @override
+  String get auRepoEvent_push => 'New commits';
+
+  @override
+  String get auRepoEvent_release => 'Releases';
+
+  @override
+  String get auRunNow => 'Run now';
+
+  @override
+  String get auRunStatus => 'running,done,failed,timeout,skipped';
+
+  @override
+  String get auRunTriggers => 'schedule,webhook,by hand,missed run';
+
+  @override
+  String get auRuns => 'Runs';
+
+  @override
+  String get auSave => 'Save';
+
+  @override
+  String get auSettings => 'Settings';
+
+  @override
+  String get auTplDesc_blank => 'You choose when, who and what.';
+
+  @override
+  String get auTplDesc_morning => 'Every working day at 8: what happened on every project.';
+
+  @override
+  String get auTplDesc_spending => 'On the 1st of the month: what was spent and where.';
+
+  @override
+  String get auTplDesc_weekly => 'Fridays at 17: the week in one message.';
+
+  @override
+  String get auTplText_morning =>
+      'Tell me in a few lines what happened yesterday on every project: work finished, problems still open, decisions to take.';
+
+  @override
+  String get auTplText_spending =>
+      'Tell me how much was spent last month, per project and per agent, and whether anything looks out of the ordinary.';
+
+  @override
+  String get auTplText_weekly =>
+      'Summarise this week on every project: what was finished, what is late, what is planned for next week.';
+
+  @override
+  String get auTplTitle_blank => 'From scratch';
+
+  @override
+  String get auTplTitle_morning => 'Morning briefing';
+
+  @override
+  String get auTplTitle_spending => 'Monthly spending';
+
+  @override
+  String get auTplTitle_weekly => 'The week\'s news';
+
+  @override
+  String get auWebhookSecretOnce =>
+      'Secret (shown only now; send it in the x-redgiant-secret header):';
+
+  @override
+  String get auWebhookUrl => 'Webhook';
+
+  @override
+  String auWhenAt(String at) {
+    return 'Once, on $at';
+  }
+
+  @override
+  String get auWhenAtTime => 'at';
+
+  @override
+  String auWhenCustom(String cron) {
+    return 'On a schedule of its own ($cron)';
+  }
+
+  @override
+  String auWhenDaily(String time) {
+    return 'Every day at $time';
+  }
+
+  @override
+  String get auWhenDayOfMonth => 'on day';
+
+  @override
+  String auWhenEmail(String filter) {
+    return 'When an email arrives ($filter)';
+  }
+
+  @override
+  String get auWhenEmailHelp =>
+      'The mailbox is set once, here or in Settings › Automations › Mailbox. The email reaches the agent as information, never as instructions.';
+
+  @override
+  String get auWhenEveryHours => 'every (hours)';
+
+  @override
+  String auWhenHours(String n) {
+    return 'Every $n hours';
+  }
+
+  @override
+  String get auWhenKind_daily => 'Every day';
+
+  @override
+  String get auWhenKind_email => 'On an email';
+
+  @override
+  String get auWhenKind_hours => 'Every few hours';
+
+  @override
+  String get auWhenKind_monthly => 'Once a month';
+
+  @override
+  String get auWhenKind_repo => 'On the repository';
+
+  @override
+  String get auWhenKind_webhook => 'On a web call';
+
+  @override
+  String get auWhenKind_weekdays => 'Working days';
+
+  @override
+  String get auWhenKind_weekly => 'Some days of the week';
+
+  @override
+  String auWhenMonthly(String day, String time) {
+    return 'Every month on day $day at $time';
+  }
+
+  @override
+  String auWhenRepo(String events) {
+    return 'When something happens in the repository ($events)';
+  }
+
+  @override
+  String get auWhenRepoHelp =>
+      'RedGiant adds the webhook to the project\'s repository by itself: on Gitea at once, on GitHub once access from outside home is on.';
+
+  @override
+  String get auWhenWebhook => 'When a web call arrives (webhook)';
+
+  @override
+  String get auWhenWebhookHelp =>
+      'Another program (a site, a form, GitHub…) calls RedGiant\'s address; the address and its secret appear after saving.';
+
+  @override
+  String auWhenWeekdays(String time) {
+    return 'Monday to Friday at $time';
+  }
+
+  @override
+  String auWhenWeekly(String days, String time) {
+    return 'Every week on $days at $time';
+  }
+
+  @override
+  String auWhoLead(String project) {
+    return 'Lead of $project';
+  }
+
+  @override
+  String get auOwnHubHint =>
+      'When things happen by themselves: schedules, emails, chats, files, reminders';
+
+  @override
+  String get auOwnOpenChat => 'Open the conversation';
+
+  @override
+  String get auOwnTalkGod => 'Talk with God';
+
+  @override
+  String get auOwnMailboxesElsewhere =>
+      'Mailboxes are added and changed in Settings › Channels and mailboxes.';
+
+  @override
+  String get auOwnNoMailboxes => 'No mailbox connected yet.';
+
+  @override
+  String get auOwnCopied => 'Copied';
+
+  @override
+  String get auOwnCopy => 'Copy';
+
+  @override
+  String get auOwnYamlLabel => 'The recipe in YAML';
+
+  @override
+  String get auOwnRoutineOpen => 'Open the routine';
+
+  @override
+  String get auOwnNoticeOpen => 'Open';
+
+  @override
+  String auOwnNoticeFailed(String name) {
+    return '$name: not done';
+  }
+
+  @override
+  String get auOwnPickTitle => 'Choose';
+
+  @override
+  String auOwnNeedOpenWhere(String where) {
+    return 'Open it in Settings › $where';
+  }
+
+  @override
+  String get auOwnWhereChats => 'Channels and mailboxes';
+
+  @override
+  String get auOwnWhereExtensions => 'Extensions';
+
+  @override
+  String get auOwnWhereKeychain => 'Keychain';
+
+  @override
+  String auOwnLoadFailed(String why) {
+    return 'Could not read: $why';
+  }
+
+  @override
+  String get auOwnReadOnly =>
+      'Automations can be changed only by the person (not from a project\'s device).';
+
+  @override
+  String get knAsstSavedNewChats => 'Saved: it applies to its new conversations.';
+
+  @override
+  String get knCompactAtHint =>
+      'An agent can keep only so much text in mind at once, like a notebook with a fixed number of pages. Further right: the summary comes later. Further left: it comes sooner and the conversation stays lighter.';
+
+  @override
+  String get knCompactAtTitle => 'When to write the summary';
+
+  @override
+  String knCompactAtValue(String n) {
+    return 'when $n% full';
+  }
+
+  @override
+  String knCompactDefaultIs(String at, String keep) {
+    return 'Default for this agent\'s model: at $at%, keeping $keep%.';
+  }
+
+  @override
+  String get knCompactDefaults => 'Back to the defaults';
+
+  @override
+  String knCompactExample(String at, String keep) {
+    return 'if the agent can keep 100 pages in mind, when it reaches $at it writes the summary: the last $keep stay exactly as they were, the ones before become a few pages of notes.';
+  }
+
+  @override
+  String knCompactExampleNone(String at) {
+    return 'if the agent can keep 100 pages in mind, when it reaches $at it turns all of them into a few pages of notes.';
+  }
+
+  @override
+  String get knCompactExampleTitle => 'For example:';
+
+  @override
+  String get knCompactExplain =>
+      'When the conversation gets long, the agent writes a summary of the old parts, like someone taking notes. Here you choose when it does it, and how much of the latest part it keeps as it is.';
+
+  @override
+  String get knCompactKeepHint =>
+      'The most recent part stays word for word, everything before it becomes notes. More kept means the agent remembers the latest details better; on a model on your computer each kept word costs a little time once (12% is fine there).';
+
+  @override
+  String get knCompactKeepNone => 'nothing';
+
+  @override
+  String get knCompactKeepTitle => 'How much of the latest part to keep as it is';
+
+  @override
+  String knCompactKeepValue(String n) {
+    return 'the last $n%';
+  }
+
+  @override
+  String get knErr_memory_empty => 'Write something to remember.';
+
+  @override
+  String get knErr_memory_forgotten => 'A memory forgotten for good cannot come back.';
+
+  @override
+  String get knErr_memory_full => 'The memory is full: delete or merge some old memories first.';
+
+  @override
+  String get knErr_memory_gone => 'That memory is not there any more.';
+
+  @override
+  String get knErr_memory_long => 'A memory is at most 400 characters: write it shorter.';
+
+  @override
+  String get knErr_memory_moved => 'The memory changed again since: undo the newer change first.';
+
+  @override
+  String get knErr_memory_same => 'Another memory already says the same.';
+
+  @override
+  String get knErr_memory_secret =>
+      'That looks like a password, a code or a card number: secrets are never kept in memory.';
+
+  @override
+  String get knErr_memory_undone => 'That change was already undone.';
+
+  @override
+  String knJob_download_knowledge_model(String model, String size) {
+    return 'Downloading $model ($size) for the knowledge, to search your files on this computer (only once)';
+  }
+
+  @override
+  String knJob_download_ocr(String languages, String size) {
+    return 'Downloading the reading of text in pictures ($languages, $size), only once';
+  }
+
+  @override
+  String get knJob_download_pgvector =>
+      'Downloading pgvector, the search by meaning in RedGiant\'s database (only once)';
+
+  @override
+  String get knJob_error_checksum =>
+      'The download arrived damaged (its fingerprint does not match): try again.';
+
+  @override
+  String get knJob_error_pgvector_unavailable =>
+      'pgvector is not published for this computer yet: the knowledge searches by words only.';
+
+  @override
+  String get knJob_step_model_download => 'The model';
+
+  @override
+  String get knJob_step_ocr_languages => 'The languages';
+
+  @override
+  String get knJob_step_ocr_program => 'The program';
+
+  @override
+  String get knJob_step_tool_download => 'Downloading';
+
+  @override
+  String get knKbAdd => 'Add';
+
+  @override
+  String get knKbAddSource => 'Add a source';
+
+  @override
+  String knKbAddSourceTo(String name) {
+    return 'Add a source to $name';
+  }
+
+  @override
+  String get knKbAgentAlways => 'Always';
+
+  @override
+  String get knKbAgentByScopeNo => 'As the collection says (no)';
+
+  @override
+  String get knKbAgentByScopeYes => 'As the collection says (yes)';
+
+  @override
+  String knKbAgentLead(String name) {
+    return 'Which collections $name can search. Each one says who may read it; here you can make an exception for this agent.';
+  }
+
+  @override
+  String get knKbAgentNever => 'Never';
+
+  @override
+  String get knKbAgentNewOnly => 'It changes from the agent\'s next conversation.';
+
+  @override
+  String knKbAgentNone(String name) {
+    return '$name reads no collection';
+  }
+
+  @override
+  String get knKbAgentOpenAll => 'All the collections';
+
+  @override
+  String knKbAgentPieces(String n) {
+    return '$n pieces';
+  }
+
+  @override
+  String knKbAgentReads(String n, String name) {
+    return '$name reads $n collections';
+  }
+
+  @override
+  String get knKbAgentTool =>
+      'It searches them with «Search the documents», and cites where each answer comes from.';
+
+  @override
+  String get knKbAllChats => 'None chosen: the conversations with every agent.';
+
+  @override
+  String get knKbBackupVectors => 'Put the knowledge in the backup too';
+
+  @override
+  String get knKbBackupVectorsHelp =>
+      'A bigger backup, but on another computer the search is ready at once, without reading everything again.';
+
+  @override
+  String get knKbChat => 'conversation';
+
+  @override
+  String get knKbCiteFallback => 'document';
+
+  @override
+  String get knKbCloudKey => 'Keychain entry with the key';
+
+  @override
+  String get knKbCloudKeyExample => 'voyage_key';
+
+  @override
+  String get knKbCloudKeyHelp =>
+      'Empty: the key given in the setup, for OpenAI, Gemini and Mistral.';
+
+  @override
+  String get knKbCloudLead =>
+      'The pieces of your documents are sent to the service to be read. Its key stays in the keychain.';
+
+  @override
+  String get knKbCloudModel => 'Suggested models';
+
+  @override
+  String get knKbCloudModelName => 'Model';
+
+  @override
+  String get knKbCloudText => 'OpenAI, Voyage, Cohere, Gemini, Mistral, Jina or your own';
+
+  @override
+  String get knKbCloudTitle => 'An online service';
+
+  @override
+  String get knKbCloudTrying => 'Trying the key…';
+
+  @override
+  String get knKbCloudUrl => 'Address of the service';
+
+  @override
+  String get knKbCloudUrlHelp => 'One that speaks like OpenAI, ending in /v1.';
+
+  @override
+  String get knKbCloudUse => 'Use it';
+
+  @override
+  String get knKbCloudWho => 'Which service';
+
+  @override
+  String knKbColLine(String docs, String pieces) {
+    return '$docs documents · $pieces pieces';
+  }
+
+  @override
+  String get knKbColName => 'Name';
+
+  @override
+  String get knKbColNameExample => 'Manuals, Contracts, Recipes…';
+
+  @override
+  String get knKbColNameHelp => 'What it holds, in a few words.';
+
+  @override
+  String get knKbColsLead =>
+      'A collection groups the sources of one subject, and says which agents may read it.';
+
+  @override
+  String get knKbColsTitle => 'Collections';
+
+  @override
+  String get knKbConsentChats =>
+      'The agents that may read this collection will be able to find and quote what you wrote in your conversations and what the agents answered.';
+
+  @override
+  String get knKbConsentChatsYes => 'Yes, the agents may read these conversations';
+
+  @override
+  String get knKbConsentMail =>
+      'The agents that may read this collection will be able to find and quote your mail. RedGiant only reads the inbox: it never marks, moves or deletes a message.';
+
+  @override
+  String get knKbConsentMailYes => 'Yes, the agents may read this mail';
+
+  @override
+  String knKbDays(String n) {
+    return '$n days';
+  }
+
+  @override
+  String get knKbDiskLead => 'What the knowledge takes, and whether the backup carries it.';
+
+  @override
+  String get knKbDiskModels => 'Models';
+
+  @override
+  String get knKbDiskOcr => 'Reading pictures';
+
+  @override
+  String get knKbDiskTexts => 'Pieces of text';
+
+  @override
+  String get knKbDiskTitle => 'Space on the disk';
+
+  @override
+  String get knKbDiskTotal => 'In all';
+
+  @override
+  String get knKbDiskVectors => 'Index by meaning';
+
+  @override
+  String knKbDocsWaiting(String n) {
+    return '$n documents still to read.';
+  }
+
+  @override
+  String get knKbDownloading => 'Downloading…';
+
+  @override
+  String get knKbDropHere => 'Drop to add them to the knowledge';
+
+  @override
+  String get knKbDropOnCard => 'Drop files on a collection to add them.';
+
+  @override
+  String get knKbDropSay => 'You can also drop files on this window.';
+
+  @override
+  String get knKbErr_bad_choice => 'That choice is not possible.';
+
+  @override
+  String get knKbErr_bad_source => 'That source cannot be read: check the path or the address.';
+
+  @override
+  String get knKbErr_embedding_failed => 'The model did not answer: check the key and try again.';
+
+  @override
+  String get knKbErr_no_vector => 'Searching by meaning is not ready on this computer yet.';
+
+  @override
+  String get knKbErr_not_found => 'It is not there any more.';
+
+  @override
+  String get knKbEtaSoon => 'The time left shows after the first minutes.';
+
+  @override
+  String get knKbFileExample => '/home/me/manual.pdf';
+
+  @override
+  String get knKbFileHelp => 'Its full path on the computer where RedGiant runs.';
+
+  @override
+  String get knKbFilePath => 'The file';
+
+  @override
+  String get knKbFolderExample => '/home/me/Documents or C:\\Users\\me\\Documents';
+
+  @override
+  String get knKbFolderHelp => 'Its full path on the computer where RedGiant runs.';
+
+  @override
+  String get knKbFolderPath => 'The folder';
+
+  @override
+  String knKbForAgent(String name) {
+    return 'For $name';
+  }
+
+  @override
+  String get knKbForAll => 'For every agent';
+
+  @override
+  String knKbForProject(String name) {
+    return 'For the project $name';
+  }
+
+  @override
+  String get knKbForWhom => 'Who may read it';
+
+  @override
+  String get knKbHere => 'Downloaded';
+
+  @override
+  String get knKbHowFarBack => 'How far back';
+
+  @override
+  String get knKbKindText_chats => 'What you said with the agents';
+
+  @override
+  String get knKbKindText_file => 'One document';
+
+  @override
+  String get knKbKindText_folder => 'Everything inside, kept up to date';
+
+  @override
+  String get knKbKindText_mail => 'Only if you want it';
+
+  @override
+  String get knKbKindText_url => 'Read once, again when you ask';
+
+  @override
+  String get knKbKindText_workspace => 'The files of one of your projects';
+
+  @override
+  String get knKbKind_chats => 'Conversations';
+
+  @override
+  String get knKbKind_file => 'A file';
+
+  @override
+  String get knKbKind_folder => 'A folder';
+
+  @override
+  String get knKbKind_mail => 'A mailbox';
+
+  @override
+  String get knKbKind_url => 'A web page';
+
+  @override
+  String get knKbKind_workspace => 'A project';
+
+  @override
+  String get knKbLead =>
+      'Choose folders, files and pages: RedGiant reads them, cuts them into pieces and finds them by what they mean. The agents say where each answer comes from, and one click opens the file at that point.';
+
+  @override
+  String knKbLeftOut(String n) {
+    return 'Left out ($n)';
+  }
+
+  @override
+  String knKbLine(String n) {
+    return 'line $n';
+  }
+
+  @override
+  String knKbLines(String a, String b) {
+    return 'lines $a–$b';
+  }
+
+  @override
+  String get knKbLoading => 'Loading…';
+
+  @override
+  String knKbLocalText(String dims, String size) {
+    return 'On this computer · $size MB · $dims numbers per piece';
+  }
+
+  @override
+  String get knKbMail => 'mail';
+
+  @override
+  String get knKbMake => 'Make it';
+
+  @override
+  String knKbMeaningBest(String name, String size) {
+    return 'The recommended one is $name: $size MB, downloaded once, only now that you say so.';
+  }
+
+  @override
+  String knKbMeaningDownload(String name, String size) {
+    return 'Download $name ($size MB) and turn it on';
+  }
+
+  @override
+  String get knKbMeaningOffTitle => 'Searching by meaning is off: only by words';
+
+  @override
+  String get knKbMeaningOff_downloading =>
+      'The model you chose is not on this computer yet: until it arrives the search goes by words.';
+
+  @override
+  String get knKbMeaningOff_failed =>
+      'The model for the meaning does not answer: the search goes by words. Choose it again or another one.';
+
+  @override
+  String get knKbMeaningOff_no_model =>
+      'No model reads your documents by meaning yet, so the agents find a piece only when it has the same words they ask with.';
+
+  @override
+  String get knKbMeaningOff_no_vector =>
+      'The part of the database that searches by meaning is missing on this computer: the search goes by words.';
+
+  @override
+  String get knKbMeaningOther => 'Choose another model';
+
+  @override
+  String get knKbMeaningTurnOn => 'Turn on searching by meaning';
+
+  @override
+  String knKbMeaningUse(String name) {
+    return 'Use $name';
+  }
+
+  @override
+  String get knKbMeaningWhy =>
+      'With a model that reads by meaning, «when does the warehouse open» also finds «it opens at 7:30». It runs on this computer: your documents do not leave it.';
+
+  @override
+  String get knKbModelLead =>
+      'On this computer (downloaded once, nothing leaves the house) or an online service with your key. Changing it makes a new index in the background.';
+
+  @override
+  String get knKbModelTitle => 'The model that reads by meaning';
+
+  @override
+  String get knKbNewCollection => 'New collection';
+
+  @override
+  String knKbNewIndex(String model) {
+    return 'A new index for $model is being made; the searches use the old one until it is ready.';
+  }
+
+  @override
+  String get knKbNoCols => 'No collection yet.';
+
+  @override
+  String get knKbNoMailboxes => 'No mailbox is connected yet: add one in Automations.';
+
+  @override
+  String get knKbNoProjects => 'There is no project yet.';
+
+  @override
+  String get knKbNoSources => 'No source yet: add a folder, a file or a page.';
+
+  @override
+  String get knKbOcrDownload => 'Download now';
+
+  @override
+  String get knKbOcrLanguages => 'Languages of your documents';
+
+  @override
+  String get knKbOcrLead =>
+      'Reads photos of documents and scanned PDFs on this computer (Tesseract). Its program and languages come down the first time, a few MB.';
+
+  @override
+  String get knKbOcrOn => 'Read the text in pictures and scans';
+
+  @override
+  String get knKbOcrOnHelp => 'Slower than text: about a second a page.';
+
+  @override
+  String get knKbOcrReady => 'Ready on this computer.';
+
+  @override
+  String get knKbOcrTitle => 'Text in pictures and scans';
+
+  @override
+  String knKbOcrToDownload(String size) {
+    return 'To download: about $size MB.';
+  }
+
+  @override
+  String knKbOcrWaiting(String n) {
+    return '$n pictures and scans are waiting for it.';
+  }
+
+  @override
+  String knKbOpenCollection(String name) {
+    return 'Open the collection $name';
+  }
+
+  @override
+  String knKbPage(String n) {
+    return 'page $n';
+  }
+
+  @override
+  String get knKbPause => 'Pause the reading';
+
+  @override
+  String get knKbPauseHelp =>
+      'The searches keep working; nothing new is read until you turn this off.';
+
+  @override
+  String knKbPickEmpty(String name) {
+    return 'Nothing here in $name.';
+  }
+
+  @override
+  String get knKbPickFile => 'Choose a file in RedGiant';
+
+  @override
+  String get knKbPickFolder => 'Choose a folder in RedGiant';
+
+  @override
+  String get knKbPickOther => 'Choose another';
+
+  @override
+  String get knKbPickPlaces => 'Back to the projects';
+
+  @override
+  String get knKbPickThis => 'Choose this folder';
+
+  @override
+  String get knKbPickUp => 'Up one folder';
+
+  @override
+  String get knKbPickWhere => 'Your projects and RedGiant\'s folders';
+
+  @override
+  String get knKbPlaceAssistants => 'The assistants\' desk';
+
+  @override
+  String get knKbPlacePlatform => 'God\'s folder';
+
+  @override
+  String get knKbProv_cohere => 'Cohere';
+
+  @override
+  String get knKbProv_compatible => 'Another (like OpenAI)';
+
+  @override
+  String get knKbProv_gemini => 'Gemini';
+
+  @override
+  String get knKbProv_jina => 'Jina';
+
+  @override
+  String get knKbProv_mistral => 'Mistral';
+
+  @override
+  String get knKbProv_openai => 'OpenAI';
+
+  @override
+  String get knKbProv_voyage => 'Voyage';
+
+  @override
+  String get knKbQ => 'Your documents, for the agents to look up';
+
+  @override
+  String knKbQueueError(String error) {
+    return 'Stopped for a problem: $error';
+  }
+
+  @override
+  String get knKbRebuild => 'Rebuild';
+
+  @override
+  String get knKbRebuildHelp => 'Reads everything again with the same model, from the start.';
+
+  @override
+  String get knKbRebuildQ => 'Rebuild the index?';
+
+  @override
+  String get knKbRebuildText =>
+      'Every piece is read again. The searches keep using the index of now until the new one is ready.';
+
+  @override
+  String get knKbRecommended => 'recommended';
+
+  @override
+  String get knKbRemove => 'Delete the collection';
+
+  @override
+  String knKbRemoveQ(String name) {
+    return 'Delete $name?';
+  }
+
+  @override
+  String get knKbRemoveSource => 'Remove this source';
+
+  @override
+  String get knKbRemoveText =>
+      'Its pieces leave the knowledge. Your files stay where they are: nothing on the disk is touched.';
+
+  @override
+  String get knKbRerankLead =>
+      'Reads the question with each piece found and reorders them: better answers, a little slower.';
+
+  @override
+  String get knKbRerankNone => 'None';
+
+  @override
+  String get knKbRerankNoneText => 'The order of the search itself';
+
+  @override
+  String knKbRerankText(String size) {
+    return 'On this computer · $size MB';
+  }
+
+  @override
+  String get knKbRerankTitle => 'The one that puts the best first';
+
+  @override
+  String get knKbRescan => 'Look again now';
+
+  @override
+  String get knKbSaveScope => 'Save who may read it';
+
+  @override
+  String get knKbScopeAgent => 'One agent';
+
+  @override
+  String get knKbScopeAll => 'Every agent';
+
+  @override
+  String get knKbScopeProject => 'The agents of one project';
+
+  @override
+  String get knKbSection => 'Knowledge';
+
+  @override
+  String get knKbSources => 'Sources';
+
+  @override
+  String knKbSrcChatsAll(String days) {
+    return 'Your conversations, last $days days';
+  }
+
+  @override
+  String knKbSrcChatsOf(String days, String names) {
+    return 'The conversations with $names, last $days days';
+  }
+
+  @override
+  String knKbSrcDocs(String n) {
+    return '$n documents';
+  }
+
+  @override
+  String knKbSrcMailOf(String days) {
+    return 'The mail of the last $days days';
+  }
+
+  @override
+  String knKbSrcProjectOf(String name) {
+    return 'The files of $name';
+  }
+
+  @override
+  String get knKbSrcState_failed => 'Could not read it';
+
+  @override
+  String get knKbSrcState_ready => 'Up to date';
+
+  @override
+  String get knKbSrcState_scanning => 'Looking';
+
+  @override
+  String get knKbSrcState_waiting => 'Waiting';
+
+  @override
+  String get knKbStateEmpty => 'Nothing to search yet: make a collection and add a folder.';
+
+  @override
+  String get knKbStateNoModel =>
+      'Choose a model below to search by meaning; until then it searches by words.';
+
+  @override
+  String get knKbStateNoVector =>
+      'Searching by meaning is not ready on this computer yet: for now it searches by words.';
+
+  @override
+  String get knKbStatePaused => 'Paused: the searches work, nothing new is read.';
+
+  @override
+  String knKbStateReady(String n) {
+    return 'Ready: $n pieces can be searched';
+  }
+
+  @override
+  String get knKbStateWorking => 'Reading your documents…';
+
+  @override
+  String knKbStatusLine(String cols, String pieces) {
+    return '$cols collections · $pieces pieces';
+  }
+
+  @override
+  String get knKbThreads => 'Processor threads';
+
+  @override
+  String get knKbThreadsAuto => 'automatic';
+
+  @override
+  String get knKbThreadsHelp => 'Automatic leaves most of the processor to you.';
+
+  @override
+  String get knKbThreadsTitle => 'How much of the processor';
+
+  @override
+  String knKbToDownload(String size) {
+    return 'To download: $size MB';
+  }
+
+  @override
+  String get knKbTryExample => 'When does the warranty end?';
+
+  @override
+  String knKbTryHow(String ms, String n) {
+    return '$n pieces in $ms ms, by meaning and by words.';
+  }
+
+  @override
+  String get knKbTryLead =>
+      'What the agents would find for a question, best first. Click one to open it.';
+
+  @override
+  String get knKbTryNothing => 'Nothing found. Try other words.';
+
+  @override
+  String get knKbTrySearch => 'Search';
+
+  @override
+  String get knKbTryTitle => 'Try a search';
+
+  @override
+  String get knKbTryWordsOnly => 'Searched by words only (no model for the meaning yet).';
+
+  @override
+  String get knKbUploadFiles => 'Send files from this computer';
+
+  @override
+  String get knKbUploadFolder => 'Send a folder from this computer';
+
+  @override
+  String get knKbUploadSay =>
+      'Or drop files here. Sent files are kept in God\'s folder, under knowledge.';
+
+  @override
+  String get knKbUploading => 'Sending the files…';
+
+  @override
+  String get knKbUrl => 'The address';
+
+  @override
+  String get knKbUrlHelp => 'Read without your logins: only public pages.';
+
+  @override
+  String get knKbWhichChats => 'Whose conversations';
+
+  @override
+  String get knKbWhichMailbox => 'Which mailbox';
+
+  @override
+  String get knKbWhichProject => 'Which project';
+
+  @override
+  String knKbWhyFailed(String error) {
+    return 'It failed: $error';
+  }
+
+  @override
+  String get knKbWhy_binary => 'Not a document (a program, an archive…)';
+
+  @override
+  String get knKbWhy_empty => 'There is no text in it';
+
+  @override
+  String get knKbWhy_encrypted => 'Protected by a password';
+
+  @override
+  String get knKbWhy_needs_libreoffice => 'An old Office file: it needs LibreOffice.';
+
+  @override
+  String get knKbWhy_needs_ocr =>
+      'A picture or a scan: turn on reading the text in pictures, below.';
+
+  @override
+  String get knKbWhy_too_big => 'Too big to read';
+
+  @override
+  String get knKbWhy_unsupported => 'A kind of file it cannot read';
+
+  @override
+  String get knMemAdd => 'Add';
+
+  @override
+  String get knMemAddPlaceholder => 'Something to remember, e.g. I prefer short answers';
+
+  @override
+  String get knMemAlready => 'Already remembered.';
+
+  @override
+  String get knMemAutoOff =>
+      'Off: RedGiant learns nothing by itself. You can still add memories here, or ask an agent to remember something.';
+
+  @override
+  String get knMemAutoOn =>
+      'After you write, RedGiant notes what stays true about you: tastes, work, how you like answers. It reads only your own messages, never emails, web pages or automations, and never notes passwords.';
+
+  @override
+  String get knMemAutoTitle => 'Learn by itself from the conversations';
+
+  @override
+  String knMemByAgent(String name) {
+    return 'Saved by $name';
+  }
+
+  @override
+  String get knMemByAgentUnknown => 'Saved by an agent';
+
+  @override
+  String get knMemByAuto => 'Learned by itself';
+
+  @override
+  String get knMemByHuman => 'Written by you';
+
+  @override
+  String get knMemByImport => 'From your old notes';
+
+  @override
+  String knMemCount(String n) {
+    return '$n memories';
+  }
+
+  @override
+  String get knMemCountOne => '1 memory';
+
+  @override
+  String get knMemDid_added => 'Added';
+
+  @override
+  String get knMemDid_edited => 'Changed';
+
+  @override
+  String get knMemDid_forgotten => 'Forgotten for good';
+
+  @override
+  String get knMemDid_removed => 'Deleted';
+
+  @override
+  String get knMemEdit => 'Change';
+
+  @override
+  String get knMemEditTitle => 'Change the memory';
+
+  @override
+  String get knMemEmpty =>
+      'RedGiant knows nothing about you yet. Talk with an agent, or write here something to remember.';
+
+  @override
+  String get knMemEyebrow => 'Shared memory';
+
+  @override
+  String get knMemForget => 'Forget for good';
+
+  @override
+  String get knMemForgetText =>
+      'RedGiant deletes it, and its words go from the list of changes too. It can never be brought back.';
+
+  @override
+  String get knMemForgetTitle => 'Forget it for good?';
+
+  @override
+  String get knMemForgottenText => 'Its words are gone for good.';
+
+  @override
+  String knMemFrom(String title) {
+    return 'from «$title»';
+  }
+
+  @override
+  String get knMemFromUntitled => 'from a conversation';
+
+  @override
+  String get knMemGoShared => 'Shared memory: what RedGiant knows about you';
+
+  @override
+  String get knMemGoSharedOpen => 'Open';
+
+  @override
+  String get knMemGoSharedText => 'Used by every agent and updated by itself while you talk.';
+
+  @override
+  String get knMemHistory => 'Recent changes';
+
+  @override
+  String get knMemHistoryLead =>
+      'Every change is kept and you can take it back, except forgetting for good.';
+
+  @override
+  String get knMemHistoryLess => 'Show fewer';
+
+  @override
+  String get knMemHistoryMore => 'Show all changes';
+
+  @override
+  String get knMemLead =>
+      'Every agent uses this memory, and it updates by itself while you talk. Each agent also has a memory of its own, in the agent\'s Memory tab.';
+
+  @override
+  String get knMemListLead =>
+      'Changes count from the next conversation: the ones already open go on as they were.';
+
+  @override
+  String get knMemListTitle => 'What it remembers';
+
+  @override
+  String get knMemNoOwn => 'This agent keeps no memory of its own.';
+
+  @override
+  String get knMemOwnCard => 'An agent\'s own memory';
+
+  @override
+  String get knMemOwnCardQ => 'In each agent\'s Memory tab';
+
+  @override
+  String get knMemOwnCardText =>
+      'Only that agent reads it. You write it, or the agent notes what it needs for its work.';
+
+  @override
+  String knMemOwnHelp(String name) {
+    return 'Only $name reads it, at the start of every conversation. $name can also note here what it needs.';
+  }
+
+  @override
+  String get knMemOwnPlaceholder => 'e.g. Always answer with a short list';
+
+  @override
+  String knMemOwnTitle(String name) {
+    return 'Memory of $name: only for this agent';
+  }
+
+  @override
+  String get knMemProjectHelp => 'Every agent working on this project reads it.';
+
+  @override
+  String knMemProjectTitle(String name) {
+    return 'Memory of the project «$name»';
+  }
+
+  @override
+  String get knMemRemove => 'Delete';
+
+  @override
+  String get knMemRemoved => 'Memory deleted.';
+
+  @override
+  String get knMemSaved => 'Saved';
+
+  @override
+  String get knMemSharedCard => 'Shared memory';
+
+  @override
+  String get knMemSharedCardQ => 'This page';
+
+  @override
+  String get knMemSharedCardText =>
+      'Every agent reads it. It fills up by itself from your conversations, and you can change it here.';
+
+  @override
+  String get knMemSummaryTitle => 'Summaries of long conversations';
+
+  @override
+  String get knMemTitle => 'What RedGiant knows about you';
+
+  @override
+  String get knMemUndid_added => 'Brought back';
+
+  @override
+  String get knMemUndid_edited => 'Back as it was';
+
+  @override
+  String get knMemUndid_removed => 'Taken away again';
+
+  @override
+  String get knMemUndo => 'Undo';
+
+  @override
+  String get knMemUndone => 'Undone';
+
+  @override
+  String knMemUsed(String limit, String used) {
+    return 'Space used: $used of $limit characters';
+  }
+
+  @override
+  String knMemWith(String name) {
+    return 'with $name';
+  }
+
+  @override
+  String get knSettings => 'Settings';
+
+  @override
+  String knUiAboutHours(String h, String min) {
+    return 'about $h h $min min left';
+  }
+
+  @override
+  String knUiAboutMinutes(String min) {
+    return 'about $min min left';
+  }
+
+  @override
+  String get knUiLessThanMinute => 'less than a minute left';
+
+  @override
+  String knUiOf(String done, String total) {
+    return '$done of $total';
+  }
+
+  @override
+  String get knUiDetails => 'Details for whoever helps you';
+
+  @override
+  String get knWzDoneBtn => 'Done';
+
+  @override
+  String get knHubKnowledge => 'Your documents the agents can search: collections, sources, models';
+
+  @override
+  String get knHubMemory => 'What every agent knows about you, with every change undoable';
 }

@@ -8138,4 +8138,2227 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get appUpdDev => 'Una build dalle sorgenti: non si aggiorna da sola.';
+
+  @override
+  String get auAsstNewRoutine => 'Nuova routine';
+
+  @override
+  String get auAutoOff => 'Spenta: non parte finché non la riaccendi.';
+
+  @override
+  String get auAutoOn => 'Accesa';
+
+  @override
+  String get auAutoStart => 'Parti da';
+
+  @override
+  String get auAutoTitle => 'Come si chiama';
+
+  @override
+  String get auAutoTitleHelp => 'Un nome breve, per te.';
+
+  @override
+  String get auAutoWhat => 'Cosa chiedere';
+
+  @override
+  String get auAutoWhatHelp =>
+      'Come lo scriveresti in una chat. La risposta ti arriva su Telegram.';
+
+  @override
+  String get auAutoWho => 'Chi lo fa';
+
+  @override
+  String get auAutoWhoHelp =>
+      'God vede tutti i progetti; il capo e gli agenti di un progetto solo il loro.';
+
+  @override
+  String get auAutoYaml => 'La ricetta (per esperti)';
+
+  @override
+  String get auAutoYamlHint => 'Quello che scrive il modulo. Se la cambi qui, viene salvata così.';
+
+  @override
+  String get auAutomationNotices => 'Messaggi delle automazioni';
+
+  @override
+  String get auAutomations => 'Automazioni';
+
+  @override
+  String get auAwChange => 'Cambia';
+
+  @override
+  String get auAwLastRun => 'Ultima volta';
+
+  @override
+  String get auAwLead =>
+      'Un\'automazione chiede a un agente di fare qualcosa a un\'ora o quando succede qualcosa; un promemoria ti manda un messaggio in un giorno. I riquadri accesi sono attivi.';
+
+  @override
+  String get auAwListLead =>
+      'Aprine una per accenderla o spegnerla, farla partire ora, cambiarla o vedere com\'è andata.';
+
+  @override
+  String get auAwListTitle => 'Le tue automazioni';
+
+  @override
+  String get auAwNewText =>
+      'Un agente fa qualcosa per te: ogni mattina, ogni settimana, a una mail o a un push.';
+
+  @override
+  String get auAwQ => 'Cosa deve fare RedGiant da solo?';
+
+  @override
+  String get auAwReminderText =>
+      'Un messaggio per te nel giorno e all\'ora che scegli, così come l\'hai scritto.';
+
+  @override
+  String get auAwSourcesLead => 'Cosa possono ascoltare le automazioni, oltre all\'orologio.';
+
+  @override
+  String get auAwSourcesTitle => 'Collegamenti';
+
+  @override
+  String get auAwStarted => 'Partita: tra un momento la vedi qui sotto.';
+
+  @override
+  String get auAxAdvanced => 'Avanzate';
+
+  @override
+  String get auAxAfterWhich => 'Quale automazione';
+
+  @override
+  String get auAxAfter_failed => 'Se è andata male';
+
+  @override
+  String get auAxAfter_ok => 'Se è andata bene';
+
+  @override
+  String get auAxAfter_timeout => 'Se ci ha messo troppo';
+
+  @override
+  String get auAxAgentOwn => 'Quello dell\'agente';
+
+  @override
+  String get auAxAnyChat => 'qualunque chat';
+
+  @override
+  String get auAxAnyProject => 'Qualunque progetto';
+
+  @override
+  String get auAxApprove => 'Chiedimi prima di agire';
+
+  @override
+  String get auAxApproveHelp =>
+      'Ti arriva una domanda qui e nelle chat; senza il tuo sì non parte.';
+
+  @override
+  String get auAxBudget => 'Un limite di spesa ogni volta';
+
+  @override
+  String get auAxBudgetHelp => 'Oltre il limite l\'agente si ferma.';
+
+  @override
+  String get auAxBudgetUsd => 'Dollari al massimo';
+
+  @override
+  String get auAxCat_other => 'Altro';
+
+  @override
+  String get auAxCat_personal => 'Personale';
+
+  @override
+  String get auAxCat_social => 'Social';
+
+  @override
+  String get auAxCat_work => 'Lavoro';
+
+  @override
+  String get auAxCondCooldown => 'Una pausa tra una volta e l\'altra';
+
+  @override
+  String get auAxCondDates => 'Solo in un periodo';
+
+  @override
+  String get auAxCondDays => 'Solo in certi giorni';
+
+  @override
+  String get auAxCondFrom => 'Solo da certi mittenti';
+
+  @override
+  String get auAxCondFromHelp => 'Per le email e i messaggi in chat.';
+
+  @override
+  String get auAxCondHours => 'Solo in certe ore';
+
+  @override
+  String get auAxCondMax => 'Non troppe volte al giorno';
+
+  @override
+  String get auAxCondWithout => 'Mai con certe parole';
+
+  @override
+  String get auAxCondWords => 'Solo con certe parole';
+
+  @override
+  String get auAxCooldown => 'Minuti di pausa';
+
+  @override
+  String get auAxCron => 'Espressione cron';
+
+  @override
+  String get auAxCronHelp =>
+      'Minuto, ora, giorno del mese, mese, giorno della settimana: 0 9 * * 1-5 vuol dire alle 9 nei giorni lavorativi.';
+
+  @override
+  String get auAxDoes => 'Cosa fa';
+
+  @override
+  String get auAxDoesAgent => 'Lavora un agente';
+
+  @override
+  String get auAxDoesHelp =>
+      'Un agente fa un lavoro, oppure ti arriva un messaggio così com\'è scritto.';
+
+  @override
+  String get auAxDoesReminder => 'Solo un messaggio';
+
+  @override
+  String get auAxEffort => 'Impegno';
+
+  @override
+  String get auAxEmailAll => 'Tutte';
+
+  @override
+  String get auAxEmailByBox => 'Alcune caselle';
+
+  @override
+  String get auAxEmailByCategory => 'Una categoria';
+
+  @override
+  String get auAxEmailText => 'Il testo contiene';
+
+  @override
+  String get auAxEmailTextPlaceholder => 'Una parola nell\'email (facoltativo)';
+
+  @override
+  String get auAxEmailWhich => 'Quali caselle';
+
+  @override
+  String get auAxEveryMinutes => 'Ogni quanti minuti';
+
+  @override
+  String get auAxFallback => 'Poi avvia';
+
+  @override
+  String get auAxFilesPath => 'Cartella';
+
+  @override
+  String get auAxFilesPathHelp => 'Dentro il progetto; un punto vuol dire tutto il progetto.';
+
+  @override
+  String get auAxFilesPattern => 'Solo questi file';
+
+  @override
+  String get auAxFilesPatternHelp => 'Per esempio *.pdf; vuoto: tutti i file.';
+
+  @override
+  String get auAxFilesProjectHelp => 'Prima crea un progetto: la cartella sta dentro un progetto.';
+
+  @override
+  String get auAxFiles_added => 'File nuovi';
+
+  @override
+  String get auAxFiles_changed => 'File cambiati';
+
+  @override
+  String get auAxFiles_removed => 'File cancellati';
+
+  @override
+  String get auAxFirstBox => 'La prima casella';
+
+  @override
+  String get auAxFrom => 'Dalle';
+
+  @override
+  String get auAxFromDay => 'Dal giorno';
+
+  @override
+  String get auAxIfFails => 'Se va male';
+
+  @override
+  String get auAxKind_custom => 'Scritto a mano (cron)';
+
+  @override
+  String get auAxKind_minutes => 'Ogni tot minuti';
+
+  @override
+  String get auAxKind_once => 'Una volta sola';
+
+  @override
+  String get auAxMagic => 'Automazione magica';
+
+  @override
+  String get auAxMagicAllSet => 'C\'è tutto quello che serve.';
+
+  @override
+  String get auAxMagicApprove => 'Approva e crea';
+
+  @override
+  String get auAxMagicAsk => 'Cosa deve succedere?';
+
+  @override
+  String get auAxMagicBuilding =>
+      'God la sta costruendo con te: rispondi alle sue domande nella conversazione.';
+
+  @override
+  String get auAxMagicDismiss => 'Metti da parte';
+
+  @override
+  String get auAxMagicDone => 'Approvata: ora è tra le tue automazioni.';
+
+  @override
+  String get auAxMagicEdit => 'Cambiala prima';
+
+  @override
+  String get auAxMagicEx1 =>
+      'Ogni giorno alle 3 controlla il mio conto Revolut e avvisami su WhatsApp se ho ricevuto o pagato soldi';
+
+  @override
+  String get auAxMagicEx2 =>
+      'Quando arriva una fattura nella casella del lavoro, salvala nel progetto e dimmi l\'importo';
+
+  @override
+  String get auAxMagicEx3 =>
+      'Quando scrivo «spesa:» su Telegram, aggiungilo alla lista e il sabato mandami la lista';
+
+  @override
+  String get auAxMagicExamples => 'Oppure parti da un esempio';
+
+  @override
+  String get auAxMagicGo => 'Chiedi a God';
+
+  @override
+  String get auAxMagicLead =>
+      'Scrivi cosa deve succedere, come lo diresti a una persona. God ti risponde in una conversazione tutta sua e costruisce l\'automazione insieme a te.';
+
+  @override
+  String get auAxMagicListLead => 'Costruite con God: aprine una per continuare la conversazione.';
+
+  @override
+  String get auAxMagicListTitle => 'Automazioni magiche';
+
+  @override
+  String get auAxMagicMissing => 'Prima di approvare, sistema quello che manca:';
+
+  @override
+  String get auAxMagicNeeds => 'Serve ancora';
+
+  @override
+  String get auAxMagicPlaceholder =>
+      'Ogni giorno alle 3 controlla il mio conto e scrivimi su WhatsApp cosa è entrato e cosa è uscito';
+
+  @override
+  String get auAxMagicPromise1 => 'Niente parte senza il tuo sì.';
+
+  @override
+  String get auAxMagicPromise2 =>
+      'Gli strumenti e le skill nuove si provano a parte e aspettano te.';
+
+  @override
+  String get auAxMagicPromise3 =>
+      'Chiavi e password non vanno mai nella chat: God ti dice dove metterle.';
+
+  @override
+  String get auAxMagicProposal => 'La proposta di God';
+
+  @override
+  String get auAxMagicReadyBadge => 'Da approvare';
+
+  @override
+  String get auAxMagicReject => 'Così no';
+
+  @override
+  String get auAxMagicSendNo => 'Manda a God';
+
+  @override
+  String get auAxMagicStarting => 'Chiamo God…';
+
+  @override
+  String get auAxMagicState_building => 'In costruzione';
+
+  @override
+  String get auAxMagicState_dismissed => 'Messa da parte';
+
+  @override
+  String get auAxMagicState_done => 'Approvata e creata';
+
+  @override
+  String get auAxMagicState_ready => 'Pronta: God aspetta il tuo sì';
+
+  @override
+  String get auAxMagicStep1 => 'Racconti cosa vuoi';
+
+  @override
+  String get auAxMagicStep2 => 'God te la propone';
+
+  @override
+  String get auAxMagicStep3 => 'La approvi';
+
+  @override
+  String get auAxMagicTile =>
+      'Di\' a God cosa vuoi, con parole tue: ti chiede quello che serve, prepara quello che manca e te lo fa vedere prima che parta qualcosa.';
+
+  @override
+  String get auAxMagicWhy => 'Cosa non va? God lo legge e riprova';
+
+  @override
+  String auAxMailboxesWatching(String n, String names) {
+    return '$n caselle collegate: $names.';
+  }
+
+  @override
+  String get auAxMatchAll => 'Tutte';
+
+  @override
+  String get auAxMatchAny => 'Almeno una';
+
+  @override
+  String get auAxMaxPerDay => 'Al massimo, volte al giorno';
+
+  @override
+  String get auAxMessageChat => 'Solo in questa chat';
+
+  @override
+  String get auAxMessageChatHelp => 'Il numero della chat, per un gruppo; vuoto: qualunque chat.';
+
+  @override
+  String get auAxMessageFrom => 'Da chi';
+
+  @override
+  String get auAxMessageFromHelp =>
+      'Una parte del nome o del numero; vuoto: chiunque sia collegato.';
+
+  @override
+  String get auAxMessageHandle => 'Il messaggio è solo per l\'automazione';
+
+  @override
+  String get auAxMessageHandleHelp => 'Demi-God non risponde: ci pensa l\'automazione.';
+
+  @override
+  String get auAxMessageWhere => 'Su quali chat (se non ne scegli nessuna: tutte)';
+
+  @override
+  String get auAxMessageWords => 'Con quali parole';
+
+  @override
+  String get auAxMessageWordsPlaceholder => 'spesa, /spese';
+
+  @override
+  String get auAxMissed => 'Se all\'ora giusta RedGiant era spento';
+
+  @override
+  String get auAxMissedRun => 'Falla appena si accende';
+
+  @override
+  String get auAxMissedSkip => 'Lascia perdere';
+
+  @override
+  String get auAxModel => 'Modello';
+
+  @override
+  String get auAxModelHelp => 'Vuoto: quello dell\'agente.';
+
+  @override
+  String get auAxNeedMissing => 'Manca';
+
+  @override
+  String get auAxNeedOpen => 'Sistemalo';
+
+  @override
+  String get auAxNeedReady => 'Pronto';
+
+  @override
+  String get auAxNeedVault => 'Aggiungi al portachiavi';
+
+  @override
+  String auAxNeed_chat(String what) {
+    return 'La chat $what';
+  }
+
+  @override
+  String auAxNeed_credential(String what) {
+    return 'La chiave per $what';
+  }
+
+  @override
+  String get auAxNeed_email => 'Una casella email';
+
+  @override
+  String auAxNeed_extension(String what) {
+    return 'L\'estensione $what';
+  }
+
+  @override
+  String auAxNeed_other(String what) {
+    return '$what';
+  }
+
+  @override
+  String get auAxNextNone =>
+      'Con queste condizioni a orario non parte mai: controlla le ore e i giorni.';
+
+  @override
+  String get auAxNextTimes => 'Le prossime volte';
+
+  @override
+  String get auAxNightHours => 'Di notte';
+
+  @override
+  String get auAxNone => 'Niente';
+
+  @override
+  String get auAxOnceAt => 'Giorno e ora';
+
+  @override
+  String get auAxOnly => 'Solo se';
+
+  @override
+  String get auAxOnlyHelp =>
+      'Le condizioni per partire: tutte quelle che accendi, insieme. Se la avvii tu a mano non contano.';
+
+  @override
+  String get auAxOr => 'oppure';
+
+  @override
+  String get auAxOverlap => 'Se lavora ancora quando dovrebbe ripartire';
+
+  @override
+  String get auAxOverlapQueue => 'Aspetta e poi parte';
+
+  @override
+  String get auAxOverlapSkip => 'Salta quella volta';
+
+  @override
+  String get auAxPick => 'Scegli…';
+
+  @override
+  String get auAxRetries => 'Riprova, quante volte';
+
+  @override
+  String get auAxRetryMinutes => 'Minuti tra un tentativo e l\'altro';
+
+  @override
+  String get auAxRunQueued => 'in attesa';
+
+  @override
+  String get auAxRunTriggers =>
+      'email,messaggio in chat,file,un\'altra automazione,lavoro,avvio,nuovo tentativo';
+
+  @override
+  String auAxSayAfter(String name) {
+    return 'Dopo «$name»';
+  }
+
+  @override
+  String get auAxSayApprove => 'Prima ti chiede il sì.';
+
+  @override
+  String auAxSayBudget(String usd) {
+    return 'Spende al massimo \$$usd ogni volta.';
+  }
+
+  @override
+  String auAxSayCooldown(String n) {
+    return 'a distanza di almeno $n minuti';
+  }
+
+  @override
+  String auAxSayDates(String from, String to) {
+    return 'dal $from al $to';
+  }
+
+  @override
+  String auAxSayDays(String days) {
+    return 'di $days';
+  }
+
+  @override
+  String auAxSayDoes(String who, String what) {
+    return '$who fa: «$what».';
+  }
+
+  @override
+  String auAxSayEmail(String filter) {
+    return 'Quando arriva un\'email ($filter)';
+  }
+
+  @override
+  String auAxSayFiles(String path) {
+    return 'Quando cambiano i file in $path';
+  }
+
+  @override
+  String get auAxSayFilesAll => 'Quando cambiano i file del progetto';
+
+  @override
+  String auAxSayFrom(String from) {
+    return 'da $from';
+  }
+
+  @override
+  String auAxSayHours(String from, String to) {
+    return 'tra le $from e le $to';
+  }
+
+  @override
+  String auAxSayMax(String n) {
+    return 'al massimo $n volte al giorno';
+  }
+
+  @override
+  String auAxSayMessage(String where) {
+    return 'Quando ti scrivono su $where';
+  }
+
+  @override
+  String get auAxSayNever => 'Scegli quando parte.';
+
+  @override
+  String get auAxSayOnly => 'Solo';
+
+  @override
+  String get auAxSayQuiet => 'Non ti avvisa.';
+
+  @override
+  String auAxSayReminder(String text) {
+    return 'Ti arriva il messaggio: «$text».';
+  }
+
+  @override
+  String get auAxSayStartup => 'All\'avvio di RedGiant';
+
+  @override
+  String get auAxSayTask => 'Quando finisce un lavoro';
+
+  @override
+  String auAxSayTell(String where) {
+    return 'Ti avvisa su $where.';
+  }
+
+  @override
+  String auAxSayTellFailure(String where) {
+    return 'Ti avvisa su $where, solo se va storto qualcosa.';
+  }
+
+  @override
+  String auAxSayWith(String words) {
+    return 'con «$words»';
+  }
+
+  @override
+  String auAxSayWithout(String words) {
+    return 'mai con «$words»';
+  }
+
+  @override
+  String auAxSayWordsAll(String words) {
+    return 'con tutte «$words»';
+  }
+
+  @override
+  String auAxSayWordsAny(String words) {
+    return 'con una di «$words»';
+  }
+
+  @override
+  String get auAxSenders => 'Mittenti';
+
+  @override
+  String get auAxSendersPlaceholder => 'banca, anna@esempio.it, +39 333';
+
+  @override
+  String get auAxServerSays => 'Non va ancora:';
+
+  @override
+  String get auAxSession => 'Ogni volta';
+
+  @override
+  String get auAxSessionContinue => 'La stessa, che si ricorda';
+
+  @override
+  String get auAxSessionNew => 'Una conversazione nuova';
+
+  @override
+  String get auAxStart_after => 'Dopo un\'altra automazione';
+
+  @override
+  String get auAxStart_files => 'File che cambiano';
+
+  @override
+  String get auAxStart_message => 'Un messaggio in chat';
+
+  @override
+  String get auAxStart_startup => 'All\'avvio di RedGiant';
+
+  @override
+  String get auAxStart_task => 'Quando finisce un lavoro';
+
+  @override
+  String get auAxStart_time => 'A un orario';
+
+  @override
+  String get auAxStartupHelp => 'Parte ogni volta che RedGiant si accende.';
+
+  @override
+  String get auAxTask_abandoned => 'Abbandonato';
+
+  @override
+  String get auAxTask_not_testable => 'Finito, senza prova';
+
+  @override
+  String get auAxTask_verified => 'Finito e controllato';
+
+  @override
+  String get auAxTell => 'Dove ti avvisa';
+
+  @override
+  String get auAxTellAllHelp => 'Se non scegli niente: su tutte le chat che hai collegato.';
+
+  @override
+  String get auAxTellAlways => 'Ogni volta';
+
+  @override
+  String get auAxTellEmailFrom => 'Mandata da';
+
+  @override
+  String get auAxTellEmailTo => 'Email a';
+
+  @override
+  String get auAxTellEmailToHelp => 'Vuoto: alla casella stessa.';
+
+  @override
+  String get auAxTellFailure => 'Solo se va storto qualcosa';
+
+  @override
+  String get auAxTellHelp => 'Quando ha finito, dove arriva la risposta.';
+
+  @override
+  String get auAxTellNever => 'Mai';
+
+  @override
+  String get auAxTellReplyHelp =>
+      'Quando parte da un messaggio in chat, risponde anche in quella chat.';
+
+  @override
+  String get auAxTellSomeHelp => 'Solo dove hai scelto.';
+
+  @override
+  String get auAxTellWhere => 'Dove';
+
+  @override
+  String get auAxTimeout => 'Tempo massimo, in minuti';
+
+  @override
+  String get auAxTo => 'Alle';
+
+  @override
+  String get auAxToAllChats => 'tutte le tue chat';
+
+  @override
+  String get auAxToDay => 'Al giorno';
+
+  @override
+  String get auAxToEmail => 'Email';
+
+  @override
+  String get auAxToWeb => 'Un avviso qui';
+
+  @override
+  String get auAxWhen => 'Quando';
+
+  @override
+  String get auAxWhenHelp => 'Che cosa la fa partire. Puoi sceglierne più d\'una: parte a ognuna.';
+
+  @override
+  String auAxWhenMinutes(String n) {
+    return 'Ogni $n minuti';
+  }
+
+  @override
+  String get auAxWithout => 'Parole che la fermano';
+
+  @override
+  String get auAxWithoutPlaceholder => 'newsletter, pubblicità';
+
+  @override
+  String get auAxWords => 'Parole';
+
+  @override
+  String get auAxWordsHelp => 'Separate da virgole.';
+
+  @override
+  String get auAxWordsPlaceholder => 'urgente, fattura';
+
+  @override
+  String get auAxWorkHours => 'Orario d\'ufficio';
+
+  @override
+  String get auAxYamlBack => 'Torna alle scelte qui sopra';
+
+  @override
+  String get auCancel => 'Annulla';
+
+  @override
+  String get auCreate => 'Crea';
+
+  @override
+  String get auDay_0 => 'domenica';
+
+  @override
+  String get auDay_1 => 'lunedì';
+
+  @override
+  String get auDay_2 => 'martedì';
+
+  @override
+  String get auDay_3 => 'mercoledì';
+
+  @override
+  String get auDay_4 => 'giovedì';
+
+  @override
+  String get auDay_5 => 'venerdì';
+
+  @override
+  String get auDay_6 => 'sabato';
+
+  @override
+  String get auDelete => 'Elimina';
+
+  @override
+  String get auDeleteAutomationConfirm => 'Eliminare questa automazione e il suo storico?';
+
+  @override
+  String get auDeliveryDelivered => 'consegnata';
+
+  @override
+  String auDeliveryDeliveredTo(String to) {
+    return 'consegnata: $to';
+  }
+
+  @override
+  String auDeliveryFailed(String reason) {
+    return 'non consegnata: $reason';
+  }
+
+  @override
+  String get auDeliveryNoChat => 'non consegnata: nessuna chat collegata';
+
+  @override
+  String get auDisabled => 'Spenta';
+
+  @override
+  String get auDismiss => 'Chiudi';
+
+  @override
+  String get auEmailAny => 'qualunque';
+
+  @override
+  String get auEmailFrom => 'da';
+
+  @override
+  String get auEmailFromPlaceholder => 'Mittente (parte dell\'indirizzo, facoltativo)';
+
+  @override
+  String get auEmailNeedFirst =>
+      'Prima collega la casella email: finché non è collegata, questa automazione non parte.';
+
+  @override
+  String get auEmailSubject => 'L\'oggetto contiene';
+
+  @override
+  String get auEmailSubjectPlaceholder => 'L\'oggetto contiene (facoltativo)';
+
+  @override
+  String auEmailWatching(String user, String host) {
+    return 'Guarda $user su $host.';
+  }
+
+  @override
+  String get auEnabled => 'Attiva';
+
+  @override
+  String get auNewAutomation => 'Nuova automazione';
+
+  @override
+  String get auNewReminder => 'Nuovo promemoria';
+
+  @override
+  String get auNewSecret => 'Nuovo segreto';
+
+  @override
+  String get auNextRun => 'prossima';
+
+  @override
+  String get auNoAutomations =>
+      'Ancora nessuna automazione. Scrivi una ricetta: quando parte, quale agente lavora, cosa gli si chiede.';
+
+  @override
+  String get auNoRuns => 'Nessuna esecuzione.';
+
+  @override
+  String get auOpen => 'apri';
+
+  @override
+  String get auOpenSession => 'Apri la sessione';
+
+  @override
+  String get auProjects => 'Progetti';
+
+  @override
+  String get auRecipeBroken => 'La ricetta non si legge più: aprila per correggerla';
+
+  @override
+  String get auReminderDay => 'Giorno';
+
+  @override
+  String get auReminderPurpose =>
+      'RedGiant ti manda questo testo su Telegram all\'ora che scegli, una volta sola. Nessun agente, nessun costo.';
+
+  @override
+  String get auReminderSave => 'Salva il promemoria';
+
+  @override
+  String get auReminderWhat => 'Cosa ricordarti';
+
+  @override
+  String get auRepoEvent_issue_comment => 'Commenti';
+
+  @override
+  String get auRepoEvent_issues => 'Issue';
+
+  @override
+  String get auRepoEvent_pull_request => 'Pull request';
+
+  @override
+  String get auRepoEvent_push => 'Nuovi commit';
+
+  @override
+  String get auRepoEvent_release => 'Rilasci';
+
+  @override
+  String get auRunNow => 'Esegui ora';
+
+  @override
+  String get auRunStatus => 'in corso,fatta,fallita,scaduta,saltata';
+
+  @override
+  String get auRunTriggers => 'orario,webhook,a mano,recuperata';
+
+  @override
+  String get auRuns => 'Esecuzioni';
+
+  @override
+  String get auSave => 'Salva';
+
+  @override
+  String get auSettings => 'Impostazioni';
+
+  @override
+  String get auTplDesc_blank => 'Scegli tu quando, chi e cosa.';
+
+  @override
+  String get auTplDesc_morning =>
+      'Ogni giorno lavorativo alle 8: cosa è successo in ogni progetto.';
+
+  @override
+  String get auTplDesc_spending => 'Il primo del mese: quanto si è speso e dove.';
+
+  @override
+  String get auTplDesc_weekly => 'Il venerdì alle 17: la settimana in un messaggio.';
+
+  @override
+  String get auTplText_morning =>
+      'Dimmi in poche righe cosa è successo ieri in ogni progetto: lavori finiti, problemi ancora aperti, decisioni da prendere.';
+
+  @override
+  String get auTplText_spending =>
+      'Dimmi quanto si è speso il mese scorso, per progetto e per agente, e se qualcosa sembra fuori dal normale.';
+
+  @override
+  String get auTplText_weekly =>
+      'Riassumi questa settimana in ogni progetto: cosa è stato finito, cosa è in ritardo, cosa è previsto per la prossima.';
+
+  @override
+  String get auTplTitle_blank => 'Da zero';
+
+  @override
+  String get auTplTitle_morning => 'Il punto del mattino';
+
+  @override
+  String get auTplTitle_spending => 'Le spese del mese';
+
+  @override
+  String get auTplTitle_weekly => 'Le novità della settimana';
+
+  @override
+  String get auWebhookSecretOnce =>
+      'Segreto (si vede solo ora; va mandato nell\'header x-redgiant-secret):';
+
+  @override
+  String get auWebhookUrl => 'Webhook';
+
+  @override
+  String auWhenAt(String at) {
+    return 'Una volta, il $at';
+  }
+
+  @override
+  String get auWhenAtTime => 'alle';
+
+  @override
+  String auWhenCustom(String cron) {
+    return 'Con un orario tutto suo ($cron)';
+  }
+
+  @override
+  String auWhenDaily(String time) {
+    return 'Ogni giorno alle $time';
+  }
+
+  @override
+  String get auWhenDayOfMonth => 'il giorno';
+
+  @override
+  String auWhenEmail(String filter) {
+    return 'Quando arriva una email ($filter)';
+  }
+
+  @override
+  String get auWhenEmailHelp =>
+      'La casella si imposta una volta, qui o in Impostazioni › Automazioni › Casella email. L\'email arriva all\'agente come informazione, mai come istruzioni.';
+
+  @override
+  String get auWhenEveryHours => 'ogni (ore)';
+
+  @override
+  String auWhenHours(String n) {
+    return 'Ogni $n ore';
+  }
+
+  @override
+  String get auWhenKind_daily => 'Ogni giorno';
+
+  @override
+  String get auWhenKind_email => 'A una email';
+
+  @override
+  String get auWhenKind_hours => 'Ogni tot ore';
+
+  @override
+  String get auWhenKind_monthly => 'Una volta al mese';
+
+  @override
+  String get auWhenKind_repo => 'Sul repository';
+
+  @override
+  String get auWhenKind_webhook => 'A una chiamata web';
+
+  @override
+  String get auWhenKind_weekdays => 'Giorni lavorativi';
+
+  @override
+  String get auWhenKind_weekly => 'Alcuni giorni della settimana';
+
+  @override
+  String auWhenMonthly(String day, String time) {
+    return 'Ogni mese il giorno $day alle $time';
+  }
+
+  @override
+  String auWhenRepo(String events) {
+    return 'Quando succede qualcosa nel repository ($events)';
+  }
+
+  @override
+  String get auWhenRepoHelp =>
+      'RedGiant aggiunge il webhook al repository del progetto da solo: su Gitea subito, su GitHub quando l\'accesso da fuori casa è attivo.';
+
+  @override
+  String get auWhenWebhook => 'Quando arriva una chiamata web (webhook)';
+
+  @override
+  String get auWhenWebhookHelp =>
+      'Un altro programma (un sito, un modulo, GitHub…) chiama l\'indirizzo di RedGiant; indirizzo e segreto compaiono dopo il salvataggio.';
+
+  @override
+  String auWhenWeekdays(String time) {
+    return 'Dal lunedì al venerdì alle $time';
+  }
+
+  @override
+  String auWhenWeekly(String days, String time) {
+    return 'Ogni settimana il $days alle $time';
+  }
+
+  @override
+  String auWhoLead(String project) {
+    return 'Capo di $project';
+  }
+
+  @override
+  String get auOwnHubHint =>
+      'Quando le cose succedono da sole: orari, email, chat, file, promemoria';
+
+  @override
+  String get auOwnOpenChat => 'Apri la conversazione';
+
+  @override
+  String get auOwnTalkGod => 'Parla con God';
+
+  @override
+  String get auOwnMailboxesElsewhere =>
+      'Le caselle si aggiungono e si cambiano in Impostazioni › Canali e caselle.';
+
+  @override
+  String get auOwnNoMailboxes => 'Ancora nessuna casella collegata.';
+
+  @override
+  String get auOwnCopied => 'Copiato';
+
+  @override
+  String get auOwnCopy => 'Copia';
+
+  @override
+  String get auOwnYamlLabel => 'La ricetta in YAML';
+
+  @override
+  String get auOwnRoutineOpen => 'Apri la routine';
+
+  @override
+  String get auOwnNoticeOpen => 'Apri';
+
+  @override
+  String auOwnNoticeFailed(String name) {
+    return '$name: non riuscita';
+  }
+
+  @override
+  String get auOwnPickTitle => 'Scegli';
+
+  @override
+  String auOwnNeedOpenWhere(String where) {
+    return 'Si fa in Impostazioni › $where';
+  }
+
+  @override
+  String get auOwnWhereChats => 'Canali e caselle';
+
+  @override
+  String get auOwnWhereExtensions => 'Estensioni';
+
+  @override
+  String get auOwnWhereKeychain => 'Portachiavi';
+
+  @override
+  String auOwnLoadFailed(String why) {
+    return 'Non riesco a leggere: $why';
+  }
+
+  @override
+  String get auOwnReadOnly =>
+      'Le automazioni le cambia solo la persona (non da un dispositivo di progetto).';
+
+  @override
+  String get knAsstSavedNewChats => 'Salvato: vale per le sue conversazioni nuove.';
+
+  @override
+  String get knCompactAtHint =>
+      'Un agente può tenere a mente solo una certa quantità di testo alla volta, come un quaderno con un numero fisso di pagine. Più a destra: il riassunto arriva più tardi. Più a sinistra: arriva prima e la conversazione resta più leggera.';
+
+  @override
+  String get knCompactAtTitle => 'Quando fare il riassunto';
+
+  @override
+  String knCompactAtValue(String n) {
+    return 'piena al $n%';
+  }
+
+  @override
+  String knCompactDefaultIs(String at, String keep) {
+    return 'Predefinito per il modello di questo agente: al $at%, tenendo il $keep%.';
+  }
+
+  @override
+  String get knCompactDefaults => 'Torna ai valori predefiniti';
+
+  @override
+  String knCompactExample(String at, String keep) {
+    return 'se l\'agente può tenere a mente 100 pagine, quando arriva a $at fa il riassunto: le ultime $keep restano esattamente com\'erano, quelle prima diventano poche pagine di appunti.';
+  }
+
+  @override
+  String knCompactExampleNone(String at) {
+    return 'se l\'agente può tenere a mente 100 pagine, quando arriva a $at le trasforma tutte in poche pagine di appunti.';
+  }
+
+  @override
+  String get knCompactExampleTitle => 'Per esempio:';
+
+  @override
+  String get knCompactExplain =>
+      'Quando la conversazione diventa lunga, l\'agente fa un riassunto delle parti vecchie, come chi prende appunti. Qui scegli quando farlo e quanto dell\'ultima parte tenere com\'è.';
+
+  @override
+  String get knCompactKeepHint =>
+      'La parte più recente resta parola per parola, tutto quello che viene prima diventa appunti. Più ne tieni, meglio l\'agente ricorda gli ultimi dettagli; con un modello sul tuo computer ogni parola tenuta costa un po\' di tempo una volta sola (lì va bene il 12%).';
+
+  @override
+  String get knCompactKeepNone => 'niente';
+
+  @override
+  String get knCompactKeepTitle => 'Quanto dell\'ultima parte tenere com\'è';
+
+  @override
+  String knCompactKeepValue(String n) {
+    return 'l\'ultimo $n%';
+  }
+
+  @override
+  String get knErr_memory_empty => 'Scrivi qualcosa da ricordare.';
+
+  @override
+  String get knErr_memory_forgotten => 'Un ricordo dimenticato per sempre non può tornare.';
+
+  @override
+  String get knErr_memory_full =>
+      'La memoria è piena: cancella o unisci prima qualche ricordo vecchio.';
+
+  @override
+  String get knErr_memory_gone => 'Quel ricordo non c\'è più.';
+
+  @override
+  String get knErr_memory_long =>
+      'Un ricordo è lungo al massimo 400 caratteri: scrivilo più corto.';
+
+  @override
+  String get knErr_memory_moved =>
+      'Il ricordo è cambiato ancora: annulla prima la modifica più recente.';
+
+  @override
+  String get knErr_memory_same => 'Un altro ricordo dice già la stessa cosa.';
+
+  @override
+  String get knErr_memory_secret =>
+      'Sembra una password, un codice o il numero di una carta: i segreti non vanno mai in memoria.';
+
+  @override
+  String get knErr_memory_undone => 'Quella modifica è già stata annullata.';
+
+  @override
+  String knJob_download_knowledge_model(String model, String size) {
+    return 'Scarico $model ($size) per la conoscenza, per cercare nei tuoi file su questo computer (una volta sola)';
+  }
+
+  @override
+  String knJob_download_ocr(String languages, String size) {
+    return 'Scarico la lettura del testo nelle immagini ($languages, $size), una volta sola';
+  }
+
+  @override
+  String get knJob_download_pgvector =>
+      'Scarico pgvector, la ricerca per significato nel database di RedGiant (una volta sola)';
+
+  @override
+  String get knJob_error_checksum =>
+      'Il download è arrivato rovinato (l\'impronta non coincide): riprova.';
+
+  @override
+  String get knJob_error_pgvector_unavailable =>
+      'pgvector non è ancora pubblicato per questo computer: la conoscenza cerca solo per parole.';
+
+  @override
+  String get knJob_step_model_download => 'Il modello';
+
+  @override
+  String get knJob_step_ocr_languages => 'Le lingue';
+
+  @override
+  String get knJob_step_ocr_program => 'Il programma';
+
+  @override
+  String get knJob_step_tool_download => 'Scarico';
+
+  @override
+  String get knKbAdd => 'Aggiungi';
+
+  @override
+  String get knKbAddSource => 'Aggiungi una fonte';
+
+  @override
+  String knKbAddSourceTo(String name) {
+    return 'Aggiungi una fonte a $name';
+  }
+
+  @override
+  String get knKbAgentAlways => 'Sempre';
+
+  @override
+  String get knKbAgentByScopeNo => 'Come dice la raccolta (no)';
+
+  @override
+  String get knKbAgentByScopeYes => 'Come dice la raccolta (sì)';
+
+  @override
+  String knKbAgentLead(String name) {
+    return 'Quali raccolte può cercare $name. Ognuna dice chi può leggerla; qui puoi fare un\'eccezione per questo agente.';
+  }
+
+  @override
+  String get knKbAgentNever => 'Mai';
+
+  @override
+  String get knKbAgentNewOnly => 'Vale dalla prossima conversazione dell\'agente.';
+
+  @override
+  String knKbAgentNone(String name) {
+    return '$name non legge nessuna raccolta';
+  }
+
+  @override
+  String get knKbAgentOpenAll => 'Tutte le raccolte';
+
+  @override
+  String knKbAgentPieces(String n) {
+    return '$n pezzi';
+  }
+
+  @override
+  String knKbAgentReads(String n, String name) {
+    return '$name legge $n raccolte';
+  }
+
+  @override
+  String get knKbAgentTool =>
+      'Le cerca con «Cerca nei documenti» e cita da dove viene ogni risposta.';
+
+  @override
+  String get knKbAllChats => 'Nessuno scelto: le conversazioni con tutti gli agenti.';
+
+  @override
+  String get knKbBackupVectors => 'Metti anche la conoscenza nel backup';
+
+  @override
+  String get knKbBackupVectorsHelp =>
+      'Un backup più grande, ma su un altro computer la ricerca è pronta subito, senza rileggere tutto.';
+
+  @override
+  String get knKbChat => 'conversazione';
+
+  @override
+  String get knKbCiteFallback => 'documento';
+
+  @override
+  String get knKbCloudKey => 'Voce del Portachiavi con la chiave';
+
+  @override
+  String get knKbCloudKeyExample => 'chiave_voyage';
+
+  @override
+  String get knKbCloudKeyHelp =>
+      'Vuoto: la chiave data nella configurazione, per OpenAI, Gemini e Mistral.';
+
+  @override
+  String get knKbCloudLead =>
+      'I pezzi dei tuoi documenti vengono mandati al servizio per essere letti. La sua chiave resta nel Portachiavi.';
+
+  @override
+  String get knKbCloudModel => 'Modelli consigliati';
+
+  @override
+  String get knKbCloudModelName => 'Modello';
+
+  @override
+  String get knKbCloudText => 'OpenAI, Voyage, Cohere, Gemini, Mistral, Jina o il tuo';
+
+  @override
+  String get knKbCloudTitle => 'Un servizio online';
+
+  @override
+  String get knKbCloudTrying => 'Provo la chiave…';
+
+  @override
+  String get knKbCloudUrl => 'Indirizzo del servizio';
+
+  @override
+  String get knKbCloudUrlHelp => 'Uno che parla come OpenAI, che finisce con /v1.';
+
+  @override
+  String get knKbCloudUse => 'Usalo';
+
+  @override
+  String get knKbCloudWho => 'Quale servizio';
+
+  @override
+  String knKbColLine(String docs, String pieces) {
+    return '$docs documenti · $pieces pezzi';
+  }
+
+  @override
+  String get knKbColName => 'Nome';
+
+  @override
+  String get knKbColNameExample => 'Manuali, Contratti, Ricette…';
+
+  @override
+  String get knKbColNameHelp => 'Cosa contiene, in poche parole.';
+
+  @override
+  String get knKbColsLead =>
+      'Una raccolta mette insieme le fonti di un argomento e dice quali agenti possono leggerla.';
+
+  @override
+  String get knKbColsTitle => 'Raccolte';
+
+  @override
+  String get knKbConsentChats =>
+      'Gli agenti che possono leggere questa raccolta potranno trovare e citare quello che hai scritto nelle conversazioni e quello che gli agenti hanno risposto.';
+
+  @override
+  String get knKbConsentChatsYes => 'Sì, gli agenti possono leggere queste conversazioni';
+
+  @override
+  String get knKbConsentMail =>
+      'Gli agenti che possono leggere questa raccolta potranno trovare e citare la tua posta. RedGiant legge solo la posta in arrivo: non segna, non sposta e non cancella mai un messaggio.';
+
+  @override
+  String get knKbConsentMailYes => 'Sì, gli agenti possono leggere questa posta';
+
+  @override
+  String knKbDays(String n) {
+    return '$n giorni';
+  }
+
+  @override
+  String get knKbDiskLead => 'Quanto occupa la conoscenza, e se va nel backup.';
+
+  @override
+  String get knKbDiskModels => 'Modelli';
+
+  @override
+  String get knKbDiskOcr => 'Lettura delle immagini';
+
+  @override
+  String get knKbDiskTexts => 'Pezzi di testo';
+
+  @override
+  String get knKbDiskTitle => 'Spazio sul disco';
+
+  @override
+  String get knKbDiskTotal => 'In tutto';
+
+  @override
+  String get knKbDiskVectors => 'Indice per significato';
+
+  @override
+  String knKbDocsWaiting(String n) {
+    return '$n documenti ancora da leggere.';
+  }
+
+  @override
+  String get knKbDownloading => 'Lo sto scaricando…';
+
+  @override
+  String get knKbDropHere => 'Lascia qui per aggiungerli alla Conoscenza';
+
+  @override
+  String get knKbDropOnCard => 'Trascina dei file su una raccolta per aggiungerli.';
+
+  @override
+  String get knKbDropSay => 'Puoi anche trascinare i file su questa finestra.';
+
+  @override
+  String get knKbErr_bad_choice => 'Questa scelta non è possibile.';
+
+  @override
+  String get knKbErr_bad_source =>
+      'Quella fonte non si può leggere: controlla il percorso o l\'indirizzo.';
+
+  @override
+  String get knKbErr_embedding_failed =>
+      'Il modello non ha risposto: controlla la chiave e riprova.';
+
+  @override
+  String get knKbErr_no_vector =>
+      'La ricerca per significato non è ancora pronta su questo computer.';
+
+  @override
+  String get knKbErr_not_found => 'Non c\'è più.';
+
+  @override
+  String get knKbEtaSoon => 'Il tempo che manca si vede dopo i primi minuti.';
+
+  @override
+  String get knKbFileExample => '/home/io/manuale.pdf';
+
+  @override
+  String get knKbFileHelp => 'Il suo percorso completo sul computer dove gira RedGiant.';
+
+  @override
+  String get knKbFilePath => 'Il file';
+
+  @override
+  String get knKbFolderExample => '/home/io/Documenti oppure C:\\Users\\io\\Documenti';
+
+  @override
+  String get knKbFolderHelp => 'Il suo percorso completo sul computer dove gira RedGiant.';
+
+  @override
+  String get knKbFolderPath => 'La cartella';
+
+  @override
+  String knKbForAgent(String name) {
+    return 'Per $name';
+  }
+
+  @override
+  String get knKbForAll => 'Per tutti gli agenti';
+
+  @override
+  String knKbForProject(String name) {
+    return 'Per il progetto $name';
+  }
+
+  @override
+  String get knKbForWhom => 'Chi può leggerla';
+
+  @override
+  String get knKbHere => 'Già scaricato';
+
+  @override
+  String get knKbHowFarBack => 'Quanto indietro';
+
+  @override
+  String get knKbKindText_chats => 'Quello che hai detto con gli agenti';
+
+  @override
+  String get knKbKindText_file => 'Un documento solo';
+
+  @override
+  String get knKbKindText_folder => 'Tutto quello che c\'è dentro, sempre aggiornato';
+
+  @override
+  String get knKbKindText_mail => 'Solo se lo vuoi tu';
+
+  @override
+  String get knKbKindText_url => 'Letta una volta, di nuovo quando lo chiedi';
+
+  @override
+  String get knKbKindText_workspace => 'I file di uno dei tuoi progetti';
+
+  @override
+  String get knKbKind_chats => 'Le conversazioni';
+
+  @override
+  String get knKbKind_file => 'Un file';
+
+  @override
+  String get knKbKind_folder => 'Una cartella';
+
+  @override
+  String get knKbKind_mail => 'Una casella di posta';
+
+  @override
+  String get knKbKind_url => 'Una pagina web';
+
+  @override
+  String get knKbKind_workspace => 'Un progetto';
+
+  @override
+  String get knKbLead =>
+      'Scegli cartelle, file e pagine: RedGiant li legge, li divide in pezzi e li ritrova per quello che vogliono dire. Gli agenti dicono da dove viene ogni risposta e con un clic si apre il file in quel punto.';
+
+  @override
+  String knKbLeftOut(String n) {
+    return 'Lasciati fuori ($n)';
+  }
+
+  @override
+  String knKbLine(String n) {
+    return 'riga $n';
+  }
+
+  @override
+  String knKbLines(String a, String b) {
+    return 'righe $a–$b';
+  }
+
+  @override
+  String get knKbLoading => 'Carico…';
+
+  @override
+  String knKbLocalText(String dims, String size) {
+    return 'Su questo computer · $size MB · $dims numeri per pezzo';
+  }
+
+  @override
+  String get knKbMail => 'email';
+
+  @override
+  String get knKbMake => 'Creala';
+
+  @override
+  String knKbMeaningBest(String name, String size) {
+    return 'Quello consigliato è $name: $size MB, scaricato una volta sola, solo adesso che lo dici tu.';
+  }
+
+  @override
+  String knKbMeaningDownload(String name, String size) {
+    return 'Scarica $name ($size MB) e attivala';
+  }
+
+  @override
+  String get knKbMeaningOffTitle => 'La ricerca per significato è spenta: solo per parole';
+
+  @override
+  String get knKbMeaningOff_downloading =>
+      'Il modello che hai scelto non è ancora su questo computer: finché non arriva la ricerca va per parole.';
+
+  @override
+  String get knKbMeaningOff_failed =>
+      'Il modello per il significato non risponde: la ricerca va per parole. Sceglilo di nuovo o scegline un altro.';
+
+  @override
+  String get knKbMeaningOff_no_model =>
+      'Nessun modello legge ancora i tuoi documenti per significato: così gli agenti trovano un pezzo solo se contiene le stesse parole che cercano.';
+
+  @override
+  String get knKbMeaningOff_no_vector =>
+      'Su questo computer manca la parte del database che cerca per significato: la ricerca va per parole.';
+
+  @override
+  String get knKbMeaningOther => 'Scegli un altro modello';
+
+  @override
+  String get knKbMeaningTurnOn => 'Attiva la ricerca per significato';
+
+  @override
+  String knKbMeaningUse(String name) {
+    return 'Usa $name';
+  }
+
+  @override
+  String get knKbMeaningWhy =>
+      'Con un modello che legge per significato, «quando apre il magazzino» trova anche «apre alle 7:30». Gira su questo computer: i tuoi documenti non escono.';
+
+  @override
+  String get knKbModelLead =>
+      'Su questo computer (scaricato una volta, niente esce di casa) oppure un servizio online con la tua chiave. Se lo cambi, l\'indice nuovo si prepara in sottofondo.';
+
+  @override
+  String get knKbModelTitle => 'Il modello che legge per significato';
+
+  @override
+  String get knKbNewCollection => 'Nuova raccolta';
+
+  @override
+  String knKbNewIndex(String model) {
+    return 'Sto preparando un indice nuovo per $model; le ricerche usano quello di prima finché non è pronto.';
+  }
+
+  @override
+  String get knKbNoCols => 'Ancora nessuna raccolta.';
+
+  @override
+  String get knKbNoMailboxes => 'Nessuna casella collegata: aggiungila in Automazioni.';
+
+  @override
+  String get knKbNoProjects => 'Non c\'è ancora nessun progetto.';
+
+  @override
+  String get knKbNoSources => 'Ancora nessuna fonte: aggiungi una cartella, un file o una pagina.';
+
+  @override
+  String get knKbOcrDownload => 'Scarica adesso';
+
+  @override
+  String get knKbOcrLanguages => 'Lingue dei tuoi documenti';
+
+  @override
+  String get knKbOcrLead =>
+      'Legge foto di documenti e PDF scansionati su questo computer (Tesseract). Il programma e le lingue si scaricano la prima volta, pochi MB.';
+
+  @override
+  String get knKbOcrOn => 'Leggi il testo nelle immagini e nelle scansioni';
+
+  @override
+  String get knKbOcrOnHelp => 'Più lento del testo: circa un secondo a pagina.';
+
+  @override
+  String get knKbOcrReady => 'Pronto su questo computer.';
+
+  @override
+  String get knKbOcrTitle => 'Il testo nelle immagini e nelle scansioni';
+
+  @override
+  String knKbOcrToDownload(String size) {
+    return 'Da scaricare: circa $size MB.';
+  }
+
+  @override
+  String knKbOcrWaiting(String n) {
+    return '$n immagini e scansioni lo aspettano.';
+  }
+
+  @override
+  String knKbOpenCollection(String name) {
+    return 'Apri la raccolta $name';
+  }
+
+  @override
+  String knKbPage(String n) {
+    return 'pagina $n';
+  }
+
+  @override
+  String get knKbPause => 'Metti in pausa la lettura';
+
+  @override
+  String get knKbPauseHelp =>
+      'Le ricerche continuano a funzionare; non legge niente di nuovo finché non lo spegni.';
+
+  @override
+  String knKbPickEmpty(String name) {
+    return 'Qui in $name non c\'è niente.';
+  }
+
+  @override
+  String get knKbPickFile => 'Scegli un file in RedGiant';
+
+  @override
+  String get knKbPickFolder => 'Scegli una cartella in RedGiant';
+
+  @override
+  String get knKbPickOther => 'Scegline un\'altra';
+
+  @override
+  String get knKbPickPlaces => 'Torna ai progetti';
+
+  @override
+  String get knKbPickThis => 'Scegli questa cartella';
+
+  @override
+  String get knKbPickUp => 'Su di una cartella';
+
+  @override
+  String get knKbPickWhere => 'I tuoi progetti e le cartelle di RedGiant';
+
+  @override
+  String get knKbPlaceAssistants => 'La scrivania degli assistenti';
+
+  @override
+  String get knKbPlacePlatform => 'La cartella di God';
+
+  @override
+  String get knKbProv_cohere => 'Cohere';
+
+  @override
+  String get knKbProv_compatible => 'Un altro (come OpenAI)';
+
+  @override
+  String get knKbProv_gemini => 'Gemini';
+
+  @override
+  String get knKbProv_jina => 'Jina';
+
+  @override
+  String get knKbProv_mistral => 'Mistral';
+
+  @override
+  String get knKbProv_openai => 'OpenAI';
+
+  @override
+  String get knKbProv_voyage => 'Voyage';
+
+  @override
+  String get knKbQ => 'I tuoi documenti, da far consultare agli agenti';
+
+  @override
+  String knKbQueueError(String error) {
+    return 'Fermo per un problema: $error';
+  }
+
+  @override
+  String get knKbRebuild => 'Ricostruisci';
+
+  @override
+  String get knKbRebuildHelp => 'Rilegge tutto da capo con lo stesso modello.';
+
+  @override
+  String get knKbRebuildQ => 'Ricostruire l\'indice?';
+
+  @override
+  String get knKbRebuildText =>
+      'Ogni pezzo viene riletto. Le ricerche continuano a usare l\'indice di adesso finché quello nuovo non è pronto.';
+
+  @override
+  String get knKbRecommended => 'consigliato';
+
+  @override
+  String get knKbRemove => 'Elimina la raccolta';
+
+  @override
+  String knKbRemoveQ(String name) {
+    return 'Eliminare $name?';
+  }
+
+  @override
+  String get knKbRemoveSource => 'Togli questa fonte';
+
+  @override
+  String get knKbRemoveText =>
+      'I suoi pezzi escono dalla conoscenza. I tuoi file restano dove sono: niente sul disco viene toccato.';
+
+  @override
+  String get knKbRerankLead =>
+      'Rilegge la domanda con ogni pezzo trovato e li rimette in ordine: risposte migliori, un po\' più lento.';
+
+  @override
+  String get knKbRerankNone => 'Nessuno';
+
+  @override
+  String get knKbRerankNoneText => 'L\'ordine della ricerca così com\'è';
+
+  @override
+  String knKbRerankText(String size) {
+    return 'Su questo computer · $size MB';
+  }
+
+  @override
+  String get knKbRerankTitle => 'Quello che mette il migliore in cima';
+
+  @override
+  String get knKbRescan => 'Guarda di nuovo adesso';
+
+  @override
+  String get knKbSaveScope => 'Salva chi può leggerla';
+
+  @override
+  String get knKbScopeAgent => 'Un agente';
+
+  @override
+  String get knKbScopeAll => 'Tutti gli agenti';
+
+  @override
+  String get knKbScopeProject => 'Gli agenti di un progetto';
+
+  @override
+  String get knKbSection => 'Conoscenza';
+
+  @override
+  String get knKbSources => 'Fonti';
+
+  @override
+  String knKbSrcChatsAll(String days) {
+    return 'Le tue conversazioni, ultimi $days giorni';
+  }
+
+  @override
+  String knKbSrcChatsOf(String days, String names) {
+    return 'Le conversazioni con $names, ultimi $days giorni';
+  }
+
+  @override
+  String knKbSrcDocs(String n) {
+    return '$n documenti';
+  }
+
+  @override
+  String knKbSrcMailOf(String days) {
+    return 'La posta degli ultimi $days giorni';
+  }
+
+  @override
+  String knKbSrcProjectOf(String name) {
+    return 'I file di $name';
+  }
+
+  @override
+  String get knKbSrcState_failed => 'Non riesco a leggerla';
+
+  @override
+  String get knKbSrcState_ready => 'Aggiornata';
+
+  @override
+  String get knKbSrcState_scanning => 'Sto guardando';
+
+  @override
+  String get knKbSrcState_waiting => 'In attesa';
+
+  @override
+  String get knKbStateEmpty =>
+      'Ancora niente da cercare: crea una raccolta e aggiungi una cartella.';
+
+  @override
+  String get knKbStateNoModel =>
+      'Scegli un modello qui sotto per cercare per significato; fino ad allora cerca per parole.';
+
+  @override
+  String get knKbStateNoVector =>
+      'La ricerca per significato non è ancora pronta su questo computer: per ora cerca per parole.';
+
+  @override
+  String get knKbStatePaused => 'In pausa: le ricerche funzionano, non legge niente di nuovo.';
+
+  @override
+  String knKbStateReady(String n) {
+    return 'Pronta: $n pezzi si possono cercare';
+  }
+
+  @override
+  String get knKbStateWorking => 'Sto leggendo i tuoi documenti…';
+
+  @override
+  String knKbStatusLine(String cols, String pieces) {
+    return '$cols raccolte · $pieces pezzi';
+  }
+
+  @override
+  String get knKbThreads => 'Thread del processore';
+
+  @override
+  String get knKbThreadsAuto => 'automatico';
+
+  @override
+  String get knKbThreadsHelp => 'In automatico lascia a te la maggior parte del processore.';
+
+  @override
+  String get knKbThreadsTitle => 'Quanto processore usare';
+
+  @override
+  String knKbToDownload(String size) {
+    return 'Da scaricare: $size MB';
+  }
+
+  @override
+  String get knKbTryExample => 'Quando scade la garanzia?';
+
+  @override
+  String knKbTryHow(String ms, String n) {
+    return '$n pezzi in $ms ms, per significato e per parole.';
+  }
+
+  @override
+  String get knKbTryLead =>
+      'Quello che troverebbero gli agenti per una domanda, il migliore per primo. Cliccane uno per aprirlo.';
+
+  @override
+  String get knKbTryNothing => 'Non ho trovato niente. Prova con altre parole.';
+
+  @override
+  String get knKbTrySearch => 'Cerca';
+
+  @override
+  String get knKbTryTitle => 'Prova una ricerca';
+
+  @override
+  String get knKbTryWordsOnly =>
+      'Cercato solo per parole (manca ancora il modello per il significato).';
+
+  @override
+  String get knKbUploadFiles => 'Carica file da questo computer';
+
+  @override
+  String get knKbUploadFolder => 'Carica una cartella da questo computer';
+
+  @override
+  String get knKbUploadSay =>
+      'Oppure trascina qui i file. I file caricati restano nella cartella di God, sotto knowledge.';
+
+  @override
+  String get knKbUploading => 'Invio dei file…';
+
+  @override
+  String get knKbUrl => 'L\'indirizzo';
+
+  @override
+  String get knKbUrlHelp => 'Letta senza i tuoi accessi: solo pagine pubbliche.';
+
+  @override
+  String get knKbWhichChats => 'Le conversazioni con chi';
+
+  @override
+  String get knKbWhichMailbox => 'Quale casella';
+
+  @override
+  String get knKbWhichProject => 'Quale progetto';
+
+  @override
+  String knKbWhyFailed(String error) {
+    return 'Non è andata: $error';
+  }
+
+  @override
+  String get knKbWhy_binary => 'Non è un documento (un programma, un archivio…)';
+
+  @override
+  String get knKbWhy_empty => 'Non c\'è testo dentro';
+
+  @override
+  String get knKbWhy_encrypted => 'Protetto da una password';
+
+  @override
+  String get knKbWhy_needs_libreoffice => 'Un vecchio file di Office: serve LibreOffice.';
+
+  @override
+  String get knKbWhy_needs_ocr =>
+      'Un\'immagine o una scansione: accendi la lettura del testo nelle immagini, più sotto.';
+
+  @override
+  String get knKbWhy_too_big => 'Troppo grande da leggere';
+
+  @override
+  String get knKbWhy_unsupported => 'Un tipo di file che non sa leggere';
+
+  @override
+  String get knMemAdd => 'Aggiungi';
+
+  @override
+  String get knMemAddPlaceholder => 'Una cosa da ricordare, per esempio: preferisco risposte brevi';
+
+  @override
+  String get knMemAlready => 'Lo ricorda già.';
+
+  @override
+  String get knMemAutoOff =>
+      'Spenta: RedGiant non impara niente da sola. Puoi sempre aggiungere ricordi qui, o chiedere a un agente di ricordarsi qualcosa.';
+
+  @override
+  String get knMemAutoOn =>
+      'Dopo che hai scritto, RedGiant annota le cose che restano vere su di te: gusti, lavoro, come preferisci le risposte. Legge solo i tuoi messaggi, mai email, pagine web o automazioni, e non annota mai le password.';
+
+  @override
+  String get knMemAutoTitle => 'Impara da sola dalle conversazioni';
+
+  @override
+  String knMemByAgent(String name) {
+    return 'Salvato da $name';
+  }
+
+  @override
+  String get knMemByAgentUnknown => 'Salvato da un agente';
+
+  @override
+  String get knMemByAuto => 'Imparato da sola';
+
+  @override
+  String get knMemByHuman => 'Scritto da te';
+
+  @override
+  String get knMemByImport => 'Dalle tue note di prima';
+
+  @override
+  String knMemCount(String n) {
+    return '$n ricordi';
+  }
+
+  @override
+  String get knMemCountOne => '1 ricordo';
+
+  @override
+  String get knMemDid_added => 'Aggiunto';
+
+  @override
+  String get knMemDid_edited => 'Modificato';
+
+  @override
+  String get knMemDid_forgotten => 'Dimenticato per sempre';
+
+  @override
+  String get knMemDid_removed => 'Cancellato';
+
+  @override
+  String get knMemEdit => 'Modifica';
+
+  @override
+  String get knMemEditTitle => 'Modifica il ricordo';
+
+  @override
+  String get knMemEmpty =>
+      'RedGiant non sa ancora niente di te. Parla con un agente, oppure scrivi qui una cosa da ricordare.';
+
+  @override
+  String get knMemEyebrow => 'Memoria condivisa';
+
+  @override
+  String get knMemForget => 'Dimentica per sempre';
+
+  @override
+  String get knMemForgetText =>
+      'RedGiant lo cancella e toglie le sue parole anche dall\'elenco delle modifiche. Non si potrà più recuperare.';
+
+  @override
+  String get knMemForgetTitle => 'Dimenticarlo per sempre?';
+
+  @override
+  String get knMemForgottenText => 'Le sue parole sono state cancellate per sempre.';
+
+  @override
+  String knMemFrom(String title) {
+    return 'dalla conversazione «$title»';
+  }
+
+  @override
+  String get knMemFromUntitled => 'da una conversazione';
+
+  @override
+  String get knMemGoShared => 'Memoria condivisa: cosa RedGiant sa di te';
+
+  @override
+  String get knMemGoSharedOpen => 'Apri';
+
+  @override
+  String get knMemGoSharedText => 'La usano tutti gli agenti e si aggiorna da sola mentre parli.';
+
+  @override
+  String get knMemHistory => 'Ultime modifiche';
+
+  @override
+  String get knMemHistoryLead =>
+      'Ogni modifica resta segnata e la puoi annullare, tranne quando dimentichi per sempre.';
+
+  @override
+  String get knMemHistoryLess => 'Mostra meno';
+
+  @override
+  String get knMemHistoryMore => 'Mostra tutte le modifiche';
+
+  @override
+  String get knMemLead =>
+      'Questa memoria la usano tutti gli agenti e si aggiorna da sola mentre parli. Ogni agente ha anche una memoria sua, nella scheda Memoria dell\'agente.';
+
+  @override
+  String get knMemListLead =>
+      'Le modifiche valgono dalla prossima conversazione: quelle già aperte continuano come prima.';
+
+  @override
+  String get knMemListTitle => 'Cosa ricorda';
+
+  @override
+  String get knMemNoOwn => 'Questo agente non tiene una memoria sua.';
+
+  @override
+  String get knMemOwnCard => 'Memoria personale di un agente';
+
+  @override
+  String get knMemOwnCardQ => 'Nella scheda Memoria di ogni agente';
+
+  @override
+  String get knMemOwnCardText =>
+      'La legge solo quell\'agente. La scrivi tu, oppure l\'agente ci annota quello che gli serve per il suo lavoro.';
+
+  @override
+  String knMemOwnHelp(String name) {
+    return 'La legge solo $name, all\'inizio di ogni conversazione. Anche $name ci può annotare quello che gli serve.';
+  }
+
+  @override
+  String get knMemOwnPlaceholder => 'Per esempio: rispondi sempre con un elenco breve';
+
+  @override
+  String knMemOwnTitle(String name) {
+    return 'Memoria di $name: solo per questo agente';
+  }
+
+  @override
+  String get knMemProjectHelp => 'La leggono tutti gli agenti che lavorano a questo progetto.';
+
+  @override
+  String knMemProjectTitle(String name) {
+    return 'Memoria del progetto «$name»';
+  }
+
+  @override
+  String get knMemRemove => 'Cancella';
+
+  @override
+  String get knMemRemoved => 'Ricordo cancellato.';
+
+  @override
+  String get knMemSaved => 'Salvato';
+
+  @override
+  String get knMemSharedCard => 'Memoria condivisa';
+
+  @override
+  String get knMemSharedCardQ => 'Questa pagina';
+
+  @override
+  String get knMemSharedCardText =>
+      'La leggono tutti gli agenti. Si riempie da sola con le tue conversazioni, e qui la puoi cambiare.';
+
+  @override
+  String get knMemSummaryTitle => 'Riassunto delle conversazioni lunghe';
+
+  @override
+  String get knMemTitle => 'Cosa RedGiant sa di te';
+
+  @override
+  String get knMemUndid_added => 'Ripristinato';
+
+  @override
+  String get knMemUndid_edited => 'Tornato com\'era';
+
+  @override
+  String get knMemUndid_removed => 'Tolto di nuovo';
+
+  @override
+  String get knMemUndo => 'Annulla';
+
+  @override
+  String get knMemUndone => 'Annullata';
+
+  @override
+  String knMemUsed(String limit, String used) {
+    return 'Spazio usato: $used caratteri su $limit';
+  }
+
+  @override
+  String knMemWith(String name) {
+    return 'con $name';
+  }
+
+  @override
+  String get knSettings => 'Impostazioni';
+
+  @override
+  String knUiAboutHours(String h, String min) {
+    return 'mancano circa $h h $min min';
+  }
+
+  @override
+  String knUiAboutMinutes(String min) {
+    return 'mancano circa $min min';
+  }
+
+  @override
+  String get knUiLessThanMinute => 'manca meno di un minuto';
+
+  @override
+  String knUiOf(String done, String total) {
+    return '$done di $total';
+  }
+
+  @override
+  String get knUiDetails => 'Dettagli per chi ti aiuta';
+
+  @override
+  String get knWzDoneBtn => 'Fatto';
+
+  @override
+  String get knHubKnowledge =>
+      'I tuoi documenti in cui gli agenti cercano: collezioni, fonti, modelli';
+
+  @override
+  String get knHubMemory => 'Cosa sanno di te tutti gli agenti, ogni modifica annullabile';
 }

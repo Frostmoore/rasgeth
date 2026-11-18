@@ -13910,6 +13910,3900 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A build from the sources: it does not update itself.'**
   String get appUpdDev;
+
+  /// No description provided for @auAsstNewRoutine.
+  ///
+  /// In en, this message translates to:
+  /// **'New routine'**
+  String get auAsstNewRoutine;
+
+  /// No description provided for @auAutoOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Switched off: it does not run until you switch it on.'**
+  String get auAutoOff;
+
+  /// No description provided for @auAutoOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Switched on'**
+  String get auAutoOn;
+
+  /// No description provided for @auAutoStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start from'**
+  String get auAutoStart;
+
+  /// No description provided for @auAutoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What it is called'**
+  String get auAutoTitle;
+
+  /// No description provided for @auAutoTitleHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A short name, for you.'**
+  String get auAutoTitleHelp;
+
+  /// No description provided for @auAutoWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'What to ask'**
+  String get auAutoWhat;
+
+  /// No description provided for @auAutoWhatHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'As you would write it in a chat. The answer reaches you on Telegram.'**
+  String get auAutoWhatHelp;
+
+  /// No description provided for @auAutoWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who does it'**
+  String get auAutoWho;
+
+  /// No description provided for @auAutoWhoHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'God sees every project; a project\'s lead and agents only theirs.'**
+  String get auAutoWhoHelp;
+
+  /// No description provided for @auAutoYaml.
+  ///
+  /// In en, this message translates to:
+  /// **'The recipe (for experts)'**
+  String get auAutoYaml;
+
+  /// No description provided for @auAutoYamlHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What the form writes. Changed here, it is saved as it is.'**
+  String get auAutoYamlHint;
+
+  /// No description provided for @auAutomationNotices.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation messages'**
+  String get auAutomationNotices;
+
+  /// No description provided for @auAutomations.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations'**
+  String get auAutomations;
+
+  /// No description provided for @auAwChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get auAwChange;
+
+  /// No description provided for @auAwLastRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Last run'**
+  String get auAwLastRun;
+
+  /// No description provided for @auAwLead.
+  ///
+  /// In en, this message translates to:
+  /// **'An automation asks an agent to do something at a time or when something happens; a reminder sends you a message on a day. The lit squares are switched on.'**
+  String get auAwLead;
+
+  /// No description provided for @auAwListLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Open one to switch it on or off, run it now, change it or read how it went.'**
+  String get auAwListLead;
+
+  /// No description provided for @auAwListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your automations'**
+  String get auAwListTitle;
+
+  /// No description provided for @auAwNewText.
+  ///
+  /// In en, this message translates to:
+  /// **'An agent does something for you: every morning, every week, on an email or a push.'**
+  String get auAwNewText;
+
+  /// No description provided for @auAwQ.
+  ///
+  /// In en, this message translates to:
+  /// **'What should RedGiant do on its own?'**
+  String get auAwQ;
+
+  /// No description provided for @auAwReminderText.
+  ///
+  /// In en, this message translates to:
+  /// **'A message for you on the day and at the time you choose, as you wrote it.'**
+  String get auAwReminderText;
+
+  /// No description provided for @auAwSourcesLead.
+  ///
+  /// In en, this message translates to:
+  /// **'What automations can listen to besides the clock.'**
+  String get auAwSourcesLead;
+
+  /// No description provided for @auAwSourcesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connections'**
+  String get auAwSourcesTitle;
+
+  /// No description provided for @auAwStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Started: its run appears below in a moment.'**
+  String get auAwStarted;
+
+  /// No description provided for @auAxAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get auAxAdvanced;
+
+  /// No description provided for @auAxAfterWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Which automation'**
+  String get auAxAfterWhich;
+
+  /// No description provided for @auAxAfter_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'When it failed'**
+  String get auAxAfter_failed;
+
+  /// No description provided for @auAxAfter_ok.
+  ///
+  /// In en, this message translates to:
+  /// **'When it went well'**
+  String get auAxAfter_ok;
+
+  /// No description provided for @auAxAfter_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'When it took too long'**
+  String get auAxAfter_timeout;
+
+  /// No description provided for @auAxAgentOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'The agent\'s own'**
+  String get auAxAgentOwn;
+
+  /// No description provided for @auAxAnyChat.
+  ///
+  /// In en, this message translates to:
+  /// **'any chat'**
+  String get auAxAnyChat;
+
+  /// No description provided for @auAxAnyProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Any project'**
+  String get auAxAnyProject;
+
+  /// No description provided for @auAxApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me before acting'**
+  String get auAxApprove;
+
+  /// No description provided for @auAxApproveHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'You get a question here and on your chats; without your yes it does not start.'**
+  String get auAxApproveHelp;
+
+  /// No description provided for @auAxBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'A spending limit each time'**
+  String get auAxBudget;
+
+  /// No description provided for @auAxBudgetHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Past it, the agent stops.'**
+  String get auAxBudgetHelp;
+
+  /// No description provided for @auAxBudgetUsd.
+  ///
+  /// In en, this message translates to:
+  /// **'Dollars at most'**
+  String get auAxBudgetUsd;
+
+  /// No description provided for @auAxCat_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get auAxCat_other;
+
+  /// No description provided for @auAxCat_personal.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal'**
+  String get auAxCat_personal;
+
+  /// No description provided for @auAxCat_social.
+  ///
+  /// In en, this message translates to:
+  /// **'Social'**
+  String get auAxCat_social;
+
+  /// No description provided for @auAxCat_work.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get auAxCat_work;
+
+  /// No description provided for @auAxCondCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'A pause between one time and the next'**
+  String get auAxCondCooldown;
+
+  /// No description provided for @auAxCondDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Only in a period'**
+  String get auAxCondDates;
+
+  /// No description provided for @auAxCondDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Only on certain days'**
+  String get auAxCondDays;
+
+  /// No description provided for @auAxCondFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Only from certain senders'**
+  String get auAxCondFrom;
+
+  /// No description provided for @auAxCondFromHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For emails and chat messages.'**
+  String get auAxCondFromHelp;
+
+  /// No description provided for @auAxCondHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Only at certain hours'**
+  String get auAxCondHours;
+
+  /// No description provided for @auAxCondMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Not too many times a day'**
+  String get auAxCondMax;
+
+  /// No description provided for @auAxCondWithout.
+  ///
+  /// In en, this message translates to:
+  /// **'Never with certain words'**
+  String get auAxCondWithout;
+
+  /// No description provided for @auAxCondWords.
+  ///
+  /// In en, this message translates to:
+  /// **'Only with certain words'**
+  String get auAxCondWords;
+
+  /// No description provided for @auAxCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes of pause'**
+  String get auAxCooldown;
+
+  /// No description provided for @auAxCron.
+  ///
+  /// In en, this message translates to:
+  /// **'Cron expression'**
+  String get auAxCron;
+
+  /// No description provided for @auAxCronHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Minute, hour, day of the month, month, day of the week: 0 9 * * 1-5 is 9:00 on working days.'**
+  String get auAxCronHelp;
+
+  /// No description provided for @auAxDoes.
+  ///
+  /// In en, this message translates to:
+  /// **'What it does'**
+  String get auAxDoes;
+
+  /// No description provided for @auAxDoesAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'An agent works'**
+  String get auAxDoesAgent;
+
+  /// No description provided for @auAxDoesHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'An agent does some work, or a plain message reaches you as written.'**
+  String get auAxDoesHelp;
+
+  /// No description provided for @auAxDoesReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Just a message'**
+  String get auAxDoesReminder;
+
+  /// No description provided for @auAxEffort.
+  ///
+  /// In en, this message translates to:
+  /// **'Effort'**
+  String get auAxEffort;
+
+  /// No description provided for @auAxEmailAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get auAxEmailAll;
+
+  /// No description provided for @auAxEmailByBox.
+  ///
+  /// In en, this message translates to:
+  /// **'Some mailboxes'**
+  String get auAxEmailByBox;
+
+  /// No description provided for @auAxEmailByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'A category'**
+  String get auAxEmailByCategory;
+
+  /// No description provided for @auAxEmailText.
+  ///
+  /// In en, this message translates to:
+  /// **'The text contains'**
+  String get auAxEmailText;
+
+  /// No description provided for @auAxEmailTextPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'A word in the email (optional)'**
+  String get auAxEmailTextPlaceholder;
+
+  /// No description provided for @auAxEmailWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Which mailboxes'**
+  String get auAxEmailWhich;
+
+  /// No description provided for @auAxEveryMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Every how many minutes'**
+  String get auAxEveryMinutes;
+
+  /// No description provided for @auAxFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Then start'**
+  String get auAxFallback;
+
+  /// No description provided for @auAxFilesPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get auAxFilesPath;
+
+  /// No description provided for @auAxFilesPathHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Inside the project; a dot is the whole project.'**
+  String get auAxFilesPathHelp;
+
+  /// No description provided for @auAxFilesPattern.
+  ///
+  /// In en, this message translates to:
+  /// **'Only these files'**
+  String get auAxFilesPattern;
+
+  /// No description provided for @auAxFilesPatternHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For example *.pdf; empty: every file.'**
+  String get auAxFilesPatternHelp;
+
+  /// No description provided for @auAxFilesProjectHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a project first: the folder is inside one.'**
+  String get auAxFilesProjectHelp;
+
+  /// No description provided for @auAxFiles_added.
+  ///
+  /// In en, this message translates to:
+  /// **'New files'**
+  String get auAxFiles_added;
+
+  /// No description provided for @auAxFiles_changed.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed files'**
+  String get auAxFiles_changed;
+
+  /// No description provided for @auAxFiles_removed.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted files'**
+  String get auAxFiles_removed;
+
+  /// No description provided for @auAxFirstBox.
+  ///
+  /// In en, this message translates to:
+  /// **'The first mailbox'**
+  String get auAxFirstBox;
+
+  /// No description provided for @auAxFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get auAxFrom;
+
+  /// No description provided for @auAxFromDay.
+  ///
+  /// In en, this message translates to:
+  /// **'From the day'**
+  String get auAxFromDay;
+
+  /// No description provided for @auAxIfFails.
+  ///
+  /// In en, this message translates to:
+  /// **'If it fails'**
+  String get auAxIfFails;
+
+  /// No description provided for @auAxKind_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Written by hand (cron)'**
+  String get auAxKind_custom;
+
+  /// No description provided for @auAxKind_minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Every few minutes'**
+  String get auAxKind_minutes;
+
+  /// No description provided for @auAxKind_once.
+  ///
+  /// In en, this message translates to:
+  /// **'Once, on a day'**
+  String get auAxKind_once;
+
+  /// No description provided for @auAxMagic.
+  ///
+  /// In en, this message translates to:
+  /// **'Magic automation'**
+  String get auAxMagic;
+
+  /// No description provided for @auAxMagicAllSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything it needs is there.'**
+  String get auAxMagicAllSet;
+
+  /// No description provided for @auAxMagicApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve and create'**
+  String get auAxMagicApprove;
+
+  /// No description provided for @auAxMagicAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'What should happen?'**
+  String get auAxMagicAsk;
+
+  /// No description provided for @auAxMagicBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'God is building it with you: answer its questions in the conversation.'**
+  String get auAxMagicBuilding;
+
+  /// No description provided for @auAxMagicDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Put it away'**
+  String get auAxMagicDismiss;
+
+  /// No description provided for @auAxMagicDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved: it is among your automations now.'**
+  String get auAxMagicDone;
+
+  /// No description provided for @auAxMagicEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Change it first'**
+  String get auAxMagicEdit;
+
+  /// No description provided for @auAxMagicEx1.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day at 3 check my Revolut account and tell me on WhatsApp if I received or paid money'**
+  String get auAxMagicEx1;
+
+  /// No description provided for @auAxMagicEx2.
+  ///
+  /// In en, this message translates to:
+  /// **'When an invoice arrives in my work mailbox, save it in the project and tell me the amount'**
+  String get auAxMagicEx2;
+
+  /// No description provided for @auAxMagicEx3.
+  ///
+  /// In en, this message translates to:
+  /// **'When I write «shopping:» on Telegram, add it to the shopping list and send me the list on Saturday'**
+  String get auAxMagicEx3;
+
+  /// No description provided for @auAxMagicExamples.
+  ///
+  /// In en, this message translates to:
+  /// **'Or start from an example'**
+  String get auAxMagicExamples;
+
+  /// No description provided for @auAxMagicGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask God'**
+  String get auAxMagicGo;
+
+  /// No description provided for @auAxMagicLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Write what should happen, as you would say it to a person. God answers in a conversation of its own and builds the automation with you.'**
+  String get auAxMagicLead;
+
+  /// No description provided for @auAxMagicListLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Built with God: open one to go on with the conversation.'**
+  String get auAxMagicListLead;
+
+  /// No description provided for @auAxMagicListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Magic automations'**
+  String get auAxMagicListTitle;
+
+  /// No description provided for @auAxMagicMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Before you can approve, set up what is missing:'**
+  String get auAxMagicMissing;
+
+  /// No description provided for @auAxMagicNeeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Still needed'**
+  String get auAxMagicNeeds;
+
+  /// No description provided for @auAxMagicPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day at 3 check my bank account and tell me on WhatsApp what came in and what went out'**
+  String get auAxMagicPlaceholder;
+
+  /// No description provided for @auAxMagicPromise1.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing starts without your yes.'**
+  String get auAxMagicPromise1;
+
+  /// No description provided for @auAxMagicPromise2.
+  ///
+  /// In en, this message translates to:
+  /// **'New tools and skills are tried apart and wait for you.'**
+  String get auAxMagicPromise2;
+
+  /// No description provided for @auAxMagicPromise3.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys and passwords never go in the chat: God tells you where to put them.'**
+  String get auAxMagicPromise3;
+
+  /// No description provided for @auAxMagicProposal.
+  ///
+  /// In en, this message translates to:
+  /// **'God\'s proposal'**
+  String get auAxMagicProposal;
+
+  /// No description provided for @auAxMagicReadyBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'To approve'**
+  String get auAxMagicReadyBadge;
+
+  /// No description provided for @auAxMagicReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Not like this'**
+  String get auAxMagicReject;
+
+  /// No description provided for @auAxMagicSendNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to God'**
+  String get auAxMagicSendNo;
+
+  /// No description provided for @auAxMagicStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Calling God…'**
+  String get auAxMagicStarting;
+
+  /// No description provided for @auAxMagicState_building.
+  ///
+  /// In en, this message translates to:
+  /// **'Being built'**
+  String get auAxMagicState_building;
+
+  /// No description provided for @auAxMagicState_dismissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Put away'**
+  String get auAxMagicState_dismissed;
+
+  /// No description provided for @auAxMagicState_done.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved and created'**
+  String get auAxMagicState_done;
+
+  /// No description provided for @auAxMagicState_ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready: God waits for your yes'**
+  String get auAxMagicState_ready;
+
+  /// No description provided for @auAxMagicStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'You say what you want'**
+  String get auAxMagicStep1;
+
+  /// No description provided for @auAxMagicStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'God proposes it'**
+  String get auAxMagicStep2;
+
+  /// No description provided for @auAxMagicStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'You approve it'**
+  String get auAxMagicStep3;
+
+  /// No description provided for @auAxMagicTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell God what you want, in your words: it asks what it needs, builds what is missing and shows it to you before anything starts.'**
+  String get auAxMagicTile;
+
+  /// No description provided for @auAxMagicWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'What is wrong? God reads it and tries again'**
+  String get auAxMagicWhy;
+
+  /// No description provided for @auAxMailboxesWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} mailboxes connected: {names}.'**
+  String auAxMailboxesWatching(String n, String names);
+
+  /// No description provided for @auAxMatchAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All of them'**
+  String get auAxMatchAll;
+
+  /// No description provided for @auAxMatchAny.
+  ///
+  /// In en, this message translates to:
+  /// **'At least one'**
+  String get auAxMatchAny;
+
+  /// No description provided for @auAxMaxPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'At most, times a day'**
+  String get auAxMaxPerDay;
+
+  /// No description provided for @auAxMessageChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Only in this chat'**
+  String get auAxMessageChat;
+
+  /// No description provided for @auAxMessageChatHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The chat\'s number, for a group; empty: any chat.'**
+  String get auAxMessageChatHelp;
+
+  /// No description provided for @auAxMessageFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From whom'**
+  String get auAxMessageFrom;
+
+  /// No description provided for @auAxMessageFromHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Part of the name or the number; empty: anyone linked.'**
+  String get auAxMessageFromHelp;
+
+  /// No description provided for @auAxMessageHandle.
+  ///
+  /// In en, this message translates to:
+  /// **'The message is for the automation only'**
+  String get auAxMessageHandle;
+
+  /// No description provided for @auAxMessageHandleHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Demi-God does not answer it: the automation does.'**
+  String get auAxMessageHandleHelp;
+
+  /// No description provided for @auAxMessageWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'On which chats (none chosen: all of them)'**
+  String get auAxMessageWhere;
+
+  /// No description provided for @auAxMessageWords.
+  ///
+  /// In en, this message translates to:
+  /// **'With which words'**
+  String get auAxMessageWords;
+
+  /// No description provided for @auAxMessageWordsPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'shopping, /expense'**
+  String get auAxMessageWordsPlaceholder;
+
+  /// No description provided for @auAxMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'If RedGiant was off at its time'**
+  String get auAxMissed;
+
+  /// No description provided for @auAxMissedRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Do it as soon as it is on'**
+  String get auAxMissedRun;
+
+  /// No description provided for @auAxMissedSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip it'**
+  String get auAxMissedSkip;
+
+  /// No description provided for @auAxModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get auAxModel;
+
+  /// No description provided for @auAxModelHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty: the agent\'s own.'**
+  String get auAxModelHelp;
+
+  /// No description provided for @auAxNeedMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing'**
+  String get auAxNeedMissing;
+
+  /// No description provided for @auAxNeedOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Set it up'**
+  String get auAxNeedOpen;
+
+  /// No description provided for @auAxNeedReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get auAxNeedReady;
+
+  /// No description provided for @auAxNeedVault.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to the keychain'**
+  String get auAxNeedVault;
+
+  /// No description provided for @auAxNeed_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'The chat {what}'**
+  String auAxNeed_chat(String what);
+
+  /// No description provided for @auAxNeed_credential.
+  ///
+  /// In en, this message translates to:
+  /// **'The key for {what}'**
+  String auAxNeed_credential(String what);
+
+  /// No description provided for @auAxNeed_email.
+  ///
+  /// In en, this message translates to:
+  /// **'A mailbox'**
+  String get auAxNeed_email;
+
+  /// No description provided for @auAxNeed_extension.
+  ///
+  /// In en, this message translates to:
+  /// **'The extension {what}'**
+  String auAxNeed_extension(String what);
+
+  /// No description provided for @auAxNeed_other.
+  ///
+  /// In en, this message translates to:
+  /// **'{what}'**
+  String auAxNeed_other(String what);
+
+  /// No description provided for @auAxNextNone.
+  ///
+  /// In en, this message translates to:
+  /// **'With these conditions it never starts at its times: check the hours and the days.'**
+  String get auAxNextNone;
+
+  /// No description provided for @auAxNextTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'Next times'**
+  String get auAxNextTimes;
+
+  /// No description provided for @auAxNightHours.
+  ///
+  /// In en, this message translates to:
+  /// **'At night'**
+  String get auAxNightHours;
+
+  /// No description provided for @auAxNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing'**
+  String get auAxNone;
+
+  /// No description provided for @auAxOnceAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Day and time'**
+  String get auAxOnceAt;
+
+  /// No description provided for @auAxOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if'**
+  String get auAxOnly;
+
+  /// No description provided for @auAxOnlyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Conditions it must meet to start; all the ones you switch on, together. Starting it by hand ignores them.'**
+  String get auAxOnlyHelp;
+
+  /// No description provided for @auAxOr.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get auAxOr;
+
+  /// No description provided for @auAxOverlap.
+  ///
+  /// In en, this message translates to:
+  /// **'If it is still working when it should start again'**
+  String get auAxOverlap;
+
+  /// No description provided for @auAxOverlapQueue.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait, then start'**
+  String get auAxOverlapQueue;
+
+  /// No description provided for @auAxOverlapSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip that time'**
+  String get auAxOverlapSkip;
+
+  /// No description provided for @auAxPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose…'**
+  String get auAxPick;
+
+  /// No description provided for @auAxRetries.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again, how many times'**
+  String get auAxRetries;
+
+  /// No description provided for @auAxRetryMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes between tries'**
+  String get auAxRetryMinutes;
+
+  /// No description provided for @auAxRunQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'waiting'**
+  String get auAxRunQueued;
+
+  /// No description provided for @auAxRunTriggers.
+  ///
+  /// In en, this message translates to:
+  /// **'email,chat message,files,another automation,task,startup,new try'**
+  String get auAxRunTriggers;
+
+  /// No description provided for @auAxSayAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'After «{name}»'**
+  String auAxSayAfter(String name);
+
+  /// No description provided for @auAxSayApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'First it asks for your yes.'**
+  String get auAxSayApprove;
+
+  /// No description provided for @auAxSayBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'It spends at most \${usd} each time.'**
+  String auAxSayBudget(String usd);
+
+  /// No description provided for @auAxSayCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'at least {n} minutes apart'**
+  String auAxSayCooldown(String n);
+
+  /// No description provided for @auAxSayDates.
+  ///
+  /// In en, this message translates to:
+  /// **'from {from} to {to}'**
+  String auAxSayDates(String from, String to);
+
+  /// No description provided for @auAxSayDays.
+  ///
+  /// In en, this message translates to:
+  /// **'on {days}'**
+  String auAxSayDays(String days);
+
+  /// No description provided for @auAxSayDoes.
+  ///
+  /// In en, this message translates to:
+  /// **'{who} does: «{what}».'**
+  String auAxSayDoes(String who, String what);
+
+  /// No description provided for @auAxSayEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'When an email arrives ({filter})'**
+  String auAxSayEmail(String filter);
+
+  /// No description provided for @auAxSayFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'When files change in {path}'**
+  String auAxSayFiles(String path);
+
+  /// No description provided for @auAxSayFilesAll.
+  ///
+  /// In en, this message translates to:
+  /// **'When files change in the project'**
+  String get auAxSayFilesAll;
+
+  /// No description provided for @auAxSayFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'from {from}'**
+  String auAxSayFrom(String from);
+
+  /// No description provided for @auAxSayHours.
+  ///
+  /// In en, this message translates to:
+  /// **'between {from} and {to}'**
+  String auAxSayHours(String from, String to);
+
+  /// No description provided for @auAxSayMax.
+  ///
+  /// In en, this message translates to:
+  /// **'at most {n} times a day'**
+  String auAxSayMax(String n);
+
+  /// No description provided for @auAxSayMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'When you get a message on {where}'**
+  String auAxSayMessage(String where);
+
+  /// No description provided for @auAxSayNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose when it starts.'**
+  String get auAxSayNever;
+
+  /// No description provided for @auAxSayOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only'**
+  String get auAxSayOnly;
+
+  /// No description provided for @auAxSayQuiet.
+  ///
+  /// In en, this message translates to:
+  /// **'It does not tell you.'**
+  String get auAxSayQuiet;
+
+  /// No description provided for @auAxSayReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'You get the message: «{text}».'**
+  String auAxSayReminder(String text);
+
+  /// No description provided for @auAxSayStartup.
+  ///
+  /// In en, this message translates to:
+  /// **'When RedGiant starts'**
+  String get auAxSayStartup;
+
+  /// No description provided for @auAxSayTask.
+  ///
+  /// In en, this message translates to:
+  /// **'When a task ends'**
+  String get auAxSayTask;
+
+  /// No description provided for @auAxSayTell.
+  ///
+  /// In en, this message translates to:
+  /// **'It tells you on {where}.'**
+  String auAxSayTell(String where);
+
+  /// No description provided for @auAxSayTellFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'It tells you on {where}, only if something goes wrong.'**
+  String auAxSayTellFailure(String where);
+
+  /// No description provided for @auAxSayWith.
+  ///
+  /// In en, this message translates to:
+  /// **'with «{words}»'**
+  String auAxSayWith(String words);
+
+  /// No description provided for @auAxSayWithout.
+  ///
+  /// In en, this message translates to:
+  /// **'never with «{words}»'**
+  String auAxSayWithout(String words);
+
+  /// No description provided for @auAxSayWordsAll.
+  ///
+  /// In en, this message translates to:
+  /// **'with all of «{words}»'**
+  String auAxSayWordsAll(String words);
+
+  /// No description provided for @auAxSayWordsAny.
+  ///
+  /// In en, this message translates to:
+  /// **'with one of «{words}»'**
+  String auAxSayWordsAny(String words);
+
+  /// No description provided for @auAxSenders.
+  ///
+  /// In en, this message translates to:
+  /// **'Senders'**
+  String get auAxSenders;
+
+  /// No description provided for @auAxSendersPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'bank, anna@example.com, +39 333'**
+  String get auAxSendersPlaceholder;
+
+  /// No description provided for @auAxServerSays.
+  ///
+  /// In en, this message translates to:
+  /// **'Not right yet:'**
+  String get auAxServerSays;
+
+  /// No description provided for @auAxSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Each time'**
+  String get auAxSession;
+
+  /// No description provided for @auAxSessionContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'The same one, remembering'**
+  String get auAxSessionContinue;
+
+  /// No description provided for @auAxSessionNew.
+  ///
+  /// In en, this message translates to:
+  /// **'A new conversation'**
+  String get auAxSessionNew;
+
+  /// No description provided for @auAxStart_after.
+  ///
+  /// In en, this message translates to:
+  /// **'After another automation'**
+  String get auAxStart_after;
+
+  /// No description provided for @auAxStart_files.
+  ///
+  /// In en, this message translates to:
+  /// **'Files that change'**
+  String get auAxStart_files;
+
+  /// No description provided for @auAxStart_message.
+  ///
+  /// In en, this message translates to:
+  /// **'A message in a chat'**
+  String get auAxStart_message;
+
+  /// No description provided for @auAxStart_startup.
+  ///
+  /// In en, this message translates to:
+  /// **'When RedGiant starts'**
+  String get auAxStart_startup;
+
+  /// No description provided for @auAxStart_task.
+  ///
+  /// In en, this message translates to:
+  /// **'When a task ends'**
+  String get auAxStart_task;
+
+  /// No description provided for @auAxStart_time.
+  ///
+  /// In en, this message translates to:
+  /// **'At set times'**
+  String get auAxStart_time;
+
+  /// No description provided for @auAxStartupHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It starts every time RedGiant is switched on.'**
+  String get auAxStartupHelp;
+
+  /// No description provided for @auAxTask_abandoned.
+  ///
+  /// In en, this message translates to:
+  /// **'Given up'**
+  String get auAxTask_abandoned;
+
+  /// No description provided for @auAxTask_not_testable.
+  ///
+  /// In en, this message translates to:
+  /// **'Done, not testable'**
+  String get auAxTask_not_testable;
+
+  /// No description provided for @auAxTask_verified.
+  ///
+  /// In en, this message translates to:
+  /// **'Done and checked'**
+  String get auAxTask_verified;
+
+  /// No description provided for @auAxTell.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it tells you'**
+  String get auAxTell;
+
+  /// No description provided for @auAxTellAllHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'None chosen: on every chat you linked.'**
+  String get auAxTellAllHelp;
+
+  /// No description provided for @auAxTellAlways.
+  ///
+  /// In en, this message translates to:
+  /// **'Every time'**
+  String get auAxTellAlways;
+
+  /// No description provided for @auAxTellEmailFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent from'**
+  String get auAxTellEmailFrom;
+
+  /// No description provided for @auAxTellEmailTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Email to'**
+  String get auAxTellEmailTo;
+
+  /// No description provided for @auAxTellEmailToHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty: to the mailbox itself.'**
+  String get auAxTellEmailToHelp;
+
+  /// No description provided for @auAxTellFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if something goes wrong'**
+  String get auAxTellFailure;
+
+  /// No description provided for @auAxTellHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'When it is done, where the answer goes.'**
+  String get auAxTellHelp;
+
+  /// No description provided for @auAxTellNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get auAxTellNever;
+
+  /// No description provided for @auAxTellReplyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A run started by a chat message answers in that chat too.'**
+  String get auAxTellReplyHelp;
+
+  /// No description provided for @auAxTellSomeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Only where you chose.'**
+  String get auAxTellSomeHelp;
+
+  /// No description provided for @auAxTellWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where'**
+  String get auAxTellWhere;
+
+  /// No description provided for @auAxTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest time, in minutes'**
+  String get auAxTimeout;
+
+  /// No description provided for @auAxTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get auAxTo;
+
+  /// No description provided for @auAxToAllChats.
+  ///
+  /// In en, this message translates to:
+  /// **'all your chats'**
+  String get auAxToAllChats;
+
+  /// No description provided for @auAxToDay.
+  ///
+  /// In en, this message translates to:
+  /// **'To the day'**
+  String get auAxToDay;
+
+  /// No description provided for @auAxToEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get auAxToEmail;
+
+  /// No description provided for @auAxToWeb.
+  ///
+  /// In en, this message translates to:
+  /// **'A notice here'**
+  String get auAxToWeb;
+
+  /// No description provided for @auAxWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get auAxWhen;
+
+  /// No description provided for @auAxWhenHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'What starts it. You can pick more than one: it starts on each of them.'**
+  String get auAxWhenHelp;
+
+  /// No description provided for @auAxWhenMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} minutes'**
+  String auAxWhenMinutes(String n);
+
+  /// No description provided for @auAxWithout.
+  ///
+  /// In en, this message translates to:
+  /// **'Words that stop it'**
+  String get auAxWithout;
+
+  /// No description provided for @auAxWithoutPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'newsletter, advertising'**
+  String get auAxWithoutPlaceholder;
+
+  /// No description provided for @auAxWords.
+  ///
+  /// In en, this message translates to:
+  /// **'Words'**
+  String get auAxWords;
+
+  /// No description provided for @auAxWordsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Separated by commas.'**
+  String get auAxWordsHelp;
+
+  /// No description provided for @auAxWordsPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'urgent, invoice'**
+  String get auAxWordsPlaceholder;
+
+  /// No description provided for @auAxWorkHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Office hours'**
+  String get auAxWorkHours;
+
+  /// No description provided for @auAxYamlBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back to the choices above'**
+  String get auAxYamlBack;
+
+  /// No description provided for @auCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get auCancel;
+
+  /// No description provided for @auCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get auCreate;
+
+  /// No description provided for @auDay_0.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunday'**
+  String get auDay_0;
+
+  /// No description provided for @auDay_1.
+  ///
+  /// In en, this message translates to:
+  /// **'Monday'**
+  String get auDay_1;
+
+  /// No description provided for @auDay_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuesday'**
+  String get auDay_2;
+
+  /// No description provided for @auDay_3.
+  ///
+  /// In en, this message translates to:
+  /// **'Wednesday'**
+  String get auDay_3;
+
+  /// No description provided for @auDay_4.
+  ///
+  /// In en, this message translates to:
+  /// **'Thursday'**
+  String get auDay_4;
+
+  /// No description provided for @auDay_5.
+  ///
+  /// In en, this message translates to:
+  /// **'Friday'**
+  String get auDay_5;
+
+  /// No description provided for @auDay_6.
+  ///
+  /// In en, this message translates to:
+  /// **'Saturday'**
+  String get auDay_6;
+
+  /// No description provided for @auDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get auDelete;
+
+  /// No description provided for @auDeleteAutomationConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this automation and its history?'**
+  String get auDeleteAutomationConfirm;
+
+  /// No description provided for @auDeliveryDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'delivered'**
+  String get auDeliveryDelivered;
+
+  /// No description provided for @auDeliveryDeliveredTo.
+  ///
+  /// In en, this message translates to:
+  /// **'delivered: {to}'**
+  String auDeliveryDeliveredTo(String to);
+
+  /// No description provided for @auDeliveryFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'not delivered: {reason}'**
+  String auDeliveryFailed(String reason);
+
+  /// No description provided for @auDeliveryNoChat.
+  ///
+  /// In en, this message translates to:
+  /// **'not delivered: no chat linked'**
+  String get auDeliveryNoChat;
+
+  /// No description provided for @auDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get auDisabled;
+
+  /// No description provided for @auDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get auDismiss;
+
+  /// No description provided for @auEmailAny.
+  ///
+  /// In en, this message translates to:
+  /// **'any'**
+  String get auEmailAny;
+
+  /// No description provided for @auEmailFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'from'**
+  String get auEmailFrom;
+
+  /// No description provided for @auEmailFromPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'From (part of the address, optional)'**
+  String get auEmailFromPlaceholder;
+
+  /// No description provided for @auEmailNeedFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect the mailbox first: until then this automation never starts.'**
+  String get auEmailNeedFirst;
+
+  /// No description provided for @auEmailSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject contains'**
+  String get auEmailSubject;
+
+  /// No description provided for @auEmailSubjectPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'The subject contains (optional)'**
+  String get auEmailSubjectPlaceholder;
+
+  /// No description provided for @auEmailWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Watching {user} on {host}.'**
+  String auEmailWatching(String user, String host);
+
+  /// No description provided for @auEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get auEnabled;
+
+  /// No description provided for @auNewAutomation.
+  ///
+  /// In en, this message translates to:
+  /// **'New automation'**
+  String get auNewAutomation;
+
+  /// No description provided for @auNewReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'New reminder'**
+  String get auNewReminder;
+
+  /// No description provided for @auNewSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'New secret'**
+  String get auNewSecret;
+
+  /// No description provided for @auNextRun.
+  ///
+  /// In en, this message translates to:
+  /// **'next'**
+  String get auNextRun;
+
+  /// No description provided for @auNoAutomations.
+  ///
+  /// In en, this message translates to:
+  /// **'No automations yet. Write a recipe: when it runs, which agent works, what it is asked.'**
+  String get auNoAutomations;
+
+  /// No description provided for @auNoRuns.
+  ///
+  /// In en, this message translates to:
+  /// **'No runs yet.'**
+  String get auNoRuns;
+
+  /// No description provided for @auOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'open'**
+  String get auOpen;
+
+  /// No description provided for @auOpenSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the session'**
+  String get auOpenSession;
+
+  /// No description provided for @auProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get auProjects;
+
+  /// No description provided for @auRecipeBroken.
+  ///
+  /// In en, this message translates to:
+  /// **'The recipe no longer reads: open it to fix it'**
+  String get auRecipeBroken;
+
+  /// No description provided for @auReminderDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get auReminderDay;
+
+  /// No description provided for @auReminderPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant sends you this text on Telegram at the time you choose, once. No agent, no cost.'**
+  String get auReminderPurpose;
+
+  /// No description provided for @auReminderSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the reminder'**
+  String get auReminderSave;
+
+  /// No description provided for @auReminderWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'What to remind you of'**
+  String get auReminderWhat;
+
+  /// No description provided for @auRepoEvent_issue_comment.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get auRepoEvent_issue_comment;
+
+  /// No description provided for @auRepoEvent_issues.
+  ///
+  /// In en, this message translates to:
+  /// **'Issues'**
+  String get auRepoEvent_issues;
+
+  /// No description provided for @auRepoEvent_pull_request.
+  ///
+  /// In en, this message translates to:
+  /// **'Pull requests'**
+  String get auRepoEvent_pull_request;
+
+  /// No description provided for @auRepoEvent_push.
+  ///
+  /// In en, this message translates to:
+  /// **'New commits'**
+  String get auRepoEvent_push;
+
+  /// No description provided for @auRepoEvent_release.
+  ///
+  /// In en, this message translates to:
+  /// **'Releases'**
+  String get auRepoEvent_release;
+
+  /// No description provided for @auRunNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Run now'**
+  String get auRunNow;
+
+  /// No description provided for @auRunStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'running,done,failed,timeout,skipped'**
+  String get auRunStatus;
+
+  /// No description provided for @auRunTriggers.
+  ///
+  /// In en, this message translates to:
+  /// **'schedule,webhook,by hand,missed run'**
+  String get auRunTriggers;
+
+  /// No description provided for @auRuns.
+  ///
+  /// In en, this message translates to:
+  /// **'Runs'**
+  String get auRuns;
+
+  /// No description provided for @auSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get auSave;
+
+  /// No description provided for @auSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get auSettings;
+
+  /// No description provided for @auTplDesc_blank.
+  ///
+  /// In en, this message translates to:
+  /// **'You choose when, who and what.'**
+  String get auTplDesc_blank;
+
+  /// No description provided for @auTplDesc_morning.
+  ///
+  /// In en, this message translates to:
+  /// **'Every working day at 8: what happened on every project.'**
+  String get auTplDesc_morning;
+
+  /// No description provided for @auTplDesc_spending.
+  ///
+  /// In en, this message translates to:
+  /// **'On the 1st of the month: what was spent and where.'**
+  String get auTplDesc_spending;
+
+  /// No description provided for @auTplDesc_weekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Fridays at 17: the week in one message.'**
+  String get auTplDesc_weekly;
+
+  /// No description provided for @auTplText_morning.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell me in a few lines what happened yesterday on every project: work finished, problems still open, decisions to take.'**
+  String get auTplText_morning;
+
+  /// No description provided for @auTplText_spending.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell me how much was spent last month, per project and per agent, and whether anything looks out of the ordinary.'**
+  String get auTplText_spending;
+
+  /// No description provided for @auTplText_weekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Summarise this week on every project: what was finished, what is late, what is planned for next week.'**
+  String get auTplText_weekly;
+
+  /// No description provided for @auTplTitle_blank.
+  ///
+  /// In en, this message translates to:
+  /// **'From scratch'**
+  String get auTplTitle_blank;
+
+  /// No description provided for @auTplTitle_morning.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning briefing'**
+  String get auTplTitle_morning;
+
+  /// No description provided for @auTplTitle_spending.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly spending'**
+  String get auTplTitle_spending;
+
+  /// No description provided for @auTplTitle_weekly.
+  ///
+  /// In en, this message translates to:
+  /// **'The week\'s news'**
+  String get auTplTitle_weekly;
+
+  /// No description provided for @auWebhookSecretOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'Secret (shown only now; send it in the x-redgiant-secret header):'**
+  String get auWebhookSecretOnce;
+
+  /// No description provided for @auWebhookUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Webhook'**
+  String get auWebhookUrl;
+
+  /// No description provided for @auWhenAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Once, on {at}'**
+  String auWhenAt(String at);
+
+  /// No description provided for @auWhenAtTime.
+  ///
+  /// In en, this message translates to:
+  /// **'at'**
+  String get auWhenAtTime;
+
+  /// No description provided for @auWhenCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'On a schedule of its own ({cron})'**
+  String auWhenCustom(String cron);
+
+  /// No description provided for @auWhenDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day at {time}'**
+  String auWhenDaily(String time);
+
+  /// No description provided for @auWhenDayOfMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'on day'**
+  String get auWhenDayOfMonth;
+
+  /// No description provided for @auWhenEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'When an email arrives ({filter})'**
+  String auWhenEmail(String filter);
+
+  /// No description provided for @auWhenEmailHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The mailbox is set once, here or in Settings › Automations › Mailbox. The email reaches the agent as information, never as instructions.'**
+  String get auWhenEmailHelp;
+
+  /// No description provided for @auWhenEveryHours.
+  ///
+  /// In en, this message translates to:
+  /// **'every (hours)'**
+  String get auWhenEveryHours;
+
+  /// No description provided for @auWhenHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} hours'**
+  String auWhenHours(String n);
+
+  /// No description provided for @auWhenKind_daily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day'**
+  String get auWhenKind_daily;
+
+  /// No description provided for @auWhenKind_email.
+  ///
+  /// In en, this message translates to:
+  /// **'On an email'**
+  String get auWhenKind_email;
+
+  /// No description provided for @auWhenKind_hours.
+  ///
+  /// In en, this message translates to:
+  /// **'Every few hours'**
+  String get auWhenKind_hours;
+
+  /// No description provided for @auWhenKind_monthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Once a month'**
+  String get auWhenKind_monthly;
+
+  /// No description provided for @auWhenKind_repo.
+  ///
+  /// In en, this message translates to:
+  /// **'On the repository'**
+  String get auWhenKind_repo;
+
+  /// No description provided for @auWhenKind_webhook.
+  ///
+  /// In en, this message translates to:
+  /// **'On a web call'**
+  String get auWhenKind_webhook;
+
+  /// No description provided for @auWhenKind_weekdays.
+  ///
+  /// In en, this message translates to:
+  /// **'Working days'**
+  String get auWhenKind_weekdays;
+
+  /// No description provided for @auWhenKind_weekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Some days of the week'**
+  String get auWhenKind_weekly;
+
+  /// No description provided for @auWhenMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every month on day {day} at {time}'**
+  String auWhenMonthly(String day, String time);
+
+  /// No description provided for @auWhenRepo.
+  ///
+  /// In en, this message translates to:
+  /// **'When something happens in the repository ({events})'**
+  String auWhenRepo(String events);
+
+  /// No description provided for @auWhenRepoHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant adds the webhook to the project\'s repository by itself: on Gitea at once, on GitHub once access from outside home is on.'**
+  String get auWhenRepoHelp;
+
+  /// No description provided for @auWhenWebhook.
+  ///
+  /// In en, this message translates to:
+  /// **'When a web call arrives (webhook)'**
+  String get auWhenWebhook;
+
+  /// No description provided for @auWhenWebhookHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Another program (a site, a form, GitHub…) calls RedGiant\'s address; the address and its secret appear after saving.'**
+  String get auWhenWebhookHelp;
+
+  /// No description provided for @auWhenWeekdays.
+  ///
+  /// In en, this message translates to:
+  /// **'Monday to Friday at {time}'**
+  String auWhenWeekdays(String time);
+
+  /// No description provided for @auWhenWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every week on {days} at {time}'**
+  String auWhenWeekly(String days, String time);
+
+  /// No description provided for @auWhoLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead of {project}'**
+  String auWhoLead(String project);
+
+  /// No description provided for @auOwnHubHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When things happen by themselves: schedules, emails, chats, files, reminders'**
+  String get auOwnHubHint;
+
+  /// No description provided for @auOwnOpenChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the conversation'**
+  String get auOwnOpenChat;
+
+  /// No description provided for @auOwnTalkGod.
+  ///
+  /// In en, this message translates to:
+  /// **'Talk with God'**
+  String get auOwnTalkGod;
+
+  /// No description provided for @auOwnMailboxesElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailboxes are added and changed in Settings › Channels and mailboxes.'**
+  String get auOwnMailboxesElsewhere;
+
+  /// No description provided for @auOwnNoMailboxes.
+  ///
+  /// In en, this message translates to:
+  /// **'No mailbox connected yet.'**
+  String get auOwnNoMailboxes;
+
+  /// No description provided for @auOwnCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get auOwnCopied;
+
+  /// No description provided for @auOwnCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get auOwnCopy;
+
+  /// No description provided for @auOwnYamlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'The recipe in YAML'**
+  String get auOwnYamlLabel;
+
+  /// No description provided for @auOwnRoutineOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the routine'**
+  String get auOwnRoutineOpen;
+
+  /// No description provided for @auOwnNoticeOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get auOwnNoticeOpen;
+
+  /// No description provided for @auOwnNoticeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: not done'**
+  String auOwnNoticeFailed(String name);
+
+  /// No description provided for @auOwnPickTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose'**
+  String get auOwnPickTitle;
+
+  /// No description provided for @auOwnNeedOpenWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Open it in Settings › {where}'**
+  String auOwnNeedOpenWhere(String where);
+
+  /// No description provided for @auOwnWhereChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels and mailboxes'**
+  String get auOwnWhereChats;
+
+  /// No description provided for @auOwnWhereExtensions.
+  ///
+  /// In en, this message translates to:
+  /// **'Extensions'**
+  String get auOwnWhereExtensions;
+
+  /// No description provided for @auOwnWhereKeychain.
+  ///
+  /// In en, this message translates to:
+  /// **'Keychain'**
+  String get auOwnWhereKeychain;
+
+  /// No description provided for @auOwnLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read: {why}'**
+  String auOwnLoadFailed(String why);
+
+  /// No description provided for @auOwnReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations can be changed only by the person (not from a project\'s device).'**
+  String get auOwnReadOnly;
+
+  /// No description provided for @knAsstSavedNewChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: it applies to its new conversations.'**
+  String get knAsstSavedNewChats;
+
+  /// No description provided for @knCompactAtHint.
+  ///
+  /// In en, this message translates to:
+  /// **'An agent can keep only so much text in mind at once, like a notebook with a fixed number of pages. Further right: the summary comes later. Further left: it comes sooner and the conversation stays lighter.'**
+  String get knCompactAtHint;
+
+  /// No description provided for @knCompactAtTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When to write the summary'**
+  String get knCompactAtTitle;
+
+  /// No description provided for @knCompactAtValue.
+  ///
+  /// In en, this message translates to:
+  /// **'when {n}% full'**
+  String knCompactAtValue(String n);
+
+  /// No description provided for @knCompactDefaultIs.
+  ///
+  /// In en, this message translates to:
+  /// **'Default for this agent\'s model: at {at}%, keeping {keep}%.'**
+  String knCompactDefaultIs(String at, String keep);
+
+  /// No description provided for @knCompactDefaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the defaults'**
+  String get knCompactDefaults;
+
+  /// No description provided for @knCompactExample.
+  ///
+  /// In en, this message translates to:
+  /// **'if the agent can keep 100 pages in mind, when it reaches {at} it writes the summary: the last {keep} stay exactly as they were, the ones before become a few pages of notes.'**
+  String knCompactExample(String at, String keep);
+
+  /// No description provided for @knCompactExampleNone.
+  ///
+  /// In en, this message translates to:
+  /// **'if the agent can keep 100 pages in mind, when it reaches {at} it turns all of them into a few pages of notes.'**
+  String knCompactExampleNone(String at);
+
+  /// No description provided for @knCompactExampleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'For example:'**
+  String get knCompactExampleTitle;
+
+  /// No description provided for @knCompactExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'When the conversation gets long, the agent writes a summary of the old parts, like someone taking notes. Here you choose when it does it, and how much of the latest part it keeps as it is.'**
+  String get knCompactExplain;
+
+  /// No description provided for @knCompactKeepHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The most recent part stays word for word, everything before it becomes notes. More kept means the agent remembers the latest details better; on a model on your computer each kept word costs a little time once (12% is fine there).'**
+  String get knCompactKeepHint;
+
+  /// No description provided for @knCompactKeepNone.
+  ///
+  /// In en, this message translates to:
+  /// **'nothing'**
+  String get knCompactKeepNone;
+
+  /// No description provided for @knCompactKeepTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How much of the latest part to keep as it is'**
+  String get knCompactKeepTitle;
+
+  /// No description provided for @knCompactKeepValue.
+  ///
+  /// In en, this message translates to:
+  /// **'the last {n}%'**
+  String knCompactKeepValue(String n);
+
+  /// No description provided for @knErr_memory_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Write something to remember.'**
+  String get knErr_memory_empty;
+
+  /// No description provided for @knErr_memory_forgotten.
+  ///
+  /// In en, this message translates to:
+  /// **'A memory forgotten for good cannot come back.'**
+  String get knErr_memory_forgotten;
+
+  /// No description provided for @knErr_memory_full.
+  ///
+  /// In en, this message translates to:
+  /// **'The memory is full: delete or merge some old memories first.'**
+  String get knErr_memory_full;
+
+  /// No description provided for @knErr_memory_gone.
+  ///
+  /// In en, this message translates to:
+  /// **'That memory is not there any more.'**
+  String get knErr_memory_gone;
+
+  /// No description provided for @knErr_memory_long.
+  ///
+  /// In en, this message translates to:
+  /// **'A memory is at most 400 characters: write it shorter.'**
+  String get knErr_memory_long;
+
+  /// No description provided for @knErr_memory_moved.
+  ///
+  /// In en, this message translates to:
+  /// **'The memory changed again since: undo the newer change first.'**
+  String get knErr_memory_moved;
+
+  /// No description provided for @knErr_memory_same.
+  ///
+  /// In en, this message translates to:
+  /// **'Another memory already says the same.'**
+  String get knErr_memory_same;
+
+  /// No description provided for @knErr_memory_secret.
+  ///
+  /// In en, this message translates to:
+  /// **'That looks like a password, a code or a card number: secrets are never kept in memory.'**
+  String get knErr_memory_secret;
+
+  /// No description provided for @knErr_memory_undone.
+  ///
+  /// In en, this message translates to:
+  /// **'That change was already undone.'**
+  String get knErr_memory_undone;
+
+  /// No description provided for @knJob_download_knowledge_model.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading {model} ({size}) for the knowledge, to search your files on this computer (only once)'**
+  String knJob_download_knowledge_model(String model, String size);
+
+  /// No description provided for @knJob_download_ocr.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading the reading of text in pictures ({languages}, {size}), only once'**
+  String knJob_download_ocr(String languages, String size);
+
+  /// No description provided for @knJob_download_pgvector.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading pgvector, the search by meaning in RedGiant\'s database (only once)'**
+  String get knJob_download_pgvector;
+
+  /// No description provided for @knJob_error_checksum.
+  ///
+  /// In en, this message translates to:
+  /// **'The download arrived damaged (its fingerprint does not match): try again.'**
+  String get knJob_error_checksum;
+
+  /// No description provided for @knJob_error_pgvector_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'pgvector is not published for this computer yet: the knowledge searches by words only.'**
+  String get knJob_error_pgvector_unavailable;
+
+  /// No description provided for @knJob_step_model_download.
+  ///
+  /// In en, this message translates to:
+  /// **'The model'**
+  String get knJob_step_model_download;
+
+  /// No description provided for @knJob_step_ocr_languages.
+  ///
+  /// In en, this message translates to:
+  /// **'The languages'**
+  String get knJob_step_ocr_languages;
+
+  /// No description provided for @knJob_step_ocr_program.
+  ///
+  /// In en, this message translates to:
+  /// **'The program'**
+  String get knJob_step_ocr_program;
+
+  /// No description provided for @knJob_step_tool_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading'**
+  String get knJob_step_tool_download;
+
+  /// No description provided for @knKbAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get knKbAdd;
+
+  /// No description provided for @knKbAddSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a source'**
+  String get knKbAddSource;
+
+  /// No description provided for @knKbAddSourceTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a source to {name}'**
+  String knKbAddSourceTo(String name);
+
+  /// No description provided for @knKbAgentAlways.
+  ///
+  /// In en, this message translates to:
+  /// **'Always'**
+  String get knKbAgentAlways;
+
+  /// No description provided for @knKbAgentByScopeNo.
+  ///
+  /// In en, this message translates to:
+  /// **'As the collection says (no)'**
+  String get knKbAgentByScopeNo;
+
+  /// No description provided for @knKbAgentByScopeYes.
+  ///
+  /// In en, this message translates to:
+  /// **'As the collection says (yes)'**
+  String get knKbAgentByScopeYes;
+
+  /// No description provided for @knKbAgentLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Which collections {name} can search. Each one says who may read it; here you can make an exception for this agent.'**
+  String knKbAgentLead(String name);
+
+  /// No description provided for @knKbAgentNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get knKbAgentNever;
+
+  /// No description provided for @knKbAgentNewOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'It changes from the agent\'s next conversation.'**
+  String get knKbAgentNewOnly;
+
+  /// No description provided for @knKbAgentNone.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} reads no collection'**
+  String knKbAgentNone(String name);
+
+  /// No description provided for @knKbAgentOpenAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All the collections'**
+  String get knKbAgentOpenAll;
+
+  /// No description provided for @knKbAgentPieces.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} pieces'**
+  String knKbAgentPieces(String n);
+
+  /// No description provided for @knKbAgentReads.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} reads {n} collections'**
+  String knKbAgentReads(String n, String name);
+
+  /// No description provided for @knKbAgentTool.
+  ///
+  /// In en, this message translates to:
+  /// **'It searches them with «Search the documents», and cites where each answer comes from.'**
+  String get knKbAgentTool;
+
+  /// No description provided for @knKbAllChats.
+  ///
+  /// In en, this message translates to:
+  /// **'None chosen: the conversations with every agent.'**
+  String get knKbAllChats;
+
+  /// No description provided for @knKbBackupVectors.
+  ///
+  /// In en, this message translates to:
+  /// **'Put the knowledge in the backup too'**
+  String get knKbBackupVectors;
+
+  /// No description provided for @knKbBackupVectorsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A bigger backup, but on another computer the search is ready at once, without reading everything again.'**
+  String get knKbBackupVectorsHelp;
+
+  /// No description provided for @knKbChat.
+  ///
+  /// In en, this message translates to:
+  /// **'conversation'**
+  String get knKbChat;
+
+  /// No description provided for @knKbCiteFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'document'**
+  String get knKbCiteFallback;
+
+  /// No description provided for @knKbCloudKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Keychain entry with the key'**
+  String get knKbCloudKey;
+
+  /// No description provided for @knKbCloudKeyExample.
+  ///
+  /// In en, this message translates to:
+  /// **'voyage_key'**
+  String get knKbCloudKeyExample;
+
+  /// No description provided for @knKbCloudKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty: the key given in the setup, for OpenAI, Gemini and Mistral.'**
+  String get knKbCloudKeyHelp;
+
+  /// No description provided for @knKbCloudLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The pieces of your documents are sent to the service to be read. Its key stays in the keychain.'**
+  String get knKbCloudLead;
+
+  /// No description provided for @knKbCloudModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested models'**
+  String get knKbCloudModel;
+
+  /// No description provided for @knKbCloudModelName.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get knKbCloudModelName;
+
+  /// No description provided for @knKbCloudText.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenAI, Voyage, Cohere, Gemini, Mistral, Jina or your own'**
+  String get knKbCloudText;
+
+  /// No description provided for @knKbCloudTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An online service'**
+  String get knKbCloudTitle;
+
+  /// No description provided for @knKbCloudTrying.
+  ///
+  /// In en, this message translates to:
+  /// **'Trying the key…'**
+  String get knKbCloudTrying;
+
+  /// No description provided for @knKbCloudUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Address of the service'**
+  String get knKbCloudUrl;
+
+  /// No description provided for @knKbCloudUrlHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'One that speaks like OpenAI, ending in /v1.'**
+  String get knKbCloudUrlHelp;
+
+  /// No description provided for @knKbCloudUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use it'**
+  String get knKbCloudUse;
+
+  /// No description provided for @knKbCloudWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Which service'**
+  String get knKbCloudWho;
+
+  /// No description provided for @knKbColLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{docs} documents · {pieces} pieces'**
+  String knKbColLine(String docs, String pieces);
+
+  /// No description provided for @knKbColName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get knKbColName;
+
+  /// No description provided for @knKbColNameExample.
+  ///
+  /// In en, this message translates to:
+  /// **'Manuals, Contracts, Recipes…'**
+  String get knKbColNameExample;
+
+  /// No description provided for @knKbColNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'What it holds, in a few words.'**
+  String get knKbColNameHelp;
+
+  /// No description provided for @knKbColsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A collection groups the sources of one subject, and says which agents may read it.'**
+  String get knKbColsLead;
+
+  /// No description provided for @knKbColsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Collections'**
+  String get knKbColsTitle;
+
+  /// No description provided for @knKbConsentChats.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents that may read this collection will be able to find and quote what you wrote in your conversations and what the agents answered.'**
+  String get knKbConsentChats;
+
+  /// No description provided for @knKbConsentChatsYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, the agents may read these conversations'**
+  String get knKbConsentChatsYes;
+
+  /// No description provided for @knKbConsentMail.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents that may read this collection will be able to find and quote your mail. RedGiant only reads the inbox: it never marks, moves or deletes a message.'**
+  String get knKbConsentMail;
+
+  /// No description provided for @knKbConsentMailYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, the agents may read this mail'**
+  String get knKbConsentMailYes;
+
+  /// No description provided for @knKbDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} days'**
+  String knKbDays(String n);
+
+  /// No description provided for @knKbDiskLead.
+  ///
+  /// In en, this message translates to:
+  /// **'What the knowledge takes, and whether the backup carries it.'**
+  String get knKbDiskLead;
+
+  /// No description provided for @knKbDiskModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Models'**
+  String get knKbDiskModels;
+
+  /// No description provided for @knKbDiskOcr.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading pictures'**
+  String get knKbDiskOcr;
+
+  /// No description provided for @knKbDiskTexts.
+  ///
+  /// In en, this message translates to:
+  /// **'Pieces of text'**
+  String get knKbDiskTexts;
+
+  /// No description provided for @knKbDiskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Space on the disk'**
+  String get knKbDiskTitle;
+
+  /// No description provided for @knKbDiskTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'In all'**
+  String get knKbDiskTotal;
+
+  /// No description provided for @knKbDiskVectors.
+  ///
+  /// In en, this message translates to:
+  /// **'Index by meaning'**
+  String get knKbDiskVectors;
+
+  /// No description provided for @knKbDocsWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} documents still to read.'**
+  String knKbDocsWaiting(String n);
+
+  /// No description provided for @knKbDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading…'**
+  String get knKbDownloading;
+
+  /// No description provided for @knKbDropHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop to add them to the knowledge'**
+  String get knKbDropHere;
+
+  /// No description provided for @knKbDropOnCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop files on a collection to add them.'**
+  String get knKbDropOnCard;
+
+  /// No description provided for @knKbDropSay.
+  ///
+  /// In en, this message translates to:
+  /// **'You can also drop files on this window.'**
+  String get knKbDropSay;
+
+  /// No description provided for @knKbErr_bad_choice.
+  ///
+  /// In en, this message translates to:
+  /// **'That choice is not possible.'**
+  String get knKbErr_bad_choice;
+
+  /// No description provided for @knKbErr_bad_source.
+  ///
+  /// In en, this message translates to:
+  /// **'That source cannot be read: check the path or the address.'**
+  String get knKbErr_bad_source;
+
+  /// No description provided for @knKbErr_embedding_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The model did not answer: check the key and try again.'**
+  String get knKbErr_embedding_failed;
+
+  /// No description provided for @knKbErr_no_vector.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching by meaning is not ready on this computer yet.'**
+  String get knKbErr_no_vector;
+
+  /// No description provided for @knKbErr_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'It is not there any more.'**
+  String get knKbErr_not_found;
+
+  /// No description provided for @knKbEtaSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'The time left shows after the first minutes.'**
+  String get knKbEtaSoon;
+
+  /// No description provided for @knKbFileExample.
+  ///
+  /// In en, this message translates to:
+  /// **'/home/me/manual.pdf'**
+  String get knKbFileExample;
+
+  /// No description provided for @knKbFileHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Its full path on the computer where RedGiant runs.'**
+  String get knKbFileHelp;
+
+  /// No description provided for @knKbFilePath.
+  ///
+  /// In en, this message translates to:
+  /// **'The file'**
+  String get knKbFilePath;
+
+  /// No description provided for @knKbFolderExample.
+  ///
+  /// In en, this message translates to:
+  /// **'/home/me/Documents or C:\\Users\\me\\Documents'**
+  String get knKbFolderExample;
+
+  /// No description provided for @knKbFolderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Its full path on the computer where RedGiant runs.'**
+  String get knKbFolderHelp;
+
+  /// No description provided for @knKbFolderPath.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder'**
+  String get knKbFolderPath;
+
+  /// No description provided for @knKbForAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'For {name}'**
+  String knKbForAgent(String name);
+
+  /// No description provided for @knKbForAll.
+  ///
+  /// In en, this message translates to:
+  /// **'For every agent'**
+  String get knKbForAll;
+
+  /// No description provided for @knKbForProject.
+  ///
+  /// In en, this message translates to:
+  /// **'For the project {name}'**
+  String knKbForProject(String name);
+
+  /// No description provided for @knKbForWhom.
+  ///
+  /// In en, this message translates to:
+  /// **'Who may read it'**
+  String get knKbForWhom;
+
+  /// No description provided for @knKbHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded'**
+  String get knKbHere;
+
+  /// No description provided for @knKbHowFarBack.
+  ///
+  /// In en, this message translates to:
+  /// **'How far back'**
+  String get knKbHowFarBack;
+
+  /// No description provided for @knKbKindText_chats.
+  ///
+  /// In en, this message translates to:
+  /// **'What you said with the agents'**
+  String get knKbKindText_chats;
+
+  /// No description provided for @knKbKindText_file.
+  ///
+  /// In en, this message translates to:
+  /// **'One document'**
+  String get knKbKindText_file;
+
+  /// No description provided for @knKbKindText_folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything inside, kept up to date'**
+  String get knKbKindText_folder;
+
+  /// No description provided for @knKbKindText_mail.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if you want it'**
+  String get knKbKindText_mail;
+
+  /// No description provided for @knKbKindText_url.
+  ///
+  /// In en, this message translates to:
+  /// **'Read once, again when you ask'**
+  String get knKbKindText_url;
+
+  /// No description provided for @knKbKindText_workspace.
+  ///
+  /// In en, this message translates to:
+  /// **'The files of one of your projects'**
+  String get knKbKindText_workspace;
+
+  /// No description provided for @knKbKind_chats.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations'**
+  String get knKbKind_chats;
+
+  /// No description provided for @knKbKind_file.
+  ///
+  /// In en, this message translates to:
+  /// **'A file'**
+  String get knKbKind_file;
+
+  /// No description provided for @knKbKind_folder.
+  ///
+  /// In en, this message translates to:
+  /// **'A folder'**
+  String get knKbKind_folder;
+
+  /// No description provided for @knKbKind_mail.
+  ///
+  /// In en, this message translates to:
+  /// **'A mailbox'**
+  String get knKbKind_mail;
+
+  /// No description provided for @knKbKind_url.
+  ///
+  /// In en, this message translates to:
+  /// **'A web page'**
+  String get knKbKind_url;
+
+  /// No description provided for @knKbKind_workspace.
+  ///
+  /// In en, this message translates to:
+  /// **'A project'**
+  String get knKbKind_workspace;
+
+  /// No description provided for @knKbLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose folders, files and pages: RedGiant reads them, cuts them into pieces and finds them by what they mean. The agents say where each answer comes from, and one click opens the file at that point.'**
+  String get knKbLead;
+
+  /// No description provided for @knKbLeftOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Left out ({n})'**
+  String knKbLeftOut(String n);
+
+  /// No description provided for @knKbLine.
+  ///
+  /// In en, this message translates to:
+  /// **'line {n}'**
+  String knKbLine(String n);
+
+  /// No description provided for @knKbLines.
+  ///
+  /// In en, this message translates to:
+  /// **'lines {a}–{b}'**
+  String knKbLines(String a, String b);
+
+  /// No description provided for @knKbLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get knKbLoading;
+
+  /// No description provided for @knKbLocalText.
+  ///
+  /// In en, this message translates to:
+  /// **'On this computer · {size} MB · {dims} numbers per piece'**
+  String knKbLocalText(String dims, String size);
+
+  /// No description provided for @knKbMail.
+  ///
+  /// In en, this message translates to:
+  /// **'mail'**
+  String get knKbMail;
+
+  /// No description provided for @knKbMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Make it'**
+  String get knKbMake;
+
+  /// No description provided for @knKbMeaningBest.
+  ///
+  /// In en, this message translates to:
+  /// **'The recommended one is {name}: {size} MB, downloaded once, only now that you say so.'**
+  String knKbMeaningBest(String name, String size);
+
+  /// No description provided for @knKbMeaningDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download {name} ({size} MB) and turn it on'**
+  String knKbMeaningDownload(String name, String size);
+
+  /// No description provided for @knKbMeaningOffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching by meaning is off: only by words'**
+  String get knKbMeaningOffTitle;
+
+  /// No description provided for @knKbMeaningOff_downloading.
+  ///
+  /// In en, this message translates to:
+  /// **'The model you chose is not on this computer yet: until it arrives the search goes by words.'**
+  String get knKbMeaningOff_downloading;
+
+  /// No description provided for @knKbMeaningOff_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The model for the meaning does not answer: the search goes by words. Choose it again or another one.'**
+  String get knKbMeaningOff_failed;
+
+  /// No description provided for @knKbMeaningOff_no_model.
+  ///
+  /// In en, this message translates to:
+  /// **'No model reads your documents by meaning yet, so the agents find a piece only when it has the same words they ask with.'**
+  String get knKbMeaningOff_no_model;
+
+  /// No description provided for @knKbMeaningOff_no_vector.
+  ///
+  /// In en, this message translates to:
+  /// **'The part of the database that searches by meaning is missing on this computer: the search goes by words.'**
+  String get knKbMeaningOff_no_vector;
+
+  /// No description provided for @knKbMeaningOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose another model'**
+  String get knKbMeaningOther;
+
+  /// No description provided for @knKbMeaningTurnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on searching by meaning'**
+  String get knKbMeaningTurnOn;
+
+  /// No description provided for @knKbMeaningUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use {name}'**
+  String knKbMeaningUse(String name);
+
+  /// No description provided for @knKbMeaningWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'With a model that reads by meaning, «when does the warehouse open» also finds «it opens at 7:30». It runs on this computer: your documents do not leave it.'**
+  String get knKbMeaningWhy;
+
+  /// No description provided for @knKbModelLead.
+  ///
+  /// In en, this message translates to:
+  /// **'On this computer (downloaded once, nothing leaves the house) or an online service with your key. Changing it makes a new index in the background.'**
+  String get knKbModelLead;
+
+  /// No description provided for @knKbModelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The model that reads by meaning'**
+  String get knKbModelTitle;
+
+  /// No description provided for @knKbNewCollection.
+  ///
+  /// In en, this message translates to:
+  /// **'New collection'**
+  String get knKbNewCollection;
+
+  /// No description provided for @knKbNewIndex.
+  ///
+  /// In en, this message translates to:
+  /// **'A new index for {model} is being made; the searches use the old one until it is ready.'**
+  String knKbNewIndex(String model);
+
+  /// No description provided for @knKbNoCols.
+  ///
+  /// In en, this message translates to:
+  /// **'No collection yet.'**
+  String get knKbNoCols;
+
+  /// No description provided for @knKbNoMailboxes.
+  ///
+  /// In en, this message translates to:
+  /// **'No mailbox is connected yet: add one in Automations.'**
+  String get knKbNoMailboxes;
+
+  /// No description provided for @knKbNoProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no project yet.'**
+  String get knKbNoProjects;
+
+  /// No description provided for @knKbNoSources.
+  ///
+  /// In en, this message translates to:
+  /// **'No source yet: add a folder, a file or a page.'**
+  String get knKbNoSources;
+
+  /// No description provided for @knKbOcrDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download now'**
+  String get knKbOcrDownload;
+
+  /// No description provided for @knKbOcrLanguages.
+  ///
+  /// In en, this message translates to:
+  /// **'Languages of your documents'**
+  String get knKbOcrLanguages;
+
+  /// No description provided for @knKbOcrLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Reads photos of documents and scanned PDFs on this computer (Tesseract). Its program and languages come down the first time, a few MB.'**
+  String get knKbOcrLead;
+
+  /// No description provided for @knKbOcrOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Read the text in pictures and scans'**
+  String get knKbOcrOn;
+
+  /// No description provided for @knKbOcrOnHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Slower than text: about a second a page.'**
+  String get knKbOcrOnHelp;
+
+  /// No description provided for @knKbOcrReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready on this computer.'**
+  String get knKbOcrReady;
+
+  /// No description provided for @knKbOcrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Text in pictures and scans'**
+  String get knKbOcrTitle;
+
+  /// No description provided for @knKbOcrToDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'To download: about {size} MB.'**
+  String knKbOcrToDownload(String size);
+
+  /// No description provided for @knKbOcrWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} pictures and scans are waiting for it.'**
+  String knKbOcrWaiting(String n);
+
+  /// No description provided for @knKbOpenCollection.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the collection {name}'**
+  String knKbOpenCollection(String name);
+
+  /// No description provided for @knKbPage.
+  ///
+  /// In en, this message translates to:
+  /// **'page {n}'**
+  String knKbPage(String n);
+
+  /// No description provided for @knKbPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause the reading'**
+  String get knKbPause;
+
+  /// No description provided for @knKbPauseHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The searches keep working; nothing new is read until you turn this off.'**
+  String get knKbPauseHelp;
+
+  /// No description provided for @knKbPickEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here in {name}.'**
+  String knKbPickEmpty(String name);
+
+  /// No description provided for @knKbPickFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a file in RedGiant'**
+  String get knKbPickFile;
+
+  /// No description provided for @knKbPickFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a folder in RedGiant'**
+  String get knKbPickFolder;
+
+  /// No description provided for @knKbPickOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose another'**
+  String get knKbPickOther;
+
+  /// No description provided for @knKbPickPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the projects'**
+  String get knKbPickPlaces;
+
+  /// No description provided for @knKbPickThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose this folder'**
+  String get knKbPickThis;
+
+  /// No description provided for @knKbPickUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Up one folder'**
+  String get knKbPickUp;
+
+  /// No description provided for @knKbPickWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Your projects and RedGiant\'s folders'**
+  String get knKbPickWhere;
+
+  /// No description provided for @knKbPlaceAssistants.
+  ///
+  /// In en, this message translates to:
+  /// **'The assistants\' desk'**
+  String get knKbPlaceAssistants;
+
+  /// No description provided for @knKbPlacePlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'God\'s folder'**
+  String get knKbPlacePlatform;
+
+  /// No description provided for @knKbProv_cohere.
+  ///
+  /// In en, this message translates to:
+  /// **'Cohere'**
+  String get knKbProv_cohere;
+
+  /// No description provided for @knKbProv_compatible.
+  ///
+  /// In en, this message translates to:
+  /// **'Another (like OpenAI)'**
+  String get knKbProv_compatible;
+
+  /// No description provided for @knKbProv_gemini.
+  ///
+  /// In en, this message translates to:
+  /// **'Gemini'**
+  String get knKbProv_gemini;
+
+  /// No description provided for @knKbProv_jina.
+  ///
+  /// In en, this message translates to:
+  /// **'Jina'**
+  String get knKbProv_jina;
+
+  /// No description provided for @knKbProv_mistral.
+  ///
+  /// In en, this message translates to:
+  /// **'Mistral'**
+  String get knKbProv_mistral;
+
+  /// No description provided for @knKbProv_openai.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenAI'**
+  String get knKbProv_openai;
+
+  /// No description provided for @knKbProv_voyage.
+  ///
+  /// In en, this message translates to:
+  /// **'Voyage'**
+  String get knKbProv_voyage;
+
+  /// No description provided for @knKbQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Your documents, for the agents to look up'**
+  String get knKbQ;
+
+  /// No description provided for @knKbQueueError.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped for a problem: {error}'**
+  String knKbQueueError(String error);
+
+  /// No description provided for @knKbRebuild.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebuild'**
+  String get knKbRebuild;
+
+  /// No description provided for @knKbRebuildHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Reads everything again with the same model, from the start.'**
+  String get knKbRebuildHelp;
+
+  /// No description provided for @knKbRebuildQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebuild the index?'**
+  String get knKbRebuildQ;
+
+  /// No description provided for @knKbRebuildText.
+  ///
+  /// In en, this message translates to:
+  /// **'Every piece is read again. The searches keep using the index of now until the new one is ready.'**
+  String get knKbRebuildText;
+
+  /// No description provided for @knKbRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'recommended'**
+  String get knKbRecommended;
+
+  /// No description provided for @knKbRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the collection'**
+  String get knKbRemove;
+
+  /// No description provided for @knKbRemoveQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}?'**
+  String knKbRemoveQ(String name);
+
+  /// No description provided for @knKbRemoveSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this source'**
+  String get knKbRemoveSource;
+
+  /// No description provided for @knKbRemoveText.
+  ///
+  /// In en, this message translates to:
+  /// **'Its pieces leave the knowledge. Your files stay where they are: nothing on the disk is touched.'**
+  String get knKbRemoveText;
+
+  /// No description provided for @knKbRerankLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Reads the question with each piece found and reorders them: better answers, a little slower.'**
+  String get knKbRerankLead;
+
+  /// No description provided for @knKbRerankNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get knKbRerankNone;
+
+  /// No description provided for @knKbRerankNoneText.
+  ///
+  /// In en, this message translates to:
+  /// **'The order of the search itself'**
+  String get knKbRerankNoneText;
+
+  /// No description provided for @knKbRerankText.
+  ///
+  /// In en, this message translates to:
+  /// **'On this computer · {size} MB'**
+  String knKbRerankText(String size);
+
+  /// No description provided for @knKbRerankTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The one that puts the best first'**
+  String get knKbRerankTitle;
+
+  /// No description provided for @knKbRescan.
+  ///
+  /// In en, this message translates to:
+  /// **'Look again now'**
+  String get knKbRescan;
+
+  /// No description provided for @knKbSaveScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Save who may read it'**
+  String get knKbSaveScope;
+
+  /// No description provided for @knKbScopeAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'One agent'**
+  String get knKbScopeAgent;
+
+  /// No description provided for @knKbScopeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent'**
+  String get knKbScopeAll;
+
+  /// No description provided for @knKbScopeProject.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents of one project'**
+  String get knKbScopeProject;
+
+  /// No description provided for @knKbSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Knowledge'**
+  String get knKbSection;
+
+  /// No description provided for @knKbSources.
+  ///
+  /// In en, this message translates to:
+  /// **'Sources'**
+  String get knKbSources;
+
+  /// No description provided for @knKbSrcChatsAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Your conversations, last {days} days'**
+  String knKbSrcChatsAll(String days);
+
+  /// No description provided for @knKbSrcChatsOf.
+  ///
+  /// In en, this message translates to:
+  /// **'The conversations with {names}, last {days} days'**
+  String knKbSrcChatsOf(String days, String names);
+
+  /// No description provided for @knKbSrcDocs.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} documents'**
+  String knKbSrcDocs(String n);
+
+  /// No description provided for @knKbSrcMailOf.
+  ///
+  /// In en, this message translates to:
+  /// **'The mail of the last {days} days'**
+  String knKbSrcMailOf(String days);
+
+  /// No description provided for @knKbSrcProjectOf.
+  ///
+  /// In en, this message translates to:
+  /// **'The files of {name}'**
+  String knKbSrcProjectOf(String name);
+
+  /// No description provided for @knKbSrcState_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read it'**
+  String get knKbSrcState_failed;
+
+  /// No description provided for @knKbSrcState_ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get knKbSrcState_ready;
+
+  /// No description provided for @knKbSrcState_scanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking'**
+  String get knKbSrcState_scanning;
+
+  /// No description provided for @knKbSrcState_waiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get knKbSrcState_waiting;
+
+  /// No description provided for @knKbStateEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to search yet: make a collection and add a folder.'**
+  String get knKbStateEmpty;
+
+  /// No description provided for @knKbStateNoModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a model below to search by meaning; until then it searches by words.'**
+  String get knKbStateNoModel;
+
+  /// No description provided for @knKbStateNoVector.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching by meaning is not ready on this computer yet: for now it searches by words.'**
+  String get knKbStateNoVector;
+
+  /// No description provided for @knKbStatePaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused: the searches work, nothing new is read.'**
+  String get knKbStatePaused;
+
+  /// No description provided for @knKbStateReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready: {n} pieces can be searched'**
+  String knKbStateReady(String n);
+
+  /// No description provided for @knKbStateWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading your documents…'**
+  String get knKbStateWorking;
+
+  /// No description provided for @knKbStatusLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{cols} collections · {pieces} pieces'**
+  String knKbStatusLine(String cols, String pieces);
+
+  /// No description provided for @knKbThreads.
+  ///
+  /// In en, this message translates to:
+  /// **'Processor threads'**
+  String get knKbThreads;
+
+  /// No description provided for @knKbThreadsAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'automatic'**
+  String get knKbThreadsAuto;
+
+  /// No description provided for @knKbThreadsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic leaves most of the processor to you.'**
+  String get knKbThreadsHelp;
+
+  /// No description provided for @knKbThreadsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How much of the processor'**
+  String get knKbThreadsTitle;
+
+  /// No description provided for @knKbToDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'To download: {size} MB'**
+  String knKbToDownload(String size);
+
+  /// No description provided for @knKbTryExample.
+  ///
+  /// In en, this message translates to:
+  /// **'When does the warranty end?'**
+  String get knKbTryExample;
+
+  /// No description provided for @knKbTryHow.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} pieces in {ms} ms, by meaning and by words.'**
+  String knKbTryHow(String ms, String n);
+
+  /// No description provided for @knKbTryLead.
+  ///
+  /// In en, this message translates to:
+  /// **'What the agents would find for a question, best first. Click one to open it.'**
+  String get knKbTryLead;
+
+  /// No description provided for @knKbTryNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing found. Try other words.'**
+  String get knKbTryNothing;
+
+  /// No description provided for @knKbTrySearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get knKbTrySearch;
+
+  /// No description provided for @knKbTryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a search'**
+  String get knKbTryTitle;
+
+  /// No description provided for @knKbTryWordsOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Searched by words only (no model for the meaning yet).'**
+  String get knKbTryWordsOnly;
+
+  /// No description provided for @knKbUploadFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Send files from this computer'**
+  String get knKbUploadFiles;
+
+  /// No description provided for @knKbUploadFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a folder from this computer'**
+  String get knKbUploadFolder;
+
+  /// No description provided for @knKbUploadSay.
+  ///
+  /// In en, this message translates to:
+  /// **'Or drop files here. Sent files are kept in God\'s folder, under knowledge.'**
+  String get knKbUploadSay;
+
+  /// No description provided for @knKbUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending the files…'**
+  String get knKbUploading;
+
+  /// No description provided for @knKbUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'The address'**
+  String get knKbUrl;
+
+  /// No description provided for @knKbUrlHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Read without your logins: only public pages.'**
+  String get knKbUrlHelp;
+
+  /// No description provided for @knKbWhichChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Whose conversations'**
+  String get knKbWhichChats;
+
+  /// No description provided for @knKbWhichMailbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Which mailbox'**
+  String get knKbWhichMailbox;
+
+  /// No description provided for @knKbWhichProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Which project'**
+  String get knKbWhichProject;
+
+  /// No description provided for @knKbWhyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'It failed: {error}'**
+  String knKbWhyFailed(String error);
+
+  /// No description provided for @knKbWhy_binary.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a document (a program, an archive…)'**
+  String get knKbWhy_binary;
+
+  /// No description provided for @knKbWhy_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no text in it'**
+  String get knKbWhy_empty;
+
+  /// No description provided for @knKbWhy_encrypted.
+  ///
+  /// In en, this message translates to:
+  /// **'Protected by a password'**
+  String get knKbWhy_encrypted;
+
+  /// No description provided for @knKbWhy_needs_libreoffice.
+  ///
+  /// In en, this message translates to:
+  /// **'An old Office file: it needs LibreOffice.'**
+  String get knKbWhy_needs_libreoffice;
+
+  /// No description provided for @knKbWhy_needs_ocr.
+  ///
+  /// In en, this message translates to:
+  /// **'A picture or a scan: turn on reading the text in pictures, below.'**
+  String get knKbWhy_needs_ocr;
+
+  /// No description provided for @knKbWhy_too_big.
+  ///
+  /// In en, this message translates to:
+  /// **'Too big to read'**
+  String get knKbWhy_too_big;
+
+  /// No description provided for @knKbWhy_unsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'A kind of file it cannot read'**
+  String get knKbWhy_unsupported;
+
+  /// No description provided for @knMemAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get knMemAdd;
+
+  /// No description provided for @knMemAddPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Something to remember, e.g. I prefer short answers'**
+  String get knMemAddPlaceholder;
+
+  /// No description provided for @knMemAlready.
+  ///
+  /// In en, this message translates to:
+  /// **'Already remembered.'**
+  String get knMemAlready;
+
+  /// No description provided for @knMemAutoOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: RedGiant learns nothing by itself. You can still add memories here, or ask an agent to remember something.'**
+  String get knMemAutoOff;
+
+  /// No description provided for @knMemAutoOn.
+  ///
+  /// In en, this message translates to:
+  /// **'After you write, RedGiant notes what stays true about you: tastes, work, how you like answers. It reads only your own messages, never emails, web pages or automations, and never notes passwords.'**
+  String get knMemAutoOn;
+
+  /// No description provided for @knMemAutoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn by itself from the conversations'**
+  String get knMemAutoTitle;
+
+  /// No description provided for @knMemByAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved by {name}'**
+  String knMemByAgent(String name);
+
+  /// No description provided for @knMemByAgentUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved by an agent'**
+  String get knMemByAgentUnknown;
+
+  /// No description provided for @knMemByAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Learned by itself'**
+  String get knMemByAuto;
+
+  /// No description provided for @knMemByHuman.
+  ///
+  /// In en, this message translates to:
+  /// **'Written by you'**
+  String get knMemByHuman;
+
+  /// No description provided for @knMemByImport.
+  ///
+  /// In en, this message translates to:
+  /// **'From your old notes'**
+  String get knMemByImport;
+
+  /// No description provided for @knMemCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} memories'**
+  String knMemCount(String n);
+
+  /// No description provided for @knMemCountOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 memory'**
+  String get knMemCountOne;
+
+  /// No description provided for @knMemDid_added.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get knMemDid_added;
+
+  /// No description provided for @knMemDid_edited.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed'**
+  String get knMemDid_edited;
+
+  /// No description provided for @knMemDid_forgotten.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgotten for good'**
+  String get knMemDid_forgotten;
+
+  /// No description provided for @knMemDid_removed.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted'**
+  String get knMemDid_removed;
+
+  /// No description provided for @knMemEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get knMemEdit;
+
+  /// No description provided for @knMemEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the memory'**
+  String get knMemEditTitle;
+
+  /// No description provided for @knMemEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant knows nothing about you yet. Talk with an agent, or write here something to remember.'**
+  String get knMemEmpty;
+
+  /// No description provided for @knMemEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared memory'**
+  String get knMemEyebrow;
+
+  /// No description provided for @knMemForget.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget for good'**
+  String get knMemForget;
+
+  /// No description provided for @knMemForgetText.
+  ///
+  /// In en, this message translates to:
+  /// **'RedGiant deletes it, and its words go from the list of changes too. It can never be brought back.'**
+  String get knMemForgetText;
+
+  /// No description provided for @knMemForgetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget it for good?'**
+  String get knMemForgetTitle;
+
+  /// No description provided for @knMemForgottenText.
+  ///
+  /// In en, this message translates to:
+  /// **'Its words are gone for good.'**
+  String get knMemForgottenText;
+
+  /// No description provided for @knMemFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'from «{title}»'**
+  String knMemFrom(String title);
+
+  /// No description provided for @knMemFromUntitled.
+  ///
+  /// In en, this message translates to:
+  /// **'from a conversation'**
+  String get knMemFromUntitled;
+
+  /// No description provided for @knMemGoShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared memory: what RedGiant knows about you'**
+  String get knMemGoShared;
+
+  /// No description provided for @knMemGoSharedOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get knMemGoSharedOpen;
+
+  /// No description provided for @knMemGoSharedText.
+  ///
+  /// In en, this message translates to:
+  /// **'Used by every agent and updated by itself while you talk.'**
+  String get knMemGoSharedText;
+
+  /// No description provided for @knMemHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent changes'**
+  String get knMemHistory;
+
+  /// No description provided for @knMemHistoryLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Every change is kept and you can take it back, except forgetting for good.'**
+  String get knMemHistoryLead;
+
+  /// No description provided for @knMemHistoryLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Show fewer'**
+  String get knMemHistoryLess;
+
+  /// No description provided for @knMemHistoryMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all changes'**
+  String get knMemHistoryMore;
+
+  /// No description provided for @knMemLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent uses this memory, and it updates by itself while you talk. Each agent also has a memory of its own, in the agent\'s Memory tab.'**
+  String get knMemLead;
+
+  /// No description provided for @knMemListLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes count from the next conversation: the ones already open go on as they were.'**
+  String get knMemListLead;
+
+  /// No description provided for @knMemListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What it remembers'**
+  String get knMemListTitle;
+
+  /// No description provided for @knMemNoOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'This agent keeps no memory of its own.'**
+  String get knMemNoOwn;
+
+  /// No description provided for @knMemOwnCard.
+  ///
+  /// In en, this message translates to:
+  /// **'An agent\'s own memory'**
+  String get knMemOwnCard;
+
+  /// No description provided for @knMemOwnCardQ.
+  ///
+  /// In en, this message translates to:
+  /// **'In each agent\'s Memory tab'**
+  String get knMemOwnCardQ;
+
+  /// No description provided for @knMemOwnCardText.
+  ///
+  /// In en, this message translates to:
+  /// **'Only that agent reads it. You write it, or the agent notes what it needs for its work.'**
+  String get knMemOwnCardText;
+
+  /// No description provided for @knMemOwnHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {name} reads it, at the start of every conversation. {name} can also note here what it needs.'**
+  String knMemOwnHelp(String name);
+
+  /// No description provided for @knMemOwnPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Always answer with a short list'**
+  String get knMemOwnPlaceholder;
+
+  /// No description provided for @knMemOwnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory of {name}: only for this agent'**
+  String knMemOwnTitle(String name);
+
+  /// No description provided for @knMemProjectHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent working on this project reads it.'**
+  String get knMemProjectHelp;
+
+  /// No description provided for @knMemProjectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory of the project «{name}»'**
+  String knMemProjectTitle(String name);
+
+  /// No description provided for @knMemRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get knMemRemove;
+
+  /// No description provided for @knMemRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory deleted.'**
+  String get knMemRemoved;
+
+  /// No description provided for @knMemSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get knMemSaved;
+
+  /// No description provided for @knMemSharedCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared memory'**
+  String get knMemSharedCard;
+
+  /// No description provided for @knMemSharedCardQ.
+  ///
+  /// In en, this message translates to:
+  /// **'This page'**
+  String get knMemSharedCardQ;
+
+  /// No description provided for @knMemSharedCardText.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent reads it. It fills up by itself from your conversations, and you can change it here.'**
+  String get knMemSharedCardText;
+
+  /// No description provided for @knMemSummaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Summaries of long conversations'**
+  String get knMemSummaryTitle;
+
+  /// No description provided for @knMemTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What RedGiant knows about you'**
+  String get knMemTitle;
+
+  /// No description provided for @knMemUndid_added.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought back'**
+  String get knMemUndid_added;
+
+  /// No description provided for @knMemUndid_edited.
+  ///
+  /// In en, this message translates to:
+  /// **'Back as it was'**
+  String get knMemUndid_edited;
+
+  /// No description provided for @knMemUndid_removed.
+  ///
+  /// In en, this message translates to:
+  /// **'Taken away again'**
+  String get knMemUndid_removed;
+
+  /// No description provided for @knMemUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get knMemUndo;
+
+  /// No description provided for @knMemUndone.
+  ///
+  /// In en, this message translates to:
+  /// **'Undone'**
+  String get knMemUndone;
+
+  /// No description provided for @knMemUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Space used: {used} of {limit} characters'**
+  String knMemUsed(String limit, String used);
+
+  /// No description provided for @knMemWith.
+  ///
+  /// In en, this message translates to:
+  /// **'with {name}'**
+  String knMemWith(String name);
+
+  /// No description provided for @knSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get knSettings;
+
+  /// No description provided for @knUiAboutHours.
+  ///
+  /// In en, this message translates to:
+  /// **'about {h} h {min} min left'**
+  String knUiAboutHours(String h, String min);
+
+  /// No description provided for @knUiAboutMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'about {min} min left'**
+  String knUiAboutMinutes(String min);
+
+  /// No description provided for @knUiLessThanMinute.
+  ///
+  /// In en, this message translates to:
+  /// **'less than a minute left'**
+  String get knUiLessThanMinute;
+
+  /// No description provided for @knUiOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total}'**
+  String knUiOf(String done, String total);
+
+  /// No description provided for @knUiDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details for whoever helps you'**
+  String get knUiDetails;
+
+  /// No description provided for @knWzDoneBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get knWzDoneBtn;
+
+  /// No description provided for @knHubKnowledge.
+  ///
+  /// In en, this message translates to:
+  /// **'Your documents the agents can search: collections, sources, models'**
+  String get knHubKnowledge;
+
+  /// No description provided for @knHubMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'What every agent knows about you, with every change undoable'**
+  String get knHubMemory;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

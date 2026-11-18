@@ -549,7 +549,14 @@ void main() {
         final before = t.widget<Text>(find.byKey(const Key('update-bar-text'))).data;
         expect(before, startsWith('in corso da 0:'));
         await _tick(t, 2);
-        expect(t.widget<Text>(find.byKey(const Key('update-bar-text'))).data, isNot(before));
+        // The time gone by is the real clock's: on a busy machine two ticks may fall in the same
+        // second, so a little more real time until the next one shows.
+        String? shown() => t.widget<Text>(find.byKey(const Key('update-bar-text'))).data;
+        for (var i = 0; i < 10 && shown() == before; i++) {
+          await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 300)));
+          await _tick(t);
+        }
+        expect(shown(), isNot(before));
         expect(find.byKey(const Key('update-older')), findsOneWidget);
         // RedGiant restarts: the screen says so with the app's tries.
         await t.runAsync(server.goDown);
