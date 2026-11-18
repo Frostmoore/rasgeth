@@ -188,14 +188,28 @@ String embedHash(EmbedParams p) {
   ].join('&');
 }
 
-/// The page at [base] showing [p]: the path is `/`, there is no query, all is in the fragment.
-Uri embedUrl(Uri base, EmbedParams p) => Uri(
+/// The page at [base] showing [p]: the embed's own entry (`/embed.html`, which does not carry the
+/// whole page), no query, all is in the fragment. [isolated] (G42.8): the same page isolated as a
+/// whole (`/embed-isolated.html`, the server's `ISOLATED_EMBED`), so that LibreOffice's frame has
+/// SharedArrayBuffer in the web views without Document-Isolation-Policy (WKWebView, WebKitGTK).
+/// A server without it answers with its page, which sends the fragment on to `/embed.html`.
+Uri embedUrl(Uri base, EmbedParams p, {bool isolated = false}) => Uri(
   scheme: base.scheme,
   host: base.host,
   port: base.hasPort ? base.port : null,
-  path: '/',
+  path: isolated ? '/embed-isolated.html' : '/embed.html',
   fragment: embedHash(p),
 );
+
+/// Documents and presentations: their tab may run LibreOffice (an ODT/ODP, or the open copy a
+/// DOCX/PPTX gets in its own tab), so their embed is the isolated one (G42.8).
+final _officeFile = RegExp(
+  r'\.(odt|odp|docx|docm|dotx|doc|rtf|pptx|pptm|ppsx|ppt)$',
+  caseSensitive: false,
+);
+
+/// Whether the Canvas tab for [path] opens the isolated embed (G42.8).
+bool embedIsolatedFor(String? path) => path != null && _officeFile.hasMatch(path);
 
 /// The embed a fragment asks for, as the page reads it (`parseEmbedHash`), or null.
 EmbedParams? parseEmbedHash(String hash) {

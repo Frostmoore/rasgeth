@@ -9,6 +9,7 @@ import { handleAppInput, installEmbedWays, onApp, toApp } from "../embed.js";
 import { lang, t } from "../i18n.js";
 import { previewLink } from "../preview-links.js";
 import { activeSide, type CanvasTarget, canvasViewId, sideViews, signIn } from "../state.js";
+import { theme } from "../theme.js";
 import { tabOpened } from "../viewers/live.js";
 import { asking, Dialogs } from "./dialogs.js";
 import { shortcutsOpen } from "./Shortcuts.js";
@@ -46,7 +47,11 @@ export function listenEmbedPreviewLinks(): () => void {
 
 /** The app's look, applied without touching the page's own choices (`rg.theme`, `rg.lang`). */
 export function applyEmbedLook(o: { theme?: "light" | "dark"; lang?: "it" | "en"; font?: string }) {
-  if (o.theme) document.documentElement.dataset.theme = o.theme;
+  if (o.theme) {
+    document.documentElement.dataset.theme = o.theme;
+    // The page's own signal too (never saved): the sheet editor and others follow it (G42.8).
+    theme.value = o.theme;
+  }
   if (o.lang) {
     lang.value = o.lang;
     document.documentElement.lang = o.lang;

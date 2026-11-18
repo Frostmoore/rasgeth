@@ -12,13 +12,16 @@
 import type { DocChange, DocFile, DocOp, DocSnapshot, Job } from "@redgiant/protocol";
 import { docKey, PERSON } from "@redgiant/protocol";
 import { useEffect, useRef, useState } from "preact/hooks";
+import { embedded } from "../../embed.js";
 import { t } from "../../i18n.js";
 import {
   IconAlert,
   IconCheck,
+  IconClock,
   IconClose,
   IconDownload,
   IconPencil,
+  IconRetry,
   IconSpinner,
 } from "../../icons.js";
 import { phoneScreen } from "../../phone.js";
@@ -48,7 +51,7 @@ import {
   type OfficeTenant,
   sharedOffice,
 } from "../../viewers/office-shared.js";
-import { bytesText } from "../../viewers/source.js";
+import { bytesText, download } from "../../viewers/source.js";
 import { Progress, useJob } from "../ui.js";
 import { CopyBar } from "./CopyBar.js";
 import { changeText, whoText } from "./DocEditor.js";
@@ -67,14 +70,24 @@ const nameOf = (p: string) => p.split("/").pop() ?? p;
 /** The pause after the person's last edit before the frame's file is saved. */
 const SAVE_PAUSE_MS = 1500;
 
-/** The full editor and its fallback for one ODT or ODP. */
+/**
+ * The full editor and its fallback for one ODT or ODP. «Riprova» after a failed or stopped start
+ * (G42.8) begins again from the check, with a fresh hold on the page's engine.
+ */
 export function OfficeEditor({ file }: { file: DocFile }) {
+  const [round, setRound] = useState(0);
+  return <OfficeEditorRound key={`${round}`} file={file} onRetry={() => setRound((r) => r + 1)} />;
+}
+
+function OfficeEditorRound({ file, onRetry }: { file: DocFile; onRetry: () => void }) {
   const [phase, setPhase] = useState<Phase>({ at: "checking" });
   const [note, setNote] = useState<string>();
   const [saving, setSaving] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
   /** Takes the page's one engine for this tab (when the person comes back to it). */
   const want = useRef<() => void>(() => {});
+  /** «Annulla» while the engine comes down (G42.8): the download stops, the pages are shown. */
+  const stop = useRef<() => void>(() => {});
   const original = originalOf(file.path);
 
   useEffect(() => {
@@ -291,6 +304,9 @@ export function OfficeEditor({ file }: { file: DocFile }) {
     });
     let taking = false;
     let opens = 0;
+    /** The person stopped the engine coming down: nothing of this start goes on. */
+    let stopped = false;
+    let serverJob: string | undefined;
     const take = async () => {
       if (taking || !alive || engine === false || engine === true) return;
       taking = true;
@@ -326,16 +342,19 @@ export function OfficeEditor({ file }: { file: DocFile }) {
                 error: (e as Error).message,
               }));
             if (p.job) {
+              serverJob = p.job;
               if (alive) setPhase({ at: "server", job: p.job });
               let j: Job | undefined;
               for (;;) {
                 await new Promise((r) => setTimeout(r, 1000));
-                if (!alive) return;
+                if (!alive || stopped) return;
                 j = await getApi()
                   .job(p.job)
                   .catch(() => undefined);
                 if (j && j.state !== "running") break;
               }
+              serverJob = undefined;
+              if (stopped) return;
               if (j?.state !== "done") return fallback("failed", j?.error?.message);
             } else if (!p.ready) return fallback("failed", (p as { error?: string }).error);
           }
@@ -345,7 +364,7 @@ export function OfficeEditor({ file }: { file: DocFile }) {
             () => undefined,
             (e: unknown) => e as Error,
           );
-          if (err instanceof NotHolderError) return;
+          if (err instanceof NotHolderError || stopped) return;
           if (err) return fallback("failed", err.message);
         }
         if (!alive || shared.owner !== tenant) return;
@@ -370,6 +389,18 @@ export function OfficeEditor({ file }: { file: DocFile }) {
         );
     });
     want.current = () => void take();
+    stop.current = () => {
+      if (stopped || engine === true || engine === false) return;
+      stopped = true;
+      const job = serverJob;
+      serverJob = undefined;
+      if (job)
+        void getApi()
+          .cancelJob(job)
+          .catch(() => {});
+      // The frame goes with it (its copy into this browser stops); what came down so far stays.
+      fallback("failed", t("officeStopped"));
+    };
 
     // The tab the person looks at takes the engine (a hidden tab measures nothing).
     const body = bodyRef.current;
@@ -384,6 +415,7 @@ export function OfficeEditor({ file }: { file: DocFile }) {
     return () => {
       alive = false;
       want.current = () => {};
+      stop.current = () => {};
       seen?.disconnect();
       void shared.leave(tenant).finally(() => close());
     };
@@ -412,18 +444,32 @@ export function OfficeEditor({ file }: { file: DocFile }) {
         </div>
       )}
       {fb ? (
-        <OfficeFallbackView file={file} why={fb.why} detail={fb.detail} />
+        <OfficeFallbackView file={file} why={fb.why} detail={fb.detail} onRetry={onRetry} />
       ) : (
         // The page's one LibreOffice frame comes here (office-shared.ts) while this tab is shown.
         <div class="doc-office-body" ref={bodyRef}>
-          {loading && <OfficeLoading phase={phase} onTake={() => want.current()} />}
+          {loading && (
+            <OfficeLoading
+              phase={phase}
+              onTake={() => want.current()}
+              onStop={() => stop.current()}
+            />
+          )}
         </div>
       )}
     </div>
   );
 }
 
-function OfficeLoading({ phase, onTake }: { phase: Phase; onTake: () => void }) {
+function OfficeLoading({
+  phase,
+  onTake,
+  onStop,
+}: {
+  phase: Phase;
+  onTake: () => void;
+  onStop: () => void;
+}) {
   const job = useJob(phase.at === "server" ? phase.job : undefined);
   const step = job?.steps.find((s) => s.state === "running") ?? job?.steps.at(-1);
   return (
@@ -466,6 +512,11 @@ function OfficeLoading({ phase, onTake }: { phase: Phase; onTake: () => void }) 
           }
         />
       )}
+      {(phase.at === "server" || phase.at === "browser") && (
+        <button type="button" class="vw-btn small doc-office-stop" onClick={onStop}>
+          {t("cancel")}
+        </button>
+      )}
       {(phase.at === "checking" || phase.at === "opening") && <IconSpinner size={18} />}
       <p class="dim">{phase.at === "elsewhere" ? t("officeOneEngine") : t("officeFirstTime")}</p>
     </div>
@@ -484,6 +535,8 @@ function OfficeStrip({
 }) {
   const [back, setBack] = useState<boolean>();
   const [busy, setBusy] = useState(false);
+  const [versions, setVersions] = useState<OfficeVersion[]>();
+  const [showVersions, setShowVersions] = useState(false);
   useEffect(() => {
     if (!original) return;
     void getApi()
@@ -510,11 +563,9 @@ function OfficeStrip({
       try {
         const blob = await getApi().officeExport(file.scope, file.path, to);
         const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${nameOf(file.path).replace(/\.[^.]+$/, "")}.${to}`;
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 10_000);
+        // Inside RGCompanion this is the app's «Save as…» (G42.8): a PDF to print from there too.
+        download(url, `${nameOf(file.path).replace(/\.[^.]+$/, "")}.${to}`);
+        setTimeout(() => URL.revokeObjectURL(url), 30_000);
       } finally {
         setBusy(false);
       }
@@ -538,6 +589,22 @@ function OfficeStrip({
       )}
       <div class="vw-bar doc-office-strip">
         <div class="spacer" />
+        {original && (
+          <button
+            type="button"
+            class={`vw-btn small doc-office-versions-btn${showVersions ? " on" : ""}`}
+            aria-expanded={showVersions}
+            title={t("officeVersionsHint", { name: nameOf(original) })}
+            onClick={() => {
+              const open = !showVersions;
+              setShowVersions(open);
+              if (open)
+                void attempt(async () => setVersions(await officeVersions(file.scope, original)));
+            }}
+          >
+            <IconClock size={13} /> {t("officeVersions")}
+          </button>
+        )}
         {saving && (
           <span class="dim doc-office-saving">
             <IconSpinner size={12} /> {t("officeSaving")}
@@ -564,8 +631,68 @@ function OfficeStrip({
           </select>
         </label>
       </div>
+      {original && showVersions && (
+        <section class="doc-office-versions" aria-label={t("officeVersions")}>
+          {versions === undefined ? (
+            <IconSpinner size={13} />
+          ) : versions.length === 0 ? (
+            <p class="dim">{t("officeNoVersions", { name: nameOf(original) })}</p>
+          ) : (
+            <ul>
+              {versions.map((x) => (
+                <li key={x.path}>
+                  <button
+                    type="button"
+                    class="link"
+                    title={t("officeVersionSave", { name: x.name })}
+                    onClick={() =>
+                      void attempt(async () => {
+                        const r = await getApi().canvasLink({
+                          kind: "file",
+                          scope: file.scope,
+                          path: x.path,
+                        });
+                        download(r.url, x.name);
+                      })
+                    }
+                  >
+                    <IconDownload size={13} /> {new Date(x.at).toLocaleString()}
+                  </button>
+                  <span class="dim">{bytesText(x.size)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
     </>
   );
+}
+
+/** One of the original's versions kept before it was written again from its copy (the last 5). */
+export interface OfficeVersion {
+  name: string;
+  path: string;
+  size: number;
+  at: string;
+}
+
+/**
+ * The versions of a closed original (G42.8, the page's «cronologia»): the server keeps the last
+ * five in the copy's folder (`x.docx.open/versions/x.<time>.docx`, `keepPrevious`), newest first.
+ */
+export async function officeVersions(scope: string, original: string): Promise<OfficeVersion[]> {
+  const name = nameOf(original);
+  const dot = name.lastIndexOf(".");
+  const stem = dot > 0 ? name.slice(0, dot) : name;
+  const ext = dot > 0 ? name.slice(dot) : "";
+  const all = await getApi()
+    .list(scope, `${original}.open/versions`)
+    .catch(() => []);
+  return all
+    .filter((f) => f.type === "file" && f.name.startsWith(`${stem}.`) && f.name.endsWith(ext))
+    .sort((a, b) => b.name.localeCompare(a.name))
+    .map((f) => ({ name: f.name, path: f.path, size: f.size, at: f.modifiedAt }));
 }
 
 const WHY: Record<
@@ -585,15 +712,29 @@ const WHY: Record<
   failed: "officeWhyFailed",
 };
 
+/**
+ * Why the full editor does not run here, in the person's words. Inside RGCompanion «this browser»
+ * is the app's web view: the sentence says so and points to the bar's «Open in the browser»
+ * (G42.8; before it told the app's person to use Chrome).
+ */
+export function whyText(why: OfficeFallback, detail?: string): string {
+  if (why === "browser" && embedded()) return t("officeWhyBrowserApp");
+  // WebKitGTK isolates the embed (G42.8) but has no WebGL in LibreOffice's workers.
+  if (why === "webgl" && embedded()) return t("officeWhyWebglApp");
+  return t(WHY[why], { reason: detail ?? "" });
+}
+
 /** Without the full editor: the pages (refreshed as the server writes), find and replace. */
 function OfficeFallbackView({
   file,
   why,
   detail,
+  onRetry,
 }: {
   file: DocFile;
   why: OfficeFallback;
   detail?: string | undefined;
+  onRetry?: (() => void) | undefined;
 }) {
   const [url, setUrl] = useState<string>();
   const [version, setVersion] = useState(0);
@@ -636,8 +777,13 @@ function OfficeFallbackView({
         <span>
           {why === "phone"
             ? t("officeWhyPhoneShort")
-            : `${t(WHY[why], { reason: detail ?? "" })} ${t("officeWhyTail")}`}
+            : `${whyText(why, detail)} ${t("officeWhyTail")}`}
         </span>
+        {why === "failed" && onRetry && (
+          <button type="button" class="vw-btn small doc-office-retry" onClick={onRetry}>
+            <IconRetry size={13} /> {t("officeRetry")}
+          </button>
+        )}
       </div>
       <form
         class="doc-office-replace"
@@ -704,7 +850,7 @@ export async function editCopyNote(env: {
   if (why)
     return {
       short: t("officeEditNoteFallbackShort"),
-      long: `${t(WHY[why], { reason: "" })} ${t("officeEditNoteFallback")}`,
+      long: `${whyText(why)} ${t("officeEditNoteFallback")}`,
     };
   if (await env.cached().catch(() => false)) return undefined;
   const size = bytesText(ZETA_BYTES);
@@ -718,8 +864,10 @@ const browserEnv = () => ({
   secure: window.isSecureContext,
   phone: phoneScreen(),
   memory: (navigator as { deviceMemory?: number }).deviceMemory ?? null,
-  // Document-Isolation-Policy, which the frame needs, is Chromium's only (G37.4).
+  // Document-Isolation-Policy, which the frame needs, is Chromium's only (G37.4); elsewhere a page
+  // isolated as a whole gives the frame the same (RGCompanion's embed on WebKit, G42.8).
   chromium:
+    globalThis.crossOriginIsolated === true ||
     !!(
       navigator as { userAgentData?: { brands?: { brand: string }[] } }
     ).userAgentData?.brands?.some((b) => /Chromium/i.test(b.brand)) ||

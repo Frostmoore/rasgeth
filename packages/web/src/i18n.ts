@@ -1038,6 +1038,19 @@ const en = {
   officeEditCopyHint:
     "Edit it on its open copy (ODT or ODP) beside it: the original stays as it is unless you choose to write it back",
   officeMakingCopy: "Making the copy…",
+  // G42.8: the engine stopped or retried, the app's web view, the original's versions.
+  officeStopped: "you stopped the download; what came down so far is kept",
+  officeRetry: "Try again",
+  officeWhyBrowserApp:
+    "On this system the app cannot run the full document editor inside the Canvas: «Open in the browser» in the bar above opens the file in Chrome, Edge or another Chromium browser, where it works.",
+  officeWhyWebglApp:
+    "On this system the app's web view has no WebGL in the background, which LibreOffice needs to draw the document: «Open in the browser» in the bar above opens the file on RedGiant's page, where the full editor runs.",
+  officeVersions: "Versions",
+  officeVersionsHint:
+    "The last 5 versions of {name}, kept each time this copy wrote it again: save one to get it back",
+  officeNoVersions:
+    "No earlier versions of {name} yet: one is kept each time this copy writes it again.",
+  officeVersionSave: "Save {name}",
   // The editor (G37.1).
   docAtLine: "at line {n}",
   docAtLines: "at lines {from}-{to}",
@@ -7809,6 +7822,18 @@ const it: Record<Key, string> = {
   officeEditCopyHint:
     "Modificalo sulla sua copia aperta (ODT o ODP) accanto: l'originale resta com'è, a meno che tu scelga di riscriverlo",
   officeMakingCopy: "Preparo la copia…",
+  officeStopped: "hai fermato lo scaricamento; quello che è già arrivato resta",
+  officeRetry: "Riprova",
+  officeWhyBrowserApp:
+    "Su questo sistema l'app non può far girare l'editor completo dei documenti dentro il Canvas: «Apri nel browser» nella barra qui sopra apre il file in Chrome, Edge o un altro browser Chromium, dove funziona.",
+  officeWhyWebglApp:
+    "Su questo sistema la vista web dell'app non ha il WebGL in sottofondo che serve a LibreOffice per disegnare il documento: «Apri nel browser» nella barra qui sopra apre il file nella pagina di RedGiant, dove l'editor completo funziona.",
+  officeVersions: "Versioni",
+  officeVersionsHint:
+    "Le ultime 5 versioni di {name}, tenute ogni volta che questa copia l'ha riscritto: salvane una per riaverla",
+  officeNoVersions:
+    "Ancora nessuna versione di prima di {name}: se ne tiene una ogni volta che questa copia lo riscrive.",
+  officeVersionSave: "Salva {name}",
   // L'editor (G37.1).
   docAtLine: "alla riga {n}",
   docAtLines: "alle righe {from}-{to}",

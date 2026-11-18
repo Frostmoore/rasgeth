@@ -1082,6 +1082,11 @@ export function takeFromLink(): {
   token?: string;
   board?: string;
   open?: "settings";
+  /**
+   * A file to show in the Canvas (`#open=canvas&scope=…&path=…`, G42.8): RGCompanion's «Open in
+   * the browser» for a document its web view cannot edit. No token: the person signs in here.
+   */
+  file?: { scope: string; path: string };
   /** RGCompanion's theme and language (G42.0): for this page only, never saved. */
   theme?: "light" | "dark";
   lang?: "it" | "en";
@@ -1090,6 +1095,12 @@ export function takeFromLink(): {
   const token = hash.get("token")?.trim() || undefined;
   const board = hash.get("tavola") || undefined;
   const open = hash.get("open") === "settings" ? "settings" : undefined;
+  const scope = hash.get("scope")?.trim();
+  const path = hash.get("path")?.trim();
+  const file =
+    hash.get("open") === "canvas" && scope && path && scope.length <= 200 && path.length <= 4000
+      ? { scope, path }
+      : undefined;
   const t = hash.get("theme");
   const theme = t === "light" || t === "dark" ? t : undefined;
   const l = hash.get("lang");
@@ -1098,6 +1109,10 @@ export function takeFromLink(): {
   hash.delete("token");
   hash.delete("tavola");
   hash.delete("open");
+  if (file) {
+    hash.delete("scope");
+    hash.delete("path");
+  }
   hash.delete("theme");
   hash.delete("lang");
   const rest = hash.toString();
@@ -1110,6 +1125,7 @@ export function takeFromLink(): {
     ...(token && { token }),
     ...(board && { board }),
     ...(open && { open }),
+    ...(file && { file }),
     ...(open && theme && { theme }),
     ...(open && lang && { lang }),
   };
