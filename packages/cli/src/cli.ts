@@ -3,7 +3,12 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { parseArgs } from "node:util";
-import { type Event, type PermissionRequestInfo, PRODUCT_NAME, type ServerMessage } from "@redgiant/protocol";
+import {
+  type Event,
+  type PermissionRequestInfo,
+  PRODUCT_NAME,
+  type ServerMessage,
+} from "@redgiant/protocol";
 import { RedGiantClient } from "./client.js";
 import { metricsLine } from "./format.js";
 

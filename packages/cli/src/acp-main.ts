@@ -24,7 +24,9 @@ if (values.help) {
 }
 const { url, token } = connection(process.env);
 if (!token) {
-  process.stderr.write(`REDGIANT_TOKEN is not set, and no ${PRODUCT_NAME} app was found for this user.\n`);
+  process.stderr.write(
+    `REDGIANT_TOKEN is not set, and no ${PRODUCT_NAME} app was found for this user.\n`,
+  );
   process.exit(2);
 }
 // Only the protocol goes to stdout: everything else is stderr (the editor's log).
@@ -32,6 +34,5 @@ const conn = serveStdio({
   link: new RedGiantClient(url, token),
   agentId: values.agent ?? process.env.REDGIANT_ACP_AGENT,
   log: (line) => process.stderr.write(`[rasgeth-acp] ${line}\n`),
-
 });
 void conn.closed.finally(() => process.exit(0));
