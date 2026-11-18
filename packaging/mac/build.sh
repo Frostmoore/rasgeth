@@ -56,20 +56,18 @@ echo "what weighs most:"
 du -sh "$res/node" "$res/web" "$res"/server/node_modules/* "$res"/server/node_modules/@*/* 2>/dev/null | sort -h | tail -8
 
 echo "== The icon"
+# Drawn by apps/companion/tool/make_icons_test.dart: the tile inside Apple's grid (the app's own
+# macOS sizes) and the menu bar's template silhouette (plan 3.8.13 N8).
 iconset="$dist/RedGiant.iconset"
 mkdir -p "$iconset"
+appicons=apps/companion/macos/Runner/Assets.xcassets/AppIcon.appiconset
 for s in 16 32 128 256 512; do
-  sips -z $s $s packages/web/public/icon-512.png --out "$iconset/icon_${s}x${s}.png" >/dev/null
-  d=$((s * 2))
-  if [ $d -le 512 ]; then
-    sips -z $d $d packages/web/public/icon-512.png --out "$iconset/icon_${s}x${s}@2x.png" >/dev/null
-  else
-    cp packages/web/public/icon-512.png "$iconset/icon_${s}x${s}@2x.png"
-  fi
+  cp "$appicons/app_icon_$s.png" "$iconset/icon_${s}x${s}.png"
+  cp "$appicons/app_icon_$((s * 2)).png" "$iconset/icon_${s}x${s}@2x.png"
 done
 iconutil -c icns "$iconset" -o "$res/RedGiant.icns"
 rm -rf "$iconset"
-sips -z 36 36 packages/web/public/icon-512.png --out "$res/menubar.png" >/dev/null
+cp packaging/icon/rasgeth-menubar.png "$res/menubar.png"
 
 echo "== The menu bar program"
 swiftc -O -target "$arch-apple-macos13" -o "$app/Contents/MacOS/RedGiant" "$here/RedGiant.swift"

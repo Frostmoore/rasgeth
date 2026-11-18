@@ -122,8 +122,9 @@ Docker: `bash tool/linux_shots.sh <folder> [test]` (see the script; the first st
 `RG_DEMO_ENV="DEMO_FRESH=1 DEMO_SETUP_AP=1"` and `integration_test/first_start_shots_test.dart`).
 
 Mascot fixtures (`test/fixtures/mascots.json`) come from the library:
-`pnpm build && node apps/companion/tool/mascot_fixtures.mjs`. The icons are RedGiant's logo
-(`packaging/icon/redgiant-icon.jpg`, G40.18): `flutter test tool/make_icons_test.dart`. The
+`pnpm build && node apps/companion/tool/mascot_fixtures.mjs`. Every size of the icon, here and in
+the page, the site and the installers, comes from the masters in `packaging/icon/` (plan 3.8.13
+N8): `flutter test tool/make_icons_test.dart`. The
 answers' figures (G40.17) are checked against the page's formatters with
 `test/fixtures/metrics_vectors.json`: `node --experimental-strip-types apps/companion/tool/metrics_fixtures.mjs`.
 
