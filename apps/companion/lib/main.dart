@@ -8,6 +8,8 @@ import 'api/discovery.dart';
 import 'api/servers.dart';
 import 'app.dart';
 import 'app_state.dart';
+import 'app_update/start.dart';
+import 'app_update/swap.dart' show UpdateStart;
 import 'desktop/handoff.dart';
 import 'push/background.dart';
 import 'push/distributors.dart';
@@ -32,7 +34,13 @@ Future<void> main(List<String> args) async {
   // Opened by RedGiant.exe or RedGiant.app (G40.12): the local server and a token for it, read
   // (and its file deleted) before anything else.
   final handoff = await takeLaunchHandoff();
+  // The app on its own updates itself (G41.8b): where the person was before an update first.
+  final updates = await prepareAppUpdater(controller, args);
   runApp(RGCompanionApp(controller: controller));
+  // The window is up: the update's helper may stop waiting (or the old version says why it is back).
+  await WidgetsBinding.instance.endOfFrame;
+  await updates?.started(UpdateStart.parse(args));
+  updates?.startChecking();
   await controller.startSystems();
   await controller.restore(handoff: handoff);
   unawaited(controller.takeLaunch());

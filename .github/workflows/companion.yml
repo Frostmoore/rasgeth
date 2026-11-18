@@ -99,7 +99,12 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
-      - run: flutter build linux --release
+      # The app's version (G41.8b: the app on its own compares it with the newest release): the
+      # release's, from packaging/release-kind.json (the tag's when a release is built).
+      - name: Version
+        shell: bash
+        run: echo "RG_APP_VERSION=$(node -p "require('../../packaging/release-kind.json').version")" >> "$GITHUB_ENV"
+      - run: flutter build linux --release --dart-define=RG_APP_VERSION=${{ env.RG_APP_VERSION }}
       # The bundle with its menu entry and a per-user installer (packaging/linux-app, G40.12).
       - run: |
           stage=rgcompanion-linux-x64
@@ -126,7 +131,12 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
-      - run: flutter build windows --release
+      # The app's version (G41.8b: the app on its own compares it with the newest release): the
+      # release's, from packaging/release-kind.json (the tag's when a release is built).
+      - name: Version
+        shell: bash
+        run: echo "RG_APP_VERSION=$(node -p "require('../../packaging/release-kind.json').version")" >> "$GITHUB_ENV"
+      - run: flutter build windows --release --dart-define=RG_APP_VERSION=${{ env.RG_APP_VERSION }}
       - uses: actions/upload-artifact@v4
         with:
           name: rgcompanion-windows-x64
@@ -146,7 +156,12 @@ jobs:
           channel: stable
           cache: true
       # Signed to run locally only (ad hoc); notarization comes with G40.13.
-      - run: flutter build macos --release
+      # The app's version (G41.8b: the app on its own compares it with the newest release): the
+      # release's, from packaging/release-kind.json (the tag's when a release is built).
+      - name: Version
+        shell: bash
+        run: echo "RG_APP_VERSION=$(node -p "require('../../packaging/release-kind.json').version")" >> "$GITHUB_ENV"
+      - run: flutter build macos --release --dart-define=RG_APP_VERSION=${{ env.RG_APP_VERSION }}
       - run: ditto -c -k --keepParent build/macos/Build/Products/Release/RGCompanion.app rgcompanion-macos.zip
       - uses: actions/upload-artifact@v4
         with:

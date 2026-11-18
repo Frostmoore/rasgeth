@@ -6258,5 +6258,130 @@
         "type": "String"
       }
     }
-  }
+  },
+  "appUpdTitle": "{app} update",
+  "@appUpdTitle": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdCheck": "Check for {app} updates…",
+  "@appUpdCheck": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdChecking": "Looking for a new version…",
+  "appUpdUpToDate": "{app} {current} is the newest version.",
+  "@appUpdUpToDate": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      },
+      "current": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdAvailable": "Version {version} is out: you have {current}.",
+  "@appUpdAvailable": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "current": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdFromServer": "GitHub does not answer: this is the version of the RedGiant you are connected to.",
+  "appUpdDownload": "Download",
+  "appUpdDownloading": "Downloading {version}",
+  "@appUpdDownloading": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdHide": "Hide",
+  "appUpdLater": "Later",
+  "appUpdSkip": "Skip this version",
+  "appUpdReady": "{version} is ready. {app} closes, updates and opens again where you are.",
+  "@appUpdReady": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdVerified": "Signature and checksum checked with RedGiant's update key.",
+  "appUpdRestart": "Update and restart",
+  "appUpdApplying": "Closing {app} to update it…",
+  "@appUpdApplying": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdRetry": "Try again",
+  "appUpdClose": "Close",
+  "appUpdErrNetwork": "GitHub cannot be reached now. Try again later.",
+  "appUpdErrSignature": "The signature of this version's file list is missing or not valid: nothing of it is used.",
+  "appUpdErrNotListed": "This version has no {app} package for this system.",
+  "@appUpdErrNotListed": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdErrChecksum": "The downloaded file is not the signed one: it was deleted.",
+  "appUpdErrDisk": "The downloaded file could not be kept or opened.",
+  "appUpdErrSwap": "The replacement could not start: nothing changed.",
+  "appUpdDone": "{app} is now {version} (it was {from}).",
+  "@appUpdDone": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdWentBack": "{version} did not start: {app} went back to {current}. It is not offered again until a newer one comes out.",
+  "@appUpdWentBack": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "app": {
+        "type": "String"
+      },
+      "current": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdCarried": "This copy of {app} comes with RedGiant: it is updated with RedGiant.",
+  "@appUpdCarried": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdDev": "A build from the sources: it does not update itself."
 }

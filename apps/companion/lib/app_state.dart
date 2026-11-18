@@ -10,6 +10,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 import 'api/budgets.dart';
+import 'app_update/brand.dart';
+import 'app_update/updater.dart';
 import 'api/client.dart';
 import 'api/conversation.dart';
 import 'api/discovery.dart';
@@ -140,6 +142,16 @@ class AppController extends ChangeNotifier {
     recorder: _recorder,
     player: _player,
   );
+
+  /// The app on its own updating itself (G41.8b): set at start on Windows and Linux (disabled
+  /// for RedGiant's own copy and builds from the sources), null on phones and in tests.
+  AppUpdater? appUpdater;
+
+  /// Where the person was before an update (taken once by the computers' room).
+  ResumeState? resume;
+
+  /// Where the person is now, given by the computers' room (kept for the update's restart).
+  ResumeState Function()? resumeNow;
 
   final TokenStore tokens;
   final AppPrefs prefs;
@@ -317,12 +329,12 @@ class AppController extends ChangeNotifier {
 
   /// The device's name on the server (Settings › Devices).
   String get deviceName => switch (platform) {
-    DevicePlatform.android => 'RGCompanion (Android)',
-    DevicePlatform.ios => 'RGCompanion (iOS)',
-    DevicePlatform.windows => 'RGCompanion (Windows)',
-    DevicePlatform.macos => 'RGCompanion (macOS)',
-    DevicePlatform.linux => 'RGCompanion (Linux)',
-    DevicePlatform.other => 'RGCompanion',
+    DevicePlatform.android => '$kAppName (Android)',
+    DevicePlatform.ios => '$kAppName (iOS)',
+    DevicePlatform.windows => '$kAppName (Windows)',
+    DevicePlatform.macos => '$kAppName (macOS)',
+    DevicePlatform.linux => '$kAppName (Linux)',
+    DevicePlatform.other => kAppName,
   };
 
   RedGiantClient _clientFor(SavedServer s, String? token, {Transport? transport}) {

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app_state.dart';
+import 'app_update/brand.dart';
+import 'app_update/update_window.dart';
 import 'desktop/desktop_shell.dart';
 import 'l10n/app_localizations.dart';
 import 'mascot/mascot_source.dart';
@@ -19,7 +21,7 @@ class RGCompanionApp extends StatelessWidget {
     child: ListenableBuilder(
       listenable: controller,
       builder: (context, _) => MaterialApp(
-        title: 'RGCompanion',
+        title: kAppName,
         debugShowCheckedModeBanner: false,
         theme: buildTheme(Brightness.light),
         darkTheme: buildTheme(Brightness.dark),
@@ -56,9 +58,11 @@ class AppHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final app = AppScope.of(context);
-    return LayoutBuilder(
-      builder: (context, box) =>
-          app.desktopLayoutFor(box.maxWidth) ? const DesktopShell() : const HomeShell(),
+    return AppUpdateWatcher(
+      child: LayoutBuilder(
+        builder: (context, box) =>
+            app.desktopLayoutFor(box.maxWidth) ? const DesktopShell() : const HomeShell(),
+      ),
     );
   }
 }

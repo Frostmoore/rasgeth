@@ -8012,4 +8012,109 @@ class AppLocalizationsEn extends AppLocalizations {
   String errAgentLimit(String project, String max, String count) {
     return 'The project «$project» can have at most $max agents besides its orchestrator: it has $count. Raise the limit in the project\'s menu or remove one.';
   }
+
+  @override
+  String appUpdTitle(String app) {
+    return '$app update';
+  }
+
+  @override
+  String appUpdCheck(String app) {
+    return 'Check for $app updates…';
+  }
+
+  @override
+  String get appUpdChecking => 'Looking for a new version…';
+
+  @override
+  String appUpdUpToDate(String app, String current) {
+    return '$app $current is the newest version.';
+  }
+
+  @override
+  String appUpdAvailable(String version, String current) {
+    return 'Version $version is out: you have $current.';
+  }
+
+  @override
+  String get appUpdFromServer =>
+      'GitHub does not answer: this is the version of the RedGiant you are connected to.';
+
+  @override
+  String get appUpdDownload => 'Download';
+
+  @override
+  String appUpdDownloading(String version) {
+    return 'Downloading $version';
+  }
+
+  @override
+  String get appUpdHide => 'Hide';
+
+  @override
+  String get appUpdLater => 'Later';
+
+  @override
+  String get appUpdSkip => 'Skip this version';
+
+  @override
+  String appUpdReady(String version, String app) {
+    return '$version is ready. $app closes, updates and opens again where you are.';
+  }
+
+  @override
+  String get appUpdVerified => 'Signature and checksum checked with RedGiant\'s update key.';
+
+  @override
+  String get appUpdRestart => 'Update and restart';
+
+  @override
+  String appUpdApplying(String app) {
+    return 'Closing $app to update it…';
+  }
+
+  @override
+  String get appUpdRetry => 'Try again';
+
+  @override
+  String get appUpdClose => 'Close';
+
+  @override
+  String get appUpdErrNetwork => 'GitHub cannot be reached now. Try again later.';
+
+  @override
+  String get appUpdErrSignature =>
+      'The signature of this version\'s file list is missing or not valid: nothing of it is used.';
+
+  @override
+  String appUpdErrNotListed(String app) {
+    return 'This version has no $app package for this system.';
+  }
+
+  @override
+  String get appUpdErrChecksum => 'The downloaded file is not the signed one: it was deleted.';
+
+  @override
+  String get appUpdErrDisk => 'The downloaded file could not be kept or opened.';
+
+  @override
+  String get appUpdErrSwap => 'The replacement could not start: nothing changed.';
+
+  @override
+  String appUpdDone(String app, String version, String from) {
+    return '$app is now $version (it was $from).';
+  }
+
+  @override
+  String appUpdWentBack(String version, String app, String current) {
+    return '$version did not start: $app went back to $current. It is not offered again until a newer one comes out.';
+  }
+
+  @override
+  String appUpdCarried(String app) {
+    return 'This copy of $app comes with RedGiant: it is updated with RedGiant.';
+  }
+
+  @override
+  String get appUpdDev => 'A build from the sources: it does not update itself.';
 }
