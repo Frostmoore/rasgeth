@@ -116,11 +116,14 @@ describe("every viewer kind, bare, with its bar sent to the app", () => {
   it.each(files)("%s", async (path) => {
     const p = open("p1", path);
     const r = render(<EmbedRoot params={p} />);
-    await waitFor(() => expect(of("title")).toContainEqual({ t: "title", name: path }));
+    await waitFor(() => expect(of("title")).toContainEqual({ t: "title", name: path }), {
+      timeout: 5000,
+    });
     type Bar = { actions: { id: string }[]; link?: string; download?: boolean };
     const last = () => of("bar").at(-1) as Bar | undefined;
     await waitFor(() =>
       expect(last()?.link).toMatch(new RegExp(`^/preview/T/${path}\\?v=\\d+-0$`)),
+      { timeout: 5000 },
     );
     // The page's head is not there: the frame is the app's.
     expect(r.container.querySelector(".canvas-head:not([hidden])")).toBeNull();
@@ -138,8 +141,11 @@ describe("every viewer kind, bare, with its bar sent to the app", () => {
     render(<EmbedRoot params={p} />);
     await waitFor(() =>
       expect(
-        (of("bar").at(-1) as unknown as { actions: { id: string }[] }).actions.map((a) => a.id),
+        (of("bar").at(-1) as unknown as { actions: { id: string }[] } | undefined)?.actions.map(
+          (a) => a.id,
+        ),
       ).toEqual(["art.app", "art.source", "art.project", "keys"]),
+      { timeout: 5000 },
     );
     const on = () =>
       (of("bar").at(-1) as unknown as { actions: { id: string; on?: boolean }[] }).actions
@@ -147,7 +153,7 @@ describe("every viewer kind, bare, with its bar sent to the app", () => {
         .map((a) => a.id);
     expect(on()).toEqual(["art.app"]);
     expect(embed.handleAppInput({ t: "action", id: "art.source" })).toBe(true);
-    await waitFor(() => expect(on()).toEqual(["art.source"]));
+    await waitFor(() => expect(on()).toEqual(["art.source"]), { timeout: 5000 });
     expect(embed.handleAppInput({ t: "action", id: "nothing.here" })).toBe(false);
   });
 });

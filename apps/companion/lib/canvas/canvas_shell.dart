@@ -752,7 +752,10 @@ class _CanvasBar extends StatelessWidget {
     // The keyboard map is one of the bar's tools (a computer's: a phone has no keys to map).
     final all = bar?.actions ?? const <EmbedAction>[];
     final keys = all.where((a) => a.id == 'keys').firstOrNull;
-    final actions = [for (final a in all) if (a.id != 'keys') a];
+    final actions = [
+      for (final a in all)
+        if (a.id != 'keys') a,
+    ];
     final note = bar?.note;
     final download = onDownload != null && (bar?.download ?? true);
     Widget icon(Key key, RgIcons ic, String tip, VoidCallback? on) => IconButton(
