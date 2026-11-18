@@ -105,7 +105,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: matrix.os == 'ubuntu-latest' && matrix.node == 24
         with:
-          name: redgiant-keychain-extension
+          name: rasgeth-keychain-extension
           path: packages/browser-extension/dist/*.zip
           if-no-files-found: error
           retention-days: 14
@@ -125,7 +125,7 @@ jobs:
           node-version: 24
       - run: node scripts/name-audit.mjs
 
-  # RGCompanion for the computers (G40.12, companion.yml with desktop): on a version branch the
+  # The app for the computers (G40.12, companion.yml with desktop): on a version branch the
   # installers carry the app's window (Windows: app\, the Mac: Contents/Helpers) and keep the
   # Linux tar for the release. Elsewhere the installers are made without it (the browser opens).
   companion:
@@ -149,7 +149,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - if: runner.os == 'Linux'
-        run: shellcheck install.sh docker/entrypoint.sh packaging/mac/build.sh packaging/mac/keychain.sh packaging/mac/redgiant
+        run: shellcheck install.sh docker/entrypoint.sh packaging/mac/build.sh packaging/mac/keychain.sh packaging/mac/rasgeth
       - if: runner.os == 'Linux'
         run: REDGIANT_TOKEN=x POSTGRES_PASSWORD=y docker compose config -q
       # Homebrew's cask (G36.10), as a release makes it: Ruby that parses.
@@ -162,7 +162,7 @@ jobs:
       - if: runner.os == 'Windows' && needs.companion.result == 'success'
         uses: actions/download-artifact@v4
         with:
-          name: rgcompanion-windows-x64
+          name: rasgeth-app-windows-x64
           path: packaging/windows/app
       - if: runner.os == 'Windows'
         shell: pwsh
@@ -175,17 +175,17 @@ jobs:
         shell: pwsh
         working-directory: packaging/windows
         run: |
-          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /target:winexe /out:RedGiant.exe /win32icon:redgiant.ico /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.IO.Compression.dll /r:System.IO.Compression.FileSystem.dll /r:System.Management.dll /r:System.Web.Extensions.dll launcher\RedGiant.cs launcher\Updates.cs launcher\Moves.cs launcher\Memory.cs launcher\Diag.cs launcher\Delta.cs launcher\UpdateKey.cs launcher\ReleaseInfo.cs launcher\PageGate.cs launcher\AskGate.cs launcher\AppWindow.cs
+          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /target:winexe /out:Rasgeth.exe /win32icon:rasgeth.ico /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.IO.Compression.dll /r:System.IO.Compression.FileSystem.dll /r:System.Management.dll /r:System.Web.Extensions.dll launcher\Rasgeth.cs launcher\Brand.cs launcher\Updates.cs launcher\Moves.cs launcher\Memory.cs launcher\Diag.cs launcher\Delta.cs launcher\UpdateKey.cs launcher\ReleaseInfo.cs launcher\PageGate.cs launcher\AskGate.cs launcher\AppWindow.cs
           if ($LASTEXITCODE -ne 0) { exit 1 }
           # Differential updates (G36.18): Delta.cs's tests and the tool the checks below use.
-          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:DeltaTests.exe /r:System.IO.Compression.dll /r:System.Web.Extensions.dll /r:System.Core.dll launcher\test\DeltaTests.cs launcher\Delta.cs
+          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:DeltaTests.exe /r:System.IO.Compression.dll /r:System.Web.Extensions.dll /r:System.Core.dll launcher\test\DeltaTests.cs launcher\Delta.cs launcher\Brand.cs
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:UpdateTool.exe /r:System.IO.Compression.dll /r:System.Web.Extensions.dll launcher\test\UpdateTool.cs launcher\Delta.cs
+          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:UpdateTool.exe /r:System.IO.Compression.dll /r:System.Web.Extensions.dll launcher\test\UpdateTool.cs launcher\Delta.cs launcher\Brand.cs
           if ($LASTEXITCODE -ne 0) { exit 1 }
           .\DeltaTests.exe
           if ($LASTEXITCODE -ne 0) { exit 1 }
           # Mandatory and breaking updates (G36.19): release.json's rules and signature.
-          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:ReleaseInfoTests.exe /r:System.IO.Compression.dll /r:System.Web.Extensions.dll /r:System.Core.dll launcher\test\ReleaseInfoTests.cs launcher\ReleaseInfo.cs launcher\Delta.cs
+          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:ReleaseInfoTests.exe /r:System.IO.Compression.dll /r:System.Web.Extensions.dll /r:System.Core.dll launcher\test\ReleaseInfoTests.cs launcher\ReleaseInfo.cs launcher\Delta.cs launcher\Brand.cs
           if ($LASTEXITCODE -ne 0) { exit 1 }
           .\ReleaseInfoTests.exe
           if ($LASTEXITCODE -ne 0) { exit 1 }
@@ -199,29 +199,29 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit 1 }
           .\AskGateTests.exe
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          # RGCompanion's window (G40.12): the device token, the handoff only this user opens, and
+          # The app's window (G40.12): the device token, the handoff only this user opens, and
           # the whole opening with a stand-in app (AppStub.exe, also used after the install below).
           & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:AppStub.exe /r:System.Web.Extensions.dll /r:System.Windows.Forms.dll launcher\test\AppStub.cs
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:AppWindowTests.exe /r:System.Web.Extensions.dll launcher\test\AppWindowTests.cs launcher\AppWindow.cs
+          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /out:AppWindowTests.exe /r:System.Web.Extensions.dll launcher\test\AppWindowTests.cs launcher\AppWindow.cs launcher\Brand.cs
           if ($LASTEXITCODE -ne 0) { exit 1 }
           .\AppWindowTests.exe (Resolve-Path .\AppStub.exe).Path
           if ($LASTEXITCODE -ne 0) { exit 1 }
           # «Looking at what changed» timed on 27,374 files (3.5.4): one thread, HashThreads, hashes.txt.
           .\DeltaTests.exe --bench
           if ($LASTEXITCODE -ne 0) { exit 1 }
-      # The engine on Windows (G24.3b): RedGiant.exe downloads llama.cpp's Vulkan build, starts it
+      # The engine on Windows (G24.3b): Rasgeth.exe downloads llama.cpp's Vulkan build, starts it
       # and reports. The runner has no GPU: the engine must be found and that must be said (no_gpu).
       - if: runner.os == 'Windows'
         shell: pwsh
         working-directory: packaging/windows
         run: |
-          $dir = "$env:LOCALAPPDATA\RedGiant\engine"
+          $dir = "$env:LOCALAPPDATA\Rasgeth\engine"
           New-Item -ItemType Directory -Force "$dir\models" | Out-Null
           Set-Content "$dir\models\tiny.gguf" "not a model"
           $build = (Select-String -Path ..\..\packages\server\src\win-engine.ts -Pattern 'WIN_ENGINE_BUILD = "(b\d+)"').Matches[0].Groups[1].Value
           Set-Content "$dir\engine.json" ('{"id":"ci-1","model":"tiny.gguf","build":"' + $build + '","ctx":2048,"parallel":1}')
-          $p = Start-Process .\RedGiant.exe -ArgumentList "--engine-only" -PassThru
+          $p = Start-Process .\Rasgeth.exe -ArgumentList "--engine-only" -PassThru
           $status = $null
           for ($i = 0; $i -lt 180; $i++) {
             Start-Sleep 2
@@ -236,7 +236,7 @@ jobs:
           if (-not (Test-Path "$dir\bin\current\llama-server.exe")) { "llama-server.exe was not installed"; exit 1 }
           if ($status.id -ne "ci-1" -or $status.state -ne "failed" -or $status.error -notin @("no_gpu", $null)) { "unexpected status"; exit 1 }
           if ("$($status.log)" -notmatch "llama|ggml|model") { "no engine log in the status"; exit 1 }
-      # RedGiant 3.0 (G30.2): the whole installer, installed silently, started, answering, and
+      # Rasgeth (3.0, G30.2): the whole installer, installed silently, started, answering, and
       # stopped the proper way, with no Node or Postgres left behind.
       - if: runner.os == 'Windows'
         uses: actions/setup-node@v4
@@ -257,7 +257,7 @@ jobs:
           # Real folders, no links: the installer copies files, and Windows' junctions would not survive.
           pnpm --filter @redgiant/server deploy --prod --legacy --config.node-linker=hoisted packaging/windows/server
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          # The redgiant command line (G36.15) inside the server, so updates carry it.
+          # The rasgeth command line (G36.15) inside the server, so updates carry it.
           node packaging/cli/stage.mjs packaging/windows/server
           if ($LASTEXITCODE -ne 0) { exit 1 }
           # Codex and Claude Code (hundreds of MB) come down only when a subscription is switched on.
@@ -276,21 +276,21 @@ jobs:
           Copy-Item "$env:RUNNER_TEMP\node-x\node-$v-win-x64\node.exe" packaging/windows/node/node.exe
           choco install innosetup -y --no-progress
           Push-Location packaging/windows
-          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=0.0.0-ci" RedGiant.iss
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=0.0.0-ci" Rasgeth.iss
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          Get-Item dist\RedGiant-Setup.exe | Format-List Name, Length
+          Get-Item dist\Rasgeth-Setup.exe | Format-List Name, Length
           # -Wait would also wait for whatever setup leaves running: only setup itself, with a limit.
-          $setup = Start-Process dist\RedGiant-Setup.exe -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LANG=en", '/TASKS=""' -PassThru
+          $setup = Start-Process dist\Rasgeth-Setup.exe -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LANG=en", '/TASKS=""' -PassThru
           if (-not $setup.WaitForExit(600000)) { "setup did not finish"; exit 1 }
           Pop-Location
-          $app = "$env:LOCALAPPDATA\RedGiant"
+          $app = "$env:LOCALAPPDATA\Rasgeth"
           if (-not (Test-Path "$app\server\dist\main.js")) { "the server was not installed"; exit 1 }
-          # Debug mode on: RedGiant.exe writes its own log and the server's output there.
+          # Debug mode on: Rasgeth.exe writes its own log and the server's output there.
           New-Item -ItemType Directory -Force "$app\engine" | Out-Null
           New-Item -ItemType File -Force "$app\engine\debug.on" | Out-Null
-          # The stand-in app (G40.12) writes what it saw here; RedGiant.exe passes its environment on.
+          # The stand-in app (G40.12) writes what it saw here; Rasgeth.exe passes its environment on.
           $env:RG_STUB_OUT = "$env:RUNNER_TEMP\stub-hello.json"
-          Start-Process "$app\RedGiant.exe" -ArgumentList "--background"
+          Start-Process "$app\Rasgeth.exe" -ArgumentList "--background"
           $up = $false
           for ($i = 0; $i -lt 120; $i++) {
             Start-Sleep 2
@@ -298,8 +298,8 @@ jobs:
           }
           Get-Content "$app\engine\launcher-*.log" -ErrorAction SilentlyContinue | Select-Object -Last 30
           if (-not $up) {
-            "RedGiant did not answer. The server started by hand, for its error:"
-            & "$app\RedGiant.exe" --quit | Out-Null
+            "Rasgeth did not answer. The server started by hand, for its error:"
+            & "$app\Rasgeth.exe" --quit | Out-Null
             $env:REDGIANT_TOKEN = "ci-token-0123456789abcdef0123456789"; $env:DATABASE_URL = "embedded"
             $env:REDGIANT_DATA_DIR = "$env:RUNNER_TEMP\rg-data"; $env:REDGIANT_PORT = "7699"
             $env:REDGIANT_WEB_DIR = "$app\web"
@@ -310,29 +310,29 @@ jobs:
             exit 1
           }
           "answered after about $($i * 2) s"
-          # The command line (G36.15): installed with the app, it finds this RedGiant by itself
+          # The command line (G36.15): installed with the app, it finds this Rasgeth by itself
           # (token and address in the data folder); the user's PATH is untouched without the task.
-          $rg = & "$app\bin\redgiant.cmd" projects create "CLI check" 2>&1
-          if ($LASTEXITCODE -ne 0 -or "$rg" -notmatch "Created project cli-check") { "the redgiant command failed: $rg"; exit 1 }
+          $rg = & "$app\bin\rasgeth.cmd" projects create "CLI check" 2>&1
+          if ($LASTEXITCODE -ne 0 -or "$rg" -notmatch "Created project cli-check") { "the rasgeth command failed: $rg"; exit 1 }
           $userPath = (Get-ItemProperty HKCU:\Environment -ErrorAction SilentlyContinue).Path
-          if ("$userPath" -like "*RedGiant\bin*") { "the PATH was changed without the clipath task"; exit 1 }
-          "redgiant command: $rg"
-          # RGCompanion's window (G40.12): RedGiant.exe clicked again opens the app (the real one on a
+          if ("$userPath" -like "*Rasgeth\bin*") { "the PATH was changed without the clipath task"; exit 1 }
+          "rasgeth command: $rg"
+          # The app's window (G40.12): Rasgeth.exe clicked again opens the app (the real one on a
           # version branch, the stand-in elsewhere) with a device token of its own, handed over in a
           # file the app deletes; a second click while it runs makes no other device.
-          $real = Test-Path "$app\app\rgcompanion.exe"
+          $real = Test-Path "$app\app\rasgeth-app.exe"
           if ($env:RELEASE -eq 'true' -and -not $real) { "a release installer without the app"; exit 1 }
-          if (-not $real) { New-Item -ItemType Directory -Force "$app\app" | Out-Null; Copy-Item packaging\windows\AppStub.exe "$app\app\rgcompanion.exe" }
+          if (-not $real) { New-Item -ItemType Directory -Force "$app\app" | Out-Null; Copy-Item packaging\windows\AppStub.exe "$app\app\rasgeth-app.exe" }
           $installToken = (Get-Content "$app\data\token.txt" -Raw).Trim()
-          function App-Devices { @((Invoke-RestMethod -Headers @{ Authorization = "Bearer $installToken" } http://127.0.0.1:7600/api/devices) | Where-Object { $_.name -like "RGCompanion (*" }) }
-          & "$app\RedGiant.exe"
+          function App-Devices { @((Invoke-RestMethod -Headers @{ Authorization = "Bearer $installToken" } http://127.0.0.1:7600/api/devices) | Where-Object { $_.name -like "Rasgeth (*" }) }
+          & "$app\Rasgeth.exe"
           $running = $null
           for ($i = 0; $i -lt 60 -and -not $running; $i++) {
             Start-Sleep 1
-            $running = Get-Process rgcompanion -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$app\app\*" }
+            $running = Get-Process rasgeth-app -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$app\app\*" }
           }
-          if (-not $running) { "RedGiant.exe did not open the app"; Get-Content "$app\engine\launcher-*.log" -ErrorAction SilentlyContinue | Select-String "\[app\]"; exit 1 }
-          $handoffs = "$env:LOCALAPPDATA\RedGiant\handoff"
+          if (-not $running) { "Rasgeth.exe did not open the app"; Get-Content "$app\engine\launcher-*.log" -ErrorAction SilentlyContinue | Select-String "\[app\]"; exit 1 }
+          $handoffs = "$env:LOCALAPPDATA\Rasgeth\handoff"
           for ($i = 0; $i -lt 30 -and @(Get-ChildItem $handoffs -Filter *.json -ErrorAction SilentlyContinue).Count -gt 0; $i++) { Start-Sleep 1 }
           if (@(Get-ChildItem $handoffs -Filter *.json -ErrorAction SilentlyContinue).Count -gt 0) { "the app did not take its handoff"; exit 1 }
           $devices = App-Devices
@@ -345,14 +345,14 @@ jobs:
             $hello = Get-Content $env:RG_STUB_OUT -Raw -ErrorAction SilentlyContinue | ConvertFrom-Json
             if (-not $hello.signedIn) { "the stand-in app did not sign in with its token"; exit 1 }
           }
-          & "$app\RedGiant.exe"
+          & "$app\Rasgeth.exe"
           Start-Sleep 5
           if ((App-Devices).Count -ne 1) { "a second click made another device"; exit 1 }
-          "the app opened signed in ($(if ($real) { 'RGCompanion' } else { 'stand-in' })), one device: $($devices[0].name)"
-          Get-Process rgcompanion -ErrorAction SilentlyContinue | Stop-Process -Force
+          "the app opened signed in ($(if ($real) { 'the app' } else { 'stand-in' })), one device: $($devices[0].name)"
+          Get-Process rasgeth-app -ErrorAction SilentlyContinue | Stop-Process -Force
           if (-not $real) { Remove-Item -Recurse -Force "$app\app" }
           # pgvector from the installed folder (G36.1): the embedded Postgres loads it from outside
-          # its installation (redgiant.conf), and CREATE EXTENSION works in RedGiant's database.
+          # its installation (redgiant.conf), and CREATE EXTENSION works in the server's database.
           if (-not (Test-Path "$app\server\pgvector\lib\vector.dll")) { "pgvector was not installed"; exit 1 }
           $conf = Get-Content "$app\data\postgres\redgiant.conf" -Raw
           if ($conf -notmatch "extension_control_path") { "the embedded Postgres does not use pgvector's folder"; $conf; exit 1 }
@@ -374,18 +374,18 @@ jobs:
           '@ | Set-Content "$env:RUNNER_TEMP\pgv-check.cjs"
           $env:PGV_SERVER = "$app\server"
           & "$app\node\node.exe" "$env:RUNNER_TEMP\pgv-check.cjs"
-          if ($LASTEXITCODE -ne 0) { "CREATE EXTENSION vector failed in the installed RedGiant"; exit 1 }
-          # RedGiant closed badly with Postgres left running (3.0.0 on Rig, 2026-11-05): setup run
+          if ($LASTEXITCODE -ne 0) { "CREATE EXTENSION vector failed in the installed Rasgeth"; exit 1 }
+          # Rasgeth closed badly with Postgres left running (3.0.0 on Rig, 2026-11-05): setup run
           # again must still replace every file ("Accesso negato" before) and stop that Postgres.
-          Stop-Process -Name RedGiant -Force
+          Stop-Process -Name Rasgeth -Force
           Get-Process node -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$app*" } | Stop-Process -Force
           Start-Sleep 2
           $orphans = @(Get-Process postgres -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$app*" } | ForEach-Object { $_.Id })
           "Postgres left running on purpose: $($orphans.Count) processes"
           if ($orphans.Count -eq 0) { "the test needs a Postgres left running"; exit 1 }
-          # 3.5.3: a RedGiant page left open during the update (here a stand-in that reconnects as the
-          # page does: 1 s, then twice as long up to 5 s for a RedGiant on this computer, api.ts
-          # reconnectCap) comes back by itself, and the new RedGiant opens no other.
+          # 3.5.3: a page left open during the update (here a stand-in that reconnects as the
+          # page does: 1 s, then twice as long up to 5 s for a server on this computer, api.ts
+          # reconnectCap) comes back by itself, and the new launcher opens no other.
           $env:PAGE_TOKEN_FILE = "$app\data\token.txt"
           $env:PAGE_PROTOCOL = (Select-String -Path packages\protocol\src\wire.ts -Pattern 'PROTOCOL_VERSION = (\d+)').Matches[0].Groups[1].Value
           @'
@@ -411,19 +411,19 @@ jobs:
           # day (3.5.3's run went past midnight UTC between the two starts and asked about a real release).
           # A feed that does not answer: «check failed», nothing to ask, the page may open.
           $env:REDGIANT_UPDATE_FEED = "http://127.0.0.1:9/release.json"
-          $again = Start-Process packaging\windows\dist\RedGiant-Setup.exe -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LANG=en", '/TASKS=""' -PassThru
+          $again = Start-Process packaging\windows\dist\Rasgeth-Setup.exe -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LANG=en", '/TASKS=""' -PassThru
           if (-not $again.WaitForExit(600000)) { "setup over a running Postgres did not finish"; exit 1 }
           if ($again.ExitCode -ne 0) { "setup over a running Postgres failed: $($again.ExitCode)"; exit 1 }
           $still = @(Get-Process postgres -ErrorAction SilentlyContinue | Where-Object { $orphans -contains $_.Id })
           if ($still.Count -gt 0) { "the old Postgres is still running after setup"; exit 1 }
           "setup replaced the files and stopped the old Postgres"
-          # An update opens RedGiant again by itself: it answers once more.
+          # An update opens Rasgeth again by itself: it answers once more.
           $up = $false
           for ($i = 0; $i -lt 120; $i++) {
             Start-Sleep 2
             try { Invoke-WebRequest -UseBasicParsing http://127.0.0.1:7600/api/health -TimeoutSec 3 | Out-Null; $up = $true; break } catch {}
           }
-          if (-not $up) { "RedGiant did not come back after the update"; exit 1 }
+          if (-not $up) { "Rasgeth did not come back after the update"; exit 1 }
           # The launcher's own answer (PageGate.Wait, 15 s at most once the server answers), with slack.
           $came = $false
           for ($i = 0; $i -lt 45 -and -not $came; $i++) {
@@ -434,31 +434,31 @@ jobs:
           Remove-Item Env:REDGIANT_UPDATE_FEED
           Get-Content "$app\engine\launcher-*.log" -ErrorAction SilentlyContinue | Select-String "\[page\]" | Select-Object -Last 5
           if (-not $came) {
-            "the RedGiant after the update did not see the open page come back"
+            "the launcher after the update did not see the open page come back"
             Get-Content "$app\engine\launcher-*.log" -ErrorAction SilentlyContinue | Select-String "\[update\]|\[server\] ready" | Select-Object -Last 8
             Get-Content "$env:RUNNER_TEMP\page.txt" -ErrorAction SilentlyContinue
             exit 1
           }
           if (Get-Content "$app\engine\launcher-*.log" -ErrorAction SilentlyContinue | Select-String "no page came back") { "a second page was opened after the update"; exit 1 }
           # Differential update (G36.18), the real launcher end to end: a release of its own
-          # (range-server.mjs: 302 then 206 as GitHub, the API's digest), RedGiant.exe --update-now.
-          # 0.0.1 changes two files: only those come down, the swap restarts RedGiant as 0.0.1.
+          # (range-server.mjs: 302 then 206 as GitHub, the API's digest), Rasgeth.exe --update-now.
+          # 0.0.1 changes two files: only those come down, the swap restarts Rasgeth as 0.0.1.
           $feed = "$env:RUNNER_TEMP\feed"; $next = "$env:RUNNER_TEMP\next"
           function Pack-Version($v, [scriptblock]$change) {
             Remove-Item -Recurse -Force $next, $feed -ErrorAction SilentlyContinue
             New-Item -ItemType Directory -Force $next, $feed | Out-Null
             foreach ($d in "server", "web", "node", "app") { if (Test-Path "packaging\windows\$d") { Copy-Item -Recurse "packaging\windows\$d" "$next\$d" } }
-            Copy-Item packaging\windows\RedGiant.exe, packaging\windows\redgiant.ico $next
+            Copy-Item packaging\windows\Rasgeth.exe, packaging\windows\rasgeth.ico, packaging\icon\rasgeth-tray-dark.ico, packaging\icon\rasgeth-tray-light.ico $next
             New-Item -ItemType Directory -Force "$next\bin" | Out-Null
-            Copy-Item packaging\windows\redgiant.cmd "$next\bin"
+            Copy-Item packaging\windows\rasgeth.cmd "$next\bin"
             & $change
-            node packaging/update/pack.mjs --tree $next --version $v --platform win-x64 --out $feed --installer packaging\windows\dist\RedGiant-Setup.exe
+            node packaging/update/pack.mjs --tree $next --version $v --platform win-x64 --out $feed --installer packaging\windows\dist\Rasgeth-Setup.exe
             if ($LASTEXITCODE -ne 0) { exit 1 }
             if ($env:UPDATE_SIGNING_KEY) {
-              node packaging/update/sign.mjs "$feed\RedGiant-win-x64.manifest.json"
+              node packaging/update/sign.mjs "$feed\Rasgeth-win-x64.manifest.json"
               if ($LASTEXITCODE -ne 0) { exit 1 }
             }
-            Copy-Item packaging\windows\dist\RedGiant-Setup.exe $feed
+            Copy-Item packaging\windows\dist\Rasgeth-Setup.exe $feed
           }
           function Wait-Version($v) {
             for ($i = 0; $i -lt 150; $i++) {
@@ -475,23 +475,23 @@ jobs:
             if ($LASTEXITCODE -ne 0) { exit 1 }
             $srv = Start-Process node -ArgumentList "packaging/update/range-server.mjs", $feed, "18765", "0.0.1" -PassThru
             Start-Sleep 2
-            & "$app\RedGiant.exe" --quit | Out-Null
+            & "$app\Rasgeth.exe" --quit | Out-Null
             $env:REDGIANT_UPDATE_FEED = "http://127.0.0.1:18765/release.json"
             # hashes.txt filled in the background (3.5.4) two seconds after the server answers, not 90.
             $env:REDGIANT_WARM_DELAY_MS = "2000"
-            Start-Process "$app\RedGiant.exe" -ArgumentList "--background", "--update-now"
+            Start-Process "$app\Rasgeth.exe" -ArgumentList "--background", "--update-now"
             if (-not (Wait-Version "0.0.1")) { "the differential update to 0.0.1 did not finish"; exit 1 }
             $served = [long](Invoke-WebRequest -UseBasicParsing http://127.0.0.1:18765/served).Content
-            "0.0.1 in place, $served bytes downloaded of a $((Get-Item "$feed\RedGiant-win-x64.zip").Length)-byte zip"
+            "0.0.1 in place, $served bytes downloaded of a $((Get-Item "$feed\Rasgeth-win-x64.zip").Length)-byte zip"
             # What it must cost: the gzipped manifest, its signature if any, and the two changed entries
             # (one range each: they sit far apart in the zip). 64 KB of slack for nothing else.
-            $m = Get-Content "$feed\RedGiant-win-x64.manifest.json" -Raw | ConvertFrom-Json
+            $m = Get-Content "$feed\Rasgeth-win-x64.manifest.json" -Raw | ConvertFrom-Json
             $changed = ($m.files | Where-Object { $_.path -in @("web/index.html", "server/dist/ci-marker.js") } | Measure-Object csize -Sum).Sum
-            $expected = (Get-Item "$feed\RedGiant-win-x64.manifest.json.gz").Length + $changed
-            if (Test-Path "$feed\RedGiant-win-x64.manifest.json.sig") { $expected += (Get-Item "$feed\RedGiant-win-x64.manifest.json.sig").Length }
+            $expected = (Get-Item "$feed\Rasgeth-win-x64.manifest.json.gz").Length + $changed
+            if (Test-Path "$feed\Rasgeth-win-x64.manifest.json.sig") { $expected += (Get-Item "$feed\Rasgeth-win-x64.manifest.json.sig").Length }
             "expected about $expected bytes (manifest.gz + $changed bytes of entries)"
             if ($served -gt $expected + 64KB) { "too much downloaded for two files"; Get-Content "$app\engine\launcher-*.log" -ErrorAction SilentlyContinue | Select-String "differential" | Select-Object -Last 5; exit 1 }
-            & packaging\windows\UpdateTool.exe verify "$feed\RedGiant-win-x64.manifest.json" $app
+            & packaging\windows\UpdateTool.exe verify "$feed\Rasgeth-win-x64.manifest.json" $app
             if ($LASTEXITCODE -ne 0) { "the folder is not 0.0.1"; exit 1 }
             for ($i = 0; $i -lt 30 -and (Test-Path "$app\update\0.0.1"); $i++) { Start-Sleep 2 }
             if (Test-Path "$app\update\0.0.1") { "the old version was not cleaned up"; exit 1 }
@@ -502,7 +502,7 @@ jobs:
             function Filled {
               $lines = @(Get-Content "$app\engine\launcher-*.log" -ErrorAction SilentlyContinue)
               $from = -1
-              for ($k = 0; $k -lt $lines.Count; $k++) { if ($lines[$k] -match "RedGiant 0\.0\.1 answered: the update stays") { $from = $k } }
+              for ($k = 0; $k -lt $lines.Count; $k++) { if ($lines[$k] -match "Rasgeth 0\.0\.1 answered: the update stays") { $from = $k } }
               if ($from -lt 0) { return $null }
               for ($k = $from + 1; $k -lt $lines.Count; $k++) { if ($lines[$k] -match "hashes of the installed files: ") { return $lines[$k] } }
               return $null
@@ -520,8 +520,8 @@ jobs:
             Pack-Version "0.0.2" { Add-Content "$next\web\index.html" "<!-- 0.0.1 -->"; Set-Content "$next\server\dist\ci-marker.js" "export {};"; Set-Content "$next\server\dist\main.js" "process.exit(1);" }
             $srv = Start-Process node -ArgumentList "packaging/update/range-server.mjs", $feed, "18765", "0.0.2" -PassThru
             Start-Sleep 2
-            & "$app\RedGiant.exe" --quit | Out-Null
-            Start-Process "$app\RedGiant.exe" -ArgumentList "--background", "--update-now"
+            & "$app\Rasgeth.exe" --quit | Out-Null
+            Start-Process "$app\Rasgeth.exe" -ArgumentList "--background", "--update-now"
             # Rolled back: the broken version is remembered (the next update uses the installer).
             for ($i = 0; $i -lt 150 -and (Get-ItemProperty HKCU:\Software\RedGiant).UpdateBroken -ne "0.0.2"; $i++) { Start-Sleep 2 }
             if ((Get-ItemProperty HKCU:\Software\RedGiant).UpdateBroken -ne "0.0.2") { "the failed 0.0.2 was not rolled back"; Get-Content "$app\engine\launcher-*.log" -ErrorAction SilentlyContinue | Select-Object -Last 40; exit 1 }
@@ -529,7 +529,7 @@ jobs:
             if ((Get-Content "$app\server\dist\main.js" -Raw).Trim() -eq "process.exit(1);") { "the broken server stayed"; exit 1 }
             "0.0.2 failed on trial and 0.0.1 came back"
             Stop-Process $srv -Force
-            # G36.19: 0.0.3 is signed "breaking": RedGiant.exe must not touch the installed files,
+            # G36.19: 0.0.3 is signed "breaking": Rasgeth.exe must not touch the installed files,
             # not even with --update-now (no differential, no installer over it).
             Pack-Version "0.0.3" { Add-Content "$next\web\index.html" "<!-- 0.0.3 -->" }
             '{"version":"0.0.3","kind":"breaking","minVersion":null,"note":{"it":"Prova","en":"Test"},"requiredBelow":null,"cleanInstallBelow":null}' | Set-Content "$env:RUNNER_TEMP\kind.json"
@@ -539,9 +539,9 @@ jobs:
             if ($LASTEXITCODE -ne 0) { exit 1 }
             $srv = Start-Process node -ArgumentList "packaging/update/range-server.mjs", $feed, "18765", "0.0.3" -PassThru
             Start-Sleep 2
-            & "$app\RedGiant.exe" --quit | Out-Null
-            Start-Process "$app\RedGiant.exe" -ArgumentList "--background", "--update-now"
-            if (-not (Wait-Version "0.0.1")) { "RedGiant did not start again as 0.0.1"; exit 1 }
+            & "$app\Rasgeth.exe" --quit | Out-Null
+            Start-Process "$app\Rasgeth.exe" -ArgumentList "--background", "--update-now"
+            if (-not (Wait-Version "0.0.1")) { "Rasgeth did not start again as 0.0.1"; exit 1 }
             Start-Sleep 20
             $served = [long](Invoke-WebRequest -UseBasicParsing http://127.0.0.1:18765/served).Content
             $info = (Get-Item "$feed\release.json").Length + (Get-Item "$feed\release.json.sig").Length
@@ -554,7 +554,7 @@ jobs:
           } else {
             "::warning::no UPDATE_SIGNING_KEY here (a pull request from a fork): the differential update is not tried"
           }
-          & "$app\RedGiant.exe" --quit | Out-Null
+          & "$app\Rasgeth.exe" --quit | Out-Null
           Start-Sleep 5
           $left = @(Get-Process node, postgres -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$app*" })
           if ($left.Count -gt 0) { $left | Format-Table Id, ProcessName, Path; "processes left after --quit"; exit 1 }
@@ -567,7 +567,7 @@ jobs:
           if (Test-Path "$app\server\dist\main.js") { "the uninstaller left the server"; exit 1 }
           if (-not (Test-Path "$app\data\postgres")) { "the uninstaller removed the data"; exit 1 }
           "uninstalled, data kept"
-      # RGCompanion on its own (3.8.2, RGCompanion-Setup.exe): the real app on a version branch, the
+      # Rasgeth App on its own (3.8.2, Rasgeth-App-Setup.exe): the real app on a version branch, the
       # stand-in elsewhere. Installed silently for this user (folder, Start menu, Windows' list),
       # installed again over a running copy (it is closed first, the update goes through), and
       # uninstalled with nothing left.
@@ -576,39 +576,39 @@ jobs:
         working-directory: packaging/windows
         run: |
           $src = "app"
-          if (-not (Test-Path app\rgcompanion.exe)) {
+          if (-not (Test-Path app\rasgeth-app.exe)) {
             $src = "$env:RUNNER_TEMP\stub-app"
             New-Item -ItemType Directory -Force $src | Out-Null
-            Copy-Item AppStub.exe "$src\rgcompanion.exe"
+            Copy-Item AppStub.exe "$src\rasgeth-app.exe"
           }
-          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=0.0.0-ci" "/DAppSource=$src" RGCompanion.iss
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=0.0.0-ci" "/DAppSource=$src" RasgethApp.iss
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          Get-Item dist\RGCompanion-Setup.exe | Format-List Name, Length
-          $dir = "$env:LOCALAPPDATA\Programs\RGCompanion"
-          $link = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\RGCompanion.lnk"
+          Get-Item dist\Rasgeth-App-Setup.exe | Format-List Name, Length
+          $dir = "$env:LOCALAPPDATA\Programs\Rasgeth App"
+          $link = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Rasgeth App.lnk"
           $key = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\{392CA02E-DEB6-43FE-8337-B46107CC5051}_is1"
           function Setup([string]$exe, [string[]]$arguments) {
             $p = Start-Process $exe -ArgumentList $arguments -PassThru
             if (-not $p.WaitForExit(300000)) { "$exe did not finish"; exit 1 }
             return $p.ExitCode
           }
-          if ((Setup dist\RGCompanion-Setup.exe "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LANG=en") -ne 0) { "the setup failed"; exit 1 }
-          if (-not (Test-Path "$dir\rgcompanion.exe")) { "the app was not installed in $dir"; exit 1 }
+          if ((Setup dist\Rasgeth-App-Setup.exe "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LANG=en") -ne 0) { "the setup failed"; exit 1 }
+          if (-not (Test-Path "$dir\rasgeth-app.exe")) { "the app was not installed in $dir"; exit 1 }
           if (-not (Test-Path $link)) { "no Start menu entry"; exit 1 }
           if ((Get-ItemProperty $key).DisplayVersion -ne "0.0.0-ci") { "not in Windows' list of programs"; exit 1 }
           # An update while the app runs: closed first, replaced, nothing refused.
-          $running = Start-Process "$dir\rgcompanion.exe" -ArgumentList "--stubborn" -PassThru
+          $running = Start-Process "$dir\rasgeth-app.exe" -ArgumentList "--stubborn" -PassThru
           Start-Sleep 2
-          if ((Setup dist\RGCompanion-Setup.exe "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LANG=en") -ne 0) { "the setup failed"; exit 1 }
+          if ((Setup dist\Rasgeth-App-Setup.exe "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LANG=en") -ne 0) { "the setup failed"; exit 1 }
           if (-not $running.HasExited) { "the setup did not close the running app"; exit 1 }
-          if (-not (Test-Path "$dir\rgcompanion.exe")) { "the update lost the app"; exit 1 }
+          if (-not (Test-Path "$dir\rasgeth-app.exe")) { "the update lost the app"; exit 1 }
           [void](Setup "$dir\unins000.exe" "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART")
           # The uninstaller goes on from a temporary copy: wait for the folder to empty, with a limit.
-          for ($i = 0; $i -lt 60 -and (Test-Path "$dir\rgcompanion.exe"); $i++) { Start-Sleep 2 }
-          if (Test-Path "$dir\rgcompanion.exe") { "the uninstaller left the app"; exit 1 }
+          for ($i = 0; $i -lt 60 -and (Test-Path "$dir\rasgeth-app.exe"); $i++) { Start-Sleep 2 }
+          if (Test-Path "$dir\rasgeth-app.exe") { "the uninstaller left the app"; exit 1 }
           if (Test-Path $link) { "the uninstaller left the Start menu entry"; exit 1 }
           if (Test-Path $key) { "still in Windows' list of programs"; exit 1 }
-          "RGCompanion-Setup.exe: installed, updated over a running app, uninstalled ($(if ($src -eq 'app') { 'RGCompanion' } else { 'stand-in' }))"
+          "Rasgeth-App-Setup.exe: installed, updated over a running app, uninstalled ($(if ($src -eq 'app') { 'the app' } else { 'stand-in' }))"
       # The release's installer and update files (3.5.9), from the very folders tested above, with
       # the release's version: release.yml on the tag signs the manifest and attaches them. The test
       # above needs 0.0.0-ci (its updates go to 0.0.1), so Inno Setup runs once more.
@@ -618,26 +618,26 @@ jobs:
           VERSION: ${{ needs.plan.outputs.version }}
         run: |
           Push-Location packaging/windows
-          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=$env:VERSION" RedGiant.iss
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=$env:VERSION" Rasgeth.iss
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          # RGCompanion on its own (3.8.2), from the same app\ RedGiant-Setup.exe carries.
-          if (-not (Test-Path app\rgcompanion.exe)) { "no app\rgcompanion.exe for RGCompanion-Setup.exe"; exit 1 }
-          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=$env:VERSION" RGCompanion.iss
+          # Rasgeth App on its own (3.8.2), from the same app\ Rasgeth-Setup.exe carries.
+          if (-not (Test-Path app\rasgeth-app.exe)) { "no app\rasgeth-app.exe for Rasgeth-App-Setup.exe"; exit 1 }
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=$env:VERSION" RasgethApp.iss
           if ($LASTEXITCODE -ne 0) { exit 1 }
           Pop-Location
           $out = "$env:RUNNER_TEMP\release-windows"
           $tree = "$env:RUNNER_TEMP\release-tree"
           New-Item -ItemType Directory -Force "$out\update", $tree | Out-Null
           # The release's tree carries the app's window (G40.12): companion ran on this version branch.
-          if (-not (Test-Path packaging\windows\app\rgcompanion.exe)) { "the release's tree has no app\rgcompanion.exe"; exit 1 }
+          if (-not (Test-Path packaging\windows\app\rasgeth-app.exe)) { "the release's tree has no app\rasgeth-app.exe"; exit 1 }
           foreach ($d in "server", "web", "node", "app") { Copy-Item -Recurse "packaging\windows\$d" "$tree\$d" }
-          Copy-Item packaging\windows\RedGiant.exe, packaging\windows\redgiant.ico $tree
+          Copy-Item packaging\windows\Rasgeth.exe, packaging\windows\rasgeth.ico, packaging\icon\rasgeth-tray-dark.ico, packaging\icon\rasgeth-tray-light.ico $tree
           New-Item -ItemType Directory -Force "$tree\bin" | Out-Null
-          Copy-Item packaging\windows\redgiant.cmd "$tree\bin"
-          node packaging/update/pack.mjs --tree $tree --version $env:VERSION --platform win-x64 --out "$out\update" --installer packaging/windows/dist/RedGiant-Setup.exe
+          Copy-Item packaging\windows\rasgeth.cmd "$tree\bin"
+          node packaging/update/pack.mjs --tree $tree --version $env:VERSION --platform win-x64 --out "$out\update" --installer packaging/windows/dist/Rasgeth-Setup.exe
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          Copy-Item packaging\windows\dist\RedGiant-Setup.exe $out
-          Copy-Item packaging\windows\dist\RGCompanion-Setup.exe $out
+          Copy-Item packaging\windows\dist\Rasgeth-Setup.exe $out
+          Copy-Item packaging\windows\dist\Rasgeth-App-Setup.exe $out
           @{ version = $env:VERSION; sha = $env:GITHUB_SHA; run = $env:GITHUB_RUN_ID; ref = $env:GITHUB_REF_NAME } | ConvertTo-Json | Set-Content "$out\build.json"
           Get-ChildItem -Recurse $out | Format-Table FullName, Length
       - if: runner.os == 'Windows' && needs.plan.outputs.release == 'true'
@@ -649,7 +649,7 @@ jobs:
           compression-level: 0
           retention-days: 14
 
-  # RedGiant for macOS (2026-11-05): the app built (signed ad-hoc here), started from its disk
+  # Rasgeth for macOS (2026-11-05): the app built (signed ad-hoc here), started from its disk
   # image, answering, stopped the proper way with nothing left running, its data where it belongs.
   mac-app:
     needs: [plan, companion]
@@ -676,46 +676,46 @@ jobs:
       - if: needs.companion.result == 'success'
         uses: actions/download-artifact@v4
         with:
-          name: rgcompanion-macos
+          name: rasgeth-app-macos
           path: ${{ runner.temp }}/companion
       - name: Build (and, for a release, notarize)
         env:
           MAC_NOTARY_KEY_ID: ${{ secrets.MAC_NOTARY_KEY_ID }}
           MAC_NOTARY_ISSUER_ID: ${{ secrets.MAC_NOTARY_ISSUER_ID }}
           VERSION: ${{ needs.plan.outputs.release == 'true' && needs.plan.outputs.version || '0.0.0-ci' }}
-          COMPANION_ZIP: ${{ needs.companion.result == 'success' && format('{0}/companion/rgcompanion-macos.zip', runner.temp) || '' }}
+          COMPANION_ZIP: ${{ needs.companion.result == 'success' && format('{0}/companion/rasgeth-app-macos.zip', runner.temp) || '' }}
         run: COMPANION_APP="$COMPANION_ZIP" bash packaging/mac/build.sh "$VERSION"
       - name: Install from the disk image, start, stop
         run: |
           set -euo pipefail
-          hdiutil attach packaging/mac/dist/RedGiant-mac-*.dmg -mountpoint /tmp/rg-dmg -nobrowse -quiet
-          cp -R /tmp/rg-dmg/RedGiant.app /tmp/RedGiant.app
+          hdiutil attach packaging/mac/dist/Rasgeth-mac-*.dmg -mountpoint /tmp/rg-dmg -nobrowse -quiet
+          cp -R /tmp/rg-dmg/Rasgeth.app /tmp/Rasgeth.app
           hdiutil detach /tmp/rg-dmg -quiet
-          codesign --verify --deep --strict /tmp/RedGiant.app
-          codesign -dv --verbose=2 /tmp/RedGiant.app 2>&1 | grep -E "Authority=Developer|TeamIdentifier|flags" || true
-          /tmp/RedGiant.app/Contents/MacOS/RedGiant --background &
+          codesign --verify --deep --strict /tmp/Rasgeth.app
+          codesign -dv --verbose=2 /tmp/Rasgeth.app 2>&1 | grep -E "Authority=Developer|TeamIdentifier|flags" || true
+          /tmp/Rasgeth.app/Contents/MacOS/Rasgeth --background &
           up=0
           for i in $(seq 1 90); do
             if curl -sf http://127.0.0.1:7600/api/health >/dev/null; then up=1; echo "answered after about $((i * 2)) s"; break; fi
             sleep 2
           done
-          tail -40 ~/Library/Logs/RedGiant/server.log || true
-          [ "$up" = 1 ] || { echo "RedGiant did not answer"; exit 1; }
+          tail -40 ~/Library/Logs/Rasgeth/server.log || true
+          [ "$up" = 1 ] || { echo "Rasgeth did not answer"; exit 1; }
           token=$(cat ~/Library/Application\ Support/RedGiant/data/token.txt)
           curl -sf -H "Authorization: Bearer $token" http://127.0.0.1:7600/api/setup >/dev/null
           curl -sf http://127.0.0.1:7600/ | grep -q "<html"
           # The command line in the bundle (G36.15), through a link as the instructions say.
-          ln -sf /tmp/RedGiant.app/Contents/Resources/bin/redgiant /tmp/redgiant
-          /tmp/redgiant projects create "CLI check" | grep -q "Created project cli-check" || { echo "the redgiant command failed"; exit 1; }
+          ln -sf /tmp/Rasgeth.app/Contents/Resources/bin/rasgeth /tmp/rasgeth
+          /tmp/rasgeth projects create "CLI check" | grep -q "Created project cli-check" || { echo "the rasgeth command failed"; exit 1; }
           # pgvector (G36.1): the signed postgres loads the signed vector.dylib from the app's own
           # folder (hardened runtime, library validation), and CREATE EXTENSION works.
           data=~/Library/Application\ Support/RedGiant/data
           grep -q extension_control_path "$data/postgres/redgiant.conf" || { echo "the embedded Postgres does not use pgvector's folder"; exit 1; }
           # shellcheck disable=SC2016 # the $1 below are SQL parameters, for node
           PGV_PORT=$(sed -n 4p "$data/postgres/postmaster.pid" | tr -d ' ') \
-          PGV_PASSWORD=$(/tmp/RedGiant.app/Contents/Resources/node/node -p "require(process.argv[1]).password" "$data/postgres.json") \
-          PGV_SERVER=/tmp/RedGiant.app/Contents/Resources/server \
-          /tmp/RedGiant.app/Contents/Resources/node/node -e '
+          PGV_PASSWORD=$(/tmp/Rasgeth.app/Contents/Resources/node/node -p "require(process.argv[1]).password" "$data/postgres.json") \
+          PGV_SERVER=/tmp/Rasgeth.app/Contents/Resources/server \
+          /tmp/Rasgeth.app/Contents/Resources/node/node -e '
             const pg = require("node:module").createRequire(process.env.PGV_SERVER + "/package.json")("pg");
             (async () => {
               const c = new pg.Client({ host: "127.0.0.1", port: +process.env.PGV_PORT, user: "redgiant", password: process.env.PGV_PASSWORD, database: "redgiant" });
@@ -726,35 +726,35 @@ jobs:
               console.log("pgvector " + v + ", cosine distance " + d);
               await c.end();
             })().catch((e) => { console.error(e.message); process.exit(1); });'
-          # RGCompanion's window (G40.12): opening RedGiant again opens the app with a device token
+          # The app's window (G40.12): opening Rasgeth again opens the app with a device token
           # of its own, which the app keeps in the keychain and then uses (lastUsedAt: a device made
           # but never used is an app that could not keep its token, -34018 before 3.8.1). Tried on
           # a Mac by hand (2026-11-16); still said as a warning, not a failure, until a CI run passes.
-          if [ -d /tmp/RedGiant.app/Contents/Helpers/RGCompanion.app ]; then
-            codesign --verify --deep --strict /tmp/RedGiant.app/Contents/Helpers/RGCompanion.app
-            open -a /tmp/RedGiant.app
+          if [ -d "/tmp/Rasgeth.app/Contents/Helpers/Rasgeth App.app" ]; then
+            codesign --verify --deep --strict "/tmp/Rasgeth.app/Contents/Helpers/Rasgeth App.app"
+            open -a /tmp/Rasgeth.app
             seen=""
             for i in $(seq 1 30); do
-              seen=$(curl -sf -H "Authorization: Bearer $token" http://127.0.0.1:7600/api/devices | grep -o '"name":"RGCompanion ([^"]*)","platform":"macos","createdAt":"[^"]*","lastUsedAt":"[^"]*"' || true)
-              if [ -n "$seen" ] && pgrep -f "RGCompanion.app/Contents/MacOS" >/dev/null; then break; fi
+              seen=$(curl -sf -H "Authorization: Bearer $token" http://127.0.0.1:7600/api/devices | grep -o '"name":"Rasgeth ([^"]*)","platform":"macos","createdAt":"[^"]*","lastUsedAt":"[^"]*"' || true)
+              if [ -n "$seen" ] && pgrep -f "Rasgeth App.app/Contents/MacOS" >/dev/null; then break; fi
               sleep 2
             done
-            if [ -n "$seen" ] && pgrep -f "RGCompanion.app/Contents/MacOS" >/dev/null; then echo "the app opened with its device: ${seen#*:}"
-            else echo "::warning title=RGCompanion on the Mac::RedGiant.app did not open its app window with a device token (device: ${seen:-none})"; fi
-            pkill -f "RGCompanion.app/Contents/MacOS" || true
+            if [ -n "$seen" ] && pgrep -f "Rasgeth App.app/Contents/MacOS" >/dev/null; then echo "the app opened with its device: ${seen#*:}"
+            else echo "::warning title=The app on the Mac::Rasgeth.app did not open its app window with a device token (device: ${seen:-none})"; fi
+            pkill -f "Rasgeth App.app/Contents/MacOS" || true
           elif [ "${{ needs.plan.outputs.release }}" = true ]; then
-            echo "a release's Mac app without RGCompanion"; exit 1
+            echo "a release's Mac app without its app window"; exit 1
           fi
-          /tmp/RedGiant.app/Contents/MacOS/RedGiant --quit
+          /tmp/Rasgeth.app/Contents/MacOS/Rasgeth --quit
           sleep 3
-          if pgrep -fl "RedGiant.app/Contents/Resources" ; then echo "processes left after --quit"; exit 1; fi
+          if pgrep -fl "Rasgeth.app/Contents/Resources" ; then echo "processes left after --quit"; exit 1; fi
           [ -d ~/Library/Application\ Support/RedGiant/data/postgres ] || { echo "no database in the data folder"; ls -R ~/Library/Application\ Support/RedGiant | head -30; exit 1; }
           echo "started, answered, stopped; data kept"
       - uses: actions/upload-artifact@v4
         if: needs.plan.outputs.release != 'true'
         with:
-          name: RedGiant-mac
-          path: packaging/mac/dist/RedGiant-mac-*.dmg
+          name: Rasgeth-mac
+          path: packaging/mac/dist/Rasgeth-mac-*.dmg
           retention-days: 3
       - name: The release's app, with what it is
         if: needs.plan.outputs.release == 'true'
@@ -764,9 +764,9 @@ jobs:
           set -euo pipefail
           out="$RUNNER_TEMP/release-mac"
           mkdir -p "$out"
-          cp packaging/mac/dist/RedGiant-mac-*.dmg "$out/"
+          cp packaging/mac/dist/Rasgeth-mac-*.dmg "$out/"
           notarized=false
-          if xcrun stapler validate "$out"/RedGiant-mac-*.dmg >/dev/null 2>&1; then notarized=true; fi
+          if xcrun stapler validate "$out"/Rasgeth-mac-*.dmg >/dev/null 2>&1; then notarized=true; fi
           printf '{"version":"%s","sha":"%s","run":"%s","ref":"%s","notarized":%s}\n' \
             "$VERSION" "$GITHUB_SHA" "$GITHUB_RUN_ID" "$GITHUB_REF_NAME" "$notarized" > "$out/build.json"
           cat "$out/build.json"

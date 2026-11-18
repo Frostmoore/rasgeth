@@ -1,5 +1,5 @@
 #!/bin/bash
-# RedGiant.app and its .dmg for macOS (2026-11-05), on a Mac (the CI's, or yours), after
+# Rasgeth.app and its .dmg for macOS (2026-11-05; RedGiant.app until 3.9.0), on a Mac (the CI's, or yours), after
 # `pnpm install --frozen-lockfile && pnpm build` at the repository's root.
 #
 #   packaging/mac/build.sh <version>
@@ -9,9 +9,9 @@
 # Store Connect API key file, .p8), MAC_NOTARY_KEY_ID and MAC_NOTARY_ISSUER_ID are set.
 # pgvector (G36.1) goes into Resources/server/pgvector, signed with the rest: from PGVECTOR_ZIP (the
 # release's pgvector job), otherwise built here with engine/pgvector/build-mac.sh (a minute or two).
-# RGCompanion (G40.12): COMPANION_APP names the Flutter build (RGCompanion.app, or the CI's
-# rgcompanion-macos.zip); it goes into Contents/Helpers and is signed again with the same identity
-# (its own entitlements: the sandbox), inside out. Without it «Open RedGiant» opens the browser.
+# The app (G40.12): COMPANION_APP names the Flutter build («Rasgeth App.app», or the CI's
+# rasgeth-app-macos.zip); it goes into Contents/Helpers and is signed again with the same identity
+# (its own entitlements: the sandbox), inside out. Without it «Open Rasgeth» opens the browser.
 set -euo pipefail
 
 version="${1:-0.0.0}"
@@ -19,7 +19,7 @@ root="$(cd "$(dirname "$0")/../.." && pwd)"
 here="$root/packaging/mac"
 arch="$(uname -m)"
 dist="$here/dist"
-app="$dist/RedGiant.app"
+app="$dist/Rasgeth.app"
 res="$app/Contents/Resources"
 identity="${MAC_SIGN_IDENTITY:--}"
 
@@ -46,11 +46,11 @@ mkdir -p "$res/server/pgvector"
 unzip -q "$pgv_zip" -d "$res/server/pgvector"
 lipo -info "$res/server/pgvector/lib/vector.dylib"
 cp -R packages/web/dist "$res/web"
-echo "== The redgiant command line (G36.15), in the app: Resources/bin/redgiant"
+echo "== The rasgeth command line (G36.15), in the app: Resources/bin/rasgeth"
 node packaging/cli/stage.mjs "$res/server"
 mkdir -p "$res/bin"
-cp "$here/redgiant" "$res/bin/redgiant"
-chmod +x "$res/bin/redgiant"
+cp "$here/rasgeth" "$res/bin/rasgeth"
+chmod +x "$res/bin/rasgeth"
 cp "$(command -v node)" "$res/node/node"
 echo "what weighs most:"
 du -sh "$res/node" "$res/web" "$res"/server/node_modules/* "$res"/server/node_modules/@*/* 2>/dev/null | sort -h | tail -8
@@ -58,19 +58,19 @@ du -sh "$res/node" "$res/web" "$res"/server/node_modules/* "$res"/server/node_mo
 echo "== The icon"
 # Drawn by apps/companion/tool/make_icons_test.dart: the tile inside Apple's grid (the app's own
 # macOS sizes) and the menu bar's template silhouette (plan 3.8.13 N8).
-iconset="$dist/RedGiant.iconset"
+iconset="$dist/Rasgeth.iconset"
 mkdir -p "$iconset"
 appicons=apps/companion/macos/Runner/Assets.xcassets/AppIcon.appiconset
 for s in 16 32 128 256 512; do
   cp "$appicons/app_icon_$s.png" "$iconset/icon_${s}x${s}.png"
   cp "$appicons/app_icon_$((s * 2)).png" "$iconset/icon_${s}x${s}@2x.png"
 done
-iconutil -c icns "$iconset" -o "$res/RedGiant.icns"
+iconutil -c icns "$iconset" -o "$res/Rasgeth.icns"
 rm -rf "$iconset"
 cp packaging/icon/rasgeth-menubar.png "$res/menubar.png"
 
 echo "== The menu bar program"
-swiftc -O -target "$arch-apple-macos13" -o "$app/Contents/MacOS/RedGiant" "$here/RedGiant.swift"
+swiftc -O -target "$arch-apple-macos13" -o "$app/Contents/MacOS/Rasgeth" "$here/Rasgeth.swift"
 sed "s/__VERSION__/$version/g" "$here/Info.plist" > "$app/Contents/Info.plist"
 
 echo "== Signing ($([ "$identity" = "-" ] && echo ad-hoc || echo "$identity"))"
@@ -84,16 +84,16 @@ sign() {
 
 companion="${COMPANION_APP:-}"
 if [ -n "$companion" ]; then
-  echo "== RGCompanion's window (G40.12), from $companion"
+  echo "== The app's window (G40.12), from $companion"
   mkdir -p "$app/Contents/Helpers"
   case "$companion" in
     *.zip) ditto -x -k "$companion" "$app/Contents/Helpers" ;;
-    *) ditto "$companion" "$app/Contents/Helpers/RGCompanion.app" ;;
+    *) ditto "$companion" "$app/Contents/Helpers/Rasgeth App.app" ;;
   esac
-  helper="$app/Contents/Helpers/RGCompanion.app"
-  [ -x "$helper/Contents/MacOS/RGCompanion" ] || { echo "no RGCompanion.app in $companion"; exit 1; }
+  helper="$app/Contents/Helpers/Rasgeth App.app"
+  [ -x "$helper/Contents/MacOS/Rasgeth App" ] || { echo "no «Rasgeth App.app» in $companion"; exit 1; }
   # The entitlements Flutter's build signed it with (the sandbox, network, microphone).
-  ents="$dist/rgcompanion.entitlements"
+  ents="$dist/rasgeth-app.entitlements"
   codesign -d --entitlements - --xml "$helper" > "$ents" 2>/dev/null || true
   [ -s "$ents" ] || cp "$root/apps/companion/macos/Runner/Release.entitlements" "$ents"
   # Flutter's ad-hoc signature ("sign to run locally") adds get-task-allow, which lets a
@@ -106,7 +106,7 @@ if [ -n "$companion" ]; then
   while IFS= read -r -d '' fw; do sign "$fw"; done < <(find "$helper/Contents/Frameworks" -maxdepth 1 -name "*.framework" -print0 2>/dev/null)
   sign --entitlements "$ents" "$helper"
   codesign --verify --deep --strict "$helper"
-  echo "RGCompanion.app signed: $(du -sh "$helper" | cut -f1)"
+  echo "Rasgeth App.app signed: $(du -sh "$helper" | cut -f1)"
 fi
 # Every program and library inside, deepest first: Node, Postgres, native modules.
 count=0
@@ -125,9 +125,9 @@ stage="$dist/stage"
 mkdir -p "$stage"
 cp -R "$app" "$stage/"
 ln -s /Applications "$stage/Applications"
-dmg="$dist/RedGiant-mac-$arch.dmg"
+dmg="$dist/Rasgeth-mac-$arch.dmg"
 # LZMA (macOS 10.15 and later): smaller than the default zlib.
-hdiutil create -volname RedGiant -srcfolder "$stage" -ov -format ULMO "$dmg" >/dev/null
+hdiutil create -volname Rasgeth -srcfolder "$stage" -ov -format ULMO "$dmg" >/dev/null
 rm -rf "$stage"
 if [ "$identity" != "-" ]; then
   codesign --force --timestamp --sign "$identity" "$dmg"

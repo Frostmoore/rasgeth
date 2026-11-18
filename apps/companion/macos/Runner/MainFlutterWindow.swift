@@ -15,6 +15,9 @@ class MainFlutterWindow: NSWindow {
     self.contentViewController = flutterViewController
     self.setFrame(windowFrame, display: true)
     self.minSize = NSSize(width: 420, height: 560)
+    // The window says the product's name (plan 3.9.0); Applications shows «Rasgeth App».
+    self.title = "Rasgeth"
+
 
     RegisterGeneratedPlugins(registry: flutterViewController)
 

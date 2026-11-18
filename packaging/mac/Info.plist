@@ -3,15 +3,17 @@
 <plist version="1.0">
 <dict>
   <key>CFBundleName</key>
-  <string>RedGiant</string>
+  <string>Rasgeth</string>
   <key>CFBundleDisplayName</key>
-  <string>RedGiant</string>
+  <string>Rasgeth</string>
+  <!-- The id keeps its name since before 3.9.0: permissions, the keychain and the login item
+       are tied to it. -->
   <key>CFBundleIdentifier</key>
   <string>com.redgiant.app</string>
   <key>CFBundleExecutable</key>
-  <string>RedGiant</string>
+  <string>Rasgeth</string>
   <key>CFBundleIconFile</key>
-  <string>RedGiant</string>
+  <string>Rasgeth</string>
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleShortVersionString</key>
