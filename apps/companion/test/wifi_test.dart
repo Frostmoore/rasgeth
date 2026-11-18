@@ -7,6 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rgcompanion/api/types.dart';
 import 'package:rgcompanion/setup/wifi.dart';
 
+import 'repo_files.dart';
+
 /// Records every program run and answers from a table (`exe args…` prefix → result).
 class FakeRunner {
   FakeRunner(this.answers);
@@ -26,6 +28,16 @@ class FakeRunner {
 
 void main() {
   group('names', () {
+    // The OS opens the network with this password (redgiant-setup-ap): the same, and one WPA2
+    // accepts (8 to 63 characters; 3.9.0's «rasgeth», 7, made iwd refuse the network).
+    const ap = 'packaging/os/rootfs/usr/lib/redgiant-os/redgiant-setup-ap';
+    test('the password is the OS\'s, and WPA2 takes it', () {
+      expect(kSetupPassphrase.length, inInclusiveRange(8, 63));
+      final os = repoFile(ap)!.readAsStringSync();
+      final m = RegExp(r'^SETUP_AP_PASSPHRASE=(\S+)$', multiLine: true).firstMatch(os);
+      expect(m?.group(1), kSetupPassphrase);
+    }, skip: repoSkip(ap));
+
     test('only the temporary network\'s own names', () {
       for (final (s, ok) in [
         ('Rasgeth-Setup-A1B2', true),
@@ -90,7 +102,7 @@ void main() {
       expect(r.ssid, 'Rasgeth-Setup-AB12');
       final add = run.calls.firstWhere((c) => c.startsWith('nmcli connection add'));
       expect(add, contains('con-name rasgeth-setup ssid Rasgeth-Setup-AB12'));
-      expect(add, contains('wifi-sec.psk rasgeth'));
+      expect(add, contains('wifi-sec.psk rasgeth-setup'));
       expect(add, contains('ipv4.never-default yes'));
       expect(add, contains('connection.autoconnect no'));
       expect(run.calls, contains('nmcli --wait 30 connection up id rasgeth-setup'));
@@ -156,7 +168,7 @@ SSID 3 : Rasgeth-Setup-AB12
       expect(x, contains('<authentication>WPA2PSK</authentication>'));
       expect(x, contains('<encryption>AES</encryption>'));
       expect(x, contains('<connectionMode>manual</connectionMode>'));
-      expect(x, contains('<keyMaterial>rasgeth</keyMaterial>'));
+      expect(x, contains('<keyMaterial>rasgeth-setup</keyMaterial>'));
       expect(windowsProfileXml('a<b>&"\''), contains('a&lt;b&gt;&amp;&quot;&apos;'));
     });
 
@@ -267,7 +279,7 @@ SSID 3 : Rasgeth-Setup-AB12
       final r = await w.join();
       expect(r.ok, isTrue);
       expect(r.ssid, 'Rasgeth-Setup-AB12');
-      expect(seen.single.arguments, {'prefix': 'Rasgeth-Setup-', 'passphrase': 'rasgeth'});
+      expect(seen.single.arguments, {'prefix': 'Rasgeth-Setup-', 'passphrase': 'rasgeth-setup'});
       await w.leave();
       expect(seen.last.method, 'leave');
     });

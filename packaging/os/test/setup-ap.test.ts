@@ -234,11 +234,16 @@ describe("the temporary network on the machine (redgiant-setup-ap)", () => {
       capable: "unknown",
       address: "10.42.0.1",
       subnet: "10.42.0.0/24",
-      passphrase: "rasgeth",
+      passphrase: "rasgeth-setup",
       trying: false,
       lastTry: null,
     });
     expect(s.ssid).toMatch(/^Rasgeth-Setup-[0-9A-F]{4}$/);
+    // WPA2's own limits (8 to 63 characters): a shorter password and iwd refuses the network
+    // (3.9.0's «rasgeth» did, on CI's simulated radio). The app joins with the same one (wifi.dart).
+    expect(s.passphrase.length).toBeGreaterThanOrEqual(8);
+    expect(s.passphrase.length).toBeLessThanOrEqual(63);
+
     // The networks around, seen before the card became an access point, strongest first.
     expect(s.networks).toEqual([
       { ssid: "Casa", security: "psk", signal: -45 },
@@ -257,7 +262,7 @@ describe("the temporary network on the machine (redgiant-setup-ap)", () => {
     ])
       expect(net).toContain(line);
     const profile = join(root, `var/lib/iwd/ap/${s.ssid}.ap`);
-    expect(readFileSync(profile, "utf8")).toContain("Passphrase=rasgeth");
+    expect(readFileSync(profile, "utf8")).toContain("Passphrase=rasgeth-setup");
     expect(statSync(profile).mode & 0o777).toBe(0o600);
     const c = calls();
     expect(c).toContain("net.connman.iwd.Station Scan");

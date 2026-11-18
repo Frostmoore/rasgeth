@@ -3590,7 +3590,7 @@ if (process.env.DEMO_SETUP_AP) {
             capable: "ok",
             pending: true,
             ssid: "Rasgeth-Setup-D3M0",
-            passphrase: "rasgeth",
+            passphrase: "rasgeth-setup",
             address: "10.42.0.1",
             subnet: process.env.DEMO_SETUP_SUBNET ?? "127.0.0.0/8",
             since,

@@ -42,7 +42,8 @@ HELPER=${REDGIANT_SETUP_TEST_HELPER:-/usr/lib/redgiant/redgiant-helper}
 SETUP_AP_ADDRESS=10.42.0.1
 # iwd's access point needs a WPA password: a public one (security is the app's channel, the
 # handshake with the pinned key; a password everyone may know protects nothing anyway).
-SETUP_AP_PASSPHRASE=rasgeth
+# WPA2 asks 8 to 63 characters: «rasgeth» alone (7) made iwd refuse the network (3.9.0).
+SETUP_AP_PASSPHRASE=rasgeth-setup
 SETUP_AP_CHANNEL=6
 # shellcheck disable=SC1091
 [ -z "$R" ] && [ -r /etc/redgiant-os/os.conf ] && . /etc/redgiant-os/os.conf

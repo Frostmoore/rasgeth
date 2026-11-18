@@ -31,7 +31,7 @@ the local server (start, updates, tray); the app is the window.
     is the very one checked against the local CA; Windows and Linux open the browser without the
     token; never over plain http on the network).
 - `lib/setup` (G40.8): the first start from the app.
-  - `wifi.dart`: Rasgeth-Setup-XXXX (password `rasgeth`) joined system by system: Android
+  - `wifi.dart`: Rasgeth-Setup-XXXX (password `rasgeth-setup`) joined system by system: Android
     `WifiNetworkSpecifier` with the prefix (MainActivity.kt: a network without internet bound to
     the app alone; `NEARBY_WIFI_DEVICES` on 13+, the location only up to 12L), iOS
     `NEHotspotConfiguration` with the prefix, `joinOnce` (AppDelegate.swift, the Hotspot

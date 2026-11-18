@@ -22,7 +22,7 @@ import 'package:flutter/services.dart';
 import '../api/types.dart';
 
 const String kSetupSsidPrefix = 'Rasgeth-Setup-';
-const String kSetupPassphrase = 'rasgeth';
+const String kSetupPassphrase = 'rasgeth-setup';
 
 /// The temporary network's name as the app shows it before it knows the four last characters.
 const String kSetupSsidPattern = 'Rasgeth-Setup-XXXX';
