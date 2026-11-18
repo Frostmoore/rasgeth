@@ -2958,6 +2958,7 @@
   "cvPastePicture": "Incolla immagine",
   "cvPasteNone": "Negli appunti non c'è un'immagine",
   "cvAskedAgent": "Messo nel messaggio della conversazione",
-  "renameNoticeTitle": "RedGiant ora si chiama Rasgeth",
-  "renameNoticeText": "Lo stesso programma, con un nome e un'icona nuovi: i tuoi server, le conversazioni e le impostazioni restano dove erano."
+  "renameNoticeTitle": "RedGiant ora si chiama Rasgeth.",
+  "renameNoticeText": "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
+  "renameNoticeOk": "Ho capito"
 }

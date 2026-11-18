@@ -10380,9 +10380,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get cvAskedAgent => 'Messo nel messaggio della conversazione';
 
   @override
-  String get renameNoticeTitle => 'RedGiant ora si chiama Rasgeth';
+  String get renameNoticeTitle => 'RedGiant ora si chiama Rasgeth.';
 
   @override
   String get renameNoticeText =>
-      'Lo stesso programma, con un nome e un\'icona nuovi: i tuoi server, le conversazioni e le impostazioni restano dove erano.';
+      'Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.';
+
+  @override
+  String get renameNoticeOk => 'Ho capito';
 }

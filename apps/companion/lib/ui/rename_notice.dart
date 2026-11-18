@@ -1,6 +1,7 @@
-// The new name, said once (plan 3.9.0, choice 17): «RedGiant is now called Rasgeth» over the
-// phone's home and under the computer's top bar, until the person closes it (`renameSeen`, this
-// device; the page has its own, `rg.renameSeen`). The old name is in its two texts on purpose.
+// The new name, said once (plan 3.9.0, choice 17, as the page's RenameNotice.tsx): «RedGiant is
+// now called Rasgeth» over the phone's home and under the computer's top bar, for whoever knew the
+// old name (AppController.renameDue), until closed with «Got it» or the cross (`renameSeen`, this
+// device). The old name is in its title on purpose.
 import 'package:flutter/material.dart';
 
 import '../app_state.dart';
@@ -14,7 +15,7 @@ class RenameNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final app = AppScope.of(context);
-    if (app.renameSeen) return const SizedBox.shrink();
+    if (!app.renameDue) return const SizedBox.shrink();
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
     return Container(
@@ -41,6 +42,11 @@ class RenameNotice extends StatelessWidget {
                 Text(l.renameNoticeText, style: TextStyle(color: c.dim, fontSize: 13)),
               ],
             ),
+          ),
+          TextButton(
+            key: const Key('rename-notice-ok'),
+            onPressed: app.dismissRenameNotice,
+            child: Text(l.renameNoticeOk),
           ),
           IconButton(
             key: const Key('rename-notice-close'),

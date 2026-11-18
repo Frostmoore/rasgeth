@@ -17844,14 +17844,20 @@ abstract class AppLocalizations {
   /// The one-time notice of the new name (plan 3.9.0, choice 17): it names the old one on purpose.
   ///
   /// In en, this message translates to:
-  /// **'RedGiant is now called Rasgeth'**
+  /// **'RedGiant is now called Rasgeth.'**
   String get renameNoticeTitle;
 
   /// Under renameNoticeTitle.
   ///
   /// In en, this message translates to:
-  /// **'The same program, with a new name and a new icon: your servers, conversations and settings are where they were.'**
+  /// **'Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.'**
   String get renameNoticeText;
+
+  /// Closes the notice for good (the page's renameOk).
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get renameNoticeOk;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -170,10 +170,12 @@ class AppController extends ChangeNotifier {
   Locale? locale;
   bool reduceMotion = false;
 
-  /// The one-time «RedGiant is now called Rasgeth» was closed on this device (plan 3.9.0,
-  /// choice 17; the page's `rg.renameSeen`). Read at [restore]: until then (and in a test that
-  /// never restores) nothing is shown.
-  bool renameSeen = true;
+  /// The one-time «RedGiant is now called Rasgeth» is due on this device (plan 3.9.0, choice 17,
+  /// the page's `RenameNotice`): not closed yet (`renameSeen`), and the person knew the old name:
+  /// this app had servers before the version that brought the new name, or the server in use was
+  /// installed before it (`firstVersion`). Whoever starts with Rasgeth sees nothing.
+  bool renameDue = false;
+  bool _renameSeen = true;
 
   /// The advanced interface (G40.11, Tu › Interfaccia), per RedGiant: the projects' git state
   /// and Files, Diff and Terminal in every agent's sheet (Projects is in the bar anyway, G42.5).
@@ -312,8 +314,16 @@ class AppController extends ChangeNotifier {
   List<AppTab> get tabs => AppTab.values;
 
   void dismissRenameNotice() {
-    renameSeen = true;
-    unawaited(prefs.set('renameSeen', '1'));
+    renameDue = false;
+    _renameSeen = true;
+    unawaited(prefs.set('renameSeen', kRenamedIn));
+    notifyListeners();
+  }
+
+  /// The server in use was born before the new name: the notice is due, unless closed.
+  void _renameFromServer(String? firstVersion) {
+    if (_renameSeen || renameDue || !bornBeforeRename(firstVersion)) return;
+    renameDue = true;
     notifyListeners();
   }
 
@@ -383,7 +393,6 @@ class AppController extends ChangeNotifier {
     final lang = await prefs.get('locale');
     locale = lang == null ? null : Locale(lang);
     reduceMotion = await prefs.get('reduceMotion') == '1';
-    renameSeen = await prefs.get('renameSeen') == '1';
     commandStripMin = await prefs.get('cmdStrip') == 'min';
     try {
       final seen = jsonDecode(await prefs.get('subSeen') ?? '{}');
@@ -399,6 +408,15 @@ class AppController extends ChangeNotifier {
     desktopNotify = await prefs.get('desktopNotify') != '0';
     desktopFrom = int.tryParse(await prefs.get('desktopFrom') ?? '') ?? kDesktopFrom;
     servers = await book.load();
+    _renameSeen = await prefs.get('renameSeen') != null;
+    // The app's own memory: the first start of a version with the new name finds servers saved
+    // by an older one (this device knew the old name) or none (it never did); kept once decided.
+    var knew = await prefs.get('renameKnew');
+    if (knew == null) {
+      knew = servers.isEmpty ? '0' : '1';
+      await prefs.set('renameKnew', knew);
+    }
+    renameDue = !_renameSeen && knew == '1';
     notifyListeners();
     if (handoff != null && await adoptHandoff(handoff)) return;
     final current = await prefs.get('current');
@@ -742,6 +760,7 @@ class AppController extends ChangeNotifier {
     if (c == null) return;
     try {
       final s = await c.updateStatus();
+      _renameFromServer(s.firstVersion);
       final os = s.install == 'os' ? await c.osUpdates() : null;
       final running = (os?.updating ?? false) || (s.progress != null && s.phase != 'failed');
       if (running) followUpdate(s, os);

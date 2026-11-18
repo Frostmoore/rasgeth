@@ -7773,12 +7773,16 @@
   "cvPastePicture": "Paste a picture",
   "cvPasteNone": "There is no picture on the clipboard",
   "cvAskedAgent": "Put in the conversation's message",
-  "renameNoticeTitle": "RedGiant is now called Rasgeth",
+  "renameNoticeTitle": "RedGiant is now called Rasgeth.",
   "@renameNoticeTitle": {
     "description": "The one-time notice of the new name (plan 3.9.0, choice 17): it names the old one on purpose."
   },
-  "renameNoticeText": "The same program, with a new name and a new icon: your servers, conversations and settings are where they were.",
+  "renameNoticeText": "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   "@renameNoticeText": {
     "description": "Under renameNoticeTitle."
+  },
+  "renameNoticeOk": "Got it",
+  "@renameNoticeOk": {
+    "description": "Closes the notice for good (the page's renameOk)."
   }
 }
