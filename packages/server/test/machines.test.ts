@@ -102,7 +102,7 @@ describe.runIf(process.platform !== "win32")(
       });
       expect(add.status).toBe(201);
       const m = add.body;
-      expect(m.publicKey).toMatch(/^ssh-ed25519 \S+ redgiant-web$/);
+      expect(m.publicKey).toMatch(/^ssh-ed25519 \S+ rasgeth-web$/);
       expect(m.keySource).toBe("generated");
       expect(JSON.stringify(m)).not.toMatch(/PRIVATE KEY/);
       const privateKey = server.core.vault.systemValue("me", `ssh:${m.id}:key`);
