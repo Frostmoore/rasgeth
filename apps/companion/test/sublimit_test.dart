@@ -109,10 +109,7 @@ void main() {
     s.onChanged!(0);
     await tester.pump();
     expect(server.maxAgentPuts, isEmpty);
-    expect(
-      tester.widget<Text>(find.byKey(const Key('agent-limit-value-demo'))).data,
-      '0',
-    );
+    expect(tester.widget<Text>(find.byKey(const Key('agent-limit-value-demo'))).data, '0');
     slider(tester).onChangeEnd!(0);
     await _settle(tester);
     expect(server.maxAgentPuts, [0]);

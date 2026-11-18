@@ -3,6 +3,7 @@
 // slider; lowered under the team, the line says nobody is removed; the project's view has the same
 // slider by its team. Light and dark, on a phone. Run by tool/linux_shots.sh:
 //   RG_SCREEN=430x932 … integration_test/g3814_sublimit_shots_test.dart
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:rgcompanion/api/token_store.dart';
 import 'package:rgcompanion/api/types.dart';
 import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
+import 'package:rgcompanion/screens/project_overview_screen.dart';
 
 import 'shots_test.dart' show frames, shot, waitFor;
 
@@ -56,31 +58,38 @@ void main() {
       app.setAdvanced(true);
       app.setTab(AppTab.projects);
       await frames(t, 2500);
-      for (var i = 0; i < 3 && find.byKey(const Key('proj-menu-limit')).evaluate().isEmpty; i++) {
-        await t.longPress(find.byKey(Key('project-${project.id}')));
-        await frames(t, 1500);
-      }
-      await shot(t, n(1, 'menu-progetto'));
-      await tap(t, find.byKey(const Key('proj-menu-limit')), 1500);
-      await shot(t, n(2, 'finestra-limite'));
-      await setTo(0);
-      await shot(t, n(3, 'solo-orchestratore'));
-      await setTo(3);
-      await tap(t, find.byKey(const Key('agent-limit-close')).first);
-      // The card's tap opens the project (as the sheet's «Open»).
-      await tap(t, find.byKey(Key('project-${project.id}')).first, 2500);
-      await shot(t, n(4, 'vista-progetto'));
-      // The slider sits by the team, under the lead's conversations.
+      // The project's view first (on a phone `openProject` pushes it), its slider by the team.
+      final nav = Navigator.of(t.element(find.byKey(Key('project-${project.id}')).first));
+      unawaited(
+        nav.push(
+          MaterialPageRoute<void>(builder: (_) => ProjectOverviewScreen(projectId: project.id)),
+        ),
+      );
+      await frames(t, 2500);
+      await shot(t, n(1, 'vista-progetto'));
       final tile = find.byKey(Key('agent-limit-${project.id}'));
       final view = find.byKey(Key('proj-overview-${project.id}'));
-      for (var i = 0; i < 12 && tile.evaluate().isEmpty; i++) {
+      for (var i = 0; i < 12 && tile.evaluate().isEmpty && view.evaluate().isNotEmpty; i++) {
         await t.drag(view.first, const Offset(0, -300));
         await frames(t, 300);
       }
       if (tile.evaluate().isNotEmpty) await t.ensureVisible(tile.first);
       await frames(t, 800);
-      await shot(t, n(5, 'vista-progetto-limite'));
-      await tap(t, find.byKey(const Key('proj-back')));
+      await shot(t, n(2, 'vista-progetto-limite'));
+      nav.pop();
+      await frames(t, 1500);
+      // The project's sheet, then its window.
+      for (var i = 0; i < 3 && find.byKey(const Key('proj-menu-limit')).evaluate().isEmpty; i++) {
+        await t.longPress(find.byKey(Key('project-${project.id}')).first);
+        await frames(t, 1500);
+      }
+      await shot(t, n(3, 'menu-progetto'));
+      await tap(t, find.byKey(const Key('proj-menu-limit')).first, 1500);
+      await shot(t, n(4, 'finestra-limite'));
+      await setTo(0);
+      await shot(t, n(5, 'solo-orchestratore'));
+      await setTo(3);
+      await tap(t, find.byKey(const Key('agent-limit-close')).first);
       app.setAdvanced(false);
       await frames(t, 1000);
     }
