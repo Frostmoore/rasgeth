@@ -7,8 +7,18 @@ import {
   type MascotSpec,
   type ModelSpec,
   type PermissionMode,
+  PROJECT_AGENTS_DEFAULT,
 } from "@redgiant/protocol";
-import { type Actor, type AgentNode, CHILD_KINDS, can } from "./scopes.js";
+import {
+  type Actor,
+  type AgentNode,
+  type AgentRoom,
+  agentRoom,
+  CHILD_KINDS,
+  can,
+  countsTowardAgentLimit,
+  type LimitNode,
+} from "./scopes.js";
 
 /**
  * How an agent left the team (p3.8.9): when, by whom ("person" or the agent's name), why, the
@@ -56,6 +66,36 @@ export class HierarchyError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "HierarchyError";
+  }
+}
+
+/**
+ * A project already has as many agents as the person allows (2026-11-18): nothing was created or
+ * brought back. The message is for the model; `code` and `vars` let the page and the app say it in
+ * the person's language.
+ */
+export class AgentLimitError extends HierarchyError {
+  readonly code = "agent_limit";
+  constructor(
+    readonly projectId: string,
+    readonly projectName: string,
+    readonly max: number,
+    readonly count: number,
+  ) {
+    super(
+      `${
+        max === 0
+          ? `The project "${projectName}" works with its orchestrator alone (its limit is 0 agents)`
+          : `The project "${projectName}" can have at most ${max} agent${max === 1 ? "" : "s"} besides its orchestrator`
+      }: it has ${count}. Nothing was created: ask the person to raise the limit (Settings > Projects)${
+        count > 0 ? " or remove an agent first" : ""
+      }.`,
+    );
+    this.name = "AgentLimitError";
+  }
+
+  get vars(): Record<string, string> {
+    return { project: this.projectName, max: String(this.max), count: String(this.count) };
   }
 }
 
@@ -181,6 +221,11 @@ export class AgentRegistry {
   private readonly archivedProjects = new Set<string>();
   /** Each owner's Chat agent (p3.8.9): set by the server; never removed. */
   private readonly chats = new Map<string, string>();
+  /**
+   * Each project's agent limit (2026-11-18), as `owner/project`, with its name for the refusal:
+   * set by the server at start and when the person changes it; absent, the default.
+   */
+  private readonly agentLimits = new Map<string, { max: number; name: string }>();
 
   constructor(
     private readonly db: SqlClient,
@@ -344,6 +389,47 @@ export class AgentRegistry {
     return !!projectId && this.archivedProjects.has(projectKey(ownerId, projectId));
   }
 
+  /** A project's agent limit (2026-11-18), or `null` for the default. Removes nobody. */
+  setProjectAgentLimit(
+    ownerId: string,
+    projectId: string,
+    max: number | null,
+    name?: string,
+  ): void {
+    const key = projectKey(ownerId, projectId);
+    if (max === null) this.agentLimits.delete(key);
+    else this.agentLimits.set(key, { max, name: name ?? projectId });
+  }
+
+  /** How many agents the project may have besides its orchestrator. */
+  projectAgentLimit(ownerId: string, projectId: string): number {
+    return this.agentLimits.get(projectKey(ownerId, projectId))?.max ?? PROJECT_AGENTS_DEFAULT;
+  }
+
+  /** Whether `adding` more agents that count fit in the project now (`agentRoom`). */
+  agentRoom(ownerId: string, projectId: string, adding = 1): AgentRoom {
+    return agentRoom(
+      this.list({ ownerId, projectId, removed: true }),
+      projectId,
+      this.projectAgentLimit(ownerId, projectId),
+      adding,
+    );
+  }
+
+  /** Throws `AgentLimitError` when these agents, joining the team as given, would not fit. */
+  private assertRoom(ownerId: string, projectId: string | null, joining: LimitNode[]): void {
+    if (!projectId) return;
+    const adding = joining.filter((a) => countsTowardAgentLimit(a, projectId)).length;
+    const room = this.agentRoom(ownerId, projectId, adding);
+    if (!room.ok)
+      throw new AgentLimitError(
+        projectId,
+        this.agentLimits.get(projectKey(ownerId, projectId))?.name ?? projectId,
+        room.max,
+        room.count,
+      );
+  }
+
   /** Lookup for scope checks. */
   readonly resolve = (id: string): AgentNode | undefined => this.cache.get(id);
 
@@ -413,6 +499,8 @@ export class AgentRegistry {
       (["agent", "inspector"].includes(input.kind) ? input.subprojectId : undefined);
     if (parent?.subprojectId && input.subprojectId && input.subprojectId !== parent.subprojectId)
       throw new HierarchyError("A child works in its parent's subproject");
+    // The person's limit for the project (2026-11-18): every way of making an agent comes here.
+    this.assertRoom(ownerId, projectId, [{ kind: input.kind, projectId, status: "active" }]);
 
     const agentId = `${input.kind}_${randomUUID().slice(0, 8)}`;
     // The mascot's seed is fixed now (G40.2): renaming never changes the face.
@@ -529,6 +617,14 @@ export class AgentRegistry {
         if (child.status === "stopped" && child.kind !== "subagent") walk(child);
     };
     walk(target);
+    // Only what did not count while stopped (a sub-agent) takes room in the project's limit.
+    this.assertRoom(
+      target.ownerId,
+      target.projectId,
+      group
+        .filter((a) => !countsTowardAgentLimit(a, a.projectId ?? ""))
+        .map((a) => ({ ...a, status: "active" as const })),
+    );
     try {
       await this.db.transaction(async (tx) => {
         for (const a of group)
@@ -668,6 +764,13 @@ export class AgentRegistry {
       throw new HierarchyError(
         `The project "${taken.projectId}" has another ${taken.kind} now: remove or stop it first`,
       );
+    // The project's limit (2026-11-18): a removed agent comes back only if there is room for it
+    // and for those removed with it, as they were.
+    this.assertRoom(
+      target.ownerId,
+      target.projectId,
+      group.map((a) => ({ ...a, status: a.removed?.was ?? "active" })),
+    );
     // All of the group or none (a unique place taken meanwhile fails the whole restore).
     try {
       await this.db.transaction(async (tx) => {

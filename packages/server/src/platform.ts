@@ -21,6 +21,8 @@ import {
   type ModelSpec,
   needsInput,
   PermissionMode,
+  PROJECT_AGENTS_MAX,
+  ProjectMaxAgents,
   ToolChoice,
   toolCatalogEntry,
   toolEntryOf,
@@ -310,6 +312,12 @@ export interface ConfigHost {
     projectId: string,
     by: string,
   ): Promise<{ resumed: string[]; sandboxes: string[] }>;
+  /** A project's agent limit (2026-11-18): what it was, what it is, how many count now. */
+  setProjectAgents?(
+    ownerId: string,
+    projectId: string,
+    max: number,
+  ): Promise<{ before: number; after: number; count: number }>;
 }
 
 /** The settings only the person changes, kept with history and undo. */
@@ -686,6 +694,37 @@ export class PlatformConfig {
     });
   }
 
+  /**
+   * How many agents a project may have besides its orchestrator (2026-11-18, decision «Limite di
+   * sotto-agenti per progetto»): only the person chooses it (the page, the app). Lowering it
+   * removes nobody; in the history and undone like any other change.
+   */
+  async projectAgents(
+    ownerId: string,
+    by: string,
+    projectId: string,
+    max: number,
+  ): Promise<PlatformChange> {
+    if (!this.h.setProjectAgents) throw new ConfigError("Agent limits are not available here");
+    if (by !== "human") throw new ConfigError("Only the person changes a project's agent limit");
+    const value = ProjectMaxAgents.safeParse(max);
+    if (!value.success)
+      throw new ConfigError(`maxAgents: a whole number from 0 to ${PROJECT_AGENTS_MAX}`);
+    const r = await this.h.setProjectAgents(ownerId, projectId, value.data);
+    return this.h.changes.record(ownerId, {
+      kind: "config",
+      change: `Project ${projectId}: at most ${r.after} agent${r.after === 1 ? "" : "s"} besides its orchestrator`,
+      stage: "promoted",
+      target: `project-agents:${projectId}`,
+      before: { maxAgents: r.before },
+      after: { maxAgents: r.after },
+      ...(r.count > r.after && {
+        detail: `${r.count} agents now: none removed, no new ones until there are fewer than ${r.after + 1}`,
+      }),
+      by,
+    });
+  }
+
   /** Puts back what a configuration change replaced; recorded as a change of its own. */
   async undo(ownerId: string, by: string, changeId: string): Promise<PlatformChange> {
     const c = await this.h.changes.get(ownerId, changeId);
@@ -735,6 +774,10 @@ export class PlatformConfig {
     } else if (type === "project") {
       const before = c.before as { archived: boolean };
       done = await this.project(ownerId, by, rest.join(":"), before.archived);
+    } else if (type === "project-agents") {
+      // The person's own choice: undone with their authority (God's platform_undo asks them).
+      const before = c.before as { maxAgents: number };
+      done = await this.projectAgents(ownerId, "human", rest.join(":"), before.maxAgents);
     } else if (type === "automation") {
       const id = rest.join(":");
       const before = c.before as { yaml: string; enabled: boolean } | null;

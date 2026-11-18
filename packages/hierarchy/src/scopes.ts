@@ -272,6 +272,49 @@ function canRead(actor: Actor, target: KnowledgeTarget): boolean {
   return target.agent.id === a.id;
 }
 
+/** What the project's agent limit needs to know about an agent. */
+export interface LimitNode {
+  kind: AgentKind;
+  projectId: string | null;
+  status: "active" | "stopped" | "removed";
+}
+
+/**
+ * The project's agent limit (2026-11-18, decision «Limite di sotto-agenti per progetto»): besides
+ * its orchestrator, a project has at most the person's number of agents. What counts: the
+ * project's own agents in the team, working or stopped (a stop is a pause, resume brings them
+ * back), and the sub-agents at work now, under any of them. What does not: the orchestrator, the
+ * inspectors (they only read, the server makes them), agents of other projects assigned here (they
+ * count in their own), removed agents and sub-agents whose task ended.
+ */
+export function countsTowardAgentLimit(a: LimitNode, projectId: string): boolean {
+  if (a.projectId !== projectId) return false;
+  if (a.kind === "agent") return a.status !== "removed";
+  if (a.kind === "subagent") return a.status === "active";
+  return false;
+}
+
+export interface AgentRoom {
+  ok: boolean;
+  /** The agents that count now. */
+  count: number;
+  max: number;
+}
+
+/**
+ * Whether `adding` more agents that count fit in the project. Nothing is ever refused that does
+ * not add one: lowering the limit removes nobody, it only stops new ones until the team is under.
+ */
+export function agentRoom(
+  team: readonly LimitNode[],
+  projectId: string,
+  max: number,
+  adding: number,
+): AgentRoom {
+  const count = team.filter((a) => countsTowardAgentLimit(a, projectId)).length;
+  return { ok: adding <= 0 || count + adding <= max, count, max };
+}
+
 /** Kinds a parent may create below itself. */
 export const CHILD_KINDS: Record<AgentKind, AgentKind[]> = {
   god: ["demigod", "orchestrator", "inspector", "assistant"],

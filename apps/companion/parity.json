@@ -359,7 +359,9 @@
         "lib/ui/project_menu.dart",
         "lib/desktop/new_project.dart",
         "lib/desktop/advanced/projects_wall.dart",
-        "lib/app_state.dart"
+        "lib/app_state.dart",
+        "lib/screens/full_settings_screen.dart",
+        "lib/ui/project_agents.dart"
       ],
       "phase": "G42.5",
       "rows": [
@@ -372,7 +374,7 @@
         135,
         136
       ],
-      "note": "G42.5: Projects is in the phone's bar for everyone (git state with the advanced interface), with «New project» (the page's flow: the name, then its orchestrator). Each project shows its subprojects (the page's Subprojects under the project): folder, agents and their conversations, «New subproject» new or bringing an existing project in (asked first), its own sandbox image; a subproject's files open on its folder. Settings › Projects (ProjectsPage): in use with the folder and «No git repository» / «Initialise git», «Archive» with the page's window, the archived ones with «Restore». The 3.8.8 menus and archived view as they were. The project board's subproject filter waits for the app's board (G42.3, another branch)."
+      "note": "Project list with git state (advanced interface); 3.8.8: a click shows the project's conversations (its lead's and its team's; archived, read only with its tasks), its menu archives it (the page's window: who works, the automations that pause), restores it and initialises git; the full Settings › Projects page only in «All settings». 2026-11-18: «Agenti al massimo in questo progetto» (0-10, default 3) native: in the project's menu (its window) and in the project's view, the same slider, rule and words as the page's Settings › Projects."
     },
     "artifacts": {
       "app": "native",

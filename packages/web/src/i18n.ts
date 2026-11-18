@@ -3204,6 +3204,21 @@ const en = {
   paPageQ: "Projects",
   paPageLead:
     "Archive a project you are not working on: it leaves the lists, nothing is deleted, and it comes back as it was.",
+  // A project's agent limit (2026-11-18).
+  palTitle: "Agents at most in this project",
+  palZero: "Orchestrator only",
+  palHelp:
+    "Besides the orchestrator; sub-agents at work count too. At 0 the orchestrator works alone.",
+  palNow: "Now: {n}.",
+  palNone: "none",
+  palOne: "1 agent",
+  palN: "{n} agents",
+  palOver:
+    "It has {n}, more than {max}: nobody is removed, but no new agent until the team is under the limit.",
+  palSaved: "Saved. It is in the history of changes, where you can undo it.",
+  err_agent_limit:
+    "The project «{project}» can have at most {max} agents besides its orchestrator: it has {count}. Raise the limit in Settings › Projects or remove one.",
+  chgProjectAgents: "{project}: agents at most from {from} to {to}",
   paInUse: "In use",
   paArchivedTitle: "Archived",
   paArchivedLead: "Read only. «Restore» puts the project back as it was, with its automations.",
@@ -9965,6 +9980,20 @@ const it: Record<Key, string> = {
   paPageQ: "Progetti",
   paPageLead:
     "Archivia un progetto su cui non lavori: esce dagli elenchi, niente viene cancellato e torna com'era.",
+  palTitle: "Agenti al massimo in questo progetto",
+  palZero: "Solo orchestratore",
+  palHelp:
+    "Oltre all'orchestratore; contano anche i sotto-agenti al lavoro. Con 0 l'orchestratore lavora da solo.",
+  palNow: "Ora: {n}.",
+  palNone: "nessuno",
+  palOne: "1 agente",
+  palN: "{n} agenti",
+  palOver:
+    "Ne ha {n}, più di {max}: nessuno viene rimosso, ma non se ne creano di nuovi finché la squadra non scende sotto il limite.",
+  palSaved: "Salvato. Lo trovi nello storico delle modifiche, dove puoi annullarlo.",
+  err_agent_limit:
+    "Il progetto «{project}» può avere al massimo {max} agenti oltre all'orchestratore: ne ha {count}. Alza il limite in Impostazioni › Progetti o rimuovine uno.",
+  chgProjectAgents: "{project}: agenti al massimo da {from} a {to}",
   paInUse: "In uso",
   paArchivedTitle: "Archiviati",
   paArchivedLead:

@@ -36,6 +36,7 @@ import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/model_sheet.dart';
 import 'conversation_screen.dart';
+import '../ui/project_agents.dart';
 import 'team_screen.dart';
 
 Future<void> openNewAgent(BuildContext context) =>
@@ -386,7 +387,7 @@ class _NewAgentScreenState extends State<NewAgentScreen> {
         _step = _Step.done;
       });
     } on ApiException catch (e) {
-      if (mounted) setState(() => _error = l.newAgentFailed(e.message));
+      if (mounted) setState(() => _error = l.newAgentFailed(apiErrorText(l, e)));
     } finally {
       if (mounted) setState(() => _creating = false);
     }

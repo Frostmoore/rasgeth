@@ -28,6 +28,7 @@ import {
   sessionRows,
   toggleExplorer,
 } from "../state.js";
+import { AgentLimitControl } from "./ProjectAgentLimit.js";
 import { Acts, Box, Head, Row, Sub, WzPage } from "./SettingsKit.js";
 import { Modal } from "./ui.js";
 
@@ -336,38 +337,40 @@ export function ProjectsPage() {
       <Box>
         {projects.value.length === 0 && <p class="dim">{t("noProjects")}</p>}
         {projects.value.map((p) => (
-          <Row
-            key={p.id}
-            title={
-              <span class="pa-title">
-                <IconBox size={15} /> {p.name}
-              </span>
-            }
-            help={
-              <>
-                <code>{p.path}</code>
-                {p.git === false && (
-                  <span class="pa-pill nogit">
-                    <IconGit size={12} /> {t("pgNoGit")}
-                  </span>
-                )}
-              </>
-            }
-          >
-            {p.git === false && (
-              <button
-                type="button"
-                class="wz-btn"
-                disabled={busy === p.id}
-                onClick={() => void initGit(p)}
-              >
-                <IconGit size={16} /> {t("pgInit")}
+          <div key={p.id} class="pa-project">
+            <Row
+              title={
+                <span class="pa-title">
+                  <IconBox size={15} /> {p.name}
+                </span>
+              }
+              help={
+                <>
+                  <code>{p.path}</code>
+                  {p.git === false && (
+                    <span class="pa-pill nogit">
+                      <IconGit size={12} /> {t("pgNoGit")}
+                    </span>
+                  )}
+                </>
+              }
+            >
+              {p.git === false && (
+                <button
+                  type="button"
+                  class="wz-btn"
+                  disabled={busy === p.id}
+                  onClick={() => void initGit(p)}
+                >
+                  <IconGit size={16} /> {t("pgInit")}
+                </button>
+              )}
+              <button type="button" class="wz-btn" onClick={() => setAsking(p)}>
+                <IconArchive size={16} /> {t("paArchive")}
               </button>
-            )}
-            <button type="button" class="wz-btn" onClick={() => setAsking(p)}>
-              <IconArchive size={16} /> {t("paArchive")}
-            </button>
-          </Row>
+            </Row>
+            <AgentLimitControl project={p} />
+          </div>
         ))}
         {done && <p class="notice">{done}</p>}
       </Box>

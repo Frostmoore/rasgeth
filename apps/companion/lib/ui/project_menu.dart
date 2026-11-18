@@ -16,6 +16,7 @@ import '../screens/project_overview_screen.dart';
 import '../theme/colors.dart';
 import 'dialogs.dart';
 import 'icons.dart';
+import 'project_agents.dart';
 import 'rg_menu.dart';
 
 /// Right click or long press on a project.
@@ -39,7 +40,7 @@ class ProjectPress extends StatelessWidget {
   );
 }
 
-enum _P { open, code, tasks, board, inspector, agents, git, archive, restore }
+enum _P { open, code, tasks, board, inspector, agents, limit, git, archive, restore }
 
 /// [p]'s menu: at [at] on a computer, the sheet without it.
 Future<void> showProjectMenu(BuildContext context, Project p, {Offset? at}) async {
@@ -59,6 +60,14 @@ Future<void> showProjectMenu(BuildContext context, Project p, {Offset? at}) asyn
       RgMenuEntry(_P.inspector, RgIcons.eye, l.cvInspector, key: const Key('proj-menu-inspector')),
     if (!p.archived)
       RgMenuEntry(_P.agents, RgIcons.users, l.pmAgents(p.name), key: const Key('proj-menu-agents')),
+    // How many agents it may have besides its orchestrator (2026-11-18).
+    if (!p.archived)
+      RgMenuEntry(
+        _P.limit,
+        RgIcons.users,
+        l.pmAgentLimit(p.maxAgents == 0 ? l.palZero : '${p.maxAgents}'),
+        key: const Key('proj-menu-limit'),
+      ),
     if (p.git == false && !p.archived)
       RgMenuEntry(_P.git, RgIcons.gitBranch, l.pmInitGit, key: const Key('proj-menu-git')),
     null,
@@ -114,6 +123,8 @@ Future<void> showProjectMenu(BuildContext context, Project p, {Offset? at}) asyn
         app.setTab(AppTab.team);
         Navigator.of(context).popUntil((r) => r.isFirst);
       }
+    case _P.limit:
+      await askProjectAgentLimit(context, p);
     case _P.git:
       say(await app.initProjectGit(p.id) ? l.pmInitGitDone(p.name) : l.cmFailed);
     case _P.archive:

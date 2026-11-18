@@ -7988,4 +7988,48 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get embedFallbackNote => 'La pagina non risponde: qui c\'è la vista semplice dell\'app.';
+
+  @override
+  String get palTitle => 'Agenti al massimo in questo progetto';
+
+  @override
+  String get palZero => 'Solo orchestratore';
+
+  @override
+  String get palHelp =>
+      'Oltre all\'orchestratore; contano anche i sotto-agenti al lavoro. Con 0 l\'orchestratore lavora da solo.';
+
+  @override
+  String palNow(String n) {
+    return 'Ora: $n.';
+  }
+
+  @override
+  String get palNone => 'nessuno';
+
+  @override
+  String get palOne => '1 agente';
+
+  @override
+  String palN(String n) {
+    return '$n agenti';
+  }
+
+  @override
+  String palOver(String n, String max) {
+    return 'Ne ha $n, più di $max: nessuno viene rimosso, ma non se ne creano di nuovi finché la squadra non scende sotto il limite.';
+  }
+
+  @override
+  String get palSaved => 'Salvato. Lo trovi nello storico delle modifiche, dove puoi annullarlo.';
+
+  @override
+  String pmAgentLimit(String n) {
+    return 'Agenti al massimo: $n';
+  }
+
+  @override
+  String errAgentLimit(String project, String max, String count) {
+    return 'Il progetto «$project» può avere al massimo $max agenti oltre all\'orchestratore: ne ha $count. Alza il limite dal menu del progetto o rimuovine uno.';
+  }
 }

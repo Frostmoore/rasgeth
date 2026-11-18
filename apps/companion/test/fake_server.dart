@@ -711,6 +711,11 @@ class FakeRedGiant {
   // G40.11: the advanced interface.
   bool archived = false;
 
+  /// The demo project's agent limit and its count (2026-11-18), and every `max-agents` saved.
+  int demoMaxAgents = 3;
+  int demoAgents = 2;
+  final maxAgentPuts = <int>[];
+
   /// The control room's «new» tiles (3.9.0): without the demo project, without any agent but
   /// God and Demi-God, the projects made with `POST /api/projects` (and their bodies), and a
   /// server where git is missing (the new project has no repository).
@@ -1917,6 +1922,8 @@ class FakeRedGiant {
             'path': '/p',
             'createdAt': '2026-11-01T00:00:00.000Z',
             if (archived) 'archivedAt': '2026-11-16T00:00:00.000Z',
+            'maxAgents': demoMaxAgents,
+            'agents': demoAgents,
           },
         ...madeProjects,
       ]);
@@ -1972,6 +1979,18 @@ class FakeRedGiant {
       }
       subprojectImages[sub] = b['image'] as String?;
       return _json(r, 200, {'ok': true});
+    }
+    // A project's agent limit (2026-11-18, app.ts): 0 to 10, in the history.
+    if (r.method == 'PUT' && path == '/api/projects/demo/max-agents') {
+      final b = jsonDecode(await utf8.decodeStream(r)) as Map<String, dynamic>;
+      final n = b['maxAgents'];
+      if (n is! int || n < 0 || n > 10) {
+        return _json(r, 400, {'error': 'maxAgents: a whole number from 0 to 10'});
+      }
+      maxAgentPuts.add(n);
+      demoMaxAgents = n;
+      listsChanged(['projects']);
+      return _json(r, 200, {'id': 'chg_agents', 'kind': 'config', 'stage': 'promoted'});
     }
     // Archiving a whole project (p3.5.3, app.ts): `/work` first, then archive or restore.
     final pw = RegExp(r'^/api/projects/([^/]+)/(work|archive|restore|git)$').firstMatch(path);

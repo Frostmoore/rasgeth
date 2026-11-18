@@ -13,6 +13,7 @@ import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/icons.dart';
+import '../ui/project_agents.dart';
 import '../ui/project_menu.dart';
 import 'activity_screen.dart' show outcomeWord;
 import 'agent_conversations_screen.dart';
@@ -221,6 +222,8 @@ class _ProjectOverviewState extends State<ProjectOverview> {
                     : b.when.compareTo(a.when),
               );
         final teamPart = [
+          // How many agents it may have besides its lead (2026-11-18), where its team is.
+          AgentLimitTile(project: p),
           if (teamRows.isNotEmpty) ...[
             ListHeading(l.pmTeam, icon: RgIcons.users),
             for (final r in teamRows) SessionTile(row: r, who: agentOf(r.agentId)),

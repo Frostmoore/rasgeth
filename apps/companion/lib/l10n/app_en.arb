@@ -6203,5 +6203,60 @@
   "embedFallbackNote": "The page is not answering: this is the app's simple view.",
   "@embedFallbackNote": {
     "description": "G42.6: above the Canvas's native viewer when the page inside the app fails or does not answer."
+  },
+  "palTitle": "Agents at most in this project",
+  "palZero": "Orchestrator only",
+  "palHelp": "Besides the orchestrator; sub-agents at work count too. At 0 the orchestrator works alone.",
+  "palNow": "Now: {n}.",
+  "@palNow": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "palNone": "none",
+  "palOne": "1 agent",
+  "palN": "{n} agents",
+  "@palN": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "palOver": "It has {n}, more than {max}: nobody is removed, but no new agent until the team is under the limit.",
+  "@palOver": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "palSaved": "Saved. It is in the history of changes, where you can undo it.",
+  "pmAgentLimit": "Agents at most: {n}",
+  "@pmAgentLimit": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "errAgentLimit": "The project «{project}» can have at most {max} agents besides its orchestrator: it has {count}. Raise the limit in the project's menu or remove one.",
+  "@errAgentLimit": {
+    "placeholders": {
+      "project": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -30,6 +30,7 @@ import { askConfirm } from "./dialogs.js";
 import { Mascot } from "./Mascot.js";
 import { modelName } from "./ModelMenu.js";
 import { ModelSelect, useModels } from "./ModelSelect.js";
+import { AgentLimitControl } from "./ProjectAgentLimit.js";
 import { PromptEditor } from "./PromptEditor.js";
 import { RemoveAgentDialog, RemovedAgentsList, removable, resumeStopped } from "./RemovedAgents.js";
 import { Acts, Head, Seg, Sub, Switch } from "./SettingsKit.js";
@@ -851,6 +852,7 @@ function AgentsPage({ projectId = null }: { projectId?: string | null }) {
   };
   const select = (a: Agent) => setSelectedId(a.id === selectedId ? null : a.id);
   const hasGod = agents.value.some((a) => a.parentId === null);
+  const project = projectId ? projects.value.find((p) => p.id === projectId) : undefined;
   return (
     <div class={`agents-page settings-section wz-look st-page st-agents view-${view}`}>
       <header class="agents-head">
@@ -903,6 +905,12 @@ function AgentsPage({ projectId = null }: { projectId?: string | null }) {
       </header>
       {/* How many may work together (3.8.10): where the person sees the whole team. */}
       {!projectId && hasGod && <AtWorkCard />}
+      {/* How many agents the project may have (2026-11-18): where its team is. */}
+      {project && (
+        <div class="wz-card wz-left st-box pal-box">
+          <AgentLimitControl project={project} />
+        </div>
+      )}
       {/* Before the other windows: «Agent under it» opens on top of it. */}
       {selected && (
         <AgentPanel

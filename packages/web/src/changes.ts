@@ -155,6 +155,20 @@ export function describeChange(c: PlatformChange, n: Names): string[] {
     return automation((c.before ?? null) as Automation, (c.after ?? null) as Automation);
   if (type === "mcp") return mcp(id, (c.before ?? null) as Mcp, (c.after ?? null) as Mcp, n);
   if (type === "tools") return tools(id, (c.before ?? {}) as Tools, (c.after ?? {}) as Tools, n);
+  // A project's agent limit (2026-11-18).
+  if (type === "project-agents") {
+    const of = (v: unknown) => (v as { maxAgents?: number } | undefined)?.maxAgents;
+    const before = of(c.before);
+    const after = of(c.after);
+    if (after !== undefined)
+      return [
+        t("chgProjectAgents", {
+          project: n.project(id),
+          from: before === undefined ? "—" : String(before),
+          to: String(after),
+        }),
+      ];
+  }
   return [c.change];
 }
 

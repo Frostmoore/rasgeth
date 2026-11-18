@@ -2,6 +2,7 @@ import { mkdir, realpath, stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, join, posix, win32 } from "node:path";
 import type { SqlClient } from "@redgiant/events";
+import { PROJECT_AGENTS_DEFAULT } from "@redgiant/protocol";
 import { hasOwnRepo, initProjectRepo, type RepoState, type RunGit, runGit } from "./project-git.js";
 
 export interface Project {
@@ -19,6 +20,11 @@ export interface Project {
    */
   git?: boolean;
   gitError?: string;
+  /**
+   * How many agents it may have besides its orchestrator (2026-11-18): the person's choice, or
+   * the default; the registry enforces it (`countsTowardAgentLimit`).
+   */
+  maxAgents: number;
 }
 
 /** What archiving a project paused, to put back exactly when it is restored. */
@@ -71,6 +77,8 @@ export async function migrateProjects(db: SqlClient): Promise<void> {
   // A whole project archived (2026-11-09): when, and what the archive paused.
   await db.query("ALTER TABLE rg_projects ADD COLUMN IF NOT EXISTS archived_at timestamptz");
   await db.query("ALTER TABLE rg_projects ADD COLUMN IF NOT EXISTS archived_state jsonb");
+  // The person's agent limit (2026-11-18); null: the default.
+  await db.query("ALTER TABLE rg_projects ADD COLUMN IF NOT EXISTS max_agents integer");
   await db.query(`
     CREATE TABLE IF NOT EXISTS rg_sessions (
       id         text PRIMARY KEY,
@@ -213,6 +221,7 @@ interface Row {
   path: string;
   created_at: Date | string;
   archived_at?: Date | string | null;
+  max_agents?: number | null;
 }
 
 const fromRow = (r: Row): Project => ({
@@ -222,6 +231,7 @@ const fromRow = (r: Row): Project => ({
   path: r.path,
   createdAt: new Date(r.created_at).toISOString(),
   ...(r.archived_at && { archivedAt: new Date(r.archived_at).toISOString() }),
+  maxAgents: r.max_agents ?? PROJECT_AGENTS_DEFAULT,
 });
 
 interface SubRow {
@@ -463,6 +473,36 @@ export class ProjectStore {
     return typeof r.archived_state === "string"
       ? (JSON.parse(r.archived_state) as ArchivedState)
       : r.archived_state;
+  }
+
+  /**
+   * The person's agent limit for a project (2026-11-18), or the default again (null). It removes
+   * nobody: the registry only refuses new agents while the team is at the limit.
+   */
+  async setMaxAgents(ownerId: string, id: string, max: number | null): Promise<void> {
+    await this.db.query("UPDATE rg_projects SET max_agents = $3 WHERE owner_id = $1 AND id = $2", [
+      ownerId,
+      id,
+      max,
+    ]);
+    this.changed(ownerId);
+  }
+
+  /** Every project of every owner with its name and limit (the registry learns them at start). */
+  async agentLimits(): Promise<{ ownerId: string; id: string; name: string; max: number }[]> {
+    return (
+      await this.db.query<{
+        owner_id: string;
+        id: string;
+        name: string;
+        max_agents: number | null;
+      }>("SELECT owner_id, id, name, max_agents FROM rg_projects")
+    ).map((r) => ({
+      ownerId: r.owner_id,
+      id: r.id,
+      name: r.name,
+      max: r.max_agents ?? PROJECT_AGENTS_DEFAULT,
+    }));
   }
 
   /** Every archived project of every owner (the registry learns them at start). */

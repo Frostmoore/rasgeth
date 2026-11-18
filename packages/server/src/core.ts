@@ -91,6 +91,7 @@ import {
   nativePaths,
   notedText,
   ownWords,
+  ProjectMaxAgents,
   type Recipe,
   type RefineEstimate,
   type RefineRequest,
@@ -1004,8 +1005,11 @@ export class RedGiantCore implements OrchestrationHost {
     this.projects = new ProjectStore(o.db, o.workspacesDir, o.projectFoldersInside);
     // Made, renamed, archived elsewhere (another page or device, God, an automation): every
     // client of the owner hears it at once (p3.8.9). An archived project marks its agents too.
-    this.registry.onChange((ownerId) => this.listsChanged(ownerId, "agents"));
+    // The projects too: each says how many agents count toward its limit (2026-11-18).
+    this.registry.onChange((ownerId) => this.listsChanged(ownerId, "agents", "projects"));
     this.projects.onChange((ownerId) => this.listsChanged(ownerId, "projects", "agents"));
+    // A project made or renamed: the registry's refusals name it (2026-11-18, agent limits).
+    this.projects.onChange((ownerId) => void this.syncAgentLimits(ownerId).catch(() => {}));
     // Requests say projects and agents by name on every channel (3.5.6).
     this.approvals.nameOf = async (ownerId, ids) => {
       const out: Record<string, string> = {};
@@ -1557,6 +1561,9 @@ export class RedGiantCore implements OrchestrationHost {
     await core.browserLinks.load();
     await core.registry.load();
     await core.markChatAgents();
+    // Each project's agent limit (2026-11-18), from the first request on.
+    for (const p of await core.projects.agentLimits())
+      core.registry.setProjectAgentLimit(p.ownerId, p.id, p.max, p.name);
     // Archived projects (2026-11-09): their agents only read, from the first request on.
     for (const p of await core.projects.archived()) {
       core.registry.setProjectArchived(p.ownerId, p.id, true);
@@ -7190,6 +7197,34 @@ export class RedGiantCore implements OrchestrationHost {
           .map((x) => ({ id: x.id, name: x.name, kind: x.kind })),
         sessions: counts.get(a.id) ?? 0,
       }));
+  }
+
+  /** The registry learns the owner's projects' agent limits and names again (2026-11-18). */
+  private async syncAgentLimits(ownerId: string): Promise<void> {
+    for (const p of await this.projects.list(ownerId))
+      this.registry.setProjectAgentLimit(ownerId, p.id, p.maxAgents, p.name);
+  }
+
+  /**
+   * The person's agent limit for a project (2026-11-18, decision «Limite di sotto-agenti per
+   * progetto»): applied at once, nobody removed (only new agents wait until the team is under).
+   * Returns what it was, for the history and undo (`PlatformConfig.projectAgents`).
+   */
+  async setProjectAgents(
+    ownerId: string,
+    projectId: string,
+    max: number,
+  ): Promise<{ before: number; after: number; count: number }> {
+    const project = await this.projects.get(ownerId, projectId);
+    if (!project) throw new NotFoundError(`Project "${projectId}" not found`);
+    const after = ProjectMaxAgents.parse(max);
+    await this.projects.setMaxAgents(ownerId, projectId, after);
+    this.registry.setProjectAgentLimit(ownerId, projectId, after, project.name);
+    return {
+      before: project.maxAgents,
+      after,
+      count: this.registry.agentRoom(ownerId, projectId, 0).count,
+    };
   }
 
   /** An archived project back exactly as it was: its automations as they were, its sandboxes. */
