@@ -38,7 +38,7 @@ const files = [
   "CompactionSettings.tsx",
 ];
 // Words the app has already under its own names.
-const skip = new Set(["cancel", "save", "uiDetails", "wzDoneBtn"]);
+const skip = new Set(["cancel", "save"]);
 const wanted = new Set();
 for (const f of files) {
   const text = readFileSync(join(web, "components", f), "utf8");
@@ -74,6 +74,11 @@ for (const k of [
   "job_step_ocr_languages",
   "job_error_checksum",
   "job_error_pgvector_unavailable",
+  // The bar's words (ui.tsx `progressText`, `timeLeft`).
+  "uiOf",
+  "uiLessThanMinute",
+  "uiAboutMinutes",
+  "uiAboutHours",
 ])
   wanted.add(k);
 for (const lang of ["it", "en"])

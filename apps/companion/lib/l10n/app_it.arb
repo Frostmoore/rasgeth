@@ -2540,5 +2540,13 @@
   "knMemUndone": "Annullata",
   "knMemUsed": "Spazio usato: {used} caratteri su {limit}",
   "knMemWith": "con {name}",
-  "knSettings": "Impostazioni"
+  "knSettings": "Impostazioni",
+  "knUiAboutHours": "mancano circa {h} h {min} min",
+  "knUiAboutMinutes": "mancano circa {min} min",
+  "knUiLessThanMinute": "manca meno di un minuto",
+  "knUiOf": "{done} di {total}",
+  "knUiDetails": "Dettagli per chi ti aiuta",
+  "knWzDoneBtn": "Fatto",
+  "knHubKnowledge": "I tuoi documenti in cui gli agenti cercano: collezioni, fonti, modelli",
+  "knHubMemory": "Cosa sanno di te tutti gli agenti, ogni modifica annullabile"
 }

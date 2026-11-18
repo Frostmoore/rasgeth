@@ -100,9 +100,11 @@
       "note": "Native (G42.4): the tree at every level (open and close, projects, assigned, stopped, «Agent under»), the new agent with every step of the page's wizards and God's instructions and tools, assistants' services, routines and skills, the whole agent's settings (read only for an archived project); pause, resume, remove, «Removed agents» (3.8.9). A new routine has the four ready schedules (the full editor with G42.9); adding a service goes to Extensions (G42.11)."
     },
     "memory": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
+        "lib/settings/memory_screen.dart",
+        "lib/settings/knowledge_kit.dart",
+        "lib/settings/api/knowledge_api.dart",
         "lib/screens/agent_settings_screen.dart"
       ],
       "phase": "G42.10",
@@ -111,12 +113,15 @@
         169,
         170
       ],
-      "note": "An agent's own memory is in its settings; shared memory and automatic summaries only in «All settings»."
+      "note": "Native (G42.10): Settings › Shared memory (the two kinds side by side, learns by itself, add, edit, delete with undo, forget for good, where each came from, space used, the last changes undoable); an agent's own and its project's memory, the way to the shared one and the automatic summaries in its Memory tab."
     },
     "knowledge": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
+        "lib/settings/knowledge_screen.dart",
+        "lib/settings/knowledge_kit.dart",
+        "lib/settings/knowledge_cite.dart",
+        "lib/settings/api/knowledge_api.dart",
         "lib/screens/agent_settings_screen.dart"
       ],
       "phase": "G42.10",
@@ -130,7 +135,7 @@
         166,
         167
       ],
-      "note": "An agent's knowledge tab is native; the index, collections, sources and models only in «All settings»."
+      "note": "Native (G42.10): state of the index with its bar, why the search goes by words only, collections and who they are for, sources (folder, file, web page, project, mailbox, conversations; RedGiant's folders, files sent from the device, or a path), what was left out, try a search, embedding and rerank models with their download bar, cloud API, threads, OCR, disk, backup of the vectors, Rebuild, Pause; an agent's Knowledge tab with the page's choices; `#kb:` citations open in the app. Files dropped on a card (drag and drop) are not there yet."
     },
     "automations": {
       "app": "partial",

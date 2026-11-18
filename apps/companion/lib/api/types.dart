@@ -563,12 +563,24 @@ class AgentCollection {
     required this.on,
     this.own,
     this.chunks = 0,
+    this.scopeId,
   });
 
   factory AgentCollection.fromJson(Map<String, dynamic> j) => AgentCollection(
     id: _str(j['id']) ?? '',
     name: _str(j['name']) ?? '',
-    scope: _str(j['scope']) ?? 'global',
+    // The server sends `KnowledgeScope` ({kind: all | agent | project, agentId, projectId}).
+    scope: switch (j['scope']) {
+      {'kind': 'agent'} => 'agent',
+      {'kind': 'project'} => 'project',
+      final String s => s,
+      _ => 'global',
+    },
+    scopeId: switch (j['scope']) {
+      {'kind': 'agent', 'agentId': final String id} => id,
+      {'kind': 'project', 'projectId': final String id} => id,
+      _ => null,
+    },
     byScope: j['byScope'] == true,
     on: j['on'] == true,
     own: _str(j['own']),
@@ -580,6 +592,9 @@ class AgentCollection {
 
   /// global | agent | project.
   final String scope;
+
+  /// The agent's or the project's id the collection is for (G42.10).
+  final String? scopeId;
 
   /// Reachable by where it belongs alone.
   final bool byScope;

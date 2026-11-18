@@ -34,6 +34,9 @@ import 'first_start_screen.dart' show openExternal;
 import 'full_settings_screen.dart';
 import 'update_screen.dart';
 import 'you_screen.dart' show reachWord;
+// G42.10: Settings › Knowledge and Shared memory, native.
+import '../settings/knowledge_screen.dart' show openKnowledgeSettings;
+import '../settings/memory_screen.dart' show openSharedMemory;
 
 /// «12 MB of 340 MB · 2.1 MB/s · 2 min left», as the page says a download.
 String progressText(AppLocalizations l, Progress p) {
@@ -541,6 +544,23 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       l.csTitle,
                       l.csRowHint,
                       () => openCodeSettings(context),
+                    ),
+                    // G42.10: Knowledge and Shared memory, native.
+                    _hub(
+                      c,
+                      'knowledge',
+                      RgIcons.database,
+                      l.knKbSection,
+                      l.knHubKnowledge,
+                      () => openKnowledgeSettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'memory',
+                      RgIcons.bookmark,
+                      l.knMemEyebrow,
+                      l.knHubMemory,
+                      () => openSharedMemory(context),
                     ),
                   ],
                 ),

@@ -6789,5 +6789,40 @@
       }
     }
   },
-  "knSettings": "Settings"
+  "knSettings": "Settings",
+  "knUiAboutHours": "about {h} h {min} min left",
+  "@knUiAboutHours": {
+    "placeholders": {
+      "h": {
+        "type": "String"
+      },
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "knUiAboutMinutes": "about {min} min left",
+  "@knUiAboutMinutes": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "knUiLessThanMinute": "less than a minute left",
+  "knUiOf": "{done} of {total}",
+  "@knUiOf": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "knUiDetails": "Details for whoever helps you",
+  "knWzDoneBtn": "Done",
+  "knHubKnowledge": "Your documents the agents can search: collections, sources, models",
+  "knHubMemory": "What every agent knows about you, with every change undoable"
 }

@@ -13,6 +13,7 @@ import '../api/board.dart' show boardFromLink;
 import '../api/saved.dart';
 import '../l10n/app_localizations.dart';
 import '../screens/board_screen.dart' show openBoard;
+import '../settings/knowledge_cite.dart' show kbChunkOf, kbCiteTitle, openKbCitation;
 import '../theme/colors.dart';
 import 'citations.dart';
 import 'code_block.dart';
@@ -87,6 +88,12 @@ class SafeMarkdown extends StatelessWidget {
       await openBoard(context, sessionId: board.sessionId, proposalId: board.proposalId);
       return;
     }
+    // A citation of the person's documents (G42.10): where it points, here in the app.
+    final chunk = kbChunkOf(href);
+    if (chunk != null) {
+      await openKbCitation(context, chunk);
+      return;
+    }
     if (!openableLink(href)) return;
     final l = AppLocalizations.of(context);
     final ok = await askConfirm(context, title: l.linkOpenTitle, body: href!, yes: l.linkOpen);
@@ -102,7 +109,9 @@ class SafeMarkdown extends StatelessWidget {
     final marked = data.contains(markOpen);
     return MarkdownBody(
       // Sources as links once the answer is whole (the page's `renderAnswer`).
-      data: cursor ? withStreamCursor(data) : linkCitations(data),
+      data: cursor
+          ? withStreamCursor(data)
+          : linkCitations(data, kbTitle: (t) => kbCiteTitle(AppLocalizations.of(context), t)),
       // The cursor is a widget inside the text: an answer being written is not selectable yet.
       selectable: selectable && !cursor,
       extensionSet: safeExtensions,

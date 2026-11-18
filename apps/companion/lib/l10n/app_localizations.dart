@@ -62,8 +62,7 @@ import 'app_localizations_it.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -93,10 +91,7 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('en'),
-    Locale('it'),
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('it')];
 
   /// No description provided for @appTitle.
   ///
@@ -9606,12 +9601,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{done} of {total} · {speed}/s · {left} left'**
-  String chatFileDownloadOf(
-    String done,
-    String total,
-    String speed,
-    String left,
-  );
+  String chatFileDownloadOf(String done, String total, String speed, String left);
 
   /// No description provided for @chatFileDownloadSoFar.
   ///
@@ -15348,10 +15338,57 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get knSettings;
+
+  /// No description provided for @knUiAboutHours.
+  ///
+  /// In en, this message translates to:
+  /// **'about {h} h {min} min left'**
+  String knUiAboutHours(String h, String min);
+
+  /// No description provided for @knUiAboutMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'about {min} min left'**
+  String knUiAboutMinutes(String min);
+
+  /// No description provided for @knUiLessThanMinute.
+  ///
+  /// In en, this message translates to:
+  /// **'less than a minute left'**
+  String get knUiLessThanMinute;
+
+  /// No description provided for @knUiOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total}'**
+  String knUiOf(String done, String total);
+
+  /// No description provided for @knUiDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details for whoever helps you'**
+  String get knUiDetails;
+
+  /// No description provided for @knWzDoneBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get knWzDoneBtn;
+
+  /// No description provided for @knHubKnowledge.
+  ///
+  /// In en, this message translates to:
+  /// **'Your documents the agents can search: collections, sources, models'**
+  String get knHubKnowledge;
+
+  /// No description provided for @knHubMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'What every agent knows about you, with every change undoable'**
+  String get knHubMemory;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -15360,8 +15397,7 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'it'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'it'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
