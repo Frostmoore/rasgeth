@@ -1043,6 +1043,8 @@ const en = {
   officeRetry: "Try again",
   officeWhyBrowserApp:
     "On this system the app cannot run the full document editor inside the Canvas: «Open in the browser» in the bar above opens the file in Chrome, Edge or another Chromium browser, where it works.",
+  officeWhyWebglApp:
+    "On this system the app's web view has no WebGL in the background, which LibreOffice needs to draw the document: «Open in the browser» in the bar above opens the file on RedGiant's page, where the full editor runs.",
   officeVersions: "Versions",
   officeVersionsHint:
     "The last 5 versions of {name}, kept each time this copy wrote it again: save one to get it back",
@@ -7815,6 +7817,8 @@ const it: Record<Key, string> = {
   officeRetry: "Riprova",
   officeWhyBrowserApp:
     "Su questo sistema l'app non può far girare l'editor completo dei documenti dentro il Canvas: «Apri nel browser» nella barra qui sopra apre il file in Chrome, Edge o un altro browser Chromium, dove funziona.",
+  officeWhyWebglApp:
+    "Su questo sistema la vista web dell'app non ha il WebGL in sottofondo che serve a LibreOffice per disegnare il documento: «Apri nel browser» nella barra qui sopra apre il file nella pagina di RedGiant, dove l'editor completo funziona.",
   officeVersions: "Versioni",
   officeVersionsHint:
     "Le ultime 5 versioni di {name}, tenute ogni volta che questa copia l'ha riscritto: salvane una per riaverla",

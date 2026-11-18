@@ -719,6 +719,8 @@ const WHY: Record<
  */
 export function whyText(why: OfficeFallback, detail?: string): string {
   if (why === "browser" && embedded()) return t("officeWhyBrowserApp");
+  // WebKitGTK isolates the embed (G42.8) but has no WebGL in LibreOffice's workers.
+  if (why === "webgl" && embedded()) return t("officeWhyWebglApp");
   return t(WHY[why], { reason: detail ?? "" });
 }
 

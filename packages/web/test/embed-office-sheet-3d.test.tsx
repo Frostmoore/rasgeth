@@ -369,6 +369,19 @@ describe("the full document editor coming down (fake clock)", () => {
   });
 });
 
+describe("the app's theme reaches the editors (G42.8)", () => {
+  it("the page's theme signal follows the app, and nothing is saved", async () => {
+    const { applyEmbedLook } = await import("../src/components/Embed.js");
+    const { theme } = await import("../src/theme.js");
+    applyEmbedLook({ theme: "dark" });
+    expect(theme.value).toBe("dark");
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    applyEmbedLook({ theme: "light" });
+    expect(theme.value).toBe("light");
+    expect(localStorage.getItem("rg.theme")).toBeNull();
+  });
+});
+
 describe("why the full editor does not run, inside the app", () => {
   it("speaks of the app's web view and of «Apri nel browser», never of using Chrome", () => {
     expect(whyText("browser")).toContain("Chrome, Edge");
@@ -376,6 +389,10 @@ describe("why the full editor does not run, inside the app", () => {
     const said = whyText("browser");
     expect(said).toContain("l'app");
     expect(said).toContain("«Apri nel browser»");
-    expect(said).not.toBe(whyText("webgl"));
+    // WebKitGTK: isolated, but no WebGL in LibreOffice's workers (G42.8, the Linux app).
+    const webgl = whyText("webgl");
+    expect(webgl).toContain("vista web dell'app");
+    expect(webgl).toContain("«Apri nel browser»");
+    expect(webgl).not.toBe(said);
   });
 });

@@ -619,13 +619,13 @@
         304,
         305
       ],
-      "note": "The page's viewer and editor through embed=canvas inside the native frame. Documents and slides open the embed isolated as a whole (/embed-isolated.html, COOP/COEP): LibreOffice's frame has SharedArrayBuffer in WKWebView and WebKitGTK too (G42.8 probe), Chromium web views also through Document-Isolation-Policy. The engine comes down the first time with the page's bar (amounts, speed, time left, «Annulla», «Riprova») into the web view's storage (rg-zeta-*); Export as, PDF to print, the original's kept versions and Find/Replace through the page, their «Save as…» over the bridge. On a phone the pages as printed with Find and Replace (as the page). Where the engine still cannot start the page says why in the app's words and «Open in the browser» opens RedGiant's page with the file in its Canvas.",
+      "note": "The page's viewer and editor through embed=canvas inside the native frame. Documents and slides open the embed isolated as a whole (/embed-isolated.html, COOP/COEP): LibreOffice's frame has SharedArrayBuffer in WKWebView and WebKitGTK too (G42.8: Playwright WebKit and the Linux app), Chromium web views also through Document-Isolation-Policy. The engine comes down the first time with the page's bar (amounts, speed, time left, «Annulla», «Riprova») into the web view's storage (rg-zeta-*); Export as, PDF to print, the original's kept versions and Find/Replace through the page, their «Save as…» over the bridge. On a phone the pages as printed with Find and Replace (as the page). Where the engine still cannot start the page says why in the app's words and «Open in the browser» opens RedGiant's page with the file in its Canvas. Linux (WebKitGTK in the app): the embed is isolated but its workers have no WebGL, so LibreOffice does not start: the pages as printed with Find and Replace, and the page's sentence sends to «Open in the browser». macOS and iOS (WKWebView, WebGL in workers since Safari 17) to confirm on a device; a phone sees the pages as in the page.",
       "systems": {
         "android": "embed",
         "windows": "embed",
         "macos": "embed",
         "ios": "embed",
-        "linux": "embed"
+        "linux": "browser"
       }
     },
     "slides": {
@@ -643,13 +643,13 @@
         102,
         120
       ],
-      "note": "The page's viewer and editor through embed=canvas inside the native frame. Documents and slides open the embed isolated as a whole (/embed-isolated.html, COOP/COEP): LibreOffice's frame has SharedArrayBuffer in WKWebView and WebKitGTK too (G42.8 probe), Chromium web views also through Document-Isolation-Policy. The engine comes down the first time with the page's bar (amounts, speed, time left, «Annulla», «Riprova») into the web view's storage (rg-zeta-*); Export as, PDF to print, the original's kept versions and Find/Replace through the page, their «Save as…» over the bridge. On a phone the pages as printed with Find and Replace (as the page). Where the engine still cannot start the page says why in the app's words and «Open in the browser» opens RedGiant's page with the file in its Canvas.",
+      "note": "The page's viewer and editor through embed=canvas inside the native frame. Documents and slides open the embed isolated as a whole (/embed-isolated.html, COOP/COEP): LibreOffice's frame has SharedArrayBuffer in WKWebView and WebKitGTK too (G42.8: Playwright WebKit and the Linux app), Chromium web views also through Document-Isolation-Policy. The engine comes down the first time with the page's bar (amounts, speed, time left, «Annulla», «Riprova») into the web view's storage (rg-zeta-*); Export as, PDF to print, the original's kept versions and Find/Replace through the page, their «Save as…» over the bridge. On a phone the pages as printed with Find and Replace (as the page). Where the engine still cannot start the page says why in the app's words and «Open in the browser» opens RedGiant's page with the file in its Canvas. Linux (WebKitGTK in the app): the embed is isolated but its workers have no WebGL, so LibreOffice does not start: the pages as printed with Find and Replace, and the page's sentence sends to «Open in the browser». macOS and iOS (WKWebView, WebGL in workers since Safari 17) to confirm on a device; a phone sees the pages as in the page.",
       "systems": {
         "android": "embed",
         "windows": "embed",
         "macos": "embed",
         "ios": "embed",
-        "linux": "embed"
+        "linux": "browser"
       }
     },
     "model": {
