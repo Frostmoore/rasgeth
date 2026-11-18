@@ -1,0 +1,775 @@
+{
+    "OTIO_SCHEMA": "Timeline.1",
+    "metadata": {
+        "redgiant": {
+            "captions": {
+                "burnIn": true,
+                "language": "it",
+                "position": "top",
+                "segments": [
+                    {
+                        "end": 40,
+                        "id": "s1",
+                        "start": 0,
+                        "text": "Ciao"
+                    }
+                ],
+                "style": "bold"
+            },
+            "format": {
+                "aspect": "9:16",
+                "height": 1920,
+                "rate": {
+                    "den": 1,
+                    "num": 25
+                },
+                "width": 1080
+            },
+            "formatVersion": 1,
+            "name": "Prova",
+            "normalize": false
+        }
+    },
+    "name": "Prova",
+    "global_start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "rate": 25.0,
+        "value": 0.0
+    },
+    "tracks": {
+        "OTIO_SCHEMA": "Stack.1",
+        "metadata": {},
+        "name": "tracks",
+        "source_range": null,
+        "effects": [],
+        "markers": [
+            {
+                "OTIO_SCHEMA": "Marker.2",
+                "metadata": {
+                    "redgiant": {
+                        "id": "m1"
+                    }
+                },
+                "name": "qui",
+                "color": "RED",
+                "marked_range": {
+                    "OTIO_SCHEMA": "TimeRange.1",
+                    "duration": {
+                        "OTIO_SCHEMA": "RationalTime.1",
+                        "rate": 25.0,
+                        "value": 0.0
+                    },
+                    "start_time": {
+                        "OTIO_SCHEMA": "RationalTime.1",
+                        "rate": 25.0,
+                        "value": 12.0
+                    }
+                },
+                "comment": ""
+            },
+            {
+                "OTIO_SCHEMA": "Marker.2",
+                "metadata": {
+                    "redgiant": {
+                        "id": "m2"
+                    }
+                },
+                "name": "",
+                "color": "GREEN",
+                "marked_range": {
+                    "OTIO_SCHEMA": "TimeRange.1",
+                    "duration": {
+                        "OTIO_SCHEMA": "RationalTime.1",
+                        "rate": 25.0,
+                        "value": 10.0
+                    },
+                    "start_time": {
+                        "OTIO_SCHEMA": "RationalTime.1",
+                        "rate": 25.0,
+                        "value": 40.0
+                    }
+                },
+                "comment": ""
+            }
+        ],
+        "enabled": true,
+        "color": null,
+        "children": [
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "hidden": false,
+                            "id": "V1",
+                            "kind": "Video",
+                            "locked": false,
+                            "name": "A"
+                        }
+                    }
+                },
+                "name": "A",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 5,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c1",
+                                    "link": "g1",
+                                    "ref": {
+                                        "frames": 500,
+                                        "media": "riprese/a.mp4"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 100,
+                                        "start": 25
+                                    },
+                                    "start": 0,
+                                    "track": "V1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "a.mp4",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 100.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 900025.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 500.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 900000.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/E%3a/Video/a.mp4"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Transition.1",
+                        "metadata": {
+                            "redgiant": {
+                                "transition": {
+                                    "from": "c1",
+                                    "id": "x1",
+                                    "inOffset": 10,
+                                    "kind": "dissolve",
+                                    "outOffset": 10,
+                                    "to": "c2",
+                                    "track": "V1"
+                                }
+                            }
+                        },
+                        "name": "",
+                        "in_offset": {
+                            "OTIO_SCHEMA": "RationalTime.1",
+                            "rate": 25.0,
+                            "value": 10.0
+                        },
+                        "out_offset": {
+                            "OTIO_SCHEMA": "RationalTime.1",
+                            "rate": 25.0,
+                            "value": 10.0
+                        },
+                        "transition_type": "SMPTE_Dissolve"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "background": "blur",
+                                    "crop": {
+                                        "h": 1,
+                                        "w": 0.3,
+                                        "x": 0.2,
+                                        "y": 0
+                                    },
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fit",
+                                    "id": "c2",
+                                    "ref": {
+                                        "frames": 300,
+                                        "media": "riprese/b.mov"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 50,
+                                        "start": 0
+                                    },
+                                    "start": 100,
+                                    "track": "V1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "b.mov",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 50.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 300.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 0.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/E%3a/Video/b.mov"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Transition.1",
+                        "metadata": {
+                            "redgiant": {
+                                "transition": {
+                                    "from": "c2",
+                                    "id": "x2",
+                                    "inOffset": 5,
+                                    "kind": "wipe_left",
+                                    "outOffset": 0,
+                                    "to": "k1",
+                                    "track": "V1"
+                                }
+                            }
+                        },
+                        "name": "",
+                        "in_offset": {
+                            "OTIO_SCHEMA": "RationalTime.1",
+                            "rate": 25.0,
+                            "value": 5.0
+                        },
+                        "out_offset": {
+                            "OTIO_SCHEMA": "RationalTime.1",
+                            "rate": 25.0,
+                            "value": 0.0
+                        },
+                        "transition_type": "Custom_Transition"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "k1",
+                                    "ref": {
+                                        "color": "#000000",
+                                        "generator": "color"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 25,
+                                        "start": 0
+                                    },
+                                    "start": 150,
+                                    "track": "V1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "#000000",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 25.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "GeneratorReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": null,
+                                "available_image_bounds": null,
+                                "generator_kind": "SolidColor",
+                                "parameters": {
+                                    "color": "#000000"
+                                }
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Video"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "hidden": true,
+                            "id": "V2",
+                            "kind": "Video",
+                            "locked": true,
+                            "name": "B"
+                        }
+                    }
+                },
+                "name": "B",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": false,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Gap.1",
+                        "metadata": {},
+                        "name": "",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 30.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": false,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c3",
+                                    "kenBurns": {
+                                        "from": {
+                                            "h": 1,
+                                            "w": 1,
+                                            "x": 0,
+                                            "y": 0
+                                        },
+                                        "to": {
+                                            "h": 0.5,
+                                            "w": 0.5,
+                                            "x": 0.25,
+                                            "y": 0.25
+                                        }
+                                    },
+                                    "ref": {
+                                        "media": "foto.jpg",
+                                        "still": true
+                                    },
+                                    "sourceRange": {
+                                        "duration": 75,
+                                        "start": 0
+                                    },
+                                    "start": 30,
+                                    "track": "V2",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "foto.jpg",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 75.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": false,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 90000.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 0.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/E%3a/Video/foto.jpg"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Gap.1",
+                        "metadata": {},
+                        "name": "",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 95.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "t1",
+                                    "ref": {
+                                        "generator": "text",
+                                        "position": "bottom",
+                                        "style": "lower_third",
+                                        "text": "Fine"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 50,
+                                        "start": 0
+                                    },
+                                    "start": 200,
+                                    "track": "V2",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "Fine",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 50.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "GeneratorReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": null,
+                                "available_image_bounds": null,
+                                "generator_kind": "RedGiantText",
+                                "parameters": {
+                                    "position": "bottom",
+                                    "style": "lower_third",
+                                    "text": "Fine"
+                                }
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Video"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "id": "A1",
+                            "kind": "Audio",
+                            "locked": false,
+                            "muted": false,
+                            "name": "A"
+                        }
+                    }
+                },
+                "name": "A",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c4",
+                                    "link": "g1",
+                                    "ref": {
+                                        "frames": 500,
+                                        "media": "riprese/a.mp4"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 100,
+                                        "start": 25
+                                    },
+                                    "start": 0,
+                                    "track": "A1",
+                                    "volume": -3.5
+                                }
+                            }
+                        },
+                        "name": "a.mp4",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 100.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 900025.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 500.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 900000.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/E%3a/Video/a.mp4"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Audio"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "duck": {
+                                "amountDb": -12,
+                                "attackMs": 200,
+                                "releaseMs": 600,
+                                "under": [
+                                    "A1"
+                                ]
+                            },
+                            "id": "A3",
+                            "kind": "Audio",
+                            "locked": false,
+                            "muted": true,
+                            "name": "Musica"
+                        }
+                    }
+                },
+                "name": "Musica",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": false,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c5",
+                                    "metadata": {
+                                        "note": "base"
+                                    },
+                                    "ref": {
+                                        "audio": true,
+                                        "frames": 9000,
+                                        "media": "musica.mp3"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 250,
+                                        "start": 0
+                                    },
+                                    "start": 0,
+                                    "track": "A3",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "musica.mp3",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 250.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 9000.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 0.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/E%3a/Video/musica.mp3"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Audio"
+            }
+        ]
+    }
+}

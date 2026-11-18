@@ -354,7 +354,9 @@ export function fcp7Xml(job: ResolveJob): string {
     const item = byUrl.get(pathurl);
     if (!item) continue;
     const nameEl = find(f, "name");
-    if (nameEl) nameEl.text = xmlSafe(item.name) || pyUnquote(baseName(pathurl)) || undefined;
+    const shown = xmlSafe(item.name) || pyUnquote(baseName(pathurl));
+    if (nameEl && shown) nameEl.text = shown;
+    else if (nameEl) delete nameEl.text;
     const tc = find(f, "timecode");
     if (item.timecode && tc) {
       (find(tc, "string") as El).text = item.timecode;

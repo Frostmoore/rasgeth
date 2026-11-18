@@ -60,6 +60,7 @@ export * from "./video-analysis.js";
 export * from "./video-assemble.js";
 export * from "./video-broll.js";
 export * from "./video-frame.js";
+export * from "./video-otio.js";
 export * from "./video-patch.js";
 export * from "./video-resolve.js";
 export * from "./video-text.js";

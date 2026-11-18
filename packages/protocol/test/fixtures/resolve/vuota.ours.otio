@@ -1,0 +1,87 @@
+{
+    "OTIO_SCHEMA": "Timeline.1",
+    "metadata": {
+        "redgiant": {
+            "captions": {
+                "burnIn": false,
+                "language": "",
+                "position": "bottom",
+                "segments": [],
+                "style": "boxed"
+            },
+            "format": {
+                "aspect": "16:9",
+                "height": 720,
+                "rate": {
+                    "den": 1,
+                    "num": 30
+                },
+                "width": 1280
+            },
+            "formatVersion": 1,
+            "name": "Vuota"
+        }
+    },
+    "name": "Vuota",
+    "global_start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "rate": 30.0,
+        "value": 0.0
+    },
+    "tracks": {
+        "OTIO_SCHEMA": "Stack.1",
+        "metadata": {},
+        "name": "tracks",
+        "source_range": null,
+        "effects": [],
+        "markers": [],
+        "enabled": true,
+        "color": null,
+        "children": [
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "hidden": false,
+                            "id": "V1",
+                            "kind": "Video",
+                            "locked": false,
+                            "name": "V1"
+                        }
+                    }
+                },
+                "name": "V1",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [],
+                "kind": "Video"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "id": "A1",
+                            "kind": "Audio",
+                            "locked": false,
+                            "muted": false,
+                            "name": "A1"
+                        }
+                    }
+                },
+                "name": "A1",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [],
+                "kind": "Audio"
+            }
+        ]
+    }
+}

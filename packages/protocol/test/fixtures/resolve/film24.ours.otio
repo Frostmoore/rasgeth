@@ -1,0 +1,436 @@
+{
+    "OTIO_SCHEMA": "Timeline.1",
+    "metadata": {
+        "redgiant": {
+            "captions": {
+                "burnIn": false,
+                "language": "",
+                "position": "bottom",
+                "segments": [],
+                "style": "boxed"
+            },
+            "format": {
+                "aspect": "16:9",
+                "height": 1716,
+                "rate": {
+                    "den": 1001,
+                    "num": 24000
+                },
+                "width": 4096
+            },
+            "formatVersion": 1,
+            "name": "Film"
+        }
+    },
+    "name": "Film",
+    "global_start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "rate": 23.976023976023978,
+        "value": 0.0
+    },
+    "tracks": {
+        "OTIO_SCHEMA": "Stack.1",
+        "metadata": {},
+        "name": "tracks",
+        "source_range": null,
+        "effects": [],
+        "markers": [],
+        "enabled": true,
+        "color": null,
+        "children": [
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "hidden": false,
+                            "id": "V1",
+                            "kind": "Video",
+                            "locked": false,
+                            "name": "V1"
+                        }
+                    }
+                },
+                "name": "V1",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c1",
+                                    "ref": {
+                                        "media": "1"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 2400,
+                                        "start": 1000
+                                    },
+                                    "start": 0,
+                                    "track": "V1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "R01.mov",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 23.976023976023978,
+                                "value": 2400.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 23.976023976023978,
+                                "value": 87400.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 23.976023976023978,
+                                        "value": 20000.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 23.976023976023978,
+                                        "value": 86400.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/D%3a/Film/rulli/R01.mov"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c2",
+                                    "ref": {
+                                        "media": "2"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 100,
+                                        "start": 0
+                                    },
+                                    "start": 2400,
+                                    "track": "V1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "R02.mov",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 23.976023976023978,
+                                "value": 100.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 23.976023976023978,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 23.976023976023978,
+                                        "value": 20000.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 23.976023976023978,
+                                        "value": 0.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/D%3a/Film/rulli/R02.mov"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Gap.1",
+                        "metadata": {},
+                        "name": "",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 23.976023976023978,
+                                "value": 100.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 23.976023976023978,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c3",
+                                    "ref": {
+                                        "media": "3"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 999,
+                                        "start": 19000
+                                    },
+                                    "start": 2600,
+                                    "track": "V1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "R03.mov",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 23.976023976023978,
+                                "value": 999.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 23.976023976023978,
+                                "value": 19000.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 23.976023976023978,
+                                        "value": 20000.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 23.976023976023978,
+                                        "value": 0.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/D%3a/Film/rulli/R03.mov"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Video"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "id": "A1",
+                            "kind": "Audio",
+                            "locked": false,
+                            "muted": false,
+                            "name": "A1"
+                        }
+                    }
+                },
+                "name": "A1",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c4",
+                                    "ref": {
+                                        "media": "1"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 2400,
+                                        "start": 1000
+                                    },
+                                    "start": 0,
+                                    "track": "A1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "R01.mov",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 23.976023976023978,
+                                "value": 2400.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 23.976023976023978,
+                                "value": 87400.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 23.976023976023978,
+                                        "value": 20000.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 23.976023976023978,
+                                        "value": 86400.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/D%3a/Film/rulli/R01.mov"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c5",
+                                    "ref": {
+                                        "media": "2"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 100,
+                                        "start": 0
+                                    },
+                                    "start": 2400,
+                                    "track": "A1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "R02.mov",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 23.976023976023978,
+                                "value": 100.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 23.976023976023978,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 23.976023976023978,
+                                        "value": 20000.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 23.976023976023978,
+                                        "value": 0.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/D%3a/Film/rulli/R02.mov"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Audio"
+            }
+        ]
+    }
+}

@@ -1,0 +1,699 @@
+{
+    "OTIO_SCHEMA": "Timeline.1",
+    "metadata": {
+        "redgiant": {
+            "captions": {
+                "burnIn": false,
+                "language": "",
+                "position": "bottom",
+                "segments": [],
+                "style": "boxed"
+            },
+            "format": {
+                "aspect": "16:9",
+                "height": 2160,
+                "rate": {
+                    "den": 1001,
+                    "num": 60000
+                },
+                "width": 3840
+            },
+            "formatVersion": 1,
+            "name": "Prova \"59,94\" è"
+        }
+    },
+    "name": "Prova \"59,94\" è",
+    "global_start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "rate": 59.94005994005994,
+        "value": 0.0
+    },
+    "tracks": {
+        "OTIO_SCHEMA": "Stack.1",
+        "metadata": {},
+        "name": "tracks",
+        "source_range": null,
+        "effects": [],
+        "markers": [],
+        "enabled": true,
+        "color": null,
+        "children": [
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "hidden": false,
+                            "id": "V1",
+                            "kind": "Video",
+                            "locked": false,
+                            "name": "V1"
+                        }
+                    }
+                },
+                "name": "V1",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c1",
+                                    "ref": {
+                                        "media": "a"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 600,
+                                        "start": 0
+                                    },
+                                    "start": 0,
+                                    "track": "V1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "scena #1 50%?.mp4",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 600.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 215752.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 3000.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 215752.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/srv/riprese/scena%20%231%2050%25%3F.mp4"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c2",
+                                    "ref": {
+                                        "media": "b"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 300,
+                                        "start": 120
+                                    },
+                                    "start": 600,
+                                    "track": "V1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "Ripresa é ü.mov",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 300.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 2637323.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 900.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 2637203.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://nas/video/Ripresa%20%C3%A9%20%C3%BC.mov"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c3",
+                                    "ref": {
+                                        "media": "c"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 10,
+                                        "start": 5
+                                    },
+                                    "start": 900,
+                                    "track": "V1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "così.mp4",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 10.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 223389.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 600.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 223384.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file:///già/così.mp4"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Video"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "hidden": false,
+                            "id": "V2",
+                            "kind": "Video",
+                            "locked": false,
+                            "name": "V2"
+                        }
+                    }
+                },
+                "name": "V2",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Gap.1",
+                        "metadata": {},
+                        "name": "",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 100.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c4",
+                                    "ref": {
+                                        "media": "a"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 600,
+                                        "start": 0
+                                    },
+                                    "start": 100,
+                                    "track": "V2",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "scena #1 50%?.mp4",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 600.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 215752.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 3000.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 215752.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/srv/riprese/scena%20%231%2050%25%3F.mp4"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Video"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "id": "A1",
+                            "kind": "Audio",
+                            "locked": false,
+                            "muted": false,
+                            "name": "A1"
+                        }
+                    }
+                },
+                "name": "A1",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c5",
+                                    "ref": {
+                                        "media": "a"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 600,
+                                        "start": 0
+                                    },
+                                    "start": 0,
+                                    "track": "A1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "scena #1 50%?.mp4",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 600.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 215752.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 3000.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 215752.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/srv/riprese/scena%20%231%2050%25%3F.mp4"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c6",
+                                    "ref": {
+                                        "media": "b"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 300,
+                                        "start": 120
+                                    },
+                                    "start": 600,
+                                    "track": "A1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "Ripresa é ü.mov",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 300.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 2637323.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 900.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 2637203.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://nas/video/Ripresa%20%C3%A9%20%C3%BC.mov"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c7",
+                                    "ref": {
+                                        "media": "c"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 10,
+                                        "start": 5
+                                    },
+                                    "start": 900,
+                                    "track": "A1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "così.mp4",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 10.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 223389.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 600.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 223384.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file:///già/così.mp4"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Audio"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "id": "A2",
+                            "kind": "Audio",
+                            "locked": false,
+                            "muted": false,
+                            "name": "A2"
+                        }
+                    }
+                },
+                "name": "A2",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Gap.1",
+                        "metadata": {},
+                        "name": "",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 100.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": false,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c8",
+                                    "ref": {
+                                        "media": "a"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 600,
+                                        "start": 0
+                                    },
+                                    "start": 100,
+                                    "track": "A2",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "scena #1 50%?.mp4",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 600.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 59.94005994005994,
+                                "value": 215752.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": false,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 3000.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 59.94005994005994,
+                                        "value": 215752.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/srv/riprese/scena%20%231%2050%25%3F.mp4"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Audio"
+            }
+        ]
+    }
+}
