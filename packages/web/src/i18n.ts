@@ -2475,6 +2475,15 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news390Name: "RedGiant is now called Rasgeth",
+  news390NameText:
+    "Only the name changes: your agents, conversations, projects and data are the same. It is read «rahs-get», with a hard g, and comes from Rasalgethi, a red giant star. The site is rasgeth.it.",
+  news390Look: "A new icon everywhere",
+  news390LookText:
+    "The crowned red giant in the night sky is the icon of the program, the app, the installers and the site, at every size, with its own silhouettes for the taskbar, the menu bar and notifications.",
+  news390Install: "A clean install, once",
+  news390InstallText:
+    "Program, app and file names change, so this version is installed from scratch: the guide makes a backup first and checks it. On the phone the app is a new app called Rasgeth: remove RGCompanion and sign in again.",
   news3814Editors: "Every editor in the app's Canvas",
   news3814EditorsText:
     "Text and code, PDF, SVG, images, sheets, documents, presentations and 3D models now open in the app's Canvas with the page's editors: the saving state in the app's bar, «Ask the agent» from a selection, paste an image, «Save as…» for exports, read only for archived projects.",
@@ -9297,6 +9306,15 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news390Name: "RedGiant ora si chiama Rasgeth",
+  news390NameText:
+    "Cambia solo il nome: agenti, conversazioni, progetti e dati restano gli stessi. Si legge «ràs-ghet», con la g dura, e viene da Rasalgethi, una stella gigante rossa. Il sito è rasgeth.it.",
+  news390Look: "Un'icona nuova dappertutto",
+  news390LookText:
+    "La gigante rossa coronata nel cielo notturno è l'icona del programma, dell'app, degli installer e del sito, a ogni misura, con le sue silhouette per la barra delle applicazioni, la barra dei menu e le notifiche.",
+  news390Install: "Un'installazione pulita, una volta",
+  news390InstallText:
+    "Cambiano i nomi di programma, app e file, quindi questa versione si installa da zero: la procedura fa prima il backup e lo controlla. Sul telefono l'app è un'app nuova che si chiama Rasgeth: togli RGCompanion e rifai l'accesso.",
   news3814Editors: "Tutti gli editor nel Canvas dell'app",
   news3814EditorsText:
     "Testo e codice, PDF, SVG, immagini, fogli, documenti, presentazioni e modelli 3D si aprono adesso nel Canvas dell'app con gli editor della pagina: stato del salvataggio nella barra dell'app, «Chiedi all'agente» da una selezione, incolla un'immagine, «Salva come…» per gli export, sola lettura per i progetti archiviati.",

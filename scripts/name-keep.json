@@ -339,5 +339,10 @@
     "pattern": "rgcompanion-(?:linux|android)-build",
     "group": "internal",
     "why": "the local Docker images that build the app (tool/*.Dockerfile): seen only by whoever builds it, named in files so the nightly cleanup keeps them"
+  },
+  {
+    "path": "packaging/release-kind.json",
+    "group": "rename",
+    "why": "the 3.9.0 breaking note tells a 3.8.x install that RedGiant is now called Rasgeth"
   }
 ]
