@@ -1,7 +1,9 @@
 // An agent's instructions (its system prompt) from the app (3.8.1), as the page's PromptEditor:
 // the text in use, its own or the built-in one as a starting point, with the agents' names as
 // they are now; Save, «Restore the built-in ones», and «Improve the instructions» (the page's
-// PromptRefiner: an estimate first, then a revised text that only fills the field). God's and
+// PromptRefiner, native in lib/settings/prompt_refiner.dart since G42.4: the writer model, an
+// estimate, the before and after with the differences lit, a revised text that only fills the
+// field). God's and
 // every agent's through `/api/agents/:id/prompt`, the Chat's through `/api/chat/prompt`. A
 // conversation keeps the instructions it started with (the prompt prefix stays stable): new
 // ones apply to new conversations, and the screen says so.
@@ -11,6 +13,8 @@ import '../api/client.dart';
 import '../api/types.dart';
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
+import '../settings/api/general_api.dart' show RefineAgent, RefineChat;
+import '../settings/prompt_refiner.dart';
 import '../theme/colors.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
@@ -18,18 +22,6 @@ import '../ui/icons.dart';
 Future<void> openInstructions(BuildContext context, Agent agent) => Navigator.of(context).push(
   MaterialPageRoute<void>(fullscreenDialog: true, builder: (_) => InstructionsScreen(agent: agent)),
 );
-
-/// «about 3,200 tokens, less than a cent», as the page's `costWords`.
-String costWords(AppLocalizations l, RefineCost c) {
-  final tokens = c.tokens < 1000 ? '${c.tokens}' : '${(c.tokens / 100).round() * 100}';
-  final usd = c.usd;
-  final cost = usd == null
-      ? l.refineFree
-      : usd < .01
-      ? l.refineCostTiny
-      : l.refineCost('\$${usd.toStringAsFixed(2)}');
-  return l.refineCostLine(tokens, cost);
-}
 
 class InstructionsScreen extends StatefulWidget {
   const InstructionsScreen({super.key, required this.agent});
@@ -42,14 +34,9 @@ class InstructionsScreen extends StatefulWidget {
 
 class _InstructionsScreenState extends State<InstructionsScreen> {
   final _text = TextEditingController();
-  final _wish = TextEditingController();
   PromptView? _view;
   String? _note;
   bool _noteBad = false;
-  bool _refining = false;
-  bool _refineOpen = false;
-  String? _estimate;
-  ({String text, String changes, RefineCost cost})? _result;
 
   late final AppController app = AppScope.read(context);
 
@@ -66,7 +53,6 @@ class _InstructionsScreenState extends State<InstructionsScreen> {
   @override
   void dispose() {
     _text.dispose();
-    _wish.dispose();
     super.dispose();
   }
 
@@ -102,52 +88,6 @@ class _InstructionsScreenState extends State<InstructionsScreen> {
       });
     } on ApiException catch (e) {
       if (mounted) setState(() => _say(l.promptSaveFailed(e.message), bad: true));
-    }
-  }
-
-  String get _lang => Localizations.localeOf(context).languageCode == 'en' ? 'en' : 'it';
-
-  Future<void> _openRefine() async {
-    final l = AppLocalizations.of(context);
-    setState(() {
-      _refineOpen = true;
-      _estimate = null;
-    });
-    try {
-      final e = await app.client!.refineEstimate(agentId: _id, text: _text.text, lang: _lang);
-      if (mounted) setState(() => _estimate = l.refineEstimate(costWords(l, e)));
-    } on ApiException {
-      if (mounted) setState(() => _estimate = l.refineNoEstimate);
-    }
-  }
-
-  String _refineError(AppLocalizations l, ApiException e) => switch (e.code) {
-    'budget' => l.refineErr_budget,
-    'no_model' => l.refineErr_no_model,
-    'no_answer' => l.refineErr_no_answer,
-    'removed_parts' => l.refineErr_removed_parts,
-    _ => e.message,
-  };
-
-  Future<void> _refine() async {
-    final l = AppLocalizations.of(context);
-    setState(() {
-      _refining = true;
-      _result = null;
-      _say(null);
-    });
-    try {
-      final r = await app.client!.refine(
-        agentId: _id,
-        text: _text.text,
-        request: _wish.text.trim(),
-        lang: _lang,
-      );
-      if (mounted) setState(() => _result = r);
-    } on ApiException catch (e) {
-      if (mounted) setState(() => _say(_refineError(l, e), bad: true));
-    } finally {
-      if (mounted) setState(() => _refining = false);
     }
   }
 
@@ -251,16 +191,14 @@ class _InstructionsScreenState extends State<InstructionsScreen> {
                           ],
                         ),
                         const SizedBox(height: 14),
-                        if (!_refineOpen)
-                          OutlinedButton.icon(
-                            key: const Key('refine-open'),
-                            style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(46)),
-                            onPressed: _openRefine,
-                            icon: RgIcon(RgIcons.edit, size: 18, color: c.text),
-                            label: Text(l.refineOpen),
-                          )
-                        else
-                          _refineBox(l, c),
+                        PromptRefiner(
+                          target: _id == null ? const RefineChat() : RefineAgent(_id!),
+                          text: _text.text,
+                          onUse: (t) => setState(() {
+                            _text.text = t;
+                            _say(null);
+                          }),
+                        ),
                       ],
                     ),
             ),
@@ -287,90 +225,6 @@ class _InstructionsScreenState extends State<InstructionsScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _refineBox(AppLocalizations l, RgColors c) {
-    final r = _result;
-    return Container(
-      key: const Key('refine-box'),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: c.panel,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: c.line),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 8,
-        children: [
-          Text(
-            l.refineOpen,
-            style: TextStyle(fontWeight: FontWeight.w800, color: c.text),
-          ),
-          Text(l.refineLead, style: TextStyle(color: c.dim, fontSize: 12.5)),
-          TextField(
-            key: const Key('refine-wish'),
-            controller: _wish,
-            minLines: 1,
-            maxLines: 4,
-            decoration: InputDecoration(
-              labelText: l.refineWish,
-              hintText: l.refineWishPlaceholder,
-              hintMaxLines: 3,
-            ),
-          ),
-          if (_estimate != null)
-            Text(
-              _estimate!,
-              key: const Key('refine-estimate'),
-              style: TextStyle(color: c.dim, fontSize: 12.5),
-            ),
-          if (r == null)
-            FilledButton(
-              key: const Key('refine-go'),
-              onPressed: _refining ? null : _refine,
-              child: Text(_refining ? l.refineWorking : l.refineGo),
-            )
-          else ...[
-            Text(
-              l.refineChanges,
-              style: TextStyle(fontWeight: FontWeight.w700, color: c.text),
-            ),
-            Text(
-              r.text.trim() == _text.text.trim() ? l.refineSame : r.changes,
-              key: const Key('refine-changes'),
-              style: TextStyle(color: c.text),
-            ),
-            Text(
-              l.refineSpent(costWords(l, r.cost)),
-              style: TextStyle(color: c.dim, fontSize: 12.5),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton(
-                    key: const Key('refine-use'),
-                    onPressed: () => setState(() {
-                      _text.text = r.text;
-                      _result = null;
-                      _refineOpen = false;
-                      _say(l.refineUsed);
-                    }),
-                    child: Text(l.refineUse),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                OutlinedButton(
-                  key: const Key('refine-retry'),
-                  onPressed: _refine,
-                  child: Text(l.refineRetry),
-                ),
-              ],
-            ),
-          ],
-        ],
       ),
     );
   }

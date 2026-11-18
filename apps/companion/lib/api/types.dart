@@ -287,6 +287,9 @@ class Agent {
     this.compactAt,
     this.compactKeep,
     this.projects = const [],
+    this.status = 'active',
+    this.connections = const [],
+    this.skills,
     this.subprojectId,
   });
 
@@ -311,6 +314,17 @@ class Agent {
         for (final p in (j['projects'] as List?) ?? const <Object?>[])
           if (p is String) p,
       ],
+      status: _str(j['status']) ?? 'active',
+      connections: [
+        for (final p in (j['connections'] as List?) ?? const <Object?>[])
+          if (p is String) p,
+      ],
+      skills: j['skills'] is List
+          ? [
+              for (final p in j['skills'] as List)
+                if (p is String) p,
+            ]
+          : null,
       subprojectId: _str(j['subprojectId']),
     );
   }
@@ -342,7 +356,16 @@ class Agent {
   /// Other projects it is assigned to (agents and personal agents only).
   final List<String> projects;
 
-  /// The subproject it works in (G24.13): its files open on that folder.
+  /// The server's `status`: active | stopped | removed.
+  final String status;
+
+  /// A personal assistant's services (MCP servers by name, G24.11).
+  final List<String> connections;
+
+  /// The skills it uses (null: every skill, new ones too; G24.14c).
+  final List<String>? skills;
+
+  /// Where in its project it works (a subproject), if not the whole project.
   final String? subprojectId;
 
   Agent withModel(AgentModel? m) => Agent(
@@ -360,6 +383,9 @@ class Agent {
     compactAt: compactAt,
     compactKeep: compactKeep,
     projects: projects,
+    status: status,
+    connections: connections,
+    skills: skills,
     subprojectId: subprojectId,
   );
 }

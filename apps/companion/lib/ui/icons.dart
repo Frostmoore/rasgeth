@@ -158,6 +158,8 @@ enum RgIcons {
   board('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h6"/>'),
   // G42.3: a project's inspector (the page's IconEye).
   eye('<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>'),
+  // G42.4: budgets (the page's IconDollar).
+  dollar('<path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'),
   // 3.8.10: a turn waiting for a place (the page's IconClock).
   clock('<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>'),
   // G42.5: the page's IconBox (a project, a subproject), IconCloud (GitHub), IconKeyboard (the

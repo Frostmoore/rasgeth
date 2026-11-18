@@ -105,7 +105,7 @@ void main() {
       }
       nav.pop();
       await frames(t, 800);
-      nav.push(MaterialPageRoute<void>(builder: (_) => const AtWorkScreen())).ignore();
+      nav.push(MaterialPageRoute<void>(builder: (_) => const CommandsScreen())).ignore();
       await shot(t, 'g3810-$p-$theme-4-impostazione', wait: 2500);
       nav.pop();
       await frames(t, 800);

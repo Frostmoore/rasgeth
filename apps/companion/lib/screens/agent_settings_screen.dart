@@ -17,6 +17,9 @@ import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../l10n/tool_words.g.dart';
 import '../mascot/mascot_view.dart';
+import '../settings/agents/add_agent_under.dart' show openAddUnder;
+import '../settings/agents/agent_tree.dart' show canAddUnder;
+import '../settings/agents/assistant_parts.dart';
 import '../theme/colors.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
@@ -25,7 +28,7 @@ import '../ui/remove_agent.dart';
 import '../ui/settings_kit.dart';
 import 'instructions_screen.dart';
 import 'new_agent_screen.dart' show RgSwitch;
-import 'team_screen.dart' show AgentModelRow;
+import 'team_screen.dart' show AgentModelRow, openAgentConversation;
 
 /// Opens [a]'s settings: a panel over the window on a computer, a whole screen on a phone.
 Future<void> openAgentSettings(BuildContext context, Agent a) {
@@ -51,12 +54,23 @@ Future<void> openAgentSettings(BuildContext context, Agent a) {
   );
 }
 
-enum AgentGroup { general, work, memory, limits, tools, knowledge }
+enum AgentGroup { general, assistant, work, memory, limits, tools, knowledge }
 
-/// The groups [a] has (as the page's tabs: Demi-God keeps no memory nor knowledge).
-List<AgentGroup> groupsOf(Agent a) => a.kind == AgentKind.demigod
-    ? const [AgentGroup.general, AgentGroup.work, AgentGroup.limits, AgentGroup.tools]
-    : AgentGroup.values;
+/// The groups [a] has (as the page's tabs: Demi-God keeps no memory nor knowledge; a personal
+/// assistant has its services, routines and skills, as the page's AssistantPage).
+List<AgentGroup> groupsOf(Agent a) => switch (a.kind) {
+  AgentKind.demigod => const [
+    AgentGroup.general,
+    AgentGroup.work,
+    AgentGroup.limits,
+    AgentGroup.tools,
+  ],
+  AgentKind.assistant => AgentGroup.values,
+  _ => [
+    for (final g in AgentGroup.values)
+      if (g != AgentGroup.assistant) g,
+  ],
+};
 
 class AgentSettingsScreen extends StatefulWidget {
   const AgentSettingsScreen({
@@ -98,10 +112,13 @@ class _AgentSettingsScreenState extends State<AgentSettingsScreen> {
           selected: group,
           onSelect: (g) => setState(() => _group = g),
         );
-        final body = KeyedSubtree(
+        // An archived project's agent only reads (p3.5.3): every change waits for «Restore».
+        final readOnly = app.isAgentReadOnly(a);
+        final inner = KeyedSubtree(
           key: ValueKey('${a.id}-${group.name}'),
           child: switch (group) {
             AgentGroup.general => _General(agent: a),
+            AgentGroup.assistant => AssistantGroup(agent: a, readOnly: readOnly),
             AgentGroup.work => _Work(agent: a),
             AgentGroup.memory => _Memory(agent: a),
             AgentGroup.limits => _Limits(agent: a),
@@ -109,6 +126,15 @@ class _AgentSettingsScreenState extends State<AgentSettingsScreen> {
             AgentGroup.knowledge => _Knowledge(agent: a),
           },
         );
+        final body = readOnly
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  NoticeBanner(key: const Key('agent-settings-archived'), text: l.g4AgReadOnly),
+                  IgnorePointer(child: Opacity(opacity: .6, child: inner)),
+                ],
+              )
+            : inner;
         final list = ListView(
           key: const Key('agent-settings-list'),
           padding: const EdgeInsets.only(bottom: 28),
@@ -256,6 +282,7 @@ class _Tabs extends StatelessWidget {
     final c = RgColors.of(context);
     (RgIcons, String) of(AgentGroup g) => switch (g) {
       AgentGroup.general => (RgIcons.user, l.asGroupGeneral),
+      AgentGroup.assistant => (RgIcons.layers, l.g4AgGroupAssistant),
       AgentGroup.work => (RgIcons.zap, l.asGroupWork),
       AgentGroup.memory => (RgIcons.bookmark, l.asGroupMemory),
       AgentGroup.limits => (RgIcons.activity, l.asGroupLimits),
@@ -429,6 +456,21 @@ class _Choice<T> extends StatelessWidget {
 
 String _why(Object e) => e is ApiException ? e.message : '$e';
 
+Set<String> _bag(String s) => {
+  for (final m in RegExp(r'[\p{L}\p{N}]{3,}', unicode: true).allMatches(s.toLowerCase())) m[0]!,
+};
+
+/// Whether what an agent does changed enough to offer rewriting its instructions (G36.14, the
+/// page's `substantialChange`): fewer than half of the meaningful words in common.
+bool substantialChange(String before, String after) {
+  final a = _bag(before);
+  final b = _bag(after);
+  if (a.isEmpty && b.isEmpty) return false;
+  if (a.isEmpty || b.isEmpty) return true;
+  final common = a.where(b.contains).length;
+  return common / (a.length + b.length - common) < .5;
+}
+
 // ---- General: mascot, name, job, projects, stop ----
 
 class _General extends StatefulWidget {
@@ -445,6 +487,9 @@ class _GeneralState extends State<_General> {
   late final _role = TextEditingController(text: widget.agent.role ?? '');
   final _out = _Outcome();
   bool _busy = false;
+
+  /// A new job (G36.14): offer to have God rewrite its instructions.
+  bool _offer = false;
 
   @override
   void initState() {
@@ -482,6 +527,7 @@ class _GeneralState extends State<_General> {
     setState(() {
       _busy = false;
       why == null ? _out.ok(l.asSaved) : _out.fail(l.asRefused(why));
+      if (why == null && role.isNotEmpty && substantialChange(a.role ?? '', role)) _offer = true;
     });
   }
 
@@ -556,10 +602,74 @@ class _GeneralState extends State<_General> {
     final chat = app.isChat(a);
     final assignable = a.kind == AgentKind.agent || a.kind == AgentKind.assistant;
     final others = app.projects.where((p) => p.id != a.projectId).toList();
+    final god2 = app.god?.name ?? 'God';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _banner(_out),
+        if (_offer)
+          Container(
+            key: const Key('as-rewrite-offer'),
+            margin: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+            padding: const EdgeInsets.fromLTRB(14, 12, 10, 6),
+            decoration: BoxDecoration(
+              color: c.accentSoft,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: c.accent.withValues(alpha: .4)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  l.g4AgRewriteOffer(a.name, god2),
+                  style: TextStyle(color: c.text, height: 1.35),
+                ),
+                Wrap(
+                  alignment: WrapAlignment.end,
+                  spacing: 6,
+                  children: [
+                    TextButton(
+                      key: const Key('as-rewrite-no'),
+                      onPressed: () => setState(() => _offer = false),
+                      child: Text(l.g4AgRewriteNo),
+                    ),
+                    FilledButton(
+                      key: const Key('as-rewrite-yes'),
+                      onPressed: () {
+                        setState(() => _offer = false);
+                        unawaited(openInstructions(context, a));
+                      },
+                      child: Text(l.g4AgRewriteYes),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        // Its conversation, and an agent under it (the page's window's bottom bar).
+        if (a.active && !chat)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                FilledButton.icon(
+                  key: const Key('as-open-chat'),
+                  onPressed: () => unawaited(openAgentConversation(context, a)),
+                  icon: const RgIcon(RgIcons.chat, size: 16, color: Colors.white),
+                  label: Text(l.g4AgOpenChat),
+                ),
+                if (canAddUnder(a))
+                  OutlinedButton.icon(
+                    key: const Key('as-add-under'),
+                    onPressed: () => unawaited(openAddUnder(context, a)),
+                    icon: RgIcon(RgIcons.plus, size: 16, color: c.text),
+                    label: Text(l.g4AgAddShort),
+                  ),
+              ],
+            ),
+          ),
         SectionHead(l.asMascot),
         SettingsCard(
           children: [
@@ -919,6 +1029,14 @@ class _MemoryState extends State<_Memory> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
             child: Text(l.asMemNone, style: TextStyle(color: c.dim)),
+          ),
+        if (a.kind == AgentKind.assistant)
+          _Notes(
+            key: const Key('as-notes-user'),
+            agent: a,
+            scope: 'user',
+            title: l.g4AgShared,
+            help: l.g4AgSharedHelp,
           ),
         if (project != null)
           _Notes(

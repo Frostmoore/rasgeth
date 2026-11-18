@@ -1732,6 +1732,13 @@ class FakeRedGiant {
     }
     if (r.method == 'GET' && path == '/api/devices') return _json(r, 200, devices);
     final dev = RegExp(r'^/api/devices/([^/]+)$').firstMatch(path);
+    if (r.method == 'PATCH' && dev != null) {
+      final body = jsonDecode(await utf8.decoder.bind(r).join()) as Map<String, dynamic>;
+      final d = devices.where((d) => d['id'] == dev.group(1)).firstOrNull;
+      if (d == null) return _json(r, 404, {'error': 'No such device'});
+      d['name'] = body['name'];
+      return _json(r, 200, d);
+    }
     if (r.method == 'DELETE' && dev != null) {
       devices.removeWhere((d) => d['id'] == dev.group(1));
       return _json(r, 200, {'ok': true});

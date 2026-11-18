@@ -14,7 +14,7 @@ import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/l10n/app_localizations_en.dart';
 import 'package:rgcompanion/l10n/app_localizations_it.dart';
-import 'package:rgcompanion/screens/at_work_screen.dart';
+import 'package:rgcompanion/settings/commands_screen.dart';
 import 'package:rgcompanion/screens/conversation_screen.dart';
 import 'package:rgcompanion/ui/turn_queue_view.dart';
 
@@ -126,7 +126,7 @@ void main() {
     testWidgets('the setting saves maxAtWork and keeps the other limits', (tester) async {
       server.commandSettings = {...server.commandSettings, 'maxAtWork': 5};
       await start(tester);
-      await push(tester, const AtWorkScreen());
+      await push(tester, const CommandsScreen());
       // The saved value that is not a ready choice is shown too.
       expect(find.byKey(const Key('at-work-5')), findsOneWidget);
       await tester.tap(find.byKey(const Key('at-work-2')));

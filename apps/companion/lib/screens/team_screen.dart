@@ -16,6 +16,7 @@ import '../api/types.dart';
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../mascot/mascot_view.dart';
+import '../settings/agents/agent_tree.dart';
 import '../theme/colors.dart';
 import '../ui/agent_menu.dart';
 import '../ui/common.dart';
@@ -181,6 +182,13 @@ class TeamScreen extends StatelessWidget {
                                       ),
                                     ),
                                   ),
+                                ),
+                                // G42.4: the whole tree, beyond the first level.
+                                IconButton(
+                                  key: const Key('team-tree'),
+                                  tooltip: l.g4AgTreeTitle,
+                                  onPressed: () => openAgentTree(context),
+                                  icon: RgIcon(RgIcons.nodes, size: 19, color: c.accent),
                                 ),
                                 TextButton.icon(
                                   key: const Key('team-new-agent'),

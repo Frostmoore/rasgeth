@@ -1082,6 +1082,17 @@ class RedGiantClient {
     return _decode(r);
   }
 
+  /// G42.4: a `GET` for the native settings in `lib/settings/` (each keeps its routes in its own
+  /// small file, as extensions of this client).
+  Future<Object?> getJson(String path, [Map<String, String>? query]) => _get(path, query);
+
+  /// G42.4: any other request (its answer may be empty: null).
+  Future<Object?> callJson(String method, String path, [Object? body]) => _call(method, path, body);
+
+  /// G42.4: an answer that must be an object, or a list of objects.
+  Map<String, dynamic> objectOf(Object? o) => _object(o);
+  List<Map<String, dynamic>> arrayOf(Object? o) => _array(o);
+
   /// `GET /api/auth/methods`: password, code and, while there is none, the first access.
   Future<Map<String, dynamic>> authMethods() async => _object(await _get('/api/auth/methods'));
 
@@ -1189,6 +1200,11 @@ class RedGiantClient {
   /// `DELETE /api/devices/:id`: that device is signed out at once.
   Future<void> revokeDevice(String id) =>
       _call('DELETE', '/api/devices/${Uri.encodeComponent(id)}');
+
+  /// `PATCH /api/devices/:id` (G42.4): a new name for a device (60 characters at most, as the
+  /// page cuts it).
+  Future<void> renameDevice(String id, String name) =>
+      _call('PATCH', '/api/devices/${Uri.encodeComponent(id)}', {'name': name});
 
   /// `POST /api/devices/:id/push/test`: a test notification; null when it went.
   Future<String?> pushTest(String id) async {

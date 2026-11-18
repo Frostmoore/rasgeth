@@ -120,7 +120,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('refine-open')));
     await _settle(tester);
-    expect(find.text('Stima: circa 4200 token, meno di un centesimo.'), findsOneWidget);
+    expect(find.text('Stima: circa 4.200 token, meno di un centesimo.'), findsOneWidget);
     expect(server.refines.last['target'], {'agentId': 'a0'});
     await tester.ensureVisible(find.byKey(const Key('refine-wish')));
     await tester.pumpAndSettle();
@@ -132,7 +132,9 @@ void main() {
     expect(server.refines.last['request'], 'più breve');
     expect(find.text('Added: answer briefly.'), findsOneWidget);
     expect(
-      find.text('Speso: circa 4300 token, nessuna spesa in denaro (modello locale o abbonamento).'),
+      find.text(
+        'Speso: circa 4.300 token, nessuna spesa in denaro (modello locale o abbonamento).',
+      ),
       findsOneWidget,
     );
     // Nothing saved until the person saves.
