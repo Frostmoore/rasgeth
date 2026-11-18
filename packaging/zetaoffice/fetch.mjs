@@ -56,7 +56,7 @@ const PRODUCT_NAME = "Rasgeth";
 export function licensesFrom(source) {
   const m = source.match(/export const ZETA_LICENSES = `([\s\S]*?)`;/);
   if (!m) throw new Error("ZETA_LICENSES not found in zeta.ts");
-  const text = m[1].replaceAll("${PRODUCT_NAME}", PRODUCT_NAME);
+  const text = m[1].replaceAll(`\${PRODUCT_NAME}`, PRODUCT_NAME);
   if (text.includes("${")) throw new Error("ZETA_LICENSES has a placeholder fetch.mjs cannot fill");
   return text;
 }
