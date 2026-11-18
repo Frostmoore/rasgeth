@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="docs/images/rasgeth-header.png" alt="Rasgeth: a crowned red giant star smiling among its small stars, the agents" width="100%" />
+  <img src="docs/images/rasgeth-header.png" alt="Rasgeth: a crowned star smiling among its small stars, the agents" width="100%" />
 </p>
 
 <h1 align="center"><img src="packages/web/public/icon-512.png" alt="" width="44" height="44" /> Rasgeth</h1>
 
 <p align="center">
   <em>Rasgeth</em> is pronounced <strong>«ràs-ghet»</strong> (RAHS-get, with a hard g), after
-  Rasalgethi, a red giant star in Hercules. It was called RedGiant until 3.8: same project, new name.
+  Rasalgethi, the star at the head of Hercules. It was called RedGiant until 3.8: same project, new name.
 </p>
 
 <p align="center">
@@ -375,7 +375,7 @@ Rasgeth is in pre-alpha. What comes next, in order:
   whole team, every-day settings, projects, sub-projects and the terminal into the app. 3.8.13 (released) gives the app's
   Canvas the page's viewers, sets a sub-agent limit per project and lets the app update itself. 3.8.14 (released) brings
   every editor, automations, knowledge and shared memory into the app.
-- **3.9 — Rasgeth**: RedGiant and its app become Rasgeth. A new name, a new icon (a crowned red giant in
+- **3.9 — Rasgeth**: RedGiant and its app become Rasgeth. A new name, a new icon (a crowned star in
   the night sky) at every size on every system, the app called Rasgeth too («Rasgeth App» on a computer,
   beside the whole Rasgeth), new file names for every download, the `rasgeth` command and the site
   [rasgeth.it](https://rasgeth.it/). The data stay where they are; moving over is a clean install that the
