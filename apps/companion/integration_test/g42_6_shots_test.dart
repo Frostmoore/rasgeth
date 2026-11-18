@@ -105,9 +105,10 @@ void main() {
         model.close(tab.id);
       }
       await frames(t, 600);
-      if (_tag != 'computer') await t.pageBack();
+      // Back to the start: the Canvas screen (a phone), then the conversation.
+      if (_tag != 'computer') nav.pop();
       await frames(t, 600);
-      await t.pageBack();
+      nav.pop();
       await frames(t, 800);
     }
   });

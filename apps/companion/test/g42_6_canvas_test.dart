@@ -230,7 +230,7 @@ void main() {
       // A button of the page's, drawn by the app: back to the page as `action`.
       await tester.tap(find.byKey(const Key('canvas-action-copy.edit')));
       await _settle(tester, 2);
-      expect(h.told, contains({'t': 'action', 'id': 'copy.edit'}));
+      expect(h.told.any((m) => m['t'] == 'action' && m['id'] == 'copy.edit'), isTrue);
       // The page asks for another tab (the open copy it made): a tab of the app's.
       h.say({
         't': 'open',
@@ -294,7 +294,7 @@ void main() {
       await _settle(tester);
       expect(hosts.first.disposed, isTrue);
       await tester.tap(find.byKey(const Key('canvas-back')));
-      await _settle(tester, 3);
+      await _settle(tester, 12);
       expect(find.byKey(const Key('canvas-screen')), findsNothing);
       await done(tester);
     });

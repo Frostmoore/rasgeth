@@ -30,6 +30,7 @@ vi.mock("../src/api.js", async (orig) => {
               if (name === "editorCopy") return { copy: null };
               if (name === "artifactState") return { pendingRun: false };
               if (name === "fileReport") return null;
+              if (name === "editorSettings") return { settings: {} };
               return [];
             },
         },

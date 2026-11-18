@@ -449,7 +449,10 @@ void main() {
       expect('${p.embed.name} ${p.agent} ${p.port} ${p.path} ${p.session}', 'port a0 5173 /app s1');
       expect(find.byKey(const Key('canvas-title')), findsOneWidget);
       expect(tester.widget<Text>(find.byKey(const Key('canvas-title'))).data, 'Il sito');
-      expect(tester.widget<Text>(find.byKey(const Key('canvas-meta'))).data, contains('Porta 5173'));
+      expect(
+        tester.widget<Text>(find.byKey(const Key('canvas-meta'))).data,
+        contains('Porta 5173'),
+      );
       // The page's own title does not replace the agent's words.
       hosts.last.say({'t': 'ready'});
       hosts.last.say({'t': 'title', 'name': 'Porta 5173', 'kind': 'site'});

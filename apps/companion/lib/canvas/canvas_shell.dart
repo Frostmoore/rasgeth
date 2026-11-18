@@ -297,6 +297,34 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
   bool _resumed = true;
 
   CanvasPanelModel get _m => widget.model;
+  final _tabKeys = <String, GlobalKey>{};
+  String? _shownTab;
+
+  /// The tab in front is always in sight in the strip, however many there are (as the page's).
+  void _revealTab() {
+    final id = _m.active;
+    if (id == null || id == _shownTab) return;
+    _shownTab = id;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ctx = _tabKeys[id]?.currentContext;
+      if (ctx != null && ctx.mounted) {
+        unawaited(
+          Scrollable.ensureVisible(
+            ctx,
+            duration: const Duration(milliseconds: 150),
+            alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+          ),
+        );
+        unawaited(
+          Scrollable.ensureVisible(
+            ctx,
+            duration: const Duration(milliseconds: 150),
+            alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
+          ),
+        );
+      }
+    });
+  }
 
   /// Tests: the web view of a tab, when it is alive.
   EmbedViewState? viewOf(String id) => _views[id]?.currentState;
@@ -542,6 +570,22 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // The whole screen keeps one slim line with its way out: nothing native is drawn over
+            // a web view everywhere (WebKitGTK's is a window above Flutter).
+            if (m.full)
+              Container(
+                height: 30,
+                color: c.panel,
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  key: const Key('canvas-full-exit'),
+                  tooltip: AppLocalizations.of(context).cvCanvasFullscreenExit,
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  onPressed: () => m.setFull(false),
+                  icon: RgIcon(RgIcons.fullscreenExit, size: 15, color: c.dim),
+                ),
+              ),
             if (!m.full) ?widget.top,
             if (!m.full) _strip(context),
             if (!m.full && t != null)
@@ -568,24 +612,6 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
                         offstage: tab.id != m.active,
                         child: TickerMode(enabled: tab.id == m.active, child: _content(tab)),
                       ),
-                  if (m.full)
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: Material(
-                        color: c.panel.withValues(alpha: .92),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: BorderSide(color: c.line),
-                        ),
-                        child: IconButton(
-                          key: const Key('canvas-full-exit'),
-                          tooltip: AppLocalizations.of(context).cvCanvasFullscreenExit,
-                          onPressed: () => m.setFull(false),
-                          icon: RgIcon(RgIcons.fullscreenExit, size: 18, color: c.text),
-                        ),
-                      ),
-                    ),
                 ],
               ),
             ),
@@ -600,6 +626,8 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
     final c = RgColors.of(context);
     final l = AppLocalizations.of(context);
     final m = _m;
+    _tabKeys.removeWhere((id, _) => !m.tabs.any((t) => t.id == id));
+    _revealTab();
     return Container(
       key: const Key('canvas-strip'),
       height: 42,
@@ -641,12 +669,15 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
                 children: [
                   for (final tab in m.tabs)
-                    _Tab(
-                      key: Key('canvas-tab-${tab.id}'),
-                      tab: tab,
-                      on: tab.id == m.active,
-                      onTap: () => m.select(tab.id),
-                      onClose: () => m.close(tab.id),
+                    KeyedSubtree(
+                      key: _tabKeys.putIfAbsent(tab.id, GlobalKey.new),
+                      child: _Tab(
+                        key: Key('canvas-tab-${tab.id}'),
+                        tab: tab,
+                        on: tab.id == m.active,
+                        onTap: () => m.select(tab.id),
+                        onClose: () => m.close(tab.id),
+                      ),
                     ),
                 ],
               ),
@@ -718,7 +749,10 @@ class _CanvasBar extends StatelessWidget {
     final name = tab.isPort
         ? (tab.title.isEmpty ? l.cvEmbedPort('${tab.port}') : tab.title)
         : (i?.name ?? (tab.title.isEmpty ? tab.fileName : tab.title));
-    final actions = bar?.actions ?? const <EmbedAction>[];
+    // The keyboard map is one of the bar's tools (a computer's: a phone has no keys to map).
+    final all = bar?.actions ?? const <EmbedAction>[];
+    final keys = all.where((a) => a.id == 'keys').firstOrNull;
+    final actions = [for (final a in all) if (a.id != 'keys') a];
     final note = bar?.note;
     final download = onDownload != null && (bar?.download ?? true);
     Widget icon(Key key, RgIcons ic, String tip, VoidCallback? on) => IconButton(
@@ -729,6 +763,8 @@ class _CanvasBar extends StatelessWidget {
       icon: RgIcon(ic, size: 16, color: c.dim),
     );
     final buttons = <Widget>[
+      if (keys != null && !phone)
+        icon(const Key('canvas-keys'), RgIcons.keyboard, keys.label, () => onAction(keys.id)),
       icon(const Key('canvas-panel-reload'), RgIcons.refresh, l.cvCanvasReload, onReload),
       if (download)
         icon(const Key('canvas-download'), RgIcons.download, l.cvVwDownload, onDownload),
