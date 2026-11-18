@@ -1,5 +1,5 @@
 // G42.8: the sheet, document and 3D editors in the Canvas's frame, on Linux (WebKitGTK) against a
-// real RedGiant (the demo with DEMO_CANVAS=1, DEMO_SAMPLES with an ODS with formulas, an ODT and a
+// real Rasgeth (the demo with DEMO_CANVAS=1, DEMO_SAMPLES with an ODS with formulas, an ODT and a
 // GLB, DEMO_ZETA with LibreOffice for the browser already on the server), light and dark. The ODT
 // opens the isolated embed: the engine comes into the web view's storage with its bar the first
 // time, then LibreOffice runs (or the page says why not). Run with tool/linux_shots.sh,

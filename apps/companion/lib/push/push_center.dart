@@ -14,6 +14,7 @@ import '../l10n/app_localizations.dart';
 import 'notice.dart';
 import 'registrar.dart';
 import 'system_notifier.dart';
+import '../brand.dart';
 
 typedef PushClientFactory = RedGiantClient Function(SavedServer server, String token);
 
@@ -134,7 +135,7 @@ class PushCenter {
         tap.notificationId,
         title: l.notifyAnswerFailedTitle,
         body: l.notifyAnswerFailedBody,
-        server: s?.label ?? 'RedGiant',
+        server: s?.label ?? kProductName,
         channel: NoticeChannel.requests,
         answers: const [],
         payload: tap.toPayload(),

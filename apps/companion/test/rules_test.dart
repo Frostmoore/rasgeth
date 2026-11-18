@@ -1,4 +1,4 @@
-// The app's pure rules, as tables: how a RedGiant is reached, what discovery keeps, the
+// The app's pure rules, as tables: how a Rasgeth is reached, what discovery keeps, the
 // conversation's items, the mascots' states, the artifact's document, the Chat's days.
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rgcompanion/api/conversation.dart';
@@ -26,9 +26,9 @@ void main() {
       ('http://[::1]:7600', false, TransportKind.loopback),
       ('http://10.42.0.1', false, TransportKind.channel),
       ('http://192.168.1.20:7600', false, TransportKind.channel),
-      ('http://redgiant.local:7600', true, TransportKind.channel),
-      ('https://redgiant.local', true, TransportKind.pinnedHttps),
-      ('https://redgiant.local', false, TransportKind.publicHttps),
+      ('http://rasgeth.local:7600', true, TransportKind.channel),
+      ('https://rasgeth.local', true, TransportKind.pinnedHttps),
+      ('https://rasgeth.local', false, TransportKind.publicHttps),
       ('https://casa.tail1234.ts.net', false, TransportKind.publicHttps),
     ];
     for (final (url, ca, kind) in table) {
@@ -40,7 +40,7 @@ void main() {
 
   test('discovery keeps an IPv4 address first, else the .local name; the channel path', () {
     final f = foundFrom(
-      name: 'RedGiant on casa',
+      name: 'Rasgeth on casa',
       addresses: ['fe80::1', '192.168.1.20'],
       hostname: 'casa.local.',
       port: 7600,
@@ -50,6 +50,16 @@ void main() {
     expect(f.base.toString(), 'http://192.168.1.20:7600');
     expect(f.machine, 'casa');
     expect(f.proto, 1);
+    // A server older than 3.9.0 still announces itself with the old name.
+    expect(
+      foundFrom(
+        name: 'RedGiant on salotto',
+        addresses: ['192.168.1.21'],
+        hostname: 'salotto.local.',
+        port: 7600,
+      )!.machine,
+      'salotto',
+    );
     expect(
       foundFrom(name: 'x', addresses: ['fe80::1'], hostname: 'casa.local.', port: 7600)!.host,
       'casa.local',

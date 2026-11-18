@@ -1,4 +1,4 @@
-// The app against a real RedGiant started locally with FakeProvider (no real model): the demo
+// The app against a real Rasgeth started locally with FakeProvider (no real model): the demo
 // server of the monorepo with a password,
 //   DEMO_PASSWORD=companion-test-1 DEMO_HOST=127.0.0.1 DEMO_REQUESTS=1 \
 //     node packages/web/scripts/demo-server.mjs 7651
@@ -55,7 +55,7 @@ void main() {
     await expectLater(ch.device('x', 'linux'), throwsA(isA<SetupRequestException>()));
     final ok = await ch.http('POST', '/api/auth/login', json: {'password': _password});
     expect(ok.status, 200);
-    final d = await ch.device('RGCompanion (test)', 'linux');
+    final d = await ch.device('Rasgeth (test)', 'linux');
     expect(d.token, startsWith('rgd_'));
     expect(d.fingerprint, ch.peerFingerprint);
     await ch.close();
@@ -131,7 +131,7 @@ void main() {
   );
 
   test(
-    'two devices on one RedGiant: what one writes, and the answer, show live on the other',
+    'two devices on one Rasgeth: what one writes, and the answer, show live on the other',
     () async {
       Future<AppController> device(DevicePlatform p) async {
         final a = AppController(tokens: MemoryTokenStore(), prefs: MemoryAppPrefs(), platform: p);
@@ -200,7 +200,7 @@ void main() {
       final pc = await device(DevicePlatform.windows);
       final other = await device(DevicePlatform.android);
       final c = other.client!;
-      // A page on the same RedGiant: a bare /ws, following nothing.
+      // A page on the same Rasgeth: a bare /ws, following nothing.
       final page = await WebSocket.connect('${base.toString().replaceFirst('http', 'ws')}/ws');
       final heard = <Map<String, dynamic>>[];
       page.listen((d) => heard.add(jsonDecode(d as String) as Map<String, dynamic>));

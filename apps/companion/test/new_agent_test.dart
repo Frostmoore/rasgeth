@@ -2,7 +2,7 @@
 // (a project's agent, orchestrator, personal assistant), the project, the name and job with the
 // face it will get, the model (optional, Subscription / API key), tools to switch off (never the
 // essential ones), then `POST /api/agents` with the page's fields, its tools, the new agent in the
-// grid, «Change mascot» and its conversation. Against the fake RedGiant.
+// grid, «Change mascot» and its conversation. Against the fake Rasgeth.
 import 'dart:io';
 
 import 'package:flutter/material.dart';

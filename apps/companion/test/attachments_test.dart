@@ -1,5 +1,5 @@
 // Attachments as the page's composer packs them (G40.10), for the composer and «Share to
-// RedGiant»: photos as images, small text files inside the message, the rest written to the
+// Rasgeth»: photos as images, small text files inside the message, the rest written to the
 // agent's workspace with its path in the text; the Share sheet's items into the message.
 import 'dart:convert';
 import 'dart:typed_data';

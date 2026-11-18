@@ -1,6 +1,6 @@
 // The update's screen (the person, from the phone: «va fatto bene, non questa monnezza»): the
 // steps' rules as tables, the follower against scripted answers, and the screen against the fake
-// RedGiant as a 3.8.0 server (a state and a step only) and as a 3.8.1 one (its run, with the
+// Rasgeth as a 3.8.0 server (a state and a step only) and as a 3.8.1 one (its run, with the
 // bar), through the restart (the server stops answering, then comes back as the new version and
 // the app reconnects by itself, HTTP and the live socket), a failure and a going back.
 import 'dart:async';
@@ -23,7 +23,7 @@ import 'fake_server.dart';
 
 const _mb = 1024.0 * 1024;
 
-/// RedGiant OS's updater as `GET /api/setup/os-updates` says it.
+/// Rasgeth OS's updater as `GET /api/setup/os-updates` says it.
 Map<String, dynamic> osJson({
   bool running = false,
   String state = 'available',
@@ -103,7 +103,7 @@ Map<String, dynamic> launcherProgress(
   'at': '2026-11-16T10:00:00.000Z',
 };
 
-/// Scripted answers for the follower alone: a status, RedGiant OS's state, or nothing (down).
+/// Scripted answers for the follower alone: a status, Rasgeth OS's state, or nothing (down).
 class ScriptSource implements UpdateSource {
   Map<String, dynamic>? statusJson = windowsStatus();
   Map<String, dynamic>? osJsonNow;
@@ -205,7 +205,7 @@ Finder _stepDone(String id) =>
 
 void main() {
   group('rules', () {
-    test('RedGiant OS before 3.8.1: the steps from the state and the step', () {
+    test('Rasgeth OS before 3.8.1: the steps from the state and the step', () {
       String marks(List<RunStep> s) => s.map((x) => '$x').join(' ');
       final applying = OsUpdates.fromJson(
         osJson(running: true, state: 'applying', step: 'download'),
@@ -256,7 +256,7 @@ void main() {
       expect(osWhy(OsUpdates.fromJson(osJson(state: 'unreachable'))), isNull);
     });
 
-    test("RedGiant.exe's steps: from its phases, else download, restart, wait", () {
+    test("Rasgeth.exe's steps: from its phases, else download, restart, wait", () {
       String marks(List<RunStep> s) => s.map((x) => '$x').join(' ');
       expect(marks(launcherSteps(seen: {})), 'download:now restart:todo wait:todo');
       expect(
@@ -295,7 +295,7 @@ void main() {
 
   group('the follower', () {
     test(
-      '3.8.0 RedGiant OS: steps from the step, the restart counted, back as the new version',
+      '3.8.0 Rasgeth OS: steps from the step, the restart counted, back as the new version',
       () async {
         final s = ScriptSource()
           ..statusJson = {...windowsStatus(), 'install': 'os'}
@@ -327,7 +327,7 @@ void main() {
       },
     );
 
-    test('3.8.1 RedGiant OS: the run, its bar and the time left', () async {
+    test('3.8.1 Rasgeth OS: the run, its bar and the time left', () async {
       final s = ScriptSource()
         ..statusJson = {...windowsStatus(), 'install': 'os'}
         ..osJsonNow = osJson(
@@ -469,7 +469,7 @@ void main() {
     });
     tearDown(() => server.close());
 
-    test('HTTP and the live socket, as soon as RedGiant answers as the new version', () async {
+    test('HTTP and the live socket, as soon as Rasgeth answers as the new version', () async {
       final app = AppController(
         tokens: MemoryTokenStore(),
         prefs: MemoryAppPrefs(),
@@ -536,7 +536,7 @@ void main() {
         await _io(t);
         expect(server.updateActs, 1);
         expect(find.byKey(const Key('update-screen')), findsOneWidget);
-        expect(find.text('Aggiorno RedGiant dalla 3.8.0 alla 3.8.1'), findsOneWidget);
+        expect(find.text('Aggiorno Rasgeth dalla 3.8.0 alla 3.8.1'), findsOneWidget);
         await _tick(t);
         expect(_stepNow('check'), findsOneWidget);
         server.osUpdates = osJson(running: true, state: 'applying', step: 'download');
@@ -560,10 +560,10 @@ void main() {
         }
         expect(shown(), isNot(before));
         expect(find.byKey(const Key('update-older')), findsOneWidget);
-        // RedGiant restarts: the screen says so with the app's tries.
+        // Rasgeth restarts: the screen says so with the app's tries.
         await t.runAsync(server.goDown);
         await _tick(t, 2);
-        expect(find.text('RedGiant si sta riavviando, mi ricollego…'), findsOneWidget);
+        expect(find.text('Rasgeth si sta riavviando, mi ricollego…'), findsOneWidget);
         expect(find.textContaining('Tentativo 2'), findsOneWidget);
         expect(_stepNow('restart'), findsOneWidget);
         // Back as the new version: the check, then done, and the app reconnected by itself.
@@ -712,7 +712,7 @@ void main() {
       );
       await _tick(t);
       expect(find.text('La versione nuova non è partita.'), findsOneWidget);
-      expect(find.textContaining('RedGiant è tornato da solo alla 3.8.0'), findsOneWidget);
+      expect(find.textContaining('Rasgeth è tornato da solo alla 3.8.0'), findsOneWidget);
       expect(find.text('fermo qui'), findsOneWidget);
       expect(find.byKey(const Key('update-retry')), findsOneWidget);
       server.onUpdateAct = () {
@@ -728,7 +728,7 @@ void main() {
       await _io(t);
       expect(server.updateActs, 2);
       await _tick(t);
-      expect(find.text('Aggiorno RedGiant dalla 3.8.0 alla 3.8.1'), findsOneWidget);
+      expect(find.text('Aggiorno Rasgeth dalla 3.8.0 alla 3.8.1'), findsOneWidget);
       expect(_stepNow('check'), findsOneWidget);
       await _end(t, app);
     });
@@ -751,7 +751,7 @@ void main() {
       await _end(t, app);
     });
 
-    testWidgets('a computer: a window; the RedGiant of this computer is updated by its launcher', (
+    testWidgets('a computer: a window; the Rasgeth of this computer is updated by its launcher', (
       t,
     ) async {
       final app = _app(platform: DevicePlatform.windows);
@@ -779,7 +779,7 @@ void main() {
       await t.pump();
       await t.tap(find.byKey(const Key('update-now')));
       await _io(t, 4);
-      expect(find.textContaining('lo fa RedGiant, con la sua finestra'), findsOneWidget);
+      expect(find.textContaining('lo fa Rasgeth, con la sua finestra'), findsOneWidget);
       await t.tap(find.byKey(const Key('dialog-yes')));
       await _io(t);
       await _tick(t);
@@ -789,7 +789,7 @@ void main() {
       expect(find.text('12.0 MB di 48.0 MB · 3.0 MB/s · mancano 12 s'), findsOneWidget);
       await t.runAsync(server.goDown);
       await _tick(t);
-      expect(find.text('RedGiant si sta riavviando, mi ricollego…'), findsOneWidget);
+      expect(find.text('Rasgeth si sta riavviando, mi ricollego…'), findsOneWidget);
       server
         ..version = '3.8.1'
         ..update = windowsStatus(installed: '3.8.1', progress: launcherProgress('restart'))

@@ -6,6 +6,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { fillProduct } from "./product.mjs";
 
 const KEYS = `permAsks permWhy permDetails permTool permRawReasons showLess showAllInput allow thisChat
 thisChatHint always alwaysHint deny denyWhy denyWhyPlaceholder criticalTitle criticalWhat toolReqTitle
@@ -61,7 +62,7 @@ const re = /^ {2}([A-Za-z0-9_]+):\s*\n?\s*"((?:[^"\\]|\\.)*)",?$/gm;
 const found = { it: {}, en: {} };
 for (const [lang, text] of Object.entries(parts))
   for (const m of text.matchAll(re))
-    if (!(m[1] in found[lang])) found[lang][m[1]] = JSON.parse(`"${m[2]}"`);
+    if (!(m[1] in found[lang])) found[lang][m[1]] = fillProduct(JSON.parse(`"${m[2]}"`));
 const camel = (k) =>
   `cv${k[0].toUpperCase()}${k.slice(1).replace(/_([a-zA-Z0-9])/g, (_, c) => c.toUpperCase())}`;
 const missing = [];

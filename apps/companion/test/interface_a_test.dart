@@ -140,7 +140,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Interrotto: Coder Web'), findsOneWidget);
 
-      // The favourite: first in the grid, with its star, kept for this RedGiant.
+      // The favourite: first in the grid, with its star, kept for this Rasgeth.
       await tester.tap(find.byKey(const Key('agent-favourite')));
       await tester.pumpAndSettle();
       expect(app.isFavourite('coder'), isTrue);

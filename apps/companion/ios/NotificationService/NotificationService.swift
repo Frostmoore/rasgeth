@@ -12,10 +12,10 @@
 //
 // To switch it on (Xcode, once there is an account):
 //   1. File > New > Target > Notification Service Extension, named "NotificationService",
-//      bundle id com.redgiant.companion.NotificationService, the same deployment target as
+//      bundle id it.rasgeth.app.NotificationService, the same deployment target as
 //      Runner; replace its files with this folder's NotificationService.swift and Info.plist.
 //   2. Keychain Sharing in BOTH Runner and NotificationService, group
-//      com.redgiant.companion.shared (the app writes the keys there: lib/push/apns.dart).
+//      it.rasgeth.app.shared (the app writes the keys there: lib/push/apns.dart).
 //   3. Push Notifications capability in Runner; ios/Apns/ApnsRegistration.swift into Runner.
 //   4. Set `kApnsEnabled = true` and the relay's address on the server
 //      (REDGIANT_PUSH_RELAY_URL).
@@ -63,7 +63,7 @@ final class NotificationService: UNNotificationServiceExtension {
 /// The device's keys for one RedGiant (`PushKeyPair.toJson`: the private scalar `d` and `auth`,
 /// base64url), written by the app into the shared keychain group.
 struct PushKeys {
-  static let group = "com.redgiant.companion.shared"
+  static let group = "it.rasgeth.app.shared"
   static let service = "flutter_secure_storage_service"
   static let prefix = "rgcompanion.apns."
 

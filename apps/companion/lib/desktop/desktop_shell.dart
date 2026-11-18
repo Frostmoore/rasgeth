@@ -24,6 +24,7 @@ import '../screens/you_screen.dart';
 import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/icons.dart';
+import '../ui/rename_notice.dart';
 import '../ui/send_keys.dart';
 import '../ui/turn_queue_view.dart';
 import 'advanced/code_view.dart';
@@ -714,6 +715,7 @@ class _DesktopShellState extends State<DesktopShell> {
                   bellKey: _bellKey,
                   onBell: () => unawaited(_bell()),
                 ),
+                const RenameNotice(),
                 Expanded(
                   child: Stack(
                     children: [
@@ -760,7 +762,7 @@ class _TopBar extends StatelessWidget {
     final c = RgColors.of(context);
     final mac = isMacLike(app);
     final m = menus;
-    final title = app.connected ? '${viewLabel(l, desk.view)} · ${app.displayName}' : 'RGCompanion';
+    final title = app.connected ? '${viewLabel(l, desk.view)} · ${app.displayName}' : kAppName;
     // Narrow windows: the views' tabs show their icons, the chosen one its name too.
     final width = MediaQuery.sizeOf(context).width;
     final compact = width < (app.advanced ? 1560 : 1100);

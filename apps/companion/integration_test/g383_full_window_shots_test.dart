@@ -1,4 +1,4 @@
-// 3.8.3 in the real app on Linux, against the tests' fake RedGiant: the conversations «full
+// 3.8.3 in the real app on Linux, against the tests' fake Rasgeth: the conversations «full
 // window» with the mascots' bar (the panel's button, another agent from the bar, a name on hover,
 // dark theme, back to the panel). Run with Xvfb like tool/linux_shots.sh (no demo server needed):
 //   RG_SCREEN=1440x900 RG_SHOTS=<folder> flutter test integration_test/g383_full_window_shots_test.dart -d linux

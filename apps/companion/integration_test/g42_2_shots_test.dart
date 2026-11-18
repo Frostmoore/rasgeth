@@ -1,5 +1,5 @@
 // G42.2: boards, an agent's port, Settings › Artifacts and a widget with its slider, on Linux
-// (WebKitGTK) against a real RedGiant (the demo with DEMO_ARTIFACTS=1 DEMO_PORT=1), light and dark.
+// (WebKitGTK) against a real Rasgeth (the demo with DEMO_ARTIFACTS=1 DEMO_PORT=1), light and dark.
 // Run in the agents' Docker with tool/linux_shots.sh (RG_SCREEN for the phone's size), RG_SHOTS the
 // folder for the pictures, RG_DEMO_LOG the demo's output (its session ids).
 import 'dart:convert';

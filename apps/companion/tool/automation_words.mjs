@@ -10,6 +10,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { fillProduct } from "./product.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repo = join(here, "../../..");
@@ -27,7 +28,7 @@ const entry = new RegExp(
 );
 const words = { it: {}, en: {} };
 for (const [lang, text] of Object.entries(parts))
-  for (const m of text.matchAll(entry)) words[lang][m[1]] = new Function(`return ${m[2]};`)();
+  for (const m of text.matchAll(entry)) words[lang][m[1]] = fillProduct(new Function(`return ${m[2]};`)());
 
 // The keys: every literal the three components pass to t(), the ones they make at run time, and
 // a few of the components next to them.

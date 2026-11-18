@@ -1,4 +1,4 @@
-// 2026-11-18 in the real app on Linux against the demo server (a real RedGiant, FakeProvider): a
+// 2026-11-18 in the real app on Linux against the demo server (a real Rasgeth, FakeProvider): a
 // project's agent limit. The project's sheet says «Agenti al massimo: N», its window has the
 // slider; lowered under the team, the line says nobody is removed; the project's view has the same
 // slider by its team. Light and dark, on a phone. Run by tool/linux_shots.sh:

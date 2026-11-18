@@ -22,8 +22,9 @@ import '../theme/colors.dart';
 import '../ui/icons.dart';
 import 'first_start_screen.dart' show openExternal;
 import 'server_settings_screen.dart' show progressText;
+import '../brand.dart';
 
-const _releases = 'https://github.com/Frostmoore/redgiant2/releases/tag/v';
+const _releases = 'https://github.com/$kReleaseRepo/releases/tag/v';
 
 /// The screens on view, and one asked for that has not shown yet.
 int _shown = 0;
@@ -437,7 +438,7 @@ class _Body extends StatelessWidget {
         key: const Key('update-why'),
         tone: c.err,
         children: [
-          Text(whyText(l, why, from.isEmpty ? 'RedGiant' : from)),
+          Text(whyText(l, why, from.isEmpty ? kProductName : from)),
           if (f.error != null) ...[
             const SizedBox(height: 6),
             Text(l.upd2WhySaid(f.error!), style: TextStyle(color: c.dim, fontSize: 13)),
@@ -683,7 +684,7 @@ class _StepRow extends StatelessWidget {
                             child: Text(
                               i.name == 'postgres'
                                   ? l.upd2ImgDatabase
-                                  : (i.name == 'redgiant' ? 'RedGiant' : i.name),
+                                  : (i.name == 'redgiant' ? kProductName : i.name),
                               style: TextStyle(fontSize: 12.5, color: c.text),
                             ),
                           ),

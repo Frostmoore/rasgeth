@@ -1,6 +1,6 @@
 // 3.9.0 in the real app on Linux: «New agent» and «New project» as the last tiles of their walls,
 // against the demo server (a project really made, with its orchestrator), and the empty walls
-// against the tests' fake RedGiant (no agents, no projects). Run by tool/linux_shots.sh:
+// against the tests' fake Rasgeth (no agents, no projects). Run by tool/linux_shots.sh:
 //   RG_SCREEN=1440x900 … integration_test/g390_new_tiles_shots_test.dart
 import 'dart:io';
 

@@ -1,4 +1,4 @@
-// The fake RedGiant's automations (G42.9), answering as `packages/server/src/app.ts` and
+// The fake Rasgeth's automations (G42.9), answering as `packages/server/src/app.ts` and
 // `@redgiant/automations` do: a recipe arrives as YAML and is read (zod's defaults filled in:
 // description, agent, project, session, timeout, missed, approve, overlap, notify, webhook,
 // startup, handle, files' path, match) and checked with the same rules (a name of lowercase

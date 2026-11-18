@@ -1,4 +1,4 @@
-// 3.8.9 in the real app on Linux against the demo server (a real RedGiant, FakeProvider): «Stop…»
+// 3.8.9 in the real app on Linux against the demo server (a real Rasgeth, FakeProvider): «Stop…»
 // is a pause (our dialog says the open tasks wait), a stopped agent's menu says «Resume», its
 // settings and its conversations too; «Remove…» stays another thing. Light and dark. Run by
 // tool/linux_shots.sh:

@@ -1,8 +1,8 @@
-// The update's screen in the real app, every step: a fake RedGiant in this process (the tests'
-// FakeRedGiant) plays a 3.8.1 RedGiant OS update (check, images with the bar, system files,
+// The update's screen in the real app, every step: a fake Rasgeth in this process (the tests'
+// FakeRedGiant) plays a 3.8.1 Rasgeth OS update (check, images with the bar, system files,
 // install, restart without answers, the check, done with the news), a 3.8.0 server (no run: the
 // bar that moves with the time), a stop with the going back, and on a computer this computer's
-// RedGiant.exe updated by its launcher. Run by tool/linux_shots.sh:
+// Rasgeth.exe updated by its launcher. Run by tool/linux_shots.sh:
 //   RG_SCREEN=430x900 … integration_test/g382_update_shots_test.dart     (phone)
 //   RG_SCREEN=1280x800 …                                                 (computer)
 // RG_LOCALE=en for the English texts.
@@ -129,7 +129,7 @@ void main() {
 
     Future<void> stage(UpdateStage s) => waitFor(t, () => app.updateRun?.stage == s);
 
-    // ---- a 3.8.1 RedGiant OS, every step ----
+    // ---- a 3.8.1 Rasgeth OS, every step ----
     await openSettings();
     await shot(t, '$p-01-disponibile');
     // A notice over the cards, with room around it.
@@ -250,7 +250,7 @@ void main() {
     app.updateRun?.dispose();
     app.updateRun = null;
 
-    // ---- a computer: this computer's RedGiant.exe, updated by its launcher ----
+    // ---- a computer: this computer's Rasgeth.exe, updated by its launcher ----
     if (!phone) {
       server
         ..osUpdates = null

@@ -1,4 +1,4 @@
-// G40.11 in the real app against a real RedGiant (the demo server, FakeProvider): the switch in
+// G40.11 in the real app against a real Rasgeth (the demo server, FakeProvider): the switch in
 // Tu › Interfaccia, Projects with git, and a project's tabs (Tasks, Files, Diff, Terminal, Log,
 // Git), the agent's sheet with Files, Diff and Terminal. Run by tool/linux_shots.sh with
 //   RG_SCREEN=430x900 RG_DEMO_ENV="DEMO_PASSWORD=companion-test-1 DEMO_CODE=1" \

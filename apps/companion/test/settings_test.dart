@@ -1,5 +1,5 @@
 // The first start's and the settings' rules as tables (G40.8), the client of the settings against
-// the fake RedGiant, and their screens: «Settings of <name>», the first start's own steps.
+// the fake Rasgeth, and their screens: «Settings of <name>», the first start's own steps.
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -53,15 +53,17 @@ void main() {
   group('rules', () {
     test('the readable name: never a container\'s id', () {
       for (final (label, machine, shown) in [
-        ('350003b5f4e6', '350003b5f4e6', 'RedGiant'),
-        (null, '350003b5f4e6', 'RedGiant'),
+        ('350003b5f4e6', '350003b5f4e6', 'Rasgeth'),
+        (null, '350003b5f4e6', 'Rasgeth'),
         ('Casa', '350003b5f4e6', 'Casa'),
         ('350003b5f4e6', 'Mini PC salotto', 'Mini PC salotto'),
-        (null, 'redgiant', 'RedGiant'),
-        (null, 'localhost', 'RedGiant'),
-        ('', '', 'RedGiant'),
+        (null, 'rasgeth', 'Rasgeth'),
+        // RedGiant OS before 3.9.0 named its host after the old name: it reads as the product too.
+        (null, 'redgiant', 'Rasgeth'),
+        (null, 'localhost', 'Rasgeth'),
+        ('', '', 'Rasgeth'),
         (null, 'coder', 'coder'),
-        (null, 'deadbeefcafe0123', 'RedGiant'),
+        (null, 'deadbeefcafe0123', 'Rasgeth'),
         (null, 'cafe', 'cafe'),
         (null, '20251115', '20251115'),
       ]) {
@@ -92,8 +94,8 @@ void main() {
     );
 
     test('the token rides the fragment, never the query', () {
-      final u = fullSettingsUrl(Uri.parse('https://redgiant.local:8443'), token: 'rgd_a+b/c');
-      expect(u.toString(), 'https://redgiant.local:8443/#token=rgd_a%2Bb%2Fc&open=settings');
+      final u = fullSettingsUrl(Uri.parse('https://rasgeth.local:8443'), token: 'rgd_a+b/c');
+      expect(u.toString(), 'https://rasgeth.local:8443/#token=rgd_a%2Bb%2Fc&open=settings');
       expect(u.query, isEmpty);
       expect(
         fullSettingsUrl(Uri.parse('https://x.ts.net')).toString(),
@@ -245,11 +247,11 @@ void main() {
       server.machine = '350003b5f4e6';
       await tester.runAsync(() => app.connect(server.base.toString(), 'secret'));
       await _pump(tester, app);
-      // The container's id is not a name: «RedGiant».
-      expect(find.text('RedGiant'), findsWidgets);
+      // The container's id is not a name: «Rasgeth».
+      expect(find.text('Rasgeth'), findsWidgets);
       await tester.tap(find.byKey(const Key('tab-you')));
       await tester.pumpAndSettle();
-      expect(find.text('Impostazioni di RedGiant'), findsOneWidget);
+      expect(find.text('Impostazioni di Rasgeth'), findsOneWidget);
       await tester.tap(find.byKey(const Key('open-server-settings')));
       await tester.pumpAndSettle();
       await _settle(tester);
@@ -300,7 +302,7 @@ void main() {
       await see(find.byKey(const Key('settings-all')));
       expect(
         find.text(
-          "La pagina Impostazioni completa di RedGiant, dentro l'app, con l'accesso di questo "
+          "La pagina Impostazioni completa di Rasgeth, dentro l'app, con l'accesso di questo "
           'dispositivo.',
         ),
         findsOneWidget,
@@ -337,13 +339,13 @@ void main() {
       await tester.pump(const Duration(seconds: 30));
     });
 
-    testWidgets('no RedGiant yet: the team offers to set one up', (tester) async {
+    testWidgets('no Rasgeth yet: the team offers to set one up', (tester) async {
       final app = _app();
       await _pump(tester, app);
       expect(find.byKey(const Key('team-setup-new')), findsOneWidget);
       await tester.tap(find.byKey(const Key('team-setup-new')));
       await tester.pumpAndSettle();
-      expect(find.text('Configura un RedGiant nuovo'), findsWidgets);
+      expect(find.text('Configura un Rasgeth nuovo'), findsWidgets);
       expect(find.byKey(const Key('fs-join')), findsOneWidget);
     });
 
@@ -388,7 +390,7 @@ void main() {
       expect(flow.remembersPassword, isFalse);
     });
 
-    testWidgets('the home network: the networks RedGiant saw, the password only where needed', (
+    testWidgets('the home network: the networks Rasgeth saw, the password only where needed', (
       tester,
     ) async {
       final app = _app();
@@ -397,7 +399,7 @@ void main() {
         ..network = SetupNetworkStatus.fromJson({
           'active': true,
           'mode': 'setup',
-          'ssid': 'RedGiant-Setup-D3M0',
+          'ssid': 'Rasgeth-Setup-D3M0',
           'networks': [
             {'ssid': 'Ospiti', 'security': 'open', 'signal': -79},
             {'ssid': 'Casa Rossi', 'security': 'psk', 'signal': -48},

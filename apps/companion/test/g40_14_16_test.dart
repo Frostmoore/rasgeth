@@ -1,4 +1,4 @@
-// G40.14 and G40.16 against the fake RedGiant: an answer selected with our menu («Copia»,
+// G40.14 and G40.16 against the fake Rasgeth: an answer selected with our menu («Copia»,
 // «Rispondi a questo», «Salva»), a whole message saved from its menu, «Salvati» (pages, search,
 // filters, note and tags, deletion, export, back to the passage lit up), the product cards
 // (pictures from the server with the token, placeholders, prices, «Apri» only for http/https),

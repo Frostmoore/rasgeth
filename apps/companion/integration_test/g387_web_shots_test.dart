@@ -1,4 +1,4 @@
-// 3.8.7: widgets and artifacts on Linux, against a real RedGiant (the demo with DEMO_ARTIFACTS=1:
+// 3.8.7: widgets and artifacts on Linux, against a real Rasgeth (the demo with DEMO_ARTIFACTS=1:
 // God's humidity widget and the CSV explorer artifact). Linux has no web view the app can trust
 // in a scrolling chat: the widget shows its words and «Apri nella pagina», the artifact its source
 // under the same button. Run by hand in the agents' Docker (see the app's README), with RG_DEMO_LOG

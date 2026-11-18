@@ -1946,7 +1946,7 @@ class _DebugPanelState extends State<_DebugPanel> {
     final l = AppLocalizations.of(context);
     try {
       final bytes = await _c.debugLogs();
-      const name = 'redgiant-logs.tar.gz';
+      const name = 'rasgeth-logs.tar.gz';
       final saved =
           await (debugSaveLogs ??
               (n, b) async =>

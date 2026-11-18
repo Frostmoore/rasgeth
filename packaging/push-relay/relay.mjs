@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// RedGiant's blind push relay for APNs (G40.4, 3.8). NOT published nor switched on yet: it is
-// turned on when RGCompanion is published on the App Store, because Apple's push key (.p8)
+// Rasgeth's blind push relay for APNs (G40.4, 3.8). NOT published nor switched on yet: it is
+// turned on when the Rasgeth app is published on the App Store, because Apple's push key (.p8)
 // belongs to the account that publishes the app and cannot be given to whoever installs
-// RedGiant. A RedGiant server sends here only what it sealed for one device (RFC 8291's
+// Rasgeth. A Rasgeth server sends here only what it sealed for one device (RFC 8291's
 // aes128gcm with the key pair the phone made; the Notification Service Extension opens it) and
 // Apple's device token; the relay adds the publisher's provider token and passes it to APNs.
 //
@@ -18,7 +18,7 @@
 //   GET  /health   {ok:true}
 //
 // Environment: APNS_KEY (the .p8's PEM) or APNS_KEY_FILE, APNS_KEY_ID, APNS_TEAM_ID, APNS_TOPIC
-// (the app's bundle id), PORT (8790), HOST (0.0.0.0); APNS_HOST / APNS_SANDBOX_HOST only to point
+// (the app's bundle id, `it.rasgeth.app`), PORT (8790), HOST (0.0.0.0); APNS_HOST / APNS_SANDBOX_HOST only to point
 // at a fake APNs in tests.
 
 import { createPrivateKey, sign } from "node:crypto";
@@ -242,6 +242,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const port = Number(process.env.PORT ?? 8790);
   createServer(relay.handler).listen(port, process.env.HOST ?? "0.0.0.0", () => {
     // The one line it ever writes: nothing about what passes.
-    process.stdout.write(`RedGiant push relay on port ${port}\n`);
+    process.stdout.write(`Rasgeth push relay on port ${port}\n`);
   });
 }

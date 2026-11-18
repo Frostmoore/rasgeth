@@ -1,4 +1,4 @@
-// G42.5 in the real app on Linux, against the demo server (a real RedGiant, FakeProvider), light
+// G42.5 in the real app on Linux, against the demo server (a real Rasgeth, FakeProvider), light
 // and dark: Projects in the bar without the advanced interface, a project with its subprojects
 // (one made here, through the page's routes), its files opening on the subproject's folder, a
 // real shell over /term drawn by xterm (colours, `top` in the other buffer, the phone's keys or

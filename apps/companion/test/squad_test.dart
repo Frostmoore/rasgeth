@@ -1,7 +1,7 @@
 // Team as the user drew it (3.8.1): God's big card on top (its mascot, state and what it is
 // doing; a tap opens its conversation), the Chat's wide card under it (a tap opens the Chat), then
 // «Agents» and the grid of the others. Demi-God is not in Team (Telegram's voice). Filters and
-// favourites are the grid's only. Against the fake RedGiant.
+// favourites are the grid's only. Against the fake Rasgeth.
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -60,7 +60,7 @@ List<String> _grid(WidgetTester tester) => [
 void main() {
   late FakeRedGiant server;
   setUp(() async {
-    // Real HTTP to the fake RedGiant (widget tests answer 400 to every request otherwise).
+    // Real HTTP to the fake Rasgeth (widget tests answer 400 to every request otherwise).
     HttpOverrides.global = null;
     server = await FakeRedGiant.start();
   });

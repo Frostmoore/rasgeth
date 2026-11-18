@@ -6,7 +6,7 @@
 	<key>AppGroupId</key>
 	<string>$(CUSTOM_GROUP_ID)</string>
 	<key>CFBundleDisplayName</key>
-	<string>RedGiant</string>
+	<string>Rasgeth</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>NSExtension</key>

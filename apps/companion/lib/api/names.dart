@@ -1,7 +1,9 @@
-// The RedGiant's name as people read it (G40.8). The server says the machine's name (the one the
+// The server's name as people read it (G40.8). The server says the machine's name (the one the
 // nodes show: the person's, set in Settings or here, else the host's); in a container or a VM
 // the host's is a generated id («350003b5f4e6»), which nobody reads as a name. One pure rule,
 // tested as a table.
+
+import '../brand.dart';
 
 /// A host name made by a machine, not given by a person: a container's id, a VM's default.
 bool looksGenerated(String name) {
@@ -18,13 +20,17 @@ bool looksGenerated(String name) {
 }
 
 /// The name to show: the person's own in the app ([label]) when it is one, else the server's
-/// ([machine]) when it is one, else «RedGiant». The OS's own host name reads as the product.
+/// ([machine]) when it is one, else the product's. The OS's own host name (`rasgeth`, `redgiant`
+/// before 3.9.0) reads as the product.
 String readableName({String? label, String? machine}) {
   String? usable(String? s) {
     final t = s?.trim() ?? '';
     if (looksGenerated(t)) return null;
-    return t.toLowerCase() == 'redgiant' ? 'RedGiant' : t;
+    return _osHosts.contains(t.toLowerCase()) ? kProductName : t;
   }
 
-  return usable(label) ?? usable(machine) ?? 'RedGiant';
+  return usable(label) ?? usable(machine) ?? kProductName;
 }
+
+/// The host names RedGiant OS gives itself: today's, and the one before 3.9.0.
+final _osHosts = {kProductName.toLowerCase(), 'redgiant'};

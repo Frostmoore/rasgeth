@@ -10,6 +10,7 @@ import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../ui/icons.dart';
+import '../ui/rename_notice.dart';
 import '../ui/send_keys.dart';
 import 'activity_screen.dart';
 import 'chat_screen.dart';
@@ -82,6 +83,7 @@ class _HomeShellState extends State<HomeShell> {
         bottom: false,
         child: Column(
           children: [
+            const RenameNotice(),
             Expanded(
               child: IndexedStack(
                 index: app.tab.index,

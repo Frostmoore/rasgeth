@@ -10,6 +10,7 @@ import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../ui/highlight.dart';
 import '../ui/icons.dart';
+import '../brand.dart';
 
 class DeskCommand {
   const DeskCommand({
@@ -135,7 +136,7 @@ Map<ShortcutActivator, VoidCallback> deskBindings(
 /// macOS: the menus in the system's menu bar (with the app's own menu first).
 List<PlatformMenuItem> platformMenus(List<DeskMenu> menus, AppLocalizations l) => [
   PlatformMenu(
-    label: 'RGCompanion',
+    label: kAppName,
     menus: [
       if (PlatformProvidedMenuItem.hasMenu(PlatformProvidedMenuItemType.about))
         const PlatformProvidedMenuItem(type: PlatformProvidedMenuItemType.about),

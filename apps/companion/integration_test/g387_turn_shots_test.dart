@@ -1,4 +1,4 @@
-// 3.8.7 in the real app on Linux, against the tests' fake RedGiant: a turn from the send to the full
+// 3.8.7 in the real app on Linux, against the tests' fake Rasgeth: a turn from the send to the full
 // answer, paced as the demo server's slow God (REDGIANT_DEMO_SLOW: 42k tokens of context, 75% from
 // the cache, read in 16 steps of 0.3 s; reasoning, the answer, a tool, a second reading, the end),
 // light and dark. With RG_SCREEN narrower than 600 the phone. Run with Xvfb (no demo server needed):

@@ -5,6 +5,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { fillProduct } from "./product.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, "../../../packages/web/src/i18n.ts"), "utf8");
@@ -13,7 +14,7 @@ const parts = { en: src.slice(0, itAt), it: src.slice(itAt) };
 const re = /^ {2}(tool(?:Do|Grp|Why)?_[A-Za-z0-9_]+):\s*\n?\s*"((?:[^"\\]|\\.)*)",?$/gm;
 const out = { it: {}, en: {} };
 for (const [lang, text] of Object.entries(parts))
-  for (const m of text.matchAll(re)) out[lang][m[1]] = JSON.parse(`"${m[2]}"`);
+  for (const m of text.matchAll(re)) out[lang][m[1]] = fillProduct(JSON.parse(`"${m[2]}"`));
 const dart = (o) =>
   Object.entries(o)
     .sort(([a], [b]) => a.localeCompare(b))

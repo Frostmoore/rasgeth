@@ -1,4 +1,4 @@
-// G40.17's figures in the real app against a real RedGiant (the demo server, FakeProvider): under
+// G40.17's figures in the real app against a real Rasgeth (the demo server, FakeProvider): under
 // each answer the page's line (read, cache, generated, context, prefill, generation, tok/s, time)
 // with its bar; short on a phone until touched, whole on a computer. Run by tool/linux_shots.sh:
 //   RG_SCREEN=430x900 RG_DEMO_ENV="DEMO_PASSWORD=companion-test-1 DEMO_PRODUCTS=1" \

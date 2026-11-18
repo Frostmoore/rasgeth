@@ -11,9 +11,9 @@ const kProductName = 'Rasgeth';
 /// `DESKTOP_APP_NAME`, plan 3.9.0 choice 4); on the phones the app is just [kProductName].
 const kDesktopAppName = '$kProductName App';
 
-/// The name in the windows, the menus and the update's texts. Still the old one until the app's
-/// texts move to the new name (plan 3.9.0, N2 and N5), then [kProductName].
-const kAppName = 'RGCompanion';
+/// The name in the windows, the menus and the update's texts: the product's own (plan 3.9.0,
+/// choice 4: «the app's window says Rasgeth everywhere»).
+const kAppName = kProductName;
 
 /// Where the releases are (GitHub: `releases/latest`, `releases/tags/v<version>`).
 const kReleaseRepo = 'Frostmoore/redgiant2';
@@ -22,17 +22,18 @@ const kReleaseRepo = 'Frostmoore/redgiant2';
 /// (`<name>.sig`, packaging/update/sign.mjs), attached to every release.
 const kSumsAsset = 'SHA256SUMS-companion';
 
-/// The Windows installer for this user (packaging/windows/RGCompanion.iss).
-const kWindowsSetupAsset = 'RGCompanion-Setup.exe';
+/// The Windows installer for this user (packaging/windows/RasgethApp.iss).
+const kWindowsSetupAsset = 'Rasgeth-App-Setup.exe';
 
 /// The Linux archive with `install-app.sh` (packaging/linux-app).
-const kLinuxTarAsset = 'rgcompanion-linux-x64.tar.gz';
+const kLinuxTarAsset = 'rasgeth-app-linux-x64.tar.gz';
 
 /// The folder install-app.sh fills in `$XDG_DATA_HOME` (`~/.local/share`), first the current one.
-const kLinuxInstallDirs = ['rgcompanion'];
+const kLinuxInstallDirs = ['rasgeth-app'];
 
-/// The executable's name inside the folder (the inside does not change with the name).
-const kExeName = 'rgcompanion';
+/// The executable's name inside the folder (`BINARY_NAME` of linux/ and windows/CMakeLists.txt:
+/// `rasgeth-app`, `rasgeth-app.exe`), the one a person sees in a task list.
+const kExeName = 'rasgeth-app';
 
 /// The file this release wants for a system, by its name; when a release names it differently
 /// (an older app reading a newer release after a rename) the one line of the signed list that
@@ -51,4 +52,20 @@ String? assetFor(String system, List<String> listed) {
   };
   final shapedNames = listed.where(shaped).toList();
   return shapedNames.length == 1 ? shapedNames.single : null;
+}
+
+/// The release that brought the new name (the page's `RENAMED_IN`, plan 3.9.0 choice 17).
+const kRenamedIn = '3.9.0';
+
+/// Whether [version] (`x.y.z`) came before [kRenamedIn]: who has it knew the old name. Anything
+/// else (null, a build from the sources) says no, as the page's `renameNoticeDue`.
+bool bornBeforeRename(String? version) {
+  final m = RegExp(r'^(\d+)\.(\d+)\.(\d+)$').firstMatch(version ?? '');
+  if (m == null) return false;
+  final v = [for (var i = 1; i <= 3; i++) int.parse(m.group(i)!)];
+  final r = kRenamedIn.split('.').map(int.parse).toList();
+  for (var i = 0; i < 3; i++) {
+    if (v[i] != r[i]) return v[i] < r[i];
+  }
+  return false;
 }

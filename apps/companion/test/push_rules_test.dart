@@ -128,7 +128,7 @@ void main() {
     });
   });
 
-  test('notification ids: positive, stable, one per RedGiant', () {
+  test('notification ids: positive, stable, one per Rasgeth', () {
     final a = notificationIdOf('casa', 'req:r1');
     expect(a, notificationIdOf('casa', 'req:r1'));
     expect(a, greaterThanOrEqualTo(0));

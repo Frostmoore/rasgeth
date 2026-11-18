@@ -1,5 +1,5 @@
 // The composer's «…» in the app (3.8.1): the page's panel as a sheet, with the same items,
-// effects and states, against the fake RedGiant: the mode (the agent's), the model of this
+// effects and states, against the fake Rasgeth: the mode (the agent's), the model of this
 // conversation with the way and the effort, «Meanwhile» with «Bring into the chat»,
 // «Summarise» (`/compact` over the same send), «Add an agent» (a group chat from this
 // conversation), what hides them and what waits while the agent works, in both languages.

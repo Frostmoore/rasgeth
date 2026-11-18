@@ -1,4 +1,4 @@
-// 3.8.11: a widget in the chat on Linux (WebKitGTK), against a real RedGiant (the demo with
+// 3.8.11: a widget in the chat on Linux (WebKitGTK), against a real Rasgeth (the demo with
 // DEMO_ARTIFACTS=1: God's humidity widget). The frame must show the widget's content, not an empty
 // box. Run in the agents' Docker with tool/linux_shots.sh (RG_DEMO_ENV with DEMO_ARTIFACTS=1),
 // RG_SHOTS the folder for the pictures (the X screen, so the native web view is in them).

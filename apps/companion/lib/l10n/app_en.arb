@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "RGCompanion",
+  "appTitle": "Rasgeth",
   "tabTeam": "Team",
   "tabChat": "Chat",
   "tabInbox": "For you",
@@ -8,7 +8,7 @@
   "tabYou": "You",
   "composerHint": "Write to Chat…",
   "composerSend": "Send",
-  "noServer": "No RedGiant connected",
+  "noServer": "No Rasgeth connected",
   "connectFromYou": "Connect one from You.",
   "statusConnected": "connected",
   "statusUnreachable": "unreachable",
@@ -44,9 +44,9 @@
   "languageSystem": "System",
   "reduceMotion": "Reduce motion",
   "reduceMotionHint": "The mascots stay still; their state shows by its sign.",
-  "sectionServer": "RedGiant",
+  "sectionServer": "Rasgeth",
   "serverAddress": "Address",
-  "serverAddressHint": "redgiant.local, https://…, 10.42.0.1",
+  "serverAddressHint": "rasgeth.local, https://…, 10.42.0.1",
   "serverPassword": "Password",
   "serverCode": "Authenticator code",
   "connect": "Connect",
@@ -60,13 +60,13 @@
       }
     }
   },
-  "errUnreachable": "RedGiant does not answer at this address.",
+  "errUnreachable": "Rasgeth does not answer at this address.",
   "errWrong": "Wrong password or code.",
   "errCodeNeeded": "The authenticator app's code is needed too.",
   "errTooMany": "Too many tries: try again in a few minutes.",
-  "errNoPassword": "This RedGiant has no password yet: complete its first start.",
-  "errServerTooOld": "This RedGiant is too old for the app: update it.",
-  "errServerTooNew": "This app is too old for this RedGiant: update the app.",
+  "errNoPassword": "This Rasgeth has no password yet: complete its first start.",
+  "errServerTooOld": "This Rasgeth is too old for the app: update it.",
+  "errServerTooNew": "This app is too old for this Rasgeth: update the app.",
   "errGeneric": "It did not work: {message}",
   "@errGeneric": {
     "placeholders": {
@@ -179,7 +179,7 @@
   "criticalDelete": "Deleting for good",
   "criticalSecret": "A secret leaving",
   "criticalPayment": "A real payment",
-  "criticalProtections": "RedGiant's own protections",
+  "criticalProtections": "Rasgeth's own protections",
   "questionFrom": "{agent} asks you a question",
   "@questionFrom": {
     "placeholders": {
@@ -213,7 +213,7 @@
   "reachPublic": "public https (proxy, Tailscale)",
   "reachLoopback": "this computer",
   "reachChannel": "encrypted setup channel",
-  "noServers": "No RedGiant yet.",
+  "noServers": "No Rasgeth yet.",
   "useServer": "Use",
   "pinnedKey": "Key: {fingerprint}",
   "@pinnedKey": {
@@ -223,10 +223,10 @@
       }
     }
   },
-  "renameServer": "Name of this RedGiant",
+  "renameServer": "Name of this Rasgeth",
   "save": "Save",
   "rename": "Rename",
-  "forgetServer": "Disconnect this RedGiant?",
+  "forgetServer": "Disconnect this Rasgeth?",
   "forgetServerBody": "The app forgets {name} and its device token. To come back, the password again.",
   "@forgetServerBody": {
     "placeholders": {
@@ -235,7 +235,7 @@
       }
     }
   },
-  "errKeyChanged": "DANGER: this RedGiant answered with another key ({fingerprint}). Another computer may be in its place: nothing was sent.",
+  "errKeyChanged": "DANGER: this Rasgeth answered with another key ({fingerprint}). Another computer may be in its place: nothing was sent.",
   "@errKeyChanged": {
     "placeholders": {
       "fingerprint": {
@@ -243,24 +243,24 @@
       }
     }
   },
-  "errCertificate": "The certificate is not this RedGiant's: the app did not go on.",
-  "errBusy": "Another device is setting this RedGiant up: one at a time.",
+  "errCertificate": "The certificate is not this Rasgeth's: the app did not go on.",
+  "errBusy": "Another device is setting this Rasgeth up: one at a time.",
   "errSignInAgain": "Sign in again with the password.",
-  "addServerFirst": "Connect a RedGiant",
-  "addServer": "Add another RedGiant",
+  "addServerFirst": "Connect a Rasgeth",
+  "addServer": "Add another Rasgeth",
   "foundOnNetwork": "Found on this network",
   "pairingNote": "The password is used once: the app keeps only a device token, revocable from Settings › Devices.",
   "allSettings": "All settings",
-  "allSettingsHint": "RedGiant's whole Settings page, inside the app, signed in with this device.",
-  "allSettingsBrowser": "Opens RedGiant's page in the browser: sign in there as usual.",
+  "allSettingsHint": "Rasgeth's whole Settings page, inside the app, signed in with this device.",
+  "allSettingsBrowser": "Opens Rasgeth's page in the browser: sign in there as usual.",
   "allSettingsNoHttps": "The full settings need HTTPS: from here the page would travel in clear. Switch on HTTPS in the home network from the computer.",
   "close": "Close",
   "copy": "Copy",
-  "connectExisting": "Connect a RedGiant that runs already",
-  "firstStepsTitle": "No RedGiant yet",
-  "firstStepsLead": "Set up a new one from here (RedGiant OS opens its own Wi-Fi network at the first start), or connect one you already use.",
-  "setupNew": "Set up a new RedGiant",
-  "setupNewHint": "A RedGiant OS machine turned on for the first time: the app joins its temporary network and does the whole first start.",
+  "connectExisting": "Connect a Rasgeth that runs already",
+  "firstStepsTitle": "No Rasgeth yet",
+  "firstStepsLead": "Set up a new one from here (Rasgeth OS opens its own Wi-Fi network at the first start), or connect one you already use.",
+  "setupNew": "Set up a new Rasgeth",
+  "setupNewHint": "A Rasgeth OS machine turned on for the first time: the app joins its temporary network and does the whole first start.",
   "defaultModel": "Default model",
   "setModel": "The model agents use when nobody chose another",
   "modelNone": "None yet: connect a way of thinking",
@@ -288,19 +288,19 @@
   "fsTitle": "First start",
   "fsLeave": "Leave",
   "fsLeaveTitle": "Leave the first start?",
-  "fsLeaveBody": "What is done stays done; you can come back here, or finish from the browser, while the temporary network is open (30 minutes from when RedGiant was turned on).",
-  "fsIntroTitle": "Set up a new RedGiant",
-  "fsIntroLead": "Turn your RedGiant on: for 30 minutes it opens the Wi-Fi network RedGiant-Setup-XXXX. The app joins it, you create the access and choose your home network, then RedGiant moves there and the app finds it again.",
-  "fsIntroSafe": "Everything you type travels encrypted, with RedGiant's own key checked by the app: nobody on the temporary network reads it.",
+  "fsLeaveBody": "What is done stays done; you can come back here, or finish from the browser, while the temporary network is open (30 minutes from when Rasgeth was turned on).",
+  "fsIntroTitle": "Set up a new Rasgeth",
+  "fsIntroLead": "Turn your Rasgeth on: for 30 minutes it opens the Wi-Fi network Rasgeth-Setup-XXXX. The app joins it, you create the access and choose your home network, then Rasgeth moves there and the app finds it again.",
+  "fsIntroSafe": "Everything you type travels encrypted, with Rasgeth's own key checked by the app: nobody on the temporary network reads it.",
   "fsSeen": "Temporary networks around",
-  "fsNoScan": "The system does not show the networks around: type the four characters after RedGiant-Setup- (you see them in the computer's Wi-Fi list).",
+  "fsNoScan": "The system does not show the networks around: type the four characters after Rasgeth-Setup- (you see them in the computer's Wi-Fi list).",
   "fsLetters": "The last four characters",
   "fsScanAgain": "Look again",
   "fsJoin": "Join the network",
   "fsByHand": "I join by hand",
   "fsJoining": "Joining the temporary network…",
-  "fsJoiningSheet": "Choose RedGiant-Setup in the window the system shows.",
-  "fsConnecting": "Looking for RedGiant on the network…",
+  "fsJoiningSheet": "Choose Rasgeth-Setup in the window the system shows.",
+  "fsConnecting": "Looking for Rasgeth on the network…",
   "fsManualTitle": "Join by hand",
   "fsManualLead": "Join the network {ssid} (password {password}) from the Wi-Fi settings, then come back here.",
   "@fsManualLead": {
@@ -315,36 +315,36 @@
   },
   "fsNetworkName": "Network",
   "fsNetworkPassword": "Password",
-  "fsWhereAndroid": "Settings › Network › Wi-Fi: tap RedGiant-Setup-…",
-  "fsWhereIos": "Settings › Wi-Fi: tap RedGiant-Setup-…",
-  "fsWhereMac": "The Wi-Fi menu at the top right of the screen: choose RedGiant-Setup-…",
-  "fsWhereWindows": "The Wi-Fi icon at the bottom right: choose RedGiant-Setup-…",
-  "fsWhereOther": "The system's Wi-Fi list: choose RedGiant-Setup-…",
+  "fsWhereAndroid": "Settings › Network › Wi-Fi: tap Rasgeth-Setup-…",
+  "fsWhereIos": "Settings › Wi-Fi: tap Rasgeth-Setup-…",
+  "fsWhereMac": "The Wi-Fi menu at the top right of the screen: choose Rasgeth-Setup-…",
+  "fsWhereWindows": "The Wi-Fi icon at the bottom right: choose Rasgeth-Setup-…",
+  "fsWhereOther": "The system's Wi-Fi list: choose Rasgeth-Setup-…",
   "fsManualNoInternet": "The system may say the network has no internet: that is right, stay on it.",
   "fsJoinedContinue": "Done, go on",
-  "fsErrNotFound": "RedGiant does not answer: are you on the RedGiant-Setup network? It stays open for 30 minutes after RedGiant is turned on.",
-  "fsErrNotHere": "This RedGiant does not let a new access be created from here: finish from its page.",
+  "fsErrNotFound": "Rasgeth does not answer: are you on the Rasgeth-Setup network? It stays open for 30 minutes after Rasgeth is turned on.",
+  "fsErrNotHere": "This Rasgeth does not let a new access be created from here: finish from its page.",
   "fsErrCancelled": "The network was not joined. Try again, or join by hand.",
   "fsErrDenied": "The app needs the permission for nearby devices to join the network: allow it, or join by hand.",
   "fsErrJoinFailed": "The system could not join the network: join by hand.",
   "fsErrNoName": "Choose the network, or type its four last characters.",
   "fsAccessTitle": "Create your access",
-  "fsAccessLead": "The password that opens RedGiant from every device. Keep it: it is also what opens its keychain.",
+  "fsAccessLead": "The password that opens Rasgeth from every device. Keep it: it is also what opens its keychain.",
   "fsPassword": "Password",
   "fsPasswordAgain": "The password again",
   "fsPasswordNeeded": "A password is needed.",
   "fsPasswordWeak": "At least 10 characters, not all the same.",
   "fsPasswordDiffer": "The two passwords are different.",
-  "fsAccessSafe": "It travels encrypted to RedGiant and stays only there; this device gets its own access, which you can sign out from Settings › Devices.",
+  "fsAccessSafe": "It travels encrypted to Rasgeth and stays only there; this device gets its own access, which you can sign out from Settings › Devices.",
   "fsAccessGo": "Create the access",
   "fsSignInTitle": "Sign in",
-  "fsSignInLead": "This RedGiant has its password already: type it to go on.",
-  "fsMaintenanceTitle": "RedGiant lost its network",
+  "fsSignInLead": "This Rasgeth has its password already: type it to go on.",
+  "fsMaintenanceTitle": "Rasgeth lost its network",
   "fsMaintenanceLead": "It opened the temporary network to be given a new one. Its owner's password, and nothing else changes.",
   "fsHomeTitle": "Your home network",
-  "fsHomeLead": "Which network should RedGiant use at home? These are the ones it saw around it.",
+  "fsHomeLead": "Which network should Rasgeth use at home? These are the ones it saw around it.",
   "fsHomeNone": "No network was seen around: use the cable, or type the name of a hidden network.",
-  "fsHomeUnusable": "RedGiant cannot join this kind of network",
+  "fsHomeUnusable": "Rasgeth cannot join this kind of network",
   "fsHomeHidden": "A hidden network",
   "fsHomeHiddenName": "Network name",
   "fsHomePassword": "Password of «{name}»",
@@ -355,7 +355,7 @@
       }
     }
   },
-  "fsHomeSafe": "The Wi-Fi password stays only in RedGiant.",
+  "fsHomeSafe": "The Wi-Fi password stays only in Rasgeth.",
   "fsHomeJoin": "Use «{name}»",
   "@fsHomeJoin": {
     "placeholders": {
@@ -365,7 +365,7 @@
     }
   },
   "fsHomeCable": "I use the cable",
-  "fsHomeWaitWifi": "RedGiant is joining «{name}»…",
+  "fsHomeWaitWifi": "Rasgeth is joining «{name}»…",
   "@fsHomeWaitWifi": {
     "placeholders": {
       "name": {
@@ -373,9 +373,9 @@
       }
     }
   },
-  "fsHomeWaitCable": "RedGiant moves to the home network…",
-  "fsHomeWaitSub": "The device goes back to its own network and finds RedGiant there (up to two minutes). If it does not work, RedGiant opens the temporary network again and says why.",
-  "fsLostTitle": "RedGiant is not found",
+  "fsHomeWaitCable": "Rasgeth moves to the home network…",
+  "fsHomeWaitSub": "The device goes back to its own network and finds Rasgeth there (up to two minutes). If it does not work, Rasgeth opens the temporary network again and says why.",
+  "fsLostTitle": "Rasgeth is not found",
   "fsLostLead": "Neither at home nor on {ssid}. Check that this device is back on the home network, then look again; or join the temporary network by hand to see what happened.",
   "@fsLostLead": {
     "placeholders": {
@@ -391,7 +391,7 @@
   "fsLanguageAgents": "The agents speak",
   "fsNext": "Next",
   "fsLater": "Later",
-  "fsBrainTitle": "How should RedGiant think?",
+  "fsBrainTitle": "How should Rasgeth think?",
   "fsBrainLead": "A subscription you have already, or a key of a provider. Any of them, or none for now.",
   "fsClaude": "Claude Pro or Max",
   "fsClaudeText": "Anthropic's page in the browser, then the code it shows",
@@ -420,27 +420,27 @@
       }
     }
   },
-  "fsTerms": "I read the provider's terms: a subscription is used by me, on my own RedGiant.",
+  "fsTerms": "I read the provider's terms: a subscription is used by me, on my own Rasgeth.",
   "fsBrainLater": "Models on this machine, your own server and the rest are in Settings, from the computer or from «All settings».",
   "fsNamesTitle": "The names",
-  "fsNamesLead": "Who runs your RedGiant, and who speaks for it in the chats. You can change them later.",
+  "fsNamesLead": "Who runs your Rasgeth, and who speaks for it in the chats. You can change them later.",
   "fsGodName": "The chief",
   "fsGodHelp": "It organises the work and hands it to the agents",
   "fsDemigodName": "The spokesperson",
   "fsDemigodHelp": "It answers you on Telegram and the other chats",
   "fsFinish": "Finish",
   "fsFinishing": "Completing the first start…",
-  "fsDoneTitle": "RedGiant is ready",
-  "fsDoneLead": "The temporary network is closed: RedGiant is on your home network, and this device is connected to it.",
-  "fsDoneMaintenance": "RedGiant is on its new network again, and this device is connected to it.",
-  "fsDoneMore": "The rest of the first start (backups, chats, access from outside…) is in the page, whenever you want: «Settings of RedGiant» › «All settings».",
+  "fsDoneTitle": "Rasgeth is ready",
+  "fsDoneLead": "The temporary network is closed: Rasgeth is on your home network, and this device is connected to it.",
+  "fsDoneMaintenance": "Rasgeth is on its new network again, and this device is connected to it.",
+  "fsDoneMore": "The rest of the first start (backups, chats, access from outside…) is in the page, whenever you want: «Settings of Rasgeth» › «All settings».",
   "fsDoneGo": "Open the team",
   "homeErrConnectFailed": "The network refused to connect: check the password and try again.",
   "homeErrNotFound": "That network is not in reach now.",
   "homeErrBadPassword": "A Wi-Fi password has 8 to 63 characters.",
   "homeErrBadSsid": "A network's name has 1 to 32 characters.",
-  "homeErrBusy": "RedGiant is already joining a network: wait a moment.",
-  "homeErrWifiOff": "Wi-Fi is not running on RedGiant.",
+  "homeErrBusy": "Rasgeth is already joining a network: wait a moment.",
+  "homeErrWifiOff": "Wi-Fi is not running on Rasgeth.",
   "homeErrNoCable": "No cable with an address: connect it to the router, or choose a Wi-Fi network.",
   "homeErrFailed": "That did not work. Try again in a moment.",
   "outsideNone": "Only from the home network. Tailscale, Cloudflare or your own name: in «All settings».",
@@ -524,8 +524,8 @@
   "updLook": "Look for updates",
   "updLooking": "Looking…",
   "updNow": "Update",
-  "updNowTitle": "Update RedGiant?",
-  "updNowBody": "RedGiant downloads {version}, then restarts: for a minute or two it does not answer. You see every step, and the app reconnects by itself as soon as RedGiant is back.",
+  "updNowTitle": "Update Rasgeth?",
+  "updNowBody": "Rasgeth downloads {version}, then restarts: for a minute or two it does not answer. You see every step, and the app reconnects by itself as soon as Rasgeth is back.",
   "@updNowBody": {
     "placeholders": {
       "version": {
@@ -577,7 +577,7 @@
   "updStepFiles": "The system's files",
   "updStepInstall": "Installing",
   "updStepRestart": "Restarting",
-  "updStepWait": "Waiting for RedGiant to answer",
+  "updStepWait": "Waiting for Rasgeth to answer",
   "updStepRollback": "Going back to the version before",
   "updStepScan": "Comparing the files",
   "updStepBuild": "Preparing",
@@ -854,7 +854,7 @@
   "newAgentRole": "Its job, in your own words",
   "newAgentRoleHint": "For example: writes the tests and checks they pass",
   "newAgentMascotPreview": "Its mascot",
-  "newAgentMascotLater": "RedGiant picks the face from the name; once it is made you can change it.",
+  "newAgentMascotLater": "Rasgeth picks the face from the name; once it is made you can change it.",
   "newAgentModelQ": "Which model does it use? (optional)",
   "newAgentModelLead": "By default it uses the one above it.",
   "newAgentModelGod": "The same as God",
@@ -1002,7 +1002,7 @@
   "refineErr_removed_parts": "The model left out parts that must stay (tools, names). Nothing changed: try again or choose another model.",
   "attachmentNotSent": "not sent",
   "notificationsTitle": "Notifications",
-  "notificationsSub": "How this device hears from RedGiant when the app is closed",
+  "notificationsSub": "How this device hears from Rasgeth when the app is closed",
   "voiceTitle": "Voice",
   "voiceSub": "Who reads the answers aloud, and how loud",
   "notifyAllow": "Yes",
@@ -1048,7 +1048,7 @@
       }
     }
   },
-  "pushOffHere": "Off on this device: RedGiant cannot tell you anything while the app is closed.",
+  "pushOffHere": "Off on this device: Rasgeth cannot tell you anything while the app is closed.",
   "pushWaiting": "Waiting for the distributor's address…",
   "pushWaitingEndpoint": "{name} is preparing this phone's address: it takes a few seconds.",
   "@pushWaitingEndpoint": {
@@ -1060,9 +1060,9 @@
   },
   "pushNowOn": "Notifications are on: send a test to see one.",
   "pushNowOff": "Notifications are off on this device.",
-  "pushEndpointNotSent": "The distributor gave an address, but RedGiant could not be reached: the app tries again at the next start.",
+  "pushEndpointNotSent": "The distributor gave an address, but Rasgeth could not be reached: the app tries again at the next start.",
   "pushFailedNetwork": "The distributor has no network now: try again in a moment.",
-  "pushFailedVapid": "The distributor wants RedGiant's VAPID key, which is in the keychain: open the keychain on RedGiant and try again.",
+  "pushFailedVapid": "The distributor wants Rasgeth's VAPID key, which is in the keychain: open the keychain on Rasgeth and try again.",
   "pushFailedAction": "The distributor needs something from you: open it (for example ntfy) and follow what it says.",
   "pushFailedOther": "Notifications could not be turned on: try again, or choose another distributor.",
   "pushDistributorDropped": "The distributor stopped this registration: turn notifications on again.",
@@ -1084,9 +1084,9 @@
     }
   },
   "pushDistributorHead": "Distributor (UnifiedPush)",
-  "pushDistributorHint": "The distributor brings RedGiant's notifications to this phone, encrypted: you choose it (ntfy, your own ntfy, Sunup…), no Google or RedGiant cloud in between.",
+  "pushDistributorHint": "The distributor brings Rasgeth's notifications to this phone, encrypted: you choose it (ntfy, your own ntfy, Sunup…), no Google or Rasgeth cloud in between.",
   "pushNoDistributor": "There is no UnifiedPush distributor on this phone.",
-  "pushNoDistributorMeans": "Without one, RedGiant cannot reach you while the app is closed: you see requests and answers only by opening the app (or in a linked chat, like Telegram).",
+  "pushNoDistributorMeans": "Without one, Rasgeth cannot reach you while the app is closed: you see requests and answers only by opening the app (or in a linked chat, like Telegram).",
   "pushNoDistributorHow": "To have them: install ntfy (from F-Droid or the Play Store) or another UnifiedPush distributor, then come back here and press «Look again».",
   "pushLookAgain": "Look again",
   "pushIosLater": "On iPhone, notifications come with the published app (Apple's push service, prepared and switched off until then).",
@@ -1094,13 +1094,13 @@
   "pushDesktopWhat": "While the app is open, even behind other windows, requests and questions show as the system's notifications, with Yes and No for ordinary requests.",
   "pushDesktopOn": "System notifications on",
   "pushDesktopOff": "System notifications off",
-  "pushDesktopClosed": "With the app closed this computer gets nothing: RedGiant's page and the linked chats still do.",
+  "pushDesktopClosed": "With the app closed this computer gets nothing: Rasgeth's page and the linked chats still do.",
   "pushNotHere": "This system has no notifications for the app.",
   "pushAboutHead": "How they work",
   "pushAboutSealed": "Each notification is encrypted for this device with keys made here: the distributor only carries it.",
   "pushAboutCritical": "A truly dangerous request never has the quick Yes: the notification opens it in the app, on its own screen.",
   "pushAboutWithdrawn": "A request answered somewhere else (the page, a chat) disappears from here too.",
-  "shareTitle": "Share to RedGiant",
+  "shareTitle": "Share to Rasgeth",
   "shareWhat": "What you are sharing",
   "shareTo": "To whom",
   "shareToChatHint": "A new conversation",
@@ -1115,19 +1115,19 @@
   "voiceStop": "Stop",
   "voiceReadAloud": "Read aloud",
   "voiceTrySentence": "Hello, this is how I read the answers.",
-  "voiceNoReader": "RedGiant has no voice to read with yet.",
-  "voiceNoReaderHow": "Add a key for OpenAI, ElevenLabs or Google Gemini in RedGiant's Settings, Voice: then choose it here.",
+  "voiceNoReader": "Rasgeth has no voice to read with yet.",
+  "voiceNoReaderHow": "Add a key for OpenAI, ElevenLabs or Google Gemini in Rasgeth's Settings, Voice: then choose it here.",
   "voiceTalkHead": "Press and talk",
   "voiceTalkWhat": "In a conversation, hold the microphone down while you speak: let go and what you said is written in the field, to read before sending.",
-  "voiceTalkWhere": "It is written down by RedGiant's transcription (Settings, Voice, Transcription), the same as the page's.",
+  "voiceTalkWhere": "It is written down by Rasgeth's transcription (Settings, Voice, Transcription), the same as the page's.",
   "voiceHoldToTalk": "Hold down to talk",
   "voiceListening": "Listening… let go to finish",
   "voiceWriting": "Writing down what you said…",
   "voiceTooShort": "Too short: hold the microphone down while you speak.",
   "voiceHeardNothing": "I did not hear any words: try again closer to the phone.",
-  "voiceMicDenied": "The microphone is not allowed: allow it in the system's settings for RGCompanion.",
+  "voiceMicDenied": "The microphone is not allowed: allow it in the system's settings for Rasgeth.",
   "voiceMicFailed": "The microphone did not start: is another app using it?",
-  "voiceErrNoService": "RedGiant has no transcription service: choose one in Settings, Voice, Transcription.",
+  "voiceErrNoService": "Rasgeth has no transcription service: choose one in Settings, Voice, Transcription.",
   "voiceErrNoKey": "{name} has no key yet: add it in Settings, Voice.",
   "@voiceErrNoKey": {
     "placeholders": {
@@ -1138,7 +1138,7 @@
   },
   "voiceErrEmpty": "The recording is empty.",
   "voiceErrTooLong": "The recording is too long.",
-  "voiceErrConvert": "The recording could not be converted for whisper on RedGiant's computer.",
+  "voiceErrConvert": "The recording could not be converted for whisper on Rasgeth's computer.",
   "voiceErrTimeout": "{name} took too long to answer.",
   "@voiceErrTimeout": {
     "placeholders": {
@@ -1183,9 +1183,9 @@
     }
   },
   "voiceErrProvider": "This provider cannot do it: choose another one.",
-  "voiceErrServer": "RedGiant cannot be reached: check the connection.",
+  "voiceErrServer": "Rasgeth cannot be reached: check the connection.",
   "voiceErrOther": "The voice did not work: try again.",
-  "notifyTestFailed": "The system did not show it: are notifications on for RGCompanion in its settings?",
+  "notifyTestFailed": "The system did not show it: are notifications on for Rasgeth in its settings?",
   "tabProjects": "Projects",
   "sectionCoders": "For those who code",
   "sectionMascots": "Mascots",
@@ -1203,7 +1203,7 @@
   "codeArchived": "Archived project: read only until you restore it.",
   "codeArchivedShort": "archived",
   "codeChangedMeanwhile": "The file changed since you opened it: open it again.",
-  "codeUnreachable": "RedGiant cannot be reached: check the connection.",
+  "codeUnreachable": "Rasgeth cannot be reached: check the connection.",
   "codeLoadFailed": "It did not load: pull down to try again.",
   "codeNoRepo": "no repository",
   "codeDetached": "no branch",
@@ -1552,7 +1552,7 @@
   "metricsCostUnknown": "cost not known",
   "metricsCostUnknownHint": "This model is not in the models catalog yet: its prices are not known, so its cost is not counted.",
   "metricsShowAll": "Show all the message's figures",
-  "updNowBodyLocal": "On this computer RedGiant does the update to {version} in its own window: it downloads, closes and starts again as the new version. Here you see the steps it reports.",
+  "updNowBodyLocal": "On this computer Rasgeth does the update to {version} in its own window: it downloads, closes and starts again as the new version. Here you see the steps it reports.",
   "@updNowBodyLocal": {
     "placeholders": {
       "version": {
@@ -1561,7 +1561,7 @@
     }
   },
   "updFollow": "Follow the update",
-  "upd2Title": "Updating RedGiant from {from} to {to}",
+  "upd2Title": "Updating Rasgeth from {from} to {to}",
   "@upd2Title": {
     "placeholders": {
       "from": {
@@ -1572,7 +1572,7 @@
       }
     }
   },
-  "upd2TitleTo": "Updating RedGiant to {to}",
+  "upd2TitleTo": "Updating Rasgeth to {to}",
   "@upd2TitleTo": {
     "placeholders": {
       "to": {
@@ -1615,7 +1615,7 @@
     }
   },
   "upd2Steps": "The update's steps",
-  "upd2Restarting": "RedGiant is restarting, reconnecting…",
+  "upd2Restarting": "Rasgeth is restarting, reconnecting…",
   "upd2Attempt": "Attempt {n} · no answer for {time}",
   "@upd2Attempt": {
     "placeholders": {
@@ -1627,11 +1627,11 @@
       }
     }
   },
-  "upd2Back": "RedGiant answers: checking it is the new version…",
-  "upd2Keeps": "RedGiant keeps working while it downloads: it stops only for the restart, a minute or two.",
-  "upd2ComesBack": "Keep the app open: it reconnects by itself as soon as RedGiant answers as the new version.",
-  "upd2Local": "On this computer RedGiant does the update in its own window, with the bar and the time: here you see the steps it reports, and if this window stays open it reconnects by itself when RedGiant is back.",
-  "upd2Older": "This RedGiant does not report each step's details yet (they come with 3.8.1): you see where it is and for how long.",
+  "upd2Back": "Rasgeth answers: checking it is the new version…",
+  "upd2Keeps": "Rasgeth keeps working while it downloads: it stops only for the restart, a minute or two.",
+  "upd2ComesBack": "Keep the app open: it reconnects by itself as soon as Rasgeth answers as the new version.",
+  "upd2Local": "On this computer Rasgeth does the update in its own window, with the bar and the time: here you see the steps it reports, and if this window stays open it reconnects by itself when Rasgeth is back.",
+  "upd2Older": "This Rasgeth does not report each step's details yet (they come with 3.8.1): you see where it is and for how long.",
   "upd2Done": "Updated to {version}",
   "@upd2Done": {
     "placeholders": {
@@ -1670,7 +1670,7 @@
     }
   },
   "upd2Notes": "The version's notes on GitHub",
-  "upd2BackHome": "Back to RedGiant",
+  "upd2BackHome": "Back to Rasgeth",
   "upd2Hide": "Hide: the update goes on",
   "upd2Retry": "Try again",
   "upd2Close": "Go back",
@@ -1705,24 +1705,24 @@
   "upd2Step_download": "Download the new version",
   "upd2Step_files": "Download the system's files",
   "upd2Step_install": "Install the system's files",
-  "upd2Step_restart": "Restart RedGiant as the new version",
-  "upd2Step_wait": "Check that RedGiant answers",
+  "upd2Step_restart": "Restart Rasgeth as the new version",
+  "upd2Step_wait": "Check that Rasgeth answers",
   "upd2Step_rollback": "Put the previous version back",
   "upd2Step_scan": "Compare the installed files",
   "upd2Step_build": "Put the new version together",
   "upd2Step_installer": "Download the installer",
-  "upd2StepText_check": "Only a version signed by RedGiant is installed.",
-  "upd2StepText_download": "RedGiant keeps working while it downloads.",
-  "upd2StepText_files": "The programs of the system around RedGiant.",
+  "upd2StepText_check": "Only a version signed by Rasgeth is installed.",
+  "upd2StepText_download": "Rasgeth keeps working while it downloads.",
+  "upd2StepText_files": "The programs of the system around Rasgeth.",
   "upd2StepText_install": "A copy of every file replaced is kept: if something goes wrong, it goes back as it was.",
-  "upd2StepText_restart": "For a minute or two RedGiant does not answer: the app reconnects by itself.",
+  "upd2StepText_restart": "For a minute or two Rasgeth does not answer: the app reconnects by itself.",
   "upd2StepText_wait": "If the new version does not answer within ten minutes, the previous one comes back by itself.",
   "upd2StepText_rollback": "The new version did not start: the previous one is coming back, nothing is lost.",
   "upd2StepText_scan": "So only what changed is downloaded.",
   "upd2StepText_build": "The new version is prepared beside the current one.",
   "upd2StepText_installer": "The whole program: it installs over the current one.",
   "upd2Why_download": "The new version could not be downloaded.",
-  "upd2WhyText_download": "Nothing changed: RedGiant {from} keeps working. Check that the machine reaches the internet, then press «Try again»: what came down already is not downloaded twice.",
+  "upd2WhyText_download": "Nothing changed: Rasgeth {from} keeps working. Check that the machine reaches the internet, then press «Try again»: what came down already is not downloaded twice.",
   "@upd2WhyText_download": {
     "placeholders": {
       "from": {
@@ -1731,7 +1731,7 @@
     }
   },
   "upd2Why_files": "The system's new files could not be installed.",
-  "upd2WhyText_files": "Every file went back as it was and RedGiant {from} keeps working. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.",
+  "upd2WhyText_files": "Every file went back as it was and Rasgeth {from} keeps working. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.",
   "@upd2WhyText_files": {
     "placeholders": {
       "from": {
@@ -1740,7 +1740,7 @@
     }
   },
   "upd2Why_not_up": "The new version did not start.",
-  "upd2WhyText_not_up": "RedGiant went back to {from} by itself: nothing is lost. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.",
+  "upd2WhyText_not_up": "Rasgeth went back to {from} by itself: nothing is lost. Try again in a while; if it happens again, download the diagnostics from the page (Settings › General › Diagnostics) and send them.",
   "@upd2WhyText_not_up": {
     "placeholders": {
       "from": {
@@ -1749,7 +1749,7 @@
     }
   },
   "upd2Why_no_images": "This version has nothing for this machine's processor.",
-  "upd2WhyText_no_images": "Nothing changed: RedGiant {from} keeps working. Wait for the next version.",
+  "upd2WhyText_no_images": "Nothing changed: Rasgeth {from} keeps working. Wait for the next version.",
   "@upd2WhyText_no_images": {
     "placeholders": {
       "from": {
@@ -1758,7 +1758,7 @@
     }
   },
   "upd2Why_breaking": "This version cannot be installed over the current one.",
-  "upd2WhyText_breaking": "Nothing changed: RedGiant {from} keeps working. Open RedGiant's page from the computer: it guides you through the clean install.",
+  "upd2WhyText_breaking": "Nothing changed: Rasgeth {from} keeps working. Open Rasgeth's page from the computer: it guides you through the clean install.",
   "@upd2WhyText_breaking": {
     "placeholders": {
       "from": {
@@ -1779,10 +1779,10 @@
       }
     }
   },
-  "upd2Why_gone": "RedGiant does not answer any more.",
+  "upd2Why_gone": "Rasgeth does not answer any more.",
   "upd2WhyText_gone": "It did not come back after the restart. Check that the machine is on and in the network, then press «Try again»: the app looks for it again.",
   "upd2Why_start": "The update did not start.",
-  "upd2WhyText_start": "Nothing changed: RedGiant {from} keeps working. Try again in a while.",
+  "upd2WhyText_start": "Nothing changed: Rasgeth {from} keeps working. Try again in a while.",
   "@upd2WhyText_start": {
     "placeholders": {
       "from": {
@@ -1790,7 +1790,7 @@
       }
     }
   },
-  "upd2WhySaid": "RedGiant said: {error}",
+  "upd2WhySaid": "Rasgeth said: {error}",
   "@upd2WhySaid": {
     "placeholders": {
       "error": {
@@ -1798,8 +1798,8 @@
       }
     }
   },
-  "upd2ScreenTitle": "RedGiant's update",
-  "deskAbout": "About RGCompanion",
+  "upd2ScreenTitle": "Rasgeth's update",
+  "deskAbout": "About Rasgeth",
   "deskAdvancedOff": "Turn off the advanced interface",
   "deskAdvancedOn": "Turn on the advanced interface",
   "deskAdvancedShort": "advanced",
@@ -4144,7 +4144,7 @@
   "@cvArEmpty1": {
     "description": "The page's `arEmpty1` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   },
-  "cvArEmpty2": "It lives as a file in the artefatti/ folder of a project (or of God and the assistants), so you also find it among the files on the right. To get one, ask an agent for a tool you want to keep and use again; or import a .rgartifact from another RedGiant.",
+  "cvArEmpty2": "It lives as a file in the artefatti/ folder of a project (or of God and the assistants), so you also find it among the files on the right. To get one, ask an agent for a tool you want to keep and use again; or import a .rgartifact from another Rasgeth.",
   "@cvArEmpty2": {
     "description": "The page's `arEmpty2` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   },
@@ -4233,7 +4233,7 @@
   "@cvArExportZip": {
     "description": "The page's `arExportZip` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   },
-  "cvArExportZipText": "To import it into another RedGiant: the app, its manifest and the fingerprint that checks it arrived intact. It carries no permissions.",
+  "cvArExportZipText": "To import it into another Rasgeth: the app, its manifest and the fingerprint that checks it arrived intact. It carries no permissions.",
   "@cvArExportZipText": {
     "description": "The page's `arExportZipText` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   },
@@ -4241,7 +4241,7 @@
   "@cvArExportHtml": {
     "description": "The page's `arExportHtml` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   },
-  "cvArExportHtmlText": "To open it elsewhere. Careful: outside RedGiant it runs without the isolated frame, with the rights of the page you open it in.",
+  "cvArExportHtmlText": "To open it elsewhere. Careful: outside Rasgeth it runs without the isolated frame, with the rights of the page you open it in.",
   "@cvArExportHtmlText": {
     "description": "The page's `arExportHtmlText` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   },
@@ -4281,7 +4281,7 @@
   "@cvArExportData": {
     "description": "The page's `arExportData` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   },
-  "cvArExportDataHint": "What the app kept on RedGiant (storage). Leave it off for a clean copy without your data.",
+  "cvArExportDataHint": "What the app kept on Rasgeth (storage). Leave it off for a clean copy without your data.",
   "@cvArExportDataHint": {
     "description": "The page's `arExportDataHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   },
@@ -4605,7 +4605,7 @@
   "@cvCmdStatusStopped": {
     "description": "The page's `cmdStatus_stopped` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   },
-  "cvCmdStatusInterrupted": "interrupted (RedGiant had stopped)",
+  "cvCmdStatusInterrupted": "interrupted (Rasgeth had stopped)",
   "@cvCmdStatusInterrupted": {
     "description": "The page's `cmdStatus_interrupted` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   },
@@ -4937,7 +4937,7 @@
   "@cvScreenStarting": {
     "description": "The page's `screenStarting` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   },
-  "cvScreenUnavailable": "The agents' browser needs RedGiant's Docker installation.",
+  "cvScreenUnavailable": "The agents' browser needs Rasgeth's Docker installation.",
   "@cvScreenUnavailable": {
     "description": "The page's `screenUnavailable` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   },
@@ -5046,7 +5046,7 @@
   "csPurpose": "Every project gets a private repository, ready for the agents to push to. Choose GitHub, a Gitea of your own on this computer, or both. Optional.",
   "csGithubTile": "The repositories stay on your GitHub account. It needs a token allowed to make them.",
   "csGiteaTitle": "A Gitea of your own",
-  "csGiteaTile": "A small private GitHub on this computer, installed and started by RedGiant, or the Gitea you already have.",
+  "csGiteaTile": "A small private GitHub on this computer, installed and started by Rasgeth, or the Gitea you already have.",
   "csLinked": "connected",
   "csBoth": "With both: the code lives on Gitea, and every change is copied to GitHub by itself.",
   "csProjects": "Projects you already have",
@@ -5056,7 +5056,7 @@
   "csDone": "Done",
   "csDisconnect": "Disconnect",
   "csTryAndSave": "Try and save",
-  "csGithubHint": "With a token you make on GitHub: RedGiant creates the repositories and the agents push to them. The token stays with RedGiant, never in the agents' boxes.",
+  "csGithubHint": "With a token you make on GitHub: Rasgeth creates the repositories and the agents push to them. The token stays with Rasgeth, never in the agents' boxes.",
   "csGithubLinked": "Connected as @{login}",
   "@csGithubLinked": {
     "placeholders": {
@@ -5068,13 +5068,13 @@
   "csGithubStep1": "Open GitHub's page for a new token (sign in if asked):",
   "csGithubOpen": "New token on GitHub",
   "csGithubStep2": "Fill it in like this:",
-  "csPermName": "Token name: RedGiant",
-  "csPermExpiry": "Expiration: one year (RedGiant reminds you before it ends)",
+  "csPermName": "Token name: Rasgeth",
+  "csPermExpiry": "Expiration: one year (Rasgeth reminds you before it ends)",
   "csPermRepos": "Repository access: All repositories",
   "csPermList": "Permissions, Repositories: Administration, Contents, Issues and Pull requests set to Read and write",
   "csGithubStep3": "Press Generate token at the bottom, copy it and paste it here",
   "csGithubTokenHelp": "It starts with github_pat_. GitHub shows it only once.",
-  "csGiteaHint": "A Git server of your own, on this computer: the repositories stay here, and you look at them in the browser like on GitHub. RedGiant starts it and keeps it updated. Or connect a Gitea you already have.",
+  "csGiteaHint": "A Git server of your own, on this computer: the repositories stay here, and you look at them in the browser like on GitHub. Rasgeth starts it and keeps it updated. Or connect a Gitea you already have.",
   "csGiteaKind": "Which Gitea",
   "csGiteaKindOwn": "Start one here",
   "csGiteaKindExisting": "A Gitea you already have",
@@ -5112,7 +5112,7 @@
   },
   "csGiteaOpen": "Open Gitea",
   "csGiteaStop": "Switch off",
-  "csGiteaNameNotFound": "RedGiant cannot find {host}: the DNS it uses does not know that name. The guide «Your home services» in Settings › Access from outside home says what to add, and lets you try the name.",
+  "csGiteaNameNotFound": "Rasgeth cannot find {host}: the DNS it uses does not know that name. The guide «Your home services» in Settings › Access from outside home says what to add, and lets you try the name.",
   "@csGiteaNameNotFound": {
     "placeholders": {
       "host": {
@@ -5120,7 +5120,7 @@
       }
     }
   },
-  "csGiteaHostUnreachable": "RedGiant finds {host}, but its address does not answer from here (a Tailscale address, another network?). The guide «Your home services» in Settings › Access from outside home says how to fix it.",
+  "csGiteaHostUnreachable": "Rasgeth finds {host}, but its address does not answer from here (a Tailscale address, another network?). The guide «Your home services» in Settings › Access from outside home says how to fix it.",
   "@csGiteaHostUnreachable": {
     "placeholders": {
       "host": {
@@ -5145,9 +5145,9 @@
   "g4SfCareful": "Careful",
   "g4SfCarefulText": "Every risky action waits for you. The safest choice, also the slowest.",
   "g4SfBalanced": "Balanced",
-  "g4SfBalancedText": "You approve what cannot be undone (publishing, history, disks, passwords, changes to RedGiant); the agents in charge approve the rest.",
+  "g4SfBalancedText": "You approve what cannot be undone (publishing, history, disks, passwords, changes to Rasgeth); the agents in charge approve the rest.",
   "g4SfFree": "Free",
-  "g4SfFreeText": "The agents in charge approve almost everything; you are asked only for passwords and changes to RedGiant itself.",
+  "g4SfFreeText": "The agents in charge approve almost everything; you are asked only for passwords and changes to Rasgeth itself.",
   "g4SfPersonalize": "Customize",
   "g4SfNoLimit": "no limit",
   "g4SfNothingPaid": "You use only subscriptions or local models: nothing is paid per use, so there is no spending limit to set. With subscriptions the plan's own limits count (shown at the top).",
@@ -5191,7 +5191,7 @@
     }
   },
   "g4SfBudgetTitle": "The spending limit",
-  "g4SfBudgetQ": "How much can RedGiant spend at most with your API keys?",
+  "g4SfBudgetQ": "How much can Rasgeth spend at most with your API keys?",
   "g4SfBudgetQFree": "With API keys a limit stops the agents before they spend too much.",
   "g4SfBudgetOther": "other",
   "g4SfBudgetSay": "At ${usd} the agents stop and tell you; you raise it whenever you like.",
@@ -5360,7 +5360,7 @@
   "g4RqModeQ": "Do you want to answer the agents' requests yourself?",
   "g4RqModeAsk": "Ask me",
   "g4RqModeClassifier": "Don't ask me anything",
-  "g4RqAlwaysYou": "Even with «Don't ask me anything», the truly dangerous requests always reach you, everywhere: deletions for good, system files, secrets leaving, real payments and RedGiant's own protections.",
+  "g4RqAlwaysYou": "Even with «Don't ask me anything», the truly dangerous requests always reach you, everywhere: deletions for good, system files, secrets leaving, real payments and Rasgeth's own protections.",
   "g4RqModeAskText": "Requests reach you everywhere: here and on the chats you connected. Answer where it suits you: the first answer counts, and the other copies close by themselves.",
   "g4RqModeClassifierText": "Nothing reaches you: the classifier decides, a model you choose. It reads each request with the conversation and writes why it decided so. Only the truly dangerous things (listed below) still reach you, everywhere.",
   "g4RqModeClassifierWarn": "The classifier can be wrong, and each decision costs a small request to its model.",
@@ -5463,8 +5463,8 @@
   "g4GenBackupText": "A task an agent gives up on is tried once more by this model, in a new conversation.",
   "g4GenBackupTitle": "Backup model for tasks",
   "g4GenCare": "Updates and diagnostics",
-  "g4GenCareLead": "Whether a newer RedGiant is out, and a log to send when something goes wrong.",
-  "g4GenCloudPrivacy": "With {name}, what you say after the wake word goes to {name} through RedGiant's server; the wake word itself is still heard only in this page.",
+  "g4GenCareLead": "Whether a newer Rasgeth is out, and a log to send when something goes wrong.",
+  "g4GenCloudPrivacy": "With {name}, what you say after the wake word goes to {name} through Rasgeth's server; the wake word itself is still heard only in this page.",
   "@g4GenCloudPrivacy": {
     "placeholders": {
       "name": {
@@ -5476,7 +5476,7 @@
   "g4GenDebugClearConfirm": "Delete every log kept?",
   "g4GenDebugDownload": "Download the logs",
   "g4GenDebugForced": "Turned on by the server's settings (REDGIANT_DEBUG=1).",
-  "g4GenDebugHelp": "Debug mode keeps a detailed log of everything RedGiant does: each step of starting a model with its times, the local engine's own messages, the requests, what the Windows program does. Turn it on when something is slow or goes wrong, repeat it, then download the logs and send them. It writes a lot (at most 300 MB, the oldest go first) and never writes passwords or keys.",
+  "g4GenDebugHelp": "Debug mode keeps a detailed log of everything Rasgeth does: each step of starting a model with its times, the local engine's own messages, the requests, what the Windows program does. Turn it on when something is slow or goes wrong, repeat it, then download the logs and send them. It writes a lot (at most 300 MB, the oldest go first) and never writes passwords or keys.",
   "g4GenDebugSize": "Logs kept: {size} in {files} files.",
   "@g4GenDebugSize": {
     "placeholders": {
@@ -5489,7 +5489,7 @@
     }
   },
   "g4GenDebugSwitch": "Debug mode",
-  "g4GenDebugText": "Everything RedGiant does, written in a log you can download and send.",
+  "g4GenDebugText": "Everything Rasgeth does, written in a log you can download and send.",
   "g4GenDebugTitle": "Diagnostics",
   "g4GenDraftDefaultUsed": "These are the built-in instructions, with what you wrote. Every tool stays as for the other agents.",
   "g4GenDraftFailed": "{god} could not write them ({why}). Here are the built-in ones, with what you wrote.",
@@ -5603,9 +5603,9 @@
     }
   },
   "g4GenOn": "on",
-  "g4GenOwnSearchHint": "RedGiant can run its own search engine (SearXNG): free, no keys, and every model can search the web with it, local ones too.",
-  "g4GenOwnSearchOn": "RedGiant's search engine is on: every agent and the Chat search the web with it.",
-  "g4GenOwnSearchStart": "Start RedGiant's search engine",
+  "g4GenOwnSearchHint": "Rasgeth can run its own search engine (SearXNG): free, no keys, and every model can search the web with it, local ones too.",
+  "g4GenOwnSearchOn": "Rasgeth's search engine is on: every agent and the Chat search the web with it.",
+  "g4GenOwnSearchStart": "Start Rasgeth's search engine",
   "g4GenOwnSearchStop": "Switch it off",
   "g4GenPriceKchars": "{usd} per 1000 characters",
   "@g4GenPriceKchars": {
@@ -5631,7 +5631,7 @@
       }
     }
   },
-  "g4GenQ": "How do you want RedGiant?",
+  "g4GenQ": "How do you want Rasgeth?",
   "g4GenRefineAfter": "After",
   "g4GenRefineBefore": "Before",
   "g4GenRefineCount": "{del} words out, {add} words in",
@@ -5730,17 +5730,17 @@
   "g4GenSttCompatible": "Another compatible service",
   "g4GenSttCompatibleHelp": "Any service with the OpenAI transcription API (speaches, whisper.cpp's server…), at its address.",
   "g4GenSttLocal": "On this computer",
-  "g4GenSttLocalHelp": "whisper.cpp, started by RedGiant: free, nothing leaves the house.",
+  "g4GenSttLocalHelp": "whisper.cpp, started by Rasgeth: free, nothing leaves the house.",
   "g4GenSttRemote": "whisper on another computer",
   "g4GenSttRemoteHelp": "whisper-asr-webservice at its address, for a computer with a graphics card.",
   "g4GenTitle": "General",
   "g4GenTrying": "Trying the model…",
   "g4GenUiLangHelp": "The pages, the menus and the setup.",
   "g4GenUiLangTitle": "Interface language",
-  "g4GenUpdHelp": "RedGiant looks for a new version by itself at the first start of each day. Here you can look now.",
+  "g4GenUpdHelp": "Rasgeth looks for a new version by itself at the first start of each day. Here you can look now.",
   "g4GenVoiceHelp": "Turns voice messages (from Telegram or the microphone) into text.",
   "g4GenVoiceKey": "Transcription service key",
-  "g4GenVoiceLocalHint": "No account and nothing leaves this computer. RedGiant downloads whisper.cpp and a multilingual model once (about 560 MB, with its bar in the corner) and runs them itself.",
+  "g4GenVoiceLocalHint": "No account and nothing leaves this computer. Rasgeth downloads whisper.cpp and a multilingual model once (about 560 MB, with its bar in the corner) and runs them itself.",
   "g4GenVoiceModel": "Transcription model",
   "g4GenVoiceModelHead": "Model",
   "g4GenVoiceNeedsKey": "Paste the {name} key first.",
@@ -5765,7 +5765,7 @@
       }
     }
   },
-  "g4GenNewsTitle": "What is new in RedGiant {version}",
+  "g4GenNewsTitle": "What is new in Rasgeth {version}",
   "@g4GenNewsTitle": {
     "placeholders": {
       "version": {
@@ -6298,7 +6298,7 @@
       }
     }
   },
-  "appUpdFromServer": "GitHub does not answer: this is the version of the RedGiant you are connected to.",
+  "appUpdFromServer": "GitHub does not answer: this is the version of the Rasgeth you are connected to.",
   "appUpdDownload": "Download",
   "appUpdDownloading": "Downloading {version}",
   "@appUpdDownloading": {
@@ -6322,7 +6322,7 @@
       }
     }
   },
-  "appUpdVerified": "Signature and checksum checked with RedGiant's update key.",
+  "appUpdVerified": "Signature and checksum checked with Rasgeth's update key.",
   "appUpdRestart": "Update and restart",
   "appUpdApplying": "Closing {app} to update it…",
   "@appUpdApplying": {
@@ -6375,7 +6375,7 @@
       }
     }
   },
-  "appUpdCarried": "This copy of {app} comes with RedGiant: it is updated with RedGiant.",
+  "appUpdCarried": "This copy of {app} comes with Rasgeth: it is updated with Rasgeth.",
   "@appUpdCarried": {
     "placeholders": {
       "app": {
@@ -6404,7 +6404,7 @@
   "auAwListLead": "Open one to switch it on or off, run it now, change it or read how it went.",
   "auAwListTitle": "Your automations",
   "auAwNewText": "An agent does something for you: every morning, every week, on an email or a push.",
-  "auAwQ": "What should RedGiant do on its own?",
+  "auAwQ": "What should Rasgeth do on its own?",
   "auAwReminderText": "A message for you on the day and at the time you choose, as you wrote it.",
   "auAwSourcesLead": "What automations can listen to besides the clock.",
   "auAwSourcesTitle": "Connections",
@@ -6525,7 +6525,7 @@
   "auAxMessageWhere": "On which chats (none chosen: all of them)",
   "auAxMessageWords": "With which words",
   "auAxMessageWordsPlaceholder": "shopping, /expense",
-  "auAxMissed": "If RedGiant was off at its time",
+  "auAxMissed": "If Rasgeth was off at its time",
   "auAxMissedRun": "Do it as soon as it is on",
   "auAxMissedSkip": "Skip it",
   "auAxModel": "Model",
@@ -6701,7 +6701,7 @@
       }
     }
   },
-  "auAxSayStartup": "When RedGiant starts",
+  "auAxSayStartup": "When Rasgeth starts",
   "auAxSayTask": "When a task ends",
   "auAxSayTell": "It tells you on {where}.",
   "@auAxSayTell": {
@@ -6760,10 +6760,10 @@
   "auAxStart_after": "After another automation",
   "auAxStart_files": "Files that change",
   "auAxStart_message": "A message in a chat",
-  "auAxStart_startup": "When RedGiant starts",
+  "auAxStart_startup": "When Rasgeth starts",
   "auAxStart_task": "When a task ends",
   "auAxStart_time": "At set times",
-  "auAxStartupHelp": "It starts every time RedGiant is switched on.",
+  "auAxStartupHelp": "It starts every time Rasgeth is switched on.",
   "auAxTask_abandoned": "Given up",
   "auAxTask_not_testable": "Done, not testable",
   "auAxTask_verified": "Done and checked",
@@ -6862,7 +6862,7 @@
   "auProjects": "Projects",
   "auRecipeBroken": "The recipe no longer reads: open it to fix it",
   "auReminderDay": "Day",
-  "auReminderPurpose": "RedGiant sends you this text on Telegram at the time you choose, once. No agent, no cost.",
+  "auReminderPurpose": "Rasgeth sends you this text on Telegram at the time you choose, once. No agent, no cost.",
   "auReminderSave": "Save the reminder",
   "auReminderWhat": "What to remind you of",
   "auRepoEvent_issue_comment": "Comments",
@@ -6960,9 +6960,9 @@
       }
     }
   },
-  "auWhenRepoHelp": "RedGiant adds the webhook to the project's repository by itself: on Gitea at once, on GitHub once access from outside home is on.",
+  "auWhenRepoHelp": "Rasgeth adds the webhook to the project's repository by itself: on Gitea at once, on GitHub once access from outside home is on.",
   "auWhenWebhook": "When a web call arrives (webhook)",
-  "auWhenWebhookHelp": "Another program (a site, a form, GitHub…) calls RedGiant's address; the address and its secret appear after saving.",
+  "auWhenWebhookHelp": "Another program (a site, a form, GitHub…) calls Rasgeth's address; the address and its secret appear after saving.",
   "auWhenWeekdays": "Monday to Friday at {time}",
   "@auWhenWeekdays": {
     "placeholders": {
@@ -7115,7 +7115,7 @@
       }
     }
   },
-  "knJob_download_pgvector": "Downloading pgvector, the search by meaning in RedGiant's database (only once)",
+  "knJob_download_pgvector": "Downloading pgvector, the search by meaning in Rasgeth's database (only once)",
   "knJob_error_checksum": "The download arrived damaged (its fingerprint does not match): try again.",
   "knJob_error_pgvector_unavailable": "pgvector is not published for this computer yet: the knowledge searches by words only.",
   "knJob_step_model_download": "The model",
@@ -7210,7 +7210,7 @@
   "knKbColsTitle": "Collections",
   "knKbConsentChats": "The agents that may read this collection will be able to find and quote what you wrote in your conversations and what the agents answered.",
   "knKbConsentChatsYes": "Yes, the agents may read these conversations",
-  "knKbConsentMail": "The agents that may read this collection will be able to find and quote your mail. RedGiant only reads the inbox: it never marks, moves or deletes a message.",
+  "knKbConsentMail": "The agents that may read this collection will be able to find and quote your mail. Rasgeth only reads the inbox: it never marks, moves or deletes a message.",
   "knKbConsentMailYes": "Yes, the agents may read this mail",
   "knKbDays": "{n} days",
   "@knKbDays": {
@@ -7246,10 +7246,10 @@
   "knKbErr_not_found": "It is not there any more.",
   "knKbEtaSoon": "The time left shows after the first minutes.",
   "knKbFileExample": "/home/me/manual.pdf",
-  "knKbFileHelp": "Its full path on the computer where RedGiant runs.",
+  "knKbFileHelp": "Its full path on the computer where Rasgeth runs.",
   "knKbFilePath": "The file",
   "knKbFolderExample": "/home/me/Documents or C:\\Users\\me\\Documents",
-  "knKbFolderHelp": "Its full path on the computer where RedGiant runs.",
+  "knKbFolderHelp": "Its full path on the computer where Rasgeth runs.",
   "knKbFolderPath": "The folder",
   "knKbForAgent": "For {name}",
   "@knKbForAgent": {
@@ -7283,7 +7283,7 @@
   "knKbKind_mail": "A mailbox",
   "knKbKind_url": "A web page",
   "knKbKind_workspace": "A project",
-  "knKbLead": "Choose folders, files and pages: RedGiant reads them, cuts them into pieces and finds them by what they mean. The agents say where each answer comes from, and one click opens the file at that point.",
+  "knKbLead": "Choose folders, files and pages: Rasgeth reads them, cuts them into pieces and finds them by what they mean. The agents say where each answer comes from, and one click opens the file at that point.",
   "knKbLeftOut": "Left out ({n})",
   "@knKbLeftOut": {
     "placeholders": {
@@ -7427,13 +7427,13 @@
       }
     }
   },
-  "knKbPickFile": "Choose a file in RedGiant",
-  "knKbPickFolder": "Choose a folder in RedGiant",
+  "knKbPickFile": "Choose a file in Rasgeth",
+  "knKbPickFolder": "Choose a folder in Rasgeth",
   "knKbPickOther": "Choose another",
   "knKbPickPlaces": "Back to the projects",
   "knKbPickThis": "Choose this folder",
   "knKbPickUp": "Up one folder",
-  "knKbPickWhere": "Your projects and RedGiant's folders",
+  "knKbPickWhere": "Your projects and Rasgeth's folders",
   "knKbPlaceAssistants": "The assistants' desk",
   "knKbPlacePlatform": "God's folder",
   "knKbProv_cohere": "Cohere",
@@ -7614,8 +7614,8 @@
   "knMemAdd": "Add",
   "knMemAddPlaceholder": "Something to remember, e.g. I prefer short answers",
   "knMemAlready": "Already remembered.",
-  "knMemAutoOff": "Off: RedGiant learns nothing by itself. You can still add memories here, or ask an agent to remember something.",
-  "knMemAutoOn": "After you write, RedGiant notes what stays true about you: tastes, work, how you like answers. It reads only your own messages, never emails, web pages or automations, and never notes passwords.",
+  "knMemAutoOff": "Off: Rasgeth learns nothing by itself. You can still add memories here, or ask an agent to remember something.",
+  "knMemAutoOn": "After you write, Rasgeth notes what stays true about you: tastes, work, how you like answers. It reads only your own messages, never emails, web pages or automations, and never notes passwords.",
   "knMemAutoTitle": "Learn by itself from the conversations",
   "knMemByAgent": "Saved by {name}",
   "@knMemByAgent": {
@@ -7644,10 +7644,10 @@
   "knMemDid_removed": "Deleted",
   "knMemEdit": "Change",
   "knMemEditTitle": "Change the memory",
-  "knMemEmpty": "RedGiant knows nothing about you yet. Talk with an agent, or write here something to remember.",
+  "knMemEmpty": "Rasgeth knows nothing about you yet. Talk with an agent, or write here something to remember.",
   "knMemEyebrow": "Shared memory",
   "knMemForget": "Forget for good",
-  "knMemForgetText": "RedGiant deletes it, and its words go from the list of changes too. It can never be brought back.",
+  "knMemForgetText": "Rasgeth deletes it, and its words go from the list of changes too. It can never be brought back.",
   "knMemForgetTitle": "Forget it for good?",
   "knMemForgottenText": "Its words are gone for good.",
   "knMemFrom": "from «{title}»",
@@ -7659,7 +7659,7 @@
     }
   },
   "knMemFromUntitled": "from a conversation",
-  "knMemGoShared": "Shared memory: what RedGiant knows about you",
+  "knMemGoShared": "Shared memory: what Rasgeth knows about you",
   "knMemGoSharedOpen": "Open",
   "knMemGoSharedText": "Used by every agent and updated by itself while you talk.",
   "knMemHistory": "Recent changes",
@@ -7706,7 +7706,7 @@
   "knMemSharedCardQ": "This page",
   "knMemSharedCardText": "Every agent reads it. It fills up by itself from your conversations, and you can change it here.",
   "knMemSummaryTitle": "Summaries of long conversations",
-  "knMemTitle": "What RedGiant knows about you",
+  "knMemTitle": "What Rasgeth knows about you",
   "knMemUndid_added": "Brought back",
   "knMemUndid_edited": "Back as it was",
   "knMemUndid_removed": "Taken away again",
@@ -7772,5 +7772,17 @@
   "cvReadOnly": "Read only",
   "cvPastePicture": "Paste a picture",
   "cvPasteNone": "There is no picture on the clipboard",
-  "cvAskedAgent": "Put in the conversation's message"
+  "cvAskedAgent": "Put in the conversation's message",
+  "renameNoticeTitle": "RedGiant is now called Rasgeth.",
+  "@renameNoticeTitle": {
+    "description": "The one-time notice of the new name (plan 3.9.0, choice 17): it names the old one on purpose."
+  },
+  "renameNoticeText": "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
+  "@renameNoticeText": {
+    "description": "Under renameNoticeTitle."
+  },
+  "renameNoticeOk": "Got it",
+  "@renameNoticeOk": {
+    "description": "Closes the notice for good (the page's renameOk)."
+  }
 }

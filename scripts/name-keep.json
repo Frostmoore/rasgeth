@@ -327,5 +327,35 @@
     "pattern": "~/Library/Logs/RedGiant",
     "group": "compat-data",
     "why": "the cask's zap also removes the logs a RedGiant before 3.9.0 wrote (~/Library/Logs/RedGiant), beside Rasgeth's"
+  },
+  {
+    "path": "apps/companion/lib/l10n/app_*.arb",
+    "key": "^renameNoticeTitle$",
+    "group": "notice",
+    "why": "the one-time notice of the new name (choice 17) says the old one on purpose: «RedGiant is now called Rasgeth»"
+  },
+  {
+    "path": "apps/companion/lib/l10n/app_*.arb",
+    "key": "^asMascotGod$",
+    "group": "mascot",
+    "why": "describes God's mascot as drawn today, a red giant star (not the product's name); N9 redraws God as the crowned giant and changes this text"
+  },
+  {
+    "path": "apps/companion/lib/api/discovery.dart",
+    "pattern": "\\|RedGiant\\) on",
+    "group": "compat",
+    "why": "a server older than 3.9.0 announces itself on mDNS as «RedGiant on <machine>»: the app reads the machine's name from it and never shows the old one"
+  },
+  {
+    "path": "apps/companion/test/rules_test.dart",
+    "pattern": "RedGiant on salotto",
+    "group": "compat",
+    "why": "the test of the announcement of a server older than 3.9.0 (lib/api/discovery.dart)"
+  },
+  {
+    "path": "apps/companion/**",
+    "pattern": "rgcompanion-(?:linux|android)-build",
+    "group": "internal",
+    "why": "the local Docker images that build the app (tool/*.Dockerfile): seen only by whoever builds it, named in files so the nightly cleanup keeps them"
   }
 ]

@@ -5,6 +5,8 @@
 // the app. The update with `closed` withdraws the notification shown (answered elsewhere).
 import 'dart:convert';
 
+import '../brand.dart';
+
 /// `automation` (G42.9): an automation's message for the person that no page or app showed.
 enum NoticeKind { request, question, task, message, automation, test }
 
@@ -36,7 +38,7 @@ class PushNotice {
       return PushNotice(
         id: id,
         kind: kind,
-        server: j['server'] is String ? j['server'] as String : 'RedGiant',
+        server: j['server'] is String ? j['server'] as String : kProductName,
         title: j['title'] is String ? j['title'] as String : '',
         body: j['body'] is String ? j['body'] as String : '',
         sessionId: j['sessionId'] is String ? j['sessionId'] as String : null,

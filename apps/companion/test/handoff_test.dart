@@ -1,4 +1,4 @@
-// The launchers' handoff (G40.12): the local RedGiant and a device token, never on the command
+// The launchers' handoff (G40.12): the local Rasgeth and a device token, never on the command
 // line; the file is read once and deleted; only this computer's server is taken.
 import 'dart:convert';
 import 'dart:io';
@@ -39,7 +39,7 @@ void main() {
     test('never another machine, https, a path, another version or a bad token', () {
       for (final bad in [
         handoffJson('http://192.168.1.53:7600', token),
-        handoffJson('http://redgiant.local:7600', token),
+        handoffJson('http://rasgeth.local:7600', token),
         handoffJson('https://127.0.0.1:7600', token),
         handoffJson('http://127.0.0.1:7600/evil', token),
         handoffJson('http://127.0.0.1:7600', token, v: 2),
@@ -95,7 +95,7 @@ void main() {
     AppController make(MemoryTokenStore t, MemoryAppPrefs p) =>
         AppController(tokens: t, prefs: p, platform: DevicePlatform.windows, liveEnabled: false);
 
-    test('the window opens on the local RedGiant, signed in, without a password', () async {
+    test('the window opens on the local Rasgeth, signed in, without a password', () async {
       server.tokens.add('rgd_from_the_launcher_1');
       final store = MemoryTokenStore();
       final app = make(store, MemoryAppPrefs());
@@ -145,7 +145,7 @@ void main() {
       expect(server.devices.where((d) => d['id'] == 'd1'), isEmpty);
     });
 
-    test('without a handoff the last RedGiant in use comes back as before', () async {
+    test('without a handoff the last Rasgeth in use comes back as before', () async {
       final prefs = MemoryAppPrefs();
       await ServerBook(prefs)
           .put(SavedServer(id: 's1', label: 'Casa', address: server.base.toString()));

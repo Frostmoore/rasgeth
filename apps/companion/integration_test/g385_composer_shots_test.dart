@@ -1,4 +1,4 @@
-// 3.8.5 in the real app on Linux, against the tests' fake RedGiant: Officina's composer (one box,
+// 3.8.5 in the real app on Linux, against the tests' fake Rasgeth: Officina's composer (one box,
 // the text on the whole width, the buttons inside it), empty, with several lines and with two
 // attachments, light and dark; on a computer also in the side panel. With RG_SCREEN narrower than 600
 // the phone. Run with Xvfb like tool/linux_shots.sh (no demo server needed):

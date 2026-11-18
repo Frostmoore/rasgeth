@@ -20,8 +20,8 @@ void main() {
   group('RedGiantClient', () {
     test('the address the person types becomes scheme, host and port', () {
       expect(
-        RedGiantClient.normalizeBase(Uri.parse('redgiant.local:8787')).toString(),
-        'https://redgiant.local:8787',
+        RedGiantClient.normalizeBase(Uri.parse('rasgeth.local:8787')).toString(),
+        'https://rasgeth.local:8787',
       );
       expect(
         RedGiantClient.normalizeBase(Uri.parse('http://10.42.0.1:8787/x/y')).toString(),
@@ -31,7 +31,7 @@ void main() {
 
     test('hello: who the server is, not signed in without a token', () async {
       final h = await RedGiantClient(server.base).hello();
-      expect(h.machine, 'RedGiant di casa');
+      expect(h.machine, 'Rasgeth di casa');
       expect(h.version, '3.8.0');
       expect(h.appProtocol, kAppProtocolVersion);
       expect(h.access.password, isTrue);
@@ -43,7 +43,7 @@ void main() {
       final c = RedGiantClient(server.base);
       final created = await c.pair(
         password: 'secret',
-        name: 'RGCompanion (Linux)',
+        name: 'Rasgeth (Linux)',
         platform: DevicePlatform.linux,
       );
       expect(created.token, startsWith('rgd_'));
@@ -115,7 +115,7 @@ void main() {
       );
     });
 
-    test('a server that is not RedGiant is said so', () async {
+    test('a server that is not Rasgeth is said so', () async {
       final other = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
       other.listen((r) {
         r.response.write('<html>router</html>');
@@ -149,7 +149,7 @@ void main() {
       final again = make(store, prefs, live: false);
       await again.restore();
       expect(again.connected, isTrue);
-      expect(again.hello?.deviceName, 'RGCompanion (Linux)');
+      expect(again.hello?.deviceName, 'Rasgeth (Linux)');
       expect(server.requests.where((r) => r.startsWith('POST /api/app/pair')), hasLength(1));
 
       await again.disconnect();

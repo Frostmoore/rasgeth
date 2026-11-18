@@ -1,8 +1,8 @@
-// G40.10 on the screens, against the fake RedGiant: Tu › Notifiche on Android (without a
+// G40.10 on the screens, against the fake Rasgeth: Tu › Notifiche on Android (without a
 // distributor it says so plainly; with one it registers with the server's VAPID key and the
 // endpoint reaches the server), on a computer (on and off, a test); the computers' live
 // notifications (shown behind other windows, withdrawn when answered); Tu › Voce; «press and
-// talk» and «read aloud» in a conversation; «Share to RedGiant».
+// talk» and «read aloud» in a conversation; «Share to Rasgeth».
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -289,11 +289,11 @@ void main() {
     await done(tester);
   });
 
-  testWidgets('Tu › Voce without a voice in RedGiant: said, with where to add one', (tester) async {
+  testWidgets('Tu › Voce without a voice in Rasgeth: said, with where to add one', (tester) async {
     await start(tester, locale: const Locale('en'));
     await push(tester, const VoiceScreen());
     expect(find.byKey(const Key('voice-no-reader')), findsOneWidget);
-    expect(find.text('RedGiant has no voice to read with yet.'), findsOneWidget);
+    expect(find.text('Rasgeth has no voice to read with yet.'), findsOneWidget);
     await done(tester);
   });
 
@@ -347,7 +347,7 @@ void main() {
     await done(tester);
   });
 
-  testWidgets('Share to RedGiant: to an agent, with a note and a photo', (tester) async {
+  testWidgets('Share to Rasgeth: to an agent, with a note and a photo', (tester) async {
     final dir = Directory.systemTemp.createTempSync('rg-share');
     addTearDown(() => dir.deleteSync(recursive: true));
     final photo = File('${dir.path}/foto.png')..writeAsBytesSync(Uint8List(40));
@@ -359,7 +359,7 @@ void main() {
       SharedItem(kind: SharedKind.file, path: pdf.path, mimeType: 'application/pdf'),
     ]);
     await _settle(tester);
-    expect(find.text('Condividi con RedGiant'), findsOneWidget);
+    expect(find.text('Condividi con Rasgeth'), findsOneWidget);
     expect(find.text('https://example.com/ricetta'), findsOneWidget);
     expect(find.text('foto.png'), findsOneWidget);
     final agent = app.agents[1];
@@ -380,15 +380,15 @@ void main() {
     await done(tester);
   });
 
-  testWidgets('Share to RedGiant: put aside', (tester) async {
+  testWidgets('Share to Rasgeth: put aside', (tester) async {
     final app = await start(tester, locale: const Locale('en'));
     share.share([const SharedItem(kind: SharedKind.text, text: 'a note')]);
     await _settle(tester);
-    expect(find.text('Share to RedGiant'), findsOneWidget);
+    expect(find.text('Share to Rasgeth'), findsOneWidget);
     await tester.tap(find.byKey(const Key('share-cancel')));
     await _settle(tester);
     expect(app.pendingShare, isNull);
-    expect(find.text('Share to RedGiant'), findsNothing);
+    expect(find.text('Share to Rasgeth'), findsNothing);
     await done(tester);
   });
 }

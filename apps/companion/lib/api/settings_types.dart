@@ -198,6 +198,7 @@ class UpdateStatus {
     required this.canUpdateHere,
     this.phase,
     this.progress,
+    this.firstVersion,
   });
 
   factory UpdateStatus.fromJson(Map<String, dynamic> j) {
@@ -216,8 +217,12 @@ class UpdateStatus {
       canUpdateHere: j['canUpdateHere'] == true,
       phase: _str(p['phase']),
       progress: Progress.fromJson(j['progress']),
+      firstVersion: _str(j['firstVersion']),
     );
   }
+
+  /// The version this installation was born with (kept with its data), null when unknown.
+  final String? firstVersion;
 
   /// windows, mac, docker, os, source.
   final String install;

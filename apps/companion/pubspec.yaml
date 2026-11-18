@@ -1,5 +1,5 @@
 name: rgcompanion
-description: "RGCompanion: the RedGiant app (Android, iOS, Windows, macOS, Linux)."
+description: "Rasgeth: the app (Android, iOS, Windows, macOS, Linux)."
 publish_to: 'none'
 version: 0.1.0+1
 

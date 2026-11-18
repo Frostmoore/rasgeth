@@ -10,6 +10,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { fillProduct } from "./product.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repo = join(here, "../../..");
@@ -28,7 +29,7 @@ const entry = new RegExp(String.raw`^ {2}([A-Za-z0-9_]+):\s*\n?\s*(${lit}(?:\s*\
 const words = { it: {}, en: {} };
 for (const [lang, text] of Object.entries(parts))
   // The page's own source: its literals are read as JavaScript reads them.
-  for (const m of text.matchAll(entry)) words[lang][m[1]] = new Function(`return ${m[2]};`)();
+  for (const m of text.matchAll(entry)) words[lang][m[1]] = fillProduct(new Function(`return ${m[2]};`)());
 
 const news = readFileSync(join(repo, "packages/web/src/components/WhatsNew.tsx"), "utf8");
 const newsVersion = news.match(/NEWS_VERSION = "([^"]+)"/)[1];

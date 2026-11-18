@@ -1,4 +1,4 @@
-// The notifications' registration and handling (G40.10) against the fake RedGiant: the keys are
+// The notifications' registration and handling (G40.10) against the fake Rasgeth: the keys are
 // made once and kept (the server gets only the public half), `PUT /api/devices/:id/push` with the
 // distributor's endpoint, `DELETE` and the keys forgotten; a message sealed for the device is
 // shown and its withdrawal takes it away; a quick answer goes to `POST /api/app/requests/:id/answer`,
@@ -63,7 +63,7 @@ void main() {
     expect((fake.pushRegistrations['d1']!['keys'] as Map)['p256dh'], mine.p256dh);
   });
 
-  test('without a token or for an unknown RedGiant nothing is sent', () async {
+  test('without a token or for an unknown Rasgeth nothing is sent', () async {
     expect(await center.onEndpoint('nobody', 'https://ntfy.sh/x'), isFalse);
     await tokens.delete('srv1');
     expect(await center.onEndpoint('srv1', 'https://ntfy.sh/x'), isFalse);

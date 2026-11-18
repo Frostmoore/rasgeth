@@ -52,9 +52,9 @@ InstallSpot? standaloneSpot({
     case 'windows':
       final dir = _parent(exePath, r'\');
       if (dir == exePath || !exePath.toLowerCase().endsWith('\\$kExeName.exe')) return null;
-      // RedGiant-Setup.exe's copy: <RedGiant>\app\rgcompanion.exe, RedGiant.exe one folder up.
-      if (exists('${_parent(dir, r'\')}\\RedGiant.exe')) return null;
-      // RGCompanion-Setup.exe's folder has its uninstaller.
+      // Rasgeth-Setup.exe's copy: <Rasgeth>\app\rasgeth-app.exe, Rasgeth.exe one folder up.
+      if (exists('${_parent(dir, r'\')}\\Rasgeth.exe')) return null;
+      // Rasgeth-App-Setup.exe's folder has its uninstaller.
       if (!exists('$dir\\unins000.exe')) return null;
       return InstallSpot(system: system, dir: dir, exe: exePath);
     case 'linux':

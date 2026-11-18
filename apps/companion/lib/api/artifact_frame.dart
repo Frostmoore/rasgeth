@@ -10,6 +10,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'widgets.dart';
+import '../brand.dart';
 
 export 'widgets.dart' show kArtifactSandbox, kArtifactClickMs, kArtifactMessageMax;
 
@@ -198,7 +199,7 @@ String? frameMessageText(FrameMessage m) {
           }
         : {
             'code': 'bad_request',
-            'message': 'Not a bridge call RedGiant knows (see canvas_edit help)',
+            'message': 'Not a bridge call $kProductName knows (see canvas_edit help)',
           },
   );
 }
@@ -605,7 +606,7 @@ class FrameSession {
     final load = loads;
     final timer = Timer(kBridgeWait, () {
       if (_pending.remove(requestId) == null) return;
-      _bridgeReply(id, {'error': err('failed', 'No answer from RedGiant')});
+      _bridgeReply(id, {'error': err('failed', 'No answer from $kProductName')});
     });
     _pending[requestId] = (id: id, load: load, timer: timer);
     final ok =
@@ -620,7 +621,7 @@ class FrameSession {
     if (!ok) {
       timer.cancel();
       _pending.remove(requestId);
-      _bridgeReply(id, {'error': err('failed', 'RedGiant is not connected')});
+      _bridgeReply(id, {'error': err('failed', '$kProductName is not connected')});
     }
   }
 

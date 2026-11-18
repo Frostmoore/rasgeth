@@ -2,10 +2,11 @@
 // page's `err_voice_*`, with the provider's name and the status where it gives them.
 import '../api/client.dart';
 import '../l10n/app_localizations.dart';
+import '../brand.dart';
 
 String voiceErrorText(AppLocalizations l, Object error) {
   if (error is VoiceException) {
-    final name = error.vars['name'] ?? 'RedGiant';
+    final name = error.vars['name'] ?? kProductName;
     final status = error.vars['status'] ?? '${error.status}';
     switch (error.code) {
       case 'voice_no_service':

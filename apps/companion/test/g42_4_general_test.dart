@@ -1,4 +1,4 @@
-// G42.4: Settings › General, native, against the fake RedGiant (real HTTP, the page's routes): the
+// G42.4: Settings › General, native, against the fake Rasgeth (real HTTP, the page's routes): the
 // look and the languages, the agents' language picker, the instructions for every agent with the
 // refiner's before and after, the backup model, web search (try, save, the environment's lock),
 // voice messages, pictures, debug mode, what's new and an error; the word diff against the page's
@@ -117,7 +117,7 @@ void main() {
       server.routes['POST /api/setup/search/try'] = (r) async {
         final b = await _body(r);
         puts.putIfAbsent('try', () => []).add(b);
-        return server.answer(r, 200, {'results': 7, 'first': 'RedGiant'});
+        return server.answer(r, 200, {'results': 7, 'first': 'Rasgeth'});
       };
       server.routes['GET /api/debug'] = (r) => server.answer(r, 200, debug);
       server.routes['PUT /api/debug'] = (r) async {
@@ -198,7 +198,7 @@ void main() {
       config['agentLanguage'] = 'fr';
       config['instructions'] = 'Rispondi breve.';
       await start(tester);
-      expect(find.text('Come vuoi RedGiant?'), findsOneWidget);
+      expect(find.text('Come vuoi Rasgeth?'), findsOneWidget);
       expect(find.text('Français'), findsOneWidget);
       expect(find.text('Francese · cambia'), findsOneWidget);
       expect(find.text('scritte'), findsOneWidget);
@@ -339,7 +339,7 @@ void main() {
       await tester.enterText(find.byKey(const Key('search-key')), 'BSA-123456');
       await tap(tester, const Key('search-try'));
       expect(puts['try']!.single, {'provider': 'brave', 'key': 'BSA-123456'});
-      expect(find.text('Funziona: 7 risultati, il primo «RedGiant».'), findsOneWidget);
+      expect(find.text('Funziona: 7 risultati, il primo «Rasgeth».'), findsOneWidget);
       await tap(tester, const Key('search-use'));
       expect(puts['/api/setup/models']!.single, {
         'search': {'provider': 'brave', 'key': 'BSA-123456'},
@@ -444,7 +444,7 @@ void main() {
       openGeneralSettings(ctx).ignore();
       await _settle(tester);
       expect(find.byKey(const Key('general-window')), findsOneWidget);
-      expect(find.text('How do you want RedGiant?'), findsOneWidget);
+      expect(find.text('How do you want Rasgeth?'), findsOneWidget);
       await done(tester);
     });
   });

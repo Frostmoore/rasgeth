@@ -44,7 +44,7 @@ async function startRelay(apnsUrl: string, o: Record<string, unknown> = {}) {
     key: privateKey.export({ type: "pkcs8", format: "pem" }),
     keyId: "KEY123",
     teamId: "TEAM456",
-    topic: "app.redgiant.companion",
+    topic: "it.rasgeth.app",
     hosts: { production: apnsUrl, sandbox: apnsUrl },
     ...o,
   });
@@ -89,7 +89,7 @@ describe("the blind relay", () => {
     const p = apns.pushes[0];
     expect(p?.headers[":path"]).toBe(`/3/device/${TOKEN}`);
     expect(p?.headers).toMatchObject({
-      "apns-topic": "app.redgiant.companion",
+      "apns-topic": "it.rasgeth.app",
       "apns-push-type": "alert",
       "apns-priority": "10",
       "apns-collapse-id": "abc",

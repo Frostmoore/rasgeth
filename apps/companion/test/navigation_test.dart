@@ -54,7 +54,7 @@ void main() {
       );
     }
     expect(app.tab, AppTab.team);
-    expect(find.text('Nessun RedGiant collegato'), findsOneWidget);
+    expect(find.text('Nessun Rasgeth collegato'), findsOneWidget);
   });
 
   testWidgets('each tab opens its place; the Chat field stays over the bar', (tester) async {
@@ -65,7 +65,7 @@ void main() {
       AppTab.inbox: 'Da te',
       AppTab.activity: 'Attività',
       AppTab.you: 'Tu',
-      AppTab.team: 'Nessun RedGiant collegato',
+      AppTab.team: 'Nessun Rasgeth collegato',
     };
     for (final MapEntry(key: tab, value: title) in headers.entries) {
       await tester.tap(find.byKey(Key('tab-${tab.name}')));
@@ -91,7 +91,7 @@ void main() {
     await tester.tap(find.byKey(const Key('chat-send')));
     await tester.pumpAndSettle();
     expect(app.tab, AppTab.chat);
-    // Taken by the Chat at once; without a RedGiant it says where to connect one.
+    // Taken by the Chat at once; without a Rasgeth it says where to connect one.
     expect(app.chatDraft, isNull);
     expect(find.text('Collegalo da Tu.'), findsWidgets);
     final field = tester.widget<TextField>(find.byKey(const Key('chat-field')));
@@ -112,7 +112,7 @@ void main() {
     for (final l in ['Team', 'Chat', 'For you', 'Activity', 'Projects', 'You']) {
       expect(find.text(l), findsWidgets);
     }
-    expect(find.text('No RedGiant connected'), findsOneWidget);
+    expect(find.text('No Rasgeth connected'), findsOneWidget);
   });
 
   testWidgets('You › Theme switches the app to dark and back', (tester) async {
@@ -120,7 +120,7 @@ void main() {
     await _pump(tester, app);
     await tester.tap(find.byKey(const Key('tab-you')));
     await tester.pumpAndSettle();
-    // Under the RedGiants and «Set up a new RedGiant» (G40.8).
+    // Under the RedGiants and «Set up a new Rasgeth» (G40.8).
     await tester.scrollUntilVisible(
       find.byKey(const Key('reduce-motion')),
       200,

@@ -1,4 +1,4 @@
-// 3.8.8: the menus and the lists the user asked for, against the fake RedGiant (which checks the
+// 3.8.8: the menus and the lists the user asked for, against the fake Rasgeth (which checks the
 // bodies as the real routes do). God's card answers a right click anywhere on it and its click
 // shows God's conversations, as every agent's does; a conversation's menu (open, pin, folder,
 // archive and back, export) in every list, the Chat's with «Archived (n)»; a project's click

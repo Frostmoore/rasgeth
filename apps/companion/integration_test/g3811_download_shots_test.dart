@@ -1,4 +1,4 @@
-// 3.8.11: «Download» on the files an agent sent, on Linux against a real RedGiant (the demo, whose
+// 3.8.11: «Download» on the files an agent sent, on Linux against a real Rasgeth (the demo, whose
 // God showed a picture and a document: its `filesSession`). The system's «Save as» is a stand-in
 // here (Xvfb has no portal); the card, then «Saved». RG_SHOT_TAG names the size (computer, phone:
 // RG_SCREEN=390x844), RG_SHOTS the folder for the pictures.

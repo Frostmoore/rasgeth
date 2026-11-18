@@ -1,4 +1,4 @@
-// 3.9.0 in the real app on Linux, against the tests' fake RedGiant: the spending and the limits in
+// 3.9.0 in the real app on Linux, against the tests' fake Rasgeth: the spending and the limits in
 // the conversations' header (the panel, a wider panel, the full conversation, dark theme), Ctrl+Enter
 // from God's field, the shortcuts' list; with RG_SCREEN narrower than 600 the phone's header.
 // Run with Xvfb like tool/linux_shots.sh (no demo server needed):

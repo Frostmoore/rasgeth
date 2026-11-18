@@ -1,5 +1,5 @@
 // Team as the user drew it, the agents' «Model», the composer's «…», «New agent» and the
-// mascots never in step (3.8.1), in the real app against a real RedGiant (the demo server,
+// mascots never in step (3.8.1), in the real app against a real Rasgeth (the demo server,
 // FakeProvider). A phone-sized window. Run by tool/linux_shots.sh with
 //   RG_SCREEN=430x900 RG_DEMO_ENV="DEMO_PASSWORD=companion-test-1 DEMO_API_KEY=1" … \
 //     integration_test/squad_shots_test.dart

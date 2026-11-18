@@ -1,4 +1,4 @@
-// G40.17 in the real app on Linux against a real RedGiant (the demo server, FakeProvider): the
+// G40.17 in the real app on Linux against a real Rasgeth (the demo server, FakeProvider): the
 // computers' control room. Run by tool/linux_shots.sh with a computer's window:
 //   RG_SCREEN=1440x900 RG_DEMO_ENV="DEMO_PASSWORD=companion-test-1 DEMO_CODE=1 DEMO_REQUESTS=1 \
 //     DEMO_CRITICAL=1" … integration_test/g40_17_desk_shots_test.dart

@@ -1,22 +1,22 @@
-# RGCompanion
+# Rasgeth, the app
 
-The RedGiant app (G40, 3.8): one Flutter project for Android, iOS, Windows, macOS and Linux. It is
-an extra: everything still works from the browser. On computers the launchers stay the keeper of
+The Rasgeth app (G40, 3.8; «Rasgeth App» on a computer, next to the whole installation): one
+Flutter project for Android, iOS, Windows, macOS and Linux. It is an extra: everything still works from the browser. On computers the launchers stay the keeper of
 the local server (start, updates, tray); the app is the window.
 
 - Flutter **3.47.3** (Dart 3.13.3), the same on Rig, in the CI (`.github/workflows/companion.yml`)
   and for local checks.
 - `lib/api`: the client of the app's protocol, the same routes as the page.
-  - `transport.dart`: how a RedGiant is reached, one pure rule (`transportFor`): plain http only
-    to this machine; https trusting only RedGiant's local CA once the app has it (or the system's
+  - `transport.dart`: how a Rasgeth is reached, one pure rule (`transportFor`): plain http only
+    to this machine; https trusting only Rasgeth's local CA once the app has it (or the system's
     roots for a proxy or Tailscale); any other http address (the temporary network 10.42.0.1, a
-    RedGiant without HTTPS) through the setup channel, never in clear.
+    Rasgeth without HTTPS) through the setup channel, never in clear.
   - `setup_channel.dart`: the app's side of `/api/setup-channel`, the nodes' handshake in `setup`
-    mode (ed25519, X25519, ChaCha20-Poly1305 with counters, package `cryptography`): RedGiant's
+    mode (ed25519, X25519, ChaCha20-Poly1305 with counters, package `cryptography`): Rasgeth's
     key pinned at first use, the password signed in inside it, the device token and the local CA
     handed back encrypted.
   - `discovery.dart`: `_redgiant._tcp` with bonsoir (the system's own mDNS service on all five).
-  - `servers.dart`: the RedGiants the app knows (home, work…: address, pinned key, local CA) and
+  - `servers.dart`: the servers the app knows (home, work…: address, pinned key, local CA) and
     the settings kept between starts; tokens and the app's own key in the keystore
     (`flutter_secure_storage`).
   - `live.dart`, `live_model.dart`: `/ws` with the device token (heartbeat, reconnection that
@@ -31,7 +31,7 @@ the local server (start, updates, tray); the app is the window.
     is the very one checked against the local CA; Windows and Linux open the browser without the
     token; never over plain http on the network).
 - `lib/setup` (G40.8): the first start from the app.
-  - `wifi.dart`: RedGiant-Setup-XXXX (password `redgiant`) joined system by system: Android
+  - `wifi.dart`: Rasgeth-Setup-XXXX (password `rasgeth`) joined system by system: Android
     `WifiNetworkSpecifier` with the prefix (MainActivity.kt: a network without internet bound to
     the app alone; `NEARBY_WIFI_DEVICES` on 13+, the location only up to 12L), iOS
     `NEHotspotConfiguration` with the prefix, `joinOnce` (AppDelegate.swift, the Hotspot
@@ -42,9 +42,9 @@ the local server (start, updates, tray); the app is the window.
     Programs run without a shell, names checked first.
   - `first_start.dart`: the flow: the setup channel (key pinned at first use), the access (the
     password inside the channel), the device token and the local CA, the home network (the
-    networks RedGiant saw, or the cable), then the wait while RedGiant moves: the app leaves the
-    temporary network, finds RedGiant at home with the same key (the address it said, mDNS,
-    redgiant.local), and when it is not there goes back to the temporary network for the reason
+    networks Rasgeth saw, or the cable), then the wait while Rasgeth moves: the app leaves the
+    temporary network, finds Rasgeth at home with the same key (the address it said, mDNS,
+    rasgeth.local), and when it is not there goes back to the temporary network for the reason
     («try and come back»). Then the languages, a way of thinking (Claude or ChatGPT
     subscription, a provider's key), the names, and the first start is completed. The password is
     kept in memory only while the flow runs.
@@ -67,9 +67,9 @@ the local server (start, updates, tray); the app is the window.
   `artefatti/*.html` (the server says which, `POST /api/canvas/link`). One frame for both
   (`lib/ui/artifact_frame_view.dart`): a web view loads a page of ours from the app's preview
   relay on 127.0.0.1 (`lib/api/preview_relay.dart`), which holds the server's signed
-  `/preview/<token>/…` in `<iframe sandbox="allow-scripts allow-forms">` and passes on to RedGiant
+  `/preview/<token>/…` in `<iframe sandbox="allow-scripts allow-forms">` and passes on to Rasgeth
   only those GETs, with the app's own trust (the local CA, or the system's roots), never the app's
-  token; the server's policy (no network, RedGiant's libraries) comes back with its origins moved
+  token; the server's policy (no network, Rasgeth's libraries) comes back with its origins moved
   to the relay's. The frame's messages reach the app only through that page, with a nonce of its
   load (`lib/api/artifact_frame.dart`: `FrameMessage`, the click rule `ClickGuard`,
   `FrameSession`): height (a widget, at most 70% of the screen), theme and language, errors for
@@ -89,9 +89,9 @@ flutter test                       # goldens: drawn on Linux
 flutter build linux|windows|macos|apk|ios
 ```
 
-Tests: `test/` runs everywhere (a fake RedGiant on localhost with `/ws`, the setup channel's
+Tests: `test/` runs everywhere (a fake Rasgeth on localhost with `/ws`, the setup channel's
 vectors recorded with node:crypto by `tool/setup_vectors.mjs`, the screens). Against a real
-RedGiant (the monorepo's demo server, FakeProvider, no real model):
+Rasgeth (the monorepo's demo server, FakeProvider, no real model):
 
 ```sh
 DEMO_PASSWORD=companion-test-1 DEMO_HOST=127.0.0.1 DEMO_REQUESTS=1 \
@@ -99,7 +99,7 @@ DEMO_PASSWORD=companion-test-1 DEMO_HOST=127.0.0.1 DEMO_REQUESTS=1 \
 RG_LIVE_URL=http://127.0.0.1:7651 flutter test test/live_server_test.dart
 ```
 
-The first start against a RedGiant never set up, with RedGiant OS's temporary network acted out
+The first start against a Rasgeth never set up, with Rasgeth OS's temporary network acted out
 by the demo (`DEMO_SETUP_AP=1`: ap-status, home-network-try, a Wi-Fi password `sbagliata` that
 fails; no real network is touched, the Wi-Fi joining is a fake):
 

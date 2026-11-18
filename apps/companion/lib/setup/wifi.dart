@@ -21,14 +21,14 @@ import 'package:flutter/services.dart';
 
 import '../api/types.dart';
 
-const String kSetupSsidPrefix = 'RedGiant-Setup-';
-const String kSetupPassphrase = 'redgiant';
+const String kSetupSsidPrefix = 'Rasgeth-Setup-';
+const String kSetupPassphrase = 'rasgeth';
 
 /// The temporary network's name as the app shows it before it knows the four last characters.
-const String kSetupSsidPattern = 'RedGiant-Setup-XXXX';
+const String kSetupSsidPattern = 'Rasgeth-Setup-XXXX';
 
-/// RedGiant-Setup- and a few letters or digits (the machine's own, from its fingerprint).
-bool isSetupSsid(String s) => RegExp(r'^RedGiant-Setup-[A-Za-z0-9]{1,16}$').hasMatch(s);
+/// Rasgeth-Setup- and a few letters or digits (the machine's own, from its fingerprint).
+bool isSetupSsid(String s) => RegExp(r'^Rasgeth-Setup-[A-Za-z0-9]{1,16}$').hasMatch(s);
 
 /// The four last characters the person typed (they read them in the system's Wi-Fi list), as the
 /// full name; null when they are not letters or digits.
@@ -196,7 +196,7 @@ class LinuxNmcliWifi implements SetupWifi {
   LinuxNmcliWifi({RunCommand? run}) : _run = run ?? runProcess;
 
   /// The connection of our own: a name no person's connection has.
-  static const connectionName = 'rgcompanion-setup';
+  static const connectionName = 'rasgeth-setup';
 
   final RunCommand _run;
   String? _previous;

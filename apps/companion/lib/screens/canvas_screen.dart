@@ -324,7 +324,7 @@ class _OpenOutside extends StatelessWidget {
 
   Future<void> _open() async {
     final dir = await getTemporaryDirectory();
-    final f = File('${dir.path}/rgcompanion-$name');
+    final f = File('${dir.path}/rasgeth-$name');
     await f.writeAsBytes(bytes);
     await launchUrl(Uri.file(f.path));
   }

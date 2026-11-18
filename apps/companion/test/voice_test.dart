@@ -1,6 +1,6 @@
 // The voice of the app (G40.10): who reads (the chosen provider while its key is there, else the
 // first one with a key), the text a reader gets, the volume's bounds, the server's failures in
-// both languages, and «press and talk» and reading aloud against the fake RedGiant with a fake
+// both languages, and «press and talk» and reading aloud against the fake Rasgeth with a fake
 // microphone and loudspeaker.
 import 'dart:io';
 import 'dart:typed_data';
@@ -119,7 +119,7 @@ void main() {
       expect(voiceErrorText(_en, e), 'OpenAI refused the key: check it in Settings, Voice.');
       expect(
         voiceErrorText(_it, const VoiceException(400, 'x', code: 'voice_no_service')),
-        startsWith('RedGiant non ha un servizio di trascrizione'),
+        startsWith('Rasgeth non ha un servizio di trascrizione'),
       );
       expect(
         voiceErrorText(
@@ -141,7 +141,7 @@ void main() {
     });
   });
 
-  group('against the fake RedGiant', () {
+  group('against the fake Rasgeth', () {
     late FakeRedGiant fake;
     late RedGiantClient client;
     late FakeRecorder mic;
@@ -217,7 +217,7 @@ void main() {
       expect(v.speaking, isNull);
     });
 
-    test('no voice in RedGiant: said, nothing asked', () async {
+    test('no voice in Rasgeth: said, nothing asked', () async {
       await v.speak('a1', 'Ciao', _en);
       expect(v.problem, _en.voiceNoReader);
       expect(fake.speeches, isEmpty);

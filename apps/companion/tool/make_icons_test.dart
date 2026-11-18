@@ -404,7 +404,7 @@ void main() {
       256,
     ], (s) => _tile(m, s, margin: s <= 32 ? 0 : .02));
     File('windows/runner/resources/app_icon.ico').writeAsBytesSync(winIco);
-    File('../../packaging/windows/redgiant.ico').writeAsBytesSync(winIco);
+    File('../../packaging/windows/rasgeth.ico').writeAsBytesSync(winIco);
     for (final (name, colour) in [
       ('dark', const Color(0xFFFFFFFF)),
       ('light', const Color(0xFF000000)),
@@ -415,7 +415,7 @@ void main() {
     }
 
     // Linux and the app's own copy: the tile.
-    await write('assets/icon/rgcompanion-512.png', _tile(m, 512));
+    await write('assets/icon/rasgeth-512.png', _tile(m, 512));
 
     // The page: favicons (an .ico of 16, 32 and 48, and a 32 PNG), the touch icon (opaque, no
     // alpha), the manifest's icons (the tile) and the maskable one (the tile in the 80% circle).

@@ -1,4 +1,4 @@
-// 3.8.8 in the real app on Linux against the demo server (a real RedGiant, FakeProvider): God's
+// 3.8.8 in the real app on Linux against the demo server (a real Rasgeth, FakeProvider): God's
 // card and its menu, an agent's conversations, a conversation's menu, a project's conversations,
 // menu and «Archive» window, the bell in the bar; on a phone the same with long presses and whole
 // screens. Light and dark. Run by tool/linux_shots.sh with RG_SCREEN=1440x900, 1100x700, 430x932:
