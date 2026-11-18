@@ -32,7 +32,11 @@ boardNotFound canvasReload embedPort drawing vwToChat canvasOpen arSection arLea
 arPlacePlatform arPlaceAssistants arOpen arExport arDelete arVersion arNoHeader arLibs arFrom arPending
 arReadOnly arDeleteQ arDeleteText arExportTitle arExportZip arExportZipText arExportHtml arExportHtmlText
 arWhereQ arWhereLead arImported arDataIgnored arDataImported arHasData arExportData arExportDataHint
-arPerms arWants arPermGranted arPermNot arGrant arRevoke arSpent`
+arPerms arWants arPermGranted arPermNot arGrant arRevoke arSpent
+canvasFullscreen canvasFullscreenExit sideMaximize sideBackToChat vwDownload vwCanvasBack kbTitle
+sideTabsLabel canvasAgentOpened vwKind_archive vwKind_audio vwKind_code vwKind_document vwKind_font
+vwKind_image vwKind_layers vwKind_markdown vwKind_model vwKind_pdf vwKind_sheet vwKind_site
+vwKind_slides vwKind_table vwKind_text vwKind_tree vwKind_unknown vwKind_video`
   .split(/\s+/)
   .filter(Boolean);
 

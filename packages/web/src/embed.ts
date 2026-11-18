@@ -6,7 +6,9 @@
 import {
   type AppToEmbed,
   EMBED_CHANNEL,
+  type EmbedAction,
   type EmbedParams,
+  type EmbedTab,
   type EmbedToApp,
   embedEnvelope,
   parseEmbedHash,
@@ -33,6 +35,56 @@ export function takeEmbed(): EmbedParams | null {
 /** For tests: forget the embed. */
 export function resetEmbed(): void {
   params = null;
+  appCanvas = null;
+  barSent = "";
+  actions.clear();
+}
+
+/**
+ * The app's Canvas (G42.6, its `tabs` message): its tabs and whether this page is the one in
+ * view. Null until the app says: the page then answers for its own tab only.
+ */
+let appCanvas: { visible: boolean; tabs: EmbedTab[] } | null = null;
+export const appCanvasNow = () => appCanvas;
+export function setAppCanvas(c: { visible: boolean; tabs: EmbedTab[] } | null): void {
+  appCanvas = c;
+}
+
+/** What the bar's actions do, by id, as the Canvas set them last. */
+const actions = new Map<string, () => void>();
+let barSent = "";
+
+/**
+ * The Canvas's own buttons, for the app's bar (G42.6): sent when they change, and what each does
+ * kept here for the app's `action`.
+ */
+export function setEmbedBar(
+  bar: {
+    actions: (EmbedAction & { run: () => void })[];
+    note?: string | undefined;
+    link?: string | undefined;
+    download?: boolean | undefined;
+  },
+): void {
+  actions.clear();
+  for (const a of bar.actions) actions.set(a.id, a.run);
+  const m: EmbedToApp = {
+    t: "bar",
+    actions: bar.actions.map(({ run: _run, ...a }) => a),
+    ...(bar.note ? { note: bar.note.slice(0, 300) } : {}),
+    ...(bar.link ? { link: bar.link } : {}),
+    ...(bar.download !== undefined && { download: bar.download }),
+  };
+  const key = JSON.stringify(m);
+  if (key === barSent) return;
+  if (toApp(m)) barSent = key;
+}
+
+/** The app used one of the bar's actions. */
+export function runEmbedAction(id: string): boolean {
+  const run = actions.get(id);
+  run?.();
+  return !!run;
 }
 
 type Channel = { postMessage: (s: string) => void };
@@ -154,6 +206,11 @@ export function handleAppInput(m: AppToEmbed): boolean {
       waitingFiles.delete(m.id);
       wait(files);
     } else window.dispatchEvent(new CustomEvent("rg-embed-files", { detail: files }));
+    return true;
+  }
+  if (m.t === "action") return runEmbedAction(m.id);
+  if (m.t === "tabs") {
+    setAppCanvas({ visible: m.visible, tabs: m.tabs });
     return true;
   }
   if (m.t === "paste") {

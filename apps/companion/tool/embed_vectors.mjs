@@ -70,6 +70,21 @@ const pageMessages = [
   { t: "previewLink", url: "https://example.com/a?b=1" },
   { t: "close" },
   { t: "back", handled: false },
+  {
+    t: "bar",
+    actions: [
+      { id: "art.app", label: "App", icon: "play", on: true },
+      { id: "art.run", label: "Esegui", primary: true, hint: "Mai eseguito" },
+      { id: "copy.edit", label: "Modifica una copia", icon: "pencil", disabled: true },
+    ],
+    note: "L'agente è andato a pagina 3",
+    link: "/api/canvas/raw/abc?v=1",
+    download: true,
+  },
+  { t: "bar", actions: [] },
+  { t: "open", title: "a.odt", target: { kind: "file", scope: "p1", path: "a.odt" } },
+  { t: "open", title: "a.pdf", target: { kind: "file", scope: "p1", path: "a.pdf", at: { page: 2 } } },
+  { t: "open", title: "Sito", target: { kind: "port", agentId: "a1", port: 5173, path: "/x" } },
   // Refused:
   { t: "saveAs", name: "a", url: "/x", data: "AA==" },
   { t: "saveAs", name: "a" },
@@ -87,6 +102,18 @@ const pageMessages = [
   { t: "back", handled: "no" },
   { t: "shell" },
   "ready",
+  { t: "bar", actions: [{ id: "A b", label: "x" }] },
+  { t: "bar", actions: [{ id: "a", label: "" }] },
+  { t: "bar", actions: [{ id: "a", label: "x", icon: "bomb" }] },
+  { t: "bar", actions: Array.from({ length: 13 }, (_, i) => ({ id: `a${i}`, label: "x" })) },
+  { t: "bar", actions: [], link: "https://evil.example/x" },
+  { t: "bar", actions: [{ id: "a", label: "x", on: "yes" }] },
+  { t: "bar" },
+  { t: "open", title: "x" },
+  { t: "open", title: "x", target: { kind: "shell" } },
+  { t: "open", title: "x", target: { kind: "file", scope: "p" } },
+  { t: "open", title: "x", target: { kind: "file", scope: "p", path: "a", at: { page: 0 } } },
+  { t: "open", title: "x", target: { kind: "port", agentId: "a", port: "80" } },
 ];
 const envelopes = [
   ...pageMessages.map((m) => env(NONCE, m)),
@@ -105,6 +132,16 @@ const appMessages = [
   { t: "key", key: "redo" },
   { t: "files", id: "f1", files: [{ name: "a.png", type: "image/png", size: 3, data: "AAAA" }] },
   { t: "paste", text: "hello" },
+  { t: "action", id: "art.source" },
+  {
+    t: "tabs",
+    visible: true,
+    tabs: [
+      { title: "a.pdf", target: { kind: "file", scope: "p1", path: "a.pdf" }, active: true },
+      { title: "Sito", target: { kind: "port", agentId: "a1", port: 5173 }, active: false },
+    ],
+  },
+  { t: "tabs", visible: false, tabs: [] },
 ];
 for (const m of appMessages) if (!p.readAppMessage({ rg: "app", m })) throw new Error(`refused: ${JSON.stringify(m)}`);
 

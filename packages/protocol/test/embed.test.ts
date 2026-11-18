@@ -168,6 +168,19 @@ describe("the bridge", () => {
     { t: "previewLink", url: "https://example.com/a?b=1" },
     { t: "close" },
     { t: "back", handled: false },
+    {
+      t: "bar",
+      actions: [
+        { id: "art.app", label: "App", icon: "play", on: true },
+        { id: "art.run", label: "Esegui", primary: true, hint: "Mai eseguito" },
+      ],
+      note: "L'agente è andato a pagina 3",
+      link: "/api/canvas/raw/abc?v=1",
+      download: true,
+    },
+    { t: "bar", actions: [] },
+    { t: "open", title: "a.odt", target: { kind: "file", scope: "p1", path: "a.odt" } },
+    { t: "open", title: "Sito", target: { kind: "port", agentId: "a1", port: 5173 } },
   ];
   it.each(pageGood.map((m) => [m.t, m]))("page → app %s", (_t, m) => {
     expect(EmbedToApp.safeParse(m).success).toBe(true);
@@ -182,6 +195,16 @@ describe("the bridge", () => {
     ["a preview's link to a file", { t: "previewLink", url: "file:///etc/passwd" }],
     ["an empty question", { t: "askAgent", text: "", ref: {} }],
     ["an extra field", { t: "ready", x: 1 }],
+    ["an action with an id of other characters", { t: "bar", actions: [{ id: "A b", label: "x" }] }],
+    ["an action with no words", { t: "bar", actions: [{ id: "a", label: "" }] }],
+    ["an icon the app does not draw", { t: "bar", actions: [{ id: "a", label: "x", icon: "bomb" }] }],
+    [
+      "too many actions",
+      { t: "bar", actions: Array.from({ length: 13 }, (_, i) => ({ id: `a${i}`, label: "x" })) },
+    ],
+    ["a bar's link to another origin", { t: "bar", actions: [], link: "https://evil.example/x" }],
+    ["an open with no target", { t: "open", title: "x" }],
+    ["an open of something else", { t: "open", title: "x", target: { kind: "shell" } }],
   ];
   it.each(pageBad)("page → app refuses %s", (_n, m) => {
     expect(EmbedToApp.safeParse(m).success).toBe(false);
@@ -199,5 +222,21 @@ describe("the bridge", () => {
     expect(AppToEmbed.safeParse({ t: "files", id: "f1", files: [file] }).success).toBe(true);
     expect(AppToEmbed.safeParse({ t: "files", files: Array(21).fill(file) }).success).toBe(false);
     expect(AppToEmbed.safeParse({ t: "font", family: "x;}" }).success).toBe(false);
+  });
+
+  it("app → page: the bar's actions and the app's Canvas tabs (G42.6)", () => {
+    expect(AppToEmbed.safeParse({ t: "action", id: "art.source" }).success).toBe(true);
+    expect(AppToEmbed.safeParse({ t: "action", id: "" }).success).toBe(false);
+    expect(AppToEmbed.safeParse({ t: "action", id: "x", more: 1 }).success).toBe(false);
+    const tab = { title: "a.pdf", target: { kind: "file", scope: "p1", path: "a.pdf" }, active: true };
+    expect(AppToEmbed.safeParse({ t: "tabs", visible: true, tabs: [tab] }).success).toBe(true);
+    expect(AppToEmbed.safeParse({ t: "tabs", visible: false, tabs: [] }).success).toBe(true);
+    expect(AppToEmbed.safeParse({ t: "tabs", tabs: [tab] }).success).toBe(false);
+    expect(AppToEmbed.safeParse({ t: "tabs", visible: true, tabs: Array(51).fill(tab) }).success).toBe(
+      false,
+    );
+    expect(
+      AppToEmbed.safeParse({ t: "tabs", visible: true, tabs: [{ ...tab, active: "yes" }] }).success,
+    ).toBe(false);
   });
 });

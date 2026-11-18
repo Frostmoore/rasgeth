@@ -1,5 +1,7 @@
-// The Canvas (G40.7): a file the agent showed or handed over. Images, SVG, PDF and Markdown are
-// shown natively. An artifact (3.8.7: `artefatti/*.html`, or an HTML file with its header, as the
+// The Canvas's native viewers (G40.7), since G42.6 the fallback: the Canvas is the page inside the
+// app (`lib/canvas/canvas_shell.dart`, `embed=canvas`), and these show when the page cannot load
+// (the first start's channel, plain http over the network) or does not answer. Images, SVG, PDF and
+// Markdown are shown natively. An artifact (3.8.7: `artefatti/*.html`, or an HTML file with its header, as the
 // server says from `POST /api/canvas/link`) runs as in the page: the server's signed
 // `/preview/<token>/` in the frame of `ui/artifact_frame_view.dart` (no network, RedGiant's
 // libraries, its errors for the agent, «send to chat» with the click rule, the bridge); on Linux,
@@ -20,6 +22,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../api/client.dart';
 import '../api/widgets.dart';
 import '../app_state.dart';
+import '../canvas/canvas_shell.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../ui/artifact_frame_view.dart';
@@ -65,7 +68,24 @@ bool get webViewHere => !kIsWeb && (Platform.isAndroid || Platform.isIOS || Plat
 bool get pdfHere =>
     !kIsWeb && (Platform.isAndroid || Platform.isIOS || Platform.isMacOS || Platform.isWindows);
 
+/// Opens a file in the Canvas (G42.6): a tab of the conversation's Canvas when there is one
+/// around [context], else the Canvas on a screen of its own; the native screen when the page
+/// cannot be shown inside the app.
 Future<void> openCanvas(
+  BuildContext context, {
+  required String scope,
+  required String path,
+  String? title,
+  String? sessionId,
+}) => showInCanvas(
+  context,
+  title: title?.isNotEmpty == true ? title! : path.split('/').last,
+  target: {'kind': 'file', 'scope': scope, 'path': path},
+  sessionId: sessionId,
+);
+
+/// The native screen for one file (the fallback of [openCanvas]).
+Future<void> openNativeCanvas(
   BuildContext context, {
   required String scope,
   required String path,
@@ -98,6 +118,52 @@ class CanvasScreen extends StatefulWidget {
 }
 
 class _CanvasScreenState extends State<CanvasScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          tooltip: l.back,
+          onPressed: () => Navigator.maybePop(context),
+          icon: RgIcon(RgIcons.arrowLeft, color: c.text),
+        ),
+        title: Text(
+          widget.title?.isNotEmpty == true ? widget.title! : widget.path.split('/').last,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      body: CanvasNativeBody(
+        scope: widget.scope,
+        path: widget.path,
+        title: widget.title,
+        sessionId: widget.sessionId,
+      ),
+    );
+  }
+}
+
+/// One file in the app's own viewers: the Canvas's fallback (G42.6), and the native screen.
+class CanvasNativeBody extends StatefulWidget {
+  const CanvasNativeBody({
+    super.key,
+    required this.scope,
+    required this.path,
+    this.title,
+    this.sessionId,
+  });
+
+  final String scope;
+  final String path;
+  final String? title;
+  final String? sessionId;
+
+  @override
+  State<CanvasNativeBody> createState() => _CanvasNativeBodyState();
+}
+
+class _CanvasNativeBodyState extends State<CanvasNativeBody> {
   late Future<Widget> _body;
 
   @override
@@ -169,33 +235,20 @@ class _CanvasScreenState extends State<CanvasScreen> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          tooltip: l.back,
-          onPressed: () => Navigator.maybePop(context),
-          icon: RgIcon(RgIcons.arrowLeft, color: c.text),
-        ),
-        title: Text(
-          widget.title?.isNotEmpty == true ? widget.title! : widget.path.split('/').last,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
-      body: FutureBuilder<Widget>(
-        future: _body,
-        builder: (context, s) {
-          if (s.hasError) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Text(l.canvasFailed('${s.error}'), style: TextStyle(color: c.err)),
-              ),
-            );
-          }
-          if (!s.hasData) return const Center(child: CircularProgressIndicator());
-          return s.data!;
-        },
-      ),
+    return FutureBuilder<Widget>(
+      future: _body,
+      builder: (context, s) {
+        if (s.hasError) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(l.canvasFailed('${s.error}'), style: TextStyle(color: c.err)),
+            ),
+          );
+        }
+        if (!s.hasData) return const Center(child: CircularProgressIndicator());
+        return s.data!;
+      },
     );
   }
 }

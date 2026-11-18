@@ -811,7 +811,11 @@ export function EditCopyNote({
  * «Modifica» on a DOCX/PPTX in the canvas: its open copy, made if missing, opened in the same tab
  * (p3.5.4: the copy lives in its original's tab).
  */
-export function EditCopyButton({ scope, path }: { scope: string; path: string }) {
+/**
+ * «Edit a copy» (p3.5.12): the open copy made (a job when it takes a while) and opened in its
+ * tab. Its words and state, for the page's button and the app's bar (G42.6).
+ */
+export function useEditCopy(scope: string, path: string) {
   const [job, setJob] = useState<{ id: string; copy: string }>();
   const note = useEditCopyNote();
   const j = useJob(job?.id);
@@ -820,24 +824,31 @@ export function EditCopyButton({ scope, path }: { scope: string; path: string })
     if (j.state === "done") openCanvas(nameOf(job.copy), { kind: "file", scope, path: job.copy });
     setJob(undefined);
   }, [j?.state]);
+  return {
+    busy: !!job,
+    label: job ? t("officeMakingCopy") : t("officeEditCopy"),
+    hint: note ? `${t("officeEditCopyHint")}. ${note.long}` : t("officeEditCopyHint"),
+    start: () =>
+      void attempt(async () => {
+        const r = await getApi().officeCopy(scope, path);
+        if (r.job) setJob({ id: r.job, copy: r.path });
+        else openCanvas(nameOf(r.path), { kind: "file", scope, path: r.path });
+      }),
+  };
+}
+
+export function EditCopyButton({ scope, path }: { scope: string; path: string }) {
+  const copy = useEditCopy(scope, path);
   return (
-    <>
-      <button
-        type="button"
-        class="button tiny canvas-edit-copy"
-        title={note ? `${t("officeEditCopyHint")}. ${note.long}` : t("officeEditCopyHint")}
-        disabled={!!job}
-        onClick={() =>
-          void attempt(async () => {
-            const r = await getApi().officeCopy(scope, path);
-            if (r.job) setJob({ id: r.job, copy: r.path });
-            else openCanvas(nameOf(r.path), { kind: "file", scope, path: r.path });
-          })
-        }
-      >
-        {job ? <IconSpinner size={13} /> : <IconPencil size={13} />}
-        <span>{job ? t("officeMakingCopy") : t("officeEditCopy")}</span>
-      </button>
-    </>
+    <button
+      type="button"
+      class="button tiny canvas-edit-copy"
+      title={copy.hint}
+      disabled={copy.busy}
+      onClick={copy.start}
+    >
+      {copy.busy ? <IconSpinner size={13} /> : <IconPencil size={13} />}
+      <span>{copy.label}</span>
+    </button>
   );
 }

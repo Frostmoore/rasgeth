@@ -11,6 +11,7 @@
 // The app mirrors these rules in Dart (lib/embed/), checked against vectors made from here
 // (apps/companion/tool/embed_vectors.mjs).
 import { z } from "zod";
+import { CanvasTargetSchema } from "./canvas.js";
 
 /** What an embed shows. */
 export const EMBED_KINDS = ["canvas", "port", "board", "probe"] as const;
@@ -183,6 +184,56 @@ const webLink = z
   .max(4000)
   .regex(/^https?:\/\/[^\s]+$/i);
 
+/**
+ * The drawn icons a Canvas action may carry in the app's bar (G42.6): the app draws its own
+ * (`RgIcons`), never a picture the page sends.
+ */
+export const EMBED_ACTION_ICONS = [
+  "play",
+  "code",
+  "folderPlus",
+  "pencil",
+  "brush",
+  "alert",
+  "keyboard",
+] as const;
+export type EmbedActionIcon = (typeof EMBED_ACTION_ICONS)[number];
+
+/** An action's id: what the app sends back when the person uses it. */
+const actionId = z
+  .string()
+  .min(1)
+  .max(40)
+  .regex(/^[a-z][a-z0-9.-]*$/);
+
+/**
+ * One of the Canvas's own buttons (G42.6), drawn by the app in its bar instead of the page's head:
+ * the artifact's «App»/«Source», «Run», «Make it a project», «Edit a copy», «Edit the picture»,
+ * the keyboard map. Its words are the page's, in the page's language.
+ */
+export const EmbedAction = z
+  .object({
+    id: actionId,
+    label: z.string().min(1).max(80),
+    icon: z.enum(EMBED_ACTION_ICONS).optional(),
+    /** One of a pair that is lit (the artifact's App or Source). */
+    on: z.boolean().optional(),
+    disabled: z.boolean().optional(),
+    /** The bar's main thing (the artifact's «Run»). */
+    primary: z.boolean().optional(),
+    hint: text(300).optional(),
+  })
+  .strict();
+export type EmbedAction = z.infer<typeof EmbedAction>;
+/** The most actions one bar carries. */
+export const EMBED_ACTIONS_MAX = 12;
+
+/** One of the app's Canvas tabs, as the page's `canvas.state` names them (G42.6). */
+export const EmbedTab = z
+  .object({ title: text(300), target: CanvasTargetSchema, active: z.boolean() })
+  .strict();
+export type EmbedTab = z.infer<typeof EmbedTab>;
+
 /** Page → app. */
 export const EmbedToApp = z.discriminatedUnion("t", [
   /** The content is drawn: the app takes its own indicator away. */
@@ -251,6 +302,22 @@ export const EmbedToApp = z.discriminatedUnion("t", [
   z.object({ t: z.literal("close") }).strict(),
   /** The answer to the app's `back`: whether the page closed something of its own. */
   z.object({ t: z.literal("back"), handled: z.boolean() }).strict(),
+  /**
+   * The Canvas's bar (G42.6), drawn by the app: the tab's own buttons, what the agent just did in
+   * it («The agent went to page 3»), the signed link of what is shown (for «Open outside»), and
+   * whether it is a file one can download (not a site nor an artifact).
+   */
+  z
+    .object({
+      t: z.literal("bar"),
+      actions: z.array(EmbedAction).max(EMBED_ACTIONS_MAX),
+      note: text(300).optional(),
+      link: serverPath.optional(),
+      download: z.boolean().optional(),
+    })
+    .strict(),
+  /** Something to open in another tab of the app's Canvas (an open copy made, a file inside). */
+  z.object({ t: z.literal("open"), title: text(300), target: CanvasTargetSchema }).strict(),
 ]);
 export type EmbedToApp = z.infer<typeof EmbedToApp>;
 
@@ -302,6 +369,15 @@ export const AppToEmbed = z.discriminatedUnion("t", [
       text: text(1_000_000).optional(),
       files: z.array(EmbedFile).max(EMBED_FILES_MAX).optional(),
     })
+    .strict(),
+  /** One of the bar's actions used (its `id`). */
+  z.object({ t: z.literal("action"), id: actionId }).strict(),
+  /**
+   * The app's Canvas now (G42.6): its tabs, and whether this page is the one in view. The page
+   * answers an agent's `canvas.query` with them, as a tab of the page's own Canvas would.
+   */
+  z
+    .object({ t: z.literal("tabs"), visible: z.boolean(), tabs: z.array(EmbedTab).max(50) })
     .strict(),
 ]);
 export type AppToEmbed = z.infer<typeof AppToEmbed>;

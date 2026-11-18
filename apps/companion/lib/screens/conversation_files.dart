@@ -90,9 +90,9 @@ mixin _ConversationFiles on State<ConversationScreen> {
     );
   }
 
-  void _openFile(BuildContext context, String scope, String path, String name) => unawaited(
-    openCanvas(context, scope: scope, path: path, title: name, sessionId: widget.sessionId),
-  );
+  /// A file opened from the files' screen (a phone): a tab of this conversation's Canvas.
+  void _openFile(BuildContext context, String scope, String path, String name) =>
+      _s._showCanvas(name, {'kind': 'file', 'scope': scope, 'path': path}, force: true);
 
   /// A file opened from the panel on a computer: in the Canvas beside the conversation (the
   /// column brings it in front), or the Canvas screen where it is narrow.
@@ -256,19 +256,40 @@ mixin _ConversationFiles on State<ConversationScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => CanvasHost(
+    // What opens a file from inside the conversation (a card, an attachment, a widget) opens a
+    // tab of its Canvas (G42.6).
+    show: (title, target) => _s._showCanvas(title, target, force: true),
+    child: _layout(context),
+  );
+
+  /// The conversation at least [min] wide, clipped (a maximized Canvas covers it, G42.6): it
+  /// stays in the tree, its state kept.
+  Widget _atLeast(double min, bool hidden, Widget child) => ClipRect(
+    child: LayoutBuilder(
+      builder: (context, b) => OverflowBox(
+        alignment: Alignment.topLeft,
+        minWidth: math.max(b.maxWidth, min),
+        maxWidth: math.max(b.maxWidth, min),
+        child: Offstage(offstage: hidden, child: child),
+      ),
+    ),
+  );
+
+  Widget _layout(BuildContext context) {
     return LayoutBuilder(
       builder: (context, box) {
         _s._canvasBeside = box.maxWidth >= canvasBesideFrom(Theme.of(context).platform);
         final chat = _s._chat(context);
         final canvasSide = _canvasSide;
+        final over = canvasSide && (_s._canvas.max || _s._canvas.full);
         if (!_computer) {
           // A tablet: the Canvas alone on the right (the files are a screen of their own).
           if (!canvasSide) return chat;
           return Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(child: chat),
+              Expanded(child: _atLeast(360, over, chat)),
               Material(
                 color: RgColors.of(context).bg,
                 child: SafeArea(
@@ -277,6 +298,7 @@ mixin _ConversationFiles on State<ConversationScreen> {
                     model: _s._canvas,
                     maxWidth: box.maxWidth,
                     sessionId: widget.sessionId,
+                    onAskAgent: _s._readOnly ? null : _s._askFromCanvas,
                   ),
                 ),
               ),
@@ -352,10 +374,10 @@ mixin _ConversationFiles on State<ConversationScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(child: target),
+                  Expanded(child: _atLeast(360, over, target)),
                   if (side && panel != null)
                     Offstage(
-                      offstage: front != _SideTab.files,
+                      offstage: front != _SideTab.files || over,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -402,7 +424,9 @@ mixin _ConversationFiles on State<ConversationScreen> {
                           model: _s._canvas,
                           maxWidth: box.maxWidth,
                           sessionId: widget.sessionId,
-                          top: both ? _sideTabs(context) : null,
+                          top: both && !over ? _sideTabs(context) : null,
+                          visible: front == _SideTab.canvas,
+                          onAskAgent: _s._readOnly ? null : _s._askFromCanvas,
                         ),
                       ),
                     ),

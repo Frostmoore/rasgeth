@@ -51,7 +51,7 @@ import '../api/image_shrink.dart';
 import '../api/pasted.dart';
 import '../api/secrets.dart';
 import 'board_screen.dart';
-import 'canvas_panel.dart';
+import '../canvas/canvas_shell.dart';
 import 'canvas_screen.dart';
 import 'conversation_more.dart';
 import 'files/files_explorer.dart';
@@ -197,6 +197,9 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
   /// Wide enough for the Canvas beside the conversation (set by [build], the files' mixin).
   bool _canvasBeside = false;
 
+  /// The Canvas is open as a screen of its own above this conversation (a phone, G42.6).
+  bool _canvasScreen = false;
+
   @override
   void initState() {
     super.initState();
@@ -249,7 +252,9 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
   /// An agent showed something while the person watches (the page's `canvasEvent`): the Canvas
   /// opens by itself, here only while this conversation is the screen in front.
   void _canvasShown(CanvasShown s) {
-    if (!mounted || !(ModalRoute.of(context)?.isCurrent ?? true)) return;
+    if (!mounted) return;
+    // The conversation in front, or its Canvas screen above it (the same tabs).
+    if (!_canvasScreen && !(ModalRoute.of(context)?.isCurrent ?? true)) return;
     _showCanvas(s.title, s.target, keep: s.keep);
   }
 
@@ -268,9 +273,62 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
     }
     final tab = CanvasTab(id: canvasTabId(target), title: title, target: target);
     if (!tab.valid) return;
+    // The Canvas screen already open: the tab comes forward in it.
+    if (_canvasScreen) {
+      _canvas.show(title, target, keep: keep);
+      return;
+    }
     // An agent moving in what the person already looks at does not open it again.
     if (keep && !force) return;
-    unawaited(openCanvasTab(context, tab, sessionId: widget.sessionId));
+    // A file, where the page cannot be shown inside the app: the native screen (G42.6 fallback).
+    if (!canvasEmbedWay(app) && !tab.isPort) {
+      unawaited(
+        openNativeCanvas(
+          context,
+          scope: tab.scope!,
+          path: tab.path!,
+          title: title,
+          sessionId: widget.sessionId,
+        ),
+      );
+      return;
+    }
+    // The whole screen (a phone): the conversation's tabs, as the page's area covering the chat.
+    _canvas.show(title, target, keep: keep);
+    _canvasScreen = true;
+    unawaited(
+      openCanvasScreen(
+        context,
+        _canvas,
+        sessionId: widget.sessionId,
+        onAskAgent: _readOnly ? null : _askFromCanvas,
+      ).whenComplete(() {
+        _canvasScreen = false;
+        if (mounted) _canvas.hide();
+      }),
+    );
+  }
+
+  /// «Ask the agent» from the Canvas (a selection in the page, G42.7): quoted in the composer
+  /// with where it is, for the person to finish.
+  void _askFromCanvas(String text, Map<String, Object?> ref) {
+    final where = [
+      ?ref['path'] as String?,
+      if (ref['line'] != null)
+        ref['lineEnd'] != null && ref['lineEnd'] != ref['line']
+            ? ':${ref['line']}-${ref['lineEnd']}'
+            : ':${ref['line']}',
+      if (ref['page'] != null) ' p. ${ref['page']}',
+    ].join();
+    final quote = text.trim().split('\n').map((l) => '> $l').join('\n');
+    final draft = '$quote\n${where.isEmpty ? '' : '($where)\n'}\n';
+    final now = _text.text;
+    final next = now.trim().isEmpty ? draft : '$now\n$draft';
+    _before = next;
+    _text.value = TextEditingValue(
+      text: next,
+      selection: TextSelection.collapsed(offset: next.length),
+    );
   }
 
   Agent? get _agent =>

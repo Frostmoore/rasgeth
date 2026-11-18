@@ -440,29 +440,43 @@
   },
   "viewers": {
     "video": {
-      "app": "no",
-      "files": [],
+      "app": "embed",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart"
+      ],
       "phase": "G42.6",
       "rows": [
         104
       ],
-      "note": "MediaView through embed=canvas."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside); codecs as the web view has them (WebKitGTK: GStreamer with gst-libav)."
     },
     "audio": {
-      "app": "no",
-      "files": [],
+      "app": "embed",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart"
+      ],
       "phase": "G42.6",
       "rows": [
         104
       ],
-      "note": "MediaView through embed=canvas."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside)."
     },
     "image": {
-      "app": "partial",
+      "app": "embed",
       "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart",
         "lib/screens/canvas_screen.dart"
       ],
-      "phase": "G42.7",
+      "phase": "G42.6",
       "rows": [
         93,
         94,
@@ -470,83 +484,113 @@
         123,
         124
       ],
-      "note": "Native fallback for png/jpg/gif/webp/bmp and SVG (flutter_svg); the page's viewer in G42.6, ImageEditor and SvgEditor in G42.7."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside); the native viewer (png/jpg/gif/webp/bmp, SVG with flutter_svg) stays as the fallback. Editing (ImageEditor, SvgEditor) opens in the page already; its integration with the app (pen and touch, paste, export as «Save as…») is G42.7."
     },
     "pdf": {
-      "app": "partial",
+      "app": "embed",
       "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart",
         "lib/screens/canvas_screen.dart"
       ],
-      "phase": "G42.7",
+      "phase": "G42.6",
       "rows": [
         95,
         127
       ],
-      "note": "Native fallback with pdfx (no search; Linux opens the system viewer); PdfView in G42.6, PdfEditor in G42.7."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside), search included; pdfx stays as the fallback. PdfEditor's integration is G42.7."
     },
     "markdown": {
-      "app": "partial",
+      "app": "embed",
       "files": [
-        "lib/screens/canvas_screen.dart",
-        "lib/ui/markdown.dart"
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart",
+        "lib/screens/canvas_screen.dart"
       ],
-      "phase": "G42.7",
+      "phase": "G42.6",
       "rows": [
         96,
         117
       ],
-      "note": "Native Markdown as fallback; DocEditor in embed in G42.7."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside); the native Markdown stays as the fallback. DocEditor's integration (save state, keys, «ask the agent») is G42.7."
     },
     "code": {
-      "app": "partial",
+      "app": "embed",
       "files": [
-        "lib/screens/canvas_screen.dart",
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart",
         "lib/screens/code/files_tab.dart",
-        "lib/ui/highlight.dart"
-      ],
-      "phase": "G42.7",
-      "rows": [
-        97,
-        117
-      ],
-      "note": "The Canvas shows plain source; the advanced Files tab highlights and edits a little; TextEditor in embed in G42.7."
-    },
-    "text": {
-      "app": "partial",
-      "files": [
+        "lib/ui/highlight.dart",
         "lib/screens/canvas_screen.dart"
       ],
-      "phase": "G42.7",
+      "phase": "G42.6",
       "rows": [
         97,
         117
       ],
-      "note": "Plain source as fallback; TextEditor in embed in G42.7."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside), highlighted; plain source as the fallback. TextEditor's integration is G42.7."
+    },
+    "text": {
+      "app": "embed",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart",
+        "lib/screens/canvas_screen.dart"
+      ],
+      "phase": "G42.6",
+      "rows": [
+        97,
+        117
+      ],
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside); plain source as the fallback. TextEditor's integration is G42.7."
     },
     "table": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.8",
+      "app": "embed",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart"
+      ],
+      "phase": "G42.6",
       "rows": [
         100,
         118
       ],
-      "note": "CSV falls back to plain source text; TableView in G42.6, SheetEditor in G42.8."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside) (TableView). SheetEditor's integration is G42.8."
     },
     "sheet": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.8",
+      "app": "embed",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart"
+      ],
+      "phase": "G42.6",
       "rows": [
         100,
         118,
         119
       ],
-      "note": "SheetEditor (Univer) through embed."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside). SheetEditor (Univer) opens in the page; its integration with the app is G42.8."
     },
     "document": {
-      "app": "no",
-      "files": [],
+      "app": "partial",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart"
+      ],
       "phase": "G42.8",
       "rows": [
         101,
@@ -558,7 +602,7 @@
         304,
         305
       ],
-      "note": "DocView in G42.6, OfficeEditor (ZetaOffice) in G42.8. ZetaOffice needs a cross-origin isolated frame: Chromium (Android WebView, WebView2) has it through Document-Isolation-Policy, WebKit (WKWebView, WebKitGTK) does not (G42.0 probe); G42.8 decides between an isolated embed page and the browser.",
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside): laid out as in print (LibreOffice's PDF, open copies with their bar) everywhere. Editing with ZetaOffice needs a cross-origin isolated frame: Chromium (Android WebView, WebView2) has it through Document-Isolation-Policy, WebKit (WKWebView, WebKitGTK) does not (G42.0 probe); G42.8 decides between an isolated embed page and the browser.",
       "systems": {
         "android": "embed",
         "windows": "embed",
@@ -568,15 +612,20 @@
       }
     },
     "slides": {
-      "app": "no",
-      "files": [],
+      "app": "partial",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart"
+      ],
       "phase": "G42.8",
       "rows": [
         101,
         102,
         120
       ],
-      "note": "SlidesView in G42.6, OfficeEditor in G42.8. ZetaOffice needs a cross-origin isolated frame: Chromium (Android WebView, WebView2) has it through Document-Isolation-Policy, WebKit (WKWebView, WebKitGTK) does not (G42.0 probe); G42.8 decides between an isolated embed page and the browser.",
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside): laid out as in print (LibreOffice's PDF, open copies with their bar) everywhere. Editing with ZetaOffice needs a cross-origin isolated frame: Chromium (Android WebView, WebView2) has it through Document-Isolation-Policy, WebKit (WKWebView, WebKitGTK) does not (G42.0 probe); G42.8 decides between an isolated embed page and the browser.",
       "systems": {
         "android": "embed",
         "windows": "embed",
@@ -586,52 +635,76 @@
       }
     },
     "model": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.8",
+      "app": "embed",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart"
+      ],
+      "phase": "G42.6",
       "rows": [
         125,
         126
       ],
-      "note": "ModelView and ModelEditor (three.js) through embed."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside) (three.js, WebGL works in every web view). ModelEditor's integration is G42.8."
     },
     "archive": {
-      "app": "no",
-      "files": [],
+      "app": "embed",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart"
+      ],
       "phase": "G42.6",
       "rows": [
         105
       ],
-      "note": "ArchiveView through embed."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside): a file inside opens in another tab of the app's Canvas (open)."
     },
     "font": {
-      "app": "no",
-      "files": [],
+      "app": "embed",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart"
+      ],
       "phase": "G42.6",
       "rows": [
         106
       ],
-      "note": "FontView through embed."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside)."
     },
     "tree": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart",
+        "lib/screens/canvas_screen.dart"
+      ],
+      "phase": "G42.6",
       "rows": [
         98,
         99
       ],
-      "note": "JSON/YAML/XML fall back to plain source; TreeView in G42.6, editing in G42.7."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside), with the syntax check; plain source as the fallback. Editing's integration is G42.7."
     },
     "site": {
-      "app": "partial",
+      "app": "embed",
       "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart",
         "lib/api/artifact_frame.dart",
         "lib/api/preview_relay.dart",
-        "lib/embed/embed_screen.dart",
-        "lib/screens/canvas_screen.dart",
         "lib/ui/artifact_frame_view.dart",
-        "lib/ui/dialogs.dart"
+        "lib/ui/dialogs.dart",
+        "lib/screens/canvas_screen.dart"
       ],
       "phase": "G42.6",
       "rows": [
@@ -639,28 +712,37 @@
         109,
         110
       ],
-      "note": "Artifacts run on the signed /preview/ link with the bridge (3.8.7); an agent's port is the page in embed=port (G42.2); a link an agent-made page wants to open is asked natively in every frame and embed (previewLink, G42.2); other HTML in a sandboxed frame; the page's site view for files via embed in G42.6."
+      "note": "Files and folders as sites, artifacts (App and Source, Run, Make it a project as the bar's actions), agents' ports: the page through embed=canvas/port in the native frame (G42.6); a link an agent-made page wants to open is asked natively (previewLink, G42.2); widgets in their frame (3.8.7); the native artifact frame and the sandboxed HTML stay as the fallback."
     },
     "layers": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart"
+      ],
+      "phase": "G42.6",
       "rows": [
         107,
         122
       ],
-      "note": "OraView and ImageEditor through embed."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside) (OraView). ImageEditor's integration is G42.7."
     },
     "unknown": {
-      "app": "partial",
+      "app": "embed",
       "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart",
         "lib/screens/canvas_screen.dart"
       ],
       "phase": "G42.6",
       "rows": [
         91
       ],
-      "note": "The app tries any other file as text; the page's byte sniffing (viewerFor) comes with embed."
+      "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside): the page's byte sniffing (viewerFor) picks the viewer; the app tries any other file as text in the fallback."
     }
   },
   "chat": {
@@ -801,8 +883,8 @@
       "app": "native",
       "files": [
         "lib/api/conversation.dart",
+        "lib/canvas/canvas_shell.dart",
         "lib/embed/embed_screen.dart",
-        "lib/screens/canvas_panel.dart",
         "lib/screens/canvas_screen.dart",
         "lib/ui/chat/chat_parts.dart"
       ],
@@ -811,7 +893,7 @@
         86,
         109
       ],
-      "note": "A line on a computer, a big card on a phone; a tap shows it again: the panel on the right (files and ports in embed), or the whole screen."
+      "note": "A line on a computer, a big card on a phone; a tap shows it again in the conversation's Canvas (the panel on the right, or the Canvas screen)."
     },
     "widget": {
       "app": "embed",
@@ -999,13 +1081,16 @@
       "note": "Neither the page nor the app sends it: both use POST /api/artifacts/errors."
     },
     "canvas.state": {
-      "app": "no",
-      "files": [],
+      "app": "embed",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/embed/bridge.dart"
+      ],
       "phase": "G42.6",
       "rows": [
         87
       ],
-      "note": "The page inside embed answers canvas.query as a page tab."
+      "note": "The page inside embed answers canvas.query as a tab of the page: the app tells every page its tabs and which one is in view (tabs), the page adds its own place and kind."
     },
     "browser.watch": {
       "app": "no",
@@ -1173,7 +1258,8 @@
       "app": "native",
       "files": [
         "lib/api/live_model.dart",
-        "lib/screens/canvas_panel.dart",
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
         "lib/screens/conversation_screen.dart"
       ],
       "phase": "G42.2",
@@ -1181,7 +1267,7 @@
         86,
         300
       ],
-      "note": "What an agent shows opens by itself while the person watches (never from the replayed log): a panel on the right of the conversation on a computer, with tabs; the whole screen on a phone. The same rule as the page's canvasEvent/openCanvas."
+      "note": "What an agent shows opens by itself while the person watches (never from the replayed log): a panel on the right of the conversation on a computer, with tabs; the Canvas screen with the same tabs on a phone (G42.6). The same rule as the page's canvasEvent/openCanvas."
     },
     "session.synced": {
       "app": "n/a",
@@ -1346,12 +1432,16 @@
       "note": "The page also refreshes projects on it (archived or restored)."
     },
     "canvas.query": {
-      "app": "no",
-      "files": [],
+      "app": "embed",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/embed/bridge.dart"
+      ],
       "phase": "G42.6",
       "rows": [
         87
-      ]
+      ],
+      "note": "Answered by the page inside embed (its own connection), with the app's tabs; an agent's canvas.act reaches the tab it is for there."
     },
     "doc.opened": {
       "app": "no",
@@ -1493,6 +1583,23 @@
         142
       ],
       "note": "The top bar's folder (Explorer.tsx): the conversation's place (project, personal agents' desk or platform, as currentScope), new file and folder, upload with keep both / replace, .rgartifact import, hidden files, refresh, terminal, rename, download, delete to .trash, copy path, ask the agent, open in the Canvas, search; archived projects read only. Computer: a resizable panel beside the conversation (or full window), kept open; files dropped from the system go into the folder under the pointer, a file dragged onto the conversation is attached. Phone: a screen of its own. Subprojects' focus (G24.13) waits for the app's subprojects."
+    },
+    "canvas": {
+      "app": "native",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/screens/conversation_files.dart",
+        "lib/screens/conversation_screen.dart"
+      ],
+      "phase": "G42.6",
+      "rows": [
+        89,
+        92,
+        113,
+        300
+      ],
+      "note": "The Canvas's frame (SideArea.tsx and Canvas.tsx's head): tabs with «Chat» and «Maximize», the bar (name, kind and weight from title, save state, the agent's move, the tab's own buttons from bar, keyboard map, reload, download, full screen, open outside), the divider; on a phone the Canvas screen with the same tabs. A few web views alive together (three, two on a phone, one on Linux), the others loaded again on return. Ctrl/Cmd+S, Z, Shift+Z, F passed to the page."
     }
   }
 }

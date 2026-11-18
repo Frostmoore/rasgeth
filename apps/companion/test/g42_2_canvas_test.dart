@@ -15,9 +15,8 @@ import 'package:rgcompanion/api/types.dart';
 import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/embed/embed_link.dart';
-import 'package:rgcompanion/embed/embed_screen.dart';
 import 'package:rgcompanion/embed/web_host.dart';
-import 'package:rgcompanion/screens/canvas_panel.dart';
+import 'package:rgcompanion/canvas/canvas_shell.dart';
 import 'package:rgcompanion/screens/conversation_screen.dart';
 
 import 'fake_server.dart';
@@ -223,12 +222,13 @@ void main() {
     ) async {
       server.store('s1', 'canvas.show', {'title': 'Vecchio', 'target': _port});
       await open(tester, const Size(390, 844));
-      expect(find.byType(EmbedScreen), findsNothing);
+      expect(find.byKey(const Key('canvas-screen')), findsNothing);
       // The big card of a phone.
       expect(find.text('Vecchio'), findsOneWidget);
       server.store('s1', 'canvas.show', {'title': 'Il sito', 'target': _port});
       await _settle(tester);
-      expect(find.byType(EmbedScreen), findsOneWidget);
+      // G42.6: the Canvas screen, with the conversation's tabs.
+      expect(find.byKey(const Key('canvas-screen')), findsOneWidget);
       expect(find.byKey(const Key('canvas-panel')), findsNothing);
       expect(jsonEncode(parseEmbedHash(hosts.last.loaded!.fragment)!.toJson()), contains('5173'));
       await done(tester);
