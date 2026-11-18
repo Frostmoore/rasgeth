@@ -404,7 +404,7 @@ void main() {
       256,
     ], (s) => _tile(m, s, margin: s <= 32 ? 0 : .02));
     File('windows/runner/resources/app_icon.ico').writeAsBytesSync(winIco);
-    File('../../packaging/windows/redgiant.ico').writeAsBytesSync(winIco);
+    File('../../packaging/windows/rasgeth.ico').writeAsBytesSync(winIco);
     for (final (name, colour) in [
       ('dark', const Color(0xFFFFFFFF)),
       ('light', const Color(0xFF000000)),

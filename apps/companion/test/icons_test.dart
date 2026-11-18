@@ -238,7 +238,7 @@ void main() {
         expect(_alpha(f, f.w ~/ 2, f.w ~/ 2), 255);
       }
       expect(
-        File('$_root/packaging/windows/redgiant.ico').readAsBytesSync(),
+        File('$_root/packaging/windows/rasgeth.ico').readAsBytesSync(),
         File('windows/runner/resources/app_icon.ico').readAsBytesSync(),
       );
       for (final (name, colour) in [('dark', (255, 255, 255)), ('light', (0, 0, 0))]) {
