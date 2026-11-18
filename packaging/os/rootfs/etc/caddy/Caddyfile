@@ -1,12 +1,12 @@
-# RedGiant OS: https://redgiant.local (and the machine's private addresses) with the machine's
+# Rasgeth OS: https://rasgeth.local (and the machine's private addresses) with the machine's
 # own certificate authority (/usr/lib/redgiant-os/redgiant-tls, keys in /var/lib/redgiant/tls,
 # root only: systemd hands the server's certificate to Caddy as credentials). Port 80 and 443
-# lead to RedGiant on 7600; http keeps working until the person says the certificate is trusted,
-# then RedGiant itself redirects to https and sends HSTS (packages/server/src/lan-https.ts).
+# lead to Rasgeth on 7600; http keeps working until the person says the certificate is trusted,
+# then Rasgeth itself redirects to https and sends HSTS (packages/server/src/lan-https.ts).
 {
 	admin off
 	auto_https off
-	default_sni redgiant.local
+	default_sni rasgeth.local
 	servers {
 		protocols h1 h2
 	}

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# RedGiant OS (G39.2): the installer ISO for x86_64, for a USB stick (dd, Rufus, Etcher…) or a
+# Rasgeth OS (G39.2): the installer ISO for x86_64, for a USB stick (dd, Rufus, Etcher…) or a
 # virtual CD. A tiny Debian live system (live-boot) that runs redgiant-install, plus the system's
 # disk image it writes. Boots with BIOS and UEFI, Secure Boot included (Debian's signed shim,
 # GRUB and kernel). Called by build.sh; no loop device is used.
@@ -53,12 +53,12 @@ cp "$PAYLOAD" "$ISO/redgiant/"
 echo "$SIZE" >"$ISO/redgiant/$(basename "${PAYLOAD%.zst}").size"
 (cd "$ISO/redgiant" && sha256sum ./*.zst >SHA256SUMS)
 # Debian's signed GRUB finds the medium by this file, then reads /boot/grub/grub.cfg.
-echo "RedGiant OS $VERSION installer" >"$ISO/.disk/info"
+echo "Rasgeth OS $VERSION installer" >"$ISO/.disk/info"
 
 cat >"$ISO/boot/grub/grub.cfg" <<EOF
 set default=0
 set timeout=5
-menuentry 'Install RedGiant OS $VERSION (erases the disk you choose)' {
+menuentry 'Install Rasgeth OS $VERSION (erases the disk you choose)' {
   linux /live/vmlinuz boot=live quiet $CONSOLE
   initrd /live/initrd.img
 }

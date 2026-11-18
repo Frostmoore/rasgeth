@@ -1,7 +1,7 @@
-# RedGiant OS (G39.1): what the OS's own scripts share. Sourced, never run.
+# Rasgeth OS (G39.1): what the OS's own scripts share. Sourced, never run.
 # shellcheck shell=bash
 
-# Everything RedGiant keeps on this machine: Docker's data-root (images and the RedGiant volumes),
+# Everything Rasgeth keeps on this machine: Docker's data-root (images and the Rasgeth volumes),
 # the stack's settings and the disks mounted for backups. Mount a bigger disk here to move it all.
 STATE=/var/lib/redgiant
 SHARE=/usr/share/redgiant-os
@@ -55,7 +55,7 @@ addresses() {
   ip -o -6 addr show scope global 2>/dev/null | awk '$2 !~ /^(docker|br-|veth)/ { split($4, a, "/"); print "[" a[1] "]" }'
 }
 
-# The name avahi publishes (redgiant.local, or redgiant-2.local when another machine has it).
+# The name avahi publishes (rasgeth.local, or redgiant-2.local when another machine has it).
 mdns_name() {
   local n
   n=$(avahi-resolve -a "$(addresses | head -1)" 2>/dev/null | awk '{ print $2 }')
@@ -69,9 +69,9 @@ mdns_name() {
 write_issue() {
   local f=/etc/issue.d/50-redgiant.issue new a
   new=$(
-    printf 'RedGiant: http://%s:%s\n' "$(mdns_name)" "$PORT"
-    for a in $(addresses); do printf 'RedGiant: http://%s:%s\n' "$a" "$PORT"; done
-    https_on && printf 'RedGiant: https://%s\n' "$(mdns_name)"
+    printf 'Rasgeth: http://%s:%s\n' "$(mdns_name)" "$PORT"
+    for a in $(addresses); do printf 'Rasgeth: http://%s:%s\n' "$a" "$PORT"; done
+    https_on && printf 'Rasgeth: https://%s\n' "$(mdns_name)"
     echo
   )
   [ "$new" = "$(cat "$f" 2>/dev/null)" ] && return 0

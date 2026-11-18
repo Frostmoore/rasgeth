@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""RedGiant OS (G39.2): the packages of the virtual machine formats, Python's own modules only.
+"""Rasgeth OS (G39.2): the packages of the virtual machine formats, Python's own modules only.
 
   vm.py zip <file> <out.zip>                     one file in a zip (Windows opens it by itself)
   vm.py ova --vmdk <disk.vmdk> --name <name> --capacity <bytes> --out <out.ova> [--cpus 2] [--memory 4096]
@@ -69,7 +69,7 @@ def descriptor(name, vmdk_name, vmdk_size, capacity, cpus, memory):
                Description="E1000 network card")
     )
     return f"""<?xml version="1.0" encoding="UTF-8"?>
-<!-- RedGiant OS (G39.2): packaging/os/formats/vm.py -->
+<!-- Rasgeth OS (G39.2): packaging/os/formats/vm.py -->
 <Envelope ovf:version="1.0" xml:lang="en-US" xmlns="{OVF}" xmlns:ovf="{OVF}" xmlns:rasd="{RASD}" xmlns:vssd="{VSSD}" xmlns:vmw="{VMW}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <References>
     <File ovf:id="file1" ovf:href="{esc(vmdk_name)}" ovf:size="{vmdk_size}"/>
@@ -81,15 +81,15 @@ def descriptor(name, vmdk_name, vmdk_size, capacity, cpus, memory):
   <NetworkSection>
     <Info>The network</Info>
     <Network ovf:name="bridged">
-      <Description>The network RedGiant OS is reached on (bridged to the host's)</Description>
+      <Description>The network Rasgeth OS is reached on (bridged to the host's)</Description>
     </Network>
   </NetworkSection>
   <VirtualSystem ovf:id="{esc(name)}">
-    <Info>RedGiant OS, a Debian 13 system that runs RedGiant</Info>
+    <Info>Rasgeth OS, a Debian 13 system that runs Rasgeth</Info>
     <Name>{esc(name)}</Name>
     <AnnotationSection>
       <Info>About this machine</Info>
-      <Annotation>RedGiant OS. Start it and open the address its screen shows (http://redgiant.local:7600). https://github.com/Frostmoore/redgiant2/blob/main/docs/INSTALL-OS.md</Annotation>
+      <Annotation>Rasgeth OS. Start it and open the address its screen shows (http://rasgeth.local:7600). https://github.com/Frostmoore/redgiant2/blob/main/docs/INSTALL-OS.md</Annotation>
     </AnnotationSection>
     <OperatingSystemSection ovf:id="96" vmw:osType="debian10_64Guest">
       <Info>The guest operating system</Info>

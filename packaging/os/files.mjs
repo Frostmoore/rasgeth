@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// RedGiant OS (p3.7.3): the system's own files of a release, so an update brings them too, not
-// only the containers. `redgiant-os-files.json` (signed with sign.mjs, the same key as
+// Rasgeth OS (p3.7.3): the system's own files of a release, so an update brings them too, not
+// only the containers. `rasgeth-os-files.json` (signed with sign.mjs, the same key as
 // release.json and the stack) lists every file that comes from the repository: where it goes, its
 // sha256, its mode, and what the machine does after it changes (reload systemd, reload a unit,
-// enable a new one). `redgiant-os-files-<version>.tar.zst` carries the contents, one blob per
+// enable a new one). `rasgeth-os-files-<version>.tar.zst` carries the contents, one blob per
 // sha256 (blobs/<sha256>). redgiant-os-update apply checks both, keeps a copy of what it replaces
 // and puts the old files back when something fails. Files written on the machine itself (the
 // login text, avahi's settings, keys and certificates) and the administrator's settings are never
@@ -170,7 +170,7 @@ export function collectFiles(root = ROOT) {
 export function checkFiles(m) {
   if (!m || m.format !== FILES_FORMAT) throw new Error("files: unknown format");
   if (!/^\d+\.\d+\.\d+$/.test(m.version ?? "")) throw new Error("files: version must be x.y.z");
-  if (m.archive?.name !== `redgiant-os-files-${m.version}.tar.zst`)
+  if (m.archive?.name !== `rasgeth-os-files-${m.version}.tar.zst`)
     throw new Error("files: bad archive name");
   if (!/^[0-9a-f]{64}$/.test(m.archive?.sha256 ?? ""))
     throw new Error("files: the archive needs its sha256");
@@ -203,7 +203,7 @@ export function buildFiles(version, out, root = ROOT) {
   try {
     mkdirSync(join(stage, "blobs"));
     for (const { entry, data } of list) writeFileSync(join(stage, "blobs", entry.sha256), data);
-    const name = `redgiant-os-files-${version}.tar.zst`;
+    const name = `rasgeth-os-files-${version}.tar.zst`;
     mkdirSync(out, { recursive: true });
     // The same inputs give the same archive: names sorted, fixed time and owner.
     execFileSync("tar", [
@@ -227,7 +227,7 @@ export function buildFiles(version, out, root = ROOT) {
       files: list.map((l) => l.entry),
     };
     checkFiles(manifest);
-    writeFileSync(join(out, "redgiant-os-files.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+    writeFileSync(join(out, "rasgeth-os-files.json"), `${JSON.stringify(manifest, null, 2)}\n`);
     return manifest;
   } finally {
     rmSync(stage, { recursive: true, force: true });

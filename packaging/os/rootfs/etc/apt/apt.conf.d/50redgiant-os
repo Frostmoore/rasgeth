@@ -1,4 +1,4 @@
-// RedGiant OS: no recommended packages, and keep the disk tidy after updates.
+// Rasgeth OS: no recommended packages, and keep the disk tidy after updates.
 APT::Install-Recommends "false";
 Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
 Unattended-Upgrade::Remove-Unused-Dependencies "true";

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# RedGiant OS: Wi-Fi for a machine without a screen (redgiant-wifi-file.service). The person
+# Rasgeth OS: Wi-Fi for a machine without a screen (redgiant-wifi-file.service). The person
 # writes redgiant-wifi.txt on the EFI partition (the small FAT disk any computer shows, as for a
 # Raspberry Pi's SD card; the ISO's installer copies it from the USB stick), the machine reads it
 # at start, saves its networks for iwd through the OS helper, then erases the file.
@@ -59,7 +59,7 @@ esac
 
 FILE=${1:-/boot/efi/redgiant-wifi.txt}
 [ -r "$FILE" ] || exit 0
-say() { echo "redgiant-os: $*" >&2; echo "RedGiant OS: $*" >/dev/console 2>/dev/null || true; }
+say() { echo "redgiant-os: $*" >&2; echo "Rasgeth OS: $*" >/dev/console 2>/dev/null || true; }
 n=0
 while read -r ssid pass hidden; do
   name=$(printf '%s' "$ssid" | base64 -d | tr -cd '[:print:]')

@@ -1,5 +1,5 @@
 [Unit]
-Description=RedGiant OS helper request
+Description=Rasgeth OS helper request
 
 [Service]
 ExecStart=/usr/lib/redgiant/redgiant-helper --stdin

@@ -1,4 +1,4 @@
-# RedGiant OS: a Wi-Fi card joined by iwd asks for an address like a cable does; the cable stays
+# Rasgeth OS: a Wi-Fi card joined by iwd asks for an address like a cable does; the cable stays
 # preferred when both are connected (higher route metric).
 [Match]
 Type=wlan

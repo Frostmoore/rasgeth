@@ -1,4 +1,4 @@
-// RedGiant OS on Proxmox (G39.2): the host's helper script (redgiant-proxmox.sh) against stand-ins
+// Rasgeth OS on Proxmox (G39.2): the host's helper script (rasgeth-proxmox.sh) against stand-ins
 // for Proxmox's commands. It must check the signature and the checksum before changing anything,
 // never use an id that is taken, and create the machine it says it creates.
 import { spawnSync } from "node:child_process";
@@ -10,11 +10,11 @@ import { fileURLToPath } from "node:url";
 import { beforeEach, describe, expect, it } from "vitest";
 import { RELEASE_PUBLIC_KEY } from "../../../packages/server/src/release-key.js";
 
-const script = fileURLToPath(new URL("../proxmox/redgiant-proxmox.sh", import.meta.url));
+const script = fileURLToPath(new URL("../proxmox/rasgeth-proxmox.sh", import.meta.url));
 const linux = process.platform === "linux" && spawnSync("openssl", ["version"]).status === 0;
 const VERSION = "9.9.9";
-const QCOW2 = `redgiant-os-${VERSION}-x86_64.qcow2`;
-const LXC = `redgiant-os-${VERSION}-x86_64-lxc.tar.zst`;
+const QCOW2 = `rasgeth-os-${VERSION}-x86_64.qcow2`;
+const LXC = `rasgeth-os-${VERSION}-x86_64-lxc.tar.zst`;
 
 // Proxmox's commands: each writes its arguments to calls.log; ids 100 and 101 are taken.
 const STUBS: Record<string, string> = {
@@ -49,7 +49,7 @@ esac`,
   chown: "true",
 };
 
-describe.skipIf(!linux)("redgiant-proxmox.sh", () => {
+describe.skipIf(!linux)("rasgeth-proxmox.sh", () => {
   let dir: string;
   let from: string;
   let key: string;
@@ -110,7 +110,7 @@ describe.skipIf(!linux)("redgiant-proxmox.sh", () => {
     release({ [QCOW2]: "a qcow2", [LXC]: "a template" });
   });
 
-  it("carries RedGiant's update key", () => {
+  it("carries Rasgeth's update key", () => {
     const body = readFileSync(script, "utf8");
     expect(body).toContain(RELEASE_PUBLIC_KEY);
   });
@@ -168,7 +168,7 @@ describe.skipIf(!linux)("redgiant-proxmox.sh", () => {
       new RegExp(`releases/download/os-preview/${LXC.replace(/\./g, "\\.")}`),
     );
     expect(r.calls).toMatch(
-      /^pct create 102 local:vztmpl\/redgiant-os-9\.9\.9-x86_64-lxc\.tar\.zst /m,
+      /^pct create 102 local:vztmpl\/rasgeth-os-9\.9\.9-x86_64-lxc\.tar\.zst /m,
     );
   });
 
@@ -178,9 +178,9 @@ describe.skipIf(!linux)("redgiant-proxmox.sh", () => {
     for (const f of ["SHA256SUMS-os", "SHA256SUMS-os.sig", LXC])
       writeFileSync(join(dir, "release", f), readFileSync(join(from, f)));
     if (pointer === undefined) return;
-    writeFileSync(join(dir, "release", "redgiant-os-release"), pointer);
+    writeFileSync(join(dir, "release", "rasgeth-os-release"), pointer);
     writeFileSync(
-      join(dir, "release", "redgiant-os-release.sig"),
+      join(dir, "release", "rasgeth-os-release.sig"),
       sign("sha256", Buffer.from(pointer), signWith).toString("base64"),
     );
   };
@@ -189,12 +189,12 @@ describe.skipIf(!linux)("redgiant-proxmox.sh", () => {
     latest("v9.9.9\n");
     const r = proxmox("--lxc", "@net");
     expect(r.status, r.out).toBe(0);
-    expect(r.calls).toContain("releases/download/v9.9.10/redgiant-os-release");
+    expect(r.calls).toContain("releases/download/v9.9.10/rasgeth-os-release");
     expect(r.calls).toContain("releases/download/v9.9.9/SHA256SUMS-os");
     expect(r.calls).not.toContain("releases/download/v9.9.10/SHA256SUMS-os");
-    expect(r.out).toContain("RedGiant OS's images are in v9.9.9");
+    expect(r.out).toContain("Rasgeth OS's images are in v9.9.9");
     expect(r.calls).toMatch(
-      /^pct create 102 local:vztmpl\/redgiant-os-9\.9\.9-x86_64-lxc\.tar\.zst /m,
+      /^pct create 102 local:vztmpl\/rasgeth-os-9\.9\.9-x86_64-lxc\.tar\.zst /m,
     );
   });
 
@@ -212,7 +212,7 @@ describe.skipIf(!linux)("redgiant-proxmox.sh", () => {
     latest("v9.9.1\n", other);
     const r = proxmox("--lxc", "@net");
     expect(r.status).not.toBe(0);
-    expect(r.out).toContain("redgiant-os-release is not signed by RedGiant's update key");
+    expect(r.out).toContain("rasgeth-os-release is not signed by Rasgeth's update key");
     expect(r.calls).not.toMatch(/^pct create/m);
   });
 
@@ -261,7 +261,7 @@ describe.skipIf(!linux)("redgiant-proxmox.sh", () => {
     );
     const r = proxmox("--vm");
     expect(r.status).not.toBe(0);
-    expect(r.out).toContain("not signed by RedGiant's update key");
+    expect(r.out).toContain("not signed by Rasgeth's update key");
     expect(r.calls).not.toMatch(/^qm create/m);
   });
 

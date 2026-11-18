@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# RedGiant OS (3.7.4): a release of this commit for update-test.sh, as GitHub would serve it to a
-# machine: release.json, redgiant-os-stack.json (the images at --source-tag, the references naming
+# Rasgeth OS (3.7.4): a release of this commit for update-test.sh, as GitHub would serve it to a
+# machine: release.json, rasgeth-os-stack.json (the images at --source-tag, the references naming
 # the version's tags), the system's files, each signed with a key made here and thrown away (the
 # release's key never leaves its secret), and release-api.json pointing at file:///root/feed/.
 #
@@ -32,13 +32,13 @@ if [ "$(printf '%s\n%s\n' "$ABOVE" "$VERSION" | sort -V | tail -1)" = "$ABOVE" ]
   VERSION=$a.$b.$((c + 1))
 fi
 mkdir -p "$OUT"
-node "$ROOT/packaging/os/stack.mjs" --version "$VERSION" --tag "${TAG:-$VERSION}" --source-tag "$SOURCE" --out "$OUT/redgiant-os-stack.json"
+node "$ROOT/packaging/os/stack.mjs" --version "$VERSION" --tag "${TAG:-$VERSION}" --source-tag "$SOURCE" --out "$OUT/rasgeth-os-stack.json"
 node "$ROOT/packaging/os/files.mjs" --version "$VERSION" --out "$OUT"
 node "$ROOT/packaging/update/release-info.mjs" --version "$VERSION" --out "$OUT"
 key=$(mktemp)
 openssl genrsa -out "$key" 2048 2>/dev/null
 openssl rsa -in "$key" -pubout -out "$OUT/key.pem" 2>/dev/null
-for f in release.json redgiant-os-stack.json redgiant-os-files.json; do
+for f in release.json rasgeth-os-stack.json rasgeth-os-files.json; do
   openssl dgst -sha256 -sign "$key" "$OUT/$f" | base64 -w0 >"$OUT/$f.sig"
 done
 rm -f "$key"

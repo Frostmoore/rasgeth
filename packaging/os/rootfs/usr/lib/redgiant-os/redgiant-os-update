@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# RedGiant OS (G39.1): updates RedGiant (its containers and, from 3.7.3, the system's own files)
+# Rasgeth OS (G39.1): updates Rasgeth (its containers and, from 3.7.3, the system's own files)
 # from the latest release.
 #   redgiant-os-update check     looks, writes /var/lib/redgiant/os-update.json
 #   redgiant-os-update apply     check, then pull the new stack, install the system's new files,
@@ -8,8 +8,8 @@
 #                                the image is older than the latest release (never a breaking one)
 #   redgiant-os-update gate <installed> <release.json>   the rule alone (tested against assessRelease)
 #   redgiant-os-update files <dir> <root> <key>          the system's files alone (tested)
-# Only files signed with the update key count (release.json, redgiant-os-stack.json and
-# redgiant-os-files.json, RSA SHA-256, the key in /usr/share/redgiant-os/release-key.pem):
+# Only files signed with the update key count (release.json, rasgeth-os-stack.json and
+# rasgeth-os-files.json, RSA SHA-256, the key in /usr/share/redgiant-os/release-key.pem):
 # unsigned, nothing is applied. A breaking release is never applied in place. A release without
 # the system's files (before 3.7.3) updates the containers only. Debian's own packages update
 # through apt (security).
@@ -113,8 +113,8 @@ check() {
   LATEST=$(jq -r '.tag_name // empty' <<<"$rel")
   LATEST=${LATEST#v}
   installed=$(installed_version)
-  for name in release.json release.json.sig redgiant-os-stack.json redgiant-os-stack.json.sig \
-    redgiant-os-files.json redgiant-os-files.json.sig; do
+  for name in release.json release.json.sig rasgeth-os-stack.json rasgeth-os-stack.json.sig \
+    rasgeth-os-files.json rasgeth-os-files.json.sig; do
     url=$(asset_url "$name")
     [ -n "$url" ] && download "$url" "$WORK/$name" || true
   done
@@ -123,19 +123,19 @@ check() {
     write_state latest "$LATEST" none ""
     return 0
   fi
-  if ! [ -s "$WORK/redgiant-os-stack.json" ] || ! signed "$WORK/redgiant-os-stack.json" ||
+  if ! [ -s "$WORK/rasgeth-os-stack.json" ] || ! signed "$WORK/rasgeth-os-stack.json" ||
     ! [ -s "$WORK/release.json" ] || ! signed "$WORK/release.json" ||
     [ "$(jq -r .version "$WORK/release.json")" != "$LATEST" ] ||
-    [ "$(jq -r .version "$WORK/redgiant-os-stack.json")" != "$LATEST" ]; then
+    [ "$(jq -r .version "$WORK/rasgeth-os-stack.json")" != "$LATEST" ]; then
     GATE=none
-    write_state unsigned "$LATEST" none "the release carries no signed stack for RedGiant OS"
+    write_state unsigned "$LATEST" none "the release carries no signed stack for Rasgeth OS"
     return 1
   fi
   # The system's files: none (a release before 3.7.3), or signed and of this version.
-  if [ -e "$WORK/redgiant-os-files.json" ] && { ! signed "$WORK/redgiant-os-files.json" ||
-    [ "$(jq -r .version "$WORK/redgiant-os-files.json")" != "$LATEST" ]; }; then
+  if [ -e "$WORK/rasgeth-os-files.json" ] && { ! signed "$WORK/rasgeth-os-files.json" ||
+    [ "$(jq -r .version "$WORK/rasgeth-os-files.json")" != "$LATEST" ]; }; then
     GATE=none
-    write_state unsigned "$LATEST" none "the release's system files for RedGiant OS are not signed"
+    write_state unsigned "$LATEST" none "the release's system files for Rasgeth OS are not signed"
     return 1
   fi
   GATE=$(gate "$installed" "$WORK/release.json")
@@ -143,8 +143,8 @@ check() {
 }
 
 # The system's own files (p3.7.3) ------------------------------------------------------------------
-# redgiant-os-files.json (packaging/os/files.mjs) lists them: path, sha256, mode, board, and what
-# to do after a change; redgiant-os-files-<version>.tar.zst carries them as blobs/<sha256>. A copy
+# rasgeth-os-files.json (packaging/os/files.mjs) lists them: path, sha256, mode, board, and what
+# to do after a change; rasgeth-os-files-<version>.tar.zst carries them as blobs/<sha256>. A copy
 # of every file replaced goes to <dir>/files-backup, and <dir>/files.undo says how to put it back.
 # Files written on the machine (the login text, avahi's settings, keys, certificates) and the
 # administrator's os.conf are never in the manifest, and refused if they were.
@@ -189,17 +189,17 @@ files_actions() { # actions-file
 # Checks and installs the files under root; on a failure it returns nonzero and files_undo puts
 # back what it had changed.
 files_apply() { # dir root key
-  local dir=$1 root=${2%/} key=$3 m=$1/redgiant-os-files.json archive board path sha mode after a
+  local dir=$1 root=${2%/} key=$3 m=$1/rasgeth-os-files.json archive board path sha mode after a
   local target blob n=0 actions=$1/files.actions
   local -a list
   rm -rf "$dir/files-backup" "$dir/files-x"
   : >"$dir/files.undo"
   : >"$actions"
-  signed "$m" "$key" || { files_fail "redgiant-os-files.json is not signed by the update key"; return 1; }
+  signed "$m" "$key" || { files_fail "rasgeth-os-files.json is not signed by the update key"; return 1; }
   jq -e '.format == 1 and (.files | type == "array" and length > 0)' "$m" >/dev/null ||
     { files_fail "unknown manifest"; return 1; }
   archive=$(jq -r '.archive.name // empty' "$m")
-  [[ "$archive" =~ ^redgiant-os-files-[0-9]+\.[0-9]+\.[0-9]+\.tar\.zst$ ]] && [ -s "$dir/$archive" ] ||
+  [[ "$archive" =~ ^rasgeth-os-files-[0-9]+\.[0-9]+\.[0-9]+\.tar\.zst$ ]] && [ -s "$dir/$archive" ] ||
     { files_fail "the archive is missing"; return 1; }
   [ "$(sha256sum "$dir/$archive" | cut -d' ' -f1)" = "$(jq -r .archive.sha256 "$m")" ] ||
     { files_fail "the archive is not the one signed"; return 1; }
@@ -330,7 +330,7 @@ apply() {
     none)
       UPD_START=""
       write_state latest "$LATEST" none ""
-      log "RedGiant $(installed_version) is the latest"
+      log "Rasgeth $(installed_version) is the latest"
       return 0
       ;;
     breaking)
@@ -338,12 +338,12 @@ apply() {
       give_up breaking "a clean install is needed: back up, then reinstall" breaking breaking
       ;;
   esac
-  local stack=$WORK/redgiant-os-stack.json files=$WORK/redgiant-os-files.json prev="" name="" url size=0 pid
+  local stack=$WORK/rasgeth-os-stack.json files=$WORK/rasgeth-os-files.json prev="" name="" url size=0 pid
   jq -e --arg a "$(arch)" '.format == 1 and (.images[$a] | length > 0)' "$stack" >/dev/null ||
     give_up no_images "the stack has no images for this processor"
   if [ -s "$files" ]; then
     name=$(jq -r '.archive.name // empty' "$files")
-    [[ "$name" =~ ^redgiant-os-files-[0-9]+\.[0-9]+\.[0-9]+\.tar\.zst$ ]] || name=""
+    [[ "$name" =~ ^rasgeth-os-files-[0-9]+\.[0-9]+\.[0-9]+\.tar\.zst$ ]] || name=""
     size=$(jq -r --arg n "$name" '[.assets[] | select(.name == $n) | .size | numbers][0] // 0' "$WORK/release-api.json")
     UPD_STEPS='["check","download","files","install","restart","wait"]'
   fi
@@ -389,7 +389,7 @@ apply() {
     if [ -s "$files" ]; then install -m 0644 "$files" "$STATE/os-files.json"; fi
     UPD_END=$(date -u +%FT%TZ)
     write_state latest "$LATEST" none ""
-    log "RedGiant $LATEST is running"
+    log "Rasgeth $LATEST is running"
     return 0
   fi
   # Back to the version that ran: its system files, then the previous applied stack (or the one
@@ -403,7 +403,7 @@ apply() {
 }
 
 # A new machine (3.7.4): its image may be older than the latest release (the images are made only
-# when the OS changes), so its first start brings RedGiant up to date by itself, once. The image
+# when the OS changes), so its first start brings Rasgeth up to date by itself, once. The image
 # carries the marker $STATE/first-update; machines that ran already have none and keep the person's
 # choice. Unreachable: tried again at the next start. Up to date, unsigned or breaking: never.
 first() {
@@ -415,7 +415,7 @@ first() {
   rm -f "$STATE/first-update"
   case "$GATE" in
     normal | mandatory)
-      log "a new machine: RedGiant $LATEST before anything else"
+      log "a new machine: Rasgeth $LATEST before anything else"
       apply
       ;;
     *) return 0 ;;

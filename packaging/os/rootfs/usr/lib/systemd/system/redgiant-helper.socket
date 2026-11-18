@@ -1,9 +1,9 @@
-# The OS helper (G39.3, packages/server/helpers/redgiant-helper): the root actions RedGiant may ask
+# The OS helper (G39.3, packages/server/helpers/redgiant-helper): the root actions Rasgeth may ask
 # of the machine (backup disks, SSH). The directory is bound into the server's container
 # (REDGIANT_OS_HELPER_SOCKET). The socket belongs to the docker group, like Docker's own socket the
 # server already holds: it adds no power the container did not have.
 [Unit]
-Description=RedGiant OS helper socket
+Description=Rasgeth OS helper socket
 
 [Socket]
 ListenStream=/run/redgiant-helper/helper.sock

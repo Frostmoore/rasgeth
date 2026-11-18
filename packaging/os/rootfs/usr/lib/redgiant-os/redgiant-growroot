@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# RedGiant OS (G39.1): the root partition fills its disk (a bigger virtual disk, or the image
+# Rasgeth OS (G39.1): the root partition fills its disk (a bigger virtual disk, or the image
 # written to a bigger drive). Runs at every start; does nothing once the disk is full.
 set -uo pipefail
 src=$(findmnt -no SOURCE /)

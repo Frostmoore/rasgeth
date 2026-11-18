@@ -1,4 +1,4 @@
-# RedGiant OS: Wi-Fi without a screen / Wi-Fi senza schermo
+# Rasgeth OS: Wi-Fi without a screen / Wi-Fi senza schermo
 #
 # EN: copy this file as redgiant-wifi.txt on this same disk, write your network's name and
 #     password below, save, put the disk back and start the machine. It is read once at the

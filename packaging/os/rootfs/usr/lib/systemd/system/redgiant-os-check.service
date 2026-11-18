@@ -1,5 +1,5 @@
 [Unit]
-Description=RedGiant OS: look for a RedGiant update
+Description=Rasgeth OS: look for a Rasgeth update
 After=network-online.target
 Wants=network-online.target
 

@@ -1,4 +1,4 @@
-# RedGiant OS self-test, Wi-Fi part (sourced by redgiant-selftest when the machine has the
+# Rasgeth OS self-test, Wi-Fi part (sourced by redgiant-selftest when the machine has the
 # credential redgiant.selftest.wifi=1): two simulated radios (mac80211_hwsim), hostapd on the
 # second one as a WPA2 access point (with systemd-networkd's DHCP server behind it), iwd on the
 # first. Checks the three ways to join a network: redgiant-wifi.txt at start (redgiant-wifi-file),
@@ -6,7 +6,7 @@
 # and leaves nothing, on a fresh iwd and after a good join (whose settings come back). hostapd
 # comes from Debian's archive, on this test machine only.
 # shellcheck shell=bash
-wifi_ssid="RedGiant Test"
+wifi_ssid="Rasgeth Test"
 wifi_pass="redgiant-test-pass"
 wifi_file="/var/lib/iwd/$wifi_ssid.psk"
 sock() { socat -t 120 - UNIX-CONNECT:/run/redgiant-helper/helper.sock; }

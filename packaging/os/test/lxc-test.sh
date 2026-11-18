@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# RedGiant OS (G39.2): starts the container template in Incus on CI's runner (LXC, as Proxmox runs
-# it: unprivileged, nesting for Docker) and checks it: systemd up, RedGiant answering, the self-test
+# Rasgeth OS (G39.2): starts the container template in Incus on CI's runner (LXC, as Proxmox runs
+# it: unprivileged, nesting for Docker) and checks it: systemd up, Rasgeth answering, the self-test
 # (redgiant-selftest) inside the container, /api/health from the host on the container's address.
 #
 #   sudo lxc-test.sh --template <redgiant-os-…-lxc.tar.zst> --logs <dir> [--timeout <s>] [--files <dir>]
 #
-# --files: a folder with redgiant-os-files.json, its .sig, its archive and key.pem (the public half
+# --files: a folder with rasgeth-os-files.json, its .sig, its archive and key.pem (the public half
 # of the key that signed it, made for the test): the update of the system's files on the real
 # container (redgiant-os-update files): a bad signature changes nothing, a changed and a missing
-# file come back with systemd reloaded, RedGiant keeps answering, a second run has nothing to do.
+# file come back with systemd reloaded, Rasgeth keeps answering, a second run has nothing to do.
 #
 # Every wait has its limit; on a failure the container's journal and log are printed.
 set -uo pipefail
@@ -47,7 +47,7 @@ cat >"$work/metadata.yaml" <<EOF
 architecture: $(uname -m)
 creation_date: $(date +%s)
 properties:
-  description: RedGiant OS (CI)
+  description: Rasgeth OS (CI)
   os: debian
   release: trixie
 EOF
@@ -73,7 +73,7 @@ wait_until() { # what seconds command…: true once the command succeeds
   return 1
 }
 healthy() { T=15 in_ct curl -fsS --max-time 5 http://127.0.0.1:7600/api/health; }
-wait_until "RedGiant answering" "$TIMEOUT" healthy || fail "RedGiant did not answer within $TIMEOUT s"
+wait_until "Rasgeth answering" "$TIMEOUT" healthy || fail "Rasgeth did not answer within $TIMEOUT s"
 echo "systemd: $(T=15 in_ct systemctl is-system-running 2>&1 </dev/null)"
 
 ok=1
@@ -92,7 +92,7 @@ if [ -n "$FILES" ]; then
   timer=/usr/lib/systemd/system/redgiant-tls.timer
   example=/usr/share/redgiant-os/redgiant-wifi-example.txt
   sum() { T=15 in_ct sha256sum "$1" 2>/dev/null | cut -d' ' -f1; }
-  want() { jq -r --arg p "$1" '.files[] | select(.path == $p) | .sha256' "$FILES/redgiant-os-files.json"; }
+  want() { jq -r --arg p "$1" '.files[] | select(.path == $p) | .sha256' "$FILES/rasgeth-os-files.json"; }
   T=60 in_ct mkdir -p /root/files /root/files-bad
   for f in "$FILES"/*; do
     if ! timeout 60 incus file push "$f" "$NAME/root/files/" || ! timeout 60 incus file push "$f" "$NAME/root/files-bad/"; then
@@ -102,7 +102,7 @@ if [ -n "$FILES" ]; then
   done
   # The same timer with one more comment, and the example file gone: what an old system has.
   T=30 in_ct sh -c "echo '# older' >>$timer && rm -f $example"
-  T=30 in_ct sh -c "echo AAAA >/root/files-bad/redgiant-os-files.json.sig"
+  T=30 in_ct sh -c "echo AAAA >/root/files-bad/rasgeth-os-files.json.sig"
   if T=120 in_ct "$up" files /root/files-bad / /root/files/key.pem; then
     echo "::error::files with a bad signature were applied"; ok=0
   fi
@@ -114,7 +114,7 @@ if [ -n "$FILES" ]; then
     [ "$(T=15 in_ct stat -c %a /usr/lib/redgiant/redgiant-helper)" = 755 ] || { echo "::error::the helper lost its mode"; ok=0; }
     [ "$(T=15 in_ct systemctl show -P NeedDaemonReload redgiant-tls.timer)" = no ] || { echo "::error::systemd was not reloaded"; ok=0; }
     [ "$(T=15 in_ct systemctl is-enabled redgiant-growroot.service 2>/dev/null)" = masked ] || { echo "::error::an update unmasked growroot"; ok=0; }
-    healthy >/dev/null || { echo "::error::RedGiant stopped answering after the files"; ok=0; }
+    healthy >/dev/null || { echo "::error::Rasgeth stopped answering after the files"; ok=0; }
     T=120 in_ct "$up" files /root/files / /root/files/key.pem 2>&1 | grep -q "up to date" ||
       { echo "::error::a second run changed files again"; ok=0; }
     echo "the system's files: updated, then up to date"

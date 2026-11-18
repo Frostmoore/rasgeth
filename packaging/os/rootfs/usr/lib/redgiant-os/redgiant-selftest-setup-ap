@@ -1,6 +1,6 @@
-# RedGiant OS self-test, the temporary network (G40.3), sourced by redgiant-selftest after the
+# Rasgeth OS self-test, the temporary network (G40.3), sourced by redgiant-selftest after the
 # Wi-Fi part (credential redgiant.selftest.wifi=1): the machine is new (its first start is not
-# completed), so redgiant-setup-ap opens RedGiant-Setup-XXXX on the first simulated radio (iwd as
+# completed), so redgiant-setup-ap opens Rasgeth-Setup-XXXX on the first simulated radio (iwd as
 # an access point). A client on the second radio, moved into its own network namespace so that
 # its traffic really goes through the simulated air (wpa_supplicant and busybox's udhcpc, from
 # Debian's archive, on this test machine only), joins it, gets an address, opens the first start's
@@ -30,7 +30,7 @@ sap_setup() {
   sap_phy=$(cat "/sys/class/net/$ap_if/phy80211/name") || return 1
   sap_if=$ap_if
   DEBIAN_FRONTEND=noninteractive timeout 300 apt-get install -y -qq --no-install-recommends wpasupplicant iw busybox >/dev/null 2>&1 || return 1
-  # The machine has been on for a while (RedGiant's first start, the Wi-Fi part): a window of a
+  # The machine has been on for a while (Rasgeth's first start, the Wi-Fi part): a window of a
   # day for the test, and a quicker look.
   mkdir -p /run/systemd/system/redgiant-setup-ap.service.d
   printf '[Service]\nEnvironment=REDGIANT_SETUP_WINDOW=86400 REDGIANT_SETUP_TICK=2\n' \
@@ -97,7 +97,7 @@ sap_new=0
 sap_server_new && sap_new=1
 if sap_setup; then
   say "ok   setup-ap open at a first start ($(sap_status | jq -c '{mode, ssid, capable, pending}'))"
-  check "setup-ap networks seen before opening" bash -c "echo ap-status | socat -t 60 - UNIX-CONNECT:/run/redgiant-helper/helper.sock | jq -e '[.networks[].ssid] | index(\"${wifi_ssid:-RedGiant Test}\") != null'"
+  check "setup-ap networks seen before opening" bash -c "echo ap-status | socat -t 60 - UNIX-CONNECT:/run/redgiant-helper/helper.sock | jq -e '[.networks[].ssid] | index(\"${wifi_ssid:-Rasgeth Test}\") != null'"
   check "setup-ap runtime network file" test -e /run/systemd/network/70-redgiant-setup.network
   check "setup-ap client joined" sap_joined
   check "setup-ap client got an address" sap_lease

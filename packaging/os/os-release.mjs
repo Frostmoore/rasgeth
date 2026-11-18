@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// RedGiant OS (3.7.4): the images are built only when the OS changes, so not every release carries
+// Rasgeth OS (3.7.4): the images are built only when the OS changes, so not every release carries
 // them. This finds the newest published release that does (not a draft, not a pre-release, a vX.Y.Z
 // tag, SHA256SUMS-os and the x86_64 qcow2 among its assets), and says whether the OS changed since
 // it: packaging/os, the OS helper, os.yml and the update key built into the images (git diff
@@ -26,7 +26,7 @@ const older = (a, b) => {
   return false;
 };
 
-/** The newest release (by version) that carries RedGiant OS's images, or null. */
+/** The newest release (by version) that carries Rasgeth OS's images, or null. */
 export function latestOsRelease(releases, below = "") {
   const limit = below ? parts(`v${below.replace(/^v/, "")}`) : null;
   let best = null;
@@ -36,7 +36,11 @@ export function latestOsRelease(releases, below = "") {
     if (!v || (limit && !older(v, limit))) continue;
     const names = new Set((r.assets ?? []).map((a) => a.name));
     const version = v.join(".");
-    if (!names.has("SHA256SUMS-os") || !names.has(`redgiant-os-${version}-x86_64.qcow2`)) continue;
+    // The images' names changed with the product's in 3.9.0 (redgiant-os-* before): a release of
+    // either name carries the OS, so the history before the rename still counts.
+    const qcow2 = [`rasgeth-os-${version}-x86_64.qcow2`, `redgiant-os-${version}-x86_64.qcow2`];
+    if (!names.has("SHA256SUMS-os") || !qcow2.some((n) => names.has(n))) continue;
+
     if (!best || older(best.v, v)) best = { v, tag: r.tag_name };
   }
   return best?.tag ?? null;

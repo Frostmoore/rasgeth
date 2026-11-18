@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# RedGiant OS (p3.7.2): redgiant.local on the machine's real network cards only.
+# Rasgeth OS (p3.7.2): rasgeth.local on the machine's real network cards only.
 #
 #   redgiant-mdns interfaces [<sys dir>]          the cards avahi may use, one per line
 #   redgiant-mdns configure [<conf>] [<sys dir>]  writes them into avahi-daemon.conf (before avahi starts)
 #   redgiant-mdns check                           the name resolves to the IPv4 of the main card
 #
 # Why: avahi announces on every interface it sees, Docker's bridges and veths included (only
-# link-local IPv6 there). In the 3.7.1 test on Proxmox redgiant.local answered with nine fe80::
+# link-local IPv6 there). In the 3.7.1 test on Proxmox rasgeth.local answered with nine fe80::
 # addresses and no IPv4 at all, and phones could not open it: a network namespace joins IPv4
-# multicast groups on at most net.ipv4.igmp_max_memberships (20) interfaces, and RedGiant's
+# multicast groups on at most net.ipv4.igmp_max_memberships (20) interfaces, and Rasgeth's
 # containers fill them, so the card that matters may be left out. avahi takes only exact names
 # (no veth*): the list is computed from the cards there at its start.
 set -uo pipefail
@@ -27,7 +27,7 @@ interfaces() {
   done | sort -u
 }
 
-# Sets the keys RedGiant decides in avahi's [server] and [publish] sections; every other line
+# Sets the keys Rasgeth decides in avahi's [server] and [publish] sections; every other line
 # stays as it was.
 configure() {
   local conf=${1:-/etc/avahi/avahi-daemon.conf} sys=${2:-/sys} list
@@ -61,7 +61,7 @@ main_dev() {
   ip -4 route show default 2>/dev/null | awk '{ for (i = 1; i < NF; i++) if ($i == "dev") { print $(i + 1); exit } }'
 }
 
-# The name avahi publishes, as avahi says it (redgiant.local, redgiant-2.local after a conflict);
+# The name avahi publishes, as avahi says it (rasgeth.local, redgiant-2.local after a conflict);
 # the host name otherwise. Never a reverse lookup: that may answer with another machine's name
 # for this address (Incus: rg-lxc-test.incus.local).
 avahi_name() {

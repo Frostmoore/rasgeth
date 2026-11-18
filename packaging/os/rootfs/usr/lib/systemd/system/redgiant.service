@@ -1,6 +1,6 @@
-# RedGiant OS (G39.1): RedGiant's compose stack (server, egress proxy, Postgres).
+# Rasgeth OS (G39.1): Rasgeth's compose stack (server, egress proxy, Postgres).
 [Unit]
-Description=RedGiant
+Description=Rasgeth
 Documentation=https://github.com/Frostmoore/redgiant2/blob/main/docs/INSTALL-OS.md
 Requires=docker.service
 After=docker.service network-online.target redgiant-growroot.service

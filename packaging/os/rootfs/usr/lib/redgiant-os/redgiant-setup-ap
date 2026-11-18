@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# RedGiant OS (G40.3): the temporary network RedGiant-Setup-XXXX, for a first start without a
+# Rasgeth OS (G40.3): the temporary network Rasgeth-Setup-XXXX, for a first start without a
 # screen (study_g40_app_native.md §2). iwd turns the Wi-Fi card into an access point, a runtime
 # systemd-networkd file (in /run, gone at the next start) gives the addresses with one lease at a
-# time (one device at a time), and a minimal DNS answers every name with RedGiant's address, so
+# time (one device at a time), and a minimal DNS answers every name with Rasgeth's address, so
 # phones show the first start's page by themselves (captive portal; the server answers the
 # probes, packages/server/src/setup-network.ts). Nothing is routed anywhere: the temporary
 # network gives no one the internet nor the home network.
 #
 #   redgiant-setup-ap run                    the service: decides every few seconds (below)
 #   redgiant-setup-ap status                 one JSON line: what the network is doing
-#   redgiant-setup-ap ssid                   RedGiant-Setup-XXXX (XXXX from the machine's id)
+#   redgiant-setup-ap ssid                   Rasgeth-Setup-XXXX (XXXX from the machine's id)
 #   redgiant-setup-ap capable                ok, or why not (container, no_wifi, no_ap)
 #   redgiant-setup-ap decide k=v…            the rule alone (tested as a table)
 #   redgiant-setup-ap start setup|maintenance / stop      (the service does it; by hand for tests)
@@ -28,7 +28,7 @@
 #     the card can look for the home Wi-Fi again (and it opens again 10 minutes later if not).
 #   - "try and return": the home Wi-Fi is tried with the network closed (one card cannot be both);
 #     when it does not work the network opens again, with the error, for 10 more minutes.
-#   - containers, or no card that can be an access point: never; RedGiant is found on the
+#   - containers, or no card that can be an access point: never; Rasgeth is found on the
 #     network instead (avahi announces _redgiant._tcp).
 set -uo pipefail
 LC_ALL=C
@@ -42,7 +42,7 @@ HELPER=${REDGIANT_SETUP_TEST_HELPER:-/usr/lib/redgiant/redgiant-helper}
 SETUP_AP_ADDRESS=10.42.0.1
 # iwd's access point needs a WPA password: a public one (security is the app's channel, the
 # handshake with the pinned key; a password everyone may know protects nothing anyway).
-SETUP_AP_PASSPHRASE=redgiant
+SETUP_AP_PASSPHRASE=rasgeth
 SETUP_AP_CHANNEL=6
 # shellcheck disable=SC1091
 [ -z "$R" ] && [ -r /etc/redgiant-os/os.conf ] && . /etc/redgiant-os/os.conf
@@ -64,12 +64,12 @@ uptime_s() { cut -d. -f1 "$R/proc/uptime" 2>/dev/null || echo 0; }
 num() { case "${1:-}" in '' | *[!0-9]*) echo 0 ;; *) echo "$1" ;; esac; }
 readnum() { num "$(cat "$1" 2>/dev/null)"; }
 
-# RedGiant-Setup- and four characters of the machine's id (the same at every start).
+# Rasgeth-Setup- and four characters of the machine's id (the same at every start).
 ssid() {
   local id
   id=$(tr -cd 'a-f0-9' <"$R/etc/machine-id" 2>/dev/null)
   [ -n "$id" ] || id=$(cat /proc/sys/kernel/random/boot_id 2>/dev/null)
-  printf 'RedGiant-Setup-%s\n' "$(printf '%s' "$id" | sha256sum | cut -c1-4 | tr a-f A-F)"
+  printf 'Rasgeth-Setup-%s\n' "$(printf '%s' "$id" | sha256sum | cut -c1-4 | tr a-f A-F)"
 }
 
 # The rule, nothing else: what the network should be now. Arguments k=v (missing ones are 0):
@@ -177,7 +177,7 @@ prescan() {
 net_file() { # interface, with DNS (0|1)
   local dns=$2
   cat <<EOF
-# RedGiant OS (G40.3): the temporary network RedGiant-Setup-XXXX, valid only while it is open
+# Rasgeth OS (G40.3): the temporary network Rasgeth-Setup-XXXX, valid only while it is open
 # (redgiant-setup-ap writes it into /run and removes it; nothing of it survives a restart).
 [Match]
 Name=$1
@@ -216,7 +216,7 @@ dns_start() { # interface
     sleep 0.5
     i=$((i + 1))
   done
-  # Every name is RedGiant: the probes of phones and computers land on its page.
+  # Every name is Rasgeth: the probes of phones and computers land on its page.
   dnsmasq --conf-file=/dev/null --no-resolv --no-hosts --no-poll --bind-interfaces \
     --listen-address="$SETUP_AP_ADDRESS" --port=53 --address="/#/$SETUP_AP_ADDRESS" --local-ttl=1 \
     --no-dhcp-interface="$1" --pid-file="$RUN/dns.pid" --user=nobody --group=nogroup >/dev/null 2>&1
@@ -256,7 +256,7 @@ start() { # setup|maintenance
   install -d -m 0700 "$AP_DIR"
   (
     umask 077
-    printf '# RedGiant OS: the temporary network (redgiant-setup-ap).\n[General]\nChannel=%s\n\n[Security]\nPassphrase=%s\n' \
+    printf '# Rasgeth OS: the temporary network (redgiant-setup-ap).\n[General]\nChannel=%s\n\n[Security]\nPassphrase=%s\n' \
       "$SETUP_AP_CHANNEL" "$SETUP_AP_PASSPHRASE" >"$AP_DIR/$name.ap"
   )
   busctl --timeout=10 set-property net.connman.iwd "$dev" net.connman.iwd.Device Mode s ap >/dev/null 2>&1 || true
@@ -376,7 +376,7 @@ run() {
   cap=$(capable 20)
   echo "$cap" >"$RUN/capable"
   if [ "$cap" != ok ]; then
-    log "no temporary network here ($cap): RedGiant is found on the network (mDNS _redgiant._tcp)"
+    log "no temporary network here ($cap): Rasgeth is found on the network (mDNS _redgiant._tcp)"
     return 0
   fi
   stop >/dev/null 2>&1

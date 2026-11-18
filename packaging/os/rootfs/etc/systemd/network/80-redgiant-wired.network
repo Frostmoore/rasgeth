@@ -1,4 +1,4 @@
-# RedGiant OS: every wired network card asks for an address (DHCP and IPv6). A cable wins over
+# Rasgeth OS: every wired network card asks for an address (DHCP and IPv6). A cable wins over
 # Wi-Fi when both are there (lower route metric than 81-redgiant-wifi.network).
 [Match]
 Type=ether

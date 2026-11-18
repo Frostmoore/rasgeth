@@ -1,8 +1,8 @@
-# RedGiant OS (G40.3): the temporary network RedGiant-Setup-XXXX (redgiant-setup-ap): at a first
+# Rasgeth OS (G40.3): the temporary network Rasgeth-Setup-XXXX (redgiant-setup-ap): at a first
 # start, always, for 30 minutes; later only as maintenance when the home network is missing.
 # Containers and machines without a card that can be an access point: nothing (it exits).
 [Unit]
-Description=RedGiant OS: the temporary network for the first start
+Description=Rasgeth OS: the temporary network for the first start
 After=iwd.service dbus.service systemd-networkd.service redgiant-wifi-file.service
 Wants=iwd.service
 

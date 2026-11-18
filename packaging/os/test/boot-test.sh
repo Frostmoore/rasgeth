@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# RedGiant OS (G39.1): boots an image in QEMU, headless, and checks it (CI's job os.yml).
+# Rasgeth OS (G39.1): boots an image in QEMU, headless, and checks it (CI's job os.yml).
 #
 #   boot-test.sh boot    --arch amd64|arm64 --firmware uefi|bios [--secureboot] [--wifi] --disk <qcow2> --logs <dir>
 #                        [--nic e1000]   (--disk: any format qemu-img reads: qcow2, vhdx, vmdk, raw)
@@ -8,7 +8,7 @@
 #   boot-test.sh install --iso <iso> --disk <new qcow2> --logs <dir> [--firmware bios|uefi]
 #
 # boot: the machine gets the credential redgiant.selftest, so redgiant-selftest prints its checks on
-# the serial console (unit active, /api/health, images pinned, redgiant.local over mDNS, the
+# the serial console (unit active, /api/health, images pinned, rasgeth.local over mDNS, the
 # console's issue, SSH off, the OS helper, unattended-upgrades); this script also asks
 # /api/health from outside through a forwarded port, then over HTTPS with the machine's own CA
 # (printed by the self-test), and looks for the login prompt's address. --wifi adds the Wi-Fi
@@ -176,7 +176,7 @@ case "$MODE" in
         "wifi joined again with the good password" "wifi password in no log"; do
         grep -aqF "REDGIANT-SELFTEST ok   $c" "$SERIAL" || { echo "::error::Wi-Fi check missing or failed: $c"; ok=0; }
       done
-      # The temporary network (G40.3): a client on the second radio joins RedGiant-Setup-XXXX,
+      # The temporary network (G40.3): a client on the second radio joins Rasgeth-Setup-XXXX,
       # gets an address, opens the first start's page and the captive probes.
       for c in "setup-ap client joined" "setup-ap client got an address" "setup-ap first start page from the client" \
         "setup-ap captive probe android" "setup-ap captive probe apple" "setup-ap dns answers with redgiant" \
@@ -193,16 +193,16 @@ case "$MODE" in
     # deauthenticated …» and a line break inside the base64): its messages are cut out and the
     # base64 is joined again up to the next self-test line.
     ca_from_console "$SERIAL" | base64 -d >"$WORK/ca.crt" 2>/dev/null
-    if [ -s "$WORK/ca.crt" ] && curl -fsS --max-time 10 --cacert "$WORK/ca.crt" --resolve "redgiant.local:$TLS_PORT:127.0.0.1" "https://redgiant.local:$TLS_PORT/api/health"; then
+    if [ -s "$WORK/ca.crt" ] && curl -fsS --max-time 10 --cacert "$WORK/ca.crt" --resolve "rasgeth.local:$TLS_PORT:127.0.0.1" "https://rasgeth.local:$TLS_PORT/api/health"; then
       echo
       echo "https from the host with the local CA: ok"
     else
-      echo "::error::https://redgiant.local not reachable from the host with the machine's CA"
+      echo "::error::https://rasgeth.local not reachable from the host with the machine's CA"
       ok=0
     fi
     # The login prompt of the serial console carries the address (/etc/issue.d/50-redgiant.issue).
-    if grep -aqE "RedGiant: http://10\.0\.2\.15:7600" "$SERIAL"; then
-      echo "issue: $(grep -aE "RedGiant: http://" "$SERIAL" | head -1 | sed 's/\r$//')"
+    if grep -aqE "Rasgeth: http://10\.0\.2\.15:7600" "$SERIAL"; then
+      echo "issue: $(grep -aE "Rasgeth: http://" "$SERIAL" | head -1 | sed 's/\r$//')"
     else
       echo "::error::the console's issue does not show the address"
       ok=0
@@ -221,14 +221,14 @@ case "$MODE" in
       -smbios "type=11,value=io.systemd.credential:redgiant.install.confirm=yes"
     deadline=$((SECONDS + TIMEOUT))
     while kill -0 "$QEMU_PID" 2>/dev/null && [ $SECONDS -lt $deadline ]; do sleep 5; done
-    grep -a "REDGIANT-INSTALL" "$SERIAL" | sed 's/\r$//'
+    grep -a "RASGETH-INSTALL" "$SERIAL" | sed 's/\r$//'
     if kill -0 "$QEMU_PID" 2>/dev/null; then
       stop_qemu
       echo "::error::the installer did not finish within $TIMEOUT s"
       tail -n 120 "$SERIAL"
       exit 1
     fi
-    grep -aq "REDGIANT-INSTALL DONE /dev/vda" "$SERIAL" || { echo "::error::the installer failed"; tail -n 120 "$SERIAL"; exit 1; }
+    grep -aq "RASGETH-INSTALL DONE /dev/vda" "$SERIAL" || { echo "::error::the installer failed"; tail -n 120 "$SERIAL"; exit 1; }
     echo "OK: installed from the ISO ($FIRMWARE) in $((SECONDS - start)) s"
     ;;
   *)

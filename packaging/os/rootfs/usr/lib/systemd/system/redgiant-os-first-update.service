@@ -1,8 +1,8 @@
-# A new machine's first start (3.7.4): RedGiant brought up to the latest release by itself, once
+# A new machine's first start (3.7.4): Rasgeth brought up to the latest release by itself, once
 # (redgiant-os-update first). Only machines made from an image carry the marker; CI's machines
 # (the self-test credential) never reach out for a real release.
 [Unit]
-Description=RedGiant OS: bring a new machine up to the latest RedGiant
+Description=Rasgeth OS: bring a new machine up to the latest Rasgeth
 ConditionPathExists=/var/lib/redgiant/first-update
 ConditionCredential=!redgiant.selftest
 After=network-online.target redgiant.service

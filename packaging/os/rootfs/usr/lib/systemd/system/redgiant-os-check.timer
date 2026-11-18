@@ -1,6 +1,6 @@
-# Looks once a day; applying is the person's choice (the console's [u], or RedGiant's page).
+# Looks once a day; applying is the person's choice (the console's [u], or Rasgeth's page).
 [Unit]
-Description=RedGiant OS: look for a RedGiant update every day
+Description=Rasgeth OS: look for a Rasgeth update every day
 
 [Timer]
 OnBootSec=10min

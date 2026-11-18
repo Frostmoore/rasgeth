@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# RedGiant OS (G39.1, G39.2): builds the images from Debian 13 in the builder container
+# Rasgeth OS (G39.1, G39.2): builds the images from Debian 13 in the builder container
 # (builder.Dockerfile). Every format starts from the same disk image:
 #
-#   build.sh --arch amd64|arm64 --stack <redgiant-os-stack.json> --out <dir>
+#   build.sh --arch amd64|arm64 --stack <rasgeth-os-stack.json> --out <dir>
 #            [--formats qcow2,raw,iso] [--os-version x.y.z] [--no-preload] [--mirror <url>]
 #            [--board generic|lxc|raspi]
 #
-#   <dir>/redgiant-os-<ver>-<arch>.qcow2      Proxmox, KVM, UTM, clouds (fills its disk at start)
-#   <dir>/redgiant-os-<ver>-<arch>.raw.zst    the disk itself (what the installer writes)
-#   <dir>/redgiant-os-<ver>-x86_64.iso        installer for a USB stick (amd64 only)
-#   <dir>/redgiant-os-<ver>-x86_64.vhdx.zip   Hyper-V, generation 2 (format vhdx)
-#   <dir>/redgiant-os-<ver>-x86_64.ova        VirtualBox, VMware (format ova)
-#   --board lxc:   <dir>/redgiant-os-<ver>-<arch>-lxc.tar.zst   container template (Proxmox, LXC, Incus)
-#   --board raspi: <dir>/redgiant-os-<ver>-arm64-raspi.img.xz   Raspberry Pi 4 (SD card or USB disk)
+#   <dir>/rasgeth-os-<ver>-<arch>.qcow2      Proxmox, KVM, UTM, clouds (fills its disk at start)
+#   <dir>/rasgeth-os-<ver>-<arch>.raw.zst    the disk itself (what the installer writes)
+#   <dir>/rasgeth-os-<ver>-x86_64.iso        installer for a USB stick (amd64 only)
+#   <dir>/rasgeth-os-<ver>-x86_64.vhdx.zip   Hyper-V, generation 2 (format vhdx)
+#   <dir>/rasgeth-os-<ver>-x86_64.ova        VirtualBox, VMware (format ova)
+#   --board lxc:   <dir>/rasgeth-os-<ver>-<arch>-lxc.tar.zst   container template (Proxmox, LXC, Incus)
+#   --board raspi: <dir>/rasgeth-os-<ver>-arm64-raspi.img.xz   Raspberry Pi 4 (SD card or USB disk)
 #
 # Tools (all Debian's): mmdebstrap for the system, mkfs.ext4 -d, mtools and systemd-repart --offline for the disk (no loop
 # devices), GRUB with Debian's signed shim for UEFI (Secure Boot included) and GRUB for BIOS on
@@ -61,7 +61,7 @@ case "$ARCH" in
   arm64) KARCH=arm64 SDARCH=arm64 EFI=aa64 EFIUP=AA64 GRUB_EFI=arm64-efi CONSOLE="console=tty0 console=ttyAMA0,115200" ;;
   *) echo "arch: amd64 or arm64" >&2 && exit 2 ;;
 esac
-NAME=redgiant-os-$OS_VERSION-$KARCH
+NAME=rasgeth-os-$OS_VERSION-$KARCH
 WORK=$OUT/work-$ARCH$([ "$BOARD" = generic ] || echo "-$BOARD")
 ROOT=$WORK/rootfs
 mkdir -p "$OUT"
@@ -82,7 +82,7 @@ DISK_ID=$(uuid disk)
 # and many laptops) and the rest of firmware-misc-nonfree (MediaTek, Ralink…). Everything in that
 # section is redistributable (Debian ships it on its own installer images since Debian 12).
 # dnsmasq-base (the program only, no service): the temporary network's DNS (G40.3).
-# Caddy (Debian's) serves https://redgiant.local with the machine's local certificate authority.
+# Caddy (Debian's) serves https://rasgeth.local with the machine's local certificate authority.
 PACKAGES=(
   systemd systemd-sysv systemd-resolved udev dbus kmod iproute2 iputils-ping netbase
   ca-certificates curl jq socat openssl qrencode less vim-tiny sudo tzdata
@@ -146,7 +146,7 @@ if [ -e "${KERNELS[0]}" ]; then
   for link in initrd.img initrd.img.old; do ln -sfn "boot/initrd.img-$KVER" "$ROOT/$link"; done
 fi
 
-step "RedGiant $VERSION in the system"
+step "Rasgeth $VERSION in the system"
 SHARE=$ROOT/usr/share/redgiant-os
 install -d "$SHARE"
 install -m 0644 "$STACK" "$SHARE/stack.json"
@@ -160,17 +160,17 @@ sed -n '/BEGIN PUBLIC KEY/,/END PUBLIC KEY/p' "$REPO_ROOT/packages/server/src/re
 grep -q "END PUBLIC KEY" "$SHARE/release-key.pem" || : >"$SHARE/release-key.pem"
 ln -sf ../run/systemd/resolve/stub-resolv.conf "$ROOT/etc/resolv.conf"
 install -d "$ROOT/etc/redgiant-os"
-echo "RedGiant OS $OS_VERSION" >"$ROOT/etc/redgiant-os/disk-$DISK_ID"
+echo "Rasgeth OS $OS_VERSION" >"$ROOT/etc/redgiant-os/disk-$DISK_ID"
 cat >"$ROOT/etc/fstab" <<EOF
-# RedGiant OS: the system and its EFI partition (the data lives in /var/lib/redgiant).
+# Rasgeth OS: the system and its EFI partition (the data lives in /var/lib/redgiant).
 PARTUUID=$ROOT_UUID  /          ext4  errors=remount-ro  0 1
 PARTUUID=$ESP_UUID   /boot/efi  vfat  umask=0077,nofail  0 2
 EOF
 cat >"$ROOT/etc/default/grub" <<EOF
-# RedGiant OS: Debian's update-grub reads this when a new kernel comes.
+# Rasgeth OS: Debian's update-grub reads this when a new kernel comes.
 GRUB_DEFAULT=0
 GRUB_TIMEOUT=3
-GRUB_DISTRIBUTOR="RedGiant OS"
+GRUB_DISTRIBUTOR="Rasgeth OS"
 GRUB_CMDLINE_LINUX_DEFAULT=""
 GRUB_CMDLINE_LINUX="$CONSOLE"
 GRUB_DISABLE_OS_PROBER=true
@@ -178,7 +178,7 @@ GRUB_DISABLE_RECOVERY=true
 EOF
 
 # A new machine updates itself once at its first start (redgiant-os-first-update, 3.7.4): the
-# images are made only when the OS changes, so they may carry an older RedGiant than the latest.
+# images are made only when the OS changes, so they may carry an older Rasgeth than the latest.
 # (/var/lib/redgiant exists already: setup-chroot.sh made it, 0700.)
 : >"$ROOT/var/lib/redgiant/first-update"
 
@@ -222,10 +222,10 @@ step "Boot: GRUB (UEFI with Debian's signed shim$([ "$ARCH" = amd64 ] && echo ",
 FIND="search --no-floppy --file --set=root /etc/redgiant-os/disk-$DISK_ID"
 install -d "$ROOT/boot/grub"
 cat >"$ROOT/boot/grub/grub.cfg" <<EOF
-# RedGiant OS: replaced by Debian's update-grub when a new kernel comes.
+# Rasgeth OS: replaced by Debian's update-grub when a new kernel comes.
 set default=0
 set timeout=3
-menuentry 'RedGiant OS' {
+menuentry 'Rasgeth OS' {
   $FIND
   linux /vmlinuz root=PARTUUID=$ROOT_UUID ro $CONSOLE
   initrd /initrd.img
@@ -241,7 +241,7 @@ for dir in BOOT debian; do
   cp "$ROOT/usr/lib/shim/mm$EFI.efi.signed" "$ESP/EFI/$dir/mm$EFI.efi"
   cp "$ROOT/usr/lib/grub/$GRUB_EFI-signed/grub$EFI.efi.signed" "$ESP/EFI/$dir/grub$EFI.efi"
   # What it finds goes to the console too (a serial console shows why a machine does not start).
-  printf 'echo "RedGiant OS: looking for the system (%s)"\n%s\necho "RedGiant OS: system on $root"\nset prefix=($root)/boot/grub\nconfigfile $prefix/grub.cfg\necho "RedGiant OS: no system disk found"\nls\n' "$DISK_ID" "$FIND" >"$ESP/EFI/$dir/grub.cfg"
+  printf 'echo "Rasgeth OS: looking for the system (%s)"\n%s\necho "Rasgeth OS: system on $root"\nset prefix=($root)/boot/grub\nconfigfile $prefix/grub.cfg\necho "Rasgeth OS: no system disk found"\nls\n' "$DISK_ID" "$FIND" >"$ESP/EFI/$dir/grub.cfg"
 done
 # Wi-Fi without a screen: the example to copy as redgiant-wifi.txt (redgiant-wifi-file).
 cp "$HERE/rootfs/usr/share/redgiant-os/redgiant-wifi-example.txt" "$ESP/redgiant-wifi-example.txt"
@@ -315,7 +315,7 @@ format_iso() {
   [ -r "$OUT/$NAME.raw.zst" ] || format_raw
   "$HERE/installer/build-iso.sh" --payload "$OUT/$NAME.raw.zst" --size "$(cat "$OUT/$NAME.raw.size")" \
     --version "$OS_VERSION" --efi-root "$ROOT" --mirror "$MIRROR" --security-mirror "$SECURITY_MIRROR" \
-    --work "$WORK/iso" --out "$OUT/redgiant-os-$OS_VERSION-x86_64.iso"
+    --work "$WORK/iso" --out "$OUT/rasgeth-os-$OS_VERSION-x86_64.iso"
 }
 # The raw disk seen as a thin 32 GB one, like the qcow2 (an overlay: nothing is copied).
 grown() {
