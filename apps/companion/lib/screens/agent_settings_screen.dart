@@ -29,6 +29,11 @@ import '../ui/settings_kit.dart';
 import 'instructions_screen.dart';
 import 'new_agent_screen.dart' show RgSwitch;
 import 'team_screen.dart' show AgentModelRow, openAgentConversation;
+// G42.10: the whole knowledge and the shared memory, native.
+import '../settings/knowledge_kit.dart' show kbNum;
+import '../settings/knowledge_screen.dart' show openKnowledgeSettings;
+import '../settings/memory_screen.dart' show openSharedMemory, memCountWords;
+import '../settings/api/knowledge_api.dart';
 
 /// Opens [a]'s settings: a panel over the window on a computer, a whole screen on a phone.
 Future<void> openAgentSettings(BuildContext context, Agent a) {
@@ -960,10 +965,23 @@ class _MemoryState extends State<_Memory> {
   late int _keep = ((widget.agent.compactKeep ?? .25) * 100).round();
   bool _touched = false;
 
+  /// How many things every agent knows about the person (G42.10: the way to the shared memory).
+  int? _shared;
+
   @override
   void initState() {
     super.initState();
     unawaited(_load());
+    unawaited(_loadShared());
+  }
+
+  Future<void> _loadShared() async {
+    try {
+      final v = await AppScope.read(context).client?.sharedMemory();
+      if (mounted && v != null) setState(() => _shared = v.entries.length);
+    } on Exception {
+      // The card stays, without the count.
+    }
   }
 
   Future<void> _load() async {
@@ -1047,6 +1065,30 @@ class _MemoryState extends State<_Memory> {
             title: l.asMemProject(project),
             help: l.asMemProjectHelp,
           ),
+        // G42.10: the shared memory, said apart from the agent's own (the page's `mem-go`).
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 14, 0, 0),
+          child: SettingsCard(
+            children: [
+              ListTile(
+                key: const Key('as-mem-shared'),
+                leading: RgIcon(RgIcons.users, color: c.accent),
+                title: Text(l.knMemGoShared),
+                subtitle: Text(
+                  [
+                    l.knMemGoSharedText,
+                    if (_shared != null) '${memCountWords(l, _shared!)}.',
+                  ].join(' '),
+                ),
+                trailing: RgIcon(RgIcons.chevronRight, color: c.dim),
+                onTap: () async {
+                  await openSharedMemory(context);
+                  if (mounted) unawaited(_loadShared());
+                },
+              ),
+            ],
+          ),
+        ),
         SectionHead(l.asCompact),
         _help(context, l.asCompactHelp),
         SettingsCard(
@@ -1652,68 +1694,114 @@ class _KnowledgeState extends State<_Knowledge> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
+    final app = AppScope.of(context);
     final list = _list;
-    String scope(String s) => switch (s) {
-      'agent' => l.asKbScope_agent,
-      'project' => l.asKbScope_project,
-      _ => l.asKbScope_global,
+    final a = widget.agent;
+    // Who a collection is for, with the agent's or the project's name (the page's `scopeWords`).
+    String scope(AgentCollection col) => switch (col.scope) {
+      'agent' => l.knKbForAgent(
+        app.agents.where((x) => x.id == col.scopeId).firstOrNull?.name ?? col.scopeId ?? '',
+      ),
+      'project' => l.knKbForProject(
+        app.projects.where((p) => p.id == col.scopeId).firstOrNull?.name ?? col.scopeId ?? '',
+      ),
+      _ => l.knKbForAll,
     };
+    final reads = list?.where((x) => x.on).length ?? 0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _banner(_out),
         SectionHead(l.asGroupKnowledge),
-        _help(context, l.asKbHelp(widget.agent.name)),
+        _help(context, l.knKbAgentLead(a.name)),
         if (list == null && _out.text == null)
           const Padding(
             padding: EdgeInsets.all(16),
             child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-          )
-        else if (list != null && list.isEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(l.asKbNone, style: TextStyle(color: c.dim)),
-          )
-        else if (list != null)
+          ),
+        if (list != null) ...[
+          // G42.10: what the agent reads, at a glance, and the way to the whole knowledge.
           SettingsCard(
             children: [
-              for (final (i, col) in list.indexed) ...[
-                if (i > 0) Divider(height: 1, color: c.line),
-                Padding(
-                  key: Key('as-kb-${col.id}'),
-                  padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              col.name,
-                              style: TextStyle(fontWeight: FontWeight.w700, color: c.text),
-                            ),
-                          ),
-                          RgSwitch(on: col.on),
-                        ],
-                      ),
-                      Text(scope(col.scope), style: TextStyle(color: c.dim, fontSize: 12.5)),
-                      const SizedBox(height: 8),
-                      _Choice<String>(
-                        options: [
-                          ('default', l.asKbByScope(col.byScope ? l.asKbOn : l.asKbOff)),
-                          ('on', l.asKbOn),
-                          ('off', l.asKbOff),
-                        ],
-                        value: col.own ?? 'default',
-                        keyOf: (v) => 'as-kb-${col.id}-$v',
-                        onChanged: (v) => _choose(col, v),
-                      ),
-                    ],
-                  ),
+              Padding(
+                key: const Key('as-kb-sum'),
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      reads == 0 ? l.knKbAgentNone(a.name) : l.knKbAgentReads('$reads', a.name),
+                      style: TextStyle(fontWeight: FontWeight.w800, color: c.text),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(l.knKbAgentTool, style: TextStyle(color: c.dim, fontSize: 12.5)),
+                  ],
                 ),
-              ],
+              ),
             ],
           ),
+          NoteLine(icon: RgIcons.info, text: l.knKbAgentNewOnly),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: OutlinedButton.icon(
+                key: const Key('as-kb-open-all'),
+                onPressed: () => openKnowledgeSettings(context),
+                icon: RgIcon(RgIcons.arrowRight, size: 16, color: c.text),
+                label: Text(l.knKbAgentOpenAll),
+              ),
+            ),
+          ),
+          if (list.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(l.knKbNoCols, style: TextStyle(color: c.dim)),
+            )
+          else
+            SettingsCard(
+              children: [
+                for (final (i, col) in list.indexed) ...[
+                  if (i > 0) Divider(height: 1, color: c.line),
+                  Padding(
+                    key: Key('as-kb-${col.id}'),
+                    padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                col.name,
+                                style: TextStyle(fontWeight: FontWeight.w700, color: c.text),
+                              ),
+                            ),
+                            RgSwitch(on: col.on),
+                          ],
+                        ),
+                        Text(
+                          '${scope(col)} · ${l.knKbAgentPieces(kbNum(l, col.chunks))}',
+                          style: TextStyle(color: c.dim, fontSize: 12.5),
+                        ),
+                        const SizedBox(height: 8),
+                        _Choice<String>(
+                          options: [
+                            ('default', col.byScope ? l.knKbAgentByScopeYes : l.knKbAgentByScopeNo),
+                            ('on', l.knKbAgentAlways),
+                            ('off', l.knKbAgentNever),
+                          ],
+                          value: col.own ?? 'default',
+                          keyOf: (v) => 'as-kb-${col.id}-$v',
+                          onChanged: (v) => _choose(col, v),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+        ],
       ],
     );
   }

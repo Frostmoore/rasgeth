@@ -195,6 +195,10 @@ enum RgIcons {
   key('<circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3L21 2M17 6l3 3M14.5 8.5l2 2"/>'),
   git(
     '<circle cx="6" cy="5" r="2.5"/><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="8" r="2.5"/><path d="M6 7.5v9M18 10.5c0 4-4 4.5-9.5 6.5"/>',
+  ),
+  // G42.10: the knowledge's index (the page's IconDatabase).
+  database(
+    '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>',
   );
 
   const RgIcons(this.paths);

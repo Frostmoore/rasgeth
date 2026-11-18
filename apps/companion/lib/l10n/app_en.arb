@@ -7028,5 +7028,743 @@
       }
     }
   },
-  "auOwnReadOnly": "Automations can be changed only by the person (not from a project's device)."
+  "auOwnReadOnly": "Automations can be changed only by the person (not from a project's device).",
+  "knAsstSavedNewChats": "Saved: it applies to its new conversations.",
+  "knCompactAtHint": "An agent can keep only so much text in mind at once, like a notebook with a fixed number of pages. Further right: the summary comes later. Further left: it comes sooner and the conversation stays lighter.",
+  "knCompactAtTitle": "When to write the summary",
+  "knCompactAtValue": "when {n}% full",
+  "@knCompactAtValue": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "knCompactDefaultIs": "Default for this agent's model: at {at}%, keeping {keep}%.",
+  "@knCompactDefaultIs": {
+    "placeholders": {
+      "at": {
+        "type": "String"
+      },
+      "keep": {
+        "type": "String"
+      }
+    }
+  },
+  "knCompactDefaults": "Back to the defaults",
+  "knCompactExample": "if the agent can keep 100 pages in mind, when it reaches {at} it writes the summary: the last {keep} stay exactly as they were, the ones before become a few pages of notes.",
+  "@knCompactExample": {
+    "placeholders": {
+      "at": {
+        "type": "String"
+      },
+      "keep": {
+        "type": "String"
+      }
+    }
+  },
+  "knCompactExampleNone": "if the agent can keep 100 pages in mind, when it reaches {at} it turns all of them into a few pages of notes.",
+  "@knCompactExampleNone": {
+    "placeholders": {
+      "at": {
+        "type": "String"
+      }
+    }
+  },
+  "knCompactExampleTitle": "For example:",
+  "knCompactExplain": "When the conversation gets long, the agent writes a summary of the old parts, like someone taking notes. Here you choose when it does it, and how much of the latest part it keeps as it is.",
+  "knCompactKeepHint": "The most recent part stays word for word, everything before it becomes notes. More kept means the agent remembers the latest details better; on a model on your computer each kept word costs a little time once (12% is fine there).",
+  "knCompactKeepNone": "nothing",
+  "knCompactKeepTitle": "How much of the latest part to keep as it is",
+  "knCompactKeepValue": "the last {n}%",
+  "@knCompactKeepValue": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "knErr_memory_empty": "Write something to remember.",
+  "knErr_memory_forgotten": "A memory forgotten for good cannot come back.",
+  "knErr_memory_full": "The memory is full: delete or merge some old memories first.",
+  "knErr_memory_gone": "That memory is not there any more.",
+  "knErr_memory_long": "A memory is at most 400 characters: write it shorter.",
+  "knErr_memory_moved": "The memory changed again since: undo the newer change first.",
+  "knErr_memory_same": "Another memory already says the same.",
+  "knErr_memory_secret": "That looks like a password, a code or a card number: secrets are never kept in memory.",
+  "knErr_memory_undone": "That change was already undone.",
+  "knJob_download_knowledge_model": "Downloading {model} ({size}) for the knowledge, to search your files on this computer (only once)",
+  "@knJob_download_knowledge_model": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "knJob_download_ocr": "Downloading the reading of text in pictures ({languages}, {size}), only once",
+  "@knJob_download_ocr": {
+    "placeholders": {
+      "languages": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "knJob_download_pgvector": "Downloading pgvector, the search by meaning in RedGiant's database (only once)",
+  "knJob_error_checksum": "The download arrived damaged (its fingerprint does not match): try again.",
+  "knJob_error_pgvector_unavailable": "pgvector is not published for this computer yet: the knowledge searches by words only.",
+  "knJob_step_model_download": "The model",
+  "knJob_step_ocr_languages": "The languages",
+  "knJob_step_ocr_program": "The program",
+  "knJob_step_tool_download": "Downloading",
+  "knKbAdd": "Add",
+  "knKbAddSource": "Add a source",
+  "knKbAddSourceTo": "Add a source to {name}",
+  "@knKbAddSourceTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbAgentAlways": "Always",
+  "knKbAgentByScopeNo": "As the collection says (no)",
+  "knKbAgentByScopeYes": "As the collection says (yes)",
+  "knKbAgentLead": "Which collections {name} can search. Each one says who may read it; here you can make an exception for this agent.",
+  "@knKbAgentLead": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbAgentNever": "Never",
+  "knKbAgentNewOnly": "It changes from the agent's next conversation.",
+  "knKbAgentNone": "{name} reads no collection",
+  "@knKbAgentNone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbAgentOpenAll": "All the collections",
+  "knKbAgentPieces": "{n} pieces",
+  "@knKbAgentPieces": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbAgentReads": "{name} reads {n} collections",
+  "@knKbAgentReads": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbAgentTool": "It searches them with «Search the documents», and cites where each answer comes from.",
+  "knKbAllChats": "None chosen: the conversations with every agent.",
+  "knKbBackupVectors": "Put the knowledge in the backup too",
+  "knKbBackupVectorsHelp": "A bigger backup, but on another computer the search is ready at once, without reading everything again.",
+  "knKbChat": "conversation",
+  "knKbCiteFallback": "document",
+  "knKbCloudKey": "Keychain entry with the key",
+  "knKbCloudKeyExample": "voyage_key",
+  "knKbCloudKeyHelp": "Empty: the key given in the setup, for OpenAI, Gemini and Mistral.",
+  "knKbCloudLead": "The pieces of your documents are sent to the service to be read. Its key stays in the keychain.",
+  "knKbCloudModel": "Suggested models",
+  "knKbCloudModelName": "Model",
+  "knKbCloudText": "OpenAI, Voyage, Cohere, Gemini, Mistral, Jina or your own",
+  "knKbCloudTitle": "An online service",
+  "knKbCloudTrying": "Trying the key…",
+  "knKbCloudUrl": "Address of the service",
+  "knKbCloudUrlHelp": "One that speaks like OpenAI, ending in /v1.",
+  "knKbCloudUse": "Use it",
+  "knKbCloudWho": "Which service",
+  "knKbColLine": "{docs} documents · {pieces} pieces",
+  "@knKbColLine": {
+    "placeholders": {
+      "docs": {
+        "type": "String"
+      },
+      "pieces": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbColName": "Name",
+  "knKbColNameExample": "Manuals, Contracts, Recipes…",
+  "knKbColNameHelp": "What it holds, in a few words.",
+  "knKbColsLead": "A collection groups the sources of one subject, and says which agents may read it.",
+  "knKbColsTitle": "Collections",
+  "knKbConsentChats": "The agents that may read this collection will be able to find and quote what you wrote in your conversations and what the agents answered.",
+  "knKbConsentChatsYes": "Yes, the agents may read these conversations",
+  "knKbConsentMail": "The agents that may read this collection will be able to find and quote your mail. RedGiant only reads the inbox: it never marks, moves or deletes a message.",
+  "knKbConsentMailYes": "Yes, the agents may read this mail",
+  "knKbDays": "{n} days",
+  "@knKbDays": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbDiskLead": "What the knowledge takes, and whether the backup carries it.",
+  "knKbDiskModels": "Models",
+  "knKbDiskOcr": "Reading pictures",
+  "knKbDiskTexts": "Pieces of text",
+  "knKbDiskTitle": "Space on the disk",
+  "knKbDiskTotal": "In all",
+  "knKbDiskVectors": "Index by meaning",
+  "knKbDocsWaiting": "{n} documents still to read.",
+  "@knKbDocsWaiting": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbDownloading": "Downloading…",
+  "knKbDropHere": "Drop to add them to the knowledge",
+  "knKbDropOnCard": "Drop files on a collection to add them.",
+  "knKbDropSay": "You can also drop files on this window.",
+  "knKbErr_bad_choice": "That choice is not possible.",
+  "knKbErr_bad_source": "That source cannot be read: check the path or the address.",
+  "knKbErr_embedding_failed": "The model did not answer: check the key and try again.",
+  "knKbErr_no_vector": "Searching by meaning is not ready on this computer yet.",
+  "knKbErr_not_found": "It is not there any more.",
+  "knKbEtaSoon": "The time left shows after the first minutes.",
+  "knKbFileExample": "/home/me/manual.pdf",
+  "knKbFileHelp": "Its full path on the computer where RedGiant runs.",
+  "knKbFilePath": "The file",
+  "knKbFolderExample": "/home/me/Documents or C:\\Users\\me\\Documents",
+  "knKbFolderHelp": "Its full path on the computer where RedGiant runs.",
+  "knKbFolderPath": "The folder",
+  "knKbForAgent": "For {name}",
+  "@knKbForAgent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbForAll": "For every agent",
+  "knKbForProject": "For the project {name}",
+  "@knKbForProject": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbForWhom": "Who may read it",
+  "knKbHere": "Downloaded",
+  "knKbHowFarBack": "How far back",
+  "knKbKindText_chats": "What you said with the agents",
+  "knKbKindText_file": "One document",
+  "knKbKindText_folder": "Everything inside, kept up to date",
+  "knKbKindText_mail": "Only if you want it",
+  "knKbKindText_url": "Read once, again when you ask",
+  "knKbKindText_workspace": "The files of one of your projects",
+  "knKbKind_chats": "Conversations",
+  "knKbKind_file": "A file",
+  "knKbKind_folder": "A folder",
+  "knKbKind_mail": "A mailbox",
+  "knKbKind_url": "A web page",
+  "knKbKind_workspace": "A project",
+  "knKbLead": "Choose folders, files and pages: RedGiant reads them, cuts them into pieces and finds them by what they mean. The agents say where each answer comes from, and one click opens the file at that point.",
+  "knKbLeftOut": "Left out ({n})",
+  "@knKbLeftOut": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbLine": "line {n}",
+  "@knKbLine": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbLines": "lines {a}–{b}",
+  "@knKbLines": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbLoading": "Loading…",
+  "knKbLocalText": "On this computer · {size} MB · {dims} numbers per piece",
+  "@knKbLocalText": {
+    "placeholders": {
+      "dims": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbMail": "mail",
+  "knKbMake": "Make it",
+  "knKbMeaningBest": "The recommended one is {name}: {size} MB, downloaded once, only now that you say so.",
+  "@knKbMeaningBest": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbMeaningDownload": "Download {name} ({size} MB) and turn it on",
+  "@knKbMeaningDownload": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbMeaningOffTitle": "Searching by meaning is off: only by words",
+  "knKbMeaningOff_downloading": "The model you chose is not on this computer yet: until it arrives the search goes by words.",
+  "knKbMeaningOff_failed": "The model for the meaning does not answer: the search goes by words. Choose it again or another one.",
+  "knKbMeaningOff_no_model": "No model reads your documents by meaning yet, so the agents find a piece only when it has the same words they ask with.",
+  "knKbMeaningOff_no_vector": "The part of the database that searches by meaning is missing on this computer: the search goes by words.",
+  "knKbMeaningOther": "Choose another model",
+  "knKbMeaningTurnOn": "Turn on searching by meaning",
+  "knKbMeaningUse": "Use {name}",
+  "@knKbMeaningUse": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbMeaningWhy": "With a model that reads by meaning, «when does the warehouse open» also finds «it opens at 7:30». It runs on this computer: your documents do not leave it.",
+  "knKbModelLead": "On this computer (downloaded once, nothing leaves the house) or an online service with your key. Changing it makes a new index in the background.",
+  "knKbModelTitle": "The model that reads by meaning",
+  "knKbNewCollection": "New collection",
+  "knKbNewIndex": "A new index for {model} is being made; the searches use the old one until it is ready.",
+  "@knKbNewIndex": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbNoCols": "No collection yet.",
+  "knKbNoMailboxes": "No mailbox is connected yet: add one in Automations.",
+  "knKbNoProjects": "There is no project yet.",
+  "knKbNoSources": "No source yet: add a folder, a file or a page.",
+  "knKbOcrDownload": "Download now",
+  "knKbOcrLanguages": "Languages of your documents",
+  "knKbOcrLead": "Reads photos of documents and scanned PDFs on this computer (Tesseract). Its program and languages come down the first time, a few MB.",
+  "knKbOcrOn": "Read the text in pictures and scans",
+  "knKbOcrOnHelp": "Slower than text: about a second a page.",
+  "knKbOcrReady": "Ready on this computer.",
+  "knKbOcrTitle": "Text in pictures and scans",
+  "knKbOcrToDownload": "To download: about {size} MB.",
+  "@knKbOcrToDownload": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbOcrWaiting": "{n} pictures and scans are waiting for it.",
+  "@knKbOcrWaiting": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbOpenCollection": "Open the collection {name}",
+  "@knKbOpenCollection": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbPage": "page {n}",
+  "@knKbPage": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbPause": "Pause the reading",
+  "knKbPauseHelp": "The searches keep working; nothing new is read until you turn this off.",
+  "knKbPickEmpty": "Nothing here in {name}.",
+  "@knKbPickEmpty": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbPickFile": "Choose a file in RedGiant",
+  "knKbPickFolder": "Choose a folder in RedGiant",
+  "knKbPickOther": "Choose another",
+  "knKbPickPlaces": "Back to the projects",
+  "knKbPickThis": "Choose this folder",
+  "knKbPickUp": "Up one folder",
+  "knKbPickWhere": "Your projects and RedGiant's folders",
+  "knKbPlaceAssistants": "The assistants' desk",
+  "knKbPlacePlatform": "God's folder",
+  "knKbProv_cohere": "Cohere",
+  "knKbProv_compatible": "Another (like OpenAI)",
+  "knKbProv_gemini": "Gemini",
+  "knKbProv_jina": "Jina",
+  "knKbProv_mistral": "Mistral",
+  "knKbProv_openai": "OpenAI",
+  "knKbProv_voyage": "Voyage",
+  "knKbQ": "Your documents, for the agents to look up",
+  "knKbQueueError": "Stopped for a problem: {error}",
+  "@knKbQueueError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbRebuild": "Rebuild",
+  "knKbRebuildHelp": "Reads everything again with the same model, from the start.",
+  "knKbRebuildQ": "Rebuild the index?",
+  "knKbRebuildText": "Every piece is read again. The searches keep using the index of now until the new one is ready.",
+  "knKbRecommended": "recommended",
+  "knKbRemove": "Delete the collection",
+  "knKbRemoveQ": "Delete {name}?",
+  "@knKbRemoveQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbRemoveSource": "Remove this source",
+  "knKbRemoveText": "Its pieces leave the knowledge. Your files stay where they are: nothing on the disk is touched.",
+  "knKbRerankLead": "Reads the question with each piece found and reorders them: better answers, a little slower.",
+  "knKbRerankNone": "None",
+  "knKbRerankNoneText": "The order of the search itself",
+  "knKbRerankText": "On this computer · {size} MB",
+  "@knKbRerankText": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbRerankTitle": "The one that puts the best first",
+  "knKbRescan": "Look again now",
+  "knKbSaveScope": "Save who may read it",
+  "knKbScopeAgent": "One agent",
+  "knKbScopeAll": "Every agent",
+  "knKbScopeProject": "The agents of one project",
+  "knKbSection": "Knowledge",
+  "knKbSources": "Sources",
+  "knKbSrcChatsAll": "Your conversations, last {days} days",
+  "@knKbSrcChatsAll": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbSrcChatsOf": "The conversations with {names}, last {days} days",
+  "@knKbSrcChatsOf": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbSrcDocs": "{n} documents",
+  "@knKbSrcDocs": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbSrcMailOf": "The mail of the last {days} days",
+  "@knKbSrcMailOf": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbSrcProjectOf": "The files of {name}",
+  "@knKbSrcProjectOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbSrcState_failed": "Could not read it",
+  "knKbSrcState_ready": "Up to date",
+  "knKbSrcState_scanning": "Looking",
+  "knKbSrcState_waiting": "Waiting",
+  "knKbStateEmpty": "Nothing to search yet: make a collection and add a folder.",
+  "knKbStateNoModel": "Choose a model below to search by meaning; until then it searches by words.",
+  "knKbStateNoVector": "Searching by meaning is not ready on this computer yet: for now it searches by words.",
+  "knKbStatePaused": "Paused: the searches work, nothing new is read.",
+  "knKbStateReady": "Ready: {n} pieces can be searched",
+  "@knKbStateReady": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbStateWorking": "Reading your documents…",
+  "knKbStatusLine": "{cols} collections · {pieces} pieces",
+  "@knKbStatusLine": {
+    "placeholders": {
+      "cols": {
+        "type": "String"
+      },
+      "pieces": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbThreads": "Processor threads",
+  "knKbThreadsAuto": "automatic",
+  "knKbThreadsHelp": "Automatic leaves most of the processor to you.",
+  "knKbThreadsTitle": "How much of the processor",
+  "knKbToDownload": "To download: {size} MB",
+  "@knKbToDownload": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbTryExample": "When does the warranty end?",
+  "knKbTryHow": "{n} pieces in {ms} ms, by meaning and by words.",
+  "@knKbTryHow": {
+    "placeholders": {
+      "ms": {
+        "type": "String"
+      },
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbTryLead": "What the agents would find for a question, best first. Click one to open it.",
+  "knKbTryNothing": "Nothing found. Try other words.",
+  "knKbTrySearch": "Search",
+  "knKbTryTitle": "Try a search",
+  "knKbTryWordsOnly": "Searched by words only (no model for the meaning yet).",
+  "knKbUploadFiles": "Send files from this computer",
+  "knKbUploadFolder": "Send a folder from this computer",
+  "knKbUploadSay": "Or drop files here. Sent files are kept in God's folder, under knowledge.",
+  "knKbUploading": "Sending the files…",
+  "knKbUrl": "The address",
+  "knKbUrlHelp": "Read without your logins: only public pages.",
+  "knKbWhichChats": "Whose conversations",
+  "knKbWhichMailbox": "Which mailbox",
+  "knKbWhichProject": "Which project",
+  "knKbWhyFailed": "It failed: {error}",
+  "@knKbWhyFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "knKbWhy_binary": "Not a document (a program, an archive…)",
+  "knKbWhy_empty": "There is no text in it",
+  "knKbWhy_encrypted": "Protected by a password",
+  "knKbWhy_needs_libreoffice": "An old Office file: it needs LibreOffice.",
+  "knKbWhy_needs_ocr": "A picture or a scan: turn on reading the text in pictures, below.",
+  "knKbWhy_too_big": "Too big to read",
+  "knKbWhy_unsupported": "A kind of file it cannot read",
+  "knMemAdd": "Add",
+  "knMemAddPlaceholder": "Something to remember, e.g. I prefer short answers",
+  "knMemAlready": "Already remembered.",
+  "knMemAutoOff": "Off: RedGiant learns nothing by itself. You can still add memories here, or ask an agent to remember something.",
+  "knMemAutoOn": "After you write, RedGiant notes what stays true about you: tastes, work, how you like answers. It reads only your own messages, never emails, web pages or automations, and never notes passwords.",
+  "knMemAutoTitle": "Learn by itself from the conversations",
+  "knMemByAgent": "Saved by {name}",
+  "@knMemByAgent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knMemByAgentUnknown": "Saved by an agent",
+  "knMemByAuto": "Learned by itself",
+  "knMemByHuman": "Written by you",
+  "knMemByImport": "From your old notes",
+  "knMemCount": "{n} memories",
+  "@knMemCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "knMemCountOne": "1 memory",
+  "knMemDid_added": "Added",
+  "knMemDid_edited": "Changed",
+  "knMemDid_forgotten": "Forgotten for good",
+  "knMemDid_removed": "Deleted",
+  "knMemEdit": "Change",
+  "knMemEditTitle": "Change the memory",
+  "knMemEmpty": "RedGiant knows nothing about you yet. Talk with an agent, or write here something to remember.",
+  "knMemEyebrow": "Shared memory",
+  "knMemForget": "Forget for good",
+  "knMemForgetText": "RedGiant deletes it, and its words go from the list of changes too. It can never be brought back.",
+  "knMemForgetTitle": "Forget it for good?",
+  "knMemForgottenText": "Its words are gone for good.",
+  "knMemFrom": "from «{title}»",
+  "@knMemFrom": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "knMemFromUntitled": "from a conversation",
+  "knMemGoShared": "Shared memory: what RedGiant knows about you",
+  "knMemGoSharedOpen": "Open",
+  "knMemGoSharedText": "Used by every agent and updated by itself while you talk.",
+  "knMemHistory": "Recent changes",
+  "knMemHistoryLead": "Every change is kept and you can take it back, except forgetting for good.",
+  "knMemHistoryLess": "Show fewer",
+  "knMemHistoryMore": "Show all changes",
+  "knMemLead": "Every agent uses this memory, and it updates by itself while you talk. Each agent also has a memory of its own, in the agent's Memory tab.",
+  "knMemListLead": "Changes count from the next conversation: the ones already open go on as they were.",
+  "knMemListTitle": "What it remembers",
+  "knMemNoOwn": "This agent keeps no memory of its own.",
+  "knMemOwnCard": "An agent's own memory",
+  "knMemOwnCardQ": "In each agent's Memory tab",
+  "knMemOwnCardText": "Only that agent reads it. You write it, or the agent notes what it needs for its work.",
+  "knMemOwnHelp": "Only {name} reads it, at the start of every conversation. {name} can also note here what it needs.",
+  "@knMemOwnHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knMemOwnPlaceholder": "e.g. Always answer with a short list",
+  "knMemOwnTitle": "Memory of {name}: only for this agent",
+  "@knMemOwnTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knMemProjectHelp": "Every agent working on this project reads it.",
+  "knMemProjectTitle": "Memory of the project «{name}»",
+  "@knMemProjectTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knMemRemove": "Delete",
+  "knMemRemoved": "Memory deleted.",
+  "knMemSaved": "Saved",
+  "knMemSharedCard": "Shared memory",
+  "knMemSharedCardQ": "This page",
+  "knMemSharedCardText": "Every agent reads it. It fills up by itself from your conversations, and you can change it here.",
+  "knMemSummaryTitle": "Summaries of long conversations",
+  "knMemTitle": "What RedGiant knows about you",
+  "knMemUndid_added": "Brought back",
+  "knMemUndid_edited": "Back as it was",
+  "knMemUndid_removed": "Taken away again",
+  "knMemUndo": "Undo",
+  "knMemUndone": "Undone",
+  "knMemUsed": "Space used: {used} of {limit} characters",
+  "@knMemUsed": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      },
+      "used": {
+        "type": "String"
+      }
+    }
+  },
+  "knMemWith": "with {name}",
+  "@knMemWith": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "knSettings": "Settings",
+  "knUiAboutHours": "about {h} h {min} min left",
+  "@knUiAboutHours": {
+    "placeholders": {
+      "h": {
+        "type": "String"
+      },
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "knUiAboutMinutes": "about {min} min left",
+  "@knUiAboutMinutes": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "knUiLessThanMinute": "less than a minute left",
+  "knUiOf": "{done} of {total}",
+  "@knUiOf": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "knUiDetails": "Details for whoever helps you",
+  "knWzDoneBtn": "Done",
+  "knHubKnowledge": "Your documents the agents can search: collections, sources, models",
+  "knHubMemory": "What every agent knows about you, with every change undoable"
 }

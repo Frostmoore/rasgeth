@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'fake_automations.dart';
 import 'fake_files.dart';
+import 'fake_knowledge.dart';
 import 'helpers.dart';
 
 class FakeRedGiant {
@@ -16,6 +17,9 @@ class FakeRedGiant {
 
   /// G42.5: a workspace in memory for the files routes (null: the canned answers below).
   FakeFiles? files;
+
+  /// G42.10: the knowledge and the shared memory in memory (null: the canned answers below).
+  FakeKnowledge? knowledge;
   bool codeOn = false;
   int appProtocol = 1;
   int wrongTries = 0;
@@ -947,6 +951,7 @@ class FakeRedGiant {
     if (path == '/term' && WebSocketTransformer.isUpgradeRequest(r)) return _term(r);
     if (!tokens.contains(token)) return _json(r, 401, {'error': 'Unauthorized'});
     if (files case final fs? when await fs.handle(r, path, (s, b) => _json(r, s, b))) return;
+    if (knowledge case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
     final own = routes['${r.method} $path'];
     if (own != null) return own(r);
     if (await automations.handle(r, path, (s, b) => _json(r, s, b))) return;
@@ -1183,8 +1188,8 @@ class FakeRedGiant {
       return _json(r, 200, {
         'collections': [
           for (final (cid, name, scope, byScope) in const [
-            ('manuali', 'Manuali', 'global', true),
-            ('contratti', 'Contratti', 'project', false),
+            ('manuali', 'Manuali', {'kind': 'all'}, true),
+            ('contratti', 'Contratti', {'kind': 'project', 'projectId': 'demo'}, false),
           ])
             {
               'id': cid,
