@@ -122,7 +122,7 @@ async function main(argv) {
   if (wrong.length) {
     await rm(tmp, { recursive: true, force: true });
     throw new Error(
-      `ZetaOffice's CDN no longer gives the build RedGiant knows (${versionFrom(source)}): ${wrong.join(", ")} differ. ` +
+      `ZetaOffice's CDN no longer gives the build Rasgeth knows (${versionFrom(source)}): ${wrong.join(", ")} differ. ` +
         "Nothing was kept or published. Try the new build, then change ZETA_VERSION and ZETA_FILES in zeta.ts " +
         "(a new build is a new set of files, never a replacement of the published ones).",
     );

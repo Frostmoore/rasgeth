@@ -78,7 +78,7 @@ jobs:
           gh release view "$CACHE" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 ||
             gh release create "$CACHE" -R "$GITHUB_REPOSITORY" --prerelease --latest=false --target "$GITHUB_SHA" \
               --title "ZetaOffice cache (not a release)" \
-              --notes "LibreOffice in the browser (ZetaOffice build zeta-24-2, published at cdn.zetaoffice.net on 2025-05-13), kept unchanged for RedGiant (workflow zetaoffice.yml). Files are never replaced: their sha256 is fixed in packages/server/src/editor/zeta.ts. Licences and sources: LICENSES.txt (LibreOffice MPL-2.0 with LGPL-3.0 parts, Qt for WebAssembly LGPL-3.0)."
+              --notes "LibreOffice in the browser (ZetaOffice build zeta-24-2, published at cdn.zetaoffice.net on 2025-05-13), kept unchanged for Rasgeth (workflow zetaoffice.yml). Files are never replaced: their sha256 is fixed in packages/server/src/editor/zeta.ts. Licences and sources: LICENSES.txt (LibreOffice MPL-2.0 with LGPL-3.0 parts, Qt for WebAssembly LGPL-3.0)."
           IFS=, read -ra names <<<"${{ steps.missing.outputs.list }}"
           for n in "${names[@]}"; do
             gh release upload "$CACHE" -R "$GITHUB_REPOSITORY" "out/$n" "out/$n.sha256"

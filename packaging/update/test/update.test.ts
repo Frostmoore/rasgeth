@@ -40,7 +40,7 @@ function pack(files: Record<string, string | Buffer>, version: string) {
 const noise = (n: number) => randomBytes(n);
 
 const v1 = {
-  "RedGiant.exe": "launcher 1",
+  "Rasgeth.exe": "launcher 1",
   "node/node.exe": noise(400_000),
   "server/dist/main.js": "console.log(1)",
   "server/dist/gone.js": "only in 1",
@@ -50,7 +50,7 @@ const v1 = {
 const v2 = { ...v1, "server/dist/main.js": "console.log(2)", "web/index.html": "<html>2</html>" };
 const v3 = {
   ...v2,
-  "RedGiant.exe": "launcher 3",
+  "Rasgeth.exe": "launcher 3",
   "server/dist/gone.js": undefined,
   "web/assets/new.js": "new in 3",
 };
@@ -64,7 +64,7 @@ describe("pack.mjs", () => {
   it("writes a zip whose every entry reads back from its offset alone", () => {
     const { m, zip } = pack(v1, "1.0.0");
     checkManifest(m);
-    expect(m.roots).toEqual(["RedGiant.exe", "node", "server", "web"]);
+    expect(m.roots).toEqual(["Rasgeth.exe", "node", "server", "web"]);
     expect(m.files.map((f) => f.path)).toEqual([...m.files.map((f) => f.path)].sort());
     for (const f of m.files) expect(sha256(readEntry(zip, f))).toBe(f.sha256);
     const bytes = readFileSync(zip);
@@ -135,12 +135,12 @@ describe("plan", () => {
       from(one)
         .fetch.map((f: Entry) => f.path)
         .sort(),
-    ).toEqual(["RedGiant.exe", "server/dist/main.js", "web/assets/new.js", "web/index.html"]);
+    ).toEqual(["Rasgeth.exe", "server/dist/main.js", "web/assets/new.js", "web/index.html"]);
     expect(
       from(two)
         .fetch.map((f: Entry) => f.path)
         .sort(),
-    ).toEqual(["RedGiant.exe", "web/assets/new.js"]);
+    ).toEqual(["Rasgeth.exe", "web/assets/new.js"]);
     // Nothing installed: everything.
     expect(plan(three, new Map()).fetch).toHaveLength(three.files.length);
   });

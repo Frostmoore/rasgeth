@@ -34,7 +34,7 @@ static class PageGateTests
         Row("server not answering yet", true, false, true, false, false, PageGate.Step.Wait);
         Row("update check not over", true, true, false, false, false, PageGate.Step.Wait);
         Row("nothing to update", true, true, true, false, false, PageGate.Step.Open);
-        Row("update chosen: never from this RedGiant", true, true, true, true, false, PageGate.Step.Wait);
+        Row("update chosen: never from this launcher", true, true, true, true, false, PageGate.Step.Wait);
         Row("update chosen before the server answered", true, false, true, true, false, PageGate.Step.Wait);
         Row("after an update", true, true, true, false, true, PageGate.Step.OpenUnlessPage);
         Row("after an update, server not answering yet", true, false, true, false, true, PageGate.Step.Wait);

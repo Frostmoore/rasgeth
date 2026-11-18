@@ -5,7 +5,7 @@
 # the release attaches those (job ci-packages) and builds them only when it has none (windows-installer,
 # mac-app, as before).
 # Build once, images too (3.7.4): os.yml on a version branch built the Docker images of the tag's
-# commit (ci-<version>-<sha>, images.yml) and RedGiant OS with them, booted and checked. The
+# commit (ci-<version>-<sha>, images.yml) and Rasgeth OS with them, booted and checked. The
 # release copies those images to the version's tags (job images: same digests, no build) and
 # attaches that run's OS images (os-plan finds the run, reuse.mjs checks they carry the release's
 # stack and files, os.yml's publish signs them); it builds either only when nothing reusable is
@@ -124,13 +124,13 @@ jobs:
           else
             for id in $(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$sha&status=success&per_page=50" --jq '.workflow_runs[].id'); do
               names=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id/artifacts?per_page=100" --jq '.artifacts[] | select(.expired | not) | .name')
-              # RGCompanion's Linux tar (G40.12) rides with the same run (ci.yml's companion job).
-              if grep -qxF "release-windows-$version" <<<"$names" && grep -qxF "release-mac-$version" <<<"$names" && grep -qxF "rgcompanion-linux-x64" <<<"$names"; then
+              # The app's Linux tar (G40.12) rides with the same run (ci.yml's companion job).
+              if grep -qxF "release-windows-$version" <<<"$names" && grep -qxF "release-mac-$version" <<<"$names" && grep -qxF "rasgeth-app-linux-x64" <<<"$names"; then
                 reuse=true; run_id=$id; break
               fi
             done
-            if [ "$reuse" = true ]; then why="CI run $run_id (green) kept release-windows-$version, release-mac-$version and rgcompanion-linux-x64"
-            else why="no green CI run of $sha kept release-windows-$version, release-mac-$version and rgcompanion-linux-x64"; fi
+            if [ "$reuse" = true ]; then why="CI run $run_id (green) kept release-windows-$version, release-mac-$version and rasgeth-app-linux-x64"
+            else why="no green CI run of $sha kept release-windows-$version, release-mac-$version and rasgeth-app-linux-x64"; fi
           fi
           # Never a release without green CI (3.7.4): a run of this commit whose checks ran and passed
           # (a run on main that only saw the commit had passed already counts through that one).
@@ -178,7 +178,7 @@ jobs:
       publish: ${{ startsWith(github.ref, 'refs/tags/') }}
 
   # Our copy of ZetaOffice (3.5.2, zetaoffice.yml): a version tag publishes the files missing from
-  # the zetaoffice-cache pre-release (RedGiant's first source for LibreOffice in the browser).
+  # the zetaoffice-cache pre-release (Rasgeth's first source for LibreOffice in the browser).
   zetaoffice:
     if: ${{ !inputs.only && !inputs.dry_run }}
     permissions:
@@ -192,7 +192,7 @@ jobs:
   # before any installer or app is attached, so no launcher or server ever meets this release's
   # files without its kind (a breaking release must never be taken for a normal one).
   release-info:
-    # The release's body says where RedGiant OS's images are (os-plan, 3.7.4).
+    # The release's body says where Rasgeth OS's images are (os-plan, 3.7.4).
     needs: [ci-build, os-plan]
     if: ${{ !cancelled() && !inputs.only && !inputs.dry_run && needs.ci-build.result == 'success' && (needs.os-plan.result == 'success' || needs.os-plan.result == 'skipped') }}
     runs-on: ubuntu-latest
@@ -239,8 +239,8 @@ jobs:
           # Before the generated notes.
           body: ${{ needs.os-plan.outputs.body }}
 
-  # RedGiant OS (G39.1, G39.2): the installer ISO, the qcow2 and raw disks for x86_64 and arm64 and
-  # the signed stack the OS updates RedGiant from, built and booted in QEMU by os.yml, attached
+  # Rasgeth OS (G39.1, G39.2): the installer ISO, the qcow2 and raw disks for x86_64 and arm64 and
+  # the signed stack the OS updates Rasgeth from, built and booted in QEMU by os.yml, attached
   # with SHA256SUMS-os signed like release.json. Off until we ship it: set the repository
   # variable REDGIANT_OS_RELEASE to "true".
   # 3.7.4: the os.yml run that already built and booted them is looked for first: a green push run
@@ -290,10 +290,10 @@ jobs:
               c=$(gh api "$api/runs/$id/jobs?per_page=100" --jq '.jobs[] | select(.name == "update-test") | .conclusion')
               if [ "$c" = success ]; then tested=true; echo "update test passed in run $id"; break; fi
             done
-            body="**RedGiant OS**: unchanged since [$os_tag]($url/$os_tag), whose release has the images (ISO, qcow2, VHDX, OVA, LXC, Raspberry Pi). Machines running RedGiant OS, and new ones at their first start, update to $VERSION from the signed \`redgiant-os-stack.json\` attached here."
-            echo "::notice title=RedGiant OS images::none (the OS is $os_tag's$([ "$FORCE_STACK" = true ] && echo ", forced for this dry run")); stack and files only, update test $([ "$tested" = true ] && echo "passed on the branch" || echo "run by the release")"
+            body="**Rasgeth OS**: unchanged since [$os_tag]($url/$os_tag), whose release has the images (ISO, qcow2, VHDX, OVA, LXC, Raspberry Pi). Machines running Rasgeth OS, and new ones at their first start, update to $VERSION from the signed \`rasgeth-os-stack.json\` attached here."
+            echo "::notice title=Rasgeth OS images::none (the OS is $os_tag's$([ "$FORCE_STACK" = true ] && echo ", forced for this dry run")); stack and files only, update test $([ "$tested" = true ] && echo "passed on the branch" || echo "run by the release")"
             {
-              echo "| RedGiant OS | Version | Commit | Decision | Why |"
+              echo "| Rasgeth OS | Version | Commit | Decision | Why |"
               echo "| --- | --- | --- | --- | --- |"
               echo "| stack and system's files | $VERSION | \`${SHA:0:7}\` | images stay $os_tag's | update test passed on the branch: $tested |"
             } >> "$GITHUB_STEP_SUMMARY"
@@ -306,7 +306,7 @@ jobs:
             } >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          body="**RedGiant OS**: the images of $VERSION are attached to this release (listed in \`SHA256SUMS-os\`, signed)."
+          body="**Rasgeth OS**: the images of $VERSION are attached to this release (listed in \`SHA256SUMS-os\`, signed)."
           {
             echo "mode=$mode"
             echo "os_tag=$os_tag"
@@ -314,7 +314,7 @@ jobs:
             echo "body=$body"
           } >> "$GITHUB_OUTPUT"
           paths=(packaging/os packages/server/helpers .github/workflows/os.yml)
-          wanted=(redgiant-os-stack redgiant-os-amd64 redgiant-os-arm64 redgiant-os-amd64-lxc redgiant-os-arm64-raspi)
+          wanted=(rasgeth-os-stack rasgeth-os-amd64 rasgeth-os-arm64 rasgeth-os-amd64-lxc rasgeth-os-arm64-raspi)
           version_branch='^[pab][0-9]+[.][0-9]+[.][0-9]+$'
           {
             gh api "$api/workflows/os.yml/runs?head_sha=$SHA&status=success&event=push&per_page=20" --jq '.workflow_runs[] | "\(.id) \(.head_sha) \(.head_branch)"'
@@ -333,7 +333,7 @@ jobs:
             for a in "${wanted[@]}"; do grep -qxF "$a" <<<"$names" || missing="$missing $a"; done
             [ -z "$missing" ] || { echo "run $id: no$missing (expired?)"; continue; }
             d=$(mktemp -d)
-            gh run download "$id" -R "$GITHUB_REPOSITORY" -n redgiant-os-stack -D "$d"
+            gh run download "$id" -R "$GITHUB_REPOSITORY" -n rasgeth-os-stack -D "$d"
             if node packaging/os/reuse.mjs --dir "$d" --version "$VERSION" --source-tag "ci-$VERSION-$SHA"; then
               run_id=$id; why="run $id on $branch (${rsha:0:7}) built and booted them with this release's stack and files"
               break
@@ -341,9 +341,9 @@ jobs:
             echo "run $id: not this release's"
           done < candidates
           decision=$([ -n "$run_id" ] && echo reuse || echo build)
-          echo "::notice title=RedGiant OS images::$decision ($why)"
+          echo "::notice title=Rasgeth OS images::$decision ($why)"
           {
-            echo "| RedGiant OS images | Version | Commit | Decision | Why |"
+            echo "| Rasgeth OS images | Version | Commit | Decision | Why |"
             echo "| --- | --- | --- | --- | --- |"
             echo "| ISO, qcow2, raw, VHDX, OVA, LXC, Raspberry Pi | $VERSION | \`${SHA:0:7}\` | $decision | $why |"
           } >> "$GITHUB_STEP_SUMMARY"
@@ -396,7 +396,7 @@ jobs:
           REDGIANT_VERSION="$version" pnpm --filter @redgiant/browser-extension build
       - uses: actions/upload-artifact@v4
         with:
-          name: redgiant-keychain-extension
+          name: rasgeth-keychain-extension
           path: packages/browser-extension/dist/*.zip
           retention-days: 7
       - uses: softprops/action-gh-release@v2
@@ -405,7 +405,7 @@ jobs:
           files: packages/browser-extension/dist/*.zip
           fail_on_unmatched_files: true
 
-  # RGCompanion for the computers (G40.12), when the installers are built here: the Windows and
+  # The app for the computers (G40.12), when the installers are built here: the Windows and
   # macOS builds go into them, Linux's tar is attached by windows-installer.
   companion:
     if: ${{ !inputs.only && !inputs.dry_run && needs.ci-build.outputs.reuse != 'true' }}
@@ -416,9 +416,9 @@ jobs:
     with:
       desktop: true
 
-  # RedGiant-Setup.exe (G22; 3.0, G30.2): the launcher, Node, the server built for Windows and the
+  # Rasgeth-Setup.exe (G22; 3.0, G30.2): the launcher, Node, the server built for Windows and the
   # web page, attached to the tag's GitHub Release. No WSL: everything runs on Windows itself.
-  # With RGCompanion's window in app\ (G40.12).
+  # With The app's window in app\ (G40.12).
   windows-installer:
     if: ${{ !inputs.only && !inputs.dry_run && needs.ci-build.outputs.reuse != 'true' }}
     needs: [ci-build, pgvector, release-info, companion]
@@ -443,11 +443,11 @@ jobs:
           path: pgv
       - uses: actions/download-artifact@v4
         with:
-          name: rgcompanion-windows-x64
+          name: rasgeth-app-windows-x64
           path: packaging/windows/app
       - uses: actions/download-artifact@v4
         with:
-          name: rgcompanion-linux-x64
+          name: rasgeth-app-linux-x64
           path: companion-linux
       - name: Stage what the installer carries (server with its production modules, page, Node)
         shell: pwsh
@@ -474,7 +474,7 @@ jobs:
         shell: pwsh
         working-directory: packaging/windows
         run: |
-          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /target:winexe /out:RedGiant.exe /win32icon:redgiant.ico /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.IO.Compression.dll /r:System.IO.Compression.FileSystem.dll /r:System.Management.dll /r:System.Web.Extensions.dll launcher\RedGiant.cs launcher\Updates.cs launcher\Moves.cs launcher\Memory.cs launcher\Diag.cs launcher\Delta.cs launcher\UpdateKey.cs launcher\ReleaseInfo.cs launcher\PageGate.cs launcher\AskGate.cs launcher\AppWindow.cs
+          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /codepage:65001 /target:winexe /out:Rasgeth.exe /win32icon:rasgeth.ico /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.IO.Compression.dll /r:System.IO.Compression.FileSystem.dll /r:System.Management.dll /r:System.Web.Extensions.dll launcher\Rasgeth.cs launcher\Brand.cs launcher\Updates.cs launcher\Moves.cs launcher\Memory.cs launcher\Diag.cs launcher\Delta.cs launcher\UpdateKey.cs launcher\ReleaseInfo.cs launcher\PageGate.cs launcher\AskGate.cs launcher\AppWindow.cs
           if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Build the installer (Inno Setup)
         shell: pwsh
@@ -482,13 +482,13 @@ jobs:
         run: |
           choco install innosetup -y --no-progress
           $version = "${{ github.ref_name }}".TrimStart("v")
-          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=$version" RedGiant.iss
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=$version" Rasgeth.iss
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          # RGCompanion on its own (3.8.2), from the same app\ RedGiant-Setup.exe carries.
-          if (-not (Test-Path app\rgcompanion.exe)) { "no app\rgcompanion.exe for RGCompanion-Setup.exe"; exit 1 }
-          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=$version" RGCompanion.iss
+          # Rasgeth App on its own (3.8.2), from the same app\ Rasgeth-Setup.exe carries.
+          if (-not (Test-Path app\rasgeth-app.exe)) { "no app\rasgeth-app.exe for Rasgeth-App-Setup.exe"; exit 1 }
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=$version" RasgethApp.iss
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          Get-Item dist\RedGiant-Setup.exe, dist\RGCompanion-Setup.exe | Format-List Name, Length
+          Get-Item dist\Rasgeth-Setup.exe, dist\Rasgeth-App-Setup.exe | Format-List Name, Length
       # Differential updates (G36.18): the same files as a zip whose entries the launcher fetches
       # one by one (HTTP Range), and the manifest of their sizes and sha256. Signed with
       # UPDATE_SIGNING_KEY when the secret is there; once UpdateKey.cs holds a public key the
@@ -502,16 +502,16 @@ jobs:
           if ($version -notmatch '^\d+\.\d+\.\d+$') { $version = "0.0.0-dispatch" }
           $app = "$env:RUNNER_TEMP\app"
           New-Item -ItemType Directory -Force $app | Out-Null
-          if (-not (Test-Path packaging\windows\app\rgcompanion.exe)) { "no app\rgcompanion.exe to carry"; exit 1 }
+          if (-not (Test-Path packaging\windows\app\rasgeth-app.exe)) { "no app\rasgeth-app.exe to carry"; exit 1 }
           foreach ($d in "server", "web", "node", "app") { Copy-Item -Recurse "packaging\windows\$d" "$app\$d" }
-          Copy-Item packaging\windows\RedGiant.exe, packaging\windows\redgiant.ico $app
+          Copy-Item packaging\windows\Rasgeth.exe, packaging\windows\rasgeth.ico, packaging\icon\rasgeth-tray-dark.ico, packaging\icon\rasgeth-tray-light.ico $app
           New-Item -ItemType Directory -Force "$app\bin" | Out-Null
-          Copy-Item packaging\windows\redgiant.cmd "$app\bin"
-          node packaging/update/pack.mjs --tree $app --version $version --platform win-x64 --out packaging/windows/update --installer packaging/windows/dist/RedGiant-Setup.exe
+          Copy-Item packaging\windows\rasgeth.cmd "$app\bin"
+          node packaging/update/pack.mjs --tree $app --version $version --platform win-x64 --out packaging/windows/update --installer packaging/windows/dist/Rasgeth-Setup.exe
           if ($LASTEXITCODE -ne 0) { exit 1 }
           $keyed = (Get-Content packaging\windows\launcher\UpdateKey.cs -Raw) -notmatch 'PublicKeyXml = ""'
           if ($env:UPDATE_SIGNING_KEY) {
-            node packaging/update/sign.mjs packaging/windows/update/RedGiant-win-x64.manifest.json
+            node packaging/update/sign.mjs packaging/windows/update/Rasgeth-win-x64.manifest.json
             if ($LASTEXITCODE -ne 0) { exit 1 }
           } elseif ($keyed) {
             "UpdateKey.cs holds a public key but the UPDATE_SIGNING_KEY secret is missing: the launchers would refuse this release's manifest"
@@ -520,15 +520,15 @@ jobs:
             "::warning::manifest not signed (no UPDATE_SIGNING_KEY): the launcher checks it against GitHub's digest only"
           }
           Get-ChildItem packaging/windows/update | Format-Table Name, Length
-      # RGCompanion's own packages (3.8.2), listed with their sha256 in SHA256SUMS-companion and
+      # The app's own packages (3.8.2), listed with their sha256 in SHA256SUMS-companion and
       # signed with the update key when the secret is there (as SHA256SUMS-os).
-      - name: RGCompanion's checksums
+      - name: The app's checksums
         shell: pwsh
         env:
           UPDATE_SIGNING_KEY: ${{ secrets.UPDATE_SIGNING_KEY }}
         run: |
           New-Item -ItemType Directory -Force companion-sums | Out-Null
-          $lines = foreach ($f in "packaging/windows/dist/RGCompanion-Setup.exe", "companion-linux/rgcompanion-linux-x64.tar.gz") {
+          $lines = foreach ($f in "packaging/windows/dist/Rasgeth-App-Setup.exe", "companion-linux/rasgeth-app-linux-x64.tar.gz") {
             "{0}  {1}" -f (Get-FileHash -Algorithm SHA256 $f).Hash.ToLowerInvariant(), (Split-Path $f -Leaf)
           }
           [IO.File]::WriteAllText("$PWD/companion-sums/SHA256SUMS-companion", (($lines -join "`n") + "`n"))
@@ -539,7 +539,7 @@ jobs:
           Get-Content companion-sums/SHA256SUMS-companion
       - uses: actions/upload-artifact@v4
         with:
-          name: RedGiant-win-x64-update
+          name: Rasgeth-win-x64-update
           path: packaging/windows/update/*
           compression-level: 0
           retention-days: 7
@@ -547,19 +547,19 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            packaging/windows/dist/RedGiant-Setup.exe
-            packaging/windows/dist/RGCompanion-Setup.exe
+            packaging/windows/dist/Rasgeth-Setup.exe
+            packaging/windows/dist/Rasgeth-App-Setup.exe
             companion-sums/SHA256SUMS-companion
             companion-sums/SHA256SUMS-companion.sig
-            packaging/windows/update/RedGiant-win-x64.zip
-            packaging/windows/update/RedGiant-win-x64.manifest.json
-            packaging/windows/update/RedGiant-win-x64.manifest.json.gz
-            packaging/windows/update/RedGiant-win-x64.manifest.json.sig
-            companion-linux/rgcompanion-linux-x64.tar.gz
+            packaging/windows/update/Rasgeth-win-x64.zip
+            packaging/windows/update/Rasgeth-win-x64.manifest.json
+            packaging/windows/update/Rasgeth-win-x64.manifest.json.gz
+            packaging/windows/update/Rasgeth-win-x64.manifest.json.sig
+            companion-linux/rasgeth-app-linux-x64.tar.gz
           fail_on_unmatched_files: false
           generate_release_notes: true
 
-  # RedGiant for macOS (2026-11-05): signed with the Developer ID and notarized by Apple, so it
+  # Rasgeth for macOS (2026-11-05): signed with the Developer ID and notarized by Apple, so it
   # opens without warnings. Secrets: MAC_CERTIFICATE_P12 (the "Developer ID Application"
   # certificate exported as .p12, base64), MAC_CERTIFICATE_PASSWORD, MAC_NOTARY_KEY (an App Store
   # Connect API key, the .p8 file in base64), MAC_NOTARY_KEY_ID, MAC_NOTARY_ISSUER_ID.
@@ -586,20 +586,20 @@ jobs:
         with:
           name: pgvector-macos-universal
           path: pgv
-      # RGCompanion's window (G40.12): into Contents/Helpers, signed and notarized with the rest.
+      # The app's window (G40.12): into Contents/Helpers, signed and notarized with the rest.
       - uses: actions/download-artifact@v4
         with:
-          name: rgcompanion-macos
+          name: rasgeth-app-macos
           path: companion
       - name: Build, sign, notarize
         env:
           MAC_NOTARY_KEY_ID: ${{ secrets.MAC_NOTARY_KEY_ID }}
           MAC_NOTARY_ISSUER_ID: ${{ secrets.MAC_NOTARY_ISSUER_ID }}
-        run: COMPANION_APP="$PWD/companion/rgcompanion-macos.zip" PGVECTOR_ZIP="$(ls "$PWD"/pgv/pgvector-*-macos-universal.zip)" bash packaging/mac/build.sh "${GITHUB_REF_NAME#v}"
+        run: COMPANION_APP="$PWD/companion/rasgeth-app-macos.zip" PGVECTOR_ZIP="$(ls "$PWD"/pgv/pgvector-*-macos-universal.zip)" bash packaging/mac/build.sh "${GITHUB_REF_NAME#v}"
       - uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: packaging/mac/dist/RedGiant-mac-*.dmg
+          files: packaging/mac/dist/Rasgeth-mac-*.dmg
 
   # CI's packages attached (3.5.9): what windows-installer and mac-app would build, made by the
   # tag's CI run, checked against this release (version, commit, installer's sha256 in the manifest,
@@ -634,10 +634,10 @@ jobs:
           path: ci/mac
           run-id: ${{ needs.ci-build.outputs.run_id }}
           github-token: ${{ github.token }}
-      # RGCompanion for Linux (G40.12), built by the same CI run (its companion job).
+      # The app for Linux (G40.12), built by the same CI run (its companion job).
       - uses: actions/download-artifact@v4
         with:
-          name: rgcompanion-linux-x64
+          name: rasgeth-app-linux-x64
           path: ci/linux
           run-id: ${{ needs.ci-build.outputs.run_id }}
           github-token: ${{ github.token }}
@@ -655,7 +655,7 @@ jobs:
               if (b.version !== version || b.sha !== sha) { console.error(file + ": made for " + b.version + " at " + b.sha); process.exit(1); }
               console.log(file + ": " + b.version + " at " + b.sha + ", CI run " + b.run + " on " + b.ref);' "$f" "$VERSION" "$SHA"
           done
-          m=ci/windows/update/RedGiant-win-x64.manifest.json
+          m=ci/windows/update/Rasgeth-win-x64.manifest.json
           node -e '
             const fs = require("fs"), crypto = require("crypto");
             const [file, version, setup] = process.argv.slice(1);
@@ -663,18 +663,18 @@ jobs:
             const data = fs.readFileSync(setup);
             const sha = crypto.createHash("sha256").update(data).digest("hex");
             if (m.version !== version) { console.error("the manifest is for " + m.version); process.exit(1); }
-            if (!m.installer || m.installer.sha256 !== sha || m.installer.size !== data.length) { console.error("the manifest does not describe this RedGiant-Setup.exe"); process.exit(1); }
+            if (!m.installer || m.installer.sha256 !== sha || m.installer.size !== data.length) { console.error("the manifest does not describe this Rasgeth-Setup.exe"); process.exit(1); }
             const zip = fs.statSync(file.replace(".manifest.json", ".zip")).size;
             if (m.archive.size !== zip) { console.error("the zip does not match the manifest"); process.exit(1); }
             // The app window (G40.12): updates carry it like the rest.
-            if (!m.files.some((f) => f.path === "app/rgcompanion.exe")) { console.error("the manifest has no app/rgcompanion.exe"); process.exit(1); }
-            console.log("manifest " + m.version + ": " + m.files.length + " files, installer sha256 " + sha);' "$m" "$VERSION" ci/windows/RedGiant-Setup.exe
+            if (!m.files.some((f) => f.path === "app/rasgeth-app.exe")) { console.error("the manifest has no app/rasgeth-app.exe"); process.exit(1); }
+            console.log("manifest " + m.version + ": " + m.files.length + " files, installer sha256 " + sha);' "$m" "$VERSION" ci/windows/Rasgeth-Setup.exe
           cmp <(gzip -dc "$m.gz") "$m"
-          ls ci/mac/RedGiant-mac-*.dmg
-          tar -tzf ci/linux/rgcompanion-linux-x64.tar.gz | grep -qx "rgcompanion-linux-x64/bundle/rgcompanion" || { echo "the Linux tar has no app"; exit 1; }
-          # RGCompanion on its own for Windows (3.8.2): an Inno Setup installer from the same run.
-          [ -s ci/windows/RGCompanion-Setup.exe ] || { echo "CI's Windows packages have no RGCompanion-Setup.exe"; exit 1; }
-          head -c 2 ci/windows/RGCompanion-Setup.exe | grep -q MZ || { echo "RGCompanion-Setup.exe is not a Windows program"; exit 1; }
+          ls ci/mac/Rasgeth-mac-*.dmg
+          tar -tzf ci/linux/rasgeth-app-linux-x64.tar.gz | grep -qx "rasgeth-app-linux-x64/bundle/rasgeth-app" || { echo "the Linux tar has no app"; exit 1; }
+          # Rasgeth App on its own for Windows (3.8.2): an Inno Setup installer from the same run.
+          [ -s ci/windows/Rasgeth-App-Setup.exe ] || { echo "CI's Windows packages have no Rasgeth-App-Setup.exe"; exit 1; }
+          head -c 2 ci/windows/Rasgeth-App-Setup.exe | grep -q MZ || { echo "Rasgeth-App-Setup.exe is not a Windows program"; exit 1; }
           notarized=$(node -p 'require("./ci/mac/build.json").notarized')
           if [ "$notarized" != true ] && [ "$NOTARY" = true ]; then
             echo "the Mac app from CI is not notarized, but this repository can notarize: not attached"; exit 1
@@ -685,7 +685,7 @@ jobs:
           UPDATE_SIGNING_KEY: ${{ secrets.UPDATE_SIGNING_KEY }}
         run: |
           set -euo pipefail
-          m=ci/windows/update/RedGiant-win-x64.manifest.json
+          m=ci/windows/update/Rasgeth-win-x64.manifest.json
           if [ -n "$UPDATE_SIGNING_KEY" ]; then
             node packaging/update/sign.mjs "$m"
           elif grep -q 'PublicKeyXml = ""' packaging/windows/launcher/UpdateKey.cs; then
@@ -693,11 +693,11 @@ jobs:
           else
             echo "UpdateKey.cs holds a public key but the UPDATE_SIGNING_KEY secret is missing: the launchers would refuse this release's manifest"; exit 1
           fi
-          # RGCompanion's own packages (3.8.2): their sha256 in SHA256SUMS-companion, signed with
+          # The app's own packages (3.8.2): their sha256 in SHA256SUMS-companion, signed with
           # the update key when the secret is there (as SHA256SUMS-os).
           mkdir -p ci/companion
-          cp ci/windows/RGCompanion-Setup.exe ci/linux/rgcompanion-linux-x64.tar.gz ci/companion/
-          (cd ci/companion && sha256sum RGCompanion-Setup.exe rgcompanion-linux-x64.tar.gz > SHA256SUMS-companion)
+          cp ci/windows/Rasgeth-App-Setup.exe ci/linux/rasgeth-app-linux-x64.tar.gz ci/companion/
+          (cd ci/companion && sha256sum Rasgeth-App-Setup.exe rasgeth-app-linux-x64.tar.gz > SHA256SUMS-companion)
           if [ -n "$UPDATE_SIGNING_KEY" ]; then node packaging/update/sign.mjs ci/companion/SHA256SUMS-companion
           else echo "::warning::SHA256SUMS-companion not signed (no UPDATE_SIGNING_KEY)"; fi
           cat ci/companion/SHA256SUMS-companion
@@ -710,7 +710,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ !inputs.dry_run }}
         with:
-          name: RedGiant-win-x64-update
+          name: Rasgeth-win-x64-update
           path: ci/windows/update/*
           compression-level: 0
           retention-days: 7
@@ -721,22 +721,22 @@ jobs:
         if: ${{ startsWith(github.ref, 'refs/tags/') && !inputs.dry_run }}
         with:
           files: |
-            ci/windows/RedGiant-Setup.exe
-            ci/windows/RGCompanion-Setup.exe
+            ci/windows/Rasgeth-Setup.exe
+            ci/windows/Rasgeth-App-Setup.exe
             ci/companion/SHA256SUMS-companion
             ci/companion/SHA256SUMS-companion.sig
-            ci/windows/update/RedGiant-win-x64.zip
-            ci/windows/update/RedGiant-win-x64.manifest.json
-            ci/windows/update/RedGiant-win-x64.manifest.json.gz
-            ci/windows/update/RedGiant-win-x64.manifest.json.sig
-            ci/mac/RedGiant-mac-*.dmg
-            ci/linux/rgcompanion-linux-x64.tar.gz
+            ci/windows/update/Rasgeth-win-x64.zip
+            ci/windows/update/Rasgeth-win-x64.manifest.json
+            ci/windows/update/Rasgeth-win-x64.manifest.json.gz
+            ci/windows/update/Rasgeth-win-x64.manifest.json.sig
+            ci/mac/Rasgeth-mac-*.dmg
+            ci/linux/rasgeth-app-linux-x64.tar.gz
           fail_on_unmatched_files: false
           generate_release_notes: true
 
   # Homebrew and winget (G36.10): the cask and the winget manifest made from this release's own
   # installers (the sha256 GitHub lists for them), attached to the release. The tap is updated
-  # when HOMEBREW_TAP_TOKEN (a token that may push to Frostmoore/homebrew-redgiant) is set; winget
+  # when HOMEBREW_TAP_TOKEN (a token that may push to Frostmoore/homebrew-rasgeth) is set; winget
   # gets a pull request only when the repository variable WINGET_AUTO_SUBMIT is "true" and
   # WINGET_TOKEN is set: off until the person turns it on, after the first submission (made by
   # hand, docs/INSTALL.md) is accepted.
@@ -765,14 +765,14 @@ jobs:
             gh release view "$GITHUB_REF_NAME" --json assets \
               -q ".assets[] | select(.name == \"$1\") | .digest" | sed 's/^sha256://'
           }
-          dmg=$(digest RedGiant-mac-arm64.dmg)
-          setup=$(digest RedGiant-Setup.exe)
+          dmg=$(digest Rasgeth-mac-arm64.dmg)
+          setup=$(digest Rasgeth-Setup.exe)
           [ -n "$dmg" ] && [ -n "$setup" ] || { echo "the release has no installers yet"; exit 1; }
           node packaging/stores/stores.mjs --version "$version" --dmg-sha256 "$dmg" \
             --setup-sha256 "$setup" --date "$(date -u +%F)" --out stores
-          ruby -c stores/homebrew/Casks/redgiant.rb
-          (cd stores/winget && zip -qr "../RedGiant-winget-$version.zip" manifests)
-          cp stores/homebrew/Casks/redgiant.rb stores/redgiant.rb
+          ruby -c stores/homebrew/Casks/rasgeth.rb
+          (cd stores/winget && zip -qr "../Rasgeth-winget-$version.zip" manifests)
+          cp stores/homebrew/Casks/rasgeth.rb stores/rasgeth.rb
           echo "version=$version" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
         with:
@@ -782,25 +782,25 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           files: |
-            stores/redgiant.rb
-            stores/RedGiant-winget-*.zip
+            stores/rasgeth.rb
+            stores/Rasgeth-winget-*.zip
       - name: The Homebrew tap (when HOMEBREW_TAP_TOKEN is set)
         env:
           TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
         run: |
           set -euo pipefail
           if [ -z "$TAP_TOKEN" ]; then
-            echo "::notice::no HOMEBREW_TAP_TOKEN: redgiant.rb is attached to the release, the tap is not updated"
+            echo "::notice::no HOMEBREW_TAP_TOKEN: rasgeth.rb is attached to the release, the tap is not updated"
             exit 0
           fi
-          git clone -q "https://x-access-token:$TAP_TOKEN@github.com/Frostmoore/homebrew-redgiant.git" tap
+          git clone -q "https://x-access-token:$TAP_TOKEN@github.com/Frostmoore/homebrew-rasgeth.git" tap
           mkdir -p tap/Casks
-          cp stores/homebrew/Casks/redgiant.rb tap/Casks/redgiant.rb
+          cp stores/homebrew/Casks/rasgeth.rb tap/Casks/rasgeth.rb
           cd tap
-          git add Casks/redgiant.rb
+          git add Casks/rasgeth.rb
           if git diff --cached --quiet; then echo "the tap already has it"; exit 0; fi
-          git -c user.name="RedGiant release" -c user.email="actions@github.com" \
-            commit -q -m "redgiant ${GITHUB_REF_NAME#v}"
+          git -c user.name="Rasgeth release" -c user.email="actions@github.com" \
+            commit -q -m "rasgeth ${GITHUB_REF_NAME#v}"
           git push -q origin HEAD
 
   # winget's pull request (G36.10), only when the person turned it on (WINGET_AUTO_SUBMIT) after
@@ -821,7 +821,7 @@ jobs:
         run: |
           if (-not $env:WINGET_TOKEN) { "WINGET_AUTO_SUBMIT is on but WINGET_TOKEN is missing"; exit 1 }
           Invoke-WebRequest https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
-          $dir = "manifests\f\Frostmoore\RedGiant\${{ needs.stores.outputs.version }}"
+          $dir = "manifests\f\Frostmoore\Rasgeth\${{ needs.stores.outputs.version }}"
           .\wingetcreate.exe submit --token $env:WINGET_TOKEN $dir
           if ($LASTEXITCODE -ne 0) { exit 1 }
 
@@ -884,10 +884,10 @@ jobs:
           echo "win_fp=$win_fp" >> "$GITHUB_OUTPUT"
           echo "linux_fp=$linux_fp" >> "$GITHUB_OUTPUT"
 
-  # llama.cpp with RedGiant's patches for Windows and NVIDIA cards (G32.2): b12034 plus
+  # llama.cpp with Rasgeth's patches for Windows and NVIDIA cards (G32.2): b12034 plus
   # engine/llama-patches (apply.ps1), CUDA 12.8 from NVIDIA's redistributable archives (no
   # installer), MSVC and Ninja (engine/build-win.ps1). The zip carries llama-server.exe with its
-  # DLLs and CUDA's own (cudart, cuBLAS) and is attached to the release; RedGiant downloads it
+  # DLLs and CUDA's own (cudart, cuBLAS) and is attached to the release; Rasgeth downloads it
   # only when the person turns on «Next layer ahead». Built only for a new fingerprint (1-3 hours),
   # then kept in engine-cache as llama-redgiant-win-cuda12.8-x64-<fingerprint>.zip.
   # Alone: Actions > Release images > Run workflow, only = llama-cuda.
@@ -942,7 +942,7 @@ jobs:
           restore-keys: |
             sccache-llama-${{ env.LLAMA_BUILD }}-${{ env.CUDA_ARCHS }}-
             sccache-llama-${{ env.LLAMA_BUILD }}-
-      - name: llama.cpp at its tag with RedGiant's patches, built and zipped
+      - name: llama.cpp at its tag with Rasgeth's patches, built and zipped
         shell: pwsh
         env:
           SCCACHE_DIR: ${{ runner.temp }}\sccache
@@ -968,12 +968,12 @@ jobs:
           if ! gh release view "$ENGINE_CACHE" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release create "$ENGINE_CACHE" -R "$GITHUB_REPOSITORY" --prerelease --latest=false --target "$GITHUB_SHA" \
               --title "Engine cache (not a release)" \
-              --notes "Patched llama.cpp builds kept by release.yml, named by their fingerprint (engine/fingerprint.sh). Download RedGiant from the latest release instead."
+              --notes "Patched llama.cpp builds kept by release.yml, named by their fingerprint (engine/fingerprint.sh). Download Rasgeth from the latest release instead."
           fi
           gh release upload "$ENGINE_CACHE" "$CACHED_ZIP" -R "$GITHUB_REPOSITORY" --clobber
 
   # The fingerprint is known: the zip an earlier release built, attached to this release with the
-  # name the app looks for (moe-prefetch.ts, RedGiant.cs: releases/download/v<version>/<zip>).
+  # name the app looks for (moe-prefetch.ts, Rasgeth.cs: releases/download/v<version>/<zip>).
   llama-cuda-reuse:
     needs: engine-plan
     if: needs.engine-plan.outputs.win == 'reuse'

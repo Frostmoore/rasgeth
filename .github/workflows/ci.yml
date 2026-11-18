@@ -155,9 +155,9 @@ jobs:
       # Homebrew's cask (G36.10), as a release makes it: Ruby that parses.
       - if: runner.os == 'Linux'
         run: |
-          sha=$(printf 'redgiant' | sha256sum | cut -d' ' -f1)
+          sha=$(printf 'rasgeth' | sha256sum | cut -d' ' -f1)
           node packaging/stores/stores.mjs --version 3.4.0 --dmg-sha256 "$sha" --setup-sha256 "$sha" --out "$RUNNER_TEMP/stores"
-          ruby -c "$RUNNER_TEMP/stores/homebrew/Casks/redgiant.rb"
+          ruby -c "$RUNNER_TEMP/stores/homebrew/Casks/rasgeth.rb"
       # The app's window for this installer (G40.12), when companion built it.
       - if: runner.os == 'Windows' && needs.companion.result == 'success'
         uses: actions/download-artifact@v4

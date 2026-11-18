@@ -123,7 +123,7 @@ jobs:
           gh release view "$CACHE" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 ||
             gh release create "$CACHE" -R "$GITHUB_REPOSITORY" --prerelease --latest=false --target "$GITHUB_SHA" \
               --title "pgvector cache (not a release)" \
-              --notes "pgvector built for RedGiant's embedded Postgres (workflow pgvector.yml). Files are never replaced: their sha256 is fixed in packages/server/src/knowledge/pgvector.ts."
+              --notes "pgvector built for Rasgeth's embedded Postgres (workflow pgvector.yml). Files are never replaced: their sha256 is fixed in packages/server/src/knowledge/pgvector.ts."
           have=$(gh release view "$CACHE" -R "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name')
           for f in out/pgvector-*.zip; do
             n=$(basename "$f")

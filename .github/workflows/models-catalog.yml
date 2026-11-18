@@ -57,5 +57,5 @@ jobs:
           gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 ||
             gh release create "$TAG" -R "$GITHUB_REPOSITORY" --prerelease --latest=false --target "$GITHUB_SHA" \
               --title "Models catalog (not a release)" \
-              --notes "The signed models catalog RedGiant downloads (names, limits and prices of the models). Updated by models-catalog.yml."
+              --notes "The signed models catalog Rasgeth downloads (names, limits and prices of the models). Updated by models-catalog.yml."
           gh release upload "$TAG" -R "$GITHUB_REPOSITORY" --clobber out/models-catalog.json out/models-catalog.json.sig

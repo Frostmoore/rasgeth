@@ -202,7 +202,7 @@ begin
   DataPage := CreateInputDirPage(wpSelectDir, CustomMessage('DataTitle'), CustomMessage('DataSub'),
     CustomMessage('DataText'), False, '');
   DataPage.Add('');
-  { An earlier installation's folder (RedGiant's too, 3.9.0) is proposed again: nothing is lost. }
+  { An earlier installation's folder (one from before 3.9.0 too) is proposed again: nothing is lost. }
   if not RegQueryStringValue(HKCU, 'Software\RedGiant', 'DataDir', Previous) then
     Previous := ExpandConstant('{localappdata}\Rasgeth\data');
   DataPage.Values[0] := Previous;
@@ -275,7 +275,7 @@ begin
 end;
 
 { The engine's folder (llama.cpp, the models, the launcher's logs) as Rasgeth.cs's WinEngine finds
-  it: {localappdata}\Rasgeth\engine, or the one an earlier RedGiant made when only that one is
+  it: {localappdata}\Rasgeth\engine, or the one a version before 3.9.0 made when only that one is
   there (3.9.0: models already downloaded are never thrown away by the new name). }
 function EngineDir(): String;
 begin
@@ -303,7 +303,7 @@ end;
 
 { Asked to stop the proper way (server and Postgres with it); what is left after a minute is
   stopped by force, so its files can be replaced. Over a version before 3.9.0 the program
-  running is the old RedGiant.exe. }
+  running is the old launcher, under its old name. }
 procedure StopRasgeth();
 var
   Code: Integer;
@@ -340,7 +340,7 @@ begin
     WizardForm.NextButton.OnClick(WizardForm.NextButton);
 end;
 
-{ A folder the program made for itself (its name says so, Rasgeth or RedGiant before 3.9.0): only
+{ A folder the program made for itself (its name says so, the old one before 3.9.0 too): only
   those are deleted whole. A folder the person chose (D:\, Documents) keeps everything else. }
 function Ours(Dir: String): Boolean;
 begin
