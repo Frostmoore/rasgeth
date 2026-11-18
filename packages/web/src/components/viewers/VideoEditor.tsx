@@ -91,6 +91,7 @@ import {
   IconChevronRight,
   IconClose,
   IconCursor,
+  IconExternal,
   IconEye,
   IconEyeOff,
   IconFileText,
@@ -176,6 +177,7 @@ import {
 import { askConfirm, askText } from "../dialogs.js";
 import { Modal } from "../ui.js";
 import { ExactJob, PrepJob, playerMediaOf, useFonts, usePrepared } from "./VideoPreview.js";
+import { ExportPanel } from "./video/ExportPanel.js";
 import { Inspector, TranscriptPanel } from "./video/Inspector.js";
 import { type PlayerMediaMap, TimelinePlayer, textStyle } from "./video/player.js";
 import { RenderPanel } from "./video/RenderPanel.js";
@@ -536,6 +538,7 @@ export function VideoEditor({
   file,
   onReveal,
   onAsk,
+  onDownload,
 }: {
   file: DocFile;
   onReveal?: (reveal: ((c: DocChange) => void) | undefined) => void;
@@ -544,6 +547,8 @@ export function VideoEditor({
    * the page's conversation by default. Undefined back: nowhere to send it.
    */
   onAsk?: (text: string) => { to: string } | undefined;
+  /** G41.6b: an app embedding the editor saves an exported file its own way (true: done). */
+  onDownload?: (f: { scope: string; path: string; name: string }) => boolean;
 }) {
   const key = videoViewKey(file);
   const view = videoViewOf(key);
@@ -573,6 +578,8 @@ export function VideoEditor({
   }>();
   /** «Crea il video» (G41.6): the render's panel. */
   const [renderOpen, setRenderOpen] = useState(false);
+  /** «Esporta» (G41.6b): the panel for Resolve and OTIO. */
+  const [exportOpen, setExportOpen] = useState(false);
   const capJobs = useRef<string[]>([]);
   const root = useRef<HTMLElement>(null);
   const rows = useRef<HTMLDivElement>(null);
@@ -2251,6 +2258,9 @@ export function VideoEditor({
           <Tool label={t("veRender")} pressed={renderOpen} on={() => setRenderOpen(!renderOpen)}>
             <IconFilm size={14} />
           </Tool>
+          <Tool label={t("veExport")} pressed={exportOpen} on={() => setExportOpen(!exportOpen)}>
+            <IconExternal size={14} />
+          </Tool>
           {size !== "wide" && (
             <Tool
               label={t("veInspectorOpen")}
@@ -2509,6 +2519,13 @@ export function VideoEditor({
         </section>
       )}
       {renderOpen && <RenderPanel file={file} doc={doc} onClose={() => setRenderOpen(false)} />}
+      {exportOpen && (
+        <ExportPanel
+          file={file}
+          onClose={() => setExportOpen(false)}
+          {...(onDownload && { onDownload })}
+        />
+      )}
       {versions && (
         <section class="ve-versions" aria-label={t("veVersionsTitle")}>
           <div class="ve-transcript-bar">

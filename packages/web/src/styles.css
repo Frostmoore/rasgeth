@@ -22451,3 +22451,32 @@ fieldset.saved-filter legend {
   gap: 8px;
   flex-wrap: wrap;
 }
+/* G41.6b: «Esporta», the folder of the originals and the two exports. */
+.ve-export-root {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.ve-export-root input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: 12.5px / 1.4 var(--mono);
+}
+.ve-export-root input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.ve-export-done {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ve-export-done p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}

@@ -1919,6 +1919,22 @@ export class Api {
   /** G41.6: the video made on this machine, a job `video_render` (its result: the MP4's path). */
   videoRender = (scope: string, path: string, ask: import("@redgiant/protocol").VideoRenderAsk) =>
     this.call<{ job: Job }>("POST", "/api/editor/video/render", { scope, path, ...ask });
+  /**
+   * G41.6b: the timeline for another editor, saved beside it: `resolve` (FCP7 XML for DaVinci
+   * Resolve, as montatore writes it) or `otio`; `mediaRoot` the folder of the originals on the
+   * computer with Resolve (empty: this machine).
+   */
+  videoExport = (
+    scope: string,
+    path: string,
+    format: import("@redgiant/protocol").VideoExportFormat,
+    mediaRoot?: string,
+  ) =>
+    this.call<{ result: import("@redgiant/protocol").VideoExportResult }>(
+      "POST",
+      "/api/editor/video/export",
+      { scope, path, format, ...(mediaRoot && { mediaRoot }) },
+    );
   /** G41.7: where a render can go, and the project's choice (unset: not asked yet). */
   videoMachines = (scope: string) =>
     this.call<{ machines: import("@redgiant/protocol").RenderMachine[]; chosen?: string }>(
