@@ -1001,7 +1001,7 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
         "--username",
         cfg.user,
         "--token-name",
-        `redgiant-${Date.now()}`,
+        `rasgeth-${Date.now()}`,
         "--scopes",
         "all",
         "--raw",

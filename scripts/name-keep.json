@@ -82,5 +82,11 @@
     "pattern": "/REDGIANT\\|ANTHROPIC\\|",
     "group": "internal",
     "why": "tests that no REDGIANT_* variable (choice 11) reaches a machine or a node"
+  },
+  {
+    "path": "packages/server/test/pulls.test.ts",
+    "pattern": "frostmoore/redgiant2\\b",
+    "group": "internal",
+    "why": "Docker images keep their names (choice 12): the registry path of ghcr.io/frostmoore/redgiant2"
   }
 ]

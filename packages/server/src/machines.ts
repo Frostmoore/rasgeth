@@ -269,7 +269,7 @@ export class Machines {
             meta: this.meta(m, "key passphrase"),
           });
       } else {
-        const pair = newSshKeyPair(`redgiant-${b.name}`);
+        const pair = newSshKeyPair(`rasgeth-${b.name}`);
         m.publicKey = pair.public.trim();
         m.keySource = "generated";
         want.set(this.keyOf(id, "key"), { value: pair.private, meta: this.meta(m, "private key") });
@@ -324,7 +324,7 @@ export class Machines {
     if (touchesSecrets) {
       const vault = this.vault();
       if (p.newKey) {
-        const pair = newSshKeyPair(`redgiant-${m.name}`);
+        const pair = newSshKeyPair(`rasgeth-${m.name}`);
         await vault.setSystem(
           ownerId,
           this.keyOf(id, "key"),

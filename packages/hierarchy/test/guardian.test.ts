@@ -245,7 +245,7 @@ describe("the archived projects' folders (p3.5.3)", () => {
     };
     for (const command of [
       "cd C:\\Users\\me\\Rasgeth\\workspaces\\shop && touch x",
-      'cd "c:/users/me/redgiant/workspaces/Shop" && ls',
+      'cd "c:/users/me/rasgeth/workspaces/Shop" && ls',
       "rm C:/Users/me/Rasgeth/workspaces/shop/a.txt",
     ])
       expect(
@@ -278,8 +278,8 @@ describe("the archived projects' folders (p3.5.3)", () => {
       [`${shop}\\prova-archivio.txt`],
     ],
     [
-      "echo prova > /C/users/me/redgiant/workspaces/Shop/a.txt",
-      ["C:\\users\\me\\redgiant\\workspaces\\Shop\\a.txt"],
+      "echo prova > /C/users/me/rasgeth/workspaces/Shop/a.txt",
+      ["C:\\users\\me\\rasgeth\\workspaces\\Shop\\a.txt"],
     ],
     ["touch /cygdrive/c/Users/me/Rasgeth/workspaces/shop/a", [`${shop}\\a`]],
     ["rm /mnt/c/Users/me/Rasgeth/workspaces/shop/a", [`${shop}\\a`]],

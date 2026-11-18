@@ -1761,8 +1761,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       async (h) => {
         // One backup at a time stays here: the older ones were downloaded already.
         await mkdir(dir, { recursive: true });
+        // (Those made before 3.9.0 carry the product's old name.)
         for (const f of await readdir(dir))
-          if (f.startsWith("redgiant-backup-")) await removeBackup(join(dir, f));
+          if (/^(?:rasgeth|redgiant)-backup-/.test(f)) await removeBackup(join(dir, f));
         // The knowledge's pieces and vectors only when the person asked (G36.6).
         const vectors = (await core.knowledge?.settings(o).catch(() => undefined))?.backupVectors;
         await exportBackup(core.backupDeps, o, join(dir, name), h, keychain, {
@@ -2145,7 +2146,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     const zip = teamsAppPackage({ appId, ...(host && { host }) });
     return c.body(new Uint8Array(zip), 200, {
       "content-type": "application/zip",
-      "content-disposition": 'attachment; filename="redgiant-teams.zip"',
+      "content-disposition": 'attachment; filename="rasgeth-teams.zip"',
     });
   });
 
@@ -3777,7 +3778,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   });
   app.get("/api/debug/logs", async (c) => {
     const body = await debugLog.archive();
-    const name = `redgiant-logs-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-")}.tar.gz`;
+    const name = `${PRODUCT_NAME.toLowerCase()}-logs-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-")}.tar.gz`;
     return new Response(new Uint8Array(body), {
       headers: {
         "content-type": "application/gzip",

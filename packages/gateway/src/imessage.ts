@@ -6,7 +6,12 @@
 // BlueBubbles' own tunnel address). No buttons on iMessage: the bridge numbers the choices.
 
 import { randomUUID } from "node:crypto";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import type { Button, Incoming, Transport } from "./bridge.js";
+
+/** A message naming the product, in a group; and the name at its start, taken out. */
+const MENTION = new RegExp(`\\b${PRODUCT_NAME}\\b`, "i");
+const MENTION_START = new RegExp(`^\\s*@?${PRODUCT_NAME}\\s*[:,]?\\s*`, "i");
 
 export interface IMessageOptions {
   /** The BlueBubbles server, e.g. http://192.168.1.20:1234 or its tunnel address. */
@@ -155,10 +160,10 @@ export class IMessageTransport implements Transport {
     const chatId = msg.chats?.[0]?.guid;
     if (!userId || !chatId) return undefined;
     let text = (msg.text ?? "").replace(/￼/g, "").trim();
-    // In a group the Mac's account is one of many: only messages naming RedGiant are for it.
+    // In a group the Mac's account is one of many: only messages naming Rasgeth are for it.
     if (isGroup(chatId)) {
-      if (!/\bredgiant\b/i.test(text)) return undefined;
-      text = text.replace(/^\s*@?redgiant\s*[:,]?\s*/i, "").trim();
+      if (!MENTION.test(text)) return undefined;
+      text = text.replace(MENTION_START, "").trim();
     }
     const m: Incoming = { userId, chatId, username: userId };
     if (text) m.text = text;

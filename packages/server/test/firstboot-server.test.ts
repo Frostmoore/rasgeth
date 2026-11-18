@@ -469,14 +469,16 @@ describe("scheduled backups (G39.3)", () => {
           "RedGiant-backup-2026-11-12",
           "RedGiant-backup-2026-11-12-2",
           "RedGiant-backup-2026-11-11",
+          "Rasgeth-backup-2026-11-13",
           "something-else",
         ],
-        2,
+        3,
       ),
     ).toEqual(["RedGiant-backup-2026-11-10", "RedGiant-backup-2026-11-11"]);
     expect(toPrune(["RedGiant-backup-2026-11-10"], 0)).toEqual([]);
-    expect(folderFor(at("2026-11-12T10:00:00"), (n) => n === "RedGiant-backup-2026-11-12")).toBe(
-      "RedGiant-backup-2026-11-12-2",
+    // New folders carry today's name; those of older versions are still pruned in their turn.
+    expect(folderFor(at("2026-11-12T10:00:00"), (n) => n === "Rasgeth-backup-2026-11-12")).toBe(
+      "Rasgeth-backup-2026-11-12-2",
     );
   });
 
@@ -511,14 +513,14 @@ describe("scheduled backups (G39.3)", () => {
       expect(await sch.tick()).toBe("idle");
     }
     const folders = (await readdir(dest)).filter((f) => f.startsWith("Rasgeth-backup-")).sort();
-    expect(folders).toEqual(["RedGiant-backup-2026-11-15", "RedGiant-backup-2026-11-16"]);
-    expect(await readdir(join(dest, "RedGiant-backup-2026-11-16"))).toEqual([
-      "redgiant-3.7.0-0301.rgbackup",
+    expect(folders).toEqual(["Rasgeth-backup-2026-11-15", "Rasgeth-backup-2026-11-16"]);
+    expect(await readdir(join(dest, "Rasgeth-backup-2026-11-16"))).toEqual([
+      "rasgeth-3.7.0-0301.rgbackup",
     ]);
     expect(await readdir(dest)).toEqual(expect.arrayContaining(["keep-me.txt", MADE_FILE]));
     expect(settings.last).toMatchObject({
       ok: true,
-      file: join("RedGiant-backup-2026-11-16", "redgiant-3.7.0-0301.rgbackup"),
+      file: join("Rasgeth-backup-2026-11-16", "rasgeth-3.7.0-0301.rgbackup"),
     });
     present = false;
     now = at("2026-11-17T03:01:00").getTime();

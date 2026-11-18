@@ -339,7 +339,7 @@ describe("the safety backup of a breaking update", () => {
     expect(job.steps.map((s) => s.id)).toEqual(["data", "conversations", "files", "verify"]);
     const file = job.vars.path as string;
     expect(file.startsWith(join(docs, "Rasgeth-backup-"))).toBe(true);
-    expect(file).toMatch(/redgiant-3\.4\.0-\d{4}\.rgbackup$/);
+    expect(file).toMatch(/rasgeth-3\.4\.0-\d{4}\.rgbackup$/);
     expect(existsSync(join(job.vars.folder as string, "LEGGIMI-README.txt"))).toBe(true);
     const check = await verifyBackup(file);
     expect(check).toMatchObject({ version: "3.4.0", projects: 1, conversations: 1 });

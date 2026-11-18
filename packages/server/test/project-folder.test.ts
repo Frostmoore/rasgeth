@@ -73,7 +73,7 @@ describe("folderProblem (G36.15: a project on an existing folder)", () => {
       { dataDir: "C:\\Users\\Me\\AppData\\Rasgeth", home: "C:\\Users\\Me" },
     ],
     [
-      "c:/users/me/appdata/redgiant/keychain",
+      "c:/users/me/appdata/rasgeth/keychain",
       false,
       { dataDir: "C:\\Users\\Me\\AppData\\Rasgeth", home: "C:\\Users\\Me" },
     ],

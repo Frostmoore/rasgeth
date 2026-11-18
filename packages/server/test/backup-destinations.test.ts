@@ -477,14 +477,14 @@ describe("backups to an SMB share (a fake smbclient, p3.7.2)", () => {
     }
     const base = join(share, "Rasgeth", "casa");
     expect((await readdir(base)).sort()).toEqual([
-      "RedGiant-backup-2026-11-14",
-      "RedGiant-backup-2026-11-15",
+      "Rasgeth-backup-2026-11-14",
+      "Rasgeth-backup-2026-11-15",
       MADE_FILE,
     ]);
-    expect(await readdir(join(base, "RedGiant-backup-2026-11-15"))).toEqual([
-      "redgiant-3.7.2-0301.rgbackup",
+    expect(await readdir(join(base, "Rasgeth-backup-2026-11-15"))).toEqual([
+      "rasgeth-3.7.2-0301.rgbackup",
     ]);
-    // The staging file was in RedGiant's private folder, and is gone; so is the login file.
+    // The staging file was in Rasgeth's private folder, and is gone; so is the login file.
     expect(seen.every((f) => f.startsWith(join(priv, "backup-staging")))).toBe(true);
     expect(await readdir(join(priv, "backup-staging"))).toEqual([]);
     expect(await readdir(join(priv, "smb"))).toEqual([]);
@@ -498,20 +498,20 @@ describe("backups to an SMB share (a fake smbclient, p3.7.2)", () => {
     // A put with a temporary name, renamed afterwards.
     const cmds = smb.calls.map((c) => c.args[c.args.indexOf("-c") + 1]);
     expect(cmds).toContain(
-      `put "${basename(seen.at(-1) ?? "")}" ".redgiant-3.7.2-0301.rgbackup.part"`,
+      `put "${basename(seen.at(-1) ?? "")}" ".rasgeth-3.7.2-0301.rgbackup.part"`,
     );
     expect(cmds).toContain(
-      'rename ".redgiant-3.7.2-0301.rgbackup.part" "redgiant-3.7.2-0301.rgbackup"',
+      'rename ".rasgeth-3.7.2-0301.rgbackup.part" "rasgeth-3.7.2-0301.rgbackup"',
     );
 
     // Listed and fetched back.
     const t = await open();
     const list = await t.list();
     expect(list.map((e: BackupEntry) => e.id)).toEqual([
-      "RedGiant-backup-2026-11-15/redgiant-3.7.2-0301.rgbackup",
-      "RedGiant-backup-2026-11-14/redgiant-3.7.2-0301.rgbackup",
+      "Rasgeth-backup-2026-11-15/rasgeth-3.7.2-0301.rgbackup",
+      "Rasgeth-backup-2026-11-14/rasgeth-3.7.2-0301.rgbackup",
     ]);
-    const got = await t.fetch("RedGiant-backup-2026-11-15", "redgiant-3.7.2-0301.rgbackup");
+    const got = await t.fetch("Rasgeth-backup-2026-11-15", "rasgeth-3.7.2-0301.rgbackup");
     expect(await readFile(got.path, "utf8")).toBe("backup-bytes");
     await got.done();
     await t.close();
@@ -521,7 +521,7 @@ describe("backups to an SMB share (a fake smbclient, p3.7.2)", () => {
     now = new Date("2026-11-16T03:01:00").getTime();
     expect(await sch.tick()).toBe("failed");
     expect(settings.last).toMatchObject({ ok: false, code: "mismatch" });
-    expect(await readdir(join(base, "RedGiant-backup-2026-11-16"))).toEqual([]);
+    expect(await readdir(join(base, "Rasgeth-backup-2026-11-16"))).toEqual([]);
     cut = false;
 
     // The NAS off: a clear failure, nothing written anywhere else.
@@ -657,7 +657,7 @@ describe("backups to one of the person's machines over SFTP (p3.7.2)", () => {
       MADE_FILE,
     ]);
     const inside = await readdir(join(home, "Rasgeth", folders[0] as string));
-    expect(inside).toEqual([expect.stringMatching(/^redgiant-3\.7\.2-\d{4}\.rgbackup$/)]);
+    expect(inside).toEqual([expect.stringMatching(/^rasgeth-3\.7\.2-\d{4}\.rgbackup$/)]);
     const list = await server.api<{ backups: BackupEntry[] }>("GET", "/api/setup/backups/list");
     expect(list.body.backups).toHaveLength(1);
     expect(list.body.backups[0]?.bytes).toBe(
