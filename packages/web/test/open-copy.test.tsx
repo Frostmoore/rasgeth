@@ -506,12 +506,12 @@ describe("what closed apps need, the ways of an IDML, the losses in words (3.3.0
     expect(sla.getAttribute("aria-pressed")).toBe("true");
     expect(view.container.textContent).toContain("Consigliato");
     expect(view.container.textContent).toContain(
-      "La prima volta RedGiant scarica Scribus (circa 125-185 MB).",
+      "La prima volta Rasgeth scarica Scribus (circa 125-185 MB).",
     );
     expect(view.container.textContent).toContain("Scribus porta pagine, mastri");
     fireEvent.click(view.getByRole("button", { name: /Disegno \(ODG\)/ }));
-    await waitFor(() => expect(view.container.textContent).toContain("L'importazione di RedGiant"));
-    expect(view.container.textContent).not.toContain("La prima volta RedGiant scarica");
+    await waitFor(() => expect(view.container.textContent).toContain("L'importazione di Rasgeth"));
+    expect(view.container.textContent).not.toContain("La prima volta Rasgeth scarica");
     fireEvent.click(view.getByRole("button", { name: "Fai la copia aperta" }));
     await waitFor(() =>
       expect(calls.find(([n]) => n === "convertFile")?.[1]).toEqual([

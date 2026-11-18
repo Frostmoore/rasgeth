@@ -12,8 +12,8 @@ import { Modal } from "./ui.js";
 
 const RELEASES = "https://github.com/Frostmoore/redgiant2/releases/latest/download";
 const ZIP = {
-  chromium: "redgiant-keychain-chromium.zip",
-  firefox: "redgiant-keychain-firefox.zip",
+  chromium: "rasgeth-keychain-chromium.zip",
+  firefox: "rasgeth-keychain-firefox.zip",
 };
 type Browser = "opera" | "chrome" | "edge" | "brave" | "firefox";
 const PAGES: Record<Exclude<Browser, "firefox">, string> = {

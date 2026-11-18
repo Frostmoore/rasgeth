@@ -334,6 +334,21 @@ pre {
 .banner .icon-button {
   margin-left: auto;
 }
+/* The new name, said once (RenameNotice.tsx, plan 3.9.0 choice 17). */
+.banner.rename-notice {
+  background: color-mix(in srgb, var(--accent) 10%, var(--panel));
+}
+.banner.rename-notice > svg {
+  flex: none;
+  color: var(--accent);
+}
+.banner.rename-notice .link {
+  margin-left: auto;
+  white-space: nowrap;
+}
+.banner.rename-notice .icon-button {
+  margin-left: 0;
+}
 
 /* Budget bars in the header, like Officina's limits. */
 .limits {

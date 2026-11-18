@@ -1,33 +1,39 @@
 // Every word the extension shows, in English and Italian. The browser's language chooses; the
 // build writes `_locales` from here for the store's name and description.
 
+/**
+ * The product's name (plan 3.9.0): the same as `PRODUCT_NAME` in @redgiant/protocol (a test checks
+ * it), written here so the scripts in every page do not carry the protocol's code.
+ */
+export const PRODUCT = "Rasgeth";
+
 const en = {
-  extName: "RedGiant Keychain",
+  extName: "{product} Keychain",
   extDescription:
-    "Your RedGiant keychain in the browser: fills sign-in forms on their own site only, saves new passwords, makes strong ones.",
+    "Your {product} keychain in the browser: fills sign-in forms on their own site only, saves new passwords, makes strong ones.",
   title: "Keychain",
   // Linking
-  linkTitle: "Link this browser to RedGiant",
+  linkTitle: "Link this browser to {product}",
   linkLead:
-    "In RedGiant open Settings › Keychain › «Link a browser»: it shows the address and a code.",
-  server: "RedGiant's address",
-  serverHelp: "As in the browser's bar, e.g. http://localhost:7650 or https://redgiant.example.com",
+    "In {product} open Settings › Keychain › «Link a browser»: it shows the address and a code.",
+  server: "{product}'s address",
+  serverHelp: "As in the browser's bar, e.g. http://localhost:7650 or https://rasgeth.example.com",
   code: "Code",
   deviceName: "Name of this browser",
   remember: "Stay linked when the browser closes (the link is kept encrypted)",
   link: "Link",
   linking: "Linking…",
-  badServer: "Write RedGiant's address, starting with https:// (http:// only at home).",
+  badServer: "Write {product}'s address, starting with https:// (http:// only at home).",
   insecureServer:
-    "Away from home RedGiant must be reached with https://: a code and passwords must not travel in the clear.",
-  noServer: "RedGiant does not answer at this address.",
-  badCode: "This code is wrong or expired: make a new one in RedGiant.",
+    "Away from home {product} must be reached with https://: a code and passwords must not travel in the clear.",
+  noServer: "{product} does not answer at this address.",
+  badCode: "This code is wrong or expired: make a new one in {product}.",
   unlinked: "This browser is no longer linked: link it again with a new code.",
   // Status
   linkedTo: "Linked to {server} as «{name}»",
   unlink: "Unlink",
-  closed: "The keychain is closed on the computer with RedGiant.",
-  offline: "RedGiant does not answer right now.",
+  closed: "The keychain is closed on the computer with {product}.",
+  offline: "{product} does not answer right now.",
   // The page
   notWeb: "This page cannot hold passwords.",
   forSite: "For {host}",
@@ -41,7 +47,7 @@ const en = {
   copiedUser: "User name copied.",
   filled: "Filled.",
   noForm: "There is no sign-in form on this page to fill.",
-  refused: "Not for this page: RedGiant gives a password only to its own site.",
+  refused: "Not for this page: {product} gives a password only to its own site.",
   tooMany: "Too many requests: wait a minute.",
   failed: "Something went wrong: {why}",
   // Generator
@@ -55,7 +61,7 @@ const en = {
   genFill: "Put in the page",
   genFilled: "Put in the page's new password fields.",
   // On the page
-  chipLabel: "RedGiant Keychain: choose a credential",
+  chipLabel: "{product} Keychain: choose a credential",
   menuTitle: "From your keychain",
   saveTitle: "Save in the keychain?",
   updateTitle: "Update the password in the keychain?",
@@ -76,31 +82,31 @@ const en = {
 export type Key = keyof typeof en;
 
 const it: Record<Key, string> = {
-  extName: "Portachiavi RedGiant",
+  extName: "Portachiavi {product}",
   extDescription:
-    "Il tuo portachiavi di RedGiant nel browser: compila gli accessi solo sul loro sito, salva le password nuove, ne crea di robuste.",
+    "Il tuo portachiavi di {product} nel browser: compila gli accessi solo sul loro sito, salva le password nuove, ne crea di robuste.",
   title: "Portachiavi",
-  linkTitle: "Collega questo browser a RedGiant",
+  linkTitle: "Collega questo browser a {product}",
   linkLead:
-    "In RedGiant apri Impostazioni › Portachiavi › «Collega un browser»: trovi l'indirizzo e un codice.",
-  server: "Indirizzo di RedGiant",
+    "In {product} apri Impostazioni › Portachiavi › «Collega un browser»: trovi l'indirizzo e un codice.",
+  server: "Indirizzo di {product}",
   serverHelp:
-    "Come nella barra del browser, per esempio http://localhost:7650 o https://redgiant.esempio.it",
+    "Come nella barra del browser, per esempio http://localhost:7650 o https://rasgeth.esempio.it",
   code: "Codice",
   deviceName: "Nome di questo browser",
   remember: "Resta collegato quando chiudi il browser (il collegamento è conservato cifrato)",
   link: "Collega",
   linking: "Collegamento…",
-  badServer: "Scrivi l'indirizzo di RedGiant, che inizia con https:// (http:// solo in casa).",
+  badServer: "Scrivi l'indirizzo di {product}, che inizia con https:// (http:// solo in casa).",
   insecureServer:
-    "Fuori casa RedGiant va raggiunto con https://: un codice e le password non devono viaggiare in chiaro.",
-  noServer: "RedGiant non risponde a questo indirizzo.",
-  badCode: "Questo codice è sbagliato o scaduto: creane uno nuovo in RedGiant.",
+    "Fuori casa {product} va raggiunto con https://: un codice e le password non devono viaggiare in chiaro.",
+  noServer: "{product} non risponde a questo indirizzo.",
+  badCode: "Questo codice è sbagliato o scaduto: creane uno nuovo in {product}.",
   unlinked: "Questo browser non è più collegato: ricollegalo con un codice nuovo.",
   linkedTo: "Collegato a {server} come «{name}»",
   unlink: "Scollega",
-  closed: "Il portachiavi è chiuso sul computer con RedGiant.",
-  offline: "RedGiant ora non risponde.",
+  closed: "Il portachiavi è chiuso sul computer con {product}.",
+  offline: "{product} ora non risponde.",
   notWeb: "Questa pagina non può contenere password.",
   forSite: "Per {host}",
   notSecure: "Questa pagina non è sicura (http): qui le password non vengono proposte.",
@@ -113,7 +119,7 @@ const it: Record<Key, string> = {
   copiedUser: "Nome utente copiato.",
   filled: "Compilato.",
   noForm: "In questa pagina non c'è un modulo di accesso da compilare.",
-  refused: "Non per questa pagina: RedGiant dà una password solo al suo sito.",
+  refused: "Non per questa pagina: {product} dà una password solo al suo sito.",
   tooMany: "Troppe richieste: aspetta un minuto.",
   failed: "Qualcosa non ha funzionato: {why}",
   generator: "Password nuova",
@@ -125,7 +131,7 @@ const it: Record<Key, string> = {
   genCopy: "Copia",
   genFill: "Metti nella pagina",
   genFilled: "Messa nei campi della password nuova della pagina.",
-  chipLabel: "Portachiavi RedGiant: scegli una credenziale",
+  chipLabel: "Portachiavi {product}: scegli una credenziale",
   menuTitle: "Dal tuo portachiavi",
   saveTitle: "Salvare nel portachiavi?",
   updateTitle: "Aggiornare la password nel portachiavi?",
@@ -166,5 +172,8 @@ export function setLang(l: Lang): void {
 }
 
 export function t(key: Key, vars: Record<string, string> = {}): string {
-  return dictionaries[lang()][key].replace(/\{(\w+)\}/g, (m, k: string) => vars[k] ?? m);
+  return dictionaries[lang()][key].replace(
+    /\{(\w+)\}/g,
+    (m, k: string) => vars[k] ?? (k === "product" ? PRODUCT : m),
+  );
 }

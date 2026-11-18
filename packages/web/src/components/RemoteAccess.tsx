@@ -260,7 +260,7 @@ function WayGuide({ way, onStart }: { way: Way; onStart: (req: object) => void }
             </Field>
             <Field label={t("cfHost")} help={t("cfHostHelp")}>
               <input
-                placeholder="redgiant.example.com"
+                placeholder="rasgeth.example.com"
                 value={host}
                 onInput={(e) => setHost((e.target as HTMLInputElement).value)}
               />
@@ -294,7 +294,7 @@ function WayGuide({ way, onStart }: { way: Way; onStart: (req: object) => void }
         >
           <Field label={t("caddyDomain")} help={t("caddyDomainHelp")}>
             <input
-              placeholder="redgiant.example.com"
+              placeholder="rasgeth.example.com"
               value={host}
               onInput={(e) => setHost((e.target as HTMLInputElement).value)}
             />

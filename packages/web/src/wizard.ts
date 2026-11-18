@@ -324,7 +324,7 @@ export function sysmemAdviceDue(
   return hw.gpus.some((g) => g.vendor === "nvidia" && !g.integrated);
 }
 
-export const defaultModelsFolder = (drive: string) => `${drive}:\\RedGiant\\models`;
+export const defaultModelsFolder = (drive: string) => `${drive}:\\Rasgeth\\models`;
 
 /** One square of the closing summary: what was set up, and the step that changes it. */
 export interface RecapItem {

@@ -457,7 +457,7 @@ async function runArtifact(path, name, shot) {
   check(r["window.open"]?.v !== "OPENED", "hostile: window.open is handed to the page");
   // The form and the self-navigation come a moment later.
   await pg.waitForTimeout(5000);
-  check(pg.url().startsWith(url), "hostile: RedGiant's page stays (no top navigation)");
+  check(pg.url().startsWith(url), "hostile: Rasgeth's page stays (no top navigation)");
   check(popups.length === 0, `hostile: no window opened (${popups.join(", ")})`);
   const strip = await pg.locator(".artifact-ask").count();
   const usersAfter =

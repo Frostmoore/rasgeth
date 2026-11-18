@@ -62,7 +62,7 @@ const page = {
 const STATES = ["native", "embed", "partial", "no", "n/a"];
 const SYSTEMS = ["android", "ios", "windows", "macos", "linux"];
 
-describe("RGCompanion's parity table (G42.0)", () => {
+describe("the app's parity table (G42.0)", () => {
   it("reads the page's lists", () => {
     expect(unionOf('export type X =\n  | "a"\n  /** b */\n  | "c";', "X")).toEqual(["a", "c"]);
     expect(page.settings.length).toBeGreaterThan(20);

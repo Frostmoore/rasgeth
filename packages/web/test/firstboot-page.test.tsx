@@ -107,11 +107,11 @@ const fakeApi = new Proxy(
           });
         if (name === "setupBackupList")
           return Promise.resolve({
-            where: "nas: ~/RedGiant",
+            where: "nas: ~/Rasgeth",
             backups: [
               {
-                id: "RedGiant-backup-2026-11-14/redgiant-3.7.2-0300.rgbackup",
-                folder: "RedGiant-backup-2026-11-14",
+                id: "Rasgeth-backup-2026-11-14/rasgeth-3.7.2-0300.rgbackup",
+                folder: "Rasgeth-backup-2026-11-14",
                 file: "redgiant-3.7.2-0300.rgbackup",
                 bytes: 300 * 1024 * 1024,
                 at: "2026-11-14T02:00:00.000Z",
@@ -198,14 +198,14 @@ describe("Settings › System (G39.3)", () => {
         <Dialogs />
       </>,
     );
-    await waitFor(() => r.getByText("Nodo di un altro RedGiant"));
-    fireEvent.click(r.getByText("Nodo di un altro RedGiant"));
-    await waitFor(() => r.getByText("Trasformare questo RedGiant in un nodo?"));
+    await waitFor(() => r.getByText("Nodo di un altro Rasgeth"));
+    fireEvent.click(r.getByText("Nodo di un altro Rasgeth"));
+    await waitFor(() => r.getByText("Trasformare questo Rasgeth in un nodo?"));
     expect(r.container.textContent).toContain("restano salvati, intatti");
     fireEvent.click(r.getByText("Annulla"));
     await new Promise((d) => setTimeout(d, 0));
     expect(calls.some(([n]) => n === "setupRole")).toBe(false);
-    fireEvent.click(r.getByText("Nodo di un altro RedGiant"));
+    fireEvent.click(r.getByText("Nodo di un altro Rasgeth"));
     await waitFor(() => r.getByText("Rendilo un nodo"));
     fireEvent.click(r.getByText("Rendilo un nodo"));
     await waitFor(() =>
@@ -256,7 +256,7 @@ describe("where backups go (G39.3)", () => {
       />,
     );
     const text = r.container.textContent ?? "";
-    expect(text).toContain("RedGiant OS gira in un container (LXC)");
+    expect(text).toContain("Rasgeth OS gira in un container (LXC)");
     expect(text).toContain("Cartelle montate per le copie");
     expect(text).not.toContain("Eternatus");
     expect(text).not.toContain("Non formattato");
@@ -306,8 +306,9 @@ describe("where backups go (G39.3)", () => {
     expect(text()).toContain("Su questa macchina c'è il disco Tech, USB, 931 GB.");
     expect(text()).toContain("questo container si chiama coder");
     expect(text()).toContain("mount /dev/sdb1 /mnt/redgiant-backups/Tech");
-    expect(text()).toContain(
-      "pct set <id> -mp0 /mnt/redgiant-backups/Tech/RedGiant,mp=/var/lib/redgiant/backups/Tech",
+    // The folder on the host is the protocol's (backup-host.ts): its last part is the product's.
+    expect(text()).toMatch(
+      /pct set <id> -mp0 \/mnt\/redgiant-backups\/Tech\/\w+,mp=\/var\/lib\/redgiant\/backups\/Tech/,
     );
     fireEvent.input(r.getByPlaceholderText("105"), { target: { value: "105" } });
     await waitFor(() => expect(text()).toContain("pct set 105 -mp0"));
@@ -316,8 +317,8 @@ describe("where backups go (G39.3)", () => {
     expect(text()).not.toContain("105; reboot -mp0");
     fireEvent.click(r.getByText("Docker"));
     await waitFor(() =>
-      expect(text()).toContain(
-        "- /mnt/redgiant-backups/Tech/RedGiant:/var/lib/redgiant/backups/Tech",
+      expect(text()).toMatch(
+        /- \/mnt\/redgiant-backups\/Tech\/\w+:\/var\/lib\/redgiant\/backups\/Tech/,
       ),
     );
     expect(r.container.querySelectorAll(NATIVE)).toHaveLength(0);
@@ -329,14 +330,14 @@ describe("where backups go (G39.3)", () => {
     expect(r.container.textContent).toContain("Prima provala in Impostazioni › Macchine");
     fireEvent.click(r.getByText("nas"));
     fireEvent.input(r.getByPlaceholderText("~/RedGiant-backups"), {
-      target: { value: "~/RedGiant" },
+      target: { value: "~/Rasgeth" },
     });
     fireEvent.click(r.getAllByText("Usa questa cartella").at(-1) as HTMLElement);
     await waitFor(() =>
-      expect(calls.find(([n]) => n === "setupBackupSftp")?.[1]).toEqual(["m1", "~/RedGiant"]),
+      expect(calls.find(([n]) => n === "setupBackupSftp")?.[1]).toEqual(["m1", "~/Rasgeth"]),
     );
     fireEvent.click(r.getByText("Cartella condivisa (SMB)"));
-    fireEvent.input(r.getByPlaceholderText(String.raw`\\nas\backup\RedGiant`), {
+    fireEvent.input(r.getByPlaceholderText(String.raw`\\nas\backup\Rasgeth`), {
       target: { value: "\\\\nas\\backup" },
     });
     const inputs = r.container.querySelectorAll(".fb-net input");
@@ -350,7 +351,7 @@ describe("where backups go (G39.3)", () => {
         { address: "\\\\nas\\backup", user: "severino", password: "s3cret" },
       ]),
     );
-    fireEvent.click(r.getByText("Un altro RedGiant"));
+    fireEvent.click(r.getByText("Un altro Rasgeth"));
     fireEvent.click(r.getByText("rig"));
     await waitFor(() =>
       expect(calls.find(([n]) => n === "setupBackupNode")?.[1]).toEqual(["SHA256:abcdefghijkl"]),
@@ -369,7 +370,7 @@ describe("where backups go (G39.3)", () => {
                   kind: "sftp",
                   machineId: "m1",
                   machineName: "nas",
-                  path: "~/RedGiant",
+                  path: "~/Rasgeth",
                 },
                 schedule: { every: "daily", hour: 3, keep: 7 },
                 last: {
@@ -386,7 +387,7 @@ describe("where backups go (G39.3)", () => {
       </>,
     );
     const text = () => r.container.textContent ?? "";
-    expect(text()).toContain("Le copie vanno su nas, in ~/RedGiant (SFTP).");
+    expect(text()).toContain("Le copie vanno su nas, in ~/Rasgeth (SFTP).");
     expect(text()).toContain("La destinazione non risponde: è accesa e in rete?");
     fireEvent.click(r.getByText("Mostra le copie"));
     await waitFor(() => r.getByText("redgiant-3.7.2-0300.rgbackup · 300 MB"));
@@ -395,7 +396,7 @@ describe("where backups go (G39.3)", () => {
     fireEvent.click(r.getAllByText("Ripristina").at(-1) as HTMLElement);
     await waitFor(() =>
       expect(calls.find(([n]) => n === "setupBackupRestore")?.[1]).toEqual([
-        "RedGiant-backup-2026-11-14/redgiant-3.7.2-0300.rgbackup",
+        "Rasgeth-backup-2026-11-14/rasgeth-3.7.2-0300.rgbackup",
       ]),
     );
   });

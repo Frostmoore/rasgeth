@@ -35,13 +35,13 @@ describe("ui pieces", () => {
     const r = render(
       <Step
         title="Telegram"
-        purpose="Parla con RedGiant dal telefono."
+        purpose="Parla con Rasgeth dal telefono."
         onSkip={() => (skipped = true)}
       >
         <p>corpo</p>
       </Step>,
     );
-    expect(r.getByText("Parla con RedGiant dal telefono.")).toBeTruthy();
+    expect(r.getByText("Parla con Rasgeth dal telefono.")).toBeTruthy();
     fireEvent.click(r.getByText("Salta questo passo"));
     expect(skipped).toBe(true);
   });
@@ -221,7 +221,7 @@ describe("ui pieces", () => {
     expect(typeof save).toBe("function");
     r.unmount();
     const paid = render(<Safety s={state(["anthropic"], balanced)} register={() => {}} />);
-    expect(paid.getByText(/Quanto può spendere RedGiant/)).toBeTruthy();
+    expect(paid.getByText(/Quanto può spendere Rasgeth/)).toBeTruthy();
     fireEvent.click(paid.getByRole("button", { name: "$50" }));
     expect(paid.getByText(/Arrivato a \$50/)).toBeTruthy();
   });

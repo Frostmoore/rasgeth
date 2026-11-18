@@ -313,7 +313,7 @@ describe("artifacts in the canvas (3.5.9)", () => {
   });
 });
 
-describe("widgets that look like RedGiant (3.5.12)", () => {
+describe("widgets that look like Rasgeth (3.5.12)", () => {
   /** A widget card with its frame drawn and listening. */
   const card = async () => {
     const { WidgetCard } = await import("../src/components/ArtifactFrame.js");

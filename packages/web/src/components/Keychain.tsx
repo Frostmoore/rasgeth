@@ -3,6 +3,7 @@
 // all'utente»): every key and password in one place, sealed on this computer. Agents use a
 // credential by its name and never see it; the person decides where it may go, who may use it and
 // whether to be asked. The page never holds a value unless the person asks to see or copy it.
+
 import type {
   Automation,
   VaultAsk,
@@ -15,7 +16,7 @@ import type {
   VaultUsedBy,
   VaultView,
 } from "@redgiant/protocol";
-import { VAULT_NAME_RE } from "@redgiant/protocol";
+import { PRODUCT_NAME, VAULT_NAME_RE } from "@redgiant/protocol";
 import type { JSX } from "preact";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import type { Installed } from "../api.js";
@@ -734,7 +735,7 @@ function UseRow({ u }: { u: VaultUse }) {
           {u.tool === "browser_extension" && u.agentName
             ? t("kcUseBrowser", { name: u.agentName })
             : (u.agentName ??
-              (u.agentId === null && u.sessionId === null ? "RedGiant" : t("kcSomeone")))}
+              (u.agentId === null && u.sessionId === null ? PRODUCT_NAME : t("kcSomeone")))}
         </b>{" "}
         {t(`kcUse_${u.outcome}`, { name: u.name, host: u.host })}
         {u.reason && u.outcome !== "used" && u.outcome !== "moved" && <small>{u.reason}</small>}
@@ -921,7 +922,7 @@ function ExportWindow({ onClose }: { onClose: () => void }) {
       const url = URL.createObjectURL(new Blob([file], { type: "application/octet-stream" }));
       const link = document.createElement("a");
       link.href = url;
-      link.download = `redgiant-keychain-${new Date().toISOString().slice(0, 10)}.rgkeychain`;
+      link.download = `rasgeth-keychain-${new Date().toISOString().slice(0, 10)}.rgkeychain`;
       link.click();
       setTimeout(() => URL.revokeObjectURL(url), 10_000);
       setDone(true);

@@ -63,14 +63,14 @@ describe("Settings › External agents (G38.6)", () => {
     await waitFor(() => expect(r.getByText("Claude Code")).toBeTruthy());
     expect(r.getByText("In Shop.")).toBeTruthy();
     expect(r.getByText("npx -y @agentclientprotocol/claude-agent-acp")).toBeTruthy();
-    expect(r.getByText("Il contrario: RedGiant dentro il tuo editor")).toBeTruthy();
+    expect(r.getByText("Il contrario: Rasgeth dentro il tuo editor")).toBeTruthy();
     // 3.7.2: what to do, in steps, for the workers and for the editors.
     expect(r.getByText("Come se ne aggiunge uno")).toBeTruthy();
     expect(r.container.querySelectorAll(".st-steps")).toHaveLength(2);
     expect(r.container.querySelectorAll(".st-steps > li")).toHaveLength(6);
-    expect(JSON.parse(zedSnippet()).agent_servers.RedGiant).toEqual({
+    expect(JSON.parse(zedSnippet()).agent_servers.Rasgeth).toEqual({
       type: "custom",
-      command: "redgiant-acp",
+      command: "rasgeth-acp",
       args: [],
       env: {},
     });

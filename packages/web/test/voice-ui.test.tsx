@@ -106,7 +106,7 @@ describe("Settings › Voice", () => {
     const { getByText, getByRole } = render(<VoiceSettingsPage />);
     fireEvent.click(getByText("Luca"));
     expect(voiceSettings.value.voice).toBe("it-2");
-    fireEvent.click(getByRole("switch", { name: "Ascolta «Ehi RedGiant»" }));
+    fireEvent.click(getByRole("switch", { name: "Ascolta «Ehi Rasgeth»" }));
     expect(voiceSettings.value.wake).toBe(false);
     fireEvent.click(getByText(dictionaries.it.vcLangEn));
     expect(voiceSettings.value).toMatchObject({ lang: "en", voice: null });
@@ -207,7 +207,7 @@ describe("Settings › Voice", () => {
   it("changes the wake word after checking its words in the model", async () => {
     const { getByText, getByLabelText, container } = render(<VoiceSettingsPage />);
     const field = getByLabelText(dictionaries.it.vcWakeWord) as HTMLInputElement;
-    expect(field.value).toBe("Ehi RedGiant");
+    expect(field.value).toBe("Ehi Rasgeth");
     missingWords = ["zzxq"];
     fireEvent.input(field, { target: { value: "Ehi Zzxq" } });
     fireEvent.click(getByText(dictionaries.it.vcWakeUse));
@@ -223,7 +223,7 @@ describe("Settings › Voice", () => {
     expect(container.textContent).toContain("Ascolta «Ciao computer»");
     expect(container.textContent).toContain("Di' «Ciao computer», chiedi");
     // Back to the default: nothing to check.
-    fireEvent.click(getByText("Ehi RedGiant", { selector: "button" }));
+    fireEvent.click(getByText("Ehi Rasgeth", { selector: "button" }));
     await waitFor(() => expect(voiceSettings.value.wakeWords).toEqual({}));
     fireEvent.input(field, { target: { value: "basta" } });
     fireEvent.click(getByText(dictionaries.it.vcWakeUse));
@@ -253,7 +253,7 @@ describe("the indicator", () => {
     c.dispatch({ type: "start", wake: true });
     const { container, rerender } = render(<VoiceIndicator />);
     const ind = () => container.querySelector(".voice-ind") as HTMLElement;
-    expect(ind().getAttribute("aria-label")).toContain("Sta ascoltando «Ehi RedGiant»");
+    expect(ind().getAttribute("aria-label")).toContain("Sta ascoltando «Ehi Rasgeth»");
     // A wake word of one's own: the indicator names it.
     setVoiceSettings({ wakeWords: { it: "Ciao computer" } });
     rerender(<VoiceIndicator />);

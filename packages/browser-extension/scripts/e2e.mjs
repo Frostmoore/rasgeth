@@ -84,7 +84,7 @@ const entry = await api("POST", "/api/vault", {
   url: `${SITE}/login`,
   hosts: [],
 });
-ok(entry.id, "credential for the test site saved in RedGiant");
+ok(entry.id, "credential for the test site saved in Rasgeth");
 
 // ---------------------------------------------------------------------------------------------
 // Chromium with the extension
@@ -158,7 +158,7 @@ await popup.waitForSelector(".foot", { timeout: 10_000 });
 const linked = await api("GET", "/api/vault-browsers");
 ok(
   linked.some((b) => b.name === "Opera sul fisso"),
-  "linked: RedGiant lists the browser",
+  "linked: Rasgeth lists the browser",
 );
 
 // 2. The sign-in page: the chip in the field, the menu, filling.

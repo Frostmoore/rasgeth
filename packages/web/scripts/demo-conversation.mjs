@@ -810,7 +810,7 @@ export function conversationEvents({
     { out: 150 },
   );
   push("message.user", {
-    text: "[RedGiant: you reached the limit of steps for one message. Do not call any more tools. In a few lines, tell the person what you did, what is left, and what you would do next: they can tell you to go on.]",
+    text: "[Rasgeth: you reached the limit of steps for one message. Do not call any more tools. In a few lines, tell the person what you did, what is left, and what you would do next: they can tell you to go on.]",
     steer: true,
     from: "redgiant",
   });

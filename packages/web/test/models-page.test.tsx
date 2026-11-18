@@ -95,7 +95,7 @@ describe("Settings > Models and subscriptions, as the wizard", () => {
   it("shows every way as a square, lit when connected and never with a check mark", () => {
     const r = render(<ModelsPage s={state()} reload={() => {}} />);
     const tile = (name: RegExp) => r.getByRole("button", { name });
-    expect(r.getByRole("heading", { level: 1 }).textContent).toBe("Come deve pensare RedGiant?");
+    expect(r.getByRole("heading", { level: 1 }).textContent).toBe("Come deve pensare Rasgeth?");
     expect(tile(/^Abbonamento Claude/).getAttribute("aria-pressed")).toBe("true");
     expect(tile(/^Abbonamento ChatGPT/).getAttribute("aria-pressed")).toBe("false");
     expect(tile(/^Una chiave API/).getAttribute("aria-pressed")).toBe("true");
@@ -118,7 +118,7 @@ describe("Settings > Models and subscriptions, as the wizard", () => {
     await waitFor(() =>
       expect(r.getByText(`Catalogo dei modelli: aggiornato il ${day("2026-11-10")}`)).toBeTruthy(),
     );
-    expect(r.getByText(/quello incluso in RedGiant · versione 1/)).toBeTruthy();
+    expect(r.getByText(/quello incluso in Rasgeth · versione 1/)).toBeTruthy();
     fireEvent.click(r.getByRole("button", { name: "Aggiorna ora" }));
     await waitFor(() =>
       expect(r.getByText(`Catalogo dei modelli: aggiornato il ${day("2026-12-01")}`)).toBeTruthy(),

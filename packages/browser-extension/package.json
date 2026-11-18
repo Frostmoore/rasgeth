@@ -2,7 +2,7 @@
   "name": "@redgiant/browser-extension",
   "version": "0.1.0",
   "private": true,
-  "description": "The RedGiant keychain in Chrome, Edge, Brave, Opera and Firefox: fills sign-in forms for their own site only, saves new passwords, generates and searches (G36.21).",
+  "description": "The Rasgeth keychain in Chrome, Edge, Brave, Opera and Firefox: fills sign-in forms for their own site only, saves new passwords, generates and searches (G36.21).",
   "license": "MIT",
   "type": "module",
   "redgiant": {

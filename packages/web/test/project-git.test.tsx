@@ -33,7 +33,7 @@ const { ProjectsPage, noGitNotice } = await import("../src/components/ProjectArc
 const { projects } = await import("../src/state.js");
 
 const base = {
-  path: "C:\\Users\\Me\\RedGiant\\workspaces\\me\\x",
+  path: "C:\\Users\\Me\\Rasgeth\\workspaces\\me\\x",
   createdAt: "2026-11-12T00:00:00Z",
 };
 
@@ -54,7 +54,7 @@ describe("noGitNotice", () => {
         id: "a",
         name: "Sito",
         git: false,
-        gitError: "git is not installed on this computer yet (RedGiant downloads…)",
+        gitError: "git is not installed on this computer yet (Rasgeth downloads…)",
       }),
     ).toBe(
       "Progetto «Sito» creato, ma senza repository git: git non è ancora installato su questo computer. Crealo da Impostazioni › Progetti («Inizializza git») appena git funziona.",
@@ -85,6 +85,6 @@ describe("Settings > Projects (3.5.12)", () => {
     expect(calls).toContainEqual(["initProjectGit", ["notes"]]);
     expect(refreshed).toBe(1);
     // The Windows path is shown as it is.
-    expect(r.getAllByText("C:\\Users\\Me\\RedGiant\\workspaces\\me\\x")).toHaveLength(2);
+    expect(r.getAllByText("C:\\Users\\Me\\Rasgeth\\workspaces\\me\\x")).toHaveLength(2);
   });
 });

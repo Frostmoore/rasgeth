@@ -335,7 +335,7 @@ for (const scheme of ["light", "dark"]) {
   const title = await page.locator(".canvas .artifact-errors").getAttribute("title");
   console.log(`     errors: ${title?.replace(/\n/g, " | ")}`);
   check(
-    /not a library RedGiant serves/.test(title ?? "") && /startTimer/.test(title ?? ""),
+    /not a library \w+ serves/.test(title ?? "") && /startTimer/.test(title ?? ""),
     "the missing library and the exception are both reported",
   );
   await page.waitForTimeout(1000);
@@ -382,7 +382,7 @@ for (const scheme of ["light", "dark"]) {
   await page.screenshot({ path: join(out, "light-7-artifact-hostile.png") });
   // Then the form and the frame's own navigation, a few seconds later.
   await page.waitForTimeout(7000);
-  check(page.url().startsWith(url), "hostile artifact: RedGiant's page stays (no top navigation)");
+  check(page.url().startsWith(url), "hostile artifact: Rasgeth's page stays (no top navigation)");
   check(popups.length === 0, `hostile artifact: no window opened (${popups.join(", ")})`);
   check(heard.length === 0, `the outside server heard nothing (${heard.join(", ")})`);
   await page.screenshot({ path: join(out, "light-8-artifact-hostile-after-nav.png") });

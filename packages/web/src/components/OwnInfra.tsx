@@ -209,7 +209,7 @@ export function OwnInfra({
                 type="text"
                 spellcheck={false}
                 autocapitalize="off"
-                placeholder="redgiant.example.com"
+                placeholder="rasgeth.example.com"
                 value={name}
                 onInput={(e) => setName((e.target as HTMLInputElement).value)}
               />

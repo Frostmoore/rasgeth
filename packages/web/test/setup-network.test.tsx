@@ -29,7 +29,7 @@ const status = (o: Partial<NonNullable<SetupNetworkInfo["status"]>> = {}) => ({
   mode: "setup" as const,
   capable: "ok" as const,
   pending: true,
-  ssid: "RedGiant-Setup-1A2B",
+  ssid: "Rasgeth-Setup-1A2B",
   passphrase: "redgiant",
   address: "10.42.0.1",
   subnet: "10.42.0.0/24",
@@ -47,14 +47,14 @@ const status = (o: Partial<NonNullable<SetupNetworkInfo["status"]>> = {}) => ({
 beforeEach(() => {
   lang.value = "it";
   calls.length = 0;
-  info = { here: "setup", ssid: "RedGiant-Setup-1A2B", status: status() };
+  info = { here: "setup", ssid: "Rasgeth-Setup-1A2B", status: status() };
 });
 afterEach(cleanup);
 
 describe("the home network from the temporary network (G40.3)", () => {
   it("lists what the machine saw, joins one with its password", async () => {
     const v = render(<SetupNetworkPanel />);
-    await waitFor(() => expect(v.container.textContent).toContain("RedGiant-Setup-1A2B"));
+    await waitFor(() => expect(v.container.textContent).toContain("Rasgeth-Setup-1A2B"));
     expect(v.container.textContent).toContain("Casa Rossi");
     expect(v.container.querySelector('input[type="checkbox"], input[type="radio"]')).toBeNull();
     fireEvent.click(v.getByText("Casa Rossi"));
@@ -76,7 +76,7 @@ describe("the home network from the temporary network (G40.3)", () => {
   it("says why the last home network did not work, and maintenance in its own words", async () => {
     info = {
       here: "maintenance",
-      ssid: "RedGiant-Setup-1A2B",
+      ssid: "Rasgeth-Setup-1A2B",
       status: status({
         mode: "maintenance",
         lastTry: { state: "failed", ssid: "Casa Rossi", error: "connect_failed", at: 1 },

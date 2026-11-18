@@ -297,7 +297,7 @@ describe("local model names (p3.3.1)", () => {
   it("shows a readable name, never the path", () => {
     expect(
       localModelName(
-        "C:\\Users\\Pixel\\AppData\\Local\\RedGiant\\engine\\models\\GLM-4.5-Air-Q4_K_S-00001-of-00002.gguf",
+        "C:\\Users\\Pixel\\AppData\\Local\\Rasgeth\\engine\\models\\GLM-4.5-Air-Q4_K_S-00001-of-00002.gguf",
       ),
     ).toBe("GLM-4.5 Air Q4_K_S");
     expect(localModelName("/data/models/Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf")).toBe(

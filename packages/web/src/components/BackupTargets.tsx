@@ -177,7 +177,7 @@ export function NetworkTargets({ st, reload }: { st: Storage; reload: () => void
             <Field label={t("fbSmbAddress")} help={t("fbSmbAddressHelp")}>
               <input
                 type="text"
-                placeholder="\\nas\backup\RedGiant"
+                placeholder="\\nas\backup\Rasgeth"
                 value={smb.address}
                 onInput={(e) => setSmb({ ...smb, address: (e.target as HTMLInputElement).value })}
               />

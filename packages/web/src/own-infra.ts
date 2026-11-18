@@ -5,14 +5,14 @@ import type { NameProbe } from "@redgiant/protocol";
 
 /** What the blocks are filled with; missing parts become readable placeholders. */
 export interface InfraData {
-  /** The name RedGiant is reached at (redgiant.home.example.com). */
+  /** The name RedGiant is reached at (rasgeth.home.example.com). */
   name: string;
   /** RedGiant's address on the local network. */
   address: string;
   port: number;
 }
 
-export const PLACEHOLDER_NAME = "redgiant.example.com";
+export const PLACEHOLDER_NAME = "rasgeth.example.com";
 export const PLACEHOLDER_ADDRESS = "192.168.1.50";
 
 /** The data, with placeholders for what is not known. */
@@ -28,7 +28,7 @@ export function infraData(
   };
 }
 
-/** The domain a wildcard covers: redgiant.home.example.com → home.example.com. */
+/** The domain a wildcard covers: rasgeth.home.example.com → home.example.com. */
 export function parentDomain(name: string): string {
   const parts = name.split(".");
   return parts.length > 2 ? parts.slice(1).join(".") : name;
@@ -45,21 +45,21 @@ export const caddyBlock = (d: InfraData) =>
 
 /** A wildcard site already in the Caddyfile: one more name inside it. */
 export const caddyWildcardBlock = (d: InfraData) =>
-  `*.${parentDomain(d.name)} {\n\t@redgiant host ${d.name}\n\thandle @redgiant {\n\t\treverse_proxy ${d.address}:${d.port}\n\t}\n\t# … the other names of the wildcard\n}`;
+  `*.${parentDomain(d.name)} {\n\t@rasgeth host ${d.name}\n\thandle @rasgeth {\n\t\treverse_proxy ${d.address}:${d.port}\n\t}\n\t# … the other names of the wildcard\n}`;
 
 /** Traefik's file provider (dynamic configuration). */
 export const traefikBlock = (d: InfraData) =>
   [
     "http:",
     "  routers:",
-    "    redgiant:",
+    "    rasgeth:",
     `      rule: Host(\`${d.name}\`)`,
     "      entryPoints: [websecure]",
-    "      service: redgiant",
+    "      service: rasgeth",
     "      tls:",
     "        certResolver: letsencrypt",
     "  services:",
-    "    redgiant:",
+    "    rasgeth:",
     "      loadBalancer:",
     "        servers:",
     `          - url: http://${d.address}:${d.port}`,

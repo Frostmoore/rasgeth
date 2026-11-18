@@ -27,7 +27,7 @@ const https = {
   ca: "-----BEGIN CERTIFICATE-----\nMIIB\n-----END CERTIFICATE-----\n",
   fingerprint: "AA:BB:CC",
   until: "Dec 14 00:00:00 2027 GMT",
-  names: ["redgiant.local", "192.168.1.20"],
+  names: ["rasgeth.local", "192.168.1.20"],
   redirect: false,
   viaLocal: false,
   inFront: null,
@@ -106,7 +106,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("not RedGiant OS", () => {
+describe("not Rasgeth OS", () => {
   it("shows nothing at all", async () => {
     answers = {
       setupWifi: { available: false, why: "no_helper" },
@@ -167,7 +167,7 @@ describe("Wi-Fi", () => {
 describe("HTTPS in the local network", () => {
   it("offers the certificate, and keeps http while this device does not trust it", async () => {
     const r = render(<HttpsPanel initial={https as never} />);
-    expect(r.container.textContent).toContain("https://redgiant.local");
+    expect(r.container.textContent).toContain("https://rasgeth.local");
     expect(r.container.textContent).toContain("AA:BB:CC");
     const a = r.getByText("Scarica il certificato").closest("a") as HTMLAnchorElement;
     expect(a.getAttribute("href")).toBe("/redgiant-ca.crt");
@@ -202,7 +202,7 @@ describe("updates", () => {
         <Dialogs />
       </>,
     );
-    expect(r.container.textContent).toContain("RedGiant 3.7.1 è pronto da installare");
+    expect(r.container.textContent).toContain("Rasgeth 3.7.1 è pronto da installare");
     expect(r.container.textContent).toContain("chiede un riavvio");
     fireEvent.click(r.getByText("Riavvia ora"));
     await waitFor(() => r.getByText("Riavviare la macchina adesso?"));
@@ -211,7 +211,7 @@ describe("updates", () => {
     await new Promise((d) => setTimeout(d, 0));
     expect(calls.some(([n]) => n === "setupReboot")).toBe(false);
     fireEvent.click(r.getByText("Aggiorna alla 3.7.1"));
-    await waitFor(() => r.getByText("Aggiornare RedGiant alla 3.7.1?"));
+    await waitFor(() => r.getByText("Aggiornare Rasgeth alla 3.7.1?"));
     fireEvent.click(r.getByText("Aggiorna ora"));
     await waitFor(() => expect(calls.find(([n]) => n === "updateAct")?.[1]).toEqual(["update"]));
   });

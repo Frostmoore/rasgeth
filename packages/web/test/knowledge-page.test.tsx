@@ -317,7 +317,7 @@ describe("Settings › Knowledge: files without typing, and the search by meanin
     }
   });
 
-  it("adds a folder chosen among RedGiant's own, as the project's files", async () => {
+  it("adds a folder chosen among Rasgeth's own, as the project's files", async () => {
     const { projects } = await import("../src/state.js");
     projects.value = [{ id: "alpha", name: "Alpha" } as never];
     const r = render(<Knowledge />);
@@ -325,7 +325,7 @@ describe("Settings › Knowledge: files without typing, and the search by meanin
     fireEvent.click(r.getByLabelText("Apri la raccolta Manuali"));
     await waitFor(() => expect(r.getByText("Aggiungi una fonte")).toBeTruthy());
     fireEvent.click(r.getByText("Aggiungi una fonte"));
-    fireEvent.click(r.getAllByText("Scegli una cartella in RedGiant")[0] as Element);
+    fireEvent.click(r.getAllByText("Scegli una cartella in Rasgeth")[0] as Element);
     await waitFor(() => expect(r.getByText("La cartella di God")).toBeTruthy());
     fireEvent.click(r.getByText("Alpha"));
     await waitFor(() => expect(r.getByText("docs")).toBeTruthy());
@@ -380,7 +380,7 @@ describe("an agent's Knowledge tab (G36.5)", () => {
 });
 
 describe("citations of the person's documents (G36.5)", () => {
-  it("turns [n] into a link to the file and page, opened inside RedGiant", () => {
+  it("turns [n] into a link to the file and page, opened inside Rasgeth", () => {
     const html = renderAnswer(
       "La garanzia dura 24 mesi [1], il tecnico arriva in 5 giorni [2].\n\nFonti:\n1. [Garanzia lavatrice, p. 3](#kb:42)\n2. [Manuale assistenza, lines 4-9](#kb:43)",
     );

@@ -27,6 +27,7 @@ import {
   type DocSnapshot,
   docKey,
   PERSON,
+  PRODUCT_NAME,
 } from "@redgiant/protocol";
 import {
   type Agent,
@@ -242,7 +243,7 @@ function notifyHidden(body: string, tag?: string): void {
   if (typeof document === "undefined" || !document.hidden) return;
   if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
   try {
-    const n = new Notification("RedGiant", { body, ...(tag && { tag }) });
+    const n = new Notification(PRODUCT_NAME, { body, ...(tag && { tag }) });
     n.onclick = () => {
       window.focus();
       n.close();

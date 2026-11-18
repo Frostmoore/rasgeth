@@ -300,7 +300,7 @@ describe("«Continua» at the step limit (3.5.6)", () => {
     const first = summary("Done: A. Left: B.");
     const events = [
       user("do A and B"),
-      ev("message.user", { text: "[RedGiant: limit of steps]", steer: true, from: "redgiant" }),
+      ev("message.user", { text: "[Rasgeth: limit of steps]", steer: true, from: "redgiant" }),
       first,
     ];
     // RedGiant's own note to the model does not count as written after it.

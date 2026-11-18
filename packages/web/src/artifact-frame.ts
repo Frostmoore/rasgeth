@@ -10,6 +10,7 @@ import {
   BridgeFrameMessage,
   FrameMessage,
   frameMessageText,
+  PRODUCT_NAME,
 } from "@redgiant/protocol";
 
 /** A frame's message, if it is one of ours and comes from that frame. */
@@ -51,7 +52,10 @@ export function bridgeRejection(
           code: "too_big",
           message: `The storage holds at most ${ARTIFACT_STORAGE_MAX / 1024 / 1024} MB`,
         }
-      : { code: "bad_request", message: "Not a bridge call RedGiant knows (see canvas_edit help)" },
+      : {
+          code: "bad_request",
+          message: `Not a bridge call ${PRODUCT_NAME} knows (see canvas_edit help)`,
+        },
   };
 }
 

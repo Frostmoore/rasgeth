@@ -96,7 +96,8 @@ const STOP_WORDS = [
   "lascia stare",
   "lascia perdere",
 ];
-const FILLER = /\b(ok|okay|grazie|thanks|thank you|allora|va bene|redgiant|red giant|ehi|hey)\b/g;
+const FILLER =
+  /\b(ok|okay|grazie|thanks|thank you|allora|va bene|rasgeth|ras get|raz get|ehi|hey)\b/g;
 
 /** The text is only a request to stop (not a sentence that happens to contain «stop»). */
 export function isStopPhrase(text: string): boolean {

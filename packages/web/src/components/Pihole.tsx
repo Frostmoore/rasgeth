@@ -164,7 +164,7 @@ export function PiholePanel({ s, onChange }: { s: SetupState; onChange: () => vo
                 error={domainOk ? undefined : t("piholeDomainWrong")}
               >
                 <input
-                  placeholder="redgiant.example.com"
+                  placeholder="rasgeth.example.com"
                   value={domain}
                   onInput={(e) => setDomain((e.target as HTMLInputElement).value)}
                 />

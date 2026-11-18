@@ -108,7 +108,7 @@ describe("first load (3.5.11)", () => {
   });
 });
 
-describe("the page inside RGCompanion (G42.0)", () => {
+describe("the page inside the app (G42.0)", () => {
   it("has its own entry that never reaches the page's App, Settings or the chat", () => {
     const { files, chain } = firstLoad("embed-main.tsx");
     const page = [

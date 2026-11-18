@@ -4,7 +4,7 @@
 import { describe, expect, it } from "vitest";
 import { ApiError } from "../src/api.js";
 import { explain } from "../src/explain.js";
-import { dictionaries, lang } from "../src/i18n.js";
+import { dictionaries, fill, lang } from "../src/i18n.js";
 import { VoiceController, type VoicePorts } from "../src/voice/controller.js";
 import {
   initialVoice,
@@ -287,7 +287,8 @@ describe("what the voice reads", () => {
 describe("the wake word (Vosk's grammar)", () => {
   it("listens for a few phrases only", () => {
     const g = JSON.parse(wakeGrammar("it")) as string[];
-    expect(g).toContain("ehi red giant");
+    expect(g).toContain("ehi ras get");
+    expect(g).toContain("ehi raz get");
     expect(g).toContain("basta");
     expect(g.at(-1)).toBe("[unk]");
   });
@@ -295,13 +296,22 @@ describe("the wake word (Vosk's grammar)", () => {
   it("wakes on the phrase when sure enough, stops on a stop word", () => {
     const sure = [
       { word: "ehi", conf: 0.9 },
-      { word: "red", conf: 0.92 },
-      { word: "giant", conf: 0.88 },
+      { word: "ras", conf: 0.92 },
+      { word: "get", conf: 0.88 },
     ];
-    expect(classifyHeard("it", "ehi red giant", sure, minConfFor(0.5))).toBe("wake");
+    expect(classifyHeard("it", "ehi ras get", sure, minConfFor(0.5))).toBe("wake");
     const unsure = sure.map((w) => ({ ...w, conf: 0.6 }));
-    expect(classifyHeard("it", "ehi red giant", unsure, minConfFor(0.5))).toBeUndefined();
-    expect(classifyHeard("it", "ehi red giant", unsure, minConfFor(1))).toBe("wake");
+    expect(classifyHeard("it", "ehi ras get", unsure, minConfFor(0.5))).toBeUndefined();
+    expect(classifyHeard("it", "ehi ras get", unsure, minConfFor(1))).toBe("wake");
+    // The name's words decide: a loose greeting does not stop it, an unsure name does.
+    const loose = [{ word: "hey", conf: 0.3 }, ...sure.slice(1)];
+    expect(classifyHeard("en", "hey ras get", loose, minConfFor(0.5))).toBe("wake");
+    const raz = [
+      { word: "raz", conf: 0.6 },
+      { word: "get", conf: 0.9 },
+    ];
+    expect(classifyHeard("en", "hey raz get", raz, minConfFor(0.5))).toBeUndefined();
+    expect(classifyHeard("en", "hey raz get", raz, minConfFor(1))).toBe("wake");
     expect(classifyHeard("it", "basta", [{ word: "basta", conf: 1 }], 0.7)).toBe("stop");
     expect(classifyHeard("en", "[unk]", undefined, 0.7)).toBeUndefined();
     expect(classifyHeard("en", "", undefined, 0.7)).toBeUndefined();
@@ -309,13 +319,17 @@ describe("the wake word (Vosk's grammar)", () => {
 });
 
 describe("a wake word of one's own", () => {
-  it("is spelled as the model spells it, «RedGiant» as two words", () => {
-    expect(spokenWake("  Ehi, RedGiant! ")).toBe("ehi red giant");
+  it("is spelled as the model spells it, «Rasgeth» as «ras get»", () => {
+    expect(spokenWake("  Ehi, Rasgeth! ")).toBe("ehi ras get");
     expect(spokenWake("Ciao   Computer")).toBe("ciao computer");
-    expect(customWake("it", "Ehi RedGiant")).toBeUndefined();
+    expect(customWake("it", "Ehi Rasgeth")).toBeUndefined();
+    expect(customWake("en", "hey RASGETH")).toBeUndefined();
+    // One's own words written with the old name keep working (the models know both words).
+    expect(customWake("it", "Ok RedGiant")).toBe("ok red giant");
     expect(customWake("it", undefined)).toBeUndefined();
     expect(customWake("it", "Ciao computer")).toBe("ciao computer");
-    expect(wakeLabel("it", undefined)).toBe("Ehi RedGiant");
+    expect(wakeLabel("it", undefined)).toBe("Ehi Rasgeth");
+    expect(wakeLabel("en", undefined)).toBe("Hey Rasgeth");
     expect(wakeLabel("en", " Hey computer ")).toBe("Hey computer");
   });
 
@@ -338,7 +352,7 @@ describe("a wake word of one's own", () => {
       ),
     ).toBeUndefined();
     // The default phrase no longer wakes it.
-    expect(classifyHeard("it", "ehi red giant", undefined, 0.75, "Ciao computer")).toBeUndefined();
+    expect(classifyHeard("it", "ehi ras get", undefined, 0.75, "Ciao computer")).toBeUndefined();
     expect(classifyHeard("it", "basta", [{ word: "basta", conf: 1 }], 0.7, "Ciao computer")).toBe(
       "stop",
     );
@@ -363,7 +377,7 @@ describe("the voice's failures, in the person's language", () => {
       "No transcription service: set one in Settings, Voice",
       "voice_no_service",
     );
-    expect(explain(none)).toBe(dictionaries.it.err_voice_no_service);
+    expect(explain(none)).toBe(fill(dictionaries.it.err_voice_no_service));
     expect(explain(none)).not.toMatch(/transcription service/);
     const refused = new ApiError(502, "Groq refused the key", "voice_key_refused", {
       name: "Groq",

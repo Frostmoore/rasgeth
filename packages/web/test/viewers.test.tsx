@@ -377,7 +377,7 @@ describe("trees", () => {
     ]);
     const loose = await parseTree('{\n // note\n "a": 1,\n}', "jsonc");
     expect(loose.children?.[0]).toMatchObject({ label: "a", value: "1" });
-    const y = await parseTree("name: RedGiant\nlist:\n  - uno\n  - due\n", "yaml");
+    const y = await parseTree("name: Rasgeth\nlist:\n  - uno\n  - due\n", "yaml");
     expect(y.children?.[1]?.children?.map((c) => c.value)).toEqual(["uno", "due"]);
     const x = await parseTree('<root id="1"><item>uno</item><item>due</item></root>', "xml");
     expect(x.label).toBe("root");

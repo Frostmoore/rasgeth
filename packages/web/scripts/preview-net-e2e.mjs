@@ -247,7 +247,7 @@ await page.waitForTimeout(4000);
 const got = await page.evaluate(() => window.__got);
 console.log("evil page says:", JSON.stringify(got.evil));
 console.log("good page says:", JSON.stringify(got.good));
-check(page.url().startsWith(url), "top navigation blocked (RedGiant's page stays)");
+check(page.url().startsWith(url), "top navigation blocked (Rasgeth's page stays)");
 for (const k of [
   "inline",
   "dataImage",
@@ -262,7 +262,7 @@ await page.screenshot({ path: join(out, "1-canvas-frames.png") });
 
 // The hostile window.open was handed to RedGiant, which asks the person.
 const asks = page.locator("[role=dialog]").filter({ hasText: "La pagina vuole aprire un link" });
-check((await asks.count()) > 0, "window.open asks the person in RedGiant's own window");
+check((await asks.count()) > 0, "window.open asks the person in Rasgeth's own window");
 await page.screenshot({ path: join(out, "2-window-open-asks.png") });
 await cancel();
 await page.waitForTimeout(300);
@@ -273,7 +273,7 @@ const asked = await page
   .locator("[role=dialog]")
   .filter({ hasText: "La pagina vuole aprire un link" })
   .count();
-check(asked > 0, "a target=_blank link asks the person in RedGiant's own window");
+check(asked > 0, "a target=_blank link asks the person in Rasgeth's own window");
 await page.screenshot({ path: join(out, "2-link-asks.png") });
 await cancel();
 await page.frameLocator("#t-good").locator("#out").click();

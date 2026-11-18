@@ -190,19 +190,19 @@ describe("what the page shows (p3.5.4)", () => {
     act(() => {
       vi.advanceTimersByTime(LOST_AFTER);
     });
-    expect(screen.queryByText("Collegamento a RedGiant perso: riprovo…")).toBe(null);
+    expect(screen.queryByText("Collegamento a Rasgeth perso: riprovo…")).toBe(null);
     act(() => {
       state.status.value = "offline";
     });
     act(() => {
       vi.advanceTimersByTime(LOST_AFTER);
     });
-    expect(screen.getByText("Collegamento a RedGiant perso: riprovo…")).toBeTruthy();
+    expect(screen.getByText("Collegamento a Rasgeth perso: riprovo…")).toBeTruthy();
     expect(screen.getByText("Ricarica")).toBeTruthy();
     act(() => {
       state.status.value = "online";
     });
-    expect(screen.queryByText("Collegamento a RedGiant perso: riprovo…")).toBe(null);
+    expect(screen.queryByText("Collegamento a Rasgeth perso: riprovo…")).toBe(null);
   });
 
   it("a stale stream goes when a conversation is followed again", async () => {

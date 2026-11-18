@@ -31,7 +31,7 @@ export const SVGCANVAS_PATCHES: Patch[] = [
       ],
       [
         "    node.nodeValue = node.nodeValue.trim()\n    // Remove if empty\n    if (!node.nodeValue.length) {\n      node.remove()\n    }",
-        "    // RedGiant (G37.6): a text's spaces are the person's; only blank nodes between elements go\n    const keep = node.parentNode && /^(text|tspan|textPath|title|desc|style|foreignObject)$/.test(node.parentNode.localName)\n    if (!keep && !node.nodeValue.trim()) {\n      node.remove()\n    }",
+        "    // Rasgeth (G37.6): a text's spaces are the person's; only blank nodes between elements go\n    const keep = node.parentNode && /^(text|tspan|textPath|title|desc|style|foreignObject)$/.test(node.parentNode.localName)\n    if (!keep && !node.nodeValue.trim()) {\n      node.remove()\n    }",
         1,
       ],
     ],

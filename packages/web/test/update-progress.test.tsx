@@ -59,7 +59,7 @@ const run = {
         here: true,
       },
     ],
-    files: { name: "redgiant-os-files-3.8.1.tar.zst", bytes: 2 * MB },
+    files: { name: "rasgeth-os-files-3.8.1.tar.zst", bytes: 2 * MB },
   },
   progress: {
     done: 120 * MB,
@@ -90,11 +90,11 @@ afterEach(() => {
   updateStatus.value = null;
 });
 
-describe("RedGiant OS's update in the page", () => {
+describe("Rasgeth OS's update in the page", () => {
   it("shows the steps, what comes down with its size, a real bar and the time left", async () => {
     const r = render(<OsUpdatesPanel initial={downloading as never} />);
     const text = () => r.container.textContent ?? "";
-    expect(text()).toContain("Aggiorno RedGiant dalla 3.8.0 alla 3.8.1");
+    expect(text()).toContain("Aggiorno Rasgeth dalla 3.8.0 alla 3.8.1");
     // The running step is the lit one.
     const current = r.container.querySelector('[aria-current="step"]');
     expect(current?.textContent).toContain("Scarico le immagini nuove");
@@ -107,8 +107,8 @@ describe("RedGiant OS's update in the page", () => {
     // The whole: 23 s of images, then the usual minutes of the steps after them.
     expect(text()).toContain("mancano circa 2 min");
     expect(text()).toContain("Controllo la firma della versione nuova");
-    expect(text()).toContain("Riavvio RedGiant con la versione nuova");
-    expect(text()).toContain("RedGiant continua a funzionare");
+    expect(text()).toContain("Riavvio Rasgeth con la versione nuova");
+    expect(text()).toContain("Rasgeth continua a funzionare");
     // Nothing to press while it runs.
     expect(r.queryByText(/Cerca aggiornamenti/)).toBeNull();
   });
@@ -120,7 +120,7 @@ describe("RedGiant OS's update in the page", () => {
     expect(calls.filter(([n]) => n === "setupOsUpdates").length).toBeGreaterThan(0);
   });
 
-  it("lives through RedGiant's restart and reloads as the new version", async () => {
+  it("lives through Rasgeth's restart and reloads as the new version", async () => {
     const reload = vi.fn();
     reloader.reload = reload;
     const seq = [
@@ -149,10 +149,10 @@ describe("RedGiant OS's update in the page", () => {
       expect(r.container.textContent).toContain("la pagina si ricollega da sola appena risponde"),
     );
     expect(r.container.querySelector('[aria-current="step"]')?.textContent).toContain(
-      "Riavvio RedGiant",
+      "Riavvio Rasgeth",
     );
     await waitFor(() =>
-      expect(r.container.textContent).toContain("RedGiant 3.8.1 risponde: ricarico la pagina"),
+      expect(r.container.textContent).toContain("Rasgeth 3.8.1 risponde: ricarico la pagina"),
     );
     expect(JSON.parse(sessionStorage.getItem("rg.updatedTo") ?? "{}")).toEqual({
       to: "3.8.1",
@@ -184,12 +184,12 @@ describe("RedGiant OS's update in the page", () => {
       </>,
     );
     expect(r.container.textContent).toContain("La versione nuova non è partita.");
-    expect(r.container.textContent).toContain("RedGiant è tornato da solo alla 3.8.0");
+    expect(r.container.textContent).toContain("Rasgeth è tornato da solo alla 3.8.0");
     expect(r.container.querySelector(".st-run-step.failed")?.textContent).toContain(
-      "Controllo che RedGiant risponda",
+      "Controllo che Rasgeth risponda",
     );
     fireEvent.click(r.getByText("Riprova"));
-    await waitFor(() => r.getByText("Aggiornare RedGiant alla 3.8.1?"));
+    await waitFor(() => r.getByText("Aggiornare Rasgeth alla 3.8.1?"));
     fireEvent.click(r.getByText("Aggiorna ora"));
     await waitFor(() => expect(calls.find(([n]) => n === "updateAct")?.[1]).toEqual(["update"]));
     // The steps show at once, before the machine writes its first state.
@@ -204,7 +204,7 @@ describe("RedGiant OS's update in the page", () => {
     // A version that brought no items of its own (independent of what's new in this release).
     sessionStorage.setItem("rg.updatedTo", JSON.stringify({ to: "99.0.1", from: "99.0.0" }));
     const r = render(<UpdatedNotice />);
-    expect(r.getByText("RedGiant è aggiornato")).toBeTruthy();
+    expect(r.getByText("Rasgeth è aggiornato")).toBeTruthy();
     expect(r.container.ownerDocument.body.textContent).toContain(
       "Ora è la 99.0.1 (prima era la 99.0.0)",
     );
@@ -212,7 +212,7 @@ describe("RedGiant OS's update in the page", () => {
     expect(notes?.getAttribute("href")).toMatch(/releases\/tag\/v99\.0\.1$/);
     fireEvent.click(r.getByText("Ok"));
     expect(sessionStorage.getItem("rg.updatedTo")).toBeNull();
-    expect(r.queryByText("RedGiant è aggiornato")).toBeNull();
+    expect(r.queryByText("Rasgeth è aggiornato")).toBeNull();
   });
 });
 
@@ -247,7 +247,7 @@ describe("the other installations", () => {
         }}
       />,
     );
-    expect(r.container.textContent).toContain("Aggiorno RedGiant alla 3.8.1");
+    expect(r.container.textContent).toContain("Aggiorno Rasgeth alla 3.8.1");
     expect(r.container.querySelector(".st-run-step.done")?.textContent).toContain(
       "Cerco cosa è cambiato",
     );
@@ -261,7 +261,7 @@ describe("the other installations", () => {
     updateStatus.value = { ...status, install: "windows", canUpdateHere: true } as never;
     answers = { updateAct: {}, updateStatus: { ...status, install: "windows" } };
     const r = render(<Updates />);
-    expect(r.container.textContent).toContain("RedGiant scarica solo i file cambiati");
+    expect(r.container.textContent).toContain("Rasgeth scarica solo i file cambiati");
     fireEvent.click(r.getByText("Aggiorna alla 3.8.1"));
     await waitFor(() => expect(calls.find(([n]) => n === "updateAct")?.[1]).toEqual(["update"]));
     expect(r.queryByText("Aggiorna alla 3.8.1")).toBeNull();

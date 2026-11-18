@@ -3,8 +3,9 @@
 // an editor that speaks it (Zed, JetBrains). A worker is an agent of the project: its orchestrator
 // and God hand it tasks like to any other; its program runs in the agent's own folder, and every
 // file, command and permission it asks for goes through RedGiant. Its variables never hold a key.
+
 import type { AcpWorkerConfig, AcpWorkerInfo } from "@redgiant/protocol";
-import { acpEnvIssue } from "@redgiant/protocol";
+import { acpEnvIssue, PRODUCT_NAME } from "@redgiant/protocol";
 import type { ComponentChildren } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import type { Project } from "../api.js";
@@ -43,9 +44,9 @@ export function zedSnippet(agent?: string): string {
   return JSON.stringify(
     {
       agent_servers: {
-        RedGiant: {
+        [PRODUCT_NAME]: {
           type: "custom",
-          command: "redgiant-acp",
+          command: "rasgeth-acp",
           args: agent ? ["--agent", agent] : [],
           env: {},
         },
@@ -59,7 +60,7 @@ export function zedSnippet(agent?: string): string {
 /** The same for JetBrains IDEs (`~/.jetbrains/acp.json`). */
 export function jetbrainsSnippet(): string {
   return JSON.stringify(
-    { agent_servers: { RedGiant: { command: "redgiant-acp", args: [], env: {} } } },
+    { agent_servers: { [PRODUCT_NAME]: { command: "rasgeth-acp", args: [], env: {} } } },
     null,
     2,
   );

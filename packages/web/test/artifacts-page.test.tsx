@@ -90,7 +90,7 @@ describe("Settings › Artifacts (3.5.9)", () => {
     const r = page();
     await waitFor(() => expect(r.getByText("Ancora nessun artefatto")).toBeTruthy());
     expect(r.getByText(/Un artefatto è un'app HTML in un file solo/)).toBeTruthy();
-    expect(r.getByText(/importa un \.rgartifact da un altro RedGiant/)).toBeTruthy();
+    expect(r.getByText(/importa un \.rgartifact da un altro Rasgeth/)).toBeTruthy();
     expect(r.container.querySelector("input[type=checkbox], input[type=radio]")).toBeNull();
   });
 
@@ -197,7 +197,7 @@ describe("Settings › Artifacts (3.5.9)", () => {
     await waitFor(() => expect(r.getByText("Calcolo preventivi")).toBeTruthy());
     fireEvent.click(r.getByText("Esporta"));
     expect(r.getByText("Scarica come HTML")).toBeTruthy();
-    expect(r.getByText(/fuori da RedGiant gira senza il riquadro isolato/)).toBeTruthy();
+    expect(r.getByText(/fuori da Rasgeth gira senza il riquadro isolato/)).toBeTruthy();
     fireEvent.click(r.getByText("Un file .rgartifact"));
     await waitFor(() =>
       expect(calls.find(([n]) => n === "artifactExport")?.[1]).toEqual([
@@ -225,7 +225,8 @@ describe("Settings › Artifacts: the bridge's permissions (3.6)", () => {
     const text = r.container.textContent ?? "";
     expect(text).toContain("Chiede di fare domande a");
     expect(text).toContain("spesi 0.25 $ di 2 $");
-    expect(text).toContain("Chiede di tenere dati suoi su RedGiant");
+    // The permission's words are the protocol's, with the product's name.
+    expect(text).toMatch(/Chiede di tenere dati suoi su \w+ \(solo testo/);
     expect(text).toContain(
       "Chiede di leggere i file della cartella dati/ del progetto (solo lettura)",
     );

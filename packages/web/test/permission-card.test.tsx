@@ -66,7 +66,8 @@ describe("what the card says (3.5.6)", () => {
     );
     // The policy's own label is said by the danger chip, in Italian.
     const because = card.querySelector(".permission-because") as HTMLElement;
-    expect(because.textContent).toBe("Cambiare RedGiant stesso");
+    // The danger's words are the protocol's (dangers.ts), which says the product's name.
+    expect(because.textContent).toMatch(/^Cambiare \w+ stesso$/);
     // The raw input and the English reason are only in the folded details.
     const details = card.querySelector("details.permission-details") as HTMLDetailsElement;
     expect(details.open).toBe(false);

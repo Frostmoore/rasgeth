@@ -1,4 +1,4 @@
-import { OWN_SERVER_ID } from "@redgiant/protocol";
+import { OWN_SERVER_ID, PRODUCT_NAME } from "@redgiant/protocol";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { usd } from "../format.js";
 import { lang, t } from "../i18n.js";
@@ -67,6 +67,7 @@ import { Explorer } from "./Explorer.js";
 import { lazy } from "./lazy.js";
 import { Mascot } from "./Mascot.js";
 import { ConnectionLost, MemoryNotice } from "./PageHealth.js";
+import { RenameNotice } from "./RenameNotice.js";
 import { SaveDialogHost, SavedPage } from "./Saved.js";
 import { preloadCanvas, SideArea } from "./SideArea.js";
 import { Sidebar } from "./Sidebar.js";
@@ -431,7 +432,7 @@ export function App() {
 
   const waiting = approvals.value.length + questions.value.length + notices.value.length;
   useEffect(() => {
-    document.title = waiting ? `(${waiting}) RedGiant` : "RedGiant";
+    document.title = waiting ? `(${waiting}) ${PRODUCT_NAME}` : PRODUCT_NAME;
   }, [waiting]);
 
   if (!ready) return null;
@@ -465,7 +466,7 @@ export function App() {
           <IconMenu />
         </button>
         <span class="brand">
-          <Logo /> <span class="name">RedGiant</span>
+          <Logo /> <span class="name">{PRODUCT_NAME}</span>
         </span>
         <Limits />
         <VoiceIndicator />
@@ -518,6 +519,8 @@ export function App() {
       {citationNote.value && <CitationNote />}
       <ConnectionLost />
       <MemoryNotice />
+      {/* «RedGiant is now called Rasgeth», once (plan 3.9.0, choice 17). */}
+      <RenameNotice />
       {lastError.value && (
         <div class="banner error">
           <IconAlert /> {lastError.value}
@@ -574,7 +577,7 @@ export function App() {
           ) : (
             <div class="welcome">
               <Logo size={64} />
-              <h1>RedGiant</h1>
+              <h1>{PRODUCT_NAME}</h1>
               <p>{t("welcomeText")}</p>
             </div>
           )}

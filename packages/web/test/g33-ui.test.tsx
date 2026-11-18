@@ -186,7 +186,7 @@ describe("plain words", () => {
     expect(dictionaries.en.agentMode_readonly).toBe("Read only");
     for (const l of ["it", "en"] as const) {
       expect(dictionaries[l].searchCard_searxng).not.toMatch(/sopra|above/);
-      expect(dictionaries[l].searchHow_searxng_own).not.toMatch(/Avvia il motore|Start RedGiant/);
+      expect(dictionaries[l].searchHow_searxng_own).not.toMatch(/Avvia il motore|Start Rasgeth/);
     }
     // The Chat's description as the server writes it.
     expect(dictionaries.en.chatAgentRole).toBe(CHAT_ROLE);

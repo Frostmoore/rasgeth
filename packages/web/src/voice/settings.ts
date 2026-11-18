@@ -7,9 +7,9 @@ import { type WakeLang, wakeLabel } from "./wake.js";
 export interface VoiceSettings {
   /** Hands-free on this device: the indicator in the top bar, the conversation by voice. */
   enabled: boolean;
-  /** Listen for the wake word («Ehi RedGiant» or the person's own) while the page is in front. */
+  /** Listen for the wake word («Ehi Rasgeth» or the person's own) while the page is in front. */
   wake: boolean;
-  /** The person's own wake word for a language, as they wrote it (3.7.3); none: «Ehi RedGiant». */
+  /** The person's own wake word for a language, as they wrote it (3.7.3); none: «Ehi Rasgeth». */
   wakeWords: Partial<Record<WakeLang, string>>;
   /** 0…1: how easily the wake word and speech are taken (the VAD's and Vosk's thresholds). */
   sensitivity: number;
@@ -121,6 +121,6 @@ export function setVoiceSettings(patch: Partial<VoiceSettings>): void {
   }
 }
 
-/** The wake word this device listens for, as the page names it («Ehi RedGiant» by default). */
+/** The wake word this device listens for, as the page names it («Ehi Rasgeth» by default). */
 export const currentWake = (): string =>
   wakeLabel(voiceSettings.value.lang, voiceSettings.value.wakeWords[voiceSettings.value.lang]);

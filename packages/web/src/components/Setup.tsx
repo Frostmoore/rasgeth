@@ -5,6 +5,7 @@
 // at the bottom of the screen and the windows come up from below. Each step is saved when it is
 // left; the wizard can be run again from Settings.
 
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import type { JSX } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { loginMethods, type SetupState } from "../api.js";
@@ -1143,7 +1144,7 @@ export function Setup({ onDone }: { onDone?: () => void }) {
             {onDone && (
               <>
                 <Logo size={26} />
-                <span>RedGiant</span>
+                <span>{PRODUCT_NAME}</span>
               </>
             )}
           </div>

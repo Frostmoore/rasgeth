@@ -146,12 +146,12 @@ describe("the keychain page (G33.4)", () => {
     expect(calls).toContainEqual(["revealVault", ["key_1"]]);
   });
 
-  it("shows the keys RedGiant uses as entries, with the page that uses them (G36.20)", async () => {
+  it("shows the keys Rasgeth uses as entries, with the page that uses them (G36.20)", async () => {
     const r = render(<Keychain />);
     await waitFor(() => r.getAllByText("Anthropic"));
     expect(r.container.textContent).toContain("Usata da: Modelli e abbonamenti");
     expect(r.container.textContent).toContain(
-      "RedGiant ha spostato anthropic-api-key qui da secrets.json",
+      "Rasgeth ha spostato anthropic-api-key qui da secrets.json",
     );
     // Set by the administrator: no way to manage it here.
     expect(r.container.textContent).toContain("Impostata dall'amministratore");

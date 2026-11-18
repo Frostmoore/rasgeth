@@ -3,6 +3,7 @@
 // threads), WebGL 2 (3D), H.264 in <video> (the video proxies), the clipboard (through the app), and
 // the memory the page can see. Shown in a table; the same results in `window.__rgProbe` for the
 // screenshot scripts.
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { useEffect, useState } from "preact/hooks";
 import { embedded, toApp } from "../embed.js";
 import { t } from "../i18n.js";
@@ -93,7 +94,7 @@ function probeH264(): Promise<Result> {
 
 function probeClipboard(): Result {
   if (embedded()) {
-    const sent = toApp({ t: "copy", text: "RedGiant probe" });
+    const sent = toApp({ t: "copy", text: `${PRODUCT_NAME} probe` });
     return { ok: sent, detail: sent ? "through the app" : "no app channel" };
   }
   const has = typeof navigator.clipboard?.writeText === "function";

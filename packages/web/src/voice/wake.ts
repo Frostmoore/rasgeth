@@ -1,15 +1,22 @@
 // Hands-free voice (G38.4): the wake word, heard in the page. Vosk (Apache-2.0, WASM in a worker)
 // with a small speech model (Apache-2.0) listens with a grammar of a few phrases only: «Ehi
-// RedGiant» (or the person's own wake word, 3.7.3) and the stop words, everything else is "[unk]". No audio leaves the page for it.
-// The model comes from RedGiant's server, which downloads it once (its bar in the page); the page
-// then keeps its own copy (IndexedDB), so the second time nothing is downloaded.
+// Rasgeth» (or the person's own wake word, 3.7.3) and the stop words, everything else is "[unk]". No audio leaves the page for it.
+// The model comes from the product's server, which downloads it once (its bar in the page); the
+// page then keeps its own copy (IndexedDB), so the second time nothing is downloaded.
+import { PRODUCT_NAME } from "@redgiant/protocol";
 
 export type WakeLang = "it" | "en";
 
-/** The phrases that wake RedGiant, as the models spell them («red» and «giant» are in both). */
+/**
+ * The name as the models spell it (3.9.0): they know neither «Rasgeth» nor «ghet» (Italian), but
+ * both know «ras», «raz» and «get» (read from each model's own word list, `graph/Gr.fst`).
+ */
+export const SPOKEN_NAME = ["ras get", "raz get"] as const;
+
+/** The phrases that wake the product, as the models spell them. */
 export const WAKE_PHRASES: Record<WakeLang, string[]> = {
-  it: ["ehi red giant", "hey red giant", "ei red giant", "red giant"],
-  en: ["hey red giant", "hi red giant", "okay red giant", "red giant"],
+  it: ["ehi ras get", "hey ras get", "ei ras get", "ehi raz get", "ras get", "raz get"],
+  en: ["hey ras get", "hi ras get", "okay ras get", "hey raz get", "ras get", "raz get"],
 };
 
 /** Said while the answer is read: it stops (the wake word instead asks something new). */
@@ -19,21 +26,26 @@ export const STOP_PHRASES: Record<WakeLang, string[]> = {
 };
 
 /** The default wake word as people write it. */
-export const DEFAULT_WAKE: Record<WakeLang, string> = { it: "Ehi RedGiant", en: "Hey RedGiant" };
+export const DEFAULT_WAKE: Record<WakeLang, string> = {
+  it: `Ehi ${PRODUCT_NAME}`,
+  en: `Hey ${PRODUCT_NAME}`,
+};
 
 /** A few wake words of one's own, every word known to the language's small model (2026-11-14). */
 export const WAKE_EXAMPLES: Record<WakeLang, string[]> = {
-  it: ["Ehi RedGiant", "Ciao computer", "Ehi Giove", "Ok Aurora", "Senti amico"],
-  en: ["Hey RedGiant", "Hey computer", "Okay Jupiter", "Hi Aurora", "Listen friend"],
+  it: [DEFAULT_WAKE.it, "Ciao computer", "Ehi Giove", "Ok Aurora", "Senti amico"],
+  en: [DEFAULT_WAKE.en, "Hey computer", "Okay Jupiter", "Hi Aurora", "Listen friend"],
 };
 
 /**
- * A wake word as the model spells it: small letters, no punctuation, «RedGiant» as its two words
- * (the model knows «red» and «giant», not the name).
+ * A wake word as the model spells it: small letters, no punctuation, the name as the words the
+ * model knows («Rasgeth» as «ras get»). A wake word of one's own written with the old name
+ * (before 3.9.0) keeps working: the models know «red» and «giant».
  */
 export function spokenWake(text: string): string {
   return text
     .toLowerCase()
+    .replace(/rasgeth/g, ` ${SPOKEN_NAME[0]} `)
     .replace(/redgiant/g, "red giant")
     .replace(/[^\p{L}\p{N}' ]+/gu, " ")
     .replace(/\s+/g, " ")
@@ -64,7 +76,7 @@ export function wakeProblem(
   return undefined;
 }
 
-/** The phrases that wake RedGiant: the default ones, or the person's own. */
+/** The phrases that wake the product: the default ones, or the person's own. */
 export const wakePhrases = (lang: WakeLang, own?: string): string[] => {
   const custom = customWake(lang, own);
   return custom ? [custom] : WAKE_PHRASES[lang];
@@ -104,7 +116,8 @@ export function classifyHeard(
     if (said.includes(custom)) return sure(custom) ? "wake" : undefined;
   } else {
     const wake = WAKE_PHRASES[lang].find((p) => said.includes(p));
-    if (wake) return sure("red giant") ? "wake" : undefined;
+    // The name's two words must be sure; the greeting before them may be heard loosely.
+    if (wake) return sure(wake.split(" ").slice(-2).join(" ")) ? "wake" : undefined;
   }
   const stop = STOP_PHRASES[lang].find((p) => said === p || said.endsWith(` ${p}`));
   if (stop) return sure(stop) ? "stop" : undefined;

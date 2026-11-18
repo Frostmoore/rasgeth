@@ -136,7 +136,7 @@ describe("Settings > Machines (G38.2)", () => {
     expect(calls.some(([n]) => n === "trustMachine")).toBe(false);
   });
 
-  it("adds a machine: a key made by RedGiant by default, who may use it chosen with our controls", async () => {
+  it("adds a machine: a key made by Rasgeth by default, who may use it chosen with our controls", async () => {
     const r = render(<Machines />);
     await waitFor(() => r.getByText("web"));
     fireEvent.click(r.getByText("Aggiungi una macchina"));

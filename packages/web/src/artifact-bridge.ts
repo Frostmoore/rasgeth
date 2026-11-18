@@ -8,6 +8,7 @@ import {
   type ArtifactRef,
   type BridgeError,
   type BridgeFrameMessage,
+  PRODUCT_NAME,
 } from "@redgiant/protocol";
 
 /** The window of a frame, as far as the bridge needs it. */
@@ -86,7 +87,7 @@ export function forwardBridge(
     owner: o.owner,
     timer: setTimeout(() => {
       pending.delete(requestId);
-      reply(p, { error: { code: "failed", message: "No answer from RedGiant" } });
+      reply(p, { error: { code: "failed", message: `No answer from ${PRODUCT_NAME}` } });
     }, WAIT_MS),
   };
   pending.set(requestId, p);
@@ -101,7 +102,7 @@ export function forwardBridge(
   } catch {
     clearTimeout(p.timer);
     pending.delete(requestId);
-    local({ code: "failed", message: "RedGiant is not connected" });
+    local({ code: "failed", message: `${PRODUCT_NAME} is not connected` });
   }
 }
 

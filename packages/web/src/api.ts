@@ -1875,7 +1875,7 @@ export class Api {
     });
     if (!r.ok) throw new ApiError(r.status, `HTTP ${r.status}`);
     const header = r.headers.get("content-disposition") ?? "";
-    const name = header.match(/filename="([^"]+)"/)?.[1] ?? "redgiant-logs.tar.gz";
+    const name = header.match(/filename="([^"]+)"/)?.[1] ?? "rasgeth-logs.tar.gz";
     return { blob: await r.blob(), name };
   }
   /** A conversation as a Markdown file. */

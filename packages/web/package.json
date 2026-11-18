@@ -2,7 +2,7 @@
   "name": "@redgiant/web",
   "version": "0.1.0",
   "private": true,
-  "description": "RedGiant web UI: tabs and split panes, live chat with the metrics bar, terminal, file explorer, hierarchy, approvals, budgets.",
+  "description": "Rasgeth web UI: tabs and split panes, live chat with the metrics bar, terminal, file explorer, hierarchy, approvals, budgets.",
   "license": "MIT",
   "type": "module",
   "redgiant": {

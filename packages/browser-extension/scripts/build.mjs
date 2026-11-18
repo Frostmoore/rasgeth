@@ -1,7 +1,7 @@
 // Builds the browser extension (G36.21): one script per part with Vite (IIFE, no modules: a
 // content script cannot be one), the manifests for Chromium (Chrome, Edge, Brave, Opera) and
 // Firefox, `_locales` from src/i18n.ts, the drawn icons, and the two zips. Both zips are also
-// copied next to the web page (`packages/web/dist/redgiant-keychain-*.zip`), so every RedGiant
+// copied next to the web page (`packages/web/dist/rasgeth-keychain-*.zip`), so every RedGiant
 // serves the extension it can link to. Same input, same zip: dates inside are fixed.
 //
 //   node scripts/build.mjs            the extension in dist/
@@ -59,7 +59,9 @@ const word = (lang, key) => {
   const block = i18n.slice(i18n.indexOf(lang === "en" ? "const en = {" : "const it: Record"));
   const m = block.match(new RegExp(`\\n  ${key}:\\s*\\n?\\s*"((?:[^"\\\\]|\\\\.)*)"`));
   if (!m) throw new Error(`No ${key} for ${lang} in src/i18n.ts`);
-  return JSON.parse(`"${m[1]}"`);
+  const product = i18n.match(/export const PRODUCT = "([^"]+)"/)?.[1];
+  if (!product) throw new Error("No PRODUCT in src/i18n.ts");
+  return JSON.parse(`"${m[1]}"`).replaceAll("{product}", product);
 };
 for (const lang of ["en", "it"]) {
   await mkdir(join(chromium, "_locales", lang), { recursive: true });
@@ -148,8 +150,8 @@ async function zipOf(dir) {
   return zipSync(files, { level: 9 });
 }
 const zips = {
-  chromium: join(dist, "redgiant-keychain-chromium.zip"),
-  firefox: join(dist, "redgiant-keychain-firefox.zip"),
+  chromium: join(dist, "rasgeth-keychain-chromium.zip"),
+  firefox: join(dist, "rasgeth-keychain-firefox.zip"),
 };
 await writeFile(zips.chromium, await zipOf(chromium));
 await writeFile(zips.firefox, await zipOf(firefox));

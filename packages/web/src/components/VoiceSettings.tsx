@@ -56,7 +56,7 @@ function WakeModelView() {
 
 /**
  * The wake word of one's own (3.7.3): written, checked against the words the language's model
- * knows (on the server, which has the model), then used; «Ehi RedGiant» stays the default.
+ * knows (on the server, which has the model), then used; «Ehi Rasgeth» stays the default.
  */
 function WakeWordField() {
   const s = voiceSettings.value;

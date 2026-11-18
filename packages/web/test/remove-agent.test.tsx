@@ -180,7 +180,7 @@ describe("removing an agent (p3.8.9)", () => {
     const r = render(<RemoveAgentDialog agent={chat as never} onClose={() => {}} />);
     await waitFor(() =>
       expect(
-        r.getByText("Chat non si può rimuovere: God, Demi-God e la Chat fanno parte di RedGiant."),
+        r.getByText("Chat non si può rimuovere: God, Demi-God e la Chat fanno parte di Rasgeth."),
       ).toBeTruthy(),
     );
     expect(r.queryByText("Rimuovi", { selector: "button" })).toBeNull();

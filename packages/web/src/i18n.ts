@@ -10,7 +10,7 @@ const en = {
   stGrpWhere: "Where you talk to it",
   stGrpModels: "Models and spending",
   stGrpHome: "Code, access and safety",
-  stGenQ: "How do you want RedGiant?",
+  stGenQ: "How do you want {product}?",
   stGenLead:
     "Its look and language, then what every agent shares and the extra services. Each square opens its window; the lit ones are set.",
   stGenAgents: "For every agent",
@@ -25,11 +25,11 @@ const en = {
   stGenNews: "What's new",
   stGenNewsText: "Everything each release brought, newest first: also what you missed.",
   stGenCare: "Updates and diagnostics",
-  stGenCareLead: "Whether a newer RedGiant is out, and a log to send when something goes wrong.",
-  stGenDebugText: "Everything RedGiant does, written in a log you can download and send.",
+  stGenCareLead: "Whether a newer {product} is out, and a log to send when something goes wrong.",
+  stGenDebugText: "Everything {product} does, written in a log you can download and send.",
   stTgAccounts: "Linked accounts",
   stCodeEyebrow: "Code",
-  stRemoteQ: "RedGiant away from home",
+  stRemoteQ: "{product} away from home",
   stAgQ: "Your team",
   // Import from other agents (G36.7) and skills that come by themselves (G36.8).
   impSection: "Import",
@@ -40,7 +40,7 @@ const en = {
     "Bring here the instructions, skills, connected services and memories of Claude Code, Codex, Cursor, Gemini, opencode or Hermes, and your ChatGPT and Claude conversations. You see everything first, then you choose; nothing is overwritten and you can take it all back.",
   impWayScan: "Look on my computer",
   impWayScanText:
-    "RedGiant looks only in the folders those agents use (.claude, .codex, .cursor, .gemini…) and in your projects, after you say yes.",
+    "{product} looks only in the folders those agents use (.claude, .codex, .cursor, .gemini…) and in your projects, after you say yes.",
   impWayFolder: "Pick a folder",
   impWayFolderText: "A folder such as .claude or a project's: only the files that matter are read.",
   impWayExport: "Upload an export",
@@ -53,17 +53,17 @@ const en = {
     "Claude: Settings, Privacy, Export data. The email's link lasts 24 hours: upload the .zip here as it is.",
   impScanTitle: "Look on this computer",
   impScanLead:
-    "RedGiant will read only the files other agents keep for you, on the computer where RedGiant runs. Nothing changes until you choose.",
+    "{product} will read only the files other agents keep for you, on the computer where {product} runs. Nothing changes until you choose.",
   impScanHome: "My agents' folders",
   impScanHomeHelp:
     "~/.claude, ~/.codex, ~/.agents, ~/.cursor, ~/.gemini, ~/.config/opencode and ~/.hermes. Claude Code's transcripts are never read.",
-  impScanProjects: "My projects in RedGiant",
+  impScanProjects: "My projects in {product}",
   impScanProjectsHelp:
     "CLAUDE.md, AGENTS.md, .cursor, .mcp.json and the like in each project's folder.",
   impScanFolder: "Another folder (optional)",
-  impScanFolderHelp: "Its full path on this computer, e.g. a project not yet in RedGiant.",
+  impScanFolderHelp: "Its full path on this computer, e.g. a project not yet in {product}.",
   impScanPromise:
-    "Keys found in these files are never shown: they go with their service, in RedGiant's private credentials.",
+    "Keys found in these files are never shown: they go with their service, in {product}'s private credentials.",
   impScanGo: "Look",
   impLooking: "Looking…",
   impUploading: "Sending the files",
@@ -106,11 +106,11 @@ const en = {
   impConvHelp: "They open as conversations you can read and go on with.",
   impConvChat: "The Chat",
   impLeftTitle: "What stays out",
-  impLeftLead: "Found but not carried over: RedGiant has its own way for these, in Settings.",
+  impLeftLead: "Found but not carried over: {product} has its own way for these, in Settings.",
   impUnreadable: "could not be read",
   "impNote_only-paths": "It was only for some files: here it is for everything.",
-  "impNote_tools-dropped": "It named the tools it could use: RedGiant's agents keep theirs.",
-  "impNote_model-dropped": "It chose its own model: RedGiant's agents use theirs.",
+  "impNote_tools-dropped": "It named the tools it could use: {product}'s agents keep theirs.",
+  "impNote_model-dropped": "It chose its own model: {product}'s agents use theirs.",
   "impNote_hooks-dropped": "Hooks and shell lines are not carried over.",
   impNote_arguments: "Its arguments become the request you make.",
   "impNote_as-skill": "A command or helper agent there, a skill here.",
@@ -150,7 +150,7 @@ const en = {
   xwScripts: "It has scripts ({files}): approve only if you trust what they do.",
   xwKeptFiles: "Files of the skill it keeps: {files}",
   login: "Sign in",
-  loginHint: "Paste the token of your RedGiant server.",
+  loginHint: "Paste the token of your {product} server.",
   token: "Token",
   logout: "Sign out",
   platform: "Platform",
@@ -176,7 +176,7 @@ const en = {
   whenDayOfMonth: "on day",
   whenEveryHours: "every (hours)",
   whenWebhookHelp:
-    "Another program (a site, a form, GitHub…) calls RedGiant's address; the address and its secret appear after saving.",
+    "Another program (a site, a form, GitHub…) calls {product}'s address; the address and its secret appear after saving.",
   day_0: "Sunday",
   day_1: "Monday",
   day_2: "Tuesday",
@@ -197,7 +197,7 @@ const en = {
   autoOn: "Switched on",
   autoOff: "Switched off: it does not run until you switch it on.",
   // settings: automations, extensions (drawn as the wizard, 2026-11-06)
-  awQ: "What should RedGiant do on its own?",
+  awQ: "What should {product} do on its own?",
   awLead:
     "An automation asks an agent to do something at a time or when something happens; a reminder sends you a message on a day. The lit squares are switched on.",
   awNewText: "An agent does something for you: every morning, every week, on an email or a push.",
@@ -242,7 +242,7 @@ const en = {
   tplTitle_blank: "From scratch",
   tplDesc_blank: "You choose when, who and what.",
   reminderPurpose:
-    "RedGiant sends you this text on Telegram at the time you choose, once. No agent, no cost.",
+    "{product} sends you this text on Telegram at the time you choose, once. No agent, no cost.",
   reminderWhat: "What to remind you of",
   reminderDay: "Day",
   reminderSave: "Save the reminder",
@@ -324,11 +324,11 @@ const en = {
     "God can work on the whole system of this computer, not only in the projects («metal» mode). Every change he makes asks you first.",
   techCodeTitle: "Code updates written by God",
   techSupervised:
-    "God can put the code updates he wrote and tested into use: RedGiant is started by a supervisor that restarts it and, if the new version does not come up, goes back to the previous one by itself.",
+    "God can put the code updates he wrote and tested into use: {product} is started by a supervisor that restarts it and, if the new version does not come up, goes back to the previous one by itself.",
   techNotSupervised:
-    "Code updates written by God cannot be put into use by themselves: RedGiant is not started by a supervisor that could restart it safely.",
+    "Code updates written by God cannot be put into use by themselves: {product} is not started by a supervisor that could restart it safely.",
   techNotSupervisedMeans:
-    "What it means: God can still propose and test changes to RedGiant's code, but not install them. You do not need to do anything: this is how RedGiant normally runs.",
+    "What it means: God can still propose and test changes to {product}'s code, but not install them. You do not need to do anything: this is how {product} normally runs.",
   techLastGood: "Last version that worked: {commit}",
   kind_god: "God, leads everything",
   mascotOf: "Mascot of {name}, {state}",
@@ -371,7 +371,7 @@ const en = {
   awSourcesTitle: "Connections",
   awSourcesLead: "What automations can listen to besides the clock.",
   emailPurpose:
-    "A routine can start when an email arrives (an invoice, an alert). RedGiant looks only at new mail, every two minutes, and changes nothing in your mailbox; the email reaches the agent as information, never as instructions.",
+    "A routine can start when an email arrives (an invoice, an alert). {product} looks only at new mail, every two minutes, and changes nothing in your mailbox; the email reaches the agent as information, never as instructions.",
   emailConnected: "Reading {user} on {host}.",
   emailHost: "Mail server (IMAP)",
   emailHostHelp: "For example imap.gmail.com, outlook.office365.com, imap.mail.me.com.",
@@ -384,12 +384,12 @@ const en = {
   emailSave: "Connect the mailbox",
   emailTesting: "Trying the mailbox…",
   err_email_failed:
-    "The mailbox did not let RedGiant in: check the server, the address and the app password.",
+    "The mailbox did not let {product} in: check the server, the address and the app password.",
   whenKind_repo: "On the repository",
   whenKind_email: "On an email",
   whenRepo: "When something happens in the repository ({events})",
   whenRepoHelp:
-    "RedGiant adds the webhook to the project's repository by itself: on Gitea at once, on GitHub once access from outside home is on.",
+    "{product} adds the webhook to the project's repository by itself: on Gitea at once, on GitHub once access from outside home is on.",
   repoEvent_push: "New commits",
   repoEvent_pull_request: "Pull requests",
   repoEvent_issues: "Issues",
@@ -412,7 +412,7 @@ const en = {
   extAppGuide: "Create your own app on {name} (once, about ten minutes)",
   extAppConsole: "Open {name}'s developer page",
   extServerUrl: "{name}'s address",
-  extServerUrlHelp: "As RedGiant's server reaches it, for example on your home network.",
+  extServerUrlHelp: "As {product}'s server reaches it, for example on your home network.",
   extClientId: "Client ID of your app",
   extClientSecret: "Client secret of your app",
   extClientSecretOptional: "Client secret of your app (if it has one)",
@@ -440,7 +440,7 @@ const en = {
   screenYours:
     "You have control: the agents wait. Click and type on the screen; give it back when you are done.",
   screenStarting: "Starting the browser…",
-  screenUnavailable: "The agents' browser needs RedGiant's Docker installation.",
+  screenUnavailable: "The agents' browser needs {product}'s Docker installation.",
   compaction_auto: "The conversation was summarised here (the earlier part, made ahead of time)",
   compaction_manual: "The conversation was summarised here, as you asked",
   compaction_emergency: "The conversation was summarised here: the window was full",
@@ -556,10 +556,10 @@ const en = {
   asstStopConfirm: "Delete {name}? Its conversations stay in the history.",
   wzRemote: "Access from outside home",
   remotePurpose:
-    "Use RedGiant from your phone or another computer when you are away. First a password, then one of three ways; nothing is reachable from outside until you finish. Optional.",
+    "Use {product} from your phone or another computer when you are away. First a password, then one of three ways; nothing is reachable from outside until you finish. Optional.",
   remotePassword: "Your password",
   remotePasswordHint:
-    "From outside, RedGiant asks for this password (the link with the token stays for this computer). Choose one you use nowhere else.",
+    "From outside, {product} asks for this password (the link with the token stays for this computer). Choose one you use nowhere else.",
   remotePasswordSet: "A password is set",
   remotePasswordChange: "Change it",
   pwSignOutOthersQ: "Sign out your other devices too?",
@@ -582,12 +582,12 @@ const en = {
   remoteCodeOff: "Second check off.",
   remoteSessions: "Signed-in browsers",
   remoteSessionsHint:
-    "Each sign-in lasts 30 days. If you lost a phone, or think someone else got in (the RGCompanion apps are signed out too):",
+    "Each sign-in lasts 30 days. If you lost a phone, or think someone else got in (the {product} apps are signed out too):",
   remoteSignOutAll: "Sign out everywhere",
   remoteSignedOut: "Signed out everywhere.",
   remoteHow: "How to reach it",
   remoteNeedsPassword: "Set the password above first.",
-  remoteOn: "RedGiant can be reached from outside at this address:",
+  remoteOn: "{product} can be reached from outside at this address:",
   remoteOff: "Switch off access from outside",
   remoteTailscale:
     "A private network between your own devices: nothing opened on the router, free for personal use. You install Tailscale on your phone too.",
@@ -600,22 +600,22 @@ const en = {
   tsStep1: "Make a free Tailscale account (with Google, Microsoft or GitHub is fine):",
   tsSignUp: "Sign up on Tailscale",
   tsStep2:
-    "In Tailscale's DNS page switch on MagicDNS and HTTPS Certificates (they give RedGiant a safe address):",
+    "In Tailscale's DNS page switch on MagicDNS and HTTPS Certificates (they give {product} a safe address):",
   tsDns: "Tailscale DNS settings",
   tsStep3: "Then here:",
   tsStep4:
     "Install Tailscale on your phone and the other computers, signed in with the same account:",
   tsApps: "Tailscale apps",
-  tsSignIn: "Tailscale wants you to sign in, to add RedGiant to your network:",
+  tsSignIn: "Tailscale wants you to sign in, to add {product} to your network:",
   tsOpenSignIn: "Open Tailscale's sign-in page",
   cfStep1:
     "If you have no domain yet, buy one (Cloudflare sells them at cost, about 10 euros a year):",
   cfBuy: "Buy a domain on Cloudflare",
   cfStep2:
-    "Open Tunnels in Cloudflare Zero Trust, press Create a tunnel, choose Cloudflared and give it a name (for example redgiant):",
+    "Open Tunnels in Cloudflare Zero Trust, press Create a tunnel, choose Cloudflared and give it a name (for example rasgeth):",
   cfTunnels: "Cloudflare tunnels",
   cfStep3:
-    "In the step Public hostname: subdomain redgiant, your domain, Service type HTTP, URL redgiant:7600. Save.",
+    "In the step Public hostname: subdomain rasgeth, your domain, Service type HTTP, URL redgiant:7600. Save.",
   cfStep4:
     "Cloudflare shows a command with a long token after --token: copy only the token and write the address here.",
   cfToken: "The tunnel's token",
@@ -623,26 +623,26 @@ const en = {
     "The long string after --token in the command Cloudflare shows (it starts with eyJ).",
   cfHost: "The address you chose",
   cfHostHelp:
-    "For example redgiant.yourdomain.com: the subdomain and domain of the Public hostname.",
+    "For example rasgeth.yourdomain.com: the subdomain and domain of the Public hostname.",
   cfAccess:
     "Safer still: in Cloudflare Zero Trust, Access, add an application for this address, so Cloudflare asks who you are before the page even appears.",
   caddyWarning:
-    "With this way RedGiant's sign-in page is on the internet: keep the password strong and the second check on.",
+    "With this way {product}'s sign-in page is on the internet: keep the password strong and the second check on.",
   caddyStep1:
-    "At your domain's provider, make a DNS record of type A for the address you want (for example redgiant.yourdomain.com) pointing at your home's public address. If it changes, use a dynamic DNS service.",
+    "At your domain's provider, make a DNS record of type A for the address you want (for example rasgeth.yourdomain.com) pointing at your home's public address. If it changes, use a dynamic DNS service.",
   caddyStep2: "On your router, forward ports 80 and 443 to this computer.",
   caddyDomain: "The address",
-  caddyDomainHelp: "RedGiant gets its HTTPS certificate from Let's Encrypt by itself.",
+  caddyDomainHelp: "{product} gets its HTTPS certificate from Let's Encrypt by itself.",
   caddyPihole:
-    "Inside home some routers cannot reach their own public address: then open RedGiant at home with its usual link, or turn on Pi-hole in Settings, Access from outside home (it is optional).",
+    "Inside home some routers cannot reach their own public address: then open {product} at home with its usual link, or turn on Pi-hole in Settings, Access from outside home (it is optional).",
   piholeTitle: "The home's own DNS, with Pi-hole (optional)",
   piholeWhat:
-    "Every device at home asks a DNS server which number is behind a name (for example redgiant.yourdomain.com). Usually your router or your internet provider answers. Pi-hole is a small DNS that RedGiant can run on this computer: it answers for your domain with this computer's home address, so the link works at home too, and it also blocks advertising and tracking for every device that uses it.",
+    "Every device at home asks a DNS server which number is behind a name (for example rasgeth.yourdomain.com). Usually your router or your internet provider answers. Pi-hole is a small DNS that {product} can run on this computer: it answers for your domain with this computer's home address, so the link works at home too, and it also blocks advertising and tracking for every device that uses it.",
   piholeNeedTitle: "You need it if",
   piholeNeed:
-    "you reach RedGiant from outside with your own domain, and at home the same link does not open. Many routers cannot send you back to your own house through the internet (the feature is called NAT loopback or hairpin, and theirs lacks it).",
+    "you reach {product} from outside with your own domain, and at home the same link does not open. Many routers cannot send you back to your own house through the internet (the feature is called NAT loopback or hairpin, and theirs lacks it).",
   piholeTest:
-    "How to check: connect your phone to the home Wi-Fi and open your RedGiant link. If it opens, you do not need Pi-hole for this (you may still want it to block ads). If it does not, but works on mobile data, Pi-hole fixes it.",
+    "How to check: connect your phone to the home Wi-Fi and open your {product} link. If it opens, you do not need Pi-hole for this (you may still want it to block ads). If it does not, but works on mobile data, Pi-hole fixes it.",
   piholeNoNeedTitle: "You do not need it if",
   piholeNoNeed:
     "you use Tailscale or Cloudflare Tunnel: those links work the same at home and outside. You can still turn it on just to block ads, if you like.",
@@ -662,15 +662,15 @@ const en = {
     "If a site stops working: open the Pi-hole page, Query Log, find the blocked name and press Allow. To pause all blocking for a few minutes, use Disable blocking in the same page.",
   piholePort: "Technical details: port 53",
   piholePortText:
-    "Pi-hole answers on port 53 (the DNS port) of this computer's home address only, not on the internet, and its own page on port 8053. If something on this computer already answers on port 53 (another DNS, or the system's own on some Linux systems), Pi-hole cannot start: RedGiant says so and nothing changes.",
+    "Pi-hole answers on port 53 (the DNS port) of this computer's home address only, not on the internet, and its own page on port 8053. If something on this computer already answers on port 53 (another DNS, or the system's own on some Linux systems), Pi-hole cannot start: {product} says so and nothing changes.",
   piholeIp: "This computer's address at home",
   piholeIpHelp:
     'Four numbers like 192.168.1.50. Find it on the router\'s page among the connected devices, or on this computer: "ip a" on Linux, "ipconfig" on Windows, System Settings, Network on Mac. Better if the router always gives this computer the same address (address reservation).',
   piholeIpWrong: "It must be four numbers from 0 to 255 separated by dots, like 192.168.1.50.",
   piholeDomain: "Your domain (optional)",
   piholeDomainHelp:
-    "The address you use from outside, like redgiant.yourdomain.com: Pi-hole answers for it with the address above. Leave it empty to use Pi-hole only to block ads.",
-  piholeDomainWrong: "It must be a name like redgiant.yourdomain.com.",
+    "The address you use from outside, like rasgeth.yourdomain.com: Pi-hole answers for it with the address above. Leave it empty to use Pi-hole only to block ads.",
+  piholeDomainWrong: "It must be a name like rasgeth.yourdomain.com.",
   piholeStart: "Turn on Pi-hole",
   piholeOn: "Pi-hole is on, at {ip}.",
   piholeAnswers: "At home, {domain} now leads to {ip}.",
@@ -770,13 +770,13 @@ const en = {
   voiceModelLoading: "Starting the wake word…",
   voiceModelReady: "The wake word is ready: say «{wake}».",
   voiceModelAbout:
-    "The wake word needs a small speech model (about 45 MB, Vosk, Apache-2.0): RedGiant downloads it once, then this browser keeps its own copy.",
+    "The wake word needs a small speech model (about 45 MB, Vosk, Apache-2.0): {product} downloads it once, then this browser keeps its own copy.",
   voiceModelGet: "Download the model",
   vcQ: "Hands-free voice",
   vcLead:
     "Say «{wake}», ask, and hear the answer; then keep talking without the wake word. These settings belong to this device.",
   vcNoTranscription:
-    "To understand you RedGiant needs a transcription service (whisper on this computer or another one, or a service in the cloud).",
+    "To understand you {product} needs a transcription service (whisper on this computer or another one, or a service in the cloud).",
   vcEnabled: "Hands-free voice on this device",
   vcEnabledHelp: "An indicator in the top bar shows whenever the microphone is in use.",
   vcWakeTitle: "Wake word",
@@ -796,7 +796,7 @@ const en = {
   vcLangIt: "Italian",
   vcLangEn: "English",
   vcNoVoices: "This browser has no voice for this language: answers stay on the screen.",
-  vcSample: "Hello, I am RedGiant. This is how I sound.",
+  vcSample: "Hello, I am {product}. This is how I sound.",
   voiceModelBroken:
     "The speech model did not start in this browser: download it again, or try another browser.",
   vcChooseTranscription: "Choose the transcription service",
@@ -806,7 +806,7 @@ const en = {
   vcSttLead:
     "Who writes down what you say after the wake word. It also serves the voice messages from the chats.",
   vcSttLocal: "On this computer",
-  vcSttLocalHelp: "whisper.cpp, started by RedGiant: free, nothing leaves the house.",
+  vcSttLocalHelp: "whisper.cpp, started by {product}: free, nothing leaves the house.",
   vcSttRemote: "whisper on another computer",
   vcSttRemoteHelp: "whisper-asr-webservice at its address, for a computer with a graphics card.",
   vcSttCompatible: "Another compatible service",
@@ -830,7 +830,7 @@ const en = {
   vcKeyGet: "Get a {name} key",
   vcKeySave: "Save the key",
   vcCloudPrivacy:
-    "With {name}, what you say after the wake word goes to {name} through RedGiant's server; the wake word itself is still heard only in this page.",
+    "With {name}, what you say after the wake word goes to {name} through {product}'s server; the wake word itself is still heard only in this page.",
   vcPriceMinute: "about {usd} a minute",
   vcPriceKchars: "{usd} per 1000 characters",
   vcPriceMtokens: "{usd} per million audio tokens",
@@ -840,7 +840,7 @@ const en = {
   vcReaderBrowserHelp:
     "Free and on the device; how natural it sounds depends on the browser and the system.",
   vcReaderCloudHelp:
-    "In the cloud, more natural: {models}. The text is read by the provider through RedGiant's server.",
+    "In the cloud, more natural: {models}. The text is read by the provider through {product}'s server.",
   vcReaderNeedsKey:
     "{name} has no key yet: paste it here, or choose another voice. Until then the browser's voice reads.",
   vcReaderFailed: "The voice in the cloud did not read, the browser's voice did: {error}",
@@ -862,7 +862,7 @@ const en = {
   vcWakeProblem_stopWord: "This is one of the words that stop the answer: choose another one.",
   vcWakeProblem_short: "A single short word wakes up by mistake too easily: use two words.",
   err_voice_no_service:
-    "RedGiant has no transcription service: choose one in Settings, Voice, Transcription.",
+    "{product} has no transcription service: choose one in Settings, Voice, Transcription.",
   err_voice_no_key: "{name} has no key yet: add it in Settings, Voice.",
   err_voice_empty: "The recording is empty.",
   err_voice_too_long: "The recording is too long.",
@@ -888,7 +888,7 @@ const en = {
   vcTargetFixed: "Always the same conversation",
   vcLimitsTitle: "How it works",
   vcLimitPrivacy:
-    "The wake word is recognised inside the browser; only after it, what you say is sent to RedGiant to be transcribed.",
+    "The wake word is recognised inside the browser; only after it, what you say is sent to {product} to be transcribed.",
   vcLimitForeground:
     "It listens only while the page is open and in front: on another tab, minimised or with the phone locked it pauses, and the indicator says so.",
   vcLimitIos:
@@ -980,7 +980,7 @@ const en = {
   pdfRedactDo: "Redact for good",
   pdfRedactConfirmTitle: "Redact for good?",
   pdfRedactConfirm:
-    "The text, pictures and drawings under the areas are taken out of the file, not just covered, and the areas become black. The file is written anew: the version before stays only in RedGiant's own folder, and «Modifiche» can still undo it.",
+    "The text, pictures and drawings under the areas are taken out of the file, not just covered, and the areas become black. The file is written anew: the version before stays only in {product}'s own folder, and «Modifiche» can still undo it.",
   pdfRedacting: "Redacting and checking…",
   pdfRedactFailed: "Not redacted: {reason}",
   pdfEncrypted: "This PDF is protected: it is shown, not edited.",
@@ -1007,7 +1007,7 @@ const en = {
   officeExport: "Export as…",
   officeExporting: "Exporting…",
   officeWhyInsecure:
-    "The full document editor works with RedGiant open in HTTPS or on this computer.",
+    "The full document editor works with {product} open in HTTPS or on this computer.",
   officeWhyPhone:
     "On a phone documents and slides are only viewed: the full editor (LibreOffice in the browser) needs a large screen and a keyboard. For small corrections there is Find and Replace, or ask an agent; for the rest open the file on a computer or a tablet.",
   officeWhyPhoneShort:
@@ -1044,7 +1044,7 @@ const en = {
   officeWhyBrowserApp:
     "On this system the app cannot run the full document editor inside the Canvas: «Open in the browser» in the bar above opens the file in Chrome, Edge or another Chromium browser, where it works.",
   officeWhyWebglApp:
-    "On this system the app's web view has no WebGL in the background, which LibreOffice needs to draw the document: «Open in the browser» in the bar above opens the file on RedGiant's page, where the full editor runs.",
+    "On this system the app's web view has no WebGL in the background, which LibreOffice needs to draw the document: «Open in the browser» in the bar above opens the file on {product}'s page, where the full editor runs.",
   officeVersions: "Versions",
   officeVersionsHint:
     "The last 5 versions of {name}, kept each time this copy wrote it again: save one to get it back",
@@ -1066,7 +1066,7 @@ const en = {
   docJustNow: "just now",
   docMinutesAgo: "{n} min ago",
   docEditorLabel: "Text of the file",
-  docRevisionHint: "Every change is a revision, kept in RedGiant's log and saved by itself",
+  docRevisionHint: "Every change is a revision, kept in {product}'s log and saved by itself",
   docRevision: "Revision {n}",
   docPages: "open in {n} pages",
   docSaved: "Saved",
@@ -1383,7 +1383,7 @@ const en = {
   boardTab: "Board",
   boardNotFound: "This board is no longer here",
   embedPort: "Port {port}",
-  embedSignInFailed: "This device's access did not work: open RedGiant again from the app.",
+  embedSignInFailed: "This device's access did not work: open {product} again from the app.",
   embedProbeTitle: "Web view test",
   embedProbeIsolation: "Isolation for LibreOffice (SharedArrayBuffer)",
   embedProbeWebgl: "WebGL 2 (3D)",
@@ -1410,7 +1410,7 @@ const en = {
   barAgentsNone: "None yet",
   projectNew: "New project",
   remoteNotice:
-    "RedGiant opens only from home for now. Set up access from outside to use it from your phone anywhere and to open boards from Telegram.",
+    "{product} opens only from home for now. Set up access from outside to use it from your phone anywhere and to open boards from Telegram.",
   remoteNoticeSet: "Set it up",
   remoteNoticeHide: "Do not show again",
   folderNew: "New folder…",
@@ -1447,7 +1447,7 @@ const en = {
   raFactRestore: "«Restore» brings it back, with those removed with it.",
   raRemove: "Remove",
   raRemoveN: "Remove {n} agents",
-  raNotAllowed: "{name} cannot be removed: God, Demi-God and the Chat are part of RedGiant.",
+  raNotAllowed: "{name} cannot be removed: God, Demi-God and the Chat are part of {product}.",
   raTitle: "Removed agents",
   raLead: "Out of the team, with all their history: read their conversations or bring them back.",
   raNone: "No removed agents.",
@@ -1472,7 +1472,7 @@ const en = {
   asstProjectCard: "Works here too, under the orchestrator",
   backup: "Backup",
   backupPurpose:
-    "Every project with its files, the agents and the conversations in one file: keep it safe, or carry it to another RedGiant.",
+    "Every project with its files, the agents and the conversations in one file: keep it safe, or carry it to another {product}.",
   backupExport: "Make a backup",
   backupExportHint:
     "Projects with their files, agents, conversations, chats and the board. Keys and sign-ins to services are not in it: they stay on this computer. node_modules folders are left out (they are rebuilt).",
@@ -1482,9 +1482,9 @@ const en = {
   backupSaved: "Saved in your Downloads folder.",
   backupImport: "Import a backup",
   backupImportHint:
-    "From another RedGiant or from this one. Nothing here is deleted or replaced: what is in the backup is added, and what is already here stays as it is.",
+    "From another {product} or from this one. Nothing here is deleted or replaced: what is in the backup is added, and what is already here stays as it is.",
   backupChoose: "Choose the backup file",
-  backupSending: "Sending the file to RedGiant",
+  backupSending: "Sending the file to {product}",
   backupFrom: "Backup of {when}",
   backupAlreadyHere: "already here, left as it is",
   backupCounts: "{agents} agents · {conversations} conversations · {size} of files",
@@ -1563,7 +1563,7 @@ const en = {
   modelWay: "How it goes",
   modelWayOr: "or",
   catalogRow: "Models catalog: updated on {date}",
-  catalogBuiltin: "the one built into RedGiant",
+  catalogBuiltin: "the one built into {product}",
   catalogDownloaded: "downloaded and signed",
   catalogVersion: "version {n}",
   catalogRefresh: "Update now",
@@ -1578,9 +1578,9 @@ const en = {
   tpReadIn: "context of {total} read in {time}, {pct} from the cache",
   tpFirstAfter: "first token after {time}",
   ownSearchHint:
-    "RedGiant can run its own search engine (SearXNG): free, no keys, and every model can search the web with it, local ones too.",
-  ownSearchOn: "RedGiant's search engine is on: every agent and the Chat search the web with it.",
-  ownSearchStart: "Start RedGiant's search engine",
+    "{product} can run its own search engine (SearXNG): free, no keys, and every model can search the web with it, local ones too.",
+  ownSearchOn: "{product}'s search engine is on: every agent and the Chat search the web with it.",
+  ownSearchStart: "Start {product}'s search engine",
   ownSearchStop: "Switch it off",
   job_searxng: "Starting the search engine",
   job_step_searxng_image: "Downloading SearXNG (only once)",
@@ -1592,7 +1592,7 @@ const en = {
     "Claude and the subscriptions search by themselves. The others (local models, OpenAI-compatible keys) use the service chosen here.",
   searchInUse: "in use",
   searchCard_searxng:
-    "Free, no key, no account: a search engine that runs at your place (RedGiant starts it, where it can, or you use yours).",
+    "Free, no key, no account: a search engine that runs at your place ({product} starts it, where it can, or you use yours).",
   searchCard_brave:
     "Its own index, independent of Google and Bing; private. Free monthly credit, then pay as you go.",
   searchCard_tavily:
@@ -1602,9 +1602,9 @@ const en = {
   searchCard_serper: "Google's results, fast and cheap. 2,500 free searches when you sign up.",
   searchHowTitle: "How to set up {name}",
   searchHow_searxng:
-    "Easiest: press «Start RedGiant's search engine» at the top of this window, and RedGiant does everything by itself.\nIf you already have your own SearXNG instead, write its address in the box below (for example http://192.168.1.20:8080) and press «Use this».\nIn its settings.yml, «json» must be among search.formats, or RedGiant cannot read its answers.",
+    "Easiest: press «Start {product}'s search engine» at the top of this window, and {product} does everything by itself.\nIf you already have your own SearXNG instead, write its address in the box below (for example http://192.168.1.20:8080) and press «Use this».\nIn its settings.yml, «json» must be among search.formats, or {product} cannot read its answers.",
   searchHow_searxng_own:
-    "Write the address of your SearXNG in the box below (for example http://192.168.1.20:8080) and press «Use this».\nIn its settings.yml, «json» must be among search.formats, or RedGiant cannot read its answers.",
+    "Write the address of your SearXNG in the box below (for example http://192.168.1.20:8080) and press «Use this».\nIn its settings.yml, «json» must be among search.formats, or {product} cannot read its answers.",
   searchHow_brave:
     "Open the Brave Search API page (link below) and create an account.\nChoose the free plan (or a paid one) under Subscriptions.\nUnder API Keys press «Add API key», copy it and paste it here.",
   searchHow_tavily:
@@ -1625,7 +1625,7 @@ const en = {
   searchSaved: "From now on the models that cannot search by themselves use {name}.",
   lmStream: "SSD stream",
   lmStreamUnknownDisk:
-    "RedGiant does not know yet which disk holds the models (it learns at the next start of RedGiant): use it only if it is an SSD.",
+    "{product} does not know yet which disk holds the models (it learns at the next start of {product}): use it only if it is an SSD.",
   lmStreamThisDisk: "the models' disk",
   lmStreamHdd:
     "Not available: {disk} is a spinning disk, too slow to read a model from at each token.",
@@ -1661,7 +1661,7 @@ const en = {
     "Among the strongest open models for code and tools; needs SSD stream on most computers.",
   dbgTitle: "Diagnostics",
   dbgHelp:
-    "Debug mode keeps a detailed log of everything RedGiant does: each step of starting a model with its times, the local engine's own messages, the requests, what the Windows program does. Turn it on when something is slow or goes wrong, repeat it, then download the logs and send them. It writes a lot (at most 300 MB, the oldest go first) and never writes passwords or keys.",
+    "Debug mode keeps a detailed log of everything {product} does: each step of starting a model with its times, the local engine's own messages, the requests, what the Windows program does. Turn it on when something is slow or goes wrong, repeat it, then download the logs and send them. It writes a lot (at most 300 MB, the oldest go first) and never writes passwords or keys.",
   dbgSwitch: "Debug mode",
   dbgForced: "Turned on by the server's settings (REDGIANT_DEBUG=1).",
   dbgSize: "Logs kept: {size} in {files} files.",
@@ -1670,54 +1670,54 @@ const en = {
   dbgClearConfirm: "Delete every log kept?",
   updTitle: "Updates",
   updHelp:
-    "RedGiant looks for a new version by itself at the first start of each day. Here you can look now.",
+    "{product} looks for a new version by itself at the first start of each day. Here you can look now.",
   updLook: "Look for updates",
   updLooking: "Looking…",
   updAvailable:
-    "RedGiant {version} is out: RedGiant's window on the desktop asks whether to update now.",
+    "{product} {version} is out: {product}'s window on the desktop asks whether to update now.",
   updLatest: "You have the latest version ({version}).",
   updManual:
-    "The latest version is {version}. On this server run RedGiant's install.sh again: it downloads the new version and starts it.",
+    "The latest version is {version}. On this server run {product}'s install.sh again: it downloads the new version and starts it.",
   updUnreachable: "GitHub did not answer: try again in a moment.",
   updCopy: "Copy",
   updCopied: "Copied",
-  updReqTitle: "RedGiant must be updated",
+  updReqTitle: "{product} must be updated",
   updReqSub: "Version {version} is needed (you have {installed})",
   updReqLead:
-    "This update cannot wait: RedGiant {version} fixes something that the {installed} cannot keep doing safely.",
+    "This update cannot wait: {product} {version} fixes something that the {installed} cannot keep doing safely.",
   updReqSafe:
     "Until you update, agents and automations wait. Your conversations, projects and settings are safe: nothing is lost.",
   updReqNow: "Update now",
-  updReqClose: "Close RedGiant",
+  updReqClose: "Close {product}",
   updReqAgain: "Look again",
   updReqUpdating:
-    "RedGiant is downloading the update: follow the window on your desktop. It restarts by itself.",
-  updReqClosing: "RedGiant is closing. You can close this page.",
+    "{product} is downloading the update: follow the window on your desktop. It restarts by itself.",
+  updReqClosing: "{product} is closing. You can close this page.",
   updDownloadNew: "Download the new version",
   updReqMac:
-    "Open the downloaded file and drag RedGiant into Applications, replacing the old one; then open it again.",
-  updReqDocker: "On the computer where RedGiant runs, in its folder, run:",
-  updReqSource: "Bring the code up to date (git pull), build it and start RedGiant again.",
+    "Open the downloaded file and drag {product} into Applications, replacing the old one; then open it again.",
+  updReqDocker: "On the computer where {product} runs, in its folder, run:",
+  updReqSource: "Bring the code up to date (git pull), build it and start {product} again.",
   updReqInstaller: "If the update does not start, the whole installer is here:",
-  updReqInstallerLink: "RedGiant-Setup.exe",
-  updWinTitle: "Updating RedGiant to {version}",
-  updWinWindow: "The same bar is in RedGiant's window on the desktop.",
+  updReqInstallerLink: "Rasgeth-Setup.exe",
+  updWinTitle: "Updating {product} to {version}",
+  updWinWindow: "The same bar is in {product}'s window on the desktop.",
   updWin_scan: "Look at what changed",
   updWin_download: "Download only the files that changed",
   updWin_installer: "Download the installer",
   updWin_build: "Put the new version together",
-  updWin_restart: "Restart RedGiant as the new version",
+  updWin_restart: "Restart {product} as the new version",
   updWin_back: "This page reconnects by itself",
   updWinText_build: "A minute at most: the new files are checked one by one.",
   updWinText_restart:
-    "RedGiant closes and opens again by itself: this page reconnects and reloads as the new version.",
+    "{product} closes and opens again by itself: this page reconnects and reloads as the new version.",
   updWinFailed: "The update could not be downloaded.",
   updWinFailedText:
-    "Nothing changed. RedGiant tries again at the next start, from where it stopped; check the internet connection.",
+    "Nothing changed. {product} tries again at the next start, from where it stopped; check the internet connection.",
   updHowTitle: "How the update goes",
   updHow_windows_1T: "It downloads",
   updHow_windows_1:
-    "RedGiant downloads only the files that changed: here and in its window by the clock you see the bar, the speed and the time left.",
+    "{product} downloads only the files that changed: here and in its window by the clock you see the bar, the speed and the time left.",
   updHow_windows_2T: "It restarts",
   updHow_windows_2: "It closes and opens again by itself as {version}.",
   updHow_windows_3T: "It comes back",
@@ -1726,62 +1726,62 @@ const en = {
   updHow_mac_1: "Download the file of {version} (.dmg) with the button below.",
   updHow_mac_2T: "Replace",
   updHow_mac_2:
-    "Close RedGiant, open the file and drag RedGiant into Applications, replacing the old one.",
+    "Close {product}, open the file and drag {product} into Applications, replacing the old one.",
   updHow_mac_3T: "Open",
-  updHow_mac_3: "Open RedGiant again: this page reconnects and tells you it is {version}.",
+  updHow_mac_3: "Open {product} again: this page reconnects and tells you it is {version}.",
   updHow_docker_1T: "Run the command",
   updHow_docker_1:
-    "On the computer where RedGiant runs, in its folder, run the command below: Docker shows each image as it comes down, with its size.",
+    "On the computer where {product} runs, in its folder, run the command below: Docker shows each image as it comes down, with its size.",
   updHow_docker_2T: "It restarts",
-  updHow_docker_2: "The same command starts {version}: RedGiant stops for a minute.",
+  updHow_docker_2: "The same command starts {version}: {product} stops for a minute.",
   updHow_docker_3T: "It comes back",
   updHow_docker_3: "This page reconnects by itself and tells you when it is done.",
   updHow_source_1T: "Update the code",
   updHow_source_1: "git pull, then pnpm install and pnpm build.",
   updHow_source_2T: "Restart",
-  updHow_source_2: "Start RedGiant again.",
+  updHow_source_2: "Start {product} again.",
   updHow_source_3T: "It comes back",
   updHow_source_3: "This page reconnects by itself and tells you it is {version}.",
   updLater: "Later",
   updBrkTitle: "This version needs a clean install",
-  updBrkSub: "RedGiant {version} cannot be installed over the {installed}",
+  updBrkSub: "{product} {version} cannot be installed over the {installed}",
   updBrkLead:
-    "RedGiant {version} changed too much inside to update the usual way: installed over the old one it could break.",
+    "{product} {version} changed too much inside to update the usual way: installed over the old one it could break.",
   updBrkWhy:
-    "So it goes in three short steps: first a backup of everything (I am making it now, by myself), then you remove the old RedGiant and install the new one, which puts everything back from the backup.",
+    "So it goes in three short steps: first a backup of everything (I am making it now, by myself), then you remove the old {product} and install the new one, which puts everything back from the backup.",
   updBrkRetry: "Try the backup again",
   updBrkSaved: "Backup made and read back: it is in this folder",
   updBrkChecked:
     "{file} · {size} · {projects} projects, {conversations} conversations, memories and settings",
   updBrkDockerCopy:
-    "The folder is inside RedGiant's data volume, which a clean install removes: copy the file out first, from RedGiant's folder:",
+    "The folder is inside {product}'s data volume, which a clean install removes: copy the file out first, from {product}'s folder:",
   updBrkKeys:
     "Your keychain ({n} keys, the models', chats' and mailboxes' ones too) is not in the backup: it goes in only protected by a passphrase of yours.",
   updBrkKeysAdd: "Add the keychain too",
   updBrkKeysAgain: "Make the backup again with the keychain",
   updBrkKeysIn: "The keychain is in the backup too, protected by your passphrase.",
   updBrkNext: "Go on",
-  updBrkStep1: "Remove the old RedGiant",
+  updBrkStep1: "Remove the old {product}",
   updBrkStep1Win:
-    "Uninstall RedGiant. When it asks whether to keep the data, you can answer No: everything is in the backup.",
+    "Uninstall {product}. When it asks whether to keep the data, you can answer No: everything is in the backup.",
   updBrkStep1Mac:
-    "From the menu bar icon choose «Uninstall…» (or drag RedGiant from Applications to the Bin).",
-  updBrkStep1Docker: "In RedGiant's folder remove the containers and their volumes:",
-  updBrkStep1Source: "Stop RedGiant and move its data folder away.",
-  updBrkUninstall: "Uninstall RedGiant",
-  updBrkSure: "RedGiant closes and its uninstaller starts. The backup stays in {folder}.",
+    "From the menu bar icon choose «Uninstall…» (or drag {product} from Applications to the Bin).",
+  updBrkStep1Docker: "In {product}'s folder remove the containers and their volumes:",
+  updBrkStep1Source: "Stop {product} and move its data folder away.",
+  updBrkUninstall: "Uninstall {product}",
+  updBrkSure: "{product} closes and its uninstaller starts. The backup stays in {folder}.",
   updBrkUninstallYes: "Yes, uninstall",
   updBrkUninstalling: "The uninstaller is starting on your desktop.",
-  updBrkStep2: "Install RedGiant {version}",
+  updBrkStep2: "Install {product} {version}",
   updBrkStep3: "Restore",
   updBrkStep3Text:
-    "At its first start the new RedGiant offers «Restore from the backup»: it finds it in that folder by itself.",
+    "At its first start the new {product} offers «Restore from the backup»: it finds it in that folder by itself.",
   updBrkStep3Docker:
-    "Open RedGiant, finish the setup and import the copied file in Settings › Backup › Import a backup.",
+    "Open {product}, finish the setup and import the copied file in Settings › Backup › Import a backup.",
   updBrkDone: "Got it",
   updFoundTitle: "Restore from the backup",
   updFoundLead:
-    "There is a backup of {date} (RedGiant {version}): {projects} projects and {conversations} conversations. Put everything back now?",
+    "There is a backup of {date} ({product} {version}): {projects} projects and {conversations} conversations. Put everything back now?",
   updFoundKeys:
     "The passphrase you chose for the keychain. Without it everything else is restored, and the keys of models and chats are put in again from their pages.",
   updFoundRestore: "Restore from the backup",
@@ -1821,19 +1821,19 @@ const en = {
   job_error_cert:
     "Let's Encrypt did not give the certificate: check the DNS record and the router's ports 80 and 443 (steps 1 and 2).",
   job_error_ports_busy: "Ports 80 or 443 are already used by another program on this computer.",
-  wzMode: "How do you want RedGiant?",
+  wzMode: "How do you want {product}?",
   wzCode: "Where the code lives",
   modeStandard: "Standard",
   modeAdvanced: "Advanced",
   gitPurpose:
     "Every project gets a private repository, ready for the agents to push to. Choose GitHub, a Gitea of your own on this computer, or both. Optional.",
   gitGithubHint:
-    "With a token you make on GitHub: RedGiant creates the repositories and the agents push to them. The token stays with RedGiant, never in the agents' boxes.",
+    "With a token you make on GitHub: {product} creates the repositories and the agents push to them. The token stays with {product}, never in the agents' boxes.",
   gitGithubStep1: "Open GitHub's page for a new token (sign in if asked):",
   gitGithubOpen: "New token on GitHub",
   gitGithubStep2: "Fill it in like this:",
-  gitPermName: "Token name: RedGiant",
-  gitPermExpiry: "Expiration: one year (RedGiant reminds you before it ends)",
+  gitPermName: "Token name: {product}",
+  gitPermExpiry: "Expiration: one year ({product} reminds you before it ends)",
   gitPermRepos: "Repository access: All repositories",
   gitPermList:
     "Permissions, Repositories: Administration, Contents, Issues and Pull requests set to Read and write",
@@ -1841,7 +1841,7 @@ const en = {
   gitGithubTokenHelp: "It starts with github_pat_. GitHub shows it only once.",
   gitGithubLinked: "Connected as @{login}",
   gitGiteaHint:
-    "A Git server of your own, on this computer: the repositories stay here, and you look at them in the browser like on GitHub. RedGiant starts it and keeps it updated. Or connect a Gitea you already have.",
+    "A Git server of your own, on this computer: the repositories stay here, and you look at them in the browser like on GitHub. {product} starts it and keeps it updated. Or connect a Gitea you already have.",
   gitGiteaKind: "Which Gitea",
   gitGiteaKindOwn: "Start one here",
   gitGiteaKindExisting: "A Gitea you already have",
@@ -1898,10 +1898,10 @@ const en = {
   safetyCarefulText: "Every risky action waits for you. The safest choice, also the slowest.",
   safetyBalanced: "Balanced",
   safetyBalancedText:
-    "You approve what cannot be undone (publishing, history, disks, passwords, changes to RedGiant); the agents in charge approve the rest.",
+    "You approve what cannot be undone (publishing, history, disks, passwords, changes to {product}); the agents in charge approve the rest.",
   safetyFree: "Free",
   safetyFreeText:
-    "The agents in charge approve almost everything; you are asked only for passwords and changes to RedGiant itself.",
+    "The agents in charge approve almost everything; you are asked only for passwords and changes to {product} itself.",
   safetyPersonalize: "Customize",
   safetyNoLimit: "no limit",
   safetyNothingPaid:
@@ -1958,14 +1958,14 @@ const en = {
     "Reads long messages in passes of 8,192 or 16,384 tokens instead of 4,096, when the graphics card has room for them, and loads the model in RAM when it fits with a margin: the experts go through the card once a pass, so fewer passes read faster. The first start measures them on a long message (a few minutes more) and keeps the fastest. Only for mixture-of-experts models.",
   lmMoePrefetch: "Next layer ahead",
   lmMoePrefetchHelp:
-    "Runs a version of llama.cpp changed by RedGiant: while the graphics card computes one layer, the experts of the next one are already on their way to it, and the model is loaded in RAM when it fits. With mixture-of-experts models long messages are read up to 1.7 times faster (measured on an RTX 4080 Super). The first start downloads that engine (about {size}), kept next to the official one. NVIDIA cards on Windows only.",
+    "Runs a version of llama.cpp changed by {product}: while the graphics card computes one layer, the experts of the next one are already on their way to it, and the model is loaded in RAM when it fits. With mixture-of-experts models long messages are read up to 1.7 times faster (measured on an RTX 4080 Super). The first start downloads that engine (about {size}), kept next to the official one. NVIDIA cards on Windows only.",
   lmMoePrefetchMissing:
-    "This version of RedGiant was released without the changed engine: the option stays off.",
+    "This version of {product} was released without the changed engine: the option stays off.",
   lmTuneBatch: "passes of {n} tokens",
   lmTuneLongRead: "a message of {n} tokens",
   lmSysmemTitle: "NVIDIA card: turn off «CUDA Sysmem Fallback»",
   lmSysmemText:
-    "When the card's memory runs out, NVIDIA's driver on Windows uses the computer's RAM instead of failing: reading messages becomes 2 to 3.5 times slower. RedGiant cannot read this setting, so check it once:",
+    "When the card's memory runs out, NVIDIA's driver on Windows uses the computer's RAM instead of failing: reading messages becomes 2 to 3.5 times slower. {product} cannot read this setting, so check it once:",
   lmSysmemStep1: "Open the NVIDIA Control Panel (right click on the desktop).",
   lmSysmemStep2:
     "Manage 3D settings, then Global Settings (or Program Settings with llama-server.exe, for the engine only).",
@@ -1975,7 +1975,7 @@ const en = {
   lmSpeedTest: "Measure the gain",
   lmSpeedTestTitle: "How much faster here",
   lmSpeedTestIntro:
-    "RedGiant starts this model once for each way of writing (alone, with the small model, with the n-grams), has it write a short new text and rewrite a piece of code, and shows the tokens a second of each. In the end the engine goes back to how it was.",
+    "{product} starts this model once for each way of writing (alone, with the small model, with the n-grams), has it write a short new text and rewrite a piece of code, and shows the tokens a second of each. In the end the engine goes back to how it was.",
   lmSpeedTestCost:
     "It takes a good while and a lot of compute: the model is loaded several times, minutes for a large one. Meanwhile the local model does not answer the agents.",
   lmSpeedTestStart: "Start the test",
@@ -1999,7 +1999,7 @@ const en = {
   lmSpecDraft: "With a small model of the family",
   lmSpecNgram: "From the text already written",
   lmSpecDraftHelp:
-    "{name} ({size}) proposes up to 8 tokens; it stays all in the card with its own context, so the big model gets a little less room there. It only works with a model of the same family (same vocabulary): RedGiant picks it.",
+    "{name} ({size}) proposes up to 8 tokens; it stays all in the card with its own context, so the big model gets a little less room there. It only works with a model of the same family (same vocabulary): {product} picks it.",
   lmSpecDraftReady: "small model ready",
   lmSpecDraftGet: "Download the small model · {size}",
   lmSpecNgramHelp:
@@ -2054,14 +2054,14 @@ const en = {
   lmOther: "Other models in the folder",
   lmEngine: "Engine",
   lmEngineHelp:
-    "RedGiant picks the one that suits this computer. Change it only if starting fails.",
+    "{product} picks the one that suits this computer. Change it only if starting fails.",
   lmEngine_cpu: "Processor",
   lmEngine_cuda: "NVIDIA graphics card (CUDA)",
   lmEngine_vulkan: "AMD, Intel or built-in graphics (Vulkan)",
   lmEngine_windows: "Graphics card, with Windows' own engine (Vulkan)",
-  lmEngine_mac: "The Mac's graphics chip (Metal), next to RedGiant",
+  lmEngine_mac: "The Mac's graphics chip (Metal), next to {product}",
   job_error_launcher_missing:
-    "RedGiant's program on Windows did not answer. Check that RedGiant is open (its icon next to the clock), then try again.",
+    "{product}'s program on Windows did not answer. Check that {product} is open (its icon next to the clock), then try again.",
   lmSearch: "Other models from Hugging Face",
   lmSearchHint:
     "Search by name, choose a repository and a file. Files that are not models are hidden.",
@@ -2116,10 +2116,10 @@ const en = {
   job_error_incomplete:
     "The download stopped before the end: press Go on to continue from where it stopped.",
   job_error_bad_file: "This is not a model file of Hugging Face.",
-  wzBrain: "How should RedGiant think?",
+  wzBrain: "How should {product} think?",
   brainClaude: "Claude subscription",
   brainClaudeHint:
-    "RedGiant uses Claude through Anthropic's official program, signed in with your account. What you use counts against your plan's limits, not money.",
+    "{product} uses Claude through Anthropic's official program, signed in with your account. What you use counts against your plan's limits, not money.",
   brainClaudeOpen: "Open Anthropic's sign-in page",
   brainNotOpened: "Did nothing open?",
   brainOpenHere: "Open it here",
@@ -2129,7 +2129,7 @@ const en = {
   brainDisconnect: "Disconnect",
   brainChatgpt: "ChatGPT subscription",
   brainChatgptHint:
-    "RedGiant uses ChatGPT through OpenAI's official Codex program, signed in with your account. What you use counts against your plan's limits.",
+    "{product} uses ChatGPT through OpenAI's official Codex program, signed in with your account. What you use counts against your plan's limits.",
   brainChatgptStart: "Connect ChatGPT",
   brainChatgptStep1: "Open this page and sign in:",
   brainChatgptStep2: "Type this code there:",
@@ -2142,7 +2142,7 @@ const en = {
   brainLocal: "A model on this computer",
   brainServer: "A server of yours",
   brainServerHint:
-    "If you already run models with Ollama, LM Studio or vLLM, give RedGiant its address.",
+    "If you already run models with Ollama, LM Studio or vLLM, give {product} its address.",
   brainServerUrl: "Server address",
   brainServerUrlHelp:
     "With /v1 at the end. Ollama: http://localhost:11434/v1, LM Studio: http://localhost:1234/v1.",
@@ -2264,15 +2264,15 @@ const en = {
   budgetRemoveLimit: "No limit",
   historyIntro:
     "Every change to the settings, made by you or by God. You can undo it: what it replaced comes back.",
-  historyCode: "Changes to RedGiant's code",
+  historyCode: "Changes to {product}'s code",
   historyCodeHelp:
-    "God can improve RedGiant itself: each change is tried apart, with its tests and a clean copy, and goes into use only when someone promotes it.",
+    "God can improve {product} itself: each change is tried apart, with its tests and a clean copy, and goes into use only when someone promotes it.",
   historySettings: "Settings",
   historyUndone: "undone",
   historyTechnical: "Technical details",
   historyPromote: "Promote",
   historyPromoteConfirm:
-    "Put this change into use? RedGiant restarts; if something breaks it goes back to the previous version by itself.",
+    "Put this change into use? {product} restarts; if something breaks it goes back to the previous version by itself.",
   chgNoLimit: "no limit",
   chgInherited: "the default",
   chgBudgetTotal: "the total spending limit",
@@ -2394,7 +2394,7 @@ const en = {
   cmdStatus_done: "exit code {code}",
   cmdStatus_failed: "failed, exit code {code}",
   cmdStatus_stopped: "stopped",
-  cmdStatus_interrupted: "interrupted (RedGiant had stopped)",
+  cmdStatus_interrupted: "interrupted ({product} had stopped)",
   cmdOutputTitle: "Background command",
   cmdStarted: "Started",
   cmdEnded: "Ended",
@@ -2422,7 +2422,7 @@ const en = {
     "It is kept in a private file on your server and never shown again, not even to the agents.",
   extKeyWhere: "Where do I find the {name} key?",
   extOauthHelp:
-    "A new tab opens on {name}'s page: sign in there and allow RedGiant. Then come back here.",
+    "A new tab opens on {name}'s page: sign in there and allow {product}. Then come back here.",
   extAddAndConnect: "Add and connect",
   extAdd: "Add",
   extCatalog: "Services you can add",
@@ -2468,9 +2468,13 @@ const en = {
   scopePlatform: "platform",
   telegram: "Telegram",
   limitWeekShort: "7d",
-  newsTitle: "What is new in RedGiant {version}",
+  newsTitle: "What is new in {product} {version}",
   newsOk: "Got it",
   newsVersion: "Version {version}",
+  renameTitle: "RedGiant is now called {product}.",
+  renameText:
+    "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
+  renameOk: "Got it",
   news3814Editors: "Every editor in the app's Canvas",
   news3814EditorsText:
     "Text and code, PDF, SVG, images, sheets, documents, presentations and 3D models now open in the app's Canvas with the page's editors: the saving state in the app's bar, «Ask the agent» from a selection, paste an image, «Save as…» for exports, read only for archived projects.",
@@ -2834,8 +2838,8 @@ const en = {
   news32StreamText:
     "Next to SSD stream: «Big chunks» reads long messages in bigger passes, and «Next layer ahead» (Windows, NVIDIA) uses our own llama.cpp that copies the next experts while the card computes: up to 1.7 times faster reading on an RTX 4080 Super. With an NVIDIA card on Windows, advice on the driver's sysmem fallback, which slows reading down.",
   subsSharedLogin:
-    "{name} is already signed in on this computer: RedGiant uses that sign-in as it is, no need to sign in again.",
-  subsProgramSystem: "{name} is already installed on this computer: RedGiant uses it.",
+    "{name} is already signed in on this computer: {product} uses that sign-in as it is, no need to sign in again.",
+  subsProgramSystem: "{name} is already installed on this computer: {product} uses it.",
   subsProgramDownload:
     "{name} is downloaded when you switch this on (once, a few hundred MB, with its bar in the corner).",
   subsUseShared: "Use the sign-in already here",
@@ -2852,7 +2856,7 @@ const en = {
   sentWhileWorking: "Sent while the agent works: it reads it as soon as it can",
   voiceLocal: "On this computer (whisper.cpp)",
   voiceLocalHint:
-    "No account and nothing leaves this computer. RedGiant downloads whisper.cpp and a multilingual model once (about 560 MB, with its bar in the corner) and runs them itself.",
+    "No account and nothing leaves this computer. {product} downloads whisper.cpp and a multilingual model once (about 560 MB, with its bar in the corner) and runs them itself.",
   job_download_whisper: "Downloading whisper.cpp for voice messages (only once)",
   job_download_ffmpeg: "Downloading ffmpeg, to read every kind of voice message (only once)",
   job_download_libreoffice:
@@ -2870,7 +2874,7 @@ const en = {
   job_download_knowledge_model:
     "Downloading {model} ({size}) for the knowledge, to search your files on this computer (only once)",
   job_download_pgvector:
-    "Downloading pgvector, the search by meaning in RedGiant's database (only once)",
+    "Downloading pgvector, the search by meaning in {product}'s database (only once)",
   job_error_checksum: "The download arrived damaged (its fingerprint does not match): try again.",
   job_error_pgvector_unavailable:
     "pgvector is not published for this computer yet: the knowledge searches by words only.",
@@ -2882,7 +2886,7 @@ const en = {
   openSubagentChat: "Open the conversation of {name}",
   notifyQuestion: "{name} has a question for you",
   notifyTitle: "Browser notifications",
-  notifyHint: "When RedGiant's page is not in view: an agent finished, or waits for you.",
+  notifyHint: "When {product}'s page is not in view: an agent finished, or waits for you.",
   notifyOn: "On",
   notifyBlocked: "Blocked in the browser's settings for this site.",
   notifyEnable: "Turn on",
@@ -2960,14 +2964,14 @@ const en = {
   // g33: memory (shared memory and the agent's own)
   memSection: "Shared memory",
   memEyebrow: "Shared memory",
-  memTitle: "What RedGiant knows about you",
+  memTitle: "What {product} knows about you",
   memLead:
     "Every agent uses this memory, and it updates by itself while you talk. Each agent also has a memory of its own, in the agent's Memory tab.",
   memAutoTitle: "Learn by itself from the conversations",
   memAutoOn:
-    "After you write, RedGiant notes what stays true about you: tastes, work, how you like answers. It reads only your own messages, never emails, web pages or automations, and never notes passwords.",
+    "After you write, {product} notes what stays true about you: tastes, work, how you like answers. It reads only your own messages, never emails, web pages or automations, and never notes passwords.",
   memAutoOff:
-    "Off: RedGiant learns nothing by itself. You can still add memories here, or ask an agent to remember something.",
+    "Off: {product} learns nothing by itself. You can still add memories here, or ask an agent to remember something.",
   memSharedCard: "Shared memory",
   memSharedCardQ: "This page",
   memSharedCardText:
@@ -2982,7 +2986,7 @@ const en = {
   memCount: "{n} memories",
   memCountOne: "1 memory",
   memEmpty:
-    "RedGiant knows nothing about you yet. Talk with an agent, or write here something to remember.",
+    "{product} knows nothing about you yet. Talk with an agent, or write here something to remember.",
   memAddPlaceholder: "Something to remember, e.g. I prefer short answers",
   memAdd: "Add",
   memAlready: "Already remembered.",
@@ -3011,7 +3015,7 @@ const en = {
   memForget: "Forget for good",
   memForgetTitle: "Forget it for good?",
   memForgetText:
-    "RedGiant deletes it, and its words go from the list of changes too. It can never be brought back.",
+    "{product} deletes it, and its words go from the list of changes too. It can never be brought back.",
   memDid_forgotten: "Forgotten for good",
   memForgottenText: "Its words are gone for good.",
   err_memory_forgotten: "A memory forgotten for good cannot come back.",
@@ -3025,7 +3029,7 @@ const en = {
   memProjectTitle: "Memory of the project «{name}»",
   memProjectHelp: "Every agent working on this project reads it.",
   memSaved: "Saved",
-  memGoShared: "Shared memory: what RedGiant knows about you",
+  memGoShared: "Shared memory: what {product} knows about you",
   memGoSharedText: "Used by every agent and updated by itself while you talk.",
   memGoSharedOpen: "Open",
   memNoOwn: "This agent keeps no memory of its own.",
@@ -3062,7 +3066,7 @@ const en = {
   chatWaSecret: "App secret",
   chatWaVerify: "Verify token (choose one)",
   chatWaHow:
-    "In Meta for Developers create a WhatsApp app, copy the access token, the phone number ID and the app secret, and choose a verify token. WhatsApp sends messages to a public address: RedGiant must be reachable from outside (Settings, Remote access).",
+    "In Meta for Developers create a WhatsApp app, copy the access token, the phone number ID and the app secret, and choose a verify token. WhatsApp sends messages to a public address: {product} must be reachable from outside (Settings, Remote access).",
   chatWaWebhook: "Webhook for Meta: {url} with the verify token you chose; subscribe to messages.",
   // G36.9: Matrix, Microsoft Teams, iMessage
   sbChatMatrixText:
@@ -3073,7 +3077,7 @@ const en = {
   chatMatrixHomeserver: "Server address (for example https://matrix.org)",
   chatMatrixToken: "The bot account's access token",
   chatMatrixHow:
-    "RedGiant needs a Matrix account of its own, not yours: it is the one you will write to.",
+    "{product} needs a Matrix account of its own, not yours: it is the one you will write to.",
   chatMatrixStep1:
     "Make a new account for the bot, for example at app.element.io (or on your own server).",
   chatMatrixStep2:
@@ -3082,12 +3086,12 @@ const en = {
   chatMatrixStep4:
     "From your own account make a new room without encryption (switch off “Enable end-to-end encryption”), invite the bot (it joins by itself) and send the code that appears.",
   chatMatrixE2ee:
-    "Encrypted chats: direct chats in Element are encrypted and the bot cannot read them. To keep encryption, run Pantalaimon (Matrix's free encryption helper) next to RedGiant and write its address instead of the server's.",
+    "Encrypted chats: direct chats in Element are encrypted and the bot cannot read them. To keep encryption, run Pantalaimon (Matrix's free encryption helper) next to {product} and write its address instead of the server's.",
   chatTeamsAppId: "Microsoft App ID",
   chatTeamsSecret: "Client secret (its Value)",
   chatTeamsTenant: "App Tenant ID",
   chatTeamsHow:
-    "Teams talks to bots only through Microsoft Azure. You need a Microsoft 365 work or school account that may add custom apps (the free personal Teams does not allow bots), and RedGiant reachable from outside (Settings, Remote access).",
+    "Teams talks to bots only through Microsoft Azure. You need a Microsoft 365 work or school account that may add custom apps (the free personal Teams does not allow bots), and {product} reachable from outside (Settings, Remote access).",
   chatTeamsStep1:
     "Open portal.azure.com (a free account is enough), choose Create a resource, search for Azure Bot and press Create.",
   chatTeamsStep2:
@@ -3102,16 +3106,16 @@ const en = {
   chatTeamsEndpoint: "Messaging endpoint for Azure: {url}",
   chatTeamsDownload: "Download the app for Teams",
   chatTeamsUpload:
-    "In Teams open Apps, Manage your apps, Upload an app, Upload a custom app, choose the file you downloaded and press Add. Then open the chat with RedGiant and send the code.",
+    "In Teams open Apps, Manage your apps, Upload an app, Upload a custom app, choose the file you downloaded and press Add. Then open the chat with {product} and send the code.",
   chatTeamsFiles:
-    "Files from RedGiant arrive as a card to accept: once accepted they are saved in your OneDrive. Voice messages cannot be sent to a bot in Teams.",
+    "Files from {product} arrive as a card to accept: once accepted they are saved in your OneDrive. Voice messages cannot be sent to a bot in Teams.",
   chatImUrl: "Address of the BlueBubbles server (http://...:1234)",
   chatImPassword: "BlueBubbles server password",
   chatImPrivate: "BlueBubbles' Private API is set up (edits and “typing...”)",
   chatImHow:
-    "Apple has no iMessage service for programs: it takes a Mac that stays on, signed in to Messages, with the free BlueBubbles server. The Mac answers with its Apple ID: use one made for RedGiant, not your own.",
+    "Apple has no iMessage service for programs: it takes a Mac that stays on, signed in to Messages, with the free BlueBubbles server. The Mac answers with its Apple ID: use one made for {product}, not your own.",
   chatImStep1:
-    "On the Mac make (or use) an Apple ID just for RedGiant and sign in with it in Messages.",
+    "On the Mac make (or use) an Apple ID just for {product} and sign in with it in Messages.",
   chatImStep2:
     "Download BlueBubbles Server from bluebubbles.app, open it and choose a server password.",
   chatImStep3:
@@ -3151,7 +3155,7 @@ const en = {
   wzSafety: "Safety and costs",
   wzDone: "Done",
   wzWelcomeText:
-    "A few steps to get RedGiant ready. Each one is saved at once; you can come back to it from the menu.",
+    "A few steps to get {product} ready. Each one is saved at once; you can come back to it from the menu.",
   wzLanguage: "Language",
   wzHardware: "This machine",
   wzDiskFree: "free disk",
@@ -3177,7 +3181,7 @@ const en = {
     "I know that using a personal subscription (instead of an API key) in a third-party tool may not be allowed by the provider's terms.",
   wzLocalModel: "Local model",
   wzRunAgain: "You can run this setup again from the menu at any time.",
-  wzFinish: "Start using RedGiant",
+  wzFinish: "Start using {product}",
   inspector: "Inspector",
   inspectorAlerts:
     "Tell me on Telegram when something goes wrong (abandoned task, budget exceeded, blocker, failed automation)",
@@ -3272,7 +3276,7 @@ const en = {
   arEmpty1:
     "An artifact is an HTML app in a single file that an agent makes in one turn: a calculator, a tournament board, a game, a viewer for a CSV. It runs in the Canvas, in an isolated frame, without installing anything and without going online.",
   arEmpty2:
-    "It lives as a file in the artefatti/ folder of a project (or of God and the assistants), so you also find it among the files on the right. To get one, ask an agent for a tool you want to keep and use again; or import a .rgartifact from another RedGiant.",
+    "It lives as a file in the artefatti/ folder of a project (or of God and the assistants), so you also find it among the files on the right. To get one, ask an agent for a tool you want to keep and use again; or import a .rgartifact from another {product}.",
   arPlacePlatform: "God's folder",
   arPlaceAssistants: "The assistants' desk",
   arOpen: "Open",
@@ -3289,10 +3293,10 @@ const en = {
   arExportTitle: "Export «{name}»",
   arExportZip: "A .rgartifact file",
   arExportZipText:
-    "To import it into another RedGiant: the app, its manifest and the fingerprint that checks it arrived intact. It carries no permissions.",
+    "To import it into another {product}: the app, its manifest and the fingerprint that checks it arrived intact. It carries no permissions.",
   arExportHtml: "Download as HTML",
   arExportHtmlText:
-    "To open it elsewhere. Careful: outside RedGiant it runs without the isolated frame, with the rights of the page you open it in.",
+    "To open it elsewhere. Careful: outside {product} it runs without the isolated frame, with the rights of the page you open it in.",
   arWhereQ: "Where should it go?",
   arWhereLead:
     "It goes into the artefatti/ folder of the place you choose. It starts with no permissions, and the first time it opens on its source with «Run».",
@@ -3302,7 +3306,7 @@ const en = {
   arHasData: "keeps saved data",
   arExportData: "Include its saved data",
   arExportDataHint:
-    "What the app kept on RedGiant (storage). Leave it off for a clean copy without your data.",
+    "What the app kept on {product} (storage). Leave it off for a clean copy without your data.",
   arPerms: "Permissions",
   arWants: "It asks to {what}",
   arPermGranted: "granted",
@@ -3324,7 +3328,7 @@ const en = {
   err_agent_removed: "The agent was removed from the team: restore it to work with it.",
   collapse: "Fold",
   more: "More commands",
-  connLost: "Connection to RedGiant lost: trying again…",
+  connLost: "Connection to {product} lost: trying again…",
   connReload: "Reload",
   stopWhenBack: "The connection is lost: «Stop» goes as soon as it is back.",
   memHigh:
@@ -3462,7 +3466,7 @@ const en = {
   skillDownloadHelp: "Download this skill as a .zip, to share it",
   skillImport: "Import a skill",
   skillImportHelp:
-    "A skill's folder as a .zip (the agentskills.io format), from another RedGiant or another tool.",
+    "A skill's folder as a .zip (the agentskills.io format), from another {product} or another tool.",
   skillImportWhere: "Install in",
   skillImportFile: "Choose a .zip file",
   skillImported: 'Skill "{name}" imported.',
@@ -3487,7 +3491,7 @@ const en = {
   wzRecommended: "recommended",
   wzChange: "Change",
   wzRunAgainSettings: "You can run this setup again whenever you like, from Settings.",
-  wzHello: "Hi. Let's get RedGiant ready.",
+  wzHello: "Hi. Let's get {product} ready.",
   wzHelloLead:
     "A few steps, one at a time. Each one is saved at once and you can come back to it whenever you like, from the counter up here.",
   wzLangIt: "interface language",
@@ -3502,19 +3506,19 @@ const en = {
   wzNoGpu: "None",
   wzNoGpuSub: "the processor does the work",
   wzShared: "memory shared with the processor",
-  wzModeQ: "How do you want RedGiant?",
+  wzModeQ: "How do you want {product}?",
   wzModeLead: "You can switch to Advanced later too, from Settings.",
   wzModeStdText:
-    "Everything already set: RedGiant and your projects stay on this computer. The right one for almost everybody.",
+    "Everything already set: {product} and your projects stay on this computer. The right one for almost everybody.",
   wzModeAdvText:
     "For those who write code: every project also gets its repository, on GitHub or on a Gitea of your own.",
   wzModeStdSets: "What Standard sets",
   wzModeAdvSets: "What Advanced sets",
   wzStd1: "Everything on this computer",
-  wzStd1Text: "RedGiant, your projects and the conversations stay here, in one data folder.",
+  wzStd1Text: "{product}, your projects and the conversations stay here, in one data folder.",
   wzStd2: "Nothing open to the outside",
   wzStd2Text:
-    "RedGiant's page opens from this computer and your home network; from outside you reach it with Telegram, if you link it.",
+    "{product}'s page opens from this computer and your home network; from outside you reach it with Telegram, if you link it.",
   wzStd3: "The guardian on every project",
   wzStd3Text:
     "The agents work right on this computer, in the project's folder; the guardian stops what goes outside it.",
@@ -3528,8 +3532,8 @@ const en = {
   wzAdv3: "Two more steps here",
   wzAdv3Text: "«Where the code lives» and «Access from outside», right after Telegram.",
   wzAdv4: "Access from outside",
-  wzAdv4Text: "Open RedGiant from your phone or another computer, at a safe address.",
-  wzBrainQ: "How should RedGiant think?",
+  wzAdv4Text: "Open {product} from your phone or another computer, at a safe address.",
+  wzBrainQ: "How should {product} think?",
   wzBrainLead:
     "To think it needs at least one model. Pick one or more: combine them as you like, and add more whenever you want from Settings.",
   wzBrainClaude: "Your Claude Pro or Max plan. You sign in on Anthropic's page.",
@@ -3548,7 +3552,7 @@ const en = {
   wzStateLocalNext: "you choose it in the next step",
   wzLocalWhy: "Free and private: nothing leaves your computer.",
   wzLocalNextStep:
-    "You choose it in the next step: RedGiant shows the ones that suit this computer, outlined in green.",
+    "You choose it in the next step: {product} shows the ones that suit this computer, outlined in green.",
   wzLocalInUse: "In use now: {model}. You change it or turn it off in the next step.",
   wzLocalYes: "Yes, I want one",
   wzLocalNo: "I don't want it any more",
@@ -3567,25 +3571,26 @@ const en = {
   wzStreamInfo2:
     "The parts of the model used most stay in the card and in RAM; the rest is read from the SSD when needed. It works best with mixture-of-experts models; dense ones work, but slower.",
   wzStreamInfo3:
-    "At the first start RedGiant measures this computer and keeps the fastest tuning. It needs an SSD with at least 20 GB free: a spinning disk is too slow.",
+    "At the first start {product} measures this computer and keeps the fastest tuning. It needs an SSD with at least 20 GB free: a spinning disk is too slow.",
   wzDisksTitle: "Where the models stay",
   wzDisksLead: "A model takes from 3 to 80 GB. A fast SSD is best: SSD stream reads from there.",
   wzDiskThis: "This disk",
-  wzDiskData: "RedGiant's data folder",
+  wzDiskData: "{product}'s data folder",
   wzHereNow: "here now",
   wzFreeOf: "free of {total} GB",
   wzDiskHdd: "A spinning disk: too slow for the models.",
   wzPickFolder: "Choose folder",
   wzDisksOne:
-    "Here the models stay in RedGiant's data folder. In RedGiant's Windows installation you can move them to another SSD.",
-  wzDisksNoMove: "The models can be moved to another disk only in RedGiant's Windows installation.",
+    "Here the models stay in {product}'s data folder. In {product}'s Windows installation you can move them to another SSD.",
+  wzDisksNoMove:
+    "The models can be moved to another disk only in {product}'s Windows installation.",
   wzMoveTitle: "Move the models to {disk}?",
   wzMoveLead:
     "{kind}, {free} free. The models already downloaded are copied to {folder}; the model in use starts again afterwards.",
   wzMoveHere: "Move them here",
   wzFolderTitle: "The models' folder on {disk}",
   wzFolderLead:
-    "Where RedGiant keeps the models' files on this disk. The ones already downloaded are copied there.",
+    "Where {product} keeps the models' files on this disk. The ones already downloaded are copied there.",
   wzFolder: "Folder",
   wzFolderHelp: "A folder of this disk; it is created if it is not there.",
   wzUseFolder: "Use this folder",
@@ -3602,11 +3607,11 @@ const en = {
   wzMoe: "{b} billion · mixture of experts",
   wzDense: "{b} billion · dense",
   wzNamesQ: "Two characters, two names",
-  wzNamesLead: "RedGiant has two main figures. Call them as you like: touch the name and type.",
+  wzNamesLead: "{product} has two main figures. Call them as you like: touch the name and type.",
   wzGodRole: "The boss",
   wzDemiRole: "The spokesperson",
   wzGodText:
-    "Coordinates every agent and every project: makes the plans, splits the work, decides. Above the clouds, never in a hurry. It is also the only one that can change RedGiant itself, always with your yes.",
+    "Coordinates every agent and every project: makes the plans, splits the work, decides. Above the clouds, never in a hurry. It is also the only one that can change {product} itself, always with your yes.",
   wzDemiText:
     "The one you talk to from Telegram and the other chats: with winged feet it takes your requests to {god} and brings the answers back. Quick and always there.",
   wzGodSug: "God,Atlas,Director,Zeus",
@@ -3625,7 +3630,7 @@ const en = {
   wzAssignLead:
     "Each one works with its own model: the strongest for who decides, a fast one for who answers. Touch a model to change it.",
   wzAssignEmpty:
-    "You have not connected any model yet, so there is nothing to choose here. Connect one in «How should RedGiant think?» or start a local model.",
+    "You have not connected any model yet, so there is nothing to choose here. Connect one in «How should {product} think?» or start a local model.",
   wzAssignConnect: "Connect a model",
   wzAssignLocal: "Choose a local model",
   wzAssignDemigod2:
@@ -3651,7 +3656,7 @@ const en = {
   wzEffort_max: "The most",
   wzEffortHelp:
     "A little is fast and cheap, deeply is slower but more careful. It stays fixed for each conversation.",
-  wzTgQ: "RedGiant on your phone",
+  wzTgQ: "{product} on your phone",
   wzTgLead:
     "With Telegram you write to {demigod} from wherever you are and get the notices there: approvals, questions, long jobs, budget. Three steps, a couple of minutes.",
   wzTgDone: "done",
@@ -3679,10 +3684,10 @@ const en = {
   wzTgOfficial: "Telegram's official bot",
   wzTgOnline: "bot · online",
   wzTgBf1: "Alright. What shall we call it?",
-  wzTgBfName: "My RedGiant",
+  wzTgBfName: "My {product}",
   wzTgBf2: "Now a username, ending in «bot».",
   wzTgBf3: "Done! Here is the token: 123456789:AAH…",
-  wzTgExampleBot: "my_redgiant_bot",
+  wzTgExampleBot: "my_rasgeth_bot",
   wzTgPressStart: "Press Start to begin talking with this bot.",
   wzTgStart: "START",
   wzTgMessage: "Message",
@@ -3696,10 +3701,10 @@ const en = {
     "The repositories stay on your GitHub account. It needs a token allowed to make them.",
   wzCodeGiteaTitle: "A Gitea of your own",
   wzCodeGitea:
-    "A small private GitHub on this computer, installed and started by RedGiant, or the Gitea you already have.",
+    "A small private GitHub on this computer, installed and started by {product}, or the Gitea you already have.",
   wzRemoteQ: "Access from outside",
   wzRemoteLead:
-    "Open RedGiant from your phone or another computer, at a safe address. You can also leave it for later: from outside you still reach it with Telegram.",
+    "Open {product} from your phone or another computer, at a safe address. You can also leave it for later: from outside you still reach it with Telegram.",
   wzSafetyLead:
     "Four decisions, each on one card. You change everything whenever you like from Settings.",
   wzGuardQ: "An agent wants to write outside its project. What happens?",
@@ -3716,7 +3721,7 @@ const en = {
     "Before these actions an agent asks. On: only you can approve it. Off: the agent guiding it can say yes too ({god} or the head of the project).",
   wzBackTo: "Back to {preset}",
   wzBudgetTitle: "The spending limit",
-  wzBudgetQ: "How much can RedGiant spend at most with your API keys?",
+  wzBudgetQ: "How much can {product} spend at most with your API keys?",
   wzBudgetQFree: "With API keys a limit stops the agents before they spend too much.",
   wzBudgetOther: "other",
   wzBudgetSay: "At ${usd} the agents stop and tell you; you raise it whenever you like.",
@@ -3728,7 +3733,7 @@ const en = {
   wzWhereAgents:
     "The agents work right on this computer, in the project's folder: the guardian checks every command that goes outside it.",
   wzKeepFor: "Keep the conversations for",
-  wzDoneQ: "RedGiant is ready.",
+  wzDoneQ: "{product} is ready.",
   wzDoneLead: "Here is what you set up. Touch a square to change it.",
   wzWhatNow: "And now?",
   wzWhatNowLead: "Three good ways to begin.",
@@ -3738,7 +3743,7 @@ const en = {
   wzNextAsk: "Ask a question",
   wzNextAskText: "The everyday chat, with web search: texts, ideas, sums.",
   wzNextPhone: "Link your phone",
-  wzNextPhoneText: "With Telegram RedGiant follows you outside home too.",
+  wzNextPhoneText: "With Telegram {product} follows you outside home too.",
   wzNextWrite: "Write to {demigod}",
   wzNextWriteText: "From your phone, anywhere: brings you the answers and asks for your yes.",
   wzRecapThinks: "Thinks with",
@@ -3773,7 +3778,7 @@ const en = {
   wzHwGood: "A good computer: models up to about {max} run fast here.",
   wzHwFits: "Models up to about {max} run fast here.",
   wzKeysLead:
-    "A key is like a password that lets RedGiant use the provider's models on your account. You pay the provider for what you use. Add as many as you like: each one is tried at once.",
+    "A key is like a password that lets {product} use the provider's models on your account. You pay the provider for what you use. Add as many as you like: each one is tried at once.",
   wzRemove: "Remove",
   wzProvider: "Provider",
   wzKeyOf: "The key of {name}",
@@ -3794,7 +3799,7 @@ const en = {
   agentLangNone: "No language matches «{q}».",
   agentLangChange: "change",
   lmMoePrefetchHelpDocker:
-    "Runs a version of llama.cpp changed by RedGiant: while the graphics card computes one layer, the experts of the next one are already on their way to it, and the model is loaded in RAM when it fits. With mixture-of-experts models long messages are read up to 1.7 times faster (measured on an RTX 4080 Super). The first start downloads that engine's image (about {size}), kept next to the usual one. NVIDIA cards only, through Docker's NVIDIA runtime.",
+    "Runs a version of llama.cpp changed by {product}: while the graphics card computes one layer, the experts of the next one are already on their way to it, and the model is loaded in RAM when it fits. With mixture-of-experts models long messages are read up to 1.7 times faster (measured on an RTX 4080 Super). The first start downloads that engine's image (about {size}), kept next to the usual one. NVIDIA cards only, through Docker's NVIDIA runtime.",
   lmMoePrefetchMissingDocker:
     "The changed engine's image is not available yet (this version has not published it, or there is no network): the option stays off.",
   // settings: chats, budgets, backup, platform drawn as the wizard (2026-11-06)
@@ -3814,7 +3819,7 @@ const en = {
   sbLimitNow: "Now: {limit}",
   sbLimitSay: "At ${usd} its agents stop and tell you; you raise it whenever you like.",
   sbLimitPick: "Choose an amount, or write another one.",
-  sbBackupQ: "All of RedGiant in one file",
+  sbBackupQ: "All of {product} in one file",
   sbPlatformQ: "What changed, and who did it",
   // g33: automations (G33.3)
   axWhenMinutes: "Every {n} minutes",
@@ -3833,8 +3838,8 @@ const en = {
   axStart_files: "Files that change",
   axStart_after: "After another automation",
   axStart_task: "When a task ends",
-  axStart_startup: "When RedGiant starts",
-  axStartupHelp: "It starts every time RedGiant is switched on.",
+  axStart_startup: "When {product} starts",
+  axStartupHelp: "It starts every time {product} is switched on.",
   axEmailText: "The text contains",
   axEmailTextPlaceholder: "A word in the email (optional)",
   axEmailWhich: "Which mailboxes",
@@ -3936,7 +3941,7 @@ const en = {
   axOverlap: "If it is still working when it should start again",
   axOverlapSkip: "Skip that time",
   axOverlapQueue: "Wait, then start",
-  axMissed: "If RedGiant was off at its time",
+  axMissed: "If {product} was off at its time",
   axMissedSkip: "Skip it",
   axMissedRun: "Do it as soon as it is on",
   axTimeout: "Longest time, in minutes",
@@ -3954,7 +3959,7 @@ const en = {
   axSayFilesAll: "When files change in the project",
   axSayAfter: "After «{name}»",
   axSayTask: "When a task ends",
-  axSayStartup: "When RedGiant starts",
+  axSayStartup: "When {product} starts",
   axSayNever: "Choose when it starts.",
   axSayOnly: "Only",
   axSayHours: "between {from} and {to}",
@@ -4067,7 +4072,7 @@ const en = {
   kcSearch: "Search by name, service, user or label",
   kcAdd: "Add",
   kcAllCats: "All",
-  kcSystem: "Kept by RedGiant",
+  kcSystem: "Kept by {product}",
   kcCat_api: "API keys",
   kcCat_login: "Logins",
   kcCat_bank: "Bank",
@@ -4085,15 +4090,15 @@ const en = {
   kcNeverUsed: "Never used",
   kcSystemTitle: "Set by the administrator",
   kcSystemLead:
-    "Keys set by whoever installed this server (in its environment): RedGiant uses them, they cannot be changed here.",
+    "Keys set by whoever installed this server (in its environment): {product} uses them, they cannot be changed here.",
   kcUsedBy: "Used by:",
   kcUsedByText:
-    "RedGiant uses this key by itself. Here you can change it, choose whether agents may use it too and see every use; you remove it from its page.",
+    "{product} uses this key by itself. Here you can change it, choose whether agents may use it too and see every use; you remove it from its page.",
   kcLockedAdmin: "Set by the administrator",
   kcUse_moved: "moved {name} here from {host}",
   kcClosedKeys:
-    "Until it opens, the keys you gave RedGiant stay where they were (secrets.json and the private files), and nothing is deleted.",
-  err_vault_system: "RedGiant uses this key: remove it from its page in Settings.",
+    "Until it opens, the keys you gave {product} stay where they were (secrets.json and the private files), and nothing is deleted.",
+  err_vault_system: "{product} uses this key: remove it from its page in Settings.",
   kcSys_provider: "Model provider: {what}",
   kcSys_chat: "Chat: {what}",
   kcSys_email: "Mailbox: {what}",
@@ -4136,7 +4141,7 @@ const en = {
     "Open about:debugging#/runtime/this-firefox, press «Load Temporary Add-on…» and choose the zip. Firefox keeps it until it closes: to keep it for good it must be signed by Mozilla.",
   kcBrStore: "Later also in the Chrome Web Store: one click to install, and it updates itself.",
   kcBrMakeCode: "Make a code",
-  kcBrAddress: "RedGiant's address",
+  kcBrAddress: "{product}'s address",
   kcBrCode: "Code",
   kcBrCodeLead:
     "In the extension (the key in the browser's bar) write this address and this code. The code works for ten minutes and for one browser.",
@@ -4199,7 +4204,7 @@ const en = {
   kcNoHosts: "Without an address no agent can use it: it stays for you only.",
   kcWho: "Who may use it",
   kcWhoLead:
-    "Agents never see the value: they ask for it by name, and RedGiant puts it on the request.",
+    "Agents never see the value: they ask for it by name, and {product} puts it on the request.",
   kcAllAgents: "Every agent",
   kcAllAgentsHelp: "Off: only the agents you choose.",
   kcSomeAgents: "The agents that may use it",
@@ -4213,7 +4218,7 @@ const en = {
   kcAsk_never: "Never: I trust the rules above",
   kcMore: "More",
   kcExpires: "Expires on",
-  kcExpiresHelp: "RedGiant reminds you a month before.",
+  kcExpiresHelp: "{product} reminds you a month before.",
   kcTags: "Labels",
   kcTagsHelp: "Separated by commas: work, home…",
   kcNotes: "Notes",
@@ -4229,7 +4234,7 @@ const en = {
     "The credential goes from the keychain for good: agents and tools can no longer use it.",
   kcImportTitle: "Import passwords",
   kcImportLead:
-    "Export your passwords from the other manager as a CSV file, then choose it here. A keychain file exported by RedGiant works too.",
+    "Export your passwords from the other manager as a CSV file, then choose it here. A keychain file exported by {product} works too.",
   kcImportBitwarden: "Bitwarden: Tools > Export vault > .csv",
   kcImport1password: "1Password: File > Export > CSV",
   kcImportChrome: "Chrome and Edge: Settings > Passwords > Export passwords",
@@ -4252,7 +4257,7 @@ const en = {
   kcImported: "{n} credentials added to the keychain.",
   kcExportTitle: "Export the keychain",
   kcExportLead:
-    "A file with every credential, sealed with a passphrase of yours: without it nobody can open it, RedGiant included.",
+    "A file with every credential, sealed with a passphrase of yours: without it nobody can open it, {product} included.",
   kcPassphrase: "Passphrase",
   kcPassphraseHelp: "At least 8 characters. Keep it somewhere safe: it cannot be recovered.",
   kcPassphraseAgain: "The passphrase again",
@@ -4261,12 +4266,12 @@ const en = {
   kcExported: "Downloaded. Keep the file and its passphrase apart.",
   err_vault_closed: "The keychain is closed on this computer.",
   err_vault_in_git:
-    "The keychain's folder is inside a git repository: it must never be committed. Move RedGiant's data folder outside it.",
+    "The keychain's folder is inside a git repository: it must never be committed. Move {product}'s data folder outside it.",
   err_vault_not_found: "That credential is no longer in the keychain.",
   err_vault_name_taken: "Another credential has that name for the agents: choose another one.",
   err_vault_no_value: "Write the secret.",
   err_vault_bad_passphrase: "Wrong passphrase, or a damaged file.",
-  err_vault_bad_file: "This file is not a password export RedGiant can read.",
+  err_vault_bad_file: "This file is not a password export {product} can read.",
   chSecretTitle: "This message holds a secret",
   chSecretText:
     "It looks like a key, a password or a card number. Secrets never go in a chat: the model and the log would keep it. Put it in the keychain instead, and agents will use it by name without seeing it.",
@@ -4284,7 +4289,7 @@ const en = {
   axMagicAllSet: "Everything it needs is there.",
   mxIntegration: "Magic integration",
   mxIntegrationTile:
-    "Connect RedGiant to a service through its API (Notion, your management software, a bank…): God writes the connector, tests it apart and you install it.",
+    "Connect {product} to a service through its API (Notion, your management software, a bank…): God writes the connector, tests it apart and you install it.",
   mxIntegrationLead:
     "Tell God which service and what the agents should do with it. God asks what it needs, writes the connector with its tests and tries it in a closed sandbox: you see the result and install it with one button.",
   mxIntegrationAsk: "Which service, and what for?",
@@ -4457,7 +4462,7 @@ const en = {
   vwKind_unknown: "File",
   vwKind_layers: "Layers (OpenRaster)",
   vwMediaConvertNow:
-    "Your browser cannot play it. RedGiant can make an open copy beside it (WebM or Opus) that plays here; the original stays as it is.",
+    "Your browser cannot play it. {product} can make an open copy beside it (WebM or Opus) that plays here; the original stays as it is.",
   vwConvertToSee: "Convert to see it",
   vwTryAgain: "Try again",
   vwLibreOfficeFirst: "LibreOffice, only the first time",
@@ -4473,9 +4478,9 @@ const en = {
   vwPagedTableHint: "Sort and filter",
   vwOpenClosed: "{format} is a closed format",
   vwOpenWhy:
-    "To show it here and let the agents work on it, RedGiant makes a copy in an open format ({to}) beside it. The original stays as it is.",
+    "To show it here and let the agents work on it, {product} makes a copy in an open format ({to}) beside it. The original stays as it is.",
   vwOpenMediaTitle: "{format}: the browser cannot play it",
-  vwOpenMediaText: "RedGiant is making an open copy beside it that plays here.",
+  vwOpenMediaText: "{product} is making an open copy beside it that plays here.",
   vwOpenMade: "Open copy of the {from} file, as {to}",
   vwOpenKept: "You are seeing the copy: {name} stays as it was, beside it.",
   vwOpenLost: "What was lost ({n})",
@@ -4484,7 +4489,7 @@ const en = {
   vwOpenWillLose: "What the copy will not keep:",
   vwOpenStale:
     "The original changed after the copy was made: convert it again to see it as it is now.",
-  vwOpenFirstDownload: "The first time RedGiant downloads {name} (about {size}).",
+  vwOpenFirstDownload: "The first time {product} downloads {name} (about {size}).",
   vwOpenKeepsChanges: "What it keeps and what can change:",
   fmtName_fig: "Figma (local copy)",
   vwOpenNeedsProgram: "This needs {name}, which is not on this computer.",
@@ -4492,14 +4497,14 @@ const en = {
   vwOpenAgain: "Convert again",
   vwNeedsTitle: "{format}: here you only see its preview",
   vwNeedsWhy:
-    "No free program can read {format} files. RedGiant shows the small picture saved inside the file: it is not a conversion, and the agents cannot change it.",
+    "No free program can read {format} files. {product} shows the small picture saved inside the file: it is not a conversion, and the agents cannot change it.",
   vwNeedsPreviewMade: "Preview of the {format} file: only the picture saved inside",
   vwNeedsPreviewNote: "About this preview:",
   vwNeedsShowPreview: "Show the preview",
   vwNeedsAffinity:
     "To work on it you need Affinity, which is free (affinity.studio). Open the file there and save a PDF or SVG copy beside it: the agents will work on that, without losing anything.",
   vwNeedsIndesign:
-    "To work on it you need Adobe InDesign. From InDesign save an IDML beside the file: with the IDML RedGiant keeps the whole layout (Scribus or a drawing). If someone sent you the file, ask them for the IDML.",
+    "To work on it you need Adobe InDesign. From InDesign save an IDML beside the file: with the IDML {product} keeps the whole layout (Scribus or a drawing). If someone sent you the file, ask them for the IDML.",
   vwNeedsFigma:
     "A .fig copy cannot be read. What works is the file's link on Figma: give it to an agent, and it brings every frame here as SVG or PDF, with your Figma token from the Keychain.",
   vwNeedsXd:
@@ -4516,7 +4521,7 @@ const en = {
   vwNeedsOpenIn: "Open in {app}",
   vwNeedsGetAffinity: "Get Affinity (free)",
   vwIdmlWhy:
-    "To show it here and let the agents work on it, RedGiant makes a copy in an open format beside it, keeping the layout. The original stays as it is. Choose how:",
+    "To show it here and let the agents work on it, {product} makes a copy in an open format beside it, keeping the layout. The original stays as it is. Choose how:",
   vwIdmlSla: "Scribus (.sla)",
   vwIdmlSlaText:
     "A free layout program, like InDesign: pages, master pages, layers, text that flows from frame to frame, styles. You can open and edit it again, with a PDF beside it.",
@@ -4525,7 +4530,7 @@ const en = {
   vwIdmlOdgText:
     "Every frame exactly in its place, as a LibreOffice drawing, ready at once without downloading Scribus. Text no longer flows between frames and styles become plain formatting.",
   vwIdmlOnlyOdg:
-    "Scribus cannot come to this computer: RedGiant makes a drawing (ODG) with every frame in its place.",
+    "Scribus cannot come to this computer: {product} makes a drawing (ODG) with every frame in its place.",
   loss_tiff_first_page: "Only the first page or frame; layers and colour profiles are flattened.",
   loss_pdf_to_odg: "Each page becomes an editable drawing; complex text and some fonts can shift.",
   loss_first_page_fonts_effects: "Only the first page; some fonts and effects can shift.",
@@ -4547,7 +4552,7 @@ const en = {
   loss_idml_scribus:
     "Scribus brings pages, master pages, layers, frames in their place, text flowing through linked frames, styles, colours and images; tints, page numbers, some picture crops and effects can differ (the PDF beside it shows how it came out).",
   loss_idml_odg:
-    "RedGiant's own import: pages, frames, shapes and pictures exactly in their place and size, text with its formatting, colours, layers.",
+    "{product}'s own import: pages, frames, shapes and pictures exactly in their place and size, text with its formatting, colours, layers.",
   loss_idml_pdf_from_odg:
     "Printed from the drawing (ODG); with Scribus the PDF comes from Scribus.",
   loss_idml_odt_target:
@@ -4556,7 +4561,7 @@ const en = {
     "This is not a conversion: only the small preview picture saved inside the file (no free program can read its layers, text and layout).",
   loss_preview_first_page: "Often only the first page.",
   loss_sketch_svg:
-    "RedGiant's own reading of the Sketch file: every artboard at its size, shapes, paths, text, colours, borders, opacity and images in their place; shadows, blurs, gradients and symbol overrides are simplified.",
+    "{product}'s own reading of the Sketch file: every artboard at its size, shapes, paths, text, colours, borders, opacity and images in their place; shadows, blurs, gradients and symbol overrides are simplified.",
   loss_sketch_last_page: "The last page you looked at in Sketch.",
   loss_sketch_outline: "Only pages, artboards, layer names and texts: no shapes or styles.",
   loss_blender_gltf:
@@ -4671,7 +4676,7 @@ const en = {
   toolGrp_canvas: "Canvas and files",
   toolGrp_talk: "Talking",
   toolGrp_agents: "Managing agents",
-  toolGrp_platform: "RedGiant's settings (God)",
+  toolGrp_platform: "{product}'s settings (God)",
   tool_read_file: "Read files",
   toolDo_read_file: "Reads the files of its project.",
   toolWhy_read_file: "without it, it cannot see its own work",
@@ -4721,7 +4726,7 @@ const en = {
   toolDo_repo: "Opens pull requests and issues on the project's repository.",
   tool_node: "Your nodes",
   toolDo_node:
-    "Runs commands in a sandbox on the other RedGiant machines paired in Settings > Nodes, which check every command again.",
+    "Runs commands in a sandbox on the other {product} machines paired in Settings > Nodes, which check every command again.",
   tool_ssh: "Your machines (SSH)",
   toolDo_ssh:
     "Runs commands, copies files and reads folders on the machines you added in Settings > Machines, only those you let it use.",
@@ -4730,7 +4735,7 @@ const en = {
   mcLead:
     "Other computers your agents reach over SSH: a server, a Raspberry Pi, a computer at the office. Keys and passwords stay in the keychain; the agents choose a machine by its name and never see them.",
   mcEmpty:
-    "No machine yet. Add one: RedGiant makes a key for it, you copy its public half onto the machine.",
+    "No machine yet. Add one: {product} makes a key for it, you copy its public half onto the machine.",
   mcSafety:
     "What happens there follows the same rules as here: sudo, switching the machine off, installing system programs, changing its system files and deleting outside its working folder always ask you, also with «Don't ask me anything».",
   mcNew: "Add a machine",
@@ -4754,12 +4759,12 @@ const en = {
   mcLogin: "Login",
   mcLoginPassword: "password in the keychain",
   mcLoginImported: "your key, in the keychain",
-  mcLoginGenerated: "key made by RedGiant, in the keychain",
+  mcLoginGenerated: "key made by {product}, in the keychain",
   mcAuthKey: "Key",
   mcAuthPassword: "Password",
   mcKeyGenerate: "Make a new key",
   mcKeyGenerateHelp:
-    "RedGiant makes an ed25519 key: you will copy its public half into ~/.ssh/authorized_keys on the machine.",
+    "{product} makes an ed25519 key: you will copy its public half into ~/.ssh/authorized_keys on the machine.",
   mcKeyKeep: "Keep the key",
   mcKeyKeepHelp: "The key kept in the keychain stays as it is.",
   mcKeyPaste: "Paste a private key",
@@ -4791,7 +4796,7 @@ const en = {
   mcStateTrusted: "Key trusted",
   mcTofuTitle: "First connection: is this the machine's key?",
   mcTofuText:
-    "Nothing was sent yet. If the fingerprint is the machine's, trust it: from now on RedGiant connects only to a machine with this key.",
+    "Nothing was sent yet. If the fingerprint is the machine's, trust it: from now on {product} connects only to a machine with this key.",
   mcTofuHow: "To see it on the machine: ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub",
   mcTrust: "Trust this key",
   mcChangedTitle: "Danger: the machine answered with another key",
@@ -4801,7 +4806,7 @@ const en = {
   mcChangedNow: "Now",
   mcReplaceQ: "Trust the new key of «{name}»?",
   mcReplaceText:
-    "Do it only if you know why the machine's key changed: otherwise someone could be reading what RedGiant sends.",
+    "Do it only if you know why the machine's key changed: otherwise someone could be reading what {product} sends.",
   mcReplaceYes: "Trust the new key",
   mcRemoveQ: "Remove «{name}»?",
   mcRemoveText:
@@ -4852,7 +4857,7 @@ const en = {
   toolDo_send_file: "Sends you a file in the chat (and on Telegram).",
   tool_show_products: "Product cards",
   toolDo_show_products:
-    "Shows things to buy or compare as cards with picture, price, shop and link; RedGiant downloads the pictures itself.",
+    "Shows things to buy or compare as cards with picture, price, shop and link; {product} downloads the pictures itself.",
   tool_publish_board: "Variants side by side",
   toolDo_publish_board: "Publishes a few design variants on a page for you to choose.",
   tool_image_generation: "Make pictures",
@@ -4918,8 +4923,8 @@ const en = {
   toolDo_propose_magic_extension:
     "In a magic integration's or extension's conversation, proposes the tested package.",
   toolWhy_propose_magic_extension: "that conversation exists for it",
-  tool_platform_status: "RedGiant's state",
-  toolDo_platform_status: "Reads how RedGiant is set up: agents, models, rules.",
+  tool_platform_status: "{product}'s state",
+  toolDo_platform_status: "Reads how {product} is set up: agents, models, rules.",
   tool_platform_changes: "History of changes",
   toolDo_platform_changes: "Reads the latest changes to the settings.",
   tool_platform_configure_agent: "Set up agents",
@@ -4936,8 +4941,8 @@ const en = {
   toolDo_platform_undo: "Undoes a change to the settings, with your yes.",
   tool_platform_project: "Archive projects",
   toolDo_platform_project: "Archives a project or restores it as it was, with your yes.",
-  tool_platform_code: "Change RedGiant's code",
-  toolDo_platform_code: "Changes RedGiant itself, tried apart before you accept it.",
+  tool_platform_code: "Change {product}'s code",
+  toolDo_platform_code: "Changes {product} itself, tried apart before you accept it.",
   // g36: the instructions' refiner, God's instructions and tools for new agents, request_tool (G36.13-15)
   refineOpen: "Improve the instructions",
   refineLead:
@@ -5074,13 +5079,14 @@ const en = {
   acpKind_other: "action",
   acpEnv_name: '"{name}" is not a variable name.',
   "acpEnv_secret-name":
-    "\"{name}\" looks like a key: keys go in RedGiant's keychain, never in an agent's variables.",
-  acpEnv_own: '"{name}" is RedGiant\'s own.',
-  "acpEnv_secret-value": 'The value of "{name}" looks like a key: keys go in RedGiant\'s keychain.',
+    "\"{name}\" looks like a key: keys go in {product}'s keychain, never in an agent's variables.",
+  acpEnv_own: '"{name}" is {product}\'s own.',
+  "acpEnv_secret-value":
+    'The value of "{name}" looks like a key: keys go in {product}\'s keychain.',
   acpSection: "External agents (ACP)",
   acpPageQ: "Let the agents you already use work here",
   acpPageLead:
-    "An external agent is a coding agent you may already use, such as Claude Code, Codex or Gemini CLI. Here it becomes an agent of one of your RedGiant projects: the project's orchestrator or God give it tasks, you follow its work in the conversation, and every file it touches, every command it runs and every permission it asks for goes through RedGiant.",
+    "An external agent is a coding agent you may already use, such as Claude Code, Codex or Gemini CLI. Here it becomes an agent of one of your {product} projects: the project's orchestrator or God give it tasks, you follow its work in the conversation, and every file it touches, every command it runs and every permission it asks for goes through {product}.",
   acpHowTitle: "How to add one",
   acpStep1Title: "Install it on this computer",
   acpStep1:
@@ -5102,26 +5108,26 @@ const en = {
   acpNeedProject: "Make a project first: an external agent works in one.",
   acpRemoveQ: "Remove {name}?",
   acpRemoveText: "The agent stops; its conversations and what it did stay in the log.",
-  acpEditorTitle: "The other way round: RedGiant inside your editor",
+  acpEditorTitle: "The other way round: {product} inside your editor",
   acpEditorLead:
-    "Useful if you write code in Zed or a JetBrains editor and want to talk to your RedGiant agents from there, without opening this page. The editor and RedGiant talk through ACP, the same language as the external agents.",
-  acpEdStep1Title: "Install RedGiant's command line",
+    "Useful if you write code in Zed or a JetBrains editor and want to talk to your {product} agents from there, without opening this page. The editor and {product} talk through ACP, the same language as the external agents.",
+  acpEdStep1Title: "Install {product}'s command line",
   acpEdStep1:
-    "It brings the redgiant-acp program, which the editor starts. It finds the RedGiant running on this computer by itself.",
+    "It brings the rasgeth-acp program, which the editor starts. It finds the {product} running on this computer by itself.",
   acpEdStep2Title: "Copy the block into the editor",
   acpEdStep2: "The block for your editor is below: paste it where it says.",
-  acpEdStep3Title: "Choose RedGiant in the editor",
+  acpEdStep3Title: "Choose {product} in the editor",
   acpEdStep3:
-    "Open the editor's agent panel and pick RedGiant: you talk to your agents from there.",
-  acpZedHelp: "In Zed's settings.json; then open the agent panel and choose RedGiant.",
+    "Open the editor's agent panel and pick {product}: you talk to your agents from there.",
+  acpZedHelp: "In Zed's settings.json; then open the agent panel and choose {product}.",
   acpJetbrainsHelp: "In ~/.jetbrains/acp.json (AI Assistant 2026.3 or later).",
   acpEditorWho:
-    "In a project's folder you talk to its orchestrator, elsewhere to God; «@name» at the start of the first message chooses another agent, and --agent fixes one. What RedGiant asks you is asked in the editor too: your answer there counts as yours. With the project open, the agent reads and writes its files through the editor, unsaved changes included.",
+    "In a project's folder you talk to its orchestrator, elsewhere to God; «@name» at the start of the first message chooses another agent, and --agent fixes one. What {product} asks you is asked in the editor too: your answer there counts as yours. With the project open, the agent reads and writes its files through the editor, unsaved changes included.",
   acpAddTitle: "A new external agent",
   acpEditTitle: "{name}",
   acpWhich: "Which agent",
   acpOther: "Another one",
-  acpName: "Its name in RedGiant",
+  acpName: "Its name in {product}",
   acpProject: "The project it works in",
   acpProjectHelp: "It gets a folder of its own there, like the project's other agents.",
   acpCommand: "Command",
@@ -5220,7 +5226,7 @@ const en = {
   rqModeAsk: "Ask me",
   rqModeClassifier: "Don't ask me anything",
   rqAlwaysYou:
-    "Even with «Don't ask me anything», the truly dangerous requests always reach you, everywhere: deletions for good, system files, secrets leaving, real payments and RedGiant's own protections.",
+    "Even with «Don't ask me anything», the truly dangerous requests always reach you, everywhere: deletions for good, system files, secrets leaving, real payments and {product}'s own protections.",
   rqModeAskText:
     "Requests reach you everywhere: here and on the chats you connected. Answer where it suits you: the first answer counts, and the other copies close by themselves.",
   rqModeClassifierText:
@@ -5283,7 +5289,7 @@ const en = {
   kbSection: "Knowledge",
   kbQ: "Your documents, for the agents to look up",
   kbLead:
-    "Choose folders, files and pages: RedGiant reads them, cuts them into pieces and finds them by what they mean. The agents say where each answer comes from, and one click opens the file at that point.",
+    "Choose folders, files and pages: {product} reads them, cuts them into pieces and finds them by what they mean. The agents say where each answer comes from, and one click opens the file at that point.",
   kbLoading: "Loading…",
   kbStateNoVector:
     "Searching by meaning is not ready on this computer yet: for now it searches by words.",
@@ -5348,10 +5354,10 @@ const en = {
   kbKind_chats: "Conversations",
   kbKindText_chats: "What you said with the agents",
   kbFolderPath: "The folder",
-  kbFolderHelp: "Its full path on the computer where RedGiant runs.",
+  kbFolderHelp: "Its full path on the computer where {product} runs.",
   kbFolderExample: "/home/me/Documents or C:\\Users\\me\\Documents",
   kbFilePath: "The file",
-  kbFileHelp: "Its full path on the computer where RedGiant runs.",
+  kbFileHelp: "Its full path on the computer where {product} runs.",
   kbFileExample: "/home/me/manual.pdf",
   kbUrl: "The address",
   kbUrlHelp: "Read without your logins: only public pages.",
@@ -5363,7 +5369,7 @@ const en = {
   kbHowFarBack: "How far back",
   kbDays: "{n} days",
   kbConsentMail:
-    "The agents that may read this collection will be able to find and quote your mail. RedGiant only reads the inbox: it never marks, moves or deletes a message.",
+    "The agents that may read this collection will be able to find and quote your mail. {product} only reads the inbox: it never marks, moves or deletes a message.",
   kbConsentMailYes: "Yes, the agents may read this mail",
   kbConsentChats:
     "The agents that may read this collection will be able to find and quote what you wrote in your conversations and what the agents answered.",
@@ -5405,9 +5411,9 @@ const en = {
   kbMeaningOther: "Choose another model",
   kbPlacePlatform: "God's folder",
   kbPlaceAssistants: "The assistants' desk",
-  kbPickFolder: "Choose a folder in RedGiant",
-  kbPickFile: "Choose a file in RedGiant",
-  kbPickWhere: "Your projects and RedGiant's folders",
+  kbPickFolder: "Choose a folder in {product}",
+  kbPickFile: "Choose a file in {product}",
+  kbPickWhere: "Your projects and {product}'s folders",
   kbPickPlaces: "Back to the projects",
   kbPickUp: "Up one folder",
   kbPickEmpty: "Nothing here in {name}.",
@@ -5977,9 +5983,10 @@ const en = {
   wzStorage: "Data and backups",
   fbSystemSection: "System",
   fbSystemQ: "System",
-  fbSystemLead: "The machine RedGiant runs on, its role, where its data and backups live, and SSH.",
+  fbSystemLead:
+    "The machine {product} runs on, its role, where its data and backups live, and SSH.",
   fbMachineTitle: "The machine",
-  fbMachineQ: "This is the machine RedGiant found",
+  fbMachineQ: "This is the machine {product} found",
   fbMachineLead:
     "Measured now. What the system does not tell is said so, never guessed. It decides only what is offered: you choose.",
   fbArch: "Architecture",
@@ -6006,9 +6013,9 @@ const en = {
   dvSection: "Devices",
   dvQ: "Your devices",
   dvLead:
-    "Phones and computers with the RGCompanion app. Each one has its own access: revoke one and it is signed out at once, the others stay.",
+    "Phones and computers with the {product} app. Each one has its own access: revoke one and it is signed out at once, the others stay.",
   dvNone:
-    "No device yet. Install RGCompanion on a phone or a computer and sign in with your password: it shows up here.",
+    "No device yet. Install the {product} app on a phone or a computer and sign in with your password: it shows up here.",
   dvThis: "this device",
   dvNeverUsed: "never used",
   dvLastUsed: "last used {when}",
@@ -6044,7 +6051,7 @@ const en = {
     "«{name}» no longer receives notifications there: the app registers them again when it opens.",
   ndQ: "Nodes",
   ndLead:
-    "Other RedGiant machines that work with this one: they lend commands, local models and room for projects and backups. Who may command whom is decided here, machine by machine.",
+    "Other {product} machines that work with this one: they lend commands, local models and room for projects and backups. Who may command whom is decided here, machine by machine.",
   ndThis: "This machine",
   ndName: "Name",
   ndNameHelp: "How the other machines and the agents call it.",
@@ -6053,7 +6060,7 @@ const en = {
     "Nodes need the keychain: this machine's key lives only there. Open it in Settings › Keychain.",
   ndAddTitle: "Add a node",
   ndAddLead:
-    "On the other machine, in its first start (role «Node of another RedGiant») or in its Settings › Nodes, write this machine's address and the code below.",
+    "On the other machine, in its first start (role «Node of another {product}») or in its Settings › Nodes, write this machine's address and the code below.",
   ndAddButton: "Show a pairing code",
   ndCode: "Pairing code",
   ndCodeExpires: "Valid once, for {min} more minutes.",
@@ -6061,11 +6068,11 @@ const en = {
   ndCodeStop: "Stop showing it",
   ndCodeAddress:
     "This machine's address, as the other one reaches it (in the local network, through Tailscale or a proxy): {address}",
-  ndJoinTitle: "Work for another RedGiant",
+  ndJoinTitle: "Work for another {product}",
   ndJoinLead:
-    "Pair this machine as a node of another RedGiant: on that one, Settings › Nodes › «Add a node» shows its address and a code.",
-  ndAddress: "The other RedGiant's address",
-  ndAddressPh: "https://redgiant.local or 192.168.1.10:3000",
+    "Pair this machine as a node of another {product}: on that one, Settings › Nodes › «Add a node» shows its address and a code.",
+  ndAddress: "The other {product}'s address",
+  ndAddressPh: "https://rasgeth.local or 192.168.1.10:3000",
   ndCodeField: "Its code",
   ndCodePh: "ABCD-EFGH",
   ndPair: "Pair",
@@ -6142,30 +6149,30 @@ const en = {
   ndNoProjects: "No project yet.",
   ndReason: "Why",
   toolOnNode: "on the node {name}",
-  fbRoleQ: "What will this RedGiant be?",
+  fbRoleQ: "What will this {product} be?",
   fbRoleLead:
-    "A complete RedGiant has its agents, projects and chats. A node lends its machine to another RedGiant: commands, local models, room for projects and backups.",
+    "A complete {product} has its agents, projects and chats. A node lends its machine to another {product}: commands, local models, room for projects and backups.",
   fbRoleTitle: "Role",
   fbRoleSettingsLead: "You can change it at any time: it asks first and says what changes.",
-  fbRoleFull: "Complete RedGiant",
+  fbRoleFull: "Complete {product}",
   fbRoleFullText: "Agents, projects, chats and everything else, on this machine.",
-  fbRoleNode: "Node of another RedGiant",
-  fbRoleNodeText: "This machine works for a RedGiant you already have.",
+  fbRoleNode: "Node of another {product}",
+  fbRoleNodeText: "This machine works for a {product} you already have.",
   fbPairCode: "Enter the pairing code",
   fbPairPlaceholder: "ABCD-EFGH",
   fbPairLater:
-    "Write the main RedGiant's address and the code it shows in Settings › Nodes › «Add a node». You can also do it later, from Settings.",
-  fbToNodeQ: "Make this RedGiant a node?",
+    "Write the main {product}'s address and the code it shows in Settings › Nodes › «Add a node». You can also do it later, from Settings.",
+  fbToNodeQ: "Make this {product} a node?",
   fbToNodeText:
-    "It will stop being a RedGiant of its own once paired: its agents, projects and conversations stay saved, untouched, but they rest until you make it complete again.",
+    "It will stop being a {product} of its own once paired: its agents, projects and conversations stay saved, untouched, but they rest until you make it complete again.",
   fbToNodeYes: "Make it a node",
-  fbToFullQ: "Make this a complete RedGiant again?",
+  fbToFullQ: "Make this a complete {product} again?",
   fbToFullText:
-    "It stops working for the other RedGiant; its own agents, projects and conversations come back as they were.",
+    "It stops working for the other {product}; its own agents, projects and conversations come back as they were.",
   fbToFullYes: "Make it complete",
   fbNodeDoneQ: "This machine is ready to be a node",
   fbNodeDoneLead:
-    "Pairing with the main RedGiant arrives in an update soon. Until then this page stays here, and you can make it a complete RedGiant from Settings › System.",
+    "Pairing with the main {product} arrives in an update soon. Until then this page stays here, and you can make it a complete {product} from Settings › System.",
   fbAccountQ: "A password for signing in",
   fbAccountLead:
     "From another computer or a phone you will sign in with it. You can skip this and set it later in Settings › Access from outside.",
@@ -6188,7 +6195,8 @@ const en = {
   fbDestDisk: "Backups go to the disk {label} ({path}).",
   fbDestFolder: "Backups go to the folder {path}.",
   fbDisksTitle: "Removable disks",
-  fbMethod_helper: "Pick one: RedGiant mounts it only for backups. System disks are never offered.",
+  fbMethod_helper:
+    "Pick one: {product} mounts it only for backups. System disks are never offered.",
   fbMethod_udisks: "Pick one: the system mounts it (udisks2). System disks are never offered.",
   fbMethod_none:
     "This installation cannot mount disks (for example plain Docker without privileges): use a disk already mounted, or a folder below.",
@@ -6203,17 +6211,17 @@ const en = {
   fbWhyNotDisk: "Not a disk",
   fbPlacesTitle: "Folders mounted for backups",
   fbPlacesLead:
-    "Folders the machine hosting RedGiant mounted under /var/lib/redgiant/backups (a Proxmox mount point, a network share).",
+    "Folders the machine hosting {product} mounted under /var/lib/redgiant/backups (a Proxmox mount point, a network share).",
   fbUsePlace: "Use for backups",
-  fbPlaceNotWritable: "RedGiant cannot write here",
+  fbPlaceNotWritable: "{product} cannot write here",
   fbPlaceFree: "{free} GB free of {total}",
   fbContainerDisks:
-    "RedGiant OS runs in a container ({name}): the disks it sees are those of the machine hosting it and cannot be used from here.",
+    "{product} OS runs in a container ({name}): the disks it sees are those of the machine hosting it and cannot be used from here.",
   fbSshWhy_no_helper:
-    "This installation has no RedGiant OS system helper: SSH is managed by the system hosting it.",
+    "This installation has no {product} OS system helper: SSH is managed by the system hosting it.",
   fbSshWhy_unreachable:
-    "RedGiant OS's system helper does not answer (redgiant-helper.socket): SSH cannot be read or changed now. Restarting the machine usually brings it back.",
-  fbSshWhy_timeout: "RedGiant OS's system helper took too long to answer: try again in a moment.",
+    "{product} OS's system helper does not answer (redgiant-helper.socket): SSH cannot be read or changed now. Restarting the machine usually brings it back.",
+  fbSshWhy_timeout: "{product} OS's system helper took too long to answer: try again in a moment.",
   fbSshWhy_not_installed: "SSH (openssh-server) is not installed on this system.",
   fbSshWhy_other: "SSH cannot be read here: the system helper answered «{why}».",
   fbSshContainer:
@@ -6252,19 +6260,19 @@ const en = {
     "Nothing to mount: it works also in a container or in Docker. Each backup arrives under a temporary name and gets its real name only once complete and checked.",
   fbNetSftp: "One of your machines",
   fbNetSmb: "Shared folder (SMB)",
-  fbNetNode: "Another RedGiant",
+  fbNetNode: "Another {product}",
   fbNetNoMachines:
     "No machine yet: add your NAS or another computer in Settings › Machines (SSH), test it once, then come back here.",
   fbNetPick: "Use for backups",
   fbNetNotTrusted: "Test it in Settings › Machines first",
   fbNetFolder: "Folder there",
   fbNetFolderHelp:
-    "A full path (/volume1/RedGiant, E:\\Backup) or one from the home (~/RedGiant-backups). It is made if missing.",
+    "A full path (/volume1/{product}, E:\\Backup) or one from the home (~/RedGiant-backups). It is made if missing.",
   fbSmbMissing:
-    "Shared folders need smbclient, which this installation does not have (the Docker image and RedGiant OS have it). On Windows use the folder field above with \\\\host\\share.",
+    "Shared folders need smbclient, which this installation does not have (the Docker image and {product} OS have it). On Windows use the folder field above with \\\\host\\share.",
   fbSmbAddress: "Shared folder",
   fbSmbAddressHelp:
-    "As Windows writes it (\\\\nas\\backup\\RedGiant) or smb://nas/backup/RedGiant.",
+    "As Windows writes it (\\\\nas\\backup\\{product}) or smb://nas/backup/{product}.",
   fbSmbUser: "User",
   fbSmbPassword: "Password",
   fbSmbPasswordKept: "Kept in the keychain: leave it empty to keep it.",
@@ -6272,12 +6280,12 @@ const en = {
   fbSmbDomain: "Domain or workgroup",
   fbSmbDomainHelp: "Only if your network needs one (often empty).",
   fbUseShare: "Use this shared folder",
-  fbNetNoNodes: "No paired RedGiant yet: pair one in Settings › Nodes (it must lend its storage).",
+  fbNetNoNodes: "No paired {product} yet: pair one in Settings › Nodes (it must lend its storage).",
   fbNodeOnline: "Online",
   fbNodeOffline: "Offline now",
   fbHostTitle: "A disk of the host",
   fbHostLead:
-    "From a container RedGiant sees the host's disks but cannot mount them: the host mounts the disk and passes a folder in. RedGiant notices it by itself.",
+    "From a container {product} sees the host's disks but cannot mount them: the host mounts the disk and passes a folder in. {product} notices it by itself.",
   fbHostOne: "On this machine there is the disk {title}, {how}, {size}.",
   fbHostMany: "On this machine there are {n} removable disks: pick the one for backups.",
   fbHostNone:
@@ -6294,14 +6302,14 @@ const en = {
   fbHostWatching: "Looking every few seconds: when {target} arrives it shows above, ready to use.",
   fbPveTitle: "Do it for me",
   fbPveLead:
-    "If the Proxmox host is among your machines (Settings › Machines), RedGiant can run these steps there itself. It asks you first, with every command in the request.",
+    "If the Proxmox host is among your machines (Settings › Machines), {product} can run these steps there itself. It asks you first, with every command in the request.",
   fbPveLook: "Look for the Proxmox host",
   fbPveNone:
-    "None of your {n} machines is a Proxmox host. Add the host in Settings › Machines (as root, with RedGiant's key), test it, then look again.",
+    "None of your {n} machines is a Proxmox host. Add the host in Settings › Machines (as root, with {product}'s key), test it, then look again.",
   fbPveHost: "{name}: Proxmox {version}.",
   fbPveGuess: "This container is {id}.",
   fbPveNoDisks: "No removable disk on that host.",
-  fbPveDo: "Pass it to RedGiant",
+  fbPveDo: "Pass it to {product}",
   fbPveFormat: "Not formatted: format and pass it",
   fbPveNeedId: "Write the container id first.",
   fbPveFormatQ: "Format the disk {title}?",
@@ -6309,7 +6317,7 @@ const en = {
   fbPveFormatYes: "Format and pass it",
   fbPveQ: "Pass the disk {title} of {host} to container {id}?",
   fbPveText:
-    "RedGiant asks you again in your requests, with the exact commands, before running anything on the host.",
+    "{product} asks you again in your requests, with the exact commands, before running anything on the host.",
   fbPveYes: "Ask me with the commands",
   fbPveDone: "Done: the folder {target} has arrived.",
   fbPveRestart:
@@ -6332,7 +6340,7 @@ const en = {
   fbErr_denied: "The destination does not let this user write there.",
   fbErr_mismatch: "The copy arrived different from the original: it was not kept. Try again.",
   fbErr_smb_missing: "Shared folders need smbclient, which this installation does not have.",
-  fbErr_bad_path: "Write a full folder path (/volume1/RedGiant) or one from the home (~/backups).",
+  fbErr_bad_path: "Write a full folder path (/volume1/{product}) or one from the home (~/backups).",
   fbErr_disk_missing:
     "The backup disk is not connected: plug it in. Nothing was written elsewhere.",
   fbErr_place_missing:
@@ -6353,7 +6361,7 @@ const en = {
   fbErr_needs_format: "That disk is not formatted.",
   job_backup_scheduled: "Backup",
   job_backup_restore: "Restoring the backup",
-  job_backup_host_mount: "Passing the disk {disk} to RedGiant",
+  job_backup_host_mount: "Passing the disk {disk} to {product}",
   job_step_fetch: "Bringing the backup here",
   job_step_look: "Looking at the host",
   job_step_ask: "Waiting for your yes",
@@ -6363,20 +6371,20 @@ const en = {
   osNetSub: "Network",
   osNetSubLead: "How the machine joins the network, and HTTPS for the pages of your home network.",
   osUpdSub: "Updates",
-  osUpdSubLead: "RedGiant and the system it runs on, kept up to date.",
+  osUpdSubLead: "{product} and the system it runs on, kept up to date.",
   osWifiTitle: "Wi-Fi",
   osWifiQ: "Which wireless network does the machine join?",
   snTitle: "Your home network",
-  snQ: "You are on {ssid}, RedGiant's temporary network: which network should RedGiant use at home?",
+  snQ: "You are on {ssid}, {product}'s temporary network: which network should {product} use at home?",
   snMaintQ:
-    "RedGiant could not find your home network, so it opened {ssid} again: choose the network it should use.",
+    "{product} could not find your home network, so it opened {ssid} again: choose the network it should use.",
   snCable: "I use the cable",
   snCableDone:
-    "The cable works: RedGiant is at {address}. Join your home network with this device and open http://{address}:7600 (or http://redgiant.local:7600).",
+    "The cable works: {product} is at {address}. Join your home network with this device and open http://{address}:7600 (or http://rasgeth.local:7600).",
   snJoin: "Use this network",
   snTrying:
-    "RedGiant is joining «{name}»: this temporary network closes now. Join your home network with this device and open http://redgiant.local:7600. If it does not work, {ssid} comes back in a minute with the reason.",
-  snFailed: "RedGiant could not join «{name}»: {why}",
+    "{product} is joining «{name}»: this temporary network closes now. Join your home network with this device and open http://rasgeth.local:7600. If it does not work, {ssid} comes back in a minute with the reason.",
+  snFailed: "{product} could not join «{name}»: {why}",
   snNone: "No network was seen around: use the cable, or type the name of a hidden network.",
   snPassword: "Password of «{name}»",
   snHiddenName: "Network name",
@@ -6402,7 +6410,7 @@ const en = {
   osWifiHiddenName: "The network's name",
   osWifiPassword: "Password of «{name}»",
   osWifiPasswordHelp:
-    "8 to 63 characters. It is kept only on the machine, readable by the system alone; RedGiant never stores or shows it.",
+    "8 to 63 characters. It is kept only on the machine, readable by the system alone; {product} never stores or shows it.",
   osWifiScan: "Look again",
   osWifiLooking: "Looking…",
   osWifiJoin: "Join",
@@ -6418,14 +6426,15 @@ const en = {
   osHttpsTitle: "HTTPS in your network",
   osHttpsQ: "Should the browser show the padlock on your home network?",
   osHttpsInFront:
-    "You already reach RedGiant over HTTPS through {name}: the local certificate is not needed for that address.",
+    "You already reach {product} over HTTPS through {name}: the local certificate is not needed for that address.",
   osHttpsLocal: "HTTPS in the local network",
   osHttpsLocalOn:
     "https://{name} and the machine's addresses answer with a certificate of this machine. http keeps working until you say it is trusted.",
-  osHttpsLocalOff: "Off: RedGiant answers on http only (or through the HTTPS you set up yourself).",
+  osHttpsLocalOff:
+    "Off: {product} answers on http only (or through the HTTPS you set up yourself).",
   osHttpsOffQ: "Switch local HTTPS off?",
   osHttpsOffText:
-    "Browsers that already went to https://redgiant.local keep asking for https for up to 30 days: in those, open the machine by its address (http://192.168…:7600) until then.",
+    "Browsers that already went to https://rasgeth.local keep asking for https for up to 30 days: in those, open the machine by its address (http://192.168…:7600) until then.",
   osHttpsOffYes: "Switch off",
   osHttpsAddress: "Address",
   osHttpsFingerprint: "Certificate's fingerprint (SHA-256)",
@@ -6438,15 +6447,15 @@ const en = {
   osHttpsQrHelp: "On a phone on the same network, scan the code to download it.",
   osHttpsDevice: "Your device",
   osHttpsHow_windows:
-    "Open RedGiant-CA.crt, «Install certificate…», «Current user», «Place all certificates in the following store», «Trusted Root Certification Authorities», Finish, Yes. Restart the browser.",
+    "Open Rasgeth-CA.crt, «Install certificate…», «Current user», «Place all certificates in the following store», «Trusted Root Certification Authorities», Finish, Yes. Restart the browser.",
   osHttpsHow_mac:
-    "Open RedGiant-CA.crt: Keychain Access adds it. Double-click «RedGiant on …» in the login keychain, open «Trust», set «When using this certificate» to «Always Trust», close and type your password.",
+    "Open Rasgeth-CA.crt: Keychain Access adds it. Double-click «{product} on …» in the login keychain, open «Trust», set «When using this certificate» to «Always Trust», close and type your password.",
   osHttpsHow_iphone:
-    "Open the download in Safari, «Allow». Settings › General › VPN & Device Management: install the profile. Then Settings › General › About › Certificate Trust Settings: switch on «RedGiant on …».",
+    "Open the download in Safari, «Allow». Settings › General › VPN & Device Management: install the profile. Then Settings › General › About › Certificate Trust Settings: switch on «{product} on …».",
   osHttpsHow_android:
-    "Settings › Security (or Security & privacy) › More › Encryption & credentials › Install a certificate › CA certificate: «Install anyway», choose RedGiant-CA.crt.",
+    "Settings › Security (or Security & privacy) › More › Encryption & credentials › Install a certificate › CA certificate: «Install anyway», choose Rasgeth-CA.crt.",
   osHttpsHow_linux:
-    "Debian/Ubuntu: sudo cp RedGiant-CA.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates. Chrome and Firefox keep their own list: add it under the browser's certificate settings (Authorities, «Import»).",
+    "Debian/Ubuntu: sudo cp Rasgeth-CA.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates. Chrome and Firefox keep their own list: add it under the browser's certificate settings (Authorities, «Import»).",
   osHttpsFirefox:
     "Firefox on any system: Settings › Privacy & Security › Certificates › View Certificates › Authorities › Import, tick «Trust this CA to identify websites».",
   osHttpsCheck: "Check this device",
@@ -6457,40 +6466,40 @@ const en = {
   osHttpsRedirect: "Always send to HTTPS",
   osHttpsRedirectOn:
     "http requests in your network go to https; browsers remember it (HSTS, 30 days). Devices without the certificate show a warning: install it there too.",
-  osUpdTitle: "RedGiant",
-  osUpdQ: "Is RedGiant up to date on this machine?",
+  osUpdTitle: "{product}",
+  osUpdQ: "Is {product} up to date on this machine?",
   osUpdInstalled: "Installed",
   osUpdState: "State",
   osUpdChecked: "Last look",
   osUpd_latest: "Up to date",
-  osUpd_available: "RedGiant {version} is ready to install",
+  osUpd_available: "{product} {version} is ready to install",
   osUpd_applying: "Updating to {version}",
   osUpd_error: "The last update did not finish (the previous version is running)",
-  osUpd_breaking: "RedGiant {version} needs a clean install",
+  osUpd_breaking: "{product} {version} needs a clean install",
   osUpd_unsigned:
-    "RedGiant {version} is out, but without a signed package for RedGiant OS yet: it comes with a later release",
+    "{product} {version} is out, but without a signed package for {product} OS yet: it comes with a later release",
   osUpd_unreachable: "Could not reach GitHub to look",
   osUpd_unknown: "Not looked yet",
   osUpdApply: "Update to {version}",
-  osUpdApplyQ: "Update RedGiant to {version}?",
+  osUpdApplyQ: "Update {product} to {version}?",
   osUpdApplyText:
-    "The machine downloads the new version while this one keeps working, then restarts RedGiant: the page stops for a few minutes and comes back by itself. Nothing is lost, and if the new version does not start the previous one comes back.",
+    "The machine downloads the new version while this one keeps working, then restarts {product}: the page stops for a few minutes and comes back by itself. Nothing is lost, and if the new version does not start the previous one comes back.",
   osUpdApplyYes: "Update now",
   osUpdBreaking:
-    "This version cannot be installed over the current one: RedGiant guides you (backup on a USB disk, reinstall RedGiant OS, restore).",
-  osRunTitle: "Updating RedGiant from {from} to {to}",
-  osRunTitleTo: "Updating RedGiant to {to}",
+    "This version cannot be installed over the current one: {product} guides you (backup on a USB disk, reinstall {product} OS, restore).",
+  osRunTitle: "Updating {product} from {from} to {to}",
+  osRunTitleTo: "Updating {product} to {to}",
   osRunLeftUnknown: "Working out how long it takes…",
   osRunTotal: "{size} to download",
   osRunSteps: "The update's steps",
   osRunKeeps:
-    "RedGiant keeps working while the new version downloads: it stops only for the restart, a minute or two.",
+    "{product} keeps working while the new version downloads: it stops only for the restart, a minute or two.",
   osRunComesBack: "Keep this page open: it reconnects by itself and reloads as the new version.",
   osRunAsking: "Asking for the images…",
   osRunExtracting: "Downloaded: getting the images ready…",
   osRunReconnecting:
-    "RedGiant is restarting: this page reconnects by itself as soon as it answers.",
-  osRunReloading: "RedGiant {version} answers: reloading the page…",
+    "{product} is restarting: this page reconnects by itself as soon as it answers.",
+  osRunReloading: "{product} {version} answers: reloading the page…",
   osRunDone: "Updated to {version}.",
   osRunDoneText: "From {from}, in {time}. Conversations, agents and settings are as before.",
   osRunDoneFrom: "From {from}. Conversations, agents and settings are as before.",
@@ -6499,11 +6508,11 @@ const en = {
   osStep_download: "Download the new images",
   osStep_files: "Download the system's files",
   osStep_install: "Install the system's files",
-  osStep_restart: "Restart RedGiant as the new version",
-  osStep_wait: "Check that RedGiant answers",
+  osStep_restart: "Restart {product} as the new version",
+  osStep_wait: "Check that {product} answers",
   osStep_rollback: "Put the previous version back",
-  osStepText_check: "Only a version signed by RedGiant is installed.",
-  osStepText_files: "{size}: the programs of the system around RedGiant.",
+  osStepText_check: "Only a version signed by {product} is installed.",
+  osStepText_files: "{size}: the programs of the system around {product}.",
   osStepText_install:
     "A copy of every file replaced is kept: if something goes wrong, it goes back as it was.",
   osStepText_restart: "The page stops for a minute or two and reconnects by itself: keep it open.",
@@ -6511,7 +6520,7 @@ const en = {
     "If the new version does not answer within ten minutes, the previous one comes back by itself.",
   osStepText_rollback:
     "The new version did not start: the previous one is coming back, nothing is lost.",
-  osImg_redgiant: "RedGiant",
+  osImg_redgiant: "{product}",
   osImg_postgres: "The database (Postgres)",
   osImgHere: "already here",
   osImgExtract: "getting it ready…",
@@ -6521,18 +6530,18 @@ const en = {
   osTookHours: "{h} h {min} min",
   osWhy_download: "The new version could not be downloaded.",
   osWhyText_download:
-    "Nothing changed: RedGiant {from} keeps working. Check that the machine reaches the internet, then press «Try again»: what came down already is not downloaded twice.",
+    "Nothing changed: {product} {from} keeps working. Check that the machine reaches the internet, then press «Try again»: what came down already is not downloaded twice.",
   osWhy_files: "The system's new files could not be installed.",
   osWhyText_files:
-    "Every file went back as it was and RedGiant {from} keeps working. Try again in a while; if it happens again, download the diagnostics (Settings › General › Diagnostics) and send them.",
+    "Every file went back as it was and {product} {from} keeps working. Try again in a while; if it happens again, download the diagnostics (Settings › General › Diagnostics) and send them.",
   osWhy_not_up: "The new version did not start.",
   osWhyText_not_up:
-    "RedGiant went back to {from} by itself: nothing is lost. Try again in a while; if it happens again, download the diagnostics (Settings › General › Diagnostics) and send them.",
+    "{product} went back to {from} by itself: nothing is lost. Try again in a while; if it happens again, download the diagnostics (Settings › General › Diagnostics) and send them.",
   osWhy_no_images: "This version has nothing for this machine's processor.",
   osWhyText_no_images: "Nothing changed. Wait for the next version.",
   osWhy_breaking: "This version cannot be installed over the current one.",
   osWhyText_breaking:
-    "Nothing changed: RedGiant {from} keeps working. RedGiant guides you through the clean install.",
+    "Nothing changed: {product} {from} keeps working. {product} guides you through the clean install.",
   osWhy_unsigned: "The new version is not signed.",
   osWhyText_unsigned: "For safety it was not installed: nothing changed. Look again later.",
   osWhy_unreachable: "GitHub did not answer.",
@@ -6544,7 +6553,7 @@ const en = {
   stStep_now: "in progress",
   stStep_todo: "to do",
   stStep_failed: "stopped here",
-  updDoneTitle: "RedGiant is up to date",
+  updDoneTitle: "{product} is up to date",
   updDoneSub: "Now {version} (it was {from})",
   updDoneText: "Everything went well: conversations, projects, agents and settings are as before.",
   updDoneNews: "What's new",
@@ -6561,7 +6570,7 @@ const en = {
   osRebootNow: "Restart now",
   osRebootQ: "Restart the machine now?",
   osRebootText:
-    "RedGiant stops for two or three minutes while the machine restarts; agents working now are interrupted and pick up again from what was saved. This page comes back by itself.",
+    "{product} stops for two or three minutes while the machine restarts; agents working now are interrupted and pick up again from what was saved. This page comes back by itself.",
   osRebootYes: "Restart",
   osRebooting: "The machine restarts in a few seconds. This page comes back by itself.",
   osErr_failed: "That did not work. Try again in a moment.",
@@ -6588,11 +6597,11 @@ const en = {
   osErr_unreachable: "The machine's helper did not answer.",
   osErr_timeout: "The machine took too long to answer.",
   updReqUpdatingOs:
-    "RedGiant OS is updating RedGiant: the page stops for a few minutes and comes back by itself.",
+    "{product} OS is updating {product}: the page stops for a few minutes and comes back by itself.",
   updBrkStep1Os:
-    "Copy the backup to a USB disk (Settings › System › Backups): reinstalling RedGiant OS erases this machine's disk.",
+    "Copy the backup to a USB disk (Settings › System › Backups): reinstalling {product} OS erases this machine's disk.",
   updBrkStep3Os:
-    "Write the new RedGiant OS (USB stick or image) and start the machine: the first start offers «Restore from the backup» and finds it on the USB disk.",
+    "Write the new {product} OS (USB stick or image) and start the machine: the first start offers «Restore from the backup» and finds it on the USB disk.",
   wzNetworkQ: "Network and HTTPS",
   wzNetworkLead:
     "Wi-Fi if the machine has no cable, and the padlock for the pages of your home network. Both can be done later in Settings › System.",
@@ -6606,14 +6615,14 @@ const en = {
   fbSshAddKey: "Add this key",
   fbSshKeyPlaceholder: "ssh-ed25519 AAAA… me@laptop",
   fbRemoteLead:
-    "Optional. Without it RedGiant works on your local network; here is what already reaches this machine.",
+    "Optional. Without it {product} works on your local network; here is what already reaches this machine.",
   fbNetTailscale: "Tailscale is already running here ({name}): you can use it.",
   fbNetTailscaleOff: "Tailscale is installed here but not connected.",
-  fbNetProxyFront: "There is already {name} in front of RedGiant.",
+  fbNetProxyFront: "There is already {name} in front of {product}.",
   fbNetAProxy: "a reverse proxy",
   fbNetProxies: "Running on this machine: {names}.",
-  fbNetDns: "A DNS server on your network ({ip}): a name like redgiant.home can point here.",
-  fbNetName: "You reached RedGiant by name: {name}.",
+  fbNetDns: "A DNS server on your network ({ip}): a name like rasgeth.home can point here.",
+  fbNetName: "You reached {product} by name: {name}.",
   fbNetNothing: "Nothing found that already reaches this machine from outside.",
   fbNetLanOnly: "Local network only is a fine choice: skip this step.",
   fbCodeTitle: "First start",
@@ -6625,31 +6634,31 @@ const en = {
   fbCodeNone: "This code was used already: restart the machine for a new one.",
   oiTitle: "Already have your own infrastructure",
   oiLead:
-    "A reverse proxy, a VPN, a home DNS: if you already reach your machines that way, RedGiant goes behind them like any other service. Here are the blocks to copy.",
+    "A reverse proxy, a VPN, a home DNS: if you already reach your machines that way, {product} goes behind them like any other service. Here are the blocks to copy.",
   oiCopy: "Copy",
   oiCopied: "Copied",
   oiOpen: "Show the guide",
   oiClose: "Hide the guide",
   oiReachedAs: "You are reachable already as {host}.",
   oiReachedProxy:
-    "This page came through a reverse proxy of your network: the guide below is filled with what RedGiant saw.",
+    "This page came through a reverse proxy of your network: the guide below is filled with what {product} saw.",
   oiReachedName:
     "This page came with a name of your network: at home it works already; from outside one of the ways below is needed (Tailscale, for instance).",
   oiSaid:
-    "You said RedGiant is reachable already your own way: it does not ask again to set up its ways.",
+    "You said {product} is reachable already your own way: it does not ask again to set up its ways.",
   oiSaidUrl:
-    "You said RedGiant is reachable already at {url}: it does not ask again to set up its ways, and its links (Telegram…) use that address.",
+    "You said {product} is reachable already at {url}: it does not ask again to set up its ways, and its links (Telegram…) use that address.",
   oiSaidUndo: "Ask again",
-  oiName: "RedGiant's name",
-  oiNameHelp: "The name you will open, e.g. redgiant.home.example.com.",
-  oiAddress: "RedGiant's address in the network",
-  oiAddressHelp: "Where the proxy or the VPN finds RedGiant; its port is {port}.",
+  oiName: "{product}'s name",
+  oiNameHelp: "The name you will open, e.g. rasgeth.home.example.com.",
+  oiAddress: "{product}'s address in the network",
+  oiAddressHelp: "Where the proxy or the VPN finds {product}; its port is {port}.",
   oiPart: "What you have",
   oiPartProxy: "Reverse proxy",
   oiPartVpn: "Tailscale or another VPN",
   oiPartDns: "Home DNS",
   oiProxyLead:
-    "The proxy can be on another machine: it only needs to reach RedGiant's address. It gets the certificate (HTTPS) and sends everything on, the WebSocket included.",
+    "The proxy can be on another machine: it only needs to reach {product}'s address. It gets the certificate (HTTPS) and sends everything on, the WebSocket included.",
   oiCaddy: "Caddyfile: a site of its own",
   oiCaddyWildcard: "Caddyfile: inside a wildcard site you already have (*.{domain})",
   oiCaddyReload: "Then reload Caddy (caddy reload, or restart its container).",
@@ -6659,20 +6668,20 @@ const en = {
   oiNpm1: "Hosts › Proxy Hosts › Add Proxy Host; Domain Names: {name}.",
   oiNpm2: "Scheme http, Forward Hostname / IP {address}, Forward Port {port}.",
   oiNpm3:
-    "Switch on «Websockets Support» (RedGiant's page lives on a WebSocket) and «Block Common Exploits».",
+    "Switch on «Websockets Support» ({product}'s page lives on a WebSocket) and «Block Common Exploits».",
   oiNpm4: "SSL: «Request a new SSL Certificate», «Force SSL», «HTTP/2 Support». Save.",
-  oiWs: "RedGiant keeps the page live through a WebSocket at /ws: Caddy and Traefik pass it on by themselves; Nginx needs the Upgrade headers (Websockets Support in Nginx Proxy Manager).",
+  oiWs: "{product} keeps the page live through a WebSocket at /ws: Caddy and Traefik pass it on by themselves; Nginx needs the Upgrade headers (Websockets Support in Nginx Proxy Manager).",
   oiAuthTitle: "Authelia, Authentik or another forward auth in front?",
   oiAuthWhy:
-    "Better not: RedGiant has its own password, with limited tries and the optional code from an authenticator app, and a sign-in in front of it blocks the app, the command line, ACP agents, the browser extension and the webhooks (Telegram, WhatsApp, automations), which come in with their own tokens.",
+    "Better not: {product} has its own password, with limited tries and the optional code from an authenticator app, and a sign-in in front of it blocks the app, the command line, ACP agents, the browser extension and the webhooks (Telegram, WhatsApp, automations), which come in with their own tokens.",
   oiAuthIf:
-    "If you want it anyway, leave /api/ and /ws out of it: forward auth then guards the page, and RedGiant's password everything else.",
+    "If you want it anyway, leave /api/ and /ws out of it: forward auth then guards the page, and {product}'s password everything else.",
   oiAuthCaddy: "Caddyfile with forward auth (Authelia), leaving out the app's paths",
-  oiTsHere: "Tailscale on RedGiant's machine",
+  oiTsHere: "Tailscale on {product}'s machine",
   oiTsHereLead:
-    "Install Tailscale on the machine and sign in (tailscale up): from your devices in the tailnet RedGiant opens at http://<machine>:7600. For HTTPS with a real certificate:",
+    "Install Tailscale on the machine and sign in (tailscale up): from your devices in the tailnet {product} opens at http://<machine>:7600. For HTTPS with a real certificate:",
   oiTsRunning:
-    "Tailscale runs here already as {name}: from your devices in the tailnet RedGiant opens with that name. For HTTPS with a real certificate:",
+    "Tailscale runs here already as {name}: from your devices in the tailnet {product} opens with that name. For HTTPS with a real certificate:",
   oiTsServe: "On the machine",
   oiTsSubnet: "Tailscale as a subnet router",
   oiTsSubnetLead:
@@ -6681,9 +6690,9 @@ const en = {
     "Approve the route in Tailscale's admin console (Machines › Edit route settings). Your phone then opens http://{address}:{port} from anywhere, and the names of your home DNS too if you add it in DNS › Nameservers (restricted to your domain).",
   oiOtherVpn: "WireGuard, ZeroTier and the others",
   oiOtherVpnLead:
-    "The same idea: with the home network {subnet} in the peer's AllowedIPs (WireGuard) or as a managed route (ZeroTier), RedGiant opens at its home address.",
+    "The same idea: with the home network {subnet} in the peer's AllowedIPs (WireGuard) or as a managed route (ZeroTier), {product} opens at its home address.",
   oiDnsLead:
-    "A name instead of an address: point it to the proxy when there is one, otherwise to RedGiant's address.",
+    "A name instead of an address: point it to the proxy when there is one, otherwise to {product}'s address.",
   oiDnsPihole: "Pi-hole: Settings › Local DNS › DNS Records: {name} → {address}.",
   oiDnsAdguard: "AdGuard Home: Filters › DNS rewrites: *.{domain} or the single name → {address}.",
   oiDnsRouter:
@@ -6692,80 +6701,80 @@ const en = {
   oiDnsTs:
     "Away from home with Tailscale: add the home DNS in Tailscale's DNS › Nameservers, restricted to your domain, so the same names work outside too.",
   oiPartHome: "Your home services",
-  oiHomeTitle: "Your home services (Gitea, NAS…) seen by RedGiant",
+  oiHomeTitle: "Your home services (Gitea, NAS…) seen by {product}",
   oiHomeWhy:
-    "RedGiant reaches your Gitea, NAS or other services by name, through the DNS of the machine it runs on (often the router). A name your phone opens may be unknown there, or point to an address RedGiant cannot reach: then «A Gitea you already have» fails even though the service works.",
+    "{product} reaches your Gitea, NAS or other services by name, through the DNS of the machine it runs on (often the router). A name your phone opens may be unknown there, or point to an address {product} cannot reach: then «A Gitea you already have» fails even though the service works.",
   oiHomeWhich:
-    "Which DNS RedGiant uses: on RedGiant OS the console (or SSH) shows it with the command below, under «Current DNS Server»; on another computer it is that computer's DNS (its network settings, /etc/resolv.conf on Linux). «Try a name» asks the very DNS RedGiant uses.",
-  oiHomeSeen: "RedGiant asks the name server {dns}.",
+    "Which DNS {product} uses: on {product} OS the console (or SSH) shows it with the command below, under «Current DNS Server»; on another computer it is that computer's DNS (its network settings, /etc/resolv.conf on Linux). «Try a name» asks the very DNS {product} uses.",
+  oiHomeSeen: "{product} asks the name server {dns}.",
   oiService: "The service's name",
   oiServiceHelp: "As you open it, e.g. git.home.example.com.",
   oiProxyAddr: "The proxy's local address",
   oiProxyAddrHelp:
-    "The address in your network (192.168.…) of the proxy in front of the service, or of the service itself. Not a Tailscale address (100.…): RedGiant reaches it only if it is in Tailscale too.",
-  oiHomeWhat: "In the DNS RedGiant uses, give the name that local address:",
+    "The address in your network (192.168.…) of the proxy in front of the service, or of the service itself. Not a Tailscale address (100.…): {product} reaches it only if it is in Tailscale too.",
+  oiHomeWhat: "In the DNS {product} uses, give the name that local address:",
   oiHomeRouter: "The router: its «static DNS» or «local names» page: {name} → {address}.",
   oiHomePihole: "Pi-hole: Settings › Local DNS › DNS Records: {name} → {address}.",
   oiHomeAdguard: "AdGuard Home: Filters › DNS rewrites: {name} → {address}.",
   oiHomeHosts: "Pi-hole's records or /etc/hosts, by hand",
   oiHomeDnsmasq: "dnsmasq (or a file in Pi-hole's /etc/dnsmasq.d/)",
   oiHomeTs:
-    "If your Pi-hole answers with Tailscale addresses (100.…), those work only for devices in Tailscale: add a local record with the address in your network as above, or let RedGiant's machine use the router as DNS with the name there.",
+    "If your Pi-hole answers with Tailscale addresses (100.…), those work only for devices in Tailscale: add a local record with the address in your network as above, or let {product}'s machine use the router as DNS with the name there.",
   oiHomeV6:
-    "A router that answers «does not exist» to the IPv6 (AAAA) question for names added by hand: RedGiant OS handles it already; on other systems with systemd-resolved, put Cache=no-negative in a file of /etc/systemd/resolved.conf.d/, or the name seems missing for a while.",
-  oiHomeLookup: "On RedGiant OS, what its DNS answers for the name",
-  oiHomeWhichCmd: "On RedGiant OS, which DNS it uses",
+    "A router that answers «does not exist» to the IPv6 (AAAA) question for names added by hand: {product} OS handles it already; on other systems with systemd-resolved, put Cache=no-negative in a file of /etc/systemd/resolved.conf.d/, or the name seems missing for a while.",
+  oiHomeLookup: "On {product} OS, what its DNS answers for the name",
+  oiHomeWhichCmd: "On {product} OS, which DNS it uses",
   oiProbe: "Try a name",
   oiProbeLead:
-    "RedGiant looks the name up and opens https://{name} from where it runs, as it does for your Gitea. Nothing of the answer is kept or shown but its code.",
+    "{product} looks the name up and opens https://{name} from where it runs, as it does for your Gitea. Nothing of the answer is kept or shown but its code.",
   oiProbeGo: "Try {name}",
   oiProbeBad: "That is not a name (for instance git.home.example.com).",
   oiProbeOk: "Fine: here {name} is {address}, and https://{name} answered (HTTP {status}).",
   oiProbeNotFound:
-    "The DNS RedGiant uses does not know {name}. Add the name there (router, Pi-hole or AdGuard) with the proxy's local address, then try again.",
+    "The DNS {product} uses does not know {name}. Add the name there (router, Pi-hole or AdGuard) with the proxy's local address, then try again.",
   oiProbeDnsFailed:
-    "The DNS RedGiant uses did not answer for {name}. Check that it works, then try again.",
+    "The DNS {product} uses did not answer for {name}. Check that it works, then try again.",
   oiProbeTailscale:
-    "Here {name} is {address}: a Tailscale address, which RedGiant cannot reach. In the DNS RedGiant uses, give the name the proxy's local address.",
+    "Here {name} is {address}: a Tailscale address, which {product} cannot reach. In the DNS {product} uses, give the name the proxy's local address.",
   oiProbeUnreachable:
-    "Here {name} is {address}, but nothing answers on https from RedGiant. Check that it is the proxy's local address and that the proxy is running.",
+    "Here {name} is {address}, but nothing answers on https from {product}. Check that it is the proxy's local address and that the proxy is running.",
   oiProbeTimeout:
-    "Here {name} is {address}, but it did not answer in time: probably an address RedGiant cannot reach (another network, a VPN).",
+    "Here {name} is {address}, but it did not answer in time: probably an address {product} cannot reach (another network, a VPN).",
   oiProbeTls:
-    "Here {name} is {address} and answers, but with a certificate RedGiant does not trust (made by hand?). Give the proxy a certificate from a public authority (Let's Encrypt).",
+    "Here {name} is {address} and answers, but with a certificate {product} does not trust (made by hand?). Give the proxy a certificate from a public authority (Let's Encrypt).",
   gitGiteaNameNotFound:
-    "RedGiant cannot find {host}: the DNS it uses does not know that name. The guide «Your home services» in Settings › Access from outside home says what to add, and lets you try the name.",
+    "{product} cannot find {host}: the DNS it uses does not know that name. The guide «Your home services» in Settings › Access from outside home says what to add, and lets you try the name.",
   gitGiteaHostUnreachable:
-    "RedGiant finds {host}, but its address does not answer from here (a Tailscale address, another network?). The guide «Your home services» in Settings › Access from outside home says how to fix it.",
+    "{product} finds {host}, but its address does not answer from here (a Tailscale address, another network?). The guide «Your home services» in Settings › Access from outside home says how to fix it.",
   gitGiteaGuide: "Open «Your home services»",
   err_name_not_found:
-    "RedGiant cannot find the server's name in the DNS it uses. See Settings › Access from outside home › Your home services.",
+    "{product} cannot find the server's name in the DNS it uses. See Settings › Access from outside home › Your home services.",
   err_host_unreachable:
-    "The server's name is known, but its address does not answer from RedGiant. See Settings › Access from outside home › Your home services.",
+    "The server's name is known, but its address does not answer from {product}. See Settings › Access from outside home › Your home services.",
   err_bad_name: "That is not a name (for instance git.home.example.com).",
   oiCheck: "Check that it answers",
-  oiCheckLead: 'From any computer: RedGiant answers {"ok":true,…}.',
+  oiCheckLead: 'From any computer: {product} answers {"ok":true,…}.',
   oiCheckGo: "Check {url} from here",
-  oiCheckRedgiant: "RedGiant answers at this address.",
+  oiCheckRedgiant: "{product} answers at this address.",
   oiCheckAnswers:
-    "Something answers at this address (the browser does not let the page read who): open it to see RedGiant.",
+    "Something answers at this address (the browser does not let the page read who): open it to see {product}.",
   oiCheckNo:
     "No answer from this browser: check the name in the DNS, the proxy's block and, from outside, the VPN.",
   oiSkip: "Skip: I am reachable already",
   oiSkipNote:
-    "RedGiant stops asking to set up its own ways out (Tailscale, Cloudflare, its own domain); they stay here if you want one later.",
-  remoteWaysFolded: "RedGiant's own ways out",
+    "{product} stops asking to set up its own ways out (Tailscale, Cloudflare, its own domain); they stay here if you want one later.",
+  remoteWaysFolded: "{product}'s own ways out",
   faTitle: "Create your access",
   faLead:
-    "Welcome to RedGiant. Choose the password you will sign in with from this and your other devices: then you are in.",
+    "Welcome to {product}. Choose the password you will sign in with from this and your other devices: then you are in.",
   faGo: "Create and enter",
   faNotHereTitle: "The first access is created at home",
   faNotHere:
-    "This RedGiant has no password yet, and its first access is created only from its own network: open this address from a phone or computer connected to the same network as the machine.",
+    "This {product} has no password yet, and its first access is created only from its own network: open this address from a phone or computer connected to the same network as the machine.",
   loginRemembered: "This device stays signed in while you use it.",
   loginNoPasswordTitle: "No password yet",
   loginNoPassword:
-    "This RedGiant has no password yet. Open it from the computer it is installed on (its icon or the installer's link) and choose one in Settings › Access from outside home.",
+    "This {product} has no password yet. Open it from the computer it is installed on (its icon or the installer's link) and choose one in Settings › Access from outside home.",
   // G42.7: the editors inside RGCompanion.
   canvasAskAgent: "Ask the agent",
   canvasAskAgentHint: "Puts what you selected, and where it is, in the conversation's message",
@@ -6786,7 +6795,7 @@ const it: Record<Key, string> = {
   stGrpWhere: "Dove gli parli",
   stGrpModels: "Modelli e spese",
   stGrpHome: "Codice, accesso e sicurezza",
-  stGenQ: "Come vuoi RedGiant?",
+  stGenQ: "Come vuoi {product}?",
   stGenLead:
     "Aspetto e lingua, poi quello che vale per tutti gli agenti e i servizi in più. Ogni riquadro apre la sua finestra; quelli accesi sono impostati.",
   stGenAgents: "Per tutti gli agenti",
@@ -6803,11 +6812,11 @@ const it: Record<Key, string> = {
   stGenNewsText:
     "Tutto quello che ha portato ogni versione, dalla più recente: anche quello che ti sei perso.",
   stGenCare: "Aggiornamenti e diagnostica",
-  stGenCareLead: "Se c'è un RedGiant più nuovo, e un registro da mandare quando qualcosa non va.",
-  stGenDebugText: "Tutto quello che fa RedGiant, scritto in un registro da scaricare e mandare.",
+  stGenCareLead: "Se c'è un {product} più nuovo, e un registro da mandare quando qualcosa non va.",
+  stGenDebugText: "Tutto quello che fa {product}, scritto in un registro da scaricare e mandare.",
   stTgAccounts: "Account collegati",
   stCodeEyebrow: "Codice",
-  stRemoteQ: "RedGiant anche fuori casa",
+  stRemoteQ: "{product} anche fuori casa",
   stAgQ: "La tua squadra",
   // Import from other agents (G36.7) and skills that come by themselves (G36.8).
   impSection: "Importa",
@@ -6818,7 +6827,7 @@ const it: Record<Key, string> = {
     "Porta qui le istruzioni, le skill, i servizi collegati e i ricordi di Claude Code, Codex, Cursor, Gemini, opencode o Hermes, e le tue conversazioni di ChatGPT e Claude. Prima vedi tutto, poi scegli; niente viene sovrascritto e puoi annullare tutto.",
   impWayScan: "Cerca sul mio computer",
   impWayScanText:
-    "RedGiant guarda solo nelle cartelle che usano quegli agenti (.claude, .codex, .cursor, .gemini…) e nei tuoi progetti, dopo il tuo sì.",
+    "{product} guarda solo nelle cartelle che usano quegli agenti (.claude, .codex, .cursor, .gemini…) e nei tuoi progetti, dopo il tuo sì.",
   impWayFolder: "Scegli una cartella",
   impWayFolderText:
     "Una cartella come .claude o quella di un progetto: si leggono solo i file che servono.",
@@ -6832,18 +6841,18 @@ const it: Record<Key, string> = {
     "Claude: Impostazioni, Privacy, Esporta dati. Il link dell'email dura 24 ore: carica qui lo .zip così com'è.",
   impScanTitle: "Cerca su questo computer",
   impScanLead:
-    "RedGiant leggerà solo i file che gli altri agenti tengono per te, sul computer dove gira RedGiant. Non cambia niente finché non scegli.",
+    "{product} leggerà solo i file che gli altri agenti tengono per te, sul computer dove gira {product}. Non cambia niente finché non scegli.",
   impScanHome: "Le cartelle dei miei agenti",
   impScanHomeHelp:
     "~/.claude, ~/.codex, ~/.agents, ~/.cursor, ~/.gemini, ~/.config/opencode e ~/.hermes. Le trascrizioni di Claude Code non si leggono mai.",
-  impScanProjects: "I miei progetti in RedGiant",
+  impScanProjects: "I miei progetti in {product}",
   impScanProjectsHelp:
     "CLAUDE.md, AGENTS.md, .cursor, .mcp.json e simili nella cartella di ogni progetto.",
   impScanFolder: "Un'altra cartella (facoltativa)",
   impScanFolderHelp:
-    "Il suo percorso completo su questo computer, per esempio un progetto non ancora in RedGiant.",
+    "Il suo percorso completo su questo computer, per esempio un progetto non ancora in {product}.",
   impScanPromise:
-    "Le chiavi trovate in questi file non si mostrano mai: vanno con il loro servizio, nelle credenziali private di RedGiant.",
+    "Le chiavi trovate in questi file non si mostrano mai: vanno con il loro servizio, nelle credenziali private di {product}.",
   impScanGo: "Cerca",
   impLooking: "Cerco…",
   impUploading: "Invio dei file",
@@ -6887,12 +6896,12 @@ const it: Record<Key, string> = {
   impConvChat: "La Chat",
   impLeftTitle: "Cosa resta fuori",
   impLeftLead:
-    "Trovato ma non portato: per queste cose RedGiant ha il suo modo, nelle Impostazioni.",
+    "Trovato ma non portato: per queste cose {product} ha il suo modo, nelle Impostazioni.",
   impUnreadable: "non si legge",
   "impNote_only-paths": "Valeva solo per alcuni file: qui vale per tutto.",
   "impNote_tools-dropped":
-    "Nominava gli strumenti che poteva usare: gli agenti di RedGiant tengono i loro.",
-  "impNote_model-dropped": "Sceglieva un suo modello: gli agenti di RedGiant usano il loro.",
+    "Nominava gli strumenti che poteva usare: gli agenti di {product} tengono i loro.",
+  "impNote_model-dropped": "Sceglieva un suo modello: gli agenti di {product} usano il loro.",
   "impNote_hooks-dropped": "Gli hook e le righe di shell non si portano.",
   impNote_arguments: "I suoi argomenti diventano la richiesta che fai.",
   "impNote_as-skill": "Là era un comando o un agente aiutante, qui una skill.",
@@ -6933,7 +6942,7 @@ const it: Record<Key, string> = {
   xwScripts: "Ha degli script ({files}): approva solo se ti fidi di quello che fanno.",
   xwKeptFiles: "File della skill che restano: {files}",
   login: "Accedi",
-  loginHint: "Incolla il token del tuo server RedGiant.",
+  loginHint: "Incolla il token del tuo server {product}.",
   token: "Token",
   logout: "Esci",
   platform: "Piattaforma",
@@ -6959,7 +6968,7 @@ const it: Record<Key, string> = {
   whenDayOfMonth: "il giorno",
   whenEveryHours: "ogni (ore)",
   whenWebhookHelp:
-    "Un altro programma (un sito, un modulo, GitHub…) chiama l'indirizzo di RedGiant; indirizzo e segreto compaiono dopo il salvataggio.",
+    "Un altro programma (un sito, un modulo, GitHub…) chiama l'indirizzo di {product}; indirizzo e segreto compaiono dopo il salvataggio.",
   day_0: "domenica",
   day_1: "lunedì",
   day_2: "martedì",
@@ -6980,7 +6989,7 @@ const it: Record<Key, string> = {
   autoOn: "Accesa",
   autoOff: "Spenta: non parte finché non la riaccendi.",
   // settings: automations, extensions (drawn as the wizard, 2026-11-06)
-  awQ: "Cosa deve fare RedGiant da solo?",
+  awQ: "Cosa deve fare {product} da solo?",
   awLead:
     "Un'automazione chiede a un agente di fare qualcosa a un'ora o quando succede qualcosa; un promemoria ti manda un messaggio in un giorno. I riquadri accesi sono attivi.",
   awNewText: "Un agente fa qualcosa per te: ogni mattina, ogni settimana, a una mail o a un push.",
@@ -7027,7 +7036,7 @@ const it: Record<Key, string> = {
   tplTitle_blank: "Da zero",
   tplDesc_blank: "Scegli tu quando, chi e cosa.",
   reminderPurpose:
-    "RedGiant ti manda questo testo su Telegram all'ora che scegli, una volta sola. Nessun agente, nessun costo.",
+    "{product} ti manda questo testo su Telegram all'ora che scegli, una volta sola. Nessun agente, nessun costo.",
   reminderWhat: "Cosa ricordarti",
   reminderDay: "Giorno",
   reminderSave: "Salva il promemoria",
@@ -7111,11 +7120,11 @@ const it: Record<Key, string> = {
     "God può lavorare su tutto il sistema di questo computer, non solo nei progetti (modalità «metallo»). Ogni sua modifica ti chiede prima il permesso.",
   techCodeTitle: "Aggiornamenti del codice scritti da God",
   techSupervised:
-    "God può mettere in uso gli aggiornamenti del codice che ha scritto e provato: RedGiant è avviato da un supervisore che lo riavvia e, se la versione nuova non parte, torna da solo a quella di prima.",
+    "God può mettere in uso gli aggiornamenti del codice che ha scritto e provato: {product} è avviato da un supervisore che lo riavvia e, se la versione nuova non parte, torna da solo a quella di prima.",
   techNotSupervised:
-    "Gli aggiornamenti del codice scritti da God non possono essere messi in uso da soli: RedGiant non è avviato da un supervisore che possa riavviarlo in sicurezza.",
+    "Gli aggiornamenti del codice scritti da God non possono essere messi in uso da soli: {product} non è avviato da un supervisore che possa riavviarlo in sicurezza.",
   techNotSupervisedMeans:
-    "Cosa vuol dire: God può comunque proporre e provare modifiche al codice di RedGiant, ma non installarle. Non devi fare niente: è il modo normale in cui RedGiant funziona.",
+    "Cosa vuol dire: God può comunque proporre e provare modifiche al codice di {product}, ma non installarle. Non devi fare niente: è il modo normale in cui {product} funziona.",
   techLastGood: "Ultima versione che funzionava: {commit}",
   kind_god: "God, guida tutto",
   mascotOf: "Mascotte di {name}, {state}",
@@ -7159,7 +7168,7 @@ const it: Record<Key, string> = {
   awSourcesTitle: "Collegamenti",
   awSourcesLead: "Cosa possono ascoltare le automazioni, oltre all'orologio.",
   emailPurpose:
-    "Una routine può partire quando arriva una email (una fattura, un avviso). RedGiant guarda solo la posta nuova, ogni due minuti, e non cambia niente nella tua casella; l'email arriva all'agente come informazione, mai come istruzioni.",
+    "Una routine può partire quando arriva una email (una fattura, un avviso). {product} guarda solo la posta nuova, ogni due minuti, e non cambia niente nella tua casella; l'email arriva all'agente come informazione, mai come istruzioni.",
   emailConnected: "Leggo {user} su {host}.",
   emailHost: "Server di posta (IMAP)",
   emailHostHelp: "Per esempio imap.gmail.com, outlook.office365.com, imap.mail.me.com.",
@@ -7172,12 +7181,12 @@ const it: Record<Key, string> = {
   emailSave: "Collega la casella",
   emailTesting: "Provo la casella…",
   err_email_failed:
-    "La casella non ha fatto entrare RedGiant: controlla server, indirizzo e password per le app.",
+    "La casella non ha fatto entrare {product}: controlla server, indirizzo e password per le app.",
   whenKind_repo: "Sul repository",
   whenKind_email: "A una email",
   whenRepo: "Quando succede qualcosa nel repository ({events})",
   whenRepoHelp:
-    "RedGiant aggiunge il webhook al repository del progetto da solo: su Gitea subito, su GitHub quando l'accesso da fuori casa è attivo.",
+    "{product} aggiunge il webhook al repository del progetto da solo: su Gitea subito, su GitHub quando l'accesso da fuori casa è attivo.",
   repoEvent_push: "Nuovi commit",
   repoEvent_pull_request: "Pull request",
   repoEvent_issues: "Issue",
@@ -7200,7 +7209,7 @@ const it: Record<Key, string> = {
   extAppGuide: "Crea la tua app su {name} (una volta, una decina di minuti)",
   extAppConsole: "Apri la pagina per sviluppatori di {name}",
   extServerUrl: "Indirizzo di {name}",
-  extServerUrlHelp: "Come lo raggiunge il server di RedGiant, per esempio sulla rete di casa.",
+  extServerUrlHelp: "Come lo raggiunge il server di {product}, per esempio sulla rete di casa.",
   extClientId: "Client ID della tua app",
   extClientSecret: "Client secret della tua app",
   extClientSecretOptional: "Client secret della tua app (se ce l'ha)",
@@ -7228,7 +7237,7 @@ const it: Record<Key, string> = {
   screenYours:
     "Ce l'hai tu: gli agenti aspettano. Clicca e scrivi sullo schermo; restituiscilo quando hai finito.",
   screenStarting: "Avvio il browser…",
-  screenUnavailable: "Il browser degli agenti richiede l'installazione di RedGiant con Docker.",
+  screenUnavailable: "Il browser degli agenti richiede l'installazione di {product} con Docker.",
   compaction_auto:
     "La conversazione è stata riassunta qui (la parte più vecchia, preparata in anticipo)",
   compaction_manual: "La conversazione è stata riassunta qui, come hai chiesto",
@@ -7346,10 +7355,10 @@ const it: Record<Key, string> = {
   asstStopConfirm: "Eliminare {name}? Le sue conversazioni restano nello storico.",
   wzRemote: "Accesso da fuori casa",
   remotePurpose:
-    "Usa RedGiant dal telefono o da un altro computer quando sei fuori. Prima una password, poi una di tre strade; niente è raggiungibile da fuori finché non hai finito. Facoltativo.",
+    "Usa {product} dal telefono o da un altro computer quando sei fuori. Prima una password, poi una di tre strade; niente è raggiungibile da fuori finché non hai finito. Facoltativo.",
   remotePassword: "La tua password",
   remotePasswordHint:
-    "Da fuori RedGiant chiede questa password (il link con il token resta per questo computer). Scegline una che non usi da nessun'altra parte.",
+    "Da fuori {product} chiede questa password (il link con il token resta per questo computer). Scegline una che non usi da nessun'altra parte.",
   remotePasswordSet: "La password è impostata",
   remotePasswordChange: "Cambiala",
   pwSignOutOthersQ: "Scollegare anche gli altri dispositivi?",
@@ -7372,12 +7381,12 @@ const it: Record<Key, string> = {
   remoteCodeOff: "Seconda verifica spenta.",
   remoteSessions: "Browser collegati",
   remoteSessionsHint:
-    "Ogni accesso dura 30 giorni. Se hai perso un telefono, o pensi che qualcun altro sia entrato (si scollegano anche le app RGCompanion):",
+    "Ogni accesso dura 30 giorni. Se hai perso un telefono, o pensi che qualcun altro sia entrato (si scollegano anche le app di {product}):",
   remoteSignOutAll: "Scollega tutti",
   remoteSignedOut: "Scollegati tutti.",
   remoteHow: "Come raggiungerlo",
   remoteNeedsPassword: "Prima imposta la password qui sopra.",
-  remoteOn: "RedGiant si raggiunge da fuori a questo indirizzo:",
+  remoteOn: "{product} si raggiunge da fuori a questo indirizzo:",
   remoteOff: "Spegni l'accesso da fuori",
   remoteTailscale:
     "Una rete privata fra i tuoi dispositivi: niente da aprire sul router, gratis per uso personale. Installi Tailscale anche sul telefono.",
@@ -7390,47 +7399,47 @@ const it: Record<Key, string> = {
   tsStep1: "Crea un account gratuito su Tailscale (va bene con Google, Microsoft o GitHub):",
   tsSignUp: "Iscriviti a Tailscale",
   tsStep2:
-    "Nella pagina DNS di Tailscale attiva MagicDNS e HTTPS Certificates (danno a RedGiant un indirizzo sicuro):",
+    "Nella pagina DNS di Tailscale attiva MagicDNS e HTTPS Certificates (danno a {product} un indirizzo sicuro):",
   tsDns: "Impostazioni DNS di Tailscale",
   tsStep3: "Poi qui:",
   tsStep4: "Installa Tailscale sul telefono e sugli altri computer, con lo stesso account:",
   tsApps: "App di Tailscale",
-  tsSignIn: "Tailscale vuole che tu acceda, per aggiungere RedGiant alla tua rete:",
+  tsSignIn: "Tailscale vuole che tu acceda, per aggiungere {product} alla tua rete:",
   tsOpenSignIn: "Apri la pagina di accesso di Tailscale",
   cfStep1:
     "Se non hai ancora un dominio, comprane uno (Cloudflare li vende a prezzo di costo, circa 10 euro l'anno):",
   cfBuy: "Compra un dominio su Cloudflare",
   cfStep2:
-    "Apri Tunnels in Cloudflare Zero Trust, premi Create a tunnel, scegli Cloudflared e dagli un nome (per esempio redgiant):",
+    "Apri Tunnels in Cloudflare Zero Trust, premi Create a tunnel, scegli Cloudflared e dagli un nome (per esempio rasgeth):",
   cfTunnels: "Tunnel di Cloudflare",
   cfStep3:
-    "Nel passo Public hostname: sottodominio redgiant, il tuo dominio, Service type HTTP, URL redgiant:7600. Salva.",
+    "Nel passo Public hostname: sottodominio rasgeth, il tuo dominio, Service type HTTP, URL redgiant:7600. Salva.",
   cfStep4:
     "Cloudflare mostra un comando con un token lungo dopo --token: copia solo il token e scrivi qui l'indirizzo.",
   cfToken: "Il token del tunnel",
   cfTokenHelp:
     "La stringa lunga dopo --token nel comando che mostra Cloudflare (comincia con eyJ).",
   cfHost: "L'indirizzo che hai scelto",
-  cfHostHelp: "Per esempio redgiant.tuodominio.it: sottodominio e dominio del Public hostname.",
+  cfHostHelp: "Per esempio rasgeth.tuodominio.it: sottodominio e dominio del Public hostname.",
   cfAccess:
     "Ancora più sicuro: in Cloudflare Zero Trust, Access, aggiungi un'applicazione per questo indirizzo, così Cloudflare chiede chi sei prima ancora di mostrare la pagina.",
   caddyWarning:
-    "Con questa strada la pagina di accesso di RedGiant è su internet: tieni la password forte e la seconda verifica attiva.",
+    "Con questa strada la pagina di accesso di {product} è su internet: tieni la password forte e la seconda verifica attiva.",
   caddyStep1:
-    "Dal fornitore del tuo dominio crea un record DNS di tipo A per l'indirizzo che vuoi (per esempio redgiant.tuodominio.it) che punti all'indirizzo pubblico di casa. Se cambia, usa un servizio di DNS dinamico.",
+    "Dal fornitore del tuo dominio crea un record DNS di tipo A per l'indirizzo che vuoi (per esempio rasgeth.tuodominio.it) che punti all'indirizzo pubblico di casa. Se cambia, usa un servizio di DNS dinamico.",
   caddyStep2: "Sul router inoltra le porte 80 e 443 a questo computer.",
   caddyDomain: "L'indirizzo",
-  caddyDomainHelp: "RedGiant prende da solo il certificato HTTPS da Let's Encrypt.",
+  caddyDomainHelp: "{product} prende da solo il certificato HTTPS da Let's Encrypt.",
   caddyPihole:
-    "In casa alcuni router non riescono a raggiungere il proprio indirizzo pubblico: allora apri RedGiant in casa con il solito link, oppure accendi Pi-hole in Impostazioni, Accesso da fuori casa (è facoltativo).",
+    "In casa alcuni router non riescono a raggiungere il proprio indirizzo pubblico: allora apri {product} in casa con il solito link, oppure accendi Pi-hole in Impostazioni, Accesso da fuori casa (è facoltativo).",
   piholeTitle: "Il DNS di casa, con Pi-hole (facoltativo)",
   piholeWhat:
-    "Ogni dispositivo di casa chiede a un server DNS quale numero sta dietro a un nome (per esempio redgiant.tuodominio.it). Di solito risponde il router o il tuo fornitore di internet. Pi-hole è un piccolo DNS che RedGiant può far girare su questo computer: per il tuo dominio risponde con l'indirizzo di casa di questo computer, così il link funziona anche in casa, e in più blocca pubblicità e tracciamento per ogni dispositivo che lo usa.",
+    "Ogni dispositivo di casa chiede a un server DNS quale numero sta dietro a un nome (per esempio rasgeth.tuodominio.it). Di solito risponde il router o il tuo fornitore di internet. Pi-hole è un piccolo DNS che {product} può far girare su questo computer: per il tuo dominio risponde con l'indirizzo di casa di questo computer, così il link funziona anche in casa, e in più blocca pubblicità e tracciamento per ogni dispositivo che lo usa.",
   piholeNeedTitle: "Ti serve se",
   piholeNeed:
-    "raggiungi RedGiant da fuori con un tuo dominio, e in casa lo stesso link non si apre. Molti router non sanno rimandarti a casa tua passando da internet (la funzione si chiama NAT loopback o hairpin, e il loro non ce l'ha).",
+    "raggiungi {product} da fuori con un tuo dominio, e in casa lo stesso link non si apre. Molti router non sanno rimandarti a casa tua passando da internet (la funzione si chiama NAT loopback o hairpin, e il loro non ce l'ha).",
   piholeTest:
-    "Come capirlo: collega il telefono al Wi-Fi di casa e apri il link di RedGiant. Se si apre, Pi-hole per questo non ti serve (puoi volerlo lo stesso per bloccare la pubblicità). Se non si apre, ma con i dati del telefono sì, Pi-hole lo risolve.",
+    "Come capirlo: collega il telefono al Wi-Fi di casa e apri il link di {product}. Se si apre, Pi-hole per questo non ti serve (puoi volerlo lo stesso per bloccare la pubblicità). Se non si apre, ma con i dati del telefono sì, Pi-hole lo risolve.",
   piholeNoNeedTitle: "Non ti serve se",
   piholeNoNeed:
     "usi Tailscale o Cloudflare Tunnel: quei link funzionano uguale in casa e fuori. Puoi comunque accenderlo solo per bloccare la pubblicità, se ti va.",
@@ -7450,15 +7459,15 @@ const it: Record<Key, string> = {
     "Se un sito smette di funzionare: apri la pagina di Pi-hole, Query Log, trova il nome bloccato e premi Allow. Per sospendere tutto il blocco per qualche minuto usa Disable blocking nella stessa pagina.",
   piholePort: "Dettagli tecnici: la porta 53",
   piholePortText:
-    "Pi-hole risponde sulla porta 53 (quella del DNS) solo all'indirizzo di casa di questo computer, non su internet, e la sua pagina sta sulla porta 8053. Se su questo computer qualcos'altro risponde già sulla porta 53 (un altro DNS, o quello del sistema su alcuni Linux), Pi-hole non può partire: RedGiant te lo dice e non cambia niente.",
+    "Pi-hole risponde sulla porta 53 (quella del DNS) solo all'indirizzo di casa di questo computer, non su internet, e la sua pagina sta sulla porta 8053. Se su questo computer qualcos'altro risponde già sulla porta 53 (un altro DNS, o quello del sistema su alcuni Linux), Pi-hole non può partire: {product} te lo dice e non cambia niente.",
   piholeIp: "L'indirizzo di casa di questo computer",
   piholeIpHelp:
     'Quattro numeri tipo 192.168.1.50. Lo trovi nella pagina del router tra i dispositivi collegati, oppure su questo computer: "ip a" su Linux, "ipconfig" su Windows, Impostazioni di Sistema, Rete su Mac. Meglio se il router dà sempre lo stesso indirizzo a questo computer (prenotazione dell\'indirizzo).',
   piholeIpWrong: "Devono essere quattro numeri da 0 a 255 separati da punti, tipo 192.168.1.50.",
   piholeDomain: "Il tuo dominio (facoltativo)",
   piholeDomainHelp:
-    "L'indirizzo che usi da fuori, tipo redgiant.tuodominio.it: Pi-hole risponde per quello con l'indirizzo qui sopra. Lascialo vuoto per usare Pi-hole solo contro la pubblicità.",
-  piholeDomainWrong: "Deve essere un nome tipo redgiant.tuodominio.it.",
+    "L'indirizzo che usi da fuori, tipo rasgeth.tuodominio.it: Pi-hole risponde per quello con l'indirizzo qui sopra. Lascialo vuoto per usare Pi-hole solo contro la pubblicità.",
+  piholeDomainWrong: "Deve essere un nome tipo rasgeth.tuodominio.it.",
   piholeStart: "Accendi Pi-hole",
   piholeOn: "Pi-hole è acceso, su {ip}.",
   piholeAnswers: "In casa {domain} ora porta a {ip}.",
@@ -7559,13 +7568,13 @@ const it: Record<Key, string> = {
   voiceModelLoading: "Avvio la parola di attivazione…",
   voiceModelReady: "La parola di attivazione è pronta: di' «{wake}».",
   voiceModelAbout:
-    "La parola di attivazione usa un piccolo modello vocale (circa 45 MB, Vosk, Apache-2.0): RedGiant lo scarica una volta, poi questo browser ne tiene una copia sua.",
+    "La parola di attivazione usa un piccolo modello vocale (circa 45 MB, Vosk, Apache-2.0): {product} lo scarica una volta, poi questo browser ne tiene una copia sua.",
   voiceModelGet: "Scarica il modello",
   vcQ: "Voce a mani libere",
   vcLead:
     "Di' «{wake}», chiedi e ascolta la risposta; poi continua a parlare senza ripeterla. Queste impostazioni valgono per questo dispositivo.",
   vcNoTranscription:
-    "Per capirti RedGiant ha bisogno di un servizio di trascrizione (whisper su questo computer o un altro, o un servizio in cloud).",
+    "Per capirti {product} ha bisogno di un servizio di trascrizione (whisper su questo computer o un altro, o un servizio in cloud).",
   vcEnabled: "Voce a mani libere su questo dispositivo",
   vcEnabledHelp: "Un indicatore nella barra in alto si vede ogni volta che il microfono è in uso.",
   vcWakeTitle: "Parola di attivazione",
@@ -7587,7 +7596,7 @@ const it: Record<Key, string> = {
   vcLangEn: "Inglese",
   vcNoVoices:
     "Questo browser non ha una voce per questa lingua: le risposte restano sullo schermo.",
-  vcSample: "Ciao, sono RedGiant. Questa è la mia voce.",
+  vcSample: "Ciao, sono {product}. Questa è la mia voce.",
   voiceModelBroken:
     "Il modello vocale non è partito in questo browser: scaricalo di nuovo, o prova un altro browser.",
   vcChooseTranscription: "Scegli il servizio di trascrizione",
@@ -7597,7 +7606,7 @@ const it: Record<Key, string> = {
   vcSttLead:
     "Chi scrive quello che dici dopo la parola di attivazione. Serve anche ai messaggi vocali delle chat.",
   vcSttLocal: "Su questo computer",
-  vcSttLocalHelp: "whisper.cpp, avviato da RedGiant: gratis, non esce niente di casa.",
+  vcSttLocalHelp: "whisper.cpp, avviato da {product}: gratis, non esce niente di casa.",
   vcSttRemote: "whisper su un altro computer",
   vcSttRemoteHelp: "whisper-asr-webservice al suo indirizzo, per un computer con la scheda video.",
   vcSttCompatible: "Un altro servizio compatibile",
@@ -7621,7 +7630,7 @@ const it: Record<Key, string> = {
   vcKeyGet: "Prendi una chiave di {name}",
   vcKeySave: "Salva la chiave",
   vcCloudPrivacy:
-    "Con {name}, quello che dici dopo la parola di attivazione va a {name} passando dal server di RedGiant; la parola di attivazione resta riconosciuta solo in questa pagina.",
+    "Con {name}, quello che dici dopo la parola di attivazione va a {name} passando dal server di {product}; la parola di attivazione resta riconosciuta solo in questa pagina.",
   vcPriceMinute: "circa {usd} al minuto",
   vcPriceKchars: "{usd} ogni 1000 caratteri",
   vcPriceMtokens: "{usd} per milione di token audio",
@@ -7631,7 +7640,7 @@ const it: Record<Key, string> = {
   vcReaderBrowserHelp:
     "Gratis e sul dispositivo; quanto è naturale dipende dal browser e dal sistema.",
   vcReaderCloudHelp:
-    "In cloud, più naturale: {models}. Il testo lo legge il fornitore passando dal server di RedGiant.",
+    "In cloud, più naturale: {models}. Il testo lo legge il fornitore passando dal server di {product}.",
   vcReaderNeedsKey:
     "{name} non ha ancora una chiave: incollala qui, o scegli un'altra voce. Fino ad allora legge la voce del browser.",
   vcReaderFailed: "La voce in cloud non ha letto, ha letto quella del browser: {error}",
@@ -7654,7 +7663,7 @@ const it: Record<Key, string> = {
   vcWakeProblem_stopWord: "È una delle parole che fermano la risposta: scegline un'altra.",
   vcWakeProblem_short: "Una sola parola corta si attiva per sbaglio troppo facilmente: usane due.",
   err_voice_no_service:
-    "RedGiant non ha un servizio di trascrizione: scegline uno in Impostazioni, Voce, Trascrizione.",
+    "{product} non ha un servizio di trascrizione: scegline uno in Impostazioni, Voce, Trascrizione.",
   err_voice_no_key: "{name} non ha ancora una chiave: aggiungila in Impostazioni, Voce.",
   err_voice_empty: "La registrazione è vuota.",
   err_voice_too_long: "La registrazione è troppo lunga.",
@@ -7681,7 +7690,7 @@ const it: Record<Key, string> = {
   vcTargetFixed: "Sempre la stessa conversazione",
   vcLimitsTitle: "Come funziona",
   vcLimitPrivacy:
-    "La parola di attivazione è riconosciuta dentro il browser; solo dopo, quello che dici va a RedGiant per essere trascritto.",
+    "La parola di attivazione è riconosciuta dentro il browser; solo dopo, quello che dici va a {product} per essere trascritto.",
   vcLimitForeground:
     "Ascolta solo mentre la pagina è aperta e in primo piano: su un'altra scheda, ridotta a icona o con il telefono bloccato si mette in pausa, e l'indicatore lo dice.",
   vcLimitIos:
@@ -7773,7 +7782,7 @@ const it: Record<Key, string> = {
   pdfRedactDo: "Oscura per sempre",
   pdfRedactConfirmTitle: "Oscurare per sempre?",
   pdfRedactConfirm:
-    "Il testo, le immagini e i disegni sotto le aree escono dal file, non vengono solo coperti, e le aree diventano nere. Il file viene riscritto: la versione di prima resta solo nella cartella di RedGiant, e da «Modifiche» si può ancora annullare.",
+    "Il testo, le immagini e i disegni sotto le aree escono dal file, non vengono solo coperti, e le aree diventano nere. Il file viene riscritto: la versione di prima resta solo nella cartella di {product}, e da «Modifiche» si può ancora annullare.",
   pdfRedacting: "Oscuro e controllo…",
   pdfRedactFailed: "Non oscurato: {reason}",
   pdfEncrypted: "Questo PDF è protetto: si vede, non si modifica.",
@@ -7800,7 +7809,7 @@ const it: Record<Key, string> = {
   officeExport: "Esporta come…",
   officeExporting: "Esporto…",
   officeWhyInsecure:
-    "L'editor completo dei documenti funziona con RedGiant aperto in HTTPS o su questo computer.",
+    "L'editor completo dei documenti funziona con {product} aperto in HTTPS o su questo computer.",
   officeWhyPhone:
     "Sul telefono documenti e presentazioni si guardano soltanto: l'editor completo (LibreOffice nel browser) chiede uno schermo grande e una tastiera. Per piccole correzioni c'è Trova e Sostituisci, o chiedi a un agente; per il resto apri il file da un computer o da un tablet.",
   officeWhyPhoneShort:
@@ -7836,7 +7845,7 @@ const it: Record<Key, string> = {
   officeWhyBrowserApp:
     "Su questo sistema l'app non può far girare l'editor completo dei documenti dentro il Canvas: «Apri nel browser» nella barra qui sopra apre il file in Chrome, Edge o un altro browser Chromium, dove funziona.",
   officeWhyWebglApp:
-    "Su questo sistema la vista web dell'app non ha il WebGL in sottofondo che serve a LibreOffice per disegnare il documento: «Apri nel browser» nella barra qui sopra apre il file nella pagina di RedGiant, dove l'editor completo funziona.",
+    "Su questo sistema la vista web dell'app non ha il WebGL in sottofondo che serve a LibreOffice per disegnare il documento: «Apri nel browser» nella barra qui sopra apre il file nella pagina di {product}, dove l'editor completo funziona.",
   officeVersions: "Versioni",
   officeVersionsHint:
     "Le ultime 5 versioni di {name}, tenute ogni volta che questa copia l'ha riscritto: salvane una per riaverla",
@@ -7859,7 +7868,7 @@ const it: Record<Key, string> = {
   docMinutesAgo: "{n} min fa",
   docEditorLabel: "Testo del file",
   docRevisionHint:
-    "Ogni modifica è una revisione, tenuta nel registro di RedGiant e salvata da sola",
+    "Ogni modifica è una revisione, tenuta nel registro di {product} e salvata da sola",
   docRevision: "Revisione {n}",
   docPages: "aperto in {n} pagine",
   docSaved: "Salvato",
@@ -8176,7 +8185,8 @@ const it: Record<Key, string> = {
   boardTab: "Tavola",
   boardNotFound: "Questa tavola non c'è più",
   embedPort: "Porta {port}",
-  embedSignInFailed: "L'accesso di questo dispositivo non ha funzionato: riapri RedGiant dall'app.",
+  embedSignInFailed:
+    "L'accesso di questo dispositivo non ha funzionato: riapri {product} dall'app.",
   embedProbeTitle: "Prova della vista web",
   embedProbeIsolation: "Isolamento per LibreOffice (SharedArrayBuffer)",
   embedProbeWebgl: "WebGL 2 (3D)",
@@ -8203,7 +8213,7 @@ const it: Record<Key, string> = {
   barAgentsNone: "Ancora nessuno",
   projectNew: "Nuovo progetto",
   remoteNotice:
-    "Per ora RedGiant si apre solo da casa. Configura l'accesso da fuori casa per usarlo dal telefono ovunque e aprire le tavole da Telegram.",
+    "Per ora {product} si apre solo da casa. Configura l'accesso da fuori casa per usarlo dal telefono ovunque e aprire le tavole da Telegram.",
   remoteNoticeSet: "Configura",
   remoteNoticeHide: "Non mostrare più",
   folderNew: "Nuova cartella…",
@@ -8241,7 +8251,7 @@ const it: Record<Key, string> = {
   raFactRestore: "«Ripristina» lo riporta indietro, con quelli rimossi insieme a lui.",
   raRemove: "Rimuovi",
   raRemoveN: "Rimuovi {n} agenti",
-  raNotAllowed: "{name} non si può rimuovere: God, Demi-God e la Chat fanno parte di RedGiant.",
+  raNotAllowed: "{name} non si può rimuovere: God, Demi-God e la Chat fanno parte di {product}.",
   raTitle: "Agenti rimossi",
   raLead:
     "Fuori dalla squadra, con tutta la loro storia: leggi le loro conversazioni o riportali indietro.",
@@ -8267,7 +8277,7 @@ const it: Record<Key, string> = {
   asstProjectCard: "Lavora anche qui, sotto l'orchestratore",
   backup: "Backup",
   backupPurpose:
-    "Tutti i progetti con i loro file, gli agenti e le conversazioni in un file solo: da tenere al sicuro, o da portare in un altro RedGiant.",
+    "Tutti i progetti con i loro file, gli agenti e le conversazioni in un file solo: da tenere al sicuro, o da portare in un altro {product}.",
   backupExport: "Fai un backup",
   backupExportHint:
     "Progetti con i loro file, agenti, conversazioni, chat e bacheca. Le chiavi e gli accessi ai servizi non ci sono: restano su questo computer. Le cartelle node_modules sono lasciate fuori (si ricreano).",
@@ -8277,9 +8287,9 @@ const it: Record<Key, string> = {
   backupSaved: "Salvato nella cartella Download.",
   backupImport: "Importa un backup",
   backupImportHint:
-    "Da un altro RedGiant o da questo. Qui non si cancella né si sostituisce niente: quello che c'è nel backup viene aggiunto, e quello che c'è già resta com'è.",
+    "Da un altro {product} o da questo. Qui non si cancella né si sostituisce niente: quello che c'è nel backup viene aggiunto, e quello che c'è già resta com'è.",
   backupChoose: "Scegli il file del backup",
-  backupSending: "Mando il file a RedGiant",
+  backupSending: "Mando il file a {product}",
   backupFrom: "Backup del {when}",
   backupAlreadyHere: "c'è già, resta com'è",
   backupCounts: "{agents} agenti · {conversations} conversazioni · {size} di file",
@@ -8360,7 +8370,7 @@ const it: Record<Key, string> = {
   modelWay: "Da dove passa",
   modelWayOr: "o",
   catalogRow: "Catalogo dei modelli: aggiornato il {date}",
-  catalogBuiltin: "quello incluso in RedGiant",
+  catalogBuiltin: "quello incluso in {product}",
   catalogDownloaded: "scaricato e firmato",
   catalogVersion: "versione {n}",
   catalogRefresh: "Aggiorna ora",
@@ -8375,10 +8385,10 @@ const it: Record<Key, string> = {
   tpReadIn: "contesto di {total} letto in {time}, {pct} dalla cache",
   tpFirstAfter: "primo token dopo {time}",
   ownSearchHint:
-    "RedGiant può avviare un suo motore di ricerca (SearXNG): gratuito, senza chiavi, e con lui ogni modello può cercare sul web, anche quelli locali.",
+    "{product} può avviare un suo motore di ricerca (SearXNG): gratuito, senza chiavi, e con lui ogni modello può cercare sul web, anche quelli locali.",
   ownSearchOn:
-    "Il motore di ricerca di RedGiant è acceso: tutti gli agenti e la Chat cercano sul web con lui.",
-  ownSearchStart: "Avvia il motore di ricerca di RedGiant",
+    "Il motore di ricerca di {product} è acceso: tutti gli agenti e la Chat cercano sul web con lui.",
+  ownSearchStart: "Avvia il motore di ricerca di {product}",
   ownSearchStop: "Spegnilo",
   job_searxng: "Avvio del motore di ricerca",
   job_step_searxng_image: "Scarico SearXNG (una volta sola)",
@@ -8390,7 +8400,7 @@ const it: Record<Key, string> = {
     "Claude e gli abbonamenti cercano da soli. Gli altri (modelli locali, chiavi compatibili OpenAI) usano il servizio scelto qui.",
   searchInUse: "in uso",
   searchCard_searxng:
-    "Gratis, senza chiave né account: un motore di ricerca che gira a casa tua (lo avvia RedGiant, dove può, oppure usi il tuo).",
+    "Gratis, senza chiave né account: un motore di ricerca che gira a casa tua (lo avvia {product}, dove può, oppure usi il tuo).",
   searchCard_brave:
     "Ha un indice suo, indipendente da Google e Bing; rispetta la privacy. Credito gratuito ogni mese, poi a consumo.",
   searchCard_tavily:
@@ -8401,9 +8411,9 @@ const it: Record<Key, string> = {
     "I risultati di Google, veloce ed economico. 2.500 ricerche gratis all'iscrizione.",
   searchHowTitle: "Come configurare {name}",
   searchHow_searxng:
-    "La via più semplice: premi «Avvia il motore di ricerca di RedGiant», in cima a questa finestra, e RedGiant fa tutto da solo.\nSe invece hai già un tuo SearXNG, scrivi il suo indirizzo nella casella qui sotto (per esempio http://192.168.1.20:8080) e premi «Usa questo».\nNel suo settings.yml, tra i search.formats ci deve essere «json», altrimenti RedGiant non legge le risposte.",
+    "La via più semplice: premi «Avvia il motore di ricerca di {product}», in cima a questa finestra, e {product} fa tutto da solo.\nSe invece hai già un tuo SearXNG, scrivi il suo indirizzo nella casella qui sotto (per esempio http://192.168.1.20:8080) e premi «Usa questo».\nNel suo settings.yml, tra i search.formats ci deve essere «json», altrimenti {product} non legge le risposte.",
   searchHow_searxng_own:
-    "Scrivi l'indirizzo del tuo SearXNG nella casella qui sotto (per esempio http://192.168.1.20:8080) e premi «Usa questo».\nNel suo settings.yml, tra i search.formats ci deve essere «json», altrimenti RedGiant non legge le risposte.",
+    "Scrivi l'indirizzo del tuo SearXNG nella casella qui sotto (per esempio http://192.168.1.20:8080) e premi «Usa questo».\nNel suo settings.yml, tra i search.formats ci deve essere «json», altrimenti {product} non legge le risposte.",
   searchHow_brave:
     "Apri la pagina della Brave Search API (link qui sotto) e crea un account.\nIn Subscriptions scegli il piano gratuito (o uno a pagamento).\nIn API Keys premi «Add API key», copiala e incollala qui.",
   searchHow_tavily:
@@ -8424,7 +8434,7 @@ const it: Record<Key, string> = {
   searchSaved: "Da ora i modelli che non sanno cercare da soli usano {name}.",
   lmStream: "SSD stream",
   lmStreamUnknownDisk:
-    "RedGiant non sa ancora su che disco stanno i modelli (lo saprà al prossimo avvio di RedGiant): usalo solo se è un SSD.",
+    "{product} non sa ancora su che disco stanno i modelli (lo saprà al prossimo avvio di {product}): usalo solo se è un SSD.",
   lmStreamThisDisk: "il disco dei modelli",
   lmStreamHdd:
     "Non disponibile: {disk} è un disco meccanico, troppo lento per leggerci un modello a ogni token.",
@@ -8461,7 +8471,7 @@ const it: Record<Key, string> = {
     "Tra i modelli aperti più forti per codice e strumenti; sulla maggior parte dei computer serve lo SSD stream.",
   dbgTitle: "Diagnostica",
   dbgHelp:
-    "La modalità di debug tiene un registro dettagliato di tutto quello che fa RedGiant: ogni passo dell'avvio di un modello con i suoi tempi, i messaggi del motore locale, le richieste, quello che fa il programma di Windows. Accendila quando qualcosa è lento o va storto, ripeti l'operazione, poi scarica i registri e mandali. Scrive tanto (al massimo 300 MB, i più vecchi se ne vanno) e non scrive mai password né chiavi.",
+    "La modalità di debug tiene un registro dettagliato di tutto quello che fa {product}: ogni passo dell'avvio di un modello con i suoi tempi, i messaggi del motore locale, le richieste, quello che fa il programma di Windows. Accendila quando qualcosa è lento o va storto, ripeti l'operazione, poi scarica i registri e mandali. Scrive tanto (al massimo 300 MB, i più vecchi se ne vanno) e non scrive mai password né chiavi.",
   dbgSwitch: "Modalità di debug",
   dbgForced: "Accesa dalle impostazioni del server (REDGIANT_DEBUG=1).",
   dbgSize: "Registri tenuti: {size} in {files} file.",
@@ -8470,54 +8480,54 @@ const it: Record<Key, string> = {
   dbgClearConfirm: "Cancellare tutti i registri tenuti?",
   updTitle: "Aggiornamenti",
   updHelp:
-    "RedGiant cerca da solo una versione nuova al primo avvio di ogni giorno. Qui puoi cercarla adesso.",
+    "{product} cerca da solo una versione nuova al primo avvio di ogni giorno. Qui puoi cercarla adesso.",
   updLook: "Cerca aggiornamenti",
   updLooking: "Cerco…",
   updAvailable:
-    "È disponibile RedGiant {version}: la finestra di RedGiant sul desktop ti chiede se aggiornare adesso.",
+    "È disponibile {product} {version}: la finestra di {product} sul desktop ti chiede se aggiornare adesso.",
   updLatest: "Hai già l'ultima versione ({version}).",
   updManual:
-    "L'ultima versione è la {version}. Su questo server rilancia install.sh di RedGiant: scarica la nuova versione e la avvia.",
+    "L'ultima versione è la {version}. Su questo server rilancia install.sh di {product}: scarica la nuova versione e la avvia.",
   updUnreachable: "GitHub non ha risposto: riprova tra poco.",
   updCopy: "Copia",
   updCopied: "Copiato",
-  updReqTitle: "È necessario aggiornare RedGiant",
+  updReqTitle: "È necessario aggiornare {product}",
   updReqSub: "Serve la versione {version} (hai la {installed})",
   updReqLead:
-    "Questo aggiornamento non può aspettare: RedGiant {version} sistema una cosa che la {installed} non può continuare a fare in sicurezza.",
+    "Questo aggiornamento non può aspettare: {product} {version} sistema una cosa che la {installed} non può continuare a fare in sicurezza.",
   updReqSafe:
     "Finché non aggiorni, agenti e automazioni restano fermi. Conversazioni, progetti e impostazioni sono al sicuro: non si perde niente.",
   updReqNow: "Aggiorna ora",
-  updReqClose: "Chiudi RedGiant",
+  updReqClose: "Chiudi {product}",
   updReqAgain: "Controlla di nuovo",
   updReqUpdating:
-    "RedGiant sta scaricando l'aggiornamento: segui la finestra sul desktop. Si riavvia da solo.",
-  updReqClosing: "RedGiant si sta chiudendo. Puoi chiudere questa pagina.",
+    "{product} sta scaricando l'aggiornamento: segui la finestra sul desktop. Si riavvia da solo.",
+  updReqClosing: "{product} si sta chiudendo. Puoi chiudere questa pagina.",
   updDownloadNew: "Scarica la versione nuova",
   updReqMac:
-    "Apri il file scaricato e trascina RedGiant in Applicazioni, sostituendo quello vecchio; poi riaprilo.",
-  updReqDocker: "Sul computer dove gira RedGiant, nella sua cartella, esegui:",
-  updReqSource: "Porta il codice all'ultima versione (git pull), ricompilalo e riavvia RedGiant.",
+    "Apri il file scaricato e trascina {product} in Applicazioni, sostituendo quello vecchio; poi riaprilo.",
+  updReqDocker: "Sul computer dove gira {product}, nella sua cartella, esegui:",
+  updReqSource: "Porta il codice all'ultima versione (git pull), ricompilalo e riavvia {product}.",
   updReqInstaller: "Se l'aggiornamento non parte, l'installazione completa è qui:",
-  updReqInstallerLink: "RedGiant-Setup.exe",
-  updWinTitle: "Aggiorno RedGiant alla {version}",
-  updWinWindow: "La stessa barra è nella finestra di RedGiant sul desktop.",
+  updReqInstallerLink: "Rasgeth-Setup.exe",
+  updWinTitle: "Aggiorno {product} alla {version}",
+  updWinWindow: "La stessa barra è nella finestra di {product} sul desktop.",
   updWin_scan: "Cerco cosa è cambiato",
   updWin_download: "Scarico solo i file cambiati",
   updWin_installer: "Scarico l'installazione",
   updWin_build: "Metto insieme la versione nuova",
-  updWin_restart: "Riavvio RedGiant con la versione nuova",
+  updWin_restart: "Riavvio {product} con la versione nuova",
   updWin_back: "La pagina si ricollega da sola",
   updWinText_build: "Al massimo un minuto: controllo i file nuovi uno per uno.",
   updWinText_restart:
-    "RedGiant si chiude e si riapre da solo: questa pagina si ricollega e si ricarica con la versione nuova.",
+    "{product} si chiude e si riapre da solo: questa pagina si ricollega e si ricarica con la versione nuova.",
   updWinFailed: "Non sono riuscito a scaricare l'aggiornamento.",
   updWinFailedText:
-    "Non è cambiato niente. RedGiant riprova al prossimo avvio, da dove era arrivato; controlla la connessione a internet.",
+    "Non è cambiato niente. {product} riprova al prossimo avvio, da dove era arrivato; controlla la connessione a internet.",
   updHowTitle: "Come va l'aggiornamento",
   updHow_windows_1T: "Scarica",
   updHow_windows_1:
-    "RedGiant scarica solo i file cambiati: qui e nella sua finestra vicino all'orologio vedi la barra, la velocità e il tempo che manca.",
+    "{product} scarica solo i file cambiati: qui e nella sua finestra vicino all'orologio vedi la barra, la velocità e il tempo che manca.",
   updHow_windows_2T: "Si riavvia",
   updHow_windows_2: "Si chiude e si riapre da solo con la {version}.",
   updHow_windows_3T: "Torna",
@@ -8526,62 +8536,62 @@ const it: Record<Key, string> = {
   updHow_mac_1: "Scarica il file della {version} (.dmg) con il pulsante qui sotto.",
   updHow_mac_2T: "Sostituisci",
   updHow_mac_2:
-    "Chiudi RedGiant, apri il file e trascina RedGiant in Applicazioni, al posto di quello vecchio.",
+    "Chiudi {product}, apri il file e trascina {product} in Applicazioni, al posto di quello vecchio.",
   updHow_mac_3T: "Riapri",
-  updHow_mac_3: "Riapri RedGiant: questa pagina si ricollega e ti dice che è la {version}.",
+  updHow_mac_3: "Riapri {product}: questa pagina si ricollega e ti dice che è la {version}.",
   updHow_docker_1T: "Lancia il comando",
   updHow_docker_1:
-    "Sul computer dove gira RedGiant, nella sua cartella, lancia il comando qui sotto: Docker mostra ogni immagine mentre scende, con quanto pesa.",
+    "Sul computer dove gira {product}, nella sua cartella, lancia il comando qui sotto: Docker mostra ogni immagine mentre scende, con quanto pesa.",
   updHow_docker_2T: "Si riavvia",
-  updHow_docker_2: "Lo stesso comando avvia la {version}: RedGiant si ferma per un minuto.",
+  updHow_docker_2: "Lo stesso comando avvia la {version}: {product} si ferma per un minuto.",
   updHow_docker_3T: "Torna",
   updHow_docker_3: "Questa pagina si ricollega da sola e ti dice quando è fatto.",
   updHow_source_1T: "Aggiorna il codice",
   updHow_source_1: "git pull, poi pnpm install e pnpm build.",
   updHow_source_2T: "Riavvia",
-  updHow_source_2: "Avvia di nuovo RedGiant.",
+  updHow_source_2: "Avvia di nuovo {product}.",
   updHow_source_3T: "Torna",
   updHow_source_3: "Questa pagina si ricollega da sola e ti dice che è la {version}.",
   updLater: "Più tardi",
   updBrkTitle: "Questa versione richiede un'installazione pulita",
-  updBrkSub: "RedGiant {version} non si può installare sopra la {installed}",
+  updBrkSub: "{product} {version} non si può installare sopra la {installed}",
   updBrkLead:
-    "RedGiant {version} è cambiato troppo dentro per aggiornarsi come al solito: installato sopra quello vecchio potrebbe rompersi.",
+    "{product} {version} è cambiato troppo dentro per aggiornarsi come al solito: installato sopra quello vecchio potrebbe rompersi.",
   updBrkWhy:
-    "Quindi si fa in tre passi brevi: prima un backup di tutto (lo sto facendo adesso, da solo), poi togli il RedGiant vecchio e installi quello nuovo, che rimette tutto a posto dal backup.",
+    "Quindi si fa in tre passi brevi: prima un backup di tutto (lo sto facendo adesso, da solo), poi togli il {product} vecchio e installi quello nuovo, che rimette tutto a posto dal backup.",
   updBrkRetry: "Riprova il backup",
   updBrkSaved: "Backup fatto e riletto: è in questa cartella",
   updBrkChecked:
     "{file} · {size} · {projects} progetti, {conversations} conversazioni, memorie e impostazioni",
   updBrkDockerCopy:
-    "La cartella sta nel volume dei dati di RedGiant, che l'installazione pulita cancella: copia prima il file fuori, dalla cartella di RedGiant:",
+    "La cartella sta nel volume dei dati di {product}, che l'installazione pulita cancella: copia prima il file fuori, dalla cartella di {product}:",
   updBrkKeys:
     "Il tuo portachiavi ({n} chiavi, anche quelle dei modelli, delle chat e delle caselle) non è nel backup: ci entra solo protetto da una frase tua.",
   updBrkKeysAdd: "Aggiungi anche il portachiavi",
   updBrkKeysAgain: "Rifai il backup con il portachiavi",
   updBrkKeysIn: "Nel backup c'è anche il portachiavi, protetto dalla tua frase.",
   updBrkNext: "Avanti",
-  updBrkStep1: "Togli il RedGiant vecchio",
+  updBrkStep1: "Togli il {product} vecchio",
   updBrkStep1Win:
-    "Disinstalla RedGiant. Quando chiede se tenere i dati puoi rispondere No: è tutto nel backup.",
+    "Disinstalla {product}. Quando chiede se tenere i dati puoi rispondere No: è tutto nel backup.",
   updBrkStep1Mac:
-    "Dall'icona nella barra dei menu scegli «Disinstalla…» (oppure trascina RedGiant da Applicazioni nel Cestino).",
-  updBrkStep1Docker: "Nella cartella di RedGiant togli i container e i loro volumi:",
-  updBrkStep1Source: "Ferma RedGiant e sposta altrove la sua cartella dei dati.",
-  updBrkUninstall: "Disinstalla RedGiant",
-  updBrkSure: "RedGiant si chiude e parte il suo disinstallatore. Il backup resta in {folder}.",
+    "Dall'icona nella barra dei menu scegli «Disinstalla…» (oppure trascina {product} da Applicazioni nel Cestino).",
+  updBrkStep1Docker: "Nella cartella di {product} togli i container e i loro volumi:",
+  updBrkStep1Source: "Ferma {product} e sposta altrove la sua cartella dei dati.",
+  updBrkUninstall: "Disinstalla {product}",
+  updBrkSure: "{product} si chiude e parte il suo disinstallatore. Il backup resta in {folder}.",
   updBrkUninstallYes: "Sì, disinstalla",
   updBrkUninstalling: "Il disinstallatore sta partendo sul desktop.",
-  updBrkStep2: "Installa RedGiant {version}",
+  updBrkStep2: "Installa {product} {version}",
   updBrkStep3: "Ripristina",
   updBrkStep3Text:
-    "Al primo avvio il nuovo RedGiant propone «Ripristina dal backup»: lo trova da solo in quella cartella.",
+    "Al primo avvio il nuovo {product} propone «Ripristina dal backup»: lo trova da solo in quella cartella.",
   updBrkStep3Docker:
-    "Apri RedGiant, finisci la configurazione e importa il file copiato in Impostazioni › Backup › Importa un backup.",
+    "Apri {product}, finisci la configurazione e importa il file copiato in Impostazioni › Backup › Importa un backup.",
   updBrkDone: "Ho capito",
   updFoundTitle: "Ripristina dal backup",
   updFoundLead:
-    "C'è un backup del {date} (RedGiant {version}): {projects} progetti e {conversations} conversazioni. Rimetto tutto a posto adesso?",
+    "C'è un backup del {date} ({product} {version}): {projects} progetti e {conversations} conversazioni. Rimetto tutto a posto adesso?",
   updFoundKeys:
     "La frase che hai scelto per il portachiavi. Senza, tutto il resto si ripristina lo stesso, e le chiavi dei modelli e delle chat si rimettono dalle loro pagine.",
   updFoundRestore: "Ripristina dal backup",
@@ -8623,19 +8633,19 @@ const it: Record<Key, string> = {
     "Let's Encrypt non ha dato il certificato: controlla il record DNS e le porte 80 e 443 del router (passi 1 e 2).",
   job_error_ports_busy:
     "Le porte 80 o 443 sono già usate da un altro programma su questo computer.",
-  wzMode: "Come vuoi RedGiant?",
+  wzMode: "Come vuoi {product}?",
   wzCode: "Dove sta il codice",
   modeStandard: "Standard",
   modeAdvanced: "Avanzata",
   gitPurpose:
     "Ogni progetto ha una repository privata, pronta perché gli agenti ci mandino il lavoro. Scegli GitHub, un Gitea tutto tuo su questo computer, o tutti e due. Facoltativo.",
   gitGithubHint:
-    "Con un token che crei tu su GitHub: RedGiant crea le repository e gli agenti ci mandano il codice. Il token resta a RedGiant, mai nelle scatole degli agenti.",
+    "Con un token che crei tu su GitHub: {product} crea le repository e gli agenti ci mandano il codice. Il token resta a {product}, mai nelle scatole degli agenti.",
   gitGithubStep1: "Apri la pagina di GitHub per un nuovo token (accedi se te lo chiede):",
   gitGithubOpen: "Nuovo token su GitHub",
   gitGithubStep2: "Compilala così:",
-  gitPermName: "Token name: RedGiant",
-  gitPermExpiry: "Expiration: un anno (RedGiant te lo ricorda prima che scada)",
+  gitPermName: "Token name: {product}",
+  gitPermExpiry: "Expiration: un anno ({product} te lo ricorda prima che scada)",
   gitPermRepos: "Repository access: All repositories",
   gitPermList:
     "Permissions, Repositories: Administration, Contents, Issues e Pull requests su Read and write",
@@ -8643,7 +8653,7 @@ const it: Record<Key, string> = {
   gitGithubTokenHelp: "Comincia con github_pat_. GitHub lo mostra una volta sola.",
   gitGithubLinked: "Collegato come @{login}",
   gitGiteaHint:
-    "Un server Git tutto tuo, su questo computer: le repository restano qui e le guardi nel browser come su GitHub. RedGiant lo avvia e lo tiene aggiornato. Oppure collega un Gitea che hai già.",
+    "Un server Git tutto tuo, su questo computer: le repository restano qui e le guardi nel browser come su GitHub. {product} lo avvia e lo tiene aggiornato. Oppure collega un Gitea che hai già.",
   gitGiteaKind: "Quale Gitea",
   gitGiteaKindOwn: "Avvialo qui",
   gitGiteaKindExisting: "Un Gitea che hai già",
@@ -8700,10 +8710,10 @@ const it: Record<Key, string> = {
   safetyCarefulText: "Ogni azione rischiosa aspetta te. La scelta più sicura, anche la più lenta.",
   safetyBalanced: "Equilibrata",
   safetyBalancedText:
-    "Approvi tu quello che non si può annullare (pubblicare, storia del codice, dischi, password, modifiche a RedGiant); il resto lo approvano gli agenti che guidano.",
+    "Approvi tu quello che non si può annullare (pubblicare, storia del codice, dischi, password, modifiche a {product}); il resto lo approvano gli agenti che guidano.",
   safetyFree: "Libera",
   safetyFreeText:
-    "Gli agenti che guidano approvano quasi tutto; a te chiedono solo per le password e per cambiare RedGiant stesso.",
+    "Gli agenti che guidano approvano quasi tutto; a te chiedono solo per le password e per cambiare {product} stesso.",
   safetyPersonalize: "Personalizza",
   safetyNoLimit: "nessun limite",
   safetyNothingPaid:
@@ -8760,14 +8770,14 @@ const it: Record<Key, string> = {
     "Legge i messaggi lunghi a blocchi da 8.192 o 16.384 token invece che da 4.096, quando la scheda video ha posto, e carica il modello nella RAM quando ci sta con margine: gli esperti passano nella scheda una volta a blocco, quindi meno blocchi leggono più in fretta. Al primo avvio li misura su un messaggio lungo (qualche minuto in più) e tiene il più veloce. Solo per i modelli a esperti.",
   lmMoePrefetch: "Strato dopo in anticipo",
   lmMoePrefetchHelp:
-    "Usa una versione di llama.cpp modificata da RedGiant: mentre la scheda video calcola uno strato, gli esperti di quello dopo le stanno già arrivando, e il modello è caricato nella RAM quando ci sta. Con i modelli a esperti i messaggi lunghi si leggono fino a 1,7 volte più in fretta (misurato con una RTX 4080 Super). Al primo avvio scarica quel motore (circa {size}), tenuto accanto a quello ufficiale. Solo schede NVIDIA su Windows.",
+    "Usa una versione di llama.cpp modificata da {product}: mentre la scheda video calcola uno strato, gli esperti di quello dopo le stanno già arrivando, e il modello è caricato nella RAM quando ci sta. Con i modelli a esperti i messaggi lunghi si leggono fino a 1,7 volte più in fretta (misurato con una RTX 4080 Super). Al primo avvio scarica quel motore (circa {size}), tenuto accanto a quello ufficiale. Solo schede NVIDIA su Windows.",
   lmMoePrefetchMissing:
-    "Questa versione di RedGiant è uscita senza il motore modificato: l'opzione resta spenta.",
+    "Questa versione di {product} è uscita senza il motore modificato: l'opzione resta spenta.",
   lmTuneBatch: "blocchi da {n} token",
   lmTuneLongRead: "un messaggio da {n} token",
   lmSysmemTitle: "Scheda NVIDIA: spegni «CUDA Sysmem Fallback»",
   lmSysmemText:
-    "Quando la memoria della scheda finisce, il driver NVIDIA su Windows usa la RAM del computer invece di dare errore: la lettura dei messaggi diventa da 2 a 3,5 volte più lenta. RedGiant non può leggere questa impostazione, quindi controllala una volta:",
+    "Quando la memoria della scheda finisce, il driver NVIDIA su Windows usa la RAM del computer invece di dare errore: la lettura dei messaggi diventa da 2 a 3,5 volte più lenta. {product} non può leggere questa impostazione, quindi controllala una volta:",
   lmSysmemStep1: "Apri il Pannello di controllo NVIDIA (clic destro sul desktop).",
   lmSysmemStep2:
     "Gestisci impostazioni 3D, poi Impostazioni globali (oppure Impostazioni programma con llama-server.exe, solo per il motore).",
@@ -8777,7 +8787,7 @@ const it: Record<Key, string> = {
   lmSpeedTest: "Misura il guadagno",
   lmSpeedTestTitle: "Quanto va più veloce qui",
   lmSpeedTestIntro:
-    "RedGiant avvia questo modello una volta per ogni modo di scrivere (da solo, con il modello piccolo, con gli n-gram), gli fa scrivere un breve testo nuovo e riscrivere un pezzo di codice, e mostra i token al secondo di ciascuno. Alla fine il motore torna com'era.",
+    "{product} avvia questo modello una volta per ogni modo di scrivere (da solo, con il modello piccolo, con gli n-gram), gli fa scrivere un breve testo nuovo e riscrivere un pezzo di codice, e mostra i token al secondo di ciascuno. Alla fine il motore torna com'era.",
   lmSpeedTestCost:
     "Richiede un bel po' di tempo e di calcolo: il modello viene caricato più volte, minuti per uno grande. Nel frattempo il modello locale non risponde agli agenti.",
   lmSpeedTestStart: "Avvia il test",
@@ -8801,7 +8811,7 @@ const it: Record<Key, string> = {
   lmSpecDraft: "Con un modello piccolo della famiglia",
   lmSpecNgram: "Dal testo già scritto",
   lmSpecDraftHelp:
-    "{name} ({size}) propone fino a 8 token; sta tutto nella scheda con il suo contesto, quindi al modello grande resta un po' meno posto lì. Funziona solo con un modello della stessa famiglia (stesso vocabolario): lo sceglie RedGiant.",
+    "{name} ({size}) propone fino a 8 token; sta tutto nella scheda con il suo contesto, quindi al modello grande resta un po' meno posto lì. Funziona solo con un modello della stessa famiglia (stesso vocabolario): lo sceglie {product}.",
   lmSpecDraftReady: "modello piccolo pronto",
   lmSpecDraftGet: "Scarica il modello piccolo · {size}",
   lmSpecNgramHelp:
@@ -8857,14 +8867,14 @@ const it: Record<Key, string> = {
   lmOther: "Altri modelli nella cartella",
   lmEngine: "Motore",
   lmEngineHelp:
-    "RedGiant sceglie quello adatto a questo computer. Cambialo solo se l'avvio non riesce.",
+    "{product} sceglie quello adatto a questo computer. Cambialo solo se l'avvio non riesce.",
   lmEngine_cpu: "Processore",
   lmEngine_cuda: "Scheda video NVIDIA (CUDA)",
   lmEngine_vulkan: "Scheda AMD, Intel o integrata (Vulkan)",
   lmEngine_windows: "Scheda video, con il motore di Windows (Vulkan)",
-  lmEngine_mac: "Il chip grafico del Mac (Metal), accanto a RedGiant",
+  lmEngine_mac: "Il chip grafico del Mac (Metal), accanto a {product}",
   job_error_launcher_missing:
-    "Il programma di RedGiant su Windows non ha risposto. Controlla che RedGiant sia aperto (la sua icona vicino all'orologio), poi riprova.",
+    "Il programma di {product} su Windows non ha risposto. Controlla che {product} sia aperto (la sua icona vicino all'orologio), poi riprova.",
   lmSearch: "Altri modelli da Hugging Face",
   lmSearchHint:
     "Cerca per nome, scegli un repository e un file. I file che non sono modelli sono nascosti.",
@@ -8925,10 +8935,10 @@ const it: Record<Key, string> = {
   job_error_incomplete:
     "Il download si è fermato prima della fine: premi Riprendi per continuare da dove era.",
   job_error_bad_file: "Questo non è un file di modello di Hugging Face.",
-  wzBrain: "Come deve pensare RedGiant?",
+  wzBrain: "Come deve pensare {product}?",
   brainClaude: "Abbonamento Claude",
   brainClaudeHint:
-    "RedGiant usa Claude tramite il programma ufficiale di Anthropic, collegato al tuo account. Quello che usi conta sui limiti del tuo piano, non costa soldi in più.",
+    "{product} usa Claude tramite il programma ufficiale di Anthropic, collegato al tuo account. Quello che usi conta sui limiti del tuo piano, non costa soldi in più.",
   brainClaudeOpen: "Apri la pagina di accesso di Anthropic",
   brainNotOpened: "Non si è aperto niente?",
   brainOpenHere: "Aprila da qui",
@@ -8939,7 +8949,7 @@ const it: Record<Key, string> = {
   brainDisconnect: "Scollega",
   brainChatgpt: "Abbonamento ChatGPT",
   brainChatgptHint:
-    "RedGiant usa ChatGPT tramite Codex, il programma ufficiale di OpenAI, collegato al tuo account. Quello che usi conta sui limiti del tuo piano.",
+    "{product} usa ChatGPT tramite Codex, il programma ufficiale di OpenAI, collegato al tuo account. Quello che usi conta sui limiti del tuo piano.",
   brainChatgptStart: "Collega ChatGPT",
   brainChatgptStep1: "Apri questa pagina e accedi:",
   brainChatgptStep2: "Lì scrivi questo codice:",
@@ -8952,7 +8962,7 @@ const it: Record<Key, string> = {
   brainLocal: "Un modello su questo computer",
   brainServer: "Un server tuo",
   brainServerHint:
-    "Se fai già girare dei modelli con Ollama, LM Studio o vLLM, dai a RedGiant il suo indirizzo.",
+    "Se fai già girare dei modelli con Ollama, LM Studio o vLLM, dai a {product} il suo indirizzo.",
   brainServerUrl: "Indirizzo del server",
   brainServerUrlHelp:
     "Con /v1 alla fine. Ollama: http://localhost:11434/v1, LM Studio: http://localhost:1234/v1.",
@@ -9076,15 +9086,15 @@ const it: Record<Key, string> = {
   budgetRemoveLimit: "Nessun limite",
   historyIntro:
     "Ogni cambiamento alle impostazioni, fatto da te o da God. Puoi annullarlo: torna quello che c'era prima.",
-  historyCode: "Modifiche al codice di RedGiant",
+  historyCode: "Modifiche al codice di {product}",
   historyCodeHelp:
-    "God può migliorare RedGiant stesso: ogni modifica viene provata a parte, con le sue prove e una copia pulita, ed entra in uso solo quando qualcuno la promuove.",
+    "God può migliorare {product} stesso: ogni modifica viene provata a parte, con le sue prove e una copia pulita, ed entra in uso solo quando qualcuno la promuove.",
   historySettings: "Impostazioni",
   historyUndone: "annullata",
   historyTechnical: "Dettagli tecnici",
   historyPromote: "Promuovi",
   historyPromoteConfirm:
-    "Mettere in uso questa modifica? RedGiant si riavvia; se qualcosa si rompe torna da solo alla versione di prima.",
+    "Mettere in uso questa modifica? {product} si riavvia; se qualcosa si rompe torna da solo alla versione di prima.",
   chgNoLimit: "nessun limite",
   chgInherited: "quello predefinito",
   chgBudgetTotal: "il limite di spesa totale",
@@ -9206,7 +9216,7 @@ const it: Record<Key, string> = {
   cmdStatus_done: "codice d'uscita {code}",
   cmdStatus_failed: "fallito, codice d'uscita {code}",
   cmdStatus_stopped: "fermato",
-  cmdStatus_interrupted: "interrotto (RedGiant si era fermato)",
+  cmdStatus_interrupted: "interrotto ({product} si era fermato)",
   cmdOutputTitle: "Comando in background",
   cmdStarted: "Partito",
   cmdEnded: "Finito",
@@ -9234,7 +9244,7 @@ const it: Record<Key, string> = {
     "Resta in un file privato sul tuo server e non viene più mostrata, nemmeno agli agenti.",
   extKeyWhere: "Dove trovo la chiave di {name}?",
   extOauthHelp:
-    "Si apre una nuova scheda sulla pagina di {name}: accedi lì e autorizza RedGiant. Poi torna qui.",
+    "Si apre una nuova scheda sulla pagina di {name}: accedi lì e autorizza {product}. Poi torna qui.",
   extAddAndConnect: "Aggiungi e collega",
   extAdd: "Aggiungi",
   extCatalog: "Servizi che puoi aggiungere",
@@ -9280,9 +9290,13 @@ const it: Record<Key, string> = {
   scopePlatform: "piattaforma",
   telegram: "Telegram",
   limitWeekShort: "7g",
-  newsTitle: "Le novità di RedGiant {version}",
+  newsTitle: "Le novità di {product} {version}",
   newsOk: "Ho capito",
   newsVersion: "Versione {version}",
+  renameTitle: "RedGiant ora si chiama {product}.",
+  renameText:
+    "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
+  renameOk: "Ho capito",
   news3814Editors: "Tutti gli editor nel Canvas dell'app",
   news3814EditorsText:
     "Testo e codice, PDF, SVG, immagini, fogli, documenti, presentazioni e modelli 3D si aprono adesso nel Canvas dell'app con gli editor della pagina: stato del salvataggio nella barra dell'app, «Chiedi all'agente» da una selezione, incolla un'immagine, «Salva come…» per gli export, sola lettura per i progetti archiviati.",
@@ -9646,8 +9660,8 @@ const it: Record<Key, string> = {
   news32StreamText:
     "Accanto a SSD stream: «Blocchi grandi» legge i messaggi lunghi a blocchi più grandi, e «Strato dopo in anticipo» (Windows, NVIDIA) usa un llama.cpp nostro che copia gli esperti successivi mentre la scheda calcola: lettura fino a 1,7 volte più veloce su una RTX 4080 Super. Con una scheda NVIDIA su Windows, un consiglio sul Sysmem Fallback del driver, che rallenta la lettura.",
   subsSharedLogin:
-    "{name} è già collegato su questo computer: RedGiant usa quell'accesso così com'è, senza rifarlo.",
-  subsProgramSystem: "{name} è già installato su questo computer: RedGiant usa quello.",
+    "{name} è già collegato su questo computer: {product} usa quell'accesso così com'è, senza rifarlo.",
+  subsProgramSystem: "{name} è già installato su questo computer: {product} usa quello.",
   subsProgramDownload:
     "{name} viene scaricato quando lo attivi (una volta sola, qualche centinaio di MB, con la barra nell'angolo).",
   subsUseShared: "Usa l'accesso già presente",
@@ -9664,7 +9678,7 @@ const it: Record<Key, string> = {
   sentWhileWorking: "Mandato mentre l'agente lavora: lo legge appena può",
   voiceLocal: "Sul computer (whisper.cpp)",
   voiceLocalHint:
-    "Nessun account e niente esce da questo computer. RedGiant scarica una volta whisper.cpp e un modello multilingue (circa 560 MB, con la barra nell'angolo) e li fa girare lui.",
+    "Nessun account e niente esce da questo computer. {product} scarica una volta whisper.cpp e un modello multilingue (circa 560 MB, con la barra nell'angolo) e li fa girare lui.",
   job_download_whisper: "Scarico whisper.cpp per i vocali (una volta sola)",
   job_download_ffmpeg: "Scarico ffmpeg, per leggere ogni tipo di vocale (una volta sola)",
   job_download_libreoffice:
@@ -9682,7 +9696,7 @@ const it: Record<Key, string> = {
   job_download_knowledge_model:
     "Scarico {model} ({size}) per la conoscenza, per cercare nei tuoi file su questo computer (una volta sola)",
   job_download_pgvector:
-    "Scarico pgvector, la ricerca per significato nel database di RedGiant (una volta sola)",
+    "Scarico pgvector, la ricerca per significato nel database di {product} (una volta sola)",
   job_error_checksum: "Il download è arrivato rovinato (l'impronta non coincide): riprova.",
   job_error_pgvector_unavailable:
     "pgvector non è ancora pubblicato per questo computer: la conoscenza cerca solo per parole.",
@@ -9694,7 +9708,7 @@ const it: Record<Key, string> = {
   openSubagentChat: "Apri la conversazione di {name}",
   notifyQuestion: "{name} ha una domanda per te",
   notifyTitle: "Notifiche del browser",
-  notifyHint: "Quando la pagina di RedGiant non è in vista: un agente ha finito, o ti aspetta.",
+  notifyHint: "Quando la pagina di {product} non è in vista: un agente ha finito, o ti aspetta.",
   notifyOn: "Attive",
   notifyBlocked: "Bloccate nelle impostazioni del browser per questo sito.",
   notifyEnable: "Attiva",
@@ -9772,14 +9786,14 @@ const it: Record<Key, string> = {
   // g33: memory (shared memory and the agent's own)
   memSection: "Memoria condivisa",
   memEyebrow: "Memoria condivisa",
-  memTitle: "Cosa RedGiant sa di te",
+  memTitle: "Cosa {product} sa di te",
   memLead:
     "Questa memoria la usano tutti gli agenti e si aggiorna da sola mentre parli. Ogni agente ha anche una memoria sua, nella scheda Memoria dell'agente.",
   memAutoTitle: "Impara da sola dalle conversazioni",
   memAutoOn:
-    "Dopo che hai scritto, RedGiant annota le cose che restano vere su di te: gusti, lavoro, come preferisci le risposte. Legge solo i tuoi messaggi, mai email, pagine web o automazioni, e non annota mai le password.",
+    "Dopo che hai scritto, {product} annota le cose che restano vere su di te: gusti, lavoro, come preferisci le risposte. Legge solo i tuoi messaggi, mai email, pagine web o automazioni, e non annota mai le password.",
   memAutoOff:
-    "Spenta: RedGiant non impara niente da sola. Puoi sempre aggiungere ricordi qui, o chiedere a un agente di ricordarsi qualcosa.",
+    "Spenta: {product} non impara niente da sola. Puoi sempre aggiungere ricordi qui, o chiedere a un agente di ricordarsi qualcosa.",
   memSharedCard: "Memoria condivisa",
   memSharedCardQ: "Questa pagina",
   memSharedCardText:
@@ -9794,7 +9808,7 @@ const it: Record<Key, string> = {
   memCount: "{n} ricordi",
   memCountOne: "1 ricordo",
   memEmpty:
-    "RedGiant non sa ancora niente di te. Parla con un agente, oppure scrivi qui una cosa da ricordare.",
+    "{product} non sa ancora niente di te. Parla con un agente, oppure scrivi qui una cosa da ricordare.",
   memAddPlaceholder: "Una cosa da ricordare, per esempio: preferisco risposte brevi",
   memAdd: "Aggiungi",
   memAlready: "Lo ricorda già.",
@@ -9824,7 +9838,7 @@ const it: Record<Key, string> = {
   memForget: "Dimentica per sempre",
   memForgetTitle: "Dimenticarlo per sempre?",
   memForgetText:
-    "RedGiant lo cancella e toglie le sue parole anche dall'elenco delle modifiche. Non si potrà più recuperare.",
+    "{product} lo cancella e toglie le sue parole anche dall'elenco delle modifiche. Non si potrà più recuperare.",
   memDid_forgotten: "Dimenticato per sempre",
   memForgottenText: "Le sue parole sono state cancellate per sempre.",
   err_memory_forgotten: "Un ricordo dimenticato per sempre non può tornare.",
@@ -9838,7 +9852,7 @@ const it: Record<Key, string> = {
   memProjectTitle: "Memoria del progetto «{name}»",
   memProjectHelp: "La leggono tutti gli agenti che lavorano a questo progetto.",
   memSaved: "Salvato",
-  memGoShared: "Memoria condivisa: cosa RedGiant sa di te",
+  memGoShared: "Memoria condivisa: cosa {product} sa di te",
   memGoSharedText: "La usano tutti gli agenti e si aggiorna da sola mentre parli.",
   memGoSharedOpen: "Apri",
   memNoOwn: "Questo agente non tiene una memoria sua.",
@@ -9875,7 +9889,7 @@ const it: Record<Key, string> = {
   chatWaSecret: "Segreto dell'app",
   chatWaVerify: "Token di verifica (sceglilo tu)",
   chatWaHow:
-    "In Meta for Developers crea un'app WhatsApp, copia il token di accesso, l'ID del numero e il segreto dell'app, e scegli un token di verifica. WhatsApp manda i messaggi a un indirizzo pubblico: RedGiant deve essere raggiungibile da fuori (Impostazioni, Accesso da fuori).",
+    "In Meta for Developers crea un'app WhatsApp, copia il token di accesso, l'ID del numero e il segreto dell'app, e scegli un token di verifica. WhatsApp manda i messaggi a un indirizzo pubblico: {product} deve essere raggiungibile da fuori (Impostazioni, Accesso da fuori).",
   chatWaWebhook:
     "Webhook per Meta: {url} con il token di verifica che hai scelto; iscriviti a messages.",
   // G36.9: Matrix, Microsoft Teams, iMessage
@@ -9887,7 +9901,7 @@ const it: Record<Key, string> = {
   chatMatrixHomeserver: "Indirizzo del server (per esempio https://matrix.org)",
   chatMatrixToken: "Il token di accesso dell'account del bot",
   chatMatrixHow:
-    "RedGiant ha bisogno di un account Matrix tutto suo, non il tuo: è quello a cui scriverai.",
+    "{product} ha bisogno di un account Matrix tutto suo, non il tuo: è quello a cui scriverai.",
   chatMatrixStep1:
     "Crea un account nuovo per il bot, per esempio su app.element.io (o sul tuo server).",
   chatMatrixStep2:
@@ -9896,12 +9910,12 @@ const it: Record<Key, string> = {
   chatMatrixStep4:
     "Dal tuo account crea una stanza nuova senza cifratura (spegni «Attiva la crittografia end-to-end»), invita il bot (entra da solo) e manda il codice che compare.",
   chatMatrixE2ee:
-    "Chat cifrate: in Element le chat dirette sono cifrate e il bot non riesce a leggerle. Per tenere la cifratura avvia Pantalaimon (l'aiutante gratuito di Matrix per la cifratura) accanto a RedGiant e scrivi il suo indirizzo al posto di quello del server.",
+    "Chat cifrate: in Element le chat dirette sono cifrate e il bot non riesce a leggerle. Per tenere la cifratura avvia Pantalaimon (l'aiutante gratuito di Matrix per la cifratura) accanto a {product} e scrivi il suo indirizzo al posto di quello del server.",
   chatTeamsAppId: "Microsoft App ID",
   chatTeamsSecret: "Segreto client (il suo Valore)",
   chatTeamsTenant: "App Tenant ID",
   chatTeamsHow:
-    "Teams parla con i bot solo attraverso Microsoft Azure. Serve un account Microsoft 365 di lavoro o scuola che possa aggiungere app personalizzate (Teams gratuito per uso personale non accetta bot) e RedGiant raggiungibile da fuori (Impostazioni, Accesso da fuori).",
+    "Teams parla con i bot solo attraverso Microsoft Azure. Serve un account Microsoft 365 di lavoro o scuola che possa aggiungere app personalizzate (Teams gratuito per uso personale non accetta bot) e {product} raggiungibile da fuori (Impostazioni, Accesso da fuori).",
   chatTeamsStep1:
     "Apri portal.azure.com (basta un account gratuito), scegli Crea una risorsa, cerca Azure Bot e premi Crea.",
   chatTeamsStep2:
@@ -9916,16 +9930,16 @@ const it: Record<Key, string> = {
   chatTeamsEndpoint: "Endpoint di messaggistica per Azure: {url}",
   chatTeamsDownload: "Scarica l'app per Teams",
   chatTeamsUpload:
-    "In Teams apri App, Gestisci le tue app, Carica un'app, Carica un'app personalizzata, scegli il file scaricato e premi Aggiungi. Poi apri la chat con RedGiant e manda il codice.",
+    "In Teams apri App, Gestisci le tue app, Carica un'app, Carica un'app personalizzata, scegli il file scaricato e premi Aggiungi. Poi apri la chat con {product} e manda il codice.",
   chatTeamsFiles:
-    "I file di RedGiant arrivano come una scheda da accettare: accettati, finiscono nel tuo OneDrive. A un bot di Teams non si possono mandare messaggi vocali.",
+    "I file di {product} arrivano come una scheda da accettare: accettati, finiscono nel tuo OneDrive. A un bot di Teams non si possono mandare messaggi vocali.",
   chatImUrl: "Indirizzo del server BlueBubbles (http://...:1234)",
   chatImPassword: "Password del server BlueBubbles",
   chatImPrivate: "La Private API di BlueBubbles è attiva (modifiche e «sta scrivendo...»)",
   chatImHow:
-    "Apple non offre iMessage ai programmi: serve un Mac sempre acceso, con l'accesso a Messaggi e il server gratuito BlueBubbles. Il Mac risponde con il suo ID Apple: usane uno fatto apposta per RedGiant, non il tuo.",
+    "Apple non offre iMessage ai programmi: serve un Mac sempre acceso, con l'accesso a Messaggi e il server gratuito BlueBubbles. Il Mac risponde con il suo ID Apple: usane uno fatto apposta per {product}, non il tuo.",
   chatImStep1:
-    "Sul Mac crea (o usa) un ID Apple solo per RedGiant e accedi con quello in Messaggi.",
+    "Sul Mac crea (o usa) un ID Apple solo per {product} e accedi con quello in Messaggi.",
   chatImStep2:
     "Scarica BlueBubbles Server da bluebubbles.app, aprilo e scegli una password del server.",
   chatImStep3:
@@ -9965,7 +9979,7 @@ const it: Record<Key, string> = {
   wzSafety: "Sicurezza e costi",
   wzDone: "Fine",
   wzWelcomeText:
-    "Pochi passi per preparare RedGiant. Ognuno si salva subito; puoi tornarci dal menu.",
+    "Pochi passi per preparare {product}. Ognuno si salva subito; puoi tornarci dal menu.",
   wzLanguage: "Lingua",
   wzHardware: "Questa macchina",
   wzDiskFree: "disco libero",
@@ -9991,7 +10005,7 @@ const it: Record<Key, string> = {
     "So che usare un abbonamento personale (al posto di una chiave API) in uno strumento di terzi può non essere permesso dalle condizioni del fornitore.",
   wzLocalModel: "Modello locale",
   wzRunAgain: "Puoi rifare questa configurazione dal menu quando vuoi.",
-  wzFinish: "Inizia a usare RedGiant",
+  wzFinish: "Inizia a usare {product}",
   inspector: "Inspector",
   inspectorAlerts:
     "Avvisami su Telegram quando qualcosa va storto (task abbandonato, budget superato, blocco, automazione fallita)",
@@ -10086,7 +10100,7 @@ const it: Record<Key, string> = {
   arEmpty1:
     "Un artefatto è un'app HTML in un file solo che un agente fa in un turno: un calcolatore, il tabellone di un torneo, un gioco, un visualizzatore per un CSV. Gira nel Canvas, in un riquadro isolato, senza installare nulla e senza andare in rete.",
   arEmpty2:
-    "Vive come file nella cartella artefatti/ di un progetto (o di God e degli assistenti), quindi lo trovi anche fra i file a destra. Per averne uno chiedi a un agente uno strumento da tenere e riusare; oppure importa un .rgartifact da un altro RedGiant.",
+    "Vive come file nella cartella artefatti/ di un progetto (o di God e degli assistenti), quindi lo trovi anche fra i file a destra. Per averne uno chiedi a un agente uno strumento da tenere e riusare; oppure importa un .rgartifact da un altro {product}.",
   arPlacePlatform: "Cartella di God",
   arPlaceAssistants: "Scrivania degli assistenti",
   arOpen: "Apri",
@@ -10103,10 +10117,10 @@ const it: Record<Key, string> = {
   arExportTitle: "Esporta «{name}»",
   arExportZip: "Un file .rgartifact",
   arExportZipText:
-    "Per importarlo in un altro RedGiant: l'app, il suo manifesto e l'impronta che controlla che arrivi intatta. Non porta con sé nessun permesso.",
+    "Per importarlo in un altro {product}: l'app, il suo manifesto e l'impronta che controlla che arrivi intatta. Non porta con sé nessun permesso.",
   arExportHtml: "Scarica come HTML",
   arExportHtmlText:
-    "Per aprirlo altrove. Attenzione: fuori da RedGiant gira senza il riquadro isolato, con i permessi della pagina in cui lo apri.",
+    "Per aprirlo altrove. Attenzione: fuori da {product} gira senza il riquadro isolato, con i permessi della pagina in cui lo apri.",
   arWhereQ: "Dove lo metto?",
   arWhereLead:
     "Va nella cartella artefatti/ del posto che scegli. Parte senza permessi e la prima volta si apre sul sorgente, con «Esegui».",
@@ -10116,7 +10130,7 @@ const it: Record<Key, string> = {
   arHasData: "ha dati salvati",
   arExportData: "Includi i dati salvati",
   arExportDataHint:
-    "Ciò che l'app ha tenuto su RedGiant (la sua memoria). Lascialo spento per una copia pulita, senza i tuoi dati.",
+    "Ciò che l'app ha tenuto su {product} (la sua memoria). Lascialo spento per una copia pulita, senza i tuoi dati.",
   arPerms: "Permessi",
   arWants: "Chiede di {what}",
   arPermGranted: "concesso",
@@ -10138,7 +10152,7 @@ const it: Record<Key, string> = {
   err_agent_removed: "L'agente è stato rimosso dalla squadra: ripristinalo per lavorarci.",
   collapse: "Chiudi",
   more: "Altri comandi",
-  connLost: "Collegamento a RedGiant perso: riprovo…",
+  connLost: "Collegamento a {product} perso: riprovo…",
   connReload: "Ricarica",
   stopWhenBack: "Il collegamento è perso: «Ferma» parte appena torna.",
   memHigh:
@@ -10277,7 +10291,7 @@ const it: Record<Key, string> = {
   skillDownloadHelp: "Scarica questa skill come .zip, per condividerla",
   skillImport: "Importa una skill",
   skillImportHelp:
-    "La cartella di una skill come .zip (il formato agentskills.io), da un altro RedGiant o da un altro strumento.",
+    "La cartella di una skill come .zip (il formato agentskills.io), da un altro {product} o da un altro strumento.",
   skillImportWhere: "Installa in",
   skillImportFile: "Scegli un file .zip",
   skillImported: "Skill «{name}» importata.",
@@ -10302,7 +10316,7 @@ const it: Record<Key, string> = {
   wzRecommended: "consigliata",
   wzChange: "Cambia",
   wzRunAgainSettings: "Puoi rifare questa configurazione quando vuoi, dalle Impostazioni.",
-  wzHello: "Ciao. Prepariamo RedGiant.",
+  wzHello: "Ciao. Prepariamo {product}.",
   wzHelloLead:
     "Pochi passi, uno alla volta. Ognuno si salva subito e puoi tornarci quando vuoi, dal contatore qui in alto.",
   wzLangIt: "lingua dell'interfaccia",
@@ -10317,20 +10331,20 @@ const it: Record<Key, string> = {
   wzNoGpu: "Nessuna",
   wzNoGpuSub: "lavora il processore",
   wzShared: "memoria in comune col processore",
-  wzModeQ: "Come vuoi RedGiant?",
+  wzModeQ: "Come vuoi {product}?",
   wzModeLead: "Puoi passare ad Avanzata anche dopo, dalle Impostazioni.",
   wzModeStdText:
-    "Tutto già impostato: RedGiant e i tuoi progetti stanno su questo computer. Quella giusta per quasi tutti.",
+    "Tutto già impostato: {product} e i tuoi progetti stanno su questo computer. Quella giusta per quasi tutti.",
   wzModeAdvText:
     "Per chi scrive codice: ogni progetto ha anche la sua repository, su GitHub o su un Gitea tutto tuo.",
   wzModeStdSets: "Cosa imposta Standard",
   wzModeAdvSets: "Cosa imposta Avanzata",
   wzStd1: "Tutto su questo computer",
   wzStd1Text:
-    "RedGiant, i tuoi progetti e le conversazioni stanno qui, in un'unica cartella dei dati.",
+    "{product}, i tuoi progetti e le conversazioni stanno qui, in un'unica cartella dei dati.",
   wzStd2: "Niente aperto verso fuori",
   wzStd2Text:
-    "La pagina di RedGiant si apre da questo computer e dalla rete di casa; da fuori arrivi con Telegram, se lo colleghi.",
+    "La pagina di {product} si apre da questo computer e dalla rete di casa; da fuori arrivi con Telegram, se lo colleghi.",
   wzStd3: "Il guardiano su ogni progetto",
   wzStd3Text:
     "Gli agenti lavorano direttamente su questo computer, nella cartella del progetto; il guardiano ferma quello che esce da lì.",
@@ -10344,8 +10358,8 @@ const it: Record<Key, string> = {
   wzAdv3: "Due passi in più qui",
   wzAdv3Text: "«Dove sta il codice» e «Accesso da fuori casa», subito dopo Telegram.",
   wzAdv4: "Accesso da fuori casa",
-  wzAdv4Text: "Aprire RedGiant dal telefono o da un altro computer, a un indirizzo sicuro.",
-  wzBrainQ: "Come deve pensare RedGiant?",
+  wzAdv4Text: "Aprire {product} dal telefono o da un altro computer, a un indirizzo sicuro.",
+  wzBrainQ: "Come deve pensare {product}?",
   wzBrainLead:
     "Per pensare gli serve almeno un modello. Scegline uno o più: li combini come vuoi, e ne aggiungi altri quando vuoi dalle Impostazioni.",
   wzBrainClaude: "Il tuo piano Claude Pro o Max. Accedi sulla pagina di Anthropic.",
@@ -10363,7 +10377,7 @@ const it: Record<Key, string> = {
   wzStateLocalNext: "lo scegli al passo dopo",
   wzLocalWhy: "Gratis e privato: niente esce dal tuo computer.",
   wzLocalNextStep:
-    "Lo scegli al passo dopo: RedGiant ti mostra quelli adatti a questo computer, con il contorno verde.",
+    "Lo scegli al passo dopo: {product} ti mostra quelli adatti a questo computer, con il contorno verde.",
   wzLocalInUse: "In uso adesso: {model}. Lo cambi o lo spegni al passo dopo.",
   wzLocalYes: "Sì, ne voglio uno",
   wzLocalNo: "Non lo voglio più",
@@ -10382,26 +10396,26 @@ const it: Record<Key, string> = {
   wzStreamInfo2:
     "Le parti del modello usate di più stanno nella scheda e in RAM; il resto si legge dall'SSD quando serve. Rende al meglio con i modelli a esperti; quelli densi funzionano, ma più lenti.",
   wzStreamInfo3:
-    "Al primo avvio RedGiant misura questo computer e tiene la regolazione più veloce. Serve un SSD con almeno 20 GB liberi: un disco meccanico è troppo lento.",
+    "Al primo avvio {product} misura questo computer e tiene la regolazione più veloce. Serve un SSD con almeno 20 GB liberi: un disco meccanico è troppo lento.",
   wzDisksTitle: "Dove stanno i modelli",
   wzDisksLead: "Un modello occupa da 3 a 80 GB. Meglio un SSD veloce: lo SSD stream legge da lì.",
   wzDiskThis: "Questo disco",
-  wzDiskData: "la cartella dei dati di RedGiant",
+  wzDiskData: "la cartella dei dati di {product}",
   wzHereNow: "qui ora",
   wzFreeOf: "liberi di {total} GB",
   wzDiskHdd: "Disco meccanico: troppo lento per i modelli.",
   wzPickFolder: "Scegli cartella",
   wzDisksOne:
-    "Qui i modelli stanno nella cartella dei dati di RedGiant. Nell'installazione di RedGiant per Windows puoi spostarli su un altro SSD.",
+    "Qui i modelli stanno nella cartella dei dati di {product}. Nell'installazione di {product} per Windows puoi spostarli su un altro SSD.",
   wzDisksNoMove:
-    "I modelli si spostano su un altro disco solo nell'installazione di RedGiant per Windows.",
+    "I modelli si spostano su un altro disco solo nell'installazione di {product} per Windows.",
   wzMoveTitle: "Spostare i modelli su {disk}?",
   wzMoveLead:
     "{kind}, {free} liberi. I modelli già scaricati vengono copiati in {folder}; il modello in uso poi riparte.",
   wzMoveHere: "Sposta qui",
   wzFolderTitle: "Cartella dei modelli su {disk}",
   wzFolderLead:
-    "Dove RedGiant salva i file dei modelli su questo disco. Quelli già scaricati vengono copiati lì.",
+    "Dove {product} salva i file dei modelli su questo disco. Quelli già scaricati vengono copiati lì.",
   wzFolder: "Cartella",
   wzFolderHelp: "Una cartella di questo disco; se non c'è, viene creata.",
   wzUseFolder: "Usa questa cartella",
@@ -10418,11 +10432,11 @@ const it: Record<Key, string> = {
   wzMoe: "{b} miliardi · a esperti",
   wzDense: "{b} miliardi · denso",
   wzNamesQ: "Due personaggi, due nomi",
-  wzNamesLead: "RedGiant ha due figure principali. Chiamale come vuoi: tocca il nome e scrivi.",
+  wzNamesLead: "{product} ha due figure principali. Chiamale come vuoi: tocca il nome e scrivi.",
   wzGodRole: "Il capo",
   wzDemiRole: "Il portavoce",
   wzGodText:
-    "Coordina tutti gli agenti e tutti i progetti: fa i piani, divide il lavoro, decide. Sta sopra le nuvole e non ha mai fretta. È anche l'unico che può cambiare RedGiant stesso, sempre con il tuo sì.",
+    "Coordina tutti gli agenti e tutti i progetti: fa i piani, divide il lavoro, decide. Sta sopra le nuvole e non ha mai fretta. È anche l'unico che può cambiare {product} stesso, sempre con il tuo sì.",
   wzDemiText:
     "Quello con cui parli da Telegram e dalle altre chat: coi piedi alati porta le tue richieste a {god} e ti riporta le risposte. Svelto e sempre disponibile.",
   wzGodSug: "God,Atlante,Regista,Zeus",
@@ -10442,7 +10456,7 @@ const it: Record<Key, string> = {
   wzAssignLead:
     "Ognuno lavora con il suo modello: il più forte per chi decide, uno veloce per chi risponde. Tocca un modello per cambiarlo.",
   wzAssignEmpty:
-    "Non hai ancora collegato nessun modello, quindi qui non c'è niente da scegliere. Collegane uno al passo «Come pensa» o avvia un modello locale.",
+    "Non hai ancora collegato nessun modello, quindi qui non c'è niente da scegliere. Collegane uno al passo «Come deve pensare {product}?» o avvia un modello locale.",
   wzAssignConnect: "Collega un modello",
   wzAssignLocal: "Scegli un modello locale",
   wzAssignDemigod2:
@@ -10468,7 +10482,7 @@ const it: Record<Key, string> = {
   wzEffort_max: "Al massimo",
   wzEffortHelp:
     "Poco è veloce ed economico, a fondo è più lento ma più accurato. Resta fisso per ogni conversazione.",
-  wzTgQ: "RedGiant sul tuo telefono",
+  wzTgQ: "{product} sul tuo telefono",
   wzTgLead:
     "Con Telegram scrivi a {demigod} da dove vuoi e ricevi lì gli avvisi: approvazioni, domande, lavori lunghi, budget. Tre passi, un paio di minuti.",
   wzTgDone: "fatto",
@@ -10496,10 +10510,10 @@ const it: Record<Key, string> = {
   wzTgOfficial: "bot ufficiale di Telegram",
   wzTgOnline: "bot · online",
   wzTgBf1: "Va bene. Come lo chiamiamo?",
-  wzTgBfName: "Il mio RedGiant",
+  wzTgBfName: "Il mio {product}",
   wzTgBf2: "Ora un nome utente, che finisca con «bot».",
   wzTgBf3: "Fatto! Ecco il token: 123456789:AAH…",
-  wzTgExampleBot: "il_mio_redgiant_bot",
+  wzTgExampleBot: "il_mio_rasgeth_bot",
   wzTgPressStart: "Premi Avvia per iniziare a parlare con questo bot.",
   wzTgStart: "AVVIA",
   wzTgMessage: "Messaggio",
@@ -10513,10 +10527,10 @@ const it: Record<Key, string> = {
     "Le repository stanno sul tuo account GitHub. Serve un token con il permesso di crearle.",
   wzCodeGiteaTitle: "Un Gitea tutto tuo",
   wzCodeGitea:
-    "Un piccolo GitHub privato su questo computer, installato e avviato da RedGiant, oppure il Gitea che hai già.",
+    "Un piccolo GitHub privato su questo computer, installato e avviato da {product}, oppure il Gitea che hai già.",
   wzRemoteQ: "Accesso da fuori casa",
   wzRemoteLead:
-    "Apri RedGiant dal telefono o da un altro computer, a un indirizzo sicuro. Puoi anche lasciarlo per dopo: da fuori arrivi comunque con Telegram.",
+    "Apri {product} dal telefono o da un altro computer, a un indirizzo sicuro. Puoi anche lasciarlo per dopo: da fuori arrivi comunque con Telegram.",
   wzSafetyLead:
     "Quattro decisioni, ognuna in una scheda. Cambi tutto quando vuoi dalle Impostazioni.",
   wzGuardQ: "Un agente vuole scrivere fuori dal suo progetto. Cosa succede?",
@@ -10533,7 +10547,7 @@ const it: Record<Key, string> = {
     "Prima di queste azioni un agente chiede. Acceso: lo puoi approvare solo tu. Spento: può dire sì anche l'agente che lo guida ({god} o il capo del progetto).",
   wzBackTo: "Torna a {preset}",
   wzBudgetTitle: "Il limite di spesa",
-  wzBudgetQ: "Quanto può spendere RedGiant al massimo con le tue chiavi API?",
+  wzBudgetQ: "Quanto può spendere {product} al massimo con le tue chiavi API?",
   wzBudgetQFree: "Con le chiavi API un limite ferma gli agenti prima che spendano troppo.",
   wzBudgetOther: "altro",
   wzBudgetSay: "Arrivato a ${usd}, gli agenti si fermano e te lo dicono; lo alzi quando vuoi.",
@@ -10545,7 +10559,7 @@ const it: Record<Key, string> = {
   wzWhereAgents:
     "Gli agenti lavorano direttamente su questo computer, nella cartella del progetto: il guardiano controlla ogni comando che esce da lì.",
   wzKeepFor: "Tieni le conversazioni per",
-  wzDoneQ: "RedGiant è pronto.",
+  wzDoneQ: "{product} è pronto.",
   wzDoneLead: "Ecco cosa hai messo in piedi. Tocca un riquadro per cambiarlo.",
   wzWhatNow: "E adesso?",
   wzWhatNowLead: "Tre buoni modi di cominciare.",
@@ -10555,7 +10569,7 @@ const it: Record<Key, string> = {
   wzNextAsk: "Fai una domanda",
   wzNextAskText: "La chat di tutti i giorni, con la ricerca sul web: testi, idee, conti.",
   wzNextPhone: "Collega il telefono",
-  wzNextPhoneText: "Con Telegram RedGiant ti segue anche fuori casa.",
+  wzNextPhoneText: "Con Telegram {product} ti segue anche fuori casa.",
   wzNextWrite: "Scrivi a {demigod}",
   wzNextWriteText: "Dal telefono, ovunque: ti riporta le risposte e ti chiede i sì.",
   wzRecapThinks: "Pensa con",
@@ -10590,7 +10604,7 @@ const it: Record<Key, string> = {
   wzHwGood: "Un buon computer: ci girano veloci modelli fino a circa {max}.",
   wzHwFits: "Ci girano veloci modelli fino a circa {max}.",
   wzKeysLead:
-    "Una chiave è come una password che lascia usare a RedGiant i modelli del fornitore sul tuo account. Paghi il fornitore per quello che usi. Aggiungine quante vuoi: ognuna viene provata subito.",
+    "Una chiave è come una password che lascia usare a {product} i modelli del fornitore sul tuo account. Paghi il fornitore per quello che usi. Aggiungine quante vuoi: ognuna viene provata subito.",
   wzRemove: "Togli",
   wzProvider: "Fornitore",
   wzKeyOf: "La chiave di {name}",
@@ -10611,7 +10625,7 @@ const it: Record<Key, string> = {
   agentLangNone: "Nessuna lingua corrisponde a «{q}».",
   agentLangChange: "cambia",
   lmMoePrefetchHelpDocker:
-    "Usa una versione di llama.cpp modificata da RedGiant: mentre la scheda video calcola uno strato, gli esperti di quello dopo le stanno già arrivando, e il modello è caricato nella RAM quando ci sta. Con i modelli a esperti i messaggi lunghi si leggono fino a 1,7 volte più in fretta (misurato con una RTX 4080 Super). Al primo avvio scarica l'immagine di quel motore (circa {size}), tenuta accanto a quella solita. Solo schede NVIDIA, con il runtime NVIDIA di Docker.",
+    "Usa una versione di llama.cpp modificata da {product}: mentre la scheda video calcola uno strato, gli esperti di quello dopo le stanno già arrivando, e il modello è caricato nella RAM quando ci sta. Con i modelli a esperti i messaggi lunghi si leggono fino a 1,7 volte più in fretta (misurato con una RTX 4080 Super). Al primo avvio scarica l'immagine di quel motore (circa {size}), tenuta accanto a quella solita. Solo schede NVIDIA, con il runtime NVIDIA di Docker.",
   lmMoePrefetchMissingDocker:
     "L'immagine del motore modificato non c'è ancora (questa versione non l'ha pubblicata, o manca la rete): l'opzione resta spenta.",
   // settings: chats, budgets, backup, platform drawn as the wizard (2026-11-06)
@@ -10632,7 +10646,7 @@ const it: Record<Key, string> = {
   sbLimitNow: "Ora: {limit}",
   sbLimitSay: "A ${usd} i suoi agenti si fermano e te lo dicono; lo alzi quando vuoi.",
   sbLimitPick: "Scegli una cifra, o scrivine un'altra.",
-  sbBackupQ: "Tutto RedGiant in un file",
+  sbBackupQ: "Tutto {product} in un file",
   sbPlatformQ: "Cosa è cambiato, e chi l'ha fatto",
   // g33: automations (G33.3)
   axWhenMinutes: "Ogni {n} minuti",
@@ -10651,8 +10665,8 @@ const it: Record<Key, string> = {
   axStart_files: "File che cambiano",
   axStart_after: "Dopo un'altra automazione",
   axStart_task: "Quando finisce un lavoro",
-  axStart_startup: "All'avvio di RedGiant",
-  axStartupHelp: "Parte ogni volta che RedGiant si accende.",
+  axStart_startup: "All'avvio di {product}",
+  axStartupHelp: "Parte ogni volta che {product} si accende.",
   axEmailText: "Il testo contiene",
   axEmailTextPlaceholder: "Una parola nell'email (facoltativo)",
   axEmailWhich: "Quali caselle",
@@ -10754,7 +10768,7 @@ const it: Record<Key, string> = {
   axOverlap: "Se lavora ancora quando dovrebbe ripartire",
   axOverlapSkip: "Salta quella volta",
   axOverlapQueue: "Aspetta e poi parte",
-  axMissed: "Se all'ora giusta RedGiant era spento",
+  axMissed: "Se all'ora giusta {product} era spento",
   axMissedSkip: "Lascia perdere",
   axMissedRun: "Falla appena si accende",
   axTimeout: "Tempo massimo, in minuti",
@@ -10772,7 +10786,7 @@ const it: Record<Key, string> = {
   axSayFilesAll: "Quando cambiano i file del progetto",
   axSayAfter: "Dopo «{name}»",
   axSayTask: "Quando finisce un lavoro",
-  axSayStartup: "All'avvio di RedGiant",
+  axSayStartup: "All'avvio di {product}",
   axSayNever: "Scegli quando parte.",
   axSayOnly: "Solo",
   axSayHours: "tra le {from} e le {to}",
@@ -10886,7 +10900,7 @@ const it: Record<Key, string> = {
   kcSearch: "Cerca per nome, servizio, utente o etichetta",
   kcAdd: "Aggiungi",
   kcAllCats: "Tutte",
-  kcSystem: "Tenute da RedGiant",
+  kcSystem: "Tenute da {product}",
   kcCat_api: "Chiavi API",
   kcCat_login: "Accessi",
   kcCat_bank: "Banca",
@@ -10904,15 +10918,15 @@ const it: Record<Key, string> = {
   kcNeverUsed: "Mai usata",
   kcSystemTitle: "Impostate dall'amministratore",
   kcSystemLead:
-    "Chiavi messe da chi ha installato questo server (nel suo ambiente): RedGiant le usa, qui non si possono cambiare.",
+    "Chiavi messe da chi ha installato questo server (nel suo ambiente): {product} le usa, qui non si possono cambiare.",
   kcUsedBy: "Usata da:",
   kcUsedByText:
-    "RedGiant usa questa chiave da sola. Qui puoi cambiarla, scegliere se possono usarla anche gli agenti e vedere ogni uso; la togli dalla sua pagina.",
+    "{product} usa questa chiave da sola. Qui puoi cambiarla, scegliere se possono usarla anche gli agenti e vedere ogni uso; la togli dalla sua pagina.",
   kcLockedAdmin: "Impostata dall'amministratore",
   kcUse_moved: "ha spostato {name} qui da {host}",
   kcClosedKeys:
-    "Finché non si apre, le chiavi che hai dato a RedGiant restano dove erano (secrets.json e i file privati) e non si cancella niente.",
-  err_vault_system: "RedGiant usa questa chiave: la togli dalla sua pagina nelle Impostazioni.",
+    "Finché non si apre, le chiavi che hai dato a {product} restano dove erano (secrets.json e i file privati) e non si cancella niente.",
+  err_vault_system: "{product} usa questa chiave: la togli dalla sua pagina nelle Impostazioni.",
   kcSys_provider: "Fornitore di modelli: {what}",
   kcSys_chat: "Chat: {what}",
   kcSys_email: "Casella email: {what}",
@@ -10957,7 +10971,7 @@ const it: Record<Key, string> = {
   kcBrStore:
     "Più avanti anche nel Chrome Web Store: si installa con un clic e si aggiorna da sola.",
   kcBrMakeCode: "Crea un codice",
-  kcBrAddress: "Indirizzo di RedGiant",
+  kcBrAddress: "Indirizzo di {product}",
   kcBrCode: "Codice",
   kcBrCodeLead:
     "Nell'estensione (la chiave nella barra del browser) scrivi questo indirizzo e questo codice. Il codice vale dieci minuti e per un solo browser.",
@@ -11021,7 +11035,7 @@ const it: Record<Key, string> = {
   kcNoHosts: "Senza un indirizzo nessun agente può usarla: resta solo per te.",
   kcWho: "Chi può usarla",
   kcWhoLead:
-    "Gli agenti non vedono mai il valore: lo chiedono per nome e RedGiant lo mette sulla richiesta.",
+    "Gli agenti non vedono mai il valore: lo chiedono per nome e {product} lo mette sulla richiesta.",
   kcAllAgents: "Tutti gli agenti",
   kcAllAgentsHelp: "Spento: solo gli agenti che scegli tu.",
   kcSomeAgents: "Gli agenti che possono usarla",
@@ -11035,7 +11049,7 @@ const it: Record<Key, string> = {
   kcAsk_never: "Mai: mi fido delle regole sopra",
   kcMore: "Altro",
   kcExpires: "Scade il",
-  kcExpiresHelp: "RedGiant te lo ricorda un mese prima.",
+  kcExpiresHelp: "{product} te lo ricorda un mese prima.",
   kcTags: "Etichette",
   kcTagsHelp: "Separate da virgole: lavoro, casa…",
   kcNotes: "Note",
@@ -11051,7 +11065,7 @@ const it: Record<Key, string> = {
     "La credenziale esce dal portachiavi per sempre: agenti e strumenti non potranno più usarla.",
   kcImportTitle: "Importa le password",
   kcImportLead:
-    "Esporta le password dall'altro gestore in un file CSV, poi sceglilo qui. Va bene anche un file del portachiavi esportato da RedGiant.",
+    "Esporta le password dall'altro gestore in un file CSV, poi sceglilo qui. Va bene anche un file del portachiavi esportato da {product}.",
   kcImportBitwarden: "Bitwarden: Strumenti > Esporta cassaforte > .csv",
   kcImport1password: "1Password: File > Esporta > CSV",
   kcImportChrome: "Chrome ed Edge: Impostazioni > Password > Esporta password",
@@ -11075,7 +11089,7 @@ const it: Record<Key, string> = {
   kcImported: "{n} credenziali aggiunte al portachiavi.",
   kcExportTitle: "Esporta il portachiavi",
   kcExportLead:
-    "Un file con tutte le credenziali, cifrato con una frase segreta tua: senza nessuno può aprirlo, nemmeno RedGiant.",
+    "Un file con tutte le credenziali, cifrato con una frase segreta tua: senza nessuno può aprirlo, nemmeno {product}.",
   kcPassphrase: "Frase segreta",
   kcPassphraseHelp: "Almeno 8 caratteri. Tienila in un posto sicuro: non si può recuperare.",
   kcPassphraseAgain: "Di nuovo la frase segreta",
@@ -11084,12 +11098,12 @@ const it: Record<Key, string> = {
   kcExported: "Scaricato. Tieni il file e la frase segreta in posti diversi.",
   err_vault_closed: "Il portachiavi è chiuso su questo computer.",
   err_vault_in_git:
-    "La cartella del portachiavi sta dentro un repository git: non deve mai finire in un commit. Sposta la cartella dei dati di RedGiant fuori da lì.",
+    "La cartella del portachiavi sta dentro un repository git: non deve mai finire in un commit. Sposta la cartella dei dati di {product} fuori da lì.",
   err_vault_not_found: "Quella credenziale non è più nel portachiavi.",
   err_vault_name_taken: "Un'altra credenziale ha già quel nome per gli agenti: scegline un altro.",
   err_vault_no_value: "Scrivi il segreto.",
   err_vault_bad_passphrase: "Frase segreta sbagliata, o file rovinato.",
-  err_vault_bad_file: "Questo file non è un'esportazione di password che RedGiant sa leggere.",
+  err_vault_bad_file: "Questo file non è un'esportazione di password che {product} sa leggere.",
   chSecretTitle: "Questo messaggio contiene un segreto",
   chSecretText:
     "Sembra una chiave, una password o un numero di carta. I segreti non vanno mai in una chat: il modello e il registro lo terrebbero. Mettilo invece nel portachiavi: gli agenti lo useranno per nome senza vederlo.",
@@ -11107,7 +11121,7 @@ const it: Record<Key, string> = {
   axMagicAllSet: "C'è tutto quello che serve.",
   mxIntegration: "Integrazione magica",
   mxIntegrationTile:
-    "Collega RedGiant a un servizio tramite le sue API (Notion, il tuo gestionale, una banca…): God scrive il connettore, lo prova a parte e tu lo installi.",
+    "Collega {product} a un servizio tramite le sue API (Notion, il tuo gestionale, una banca…): God scrive il connettore, lo prova a parte e tu lo installi.",
   mxIntegrationLead:
     "Di' a God quale servizio e cosa devono farci gli agenti. God chiede quello che gli serve, scrive il connettore con i suoi test e lo prova in una sandbox chiusa: tu vedi com'è andata e lo installi con un tasto.",
   mxIntegrationAsk: "Quale servizio, e per farci cosa?",
@@ -11282,7 +11296,7 @@ const it: Record<Key, string> = {
   vwKind_unknown: "File",
   vwKind_layers: "Livelli (OpenRaster)",
   vwMediaConvertNow:
-    "Il browser non lo sa riprodurre. RedGiant può farne accanto una copia in un formato aperto (WebM o Opus) che qui si vede; l'originale resta com'è.",
+    "Il browser non lo sa riprodurre. {product} può farne accanto una copia in un formato aperto (WebM o Opus) che qui si vede; l'originale resta com'è.",
   vwConvertToSee: "Converti per vederlo",
   vwTryAgain: "Riprova",
   vwLibreOfficeFirst: "LibreOffice, solo la prima volta",
@@ -11298,10 +11312,10 @@ const it: Record<Key, string> = {
   vwPagedTableHint: "Ordina e filtra",
   vwOpenClosed: "{format} è un formato chiuso",
   vwOpenWhy:
-    "Per mostrarlo qui e farlo usare agli agenti, RedGiant ne fa accanto una copia in un formato aperto ({to}). L'originale resta com'è.",
+    "Per mostrarlo qui e farlo usare agli agenti, {product} ne fa accanto una copia in un formato aperto ({to}). L'originale resta com'è.",
   vwOpenMediaTitle: "{format}: il browser non lo sa riprodurre",
   vwOpenMediaText:
-    "RedGiant ne sta facendo accanto una copia in un formato aperto che qui si vede.",
+    "{product} ne sta facendo accanto una copia in un formato aperto che qui si vede.",
   vwOpenMade: "Copia aperta del file {from}, in {to}",
   vwOpenKept: "Stai vedendo la copia: {name} resta com'era, lì accanto.",
   vwOpenLost: "Cosa si è perso ({n})",
@@ -11310,7 +11324,7 @@ const it: Record<Key, string> = {
   vwOpenWillLose: "Cosa la copia non conserverà:",
   vwOpenStale:
     "L'originale è cambiato dopo la copia: convertilo di nuovo per vederlo com'è adesso.",
-  vwOpenFirstDownload: "La prima volta RedGiant scarica {name} (circa {size}).",
+  vwOpenFirstDownload: "La prima volta {product} scarica {name} (circa {size}).",
   vwOpenKeepsChanges: "Cosa tiene e cosa può cambiare:",
   fmtName_fig: "Figma (copia locale)",
   vwOpenNeedsProgram: "Serve {name}, che su questo computer non c'è.",
@@ -11318,14 +11332,14 @@ const it: Record<Key, string> = {
   vwOpenAgain: "Converti di nuovo",
   vwNeedsTitle: "{format}: qui vedi solo l'anteprima",
   vwNeedsWhy:
-    "Nessun programma libero sa leggere i file {format}. RedGiant mostra la piccola immagine salvata dentro il file: non è una conversione e gli agenti non possono modificarla.",
+    "Nessun programma libero sa leggere i file {format}. {product} mostra la piccola immagine salvata dentro il file: non è una conversione e gli agenti non possono modificarla.",
   vwNeedsPreviewMade: "Anteprima del file {format}: solo l'immagine salvata dentro",
   vwNeedsPreviewNote: "Su questa anteprima:",
   vwNeedsShowPreview: "Mostra l'anteprima",
   vwNeedsAffinity:
     "Per lavorarci serve Affinity, che è gratis (affinity.studio). Apri lì il file e salva accanto una copia in PDF o SVG: gli agenti lavoreranno su quella, senza perdere niente.",
   vwNeedsIndesign:
-    "Per lavorarci serve Adobe InDesign. Da InDesign salva accanto al file un IDML: con l'IDML RedGiant tiene tutta l'impaginazione (Scribus o disegno). Se il file te l'ha mandato qualcuno, chiedigli l'IDML.",
+    "Per lavorarci serve Adobe InDesign. Da InDesign salva accanto al file un IDML: con l'IDML {product} tiene tutta l'impaginazione (Scribus o disegno). Se il file te l'ha mandato qualcuno, chiedigli l'IDML.",
   vwNeedsFigma:
     "Una copia .fig non si può leggere. Funziona il link del file su Figma: dallo a un agente e ti porta qui ogni tavola in SVG o PDF, con il tuo token di Figma del Portachiavi.",
   vwNeedsXd:
@@ -11342,7 +11356,7 @@ const it: Record<Key, string> = {
   vwNeedsOpenIn: "Apri in {app}",
   vwNeedsGetAffinity: "Scarica Affinity (gratis)",
   vwIdmlWhy:
-    "Per mostrarlo qui e farlo usare agli agenti, RedGiant ne fa accanto una copia in un formato aperto, con la stessa impaginazione. L'originale resta com'è. Scegli come:",
+    "Per mostrarlo qui e farlo usare agli agenti, {product} ne fa accanto una copia in un formato aperto, con la stessa impaginazione. L'originale resta com'è. Scegli come:",
   vwIdmlSla: "Scribus (.sla)",
   vwIdmlSlaText:
     "Un programma libero di impaginazione, come InDesign: pagine, mastri, livelli, testo che scorre da una cornice all'altra, stili. Si riapre e si modifica, con il PDF accanto.",
@@ -11351,7 +11365,7 @@ const it: Record<Key, string> = {
   vwIdmlOdgText:
     "Ogni cornice esattamente al suo posto, come un disegno di LibreOffice, pronto subito senza scaricare Scribus. Il testo non scorre più fra le cornici e gli stili diventano formattazione.",
   vwIdmlOnlyOdg:
-    "Su questo computer Scribus non può arrivare: RedGiant fa un disegno (ODG) con ogni cornice al suo posto.",
+    "Su questo computer Scribus non può arrivare: {product} fa un disegno (ODG) con ogni cornice al suo posto.",
   loss_tiff_first_page:
     "Solo la prima pagina o il primo fotogramma; livelli e profili colore vengono appiattiti.",
   loss_pdf_to_odg:
@@ -11376,7 +11390,7 @@ const it: Record<Key, string> = {
   loss_idml_scribus:
     "Scribus porta pagine, mastri, livelli, cornici al loro posto, testo che scorre fra le cornici collegate, stili, colori e immagini; tinte, numeri di pagina, alcuni ritagli delle immagini ed effetti possono cambiare (il PDF accanto mostra com'è venuto).",
   loss_idml_odg:
-    "L'importazione di RedGiant: pagine, cornici, forme e immagini esattamente al loro posto e della loro misura, testo con la sua formattazione, colori, livelli.",
+    "L'importazione di {product}: pagine, cornici, forme e immagini esattamente al loro posto e della loro misura, testo con la sua formattazione, colori, livelli.",
   loss_idml_pdf_from_odg: "Stampato dal disegno (ODG); con Scribus il PDF lo fa Scribus.",
   loss_idml_odt_target:
     "Solo il testo: l'impaginazione (cornici, posizioni, mastri, immagini) non passa, solo le storie con i loro stili di paragrafo e carattere.",
@@ -11384,7 +11398,7 @@ const it: Record<Key, string> = {
     "Questa non è una conversione: solo la piccola immagine di anteprima salvata nel file (nessun programma libero sa leggerne livelli, testo e impaginazione).",
   loss_preview_first_page: "Spesso solo la prima pagina.",
   loss_sketch_svg:
-    "La lettura di RedGiant del file Sketch: ogni tavola della sua misura, forme, tracciati, testo, colori, bordi, opacità e immagini al loro posto; ombre, sfocature, sfumature e modifiche ai simboli vengono semplificate.",
+    "La lettura di {product} del file Sketch: ogni tavola della sua misura, forme, tracciati, testo, colori, bordi, opacità e immagini al loro posto; ombre, sfocature, sfumature e modifiche ai simboli vengono semplificate.",
   loss_sketch_last_page: "L'ultima pagina che hai guardato in Sketch.",
   loss_sketch_outline: "Solo pagine, tavole, nomi dei livelli e testi: niente forme né stili.",
   loss_blender_gltf:
@@ -11504,7 +11518,7 @@ const it: Record<Key, string> = {
   toolGrp_canvas: "Canvas e file",
   toolGrp_talk: "Comunicazione",
   toolGrp_agents: "Gestione degli agenti",
-  toolGrp_platform: "Impostazioni di RedGiant (God)",
+  toolGrp_platform: "Impostazioni di {product} (God)",
   tool_read_file: "Leggere i file",
   toolDo_read_file: "Legge i file del suo progetto.",
   toolWhy_read_file: "senza, non vede nemmeno il proprio lavoro",
@@ -11554,7 +11568,7 @@ const it: Record<Key, string> = {
   toolDo_repo: "Apre richieste di modifica e segnalazioni sul repository del progetto.",
   tool_node: "I tuoi nodi",
   toolDo_node:
-    "Fa girare comandi in una sandbox sulle altre macchine RedGiant abbinate in Impostazioni > Nodi, che ricontrollano ogni comando.",
+    "Fa girare comandi in una sandbox sulle altre macchine {product} abbinate in Impostazioni > Nodi, che ricontrollano ogni comando.",
   tool_ssh: "Le tue macchine (SSH)",
   toolDo_ssh:
     "Lancia comandi, copia file e legge cartelle sulle macchine aggiunte in Impostazioni > Macchine, solo quelle che gli lasci usare.",
@@ -11563,7 +11577,7 @@ const it: Record<Key, string> = {
   mcLead:
     "Altri computer che i tuoi agenti raggiungono via SSH: un server, un Raspberry Pi, il computer dell'ufficio. Chiavi e password restano nel portachiavi; gli agenti scelgono una macchina per nome e non le vedono mai.",
   mcEmpty:
-    "Ancora nessuna macchina. Aggiungine una: RedGiant le prepara una chiave, tu ne copi la parte pubblica sulla macchina.",
+    "Ancora nessuna macchina. Aggiungine una: {product} le prepara una chiave, tu ne copi la parte pubblica sulla macchina.",
   mcSafety:
     "Quello che succede lì segue le stesse regole di qui: sudo, spegnere la macchina, installare programmi di sistema, cambiarne i file di sistema e cancellare fuori dalla sua cartella di lavoro ti chiedono sempre, anche con «Non chiedermi niente».",
   mcNew: "Aggiungi una macchina",
@@ -11588,12 +11602,12 @@ const it: Record<Key, string> = {
   mcLogin: "Accesso",
   mcLoginPassword: "password nel portachiavi",
   mcLoginImported: "la tua chiave, nel portachiavi",
-  mcLoginGenerated: "chiave fatta da RedGiant, nel portachiavi",
+  mcLoginGenerated: "chiave fatta da {product}, nel portachiavi",
   mcAuthKey: "Chiave",
   mcAuthPassword: "Password",
   mcKeyGenerate: "Crea una chiave nuova",
   mcKeyGenerateHelp:
-    "RedGiant crea una chiave ed25519: ne copierai la parte pubblica in ~/.ssh/authorized_keys sulla macchina.",
+    "{product} crea una chiave ed25519: ne copierai la parte pubblica in ~/.ssh/authorized_keys sulla macchina.",
   mcKeyKeep: "Tieni la chiave",
   mcKeyKeepHelp: "La chiave nel portachiavi resta com'è.",
   mcKeyPaste: "Incolla una chiave privata",
@@ -11626,7 +11640,7 @@ const it: Record<Key, string> = {
   mcStateTrusted: "Chiave fidata",
   mcTofuTitle: "Prima connessione: è la chiave della macchina?",
   mcTofuText:
-    "Non è ancora partito niente. Se l'impronta è quella della macchina, fidati: da ora RedGiant si collega solo a una macchina con questa chiave.",
+    "Non è ancora partito niente. Se l'impronta è quella della macchina, fidati: da ora {product} si collega solo a una macchina con questa chiave.",
   mcTofuHow: "Per vederla sulla macchina: ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub",
   mcTrust: "Fidati di questa chiave",
   mcChangedTitle: "Pericolo: la macchina ha risposto con un'altra chiave",
@@ -11636,7 +11650,7 @@ const it: Record<Key, string> = {
   mcChangedNow: "Adesso",
   mcReplaceQ: "Fidarsi della chiave nuova di «{name}»?",
   mcReplaceText:
-    "Fallo solo se sai perché la chiave della macchina è cambiata: altrimenti qualcuno potrebbe leggere quello che RedGiant manda.",
+    "Fallo solo se sai perché la chiave della macchina è cambiata: altrimenti qualcuno potrebbe leggere quello che {product} manda.",
   mcReplaceYes: "Fidati della chiave nuova",
   mcRemoveQ: "Togliere «{name}»?",
   mcRemoveText:
@@ -11687,7 +11701,7 @@ const it: Record<Key, string> = {
   toolDo_send_file: "Ti manda un file nella chat (e su Telegram).",
   tool_show_products: "Schede prodotto",
   toolDo_show_products:
-    "Ti mostra cose da comprare o confrontare in schede con foto, prezzo, negozio e link; le foto le scarica RedGiant.",
+    "Ti mostra cose da comprare o confrontare in schede con foto, prezzo, negozio e link; le foto le scarica {product}.",
   tool_publish_board: "Varianti a confronto",
   toolDo_publish_board: "Pubblica alcune varianti grafiche su una pagina, perché tu scelga.",
   tool_image_generation: "Creare immagini",
@@ -11754,8 +11768,8 @@ const it: Record<Key, string> = {
   toolDo_propose_magic_extension:
     "Nella conversazione di un'integrazione o estensione magica propone il pacchetto provato.",
   toolWhy_propose_magic_extension: "quella conversazione esiste per questo",
-  tool_platform_status: "Stato di RedGiant",
-  toolDo_platform_status: "Legge come è impostato RedGiant: agenti, modelli, regole.",
+  tool_platform_status: "Stato di {product}",
+  toolDo_platform_status: "Legge come è impostato {product}: agenti, modelli, regole.",
   tool_platform_changes: "Storico delle modifiche",
   toolDo_platform_changes: "Legge le ultime modifiche alle impostazioni.",
   tool_platform_configure_agent: "Impostare gli agenti",
@@ -11773,8 +11787,8 @@ const it: Record<Key, string> = {
   toolDo_platform_undo: "Annulla una modifica alle impostazioni, con il tuo sì.",
   tool_platform_project: "Archiviare progetti",
   toolDo_platform_project: "Archivia un progetto o lo ripristina com'era, con il tuo sì.",
-  tool_platform_code: "Cambiare il codice di RedGiant",
-  toolDo_platform_code: "Cambia RedGiant stesso, provato a parte prima che tu lo accetti.",
+  tool_platform_code: "Cambiare il codice di {product}",
+  toolDo_platform_code: "Cambia {product} stesso, provato a parte prima che tu lo accetti.",
   // g36: refiner delle istruzioni, istruzioni e strumenti di God per gli agenti nuovi, request_tool (G36.13-15)
   refineOpen: "Migliora le istruzioni",
   refineLead:
@@ -11912,14 +11926,14 @@ const it: Record<Key, string> = {
   acpKind_other: "azione",
   acpEnv_name: '"{name}" non è un nome di variabile.',
   "acpEnv_secret-name":
-    '"{name}" sembra una chiave: le chiavi vanno nel portachiavi di RedGiant, mai nelle variabili di un agente.',
-  acpEnv_own: '"{name}" è una variabile di RedGiant.',
+    '"{name}" sembra una chiave: le chiavi vanno nel portachiavi di {product}, mai nelle variabili di un agente.',
+  acpEnv_own: '"{name}" è una variabile di {product}.',
   "acpEnv_secret-value":
-    'Il valore di "{name}" sembra una chiave: le chiavi vanno nel portachiavi di RedGiant.',
+    'Il valore di "{name}" sembra una chiave: le chiavi vanno nel portachiavi di {product}.',
   acpSection: "Agenti esterni (ACP)",
   acpPageQ: "Fai lavorare qui gli agenti che usi già",
   acpPageLead:
-    "Un agente esterno è un agente per programmare che forse usi già, come Claude Code, Codex o Gemini CLI. Qui diventa un agente di un tuo progetto di RedGiant: l'orchestratore del progetto o God gli danno dei compiti, tu segui il suo lavoro nella conversazione, e ogni file che tocca, ogni comando che lancia e ogni permesso che chiede passano da RedGiant.",
+    "Un agente esterno è un agente per programmare che forse usi già, come Claude Code, Codex o Gemini CLI. Qui diventa un agente di un tuo progetto di {product}: l'orchestratore del progetto o God gli danno dei compiti, tu segui il suo lavoro nella conversazione, e ogni file che tocca, ogni comando che lancia e ogni permesso che chiede passano da {product}.",
   acpHowTitle: "Come se ne aggiunge uno",
   acpStep1Title: "Installalo su questo computer",
   acpStep1:
@@ -11941,26 +11955,26 @@ const it: Record<Key, string> = {
   acpNeedProject: "Prima crea un progetto: un agente esterno lavora in uno.",
   acpRemoveQ: "Togliere {name}?",
   acpRemoveText: "L'agente si ferma; le sue conversazioni e ciò che ha fatto restano nel registro.",
-  acpEditorTitle: "Il contrario: RedGiant dentro il tuo editor",
+  acpEditorTitle: "Il contrario: {product} dentro il tuo editor",
   acpEditorLead:
-    "Serve se scrivi codice in Zed o in un editor JetBrains e vuoi parlare con i tuoi agenti di RedGiant da lì, senza aprire questa pagina. L'editor e RedGiant si parlano con ACP, la stessa lingua degli agenti esterni.",
-  acpEdStep1Title: "Installa la riga di comando di RedGiant",
+    "Serve se scrivi codice in Zed o in un editor JetBrains e vuoi parlare con i tuoi agenti di {product} da lì, senza aprire questa pagina. L'editor e {product} si parlano con ACP, la stessa lingua degli agenti esterni.",
+  acpEdStep1Title: "Installa la riga di comando di {product}",
   acpEdStep1:
-    "Porta il programma redgiant-acp, che l'editor avvia. Trova da solo il RedGiant acceso su questo computer.",
+    "Porta il programma rasgeth-acp, che l'editor avvia. Trova da solo il {product} acceso su questo computer.",
   acpEdStep2Title: "Copia il blocco nell'editor",
   acpEdStep2: "Il blocco per il tuo editor è qui sotto: incollalo dove è scritto.",
-  acpEdStep3Title: "Scegli RedGiant nell'editor",
+  acpEdStep3Title: "Scegli {product} nell'editor",
   acpEdStep3:
-    "Apri il pannello degli agenti dell'editor e scegli RedGiant: da lì parli con i tuoi agenti.",
-  acpZedHelp: "Nel settings.json di Zed; poi apri il pannello degli agenti e scegli RedGiant.",
+    "Apri il pannello degli agenti dell'editor e scegli {product}: da lì parli con i tuoi agenti.",
+  acpZedHelp: "Nel settings.json di Zed; poi apri il pannello degli agenti e scegli {product}.",
   acpJetbrainsHelp: "In ~/.jetbrains/acp.json (AI Assistant 2026.3 o successivo).",
   acpEditorWho:
-    "Nella cartella di un progetto parli con il suo orchestratore, altrove con God; «@nome» all'inizio del primo messaggio sceglie un altro agente, e --agent ne fissa uno. Ciò che RedGiant ti chiede viene chiesto anche nell'editor: la tua risposta lì vale come tua. Con il progetto aperto, l'agente legge e scrive i suoi file attraverso l'editor, modifiche non salvate comprese.",
+    "Nella cartella di un progetto parli con il suo orchestratore, altrove con God; «@nome» all'inizio del primo messaggio sceglie un altro agente, e --agent ne fissa uno. Ciò che {product} ti chiede viene chiesto anche nell'editor: la tua risposta lì vale come tua. Con il progetto aperto, l'agente legge e scrive i suoi file attraverso l'editor, modifiche non salvate comprese.",
   acpAddTitle: "Un nuovo agente esterno",
   acpEditTitle: "{name}",
   acpWhich: "Quale agente",
   acpOther: "Un altro",
-  acpName: "Il suo nome in RedGiant",
+  acpName: "Il suo nome in {product}",
   acpProject: "Il progetto in cui lavora",
   acpProjectHelp: "Lì riceve una cartella tutta sua, come gli altri agenti del progetto.",
   acpCommand: "Comando",
@@ -12062,7 +12076,7 @@ const it: Record<Key, string> = {
   rqModeAsk: "Chiedimelo",
   rqModeClassifier: "Non chiedermi niente",
   rqAlwaysYou:
-    "Anche con «Non chiedermi niente», le richieste davvero pericolose arrivano sempre a te, ovunque: cancellazioni definitive, file di sistema, segreti che escono, pagamenti veri e le protezioni di RedGiant.",
+    "Anche con «Non chiedermi niente», le richieste davvero pericolose arrivano sempre a te, ovunque: cancellazioni definitive, file di sistema, segreti che escono, pagamenti veri e le protezioni di {product}.",
   rqModeAskText:
     "Le richieste ti arrivano ovunque: qui e sulle chat collegate. Rispondi dove ti è comodo: vale la prima risposta, e le altre copie si chiudono da sole.",
   rqModeClassifierText:
@@ -12125,7 +12139,7 @@ const it: Record<Key, string> = {
   kbSection: "Conoscenza",
   kbQ: "I tuoi documenti, da far consultare agli agenti",
   kbLead:
-    "Scegli cartelle, file e pagine: RedGiant li legge, li divide in pezzi e li ritrova per quello che vogliono dire. Gli agenti dicono da dove viene ogni risposta e con un clic si apre il file in quel punto.",
+    "Scegli cartelle, file e pagine: {product} li legge, li divide in pezzi e li ritrova per quello che vogliono dire. Gli agenti dicono da dove viene ogni risposta e con un clic si apre il file in quel punto.",
   kbLoading: "Carico…",
   kbStateNoVector:
     "La ricerca per significato non è ancora pronta su questo computer: per ora cerca per parole.",
@@ -12193,10 +12207,10 @@ const it: Record<Key, string> = {
   kbKind_chats: "Le conversazioni",
   kbKindText_chats: "Quello che hai detto con gli agenti",
   kbFolderPath: "La cartella",
-  kbFolderHelp: "Il suo percorso completo sul computer dove gira RedGiant.",
+  kbFolderHelp: "Il suo percorso completo sul computer dove gira {product}.",
   kbFolderExample: "/home/io/Documenti oppure C:\\Users\\io\\Documenti",
   kbFilePath: "Il file",
-  kbFileHelp: "Il suo percorso completo sul computer dove gira RedGiant.",
+  kbFileHelp: "Il suo percorso completo sul computer dove gira {product}.",
   kbFileExample: "/home/io/manuale.pdf",
   kbUrl: "L'indirizzo",
   kbUrlHelp: "Letta senza i tuoi accessi: solo pagine pubbliche.",
@@ -12208,7 +12222,7 @@ const it: Record<Key, string> = {
   kbHowFarBack: "Quanto indietro",
   kbDays: "{n} giorni",
   kbConsentMail:
-    "Gli agenti che possono leggere questa raccolta potranno trovare e citare la tua posta. RedGiant legge solo la posta in arrivo: non segna, non sposta e non cancella mai un messaggio.",
+    "Gli agenti che possono leggere questa raccolta potranno trovare e citare la tua posta. {product} legge solo la posta in arrivo: non segna, non sposta e non cancella mai un messaggio.",
   kbConsentMailYes: "Sì, gli agenti possono leggere questa posta",
   kbConsentChats:
     "Gli agenti che possono leggere questa raccolta potranno trovare e citare quello che hai scritto nelle conversazioni e quello che gli agenti hanno risposto.",
@@ -12252,9 +12266,9 @@ const it: Record<Key, string> = {
   kbMeaningOther: "Scegli un altro modello",
   kbPlacePlatform: "La cartella di God",
   kbPlaceAssistants: "La scrivania degli assistenti",
-  kbPickFolder: "Scegli una cartella in RedGiant",
-  kbPickFile: "Scegli un file in RedGiant",
-  kbPickWhere: "I tuoi progetti e le cartelle di RedGiant",
+  kbPickFolder: "Scegli una cartella in {product}",
+  kbPickFile: "Scegli un file in {product}",
+  kbPickWhere: "I tuoi progetti e le cartelle di {product}",
   kbPickPlaces: "Torna ai progetti",
   kbPickUp: "Su di una cartella",
   kbPickEmpty: "Qui in {name} non c'è niente.",
@@ -12827,9 +12841,9 @@ const it: Record<Key, string> = {
   fbSystemSection: "Sistema",
   fbSystemQ: "Sistema",
   fbSystemLead:
-    "La macchina su cui gira RedGiant, il suo ruolo, dove stanno i dati e le copie, e SSH.",
+    "La macchina su cui gira {product}, il suo ruolo, dove stanno i dati e le copie, e SSH.",
   fbMachineTitle: "La macchina",
-  fbMachineQ: "Ecco la macchina che RedGiant ha trovato",
+  fbMachineQ: "Ecco la macchina che {product} ha trovato",
   fbMachineLead:
     "Misurata adesso. Quello che il sistema non dice è scritto, mai indovinato. Decide solo cosa ti viene proposto: scegli tu.",
   fbArch: "Architettura",
@@ -12856,9 +12870,9 @@ const it: Record<Key, string> = {
   dvSection: "Dispositivi",
   dvQ: "I tuoi dispositivi",
   dvLead:
-    "Telefoni e computer con l'app RGCompanion. Ognuno ha il suo accesso: se ne revochi uno si scollega subito, gli altri restano.",
+    "Telefoni e computer con l'app di {product}. Ognuno ha il suo accesso: se ne revochi uno si scollega subito, gli altri restano.",
   dvNone:
-    "Ancora nessun dispositivo. Installa RGCompanion su un telefono o un computer ed entra con la tua password: comparirà qui.",
+    "Ancora nessun dispositivo. Installa l'app di {product} su un telefono o un computer ed entra con la tua password: comparirà qui.",
   dvThis: "questo dispositivo",
   dvNeverUsed: "mai usato",
   dvLastUsed: "ultimo uso {when}",
@@ -12894,7 +12908,7 @@ const it: Record<Key, string> = {
     "«{name}» non riceve più notifiche lì: l'app le registra di nuovo quando si apre.",
   ndQ: "Nodi",
   ndLead:
-    "Altre macchine RedGiant che lavorano con questa: prestano comandi, modelli locali e spazio per progetti e copie di sicurezza. Chi può comandare chi si decide qui, macchina per macchina.",
+    "Altre macchine {product} che lavorano con questa: prestano comandi, modelli locali e spazio per progetti e copie di sicurezza. Chi può comandare chi si decide qui, macchina per macchina.",
   ndThis: "Questa macchina",
   ndName: "Nome",
   ndNameHelp: "Come la chiamano le altre macchine e gli agenti.",
@@ -12903,7 +12917,7 @@ const it: Record<Key, string> = {
     "I nodi hanno bisogno del Portachiavi: la chiave di questa macchina sta solo lì. Aprilo in Impostazioni › Portachiavi.",
   ndAddTitle: "Aggiungi un nodo",
   ndAddLead:
-    "Sull'altra macchina, al primo avvio (ruolo «Nodo di un altro RedGiant») o nelle sue Impostazioni › Nodi, scrivi l'indirizzo di questa macchina e il codice qui sotto.",
+    "Sull'altra macchina, al primo avvio (ruolo «Nodo di un altro {product}») o nelle sue Impostazioni › Nodi, scrivi l'indirizzo di questa macchina e il codice qui sotto.",
   ndAddButton: "Mostra un codice di abbinamento",
   ndCode: "Codice di abbinamento",
   ndCodeExpires: "Vale una volta, ancora per {min} minuti.",
@@ -12911,11 +12925,11 @@ const it: Record<Key, string> = {
   ndCodeStop: "Smetti di mostrarlo",
   ndCodeAddress:
     "L'indirizzo di questa macchina, come la raggiunge l'altra (in rete locale, con Tailscale o un proxy): {address}",
-  ndJoinTitle: "Lavora per un altro RedGiant",
+  ndJoinTitle: "Lavora per un altro {product}",
   ndJoinLead:
-    "Abbina questa macchina come nodo di un altro RedGiant: su quello, Impostazioni › Nodi › «Aggiungi un nodo» mostra l'indirizzo e un codice.",
-  ndAddress: "L'indirizzo dell'altro RedGiant",
-  ndAddressPh: "https://redgiant.local oppure 192.168.1.10:3000",
+    "Abbina questa macchina come nodo di un altro {product}: su quello, Impostazioni › Nodi › «Aggiungi un nodo» mostra l'indirizzo e un codice.",
+  ndAddress: "L'indirizzo dell'altro {product}",
+  ndAddressPh: "https://rasgeth.local oppure 192.168.1.10:3000",
   ndCodeField: "Il suo codice",
   ndCodePh: "ABCD-EFGH",
   ndPair: "Abbina",
@@ -12993,30 +13007,30 @@ const it: Record<Key, string> = {
   ndNoProjects: "Ancora nessun progetto.",
   ndReason: "Perché",
   toolOnNode: "sul nodo {name}",
-  fbRoleQ: "Che cosa sarà questo RedGiant?",
+  fbRoleQ: "Che cosa sarà questo {product}?",
   fbRoleLead:
-    "Un RedGiant completo ha i suoi agenti, progetti e chat. Un nodo presta la sua macchina a un altro RedGiant: comandi, modelli locali, spazio per progetti e copie.",
+    "Un {product} completo ha i suoi agenti, progetti e chat. Un nodo presta la sua macchina a un altro {product}: comandi, modelli locali, spazio per progetti e copie.",
   fbRoleTitle: "Ruolo",
   fbRoleSettingsLead: "Puoi cambiarlo quando vuoi: prima chiede e dice cosa cambia.",
-  fbRoleFull: "RedGiant completo",
+  fbRoleFull: "{product} completo",
   fbRoleFullText: "Agenti, progetti, chat e tutto il resto, su questa macchina.",
-  fbRoleNode: "Nodo di un altro RedGiant",
-  fbRoleNodeText: "Questa macchina lavora per un RedGiant che hai già.",
+  fbRoleNode: "Nodo di un altro {product}",
+  fbRoleNodeText: "Questa macchina lavora per un {product} che hai già.",
   fbPairCode: "Inserisci il codice di abbinamento",
   fbPairPlaceholder: "ABCD-EFGH",
   fbPairLater:
-    "Scrivi l'indirizzo del RedGiant principale e il codice che mostra in Impostazioni › Nodi › «Aggiungi un nodo». Puoi farlo anche dopo, dalle Impostazioni.",
-  fbToNodeQ: "Trasformare questo RedGiant in un nodo?",
+    "Scrivi l'indirizzo del {product} principale e il codice che mostra in Impostazioni › Nodi › «Aggiungi un nodo». Puoi farlo anche dopo, dalle Impostazioni.",
+  fbToNodeQ: "Trasformare questo {product} in un nodo?",
   fbToNodeText:
-    "Smetterà di essere un RedGiant a sé quando sarà abbinato: agenti, progetti e conversazioni restano salvati, intatti, ma fermi finché non lo rendi di nuovo completo.",
+    "Smetterà di essere un {product} a sé quando sarà abbinato: agenti, progetti e conversazioni restano salvati, intatti, ma fermi finché non lo rendi di nuovo completo.",
   fbToNodeYes: "Rendilo un nodo",
-  fbToFullQ: "Rendere di nuovo questo un RedGiant completo?",
+  fbToFullQ: "Rendere di nuovo questo un {product} completo?",
   fbToFullText:
-    "Smette di lavorare per l'altro RedGiant; i suoi agenti, progetti e conversazioni tornano com'erano.",
+    "Smette di lavorare per l'altro {product}; i suoi agenti, progetti e conversazioni tornano com'erano.",
   fbToFullYes: "Rendilo completo",
   fbNodeDoneQ: "Questa macchina è pronta a fare da nodo",
   fbNodeDoneLead:
-    "L'abbinamento con il RedGiant principale arriva con un prossimo aggiornamento. Fino ad allora questa pagina resta qui, e puoi renderlo un RedGiant completo da Impostazioni › Sistema.",
+    "L'abbinamento con il {product} principale arriva con un prossimo aggiornamento. Fino ad allora questa pagina resta qui, e puoi renderlo un {product} completo da Impostazioni › Sistema.",
   fbAccountQ: "Una password per entrare",
   fbAccountLead:
     "Da un altro computer o dal telefono entrerai con questa. Puoi saltare e metterla dopo in Impostazioni › Accesso da fuori casa.",
@@ -13040,7 +13054,7 @@ const it: Record<Key, string> = {
   fbDestFolder: "Le copie vanno nella cartella {path}.",
   fbDisksTitle: "Dischi rimovibili",
   fbMethod_helper:
-    "Scegline uno: RedGiant lo monta solo per le copie. I dischi di sistema non vengono mai proposti.",
+    "Scegline uno: {product} lo monta solo per le copie. I dischi di sistema non vengono mai proposti.",
   fbMethod_udisks:
     "Scegline uno: lo monta il sistema (udisks2). I dischi di sistema non vengono mai proposti.",
   fbMethod_none:
@@ -13057,18 +13071,18 @@ const it: Record<Key, string> = {
   fbWhyNotDisk: "Non è un disco",
   fbPlacesTitle: "Cartelle montate per le copie",
   fbPlacesLead:
-    "Cartelle che la macchina che ospita RedGiant ha montato in /var/lib/redgiant/backups (un punto di montaggio di Proxmox, una cartella di rete).",
+    "Cartelle che la macchina che ospita {product} ha montato in /var/lib/redgiant/backups (un punto di montaggio di Proxmox, una cartella di rete).",
   fbUsePlace: "Usa per le copie",
-  fbPlaceNotWritable: "RedGiant non può scriverci",
+  fbPlaceNotWritable: "{product} non può scriverci",
   fbPlaceFree: "{free} GB liberi su {total}",
   fbContainerDisks:
-    "RedGiant OS gira in un container ({name}): i dischi che vede sono quelli della macchina che lo ospita e da qui non si possono usare.",
+    "{product} OS gira in un container ({name}): i dischi che vede sono quelli della macchina che lo ospita e da qui non si possono usare.",
   fbSshWhy_no_helper:
-    "Questa installazione non ha l'aiutante di sistema di RedGiant OS: SSH lo gestisce il sistema che la ospita.",
+    "Questa installazione non ha l'aiutante di sistema di {product} OS: SSH lo gestisce il sistema che la ospita.",
   fbSshWhy_unreachable:
-    "L'aiutante di sistema di RedGiant OS non risponde (redgiant-helper.socket): ora SSH non si può leggere né cambiare. Di solito riavviare la macchina lo rimette a posto.",
+    "L'aiutante di sistema di {product} OS non risponde (redgiant-helper.socket): ora SSH non si può leggere né cambiare. Di solito riavviare la macchina lo rimette a posto.",
   fbSshWhy_timeout:
-    "L'aiutante di sistema di RedGiant OS ci ha messo troppo a rispondere: riprova tra poco.",
+    "L'aiutante di sistema di {product} OS ci ha messo troppo a rispondere: riprova tra poco.",
   fbSshWhy_not_installed: "SSH (openssh-server) non è installato in questo sistema.",
   fbSshWhy_other: "Qui SSH non si può leggere: l'aiutante di sistema ha risposto «{why}».",
   fbSshContainer:
@@ -13107,19 +13121,19 @@ const it: Record<Key, string> = {
     "Niente da montare: funziona anche in un container o in Docker. Ogni copia arriva con un nome temporaneo e prende il suo nome vero solo quando è completa e controllata.",
   fbNetSftp: "Una delle tue macchine",
   fbNetSmb: "Cartella condivisa (SMB)",
-  fbNetNode: "Un altro RedGiant",
+  fbNetNode: "Un altro {product}",
   fbNetNoMachines:
     "Nessuna macchina ancora: aggiungi il NAS o un altro computer in Impostazioni › Macchine (SSH), provalo una volta e torna qui.",
   fbNetPick: "Usa per le copie",
   fbNetNotTrusted: "Prima provala in Impostazioni › Macchine",
   fbNetFolder: "Cartella lì",
   fbNetFolderHelp:
-    "Un percorso completo (/volume1/RedGiant, E:\\Backup) o dalla home (~/RedGiant-backups). Se manca la crea.",
+    "Un percorso completo (/volume1/{product}, E:\\Backup) o dalla home (~/RedGiant-backups). Se manca la crea.",
   fbSmbMissing:
-    "Le cartelle condivise hanno bisogno di smbclient, che questa installazione non ha (l'immagine Docker e RedGiant OS ce l'hanno). Su Windows usa il campo cartella qui sopra con \\\\host\\condivisione.",
+    "Le cartelle condivise hanno bisogno di smbclient, che questa installazione non ha (l'immagine Docker e {product} OS ce l'hanno). Su Windows usa il campo cartella qui sopra con \\\\host\\condivisione.",
   fbSmbAddress: "Cartella condivisa",
   fbSmbAddressHelp:
-    "Come la scrive Windows (\\\\nas\\backup\\RedGiant) oppure smb://nas/backup/RedGiant.",
+    "Come la scrive Windows (\\\\nas\\backup\\{product}) oppure smb://nas/backup/{product}.",
   fbSmbUser: "Utente",
   fbSmbPassword: "Password",
   fbSmbPasswordKept: "È nel Portachiavi: lascia vuoto per tenerla.",
@@ -13128,12 +13142,12 @@ const it: Record<Key, string> = {
   fbSmbDomainHelp: "Solo se la tua rete lo chiede (spesso vuoto).",
   fbUseShare: "Usa questa cartella condivisa",
   fbNetNoNodes:
-    "Nessun RedGiant abbinato: abbinane uno in Impostazioni › Nodi (deve prestare il suo spazio).",
+    "Nessun {product} abbinato: abbinane uno in Impostazioni › Nodi (deve prestare il suo spazio).",
   fbNodeOnline: "In linea",
   fbNodeOffline: "Non in linea ora",
   fbHostTitle: "Un disco della macchina ospite",
   fbHostLead:
-    "Da un container RedGiant vede i dischi della macchina ospite ma non può montarli: li monta l'ospite e passa dentro una cartella. RedGiant se ne accorge da solo.",
+    "Da un container {product} vede i dischi della macchina ospite ma non può montarli: li monta l'ospite e passa dentro una cartella. {product} se ne accorge da solo.",
   fbHostOne: "Su questa macchina c'è il disco {title}, {how}, {size}.",
   fbHostMany: "Su questa macchina ci sono {n} dischi rimovibili: scegli quello per le copie.",
   fbHostNone:
@@ -13151,14 +13165,14 @@ const it: Record<Key, string> = {
     "Controllo ogni pochi secondi: quando arriva {target} compare qui sopra, pronta da usare.",
   fbPveTitle: "Fallo tu",
   fbPveLead:
-    "Se l'host Proxmox è tra le tue macchine (Impostazioni › Macchine), RedGiant può eseguire lì questi passi da solo. Prima te lo chiede, con tutti i comandi nella richiesta.",
+    "Se l'host Proxmox è tra le tue macchine (Impostazioni › Macchine), {product} può eseguire lì questi passi da solo. Prima te lo chiede, con tutti i comandi nella richiesta.",
   fbPveLook: "Cerca l'host Proxmox",
   fbPveNone:
-    "Nessuna delle tue {n} macchine è un host Proxmox. Aggiungi l'host in Impostazioni › Macchine (come root, con la chiave di RedGiant), provalo, poi cerca di nuovo.",
+    "Nessuna delle tue {n} macchine è un host Proxmox. Aggiungi l'host in Impostazioni › Macchine (come root, con la chiave di {product}), provalo, poi cerca di nuovo.",
   fbPveHost: "{name}: Proxmox {version}.",
   fbPveGuess: "Questo container è il {id}.",
   fbPveNoDisks: "Nessun disco rimovibile su quell'host.",
-  fbPveDo: "Passalo a RedGiant",
+  fbPveDo: "Passalo a {product}",
   fbPveFormat: "Non formattato: formattalo e passalo",
   fbPveNeedId: "Scrivi prima il numero del container.",
   fbPveFormatQ: "Formattare il disco {title}?",
@@ -13167,7 +13181,7 @@ const it: Record<Key, string> = {
   fbPveFormatYes: "Formatta e passalo",
   fbPveQ: "Passare il disco {title} di {host} al container {id}?",
   fbPveText:
-    "RedGiant te lo chiede di nuovo tra le richieste, con i comandi esatti, prima di eseguire qualcosa sull'host.",
+    "{product} te lo chiede di nuovo tra le richieste, con i comandi esatti, prima di eseguire qualcosa sull'host.",
   fbPveYes: "Chiedimelo con i comandi",
   fbPveDone: "Fatto: la cartella {target} è arrivata.",
   fbPveRestart:
@@ -13192,7 +13206,7 @@ const it: Record<Key, string> = {
   fbErr_mismatch: "La copia è arrivata diversa dall'originale: non è stata tenuta. Riprova.",
   fbErr_smb_missing:
     "Le cartelle condivise hanno bisogno di smbclient, che questa installazione non ha.",
-  fbErr_bad_path: "Scrivi un percorso completo (/volume1/RedGiant) o dalla home (~/backup).",
+  fbErr_bad_path: "Scrivi un percorso completo (/volume1/{product}) o dalla home (~/backup).",
   fbErr_disk_missing:
     "Il disco delle copie non è collegato: collegalo. Non è stato scritto niente altrove.",
   fbErr_place_missing:
@@ -13214,7 +13228,7 @@ const it: Record<Key, string> = {
   fbErr_needs_format: "Quel disco non è formattato.",
   job_backup_scheduled: "Copia di sicurezza",
   job_backup_restore: "Ripristino della copia",
-  job_backup_host_mount: "Passo il disco {disk} a RedGiant",
+  job_backup_host_mount: "Passo il disco {disk} a {product}",
   job_step_fetch: "Porto qui la copia",
   job_step_look: "Guardo l'host",
   job_step_ask: "Aspetto il tuo sì",
@@ -13225,20 +13239,20 @@ const it: Record<Key, string> = {
   osNetSubLead:
     "Come la macchina si collega alla rete, e l'HTTPS per le pagine della rete di casa.",
   osUpdSub: "Aggiornamenti",
-  osUpdSubLead: "RedGiant e il sistema su cui gira, sempre aggiornati.",
+  osUpdSubLead: "{product} e il sistema su cui gira, sempre aggiornati.",
   osWifiTitle: "Wi-Fi",
   osWifiQ: "A quale rete senza fili si collega la macchina?",
   snTitle: "La rete di casa",
-  snQ: "Sei collegato a {ssid}, la rete temporanea di RedGiant: quale rete deve usare RedGiant a casa?",
+  snQ: "Sei collegato a {ssid}, la rete temporanea di {product}: quale rete deve usare {product} a casa?",
   snMaintQ:
-    "RedGiant non trovava più la rete di casa e ha riaperto {ssid}: scegli la rete che deve usare.",
+    "{product} non trovava più la rete di casa e ha riaperto {ssid}: scegli la rete che deve usare.",
   snCable: "Uso il cavo",
   snCableDone:
-    "Il cavo funziona: RedGiant è a {address}. Collega questo dispositivo alla rete di casa e apri http://{address}:7600 (oppure http://redgiant.local:7600).",
+    "Il cavo funziona: {product} è a {address}. Collega questo dispositivo alla rete di casa e apri http://{address}:7600 (oppure http://rasgeth.local:7600).",
   snJoin: "Usa questa rete",
   snTrying:
-    "RedGiant si collega a «{name}»: questa rete temporanea adesso si chiude. Collega questo dispositivo alla rete di casa e apri http://redgiant.local:7600. Se non funziona, {ssid} torna fra un minuto con il motivo.",
-  snFailed: "RedGiant non è riuscito a collegarsi a «{name}»: {why}",
+    "{product} si collega a «{name}»: questa rete temporanea adesso si chiude. Collega questo dispositivo alla rete di casa e apri http://rasgeth.local:7600. Se non funziona, {ssid} torna fra un minuto con il motivo.",
+  snFailed: "{product} non è riuscito a collegarsi a «{name}»: {why}",
   snNone:
     "Intorno non si vede nessuna rete: usa il cavo, oppure scrivi il nome di una rete nascosta.",
   snPassword: "Password di «{name}»",
@@ -13266,7 +13280,7 @@ const it: Record<Key, string> = {
   osWifiHiddenName: "Il nome della rete",
   osWifiPassword: "Password di «{name}»",
   osWifiPasswordHelp:
-    "Da 8 a 63 caratteri. Resta solo sulla macchina, leggibile solo dal sistema; RedGiant non la conserva e non la mostra mai.",
+    "Da 8 a 63 caratteri. Resta solo sulla macchina, leggibile solo dal sistema; {product} non la conserva e non la mostra mai.",
   osWifiScan: "Cerca di nuovo",
   osWifiLooking: "Cerco…",
   osWifiJoin: "Collegati",
@@ -13282,15 +13296,15 @@ const it: Record<Key, string> = {
   osHttpsTitle: "HTTPS nella tua rete",
   osHttpsQ: "Vuoi il lucchetto del browser anche nella rete di casa?",
   osHttpsInFront:
-    "Arrivi già a RedGiant in HTTPS attraverso {name}: per quell'indirizzo il certificato locale non serve.",
+    "Arrivi già a {product} in HTTPS attraverso {name}: per quell'indirizzo il certificato locale non serve.",
   osHttpsLocal: "HTTPS nella rete locale",
   osHttpsLocalOn:
     "https://{name} e gli indirizzi della macchina rispondono con un certificato di questa macchina. http continua a funzionare finché non dici che è fidato.",
   osHttpsLocalOff:
-    "Spento: RedGiant risponde solo in http (o attraverso l'HTTPS che hai messo tu).",
+    "Spento: {product} risponde solo in http (o attraverso l'HTTPS che hai messo tu).",
   osHttpsOffQ: "Spegnere l'HTTPS locale?",
   osHttpsOffText:
-    "I browser che sono già passati da https://redgiant.local continuano a chiedere https per al massimo 30 giorni: lì apri la macchina con il suo indirizzo (http://192.168…:7600) fino ad allora.",
+    "I browser che sono già passati da https://rasgeth.local continuano a chiedere https per al massimo 30 giorni: lì apri la macchina con il suo indirizzo (http://192.168…:7600) fino ad allora.",
   osHttpsOffYes: "Spegni",
   osHttpsAddress: "Indirizzo",
   osHttpsFingerprint: "Impronta del certificato (SHA-256)",
@@ -13303,15 +13317,15 @@ const it: Record<Key, string> = {
   osHttpsQrHelp: "Da un telefono sulla stessa rete, inquadra il codice per scaricarlo.",
   osHttpsDevice: "Il tuo dispositivo",
   osHttpsHow_windows:
-    "Apri RedGiant-CA.crt, «Installa certificato…», «Utente corrente», «Colloca tutti i certificati nel seguente archivio», «Autorità di certificazione radice attendibili», Fine, Sì. Riavvia il browser.",
+    "Apri Rasgeth-CA.crt, «Installa certificato…», «Utente corrente», «Colloca tutti i certificati nel seguente archivio», «Autorità di certificazione radice attendibili», Fine, Sì. Riavvia il browser.",
   osHttpsHow_mac:
-    "Apri RedGiant-CA.crt: Accesso Portachiavi lo aggiunge. Fai doppio clic su «RedGiant on …» nel portachiavi «login», apri «Attendibilità», metti «Quando si utilizza questo certificato» su «Fidati sempre», chiudi e scrivi la tua password.",
+    "Apri Rasgeth-CA.crt: Accesso Portachiavi lo aggiunge. Fai doppio clic su «{product} on …» nel portachiavi «login», apri «Attendibilità», metti «Quando si utilizza questo certificato» su «Fidati sempre», chiudi e scrivi la tua password.",
   osHttpsHow_iphone:
-    "Apri il file scaricato in Safari, «Consenti». Impostazioni › Generali › VPN e gestione dispositivi: installa il profilo. Poi Impostazioni › Generali › Info › Impostazioni certificati attendibili: attiva «RedGiant on …».",
+    "Apri il file scaricato in Safari, «Consenti». Impostazioni › Generali › VPN e gestione dispositivi: installa il profilo. Poi Impostazioni › Generali › Info › Impostazioni certificati attendibili: attiva «{product} on …».",
   osHttpsHow_android:
-    "Impostazioni › Sicurezza (o Sicurezza e privacy) › Altro › Crittografia e credenziali › Installa un certificato › Certificato CA: «Installa comunque», scegli RedGiant-CA.crt.",
+    "Impostazioni › Sicurezza (o Sicurezza e privacy) › Altro › Crittografia e credenziali › Installa un certificato › Certificato CA: «Installa comunque», scegli Rasgeth-CA.crt.",
   osHttpsHow_linux:
-    "Debian/Ubuntu: sudo cp RedGiant-CA.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates. Chrome e Firefox hanno un elenco loro: aggiungilo nelle impostazioni dei certificati del browser (Autorità, «Importa»).",
+    "Debian/Ubuntu: sudo cp Rasgeth-CA.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates. Chrome e Firefox hanno un elenco loro: aggiungilo nelle impostazioni dei certificati del browser (Autorità, «Importa»).",
   osHttpsFirefox:
     "Firefox su qualsiasi sistema: Impostazioni › Privacy e sicurezza › Certificati › Mostra certificati › Autorità › Importa, spunta «Considera attendibile questa CA per l'identificazione di siti web».",
   osHttpsCheck: "Prova questo dispositivo",
@@ -13322,40 +13336,40 @@ const it: Record<Key, string> = {
   osHttpsRedirect: "Manda sempre a HTTPS",
   osHttpsRedirectOn:
     "Le richieste http nella tua rete passano a https; i browser se lo ricordano (HSTS, 30 giorni). I dispositivi senza certificato mostrano un avviso: installalo anche lì.",
-  osUpdTitle: "RedGiant",
-  osUpdQ: "RedGiant è aggiornato su questa macchina?",
+  osUpdTitle: "{product}",
+  osUpdQ: "{product} è aggiornato su questa macchina?",
   osUpdInstalled: "Installato",
   osUpdState: "Stato",
   osUpdChecked: "Ultimo controllo",
   osUpd_latest: "Aggiornato",
-  osUpd_available: "RedGiant {version} è pronto da installare",
+  osUpd_available: "{product} {version} è pronto da installare",
   osUpd_applying: "Aggiorno alla {version}",
   osUpd_error: "L'ultimo aggiornamento non è finito (gira la versione di prima)",
-  osUpd_breaking: "RedGiant {version} chiede un'installazione pulita",
+  osUpd_breaking: "{product} {version} chiede un'installazione pulita",
   osUpd_unsigned:
-    "È uscito RedGiant {version}, ma ancora senza il pacchetto firmato per RedGiant OS: arriva con un rilascio successivo",
+    "È uscito {product} {version}, ma ancora senza il pacchetto firmato per {product} OS: arriva con un rilascio successivo",
   osUpd_unreachable: "Non riesco a raggiungere GitHub per controllare",
   osUpd_unknown: "Non ancora controllato",
   osUpdApply: "Aggiorna alla {version}",
-  osUpdApplyQ: "Aggiornare RedGiant alla {version}?",
+  osUpdApplyQ: "Aggiornare {product} alla {version}?",
   osUpdApplyText:
-    "La macchina scarica la versione nuova mentre questa continua a funzionare, poi riavvia RedGiant: la pagina si ferma per qualche minuto e torna da sola. Non si perde niente, e se la versione nuova non parte torna quella di prima.",
+    "La macchina scarica la versione nuova mentre questa continua a funzionare, poi riavvia {product}: la pagina si ferma per qualche minuto e torna da sola. Non si perde niente, e se la versione nuova non parte torna quella di prima.",
   osUpdApplyYes: "Aggiorna ora",
   osUpdBreaking:
-    "Questa versione non si installa sopra quella di adesso: RedGiant ti guida (backup su un disco USB, reinstalli RedGiant OS, ripristini).",
-  osRunTitle: "Aggiorno RedGiant dalla {from} alla {to}",
-  osRunTitleTo: "Aggiorno RedGiant alla {to}",
+    "Questa versione non si installa sopra quella di adesso: {product} ti guida (backup su un disco USB, reinstalli {product} OS, ripristini).",
+  osRunTitle: "Aggiorno {product} dalla {from} alla {to}",
+  osRunTitleTo: "Aggiorno {product} alla {to}",
   osRunLeftUnknown: "Calcolo quanto ci vuole…",
   osRunTotal: "{size} da scaricare",
   osRunSteps: "I passi dell'aggiornamento",
   osRunKeeps:
-    "RedGiant continua a funzionare mentre scarica la versione nuova: si ferma solo per il riavvio, un minuto o due.",
+    "{product} continua a funzionare mentre scarica la versione nuova: si ferma solo per il riavvio, un minuto o due.",
   osRunComesBack:
     "Lascia aperta questa pagina: si ricollega da sola e si ricarica con la versione nuova.",
   osRunAsking: "Chiedo le immagini…",
   osRunExtracting: "Scaricate: preparo le immagini…",
-  osRunReconnecting: "RedGiant si sta riavviando: la pagina si ricollega da sola appena risponde.",
-  osRunReloading: "RedGiant {version} risponde: ricarico la pagina…",
+  osRunReconnecting: "{product} si sta riavviando: la pagina si ricollega da sola appena risponde.",
+  osRunReloading: "{product} {version} risponde: ricarico la pagina…",
   osRunDone: "Aggiornato alla {version}.",
   osRunDoneText: "Dalla {from}, in {time}. Conversazioni, agenti e impostazioni sono come prima.",
   osRunDoneFrom: "Dalla {from}. Conversazioni, agenti e impostazioni sono come prima.",
@@ -13364,11 +13378,11 @@ const it: Record<Key, string> = {
   osStep_download: "Scarico le immagini nuove",
   osStep_files: "Scarico i file di sistema",
   osStep_install: "Installo i file di sistema",
-  osStep_restart: "Riavvio RedGiant con la versione nuova",
-  osStep_wait: "Controllo che RedGiant risponda",
+  osStep_restart: "Riavvio {product} con la versione nuova",
+  osStep_wait: "Controllo che {product} risponda",
   osStep_rollback: "Rimetto la versione di prima",
-  osStepText_check: "Si installa solo una versione firmata da RedGiant.",
-  osStepText_files: "{size}: i programmi del sistema intorno a RedGiant.",
+  osStepText_check: "Si installa solo una versione firmata da {product}.",
+  osStepText_files: "{size}: i programmi del sistema intorno a {product}.",
   osStepText_install:
     "Di ogni file sostituito resta una copia: se qualcosa va storto, torna com'era.",
   osStepText_restart:
@@ -13377,7 +13391,7 @@ const it: Record<Key, string> = {
     "Se la versione nuova non risponde entro dieci minuti, torna da sola quella di prima.",
   osStepText_rollback:
     "La versione nuova non è partita: rimetto quella di prima, non si perde niente.",
-  osImg_redgiant: "RedGiant",
+  osImg_redgiant: "{product}",
   osImg_postgres: "Il database (Postgres)",
   osImgHere: "già qui",
   osImgExtract: "la preparo…",
@@ -13387,18 +13401,18 @@ const it: Record<Key, string> = {
   osTookHours: "{h} h {min} min",
   osWhy_download: "Non sono riuscito a scaricare la versione nuova.",
   osWhyText_download:
-    "Non è cambiato niente: RedGiant {from} continua a funzionare. Controlla che la macchina arrivi a internet, poi premi «Riprova»: quello già scaricato non si riscarica.",
+    "Non è cambiato niente: {product} {from} continua a funzionare. Controlla che la macchina arrivi a internet, poi premi «Riprova»: quello già scaricato non si riscarica.",
   osWhy_files: "Non sono riuscito a installare i file di sistema nuovi.",
   osWhyText_files:
-    "Ogni file è tornato com'era e RedGiant {from} continua a funzionare. Riprova tra un po'; se succede ancora, scarica la diagnostica (Impostazioni › Generale › Diagnostica) e mandala.",
+    "Ogni file è tornato com'era e {product} {from} continua a funzionare. Riprova tra un po'; se succede ancora, scarica la diagnostica (Impostazioni › Generale › Diagnostica) e mandala.",
   osWhy_not_up: "La versione nuova non è partita.",
   osWhyText_not_up:
-    "RedGiant è tornato da solo alla {from}: non si è perso niente. Riprova tra un po'; se succede ancora, scarica la diagnostica (Impostazioni › Generale › Diagnostica) e mandala.",
+    "{product} è tornato da solo alla {from}: non si è perso niente. Riprova tra un po'; se succede ancora, scarica la diagnostica (Impostazioni › Generale › Diagnostica) e mandala.",
   osWhy_no_images: "Questa versione non ha niente per il processore di questa macchina.",
   osWhyText_no_images: "Non è cambiato niente. Aspetta la prossima versione.",
   osWhy_breaking: "Questa versione non si installa sopra quella di adesso.",
   osWhyText_breaking:
-    "Non è cambiato niente: RedGiant {from} continua a funzionare. RedGiant ti guida nell'installazione da capo.",
+    "Non è cambiato niente: {product} {from} continua a funzionare. {product} ti guida nell'installazione da capo.",
   osWhy_unsigned: "La versione nuova non è firmata.",
   osWhyText_unsigned:
     "Per sicurezza non l'ho installata: non è cambiato niente. Riguarda più tardi.",
@@ -13411,7 +13425,7 @@ const it: Record<Key, string> = {
   stStep_now: "in corso",
   stStep_todo: "da fare",
   stStep_failed: "fermo qui",
-  updDoneTitle: "RedGiant è aggiornato",
+  updDoneTitle: "{product} è aggiornato",
   updDoneSub: "Ora è la {version} (prima era la {from})",
   updDoneText:
     "È andato tutto bene: conversazioni, progetti, agenti e impostazioni sono come prima.",
@@ -13429,7 +13443,7 @@ const it: Record<Key, string> = {
   osRebootNow: "Riavvia ora",
   osRebootQ: "Riavviare la macchina adesso?",
   osRebootText:
-    "RedGiant si ferma per due o tre minuti mentre la macchina riparte; gli agenti al lavoro vengono interrotti e riprendono da quello che era salvato. La pagina torna da sola.",
+    "{product} si ferma per due o tre minuti mentre la macchina riparte; gli agenti al lavoro vengono interrotti e riprendono da quello che era salvato. La pagina torna da sola.",
   osRebootYes: "Riavvia",
   osRebooting: "La macchina si riavvia tra pochi secondi. La pagina torna da sola.",
   osErr_failed: "Non ha funzionato. Riprova tra un momento.",
@@ -13456,11 +13470,11 @@ const it: Record<Key, string> = {
   osErr_unreachable: "L'aiutante della macchina non ha risposto.",
   osErr_timeout: "La macchina ci ha messo troppo a rispondere.",
   updReqUpdatingOs:
-    "RedGiant OS sta aggiornando RedGiant: la pagina si ferma per qualche minuto e torna da sola.",
+    "{product} OS sta aggiornando {product}: la pagina si ferma per qualche minuto e torna da sola.",
   updBrkStep1Os:
-    "Copia il backup su un disco USB (Impostazioni › Sistema › Backup): reinstallare RedGiant OS cancella il disco di questa macchina.",
+    "Copia il backup su un disco USB (Impostazioni › Sistema › Backup): reinstallare {product} OS cancella il disco di questa macchina.",
   updBrkStep3Os:
-    "Scrivi la nuova RedGiant OS (chiavetta o immagine) e accendi la macchina: il primo avvio propone «Ripristina dal backup» e lo trova sul disco USB.",
+    "Scrivi la nuova {product} OS (chiavetta o immagine) e accendi la macchina: il primo avvio propone «Ripristina dal backup» e lo trova sul disco USB.",
   wzNetworkQ: "Rete e HTTPS",
   wzNetworkLead:
     "Il Wi-Fi se la macchina non ha un cavo, e il lucchetto per le pagine della rete di casa. Si può fare anche dopo, da Impostazioni › Sistema.",
@@ -13474,14 +13488,14 @@ const it: Record<Key, string> = {
   fbSshAddKey: "Aggiungi questa chiave",
   fbSshKeyPlaceholder: "ssh-ed25519 AAAA… io@portatile",
   fbRemoteLead:
-    "Facoltativo. Senza, RedGiant funziona nella tua rete locale; ecco cosa raggiunge già questa macchina.",
+    "Facoltativo. Senza, {product} funziona nella tua rete locale; ecco cosa raggiunge già questa macchina.",
   fbNetTailscale: "Tailscale è già attivo qui ({name}): puoi usarlo.",
   fbNetTailscaleOff: "Tailscale è installato qui ma non collegato.",
-  fbNetProxyFront: "Davanti a RedGiant c'è già {name}.",
+  fbNetProxyFront: "Davanti a {product} c'è già {name}.",
   fbNetAProxy: "un reverse proxy",
   fbNetProxies: "Gira già su questa macchina: {names}.",
-  fbNetDns: "Un server DNS nella tua rete ({ip}): un nome come redgiant.home può puntare qui.",
-  fbNetName: "Hai raggiunto RedGiant con un nome: {name}.",
+  fbNetDns: "Un server DNS nella tua rete ({ip}): un nome come rasgeth.home può puntare qui.",
+  fbNetName: "Hai raggiunto {product} con un nome: {name}.",
   fbNetNothing: "Non c'è niente che raggiunga già questa macchina da fuori.",
   fbNetLanOnly: "Solo rete locale va benissimo: salta questo passo.",
   fbCodeTitle: "Primo avvio",
@@ -13494,31 +13508,31 @@ const it: Record<Key, string> = {
   fbCodeNone: "Questo codice è già stato usato: riavvia la macchina per averne uno nuovo.",
   oiTitle: "Hai già un'infrastruttura",
   oiLead:
-    "Un reverse proxy, una VPN, un DNS di casa: se raggiungi già le tue macchine così, RedGiant ci va dietro come qualsiasi altro servizio. Qui ci sono i blocchi da copiare.",
+    "Un reverse proxy, una VPN, un DNS di casa: se raggiungi già le tue macchine così, {product} ci va dietro come qualsiasi altro servizio. Qui ci sono i blocchi da copiare.",
   oiCopy: "Copia",
   oiCopied: "Copiato",
   oiOpen: "Mostra la guida",
   oiClose: "Nascondi la guida",
   oiReachedAs: "Sei già raggiungibile come {host}.",
   oiReachedProxy:
-    "Questa pagina è arrivata attraverso un reverse proxy della tua rete: la guida qui sotto è già compilata con quello che RedGiant ha visto.",
+    "Questa pagina è arrivata attraverso un reverse proxy della tua rete: la guida qui sotto è già compilata con quello che {product} ha visto.",
   oiReachedName:
     "Questa pagina è arrivata con un nome della tua rete: in casa funziona già; da fuori serve una delle strade qui sotto (per esempio Tailscale).",
   oiSaid:
-    "Hai detto che RedGiant è già raggiungibile a modo tuo: non chiede più di configurare le sue strade.",
+    "Hai detto che {product} è già raggiungibile a modo tuo: non chiede più di configurare le sue strade.",
   oiSaidUrl:
-    "Hai detto che RedGiant è già raggiungibile a {url}: non chiede più di configurare le sue strade e i suoi link (Telegram…) usano quell'indirizzo.",
+    "Hai detto che {product} è già raggiungibile a {url}: non chiede più di configurare le sue strade e i suoi link (Telegram…) usano quell'indirizzo.",
   oiSaidUndo: "Chiedimelo di nuovo",
-  oiName: "Il nome di RedGiant",
-  oiNameHelp: "Il nome che aprirai, per esempio redgiant.casa.example.com.",
-  oiAddress: "L'indirizzo di RedGiant nella rete",
-  oiAddressHelp: "Dove il proxy o la VPN trovano RedGiant; la sua porta è {port}.",
+  oiName: "Il nome di {product}",
+  oiNameHelp: "Il nome che aprirai, per esempio rasgeth.casa.example.com.",
+  oiAddress: "L'indirizzo di {product} nella rete",
+  oiAddressHelp: "Dove il proxy o la VPN trovano {product}; la sua porta è {port}.",
   oiPart: "Cosa hai",
   oiPartProxy: "Reverse proxy",
   oiPartVpn: "Tailscale o un'altra VPN",
   oiPartDns: "DNS di casa",
   oiProxyLead:
-    "Il proxy può stare su un'altra macchina: gli basta raggiungere l'indirizzo di RedGiant. Prende il certificato (HTTPS) e passa tutto, WebSocket compreso.",
+    "Il proxy può stare su un'altra macchina: gli basta raggiungere l'indirizzo di {product}. Prende il certificato (HTTPS) e passa tutto, WebSocket compreso.",
   oiCaddy: "Caddyfile: un sito tutto suo",
   oiCaddyWildcard: "Caddyfile: dentro un sito jolly che hai già (*.{domain})",
   oiCaddyReload: "Poi ricarica Caddy (caddy reload, o riavvia il suo container).",
@@ -13528,20 +13542,20 @@ const it: Record<Key, string> = {
   oiNpm1: "Hosts › Proxy Hosts › Add Proxy Host; Domain Names: {name}.",
   oiNpm2: "Scheme http, Forward Hostname / IP {address}, Forward Port {port}.",
   oiNpm3:
-    "Accendi «Websockets Support» (la pagina di RedGiant vive su un WebSocket) e «Block Common Exploits».",
+    "Accendi «Websockets Support» (la pagina di {product} vive su un WebSocket) e «Block Common Exploits».",
   oiNpm4: "SSL: «Request a new SSL Certificate», «Force SSL», «HTTP/2 Support». Salva.",
-  oiWs: "RedGiant tiene viva la pagina con un WebSocket su /ws: Caddy e Traefik lo passano da soli; Nginx vuole gli header Upgrade (Websockets Support in Nginx Proxy Manager).",
+  oiWs: "{product} tiene viva la pagina con un WebSocket su /ws: Caddy e Traefik lo passano da soli; Nginx vuole gli header Upgrade (Websockets Support in Nginx Proxy Manager).",
   oiAuthTitle: "Authelia, Authentik o un altro forward auth davanti?",
   oiAuthWhy:
-    "Meglio di no: RedGiant ha già la sua password, con tentativi limitati e il codice facoltativo dell'app di autenticazione, e un accesso davanti blocca l'app, la riga di comando, gli agenti ACP, l'estensione del browser e i webhook (Telegram, WhatsApp, automazioni), che entrano con i loro token.",
+    "Meglio di no: {product} ha già la sua password, con tentativi limitati e il codice facoltativo dell'app di autenticazione, e un accesso davanti blocca l'app, la riga di comando, gli agenti ACP, l'estensione del browser e i webhook (Telegram, WhatsApp, automazioni), che entrano con i loro token.",
   oiAuthIf:
-    "Se lo vuoi comunque, lascia fuori /api/ e /ws: il forward auth protegge la pagina, la password di RedGiant tutto il resto.",
+    "Se lo vuoi comunque, lascia fuori /api/ e /ws: il forward auth protegge la pagina, la password di {product} tutto il resto.",
   oiAuthCaddy: "Caddyfile con forward auth (Authelia), lasciando fuori i percorsi dell'app",
-  oiTsHere: "Tailscale sulla macchina di RedGiant",
+  oiTsHere: "Tailscale sulla macchina di {product}",
   oiTsHereLead:
-    "Installa Tailscale sulla macchina ed entra (tailscale up): dai tuoi dispositivi della tailnet RedGiant si apre a http://<macchina>:7600. Per l'HTTPS con un certificato vero:",
+    "Installa Tailscale sulla macchina ed entra (tailscale up): dai tuoi dispositivi della tailnet {product} si apre a http://<macchina>:7600. Per l'HTTPS con un certificato vero:",
   oiTsRunning:
-    "Tailscale gira già qui come {name}: dai tuoi dispositivi della tailnet RedGiant si apre con quel nome. Per l'HTTPS con un certificato vero:",
+    "Tailscale gira già qui come {name}: dai tuoi dispositivi della tailnet {product} si apre con quel nome. Per l'HTTPS con un certificato vero:",
   oiTsServe: "Sulla macchina",
   oiTsSubnet: "Tailscale come subnet router",
   oiTsSubnetLead:
@@ -13550,9 +13564,9 @@ const it: Record<Key, string> = {
     "Approva la rotta nella console di Tailscale (Machines › Edit route settings). Il telefono apre poi http://{address}:{port} da ovunque, e anche i nomi del tuo DNS di casa se lo aggiungi in DNS › Nameservers (limitato al tuo dominio).",
   oiOtherVpn: "WireGuard, ZeroTier e le altre",
   oiOtherVpnLead:
-    "La stessa idea: con la rete di casa {subnet} negli AllowedIPs del peer (WireGuard) o come rotta gestita (ZeroTier), RedGiant si apre al suo indirizzo di casa.",
+    "La stessa idea: con la rete di casa {subnet} negli AllowedIPs del peer (WireGuard) o come rotta gestita (ZeroTier), {product} si apre al suo indirizzo di casa.",
   oiDnsLead:
-    "Un nome al posto di un indirizzo: puntalo al proxy quando c'è, altrimenti all'indirizzo di RedGiant.",
+    "Un nome al posto di un indirizzo: puntalo al proxy quando c'è, altrimenti all'indirizzo di {product}.",
   oiDnsPihole: "Pi-hole: Settings › Local DNS › DNS Records: {name} → {address}.",
   oiDnsAdguard: "AdGuard Home: Filtri › Riscritture DNS: *.{domain} o il nome singolo → {address}.",
   oiDnsRouter:
@@ -13562,80 +13576,80 @@ const it: Record<Key, string> = {
   oiDnsTs:
     "Fuori casa con Tailscale: aggiungi il DNS di casa in DNS › Nameservers di Tailscale, limitato al tuo dominio, e gli stessi nomi funzionano anche fuori.",
   oiPartHome: "I tuoi servizi di casa",
-  oiHomeTitle: "I tuoi servizi di casa (Gitea, NAS…) visti da RedGiant",
+  oiHomeTitle: "I tuoi servizi di casa (Gitea, NAS…) visti da {product}",
   oiHomeWhy:
-    "RedGiant raggiunge il tuo Gitea, il NAS o gli altri servizi per nome, con il DNS della macchina su cui gira (spesso il router). Un nome che il telefono apre può lì essere sconosciuto, o portare a un indirizzo che RedGiant non raggiunge: allora «Un Gitea che hai già» non riesce anche se il servizio funziona.",
+    "{product} raggiunge il tuo Gitea, il NAS o gli altri servizi per nome, con il DNS della macchina su cui gira (spesso il router). Un nome che il telefono apre può lì essere sconosciuto, o portare a un indirizzo che {product} non raggiunge: allora «Un Gitea che hai già» non riesce anche se il servizio funziona.",
   oiHomeWhich:
-    "Quale DNS usa RedGiant: su RedGiant OS lo mostra la console (o SSH) con il comando qui sotto, alla voce «Current DNS Server»; su un altro computer è il DNS di quel computer (impostazioni di rete, /etc/resolv.conf su Linux). «Prova un nome» chiede proprio al DNS che usa RedGiant.",
-  oiHomeSeen: "RedGiant chiede i nomi a {dns}.",
+    "Quale DNS usa {product}: su {product} OS lo mostra la console (o SSH) con il comando qui sotto, alla voce «Current DNS Server»; su un altro computer è il DNS di quel computer (impostazioni di rete, /etc/resolv.conf su Linux). «Prova un nome» chiede proprio al DNS che usa {product}.",
+  oiHomeSeen: "{product} chiede i nomi a {dns}.",
   oiService: "Il nome del servizio",
   oiServiceHelp: "Come lo apri, per esempio git.home.example.com.",
   oiProxyAddr: "L'indirizzo locale del proxy",
   oiProxyAddrHelp:
-    "L'indirizzo nella tua rete (192.168.…) del proxy davanti al servizio, o del servizio stesso. Non un indirizzo Tailscale (100.…): RedGiant lo raggiunge solo se è anche lui in Tailscale.",
-  oiHomeWhat: "Nel DNS che usa RedGiant, dai al nome quell'indirizzo locale:",
+    "L'indirizzo nella tua rete (192.168.…) del proxy davanti al servizio, o del servizio stesso. Non un indirizzo Tailscale (100.…): {product} lo raggiunge solo se è anche lui in Tailscale.",
+  oiHomeWhat: "Nel DNS che usa {product}, dai al nome quell'indirizzo locale:",
   oiHomeRouter: "Il router: la pagina «DNS statico» o «nomi locali»: {name} → {address}.",
   oiHomePihole: "Pi-hole: Settings › Local DNS › DNS Records: {name} → {address}.",
   oiHomeAdguard: "AdGuard Home: Filtri › Riscritture DNS: {name} → {address}.",
   oiHomeHosts: "I record di Pi-hole o /etc/hosts, a mano",
   oiHomeDnsmasq: "dnsmasq (o un file in /etc/dnsmasq.d/ di Pi-hole)",
   oiHomeTs:
-    "Se il tuo Pi-hole risponde con indirizzi Tailscale (100.…), quelli funzionano solo per i dispositivi in Tailscale: aggiungi un record locale con l'indirizzo della tua rete come sopra, oppure fai usare alla macchina di RedGiant il router come DNS, con il nome lì.",
+    "Se il tuo Pi-hole risponde con indirizzi Tailscale (100.…), quelli funzionano solo per i dispositivi in Tailscale: aggiungi un record locale con l'indirizzo della tua rete come sopra, oppure fai usare alla macchina di {product} il router come DNS, con il nome lì.",
   oiHomeV6:
-    "Un router che risponde «non esiste» alla domanda IPv6 (AAAA) per i nomi aggiunti a mano: RedGiant OS lo gestisce già; su altri sistemi con systemd-resolved serve Cache=no-negative in un file di /etc/systemd/resolved.conf.d/, altrimenti per un po' il nome sembra non esistere.",
-  oiHomeLookup: "Su RedGiant OS, cosa risponde il suo DNS per il nome",
-  oiHomeWhichCmd: "Su RedGiant OS, quale DNS usa",
+    "Un router che risponde «non esiste» alla domanda IPv6 (AAAA) per i nomi aggiunti a mano: {product} OS lo gestisce già; su altri sistemi con systemd-resolved serve Cache=no-negative in un file di /etc/systemd/resolved.conf.d/, altrimenti per un po' il nome sembra non esistere.",
+  oiHomeLookup: "Su {product} OS, cosa risponde il suo DNS per il nome",
+  oiHomeWhichCmd: "Su {product} OS, quale DNS usa",
   oiProbe: "Prova un nome",
   oiProbeLead:
-    "RedGiant cerca il nome e apre https://{name} da dove gira, come fa per il tuo Gitea. Della risposta non tiene e non mostra nulla, tranne il codice.",
+    "{product} cerca il nome e apre https://{name} da dove gira, come fa per il tuo Gitea. Della risposta non tiene e non mostra nulla, tranne il codice.",
   oiProbeGo: "Prova {name}",
   oiProbeBad: "Questo non è un nome (per esempio git.home.example.com).",
   oiProbeOk: "Tutto a posto: qui {name} è {address}, e https://{name} ha risposto (HTTP {status}).",
   oiProbeNotFound:
-    "Il DNS che usa RedGiant non conosce {name}. Aggiungi lì il nome (router, Pi-hole o AdGuard) con l'indirizzo locale del proxy, poi riprova.",
+    "Il DNS che usa {product} non conosce {name}. Aggiungi lì il nome (router, Pi-hole o AdGuard) con l'indirizzo locale del proxy, poi riprova.",
   oiProbeDnsFailed:
-    "Il DNS che usa RedGiant non ha risposto per {name}. Controlla che funzioni, poi riprova.",
+    "Il DNS che usa {product} non ha risposto per {name}. Controlla che funzioni, poi riprova.",
   oiProbeTailscale:
-    "Qui {name} è {address}: un indirizzo Tailscale, che RedGiant non raggiunge. Nel DNS che usa RedGiant, dai al nome l'indirizzo locale del proxy.",
+    "Qui {name} è {address}: un indirizzo Tailscale, che {product} non raggiunge. Nel DNS che usa {product}, dai al nome l'indirizzo locale del proxy.",
   oiProbeUnreachable:
-    "Qui {name} è {address}, ma da RedGiant nessuno risponde in https. Controlla che sia l'indirizzo locale del proxy e che il proxy sia acceso.",
+    "Qui {name} è {address}, ma da {product} nessuno risponde in https. Controlla che sia l'indirizzo locale del proxy e che il proxy sia acceso.",
   oiProbeTimeout:
-    "Qui {name} è {address}, ma non ha risposto in tempo: probabilmente un indirizzo che RedGiant non raggiunge (un'altra rete, una VPN).",
+    "Qui {name} è {address}, ma non ha risposto in tempo: probabilmente un indirizzo che {product} non raggiunge (un'altra rete, una VPN).",
   oiProbeTls:
-    "Qui {name} è {address} e risponde, ma con un certificato di cui RedGiant non si fida (fatto a mano?). Dai al proxy un certificato di un'autorità pubblica (Let's Encrypt).",
+    "Qui {name} è {address} e risponde, ma con un certificato di cui {product} non si fida (fatto a mano?). Dai al proxy un certificato di un'autorità pubblica (Let's Encrypt).",
   gitGiteaNameNotFound:
-    "RedGiant non trova {host}: il DNS che usa non conosce quel nome. La guida «I tuoi servizi di casa» in Impostazioni › Accesso da fuori casa dice cosa aggiungere e ti fa provare il nome.",
+    "{product} non trova {host}: il DNS che usa non conosce quel nome. La guida «I tuoi servizi di casa» in Impostazioni › Accesso da fuori casa dice cosa aggiungere e ti fa provare il nome.",
   gitGiteaHostUnreachable:
-    "RedGiant trova {host}, ma da qui il suo indirizzo non risponde (un indirizzo Tailscale, un'altra rete?). La guida «I tuoi servizi di casa» in Impostazioni › Accesso da fuori casa dice come sistemare.",
+    "{product} trova {host}, ma da qui il suo indirizzo non risponde (un indirizzo Tailscale, un'altra rete?). La guida «I tuoi servizi di casa» in Impostazioni › Accesso da fuori casa dice come sistemare.",
   gitGiteaGuide: "Apri «I tuoi servizi di casa»",
   err_name_not_found:
-    "RedGiant non trova il nome del server nel DNS che usa. Vedi Impostazioni › Accesso da fuori casa › I tuoi servizi di casa.",
+    "{product} non trova il nome del server nel DNS che usa. Vedi Impostazioni › Accesso da fuori casa › I tuoi servizi di casa.",
   err_host_unreachable:
-    "Il nome del server è noto, ma da RedGiant il suo indirizzo non risponde. Vedi Impostazioni › Accesso da fuori casa › I tuoi servizi di casa.",
+    "Il nome del server è noto, ma da {product} il suo indirizzo non risponde. Vedi Impostazioni › Accesso da fuori casa › I tuoi servizi di casa.",
   err_bad_name: "Questo non è un nome (per esempio git.home.example.com).",
   oiCheck: "Controlla che risponda",
-  oiCheckLead: 'Da qualsiasi computer: RedGiant risponde {"ok":true,…}.',
+  oiCheckLead: 'Da qualsiasi computer: {product} risponde {"ok":true,…}.',
   oiCheckGo: "Controlla {url} da qui",
-  oiCheckRedgiant: "RedGiant risponde a questo indirizzo.",
+  oiCheckRedgiant: "{product} risponde a questo indirizzo.",
   oiCheckAnswers:
-    "Qualcosa risponde a questo indirizzo (il browser non lascia leggere chi): aprilo per vedere RedGiant.",
+    "Qualcosa risponde a questo indirizzo (il browser non lascia leggere chi): aprilo per vedere {product}.",
   oiCheckNo:
     "Nessuna risposta da questo browser: controlla il nome nel DNS, il blocco del proxy e, da fuori, la VPN.",
   oiSkip: "Salta: sono già raggiungibile",
   oiSkipNote:
-    "RedGiant smette di chiederti di configurare le sue strade (Tailscale, Cloudflare, il tuo dominio); restano qui se un giorno ne vuoi una.",
-  remoteWaysFolded: "Le strade di RedGiant",
+    "{product} smette di chiederti di configurare le sue strade (Tailscale, Cloudflare, il tuo dominio); restano qui se un giorno ne vuoi una.",
+  remoteWaysFolded: "Le strade di {product}",
   faTitle: "Crea il tuo accesso",
   faLead:
-    "Benvenuto in RedGiant. Scegli la password con cui entrerai da questo e dagli altri dispositivi: poi sei dentro.",
+    "Benvenuto in {product}. Scegli la password con cui entrerai da questo e dagli altri dispositivi: poi sei dentro.",
   faGo: "Crea ed entra",
   faNotHereTitle: "Il primo accesso si crea da casa",
   faNotHere:
-    "Questo RedGiant non ha ancora una password e il primo accesso si crea solo dalla sua rete: apri questo indirizzo da un telefono o un computer collegato alla stessa rete della macchina.",
+    "Questo {product} non ha ancora una password e il primo accesso si crea solo dalla sua rete: apri questo indirizzo da un telefono o un computer collegato alla stessa rete della macchina.",
   loginRemembered: "Questo dispositivo resta dentro finché lo usi.",
   loginNoPasswordTitle: "Ancora nessuna password",
   loginNoPassword:
-    "Questo RedGiant non ha ancora una password. Aprilo dal computer dove è installato (dalla sua icona o dal link dell'installazione) e sceglila in Impostazioni › Accesso da fuori casa.",
+    "Questo {product} non ha ancora una password. Aprilo dal computer dove è installato (dalla sua icona o dal link dell'installazione) e sceglila in Impostazioni › Accesso da fuori casa.",
   // G42.7: gli editor dentro RGCompanion.
   canvasAskAgent: "Chiedi all'agente",
   canvasAskAgentHint:

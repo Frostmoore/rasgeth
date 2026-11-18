@@ -82,7 +82,7 @@ describe("a Gitea the person already has", () => {
   });
 });
 
-describe("a Gitea whose name RedGiant cannot use (p3.7.3)", () => {
+describe("a Gitea whose name Rasgeth cannot use (p3.7.3)", () => {
   const tryIt = async (code: string) => {
     fail.code = code;
     const r = render(<Gitea s={state()} onChange={() => {}} />);
@@ -100,14 +100,14 @@ describe("a Gitea whose name RedGiant cannot use (p3.7.3)", () => {
 
   it("says the name is unknown to its DNS, and leads to the guide", async () => {
     const r = await tryIt("name_not_found");
-    await waitFor(() => r.getByText(/RedGiant non trova git.home.varitest.ovh/));
+    await waitFor(() => r.getByText(/Rasgeth non trova git.home.varitest.ovh/));
     expect(r.container.textContent).not.toContain("fetch failed");
     expect(r.getByText("Apri «I tuoi servizi di casa»")).toBeTruthy();
   });
 
   it("says the address does not answer from here, and leads to the guide", async () => {
     const r = await tryIt("host_unreachable");
-    await waitFor(() => r.getByText(/RedGiant trova git.home.varitest.ovh, ma da qui/));
+    await waitFor(() => r.getByText(/Rasgeth trova git.home.varitest.ovh, ma da qui/));
     expect(r.getByText("Apri «I tuoi servizi di casa»")).toBeTruthy();
   });
 });

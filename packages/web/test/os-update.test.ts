@@ -36,7 +36,7 @@ function upd(o: Partial<OsUpdate> = {}, run: Partial<NonNullable<OsUpdate["run"]
           { name: "redgiant", ref: "r:3.8.1", bytes: 400 * MB, here: false },
           { name: "postgres", ref: "p:17", bytes: 90 * MB, here: true },
         ],
-        files: { name: "redgiant-os-files-3.8.1.tar.zst", bytes: 2 * MB },
+        files: { name: "rasgeth-os-files-3.8.1.tar.zst", bytes: 2 * MB },
       },
       progress: {
         done: 100 * MB,
@@ -70,7 +70,7 @@ describe("the update's steps", () => {
       ["check:now", "download:todo", "files:todo", "install:todo", "restart:todo", "wait:todo"],
     ],
     [
-      "RedGiant restarting (the page lost it)",
+      "Rasgeth restarting (the page lost it)",
       upd({ step: "install" }),
       true,
       true,

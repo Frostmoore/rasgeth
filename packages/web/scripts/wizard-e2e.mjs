@@ -61,7 +61,7 @@ await button("Salva e continua").click();
 
 await step("Fine");
 await shot("wz-7-done");
-await button("Inizia a usare RedGiant").click();
+await button("Inizia a usare Rasgeth").click();
 await page.waitForSelector(".sidebar");
 await page.waitForTimeout(500);
 await shot("wz-8-app");

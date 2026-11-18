@@ -1,3 +1,4 @@
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { useEffect, useState } from "preact/hooks";
 import {
   firstAccessLogin,
@@ -199,7 +200,7 @@ export function Login() {
     <div class="login">
       <div class="login-box">
         <div class="logo">
-          <Logo size={40} /> RedGiant
+          <Logo size={40} /> {PRODUCT_NAME}
         </div>
         {methods?.firstAccess === "password" ? (
           <FirstAccessForm reload={load} />

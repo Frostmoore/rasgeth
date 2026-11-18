@@ -34,5 +34,41 @@
     "path": "research/**",
     "group": "history",
     "why": "studies and measurements of the past, not shipped with the product (research/sparsity/README.md)"
+  },
+  {
+    "path": "packages/web/src/i18n.ts",
+    "key": "^renameTitle$",
+    "group": "rename-notice",
+    "why": "the one-time notice says the old name on purpose: «RedGiant is now called Rasgeth» (plan 3.9.0, choice 17)"
+  },
+  {
+    "path": "packages/web/src/i18n.ts",
+    "key": "^mascotGodHelp$",
+    "group": "mascot",
+    "why": "describes God's mascot as drawn today (the red giant); it changes with the drawing (plan 3.9.0, choice 15)"
+  },
+  {
+    "path": "packages/web/src/voice/wake.ts",
+    "pattern": "red giant",
+    "group": "wake-word",
+    "why": "a wake word of one's own written with the old name keeps working (plan 3.9.0 N2: «chi aveva scritto a mano una parola sua la tiene»); the models spell it «red giant»"
+  },
+  {
+    "path": "packages/web/test/voice.test.ts",
+    "pattern": "RedGiant|red giant",
+    "group": "wake-word",
+    "why": "tests that a wake word of one's own written with the old name keeps working"
+  },
+  {
+    "path": "packages/web/src/components/Keychain.tsx",
+    "pattern": "REDGIANT-KEYCHAIN",
+    "group": "format",
+    "why": "the sealed keychain file's first line (the server's EXPORT_MAGIC): files exported before 3.9.0 must still open; it is a format mark, not a name"
+  },
+  {
+    "path": "packages/browser-extension/scripts/e2e.mjs",
+    "pattern": "REDGIANT-KEYCHAIN",
+    "group": "internal",
+    "why": "the overlay's custom element <redgiant-keychain> as DevTools names it: an id inside the page, never shown"
   }
 ]

@@ -59,7 +59,7 @@ export function Gallery() {
             {
               id: "telegram",
               title: "Telegram",
-              description: "Talk to RedGiant from your phone.",
+              description: "Talk to Rasgeth from your phone.",
               icon: <IconTelegram size={16} />,
             },
           ]}

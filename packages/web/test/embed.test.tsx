@@ -158,7 +158,7 @@ describe("the root", () => {
     if (!p) throw new Error("no embed");
     const r = render(<EmbedRoot params={p} />);
     await waitFor(() => r.getByRole("alert"));
-    expect(r.getByRole("alert").textContent).toMatch(/riapri RedGiant dall'app/);
+    expect(r.getByRole("alert").textContent).toMatch(/riapri Rasgeth dall'app/);
   });
 });
 

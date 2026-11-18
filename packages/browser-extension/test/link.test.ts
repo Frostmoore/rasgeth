@@ -1,10 +1,11 @@
-// G36.21: RedGiant's address as the person types it, which browser this is, the generator, the
+// G36.21: Rasgeth's address as the person types it, which browser this is, the generator, the
 // icon drawn at build time and the words in both languages.
 import { inflateSync } from "node:zlib";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { describe, expect, it } from "vitest";
 // @ts-expect-error: a build script in plain JavaScript
 import { drawIcon, iconPng } from "../scripts/icons.mjs";
-import { dictionaries, setLang, t } from "../src/i18n.js";
+import { dictionaries, PRODUCT, setLang, t } from "../src/i18n.js";
 import { browserKind, homeHost, serverOrigin } from "../src/link.js";
 import { generatePassword, SETS } from "../src/password.js";
 
@@ -16,16 +17,16 @@ describe("serverOrigin", () => {
     ["192.168.1.12:7650", "http://192.168.1.12:7650"],
     ["http://nas.local:7650", "http://nas.local:7650"],
     ["http://redgiant:7650", "http://redgiant:7650"],
-    ["redgiant.example.com", "https://redgiant.example.com"],
-    ["https://redgiant.example.com/#/settings", "https://redgiant.example.com"],
-    ["HTTPS://RedGiant.Example.com:8443", "https://redgiant.example.com:8443"],
+    ["rasgeth.example.com", "https://rasgeth.example.com"],
+    ["https://rasgeth.example.com/#/settings", "https://rasgeth.example.com"],
+    ["HTTPS://Rasgeth.Example.com:8443", "https://rasgeth.example.com:8443"],
     // Away from home only https: the code and the passwords never travel in the clear.
-    ["http://redgiant.example.com", "insecure"],
+    ["http://rasgeth.example.com", "insecure"],
     ["http://8.8.8.8:7650", "insecure"],
     ["", "bad"],
     ["ftp://localhost", "bad"],
     ["javascript:alert(1)", "bad"],
-    ["https://user:pw@redgiant.example.com", "bad"],
+    ["https://user:pw@rasgeth.example.com", "bad"],
     ["http://[::1]:7650", "http://[::1]:7650"],
   ];
   for (const [typed, want] of table)
@@ -110,5 +111,19 @@ describe("words", () => {
     expect(t("forSite", { host: "github.com" })).toBe("Per github.com");
     setLang("en");
     expect(t("forSite", { host: "github.com" })).toBe("For github.com");
+  });
+
+  it("names the product as the protocol does, in the words and the store's name", () => {
+    expect(PRODUCT).toBe(PRODUCT_NAME);
+    for (const l of ["en", "it"] as const) {
+      setLang(l);
+      for (const k of Object.keys(dictionaries.en) as (keyof typeof dictionaries.en)[])
+        expect(t(k), k).not.toMatch(/\{product\}|red ?giant/i);
+    }
+    setLang("en");
+    expect(t("extName")).toBe("Rasgeth Keychain");
+    setLang("it");
+    expect(t("extName")).toBe("Portachiavi Rasgeth");
+    setLang("en");
   });
 });

@@ -1108,8 +1108,8 @@ const brain = (req) => {
           name: "edit_file",
           input: {
             path: "src/app.py",
-            old_string: '    print("Hello RedGiant")',
-            new_string: '    name = "RedGiant"\n    print(f"Hello {name}")',
+            old_string: '    print("Hello Rasgeth")',
+            new_string: '    name = "Rasgeth"\n    print(f"Hello {name}")',
           },
         },
       ],
@@ -1121,7 +1121,7 @@ const brain = (req) => {
     };
   }
   return {
-    text: 'Here is the state of **Demo**:\n\n- `README.md` describes the goal\n- `src/app.py` is the entry point\n\n```python\nprint("Hello RedGiant")\n```\n\nNext step: add tests, then I will verify them with `pytest`.',
+    text: 'Here is the state of **Demo**:\n\n- `README.md` describes the goal\n- `src/app.py` is the entry point\n\n```python\nprint("Hello Rasgeth")\n```\n\nNext step: add tests, then I will verify them with `pytest`.',
     usage: {
       inputTokens: 4700 + turn * 300,
       cachedReadTokens: 4400 + turn * 250,
@@ -1240,17 +1240,17 @@ core.catalog = new CatalogWatcher({ dataDir: dir, sources: [], feed: null });
 const me = { type: "human", ownerId: "local" };
 const project = await core.projects.create("local", "Demo");
 await mkdir(join(project.path, "src"), { recursive: true });
-await writeFile(join(project.path, "README.md"), "# Demo\n\nA small project to show RedGiant.\n");
+await writeFile(join(project.path, "README.md"), "# Demo\n\nA small project to show Rasgeth.\n");
 // A picture and a PDF for the previews.
 await mkdir(join(project.path, "docs"), { recursive: true });
 await writeFile(
   join(project.path, "docs", "diagram.svg"),
-  '<svg xmlns="http://www.w3.org/2000/svg" width="480" height="240"><rect width="480" height="240" rx="16" fill="#1c1f26"/><circle cx="120" cy="120" r="70" fill="#ef4b3a"/><text x="220" y="130" font-family="sans-serif" font-size="32" fill="#e8e6e3">RedGiant</text></svg>',
+  '<svg xmlns="http://www.w3.org/2000/svg" width="480" height="240"><rect width="480" height="240" rx="16" fill="#1c1f26"/><circle cx="120" cy="120" r="70" fill="#ef4b3a"/><text x="220" y="130" font-family="sans-serif" font-size="32" fill="#e8e6e3">Rasgeth</text></svg>',
 );
 await writeFile(join(project.path, "docs", "report.pdf"), demoPdf("Demo report: all tests pass."));
 await writeFile(
   join(project.path, "src", "app.py"),
-  'def main():\n    print("Hello RedGiant")\n\n\nif __name__ == "__main__":\n    main()\n',
+  'def main():\n    print("Hello Rasgeth")\n\n\nif __name__ == "__main__":\n    main()\n',
 );
 const god = await core.registry.create(me, {
   kind: "god",
@@ -1386,11 +1386,11 @@ if (process.env.DEMO_CODE) {
   if (String(git("status", "--porcelain")).trim()) git("commit", "-qm", "Demo files");
   await writeFile(
     join(project.path, "src", "app.py"),
-    'import json\nimport sys\n\n\ndef main():\n    result = {"greeting": "Hello RedGiant"}\n    if "--json" in sys.argv:\n        print(json.dumps(result))\n    else:\n        print(result["greeting"])\n\n\nif __name__ == "__main__":\n    main()\n',
+    'import json\nimport sys\n\n\ndef main():\n    result = {"greeting": "Hello Rasgeth"}\n    if "--json" in sys.argv:\n        print(json.dumps(result))\n    else:\n        print(result["greeting"])\n\n\nif __name__ == "__main__":\n    main()\n',
   );
   await writeFile(
     join(project.path, "README.md"),
-    "# Demo\n\nA small project to show RedGiant.\n\nRun `python src/app.py --json` for JSON.\n",
+    "# Demo\n\nA small project to show Rasgeth.\n\nRun `python src/app.py --json` for JSON.\n",
   );
   await writeFile(
     join(project.path, "src", "test_app.py"),
@@ -1448,7 +1448,7 @@ void (await core.send("local", godSid, "Plan the export feature for the reports.
   await mkdir(join(home, "site"), { recursive: true });
   await writeFile(
     join(home, "site", "index.html"),
-    `<!doctype html><html><head><link rel="stylesheet" href="/style.css"></head><body><main><h1>Good morning, Red Giant</h1><p>A site made by God, shown in the canvas.</p></main></body></html>`,
+    `<!doctype html><html><head><link rel="stylesheet" href="/style.css"></head><body><main><h1>Good morning, Rasgeth</h1><p>A site made by God, shown in the canvas.</p></main></body></html>`,
   );
   await writeFile(
     join(home, "site", "style.css"),
@@ -1494,7 +1494,7 @@ void (await core.send("local", godSid, "Plan the export feature for the reports.
   // Files sent in the chat (G25.2): a picture and a document.
   await writeFile(
     join(home, "preview.svg"),
-    `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2b0f12"/><stop offset="1" stop-color="#e0482e"/></linearGradient></defs><rect width="640" height="360" fill="url(#g)"/><text x="320" y="190" font-family="sans-serif" font-size="36" fill="#fff" text-anchor="middle">Good morning, Red Giant</text></svg>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2b0f12"/><stop offset="1" stop-color="#e0482e"/></linearGradient></defs><rect width="640" height="360" fill="url(#g)"/><text x="320" y="190" font-family="sans-serif" font-size="36" fill="#fff" text-anchor="middle">Good morning, Rasgeth</text></svg>`,
   );
   await writeFile(join(home, "report.txt"), "Project report\n".repeat(40));
   for (const [name, mime, caption] of [
@@ -1526,12 +1526,12 @@ void (await core.send("local", godSid, "Plan the export feature for the reports.
   const boardDir = join(dirname(dirname(core.platformPath("local"))), "boards", boardId);
   await mkdir(boardDir, { recursive: true });
   const page = (bg, fg, sub) =>
-    `<!doctype html><html lang="en"><body style="margin:0;min-height:100vh;display:grid;place-items:center;font-family:system-ui;background:${bg};color:${fg}"><main style="text-align:center"><h1 style="font-size:64px;margin:0">Good morning, Red Giant</h1><p style="font-size:22px">${sub}</p></main></body></html>`;
+    `<!doctype html><html lang="en"><body style="margin:0;min-height:100vh;display:grid;place-items:center;font-family:system-ui;background:${bg};color:${fg}"><main style="text-align:center"><h1 style="font-size:64px;margin:0">Good morning, Rasgeth</h1><p style="font-size:22px">${sub}</p></main></body></html>`;
   const pages = [
     page(
       "linear-gradient(135deg,#2b0f12,#7a1e22 55%,#e0482e)",
       "#fff",
-      "Red on black, like RedGiant",
+      "Red on black, like Rasgeth",
     ),
     page("#f6f1ea", "#2b0f12", "Warm tones, lighter"),
     page("#0d1b2a", "#e0e1dd", "Night blue, plain"),
@@ -1549,7 +1549,7 @@ void (await core.send("local", godSid, "Plan the export feature for the reports.
         title: "The site's home page",
         description: "Three ways to the front page.",
         variants: [
-          { title: "Dark", note: "Red on black, like RedGiant", bytes: pages[0].length },
+          { title: "Dark", note: "Red on black, like Rasgeth", bytes: pages[0].length },
           { title: "Light", note: "Warm tones, lighter", bytes: pages[1].length },
           { title: "Night", bytes: pages[2].length },
         ],
@@ -1951,7 +1951,7 @@ function demoOsUpdate() {
         here: true,
       },
     ],
-    files: { name: "redgiant-os-files-3.8.1.tar.zst", bytes: 2.4 * MB },
+    files: { name: "rasgeth-os-files-3.8.1.tar.zst", bytes: 2.4 * MB },
   };
   const steps = ["check", "download", "files", "install", "restart", "wait"];
   const starts = { check: 0, download: 3, files: 43, install: 45, restart: 47, wait: 60 };
@@ -2127,7 +2127,7 @@ const setup = new SetupService({
                 fingerprint:
                   "98:33:81:41:31:D2:1F:B1:48:B1:4E:06:50:19:A5:63:88:FE:3D:4A:24:A7:5F:1D:E9:46:8E:77:84:47:04:03",
                 until: "Dec 16 00:11:48 2027 GMT",
-                names: ["redgiant.local", "192.168.1.50"],
+                names: ["rasgeth.local", "192.168.1.50"],
               }
             : { ok: true, on: false };
         // DEMO_OS_UPDATE (3.8.1): RedGiant OS updating, as its updater writes it.
@@ -2214,7 +2214,7 @@ const setup = new SetupService({
       await new Promise((r) => setTimeout(r, 4000));
       h?.step("remote_https");
       await new Promise((r) => setTimeout(r, 800));
-      return { url: "https://redgiant.tail1234.ts.net" };
+      return { url: "https://rasgeth.tail1234.ts.net" };
     },
     // Pi-hole acted out: a busy port at one address, otherwise its steps.
     pihole: async (o, h) => {
@@ -2255,7 +2255,7 @@ await writeFile(join(dir, "models", "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf.part"), "de
     "Preferisce risposte brevi, con un elenco quando serve",
     from,
   );
-  await core.sharedMemory.add("local", "Lavora su RedGiant, un monorepo TypeScript con pnpm", from);
+  await core.sharedMemory.add("local", "Lavora su Rasgeth, un monorepo TypeScript con pnpm", from);
   await core.sharedMemory.add("local", "Ha un PC fisso con Windows chiamato Rig", {
     by: secretary.id,
     agentId: secretary.id,
@@ -2279,7 +2279,7 @@ if (process.env.DEMO_SUBAGENTS) {
     model: {
       provider: "local",
       model:
-        "C:\\Users\\Pixel\\AppData\\Local\\RedGiant\\engine\\models\\GLM-4.5-Air-Q4_K_S-00001-of-00002.gguf",
+        "C:\\Users\\Pixel\\AppData\\Local\\Rasgeth\\engine\\models\\GLM-4.5-Air-Q4_K_S-00001-of-00002.gguf",
     },
   });
   // Asks before every command: the third sub-agent waits for the person's yes.
@@ -3024,7 +3024,7 @@ if (process.env.DEMO_CANVAS) {
       index: g.index?.array,
     });
     let root = {
-      asset: { version: "2.0", generator: "RedGiant demo (three.js)" },
+      asset: { version: "2.0", generator: "Rasgeth demo (three.js)" },
       extensionsUsed: ["OFFICINA_note"],
       extras: { progetto: "Stanza di prova", autore: "Ada" },
       scene: 0,
@@ -3207,7 +3207,7 @@ if (process.env.DEMO_UPDATE || process.env.DEMO_FOUND) {
       exportBackup(
         core.backupDeps,
         "local",
-        join(docs, "RedGiant-backup-2026-11-08", "redgiant-3.4.0-0930.rgbackup"),
+        join(docs, "Rasgeth-backup-2026-11-08", "rasgeth-3.4.0-0930.rgbackup"),
         h,
         undefined,
         { full: true, version: "3.4.0" },
@@ -3506,16 +3506,16 @@ if (process.env.DEMO_BACKUPS) {
     ["2026-11-13", 412],
     ["2026-11-14", 418],
   ]) {
-    const folder = join(root, "volume1", "redgiant", `RedGiant-backup-${day}`);
+    const folder = join(root, "volume1", "rasgeth", `Rasgeth-backup-${day}`);
     await fs.mkdir(folder, { recursive: true });
-    const file = join(folder, `redgiant-${day}.rgbackup`);
+    const file = join(folder, `rasgeth-${day}.rgbackup`);
     await fs.writeFile(file, "");
     await fs.truncate(file, size * 1024 ** 2); // sparse: the size shows, nothing is written
     const at = new Date(`${day}T03:00:00Z`);
     await fs.utimes(file, at, at);
   }
   await setup.saveBackups({
-    destination: { kind: "sftp", machineId: nas.id, machineName: "nas", path: "/volume1/redgiant" },
+    destination: { kind: "sftp", machineId: nas.id, machineName: "nas", path: "/volume1/rasgeth" },
   });
 }
 // DEMO_MAGIC=1 (G38.3): three magic packages. Notion waits for its key, the CSV totals wait for
@@ -3589,8 +3589,8 @@ if (process.env.DEMO_SETUP_AP) {
             mode: ap.active ? "setup" : "off",
             capable: "ok",
             pending: true,
-            ssid: "RedGiant-Setup-D3M0",
-            passphrase: "redgiant",
+            ssid: "Rasgeth-Setup-D3M0",
+            passphrase: "rasgeth",
             address: "10.42.0.1",
             subnet: process.env.DEMO_SETUP_SUBNET ?? "127.0.0.0/8",
             since,

@@ -39,7 +39,7 @@ describe("Settings › Requests to you (3.5.3)", () => {
     lang.value = "it";
     const r = render(<RequestsPage />);
     const line =
-      /le richieste davvero pericolose arrivano sempre a te, ovunque: cancellazioni definitive, file di sistema, segreti che escono, pagamenti veri e le protezioni di RedGiant/;
+      /le richieste davvero pericolose arrivano sempre a te, ovunque: cancellazioni definitive, file di sistema, segreti che escono, pagamenti veri e le protezioni di Rasgeth/;
     await waitFor(() => expect(r.getByText(line)).toBeTruthy());
     fireEvent.click(r.getByText("Non chiedermi niente"));
     expect(r.getByText(line)).toBeTruthy();

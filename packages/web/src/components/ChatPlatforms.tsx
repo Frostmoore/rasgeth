@@ -76,7 +76,7 @@ async function downloadTeamsApp() {
   const blob = await getApi().teamsApp(location.host);
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "redgiant-teams.zip";
+  a.download = "rasgeth-teams.zip";
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 10_000);
 }

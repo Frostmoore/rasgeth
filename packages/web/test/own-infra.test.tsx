@@ -49,8 +49,8 @@ const net = {
   proxyInFront: "proxy",
   proxiesRunning: [],
   localDns: "192.168.1.2",
-  hostName: "redgiant.home.example.com",
-  reachedAs: { host: "redgiant.home.example.com", https: true, through: "proxy" as const },
+  hostName: "rasgeth.home.example.com",
+  reachedAs: { host: "rasgeth.home.example.com", https: true, through: "proxy" as const },
   lan: { address: "192.168.1.40", port: 7600 },
 };
 const state = (reachable?: { url?: string; at: string }) =>
@@ -63,23 +63,23 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe("the blocks to copy (G39.8)", () => {
-  it("are filled with RedGiant's name, address and port", () => {
-    const d = infraData("redgiant.home.example.com", "192.168.1.40", 7600);
-    expect(caddyBlock(d)).toBe("redgiant.home.example.com {\n\treverse_proxy 192.168.1.40:7600\n}");
+  it("are filled with Rasgeth's name, address and port", () => {
+    const d = infraData("rasgeth.home.example.com", "192.168.1.40", 7600);
+    expect(caddyBlock(d)).toBe("rasgeth.home.example.com {\n\treverse_proxy 192.168.1.40:7600\n}");
     expect(caddyWildcardBlock(d)).toContain("*.home.example.com {");
-    expect(caddyWildcardBlock(d)).toContain("@redgiant host redgiant.home.example.com");
-    expect(traefikBlock(d)).toContain("rule: Host(`redgiant.home.example.com`)");
+    expect(caddyWildcardBlock(d)).toContain("@rasgeth host rasgeth.home.example.com");
+    expect(traefikBlock(d)).toContain("rule: Host(`rasgeth.home.example.com`)");
     expect(traefikBlock(d)).toContain("url: http://192.168.1.40:7600");
     expect(tailscaleSubnet(d)).toBe("tailscale up --advertise-routes=192.168.1.0/24");
     expect(dnsmasqWildcard(d)).toBe("address=/home.example.com/192.168.1.40");
-    expect(healthCheck("https://redgiant.home.example.com/")).toBe(
-      "curl -s https://redgiant.home.example.com/api/health",
+    expect(healthCheck("https://rasgeth.home.example.com/")).toBe(
+      "curl -s https://rasgeth.home.example.com/api/health",
     );
-    expect(parentDomain("redgiant.lan")).toBe("redgiant.lan");
+    expect(parentDomain("rasgeth.lan")).toBe("rasgeth.lan");
     expect(subnetOf("fd00::1")).toBe("192.168.1.0/24");
     // What is not known reads as a placeholder, never empty.
     expect(infraData("", null, undefined)).toEqual({
-      name: "redgiant.example.com",
+      name: "rasgeth.example.com",
       address: "192.168.1.50",
       port: 7600,
     });
@@ -89,10 +89,10 @@ describe("the blocks to copy (G39.8)", () => {
 describe("the guide (G39.8)", () => {
   it("says the page is reachable already and shows the guide filled with what was seen", async () => {
     const r = render(<OwnInfra s={state()} onChange={() => {}} net={net} />);
-    await waitFor(() => r.getByText(/Sei già raggiungibile come redgiant.home.example.com/));
+    await waitFor(() => r.getByText(/Sei già raggiungibile come rasgeth.home.example.com/));
     const text = r.container.textContent ?? "";
     expect(text).toContain("reverse_proxy 192.168.1.40:7600");
-    expect(text).toContain("curl -s https://redgiant.home.example.com/api/health");
+    expect(text).toContain("curl -s https://rasgeth.home.example.com/api/health");
     // Forward auth: why RedGiant's own password is better, and what to leave out.
     expect(text).toContain("Authelia");
     expect(text).toContain("/api/ e /ws");
@@ -116,8 +116,8 @@ describe("the guide (G39.8)", () => {
     );
     expect(r.queryByText(/Sei già raggiungibile/)).toBeNull();
     fireEvent.click(r.getByText("Mostra la guida"));
-    expect(r.container.textContent).toContain("redgiant.example.com {");
-    const name = r.getByPlaceholderText("redgiant.example.com");
+    expect(r.container.textContent).toContain("rasgeth.example.com {");
+    const name = r.getByPlaceholderText("rasgeth.example.com");
     fireEvent.input(name, { target: { value: "rg.casa.example.org" } });
     fireEvent.click(r.getByText("Salta: sono già raggiungibile"));
     await waitFor(() => expect(onChange).toHaveBeenCalled());
@@ -127,13 +127,13 @@ describe("the guide (G39.8)", () => {
   it("in Settings starts folded even when reachable, and opens and folds from its bar (3.7.2)", async () => {
     const r = render(
       <OwnInfra
-        s={state({ url: "https://redgiant.home.example.com", at: "2026-11-14T10:00:00Z" })}
+        s={state({ url: "https://rasgeth.home.example.com", at: "2026-11-14T10:00:00Z" })}
         onChange={() => {}}
         net={net}
         folded
       />,
     );
-    await waitFor(() => r.getByText(/già raggiungibile a https:\/\/redgiant.home.example.com/));
+    await waitFor(() => r.getByText(/già raggiungibile a https:\/\/rasgeth.home.example.com/));
     const bar = r.getByRole("button", { name: "Mostra la guida" });
     expect(bar.getAttribute("aria-expanded")).toBe("false");
     expect(r.container.textContent).not.toContain("reverse_proxy");
@@ -146,19 +146,19 @@ describe("the guide (G39.8)", () => {
   it("once skipped, says so and can ask again", async () => {
     const r = render(
       <OwnInfra
-        s={state({ url: "https://redgiant.home.example.com", at: "2026-11-14T10:00:00Z" })}
+        s={state({ url: "https://rasgeth.home.example.com", at: "2026-11-14T10:00:00Z" })}
         onChange={() => {}}
         net={net}
       />,
     );
-    await waitFor(() => r.getByText(/già raggiungibile a https:\/\/redgiant.home.example.com/));
+    await waitFor(() => r.getByText(/già raggiungibile a https:\/\/rasgeth.home.example.com/));
     expect(r.queryByText("Salta: sono già raggiungibile")).toBeNull();
     fireEvent.click(r.getByText("Chiedimelo di nuovo"));
     await waitFor(() => expect(calls).toContainEqual(["setReachable", [false, undefined]]));
   });
 });
 
-describe("your home services seen by RedGiant (p3.7.3)", () => {
+describe("your home services seen by Rasgeth (p3.7.3)", () => {
   it("fills the DNS lines with the service's name and the proxy's local address", () => {
     const h = homeService(" Git.Home.Varitest.ovh ", "192.168.1.12");
     expect(homeDnsmasq(h)).toBe("address=/git.home.varitest.ovh/192.168.1.12");
@@ -209,9 +209,9 @@ describe("your home services seen by RedGiant (p3.7.3)", () => {
     await waitFor(() => r.getByText("I tuoi servizi di casa"));
     fireEvent.click(r.getByText("I tuoi servizi di casa"));
     const text = () => r.container.textContent ?? "";
-    expect(text()).toContain("visti da RedGiant");
+    expect(text()).toContain("visti da Rasgeth");
     expect(text()).toContain("resolvectl status");
-    expect(text()).toContain("RedGiant chiede i nomi a 192.168.1.2.");
+    expect(text()).toContain("Rasgeth chiede i nomi a 192.168.1.2.");
     expect(text()).toContain("Tailscale (100.…)");
     expect(text()).toContain("Cache=no-negative");
     const [name, proxy] = [...r.container.querySelectorAll(".oi-home input")];
@@ -220,7 +220,7 @@ describe("your home services seen by RedGiant (p3.7.3)", () => {
     expect(text()).toContain("address=/git.home.varitest.ovh/192.168.1.12");
     expect(text()).toContain("192.168.1.12 git.home.varitest.ovh");
     fireEvent.click(r.getByText("Prova git.home.varitest.ovh"));
-    await waitFor(() => r.getByText(/Il DNS che usa RedGiant non conosce git.home.varitest.ovh/));
+    await waitFor(() => r.getByText(/Il DNS che usa Rasgeth non conosce git.home.varitest.ovh/));
     expect(calls.find(([n]) => n === "probeName")?.[1]).toEqual(["git.home.varitest.ovh"]);
     expect(r.container.querySelector(NATIVE)).toBeNull();
     delete answers.probeName;
@@ -229,7 +229,7 @@ describe("your home services seen by RedGiant (p3.7.3)", () => {
   it("opens unfolded on this part when asked from elsewhere (Gitea's error)", async () => {
     ownInfraFocus.value = "home";
     const r = render(<OwnInfra s={state()} onChange={() => {}} net={null} folded />);
-    await waitFor(() => r.getByText("I tuoi servizi di casa (Gitea, NAS…) visti da RedGiant"));
+    await waitFor(() => r.getByText("I tuoi servizi di casa (Gitea, NAS…) visti da Rasgeth"));
     expect(ownInfraFocus.value).toBeNull();
   });
 });

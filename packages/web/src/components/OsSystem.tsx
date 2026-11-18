@@ -304,12 +304,12 @@ export function HttpsPanel({ initial }: { initial?: LocalHttps | undefined } = {
     if (await set({ redirect: true, trusted: true }))
       setSaid({ ok: true, text: t("osHttpsNowOnly") });
   };
-  const host = typeof location === "undefined" ? "redgiant.local" : location.hostname;
+  const host = typeof location === "undefined" ? "rasgeth.local" : location.hostname;
   const crtUrl =
     typeof location === "undefined" || location.protocol === "http:"
       ? `${typeof location === "undefined" ? "" : location.origin}/redgiant-ca.crt`
       : `http://${host}/redgiant-ca.crt`;
-  const name = h.names.find((n) => n.endsWith(".local")) ?? "redgiant.local";
+  const name = h.names.find((n) => n.endsWith(".local")) ?? "rasgeth.local";
   return (
     <SCard icon={<IconShield size={22} />} title={t("osHttpsTitle")} q={t("osHttpsQ")}>
       {h.inFront && (
@@ -353,7 +353,7 @@ export function HttpsPanel({ initial }: { initial?: LocalHttps | undefined } = {
           <div class="os-https-get">
             <Qr text={crtUrl} label={t("osHttpsQr")} />
             <div>
-              <a class="wz-btn primary" href="/redgiant-ca.crt" download="RedGiant-CA.crt">
+              <a class="wz-btn primary" href="/redgiant-ca.crt" download="Rasgeth-CA.crt">
                 <IconDownload size={18} /> {t("osHttpsDownload")}
               </a>
               <p class="dim">{t("osHttpsQrHelp")}</p>
@@ -614,7 +614,7 @@ export function SetupNetworkPanel({ demo }: { demo?: SetupNetworkInfo } = {}) {
     setBusy(false);
     setSaid(
       "ok" in r
-        ? { ok: true, text: t("snCableDone", { address: r.ok.address ?? "redgiant.local" }) }
+        ? { ok: true, text: t("snCableDone", { address: r.ok.address ?? "rasgeth.local" }) }
         : { ok: false, text: errorText(r.code) },
     );
   };
