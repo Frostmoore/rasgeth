@@ -233,16 +233,17 @@ describe("«Save as…» through the app", () => {
     const r = render(<OfficeEditor file={{ scope: "p1", path: "relazione.odt" }} />);
     const select = r.container.querySelector(".doc-office-export select") as HTMLSelectElement;
     expect(select).not.toBeNull();
-    // jsdom has no blob URLs to fetch: the bytes come from the URL the page made.
-    const made = new Map<string, Blob>();
-    const urls = vi.spyOn(URL, "createObjectURL").mockImplementation((b) => {
-      const u = `blob:http://localhost/${made.size}`;
-      made.set(u, b as Blob);
-      return u;
-    });
+    // jsdom has no blob URLs to fetch: the URL the page made answers with the export's bytes.
+    const urls = vi
+      .spyOn(URL, "createObjectURL")
+      .mockImplementation(() => "blob:http://localhost/1");
     const fetched = vi
       .spyOn(globalThis, "fetch")
-      .mockImplementation(async (u) => new Response(made.get(String(u)) ?? null));
+      .mockImplementation(async (u) =>
+        String(u) === "blob:http://localhost/1"
+          ? new Response(new Uint8Array([80, 75, 3, 4]))
+          : new Response(null, { status: 404 }),
+      );
     try {
       fireEvent.change(select, { target: { value: "pdf" } });
       await waitFor(() => expect(of("saveAs")).toHaveLength(1));

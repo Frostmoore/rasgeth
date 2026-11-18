@@ -121,8 +121,16 @@ describe("every viewer kind, bare, with its bar sent to the app", () => {
     });
     type Bar = { actions: { id: string }[]; link?: string; download?: boolean };
     const last = () => of("bar").at(-1) as Bar | undefined;
+    // A document or a presentation: RedGiant's page with the file in its Canvas (G42.8).
+    const link = /\.(docx|pptx)$/.test(path)
+      ? `/#open=canvas&scope=p1&path=${path}`
+      : new RegExp(`^/preview/T/${path}\\?v=\\d+-0$`);
     await waitFor(
-      () => expect(last()?.link).toMatch(new RegExp(`^/preview/T/${path}\\?v=\\d+-0$`)),
+      () =>
+        typeof link === "string"
+          ? // Its own link comes at once: the file's signed one too before the bar is whole.
+            expect([last()?.link, last()?.download]).toEqual([link, true])
+          : expect(last()?.link).toMatch(link),
       { timeout: 5000 },
     );
     // The page's head is not there: the frame is the app's.
