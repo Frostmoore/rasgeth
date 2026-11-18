@@ -200,6 +200,7 @@ final class App: NSObject, NSApplicationDelegate {
     item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     if let icon = NSImage(contentsOf: resources.appendingPathComponent("menubar.png")) {
       icon.size = NSSize(width: 18, height: 18)
+      icon.isTemplate = true  // a black silhouette: macOS colours it for the bar
       item.button?.image = icon
     } else {
       item.button?.title = "RG"
