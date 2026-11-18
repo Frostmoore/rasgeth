@@ -52,7 +52,20 @@ void main() {
     final p = _phone ? 'telefono' : 'computer';
     final god = app.agents.firstWhere((a) => a.kind == AgentKind.god);
 
+    // A page builds only what is near the screen: it scrolls until [key] is there.
     Future<void> scrollTo(Key key) async {
+      if (find.byKey(key).evaluate().isEmpty) {
+        for (final page in const [Key('knowledge-settings'), Key('memory-settings')]) {
+          if (find.byKey(page).evaluate().isEmpty) continue;
+          await t.scrollUntilVisible(
+            find.byKey(key),
+            250,
+            scrollable: find
+                .descendant(of: find.byKey(page), matching: find.byType(Scrollable))
+                .first,
+          );
+        }
+      }
       await t.ensureVisible(find.byKey(key).first);
       await frames(t, 500);
     }
@@ -101,16 +114,20 @@ void main() {
       await scrollTo(const Key('kb-rebuild'));
       await shot(t, '05_conoscenza_ocr_disco_$tag');
       // A collection's window, then adding a source.
-      await t.scrollUntilVisible(
-        find.textContaining('Home manuals').first,
-        -300,
-        scrollable: find
-            .descendant(
-              of: find.byKey(const Key('knowledge-settings')),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
+      // Back to the top, where the collections are.
+      t
+          .state<ScrollableState>(
+            find
+                .descendant(
+                  of: find.byKey(const Key('knowledge-settings')),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          )
+          .position
+          .jumpTo(0);
+      await frames(t, 500);
+      await t.ensureVisible(find.textContaining('Home manuals').first);
       await frames(t, 500);
       await t.tap(find.textContaining('Home manuals').first);
       await frames(t, 2500);
