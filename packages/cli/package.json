@@ -1,7 +1,7 @@
 {
   "name": "@redgiant/cli",
   "version": "0.1.0",
-  "description": "RedGiant command line: projects, agents, live chat with agents, approvals.",
+  "description": "Rasgeth command line: projects, agents, live chat with agents, approvals.",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -11,8 +11,8 @@
     }
   },
   "bin": {
-    "redgiant": "./dist/main.js",
-    "redgiant-acp": "./dist/acp-main.js"
+    "rasgeth": "./dist/main.js",
+    "rasgeth-acp": "./dist/acp-main.js"
   },
   "files": [
     "dist"

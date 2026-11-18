@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# RedGiant installer for Linux and macOS.
+# Rasgeth installer for Linux and macOS (Docker; the folder ~/redgiant, the service and the volumes keep their names).
 #   curl -fsSL https://raw.githubusercontent.com/Frostmoore/redgiant2/main/install.sh | bash
 # Environment: REDGIANT_HOME (default ~/redgiant), REDGIANT_REF (git ref of the files, default main),
 # REDGIANT_IMAGE / REDGIANT_SANDBOX_IMAGE (images to use), REDGIANT_PORT (default 7600),
@@ -34,11 +34,11 @@ if ! command -v docker >/dev/null 2>&1; then
   if [ "$os" = Linux ]; then
     say "Docker is not installed."
     ask "Install it now with Docker's official script (get.docker.com, needs sudo)?" ||
-      die "RedGiant needs Docker: https://docs.docker.com/engine/install/"
+      die "Rasgeth needs Docker: https://docs.docker.com/engine/install/"
     curl -fsSL https://get.docker.com | sudo sh
     sudo usermod -aG docker "$USER" 2>/dev/null || true
   else
-    die "RedGiant needs Docker. On macOS install Docker Desktop (https://www.docker.com/products/docker-desktop/) or OrbStack (brew install --cask orbstack), start it, then run this again."
+    die "Rasgeth needs Docker. On macOS install Docker Desktop (https://www.docker.com/products/docker-desktop/) or OrbStack (brew install --cask orbstack), start it, then run this again."
   fi
 fi
 DOCKER=(docker)
@@ -56,10 +56,10 @@ fi
 api=$("${DOCKER[@]}" version --format '{{.Server.APIVersion}}')
 # Sandboxes mount their folders with volume subpaths (Docker Engine 26 / API 1.45).
 awk -v v="$api" 'BEGIN { split(v, a, "."); exit !(a[1] > 1 || (a[1] == 1 && a[2] >= 45)) }' ||
-  die "Docker is too old (API $api): RedGiant needs Docker Engine 26 or newer."
+  die "Docker is too old (API $api): Rasgeth needs Docker Engine 26 or newer."
 
 # 2. Files --------------------------------------------------------------------------------------
-say "Installing RedGiant in $HOME_DIR"
+say "Installing Rasgeth in $HOME_DIR"
 mkdir -p "$HOME_DIR/docker/searxng"
 here=$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || echo "")
 for f in "${FILES[@]}"; do
@@ -241,7 +241,7 @@ compose_image() { grep "^$1=" .env | cut -d= -f2- || true; }
 
 # 5. Start --------------------------------------------------------------------------------------
 if [ "${REDGIANT_NO_PULL:-}" != 1 ]; then
-  say "Downloading RedGiant (the first time takes a few minutes)"
+  say "Downloading Rasgeth (the first time takes a few minutes)"
   image=$(compose_image REDGIANT_IMAGE)
   sandbox=$(compose_image REDGIANT_SANDBOX_IMAGE)
   postgres=$(compose_image REDGIANT_POSTGRES_IMAGE)
@@ -250,10 +250,10 @@ if [ "${REDGIANT_NO_PULL:-}" != 1 ]; then
     "${sandbox:-ghcr.io/frostmoore/redgiant2-sandbox:latest}"
 fi
 if [ "${REDGIANT_NO_START:-}" = 1 ]; then
-  say "Files updated; RedGiant starts with the new version next time"
+  say "Files updated; Rasgeth starts with the new version next time"
   exit 0
 fi
-say "Starting RedGiant"
+say "Starting Rasgeth"
 "${DOCKER[@]}" compose up -d
 
 url="http://127.0.0.1:$PORT"
@@ -262,9 +262,9 @@ for _ in $(seq 1 120); do
   sleep 3
 done
 curl -fsS "$url/api/health" >/dev/null 2>&1 ||
-  die "RedGiant did not come up. See: cd $HOME_DIR && docker compose logs redgiant"
+  die "Rasgeth did not come up. See: cd $HOME_DIR && docker compose logs redgiant"
 
-say "RedGiant is running: $url"
+say "Rasgeth is running: $url"
 echo "   Open it and create your access (a password). For apps and the command line: the token in $HOME_DIR/.env"
 echo "   Stop: cd $HOME_DIR && docker compose down    Update: run this installer again"
 if [ "${REDGIANT_NO_BROWSER:-}" != 1 ]; then

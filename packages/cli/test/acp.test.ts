@@ -110,7 +110,7 @@ async function people(server: Server, mode?: string) {
   return { project, god, orch };
 }
 
-describe("redgiant-acp: RedGiant as an agent inside editors (G38.6)", () => {
+describe("rasgeth-acp: Rasgeth as an agent inside editors (G38.6)", () => {
   it("streams a turn to the editor: thinking, text, a tool call and its result", async () => {
     s = await startServer((req) =>
       lastIsTool(req)
@@ -148,7 +148,7 @@ describe("redgiant-acp: RedGiant as an agent inside editors (G38.6)", () => {
     expect(done).toMatchObject({ status: "completed" });
   });
 
-  it("asks the editor what RedGiant asks the person; the editor's answer counts as theirs", async () => {
+  it("asks the editor what Rasgeth asks the person; the editor's answer counts as theirs", async () => {
     s = await startServer((req) =>
       lastIsTool(req) ? { text: "Done." } : call("bash", { command: "echo from-bash" }),
     );
@@ -242,7 +242,7 @@ describe("redgiant-acp: RedGiant as an agent inside editors (G38.6)", () => {
     expect(JSON.stringify(s.provider.requests.at(-1)?.messages.at(-1))).toContain("ON DISK");
   });
 
-  it("cancels: session/cancel stops RedGiant's turn and the prompt ends as cancelled", async () => {
+  it("cancels: session/cancel stops the agent's turn and the prompt ends as cancelled", async () => {
     s = await startServer((req) =>
       lastIsTool(req)
         ? { text: "stopped" }

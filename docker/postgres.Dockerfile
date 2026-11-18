@@ -22,7 +22,7 @@ RUN curl -fsSL "https://github.com/pgvector/pgvector/archive/refs/tags/v${PGVECT
 FROM ${PG_IMAGE}
 ARG PGVECTOR_VERSION=0.8.7
 LABEL org.opencontainers.image.title="redgiant2-postgres" \
-      org.opencontainers.image.description="postgres:17-alpine with pgvector ${PGVECTOR_VERSION} for RedGiant" \
+      org.opencontainers.image.description="postgres:17-alpine with pgvector ${PGVECTOR_VERSION} for Rasgeth" \
       org.opencontainers.image.source="https://github.com/Frostmoore/redgiant2" \
       org.opencontainers.image.licenses="PostgreSQL"
 # Only pgvector's files (the library and its control and SQL files), into the image's own folders.
