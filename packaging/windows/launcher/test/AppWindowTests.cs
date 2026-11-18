@@ -1,6 +1,6 @@
 // Tests of AppWindow.cs (G40.12), a console program built like the others (ci.yml):
 //
-//   csc /out:AppWindowTests.exe /r:System.Web.Extensions.dll test\AppWindowTests.cs AppWindow.cs
+//   csc /out:AppWindowTests.exe /r:System.Web.Extensions.dll test\AppWindowTests.cs AppWindow.cs Brand.cs
 //   AppWindowTests.exe [AppStub.exe]   with the stand-in app: the whole opening, end to end
 //
 // The device's name and body, the server's answer, the handoff (a file only this user opens,
@@ -79,15 +79,15 @@ static class AppWindowTests
     static int Main(string[] args)
     {
         // The device's name: what Settings › Devices shows, within the server's 60 characters.
-        Check(AppWindow.DeviceName("RIG") == "RGCompanion (RIG)", "the computer's name");
-        Check(AppWindow.DeviceName("") == "RGCompanion (Windows)", "no name: Windows");
-        Check(AppWindow.DeviceName("A\u0001B\tC") == "RGCompanion (ABC)", "no control characters");
+        Check(AppWindow.DeviceName("RIG") == "Rasgeth (RIG)", "the computer's name");
+        Check(AppWindow.DeviceName("") == "Rasgeth (Windows)", "no name: Windows");
+        Check(AppWindow.DeviceName("A\u0001B\tC") == "Rasgeth (ABC)", "no control characters");
         string longName = AppWindow.DeviceName(new string('x', 200));
         Check(longName.Length <= 60 && longName.EndsWith(")"), "60 characters at most: " + longName.Length);
 
         var json = new JavaScriptSerializer();
-        var body = (Dictionary<string, object>)json.DeserializeObject(AppWindow.DeviceBody("RGCompanion (\"Rig\")"));
-        Check((string)body["name"] == "RGCompanion (\"Rig\")" && (string)body["platform"] == "windows", "the body, quotes escaped");
+        var body = (Dictionary<string, object>)json.DeserializeObject(AppWindow.DeviceBody("Rasgeth (\"Rig\")"));
+        Check((string)body["name"] == "Rasgeth (\"Rig\")" && (string)body["platform"] == "windows", "the body, quotes escaped");
 
         // The server's answer.
         string token, id;
@@ -125,12 +125,12 @@ static class AppWindowTests
         // The calls: the installation's token, the body, the answer; the revocation.
         var server = new OneRequest("{\"token\":\"rgd_fromtheserver_0123\",\"device\":{\"id\":\"d7\"}}");
         string device;
-        string made = AppWindow.CreateDevice(server.Port, "installation-token-0123456789abcdef", "RGCompanion (RIG)", out device);
+        string made = AppWindow.CreateDevice(server.Port, "installation-token-0123456789abcdef", "Rasgeth (RIG)", out device);
         server.Done();
         Check(made == "rgd_fromtheserver_0123" && device == "d7", "the device made: " + made + " " + device);
         Check(server.Line == "POST /api/devices HTTP/1.1", "POST /api/devices: " + server.Line);
         Check(server.Headers.Contains("Authorization: Bearer installation-token-0123456789abcdef"), "with the installation's token");
-        Check(server.Body.Contains("\"platform\":\"windows\"") && server.Body.Contains("RGCompanion (RIG)"), "the body: " + server.Body);
+        Check(server.Body.Contains("\"platform\":\"windows\"") && server.Body.Contains("Rasgeth (RIG)"), "the body: " + server.Body);
         var refused = new OneRequest("{\"error\":\"no\"}");
         Check(AppWindow.CreateDevice(refused.Port, "t", "n", out device) == null, "a refusal: no token (the browser then)");
         refused.Done();
@@ -193,7 +193,7 @@ static class AppWindowTests
     /**
      * Before an update replaces app\ (3.8.2): the app is asked to close and closes (its window
      * gets the close), one that does not is stopped, and app\ can then be moved; the same program
-     * in another folder (RGCompanion installed on its own) is left running.
+     * in another folder (the app installed on its own) is left running.
      */
     static void CloseBeforeUpdate(string stub)
     {
@@ -222,7 +222,7 @@ static class AppWindowTests
         if (desktop) Check(File.Exists(closedFile), "it closed by itself (its window was closed, it was not stopped)");
 
         // Without a window it cannot be asked: stopped after the grace time. Elsewhere: left alone.
-        string other = Path.Combine(root, "other", "rgcompanion.exe");
+        string other = Path.Combine(root, "other", "rasgeth-app.exe");
         Directory.CreateDirectory(Path.GetDirectoryName(other));
         File.Copy(stub, other);
         var stubborn = Start(exe, "--stubborn");

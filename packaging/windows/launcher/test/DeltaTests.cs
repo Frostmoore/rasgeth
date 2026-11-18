@@ -1,8 +1,8 @@
 // Tests of the differential updates (G36.18, Delta.cs), a console program built with the same
 // C# compiler as the launcher (ci.yml, installers job on Windows):
 //
-//   csc /out:DeltaTests.exe /r:System.Web.Extensions.dll test\DeltaTests.cs Delta.cs
-//   DeltaTests.exe [<folder with RedGiant-x.zip and its manifest from pack.mjs> <the tree packed>]
+//   csc /out:DeltaTests.exe /r:System.Web.Extensions.dll test\DeltaTests.cs Delta.cs Brand.cs
+//   DeltaTests.exe [<folder with Rasgeth-x.zip and its manifest from pack.mjs> <the tree packed>]
 //
 // Exit code 0 when every test passes. Each test works in a folder of its own under %TEMP%.
 using System;
@@ -90,10 +90,10 @@ static class DeltaTests
         return new Built { Manifest = m, Archive = archive };
     }
 
-    /** A tree like the installed one: launcher, node, server, web, and what RedGiant keeps beside them. */
+    /** A tree like the installed one: launcher, node, server, web, and what the program keeps beside them. */
     static string OldTree(string dir)
     {
-        Write(dir, "RedGiant.exe", "launcher 1");
+        Write(dir, "Rasgeth.exe", "launcher 1");
         WriteRandom(dir, "node/node.exe", 600000, 1);
         Write(dir, "server/dist/main.js", "console.log(1)");
         Write(dir, "server/dist/gone.js", "removed in 2");
@@ -109,7 +109,7 @@ static class DeltaTests
 
     static string NewTree(string dir)
     {
-        Write(dir, "RedGiant.exe", "launcher 2");
+        Write(dir, "Rasgeth.exe", "launcher 2");
         WriteRandom(dir, "node/node.exe", 600000, 1);
         Write(dir, "server/dist/main.js", "console.log(2)");
         Write(dir, "server/dist/added.js", "new in 2");
@@ -246,7 +246,7 @@ static class DeltaTests
             var s = Prepare();
             var m = UpdateManifest.Parse(Json(s.Next.Manifest, f => f.Path));
             Check(m.Files.Count == s.Next.Manifest.Files.Count && m.Version == "2.0.0", "every file read back");
-            Check(m.Roots.SequenceEqual(new[] { "RedGiant.exe", "node", "server", "web" }), "roots in order");
+            Check(m.Roots.SequenceEqual(new[] { "Rasgeth.exe", "node", "server", "web" }), "roots in order");
             foreach (var bad in new[] { "../evil.exe", "/abs", "server\\\\x", "server//x", "C:/x", "web/./x", "web/x.", "aux:x" })
             {
                 string b = bad;
@@ -262,7 +262,7 @@ static class DeltaTests
         {
             var s = Prepare();
             var names = s.Plan.Fetch.Select(f => f.Path).OrderBy(p => p, StringComparer.Ordinal).ToArray();
-            Check(names.SequenceEqual(new[] { "RedGiant.exe", "server/dist/added.js", "server/dist/main.js", "web/assets/index-2.js", "web/index.html" }), "five files: " + string.Join(", ", names));
+            Check(names.SequenceEqual(new[] { "Rasgeth.exe", "server/dist/added.js", "server/dist/main.js", "web/assets/index-2.js", "web/index.html" }), "five files: " + string.Join(", ", names));
             Check(s.Plan.Keep == 2, "node.exe and the module kept");
             Check(s.Plan.Bytes == s.Plan.Runs.Sum(r => r.Length) && s.Plan.Bytes < s.Next.Manifest.ArchiveSize / 4, "a fraction of the archive: " + s.Plan.Bytes + " of " + s.Next.Manifest.ArchiveSize);
             // Same size, different bytes: still fetched.
@@ -309,12 +309,12 @@ static class DeltaTests
             Delta.Fetch(s.Plan, new FileRangeSource(s.Next.Archive), s.Staging, null, null);
             Delta.Build(s.Next.Manifest, s.Plan, s.App, s.Staging);
             Delta.Swap(s.Next.Manifest, s.App, s.Staging);
-            Check(Read(s.App, "RedGiant.exe") == "launcher 2", "swapped");
+            Check(Read(s.App, "Rasgeth.exe") == "launcher 2", "swapped");
             Delta.Rollback(s.App, s.Staging);
             Check(Delta.Differences(old.Manifest, s.App).Count == 0, "old files back: " + string.Join(", ", Delta.Differences(old.Manifest, s.App)));
             Check(!Delta.Swapped(s.Staging), "journal gone");
             Delta.Rollback(s.App, s.Staging); // again: nothing to do
-            Check(Read(s.App, "RedGiant.exe") == "launcher 1", "still the old one");
+            Check(Read(s.App, "Rasgeth.exe") == "launcher 1", "still the old one");
         });
 
         Run("rollback after a swap stopped halfway (a crash)", () =>
@@ -325,14 +325,14 @@ static class DeltaTests
             // By hand, as Swap would, stopping after "server" moved away but before the new one came.
             string journal = Path.Combine(s.Staging, "swap.txt"), prev = Path.Combine(s.Staging, "prev"), next = Path.Combine(s.Staging, "next");
             Directory.CreateDirectory(prev);
-            File.AppendAllText(journal, "moved RedGiant.exe\r\n");
-            File.Move(Path.Combine(s.App, "RedGiant.exe"), Path.Combine(prev, "RedGiant.exe"));
-            File.Move(Path.Combine(next, "RedGiant.exe"), Path.Combine(s.App, "RedGiant.exe"));
-            File.AppendAllText(journal, "done RedGiant.exe\r\nmoved node\r\n");
+            File.AppendAllText(journal, "moved Rasgeth.exe\r\n");
+            File.Move(Path.Combine(s.App, "Rasgeth.exe"), Path.Combine(prev, "Rasgeth.exe"));
+            File.Move(Path.Combine(next, "Rasgeth.exe"), Path.Combine(s.App, "Rasgeth.exe"));
+            File.AppendAllText(journal, "done Rasgeth.exe\r\nmoved node\r\n");
             File.AppendAllText(journal, "moved server\r\n");
             Directory.Move(Path.Combine(s.App, "server"), Path.Combine(prev, "server"));
             Delta.Rollback(s.App, s.Staging);
-            Check(Read(s.App, "RedGiant.exe") == "launcher 1" && Read(s.App, "server/dist/main.js") == "console.log(1)", "old launcher and server back");
+            Check(Read(s.App, "Rasgeth.exe") == "launcher 1" && Read(s.App, "server/dist/main.js") == "console.log(1)", "old launcher and server back");
             Check(new FileInfo(Path.Combine(s.App, "node", "node.exe")).Length == 600000 && Read(s.App, "web/index.html") == "<html>1</html>", "node and web never moved");
         });
 
@@ -346,7 +346,7 @@ static class DeltaTests
             {
                 Throws(() => Delta.Swap(s.Next.Manifest, s.App, s.Staging), "swap with a held file");
             }
-            Check(Read(s.App, "RedGiant.exe") == "launcher 1" && Read(s.App, "server/dist/main.js") == "console.log(1)", "old version whole");
+            Check(Read(s.App, "Rasgeth.exe") == "launcher 1" && Read(s.App, "server/dist/main.js") == "console.log(1)", "old version whole");
             Check(!Delta.Swapped(s.Staging), "nothing recorded");
         });
 
@@ -431,10 +431,37 @@ static class DeltaTests
         {
             var s = Prepare();
             Write(s.App, "update/hashes.txt", "");
-            Write(s.App, "bin/redgiant.cmd", "@echo off");
+            Write(s.App, "bin/rasgeth.cmd", "@echo off");
             var files = Delta.InstalledFiles(s.App);
-            Check(files.SequenceEqual(new[] { "RedGiant.exe", "bin/redgiant.cmd", "node/node.exe", "server/dist/gone.js", "server/dist/main.js", "server/node_modules/a/index.js", "web/assets/index-1.js", "web/index.html" }), "launcher, bin, node, server, web: " + string.Join(", ", files));
+            Check(files.SequenceEqual(new[] { "Rasgeth.exe", "bin/rasgeth.cmd", "node/node.exe", "server/dist/gone.js", "server/dist/main.js", "server/node_modules/a/index.js", "web/assets/index-1.js", "web/index.html" }), "launcher, bin, node, server, web: " + string.Join(", ", files));
         });
+
+        Run("installed files: the icons of 3.9.0 count, the old names do not", () =>
+        {
+            var s = Prepare();
+            Write(s.App, "rasgeth.ico", "icon");
+            Write(s.App, "rasgeth-tray-dark.ico", "white");
+            Write(s.App, "rasgeth-tray-light.ico", "black");
+            // What a RedGiant before 3.9.0 installed: not the program any more, never compared.
+            Write(s.App, "RedGiant.exe", "old launcher");
+            Write(s.App, "redgiant.ico", "old icon");
+            var files = Delta.InstalledFiles(s.App);
+            Check(files.Contains("rasgeth.ico") && files.Contains("rasgeth-tray-dark.ico") && files.Contains("rasgeth-tray-light.ico"), "the icons: " + string.Join(", ", files));
+            Check(!files.Contains("RedGiant.exe") && !files.Contains("redgiant.ico"), "no old names: " + string.Join(", ", files));
+        });
+
+        Run("local folders: the new name, or an earlier one's folder when only that is there", () =>
+        {
+            string local = Temp();
+            Check(Brand.LocalDir(local, "engine") == Path.Combine(local, "Rasgeth", "engine"), "nothing yet: Rasgeth");
+            Directory.CreateDirectory(Path.Combine(local, "RedGiant", "engine"));
+            Check(Brand.LocalDir(local, "engine") == Path.Combine(local, "RedGiant", "engine"), "only the old one: kept, its models found");
+            Check(Brand.LocalDir(local, "data") == Path.Combine(local, "Rasgeth", "data"), "another folder: Rasgeth");
+            Directory.CreateDirectory(Path.Combine(local, "Rasgeth", "engine"));
+            Check(Brand.LocalDir(local, "engine") == Path.Combine(local, "Rasgeth", "engine"), "both: the new one");
+            Directory.Delete(local, true);
+        });
+
 
         Run("warm: hashes.txt filled in the background, the next compare reads nothing again", () =>
         {

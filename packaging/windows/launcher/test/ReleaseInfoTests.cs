@@ -1,6 +1,6 @@
 // Tests of ReleaseInfo.cs (G36.19), a console program built like DeltaTests (ci.yml):
 //
-//   csc /out:ReleaseInfoTests.exe /r:System.Web.Extensions.dll test\ReleaseInfoTests.cs ReleaseInfo.cs Delta.cs
+//   csc /out:ReleaseInfoTests.exe /r:System.Web.Extensions.dll test\ReleaseInfoTests.cs ReleaseInfo.cs Delta.cs Brand.cs
 //
 // The table is the same as packages/protocol/test/release.test.ts. Exit code 0 when all pass.
 using System;

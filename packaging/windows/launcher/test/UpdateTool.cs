@@ -2,7 +2,7 @@
 // tree without the launcher (its registry, its mutex, its windows). The CI and the tests on a PC
 // use it; RedGiant itself never ships it.
 //
-//   csc /out:UpdateTool.exe /r:System.Web.Extensions.dll test\UpdateTool.cs Delta.cs
+//   csc /out:UpdateTool.exe /r:System.Web.Extensions.dll test\UpdateTool.cs Delta.cs Brand.cs
 //   UpdateTool plan     <manifest> <app>
 //   UpdateTool fetch    <manifest> <app> <staging> <zip URL or file> [stop-after-bytes]
 //   UpdateTool build    <manifest> <app> <staging>
