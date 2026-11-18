@@ -38,16 +38,22 @@ const _editors = [
 const _openChanges =
     "document.querySelector('.doc-bar button[aria-controls=\"doc-changes\"]:not([aria-pressed=\"true\"])')?.click();";
 
-/// Lines 3 to 5 of the text selected (CodeMirror follows the page's selection while it has the focus).
+/// Lines 13 to 15 of the text selected, through the editor itself (its content element keeps its
+/// view); the page's own selection as a fallback.
 const _selectLines = '''
 (() => {
   const c = document.querySelector('.cm-content');
   if (!c) return;
   c.focus();
+  const v = c.cmView?.view ?? c.cmView?.rootView?.view;
+  if (v) {
+    const d = v.state.doc;
+    v.dispatch({ selection: { anchor: d.line(13).from, head: d.line(15).to } });
+    return;
+  }
   const lines = c.querySelectorAll('.cm-line');
   const a = lines[2], b = lines[4] ?? lines[lines.length - 1];
-  if (!a || !b) return;
-  getSelection().setBaseAndExtent(a, 0, b, b.childNodes.length);
+  if (a && b) getSelection().setBaseAndExtent(a, 0, b, b.childNodes.length);
 })();
 ''';
 
@@ -107,11 +113,12 @@ void main() {
     }
     // A selection in the text: «Chiedi all'agente» in the native bar.
     final text = await openFile('canvas/app.py');
-    await frames(t, 1200);
-    await t.runAsync(() => text?.run(_selectLines) ?? Future<void>.value());
-    try {
-      await waitFor(t, () => find.byKey(const Key('canvas-action-ask')).evaluate().isNotEmpty);
-    } on StateError {
+    // Tried again until the editor has its text (the tab may load again: one view alive on Linux).
+    for (var i = 0; i < 20 && find.byKey(const Key('canvas-action-ask')).evaluate().isEmpty; i++) {
+      await frames(t, 800);
+      await t.runAsync(() => text?.run(_selectLines) ?? Future<void>.value());
+    }
+    if (find.byKey(const Key('canvas-action-ask')).evaluate().isEmpty) {
       debugPrint('no «Chiedi all\'agente» in the bar');
     }
     await shot(t, 'g42-7-$_tag-$_theme-05-chiedi', wait: 1200);
