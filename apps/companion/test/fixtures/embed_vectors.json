@@ -261,6 +261,82 @@
       }
     },
     {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"bar\",\"actions\":[{\"id\":\"art.app\",\"label\":\"App\",\"icon\":\"play\",\"on\":true},{\"id\":\"art.run\",\"label\":\"Esegui\",\"primary\":true,\"hint\":\"Mai eseguito\"},{\"id\":\"copy.edit\",\"label\":\"Modifica una copia\",\"icon\":\"pencil\",\"disabled\":true}],\"note\":\"L'agente è andato a pagina 3\",\"link\":\"/api/canvas/raw/abc?v=1\",\"download\":true}}",
+      "message": {
+        "t": "bar",
+        "actions": [
+          {
+            "id": "art.app",
+            "label": "App",
+            "icon": "play",
+            "on": true
+          },
+          {
+            "id": "art.run",
+            "label": "Esegui",
+            "primary": true,
+            "hint": "Mai eseguito"
+          },
+          {
+            "id": "copy.edit",
+            "label": "Modifica una copia",
+            "icon": "pencil",
+            "disabled": true
+          }
+        ],
+        "note": "L'agente è andato a pagina 3",
+        "link": "/api/canvas/raw/abc?v=1",
+        "download": true
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"bar\",\"actions\":[]}}",
+      "message": {
+        "t": "bar",
+        "actions": []
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"open\",\"title\":\"a.odt\",\"target\":{\"kind\":\"file\",\"scope\":\"p1\",\"path\":\"a.odt\"}}}",
+      "message": {
+        "t": "open",
+        "title": "a.odt",
+        "target": {
+          "kind": "file",
+          "scope": "p1",
+          "path": "a.odt"
+        }
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"open\",\"title\":\"a.pdf\",\"target\":{\"kind\":\"file\",\"scope\":\"p1\",\"path\":\"a.pdf\",\"at\":{\"page\":2}}}}",
+      "message": {
+        "t": "open",
+        "title": "a.pdf",
+        "target": {
+          "kind": "file",
+          "scope": "p1",
+          "path": "a.pdf",
+          "at": {
+            "page": 2
+          }
+        }
+      }
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"open\",\"title\":\"Sito\",\"target\":{\"kind\":\"port\",\"agentId\":\"a1\",\"port\":5173,\"path\":\"/x\"}}}",
+      "message": {
+        "t": "open",
+        "title": "Sito",
+        "target": {
+          "kind": "port",
+          "agentId": "a1",
+          "port": 5173,
+          "path": "/x"
+        }
+      }
+    },
+    {
       "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"saveAs\",\"name\":\"a\",\"url\":\"/x\",\"data\":\"AA==\"}}",
       "message": null
     },
@@ -325,6 +401,54 @@
       "message": null
     },
     {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"bar\",\"actions\":[{\"id\":\"A b\",\"label\":\"x\"}]}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"bar\",\"actions\":[{\"id\":\"a\",\"label\":\"\"}]}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"bar\",\"actions\":[{\"id\":\"a\",\"label\":\"x\",\"icon\":\"bomb\"}]}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"bar\",\"actions\":[{\"id\":\"a0\",\"label\":\"x\"},{\"id\":\"a1\",\"label\":\"x\"},{\"id\":\"a2\",\"label\":\"x\"},{\"id\":\"a3\",\"label\":\"x\"},{\"id\":\"a4\",\"label\":\"x\"},{\"id\":\"a5\",\"label\":\"x\"},{\"id\":\"a6\",\"label\":\"x\"},{\"id\":\"a7\",\"label\":\"x\"},{\"id\":\"a8\",\"label\":\"x\"},{\"id\":\"a9\",\"label\":\"x\"},{\"id\":\"a10\",\"label\":\"x\"},{\"id\":\"a11\",\"label\":\"x\"},{\"id\":\"a12\",\"label\":\"x\"}]}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"bar\",\"actions\":[],\"link\":\"https://evil.example/x\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"bar\",\"actions\":[{\"id\":\"a\",\"label\":\"x\",\"on\":\"yes\"}]}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"bar\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"open\",\"title\":\"x\"}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"open\",\"title\":\"x\",\"target\":{\"kind\":\"shell\"}}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"open\",\"title\":\"x\",\"target\":{\"kind\":\"file\",\"scope\":\"p\"}}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"open\",\"title\":\"x\",\"target\":{\"kind\":\"file\",\"scope\":\"p\",\"path\":\"a\",\"at\":{\"page\":0}}}}",
+      "message": null
+    },
+    {
+      "raw": "{\"rg\":\"embed\",\"n\":\"n0nce-n0nce_n0nce\",\"m\":{\"t\":\"open\",\"title\":\"x\",\"target\":{\"kind\":\"port\",\"agentId\":\"a\",\"port\":\"80\"}}}",
+      "message": null
+    },
+    {
       "raw": "{\"rg\":\"embed\",\"n\":\"another-nonce-123\",\"m\":{\"t\":\"ready\"}}",
       "message": null
     },
@@ -380,6 +504,39 @@
     {
       "t": "paste",
       "text": "hello"
+    },
+    {
+      "t": "action",
+      "id": "art.source"
+    },
+    {
+      "t": "tabs",
+      "visible": true,
+      "tabs": [
+        {
+          "title": "a.pdf",
+          "target": {
+            "kind": "file",
+            "scope": "p1",
+            "path": "a.pdf"
+          },
+          "active": true
+        },
+        {
+          "title": "Sito",
+          "target": {
+            "kind": "port",
+            "agentId": "a1",
+            "port": 5173
+          },
+          "active": false
+        }
+      ]
+    },
+    {
+      "t": "tabs",
+      "visible": false,
+      "tabs": []
     }
   ],
   "boardScreens": {

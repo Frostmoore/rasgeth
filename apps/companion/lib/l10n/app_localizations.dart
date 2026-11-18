@@ -13514,6 +13514,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Guardian, who approves, spending, skills, retention'**
   String get g4HubSafety;
+
+  /// The page's `canvasFullscreen` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Full screen'**
+  String get cvCanvasFullscreen;
+
+  /// The page's `canvasFullscreenExit` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Exit full screen'**
+  String get cvCanvasFullscreenExit;
+
+  /// The page's `sideMaximize` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Maximize'**
+  String get cvSideMaximize;
+
+  /// The page's `sideBackToChat` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Back to chat'**
+  String get cvSideBackToChat;
+
+  /// The page's `vwDownload` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get cvVwDownload;
+
+  /// The page's `vwCanvasBack` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Canvas ({n})'**
+  String cvVwCanvasBack(String n);
+
+  /// The page's `kbTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard shortcuts'**
+  String get cvKbTitle;
+
+  /// The page's `sideTabsLabel` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Open files and terminals'**
+  String get cvSideTabsLabel;
+
+  /// The page's `canvasAgentOpened` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Opened by the agent'**
+  String get cvCanvasAgentOpened;
+
+  /// The page's `vwKind_archive` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get cvVwKindArchive;
+
+  /// The page's `vwKind_audio` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Audio'**
+  String get cvVwKindAudio;
+
+  /// The page's `vwKind_code` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get cvVwKindCode;
+
+  /// The page's `vwKind_document` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Document'**
+  String get cvVwKindDocument;
+
+  /// The page's `vwKind_font` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Font'**
+  String get cvVwKindFont;
+
+  /// The page's `vwKind_image` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Picture'**
+  String get cvVwKindImage;
+
+  /// The page's `vwKind_layers` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Layers (OpenRaster)'**
+  String get cvVwKindLayers;
+
+  /// The page's `vwKind_markdown` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Markdown'**
+  String get cvVwKindMarkdown;
+
+  /// The page's `vwKind_model` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'3D model'**
+  String get cvVwKindModel;
+
+  /// The page's `vwKind_pdf` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'PDF'**
+  String get cvVwKindPdf;
+
+  /// The page's `vwKind_sheet` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Spreadsheet'**
+  String get cvVwKindSheet;
+
+  /// The page's `vwKind_site` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Page'**
+  String get cvVwKindSite;
+
+  /// The page's `vwKind_slides` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Slides'**
+  String get cvVwKindSlides;
+
+  /// The page's `vwKind_table` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Table'**
+  String get cvVwKindTable;
+
+  /// The page's `vwKind_text` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get cvVwKindText;
+
+  /// The page's `vwKind_tree` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get cvVwKindTree;
+
+  /// The page's `vwKind_unknown` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get cvVwKindUnknown;
+
+  /// The page's `vwKind_video` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Video'**
+  String get cvVwKindVideo;
+
+  /// G42.6: above the Canvas's native viewer when the page inside the app fails or does not answer.
+  ///
+  /// In en, this message translates to:
+  /// **'The page is not answering: this is the app\'s simple view.'**
+  String get embedFallbackNote;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

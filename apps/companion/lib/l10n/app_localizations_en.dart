@@ -7882,4 +7882,90 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get g4HubSafety => 'Guardian, who approves, spending, skills, retention';
+
+  @override
+  String get cvCanvasFullscreen => 'Full screen';
+
+  @override
+  String get cvCanvasFullscreenExit => 'Exit full screen';
+
+  @override
+  String get cvSideMaximize => 'Maximize';
+
+  @override
+  String get cvSideBackToChat => 'Back to chat';
+
+  @override
+  String get cvVwDownload => 'Download';
+
+  @override
+  String cvVwCanvasBack(String n) {
+    return 'Canvas ($n)';
+  }
+
+  @override
+  String get cvKbTitle => 'Keyboard shortcuts';
+
+  @override
+  String get cvSideTabsLabel => 'Open files and terminals';
+
+  @override
+  String get cvCanvasAgentOpened => 'Opened by the agent';
+
+  @override
+  String get cvVwKindArchive => 'Archive';
+
+  @override
+  String get cvVwKindAudio => 'Audio';
+
+  @override
+  String get cvVwKindCode => 'Code';
+
+  @override
+  String get cvVwKindDocument => 'Document';
+
+  @override
+  String get cvVwKindFont => 'Font';
+
+  @override
+  String get cvVwKindImage => 'Picture';
+
+  @override
+  String get cvVwKindLayers => 'Layers (OpenRaster)';
+
+  @override
+  String get cvVwKindMarkdown => 'Markdown';
+
+  @override
+  String get cvVwKindModel => '3D model';
+
+  @override
+  String get cvVwKindPdf => 'PDF';
+
+  @override
+  String get cvVwKindSheet => 'Spreadsheet';
+
+  @override
+  String get cvVwKindSite => 'Page';
+
+  @override
+  String get cvVwKindSlides => 'Slides';
+
+  @override
+  String get cvVwKindTable => 'Table';
+
+  @override
+  String get cvVwKindText => 'Text';
+
+  @override
+  String get cvVwKindTree => 'Data';
+
+  @override
+  String get cvVwKindUnknown => 'File';
+
+  @override
+  String get cvVwKindVideo => 'Video';
+
+  @override
+  String get embedFallbackNote => 'The page is not answering: this is the app\'s simple view.';
 }

@@ -19,6 +19,8 @@ import 'package:rgcompanion/api/types.dart';
 import 'package:rgcompanion/api/widgets.dart';
 import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
+import 'package:rgcompanion/embed/embed_link.dart';
+import 'package:rgcompanion/embed/web_host.dart';
 import 'package:rgcompanion/screens/canvas_screen.dart';
 import 'package:rgcompanion/screens/conversation_screen.dart';
 import 'package:rgcompanion/ui/artifact_frame_view.dart';
@@ -937,16 +939,23 @@ void main() {
     });
 
     testWidgets('«Tienilo» keeps it and opens the Canvas, where the artifact runs', (tester) async {
+      // G42.6: the Canvas is the page inside the app (embed=canvas), the artifact runs there.
+      final pages = <Uri>[];
+      debugWebHost = (_) => _Page(pages);
+      addTearDown(() => debugWebHost = null);
       await open(tester);
       server.streamEnd('s1', answer);
       await settle(tester);
       await tester.tap(find.byKey(const Key('widget-keep')));
       await settle(tester);
       expect(server.requests, contains('POST /api/sessions/s1/widgets/3/0/keep'));
-      expect(find.byKey(const Key('canvas-artifact')), findsOneWidget);
-      expect(host.eager, isTrue);
-      expect(host.loaded?.preview.path, '/preview/tokA/conti.html');
-      expect(server.requests, contains('POST /api/canvas/link'));
+      expect(find.byKey(const Key('canvas-screen')), findsOneWidget);
+      final p = parseEmbedHash(pages.last.fragment)!;
+      expect(
+        '${p.embed.name} ${p.scope} ${p.path} ${p.session}',
+        'canvas p1 artefatti/mutuo.html s1',
+      );
+      expect(find.byKey(const Key('canvas-artifact')), findsNothing);
       await done(tester);
     });
 
@@ -1015,4 +1024,29 @@ void main() {
       await done(tester);
     });
   });
+}
+
+/// The page inside the app (G42.6): only where it was loaded.
+class _Page implements WebHost {
+  _Page(this.loaded);
+
+  final List<Uri> loaded;
+
+  @override
+  Stream<String> get messages => const Stream.empty();
+
+  @override
+  Future<void> load(Uri url, WebRules r) async => loaded.add(url);
+
+  @override
+  Future<void> run(String script) async {}
+
+  @override
+  Future<void> reload() async {}
+
+  @override
+  Widget view({required bool eager}) => const SizedBox.expand();
+
+  @override
+  void dispose() {}
 }

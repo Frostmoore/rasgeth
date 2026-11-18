@@ -7902,4 +7902,90 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get g4HubSafety => 'Guardiano, chi approva, spesa, skill, conservazione';
+
+  @override
+  String get cvCanvasFullscreen => 'Schermo intero';
+
+  @override
+  String get cvCanvasFullscreenExit => 'Esci dallo schermo intero';
+
+  @override
+  String get cvSideMaximize => 'Ingrandisci';
+
+  @override
+  String get cvSideBackToChat => 'Torna alla chat';
+
+  @override
+  String get cvVwDownload => 'Scarica';
+
+  @override
+  String cvVwCanvasBack(String n) {
+    return 'Canvas ($n)';
+  }
+
+  @override
+  String get cvKbTitle => 'Scorciatoie';
+
+  @override
+  String get cvSideTabsLabel => 'File e terminali aperti';
+
+  @override
+  String get cvCanvasAgentOpened => 'Aperto dall\'agente';
+
+  @override
+  String get cvVwKindArchive => 'Archivio';
+
+  @override
+  String get cvVwKindAudio => 'Audio';
+
+  @override
+  String get cvVwKindCode => 'Codice';
+
+  @override
+  String get cvVwKindDocument => 'Documento';
+
+  @override
+  String get cvVwKindFont => 'Carattere';
+
+  @override
+  String get cvVwKindImage => 'Immagine';
+
+  @override
+  String get cvVwKindLayers => 'Livelli (OpenRaster)';
+
+  @override
+  String get cvVwKindMarkdown => 'Markdown';
+
+  @override
+  String get cvVwKindModel => 'Modello 3D';
+
+  @override
+  String get cvVwKindPdf => 'PDF';
+
+  @override
+  String get cvVwKindSheet => 'Foglio di calcolo';
+
+  @override
+  String get cvVwKindSite => 'Pagina';
+
+  @override
+  String get cvVwKindSlides => 'Presentazione';
+
+  @override
+  String get cvVwKindTable => 'Tabella';
+
+  @override
+  String get cvVwKindText => 'Testo';
+
+  @override
+  String get cvVwKindTree => 'Dati';
+
+  @override
+  String get cvVwKindUnknown => 'File';
+
+  @override
+  String get cvVwKindVideo => 'Video';
+
+  @override
+  String get embedFallbackNote => 'La pagina non risponde: qui c\'è la vista semplice dell\'app.';
 }

@@ -615,9 +615,13 @@ void main() {
     expect(row('README.md'), findsOneWidget);
     // Rows tall enough for a finger.
     expect(tester.getSize(row('README.md')).height, greaterThanOrEqualTo(44));
+    // G42.6: the conversation's Canvas screen, the page inside it.
+    debugWebHost = (_) => _Web();
+    addTearDown(() => debugWebHost = null);
     await tap(tester, row('README.md'), 14);
-    expect(find.byType(CanvasScreen), findsOneWidget);
-    Navigator.of(tester.element(find.byType(CanvasScreen))).pop();
+    expect(find.byKey(const Key('canvas-screen')), findsOneWidget);
+    expect(find.text('README.md'), findsWidgets);
+    Navigator.of(tester.element(find.byKey(const Key('canvas-screen')))).pop();
     await _settle(tester);
     await _settle(tester, 2);
     // «…»: the sheet; «Ask the agent» goes back to the conversation with the line written.

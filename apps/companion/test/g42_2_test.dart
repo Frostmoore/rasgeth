@@ -447,15 +447,18 @@ void main() {
       await _settle(tester);
       final p = parseEmbedHash(hosts.last.loaded!.fragment)!;
       expect('${p.embed.name} ${p.agent} ${p.port} ${p.path} ${p.session}', 'port a0 5173 /app s1');
-      expect(find.byKey(const Key('embed-title')), findsOneWidget);
-      expect(tester.widget<Text>(find.byKey(const Key('embed-title'))).data, 'Il sito');
-      expect(tester.widget<Text>(find.byKey(const Key('embed-meta'))).data, contains('Porta 5173'));
+      expect(find.byKey(const Key('canvas-title')), findsOneWidget);
+      expect(tester.widget<Text>(find.byKey(const Key('canvas-title'))).data, 'Il sito');
+      expect(
+        tester.widget<Text>(find.byKey(const Key('canvas-meta'))).data,
+        contains('Porta 5173'),
+      );
       // The page's own title does not replace the agent's words.
       hosts.last.say({'t': 'ready'});
       hosts.last.say({'t': 'title', 'name': 'Porta 5173', 'kind': 'site'});
       await _settle(tester, 2);
-      expect(tester.widget<Text>(find.byKey(const Key('embed-title'))).data, 'Il sito');
-      await tester.tap(find.byKey(const Key('embed-reload')));
+      expect(tester.widget<Text>(find.byKey(const Key('canvas-title'))).data, 'Il sito');
+      await tester.tap(find.byKey(const Key('canvas-panel-reload')));
       await _settle(tester, 2);
       expect(hosts.last.reloads, 1);
       // A link a preview inside wants: asked natively, nothing opened by itself.
@@ -466,7 +469,7 @@ void main() {
       await tester.tap(find.byKey(const Key('dialog-no')));
       await _settle(tester, 2);
       expect(portLinkBody, isNull, reason: 'the signed link only for «Open in the browser»');
-      await tester.tap(find.byKey(const Key('embed-back')));
+      await tester.tap(find.byKey(const Key('canvas-back')));
       await _settle(tester);
       // The board's card.
       await tester.ensureVisible(find.byKey(const Key('variants-$_board')));

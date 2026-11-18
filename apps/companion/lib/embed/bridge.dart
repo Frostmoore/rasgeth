@@ -11,6 +11,14 @@ const embedFileMax = 25 * 1024 * 1024;
 /// The keys the app passes on (`EMBED_KEYS`).
 enum EmbedKey { save, undo, redo, find }
 
+/// The drawn icons a Canvas action may carry (`EMBED_ACTION_ICONS`, G42.6).
+const embedActionIcons = ['play', 'code', 'folderPlus', 'pencil', 'brush', 'alert', 'keyboard'];
+
+/// The most actions one bar carries (`EMBED_ACTIONS_MAX`).
+const embedActionsMax = 12;
+
+final _actionId = RegExp(r'^[a-z][a-z0-9.-]*$');
+
 final _serverPath = RegExp(r'^/(?!/)');
 final _webLink = RegExp(r'^https?://\S+$', caseSensitive: false);
 final _base64 = RegExp(r'^[A-Za-z0-9+/]*={0,2}$');
@@ -23,6 +31,41 @@ bool _optStr(Object? v, {int min = 0, required int max}) =>
 bool _count(Object? v) => v is int && v >= 0 && v <= 999999999;
 bool _optCount(Object? v) => v == null || _count(v);
 bool _only(Map<String, Object?> m, Set<String> keys) => m.keys.every(keys.contains);
+bool _optBool(Object? v) => v == null || v is bool;
+bool _id(Object? v) => _str(v, min: 1, max: 40) && _actionId.hasMatch(v! as String);
+bool _positive(Object? v) => v == null || (v is int && v > 0);
+
+/// A Canvas target as the protocol's `CanvasTargetSchema` takes it (a file or an agent's port).
+bool embedTargetOk(Object? t) {
+  if (t is! Map) return false;
+  final x = t.cast<String, Object?>();
+  return switch (x['kind']) {
+    'file' =>
+      x['scope'] is String &&
+          x['path'] is String &&
+          (x['at'] == null ||
+              (x['at'] is Map &&
+                  _positive((x['at']! as Map)['page']) &&
+                  _positive((x['at']! as Map)['line']))),
+    'port' =>
+      x['agentId'] is String && x['port'] is int && (x['path'] == null || x['path'] is String),
+    _ => false,
+  };
+}
+
+/// One of the bar's actions (`EmbedAction`).
+bool _action(Object? a) {
+  if (a is! Map) return false;
+  final x = a.cast<String, Object?>();
+  return _only(x, {'id', 'label', 'icon', 'on', 'disabled', 'primary', 'hint'}) &&
+      _id(x['id']) &&
+      _str(x['label'], min: 1, max: 80) &&
+      (x['icon'] == null || embedActionIcons.contains(x['icon'])) &&
+      _optBool(x['on']) &&
+      _optBool(x['disabled']) &&
+      _optBool(x['primary']) &&
+      _optStr(x['hint'], max: 300);
+}
 
 /// A page message (`EmbedToApp`) if [m] is one, as it came; null otherwise.
 Map<String, Object?>? embedToApp(Object? m) {
@@ -71,6 +114,19 @@ Map<String, Object?>? embedToApp(Object? m) {
       _only(x, {'t', 'url'}) && _str(x['url'], max: 4000) && _webLink.hasMatch(x['url']! as String),
     'close' => _only(x, {'t'}),
     'back' => _only(x, {'t', 'handled'}) && x['handled'] is bool,
+    'bar' =>
+      _only(x, {'t', 'actions', 'note', 'link', 'download'}) &&
+          x['actions'] is List &&
+          (x['actions']! as List).length <= embedActionsMax &&
+          (x['actions']! as List).every(_action) &&
+          _optStr(x['note'], max: 300) &&
+          (x['link'] == null ||
+              (_str(x['link'], max: 4000) && _serverPath.hasMatch(x['link']! as String))) &&
+          _optBool(x['download']),
+    'open' =>
+      _only(x, {'t', 'title', 'target'}) &&
+          _str(x['title'], max: 300) &&
+          embedTargetOk(x['target']),
     _ => false,
   };
   return ok ? x : null;
@@ -138,6 +194,20 @@ bool appToEmbedOk(Map<String, Object?> m) {
       _only(m, {'t', 'text', 'files'}) &&
           _optStr(m['text'], max: 1000000) &&
           (m['files'] == null || files(m['files'])),
+    'action' => _only(m, {'t', 'id'}) && _id(m['id']),
+    'tabs' =>
+      _only(m, {'t', 'visible', 'tabs'}) &&
+          m['visible'] is bool &&
+          m['tabs'] is List &&
+          (m['tabs']! as List).length <= 50 &&
+          (m['tabs']! as List).every(
+            (t) =>
+                t is Map &&
+                _only(t.cast<String, Object?>(), {'title', 'target', 'active'}) &&
+                _str(t['title'], max: 300) &&
+                embedTargetOk(t['target']) &&
+                t['active'] is bool,
+          ),
     _ => false,
   };
 }
@@ -164,6 +234,8 @@ class EmbedHandlers {
     this.previewLink,
     this.close,
     this.back,
+    this.bar,
+    this.open,
   });
 
   final void Function()? ready;
@@ -180,6 +252,65 @@ class EmbedHandlers {
   final void Function(Uri url)? previewLink;
   final void Function()? close;
   final void Function(bool handled)? back;
+
+  /// The Canvas's bar (G42.6): its own buttons, the agent's move, the signed link, downloadable.
+  final void Function(EmbedBar bar)? bar;
+
+  /// Something to open in another tab of the app's Canvas (G42.6).
+  final void Function(String title, Map<String, dynamic> target)? open;
+}
+
+/// One of the Canvas's own buttons, drawn by the app (`EmbedAction`).
+class EmbedAction {
+  const EmbedAction({
+    required this.id,
+    required this.label,
+    this.icon,
+    this.on = false,
+    this.disabled = false,
+    this.primary = false,
+    this.hint,
+  });
+
+  factory EmbedAction.fromJson(Map<String, Object?> m) => EmbedAction(
+    id: m['id']! as String,
+    label: m['label']! as String,
+    icon: m['icon'] as String?,
+    on: m['on'] == true,
+    disabled: m['disabled'] == true,
+    primary: m['primary'] == true,
+    hint: m['hint'] as String?,
+  );
+
+  final String id;
+  final String label;
+  final String? icon;
+  final bool on;
+  final bool disabled;
+  final bool primary;
+  final String? hint;
+}
+
+/// The Canvas's bar as the page said it last (`bar`).
+class EmbedBar {
+  const EmbedBar({this.actions = const [], this.note, this.link, this.download = false});
+
+  factory EmbedBar.fromJson(Map<String, Object?> m) => EmbedBar(
+    actions: [
+      for (final a in m['actions']! as List)
+        EmbedAction.fromJson((a as Map).cast<String, Object?>()),
+    ],
+    note: m['note'] as String?,
+    link: m['link'] as String?,
+    download: m['download'] == true,
+  );
+
+  final List<EmbedAction> actions;
+  final String? note;
+
+  /// The signed link of what is shown (a path of the server).
+  final String? link;
+  final bool download;
 }
 
 /// One page's bridge: its nonce, the page's messages to [handlers], the app's out through [run].
@@ -233,6 +364,10 @@ class EmbedBridge {
         h.close?.call();
       case 'back':
         h.back?.call(m['handled'] == true);
+      case 'bar':
+        h.bar?.call(EmbedBar.fromJson(m));
+      case 'open':
+        h.open?.call(m['title']! as String, Map<String, dynamic>.from(m['target']! as Map));
     }
     return m;
   }
@@ -249,4 +384,9 @@ class EmbedBridge {
       send({'t': 'files', 'id': ?id, 'files': files});
   Future<void> paste({String? text, List<Map<String, Object?>>? files}) =>
       send({'t': 'paste', 'text': ?text, 'files': ?files});
+  Future<void> action(String id) => send({'t': 'action', 'id': id});
+
+  /// The app's Canvas tabs, and whether this page is the one in view (G42.6).
+  Future<void> tabs({required bool visible, required List<Map<String, Object?>> tabs}) =>
+      send({'t': 'tabs', 'visible': visible, 'tabs': tabs});
 }

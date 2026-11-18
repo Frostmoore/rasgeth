@@ -8,7 +8,8 @@ import { useEffect, useState } from "preact/hooks";
 import { handleAppInput, installEmbedWays, onApp, toApp } from "../embed.js";
 import { lang, t } from "../i18n.js";
 import { previewLink } from "../preview-links.js";
-import { type CanvasTarget, signIn } from "../state.js";
+import { activeSide, type CanvasTarget, canvasViewId, sideViews, signIn } from "../state.js";
+import { tabOpened } from "../viewers/live.js";
 import { asking, Dialogs } from "./dialogs.js";
 import { shortcutsOpen } from "./Shortcuts.js";
 
@@ -88,6 +89,19 @@ export function embedTarget(p: EmbedParams): CanvasTarget | undefined {
   return undefined;
 }
 
+/**
+ * The embed's one tab (G42.6): the page's Canvas holds it as its only side view, so what works
+ * on a tab of the page works here (an open copy shown in its original's tab, an agent's move,
+ * `canvas.query`). Returns its id.
+ */
+export function embedTab(title: string, target: CanvasTarget): string {
+  const id = canvasViewId(target);
+  if (!sideViews.value.some((v) => v.id === id)) tabOpened(id);
+  sideViews.value = [{ id, type: "canvas", title, target }];
+  activeSide.value = id;
+  return id;
+}
+
 /** Mounted once its lazy siblings are: the content is drawn, the app takes its indicator away. */
 function Ready() {
   useEffect(() => {
@@ -120,10 +134,23 @@ export function EmbedRoot({ params }: { params: EmbedParams }) {
       unlisten();
     };
   }, []);
-  const target = embedTarget(params);
+  const asked = embedTarget(params);
+  const [tabId] = useState(() =>
+    asked
+      ? embedTab(
+          asked.kind === "file"
+            ? fileName(asked.path)
+            : t("embedPort", { port: String(asked.port) }),
+          asked,
+        )
+      : undefined,
+  );
+  // What the tab shows now (an original's open copy replaces it in the same tab, p3.5.12).
+  const view = sideViews.value.find((v) => v.id === tabId);
+  const target = view?.type === "canvas" ? view.target : asked;
   const name =
     target?.kind === "file"
-      ? fileName(target.path)
+      ? (view?.title ?? fileName(target.path))
       : target?.kind === "port"
         ? t("embedPort", { port: String(target.port) })
         : params.embed === "board"

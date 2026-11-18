@@ -40,7 +40,7 @@ import {
   type Subproject,
 } from "./api.js";
 import { bridgeResult } from "./artifact-bridge.js";
-import { embedParams } from "./embed.js";
+import { appCanvasNow, embedded, embedParams, toApp } from "./embed.js";
 import { t, tOptional } from "./i18n.js";
 import { coversNow } from "./phone.js";
 import {
@@ -1395,6 +1395,8 @@ export function sideWidthByKey(
 }
 
 function persistCanvas(): void {
+  // Inside RGCompanion the app keeps the tabs (G42.6): the page's own reopening stays as it was.
+  if (embedded()) return;
   const views = sideViews.value.filter((v) => v.type === "canvas");
   try {
     localStorage.setItem(
@@ -1534,6 +1536,11 @@ export function canvasViewId(target: CanvasTarget): string {
  */
 export function openCanvas(title: string, target: CanvasTarget, keep = false): string {
   const id = canvasViewId(target);
+  // Inside RGCompanion (G42.6) this page is one tab of the app's Canvas: another tab is the app's.
+  if (embedded() && !sideViews.value.some((v) => v.id === id)) {
+    toApp({ t: "open", title: title.slice(0, 300), target });
+    return id;
+  }
   // An open copy is shown in its original's tab, under the original's name (p3.5.4).
   const original = target.kind === "file" ? copyOriginal(target.path) : undefined;
   if (original) title = original.split(/[\\/]/).pop() ?? title;
@@ -1579,6 +1586,31 @@ export function canvasSnapshot(): CanvasState {
   const views = sideViews.value.filter(
     (v): v is Extract<SideView, { type: "canvas" }> => v.type === "canvas",
   );
+  // Inside RGCompanion (G42.6): the app's tabs, with what this page knows of its own one.
+  const app = embedded() ? appCanvasNow() : null;
+  if (embedded()) {
+    const own = views[0];
+    const hidden = typeof document !== "undefined" && document.visibilityState === "hidden";
+    const tabs = app?.tabs ?? (own ? [{ title: own.title, target: own.target, active: true }] : []);
+    return {
+      visible: !hidden && (app ? app.visible : !!own),
+      tabs: tabs.slice(-50).map((tab) => {
+        const id = canvasViewId(tab.target);
+        const place = id === own?.id ? placeOf(id) : undefined;
+        const kind = id === own?.id ? kindOfTab(id) : undefined;
+        return {
+          ...tab,
+          ...(kind && { kind }),
+          ...(place && {
+            place: {
+              ...place,
+              ...(place.selection && { selection: place.selection.slice(0, 2000) }),
+            },
+          }),
+        };
+      }),
+    };
+  }
   const active = views.find((v) => v.id === activeSide.value);
   const narrow = coversNow();
   const hidden = typeof document !== "undefined" && document.visibilityState === "hidden";
@@ -1763,6 +1795,14 @@ function canvasEvent(sessionId: string, e: Event): void {
   if (canvasSeen.has(key)) return;
   canvasSeen.add(key);
   if (canvasSeen.size > 500) canvasSeen.delete(canvasSeen.values().next().value as string);
+  // Inside RGCompanion (G42.6) the app opens the tabs itself (its own connection sees the same
+  // events); this page only takes an agent's move in the tab it is.
+  if (embedded()) {
+    const id = canvasViewId(e.payload.target);
+    if (e.type === "canvas.act" && sideViews.value.some((v) => v.id === id))
+      order(id, e.payload.do);
+    return;
+  }
   if (e.type === "canvas.show") openCanvas(e.payload.title, e.payload.target);
   else order(openCanvas(e.payload.title, e.payload.target, true), e.payload.do);
 }

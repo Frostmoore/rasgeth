@@ -6086,5 +6086,122 @@
   "g4HubTools": "What every agent may use",
   "g4HubCommands": "Background commands, agents at work together",
   "g4HubRequests": "Where requests reach you, how long they wait",
-  "g4HubSafety": "Guardian, who approves, spending, skills, retention"
+  "g4HubSafety": "Guardian, who approves, spending, skills, retention",
+  "cvCanvasFullscreen": "Full screen",
+  "@cvCanvasFullscreen": {
+    "description": "The page's `canvasFullscreen` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCanvasFullscreenExit": "Exit full screen",
+  "@cvCanvasFullscreenExit": {
+    "description": "The page's `canvasFullscreenExit` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSideMaximize": "Maximize",
+  "@cvSideMaximize": {
+    "description": "The page's `sideMaximize` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSideBackToChat": "Back to chat",
+  "@cvSideBackToChat": {
+    "description": "The page's `sideBackToChat` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwDownload": "Download",
+  "@cvVwDownload": {
+    "description": "The page's `vwDownload` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwCanvasBack": "Canvas ({n})",
+  "@cvVwCanvasBack": {
+    "description": "The page's `vwCanvasBack` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvKbTitle": "Keyboard shortcuts",
+  "@cvKbTitle": {
+    "description": "The page's `kbTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvSideTabsLabel": "Open files and terminals",
+  "@cvSideTabsLabel": {
+    "description": "The page's `sideTabsLabel` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvCanvasAgentOpened": "Opened by the agent",
+  "@cvCanvasAgentOpened": {
+    "description": "The page's `canvasAgentOpened` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindArchive": "Archive",
+  "@cvVwKindArchive": {
+    "description": "The page's `vwKind_archive` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindAudio": "Audio",
+  "@cvVwKindAudio": {
+    "description": "The page's `vwKind_audio` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindCode": "Code",
+  "@cvVwKindCode": {
+    "description": "The page's `vwKind_code` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindDocument": "Document",
+  "@cvVwKindDocument": {
+    "description": "The page's `vwKind_document` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindFont": "Font",
+  "@cvVwKindFont": {
+    "description": "The page's `vwKind_font` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindImage": "Picture",
+  "@cvVwKindImage": {
+    "description": "The page's `vwKind_image` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindLayers": "Layers (OpenRaster)",
+  "@cvVwKindLayers": {
+    "description": "The page's `vwKind_layers` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindMarkdown": "Markdown",
+  "@cvVwKindMarkdown": {
+    "description": "The page's `vwKind_markdown` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindModel": "3D model",
+  "@cvVwKindModel": {
+    "description": "The page's `vwKind_model` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindPdf": "PDF",
+  "@cvVwKindPdf": {
+    "description": "The page's `vwKind_pdf` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindSheet": "Spreadsheet",
+  "@cvVwKindSheet": {
+    "description": "The page's `vwKind_sheet` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindSite": "Page",
+  "@cvVwKindSite": {
+    "description": "The page's `vwKind_site` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindSlides": "Slides",
+  "@cvVwKindSlides": {
+    "description": "The page's `vwKind_slides` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindTable": "Table",
+  "@cvVwKindTable": {
+    "description": "The page's `vwKind_table` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindText": "Text",
+  "@cvVwKindText": {
+    "description": "The page's `vwKind_text` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindTree": "Data",
+  "@cvVwKindTree": {
+    "description": "The page's `vwKind_tree` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindUnknown": "File",
+  "@cvVwKindUnknown": {
+    "description": "The page's `vwKind_unknown` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvVwKindVideo": "Video",
+  "@cvVwKindVideo": {
+    "description": "The page's `vwKind_video` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "embedFallbackNote": "The page is not answering: this is the app's simple view.",
+  "@embedFallbackNote": {
+    "description": "G42.6: above the Canvas's native viewer when the page inside the app fails or does not answer."
+  }
 }

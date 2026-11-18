@@ -9,6 +9,7 @@
 import type { ArtifactError, CanvasDo } from "@redgiant/protocol";
 import { FILES_SANDBOX, PROGRAM_SANDBOX } from "@redgiant/protocol";
 import { useEffect, useRef, useState } from "preact/hooks";
+import { setEmbedBar } from "../embed.js";
 import { t } from "../i18n.js";
 import {
   IconAlert,
@@ -43,8 +44,13 @@ import { ArtifactFrame } from "./ArtifactFrame.js";
 import { shortcutsOpen } from "./Shortcuts.js";
 import { CopyStale } from "./viewers/CopyBar.js";
 import { DocEditor, editableInCanvas } from "./viewers/DocEditor.js";
-import { EditPictureButton, IMAGE_FLAT, pictureEditable } from "./viewers/ImageEditor.js";
-import { EditCopyButton, EditCopyNote } from "./viewers/OfficeEditor.js";
+import {
+  EditPictureButton,
+  IMAGE_FLAT,
+  pictureEditable,
+  setEditingPicture,
+} from "./viewers/ImageEditor.js";
+import { EditCopyButton, EditCopyNote, useEditCopy } from "./viewers/OfficeEditor.js";
 import { CanvasFile } from "./viewers/OpenCopy.js";
 
 export { type CanvasKind, canvasKind } from "../viewers/canvas-kind.js";
@@ -251,6 +257,131 @@ export function Canvas({
     phoneViewNote({ phone: phoneScreen(), path: target.path, editor: isOfficeFile(target.path) });
   const url = link && `${link}${link.includes("?") ? "&" : "?"}v=${version}-${reloads}`;
   const name = target.kind === "file" ? fileName(target.path) : title;
+  const runArtifact = () => {
+    if (target.kind !== "file" || target.scope === "outside") return;
+    void getApi()
+      .artifactRun(target.scope, target.path)
+      .then(
+        () => {
+          setPendingRun(false);
+          setArtView("app");
+        },
+        (e: unknown) => {
+          lastError.value = (e as Error).message;
+        },
+      );
+  };
+  const makeProject = () => {
+    if (target.kind !== "file" || target.scope === "outside") return;
+    setMaking(true);
+    const session = frontSession();
+    void getApi()
+      .artifactToProject(target.scope, target.path, session)
+      .then(
+        // The new folder's page opens next to it: that is the answer.
+        (r) => openCanvas(r.path, { kind: "file", ...r }),
+        (e: unknown) => {
+          lastError.value = (e as Error).message;
+        },
+      )
+      .finally(() => setMaking(false));
+  };
+  const own = target.kind === "file" && target.scope !== "outside";
+  const copy = useEditCopy(own ? target.scope : "", own ? target.path : "");
+  // Inside RGCompanion (G42.6) the head's buttons are the app's bar: sent as data, done here.
+  const errorsHint = artErrors
+    .map((e) => `${e.message}${e.where ? ` (${e.where})` : ""}`)
+    .join("\n");
+  useEffect(() => {
+    if (!bare) return;
+    const file = target.kind === "file" ? target : undefined;
+    const ownFile = file && file.scope !== "outside" ? file : undefined;
+    const actions: Parameters<typeof setEmbedBar>[0]["actions"] = [];
+    if (ownFile && hasOfficeCopy(ownFile.path))
+      actions.push({
+        id: "copy.edit",
+        label: copy.label,
+        icon: "pencil",
+        hint: copy.hint.slice(0, 300),
+        ...(copy.busy && { disabled: true }),
+        run: copy.start,
+      });
+    if (ownFile && folder === false && IMAGE_FLAT.test(ownFile.path) && !pictureEditable(ownFile))
+      actions.push({
+        id: "picture.edit",
+        label: t("imgEdit"),
+        icon: "brush",
+        hint: t("imgEditHint").slice(0, 300),
+        run: () => setEditingPicture({ scope: ownFile.scope, path: ownFile.path }, true),
+      });
+    if (artifact && file) {
+      actions.push(
+        {
+          id: "art.app",
+          label: t("artApp"),
+          icon: "play",
+          on: artView === "app",
+          ...(pendingRun && { disabled: true, hint: t("artPendingHint").slice(0, 300) }),
+          run: () => !pendingRun && setArtView("app"),
+        },
+        {
+          id: "art.source",
+          label: t("artSource"),
+          icon: "code",
+          on: artView === "source",
+          run: () => setArtView("source"),
+        },
+      );
+      if (pendingRun && ownFile)
+        actions.push({
+          id: "art.run",
+          label: t("artRun"),
+          icon: "play",
+          primary: true,
+          hint: t("artPendingHint").slice(0, 300),
+          run: runArtifact,
+        });
+      if (artErrors.length > 0)
+        actions.push({
+          id: "art.errors",
+          label:
+            artErrors.length === 1
+              ? t("artError1")
+              : t("artErrors", { n: String(artErrors.length) }),
+          icon: "alert",
+          hint: errorsHint.slice(0, 300),
+          run: () => {},
+        });
+      if (ownFile)
+        actions.push({
+          id: "art.project",
+          label: t("artMakeProject"),
+          icon: "folderPlus",
+          hint: t("artMakeProjectHint").slice(0, 300),
+          ...(making && { disabled: true }),
+          run: makeProject,
+        });
+    }
+    actions.push({
+      id: "keys",
+      label: t("kbTitle"),
+      icon: "keyboard",
+      run: () => (shortcutsOpen.value = true),
+    });
+    let signed: string | undefined;
+    try {
+      const u = url ? new URL(url, location.href) : undefined;
+      if (u && u.origin === location.origin) signed = u.pathname + u.search;
+    } catch {
+      signed = undefined;
+    }
+    setEmbedBar({
+      actions,
+      note: move && moveShown === move.n ? moveText(move.do) : undefined,
+      link: signed,
+      download: !!url && !site && !artifact,
+    });
+  });
   return (
     <div class={bare ? "canvas canvas-bare" : "canvas"} ref={box}>
       <div class="canvas-head" hidden={bare}>
@@ -301,32 +432,14 @@ export function Canvas({
                 type="button"
                 class="button tiny primary art-make"
                 title={t("artPendingHint")}
-                onClick={() =>
-                  void getApi()
-                    .artifactRun(target.scope, target.path)
-                    .then(
-                      () => {
-                        setPendingRun(false);
-                        setArtView("app");
-                      },
-                      (e: unknown) => {
-                        lastError.value = (e as Error).message;
-                      },
-                    )
-                }
+                onClick={runArtifact}
               >
                 <IconPlay size={12} />
                 <span>{t("artRun")}</span>
               </button>
             )}
             {artErrors.length > 0 && (
-              <span
-                class="artifact-errors"
-                role="status"
-                title={artErrors
-                  .map((e) => `${e.message}${e.where ? ` (${e.where})` : ""}`)
-                  .join("\n")}
-              >
+              <span class="artifact-errors" role="status" title={errorsHint}>
                 <IconAlert size={12} />
                 {artErrors.length === 1
                   ? t("artError1")
@@ -339,20 +452,7 @@ export function Canvas({
                 class="button tiny art-make"
                 disabled={making}
                 title={t("artMakeProjectHint")}
-                onClick={() => {
-                  setMaking(true);
-                  const session = frontSession();
-                  void getApi()
-                    .artifactToProject(target.scope, target.path, session)
-                    .then(
-                      // The new folder's page opens next to it: that is the answer.
-                      (r) => openCanvas(r.path, { kind: "file", ...r }),
-                      (e: unknown) => {
-                        lastError.value = (e as Error).message;
-                      },
-                    )
-                    .finally(() => setMaking(false));
-                }}
+                onClick={makeProject}
               >
                 <IconFolderPlus size={13} />
                 <span>{t("artMakeProject")}</span>
