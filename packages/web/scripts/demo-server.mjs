@@ -408,7 +408,7 @@ const brain = (req) => {
         "2. [Bialetti, Venus](https://www.bialetti.com/it_it/venus)\n" +
         "3. [Caffè e moka, prova della Brikka](https://www.example.com/brikka)",
     };
-  // G42.9 (DEMO_MAGIC): a magic automation's conversation ends in God's proposal, with a chat
+  // G42.9 (DEMO_MAGIC_AUTOMATION): a magic automation's conversation ends in God's proposal, with a chat
   // still to link, so the preview, its needs and the yes show (the app's and the page's shots).
   if (/Revolut/.test(said) && !/^Magic (integration|extension): /.test(said) && !results)
     return {
@@ -3544,7 +3544,9 @@ if (process.env.DEMO_MAGIC) {
   );
   await Promise.all([wait(notion.id, "ready"), wait(csv.id, "ready"), wait(piva.id, "ready")]);
   await core.magicExt.approve("local", piva.id);
-  // G42.9: a magic automation with God's proposal waiting for the person.
+}
+// DEMO_MAGIC_AUTOMATION=1 (G42.9): a magic automation with God's proposal waiting for the person.
+if (process.env.DEMO_MAGIC_AUTOMATION) {
   const revolut = await core.magic.create(
     "local",
     "Ogni giorno alle 15 controlla il mio conto Revolut e dimmi su WhatsApp se ho ricevuto o pagato soldi",

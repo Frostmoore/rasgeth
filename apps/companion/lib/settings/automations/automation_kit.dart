@@ -187,7 +187,11 @@ class AutoTile extends StatelessWidget {
     this.on = false,
     required this.onTap,
     this.trailing,
+    this.gold = false,
   });
+
+  /// God's look (a magic automation, the page's `mg-list`): gold instead of the accent.
+  final bool gold;
 
   final RgIcons icon;
   final String title;
@@ -201,14 +205,16 @@ class AutoTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = RgColors.of(context);
+    final tone = gold ? godColor(context) : c.accent;
+    final soft = gold ? Color.alphaBlend(tone.withValues(alpha: .14), c.panel) : c.accentSoft;
     return Semantics(
       button: true,
       selected: on,
       child: Material(
-        color: on ? c.accentSoft : c.panel,
+        color: on ? soft : c.panel,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
-          side: BorderSide(color: on ? c.accent : c.line, width: 2),
+          side: BorderSide(color: on ? (gold ? godLine(context) : c.accent) : c.line, width: 2),
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -222,7 +228,7 @@ class AutoTile extends StatelessWidget {
                   width: 46,
                   height: 46,
                   decoration: BoxDecoration(
-                    color: on ? c.accent : c.panel2,
+                    color: on ? tone : c.panel2,
                     borderRadius: BorderRadius.circular(13),
                   ),
                   child: Center(child: RgIcon(icon, size: 22, color: on ? Colors.white : c.text)),
@@ -237,7 +243,8 @@ class AutoTile extends StatelessWidget {
                           margin: const EdgeInsets.only(bottom: 6),
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: c.warn.withValues(alpha: .16),
+                            color: gold ? Colors.transparent : c.warn.withValues(alpha: .16),
+                            border: gold ? Border.all(color: c.ok) : null,
                             borderRadius: BorderRadius.circular(999),
                           ),
                           child: Text(
@@ -246,7 +253,7 @@ class AutoTile extends StatelessWidget {
                               fontSize: 11,
                               letterSpacing: .4,
                               fontWeight: FontWeight.w800,
-                              color: c.warnText,
+                              color: gold ? c.ok : c.warnText,
                             ),
                           ),
                         ),
@@ -275,7 +282,7 @@ class AutoTile extends StatelessWidget {
                           child: Text(
                             state!,
                             style: TextStyle(
-                              color: on ? c.accent : c.dim,
+                              color: on ? tone : c.dim,
                               fontSize: 12.5,
                               fontWeight: FontWeight.w700,
                             ),

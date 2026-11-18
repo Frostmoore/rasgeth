@@ -55,6 +55,26 @@ void main() {
     }
 
     Future<void> scrollTo(Key key) async {
+      // A row the lazy list has not built yet: scroll the biggest list down to it.
+      if (find.byKey(key).evaluate().isEmpty) {
+        final lists = [
+          for (final e in find.byType(Scrollable).evaluate())
+            if ((e.widget as Scrollable).axisDirection == AxisDirection.down) e,
+        ]..sort((x, y) => (y.size?.height ?? 0).compareTo(x.size?.height ?? 0));
+        for (final step in [250.0, -250.0]) {
+          if (find.byKey(key).evaluate().isNotEmpty) break;
+          try {
+            await t.scrollUntilVisible(
+              find.byKey(key),
+              step,
+              scrollable: find.byElementPredicate((e) => e == lists.first),
+              maxScrolls: 40,
+            );
+          } on StateError {
+            // Not that way: the other.
+          }
+        }
+      }
       await t.ensureVisible(find.byKey(key));
       await frames(t, 500);
     }
@@ -91,11 +111,12 @@ void main() {
       await closeTop();
 
       // A reminder, and the magic start.
+      await scrollTo(const Key('au-new-reminder'));
       await t.tap(find.byKey(const Key('au-new-reminder')));
       await frames(t, 1500);
       await shot(t, '08_promemoria_$tag');
       await closeTop();
-      await t.ensureVisible(find.byKey(const Key('au-magic')));
+      await scrollTo(const Key('au-magic'));
       await t.tap(find.byKey(const Key('au-magic')));
       await frames(t, 1500);
       await t.tap(find.byKey(const Key('au-magic-ex-0')));

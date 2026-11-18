@@ -290,6 +290,7 @@ class _AutomationsScreenState extends State<AutomationsScreen> {
                 AutoTile(
                   key: Key('au-magic-${m.id}'),
                   icon: RgIcons.spark,
+                  gold: true,
                   on: m.status == 'ready',
                   title: '${l.auAxMagic}: ${m.title}',
                   badge: m.status == 'ready' ? l.auAxMagicReadyBadge : null,
