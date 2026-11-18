@@ -4,7 +4,7 @@
 // wizard of a new installation finds by itself.
 import { generateKeyPairSync, sign } from "node:crypto";
 import { existsSync } from "node:fs";
-import { mkdir, mkdtemp, readFile, rm, truncate, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rename, rm, truncate, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { Automation, AutomationRun, FoundBackup, Job, UpdateStatus } from "@redgiant/protocol";
@@ -389,5 +389,53 @@ describe("the safety backup of a breaking update", () => {
     await truncate(cut, Math.floor((await readFile(file)).length / 2));
     await expect(verifyBackup(cut)).rejects.toBeInstanceOf(BackupError);
     expect((await findBackups(docs)).map((x) => x.file)).toEqual([found[0]?.file]);
+  });
+
+  it("of 3.8.x, in a folder with the product's old name, is found and restored by 3.9.0 (N12)", async () => {
+    const a = await startServer(() => ({ text: "ok" }));
+    servers.push(a);
+    await god(a);
+    const p = await a.api<{ id: string }>("POST", "/api/projects", { name: "Sito" });
+    const path = (await a.core.projects.get("me", p.body.id))?.path as string;
+    await writeFile(join(path, "index.html"), "<h1>from 3.8</h1>");
+    const docs = await mkdtemp(join(tmpdir(), "rg-docs-"));
+    dirs.push(docs);
+    a.core.updates = await watcher({
+      fetch: feed("3.9.0", { format: 1, version: "3.9.0", kind: "breaking", note }).fetch,
+      installed: "3.8.14",
+      backupBase: docs,
+    });
+    await a.core.updates.check();
+    const job = await finished(a, (await a.api<Job>("POST", "/api/update/safety-backup", {})).body);
+    expect(job.state).toBe("done");
+    // Where and how a 3.8.x wrote it (the file's format did not change).
+    const old = join(docs, "RedGiant-backup-2026-11-17");
+    await mkdir(old);
+    await rename(job.vars.path as string, join(old, "redgiant-3.8.14-0930.rgbackup"));
+    await rm(job.vars.folder as string, { recursive: true, force: true });
+
+    const b = await startServer(() => ({ text: "ok" }));
+    servers.push(b);
+    b.core.updates = await watcher({
+      fetch: feed("3.9.0").fetch,
+      installed: "3.9.0",
+      backupBase: docs,
+    });
+    const found = (await b.api<FoundBackup[]>("GET", "/api/backup/found")).body;
+    expect(found).toHaveLength(1);
+    expect(found[0]).toMatchObject({
+      id: "RedGiant-backup-2026-11-17/redgiant-3.8.14-0930.rgbackup",
+      version: "3.8.14",
+      projects: 1,
+    });
+    const imported = await finished(
+      b,
+      (await b.api<Job>("POST", "/api/backup/found/import", { id: found[0]?.id })).body,
+    );
+    expect(imported.state).toBe("done");
+    const [project] = await b.core.projects.list("me");
+    expect(await readFile(join(project?.path as string, "index.html"), "utf8")).toBe(
+      "<h1>from 3.8</h1>",
+    );
   });
 });
