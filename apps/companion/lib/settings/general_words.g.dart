@@ -4,10 +4,13 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.8.14';
+const newsVersion = '3.9.0';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.9.0', 'news390Name', 'news390NameText'),
+  NewsRow('3.9.0', 'news390Look', 'news390LookText'),
+  NewsRow('3.9.0', 'news390Install', 'news390InstallText'),
   NewsRow('3.8.14', 'news3814Editors', 'news3814EditorsText'),
   NewsRow('3.8.14', 'news3814Automations', 'news3814AutomationsText'),
   NewsRow('3.8.14', 'news3814Knowledge', 'news3814KnowledgeText'),
@@ -137,38 +140,14 @@ const agentLanguages = <AgentLanguageRow>[
   AgentLanguageRow('es', 'Español', 'Spanish', 'Spagnolo', common: true),
   AgentLanguageRow('fr', 'Français', 'French', 'Francese', common: true),
   AgentLanguageRow('de', 'Deutsch', 'German', 'Tedesco', common: true),
-  AgentLanguageRow(
-    'pt-BR',
-    'Português (Brasil)',
-    'Portuguese (Brazil)',
-    'Portoghese (Brasile)',
-    common: true,
-  ),
-  AgentLanguageRow(
-    'zh-Hans',
-    '中文（简体）',
-    'Chinese (Simplified)',
-    'Cinese (semplificato)',
-    common: true,
-  ),
+  AgentLanguageRow('pt-BR', 'Português (Brasil)', 'Portuguese (Brazil)', 'Portoghese (Brasile)', common: true),
+  AgentLanguageRow('zh-Hans', '中文（简体）', 'Chinese (Simplified)', 'Cinese (semplificato)', common: true),
   AgentLanguageRow('hi', 'हिन्दी', 'Hindi', 'Hindi', common: true),
   AgentLanguageRow('ar', 'العربية', 'Arabic', 'Arabo', common: true),
   AgentLanguageRow('ru', 'Русский', 'Russian', 'Russo', common: true),
   AgentLanguageRow('ja', '日本語', 'Japanese', 'Giapponese', common: true),
-  AgentLanguageRow(
-    'pt-PT',
-    'Português (Portugal)',
-    'Portuguese (Portugal)',
-    'Portoghese (Portogallo)',
-    common: false,
-  ),
-  AgentLanguageRow(
-    'zh-Hant',
-    '中文（繁體）',
-    'Chinese (Traditional)',
-    'Cinese (tradizionale)',
-    common: false,
-  ),
+  AgentLanguageRow('pt-PT', 'Português (Portugal)', 'Portuguese (Portugal)', 'Portoghese (Portogallo)', common: false),
+  AgentLanguageRow('zh-Hant', '中文（繁體）', 'Chinese (Traditional)', 'Cinese (tradizionale)', common: false),
   AgentLanguageRow('ko', '한국어', 'Korean', 'Coreano', common: false),
   AgentLanguageRow('bn', 'বাংলা', 'Bengali', 'Bengalese', common: false),
   AgentLanguageRow('ur', 'اردو', 'Urdu', 'Urdu', common: false),
@@ -178,13 +157,7 @@ const agentLanguages = <AgentLanguageRow>[
   AgentLanguageRow('pl', 'Polski', 'Polish', 'Polacco', common: false),
   AgentLanguageRow('uk', 'Українська', 'Ukrainian', 'Ucraino', common: false),
   AgentLanguageRow('sv', 'Svenska', 'Swedish', 'Svedese', common: false),
-  AgentLanguageRow(
-    'nb',
-    'Norsk (bokmål)',
-    'Norwegian (Bokmål)',
-    'Norvegese (bokmål)',
-    common: false,
-  ),
+  AgentLanguageRow('nb', 'Norsk (bokmål)', 'Norwegian (Bokmål)', 'Norvegese (bokmål)', common: false),
   AgentLanguageRow('da', 'Dansk', 'Danish', 'Danese', common: false),
   AgentLanguageRow('fi', 'Suomi', 'Finnish', 'Finlandese', common: false),
   AgentLanguageRow('is', 'Íslenska', 'Icelandic', 'Islandese', common: false),
@@ -241,112 +214,28 @@ const agentLanguages = <AgentLanguageRow>[
 ];
 
 const searchProviders = <SearchProviderRow>[
-  SearchProviderRow(
-    'searxng',
-    'SearXNG',
-    needsUrl: true,
-    keyUrl: 'https://docs.searxng.org/admin/installation.html',
-    keyExample: null,
-  ),
-  SearchProviderRow(
-    'brave',
-    'Brave Search',
-    needsUrl: false,
-    keyUrl: 'https://api-dashboard.search.brave.com/app/keys',
-    keyExample: 'BSA…',
-  ),
-  SearchProviderRow(
-    'tavily',
-    'Tavily',
-    needsUrl: false,
-    keyUrl: 'https://app.tavily.com/home',
-    keyExample: 'tvly-…',
-  ),
-  SearchProviderRow(
-    'exa',
-    'Exa',
-    needsUrl: false,
-    keyUrl: 'https://dashboard.exa.ai/api-keys',
-    keyExample: null,
-  ),
-  SearchProviderRow(
-    'serper',
-    'Serper (Google)',
-    needsUrl: false,
-    keyUrl: 'https://serper.dev/api-keys',
-    keyExample: null,
-  ),
+  SearchProviderRow('searxng', 'SearXNG', needsUrl: true, keyUrl: 'https://docs.searxng.org/admin/installation.html', keyExample: null),
+  SearchProviderRow('brave', 'Brave Search', needsUrl: false, keyUrl: 'https://api-dashboard.search.brave.com/app/keys', keyExample: 'BSA…'),
+  SearchProviderRow('tavily', 'Tavily', needsUrl: false, keyUrl: 'https://app.tavily.com/home', keyExample: 'tvly-…'),
+  SearchProviderRow('exa', 'Exa', needsUrl: false, keyUrl: 'https://dashboard.exa.ai/api-keys', keyExample: null),
+  SearchProviderRow('serper', 'Serper (Google)', needsUrl: false, keyUrl: 'https://serper.dev/api-keys', keyExample: null),
 ];
 
 const sttProviders = <SttProviderRow>[
-  SttProviderRow(
-    'openai',
-    'OpenAI',
-    keyUrl: 'https://platform.openai.com/api-keys',
-    keyExample: 'sk-proj-…',
-    models: [
+  SttProviderRow('openai', 'OpenAI', keyUrl: 'https://platform.openai.com/api-keys', keyExample: 'sk-proj-…', models: [
       SttModelRow('gpt-transcribe', 'GPT Transcribe', usd: 0.0045, per: 'minute', closes: null),
-      SttModelRow(
-        'gpt-4o-mini-transcribe',
-        'GPT-4o mini Transcribe',
-        usd: 0.003,
-        per: 'minute',
-        closes: '2027-02-26',
-      ),
-      SttModelRow(
-        'gpt-4o-transcribe',
-        'GPT-4o Transcribe',
-        usd: 0.006,
-        per: 'minute',
-        closes: '2027-02-26',
-      ),
+      SttModelRow('gpt-4o-mini-transcribe', 'GPT-4o mini Transcribe', usd: 0.003, per: 'minute', closes: '2027-02-26'),
+      SttModelRow('gpt-4o-transcribe', 'GPT-4o Transcribe', usd: 0.006, per: 'minute', closes: '2027-02-26'),
       SttModelRow('whisper-1', 'Whisper', usd: 0.006, per: 'minute', closes: '2027-02-26'),
-    ],
-  ),
-  SttProviderRow(
-    'groq',
-    'Groq',
-    keyUrl: 'https://console.groq.com/keys',
-    keyExample: 'gsk_…',
-    models: [
-      SttModelRow(
-        'whisper-large-v3-turbo',
-        'Whisper Large v3 Turbo',
-        usd: 0.0006666666666666666,
-        per: 'minute',
-        closes: null,
-      ),
-      SttModelRow(
-        'whisper-large-v3',
-        'Whisper Large v3',
-        usd: 0.00185,
-        per: 'minute',
-        closes: null,
-      ),
-    ],
-  ),
-  SttProviderRow(
-    'elevenlabs',
-    'ElevenLabs',
-    keyUrl: 'https://elevenlabs.io/app/settings/api-keys',
-    keyExample: 'sk_…',
-    models: [
-      SttModelRow(
-        'scribe_v3',
-        'Scribe v3',
-        usd: 0.0033333333333333335,
-        per: 'minute',
-        closes: null,
-      ),
-      SttModelRow(
-        'scribe_v2',
-        'Scribe v2',
-        usd: 0.0033333333333333335,
-        per: 'minute',
-        closes: null,
-      ),
-    ],
-  ),
+  ]),
+  SttProviderRow('groq', 'Groq', keyUrl: 'https://console.groq.com/keys', keyExample: 'gsk_…', models: [
+      SttModelRow('whisper-large-v3-turbo', 'Whisper Large v3 Turbo', usd: 0.0006666666666666666, per: 'minute', closes: null),
+      SttModelRow('whisper-large-v3', 'Whisper Large v3', usd: 0.00185, per: 'minute', closes: null),
+  ]),
+  SttProviderRow('elevenlabs', 'ElevenLabs', keyUrl: 'https://elevenlabs.io/app/settings/api-keys', keyExample: 'sk_…', models: [
+      SttModelRow('scribe_v3', 'Scribe v3', usd: 0.0033333333333333335, per: 'minute', closes: null),
+      SttModelRow('scribe_v2', 'Scribe v2', usd: 0.0033333333333333335, per: 'minute', closes: null),
+  ]),
 ];
 
 /// The page's words for the news and the search services.
@@ -594,13 +483,17 @@ const generalWords = <String, Map<String, String>>{
     'news389RestartText': 'Dopo un blackout o un aggiornamento, i compiti interrotti ripartono da soli nella stessa conversazione, e agenti, progetti e compiti che esistono già non vengono mai rifatti due volte.',
     'news389Small': 'Cose più piccole',
     'news389SmallText': 'I cerchietti girano di nuovo (tre puntini fermi con «Riduci movimento»); una richiesta risolta altrove chiude da sola la sua finestra nell\'app; un progetto apre il suo orchestratore attivo.',
+    'news390Install': 'Un\'installazione pulita, una volta',
+    'news390InstallText': 'Cambiano i nomi di programma, app e file, quindi questa versione si installa da zero: la procedura fa prima il backup e lo controlla. Sul telefono l\'app è un\'app nuova che si chiama Rasgeth: togli RGCompanion e rifai l\'accesso.',
+    'news390Look': 'Un\'icona nuova dappertutto',
+    'news390LookText': 'La gigante rossa coronata nel cielo notturno è l\'icona del programma, dell\'app, degli installer e del sito, a ogni misura, con le sue silhouette per la barra delle applicazioni, la barra dei menu e le notifiche.',
+    'news390Name': 'RedGiant ora si chiama Rasgeth',
+    'news390NameText': 'Cambia solo il nome: agenti, conversazioni, progetti e dati restano gli stessi. Si legge «ràs-ghet», con la g dura, e viene da Rasalgethi, una stella gigante rossa. Il sito è rasgeth.it.',
     'searchCard_brave': 'Ha un indice suo, indipendente da Google e Bing; rispetta la privacy. Credito gratuito ogni mese, poi a consumo.',
     'searchCard_exa': 'Cerca per significato: forte su documentazione, articoli scientifici e tecnici. Credito gratuito all\'inizio.',
     'searchCard_searxng': 'Gratis, senza chiave né account: un motore di ricerca che gira a casa tua (lo avvia Rasgeth, dove può, oppure usi il tuo).',
-    'searchCard_serper':
-        'I risultati di Google, veloce ed economico. 2.500 ricerche gratis all\'iscrizione.',
-    'searchCard_tavily':
-        'Fatto per gli agenti: estratti già puliti di ogni pagina. 1.000 ricerche gratis al mese.',
+    'searchCard_serper': 'I risultati di Google, veloce ed economico. 2.500 ricerche gratis all\'iscrizione.',
+    'searchCard_tavily': 'Fatto per gli agenti: estratti già puliti di ogni pagina. 1.000 ricerche gratis al mese.',
     'searchHow_brave': 'Apri la pagina della Brave Search API (link qui sotto) e crea un account.\nIn Subscriptions scegli il piano gratuito (o uno a pagamento).\nIn API Keys premi «Add API key», copiala e incollala qui.',
     'searchHow_exa': 'Apri la dashboard di Exa (link qui sotto) e crea un account.\nIn API Keys crea una chiave e copiala.\nIncollala qui: i nuovi account hanno un credito gratuito.',
     'searchHow_searxng': 'La via più semplice: premi «Avvia il motore di ricerca di Rasgeth», in cima a questa finestra, e Rasgeth fa tutto da solo.\nSe invece hai già un tuo SearXNG, scrivi il suo indirizzo nella casella qui sotto (per esempio http://192.168.1.20:8080) e premi «Usa questo».\nNel suo settings.yml, tra i search.formats ci deve essere «json», altrimenti Rasgeth non legge le risposte.',
@@ -850,12 +743,17 @@ const generalWords = <String, Map<String, String>>{
     'news389RestartText': 'After a power cut or an update, the tasks that were interrupted start again by themselves in the same conversation, and agents, projects and tasks that already exist are never made twice.',
     'news389Small': 'Smaller things',
     'news389SmallText': 'Spinners turn again (three still dots with «Reduce motion»); a request answered elsewhere closes its window in the app by itself; a project opens its active orchestrator.',
+    'news390Install': 'A clean install, once',
+    'news390InstallText': 'Program, app and file names change, so this version is installed from scratch: the guide makes a backup first and checks it. On the phone the app is a new app called Rasgeth: remove RGCompanion and sign in again.',
+    'news390Look': 'A new icon everywhere',
+    'news390LookText': 'The crowned red giant in the night sky is the icon of the program, the app, the installers and the site, at every size, with its own silhouettes for the taskbar, the menu bar and notifications.',
+    'news390Name': 'RedGiant is now called Rasgeth',
+    'news390NameText': 'Only the name changes: your agents, conversations, projects and data are the same. It is read «rahs-get», with a hard g, and comes from Rasalgethi, a red giant star. The site is rasgeth.it.',
     'searchCard_brave': 'Its own index, independent of Google and Bing; private. Free monthly credit, then pay as you go.',
     'searchCard_exa': 'Searches by meaning: strong on documentation, papers and technical articles. Free credit to start.',
     'searchCard_searxng': 'Free, no key, no account: a search engine that runs at your place (Rasgeth starts it, where it can, or you use yours).',
     'searchCard_serper': 'Google\'s results, fast and cheap. 2,500 free searches when you sign up.',
-    'searchCard_tavily':
-        'Made for AI agents: clean extracts of each page. 1,000 free searches a month.',
+    'searchCard_tavily': 'Made for AI agents: clean extracts of each page. 1,000 free searches a month.',
     'searchHow_brave': 'Open the Brave Search API page (link below) and create an account.\nChoose the free plan (or a paid one) under Subscriptions.\nUnder API Keys press «Add API key», copy it and paste it here.',
     'searchHow_exa': 'Open Exa\'s dashboard (link below) and create an account.\nUnder API Keys create a key and copy it.\nPaste it here: new accounts get free credit.',
     'searchHow_searxng': 'Easiest: press «Start Rasgeth\'s search engine» at the top of this window, and Rasgeth does everything by itself.\nIf you already have your own SearXNG instead, write its address in the box below (for example http://192.168.1.20:8080) and press «Use this».\nIn its settings.yml, «json» must be among search.formats, or Rasgeth cannot read its answers.',
