@@ -13,6 +13,7 @@ import { availableParallelism, freemem } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { SqlClient } from "@redgiant/events";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { unzipSync } from "fflate";
 import { JobFailure, type Jobs } from "../jobs.js";
 
@@ -96,7 +97,7 @@ export function pgvectorConf(dir: string, platform: string = process.platform): 
   const sep = platform === "win32" ? ";" : ":";
   const d = dir.replaceAll("\\", "/").replace(/\/+$/, "");
   return [
-    "# Written by RedGiant at every start: pgvector from a folder of its own (G36).",
+    `# Written by ${PRODUCT_NAME} at every start: pgvector from a folder of its own (G36).`,
     `extension_control_path = ${confString(`${d}/share${sep}$system`)}`,
     `dynamic_library_path = ${confString(`${d}/lib${sep}$libdir`)}`,
     "",
@@ -120,7 +121,7 @@ export async function writePgvectorConf(
   if (!text.split(/\r?\n/).some((l) => l.trim() === INCLUDE))
     await writeFile(
       conf,
-      `${text.endsWith("\n") ? text : `${text}\n`}\n# RedGiant's own settings (G36)\n${INCLUDE}\n`,
+      `${text.endsWith("\n") ? text : `${text}\n`}\n# ${PRODUCT_NAME}'s own settings (G36)\n${INCLUDE}\n`,
     );
   const ours = join(clusterDir, "redgiant.conf");
   const tmp = `${ours}.tmp`;

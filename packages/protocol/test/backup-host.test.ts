@@ -7,7 +7,7 @@ const MOUNT = [
   "mkdir -p /mnt/redgiant-backups/Tech",
   "mount /dev/sdb1 /mnt/redgiant-backups/Tech",
   'echo "UUID=$(blkid -s UUID -o value /dev/sdb1) /mnt/redgiant-backups/Tech auto defaults,nofail 0 2" >> /etc/fstab',
-  "# 2. RedGiant's own folder on it (the rest of the disk stays out of the container)",
+  "# 2. Rasgeth's own folder on it (the rest of the disk stays out of the container)",
   "mkdir -p /mnt/redgiant-backups/Tech/RedGiant",
 ];
 
@@ -51,7 +51,7 @@ describe("hostMountGuide (p3.7.2)", () => {
       { kind: "other" as const, name: "Tech" },
       [
         ...MOUNT.map((l) => l.replace(/\/dev\/sdb1/g, "/dev/sdX1")),
-        "# 3. Make /mnt/redgiant-backups/Tech/RedGiant appear inside RedGiant at /var/lib/redgiant/backups/Tech (a bind mount)",
+        "# 3. Make /mnt/redgiant-backups/Tech/RedGiant appear inside Rasgeth at /var/lib/redgiant/backups/Tech (a bind mount)",
       ],
       ["device"],
     ],

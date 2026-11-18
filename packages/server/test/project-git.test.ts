@@ -49,8 +49,8 @@ const noGit: RunGit = () =>
 describe("safeDirectoryPath", () => {
   const table: [string, string][] = [
     [
-      "C:\\Users\\Me\\AppData\\Roaming\\RedGiant\\workspaces\\me\\shop",
-      "C:/Users/Me/AppData/Roaming/RedGiant/workspaces/me/shop",
+      "C:\\Users\\Me\\AppData\\Roaming\\Rasgeth\\workspaces\\me\\shop",
+      "C:/Users/Me/AppData/Roaming/Rasgeth/workspaces/me/shop",
     ],
     ["E:\\coding\\XAMPP\\htdocs\\site\\", "E:/coding/XAMPP/htdocs/site"],
     ["D:\\", "D:/"],
@@ -69,7 +69,7 @@ describe("initProjectRepo", () => {
     await writeFile(join(d, "index.html"), "<h1>Hi</h1>\n");
     expect(await initProjectRepo(d)).toEqual({ git: "created" });
     expect(await git(d, "rev-parse", "--abbrev-ref", "HEAD")).toBe("main");
-    expect(await git(d, "log", "--format=%s %an")).toBe("Initial commit RedGiant");
+    expect(await git(d, "log", "--format=%s %an")).toBe("Initial commit Rasgeth");
     expect(await git(d, "ls-files")).toBe("index.html");
     expect(await git(d, "config", "core.autocrlf")).toBe("false");
     expect(await readFile(join(d, ".git", "info", "exclude"), "utf8")).toMatch(

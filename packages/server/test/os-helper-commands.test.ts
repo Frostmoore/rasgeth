@@ -345,7 +345,7 @@ describe("the helper's HTTPS, update and restart commands", { skip: !tools }, ()
     expect(pem).toContain("BEGIN CERTIFICATE");
     expect(JSON.stringify(s)).not.toContain("PRIVATE KEY");
     expect(String(s.fingerprint)).toMatch(/^([0-9A-F]{2}:){31}[0-9A-F]{2}$/);
-    expect(s.names).toContain("redgiant.local");
+    expect(s.names).toContain("rasgeth.local");
   });
 
   it("switches local HTTPS on and off through Caddy's unit", async () => {
@@ -472,7 +472,7 @@ describe("the helper's folders mounted by the host (p3.7.2)", {
     writeFileSync(fake("mounts"), `${join(root, "var/lib/redgiant/backups/redgiant")}\n`);
   });
 
-  it("makes RedGiant's folder in a mounted folder only, and says it runs in a container", async () => {
+  it("makes Rasgeth's folder in a mounted folder only, and says it runs in a container", async () => {
     expect(await run("place-prepare redgiant", {})).toEqual({
       ok: true,
       path: "/var/lib/redgiant/backups/redgiant/RedGiant",

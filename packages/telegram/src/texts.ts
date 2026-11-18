@@ -2,18 +2,17 @@
 // interface's (G33.5; `RedGiantCore.language`), English by default.
 // No emoji and no symbol characters as icons (user's request, 2026-11-01).
 
+import { PRODUCT_NAME } from "@redgiant/protocol";
+
 const en = {
-  linkHow:
-    "To link this chat, open RedGiant, Settings, Telegram, Pair, then send /start <code> here.",
+  linkHow: `To link this chat, open ${PRODUCT_NAME}, Settings, Telegram, Pair, then send /start <code> here.`,
   linked: "Linked. Write to me and I will pass it on to God.",
-  notLinked:
-    "This chat is not linked to RedGiant. Open RedGiant, Settings, Telegram, Pair, then send /start <code>.",
+  notLinked: `This chat is not linked to ${PRODUCT_NAME}. Open ${PRODUCT_NAME}, Settings, Telegram, Pair, then send /start <code>.`,
   error: "Error: {error}",
-  fileTooBig: "I could not send {name} here (Telegram takes up to 50 MB): open it in RedGiant.",
+  fileTooBig: `I could not send {name} here (Telegram takes up to 50 MB): open it in ${PRODUCT_NAME}.`,
   queued: "Got it. I am still answering your previous message: I will read this one right after.",
   automationTook: "Passed to the automation: {names}.",
-  noModel:
-    "No model is chosen yet. Open RedGiant, Settings, Models and subscriptions, connect one (a subscription, a key or a local model) and write to me again.",
+  noModel: `No model is chosen yet. Open ${PRODUCT_NAME}, Settings, Models and subscriptions, connect one (a subscription, a key or a local model) and write to me again.`,
   approvalNeeded: "Approval needed: {agent}{project} asks for your yes",
   details: "Details: {tool} {input}",
   why: "Why: {reasons}",
@@ -41,18 +40,16 @@ const en = {
   pickFirst: "Pick at least one option.",
   saved: "Saved",
   seeAttached: "(see the attachment)",
-  noTranscription:
-    "Voice messages need a transcription service: choose one in RedGiant, Settings, Voice.",
+  noTranscription: `Voice messages need a transcription service: choose one in ${PRODUCT_NAME}, Settings, Voice.`,
   heard: "I heard: {text}",
   heardNothing: "I could not make out any words.",
-  voice_no_key: "{name} has no key yet: add it in RedGiant, Settings, Voice.",
+  voice_no_key: `{name} has no key yet: add it in ${PRODUCT_NAME}, Settings, Voice.`,
   voice_empty: "The voice message is empty.",
   voice_too_long: "The voice message is too long.",
   voice_convert: "The voice message could not be converted for whisper.",
   voice_timeout: "{name} took too long to write down the voice message.",
-  voice_unreachable:
-    "{name} cannot be reached: check that it is on and its address in RedGiant, Settings, Voice.",
-  voice_key_refused: "{name} refused the key: check it in RedGiant, Settings, Voice.",
+  voice_unreachable: `{name} cannot be reached: check that it is on and its address in ${PRODUCT_NAME}, Settings, Voice.`,
+  voice_key_refused: `{name} refused the key: check it in ${PRODUCT_NAME}, Settings, Voice.`,
   voice_rate_limited: "{name} says too many requests or no credit left.",
   voice_service_error: "{name} answered with an error ({status}).",
   newConversation: "New conversation: God and I start fresh.",
@@ -85,18 +82,14 @@ export const VOICE_FAILURES = {
 export type VoiceFailure = keyof typeof VOICE_FAILURES;
 
 const it: Record<TextKey, string> = {
-  linkHow:
-    "Per collegare questa chat apri RedGiant, Impostazioni, Telegram, Abbina, poi manda qui /start <codice>.",
+  linkHow: `Per collegare questa chat apri ${PRODUCT_NAME}, Impostazioni, Telegram, Abbina, poi manda qui /start <codice>.`,
   linked: "Collegato. Scrivimi e lo passo a God.",
-  notLinked:
-    "Questa chat non è collegata a RedGiant. Apri RedGiant, Impostazioni, Telegram, Abbina, poi manda /start <codice>.",
+  notLinked: `Questa chat non è collegata a ${PRODUCT_NAME}. Apri ${PRODUCT_NAME}, Impostazioni, Telegram, Abbina, poi manda /start <codice>.`,
   error: "Errore: {error}",
-  fileTooBig:
-    "Non sono riuscito a mandarti {name} qui (Telegram accetta fino a 50 MB): aprilo in RedGiant.",
+  fileTooBig: `Non sono riuscito a mandarti {name} qui (Telegram accetta fino a 50 MB): aprilo in ${PRODUCT_NAME}.`,
   queued: "Ricevuto. Sto ancora rispondendo al messaggio di prima: leggo questo subito dopo.",
   automationTook: "Lo passo all'automazione: {names}.",
-  noModel:
-    "Non hai ancora scelto un modello. Apri RedGiant, Impostazioni, Modelli e abbonamenti, collegane uno (un abbonamento, una chiave o un modello locale) e poi scrivimi di nuovo.",
+  noModel: `Non hai ancora scelto un modello. Apri ${PRODUCT_NAME}, Impostazioni, Modelli e abbonamenti, collegane uno (un abbonamento, una chiave o un modello locale) e poi scrivimi di nuovo.`,
   approvalNeeded: "Serve un'approvazione: {agent}{project} chiede il tuo sì",
   details: "Dettagli: {tool} {input}",
   why: "Perché: {reasons}",
@@ -124,18 +117,16 @@ const it: Record<TextKey, string> = {
   pickFirst: "Scegli almeno un'opzione.",
   saved: "Salvato",
   seeAttached: "(vedi l'allegato)",
-  noTranscription:
-    "Per i vocali serve un servizio di trascrizione: sceglilo in RedGiant, Impostazioni, Voce.",
+  noTranscription: `Per i vocali serve un servizio di trascrizione: sceglilo in ${PRODUCT_NAME}, Impostazioni, Voce.`,
   heard: "Ho capito: {text}",
   heardNothing: "Non sono riuscito a capire nessuna parola.",
-  voice_no_key: "{name} non ha ancora una chiave: aggiungila in RedGiant, Impostazioni, Voce.",
+  voice_no_key: `{name} non ha ancora una chiave: aggiungila in ${PRODUCT_NAME}, Impostazioni, Voce.`,
   voice_empty: "Il vocale è vuoto.",
   voice_too_long: "Il vocale è troppo lungo.",
   voice_convert: "Non sono riuscito a convertire il vocale per whisper.",
   voice_timeout: "{name} ci ha messo troppo a trascrivere il vocale.",
-  voice_unreachable:
-    "{name} non si raggiunge: controlla che sia acceso e il suo indirizzo in RedGiant, Impostazioni, Voce.",
-  voice_key_refused: "{name} ha rifiutato la chiave: controllala in RedGiant, Impostazioni, Voce.",
+  voice_unreachable: `{name} non si raggiunge: controlla che sia acceso e il suo indirizzo in ${PRODUCT_NAME}, Impostazioni, Voce.`,
+  voice_key_refused: `{name} ha rifiutato la chiave: controllala in ${PRODUCT_NAME}, Impostazioni, Voce.`,
   voice_rate_limited: "{name} dice troppe richieste o credito finito.",
   voice_service_error: "{name} ha risposto con un errore ({status}).",
   newConversation: "Nuova conversazione: io e God ripartiamo da capo.",

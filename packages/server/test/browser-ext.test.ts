@@ -155,7 +155,7 @@ describe("browser extension routes (G36.21)", () => {
     expect(view.body.entries.find((e) => e.id === githubId)?.uses).toBe(1);
   });
 
-  it("never fills a key RedGiant uses itself", async () => {
+  it("never fills a key Rasgeth uses itself", async () => {
     await s.core.vault.setSystem("me", "setup:keys.anthropic", "sk-ant-api03-browser-test", {
       name: "anthropic",
       service: "Anthropic",

@@ -1,7 +1,7 @@
 {
   "name": "@redgiant/evals",
   "version": "0.1.0",
-  "description": "RedGiant's evaluation suite: coding tasks with verifiers, run by a real project orchestrator, compared across models.",
+  "description": "Rasgeth's evaluation suite: coding tasks with verifiers, run by a real project orchestrator, compared across models.",
   "license": "MIT",
   "type": "module",
   "private": true,

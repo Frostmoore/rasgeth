@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { PRODUCT_NAME } from "./brand.js";
 
 /**
  * A passage of an earlier message the person answers (G36.22, inline replies as in an email):
@@ -68,8 +69,7 @@ export function ownWords(text: string, quotes?: readonly MessageQuote[]): string
  * end of a separate request with the conversation's own prefix, so the cache holds and nothing
  * enters the conversation.
  */
-export const ASIDE_NOTE =
-  "[RedGiant: a side question from the person while the conversation goes on. Answer it briefly from what you know of the conversation. You cannot use tools for it, and neither this question nor your answer becomes part of the conversation.]";
+export const ASIDE_NOTE = `[${PRODUCT_NAME}: a side question from the person while the conversation goes on. Answer it briefly from what you know of the conversation. You cannot use tools for it, and neither this question nor your answer becomes part of the conversation.]`;
 
 /** A side question and its answer, as the page shows it (from the `aside` event). */
 export interface AsideView {
@@ -95,6 +95,6 @@ export const MAX_NOTES = 20;
 export function notedText(text: string, notes: readonly string[]): string {
   const lines = notes.map((n) => n.trim()).filter(Boolean);
   if (!lines.length) return text;
-  const block = `[RedGiant: ${lines.length === 1 ? lines[0] : `\n${lines.map((l) => `- ${l}`).join("\n")}`}]`;
+  const block = `[${PRODUCT_NAME}: ${lines.length === 1 ? lines[0] : `\n${lines.map((l) => `- ${l}`).join("\n")}`}]`;
   return text.trim() ? `${text}\n\n${block}` : block;
 }

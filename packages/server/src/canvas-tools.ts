@@ -16,6 +16,7 @@ import type {
   CanvasTabInfo,
   CanvasTargetInfo,
 } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import type { Workspace } from "@redgiant/tools";
 import { z } from "zod";
 import type { CanvasSeen } from "./canvas-live.js";
@@ -130,8 +131,8 @@ export function stateText(seen: CanvasSeen | CanvasState | undefined): string {
   // p3.5.6: «no page open» only when none is connected, never for a page slow to answer.
   if (!s)
     return pages > 0
-      ? "The person has a RedGiant page open, but it did not answer in time (it may be busy loading an editor): look again in a moment."
-      : "The person has no RedGiant page open now: their canvas cannot be seen.";
+      ? `The person has a ${PRODUCT_NAME} page open, but it did not answer in time (it may be busy loading an editor): look again in a moment.`
+      : `The person has no ${PRODUCT_NAME} page open now: their canvas cannot be seen.`;
   const late =
     ageMs !== undefined
       ? `The person's page did not answer in time (it may be busy); this is what it showed ${Math.max(1, Math.round(ageMs / 1000))} s ago. `
@@ -405,7 +406,7 @@ export function canvasTools(
                 : "The person's canvas is empty: give a path to open."
               : seen.pages > 0
                 ? "The person's page did not answer in time (it may be busy): give the file's path to open it, or try again in a moment."
-                : "The person has no RedGiant page open: nothing to move.",
+                : `The person has no ${PRODUCT_NAME} page open: nothing to move.`,
             isError: true,
           };
         target = tab.target;

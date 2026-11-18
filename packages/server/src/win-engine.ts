@@ -13,6 +13,7 @@ import { readFileSync } from "node:fs";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { UpdateProgress } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { debugLog } from "./debug-log.js";
 import { engineError } from "./engine-errors.js";
 import { JobFailure, type JobHandle } from "./jobs.js";
@@ -180,7 +181,7 @@ export class WinEngine {
       } else if (Date.now() - asked > (this.o.noticeMs ?? 60_000)) {
         throw new JobFailure(
           "launcher_missing",
-          "RedGiant's Windows program did not pick up the request: is RedGiant open next to the clock?",
+          `${PRODUCT_NAME}'s Windows program did not pick up the request: is ${PRODUCT_NAME} open next to the clock?`,
         );
       }
       await new Promise((r) => setTimeout(r, this.o.pollMs ?? 1000));
@@ -212,7 +213,7 @@ export class WinEngine {
     const file = join(this.o.dir, "update.json");
     await writeFile(`${file}.tmp`, JSON.stringify({ id: randomUUID(), action }));
     await rename(`${file}.tmp`, file);
-    debugLog.write("engine", `asked RedGiant.exe: ${action}`);
+    debugLog.write("engine", `asked ${PRODUCT_NAME}.exe: ${action}`);
   }
 
   /** The update RedGiant.exe is applying now (its update-progress.json, 3.8.1), or null. */
@@ -254,7 +255,7 @@ export class WinEngine {
     if (!this.o.host)
       throw new JobFailure(
         "launcher_missing",
-        "RedGiant does not know Windows' address on WSL's network: start RedGiant again from its icon",
+        `${PRODUCT_NAME} does not know Windows' address on WSL's network: start ${PRODUCT_NAME} again from its icon`,
       );
     const id = await this.request(model, plan, preload, spec, flavor, template, prefetchRelease);
     const poll = this.o.pollMs ?? 1000;
@@ -303,7 +304,7 @@ export class WinEngine {
       } else if (!seen && Date.now() - asked > (this.o.noticeMs ?? 60_000)) {
         throw new JobFailure(
           "launcher_missing",
-          "RedGiant's Windows program did not pick up the request: is RedGiant open next to the clock?",
+          `${PRODUCT_NAME}'s Windows program did not pick up the request: is ${PRODUCT_NAME} open next to the clock?`,
         );
       }
       if (Date.now() - asked > (this.o.loadMs ?? 20 * 60_000))

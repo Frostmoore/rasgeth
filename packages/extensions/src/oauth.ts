@@ -140,7 +140,7 @@ export class StoredOAuthProvider implements OAuthClientProvider {
 
   get clientMetadata(): OAuthClientMetadata {
     return {
-      client_name: "RedGiant",
+      client_name: "Rasgeth",
       redirect_uris: [this.redirect],
       grant_types: ["authorization_code", "refresh_token"],
       response_types: ["code"],

@@ -42,7 +42,7 @@ const turn = (text: string, log: string[]): EngineTurn => ({
 });
 
 describe("ChatGPT on a subscription", () => {
-  it("runs the turn in Codex with RedGiant's tools as dynamic tools, and keeps the plan's limits", async () => {
+  it("runs the turn in Codex with Rasgeth's tools as dynamic tools, and keeps the plan's limits", async () => {
     const p = await provider();
     const log: string[] = [];
     expect(await p.engine.turn(turn("What is in a.txt?", log))).toEqual({

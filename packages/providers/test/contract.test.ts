@@ -14,7 +14,7 @@ import { anthropicEvents, fakeFetch, openAiTextEvents, sseResponse } from "./hel
  * answers the given scenario, via a script (fake) or recorded HTTP (adapters).
  */
 type Scenario = "text" | "tool" | "overloaded" | "slow";
-const TEXT = "Hello from RedGiant, all good.";
+const TEXT = "Hello from Rasgeth, all good.";
 const TOOL = { name: "read_file", input: { path: "src/a.ts" } };
 
 const setups: Record<string, (s: Scenario) => Provider> = {

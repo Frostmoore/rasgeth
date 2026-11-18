@@ -18,7 +18,7 @@ describe("SearXNG on this computer, without Docker (2026-11-05)", () => {
   });
 
   it.skipIf(process.platform === "win32")(
-    "installs uv, a Python and SearXNG once, starts it on 127.0.0.1 and stops it with RedGiant",
+    "installs uv, a Python and SearXNG once, starts it on 127.0.0.1 and stops it with Rasgeth",
     async () => {
       const dir = await mkdtemp(join(tmpdir(), "rg-searxng-"));
       const stage = join(dir, "stage");

@@ -127,7 +127,7 @@ describe("the setup channel (G40.3)", () => {
       here: "setup",
       signedIn: false,
       auth: { password: false, firstAccess: "password" },
-      network: { active: true, ssid: "RedGiant-Setup-1A2B" },
+      network: { active: true, ssid: "Rasgeth-Setup-1A2B" },
     });
     // The network's password is not part of what the channel tells.
     expect(JSON.stringify(info)).not.toContain("passphrase");

@@ -34,7 +34,7 @@ function inspect(wav: Uint8Array) {
   return { seconds: n / 16000, hz: crossings / 2 / (n / 16000) };
 }
 
-describe("voice messages on this computer (RedGiant 3.0)", () => {
+describe("voice messages on this computer (Rasgeth 3.0)", () => {
   it("knows whisper.cpp's ready programs", () => {
     expect(whisperAsset("win32", "x64")).toBe("whisper-bin-x64.zip");
     expect(whisperAsset("linux", "x64")).toBe("whisper-bin-ubuntu-x64.tar.gz");

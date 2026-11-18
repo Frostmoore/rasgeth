@@ -24,7 +24,7 @@ afterEach(async () => {
   await rm(dir, { recursive: true, force: true });
 });
 
-const longDoc = "RedGiant keeps the prompt prefix stable so the cache can be reused. ".repeat(60);
+const longDoc = "Rasgeth keeps the prompt prefix stable so the cache can be reused. ".repeat(60);
 const user = (text: string): ChatMessage => ({ role: "user", parts: [{ type: "text", text }] });
 const req = (
   session: string,

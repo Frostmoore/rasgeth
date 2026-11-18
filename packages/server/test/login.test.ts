@@ -65,7 +65,7 @@ describe("signing in with a password", () => {
     await store.login("me", "una-password-lunga", undefined, "6.6.6.6", "x");
     // The second check: on only with a right code from the app.
     const { secret, url } = store.newCodeSecret("me");
-    expect(url).toMatch(/^otpauth:\/\/totp\/RedGiant:me\?secret=[A-Z2-7]+&issuer=RedGiant/);
+    expect(url).toMatch(/^otpauth:\/\/totp\/Rasgeth:me\?secret=[A-Z2-7]+&issuer=Rasgeth/);
     await expect(store.enableCode("me", secret, "000000")).rejects.toMatchObject({ code: "wrong" });
     await store.enableCode("me", secret, totp(secret, now));
     await expect(

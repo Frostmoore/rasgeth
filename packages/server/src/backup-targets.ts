@@ -47,7 +47,7 @@ export class TargetError extends Error {
 export interface BackupTarget {
   /** Where, for messages ("the machine nas: /volume1/backup"). */
   readonly where: string;
-  /** The backup folders there ("RedGiant-backup-2026-11-14"…). */
+  /** The backup folders there ("Rasgeth-backup-2026-11-14"…). */
   folders(): Promise<string[]>;
   readMade(): Promise<string[]>;
   writeMade(list: readonly string[]): Promise<void>;

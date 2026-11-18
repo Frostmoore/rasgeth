@@ -113,7 +113,7 @@ Pages purgeable:                          65536.
     expect(parseVmStat("nothing")).toBeUndefined();
   });
 
-  it("sees Apple Silicon's GPU and runs the engine next to RedGiant", async () => {
+  it("sees Apple Silicon's GPU and runs the engine next to Rasgeth", async () => {
     expect(appleGpu("Apple M6", 16)).toEqual({
       name: "Apple M6",
       vramGb: 12,

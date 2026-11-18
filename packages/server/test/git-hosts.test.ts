@@ -97,7 +97,7 @@ describe("where the code lives", () => {
     expect(list).toBe("#1 Bug (marta) https://x/1");
   });
 
-  it("adds a routine's webhook on Gitea, or on GitHub when it can reach RedGiant (G24.14c)", async () => {
+  it("adds a routine's webhook on Gitea, or on GitHub when it can reach Rasgeth (G24.14c)", async () => {
     const h = hosts();
     const g = new GitHosts({ fetch: h.f });
     const url = { internal: "http://redgiant:7600/api/automations/a1/hook/rgwh_x" };
@@ -290,7 +290,7 @@ describe("a Gitea the person already has (p3.7.2)", () => {
       search: async () => {},
       engine: async () => {},
       gitea: async () => {
-        throw new Error("RedGiant's own Gitea must not be touched");
+        throw new Error("Rasgeth's own Gitea must not be touched");
       },
     };
     let setup: SetupService | undefined;
@@ -349,7 +349,7 @@ describe("a Gitea the person already has (p3.7.2)", () => {
     }
   });
 
-  it("an external Gitea's webhook calls RedGiant's public address, never the inside one", async () => {
+  it("an external Gitea's webhook calls Rasgeth's public address, never the inside one", async () => {
     const h = hosts();
     const g = new GitHosts({ fetch: h.f });
     const cfg = {

@@ -1,7 +1,7 @@
 {
   "name": "@redgiant/events",
   "version": "0.1.0",
-  "description": "Append-only, hash-chained event log for RedGiant, on Postgres.",
+  "description": "Append-only, hash-chained event log for Rasgeth, on Postgres.",
   "license": "MIT",
   "type": "module",
   "exports": {

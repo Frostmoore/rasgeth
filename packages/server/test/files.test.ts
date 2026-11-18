@@ -190,11 +190,11 @@ describe("budgets and web UI", () => {
     const { tmpdir } = await import("node:os");
     const web = await mkdtemp(join(tmpdir(), "rg-web-"));
     await mkdir(join(web, "assets"));
-    await writeFile(join(web, "index.html"), "<!doctype html><title>RedGiant</title>");
+    await writeFile(join(web, "index.html"), "<!doctype html><title>Rasgeth</title>");
     await writeFile(join(web, "assets", "app-1234.js"), "console.log(1)");
     s = await startServer([], {}, {}, web);
     const page = await fetch(`${s.url}/projects/x`);
-    expect(await page.text()).toMatch(/<title>RedGiant/);
+    expect(await page.text()).toMatch(/<title>Rasgeth/);
     expect(page.headers.get("cache-control")).toBe("no-cache");
     const asset = await fetch(`${s.url}/assets/app-1234.js`);
     expect(asset.headers.get("content-type")).toMatch(/javascript/);
@@ -217,9 +217,7 @@ describe("budgets and web UI", () => {
     expect(plain.headers.get("content-encoding")).toBeNull();
     expect(await plain.text()).toBe(big);
     expect((await fetch(`${s.url}/assets/app-1234.js`)).headers.get("content-encoding")).toBeNull();
-    expect(await (await fetch(`${s.url}/..%2F..%2Fetc%2Fpasswd`)).text()).toMatch(
-      /<title>RedGiant/,
-    );
+    expect(await (await fetch(`${s.url}/..%2F..%2Fetc%2Fpasswd`)).text()).toMatch(/<title>Rasgeth/);
     expect(
       (await fetch(`${s.url}/api/nope`, { headers: { authorization: `Bearer ${TOKEN}` } })).status,
     ).toBe(404);

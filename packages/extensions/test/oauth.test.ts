@@ -125,7 +125,7 @@ describe("signing in to a remote MCP server", () => {
     expect(page?.origin).toBe(base);
     expect(page?.searchParams.get("state")).toBe("state-123");
     expect(page?.searchParams.get("code_challenge_method")).toBe("S256");
-    expect(registered[0]).toMatchObject({ client_name: "RedGiant", redirect_uris: [redirect] });
+    expect(registered[0]).toMatchObject({ client_name: "Rasgeth", redirect_uris: [redirect] });
     // The person signs in; the service sends them back with a code.
     const r = await fetch(page as URL, { redirect: "manual" });
     const back = new URL(r.headers.get("location") ?? "");
@@ -147,7 +147,7 @@ describe("signing in to a remote MCP server", () => {
     await again.close();
   });
 
-  it("uses the person's own app where the service does not let RedGiant register (G24.14c)", async () => {
+  it("uses the person's own app where the service does not let Rasgeth register (G24.14c)", async () => {
     const dir = await mkdtemp(join(tmpdir(), "rg-oauth-app-"));
     const store = new McpCredentialStore(dir);
     const app = {

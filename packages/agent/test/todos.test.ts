@@ -67,7 +67,7 @@ const results = async () =>
     e.type === "tool.result" && e.payload ? [e.payload] : [],
   );
 const reminded = async () =>
-  (await results()).filter((r) => r.output.includes("[RedGiant: Your list of steps"));
+  (await results()).filter((r) => r.output.includes("[Rasgeth: Your list of steps"));
 
 describe("the list of steps kept up to date (3.5.6)", () => {
   it(`reminds after ${TODO_REMINDER_EVERY} calls without update_todos, with the list`, async () => {
@@ -83,7 +83,7 @@ describe("the list of steps kept up to date (3.5.6)", () => {
     const marked = out.filter((r) => r.reminder === "todos");
     expect(marked).toHaveLength(1);
     expect(marked[0]).toBe(out.at(-1));
-    expect(marked[0]?.output).toContain(`C${TODO_REMINDER_EVERY - 1}\n\n[RedGiant: Your list`);
+    expect(marked[0]?.output).toContain(`C${TODO_REMINDER_EVERY - 1}\n\n[Rasgeth: Your list`);
     expect(marked[0]?.output).toContain("1. [completed] step 1\n2. [in_progress] step 2");
     expect(marked[0]?.output).toContain("Mark a step in_progress before you start it");
     // The model read it, appended to that result (the prefix is untouched).
@@ -151,7 +151,7 @@ describe("the list of steps kept up to date (3.5.6)", () => {
     expect(users[1]?.notes?.[0]).toMatch(/^Your list of steps \(update_todos\) still has open/);
     const read = fake.requests[2]?.messages.at(-1)?.parts[0];
     expect(read?.type === "text" && read.text).toContain(
-      "</task_report>\n\n[RedGiant: Your list of steps",
+      "</task_report>\n\n[Rasgeth: Your list of steps",
     );
     // Closed list: a report carries nothing.
     await s.send("next");

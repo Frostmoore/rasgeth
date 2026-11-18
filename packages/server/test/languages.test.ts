@@ -97,7 +97,7 @@ describe("the languages the agents speak (G33.5)", () => {
     expect(replyLanguageLine("ja")).not.toMatch(/informally/);
     // Where the language has one (p3.5.3: God said «voi» to the person), the familiar singular.
     expect(replyLanguageLine("it")).toBe(
-      "## Language\nReply to the person in Italian (Italiano), whatever language these instructions are written in, unless they ask you for another. Speak to them as one person, informally, as RedGiant's pages do: «tu», never a plural or formal form of address.",
+      "## Language\nReply to the person in Italian (Italiano), whatever language these instructions are written in, unless they ask you for another. Speak to them as one person, informally, as Rasgeth's pages do: «tu», never a plural or formal form of address.",
     );
     expect(replyLanguageLine("de")).toContain("«du»");
     expect(replyLanguageLine("pt-BR")).toContain("«você»");

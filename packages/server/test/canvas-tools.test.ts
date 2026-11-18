@@ -122,9 +122,9 @@ describe("canvas_look and canvas_act (G36.12)", () => {
     const data = new Uint8Array(40 * 20 * 4).fill(255);
     await writeFile(join(root, "pics/dot.png"), pngOf({ width: 40, height: 20, data }));
     await (await s.core.send("me", sessionId, "look")).done;
-    expect(seen[0]).toMatch(/no RedGiant page open now.*\n\nNothing to look at: give a path/);
+    expect(seen[0]).toMatch(/no Rasgeth page open now.*\n\nNothing to look at: give a path/);
     expect(seen[1]).toMatch(/Looking at pics\/dot\.png: dot\.png \(\d+ B\)\. Picture 40×20\./);
-    expect(seen[2]).toBe("The person has no RedGiant page open: nothing to move.");
+    expect(seen[2]).toBe("The person has no Rasgeth page open: nothing to move.");
     const events = (await s.api<Event[]>("GET", `/api/sessions/${sessionId}/events`)).body;
     const pictures = events.flatMap((e) =>
       e.type === "tool.result" ? (e.payload.images ?? []) : [],

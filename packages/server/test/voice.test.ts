@@ -438,7 +438,7 @@ describe("voice messages through the server", () => {
       provider: "openai",
       model: "gpt-4o-mini-tts",
       voice: "cedar",
-      text: "Ciao, sono RedGiant.",
+      text: "Ciao, sono Rasgeth.",
     });
     expect([read.status, read.headers.get("content-type")]).toEqual([200, "audio/mpeg"]);
     expect([...new Uint8Array(await read.arrayBuffer())]).toEqual([0xff, 0xfb, 1, 2]);
@@ -447,7 +447,7 @@ describe("voice messages through the server", () => {
     expect(JSON.parse(String(sent?.init.body))).toMatchObject({
       model: "gpt-4o-mini-tts",
       voice: "cedar",
-      input: "Ciao, sono RedGiant.",
+      input: "Ciao, sono Rasgeth.",
     });
     // tts-1 does not know cedar: its first voice instead.
     await speech({ provider: "openai", model: "tts-1", voice: "cedar", text: "Ciao" });

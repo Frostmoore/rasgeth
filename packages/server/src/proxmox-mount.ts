@@ -12,6 +12,7 @@ import {
   HOST_DEVICE,
   HOST_FOLDER_NAME,
   type MachineView,
+  PRODUCT_NAME,
   PROXMOX_ID,
 } from "@redgiant/protocol";
 import { BACKUP_FSTYPES, isSystemMount } from "./backup-disks.js";
@@ -114,7 +115,7 @@ export function proxmoxPlan(i: ProxmoxPlanInput): ProxmoxPlan {
         what: `Mount it again at every start of the host (/etc/fstab, nofail)`,
       },
     );
-  steps.push({ argv: ["mkdir", "-p", hostDir], what: `Make RedGiant's folder ${hostDir}` });
+  steps.push({ argv: ["mkdir", "-p", hostDir], what: `Make ${PRODUCT_NAME}'s folder ${hostDir}` });
   if (i.unprivileged && !owners)
     steps.push({
       argv: ["chown", `${LXC_ROOT}:${LXC_ROOT}`, hostDir],

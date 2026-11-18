@@ -15,6 +15,7 @@ import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { createBrotliDecompress } from "node:zlib";
 import type { OfficeEngineState } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import type { JobHandle, Jobs } from "../jobs.js";
 
 /** The build tried in G37.0 (zeta-24-2, LibreOffice 24.2, published 2025-05-13). */
@@ -115,7 +116,7 @@ export const ISOLATION_HEADERS: Record<string, string> = {
   "x-content-type-options": "nosniff",
 };
 
-export const ZETA_LICENSES = `LibreOffice in the browser (ZetaOffice), served by RedGiant as a separate program.
+export const ZETA_LICENSES = `LibreOffice in the browser (ZetaOffice), served by ${PRODUCT_NAME} as a separate program.
 
 - LibreOffice (zeta-24-2 build by allotropia): Mozilla Public License 2.0 (MPL-2.0), parts LGPL-3.0.
   Sources: https://git.libreoffice.org/core/+/refs/heads/distro/allotropia/zeta-24-2
@@ -124,7 +125,7 @@ export const ZETA_LICENSES = `LibreOffice in the browser (ZetaOffice), served by
 - zetajs 1.2.0: MIT. https://github.com/allotropia/zetajs
 
 The files are the ones published at cdn.zetaoffice.net on 2025-05-13 (ZetaOffice is now by Collabora
-Productivity), kept unchanged by RedGiant in the pre-release zetaoffice-cache of
+Productivity), kept unchanged by ${PRODUCT_NAME} in the pre-release zetaoffice-cache of
 https://github.com/Frostmoore/redgiant2 (the CDN is the second source), downloaded once, checked by
 their sha256 and served from this computer.
 `;
@@ -145,7 +146,7 @@ function fetchOne(
       {
         headers: {
           "accept-encoding": req.encoding === "br" ? "br" : "identity",
-          "user-agent": "RedGiant (zetaoffice; +https://github.com/Frostmoore/redgiant2)",
+          "user-agent": `${PRODUCT_NAME} (zetaoffice; +https://github.com/Frostmoore/redgiant2)`,
         },
         signal,
       },
@@ -232,7 +233,7 @@ export class ZetaOffice {
         const hash = await sha256Of(part);
         if (hash !== f.sha256)
           throw new Error(
-            `${f.name} is not the file RedGiant knows (sha256 ${hash.slice(0, 12)}…): it was not kept`,
+            `${f.name} is not the file ${PRODUCT_NAME} knows (sha256 ${hash.slice(0, 12)}…): it was not kept`,
           );
         await rename(part, target);
         return src.name;

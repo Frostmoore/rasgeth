@@ -7,7 +7,7 @@ import { Transform, Writable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { KvStore, LocalEngineProvider, readLocalGgufMeta } from "@redgiant/engine-local";
 import type { Redactor, SqlClient } from "@redgiant/events";
-import { keyProvider, OWN_SERVER_ID } from "@redgiant/protocol";
+import { keyProvider, OWN_SERVER_ID, PRODUCT_NAME } from "@redgiant/protocol";
 import {
   AnthropicProvider,
   LOCAL_STALL,
@@ -511,7 +511,7 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
         if (!win)
           throw new JobFailure(
             "start",
-            "The Windows engine exists only in RedGiant's Windows install",
+            `The Windows engine exists only in ${PRODUCT_NAME}'s Windows install`,
           );
         const pre = await preloadable(cfg);
         const started = async () => {
@@ -714,7 +714,8 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
 
     async moveModels(kind, to, h) {
       const win = o.engine?.windows;
-      if (!win) throw new Error("Models can be moved only in RedGiant's Windows installation");
+      if (!win)
+        throw new Error(`Models can be moved only in ${PRODUCT_NAME}'s Windows installation`);
       await win.move(kind, to, h);
     },
 
@@ -987,7 +988,7 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
         "--password",
         cfg.password,
         "--email",
-        `${cfg.user}@redgiant.local`,
+        `${cfg.user}@rasgeth.local`,
         "--must-change-password=false",
       ]);
       if (made.code !== 0 && !/already exists/i.test(made.out))
@@ -1000,7 +1001,7 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
         "--username",
         cfg.user,
         "--token-name",
-        `redgiant-${Date.now()}`,
+        `rasgeth-${Date.now()}`,
         "--scopes",
         "all",
         "--raw",

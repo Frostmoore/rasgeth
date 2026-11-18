@@ -42,7 +42,7 @@ function launcher(dir: string, states: Omit<WinEngineStatus, "id">[], everyMs = 
 }
 
 describe("the engine on Windows itself", () => {
-  it("asks RedGiant.exe for a model and follows the download, start and loading", async () => {
+  it("asks Rasgeth.exe for a model and follows the download, start and loading", async () => {
     const dir = await mkdtemp(join(tmpdir(), "rg-win-"));
     const l = launcher(dir, [
       { state: "downloading", done: 10, total: 36 },
@@ -136,7 +136,7 @@ describe("the engine on Windows itself", () => {
     expect(engine.modelsDir).toBe(join(dir, "models"));
   });
 
-  it("notices when RedGiant.exe is not there to run it", async () => {
+  it("notices when Rasgeth.exe is not there to run it", async () => {
     const dir = await mkdtemp(join(tmpdir(), "rg-win-"));
     const err = await new WinEngine({ dir, host: "h", pollMs: 10, noticeMs: 100 })
       .start("m.gguf")
@@ -174,12 +174,12 @@ describe("the engine on Windows itself", () => {
     const jobs = new Jobs();
     const job = jobs.start("me", "models_move", ["move"], async (h) => {
       h.step("move");
-      await engine.move("models", "D:\\RedGiant\\models", h);
+      await engine.move("models", "D:\\Rasgeth\\models", h);
     });
     const end = await jobs.settled(job.id);
     stop = true;
     expect(end?.state).toBe("done");
-    expect(asked).toMatchObject({ kind: "models", to: "D:\\RedGiant\\models" });
+    expect(asked).toMatchObject({ kind: "models", to: "D:\\Rasgeth\\models" });
   });
 
   it("is what the wizard suggests on Windows for AMD, Intel and built-in GPUs", async () => {

@@ -298,7 +298,7 @@ describe("Anthropic's own web search (2026-11-03)", () => {
     messages: [user("who?")],
   });
 
-  it("turns RedGiant's web_search into Anthropic's, filtered with code on newer models", () => {
+  it("turns Rasgeth's web_search into Anthropic's, filtered with code on newer models", () => {
     const p = new AnthropicProvider({ apiKey: "t" });
     expect(p.buildParams(req("claude-sonnet-5-5")).tools?.[1]).toEqual({
       type: "web_search_20260318",

@@ -16,6 +16,7 @@ import type { SqlClient } from "@redgiant/events";
 import {
   type Event,
   type PermissionRequestInfo,
+  PRODUCT_NAME,
   type PushChannelView,
   type PushNotice,
   type PushRegisterBody,
@@ -336,7 +337,9 @@ export class PushService {
     return this.host?.language(ownerId) ?? "en";
   }
   private machine(ownerId: string) {
-    return this.host?.machineName(ownerId).catch(() => "RedGiant") ?? Promise.resolve("RedGiant");
+    return (
+      this.host?.machineName(ownerId).catch(() => PRODUCT_NAME) ?? Promise.resolve(PRODUCT_NAME)
+    );
   }
 
   private async notify(ownerId: string, t: PushTrigger): Promise<void> {
@@ -417,7 +420,7 @@ export class PushService {
         this.notify(t.ownerId, {
           type: "message",
           sessionId: t.sessionId,
-          agentName: h.registry.get(t.agentId)?.name ?? "RedGiant",
+          agentName: h.registry.get(t.agentId)?.name ?? PRODUCT_NAME,
           text,
           byPerson: t.byPerson,
           watched: h.isWatched(t.sessionId),

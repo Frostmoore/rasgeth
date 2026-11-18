@@ -1,7 +1,7 @@
 {
   "name": "@redgiant/mascot",
   "version": "0.1.0",
-  "description": "RedGiant agents' mascots: a seed makes a face (spec for the app, SVG for the page), with states, themes and sizes.",
+  "description": "Rasgeth agents' mascots: a seed makes a face (spec for the app, SVG for the page), with states, themes and sizes.",
   "license": "MIT",
   "type": "module",
   "exports": {

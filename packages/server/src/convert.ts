@@ -18,6 +18,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { basename, dirname, join, relative, sep } from "node:path";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { LocalWorkspace } from "@redgiant/tools";
 import { unzipSync } from "fflate";
 import { BLENDER_CONVERT_SCRIPT, commands as blenderCommands } from "./convert-blender.js";
@@ -73,7 +74,7 @@ export const SCRIBUS_LIBS = "xvfb xauth fonts-dejavu-core";
  * The script Scribus runs (`-py`, arguments in sys.argv): opens what it can import (IDML),
  * saves it as .sla and prints a PDF. Written by RedGiant, never by a model; paths are arguments.
  */
-export const SCRIBUS_SCRIPT = `# RedGiant: open a document Scribus can import (IDML...), save it as .sla and print a PDF.
+export const SCRIBUS_SCRIPT = `# ${PRODUCT_NAME}: open a document Scribus can import (IDML...), save it as .sla and print a PDF.
 import os
 import sys
 import traceback
@@ -451,7 +452,7 @@ export class FileConverter {
     const st = await stat(abs).catch(() => undefined);
     if (!st?.isFile()) throw new ConvertError(`There is no file "${path}"`);
     const f = await formatOfFile(abs);
-    if (!f) throw new ConvertError(`RedGiant does not know the format of ${basename(path)}`);
+    if (!f) throw new ConvertError(`${PRODUCT_NAME} does not know the format of ${basename(path)}`);
     if (f.targets.length === 0)
       throw new ConvertError(`${basename(path)} is ${f.name}, an open format: use it as it is.`);
     const wanted = wantedOf(f, o.to);

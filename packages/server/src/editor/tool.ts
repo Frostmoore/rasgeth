@@ -8,6 +8,7 @@ import { readFile, realpath } from "node:fs/promises";
 import { basename, resolve } from "node:path";
 import type { Tool, ToolContext } from "@redgiant/agent";
 import type { CanvasState, DocFile } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import type { Workspace } from "@redgiant/tools";
 import { z } from "zod";
 import { ARTIFACT_HELP } from "../artifact-engine.js";
@@ -128,7 +129,7 @@ export function canvasEditTool(
           if (i.help) return catalogs(host.editor);
           return fail(
             !state
-              ? 'The person has no RedGiant page open: give the file\'s "path".'
+              ? `The person has no ${PRODUCT_NAME} page open: give the file's "path".`
               : i.tab
                 ? `There is no file in tab ${i.tab}.`
                 : 'No file is open in the canvas: give the file\'s "path".',
@@ -152,7 +153,7 @@ export function canvasEditTool(
       file ??= await host.docFileOf(agent.ownerId, abs);
       if (!file)
         return fail(
-          `${basename(abs)} is in no project or folder RedGiant knows: canvas_edit edits files of the projects; use edit_file or write_file.`,
+          `${basename(abs)} is in no project or folder ${PRODUCT_NAME} knows: canvas_edit edits files of the projects; use edit_file or write_file.`,
         );
       if (!i.help && host.readOnly?.(agent.ownerId, file.scope))
         return fail(

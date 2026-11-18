@@ -390,7 +390,7 @@ describe("the setup wizard", () => {
     expect((await api<SetupState>("GET", "/api/setup")).body.secretsSet.search).toEqual(["tavily"]);
   });
 
-  it("turns the local model off and on, and loads it as a job when RedGiant opens (2026-11-04)", async () => {
+  it("turns the local model off and on, and loads it as a job when Rasgeth opens (2026-11-04)", async () => {
     const { calls, hooks, dataDir } = await setup();
     const api = (s as Server).api;
     s?.core.providers.register(new FakeProvider(() => ({ text: "OK" }), { id: "local" }));
@@ -763,7 +763,7 @@ describe("the setup wizard", () => {
     expect((await again.state()).config.searxngUrl).toBe("http://127.0.0.1:9002");
   });
 
-  it("looks for updates on its own when RedGiant.exe could not reach GitHub (2026-11-05)", async () => {
+  it("looks for updates on its own when Rasgeth.exe could not reach GitHub (2026-11-05)", async () => {
     const { hooks, service } = await setup();
     const real = globalThis.fetch;
     const asked: string[] = [];
@@ -1288,7 +1288,7 @@ describe("the models' folder (2026-11-06)", () => {
       // Without a folder, the usual one.
       const plain = await api<Job>("POST", "/api/setup/models-disk", { drive: "C" });
       await s?.core.jobs.settled(plain.body.id);
-      expect(calls).toContain("move:models:C:\\RedGiant\\models");
+      expect(calls).toContain("move:models:C:\\Rasgeth\\models");
       // Another disk's folder, or a spinning disk: refused before anything moves.
       expect(
         (await api("POST", "/api/setup/models-disk", { drive: "D", folder: "C:\\AI" })).status,

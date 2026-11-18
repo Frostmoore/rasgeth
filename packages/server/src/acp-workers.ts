@@ -12,7 +12,7 @@ import * as acp from "@agentclientprotocol/sdk";
 import type { AcpProcess, AcpWorkerHost } from "@redgiant/acp";
 import type { SqlClient } from "@redgiant/events";
 import type { AgentRecord, PermissionBroker } from "@redgiant/hierarchy";
-import { type AcpWorkerConfig, AcpWorkers, acpEnvProblem } from "@redgiant/protocol";
+import { type AcpWorkerConfig, AcpWorkers, acpEnvProblem, PRODUCT_NAME } from "@redgiant/protocol";
 import { LocalWorkspace, type SpawnedProcess, type Workspace } from "@redgiant/tools";
 import { OwnerSettings } from "./person-requests.js";
 
@@ -158,7 +158,7 @@ export async function probeAcp(
         conn.agent.request("initialize", {
           protocolVersion: acp.PROTOCOL_VERSION,
           clientCapabilities: { fs: { readTextFile: true, writeTextFile: true }, terminal: true },
-          clientInfo: { name: "redgiant", title: "RedGiant", version: "3" },
+          clientInfo: { name: "redgiant", title: PRODUCT_NAME, version: "3" },
         }),
         ended,
         late,

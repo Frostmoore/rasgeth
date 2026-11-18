@@ -6,6 +6,8 @@
 // `engine-prefetch`). Only where those builds exist: without them the switch says so and stays off.
 // Never on a Mac, never with Vulkan or the CPU.
 
+import { PRODUCT_NAME } from "@redgiant/protocol";
+
 /** The zip the release carries: llama-server.exe with its DLLs, cudart and cuBLAS. */
 export const MOE_PREFETCH_ASSET = "llama-redgiant-win-cuda12.8-x64.zip";
 
@@ -73,7 +75,7 @@ export function moePrefetchChecker(
       const r = await fetcher(moePrefetchUrl(v), {
         method: "HEAD",
         redirect: "follow",
-        headers: { "user-agent": "RedGiant" },
+        headers: { "user-agent": PRODUCT_NAME },
         signal: AbortSignal.timeout(4000),
       });
       found = r.ok;

@@ -76,7 +76,7 @@ describe("secrets, duplicates and the model's answer (G33.2)", () => {
       "My password is strong",
       "Usa i token di GitHub per il lavoro",
       "Lives in Pinerolo with two cats",
-      "Works on RedGiant 2, a TypeScript monorepo",
+      "Works on Rasgeth 2, a TypeScript monorepo",
       "Runs models with a 32k token context",
       "Il suo numero di telefono finisce con 4567",
       "Born in 1988",

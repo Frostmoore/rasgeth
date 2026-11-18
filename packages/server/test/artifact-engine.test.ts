@@ -145,7 +145,7 @@ describe("the artifacts' frame (3.5.9)", () => {
   });
 });
 
-describe("artifacts in RedGiant (3.5.9)", () => {
+describe("artifacts in Rasgeth (3.5.9)", () => {
   it("serves an artifact through its signed link, with the runtime, the import map and JSX compiled", async () => {
     let step = 0;
     s = await startServer(() => {

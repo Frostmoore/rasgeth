@@ -184,7 +184,7 @@ describe("bash on this computer", () => {
         const r = await ws.exec(`${escaper}; sleep 30`, { timeoutMs: 500 });
         expect(r.timedOut).toBe(true);
         expect(Date.now() - t0).toBeLessThan(5_000);
-        expect(r.stderr).toMatch(/\[RedGiant: the command was stopped/);
+        expect(r.stderr).toMatch(/\[Rasgeth: the command was stopped/);
         pids.push(Number(/pid (\d+)/.exec(r.stdout)?.[1]));
 
         const c = new AbortController();

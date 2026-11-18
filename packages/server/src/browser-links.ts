@@ -23,6 +23,7 @@ import type {
   VaultBrowserCode,
   VaultEntry,
 } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { pageSite, siteMatches, sitesForSave } from "./site-match.js";
 import type { Vault, VaultCaller } from "./vault.js";
 import { nameFor } from "./vault-import.js";
@@ -214,7 +215,7 @@ export class BrowserLinks {
       if (found) this.codes.delete(code);
       throw new BrowserLinkError(
         "bad_code",
-        "This code is wrong or expired: make a new one in RedGiant",
+        `This code is wrong or expired: make a new one in ${PRODUCT_NAME}`,
       );
     }
     this.codes.delete(code);
@@ -346,7 +347,7 @@ export class BrowserLinks {
     const host = pageSite(pageUrl)?.host ?? "";
     const method = purpose === "fill" ? "FILL" : "COPY";
     const why = e.usedBy
-      ? "a key RedGiant uses itself is never given to a page"
+      ? `a key ${PRODUCT_NAME} uses itself is never given to a page`
       : (() => {
           const v = siteMatches(e, pageUrl);
           return v.ok ? null : v.why;
@@ -414,7 +415,7 @@ export class BrowserLinks {
       if (!e)
         throw new BrowserLinkError("not_found", "That credential is no longer in the keychain");
       const m = e.usedBy
-        ? { ok: false as const, why: "a key RedGiant uses" }
+        ? { ok: false as const, why: `a key ${PRODUCT_NAME} uses` }
         : siteMatches(e, input.url);
       if (!m.ok) {
         await v.recordUse(this.caller(dev), e.id, page.host, "UPDATE", "refused", m.why);

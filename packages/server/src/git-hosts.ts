@@ -7,6 +7,7 @@ import { execFile } from "node:child_process";
 import { mkdir, stat } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import type { CredentialRoute } from "@redgiant/sandbox";
 import { RoutesFile } from "./egress-routes.js";
 import { netFailure } from "./net-probe.js";
@@ -138,12 +139,12 @@ export class GitHosts {
       if (why === "not_found" || why === "dns_failed")
         throw new GitHostError(
           "name_not_found",
-          `${what} did not answer: the DNS RedGiant uses does not know ${host}`,
+          `${what} did not answer: the DNS ${PRODUCT_NAME} uses does not know ${host}`,
         );
       if (why === "unreachable" || why === "timeout")
         throw new GitHostError(
           "host_unreachable",
-          `${what} did not answer: ${host} is known, but its address does not answer from RedGiant`,
+          `${what} did not answer: ${host} is known, but its address does not answer from ${PRODUCT_NAME}`,
         );
       throw new GitHostError("unreachable", `${what} did not answer: ${(err as Error).message}`);
     }
@@ -157,7 +158,7 @@ export class GitHosts {
         headers: {
           authorization: `Bearer ${token}`,
           accept: "application/vnd.github+json",
-          "user-agent": "RedGiant",
+          "user-agent": PRODUCT_NAME,
           ...(init.body ? { "content-type": "application/json" } : {}),
         },
       },
@@ -192,7 +193,7 @@ export class GitHosts {
         headers: {
           authorization: `Bearer ${s.githubToken}`,
           accept: "application/vnd.github+json",
-          "user-agent": "RedGiant",
+          "user-agent": PRODUCT_NAME,
         },
       };
     }
@@ -339,7 +340,7 @@ export class GitHosts {
       if (!url)
         throw new GitHostError(
           "unreachable",
-          "Your Gitea must reach RedGiant from outside: set up access from outside home first",
+          `Your Gitea must reach ${PRODUCT_NAME} from outside: set up access from outside home first`,
         );
       const r = await this.gitea(
         cfg.gitea,
@@ -363,7 +364,7 @@ export class GitHosts {
       if (!urls.public)
         throw new GitHostError(
           "unreachable",
-          "GitHub must reach RedGiant from outside: set up access from outside home first",
+          `GitHub must reach ${PRODUCT_NAME} from outside: set up access from outside home first`,
         );
       const r = await this.github(s.githubToken, `/repos/${cfg.github.login}/${projectId}/hooks`, {
         method: "POST",

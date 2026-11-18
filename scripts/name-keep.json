@@ -70,5 +70,59 @@
     "pattern": "REDGIANT-KEYCHAIN",
     "group": "internal",
     "why": "the overlay's custom element <redgiant-keychain> as DevTools names it: an id inside the page, never shown"
+  },
+  {
+    "path": "packages/protocol/src/brand.ts",
+    "pattern": "FORMER_PRODUCT_NAME = \"RedGiant\"",
+    "group": "history",
+    "why": "the name before 3.9.0, kept only to recognise what older versions wrote (built-in instructions, backup folders), never shown"
+  },
+  {
+    "path": "packages/server/**",
+    "pattern": "\"You are (?:the user's everyday|the person's everyday companion|\\{name\\}, the main orchestrator).*",
+    "group": "history",
+    "why": "the built-in instructions of older versions (Chat up to 3.8.6, God and Chat up to 3.8.14), word for word so that an agent that kept them gets today's text"
+  },
+  {
+    "path": "packages/server/test/**",
+    "pattern": "RedGiant-backup-[\\d-]+|redgiant-[\\d.]+-\\d{4}\\.rgbackup",
+    "group": "history",
+    "why": "backups written before 3.9.0 carry the old name and must still be found, listed and pruned (SAFETY_FOLDER, SAFETY_FILE)"
+  },
+  {
+    "path": "packages/**",
+    "pattern": "REDGIANT-(?:BACKUP|KEYCHAIN) 1",
+    "group": "format",
+    "why": "the first line of backup and keychain files (MAGIC, EXPORT_MAGIC): files made by older versions must still open"
+  },
+  {
+    "path": "packages/server/src/**",
+    "pattern": "print\\(\"REDGIANT (?:done|pages=)",
+    "group": "internal",
+    "why": "the line Blender and Scribus print for the server to read in their output, never shown"
+  },
+  {
+    "path": "packages/**",
+    "pattern": "join\\((?:place\\.path|dir), \"RedGiant\"\\)|\\$\\{disk\\}/RedGiant\\b|\\$place/RedGiant\\b|/(?:backups|redgiant-backups)/[\\w$.-]+/RedGiant\\b|/media/usb/RedGiant\\b",
+    "group": "data-folder",
+    "why": "the backups folder on external and host disks (choice 5, existing data folders never move): backups already there must stay where the scheduler and the restore look"
+  },
+  {
+    "path": "packages/server/src/main.ts",
+    "pattern": "\"RedGiant\",\\s*$|\"AppData\", \"Local\"\\), \"RedGiant\", \"engine\"",
+    "group": "data-folder",
+    "why": "the local engine's folder inside the data folders of the Mac and of Windows (choice 5); the launcher normally gives it with REDGIANT_WIN_ENGINE_DIR"
+  },
+  {
+    "path": "packages/server/test/**",
+    "pattern": "/REDGIANT\\|ANTHROPIC\\|",
+    "group": "internal",
+    "why": "tests that no REDGIANT_* variable (choice 11) reaches a machine or a node"
+  },
+  {
+    "path": "packages/server/test/pulls.test.ts",
+    "pattern": "frostmoore/redgiant2\\b",
+    "group": "internal",
+    "why": "Docker images keep their names (choice 12): the registry path of ghcr.io/frostmoore/redgiant2"
   }
 ]

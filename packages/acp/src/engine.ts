@@ -1,6 +1,7 @@
 import * as acp from "@agentclientprotocol/sdk";
 import type { Engine, EngineTurn } from "@redgiant/agent";
 import type { AssistantPart, MessageMetrics, StopReason } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import {
   COMPLETE_MARK,
   chooseOption,
@@ -172,7 +173,7 @@ export class AcpEngine implements Engine {
       init = await c.agent.request("initialize", {
         protocolVersion: acp.PROTOCOL_VERSION,
         clientCapabilities: { fs: { readTextFile: true, writeTextFile: true }, terminal: true },
-        clientInfo: { name: "redgiant", title: "RedGiant", version: "3" },
+        clientInfo: { name: "redgiant", title: PRODUCT_NAME, version: "3" },
       });
     } catch (err) {
       proc.kill();
@@ -247,7 +248,7 @@ export class AcpEngine implements Engine {
       ? [
           workerPrelude(this.o.name, closesTasks),
           t.resume
-            ? "RedGiant restarted and your earlier conversation could not be reopened: what you did is in this folder."
+            ? `${PRODUCT_NAME} restarted and your earlier conversation could not be reopened: what you did is in this folder.`
             : "",
         ]
           .filter(Boolean)
@@ -256,7 +257,7 @@ export class AcpEngine implements Engine {
     // RedGiant's reminders and tasks name complete_task, a tool it does not have: the line it has.
     const how =
       !prelude && closesTasks && /complete_task/.test(t.text)
-        ? `\n\n(To close a task, end your answer with the ${COMPLETE_MARK} line, as RedGiant explained.)`
+        ? `\n\n(To close a task, end your answer with the ${COMPLETE_MARK} line, as ${PRODUCT_NAME} explained.)`
         : "";
     let text = prelude ? `${prelude}\n\n---\n\n${t.text}` : `${t.text}${how}`;
     let images = t.images;
@@ -272,7 +273,7 @@ export class AcpEngine implements Engine {
         input: done,
       });
       if (!r.isError) return { resume: sessionId, stopReason: "end_turn" };
-      text = `RedGiant: complete_task did not close the task.\n${r.content}\n\nFix what is wrong, then end your answer with the ${"RG_COMPLETE_TASK"} line again.`;
+      text = `${PRODUCT_NAME}: complete_task did not close the task.\n${r.content}\n\nFix what is wrong, then end your answer with the ${"RG_COMPLETE_TASK"} line again.`;
       images = [];
     }
   }
@@ -496,7 +497,7 @@ export class AcpEngine implements Engine {
     if (rel === undefined)
       throw acp.RequestError.invalidParams(
         { path },
-        `RedGiant refused: ${path} is outside this agent's folder (${cwd[0]})`,
+        `${PRODUCT_NAME} refused: ${path} is outside this agent's folder (${cwd[0]})`,
       );
     return rel;
   }
@@ -509,7 +510,7 @@ export class AcpEngine implements Engine {
     if (!d.allow)
       throw acp.RequestError.invalidParams(
         { tool: call.name },
-        `RedGiant refused: ${d.reason ?? "not allowed"}`,
+        `${PRODUCT_NAME} refused: ${d.reason ?? "not allowed"}`,
       );
   }
 

@@ -1,4 +1,5 @@
 import type { Event } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 
 /** The events that say how far a turn got. */
 const TURN_EVENTS = new Set<Event["type"]>([
@@ -46,7 +47,7 @@ export function lastTurnAt(events: readonly Event[]): number | undefined {
  */
 export function resumeNote(task: { id: string; title: string }): string {
   return (
-    `[RedGiant restarted (a power cut, a crash or an update) while you were working on task ${task.id} («${task.title}»). ` +
+    `[${PRODUCT_NAME} restarted (a power cut, a crash or an update) while you were working on task ${task.id} («${task.title}»). ` +
     "Your conversation above is everything that happened up to that moment; a call answered «Interrupted» did not return, and what it does may or may not have happened. " +
     "Check what is already there (files, running commands, list_agents, read_agent) before going on, and do not do again what is done: " +
     "do not create again agents, projects or tasks that already exist, and give work to the agents you already have. " +

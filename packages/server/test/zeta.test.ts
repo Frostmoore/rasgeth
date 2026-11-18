@@ -22,7 +22,7 @@ import {
 import type { Jobs } from "../src/jobs.js";
 
 const sha = (b: Buffer) => createHash("sha256").update(b).digest("hex");
-const GOOD = Buffer.from("the build RedGiant knows");
+const GOOD = Buffer.from("the build Rasgeth knows");
 const OTHER = Buffer.from("another build of the same file");
 const WASM: ZetaFile = {
   name: "soffice.wasm",
@@ -122,7 +122,7 @@ describe("ZetaOffice.fetchFile", () => {
       [`${ZETA_CDN}/soffice.wasm`]: OTHER,
     });
     await expect(t.run()).rejects.toThrow(
-      /no source gave it \(mirror: .*not the file RedGiant knows.*; redgiant: 404; zetaoffice: .*not the file/,
+      /no source gave it \(mirror: .*not the file Rasgeth knows.*; redgiant: 404; zetaoffice: .*not the file/,
     );
     expect(await readdir(t.dir)).toEqual([]);
     expect(t.bar()).toBe(0);

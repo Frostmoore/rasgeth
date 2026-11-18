@@ -34,6 +34,7 @@ import {
   KnowledgeSourceInput,
   type KnowledgeStatus,
   OCR_LANGUAGES,
+  PRODUCT_NAME,
   RerankChoice,
   TEXT_SEARCH_CONFIG_NAMES,
   textSearchConfig,
@@ -540,7 +541,7 @@ export class KnowledgeService {
       });
       let v: number[] | undefined;
       try {
-        v = (await probe.embed(["RedGiant"], "query", signal))[0];
+        v = (await probe.embed([PRODUCT_NAME], "query", signal))[0];
       } catch (err) {
         throw new KnowledgeError(
           "embedding_failed",
@@ -818,8 +819,8 @@ export class KnowledgeService {
         throw new KnowledgeError(
           "bad_source",
           within(keep, real)
-            ? `${path} is inside RedGiant's own data (its database, keychain and downloads are never read). A project's files can be: add them as kind "workspace" with scope "project:<id>"`
-            : `${path} holds RedGiant's own data (its database, keychain and downloads are never read): choose a folder inside it`,
+            ? `${path} is inside ${PRODUCT_NAME}'s own data (its database, keychain and downloads are never read). A project's files can be: add them as kind "workspace" with scope "project:<id>"`
+            : `${path} holds ${PRODUCT_NAME}'s own data (its database, keychain and downloads are never read): choose a folder inside it`,
         );
     }
     return real;

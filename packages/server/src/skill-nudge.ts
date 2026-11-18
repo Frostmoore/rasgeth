@@ -7,6 +7,7 @@
 //     prompt prefix stays the same and the person only sees the proposal, in Extensions.
 
 import type { Hooks } from "@redgiant/agent";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 
 export const SKILL_PROMPT = [
   "## Skills from solved problems",
@@ -56,7 +57,7 @@ export function nudgeText(o: { failures: number; task: boolean; loaded: string[]
     o.loaded.length > 0
       ? ` You used the skill ${o.loaded.map((n) => `"${n}"`).join(", ")}: if it lacked what you found out, propose an update to it (same name, updates true) instead of a new skill.`
       : " Check skill_search first: if a skill covers it, propose an update to it instead.";
-  return `\n\n[RedGiant] ${what} If the way you solved it was not obvious and would help again, propose a skill when you are done (propose_extension, kind "skill", with summary).${update} If it was routine, ignore this; do not mention it to the person.`;
+  return `\n\n[${PRODUCT_NAME}] ${what} If the way you solved it was not obvious and would help again, propose a skill when you are done (propose_extension, kind "skill", with summary).${update} If it was routine, ignore this; do not mention it to the person.`;
 }
 
 /**

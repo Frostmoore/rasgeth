@@ -7,6 +7,7 @@
 import type { Tool, ToolContext } from "@redgiant/agent";
 import { criticalOf } from "@redgiant/hierarchy";
 import type { NodeRight, NodeView } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { truncateMiddle } from "@redgiant/tools";
 import { z } from "zod";
 import type { NodeWorkspace } from "./remote.js";
@@ -77,15 +78,14 @@ export function nodeTools(host: NodeToolsHost): Tool[] {
   const list: Tool<Record<string, never>> = {
     def: {
       name: "node_list",
-      description:
-        "List the person's nodes (other RedGiant machines paired with this one): whether each is online and what it offers (commands, models, storage, load). Run commands on one with node_run.",
+      description: `List the person's nodes (other ${PRODUCT_NAME} machines paired with this one): whether each is online and what it offers (commands, models, storage, load). Run commands on one with node_run.`,
       inputSchema: { type: "object", properties: {} },
     },
     schema: z.object({}).strict() as unknown as z.ZodType<Record<string, never>>,
     async run(_input, ctx) {
       const all = await host.nodes(ctx);
       if (!all.length)
-        return "There are no nodes: the person pairs other RedGiant machines in Settings > Nodes.";
+        return `There are no nodes: the person pairs other ${PRODUCT_NAME} machines in Settings > Nodes.`;
       const pin = await host.pinned(ctx);
       return all.map((n) => line(n, n.fingerprint === pin)).join("\n");
     },

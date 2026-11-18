@@ -141,7 +141,7 @@ async function run(parallel: boolean, follow = true) {
     }
   };
   try {
-    page.send({ type: "session.send", sessionId: body.sessionId, text: "Test RedGiant" });
+    page.send({ type: "session.send", sessionId: body.sessionId, text: "Test Rasgeth" });
     const started = await waitSeen(
       "session.activity",
       (m) => m.agentId !== god.body.id && m.state === "running",

@@ -8,6 +8,7 @@
  */
 
 import { ARTIFACT_GRANT_TOOL, grantSentence } from "./artifact-bridge.js";
+import { PRODUCT_NAME } from "./brand.js";
 import { preparedMailOf } from "./mail.js";
 import { routePhrase } from "./model-routes.js";
 import { shellSummary } from "./shell-summary.js";
@@ -125,8 +126,8 @@ function policySentence({ l, i }: Ctx): string {
   const n = Array.isArray(i.rules) ? i.rules.length : 0;
   const rules = it ? (n === 1 ? "1 regola" : `${n} regole`) : n === 1 ? "1 rule" : `${n} rules`;
   return it
-    ? `Sostituisce le regole dei permessi di RedGiant (${rules})`
-    : `Replaces RedGiant's permission rules (${rules})`;
+    ? `Sostituisce le regole dei permessi di ${PRODUCT_NAME} (${rules})`
+    : `Replaces ${PRODUCT_NAME}'s permission rules (${rules})`;
 }
 
 function mcpSentence({ l, i, name, q }: Ctx): string {
@@ -304,36 +305,37 @@ const SENTENCES: Record<string, Record<Lang, Sentence>> = {
   platform_policy: { it: policySentence, en: policySentence },
   platform_mcp: { it: mcpSentence, en: mcpSentence },
   platform_undo: {
-    it: ({ i }) => `Annulla la modifica a RedGiant ${str(i.change_id) ?? ""}`.trim(),
-    en: ({ i }) => `Undoes the change to RedGiant ${str(i.change_id) ?? ""}`.trim(),
+    it: ({ i }) => `Annulla la modifica a ${PRODUCT_NAME} ${str(i.change_id) ?? ""}`.trim(),
+    en: ({ i }) => `Undoes the change to ${PRODUCT_NAME} ${str(i.change_id) ?? ""}`.trim(),
   },
   platform_code_start: {
-    it: ({ i, q }) => `Inizia una modifica al codice di RedGiant: ${q(str(i.title) ?? "?")}`,
-    en: ({ i, q }) => `Starts a change to RedGiant's code: ${q(str(i.title) ?? "?")}`,
+    it: ({ i, q }) => `Inizia una modifica al codice di ${PRODUCT_NAME}: ${q(str(i.title) ?? "?")}`,
+    en: ({ i, q }) => `Starts a change to ${PRODUCT_NAME}'s code: ${q(str(i.title) ?? "?")}`,
   },
   platform_code_test: {
     it: ({ i }) =>
-      `Prova la modifica al codice di RedGiant ${str(i.change_id) ?? ""} in una copia separata`,
+      `Prova la modifica al codice di ${PRODUCT_NAME} ${str(i.change_id) ?? ""} in una copia separata`,
     en: ({ i }) =>
-      `Tests the change to RedGiant's code ${str(i.change_id) ?? ""} in a separate copy`,
+      `Tests the change to ${PRODUCT_NAME}'s code ${str(i.change_id) ?? ""} in a separate copy`,
   },
   platform_code_promote: {
     it: ({ i }) =>
-      `Mette in funzione la modifica al codice di RedGiant ${str(i.change_id) ?? ""}: RedGiant ripartirà con il codice nuovo`,
+      `Mette in funzione la modifica al codice di ${PRODUCT_NAME} ${str(i.change_id) ?? ""}: ${PRODUCT_NAME} ripartirà con il codice nuovo`,
     en: ({ i }) =>
-      `Puts live the change to RedGiant's code ${str(i.change_id) ?? ""}: RedGiant restarts with the new code`,
+      `Puts live the change to ${PRODUCT_NAME}'s code ${str(i.change_id) ?? ""}: ${PRODUCT_NAME} restarts with the new code`,
   },
   platform_code_discard: {
-    it: ({ i }) => `Scarta la modifica al codice di RedGiant ${str(i.change_id) ?? ""}`.trim(),
-    en: ({ i }) => `Drops the change to RedGiant's code ${str(i.change_id) ?? ""}`.trim(),
+    it: ({ i }) =>
+      `Scarta la modifica al codice di ${PRODUCT_NAME} ${str(i.change_id) ?? ""}`.trim(),
+    en: ({ i }) => `Drops the change to ${PRODUCT_NAME}'s code ${str(i.change_id) ?? ""}`.trim(),
   },
   platform_status: {
-    it: () => "Legge lo stato di RedGiant",
-    en: () => "Reads RedGiant's state",
+    it: () => `Legge lo stato di ${PRODUCT_NAME}`,
+    en: () => `Reads ${PRODUCT_NAME}'s state`,
   },
   platform_changes: {
-    it: () => "Legge le ultime modifiche a RedGiant",
-    en: () => "Reads the latest changes to RedGiant",
+    it: () => `Legge le ultime modifiche a ${PRODUCT_NAME}`,
+    en: () => `Reads the latest changes to ${PRODUCT_NAME}`,
   },
   bash: { it: bashSentence, en: bashSentence },
   // Another machine (G38.2) or a node (G39.4): the command in words, and where (p3.8.9).

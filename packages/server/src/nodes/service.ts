@@ -37,6 +37,7 @@ import {
   PAIR_CODE_TTL_MS,
   type PairCode,
   type PendingPair,
+  PRODUCT_NAME,
 } from "@redgiant/protocol";
 import type WebSocket from "ws";
 import type { Vault } from "../vault.js";
@@ -321,7 +322,7 @@ export class Nodes {
       const made = newIdentity();
       await vault.setSystem(ownerId, IDENTITY_KEY, made.pem, {
         name: "redgiant-node-key",
-        service: "RedGiant nodes",
+        service: `${PRODUCT_NAME} nodes`,
         category: "server",
         hosts: [],
         section: "nodes",
@@ -539,7 +540,7 @@ export class Nodes {
         const x = m as { t?: string; name?: unknown };
         if (x.t !== "pair-hello") return;
         clearTimeout(timer);
-        ok(typeof x.name === "string" && x.name.trim() ? x.name.trim().slice(0, 40) : "RedGiant");
+        ok(typeof x.name === "string" && x.name.trim() ? x.name.trim().slice(0, 40) : PRODUCT_NAME);
       });
       link.send({ t: "pair-hello", name: mine });
     });
@@ -681,7 +682,7 @@ export class Nodes {
       const s = await this.load(ownerId);
       const self = (await this.identity(ownerId)).fingerprint;
       const peerName = await this.helloOver(acc.link, await this.name(ownerId)).catch(
-        () => "RedGiant",
+        () => PRODUCT_NAME,
       );
       const check: AttachCheck = canAttach(this.graph(self, s), self, acc.peer.fingerprint);
       if (!check.ok || s.parent?.fingerprint === acc.peer.fingerprint) {

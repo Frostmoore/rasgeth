@@ -91,7 +91,7 @@ describe("God on the platform's configuration", () => {
     // Reading the platform needs no approval.
     const status = (await say("status"))?.output;
     expect(status).toMatch(/\tgod\tGod\t-\tactive\tfake\/bigger \(high\)\t/);
-    expect(status).toMatch(/^RedGiant: version /);
+    expect(status).toMatch(/^Rasgeth: version /);
     expect(requests).toHaveLength(1);
 
     const [change] = await (s as Server).core.changes.list("me");
@@ -247,11 +247,11 @@ describe("platform_status says the version installed (UpdateStatus.installed)", 
     canUninstall: false,
   };
   it.each([
-    ["not checked yet", base, "RedGiant: version 3.7.1, installed as RedGiant OS"],
+    ["not checked yet", base, "Rasgeth: version 3.7.1, installed as Rasgeth OS"],
     [
       "up to date",
       { ...base, latest: "3.7.1", state: "latest" as const },
-      "RedGiant: version 3.7.1, installed as RedGiant OS; up to date",
+      "Rasgeth: version 3.7.1, installed as Rasgeth OS; up to date",
     ],
     [
       "an update",
@@ -262,12 +262,12 @@ describe("platform_status says the version installed (UpdateStatus.installed)", 
         state: "available" as const,
         gate: "mandatory" as const,
       },
-      "RedGiant: version 3.7.1, installed as Docker; latest release 3.8.0 (available, mandatory)",
+      "Rasgeth: version 3.7.1, installed as Docker; latest release 3.8.0 (available, mandatory)",
     ],
     [
       "from the source",
       { ...base, install: "source" as const, installed: null },
-      "RedGiant: version unknown (running from the source), installed as from the source code",
+      "Rasgeth: version unknown (running from the source), installed as from the source code",
     ],
   ])("%s", (_name, u, line) => {
     expect(versionLine(u)).toBe(line);

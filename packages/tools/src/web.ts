@@ -5,6 +5,7 @@ import { isIP } from "node:net";
 import { Readable } from "node:stream";
 import zlib from "node:zlib";
 import type { Tool } from "@redgiant/agent";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { z } from "zod";
 import { describe, type ModelProfile } from "./profiles.js";
 import { truncateMiddle } from "./text.js";
@@ -239,8 +240,7 @@ export function webSearchTool(
     async run({ query, max_results = 8 }, ctx) {
       if (!provider) {
         return {
-          content:
-            "Web search is not configured. Tell the user to choose a search provider in the RedGiant settings.",
+          content: `Web search is not configured. Tell the user to choose a search provider in the ${PRODUCT_NAME} settings.`,
           isError: true,
         };
       }
@@ -350,7 +350,7 @@ const nodeTransport: Transport = (url, { signal, addresses }) =>
         signal,
         lookup: pinned as never,
         headers: {
-          "user-agent": "Mozilla/5.0 (compatible; RedGiant)",
+          "user-agent": `Mozilla/5.0 (compatible; ${PRODUCT_NAME})`,
           accept: "text/html,application/xhtml+xml,application/json,text/plain;q=0.9,*/*;q=0.8",
           "accept-encoding": "gzip, deflate, br",
         },

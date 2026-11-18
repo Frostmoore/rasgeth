@@ -777,7 +777,7 @@ describe("orchestration", () => {
     expect(heard).toHaveLength(1);
     expect(heard[0]).toContain("</task_report>");
     expect(heard[0]).toContain(
-      "[RedGiant: Your list of steps (update_todos) still has open steps; it says:\n" +
+      "[Rasgeth: Your list of steps (update_todos) still has open steps; it says:\n" +
         "1. [in_progress] Hand the work over\n2. [pending] Tell the person",
     );
     const user = (await s.core.store.list({ sessionId: sid })).filter(

@@ -18,6 +18,7 @@ import {
   type Event,
   type ImagePart,
   type ModelSpec,
+  PRODUCT_NAME,
   routePhrase,
 } from "@redgiant/protocol";
 import { complete, costUsd, type ProviderRegistry, streamWithFallback } from "@redgiant/providers";
@@ -755,8 +756,7 @@ export function orchestrationTools(
     tools.push({
       def: {
         name: "ask_group",
-        description:
-          "Bring several agents into one group chat (the user can open it in RedGiant) and get their answers, for questions that need more than one of them, like two projects' inspectors. members: agent ids, or inspector:<project_id> for a project's inspector. The first member answers first; they pass the word to each other with @name.",
+        description: `Bring several agents into one group chat (the user can open it in ${PRODUCT_NAME}) and get their answers, for questions that need more than one of them, like two projects' inspectors. members: agent ids, or inspector:<project_id> for a project's inspector. The first member answers first; they pass the word to each other with @name.`,
         inputSchema: {
           type: "object",
           properties: {
@@ -805,7 +805,7 @@ export function orchestrationTools(
         await done;
         const answers = (await rooms.events(self.ownerId, room.id)).flatMap((e) =>
           e.seq > before && e.type === "room.message" && e.payload && e.payload.from !== "human"
-            ? [`${e.payload.name || "RedGiant"}: ${e.payload.text}`]
+            ? [`${e.payload.name || PRODUCT_NAME}: ${e.payload.text}`]
             : [],
         );
         return `Group chat "${room.title}" (the user can open it among the groups).\n\n${clip(answers.join("\n\n"), 8000) || "No answer."}`;
@@ -1198,8 +1198,7 @@ export function orchestrationTools(
       {
         def: {
           name: "stop_agent",
-          description:
-            "Pause an agent you manage, and everything below it: its turns stop now and it takes no work until resume_agent brings it back; its open tasks wait and go on in the same conversation when it is resumed. Not a way to restart one: after a restart RedGiant resumes the work that was cut by itself, and delegate gives an agent new work at any time.",
+          description: `Pause an agent you manage, and everything below it: its turns stop now and it takes no work until resume_agent brings it back; its open tasks wait and go on in the same conversation when it is resumed. Not a way to restart one: after a restart ${PRODUCT_NAME} resumes the work that was cut by itself, and delegate gives an agent new work at any time.`,
           inputSchema: {
             type: "object",
             properties: { agent_id: { type: "string" }, reason: { type: "string" } },

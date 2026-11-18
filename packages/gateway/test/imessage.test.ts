@@ -112,7 +112,7 @@ describe("IMessageTransport", () => {
     ]);
   });
 
-  it("in a group answers only messages naming RedGiant", async () => {
+  it("in a group answers only messages naming Rasgeth", async () => {
     const got: Incoming[] = [];
     const { t, inbox } = make();
     await t.start(async (m) => {
@@ -120,7 +120,7 @@ describe("IMessageTransport", () => {
     });
     const group = { chats: [{ guid: "iMessage;+;chat42" }] };
     inbox.push(message("g1", Date.now() + 10, { ...group, text: "dinner at 8?" }));
-    inbox.push(message("g2", Date.now() + 20, { ...group, text: "RedGiant, what's the weather" }));
+    inbox.push(message("g2", Date.now() + 20, { ...group, text: "Rasgeth, what's the weather" }));
     await waitFor(() => got.length === 1);
     expect(got[0]).toMatchObject({ chatId: "iMessage;+;chat42", text: "what's the weather" });
   });

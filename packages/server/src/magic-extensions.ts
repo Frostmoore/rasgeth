@@ -20,6 +20,7 @@ import {
   MagicManifest,
   type MagicPart,
   magicChecks,
+  PRODUCT_NAME,
 } from "@redgiant/protocol";
 import type { z } from "zod";
 import { magicTitle } from "./magic.js";
@@ -102,7 +103,7 @@ export async function migrateMagicExtensions(db: SqlClient): Promise<void> {
 
 /** What God reads, in the system prompt of a magic integration's or extension's conversation. */
 export const MAGIC_EXT_PROMPT = `## This conversation builds an integration or an extension (magic)
-The person pressed "Magic integration" or "Magic extension" in the Extensions page and wrote what they want: a connection to a service (its API) or new abilities for the agents. Your job is one working package of RedGiant: tools (and skills when they help), tested, that the person installs with one button.
+The person pressed "Magic integration" or "Magic extension" in the Extensions page and wrote what they want: a connection to a service (its API) or new abilities for the agents. Your job is one working package of ${PRODUCT_NAME}: tools (and skills when they help), tested, that the person installs with one button.
 1. Understand what they want. Ask short, simple questions (ask_user) only for what you cannot sensibly choose yourself (which account, which operations they need). Write to them in their language, in plain words.
 2. Find out how the service's API works (web_search, fetch of its documentation) when you do not know it.
 3. Propose the whole package with propose_magic_extension: name, title and summary for the person, hosts (every host the code reaches, nothing else is reachable), credentials (name in lower case with dashes or underscores such as notion_api, service, hosts, the header and format the API wants such as Authorization "Bearer {value}", why, and help: where the person gets the key), tools and skills. Do not use propose_extension here.

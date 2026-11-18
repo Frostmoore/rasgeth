@@ -130,7 +130,7 @@ const turn = (over: Partial<EngineTurn> = {}) => {
 };
 
 describe("Claude on a subscription", () => {
-  it("runs the turn in the engine with RedGiant's tools only, and continues the same session", async () => {
+  it("runs the turn in the engine with Rasgeth's tools only, and continues the same session", async () => {
     const { sdk, asked } = fakeSdk("tools");
     const p = new ClaudeSubscriptionProvider({
       token: "sk-ant-oat01-x",

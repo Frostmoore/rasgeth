@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { KvStore, LocalEngineProvider } from "@redgiant/engine-local";
 import { pgPoolClient, Redactor, type SqlClient } from "@redgiant/events";
 import type { ModelSpec } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import {
   AnthropicProvider,
   LOCAL_STALL,
@@ -505,7 +506,7 @@ const running = await serve(core, new TokenAuth({ [token]: owner }), {
   issueDeviceToken: (ownerId, device) => core.devices.create(ownerId, device),
   webDir: env.REDGIANT_WEB_DIR ?? fileURLToPath(new URL("../../web/dist", import.meta.url)),
 });
-console.log(`RedGiant listening on ${running.url} (sandbox: ${sandbox.kind})`);
+console.log(`${PRODUCT_NAME} listening on ${running.url} (sandbox: ${sandbox.kind})`);
 // A first start without a screen (G39.7): the address to open from another device of the
 // network, where the page creates the access. The one-time code of G39.3 only when asked for
 // (REDGIANT_SETUP_CODE=1, a network the administrator does not trust).

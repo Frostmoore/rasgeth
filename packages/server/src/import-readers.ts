@@ -20,6 +20,7 @@
 
 import { NAME_RE } from "@redgiant/extensions";
 import type { ImportItem, ImportNote, ImportSource } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { parse as parseToml } from "smol-toml";
 import { parse as parseYaml } from "yaml";
 
@@ -573,7 +574,7 @@ async function codexToml(ctx: Ctx, path: string) {
   if (kept.length > 0)
     ctx.out.left.push({
       from: path,
-      what: `settings ${kept.join(", ")} (chosen in RedGiant's own Settings)`,
+      what: `settings ${kept.join(", ")} (chosen in ${PRODUCT_NAME}'s own Settings)`,
     });
 }
 

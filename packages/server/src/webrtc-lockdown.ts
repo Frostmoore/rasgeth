@@ -21,6 +21,8 @@
 // The script holds against a page that replaces built-ins afterwards: it keeps its own references
 // (Reflect.apply, getters, slice) and never hands a native function to the page's code.
 
+import { PRODUCT_NAME } from "@redgiant/protocol";
+
 /**
  * The scanner, as source (it runs in the page too, so no compiled function's `toString`, which a
  * bundler may decorate): attributes `srcdoc` and `src` inside `<iframe` and `<frame` tags renamed
@@ -288,7 +290,7 @@ var writing = function (o) {
       if (t[k] !== "\x3c") continue;
       var l = t[k + 1] === "i" || t[k + 1] === "I" ? 1 : 0;
       if (eqi(cut(t, k + 1 + l, k + 6 + l), "frame", "FRAME"))
-        throw new Err("RedGiant: document.write cannot make frames in this page (WebRTC is off); create them with document.createElement");
+        throw new Err("${PRODUCT_NAME}: document.write cannot make frames in this page (WebRTC is off); create them with document.createElement");
     }
     tail = cut(t, t.length > 6 ? t.length - 6 : 0, t.length);
     return A(o, this, [s]);

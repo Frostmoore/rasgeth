@@ -1,6 +1,6 @@
 // Hands-free voice (G38.4): the wake word is heard in the browser, never here. The page runs Vosk
 // (Apache-2.0) in WASM with a small speech model (Apache-2.0) and a grammar limited to the wake
-// phrase, so «Ehi RedGiant» works without a trained model and no audio leaves the page before it.
+// phrase, so «Ehi Rasgeth» works without a trained model and no audio leaves the page before it.
 // The model comes down once into the data folder, as a job with its bar, and is handed to the page
 // as the `.tar.gz` (one folder on top) that vosk-browser unpacks into its own storage.
 //

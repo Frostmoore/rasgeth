@@ -21,6 +21,7 @@ import {
   type MachineTest,
   type MachineTestCode,
   type MachineView,
+  PRODUCT_NAME,
   WINDOWS_FOLDER,
 } from "@redgiant/protocol";
 import ssh2 from "ssh2";
@@ -224,7 +225,7 @@ export class Machines {
         "invalid",
         key instanceof Error && /passphrase|encrypted/i.test(key.message)
           ? "The private key is protected by a passphrase: write it too"
-          : "This is not a private key RedGiant can read (OpenSSH or PEM)",
+          : `This is not a private key ${PRODUCT_NAME} can read (OpenSSH or PEM)`,
       );
     if (!key.isPrivateKey())
       throw new MachineError("invalid", "This is a public key: paste the private one");
@@ -268,7 +269,7 @@ export class Machines {
             meta: this.meta(m, "key passphrase"),
           });
       } else {
-        const pair = newSshKeyPair(`redgiant-${b.name}`);
+        const pair = newSshKeyPair(`rasgeth-${b.name}`);
         m.publicKey = pair.public.trim();
         m.keySource = "generated";
         want.set(this.keyOf(id, "key"), { value: pair.private, meta: this.meta(m, "private key") });
@@ -323,7 +324,7 @@ export class Machines {
     if (touchesSecrets) {
       const vault = this.vault();
       if (p.newKey) {
-        const pair = newSshKeyPair(`redgiant-${m.name}`);
+        const pair = newSshKeyPair(`rasgeth-${m.name}`);
         await vault.setSystem(
           ownerId,
           this.keyOf(id, "key"),

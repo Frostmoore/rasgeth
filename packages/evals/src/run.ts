@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { PGlite } from "@electric-sql/pglite";
 import type { SqlClient } from "@redgiant/events";
 import type { ModelSpec } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import type { ProviderRegistry } from "@redgiant/providers";
 import { commitAll, ensureRepo, HostSandboxProvider } from "@redgiant/sandbox";
 import { RedGiantCore } from "@redgiant/server";
@@ -178,7 +179,7 @@ export function report(
   const lines = [
     "# Evaluations",
     "",
-    `RedGiant ${meta.version}, ${meta.date}. Each task runs in a fresh project with its own orchestrator`,
+    `${PRODUCT_NAME} ${meta.version}, ${meta.date}. Each task runs in a fresh project with its own orchestrator`,
     "(permission mode `auto`; requests that only a human may approve are denied). The verifier is",
     "written after the agents finish and decides alone. Cost and tokens are the project's budget.",
     "Run them yourself: `pnpm --filter @redgiant/evals start -- --models provider/model,…`.",

@@ -62,7 +62,7 @@ describe("chat platforms of G36.9", () => {
     );
   });
 
-  it("Teams' webhook is reachable without RedGiant's token, and refuses when Teams is off", async () => {
+  it("Teams' webhook is reachable without Rasgeth's token, and refuses when Teams is off", async () => {
     const s = await startServer([]);
     try {
       const r = await fetch(`${s.url}/api/chats/teams/messages`, {

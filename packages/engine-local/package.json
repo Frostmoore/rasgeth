@@ -1,7 +1,7 @@
 {
   "name": "@redgiant/engine-local",
   "version": "0.1.0",
-  "description": "Local engines for RedGiant: llama.cpp slots, a priority scheduler and an SSD-backed KV cache store inspired by DwarfStar 4.",
+  "description": "Local engines for Rasgeth: llama.cpp slots, a priority scheduler and an SSD-backed KV cache store inspired by DwarfStar 4.",
   "license": "MIT",
   "type": "module",
   "exports": {

@@ -9,7 +9,7 @@ afterEach(() => {
   process.env = { ...saved };
 });
 
-describe("Git on Windows (RedGiant 3.0)", () => {
+describe("Git on Windows (Rasgeth 3.0)", () => {
   it("sees a git.exe on the PATH, and puts the portable one first when used", async () => {
     const dir = await mkdtemp(join(tmpdir(), "rg-git-"));
     expect(gitOnPath(dir)).toBe(false);

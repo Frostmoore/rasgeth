@@ -106,7 +106,7 @@ async function run(version: string, supervised = true) {
   return { ...src, asked, outputs, change, core: s.core };
 }
 
-describe("God's changes to RedGiant's own code", () => {
+describe("God's changes to Rasgeth's own code", () => {
   it("tests a change in a worktree, with a trial copy, and promotes it through the supervisor", async () => {
     const { asked, outputs, change, git, restarts, stateDir, core } = await run("v2");
     // Opening a change and editing files ask nobody; testing and promoting ask the human.
@@ -150,7 +150,7 @@ describe("God's changes to RedGiant's own code", () => {
     const godSession = (await core.history("me", (await core.listSessions("me"))[0]?.id ?? ""))
       .filter((e) => e.type === "message.user")
       .map((e) => (e.payload as { text: string }).text);
-    expect(godSession.at(-1)).toMatch(/is live: RedGiant restarted on version/);
+    expect(godSession.at(-1)).toMatch(/is live: Rasgeth restarted on version/);
   });
 
   it("records a failing change and never promotes it", async () => {

@@ -278,7 +278,7 @@ describe("AgentSession", () => {
     expect(resumed.messages).toEqual(s.messages);
   });
 
-  it("lets an external engine run the turn while the tools, permissions and log stay RedGiant's", async () => {
+  it("lets an external engine run the turn while the tools, permissions and log stay Rasgeth's", async () => {
     const seen: { resume: string | undefined; tools: string[] }[] = [];
     const metrics = {
       startedAt: "2026-11-01T10:00:00.000Z",
@@ -438,7 +438,7 @@ describe("AgentSession", () => {
       setStallLog((l) => console.warn(l));
     });
 
-    it("does not count the time of RedGiant's tools (a long command is not a silent provider)", async () => {
+    it("does not count the time of Rasgeth's tools (a long command is not a silent provider)", async () => {
       const slow: Tool = {
         def: { name: "slow", description: "Takes its time", inputSchema: { type: "object" } },
         async run() {

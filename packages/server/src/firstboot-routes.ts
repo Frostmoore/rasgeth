@@ -35,6 +35,7 @@ import {
   type BackupSchedule,
   HOST_DEVICE,
   HOST_FOLDER_NAME,
+  PRODUCT_NAME,
   PROXMOX_ID,
 } from "@redgiant/protocol";
 import type { Context, Hono } from "hono";
@@ -481,7 +482,7 @@ export function firstBootRoutes<E extends { Variables: any }>(
         throw fail("not_found", "No such machine");
       });
       const god = core.registry.list({ ownerId: o }).find((a) => a.kind === "god");
-      if (!god) throw fail("unavailable", "RedGiant is not set up yet");
+      if (!god) throw fail("unavailable", `${PRODUCT_NAME} is not set up yet`);
       return core.jobs.start(
         o,
         "backup_host_mount",
@@ -631,7 +632,7 @@ export function firstBootRoutes<E extends { Variables: any }>(
     if (!pem) return c.json({ error: "No local certificate on this installation" }, 404);
     return c.body(pem, 200, {
       "content-type": "application/x-x509-ca-cert",
-      "content-disposition": 'attachment; filename="RedGiant-CA.crt"',
+      "content-disposition": `attachment; filename="${PRODUCT_NAME}-CA.crt"`,
       "cache-control": "no-store",
     });
   });

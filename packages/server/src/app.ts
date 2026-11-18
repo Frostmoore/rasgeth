@@ -37,6 +37,7 @@ import {
   type ModelSpec as ModelSpecType,
   PermissionMode,
   PermissionRequestInfo,
+  PRODUCT_NAME,
   PROJECT_AGENTS_MAX,
   PROTOCOL_VERSION,
   ProjectMaxAgents,
@@ -928,7 +929,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.get("/api/health", (c) => c.json({ ok: true, protocolVersion: PROTOCOL_VERSION }));
   app.doc31("/api/openapi.json", {
     openapi: "3.1.0",
-    info: { title: "RedGiant", version: String(PROTOCOL_VERSION) },
+    info: { title: PRODUCT_NAME, version: String(PROTOCOL_VERSION) },
   });
   app.openAPIRegistry.registerComponent("securitySchemes", "bearer", {
     type: "http",
@@ -1752,7 +1753,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       .find((j) => j.kind === "backup_export" && j.state === "running");
     if (running) return c.json(running, 200);
     const dir = core.backupsDir;
-    const name = `redgiant-backup-${new Date().toISOString().slice(0, 16).replace(/[T:]/g, "-")}.rgbackup`;
+    const name = `${PRODUCT_NAME.toLowerCase()}-backup-${new Date().toISOString().slice(0, 16).replace(/[T:]/g, "-")}.rgbackup`;
     const job = core.jobs.start(
       o,
       "backup_export",
@@ -1760,8 +1761,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       async (h) => {
         // One backup at a time stays here: the older ones were downloaded already.
         await mkdir(dir, { recursive: true });
+        // (Those made before 3.9.0 carry the product's old name.)
         for (const f of await readdir(dir))
-          if (f.startsWith("redgiant-backup-")) await removeBackup(join(dir, f));
+          if (/^(?:rasgeth|redgiant)-backup-/.test(f)) await removeBackup(join(dir, f));
         // The knowledge's pieces and vectors only when the person asked (G36.6).
         const vectors = (await core.knowledge?.settings(o).catch(() => undefined))?.backupVectors;
         await exportBackup(core.backupDeps, o, join(dir, name), h, keychain, {
@@ -2144,7 +2146,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     const zip = teamsAppPackage({ appId, ...(host && { host }) });
     return c.body(new Uint8Array(zip), 200, {
       "content-type": "application/zip",
-      "content-disposition": 'attachment; filename="redgiant-teams.zip"',
+      "content-disposition": 'attachment; filename="rasgeth-teams.zip"',
     });
   });
 
@@ -3373,13 +3375,13 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.get("/api/extensions/mcp/status", async (c) => c.json(await core.mcpStatus(owner(c)), 200));
   app.post("/api/extensions/mcp/:name/login", async (c) => {
     const b = z.object({ origin: z.url() }).safeParse(await c.req.json().catch(() => ({})));
-    if (!b.success) return c.json({ error: "RedGiant's address (origin) is needed" }, 400);
+    if (!b.success) return c.json({ error: `${PRODUCT_NAME}'s address (origin) is needed` }, 400);
     return c.json(await core.startMcpAuth(owner(c), c.req.param("name"), b.data.origin), 200);
   });
   app.get("/api/extensions/oauth/callback", async (c) => {
     const page = (title: string, text: string, ok: boolean) =>
       c.html(
-        `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>RedGiant</title>` +
+        `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>${PRODUCT_NAME}</title>` +
           `<body style="font-family:system-ui;max-width:32rem;margin:4rem auto;padding:0 1rem;line-height:1.5">` +
           `<h2 style="color:${ok ? "#2e9d5b" : "#d23d3d"}">${title}</h2><p>${text}</p>` +
           `<script>setTimeout(()=>window.close(),${ok ? 1500 : 60000})</script></body>`,
@@ -3399,8 +3401,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       return page(
         it ? "Collegato" : "Connected",
         it
-          ? `${escapeHtml(r.name)} è collegato a RedGiant (${r.tools} strumenti). Puoi chiudere questa scheda.`
-          : `${escapeHtml(r.name)} is connected to RedGiant (${r.tools} tools). You can close this tab.`,
+          ? `${escapeHtml(r.name)} è collegato a ${PRODUCT_NAME} (${r.tools} strumenti). Puoi chiudere questa scheda.`
+          : `${escapeHtml(r.name)} is connected to ${PRODUCT_NAME} (${r.tools} tools). You can close this tab.`,
         true,
       );
     } catch (err) {
@@ -3776,7 +3778,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   });
   app.get("/api/debug/logs", async (c) => {
     const body = await debugLog.archive();
-    const name = `redgiant-logs-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-")}.tar.gz`;
+    const name = `${PRODUCT_NAME.toLowerCase()}-logs-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-")}.tar.gz`;
     return new Response(new Uint8Array(body), {
       headers: {
         "content-type": "application/gzip",

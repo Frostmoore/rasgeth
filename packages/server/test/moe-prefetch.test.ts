@@ -21,7 +21,7 @@ import { WinEngine, type WinEngineRequest } from "../src/win-engine.js";
 const nvidia = { vendor: "nvidia", integrated: false };
 
 describe("«next layer ahead»: the patched llama.cpp (G32.2)", () => {
-  it("is RedGiant's release of the same version, one zip", () => {
+  it("is Rasgeth's release of the same version, one zip", () => {
     expect(MOE_PREFETCH_ASSET).toBe("llama-redgiant-win-cuda12.8-x64.zip");
     expect(moePrefetchUrl("3.2.0")).toBe(
       "https://github.com/Frostmoore/redgiant2/releases/download/v3.2.0/llama-redgiant-win-cuda12.8-x64.zip",
@@ -101,7 +101,7 @@ describe("«next layer ahead»: the patched llama.cpp (G32.2)", () => {
     expect(moePrefetchRelease(on, "available", "dev")).toBe(undefined);
   });
 
-  it("asks RedGiant.exe for the patched build, only with CUDA", async () => {
+  it("asks Rasgeth.exe for the patched build, only with CUDA", async () => {
     const dir = await mkdtemp(join(tmpdir(), "rg-prefetch-"));
     const engine = new WinEngine({ dir, host: "h", pollMs: 5, noticeMs: 30 });
     const plan = {

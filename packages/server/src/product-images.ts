@@ -11,7 +11,7 @@ import http, { type IncomingMessage } from "node:http";
 import https from "node:https";
 import { isIP } from "node:net";
 import { join } from "node:path";
-import { PRODUCT_IMAGE_TYPES, type ProductImageType } from "@redgiant/protocol";
+import { PRODUCT_IMAGE_TYPES, PRODUCT_NAME, type ProductImageType } from "@redgiant/protocol";
 import { decode as decodePng } from "fast-png";
 import { decode as decodeJpeg, encode as encodeJpeg } from "jpeg-js";
 import { pngOf, rgbaOf, shrink } from "./convert-js.js";
@@ -377,7 +377,7 @@ export class ProductImages {
         {
           lookup: lookup as never,
           headers: {
-            "user-agent": "RedGiant (product pictures)",
+            "user-agent": `${PRODUCT_NAME} (product pictures)`,
             accept: "image/avif,image/webp,image/png,image/jpeg,image/gif;q=0.9,*/*;q=0.1",
           },
           agent: false,

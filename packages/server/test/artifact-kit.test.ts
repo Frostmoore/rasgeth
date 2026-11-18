@@ -297,7 +297,7 @@ boom();
     expect(errorsOf(rt.posted)[0]?.where).toBe("line 13:1");
   });
 
-  it("says [lib] only for a library RedGiant serves; outside things are blocked, and a picture gets a placeholder", async () => {
+  it("says [lib] only for a library Rasgeth serves; outside things are blocked, and a picture gets a placeholder", async () => {
     const rt = runRuntime(await artifactPage("<p>x</p>", "/preview/T"));
     rt.fire("error", {
       target: el("SCRIPT", { src: "http://rg.local/preview/T/lib/react-19.0.0/react.js" }),

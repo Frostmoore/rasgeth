@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { tarFile } from "../src/runtime.js";
 
-describe("RedGiant's own search engine (2026-11-03)", () => {
+describe("Rasgeth's own search engine (2026-11-03)", () => {
   it.skipIf(process.platform === "win32")(
     "puts its settings in a tar archive that tar itself reads back",
     async () => {

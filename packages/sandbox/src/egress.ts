@@ -152,7 +152,7 @@ export class EgressProxy {
     const d = await this.check("connect", host);
     if (!d.allowed) {
       socket.end(
-        `HTTP/1.1 403 Forbidden\r\ncontent-type: text/plain\r\n\r\nRedGiant egress: ${host} blocked (${d.reason})\n`,
+        `HTTP/1.1 403 Forbidden\r\ncontent-type: text/plain\r\n\r\nRasgeth egress: ${host} blocked (${d.reason})\n`,
       );
       return;
     }
@@ -184,7 +184,7 @@ export class EgressProxy {
     }
     const d = await this.check("http", target.hostname);
     if (!d.allowed)
-      return deny(res, 403, `RedGiant egress: ${target.hostname} blocked (${d.reason})`);
+      return deny(res, 403, `Rasgeth egress: ${target.hostname} blocked (${d.reason})`);
     forward(req, res, target, {});
   }
 
@@ -193,7 +193,7 @@ export class EgressProxy {
     const route = this.extra[name] ?? this.policy.routes?.[name];
     if (!route) {
       this.onDecision({ kind: "route", host: name, allowed: false, reason: "unknown route" });
-      return deny(res, 404, `RedGiant egress: unknown route "${name}"`);
+      return deny(res, 404, `Rasgeth egress: unknown route "${name}"`);
     }
     const target = new URL(
       rest.join("/"),
@@ -213,7 +213,7 @@ export class EgressProxy {
         allowed: false,
         reason: "unknown credential",
       });
-      return deny(res, 404, "RedGiant egress: unknown credential");
+      return deny(res, 404, "Rasgeth egress: unknown credential");
     }
     const name = host.split(":")[0]?.toLowerCase() ?? "";
     if (!name || !hostAllowed(name, route.hosts)) {
@@ -223,7 +223,7 @@ export class EgressProxy {
         allowed: false,
         reason: "not a host of the credential",
       });
-      return deny(res, 403, `RedGiant egress: ${name} is not a host of credential "${route.name}"`);
+      return deny(res, 403, `Rasgeth egress: ${name} is not a host of credential "${route.name}"`);
     }
     const target = new URL(`https://${host}/${rest.join("/")}`);
     const re = placeholder(route.name);
@@ -309,7 +309,7 @@ function forward(
     });
   });
   upstream.on("error", (err) => {
-    if (!res.headersSent) deny(res, 502, `RedGiant egress: upstream error: ${err.message}`);
+    if (!res.headersSent) deny(res, 502, `Rasgeth egress: upstream error: ${err.message}`);
     else res.destroy();
   });
   req.pipe(upstream);

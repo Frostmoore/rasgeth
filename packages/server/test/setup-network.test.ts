@@ -36,7 +36,7 @@ describe("the temporary network's rules", () => {
     expect(networkOf("10.42.0.10", null)).toBe("home");
   });
 
-  it("sends the probes of phones and computers to the first start's page, never RedGiant's own names", () => {
+  it("sends the probes of phones and computers to the first start's page, never Rasgeth's own names", () => {
     const at = (host: string | undefined, here: "home" | "setup" | "maintenance" = "setup") =>
       captiveRedirect({ host, here, address: "10.42.0.1" });
     for (const probe of [
@@ -54,7 +54,7 @@ describe("the temporary network's rules", () => {
     for (const own of [
       "10.42.0.1",
       "10.42.0.1:7600",
-      "redgiant.local",
+      "rasgeth.local",
       "redgiant-2.local",
       "setup.redgiant",
       "redgiant",
@@ -70,7 +70,7 @@ describe("the temporary network's rules", () => {
     expect(parseSetupStatus(apStatus())).toMatchObject({
       active: true,
       mode: "setup",
-      ssid: "RedGiant-Setup-1A2B",
+      ssid: "Rasgeth-Setup-1A2B",
       networks: [{ ssid: "Casa", security: "psk", signal: -45 }],
     });
     expect(parseSetupStatus({ ok: true, active: true, mode: "weird" })).toMatchObject({
@@ -234,7 +234,7 @@ describe("the temporary network over HTTP (G40.3)", () => {
     const here = JSON.parse(
       (await raw("/api/setup-network/here", { host: "10.42.0.1", ...fromAp })).body,
     );
-    expect(here).toEqual({ here: "setup", ssid: "RedGiant-Setup-1A2B" });
+    expect(here).toEqual({ here: "setup", ssid: "Rasgeth-Setup-1A2B" });
     const home = JSON.parse(
       (await raw("/api/setup-network/here", { host: "x.local", ...fromHome })).body,
     );
@@ -281,7 +281,7 @@ describe("the temporary network over HTTP (G40.3)", () => {
     const api = s?.api as NonNullable<Server>["api"];
     expect((await api("GET", "/api/setup-network")).body).toMatchObject({
       here: "home",
-      status: { active: true, ssid: "RedGiant-Setup-1A2B" },
+      status: { active: true, ssid: "Rasgeth-Setup-1A2B" },
     });
     expect((await api("POST", "/api/setup-network/home", { cable: true })).body).toEqual({
       state: "connected",

@@ -13,6 +13,7 @@ import { rm, rmdir } from "node:fs/promises";
 import { availableParallelism } from "node:os";
 import { join, posix } from "node:path";
 import type { Tool, ToolContext } from "@redgiant/agent";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { type ShowFileHost, showFileTool, type Workspace } from "@redgiant/tools";
 import { z } from "zod";
 import type { Programs } from "./convert-programs.js";
@@ -69,7 +70,7 @@ def export_glb(path):
 `;
 
 /** The conversion: `-- <input> <output.glb>`. */
-export const BLENDER_CONVERT_SCRIPT = `# RedGiant: import a 3D file into Blender and export it as glTF (GLB).
+export const BLENDER_CONVERT_SCRIPT = `# ${PRODUCT_NAME}: import a 3D file into Blender and export it as glTF (GLB).
 import sys
 import traceback
 ${IMPORT_PY}
@@ -90,7 +91,7 @@ os._exit(code)
  * The tool's runner: `-- <spec.json>` with file, script, outputs and render settings. Opens the
  * file, runs the agent's script, saves .blend and .glb, renders if asked; prints REDGIANT_RESULT.
  */
-export const BLENDER_RUN_SCRIPT = `# RedGiant: the blender tool (file, the agent's script, outputs, an optional render).
+export const BLENDER_RUN_SCRIPT = `# ${PRODUCT_NAME}: the blender tool (file, the agent's script, outputs, an optional render).
 import json
 import math
 import sys
@@ -114,9 +115,9 @@ def frame_scene(view):
             "top": Vector((0, -0.01, 1)),
             "iso": Vector((1, -1, 0.8)),
         }.get(view or "iso", Vector((1, -1, 0.8))).normalized()
-        cam_data = bpy.data.cameras.new("RedGiant camera")
+        cam_data = bpy.data.cameras.new("${PRODUCT_NAME} camera")
         cam_data.lens = 50
-        cam = bpy.data.objects.new("RedGiant camera", cam_data)
+        cam = bpy.data.objects.new("${PRODUCT_NAME} camera", cam_data)
         scene.collection.objects.link(cam)
         distance = radius / math.tan(cam_data.angle / 2) * 1.15
         cam.location = centre + direction * distance
@@ -131,12 +132,12 @@ def light_scene():
     scene = bpy.context.scene
     if any(o.type == "LIGHT" for o in scene.objects):
         return
-    sun = bpy.data.objects.new("RedGiant sun", bpy.data.lights.new("RedGiant sun", "SUN"))
+    sun = bpy.data.objects.new("${PRODUCT_NAME} sun", bpy.data.lights.new("${PRODUCT_NAME} sun", "SUN"))
     sun.data.energy = 3
     sun.rotation_euler = (math.radians(50), 0, math.radians(30))
     scene.collection.objects.link(sun)
     if scene.world is None:
-        scene.world = bpy.data.worlds.new("RedGiant world")
+        scene.world = bpy.data.worlds.new("${PRODUCT_NAME} world")
     scene.world.color = (0.6, 0.6, 0.6)
 
 
@@ -164,7 +165,7 @@ def render(spec, out):
         scene.frame_start, scene.frame_end = 1, frames
         scene.render.fps = 24
         bpy.context.preferences.edit.keyframe_new_interpolation_type = "LINEAR"
-        pivot = bpy.data.objects.new("RedGiant pivot", None)
+        pivot = bpy.data.objects.new("${PRODUCT_NAME} pivot", None)
         scene.collection.objects.link(pivot)
         pivot.location = centre if centre is not None else Vector((0, 0, 0))
         # The pivot does not turn yet: the camera keeps its place relative to it.

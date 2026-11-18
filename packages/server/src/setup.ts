@@ -26,6 +26,7 @@ import {
   type ModelSpec,
   mediaProvider,
   OWN_SERVER_ID,
+  PRODUCT_NAME,
   type SearchProviderId,
   VOICE_PROVIDERS,
   voiceProvider,
@@ -56,7 +57,7 @@ import { JobFailure, type JobHandle } from "./jobs.js";
 import { LocalWhisper } from "./local-voice.js";
 import { elevenVoices } from "./media.js";
 import type { MoePrefetchState } from "./moe-prefetch.js";
-import { defaultTemplate, toPlaceholders } from "./prompts.js";
+import { defaultTemplate, ownPrompt, toPlaceholders } from "./prompts.js";
 import { REMOTE_STEPS, type RemoteRequest } from "./remote.js";
 import { lanAddresses, SetupCode, setupCodeBanner } from "./setup-code.js";
 import { BIG_BATCHES, type EnginePlan, MOE_BATCH } from "./stream.js";
@@ -502,7 +503,7 @@ const hostOf = (url: string | undefined) => {
 export function setupKeyMeta(path: string, c: SetupConfig): SystemKeyMeta {
   const [head = "", sub = "", field = ""] = path.split(".");
   const named = (id: string) =>
-    SERVICE_NAMES[id] ?? (id ? id.charAt(0).toUpperCase() + id.slice(1) : "RedGiant");
+    SERVICE_NAMES[id] ?? (id ? id.charAt(0).toUpperCase() + id.slice(1) : PRODUCT_NAME);
   const hostsOf = (id: string) => {
     const known = KEY_HOSTS[id];
     if (known) return known;
@@ -672,7 +673,7 @@ export function setupKeyMeta(path: string, c: SetupConfig): SystemKeyMeta {
         { brand: "cloudflare", category: "server" },
       );
     default:
-      return base(path.replace(/\./g, "-"), "RedGiant", "subscriptions", "other", path, []);
+      return base(path.replace(/\./g, "-"), PRODUCT_NAME, "subscriptions", "other", path, []);
   }
 }
 
@@ -793,7 +794,9 @@ export function modelsFolder(drive: string, folder: string): string {
     .replace(/[\\/]+$/, "")
     .replace(/\//g, "\\");
   if (!/^[A-Za-z]:\\[^"<>|?*:]+$/.test(path) || path.split("\\").includes(".."))
-    throw new SetupError(`Not a folder of ${drive}: (for example ${drive}:\\RedGiant\\models)`);
+    throw new SetupError(
+      `Not a folder of ${drive}: (for example ${drive}:\\${PRODUCT_NAME}\\models)`,
+    );
   if (path[0]?.toUpperCase() !== drive.toUpperCase())
     throw new SetupError(`The folder is not on ${drive}:`);
   return `${drive.toUpperCase()}${path.slice(1)}`;
@@ -1015,7 +1018,7 @@ export class SetupService {
     // Readable copy of the choices (no secrets): for people and backups.
     await writeFile(
       join(this.o.dataDir, "redgiant.yaml"),
-      `# Written by RedGiant's setup wizard; secrets are in ${inVault ? "the keychain (Settings > Keychain)" : "secrets.json"}.\n${stringify(this.config)}`,
+      `# Written by ${PRODUCT_NAME}'s setup wizard; secrets are in ${inVault ? "the keychain (Settings > Keychain)" : "secrets.json"}.\n${stringify(this.config)}`,
     );
   }
 
@@ -1192,7 +1195,7 @@ export class SetupService {
         god: god?.name ?? null,
         demigod: demigod?.name ?? null,
         // As the person reads it: the names in place of the placeholders.
-        godPrompt: god?.systemPrompt ? this.o.core.systemFor(god) : null,
+        godPrompt: god && ownPrompt(god) ? this.o.core.systemFor(god) : null,
         /** God's built-in instructions, with {name} and {demigod} for the names being chosen. */
         godPromptTemplate: defaultTemplate("god", false),
       },
@@ -1710,7 +1713,7 @@ export class SetupService {
     const p = this.o.core.providers.get("local");
     // A new first line every time: the same text would come back from the saved contexts and
     // measure nothing (it showed 3,487 tokens/s, the first real message read at 21).
-    const text = `Warm-up ${randomBytes(6).toString("hex")}.\n${"RedGiant warms up the model before the first conversation. ".repeat(260)}`;
+    const text = `Warm-up ${randomBytes(6).toString("hex")}.\n${`${PRODUCT_NAME} warms up the model before the first conversation. `.repeat(260)}`;
     let written = 0;
     const started = Date.now();
     let read = 0;
@@ -1842,7 +1845,7 @@ export class SetupService {
     const p = this.o.core.providers.get("local");
     // The sentence is about 11 tokens: a few fewer than asked, never more than the context.
     const times = read ? Math.max(1, Math.floor(read / 12)) : 180;
-    const text = `Measure ${randomBytes(6).toString("hex")}.\n${"RedGiant measures how fast this computer runs the model. ".repeat(times)}`;
+    const text = `Measure ${randomBytes(6).toString("hex")}.\n${`${PRODUCT_NAME} measures how fast this computer runs the model. `.repeat(times)}`;
     const c = await complete(
       p.stream({
         model,
@@ -1990,8 +1993,8 @@ export class SetupService {
     await this.o.core.tell(
       this.o.ownerId,
       it
-        ? `Il token di GitHub di RedGiant scade il ${date}. Creane uno nuovo (Impostazioni, Dove sta il codice) per non fermare i push dei progetti.`
-        : `RedGiant's GitHub token expires on ${date}. Make a new one (Settings, Where the code lives) so the projects can keep pushing.`,
+        ? `Il token di GitHub di ${PRODUCT_NAME} scade il ${date}. Creane uno nuovo (Impostazioni, Dove sta il codice) per non fermare i push dei progetti.`
+        : `${PRODUCT_NAME}'s GitHub token expires on ${date}. Make a new one (Settings, Where the code lives) so the projects can keep pushing.`,
     );
     return true;
   }
@@ -2056,7 +2059,7 @@ export class SetupService {
     const base = giteaBase(url);
     if (!base) throw new SetupError("That is not a Gitea address (https://…)", "bad_url");
     if (this.config.git?.gitea && !this.config.git.gitea.external)
-      throw new SetupError("Switch off RedGiant's own Gitea first", "gitea_running");
+      throw new SetupError(`Switch off ${PRODUCT_NAME}'s own Gitea first`, "gitea_running");
     let checked: { user: string };
     try {
       checked = await git.checkGitea(base, user, token);
@@ -2093,7 +2096,10 @@ export class SetupService {
         c.provider === "searxng" ? "The address is missing" : "The key is missing",
       );
     try {
-      const r = await p.search("RedGiant", { maxResults: 3, signal: AbortSignal.timeout(15_000) });
+      const r = await p.search(PRODUCT_NAME, {
+        maxResults: 3,
+        signal: AbortSignal.timeout(15_000),
+      });
       return { results: r.length, ...(r[0] && { first: r[0].title }) };
     } catch (err) {
       throw new SetupError((err as Error).message);
@@ -2107,7 +2113,8 @@ export class SetupService {
    */
   async startModelsMove(drive: string, kind: "models" = "models", folder?: string): Promise<Job> {
     const hook = this.o.hooks.moveModels;
-    if (!hook) throw new SetupError("Models can be moved only in RedGiant's Windows installation");
+    if (!hook)
+      throw new SetupError(`Models can be moved only in ${PRODUCT_NAME}'s Windows installation`);
     const hw = await detectHardware({
       dataDir: this.o.dataDir,
       ...(this.o.hooks.dockerRuntimes && { dockerRuntimes: this.o.hooks.dockerRuntimes }),
@@ -2117,7 +2124,9 @@ export class SetupService {
     if (disk.ssd === false)
       throw new SetupError(`${disk.name}: is a spinning disk, too slow for streaming`);
     const to =
-      folder === undefined ? `${disk.name}:\\RedGiant\\models` : modelsFolder(disk.name, folder);
+      folder === undefined
+        ? `${disk.name}:\\${PRODUCT_NAME}\\models`
+        : modelsFolder(disk.name, folder);
     return this.o.core.jobs.start(
       this.o.ownerId,
       "models_move",
@@ -2147,7 +2156,7 @@ export class SetupService {
       return { state: win.state as "available" | "latest", version: win.version };
     try {
       const r = await fetch("https://api.github.com/repos/Frostmoore/redgiant2/releases/latest", {
-        headers: { "user-agent": "RedGiant", accept: "application/vnd.github+json" },
+        headers: { "user-agent": PRODUCT_NAME, accept: "application/vnd.github+json" },
         signal: AbortSignal.timeout(15_000),
       });
       const tag = ((await r.json()) as { tag_name?: string }).tag_name;

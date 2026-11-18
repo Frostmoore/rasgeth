@@ -1,7 +1,7 @@
 {
   "name": "@redgiant/tools",
   "version": "0.1.0",
-  "description": "RedGiant base tools: files, search, shell, fetch, web search; model profiles.",
+  "description": "Rasgeth base tools: files, search, shell, fetch, web search; model profiles.",
   "license": "MIT",
   "type": "module",
   "exports": {

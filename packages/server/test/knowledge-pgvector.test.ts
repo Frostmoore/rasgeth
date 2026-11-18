@@ -52,14 +52,14 @@ describe("pgvectorConf", () => {
 
   it("uses ; and forward slashes on Windows (a backslash would be an escape in the file)", () => {
     const c = pgvectorConf(
-      "C:\\Users\\Mario Rossi\\AppData\\Local\\RedGiant\\server\\pgvector",
+      "C:\\Users\\Mario Rossi\\AppData\\Local\\Rasgeth\\server\\pgvector",
       "win32",
     );
     expect(c).toContain(
-      "extension_control_path = 'C:/Users/Mario Rossi/AppData/Local/RedGiant/server/pgvector/share;$system'",
+      "extension_control_path = 'C:/Users/Mario Rossi/AppData/Local/Rasgeth/server/pgvector/share;$system'",
     );
     expect(c).toContain(
-      "dynamic_library_path = 'C:/Users/Mario Rossi/AppData/Local/RedGiant/server/pgvector/lib;$libdir'",
+      "dynamic_library_path = 'C:/Users/Mario Rossi/AppData/Local/Rasgeth/server/pgvector/lib;$libdir'",
     );
     expect(c).not.toContain("\\");
   });
