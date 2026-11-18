@@ -91,7 +91,7 @@ async function setupAgents(mode = "auto") {
   return { god, orch, agent, session };
 }
 
-describe("redgiant CLI", () => {
+describe("rasgeth CLI", () => {
   it("manages projects and agents", async () => {
     s = await startServer([]);
     const created = await run(["projects", "create", "CLI", "Demo"]);
@@ -150,7 +150,7 @@ describe("redgiant CLI", () => {
     const id = pending[0]?.split(/\s+/)[0] ?? "";
     expect((await run(["approve", id])).out()).toBe(`Approved ${id}\n`);
     const r = await sending;
-    expect(r.out()).toMatch(/no terminal: approve with `redgiant approve`/);
+    expect(r.out()).toMatch(/no terminal: approve with `rasgeth approve`/);
     expect(r.out()).toMatch(/cleaned/);
     expect((await run(["verify"])).out()).toMatch(/^Event log intact \(\d+ events\)/);
   });
@@ -166,7 +166,7 @@ describe("redgiant CLI", () => {
   });
 });
 
-describe("finding the installed RedGiant (G36.15)", () => {
+describe("finding the installed Rasgeth (G36.15)", () => {
   it("reads the app's data folder when the environment says nothing", async () => {
     const files: Record<string, string> = {
       [join("/data", "token.txt")]: "tok",
@@ -182,9 +182,21 @@ describe("finding the installed RedGiant (G36.15)", () => {
       url: "http://127.0.0.1:7600",
       token: undefined,
     });
-    expect(appDataDir({ LOCALAPPDATA: "C:\\Users\\Me\\AppData\\Local" }, "win32")).toBe(
-      join("C:\\Users\\Me\\AppData\\Local", "RedGiant", "data"),
+    // Windows: the new folder, or a RedGiant's before 3.9.0 when only that one is there.
+    const local = "C:\\Users\\Me\\AppData\\Local";
+    const none = () => false;
+    expect(appDataDir({ LOCALAPPDATA: local }, "win32", "", none)).toBe(
+      join(local, "Rasgeth", "data"),
     );
+    const onlyOld = (p: string) => p === join(local, "RedGiant", "data");
+    expect(appDataDir({ LOCALAPPDATA: local }, "win32", "", onlyOld)).toBe(
+      join(local, "RedGiant", "data"),
+    );
+    const both = (p: string) => onlyOld(p) || p === join(local, "Rasgeth", "data");
+    expect(appDataDir({ LOCALAPPDATA: local }, "win32", "", both)).toBe(
+      join(local, "Rasgeth", "data"),
+    );
+
     expect(appDataDir({}, "darwin", "/Users/me")).toBe(
       join("/Users/me", "Library", "Application Support", "RedGiant", "data"),
     );

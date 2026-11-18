@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# RedGiant OS (G39.1): the screen of the machine (tty1). The address(es), a QR code to open the page
+# Rasgeth OS (G39.1): the screen of the machine (tty1). The address(es), a QR code to open the page
 # from a phone and the status; nothing else. Keys: [t] the access link with the token (a QR, for one
-# minute), [u] update RedGiant when a signed update is there, [w] join a Wi-Fi network, any other
+# minute), [u] update Rasgeth when a signed update is there, [w] join a Wi-Fi network, any other
 # key refreshes.
 set -uo pipefail
 # shellcheck source=common.sh
@@ -20,7 +20,7 @@ screen() {
   name=$(mdns_name)
   s=$(status_line)
   clear
-  printf '\n  \033[1;31mRedGiant\033[0m  %s   ·   RedGiant OS %s (Debian %s)\n\n' \
+  printf '\n  \033[1;31mRasgeth\033[0m  %s   ·   Rasgeth OS %s (Debian %s)\n\n' \
     "$(installed_version)" "$(cat "$SHARE/os-version" 2>/dev/null)" "$(cat /etc/debian_version)"
   if [ -z "$first" ]; then
     if has_wifi; then
@@ -41,12 +41,12 @@ screen() {
     printf '\n  First start: the page asks for this code:  \033[1m%s\033[0m\n' "$(head -c 64 "$SETUP_CODE" | tr -cd 'A-Za-z0-9 -')"
   fi
   printf '\n  Open the address above from any device at home and create your access (a password).\n'
-  printf '\n  RedGiant: %s' "$s"
+  printf '\n  Rasgeth: %s' "$s"
   upd=$(jq -r 'select(.state == "available") | " · update to \(.latest) ready: press [u]"' "$STATE/os-update.json" 2>/dev/null)
   reboot=""
   [ -e /run/reboot-required ] && reboot="  ·  system updated: restart when convenient"
   printf '%s%s\n' "$upd" "$reboot"
-  printf '\n  [u] update RedGiant    [t] link for apps and the command line (token)'
+  printf '\n  [u] update Rasgeth    [t] link for apps and the command line (token)'
   has_wifi && printf '    [w] Wi-Fi'
   printf '    any key: refresh\n'
 }
@@ -121,7 +121,7 @@ token_screen() {
   [ -n "$first" ] && [ -n "$token" ] || return
   url="http://$first:$PORT/#token=$token"
   clear
-  printf '\n  The access link (it opens RedGiant already signed in). Anyone who sees it can use it.\n\n'
+  printf '\n  The access link (it opens Rasgeth already signed in). Anyone who sees it can use it.\n\n'
   qrencode -t ANSIUTF8 -m 2 "$url" | sed 's/^/  /'
   printf '\n  %s\n\n  Hidden again in one minute, or press a key.\n' "$url"
   read -rsn1 -t 60 || true
@@ -137,7 +137,7 @@ while true; do
     w | W) has_wifi && wifi_screen ;;
     u | U)
       clear
-      echo "  Updating RedGiant…"
+      echo "  Updating Rasgeth…"
       /usr/lib/redgiant-os/redgiant-os-update apply 2>&1 | sed 's/^/  /'
       sleep 5
       ;;

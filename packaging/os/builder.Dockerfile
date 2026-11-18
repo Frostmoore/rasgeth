@@ -1,7 +1,7 @@
-# RedGiant OS (G39.1): the tools that build the images, Debian's own, pinned to Debian 13.
+# Rasgeth OS (G39.1): the tools that build the images, Debian's own, pinned to Debian 13.
 #   docker build -f packaging/os/builder.Dockerfile -t redgiant-os-builder packaging/os
 #   docker run --rm --privileged -v "$PWD:/src" -v "$OUT:/out" redgiant-os-builder \
-#     /src/packaging/os/build.sh --arch amd64 --stack /out/redgiant-os-stack.json --out /out
+#     /src/packaging/os/build.sh --arch amd64 --stack /out/rasgeth-os-stack.json --out /out
 # Privileged only for mmdebstrap's chroot (mounting /proc) and grub-bios-setup's view of the
 # image; no loop device is ever used: the disk is put together from files (systemd-repart --offline).
 FROM debian:trixie

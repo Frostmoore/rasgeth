@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// RedGiant OS (G39.1): the stack of a release, `redgiant-os-stack.json`. It names every image the OS
+// Rasgeth OS (G39.1): the stack of a release, `rasgeth-os-stack.json`. It names every image the OS
 // runs, pinned for each processor by the registry's manifest digest and the image id (the config
-// digest Docker reports), and carries the compose files of the release, so the OS updates RedGiant
+// digest Docker reports), and carries the compose files of the release, so the OS updates Rasgeth
 // from one signed file (sign.mjs, the same key as release.json). Only Node's own modules.
 //
 //   node packaging/os/stack.mjs --version 3.7.0 --out <file> [--tag 3.7.0] [--source-tag <tag>]
@@ -128,7 +128,7 @@ if (process.argv[1]?.endsWith("stack.mjs")) {
   const out = arg("--out");
   if (!version || !out) {
     console.error(
-      "usage: stack.mjs --version x.y.z --out <file> [--tag <redgiant2 tag>] [--source-tag <tag>]",
+      "usage: stack.mjs --version x.y.z --out <file> [--tag <image tag>] [--source-tag <tag>]",
     );
     process.exit(2);
   }

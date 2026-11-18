@@ -1,17 +1,17 @@
-// RedGiant.exe (G22; RedGiant 3.0, G30.2: no WSL): what the desktop icon opens on Windows. It
-// starts RedGiant's server with the Node that came with the installer (the server starts its own
-// Postgres), waits until it answers, opens the browser already signed in, and stays next to the
-// clock with "Open RedGiant" and "Quit". With RGCompanion in the installation (app\, G40.12) the
-// app's window opens instead of the browser (AppWindow.cs); "Open in the browser" stays. Built with the C# compiler of .NET Framework 4, which
-// every Windows has: no runtime to install.
+// Rasgeth.exe (G22; 3.0, G30.2: no WSL; RedGiant.exe until 3.9.0): what the desktop icon opens on
+// Windows. It starts the server with the Node that came with the installer (the server starts its
+// own Postgres), waits until it answers, opens the browser already signed in, and stays next to
+// the clock with "Open Rasgeth" and "Quit". With the app in the installation (app\, G40.12) the
+// app's window opens instead of the browser (AppWindow.cs); "Open in the browser" stays. Built
+// with the C# compiler of .NET Framework 4, which every Windows has: no runtime to install.
 //
-//   RedGiant.exe               start (or, if already running, just open the app or the browser)
-//   RedGiant.exe --background  start without opening the browser (start with Windows)
-//   RedGiant.exe --engine-only only the engine on Windows (G24.3b), without the server
-//   RedGiant.exe --quit        asks the running RedGiant to stop (server and database), and waits
-//   RedGiant.exe --update-now  looks for an update now and installs it without asking (the CI)
+//   Rasgeth.exe               start (or, if already running, just open the app or the browser)
+//   Rasgeth.exe --background  start without opening the browser (start with Windows)
+//   Rasgeth.exe --engine-only only the engine on Windows (G24.3b), without the server
+//   Rasgeth.exe --quit        asks the running Rasgeth to stop (server and database), and waits
+//   Rasgeth.exe --update-now  looks for an update now and installs it without asking (the CI)
 // Started by an update (G36.18): --after-update (the new version, on trial, or after the
-// installer) and --rolled-back <version> (the previous one again); both wait for the RedGiant
+// installer) and --rolled-back <version> (the previous one again); both wait for the launcher
 // that is leaving, and open the page only when no open page came back by itself (PageGate.cs).
 using System;
 using System.Diagnostics;
@@ -28,21 +28,26 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
+// What Windows shows of the program (Task Manager, the file's properties): the product's name.
+[assembly: System.Reflection.AssemblyTitle(Brand.Name)]
+[assembly: System.Reflection.AssemblyProduct(Brand.Name)]
+[assembly: System.Reflection.AssemblyCompany(Brand.Name)]
+
 static class Texts
 {
     static readonly bool It = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "it";
-    public static string Title { get { return "RedGiant"; } }
-    public static string Starting { get { return It ? "Avvio di RedGiant…" : "Starting RedGiant…"; } }
-    public static string Open { get { return It ? "Apri RedGiant" : "Open RedGiant"; } }
+    public static string Title { get { return Brand.Name; } }
+    public static string Starting { get { return It ? "Avvio di " + Brand.Name + "…" : "Starting " + Brand.Name + "…"; } }
+    public static string Open { get { return It ? "Apri " + Brand.Name : "Open " + Brand.Name; } }
     public static string OpenInBrowser { get { return It ? "Apri nel browser" : "Open in the browser"; } }
     public static string Restart { get { return It ? "Riavvia" : "Restart"; } }
     public static string Quit { get { return It ? "Esci" : "Quit"; } }
-    public static string Running { get { return It ? "RedGiant è acceso" : "RedGiant is running"; } }
+    public static string Running { get { return It ? Brand.Name + " è acceso" : Brand.Name + " is running"; } }
     public static string Of { get { return It ? "di" : "of"; } }
     public static string Downloaded { get { return It ? "Scaricati" : "Downloaded"; } }
     public static string Moving(string to, long percent)
     {
-        return (It ? "Sposto RedGiant in " : "Moving RedGiant to ") + to + " · " + percent + "%";
+        return (It ? "Sposto " + Brand.Name + " in " : "Moving " + Brand.Name + " to ") + to + " · " + percent + "%";
     }
     public static string Left(double seconds)
     {
@@ -58,8 +63,8 @@ static class Texts
         get
         {
             return It
-                ? "RedGiant non è installato bene su questo computer. Reinstallalo con RedGiant-Setup.exe."
-                : "RedGiant is not installed correctly on this computer. Install it again with RedGiant-Setup.exe.";
+                ? Brand.Name + " non è installato bene su questo computer. Reinstallalo con " + Brand.Setup + "."
+                : Brand.Name + " is not installed correctly on this computer. Install it again with " + Brand.Setup + ".";
         }
     }
     public static string Failed
@@ -67,14 +72,60 @@ static class Texts
         get
         {
             return It
-                ? "RedGiant non è riuscito a partire. Riprova; se succede ancora, chiedi aiuto."
-                : "RedGiant could not start. Try again; if it happens again, ask for help.";
+                ? Brand.Name + " non è riuscito a partire. Riprova; se succede ancora, chiedi aiuto."
+                : Brand.Name + " could not start. Try again; if it happens again, ask for help.";
         }
+    }
+}
+
+// The tray's icon (N8): the silhouette in black on a light taskbar and in white on a dark one, as
+// Windows' own icons there. The taskbar follows the system's theme (SystemUsesLightTheme), not the
+// apps' one; when the silhouettes are missing (an old folder) the program's own icon stays.
+static class Tray
+{
+    const string Personalize = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+
+    /** True when the taskbar is light (Windows 10 1903 and later; dark before, and when unknown). */
+    public static bool LightTaskbar()
+    {
+        try
+        {
+            using (var k = Registry.CurrentUser.OpenSubKey(Personalize))
+            {
+                object v = k == null ? null : k.GetValue("SystemUsesLightTheme");
+                return v is int && (int)v == 1;
+            }
+        }
+        catch (Exception) { return false; }
+    }
+
+    /** The silhouette for the taskbar as it is now, at the tray's size; [fallback] without it. */
+    public static Icon Icon(string appDir, Icon fallback)
+    {
+        string file = Path.Combine(appDir, LightTaskbar() ? Brand.TrayLight : Brand.TrayDark);
+        try { if (File.Exists(file)) return new Icon(file, SystemInformation.SmallIconSize); }
+        catch (Exception) { }
+        return fallback;
+    }
+
+    /** Calls [changed] when the person switches the theme (light, dark) while the launcher runs. */
+    public static void Follow(Action changed)
+    {
+        bool light = LightTaskbar();
+        SystemEvents.UserPreferenceChanged += (s, e) =>
+        {
+            if (e.Category != UserPreferenceCategory.General) return;
+            bool now = LightTaskbar();
+            if (now == light) return;
+            light = now;
+            changed();
+        };
     }
 }
 
 sealed class Launcher : ApplicationContext
 {
+
     readonly bool handover;
     // When the page opens (3.5.3, PageGate.cs): asked for, the update check over, an update running.
     bool pageWanted;
@@ -123,19 +174,21 @@ sealed class Launcher : ApplicationContext
         splash.Controls.Add(bar);
         splash.FormClosing += (s, e) =>
         {
-            // Closing the window only hides it: RedGiant keeps starting next to the clock.
+            // Closing the window only hides it: Rasgeth keeps starting next to the clock.
             if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; splash.Hide(); }
         };
 
         var menu = new ContextMenuStrip();
         menu.Items.Add(Texts.Open, null, (s, e) => OpenWindow());
-        // The app's window is what «Open RedGiant» opens (G40.12): the page stays one click away.
+        // The app's window is what «Open Rasgeth» opens (G40.12): the page stays one click away.
         if (AppWindow.Present(AppDir)) menu.Items.Add(Texts.OpenInBrowser, null, (s, e) => OpenBrowser());
         menu.Items.Add(Texts.Restart, null, (s, e) => { StopEngine(); StartEngine(); });
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add(Texts.Quit, null, (s, e) => Quit());
-        tray = new NotifyIcon { Icon = icon, Text = Texts.Title, ContextMenuStrip = menu, Visible = true };
+        tray = new NotifyIcon { Icon = Tray.Icon(AppDir, icon), Text = Texts.Title, ContextMenuStrip = menu, Visible = true };
         tray.DoubleClick += (s, e) => OpenWindow();
+        // The taskbar turned light or dark: the silhouette follows it (N8).
+        Tray.Follow(() => Ui(() => tray.Icon = Tray.Icon(AppDir, icon)));
         AppWindow.Log = (line) => Diag.Log("app", line);
 
         if (!File.Exists(NodeExe) || !File.Exists(ServerMain))
@@ -151,16 +204,16 @@ sealed class Launcher : ApplicationContext
         Moves.Watch();
         Memory.Watch();
         StartEngine();
-        // The first start of the day looks for a newer RedGiant (Updates.cs); its questions are
+        // The first start of the day looks for a newer version (Updates.cs); its questions are
         // asked on the splash's thread, whose handle exists even when the splash stays hidden.
         if (!splash.IsHandleCreated) { var unused = splash.Handle; }
         // A differential update (G36.18) stops everything that holds the program's files, then
-        // starts the new RedGiant and leaves. RGCompanion's window first (3.8.2): asked to close,
+        // starts the new version and leaves. The app's window first (3.8.2): asked to close,
         // stopped if it does not, so app\ is free to move; it opens again with the new version
         // (PageGate: no page came back by itself).
         Updates.StopAll = () => { AppWindow.CloseAll(AppDir, 5000); WinEngine.Shutdown(); StopEngine(); StopLeftovers(); };
         Updates.Exit = () => { tray.Visible = false; ExitThread(); };
-        // A mandatory update's «Close RedGiant», and a breaking one's guide in the page (G36.19).
+        // A mandatory update's «Close Rasgeth», and a breaking one's guide in the page (G36.19).
         Updates.Quit = () => Ui(Quit);
         // A breaking release's «Open the guide»: the page, through the gate when it was not open yet.
         Updates.OpenPage = () => Ui(() => { pageWanted = true; if (firstOpenDone) OpenBrowser(); else FirstOpen(); });
@@ -213,7 +266,7 @@ sealed class Launcher : ApplicationContext
         }
     }
 
-    /** Where the installer put Node, the server and the web page (next to RedGiant.exe). */
+    /** Where the installer put Node, the server and the web page (next to Rasgeth.exe). */
     public static string AppDir { get { return Path.GetDirectoryName(Application.ExecutablePath); } }
     static string NodeExe { get { return Path.Combine(AppDir, "node", "node.exe"); } }
     static string ServerMain { get { return Path.Combine(AppDir, "server", "dist", "main.js"); } }
@@ -276,7 +329,9 @@ sealed class Launcher : ApplicationContext
             }
         }
         catch (Exception) { }
-        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "RedGiant", "data");
+        // No registry value (never written by an installer): the default folder, an earlier
+        // RedGiant's when only that one is there (Brand.LocalDir).
+        return Brand.LocalDir("data");
     }
 
     /** The server's token: made the first time, kept in the data folder (only this user reads it). */
@@ -293,7 +348,7 @@ sealed class Launcher : ApplicationContext
         return token;
     }
 
-    /** 7600 when free; otherwise the next free port (an older RedGiant or another program). */
+    /** 7600 when free; otherwise the next free port (an older launcher or another program). */
     static int FreePort()
     {
         for (int port = 7600; port < 7700; port++)
@@ -382,7 +437,7 @@ sealed class Launcher : ApplicationContext
         env["NODE_ENV"] = "production";
         engine = new Process { StartInfo = info, EnableRaisingEvents = true };
         var startedAt = DateTime.Now;
-        Diag.Log("server", "starting RedGiant's server on port " + port);
+        Diag.Log("server", "starting the server on port " + port);
         DataReceivedEventHandler keep = (s, e) =>
         {
             if (e.Data == null) return;
@@ -669,8 +724,9 @@ sealed class Launcher : ApplicationContext
 // both see. The program is kept at a fixed path, the one the installer's firewall rule names.
 static class WinEngine
 {
-    public static readonly string Dir = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "RedGiant", "engine");
+    // %LOCALAPPDATA%\Rasgeth\engine, or an earlier RedGiant's engine folder with the models it
+    // downloaded when only that one is there (3.9.0, Brand.LocalDir; Rasgeth.iss finds the same).
+    public static readonly string Dir = Brand.LocalDir("engine");
     const int Port = 8091;
     /**
      * Which llama.cpp build runs (2026-11-04): "cuda" for NVIDIA cards, natively on Windows
@@ -964,7 +1020,8 @@ static class WinEngine
     static void Fetch(int gen, string id, string url, string zip)
     {
         var req = (HttpWebRequest)WebRequest.Create(url);
-        req.UserAgent = "RedGiant";
+        req.UserAgent = Brand.Name;
+
         using (var res = (HttpWebResponse)req.GetResponse())
         using (var input = res.GetResponseStream())
         using (var output = File.Create(zip))

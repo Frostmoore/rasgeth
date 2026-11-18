@@ -1,4 +1,4 @@
-# RedGiant OS (G39.2): the Raspberry Pi image, sourced by build.sh --board raspi (arm64). Debian's
+# Rasgeth OS (G39.2): the Raspberry Pi image, sourced by build.sh --board raspi (arm64). Debian's
 # own way (raspi.debian.net): the Pi's firmware, Debian's kernel, its initramfs and device trees on a
 # FAT partition the firmware reads (RASPIFIRM, mounted at /boot/firmware), the system on ext4
 # (RASPIROOT), an MBR disk. Debian's raspi-firmware package keeps the FAT partition current: every
@@ -9,7 +9,7 @@
 step "Raspberry Pi: Debian's firmware and kernel on RASPIFIRM, the system on RASPIROOT"
 rm -f "$ROOT/etc/default/grub"
 cat >"$ROOT/etc/fstab" <<'EOF'
-# RedGiant OS on a Raspberry Pi: the system and the firmware's partition (Debian's raspi-firmware
+# Rasgeth OS on a Raspberry Pi: the system and the firmware's partition (Debian's raspi-firmware
 # writes the kernel there). The data lives in /var/lib/redgiant.
 LABEL=RASPIROOT  /               ext4  errors=remount-ro  0 1
 LABEL=RASPIFIRM  /boot/firmware  vfat  umask=0077,nofail  0 2
@@ -17,7 +17,7 @@ EOF
 # raspi-firmware reads this at every kernel update. The console on the screen (last: boot messages
 # and the emergency shell) and on the serial pins; no memory set aside for a desktop.
 cat >"$ROOT/etc/default/raspi-firmware" <<'EOF'
-# RedGiant OS: read by raspi-firmware when the kernel or the firmware is updated.
+# Rasgeth OS: read by raspi-firmware when the kernel or the firmware is updated.
 ROOTPART=LABEL=RASPIROOT
 CONSOLES="ttyS1,115200 tty0"
 CMA=0
@@ -37,7 +37,7 @@ cp -r "$ROOT/usr/lib/raspi-firmware/." "$ROOT/boot/firmware/"
 if [ -e "$ROOT/usr/lib/systemd/system/redgiant-wifi-file.service" ]; then
   install -d "$ROOT/etc/systemd/system/redgiant-wifi-file.service.d"
   cat >"$ROOT/etc/systemd/system/redgiant-wifi-file.service.d/raspi.conf" <<'EOF'
-# RedGiant OS on a Raspberry Pi: the file is on the firmware's partition.
+# Rasgeth OS on a Raspberry Pi: the file is on the firmware's partition.
 [Unit]
 ConditionPathExists=
 ConditionPathExists=/boot/firmware/redgiant-wifi.txt
@@ -50,11 +50,11 @@ EOF
   cp "$ROOT/usr/share/redgiant-os/redgiant-wifi-example.txt" "$ROOT/boot/firmware/redgiant-wifi-example.txt"
 fi
 # What the boot partition offers the person who flashed it.
-cat >"$ROOT/boot/firmware/README-RedGiant.txt" <<'EOF'
-RedGiant OS for Raspberry Pi
+cat >"$ROOT/boot/firmware/README-Rasgeth.txt" <<'EOF'
+Rasgeth OS for Raspberry Pi
 
 Put this card (or USB disk) in a Raspberry Pi 4, 400 or CM4, connect it to your router with a
-cable and switch it on. After a few minutes open http://redgiant.local:7600 from a computer or a
+cable and switch it on. After a few minutes open http://rasgeth.local:7600 from a computer or a
 phone on the same network (or the address the Pi's screen shows).
 
 Wi-Fi instead of a cable: copy redgiant-wifi-example.txt to redgiant-wifi.txt on this partition,
@@ -63,7 +63,7 @@ write your network's name and password in it, then start the Pi. The file is rea
 The files on this partition are written by the system: config.txt and cmdline.txt are rewritten at
 every kernel update. https://github.com/Frostmoore/redgiant2/blob/main/docs/INSTALL-OS.md
 EOF
-printf 'RedGiant OS %s\r\n' "$OS_VERSION" >"$ROOT/boot/firmware/redgiant-os-version.txt"
+printf 'Rasgeth OS %s\r\n' "$OS_VERSION" >"$ROOT/boot/firmware/redgiant-os-version.txt"
 # SD card, USB disk (through the PCIe USB controller) and the wired network, from the initramfs.
 initrd_has mmc_block sdhci-iproc xhci-pci uas usb-storage pcie-brcmstb genet
 

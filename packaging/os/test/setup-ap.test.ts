@@ -1,4 +1,4 @@
-// RedGiant OS's temporary network (G40.3): redgiant-setup-ap and the OS helper's ap-* and
+// Rasgeth OS's temporary network (G40.3): redgiant-setup-ap and the OS helper's ap-* and
 // home-network-try, run for real with fake programs (busctl answers as iwd would, the rest only
 // writes down what it was asked), in another root. The rule (decide) is a table.
 import { execFileSync, spawnSync } from "node:child_process";
@@ -204,7 +204,7 @@ describe("the temporary network on the machine (redgiant-setup-ap)", () => {
       .digest("hex")
       .slice(0, 4)
       .toUpperCase();
-    expect(run(["ssid"]).trim()).toBe(`RedGiant-Setup-${want}`);
+    expect(run(["ssid"]).trim()).toBe(`Rasgeth-Setup-${want}`);
   });
 
   it("knows when it cannot be: a container, no Wi-Fi, a card that cannot", { skip: !tools }, () => {
@@ -215,7 +215,7 @@ describe("the temporary network on the machine (redgiant-setup-ap)", () => {
     expect(run(["capable"]).trim()).toBe("no_wifi");
     writeFileSync(fake("container"), "");
     expect(run(["capable"]).trim()).toBe("container");
-    // The service then only says so: RedGiant is found on the network.
+    // The service then only says so: Rasgeth is found on the network.
     run(["run"]);
     expect(readFileSync(join(root, "run/redgiant-setup/capable"), "utf8").trim()).toBe("container");
     expect(calls()).not.toContain("StartProfile");
@@ -234,11 +234,11 @@ describe("the temporary network on the machine (redgiant-setup-ap)", () => {
       capable: "unknown",
       address: "10.42.0.1",
       subnet: "10.42.0.0/24",
-      passphrase: "redgiant",
+      passphrase: "rasgeth",
       trying: false,
       lastTry: null,
     });
-    expect(s.ssid).toMatch(/^RedGiant-Setup-[0-9A-F]{4}$/);
+    expect(s.ssid).toMatch(/^Rasgeth-Setup-[0-9A-F]{4}$/);
     // The networks around, seen before the card became an access point, strongest first.
     expect(s.networks).toEqual([
       { ssid: "Casa", security: "psk", signal: -45 },
@@ -257,7 +257,7 @@ describe("the temporary network on the machine (redgiant-setup-ap)", () => {
     ])
       expect(net).toContain(line);
     const profile = join(root, `var/lib/iwd/ap/${s.ssid}.ap`);
-    expect(readFileSync(profile, "utf8")).toContain("Passphrase=redgiant");
+    expect(readFileSync(profile, "utf8")).toContain("Passphrase=rasgeth");
     expect(statSync(profile).mode & 0o777).toBe(0o600);
     const c = calls();
     expect(c).toContain("net.connman.iwd.Station Scan");
@@ -326,7 +326,7 @@ describe("the temporary network on the machine (redgiant-setup-ap)", () => {
     const grace = Number(readFileSync(join(root, "run/redgiant-setup/grace"), "utf8"));
     expect(grace).toBeGreaterThan(Date.now() / 1000 + 500);
     expect(existsSync(join(root, "run/redgiant-setup/try.req"))).toBe(false);
-    // Joined: closed for good, the app finds RedGiant on the home network.
+    // Joined: closed for good, the app finds Rasgeth on the home network.
     put('{"ok":true,"state":"connected"}');
     writeFileSync(join(root, "run/redgiant-setup/try.req"), req);
     run(["try"], { REDGIANT_SETUP_TEST_HELPER: answer });

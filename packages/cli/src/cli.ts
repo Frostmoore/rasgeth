@@ -1,9 +1,14 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { parseArgs } from "node:util";
-import type { Event, PermissionRequestInfo, ServerMessage } from "@redgiant/protocol";
+import {
+  type Event,
+  type PermissionRequestInfo,
+  PRODUCT_NAME,
+  type ServerMessage,
+} from "@redgiant/protocol";
 import { RedGiantClient } from "./client.js";
 import { metricsLine } from "./format.js";
 
@@ -16,7 +21,7 @@ export interface CliIo {
   readLine?: (prompt: string) => Promise<string | undefined>;
 }
 
-const USAGE = `Usage: redgiant <command> [options]
+const USAGE = `Usage: rasgeth <command> [options]
 
   projects                          list projects
   projects create <name>            create a project
@@ -34,17 +39,28 @@ const USAGE = `Usage: redgiant <command> [options]
   projects create <name> --path <folder>   a project on a folder that already exists
 
 Environment: REDGIANT_URL (default http://127.0.0.1:7600), REDGIANT_TOKEN. Without them, the
-RedGiant installed for this user is found in its data folder (REDGIANT_DATA_DIR, or the app's own:
-%LOCALAPPDATA%\\RedGiant\\data on Windows, ~/Library/Application Support/RedGiant/data on a Mac).`;
+${PRODUCT_NAME} installed for this user is found in its data folder (REDGIANT_DATA_DIR, or the app's
+own: %LOCALAPPDATA%\\${PRODUCT_NAME}\\data on Windows, ~/Library/Application Support/RedGiant/data on a
+Mac).`;
 
-/** The data folder of the RedGiant app installed for this user (Windows, Mac), if any. */
+/**
+ * The data folder of the app installed for this user (Windows, Mac), if any. On Windows the
+ * installer's default is %LOCALAPPDATA%\Rasgeth\data; a RedGiant before 3.9.0 kept it in
+ * %LOCALAPPDATA%\RedGiant\data, which is still used when only that one is there (data never
+ * move). On a Mac the folder kept its name.
+ */
 export function appDataDir(
   env: Record<string, string | undefined>,
   platform: NodeJS.Platform = process.platform,
   home = homedir(),
+  exists: (path: string) => boolean = existsSync,
 ): string | undefined {
   if (env.REDGIANT_DATA_DIR) return env.REDGIANT_DATA_DIR;
-  if (platform === "win32" && env.LOCALAPPDATA) return join(env.LOCALAPPDATA, "RedGiant", "data");
+  if (platform === "win32" && env.LOCALAPPDATA) {
+    const now = join(env.LOCALAPPDATA, PRODUCT_NAME, "data");
+    const before = join(env.LOCALAPPDATA, "RedGiant", "data");
+    return !exists(now) && exists(before) ? before : now;
+  }
   if (platform === "darwin")
     return join(home, "Library", "Application Support", "RedGiant", "data");
   return undefined;
@@ -86,7 +102,8 @@ export async function runCli(
   }
   const { url, token } = connection(env);
   if (!token) {
-    io.err("REDGIANT_TOKEN is not set, and no RedGiant app was found for this user.");
+    io.err(`REDGIANT_TOKEN is not set, and no ${PRODUCT_NAME} app was found for this user.`);
+
     return 2;
   }
   const client = new RedGiantClient(url, token);
@@ -266,7 +283,7 @@ async function converse(
         answered.add(m.request.requestId);
         io.out(`\n? ${describeRequest(m.request)}\n`);
         if (!io.confirm) {
-          io.out("  (no terminal: approve with `redgiant approve` or from the web UI)\n");
+          io.out("  (no terminal: approve with `rasgeth approve` or from the web UI)\n");
           return;
         }
         void io.confirm("  Allow? [y/N] ").then((yes) =>

@@ -34,9 +34,9 @@
 		<true/>
 	</dict>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Press and talk: what you say is written down by your RedGiant.</string>
+	<string>Press and talk: what you say is written down by your Rasgeth.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>RGCompanion looks for your RedGiant on the local network.</string>
+	<string>Rasgeth App looks for your Rasgeth on the local network.</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_redgiant._tcp</string>

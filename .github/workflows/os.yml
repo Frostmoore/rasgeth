@@ -1,4 +1,4 @@
-# RedGiant OS (G39.1, G39.2): builds the images on GitHub's runners (x86_64 and arm64, each on its
+# Rasgeth OS (G39.1, G39.2): builds the images on GitHub's runners (x86_64 and arm64, each on its
 # own processor), boots every one in QEMU headless and checks it (packaging/os/test/boot-test.sh).
 # Runs by hand, on every push to a version branch, on a work branch when the OS's files change,
 # and from release.yml for a tag (publish: the images are attached to the release with SHA256SUMS
@@ -9,13 +9,13 @@
 # packaging/release-kind.json. release.yml on the tag copies those images to the version's tags
 # and attaches this run's images (reuse_run, after reuse.mjs checks they carry the release's stack
 # and files) instead of building them again; it builds them here only when no such run is left.
-name: RedGiant OS
+name: Rasgeth OS
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "RedGiant version whose images the OS carries (empty: the latest release)"
+        description: "Rasgeth version whose images the OS carries (empty: the latest release)"
         type: string
         default: ""
       arm64:
@@ -135,7 +135,7 @@ jobs:
           elif [ "$EVENT" = push ] && [ "$GITHUB_REF_TYPE" = branch ] && [[ "$GITHUB_REF_NAME" =~ $version_branch ]]; then
             version=$(git show HEAD:packaging/release-kind.json | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).version")
             if [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-              # 3.7.4: the Docker images always; RedGiant OS's images only when the OS changed since
+              # 3.7.4: the Docker images always; Rasgeth OS's images only when the OS changed since
               # the latest release that carries them (os-release.mjs, git diff on its tag).
               release=true; source_tag="ci-$version-$GITHUB_SHA"
               eval "$(node packaging/os/os-release.mjs --sha HEAD | sed 's/^/os_/')"
@@ -163,7 +163,7 @@ jobs:
             [ -n "$version" ] || version=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq .tag_name | sed 's/^v//')
             [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "not a version: $version"; exit 1; }
           fi
-          echo "::notice title=RedGiant OS::build=$build release=$release update=$update version=${version:-none} ($why)"
+          echo "::notice title=Rasgeth OS::build=$build release=$release update=$update version=${version:-none} ($why)"
           {
             echo "build=$build"
             echo "release=$release"
@@ -173,7 +173,7 @@ jobs:
             echo "update=$update"
           } >> "$GITHUB_OUTPUT"
 
-  # The Docker images of this commit (version branches): RedGiant OS is built with these.
+  # The Docker images of this commit (version branches): Rasgeth OS is built with these.
   images:
     needs: plan
     if: needs.plan.outputs.release == 'true'
@@ -209,17 +209,17 @@ jobs:
           SOURCE_TAG: ${{ needs.plan.outputs.source_tag }}
         run: |
           mkdir -p dist
-          node packaging/os/stack.mjs --version "${{ steps.v.outputs.version }}" --source-tag "$SOURCE_TAG" --out dist/redgiant-os-stack.json
+          node packaging/os/stack.mjs --version "${{ steps.v.outputs.version }}" --source-tag "$SOURCE_TAG" --out dist/rasgeth-os-stack.json
       # The system's own files (p3.7.3): an update installs them before the new containers.
       - name: The system's files
         run: node packaging/os/files.mjs --version "${{ steps.v.outputs.version }}" --out dist
       - uses: actions/upload-artifact@v4
         with:
-          name: redgiant-os-stack
+          name: rasgeth-os-stack
           path: |
-            dist/redgiant-os-stack.json
-            dist/redgiant-os-files.json
-            dist/redgiant-os-files-*.tar.zst
+            dist/rasgeth-os-stack.json
+            dist/rasgeth-os-files.json
+            dist/rasgeth-os-files-*.tar.zst
           retention-days: 7
 
   build:
@@ -260,7 +260,7 @@ jobs:
       - uses: actions/download-artifact@v4
         if: ${{ env.SKIP != '1' }}
         with:
-          name: redgiant-os-stack
+          name: rasgeth-os-stack
           path: stack
       - name: Room on the disk
         if: ${{ env.SKIP != '1' }}
@@ -272,10 +272,10 @@ jobs:
         if: ${{ env.SKIP != '1' }}
         run: |
           docker build -q -f packaging/os/builder.Dockerfile -t redgiant-os-builder packaging/os
-          cp stack/redgiant-os-stack.json "$OUT/"
+          cp stack/rasgeth-os-stack.json "$OUT/"
           docker run --rm --privileged -e SOURCE_DATE_EPOCH="$(git log -1 --format=%ct)" \
             -v "$PWD:/src" -v "$OUT:/out" redgiant-os-builder \
-            /src/packaging/os/build.sh --arch ${{ matrix.arch }} --stack /out/redgiant-os-stack.json \
+            /src/packaging/os/build.sh --arch ${{ matrix.arch }} --stack /out/rasgeth-os-stack.json \
             --out /out --formats "$FORMATS"
           sudo rm -rf "$OUT"/work-*
           sudo chown -R "$(id -u):$(id -g)" "$OUT"
@@ -293,30 +293,30 @@ jobs:
       - name: Boot the qcow2 (UEFI) and check, HTTPS included
         if: ${{ env.SKIP != '1' && matrix.arch == 'amd64' && contains(env.FORMATS, 'qcow2') }}
         timeout-minutes: 50
-        run: packaging/os/test/boot-test.sh boot --arch amd64 --firmware uefi --disk "$OUT"/redgiant-os-*-x86_64.qcow2 --logs logs --work "$RUNNER_TEMP/uefi" --timeout 2400
+        run: packaging/os/test/boot-test.sh boot --arch amd64 --firmware uefi --disk "$OUT"/rasgeth-os-*-x86_64.qcow2 --logs logs --work "$RUNNER_TEMP/uefi" --timeout 2400
       - name: Wi-Fi checks (mac80211_hwsim and hostapd in the machine)
         if: ${{ always() && env.SKIP != '1' && matrix.arch == 'amd64' && contains(env.FORMATS, 'qcow2') }}
         timeout-minutes: 50
-        run: packaging/os/test/boot-test.sh boot --arch amd64 --firmware uefi --wifi --disk "$OUT"/redgiant-os-*-x86_64.qcow2 --logs logs/wifi --work "$RUNNER_TEMP/wifi" --timeout 2400
+        run: packaging/os/test/boot-test.sh boot --arch amd64 --firmware uefi --wifi --disk "$OUT"/rasgeth-os-*-x86_64.qcow2 --logs logs/wifi --work "$RUNNER_TEMP/wifi" --timeout 2400
       - name: Boot the qcow2 (UEFI, Secure Boot) and check
         if: ${{ env.SKIP != '1' && matrix.arch == 'amd64' && contains(env.FORMATS, 'qcow2') && env.QUICK != '1' }}
         timeout-minutes: 50
-        run: packaging/os/test/boot-test.sh boot --arch amd64 --firmware uefi --secureboot --disk "$OUT"/redgiant-os-*-x86_64.qcow2 --logs logs --timeout 2400
+        run: packaging/os/test/boot-test.sh boot --arch amd64 --firmware uefi --secureboot --disk "$OUT"/rasgeth-os-*-x86_64.qcow2 --logs logs --timeout 2400
       - name: Boot the qcow2 (BIOS) and check
         if: ${{ env.SKIP != '1' && matrix.arch == 'amd64' && contains(env.FORMATS, 'qcow2') && env.QUICK != '1' }}
         timeout-minutes: 50
-        run: packaging/os/test/boot-test.sh boot --arch amd64 --firmware bios --disk "$OUT"/redgiant-os-*-x86_64.qcow2 --logs logs --timeout 2400
+        run: packaging/os/test/boot-test.sh boot --arch amd64 --firmware bios --disk "$OUT"/rasgeth-os-*-x86_64.qcow2 --logs logs --timeout 2400
       - name: Install from the ISO (BIOS), then boot the installed disk (UEFI) and check
         if: ${{ env.SKIP != '1' && matrix.arch == 'amd64' && contains(env.FORMATS, 'iso') && env.QUICK != '1' }}
         timeout-minutes: 80
         run: |
-          packaging/os/test/boot-test.sh install --firmware bios --iso "$OUT"/redgiant-os-*-x86_64.iso --disk "$RUNNER_TEMP/installed.qcow2" --logs logs --timeout 1800
+          packaging/os/test/boot-test.sh install --firmware bios --iso "$OUT"/rasgeth-os-*-x86_64.iso --disk "$RUNNER_TEMP/installed.qcow2" --logs logs --timeout 1800
           packaging/os/test/boot-test.sh boot --arch amd64 --firmware uefi --disk "$RUNNER_TEMP/installed.qcow2" --logs logs --timeout 2400
       - name: Boot the qcow2 (arm64, UEFI) and check
         if: ${{ env.SKIP != '1' && matrix.arch == 'arm64' && contains(env.FORMATS, 'qcow2') }}
-        run: packaging/os/test/boot-test.sh boot --arch arm64 --firmware uefi --disk "$OUT"/redgiant-os-*-arm64.qcow2 --logs logs --timeout 7200
+        run: packaging/os/test/boot-test.sh boot --arch arm64 --firmware uefi --disk "$OUT"/rasgeth-os-*-arm64.qcow2 --logs logs --timeout 7200
         timeout-minutes: 130
-        # Emulated: the first start loads RedGiant's images for many minutes before the self-test.
+        # Emulated: the first start loads Rasgeth's images for many minutes before the self-test.
         env:
           START_LIMIT: 5400
       # Hyper-V and VirtualBox/VMware (G39.2): the same disk through their files. The VHDX boots with
@@ -326,7 +326,7 @@ jobs:
         timeout-minutes: 50
         run: |
           mkdir -p "$RUNNER_TEMP/vhdx"
-          unzip -q "$OUT"/redgiant-os-*-x86_64.vhdx.zip -d "$RUNNER_TEMP/vhdx"
+          unzip -q "$OUT"/rasgeth-os-*-x86_64.vhdx.zip -d "$RUNNER_TEMP/vhdx"
           qemu-img info "$RUNNER_TEMP"/vhdx/*.vhdx
           packaging/os/test/boot-test.sh boot --arch amd64 --firmware uefi --disk "$RUNNER_TEMP"/vhdx/*.vhdx --logs logs/vhdx --timeout 2400
           rm -rf "$RUNNER_TEMP/vhdx"
@@ -334,9 +334,9 @@ jobs:
         if: ${{ env.SKIP != '1' && matrix.arch == 'amd64' && contains(env.FORMATS, 'ova') }}
         timeout-minutes: 50
         run: |
-          python3 packaging/os/formats/vm.py check-ova "$OUT"/redgiant-os-*-x86_64.ova
+          python3 packaging/os/formats/vm.py check-ova "$OUT"/rasgeth-os-*-x86_64.ova
           mkdir -p "$RUNNER_TEMP/ova"
-          tar -xf "$OUT"/redgiant-os-*-x86_64.ova -C "$RUNNER_TEMP/ova"
+          tar -xf "$OUT"/rasgeth-os-*-x86_64.ova -C "$RUNNER_TEMP/ova"
           python3 -c "import sys, xml.dom.minidom as m; m.parse(sys.argv[1])" "$RUNNER_TEMP"/ova/*.ovf
           qemu-img info "$RUNNER_TEMP"/ova/*.vmdk
           packaging/os/test/boot-test.sh boot --arch amd64 --firmware bios --nic e1000 --disk "$RUNNER_TEMP"/ova/*.vmdk --logs logs/ova --timeout 2400
@@ -345,15 +345,15 @@ jobs:
         if: ${{ always() && env.SKIP != '1' }}
         run: |
           cd "$OUT"
-          rm -f ./*.size redgiant-os-stack.json
-          ls redgiant-os-* >/dev/null 2>&1 || exit 0
-          sha256sum redgiant-os-* | tee SHA256SUMS-${{ matrix.arch }}
+          rm -f ./*.size rasgeth-os-stack.json
+          ls rasgeth-os-* >/dev/null 2>&1 || exit 0
+          sha256sum rasgeth-os-* | tee SHA256SUMS-${{ matrix.arch }}
           ls -la
       # Also when a boot fails: the images can then be looked at.
       - uses: actions/upload-artifact@v4
         if: ${{ always() && env.SKIP != '1' }}
         with:
-          name: redgiant-os-${{ matrix.arch }}
+          name: rasgeth-os-${{ matrix.arch }}
           path: |
             /mnt/os/*
             !/mnt/os/work-*
@@ -362,7 +362,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ always() && env.SKIP != '1' }}
         with:
-          name: redgiant-os-${{ matrix.arch }}-logs
+          name: rasgeth-os-${{ matrix.arch }}-logs
           path: logs/**/serial-*.log
           retention-days: 7
 
@@ -381,13 +381,13 @@ jobs:
       - name: Shell scripts (shellcheck)
         run: |
           shellcheck --version | head -2
-          shellcheck -x packaging/os/proxmox/redgiant-proxmox.sh packaging/os/lxc/lxc.sh packaging/os/raspi/raspi.sh \
+          shellcheck -x packaging/os/proxmox/rasgeth-proxmox.sh packaging/os/lxc/lxc.sh packaging/os/raspi/raspi.sh \
             packaging/os/test/lxc-test.sh packaging/os/test/boot-test.sh packaging/os/test/update-test.sh \
             packaging/os/test/update-feed.sh
-          bash packaging/os/proxmox/redgiant-proxmox.sh --help | head -5
+          bash packaging/os/proxmox/rasgeth-proxmox.sh --help | head -5
       - uses: actions/download-artifact@v4
         with:
-          name: redgiant-os-stack
+          name: rasgeth-os-stack
           path: stack
       - name: Room on the disk
         run: |
@@ -398,10 +398,10 @@ jobs:
         timeout-minutes: 90
         run: |
           docker build -q -f packaging/os/builder.Dockerfile -t redgiant-os-builder packaging/os
-          cp stack/redgiant-os-stack.json "$OUT/"
+          cp stack/rasgeth-os-stack.json "$OUT/"
           docker run --rm --privileged -e SOURCE_DATE_EPOCH="$(git log -1 --format=%ct)" \
             -v "$PWD:/src" -v "$OUT:/out" redgiant-os-builder \
-            /src/packaging/os/build.sh --arch amd64 --board lxc --stack /out/redgiant-os-stack.json --out /out
+            /src/packaging/os/build.sh --arch amd64 --board lxc --stack /out/rasgeth-os-stack.json --out /out
           sudo rm -rf "$OUT"/work-*
           sudo chown -R "$(id -u):$(id -g)" "$OUT"
           ls -la "$OUT"
@@ -426,12 +426,12 @@ jobs:
           node packaging/os/files.mjs --version "${{ needs.stack.outputs.version }}" --out "$f"
           openssl genrsa -out "$RUNNER_TEMP/throwaway.pem" 2048 2>/dev/null
           openssl rsa -in "$RUNNER_TEMP/throwaway.pem" -pubout -out "$f/key.pem" 2>/dev/null
-          openssl dgst -sha256 -sign "$RUNNER_TEMP/throwaway.pem" "$f/redgiant-os-files.json" | base64 -w0 >"$f/redgiant-os-files.json.sig"
+          openssl dgst -sha256 -sign "$RUNNER_TEMP/throwaway.pem" "$f/rasgeth-os-files.json" | base64 -w0 >"$f/rasgeth-os-files.json.sig"
           rm -f "$RUNNER_TEMP/throwaway.pem"
           ls -la "$f"
       - name: Start the template in Incus and check
         timeout-minutes: 50
-        run: sudo packaging/os/test/lxc-test.sh --template "$OUT"/redgiant-os-*-x86_64-lxc.tar.zst --files "$RUNNER_TEMP/files" --logs logs/lxc --timeout 1500
+        run: sudo packaging/os/test/lxc-test.sh --template "$OUT"/rasgeth-os-*-x86_64-lxc.tar.zst --files "$RUNNER_TEMP/files" --logs logs/lxc --timeout 1500
       # 3.7.4: a new machine's first start brings it to the latest release by itself (here a feed of
       # this commit, one patch newer, signed with a throwaway key).
       - name: A new machine's first start updates it (redgiant-os-update first)
@@ -441,18 +441,18 @@ jobs:
           SOURCE_TAG: ${{ needs.plan.outputs.source_tag }}
         run: |
           packaging/os/test/update-feed.sh --out "$RUNNER_TEMP/feed" --version "$VERSION" --above "$VERSION" --source-tag "$SOURCE_TAG"
-          sudo packaging/os/test/update-test.sh --first --template "$OUT"/redgiant-os-*-x86_64-lxc.tar.zst --feed "$RUNNER_TEMP/feed" --logs logs/lxc-first --timeout 1500
+          sudo packaging/os/test/update-test.sh --first --template "$OUT"/rasgeth-os-*-x86_64-lxc.tar.zst --feed "$RUNNER_TEMP/feed" --logs logs/lxc-first --timeout 1500
       - name: sha256
         if: ${{ always() }}
         run: |
           cd "$OUT"
-          rm -f redgiant-os-stack.json
-          ls redgiant-os-* >/dev/null 2>&1 || exit 0
-          sha256sum redgiant-os-* | tee SHA256SUMS-amd64-lxc
+          rm -f rasgeth-os-stack.json
+          ls rasgeth-os-* >/dev/null 2>&1 || exit 0
+          sha256sum rasgeth-os-* | tee SHA256SUMS-amd64-lxc
       - uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
-          name: redgiant-os-amd64-lxc
+          name: rasgeth-os-amd64-lxc
           path: |
             /mnt/os/*
             !/mnt/os/work-*
@@ -461,12 +461,12 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
-          name: redgiant-os-amd64-lxc-logs
+          name: rasgeth-os-amd64-lxc-logs
           path: logs/lxc/*.log
           retention-days: 7
 
   # The update an existing machine makes (3.7.4), at every version and cheap: the container template
-  # of the latest release that carries RedGiant OS, started in Incus, updated by its own updater to
+  # of the latest release that carries Rasgeth OS, started in Incus, updated by its own updater to
   # this commit's stack (its Docker images) and system's files. A release whose OS did not change
   # publishes no new images: this is how its stack meets the machines that exist.
   update-test:
@@ -481,19 +481,31 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      # 3.9.0: RedGiant became Rasgeth with a breaking release. A template from before it (its files
+      # named redgiant-os-*) carries an updater that never applies a breaking release and looks for
+      # the old file names: such machines are reinstalled or migrated by hand (plan 3.9.0, N14), so
+      # there is nothing to try here until a release with rasgeth-os-* images is the latest.
       - name: The template of ${{ needs.plan.outputs.os_tag }}, checked against its signed list
+        id: old
         env:
           GH_TOKEN: ${{ github.token }}
           OS_TAG: ${{ needs.plan.outputs.os_tag }}
         run: |
           set -euo pipefail
           mkdir -p old && cd old
-          gh release download "$OS_TAG" -R "$GITHUB_REPOSITORY" -p SHA256SUMS-os -p SHA256SUMS-os.sig -p 'redgiant-os-*-x86_64-lxc.tar.zst'
+          names=$(gh release view "$OS_TAG" -R "$GITHUB_REPOSITORY" --json assets -q '.assets[].name')
+          if ! grep -qE '^rasgeth-os-.*-x86_64-lxc\.tar\.zst$' <<<"$names"; then
+            echo "::notice title=Update test::$OS_TAG's images are from before Rasgeth (breaking 3.9.0): an old machine is not updated in place, nothing to try"
+            echo "skip=true" >>"$GITHUB_OUTPUT"
+            exit 0
+          fi
+          gh release download "$OS_TAG" -R "$GITHUB_REPOSITORY" -p SHA256SUMS-os -p SHA256SUMS-os.sig -p 'rasgeth-os-*-x86_64-lxc.tar.zst'
           sed -n '/BEGIN PUBLIC KEY/,/END PUBLIC KEY/p' ../packages/server/src/release-key.ts | sed 's/^.*\(-----BEGIN\)/\1/; s/\(KEY-----\).*$/\1/' >key.pem
           openssl dgst -sha256 -verify key.pem -signature <(base64 -d SHA256SUMS-os.sig) SHA256SUMS-os
           sha256sum -c --ignore-missing SHA256SUMS-os
           ls -la
       - name: Incus
+        if: steps.old.outputs.skip != 'true'
         timeout-minutes: 10
         run: |
           sudo apt-get update -q
@@ -502,20 +514,23 @@ jobs:
           sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT || true
           sudo iptables -I DOCKER-USER -o incusbr0 -j ACCEPT || true
       - name: This commit's release as a feed (throwaway key)
+        if: steps.old.outputs.skip != 'true'
         env:
           VERSION: ${{ needs.plan.outputs.version }}
           # Branch: this commit's images; a release: its tags (copied already), or for a dry run the branch's.
           SOURCE_TAG: ${{ needs.plan.outputs.source_tag || (inputs.dry_run && inputs.expect_tag) || '' }}
         run: |
-          old=$(basename old/redgiant-os-*-x86_64-lxc.tar.zst | sed -E 's/^redgiant-os-([0-9]+\.[0-9]+\.[0-9]+)-.*/\1/')
+          old=$(basename old/rasgeth-os-*-x86_64-lxc.tar.zst | sed -E 's/^rasgeth-os-([0-9]+\.[0-9]+\.[0-9]+)-.*/\1/')
           packaging/os/test/update-feed.sh --out "$RUNNER_TEMP/feed" --version "$VERSION" --above "$old" --source-tag "$SOURCE_TAG"
       - name: The old machine updates itself to this commit
+        if: steps.old.outputs.skip != 'true'
         timeout-minutes: 40
-        run: sudo packaging/os/test/update-test.sh --template old/redgiant-os-*-x86_64-lxc.tar.zst --feed "$RUNNER_TEMP/feed" --logs logs/update --timeout 1500
+        run: sudo packaging/os/test/update-test.sh --template old/rasgeth-os-*-x86_64-lxc.tar.zst --feed "$RUNNER_TEMP/feed" --logs logs/update --timeout 1500
       - uses: actions/upload-artifact@v4
-        if: ${{ always() }}
+        if: ${{ always() && steps.old.outputs.skip != 'true' }}
         with:
-          name: redgiant-os-update-test-logs
+          name: rasgeth-os-update-test-logs
+
           path: logs/update/*.log
           retention-days: 7
 
@@ -533,7 +548,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: redgiant-os-stack
+          name: rasgeth-os-stack
           path: stack
       - name: Room on the disk
         run: |
@@ -544,10 +559,10 @@ jobs:
         timeout-minutes: 90
         run: |
           docker build -q -f packaging/os/builder.Dockerfile -t redgiant-os-builder packaging/os
-          cp stack/redgiant-os-stack.json "$OUT/"
+          cp stack/rasgeth-os-stack.json "$OUT/"
           docker run --rm --privileged -e SOURCE_DATE_EPOCH="$(git log -1 --format=%ct)" \
             -v "$PWD:/src" -v "$OUT:/out" redgiant-os-builder \
-            /src/packaging/os/build.sh --arch arm64 --board raspi --stack /out/redgiant-os-stack.json --out /out
+            /src/packaging/os/build.sh --arch arm64 --board raspi --stack /out/rasgeth-os-stack.json --out /out
           sudo rm -rf "$OUT"/work-*
           sudo chown -R "$(id -u):$(id -g)" "$OUT"
           ls -la "$OUT"
@@ -557,7 +572,7 @@ jobs:
           sudo apt-get update -q
           sudo apt-get install -y -q --no-install-recommends mtools qemu-system-arm qemu-utils
           img="$RUNNER_TEMP/raspi.img"
-          xz -dc "$OUT"/redgiant-os-*-arm64-raspi.img.xz > "$img"
+          xz -dc "$OUT"/rasgeth-os-*-arm64-raspi.img.xz > "$img"
           sfdisk -d "$img" | tee "$RUNNER_TEMP/layout"
           grep -q "label: dos" "$RUNNER_TEMP/layout"
           grep -qE "start= +8192, size= +1048576, type=c, bootable" "$RUNNER_TEMP/layout"
@@ -566,7 +581,7 @@ jobs:
           [ "$(blkid -p -O $((1056768 * 512)) -s LABEL -o value "$img")" = RASPIROOT ]
           fat="$img@@$((8192 * 512))"
           mdir -b -i "$fat" ::/ | tee "$RUNNER_TEMP/boot-files"
-          for f in config.txt cmdline.txt start4.elf fixup4.dat bcm2711-rpi-4-b.dtb README-RedGiant.txt; do
+          for f in config.txt cmdline.txt start4.elf fixup4.dat bcm2711-rpi-4-b.dtb README-Rasgeth.txt; do
             grep -qi "/$f\$" "$RUNNER_TEMP/boot-files" || { echo "::error::no $f on the boot partition"; exit 1; }
           done
           mtype -i "$fat" ::/config.txt
@@ -579,7 +594,7 @@ jobs:
           ls -la "$RUNNER_TEMP/kernel"
       - name: Start the image's system on QEMU (arm64 virt, its kernel) and check
         timeout-minutes: 130
-        # Emulated: the first start loads RedGiant's images for many minutes before the self-test.
+        # Emulated: the first start loads Rasgeth's images for many minutes before the self-test.
         # No firmware, so no SMBIOS: the self-test's credential comes on the kernel's command line.
         env:
           START_LIMIT: 5400
@@ -595,13 +610,13 @@ jobs:
         if: ${{ always() }}
         run: |
           cd "$OUT"
-          rm -f redgiant-os-stack.json
-          ls redgiant-os-* >/dev/null 2>&1 || exit 0
-          sha256sum redgiant-os-* | tee SHA256SUMS-arm64-raspi
+          rm -f rasgeth-os-stack.json
+          ls rasgeth-os-* >/dev/null 2>&1 || exit 0
+          sha256sum rasgeth-os-* | tee SHA256SUMS-arm64-raspi
       - uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
-          name: redgiant-os-arm64-raspi
+          name: rasgeth-os-arm64-raspi
           path: |
             /mnt/os/*
             !/mnt/os/work-*
@@ -610,12 +625,12 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
-          name: redgiant-os-arm64-raspi-logs
+          name: rasgeth-os-arm64-raspi-logs
           path: logs/raspi/serial-*.log
           retention-days: 7
 
   # A preview by hand (input preview): what this run built, signed like a release, on the
-  # pre-release os-preview (never "latest": RedGiant's updates read only the latest release).
+  # pre-release os-preview (never "latest": Rasgeth's updates read only the latest release).
   preview:
     if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.preview && needs.stack.result == 'success' && needs.lxc.result == 'success' }}
     needs: [stack, build, lxc, raspi]
@@ -629,7 +644,7 @@ jobs:
           node-version: 24
       - uses: actions/download-artifact@v4
         with:
-          pattern: redgiant-os-*
+          pattern: rasgeth-os-*
           path: dl
       - name: SHA256SUMS-os and the stack, signed with the update key (only the files of jobs that passed)
         env:
@@ -638,21 +653,21 @@ jobs:
           RASPI: ${{ needs.raspi.result }}
         run: |
           mkdir -p rel
-          [ "$BUILD" = success ] || rm -rf dl/redgiant-os-amd64 dl/redgiant-os-arm64
-          [ "$RASPI" = success ] || rm -rf dl/redgiant-os-arm64-raspi
-          find dl -type f \( -name 'redgiant-os-*.qcow2' -o -name 'redgiant-os-*.raw.zst' -o -name 'redgiant-os-*.iso' -o -name 'redgiant-os-*.vhdx.zip' -o -name 'redgiant-os-*.ova' -o -name 'redgiant-os-*-lxc.tar.zst' -o -name 'redgiant-os-*-raspi.img.xz' -o -name redgiant-os-stack.json -o -name redgiant-os-files.json -o -name 'redgiant-os-files-*.tar.zst' \) -exec cp {} rel/ \;
-          cp packaging/os/proxmox/redgiant-proxmox.sh rel/
-          (cd rel && sha256sum redgiant-os-* redgiant-proxmox.sh > SHA256SUMS-os)
+          [ "$BUILD" = success ] || rm -rf dl/rasgeth-os-amd64 dl/rasgeth-os-arm64
+          [ "$RASPI" = success ] || rm -rf dl/rasgeth-os-arm64-raspi
+          find dl -type f \( -name 'rasgeth-os-*.qcow2' -o -name 'rasgeth-os-*.raw.zst' -o -name 'rasgeth-os-*.iso' -o -name 'rasgeth-os-*.vhdx.zip' -o -name 'rasgeth-os-*.ova' -o -name 'rasgeth-os-*-lxc.tar.zst' -o -name 'rasgeth-os-*-raspi.img.xz' -o -name rasgeth-os-stack.json -o -name rasgeth-os-files.json -o -name 'rasgeth-os-files-*.tar.zst' \) -exec cp {} rel/ \;
+          cp packaging/os/proxmox/rasgeth-proxmox.sh rel/
+          (cd rel && sha256sum rasgeth-os-* rasgeth-proxmox.sh > SHA256SUMS-os)
           [ -n "$UPDATE_SIGNING_KEY" ] || { echo "UPDATE_SIGNING_KEY is missing: the OS's files must be signed"; exit 1; }
           node packaging/update/sign.mjs rel/SHA256SUMS-os
-          [ ! -e rel/redgiant-os-stack.json ] || node packaging/update/sign.mjs rel/redgiant-os-stack.json
-          [ ! -e rel/redgiant-os-files.json ] || node packaging/update/sign.mjs rel/redgiant-os-files.json
+          [ ! -e rel/rasgeth-os-stack.json ] || node packaging/update/sign.mjs rel/rasgeth-os-stack.json
+          [ ! -e rel/rasgeth-os-files.json ] || node packaging/update/sign.mjs rel/rasgeth-os-files.json
           cat rel/SHA256SUMS-os
       # The signed files, also as an artifact: the pre-release can be made from them by hand when
       # this repository's token may not create releases.
       - uses: actions/upload-artifact@v4
         with:
-          name: redgiant-os-preview
+          name: rasgeth-os-preview
           path: rel/*
           compression-level: 0
           retention-days: 14
@@ -662,11 +677,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ needs.stack.outputs.version }}
         run: |
-          notes="RedGiant OS preview (not a release): RedGiant $VERSION, built from ${GITHUB_SHA::12} on ${GITHUB_REF_NAME}. Files listed in SHA256SUMS-os, signed with the update key. Proxmox: bash redgiant-proxmox.sh --lxc --release os-preview (docs/INSTALL-OS.md)."
+          notes="Rasgeth OS preview (not a release): Rasgeth $VERSION, built from ${GITHUB_SHA::12} on ${GITHUB_REF_NAME}. Files listed in SHA256SUMS-os, signed with the update key. Proxmox: bash rasgeth-proxmox.sh --lxc --release os-preview (docs/INSTALL-OS.md)."
           if gh release view os-preview >/dev/null 2>&1; then
             gh release edit os-preview --prerelease --latest=false --notes "$notes"
           else
-            gh release create os-preview --prerelease --latest=false --target "$GITHUB_SHA" --title "RedGiant OS preview" --notes "$notes"
+            gh release create os-preview --prerelease --latest=false --target "$GITHUB_SHA" --title "Rasgeth OS preview" --notes "$notes"
           fi
           gh release upload os-preview rel/* --clobber
           gh release view os-preview --json assets --jq '.assets[].name'
@@ -692,7 +707,7 @@ jobs:
           node-version: 24
       - uses: actions/download-artifact@v4
         with:
-          pattern: redgiant-os-*
+          pattern: rasgeth-os-*
           path: dl
           run-id: ${{ inputs.reuse_run || github.run_id }}
           github-token: ${{ github.token }}
@@ -704,42 +719,42 @@ jobs:
           set -euo pipefail
           version="${WANTED#v}"
           ls -la dl/*
-          for d in redgiant-os-amd64 redgiant-os-arm64 redgiant-os-amd64-lxc redgiant-os-arm64-raspi; do
+          for d in rasgeth-os-amd64 rasgeth-os-arm64 rasgeth-os-amd64-lxc rasgeth-os-arm64-raspi; do
             sums=$(find "dl/$d" -maxdepth 1 -name 'SHA256SUMS-*' | head -1)
             [ -n "$sums" ] || { echo "$d: no SHA256SUMS"; exit 1; }
             (cd "dl/$d" && sha256sum -c --strict "$(basename "$sums")")
           done
-          for f in "redgiant-os-$version-x86_64.qcow2" "redgiant-os-$version-x86_64.raw.zst" "redgiant-os-$version-x86_64.iso" \
-                   "redgiant-os-$version-x86_64.vhdx.zip" "redgiant-os-$version-x86_64.ova" "redgiant-os-$version-arm64.qcow2" \
-                   "redgiant-os-$version-arm64.raw.zst" "redgiant-os-$version-x86_64-lxc.tar.zst" "redgiant-os-$version-arm64-raspi.img.xz"; do
+          for f in "rasgeth-os-$version-x86_64.qcow2" "rasgeth-os-$version-x86_64.raw.zst" "rasgeth-os-$version-x86_64.iso" \
+                   "rasgeth-os-$version-x86_64.vhdx.zip" "rasgeth-os-$version-x86_64.ova" "rasgeth-os-$version-arm64.qcow2" \
+                   "rasgeth-os-$version-arm64.raw.zst" "rasgeth-os-$version-x86_64-lxc.tar.zst" "rasgeth-os-$version-arm64-raspi.img.xz"; do
             [ -n "$(find dl -type f -name "$f")" ] || { echo "::error::no $f"; exit 1; }
           done
-          node packaging/os/reuse.mjs --dir dl/redgiant-os-stack --version "$version" --source-tag "$EXPECT_TAG"
+          node packaging/os/reuse.mjs --dir dl/rasgeth-os-stack --version "$version" --source-tag "$EXPECT_TAG"
       - name: SHA256SUMS, the stack and the system's files, signed with the update key
         env:
           UPDATE_SIGNING_KEY: ${{ secrets.UPDATE_SIGNING_KEY }}
           WANTED: ${{ inputs.version }}
         run: |
           mkdir -p rel
-          find dl -type f \( -name 'redgiant-os-*.qcow2' -o -name 'redgiant-os-*.raw.zst' -o -name 'redgiant-os-*.iso' -o -name 'redgiant-os-*.vhdx.zip' -o -name 'redgiant-os-*.ova' -o -name 'redgiant-os-*-lxc.tar.zst' -o -name 'redgiant-os-*-raspi.img.xz' -o -name redgiant-os-stack.json -o -name redgiant-os-files.json -o -name 'redgiant-os-files-*.tar.zst' \) -exec cp {} rel/ \;
+          find dl -type f \( -name 'rasgeth-os-*.qcow2' -o -name 'rasgeth-os-*.raw.zst' -o -name 'rasgeth-os-*.iso' -o -name 'rasgeth-os-*.vhdx.zip' -o -name 'rasgeth-os-*.ova' -o -name 'rasgeth-os-*-lxc.tar.zst' -o -name 'rasgeth-os-*-raspi.img.xz' -o -name rasgeth-os-stack.json -o -name rasgeth-os-files.json -o -name 'rasgeth-os-files-*.tar.zst' \) -exec cp {} rel/ \;
           # The Proxmox host's helper script, listed and signed with the images.
-          cp packaging/os/proxmox/redgiant-proxmox.sh rel/
-          (cd rel && sha256sum redgiant-os-* redgiant-proxmox.sh > SHA256SUMS-os)
+          cp packaging/os/proxmox/rasgeth-proxmox.sh rel/
+          (cd rel && sha256sum rasgeth-os-* rasgeth-proxmox.sh > SHA256SUMS-os)
           [ -n "$UPDATE_SIGNING_KEY" ] || { echo "UPDATE_SIGNING_KEY is missing: the OS's files must be signed"; exit 1; }
           node packaging/update/sign.mjs rel/SHA256SUMS-os
-          node packaging/update/sign.mjs rel/redgiant-os-stack.json
-          node packaging/update/sign.mjs rel/redgiant-os-files.json
-          # Where the latest RedGiant OS images are (3.7.4): here. redgiant-proxmox.sh reads it from
+          node packaging/update/sign.mjs rel/rasgeth-os-stack.json
+          node packaging/update/sign.mjs rel/rasgeth-os-files.json
+          # Where the latest Rasgeth OS images are (3.7.4): here. rasgeth-proxmox.sh reads it from
           # the latest release, which may carry the stack alone.
-          echo "v${WANTED#v}" > rel/redgiant-os-release
-          node packaging/update/sign.mjs rel/redgiant-os-release
+          echo "v${WANTED#v}" > rel/rasgeth-os-release
+          node packaging/update/sign.mjs rel/rasgeth-os-release
           ls -la rel
           cat rel/SHA256SUMS-os
       - name: Dry run, stopping here
         if: inputs.dry_run
         env:
           REUSE_RUN: ${{ inputs.reuse_run }}
-        run: echo "::notice title=Dry run::RedGiant OS images of run ${REUSE_RUN:-$GITHUB_RUN_ID} checked and signed; nothing attached"
+        run: echo "::notice title=Dry run::Rasgeth OS images of run ${REUSE_RUN:-$GITHUB_RUN_ID} checked and signed; nothing attached"
       - name: Attach to the release
         if: ${{ !inputs.dry_run && startsWith(github.ref, 'refs/tags/') }}
         env:
@@ -772,15 +787,15 @@ jobs:
         run: |
           set -euo pipefail
           version="${WANTED#v}"
-          [[ "$OS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "no release with RedGiant OS's images: $OS_TAG"; exit 1; }
+          [[ "$OS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "no release with Rasgeth OS's images: $OS_TAG"; exit 1; }
           mkdir -p rel
-          node packaging/os/stack.mjs --version "$version" --source-tag "$EXPECT_TAG" --out rel/redgiant-os-stack.json
+          node packaging/os/stack.mjs --version "$version" --source-tag "$EXPECT_TAG" --out rel/rasgeth-os-stack.json
           node packaging/os/files.mjs --version "$version" --out rel
-          echo "$OS_TAG" > rel/redgiant-os-release
+          echo "$OS_TAG" > rel/rasgeth-os-release
           [ -n "$UPDATE_SIGNING_KEY" ] || { echo "UPDATE_SIGNING_KEY is missing: the OS's files must be signed"; exit 1; }
-          for f in redgiant-os-stack.json redgiant-os-files.json redgiant-os-release; do node packaging/update/sign.mjs "rel/$f"; done
+          for f in rasgeth-os-stack.json rasgeth-os-files.json rasgeth-os-release; do node packaging/update/sign.mjs "rel/$f"; done
           ls -la rel
-          echo "::notice title=RedGiant OS::$version: the stack and the system's files; the images stay $OS_TAG's"
+          echo "::notice title=Rasgeth OS::$version: the stack and the system's files; the images stay $OS_TAG's"
       - name: Dry run, stopping here
         if: inputs.dry_run
         run: echo "::notice title=Dry run::the stack and the system's files signed; nothing attached"

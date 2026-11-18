@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# RedGiant's container entrypoint.
+# Rasgeth's container entrypoint (the image, services and folders keep their redgiant names).
 #   (default)  the server under the supervisor, from a git copy of the source in the data volume
 #   egress     the egress proxy for the sandboxes
 #   anything else is run as is
@@ -10,7 +10,7 @@ DATA=${REDGIANT_DATA_DIR:-/data}
 SRC=$DATA/source
 VERSION=$(cat "$APP/.image-version")
 log() { echo "[entrypoint] $*"; }
-git_() { git -c user.name=RedGiant -c user.email=redgiant@localhost -C "$SRC" "$@"; }
+git_() { git -c user.name=Rasgeth -c user.email=rasgeth@localhost -C "$SRC" "$@"; }
 
 case "${1:-redgiant}" in
   egress)
@@ -24,12 +24,12 @@ esac
 mkdir -p "$DATA"
 if [ ! -d "$SRC/.git" ]; then
   # First start: the image's source becomes a repository God can change (G14).
-  log "copying RedGiant $VERSION into $SRC"
+  log "copying Rasgeth $VERSION into $SRC"
   rm -rf "$SRC"
   cp -a "$APP" "$SRC"
   git_ init -q -b live
   git_ add -A
-  git_ commit -q -m "RedGiant $VERSION"
+  git_ commit -q -m "Rasgeth $VERSION"
   git_ branch upstream
   echo "$VERSION" > "$SRC/.git/redgiant-image"
   # Already built in the image: the supervisor need not build it again.
@@ -39,19 +39,19 @@ if [ ! -d "$SRC/.git" ]; then
 elif [ "$(cat "$SRC/.git/redgiant-image" 2>/dev/null)" != "$VERSION" ]; then
   # A new image: its source arrives on branch "upstream" and is merged into the live code,
   # God's changes included. The supervisor builds it and rolls back if it does not come up.
-  log "updating to RedGiant $VERSION"
+  log "updating to Rasgeth $VERSION"
   tmp=$(mktemp -d)
   git_ worktree add -q "$tmp" upstream
   find "$tmp" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
   (cd "$APP" && tar --exclude=./node_modules --exclude='*/node_modules' -cf - .) | tar -xf - -C "$tmp"
-  git -c user.name=RedGiant -c user.email=redgiant@localhost -C "$tmp" add -A
-  git -c user.name=RedGiant -c user.email=redgiant@localhost -C "$tmp" commit -q -m "RedGiant $VERSION" || true
+  git -c user.name=Rasgeth -c user.email=rasgeth@localhost -C "$tmp" add -A
+  git -c user.name=Rasgeth -c user.email=rasgeth@localhost -C "$tmp" commit -q -m "Rasgeth $VERSION" || true
   git_ worktree remove --force "$tmp"
-  if git_ merge -q --no-edit -m "Update to RedGiant $VERSION" upstream; then
+  if git_ merge -q --no-edit -m "Update to Rasgeth $VERSION" upstream; then
     echo "$VERSION" > "$SRC/.git/redgiant-image"
   else
     git_ merge --abort || true
-    log "WARNING: RedGiant $VERSION conflicts with changes made here; still running the current code. Ask God to merge branch 'upstream'."
+    log "WARNING: Rasgeth $VERSION conflicts with changes made here; still running the current code. Ask God to merge branch 'upstream'."
   fi
   chown -R node:node "$SRC"
 fi

@@ -1,5 +1,5 @@
 [Unit]
-Description=RedGiant OS: the root partition fills its disk
+Description=Rasgeth OS: the root partition fills its disk
 DefaultDependencies=no
 After=local-fs.target
 Before=redgiant.service docker.service

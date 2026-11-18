@@ -1,4 +1,4 @@
-# RedGiant installer for Windows (PowerShell 5.1 or 7).
+# Rasgeth installer for Windows with Docker (PowerShell 5.1 or 7).
 #   irm https://raw.githubusercontent.com/Frostmoore/redgiant2/main/install.ps1 | iex
 # or double-click install.cmd in a copy of the repository.
 # Environment: REDGIANT_HOME (default %USERPROFILE%\redgiant), REDGIANT_REF (default main),
@@ -33,12 +33,12 @@ function Test-Docker {
 
 # 1. WSL 2 and Docker Desktop -------------------------------------------------------------------
 if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
-  Say "Docker Desktop is not installed (RedGiant runs in Docker, on WSL 2)."
+  Say "Docker Desktop is not installed (Rasgeth runs in Docker, on WSL 2)."
   $wsl = $false
   try { wsl --status *> $null; $wsl = $LASTEXITCODE -eq 0 } catch {}
   if (-not $wsl) {
     if (-not (Ask "Install WSL 2 now (needs administrator rights and a restart)?")) {
-      Die "RedGiant needs WSL 2: https://learn.microsoft.com/windows/wsl/install"
+      Die "Rasgeth needs WSL 2: https://learn.microsoft.com/windows/wsl/install"
     }
     Start-Process -Verb RunAs -Wait wsl -ArgumentList "--install", "--no-distribution"
     Say "Restart Windows, then run this installer again."
@@ -48,7 +48,7 @@ if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
     Die "Install Docker Desktop from https://www.docker.com/products/docker-desktop/ then run this again."
   }
   if (-not (Ask "Install Docker Desktop now with winget?")) {
-    Die "RedGiant needs Docker Desktop: https://www.docker.com/products/docker-desktop/"
+    Die "Rasgeth needs Docker Desktop: https://www.docker.com/products/docker-desktop/"
   }
   winget install -e --id Docker.DockerDesktop --accept-source-agreements --accept-package-agreements
   $env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [Environment]::GetEnvironmentVariable("Path", "User")
@@ -71,7 +71,7 @@ if ([int]$v[0] -lt 1 -or ([int]$v[0] -eq 1 -and [int]$v[1] -lt 45)) {
 }
 
 # 2. Files --------------------------------------------------------------------------------------
-Say "Installing RedGiant in $HomeDir"
+Say "Installing Rasgeth in $HomeDir"
 New-Item -ItemType Directory -Force -Path (Join-Path $HomeDir "docker\searxng") | Out-Null
 $here = if ($PSScriptRoot) { $PSScriptRoot } else { "" }
 foreach ($f in $Files) {
@@ -186,12 +186,12 @@ function Save-Images([string[]]$Images) {
         $left = [int](($total - $done) / $speed)
       }
       if ($done -ge $total) { $status += " - unpacking" }
-      Write-Progress -Activity "Downloading RedGiant" -Status $status -PercentComplete ([int]($done * 100 / $total)) -SecondsRemaining $left
+      Write-Progress -Activity "Downloading Rasgeth" -Status $status -PercentComplete ([int]($done * 100 / $total)) -SecondsRemaining $left
     }
   }
   $ok = $LASTEXITCODE -eq 0
   $ErrorActionPreference = $before
-  Write-Progress -Activity "Downloading RedGiant" -Completed
+  Write-Progress -Activity "Downloading Rasgeth" -Completed
   Remove-Item $file -ErrorAction SilentlyContinue
   if (-not $json) {
     # An older Compose without JSON progress: its own output, layer by layer.
@@ -205,13 +205,13 @@ function Save-Images([string[]]$Images) {
 
 # 5. Start --------------------------------------------------------------------------------------
 if ($env:REDGIANT_NO_PULL -ne "1") {
-  Say "Downloading RedGiant (the first time takes a few minutes)"
+  Say "Downloading Rasgeth (the first time takes a few minutes)"
   $image = if ($settings.REDGIANT_IMAGE) { $settings.REDGIANT_IMAGE } else { "ghcr.io/frostmoore/redgiant2:latest" }
   $sandbox = if ($settings.REDGIANT_SANDBOX_IMAGE) { $settings.REDGIANT_SANDBOX_IMAGE } else { "ghcr.io/frostmoore/redgiant2-sandbox:latest" }
   $postgres = if ($settings.REDGIANT_POSTGRES_IMAGE) { $settings.REDGIANT_POSTGRES_IMAGE } else { "ghcr.io/frostmoore/redgiant2-postgres:17-pgvector0.8.7" }
   Save-Images @($image, $postgres, $sandbox)
 }
-Say "Starting RedGiant"
+Say "Starting Rasgeth"
 docker compose up -d
 if ($LASTEXITCODE -ne 0) { Die "docker compose up failed." }
 
@@ -220,9 +220,9 @@ $up = $false
 for ($i = 0; $i -lt 120 -and -not $up; $i++) {
   try { $up = (Invoke-WebRequest -UseBasicParsing "$url/api/health" -TimeoutSec 3).StatusCode -eq 200 } catch { Start-Sleep -Seconds 3 }
 }
-if (-not $up) { Die "RedGiant did not come up. See: cd $HomeDir; docker compose logs redgiant" }
+if (-not $up) { Die "Rasgeth did not come up. See: cd $HomeDir; docker compose logs redgiant" }
 
-Say "RedGiant is running: $url"
+Say "Rasgeth is running: $url"
 Write-Host "   Your token (also in $envFile): $token"
 Write-Host "   Stop: cd $HomeDir; docker compose down    Update: run this installer again"
 # The token travels after '#': it never reaches any server, only the page.

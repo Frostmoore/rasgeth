@@ -1,9 +1,9 @@
 #!/bin/sh
-# RedGiant OS (G39.1): run once inside the new system (mmdebstrap's customize hook), after the
+# Rasgeth OS (G39.1): run once inside the new system (mmdebstrap's customize hook), after the
 # packages and packaging/os/rootfs are in. Nothing here depends on the machine it will run on.
 set -eu
 
-# The services of the OS. SSH is installed but off: RedGiant's Settings switch it on (key only).
+# The services of the OS. SSH is installed but off: Rasgeth's Settings switch it on (key only).
 systemctl enable systemd-networkd.service systemd-resolved.service avahi-daemon.service \
   docker.service redgiant-growroot.service redgiant.service redgiant-console.service \
   redgiant-helper.socket redgiant-ssh-keys.service redgiant-issue.service redgiant-os-check.timer redgiant-os-first-update.service redgiant-selftest.service \
@@ -20,10 +20,10 @@ passwd --lock redgiant >/dev/null
 passwd --lock root >/dev/null
 chmod 0440 /etc/sudoers.d/redgiant
 
-echo redgiant >/etc/hostname
+echo rasgeth >/etc/hostname
 cat >/etc/hosts <<'EOF'
 127.0.0.1	localhost
-127.0.1.1	redgiant
+127.0.1.1	rasgeth
 ::1		localhost ip6-localhost ip6-loopback
 EOF
 

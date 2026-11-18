@@ -4,7 +4,7 @@
 // size, its sha256 and where its bytes sit in the zip.
 //
 //   node packaging/update/pack.mjs --tree <app folder> --version 3.4.0 --platform win-x64 --out <dir>
-//     → <out>/RedGiant-<platform>.zip, <out>/RedGiant-<platform>.manifest.json and its .gz
+//     → <out>/Rasgeth-<platform>.zip, <out>/Rasgeth-<platform>.manifest.json and its .gz
 //   node packaging/update/pack.mjs --estimate <old manifest> <new manifest>
 //     → what an update from the old files to the new ones downloads (bytes and requests)
 //
@@ -32,10 +32,10 @@ const DOS_TIME = 0;
 const DOS_DATE = (0 << 9) | (1 << 5) | 1;
 
 export function archiveName(platform) {
-  return `RedGiant-${platform}.zip`;
+  return `Rasgeth-${platform}.zip`;
 }
 export function manifestName(platform) {
-  return `RedGiant-${platform}.manifest.json`;
+  return `Rasgeth-${platform}.manifest.json`;
 }
 
 export function sha256(buf) {

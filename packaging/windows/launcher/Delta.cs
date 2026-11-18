@@ -1,5 +1,5 @@
-// Differential updates (G36.18): what changed between the installed RedGiant and a new version,
-// and only that downloaded. Every release carries RedGiant-win-x64.zip (each file deflated on its
+// Differential updates (G36.18): what changed between the installed version and a new one,
+// and only that downloaded. Every release carries Rasgeth-win-x64.zip (each file deflated on its
 // own, packaging/update/pack.mjs) and its manifest (every file's size, sha256 and place in the
 // zip). The files missing here are downloaded with HTTP Range requests, checked one by one, and a
 // whole new tree is put together beside the old one (unchanged files as hard links); the swap is
@@ -209,7 +209,7 @@ public sealed class HttpRangeSource : IRangeSource
     {
         ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072; // TLS 1.2
         var req = (HttpWebRequest)WebRequest.Create(url);
-        req.UserAgent = "RedGiant-Updates";
+        req.UserAgent = Brand.Name + "-Updates";
         req.AllowAutoRedirect = true;
         req.Timeout = 30000;
         req.ReadWriteTimeout = 60000;
@@ -469,11 +469,13 @@ public static class Delta
     }
 
     /**
-     * What the installer puts in RedGiant's folder (redgiant.iss [Files], pack.mjs's roots; app\ is
-     * RGCompanion's window, G40.12, when the release carries it): the
-     * files the next update compares. Never data, the engine, update\ or the uninstaller.
+     * What the installer puts in the program's folder (Rasgeth.iss [Files], pack.mjs's roots; app\
+     * is the app's window, G40.12, when the release carries it; the tray's silhouettes since
+     * 3.9.0): the files the next update compares. Never data, the engine, update\ or the
+     * uninstaller.
      */
-    public static readonly string[] InstalledRoots = { "RedGiant.exe", "redgiant.ico", "app", "bin", "node", "server", "web" };
+    public static readonly string[] InstalledRoots = { Brand.Exe, "rasgeth.ico", Brand.TrayDark, Brand.TrayLight, "app", "bin", "node", "server", "web" };
+
 
     /** The installed files under InstalledRoots, as manifest paths ("server/dist/main.js"). */
     public static List<string> InstalledFiles(string appDir)
@@ -768,9 +770,9 @@ public static class Delta
     }
 
     /**
-     * The new version in place: for each root (RedGiant.exe, node, server, web…) the installed one
+     * The new version in place: for each root (Rasgeth.exe, node, server, web…) the installed one
      * moves to staging\prev and the new one from staging\next takes its place. Renames on the same
-     * disk, a second or two; a running RedGiant.exe can be renamed. Written down step by step in
+     * disk, a second or two; a running Rasgeth.exe can be renamed. Written down step by step in
      * staging\swap.txt, so Rollback undoes exactly what was done, even after a crash. Server and
      * Postgres must be stopped first (they hold files in server\).
      */

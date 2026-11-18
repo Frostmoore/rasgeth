@@ -1,5 +1,5 @@
 [Unit]
-Description=RedGiant OS: update RedGiant from its signed release
+Description=Rasgeth OS: update Rasgeth from its signed release
 After=network-online.target redgiant.service
 Wants=network-online.target
 

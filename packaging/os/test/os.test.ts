@@ -1,4 +1,4 @@
-// RedGiant OS (G39.1): the pinned stack (stack.mjs), and the update gate of the OS's updater
+// Rasgeth OS (G39.1): the pinned stack (stack.mjs), and the update gate of the OS's updater
 // (redgiant-os-update, bash) checked against assessRelease, the rule it mirrors.
 import { execFileSync, spawnSync } from "node:child_process";
 import { generateKeyPairSync } from "node:crypto";
@@ -142,15 +142,15 @@ describe("the stack of a release", () => {
   });
 });
 
-// RedGiant OS's images only when the OS changed since the latest release that has them (3.7.4).
-describe("the latest release with RedGiant OS's images (os-release.mjs, 3.7.4)", () => {
+// Rasgeth OS's images only when the OS changed since the latest release that has them (3.7.4).
+describe("the latest release with Rasgeth OS's images (os-release.mjs, 3.7.4)", () => {
   const rel = (tag: string, o: Record<string, unknown> = {}, images = true) => ({
     tag_name: tag,
     draft: false,
     prerelease: false,
     assets: images
-      ? [{ name: "SHA256SUMS-os" }, { name: `redgiant-os-${tag.slice(1)}-x86_64.qcow2` }]
-      : [{ name: "redgiant-os-stack.json" }, { name: "redgiant-os-release" }],
+      ? [{ name: "SHA256SUMS-os" }, { name: `rasgeth-os-${tag.slice(1)}-x86_64.qcow2` }]
+      : [{ name: "rasgeth-os-stack.json" }, { name: "rasgeth-os-release" }],
     ...o,
   });
   it.each([
@@ -174,6 +174,29 @@ describe("the latest release with RedGiant OS's images (os-release.mjs, 3.7.4)",
       "v3.7.2",
     ],
     ["only older than --below", [rel("v3.7.4"), rel("v3.7.3")], "3.7.4", "v3.7.3"],
+    [
+      "the images' names before 3.9.0 (redgiant-os-*) still count",
+      [
+        rel("v3.8.14", {
+          assets: [{ name: "SHA256SUMS-os" }, { name: "redgiant-os-3.8.14-x86_64.qcow2" }],
+        }),
+        rel("v3.9.0", {}, false),
+      ],
+      "",
+      "v3.8.14",
+    ],
+    [
+      "the newest wins whatever its images' name",
+      [
+        rel("v3.8.14", {
+          assets: [{ name: "SHA256SUMS-os" }, { name: "redgiant-os-3.8.14-x86_64.qcow2" }],
+        }),
+        rel("v3.9.0"),
+      ],
+      "",
+      "v3.9.0",
+    ],
+
     ["none", [rel("v3.7.5", {}, false)], "", null],
   ])("%s", (_name, list, below, tag) => {
     expect(latestOsRelease(list, below)).toBe(tag);
@@ -262,7 +285,7 @@ describe("reusing a branch's OS images (reuse.mjs, 3.7.4)", () => {
   const files = (o: Record<string, unknown> = {}) => ({
     format: 1,
     version: "3.7.4",
-    archive: { name: "redgiant-os-files-3.7.4.tar.zst", sha256: "a".repeat(64) },
+    archive: { name: "rasgeth-os-files-3.7.4.tar.zst", sha256: "a".repeat(64) },
     files: [
       { path: "/etc/caddy/Caddyfile", sha256: "1".repeat(64), mode: "0644" },
       {
@@ -278,7 +301,7 @@ describe("reusing a branch's OS images (reuse.mjs, 3.7.4)", () => {
     expect(
       filesDifferences(
         files(),
-        files({ archive: { name: "redgiant-os-files-3.7.4.tar.zst", sha256: "b".repeat(64) } }),
+        files({ archive: { name: "rasgeth-os-files-3.7.4.tar.zst", sha256: "b".repeat(64) } }),
       ),
     ).toEqual([]);
     expect(filesDifferences(files(), files({ version: "3.7.3" }))).toContain(
@@ -423,7 +446,7 @@ describe("redgiant-wifi.txt as people write it (redgiant-wifi-file parse)", () =
   });
 });
 
-describe("redgiant.local only on the real network cards (redgiant-mdns, p3.7.2)", () => {
+describe("rasgeth.local only on the real network cards (redgiant-mdns, p3.7.2)", () => {
   const sys = mkdtempSync(join(tmpdir(), "rg-mdns-sys-"));
   for (const n of [
     "lo",
@@ -468,12 +491,12 @@ describe("redgiant.local only on the real network cards (redgiant-mdns, p3.7.2)"
     expect(ok.status).toBe(0);
     expect(ok.stdout).toContain("redgiant-2.local is 10.0.2.15 on enp0s2");
     const bad = spawnSync("bash", [mdns, "check"], {
-      env: fakes({ name: "redgiant.local", resolves: "172.17.0.1" }),
+      env: fakes({ name: "rasgeth.local", resolves: "172.17.0.1" }),
       encoding: "utf8",
     });
     expect(bad.status).toBe(1);
     expect(bad.stderr).toContain(
-      "redgiant.local resolves to '172.17.0.1', not an IPv4 of enp0s2 (10.0.2.15)",
+      "rasgeth.local resolves to '172.17.0.1', not an IPv4 of enp0s2 (10.0.2.15)",
     );
   });
 
@@ -590,7 +613,7 @@ describe("the system's files of a release (files.mjs, p3.7.3)", () => {
   const manifest = (o: Record<string, unknown> = {}, file: Record<string, unknown> = {}) => ({
     format: 1,
     version: "3.7.3",
-    archive: { name: "redgiant-os-files-3.7.3.tar.zst", sha256: "a".repeat(64) },
+    archive: { name: "rasgeth-os-files-3.7.3.tar.zst", sha256: "a".repeat(64) },
     files: [{ path: "/usr/lib/redgiant-os/x", sha256: "b".repeat(64), mode: "0755", ...file }],
     ...o,
   });
@@ -660,15 +683,15 @@ describe("redgiant-os-update files: signed, checked, put back on a failure", () 
     const dir = mkdtempSync(join(tmpdir(), "rg-os-files-work-"));
     buildFiles("3.7.3", dir, repo);
     writeFileSync(
-      join(dir, "redgiant-os-files.json.sig"),
-      signManifest(readFileSync(join(dir, "redgiant-os-files.json")), pem),
+      join(dir, "rasgeth-os-files.json.sig"),
+      signManifest(readFileSync(join(dir, "rasgeth-os-files.json")), pem),
     );
     const key = join(dir, "key.pem");
     writeFileSync(key, pub);
     // What the machine has: an old tool, the same Caddyfile, its own login text.
     put(root, "usr/lib/redgiant-os/redgiant-tool", "#!/bin/sh\necho old\n", 0o755);
     put(root, "etc/caddy/Caddyfile", ":443 {}\n");
-    put(root, "etc/issue.d/50-redgiant.issue", "RedGiant: http://10.0.0.5:7600\n");
+    put(root, "etc/issue.d/50-redgiant.issue", "Rasgeth: http://10.0.0.5:7600\n");
     const bin = mkdtempSync(join(tmpdir(), "rg-os-files-bin-"));
     const log = join(bin, "calls.log");
     const fake = (n: string, text: string) => writeFileSync(join(bin, n), text, { mode: 0o755 });
@@ -706,7 +729,7 @@ describe("redgiant-os-update files: signed, checked, put back on a failure", () 
     expect(read(m, "usr/lib/redgiant/redgiant-helper")).toContain("helper");
     expect(modeOfFile(m, "usr/lib/redgiant/redgiant-helper")).toBe("755");
     expect(modeOfFile(m, "usr/lib/systemd/system/a.service")).toBe("644");
-    expect(read(m, "etc/issue.d/50-redgiant.issue")).toBe("RedGiant: http://10.0.0.5:7600\n");
+    expect(read(m, "etc/issue.d/50-redgiant.issue")).toBe("Rasgeth: http://10.0.0.5:7600\n");
     // Not a container: the container's own file stays out.
     expect(existsSync(join(m.root, "etc/systemd/network/70-redgiant-container.network"))).toBe(
       false,
@@ -739,7 +762,7 @@ describe("redgiant-os-update files: signed, checked, put back on a failure", () 
   it("applies nothing without the right signature", { skip: !linuxTools }, () => {
     const m = machine();
     writeFileSync(
-      join(m.dir, "redgiant-os-files.json.sig"),
+      join(m.dir, "rasgeth-os-files.json.sig"),
       signManifest(Buffer.from("other"), pem),
     );
     const r = run(m);
@@ -751,7 +774,7 @@ describe("redgiant-os-update files: signed, checked, put back on a failure", () 
 
   it("applies nothing from an archive that is not the one signed", { skip: !linuxTools }, () => {
     const m = machine();
-    const archive = join(m.dir, "redgiant-os-files-3.7.3.tar.zst");
+    const archive = join(m.dir, "rasgeth-os-files-3.7.3.tar.zst");
     writeFileSync(archive, Buffer.concat([readFileSync(archive), Buffer.from("x")]));
     const r = run(m);
     expect(r.status).toBe(1);
@@ -763,7 +786,7 @@ describe("redgiant-os-update files: signed, checked, put back on a failure", () 
     skip: !linuxTools,
   }, () => {
     const m = machine();
-    const file = join(m.dir, "redgiant-os-files.json");
+    const file = join(m.dir, "rasgeth-os-files.json");
     const bad = JSON.parse(readFileSync(file, "utf8"));
     bad.files[0].path = "/etc/passwd";
     writeFileSync(file, JSON.stringify(bad));

@@ -4,11 +4,12 @@
 // future. If not, the values below would default to using the project name when this becomes a
 // 'flutter create' template.
 
-// The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = RGCompanion
+// The application's name (plan 3.9.0, choice 4: «Rasgeth App» in Applications, beside Rasgeth.app;
+// the window itself says Rasgeth, MainFlutterWindow.swift). The bundle id below keeps its name.
+PRODUCT_NAME = Rasgeth App
 
 // The application's bundle identifier
 PRODUCT_BUNDLE_IDENTIFIER = com.redgiant.companion
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 Frostmoore and RedGiant contributors. MIT License.
+PRODUCT_COPYRIGHT = Copyright © 2026 Frostmoore and Rasgeth contributors. MIT License.

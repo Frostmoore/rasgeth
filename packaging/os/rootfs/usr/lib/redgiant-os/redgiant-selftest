@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# RedGiant OS (G39.1): the checks CI runs in QEMU, started only when the machine is given the
+# Rasgeth OS (G39.1): the checks CI runs in QEMU, started only when the machine is given the
 # credential redgiant.selftest (qemu -smbios type=11,value=io.systemd.credential:redgiant.selftest=1).
 # Results go to the console: REDGIANT-SELFTEST PASS or FAIL, one line per check.
 set -uo pipefail
@@ -14,7 +14,7 @@ check() { # name command…
   shift
   if "$@" >/dev/null 2>&1; then say "ok   $name"; else say "FAIL $name"; ok=0; fi
 }
-# Up to 15 minutes for RedGiant to answer; a start that keeps failing is reported after 5.
+# Up to 15 minutes for Rasgeth to answer; a start that keeps failing is reported after 5.
 for i in $(seq 1 180); do
   healthy && break
   [ "$i" -gt 60 ] && [ "$(systemctl show -p NRestarts --value redgiant.service)" -ge 3 ] && break
@@ -23,8 +23,8 @@ done
 check "redgiant.service active" systemctl is-active --quiet redgiant.service
 check "api/health" curl -fsS "http://localhost:$PORT/api/health"
 check "images pinned" /usr/lib/redgiant-os/redgiant-stack images
-check "mdns redgiant.local" avahi-resolve -4 -n "$(hostname).local"
-# redgiant.local is the main card's IPv4 (not a Docker bridge's, not only IPv6 link-local), and
+check "mdns rasgeth.local" avahi-resolve -4 -n "$(hostname).local"
+# rasgeth.local is the main card's IPv4 (not a Docker bridge's, not only IPv6 link-local), and
 # avahi uses only the real cards (p3.7.2).
 # Its own line with the reason: the name avahi publishes, what it resolved to, the route.
 if why=$(/usr/lib/redgiant-os/redgiant-mdns check 2>&1); then
@@ -44,8 +44,8 @@ check "dns no negative cache" bash -c 'systemd-analyze cat-config systemd/resolv
 # HTTPS in the local network: the machine's own CA, its name and its address, TLS 1.2 at least.
 CA=$STATE/tls/ca.crt
 ip1=$(addresses | head -1)
-for i in $(seq 1 24); do curl -fsS --max-time 5 --cacert "$CA" --resolve "redgiant.local:443:127.0.0.1" https://redgiant.local/api/health >/dev/null 2>&1 && break; sleep 5; done
-check "https redgiant.local (local CA)" curl -fsS --max-time 10 --cacert "$CA" --resolve "redgiant.local:443:127.0.0.1" https://redgiant.local/api/health
+for i in $(seq 1 24); do curl -fsS --max-time 5 --cacert "$CA" --resolve "rasgeth.local:443:127.0.0.1" https://rasgeth.local/api/health >/dev/null 2>&1 && break; sleep 5; done
+check "https rasgeth.local (local CA)" curl -fsS --max-time 10 --cacert "$CA" --resolve "rasgeth.local:443:127.0.0.1" https://rasgeth.local/api/health
 check "https $(hostname).local (local CA)" curl -fsS --max-time 10 --cacert "$CA" --resolve "$(hostname).local:443:127.0.0.1" "https://$(hostname).local/api/health"
 check "https by address $ip1" curl -fsS --max-time 10 --cacert "$CA" "https://$ip1/api/health"
 check "https TLS 1.2" curl -fsS --max-time 10 -k --tlsv1.2 --tls-max 1.2 https://127.0.0.1/api/health
@@ -73,7 +73,7 @@ say "addresses $(addresses | tr '\n' ' ')"
 say "ca $(base64 -w0 "$CA" 2>/dev/null)"
 say "health $(curl -fsS "http://localhost:$PORT/api/health" 2>&1)"
 if [ "$ok" != 1 ]; then
-  # Why, on the console: RedGiant's start and its containers.
+  # Why, on the console: Rasgeth's start and its containers.
   journalctl -b -u redgiant.service --no-pager -n 40 -o cat 2>&1 | sed 's/^/REDGIANT-SELFTEST journal: /' >/dev/console
   journalctl -b -u caddy.service -u redgiant-tls.service --no-pager -n 40 -o cat 2>&1 | sed 's/^/REDGIANT-SELFTEST https: /' >/dev/console
   systemctl status caddy.service --no-pager -n 0 2>&1 | sed 's/^/REDGIANT-SELFTEST https: /' >/dev/console

@@ -46,8 +46,8 @@ static class Updates
     const string UninstallKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\{6F0E3B52-8D4A-4C1E-9B7A-2E1D5C9F4A10}_is1";
     const string Latest = "https://api.github.com/repos/Frostmoore/redgiant2/releases/latest";
     const string Platform = "win-x64";
-    const string ManifestAsset = "RedGiant-win-x64.manifest.json";
-    const string ArchiveAsset = "RedGiant-win-x64.zip";
+    const string ManifestAsset = Brand.ManifestAsset;
+    const string ArchiveAsset = Brand.ArchiveAsset;
     static readonly bool It = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "it";
 
     public sealed class Release
@@ -226,7 +226,7 @@ static class Updates
     {
         ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072; // TLS 1.2
         var w = new WebClient();
-        w.Headers[HttpRequestHeader.UserAgent] = "RedGiant-Updates";
+        w.Headers[HttpRequestHeader.UserAgent] = Brand.Name + "-Updates";
         return w;
     }
 
@@ -245,7 +245,7 @@ static class Updates
             if (a == null || !(a.ContainsKey("name") && a["name"] is string)) continue;
             string name = (string)a["name"];
             string url = a.ContainsKey("browser_download_url") ? a["browser_download_url"] as string : null;
-            if (name == "RedGiant-Setup.exe")
+            if (name == Brand.Setup)
             {
                 r.Url = url;
                 if (a.ContainsKey("size") && a["size"] != null) r.Size = Convert.ToInt64(a["size"], CultureInfo.InvariantCulture);
@@ -483,7 +483,7 @@ static class Updates
     static void Required(Release r)
     {
         Asking = true;
-        var f = Dialog(It ? "È necessario aggiornare RedGiant" : "RedGiant must be updated", 500, 250);
+        var f = Dialog(It ? "È necessario aggiornare " + Brand.Name : Brand.Name + " must be updated", 500, 250);
         f.ControlBox = false;
         bool leaving = false;
         f.FormClosing += (s, e) => { if (!leaving && !replacing && e.CloseReason == CloseReason.UserClosing) e.Cancel = true; };
@@ -491,13 +491,13 @@ static class Updates
         var text = new Label
         {
             Text = (It
-                ? "Serve RedGiant " + r.Version + " (hai la " + (Installed ?? "?") + "): questo aggiornamento non può aspettare. Finché non aggiorni, agenti e automazioni restano fermi; conversazioni e progetti sono al sicuro."
-                : "RedGiant " + r.Version + " is needed (you have " + (Installed ?? "?") + "): this update cannot wait. Until you update, agents and automations wait; conversations and projects are safe.") + NoteFor(r),
+                ? "Serve " + Brand.Name + " " + r.Version + " (hai la " + (Installed ?? "?") + "): questo aggiornamento non può aspettare. Finché non aggiorni, agenti e automazioni restano fermi; conversazioni e progetti sono al sicuro."
+                : Brand.Name + " " + r.Version + " is needed (you have " + (Installed ?? "?") + "): this update cannot wait. Until you update, agents and automations wait; conversations and projects are safe.") + NoteFor(r),
             Location = new Point(18, 16),
             Size = new Size(464, 160),
         };
         var now = Button(It ? "Aggiorna ora" : "Update now", 18, 196, 170, true);
-        var close = Button(It ? "Chiudi RedGiant" : "Close RedGiant", 196, 196, 170, false);
+        var close = Button(It ? "Chiudi " + Brand.Name : "Close " + Brand.Name, 196, 196, 170, false);
         f.Controls.AddRange(new Control[] { text, now, close });
         now.Click += (s, e) => { leaving = true; Decide(true); f.Close(); Update(r); };
         close.Click += (s, e) => { leaving = true; f.Close(); if (Quit != null) Quit(); };
@@ -513,8 +513,8 @@ static class Updates
         var text = new Label
         {
             Text = (It
-                ? "RedGiant " + r.Version + " non si può installare sopra la " + (Installed ?? "?") + ": è cambiato troppo dentro. Nella pagina di RedGiant faccio prima un backup di tutto nella cartella Documenti, poi ti guido a disinstallare e installare la versione nuova, che rimette tutto a posto."
-                : "RedGiant " + r.Version + " cannot be installed over " + (Installed ?? "?") + ": too much changed inside. In RedGiant's page a backup of everything goes into your Documents first, then you are guided to uninstall and install the new version, which puts everything back.") + NoteFor(r),
+                ? Brand.Name + " " + r.Version + " non si può installare sopra la " + (Installed ?? "?") + ": è cambiato troppo dentro. Nella pagina di " + Brand.Name + " faccio prima un backup di tutto nella cartella Documenti, poi ti guido a disinstallare e installare la versione nuova, che rimette tutto a posto."
+                : Brand.Name + " " + r.Version + " cannot be installed over " + (Installed ?? "?") + ": too much changed inside. In " + Brand.Name + "'s page a backup of everything goes into your Documents first, then you are guided to uninstall and install the new version, which puts everything back.") + NoteFor(r),
             Location = new Point(18, 16),
             Size = new Size(464, 160),
         };
@@ -538,12 +538,12 @@ static class Updates
         string unins = AppDir != null ? Path.Combine(AppDir, "unins000.exe") : null;
         if (unins == null || !File.Exists(unins))
         {
-            MessageBox.Show(It ? "Non trovo il disinstallatore: disinstalla RedGiant da Impostazioni di Windows > App." : "The uninstaller was not found: uninstall RedGiant from Windows Settings > Apps.", "RedGiant", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(It ? "Non trovo il disinstallatore: disinstalla " + Brand.Name + " da Impostazioni di Windows > App." : "The uninstaller was not found: uninstall " + Brand.Name + " from Windows Settings > Apps.", Brand.Name, MessageBoxButtons.OK, MessageBoxIcon.Information);
             return;
         }
         var yes = MessageBox.Show(
-            It ? "Chiudo RedGiant e apro il suo disinstallatore. Il backup che hai fatto resta nella cartella Documenti. Continuo?" : "RedGiant closes and its uninstaller opens. The backup you made stays in your Documents. Go on?",
-            "RedGiant", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, (MessageBoxOptions)0x40000);
+            It ? "Chiudo " + Brand.Name + " e apro il suo disinstallatore. Il backup che hai fatto resta nella cartella Documenti. Continuo?" : Brand.Name + " closes and its uninstaller opens. The backup you made stays in your Documents. Go on?",
+            Brand.Name, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, (MessageBoxOptions)0x40000);
         if (yes != DialogResult.Yes) return;
         Diag.Log("update", "starting the uninstaller for a clean install");
         if (StopAll != null) StopAll();
@@ -555,12 +555,12 @@ static class Updates
     static void Ask(Release r)
     {
         Asking = true;
-        var f = Dialog(It ? "Aggiornamento di RedGiant" : "RedGiant update", 470, 210);
+        var f = Dialog(It ? "Aggiornamento di " + Brand.Name : Brand.Name + " update", 470, 210);
         var text = new Label
         {
             Text = It
-                ? "È disponibile RedGiant " + r.Version + " (hai la " + (Get("Version") ?? "?") + ").\n\nVuoi aggiornarlo adesso? Scarico solo quello che è cambiato e riavvio RedGiant: le tue conversazioni e i tuoi progetti restano."
-                : "RedGiant " + r.Version + " is out (you have " + (Get("Version") ?? "?") + ").\n\nUpdate now? Only what changed is downloaded, then RedGiant restarts: your conversations and projects stay.",
+                ? "È disponibile " + Brand.Name + " " + r.Version + " (hai la " + (Get("Version") ?? "?") + ").\n\nVuoi aggiornarlo adesso? Scarico solo quello che è cambiato e riavvio " + Brand.Name + ": le tue conversazioni e i tuoi progetti restano."
+                : Brand.Name + " " + r.Version + " is out (you have " + (Get("Version") ?? "?") + ").\n\nUpdate now? Only what changed is downloaded, then " + Brand.Name + " restarts: your conversations and projects stay.",
             Location = new Point(18, 16),
             Size = new Size(434, 96),
         };
@@ -811,7 +811,7 @@ static class Updates
             return;
         }
         var f = Dialog(It ? "Scarico l'aggiornamento" : "Downloading the update", 470, 150);
-        var what = new Label { Text = "RedGiant " + r.Version, Location = new Point(18, 16), Size = new Size(434, 24) };
+        var what = new Label { Text = Brand.Name + " " + r.Version, Location = new Point(18, 16), Size = new Size(434, 24) };
         var detail = new Label { Text = It ? "Cerco cosa è cambiato…" : "Looking at what changed…", Location = new Point(18, 48), Size = new Size(434, 40), ForeColor = Color.FromArgb(160, 166, 178), Font = new Font("Segoe UI", 9.5f) };
         var bar = new ProgressBar { Location = new Point(18, 100), Size = new Size(434, 14), Maximum = 1000, Style = ProgressBarStyle.Marquee, MarqueeAnimationSpeed = 30 };
         f.Controls.AddRange(new Control[] { what, detail, bar });
@@ -855,8 +855,8 @@ static class Updates
                 ui(() =>
                 {
                     what.Text = It
-                        ? "RedGiant " + r.Version + " · scarico " + Mb(plan.Bytes) + " invece di " + Mb(full)
-                        : "RedGiant " + r.Version + " · downloading " + Mb(plan.Bytes) + " instead of " + Mb(full);
+                        ? Brand.Name + " " + r.Version + " · scarico " + Mb(plan.Bytes) + " invece di " + Mb(full)
+                        : Brand.Name + " " + r.Version + " · downloading " + Mb(plan.Bytes) + " instead of " + Mb(full);
                     bar.Style = ProgressBarStyle.Continuous;
                 });
                 var speed = new Speed();
@@ -884,7 +884,7 @@ static class Updates
                 Report("restart", r.Version, 0, 0);
                 ui(() =>
                 {
-                    detail.Text = It ? "Riavvio RedGiant con la versione nuova…" : "Restarting RedGiant as the new version…";
+                    detail.Text = It ? "Riavvio " + Brand.Name + " con la versione nuova…" : "Restarting " + Brand.Name + " as the new version…";
                     Apply(r, m, staging, f);
                 });
             }
@@ -911,7 +911,7 @@ static class Updates
             f.BeginInvoke(new Action(() =>
             {
                 f.Close();
-                MessageBox.Show((It ? "Non sono riuscito a scaricare l'aggiornamento. Riprovo la prossima volta, da dove ero arrivato.\n\n" : "The update could not be downloaded. It is tried again next time, from where it stopped.\n\n") + e.Message, "RedGiant", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show((It ? "Non sono riuscito a scaricare l'aggiornamento. Riprovo la prossima volta, da dove ero arrivato.\n\n" : "The update could not be downloaded. It is tried again next time, from where it stopped.\n\n") + e.Message, Brand.Name, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 // A mandatory update stays mandatory: its window comes back. Otherwise the page opens.
                 GaveUp(r);
             }));
@@ -946,7 +946,7 @@ static class Updates
     static void Apply(Release r, UpdateManifest m, string staging, Form f)
     {
         string from = Installed;
-        Diag.Log("update", "stopping RedGiant to swap " + from + " -> " + m.Version);
+        Diag.Log("update", "stopping " + Brand.Name + " to swap " + from + " -> " + m.Version);
         if (StopAll != null) StopAll();
         try
         {
@@ -975,8 +975,8 @@ static class Updates
     /** RedGiant.exe of the folder (new or old, whichever is there now) starts; this one leaves. */
     static void Relaunch(string args)
     {
-        try { Process.Start(new ProcessStartInfo(Path.Combine(AppDir, "RedGiant.exe"), args + CarryArgs) { UseShellExecute = false }); }
-        catch (Exception e) { Diag.Log("update", "could not start RedGiant again: " + e.Message); }
+        try { Process.Start(new ProcessStartInfo(Path.Combine(AppDir, Brand.Exe), args + CarryArgs) { UseShellExecute = false }); }
+        catch (Exception e) { Diag.Log("update", "could not start " + Brand.Name + " again: " + e.Message); }
         if (Exit != null) Exit();
     }
 
@@ -1014,7 +1014,7 @@ static class Updates
         SetListedVersion(s["from"]);
         if (s["phase"] == "trial") Set("UpdateBroken", s["version"]);
         try { File.Delete(StateFile); } catch (Exception) { }
-        try { Process.Start(new ProcessStartInfo(Path.Combine(AppDir, "RedGiant.exe"), "--rolled-back " + s["version"] + (background ? " --background" : "")) { UseShellExecute = false }); }
+        try { Process.Start(new ProcessStartInfo(Path.Combine(AppDir, Brand.Exe), "--rolled-back " + s["version"] + (background ? " --background" : "")) { UseShellExecute = false }); }
         catch (Exception) { return true; }
         return false;
     }
@@ -1043,7 +1043,7 @@ static class Updates
     {
         if (!trial) { StartWarm(); return; }
         trial = false;
-        Diag.Log("update", "RedGiant " + trialVersion + " answered: the update stays");
+        Diag.Log("update", Brand.Name + " " + trialVersion + " answered: the update stays");
         try { File.Delete(StateFile); } catch (Exception) { }
         Set("UpdateBroken", null);
         string staging = Staging(trialVersion);
@@ -1069,7 +1069,7 @@ static class Updates
     {
         if (!trial) return false;
         trial = false;
-        Diag.Log("update", "RedGiant " + trialVersion + " did not start: putting " + trialFrom + " back");
+        Diag.Log("update", Brand.Name + " " + trialVersion + " did not start: putting " + trialFrom + " back");
         if (StopAll != null) StopAll();
         try { Delta.Rollback(AppDir, Staging(trialVersion)); }
         catch (Exception e) { Diag.Log("update", "rollback failed: " + e.Message); return false; }
@@ -1088,12 +1088,12 @@ static class Updates
         {
             owner.BeginInvoke(new Action(() =>
             {
-                var f = Dialog(It ? "Aggiornamento di RedGiant" : "RedGiant update", 470, 170);
+                var f = Dialog(It ? "Aggiornamento di " + Brand.Name : Brand.Name + " update", 470, 170);
                 var text = new Label
                 {
                     Text = It
-                        ? "L'aggiornamento a RedGiant " + version + " non è partito: ho rimesso la " + (Installed ?? "?") + ", come prima.\n\nLa prossima volta lo aggiorno con l'installazione completa."
-                        : "The update to RedGiant " + version + " did not start: " + (Installed ?? "?") + " is back, as before.\n\nNext time it is updated with the whole installer.",
+                        ? "L'aggiornamento a " + Brand.Name + " " + version + " non è partito: ho rimesso la " + (Installed ?? "?") + ", come prima.\n\nLa prossima volta lo aggiorno con l'installazione completa."
+                        : "The update to " + Brand.Name + " " + version + " did not start: " + (Installed ?? "?") + " is back, as before.\n\nNext time it is updated with the whole installer.",
                     Location = new Point(18, 16),
                     Size = new Size(434, 96),
                 };
@@ -1112,13 +1112,13 @@ static class Updates
         if (r.Gate == "breaking" || r.Gate == "unchecked") return;
         Decide(true);
         var f = Dialog(It ? "Scarico l'aggiornamento" : "Downloading the update", 470, 150);
-        var what = new Label { Text = "RedGiant " + r.Version, Location = new Point(18, 16), Size = new Size(434, 24) };
+        var what = new Label { Text = Brand.Name + " " + r.Version, Location = new Point(18, 16), Size = new Size(434, 24) };
         var detail = new Label { Text = "", Location = new Point(18, 48), Size = new Size(434, 40), ForeColor = Color.FromArgb(160, 166, 178), Font = new Font("Segoe UI", 9.5f) };
         var bar = new ProgressBar { Location = new Point(18, 100), Size = new Size(434, 14), Maximum = 1000 };
         f.Controls.AddRange(new Control[] { what, detail, bar });
         Track(f);
         f.Show();
-        string file = Path.Combine(Path.GetTempPath(), "RedGiant-Setup-" + r.Version + ".exe");
+        string file = Path.Combine(Path.GetTempPath(), Brand.Name + "-Setup-" + r.Version + ".exe");
         var speed = new Speed();
         var w = Client();
         var downloadStarted = DateTime.Now;
@@ -1137,7 +1137,7 @@ static class Updates
                 Diag.Log("update", "download failed: " + (e.Error != null ? e.Error.Message : "cancelled"));
                 Report("failed", r.Version, 0, 0);
                 f.Close();
-                MessageBox.Show((It ? "Non sono riuscito a scaricare l'aggiornamento. Riprovo la prossima volta.\n\n" : "The update could not be downloaded. It is tried again next time.\n\n") + (e.Error != null ? e.Error.Message : ""), "RedGiant", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show((It ? "Non sono riuscito a scaricare l'aggiornamento. Riprovo la prossima volta.\n\n" : "The update could not be downloaded. It is tried again next time.\n\n") + (e.Error != null ? e.Error.Message : ""), Brand.Name, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Set("UpdatePending", r.Version);
                 GaveUp(r);
                 return;

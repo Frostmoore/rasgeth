@@ -14,7 +14,7 @@ if (catalog.format !== 1 || !Number.isInteger(catalog.version) || catalog.versio
 writeFileSync(
   out,
   `// Written by packaging/models/embed.mjs from packaging/models/catalog.json: do not edit by hand.\n` +
-    `// The catalog built into this RedGiant, used until a newer signed one is downloaded.\n` +
+    `// The catalog built into Rasgeth, used until a newer signed one is downloaded.\n` +
     `import type { ModelsCatalog } from "@redgiant/protocol";\n\n` +
     `export const BUILTIN_CATALOG: ModelsCatalog = ${JSON.stringify(catalog, null, 2)};\n`,
 );

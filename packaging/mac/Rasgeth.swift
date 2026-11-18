@@ -1,24 +1,26 @@
-// RedGiant for macOS (2026-11-05): what RedGiant.exe is on Windows. A menu bar app that starts the
-// server it carries (Node and the server inside the app), waits until it answers, opens the browser
-// already signed in, and stops it the proper way when it quits. Everything RedGiant keeps lives in
-// ~/Library/Application Support/RedGiant (data/ with the database, engine/ with the local models),
-// its logs in ~/Library/Logs/RedGiant.
+// Rasgeth for macOS (2026-11-05; RedGiant until 3.9.0): what Rasgeth.exe is on Windows. A menu
+// bar app that starts the server it carries (Node and the server inside the app), waits until it
+// answers, opens the browser already signed in, and stops it the proper way when it quits.
+// Everything it keeps lives in ~/Library/Application Support/RedGiant (data/ with the database,
+// engine/ with the local models; the folder keeps its name since before 3.9.0, so nothing moves),
+// its logs in ~/Library/Logs/Rasgeth.
 //
-//   RedGiant.app/Contents/MacOS/RedGiant          this program
-//   RedGiant.app/Contents/Resources/node/node     Node
-//   RedGiant.app/Contents/Resources/server        the server, with its production modules
-//   RedGiant.app/Contents/Resources/web           the web page
-//   RedGiant.app/Contents/Helpers/RGCompanion.app the app's window (G40.12), when the CI built it
+//   Rasgeth.app/Contents/MacOS/Rasgeth               this program
+//   Rasgeth.app/Contents/Resources/node/node         Node
+//   Rasgeth.app/Contents/Resources/server            the server, with its production modules
+//   Rasgeth.app/Contents/Resources/web               the web page
+//   Rasgeth.app/Contents/Helpers/Rasgeth App.app     the app's window (G40.12), when the CI built it
 //
-// «Open RedGiant» opens RGCompanion's window when it is there, signed in with a device token the
+// «Open Rasgeth» opens the app's window when it is there, signed in with a device token the
 // launcher makes for it (POST /api/devices with the installation's token) and hands over in the
 // app's own environment (RGCOMPANION_HANDOFF: the sandboxed app cannot read this program's
 // files; only this user's processes see another's environment, never the command line). An app
 // already open is only brought to the front; without it, or on a failure, the browser as before.
-// «Open in the browser» stays in the menu.
+// «Open in the browser» stays in the menu. The bundle ids (com.redgiant.app, com.redgiant.companion)
+// keep their names: permissions, the keychain and the login item are tied to them.
 //
 // Arguments (for the CI and for whoever helps): --background (no browser), --quit (asks a running
-// RedGiant to stop, and waits).
+// Rasgeth to stop, and waits).
 
 import Cocoa
 import ServiceManagement
@@ -27,26 +29,28 @@ let fm = FileManager.default
 let home = fm.homeDirectoryForCurrentUser
 let support = home.appendingPathComponent("Library/Application Support/RedGiant")
 let dataDir = support.appendingPathComponent("data")
-let logsDir = home.appendingPathComponent("Library/Logs/RedGiant")
+/** The product's name, as the protocol's PRODUCT_NAME (packages/protocol/src/brand.ts). */
+let productName = "Rasgeth"
+let logsDir = home.appendingPathComponent("Library/Logs/Rasgeth")
 let resources = Bundle.main.resourceURL!
 let quitNote = Notification.Name("com.redgiant.quit")
 
 func say(_ key: String) -> String {
   let it = Locale.preferredLanguages.first?.hasPrefix("it") ?? false
   let texts: [String: (String, String)] = [
-    "open": ("Apri RedGiant", "Open RedGiant"),
+    "open": ("Apri \(productName)", "Open \(productName)"),
     "browser": ("Apri nel browser", "Open in the browser"),
     "login": ("Avvia al login", "Start at login"),
-    "uninstall": ("Disinstalla RedGiant…", "Uninstall RedGiant…"),
-    "quit": ("Esci da RedGiant", "Quit RedGiant"),
-    "starting": ("RedGiant si sta avviando…", "RedGiant is starting…"),
-    "ready": ("RedGiant è pronto", "RedGiant is ready"),
-    "failed": ("RedGiant non è partito", "RedGiant did not start"),
+    "uninstall": ("Disinstalla \(productName)…", "Uninstall \(productName)…"),
+    "quit": ("Esci da \(productName)", "Quit \(productName)"),
+    "starting": ("\(productName) si sta avviando…", "\(productName) is starting…"),
+    "ready": ("\(productName) è pronto", "\(productName) is ready"),
+    "failed": ("\(productName) non è partito", "\(productName) did not start"),
     "failedText": (
-      "Il server non ha risposto. I dettagli sono in ~/Library/Logs/RedGiant/server.log.",
-      "The server did not answer. The details are in ~/Library/Logs/RedGiant/server.log."
+      "Il server non ha risposto. I dettagli sono in ~/Library/Logs/Rasgeth/server.log.",
+      "The server did not answer. The details are in ~/Library/Logs/Rasgeth/server.log."
     ),
-    "uninstallTitle": ("Disinstallare RedGiant?", "Uninstall RedGiant?"),
+    "uninstallTitle": ("Disinstallare \(productName)?", "Uninstall \(productName)?"),
     "uninstallText": (
       "Il programma va nel Cestino. Conversazioni, progetti, impostazioni e modelli locali stanno in ~/Library/Application Support/RedGiant: vuoi tenerli?",
       "The program goes to the Trash. Conversations, projects, settings and local models are in ~/Library/Application Support/RedGiant: keep them?"
@@ -55,17 +59,17 @@ func say(_ key: String) -> String {
     "delete": ("Disinstalla e cancella tutto", "Uninstall and delete everything"),
     "cancel": ("Annulla", "Cancel"),
     // Mandatory and breaking updates (G36.19), as the server found them (update-required.json).
-    "mandatoryTitle": ("È necessario aggiornare RedGiant", "RedGiant must be updated"),
+    "mandatoryTitle": ("È necessario aggiornare \(productName)", "\(productName) must be updated"),
     "mandatoryText": (
-      "Serve RedGiant %@ (hai la %@): questo aggiornamento non può aspettare. Finché non aggiorni, agenti e automazioni restano fermi; conversazioni e progetti sono al sicuro. Scarica la versione nuova, chiudi RedGiant e trascina quella nuova in Applicazioni.",
-      "RedGiant %@ is needed (you have %@): this update cannot wait. Until you update, agents and automations wait; conversations and projects are safe. Download the new version, close RedGiant and drag the new one into Applications."
+      "Serve \(productName) %@ (hai la %@): questo aggiornamento non può aspettare. Finché non aggiorni, agenti e automazioni restano fermi; conversazioni e progetti sono al sicuro. Scarica la versione nuova, chiudi \(productName) e trascina quella nuova in Applicazioni.",
+      "\(productName) %@ is needed (you have %@): this update cannot wait. Until you update, agents and automations wait; conversations and projects are safe. Download the new version, close \(productName) and drag the new one into Applications."
     ),
     "download": ("Scarica la versione nuova", "Download the new version"),
-    "close": ("Chiudi RedGiant", "Close RedGiant"),
+    "close": ("Chiudi \(productName)", "Close \(productName)"),
     "breakingTitle": ("Questa versione richiede un'installazione pulita", "This version needs a clean install"),
     "breakingText": (
-      "RedGiant %@ non si può installare sopra la %@. Nella pagina di RedGiant faccio prima un backup di tutto in Documenti, poi ti guido passo per passo.",
-      "RedGiant %@ cannot be installed over %@. In RedGiant's page a backup of everything goes into Documents first, then you are guided step by step."
+      "\(productName) %@ non si può installare sopra la %@. Nella pagina di \(productName) faccio prima un backup di tutto in Documenti, poi ti guido passo per passo.",
+      "\(productName) %@ cannot be installed over %@. In \(productName)'s page a backup of everything goes into Documents first, then you are guided step by step."
     ),
     "guide": ("Apri la guida", "Open the guide"),
     "later": ("Più tardi", "Later"),
@@ -110,20 +114,21 @@ func freePort() -> Int {
   return 7600
 }
 
-// RGCompanion (G40.12): the Flutter app inside this one, and how it is handed this RedGiant.
-let companionApp = Bundle.main.bundleURL.appendingPathComponent("Contents/Helpers/RGCompanion.app")
+// The app (G40.12): the Flutter app inside this one, «Rasgeth App» (its PRODUCT_NAME), and how it
+// is handed this server.
+let companionApp = Bundle.main.bundleURL.appendingPathComponent("Contents/Helpers/Rasgeth App.app")
 let companionID = "com.redgiant.companion"
 
-/** The device's name in Settings › Devices: "RGCompanion (<this Mac>)", 60 characters at most. */
+/** The device's name in Settings › Devices: "Rasgeth (<this Mac>)", 60 characters at most. */
 func companionDeviceName() -> String {
   let mac = (Host.current().localizedName ?? "")
     .unicodeScalars.filter { $0.value >= 32 && $0.value != 127 }
     .map(String.init).joined().trimmingCharacters(in: .whitespaces)
-  let name = mac.isEmpty ? "Mac" : String(mac.prefix(60 - "RGCompanion ()".count))
-  return "RGCompanion (\(name))"
+  let name = mac.isEmpty ? "Mac" : String(mac.prefix(60 - "\(productName) ()".count))
+  return "\(productName) (\(name))"
 }
 
-/** One call to this RedGiant with the installation's token; the answer's JSON, nil on a failure. */
+/** One call to this Rasgeth with the installation's token; the answer's JSON, nil on a failure. */
 func callServer(_ method: String, _ path: String, port: Int, token: String, body: [String: Any]? = nil)
   -> [String: Any]?
 {
@@ -194,7 +199,7 @@ final class App: NSObject, NSApplicationDelegate {
   let background = CommandLine.arguments.contains("--background")
 
   func applicationDidFinishLaunching(_ n: Notification) {
-    // Another RedGiant asks this one to stop (`--quit`).
+    // Another Rasgeth asks this one to stop (`--quit`).
     DistributedNotificationCenter.default().addObserver(
       self, selector: #selector(quit), name: quitNote, object: nil)
     item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -221,7 +226,7 @@ final class App: NSObject, NSApplicationDelegate {
     start()
   }
 
-  /** Opening RedGiant again (Dock, Spotlight, Applications): the app's window, or the page. */
+  /** Opening Rasgeth again (Dock, Spotlight, Applications): the app's window, or the page. */
   func applicationShouldHandleReopen(_ s: NSApplication, hasVisibleWindows: Bool) -> Bool {
     openWindow()
     return false
@@ -303,7 +308,7 @@ final class App: NSObject, NSApplicationDelegate {
   /**
    * G36.19: the server writes update-required.json in the data folder when the latest release is
    * mandatory or breaking (it checked the signature), and quit-request.json when the page's
-   * «Close RedGiant» is pressed. Looked at every 15 seconds.
+   * «Close Rasgeth» is pressed. Looked at every 15 seconds.
    */
   func watchUpdates() {
     updateTimer?.invalidate()
@@ -347,7 +352,7 @@ final class App: NSObject, NSApplicationDelegate {
       {
         NSWorkspace.shared.open(link)
       }
-      // Either way RedGiant closes: the new version replaces this one in Applications.
+      // Either way Rasgeth closes: the new version replaces this one in Applications.
       quit()
     } else if gate == "breaking" {
       a.messageText = say("breakingTitle")
@@ -377,7 +382,7 @@ final class App: NSObject, NSApplicationDelegate {
   var ready = false
 
   /**
-   * «Open RedGiant» (G40.12): RGCompanion's window when this app carries it (an open one comes to
+   * «Open Rasgeth» (G40.12): the app's window when this app carries it (an open one comes to
    * the front, no new token), the page otherwise or when the app cannot be opened.
    */
   @objc func openWindow() {
@@ -461,7 +466,7 @@ final class App: NSObject, NSApplicationDelegate {
       try? fm.removeItem(at: support)
       try? fm.removeItem(at: logsDir)
     } else {
-      // The data stays; the engine's programs come down again if RedGiant comes back.
+      // The data stays; the engine's programs come down again if Rasgeth comes back.
       try? fm.removeItem(at: support.appendingPathComponent("engine/bin"))
     }
     NSWorkspace.shared.recycle([Bundle.main.bundleURL]) { _, _ in
@@ -470,7 +475,7 @@ final class App: NSObject, NSApplicationDelegate {
   }
 }
 
-// `--quit`: asks the running RedGiant to stop, and waits until its server is gone.
+// `--quit`: asks the running Rasgeth to stop, and waits until its server is gone.
 if CommandLine.arguments.contains("--quit") {
   DistributedNotificationCenter.default().postNotificationName(
     quitNote, object: nil, userInfo: nil, deliverImmediately: true)

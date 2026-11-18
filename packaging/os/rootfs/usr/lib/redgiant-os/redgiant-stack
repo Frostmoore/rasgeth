@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# RedGiant OS (G39.1): starts and stops RedGiant's compose stack (redgiant.service).
+# Rasgeth OS (G39.1): starts and stops Rasgeth's compose stack (redgiant.service).
 #   redgiant-stack up | down | images | images-of <stack> [progress-file] | status
 # The images are the stack's (stack.json), pinned by digest: loaded from the copies built into the
 # image the first time, otherwise pulled by digest; an image whose id is not the pinned one is
@@ -17,7 +17,7 @@ settings() {
   if [ ! -s "$STATE/stack.env" ]; then
     umask 077
     {
-      echo "# RedGiant OS: written at the first start. Keep it private: it holds the access token."
+      echo "# Rasgeth OS: written at the first start. Keep it private: it holds the access token."
       echo "REDGIANT_TOKEN=$(secret 40)"
       echo "POSTGRES_PASSWORD=$(secret 32)"
       # The page is for the local network: the OS has no other way in.

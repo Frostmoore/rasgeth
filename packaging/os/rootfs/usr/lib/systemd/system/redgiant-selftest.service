@@ -1,6 +1,6 @@
 # CI's checks (G39.1), only on a machine given the credential redgiant.selftest.
 [Unit]
-Description=RedGiant OS self-test
+Description=Rasgeth OS self-test
 ConditionCredential=redgiant.selftest
 After=redgiant.service avahi-daemon.service redgiant-helper.socket caddy.service iwd.service
 Wants=redgiant.service

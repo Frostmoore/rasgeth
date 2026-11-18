@@ -1,7 +1,7 @@
-# The machine's local certificate authority and the certificate of https://redgiant.local,
+# The machine's local certificate authority and the certificate of https://rasgeth.local,
 # made at the first start; renewed when the addresses change or it is about to expire.
 [Unit]
-Description=RedGiant OS: local HTTPS certificate
+Description=Rasgeth OS: local HTTPS certificate
 After=network-online.target avahi-daemon.service
 Wants=network-online.target
 Before=caddy.service

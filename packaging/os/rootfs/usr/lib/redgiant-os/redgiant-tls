@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# RedGiant OS: HTTPS in the local network (https://redgiant.local and the machine's private
+# Rasgeth OS: HTTPS in the local network (https://rasgeth.local and the machine's private
 # addresses) with a certificate authority of this machine alone.
 #   redgiant-tls ensure    the CA (made once, 10 years) and the server's certificate (397 days,
 #                          for the names and addresses below), Caddy restarted when it changed
@@ -39,7 +39,7 @@ private() {
 
 names() {
   {
-    echo redgiant.local
+    echo rasgeth.local
     echo "$(hostname).local"
     mdns_name
     echo localhost
@@ -71,7 +71,7 @@ make_ca() {
     umask 077
     openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -out "$DIR/ca.key.new" 2>/dev/null
     openssl req -x509 -new -key "$DIR/ca.key.new" -sha256 -days 3650 -set_serial "0x$(openssl rand -hex 16)" \
-      -subj "/O=RedGiant OS/CN=RedGiant on $(hostname) ($(date -u +%Y-%m-%d))" \
+      -subj "/O=Rasgeth OS/CN=Rasgeth on $(hostname) ($(date -u +%Y-%m-%d))" \
       -addext "basicConstraints=critical,CA:TRUE,pathlen:0" \
       -addext "keyUsage=critical,keyCertSign,cRLSign" \
       -addext "subjectKeyIdentifier=hash" \
@@ -101,7 +101,7 @@ make_server() {
   (
     umask 077
     openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -out "$DIR/server.key.new" 2>/dev/null
-    openssl req -new -key "$DIR/server.key.new" -subj "/O=RedGiant OS/CN=redgiant.local" |
+    openssl req -new -key "$DIR/server.key.new" -subj "/O=Rasgeth OS/CN=rasgeth.local" |
       openssl x509 -req -CA "$DIR/ca.crt" -CAkey "$DIR/ca.key" -set_serial "0x$(openssl rand -hex 16)" \
         -days 397 -sha256 -extfile "$ext" -out "$DIR/server.crt.new" 2>/dev/null
   )

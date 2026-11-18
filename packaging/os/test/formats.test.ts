@@ -1,4 +1,4 @@
-// RedGiant OS (G39.2): the OVA that VirtualBox and VMware import (formats/vm.py): the descriptor,
+// Rasgeth OS (G39.2): the OVA that VirtualBox and VMware import (formats/vm.py): the descriptor,
 // the manifest and the disk in that order, and a check that refuses what they would refuse.
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
@@ -27,7 +27,7 @@ describe.skipIf(!python)("formats/vm.py", () => {
       "--vmdk",
       join(dir, "d.vmdk"),
       "--name",
-      "redgiant-os-9.9.9-x86_64",
+      "rasgeth-os-9.9.9-x86_64",
       "--capacity",
       String(32 * 2 ** 30),
       "--out",

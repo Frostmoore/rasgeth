@@ -1,12 +1,12 @@
-# RedGiant OS (G39.2): the container template, sourced by build.sh --board lxc. The same system as
+# Rasgeth OS (G39.2): the container template, sourced by build.sh --board lxc. The same system as
 # the disk images without a kernel or a boot loader, for Proxmox (pct create … --ostype unmanaged
-# --features nesting=1,keyctl=1, what packaging/os/proxmox/redgiant-proxmox.sh does), LXC and Incus.
+# --features nesting=1,keyctl=1, what packaging/os/proxmox/rasgeth-proxmox.sh does), LXC and Incus.
 # Docker runs inside the container: it needs nesting (and keyctl when unprivileged).
 # shellcheck shell=bash
 
 step "Container: no boot, no disk to grow; the container's network card and terminal"
 cp -a "$HERE/lxc/rootfs/." "$ROOT/"
-echo "# RedGiant OS in a container: the host mounts the root." >"$ROOT/etc/fstab"
+echo "# Rasgeth OS in a container: the host mounts the root." >"$ROOT/etc/fstab"
 rm -f "$ROOT/etc/default/grub"
 ln -sf /dev/null "$ROOT/etc/systemd/system/redgiant-growroot.service"
 # No radio in a container: the host has the Wi-Fi.
@@ -29,7 +29,7 @@ format_lxc() {
     --mtime="@$SOURCE_DATE_EPOCH" --clamp-mtime -C "$ROOT" \
     --exclude='./dev/*' --exclude='./proc/*' --exclude='./sys/*' --exclude='./run/*' --exclude='./tmp/*' \
     -cf - . | zstd -q -T0 -19 --long=27 -o "$OUT/$NAME-lxc.tar.zst"
-  # What a template must have: an init, systemd's units, RedGiant's stack and no kernel.
+  # What a template must have: an init, systemd's units, Rasgeth's stack and no kernel.
   zstd -dc --long=27 "$OUT/$NAME-lxc.tar.zst" | tar -t >"$WORK/lxc.list"
   for f in ./usr/sbin/init ./usr/lib/systemd/system/redgiant.service ./usr/share/redgiant-os/stack.json \
     ./etc/systemd/network/70-redgiant-container.network ./etc/systemd/system/redgiant-growroot.service; do

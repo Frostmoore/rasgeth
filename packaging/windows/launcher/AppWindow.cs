@@ -1,6 +1,6 @@
-// RGCompanion's window on Windows (G40.12): «Open RedGiant», the icon and the start open the app
-// that came with the installer (app\rgcompanion.exe, the Flutter build) instead of the browser,
-// already signed in to this RedGiant. The launcher makes a device token for it (POST /api/devices
+// The app's window on Windows (G40.12): «Open Rasgeth», the icon and the start open the app that
+// came with the installer (app\rasgeth-app.exe, the Flutter build; app\rgcompanion.exe before
+// 3.9.0) instead of the browser, already signed in to this server. The launcher makes a device token for it (POST /api/devices
 // with the installation's token: Settings › Devices lists it) and hands it over without the
 // command line, which every process can read: a file in the user's own folder whose ACL lets only
 // this user in, named by RGCOMPANION_HANDOFF_FILE in the app's environment. The app reads it and
@@ -28,20 +28,20 @@ static class AppWindow
     /** How long a handoff waits for the app before it is deleted (and its device revoked). */
     public const int HandoffSeconds = 60;
 
-    /** The launcher's log (Diag.Log in RedGiant.exe); never handed a token. */
+    /** The launcher's log (Diag.Log in Rasgeth.exe); never handed a token. */
     public static Action<string> Log = (s) => { };
 
-    public static string Exe(string appDir) { return Path.Combine(appDir, "app", "rgcompanion.exe"); }
+    public static string Exe(string appDir) { return Path.Combine(appDir, "app", Brand.AppExe); }
 
     public static bool Present(string appDir) { return File.Exists(Exe(appDir)); }
 
     /** Where handoffs are written: the user's own local folder, never the program's. */
     public static string HandoffDir
     {
-        get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "RedGiant", "handoff"); }
+        get { return Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Brand.Name), "handoff"); }
     }
 
-    /** The device's name in Settings › Devices: "RGCompanion (<computer>)", 60 characters at most. */
+    /** The device's name in Settings › Devices: "Rasgeth (<computer>)", 60 characters at most. */
     public static string DeviceName(string computer)
     {
         var sb = new StringBuilder();
@@ -49,7 +49,7 @@ static class AppWindow
             if (c >= 32 && c != 127) sb.Append(c);
         string name = sb.ToString().Trim();
         if (name.Length == 0) name = "Windows";
-        const string head = "RGCompanion (";
+        const string head = Brand.Name + " (";
         int room = 60 - head.Length - 1;
         if (name.Length > room) name = name.Substring(0, room).TrimEnd();
         return head + name + ")";
@@ -204,7 +204,7 @@ static class AppWindow
      * the installation's app\ folder is asked to close (its window's close, so it can save what it
      * keeps), stopped by force after [graceMs], and waited for, so no file of app\ stays open and
      * the folder can be moved. This user's processes only; an app installed on its own
-     * (RGCompanion-Setup.exe, another folder) is left alone. Returns how many were running.
+     * (Rasgeth-App-Setup.exe, another folder) is left alone. Returns how many were running.
      */
     public static int CloseAll(string appDir, int graceMs)
     {
@@ -257,7 +257,8 @@ static class AppWindow
     }
 
     /**
-     * Opens the app on this RedGiant (any thread but the UI's: it talks to the server). False when
+     * Opens the app on this server (any thread but the UI's: it talks to the server). False when
+
      * the browser must open instead: no app, no token, the app would not start.
      */
     public static bool Open(string appDir, int port, string installationToken)

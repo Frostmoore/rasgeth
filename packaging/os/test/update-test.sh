@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# RedGiant OS (3.7.4): the update a machine makes, tried in Incus on CI's runner. A container
-# template (the latest release's that carries RedGiant OS, or this commit's) starts as Proxmox would
+# Rasgeth OS (3.7.4): the update a machine makes, tried in Incus on CI's runner. A container
+# template (the latest release's that carries Rasgeth OS, or this commit's) starts as Proxmox would
 # start it, then its own redgiant-os-update brings it to a feed of this commit: a new stack (this
 # commit's Docker images), its release.json and its system's files, signed with a key made for the
 # test. The machine must end on the new version with the pinned images, its system files as listed,
-# RedGiant answering. Cheap enough for every version: the images are not built again for it.
+# Rasgeth answering. Cheap enough for every version: the images are not built again for it.
 #
 #   sudo update-test.sh --template <…-lxc.tar.zst> --feed <dir> --logs <dir> [--first] [--timeout <s>]
 #
@@ -43,7 +43,7 @@ fail() {
 }
 start=$SECONDS
 work=$(mktemp -d)
-printf 'architecture: %s\ncreation_date: %s\nproperties:\n  description: RedGiant OS (CI update)\n  os: debian\n  release: trixie\n' \
+printf 'architecture: %s\ncreation_date: %s\nproperties:\n  description: Rasgeth OS (CI update)\n  os: debian\n  release: trixie\n' \
   "$(uname -m)" "$(date +%s)" >"$work/metadata.yaml"
 tar -C "$work" -czf "$work/metadata.tar.gz" metadata.yaml
 timeout 900 incus image import "$work/metadata.tar.gz" "$TEMPLATE" --alias redgiant-os-update-ci ||
@@ -65,11 +65,11 @@ wait_until() { # what seconds command…
   return 1
 }
 healthy() { T=15 in_ct curl -fsS --max-time 5 http://127.0.0.1:7600/api/health; }
-wait_until "RedGiant answering" "$TIMEOUT" healthy || fail "RedGiant did not answer within $TIMEOUT s"
+wait_until "Rasgeth answering" "$TIMEOUT" healthy || fail "Rasgeth did not answer within $TIMEOUT s"
 old=$(T=15 in_ct bash -c '. /usr/lib/redgiant-os/common.sh; installed_version')
 new=$(jq -r .tag_name "$FEED/release-api.json")
 new=${new#v}
-echo "the machine runs RedGiant $old; the feed brings $new"
+echo "the machine runs Rasgeth $old; the feed brings $new"
 
 # The feed inside the machine, the test key in place of the update key (the machine trusts it).
 T=30 in_ct mkdir -p /root/feed
@@ -93,19 +93,19 @@ now=$(T=15 in_ct bash -c '. /usr/lib/redgiant-os/common.sh; installed_version')
 [ "$now" = "$new" ] || { echo "::error::the machine runs $now, not $new"; ok=0; }
 state=$(T=15 in_ct jq -r .state /var/lib/redgiant/os-update.json)
 [ "$state" = latest ] || { echo "::error::the updater says $state"; ok=0; }
-healthy >/dev/null || { echo "::error::RedGiant does not answer after the update"; ok=0; }
+healthy >/dev/null || { echo "::error::Rasgeth does not answer after the update"; ok=0; }
 # The containers run the stack's pinned images (the id Docker reports is the stack's).
 arch=$(T=15 in_ct bash -c '. /usr/lib/redgiant-os/common.sh; arch')
-for id in $(jq -r --arg a "$arch" '.images[$a][].id' "$FEED/redgiant-os-stack.json"); do
+for id in $(jq -r --arg a "$arch" '.images[$a][].id' "$FEED/rasgeth-os-stack.json"); do
   T=30 in_ct sh -c "docker ps -q | xargs docker inspect -f '{{.Image}}'" | grep -qx "$id" ||
     { echo "::error::no container runs $id"; ok=0; }
 done
 # The system's files as the release lists them (the container's own and every board's).
 while read -r path sha; do
   [ "$(T=15 in_ct sha256sum "$path" 2>/dev/null | cut -d' ' -f1)" = "$sha" ] || { echo "::error::$path is not the release's"; ok=0; }
-done < <(jq -r '.files[] | select(.board == null or .board == "lxc") | "\(.path) \(.sha256)"' "$FEED/redgiant-os-files.json")
+done < <(jq -r '.files[] | select(.board == null or .board == "lxc") | "\(.path) \(.sha256)"' "$FEED/rasgeth-os-files.json")
 [ "$ok" = 1 ] || fail "the update did not land"
 T=60 in_ct journalctl -b --no-pager -n 600 2>&1 | sed 's/\r$//' >"$LOG"
 timeout 120 incus delete --force "$NAME" >/dev/null 2>&1 || true
 timeout 60 incus image delete redgiant-os-update-ci >/dev/null 2>&1 || true
-echo "OK: RedGiant $old updated to $new in $((SECONDS - start)) s"
+echo "OK: Rasgeth $old updated to $new in $((SECONDS - start)) s"

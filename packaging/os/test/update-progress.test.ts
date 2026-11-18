@@ -1,4 +1,4 @@
-// RedGiant OS (3.8.1): an update as the page follows it. The updater runs as it is (a copy whose
+// Rasgeth OS (3.8.1): an update as the page follows it. The updater runs as it is (a copy whose
 // only changes are the machine's folders, its port and the address of the latest release) on a
 // fake root: Docker is a fake socket that answers the pull with the progress of every layer, as the
 // real API does, and a fake `docker` for the rest. The state the page reads must say the steps in
@@ -181,7 +181,7 @@ async function machine(o: { fail?: boolean; unhealthy?: boolean } = {}): Promise
       repo: "ghcr.io/frostmoore/redgiant2-postgres",
       digest: `sha256:${hex("2")}`,
       id: `sha256:${hex("f")}`,
-      // b is shared with RedGiant's image: downloaded (and counted) once.
+      // b is shared with Rasgeth's image: downloaded (and counted) once.
       layers: [L("b", 3 * MB), L("d", 1 * MB)],
       fail: o.fail === true,
     },
@@ -227,17 +227,17 @@ async function machine(o: { fail?: boolean; unhealthy?: boolean } = {}): Promise
   buildFiles("3.8.1", feed, join(root, "repo"));
   put(join(root, "root"), "usr/lib/redgiant-os/redgiant-tool", "echo old\n", 0o755);
   writeFileSync(join(feed, "release.json"), '{"format":1,"version":"3.8.1","kind":"normal"}\n');
-  writeFileSync(join(feed, "redgiant-os-stack.json"), stack("3.8.1", list));
-  for (const f of ["release.json", "redgiant-os-stack.json", "redgiant-os-files.json"])
+  writeFileSync(join(feed, "rasgeth-os-stack.json"), stack("3.8.1", list));
+  for (const f of ["release.json", "rasgeth-os-stack.json", "rasgeth-os-files.json"])
     writeFileSync(join(feed, `${f}.sig`), signManifest(readFileSync(join(feed, f)), pem));
-  const archive = "redgiant-os-files-3.8.1.tar.zst";
+  const archive = "rasgeth-os-files-3.8.1.tar.zst";
   const assets = [
     "release.json",
     "release.json.sig",
-    "redgiant-os-stack.json",
-    "redgiant-os-stack.json.sig",
-    "redgiant-os-files.json",
-    "redgiant-os-files.json.sig",
+    "rasgeth-os-stack.json",
+    "rasgeth-os-stack.json.sig",
+    "rasgeth-os-files.json",
+    "rasgeth-os-files.json.sig",
     archive,
   ].map((name) => ({
     name,
@@ -348,7 +348,7 @@ describe("redgiant-os-update apply: the page can follow every step", () => {
         { name: "redgiant", bytes: 55 * MB, here: false },
         { name: "postgres", bytes: 4 * MB, here: false },
       ],
-      files: { name: "redgiant-os-files-3.8.1.tar.zst" },
+      files: { name: "rasgeth-os-files-3.8.1.tar.zst" },
     });
     // The bar: the layer already here is not counted, the shared one once (3 + 2 + 1 MB).
     const bars = r.seen.filter((s) => s.step === "download" && s.progress?.total);
@@ -370,7 +370,7 @@ describe("redgiant-os-update apply: the page can follow every step", () => {
       expect(full.at(-1)?.progress?.items.map((i) => i.state)).toEqual(["done", "done"]);
     // The system's files: their own bar, of the archive's size.
     const files = r.seen.find((s) => s.step === "files" && s.progress);
-    expect(files?.progress?.items[0]?.name).toBe("redgiant-os-files-3.8.1.tar.zst");
+    expect(files?.progress?.items[0]?.name).toBe("rasgeth-os-files-3.8.1.tar.zst");
     // The end: the new version, where it came from, when.
     expect(r.end).toMatchObject({ state: "latest", installed: "3.8.1", from: "3.8.0" });
     expect(typeof r.end.finishedAt).toBe("string");

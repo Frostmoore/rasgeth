@@ -1,14 +1,14 @@
 <?xml version="1.0" standalone='no'?>
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
-<!-- RedGiant OS: the page, announced on the local network (redgiant.local). -->
+<!-- Rasgeth OS: the page, announced on the local network (rasgeth.local). -->
 <service-group>
-  <name replace-wildcards="yes">RedGiant on %h</name>
+  <name replace-wildcards="yes">Rasgeth on %h</name>
   <service>
     <type>_http._tcp</type>
     <port>7600</port>
     <txt-record>path=/</txt-record>
   </service>
-  <!-- G40.3: RedGiant's own service, for the app (RGCompanion) and the first start without a
+  <!-- G40.3: Rasgeth's own service, for the app (RGCompanion) and the first start without a
        screen: the app checks the machine's key over the setup channel, never this record. -->
   <service>
     <type>_redgiant._tcp</type>

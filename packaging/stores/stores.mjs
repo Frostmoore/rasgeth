@@ -1,12 +1,13 @@
 #!/usr/bin/env node
-// Homebrew and winget (G36.10): the files that put a RedGiant release in the two stores, made from
-// the release's own installers (their sha256), never written by hand.
+// Homebrew and winget (G36.10): the files that put a Rasgeth release in the two stores, made from
+// the release's own installers (their sha256), never written by hand. Named Rasgeth from 3.9.0
+// (choice 16: neither store had the old names published, checked 2026-11-18).
 //
-//   node packaging/stores/stores.mjs --version 3.4.0 --dmg RedGiant-mac-arm64.dmg \
-//     --setup RedGiant-Setup.exe --out <dir> [--repo Frostmoore/redgiant2] [--date 2026-11-08]
+//   node packaging/stores/stores.mjs --version 3.4.0 --dmg Rasgeth-mac-arm64.dmg \
+//     --setup Rasgeth-Setup.exe --out <dir> [--repo Frostmoore/redgiant2] [--date 2026-11-08]
 //   (or --dmg-sha256 / --setup-sha256 with the digests GitHub lists for the release's assets)
-//     → <dir>/homebrew/Casks/redgiant.rb (for the tap Frostmoore/homebrew-redgiant)
-//     → <dir>/winget/manifests/f/Frostmoore/RedGiant/<version>/*.yaml (for microsoft/winget-pkgs)
+//     → <dir>/homebrew/Casks/rasgeth.rb (for the tap Frostmoore/homebrew-rasgeth)
+//     → <dir>/winget/manifests/f/Frostmoore/Rasgeth/<version>/*.yaml (for microsoft/winget-pkgs)
 //
 // Only Node's own modules: it runs in the release job on the files it just downloaded.
 import { createHash } from "node:crypto";
@@ -14,17 +15,22 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { parseArgs } from "node:util";
 
+/** The product's name (packages/protocol/src/brand.ts PRODUCT_NAME; this file has no dependencies). */
+export const PRODUCT = "Rasgeth";
+
 export const DEFAULT_REPO = "Frostmoore/redgiant2";
-export const WINGET_ID = "Frostmoore.RedGiant";
+export const WINGET_ID = `Frostmoore.${PRODUCT}`;
+/** The cask's name and the tap's (Frostmoore/homebrew-rasgeth). */
+export const CASK = "rasgeth";
 /** The schema winget-pkgs' own tools write (Tools/YamlCreate.ps1), checked 2026-11-08. */
 export const WINGET_MANIFEST_VERSION = "1.12.0";
-/** RedGiant.iss's AppId: Windows lists the installed app under it (with Inno Setup's "_is1"). */
+/** Rasgeth.iss's AppId (kept from RedGiant.iss): Windows lists the installed app under it (with Inno Setup's "_is1"). */
 export const INNO_PRODUCT_CODE = "{6F0E3B52-8D4A-4C1E-9B7A-2E1D5C9F4A10}_is1";
 
 const SHA = /^[0-9a-f]{64}$/i;
-/** The first version whose app carries the `redgiant` command line (G36.15). */
+/** The first version whose app carries the command line (G36.15; `rasgeth` from 3.9.0). */
 const CLI_SINCE = [3, 4, 0];
-const CLI_LINK = '  binary "#{appdir}/RedGiant.app/Contents/Resources/bin/redgiant"\n';
+const CLI_LINK = `  binary "#{appdir}/${PRODUCT}.app/Contents/Resources/bin/${CASK}"\n`;
 const atLeast = (version, min) => {
   const v = version.split(".").map(Number);
   for (let i = 0; i < 3; i++) if (v[i] !== min[i]) return (v[i] ?? 0) > (min[i] ?? 0);
@@ -42,19 +48,20 @@ export function sha256File(path) {
 }
 
 /**
- * The cask for the tap (brew install --cask frostmoore/redgiant/redgiant). The app updates itself
+ * The cask for the tap (brew install --cask frostmoore/rasgeth/rasgeth). The app updates itself
  * only through the person (G36.19), so no `auto_updates`: `brew upgrade` brings new versions. The
- * command line inside the app (G36.15) is linked as `redgiant`. `zap` (only with --zap) removes
- * the data too; a plain uninstall keeps them, as the app's own "Uninstall" asks.
+ * command line inside the app (G36.15) is linked as `rasgeth`. `zap` (only with --zap) removes
+ * the data too (their folder keeps its name since before 3.9.0); a plain uninstall keeps them, as
+ * the app's own "Uninstall" asks.
  */
 export function homebrewCask({ version, sha256, repo = DEFAULT_REPO }) {
   check(version, sha256, "disk image");
-  return `cask "redgiant" do
+  return `cask "${CASK}" do
   version "${version}"
   sha256 "${sha256.toLowerCase()}"
 
-  url "https://github.com/${repo}/releases/download/v#{version}/RedGiant-mac-arm64.dmg"
-  name "RedGiant"
+  url "https://github.com/${repo}/releases/download/v#{version}/${PRODUCT}-mac-arm64.dmg"
+  name "${PRODUCT}"
   desc "Self-hosted agent harness for coding, daily assistance and automations"
   homepage "https://github.com/${repo}"
 
@@ -66,12 +73,13 @@ export function homebrewCask({ version, sha256, repo = DEFAULT_REPO }) {
   depends_on arch: :arm64
   depends_on macos: ">= :ventura"
 
-  app "RedGiant.app"
+  app "${PRODUCT}.app"
 ${atLeast(version, CLI_SINCE) ? CLI_LINK : ""}
   uninstall quit: "com.redgiant.app"
 
   zap trash: [
     "~/Library/Application Support/RedGiant",
+    "~/Library/Logs/${PRODUCT}",
     "~/Library/Logs/RedGiant",
   ]
 end
@@ -92,12 +100,12 @@ const yaml = (type, lines) =>
  * The three files of a winget multi-file manifest. Inno Setup's installer: winget runs it with
  * /VERYSILENT /SUPPRESSMSGBOXES /NORESTART by itself (InstallerType inno); per user, no
  * administrator (PrivilegesRequired=lowest). No /TASKS: a first installation gets the setup's own
- * defaults and an upgrade keeps the tasks chosen before (the `redgiant` command in PATH stays a
+ * defaults and an upgrade keeps the tasks chosen before (the `rasgeth` command in PATH stays a
  * choice made in the interactive setup).
  */
 export function wingetManifests({ version, sha256, repo = DEFAULT_REPO, date }) {
   check(version, sha256, "installer");
-  const dir = `manifests/f/Frostmoore/RedGiant/${version}`;
+  const dir = `manifests/f/Frostmoore/${PRODUCT}/${version}`;
   const head = [`PackageIdentifier: ${WINGET_ID}`, `PackageVersion: ${version}`];
   const release = `https://github.com/${repo}/releases/tag/v${version}`;
   return {
@@ -115,30 +123,30 @@ export function wingetManifests({ version, sha256, repo = DEFAULT_REPO, date }) 
       ...(date ? [`ReleaseDate: ${date}`] : []),
       `ProductCode: '${INNO_PRODUCT_CODE}'`,
       "AppsAndFeaturesEntries:",
-      "- DisplayName: RedGiant",
-      "  Publisher: RedGiant",
+      `- DisplayName: ${PRODUCT}`,
+      `  Publisher: ${PRODUCT}`,
       `  ProductCode: '${INNO_PRODUCT_CODE}'`,
       "Installers:",
       "- Architecture: x64",
-      `  InstallerUrl: https://github.com/${repo}/releases/download/v${version}/RedGiant-Setup.exe`,
+      `  InstallerUrl: https://github.com/${repo}/releases/download/v${version}/${PRODUCT}-Setup.exe`,
       `  InstallerSha256: ${sha256.toUpperCase()}`,
     ]),
     [`${dir}/${WINGET_ID}.locale.en-US.yaml`]: yaml("defaultLocale", [
       ...head,
       "PackageLocale: en-US",
-      "Publisher: RedGiant",
+      `Publisher: ${PRODUCT}`,
       `PublisherUrl: https://github.com/${repo.split("/")[0]}`,
       `PublisherSupportUrl: https://github.com/${repo}/issues`,
-      "PackageName: RedGiant",
+      `PackageName: ${PRODUCT}`,
       `PackageUrl: https://github.com/${repo}`,
       "License: MIT",
       `LicenseUrl: https://github.com/${repo}/blob/main/LICENSE`,
       "ShortDescription: Self-hosted agent harness for coding, daily assistance and automations.",
       "Description: |-",
-      "  RedGiant runs a team of AI agents on your own computer: projects with their orchestrators,",
+      `  ${PRODUCT} runs a team of AI agents on your own computer: projects with their orchestrators,`,
       "  personal assistants, automations and chats, with cloud models, subscriptions or a local",
       "  engine. Everything runs on Windows itself, with its own database: no WSL, no Docker.",
-      "Moniker: redgiant",
+      `Moniker: ${CASK}`,
       "Tags:",
       "- agents",
       "- ai",
@@ -181,7 +189,7 @@ function main() {
   };
   if (dmgSha) {
     const cask = homebrewCask({ version, sha256: dmgSha, repo });
-    write(join(values.out, "homebrew", "Casks", "redgiant.rb"), cask);
+    write(join(values.out, "homebrew", "Casks", `${CASK}.rb`), cask);
   }
   if (setupSha) {
     const files = wingetManifests({ version, sha256: setupSha, repo, date: values.date });

@@ -23,9 +23,13 @@ describe("stores.mjs", () => {
     expect(cask).toContain('version "3.4.0"');
     expect(cask).toContain(`sha256 "${sha}"`);
     expect(cask).toContain(
-      'url "https://github.com/Frostmoore/redgiant2/releases/download/v#{version}/RedGiant-mac-arm64.dmg"',
+      'url "https://github.com/Frostmoore/redgiant2/releases/download/v#{version}/Rasgeth-mac-arm64.dmg"',
     );
-    expect(cask).toContain('binary "#{appdir}/RedGiant.app/Contents/Resources/bin/redgiant"');
+    expect(cask).toContain('cask "rasgeth" do');
+    expect(cask).toContain('app "Rasgeth.app"');
+    expect(cask).toContain('binary "#{appdir}/Rasgeth.app/Contents/Resources/bin/rasgeth"');
+    // The data's folder keeps its name since before 3.9.0: zap finds it.
+    expect(cask).toContain('"~/Library/Application Support/RedGiant"');
     // The bundle id is the app's own (Info.plist).
     const plist = readFileSync(new URL("../../mac/Info.plist", import.meta.url), "utf8");
     const id = /<key>CFBundleIdentifier<\/key>\s*<string>([^<]+)<\/string>/.exec(plist)?.[1];
@@ -44,21 +48,21 @@ describe("stores.mjs", () => {
       sha256: sha,
       date: "2026-11-08",
     });
-    const dir = "manifests/f/Frostmoore/RedGiant/3.4.0";
+    const dir = "manifests/f/Frostmoore/Rasgeth/3.4.0";
     expect(Object.keys(files).sort()).toEqual([
-      `${dir}/Frostmoore.RedGiant.installer.yaml`,
-      `${dir}/Frostmoore.RedGiant.locale.en-US.yaml`,
-      `${dir}/Frostmoore.RedGiant.yaml`,
+      `${dir}/Frostmoore.Rasgeth.installer.yaml`,
+      `${dir}/Frostmoore.Rasgeth.locale.en-US.yaml`,
+      `${dir}/Frostmoore.Rasgeth.yaml`,
     ]);
     const doc = (name: string) => YAML.parse(files[`${dir}/${name}`] as string);
-    expect(doc("Frostmoore.RedGiant.yaml")).toEqual({
-      PackageIdentifier: "Frostmoore.RedGiant",
+    expect(doc("Frostmoore.Rasgeth.yaml")).toEqual({
+      PackageIdentifier: "Frostmoore.Rasgeth",
       PackageVersion: "3.4.0",
       DefaultLocale: "en-US",
       ManifestType: "version",
       ManifestVersion: "1.12.0",
     });
-    const inst = doc("Frostmoore.RedGiant.installer.yaml");
+    const inst = doc("Frostmoore.Rasgeth.installer.yaml");
     expect(inst).toMatchObject({
       InstallerType: "inno",
       Scope: "user",
@@ -70,18 +74,18 @@ describe("stores.mjs", () => {
         {
           Architecture: "x64",
           InstallerUrl:
-            "https://github.com/Frostmoore/redgiant2/releases/download/v3.4.0/RedGiant-Setup.exe",
+            "https://github.com/Frostmoore/redgiant2/releases/download/v3.4.0/Rasgeth-Setup.exe",
           InstallerSha256: sha.toUpperCase(),
         },
       ],
     });
-    // The product code is RedGiant.iss's AppId, as Windows lists it.
-    const iss = readFileSync(new URL("../../windows/RedGiant.iss", import.meta.url), "utf8");
+    // The product code is Rasgeth.iss's AppId (RedGiant.iss's before 3.9.0), as Windows lists it.
+    const iss = readFileSync(new URL("../../windows/Rasgeth.iss", import.meta.url), "utf8");
     const appId = /^AppId=\{(\{[0-9A-F-]+\})$/m.exec(iss)?.[1];
     expect(INNO_PRODUCT_CODE).toBe(`${appId}_is1`);
     expect(iss).toMatch(/^PrivilegesRequired=lowest$/m);
-    const locale = doc("Frostmoore.RedGiant.locale.en-US.yaml");
-    expect(locale).toMatchObject({ PackageName: "RedGiant", License: "MIT", Moniker: "redgiant" });
+    const locale = doc("Frostmoore.Rasgeth.locale.en-US.yaml");
+    expect(locale).toMatchObject({ PackageName: "Rasgeth", License: "MIT", Moniker: "rasgeth" });
     expect(String(locale.ShortDescription).length).toBeLessThanOrEqual(256);
   });
 
@@ -102,14 +106,14 @@ describe("stores.mjs", () => {
         "--out",
         join(dir, "out"),
       ]);
-      const cask = readFileSync(join(dir, "out", "homebrew", "Casks", "redgiant.rb"), "utf8");
+      const cask = readFileSync(join(dir, "out", "homebrew", "Casks", "rasgeth.rb"), "utf8");
       expect(cask).toContain(`sha256 "${createHash("sha256").update("dmg").digest("hex")}"`);
       const inst = readFileSync(
         join(
           dir,
           "out",
           "winget",
-          "manifests/f/Frostmoore/RedGiant/3.4.0/Frostmoore.RedGiant.installer.yaml",
+          "manifests/f/Frostmoore/Rasgeth/3.4.0/Frostmoore.Rasgeth.installer.yaml",
         ),
         "utf8",
       );

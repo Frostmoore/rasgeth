@@ -1,6 +1,6 @@
 # Wi-Fi from redgiant-wifi.txt on the EFI partition (a machine without a screen): read once, erased.
 [Unit]
-Description=RedGiant OS: Wi-Fi from redgiant-wifi.txt
+Description=Rasgeth OS: Wi-Fi from redgiant-wifi.txt
 ConditionPathExists=/boot/efi/redgiant-wifi.txt
 RequiresMountsFor=/boot/efi
 After=iwd.service dbus.service redgiant-helper.socket

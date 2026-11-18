@@ -14,7 +14,7 @@ on:
   workflow_call:
     inputs:
       version:
-        description: "RedGiant's version inside the images (REDGIANT_VERSION)"
+        description: "Rasgeth's version inside the images (REDGIANT_VERSION)"
         type: string
         required: true
       sha:

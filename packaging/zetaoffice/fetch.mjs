@@ -46,11 +46,19 @@ export function zetaFilesFrom(source) {
   return files;
 }
 
-/** The licences' note served as /zeta/LICENSES.txt (ZETA_LICENSES), published with the files. */
+/** The product's name, as zeta.ts's PRODUCT_NAME (packages/protocol/src/brand.ts). */
+const PRODUCT_NAME = "Rasgeth";
+
+/**
+ * The licences' note served as /zeta/LICENSES.txt (ZETA_LICENSES), published with the files: the
+ * template's text, with the product's name (3.9.0: `${PRODUCT_NAME}` in zeta.ts) filled in.
+ */
 export function licensesFrom(source) {
   const m = source.match(/export const ZETA_LICENSES = `([\s\S]*?)`;/);
   if (!m) throw new Error("ZETA_LICENSES not found in zeta.ts");
-  return m[1];
+  const text = m[1].replaceAll(`\${PRODUCT_NAME}`, PRODUCT_NAME);
+  if (text.includes("${")) throw new Error("ZETA_LICENSES has a placeholder fetch.mjs cannot fill");
+  return text;
 }
 
 /** The build zeta.ts names (ZETA_VERSION). */
@@ -122,7 +130,7 @@ async function main(argv) {
   if (wrong.length) {
     await rm(tmp, { recursive: true, force: true });
     throw new Error(
-      `ZetaOffice's CDN no longer gives the build RedGiant knows (${versionFrom(source)}): ${wrong.join(", ")} differ. ` +
+      `ZetaOffice's CDN no longer gives the build Rasgeth knows (${versionFrom(source)}): ${wrong.join(", ")} differ. ` +
         "Nothing was kept or published. Try the new build, then change ZETA_VERSION and ZETA_FILES in zeta.ts " +
         "(a new build is a new set of files, never a replacement of the published ones).",
     );

@@ -45,14 +45,14 @@ jobs:
         run: bash packaging/mac/build.sh "0.0.0-$(git rev-parse --short HEAD)"
       - name: What Gatekeeper says
         run: |
-          xcrun stapler validate packaging/mac/dist/RedGiant-mac-*.dmg || true
-          spctl -a -vvv -t install packaging/mac/dist/RedGiant-mac-*.dmg || true
-          hdiutil attach packaging/mac/dist/RedGiant-mac-*.dmg -mountpoint /tmp/rg-dmg -nobrowse -quiet
-          spctl -a -vvv /tmp/rg-dmg/RedGiant.app || true
-          codesign -dv --verbose=2 /tmp/rg-dmg/RedGiant.app 2>&1 | grep -E "Authority|TeamIdentifier|Runtime" || true
+          xcrun stapler validate packaging/mac/dist/Rasgeth-mac-*.dmg || true
+          spctl -a -vvv -t install packaging/mac/dist/Rasgeth-mac-*.dmg || true
+          hdiutil attach packaging/mac/dist/Rasgeth-mac-*.dmg -mountpoint /tmp/rg-dmg -nobrowse -quiet
+          spctl -a -vvv /tmp/rg-dmg/Rasgeth.app || true
+          codesign -dv --verbose=2 /tmp/rg-dmg/Rasgeth.app 2>&1 | grep -E "Authority|TeamIdentifier|Runtime" || true
           hdiutil detach /tmp/rg-dmg -quiet
       - uses: actions/upload-artifact@v4
         with:
-          name: RedGiant-mac-signed
-          path: packaging/mac/dist/RedGiant-mac-*.dmg
+          name: Rasgeth-mac-signed
+          path: packaging/mac/dist/Rasgeth-mac-*.dmg
           retention-days: 7

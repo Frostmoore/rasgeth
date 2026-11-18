@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "RedGiant" "\0"
-            VALUE "FileDescription", "RGCompanion" "\0"
+            VALUE "CompanyName", "Rasgeth" "\0"
+            VALUE "FileDescription", "Rasgeth" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "rgcompanion" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 Frostmoore and RedGiant contributors. MIT License." "\0"
-            VALUE "OriginalFilename", "rgcompanion.exe" "\0"
-            VALUE "ProductName", "RGCompanion" "\0"
+            VALUE "InternalName", "rasgeth-app" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 Frostmoore and Rasgeth contributors. MIT License." "\0"
+            VALUE "OriginalFilename", "rasgeth-app.exe" "\0"
+            VALUE "ProductName", "Rasgeth" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
-# RedGiant OS installer (G39.2): writes RedGiant OS to a disk of this machine. One question: which
-# disk (it is erased), confirmed by typing its name. Nothing else is asked; RedGiant's own setup
+# Rasgeth OS installer (G39.2): writes Rasgeth OS to a disk of this machine. One question: which
+# disk (it is erased), confirmed by typing its name. Nothing else is asked; Rasgeth's own setup
 # happens later, in the browser.
 # For automated installs (and CI), two system credentials answer the question:
 #   redgiant.install.disk=/dev/vda   redgiant.install.confirm=yes
 # (qemu: -smbios type=11,value=io.systemd.credential:redgiant.install.disk=/dev/vda)
 set -uo pipefail
 MEDIUM=/run/live/medium
-PAYLOAD=$(ls "$MEDIUM"/redgiant/redgiant-os-*.raw.zst 2>/dev/null | head -1)
+PAYLOAD=$(ls "$MEDIUM"/redgiant/rasgeth-os-*.raw.zst 2>/dev/null | head -1)
 SIZE=$(cat "${PAYLOAD%.zst}.size" 2>/dev/null || echo 0)
 cred() { cat "${CREDENTIALS_DIRECTORY:-/nonexistent}/$1" 2>/dev/null || true; }
 AUTO_DISK=$(cred redgiant.install.disk)
 AUTO_YES=$(cred redgiant.install.confirm)
 say() { # the screen, and the serial console of a virtual machine
-  echo "REDGIANT-INSTALL $*"
-  echo "REDGIANT-INSTALL $*" >/dev/console 2>/dev/null || true
+  echo "RASGETH-INSTALL $*"
+  echo "RASGETH-INSTALL $*" >/dev/console 2>/dev/null || true
 }
 die() {
   say "FAILED: $*"
@@ -42,7 +42,7 @@ candidates() { # name size model, disks of 16 GB or more
 }
 
 clear 2>/dev/null || true
-printf '\n  RedGiant OS installer\n\n'
+printf '\n  Rasgeth OS installer\n\n'
 [ -r "$PAYLOAD" ] || die "the system image is missing from the installer"
 mapfile -t disks < <(candidates)
 if [ -n "$AUTO_DISK" ]; then
@@ -51,7 +51,7 @@ if [ -n "$AUTO_DISK" ]; then
   printf '%s\n' "${disks[@]}" | cut -f1 | grep -qxF "$(basename "$target")" || die "$target is not a disk that can be used"
 else
   [ ${#disks[@]} -gt 0 ] || die "no disk of 16 GB or more was found"
-  echo "  RedGiant OS takes a whole disk. Everything on the disk you choose is erased."
+  echo "  Rasgeth OS takes a whole disk. Everything on the disk you choose is erased."
   echo
   i=1
   for d in "${disks[@]}"; do
@@ -103,7 +103,7 @@ say "writing to $target"
 for p in $(lsblk -lnpo NAME "$target" | tail -n +2); do umount "$p" 2>/dev/null || true; done
 wipefs -a -q "$target" 2>/dev/null || true
 # The bar: amount, speed and time left.
-if ! zstd -dc --long=27 "$PAYLOAD" | pv -f -s "$SIZE" -N "RedGiant OS" | dd of="$target" bs=4M oflag=direct status=none; then
+if ! zstd -dc --long=27 "$PAYLOAD" | pv -f -s "$SIZE" -N "Rasgeth OS" | dd of="$target" bs=4M oflag=direct status=none; then
   die "writing to $target failed"
 fi
 sync
@@ -116,7 +116,7 @@ if [ -n "$AUTO_DISK" ]; then
   systemctl poweroff
 else
   echo
-  echo "  RedGiant OS is installed. Remove the USB stick, then press Enter to restart."
+  echo "  Rasgeth OS is installed. Remove the USB stick, then press Enter to restart."
   echo "  After the restart, the screen shows the address to open in a browser."
   read -r _ || true
   systemctl reboot

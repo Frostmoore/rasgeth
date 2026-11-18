@@ -1,4 +1,4 @@
-# RedGiant: `docker compose up -d` (the installer writes .env next to this file).
+# Rasgeth: `docker compose up -d` (the installer writes .env next to this file).
 # Optional parts are profiles:  --profile engine (llama.cpp on CPU), --profile engine-cuda (NVIDIA),
 #                               --profile search (SearXNG for web search).
 name: redgiant

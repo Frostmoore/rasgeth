@@ -1,13 +1,13 @@
 #!/usr/bin/env node
-// RedGiant OS (3.7.4): may a release attach the images an earlier os.yml run built and booted?
-// Only when what they carry is the release's own: the stack they hold (redgiant-os-stack.json:
+// Rasgeth OS (3.7.4): may a release attach the images an earlier os.yml run built and booted?
+// Only when what they carry is the release's own: the stack they hold (rasgeth-os-stack.json:
 // version, every image's digest and id, the compose files) equals the one resolved now from the
-// registry, and their system's files (redgiant-os-files.json) equal the ones made from the tagged
+// registry, and their system's files (rasgeth-os-files.json) equal the ones made from the tagged
 // commit. The archive of those files is checked against its manifest, blob by blob. Anything else
 // and the release builds the images again (os.yml), as before. Only Node's own modules, and tar.
 //
 //   node packaging/os/reuse.mjs --dir <artifact dir> --version x.y.z [--source-tag <tag>]
-//     --dir: holds redgiant-os-stack.json, redgiant-os-files.json, redgiant-os-files-<v>.tar.zst
+//     --dir: holds rasgeth-os-stack.json, rasgeth-os-files.json, rasgeth-os-files-<v>.tar.zst
 //     --source-tag: compare with the branch's images (ci-<version>-<sha>) instead of the
 //       release's tags (a dry run, before anything is copied)
 import { execFileSync } from "node:child_process";
@@ -101,14 +101,14 @@ if (process.argv[1]?.endsWith("reuse.mjs")) {
   }
   const problems = [];
   try {
-    const got = checkStack(JSON.parse(readFileSync(join(dir, "redgiant-os-stack.json"), "utf8")));
+    const got = checkStack(JSON.parse(readFileSync(join(dir, "rasgeth-os-stack.json"), "utf8")));
     const expected = await resolveStack(version, version, arg("--source-tag", ""));
     problems.push(...stackDifferences(expected, got));
   } catch (e) {
     problems.push(`stack: ${e.message}`);
   }
   try {
-    const got = checkFiles(JSON.parse(readFileSync(join(dir, "redgiant-os-files.json"), "utf8")));
+    const got = checkFiles(JSON.parse(readFileSync(join(dir, "rasgeth-os-files.json"), "utf8")));
     const fresh = mkdtempSync(join(tmpdir(), "rg-os-files-now-"));
     try {
       problems.push(...filesDifferences(buildFiles(version, fresh), got));

@@ -1,4 +1,4 @@
-# RedGiant OS (G39.1): what the OS adds to the release's compose.yaml.
+# Rasgeth OS (G39.1): what the OS adds to the release's compose.yaml.
 #   docker compose -f compose.yaml -f /usr/share/redgiant-os/compose.os.yaml …
 services:
   redgiant:
