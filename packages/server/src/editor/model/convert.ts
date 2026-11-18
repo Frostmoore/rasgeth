@@ -3,6 +3,8 @@
 // .blend, USD and Alembic go through Blender (the converter, downloaded once when needed). An
 // OBJ's .mtl colours and textures, and every format's animations, need Blender: the copy made
 // here keeps the meshes, their groups, normals, UVs and vertex colours.
+
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import type { BufferAttribute, BufferGeometry, Material, Mesh, Object3D, Points } from "three";
 import { MeshStandardMaterial, Mesh as ThreeMesh, Points as ThreePoints } from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
@@ -234,5 +236,5 @@ export function jsModelToGlb(bytes: Uint8Array, name: string): Uint8Array {
   } else throw new Error(`${name} is not an OBJ, STL or PLY`);
   const stem = name.replace(/^.*[\\/]/, "").replace(/\.[^.]+$/, "");
   if (!top.name) top.name = stem;
-  return new GlbWriter().glb(top, "RedGiant (three.js loaders)");
+  return new GlbWriter().glb(top, `${PRODUCT_NAME} (three.js loaders)`);
 }

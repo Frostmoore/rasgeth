@@ -1,7 +1,7 @@
 {
   "name": "@redgiant/agent",
   "version": "0.1.0",
-  "description": "RedGiant agent runtime: the model/tool loop, hooks, compaction, event-sourced sessions.",
+  "description": "Rasgeth agent runtime: the model/tool loop, hooks, compaction, event-sourced sessions.",
   "license": "MIT",
   "type": "module",
   "exports": {

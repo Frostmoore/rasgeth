@@ -20,6 +20,7 @@ import { pipeline } from "node:stream/promises";
 import { createGunzip, createGzip } from "node:zlib";
 import type { EventStore, SqlClient } from "@redgiant/events";
 import type { BackupPreview, EventBody } from "@redgiant/protocol";
+import { FORMER_PRODUCT_NAME, PRODUCT_NAME } from "@redgiant/protocol";
 import type { JobHandle } from "./jobs.js";
 import { slug } from "./projects.js";
 
@@ -239,16 +240,16 @@ export class BackupError extends Error {}
 async function open(file: string): Promise<{ r: Reader; data: BackupData }> {
   const r = new Reader(file);
   try {
-    if ((await r.line()) !== MAGIC) throw new BackupError("This is not a RedGiant backup");
+    if ((await r.line()) !== MAGIC) throw new BackupError(`This is not a ${PRODUCT_NAME} backup`);
     const h = await r.next();
     if (h?.name !== "backup.json") throw new BackupError("The backup file is damaged");
     const data = JSON.parse((await r.read(h.size)).toString()) as BackupData;
-    if (data.format !== 1) throw new BackupError("This backup comes from a newer RedGiant");
+    if (data.format !== 1) throw new BackupError(`This backup comes from a newer ${PRODUCT_NAME}`);
     return { r, data };
   } catch (err) {
     await r.close();
     if (err instanceof SyntaxError || (err as { code?: string }).code === "Z_DATA_ERROR")
-      throw new BackupError("This is not a RedGiant backup");
+      throw new BackupError(`This is not a ${PRODUCT_NAME} backup`);
     throw err;
   }
 }
@@ -848,9 +849,24 @@ export async function verifyBackup(file: string, h?: JobHandle): Promise<BackupC
   }
 }
 
-/** The folders a safety backup goes in (G36.19): "RedGiant-backup-2026-11-08", "-2" for the next one that day. */
-export const SAFETY_FOLDER = /^RedGiant-backup-\d{4}-\d{2}-\d{2}(?:-\d{1,3})?$/;
-export const SAFETY_FILE = /^redgiant-[0-9a-z.-]+\.rgbackup$/;
+/**
+ * The folders a safety backup goes in (G36.19): "Rasgeth-backup-2026-11-08", "-2" for the next
+ * one that day, with files like "rasgeth-3.9.0-0930.rgbackup". Those written before 3.9.0 carry
+ * the product's old name and are still found.
+ */
+export const SAFETY_FOLDER = new RegExp(
+  `^(?:${PRODUCT_NAME}|${FORMER_PRODUCT_NAME})-backup-\\d{4}-\\d{2}-\\d{2}(?:-\\d{1,3})?$`,
+);
+export const SAFETY_FILE = new RegExp(
+  `^(?:${PRODUCT_NAME.toLowerCase()}|${FORMER_PRODUCT_NAME.toLowerCase()})-[0-9a-z.-]+\\.rgbackup$`,
+);
+
+/** A new safety backup's folder for a local day ("2026-11-08"). */
+export const safetyFolder = (day: string): string => `${PRODUCT_NAME}-backup-${day}`;
+
+/** A new safety backup's file: the version that made it and the local time ("0930"). */
+export const safetyFile = (version: string | null, hhmm: string): string =>
+  `${PRODUCT_NAME.toLowerCase()}-${version ?? "dev"}-${hhmm}.rgbackup`;
 
 /**
  * The backups left by a breaking update under `base` (Documents, or the data volume), newest

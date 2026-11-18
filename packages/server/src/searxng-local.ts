@@ -15,6 +15,7 @@ import { mkdir, readdir, rename, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { killTree } from "@redgiant/tools";
 import type { JobHandle } from "./jobs.js";
 
@@ -50,7 +51,7 @@ def getpwuid(_uid=None):
 `;
 // RedGiant's process is watched, not stdin: on Windows a thread waiting on the stdin pipe held
 // up every other use of it, and SearXNG never answered (2026-11-05, Rig).
-const RUN_PY = `# RedGiant starts SearXNG through this: it ends when RedGiant's process does.
+const RUN_PY = `# ${PRODUCT_NAME} starts SearXNG through this: it ends when ${PRODUCT_NAME}'s process does.
 import os
 import runpy
 import threading
@@ -223,7 +224,7 @@ export class LocalSearxng {
       [
         "use_default_settings: true",
         "general:",
-        "  instance_name: RedGiant",
+        `  instance_name: ${PRODUCT_NAME}`,
         "server:",
         '  bind_address: "127.0.0.1"',
         `  port: ${port}`,

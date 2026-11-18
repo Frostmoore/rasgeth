@@ -6,6 +6,8 @@
 // the connection itself must come from a private address, and so must every address the
 // proxies in between say they saw. Pure functions, tested as tables.
 
+import { PRODUCT_NAME } from "@redgiant/protocol";
+
 /** IPv4 as four numbers, or null. */
 function v4(ip: string): number[] | null {
   const m = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(ip);
@@ -119,7 +121,7 @@ export function firstAccessBanner(port: number, addresses: string[]): string {
   const line = "=".repeat(72);
   return [
     line,
-    " RedGiant: first start. From a phone or computer on this network open",
+    ` ${PRODUCT_NAME}: first start. From a phone or computer on this network open`,
     `   ${where}`,
     " and create your access (a password).",
     line,

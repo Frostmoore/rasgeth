@@ -22,6 +22,7 @@ import { mkdir, mkdtemp, readdir, readFile, rm, stat, writeFile } from "node:fs/
 import { tmpdir } from "node:os";
 import { join, relative, sep } from "node:path";
 import { type ApprovalRequest, allows } from "@redgiant/hierarchy";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { worktreeDir } from "@redgiant/sandbox";
 import type { Context, Hono } from "hono";
 import { z } from "zod";
@@ -373,7 +374,7 @@ export function codeRoutes<E extends { Variables: any }>(
     const named = (await git(dir, ["config", "user.name"], [0, 1])).stdout.trim();
     const identity = named
       ? []
-      : ["-c", "user.name=RedGiant", "-c", "user.email=redgiant@localhost"];
+      : ["-c", `user.name=${PRODUCT_NAME}`, "-c", "user.email=rasgeth@localhost"];
     await git(dir, [...identity, "commit", "-q", "-m", b.data.message]);
     const short = (await git(dir, ["rev-parse", "--short", "HEAD"])).stdout.trim();
     return c.json({ commit: short }, 200);
@@ -413,7 +414,7 @@ export function codeRoutes<E extends { Variables: any }>(
           call: {
             callId: id,
             name: "bash",
-            input: { command, project: p.name, branch, from: "RGCompanion" },
+            input: { command, project: p.name, branch, from: `${PRODUCT_NAME} app` },
           },
           reasons: [`Sends the branch ${branch} of ${p.name} to ${remote} (asked from the app)`],
           danger: ["git-push"],

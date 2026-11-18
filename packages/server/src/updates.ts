@@ -14,6 +14,7 @@ import { join } from "node:path";
 import {
   assessRelease,
   type InstallKind,
+  PRODUCT_NAME,
   ReleaseInfo,
   type ReleaseNote,
   UpdateProgress,
@@ -183,9 +184,9 @@ export class UpdateWatcher {
       note: null,
       downloadUrl:
         o.install === "windows"
-          ? `${DOWNLOADS}/RedGiant-Setup.exe`
+          ? `${DOWNLOADS}/${PRODUCT_NAME}-Setup.exe`
           : o.install === "mac"
-            ? `${DOWNLOADS}/RedGiant-mac-${(o.arch ?? process.arch) === "x64" ? "x86_64" : "arm64"}.dmg`
+            ? `${DOWNLOADS}/${PRODUCT_NAME}-mac-${(o.arch ?? process.arch) === "x64" ? "x86_64" : "arm64"}.dmg`
             : o.install === "os"
               ? "https://github.com/Frostmoore/redgiant2/releases/latest"
               : null,
@@ -254,7 +255,7 @@ export class UpdateWatcher {
     }
     const get = (url: string) =>
       f(url, {
-        headers: { "user-agent": "RedGiant", accept: "application/vnd.github+json" },
+        headers: { "user-agent": PRODUCT_NAME, accept: "application/vnd.github+json" },
         signal: AbortSignal.timeout(15_000),
       });
     try {
@@ -358,7 +359,7 @@ export class UpdateRequiredError extends Error {
   readonly code = "update_required";
   constructor(version: string | null) {
     super(
-      `RedGiant must be updated${version ? ` to ${version}` : ""} before agents can work again; nothing was lost, the message was not sent.`,
+      `${PRODUCT_NAME} must be updated${version ? ` to ${version}` : ""} before agents can work again; nothing was lost, the message was not sent.`,
     );
     this.name = "UpdateRequiredError";
   }

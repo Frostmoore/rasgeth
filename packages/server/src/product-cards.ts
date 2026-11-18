@@ -6,6 +6,7 @@ import type { Tool } from "@redgiant/agent";
 import type { AgentRecord } from "@redgiant/hierarchy";
 import {
   MAX_PRODUCTS,
+  PRODUCT_NAME,
   type ProductCard,
   type ProductsShownPayload,
   WebLink,
@@ -68,7 +69,7 @@ export function showProductsTool(_agent: AgentRecord, host: ProductsToolHost): T
   return {
     def: {
       name: "show_products",
-      description: `Show the person products to buy or compare as a carousel of cards in your answer: a picture, the name, the price, the shop, a link to the product's page and the number of the web source it comes from (as you cite it, [1], [2]…). Up to ${MAX_PRODUCTS}. RedGiant downloads the pictures itself; you do not see them, only a summary.`,
+      description: `Show the person products to buy or compare as a carousel of cards in your answer: a picture, the name, the price, the shop, a link to the product's page and the number of the web source it comes from (as you cite it, [1], [2]…). Up to ${MAX_PRODUCTS}. ${PRODUCT_NAME} downloads the pictures itself; you do not see them, only a summary.`,
       inputSchema: {
         type: "object",
         properties: {

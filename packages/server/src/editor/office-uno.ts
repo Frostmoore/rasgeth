@@ -4,7 +4,9 @@
 // its own format and stops soffice. Run with LibreOffice's own Python (or a system one with
 // `uno`), never with a shell; paths and actions come in a JSON file given as its argument.
 // The page's ZetaOffice applies the same actions with the same API (packages/web/public/zeta).
-export const OFFICE_UNO_SCRIPT = String.raw`# RedGiant: the editor's actions on a document (G37.4). Generated: do not edit.
+import { PRODUCT_NAME } from "@redgiant/protocol";
+
+export const OFFICE_UNO_SCRIPT = String.raw`# ${PRODUCT_NAME}: the editor's actions on a document (G37.4). Generated: do not edit.
 import json, os, subprocess, sys, time, unicodedata
 import uno
 from com.sun.star.beans import PropertyValue

@@ -9,6 +9,7 @@
 import { mkdir, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { FoundBackup, UpdateStatus } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import type { Context, Hono } from "hono";
 import {
   BackupError,
@@ -16,6 +17,8 @@ import {
   findBackups,
   foundBackupPath,
   importBackup,
+  safetyFile,
+  safetyFolder,
   verifyBackup,
 } from "./backup.js";
 import type { RedGiantCore } from "./core.js";
@@ -42,9 +45,9 @@ const NOTHING: UpdateStatus = {
 /** The text left beside the backup, for whoever opens the folder. */
 function readme(file: string, version: string | null): string {
   return [
-    "RedGiant backup / Backup di RedGiant",
+    `${PRODUCT_NAME} backup / Backup di ${PRODUCT_NAME}`,
     "",
-    `File: ${file}${version ? ` (RedGiant ${version})` : ""}`,
+    `File: ${file}${version ? ` (${PRODUCT_NAME} ${version})` : ""}`,
     "",
     "IT: questo file contiene progetti, conversazioni, agenti, memorie e impostazioni. Dopo aver",
     "installato la versione nuova, la prima schermata propone «Ripristina dal backup» e lo trova da",
@@ -104,9 +107,9 @@ export function updateRoutes<E extends { Variables: any }>(
     if (running) return c.json(running, 200);
     const now = new Date();
     const local = new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString();
-    const folder = `RedGiant-backup-${local.slice(0, 10)}`;
+    const folder = safetyFolder(local.slice(0, 10));
     const version = core.updates?.status().installed ?? null;
-    const file = `redgiant-${version ?? "dev"}-${local.slice(11, 16).replace(":", "")}.rgbackup`;
+    const file = safetyFile(version, local.slice(11, 16).replace(":", ""));
     const path = join(dir, folder, file);
     const job = core.jobs.start(
       o,

@@ -8,6 +8,7 @@
 import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { LO_QUIET } from "./lo-profiles.js";
 
 export interface LauncherFile {
@@ -41,7 +42,7 @@ export function officeLaunchers(
   const quiet = LO_QUIET.join(" ");
   const sh = [
     "#!/bin/sh",
-    "# Made by RedGiant (p3.5.3): LibreOffice for the agents' commands, with a profile of its",
+    `# Made by ${PRODUCT_NAME} (p3.5.3): LibreOffice for the agents' commands, with a profile of its`,
     "# own for this command (never the person's, never another command's) and no windows.",
     `real=${shQuote(win ? slashed(real) : real)}`,
     `base=${shQuote(win ? slashed(profiles) : profiles)}`,
@@ -67,7 +68,7 @@ export function officeLaunchers(
   if (win) {
     const cmd = [
       "@echo off",
-      "rem Made by RedGiant (p3.5.3): LibreOffice for the agents' commands, with a profile of its",
+      `rem Made by ${PRODUCT_NAME} (p3.5.3): LibreOffice for the agents' commands, with a profile of its`,
       "rem own for this command (never the person's, never another command's) and no windows.",
       "setlocal EnableExtensions DisableDelayedExpansion",
       `set "RG_BASE=${cmdText(profiles)}"`,

@@ -6,6 +6,7 @@
 import { createHash, createHmac, randomBytes, scrypt, timingSafeEqual } from "node:crypto";
 import { promisify } from "node:util";
 import type { SqlClient } from "@redgiant/events";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import type { Principal } from "./auth.js";
 
 const scryptAsync = promisify(scrypt) as (pw: string, salt: Buffer, len: number) => Promise<Buffer>;
@@ -183,7 +184,7 @@ export class LoginStore {
   }
 
   /** A new secret for the authenticator app (not active until confirmed with a code). */
-  newCodeSecret(ownerId: string, label = "RedGiant"): { secret: string; url: string } {
+  newCodeSecret(ownerId: string, label = PRODUCT_NAME): { secret: string; url: string } {
     const secret = base32(randomBytes(20));
     const url = `otpauth://totp/${encodeURIComponent(label)}:${encodeURIComponent(ownerId)}?secret=${secret}&issuer=${encodeURIComponent(label)}&digits=6&period=30`;
     return { secret, url };

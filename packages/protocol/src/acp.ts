@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { PRODUCT_NAME } from "./brand.js";
 
 /**
  * External ACP agents as RedGiant workers (G38.6): the program an agent of a project runs as
@@ -87,11 +88,11 @@ export function acpEnvProblem(name: string, value: string): string | undefined {
     case "name":
       return `"${name}" is not a variable name`;
     case "secret-name":
-      return `"${name}" looks like a secret: keys go in RedGiant's keychain, never in an agent's variables`;
+      return `"${name}" looks like a secret: keys go in ${PRODUCT_NAME}'s keychain, never in an agent's variables`;
     case "own":
-      return `"${name}" is RedGiant's own`;
+      return `"${name}" is ${PRODUCT_NAME}'s own`;
     case "secret-value":
-      return `the value of "${name}" looks like a key: keys go in RedGiant's keychain`;
+      return `the value of "${name}" looks like a key: keys go in ${PRODUCT_NAME}'s keychain`;
     default:
       return undefined;
   }

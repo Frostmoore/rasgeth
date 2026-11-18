@@ -4,6 +4,8 @@
 // is here as a template: `{name}` parts are the values (a layer's name, a count, a list). A text
 // that matches no template keeps `code: null` and the page shows the English as it is.
 
+import { PRODUCT_NAME } from "@redgiant/protocol";
+
 /** Every loss the converters can write, by its code. */
 export const LOSS_TEMPLATES = {
   // What a target keeps and leaves out (convert-formats.ts).
@@ -26,16 +28,14 @@ export const LOSS_TEMPLATES = {
   ai_odg_artboards: "every artboard as an editable drawing; effects and some fonts can shift",
   idml_scribus:
     "Scribus's own IDML import: pages, master pages, layers, frames at their place, text flowing through linked frames, styles, colours and images; tints, page-number markers, some crops of pictures and effects can differ (the PDF beside it shows how it came out)",
-  idml_odg:
-    "RedGiant's own import (when Scribus cannot be had): pages, frames, shapes and pictures at their exact place and size, text with its formatting, colours, layers",
+  idml_odg: `${PRODUCT_NAME}'s own import (when Scribus cannot be had): pages, frames, shapes and pictures at their exact place and size, text with its formatting, colours, layers`,
   idml_pdf_from_odg: "printed from the ODG (Scribus makes its own PDF with the SLA)",
   idml_odt_target:
     "text only: the page layout (frames, positions, master pages, images) is not carried over, only the stories with their paragraph and character styles",
   preview_only:
     "this is NOT a conversion: only the small preview picture stored inside the file (layers, text and layout cannot be read by any free program)",
   preview_first_page: "often just the first page",
-  sketch_svg:
-    "RedGiant's own reading of the Sketch file: every artboard at its size, shapes, paths, text, colours, borders, opacity and images at their place; shadows, blurs, gradients beyond their first colour and symbol overrides are simplified",
+  sketch_svg: `${PRODUCT_NAME}'s own reading of the Sketch file: every artboard at its size, shapes, paths, text, colours, borders, opacity and images at their place; shadows, blurs, gradients beyond their first colour and symbol overrides are simplified`,
   sketch_last_page: "the last page you looked at in Sketch",
   sketch_outline: "only the pages, artboards, layer names and texts: no shapes or styles",
   blender_gltf:

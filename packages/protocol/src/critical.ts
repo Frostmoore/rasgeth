@@ -9,6 +9,7 @@
  * ordinary approvals that skip the parent agents.
  */
 import { z } from "zod";
+import { PRODUCT_NAME } from "./brand.js";
 
 export const CRITICAL_IDS = [
   "critical-system",
@@ -67,12 +68,12 @@ const en: Record<CriticalId, CriticalWords> = {
     examples: ["Pressing «Buy» or «Pay» on a site", "A payment through a connected service"],
   },
   "critical-protections": {
-    name: "Switching off RedGiant's protections",
-    hint: "Changing the permission rules, the guardian, the classifier or this list, or putting new RedGiant code live.",
+    name: `Switching off ${PRODUCT_NAME}'s protections`,
+    hint: `Changing the permission rules, the guardian, the classifier or this list, or putting new ${PRODUCT_NAME} code live.`,
     examples: [
       "Changing the permission policy",
-      "Changing RedGiant's settings files or its keychain",
-      "Putting a change to RedGiant's own code live",
+      `Changing ${PRODUCT_NAME}'s settings files or its keychain`,
+      `Putting a change to ${PRODUCT_NAME}'s own code live`,
     ],
   },
 };
@@ -118,12 +119,12 @@ const it: Record<CriticalId, CriticalWords> = {
     ],
   },
   "critical-protections": {
-    name: "Spegnere le protezioni di RedGiant",
-    hint: "Cambiare le regole dei permessi, il guardiano, il classificatore o questo elenco, o mettere in funzione codice nuovo di RedGiant.",
+    name: `Spegnere le protezioni di ${PRODUCT_NAME}`,
+    hint: `Cambiare le regole dei permessi, il guardiano, il classificatore o questo elenco, o mettere in funzione codice nuovo di ${PRODUCT_NAME}.`,
     examples: [
       "Cambiare la politica dei permessi",
-      "Cambiare i file delle impostazioni di RedGiant o il suo portachiavi",
-      "Mettere in funzione una modifica al codice di RedGiant",
+      `Cambiare i file delle impostazioni di ${PRODUCT_NAME} o il suo portachiavi`,
+      `Mettere in funzione una modifica al codice di ${PRODUCT_NAME}`,
     ],
   },
 };
@@ -287,16 +288,16 @@ const SENTENCES: Record<Lang, Record<CriticalAction, Sentence>> = {
         ? `Deletes emails for good from ${x.t}: they do not go to the bin`
         : "Deletes emails for good: they do not go to the bin",
     "secret-artifact-read": (_, x) =>
-      `An artifact reads ${x.t}: a secret or one of RedGiant's own files (never allowed)`,
+      `An artifact reads ${x.t}: a secret or one of ${PRODUCT_NAME}'s own files (never allowed)`,
     "pay-tool": (_, x) => `Pays or buys with real money through ${x.t}`,
     "pay-service": (_, x) =>
       `Makes a payment with real money through ${x.t || "a payment service"}`,
     "pay-button": (_, x) => `Presses «${x.t}» in the browser: a payment with real money`,
-    "protect-delete": (_, x) => `${x.del} RedGiant's own files: ${x.t}`,
-    "protect-files": (_, x) => `Changes RedGiant's own files: ${x.t}`,
-    "protect-db": () => "Changes RedGiant's own settings or history in its database",
-    "protect-policy": () => "Changes RedGiant's permission rules",
-    "protect-code": () => "Puts new RedGiant code live: it could switch off its protections",
+    "protect-delete": (_, x) => `${x.del} ${PRODUCT_NAME}'s own files: ${x.t}`,
+    "protect-files": (_, x) => `Changes ${PRODUCT_NAME}'s own files: ${x.t}`,
+    "protect-db": () => `Changes ${PRODUCT_NAME}'s own settings or history in its database`,
+    "protect-policy": () => `Changes ${PRODUCT_NAME}'s permission rules`,
+    "protect-code": () => `Puts new ${PRODUCT_NAME} code live: it could switch off its protections`,
     "remote-sudo": (_, x) => `Runs a command as administrator: ${x.t}`,
     "remote-power": () => "Switches the machine off or restarts it",
     "remote-install": (_, x) => `Installs or removes system programs: ${x.t}`,
@@ -349,17 +350,17 @@ const SENTENCES: Record<Lang, Record<CriticalAction, Sentence>> = {
         ? `Cancella per sempre delle email da ${x.t}: non passano dal cestino`
         : "Cancella per sempre delle email: non passano dal cestino",
     "secret-artifact-read": (_, x) =>
-      `Un artefatto legge ${x.t}: un segreto o un file di RedGiant (mai permesso)`,
+      `Un artefatto legge ${x.t}: un segreto o un file di ${PRODUCT_NAME} (mai permesso)`,
     "pay-tool": (_, x) => `Paga o compra con soldi veri attraverso ${x.t}`,
     "pay-service": (_, x) =>
       `Fa un pagamento con soldi veri attraverso ${x.t || "un servizio di pagamento"}`,
     "pay-button": (_, x) => `Preme «${x.t}» nel browser: un pagamento con soldi veri`,
-    "protect-delete": (_, x) => `${x.del} i file di RedGiant stesso: ${x.t}`,
-    "protect-files": (_, x) => `Cambia i file di RedGiant stesso: ${x.t}`,
-    "protect-db": () => "Cambia le impostazioni o la storia di RedGiant nel suo database",
-    "protect-policy": () => "Cambia le regole dei permessi di RedGiant",
+    "protect-delete": (_, x) => `${x.del} i file di ${PRODUCT_NAME} stesso: ${x.t}`,
+    "protect-files": (_, x) => `Cambia i file di ${PRODUCT_NAME} stesso: ${x.t}`,
+    "protect-db": () => `Cambia le impostazioni o la storia di ${PRODUCT_NAME} nel suo database`,
+    "protect-policy": () => `Cambia le regole dei permessi di ${PRODUCT_NAME}`,
     "protect-code": () =>
-      "Mette in funzione codice nuovo di RedGiant: potrebbe spegnere le sue protezioni",
+      `Mette in funzione codice nuovo di ${PRODUCT_NAME}: potrebbe spegnere le sue protezioni`,
     "remote-sudo": (_, x) => `Esegue un comando come amministratore: ${x.t}`,
     "remote-power": () => "Spegne o riavvia la macchina",
     "remote-install": (_, x) => `Installa o toglie programmi di sistema: ${x.t}`,

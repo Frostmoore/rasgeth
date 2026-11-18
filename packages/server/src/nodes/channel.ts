@@ -43,6 +43,7 @@ import {
   timingSafeEqual,
   verify,
 } from "node:crypto";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import WebSocket from "ws";
 
 const VERSION = "rg-node-v1";
@@ -448,7 +449,10 @@ export async function dialNode(o: DialOptions): Promise<Dialled> {
     ws.send(JSON.stringify(hello));
     const w = await inbox.next(timeoutMs);
     if (w.t !== "welcome")
-      throw new NodeChannelError("protocol", "The other machine is not a RedGiant node channel");
+      throw new NodeChannelError(
+        "protocol",
+        `The other machine is not a ${PRODUCT_NAME} node channel`,
+      );
     const peerRaw = bytes(w.id);
     const peerFp = fingerprintOf(peerRaw);
     const th = transcript(o.mode, hello, { eph: str(w.eph), id: str(w.id), nonce: str(w.nonce) });
@@ -536,7 +540,7 @@ export async function acceptNode(ws: WebSocket, o: AcceptOptions): Promise<Accep
     h.v !== VERSION ||
     (h.mode !== "link" && h.mode !== "pair" && h.mode !== "setup")
   )
-    refuse(ws, "protocol", "Not a RedGiant node handshake");
+    refuse(ws, "protocol", `Not a ${PRODUCT_NAME} node handshake`);
   const peerRaw = bytes(h.id);
   const peerFp = fingerprintOf(peerRaw);
   if (peerRaw.length !== 32 || bytes(h.eph).length !== 32 || bytes(h.nonce).length !== 32)
@@ -548,7 +552,7 @@ export async function acceptNode(ws: WebSocket, o: AcceptOptions): Promise<Accep
   if (h.mode === "setup") {
     if (!o.setup) refuse(ws, "protocol", "This is not a setup channel");
     if (o.setup(peerFp) === "busy")
-      refuse(ws, "busy", "Another device is setting up this RedGiant: one at a time");
+      refuse(ws, "busy", `Another device is setting up this ${PRODUCT_NAME}: one at a time`);
   }
   const eph = x25519Pair();
   const mine = { eph: b64(eph.pub), id: b64(o.identity.raw), nonce: b64(randomBytes(32)) };

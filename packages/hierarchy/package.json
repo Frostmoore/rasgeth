@@ -1,7 +1,7 @@
 {
   "name": "@redgiant/hierarchy",
   "version": "0.1.0",
-  "description": "RedGiant agent hierarchy: registry, scopes, permission policies with escalation, persistent budgets.",
+  "description": "Rasgeth agent hierarchy: registry, scopes, permission policies with escalation, persistent budgets.",
   "license": "MIT",
   "type": "module",
   "exports": {

@@ -2,7 +2,7 @@ import { mkdir, realpath, stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, join, posix, win32 } from "node:path";
 import type { SqlClient } from "@redgiant/events";
-import { PROJECT_AGENTS_DEFAULT } from "@redgiant/protocol";
+import { PRODUCT_NAME, PROJECT_AGENTS_DEFAULT } from "@redgiant/protocol";
 import { hasOwnRepo, initProjectRepo, type RepoState, type RunGit, runGit } from "./project-git.js";
 
 export interface Project {
@@ -208,7 +208,7 @@ export function folderProblem(
     const inside = key(rules.inside);
     if (p === inside || !within(p, inside))
       return `Here projects live in the data volume: choose a folder inside ${rules.inside}`;
-  } else if (overlaps(p, key(rules.dataDir))) return "Not RedGiant's own data folder";
+  } else if (overlaps(p, key(rules.dataDir))) return `Not ${PRODUCT_NAME}'s own data folder`;
   const clash = others.find((o) => overlaps(p, key(o)));
   if (clash) return `It overlaps the folder of another project (${clash})`;
   return undefined;

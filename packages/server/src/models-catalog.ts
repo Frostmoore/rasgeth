@@ -17,6 +17,7 @@ import {
   MODELS_CATALOG_TAG,
   ModelsCatalog,
   type ModelsCatalogStatus,
+  PRODUCT_NAME,
 } from "@redgiant/protocol";
 import { applyCatalog, modelsCatalog } from "@redgiant/providers";
 import { debugLog } from "./debug-log.js";
@@ -149,7 +150,7 @@ export class CatalogWatcher {
   private async look(): Promise<ModelsCatalogStatus> {
     const f = this.o.fetch ?? fetch;
     const get = (url: string) =>
-      f(url, { headers: { "user-agent": "RedGiant" }, signal: AbortSignal.timeout(15_000) });
+      f(url, { headers: { "user-agent": PRODUCT_NAME }, signal: AbortSignal.timeout(15_000) });
     let best: { catalog: ModelsCatalog; bytes: Buffer; sig: string } | undefined;
     let reached = false;
     let unsigned = false;

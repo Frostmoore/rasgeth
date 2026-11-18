@@ -293,8 +293,7 @@ function connectionOf(req: IncomingMessage): Connection {
     if (v) headers.push([n, v]);
   }
   const socket = req.socket?.remoteAddress;
-  const host =
-    (h("host") ?? "redgiant.local").replace(/[^A-Za-z0-9.:[\]-]/g, "") || "redgiant.local";
+  const host = (h("host") ?? "rasgeth.local").replace(/[^A-Za-z0-9.:[\]-]/g, "") || "rasgeth.local";
   return {
     host,
     socket,

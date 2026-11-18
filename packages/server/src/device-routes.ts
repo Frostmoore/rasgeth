@@ -23,6 +23,7 @@ import {
   DevicePairBody,
   DeviceRenameBody,
   mayIssueDevice,
+  PRODUCT_NAME,
   PROTOCOL_VERSION,
   PushAnswerBody,
   PushRegisterBody,
@@ -74,7 +75,7 @@ export function deviceRoutes<E extends { Variables: { principal: Principal } }>(
       version: o.version,
       appProtocol: APP_PROTOCOL_VERSION,
       protocolVersion: PROTOCOL_VERSION,
-      machine: await core.nodes.machineName(o.loginOwner).catch(() => "RedGiant"),
+      machine: await core.nodes.machineName(o.loginOwner).catch(() => PRODUCT_NAME),
       firstStartCompleted: o.completed(),
       access: {
         password: status.password,

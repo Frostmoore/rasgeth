@@ -13,6 +13,7 @@ import { delimiter } from "node:path";
 import { createInterface } from "node:readline";
 import type { Engine, EngineTurn } from "@redgiant/agent";
 import type { AssistantPart, MessageMetrics } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import {
   type ModelInfo,
   type Provider,
@@ -86,7 +87,7 @@ class CodexConnection {
       });
       createInterface({ input: proc.stdout }).on("line", (line) => this.receive(line));
       await this.request("initialize", {
-        clientInfo: { name: "redgiant", title: "RedGiant", version: "2" },
+        clientInfo: { name: "redgiant", title: PRODUCT_NAME, version: "2" },
         capabilities: { experimentalApi: true, requestAttestation: false },
       });
       this.notify("initialized", {});

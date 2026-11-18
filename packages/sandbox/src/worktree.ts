@@ -1,7 +1,7 @@
 import type { Workspace } from "@redgiant/tools";
 
 const TIMEOUT = { timeoutMs: 60_000 };
-const IDENTITY = ["-c", "user.name=RedGiant", "-c", "user.email=redgiant@localhost"];
+const IDENTITY = ["-c", "user.name=Rasgeth", "-c", "user.email=rasgeth@localhost"];
 
 export const worktreeDir = (agentId: string) => `.worktrees/${safe(agentId)}`;
 export const worktreeBranch = (agentId: string) => `rg/${safe(agentId)}`;
@@ -73,11 +73,11 @@ export async function createWorktree(
 export async function commitAll(
   ws: Workspace,
   message: string,
-  author = "RedGiant <redgiant@localhost>",
+  author = "Rasgeth <rasgeth@localhost>",
 ): Promise<boolean> {
   await git(ws, ["add", "-A"]);
   if ((await run(ws, ["diff", "--cached", "--quiet"])).exitCode === 0) return false;
-  const [name = "RedGiant", email = "redgiant@localhost"] = author.replace(/>$/, "").split(" <");
+  const [name = "Rasgeth", email = "rasgeth@localhost"] = author.replace(/>$/, "").split(" <");
   // The message is an argument, never shell text: an agent cannot inject commands through it.
   await git(ws, [
     "-c",

@@ -12,7 +12,7 @@ import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import type { Tool, ToolContext } from "@redgiant/agent";
 import type { AgentRecord, PermissionBroker } from "@redgiant/hierarchy";
-import { nativePaths } from "@redgiant/protocol";
+import { nativePaths, PRODUCT_NAME } from "@redgiant/protocol";
 import type { Workspace } from "@redgiant/tools";
 import { z } from "zod";
 
@@ -32,7 +32,7 @@ const NOT_FROM_SCRIPTS = new Set([
 const MAX_CALLS = 200;
 const MAX_OUTPUT = 20_000;
 
-const PY_HELPER = `# RedGiant's tools from a script (G29.7): call("grep", pattern="TODO") returns the text.
+const PY_HELPER = `# ${PRODUCT_NAME}'s tools from a script (G29.7): call("grep", pattern="TODO") returns the text.
 import json, os, urllib.request
 _cfg = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "rg.json")))
 class ToolError(Exception):
@@ -46,7 +46,7 @@ def call(name, **args):
     return out.get("content", "")
 `;
 
-const JS_HELPER = `// RedGiant's tools from a script (G29.7): await call("grep", { pattern: "TODO" }) returns the text.
+const JS_HELPER = `// ${PRODUCT_NAME}'s tools from a script (G29.7): await call("grep", { pattern: "TODO" }) returns the text.
 import { readFileSync } from "node:fs";
 const cfg = JSON.parse(readFileSync(new URL("./rg.json", import.meta.url), "utf8"));
 export async function call(name, input = {}) {

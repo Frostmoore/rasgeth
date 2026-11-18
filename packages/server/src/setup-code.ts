@@ -10,6 +10,7 @@ import { randomInt, timingSafeEqual } from "node:crypto";
 import { rm, writeFile } from "node:fs/promises";
 import type { NetworkInterfaceInfo } from "node:os";
 import { join } from "node:path";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 
 /** No 0/O, 1/I/L: read from a screen and typed on a phone (31 symbols). */
 export const CODE_ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";
@@ -123,7 +124,7 @@ export function setupCodeBanner(code: string, port: number, addresses: string[])
   const line = "=".repeat(72);
   return [
     line,
-    " RedGiant: first start. From a phone or computer on this network open",
+    ` ${PRODUCT_NAME}: first start. From a phone or computer on this network open`,
     `   ${where}`,
     ` and type the setup code:  ${code}`,
     " (one use; a new code at every start until the setup is completed)",

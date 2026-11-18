@@ -1,7 +1,7 @@
 {
   "name": "@redgiant/server",
   "version": "0.1.0",
-  "description": "RedGiant server: HTTP API (OpenAPI), WebSocket live stream, sessions, projects, approvals.",
+  "description": "Rasgeth server: HTTP API (OpenAPI), WebSocket live stream, sessions, projects, approvals.",
   "license": "MIT",
   "type": "module",
   "exports": {

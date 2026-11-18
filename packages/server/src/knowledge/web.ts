@@ -4,6 +4,7 @@
 
 import { lookup as dnsLookup } from "node:dns/promises";
 import { isIP } from "node:net";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { isNonPublicAddress } from "@redgiant/tools";
 
 export type FetchPageErrorCode =
@@ -148,7 +149,7 @@ export async function fetchPage(url: string, o: FetchPageOptions = {}): Promise<
       redirect: "manual",
       credentials: "omit",
       headers: {
-        "user-agent": "RedGiant/3 (knowledge; +https://github.com/Frostmoore/redgiant2)",
+        "user-agent": `${PRODUCT_NAME}/3 (knowledge; +https://github.com/Frostmoore/redgiant2)`,
         accept: "text/html,application/xhtml+xml,text/plain;q=0.9,application/pdf;q=0.9,*/*;q=0.5",
       },
       signal,

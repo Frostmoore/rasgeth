@@ -1,6 +1,6 @@
 // Scheduled backups (G39.3): the backup of Settings › Backup, made by itself at the hour the
 // person chose, into the destination they picked (a removable disk or a folder). Each one goes
-// in a folder like the safety backup's ("RedGiant-backup-2026-11-12", found again by the restore
+// in a folder like the safety backup's ("Rasgeth-backup-2026-11-12", found again by the restore
 // page) and is read back once written; only the folders this schedule made are ever removed,
 // the oldest first, keeping the number chosen. A run never overlaps the previous one, and a
 // destination that is missing (the disk unplugged) is a failed run the page shows, never a
@@ -8,7 +8,7 @@
 import { rm } from "node:fs/promises";
 import { join } from "node:path";
 import type { BackupSchedule, BackupSettings } from "@redgiant/protocol";
-import { SAFETY_FOLDER } from "./backup.js";
+import { SAFETY_FOLDER, safetyFile, safetyFolder } from "./backup.js";
 import { type BackupTarget, localTarget, MADE_FILE } from "./backup-targets.js";
 
 export { MADE_FILE };
@@ -53,7 +53,7 @@ export function toPrune(made: readonly string[], keep: number): string[] {
   return sorted.slice(0, Math.max(0, sorted.length - Math.max(1, keep)));
 }
 
-/** "RedGiant-backup-2026-11-12-2" after "…-12", before "…-13". */
+/** "Rasgeth-backup-2026-11-12-2" after "…-12", before "…-13" (an older name's folder too). */
 function byDay(a: string, b: string): number {
   const key = (f: string) => {
     const m = /(\d{4}-\d{2}-\d{2})(?:-(\d+))?$/.exec(f);
@@ -65,7 +65,7 @@ function byDay(a: string, b: string): number {
 /** The local day's folder name, "-2"… when one is there already. */
 export function folderFor(now: Date, taken: (name: string) => boolean): string {
   const local = new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString();
-  const base = `RedGiant-backup-${local.slice(0, 10)}`;
+  const base = safetyFolder(local.slice(0, 10));
   if (!taken(base)) return base;
   for (let i = 2; i < 1000; i++) if (!taken(`${base}-${i}`)) return `${base}-${i}`;
   return `${base}-999`;
@@ -140,7 +140,7 @@ export class BackupScheduler {
         const now = this.now();
         const folder = folderFor(now, (n) => there.has(n));
         const local = new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString();
-        file = `redgiant-${this.o.version() ?? "dev"}-${local.slice(11, 16).replace(":", "")}.rgbackup`;
+        file = safetyFile(this.o.version(), local.slice(11, 16).replace(":", ""));
         // Listed before writing: a run cut short leaves a folder this schedule may remove later.
         const list = [...made, folder];
         await target.writeMade(list);

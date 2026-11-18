@@ -7,6 +7,7 @@ import type {
   PermissionRequestInfo,
   ServerMessage,
 } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import {
   acpStopReason,
   promptImages,
@@ -102,12 +103,14 @@ export function redgiantAgent(o: BridgeOptions): acp.AgentApp {
       .live(onMessage, () => {
         if (channel !== opened || closing) return;
         channel = undefined;
-        log("RedGiant closed the connection; it is opened again at the next message");
+        log(`${PRODUCT_NAME} closed the connection; it is opened again at the next message`);
         for (const b of sessions.values()) {
           b.synced = false;
           const t = b.turn;
           b.turn = undefined;
-          t?.fail(acp.RequestError.internalError(undefined, "RedGiant closed the connection"));
+          t?.fail(
+            acp.RequestError.internalError(undefined, `${PRODUCT_NAME} closed the connection`),
+          );
         }
       })
       .then((c) => {
@@ -175,7 +178,7 @@ export function redgiantAgent(o: BridgeOptions): acp.AgentApp {
       }
       case "error": {
         const b = owning((m as { sessionId?: string }).sessionId);
-        log(`RedGiant: ${m.code}: ${m.message}`);
+        log(`${PRODUCT_NAME}: ${m.code}: ${m.message}`);
         if (b?.turn && !b.turn.sawRunning) {
           const t = b.turn;
           b.turn = undefined;
@@ -329,7 +332,7 @@ export function redgiantAgent(o: BridgeOptions): acp.AgentApp {
       if (!a)
         throw acp.RequestError.invalidParams(
           { agent: o.agentId },
-          `No active agent "${o.agentId}" in RedGiant`,
+          `No active agent "${o.agentId}" in ${PRODUCT_NAME}`,
         );
       const p = pathOf(a.projectId);
       return { agent: a, ...(p && { projectPath: p }) };
@@ -343,7 +346,7 @@ export function redgiantAgent(o: BridgeOptions): acp.AgentApp {
     if (!god)
       throw acp.RequestError.internalError(
         undefined,
-        "RedGiant has no God agent yet: open RedGiant once first",
+        `${PRODUCT_NAME} has no God agent yet: open ${PRODUCT_NAME} once first`,
       );
     return { agent: god };
   }
@@ -467,7 +470,7 @@ export function redgiantAgent(o: BridgeOptions): acp.AgentApp {
           loadSession: true,
           promptCapabilities: { image: true, embeddedContext: true },
         },
-        agentInfo: { name: "redgiant", title: "RedGiant", version: o.version ?? "3" },
+        agentInfo: { name: "redgiant", title: PRODUCT_NAME, version: o.version ?? "3" },
         authMethods: [],
       };
     })

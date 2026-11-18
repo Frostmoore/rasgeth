@@ -1,7 +1,7 @@
 {
   "name": "@redgiant/providers",
   "version": "0.1.0",
-  "description": "Model provider layer for RedGiant: Anthropic, OpenAI-compatible, fake; metrics, effort, pricing and budgets.",
+  "description": "Model provider layer for Rasgeth: Anthropic, OpenAI-compatible, fake; metrics, effort, pricing and budgets.",
   "license": "MIT",
   "type": "module",
   "exports": {

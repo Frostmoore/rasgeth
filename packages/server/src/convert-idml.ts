@@ -6,6 +6,7 @@
 // page that uses them. Scribus (convert.ts) is the other way, when it can be had; this one is the
 // fallback that always works. What stays approximate is said in the losses.
 
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { strFromU8, strToU8 } from "fflate";
 import {
   type Converted,
@@ -1120,7 +1121,7 @@ export function idmlToOdg(
   const defaults =
     '<style:default-style style:family="graphic"><style:graphic-properties draw:shadow="hidden" draw:fill="none" draw:stroke="none"/><style:paragraph-properties fo:margin-top="0pt" fo:margin-bottom="0pt"/><style:text-properties fo:font-size="12pt" fo:color="#000000"/></style:default-style>';
   const styles = `<?xml version="1.0" encoding="UTF-8"?>\n<office:document-styles ${NS}>${faces}<office:styles>${defaults}</office:styles><office:automatic-styles>${layouts}</office:automatic-styles><office:master-styles>${layerSet}${masterXml}</office:master-styles></office:document-styles>\n`;
-  const meta = `<?xml version="1.0" encoding="UTF-8"?>\n<office:document-meta ${NS}><office:meta><dc:title>${escapeXml(stem)}</dc:title><meta:generator xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0">RedGiant IDML import</meta:generator></office:meta></office:document-meta>\n`;
+  const meta = `<?xml version="1.0" encoding="UTF-8"?>\n<office:document-meta ${NS}><office:meta><dc:title>${escapeXml(stem)}</dc:title><meta:generator xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0">${PRODUCT_NAME} IDML import</meta:generator></office:meta></office:document-meta>\n`;
   const manifest = `<?xml version="1.0" encoding="UTF-8"?>\n<manifest:manifest xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0" manifest:version="1.3"><manifest:file-entry manifest:full-path="/" manifest:media-type="application/vnd.oasis.opendocument.graphics"/><manifest:file-entry manifest:full-path="content.xml" manifest:media-type="text/xml"/><manifest:file-entry manifest:full-path="styles.xml" manifest:media-type="text/xml"/><manifest:file-entry manifest:full-path="meta.xml" manifest:media-type="text/xml"/>${media
     .map(
       (m) =>

@@ -31,6 +31,7 @@ import type { Tool } from "@redgiant/agent";
 import type { Redactor } from "@redgiant/events";
 import {
   hideSecrets,
+  PRODUCT_NAME,
   type VaultEntry,
   type VaultImportPreview,
   VaultInput,
@@ -407,9 +408,13 @@ export class Vault {
         );
       await mkdir(this.o.dir, { recursive: true, mode: 0o700 });
       // A second guard should the folder ever be copied into a repository.
-      await writeFile(join(this.o.dir, ".gitignore"), "# RedGiant's keychain: never commit\n*\n", {
-        mode: 0o600,
-      });
+      await writeFile(
+        join(this.o.dir, ".gitignore"),
+        `# ${PRODUCT_NAME}'s keychain: never commit\n*\n`,
+        {
+          mode: 0o600,
+        },
+      );
       const stores = this.o.keyStores ?? systemKeyStores(this.o.dir);
       const exists = await stat(this.file).catch(() => null);
       let key: Buffer | null = null;
@@ -634,7 +639,7 @@ export class Vault {
     if (e.usedBy)
       throw new VaultError(
         "vault_system",
-        `"${e.name}" is used by RedGiant: remove it from its page in Settings (${e.usedBy.section})`,
+        `"${e.name}" is used by ${PRODUCT_NAME}: remove it from its page in Settings (${e.usedBy.section})`,
       );
     this.data.entries = this.data.entries.filter((x) => x.id !== e.id);
     this.caps.delete(e.id);
@@ -1242,7 +1247,7 @@ export class Vault {
     this.need();
     const [magic, body] = file.trim().split("\n");
     if (magic !== EXPORT_MAGIC || !body)
-      throw new VaultError("vault_bad_file", "This is not a RedGiant keychain file");
+      throw new VaultError("vault_bad_file", `This is not a ${PRODUCT_NAME} keychain file`);
     let entries: Omit<Stored, "ownerId">[];
     try {
       const sealed = JSON.parse(body) as Sealed;
@@ -1367,5 +1372,5 @@ export function blankPastedSecrets(text: string): string {
   const { text: clean, found } = hideSecrets(text, "[secret removed]");
   return found.length === 0
     ? text
-    : `${clean}\n\n(RedGiant removed ${found.length === 1 ? "a secret" : `${found.length} secrets`} from this message before it reached you. Tell the person, in their language, that secrets never go in a chat, and that they can keep it safely in Settings > Keychain, where you can use it by name without seeing it.)`;
+    : `${clean}\n\n(${PRODUCT_NAME} removed ${found.length === 1 ? "a secret" : `${found.length} secrets`} from this message before it reached you. Tell the person, in their language, that secrets never go in a chat, and that they can keep it safely in Settings > Keychain, where you can use it by name without seeing it.)`;
 }

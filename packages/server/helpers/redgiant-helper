@@ -819,7 +819,7 @@ EOF
 
   reboot)
     [ $# -eq 0 ] || fail bad_request
-    systemd-run --on-active=5 --unit=redgiant-reboot --description="RedGiant OS: restart asked from RedGiant" \
+    systemd-run --on-active=5 --unit=redgiant-reboot --description="Rasgeth OS: restart asked from Rasgeth" \
       /usr/bin/systemctl reboot >/dev/null 2>&1 || fail reboot_failed
     ok ',"in":5'
     ;;

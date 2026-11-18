@@ -1,3 +1,5 @@
+import { PRODUCT_NAME } from "./brand.js";
+
 /**
  * A disk for backups when RedGiant runs in a container (p3.7.2): the container cannot mount the
  * host's disks, so the host mounts it and passes a folder in. These are the steps the page shows,
@@ -78,7 +80,7 @@ export function hostMountGuide(i: HostGuideInput): HostGuide {
     `mkdir -p ${disk}`,
     `mount ${device} ${disk}`,
     `echo "UUID=$(blkid -s UUID -o value ${device}) ${disk} auto defaults,nofail 0 2" >> /etc/fstab`,
-    "# 2. RedGiant's own folder on it (the rest of the disk stays out of the container)",
+    `# 2. ${PRODUCT_NAME}'s own folder on it (the rest of the disk stays out of the container)`,
     `mkdir -p ${hostDir}`,
   ];
   if (i.kind === "proxmox") {
@@ -97,7 +99,7 @@ export function hostMountGuide(i: HostGuideInput): HostGuide {
       `      - ${hostDir}:${target}`,
     );
   } else {
-    lines.push(`# 3. Make ${hostDir} appear inside RedGiant at ${target} (a bind mount)`);
+    lines.push(`# 3. Make ${hostDir} appear inside ${PRODUCT_NAME} at ${target} (a bind mount)`);
   }
   return { ok: true, lines, hostDir, target, placeholders };
 }

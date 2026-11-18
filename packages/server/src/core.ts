@@ -91,6 +91,7 @@ import {
   nativePaths,
   notedText,
   ownWords,
+  PRODUCT_NAME,
   ProjectMaxAgents,
   type Recipe,
   type RefineEstimate,
@@ -292,9 +293,11 @@ import { kindLabel, PromptRefiner, RefineError, type RefineJob } from "./prompt-
 import {
   defaultTemplate,
   expandPrompt,
+  ownPrompt,
   type PromptNames,
   type PromptView,
   placeholdersOf,
+  previousTemplates,
   toPlaceholders,
 } from "./prompts.js";
 import { migratePush, type PushOptions, PushService } from "./push/service.js";
@@ -346,9 +349,9 @@ const STARTED_BY: Partial<Record<RunContext["trigger"], string>> = {
 };
 
 const INSTALLS: Record<string, string> = {
-  os: "RedGiant OS",
+  os: `${PRODUCT_NAME} OS`,
   docker: "Docker",
-  windows: "Windows (RedGiant.exe)",
+  windows: `Windows (${PRODUCT_NAME}.exe)`,
   mac: "the Mac app",
   source: "from the source code",
 };
@@ -358,7 +361,7 @@ const INSTALLS: Record<string, string> = {
  * packages' own numbers), with how it is installed and what the last check found (platform_status).
  */
 export function versionLine(u: UpdateStatus | undefined): string {
-  if (!u) return "RedGiant: version unknown (no update watcher)";
+  if (!u) return `${PRODUCT_NAME}: version unknown (no update watcher)`;
   const how = INSTALLS[u.install] ?? u.install;
   const latest =
     u.latest && u.latest !== u.installed
@@ -366,7 +369,7 @@ export function versionLine(u: UpdateStatus | undefined): string {
       : u.latest
         ? "; up to date"
         : "";
-  return `RedGiant: version ${u.installed ?? "unknown (running from the source)"}, installed as ${how}${latest}`;
+  return `${PRODUCT_NAME}: version ${u.installed ?? "unknown (running from the source)"}, installed as ${how}${latest}`;
 }
 
 /** What starts a recipe, in a few words (platform_status). */
@@ -696,7 +699,7 @@ const PRIORITY: Record<AgentRecord["kind"], number> = {
 function whereYouRun(model: ModelSpec): string {
   const where =
     model.provider === "local"
-      ? "on this computer, through RedGiant's local engine (llama.cpp): nothing you read or write leaves it"
+      ? `on this computer, through ${PRODUCT_NAME}'s local engine (llama.cpp): nothing you read or write leaves it`
       : model.provider.endsWith("-subscription")
         ? `through the person's ${model.provider.replace("-subscription", "")} subscription`
         : `through ${model.provider}'s API`;
@@ -1277,7 +1280,7 @@ export class RedGiantCore implements OrchestrationHost {
       // A mandatory update (G36.19) holds every run, each written down with the reason.
       held: () =>
         this.updates?.held
-          ? `Not run: RedGiant must be updated${this.updates.status().latest ? ` to ${this.updates.status().latest}` : ""} first (automations wait until then).`
+          ? `Not run: ${PRODUCT_NAME} must be updated${this.updates.status().latest ? ` to ${this.updates.status().latest}` : ""} first (automations wait until then).`
           : null,
     });
     this.policies = new PolicyStore(o.db);
@@ -3130,7 +3133,8 @@ export class RedGiantCore implements OrchestrationHost {
     const demigod = this.registry
       .list({ ownerId, activeOnly: true })
       .find((a) => a.kind === "demigod");
-    if (!demigod) throw new Error("Demi-God is not set up yet: create it under God in RedGiant.");
+    if (!demigod)
+      throw new Error(`Demi-God is not set up yet: create it under God in ${PRODUCT_NAME}.`);
     const sid = await this.workSession(demigod);
     // What Demi-God and God send to the person goes to Telegram too (G25.2).
     this.telegramSessions.add(sid);
@@ -3263,7 +3267,7 @@ export class RedGiantCore implements OrchestrationHost {
    * the placeholders. Read when a conversation starts; the conversation keeps it (cache).
    */
   systemFor(agent: AgentRecord): string {
-    return expandPrompt(agent.systemPrompt || this.templateFor(agent), this.promptNames(agent));
+    return expandPrompt(ownPrompt(agent) ?? this.templateFor(agent), this.promptNames(agent));
   }
 
   /** The names an agent's instructions may mention, as they are now. */
@@ -3290,8 +3294,9 @@ export class RedGiantCore implements OrchestrationHost {
       return this.chatPrompt(agent.ownerId);
     const names = this.promptNames(agent);
     const defaultText = expandPrompt(this.templateFor(agent), names);
-    return agent.systemPrompt
-      ? { text: expandPrompt(agent.systemPrompt, names), isDefault: false, defaultText }
+    const own = ownPrompt(agent);
+    return own
+      ? { text: expandPrompt(own, names), isDefault: false, defaultText }
       : { text: defaultText, isDefault: true, defaultText };
   }
 
@@ -3302,7 +3307,12 @@ export class RedGiantCore implements OrchestrationHost {
   async setPrompt(agent: AgentRecord, text: string | null): Promise<PromptView> {
     if ((await this.chatAgentIdOf(agent.ownerId)) === agent.id)
       return this.setChatPrompt(agent.ownerId, text);
-    const kept = this.keptPrompt(text, this.templateFor(agent), this.promptNames(agent));
+    const kept = this.keptPrompt(
+      text,
+      this.templateFor(agent),
+      this.promptNames(agent),
+      previousTemplates(agent.kind),
+    );
     const updated = await this.registry.configure(
       { type: "human", ownerId: agent.ownerId },
       agent.id,
@@ -3345,15 +3355,26 @@ export class RedGiantCore implements OrchestrationHost {
   }
 
   /** What is kept of a text: null for the built-in one, the names as placeholders otherwise. */
-  private keptPrompt(text: string | null, template: string, names: PromptNames): string | null {
+  private keptPrompt(
+    text: string | null,
+    template: string,
+    names: PromptNames,
+    previous: readonly string[] = [],
+  ): string | null {
     const t = text?.trim() ?? "";
-    if (!t || t === expandPrompt(template, names).trim()) return null;
+    // The built-in text, of this version or an older one (3.9.0: the product's old name).
+    if (!t || [template, ...previous].some((p) => t === expandPrompt(p, names).trim())) return null;
     return toPlaceholders(t, names, new Set([...placeholdersOf(template), "god", "demigod"]));
   }
 
   /** A text as it is kept, for an agent (the setup wizard's God prompt). */
   keptPromptFor(agent: AgentRecord, text: string | null): string | null {
-    return this.keptPrompt(text, this.templateFor(agent), this.promptNames(agent));
+    return this.keptPrompt(
+      text,
+      this.templateFor(agent),
+      this.promptNames(agent),
+      previousTemplates(agent.kind),
+    );
   }
 
   get providers(): ProviderRegistry {
@@ -4413,9 +4434,9 @@ export class RedGiantCore implements OrchestrationHost {
       def: {
         name: "publish_board",
         description: [
-          "Publish a BOARD: 1 to 8 design variants (HTML pages) side by side on a page of RedGiant, for the person to look at, choose one or comment on.",
+          `Publish a BOARD: 1 to 8 design variants (HTML pages) side by side on a page of ${PRODUCT_NAME}, for the person to look at, choose one or comment on.`,
           "Use it when they ask for options, proposals, variants or mockups to compare (interfaces, pages, graphics), instead of describing them in words.",
-          "Each variant is a whole, self-contained page: CSS and JS inside the page, pictures as data: URIs (your workspace's files cannot be seen from there). It runs isolated, without internet: nothing loads from other sites (no CDN, no web fonts, no APIs), no cookies, no access to RedGiant.",
+          `Each variant is a whole, self-contained page: CSS and JS inside the page, pictures as data: URIs (your workspace's files cannot be seen from there). It runs isolated, without internet: nothing loads from other sites (no CDN, no web fonts, no APIs), no cookies, no access to ${PRODUCT_NAME}.`,
           "Give each variant a short title and, if useful, a note with the idea behind it. For big pages write them to a file and pass `file` (the path of an .html in your workspace) instead of `html`.",
           "After publishing do NOT ask the person to choose in the chat and do not wait: their choices and comments will come to you as messages starting with «[Tavola «title»]» (or «[Board «title»]»).",
         ].join(" "),
@@ -4503,14 +4524,14 @@ export class RedGiantCore implements OrchestrationHost {
           `${head}\n${
             url ??
             (it
-              ? "La trovi in RedGiant, nella conversazione. Per aprirla dal telefono serve l'accesso da fuori casa (Impostazioni)."
-              : "Open it in RedGiant, in the conversation. To open it from the phone, set up access from outside home (Settings).")
+              ? `La trovi in ${PRODUCT_NAME}, nella conversazione. Per aprirla dal telefono serve l'accesso da fuori casa (Impostazioni).`
+              : `Open it in ${PRODUCT_NAME}, in the conversation. To open it from the phone, set up access from outside home (Settings).`)
           }`,
         ).catch(() => {});
         return [
           `Board published: «${i.title}»`,
           `${variants.length} ${variants.length === 1 ? "variant" : "variants"}: ${list}`,
-          `The person sees it in RedGiant. Their choices and comments will come to you as messages «[${it ? "Tavola" : "Board"} «…»]»: do not ask them to choose in the chat.`,
+          `The person sees it in ${PRODUCT_NAME}. Their choices and comments will come to you as messages «[${it ? "Tavola" : "Board"} «…»]»: do not ask them to choose in the chat.`,
         ].join("\n");
       },
     } as Tool;
@@ -6540,7 +6561,7 @@ export class RedGiantCore implements OrchestrationHost {
       try {
         if (gone) throw new Error("its agent or project is no longer active");
         const text = p.images
-          ? `${p.text}\n\n[RedGiant restarted while this waited: its ${p.images} image(s) were not kept.]`
+          ? `${p.text}\n\n[${PRODUCT_NAME} restarted while this waited: its ${p.images} image(s) were not kept.]`
           : p.text;
         const { done } = await this.send(e.ownerId, e.sessionId, text, {
           queue: true,
@@ -7298,9 +7319,13 @@ export class RedGiantCore implements OrchestrationHost {
     const dir = (o.dir?.trim() || slug(child.name)).replace(/^\/+|\/+$/g, "");
     const name = o.name?.trim() || child.name;
     const git = (cwd: string, args: string[]) =>
-      runFile("git", ["-c", "user.name=RedGiant", "-c", "user.email=redgiant@localhost", ...args], {
-        cwd,
-      });
+      runFile(
+        "git",
+        ["-c", `user.name=${PRODUCT_NAME}`, "-c", "user.email=rasgeth@localhost", ...args],
+        {
+          cwd,
+        },
+      );
     // Both repositories with everything committed.
     for (const p of [parent.path, child.path]) {
       await git(p, ["init", "-q"]).catch(() => {});
@@ -7753,7 +7778,7 @@ export class RedGiantCore implements OrchestrationHost {
             t.sessionId,
             attempt === 0
               ? resumeNote(t)
-              : "[RedGiant: the resume after the restart failed; trying again.]",
+              : `[${PRODUCT_NAME}: the resume after the restart failed; trying again.]`,
             { from: "redgiant", queue: true },
           );
           result = await done;

@@ -1,7 +1,7 @@
 {
   "name": "@redgiant/board",
   "version": "0.1.0",
-  "description": "RedGiant bulletin board: a forum where agents (and the user) coordinate, with search, duplicates, task-driven status and summaries.",
+  "description": "Rasgeth bulletin board: a forum where agents (and the user) coordinate, with search, duplicates, task-driven status and summaries.",
   "license": "MIT",
   "type": "module",
   "exports": {

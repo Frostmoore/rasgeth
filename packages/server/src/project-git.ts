@@ -10,6 +10,7 @@
 import { execFile } from "node:child_process";
 import { readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 
 /** One git run, without a shell; rejects with ENOENT when there is no git at all. */
 export type RunGit = (
@@ -57,7 +58,7 @@ export function safeDirectoryPath(path: string): string {
   return /^[A-Za-z]:$/.test(p) ? `${p}/` : p || "/";
 }
 
-const IDENTITY = ["-c", "user.name=RedGiant", "-c", "user.email=redgiant@localhost"];
+const IDENTITY = ["-c", `user.name=${PRODUCT_NAME}`, "-c", "user.email=rasgeth@localhost"];
 const dubious = (s: string) => /dubious ownership|safe\.directory/i.test(s);
 
 /**
@@ -84,7 +85,7 @@ export async function initProjectRepo(path: string, run: RunGit = runGit): Promi
         git: "missing",
         error:
           process.platform === "win32"
-            ? "git is not installed on this computer yet (RedGiant downloads Git for Windows by itself at start)"
+            ? `git is not installed on this computer yet (${PRODUCT_NAME} downloads Git for Windows by itself at start)`
             : "git is not installed on this computer",
       };
     return { git: "failed", error: e.message };

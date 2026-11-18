@@ -7,6 +7,7 @@ import { join, relative } from "node:path";
 import { promisify } from "node:util";
 import type { Tool } from "@redgiant/agent";
 import type { AgentRecord } from "@redgiant/hierarchy";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { type ReleaseRequest, readRelease, requestFile, writeJson } from "@redgiant/supervisor";
 import { z } from "zod";
 import type { PlatformChange, PlatformChanges } from "./platform.js";
@@ -288,7 +289,7 @@ export class CodeChanges {
     const { c, s } = await this.load(ownerId, id);
     if (!this.o.restart)
       throw new CodeChangeError(
-        "RedGiant is not running under the supervisor (redgiant-supervisor): a change cannot be promoted safely",
+        `${PRODUCT_NAME} is not running under the supervisor (redgiant-supervisor): a change cannot be promoted safely`,
       );
     const head = await this.git(s.path, "rev-parse", "HEAD");
     if (c.stage !== "tested" || !s.passed || s.commit !== head)
@@ -394,7 +395,7 @@ export class CodeChanges {
         await this.git(this.o.dir, "worktree", "remove", "--force", s.path).catch(() => {});
         await this.notify(h.ownerId, `Platform change live: ${c.change} (${h.commit.slice(0, 8)})`);
         tellGod(
-          `Your platform change ${c.id} ("${c.change}") is live: RedGiant restarted on version ${h.commit.slice(0, 8)}, which interrupted your previous turn. Check that the change works, then give the user the result they asked for.`,
+          `Your platform change ${c.id} ("${c.change}") is live: ${PRODUCT_NAME} restarted on version ${h.commit.slice(0, 8)}, which interrupted your previous turn. Check that the change works, then give the user the result they asked for.`,
         );
       } else {
         await this.changes.record(h.ownerId, {
@@ -427,8 +428,7 @@ export function platformCodeTools(self: AgentRecord, code: CodeChanges | undefin
     {
       def: {
         name: "platform_code_start",
-        description:
-          "Start a change to RedGiant's own source code. Returns a directory in your workspace (a git worktree of the source) where you edit files with your usual tools; then call platform_code_test.",
+        description: `Start a change to ${PRODUCT_NAME}'s own source code. Returns a directory in your workspace (a git worktree of the source) where you edit files with your usual tools; then call platform_code_test.`,
         inputSchema: {
           type: "object",
           properties: {
@@ -446,8 +446,7 @@ export function platformCodeTools(self: AgentRecord, code: CodeChanges | undefin
     {
       def: {
         name: "platform_code_test",
-        description:
-          "Commit the change, then install, build, run the test suite and start a trial copy of RedGiant from it (throwaway database, no secrets) that must answer its health check. Runs the code you wrote: the human approves it.",
+        description: `Commit the change, then install, build, run the test suite and start a trial copy of ${PRODUCT_NAME} from it (throwaway database, no secrets) that must answer its health check. Runs the code you wrote: the human approves it.`,
         inputSchema: {
           type: "object",
           properties: { change_id: { type: "string" } },
@@ -457,14 +456,13 @@ export function platformCodeTools(self: AgentRecord, code: CodeChanges | undefin
       schema: z.object({ change_id: z.string() }),
       async run({ change_id }) {
         const r = await code.test(owner, by, change_id);
-        return `${r.passed ? "PASSED" : "FAILED"}: ${change_id}\n${r.detail}${r.passed ? `\nPromote it with platform_code_promote${code.supervised ? "" : " (not possible here: RedGiant is not supervised)"}.` : ""}`;
+        return `${r.passed ? "PASSED" : "FAILED"}: ${change_id}\n${r.detail}${r.passed ? `\nPromote it with platform_code_promote${code.supervised ? "" : ` (not possible here: ${PRODUCT_NAME} is not supervised)`}.` : ""}`;
       },
     } as Tool,
     {
       def: {
         name: "platform_code_promote",
-        description:
-          "Put a tested change live: it is merged and RedGiant restarts on it (this conversation is interrupted). If the new version does not come up healthy the supervisor puts the previous one back by itself and the user is told.",
+        description: `Put a tested change live: it is merged and ${PRODUCT_NAME} restarts on it (this conversation is interrupted). If the new version does not come up healthy the supervisor puts the previous one back by itself and the user is told.`,
         inputSchema: {
           type: "object",
           properties: { change_id: { type: "string" } },
@@ -474,7 +472,7 @@ export function platformCodeTools(self: AgentRecord, code: CodeChanges | undefin
       schema: z.object({ change_id: z.string() }),
       async run({ change_id }, ctx) {
         const commit = await code.promote(owner, by, change_id, ctx.sessionId);
-        return `Merged as ${commit.slice(0, 8)}. RedGiant restarts on it in a moment; the outcome will be in platform_changes.`;
+        return `Merged as ${commit.slice(0, 8)}. ${PRODUCT_NAME} restarts on it in a moment; the outcome will be in platform_changes.`;
       },
     } as Tool,
     {

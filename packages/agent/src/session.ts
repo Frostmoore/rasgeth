@@ -11,6 +11,7 @@ import {
   type MessageQuote,
   type ModelSpec,
   notedText,
+  PRODUCT_NAME,
   quotedText,
   type StopReason,
   UNATTENDED_MAX_TURNS,
@@ -52,8 +53,7 @@ export interface PermissionDecision {
 }
 
 /** Told to an engine whose earlier try was cancelled after it had started working (3.5.4). */
-const STALL_GO_ON =
-  "[RedGiant: the provider stopped answering and your request was cancelled. Go on from where you were; the tool results you already have are real.]";
+const STALL_GO_ON = `[${PRODUCT_NAME}: the provider stopped answering and your request was cancelled. Go on from where you were; the tool results you already have are real.]`;
 
 export interface AgentSessionOptions {
   /**
@@ -594,8 +594,7 @@ export class AgentSession {
    * with an error, not run.
    */
   private async closingSummary(signal: AbortSignal | undefined): Promise<Completion | undefined> {
-    const text =
-      "[RedGiant: you reached the limit of steps for one message. Do not call any more tools. In a few lines, tell the person what you did, what is left, and what you would do next: they can tell you to go on.]";
+    const text = `[${PRODUCT_NAME}: you reached the limit of steps for one message. Do not call any more tools. In a few lines, tell the person what you did, what is left, and what you would do next: they can tell you to go on.]`;
     // It joins the last results' message, as the person's own words in the middle of work do.
     const results = this.history.at(-1)?.message;
     if (results?.role !== "user") return undefined;
@@ -1002,7 +1001,7 @@ export class AgentSession {
       this.repeats =
         key === this.repeats.key ? { key, count: this.repeats.count + 1 } : { key, count: 1 };
       if (this.repeats.count >= REPEAT_NOTE_AFTER)
-        r.content = `${r.content}\n\n[RedGiant: this is the ${this.repeats.count}th time in a row you make exactly this call and get exactly this result. Repeating it will not change anything: try a different approach, or stop and tell the person what blocks you.]`;
+        r.content = `${r.content}\n\n[${PRODUCT_NAME}: this is the ${this.repeats.count}th time in a row you make exactly this call and get exactly this result. Repeating it will not change anything: try a different approach, or stop and tell the person what blocks you.]`;
       const reminder = this.todoReminder(calls[i]?.name, calls[i]?.input, r);
       const images = "images" in r ? r.images : undefined;
       const e = await this.record({

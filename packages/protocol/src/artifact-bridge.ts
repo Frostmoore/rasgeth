@@ -7,6 +7,7 @@
 // the page checks who sent it (`event.source`) and the shape here, then forwards it to the server
 // over its WebSocket with the artifact the frame shows; the answer goes back to that frame only.
 import { z } from "zod";
+import { PRODUCT_NAME } from "./brand.js";
 
 /** The most text an artifact keeps (`storage`), all its keys and values together. */
 export const ARTIFACT_STORAGE_MAX = 5 * 1024 * 1024;
@@ -174,8 +175,8 @@ export function capabilitySentence(lang: string, capability: string, agent?: str
       : `read the files in the project's folder ${c.dir} (read only)`;
   if (c.kind === "storage")
     return it
-      ? "tenere dati suoi su RedGiant (solo testo, fino a 5 MB)"
-      : "keep data of its own on RedGiant (text only, up to 5 MB)";
+      ? `tenere dati suoi su ${PRODUCT_NAME} (solo testo, fino a 5 MB)`
+      : `keep data of its own on ${PRODUCT_NAME} (text only, up to 5 MB)`;
   const who = agent
     ? it
       ? `«${agent}»`

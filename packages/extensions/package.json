@@ -1,7 +1,7 @@
 {
   "name": "@redgiant/extensions",
   "version": "0.1.0",
-  "description": "RedGiant extensions: MCP servers as tools, skills loaded on demand, custom tools that run in the sandbox, and a builder where agents propose them for approval.",
+  "description": "Rasgeth extensions: MCP servers as tools, skills loaded on demand, custom tools that run in the sandbox, and a builder where agents propose them for approval.",
   "license": "MIT",
   "type": "module",
   "exports": {

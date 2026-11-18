@@ -3,6 +3,7 @@
 // Upload an app): a manifest with the bot's App ID and two icons drawn here, nothing to edit.
 
 import { crc32, deflateSync } from "node:zlib";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 
 export interface TeamsAppOptions {
   appId: string;
@@ -112,7 +113,7 @@ export function zipStore(files: { name: string; data: Buffer }[]): Buffer {
 }
 
 export function teamsManifest(o: TeamsAppOptions): Record<string, unknown> {
-  const name = (o.name ?? "RedGiant").slice(0, 30);
+  const name = (o.name ?? PRODUCT_NAME).slice(0, 30);
   return {
     $schema:
       "https://developer.microsoft.com/en-us/json-schemas/teams/v1.17/MicrosoftTeams.schema.json",
@@ -120,15 +121,15 @@ export function teamsManifest(o: TeamsAppOptions): Record<string, unknown> {
     version: o.version ?? "1.0.0",
     id: o.appId,
     developer: {
-      name: "RedGiant",
+      name: PRODUCT_NAME,
       websiteUrl: "https://github.com/Frostmoore/redgiant2",
       privacyUrl: "https://github.com/Frostmoore/redgiant2",
       termsOfUseUrl: "https://github.com/Frostmoore/redgiant2",
     },
     name: { short: name, full: `${name} (Demi-God)` },
     description: {
-      short: "Your RedGiant agents in Teams",
-      full: "Talk to Demi-God, the RedGiant agent on your own computer: messages, files, approvals and questions.",
+      short: `Your ${PRODUCT_NAME} agents in Teams`,
+      full: `Talk to Demi-God, the ${PRODUCT_NAME} agent on your own computer: messages, files, approvals and questions.`,
     },
     icons: { color: "color.png", outline: "outline.png" },
     accentColor: "#C62828",

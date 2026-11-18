@@ -11,6 +11,7 @@ import type {
   RefineEstimate,
   RefineResult,
 } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import {
   type Completion,
   complete,
@@ -49,14 +50,14 @@ export class RefineError extends Error {
 }
 
 /** Stable, so the request is cacheable; the variable parts go in the message. */
-export const REFINER_SYSTEM = `You revise the instructions (system prompts) of AI agents in RedGiant, a platform where a person runs a hierarchy of agents. Follow the good practice of prompt writing:
+export const REFINER_SYSTEM = `You revise the instructions (system prompts) of AI agents in ${PRODUCT_NAME}, a platform where a person runs a hierarchy of agents. Follow the good practice of prompt writing:
 - Clear, direct instructions in the second person ("You ..."), saying what to do rather than only what to avoid; give the reason when it helps the agent judge edge cases.
 - No contradictions, no repetitions, no filler; keep one consistent tone and one language.
 - Keep the agent's identity, job and limits; organise the text so the most important rules come first. Short paragraphs; lists only where they help.
 - Do not invent facts, tools, services or rules the text and the settings do not give.
 - Placeholders in braces ({god}, {demigod}, {name}, {role}) are names filled in later: keep every one exactly as written, never replace it with a name and never add new kinds.
 - Tool names (words like ask_god, delegate, create_project, propose_extension) are functional: keep every one that is there, spelled exactly, with what it is for.
-- When the text is based on RedGiant's built-in instructions, keep every functional part of them: the tools and when to use them, how work is handed over, and every safety rule (what waits for the person's approval, what must be verified, what the agent must not do). You may reword them, never remove or weaken them.
+- When the text is based on ${PRODUCT_NAME}'s built-in instructions, keep every functional part of them: the tools and when to use them, how work is handed over, and every safety rule (what waits for the person's approval, what must be verified, what the agent must not do). You may reword them, never remove or weaken them.
 - If the person asks for something that would remove a functional part or a safety rule, keep that part and say so in the explanation.
 
 Answer in exactly this form, nothing before or after:
@@ -74,7 +75,7 @@ export function refineMessage(job: RefineJob): string {
   const out: string[] = [];
   if (job.goal === "draft")
     out.push(
-      `Write the instructions for ${job.what}. Start from RedGiant's built-in instructions below and adapt them to the agent's job and settings: say what it is for, how it should work and what it should pay attention to, as the person described it. Keep it compact.`,
+      `Write the instructions for ${job.what}. Start from ${PRODUCT_NAME}'s built-in instructions below and adapt them to the agent's job and settings: say what it is for, how it should work and what it should pay attention to, as the person described it. Keep it compact.`,
     );
   else
     out.push(
@@ -83,7 +84,7 @@ export function refineMessage(job: RefineJob): string {
   out.push(
     job.keepLanguage
       ? "Keep the instructions in the language they are written in."
-      : "Write the instructions in English, as all of RedGiant's agent instructions are, whatever language the person writes in.",
+      : `Write the instructions in English, as all of ${PRODUCT_NAME}'s agent instructions are, whatever language the person writes in.`,
   );
   out.push(`Write the explanation in ${LANG_NAME[job.lang]}.`);
   if (job.builtIn) out.push(`<built_in>\n${job.builtIn}\n</built_in>`);
@@ -274,7 +275,7 @@ export class PromptRefiner {
 export function kindLabel(kind: AgentKind): string {
   switch (kind) {
     case "god":
-      return "the main orchestrator (God) of a RedGiant installation";
+      return `the main orchestrator (God) of a ${PRODUCT_NAME} installation`;
     case "demigod":
       return "the person's spokesperson on Telegram";
     case "orchestrator":

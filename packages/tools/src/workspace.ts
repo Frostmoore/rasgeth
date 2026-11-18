@@ -11,6 +11,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { delimiter, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 
 export interface ExecResult {
   stdout: string;
@@ -735,8 +736,8 @@ export class LocalWorkspace implements Workspace {
           finish(
             exited ? exitCode : null,
             exited
-              ? "[RedGiant: the command was stopped; something it started still held its output open and was left behind.]"
-              : `[RedGiant: the command was stopped but did not end (process ${child.pid ?? "unknown"}); it may still be running.]`,
+              ? `[${PRODUCT_NAME}: the command was stopped; something it started still held its output open and was left behind.]`
+              : `[${PRODUCT_NAME}: the command was stopped but did not end (process ${child.pid ?? "unknown"}); it may still be running.]`,
           );
         }, this.stopGraceMs);
       };

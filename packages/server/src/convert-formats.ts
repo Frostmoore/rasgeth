@@ -4,6 +4,8 @@
 // cannot show) is converted into an open one beside the original. This file only knows formats:
 // what a file is (from its name and first bytes) and what it can become. Pure, no I/O.
 
+import { PRODUCT_NAME } from "@redgiant/protocol";
+
 /** The program that makes a target: our own code, or one downloaded when needed. */
 export type Via = "js" | "libreoffice" | "scribus" | "blender" | "ghostscript" | "ffmpeg";
 
@@ -489,7 +491,7 @@ const FORMATS: Record<string, Entry> = {
         ...t(
           "odg",
           "js",
-          "RedGiant's own import (when Scribus cannot be had): pages, frames, shapes and pictures at their exact place and size, text with its formatting, colours, layers",
+          `${PRODUCT_NAME}'s own import (when Scribus cannot be had): pages, frames, shapes and pictures at their exact place and size, text with its formatting, colours, layers`,
         ),
         unless: "sla",
       },
@@ -517,8 +519,7 @@ const FORMATS: Record<string, Entry> = {
       name: "Adobe InDesign",
       alt: "idml",
       export: ["idml", "pdf"],
-      message:
-        "No free program can read an INDD. It needs InDesign, or the IDML exported by whoever sent it (InDesign: File > Export > InDesign Markup); with the IDML, RedGiant keeps the layout (Scribus or ODG).",
+      message: `No free program can read an INDD. It needs InDesign, or the IDML exported by whoever sent it (InDesign: File > Export > InDesign Markup); with the IDML, ${PRODUCT_NAME} keeps the layout (Scribus or ODG).`,
     },
     note: "Closed and unreadable by free programs: only its stored preview. Ask for the IDML (or a PDF).",
   },
@@ -532,7 +533,7 @@ const FORMATS: Record<string, Entry> = {
       t(
         "svg",
         "js",
-        "RedGiant's own reading of the Sketch file: every artboard at its size, shapes, paths, text, colours, borders, opacity and images at their place; shadows, blurs, gradients beyond their first colour and symbol overrides are simplified",
+        `${PRODUCT_NAME}'s own reading of the Sketch file: every artboard at its size, shapes, paths, text, colours, borders, opacity and images at their place; shadows, blurs, gradients beyond their first colour and symbol overrides are simplified`,
       ),
       preview("png", "the last page you looked at in Sketch"),
       t("txt", "js", "only the pages, artboards, layer names and texts: no shapes or styles"),
@@ -550,8 +551,7 @@ const FORMATS: Record<string, Entry> = {
       name: "Figma",
       url: "https://www.figma.com",
       export: ["svg", "pdf"],
-      message:
-        "A .fig copy cannot be read. Give its Figma link (convert_file with url): RedGiant exports every frame as SVG or PDF through Figma's API, with a token from the Keychain.",
+      message: `A .fig copy cannot be read. Give its Figma link (convert_file with url): ${PRODUCT_NAME} exports every frame as SVG or PDF through Figma's API, with a token from the Keychain.`,
     },
   },
   xd: {

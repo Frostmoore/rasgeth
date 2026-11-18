@@ -36,6 +36,7 @@ import {
   type LeakableSecret,
   leakableSecrets,
   nativePath,
+  PRODUCT_NAME,
   type Simple,
   simpleCommands,
   substitutions,
@@ -428,9 +429,13 @@ function textRules(text: string, add: Add) {
         target: short(re.exec(text)?.[0] ?? ""),
       });
   if (PROTECTED_SQL.test(text))
-    add("critical-protections", "changes RedGiant's own settings or history in its database", {
-      action: "protect-db",
-    });
+    add(
+      "critical-protections",
+      `changes ${PRODUCT_NAME}'s own settings or history in its database`,
+      {
+        action: "protect-db",
+      },
+    );
   if (PAYMENT_HTTP.test(text))
     add("critical-payment", "makes a payment through a payment service", {
       action: "pay-service",
@@ -627,7 +632,7 @@ function deleteTarget(l: Loc, recursive: boolean, w: Where, add: Add, how: strin
   if (isProtected(l, w))
     return add(
       "critical-protections",
-      `${how} RedGiant's own files: ${showPath(l)}`,
+      `${how} ${PRODUCT_NAME}'s own files: ${showPath(l)}`,
       say("protect-delete", showPath(l)),
     );
   // A path of variables only matters when it reaches into folders: `rm -f $X/*` with $X empty
@@ -703,7 +708,7 @@ function writeTarget(l: Loc | undefined, w: Where, add: Add, how = "changes") {
       target: showPath(l),
     });
   else if (isProtected(l, w))
-    add("critical-protections", `${how} RedGiant's own files: ${showPath(l)}`, {
+    add("critical-protections", `${how} ${PRODUCT_NAME}'s own files: ${showPath(l)}`, {
       action: "protect-files",
       target: showPath(l),
     });
@@ -1103,7 +1108,7 @@ function artifactReadRules(input: Record<string, unknown>, w: Where, add: Add) {
     /(^|[\\/])\.git([\\/]|$)/.test(p) ||
     (l !== undefined && isProtected(l, w));
   if (secret)
-    add("critical-secret", `an artifact reads ${p}, a secret or RedGiant's own file`, {
+    add("critical-secret", `an artifact reads ${p}, a secret or ${PRODUCT_NAME}'s own file`, {
       action: "secret-artifact-read",
       target: p,
     });
@@ -1285,9 +1290,9 @@ function outboundRules(call: ToolCallInfo, input: unknown, w: Where, add: Add) {
 
 /** The tools that change the platform's protections themselves. */
 const PROTECTION_TOOLS: Record<string, [string, CriticalAction]> = {
-  platform_policy: ["changes RedGiant's permission rules", "protect-policy"],
+  platform_policy: [`changes ${PRODUCT_NAME}'s permission rules`, "protect-policy"],
   platform_code_promote: [
-    "puts new RedGiant code live: it could switch off its protections",
+    `puts new ${PRODUCT_NAME} code live: it could switch off its protections`,
     "protect-code",
   ],
 };

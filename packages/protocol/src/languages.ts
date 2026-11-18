@@ -1,3 +1,5 @@
+import { PRODUCT_NAME } from "./brand.js";
+
 /**
  * The languages the agents can speak to the person (G33.5): apart from the interface's (only
  * Italian and English are translated), any of the most spoken in the world. Each has a BCP-47
@@ -164,6 +166,6 @@ export function replyLanguageLine(code: string | null | undefined): string {
   if (!l) return "";
   const line = `## Language\nReply to the person in ${l.en} (${l.native}), whatever language these instructions are written in, unless they ask you for another.`;
   return l.address
-    ? `${line} Speak to them as one person, informally, as RedGiant's pages do: «${l.address}», never a plural or formal form of address.`
+    ? `${line} Speak to them as one person, informally, as ${PRODUCT_NAME}'s pages do: «${l.address}», never a plural or formal form of address.`
     : line;
 }

@@ -1,6 +1,7 @@
 import { posix, win32 } from "node:path";
 import type * as acp from "@agentclientprotocol/sdk";
 import type { ImagePart } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 
 /** One of an external agent's actions, as RedGiant's permission rules read it. */
 export interface MappedCall {
@@ -254,14 +255,14 @@ export function completionOf(
 /** What an external agent reads before its first task (it keeps its own instructions). */
 export function workerPrelude(name: string, closesTasks: boolean): string {
   return [
-    `You work for RedGiant as "${name}", an agent of the project in this folder. ` +
-      "RedGiant's person and agents see what you do; your file and command requests are checked by RedGiant.",
+    `You work for ${PRODUCT_NAME} as "${name}", an agent of the project in this folder. ` +
+      `${PRODUCT_NAME}'s person and agents see what you do; your file and command requests are checked by ${PRODUCT_NAME}.`,
     closesTasks
       ? "When a task is done, verify the result yourself, then end your answer with one line, exactly:\n" +
         `${COMPLETE_MARK} {"verify_command": "<a shell command that exits 0 only if the result is right>"}\n` +
         "or, only if the result truly cannot be tested:\n" +
         `${COMPLETE_MARK} {"not_testable_reason": "<why, at least 20 characters>"}\n` +
-        "RedGiant runs the command in this folder and closes the task when it exits 0."
+        `${PRODUCT_NAME} runs the command in this folder and closes the task when it exits 0.`
       : "",
   ]
     .filter(Boolean)

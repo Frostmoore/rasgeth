@@ -5,6 +5,7 @@
 
 import { readFile, rename, stat, writeFile } from "node:fs/promises";
 import type { Tool, ToolContext } from "@redgiant/agent";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { applyEdit, LocalWorkspace, type ShowFileHost, type Workspace } from "@redgiant/tools";
 import { strFromU8, strToU8 } from "fflate";
 import { z } from "zod";
@@ -145,7 +146,7 @@ export function convertFileTool(ws: Workspace, d: ConvertToolDeps): Tool {
       try {
         if (i.check) {
           const r = await d.converter.inspect(ws.root, i.path);
-          if (!r.format) return `RedGiant does not know the format of ${i.path}.`;
+          if (!r.format) return `${PRODUCT_NAME} does not know the format of ${i.path}.`;
           return [
             `${i.path}: ${r.format.name}, ${r.format.open ? "open" : "closed"} format${r.format.browser ? "" : ", not shown by a browser as it is"}.`,
             r.format.note,

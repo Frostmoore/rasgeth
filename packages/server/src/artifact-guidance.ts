@@ -3,6 +3,8 @@
 // instructions of every agent that can show files; how to write a widget or an artifact (header,
 // libraries, runtime) is the Canvas engine's help, not this rule.
 
+import { PRODUCT_NAME } from "@redgiant/protocol";
+
 /** The rule, short: it is read on every conversation's first request. */
 export const ARTIFACT_GUIDANCE = `## Choosing the form of an answer
 - **Text** when the answer is just read: "how long should the window stay open?" gets two lines.
@@ -13,7 +15,7 @@ export const ARTIFACT_GUIDANCE = `## Choosing the form of an answer
 In short: text to tell, widget to try on the spot, artifact to use, board to choose, project to last. Widgets and artifacts install nothing, never go online and have no server: if one of those is needed, it is a project. An artifact may ask the person for three things through its bridge: ask you questions, keep data of its own, read a folder of its project (canvas_edit help on an HTML file says how). Never make a widget or an artifact when a few lines of text answer the question.
 
 ## How widgets and artifacts look
-Make a small, polished app, not a form. RedGiant dresses plain HTML in its own look, light and dark: write no design CSS (no colours, fonts, shadows, backgrounds), use its rg- classes.
+Make a small, polished app, not a form. ${PRODUCT_NAME} dresses plain HTML in its own look, light and dark: write no design CSS (no colours, fonts, shadows, backgrounds), use its rg- classes.
 - On top a short title and one line of what to try: <div class="rg-head"><h3>…</h3><p>…</p></div>.
 - Controls beside the result: .rg-split holds .rg-controls (.rg-group columns, each with a .rg-label caption) and the result card; on a phone it folds to one column, the result first.
 - A slider whenever the value has a sensible range (degrees, %, money, years): <label class="rg-range">Name<input type="range" min="10" max="30" step="0.5" value="19" data-unit="°C"></label> shows its value in a pill. A number field only for free values: <label class="rg-field">Name<span class="rg-input"><input type="number"><span>kg</span></span></label>. A choice: .rg-seg of <label><input type="radio" name="k" checked>Fixed</label>. Two to six controls, never a wall of fields.

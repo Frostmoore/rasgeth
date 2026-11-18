@@ -3,7 +3,7 @@
 The page and the server draw text layers with these very files (p3.5.8, `TEXT_FONTS` in
 `@redgiant/protocol`, served by `GET /api/editor/fonts/:file`, never from a CDN). Liberation
 Sans comes from pdf.js (`pdfjs-dist/standard_fonts`, its own licence file there); everything
-here is carried by RedGiant.
+here is carried by Rasgeth.
 
 All are under the **SIL Open Font License 1.1** (OFL-1.1): free to use, embed and redistribute
 with software, the licence travelling with them (the `OFL-*.txt` files beside them).

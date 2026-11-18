@@ -1,4 +1,10 @@
-import { type ChatMessage, type Event, quotedText, type UserPart } from "@redgiant/protocol";
+import {
+  type ChatMessage,
+  type Event,
+  PRODUCT_NAME,
+  quotedText,
+  type UserPart,
+} from "@redgiant/protocol";
 import { trimResult, withoutReasoning } from "./compaction.js";
 
 /** A conversation message plus the sequence number of the first event it came from. */
@@ -41,8 +47,7 @@ export function rebuildHistory(events: Iterable<Event>, o: RebuildOptions = {}):
       const part: UserPart = {
         type: "tool_result",
         callId: c.callId,
-        content:
-          "Interrupted: RedGiant stopped before this call finished. Check its effect before doing it again.",
+        content: `Interrupted: ${PRODUCT_NAME} stopped before this call finished. Check its effect before doing it again.`,
         isError: true,
       };
       if (pendingResults) pendingResults.parts.push(part);

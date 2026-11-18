@@ -1,3 +1,4 @@
+import { PRODUCT_NAME } from "./brand.js";
 import { criticalWords, isCriticalId } from "./critical.js";
 
 /**
@@ -49,8 +50,8 @@ const en: Record<string, Words> = {
     hint: "Putting something online for everyone: npm publish, terraform apply and the like.",
   },
   platform: {
-    name: "Changing RedGiant itself",
-    hint: "God changing RedGiant's settings, permissions or its own code.",
+    name: `Changing ${PRODUCT_NAME} itself`,
+    hint: `God changing ${PRODUCT_NAME}'s settings, permissions or its own code.`,
   },
   "secrets-files": {
     name: "Files with passwords and keys",
@@ -116,8 +117,8 @@ const it: Record<string, Words> = {
     hint: "Mettere qualcosa online per tutti: npm publish, terraform apply e simili.",
   },
   platform: {
-    name: "Cambiare RedGiant stesso",
-    hint: "God che cambia le impostazioni di RedGiant, i permessi o il suo stesso codice.",
+    name: `Cambiare ${PRODUCT_NAME} stesso`,
+    hint: `God che cambia le impostazioni di ${PRODUCT_NAME}, i permessi o il suo stesso codice.`,
   },
   "secrets-files": {
     name: "File con password e chiavi",

@@ -21,6 +21,7 @@ import {
   type MachineTest,
   type MachineTestCode,
   type MachineView,
+  PRODUCT_NAME,
   WINDOWS_FOLDER,
 } from "@redgiant/protocol";
 import ssh2 from "ssh2";
@@ -224,7 +225,7 @@ export class Machines {
         "invalid",
         key instanceof Error && /passphrase|encrypted/i.test(key.message)
           ? "The private key is protected by a passphrase: write it too"
-          : "This is not a private key RedGiant can read (OpenSSH or PEM)",
+          : `This is not a private key ${PRODUCT_NAME} can read (OpenSSH or PEM)`,
       );
     if (!key.isPrivateKey())
       throw new MachineError("invalid", "This is a public key: paste the private one");

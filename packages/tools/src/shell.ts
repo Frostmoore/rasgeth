@@ -1,4 +1,5 @@
 import type { Tool } from "@redgiant/agent";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { z } from "zod";
 import type { BackgroundCommands } from "./background.js";
 import { diskWideSearch } from "./disk-wide.js";
@@ -37,7 +38,7 @@ export function bashTool(
           "Stay in the project: never search a whole disk (find /, ls -R /, grep -r /, Get-ChildItem C:\\ -Recurse); inside the project use glob and grep, and to find files or programs elsewhere on this computer use find_files. " +
           "Default timeout 120 s; a longer timeout_ms is cut to the person's maximum (10 min unless they changed it). Long output keeps its beginning and end. " +
           "background: true for servers, watchers, long builds: returns an id at once; read it with bash_output. Keep commands verbose (no -q/--silent, no >/dev/null): every line is logged with its time. " +
-          "Run on this computer (not in a container), RedGiant's own ffmpeg, and Blender, LibreOffice and Scribus once downloaded, are on the PATH (call LibreOffice as plain soffice: it gets a profile of its own and no windows); ffmpeg's drawtext needs fontfile=.",
+          `Run on this computer (not in a container), ${PRODUCT_NAME}'s own ffmpeg, and Blender, LibreOffice and Scribus once downloaded, are on the PATH (call LibreOffice as plain soffice: it gets a profile of its own and no windows); ffmpeg's drawtext needs fontfile=.`,
         compact:
           "Run a shell command in the workspace root (a new shell each call). Never search a whole disk (find /): use find_files. background: true returns an id (bash_output); keep it verbose.",
       }),
@@ -147,6 +148,6 @@ export function ffmpegHint(command: string, output: string): string | undefined 
   if (/drawtext/.test(command) && !/fontfile\s*=/.test(command))
     return `Hint: ffmpeg's drawtext needs a font file here (there is no font configuration): add ${DRAWTEXT_FONTS}.`;
   if (/permission denied|cannot execute|attendibile|untrusted mount point/i.test(output))
-    return "Hint: RedGiant's own ffmpeg is the first on your PATH (command -v ffmpeg): call it as plain ffmpeg, not through a WinGet link or another path.";
+    return `Hint: ${PRODUCT_NAME}'s own ffmpeg is the first on your PATH (command -v ffmpeg): call it as plain ffmpeg, not through a WinGet link or another path.`;
   return undefined;
 }

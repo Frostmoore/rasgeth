@@ -12,6 +12,7 @@ import { createServer as createNetServer } from "node:net";
 import { join } from "node:path";
 import type { Tool, ToolContext } from "@redgiant/agent";
 import { classify, DEFAULT_DANGER_RULES } from "@redgiant/hierarchy";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import { agentEnv } from "@redgiant/tools";
 import type Docker from "dockerode";
 import { type Browser, type CDPSession, chromium, type Page } from "playwright-core";
@@ -1062,8 +1063,7 @@ export function browserTools(
         page(ctx, async (p) => {
           if (await p.isPassword(field))
             return {
-              content:
-                "That is a password field: passwords are typed by the user. Ask them to take control of the browser (its screen in RedGiant) and sign in.",
+              content: `That is a password field: passwords are typed by the user. Ask them to take control of the browser (its screen in ${PRODUCT_NAME}) and sign in.`,
               isError: true,
             };
           await p.fill(field, text, false);

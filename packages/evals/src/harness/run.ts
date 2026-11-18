@@ -3,6 +3,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { ModelSpec } from "@redgiant/protocol";
+import { PRODUCT_NAME } from "@redgiant/protocol";
 import type { ProviderRegistry } from "@redgiant/providers";
 import { ScenarioContext } from "./context.js";
 import { type HarnessMetrics, harnessMetrics } from "./metrics.js";
@@ -152,7 +153,7 @@ export function harnessReport(
   const lines = [
     "# Harness evaluation",
     "",
-    `RedGiant ${meta.version}, ${meta.date}. Each scenario runs in a fresh RedGiant (in-process database,`,
+    `${PRODUCT_NAME} ${meta.version}, ${meta.date}. Each scenario runs in a fresh ${PRODUCT_NAME} (in-process database,`,
     "host sandbox). **Harness** checks are about the program (read from its log and its effects);",
     "**outcome** checks are about the work done, where the model has its part.",
     "",

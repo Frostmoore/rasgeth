@@ -10,3 +10,7 @@ export const PRODUCT_NAME = "Rasgeth";
  * installation: two entries with the same name would confuse (plan 3.9.0, choice 4). On the
  * phones the app is just {@link PRODUCT_NAME}. */
 export const DESKTOP_APP_NAME = `${PRODUCT_NAME} App`;
+
+/** The name before 3.9.0, only to recognise what older versions wrote (their built-in
+ * instructions, their backup folders): never shown. */
+export const FORMER_PRODUCT_NAME = "RedGiant";
