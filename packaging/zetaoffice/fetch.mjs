@@ -61,7 +61,6 @@ export function licensesFrom(source) {
   return text;
 }
 
-
 /** The build zeta.ts names (ZETA_VERSION). */
 export function versionFrom(source) {
   const m = source.match(/export const ZETA_VERSION = "([^"]+)"/);
