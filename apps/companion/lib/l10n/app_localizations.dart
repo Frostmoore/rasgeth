@@ -17804,6 +17804,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'What every agent knows about you, with every change undoable'**
   String get knHubMemory;
+
+  /// No description provided for @cvSaveFailedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Not saved'**
+  String get cvSaveFailedShort;
+
+  /// No description provided for @cvSaveRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try saving again'**
+  String get cvSaveRetry;
+
+  /// No description provided for @cvReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Read only'**
+  String get cvReadOnly;
+
+  /// No description provided for @cvPastePicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a picture'**
+  String get cvPastePicture;
+
+  /// No description provided for @cvPasteNone.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no picture on the clipboard'**
+  String get cvPasteNone;
+
+  /// No description provided for @cvAskedAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Put in the conversation\'s message'**
+  String get cvAskedAgent;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

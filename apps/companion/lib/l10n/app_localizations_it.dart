@@ -10361,4 +10361,22 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get knHubMemory => 'Cosa sanno di te tutti gli agenti, ogni modifica annullabile';
+
+  @override
+  String get cvSaveFailedShort => 'Non salvato';
+
+  @override
+  String get cvSaveRetry => 'Riprova a salvare';
+
+  @override
+  String get cvReadOnly => 'Sola lettura';
+
+  @override
+  String get cvPastePicture => 'Incolla immagine';
+
+  @override
+  String get cvPasteNone => 'Negli appunti non c\'è un\'immagine';
+
+  @override
+  String get cvAskedAgent => 'Messo nel messaggio della conversazione';
 }
