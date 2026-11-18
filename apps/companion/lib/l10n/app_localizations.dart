@@ -9620,6 +9620,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not download {name}'**
   String chatFileDownloadFailed(String name);
+
+  /// No description provided for @palTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents at most in this project'**
+  String get palTitle;
+
+  /// No description provided for @palZero.
+  ///
+  /// In en, this message translates to:
+  /// **'Orchestrator only'**
+  String get palZero;
+
+  /// No description provided for @palHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Besides the orchestrator; sub-agents at work count too. At 0 the orchestrator works alone.'**
+  String get palHelp;
+
+  /// No description provided for @palNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now: {n}.'**
+  String palNow(String n);
+
+  /// No description provided for @palNone.
+  ///
+  /// In en, this message translates to:
+  /// **'none'**
+  String get palNone;
+
+  /// No description provided for @palOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 agent'**
+  String get palOne;
+
+  /// No description provided for @palN.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} agents'**
+  String palN(String n);
+
+  /// No description provided for @palOver.
+  ///
+  /// In en, this message translates to:
+  /// **'It has {n}, more than {max}: nobody is removed, but no new agent until the team is under the limit.'**
+  String palOver(String n, String max);
+
+  /// No description provided for @palSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved. It is in the history of changes, where you can undo it.'**
+  String get palSaved;
+
+  /// No description provided for @pmAgentLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents at most: {n}'**
+  String pmAgentLimit(String n);
+
+  /// No description provided for @errAgentLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'The project «{project}» can have at most {max} agents besides its orchestrator: it has {count}. Raise the limit in the project\'s menu or remove one.'**
+  String errAgentLimit(String project, String max, String count);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

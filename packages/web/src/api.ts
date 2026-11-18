@@ -380,6 +380,10 @@ export interface Project {
   /** Whether its folder has its own git repository (3.5.12); on creation, why not. */
   git?: boolean;
   gitError?: string;
+  /** How many agents it may have besides its orchestrator (2026-11-18): 0 to 10, default 3. */
+  maxAgents?: number;
+  /** How many count toward that limit now: its agents, and the sub-agents at work. */
+  agents?: number;
 }
 
 /** Who works in a project now: what archiving it stops (the window says it first). */
@@ -824,6 +828,9 @@ export class Api {
     this.call<{ git: "created" | "present" }>("POST", `/api/projects/${id}/git`);
   archiveProject = (id: string) => this.call<unknown>("POST", `/api/projects/${id}/archive`);
   restoreProject = (id: string) => this.call<unknown>("POST", `/api/projects/${id}/restore`);
+  /** The project's agent limit (2026-11-18): in the history, undoable; removes nobody. */
+  setProjectMaxAgents = (id: string, maxAgents: number) =>
+    this.call<PlatformChange>("PUT", `/api/projects/${id}/max-agents`, { maxAgents });
   agents = () => this.call<Agent[]>("GET", "/api/agents");
   createAgent = (a: Record<string, unknown>) => this.call<Agent>("POST", "/api/agents", a);
   configureAgent = (id: string, change: Record<string, unknown>) =>

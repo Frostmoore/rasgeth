@@ -1165,6 +1165,8 @@ class Project {
     this.git,
     this.gitError,
     this.archivedAt,
+    this.maxAgents = projectAgentsDefault,
+    this.agents,
   });
 
   factory Project.fromJson(Map<String, dynamic> j) => Project(
@@ -1174,7 +1176,13 @@ class Project {
     archivedAt: _str(j['archivedAt']),
     git: j['git'] is bool ? j['git'] as bool : null,
     gitError: _str(j['gitError']),
+    maxAgents: j['maxAgents'] is num ? (j['maxAgents'] as num).toInt() : projectAgentsDefault,
+    agents: j['agents'] is num ? (j['agents'] as num).toInt() : null,
   );
+
+  /// The page's `PROJECT_AGENTS_DEFAULT` and `PROJECT_AGENTS_MAX` (protocol, 2026-11-18).
+  static const projectAgentsDefault = 3;
+  static const projectAgentsMax = 10;
 
   final String id;
   final String name;
@@ -1188,6 +1196,13 @@ class Project {
 
   /// Why the repository could not be made, when [git] is false on a new folder.
   final String? gitError;
+
+  /// How many agents it may have besides its orchestrator (2026-11-18): 0 to 10, default 3.
+  final int maxAgents;
+
+  /// How many count toward [maxAgents] now (its agents and the sub-agents at work); null from
+  /// servers that do not say.
+  final int? agents;
 }
 
 /// `GET /api/projects/:id/work` (p3.5.3): what «Archive» stops, said first.

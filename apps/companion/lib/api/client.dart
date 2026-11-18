@@ -18,7 +18,13 @@ import 'types.dart';
 
 /// An answer the app can explain: the server's message and its `code` when it gives one.
 class ApiException implements Exception {
-  const ApiException(this.status, this.message, {this.code, this.certificate = false});
+  const ApiException(
+    this.status,
+    this.message, {
+    this.code,
+    this.certificate = false,
+    this.vars = const {},
+  });
 
   /// The HTTP status (0: the server could not be reached or did not answer like RedGiant).
   final int status;
@@ -30,6 +36,9 @@ class ApiException implements Exception {
   /// The TLS check failed: not the pinned CA (another machine, or a proxy in the middle).
   final bool certificate;
 
+  /// The words that go in the code's sentence (`agent_limit`: project, max, count).
+  final Map<String, String> vars;
+
   bool get unreachable => status == 0;
 
   @override
@@ -39,9 +48,7 @@ class ApiException implements Exception {
 /// A voice route's refusal, with the code the page explains (`voice_no_service`, `voice_no_key`…)
 /// and its words (`name`, `status`).
 class VoiceException extends ApiException {
-  const VoiceException(super.status, super.message, {super.code, this.vars = const {}});
-
-  final Map<String, String> vars;
+  const VoiceException(super.status, super.message, {super.code, super.vars});
 }
 
 class RedGiantClient {
@@ -117,6 +124,11 @@ class RedGiantClient {
       r.status,
       m['error'] is String ? m['error'] as String : 'HTTP ${r.status}',
       code: m['code'] is String ? m['code'] as String : null,
+      vars: {
+        if (m['vars'] is Map)
+          for (final e in (m['vars'] as Map).entries)
+            if (e.key is String) e.key as String: '${e.value}',
+      },
     );
   }
 
@@ -775,6 +787,14 @@ class RedGiantClient {
   /// `POST /api/projects/:id/archive` (p3.5.3): the project stops and becomes read only.
   Future<void> archiveProject(String projectId) =>
       _call('POST', '/api/projects/${Uri.encodeComponent(projectId)}/archive', const {});
+
+  /// `PUT /api/projects/:id/max-agents` (2026-11-18): how many agents the project may have besides
+  /// its orchestrator; in the history of changes, undoable; lowering it removes nobody.
+  Future<void> setProjectMaxAgents(String projectId, int maxAgents) => _call(
+    'PUT',
+    '/api/projects/${Uri.encodeComponent(projectId)}/max-agents',
+    {'maxAgents': maxAgents},
+  );
 
   /// `POST /api/projects/:id/git` (3.5.12): «Initialise git» for a project without a repository.
   Future<void> initProjectGit(String projectId) =>

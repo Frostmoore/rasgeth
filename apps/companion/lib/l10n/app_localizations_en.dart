@@ -5619,4 +5619,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String chatFileDownloadFailed(String name) {
     return 'Could not download $name';
   }
+
+  @override
+  String get palTitle => 'Agents at most in this project';
+
+  @override
+  String get palZero => 'Orchestrator only';
+
+  @override
+  String get palHelp =>
+      'Besides the orchestrator; sub-agents at work count too. At 0 the orchestrator works alone.';
+
+  @override
+  String palNow(String n) {
+    return 'Now: $n.';
+  }
+
+  @override
+  String get palNone => 'none';
+
+  @override
+  String get palOne => '1 agent';
+
+  @override
+  String palN(String n) {
+    return '$n agents';
+  }
+
+  @override
+  String palOver(String n, String max) {
+    return 'It has $n, more than $max: nobody is removed, but no new agent until the team is under the limit.';
+  }
+
+  @override
+  String get palSaved => 'Saved. It is in the history of changes, where you can undo it.';
+
+  @override
+  String pmAgentLimit(String n) {
+    return 'Agents at most: $n';
+  }
+
+  @override
+  String errAgentLimit(String project, String max, String count) {
+    return 'The project «$project» can have at most $max agents besides its orchestrator: it has $count. Raise the limit in the project\'s menu or remove one.';
+  }
 }

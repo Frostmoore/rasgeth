@@ -1422,6 +1422,19 @@ class AppController extends ChangeNotifier {
     }
   }
 
+  /// How many agents [projectId] may have besides its orchestrator (2026-11-18): null when saved,
+  /// else what went wrong (in the person's words when the server gives a code).
+  Future<String?> setProjectMaxAgents(String projectId, int maxAgents) async {
+    try {
+      await client?.setProjectMaxAgents(projectId, maxAgents);
+      await _loadLists();
+      notifyListeners();
+      return null;
+    } on ApiException catch (e) {
+      return e.message;
+    }
+  }
+
   /// «Initialise git» (3.5.12) for a project made without its repository.
   Future<bool> initProjectGit(String projectId) async {
     try {

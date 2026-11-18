@@ -17,7 +17,7 @@ import {
   SkillExistsError,
 } from "@redgiant/extensions";
 import { teamsAppPackage } from "@redgiant/gateway";
-import { can, HierarchyError } from "@redgiant/hierarchy";
+import { AgentLimitError, can, HierarchyError } from "@redgiant/hierarchy";
 import { mascotSvg } from "@redgiant/mascot";
 import {
   AgentKind,
@@ -37,7 +37,9 @@ import {
   type ModelSpec as ModelSpecType,
   PermissionMode,
   PermissionRequestInfo,
+  PROJECT_AGENTS_MAX,
   PROTOCOL_VERSION,
+  ProjectMaxAgents,
   RefineRequest,
   SEARCH_PROVIDER_IDS,
   withRequestWords,
@@ -154,6 +156,10 @@ const Project = z
     /** Whether its folder has its own git repository (3.5.12); on creation, why not. */
     git: z.boolean().optional(),
     gitError: z.string().optional(),
+    /** How many agents it may have besides its orchestrator (2026-11-18). */
+    maxAgents: z.number().int(),
+    /** How many count toward that limit now (in the list). */
+    agents: z.number().int().optional(),
   })
   .openapi("Project");
 const Agent = z
@@ -1009,6 +1015,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       return c.json({ error: err.message, code: err.code }, 423);
     if (err instanceof SessionBusyError) return c.json({ error: err.message }, 409);
     if (err instanceof NoModelError) return c.json({ error: err.message, code: err.code }, 400);
+    // A project at its agent limit (2026-11-18): the page and the app say it in the person's words.
+    if (err instanceof AgentLimitError)
+      return c.json({ error: err.message, code: err.code, vars: err.vars }, 409);
     if (
       err instanceof HierarchyError ||
       err instanceof BadRequestError ||
@@ -1208,8 +1217,15 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.openapi(routes.listProjects, async (c) => {
     const list = await core.projects.list(owner(c));
     // Whether each folder has its repository: Settings > Projects offers «Initialise git» (3.5.12).
+    // And how many agents count toward its limit now (2026-11-18).
     return c.json(
-      await Promise.all(list.map(async (p) => ({ ...p, git: await hasOwnRepo(p.path) }))),
+      await Promise.all(
+        list.map(async (p) => ({
+          ...p,
+          git: await hasOwnRepo(p.path),
+          agents: core.registry.agentRoom(owner(c), p.id, 0).count,
+        })),
+      ),
       200,
     );
   });
@@ -1412,7 +1428,12 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     return a && a.ownerId === ownerId ? a : undefined;
   };
   /** A refusal of the scope rules or of the tree: 403 when nobody may, else 409. */
-  const refused = (err: unknown, status: 403 | 409) => {
+  const refused = (
+    err: unknown,
+    status: 403 | 409,
+  ): { error: string; code?: string; vars?: Record<string, string>; status: 403 | 409 } => {
+    if (err instanceof AgentLimitError)
+      return { error: err.message, code: err.code, vars: err.vars, status: 409 };
     if (err instanceof HierarchyError) return { error: err.message, status };
     throw err;
   };
@@ -1423,8 +1444,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       const r = await core.resumeAgent(human(c), a.id, "person");
       return c.json({ resumed: r.resumed, tasks: r.tasks }, 200);
     } catch (err) {
-      const r = refused(err, 409);
-      return c.json({ error: r.error }, r.status);
+      const { status, ...r } = refused(err, 409);
+      return c.json(r, status);
     }
   });
   app.get("/api/agents/removed", async (c) =>
@@ -1464,8 +1485,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       const r = await core.removeAgent(human(c), a.id, reason, "person");
       return c.json({ removed: r.removed, tasks: r.tasks }, 200);
     } catch (err) {
-      const r = refused(err, 409);
-      return c.json({ error: r.error }, r.status);
+      const { status, ...r } = refused(err, 409);
+      return c.json(r, status);
     }
   });
   app.post("/api/agents/:id/restore", async (c) => {
@@ -1474,8 +1495,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     try {
       return c.json(await core.restoreAgent(human(c), a.id, "person"), 200);
     } catch (err) {
-      const r = refused(err, 409);
-      return c.json({ error: r.error }, r.status);
+      const { status, ...r } = refused(err, 409);
+      return c.json(r, status);
     }
   });
 
@@ -3173,6 +3194,24 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
         throw err;
       }
     });
+  // How many agents a project may have besides its orchestrator (2026-11-18): the person's choice,
+  // in the history and undoable; lowering it removes nobody.
+  app.put("/api/projects/:id/max-agents", async (c) => {
+    const b = z
+      .object({ maxAgents: ProjectMaxAgents })
+      .safeParse(await c.req.json().catch(() => ({})));
+    if (!b.success)
+      return c.json({ error: `maxAgents: a whole number from 0 to ${PROJECT_AGENTS_MAX}` }, 400);
+    try {
+      return c.json(
+        await core.config.projectAgents(owner(c), "human", c.req.param("id"), b.data.maxAgents),
+        200,
+      );
+    } catch (err) {
+      if (err instanceof ConfigError) return c.json({ error: err.message }, 400);
+      throw err;
+    }
+  });
   // An existing project becomes a subproject of this one (G24.14c), with its history.
   app.post("/api/projects/:id/adopt", async (c) => {
     const b = z

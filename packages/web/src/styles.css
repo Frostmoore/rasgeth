@@ -21382,3 +21382,27 @@ fieldset.saved-filter legend {
     margin-left: 54px;
   }
 }
+
+/* A project's agent limit (2026-11-18): under its row in Settings › Projects, and above its team. */
+.pa-project + .pa-project {
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  margin-top: 6px;
+}
+.pal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0 8px;
+}
+.pal-box {
+  margin-bottom: 14px;
+}
+.pal-over {
+  margin: 0;
+}
+.pal-saved {
+  margin: 0;
+  color: var(--dim);
+  font-size: 13.5px;
+}

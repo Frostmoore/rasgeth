@@ -856,7 +856,7 @@ export function orchestrationTools(
     tools.push({
       def: {
         name: "create_agent",
-        description: `Create a persistent agent under you (kind: ${creatable.join(" or ")}). Give it a clear role.`,
+        description: `Create a persistent agent under you (kind: ${creatable.join(" or ")}). Give it a clear role. Each project has a limit, chosen by the person, on its agents besides the orchestrator (sub-agents at work count too): past it nothing is created and the result says so.`,
         inputSchema: {
           type: "object",
           properties: {
@@ -1347,6 +1347,15 @@ export function orchestrationTools(
             "Work in progress, before sub-agents",
             `${self.name} <${self.id}@redgiant>`,
           );
+          // The project's agent limit (2026-11-18): all of them fit, or none starts.
+          const room = self.projectId
+            ? host.registry.agentRoom(self.ownerId, self.projectId, list.length)
+            : undefined;
+          if (room && !room.ok)
+            return {
+              content: `The project allows ${room.max} agent${room.max === 1 ? "" : "s"} besides its orchestrator (sub-agents at work count too): it has ${room.count}, and ${list.length} more do not fit. No sub-agent was started: run fewer at once (${Math.max(0, room.max - room.count)} fit now), do the work yourself, or ask for the limit to be raised.`,
+              isError: true,
+            };
           const subs: AgentRecord[] = [];
           try {
             for (const t of list) {

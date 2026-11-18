@@ -1587,5 +1587,16 @@
   "chatFileDownloadOf": "{done} di {total} · {speed}/s · ancora {left}",
   "chatFileDownloadSoFar": "{done} · {speed}/s",
   "chatFileSaved": "Salvato: {name}",
-  "chatFileDownloadFailed": "Non sono riuscito a scaricare {name}"
+  "chatFileDownloadFailed": "Non sono riuscito a scaricare {name}",
+  "palTitle": "Agenti al massimo in questo progetto",
+  "palZero": "Solo orchestratore",
+  "palHelp": "Oltre all'orchestratore; contano anche i sotto-agenti al lavoro. Con 0 l'orchestratore lavora da solo.",
+  "palNow": "Ora: {n}.",
+  "palNone": "nessuno",
+  "palOne": "1 agente",
+  "palN": "{n} agenti",
+  "palOver": "Ne ha {n}, più di {max}: nessuno viene rimosso, ma non se ne creano di nuovi finché la squadra non scende sotto il limite.",
+  "palSaved": "Salvato. Lo trovi nello storico delle modifiche, dove puoi annullarlo.",
+  "pmAgentLimit": "Agenti al massimo: {n}",
+  "errAgentLimit": "Il progetto «{project}» può avere al massimo {max} agenti oltre all'orchestratore: ne ha {count}. Alza il limite dal menu del progetto o rimuovine uno."
 }

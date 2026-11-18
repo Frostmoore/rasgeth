@@ -344,7 +344,8 @@
         "lib/screens/projects_screen.dart",
         "lib/desktop/advanced/projects_wall.dart",
         "lib/ui/project_menu.dart",
-        "lib/screens/project_overview_screen.dart"
+        "lib/screens/project_overview_screen.dart",
+        "lib/ui/project_agents.dart"
       ],
       "phase": "G42.5",
       "rows": [
@@ -357,7 +358,7 @@
         135,
         136
       ],
-      "note": "Project list with git state (advanced interface); 3.8.8: a click shows the project's conversations (its lead's and its team's; archived, read only with its tasks), its menu archives it (the page's window: who works, the automations that pause), restores it and initialises git; the full Settings › Projects page only in «All settings»."
+      "note": "Project list with git state (advanced interface); 3.8.8: a click shows the project's conversations (its lead's and its team's; archived, read only with its tasks), its menu archives it (the page's window: who works, the automations that pause), restores it and initialises git; the full Settings › Projects page only in «All settings». 2026-11-18: «Agenti al massimo in questo progetto» (0-10, default 3) native: in the project's menu (its window) and in the project's view, the same slider, rule and words as the page's Settings › Projects."
     },
     "artifacts": {
       "app": "native",

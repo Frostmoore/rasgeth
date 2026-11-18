@@ -77,3 +77,13 @@ export const AgentSpec = z.object({
   mascotSeed: z.string().min(1).optional(),
 });
 export type AgentSpec = z.infer<typeof AgentSpec>;
+
+/**
+ * How many agents a project may have besides its orchestrator (decision «Limite di sotto-agenti
+ * per progetto», 2026-11-18): the person's choice for each project, from 0 (the orchestrator
+ * alone) to `PROJECT_AGENTS_MAX`; a project that never chose has `PROJECT_AGENTS_DEFAULT`. What
+ * counts is `countsTowardAgentLimit` in `@redgiant/hierarchy`.
+ */
+export const PROJECT_AGENTS_DEFAULT = 3;
+export const PROJECT_AGENTS_MAX = 10;
+export const ProjectMaxAgents = z.number().int().min(0).max(PROJECT_AGENTS_MAX);
