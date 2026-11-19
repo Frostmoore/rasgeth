@@ -1569,10 +1569,13 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
               <div class="dim">{t("compacting")}</div>
             </div>
           )}
+          {/* No «reading the context» while the turn waits for the person's answer (3.9.5: an
+              engine's question, the card above). */}
           {v.state === "running" &&
             v.call &&
             !v.compacting &&
             !generating &&
+            !questions.value.some((q) => q.sessionId === sessionId) &&
             !externalAgent(agentId) && <TurnProgress call={v.call} />}
           {(v.thinking || v.text) && (
             <div class="bubble assistant streaming">

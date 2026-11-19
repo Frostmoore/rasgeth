@@ -3911,6 +3911,40 @@ if (process.env.DEMO_NATIVE) {
   nativeSessions.slow = slow;
   console.log(JSON.stringify({ nativeSessions }));
 }
+// DEMO_CODEX_ASK=1 (3.9.5): the Chat on Rasgeth's real Codex adapter, driven by a `codex
+// app-server` stand-in (demo-codex.mjs) that asks about a UPS and waits: the question card waits
+// for the person in the conversation «Gruppo di continuità (Codex)».
+let codexAskSession;
+if (process.env.DEMO_CODEX_ASK) {
+  const { ChatgptSubscriptionProvider } = await import(
+    createRequire(new URL("../../server/package.json", import.meta.url)).resolve(
+      "@redgiant/subscriptions",
+    )
+  );
+  const codexHome = join(dir, "codex-ask");
+  core.providers.register(
+    new ChatgptSubscriptionProvider({
+      home: codexHome,
+      cwd: join(codexHome, "work"),
+      command: {
+        file: process.execPath,
+        args: [fileURLToPath(new URL("./demo-codex.mjs", import.meta.url))],
+      },
+    }),
+  );
+  const chat = await core.chatAgent("local");
+  await core.registry.configure({ type: "human", ownerId: "local" }, chat.id, {
+    model: { provider: "chatgpt-subscription", model: "gpt-5.5" },
+  });
+  codexAskSession = await core.startSession("local", chat.id);
+  await core.nameSession(codexAskSession, "Gruppo di continuità (Codex)");
+  const { done } = await core.send(
+    "local",
+    codexAskSession,
+    "Mi serve un gruppo di continuità per il PC dello studio: quale prendo?",
+  );
+  done.catch(() => {});
+}
 const running = await serve(core, new TokenAuth({ [token]: "local" }), {
   port,
   host: process.env.DEMO_HOST ?? "0.0.0.0",
@@ -3937,5 +3971,6 @@ console.log(
     ...(toolsSession && { toolsSession, branchSession }),
     ...(sshSession && { sshSession, sshAgent }),
     ...(queueSessions && { queueSessions }),
+    ...(codexAskSession && { codexAskSession }),
   }),
 );

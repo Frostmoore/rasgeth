@@ -3,7 +3,13 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { EngineTurn } from "@redgiant/agent";
 import { afterEach, describe, expect, it } from "vitest";
-import { ChatgptSubscriptionProvider, codexImage, codexWindows } from "../src/index.js";
+import {
+  askInput,
+  ChatgptSubscriptionProvider,
+  codexAnswers,
+  codexImage,
+  codexWindows,
+} from "../src/index.js";
 
 const fake = join(import.meta.dirname, "fake-codex.mjs");
 let providers: ChatgptSubscriptionProvider[] = [];
@@ -112,6 +118,8 @@ describe("ChatGPT on a subscription", () => {
         "features.unified_exec": false,
         // Codex's own pictures only when the conversation lets it (2026-11-19).
         "features.image_generation": false,
+        // Codex's own questions off (3.9.5): the agent asks with ask_user, which waits.
+        "tools.experimental_request_user_input.enabled": false,
         web_search: "live",
       },
     });
@@ -152,6 +160,126 @@ describe("ChatGPT on a subscription", () => {
       "end_turn Here it is.",
     ]);
     expect(made[0]?.path).toMatch(/generated_images[/\\]th-1[/\\]ig_1\.png$/);
+  });
+
+  /** A turn whose agent can ask the person: ask_user answers once `answer` is called. */
+  function asking(text: string, log: string[]) {
+    let answer: (content: string) => void = () => {};
+    const answered = new Promise<string>((ok) => {
+      answer = ok;
+    });
+    const t: EngineTurn = {
+      ...turn(text, log),
+      tools: [
+        { name: "read_file", description: "Read", inputSchema: { type: "object" } },
+        { name: "ask_user", description: "Ask", inputSchema: { type: "object" } },
+      ],
+      runTool: async (c) => {
+        log.push(`card ${c.callId} ${JSON.stringify(c.input)}`);
+        const content = await answered;
+        log.push("answered");
+        return { content, isError: false };
+      },
+    };
+    return { t, answer: (content: string) => answer(content) };
+  }
+
+  it("shows Codex's question on Rasgeth's card, waits for the person and hands the answer back (3.9.5)", async () => {
+    const p = await provider();
+    const log: string[] = [];
+    const { t, answer } = asking("ups", log);
+    const r = p.engine.turn(t);
+    await new Promise((ok) => setTimeout(ok, 300));
+    // The card is up, the engine waits: no message after the question, the turn still runs.
+    expect(log).toEqual([
+      "end_turn thinking",
+      "tool_use tool_call",
+      `card call_q ${JSON.stringify({
+        questions: [
+          {
+            question: "How much does it need to power, and for how long?",
+            header: "Load",
+            options: [
+              { label: "About 300 W, 5-10 minutes", description: "PC and monitor" },
+              { label: "About 600 W, 20 minutes" },
+              { label: "Not sure", description: "I will check the labels" },
+            ],
+          },
+        ],
+      })}`,
+    ]);
+    answer("How much does it need to power, and for how long?\n-> About 600 W, 20 minutes");
+    expect(await r).toEqual({ resume: "th-1", stopReason: "end_turn" });
+    expect(log.slice(3)).toEqual([
+      "answered",
+      "end_turn For About 600 W, 20 minutes: a 1000 VA UPS.",
+    ]);
+    const debug = (
+      p as unknown as { conn: { request: (m: string, x: unknown) => Promise<{ log: string[] }> } }
+    ).conn;
+    expect((await debug.request("debug/log", {})).log).toContain(
+      `answer ${JSON.stringify({ answers: { ups: { answers: ["About 600 W, 20 minutes"] } } })}`,
+    );
+  });
+
+  it("stops at Codex's async question instead of letting it go on alone, and goes on with the answer", async () => {
+    const p = await provider();
+    const log: string[] = [];
+    const { t, answer } = asking("ups-async", log);
+    const r = p.engine.turn(t);
+    // Longer than the fake takes to go on by itself (150 ms) when nobody stops it.
+    await new Promise((ok) => setTimeout(ok, 400));
+    expect(log.some((l) => l.includes("Without your answer"))).toBe(false);
+    // The question is the card, not a bulleted text.
+    expect(log.some((l) => l.includes("- About 300 W"))).toBe(false);
+    expect(log.at(-1)).toBe(
+      `card call_aq ${JSON.stringify({
+        questions: [
+          {
+            question: "How much does it need to power?",
+            options: [{ label: "About 300 W" }, { label: "About 600 W" }, { label: "Not sure" }],
+          },
+        ],
+      })}`,
+    );
+    answer("How much does it need to power?\n-> About 300 W");
+    expect(await r).toEqual({ resume: "th-1", stopReason: "end_turn" });
+    // The next Codex turn carries the answer (the fake thinks first at every turn).
+    expect(log.slice(-3)).toEqual([
+      "answered",
+      "end_turn thinking",
+      "end_turn Thanks: About 300 W",
+    ]);
+  });
+
+  it("tells Codex nobody can answer when the agent has no ask_user, without waiting", async () => {
+    const p = await provider();
+    const log: string[] = [];
+    expect(await p.engine.turn(turn("ups", log))).toEqual({
+      resume: "th-1",
+      stopReason: "end_turn",
+    });
+    expect(log.some((l) => l.startsWith("tool"))).toBe(false);
+    expect(log.at(-1)).toMatch(/^end_turn For No person can answer/);
+  });
+
+  it("maps Codex's questions and the card's answers both ways", () => {
+    const qs = [
+      { id: "a", question: "First?", options: [{ label: "x" }, { label: "y" }] },
+      { id: "b", question: "Second?", options: [{ label: "z" }, { label: "w" }] },
+    ];
+    expect(askInput([{ title: "T?", options: ["p", "q"] }])).toEqual({
+      questions: [{ question: "T?", options: [{ label: "p" }, { label: "q" }] }],
+    });
+    expect(
+      codexAnswers("First?\n-> Yes, 300 W; 10 minutes\n\nSecond?\n-> my own words", qs),
+    ).toEqual({
+      a: { answers: ["Yes, 300 W; 10 minutes"] },
+      b: { answers: ["my own words"] },
+    });
+    // Not the person's own answer (their classifier, nobody, an error): whole, to the first one.
+    const note = "The person is not taking questions now (busy).\n\nFirst?\n-> x\n\nSecond?\n-> z";
+    expect(codexAnswers(note, qs)).toEqual({ a: { answers: [note] }, b: { answers: [] } });
   });
 
   it("reads a finished picture: its file, its bytes, or why it failed", () => {

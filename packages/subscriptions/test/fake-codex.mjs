@@ -28,10 +28,30 @@ const usage = (input, cached, output) => ({
   },
 });
 let toolCall;
+let goOn;
 let threads = 0;
 createInterface({ input: process.stdin }).on("line", (line) => {
   const m = JSON.parse(line);
   if (m.method) log.push(m.method);
+  if (m.id === 901 && !m.method) {
+    // Our answer to Codex's question (`item/tool/requestUserInput`): the model goes on with it.
+    log.push(`answer ${JSON.stringify(m.result)}`);
+    const at = { threadId: "th-1", turnId: "tu-1" };
+    const chosen = m.result.answers.ups?.answers.join(" + ") ?? "nothing";
+    send({
+      method: "item/completed",
+      params: {
+        ...at,
+        completedAtMs: 0,
+        item: { type: "agentMessage", id: "i5", text: `For ${chosen}: a 1000 VA UPS.` },
+      },
+    });
+    send({
+      method: "turn/completed",
+      params: { ...at, turn: { id: "tu-1", status: "completed" } },
+    });
+    return;
+  }
   if (m.id !== undefined && !m.method) {
     // Our answer to the dynamic tool call.
     const text = m.result.contentItems[0].text;
@@ -128,6 +148,102 @@ createInterface({ input: process.stdin }).on("line", (line) => {
         }, 30);
         return;
       }
+      if (m.params.input[0].text === "ups") {
+        // Codex asks the person and waits (request_user_input): nothing more until the answer.
+        send({
+          id: 901,
+          method: "item/tool/requestUserInput",
+          params: {
+            threadId: m.params.threadId,
+            turnId: "tu-1",
+            itemId: "call_q",
+            isBlocking: true,
+            autoResolutionMs: null,
+            questions: [
+              {
+                id: "ups",
+                header: "Load",
+                question: "How much does it need to power, and for how long?",
+                isOther: true,
+                isSecret: false,
+                options: [
+                  { label: "About 300 W, 5-10 minutes", description: "PC and monitor" },
+                  { label: "About 600 W, 20 minutes", description: "" },
+                  { label: "Not sure", description: "I will check the labels" },
+                ],
+              },
+            ],
+          },
+        });
+        // The request's usage comes after its items, while the question waits.
+        send(usage(1200, 0, 40));
+        return;
+      }
+      if (m.params.input[0].text === "ups-async") {
+        // Codex's async question (request_user_input_async): a message with the questions and
+        // their options as bullets, then the model goes on by itself, as on 3.9.3, unless stopped.
+        const at = { threadId: m.params.threadId, turnId: "tu-1" };
+        send({
+          method: "item/completed",
+          params: {
+            ...at,
+            completedAtMs: 0,
+            item: {
+              type: "agentMessage",
+              id: "call_aq",
+              phase: "final_answer",
+              delivery: "async",
+              text: "How much does it need to power?\n- About 300 W\n- About 600 W\n- Not sure",
+              questions: [
+                {
+                  title: "How much does it need to power?",
+                  options: ["About 300 W", "About 600 W", "Not sure"],
+                },
+              ],
+            },
+          },
+        });
+        goOn = setTimeout(() => {
+          send({
+            method: "item/completed",
+            params: {
+              ...at,
+              completedAtMs: 0,
+              item: {
+                type: "agentMessage",
+                id: "i6",
+                text: "Without your answer: buy a 1500 VA UPS.",
+              },
+            },
+          });
+          send({
+            method: "turn/completed",
+            params: { ...at, turn: { id: "tu-1", status: "completed" } },
+          });
+        }, 150);
+        return;
+      }
+      if (m.params.input[0].text.includes("-> ")) {
+        // The person's answer to the async question, as the next turn's message.
+        const at = { threadId: m.params.threadId, turnId: "tu-1" };
+        send({
+          method: "item/completed",
+          params: {
+            ...at,
+            completedAtMs: 0,
+            item: {
+              type: "agentMessage",
+              id: "i7",
+              text: `Thanks: ${m.params.input[0].text.split("-> ")[1]}`,
+            },
+          },
+        });
+        send({
+          method: "turn/completed",
+          params: { ...at, turn: { id: "tu-1", status: "completed" } },
+        });
+        return;
+      }
       if (m.params.input[0].text === "fail") {
         send({
           method: "turn/completed",
@@ -159,6 +275,16 @@ createInterface({ input: process.stdin }).on("line", (line) => {
       // The first request's usage, once its stream has ended (the tool is still running).
       send(usage(1200, 0, 40));
       return;
+    case "turn/interrupt":
+      clearTimeout(goOn);
+      send({ id: m.id, result: {} });
+      return send({
+        method: "turn/completed",
+        params: {
+          threadId: m.params.threadId,
+          turn: { id: m.params.turnId, status: "interrupted" },
+        },
+      });
     case "model/list":
       return send({
         id: m.id,

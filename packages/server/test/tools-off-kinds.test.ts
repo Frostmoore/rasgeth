@@ -62,6 +62,22 @@ describe("a tool switched off for every agent (3.5.3)", () => {
     }
   });
 
+  it("gives ask_user to the agents the person talks with, the Chat included, and to no worker (3.9.5)", async () => {
+    s = await startServer(() => ({ text: "ok" }), ROOM);
+    const ids = await everyone(s);
+    const has: Record<string, boolean> = {};
+    for (const [kind, id] of Object.entries(ids))
+      has[kind] = (await start(s, id)).tools.includes("ask_user");
+    expect(has).toEqual({
+      god: true,
+      orch: true,
+      coder: false,
+      sub: false,
+      assistant: true,
+      chat: true,
+    });
+  });
+
   it("God, from the HTTP API as the page does it: off, then asked for and switched back on", async () => {
     let step = 0;
     s = await startServer((req) => {
