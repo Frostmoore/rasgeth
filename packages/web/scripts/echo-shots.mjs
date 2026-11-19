@@ -19,7 +19,8 @@ for (const [device, width, height] of [
       locale: "it-IT",
     });
     page.on("pageerror", (e) => console.error("pageerror:", e.message));
-    const shot = (name) => page.screenshot({ path: `${out}/pagina-${device}-${scheme}-${name}.png` });
+    const shot = (name) =>
+      page.screenshot({ path: `${out}/pagina-${device}-${scheme}-${name}.png` });
     await page.goto(`${url}/#token=${token}`);
     await page.evaluate(() => localStorage.clear());
     await page.goto(`${url}/#token=${token}`);
