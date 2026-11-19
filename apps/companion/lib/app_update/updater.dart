@@ -425,7 +425,8 @@ class AppUpdater extends ChangeNotifier {
     _set(AppUpdateStage.idle);
   }
 
-  /// «Update and restart»: where the person is ([resume]), the helper, then the app closes.
+  /// «Update and restart»: where the person is ([resume]), the helper, then the app closes, only
+  /// once the helper runs (a helper that does not start leaves the app open, `failed`).
   Future<void> apply(ResumeState resume) async {
     final f = found;
     final ready = _ready;
@@ -447,6 +448,7 @@ class AppUpdater extends ChangeNotifier {
           package: ready,
           marker: '$base${sep}started-${f.version}',
           log: '$base${sep}update.log',
+          alive: '$base${sep}helper-alive',
         ),
         base,
       );

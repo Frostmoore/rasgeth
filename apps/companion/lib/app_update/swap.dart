@@ -5,6 +5,13 @@
 // starts it with a marker file to write. A new version that does not write it within a minute (or
 // stops first) is taken away: the old folder comes back and the old version starts again, told
 // which one failed. Every step goes into the helper's log next to it.
+//
+// 3.9.5: the app writes its own line into that log before starting the helper and closes only once
+// the helper has written its `alive` file (its first step after its first line: the app's last
+// line comes after it, never over it); a helper that does not start
+// leaves the app open, with the reason in the log. 3.9.0-3.9.4's Windows helper never ran: its
+// first line held `$to:`, which PowerShell reads as a drive-qualified variable, so the whole file
+// failed to parse (hidden window, detached: nobody saw it).
 import 'dart:io';
 
 import '../brand.dart';
@@ -21,6 +28,7 @@ class SwapPlan {
     required this.package,
     required this.marker,
     required this.log,
+    required this.alive,
     this.waitSeconds = 60,
   });
 
@@ -44,6 +52,10 @@ class SwapPlan {
   /// The file the new version writes once its window is up (`--rg-update-marker=`).
   final String marker;
   final String log;
+
+  /// The file the helper writes right after its first line (it is running); the app closes only
+  /// once it is there.
+  final String alive;
 
   /// How long the new version has to write the marker.
   final int waitSeconds;
@@ -78,7 +90,8 @@ start() {
   else nohup "\$@" </dev/null >/dev/null 2>&1 & fi
   started=\$!
 }
-say "update \$from -> \$to: waiting for the app (\$pid) to close"
+say "helper \$\$: update \$from -> \$to, waiting for the app (\$pid) to close"
+: >${_sh(p.alive)}
 i=0
 while kill -0 "\$pid" 2>/dev/null; do
   i=\$((i + 1))
@@ -131,9 +144,11 @@ String windowsSwapScript(SwapPlan p) =>
 \$from = ${_ps(p.fromVersion)}
 \$to = ${_ps(p.toVersion)}
 \$log = ${_ps(p.log)}
+\$alive = ${_ps(p.alive)}
 \$waitS = ${p.waitSeconds}
-\$prev = "\$dest.previous"
+\$prev = "\${dest}.previous"
 function Say(\$t) { Add-Content -LiteralPath \$log -Value ("{0:yyyy-MM-dd HH:mm:ss} {1}" -f (Get-Date), \$t) }
+trap { Say "error: \$(\$_)"; continue }
 function StartApp([string[]]\$a) { Start-Process -FilePath \$exe -ArgumentList \$a -WorkingDirectory \$dest -PassThru }
 function StopInFolder {
   Get-Process -ErrorAction SilentlyContinue | Where-Object { \$_.Path -like "\$dest\\*" } |
@@ -149,7 +164,8 @@ function GoBack(\$why) {
   }
   [void](StartApp @("$kUpdateFailedArg\$to"))
 }
-Say "update \$from -> \$to: waiting for the app (\$appPid) to close"
+Say "helper \${PID}: update \${from} -> \${to}, waiting for the app (\${appPid}) to close"
+Set-Content -LiteralPath \$alive -Value \$PID
 \$p = Get-Process -Id \$appPid -ErrorAction SilentlyContinue
 if (\$p -and -not \$p.WaitForExit(30000)) { Say "the app did not close: nothing changed"; exit 1 }
 if (-not (Test-Path -LiteralPath \$setup)) { Say "no installer: nothing changed"; [void](StartApp @("$kUpdateFailedArg\$to")); exit 1 }
@@ -176,13 +192,62 @@ Say "\$to started: done"
 exit 0
 ''';
 
-/// Writes the helper next to the download and starts it detached; the caller closes the app.
-Future<void> startSwap(SwapPlan p, String folder) async {
+/// The helper did not write its `alive` file in time: the app stays open (the reason is in the log).
+class SwapNotStarted implements Exception {
+  const SwapNotStarted(this.reason);
+
+  final String reason;
+
+  @override
+  String toString() => 'SwapNotStarted($reason)';
+}
+
+/// Starts a program detached and gives its process id ([Process.start] by default).
+typedef SwapLauncher = Future<int> Function(String exe, List<String> args);
+
+Future<int> _launch(String exe, List<String> args) async =>
+    (await Process.start(exe, args, mode: ProcessStartMode.detached)).pid;
+
+/// Windows PowerShell 5.1 by its full path: never another `powershell.exe` found first in PATH.
+String windowsPowerShell(Map<String, String> env) {
+  final root = env['SystemRoot'] ?? env['SYSTEMROOT'] ?? r'C:\Windows';
+  return '$root\\System32\\WindowsPowerShell\\v1.0\\powershell.exe';
+}
+
+String _stamp(DateTime t) {
+  String two(int n) => n.toString().padLeft(2, '0');
+  return '${t.year}-${two(t.month)}-${two(t.day)} ${two(t.hour)}:${two(t.minute)}:${two(t.second)}';
+}
+
+/// One line of the app's own into the helper's log (same format as the helper's).
+Future<void> appendSwapLog(String log, String line) async {
+  try {
+    final end = Platform.isWindows ? '\r\n' : '\n';
+    await File(log)
+        .writeAsString('${_stamp(DateTime.now())} $line$end', mode: FileMode.append, flush: true);
+  } on FileSystemException {
+    // The log is for people; the update does not depend on it.
+  }
+}
+
+/// Writes the helper next to the download, starts it detached and returns once it runs (its
+/// `alive` file is there): only then may the caller close the app. A helper that does not start
+/// within [aliveWithin] is stopped and [SwapNotStarted] thrown: the app stays open.
+Future<void> startSwap(
+  SwapPlan p,
+  String folder, {
+  Duration aliveWithin = const Duration(seconds: 30),
+  SwapLauncher launch = _launch,
+  Map<String, String>? env,
+}) async {
+  final String exe;
+  final List<String> args;
   if (p.system == 'windows') {
     final script = File('$folder\\swap.ps1');
     // A BOM: Windows PowerShell 5.1 reads a file without one in the system's code page.
-    await script.writeAsString('﻿${windowsSwapScript(p)}');
-    await Process.start('powershell.exe', [
+    await script.writeAsString('\uFEFF${windowsSwapScript(p)}', flush: true);
+    exe = windowsPowerShell(env ?? Platform.environment);
+    args = [
       '-NoProfile',
       '-NonInteractive',
       '-ExecutionPolicy',
@@ -191,12 +256,43 @@ Future<void> startSwap(SwapPlan p, String folder) async {
       'Hidden',
       '-File',
       script.path,
-    ], mode: ProcessStartMode.detached);
+    ];
   } else {
     final script = File('$folder/swap.sh');
-    await script.writeAsString(linuxSwapScript(p));
-    await Process.start('/bin/sh', [script.path], mode: ProcessStartMode.detached);
+    await script.writeAsString(linuxSwapScript(p), flush: true);
+    exe = '/bin/sh';
+    args = [script.path];
   }
+  final alive = File(p.alive);
+  try {
+    if (alive.existsSync()) alive.deleteSync();
+  } on FileSystemException {
+    // A stale file would let the app close too early: better not to start at all.
+    await appendSwapLog(p.log, 'app ${p.fromVersion}: an old ${p.alive} is in the way');
+    throw const SwapNotStarted('stale alive file');
+  }
+  await appendSwapLog(p.log, 'app ${p.fromVersion}: starting the helper for ${p.toVersion}');
+  final int helper;
+  try {
+    helper = await launch(exe, args);
+  } on Object catch (e) {
+    await appendSwapLog(p.log, 'app ${p.fromVersion}: the helper could not start ($e)');
+    throw SwapNotStarted('$e');
+  }
+  final deadline = DateTime.now().add(aliveWithin);
+  while (!alive.existsSync()) {
+    if (DateTime.now().isAfter(deadline)) {
+      Process.killPid(helper);
+      await appendSwapLog(
+        p.log,
+        'app ${p.fromVersion}: the helper ($helper) did not start within '
+        '${aliveWithin.inSeconds} s: the app stays open',
+      );
+      throw const SwapNotStarted('no alive file');
+    }
+    await Future<void>.delayed(const Duration(milliseconds: 100));
+  }
+  await appendSwapLog(p.log, 'app ${p.fromVersion}: the helper ($helper) runs, the app closes');
 }
 
 /// The bundle folder inside the unpacked Linux archive (`<top>/bundle/rgcompanion`), or null.
