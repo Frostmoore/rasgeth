@@ -17,7 +17,11 @@ const passes = [
 ];
 
 for (const [n, [device, width, height, scheme]] of passes.entries()) {
-  const page = await browser.newPage({ viewport: { width, height }, colorScheme: scheme, locale: "it-IT" });
+  const page = await browser.newPage({
+    viewport: { width, height },
+    colorScheme: scheme,
+    locale: "it-IT",
+  });
   page.on("pageerror", (e) => console.error("pageerror:", e.message));
   const shot = (name) => page.screenshot({ path: `${out}/pagina-${device}-${scheme}-${name}.png` });
   await page.goto(`${url}/#token=${token}`);
@@ -39,9 +43,12 @@ for (const [n, [device, width, height, scheme]] of passes.entries()) {
   await page.waitForSelector(".question-card .option", { timeout: 15_000 });
   await page.waitForTimeout(500);
   await shot("01-domanda");
-  await page.locator(".question-card").first().screenshot({
-    path: `${out}/pagina-${device}-${scheme}-01b-scheda.png`,
-  });
+  await page
+    .locator(".question-card")
+    .first()
+    .screenshot({
+      path: `${out}/pagina-${device}-${scheme}-01b-scheda.png`,
+    });
   await page.locator(".question-card .option", { hasText: "300 W" }).click();
   await page.waitForTimeout(300);
   await shot("02-scelta");

@@ -23,7 +23,10 @@ createInterface({ input: process.stdin }).on("line", (line) => {
         },
       },
     });
-    send({ method: "turn/completed", params: { ...at, turn: { id: at.turnId, status: "completed" } } });
+    send({
+      method: "turn/completed",
+      params: { ...at, turn: { id: at.turnId, status: "completed" } },
+    });
     return;
   }
   switch (m.method) {
