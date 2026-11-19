@@ -1770,6 +1770,16 @@
         300
       ],
       "note": "The Canvas's frame (SideArea.tsx and Canvas.tsx's head): tabs with «Chat» and «Maximize», the bar (name, kind and weight from title, save state, the agent's move, the tab's own buttons from bar, keyboard map, reload, download, full screen, open outside), the divider; on a phone the Canvas screen with the same tabs. A few web views alive together (three, two on a phone, one on Linux), the others loaded again on return. Ctrl/Cmd+S, Z, Shift+Z, F passed to the page."
+    },
+    "subagentSign": {
+      "app": "native",
+      "files": [
+        "lib/mascot/subagent_sign.dart",
+        "lib/mascot/mascot_view.dart",
+        "lib/mascot/mascot_source.dart",
+        "lib/app.dart"
+      ],
+      "note": "A sub-agent's sign instead of a mascot (decision of 2026-11-19, board choice A): the ring in its parent's colour, the same drawing as the page's subagentSignSvg (Mascot.tsx), checked pixel by pixel against the library (test/subagent_sign_test.dart). Every MascotView of a sub-agent shows it: tabs, team, Room, approvals, the computer's rail and lists."
     }
   }
 }

@@ -62,16 +62,35 @@ describe("mascot seeds", () => {
     expect(new Set(faces).size).toBe(faces.length);
   });
 
-  it("makes a subagent look like its parent", async () => {
+  // Decision «Mascotte solo per orchestratori e agenti di primo livello» (2026-11-19).
+  it("gives a subagent no mascot: no seed, no spec, no preview, no change", async () => {
     const { orch } = await team();
     const coder = await registry.create(human, { kind: "agent", parentId: orch.id, name: "Coder" });
     const sub = await registry.create(
       { type: "agent", agent: coder },
       { kind: "subagent", parentId: coder.id, name: "Tester" },
     );
-    const p = registry.mascotOf(coder.id);
-    const s = registry.mascotOf(sub.id);
-    expect([s?.body, s?.hue, s?.head, s?.pattern]).toEqual([p?.body, p?.hue, p?.head, p?.pattern]);
+    expect(sub.mascotSeed).toBeUndefined();
+    expect(registry.mascotOf(sub.id)).toBeUndefined();
+    const row = await db.query<{ mascot_seed: string | null }>(
+      "SELECT mascot_seed FROM rg_agents WHERE id = $1",
+      [sub.id],
+    );
+    expect(row[0]?.mascot_seed).toBeNull();
+    expect(registry.previewMascot("me", "Tester", "subagent")).toBeUndefined();
+    expect(registry.previewMascot("me", "Tester", "agent")?.kind).toBe("agent");
+    await expect(registry.changeMascot(human, sub.id)).rejects.toThrow(HierarchyError);
+    // A restart does not give it one, and an older sub-agent that kept a seed shows none.
+    await db.query("UPDATE rg_agents SET mascot_seed = 'Tester' WHERE id = $1", [sub.id]);
+    const again = new AgentRegistry(db, store);
+    await again.load();
+    expect(again.mascotOf(sub.id)).toBeUndefined();
+    await db.query("UPDATE rg_agents SET mascot_seed = NULL WHERE id = $1", [sub.id]);
+    const later = new AgentRegistry(db, store);
+    await later.load();
+    expect(later.get(sub.id)?.mascotSeed).toBeUndefined();
+    const logged = await store.list({ types: ["agent.mascot_changed"] });
+    expect(logged.some((e) => (e.payload as { agentId: string }).agentId === sub.id)).toBe(false);
   });
 
   it("gives the agents made before mascots their name of today, once, saved and logged", async () => {

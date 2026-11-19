@@ -1258,7 +1258,7 @@ function SubTabButton({
     >
       <button type="button" role="tab" aria-selected={on} class="sub-tab-main" onClick={select}>
         <span role="img" class={`sub-dot ${status}`} aria-label={t(`subStatus_${status}`)} />
-        {/* The subagent's face: like its parent's (G40.2). */}
+        {/* The sub-agent's sign: the ring in its parent's colour (2026-11-19). */}
         {childAgent && <Mascot agent={childAgent} size={16} decorative />}
         <span class="sub-tab-title">{tab.title}</span>
         {fresh && (

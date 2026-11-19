@@ -723,3 +723,79 @@ export const MASCOT_STATES: readonly MascotState[] = [
 
 /** The assistants' cold hues (for tests). */
 export const COLD_HUES_FOR_TEST: readonly number[] = COLD;
+
+/**
+ * Whether an agent has a mascot of its own (decision «Mascotte solo per orchestratori e agenti di
+ * primo livello», 2026-11-19): the first level, every lasting kind (God, the Demi-God,
+ * orchestrators, agents, assistants, inspectors), made by the person or by an agent as part of the
+ * team. A sub-agent never does: an agent opens it for one task (`run_subagent`, `run_subagents`)
+ * and it stops when the task ends, so it shows `subagentSignSvg` instead. The kind decides, not
+ * the `persistent` flag.
+ */
+export function hasOwnMascot(a: { kind: AgentKind; persistent?: boolean }): boolean {
+  return a.kind !== "subagent";
+}
+
+/** The sign's colours in one theme: the ring (the parent's body), the blocked red, the badge. */
+export interface SubagentSignColors {
+  ring: string;
+  err: string;
+  accent: string;
+  /** The badge's outline: the surface it sits on. */
+  panel: string;
+}
+
+/** A sub-agent's sign colours: its parent's body colour, or a neutral grey without a parent. */
+export function subagentSignColors(
+  parent: MascotSpec | undefined,
+  theme: MascotTheme,
+): SubagentSignColors {
+  const t = THEMES[theme];
+  return {
+    ring: parent ? parent.colors[theme].body : t.dim,
+    err: t.err,
+    accent: t.accent,
+    panel: t.panel,
+  };
+}
+
+/**
+ * The sign a sub-agent shows instead of a mascot (board «segno dei sotto-agenti», choice A): a
+ * ring in its parent's colour with a dot in the middle, on a 24x24 box. Asleep the ring fades and
+ * the dot goes; working, an arc turns on a faded ring (`spin`); thinking, the dot pulses (`pulse`);
+ * waiting for the person, a red badge blinks (`blink`); blocked, the ring turns red with a cross.
+ * Without a theme the page's CSS colours it (`--h`, `--c`, `--mL`, `--err`, `--accent`); with one
+ * the colours are written in (the app's painter mirrors this drawing, `subagent_sign.dart`).
+ */
+export function subagentSignSvg(
+  parent: MascotSpec | undefined,
+  options: MascotSvgOptions = {},
+): string {
+  const state = options.state ?? "idle";
+  const size = options.size ?? 24;
+  const c = options.theme ? subagentSignColors(parent, options.theme) : undefined;
+  const ringCol = state === "error" ? (c?.err ?? "") : (c?.ring ?? "");
+  const stroke = (cls: string, col: string) => (c ? `stroke="${col}"` : `class="${cls}"`);
+  const fill = (cls: string, col: string) => (c ? `fill="${col}"` : `class="${cls}"`);
+  const ringCls = state === "error" ? "sge" : "sgr";
+  let inner: string;
+  if (state === "work") {
+    inner =
+      `<circle cx="12" cy="12" r="8" fill="none" ${stroke(ringCls, ringCol)} stroke-width="3.2" stroke-opacity=".3"/>` +
+      `<g class="spin" style="transform-origin:12px 12px"><path d="M20 12A8 8 0 0 1 8.67 19.27" fill="none" ${stroke(ringCls, ringCol)} stroke-width="3.2" stroke-linecap="round"/></g>`;
+  } else {
+    inner = `<circle cx="12" cy="12" r="8" fill="none" ${stroke(ringCls, ringCol)} stroke-width="3.2"${state === "idle" ? ' stroke-opacity=".5"' : ""}/>`;
+  }
+  if (state === "error")
+    inner += `<path d="M9.8 9.8l4.4 4.4M14.2 9.8l-4.4 4.4" fill="none" ${stroke("sge", c?.err ?? "")} stroke-width="2.2" stroke-linecap="round"/>`;
+  else if (state !== "idle")
+    inner += `<g class="${state === "think" ? "pulse" : "dot"}" style="transform-origin:12px 12px"><circle cx="12" cy="12" r="3" ${fill("sgf", c?.ring ?? "")}/></g>`;
+  if (state === "wait")
+    inner += `<g class="blink"><circle cx="19.5" cy="4.5" r="3.6" ${c ? `fill="${c.accent}" stroke="${c.panel}"` : 'class="sgw"'} stroke-width="1.6"/></g>`;
+  const a11y = options.label
+    ? `role="img" aria-label="${escapeAttr(options.label)}"`
+    : `aria-hidden="true"`;
+  const hue = parent?.hue ?? 0;
+  const chroma = parent ? parent.chroma : 0;
+  return `<svg xmlns="http://www.w3.org/2000/svg" class="sgn st-${state}" viewBox="0 0 24 24" width="${size}" height="${size}" style="--h:${hue};--c:${chroma}" ${a11y}>${inner}</svg>`;
+}

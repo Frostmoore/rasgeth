@@ -6816,6 +6816,9 @@ const en = {
   imgPasted: "Picture pasted as a new layer",
   imgPasteFailed: "Cannot paste the picture: {reason}",
   imgPasteNone: "There is no picture on the clipboard",
+  subagentSignOf: "Sub-agent {name}, {state}",
+  mascotSubHelp:
+    "A sub-agent has no mascot of its own: it lives for one task, and shows a ring in its parent's colour.",
 } as const;
 
 export type Key = keyof typeof en;
@@ -13724,6 +13727,9 @@ const it: Record<Key, string> = {
   imgPasted: "Immagine incollata in un livello nuovo",
   imgPasteFailed: "Non riesco a incollare l'immagine: {reason}",
   imgPasteNone: "Negli appunti non c'è un'immagine",
+  subagentSignOf: "Sotto-agente {name}, {state}",
+  mascotSubHelp:
+    "Un sotto-agente non ha una mascotte sua: vive per un compito, e mostra un anello nel colore del genitore.",
 };
 
 export const dictionaries: Record<Lang, Record<Key, string>> = { en, it };

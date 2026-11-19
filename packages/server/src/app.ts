@@ -18,7 +18,7 @@ import {
 } from "@redgiant/extensions";
 import { teamsAppPackage } from "@redgiant/gateway";
 import { AgentLimitError, can, HierarchyError } from "@redgiant/hierarchy";
-import { mascotSvg } from "@redgiant/mascot";
+import { hasOwnMascot, mascotSvg, subagentSignSvg } from "@redgiant/mascot";
 import {
   AgentKind,
   ARTIFACT_SANDBOX,
@@ -1325,18 +1325,32 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     return c.json(agentOut(updated, core.registry), 200);
   });
   // An agent's mascot (G40.2): the spec the app paints, or the page's drawing as an SVG file
-  // (`?format=svg`, with `state`, `size` and `theme` light or dark: colours written in).
+  // (`?format=svg`, with `state`, `size` and `theme` light or dark: colours written in). A
+  // sub-agent has no spec (2026-11-19); as SVG it is its sign, the ring in its parent's colour.
   app.get("/api/agents/:id/mascot", (c) => {
     const id = c.req.param("id");
-    const spec = core.registry.get(id)?.ownerId === owner(c) && core.registry.mascotOf(id);
-    if (!spec) return c.json({ error: "Agent not found" }, 404);
-    if (c.req.query("format") !== "svg") return c.json(spec, 200);
+    const agent = core.registry.get(id);
+    if (!agent || agent.ownerId !== owner(c)) return c.json({ error: "Agent not found" }, 404);
+    const sub = !hasOwnMascot(agent);
+    const spec = sub ? undefined : core.registry.mascotOf(id);
+    const svg = c.req.query("format") === "svg";
+    if (!svg)
+      return spec
+        ? c.json(spec, 200)
+        : c.json({ error: "A sub-agent has no mascot of its own" }, 404);
     const state = MascotState.safeParse(c.req.query("state") ?? "idle");
     const theme = c.req.query("theme") ?? "light";
     const size = Number(c.req.query("size") ?? 128);
     if (!state.success || (theme !== "light" && theme !== "dark") || !(size >= 16 && size <= 1024))
       return c.json({ error: "state, theme (light, dark) or size (16-1024) not valid" }, 400);
-    return c.body(mascotSvg(spec, { state: state.data, theme, size, idPrefix: "m" }), 200, {
+    const drawing = spec
+      ? mascotSvg(spec, { state: state.data, theme, size, idPrefix: "m" })
+      : subagentSignSvg(agent.parentId ? core.registry.mascotOf(agent.parentId) : undefined, {
+          state: state.data,
+          theme,
+          size,
+        });
+    return c.body(drawing, 200, {
       "Content-Type": "image/svg+xml; charset=utf-8",
       "Cache-Control": "no-store",
     });
@@ -1346,10 +1360,10 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.get("/api/mascot/preview", (c) => {
     const kind = AgentKind.safeParse(c.req.query("kind") ?? "agent");
     const name = (c.req.query("name") ?? "").trim();
-    const parentId = c.req.query("parentId") || null;
     if (!kind.success || !name || name.length > 60)
       return c.json({ error: "A kind and a name (1-60) are needed" }, 400);
-    const spec = core.registry.previewMascot(owner(c), name, kind.data, parentId);
+    const spec = core.registry.previewMascot(owner(c), name, kind.data);
+    if (!spec) return c.json({ error: "A sub-agent has no mascot of its own" }, 400);
     if (c.req.query("format") !== "svg") return c.json(spec, 200);
     const state = MascotState.safeParse(c.req.query("state") ?? "idle");
     const theme = c.req.query("theme") ?? "light";

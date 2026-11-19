@@ -827,6 +827,14 @@ class AppController extends ChangeNotifier {
 
   /// Team's «Agents» grid: first level without God, the Chat and Demi-God (Telegram's voice: it
   /// stays in the full list in the settings), favourites first, then by name; filtered.
+  /// The agent with [id] among those the app knows (the mascots ask: a sub-agent shows its sign).
+  Agent? agentWithId(String id) {
+    for (final a in agents) {
+      if (a.id == id) return a;
+    }
+    return null;
+  }
+
   List<Agent> teamShown() {
     final first = agents
         .where(
