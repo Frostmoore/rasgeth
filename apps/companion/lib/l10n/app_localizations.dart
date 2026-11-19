@@ -17906,6 +17906,342 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.'**
   String get cvMediaNativeHelp;
+
+  /// Settings › Portrait (3.9.4, «Mirror»): the page's `pr*` words (packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Portrait'**
+  String get ptrSection;
+
+  /// No description provided for @ptrHub.
+  ///
+  /// In en, this message translates to:
+  /// **'How the agents see you, built from your conversations'**
+  String get ptrHub;
+
+  /// No description provided for @ptrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How the agents see you'**
+  String get ptrTitle;
+
+  /// No description provided for @ptrLead.
+  ///
+  /// In en, this message translates to:
+  /// **'This portrait builds itself from your conversations: your tastes, how you like to be spoken to, your habits, what you are working on, what to avoid. The agents you choose read it when a conversation starts. Correct it whenever you like: your word always wins.'**
+  String get ptrLead;
+
+  /// No description provided for @ptrOnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Build the portrait from the conversations'**
+  String get ptrOnTitle;
+
+  /// No description provided for @ptrOnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'After a conversation goes quiet, a light model reads only your own messages and updates the portrait. It never notes passwords, keys, email addresses, phone numbers or things about other people. It spends a little from your budget.'**
+  String get ptrOnOn;
+
+  /// No description provided for @ptrOnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: the portrait does not change and no agent reads it. What is here stays until you delete it.'**
+  String get ptrOnOff;
+
+  /// No description provided for @ptrWhoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who reads it'**
+  String get ptrWhoTitle;
+
+  /// No description provided for @ptrWhoLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes count from the next conversation: the ones already open go on as they were.'**
+  String get ptrWhoLead;
+
+  /// No description provided for @ptrWho_god.
+  ///
+  /// In en, this message translates to:
+  /// **'God'**
+  String get ptrWho_god;
+
+  /// No description provided for @ptrWho_orchestrators.
+  ///
+  /// In en, this message translates to:
+  /// **'The projects\' orchestrators'**
+  String get ptrWho_orchestrators;
+
+  /// No description provided for @ptrWho_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'The Chat'**
+  String get ptrWho_chat;
+
+  /// No description provided for @ptrWho_others.
+  ///
+  /// In en, this message translates to:
+  /// **'Every other agent'**
+  String get ptrWho_others;
+
+  /// No description provided for @ptrListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Traits'**
+  String get ptrListTitle;
+
+  /// No description provided for @ptrListLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Each trait says how sure it is and where it comes from. A trait no conversation says again fades with time.'**
+  String get ptrListLead;
+
+  /// No description provided for @ptrCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} traits'**
+  String ptrCount(String n);
+
+  /// No description provided for @ptrCountOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 trait'**
+  String get ptrCountOne;
+
+  /// No description provided for @ptrEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No traits yet: the portrait fills in as you talk with the agents.'**
+  String get ptrEmpty;
+
+  /// No description provided for @ptrEmptyOff.
+  ///
+  /// In en, this message translates to:
+  /// **'The portrait is off and empty.'**
+  String get ptrEmptyOff;
+
+  /// No description provided for @ptrAddPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a trait yourself, e.g. I like answers with examples'**
+  String get ptrAddPlaceholder;
+
+  /// No description provided for @ptrAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get ptrAdd;
+
+  /// No description provided for @ptrCat_preference.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get ptrCat_preference;
+
+  /// No description provided for @ptrCat_style.
+  ///
+  /// In en, this message translates to:
+  /// **'How to talk to you'**
+  String get ptrCat_style;
+
+  /// No description provided for @ptrCat_habit.
+  ///
+  /// In en, this message translates to:
+  /// **'Habits'**
+  String get ptrCat_habit;
+
+  /// No description provided for @ptrCat_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Current projects'**
+  String get ptrCat_project;
+
+  /// No description provided for @ptrCat_avoid.
+  ///
+  /// In en, this message translates to:
+  /// **'To avoid'**
+  String get ptrCat_avoid;
+
+  /// No description provided for @ptrCat_about.
+  ///
+  /// In en, this message translates to:
+  /// **'About you'**
+  String get ptrCat_about;
+
+  /// No description provided for @ptrSure.
+  ///
+  /// In en, this message translates to:
+  /// **'Sure'**
+  String get ptrSure;
+
+  /// No description provided for @ptrLikely.
+  ///
+  /// In en, this message translates to:
+  /// **'Likely'**
+  String get ptrLikely;
+
+  /// No description provided for @ptrUnsure.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sure yet'**
+  String get ptrUnsure;
+
+  /// No description provided for @ptrByYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Written by you'**
+  String get ptrByYou;
+
+  /// No description provided for @ptrSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'seen {n} times'**
+  String ptrSeen(String n);
+
+  /// No description provided for @ptrSeenOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'seen once'**
+  String get ptrSeenOnce;
+
+  /// No description provided for @ptrWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it comes from'**
+  String get ptrWhere;
+
+  /// No description provided for @ptrUntitled.
+  ///
+  /// In en, this message translates to:
+  /// **'A conversation'**
+  String get ptrUntitled;
+
+  /// No description provided for @ptrWith.
+  ///
+  /// In en, this message translates to:
+  /// **'with {name}'**
+  String ptrWith(String name);
+
+  /// No description provided for @ptrEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get ptrEdit;
+
+  /// No description provided for @ptrRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get ptrRemove;
+
+  /// No description provided for @ptrDeny.
+  ///
+  /// In en, this message translates to:
+  /// **'Not true'**
+  String get ptrDeny;
+
+  /// No description provided for @ptrEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the trait'**
+  String get ptrEditTitle;
+
+  /// No description provided for @ptrEditNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Once you change it, the trait is yours: it never fades and nothing changes it by itself.'**
+  String get ptrEditNote;
+
+  /// No description provided for @ptrDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} traits you said are not true: they will not be proposed again.'**
+  String ptrDenied(String n);
+
+  /// No description provided for @ptrDeniedOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 trait you said is not true: it will not be proposed again.'**
+  String get ptrDeniedOne;
+
+  /// No description provided for @ptrTextTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What the agents read'**
+  String get ptrTextTitle;
+
+  /// No description provided for @ptrTextLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The portrait exactly as it goes into a new conversation, short and always the same until it changes.'**
+  String get ptrTextLead;
+
+  /// No description provided for @ptrTextShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the text'**
+  String get ptrTextShow;
+
+  /// No description provided for @ptrTextHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the text'**
+  String get ptrTextHide;
+
+  /// No description provided for @ptrForgetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget everything'**
+  String get ptrForgetTitle;
+
+  /// No description provided for @ptrForgetLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Every trait goes, and its words go from the history too. It cannot be undone.'**
+  String get ptrForgetLead;
+
+  /// No description provided for @ptrForgetText.
+  ///
+  /// In en, this message translates to:
+  /// **'Every trait of the portrait is deleted and its words erased from the history, the «not true» ones too. The portrait starts again empty.'**
+  String get ptrForgetText;
+
+  /// No description provided for @ptrForget.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget everything'**
+  String get ptrForget;
+
+  /// No description provided for @ptrErr_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the trait.'**
+  String get ptrErr_empty;
+
+  /// No description provided for @ptrErr_long.
+  ///
+  /// In en, this message translates to:
+  /// **'A trait is at most 200 characters: write it shorter.'**
+  String get ptrErr_long;
+
+  /// No description provided for @ptrErr_secret.
+  ///
+  /// In en, this message translates to:
+  /// **'That looks like a password, a code or a card number: secrets never go into the portrait.'**
+  String get ptrErr_secret;
+
+  /// No description provided for @ptrErr_private.
+  ///
+  /// In en, this message translates to:
+  /// **'Email addresses and phone numbers never go into the portrait.'**
+  String get ptrErr_private;
+
+  /// No description provided for @ptrErr_gone.
+  ///
+  /// In en, this message translates to:
+  /// **'That trait is not there any more.'**
+  String get ptrErr_gone;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

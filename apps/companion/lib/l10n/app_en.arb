@@ -7826,5 +7826,92 @@
   "cvMediaNativeHelp": "Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.",
   "@cvMediaNativeHelp": {
     "description": "The page's `mediaNativeHelp` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
-  }
+  },
+  "ptrSection": "Portrait",
+  "@ptrSection": {
+    "description": "Settings › Portrait (3.9.4, «Mirror»): the page's `pr*` words (packages/web/src/i18n.ts)."
+  },
+  "ptrHub": "How the agents see you, built from your conversations",
+  "ptrTitle": "How the agents see you",
+  "ptrLead": "This portrait builds itself from your conversations: your tastes, how you like to be spoken to, your habits, what you are working on, what to avoid. The agents you choose read it when a conversation starts. Correct it whenever you like: your word always wins.",
+  "ptrOnTitle": "Build the portrait from the conversations",
+  "ptrOnOn": "After a conversation goes quiet, a light model reads only your own messages and updates the portrait. It never notes passwords, keys, email addresses, phone numbers or things about other people. It spends a little from your budget.",
+  "ptrOnOff": "Off: the portrait does not change and no agent reads it. What is here stays until you delete it.",
+  "ptrWhoTitle": "Who reads it",
+  "ptrWhoLead": "Changes count from the next conversation: the ones already open go on as they were.",
+  "ptrWho_god": "God",
+  "ptrWho_orchestrators": "The projects' orchestrators",
+  "ptrWho_chat": "The Chat",
+  "ptrWho_others": "Every other agent",
+  "ptrListTitle": "Traits",
+  "ptrListLead": "Each trait says how sure it is and where it comes from. A trait no conversation says again fades with time.",
+  "ptrCount": "{n} traits",
+  "@ptrCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "ptrCountOne": "1 trait",
+  "ptrEmpty": "No traits yet: the portrait fills in as you talk with the agents.",
+  "ptrEmptyOff": "The portrait is off and empty.",
+  "ptrAddPlaceholder": "Add a trait yourself, e.g. I like answers with examples",
+  "ptrAdd": "Add",
+  "ptrCat_preference": "Preferences",
+  "ptrCat_style": "How to talk to you",
+  "ptrCat_habit": "Habits",
+  "ptrCat_project": "Current projects",
+  "ptrCat_avoid": "To avoid",
+  "ptrCat_about": "About you",
+  "ptrSure": "Sure",
+  "ptrLikely": "Likely",
+  "ptrUnsure": "Not sure yet",
+  "ptrByYou": "Written by you",
+  "ptrSeen": "seen {n} times",
+  "@ptrSeen": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "ptrSeenOnce": "seen once",
+  "ptrWhere": "Where it comes from",
+  "ptrUntitled": "A conversation",
+  "ptrWith": "with {name}",
+  "@ptrWith": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptrEdit": "Change",
+  "ptrRemove": "Remove",
+  "ptrDeny": "Not true",
+  "ptrEditTitle": "Change the trait",
+  "ptrEditNote": "Once you change it, the trait is yours: it never fades and nothing changes it by itself.",
+  "ptrDenied": "{n} traits you said are not true: they will not be proposed again.",
+  "@ptrDenied": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "ptrDeniedOne": "1 trait you said is not true: it will not be proposed again.",
+  "ptrTextTitle": "What the agents read",
+  "ptrTextLead": "The portrait exactly as it goes into a new conversation, short and always the same until it changes.",
+  "ptrTextShow": "Show the text",
+  "ptrTextHide": "Hide the text",
+  "ptrForgetTitle": "Forget everything",
+  "ptrForgetLead": "Every trait goes, and its words go from the history too. It cannot be undone.",
+  "ptrForgetText": "Every trait of the portrait is deleted and its words erased from the history, the «not true» ones too. The portrait starts again empty.",
+  "ptrForget": "Forget everything",
+  "ptrErr_empty": "Write the trait.",
+  "ptrErr_long": "A trait is at most 200 characters: write it shorter.",
+  "ptrErr_secret": "That looks like a password, a code or a card number: secrets never go into the portrait.",
+  "ptrErr_private": "Email addresses and phone numbers never go into the portrait.",
+  "ptrErr_gone": "That trait is not there any more."
 }

@@ -7,6 +7,7 @@ import 'dart:io';
 import 'fake_automations.dart';
 import 'fake_files.dart';
 import 'fake_knowledge.dart';
+import 'fake_portrait.dart';
 import 'helpers.dart';
 
 class FakeRedGiant {
@@ -20,6 +21,9 @@ class FakeRedGiant {
 
   /// G42.10: the knowledge and the shared memory in memory (null: the canned answers below).
   FakeKnowledge? knowledge;
+
+  /// 3.9.4: the person's portrait in memory (null: no portrait routes).
+  FakePortrait? portrait;
   bool codeOn = false;
   int appProtocol = 1;
   int wrongTries = 0;
@@ -952,6 +956,7 @@ class FakeRedGiant {
     if (!tokens.contains(token)) return _json(r, 401, {'error': 'Unauthorized'});
     if (files case final fs? when await fs.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (knowledge case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
+    if (portrait case final p? when await p.handle(r, path, (s, b) => _json(r, s, b))) return;
     final own = routes['${r.method} $path'];
     if (own != null) return own(r);
     if (await automations.handle(r, path, (s, b) => _json(r, s, b))) return;
