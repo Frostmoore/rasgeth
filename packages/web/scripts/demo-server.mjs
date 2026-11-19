@@ -2269,6 +2269,35 @@ await writeFile(join(dir, "models", "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf.part"), "de
     "- Il punto della giornata alle 8, in tre righe\n- Le riunioni del giovedì sono con lo studio Bianchi",
   );
 }
+// The person's portrait (3.9.4, «Mirror»): traits learned from a conversation, one written by
+// the person; one said not true.
+{
+  const source = { sessionId: sid, agentId: orch.id, at: new Date().toISOString() };
+  const learned = (traitId, category, text, confidence) =>
+    core.store.append({
+      ownerId: "local",
+      sessionId: sid,
+      agentId: orch.id,
+      body: {
+        type: "portrait.trait",
+        payload: { traitId, op: "add", category, text, confidence, source, by: "auto" },
+      },
+    });
+  await learned("pt1", "style", "Preferisce risposte brevi, con un elenco solo quando serve", 0.8);
+  await learned("pt2", "style", "Gli piace che gli si dia del tu, senza giri di parole", 0.6);
+  await learned(
+    "pt3",
+    "project",
+    "Sta portando Rasgeth alla 3.9 con il ritratto e la ricerca",
+    0.6,
+  );
+  await learned("pt4", "habit", "Lavora spesso la sera tardi", 0.4);
+  await learned("pt5", "avoid", "Non proporre servizi cloud di terzi per i dati personali", 0.7);
+  await learned("pt6", "about", "Vive in Italia e scrive in italiano", 0.3);
+  await core.portrait.add("local", "Gli piace il tè verde", "preference");
+  await learned("pt7", "about", "Ha un cane", 0.5);
+  await core.portrait.deny("local", "pt7");
+}
 // G34: DEMO_SAMPLES=<folder>: God shows every file of it in the canvas, one message each.
 // p3.3.1, DEMO_SUBAGENTS=1: God's conversation with sub-agents at work (one finished, one failed,
 // one waiting for the person's yes with a sub-agent of its own), and a local model's file as a
@@ -3719,7 +3748,12 @@ if (process.env.DEMO_NATIVE) {
     source: "server",
   });
   const say = (t, text) =>
-    t.onMessage({ parts: [{ type: "text", text }], stopReason: "end_turn", metrics: metrics(), model: t.model.model });
+    t.onMessage({
+      parts: [{ type: "text", text }],
+      stopReason: "end_turn",
+      metrics: metrics(),
+      model: t.model.model,
+    });
   core.providers.register({
     id: "chatgpt-subscription",
     nativeFolder,
@@ -3732,19 +3766,38 @@ if (process.env.DEMO_NATIVE) {
       id: "chatgpt-subscription",
       async turn(t) {
         if (/cavallo/i.test(t.text) && !/lentamente/i.test(t.text)) {
-          await t.onNativeStart?.({ id: "ig_demo1", kind: "image", prompt: "Una stella gigante rossa nel cielo scuro" });
+          await t.onNativeStart?.({
+            id: "ig_demo1",
+            kind: "image",
+            prompt: "Una stella gigante rossa nel cielo scuro",
+          });
           await mkdir(join(nativeFolder, "th-demo"), { recursive: true });
           const file = join(nativeFolder, "th-demo", "ig_demo1.png");
           await writeFile(file, star());
-          await t.onNativeMade?.({ id: "ig_demo1", kind: "image", path: file, prompt: "Una stella gigante rossa nel cielo scuro" });
-          await say(t, "Ecco la stella: la trovi qui sopra, ed è salvata anche nella tua cartella.");
+          await t.onNativeMade?.({
+            id: "ig_demo1",
+            kind: "image",
+            path: file,
+            prompt: "Una stella gigante rossa nel cielo scuro",
+          });
+          await say(
+            t,
+            "Ecco la stella: la trovi qui sopra, ed è salvata anche nella tua cartella.",
+          );
         } else if (/lentamente/i.test(t.text)) {
-          await t.onNativeStart?.({ id: "ig_demo2", kind: "image", prompt: "Un cavallo al tramonto" });
+          await t.onNativeStart?.({
+            id: "ig_demo2",
+            kind: "image",
+            prompt: "Un cavallo al tramonto",
+          });
           // Drawing until the person stops it: the «generating» card stays.
           await new Promise((ok) => t.signal?.addEventListener("abort", ok, { once: true }));
           return { resume: "th-demo2", stopReason: "aborted" };
         } else if (/percorso/i.test(t.text)) {
-          await say(t, "Te l'ho preparata: ![cavallo](/data/engines/codex/generated_images/th-1/ig_1.png)");
+          await say(
+            t,
+            "Te l'ho preparata: ![cavallo](/data/engines/codex/generated_images/th-1/ig_1.png)",
+          );
         } else await say(t, "Fatto.");
         return { resume: "th-demo", stopReason: "end_turn" };
       },
@@ -3765,7 +3818,8 @@ if (process.env.DEMO_NATIVE) {
   ]) {
     const s = await core.startSession("local", codexAgent.id);
     await core.nameSession(s, title);
-    const r = await (await core.send("local", s, key === "done" ? "Disegna il cavallo" : text)).done;
+    const r = await (await core.send("local", s, key === "done" ? "Disegna il cavallo" : text))
+      .done;
     console.log(`demo native ${key}: ${r.stopReason} ${r.reason ?? ""}`);
     nativeSessions[key] = s;
   }
@@ -3777,7 +3831,14 @@ if (process.env.DEMO_NATIVE) {
     sessionId: nativeSessions.path,
     body: {
       type: "file.sent",
-      payload: { scope: "assistants", path: "images/manca.png", name: "manca.png", size: 81234, mime: "image/png", caption: "Una foto che non c'è più" },
+      payload: {
+        scope: "assistants",
+        path: "images/manca.png",
+        name: "manca.png",
+        size: 81234,
+        mime: "image/png",
+        caption: "Una foto che non c'è più",
+      },
     },
   });
   const slow = await core.startSession("local", codexAgent.id);
