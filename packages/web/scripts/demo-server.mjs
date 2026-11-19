@@ -1352,6 +1352,38 @@ await core.extensions.propose({
     untestableReason: "Style is judged by reading.",
   },
 });
+// 3.9.7: the skill improved with use: an agent's new version approved by the person, and one more
+// waiting, with its reason and what changes.
+{
+  const notes = (body, summary) => ({
+    kind: "skill",
+    name: "release-notes",
+    description: "How we write release notes",
+    body,
+    untestableReason: "Style is judged by reading.",
+    summary,
+    updates: true,
+  });
+  const first = await core.extensions.propose({
+    ownerId: "local",
+    projectId: null,
+    author: coder.id,
+    input: notes(
+      "Group changes by user impact; one line each. Put breaking changes first, with what to do.",
+      "The person had to ask twice for the breaking changes: they were buried at the end.",
+    ),
+  });
+  await core.extensions.decide("local", first.id, "approve", "human");
+  await core.extensions.propose({
+    ownerId: "local",
+    projectId: null,
+    author: coder.id,
+    input: notes(
+      "Group changes by user impact; one line each. Put breaking changes first, with what to do. Link every line to its pull request.",
+      "Twice the person asked where a change came from: a link to the pull request answers it at once.",
+    ),
+  });
+}
 await core.setMcp("local", {
   name: "docs",
   projectId: null,
