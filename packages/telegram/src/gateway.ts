@@ -267,7 +267,8 @@ export class TelegramGateway {
   /** Reads the bot's identity (also validates the token). */
   async init(): Promise<{ username: string }> {
     if (!this.me) {
-      await this.bot.init();
+      // grammY waits up to 500 s for an answer: without a network that held the start (3.9.1).
+      await this.bot.init(AbortSignal.timeout(20_000) as Parameters<Bot["init"]>[0]);
       this.me = { username: this.bot.botInfo.username };
     }
     return this.me;

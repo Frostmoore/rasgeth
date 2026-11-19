@@ -24,6 +24,7 @@ import '../screens/you_screen.dart';
 import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/icons.dart';
+import '../ui/no_internet_notice.dart';
 import '../ui/rename_notice.dart';
 import '../ui/send_keys.dart';
 import '../ui/turn_queue_view.dart';
@@ -716,6 +717,7 @@ class _DesktopShellState extends State<DesktopShell> {
                   onBell: () => unawaited(_bell()),
                 ),
                 const RenameNotice(),
+                const NoInternetNotice(),
                 Expanded(
                   child: Stack(
                     children: [

@@ -19,6 +19,7 @@ import {
   IconTree,
   IconUser,
   IconUsers,
+  IconWifi,
   Logo,
 } from "../icons.js";
 import {
@@ -549,6 +550,12 @@ export function App() {
           </button>
         </div>
       ))}
+      {info?.waitingNetwork && info.waitingNetwork.length > 0 && (
+        <div class="banner no-internet">
+          <IconWifi />{" "}
+          {t("noInternet", { parts: info.waitingNetwork.map((p) => p.label).join(", ") })}
+        </div>
+      )}
       {info?.metal && (
         <div class="banner error">
           <IconAlert /> {t("metalWarning")}

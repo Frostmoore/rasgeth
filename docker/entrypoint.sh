@@ -5,12 +5,45 @@
 #   anything else is run as is
 set -euo pipefail
 
-APP=/opt/redgiant
+# The image's own folder and the server's user; the tests run this script on a folder of theirs
+# and stop before the server (REDGIANT_ENTRYPOINT_PREPARE_ONLY=1).
+APP=${REDGIANT_APP_DIR:-/opt/redgiant}
+OWNER=${REDGIANT_RUN_AS:-node:node}
 DATA=${REDGIANT_DATA_DIR:-/data}
 SRC=$DATA/source
 VERSION=$(cat "$APP/.image-version")
 log() { echo "[entrypoint] $*"; }
 git_() { git -c user.name=Rasgeth -c user.email=rasgeth@localhost -C "$SRC" "$@"; }
+
+# What the image built (dependencies and compiled files, all ignored by git) replaces the source's
+# own (3.9.1). Without a network the supervisor could not install the new version's packages: it
+# went back to the previous version, which did not answer in the new image.
+# The packages (1 GB and more) are copied only when they came from another lockfile.
+image_build() {
+  local built='-type d -name dist'
+  if ! cmp -s "$APP/node_modules/.rasgeth-lockfile" "$SRC/node_modules/.rasgeth-lockfile"; then
+    built='-type d ( -name node_modules -o -name dist )'
+  fi
+  # shellcheck disable=SC2086 # $built is find's own words
+  find "$SRC" \( -path "$SRC/.git" -o -type d -name node_modules ! \( $built \) \) -prune -o \
+    \( $built -prune -exec rm -rf {} + \) -o \( -name '*.tsbuildinfo' -exec rm -f {} + \)
+  # shellcheck disable=SC2086
+  (cd "$APP" && find . \( -type d -name node_modules ! \( $built \) \) -prune -o \
+    \( $built -prune -print \) -o \( -name '*.tsbuildinfo' -print \) | tar -cf - -T -) |
+    tar -xf - -C "$SRC"
+}
+# The supervisor's state says the live commit is built: it starts it without building.
+mark_built() {
+  node -e '
+    const fs = require("fs");
+    const [file, commit] = process.argv.slice(1);
+    let s = { lastGood: null, built: null, history: [] };
+    try { s = JSON.parse(fs.readFileSync(file, "utf8")); } catch {}
+    s.built = commit;
+    fs.writeFileSync(`${file}.tmp`, `${JSON.stringify(s, null, 2)}\n`);
+    fs.renameSync(`${file}.tmp`, file);
+  ' "$DATA/release/release.json" "$(git_ rev-parse HEAD)"
+}
 
 case "${1:-redgiant}" in
   egress)
@@ -35,7 +68,7 @@ if [ ! -d "$SRC/.git" ]; then
   # Already built in the image: the supervisor need not build it again.
   mkdir -p "$DATA/release"
   printf '{"lastGood":null,"built":"%s","history":[]}\n' "$(git_ rev-parse HEAD)" > "$DATA/release/release.json"
-  chown -R node:node "$SRC" "$DATA/release"
+  chown -R "$OWNER" "$SRC" "$DATA/release"
 elif [ "$(cat "$SRC/.git/redgiant-image" 2>/dev/null)" != "$VERSION" ]; then
   # A new image: its source arrives on branch "upstream" and is merged into the live code,
   # God's changes included. The supervisor builds it and rolls back if it does not come up.
@@ -49,12 +82,24 @@ elif [ "$(cat "$SRC/.git/redgiant-image" 2>/dev/null)" != "$VERSION" ]; then
   git_ worktree remove --force "$tmp"
   if git_ merge -q --no-edit -m "Update to Rasgeth $VERSION" upstream; then
     echo "$VERSION" > "$SRC/.git/redgiant-image"
+    image_build
+    mkdir -p "$DATA/release"
+    if git_ diff --quiet upstream HEAD --; then
+      # The live code is the image's own: its build is used as it is (no network, no wait).
+      log "using the build of Rasgeth $VERSION in the image"
+      mark_built
+    else
+      # Changes of God's on top: the supervisor builds them, from the image's packages.
+      log "Rasgeth $VERSION merged with the changes made here; the supervisor builds them"
+    fi
+    chown -R "$OWNER" "$DATA/release"
   else
     git_ merge --abort || true
     log "WARNING: Rasgeth $VERSION conflicts with changes made here; still running the current code. Ask God to merge branch 'upstream'."
   fi
-  chown -R node:node "$SRC"
+  chown -R "$OWNER" "$SRC"
 fi
+[ "${REDGIANT_ENTRYPOINT_PREPARE_ONLY:-}" = 1 ] && exit 0
 
 # The server runs as "node"; it may use the Docker socket (sandboxes) when one is mounted.
 chown node:node "$DATA"

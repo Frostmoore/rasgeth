@@ -17,7 +17,10 @@ WORKDIR /opt/redgiant
 RUN corepack enable
 COPY . .
 # Each processor's own packages (the embedded Postgres, native modules) and the server's TypeScript.
-RUN pnpm install --frozen-lockfile && pnpm exec tsc -b
+# The lockfile they came from stays beside them: the supervisor installs again only when it changes
+# (3.9.1, a build without a network).
+RUN pnpm install --frozen-lockfile && cp pnpm-lock.yaml node_modules/.rasgeth-lockfile \
+ && pnpm exec tsc -b
 COPY --from=web /opt/redgiant/packages/web/dist packages/web/dist
 COPY --from=web /opt/redgiant/packages/browser-extension/dist packages/browser-extension/dist
 # Codex and Claude Code (hundreds of MB) come down only when a subscription is switched on
@@ -55,12 +58,26 @@ COPY --from=build /opt/redgiant /opt/redgiant
 COPY docker/entrypoint.sh /usr/local/bin/redgiant-entrypoint
 # Declared here, at its only use (G36.18): an ARG before a RUN is in that RUN's environment, so a
 # new version made the apt and uv layers new too (3.3.0 → 3.3.1: 373 of 455 MB to download again).
+# pnpm 11 and later are a small package that downloads its native binary the first time it runs
+# (Corepack runs no install scripts): run once here, for root and (the same file) for "node", or
+# every new container downloaded it again, and without internet the supervisor could not build
+# (3.9.1: seen on a Rasgeth OS container after an image change).
 ARG REDGIANT_VERSION=dev
 RUN chmod 755 /usr/local/bin/redgiant-entrypoint \
  && echo "${REDGIANT_VERSION}" > /opt/redgiant/.image-version \
- && corepack prepare "$(node -p "require('/opt/redgiant/package.json').packageManager")" --activate \
- && su node -s /bin/sh -c 'corepack prepare "$(node -p "require(\"/opt/redgiant/package.json\").packageManager")" --activate'
+ && pm="$(node -p "require('/opt/redgiant/package.json').packageManager")" \
+ && corepack prepare "$pm" --activate \
+ && su node -s /bin/sh -c "corepack prepare '$pm' --activate" \
+ && (cd /opt/redgiant && pnpm --version) \
+ && v="${pm#pnpm@}" && v="${v%%+*}" \
+ && ln /root/.cache/node/corepack/v1/pnpm/"$v"/pnpm-native /home/node/.cache/node/corepack/v1/pnpm/"$v"/pnpm-native
+# The image's pnpm works without a network, for root and for "node".
+RUN --network=none (cd /opt/redgiant && pnpm --version) \
+ && su node -s /bin/sh -c 'cd /opt/redgiant && pnpm --version'
+# UV_THREADPOOL_SIZE (3.9.1): name lookups use half of Node's thread pool; without a network the
+# providers' hanging lookups held back the database's (the page stayed blank for 30 s).
 ENV REDGIANT_DATA_DIR=/data \
+    UV_THREADPOOL_SIZE=16 \
     REDGIANT_PORT=7600 \
     REDGIANT_HOST=0.0.0.0 \
     REDGIANT_WEB_DIR=/opt/redgiant/packages/web/dist

@@ -7140,6 +7140,15 @@
   "@renameNoticeOk": {
     "description": "Closes the notice for good (the page's renameOk)."
   },
+  "noInternetNotice": "No internet. Waiting for the network: {parts} (the connection starts again by itself once it is back). Everything else works, local models included.",
+  "@noInternetNotice": {
+    "description": "The server started without internet (3.9.1, the page's noInternet): parts lists what connects once it is back (Anthropic, Telegram...).",
+    "placeholders": {
+      "parts": {
+        "type": "String"
+      }
+    }
+  },
   "auAsstNewRoutine": "New routine",
   "auAutoOff": "Switched off: it does not run until you switch it on.",
   "auAutoOn": "Switched on",

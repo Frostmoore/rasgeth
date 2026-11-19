@@ -2624,6 +2624,7 @@
   "renameNoticeTitle": "RedGiant ora si chiama Rasgeth.",
   "renameNoticeText": "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   "renameNoticeOk": "Ho capito",
+  "noInternetNotice": "Senza internet. In attesa della rete: {parts} (il collegamento riparte da solo appena torna). Tutto il resto funziona, modelli locali compresi.",
   "auAsstNewRoutine": "Nuova routine",
   "auAutoOff": "Spenta: non parte finché non la riaccendi.",
   "auAutoOn": "Accesa",

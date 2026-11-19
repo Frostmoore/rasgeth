@@ -2,7 +2,7 @@
 // Runs the RedGiant server under supervision: rebuilds it when God promotes a change and rolls
 // back to the last good version when the new one does not come up (G14.2).
 import { join, resolve } from "node:path";
-import { Supervisor } from "./supervisor.js";
+import { DEFAULT_BUILD, Supervisor } from "./supervisor.js";
 
 const env = process.env;
 const sourceDir = resolve(env.REDGIANT_SOURCE_DIR ?? process.cwd());
@@ -13,12 +13,15 @@ const port = env.REDGIANT_PORT ?? "7600";
 const supervisor = new Supervisor({
   sourceDir,
   stateDir,
-  build: env.REDGIANT_BUILD_COMMAND ?? "pnpm install --frozen-lockfile && pnpm build",
+  build: env.REDGIANT_BUILD_COMMAND ?? DEFAULT_BUILD,
   start: { command: process.execPath, args: ["packages/server/dist/main.js"] },
   // The server knows it is supervised (it may ask for a restart) and where to leave requests.
   env: {
     ...env,
     REDGIANT_SUPERVISED: "1",
+    // Name lookups use at most half of Node's thread pool (4 threads): without a network the
+    // providers' hanging lookups held back the database's for 30 s (3.9.1). 16: 8 at once.
+    UV_THREADPOOL_SIZE: env.UV_THREADPOOL_SIZE ?? "16",
     REDGIANT_SOURCE_DIR: sourceDir,
     REDGIANT_STATE_DIR: stateDir,
   },

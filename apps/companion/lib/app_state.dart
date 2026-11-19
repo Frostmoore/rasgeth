@@ -37,6 +37,7 @@ import 'push/push_center.dart';
 import 'push/registrar.dart';
 import 'push/system_notifier.dart';
 import 'share/share_intake.dart';
+import 'ui/no_internet_notice.dart';
 import 'voice/audio.dart';
 import 'voice/voice_controller.dart';
 
@@ -201,6 +202,9 @@ class AppController extends ChangeNotifier {
 
   /// Spending and limits for the conversations' header (3.9.0).
   final SpendModel spend = SpendModel();
+
+  /// What on the server waits for the internet (3.9.1): a notice over the home.
+  final NoInternetModel noInternet = NoInternetModel();
   LiveSocket? socket;
   LiveStatus? liveStatus;
   StreamSubscription<Map<String, dynamic>>? _liveSub;
@@ -1160,6 +1164,7 @@ class AppController extends ChangeNotifier {
     final c = client;
     if (c == null) return;
     unawaited(spend.refresh(c));
+    unawaited(noInternet.refresh(c));
     await _loadProjects(c);
     try {
       live.setSessions(await c.sessions());
@@ -1996,6 +2001,7 @@ class AppController extends ChangeNotifier {
     _seenRequests = const {};
     live.clear();
     spend.clear();
+    noInternet.clear();
     unawaited(voice.attach(null, null));
   }
 

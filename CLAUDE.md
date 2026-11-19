@@ -56,6 +56,14 @@
 - Server: one WebSocket connection handles its messages strictly in order; `RedGiantCore.send` returns `{ done }`
   (never an async function returning a bare promise: it would wait for the whole turn).
 - Run programs with `Workspace.execFile` (no shell) whenever arguments may come from a model or a user.
+- Start without internet (3.9.1): nothing that needs the network is awaited before the port opens. What the
+  start connects to (keys checked with their provider, Telegram, chats, subscriptions) runs through
+  `SetupService.retries` (`NetworkRetries`, `src/offline.ts`): in the background, one try at a time, tried again
+  while the network is missing, listed in `platformInfo().waitingNetwork` (the page's and the app's «no internet»
+  notice). Hanging name lookups take Node's thread pool (half of it at most): the image runs the server with
+  `UV_THREADPOOL_SIZE=16`, or the database's own lookup waits behind them.
+  The image carries pnpm's native binary and its own build: after an image change the entrypoint uses that
+  build when the live code is the image's, and the supervisor installs packages only when the lockfile changed.
 - Tasks (RD17): `delegate` opens one; it closes only through `complete_task` with a verifier that exits 0, or a
   justified "not testable"; the stop hook reminds the agent and gives up after three reminders ("abandoned").
 - Sandboxes are created once per workspace and reused (`RedGiantCore.sandboxFor`): never call

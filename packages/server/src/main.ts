@@ -362,10 +362,6 @@ const tgToken =
   (env.REDGIANT_TELEGRAM_TOKEN_FILE
     ? (await readFile(env.REDGIANT_TELEGRAM_TOKEN_FILE, "utf8")).trim()
     : undefined);
-if (tgToken) {
-  const me = await hooks.telegram(tgToken);
-  console.log(`Telegram bot @${me?.username} (${telegram.webhookSecret ? "webhook" : "polling"})`);
-}
 shutdownHooks.push(async () => void (await telegram.gateway?.stop()));
 
 // The setup wizard (G17): what it set is applied again at every start; the environment wins.
@@ -401,6 +397,15 @@ const setup = new SetupService({
   },
 });
 await setup.applyAtStartup();
+// The environment's Telegram bot: in the background like the setup's own (3.9.1), so a start
+// without internet opens the port at once and the bot connects when the network is back.
+if (tgToken)
+  void setup.retries.run("telegram", "Telegram", async () => {
+    const me = await hooks.telegram(tgToken);
+    console.log(
+      `Telegram bot @${me?.username} (${telegram.webhookSecret ? "webhook" : "polling"})`,
+    );
+  });
 // RedGiant OS's temporary network (G40.3): closed once the first start is completed (and at start,
 // should it have been completed before the machine knew).
 const setupNetwork = new SetupNetwork({ helper: osHelper });
@@ -410,8 +415,10 @@ void setupNetwork.reconcile(setup.completed).catch(() => {});
 core.vaultSystem = async () => setup.keysForVault();
 if (vaultEgress && "close" in vaultEgress) shutdownHooks.push(() => vaultEgress.close());
 // Claude on a flat subscription from the environment (the wizard's choice otherwise).
-if (env.REDGIANT_CLAUDE_SUBSCRIPTION_TOKEN)
-  await hooks.claudeSubscription?.(env.REDGIANT_CLAUDE_SUBSCRIPTION_TOKEN);
+const claudeToken = env.REDGIANT_CLAUDE_SUBSCRIPTION_TOKEN;
+const claudeSubscription = hooks.claudeSubscription;
+if (claudeToken && claudeSubscription)
+  void setup.retries.run("claude-subscription", "Claude", () => claudeSubscription(claudeToken));
 shutdownHooks.push(async () => setup.stop());
 const modelsDir = env.REDGIANT_MODELS_DIR ?? join(dataDir, "models");
 

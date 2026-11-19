@@ -3433,6 +3433,8 @@ const en = {
   copied: "Copied",
   exportMd: "Export as Markdown",
   keyRefused: "{provider} refused the key ({message}). Update it in the configuration.",
+  noInternet:
+    "No internet. Waiting for the network: {parts} (the connection starts again by itself once it is back). Everything else works, local models included.",
   openSetup: "Open the configuration",
   effort_low: "Low",
   effort_medium: "Medium",
@@ -10267,6 +10269,8 @@ const it: Record<Key, string> = {
   copied: "Copiato",
   exportMd: "Esporta in Markdown",
   keyRefused: "{provider} ha rifiutato la chiave ({message}). Aggiornala nella configurazione.",
+  noInternet:
+    "Senza internet. In attesa della rete: {parts} (il collegamento riparte da solo appena torna). Tutto il resto funziona, modelli locali compresi.",
   openSetup: "Apri la configurazione",
   effort_low: "Basso",
   effort_medium: "Medio",

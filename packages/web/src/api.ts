@@ -346,6 +346,8 @@ export interface PlatformInfo {
   voice?: boolean;
   /** Providers whose key was refused (a banner until a new key works). */
   keyProblems?: { provider: string; message: string }[];
+  /** Parts of the start waiting for the internet (3.9.1): they connect once it is back. */
+  waitingNetwork?: { id: string; label: string }[];
   lastGood: string | null;
   releases: {
     commit: string;

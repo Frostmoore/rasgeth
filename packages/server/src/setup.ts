@@ -3,7 +3,7 @@ import { chmod, mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { networkInterfaces } from "node:os";
 import { join } from "node:path";
 import type { SqlClient } from "@redgiant/events";
-import type { Platform } from "@redgiant/gateway";
+import { PLATFORM_NAMES, type Platform } from "@redgiant/gateway";
 import { DEFAULT_POLICY } from "@redgiant/hierarchy";
 import type {
   BackupDestination,
@@ -57,6 +57,7 @@ import { JobFailure, type JobHandle } from "./jobs.js";
 import { LocalWhisper } from "./local-voice.js";
 import { elevenVoices } from "./media.js";
 import type { MoePrefetchState } from "./moe-prefetch.js";
+import { NetworkRetries } from "./offline.js";
 import { defaultTemplate, ownPrompt, toPlaceholders } from "./prompts.js";
 import { REMOTE_STEPS, type RemoteRequest } from "./remote.js";
 import { lanAddresses, SetupCode, setupCodeBanner } from "./setup-code.js";
@@ -802,6 +803,11 @@ export function modelsFolder(drive: string, folder: string): string {
   return `${drive.toUpperCase()}${path.slice(1)}`;
 }
 
+/** A chat platform's name for people (the parts waiting for the network). */
+function chatLabel(platform: string): string {
+  return PLATFORM_NAMES[platform as Platform] ?? platform;
+}
+
 export class SetupService {
   private config: SetupConfig = { completed: false };
   private secrets: Secrets = {};
@@ -819,10 +825,22 @@ export class SetupService {
       git?: GitHosts;
       /** The machine: disks, mounting, SSH (G39.3). */
       firstBoot?: FirstBoot;
+      /** What waits for the network at start (3.9.1); shared with main for the environment's. */
+      retries?: NetworkRetries;
     },
   ) {
     this.setupCode = new SetupCode({ dataDir: o.dataDir });
+    this.retries = o.retries ?? new NetworkRetries({ changed: (w) => o.core.setWaitingNetwork(w) });
   }
+
+  /**
+   * The parts of the start that need the internet (keys checked with their provider, Telegram,
+   * the chats, the subscriptions) run here in the background, tried again while it is missing.
+   */
+  readonly retries: NetworkRetries;
+
+  /** The background start's parts, all settled (tests wait for it). */
+  startupDone: Promise<unknown> = Promise.resolve();
 
   /** Scheduled backups (G39.3), set by main once the core runs. */
   scheduler: BackupScheduler | undefined;
@@ -942,6 +960,15 @@ export class SetupService {
     if (owner !== this.o.ownerId || !key.startsWith(SETUP_KEYS)) return;
     this.secrets = this.fromVault();
     const [head = "", sub = ""] = key.slice(SETUP_KEYS.length).split(".");
+    // A part of the start still waiting for the network gives way to the changed key (3.9.1).
+    const waiting = {
+      keys: `key:${sub}`,
+      serverKey: "server",
+      telegramToken: "telegram",
+      chats: `chat:${sub}`,
+      claudeSubscriptionToken: "claude-subscription",
+    }[head];
+    if (waiting) this.retries.cancel(waiting);
     const h = this.o.hooks;
     const s = this.secrets;
     const c = this.config;
@@ -1058,26 +1085,39 @@ export class SetupService {
     const s = this.secrets;
     const run = (what: string, p: Promise<unknown>) =>
       p.catch((err) => console.warn(`setup: ${what}: ${(err as Error).message}`));
+    // 3.9.1: what needs the internet runs in the background, never before the port opens (without
+    // a network every part took its full timeout, one after the other); a part that failed for
+    // want of a network is tried again until it is back.
+    const later: Promise<unknown>[] = [];
+    const background = (id: string, label: string, fn: () => Promise<unknown>) =>
+      later.push(this.retries.run(id, label, fn));
     for (const [id, key] of Object.entries(s.keys ?? {}))
-      if (!(id === "anthropic" && this.locked.anthropic)) await run(id, h.key(id, key));
-    if (!this.locked.server && c.server)
-      await run(
-        "own server",
-        h.server({ baseUrl: c.server.baseUrl, ...(s.serverKey && { key: s.serverKey }) }),
+      if (!(id === "anthropic" && this.locked.anthropic))
+        background(`key:${id}`, keyProvider(id)?.name ?? id, () => h.key(id, key));
+    if (!this.locked.server && c.server) {
+      const server = c.server;
+      background("server", server.baseUrl, () =>
+        h.server({ baseUrl: server.baseUrl, ...(s.serverKey && { key: s.serverKey }) }),
       );
+    }
     // RedGiant's own search engine is started again (a restart of the computer stops it).
     // Run on this computer (no Docker, 2026-11-05) it answers on a new port each time: kept.
     if (!this.locked.search && c.searxngManaged && h.searxng) {
       const searxng = h.searxng;
-      await run(
-        "searxng",
-        searxng(true).then(async (r) => {
-          if (r && r.url !== c.searxngUrl) {
-            c.searxngUrl = r.url;
-            await this.save();
-          }
-          return r;
-        }),
+      later.push(
+        run(
+          "searxng",
+          searxng(true).then(async (r) => {
+            if (r && r.url !== c.searxngUrl) {
+              c.searxngUrl = r.url;
+              await this.save();
+              // Started in the background (3.9.1): the search takes its new address now.
+              const now = this.searchChoice();
+              if (now) await h.search(now);
+            }
+            return r;
+          }),
+        ),
       );
     }
     const search = this.searchChoice();
@@ -1094,22 +1134,28 @@ export class SetupService {
     this.o.core.setVoiceKeys(this.voiceKeys());
     // Links sent to the phone (boards on Telegram) use the way in from outside.
     this.o.core.setPublicUrl(c.remote?.url ?? c.reachable?.url);
-    if (c.subscriptions?.chatgpt && h.chatgptSubscription)
-      await run("ChatGPT subscription", h.chatgptSubscription(true));
-    if (c.subscriptions?.claude && h.claudeSubscription)
-      await run("Claude subscription", h.claudeSubscription(s.claudeSubscriptionToken ?? ""));
+    const chatgpt = h.chatgptSubscription;
+    if (c.subscriptions?.chatgpt && chatgpt)
+      background("chatgpt-subscription", "ChatGPT", () => chatgpt(true));
+    const claude = h.claudeSubscription;
+    if (c.subscriptions?.claude && claude)
+      background("claude-subscription", "Claude", () => claude(s.claudeSubscriptionToken ?? ""));
     if (!this.locked.defaultModel && c.defaultModel) this.o.core.setDefaultModel(c.defaultModel);
     if (c.language) this.o.core.setLanguage(c.language);
     this.o.core.setAgentLanguage(c.agentLanguage);
     if (c.instructions) this.o.core.setInstructions(c.instructions);
     if (c.backupModel) this.o.core.setBackupModel(c.backupModel);
-    if (!this.locked.telegram && s.telegramToken)
-      await run("Telegram", h.telegram(s.telegramToken));
+    const telegramToken = s.telegramToken;
+    if (!this.locked.telegram && telegramToken)
+      background("telegram", "Telegram", () => h.telegram(telegramToken));
+    const chat = h.chat;
     for (const [p, settings] of Object.entries(s.chats ?? {}))
-      if (settings && h.chat) await run(p, h.chat(p as Platform, settings));
+      if (settings && chat)
+        background(`chat:${p}`, chatLabel(p), () => chat(p as Platform, settings));
     await run("git routes", this.applyGit());
     this.scheduleTokenReminder();
     this.scheduleRetention();
+    this.startupDone = Promise.allSettled(later);
   }
 
   /**
@@ -1235,6 +1281,7 @@ export class SetupService {
     if (!p) throw new SetupError(`Unknown provider "${id}"`);
     if (id === "anthropic" && this.locked.anthropic)
       throw new SetupError("The Anthropic key is set by the environment");
+    this.retries.cancel(`key:${id}`);
     let models: string[];
     try {
       models = await this.o.hooks.key(id, key);
@@ -1261,6 +1308,7 @@ export class SetupService {
     if (this.locked.server) throw new SetupError("The server is set by the environment");
     // An empty key keeps the saved one.
     const key = cfg?.key || this.secrets.serverKey;
+    this.retries.cancel("server");
     let models: string[];
     try {
       models = await this.o.hooks.server(cfg && { baseUrl: cfg.baseUrl, ...(key && { key }) });
@@ -2476,6 +2524,7 @@ export class SetupService {
   /** Discord, Slack, Signal, WhatsApp (G29.5): checked by connecting before anything is kept. */
   async saveChat(platform: Platform, settings: Record<string, string> | null): Promise<void> {
     if (!this.o.hooks.chat) throw new SetupError("Chat platforms are not available here");
+    this.retries.cancel(`chat:${platform}`);
     try {
       await this.o.hooks.chat(platform, settings);
     } catch (err) {
@@ -2497,6 +2546,7 @@ export class SetupService {
   /** Step "Telegram": the token is checked with Telegram before it is kept. */
   async saveTelegram(token: string | null): Promise<{ username: string } | null> {
     if (this.locked.telegram) throw new SetupError("Telegram is set by the environment");
+    this.retries.cancel("telegram");
     let bot: { username: string } | null;
     try {
       bot = await this.o.hooks.telegram(token);
@@ -2530,6 +2580,7 @@ export class SetupService {
         throw new SetupError("Read and accept the warning on the providers' terms first");
       if (!this.o.hooks.chatgptSubscription)
         throw new SetupError("This installation cannot run subscription engines");
+      this.retries.cancel("chatgpt-subscription");
       await this.o.hooks.chatgptSubscription(s.chatgpt);
       this.config.subscriptions = { ...this.config.subscriptions, chatgpt: s.chatgpt };
     }
@@ -2538,6 +2589,7 @@ export class SetupService {
         throw new SetupError("Read and accept the warning on the providers' terms first");
       if (!this.o.hooks.claudeSubscription)
         throw new SetupError("This installation cannot run subscription engines");
+      this.retries.cancel("claude-subscription");
       if (s.claude) {
         if (s.claude.token) this.secrets.claudeSubscriptionToken = s.claude.token;
         await this.o.hooks.claudeSubscription(this.secrets.claudeSubscriptionToken ?? "");
@@ -2847,6 +2899,7 @@ export class SetupService {
   }
 
   stop(): void {
+    this.retries.stop();
     this.localVoice?.stop();
     clearInterval(this.reminder);
     clearInterval(this.retention);

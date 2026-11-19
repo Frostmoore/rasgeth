@@ -5064,6 +5064,13 @@ export class RedGiantCore implements OrchestrationHost {
     this.keyProblems.delete(provider);
   }
 
+  /** Parts of the start waiting for the internet (3.9.1), by name: a banner in the page. */
+  private waitingNetwork: { id: string; label: string }[] = [];
+
+  setWaitingNetwork(parts: { id: string; label: string }[]): void {
+    this.waitingNetwork = parts;
+  }
+
   /** Budgets crossing 80 % or 95 % after a turn: told once per level. */
   private readonly budgetLevels = new Map<string, number>();
   private async checkBudgets(ownerId: string, agent: AgentRecord): Promise<void> {
@@ -5215,6 +5222,7 @@ export class RedGiantCore implements OrchestrationHost {
       voice: this.o.transcription !== undefined,
       images: this.o.images !== undefined || this.media.choices.image !== undefined,
       keyProblems: [...this.keyProblems].map(([provider, message]) => ({ provider, message })),
+      waitingNetwork: this.waitingNetwork,
       lastGood: release?.lastGood ?? null,
       releases: release?.history.slice(-20).reverse() ?? [],
     };
