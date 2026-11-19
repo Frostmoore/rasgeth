@@ -3719,12 +3719,18 @@ if (process.env.DEMO_NATIVE) {
     source: "server",
   });
   const say = (t, text) =>
-    t.onMessage({ parts: [{ type: "text", text }], stopReason: "end_turn", metrics: metrics(), model: t.model.model });
+    t.onMessage({
+      parts: [{ type: "text", text }],
+      stopReason: "end_turn",
+      metrics: metrics(),
+      model: t.model.model,
+    });
   core.providers.register({
     id: "chatgpt-subscription",
     nativeFolder,
     modelInfo: (model) => ({ id: model, contextWindow: 272_000, maxOutputTokens: 128_000 }),
     models: async () => ["gpt-6"],
+    // biome-ignore lint/correctness/useYield: the demo's ChatGPT engine never streams, it only runs turns
     async *stream() {
       throw new Error("engine only");
     },
@@ -3732,19 +3738,38 @@ if (process.env.DEMO_NATIVE) {
       id: "chatgpt-subscription",
       async turn(t) {
         if (/cavallo/i.test(t.text) && !/lentamente/i.test(t.text)) {
-          await t.onNativeStart?.({ id: "ig_demo1", kind: "image", prompt: "Una stella gigante rossa nel cielo scuro" });
+          await t.onNativeStart?.({
+            id: "ig_demo1",
+            kind: "image",
+            prompt: "Una stella gigante rossa nel cielo scuro",
+          });
           await mkdir(join(nativeFolder, "th-demo"), { recursive: true });
           const file = join(nativeFolder, "th-demo", "ig_demo1.png");
           await writeFile(file, star());
-          await t.onNativeMade?.({ id: "ig_demo1", kind: "image", path: file, prompt: "Una stella gigante rossa nel cielo scuro" });
-          await say(t, "Ecco la stella: la trovi qui sopra, ed è salvata anche nella tua cartella.");
+          await t.onNativeMade?.({
+            id: "ig_demo1",
+            kind: "image",
+            path: file,
+            prompt: "Una stella gigante rossa nel cielo scuro",
+          });
+          await say(
+            t,
+            "Ecco la stella: la trovi qui sopra, ed è salvata anche nella tua cartella.",
+          );
         } else if (/lentamente/i.test(t.text)) {
-          await t.onNativeStart?.({ id: "ig_demo2", kind: "image", prompt: "Un cavallo al tramonto" });
+          await t.onNativeStart?.({
+            id: "ig_demo2",
+            kind: "image",
+            prompt: "Un cavallo al tramonto",
+          });
           // Drawing until the person stops it: the «generating» card stays.
           await new Promise((ok) => t.signal?.addEventListener("abort", ok, { once: true }));
           return { resume: "th-demo2", stopReason: "aborted" };
         } else if (/percorso/i.test(t.text)) {
-          await say(t, "Te l'ho preparata: ![cavallo](/data/engines/codex/generated_images/th-1/ig_1.png)");
+          await say(
+            t,
+            "Te l'ho preparata: ![cavallo](/data/engines/codex/generated_images/th-1/ig_1.png)",
+          );
         } else await say(t, "Fatto.");
         return { resume: "th-demo", stopReason: "end_turn" };
       },
@@ -3765,7 +3790,8 @@ if (process.env.DEMO_NATIVE) {
   ]) {
     const s = await core.startSession("local", codexAgent.id);
     await core.nameSession(s, title);
-    const r = await (await core.send("local", s, key === "done" ? "Disegna il cavallo" : text)).done;
+    const r = await (await core.send("local", s, key === "done" ? "Disegna il cavallo" : text))
+      .done;
     console.log(`demo native ${key}: ${r.stopReason} ${r.reason ?? ""}`);
     nativeSessions[key] = s;
   }
@@ -3777,7 +3803,14 @@ if (process.env.DEMO_NATIVE) {
     sessionId: nativeSessions.path,
     body: {
       type: "file.sent",
-      payload: { scope: "assistants", path: "images/manca.png", name: "manca.png", size: 81234, mime: "image/png", caption: "Una foto che non c'è più" },
+      payload: {
+        scope: "assistants",
+        path: "images/manca.png",
+        name: "manca.png",
+        size: 81234,
+        mime: "image/png",
+        caption: "Una foto che non c'è più",
+      },
     },
   });
   const slow = await core.startSession("local", codexAgent.id);
