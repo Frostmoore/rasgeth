@@ -7,15 +7,10 @@ import type { SkillUpdateRequestInfo } from "@redgiant/protocol";
 
 export type SkillDecision = "approve" | "reject";
 
-export interface SkillUpdateRequests {
-  on(event: "request", l: (ownerId: string, info: SkillUpdateRequestInfo) => void): this;
-  on(
-    event: "closed",
-    l: (ownerId: string, proposalId: string, decision: SkillDecision, via: string) => void,
-  ): this;
-}
-
-export class SkillUpdateRequests extends EventEmitter {
+export class SkillUpdateRequests extends EventEmitter<{
+  request: [ownerId: string, info: SkillUpdateRequestInfo];
+  closed: [ownerId: string, proposalId: string, decision: SkillDecision, via: string];
+}> {
   /** The requests sent to the chats and still open, by proposal. */
   private readonly open = new Map<string, string>();
 
