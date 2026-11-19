@@ -375,7 +375,7 @@ Rasgeth is in pre-alpha. What comes next, in order:
   whole team, every-day settings, projects, sub-projects and the terminal into the app. 3.8.13 (released) gives the app's
   Canvas the page's viewers, sets a sub-agent limit per project and lets the app update itself. 3.8.14 (released) brings
   every editor, automations, knowledge and shared memory into the app.
-- **3.9 — Rasgeth** (3.9.0 and 3.9.1 released; 3.9.1 redraws God and the Demigod and starts without internet): RedGiant and its app become Rasgeth. A new name, a new icon (a crowned star in
+- **3.9 — Rasgeth** (3.9.0 and 3.9.2 released; 3.9.2 redraws God and the Demigod and starts without internet): RedGiant and its app become Rasgeth. A new name, a new icon (a crowned star in
   the night sky) at every size on every system, the app called Rasgeth too («Rasgeth App» on a computer,
   beside the whole Rasgeth), new file names for every download, the `rasgeth` command and the site
   [rasgeth.it](https://rasgeth.it/). The data stay where they are; moving over is a clean install that the
