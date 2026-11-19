@@ -219,6 +219,149 @@ describe("Demi-God on Telegram", () => {
     expect(tg?.calls.some((c) => c.method === "sendChatAction")).toBe(true);
   });
 
+  it("holds a message that looks like a secret; «Send anyway» passes it as written, in the log (2026-11-19)", async () => {
+    await setup((req) =>
+      req.system.startsWith("You are Demi-God")
+        ? { text: `Demi-God heard: ${lastText(req).split("\n")[0]}` }
+        : { text: "x" },
+    );
+    await pair();
+    // Built at run time: no key-shaped literal in the sources.
+    const token = `ghp_${"A1b2".repeat(9)}`;
+    const before = s?.provider.requests.length ?? 0;
+    await s?.gateway?.handleUpdate(tg?.text(USER, `my link ${token}`) as never);
+    await s?.gateway?.idle();
+    const notice = tg?.sent(USER).at(-1);
+    expect(notice?.text).toMatch(/^This message looks like it holds a secret \(a key\)/);
+    expect(String(notice?.text)).not.toContain(token);
+    const keyboard =
+      (
+        notice?.reply_markup as { inline_keyboard: { text: string; callback_data: string }[][] }
+      )?.inline_keyboard.flat() ?? [];
+    expect(keyboard.map((b) => b.text)).toEqual(["Send anyway", "Send without it", "Leave it"]);
+    // Nothing reached a model yet.
+    expect(s?.provider.requests.length).toBe(before);
+    // Someone not linked cannot choose for the person.
+    await s?.gateway?.handleUpdate(tg?.button(9999, keyboard[0]?.callback_data ?? "") as never);
+    await s?.gateway?.idle();
+    expect(s?.provider.requests.length).toBe(before);
+    await s?.gateway?.handleUpdate(tg?.button(USER, keyboard[0]?.callback_data ?? "") as never);
+    await s?.gateway?.idle();
+    expect(tg?.sent(USER).at(-1)?.text).toBe(`Demi-God heard: my link ${token}`);
+    expect(tg?.calls.filter((c) => c.method === "editMessageText").at(-1)?.body.text).toMatch(
+      /Sent as written\.$/,
+    );
+    const core = s?.core as unknown as {
+      registry: { list(o: { ownerId: string }): { id: string; kind: string }[] };
+      workSession(a: unknown): Promise<string>;
+      history(o: string, sid: string): Promise<{ type: string; payload: unknown }[]>;
+    };
+    const demigod = core.registry.list({ ownerId: "me" }).find((a) => a.kind === "demigod");
+    const sid = await core.workSession(demigod);
+    const users = (await core.history("me", sid)).filter((e) => e.type === "message.user");
+    expect(users.at(-1)?.payload).toMatchObject({ secretOk: true });
+
+    // «Send without it»: the server blanks it, as before; «Leave it»: nothing is sent.
+    await s?.gateway?.handleUpdate(tg?.text(USER, `again ${token}`) as never);
+    await s?.gateway?.idle();
+    const second =
+      (
+        tg?.sent(USER).at(-1)?.reply_markup as {
+          inline_keyboard: { callback_data: string }[][];
+        }
+      )?.inline_keyboard.flat() ?? [];
+    await s?.gateway?.handleUpdate(tg?.button(USER, second[1]?.callback_data ?? "") as never);
+    await s?.gateway?.idle();
+    expect(tg?.sent(USER).at(-1)?.text).toBe("Demi-God heard: again [secret removed]");
+    const after = s?.provider.requests.length ?? 0;
+    await s?.gateway?.handleUpdate(tg?.text(USER, `third ${token}`) as never);
+    await s?.gateway?.idle();
+    const third =
+      (
+        tg?.sent(USER).at(-1)?.reply_markup as {
+          inline_keyboard: { callback_data: string }[][];
+        }
+      )?.inline_keyboard.flat() ?? [];
+    await s?.gateway?.handleUpdate(tg?.button(USER, third[2]?.callback_data ?? "") as never);
+    await s?.gateway?.idle();
+    expect(s?.provider.requests.length).toBe(after);
+    expect(tg?.calls.filter((c) => c.method === "editMessageText").at(-1)?.body.text).toMatch(
+      /Not sent\.$/,
+    );
+    // The same button twice: the message is gone, nothing more is sent.
+    await s?.gateway?.handleUpdate(tg?.button(USER, keyboard[0]?.callback_data ?? "") as never);
+    await s?.gateway?.idle();
+    expect(s?.provider.requests.length).toBe(after);
+  });
+
+  it("asks for a skill's new version with its line, and closes the copy decided on the page (3.9.7)", async () => {
+    const { god } = await setup(() => ({ text: "x" }));
+    await pair();
+    const skill = (body: string, extra: Record<string, unknown> = {}) => ({
+      kind: "skill" as const,
+      name: "invoice-pdf",
+      description: "Read a supplier's invoice PDF and pull out total, VAT and due date",
+      body,
+      untestableReason: "Instructions only, nothing to run here.",
+      ...extra,
+    });
+    await s?.core.extensions.propose({
+      ownerId: "me",
+      projectId: null,
+      author: "human",
+      autoInstall: true,
+      input: skill("Version one: the total is on the last page."),
+    });
+    const update = (n: string) =>
+      s?.core.extensions.propose({
+        ownerId: "me",
+        projectId: null,
+        author: god,
+        // Even with the person's «install them by myself», a new version waits.
+        autoInstall: true,
+        input: skill(`Version ${n}: also the .rtf files.`, {
+          updates: true,
+          change: "Added the step for .rtf files",
+          summary: "It failed twice on Word documents. Nothing else changes.",
+        }),
+      });
+    const first = await update("two");
+    expect(first?.status).toBe("pending");
+    let ask: Record<string, unknown> | undefined;
+    for (let i = 0; i < 100 && !ask; i++) {
+      await new Promise((r) => setTimeout(r, 20));
+      ask = tg?.sent(USER).find((m) => String(m.text).includes("new version of the skill"));
+    }
+    expect(String(ask?.text).split("\n").slice(0, 2)).toEqual([
+      "God proposes a new version of the skill «invoice-pdf»:",
+      "Added the step for .rtf files: it failed twice on Word documents",
+    ]);
+    const keyboard =
+      (
+        ask?.reply_markup as { inline_keyboard: { text: string; callback_data: string }[][] }
+      )?.inline_keyboard.flat() ?? [];
+    expect(keyboard.map((b) => b.text)).toEqual(["Approve", "Reject"]);
+    await s?.gateway?.handleUpdate(tg?.button(USER, keyboard[0]?.callback_data ?? "") as never);
+    await new Promise((r) => setTimeout(r, 50));
+    expect((await s?.core.extensions.get("me", first?.id ?? ""))?.status).toBe("installed");
+    expect(tg?.calls.filter((c) => c.method === "editMessageText").at(-1)?.body.text).toMatch(
+      /Approved: agents use it from their next conversation\.$/,
+    );
+    // Decided on the page: Telegram's copy says where.
+    const second = await update("three");
+    for (let i = 0; i < 100; i++) {
+      await new Promise((r) => setTimeout(r, 20));
+      if (tg?.sent(USER).filter((m) => String(m.text).includes("new version")).length === 2) break;
+    }
+    await s?.api("POST", `/api/extensions/proposals/${second?.id}/decision`, {
+      decision: "reject",
+    });
+    await new Promise((r) => setTimeout(r, 50));
+    expect(tg?.calls.filter((c) => c.method === "editMessageText").at(-1)?.body.text).toMatch(
+      /Already decided by you on the web page: rejected\.$/,
+    );
+  });
+
   it("asks for approvals with buttons and closes them everywhere", async () => {
     const { god } = await setup((req) =>
       toolResult(req) === undefined

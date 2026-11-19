@@ -20,6 +20,7 @@ import '../mascot/mascot_view.dart';
 import '../settings/agents/add_agent_under.dart' show openAddUnder;
 import '../settings/agents/agent_tree.dart' show canAddUnder;
 import '../settings/agents/assistant_parts.dart';
+import '../settings/tool_kits.dart' show AgentKits;
 import '../theme/colors.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
@@ -604,6 +605,7 @@ class _GeneralState extends State<_General> {
     final c = RgColors.of(context);
     final a = widget.agent;
     final god = a.kind == AgentKind.god;
+    final sub = a.kind == AgentKind.subagent;
     final chat = app.isChat(a);
     final assignable = a.kind == AgentKind.agent || a.kind == AgentKind.assistant;
     final others = app.projects.where((p) => p.id != a.projectId).toList();
@@ -689,10 +691,15 @@ class _GeneralState extends State<_General> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          god ? l.asMascotGod : l.asMascotHelp,
+                          god
+                              ? l.asMascotGod
+                              : sub
+                              ? l.asMascotSub
+                              : l.asMascotHelp,
                           style: TextStyle(color: c.dim, fontSize: 13, height: 1.35),
                         ),
-                        if (!god && a.active) ...[
+                        // A sub-agent has no mascot of its own (2026-11-19): nothing to change.
+                        if (!god && !sub && a.active) ...[
                           const SizedBox(height: 8),
                           OutlinedButton.icon(
                             key: const Key('as-mascot'),
@@ -1561,6 +1568,9 @@ class _ToolsState extends State<_Tools> {
             ),
           ),
         ],
+        // The groups (3.9.4): as for everyone, or its own choice.
+        SectionHead(l.tkTitle),
+        AgentKits(agentId: widget.agent.id, agentName: widget.agent.name),
         SectionHead(l.asGroupTools),
         _help(context, l.asToolsHelp),
         if (tools == null)

@@ -391,6 +391,34 @@ describe("secrets pasted in a chat (G33.4)", () => {
       expect(blankPastedSecrets(fact)).toBe(fact);
   });
 
+  it("«Send anyway» (2026-11-19): as written, the person's choice in the log", async () => {
+    const s = await startServer([{ text: "Ok." }, { text: "Ok." }]);
+    try {
+      const god = await s.api<{ id: string }>("POST", "/api/agents", {
+        kind: "god",
+        parentId: null,
+        name: "God",
+      });
+      const sid = await s.core.startSession("me", god.body.id);
+      const odd = "il codice del pacco è Ab3dE5fG7hJ9kL1mN3pQ5rS7tU";
+      await (await s.core.send("me", sid, odd, { watch: true, secretOk: true })).done;
+      expect(JSON.stringify(s.provider.requests[0]?.messages)).toContain(
+        "Ab3dE5fG7hJ9kL1mN3pQ5rS7tU",
+      );
+      expect(JSON.stringify(s.provider.requests[0]?.messages)).not.toContain("[secret removed]");
+      // Without the choice the same words are still blanked.
+      await (await s.core.send("me", sid, odd, { watch: true })).done;
+      const users = (await s.core.history("me", sid)).filter((e) => e.type === "message.user");
+      expect(users.map((e) => (e.payload as { secretOk?: boolean }).secretOk)).toEqual([
+        true,
+        undefined,
+      ]);
+      expect(JSON.stringify(users[1]?.payload)).toContain("[secret removed]");
+    } finally {
+      await s.close();
+    }
+  });
+
   it("never reach the model nor the log; agents get use_credential", async () => {
     const s = await startServer([{ text: "Ok." }]);
     try {

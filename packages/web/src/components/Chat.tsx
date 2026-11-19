@@ -41,6 +41,7 @@ import {
   attempt,
   buildItems,
   type ChatItem,
+  generatingNow,
   getApi,
   getLive,
   inheritedModel,
@@ -73,6 +74,7 @@ import { canvasKind } from "../viewers/canvas-kind.js";
 import { WidgetCard } from "./ArtifactFrame.js";
 import { ArtifactGrantCard } from "./ArtifactGrantCard.js";
 import { noEnter, useArmed } from "./armed.js";
+import { ChatImage } from "./ChatImage.js";
 import {
   AsidePanel,
   addQuote,
@@ -102,36 +104,6 @@ import { ToolRequestCard } from "./ToolRequestCard.js";
 import { QueuedNotice } from "./TurnLine.js";
 import { TurnProgress } from "./TurnProgress.js";
 import { FileIcon } from "./viewers/FileIcon.js";
-
-/** A picture from the workspace inside the chat (generate_image's result); a click opens it. */
-function WorkspaceImage({ scope, path }: { scope: string; path: string }) {
-  const [url, setUrl] = useState<string | null>(null);
-  const [failed, setFailed] = useState(false);
-  useEffect(() => {
-    let made: string | null = null;
-    let cancelled = false;
-    void attempt(() => getApi().download(scope, path)).then((blob) => {
-      if (cancelled) return;
-      if (!blob) return setFailed(true);
-      made = URL.createObjectURL(
-        // An SVG shown as an image runs no script; the right type makes it display.
-        path.toLowerCase().endsWith(".svg") ? new Blob([blob], { type: "image/svg+xml" }) : blob,
-      );
-      setUrl(made);
-    });
-    return () => {
-      cancelled = true;
-      if (made) URL.revokeObjectURL(made);
-    };
-  }, [scope, path]);
-  if (failed) return <div class="dim">{path}</div>;
-  if (!url) return <div class="drawing-frame" />;
-  return (
-    <a href={url} target="_blank" rel="noreferrer" class="generated">
-      <img src={url} alt={path} />
-    </a>
-  );
-}
 
 const time = (iso: string) =>
   new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -509,7 +481,16 @@ export function ToolLine({
         </div>
       )}
       {item.tool === "generate_image" && item.result?.ok && picture && (
-        <WorkspaceImage scope={scopeOf(agentId)} path={picture} />
+        <div class="generated">
+          <ChatImage
+            scope={scopeOf(agentId)}
+            path={picture}
+            alt={picture}
+            onOpen={() =>
+              openCanvas(picture, { kind: "file", scope: scopeOf(agentId), path: picture })
+            }
+          />
+        </div>
       )}
     </div>
   );
@@ -1019,7 +1000,8 @@ const MODES = ["manual", "auto", "plan", "readonly"] as const;
 /** A file an agent sent (G25.2): pictures, videos and sounds in place; anything opens or saves. */
 function FileCard({ item }: { item: Extract<ChatItem, { kind: "file" }> }) {
   const kind = canvasKind({ kind: "file", scope: item.scope, path: item.path });
-  const inline = kind === "image" || kind === "video" || kind === "audio";
+  // Pictures load by themselves (ChatImage); videos and sounds play from their link.
+  const inline = kind === "video" || kind === "audio";
   const [url, setUrl] = useState<string>();
   useEffect(() => {
     if (!inline) return;
@@ -1041,17 +1023,13 @@ function FileCard({ item }: { item: Extract<ChatItem, { kind: "file" }> }) {
   };
   return (
     <div class="file-card">
-      {url && kind === "image" && (
-        <button
-          type="button"
-          class="file-card-image"
-          title={t("canvasOpen")}
-          onClick={() =>
-            openCanvas(item.name, { kind: "file", scope: item.scope, path: item.path })
-          }
-        >
-          <img src={url} alt={item.caption ?? item.name} />
-        </button>
+      {kind === "image" && (
+        <ChatImage
+          scope={item.scope}
+          path={item.path}
+          alt={item.caption ?? item.name}
+          onOpen={() => openCanvas(item.name, { kind: "file", scope: item.scope, path: item.path })}
+        />
       )}
       {url && kind === "video" && (
         // biome-ignore lint/a11y/useMediaCaption: agents' videos come without captions.
@@ -1280,7 +1258,7 @@ function SubTabButton({
     >
       <button type="button" role="tab" aria-selected={on} class="sub-tab-main" onClick={select}>
         <span role="img" class={`sub-dot ${status}`} aria-label={t(`subStatus_${status}`)} />
-        {/* The subagent's face: like its parent's (G40.2). */}
+        {/* The sub-agent's sign: the ring in its parent's colour (2026-11-19). */}
         {childAgent && <Mascot agent={childAgent} size={16} decorative />}
         <span class="sub-tab-title">{tab.title}</span>
         {fresh && (
@@ -1517,6 +1495,8 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
   }, [items.value, pendingJump.value, sessionId]);
 
   const v = view.value;
+  // A picture (video, sound) being made with no percent to tell (2026-11-19).
+  const generating = useComputed(() => generatingNow(view.value.events)).value;
   const mode = agent?.mode ?? "auto";
   const own = sessionRows.value.find((r) => r.id === sessionId)?.model ?? undefined;
   const model = own ?? agent?.model ?? inheritedModel(agentId);
@@ -1574,14 +1554,29 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
               <div class="dim">{t("drawing", { percent: String(v.drawing.percent) })}</div>
             </div>
           )}
+          {/* Being made, with no percent to tell (2026-11-19: the model's own picture). */}
+          {!v.drawing && v.state === "running" && generating && (
+            <div class="drawing" role="status">
+              <div class="drawing-frame" />
+              <div class="ui-bar busy">
+                <span />
+              </div>
+              <div class="dim">{t(`generating_${generating}`)}</div>
+            </div>
+          )}
           {v.compacting && (
             <div class="bubble assistant streaming">
               <div class="dim">{t("compacting")}</div>
             </div>
           )}
-          {v.state === "running" && v.call && !v.compacting && !externalAgent(agentId) && (
-            <TurnProgress call={v.call} />
-          )}
+          {/* No «reading the context» while the turn waits for the person's answer (3.9.5: an
+              engine's question, the card above). */}
+          {v.state === "running" &&
+            v.call &&
+            !v.compacting &&
+            !generating &&
+            !questions.value.some((q) => q.sessionId === sessionId) &&
+            !externalAgent(agentId) && <TurnProgress call={v.call} />}
           {(v.thinking || v.text) && (
             <div class="bubble assistant streaming">
               {/* The reasoning as it comes (2026-11-05), folded away once the answer starts. */}
@@ -1668,7 +1663,7 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
         }
         running={v.state === "running"}
         queues
-        onSend={async (text, files) => {
+        onSend={async (text, files, opts) => {
           // Other files land in the workspace the agent works in: its project's, or God's.
           const scope = agent?.projectId ? `project:${agent.projectId}` : "platform";
           const msg = await packMessage(text, files, (path, data) =>
@@ -1684,6 +1679,7 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
             text: msg.text,
             ...(msg.images.length ? { images: msg.images } : {}),
             ...(clean.length ? { quotes: clean } : {}),
+            ...(opts?.secretOk && { secretOk: true }),
             clientId,
           });
           setDrafts([]);

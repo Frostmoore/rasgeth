@@ -24,6 +24,7 @@ import {
 } from "../icons.js";
 import { getApi, openTab } from "../state.js";
 import { Head, Switch, WzPage } from "./SettingsKit.js";
+import { ToolKits } from "./ToolKits.js";
 
 const GROUP_ICON: Record<ToolGroup, () => JSX.Element> = {
   files: () => <IconFile size={20} />,
@@ -73,7 +74,11 @@ export function ToolText({ e }: { e: ToolView }) {
         <code class="tl-id">{e.id}</code>
       </div>
       <span>{toolDoes(e.id)}</span>
-      <small class="tl-weight">{t("toolsWeight", { n: aboutTokens(e.tokens) })}</small>
+      <small class="tl-weight">
+        {t("toolsWeight", { n: aboutTokens(e.tokens) })}
+        {/* Off at the start, the agent switches it on with its group (3.9.4). */}
+        {e.state === "auto" ? ` · ${t("toolStateAuto")}` : ""}
+      </small>
       {e.essential && (
         <small class="tl-needed">
           <IconLock size={14} /> {t("toolsNeeded", { why: toolWhy(e.id) })}
@@ -192,9 +197,17 @@ export function ToolsPage() {
       .filter((x) => !x.essential && (x.id === e.id ? !on : !x.global))
       .map((x) => x.id);
     // Lit at once; the server's answer follows.
-    const entries = view.entries.map((x) => (x.id === e.id ? { ...x, global: on } : x));
-    const total = entries.filter((x) => x.global).reduce((n, x) => n + x.tokens, 0);
-    const saved = entries.filter((x) => !x.global).reduce((n, x) => n + x.tokens, 0);
+    const entries = view.entries.map((x) =>
+      x.id === e.id
+        ? {
+            ...x,
+            global: on,
+            state: on ? (view.kits.find((k) => k.id === x.kit)?.state ?? "auto") : ("off" as const),
+          }
+        : x,
+    );
+    const total = entries.filter((x) => x.state === "on").reduce((n, x) => n + x.tokens, 0);
+    const saved = entries.filter((x) => x.state !== "on").reduce((n, x) => n + x.tokens, 0);
     setView({ ...view, entries, total, saved });
     setBusy(true);
     try {
@@ -228,10 +241,10 @@ export function ToolsPage() {
         <>
           <div class="tl-sum">
             <div class="tl-sum-box">
-              <b>{t("toolsTotal", { n: aboutTokens(view.total) })}</b>
+              <b>{t("kitStartTotal", { n: aboutTokens(view.total) })}</b>
               <span>
                 {t("toolsHowMany", {
-                  on: String(view.entries.filter((e) => e.global).length),
+                  on: String(view.entries.filter((e) => e.state === "on").length),
                   all: String(view.entries.length),
                 })}
               </span>
@@ -239,12 +252,13 @@ export function ToolsPage() {
             <div class={`tl-sum-box${view.saved > 0 ? " on" : ""}`}>
               <b>
                 {view.saved > 0
-                  ? t("toolsSaved", { n: aboutTokens(view.saved) })
+                  ? t("kitRest", { n: aboutTokens(view.saved) })
                   : t("toolsNoneSaved")}
               </b>
             </div>
           </div>
           <NewOnly />
+          <ToolKits view={view} setView={setView} setError={setError} load={load} />
           <ToolSearch q={q} onChange={setQ} />
           <ToolGroups
             entries={view.entries}

@@ -198,6 +198,78 @@ describe("the face", () => {
   });
 });
 
+// Decision «Mascotte solo per orchestratori e agenti di primo livello» (2026-11-19, board A).
+describe("a sub-agent's sign", () => {
+  const coderSpec = mascotSpec("Coder", "agent");
+  const withSub = () =>
+    [
+      ...(team() as unknown as object[]),
+      {
+        id: "coder",
+        name: "Coder",
+        kind: "agent",
+        parentId: "orch",
+        projectId: "demo",
+        status: "active",
+        mascotSeed: "Coder",
+        mascot: coderSpec,
+      },
+      {
+        id: "sub",
+        name: "Test UI",
+        kind: "subagent",
+        parentId: "coder",
+        projectId: "demo",
+        status: "active",
+      },
+      {
+        id: "lost",
+        name: "Orphan",
+        kind: "subagent",
+        parentId: "gone",
+        projectId: "demo",
+        status: "active",
+        // An older server's seed: still no face.
+        mascotSeed: "Orphan",
+      },
+    ] as never;
+  const find = (id: string) => (agents.value as { id: string }[]).find((a) => a.id === id);
+
+  it("shows the ring in its parent's colour, never a face, named in both languages", () => {
+    agents.value = withSub();
+    const { container } = render(<Mascot agent={find("sub") as never} size={20} />);
+    const svg = container.querySelector("svg.sgn") as SVGElement;
+    expect(svg).toBeTruthy();
+    expect(container.querySelector("svg.masc")).toBeNull();
+    expect(svg.getAttribute("style")).toContain(`--h:${coderSpec.hue};--c:${coderSpec.chroma}`);
+    expect(svg.getAttribute("aria-label")).toBe("Sotto-agente Test UI, fermo");
+    cleanup();
+    lang.value = "en";
+    approvals.value = [{ requestId: "r1", agentId: "sub" }] as never;
+    const again = render(<Mascot agent={find("sub") as never} size={16} />);
+    const wait = again.container.querySelector("svg.sgn.st-wait");
+    expect(wait?.getAttribute("aria-label")).toBe("Sub-agent Test UI, waiting for you");
+    expect(wait?.querySelector(".blink .sgw")).toBeTruthy();
+  });
+
+  it("is grey without a parent, even with an older seed", () => {
+    agents.value = withSub();
+    const { container } = render(<Mascot agent={find("lost") as never} size={32} decorative />);
+    const svg = container.querySelector("svg.sgn") as SVGElement;
+    expect(svg.getAttribute("style")).toContain("--c:0");
+    expect(svg.getAttribute("aria-hidden")).toBe("true");
+  });
+
+  it("colours and moves it from the theme, still with reduced motion", () => {
+    const css = readFileSync(join(import.meta.dirname, "..", "src", "styles.css"), "utf8");
+    expect(css).toMatch(/\.sgn \.sgr \{\s*stroke: oklch\(var\(--mL\) var\(--c\) var\(--h\)\);/);
+    expect(css).toMatch(/\.sgn \.spin \{\s*animation: rg-sign-spin/);
+    expect(css).toMatch(
+      /@media \(prefers-reduced-motion: reduce\) \{\s*\.sgn \.spin,\s*\.sgn \.pulse,\s*\.sgn \.blink \{\s*animation: none;/,
+    );
+  });
+});
+
 describe("where the faces are", () => {
   it("in the bar: God, the personal agents and the projects' orchestrators", () => {
     render(<Sidebar />);

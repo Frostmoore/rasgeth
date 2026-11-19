@@ -3754,7 +3754,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get asMascotHelp => 'Rinominarlo non cambia la faccia: la cambi solo tu, da qui.';
 
   @override
-  String get asMascotGod => 'La mascotte di God è disegnata a mano: è sempre il gigante rosso.';
+  String get asMascotGod =>
+      'La mascotte di God è disegnata a mano: la stella gigante con la corona, con tre stelline che le girano attorno.';
 
   @override
   String get asName => 'Nome';
@@ -9260,6 +9261,287 @@ class AppLocalizationsIt extends AppLocalizations {
   String get renameNoticeOk => 'Ho capito';
 
   @override
+  String noInternetNotice(String parts) {
+    return 'Senza internet. In attesa della rete: $parts (il collegamento riparte da solo appena torna). Tutto il resto funziona, modelli locali compresi.';
+  }
+
+  @override
+  String get cvGeneratingImage => 'Sta generando un\'immagine…';
+
+  @override
+  String get cvGeneratingVideo => 'Sta generando un video…';
+
+  @override
+  String get cvGeneratingAudio => 'Sta generando un suono…';
+
+  @override
+  String get cvImageUnreadable => 'Non riesco ad aprire questa immagine';
+
+  @override
+  String cvImageUnreachable(String name) {
+    return 'Immagine non disponibile qui: $name';
+  }
+
+  @override
+  String get cvMediaNativeTitle => 'Usa lo strumento del modello quando c\'è';
+
+  @override
+  String get cvMediaNativeHelp =>
+      'Alcuni modelli fanno le immagini da sé (ChatGPT con Codex): allora si usa il loro, e l\'immagine ti arriva in chat come con il nostro. Spento: sempre il fornitore scelto qui. Se in una conversazione chiedi «il vostro strumento», si usa sempre il nostro. Vale per le conversazioni nuove.';
+
+  @override
+  String get ptrSection => 'Ritratto';
+
+  @override
+  String get ptrHub => 'Come ti vedono gli agenti, costruito dalle tue conversazioni';
+
+  @override
+  String get ptrTitle => 'Come ti vedono gli agenti';
+
+  @override
+  String get ptrLead =>
+      'Questo ritratto si costruisce da solo dalle tue conversazioni: i tuoi gusti, come ti piace che ti si parli, le tue abitudini, i progetti a cui lavori, cosa evitare. Lo leggono gli agenti che scegli, all\'inizio di ogni conversazione. Correggilo quando vuoi: vale sempre la tua parola.';
+
+  @override
+  String get ptrOnTitle => 'Costruisci il ritratto dalle conversazioni';
+
+  @override
+  String get ptrOnOn =>
+      'Quando una conversazione si ferma, un modello leggero legge solo i tuoi messaggi e aggiorna il ritratto. Non annota mai password, chiavi, indirizzi email, numeri di telefono o cose di altre persone. Spende un poco dal tuo budget.';
+
+  @override
+  String get ptrOnOff =>
+      'Spento: il ritratto non cambia e nessun agente lo legge. Quello che c\'è resta finché non lo cancelli.';
+
+  @override
+  String get ptrWhoTitle => 'Chi lo legge';
+
+  @override
+  String get ptrWhoLead =>
+      'Le modifiche valgono dalla prossima conversazione: quelle già aperte continuano come erano.';
+
+  @override
+  String get ptrWho_god => 'God';
+
+  @override
+  String get ptrWho_orchestrators => 'Gli orchestratori dei progetti';
+
+  @override
+  String get ptrWho_chat => 'La Chat';
+
+  @override
+  String get ptrWho_others => 'Tutti gli altri agenti';
+
+  @override
+  String get ptrListTitle => 'Tratti';
+
+  @override
+  String get ptrListLead =>
+      'Ogni tratto dice quanto è sicuro e da dove viene. Un tratto che nessuna conversazione ripete sbiadisce col tempo.';
+
+  @override
+  String ptrCount(String n) {
+    return '$n tratti';
+  }
+
+  @override
+  String get ptrCountOne => '1 tratto';
+
+  @override
+  String get ptrEmpty =>
+      'Ancora nessun tratto: il ritratto si riempie mentre parli con gli agenti.';
+
+  @override
+  String get ptrEmptyOff => 'Il ritratto è spento e vuoto.';
+
+  @override
+  String get ptrAddPlaceholder =>
+      'Aggiungi un tratto tu, per esempio Mi piacciono le risposte con esempi';
+
+  @override
+  String get ptrAdd => 'Aggiungi';
+
+  @override
+  String get ptrCat_preference => 'Preferenze';
+
+  @override
+  String get ptrCat_style => 'Come parlarti';
+
+  @override
+  String get ptrCat_habit => 'Abitudini';
+
+  @override
+  String get ptrCat_project => 'Progetti in corso';
+
+  @override
+  String get ptrCat_avoid => 'Da evitare';
+
+  @override
+  String get ptrCat_about => 'Su di te';
+
+  @override
+  String get ptrSure => 'Sicuro';
+
+  @override
+  String get ptrLikely => 'Probabile';
+
+  @override
+  String get ptrUnsure => 'Ancora incerto';
+
+  @override
+  String get ptrByYou => 'Scritto da te';
+
+  @override
+  String ptrSeen(String n) {
+    return 'visto $n volte';
+  }
+
+  @override
+  String get ptrSeenOnce => 'visto una volta';
+
+  @override
+  String get ptrWhere => 'Da dove viene';
+
+  @override
+  String get ptrUntitled => 'Una conversazione';
+
+  @override
+  String ptrWith(String name) {
+    return 'con $name';
+  }
+
+  @override
+  String get ptrEdit => 'Cambia';
+
+  @override
+  String get ptrRemove => 'Togli';
+
+  @override
+  String get ptrDeny => 'Non è vero';
+
+  @override
+  String get ptrEditTitle => 'Cambia il tratto';
+
+  @override
+  String get ptrEditNote =>
+      'Una volta cambiato, il tratto è tuo: non sbiadisce e niente lo cambia da solo.';
+
+  @override
+  String ptrDenied(String n) {
+    return '$n tratti che hai detto non veri: non verranno più proposti.';
+  }
+
+  @override
+  String get ptrDeniedOne => '1 tratto che hai detto non vero: non verrà più proposto.';
+
+  @override
+  String get ptrTextTitle => 'Quello che leggono gli agenti';
+
+  @override
+  String get ptrTextLead =>
+      'Il ritratto esattamente come entra in una conversazione nuova, breve e sempre uguale finché non cambia.';
+
+  @override
+  String get ptrTextShow => 'Mostra il testo';
+
+  @override
+  String get ptrTextHide => 'Nascondi il testo';
+
+  @override
+  String get ptrForgetTitle => 'Dimentica tutto';
+
+  @override
+  String get ptrForgetLead =>
+      'Se ne vanno tutti i tratti, e le loro parole spariscono anche dalla cronologia. Non si torna indietro.';
+
+  @override
+  String get ptrForgetText =>
+      'Ogni tratto del ritratto viene cancellato e le sue parole tolte dalla cronologia, anche quelli «non veri». Il ritratto riparte vuoto.';
+
+  @override
+  String get ptrForget => 'Dimentica tutto';
+
+  @override
+  String get ptrErr_empty => 'Scrivi il tratto.';
+
+  @override
+  String get ptrErr_long => 'Un tratto è al massimo di 200 caratteri: scrivilo più corto.';
+
+  @override
+  String get ptrErr_secret =>
+      'Sembra una password, un codice o un numero di carta: i segreti non entrano mai nel ritratto.';
+
+  @override
+  String get ptrErr_private => 'Indirizzi email e numeri di telefono non entrano mai nel ritratto.';
+
+  @override
+  String get ptrErr_gone => 'Quel tratto non c\'è più.';
+
+  @override
+  String get tkTitle => 'Gruppi di strumenti';
+
+  @override
+  String get tkLead =>
+      'Gli agenti partono con pochi strumenti, così ogni messaggio pesa poco. Gli altri gruppi sono spenti di serie: un agente ne accende uno da sé quando il lavoro lo chiede, per quella conversazione. Acceso sempre: l\'agente lo ha dall\'inizio. Spento da te: l\'agente deve chiedertelo.';
+
+  @override
+  String tkAgentLead(String name) {
+    return 'I gruppi di $name: come per tutti gli agenti, oppure una scelta sua.';
+  }
+
+  @override
+  String get tkAuto => 'Spento di serie';
+
+  @override
+  String get tkOn => 'Acceso sempre';
+
+  @override
+  String get tkOff => 'Spento da te';
+
+  @override
+  String tkAsAll(String state) {
+    return 'Come per tutti: $state';
+  }
+
+  @override
+  String get tkIsDefault => 'di serie';
+
+  @override
+  String get tkRole => 'acceso per il suo ruolo';
+
+  @override
+  String tkWeight(String n) {
+    return 'circa $n token quando è acceso';
+  }
+
+  @override
+  String tkEssential(String n) {
+    return 'Strumenti essenziali, sempre accesi: circa $n token';
+  }
+
+  @override
+  String tkStartTotal(String n) {
+    return 'All\'inizio: circa $n token a ogni messaggio';
+  }
+
+  @override
+  String tkRest(String n) {
+    return 'Spenti all\'inizio: $n token che pesano solo se si accende un gruppo';
+  }
+
+  @override
+  String tkTools(String list) {
+    return 'Strumenti: $list';
+  }
+
+  @override
+  String get tkStateAuto => 'spento di serie';
+
+  @override
+  String get asMascotSub =>
+      'Un sotto-agente non ha una mascotte sua: vive per un compito, e mostra un anello nel colore del genitore.';
+
+  @override
   String get auAsstNewRoutine => 'Nuova routine';
 
   @override
@@ -10388,4 +10670,194 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get auOwnReadOnly =>
       'Le automazioni le cambia solo la persona (non da un dispositivo di progetto).';
+
+  @override
+  String get cvChSecretAnyway => 'Invia comunque';
+
+  @override
+  String get cvChSecretAnywayNote =>
+      'Non è un segreto (un link, un codice d\'ordine)? «Invia comunque» lo manda come l\'hai scritto.';
+
+  @override
+  String get echoSearch => 'Cerca nelle conversazioni passate';
+
+  @override
+  String get echoClear => 'Cancella la ricerca';
+
+  @override
+  String get echoNone => 'Nessuna conversazione passata ha queste parole.';
+
+  @override
+  String get echoArchived => 'archiviato';
+
+  @override
+  String echoMatches(String n) {
+    return '$n messaggi';
+  }
+
+  @override
+  String get echoMatch => '1 messaggio';
+
+  @override
+  String get echoYou => 'Tu';
+
+  @override
+  String get echoHint =>
+      'Scrivi almeno due lettere: ogni parola si cerca in quello che hai scritto tu e gli agenti.';
+
+  @override
+  String get skSection => 'Skill';
+
+  @override
+  String get skHub => 'Le skill degli agenti, le loro versioni e il ritorno indietro';
+
+  @override
+  String get skQuestion => 'Cosa hanno imparato gli agenti';
+
+  @override
+  String get skLead =>
+      'Le skill sono istruzioni che gli agenti scrivono dopo un lavoro andato bene, o che dai tu. Ognuna tiene le sue versioni: chi l\'ha scritta, perché e quando, e puoi tornare a una qualsiasi.';
+
+  @override
+  String get skWaitingTitle => 'Ti aspettano';
+
+  @override
+  String get skWaitingLead =>
+      'Skill nuove e versioni nuove di quelle installate, provate a parte. Non cambia niente finché non dici di sì.';
+
+  @override
+  String get skNoneWaiting => 'Non ti aspetta niente.';
+
+  @override
+  String get skNew => 'Skill nuova';
+
+  @override
+  String get skUpdate => 'Nuova versione di una skill installata';
+
+  @override
+  String skBy(String who) {
+    return 'di $who';
+  }
+
+  @override
+  String get skWhy => 'Perché';
+
+  @override
+  String get skTestsOk => 'Le sue prove sono passate.';
+
+  @override
+  String skScripts(String files) {
+    return 'Ha degli script ($files): il codice non si installa mai da solo.';
+  }
+
+  @override
+  String get skApprove => 'Approva';
+
+  @override
+  String get skReject => 'Rifiuta';
+
+  @override
+  String get skNextSession =>
+      'Una volta installata, gli agenti la usano dalla loro conversazione successiva; quelli che stanno già parlando tengono la versione con cui hanno cominciato.';
+
+  @override
+  String get skInstalledTitle => 'Installate';
+
+  @override
+  String get skInstalledLead => 'Aprine una per vedere le sue versioni.';
+
+  @override
+  String get skNoneInstalled => 'Ancora nessuna skill.';
+
+  @override
+  String get skEverywhere => 'per tutti i progetti';
+
+  @override
+  String skProject(String name) {
+    return 'progetto $name';
+  }
+
+  @override
+  String get skVersionsTitle => 'Versioni';
+
+  @override
+  String get skVersionsLead => 'Gli agenti usano la più nuova dalla loro conversazione successiva.';
+
+  @override
+  String skVersion(String n) {
+    return 'Versione $n';
+  }
+
+  @override
+  String get skCurrent => 'in uso';
+
+  @override
+  String get skHow_baseline => 'Com\'era prima della cronologia';
+
+  @override
+  String get skHow_edited => 'Cambiata a mano';
+
+  @override
+  String get skHow_install => 'Prima versione';
+
+  @override
+  String get skHow_update => 'Nuova versione';
+
+  @override
+  String get skHow_import => 'Importata';
+
+  @override
+  String skHow_rollback(String n) {
+    return 'Ritorno alla versione $n';
+  }
+
+  @override
+  String get skUnknown => 'autore sconosciuto';
+
+  @override
+  String get skYou => 'te';
+
+  @override
+  String get skApprovedYou => 'approvata da te';
+
+  @override
+  String get skApprovedAuto => 'installata da sola (la tua scelta in Sicurezza)';
+
+  @override
+  String get skCompare => 'Confronta con quella in uso';
+
+  @override
+  String get skHideCompare => 'Nascondi il confronto';
+
+  @override
+  String skRollback(String n) {
+    return 'Torna alla versione $n';
+  }
+
+  @override
+  String skRollbackTitle(String n) {
+    return 'Tornare alla versione $n?';
+  }
+
+  @override
+  String skRollbackText(String name) {
+    return 'I suoi file prendono il posto di quelli di «$name» in uso, come versione nuova: non si perde niente e puoi tornare qui. Gli agenti la usano dalla loro conversazione successiva.';
+  }
+
+  @override
+  String skRolledBack(String n, String v) {
+    return 'Tornata alla versione $n: adesso è la versione $v.';
+  }
+
+  @override
+  String get skNotRestorable => 'Troppo grande per essere conservata: non può tornare.';
+
+  @override
+  String get skNoVersions => 'Ancora nessuna versione.';
+
+  @override
+  String get skLineTitle => 'Cosa è cambiato e perché';
+
+  @override
+  String get skCompareFull => 'Confronta: tutte le differenze';
 }

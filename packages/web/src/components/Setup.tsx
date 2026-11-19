@@ -5,9 +5,10 @@
 // at the bottom of the screen and the windows come up from below. Each step is saved when it is
 // left; the wizard can be run again from Settings.
 
+import { mascotSpec, mascotSvg } from "@redgiant/mascot";
 import { PRODUCT_NAME } from "@redgiant/protocol";
 import type { JSX } from "preact";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { loginMethods, type SetupState } from "../api.js";
 import { lang, setLang, t } from "../i18n.js";
 import {
@@ -85,6 +86,7 @@ import { GitTiles } from "./GitCode.js";
 import { ImportFrom } from "./ImportFrom.js";
 import { AgentLanguagePicker } from "./LanguagePicker.js";
 import { hardwareText, LocalModels } from "./LocalModels.js";
+import { addMascotMotion } from "./Mascot.js";
 import { modelName } from "./ModelMenu.js";
 import { OsNetworkSection, SetupNetworkPanel } from "./OsSystem.js";
 import { OwnInfra } from "./OwnInfra.js";
@@ -413,69 +415,24 @@ function LocalStep() {
   );
 }
 
-/** God, drawn: a crown, rays, a calm face. */
-const AvGod = () => (
-  <svg
-    class="wz-av"
-    viewBox="0 0 128 128"
-    fill="none"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    aria-hidden="true"
-  >
-    <circle cx="64" cy="64" r="60" fill="var(--accent-soft)" />
-    <g stroke="var(--accent)" stroke-width="3" opacity=".55">
-      <path d="M64 6v10M22 22l7 7M106 22l-7 7M8 64h10M110 64h10" />
-    </g>
-    <path
-      d="M42 40l7 12 15-16 15 16 7-12-4 22H46z"
-      stroke="var(--accent)"
-      stroke-width="3.5"
-      fill="var(--panel)"
-    />
-    <circle cx="64" cy="76" r="15" stroke="var(--text)" stroke-width="3.5" fill="var(--panel)" />
-    <path
-      d="M34 120c2-16 14-24 30-24s28 8 30 24"
-      stroke="var(--text)"
-      stroke-width="3.5"
-      fill="var(--panel)"
-    />
-    <path d="M58 76h.01M70 76h.01" stroke="var(--text)" stroke-width="4" />
-  </svg>
-);
-/** Demi-God, drawn: wings, a smile, a speech bubble. */
-const AvDemi = () => (
-  <svg
-    class="wz-av"
-    viewBox="0 0 128 128"
-    fill="none"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    aria-hidden="true"
-  >
-    <circle cx="64" cy="64" r="60" fill="var(--accent-soft)" />
-    <path
-      d="M30 60c-12-4-18-14-18-24 10 2 18 8 22 16M98 60c12-4 18-14 18-24-10 2-18 8-22 16"
-      stroke="var(--accent)"
-      stroke-width="3"
-    />
-    <circle cx="64" cy="62" r="17" stroke="var(--text)" stroke-width="3.5" fill="var(--panel)" />
-    <path d="M57 62h.01M71 62h.01M58 70c4 3 8 3 12 0" stroke="var(--text)" stroke-width="3.5" />
-    <path
-      d="M32 120c2-16 14-26 32-26s30 10 32 26"
-      stroke="var(--text)"
-      stroke-width="3.5"
-      fill="var(--panel)"
-    />
-    <path
-      d="M84 20h28a6 6 0 0 1 6 6v12a6 6 0 0 1-6 6h-16l-8 7v-7h-4a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6z"
-      stroke="var(--accent)"
-      stroke-width="3"
-      fill="var(--panel)"
-    />
-    <path d="M90 32h16" stroke="var(--accent)" stroke-width="3" />
-  </svg>
-);
+/**
+ * God and the Demigod as they will look: their own mascots (3.9.1, the crowned red giant and its
+ * companion star), awake. The Demigod's gold follows its seed later, a little.
+ */
+const AvMascot = ({ kind }: { kind: "god" | "demigod" }) => {
+  addMascotMotion();
+  const svg = useMemo(
+    () =>
+      mascotSvg(mascotSpec(kind === "god" ? "God" : "Demigod", kind), {
+        state: "active",
+        size: 108,
+        idPrefix: `wz${kind}-`,
+      }),
+    [kind],
+  );
+  // Our own drawing from fixed numbers, no text from anyone.
+  return <span class="wz-av" aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
+};
 
 /** A name that wraps instead of scrolling sideways, smaller when it is long. */
 function BigName({
@@ -608,7 +565,7 @@ function Names() {
       <Head q={t("wzNamesQ")} lead={t("wzNamesLead")} />
       <div class="wz-duo">
         {Char({
-          av: <AvGod />,
+          av: <AvMascot kind="god" />,
           role: t("wzGodRole"),
           text: t("wzGodText", { demigod: demiName }),
           value: god,
@@ -632,7 +589,7 @@ function Names() {
           <span>{t("wzBetween")}</span>
         </div>
         {Char({
-          av: <AvDemi />,
+          av: <AvMascot kind="demigod" />,
           role: t("wzDemiRole"),
           text: t("wzDemiText", { god: godName }),
           value: demigod,

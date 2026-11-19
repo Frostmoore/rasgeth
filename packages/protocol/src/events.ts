@@ -6,6 +6,7 @@ import { MAX_NOTES, MAX_QUOTES, MessageQuote } from "./chat-tools.js";
 import { DocDecidedPayload, DocOpsPayload, DocProposedPayload, DocReplacedPayload } from "./doc.js";
 import { AssistantPart, ImagePart, NativeContent, StopReason } from "./messages.js";
 import { MessageMetrics } from "./metrics.js";
+import { PortraitAgents, PortraitTraitPayload } from "./portrait.js";
 import { ProductsShownPayload } from "./products.js";
 import { Answers, Question } from "./questions.js";
 
@@ -27,6 +28,16 @@ export const EventBody = z.discriminatedUnion("type", [
       tools: z.array(z.string()),
       /** Tools the person had switched off when it started (G34.5): resuming keeps them off. */
       toolsOff: z.array(z.string()).optional(),
+      /**
+       * Tools off by default when it started (3.9.4): the agent switches them on itself with
+       * request_tool (`session.tools_added`, by "agent"); resuming keeps the same split.
+       */
+      toolsDeferred: z.array(z.string()).optional(),
+      /**
+       * What the model's engine makes by itself in this conversation (2026-11-19: `image`…, see
+       * `capabilities.ts`): fixed at its start, resuming keeps it.
+       */
+      native: z.array(z.string()).optional(),
     }),
   }),
   /**
@@ -43,6 +54,16 @@ export const EventBody = z.discriminatedUnion("type", [
       why: z.string(),
       /** "session": this conversation only; "agent": from now on for this agent too. */
       scope: z.enum(["session", "agent"]),
+      /**
+       * Who switched them on (3.9.4): the agent itself (tools off by default), or the person's yes
+       * (absent: the person, as before).
+       */
+      by: z.enum(["agent", "person"]).optional(),
+      /**
+       * They were declared from the start as deferred tools and surfaced by reference in
+       * request_tool's result (Anthropic's deferred loading): the cached prefix did not change.
+       */
+      deferred: z.boolean().optional(),
     }),
   }),
   /**
@@ -99,6 +120,11 @@ export const EventBody = z.discriminatedUnion("type", [
        * («send to chat»). Shown like their other messages, marked.
        */
       via: z.enum(["artifact", "voice"]).optional(),
+      /**
+       * The person chose «Send anyway» on the page's or the app's secret warning (2026-11-19):
+       * their words were not blanked, by their choice (the log's Redactor still applies).
+       */
+      secretOk: z.boolean().optional(),
     }),
   }),
   z.object({ type: z.literal("message.assistant.delta"), payload: text }),
@@ -139,6 +165,11 @@ export const EventBody = z.discriminatedUnion("type", [
        * in `output`, marked so a resumed session counts the next calls from the same point.
        */
       reminder: z.enum(["todos"]).optional(),
+      /**
+       * Deferred tools the result surfaces by name (3.9.4, request_tool): the provider loads their
+       * definitions from here on (Anthropic's `tool_reference`), the prefix stays the same.
+       */
+      refs: z.array(z.string()).optional(),
     }),
   }),
   z.object({
@@ -646,6 +677,9 @@ export const EventBody = z.discriminatedUnion("type", [
       name: z.string(),
       author: z.string(),
       status: z.enum(["failed", "pending", "installed"]),
+      /** 3.9.7: a new version of an installed skill, and «what changed: why». */
+      update: z.boolean().optional(),
+      line: z.string().optional(),
     }),
   }),
   z.object({
@@ -660,6 +694,23 @@ export const EventBody = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("extension.removed"),
     payload: z.object({ kind: z.enum(["tool", "skill"]), name: z.string(), by: z.string() }),
+  }),
+  /**
+   * A skill's new version (3.9.7): installed from a proposal (by the person's yes or by policy),
+   * written or imported by the person, its state before the history began or after a change by
+   * hand, or a return to an earlier version. The history only goes forward.
+   */
+  z.object({
+    type: z.literal("extension.versioned"),
+    payload: z.object({
+      kind: z.literal("skill"),
+      name: z.string(),
+      scope: z.string(),
+      version: z.number().int().positive(),
+      how: z.enum(["baseline", "edited", "install", "update", "import", "rollback"]),
+      author: z.string().nullable(),
+      fromVersion: z.number().int().positive().optional(),
+    }),
   }),
   /** An automation started (status `running`) or ended; `skipped` when the previous run was still going. */
   z.object({
@@ -722,6 +773,28 @@ export const EventBody = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("memory.settings"),
     payload: z.object({ auto: z.boolean(), by: z.string() }),
+  }),
+  /** The person's portrait (3.9.4): one trait learned, said again, corrected or taken away. */
+  z.object({
+    type: z.literal("portrait.trait"),
+    payload: PortraitTraitPayload,
+  }),
+  /** The portrait on or off, and which agents read it (3.9.4). */
+  z.object({
+    type: z.literal("portrait.settings"),
+    payload: z.object({
+      on: z.boolean().optional(),
+      agents: PortraitAgents.optional(),
+      by: z.string(),
+    }),
+  }),
+  /**
+   * «Forget everything» (3.9.4): the text of every `portrait.trait` event was erased; this event
+   * keeps no text, and the portrait starts again empty.
+   */
+  z.object({
+    type: z.literal("portrait.forgotten"),
+    payload: z.object({ by: z.string() }),
   }),
   /**
    * A conversation brought in from another assistant (G36.7, ChatGPT or Claude): the messages

@@ -52,6 +52,11 @@ permissions:
 
 env:
   REGISTRY: ghcr.io/frostmoore
+  # pnpm's own retries for the registry (3.9.6): a slow minute of npm's registry is waited out.
+  npm_config_fetch_retries: "5"
+  npm_config_fetch_retry_mintimeout: "10000"
+  npm_config_fetch_retry_maxtimeout: "120000"
+  pnpm_config_fetch_retries: "5"
   # The patched engines (G32.2): what goes into their fingerprint.
   LLAMA_BUILD: b12034
   CUDA_VERSION: 12.8.1
@@ -223,6 +228,20 @@ jobs:
           cat dist-info/release.json
       - uses: actions/upload-artifact@v4
         with:
+          name: release-info
+          path: dist-info/*
+          retention-days: 7
+        id: upload_229
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ steps.upload_229.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ steps.upload_229.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
           name: release-info
           path: dist-info/*
           retention-days: 7
@@ -399,6 +418,20 @@ jobs:
           name: rasgeth-keychain-extension
           path: packages/browser-extension/dist/*.zip
           retention-days: 7
+        id: upload_402
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ steps.upload_402.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ steps.upload_402.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: rasgeth-keychain-extension
+          path: packages/browser-extension/dist/*.zip
+          retention-days: 7
       - uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
@@ -441,11 +474,47 @@ jobs:
         with:
           name: pgvector-windows-x64
           path: pgv
+        id: download_445
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ steps.download_445.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ steps.download_445.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: pgvector-windows-x64
+          path: pgv
       - uses: actions/download-artifact@v4
         with:
           name: rasgeth-app-windows-x64
           path: packaging/windows/app
+        id: download_449
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ steps.download_449.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ steps.download_449.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: rasgeth-app-windows-x64
+          path: packaging/windows/app
       - uses: actions/download-artifact@v4
+        with:
+          name: rasgeth-app-linux-x64
+          path: companion-linux
+        id: download_453
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ steps.download_453.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ steps.download_453.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
         with:
           name: rasgeth-app-linux-x64
           path: companion-linux
@@ -466,7 +535,7 @@ jobs:
           Copy-Item -Recurse packages/web/dist packaging/windows/web
           $v = node -p "process.version"
           New-Item -ItemType Directory -Force packaging/windows/node | Out-Null
-          Invoke-WebRequest "https://nodejs.org/dist/$v/node-$v-win-x64.zip" -OutFile node.zip
+          Invoke-WebRequest "https://nodejs.org/dist/$v/node-$v-win-x64.zip" -OutFile node.zip -MaximumRetryCount 4 -RetryIntervalSec 15
           Expand-Archive node.zip -DestinationPath node-x
           Copy-Item "node-x/node-$v-win-x64/node.exe" packaging/windows/node/node.exe
           "{0:N0} MB staged" -f ((Get-ChildItem -Recurse packaging/windows/server, packaging/windows/web, packaging/windows/node | Measure-Object Length -Sum).Sum / 1MB)
@@ -480,7 +549,7 @@ jobs:
         shell: pwsh
         working-directory: packaging/windows
         run: |
-          choco install innosetup -y --no-progress
+          foreach ($try in 1..3) { choco install innosetup -y --no-progress; if ($LASTEXITCODE -eq 0) { break }; if ($try -eq 3) { exit 1 }; Start-Sleep (20 * $try) }
           $version = "${{ github.ref_name }}".TrimStart("v")
           & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=$version" Rasgeth.iss
           if ($LASTEXITCODE -ne 0) { exit 1 }
@@ -543,6 +612,21 @@ jobs:
           path: packaging/windows/update/*
           compression-level: 0
           retention-days: 7
+        id: upload_545
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ steps.upload_545.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ steps.upload_545.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: Rasgeth-win-x64-update
+          path: packaging/windows/update/*
+          compression-level: 0
+          retention-days: 7
       - uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
@@ -586,8 +670,32 @@ jobs:
         with:
           name: pgvector-macos-universal
           path: pgv
+        id: download_590
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ steps.download_590.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ steps.download_590.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: pgvector-macos-universal
+          path: pgv
       # The app's window (G40.12): into Contents/Helpers, signed and notarized with the rest.
       - uses: actions/download-artifact@v4
+        with:
+          name: rasgeth-app-macos
+          path: companion
+        id: download_595
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ steps.download_595.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ steps.download_595.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
         with:
           name: rasgeth-app-macos
           path: companion
@@ -628,7 +736,35 @@ jobs:
           path: ci/windows
           run-id: ${{ needs.ci-build.outputs.run_id }}
           github-token: ${{ github.token }}
+        id: download_630
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ steps.download_630.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ steps.download_630.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: release-windows-${{ needs.ci-build.outputs.version }}
+          path: ci/windows
+          run-id: ${{ needs.ci-build.outputs.run_id }}
+          github-token: ${{ github.token }}
       - uses: actions/download-artifact@v4
+        with:
+          name: release-mac-${{ needs.ci-build.outputs.version }}
+          path: ci/mac
+          run-id: ${{ needs.ci-build.outputs.run_id }}
+          github-token: ${{ github.token }}
+        id: download_636
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ steps.download_636.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ steps.download_636.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
         with:
           name: release-mac-${{ needs.ci-build.outputs.version }}
           path: ci/mac
@@ -636,6 +772,20 @@ jobs:
           github-token: ${{ github.token }}
       # The app for Linux (G40.12), built by the same CI run (its companion job).
       - uses: actions/download-artifact@v4
+        with:
+          name: rasgeth-app-linux-x64
+          path: ci/linux
+          run-id: ${{ needs.ci-build.outputs.run_id }}
+          github-token: ${{ github.token }}
+        id: download_643
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ steps.download_643.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ steps.download_643.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
         with:
           name: rasgeth-app-linux-x64
           path: ci/linux
@@ -671,7 +821,11 @@ jobs:
             console.log("manifest " + m.version + ": " + m.files.length + " files, installer sha256 " + sha);' "$m" "$VERSION" ci/windows/Rasgeth-Setup.exe
           cmp <(gzip -dc "$m.gz") "$m"
           ls ci/mac/Rasgeth-mac-*.dmg
-          tar -tzf ci/linux/rasgeth-app-linux-x64.tar.gz | grep -qx "rasgeth-app-linux-x64/bundle/rasgeth-app" || { echo "the Linux tar has no app"; exit 1; }
+          # The listing whole, then the search: `tar | grep -q` stops reading at the first match and
+          # tar, still listing, fails on the closed pipe (3.9.1: «tar: stdout: write error», with
+          # pipefail the check said the app was missing; the files' order in the tar decides it).
+          tar -tzf ci/linux/rasgeth-app-linux-x64.tar.gz >"$RUNNER_TEMP/linux-tar.txt"
+          grep -qx "rasgeth-app-linux-x64/bundle/rasgeth-app" "$RUNNER_TEMP/linux-tar.txt" || { echo "the Linux tar has no app"; exit 1; }
           # Rasgeth App on its own for Windows (3.8.2): an Inno Setup installer from the same run.
           [ -s ci/windows/Rasgeth-App-Setup.exe ] || { echo "CI's Windows packages have no Rasgeth-App-Setup.exe"; exit 1; }
           head -c 2 ci/windows/Rasgeth-App-Setup.exe | grep -q MZ || { echo "Rasgeth-App-Setup.exe is not a Windows program"; exit 1; }
@@ -710,6 +864,21 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ !inputs.dry_run }}
         with:
+          name: Rasgeth-win-x64-update
+          path: ci/windows/update/*
+          compression-level: 0
+          retention-days: 7
+        id: upload_719
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ (!inputs.dry_run) && steps.upload_719.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ (!inputs.dry_run) && steps.upload_719.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
           name: Rasgeth-win-x64-update
           path: ci/windows/update/*
           compression-level: 0
@@ -779,6 +948,20 @@ jobs:
           name: stores
           path: stores/winget/manifests
           retention-days: 30
+        id: upload_786
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ steps.upload_786.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ steps.upload_786.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: stores
+          path: stores/winget/manifests
+          retention-days: 30
       - uses: softprops/action-gh-release@v2
         with:
           files: |
@@ -814,13 +997,25 @@ jobs:
         with:
           name: stores
           path: manifests
+        id: download_822
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ steps.download_822.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ steps.download_822.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: stores
+          path: manifests
       - name: wingetcreate submit
         shell: pwsh
         env:
           WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
         run: |
           if (-not $env:WINGET_TOKEN) { "WINGET_AUTO_SUBMIT is on but WINGET_TOKEN is missing"; exit 1 }
-          Invoke-WebRequest https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
+          Invoke-WebRequest https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe -MaximumRetryCount 4 -RetryIntervalSec 15
           $dir = "manifests\f\Frostmoore\Rasgeth\${{ needs.stores.outputs.version }}"
           .\wingetcreate.exe submit --token $env:WINGET_TOKEN $dir
           if ($LASTEXITCODE -ne 0) { exit 1 }
@@ -860,7 +1055,9 @@ jobs:
           linux_fp=$(engine/fingerprint.sh linux)
           cached_zip="${ZIP%.zip}-$win_fp.zip"
           image="$REGISTRY/redgiant2-engine:cuda-prefetch-$linux_fp"
-          if gh api "repos/$GITHUB_REPOSITORY/releases/tags/$ENGINE_CACHE" --jq '.assets[].name' 2>/dev/null | grep -qxF "$cached_zip"; then win_have=yes; else win_have=no; fi
+          # grep reads the whole list (with -q it would stop early and gh could fail on the pipe).
+          if gh api "repos/$GITHUB_REPOSITORY/releases/tags/$ENGINE_CACHE" --jq '.assets[].name' 2>/dev/null | grep -xF "$cached_zip" >/dev/null; then win_have=yes; else win_have=no; fi
+
           if docker buildx imagetools inspect "$image" >/dev/null 2>&1; then linux_have=yes; else linux_have=no; fi
           wanted() { if [ -z "$ONLY" ] || [ "$ONLY" = "$1" ]; then echo yes; else echo no; fi; }
           echo "| Engine | Fingerprint | Decision | Why |" >> "$GITHUB_STEP_SUMMARY"
@@ -893,7 +1090,8 @@ jobs:
   # Alone: Actions > Release images > Run workflow, only = llama-cuda.
   llama-cuda:
     needs: engine-plan
-    if: needs.engine-plan.outputs.win == 'build'
+    # !cancelled(): with `only` ci-build is skipped, and a skipped ancestor would skip this job too.
+    if: ${{ !cancelled() && needs.engine-plan.outputs.win == 'build' }}
     runs-on: windows-latest
     timeout-minutes: 240
     permissions:
@@ -932,8 +1130,7 @@ jobs:
       - name: Ninja and sccache
         shell: pwsh
         run: |
-          choco install ninja sccache -y --no-progress
-          if ($LASTEXITCODE -ne 0) { exit 1 }
+          foreach ($try in 1..3) { choco install ninja sccache -y --no-progress; if ($LASTEXITCODE -eq 0) { break }; if ($try -eq 3) { exit 1 }; Start-Sleep (20 * $try) }
       - name: Compiler cache
         uses: actions/cache@v4
         with:
@@ -950,6 +1147,21 @@ jobs:
         run: ./engine/build-win.ps1 -CudaFlags "${{ steps.msvc.outputs.cudaflags }}"
       - uses: actions/upload-artifact@v4
         with:
+          name: llama-redgiant-win-cuda12.8-x64
+          path: ${{ env.ZIP }}
+          compression-level: 0
+          retention-days: 14
+        id: upload_961
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ steps.upload_961.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ steps.upload_961.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
           name: llama-redgiant-win-cuda12.8-x64
           path: ${{ env.ZIP }}
           compression-level: 0
@@ -976,7 +1188,8 @@ jobs:
   # name the app looks for (moe-prefetch.ts, Rasgeth.cs: releases/download/v<version>/<zip>).
   llama-cuda-reuse:
     needs: engine-plan
-    if: needs.engine-plan.outputs.win == 'reuse'
+    # !cancelled(): with `only` ci-build is skipped, and a skipped ancestor would skip this job too.
+    if: ${{ !cancelled() && needs.engine-plan.outputs.win == 'reuse' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -986,7 +1199,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           CACHED_ZIP: llama-redgiant-win-cuda12.8-x64-${{ needs.engine-plan.outputs.win_fp }}.zip
         run: |
-          gh release download "$ENGINE_CACHE" -R "$GITHUB_REPOSITORY" -p "$CACHED_ZIP"
+          for try in 1 2 3; do gh release download "$ENGINE_CACHE" -R "$GITHUB_REPOSITORY" -p "$CACHED_ZIP" --clobber && break; [ "$try" = 3 ] && exit 1; sleep $((20 * try)); done
           mv "$CACHED_ZIP" "$ZIP"
           ls -l "$ZIP"
           sha256sum "$ZIP"
@@ -1004,7 +1217,8 @@ jobs:
   # cuda-prefetch-<fingerprint>. Alone: Run workflow with only = engine-prefetch (built, not pushed).
   engine-prefetch:
     needs: engine-plan
-    if: needs.engine-plan.outputs.linux == 'build'
+    # !cancelled(): with `only` ci-build is skipped, and a skipped ancestor would skip this job too.
+    if: ${{ !cancelled() && needs.engine-plan.outputs.linux == 'build' }}
     runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:
@@ -1025,6 +1239,8 @@ jobs:
         shell: bash
         run: |
           version=${GITHUB_REF_NAME#v}
+          # A run by hand on a branch (wip/p3.9.6): a tag has no "/" (built, never pushed there).
+          version=${version//\//-}
           image=$REGISTRY/redgiant2-engine
           echo "tags=$image:cuda-prefetch,$image:$version-cuda-prefetch,$image:cuda-prefetch-${{ needs.engine-plan.outputs.linux_fp }}" >> "$GITHUB_OUTPUT"
       - uses: docker/build-push-action@v6
@@ -1045,7 +1261,8 @@ jobs:
   # The fingerprint is known: the image an earlier release built gets this release's tags, no build.
   engine-prefetch-reuse:
     needs: engine-plan
-    if: needs.engine-plan.outputs.linux == 'reuse'
+    # !cancelled(): with `only` ci-build is skipped, and a skipped ancestor would skip this job too.
+    if: ${{ !cancelled() && needs.engine-plan.outputs.linux == 'reuse' }}
     runs-on: ubuntu-latest
     steps:
       - uses: docker/setup-buildx-action@v3

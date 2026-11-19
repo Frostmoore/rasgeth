@@ -7,6 +7,8 @@ import 'dart:io';
 import 'fake_automations.dart';
 import 'fake_files.dart';
 import 'fake_knowledge.dart';
+import 'fake_portrait.dart';
+import 'fake_skills.dart';
 import 'helpers.dart';
 
 class FakeRedGiant {
@@ -20,6 +22,12 @@ class FakeRedGiant {
 
   /// G42.10: the knowledge and the shared memory in memory (null: the canned answers below).
   FakeKnowledge? knowledge;
+
+  /// 3.9.4: the person's portrait in memory (null: no portrait routes).
+  FakePortrait? portrait;
+
+  /// 3.9.7: the skills, their versions and the agents' proposals (null: the canned answers).
+  FakeSkills? skills;
   bool codeOn = false;
   int appProtocol = 1;
   int wrongTries = 0;
@@ -891,6 +899,18 @@ class FakeRedGiant {
           'futureField': {'ignored': true},
           ...?agentOverrides['a$i'],
         },
+    // A sub-agent, after the fixtures' first-level agents: no mascot of its own (2026-11-19).
+    if (!onlyLeaders)
+      {
+        'id': 'a${mascots.length}',
+        'kind': 'subagent',
+        'parentId': 'a0',
+        'projectId': null,
+        'persistent': false,
+        'name': 'Tester',
+        'status': 'active',
+        ...?agentOverrides['a${mascots.length}'],
+      },
     ...created,
   ];
 
@@ -952,6 +972,8 @@ class FakeRedGiant {
     if (!tokens.contains(token)) return _json(r, 401, {'error': 'Unauthorized'});
     if (files case final fs? when await fs.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (knowledge case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
+    if (portrait case final p? when await p.handle(r, path, (s, b) => _json(r, s, b))) return;
+    if (skills case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
     final own = routes['${r.method} $path'];
     if (own != null) return own(r);
     if (await automations.handle(r, path, (s, b) => _json(r, s, b))) return;

@@ -25,6 +25,7 @@ import {
   type McpStatus,
   type Proposal,
   type SetupState,
+  type SkillVersion,
 } from "../api.js";
 import { brandOr } from "../brands.js";
 import { lang, t } from "../i18n.js";
@@ -59,6 +60,7 @@ import { explain } from "./Brain.js";
 import { askConfirm } from "./dialogs.js";
 import { MagicExtChat, MagicExtStart } from "./MagicExtension.js";
 import { KindRow } from "./Media.js";
+import { DiffView } from "./PromptRefiner.js";
 import { Acts, Facts, Head, Seg, Sub, SwitchRow, Tile, WzPage } from "./SettingsKit.js";
 import { PHONE, useMedia } from "./SetupKit.js";
 import { Field, Modal } from "./ui.js";
@@ -80,7 +82,7 @@ const projectOptions = (val: (id: string) => string, label: (name: string) => st
   ));
 
 /** An agent's proposal, read in full: what it does, its files, how its tests went. */
-function ProposalView({
+export function ProposalView({
   p,
   onDone,
   onClose,
@@ -95,6 +97,8 @@ function ProposalView({
       onClose();
     });
   const description = p.input.spec?.description ?? p.input.description ?? "";
+  // 3.9.7: a new version is decided on its line; the whole comparison on request.
+  const [comparing, setComparing] = useState(false);
   // G36.8: an agent's skill that changes an installed one, its scripts, why it came.
   const update = p.kind === "skill" && Boolean(p.previous);
   const scripts =
@@ -122,7 +126,8 @@ function ProposalView({
           ]}
         />
         {description && <p class="wz-lead2">{description}</p>}
-        {p.input.summary && (
+        {/* A new version says why in its line (3.9.7): the summary card is for new skills. */}
+        {p.input.summary && !(update && p.updateLine) && (
           <div class="wz-card wz-left xw-summary">
             <b>{t("xwSummary")}</b>
             <p>{p.input.summary}</p>
@@ -130,6 +135,27 @@ function ProposalView({
         )}
         {scripts.length > 0 && p.status === "pending" && p.author !== "human" && (
           <p class="notice warn">{t("xwScripts", { files: scripts.join(", ") })}</p>
+        )}
+        {update && p.updateLine && (
+          <div class="wz-card wz-left sv-line" data-testid="update-line">
+            <b>{t("svLineTitle")}</b>
+            <p>{p.updateLine}</p>
+          </div>
+        )}
+        {update && p.previous && p.proposedSkillMd !== undefined && (
+          <div class="sv-changes" data-testid="proposal-diff">
+            <button
+              type="button"
+              class="wz-btn quiet"
+              data-testid="proposal-compare"
+              aria-expanded={comparing}
+              onClick={() => setComparing(!comparing)}
+            >
+              {comparing ? t("svHideCompare") : t("svCompareFull")}
+            </button>
+            {comparing && <DiffView before={p.previous.skillMd} after={p.proposedSkillMd} />}
+            {p.status === "pending" && <p class="ui-help">{t("svNextSession")}</p>}
+          </div>
         )}
         {update && p.previous && (
           <div class="xw-compare">
@@ -677,6 +703,13 @@ function MediaTiles() {
   return (
     <>
       <Sub title={t("mediaTitle")} lead={t("mediaPurpose")} />
+      {/* The model's own tool first (2026-11-19), on by default. */}
+      <SwitchRow
+        title={t("mediaNativeTitle")}
+        help={t("mediaNativeHelp")}
+        on={s.config.mediaNative !== false}
+        onChange={(on) => void attempt(() => getApi().setupMediaNative(on)).then(load)}
+      />
       <div class="wz-brain xw-grid">
         {MEDIA_KINDS.filter((k) => MEDIA_PROVIDERS.some((p) => p.models[k]?.length)).map((k) => (
           <Tile
@@ -957,10 +990,123 @@ function ImportSkill({ onDone, onClose }: { onDone: () => void; onClose: () => v
   );
 }
 
+const svDate = (iso: string) =>
+  new Date(iso).toLocaleString(lang.value === "it" ? "it-IT" : "en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+/** How a version came, in words (3.9.7). */
+export function versionHow(v: Pick<SkillVersion, "how" | "fromVersion">): string {
+  return v.how === "rollback"
+    ? t("svHow_rollback", { n: String(v.fromVersion ?? "") })
+    : t(`svHow_${v.how}` as "svHow_install");
+}
+
+/** Who wrote a version and who let it in (3.9.7). */
+export function versionWho(v: Pick<SkillVersion, "author" | "approvedBy">): string {
+  const parts = [
+    v.author
+      ? t("svBy", { who: v.author === "human" ? t("svYou") : who(v.author) })
+      : t("svUnknown"),
+  ];
+  if (v.approvedBy === "human" && v.author !== "human") parts.push(t("svApprovedYou"));
+  if (v.approvedBy === "auto") parts.push(t("svApprovedAuto"));
+  return parts.join(" · ");
+}
+
+/**
+ * A skill's versions (3.9.7): newest first, who wrote each, why and when; any earlier one can be
+ * compared with the one in use and brought back, as a new version.
+ */
+export function SkillHistory({ name, scope }: { name: string; scope: string }) {
+  const [list, setList] = useState<SkillVersion[] | null>(null);
+  const [open, setOpen] = useState<{ version: number; before: string; after: string } | null>(null);
+  const [done, setDone] = useState<string | null>(null);
+  const load = () =>
+    void getApi()
+      .skillVersions(name, scope)
+      .then(setList, () => setList([]));
+  useEffect(load, [name, scope]);
+  const compare = async (v: SkillVersion) => {
+    if (open?.version === v.version) return setOpen(null);
+    const cur = list?.find((x) => x.current);
+    if (!cur) return;
+    const [a, b] = await Promise.all([
+      getApi().skillVersion(name, scope, v.version),
+      getApi().skillVersion(name, scope, cur.version),
+    ]);
+    setOpen({ version: v.version, before: a.skillMd, after: b.skillMd });
+  };
+  const rollback = async (v: SkillVersion) => {
+    const n = String(v.version);
+    const yes = await askConfirm(t("svRollbackTitle", { n }), {
+      text: t("svRollbackConfirm", { name }),
+      yes: t("svRollback", { n }),
+    });
+    if (!yes) return;
+    const r = await attempt(() => getApi().rollbackSkill(name, scope, v.version));
+    if (!r) return;
+    setOpen(null);
+    setDone(t("svRolledBack", { n: String(v.version), v: String(r.version) }));
+    load();
+  };
+  return (
+    <div class="sv-history" data-testid="skill-history">
+      <h4>{t("svTitle")}</h4>
+      <p class="ui-help">{t("svLead")}</p>
+      {done && <p class="notice ok">{done}</p>}
+      {list?.length === 0 && <p class="ui-help">{t("svNone")}</p>}
+      <ol class="sv-list">
+        {(list ?? []).map((v) => (
+          <li key={v.version} class={`sv-item${v.current ? " current" : ""}`}>
+            <div class="sv-head">
+              <b>{t("svVersion", { n: String(v.version) })}</b>
+              {v.current && <span class="sv-badge">{t("svCurrent")}</span>}
+              <span class="sv-how">{versionHow(v)}</span>
+            </div>
+            <p class="sv-meta">
+              {versionWho(v)} · <time dateTime={v.createdAt}>{svDate(v.createdAt)}</time>
+            </p>
+            {v.reason && (
+              <p class="sv-why">
+                <span>{t("svWhy")}:</span> {v.reason}
+              </p>
+            )}
+            {!v.current && (
+              <div class="sv-acts">
+                <button type="button" class="wz-btn quiet" onClick={() => void compare(v)}>
+                  {open?.version === v.version ? t("svHideCompare") : t("svCompare")}
+                </button>
+                {v.restorable ? (
+                  <button
+                    type="button"
+                    class="wz-btn"
+                    data-testid={`skill-rollback-${v.version}`}
+                    onClick={() => void rollback(v)}
+                  >
+                    {t("svRollback", { n: String(v.version) })}
+                  </button>
+                ) : (
+                  <span class="ui-help">{t("svNotRestorable")}</span>
+                )}
+              </div>
+            )}
+            {open?.version === v.version && <DiffView before={open.before} after={open.after} />}
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
 /** A skill or tool installed: what it is, where it works; open its file or download it. */
 function InstalledView({ x, onClose }: { x: Installed; onClose: () => void }) {
   return (
-    <Modal title={x.name} onClose={onClose}>
+    <Modal wide={x.kind === "skill"} title={x.name} onClose={onClose}>
       <div class="wz-panel-in">
         <p class="wz-lead2">{x.description}</p>
         <Facts
@@ -971,6 +1117,7 @@ function InstalledView({ x, onClose }: { x: Installed; onClose: () => void }) {
           ]}
         />
         {x.kind === "skill" && <p class="ui-help">{t("skillDownloadHelp")}</p>}
+        {x.kind === "skill" && <SkillHistory name={x.name} scope={x.scope} />}
       </div>
       <Acts>
         {x.kind === "skill" && (
@@ -1069,7 +1216,7 @@ export function Extensions() {
       icon={p.kind === "tool" ? <IconTool /> : <IconBook />}
       title={p.name}
       badge={t(p.kind === "tool" ? "extKindTool" : "extKindSkill")}
-      text={p.input.spec?.description ?? p.input.description ?? ""}
+      text={p.updateLine ?? p.input.spec?.description ?? p.input.description ?? ""}
       state={
         waiting
           ? `${t("xwWaitsYou")} · ${t("by")} ${who(p.author)}`

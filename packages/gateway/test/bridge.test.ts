@@ -1,5 +1,9 @@
 import { EventEmitter } from "node:events";
-import type { PermissionRequestInfo, QuestionRequestInfo } from "@redgiant/protocol";
+import {
+  type PermissionRequestInfo,
+  PRODUCT_NAME,
+  type QuestionRequestInfo,
+} from "@redgiant/protocol";
 import { describe, expect, it } from "vitest";
 import {
   type Button,
@@ -38,12 +42,14 @@ class FakeTransport implements Transport {
 function fakeHost() {
   const approvals = new EventEmitter();
   const questions = new EventEmitter();
+  const skills = new EventEmitter();
+  const skillDecisions: [string, string, string][] = [];
   const decided: [string, string][] = [];
   const answered: unknown[] = [];
-  const asked: { chatId: string; text: string }[] = [];
+  const asked: { chatId: string; text: string; secretOk?: boolean }[] = [];
   const host: GatewayHost = {
-    async askDemigod(_owner, chatId, text) {
-      asked.push({ chatId, text });
+    async askDemigod(_owner, chatId, text, extra) {
+      asked.push({ chatId, text, ...(extra?.secretOk && { secretOk: true }) });
       return `You said: ${text}`;
     },
     transcription: {},
@@ -66,8 +72,17 @@ function fakeHost() {
       },
     },
     language: () => "en",
+    skillUpdates: {
+      on: (e: string, l: (...a: never[]) => void) => skills.on(e, l),
+      async decide(owner, id, d, via) {
+        if (skillDecisions.some(([x]) => x === id)) return false;
+        skillDecisions.push([id, d, via]);
+        skills.emit("closed", owner, id, d, via);
+        return true;
+      },
+    },
   };
-  return { host, approvals, questions, decided, answered, asked };
+  return { host, approvals, questions, decided, answered, asked, skills, skillDecisions };
 }
 
 async function setup(buttons = true) {
@@ -308,5 +323,125 @@ describe("chat bridge (G29.5)", () => {
       "Nothing was running.",
       "Working now: God.\nWaiting for you: 1 approvals, 0 questions.\nSpent: $1.50.",
     ]);
+  });
+});
+
+// Built at run time: no key-shaped literal in the sources.
+const fakeToken = () => `ghp_${"A1b2".repeat(9)}`;
+
+describe("a message that looks like a secret (2026-11-19)", () => {
+  it("is held with buttons, and «Send anyway» passes it as written with secretOk", async () => {
+    const { t, send, asked } = await setup();
+    const text = `the link is ${fakeToken()}`;
+    await send({ text });
+    expect(asked).toEqual([]);
+    const notice = t.sent.at(-1);
+    expect(notice?.text).toMatch(/looks like it holds a secret \(a key\)/);
+    expect(notice?.text).not.toContain(fakeToken());
+    expect(notice?.buttons?.map((b) => b.label)).toEqual([
+      "Send anyway",
+      "Send without it",
+      "Leave it",
+    ]);
+    await send({ button: notice?.buttons?.[0]?.id ?? "" });
+    expect(asked).toEqual([{ chatId: "c1", text, secretOk: true }]);
+    expect(t.edits.at(-1)?.text).toMatch(/Sent as written\.$/);
+    // A choice counts once: the same button again sends nothing more.
+    await send({ button: notice?.buttons?.[0]?.id ?? "" });
+    expect(asked).toHaveLength(1);
+  });
+
+  it("«Send without it» lets the server blank it (no secretOk), «Leave it» sends nothing", async () => {
+    const { t, send, asked } = await setup();
+    await send({ text: `one ${fakeToken()}` });
+    await send({ button: t.sent.at(-1)?.buttons?.[1]?.id ?? "" });
+    expect(asked).toEqual([{ chatId: "c1", text: `one ${fakeToken()}` }]);
+    expect(t.edits.at(-1)?.text).toMatch(/Sent without the secret\.$/);
+    await send({ text: `two ${fakeToken()}` });
+    await send({ button: t.sent.at(-1)?.buttons?.[2]?.id ?? "" });
+    expect(asked).toHaveLength(1);
+    expect(t.edits.at(-1)?.text).toMatch(/Not sent\.$/);
+  });
+
+  it("without buttons the choices are numbered and answered by number", async () => {
+    const { t, send, asked } = await setup(false);
+    await send({ text: `password: Zx81-hunter2` });
+    const notice = t.sent.at(-1)?.text ?? "";
+    expect(notice).toMatch(/a password/);
+    expect(notice).toMatch(/1\. Send anyway\n2\. Send without it\n3\. Leave it/);
+    expect(notice).not.toContain("Zx81-hunter2");
+    await send({ text: "1" });
+    expect(asked).toEqual([{ chatId: "c1", text: "password: Zx81-hunter2", secretOk: true }]);
+    // The number answered the warning: it is not a message of its own.
+    expect(asked.map((a) => a.text)).not.toContain("1");
+  });
+
+  it("only the person who sent it chooses, and a choice after the time runs out sends nothing", async () => {
+    const { bridge, t, send, asked } = await setup();
+    await send({ text: `x ${fakeToken()}` });
+    const id = t.sent.at(-1)?.buttons?.[0]?.id ?? "";
+    // Someone else linked to another owner presses it.
+    const { code } = bridge.pairingCode("other");
+    await send({ userId: "u2", chatId: "c2", text: `/start ${code}` });
+    await send({ userId: "u2", chatId: "c2", button: id });
+    expect(asked).toEqual([]);
+    const realNow = Date.now;
+    try {
+      Date.now = () => realNow() + 11 * 60_000;
+      await send({ button: id });
+    } finally {
+      Date.now = realNow;
+    }
+    expect(asked).toEqual([]);
+    expect(t.edits.at(-1)?.text).toMatch(/Too late/);
+  });
+
+  it("a plain message, a link without a secret, goes on as before", async () => {
+    const { send, asked } = await setup();
+    await send({ text: "https://www.amazon.it/dp/B0CX23V2ZK?ref=nav_logo&th=1" });
+    expect(asked).toHaveLength(1);
+  });
+});
+
+const skillUpdate = {
+  proposalId: "prop_1",
+  name: "invoice-pdf",
+  agentName: "Coder",
+  line: "Added the step for .rtf files: it failed twice on Word documents",
+  createdAt: new Date().toISOString(),
+};
+
+describe("a new version of a skill waiting for the person (3.9.7)", () => {
+  it("comes with its line and Approve / Reject; the answer closes it", async () => {
+    const { t, skills, skillDecisions } = await setup();
+    skills.emit("request", "me", skillUpdate);
+    await new Promise((r) => setTimeout(r, 20));
+    const m = t.sent.at(-1);
+    expect(m?.text).toBe(
+      [
+        "Coder proposes a new version of the skill «invoice-pdf»:",
+        skillUpdate.line,
+        `The whole comparison: ${PRODUCT_NAME}, Settings, Extensions.`,
+      ].join("\n"),
+    );
+    expect(m?.buttons?.map((b) => b.label)).toEqual(["Approve", "Reject"]);
+    await t.on?.({ userId: "u1", chatId: "c1", button: m?.buttons?.[0]?.id ?? "" });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(skillDecisions).toEqual([["prop_1", "approve", "discord"]]);
+    expect(t.edits.at(-1)?.text).toMatch(/Approved: agents use it from their next conversation\.$/);
+  });
+
+  it("without buttons it is answered by number; decided on the page, the copy says so", async () => {
+    const { t, send, skills, skillDecisions } = await setup(false);
+    skills.emit("request", "me", skillUpdate);
+    await new Promise((r) => setTimeout(r, 20));
+    expect(t.sent.at(-1)?.text).toMatch(/1\. Approve\n2\. Reject/);
+    await send({ text: "2" });
+    expect(skillDecisions).toEqual([["prop_1", "reject", "discord"]]);
+    skills.emit("request", "me", { ...skillUpdate, proposalId: "prop_2" });
+    await new Promise((r) => setTimeout(r, 20));
+    skills.emit("closed", "me", "prop_2", "approve", "web");
+    await new Promise((r) => setTimeout(r, 20));
+    expect(t.edits.at(-1)?.text).toMatch(/Already decided by you on the web page: approved\.$/);
   });
 });

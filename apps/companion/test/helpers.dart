@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -18,7 +19,8 @@ class MascotFixture {
       svg = (j['svg'] as Map<String, dynamic>).map(
         (theme, states) => MapEntry(theme, (states as Map<String, dynamic>).cast<String, String>()),
       ),
-      tiny = j['tiny'] as String;
+      tiny = j['tiny'] as String,
+      compact = j['compact'] as String;
 
   final String seed;
   final String kind;
@@ -26,6 +28,9 @@ class MascotFixture {
   final Map<String, dynamic> raw;
   final Map<String, Map<String, String>> svg;
   final String tiny;
+
+  /// The 32 px drawing (idle, light): God and the Demigod without orbit, halo and glints.
+  final String compact;
 
   String svgOf(MascotTheme t, MascotState s) => svg[t.name]![s.name]!;
   String get slug => seed.toLowerCase().replaceAll(' ', '-');
@@ -67,3 +72,15 @@ Widget onCanvas(Widget child, {Key key = const Key('canvas'), Color bg = Colors.
         ),
       ),
     );
+
+/// 3.9.6: the team's screen has Echo's search box over the list, so a tile can sit under the
+/// bottom bar (or not be built yet): the list is scrolled until [f] is in its middle.
+Future<void> bringToMiddle(WidgetTester tester, Finder f) async {
+  final list = find
+      .descendant(of: find.byType(CustomScrollView).first, matching: find.byType(Scrollable))
+      .first;
+  if (f.evaluate().isEmpty) await tester.scrollUntilVisible(f, 200, scrollable: list);
+  unawaited(Scrollable.ensureVisible(tester.element(f.first), alignment: 0.5));
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 50));
+}

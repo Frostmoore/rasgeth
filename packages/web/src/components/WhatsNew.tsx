@@ -11,7 +11,7 @@ import { getApi } from "../state.js";
 import { Modal } from "./ui.js";
 
 /** Bump with every big update, and write its items below with that version. */
-export const NEWS_VERSION = "3.9.0";
+export const NEWS_VERSION = "3.9.7";
 const SEEN = "rg.newsSeen";
 
 export interface NewsItem {
@@ -22,6 +22,20 @@ export interface NewsItem {
 }
 
 export const ITEMS: NewsItem[] = [
+  { version: "3.9.7", title: "news397Skills", text: "news397SkillsText" },
+  { version: "3.9.7", title: "news397Secrets", text: "news397SecretsText" },
+  { version: "3.9.6", title: "news396Echo", text: "news396EchoText" },
+  { version: "3.9.6", title: "news396Engines", text: "news396EnginesText" },
+  { version: "3.9.5", title: "news395Questions", text: "news395QuestionsText" },
+  { version: "3.9.5", title: "news395AppUpdate", text: "news395AppUpdateText" },
+  { version: "3.9.5", title: "news395Secrets", text: "news395SecretsText" },
+  { version: "3.9.4", title: "news394Portrait", text: "news394PortraitText" },
+  { version: "3.9.4", title: "news394Tools", text: "news394ToolsText" },
+  { version: "3.9.4", title: "news394Ring", text: "news394RingText" },
+  { version: "3.9.3", title: "news393Images", text: "news393ImagesText" },
+  { version: "3.9.3", title: "news393Native", text: "news393NativeText" },
+  { version: "3.9.1", title: "news391Mascots", text: "news391MascotsText" },
+  { version: "3.9.1", title: "news391Offline", text: "news391OfflineText" },
   { version: "3.9.0", title: "news390Name", text: "news390NameText" },
   { version: "3.9.0", title: "news390Look", text: "news390LookText" },
   { version: "3.9.0", title: "news390Install", text: "news390InstallText" },

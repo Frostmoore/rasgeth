@@ -23,21 +23,46 @@ const entry = (
   chars: Math.round(tokens * 3.5),
   tokens,
   global,
+  state: global ? "on" : "off",
   ...extra,
 });
 const ALL: ToolsView = {
   agentId: null,
   entries: [
     entry("read_file", "files", 120, true, { essential: true }),
-    entry("grep", "files", 107, true),
+    entry("grep", "files", 107, true, { kit: "core" }),
     entry("web_search", "web", 73, false, {
+      kit: "core",
       exceptions: [{ agentId: "g1", name: "God", state: "on" }],
     }),
-    entry("browser", "web", 1200, true, { tools: ["browser_open", "browser_click"] }),
+    entry("browser", "web", 1200, true, {
+      kit: "browser",
+      state: "auto",
+      tools: ["browser_open", "browser_click"],
+    }),
     entry("complete_task", "agents", 115, true, { essential: true }),
   ] as ToolsView["entries"],
-  total: 1542,
-  saved: 73,
+  kits: [
+    {
+      id: "core",
+      entries: ["grep", "web_search"],
+      tokens: 180,
+      state: "on",
+      default: "on",
+      own: null,
+    },
+    {
+      id: "browser",
+      entries: ["browser"],
+      tokens: 1200,
+      state: "auto",
+      default: "auto",
+      own: null,
+    },
+  ],
+  total: 342,
+  saved: 1273,
+  essential: 235,
 };
 const AGENT: ToolsView = {
   agentId: "a1",
@@ -45,7 +70,28 @@ const AGENT: ToolsView = {
     ...e,
     own: e.essential ? null : e.id === "grep" ? "off" : null,
     on: e.essential || (e.id === "grep" ? false : e.global),
+    state: e.id === "grep" ? ("off" as const) : e.state,
   })),
+  kits: [
+    {
+      id: "core",
+      entries: ["grep", "web_search"],
+      tokens: 180,
+      state: "on",
+      default: "on",
+      own: null,
+      global: null,
+    },
+    {
+      id: "browser",
+      entries: ["browser"],
+      tokens: 1200,
+      state: "on",
+      default: "auto",
+      own: "on",
+      global: null,
+    },
+  ],
   total: 1435,
   saved: 180,
 };
@@ -84,14 +130,16 @@ describe("the tools page (G34.5)", () => {
   it("shows every tool with its weight, the total and the saving, essential ones locked", async () => {
     const r = render(<ToolsPage />);
     await waitFor(() => expect(r.getByText("Cercare sul web")).toBeTruthy());
-    expect(r.getByText("Circa 1540 token a ogni messaggio")).toBeTruthy();
-    expect(r.getByText("Spenti: 70 token risparmiati a ogni messaggio")).toBeTruthy();
-    expect(r.getByText("4 su 5 accesi")).toBeTruthy();
+    expect(r.getByText("All'inizio: circa 340 token a ogni messaggio")).toBeTruthy();
+    expect(
+      r.getByText("Spenti all'inizio: 1270 token che pesano solo se si accende un gruppo"),
+    ).toBeTruthy();
+    expect(r.getByText("3 su 5 accesi")).toBeTruthy();
     expect(r.getByText(/Le modifiche valgono dalle conversazioni nuove/)).toBeTruthy();
     // Groups with their names.
     expect(r.getByText("File e codice")).toBeTruthy();
     expect(r.getByText("Gestione degli agenti")).toBeTruthy();
-    expect(r.getAllByText("circa 1200 token a ogni messaggio")).toHaveLength(1);
+    expect(r.getAllByText(/circa 1200 token a ogni messaggio/)).toHaveLength(1);
     // The essential ones: locked switch and why.
     const read = r.getByRole("switch", { name: "Leggere i file" }) as HTMLButtonElement;
     expect(read.disabled).toBe(true);
@@ -161,6 +209,69 @@ describe("an agent's Tools tab (G34.5)", () => {
   });
 });
 
+describe("tool groups (3.9.4)", () => {
+  it("shows each group with its weight and state, and sets it for every agent", async () => {
+    const r = render(<ToolsPage />);
+    await waitFor(() => expect(r.container.querySelector('[data-kit="browser"]')).toBeTruthy());
+    expect(r.getByText("Strumenti essenziali, sempre accesi: circa 240 token")).toBeTruthy();
+    const kit = r.container.querySelector('[data-kit="browser"]') as HTMLElement;
+    expect(kit.textContent).toContain("circa 1200 token quando è acceso");
+    const buttons = [...kit.querySelectorAll("button")].map((b) => [
+      b.textContent,
+      b.getAttribute("aria-pressed"),
+    ]);
+    expect(buttons).toEqual([
+      ["Spento di serie", "true"],
+      ["Acceso sempre", "false"],
+      ["Spento da te", "false"],
+    ]);
+    // A tool of a group off by default says so.
+    expect(r.container.querySelector('[data-tool="browser"]')?.textContent).toContain(
+      "spento di serie",
+    );
+    fireEvent.click([...kit.querySelectorAll("button")][1] as HTMLElement);
+    await waitFor(() =>
+      expect(calls.find(([n]) => n === "setKits")?.[1]).toEqual([{ browser: "on" }]),
+    );
+    // Back to the default: the choice goes.
+    calls.length = 0;
+    fireEvent.click([...kit.querySelectorAll("button")][0] as HTMLElement);
+    await waitFor(() =>
+      expect(calls.find(([n]) => n === "setKits")?.[1]).toEqual([{ browser: "default" }]),
+    );
+    expect(r.container.querySelector('input[type="checkbox"], input[type="radio"]')).toBeNull();
+  });
+
+  it("offers an agent as for everyone, or its own choice", async () => {
+    const r = render(<AgentTools agent={{ id: "a1", name: "Coder", kind: "agent" } as never} />);
+    await waitFor(() => expect(r.container.querySelector('[data-kit="browser"]')).toBeTruthy());
+    const kit = r.container.querySelector('[data-kit="browser"]') as HTMLElement;
+    expect([...kit.querySelectorAll("button")].map((b) => b.textContent)).toEqual([
+      "Come per tutti",
+      "Spento di serie",
+      "Acceso sempre",
+      "Spento da te",
+    ]);
+    expect(kit.querySelector('[aria-pressed="true"]')?.textContent).toBe("Acceso sempre");
+    expect(kit.textContent).toContain("Come per tutti: Spento di serie");
+    fireEvent.click([...kit.querySelectorAll("button")][3] as HTMLElement);
+    await waitFor(() =>
+      expect(calls.find(([n]) => n === "setAgentKits")?.[1]).toEqual(["a1", { browser: "off" }]),
+    );
+  });
+
+  it("has words for every group in both languages", async () => {
+    const { TOOL_KITS } = await import("@redgiant/protocol");
+    for (const d of [dictionaries.en, dictionaries.it]) {
+      const words = d as Record<string, string>;
+      for (const k of TOOL_KITS) {
+        expect(words[`kit_${k}`], k).toBeTruthy();
+        expect(words[`kitDo_${k}`], k).toBeTruthy();
+      }
+    }
+  });
+});
+
 describe("words (G34.5)", () => {
   it("has a name and a sentence for every tool, and why for the essential ones", () => {
     for (const d of [dictionaries.en, dictionaries.it]) {
@@ -220,12 +331,57 @@ describe("words (G34.5)", () => {
   });
 });
 
+describe("the history's kit changes (3.9.4)", () => {
+  it("tells them in sentences, for everyone and for one agent", () => {
+    const names = {
+      agent: (id: string) => (id === "a1" ? "Coder" : id),
+      project: (id: string) => id,
+    };
+    const base = {
+      id: "c",
+      ownerId: "me",
+      kind: "config" as const,
+      change: "",
+      stage: "promoted" as const,
+      detail: null,
+      by: "human",
+      createdAt: "",
+      updatedAt: "",
+    };
+    expect(
+      describeChange(
+        {
+          ...base,
+          target: "tools",
+          before: { off: [], agents: {}, kits: { mail: "off" } },
+          after: { off: [], agents: {}, kits: { images: "on" } },
+        },
+        names,
+      ),
+    ).toEqual([
+      "Gruppo di strumenti Email: di nuovo com'era di serie",
+      "Gruppo di strumenti Immagini: Acceso sempre",
+    ]);
+    expect(
+      describeChange(
+        {
+          ...base,
+          target: "tools:a1",
+          before: { off: [], agents: {} },
+          after: { off: [], agents: {}, agentKits: { a1: { browser: "off" } } },
+        },
+        names,
+      ),
+    ).toEqual(["Coder: gruppo di strumenti Browser: Spento da te"]);
+  });
+});
+
 describe("finding a tool (p3.5.3)", () => {
   it("shows each tool's real name and filters by words, name and what it does", async () => {
     const view = render(<ToolsPage />);
     await waitFor(() => expect(view.container.querySelectorAll(".tl-row")).toHaveLength(5));
     // The command beside its name in words, as the chat's lines and request_tool say it.
-    const ids = [...view.container.querySelectorAll(".tl-id")].map((x) => x.textContent);
+    const ids = [...view.container.querySelectorAll(".tl-row .tl-id")].map((x) => x.textContent);
     expect(ids).toEqual(["read_file", "grep", "web_search", "browser", "complete_task"]);
     const box = view.container.querySelector(".tl-search input") as HTMLInputElement;
     const shown = () =>

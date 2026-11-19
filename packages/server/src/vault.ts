@@ -167,32 +167,38 @@ export function dpapiKeyStore(path: string): MasterKeyStore {
   };
 }
 
+/** How long macOS's `security` may take (a Keychain waiting to be unlocked). */
+const SECURITY_TIMEOUT_MS = 60_000;
+
 /** macOS: the key in the login Keychain (service `redgiant-vault`, one account per data folder). */
 export function keychainKeyStore(account: string): MasterKeyStore {
   return {
     kind: "keychain",
     async load() {
-      const r = await run("security", [
-        "find-generic-password",
-        "-s",
-        "redgiant-vault",
-        "-a",
-        account,
-        "-w",
-      ]).catch(() => null);
+      // A limit (3.9.1): a locked Keychain with nobody to unlock it (no screen) held the start for
+      // ever. Without an answer the keychain stays closed and says why; nothing is replaced.
+      const r = await run(
+        "security",
+        ["find-generic-password", "-s", "redgiant-vault", "-a", account, "-w"],
+        { timeout: SECURITY_TIMEOUT_MS },
+      ).catch(() => null);
       return r?.stdout.trim() ? Buffer.from(r.stdout.trim(), "base64") : null;
     },
     async save(key) {
-      await run("security", [
-        "add-generic-password",
-        "-U",
-        "-s",
-        "redgiant-vault",
-        "-a",
-        account,
-        "-w",
-        key.toString("base64"),
-      ]);
+      await run(
+        "security",
+        [
+          "add-generic-password",
+          "-U",
+          "-s",
+          "redgiant-vault",
+          "-a",
+          account,
+          "-w",
+          key.toString("base64"),
+        ],
+        { timeout: SECURITY_TIMEOUT_MS },
+      );
     },
   };
 }

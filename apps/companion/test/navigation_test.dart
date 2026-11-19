@@ -18,10 +18,16 @@ class FixtureMascots implements MascotSource {
   final asked = <String>[];
 
   @override
-  Future<String> svg(String agentId, MascotState state, MascotTheme theme, {bool tiny = false}) {
+  Future<String> svg(
+    String agentId,
+    MascotState state,
+    MascotTheme theme, {
+    bool tiny = false,
+    bool compact = false,
+  }) {
     asked.add('$agentId ${state.name} ${theme.name}');
     final f = byId[agentId]!;
-    return Future.value(tiny ? f.tiny : f.svgOf(theme, state));
+    return Future.value(tiny ? f.tiny : (compact ? f.compact : f.svgOf(theme, state)));
   }
 }
 

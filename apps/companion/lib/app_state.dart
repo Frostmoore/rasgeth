@@ -37,6 +37,7 @@ import 'push/push_center.dart';
 import 'push/registrar.dart';
 import 'push/system_notifier.dart';
 import 'share/share_intake.dart';
+import 'ui/no_internet_notice.dart';
 import 'voice/audio.dart';
 import 'voice/voice_controller.dart';
 
@@ -201,6 +202,9 @@ class AppController extends ChangeNotifier {
 
   /// Spending and limits for the conversations' header (3.9.0).
   final SpendModel spend = SpendModel();
+
+  /// What on the server waits for the internet (3.9.1): a notice over the home.
+  final NoInternetModel noInternet = NoInternetModel();
   LiveSocket? socket;
   LiveStatus? liveStatus;
   StreamSubscription<Map<String, dynamic>>? _liveSub;
@@ -823,6 +827,14 @@ class AppController extends ChangeNotifier {
 
   /// Team's «Agents» grid: first level without God, the Chat and Demi-God (Telegram's voice: it
   /// stays in the full list in the settings), favourites first, then by name; filtered.
+  /// The agent with [id] among those the app knows (the mascots ask: a sub-agent shows its sign).
+  Agent? agentWithId(String id) {
+    for (final a in agents) {
+      if (a.id == id) return a;
+    }
+    return null;
+  }
+
   List<Agent> teamShown() {
     final first = agents
         .where(
@@ -1160,6 +1172,7 @@ class AppController extends ChangeNotifier {
     final c = client;
     if (c == null) return;
     unawaited(spend.refresh(c));
+    unawaited(noInternet.refresh(c));
     await _loadProjects(c);
     try {
       live.setSessions(await c.sessions());
@@ -1329,6 +1342,7 @@ class AppController extends ChangeNotifier {
     List<Map<String, Object?>>? images,
     List<Quote> quotes = const [],
     String? shown,
+    bool secretOk = false,
   }) async {
     // A Chat conversation's first message names it (G40.9), unless the server named it already.
     final row = live.sessions.where((r) => r.id == sessionId).firstOrNull;
@@ -1337,7 +1351,14 @@ class AppController extends ChangeNotifier {
         row.agentId == chatAgentId &&
         row.title?.isNotEmpty != true &&
         !(live.views[sessionId]?.events.any((e) => e.type == 'message.user') ?? false);
-    final sent = await _send(sessionId, text, images: images, quotes: quotes, shown: shown);
+    final sent = await _send(
+      sessionId,
+      text,
+      images: images,
+      quotes: quotes,
+      shown: shown,
+      secretOk: secretOk,
+    );
     if (sent && first) unawaited(nameNewChat(sessionId, text));
     return sent;
   }
@@ -1348,13 +1369,21 @@ class AppController extends ChangeNotifier {
     List<Map<String, Object?>>? images,
     List<Quote> quotes = const [],
     String? shown,
+    bool secretOk = false,
   }) async {
     final s = socket;
     final clientId = 'app-${DateTime.now().microsecondsSinceEpoch}';
     final view = live.views[sessionId];
     if (s != null &&
         s.send(
-          sessionSendMessage(sessionId, text, images: images, quotes: quotes, clientId: clientId),
+          sessionSendMessage(
+            sessionId,
+            text,
+            images: images,
+            quotes: quotes,
+            clientId: clientId,
+            secretOk: secretOk,
+          ),
         )) {
       // Sent while it works (as the page): shown at once in line, until the log has it.
       if (view != null && view.running) {
@@ -1363,7 +1392,13 @@ class AppController extends ChangeNotifier {
       return true;
     }
     try {
-      await client?.sendMessage(sessionId, text, images: images, quotes: quotes);
+      await client?.sendMessage(
+        sessionId,
+        text,
+        images: images,
+        quotes: quotes,
+        secretOk: secretOk,
+      );
       return true;
     } on ApiException {
       return false;
@@ -1996,6 +2031,7 @@ class AppController extends ChangeNotifier {
     _seenRequests = const {};
     live.clear();
     spend.clear();
+    noInternet.clear();
     unawaited(voice.attach(null, null));
   }
 

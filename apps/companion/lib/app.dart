@@ -42,6 +42,7 @@ class RGCompanionApp extends StatelessWidget {
         builder: (context, child) => MascotScope(
           source: controller.mascots,
           reduceMotion: controller.reduceMotion,
+          agentOf: controller.agentWithId,
           child: child!,
         ),
         home: const AppHome(),

@@ -66,7 +66,7 @@ class PanelProject extends PanelContent {
 }
 
 /// The screens that open in the panel (the phone's, reused as they are).
-enum PanelScreen { inbox, chat, saved, you }
+enum PanelScreen { inbox, chat, saved, you, echo }
 
 class PanelPage extends PanelContent {
   const PanelPage(this.screen);

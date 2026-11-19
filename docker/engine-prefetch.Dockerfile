@@ -21,11 +21,14 @@ COPY llama-patches/ /patches/
 RUN sh /patches/apply.sh
 # As llama.cpp's own .devops/cuda.Dockerfile: CPU and CUDA backends as modules llama-server loads
 # (no card while building: libcuda comes from the NVIDIA runtime when the container starts).
+# Without llama.cpp's own web UI (Rasgeth never serves it): no download from Hugging Face while
+# building. The shallow clone has no history, so the build number comes from the tag (else it is 1).
 RUN cmake -S . -B build -G Ninja \
       -DCMAKE_BUILD_TYPE=Release \
       -DGGML_NATIVE=OFF -DGGML_CUDA=ON -DGGML_BACKEND_DL=ON -DGGML_CPU_ALL_VARIANTS=ON \
       -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCHS}" \
       -DLLAMA_OPENSSL=OFF -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=OFF -DLLAMA_BUILD_SERVER=ON \
+      -DLLAMA_BUILD_UI=OFF -DLLAMA_USE_PREBUILT_UI=OFF -DLLAMA_BUILD_NUMBER="${LLAMA_BUILD#b}" \
       -DCMAKE_EXE_LINKER_FLAGS=-Wl,--allow-shlib-undefined \
     && cmake --build build -j"$(nproc)" \
     && mkdir -p /out \

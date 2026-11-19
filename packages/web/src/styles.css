@@ -4222,6 +4222,10 @@ html[data-theme="dark"] :is(.wz, .wz-look) {
   display: block;
   flex: none;
 }
+.wz-av > svg {
+  width: 100%;
+  height: 100%;
+}
 .wz-role {
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -7407,13 +7411,67 @@ a.button.primary {
 .file-card p {
   margin: 0;
 }
-.file-card-image {
+/* A picture in the chat (2026-11-19): in place, its shape kept, a frame while it loads. */
+.chat-image {
+  position: relative;
+  display: block;
+  align-self: flex-start;
+  max-width: 100%;
   padding: 0;
   border: 0;
+  border-radius: 8px;
   background: none;
   cursor: zoom-in;
+  overflow: hidden;
 }
-.file-card-image img,
+.chat-image img {
+  display: block;
+  max-width: min(100%, 480px);
+  max-height: 360px;
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+.chat-image.wait img {
+  position: absolute;
+  opacity: 0;
+}
+.chat-image-wait {
+  display: block;
+  width: min(320px, 70vw);
+  aspect-ratio: 4 / 3;
+  border-radius: 8px;
+  background:
+    linear-gradient(110deg, var(--panel-2) 40%, var(--line) 50%, var(--panel-2) 60%) 0 0 / 300% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+.chat-image.bad {
+  cursor: default;
+}
+.chat-image-bad,
+.img-missing {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  color: var(--dim);
+  background: var(--panel-2);
+  font-size: 0.92em;
+}
+.md img {
+  max-width: min(100%, 480px);
+  max-height: 360px;
+  height: auto;
+  border-radius: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-image-wait {
+    animation: none;
+  }
+}
 .file-card video {
   max-width: 100%;
   max-height: 360px;
@@ -9393,6 +9451,7 @@ button.pick-tile.on {
 }
 .st-switch-row > div {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
@@ -20599,15 +20658,6 @@ html[data-theme="dark"] {
 .masc .cap {
   fill: oklch(0.64 0.12 var(--h2));
 }
-.masc .godlid {
-  fill: var(--accent);
-}
-.masc .orb {
-  stroke: #ffb36b;
-}
-.masc .orbp {
-  fill: #ffd27a;
-}
 .masc.st-error .b {
   fill: oklch(var(--mL) calc(var(--c) * 0.3) var(--h));
 }
@@ -20643,6 +20693,62 @@ html[data-theme="dark"] {
   .masc,
   .masc * {
     animation: none !important;
+  }
+}
+/* A sub-agent's sign instead of a mascot (2026-11-19, board choice A): a ring in its parent's
+   colour (`subagentSignSvg`); working an arc turns, thinking the dot pulses, waiting a red badge
+   blinks. Still with reduced motion or while the page is not in front. */
+.sgn {
+  overflow: visible;
+  display: block;
+}
+.sgn .sgr {
+  stroke: oklch(var(--mL) var(--c) var(--h));
+}
+.sgn .sgf {
+  fill: oklch(var(--mL) var(--c) var(--h));
+}
+.sgn .sge {
+  stroke: var(--err);
+}
+.sgn .sgw {
+  fill: var(--accent);
+  stroke: var(--panel);
+}
+.sgn .spin,
+.sgn .pulse {
+  transform-box: view-box;
+}
+.sgn .spin {
+  animation: rg-sign-spin 1.1s linear infinite;
+}
+.sgn .pulse {
+  animation: rg-sign-fade 1.4s ease-in-out infinite;
+}
+.sgn .blink {
+  animation: rg-sign-fade 1.2s ease-in-out infinite;
+}
+@keyframes rg-sign-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+@keyframes rg-sign-fade {
+  50% {
+    opacity: 0.3;
+  }
+}
+/* After the rules above, with their weight: no !important needed. */
+.rg-hidden .sgn .spin,
+.rg-hidden .sgn .pulse,
+.rg-hidden .sgn .blink {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sgn .spin,
+  .sgn .pulse,
+  .sgn .blink {
+    animation: none;
   }
 }
 /* «Change mascot» in the agent's General tab (G40.2). */
@@ -23090,4 +23196,318 @@ fieldset.saved-filter legend {
 .ve-export-done p {
   margin: 0;
   overflow-wrap: anywhere;
+}
+
+/* 3.9.4: Settings › Portrait («Mirror»), on the shared memory's page parts */
+.pr-who {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pr-group + .pr-group {
+  margin-top: 14px;
+}
+.pr-group-title {
+  margin: 4px 0 2px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.pr-sure {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-size: 12px;
+}
+.pr-sure.on {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.pr-sources {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pr-sources li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.pr-sources small {
+  color: var(--dim);
+}
+.pr-text {
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--panel-2);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.5;
+}
+/* Tool groups (3.9.4): off by default, always on, or off by the person, with their weight. */
+.tl-kits {
+  max-width: 860px;
+  margin: 26px auto 0;
+  text-align: left;
+}
+.tl-agent .tl-kits {
+  max-width: none;
+}
+.tl-kits .tl-list {
+  margin-top: 10px;
+}
+.tl-kit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 20px;
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel);
+  text-align: left;
+  min-width: 0;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.tl-kit.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.tl-kit.off {
+  border-style: dashed;
+}
+.tl-kit .tl-main {
+  min-width: 0;
+}
+.tl-kit-state {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--dim);
+}
+.tl-kit-state.on {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.tl-kit-state.off {
+  color: var(--warn);
+  border-color: var(--warn);
+}
+.tl-kit-tools {
+  color: var(--dim);
+  font-size: 13px;
+}
+.tl-kit-essential {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--dim);
+  margin: 6px 0 0;
+  text-align: left;
+}
+.tl-kit .tl-pick {
+  width: min(460px, 52%);
+}
+@media (max-width: 720px) {
+  .tl-kit {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .tl-kit .tl-pick {
+    width: 100%;
+  }
+}
+
+/* Echo (3.9.6): the search box over past conversations, at the top of the left bar. */
+.echo-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 0 10px;
+  padding: 0 6px 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--dim);
+}
+.echo-bar:focus-within {
+  border-color: var(--accent);
+}
+.echo-bar input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  padding: 8px 0;
+  outline: none;
+  color: var(--text);
+}
+.echo-results {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.echo-hit {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: none;
+  padding: 8px;
+  border-radius: 8px;
+  min-width: 0;
+}
+.echo-hit:hover,
+.echo-hit:focus-visible {
+  background: var(--panel-2);
+}
+.echo-title {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.echo-place,
+.echo-date {
+  font-size: 12px;
+  color: var(--dim);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.echo-archived {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 5px;
+  font-size: 11px;
+}
+.echo-snippet {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.echo-snippet b {
+  color: var(--dim);
+  font-weight: 600;
+}
+.echo-snippet mark {
+  background: var(--mark-bg, rgb(255 214 102 / 0.45));
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 1px;
+}
+
+/* 3.9.7: skills that improve with use: the differences of a new version, the versions kept. */
+.sv-changes {
+  margin: 12px 0;
+}
+.sv-history {
+  margin-top: 16px;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+.sv-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sv-item {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--panel);
+}
+.sv-item.current {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.sv-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sv-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-text);
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+.sv-how {
+  color: var(--dim);
+}
+.sv-meta {
+  margin: 4px 0 0;
+  color: var(--dim);
+  font-size: 13px;
+}
+.sv-why {
+  margin: 6px 0 0;
+  white-space: pre-line;
+}
+.sv-why span {
+  font-weight: 600;
+}
+.sv-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.sv-item .rf-diff-wrap {
+  margin-top: 8px;
+}
+
+/* 3.9.7: our questions (askConfirm, askText) open above any window, the wizard's (z-index 80)
+   included: «Go back to version N» asked from a skill's window was hidden under it. */
+.ui-modal-back:has(> .ui-modal.dlg) {
+  z-index: 90;
+}
+
+/* 3.9.7: the line a new version of a skill is approved by. */
+.sv-line {
+  margin: 10px 0;
+  border-color: var(--accent);
+}
+.sv-line p {
+  margin: 4px 0 0;
+  font-size: 15px;
+}
+.sv-changes .rf-diff-wrap {
+  margin-top: 8px;
 }

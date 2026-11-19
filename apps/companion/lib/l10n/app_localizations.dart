@@ -6546,7 +6546,7 @@ abstract class AppLocalizations {
   /// No description provided for @asMascotGod.
   ///
   /// In en, this message translates to:
-  /// **'God\'s mascot is drawn by hand: it is always the red giant.'**
+  /// **'God\'s mascot is drawn by hand: the crowned giant star, with three little stars going round it.'**
   String get asMascotGod;
 
   /// No description provided for @asName.
@@ -15837,6 +15837,486 @@ abstract class AppLocalizations {
   /// **'Got it'**
   String get renameNoticeOk;
 
+  /// The server started without internet (3.9.1, the page's noInternet): parts lists what connects once it is back (Anthropic, Telegram...).
+  ///
+  /// In en, this message translates to:
+  /// **'No internet. Waiting for the network: {parts} (the connection starts again by itself once it is back). Everything else works, local models included.'**
+  String noInternetNotice(String parts);
+
+  /// The page's `generating_image` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Generating a picture…'**
+  String get cvGeneratingImage;
+
+  /// The page's `generating_video` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Making a video…'**
+  String get cvGeneratingVideo;
+
+  /// The page's `generating_audio` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Making a sound…'**
+  String get cvGeneratingAudio;
+
+  /// The page's `imageUnreadable` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'This picture cannot be opened'**
+  String get cvImageUnreadable;
+
+  /// The page's `imageUnreachable` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Picture not available here: {name}'**
+  String cvImageUnreachable(String name);
+
+  /// The page's `mediaNativeTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Use the model\'s own tool when it has one'**
+  String get cvMediaNativeTitle;
+
+  /// The page's `mediaNativeHelp` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.'**
+  String get cvMediaNativeHelp;
+
+  /// Settings › Portrait (3.9.4, «Mirror»): the page's `pr*` words (packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Portrait'**
+  String get ptrSection;
+
+  /// No description provided for @ptrHub.
+  ///
+  /// In en, this message translates to:
+  /// **'How the agents see you, built from your conversations'**
+  String get ptrHub;
+
+  /// No description provided for @ptrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How the agents see you'**
+  String get ptrTitle;
+
+  /// No description provided for @ptrLead.
+  ///
+  /// In en, this message translates to:
+  /// **'This portrait builds itself from your conversations: your tastes, how you like to be spoken to, your habits, what you are working on, what to avoid. The agents you choose read it when a conversation starts. Correct it whenever you like: your word always wins.'**
+  String get ptrLead;
+
+  /// No description provided for @ptrOnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Build the portrait from the conversations'**
+  String get ptrOnTitle;
+
+  /// No description provided for @ptrOnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'After a conversation goes quiet, a light model reads only your own messages and updates the portrait. It never notes passwords, keys, email addresses, phone numbers or things about other people. It spends a little from your budget.'**
+  String get ptrOnOn;
+
+  /// No description provided for @ptrOnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: the portrait does not change and no agent reads it. What is here stays until you delete it.'**
+  String get ptrOnOff;
+
+  /// No description provided for @ptrWhoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who reads it'**
+  String get ptrWhoTitle;
+
+  /// No description provided for @ptrWhoLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes count from the next conversation: the ones already open go on as they were.'**
+  String get ptrWhoLead;
+
+  /// No description provided for @ptrWho_god.
+  ///
+  /// In en, this message translates to:
+  /// **'God'**
+  String get ptrWho_god;
+
+  /// No description provided for @ptrWho_orchestrators.
+  ///
+  /// In en, this message translates to:
+  /// **'The projects\' orchestrators'**
+  String get ptrWho_orchestrators;
+
+  /// No description provided for @ptrWho_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'The Chat'**
+  String get ptrWho_chat;
+
+  /// No description provided for @ptrWho_others.
+  ///
+  /// In en, this message translates to:
+  /// **'Every other agent'**
+  String get ptrWho_others;
+
+  /// No description provided for @ptrListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Traits'**
+  String get ptrListTitle;
+
+  /// No description provided for @ptrListLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Each trait says how sure it is and where it comes from. A trait no conversation says again fades with time.'**
+  String get ptrListLead;
+
+  /// No description provided for @ptrCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} traits'**
+  String ptrCount(String n);
+
+  /// No description provided for @ptrCountOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 trait'**
+  String get ptrCountOne;
+
+  /// No description provided for @ptrEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No traits yet: the portrait fills in as you talk with the agents.'**
+  String get ptrEmpty;
+
+  /// No description provided for @ptrEmptyOff.
+  ///
+  /// In en, this message translates to:
+  /// **'The portrait is off and empty.'**
+  String get ptrEmptyOff;
+
+  /// No description provided for @ptrAddPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a trait yourself, e.g. I like answers with examples'**
+  String get ptrAddPlaceholder;
+
+  /// No description provided for @ptrAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get ptrAdd;
+
+  /// No description provided for @ptrCat_preference.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get ptrCat_preference;
+
+  /// No description provided for @ptrCat_style.
+  ///
+  /// In en, this message translates to:
+  /// **'How to talk to you'**
+  String get ptrCat_style;
+
+  /// No description provided for @ptrCat_habit.
+  ///
+  /// In en, this message translates to:
+  /// **'Habits'**
+  String get ptrCat_habit;
+
+  /// No description provided for @ptrCat_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Current projects'**
+  String get ptrCat_project;
+
+  /// No description provided for @ptrCat_avoid.
+  ///
+  /// In en, this message translates to:
+  /// **'To avoid'**
+  String get ptrCat_avoid;
+
+  /// No description provided for @ptrCat_about.
+  ///
+  /// In en, this message translates to:
+  /// **'About you'**
+  String get ptrCat_about;
+
+  /// No description provided for @ptrSure.
+  ///
+  /// In en, this message translates to:
+  /// **'Sure'**
+  String get ptrSure;
+
+  /// No description provided for @ptrLikely.
+  ///
+  /// In en, this message translates to:
+  /// **'Likely'**
+  String get ptrLikely;
+
+  /// No description provided for @ptrUnsure.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sure yet'**
+  String get ptrUnsure;
+
+  /// No description provided for @ptrByYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Written by you'**
+  String get ptrByYou;
+
+  /// No description provided for @ptrSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'seen {n} times'**
+  String ptrSeen(String n);
+
+  /// No description provided for @ptrSeenOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'seen once'**
+  String get ptrSeenOnce;
+
+  /// No description provided for @ptrWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it comes from'**
+  String get ptrWhere;
+
+  /// No description provided for @ptrUntitled.
+  ///
+  /// In en, this message translates to:
+  /// **'A conversation'**
+  String get ptrUntitled;
+
+  /// No description provided for @ptrWith.
+  ///
+  /// In en, this message translates to:
+  /// **'with {name}'**
+  String ptrWith(String name);
+
+  /// No description provided for @ptrEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get ptrEdit;
+
+  /// No description provided for @ptrRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get ptrRemove;
+
+  /// No description provided for @ptrDeny.
+  ///
+  /// In en, this message translates to:
+  /// **'Not true'**
+  String get ptrDeny;
+
+  /// No description provided for @ptrEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the trait'**
+  String get ptrEditTitle;
+
+  /// No description provided for @ptrEditNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Once you change it, the trait is yours: it never fades and nothing changes it by itself.'**
+  String get ptrEditNote;
+
+  /// No description provided for @ptrDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} traits you said are not true: they will not be proposed again.'**
+  String ptrDenied(String n);
+
+  /// No description provided for @ptrDeniedOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 trait you said is not true: it will not be proposed again.'**
+  String get ptrDeniedOne;
+
+  /// No description provided for @ptrTextTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What the agents read'**
+  String get ptrTextTitle;
+
+  /// No description provided for @ptrTextLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The portrait exactly as it goes into a new conversation, short and always the same until it changes.'**
+  String get ptrTextLead;
+
+  /// No description provided for @ptrTextShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the text'**
+  String get ptrTextShow;
+
+  /// No description provided for @ptrTextHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the text'**
+  String get ptrTextHide;
+
+  /// No description provided for @ptrForgetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget everything'**
+  String get ptrForgetTitle;
+
+  /// No description provided for @ptrForgetLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Every trait goes, and its words go from the history too. It cannot be undone.'**
+  String get ptrForgetLead;
+
+  /// No description provided for @ptrForgetText.
+  ///
+  /// In en, this message translates to:
+  /// **'Every trait of the portrait is deleted and its words erased from the history, the «not true» ones too. The portrait starts again empty.'**
+  String get ptrForgetText;
+
+  /// No description provided for @ptrForget.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget everything'**
+  String get ptrForget;
+
+  /// No description provided for @ptrErr_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the trait.'**
+  String get ptrErr_empty;
+
+  /// No description provided for @ptrErr_long.
+  ///
+  /// In en, this message translates to:
+  /// **'A trait is at most 200 characters: write it shorter.'**
+  String get ptrErr_long;
+
+  /// No description provided for @ptrErr_secret.
+  ///
+  /// In en, this message translates to:
+  /// **'That looks like a password, a code or a card number: secrets never go into the portrait.'**
+  String get ptrErr_secret;
+
+  /// No description provided for @ptrErr_private.
+  ///
+  /// In en, this message translates to:
+  /// **'Email addresses and phone numbers never go into the portrait.'**
+  String get ptrErr_private;
+
+  /// No description provided for @ptrErr_gone.
+  ///
+  /// In en, this message translates to:
+  /// **'That trait is not there any more.'**
+  String get ptrErr_gone;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Tool groups'**
+  String get tkTitle;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Agents start with few tools, to keep every message light. The other groups are off by default: an agent switches one on by itself when the work needs it, for that conversation. Always on: the agent has it from the start. Off by you: the agent has to ask you.'**
+  String get tkLead;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'The groups for {name}: as for every agent, or a choice of its own.'**
+  String tkAgentLead(String name);
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Off by default'**
+  String get tkAuto;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Always on'**
+  String get tkOn;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Off by you'**
+  String get tkOff;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'As for everyone: {state}'**
+  String tkAsAll(String state);
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'default'**
+  String get tkIsDefault;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'on for its role'**
+  String get tkRole;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'about {n} tokens when on'**
+  String tkWeight(String n);
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Essential tools, always on: about {n} tokens'**
+  String tkEssential(String n);
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'At the start: about {n} tokens in every message'**
+  String tkStartTotal(String n);
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Off at the start: {n} tokens that weigh only if a group is switched on'**
+  String tkRest(String n);
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Tools: {list}'**
+  String tkTools(String list);
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'off by default'**
+  String get tkStateAuto;
+
+  /// The page's `mascotSubHelp` (packages/web/src/i18n.ts): a sub-agent's card, instead of «Change mascot».
+  ///
+  /// In en, this message translates to:
+  /// **'A sub-agent has no mascot of its own: it lives for one task, and shows a ring in its parent\'s colour.'**
+  String get asMascotSub;
+
   /// No description provided for @auAsstNewRoutine.
   ///
   /// In en, this message translates to:
@@ -17858,6 +18338,336 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Automations can be changed only by the person (not from a project\'s device).'**
   String get auOwnReadOnly;
+
+  /// Secret warning: send the message as written (the person's choice, 2026-11-19).
+  ///
+  /// In en, this message translates to:
+  /// **'Send anyway'**
+  String get cvChSecretAnyway;
+
+  /// Secret warning: what Send anyway does.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a secret (a link, an order code)? «Send anyway» sends it as you wrote it.'**
+  String get cvChSecretAnywayNote;
+
+  /// Echo (3.9.6): the search over past conversations; the page's echoSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search past conversations'**
+  String get echoSearch;
+
+  /// No description provided for @echoClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear the search'**
+  String get echoClear;
+
+  /// No description provided for @echoNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No past conversation has these words.'**
+  String get echoNone;
+
+  /// No description provided for @echoArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'archived'**
+  String get echoArchived;
+
+  /// No description provided for @echoMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} messages'**
+  String echoMatches(String n);
+
+  /// No description provided for @echoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'1 message'**
+  String get echoMatch;
+
+  /// No description provided for @echoYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get echoYou;
+
+  /// No description provided for @echoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type at least two letters: every word is looked for in what you and the agents wrote.'**
+  String get echoHint;
+
+  /// No description provided for @skSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get skSection;
+
+  /// No description provided for @skHub.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents\' skills, their versions and the way back'**
+  String get skHub;
+
+  /// No description provided for @skQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'What the agents learned'**
+  String get skQuestion;
+
+  /// No description provided for @skLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills are instructions the agents write after a job that went well, or that you give them. Each one keeps its versions: who wrote it, why and when, and you can go back to any of them.'**
+  String get skLead;
+
+  /// No description provided for @skWaitingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you'**
+  String get skWaitingTitle;
+
+  /// No description provided for @skWaitingLead.
+  ///
+  /// In en, this message translates to:
+  /// **'New skills and new versions of installed ones, tested apart. Nothing changes until you say yes.'**
+  String get skWaitingLead;
+
+  /// No description provided for @skNoneWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing waits for you.'**
+  String get skNoneWaiting;
+
+  /// No description provided for @skNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New skill'**
+  String get skNew;
+
+  /// No description provided for @skUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'New version of an installed skill'**
+  String get skUpdate;
+
+  /// No description provided for @skBy.
+  ///
+  /// In en, this message translates to:
+  /// **'by {who}'**
+  String skBy(String who);
+
+  /// No description provided for @skWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Why'**
+  String get skWhy;
+
+  /// No description provided for @skTestsOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Its tests passed.'**
+  String get skTestsOk;
+
+  /// No description provided for @skScripts.
+  ///
+  /// In en, this message translates to:
+  /// **'It has scripts ({files}): code never installs by itself.'**
+  String skScripts(String files);
+
+  /// No description provided for @skApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get skApprove;
+
+  /// No description provided for @skReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get skReject;
+
+  /// No description provided for @skNextSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.'**
+  String get skNextSession;
+
+  /// No description provided for @skInstalledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get skInstalledTitle;
+
+  /// No description provided for @skInstalledLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Open one to see its versions.'**
+  String get skInstalledLead;
+
+  /// No description provided for @skNoneInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'No skills yet.'**
+  String get skNoneInstalled;
+
+  /// No description provided for @skEverywhere.
+  ///
+  /// In en, this message translates to:
+  /// **'for every project'**
+  String get skEverywhere;
+
+  /// No description provided for @skProject.
+  ///
+  /// In en, this message translates to:
+  /// **'project {name}'**
+  String skProject(String name);
+
+  /// No description provided for @skVersionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Versions'**
+  String get skVersionsTitle;
+
+  /// No description provided for @skVersionsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents use the newest from their next conversation.'**
+  String get skVersionsLead;
+
+  /// No description provided for @skVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {n}'**
+  String skVersion(String n);
+
+  /// No description provided for @skCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'in use'**
+  String get skCurrent;
+
+  /// No description provided for @skHow_baseline.
+  ///
+  /// In en, this message translates to:
+  /// **'As it was before the history began'**
+  String get skHow_baseline;
+
+  /// No description provided for @skHow_edited.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed by hand'**
+  String get skHow_edited;
+
+  /// No description provided for @skHow_install.
+  ///
+  /// In en, this message translates to:
+  /// **'First version'**
+  String get skHow_install;
+
+  /// No description provided for @skHow_update.
+  ///
+  /// In en, this message translates to:
+  /// **'New version'**
+  String get skHow_update;
+
+  /// No description provided for @skHow_import.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported'**
+  String get skHow_import;
+
+  /// No description provided for @skHow_rollback.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to version {n}'**
+  String skHow_rollback(String n);
+
+  /// No description provided for @skUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'author unknown'**
+  String get skUnknown;
+
+  /// No description provided for @skYou.
+  ///
+  /// In en, this message translates to:
+  /// **'you'**
+  String get skYou;
+
+  /// No description provided for @skApprovedYou.
+  ///
+  /// In en, this message translates to:
+  /// **'approved by you'**
+  String get skApprovedYou;
+
+  /// No description provided for @skApprovedAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'installed by itself (your choice in Safety)'**
+  String get skApprovedAuto;
+
+  /// No description provided for @skCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare with the one in use'**
+  String get skCompare;
+
+  /// No description provided for @skHideCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the comparison'**
+  String get skHideCompare;
+
+  /// No description provided for @skRollback.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back to version {n}'**
+  String skRollback(String n);
+
+  /// No description provided for @skRollbackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back to version {n}?'**
+  String skRollbackTitle(String n);
+
+  /// No description provided for @skRollbackText.
+  ///
+  /// In en, this message translates to:
+  /// **'Its files replace those of «{name}» in use, as a new version: nothing is lost and you can come back here. Agents get it from their next conversation.'**
+  String skRollbackText(String name);
+
+  /// No description provided for @skRolledBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to version {n}: it is version {v} now.'**
+  String skRolledBack(String n, String v);
+
+  /// No description provided for @skNotRestorable.
+  ///
+  /// In en, this message translates to:
+  /// **'Too large to keep: it cannot come back.'**
+  String get skNotRestorable;
+
+  /// No description provided for @skNoVersions.
+  ///
+  /// In en, this message translates to:
+  /// **'No versions yet.'**
+  String get skNoVersions;
+
+  /// No description provided for @skLineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What changed and why'**
+  String get skLineTitle;
+
+  /// No description provided for @skCompareFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare: every difference'**
+  String get skCompareFull;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { lstat, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { EventStore, SqlClient } from "@redgiant/events";
+import { SKILL_CHANGE_MAX, skillUpdateLine } from "@redgiant/protocol";
 import { LocalWorkspace, type Workspace } from "@redgiant/tools";
 import { z } from "zod";
 import { CustomToolSpec, RESERVED, runCustomTool, ToolTest } from "./customtools.js";
@@ -13,6 +14,7 @@ import {
   renderSkillMd,
   type Skill,
 } from "./skills.js";
+import { migrateSkillVersions, SkillVersions } from "./versions.js";
 
 export const ProposalInput = z.discriminatedUnion("kind", [
   z.object({
@@ -45,6 +47,11 @@ export const ProposalInput = z.discriminatedUnion("kind", [
     summary: z.string().min(1).max(2000).optional(),
     /** G36.8: this changes the installed skill of the same name instead of adding one. */
     updates: z.boolean().optional(),
+    /**
+     * 3.9.7: what this new version changes, in one short line («Added the step for .rtf
+     * files»); with `summary` (why) it makes the line the person approves.
+     */
+    change: z.string().min(3).max(SKILL_CHANGE_MAX).optional(),
   }),
 ]);
 export type ProposalInput = z.input<typeof ProposalInput>;
@@ -69,9 +76,22 @@ export interface Proposal {
   report: TestResult[];
   createdAt: string;
   decidedBy: string | null;
-  /** G36.8: the installed skill an update would replace, as it is now (for the comparison). */
-  previous: { skillMd: string; files: string[] } | null;
+  /**
+   * G36.8: the installed skill an update would replace, as it is now (for the comparison);
+   * 3.9.7: where it lives ("platform" or "project:<id>"), so the update lands there.
+   */
+  previous: { skillMd: string; files: string[]; scope?: string } | null;
+  /** 3.9.7: the SKILL.md a skill proposal would write (beside `previous`, for the differences). */
+  proposedSkillMd?: string;
+  /** 3.9.7: «what changed: why», the line the person approves a new version by. */
+  updateLine?: string;
 }
+
+/** "platform" or "project:<id>": where a skill lives, as /api/extensions/installed says it. */
+export const skillScope = (projectId: string | null) =>
+  projectId ? `project:${projectId}` : "platform";
+const scopeProject = (scope: string) =>
+  scope.startsWith("project:") ? scope.slice("project:".length) : null;
 
 export async function migrateExtensions(db: SqlClient): Promise<void> {
   await db.query(`
@@ -98,6 +118,8 @@ export async function migrateExtensions(db: SqlClient): Promise<void> {
     )`);
   // G36.8: the installed skill an update replaces, kept for the person's comparison.
   await db.query("ALTER TABLE rg_proposals ADD COLUMN IF NOT EXISTS previous jsonb");
+  // 3.9.7: every installed skill's versions.
+  await migrateSkillVersions(db);
 }
 
 interface Row {
@@ -115,20 +137,28 @@ interface Row {
   previous?: unknown;
 }
 const parse = <T>(v: unknown) => (typeof v === "string" ? (JSON.parse(v) as T) : (v as T));
-const fromRow = (r: Row): Proposal => ({
-  id: r.id,
-  ownerId: r.owner_id,
-  projectId: r.project_id,
-  kind: r.kind,
-  name: r.name,
-  author: r.author,
-  input: parse(r.input),
-  status: r.status,
-  report: parse(r.report),
-  createdAt: new Date(r.created_at).toISOString(),
-  decidedBy: r.decided_by,
-  previous: r.previous ? parse(r.previous) : null,
-});
+const fromRow = (r: Row): Proposal => {
+  const input = parse<z.output<typeof ProposalInput>>(r.input);
+  return {
+    id: r.id,
+    ownerId: r.owner_id,
+    projectId: r.project_id,
+    kind: r.kind,
+    name: r.name,
+    author: r.author,
+    input,
+    status: r.status,
+    report: parse(r.report),
+    createdAt: new Date(r.created_at).toISOString(),
+    decidedBy: r.decided_by,
+    previous: r.previous ? parse(r.previous) : null,
+    ...(input.kind === "skill" && { proposedSkillMd: renderSkillMd(input) }),
+    // 3.9.7: what changed and why, in one line, for a new version of an installed skill.
+    ...(input.kind === "skill" && r.previous
+      ? { updateLine: skillUpdateLine({ change: input.change, why: input.summary }) }
+      : {}),
+  };
+};
 
 export interface BuilderOptions {
   db: SqlClient;
@@ -160,7 +190,16 @@ export interface BuilderOptions {
  * session, a *proposal* waits, on disk, for as long as it takes.
  */
 export class ExtensionBuilder {
-  constructor(private readonly o: BuilderOptions) {}
+  /** 3.9.7: the history of every installed skill, and the way back. */
+  readonly versions: SkillVersions;
+
+  constructor(private readonly o: BuilderOptions) {
+    this.versions = new SkillVersions({
+      db: o.db,
+      store: o.store,
+      root: (ownerId, scope) => o.installRoot(ownerId, scopeProject(scope)),
+    });
+  }
 
   async propose(o: {
     ownerId: string;
@@ -187,7 +226,11 @@ export class ExtensionBuilder {
     if (input.kind === "skill" && o.author !== "human") {
       const skills = await this.visibleSkills(o.ownerId, o.projectId);
       const same = skills.find((s) => s.name === input.name);
-      if (same) previous = await readSkill(same.dir);
+      if (same)
+        previous = {
+          ...(await readSkill(same.dir)),
+          scope: same.scope === "project" ? skillScope(o.projectId) : "platform",
+        };
       else if (input.updates)
         throw new Error(
           `There is no skill "${input.name}" to update: use the name of an installed skill (skill_search finds it), or leave updates out for a new one.`,
@@ -199,6 +242,18 @@ export class ExtensionBuilder {
             `A skill like this is already installed: "${like.name}" (${like.description}). Load it with skill_load and propose an update to it (name "${like.name}", updates true) instead of a new skill; if yours is truly different, give it a name and description that say how.`,
           );
       }
+    }
+    // 3.9.7: a new version of a skill says why, for the person and for its history.
+    if (previous && input.kind === "skill" && o.author !== "human") {
+      const missing = [
+        !input.change?.trim() && "change (what this version changes, in one short line)",
+        !input.summary?.trim() &&
+          "summary (why: what went wrong or was missing with the installed version)",
+      ].filter(Boolean);
+      if (missing.length)
+        throw new Error(
+          `This is a new version of the installed skill "${input.name}": the user approves it reading one line, what changed and why. Add ${missing.join(" and ")}.`,
+        );
     }
     const id = `prop_${randomUUID().slice(0, 8)}`;
     const report = await this.test(id, input, o.testEnv, o.routesOnly);
@@ -216,19 +271,26 @@ export class ExtensionBuilder {
         passed: true,
         detail: `It has scripts (${scripts.join(", ")}): code never installs by itself, it waits for the user's approval.`,
       });
-    // An agent's skill installed by itself (G29.4) never replaces one that exists: that waits.
-    if (status === "installed" && o.author !== "human" && (await this.exists(o, input))) {
+    // A new version of an installed skill always waits for the person (G29.4, the person's
+    // decision of 3.9.7): the policy installs by itself only an agent's brand-new skill.
+    const target = previous?.scope ?? skillScope(o.projectId);
+    if (status === "installed" && o.author !== "human" && (await this.exists(o, input, target))) {
       status = "pending";
       report.push({
         name: "existing skill",
         passed: true,
-        detail: `A skill named "${name}" is already installed: replacing it waits for the user's approval.`,
+        detail: `"${name}" is already installed: a new version of it always waits for the user's approval.`,
       });
     }
     // "installed" is recorded only once the files are in place.
     if (status === "installed") {
       try {
-        await this.install(o.ownerId, o.projectId, input);
+        await this.install(o.ownerId, o.projectId, input, {
+          scope: target,
+          author: o.author,
+          approvedBy: o.author === "human" ? null : "auto",
+          proposalId: id,
+        });
       } catch (err) {
         status = "failed";
         report.push({ name: "install", passed: false, detail: (err as Error).message });
@@ -267,6 +329,14 @@ export class ExtensionBuilder {
           name,
           author: o.author,
           status: status === "installed" ? "installed" : status === "failed" ? "failed" : "pending",
+          // 3.9.7: a new version of an installed skill, with the line the person reads.
+          ...(previous && {
+            update: true,
+            line: skillUpdateLine({
+              change: input.kind === "skill" ? input.change : null,
+              why: input.kind === "skill" ? input.summary : null,
+            }),
+          }),
         },
       },
     });
@@ -331,15 +401,21 @@ export class ExtensionBuilder {
   private async visibleSkills(ownerId: string, projectId: string | null): Promise<Skill[]> {
     const roots = this.o.skillRoots
       ? await this.o.skillRoots(ownerId, projectId)
-      : [{ dir: await this.o.installRoot(ownerId, projectId), scope: "platform" as const }];
+      : [
+          {
+            dir: await this.o.installRoot(ownerId, projectId),
+            scope: projectId ? ("project" as const) : ("platform" as const),
+          },
+        ];
     return loadSkills(roots, () => {});
   }
 
   private async exists(
     o: { ownerId: string; projectId: string | null },
     input: z.output<typeof ProposalInput>,
+    scope = skillScope(o.projectId),
   ): Promise<boolean> {
-    const root = await this.o.installRoot(o.ownerId, o.projectId);
+    const root = await this.o.installRoot(o.ownerId, scopeProject(scope));
     const name = input.kind === "tool" ? input.spec.name : input.name;
     return lstat(join(root, input.kind === "tool" ? "tools" : "skills", name)).then(
       () => true,
@@ -351,17 +427,34 @@ export class ExtensionBuilder {
     ownerId: string,
     projectId: string | null,
     input: z.output<typeof ProposalInput>,
+    /** 3.9.7: where a skill lands (the scope of the one it updates) and who it comes from. */
+    v: { scope?: string; author: string; approvedBy: string | null; proposalId: string },
   ) {
-    const root = await this.o.installRoot(ownerId, projectId);
+    const scope = v.scope ?? skillScope(projectId);
+    const root = await this.o.installRoot(ownerId, scopeProject(scope));
     const name = input.kind === "tool" ? input.spec.name : input.name;
     const dir = join(root, input.kind === "tool" ? "tools" : "skills", name);
+    const existed = await lstat(join(dir, input.kind === "tool" ? "tool.json" : "SKILL.md")).then(
+      () => true,
+      () => false,
+    );
+    if (input.kind === "skill") await this.versions.keepCurrent(ownerId, scope, name);
     // An update (G36.8) keeps the files it does not rewrite (its scripts, its references).
     if (!(input.kind === "skill" && input.updates)) await rm(dir, { recursive: true, force: true });
     const ws = new LocalWorkspace(await mkdir(dir, { recursive: true }).then(() => dir));
     for (const [path, content] of Object.entries(input.files)) await ws.writeText(path, content);
     if (input.kind === "tool")
       await writeFile(join(dir, "tool.json"), JSON.stringify(input.spec, null, 2));
-    else await writeFile(join(dir, "SKILL.md"), renderSkillMd(input));
+    else {
+      await writeFile(join(dir, "SKILL.md"), renderSkillMd(input));
+      await this.versions.record(ownerId, scope, name, {
+        how: existed ? "update" : "install",
+        author: v.author,
+        approvedBy: v.approvedBy,
+        reason: input.summary ?? null,
+        proposalId: v.proposalId,
+      });
+    }
   }
 
   async get(ownerId: string, id: string): Promise<Proposal | undefined> {
@@ -418,7 +511,13 @@ export class ExtensionBuilder {
     const p = await this.get(ownerId, id);
     if (!p) throw new Error(`No proposal "${id}"`);
     if (p.status !== "pending") throw new Error(`Proposal ${id} is ${p.status}, not pending`);
-    if (decision === "approve") await this.install(ownerId, p.projectId, p.input);
+    if (decision === "approve")
+      await this.install(ownerId, p.projectId, p.input, {
+        ...(p.previous?.scope && { scope: p.previous.scope }),
+        author: p.author,
+        approvedBy: by,
+        proposalId: id,
+      });
     await this.o.db.query(
       "UPDATE rg_proposals SET status = $3, decided_by = $4 WHERE id = $1 AND owner_id = $2",
       [id, ownerId, decision === "approve" ? "installed" : "rejected", by],

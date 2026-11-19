@@ -1,4 +1,5 @@
-import { mkdtemp, readFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -242,4 +243,66 @@ describe("«next layer ahead»: the patched llama.cpp (G32.2)", () => {
     expect(workflow).toContain("docker/engine-prefetch.Dockerfile");
     expect(workflow).toContain(MOE_PREFETCH_IMAGE.split(":")[1]);
   });
+
+  it("both recipes build without llama.cpp's own web UI and with the tag's build number", async () => {
+    // 3.9.0-3.9.4: the shallow clone made the build number 1, the UI step asked Hugging Face
+    // for the assets of "b1", fell back to "latest" (other files) and CMake stopped.
+    const root = join(import.meta.dirname, "..", "..", "..");
+    const linux = await readFile(join(root, "docker", "engine-prefetch.Dockerfile"), "utf8");
+    const win = await readFile(join(root, "engine", "build-win.ps1"), "utf8");
+    for (const recipe of [linux, win]) {
+      expect(recipe).toContain("-DLLAMA_BUILD_UI=OFF");
+      expect(recipe).toContain("-DLLAMA_USE_PREBUILT_UI=OFF");
+    }
+    expect(linux).toContain('-DLLAMA_BUILD_NUMBER="${LLAMA_BUILD#b}"');
+    expect(win).toContain("-DLLAMA_BUILD_NUMBER=\"$($env:LLAMA_BUILD.TrimStart('b'))\"");
+  });
+
+  // engine/fingerprint.sh runs with sh and git, as on the release's Linux runner.
+  it.skipIf(process.platform === "win32")(
+    "the fingerprint ignores comments and the build.txt label, not the commands",
+    async () => {
+      const root = join(import.meta.dirname, "..", "..", "..");
+      const dir = await mkdtemp(join(tmpdir(), "rg-fp-"));
+      try {
+        await cp(join(root, "engine"), join(dir, "engine"), { recursive: true });
+        await mkdir(join(dir, "docker"));
+        const dockerfile = join(dir, "docker", "engine-prefetch.Dockerfile");
+        const recipe = await readFile(join(root, "docker", "engine-prefetch.Dockerfile"), "utf8");
+        const git = (...args: string[]) =>
+          execFileSync("git", ["-c", "user.name=t", "-c", "user.email=t@t", ...args], { cwd: dir });
+        const env = {
+          ...process.env,
+          LLAMA_BUILD: "b12034",
+          CUDA_VERSION: "12.8.1",
+          CUDA_ARCHS: "75-real;80-real;86-real;89-real;90-real;120",
+        };
+        const commit = async (text: string) => {
+          await writeFile(dockerfile, text);
+          git("add", "-A");
+          git("commit", "-q", "--allow-empty", "-m", "x");
+          const fp = (t: string) =>
+            execFileSync("sh", ["engine/fingerprint.sh", t], { cwd: dir, env }).toString().trim();
+          return { win: fp("win"), linux: fp("linux") };
+        };
+        git("init", "-q");
+        const first = await commit(recipe);
+        expect(first.linux).toMatch(/^[0-9a-f]{16}$/);
+        expect(first.win).not.toBe(first.linux);
+        // A product rename: the label and the comments change, the program does not.
+        const renamed = recipe
+          .replace("Rasgeth patches", "Another name's patches")
+          .replace(/^# .*$/m, "# A different first comment")
+          .replace("\nWORKDIR /src", "\n\n# one more comment\nWORKDIR /src");
+        expect(renamed).not.toBe(recipe);
+        expect(await commit(renamed)).toEqual(first);
+        // A real change (another CMake option) is a new build.
+        const changed = await commit(recipe.replace("-DLLAMA_OPENSSL=OFF", "-DLLAMA_OPENSSL=ON"));
+        expect(changed.linux).not.toBe(first.linux);
+        expect(changed.win).toBe(first.win);
+      } finally {
+        await rm(dir, { recursive: true, force: true });
+      }
+    },
+  );
 });

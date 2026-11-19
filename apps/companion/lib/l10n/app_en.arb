@@ -2367,7 +2367,7 @@
   "asStopped": "Stopped",
   "asMascot": "Mascot",
   "asMascotHelp": "Renaming it never changes its face: only you change it, here.",
-  "asMascotGod": "God's mascot is drawn by hand: it is always the red giant.",
+  "asMascotGod": "God's mascot is drawn by hand: the crowned giant star, with three little stars going round it.",
   "asName": "Name",
   "asRole": "What it does",
   "asRoleHelp": "One or two lines: God and the orchestrators read it to decide what to hand over.",
@@ -7140,6 +7140,234 @@
   "@renameNoticeOk": {
     "description": "Closes the notice for good (the page's renameOk)."
   },
+  "noInternetNotice": "No internet. Waiting for the network: {parts} (the connection starts again by itself once it is back). Everything else works, local models included.",
+  "@noInternetNotice": {
+    "description": "The server started without internet (3.9.1, the page's noInternet): parts lists what connects once it is back (Anthropic, Telegram...).",
+    "placeholders": {
+      "parts": {
+        "type": "String"
+      }
+    }
+  },
+  "cvGeneratingImage": "Generating a picture…",
+  "@cvGeneratingImage": {
+    "description": "The page's `generating_image` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvGeneratingVideo": "Making a video…",
+  "@cvGeneratingVideo": {
+    "description": "The page's `generating_video` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvGeneratingAudio": "Making a sound…",
+  "@cvGeneratingAudio": {
+    "description": "The page's `generating_audio` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvImageUnreadable": "This picture cannot be opened",
+  "@cvImageUnreadable": {
+    "description": "The page's `imageUnreadable` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvImageUnreachable": "Picture not available here: {name}",
+  "@cvImageUnreachable": {
+    "description": "The page's `imageUnreachable` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvMediaNativeTitle": "Use the model's own tool when it has one",
+  "@cvMediaNativeTitle": {
+    "description": "The page's `mediaNativeTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvMediaNativeHelp": "Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.",
+  "@cvMediaNativeHelp": {
+    "description": "The page's `mediaNativeHelp` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "ptrSection": "Portrait",
+  "@ptrSection": {
+    "description": "Settings › Portrait (3.9.4, «Mirror»): the page's `pr*` words (packages/web/src/i18n.ts)."
+  },
+  "ptrHub": "How the agents see you, built from your conversations",
+  "ptrTitle": "How the agents see you",
+  "ptrLead": "This portrait builds itself from your conversations: your tastes, how you like to be spoken to, your habits, what you are working on, what to avoid. The agents you choose read it when a conversation starts. Correct it whenever you like: your word always wins.",
+  "ptrOnTitle": "Build the portrait from the conversations",
+  "ptrOnOn": "After a conversation goes quiet, a light model reads only your own messages and updates the portrait. It never notes passwords, keys, email addresses, phone numbers or things about other people. It spends a little from your budget.",
+  "ptrOnOff": "Off: the portrait does not change and no agent reads it. What is here stays until you delete it.",
+  "ptrWhoTitle": "Who reads it",
+  "ptrWhoLead": "Changes count from the next conversation: the ones already open go on as they were.",
+  "ptrWho_god": "God",
+  "ptrWho_orchestrators": "The projects' orchestrators",
+  "ptrWho_chat": "The Chat",
+  "ptrWho_others": "Every other agent",
+  "ptrListTitle": "Traits",
+  "ptrListLead": "Each trait says how sure it is and where it comes from. A trait no conversation says again fades with time.",
+  "ptrCount": "{n} traits",
+  "@ptrCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "ptrCountOne": "1 trait",
+  "ptrEmpty": "No traits yet: the portrait fills in as you talk with the agents.",
+  "ptrEmptyOff": "The portrait is off and empty.",
+  "ptrAddPlaceholder": "Add a trait yourself, e.g. I like answers with examples",
+  "ptrAdd": "Add",
+  "ptrCat_preference": "Preferences",
+  "ptrCat_style": "How to talk to you",
+  "ptrCat_habit": "Habits",
+  "ptrCat_project": "Current projects",
+  "ptrCat_avoid": "To avoid",
+  "ptrCat_about": "About you",
+  "ptrSure": "Sure",
+  "ptrLikely": "Likely",
+  "ptrUnsure": "Not sure yet",
+  "ptrByYou": "Written by you",
+  "ptrSeen": "seen {n} times",
+  "@ptrSeen": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "ptrSeenOnce": "seen once",
+  "ptrWhere": "Where it comes from",
+  "ptrUntitled": "A conversation",
+  "ptrWith": "with {name}",
+  "@ptrWith": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptrEdit": "Change",
+  "ptrRemove": "Remove",
+  "ptrDeny": "Not true",
+  "ptrEditTitle": "Change the trait",
+  "ptrEditNote": "Once you change it, the trait is yours: it never fades and nothing changes it by itself.",
+  "ptrDenied": "{n} traits you said are not true: they will not be proposed again.",
+  "@ptrDenied": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "ptrDeniedOne": "1 trait you said is not true: it will not be proposed again.",
+  "ptrTextTitle": "What the agents read",
+  "ptrTextLead": "The portrait exactly as it goes into a new conversation, short and always the same until it changes.",
+  "ptrTextShow": "Show the text",
+  "ptrTextHide": "Hide the text",
+  "ptrForgetTitle": "Forget everything",
+  "ptrForgetLead": "Every trait goes, and its words go from the history too. It cannot be undone.",
+  "ptrForgetText": "Every trait of the portrait is deleted and its words erased from the history, the «not true» ones too. The portrait starts again empty.",
+  "ptrForget": "Forget everything",
+  "ptrErr_empty": "Write the trait.",
+  "ptrErr_long": "A trait is at most 200 characters: write it shorter.",
+  "ptrErr_secret": "That looks like a password, a code or a card number: secrets never go into the portrait.",
+  "ptrErr_private": "Email addresses and phone numbers never go into the portrait.",
+  "ptrErr_gone": "That trait is not there any more.",
+  "tkTitle": "Tool groups",
+  "@tkTitle": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkLead": "Agents start with few tools, to keep every message light. The other groups are off by default: an agent switches one on by itself when the work needs it, for that conversation. Always on: the agent has it from the start. Off by you: the agent has to ask you.",
+  "@tkLead": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkAgentLead": "The groups for {name}: as for every agent, or a choice of its own.",
+  "@tkAgentLead": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tkAuto": "Off by default",
+  "@tkAuto": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkOn": "Always on",
+  "@tkOn": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkOff": "Off by you",
+  "@tkOff": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkAsAll": "As for everyone: {state}",
+  "@tkAsAll": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "tkIsDefault": "default",
+  "@tkIsDefault": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkRole": "on for its role",
+  "@tkRole": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkWeight": "about {n} tokens when on",
+  "@tkWeight": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tkEssential": "Essential tools, always on: about {n} tokens",
+  "@tkEssential": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tkStartTotal": "At the start: about {n} tokens in every message",
+  "@tkStartTotal": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tkRest": "Off at the start: {n} tokens that weigh only if a group is switched on",
+  "@tkRest": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tkTools": "Tools: {list}",
+  "@tkTools": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "tkStateAuto": "off by default",
+  "@tkStateAuto": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "asMascotSub": "A sub-agent has no mascot of its own: it lives for one task, and shows a ring in its parent's colour.",
+  "@asMascotSub": {
+    "description": "The page's `mascotSubHelp` (packages/web/src/i18n.ts): a sub-agent's card, instead of «Change mascot»."
+  },
   "auAsstNewRoutine": "New routine",
   "auAutoOff": "Switched off: it does not run until you switch it on.",
   "auAutoOn": "Switched on",
@@ -7784,5 +8012,142 @@
       }
     }
   },
-  "auOwnReadOnly": "Automations can be changed only by the person (not from a project's device)."
+  "auOwnReadOnly": "Automations can be changed only by the person (not from a project's device).",
+  "cvChSecretAnyway": "Send anyway",
+  "@cvChSecretAnyway": {
+    "description": "Secret warning: send the message as written (the person's choice, 2026-11-19)."
+  },
+  "cvChSecretAnywayNote": "Not a secret (a link, an order code)? «Send anyway» sends it as you wrote it.",
+  "@cvChSecretAnywayNote": {
+    "description": "Secret warning: what Send anyway does."
+  },
+  "echoSearch": "Search past conversations",
+  "@echoSearch": {
+    "description": "Echo (3.9.6): the search over past conversations; the page's echoSearch."
+  },
+  "echoClear": "Clear the search",
+  "echoNone": "No past conversation has these words.",
+  "echoArchived": "archived",
+  "echoMatches": "{n} messages",
+  "@echoMatches": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "echoMatch": "1 message",
+  "echoYou": "You",
+  "echoHint": "Type at least two letters: every word is looked for in what you and the agents wrote.",
+  "skSection": "Skills",
+  "skHub": "The agents' skills, their versions and the way back",
+  "skQuestion": "What the agents learned",
+  "skLead": "Skills are instructions the agents write after a job that went well, or that you give them. Each one keeps its versions: who wrote it, why and when, and you can go back to any of them.",
+  "skWaitingTitle": "Waiting for you",
+  "skWaitingLead": "New skills and new versions of installed ones, tested apart. Nothing changes until you say yes.",
+  "skNoneWaiting": "Nothing waits for you.",
+  "skNew": "New skill",
+  "skUpdate": "New version of an installed skill",
+  "skBy": "by {who}",
+  "@skBy": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "skWhy": "Why",
+  "skTestsOk": "Its tests passed.",
+  "skScripts": "It has scripts ({files}): code never installs by itself.",
+  "@skScripts": {
+    "placeholders": {
+      "files": {
+        "type": "String"
+      }
+    }
+  },
+  "skApprove": "Approve",
+  "skReject": "Reject",
+  "skNextSession": "Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.",
+  "skInstalledTitle": "Installed",
+  "skInstalledLead": "Open one to see its versions.",
+  "skNoneInstalled": "No skills yet.",
+  "skEverywhere": "for every project",
+  "skProject": "project {name}",
+  "@skProject": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "skVersionsTitle": "Versions",
+  "skVersionsLead": "Agents use the newest from their next conversation.",
+  "skVersion": "Version {n}",
+  "@skVersion": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "skCurrent": "in use",
+  "skHow_baseline": "As it was before the history began",
+  "skHow_edited": "Changed by hand",
+  "skHow_install": "First version",
+  "skHow_update": "New version",
+  "skHow_import": "Imported",
+  "skHow_rollback": "Back to version {n}",
+  "@skHow_rollback": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "skUnknown": "author unknown",
+  "skYou": "you",
+  "skApprovedYou": "approved by you",
+  "skApprovedAuto": "installed by itself (your choice in Safety)",
+  "skCompare": "Compare with the one in use",
+  "skHideCompare": "Hide the comparison",
+  "skRollback": "Go back to version {n}",
+  "@skRollback": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "skRollbackTitle": "Go back to version {n}?",
+  "@skRollbackTitle": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "skRollbackText": "Its files replace those of «{name}» in use, as a new version: nothing is lost and you can come back here. Agents get it from their next conversation.",
+  "@skRollbackText": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "skRolledBack": "Back to version {n}: it is version {v} now.",
+  "@skRolledBack": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "skNotRestorable": "Too large to keep: it cannot come back.",
+  "skNoVersions": "No versions yet.",
+  "skLineTitle": "What changed and why",
+  "skCompareFull": "Compare: every difference"
 }

@@ -661,15 +661,6 @@ section {
 .masc .cap {
   fill: oklch(0.64 0.12 var(--h2));
 }
-.masc .godlid {
-  fill: var(--accent);
-}
-.masc .orb {
-  stroke: #ffb36b;
-}
-.masc .orbp {
-  fill: #ffd27a;
-}
 .masc.st-error .b {
   fill: oklch(var(--mL) calc(var(--c) * 0.3) var(--h));
 }

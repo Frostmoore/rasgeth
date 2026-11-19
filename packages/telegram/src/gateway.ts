@@ -1,4 +1,4 @@
-import { randomInt } from "node:crypto";
+import { randomBytes, randomInt } from "node:crypto";
 import { autoRetry } from "@grammyjs/auto-retry";
 import type { SqlClient } from "@redgiant/events";
 import {
@@ -6,6 +6,7 @@ import {
   CHANNEL_NAMES,
   criticalChatLines,
   dangerWords,
+  findSecrets,
   type ImagePart,
   type MessageQuote,
   mailRequestLines,
@@ -15,6 +16,8 @@ import {
   type QuestionRequestInfo,
   requestReasons,
   requestSentence,
+  type SecretSpan,
+  type SkillUpdateRequestInfo,
 } from "@redgiant/protocol";
 import { Bot, type Context, InlineKeyboard, InputFile } from "grammy";
 import type { Update } from "grammy/types";
@@ -34,6 +37,11 @@ export interface TelegramHost {
       quotes?: MessageQuote[];
       /** Called when the message waits behind the previous one. */
       onQueued?: () => void;
+      /**
+       * The person chose «Send anyway» on the secret warning (2026-11-19): their words go as
+       * written, and the choice is in the log (`message.user.secretOk`).
+       */
+      secretOk?: boolean;
     },
   ): Promise<string>;
   /**
@@ -91,7 +99,53 @@ export interface TelegramHost {
   };
   /** What its texts are written in: the agents' language if translated, else the interface's. */
   language?(ownerId: string): Language;
+  /** 3.9.7: new versions of skills waiting for the person, approved or rejected with buttons. */
+  skillUpdates?: {
+    on(event: "request", l: (ownerId: string, info: SkillUpdateRequestInfo) => void): unknown;
+    on(
+      event: "closed",
+      l: (ownerId: string, proposalId: string, decision: "approve" | "reject", via: string) => void,
+    ): unknown;
+    decide(
+      ownerId: string,
+      proposalId: string,
+      decision: "approve" | "reject",
+      via: string,
+    ): Promise<boolean>;
+  };
 }
+
+/** How long a message that looks like a secret waits for the person's choice. */
+export const SECRET_HOLD_MS = 10 * 60_000;
+
+/** The words for each kind of secret found. */
+const SECRET_WORDS: Record<SecretSpan["kind"], TextKey> = {
+  key: "secretKey",
+  password: "secretPassword",
+  code: "secretCode",
+  card: "secretCard",
+  iban: "secretIban",
+};
+
+/**
+ * A message held because it looks like a secret (2026-11-19): only in memory, never written
+ * anywhere, gone once the person chooses or the time runs out.
+ */
+interface HeldSecret {
+  ownerId: string;
+  chatId: number;
+  text: string;
+  extra?: RelayExtra | undefined;
+  expires: number;
+  messageId?: number;
+  notice: string;
+}
+
+type RelayExtra = {
+  images?: ImagePart[];
+  files?: { name: string; data: Buffer }[];
+  quotes?: MessageQuote[];
+};
 
 /** A question being answered on Telegram: one message per question. */
 interface Asking {
@@ -215,6 +269,7 @@ export class TelegramGateway {
   private me: { username: string } | undefined;
   private readonly inFlight = new Set<Promise<void>>();
   private readonly asking = new Map<string, Asking>();
+  private readonly held = new Map<string, HeldSecret>();
 
   constructor(private readonly o: GatewayOptions) {
     this.bot = new Bot(o.token, o.apiRoot ? { client: { apiRoot: o.apiRoot } } : {});
@@ -236,6 +291,14 @@ export class TelegramGateway {
       "closed",
       (_ownerId, requestId, decision, via) =>
         void this.closeApproval(requestId, decision, via).catch(() => {}),
+    );
+    o.host.skillUpdates?.on("request", (ownerId, info) => {
+      void this.sendSkillUpdate(ownerId, info).catch(() => {});
+    });
+    o.host.skillUpdates?.on(
+      "closed",
+      (_ownerId, proposalId, decision, via) =>
+        void this.closeSkillUpdate(proposalId, decision, via).catch(() => {}),
     );
     o.host.questions?.on("request", (ownerId, info) => {
       void this.sendQuestion(ownerId, info).catch(() => {});
@@ -267,7 +330,8 @@ export class TelegramGateway {
   /** Reads the bot's identity (also validates the token). */
   async init(): Promise<{ username: string }> {
     if (!this.me) {
-      await this.bot.init();
+      // grammY waits up to 500 s for an answer: without a network that held the start (3.9.1).
+      await this.bot.init(AbortSignal.timeout(20_000) as Parameters<Bot["init"]>[0]);
       this.me = { username: this.bot.botInfo.username };
     }
     return this.me;
@@ -497,13 +561,24 @@ export class TelegramGateway {
     owner: string,
     chatId: number,
     text: string,
-    extra?: {
-      images?: ImagePart[];
-      files?: { name: string; data: Buffer }[];
-      quotes?: MessageQuote[];
-    },
+    extra?: RelayExtra,
+    /**
+     * The person already chose on the secret warning: "anyway" sends it as written (secretOk),
+     * "without" lets the server blank it as it always does.
+     */
+    chosen?: "anyway" | "without",
   ) {
     const api = this.bot.api;
+    // A secret in the message (G33.4) waits for the person's choice, as in the page and the app.
+    if (!chosen) {
+      const found = findSecrets(
+        [text, ...(extra?.quotes ?? []).map((q) => q.reply ?? "")].join("\n"),
+      );
+      if (found.length > 0) {
+        await this.holdSecret(owner, chatId, text, found, extra);
+        return;
+      }
+    }
     // "typing…" while Demi-God and God work (Telegram shows it for about 5 seconds).
     const typing = setInterval(
       () => void api.sendChatAction(chatId, "typing").catch(() => {}),
@@ -513,6 +588,7 @@ export class TelegramGateway {
     try {
       const answer = await this.o.host.askDemigod(owner, chatId, text, {
         ...extra,
+        ...(chosen === "anyway" && { secretOk: true }),
         onQueued: () => void api.sendMessage(chatId, this.say(owner, "queued")).catch(() => {}),
       });
       for (const part of splitMessage(answer)) await this.sendFormatted(chatId, part);
@@ -521,6 +597,80 @@ export class TelegramGateway {
     } finally {
       clearInterval(typing);
     }
+  }
+
+  /**
+   * «This looks like a secret» with three buttons (2026-11-19): send anyway, send without it
+   * (the server blanks it, as before), leave it. The bot never repeats the secret.
+   */
+  private async holdSecret(
+    owner: string,
+    chatId: number,
+    text: string,
+    found: SecretSpan[],
+    extra?: RelayExtra,
+  ) {
+    const now = Date.now();
+    for (const [id, h] of this.held) if (h.expires <= now) this.held.delete(id);
+    const id = randomBytes(6).toString("hex");
+    const what = [...new Set(found.map((s) => s.kind))]
+      .map((k) => this.say(owner, SECRET_WORDS[k]))
+      .join(", ");
+    const notice = this.say(owner, "secretHeld", { what });
+    const keyboard = new InlineKeyboard()
+      .text(this.say(owner, "secretSendAnyway"), `sec:${id}:send`)
+      .text(this.say(owner, "secretSendWithout"), `sec:${id}:clean`)
+      .row()
+      .text(this.say(owner, "secretDrop"), `sec:${id}:drop`);
+    const h: HeldSecret = {
+      ownerId: owner,
+      chatId,
+      text,
+      extra,
+      expires: now + SECRET_HOLD_MS,
+      notice,
+    };
+    this.held.set(id, h);
+    const m = await this.bot.api
+      .sendMessage(chatId, notice, { reply_markup: keyboard })
+      .catch(() => undefined);
+    if (m) h.messageId = m.message_id;
+  }
+
+  private async onSecretButton(ctx: Context, owner: string, data: string) {
+    const m = data.match(/^sec:([0-9a-f]+):(send|clean|drop)$/);
+    const h = m ? this.held.get(m[1] as string) : undefined;
+    if (!m || !h || h.ownerId !== owner) {
+      await ctx.answerCallbackQuery({ text: this.say(owner, h ? "notAllowed" : "secretExpired") });
+      return;
+    }
+    this.held.delete(m[1] as string);
+    if (h.expires <= Date.now()) {
+      await ctx.answerCallbackQuery({ text: this.say(owner, "secretExpired") });
+      if (h.messageId !== undefined)
+        await this.bot.api
+          .editMessageText(
+            h.chatId,
+            h.messageId,
+            `${h.notice}\n\n${this.say(owner, "secretExpired")}`,
+          )
+          .catch(() => {});
+      return;
+    }
+    const choice = m[2] as "send" | "clean" | "drop";
+    const tail = this.say(
+      owner,
+      choice === "send" ? "secretSent" : choice === "clean" ? "secretSentWithout" : "secretDropped",
+    );
+    await ctx.answerCallbackQuery({ text: tail });
+    if (h.messageId !== undefined)
+      await this.bot.api
+        .editMessageText(h.chatId, h.messageId, `${h.notice}\n\n${tail}`)
+        .catch(() => {});
+    if (choice !== "drop")
+      this.background(
+        this.relay(owner, h.chatId, h.text, h.extra, choice === "send" ? "anyway" : "without"),
+      );
   }
 
   /** Resolves when every message being relayed has been answered (tests, shutdown). */
@@ -625,6 +775,49 @@ export class TelegramGateway {
         { chatId: link.chatId, messageId: m.message_id, text },
       ]);
     }
+  }
+
+  /** 3.9.7: «{agent} proposes a new version…», the line, and Approve / Reject. */
+  private async sendSkillUpdate(ownerId: string, info: SkillUpdateRequestInfo) {
+    const text = [
+      this.say(ownerId, "skillUpdateFrom", { agent: info.agentName, name: info.name }),
+      info.line,
+      this.say(ownerId, "skillUpdateCompare"),
+    ]
+      .filter(Boolean)
+      .join("\n");
+    const keyboard = new InlineKeyboard()
+      .text(this.say(ownerId, "skillApprove"), `xs:${info.proposalId}:approve`)
+      .text(this.say(ownerId, "skillReject"), `xs:${info.proposalId}:reject`);
+    this.sentOwner.set(info.proposalId, ownerId);
+    for (const link of await this.links(ownerId)) {
+      const m = await this.bot.api.sendMessage(link.chatId, text, { reply_markup: keyboard });
+      this.sent.set(info.proposalId, [
+        ...(this.sent.get(info.proposalId) ?? []),
+        { chatId: link.chatId, messageId: m.message_id, text },
+      ]);
+    }
+  }
+
+  private async closeSkillUpdate(proposalId: string, decision: "approve" | "reject", via: string) {
+    const owner = this.sentOwner.get(proposalId);
+    const done = this.say(owner, decision === "approve" ? "skillApproved" : "skillRejected");
+    const tail =
+      via === "telegram"
+        ? done
+        : this.say(owner, "decidedVia", {
+            where:
+              via === "web"
+                ? this.say(owner, "whereWeb")
+                : this.say(owner, "whereChat", { name: CHANNEL_NAMES[via] ?? via }),
+            decision: done.split(":")[0]?.toLowerCase() ?? "",
+          });
+    for (const m of this.sent.get(proposalId) ?? [])
+      await this.bot.api
+        .editMessageText(m.chatId, m.messageId, `${m.text}\n\n${tail}`)
+        .catch(() => {});
+    this.sent.delete(proposalId);
+    this.sentOwner.delete(proposalId);
   }
 
   private async closeApproval(
@@ -808,6 +1001,23 @@ export class TelegramGateway {
     const data = ctx.callbackQuery?.data ?? "";
     const owner = await this.ownerOf(ctx.from?.id);
     if (owner && data.startsWith("q:")) return this.onQuestionButton(ctx, owner, data);
+    if (owner && data.startsWith("sec:")) return this.onSecretButton(ctx, owner, data);
+    const skill = data.match(/^xs:([\w-]+):(approve|reject)$/);
+    if (owner && skill) {
+      const ok = await this.o.host.skillUpdates?.decide(
+        owner,
+        skill[1] as string,
+        skill[2] as "approve" | "reject",
+        "telegram",
+      );
+      await ctx.answerCallbackQuery({
+        text: this.say(
+          owner,
+          ok ? (skill[2] === "approve" ? "skillApproved" : "skillRejected") : "closedAlready",
+        ),
+      });
+      return;
+    }
     const m = data.match(/^perm:([\w-]+):(allow|deny)$/);
     if (!m || !owner) {
       await ctx.answerCallbackQuery({ text: this.say(owner, "notAllowed") });

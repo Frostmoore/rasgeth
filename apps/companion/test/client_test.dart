@@ -53,7 +53,12 @@ void main() {
       final agents = await c.agents();
       expect(agents.first.kind, AgentKind.god);
       expect(agents.first.mascot?.handDrawn, isTrue);
-      expect(agents.every((a) => a.mascot != null), isTrue);
+      // Every first-level agent has its mascot; a sub-agent none (2026-11-19).
+      expect(
+        agents.where((a) => a.kind != AgentKind.subagent).every((a) => a.mascot != null),
+        isTrue,
+      );
+      expect(agents.where((a) => a.kind == AgentKind.subagent).single.mascot, isNull);
     });
 
     test('a wrong password says why, with the server code', () async {

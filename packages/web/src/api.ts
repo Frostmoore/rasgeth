@@ -54,6 +54,9 @@ import {
   type PairCode,
   type PendingPair,
   type PermissionRequestInfo,
+  type PortraitAgents,
+  type PortraitCategory,
+  type PortraitView,
   PROTOCOL_VERSION,
   type Recipe,
   type RedGiantRole,
@@ -166,6 +169,8 @@ export interface SetupState {
         { provider: string; model: string; voice?: string }
       >
     >;
+    /** «Use the model's own tool when it has one» (2026-11-19): false when switched off. */
+    mediaNative?: boolean;
     subscriptions?: { claude?: boolean; chatgpt?: boolean };
     engine?: {
       variant: EngineVariant;
@@ -346,6 +351,8 @@ export interface PlatformInfo {
   voice?: boolean;
   /** Providers whose key was refused (a banner until a new key works). */
   keyProblems?: { provider: string; message: string }[];
+  /** Parts of the start waiting for the internet (3.9.1): they connect once it is back. */
+  waitingNetwork?: { id: string; label: string }[];
   lastGood: string | null;
   releases: {
     commit: string;
@@ -514,6 +521,24 @@ export interface SearchHit {
   excerpt: string;
 }
 
+/** Echo (3.9.6): one past conversation found, with the places that have the words. */
+export interface EchoHit {
+  sessionId: string;
+  title: string | null;
+  agentId: string;
+  projectId: string | null;
+  at: string;
+  lastAt: string | null;
+  matches: number;
+  archived: boolean;
+  snippets: {
+    role: "person" | "agent" | "other";
+    at: string;
+    text: string;
+    marks: [number, number][];
+  }[];
+}
+
 export interface FileEntry {
   name: string;
   path: string;
@@ -595,9 +620,30 @@ export interface Proposal {
     /** G36.8: it changes the installed skill of the same name. */
     updates?: boolean;
   };
-  /** G36.8: the installed skill an update replaces, as it is now. */
-  previous?: { skillMd: string; files: string[] } | null;
+  /** G36.8: the installed skill an update replaces, as it is now (3.9.7: and where it lives). */
+  previous?: { skillMd: string; files: string[]; scope?: string } | null;
+  /** 3.9.7: the SKILL.md the proposal would write, for the differences. */
+  proposedSkillMd?: string;
+  /** 3.9.7: «what changed: why», the line a new version is approved by. */
+  updateLine?: string;
   decidedBy?: string | null;
+}
+
+/** One version of an installed skill (3.9.7). */
+export interface SkillVersion {
+  name: string;
+  scope: string;
+  version: number;
+  how: "baseline" | "edited" | "install" | "update" | "import" | "rollback";
+  author: string | null;
+  approvedBy: string | null;
+  reason: string | null;
+  fromVersion: number | null;
+  proposalId: string | null;
+  createdAt: string;
+  files: string[];
+  restorable: boolean;
+  current: boolean;
 }
 
 export interface Installed {
@@ -889,6 +935,12 @@ export class Api {
   refreshModelsCatalog = () =>
     this.call<ModelsCatalogStatus | null>("POST", "/api/models/catalog/refresh");
   search = (q: string) => this.call<SearchHit[]>("GET", `/api/search?q=${encodeURIComponent(q)}`);
+  /** Echo (3.9.6): the same conversations the agents' search_conversations finds. */
+  searchConversations = (q: string, limit = 20) =>
+    this.call<EchoHit[]>(
+      "GET",
+      `/api/conversations/search?q=${encodeURIComponent(q)}&limit=${limit}`,
+    );
   startSession = (agentId: string) =>
     this.call<{ sessionId: string }>("POST", "/api/sessions", { agentId });
   events = (sessionId: string) => this.call<Event[]>("GET", `/api/sessions/${sessionId}/events`);
@@ -925,6 +977,24 @@ export class Api {
   decideExtension = (id: string, decision: "approve" | "reject") =>
     this.call<Proposal>("POST", `/api/extensions/proposals/${id}/decision`, { decision });
   installed = () => this.call<Installed[]>("GET", "/api/extensions/installed");
+  /** 3.9.7: a skill's versions, newest first (scope as in `installed`). */
+  skillVersions = (name: string, scope: string) =>
+    this.call<SkillVersion[]>(
+      "GET",
+      `/api/extensions/skills/${encodeURIComponent(name)}/versions?scope=${encodeURIComponent(scope)}`,
+    );
+  skillVersion = (name: string, scope: string, version: number) =>
+    this.call<{ name: string; version: number; skillMd: string }>(
+      "GET",
+      `/api/extensions/skills/${encodeURIComponent(name)}/versions/${version}?scope=${encodeURIComponent(scope)}`,
+    );
+  /** «Go back to version N»: a new version equal to it. */
+  rollbackSkill = (name: string, scope: string, version: number) =>
+    this.call<{ name: string; version: number; fromVersion: number }>(
+      "POST",
+      `/api/extensions/skills/${encodeURIComponent(name)}/rollback?scope=${encodeURIComponent(scope)}`,
+      { version },
+    );
   /** A skill's folder as a .zip, to share it (scope as in `installed`). */
   async exportSkill(name: string, scope: string): Promise<{ blob: Blob; name: string }> {
     const r = await fetch(
@@ -1125,6 +1195,18 @@ export class Api {
   /** Forgets a memory for good: its text goes from every past change too. */
   forgetMemory = (id: string) => this.call("POST", `/api/memory/${encodeURIComponent(id)}/forget`);
   setMemoryAuto = (auto: boolean) => this.call("PUT", "/api/memory/settings", { auto });
+  /** The person's portrait (3.9.4): built by itself from the conversations, corrected here. */
+  portrait = () => this.call<PortraitView>("GET", "/api/portrait");
+  addTrait = (text: string, category: PortraitCategory) =>
+    this.call<{ id: string }>("POST", "/api/portrait", { text, category });
+  editTrait = (id: string, change: { text?: string; category?: PortraitCategory }) =>
+    this.call("PUT", `/api/portrait/${encodeURIComponent(id)}`, change);
+  removeTrait = (id: string) => this.call("DELETE", `/api/portrait/${encodeURIComponent(id)}`);
+  /** «Not true»: gone, and never proposed again. */
+  denyTrait = (id: string) => this.call("POST", `/api/portrait/${encodeURIComponent(id)}/deny`);
+  forgetPortrait = () => this.call("POST", "/api/portrait/forget");
+  setPortrait = (change: { on?: boolean; agents?: PortraitAgents }) =>
+    this.call("PUT", "/api/portrait/settings", change);
   /** The keychain (G33.4): values go up once and come back only through `revealVault`. */
   vault = () => this.call<VaultView>("GET", "/api/vault");
   addVault = (e: VaultInput) => this.call<VaultEntry>("POST", "/api/vault", e);
@@ -1510,6 +1592,13 @@ export class Api {
   setAgentTools = (agentId: string, tools: Record<string, "on" | "off" | "default">) =>
     this.call<PlatformChange>("PUT", `/api/agents/${encodeURIComponent(agentId)}/tools`, {
       tools,
+    });
+  /** Tool groups (3.9.4): for every agent, and for one. */
+  setKits = (kits: Record<string, "on" | "auto" | "off" | "default">) =>
+    this.call<PlatformChange>("PUT", "/api/tools/kits", { kits });
+  setAgentKits = (agentId: string, kits: Record<string, "on" | "auto" | "off" | "default">) =>
+    this.call<PlatformChange>("PUT", `/api/agents/${encodeURIComponent(agentId)}/tools/kits`, {
+      kits,
     });
   /** What an agent's summaries do when it sets nothing (12% kept on a local model). */
   compactionDefaults = (agentId: string) =>
@@ -1898,6 +1987,8 @@ export class Api {
   /** Who makes one kind of media (G25.3); null: nobody. */
   setupMedia = (kind: string, choice: { provider: string; model: string; voice?: string } | null) =>
     this.call("PUT", `/api/setup/media/${encodeURIComponent(kind)}`, { choice });
+  /** «Use the model's own tool when it has one» (2026-11-19). */
+  setupMediaNative = (on: boolean) => this.call("PUT", "/api/setup/media-native", { on });
   setupMediaKey = (provider: string, key: string | null) =>
     this.call("PUT", `/api/setup/media-keys/${encodeURIComponent(provider)}`, { key });
   mediaVoices = (provider: string) =>

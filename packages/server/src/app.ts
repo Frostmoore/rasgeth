@@ -15,10 +15,11 @@ import {
   NAME_RE as SKILL_NAME_RE,
   SkillArchiveError,
   SkillExistsError,
+  SkillVersionError,
 } from "@redgiant/extensions";
 import { teamsAppPackage } from "@redgiant/gateway";
 import { AgentLimitError, can, HierarchyError } from "@redgiant/hierarchy";
-import { mascotSvg } from "@redgiant/mascot";
+import { hasOwnMascot, mascotSvg, subagentSignSvg } from "@redgiant/mascot";
 import {
   AgentKind,
   ARTIFACT_SANDBOX,
@@ -28,6 +29,7 @@ import {
   AutomationRun,
   Effort,
   ImagePart,
+  type KitState,
   LOCAL_OWNER_ID,
   MachineAccess,
   MachineBody,
@@ -37,6 +39,8 @@ import {
   type ModelSpec as ModelSpecType,
   PermissionMode,
   PermissionRequestInfo,
+  PortraitAgents,
+  PortraitCategory,
   PRODUCT_NAME,
   PROJECT_AGENTS_MAX,
   PROTOCOL_VERSION,
@@ -111,6 +115,7 @@ import { MagicExtNotFoundError, MagicExtStateError } from "./magic-extensions.js
 import { nodeRoutes } from "./nodes/routes.js";
 import { personRoutes } from "./person-routes.js";
 import { ConfigError, PlatformPolicy } from "./platform.js";
+import { PortraitError, TRAIT_LIMIT } from "./portrait.js";
 import { hasOwnRepo } from "./project-git.js";
 import { ProjectError, SubprojectError } from "./projects.js";
 import { RefineError } from "./prompt-refiner.js";
@@ -454,6 +459,8 @@ const routes = {
             schema: z.object({
               text: z.string().min(1),
               images: z.array(ImagePart).max(10).optional(),
+              /** «Send anyway» on the secret warning (2026-11-19): not blanked, the choice logged. */
+              secretOk: z.boolean().optional(),
             }),
           },
         },
@@ -1326,18 +1333,32 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     return c.json(agentOut(updated, core.registry), 200);
   });
   // An agent's mascot (G40.2): the spec the app paints, or the page's drawing as an SVG file
-  // (`?format=svg`, with `state`, `size` and `theme` light or dark: colours written in).
+  // (`?format=svg`, with `state`, `size` and `theme` light or dark: colours written in). A
+  // sub-agent has no spec (2026-11-19); as SVG it is its sign, the ring in its parent's colour.
   app.get("/api/agents/:id/mascot", (c) => {
     const id = c.req.param("id");
-    const spec = core.registry.get(id)?.ownerId === owner(c) && core.registry.mascotOf(id);
-    if (!spec) return c.json({ error: "Agent not found" }, 404);
-    if (c.req.query("format") !== "svg") return c.json(spec, 200);
+    const agent = core.registry.get(id);
+    if (!agent || agent.ownerId !== owner(c)) return c.json({ error: "Agent not found" }, 404);
+    const sub = !hasOwnMascot(agent);
+    const spec = sub ? undefined : core.registry.mascotOf(id);
+    const svg = c.req.query("format") === "svg";
+    if (!svg)
+      return spec
+        ? c.json(spec, 200)
+        : c.json({ error: "A sub-agent has no mascot of its own" }, 404);
     const state = MascotState.safeParse(c.req.query("state") ?? "idle");
     const theme = c.req.query("theme") ?? "light";
     const size = Number(c.req.query("size") ?? 128);
     if (!state.success || (theme !== "light" && theme !== "dark") || !(size >= 16 && size <= 1024))
       return c.json({ error: "state, theme (light, dark) or size (16-1024) not valid" }, 400);
-    return c.body(mascotSvg(spec, { state: state.data, theme, size, idPrefix: "m" }), 200, {
+    const drawing = spec
+      ? mascotSvg(spec, { state: state.data, theme, size, idPrefix: "m" })
+      : subagentSignSvg(agent.parentId ? core.registry.mascotOf(agent.parentId) : undefined, {
+          state: state.data,
+          theme,
+          size,
+        });
+    return c.body(drawing, 200, {
       "Content-Type": "image/svg+xml; charset=utf-8",
       "Cache-Control": "no-store",
     });
@@ -1347,10 +1368,10 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.get("/api/mascot/preview", (c) => {
     const kind = AgentKind.safeParse(c.req.query("kind") ?? "agent");
     const name = (c.req.query("name") ?? "").trim();
-    const parentId = c.req.query("parentId") || null;
     if (!kind.success || !name || name.length > 60)
       return c.json({ error: "A kind and a name (1-60) are needed" }, 400);
-    const spec = core.registry.previewMascot(owner(c), name, kind.data, parentId);
+    const spec = core.registry.previewMascot(owner(c), name, kind.data);
+    if (!spec) return c.json({ error: "A sub-agent has no mascot of its own" }, 400);
     if (c.req.query("format") !== "svg") return c.json(spec, 200);
     const state = MascotState.safeParse(c.req.query("state") ?? "idle");
     const theme = c.req.query("theme") ?? "light";
@@ -1626,6 +1647,19 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.get("/api/search", async (c) =>
     c.json(await core.search(owner(c), c.req.query("q") ?? ""), 200),
   );
+  // Echo (3.9.6): past conversations by their words, the same results the agents' tool gives.
+  app.get("/api/conversations/search", async (c) => {
+    const q = (c.req.query("q") ?? "").slice(0, 500);
+    const limit = Number(c.req.query("limit") ?? "20");
+    const agentId = c.req.query("agent") || undefined;
+    return c.json(
+      await core.searchConversations(owner(c), q, {
+        limit: Number.isFinite(limit) ? Math.min(Math.max(Math.trunc(limit), 1), 50) : 20,
+        ...(agentId ? { agentId } : {}),
+      }),
+      200,
+    );
+  });
   app.openapi(routes.startSession, async (c) =>
     c.json({ sessionId: await core.startSession(owner(c), c.req.valid("json").agentId) }, 201),
   );
@@ -1633,9 +1667,10 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     c.json(await core.history(owner(c), c.req.valid("param").id), 200),
   );
   app.openapi(routes.sendMessage, async (c) => {
-    const { text, images } = c.req.valid("json");
+    const { text, images, secretOk } = c.req.valid("json");
     const { done } = await core.send(owner(c), c.req.valid("param").id, text, {
       ...(images?.length ? { images } : {}),
+      ...(secretOk === true && { secretOk: true }),
       watch: true,
       queue: true,
     });
@@ -1992,15 +2027,12 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   });
   app.openapi(routes.decideExtension, async (c) => {
     try {
-      return c.json(
-        await core.extensions.decide(
-          owner(c),
-          c.req.valid("param").id,
-          c.req.valid("json").decision,
-          "human",
-        ),
-        200,
-      );
+      const id = c.req.valid("param").id;
+      const decision = c.req.valid("json").decision;
+      const p = await core.extensions.decide(owner(c), id, decision, "human");
+      // 3.9.7: the chats' copies of a new version's request say it was decided here.
+      core.skillUpdates.decidedElsewhere(owner(c), id, decision, "web");
+      return c.json(p, 200);
     } catch (err) {
       return c.json(
         { error: (err as Error).message },
@@ -2274,6 +2306,44 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       return c.json({ error: "off must be a list of tool ids" }, 400);
     try {
       return c.json(await core.setToolsOff(owner(c), body.off as string[]), 200);
+    } catch (err) {
+      if (err instanceof ConfigError) return c.json({ error: err.message }, 400);
+      throw err;
+    }
+  });
+  // Kits (3.9.4): "on" from the start, "auto" off until the agent switches them on, "off" switched
+  // off by the person, "default" back to the default; for every agent or for one.
+  const kitStates = (v: unknown) =>
+    !!v &&
+    typeof v === "object" &&
+    Object.values(v).every((x) => x === "on" || x === "auto" || x === "off" || x === "default");
+  app.put("/api/tools/kits", async (c) => {
+    const body = (await c.req.json().catch(() => null)) as { kits?: unknown } | null;
+    if (!kitStates(body?.kits))
+      return c.json({ error: 'kits: { <kit>: "on" | "auto" | "off" | "default" }' }, 400);
+    try {
+      return c.json(
+        await core.setKits(owner(c), body?.kits as Record<string, KitState | "default">),
+        200,
+      );
+    } catch (err) {
+      if (err instanceof ConfigError) return c.json({ error: err.message }, 400);
+      throw err;
+    }
+  });
+  app.put("/api/agents/:id/tools/kits", async (c) => {
+    const body = (await c.req.json().catch(() => null)) as { kits?: unknown } | null;
+    if (!kitStates(body?.kits))
+      return c.json({ error: 'kits: { <kit>: "on" | "auto" | "off" | "default" }' }, 400);
+    try {
+      return c.json(
+        await core.setAgentKits(
+          owner(c),
+          c.req.param("id"),
+          body?.kits as Record<string, KitState | "default">,
+        ),
+        200,
+      );
     } catch (err) {
       if (err instanceof ConfigError) return c.json({ error: err.message }, 400);
       throw err;
@@ -2629,6 +2699,13 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
         kind,
         ch && { provider: ch.provider, model: ch.model, ...(ch.voice && { voice: ch.voice }) },
       );
+    }),
+  );
+  // «Use the model's own tool when it has one» (2026-11-19).
+  app.put("/api/setup/media-native", (c) =>
+    wizard(c, async () => {
+      const b = await parsed(c, z.object({ on: z.boolean() }));
+      await (setup as SetupService).saveMediaNative(b.on);
     }),
   );
   app.put("/api/setup/media-keys/:provider", (c) =>
@@ -3104,6 +3181,74 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       return memoryFailed(c, err);
     }
   });
+  // The person's portrait (3.9.4, «Mirror»): built by itself from the conversations; the person
+  // sees each trait with where it comes from, corrects it, says «not true», turns it all off or
+  // forgets everything. Every route acts on the signed-in owner's portrait only.
+  const portraitFailed = (c: Context<Env>, err: unknown) => {
+    if (err instanceof PortraitError) return c.json({ error: err.message, code: err.code }, 400);
+    throw err;
+  };
+  const TraitBody = z.object({
+    text: z
+      .string()
+      .min(1)
+      .max(TRAIT_LIMIT * 2)
+      .optional(),
+    category: PortraitCategory.optional(),
+  });
+  app.get("/api/portrait", async (c) => c.json(await core.portraitView(owner(c)), 200));
+  app.put("/api/portrait/settings", async (c) => {
+    const b = z
+      .object({ on: z.boolean().optional(), agents: PortraitAgents.optional() })
+      .safeParse(await c.req.json().catch(() => undefined));
+    if (!b.success || (b.data.on === undefined && !b.data.agents))
+      return c.json({ error: "on or agents is required" }, 400);
+    await core.portrait.setSettings(owner(c), b.data);
+    return c.json({ ok: true }, 200);
+  });
+  app.post("/api/portrait", async (c) => {
+    const b = TraitBody.safeParse(await c.req.json().catch(() => undefined));
+    if (!b.success || !b.data.text) return c.json({ error: "text is required" }, 400);
+    try {
+      const id = await core.portrait.add(owner(c), b.data.text, b.data.category ?? "about");
+      return c.json({ id }, 200);
+    } catch (err) {
+      return portraitFailed(c, err);
+    }
+  });
+  // «Dimentica tutto»: every trait and its words in every past event (not undoable).
+  app.post("/api/portrait/forget", async (c) => {
+    await core.portrait.forgetAll(owner(c));
+    return c.json({ ok: true }, 200);
+  });
+  app.put("/api/portrait/:id", async (c) => {
+    const b = TraitBody.safeParse(await c.req.json().catch(() => undefined));
+    if (!b.success || (!b.data.text && !b.data.category))
+      return c.json({ error: "text or category is required" }, 400);
+    try {
+      await core.portrait.edit(owner(c), c.req.param("id"), b.data);
+      return c.json({ ok: true }, 200);
+    } catch (err) {
+      return portraitFailed(c, err);
+    }
+  });
+  // «Non è vero»: gone, and never proposed again.
+  app.post("/api/portrait/:id/deny", async (c) => {
+    try {
+      await core.portrait.deny(owner(c), c.req.param("id"));
+      return c.json({ ok: true }, 200);
+    } catch (err) {
+      return portraitFailed(c, err);
+    }
+  });
+  app.delete("/api/portrait/:id", async (c) => {
+    try {
+      await core.portrait.remove(owner(c), c.req.param("id"));
+      return c.json({ ok: true }, 200);
+    } catch (err) {
+      return portraitFailed(c, err);
+    }
+  });
   // A new conversation that goes on from this one (G36.23): «Continua da qui» from a message
   // (`fromSeq`), or before a message to send it edited (`beforeSeq`, 2026-11-05).
   app.post("/api/sessions/:id/fork", async (c) => {
@@ -3356,6 +3501,51 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       throw err;
     }
   });
+  // 3.9.7: a skill's versions (who, why, when), one version's SKILL.md, and the way back. The
+  // scope is the one above; only the person reaches these routes.
+  const versionScope = async (c: Context<Env>, given?: unknown) => {
+    const raw = c.req.query("scope") ?? (typeof given === "string" ? given : undefined);
+    const scope =
+      !raw || raw === "platform" ? "platform" : raw.startsWith("project:") ? raw : `project:${raw}`;
+    return (await skillRoot(c, scope)) ? scope : undefined;
+  };
+  app.get("/api/extensions/skills/:name/versions", async (c) => {
+    const name = c.req.param("name");
+    if (!SKILL_NAME_RE.test(name)) return c.json({ error: "Invalid skill name" }, 400);
+    const scope = await versionScope(c);
+    if (!scope) return c.json({ error: "Project not found" }, 404);
+    // What is on disk now and not in the history yet (a skill from before, a change by hand).
+    await core.extensions.versions.keepCurrent(owner(c), scope, name);
+    return c.json(await core.extensions.versions.list(owner(c), scope, name), 200);
+  });
+  app.get("/api/extensions/skills/:name/versions/:version", async (c) => {
+    const name = c.req.param("name");
+    const version = Number(c.req.param("version"));
+    if (!SKILL_NAME_RE.test(name) || !Number.isInteger(version) || version < 1)
+      return c.json({ error: "Invalid skill or version" }, 400);
+    const scope = await versionScope(c);
+    if (!scope) return c.json({ error: "Project not found" }, 404);
+    const skillMd = await core.extensions.versions.skillMd(owner(c), scope, name, version);
+    if (skillMd === undefined) return c.json({ error: `No version ${version}` }, 404);
+    return c.json({ name, version, skillMd }, 200);
+  });
+  app.post("/api/extensions/skills/:name/rollback", async (c) => {
+    const name = c.req.param("name");
+    const body = (await c.req.json().catch(() => ({}))) as { version?: unknown; scope?: unknown };
+    const version = Number(body.version);
+    if (!SKILL_NAME_RE.test(name) || !Number.isInteger(version) || version < 1)
+      return c.json({ error: "Invalid skill or version" }, 400);
+    // The scope in the query (the page) or in the body (the app's client keeps paths plain).
+    const scope = await versionScope(c, body.scope);
+    if (!scope) return c.json({ error: "Project not found" }, 404);
+    try {
+      const v = await core.extensions.versions.rollback(owner(c), scope, name, version, "human");
+      return c.json({ name, version: v, fromVersion: version }, 200);
+    } catch (err) {
+      if (err instanceof SkillVersionError) return c.json({ error: err.message }, 400);
+      throw err;
+    }
+  });
   /** The archive is the raw body; `?scope=` as above, `?replace=1` to overwrite a skill. */
   app.post("/api/extensions/skills/import", async (c) => {
     const root = await skillRoot(c, c.req.query("scope"));
@@ -3366,7 +3556,18 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     const body = new Uint8Array(await c.req.arrayBuffer());
     if (body.length > SKILL_ARCHIVE_LIMITS.archiveBytes) return c.json(tooLarge, 413);
     try {
-      const r = await importSkill(body, root, { replace: c.req.query("replace") === "1" });
+      const scope = (await versionScope(c)) ?? "platform";
+      // 3.9.7: the skill it replaces stays in the history, and the import is a version.
+      const r = await importSkill(body, root, {
+        replace: c.req.query("replace") === "1",
+        beforeReplace: (name) => core.extensions.versions.keepCurrent(owner(c), scope, name),
+      });
+      await core.extensions.versions.record(owner(c), scope, r.name, {
+        how: "import",
+        author: "human",
+        approvedBy: null,
+        reason: null,
+      });
       return c.json({ name: r.name, description: r.description, replaced: r.replaced }, 201);
     } catch (err) {
       if (err instanceof SkillExistsError) return c.json({ error: err.message }, 409);

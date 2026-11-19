@@ -24,6 +24,7 @@ import '../screens/you_screen.dart';
 import '../theme/colors.dart';
 import '../ui/common.dart';
 import '../ui/icons.dart';
+import '../ui/no_internet_notice.dart';
 import '../ui/rename_notice.dart';
 import '../ui/send_keys.dart';
 import '../ui/turn_queue_view.dart';
@@ -251,6 +252,14 @@ class _DesktopShellState extends State<DesktopShell> {
           group: l.deskMenuFile,
           icon: RgIcons.bookmark,
           run: () => _desk.show(const PanelPage(PanelScreen.saved)),
+        ),
+        // Echo (3.9.6): the past conversations' search, as the page's box in the left bar.
+        DeskCommand(
+          id: 'echo',
+          label: l.echoSearch,
+          group: l.deskMenuFile,
+          icon: RgIcons.search,
+          run: () => _desk.show(const PanelPage(PanelScreen.echo)),
         ),
         null,
         DeskCommand(
@@ -716,6 +725,7 @@ class _DesktopShellState extends State<DesktopShell> {
                   onBell: () => unawaited(_bell()),
                 ),
                 const RenameNotice(),
+                const NoInternetNotice(),
                 Expanded(
                   child: Stack(
                     children: [

@@ -136,8 +136,12 @@ void main() {
     await waitFor(t, () => app.chatAgentId != null);
     await frames(t, 2500);
     await shot(t, 'g40-squad-01-team');
-    // God's conversation (a tap on its card): an answer, then the «…».
+    // God's conversations (a tap on its card opens their list), then a new one: an answer,
+    // then the «…».
     await t.tap(find.byKey(const Key('team-god')));
+    await waitFor(t, () => find.byKey(const Key('agent-conv-new')).evaluate().isNotEmpty);
+    await frames(t, 800);
+    await t.tap(find.byKey(const Key('agent-conv-new')));
     await waitFor(t, () => find.byKey(const Key('composer-text')).evaluate().isNotEmpty);
     await frames(t, 1500);
     await t.enterText(find.byKey(const Key('composer-text')), 'Ciao God, come va?');
@@ -166,6 +170,9 @@ void main() {
     await t.tapAt(const Offset(20, 20));
     await frames(t, 800);
     await t.tap(find.byKey(const Key('conversation-back')));
+    await frames(t, 1200);
+    // Back from God's list of conversations to Team.
+    await t.tap(find.byKey(const Key('agent-convs-back')));
     await frames(t, 2000);
     // God answered: awake, «active».
     await shot(t, 'g40-squad-06b-team-god-active');
@@ -229,10 +236,11 @@ void main() {
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 150)));
       await t.pump(const Duration(milliseconds: 50));
     }
-    final reopened = find.byKey(const Key('conversation-back')).evaluate().isNotEmpty;
+    // A card opens the agent's list of conversations.
+    final reopened = find.byKey(const Key('agent-convs-back')).evaluate().isNotEmpty;
     debugPrint('TOUR god card after the sheets: ${reopened ? 'opens' : 'does not open'}');
     if (reopened) {
-      await t.tap(find.byKey(const Key('conversation-back')));
+      await t.tap(find.byKey(const Key('agent-convs-back')));
       await frames(t, 1500);
     }
     // A card never long-pressed, after the same sheets.
@@ -248,10 +256,10 @@ void main() {
         await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 150)));
         await t.pump(const Duration(milliseconds: 50));
       }
-      final opened = find.byKey(const Key('conversation-back')).evaluate().isNotEmpty;
+      final opened = find.byKey(const Key('agent-convs-back')).evaluate().isNotEmpty;
       debugPrint('TOUR another card after the sheets: ${opened ? 'opens' : 'does not open'}');
       if (opened) {
-        await t.tap(find.byKey(const Key('conversation-back')));
+        await t.tap(find.byKey(const Key('agent-convs-back')));
         await frames(t, 1500);
       }
     }

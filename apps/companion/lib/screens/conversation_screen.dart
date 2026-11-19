@@ -41,6 +41,7 @@ import '../ui/send_keys.dart';
 import '../ui/turn_progress.dart';
 import '../ui/paste_files.dart';
 import '../ui/words.dart';
+import '../ui/chat/chat_image.dart';
 import '../ui/chat/chat_parts.dart';
 import '../ui/chat/question_card.dart';
 import '../ui/chat/request_cards.dart';
@@ -462,6 +463,7 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
   Future<void> _send({String? text}) async {
     final l = AppLocalizations.of(context);
     var t = (text ?? _text.text).trim();
+    var secretOk = false;
     if (t.isEmpty && _attached.isEmpty && _quotes.isEmpty) return;
     if (_readOnly) return;
     // A secret in the message (G33.4): held back before it leaves the app, as the page does.
@@ -477,14 +479,21 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
             SecretKind.iban => l.cvChSecretKindIban,
           },
       };
-      final go = await askConfirm(
+      // «Invia comunque» (2026-11-19, a link taken for a secret): as written, the choice logged.
+      final how = await askChoice<String>(
         context,
         title: l.cvChSecretTitle,
-        body: '${l.cvChSecretText}\n\n${l.cvChSecretFound(kinds.join(', '))}',
-        yes: l.cvChSecretSend,
+        body:
+            '${l.cvChSecretText}\n\n${l.cvChSecretFound(kinds.join(', '))}\n\n${l.cvChSecretAnywayNote}',
+        choices: [
+          RgWindowChoice('back', l.cvChSecretBack, key: const Key('secret-back')),
+          RgWindowChoice('anyway', l.cvChSecretAnyway, key: const Key('secret-send-anyway')),
+          RgWindowChoice('without', l.cvChSecretSend, key: const Key('dialog-yes'), main: true),
+        ],
       );
-      if (!go || !mounted) return;
-      t = hideSecrets(t, '[secret removed]').text;
+      if (how == null || how == 'back' || !mounted) return;
+      if (how == 'without') t = hideSecrets(t, '[secret removed]').text;
+      secretOk = how == 'anyway';
     }
     setState(() => _sending = true);
     final c = app.client;
@@ -505,6 +514,7 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
         images: packed.images,
         quotes: quotes,
         shown: t.isEmpty ? l.attachmentOnly : t,
+        secretOk: secretOk,
       );
     } on ApiException {
       ok = false;
@@ -876,11 +886,27 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
                                   style: TextStyle(color: c.dim, fontSize: 13.5),
                                 ),
                               ),
-                            if (view.running && call != null && !view.compacting)
+                            // 2026-11-19: not while something is being made (its own card);
+                            // 3.9.5: nor while the turn waits for the person's answer (the card).
+                            if (view.running &&
+                                call != null &&
+                                !view.compacting &&
+                                generatingNow(view.events) == null &&
+                                !app.live.questions.any((q) => q.sessionId == widget.sessionId))
                               TurnProgress(call: call, now: app.live.now, still: still),
                             // G42.2: generate_image's picture as it forms (`image.progress`).
                             if (view.drawing case final d?)
-                              DrawingCard(percent: d.percent, preview: d.preview),
+                              DrawingCard(percent: d.percent, preview: d.preview)
+                            // 2026-11-19: being made with no percent to tell (the model's own).
+                            else if (generatingNow(view.events) case final g? when view.running)
+                              DrawingCard(
+                                key: const Key('generating'),
+                                label: switch (g) {
+                                  'video' => l.cvGeneratingVideo,
+                                  'audio' => l.cvGeneratingAudio,
+                                  _ => l.cvGeneratingImage,
+                                },
+                              ),
                           ];
                           final after = <Widget>[
                             for (final q in view.queued)
@@ -1665,16 +1691,32 @@ class ChatItemView extends StatelessWidget {
                     ? () => a.showCanvas?.call(title, it.target)
                     : null,
               ),
-      FileItem(:final scope, :final path, :final name, :final caption, :final size) => _FileCard(
-        path: path,
-        title: name,
-        subtitle: [?caption, formatBytes(size)].join(' · '),
-        onOpen: () =>
-            openCanvas(context, scope: scope, path: path, title: name, sessionId: a.sessionId),
-        // 3.8.11: «Download», as the page's «Save».
-        onDownload: () =>
-            unawaited(saveChatFile(context, scope: scope, path: path, name: name, size: size)),
-      ),
+      FileItem(:final scope, :final path, :final name, :final caption, :final size, :final mime) =>
+        _FileCard(
+          path: path,
+          title: name,
+          subtitle: [?caption, formatBytes(size)].join(' · '),
+          // 2026-11-19: a picture shows in place (the page's ChatImage); a tap opens it big.
+          preview: isChatPicture(mime, name)
+              ? ChatImagePreview(
+                  scope: scope,
+                  path: path,
+                  alt: caption ?? name,
+                  onOpen: () => openCanvas(
+                    context,
+                    scope: scope,
+                    path: path,
+                    title: name,
+                    sessionId: a.sessionId,
+                  ),
+                )
+              : null,
+          onOpen: () =>
+              openCanvas(context, scope: scope, path: path, title: name, sessionId: a.sessionId),
+          // 3.8.11: «Download», as the page's «Save».
+          onDownload: () =>
+              unawaited(saveChatFile(context, scope: scope, path: path, name: name, size: size)),
+        ),
       // 3.8.7: a widget after its answer, as the page's `widget` item.
       WidgetItem() => WidgetCard(
         key: Key('widget-${it.key}'),
@@ -2285,8 +2327,11 @@ class _FileCard extends StatelessWidget {
     required this.subtitle,
     required this.onOpen,
     this.onDownload,
+    this.preview,
   });
 
+  /// The picture itself above the row (2026-11-19), when the file is one.
+  final Widget? preview;
   final String path;
   final String title;
   final String subtitle;
@@ -2297,36 +2342,53 @@ class _FileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = RgColors.of(context);
     final l = AppLocalizations.of(context);
+    final row = ListTile(
+      dense: true,
+      leading: RgIcon(RgIcons.file, color: c.dim),
+      title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
+      subtitle: Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (onDownload != null)
+            TextButton.icon(
+              key: Key('file-download-$path'),
+              onPressed: onDownload,
+              icon: RgIcon(RgIcons.download, size: 15, color: c.accent),
+              label: Text(l.chatFileDownload),
+            ),
+          if (onOpen != null)
+            TextButton(key: Key('file-open-$path'), onPressed: onOpen, child: Text(l.open)),
+        ],
+      ),
+      onTap: onOpen,
+    );
     return Material(
       color: c.panel,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: c.line),
       ),
-      child: ListTile(
-        dense: true,
-        leading: RgIcon(RgIcons.file, color: c.dim),
-        title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
-        subtitle: Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (onDownload != null)
-              TextButton.icon(
-                key: Key('file-download-$path'),
-                onPressed: onDownload,
-                icon: RgIcon(RgIcons.download, size: 15, color: c.accent),
-                label: Text(l.chatFileDownload),
+      child: preview == null
+          ? row
+          : Padding(
+              padding: const EdgeInsets.only(top: 10, left: 12, right: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [preview!, row],
               ),
-            if (onOpen != null)
-              TextButton(key: Key('file-open-$path'), onPressed: onOpen, child: Text(l.open)),
-          ],
-        ),
-        onTap: onOpen,
-      ),
+            ),
     );
   }
 }
+
+/// Whether a file the agent sent is a picture to show in place (2026-11-19): its type, or its
+/// name when the type is missing.
+/// SVG opens in the Canvas only (Flutter draws no SVG from bytes here).
+bool isChatPicture(String mime, String name) =>
+    (mime.startsWith('image/') && mime != 'image/svg+xml') ||
+    (mime.isEmpty && RegExp(r'\.(png|jpe?g|gif|webp|bmp)$', caseSensitive: false).hasMatch(name));
 
 /// «Press and talk»: the microphone, held down while speaking.
 class _TalkButton extends StatelessWidget {

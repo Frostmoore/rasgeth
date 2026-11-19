@@ -19,14 +19,21 @@
   rebuilt with `rebuildHistory`. Tests use an in-process Postgres (PGlite, see `test/pglite.ts`).
 - Keep the prompt prefix stable: tools are sorted by name (`canonicalTools`), the system prompt never
   changes inside a session, history is append-only (compaction is an explicit event).
-- Every agent gets every base tool (`baseTools`) except those the person switched off (for every agent or for one,
-  Settings > Tools, G34.5); essential tools (`TOOL_CATALOG`, `essential`) never switch off. The set is computed when a
-  conversation starts and stays fixed for the session (`session.started.toolsOff`); model profiles change
-  descriptions only, never the tool set.
-  Exception (G36.15): an agent can ask for a switched-off tool with `request_tool`; with the person's yes the tool
-  joins the running session through an explicit `session.tools_added` event (the prefix is rebuilt once, like a
-  compaction), and resuming rebuilds the same set from the log. Creators may switch tools off for an agent they
-  just made (`create_agent` `tools_off`), never essential ones.
+- Tools off by default, switched on by kits (3.9.4, decision «Strumenti spenti di serie, accesi a gruppi quando
+  servono»): every catalog entry (`TOOL_CATALOG`) has a `kit` except the essential ones, which never switch off. A
+  conversation starts with the essential tools, the `core` kit, the kits of its profile (`KIT_PROFILES`: God
+  team, helpers and platform, orchestrators team and helpers) and whatever the person switched on (Settings > Tools, for every agent or for
+  one: "on" | "auto" | "off"); one pure rule decides (`toolState` in `packages/protocol/src/tools.ts`, tested as a
+  table: change the table first). The split is fixed at the start (`session.started.toolsOff` for those the person
+  switched off, `toolsDeferred` for those off by default) and resuming rebuilds it from the log; model profiles
+  change descriptions only, never the tool set. With `request_tool` an agent switches on a kit (or one tool): off by
+  default it comes on at once, without asking; switched off by the person it needs their yes (G36.15). Either way an
+  explicit `session.tools_added` event (`by` agent | person) and the tools join at the end of the set. Every tool
+  left aside is declared to the provider as deferred (`ToolDef.deferred`) and request_tool's result names those it
+  switches on (`refs`): Anthropic keeps them out of the cached prefix (`defer_loading`, `tool_reference`), every
+  other provider gets only the callable ones, the named ones appended (`forProvider`: one prefix rebuild per kit,
+  like a compaction). Creators may switch tools off for an agent they just made (`create_agent` `tools_off`), never
+  essential ones.
 - Cache discipline: reasoning is always sent back (Anthropic native blocks; `reasoning_content` for local servers),
   effort/thinking stay fixed for a session (only the human changes the model or effort, from the composer: `setSessionModel`), and compaction reuses the exact same request plus one message.
 - Keys (G36.20): every key Rasgeth keeps (providers, chats, mailboxes, MCP sign-ins, GitHub/Gitea…) lives in the
@@ -56,6 +63,14 @@
 - Server: one WebSocket connection handles its messages strictly in order; `RedGiantCore.send` returns `{ done }`
   (never an async function returning a bare promise: it would wait for the whole turn).
 - Run programs with `Workspace.execFile` (no shell) whenever arguments may come from a model or a user.
+- Start without internet (3.9.1): nothing that needs the network is awaited before the port opens. What the
+  start connects to (keys checked with their provider, Telegram, chats, subscriptions) runs through
+  `SetupService.retries` (`NetworkRetries`, `src/offline.ts`): in the background, one try at a time, tried again
+  while the network is missing, listed in `platformInfo().waitingNetwork` (the page's and the app's «no internet»
+  notice). Hanging name lookups take Node's thread pool (half of it at most): the image runs the server with
+  `UV_THREADPOOL_SIZE=16`, or the database's own lookup waits behind them.
+  The image carries pnpm's native binary and its own build: after an image change the entrypoint uses that
+  build when the live code is the image's, and the supervisor installs packages only when the lockfile changed.
 - Tasks (RD17): `delegate` opens one; it closes only through `complete_task` with a verifier that exits 0, or a
   justified "not testable"; the stop hook reminds the agent and gives up after three reminders ("abandoned").
 - Sandboxes are created once per workspace and reused (`RedGiantCore.sandboxFor`): never call
@@ -84,7 +99,12 @@
 - Extensions never install themselves: an agent's proposal is tested in a throwaway sandbox and waits for the
   user (`ExtensionBuilder.decide`); only the user's own extensions install directly once their tests pass. The one
   exception is the user's choice (G29.4, policy `skills: "auto"`): an agent's _skill_ (instructions) installs once
-  tested; tools that run code always wait.
+  tested; tools that run code always wait. Skills improve with use (3.9.7): an agent's new version of an installed
+  skill (`updates`, with `change`: what changed, and `summary`: why) is tested the same way and **always** waits for
+  the person, whatever the policy, who decides on one line «what changed: why» (`skillUpdateLine`, protocol) with
+  the whole comparison on request; the request reaches every channel like the other requests (`SkillUpdateRequests`).
+  Every installed skill keeps its versions (`SkillVersions`: who, why, when) and only the person goes back to one,
+  as a new version; a new version reaches agents from their next session (the index and `skill_load` stay fixed).
 - Automations (`@redgiant/automations`): recipes choose an agent, never its tools; a run never overlaps the previous
   one; webhook bodies reach the agent as data, never as instructions. Test schedules with the service's fake clock
   (`now`, `tick`), never by waiting for real time.

@@ -5,7 +5,10 @@
 // every agent, and a sub-agent follows the choice made for its parent.
 import type { Event, ToolsView } from "@redgiant/protocol";
 import { afterEach, describe, expect, it } from "vitest";
-import { startServer } from "./helpers.js";
+import { keepKitDefaults, startServer } from "./helpers.js";
+
+// The kits as they are by default (3.9.4).
+keepKitDefaults();
 
 type Server = Awaited<ReturnType<typeof startServer>>;
 let s: Server | undefined;
@@ -59,6 +62,22 @@ describe("a tool switched off for every agent (3.5.3)", () => {
     }
   });
 
+  it("gives ask_user to the agents the person talks with, the Chat included, and to no worker (3.9.5)", async () => {
+    s = await startServer(() => ({ text: "ok" }), ROOM);
+    const ids = await everyone(s);
+    const has: Record<string, boolean> = {};
+    for (const [kind, id] of Object.entries(ids))
+      has[kind] = (await start(s, id)).tools.includes("ask_user");
+    expect(has).toEqual({
+      god: true,
+      orch: true,
+      coder: false,
+      sub: false,
+      assistant: true,
+      chat: true,
+    });
+  });
+
   it("God, from the HTTP API as the page does it: off, then asked for and switched back on", async () => {
     let step = 0;
     s = await startServer((req) => {
@@ -97,10 +116,12 @@ describe("a tool switched off for every agent (3.5.3)", () => {
     const h = await start(s, sub);
     expect(h.tools).not.toContain("find_files");
     expect(h.toolsOff).toEqual(["find_files"]);
-    // God was not touched: it has the tool, and nothing to ask for.
+    // God was not touched: the tool is only off by default for it (3.9.4), it switches it on itself.
     const g = await start(s, god);
-    expect(g.tools).toContain("find_files");
-    expect(g.tools).not.toContain("request_tool");
+    expect(g.tools).not.toContain("find_files");
+    expect(g.toolsOff).toEqual([]);
+    expect(g.system).toContain("- computer: ");
+    expect(g.system).not.toContain("- find_files:");
   });
 
   it("says on the page for every agent when one agent keeps it on by its own choice", async () => {

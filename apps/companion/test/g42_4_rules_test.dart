@@ -19,6 +19,7 @@ import 'package:rgcompanion/settings/commands_screen.dart';
 import 'package:rgcompanion/settings/requests_screen.dart';
 import 'package:rgcompanion/settings/rules_kit.dart';
 import 'package:rgcompanion/settings/safety_screen.dart';
+import 'package:rgcompanion/settings/tool_kits.dart';
 import 'package:rgcompanion/settings/tools_screen.dart';
 
 import 'fake_server.dart';
@@ -344,8 +345,11 @@ void main() {
       ]);
       await start(tester);
       await push(tester, const ToolsScreen());
-      expect(find.text('Circa 240 token a ogni messaggio'), findsOneWidget);
-      expect(find.text('Spenti: 120 token risparmiati a ogni messaggio'), findsOneWidget);
+      expect(find.text("All'inizio: circa 240 token a ogni messaggio"), findsOneWidget);
+      expect(
+        find.text("Spenti all'inizio: 120 token che pesano solo se si accende un gruppo"),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('tl-tool-read_file-locked')), findsOneWidget);
       await reveal(tester, find.byKey(const Key('tl-tool-fetch-except')));
       expect(find.text('Spento per: Orso (scelta loro)'), findsOneWidget);
@@ -367,6 +371,86 @@ void main() {
       await tester.enterText(find.byKey(const Key('tl-search')), 'zzz');
       await _settle(tester);
       expect(find.byKey(const Key('tl-none')), findsOneWidget);
+      await done(tester);
+    });
+
+    testWidgets('Tools: groups with their weight and state, for everyone and for an agent', (
+      tester,
+    ) async {
+      final kitPuts = <Map<String, dynamic>>[];
+      final agentKitPuts = <Map<String, dynamic>>[];
+      Map<String, dynamic> view(String? agentId) => {
+        'agentId': agentId,
+        'total': 300,
+        'saved': 1200,
+        'essential': 235,
+        'entries': [
+          {
+            'id': 'browser',
+            'group': 'web',
+            'essential': false,
+            'kit': 'browser',
+            'state': 'auto',
+            'tools': ['browser_open'],
+            'chars': 3500,
+            'tokens': 1200,
+            'global': true,
+          },
+        ],
+        'kits': [
+          {
+            'id': 'browser',
+            'entries': ['browser'],
+            'tokens': 1200,
+            'state': agentId == null ? 'auto' : 'on',
+            'default': 'auto',
+            'own': agentId == null ? null : 'on',
+            if (agentId != null) 'global': null,
+          },
+        ],
+      };
+      server.routes['GET /api/tools'] = (r) =>
+          server.answer(r, 200, view(r.uri.queryParameters['agentId']));
+      server.routes['PUT /api/tools/kits'] = (r) async {
+        kitPuts.add(await _body(r));
+        await server.answer(r, 200, {'id': 'chg10'});
+      };
+      server.routes['PUT /api/agents/a1/tools/kits'] = (r) async {
+        agentKitPuts.add(await _body(r));
+        await server.answer(r, 200, {'id': 'chg11'});
+      };
+      server.routes['GET /api/extensions/installed'] = (r) => server.answer(r, 200, []);
+      await start(tester);
+      await push(tester, const ToolsScreen());
+      await reveal(tester, find.byKey(const Key('tl-kit-browser')));
+      expect(find.text('Gruppi di strumenti'), findsOneWidget);
+      expect(find.text('Strumenti essenziali, sempre accesi: circa 240 token'), findsOneWidget);
+      expect(find.text('circa 1.200 token quando è acceso'), findsOneWidget);
+      expect(find.byKey(const Key('tl-kit-browser-auto')), findsOneWidget);
+      expect(find.textContaining('spento di serie'), findsWidgets);
+      await tap(tester, 'tl-kit-browser-on');
+      expect(kitPuts.single, {
+        'kits': {'browser': 'on'},
+      });
+      await done(tester);
+      // An agent's window: as for everyone, or its own choice.
+      await start(tester);
+      await push(
+        tester,
+        const RulesPage(
+          pageKey: Key('agent-kits'),
+          title: 'Orso',
+          question: '',
+          panel: false,
+          children: [AgentKits(agentId: 'a1', agentName: 'Orso')],
+        ),
+      );
+      await reveal(tester, find.byKey(const Key('tl-kit-browser')));
+      expect(find.text('Come per tutti: Spento di serie'), findsOneWidget);
+      await tap(tester, 'tl-kit-browser-off');
+      expect(agentKitPuts.single, {
+        'kits': {'browser': 'off'},
+      });
       await done(tester);
     });
 

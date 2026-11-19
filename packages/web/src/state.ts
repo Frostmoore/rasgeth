@@ -251,6 +251,32 @@ function notifyHidden(body: string, tag?: string): void {
   } catch {}
 }
 
+/** Our tools that make things, by what they make (2026-11-19). */
+const GENERATION_TOOLS: Record<string, "image" | "video" | "audio"> = {
+  image_generation: "image",
+  generate_image: "image",
+  video_generation: "video",
+  audio_generation: "audio",
+};
+
+/**
+ * What is being made right now (2026-11-19): the last call to a generation tool still without its
+ * result, ours or the model's own (logged as ours). The chat shows «generating a picture» for it
+ * instead of «reading the context».
+ */
+export function generatingNow(events: readonly Event[]): "image" | "video" | "audio" | undefined {
+  const open = new Map<string, "image" | "video" | "audio">();
+  for (const e of events) {
+    if (!e.payload) continue;
+    if (e.type === "tool.call") {
+      const kind = GENERATION_TOOLS[e.payload.tool];
+      if (kind) open.set(e.payload.callId, kind);
+    } else if (e.type === "tool.result") open.delete(e.payload.callId);
+    else if (e.type === "message.user" && e.payload.from !== "redgiant") open.clear();
+  }
+  return [...open.values()].at(-1);
+}
+
 export function buildItems(events: Event[]): ChatItem[] {
   const items: ChatItem[] = [];
   // Calls by id, oldest first: an id given twice (an engine's two calls in the same instant,
@@ -727,11 +753,15 @@ export function applyMessage(m: ServerMessage): void {
       const next =
         v.value.state === "running" &&
         (m.event.type === "tool.result" || m.event.type === "message.user");
+      // A tool runs (2026-11-19: an engine's own picture comes without a model message first):
+      // no model request is under way until its result.
+      const tooling = m.event.type === "tool.call";
       v.value = {
         ...v.value,
         events: withEvent(v.value.events, m.event),
         ...(done && { text: "", thinking: "", call: undefined }),
         ...(next && { call: newCall() }),
+        ...(tooling && { call: undefined }),
         // The picture is in the tool's result now: the live preview goes.
         ...(m.event.type === "tool.result" && { drawing: undefined }),
       };
@@ -1207,6 +1237,8 @@ export type SettingsSection =
   | "setup"
   | "agents"
   | "memory"
+  /** The person's portrait, built by itself from the conversations (3.9.4). */
+  | "portrait"
   | "knowledge"
   | "automations"
   | "extensions"
@@ -1679,6 +1711,19 @@ if (typeof document !== "undefined")
     e.preventDefault();
     const id = (a.getAttribute("href") ?? "").slice(4);
     if (/^\d+$/.test(id)) void openCitation(id).catch(() => {});
+  });
+
+/**
+ * A past conversation an agent found (`#conv:<session>`, Echo 3.9.6, `search_conversations`)
+ * opens in its tab instead of following the address.
+ */
+if (typeof document !== "undefined")
+  document.addEventListener("click", (e) => {
+    const a = (e.target as Element | null)?.closest?.("a[href^='#conv:']");
+    if (!a) return;
+    e.preventDefault();
+    const id = (a.getAttribute("href") ?? "").slice(6);
+    if (/^[\w-]{1,200}$/.test(id)) void openSessionById(id).catch(() => {});
   });
 
 /** Opens a board of variants as a page of its own (G25.4). */

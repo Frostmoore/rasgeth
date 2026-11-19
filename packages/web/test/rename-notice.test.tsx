@@ -101,9 +101,8 @@ describe("the notice", () => {
 });
 
 describe("the page's words", () => {
-  // Kept on purpose (scripts/name-keep.json): the news of past releases, the notice itself and
-  // the description of God's mascot as it is drawn today.
-  const kept = (k: string) => /^news\d/.test(k) || k === "renameTitle" || k === "mascotGodHelp";
+  // Kept on purpose (scripts/name-keep.json): the news of past releases and the notice itself.
+  const kept = (k: string) => /^news\d/.test(k) || k === "renameTitle";
 
   // The inside that stays and that some texts must name exactly (plan 3.9.0, «l'interno resta»):
   // variables, folders, the Docker service the tunnel reaches, the webhook's header, the OS's user.

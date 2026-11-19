@@ -33,6 +33,8 @@ export interface FakeProviderOptions {
   models?: string[];
   /** Reports reading a prompt of this many tokens (part from the cache) before writing. */
   prefill?: { total: number; cached: number; steps: number; stepMs: number };
+  /** Loads deferred tools on demand, as Anthropic does (3.9.4): requests keep them as sent. */
+  deferredTools?: boolean;
 }
 
 /**
@@ -56,6 +58,10 @@ export class FakeProvider implements Provider {
 
   async models(): Promise<string[]> {
     return this.options.models ?? [];
+  }
+
+  deferredTools(): boolean {
+    return this.options.deferredTools === true;
   }
 
   modelInfo(model: string): ModelInfo {

@@ -199,6 +199,47 @@ describe("a secret in a chat (G33.4)", () => {
     expect(sent[0]).toContain("[secret removed]");
   });
 
+  it("«Invia comunque» sends it as written, with the person's choice (2026-11-19)", async () => {
+    const sent: { text: string; opts?: { secretOk?: boolean } }[] = [];
+    const r = render(
+      <Composer
+        onSend={async (text, _files, opts) => void sent.push({ text, ...(opts && { opts }) })}
+        running={false}
+        placeholder="Scrivi"
+        lang="it-IT"
+        queues={false}
+      />,
+    );
+    const box = r.container.querySelector("textarea") as HTMLTextAreaElement;
+    fireEvent.input(box, { target: { value: `il codice è ${VALUE}` } });
+    fireEvent.click(r.container.querySelector("button.send") as HTMLElement);
+    await waitFor(() => r.getByText("Questo messaggio contiene un segreto"));
+    expect(r.getByText(/Non è un segreto/)).toBeTruthy();
+    fireEvent.click(r.getByText("Invia comunque"));
+    await waitFor(() => expect(sent).toHaveLength(1));
+    expect(sent[0]).toEqual({ text: `il codice è ${VALUE}`, opts: { secretOk: true } });
+    expect(r.queryByText("Questo messaggio contiene un segreto")).toBeNull();
+  });
+
+  it("lets a pasted shop link through without asking (2026-11-19)", async () => {
+    const sent: string[] = [];
+    const r = render(
+      <Composer
+        onSend={async (text) => void sent.push(text)}
+        running={false}
+        placeholder="Scrivi"
+        lang="it-IT"
+        queues={false}
+      />,
+    );
+    const link =
+      "https://www.amazon.it/dp/B0CHWRXH8B?crid=2X3K9QZ7M1ABC&dib=eyJ2IjoiMSJ9.M4fWq7XkPz3RtY8sLmN2bVcQ9wEaH5jK1oUiP0lZxCv6BnM.Xk9Lq2Wm8NvBz3PcRf7HtY5gJu1&dib_tag=se";
+    const box = r.container.querySelector("textarea") as HTMLTextAreaElement;
+    fireEvent.input(box, { target: { value: link } });
+    fireEvent.click(r.container.querySelector("button.send") as HTMLElement);
+    await waitFor(() => expect(sent).toEqual([link]));
+  });
+
   it("lets plain talk about passwords through", async () => {
     const sent: string[] = [];
     const r = render(

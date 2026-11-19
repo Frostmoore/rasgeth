@@ -91,6 +91,21 @@ jobs:
           path: out/pgvector-*.zip*
           if-no-files-found: error
           retention-days: 7
+        id: upload_88
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ steps.upload_88.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ steps.upload_88.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: pgvector-${{ matrix.os }}-${{ matrix.arch }}
+          path: out/pgvector-*.zip*
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Summary
         shell: bash
@@ -113,6 +128,19 @@ jobs:
       CACHE: pgvector-cache
     steps:
       - uses: actions/download-artifact@v4
+        with:
+          pattern: pgvector-*
+          merge-multiple: true
+          path: out
+        id: download_115
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ steps.download_115.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ steps.download_115.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
         with:
           pattern: pgvector-*
           merge-multiple: true

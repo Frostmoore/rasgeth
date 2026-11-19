@@ -43,5 +43,11 @@ export interface Hooks {
   stop?: ((
     completion: Completion,
     ctx: ToolContext,
-  ) => Promise<string | undefined> | string | undefined)[];
+  ) => Promise<StopNote | undefined> | StopNote | undefined)[];
 }
+
+/**
+ * A stop hook's message: a text the person sees in the chat, or RedGiant's own note to the model
+ * (`quiet`, 2026-11-19: recorded `from: "redgiant"`, the chat leaves it out).
+ */
+export type StopNote = string | { text: string; quiet: true };

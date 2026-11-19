@@ -1358,6 +1358,41 @@ await core.extensions.propose({
     untestableReason: "Style is judged by reading.",
   },
 });
+// 3.9.7: the skill improved with use: an agent's new version approved by the person, and one more
+// waiting, with its reason and what changes.
+{
+  const notes = (body, summary, change) => ({
+    kind: "skill",
+    name: "release-notes",
+    description: "How we write release notes",
+    body,
+    untestableReason: "Style is judged by reading.",
+    summary,
+    change,
+    updates: true,
+  });
+  const first = await core.extensions.propose({
+    ownerId: "local",
+    projectId: null,
+    author: coder.id,
+    input: notes(
+      "Group changes by user impact; one line each. Put breaking changes first, with what to do.",
+      "The person had to ask twice for the breaking changes: they were buried at the end.",
+      "Breaking changes first, with what to do",
+    ),
+  });
+  await core.extensions.decide("local", first.id, "approve", "human");
+  await core.extensions.propose({
+    ownerId: "local",
+    projectId: null,
+    author: coder.id,
+    input: notes(
+      "Group changes by user impact; one line each. Put breaking changes first, with what to do. Link every line to its pull request.",
+      "Twice the person asked where a change came from. A link answers it at once.",
+      "Every line links to its pull request",
+    ),
+  });
+}
 await core.setMcp("local", {
   name: "docs",
   projectId: null,
@@ -2275,6 +2310,35 @@ await writeFile(join(dir, "models", "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf.part"), "de
     "- Il punto della giornata alle 8, in tre righe\n- Le riunioni del giovedì sono con lo studio Bianchi",
   );
 }
+// The person's portrait (3.9.4, «Mirror»): traits learned from a conversation, one written by
+// the person; one said not true.
+{
+  const source = { sessionId: sid, agentId: orch.id, at: new Date().toISOString() };
+  const learned = (traitId, category, text, confidence) =>
+    core.store.append({
+      ownerId: "local",
+      sessionId: sid,
+      agentId: orch.id,
+      body: {
+        type: "portrait.trait",
+        payload: { traitId, op: "add", category, text, confidence, source, by: "auto" },
+      },
+    });
+  await learned("pt1", "style", "Preferisce risposte brevi, con un elenco solo quando serve", 0.8);
+  await learned("pt2", "style", "Gli piace che gli si dia del tu, senza giri di parole", 0.6);
+  await learned(
+    "pt3",
+    "project",
+    "Sta portando Rasgeth alla 3.9 con il ritratto e la ricerca",
+    0.6,
+  );
+  await learned("pt4", "habit", "Lavora spesso la sera tardi", 0.4);
+  await learned("pt5", "avoid", "Non proporre servizi cloud di terzi per i dati personali", 0.7);
+  await learned("pt6", "about", "Vive in Italia e scrive in italiano", 0.3);
+  await core.portrait.add("local", "Gli piace il tè verde", "preference");
+  await learned("pt7", "about", "Ha un cane", 0.5);
+  await core.portrait.deny("local", "pt7");
+}
 // G34: DEMO_SAMPLES=<folder>: God shows every file of it in the canvas, one message each.
 // p3.3.1, DEMO_SUBAGENTS=1: God's conversation with sub-agents at work (one finished, one failed,
 // one waiting for the person's yes with a sub-agent of its own), and a local model's file as a
@@ -2357,6 +2421,68 @@ if (process.env.DEMO_SUBAGENTS) {
       await at(child, researcher.id, {
         type: "subagent.ended",
         payload: { childSessionId: grand, status: "done", summary: "ok" },
+      });
+    }
+  }
+}
+// 3.9.4, DEMO_SUBSIGN=1: the Coder's conversation with two real sub-agents, which have no mascot
+// of their own (decision of 2026-11-19): the ring in the Coder's colour. One finished, one waiting
+// for the person's yes.
+if (process.env.DEMO_SUBSIGN) {
+  // Room for the two sub-agents beside the demo's agents.
+  await core.setProjectAgents("local", "demo", 6);
+  const at = (sessionId, agentId, body) =>
+    core.store.append({ ownerId: "local", projectId: "demo", agentId, sessionId, body });
+  const mine = await core.startSession("local", coder.id);
+  await core.nameSession(mine, "Pagina prodotto");
+  await at(mine, null, {
+    type: "message.user",
+    payload: { text: "Prepara la pagina prodotto: prova la UI e prepara la migrazione." },
+  });
+  await at(mine, coder.id, {
+    type: "message.assistant",
+    payload: {
+      parts: [{ type: "text", text: "Divido il lavoro fra due sotto-agenti." }],
+      metrics: {
+        inputTokens: 3000,
+        outputTokens: 80,
+        cachedReadTokens: 2500,
+        contextUsed: 3080,
+        contextWindow: 200000,
+        startedAt: new Date().toISOString(),
+        source: "server",
+      },
+      costUsd: 0.003,
+      model: "claude-opus-5-5",
+      stopReason: "tool_use",
+    },
+  });
+  for (const [title, said, wait] of [
+    ["Test UI", "Task from Coder: «Test UI»\n\nRun the UI tests of the product page.", false],
+    ["Migrazione DB", "Task from God: «Publish the migration»\n\nWrite the migration.", true],
+  ]) {
+    const sub = await core.registry.create(
+      { type: "agent", agent: coder },
+      { kind: "subagent", parentId: coder.id, name: `Coder › ${title}`, mode: "manual" },
+    );
+    const child = await core.startSession("local", sub.id);
+    await at(mine, coder.id, {
+      type: "subagent.started",
+      payload: {
+        childSessionId: child,
+        childAgentId: sub.id,
+        via: "run_subagents",
+        title,
+        task: said,
+      },
+    });
+    const { done } = await core.send("local", child, said);
+    if (wait) done.catch(() => {});
+    else {
+      await done;
+      await at(mine, coder.id, {
+        type: "subagent.ended",
+        payload: { childSessionId: child, status: "done", summary: "12 prove su 12 passate" },
       });
     }
   }
@@ -3681,6 +3807,185 @@ if (process.env.DEMO_QUEUE) {
   }
   core.turnFirst("local", queueSessions[3]);
 }
+// DEMO_NATIVE=1 (3.9.2): an agent on a Codex stand-in that draws by itself. One conversation got
+// its picture (copied into the workspace and sent, logged as image_generation), one is drawing
+// now (the «generating» card), one answered with a picture by a path (said plainly) and a picture
+// that cannot be read (the card says so).
+let nativeSessions;
+if (process.env.DEMO_NATIVE) {
+  const { encode: encodePng } = await import(
+    createRequire(new URL("../../server/package.json", import.meta.url)).resolve("fast-png")
+  );
+  /** A red giant over a dark sky (640x420), its glow fading out. */
+  const star = () => {
+    const w = 640;
+    const h = 420;
+    const data = new Uint8Array(w * h * 4);
+    for (let y = 0; y < h; y++)
+      for (let x = 0; x < w; x++) {
+        const d = Math.hypot(x - 380, y - 230) / 170;
+        const glow = Math.max(0, 1 - d);
+        const core_ = d < 0.55 ? 1 : 0;
+        const twinkle = (x * 7919 + y * 104729) % 997 === 0 ? 220 : 0;
+        const i = (y * w + x) * 4;
+        data[i] = Math.min(255, 14 + glow * 240 + core_ * 15 + twinkle);
+        data[i + 1] = Math.min(255, 10 + glow * glow * 120 + core_ * 70 + twinkle);
+        data[i + 2] = Math.min(255, 32 + glow * 30 + twinkle);
+        data[i + 3] = 255;
+      }
+    return Buffer.from(encodePng({ width: w, height: h, data, channels: 4, depth: 8 }));
+  };
+  const nativeFolder = join(dir, "codex-home", "generated_images");
+  const metrics = () => ({
+    startedAt: new Date().toISOString(),
+    endedAt: new Date().toISOString(),
+    inputTokens: 1200,
+    cachedReadTokens: 900,
+    cacheWriteTokens: 0,
+    outputTokens: 60,
+    contextUsed: 1260,
+    contextWindow: 272_000,
+    prefillMs: 0,
+    decodeMs: 0,
+    tokPerSec: 0,
+    source: "server",
+  });
+  const say = (t, text) =>
+    t.onMessage({
+      parts: [{ type: "text", text }],
+      stopReason: "end_turn",
+      metrics: metrics(),
+      model: t.model.model,
+    });
+  core.providers.register({
+    id: "chatgpt-subscription",
+    nativeFolder,
+    modelInfo: (model) => ({ id: model, contextWindow: 272_000, maxOutputTokens: 128_000 }),
+    models: async () => ["gpt-6"],
+    // biome-ignore lint/correctness/useYield: the demo's ChatGPT engine never streams, it only runs turns
+    async *stream() {
+      throw new Error("engine only");
+    },
+    engine: {
+      id: "chatgpt-subscription",
+      async turn(t) {
+        if (/cavallo/i.test(t.text) && !/lentamente/i.test(t.text)) {
+          await t.onNativeStart?.({
+            id: "ig_demo1",
+            kind: "image",
+            prompt: "Una stella gigante rossa nel cielo scuro",
+          });
+          await mkdir(join(nativeFolder, "th-demo"), { recursive: true });
+          const file = join(nativeFolder, "th-demo", "ig_demo1.png");
+          await writeFile(file, star());
+          await t.onNativeMade?.({
+            id: "ig_demo1",
+            kind: "image",
+            path: file,
+            prompt: "Una stella gigante rossa nel cielo scuro",
+          });
+          await say(
+            t,
+            "Ecco la stella: la trovi qui sopra, ed è salvata anche nella tua cartella.",
+          );
+        } else if (/lentamente/i.test(t.text)) {
+          await t.onNativeStart?.({
+            id: "ig_demo2",
+            kind: "image",
+            prompt: "Un cavallo al tramonto",
+          });
+          // Drawing until the person stops it: the «generating» card stays.
+          await new Promise((ok) => t.signal?.addEventListener("abort", ok, { once: true }));
+          return { resume: "th-demo2", stopReason: "aborted" };
+        } else if (/percorso/i.test(t.text)) {
+          await say(
+            t,
+            "Te l'ho preparata: ![cavallo](/data/engines/codex/generated_images/th-1/ig_1.png)",
+          );
+        } else await say(t, "Fatto.");
+        return { resume: "th-demo", stopReason: "end_turn" };
+      },
+    },
+  });
+  // A personal agent: the demo project's budget is spent on purpose.
+  const codexAgent = await core.registry.create(me, {
+    kind: "assistant",
+    parentId: god.id,
+    name: "Grafica",
+    role: "Disegna con Codex",
+    model: { provider: "chatgpt-subscription", model: "gpt-6" },
+  });
+  nativeSessions = {};
+  for (const [key, title, text] of [
+    ["done", "Disegna una stella (Codex)", "Disegnami una stella, anzi un cavallo… no, la stella"],
+    ["path", "Immagine per percorso", "Mandami l'immagine col percorso"],
+  ]) {
+    const s = await core.startSession("local", codexAgent.id);
+    await core.nameSession(s, title);
+    const r = await (await core.send("local", s, key === "done" ? "Disegna il cavallo" : text))
+      .done;
+    console.log(`demo native ${key}: ${r.stopReason} ${r.reason ?? ""}`);
+    nativeSessions[key] = s;
+  }
+  // A picture that cannot be read: its file is gone.
+  await core.store.append({
+    ownerId: "local",
+    projectId: null,
+    agentId: codexAgent.id,
+    sessionId: nativeSessions.path,
+    body: {
+      type: "file.sent",
+      payload: {
+        scope: "assistants",
+        path: "images/manca.png",
+        name: "manca.png",
+        size: 81234,
+        mime: "image/png",
+        caption: "Una foto che non c'è più",
+      },
+    },
+  });
+  const slow = await core.startSession("local", codexAgent.id);
+  await core.nameSession(slow, "Disegna lentamente (Codex)");
+  const { done } = await core.send("local", slow, "Disegna lentamente un cavallo al tramonto");
+  done.catch(() => {});
+  nativeSessions.slow = slow;
+  console.log(JSON.stringify({ nativeSessions }));
+}
+// DEMO_CODEX_ASK=1 (3.9.5): the Chat on Rasgeth's real Codex adapter, driven by a `codex
+// app-server` stand-in (demo-codex.mjs) that asks about a UPS and waits: the question card waits
+// for the person in the conversation «Gruppo di continuità (Codex)».
+let codexAskSession;
+if (process.env.DEMO_CODEX_ASK) {
+  const { ChatgptSubscriptionProvider } = await import(
+    createRequire(new URL("../../server/package.json", import.meta.url)).resolve(
+      "@redgiant/subscriptions",
+    )
+  );
+  const codexHome = join(dir, "codex-ask");
+  core.providers.register(
+    new ChatgptSubscriptionProvider({
+      home: codexHome,
+      cwd: join(codexHome, "work"),
+      command: {
+        file: process.execPath,
+        args: [fileURLToPath(new URL("./demo-codex.mjs", import.meta.url))],
+      },
+    }),
+  );
+  const chat = await core.chatAgent("local");
+  await core.registry.configure({ type: "human", ownerId: "local" }, chat.id, {
+    model: { provider: "chatgpt-subscription", model: "gpt-5.5" },
+  });
+  codexAskSession = await core.startSession("local", chat.id);
+  await core.nameSession(codexAskSession, "Gruppo di continuità (Codex)");
+  const { done } = await core.send(
+    "local",
+    codexAskSession,
+    "Mi serve un gruppo di continuità per il PC dello studio: quale prendo?",
+  );
+  done.catch(() => {});
+}
 const running = await serve(core, new TokenAuth({ [token]: "local" }), {
   port,
   host: process.env.DEMO_HOST ?? "0.0.0.0",
@@ -3707,5 +4012,6 @@ console.log(
     ...(toolsSession && { toolsSession, branchSession }),
     ...(sshSession && { sshSession, sshAgent }),
     ...(queueSessions && { queueSessions }),
+    ...(codexAskSession && { codexAskSession }),
   }),
 );

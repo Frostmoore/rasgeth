@@ -13,6 +13,7 @@ import {
   type Engine,
   forkPoint,
   type Hooks,
+  type NativeMade,
   type SendResult,
   sessionLog,
   type Tool,
@@ -28,7 +29,7 @@ import {
   type RunOutcome,
 } from "@redgiant/automations";
 import { Board, BoardSummarizer, boardTools, migrateBoard } from "@redgiant/board";
-import { EventStore, migrate, type Redactor, type SqlClient } from "@redgiant/events";
+import { EventStore, migrate, Redactor, type SqlClient } from "@redgiant/events";
 import {
   customTools,
   ExtensionBuilder,
@@ -71,6 +72,8 @@ import {
   type ArtifactError,
   type ArtifactRef,
   agentLanguage,
+  CAPABILITY_FOLDER,
+  type Capability,
   CommandSettings,
   DEFAULT_COMMAND_SETTINGS,
   DEFAULT_EDITOR_SETTINGS,
@@ -81,6 +84,7 @@ import {
   type Event,
   type ImagePart,
   isCriticalId,
+  type KitState,
   type ListName,
   MCP_CATALOG,
   type MediaChoice,
@@ -90,8 +94,10 @@ import {
   type ModelSpec,
   type NotifyReport,
   nativePaths,
+  nativeToolNote,
   notedText,
   ownWords,
+  type PortraitView,
   PRODUCT_NAME,
   ProjectMaxAgents,
   type Recipe,
@@ -106,11 +112,12 @@ import {
   replyLanguageLine,
   type ServerMessage,
   type SharedMemoryView,
+  sessionNative,
   type ToolChoice,
   type ToolsView,
   type TurnQueueView,
   textLanguage,
-  toolsSwitchedOff,
+  toolsAside,
   type UiLanguage,
   UNATTENDED_MAX_TURNS,
   type UpdateStatus,
@@ -198,6 +205,7 @@ import { Programs } from "./convert-programs.js";
 import { convertTools, vaultFigma } from "./convert-tools.js";
 import { debugLog } from "./debug-log.js";
 import { DeviceStore, migrateDevices } from "./devices.js";
+import { ConversationIndex, echoReaders, migrateEcho, searchConversationsTool } from "./echo.js";
 import { copyOfAnyOriginal, originalOfSheetCopy } from "./editor/copies.js";
 import { EditorHost, type EditorHostOptions } from "./editor/host.js";
 import { ImageFamily, oraCopyOfOriginal } from "./editor/image-family.js";
@@ -267,6 +275,7 @@ import { MailService, SendLimiter } from "./mail/service.js";
 import { MAIL_GUIDANCE, mailSendHook, mailTools } from "./mail/tools.js";
 import { MediaError, type MediaRequest, type MediaResult, makeMedia } from "./media.js";
 import type { CatalogWatcher } from "./models-catalog.js";
+import { imageTextHook, nativeSection, sendFileMissing, sniffImage } from "./native-media.js";
 import {
   NodeProvider,
   NodeSandboxProvider,
@@ -299,6 +308,7 @@ import {
   PolicyStore,
   platformConfigTools,
 } from "./platform.js";
+import { Portrait } from "./portrait.js";
 import { PRODUCTS_GUIDANCE, type ProductsToolHost, showProductsTool } from "./product-cards.js";
 import { ProductImages, type ProductImagesOptions } from "./product-images.js";
 import { migrateProjects, ProjectStore, type Subproject, slug } from "./projects.js";
@@ -329,6 +339,7 @@ import { scriptTool } from "./script.js";
 import { settingValue } from "./setting-value.js";
 import { SharedMemory } from "./shared-memory.js";
 import { SKILL_PROMPT, SkillNudge } from "./skill-nudge.js";
+import { SkillUpdateRequests } from "./skill-requests.js";
 import { type SshToolsHost, sshTools } from "./ssh-tools.js";
 import { dryWorkspace, ToolChoiceStore, toolChars, toolsView } from "./tool-choice.js";
 import { type Seat, TurnSeats } from "./turn-seats.js";
@@ -487,7 +498,7 @@ export interface CoreOptions {
    * The shared memory's learning (G33.2): its model (default: the board's, else the default) and
    * how long after a turn it reads what the person wrote.
    */
-  memory?: { model?: ModelSpec; delayMs?: number };
+  memory?: { model?: ModelSpec; delayMs?: number; portraitDelayMs?: number };
   /**
    * God works on the real system (G14.3): its workspace is on the host even with Docker
    * sandboxes, and every change it makes asks the human.
@@ -587,6 +598,7 @@ type TurnExtra = {
   human?: boolean;
   taskReport?: boolean;
   via?: "artifact" | "voice";
+  secretOk?: boolean;
 };
 
 /** A turn waiting for a place (3.8.10): started by `TurnSeats` when its place comes. */
@@ -633,6 +645,7 @@ interface Live {
       human?: boolean;
       taskReport?: boolean;
       via?: "artifact" | "voice";
+      secretOk?: boolean;
     };
     /** The running turn that waits for its answer (3.8.10): it lends its place. */
     asker?: string;
@@ -760,6 +773,8 @@ const gitBashPaths: NonNullable<Hooks["preToolUse"]>[number] = (call) => {
 
 export class RedGiantCore implements OrchestrationHost {
   readonly store: EventStore;
+  /** Echo (3.9.6): the conversations' index, filled from the log. */
+  readonly echo: ConversationIndex;
   readonly registry: AgentRegistry;
   readonly budget: PersistentBudget;
   readonly broker: PermissionBroker;
@@ -795,6 +810,8 @@ export class RedGiantCore implements OrchestrationHost {
   readonly notes: Notes;
   /** What every agent knows about the person (G33.2), learned from the conversations. */
   readonly sharedMemory: SharedMemory;
+  /** The person's portrait (3.9.4, «Mirror»): built by itself from the conversations. */
+  readonly portrait: Portrait;
   readonly extensions: ExtensionBuilder;
   readonly automations: AutomationService;
   readonly policies: PolicyStore;
@@ -832,6 +849,10 @@ export class RedGiantCore implements OrchestrationHost {
   private readonly protectedPaths: string[];
   /** Skills that come by themselves (G36.8): one quiet nudge after a problem solved. */
   readonly skillNudge = new SkillNudge();
+  /** 3.9.7: new versions of skills waiting for the person, asked on every chat. */
+  readonly skillUpdates = new SkillUpdateRequests((ownerId, id, decision) =>
+    this.extensions.decide(ownerId, id, decision, "human"),
+  );
   /** The keys kept by the setup (providers, chats, git…), listed in the keychain (set by main). */
   vaultSystem?: (ownerId: string) => Promise<VaultSystemEntry[]>;
   /** The knowledge (G36, the RAG): set by main.ts once the database and the setup are up. */
@@ -986,6 +1007,12 @@ export class RedGiantCore implements OrchestrationHost {
 
   private constructor(private readonly o: CoreOptions) {
     this.store = new EventStore(o.db, o.redactor ? { redactor: o.redactor } : {});
+    const echoRedactor = o.redactor ?? new Redactor();
+    this.echo = new ConversationIndex({
+      db: o.db,
+      store: this.store,
+      redact: (text) => echoRedactor.redactText(text).text,
+    });
     // MCP sign-ins and keys live in the keychain (G36.20), one entry per server.
     const mcpKey = (name: string) => `mcp:${name}`;
     const mcpMeta = (name: string) => ({
@@ -1069,6 +1096,34 @@ export class RedGiantCore implements OrchestrationHost {
       },
     });
     this.notes = new Notes((ownerId) => this.notesPath(ownerId), this.sharedMemory);
+    // The same cheap model as the shared memory; it spends from God's budget and waits when the
+    // budget is gone.
+    const godOf = (ownerId: string) =>
+      this.registry.list({ ownerId }).find((a) => a.kind === "god");
+    this.portrait = new Portrait({
+      store: this.store,
+      providers: o.providers,
+      model: () => this.o.memory?.model ?? this.o.boardModel ?? this.o.defaultModel,
+      redactor: o.redactor,
+      delayMs: o.memory?.portraitDelayMs,
+      language: () => agentLanguage(this.agentLang)?.en,
+      allowed: async (ownerId) => {
+        const god = godOf(ownerId);
+        return (
+          !god || (await this.budget.check(budgetKeys(god, this.registry.resolve))).length === 0
+        );
+      },
+      spent: async (ownerId, usage, provider, model) => {
+        const god = godOf(ownerId);
+        if (!god) return;
+        const usd = costUsd(usage, this.o.providers.get(provider).modelInfo(model).pricing);
+        await this.budget.record(budgetKeys(god, this.registry.resolve), usage, usd, {
+          ownerId,
+          projectId: null,
+          agentId: god.id,
+        });
+      },
+    });
     const dataDir = dirname(o.workspacesDir);
     this.protectedPaths = [
       ...["redgiant.yaml", "secrets.json", "keychain", "postgres", "release"].map((f) =>
@@ -1548,7 +1603,21 @@ export class RedGiantCore implements OrchestrationHost {
       // The canvas opens on the person's pages also for a conversation none of them follows.
       if (l && (e.type === "canvas.show" || e.type === "canvas.act"))
         this.toOwner(l.ownerId, { type: "canvas.open", sessionId: l.id, event: e });
-      if (e.type === "extension.proposed" && e.payload?.status === "pending" && e.ownerId)
+      // 3.9.7: a new version of a skill is a request with its buttons on every chat.
+      if (
+        e.type === "extension.proposed" &&
+        e.payload?.status === "pending" &&
+        e.payload.update &&
+        e.ownerId
+      )
+        this.skillUpdates.request(e.ownerId, {
+          proposalId: e.payload.proposalId,
+          name: e.payload.name,
+          agentName: this.registry.get(e.payload.author)?.name ?? e.payload.author,
+          line: e.payload.line ?? "",
+          createdAt: e.ts,
+        });
+      else if (e.type === "extension.proposed" && e.payload?.status === "pending" && e.ownerId)
         this.alert(e.ownerId, {
           kind: "proposal",
           title: this.say(e.ownerId, "proposal"),
@@ -1583,6 +1652,7 @@ export class RedGiantCore implements OrchestrationHost {
     await migrateDevices(o.db);
     await migrateSaved(o.db);
     await migratePush(o.db);
+    await migrateEcho(o.db);
     const core = new RedGiantCore(o);
     // Notifications to the devices (G40.4): one more channel of the requests «all at once».
     core.push.attach({
@@ -1617,6 +1687,8 @@ export class RedGiantCore implements OrchestrationHost {
     await core.editorSettings.load();
     await core.acpWorkers.load();
     await core.tasks.rebuild();
+    // Echo (3.9.6): the conversations' index catches up with the log, then follows it.
+    core.echo.start();
     await core.reapCommands();
     // The links to this machine's parent and the polls of its nodes (G39.4).
     await core.nodes.start();
@@ -1924,6 +1996,8 @@ export class RedGiantCore implements OrchestrationHost {
       this.o.defaultModel ??
       (preview === "dry" ? { provider: "none", model: "none" } : undefined);
     if (!model) throw new NoModelError(`No model configured for "${agent.name}" or its ancestors`);
+    // What the model's engine makes by itself (2026-11-19): fixed at the start, read back on resume.
+    const native = preview === "dry" ? [] : await this.nativeFor(sessionId, resume, model.provider);
     const folder =
       preview === "dry"
         ? agent.kind === "demigod"
@@ -2033,7 +2107,7 @@ export class RedGiantCore implements OrchestrationHost {
       // Always offered (only the person's tools page takes tools away, G34.5); without a key it says so.
       if (ws)
         tools.push(
-          ...this.mediaTools(agent, ws),
+          ...this.mediaTools(agent, ws, native),
           this.showTool(agent, ws),
           // The canvas seen and moved by the agent (G36.12).
           ...canvasTools(agent, ws, this.canvasHost(agent)),
@@ -2091,6 +2165,20 @@ export class RedGiantCore implements OrchestrationHost {
         memoryTool(this.notes, this.noteOwner(agent, assignedTo)),
         // The person's documents (G36.5): only the collections this agent may read.
         searchKnowledgeTool(() => this.knowledge, this.knowledgeAsker(agent, assignedTo)),
+        // Past conversations (Echo, 3.9.6): only those of the agents this one may read.
+        searchConversationsTool({
+          index: () => this.echo,
+          readers: () => {
+            const me = this.registry.get(agent.id) ?? agent;
+            return echoReaders(this.registry, ownerId, { kind: "agent", agent: me });
+          },
+          agentName: (id) => this.registry.get(id)?.name ?? id,
+          projectName: async (id) =>
+            id
+              ? ((await this.projects.get(ownerId, id).catch(() => undefined))?.name ?? null)
+              : null,
+          archived: (id) => this.registry.isProjectArchived(ownerId, id),
+        }),
         // Making collections and their sources (3.5.3): every agent that can make one (the table).
         ...(agent.kind === "subagent"
           ? []
@@ -2147,34 +2235,55 @@ export class RedGiantCore implements OrchestrationHost {
     const receivesTasks =
       assignedTo !== undefined || ["orchestrator", "agent", "subagent"].includes(agent.kind);
     if (receivesTasks) tools.push(completeTaskTool(agent, ws, this.broker, this.tasks));
-    // The tools the person switched off (G34.5), fixed for the whole conversation: chosen when it
-    // starts, read back from its start when it resumes. Essential ones never go. In place, so
-    // run_script sees the same list.
-    const toolsOff =
+    // Every tool the agent could get, before any is left aside.
+    const every = tools.map((t) => t.def.name);
+    // The tools it starts without (G34.5; 3.9.4): switched off by the person, or off by default
+    // (their kit), fixed for the whole conversation: chosen when it starts, read back from its
+    // start when it resumes. Essential ones never go. In place, so run_script sees the same list.
+    const { off: toolsOff, deferred: toolsDeferred } =
       preview === "dry"
-        ? []
-        : await this.toolsOffFor(
-            ownerId,
-            agentId,
-            sessionId,
-            resume,
-            tools.map((t) => t.def.name),
-          );
-    // Asking for one back (G36.15): request_tool, with the tools kept aside; on resume the ones the
-    // person switched back on in this conversation are there again.
-    const granted =
-      resume && toolsOff.length > 0 ? await this.toolsAdded(sessionId) : new Set<string>();
+        ? { off: [], deferred: [] }
+        : await this.toolsAsideFor(agent, sessionId, resume, every);
+    // Switching them on (G36.15, 3.9.4): request_tool, with the tools kept aside. The session
+    // declares them all (deferred) and moves those switched on in this conversation, from its log.
     const aside: Tool[] = [];
+    const kept: Tool[] = [];
+    const granted: Tool[] = [];
     let sessionRef: AgentSession | undefined;
-    if (toolsOff.length > 0) {
-      const off = new Set(toolsOff.filter((n) => !granted.has(n)));
+    if (toolsOff.length + toolsDeferred.length > 0) {
+      const out = new Set([...toolsOff, ...toolsDeferred]);
       for (let i = tools.length - 1; i >= 0; i--)
-        if (off.has((tools[i] as Tool).def.name)) aside.unshift(...tools.splice(i, 1));
+        if (out.has((tools[i] as Tool).def.name)) aside.unshift(...tools.splice(i, 1));
+      kept.push(...aside);
+      const on = resume ? await this.toolsAdded(sessionId) : new Set<string>();
+      const waiting = aside.filter((t) => !on.has(t.def.name));
+      // Those already switched on: the session puts them back from its log, in their order.
+      granted.push(...aside.filter((t) => on.has(t.def.name)));
       tools.push(
-        this.requestToolTool(agent, aside, async (added, payload) => {
-          tools.push(...added);
-          await sessionRef?.addTools(added, payload);
-        }),
+        this.requestToolTool(
+          agent,
+          waiting,
+          new Set(toolsOff),
+          async (added, payload) => {
+            tools.push(...added);
+            return (await sessionRef?.addTools(added, payload)) ?? [];
+          },
+          // What the instructions say about a kit on from the start, for one switched on later.
+          async (names) =>
+            [
+              names.includes("mail_read") ? MAIL_GUIDANCE : "",
+              names.includes("show_products") ? PRODUCTS_GUIDANCE : "",
+              names.includes("search_knowledge") && this.knowledge
+                ? knowledgeSection(
+                    await this.knowledge
+                      .visible(ownerId, this.knowledgeAsker(agent, assignedTo))
+                      .catch(() => []),
+                  )
+                : "",
+            ]
+              .filter(Boolean)
+              .join("\n\n"),
+        ),
       );
     }
     // The conversation's followers (p3.5.4), read each time: every copy built of it sends to them.
@@ -2206,7 +2315,9 @@ export class RedGiantCore implements OrchestrationHost {
         this.instructions
           ? `## The person's instructions for every agent\n${this.instructions}`
           : "",
-        toolsOff.length > 0 ? switchedOffSection(toolsOff, aside) : "",
+        kept.length > 0 ? switchedOffSection(toolsOff, toolsDeferred, kept) : "",
+        // Pictures the engine draws itself (2026-11-19): Rasgeth keeps and sends them.
+        ws ? nativeSection(native) : "",
         // What it can search and how to cite (G36.5); fixed with the conversation's start.
         tools.some((t) => t.def.name === "search_knowledge") && this.knowledge
           ? knowledgeSection(
@@ -2219,6 +2330,10 @@ export class RedGiantCore implements OrchestrationHost {
         agent.kind !== "demigod" && agent.kind !== "inspector"
           ? await this.notes.prompt(this.noteOwner(agent, assignedTo))
           : "",
+        // The person's portrait (3.9.4), for the agents they chose; read once, like the notes.
+        await this.portrait
+          .prompt(ownerId, agent.kind, (await this.chatAgentIdOf(agent.ownerId)) === agent.id)
+          .catch(() => ""),
         await this.subprojectNote(agent),
         // A magic automation's conversation knows its task from the start (G33.3).
         magicSession ? MAGIC_PROMPT : "",
@@ -2253,10 +2368,23 @@ export class RedGiantCore implements OrchestrationHost {
             agent.kind !== "inspector" && {
               postToolUse: [this.skillNudge.hook(), this.editorNotesHook()],
             }),
-          ...(receivesTasks && { stop: [this.tasks.stopHook(agentId)] }),
+          // A picture in the answer the person cannot open (2026-11-19): one reminder to send it.
+          stop: [
+            ...(receivesTasks ? [this.tasks.stopHook(agentId)] : []),
+            ...(tools.some((t) => t.def.name === "send_file") ? [this.imageText] : []),
+          ],
         }),
       },
       ...(toolsOff.length > 0 && { toolsOff }),
+      ...(toolsDeferred.length > 0 && { toolsDeferred }),
+      ...(kept.length > 0 && { aside: kept }),
+      ...(engine && { native }),
+      ...(engine &&
+        ws &&
+        native.length > 0 && {
+          nativeMade: (m: NativeMade, ctx: ToolContext) =>
+            this.keepNative(agent, ws, model.provider, m, ctx),
+        }),
       sessionId,
       ownerId,
       projectId: assignedTo ?? agent.projectId,
@@ -2272,7 +2400,7 @@ export class RedGiantCore implements OrchestrationHost {
         l.folded = [...(l.folded ?? []), ...mine];
         for (const q of mine)
           if (q.extra.watch === true || q.extra.human === true)
-            this.sharedMemory.heard(ownerId, sessionId, agentId, ownWords(q.text, q.extra.quotes));
+            this.heardPerson(ownerId, sessionId, agentId, ownWords(q.text, q.extra.quotes));
         return mine.map((q) => ({
           text: q.text,
           ...(q.extra.images?.length && { images: q.extra.images }),
@@ -2280,6 +2408,7 @@ export class RedGiantCore implements OrchestrationHost {
           ...(q.extra.from && { from: q.extra.from }),
           ...(q.extra.taskReport && { taskReport: true }),
           ...(q.extra.via && { via: q.extra.via }),
+          ...(q.extra.secretOk && { secretOk: true }),
         }));
       },
       priority: PRIORITY[agent.kind],
@@ -2325,6 +2454,8 @@ export class RedGiantCore implements OrchestrationHost {
         ? await AgentSession.resume(options)
         : await AgentSession.start(options);
     sessionRef = session;
+    // run_script's list too (the session has its own copy, made above).
+    tools.push(...granted);
     return {
       id: sessionId,
       ownerId,
@@ -2592,8 +2723,15 @@ export class RedGiantCore implements OrchestrationHost {
   }
 
   /** request_tool for one conversation of an agent (G36.15). */
-  private requestToolTool(agent: AgentRecord, aside: Tool[], add: RequestToolHost["add"]): Tool {
-    return requestTool(aside, {
+  private requestToolTool(
+    agent: AgentRecord,
+    aside: Tool[],
+    off: ReadonlySet<string>,
+    add: RequestToolHost["add"],
+    guidance?: RequestToolHost["guidance"],
+  ): Tool {
+    return requestTool(aside, off, {
+      ...(guidance && { guidance }),
       ask: async (input, ctx) => {
         const id = `tool_${randomUUID().slice(0, 12)}`;
         try {
@@ -2646,29 +2784,53 @@ export class RedGiantCore implements OrchestrationHost {
     });
   }
 
-  /** What a conversation leaves out (G34.5): its start's record when resumed, the choice now otherwise. */
-  private async toolsOffFor(
-    ownerId: string,
-    agentId: string,
+  /**
+   * What the model's engine makes by itself in a conversation (2026-11-19): its start's record
+   * when resumed (where the provider still can), the person's setting now otherwise.
+   */
+  private async nativeFor(sessionId: string, resume: boolean, provider: string) {
+    let recorded: readonly string[] | undefined;
+    if (resume) {
+      const started = (await sessionLog(this.store, sessionId)).find(
+        (e) => e.type === "session.started",
+      );
+      if (started?.type === "session.started") recorded = started.payload?.native;
+    }
+    return sessionNative(provider, this.media.native !== false, recorded);
+  }
+
+  /**
+   * What a conversation leaves out (G34.5; 3.9.4): the tools switched off by the person and those
+   * off by default. Its start's record when resumed, the choice now otherwise.
+   */
+  private async toolsAsideFor(
+    agent: AgentRecord,
     sessionId: string,
     resume: boolean,
     names: string[],
-  ): Promise<string[]> {
+  ): Promise<{ off: string[]; deferred: string[] }> {
     // A sub-agent is made for one run: it follows the choice the person made for its parent.
-    const self = this.registry.get(agentId);
-    const parent = self?.kind === "subagent" ? self.parentId : undefined;
+    const who = {
+      agentId: agent.id,
+      parentId: agent.kind === "subagent" ? agent.parentId : undefined,
+      kind: agent.kind,
+    };
+    const now = async () => toolsAside(await this.toolChoices.get(agent.ownerId), names, who);
     if (resume) {
       const started = (await sessionLog(this.store, sessionId)).find(
         (e) => e.type === "session.started",
       );
       if (started?.type === "session.started" && started.payload)
-        return started.payload.toolsOff ?? [];
+        return {
+          off: started.payload.toolsOff ?? [],
+          // Before 3.9.4 nothing was off by default: the tools it had stay.
+          deferred: started.payload.toolsDeferred ?? [],
+        };
       // An imported conversation (G36.7) has no start of its own: the person's choice now.
-      if (!started)
-        return toolsSwitchedOff(await this.toolChoices.get(ownerId), agentId, names, parent);
-      return [];
+      if (!started) return now();
+      return { off: [], deferred: [] };
     }
-    return toolsSwitchedOff(await this.toolChoices.get(ownerId), agentId, names, parent);
+    return now();
   }
 
   /** Each tool of an agent and its characters, nothing switched off (a dry build, G34.5). */
@@ -2691,27 +2853,26 @@ export class RedGiantCore implements OrchestrationHost {
    */
   async toolsView(ownerId: string, agentId?: string): Promise<ToolsView> {
     const choice = await this.toolChoices.get(ownerId);
+    // Every agent with something aside has request_tool to switch it on (G36.15, 3.9.4).
+    const ask = toolChars(requestTool([], new Set(), REQUEST_TOOL_DRY));
     if (agentId) {
       const agent = this.registry.get(agentId);
       if (!agent || agent.ownerId !== ownerId)
         throw new NotFoundError(`Agent "${agentId}" not found`);
       const measured = await this.measureTools(agent);
-      // With something off, the agent also gets request_tool to ask for it back (G36.15).
-      const parent = agent.kind === "subagent" ? agent.parentId : undefined;
-      if (toolsSwitchedOff(choice, agentId, [...measured.keys()], parent).length > 0)
-        measured.set("request_tool", toolChars(requestTool([], REQUEST_TOOL_DRY)));
-      return toolsView(choice, measured, agentId);
+      measured.set("request_tool", ask);
+      return toolsView(choice, measured, {
+        agentId,
+        parentId: agent.kind === "subagent" ? agent.parentId : undefined,
+        kind: agent.kind,
+      });
     }
     const measured = new Map<string, number>();
     for (const a of this.registry.list({ ownerId, activeOnly: true })) {
       const m = await this.measureTools(a).catch(() => new Map<string, number>());
       for (const [name, chars] of m) measured.set(name, Math.max(chars, measured.get(name) ?? 0));
     }
-    if (
-      choice.off.length > 0 ||
-      Object.values(choice.agents).some((m) => Object.values(m).includes("off"))
-    )
-      measured.set("request_tool", toolChars(requestTool([], REQUEST_TOOL_DRY)));
+    measured.set("request_tool", ask);
     const names = new Map(
       this.registry.list({ ownerId, activeOnly: true }).map((a) => [a.id, a.name] as const),
     );
@@ -2721,7 +2882,44 @@ export class RedGiantCore implements OrchestrationHost {
   /** Switches tools off (or back on) for every agent; essential ones are refused (G34.5). */
   async setToolsOff(ownerId: string, off: string[]) {
     const now = await this.toolChoices.get(ownerId);
-    return this.config.setTools(ownerId, "human", { off, agents: now.agents });
+    return this.config.setTools(ownerId, "human", { ...now, off });
+  }
+
+  /**
+   * Kits for every agent (3.9.4): "on" from the start, "auto" off until the agent switches them on,
+   * "off" switched off by the person, "default" back to the kit's default. Only the person.
+   */
+  async setKits(ownerId: string, states: Record<string, KitState | "default">) {
+    const now = await this.toolChoices.get(ownerId);
+    const kits = { ...(now.kits ?? {}) };
+    for (const [id, v] of Object.entries(states)) {
+      if (v === "default") delete kits[id];
+      else kits[id] = v;
+    }
+    return this.config.setTools(ownerId, "human", { ...now, kits });
+  }
+
+  /** One agent's kits (3.9.4), as `setKits`; "default" follows the choice for every agent again. */
+  async setAgentKits(
+    ownerId: string,
+    agentId: string,
+    states: Record<string, KitState | "default">,
+  ) {
+    const agent = this.registry.get(agentId);
+    if (!agent || !can({ type: "human", ownerId }, "tools", agent, this.registry.resolve))
+      throw new NotFoundError(`Agent "${agentId}" not found`);
+    const now = await this.toolChoices.get(ownerId);
+    const own = { ...(now.agentKits?.[agentId] ?? {}) };
+    for (const [id, v] of Object.entries(states)) {
+      if (v === "default") delete own[id];
+      else own[id] = v;
+    }
+    return this.config.setTools(
+      ownerId,
+      "human",
+      { ...now, agentKits: { ...(now.agentKits ?? {}), [agentId]: own } },
+      { agentId },
+    );
   }
 
   /**
@@ -2745,7 +2943,7 @@ export class RedGiantCore implements OrchestrationHost {
     return this.config.setTools(
       ownerId,
       "human",
-      { off: now.off, agents: { ...now.agents, [agentId]: own } },
+      { ...now, agents: { ...now.agents, [agentId]: own } },
       { agentId },
     );
   }
@@ -3165,6 +3363,8 @@ export class RedGiantCore implements OrchestrationHost {
       quotes?: MessageQuote[];
       /** The message waits behind the previous one: the person is told at once. */
       onQueued?: () => void;
+      /** «Send anyway» on the chat's secret warning (2026-11-19): as written, in the log. */
+      secretOk?: boolean;
     } = {},
   ): Promise<string> {
     const demigod = this.registry
@@ -3199,6 +3399,7 @@ export class RedGiantCore implements OrchestrationHost {
       ...(extra.quotes?.length && { quotes: extra.quotes }),
       queue: true,
       human: true,
+      ...(extra.secretOk === true && { secretOk: true }),
     });
     if (queued) extra.onQueued?.();
     const r = await done;
@@ -4690,11 +4891,7 @@ export class RedGiantCore implements OrchestrationHost {
         const abs = (await ws.isFile(i.path).catch(() => false))
           ? await new LocalWorkspace(ws.root).resolve(i.path)
           : await this.readableElsewhere(agent, i.path);
-        if (!abs)
-          return {
-            content: `There is no file "${i.path}" in your workspace${isAbsolute(i.path) ? " or in a project you may read" : ""}.`,
-            isError: true,
-          };
+        if (!abs) return { content: sendFileMissing(i.path), isError: true };
         const st = await stat(abs);
         if (st.size > MAX)
           return {
@@ -4839,9 +5036,15 @@ export class RedGiantCore implements OrchestrationHost {
   private media: {
     choices: Partial<Record<MediaKind, MediaChoice>>;
     keys: Record<string, string>;
+    /** «Use the model's own tool when it has one» (2026-11-19); on unless the person said no. */
+    native?: boolean;
   } = { choices: {}, keys: {} };
 
-  setMedia(m: { choices: Partial<Record<MediaKind, MediaChoice>>; keys: Record<string, string> }) {
+  setMedia(m: {
+    choices: Partial<Record<MediaKind, MediaChoice>>;
+    keys: Record<string, string>;
+    native?: boolean;
+  }) {
     for (const [p, key] of Object.entries(m.keys)) this.o.redactor?.addSecret(`media-${p}`, key);
     this.media = m;
   }
@@ -4899,11 +5102,13 @@ export class RedGiantCore implements OrchestrationHost {
     } catch (err) {
       return { content: (err as Error).message, isError: true };
     }
-    const now = new Date();
-    const rel = `${folder}/${now.toISOString().slice(0, 10)}/${now.toISOString().slice(11, 19).replace(/:/g, "")}-${imageFileName(req.prompt)}.${made.ext}`;
-    const abs = await new LocalWorkspace(ws.root).resolve(rel);
-    await mkdir(dirname(abs), { recursive: true });
-    await writeFile(abs, made.data);
+    const rel = await this.keepAndSend(agent, ws, ctx, {
+      data: made.data,
+      ext: made.ext,
+      mime: made.mime,
+      prompt: req.prompt,
+      folder,
+    });
     if (made.costUsd !== null || (made.tokens ?? 0) > 0)
       await this.budget.record(
         keys,
@@ -4916,6 +5121,26 @@ export class RedGiantCore implements OrchestrationHost {
         made.costUsd ?? 0,
         { ownerId: ctx.ownerId, projectId: agent.projectId, agentId: agent.id },
       );
+    const cost = made.costUsd !== null ? `, about $${made.costUsd.toFixed(3)}` : "";
+    return `Saved ${rel} (${m.choice.provider} ${m.choice.model}${cost}). The person sees it in the chat; show puts it in the canvas.`;
+  }
+
+  /**
+   * Saves what was made in the workspace (`<folder>/<date>/<time>-<name>.<ext>`) and sends it to
+   * the person: the chat's card, and Telegram when they talk from there. Our tools' pictures and
+   * the engine's own (2026-11-19) alike. Returns the file's path in the workspace.
+   */
+  private async keepAndSend(
+    agent: AgentRecord,
+    ws: Workspace,
+    ctx: ToolContext,
+    f: { data: Buffer; ext: string; mime: string; prompt: string; folder: string },
+  ): Promise<string> {
+    const now = new Date();
+    const rel = `${f.folder}/${now.toISOString().slice(0, 10)}/${now.toISOString().slice(11, 19).replace(/:/g, "")}-${imageFileName(f.prompt)}.${f.ext}`;
+    const abs = await new LocalWorkspace(ws.root).resolve(rel);
+    await mkdir(dirname(abs), { recursive: true });
+    await writeFile(abs, f.data);
     const where = await this.scopeOf(agent.ownerId, abs);
     await this.store.append({
       ownerId: agent.ownerId,
@@ -4927,9 +5152,9 @@ export class RedGiantCore implements OrchestrationHost {
         payload: {
           ...where,
           name: basename(abs),
-          size: made.data.length,
-          mime: made.mime,
-          caption: req.prompt.slice(0, 300),
+          size: f.data.length,
+          mime: f.mime,
+          ...(f.prompt && { caption: f.prompt.slice(0, 300) }),
         },
       },
     });
@@ -4939,17 +5164,73 @@ export class RedGiantCore implements OrchestrationHost {
     )
       await this.sendFile?.(
         agent.ownerId,
-        made.data,
+        f.data,
         basename(abs),
-        made.mime,
-        req.prompt.slice(0, 200),
+        f.mime,
+        f.prompt.slice(0, 200),
       ).catch(() => {});
-    const cost = made.costUsd !== null ? `, about $${made.costUsd.toFixed(3)}` : "";
-    return `Saved ${rel} (${m.choice.provider} ${m.choice.model}${cost}). The person sees it in the chat; show puts it in the canvas.`;
+    return rel;
+  }
+
+  /**
+   * Something the model's engine made with its own tool (2026-11-19: a picture Codex drew, saved
+   * under its CODEX_HOME): copied into the agent's workspace and sent like our tools' results,
+   * nobody in between. Only a file in the engine's own folder for it, of the right kind.
+   */
+  private async keepNative(
+    agent: AgentRecord,
+    ws: Workspace,
+    provider: string,
+    m: NativeMade,
+    ctx: ToolContext,
+  ): Promise<{ ok: boolean; output: string }> {
+    const MAX = 50 * 1024 * 1024;
+    let data: Buffer;
+    let name: string;
+    if (m.path) {
+      const engine = this.o.providers.has(provider)
+        ? (this.o.providers.get(provider) as { nativeFolder?: string })
+        : undefined;
+      const folder = engine?.nativeFolder;
+      const abs = await realpath(m.path).catch(() => undefined);
+      const root = folder ? await realpath(folder).catch(() => undefined) : undefined;
+      if (!abs || !root || inside(root, abs) === undefined)
+        return { ok: false, output: `The engine's file is not where it keeps them: ${m.path}` };
+      const st = await stat(abs);
+      if (!st.isFile() || st.size > MAX)
+        return { ok: false, output: `The engine's file cannot be sent: ${m.path}` };
+      data = await readFile(abs);
+      name = abs;
+    } else if (m.data) {
+      data = Buffer.from(m.data, "base64");
+      name = "picture.png";
+    } else return { ok: false, output: "The engine gave no file." };
+    const mime = m.path ? (contentType(name).split(";")[0] ?? "") : sniffImage(data);
+    const ext = mime.split("/")[1]?.replace("jpeg", "jpg").replace("svg+xml", "svg") ?? "";
+    if (!mime.startsWith(`${m.kind}/`) || !ext)
+      return { ok: false, output: `The engine's file is not a ${m.kind}: ${basename(name)}` };
+    const rel = await this.keepAndSend(agent, ws, ctx, {
+      data,
+      ext,
+      mime,
+      prompt: m.prompt ?? "",
+      folder: CAPABILITY_FOLDER[m.kind] ?? "images",
+    });
+    return {
+      ok: true,
+      output: `Saved ${rel} in your workspace and sent it to the person: it is in the chat. Do not send it again.`,
+    };
   }
 
   /** image_generation, video_generation, audio_generation: always offered (G25.3). */
-  private mediaTools(agent: AgentRecord, ws: Workspace): Tool[] {
+  private mediaTools(
+    agent: AgentRecord,
+    ws: Workspace,
+    native: readonly Capability[] = [],
+  ): Tool[] {
+    // The model makes some of these by itself (2026-11-19): ours stays, for when it is asked for.
+    const note = (c: Capability, text: string) =>
+      native.includes(c) ? `${nativeToolNote(c)} ${text}` : text;
     const Ratio = z.enum(["1:1", "16:9", "9:16", "4:3", "3:4"]).optional();
     const Image = z.object({
       prompt: z.string().min(1),
@@ -4980,8 +5261,10 @@ export class RedGiantCore implements OrchestrationHost {
       {
         def: {
           name: "image_generation",
-          description:
+          description: note(
+            "image",
             "Make a picture from a description, with the provider the person chose; it is saved in your workspace (images/<date>/) and sent to the person. Describe subject, style, colours and any text precisely. It costs money: use it when a picture is wanted.",
+          ),
           inputSchema: {
             type: "object",
             properties: {
@@ -5013,8 +5296,10 @@ export class RedGiantCore implements OrchestrationHost {
       {
         def: {
           name: "video_generation",
-          description:
+          description: note(
+            "video",
             "Make a short video from a description (and, where supported, a first frame from your workspace), with the provider the person chose; saved in videos/<date>/ and sent to the person. It can take minutes and costs money.",
+          ),
           inputSchema: {
             type: "object",
             properties: {
@@ -5045,8 +5330,10 @@ export class RedGiantCore implements OrchestrationHost {
       {
         def: {
           name: "audio_generation",
-          description:
+          description: note(
+            "audio",
             "Make a sound with the provider the person chose for it: type speech says text aloud (style: how to say it), music composes a piece from a description, sound makes a sound effect from a description. Saved in audio/<date>/ and sent to the person. It costs money.",
+          ),
           inputSchema: {
             type: "object",
             properties: {
@@ -5074,6 +5361,9 @@ export class RedGiantCore implements OrchestrationHost {
     ];
   }
 
+  /** The reminder about pictures by a path the person cannot open (2026-11-19), per conversation. */
+  private readonly imageText = imageTextHook();
+
   /** Providers whose key was refused, with the provider's words (shown in the web UI). */
   private readonly keyProblems = new Map<string, string>();
 
@@ -5099,6 +5389,13 @@ export class RedGiantCore implements OrchestrationHost {
   /** A new key was saved: the banner goes until it is refused again. */
   clearKeyProblem(provider: string): void {
     this.keyProblems.delete(provider);
+  }
+
+  /** Parts of the start waiting for the internet (3.9.1), by name: a banner in the page. */
+  private waitingNetwork: { id: string; label: string }[] = [];
+
+  setWaitingNetwork(parts: { id: string; label: string }[]): void {
+    this.waitingNetwork = parts;
   }
 
   /** Budgets crossing 80 % or 95 % after a turn: told once per level. */
@@ -5443,6 +5740,7 @@ export class RedGiantCore implements OrchestrationHost {
       voice: this.o.transcription !== undefined,
       images: this.o.images !== undefined || this.media.choices.image !== undefined,
       keyProblems: [...this.keyProblems].map(([provider, message]) => ({ provider, message })),
+      waitingNetwork: this.waitingNetwork,
       lastGood: release?.lastGood ?? null,
       releases: release?.history.slice(-20).reverse() ?? [],
     };
@@ -6179,6 +6477,42 @@ export class RedGiantCore implements OrchestrationHost {
     return done;
   }
 
+  /** The person's own words reach the shared memory and the portrait (only theirs, G33.2). */
+  private heardPerson(ownerId: string, sessionId: string, agentId: string | null, text: string) {
+    this.sharedMemory.heard(ownerId, sessionId, agentId, text);
+    this.portrait.heard(ownerId, sessionId, agentId, text);
+  }
+
+  /** The portrait for its page (3.9.4): each source with its conversation's title and agent. */
+  async portraitView(ownerId: string): Promise<PortraitView> {
+    const v = await this.portrait.view(ownerId);
+    const ids = [...new Set(v.traits.flatMap((t) => t.sources.map((x) => x.sessionId)))];
+    const titles = new Map(
+      ids.length
+        ? (
+            await this.o.db.query<{ id: string; title: string | null }>(
+              "SELECT id, title FROM rg_sessions WHERE owner_id = $1 AND id = ANY($2)",
+              [ownerId, ids],
+            )
+          ).map((r) => [r.id, r.title])
+        : [],
+    );
+    return {
+      ...v,
+      traits: v.traits.map((t) => ({
+        ...t,
+        // A conversation of someone else's never shows (the ids come from this owner's events).
+        sources: t.sources
+          .filter((x) => titles.has(x.sessionId))
+          .map((x) => ({
+            ...x,
+            sessionTitle: titles.get(x.sessionId) ?? null,
+            agentName: x.agentId ? (this.registry.get(x.agentId)?.name ?? null) : null,
+          })),
+      })),
+    };
+  }
+
   /** The shared memory for its page (G33.2): each memory with its conversation's title and agent. */
   async sharedMemoryView(ownerId: string): Promise<SharedMemoryView> {
     const v = await this.sharedMemory.view(ownerId);
@@ -6419,6 +6753,27 @@ export class RedGiantCore implements OrchestrationHost {
   }
 
   /**
+   * Echo (3.9.6): the person's past conversations with these words, best first, as the agents'
+   * `search_conversations` finds them (every agent still in the team; archived projects marked).
+   */
+  async searchConversations(
+    ownerId: string,
+    query: string,
+    o: { limit?: number; agentId?: string } = {},
+  ) {
+    const hits = await this.echo.search(ownerId, {
+      query,
+      agents: echoReaders(this.registry, ownerId, { kind: "human" }),
+      limit: o.limit ?? 20,
+      ...(o.agentId ? { agentId: o.agentId } : {}),
+    });
+    return hits.map((h) => ({
+      ...h,
+      archived: this.registry.isProjectArchived(ownerId, h.projectId),
+    }));
+  }
+
+  /**
    * Searches what was said in the owner's conversations: agents' sessions and daily chats.
    * Newest first; each hit names its conversation and carries a short excerpt.
    */
@@ -6545,6 +6900,11 @@ export class RedGiantCore implements OrchestrationHost {
       /** A button the person clicked in an artifact or a widget sent it (3.5.9). */
       via?: "artifact" | "voice";
       /**
+       * «Send anyway» on the page's or the app's secret warning (2026-11-19): the person's words
+       * are not blanked, by their choice, and the choice is in the log (`message.user.secretOk`).
+       */
+      secretOk?: boolean;
+      /**
        * The turn sending it waits for its answer (3.8.10: run_subagent, ask_god, ask_assistant):
        * it takes that turn's place instead of waiting for one.
        */
@@ -6554,15 +6914,18 @@ export class RedGiantCore implements OrchestrationHost {
     } = {},
   ): Promise<{ done: Promise<SendResult>; queued?: boolean; waiting?: boolean }> {
     // A secret the person pasted (G33.4) never reaches the model nor the log: it is blanked here,
-    // and the agent is told so it can point them to the keychain. The page asks first.
+    // and the agent is told so it can point them to the keychain. The page, the app and the chats
+    // (Telegram and the gateway's) ask first; «Send anyway» there (2026-11-19, a link taken for a
+    // secret) sends it as written.
     const person = extra.watch === true || extra.human === true;
-    const text = person ? blankPastedSecrets(raw) : raw;
+    const blank = person && extra.secretOk !== true;
+    const text = blank ? blankPastedSecrets(raw) : raw;
     this.updateGate();
     const l = await this.open(ownerId, sessionId);
     this.liveGate(l);
     const { queue, waits, requeue, ...rest } = extra;
     // The replies under quoted passages are the person's words too.
-    if (person && rest.quotes)
+    if (blank && rest.quotes)
       rest.quotes = rest.quotes.map((q) =>
         q.reply ? { ...q, reply: blankPastedSecrets(q.reply) } : q,
       );
@@ -6908,6 +7271,7 @@ export class RedGiantCore implements OrchestrationHost {
       human?: boolean;
       taskReport?: boolean;
       via?: "artifact" | "voice";
+      secretOk?: boolean;
     },
     seat: Seat,
   ): Promise<{ done: Promise<SendResult> }> {
@@ -6933,8 +7297,9 @@ export class RedGiantCore implements OrchestrationHost {
     // may write in it (G33.2): automations, webhooks, emails and other agents never do.
     const human = extra.watch === true || extra.human === true;
     this.sharedMemory.turnStarted(sessionId, human);
-    this.skillNudge.turnStarted(sessionId);
-    if (human) this.sharedMemory.heard(ownerId, sessionId, l.agentId, ownWords(text, extra.quotes));
+    // 3.9.7: the person's words can put a skill in doubt (a correction, «the skill could be better»).
+    this.skillNudge.turnStarted(sessionId, human ? ownWords(text, extra.quotes) : undefined);
+    if (human) this.heardPerson(ownerId, sessionId, l.agentId, ownWords(text, extra.quotes));
     const notify = (state: "idle" | "running", stopReason?: string, repliedAt?: string) => {
       for (const f of l.listeners)
         f({ type: "session.state", sessionId, state, ...(stopReason && { stopReason }) });
@@ -6962,6 +7327,7 @@ export class RedGiantCore implements OrchestrationHost {
           l.running = null;
           seat.release();
           this.sharedMemory.turnEnded(sessionId);
+          this.portrait.turnEnded(sessionId);
           notify("idle", "end_turn");
           this.turnOver(ownerId, sessionId, l);
         });
@@ -6979,6 +7345,7 @@ export class RedGiantCore implements OrchestrationHost {
       l.running = null;
       seat.release();
       this.sharedMemory.turnEnded(sessionId);
+      this.portrait.turnEnded(sessionId);
       // The agent answered the person (3.8.1): its mascot stays awake for a while.
       const repliedAt = human && stopReason === "end_turn" ? new Date().toISOString() : undefined;
       if (repliedAt)
@@ -8270,6 +8637,8 @@ export class RedGiantCore implements OrchestrationHost {
     await this.mail.close().catch(() => {});
     this.files.stop();
     this.sharedMemory.stop();
+    this.portrait.stop();
+    this.echo.stop();
     clearInterval(this.sweeper);
     this.inspector.stop();
     this.code?.unwatch();

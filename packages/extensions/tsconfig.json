@@ -5,5 +5,10 @@
     "outDir": "dist"
   },
   "include": ["src"],
-  "references": [{ "path": "../agent" }, { "path": "../events" }, { "path": "../tools" }]
+  "references": [
+    { "path": "../agent" },
+    { "path": "../events" },
+    { "path": "../protocol" },
+    { "path": "../tools" }
+  ]
 }

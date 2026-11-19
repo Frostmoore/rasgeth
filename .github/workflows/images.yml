@@ -230,6 +230,21 @@ jobs:
           path: digests/*
           if-no-files-found: error
           retention-days: 1
+        id: upload_226
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ (inputs.push) && steps.upload_226.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ (inputs.push) && steps.upload_226.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: digest-${{ matrix.key }}-${{ matrix.arch }}
+          path: digests/*
+          if-no-files-found: error
+          retention-days: 1
 
   # One index per image with its tags: from the digests built above, or copied from the branch's.
   tag:
@@ -261,6 +276,19 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/download-artifact@v4
         if: needs.plan.outputs.action == 'build'
+        with:
+          pattern: digest-${{ matrix.key }}-*
+          path: digests
+          merge-multiple: true
+        id: download_262
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ (needs.plan.outputs.action == 'build') && steps.download_262.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ (needs.plan.outputs.action == 'build') && steps.download_262.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
         with:
           pattern: digest-${{ matrix.key }}-*
           path: digests

@@ -113,6 +113,47 @@ describe("seed and choices", () => {
     expect(still(mascotSvg(a, { idPrefix: "x" }))).toBe(still(mascotSvg(b, { idPrefix: "x" })));
   });
 
+  it("draws God as the crowned giant star with three companion stars, and the Demigod as its child", () => {
+    const god = mascotSpec("God", "god");
+    expect([god.parts.body, god.parts.head]).toEqual(["god", "crown"]);
+    const demi = mascotSpec("Demetra#9", "demigod");
+    expect([demi.parts.body, demi.parts.head, demi.handDrawn]).toEqual(["demigod", "diadem", true]);
+    const big = mascotSvg(god, { state: "active", size: 128, idPrefix: "g" });
+    for (const k of ["orbf", "orbf2", "orbf3", "orbb", "orbb2", "orbb3", "hal", "gl"])
+      expect(big, k).toContain(`class="${k}"`);
+    // Awake: the icon's arched eyes; asleep: closed eyes that open with a start.
+    expect(big).toMatch(/stroke-width="3.3"/);
+    expect(mascotSvg(god, { state: "idle", size: 128 })).toContain('class="eyw"');
+    // The Demigod is God's drawing made smaller, with the diadem and God's red gem.
+    const d = mascotSvg(demi, { state: "active", size: 128, idPrefix: "d" });
+    expect(d).toContain('transform="translate(7.5 13.5) scale(0.85)"');
+    expect(d).toContain('fill="#e5371f"');
+    expect(d).not.toContain('class="orbf"');
+  });
+
+  it("keeps only body, face and crown (diadem) at 32 px and less", () => {
+    for (const kind of ["god", "demigod"] as const) {
+      const s = mascotSpec("Demetra#9", kind);
+      for (const size of [16, 20, 24, 32]) {
+        const svg = mascotSvg(s, { state: "active", size });
+        expect(svg, `${kind} ${size}`).not.toMatch(/class="(orbf|orbb|hal|gl)\d?"/);
+        expect(svg, `${kind} ${size}`).toContain("#8a5a00"); // the crown's or the diadem's gold line
+        expect(svg).toContain('class="eyes"');
+      }
+      expect(mascotSvg(s, { state: "active", size: 48 })).toMatch(/class="(orbf|hal)"/);
+    }
+  });
+
+  it("gives every demigod cream and gold, a little different by seed", () => {
+    const golds = new Set(
+      [0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
+        const svg = mascotSvg(mascotSpec(`d${i}`, "demigod"), { theme: "light", idPrefix: "d" });
+        return /<stop offset=".85" stop-color="(#[0-9a-f]{6})"/.exec(svg)?.[1];
+      }),
+    );
+    expect(golds.size).toBe(3);
+  });
+
   it("makes a subagent look like its parent: body, hue, headgear and pattern", () => {
     const parent = mascotSpec("Coder Web", "orchestrator");
     for (const seed of ["Tester", "Tester UI", "Runner"]) {

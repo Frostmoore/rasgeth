@@ -309,7 +309,7 @@ describe("installing skills", () => {
     untestable_reason: "Instructions only, nothing to run.",
   });
 
-  it("never lets an agent's auto-installed skill replace an existing one (G29.4)", async () => {
+  it("an agent's new version always waits for the person, with what changed and why (3.9.7)", async () => {
     const { builder, installRoot } = await setup();
     const tool = proposeTool(
       { id: "agent_cccccccc", ownerId: "me", projectId: "p" },
@@ -319,12 +319,29 @@ describe("installing skills", () => {
     expect(text(await tool.run(skill("First version of the instructions."), ctx))).toMatch(
       /is installed/,
     );
-    const second = text(await tool.run(skill("Second version, replacing the first."), ctx));
-    expect(second).toMatch(/waits for the user's approval/);
-    expect(second).toMatch(/already installed/);
+    // Without what changed and why it is refused.
+    const bare = text(await tool.run(skill("Second version, replacing the first."), ctx));
+    expect(bare).toMatch(/Add change .* and summary/);
     const read = () => readFile(join(installRoot, "skills", "flaky-ci", "SKILL.md"), "utf8");
+    // Even with the person's policy «install them by myself», and over an agent's own version.
+    const second = text(
+      await tool.run(
+        {
+          ...skill("Second version, replacing the first."),
+          change: "Added the retry of the cache step",
+          summary: "The first version missed it. Twice.",
+        },
+        ctx,
+      ),
+    );
+    expect(second).toMatch(/new version of the skill "flaky-ci".*waits for the user's approval/s);
+    expect(second).toContain("«Added the retry of the cache step: the first version missed it»");
     expect(await read()).toMatch(/First version/);
     const [pending] = await builder.list("me", "pending");
+    expect(pending?.updateLine).toBe(
+      "Added the retry of the cache step: the first version missed it",
+    );
+    expect(pending?.report.at(-1)?.detail).toMatch(/always waits for the user's approval/);
     await builder.decide("me", pending?.id ?? "", "approve", "human");
     expect(await read()).toMatch(/Second version/);
   });

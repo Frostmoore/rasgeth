@@ -17,6 +17,7 @@ import 'clock.dart';
 import 'mascot_source.dart';
 import 'motion.dart';
 import 'rhythm.dart';
+import 'subagent_sign.dart';
 import 'svg_layers.dart';
 
 Color hexColor(String hex) {
@@ -70,6 +71,9 @@ class MascotView extends StatefulWidget {
   /// 16-20 px: body and eyes only, no sign; only the eyes blink (as the library draws it).
   bool get tiny => size <= 20;
 
+  /// 21-32 px: the library's small drawing (God and the Demigod without orbit, halo and glints).
+  bool get compact => !tiny && size <= 32;
+
   @override
   State<MascotView> createState() => _MascotViewState();
 }
@@ -99,8 +103,25 @@ class _MascotViewState extends State<MascotView> {
     if (mounted) setState(() {});
   }
 
+  /// A sub-agent has no mascot (decision of 2026-11-19): its parent, when the scope knows the
+  /// agents and [MascotView.agentId] is a sub-agent; null for every other agent.
+  ({MascotSpec? parent})? _subagent() {
+    final id = widget.agentId;
+    final find = MascotScope.maybeOf(context)?.agentOf;
+    if (id == null || find == null) return null;
+    final a = find(id);
+    if (a == null || a.kind != AgentKind.subagent) return null;
+    final p = a.parentId == null ? null : find(a.parentId!);
+    return (parent: p?.kind == AgentKind.subagent ? null : p?.mascot);
+  }
+
   void _syncClock() {
-    final want = _moving && widget.seconds == null && TickerMode.valuesOf(context).enabled;
+    // A sub-agent's sign keeps its own clock.
+    final want =
+        _moving &&
+        widget.seconds == null &&
+        TickerMode.valuesOf(context).enabled &&
+        _subagent() == null;
     if (want && !_listening) MascotClock.instance.attach(_tick);
     if (!want && _listening) MascotClock.instance.detach(_tick);
     _listening = want;
@@ -130,16 +151,29 @@ class _MascotViewState extends State<MascotView> {
     final id = widget.agentId;
     if (source == null || id == null) return null;
     // The seed too: after «Change mascot» the same agent has a new face.
-    final key = '$id|${widget.spec?.seed}|${widget.state.name}|${_theme.name}|${widget.tiny}';
+    final key =
+        '$id|${widget.spec?.seed}|${widget.state.name}|${_theme.name}|${widget.tiny}|${widget.compact}';
     if (key != _futureKey) {
       _futureKey = key;
-      _future = source.svg(id, widget.state, _theme, tiny: widget.tiny);
+      _future = source.svg(id, widget.state, _theme, tiny: widget.tiny, compact: widget.compact);
     }
     return _future;
   }
 
   @override
   Widget build(BuildContext context) {
+    final sub = widget.svg == null ? _subagent() : null;
+    if (sub != null) {
+      return SubagentSign(
+        parent: sub.parent,
+        state: widget.state,
+        size: widget.size,
+        label: widget.label,
+        theme: widget.theme,
+        animate: widget.animate,
+        seconds: widget.seconds,
+      );
+    }
     final s = widget.size;
     final svg = widget.svg;
     final future = _load();

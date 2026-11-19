@@ -7,7 +7,10 @@ import type { CompletionRequest, FakeTurn } from "@redgiant/providers";
 import { afterEach, describe, expect, it } from "vitest";
 import type { PlatformChange } from "../src/index.js";
 import { switchedOffSection } from "../src/request-tool.js";
-import { startServer } from "./helpers.js";
+import { keepKitDefaults, startServer } from "./helpers.js";
+
+// The kits as they are by default (3.9.4).
+keepKitDefaults();
 
 type Server = Awaited<ReturnType<typeof startServer>>;
 let s: Server | undefined;
@@ -75,6 +78,7 @@ describe("request_tool (G36.15)", () => {
       ({ def: { name, description, inputSchema: {} }, run: async () => "" }) as never;
     const text = switchedOffSection(
       ["fetch", "browser_open", "browser_click"],
+      [],
       [
         tool("fetch", "Fetches a web page as text. Use it for pages you know."),
         tool("browser_open", "Opens a real browser on a page. It is slow."),
@@ -101,9 +105,8 @@ describe("request_tool (G36.15)", () => {
       input: { tool: "fetch", why: "to read the page" },
       sessionId: sid,
     });
-    // The next step of the same turn has it, sorted with the others; the system prompt is the same.
-    expect(names(reqs[1])).toContain("fetch");
-    expect(names(reqs[1])).toEqual([...names(reqs[1])].sort());
+    // The next step of the same turn has it, at the end (3.9.4); the system prompt is the same.
+    expect(names(reqs[1])).toEqual([...names(reqs[0]), "fetch"]);
     expect(reqs[1]?.system).toBe(reqs[0]?.system);
     expect(resultOf(reqs[1])).toContain("fetch is on");
 
@@ -115,6 +118,8 @@ describe("request_tool (G36.15)", () => {
       entry: "fetch",
       why: "to read the page",
       scope: "session",
+      by: "person",
+      deferred: true,
     });
     // Only this conversation: the agent's own choice is unchanged.
     expect((await s.core.toolChoices.get("me")).agents[god]).toEqual({ fetch: "off" });
@@ -181,7 +186,8 @@ describe("request_tool (G36.15)", () => {
     );
     const { sid } = await setup(s);
     await (await s.core.send("me", sid, "go")).done;
-    expect(resultOf(s.provider.requests[1])).toContain("Switched off: fetch");
+    expect(resultOf(s.provider.requests[1])).toContain("Switched off by the person: fetch.");
+    expect(resultOf(s.provider.requests[1])).toContain("Groups: 3d, audio,");
   });
 });
 

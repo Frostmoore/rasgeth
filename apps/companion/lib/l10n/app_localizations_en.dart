@@ -3749,7 +3749,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asMascotHelp => 'Renaming it never changes its face: only you change it, here.';
 
   @override
-  String get asMascotGod => 'God\'s mascot is drawn by hand: it is always the red giant.';
+  String get asMascotGod =>
+      'God\'s mascot is drawn by hand: the crowned giant star, with three little stars going round it.';
 
   @override
   String get asName => 'Name';
@@ -9231,6 +9232,285 @@ class AppLocalizationsEn extends AppLocalizations {
   String get renameNoticeOk => 'Got it';
 
   @override
+  String noInternetNotice(String parts) {
+    return 'No internet. Waiting for the network: $parts (the connection starts again by itself once it is back). Everything else works, local models included.';
+  }
+
+  @override
+  String get cvGeneratingImage => 'Generating a picture…';
+
+  @override
+  String get cvGeneratingVideo => 'Making a video…';
+
+  @override
+  String get cvGeneratingAudio => 'Making a sound…';
+
+  @override
+  String get cvImageUnreadable => 'This picture cannot be opened';
+
+  @override
+  String cvImageUnreachable(String name) {
+    return 'Picture not available here: $name';
+  }
+
+  @override
+  String get cvMediaNativeTitle => 'Use the model\'s own tool when it has one';
+
+  @override
+  String get cvMediaNativeHelp =>
+      'Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.';
+
+  @override
+  String get ptrSection => 'Portrait';
+
+  @override
+  String get ptrHub => 'How the agents see you, built from your conversations';
+
+  @override
+  String get ptrTitle => 'How the agents see you';
+
+  @override
+  String get ptrLead =>
+      'This portrait builds itself from your conversations: your tastes, how you like to be spoken to, your habits, what you are working on, what to avoid. The agents you choose read it when a conversation starts. Correct it whenever you like: your word always wins.';
+
+  @override
+  String get ptrOnTitle => 'Build the portrait from the conversations';
+
+  @override
+  String get ptrOnOn =>
+      'After a conversation goes quiet, a light model reads only your own messages and updates the portrait. It never notes passwords, keys, email addresses, phone numbers or things about other people. It spends a little from your budget.';
+
+  @override
+  String get ptrOnOff =>
+      'Off: the portrait does not change and no agent reads it. What is here stays until you delete it.';
+
+  @override
+  String get ptrWhoTitle => 'Who reads it';
+
+  @override
+  String get ptrWhoLead =>
+      'Changes count from the next conversation: the ones already open go on as they were.';
+
+  @override
+  String get ptrWho_god => 'God';
+
+  @override
+  String get ptrWho_orchestrators => 'The projects\' orchestrators';
+
+  @override
+  String get ptrWho_chat => 'The Chat';
+
+  @override
+  String get ptrWho_others => 'Every other agent';
+
+  @override
+  String get ptrListTitle => 'Traits';
+
+  @override
+  String get ptrListLead =>
+      'Each trait says how sure it is and where it comes from. A trait no conversation says again fades with time.';
+
+  @override
+  String ptrCount(String n) {
+    return '$n traits';
+  }
+
+  @override
+  String get ptrCountOne => '1 trait';
+
+  @override
+  String get ptrEmpty => 'No traits yet: the portrait fills in as you talk with the agents.';
+
+  @override
+  String get ptrEmptyOff => 'The portrait is off and empty.';
+
+  @override
+  String get ptrAddPlaceholder => 'Add a trait yourself, e.g. I like answers with examples';
+
+  @override
+  String get ptrAdd => 'Add';
+
+  @override
+  String get ptrCat_preference => 'Preferences';
+
+  @override
+  String get ptrCat_style => 'How to talk to you';
+
+  @override
+  String get ptrCat_habit => 'Habits';
+
+  @override
+  String get ptrCat_project => 'Current projects';
+
+  @override
+  String get ptrCat_avoid => 'To avoid';
+
+  @override
+  String get ptrCat_about => 'About you';
+
+  @override
+  String get ptrSure => 'Sure';
+
+  @override
+  String get ptrLikely => 'Likely';
+
+  @override
+  String get ptrUnsure => 'Not sure yet';
+
+  @override
+  String get ptrByYou => 'Written by you';
+
+  @override
+  String ptrSeen(String n) {
+    return 'seen $n times';
+  }
+
+  @override
+  String get ptrSeenOnce => 'seen once';
+
+  @override
+  String get ptrWhere => 'Where it comes from';
+
+  @override
+  String get ptrUntitled => 'A conversation';
+
+  @override
+  String ptrWith(String name) {
+    return 'with $name';
+  }
+
+  @override
+  String get ptrEdit => 'Change';
+
+  @override
+  String get ptrRemove => 'Remove';
+
+  @override
+  String get ptrDeny => 'Not true';
+
+  @override
+  String get ptrEditTitle => 'Change the trait';
+
+  @override
+  String get ptrEditNote =>
+      'Once you change it, the trait is yours: it never fades and nothing changes it by itself.';
+
+  @override
+  String ptrDenied(String n) {
+    return '$n traits you said are not true: they will not be proposed again.';
+  }
+
+  @override
+  String get ptrDeniedOne => '1 trait you said is not true: it will not be proposed again.';
+
+  @override
+  String get ptrTextTitle => 'What the agents read';
+
+  @override
+  String get ptrTextLead =>
+      'The portrait exactly as it goes into a new conversation, short and always the same until it changes.';
+
+  @override
+  String get ptrTextShow => 'Show the text';
+
+  @override
+  String get ptrTextHide => 'Hide the text';
+
+  @override
+  String get ptrForgetTitle => 'Forget everything';
+
+  @override
+  String get ptrForgetLead =>
+      'Every trait goes, and its words go from the history too. It cannot be undone.';
+
+  @override
+  String get ptrForgetText =>
+      'Every trait of the portrait is deleted and its words erased from the history, the «not true» ones too. The portrait starts again empty.';
+
+  @override
+  String get ptrForget => 'Forget everything';
+
+  @override
+  String get ptrErr_empty => 'Write the trait.';
+
+  @override
+  String get ptrErr_long => 'A trait is at most 200 characters: write it shorter.';
+
+  @override
+  String get ptrErr_secret =>
+      'That looks like a password, a code or a card number: secrets never go into the portrait.';
+
+  @override
+  String get ptrErr_private => 'Email addresses and phone numbers never go into the portrait.';
+
+  @override
+  String get ptrErr_gone => 'That trait is not there any more.';
+
+  @override
+  String get tkTitle => 'Tool groups';
+
+  @override
+  String get tkLead =>
+      'Agents start with few tools, to keep every message light. The other groups are off by default: an agent switches one on by itself when the work needs it, for that conversation. Always on: the agent has it from the start. Off by you: the agent has to ask you.';
+
+  @override
+  String tkAgentLead(String name) {
+    return 'The groups for $name: as for every agent, or a choice of its own.';
+  }
+
+  @override
+  String get tkAuto => 'Off by default';
+
+  @override
+  String get tkOn => 'Always on';
+
+  @override
+  String get tkOff => 'Off by you';
+
+  @override
+  String tkAsAll(String state) {
+    return 'As for everyone: $state';
+  }
+
+  @override
+  String get tkIsDefault => 'default';
+
+  @override
+  String get tkRole => 'on for its role';
+
+  @override
+  String tkWeight(String n) {
+    return 'about $n tokens when on';
+  }
+
+  @override
+  String tkEssential(String n) {
+    return 'Essential tools, always on: about $n tokens';
+  }
+
+  @override
+  String tkStartTotal(String n) {
+    return 'At the start: about $n tokens in every message';
+  }
+
+  @override
+  String tkRest(String n) {
+    return 'Off at the start: $n tokens that weigh only if a group is switched on';
+  }
+
+  @override
+  String tkTools(String list) {
+    return 'Tools: $list';
+  }
+
+  @override
+  String get tkStateAuto => 'off by default';
+
+  @override
+  String get asMascotSub =>
+      'A sub-agent has no mascot of its own: it lives for one task, and shows a ring in its parent\'s colour.';
+
+  @override
   String get auAsstNewRoutine => 'New routine';
 
   @override
@@ -10353,4 +10633,194 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get auOwnReadOnly =>
       'Automations can be changed only by the person (not from a project\'s device).';
+
+  @override
+  String get cvChSecretAnyway => 'Send anyway';
+
+  @override
+  String get cvChSecretAnywayNote =>
+      'Not a secret (a link, an order code)? «Send anyway» sends it as you wrote it.';
+
+  @override
+  String get echoSearch => 'Search past conversations';
+
+  @override
+  String get echoClear => 'Clear the search';
+
+  @override
+  String get echoNone => 'No past conversation has these words.';
+
+  @override
+  String get echoArchived => 'archived';
+
+  @override
+  String echoMatches(String n) {
+    return '$n messages';
+  }
+
+  @override
+  String get echoMatch => '1 message';
+
+  @override
+  String get echoYou => 'You';
+
+  @override
+  String get echoHint =>
+      'Type at least two letters: every word is looked for in what you and the agents wrote.';
+
+  @override
+  String get skSection => 'Skills';
+
+  @override
+  String get skHub => 'The agents\' skills, their versions and the way back';
+
+  @override
+  String get skQuestion => 'What the agents learned';
+
+  @override
+  String get skLead =>
+      'Skills are instructions the agents write after a job that went well, or that you give them. Each one keeps its versions: who wrote it, why and when, and you can go back to any of them.';
+
+  @override
+  String get skWaitingTitle => 'Waiting for you';
+
+  @override
+  String get skWaitingLead =>
+      'New skills and new versions of installed ones, tested apart. Nothing changes until you say yes.';
+
+  @override
+  String get skNoneWaiting => 'Nothing waits for you.';
+
+  @override
+  String get skNew => 'New skill';
+
+  @override
+  String get skUpdate => 'New version of an installed skill';
+
+  @override
+  String skBy(String who) {
+    return 'by $who';
+  }
+
+  @override
+  String get skWhy => 'Why';
+
+  @override
+  String get skTestsOk => 'Its tests passed.';
+
+  @override
+  String skScripts(String files) {
+    return 'It has scripts ($files): code never installs by itself.';
+  }
+
+  @override
+  String get skApprove => 'Approve';
+
+  @override
+  String get skReject => 'Reject';
+
+  @override
+  String get skNextSession =>
+      'Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.';
+
+  @override
+  String get skInstalledTitle => 'Installed';
+
+  @override
+  String get skInstalledLead => 'Open one to see its versions.';
+
+  @override
+  String get skNoneInstalled => 'No skills yet.';
+
+  @override
+  String get skEverywhere => 'for every project';
+
+  @override
+  String skProject(String name) {
+    return 'project $name';
+  }
+
+  @override
+  String get skVersionsTitle => 'Versions';
+
+  @override
+  String get skVersionsLead => 'Agents use the newest from their next conversation.';
+
+  @override
+  String skVersion(String n) {
+    return 'Version $n';
+  }
+
+  @override
+  String get skCurrent => 'in use';
+
+  @override
+  String get skHow_baseline => 'As it was before the history began';
+
+  @override
+  String get skHow_edited => 'Changed by hand';
+
+  @override
+  String get skHow_install => 'First version';
+
+  @override
+  String get skHow_update => 'New version';
+
+  @override
+  String get skHow_import => 'Imported';
+
+  @override
+  String skHow_rollback(String n) {
+    return 'Back to version $n';
+  }
+
+  @override
+  String get skUnknown => 'author unknown';
+
+  @override
+  String get skYou => 'you';
+
+  @override
+  String get skApprovedYou => 'approved by you';
+
+  @override
+  String get skApprovedAuto => 'installed by itself (your choice in Safety)';
+
+  @override
+  String get skCompare => 'Compare with the one in use';
+
+  @override
+  String get skHideCompare => 'Hide the comparison';
+
+  @override
+  String skRollback(String n) {
+    return 'Go back to version $n';
+  }
+
+  @override
+  String skRollbackTitle(String n) {
+    return 'Go back to version $n?';
+  }
+
+  @override
+  String skRollbackText(String name) {
+    return 'Its files replace those of «$name» in use, as a new version: nothing is lost and you can come back here. Agents get it from their next conversation.';
+  }
+
+  @override
+  String skRolledBack(String n, String v) {
+    return 'Back to version $n: it is version $v now.';
+  }
+
+  @override
+  String get skNotRestorable => 'Too large to keep: it cannot come back.';
+
+  @override
+  String get skNoVersions => 'No versions yet.';
+
+  @override
+  String get skLineTitle => 'What changed and why';
+
+  @override
+  String get skCompareFull => 'Compare: every difference';
 }

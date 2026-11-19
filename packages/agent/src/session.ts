@@ -30,6 +30,7 @@ import {
   type StreamEvent,
   stallLog,
   streamWithFallback,
+  type ToolDef,
 } from "@redgiant/providers";
 import { z } from "zod";
 import {
@@ -39,9 +40,16 @@ import {
   trimResult,
   withoutReasoning,
 } from "./compaction.js";
-import type { Engine, EngineTurn } from "./engine.js";
+import {
+  type Engine,
+  type EngineTurn,
+  NATIVE_TOOL,
+  type NativeKind,
+  type NativeMade,
+  nativeCallId,
+} from "./engine.js";
 import { sessionLog } from "./forks.js";
-import type { Hooks, ToolCallInfo } from "./hooks.js";
+import type { Hooks, StopNote, ToolCallInfo } from "./hooks.js";
 import { type HistoryEntry, rebuildHistory, summaryMessage } from "./rebuild.js";
 import { repairJson } from "./repair.js";
 import { TodoWatch } from "./todos.js";
@@ -70,6 +78,8 @@ export interface AgentSessionOptions {
     taskReport?: boolean;
     /** Sent through an artifact's or a widget's button (3.5.9). */
     via?: "artifact" | "voice";
+    /** «Send anyway» on the secret warning (2026-11-19). */
+    secretOk?: boolean;
   }[];
   /**
    * Tools that only read (2026-11-05, as the Claude Agent SDK does): consecutive calls of these
@@ -117,6 +127,23 @@ export interface AgentSessionOptions {
    * session starts, so a resumed one keeps the same set (the cached prefix does not move).
    */
   toolsOff?: readonly string[];
+  /** Tools off by default (3.9.4), also left out of `tools`: recorded like `toolsOff`. */
+  toolsDeferred?: readonly string[];
+  /**
+   * The tools left out of `tools` (switched off by the person, or off by default): declared to
+   * the model as deferred, callable only once `addTools` switched them on (3.9.4).
+   */
+  aside?: readonly Tool[];
+  /**
+   * What the model's engine makes by itself in this conversation (2026-11-19, `image`…): recorded
+   * at the start and told to the engine at every turn.
+   */
+  native?: readonly string[];
+  /**
+   * The engine made something with its own tool (2026-11-19): saved in the workspace and sent to
+   * the person by the caller; the result is recorded as our tool's would be.
+   */
+  nativeMade?: (m: NativeMade, ctx: ToolContext) => Promise<{ ok: boolean; output: string }>;
   /** A summary is being made in the foreground (the chat says so) or done. */
   onCompacting?: (busy: boolean) => void;
   /**
@@ -280,6 +307,10 @@ export class AgentSession {
   /** Metrics of the latest model call since the last compaction; drives auto-compaction. */
   private lastMetrics: MessageMetrics | undefined;
   private tools: Tool[];
+  /** Declared but not loaded (3.9.4): the tools left aside, sorted by name. */
+  private readonly shelved: Tool[];
+  /** Tools switched on while the conversation runs, in the order they came (after `tools`). */
+  private added: Tool[] = [];
   private readonly ctx: ToolContext;
   /** The engine's conversation id (G21), from the log. */
   private engineSession: string | undefined;
@@ -296,6 +327,7 @@ export class AgentSession {
     this.tools = canonicalTools(
       o.historyTool === false ? o.tools : [...o.tools, historyTool(o.store, o.sessionId)],
     );
+    this.shelved = canonicalTools([...(o.aside ?? [])]);
     this.ctx = {
       ownerId: o.ownerId ?? LOCAL_OWNER_ID,
       projectId: o.projectId ?? null,
@@ -314,6 +346,8 @@ export class AgentSession {
         system: options.system,
         tools: s.tools.map((t) => t.def.name),
         ...(options.toolsOff?.length && { toolsOff: [...options.toolsOff] }),
+        ...(options.toolsDeferred?.length && { toolsDeferred: [...options.toolsDeferred] }),
+        ...(options.native && { native: [...options.native] }),
       },
     });
     for (const h of options.hooks?.sessionStart ?? []) await h(s.ctx);
@@ -343,6 +377,10 @@ export class AgentSession {
     for (const e of events) {
       if (e.type === "compaction" || e.type === "compaction.undone") s.lastMetrics = undefined;
       if (e.type === "message.assistant" && e.payload) s.lastMetrics = e.payload.metrics;
+      // Tools switched on in the conversation, in the same order (3.9.4); before 3.9.4 (no `by`)
+      // they joined the sorted set, as they did then.
+      if (e.type === "session.tools_added" && e.payload)
+        s.switchedOn(e.payload.tools, !e.payload.by);
       // An engine's own conversation belongs to the session that had it, not to its forks.
       if (e.type === "engine.session" && e.payload && e.sessionId === options.sessionId)
         s.engineSession = e.payload.id;
@@ -355,25 +393,73 @@ export class AgentSession {
   }
 
   /**
-   * Tools switched back on while the conversation runs (G36.15, the agent asked and the person said
-   * yes): recorded first, then part of every later request. The prefix changes once, here.
+   * Tools switched on while the conversation runs (G36.15; 3.9.4): recorded first, then part of
+   * every later request, after the ones it started with. Returns the names the tool result must
+   * surface (`refs`): a provider with deferred loading reads them there and its cached prefix stays
+   * the same; another gets them at the end of its tool list (the prefix changes once, here).
    */
   async addTools(
     tools: Tool[],
-    payload: { entry: string; why: string; scope: "session" | "agent" },
-  ): Promise<void> {
-    const fresh = tools.filter((t) => !this.tools.some((x) => x.def.name === t.def.name));
-    if (fresh.length === 0) return;
+    payload: {
+      entry: string;
+      why: string;
+      scope: "session" | "agent";
+      by?: "agent" | "person";
+    },
+  ): Promise<string[]> {
+    const fresh = tools.filter((t) => !this.callable.some((x) => x.def.name === t.def.name));
+    if (fresh.length === 0) return [];
+    const names = fresh.map((t) => t.def.name).sort();
     await this.record({
       type: "session.tools_added",
-      payload: { tools: fresh.map((t) => t.def.name).sort(), ...payload },
+      payload: {
+        tools: names,
+        ...payload,
+        by: payload.by ?? "person",
+        ...(fresh.every((t) => this.shelved.includes(t)) && { deferred: true }),
+      },
     });
-    this.tools = canonicalTools([...this.tools, ...fresh]);
+    this.switchedOn(names, false, fresh);
+    return names;
+  }
+
+  /** Moves tools into the callable set: at the end, or (`sorted`, before 3.9.4) into the base. */
+  private switchedOn(names: readonly string[], sorted: boolean, given: readonly Tool[] = []) {
+    const pick = names.flatMap((n) => {
+      if (this.callable.some((t) => t.def.name === n)) return [];
+      const t = this.shelved.find((x) => x.def.name === n) ?? given.find((x) => x.def.name === n);
+      return t ? [t] : [];
+    });
+    if (sorted) this.tools = canonicalTools([...this.tools, ...pick]);
+    else this.added.push(...canonicalTools(pick));
+  }
+
+  /** What the model may call: the tools it started with, then those switched on, in order. */
+  private get callable(): Tool[] {
+    return [...this.tools, ...this.added];
   }
 
   /** The tools as the model receives them, in order (the tools page weighs them, G34.5). */
   get toolDefs(): Tool["def"][] {
-    return this.tools.map((t) => t.def);
+    return this.callable.map((t) => t.def);
+  }
+
+  /**
+   * The tool list of a request (3.9.4): the loaded tools, then every tool left aside declared as
+   * deferred (sorted, the same for the whole conversation). A tool switched on stays deferred while
+   * a result in the history names it; after a summary dropped that result it is loaded again.
+   */
+  private requestTools(messages: readonly ChatMessage[]): ToolDef[] {
+    const named = new Set(
+      messages.flatMap((m) =>
+        m.role === "user"
+          ? m.parts.flatMap((p) => (p.type === "tool_result" ? (p.refs ?? []) : []))
+          : [],
+      ),
+    );
+    const loaded = [...this.tools, ...this.added.filter((t) => !named.has(t.def.name))];
+    const deferred = this.shelved.filter((t) => !loaded.includes(t));
+    return [...loaded.map((t) => t.def), ...deferred.map((t) => ({ ...t.def, deferred: true }))];
   }
 
   get messages(): ChatMessage[] {
@@ -391,10 +477,11 @@ export class AgentSession {
   }
 
   private request() {
+    const messages = this.messages;
     return {
       system: this.o.system,
-      tools: this.tools.map((t) => t.def),
-      messages: this.messages,
+      tools: this.requestTools(messages),
+      messages,
       ...(this.o.maxTokens !== undefined && { maxTokens: this.o.maxTokens }),
       cacheKey: this.ctx.sessionId,
       ...(this.o.priority !== undefined && { priority: this.o.priority }),
@@ -455,6 +542,8 @@ export class AgentSession {
       person?: boolean;
       /** Sent through an artifact's or a widget's button (3.5.9). */
       via?: "artifact" | "voice";
+      /** «Send anyway» on the secret warning (2026-11-19): recorded with the message. */
+      secretOk?: boolean;
     } = {},
   ): Promise<SendResult> {
     const ctx = { ...this.ctx, signal };
@@ -478,6 +567,7 @@ export class AgentSession {
         ...(quotes.length > 0 && { quotes }),
         ...(notes.length > 0 && { notes }),
         ...(extra.via && { via: extra.via }),
+        ...(extra.secretOk && { secretOk: true }),
       },
     });
     this.history.push({
@@ -552,9 +642,9 @@ export class AgentSession {
             this.compactAhead();
             return { stopReason: "end_turn", turns: turn, lastCompletion: completion };
           }
-          const e = await this.record({ type: "message.user", payload: { text: more } });
+          const e = await this.recordStopNote(more);
           this.history.push({
-            message: { role: "user", parts: [{ type: "text", text: more }] },
+            message: { role: "user", parts: [{ type: "text", text: stopText(more) }] },
             firstSeq: e.seq,
           });
           continue;
@@ -637,6 +727,26 @@ export class AgentSession {
     }
   }
 
+  /** The engine's native calls already logged (one `tool.call` each, at their start or end). */
+  private readonly nativeCalls = new Set<string>();
+
+  /** Logs an engine's own making as our tool's call, once (2026-11-19). */
+  private async nativeCall(
+    engine: string,
+    m: { id: string; kind: NativeKind; prompt?: string | undefined },
+  ): Promise<void> {
+    if (this.nativeCalls.has(m.id)) return;
+    this.nativeCalls.add(m.id);
+    await this.record({
+      type: "tool.call",
+      payload: {
+        callId: nativeCallId(m.id),
+        tool: NATIVE_TOOL[m.kind],
+        input: { ...(m.prompt && { prompt: m.prompt }), by: engine },
+      },
+    });
+  }
+
   /**
    * A turn on an external engine (G21): the engine runs the model, RedGiant runs and logs the
    * tools. Stop hooks still apply: their reminder is the next turn's message.
@@ -702,6 +812,28 @@ export class AgentSession {
             payload: { callId: result.callId, ok: result.ok, output: result.output },
           });
         },
+        // The engine's own picture (2026-11-19): logged as our tool's call and result, so the
+        // chat shows «generating» and then the file; the watch waits while it draws.
+        onNativeStart: async (m) => {
+          said();
+          watch.pause();
+          await this.nativeCall(engine.id, m);
+        },
+        onNativeMade: async (m) => {
+          said();
+          watch.resume();
+          await this.nativeCall(engine.id, m);
+          const r = m.error
+            ? { ok: false, output: `Not made: ${m.error}` }
+            : ((await this.o.nativeMade?.(m, ctx).catch((err: Error) => ({
+                ok: false,
+                output: err.message,
+              }))) ?? { ok: false, output: "Nobody keeps what the engine makes here." });
+          await this.record({
+            type: "tool.result",
+            payload: { callId: nativeCallId(m.id), ok: r.ok, output: r.output },
+          });
+        },
         runTool: async (call) => {
           // A tool's time is not the provider's: the watch waits while it runs.
           watch.pause();
@@ -724,6 +856,7 @@ export class AgentSession {
                 ok: !r.isError,
                 output: r.content,
                 ...(reminder && { reminder }),
+                ...(r.refs?.length ? { refs: r.refs } : {}),
               },
             });
             this.history.push({
@@ -735,6 +868,7 @@ export class AgentSession {
                     callId: call.callId,
                     content: trimResult(r.content, this.maxResultChars),
                     ...(r.isError && { isError: true }),
+                    ...(r.refs?.length ? { refs: r.refs } : {}),
                   },
                 ],
               },
@@ -753,12 +887,12 @@ export class AgentSession {
       if (r.stopReason !== "end_turn") return { stopReason: r.stopReason, turns: turn };
       const more = await this.engineStopHooks(ctx);
       if (more === undefined) return { stopReason: "end_turn", turns: turn };
-      const e = await this.record({ type: "message.user", payload: { text: more } });
+      const e = await this.recordStopNote(more);
       this.history.push({
-        message: { role: "user", parts: [{ type: "text", text: more }] },
+        message: { role: "user", parts: [{ type: "text", text: stopText(more) }] },
         firstSeq: e.seq,
       });
-      message = more;
+      message = stopText(more);
       pictures = [];
     }
     return { stopReason: "max_turns", turns: limit };
@@ -782,7 +916,13 @@ export class AgentSession {
       said: () => void,
     ) => Pick<
       EngineTurn,
-      "onMessage" | "runTool" | "onCompaction" | "onExternalTool" | "onExternalResult"
+      | "onMessage"
+      | "runTool"
+      | "onCompaction"
+      | "onExternalTool"
+      | "onExternalResult"
+      | "onNativeStart"
+      | "onNativeMade"
     >,
   ): Promise<{ resume: string; stopReason: StopReason }> {
     const limits = engine.stall ?? ENGINE_STALL;
@@ -816,9 +956,10 @@ export class AgentSession {
           text: message,
           images: pictures,
           system: this.o.system,
-          tools: this.tools.map((t) => t.def),
+          tools: this.callable.map((t) => t.def),
           model,
           resume: this.engineSession,
+          ...(this.o.native && { native: this.o.native }),
           signal: inner.signal,
           alive: () => watch.touch(),
           live: (e) => {
@@ -894,7 +1035,7 @@ export class AgentSession {
   }
 
   /** Stop hooks for engines: they see the last assistant text as a completion. */
-  private async engineStopHooks(ctx: ToolContext): Promise<string | undefined> {
+  private async engineStopHooks(ctx: ToolContext): Promise<StopNote | undefined> {
     const last = [...this.history].reverse().find((h) => h.message.role === "assistant");
     const completion = {
       message: { role: "assistant", parts: last?.message.parts ?? [] },
@@ -916,7 +1057,15 @@ export class AgentSession {
     throw new Error("Model stream ended without a completion");
   }
 
-  private async stopHooks(completion: Completion, ctx: ToolContext): Promise<string | undefined> {
+  /** A stop hook's message in the log: the person's to see, or RedGiant's quiet note. */
+  private recordStopNote(note: StopNote) {
+    return this.record({
+      type: "message.user",
+      payload: typeof note === "string" ? { text: note } : { text: note.text, from: "redgiant" },
+    });
+  }
+
+  private async stopHooks(completion: Completion, ctx: ToolContext): Promise<StopNote | undefined> {
     for (const h of this.o.hooks?.stop ?? []) {
       const more = await h(completion, ctx);
       if (more !== undefined) return more;
@@ -1012,6 +1161,7 @@ export class AgentSession {
           output: r.content,
           ...(images && { images }),
           ...(reminder && { reminder }),
+          ...(r.refs?.length ? { refs: r.refs } : {}),
         },
       });
       firstSeq ??= e.seq;
@@ -1027,6 +1177,7 @@ export class AgentSession {
             callId: calls[i]?.callId ?? "",
             content: trimResult(r.content, this.maxResultChars),
             ...(r.isError && { isError: true }),
+            ...(r.refs?.length ? { refs: r.refs } : {}),
           })),
           ...pictures,
           ...(await this.interjections()),
@@ -1070,6 +1221,7 @@ export class AgentSession {
           ...(m.quotes?.length && { quotes: m.quotes }),
           ...(notes.length > 0 && { notes }),
           ...(m.via && { via: m.via }),
+          ...(m.secretOk && { secretOk: true }),
           steer: true,
         },
       });
@@ -1103,10 +1255,14 @@ export class AgentSession {
     });
   }
 
-  private async runOne(call: ToolCallInfo, rawInput: string, base: ToolContext) {
+  private async runOne(
+    call: ToolCallInfo,
+    rawInput: string,
+    base: ToolContext,
+  ): Promise<{ content: string; isError: boolean; images?: ImagePart[]; refs?: string[] }> {
     const ctx: ToolContext = { ...base, callId: call.callId };
     const fail = (content: string) => ({ content, isError: true });
-    const tool = this.tools.find((t) => t.def.name === call.name);
+    const tool = this.callable.find((t) => t.def.name === call.name);
     if (!tool) return fail(`Unknown tool "${call.name}".`);
     let input: unknown = call.input;
     if (input === undefined) {
@@ -1150,6 +1306,7 @@ export class AgentSession {
 
     let result: { content: string; isError: boolean };
     let images: ImagePart[] = [];
+    let refs: string[] = [];
     try {
       const out = await this.untilStopped(tool.run(input, ctx), ctx.signal);
       result =
@@ -1157,14 +1314,18 @@ export class AgentSession {
           ? { content: out, isError: false }
           : { content: out.content, isError: out.isError ?? false };
       if (typeof out !== "string" && out.images?.length) images = out.images;
+      if (typeof out !== "string" && out.refs?.length) refs = out.refs;
     } catch (err) {
       result = fail(`Tool failed: ${err instanceof Error ? err.message : String(err)}`);
     }
     for (const h of this.o.hooks?.postToolUse ?? []) {
       result = (await h({ ...call, input }, result, ctx)) ?? result;
     }
-    if (images.length > 0) return { ...result, images };
-    return result;
+    return {
+      ...result,
+      ...(images.length > 0 && { images }),
+      ...(refs.length > 0 && { refs }),
+    };
   }
 
   /**
@@ -1491,3 +1652,6 @@ export function decodeJsonStrings(input: unknown): Record<string, unknown> | und
   }
   return changed ? out : undefined;
 }
+
+/** A stop hook's message as the model reads it. */
+const stopText = (note: StopNote) => (typeof note === "string" ? note : note.text);

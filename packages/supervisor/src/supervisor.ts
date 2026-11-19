@@ -14,6 +14,16 @@ import {
 
 const run = promisify(execFile);
 
+/** Beside the packages: the lockfile they were installed from. */
+export const INSTALLED_LOCKFILE = "node_modules/.rasgeth-lockfile";
+
+/**
+ * The default build (3.9.1): the packages are installed only when the lockfile is not the one
+ * they came from, so a version with the image's packages builds without a network; after an
+ * install the lockfile is remembered.
+ */
+export const DEFAULT_BUILD = `(cmp -s pnpm-lock.yaml ${INSTALLED_LOCKFILE} || (pnpm install --frozen-lockfile && cp pnpm-lock.yaml ${INSTALLED_LOCKFILE})) && pnpm build`;
+
 export interface SupervisorOptions {
   /** The RedGiant source: a git repository, checked out on the live branch. */
   sourceDir: string;

@@ -14,6 +14,7 @@ import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
 
 import 'fake_server.dart';
+import 'helpers.dart';
 
 Future<void> _settle(WidgetTester tester, [int rounds = 12]) async {
   for (var i = 0; i < rounds; i++) {
@@ -127,6 +128,7 @@ void main() {
 
   testWidgets('phone: long press, the sheet, the whole screen; general saved', (tester) async {
     final app = await start(tester, size: const Size(430, 932), platform: DevicePlatform.android);
+    await bringToMiddle(tester, find.byKey(const Key('agent-a3')));
     await tester.longPress(find.byKey(const Key('agent-a3')));
     await _settle(tester);
     expect(find.byKey(const Key('agent-sheet-a3')), findsOneWidget);

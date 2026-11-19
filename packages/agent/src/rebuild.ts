@@ -6,6 +6,7 @@ import {
   type UserPart,
 } from "@redgiant/protocol";
 import { trimResult, withoutReasoning } from "./compaction.js";
+import { isNativeCallId } from "./engine.js";
 
 /** A conversation message plus the sequence number of the first event it came from. */
 export interface HistoryEntry {
@@ -108,6 +109,8 @@ export function rebuildHistory(events: Iterable<Event>, o: RebuildOptions = {}):
         });
         break;
       case "tool.result": {
+        // An engine's own picture (2026-11-19): no model message holds its call.
+        if (isNativeCallId(e.payload.callId)) break;
         const part: UserPart = {
           type: "tool_result",
           callId: e.payload.callId,
@@ -116,6 +119,7 @@ export function rebuildHistory(events: Iterable<Event>, o: RebuildOptions = {}):
               ? trimResult(e.payload.output, o.maxResultChars)
               : e.payload.output,
           ...(!e.payload.ok && { isError: true }),
+          ...(e.payload.refs?.length && { refs: e.payload.refs }),
         };
         const images = e.payload.images ?? [];
         open = open.filter((c) => c.callId !== e.payload.callId);

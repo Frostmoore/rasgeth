@@ -24,6 +24,7 @@ export function proposeTool(
     untestable_reason: z.string().optional(),
     summary: z.string().optional(),
     updates: z.boolean().optional(),
+    change: z.string().optional(),
   });
   return {
     def: {
@@ -32,8 +33,10 @@ export function proposeTool(
         "Propose a new tool or skill for this project. A tool: input_schema, command (run in the tool's folder with the path of a " +
         "JSON file of arguments as last argument; print the result) and files, plus tests [{input, expectExitCode?, " +
         "expectStdoutContains?}]. A skill: body (instructions) and files, plus tests [{command}] or untestable_reason, " +
-        "and summary (the problem and what worked, two or three lines). To change an installed skill use its name " +
-        "with updates: true (files you leave out stay). It is tested in a sandbox and waits for the user's approval.",
+        "and summary (the problem and what worked, two or three lines). To improve an installed skill (a new version) use its name " +
+        "with updates: true (files you leave out stay), change (what this version changes, one short line) and summary " +
+        "(why: what went wrong or was missing). It is tested in a sandbox and waits for the user's approval: a new " +
+        "version of an installed skill always does, and the user decides on that one line.",
       inputSchema: {
         type: "object",
         properties: {
@@ -48,6 +51,7 @@ export function proposeTool(
           untestable_reason: { type: "string" },
           summary: { type: "string" },
           updates: { type: "boolean" },
+          change: { type: "string", description: "A new version: what it changes, one short line" },
         },
         required: ["kind", "name", "description"],
       },
@@ -77,6 +81,7 @@ export function proposeTool(
               ...(i.untestable_reason && { untestableReason: i.untestable_reason }),
               ...(i.summary?.trim() && { summary: i.summary.trim().slice(0, 2000) }),
               ...(i.updates && { updates: true }),
+              ...(i.change?.trim() && { change: i.change.trim().slice(0, 160) }),
             };
       let p: Awaited<ReturnType<ExtensionBuilder["propose"]>>;
       try {
@@ -106,7 +111,7 @@ export function proposeTool(
       if (p.status === "installed")
         return `Skill "${i.name}" passed its tests and is installed: every agent finds it from its next conversation.\n${lines.join("\n")}`;
       if (p.previous)
-        return `Proposal ${p.id} (an update of the skill "${i.name}") passed its tests and waits for the user's approval:\n${lines.join("\n")}`;
+        return `Proposal ${p.id} (a new version of the skill "${i.name}") passed its tests and waits for the user's approval, who reads: «${p.updateLine ?? ""}». Once approved, every agent gets it from its next conversation; this one keeps the version it started with.\n${lines.join("\n")}`;
       return `Proposal ${p.id} passed its tests and waits for the user's approval:\n${lines.join("\n")}`;
     },
   } as Tool;

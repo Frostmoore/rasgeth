@@ -2,7 +2,13 @@
 // variables and always moving (the library's motion table as CSS animations, each mascot with its
 // own rhythm from its seed; none with reduced motion, paused while the page is hidden). The state
 // is the agent's live one unless given; screen readers hear the name and the state.
-import { mascotMotionCss, mascotSpec, mascotSvg } from "@redgiant/mascot";
+import {
+  hasOwnMascot,
+  mascotMotionCss,
+  mascotSpec,
+  mascotSvg,
+  subagentSignSvg,
+} from "@redgiant/mascot";
 import type { MascotSpec, MascotState } from "@redgiant/protocol";
 import { useMemo } from "preact/hooks";
 import type { Agent } from "../api.js";
@@ -29,19 +35,10 @@ export function addMascotMotion(doc: Document | undefined = globalThis.document)
 /** The agent's spec: the server's, or made here from its seed (older servers, the demo). */
 export function specOf(agent: Agent): MascotSpec {
   if (agent.mascot) return agent.mascot;
-  const parent =
-    agent.kind === "subagent" && agent.parentId
-      ? agents.value.find((a) => a.id === agent.parentId)
-      : undefined;
-  return mascotSpec(agent.mascotSeed ?? agent.id, agent.kind, parent ? specOf(parent) : undefined);
+  return mascotSpec(agent.mascotSeed ?? agent.id, agent.kind);
 }
 
-export function Mascot({
-  agent,
-  size = 24,
-  state,
-  decorative,
-}: {
+type MascotProps = {
   agent: Agent;
   /** 16-20: body and eyes only; 24-32 lists; 48-64 headers; 128 the agent's card. */
   size?: number;
@@ -49,7 +46,40 @@ export function Mascot({
   state?: MascotState;
   /** Next to the agent's name and its state in words: screen readers skip it. */
   decorative?: boolean;
-}) {
+};
+
+/**
+ * An agent's face; a sub-agent has none (decision «Mascotte solo per orchestratori e agenti di
+ * primo livello», 2026-11-19) and shows its sign, the ring in its parent's colour.
+ */
+export function Mascot(props: MascotProps) {
+  return hasOwnMascot(props.agent) ? <AgentMascot {...props} /> : <SubagentSign {...props} />;
+}
+
+/** A sub-agent's sign (board choice A): the ring in its parent's colour, grey without one. */
+function SubagentSign({ agent, size = 24, state, decorative }: MascotProps) {
+  const shown = state ?? agentMascotState(agent.id);
+  const parent = agent.parentId ? agents.value.find((a) => a.id === agent.parentId) : undefined;
+  const spec = parent && hasOwnMascot(parent) ? specOf(parent) : undefined;
+  const label = decorative
+    ? undefined
+    : t("subagentSignOf", { name: agent.name, state: t(`mascotState_${shown}`) });
+  const svg = useMemo(
+    () => subagentSignSvg(spec, { state: shown, size, ...(label && { label }) }),
+    [spec, shown, size, label],
+  );
+  return (
+    <span
+      class="mascot sub-sign"
+      data-state={shown}
+      style={{ width: `${size}px`, height: `${size}px` }}
+      // Our own drawing: numbers from the spec and an escaped label, never the agent's text.
+      dangerouslySetInnerHTML={{ __html: svg }}
+    />
+  );
+}
+
+function AgentMascot({ agent, size = 24, state, decorative }: MascotProps) {
   addMascotMotion();
   const shown = state ?? agentMascotState(agent.id);
   const spec = specOf(agent);

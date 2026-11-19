@@ -404,6 +404,35 @@ void main() {
     await done(tester);
   });
 
+  testWidgets('«Invia comunque»: as written, with the choice (2026-11-19)', (tester) async {
+    await open(tester);
+    const odd = 'il codice del pacco è Ab3dE5fG7hJ9kL1mN3pQ5rS7tU';
+    await tester.enterText(find.byKey(const Key('composer-text')), odd);
+    await tester.tap(find.byKey(const Key('composer-send')));
+    await _settle(tester);
+    expect(server.received.where((m) => m['type'] == 'session.send'), isEmpty);
+    expect(find.textContaining('Non è un segreto'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('secret-send-anyway')));
+    await _settle(tester);
+    final sent = server.received.lastWhere((m) => m['type'] == 'session.send');
+    expect(sent['text'], odd);
+    expect(sent['secretOk'], isTrue);
+    await done(tester);
+  });
+
+  testWidgets('a pasted shop link goes without asking (2026-11-19)', (tester) async {
+    await open(tester);
+    const link =
+        'https://www.amazon.it/dp/B0CHWRXH8B?crid=2X3K9QZ7M1ABC&dib=eyJ2IjoiMSJ9.M4fWq7XkPz3RtY8sLmN2bVcQ9wEaH5jK1oUiP0lZxCv6BnM.Xk9Lq2Wm8NvBz3PcRf7HtY5gJu1&dib_tag=se';
+    await tester.enterText(find.byKey(const Key('composer-text')), link);
+    await tester.tap(find.byKey(const Key('composer-send')));
+    await _settle(tester);
+    final sent = server.received.lastWhere((m) => m['type'] == 'session.send');
+    expect(sent['text'], link);
+    expect(sent.containsKey('secretOk'), isFalse);
+    await done(tester);
+  });
+
   testWidgets('a long paste becomes a card beside the message', (tester) async {
     await open(tester);
     final long = List.filled(60, 'riga di log').join('\n');

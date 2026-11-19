@@ -60,7 +60,11 @@ function safePath(raw: string): string {
 export async function importSkill(
   archive: Uint8Array,
   targetRoot: string,
-  o: { replace?: boolean } = {},
+  o: {
+    replace?: boolean;
+    /** 3.9.7: called before a skill is replaced, to keep it in its history. */
+    beforeReplace?: (name: string) => Promise<void>;
+  } = {},
 ): Promise<{ name: string; description: string; dir: string; replaced: boolean }> {
   if (archive.length > SKILL_ARCHIVE_LIMITS.archiveBytes)
     throw new SkillArchiveError("The archive is too large");
@@ -117,6 +121,7 @@ export async function importSkill(
     () => false,
   );
   if (exists && !o.replace) throw new SkillExistsError(`A skill named "${name}" already exists`);
+  if (exists) await o.beforeReplace?.(name);
   // Written aside first (a dot folder, which loadSkills ignores), then moved in place.
   const tmp = join(skillsDir, `.import-${randomUUID().slice(0, 8)}`);
   try {

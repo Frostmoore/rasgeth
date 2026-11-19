@@ -19,7 +19,7 @@ import {
   rareStarts,
   rhythmOf,
 } from "../src/index.js";
-import { cssRareStarts } from "../src/motion.js";
+import { COMPANIONS, cssRareStarts } from "../src/motion.js";
 
 const KINDS: [string, AgentKind][] = [
   ["God", "god"],
@@ -104,10 +104,17 @@ describe("the table", () => {
     for (const [seed, kind] of KINDS)
       for (const state of MASCOT_STATES)
         for (const el of groups(mascotSvg(mascotSpec(seed, kind), { state, size: 64 })))
-          if (el.getAttribute("opacity") === "0")
+          if (el.getAttribute("opacity") === "0") {
             hidden.add(el.getAttribute("class")?.split(" ")[0] ?? "");
+            // Plain shapes only: the app's parity test drops hidden groups as flat text.
+            expect(el.querySelector("g"), el.getAttribute("class") ?? "").toBeNull();
+          }
     expect([...hidden].sort()).toEqual(
-      ["bub", "eyw", "gl", "orbb", "pop", "smk1", "smk2", "smk3", "spk", "yn", "z3"].sort(),
+      // God's companions: each one's copy on the other side of the body (all three show at rest).
+      [
+        ...["bub", "eyw", "gl", "pop", "smk1", "smk2", "smk3", "spk", "yn", "z3"],
+        ...["orbb", "orbf2", "orbb3"],
+      ].sort(),
     );
     // The two z's of the approved board, where they were.
     const idle = mascotSvg(mascotSpec("Chat", "assistant"), { state: "idle", size: 64 });
@@ -244,6 +251,31 @@ describe("the rare events", () => {
 
   it("puts a small shift per mascot in the page's delays (--j)", () => {
     expect(mascotMotionCss()).toContain("var(--j, 0) * 1s");
+  });
+});
+
+describe("God's companions", () => {
+  it("are three, each the first one's tracks shifted by its phase, in every state", () => {
+    expect(COMPANIONS.map((c) => [c.k, c.front])).toEqual([
+      ["", true],
+      ["2", false],
+      ["3", true],
+    ]);
+    for (const state of MASCOT_STATES) {
+      const t = MASCOT_MOTION.states[state];
+      const of = (el: string, prop: string) => t.find((x) => x.el === el && x.prop === prop);
+      for (const c of COMPANIONS)
+        for (const el of [`orbf${c.k}`, `orbb${c.k}`]) {
+          const move = of(el, "translate");
+          expect(move?.dur, el).toBe(14);
+          // At its phase it is where it is drawn: no jump when the motion starts.
+          const p = move?.phase ?? 0;
+          const at = move?.frames.find(([x]) => Math.abs(x - p) < 1e-3);
+          expect(at?.[1], `${state} ${el}`).toEqual([0, 0]);
+        }
+      expect(of("orbf2", "opacity")?.frames).toEqual(of("orbf", "opacity")?.frames);
+      expect(of("orbb3", "opacity")?.frames).toEqual(of("orbb", "opacity")?.frames);
+    }
   });
 });
 

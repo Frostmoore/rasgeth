@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EventStore, SqlClient } from "@redgiant/events";
-import { MascotBook, mascotSpec } from "@redgiant/mascot";
+import { hasOwnMascot, MascotBook, mascotSpec } from "@redgiant/mascot";
 import {
   type AgentSpec,
   LOCAL_OWNER_ID,
@@ -254,11 +254,14 @@ export class AgentRegistry {
     const rows = await this.db.query<Row>("SELECT * FROM rg_agents");
     this.cache = new Map(rows.map((r) => [r.id, this.mark(fromRow(r))]));
     const time = (r: Row) => (r.created_at ? new Date(r.created_at).getTime() : 0);
-    const missing = rows.filter((r) => !r.mascot_seed).sort((a, b) => time(a) - time(b));
+    // Sub-agents never get one (decision of 2026-11-19): they show their parent's ring.
+    const missing = rows
+      .filter((r) => !r.mascot_seed && hasOwnMascot({ kind: r.kind as AgentRecord["kind"] }))
+      .sort((a, b) => time(a) - time(b));
     for (const r of missing) {
       const a = this.cache.get(r.id);
       if (!a) continue;
-      const seed = this.claimSeed(a.ownerId, a.name, a.kind, a.parentId, a.id);
+      const seed = this.claimSeed(a.ownerId, a.name, a.kind, a.id);
       await this.db.query("UPDATE rg_agents SET mascot_seed = $2 WHERE id = $1", [a.id, seed]);
       a.mascotSeed = seed;
       await this.store.append({
@@ -274,14 +277,14 @@ export class AgentRegistry {
   }
 
   /**
-   * An agent's mascot (G40.2): from its saved seed (its id if it has none yet); a subagent's
-   * looks like its parent's.
+   * An agent's mascot (G40.2): from its saved seed (its id if it has none yet). A sub-agent has
+   * none (decision «Mascotte solo per orchestratori e agenti di primo livello», 2026-11-19): it
+   * shows a ring in its parent's colour (`subagentSignSvg`), even if an older one kept a seed.
    */
   mascotOf(id: string): MascotSpec | undefined {
     const a = this.cache.get(id);
-    if (!a) return undefined;
-    const parent = a.kind === "subagent" && a.parentId ? this.mascotOf(a.parentId) : undefined;
-    return mascotSpec(a.mascotSeed ?? a.id, a.kind, parent);
+    if (!a || !hasOwnMascot(a)) return undefined;
+    return mascotSpec(a.mascotSeed ?? a.id, a.kind);
   }
 
   /** The faces the owner's working agents have now (all but `except`). */
@@ -296,30 +299,23 @@ export class AgentRegistry {
     return book;
   }
 
-  /** The first free face for `base` among the owner's agents: the seed to save. */
   /**
    * The face a new agent named `name` would get now (3.8.1, the app's preview while the person
-   * types): the same choice `create` makes, nothing saved.
+   * types): the same choice `create` makes, nothing saved. None for a sub-agent.
    */
-  previewMascot(
-    ownerId: string,
-    name: string,
-    kind: AgentSpec["kind"],
-    parentId: string | null,
-  ): MascotSpec {
-    const parent = kind === "subagent" && parentId ? this.mascotOf(parentId) : undefined;
-    return this.mascotBook(ownerId).claim(name, kind, parent);
+  previewMascot(ownerId: string, name: string, kind: AgentSpec["kind"]): MascotSpec | undefined {
+    if (!hasOwnMascot({ kind })) return undefined;
+    return this.mascotBook(ownerId).claim(name, kind);
   }
 
+  /** The first free face for `base` among the owner's agents: the seed to save. */
   private claimSeed(
     ownerId: string,
     base: string,
     kind: AgentSpec["kind"],
-    parentId: string | null,
     except?: string,
   ): string {
-    const parent = kind === "subagent" && parentId ? this.mascotOf(parentId) : undefined;
-    return this.mascotBook(ownerId, except).claim(base, kind, parent).seed;
+    return this.mascotBook(ownerId, except).claim(base, kind).seed;
   }
 
   /**
@@ -331,10 +327,10 @@ export class AgentRegistry {
     if (!a) throw new HierarchyError(`Unknown agent "${id}"`);
     if (actor.type !== "human") throw new HierarchyError("Only the person changes a mascot");
     if (a.kind === "god") throw new HierarchyError("God's mascot is drawn by hand");
+    if (!hasOwnMascot(a)) throw new HierarchyError("A sub-agent has no mascot of its own");
     const book = this.mascotBook(a.ownerId);
-    const parent = a.kind === "subagent" && a.parentId ? this.mascotOf(a.parentId) : undefined;
     const base = `${a.name}~${randomUUID().slice(0, 6)}`;
-    const seed = book.claim(base, a.kind, parent).seed;
+    const seed = book.claim(base, a.kind).seed;
     await this.db.query("UPDATE rg_agents SET mascot_seed = $2 WHERE id = $1", [id, seed]);
     const updated: AgentRecord = { ...a, mascotSeed: seed };
     this.cache.set(id, this.mark(updated));
@@ -503,8 +499,11 @@ export class AgentRegistry {
     this.assertRoom(ownerId, projectId, [{ kind: input.kind, projectId, status: "active" }]);
 
     const agentId = `${input.kind}_${randomUUID().slice(0, 8)}`;
-    // The mascot's seed is fixed now (G40.2): renaming never changes the face.
-    const mascotSeed = this.claimSeed(ownerId, input.name, input.kind, input.parentId);
+    // The mascot's seed is fixed now (G40.2): renaming never changes the face. A sub-agent gets
+    // none (2026-11-19): it shows its parent's ring.
+    const mascotSeed = hasOwnMascot(input)
+      ? this.claimSeed(ownerId, input.name, input.kind)
+      : undefined;
     const record: AgentRecord = {
       id: agentId,
       ownerId,
@@ -519,7 +518,7 @@ export class AgentRegistry {
       ...(input.mode !== undefined && { mode: input.mode }),
       ...(input.connections !== undefined && { connections: input.connections }),
       ...(subprojectId !== undefined && { subprojectId }),
-      mascotSeed,
+      ...(mascotSeed !== undefined && { mascotSeed }),
       status: "active",
     };
     try {
@@ -540,7 +539,7 @@ export class AgentRegistry {
           input.mode ?? null,
           input.connections ? JSON.stringify(input.connections) : null,
           subprojectId ?? null,
-          mascotSeed,
+          mascotSeed ?? null,
         ],
       );
     } catch (err) {

@@ -16,6 +16,7 @@ import 'package:rgcompanion/screens/conversation_screen.dart';
 import 'package:rgcompanion/screens/new_agent_screen.dart';
 
 import 'fake_server.dart';
+import 'helpers.dart';
 
 AppController _app({Locale locale = const Locale('it')}) =>
     AppController(
@@ -168,6 +169,7 @@ void main() {
     );
     await tester.binding.handlePopRoute();
     await _settle(tester);
+    await bringToMiddle(tester, find.byKey(const Key('agent-agent_1')));
     expect(find.byKey(const Key('agent-agent_1')), findsOneWidget);
     await _done(tester);
   });
