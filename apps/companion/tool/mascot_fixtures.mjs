@@ -35,7 +35,8 @@ const out = cases.map(([seed, kind, p]) => {
       svg[theme][state] = mascotSvg(spec, { state, theme, size: 128, idPrefix: "m" });
   }
   const tiny = mascotSvg(spec, { state: "idle", theme: "light", size: 20, idPrefix: "m" });
-  return { seed, kind, spec, svg, tiny };
+  const compact = mascotSvg(spec, { state: "idle", theme: "light", size: 32, idPrefix: "m" });
+  return { seed, kind, spec, svg, tiny, compact };
 });
 
 const file = join(here, "../test/fixtures/mascots.json");

@@ -6,8 +6,15 @@ import '../api/client.dart';
 import '../api/types.dart';
 
 abstract class MascotSource {
-  /// The drawing of [agentId] in [state] and [theme]; [tiny] is the 16-20 px drawing.
-  Future<String> svg(String agentId, MascotState state, MascotTheme theme, {bool tiny = false});
+  /// The drawing of [agentId] in [state] and [theme]; [tiny] is the 16-20 px drawing, [compact]
+  /// the 21-32 px one (God and the Demigod keep only body, face and crown or diadem there).
+  Future<String> svg(
+    String agentId,
+    MascotState state,
+    MascotTheme theme, {
+    bool tiny = false,
+    bool compact = false,
+  });
 }
 
 class ClientMascotSource implements MascotSource {
@@ -17,10 +24,16 @@ class ClientMascotSource implements MascotSource {
   final Map<String, Future<String>> _cache = {};
 
   @override
-  Future<String> svg(String agentId, MascotState state, MascotTheme theme, {bool tiny = false}) {
-    final key = '$agentId|${state.name}|${theme.name}|$tiny';
+  Future<String> svg(
+    String agentId,
+    MascotState state,
+    MascotTheme theme, {
+    bool tiny = false,
+    bool compact = false,
+  }) {
+    final key = '$agentId|${state.name}|${theme.name}|$tiny|$compact';
     return _cache[key] ??= client
-        .mascotSvg(agentId, state: state, theme: theme, size: tiny ? 20 : 128)
+        .mascotSvg(agentId, state: state, theme: theme, size: tiny ? 20 : (compact ? 32 : 128))
         .catchError((Object e) {
           _cache.remove(key);
           throw e;

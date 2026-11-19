@@ -3754,7 +3754,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get asMascotHelp => 'Rinominarlo non cambia la faccia: la cambi solo tu, da qui.';
 
   @override
-  String get asMascotGod => 'La mascotte di God è disegnata a mano: è sempre il gigante rosso.';
+  String get asMascotGod =>
+      'La mascotte di God è disegnata a mano: la stella gigante con la corona, con tre stelline che le girano attorno.';
 
   @override
   String get asName => 'Nome';

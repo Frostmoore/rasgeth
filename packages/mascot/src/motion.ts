@@ -189,8 +189,8 @@ const bubble = (): MotionTrack[] => {
   ];
 };
 
-// God: the halo breathes, the little planet goes round the orbit (behind the body on the far
-// half: two copies trade places), and the crown glints now and then.
+// God: the halo breathes, three little companion stars go round the orbit (each behind the body
+// on the far half: a front and a back copy trade places), and the crown glints now and then.
 const ORBIT = { cx: 50, cy: 56, rx: 43.2, ry: 12.06, tilt: (-14 * Math.PI) / 180 };
 const PLANET: [number, number] = [17, 70.5];
 function orbitTracks(): MotionTrack[] {
@@ -204,7 +204,7 @@ function orbitTracks(): MotionTrack[] {
   const uy = (-dx * sin + dy * cos) / ry;
   const k = Math.hypot(ux, uy);
   const a0 = Math.atan2(uy, ux);
-  const steps = 24;
+  const steps = ORBIT_STEPS;
   const translate: [number, MotionValue][] = [];
   for (let i = 0; i <= steps; i++) {
     const a = a0 + (2 * Math.PI * i) / steps;
@@ -227,14 +227,64 @@ function orbitTracks(): MotionTrack[] {
     f(1, 1),
   ];
   const back = front.map(([at, v]) => [at, 1 - (v as number)] as [number, MotionValue]);
-  const c = { dur: 14, pk: 14, ease: "linear" as const };
-  return [
-    { el: "orbf", prop: "translate", ...c, frames: translate },
-    { el: "orbf", prop: "opacity", ...c, frames: front },
-    { el: "orbb", prop: "translate", ...c, frames: translate },
-    { el: "orbb", prop: "opacity", ...c, frames: back },
-  ];
+  const out: MotionTrack[] = [];
+  // Each companion is the first one's tracks shifted by its phase, measured from where it is drawn.
+  for (const { k, step } of COMPANION_STEPS) {
+    const [rx0, ry0] = (translate[step] as [number, [number, number]])[1];
+    const moved = translate.map(([at, v]) => {
+      const [x, y] = v as [number, number];
+      return f(at, [x - rx0, y - ry0]);
+    });
+    const c = {
+      dur: 14,
+      pk: 14,
+      ...(step ? { phase: r4(step / ORBIT_STEPS) } : {}),
+      ease: "linear" as const,
+    };
+    out.push(
+      { el: `orbf${k}`, prop: "translate", ...c, frames: moved },
+      { el: `orbf${k}`, prop: "opacity", ...c, frames: front },
+      { el: `orbb${k}`, prop: "translate", ...c, frames: moved },
+      { el: `orbb${k}`, prop: "opacity", ...c, frames: back },
+    );
+  }
+  return out;
 }
+
+/** The orbit's sampling: 24 steps, and each companion starts on one of them. */
+const ORBIT_STEPS = 24;
+/**
+ * The three companion stars (the Rasgeth header's): the first where the old planet was (front left),
+ * the second behind the body at the top right, the third in front on the right. Uneven on purpose,
+ * as in the header; at rest (no motion) all three show.
+ */
+const COMPANION_STEPS = [
+  { k: "", step: 0 },
+  { k: "2", step: 12 },
+  { k: "3", step: 17 },
+] as const;
+
+/** Where each companion is drawn (its rest place in the 100x100 box) and whether it is in front. */
+export const COMPANIONS: { k: string; x: number; y: number; front: boolean }[] =
+  COMPANION_STEPS.map(({ k, step }) => {
+    const { cx, cy, rx, ry, tilt } = ORBIT;
+    const dx = PLANET[0] - cx;
+    const dy = PLANET[1] - cy;
+    const cos = Math.cos(tilt);
+    const sin = Math.sin(tilt);
+    const ux = (dx * cos + dy * sin) / rx;
+    const uy = (-dx * sin + dy * cos) / ry;
+    const kk = Math.hypot(ux, uy);
+    const a = Math.atan2(uy, ux) + (2 * Math.PI * step) / ORBIT_STEPS;
+    const ex = kk * rx * Math.cos(a);
+    const ey = kk * ry * Math.sin(a);
+    return {
+      k,
+      x: r4(cx + ex * cos - ey * sin),
+      y: r4(cy + ex * sin + ey * cos),
+      front: Math.sin(a) > 0,
+    };
+  });
 const godTracks = (): MotionTrack[] => {
   const glint = (prop: MotionProp, rest: MotionValue, frames: [number, MotionValue][]) =>
     rare("glint", [4.5, 10], 15, 14, 0.7, { el: "gl", prop }, rest, frames);

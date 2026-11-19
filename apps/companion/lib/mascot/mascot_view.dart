@@ -70,6 +70,9 @@ class MascotView extends StatefulWidget {
   /// 16-20 px: body and eyes only, no sign; only the eyes blink (as the library draws it).
   bool get tiny => size <= 20;
 
+  /// 21-32 px: the library's small drawing (God and the Demigod without orbit, halo and glints).
+  bool get compact => !tiny && size <= 32;
+
   @override
   State<MascotView> createState() => _MascotViewState();
 }
@@ -130,10 +133,11 @@ class _MascotViewState extends State<MascotView> {
     final id = widget.agentId;
     if (source == null || id == null) return null;
     // The seed too: after «Change mascot» the same agent has a new face.
-    final key = '$id|${widget.spec?.seed}|${widget.state.name}|${_theme.name}|${widget.tiny}';
+    final key =
+        '$id|${widget.spec?.seed}|${widget.state.name}|${_theme.name}|${widget.tiny}|${widget.compact}';
     if (key != _futureKey) {
       _futureKey = key;
-      _future = source.svg(id, widget.state, _theme, tiny: widget.tiny);
+      _future = source.svg(id, widget.state, _theme, tiny: widget.tiny, compact: widget.compact);
     }
     return _future;
   }

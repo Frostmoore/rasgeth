@@ -47,12 +47,6 @@
     "why": "the one-time notice says the old name on purpose: «RedGiant is now called Rasgeth» (plan 3.9.0, choice 17)"
   },
   {
-    "path": "packages/web/src/i18n.ts",
-    "key": "^mascotGodHelp$",
-    "group": "mascot",
-    "why": "describes God's mascot as drawn today (the red giant); it changes with the drawing (plan 3.9.0, choice 15)"
-  },
-  {
     "path": "packages/web/src/voice/wake.ts",
     "pattern": "red giant",
     "group": "wake-word",
@@ -315,12 +309,6 @@
     "key": "^renameNoticeTitle$",
     "group": "notice",
     "why": "the one-time notice of the new name (choice 17) says the old one on purpose: «RedGiant is now called Rasgeth»"
-  },
-  {
-    "path": "apps/companion/lib/l10n/app_*.arb",
-    "key": "^asMascotGod$",
-    "group": "mascot",
-    "why": "describes God's mascot as drawn today, a red giant star (not the product's name); N9 redraws God as the crowned giant and changes this text"
   },
   {
     "path": "apps/companion/lib/api/discovery.dart",

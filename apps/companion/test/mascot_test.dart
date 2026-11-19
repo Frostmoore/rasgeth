@@ -94,11 +94,39 @@ void main() {
       expect(tool.parent!.entry(0, 0), closeTo(.8, 1e-9));
     });
 
-    test('God keeps its gradients, its orbit with two planets, its halo and its glint', () {
+    test('God keeps its gradients, its orbit with three companion stars, its halo and its glint', () {
       final l = splitMascotSvg(byKind('god').svgOf(MascotTheme.light, MascotState.idle), moving);
       final els = {for (final x in l.layers) ?x.el};
-      expect(els, containsAll(['hal', 'orbb', 'orbf', 'gl', 'eyes', 'eyw', 'bub', 'z1']));
+      expect(
+        els,
+        containsAll(['hal', 'orbb', 'orbf', 'orbb2', 'orbf2', 'orbb3', 'orbf3', 'gl', 'eyes', 'eyw']),
+      );
+      expect(els, containsAll(['bub', 'z1']));
       expect(l.layers.every((x) => x.svg.contains('radialGradient')), isTrue);
+      // Each companion turns around its own rest place; all three show without motion.
+      final f3 = l.layers.firstWhere((x) => x.el == 'orbf3');
+      expect(f3.origin.dx, greaterThan(70));
+      expect(l.layers.firstWhere((x) => x.el == 'orbb2').restOpacity, 1);
+    });
+
+    test("the Demigod is God's drawing at 0.85: its moving parts stay inside that scale", () {
+      final l = splitMascotSvg(
+        byKind('demigod').svgOf(MascotTheme.light, MascotState.active),
+        moving,
+      );
+      final eyes = l.layers.firstWhere((x) => x.el == 'eyes');
+      expect(eyes.parent!.entry(0, 0), closeTo(.85, 1e-9));
+      expect(l.layers.where((x) => x.el?.startsWith('orb') ?? false), isEmpty);
+    });
+
+    test('at 32 px God and the Demigod keep only body, face and crown (diadem)', () {
+      for (final kind in ['god', 'demigod']) {
+        final l = splitMascotSvg(byKind(kind).compact, moving);
+        final els = {for (final x in l.layers) ?x.el};
+        expect(els, contains('eyes'), reason: kind);
+        expect(els.intersection({'hal', 'gl', 'orbf', 'orbb', 'orbf2', 'orbb3'}), isEmpty);
+        expect(byKind(kind).compact, contains('#8a5a00'), reason: kind);
+      }
     });
   });
 
