@@ -1,6 +1,7 @@
 export * from "./anthropic.js";
 export * from "./budget.js";
 export * from "./catalog.js";
+export * from "./deferred.js";
 export * from "./effort.js";
 export * from "./fake.js";
 export * from "./fallback.js";

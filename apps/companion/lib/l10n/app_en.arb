@@ -7913,5 +7913,100 @@
   "ptrErr_long": "A trait is at most 200 characters: write it shorter.",
   "ptrErr_secret": "That looks like a password, a code or a card number: secrets never go into the portrait.",
   "ptrErr_private": "Email addresses and phone numbers never go into the portrait.",
-  "ptrErr_gone": "That trait is not there any more."
+  "ptrErr_gone": "That trait is not there any more.",
+  "tkTitle": "Tool groups",
+  "@tkTitle": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkLead": "Agents start with few tools, to keep every message light. The other groups are off by default: an agent switches one on by itself when the work needs it, for that conversation. Always on: the agent has it from the start. Off by you: the agent has to ask you.",
+  "@tkLead": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkAgentLead": "The groups for {name}: as for every agent, or a choice of its own.",
+  "@tkAgentLead": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tkAuto": "Off by default",
+  "@tkAuto": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkOn": "Always on",
+  "@tkOn": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkOff": "Off by you",
+  "@tkOff": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkAsAll": "As for everyone: {state}",
+  "@tkAsAll": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "tkIsDefault": "default",
+  "@tkIsDefault": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkRole": "on for its role",
+  "@tkRole": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkWeight": "about {n} tokens when on",
+  "@tkWeight": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tkEssential": "Essential tools, always on: about {n} tokens",
+  "@tkEssential": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tkStartTotal": "At the start: about {n} tokens in every message",
+  "@tkStartTotal": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tkRest": "Off at the start: {n} tokens that weigh only if a group is switched on",
+  "@tkRest": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tkTools": "Tools: {list}",
+  "@tkTools": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "tkStateAuto": "off by default",
+  "@tkStateAuto": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  }
 }

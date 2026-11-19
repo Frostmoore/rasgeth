@@ -1530,6 +1530,13 @@ export class Api {
     this.call<PlatformChange>("PUT", `/api/agents/${encodeURIComponent(agentId)}/tools`, {
       tools,
     });
+  /** Tool groups (3.9.4): for every agent, and for one. */
+  setKits = (kits: Record<string, "on" | "auto" | "off" | "default">) =>
+    this.call<PlatformChange>("PUT", "/api/tools/kits", { kits });
+  setAgentKits = (agentId: string, kits: Record<string, "on" | "auto" | "off" | "default">) =>
+    this.call<PlatformChange>("PUT", `/api/agents/${encodeURIComponent(agentId)}/tools/kits`, {
+      kits,
+    });
   /** What an agent's summaries do when it sets nothing (12% kept on a local model). */
   compactionDefaults = (agentId: string) =>
     this.call<{ at: number; keep: number }>(

@@ -30,6 +30,7 @@ import {
   type StreamEvent,
   stallLog,
   streamWithFallback,
+  type ToolDef,
 } from "@redgiant/providers";
 import { z } from "zod";
 import {
@@ -124,6 +125,13 @@ export interface AgentSessionOptions {
    * session starts, so a resumed one keeps the same set (the cached prefix does not move).
    */
   toolsOff?: readonly string[];
+  /** Tools off by default (3.9.4), also left out of `tools`: recorded like `toolsOff`. */
+  toolsDeferred?: readonly string[];
+  /**
+   * The tools left out of `tools` (switched off by the person, or off by default): declared to
+   * the model as deferred, callable only once `addTools` switched them on (3.9.4).
+   */
+  aside?: readonly Tool[];
   /**
    * What the model's engine makes by itself in this conversation (2026-11-19, `image`…): recorded
    * at the start and told to the engine at every turn.
@@ -297,6 +305,10 @@ export class AgentSession {
   /** Metrics of the latest model call since the last compaction; drives auto-compaction. */
   private lastMetrics: MessageMetrics | undefined;
   private tools: Tool[];
+  /** Declared but not loaded (3.9.4): the tools left aside, sorted by name. */
+  private readonly shelved: Tool[];
+  /** Tools switched on while the conversation runs, in the order they came (after `tools`). */
+  private added: Tool[] = [];
   private readonly ctx: ToolContext;
   /** The engine's conversation id (G21), from the log. */
   private engineSession: string | undefined;
@@ -313,6 +325,7 @@ export class AgentSession {
     this.tools = canonicalTools(
       o.historyTool === false ? o.tools : [...o.tools, historyTool(o.store, o.sessionId)],
     );
+    this.shelved = canonicalTools([...(o.aside ?? [])]);
     this.ctx = {
       ownerId: o.ownerId ?? LOCAL_OWNER_ID,
       projectId: o.projectId ?? null,
@@ -331,6 +344,7 @@ export class AgentSession {
         system: options.system,
         tools: s.tools.map((t) => t.def.name),
         ...(options.toolsOff?.length && { toolsOff: [...options.toolsOff] }),
+        ...(options.toolsDeferred?.length && { toolsDeferred: [...options.toolsDeferred] }),
         ...(options.native && { native: [...options.native] }),
       },
     });
@@ -361,6 +375,10 @@ export class AgentSession {
     for (const e of events) {
       if (e.type === "compaction" || e.type === "compaction.undone") s.lastMetrics = undefined;
       if (e.type === "message.assistant" && e.payload) s.lastMetrics = e.payload.metrics;
+      // Tools switched on in the conversation, in the same order (3.9.4); before 3.9.4 (no `by`)
+      // they joined the sorted set, as they did then.
+      if (e.type === "session.tools_added" && e.payload)
+        s.switchedOn(e.payload.tools, !e.payload.by);
       // An engine's own conversation belongs to the session that had it, not to its forks.
       if (e.type === "engine.session" && e.payload && e.sessionId === options.sessionId)
         s.engineSession = e.payload.id;
@@ -373,25 +391,73 @@ export class AgentSession {
   }
 
   /**
-   * Tools switched back on while the conversation runs (G36.15, the agent asked and the person said
-   * yes): recorded first, then part of every later request. The prefix changes once, here.
+   * Tools switched on while the conversation runs (G36.15; 3.9.4): recorded first, then part of
+   * every later request, after the ones it started with. Returns the names the tool result must
+   * surface (`refs`): a provider with deferred loading reads them there and its cached prefix stays
+   * the same; another gets them at the end of its tool list (the prefix changes once, here).
    */
   async addTools(
     tools: Tool[],
-    payload: { entry: string; why: string; scope: "session" | "agent" },
-  ): Promise<void> {
-    const fresh = tools.filter((t) => !this.tools.some((x) => x.def.name === t.def.name));
-    if (fresh.length === 0) return;
+    payload: {
+      entry: string;
+      why: string;
+      scope: "session" | "agent";
+      by?: "agent" | "person";
+    },
+  ): Promise<string[]> {
+    const fresh = tools.filter((t) => !this.callable.some((x) => x.def.name === t.def.name));
+    if (fresh.length === 0) return [];
+    const names = fresh.map((t) => t.def.name).sort();
     await this.record({
       type: "session.tools_added",
-      payload: { tools: fresh.map((t) => t.def.name).sort(), ...payload },
+      payload: {
+        tools: names,
+        ...payload,
+        by: payload.by ?? "person",
+        ...(fresh.every((t) => this.shelved.includes(t)) && { deferred: true }),
+      },
     });
-    this.tools = canonicalTools([...this.tools, ...fresh]);
+    this.switchedOn(names, false, fresh);
+    return names;
+  }
+
+  /** Moves tools into the callable set: at the end, or (`sorted`, before 3.9.4) into the base. */
+  private switchedOn(names: readonly string[], sorted: boolean, given: readonly Tool[] = []) {
+    const pick = names.flatMap((n) => {
+      if (this.callable.some((t) => t.def.name === n)) return [];
+      const t = this.shelved.find((x) => x.def.name === n) ?? given.find((x) => x.def.name === n);
+      return t ? [t] : [];
+    });
+    if (sorted) this.tools = canonicalTools([...this.tools, ...pick]);
+    else this.added.push(...canonicalTools(pick));
+  }
+
+  /** What the model may call: the tools it started with, then those switched on, in order. */
+  private get callable(): Tool[] {
+    return [...this.tools, ...this.added];
   }
 
   /** The tools as the model receives them, in order (the tools page weighs them, G34.5). */
   get toolDefs(): Tool["def"][] {
-    return this.tools.map((t) => t.def);
+    return this.callable.map((t) => t.def);
+  }
+
+  /**
+   * The tool list of a request (3.9.4): the loaded tools, then every tool left aside declared as
+   * deferred (sorted, the same for the whole conversation). A tool switched on stays deferred while
+   * a result in the history names it; after a summary dropped that result it is loaded again.
+   */
+  private requestTools(messages: readonly ChatMessage[]): ToolDef[] {
+    const named = new Set(
+      messages.flatMap((m) =>
+        m.role === "user"
+          ? m.parts.flatMap((p) => (p.type === "tool_result" ? (p.refs ?? []) : []))
+          : [],
+      ),
+    );
+    const loaded = [...this.tools, ...this.added.filter((t) => !named.has(t.def.name))];
+    const deferred = this.shelved.filter((t) => !loaded.includes(t));
+    return [...loaded.map((t) => t.def), ...deferred.map((t) => ({ ...t.def, deferred: true }))];
   }
 
   get messages(): ChatMessage[] {
@@ -409,10 +475,11 @@ export class AgentSession {
   }
 
   private request() {
+    const messages = this.messages;
     return {
       system: this.o.system,
-      tools: this.tools.map((t) => t.def),
-      messages: this.messages,
+      tools: this.requestTools(messages),
+      messages,
       ...(this.o.maxTokens !== undefined && { maxTokens: this.o.maxTokens }),
       cacheKey: this.ctx.sessionId,
       ...(this.o.priority !== undefined && { priority: this.o.priority }),
@@ -784,6 +851,7 @@ export class AgentSession {
                 ok: !r.isError,
                 output: r.content,
                 ...(reminder && { reminder }),
+                ...(r.refs?.length ? { refs: r.refs } : {}),
               },
             });
             this.history.push({
@@ -795,6 +863,7 @@ export class AgentSession {
                     callId: call.callId,
                     content: trimResult(r.content, this.maxResultChars),
                     ...(r.isError && { isError: true }),
+                    ...(r.refs?.length ? { refs: r.refs } : {}),
                   },
                 ],
               },
@@ -882,7 +951,7 @@ export class AgentSession {
           text: message,
           images: pictures,
           system: this.o.system,
-          tools: this.tools.map((t) => t.def),
+          tools: this.callable.map((t) => t.def),
           model,
           resume: this.engineSession,
           ...(this.o.native && { native: this.o.native }),
@@ -1087,6 +1156,7 @@ export class AgentSession {
           output: r.content,
           ...(images && { images }),
           ...(reminder && { reminder }),
+          ...(r.refs?.length ? { refs: r.refs } : {}),
         },
       });
       firstSeq ??= e.seq;
@@ -1102,6 +1172,7 @@ export class AgentSession {
             callId: calls[i]?.callId ?? "",
             content: trimResult(r.content, this.maxResultChars),
             ...(r.isError && { isError: true }),
+            ...(r.refs?.length ? { refs: r.refs } : {}),
           })),
           ...pictures,
           ...(await this.interjections()),
@@ -1178,10 +1249,14 @@ export class AgentSession {
     });
   }
 
-  private async runOne(call: ToolCallInfo, rawInput: string, base: ToolContext) {
+  private async runOne(
+    call: ToolCallInfo,
+    rawInput: string,
+    base: ToolContext,
+  ): Promise<{ content: string; isError: boolean; images?: ImagePart[]; refs?: string[] }> {
     const ctx: ToolContext = { ...base, callId: call.callId };
     const fail = (content: string) => ({ content, isError: true });
-    const tool = this.tools.find((t) => t.def.name === call.name);
+    const tool = this.callable.find((t) => t.def.name === call.name);
     if (!tool) return fail(`Unknown tool "${call.name}".`);
     let input: unknown = call.input;
     if (input === undefined) {
@@ -1225,6 +1300,7 @@ export class AgentSession {
 
     let result: { content: string; isError: boolean };
     let images: ImagePart[] = [];
+    let refs: string[] = [];
     try {
       const out = await this.untilStopped(tool.run(input, ctx), ctx.signal);
       result =
@@ -1232,14 +1308,18 @@ export class AgentSession {
           ? { content: out, isError: false }
           : { content: out.content, isError: out.isError ?? false };
       if (typeof out !== "string" && out.images?.length) images = out.images;
+      if (typeof out !== "string" && out.refs?.length) refs = out.refs;
     } catch (err) {
       result = fail(`Tool failed: ${err instanceof Error ? err.message : String(err)}`);
     }
     for (const h of this.o.hooks?.postToolUse ?? []) {
       result = (await h({ ...call, input }, result, ctx)) ?? result;
     }
-    if (images.length > 0) return { ...result, images };
-    return result;
+    return {
+      ...result,
+      ...(images.length > 0 && { images }),
+      ...(refs.length > 0 && { refs }),
+    };
   }
 
   /**

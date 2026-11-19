@@ -16,6 +16,7 @@ import {
 import {
   catalogConfig,
   Effort,
+  invalidKitIds,
   invalidToolIds,
   MCP_CATALOG,
   type ModelSpec,
@@ -563,14 +564,29 @@ export class PlatformConfig {
       throw new ConfigError(
         `These tools are essential and cannot be switched off: ${[...new Set(essential)].join(", ")}`,
       );
+    // Kits (3.9.4): only known ones; every kit, core included, may be off or on.
+    const kitIds = [
+      ...Object.keys(choice.kits ?? {}),
+      ...Object.values(choice.agentKits ?? {}).flatMap((m) => Object.keys(m)),
+    ];
+    const badKits = invalidKitIds(kitIds);
+    if (badKits.length > 0)
+      throw new ConfigError(`Unknown tool groups: ${[...new Set(badKits)].join(", ")}`);
     const mine = (id: string) => this.h.registry.get(id)?.ownerId === ownerId;
     if (about && !mine(about.agentId)) throw new ConfigError(`Unknown agent "${about.agentId}"`);
     // Empty exceptions, and those of agents that are gone, are not kept.
+    const agentKits = Object.fromEntries(
+      Object.entries(choice.agentKits ?? {}).filter(
+        ([id, m]) => mine(id) && Object.keys(m).length > 0,
+      ),
+    );
     const clean: ToolChoice = {
       off: [...new Set(choice.off)].sort(),
       agents: Object.fromEntries(
         Object.entries(choice.agents).filter(([id, m]) => mine(id) && Object.keys(m).length > 0),
       ),
+      ...(Object.keys(choice.kits ?? {}).length > 0 && { kits: choice.kits }),
+      ...(Object.keys(agentKits).length > 0 && { agentKits }),
     };
     const before = await store.get(ownerId);
     await store.set(ownerId, clean);
@@ -614,7 +630,7 @@ export class PlatformConfig {
       }
     }
     if (kept.length === 0) return { change: null, ignored };
-    const after: ToolChoice = { off: before.off, agents: { ...before.agents, [agentId]: own } };
+    const after: ToolChoice = { ...before, agents: { ...before.agents, [agentId]: own } };
     await store.set(ownerId, after);
     const change = await this.h.changes.record(ownerId, {
       kind: "config",

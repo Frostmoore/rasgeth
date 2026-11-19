@@ -6,7 +6,10 @@ import { invalidToolIds, TOOL_CATALOG, toolEntryOf, toolsSwitchedOff } from "@re
 import { afterEach, describe, expect, it } from "vitest";
 import type { PlatformChange } from "../src/index.js";
 import { toolChars, toolsView } from "../src/tool-choice.js";
-import { OTHER, startServer } from "./helpers.js";
+import { keepKitDefaults, OTHER, startServer } from "./helpers.js";
+
+// The kits as they are by default (3.9.4).
+keepKitDefaults();
 
 type Server = Awaited<ReturnType<typeof startServer>>;
 let s: Server | undefined;
@@ -83,19 +86,28 @@ describe("the catalog (G34.5)", () => {
       ["mcp__x", 9999],
     ]);
     const v = toolsView({ off: ["web_search"], agents: { a: { fetch: "off" } } }, measured, null);
-    expect(v.entries.map((e) => [e.id, e.chars, e.tokens, e.global])).toEqual([
-      ["read_file", 35, 10, true],
-      ["fetch", 350, 100, true],
-      ["web_search", 700, 200, false],
-      ["browser", 350, 100, true],
+    expect(v.entries.map((e) => [e.id, e.chars, e.tokens, e.global, e.state])).toEqual([
+      ["read_file", 35, 10, true, "on"],
+      ["fetch", 350, 100, true, "on"],
+      ["web_search", 700, 200, false, "off"],
+      ["browser", 350, 100, true, "auto"],
     ]);
-    expect(v.total).toBe(210);
-    expect(v.saved).toBe(200);
-    const a = toolsView({ off: ["web_search"], agents: { a: { fetch: "off" } } }, measured, "a");
+    // On every request: what is on from the start (3.9.4: the browser is off by default).
+    expect(v.total).toBe(110);
+    expect(v.saved).toBe(300);
+    expect(v.essential).toBe(10);
+    expect(v.kits.map((k) => [k.id, k.tokens, k.state, k.own])).toEqual([
+      ["core", 300, "on", null],
+      ["browser", 100, "auto", null],
+    ]);
+    const a = toolsView({ off: ["web_search"], agents: { a: { fetch: "off" } } }, measured, {
+      agentId: "a",
+    });
     expect(a.entries.find((e) => e.id === "fetch")).toMatchObject({ own: "off", on: false });
     expect(a.entries.find((e) => e.id === "read_file")).toMatchObject({ own: null, on: true });
-    expect(a.total).toBe(110);
-    expect(a.saved).toBe(300);
+    expect(a.entries.find((e) => e.id === "browser")).toMatchObject({ state: "auto", on: true });
+    expect(a.total).toBe(10);
+    expect(a.saved).toBe(400);
     expect(toolChars({ def: { name: "x", description: "d", inputSchema: {} } })).toBe(
       JSON.stringify({ name: "x", description: "d", input_schema: {} }).length,
     );
@@ -225,7 +237,9 @@ describe("tools switched off (G34.5)", () => {
       essential: true,
       global: true,
     });
-    expect(all.saved).toBe(ws?.tokens);
+    expect(all.saved).toBe(
+      all.entries.filter((e) => e.state !== "on").reduce((n, e) => n + e.tokens, 0),
+    );
     // One agent: only its own tools, measured as the model receives them.
     const mine = (await s.api<ToolsView>("GET", `/api/tools?agentId=${coder}`)).body;
     expect(mine.entries.map((e) => e.id)).not.toContain("platform_mcp");
@@ -236,10 +250,13 @@ describe("tools switched off (G34.5)", () => {
     expect(mine.entries.find((e) => e.id === "fetch")?.chars).toBe(
       toolChars({ def: fetchDef as never }),
     );
-    // What the agent gets now is exactly what is on in its view (outside the catalog: none here).
-    const onNames = mine.entries.filter((e) => e.on).flatMap((e) => e.tools);
+    // What the agent starts with is exactly what is on in its view (outside the catalog: none
+    // here); what is off by default it can switch on.
+    const onNames = mine.entries.filter((e) => e.state === "on").flatMap((e) => e.tools);
     expect(sent.map((t) => t.name).sort()).toEqual(onNames.sort());
-    expect(mine.total).toBe(mine.entries.filter((e) => e.on).reduce((n, e) => n + e.tokens, 0));
+    expect(mine.total).toBe(
+      mine.entries.filter((e) => e.state === "on").reduce((n, e) => n + e.tokens, 0),
+    );
     expect((await s.api("GET", "/api/tools?agentId=nobody")).status).toBe(404);
     expect((await s.api<ToolsView>("GET", `/api/tools?agentId=${god}`)).status).toBe(200);
   });

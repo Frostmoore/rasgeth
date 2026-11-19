@@ -1,4 +1,5 @@
 import type { ModelSpec } from "@redgiant/protocol";
+import { forProvider } from "./deferred.js";
 import {
   CLOUD_STALL,
   ProviderStalledError,
@@ -64,8 +65,12 @@ export async function* streamWithFallback(
   let stallStarted: number | undefined;
   while (current) {
     effort = current.effort ?? effort;
-    const attempt: CompletionRequest = { ...request, model: current.model, effort };
     const provider = registry.get(current.provider);
+    const attempt: CompletionRequest = forProvider(provider, current.model, {
+      ...request,
+      model: current.model,
+      effort,
+    });
     const limits = provider.stall ?? CLOUD_STALL;
     let emitted = false;
     // Its own cancel: a stalled try is aborted for real (the HTTP request, the engine).

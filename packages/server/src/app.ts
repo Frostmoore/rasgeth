@@ -28,6 +28,7 @@ import {
   AutomationRun,
   Effort,
   ImagePart,
+  type KitState,
   LOCAL_OWNER_ID,
   MachineAccess,
   MachineBody,
@@ -2274,6 +2275,44 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       return c.json({ error: "off must be a list of tool ids" }, 400);
     try {
       return c.json(await core.setToolsOff(owner(c), body.off as string[]), 200);
+    } catch (err) {
+      if (err instanceof ConfigError) return c.json({ error: err.message }, 400);
+      throw err;
+    }
+  });
+  // Kits (3.9.4): "on" from the start, "auto" off until the agent switches them on, "off" switched
+  // off by the person, "default" back to the default; for every agent or for one.
+  const kitStates = (v: unknown) =>
+    !!v &&
+    typeof v === "object" &&
+    Object.values(v).every((x) => x === "on" || x === "auto" || x === "off" || x === "default");
+  app.put("/api/tools/kits", async (c) => {
+    const body = (await c.req.json().catch(() => null)) as { kits?: unknown } | null;
+    if (!kitStates(body?.kits))
+      return c.json({ error: 'kits: { <kit>: "on" | "auto" | "off" | "default" }' }, 400);
+    try {
+      return c.json(
+        await core.setKits(owner(c), body?.kits as Record<string, KitState | "default">),
+        200,
+      );
+    } catch (err) {
+      if (err instanceof ConfigError) return c.json({ error: err.message }, 400);
+      throw err;
+    }
+  });
+  app.put("/api/agents/:id/tools/kits", async (c) => {
+    const body = (await c.req.json().catch(() => null)) as { kits?: unknown } | null;
+    if (!kitStates(body?.kits))
+      return c.json({ error: 'kits: { <kit>: "on" | "auto" | "off" | "default" }' }, 400);
+    try {
+      return c.json(
+        await core.setAgentKits(
+          owner(c),
+          c.req.param("id"),
+          body?.kits as Record<string, KitState | "default">,
+        ),
+        200,
+      );
     } catch (err) {
       if (err instanceof ConfigError) return c.json({ error: err.message }, 400);
       throw err;

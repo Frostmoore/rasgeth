@@ -21,6 +21,12 @@ export interface ToolDef {
   name: string;
   description: string;
   inputSchema: Record<string, unknown>;
+  /**
+   * Declared but not loaded (3.9.4): the model sees it only once a tool result names it
+   * (`refs`). Sent only to providers that say `deferredTools`; they keep it out of the cached
+   * prefix (Anthropic's `defer_loading`). Deferred tools come after every loaded one.
+   */
+  deferred?: boolean;
 }
 
 export interface CompletionRequest {
@@ -146,6 +152,12 @@ export interface Provider {
   /** The models one can pick (the composer's menu); best known first. */
   models?(signal?: AbortSignal): Promise<string[]>;
   stream(request: CompletionRequest, signal?: AbortSignal): AsyncIterable<StreamEvent>;
+  /**
+   * Whether `model` loads deferred tools on demand (3.9.4): `ToolDef.deferred` stays out of the
+   * cached prefix and a tool result's `refs` loads them. Without it the request gets only the
+   * tools the model may call (`forProvider`).
+   */
+  deferredTools?(model: string): boolean;
 }
 
 /** Thrown by providers for failures that another model may succeed on. */

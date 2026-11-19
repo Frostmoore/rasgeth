@@ -17,7 +17,10 @@ import {
   UpdateWatcher,
   type UpdateWatcherOptions,
 } from "../src/updates.js";
-import { startServer } from "./helpers.js";
+import { keepKitDefaults, startServer } from "./helpers.js";
+
+// A restored backup brings its own settings: no seeded tool kits (3.9.4).
+keepKitDefaults();
 
 const keys = generateKeyPairSync("rsa", { modulusLength: 2048 });
 const PUB = keys.publicKey.export({ type: "spki", format: "pem" }).toString();

@@ -20,6 +20,7 @@ import '../mascot/mascot_view.dart';
 import '../settings/agents/add_agent_under.dart' show openAddUnder;
 import '../settings/agents/agent_tree.dart' show canAddUnder;
 import '../settings/agents/assistant_parts.dart';
+import '../settings/tool_kits.dart' show AgentKits;
 import '../theme/colors.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
@@ -1561,6 +1562,9 @@ class _ToolsState extends State<_Tools> {
             ),
           ),
         ],
+        // The groups (3.9.4): as for everyone, or its own choice.
+        SectionHead(l.tkTitle),
+        AgentKits(agentId: widget.agent.id, agentName: widget.agent.name),
         SectionHead(l.asGroupTools),
         _help(context, l.asToolsHelp),
         if (tools == null)

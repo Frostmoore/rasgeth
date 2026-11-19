@@ -19,6 +19,11 @@ export type ToolOutput =
       isError?: boolean;
       /** Pictures for the model (a screenshot): they follow the results in the same message. */
       images?: ImagePart[];
+      /**
+       * Deferred tools this result surfaces by name (3.9.4, request_tool): recorded with the
+       * result; providers load their definitions from here on.
+       */
+      refs?: string[];
     };
 
 export interface Tool<I = unknown> {

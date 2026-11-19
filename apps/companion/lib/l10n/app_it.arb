@@ -3024,5 +3024,20 @@
   "ptrErr_long": "Un tratto è al massimo di 200 caratteri: scrivilo più corto.",
   "ptrErr_secret": "Sembra una password, un codice o un numero di carta: i segreti non entrano mai nel ritratto.",
   "ptrErr_private": "Indirizzi email e numeri di telefono non entrano mai nel ritratto.",
-  "ptrErr_gone": "Quel tratto non c'è più."
+  "ptrErr_gone": "Quel tratto non c'è più.",
+  "tkTitle": "Gruppi di strumenti",
+  "tkLead": "Gli agenti partono con pochi strumenti, così ogni messaggio pesa poco. Gli altri gruppi sono spenti di serie: un agente ne accende uno da sé quando il lavoro lo chiede, per quella conversazione. Acceso sempre: l'agente lo ha dall'inizio. Spento da te: l'agente deve chiedertelo.",
+  "tkAgentLead": "I gruppi di {name}: come per tutti gli agenti, oppure una scelta sua.",
+  "tkAuto": "Spento di serie",
+  "tkOn": "Acceso sempre",
+  "tkOff": "Spento da te",
+  "tkAsAll": "Come per tutti: {state}",
+  "tkIsDefault": "di serie",
+  "tkRole": "acceso per il suo ruolo",
+  "tkWeight": "circa {n} token quando è acceso",
+  "tkEssential": "Strumenti essenziali, sempre accesi: circa {n} token",
+  "tkStartTotal": "All'inizio: circa {n} token a ogni messaggio",
+  "tkRest": "Spenti all'inizio: {n} token che pesano solo se si accende un gruppo",
+  "tkTools": "Strumenti: {list}",
+  "tkStateAuto": "spento di serie"
 }

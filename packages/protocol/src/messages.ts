@@ -17,6 +17,8 @@ export const UserPart = z.discriminatedUnion("type", [
     callId: z.string(),
     content: z.string(),
     isError: z.boolean().optional(),
+    /** Deferred tools this result surfaces by name (3.9.4): see `tool.result`'s `refs`. */
+    refs: z.array(z.string()).optional(),
   }),
 ]);
 export type UserPart = z.infer<typeof UserPart>;

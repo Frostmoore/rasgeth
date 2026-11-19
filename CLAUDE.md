@@ -19,14 +19,21 @@
   rebuilt with `rebuildHistory`. Tests use an in-process Postgres (PGlite, see `test/pglite.ts`).
 - Keep the prompt prefix stable: tools are sorted by name (`canonicalTools`), the system prompt never
   changes inside a session, history is append-only (compaction is an explicit event).
-- Every agent gets every base tool (`baseTools`) except those the person switched off (for every agent or for one,
-  Settings > Tools, G34.5); essential tools (`TOOL_CATALOG`, `essential`) never switch off. The set is computed when a
-  conversation starts and stays fixed for the session (`session.started.toolsOff`); model profiles change
-  descriptions only, never the tool set.
-  Exception (G36.15): an agent can ask for a switched-off tool with `request_tool`; with the person's yes the tool
-  joins the running session through an explicit `session.tools_added` event (the prefix is rebuilt once, like a
-  compaction), and resuming rebuilds the same set from the log. Creators may switch tools off for an agent they
-  just made (`create_agent` `tools_off`), never essential ones.
+- Tools off by default, switched on by kits (3.9.4, decision «Strumenti spenti di serie, accesi a gruppi quando
+  servono»): every catalog entry (`TOOL_CATALOG`) has a `kit` except the essential ones, which never switch off. A
+  conversation starts with the essential tools, the `core` kit, the kits of its profile (`KIT_PROFILES`: God
+  team, helpers and platform, orchestrators team and helpers) and whatever the person switched on (Settings > Tools, for every agent or for
+  one: "on" | "auto" | "off"); one pure rule decides (`toolState` in `packages/protocol/src/tools.ts`, tested as a
+  table: change the table first). The split is fixed at the start (`session.started.toolsOff` for those the person
+  switched off, `toolsDeferred` for those off by default) and resuming rebuilds it from the log; model profiles
+  change descriptions only, never the tool set. With `request_tool` an agent switches on a kit (or one tool): off by
+  default it comes on at once, without asking; switched off by the person it needs their yes (G36.15). Either way an
+  explicit `session.tools_added` event (`by` agent | person) and the tools join at the end of the set. Every tool
+  left aside is declared to the provider as deferred (`ToolDef.deferred`) and request_tool's result names those it
+  switches on (`refs`): Anthropic keeps them out of the cached prefix (`defer_loading`, `tool_reference`), every
+  other provider gets only the callable ones, the named ones appended (`forProvider`: one prefix rebuild per kit,
+  like a compaction). Creators may switch tools off for an agent they just made (`create_agent` `tools_off`), never
+  essential ones.
 - Cache discipline: reasoning is always sent back (Anthropic native blocks; `reasoning_content` for local servers),
   effort/thinking stay fixed for a session (only the human changes the model or effort, from the composer: `setSessionModel`), and compaction reuses the exact same request plus one message.
 - Keys (G36.20): every key Rasgeth keeps (providers, chats, mailboxes, MCP sign-ins, GitHub/Gitea…) lives in the

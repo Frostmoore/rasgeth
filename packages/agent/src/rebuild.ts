@@ -119,6 +119,7 @@ export function rebuildHistory(events: Iterable<Event>, o: RebuildOptions = {}):
               ? trimResult(e.payload.output, o.maxResultChars)
               : e.payload.output,
           ...(!e.payload.ok && { isError: true }),
+          ...(e.payload.refs?.length && { refs: e.payload.refs }),
         };
         const images = e.payload.images ?? [];
         open = open.filter((c) => c.callId !== e.payload.callId);
