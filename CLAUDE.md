@@ -22,7 +22,7 @@
 - Tools off by default, switched on by kits (3.9.4, decision «Strumenti spenti di serie, accesi a gruppi quando
   servono»): every catalog entry (`TOOL_CATALOG`) has a `kit` except the essential ones, which never switch off. A
   conversation starts with the essential tools, the `core` kit, the kits of its profile (`KIT_PROFILES`: God
-  team+platform, orchestrators team) and whatever the person switched on (Settings > Tools, for every agent or for
+  team, helpers and platform, orchestrators team and helpers) and whatever the person switched on (Settings > Tools, for every agent or for
   one: "on" | "auto" | "off"); one pure rule decides (`toolState` in `packages/protocol/src/tools.ts`, tested as a
   table: change the table first). The split is fixed at the start (`session.started.toolsOff` for those the person
   switched off, `toolsDeferred` for those off by default) and resuming rebuilds it from the log; model profiles

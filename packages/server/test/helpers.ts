@@ -1,7 +1,7 @@
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { PROTOCOL_VERSION, type ServerMessage } from "@redgiant/protocol";
+import { PROTOCOL_VERSION, type ServerMessage, TOOL_KITS } from "@redgiant/protocol";
 import {
   FakeProvider,
   type FakeProviderOptions,
@@ -21,6 +21,15 @@ import type { IssueDeviceToken } from "../src/setup-channel.js";
 import { memoryDb } from "./pglite.js";
 
 export const TOKEN = "test-token-0123456789";
+
+/**
+ * 3.9.4: a feature's test starts with every tool kit on, as before kits existed, so its script may
+ * call any tool; the tests of the kits themselves call this first and keep the defaults.
+ */
+let kitsOn = true;
+export const keepKitDefaults = () => {
+  kitsOn = false;
+};
 export const OTHER = "other-token-0123456789";
 
 /**
@@ -56,6 +65,13 @@ export async function startServer(
     askAgent: async () => "escalate",
     ...core,
   });
+  if (kitsOn)
+    for (const owner of ["me", "someone-else"])
+      await redgiant.toolChoices.set(owner, {
+        off: [],
+        agents: {},
+        kits: Object.fromEntries(TOOL_KITS.map((k) => [k, "on" as const])),
+      });
   let gateway: TelegramGateway | undefined;
   if (telegramApiRoot) {
     await migrateTelegram(db);

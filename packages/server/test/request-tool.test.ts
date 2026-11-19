@@ -7,7 +7,10 @@ import type { CompletionRequest, FakeTurn } from "@redgiant/providers";
 import { afterEach, describe, expect, it } from "vitest";
 import type { PlatformChange } from "../src/index.js";
 import { switchedOffSection } from "../src/request-tool.js";
-import { startServer } from "./helpers.js";
+import { keepKitDefaults, startServer } from "./helpers.js";
+
+// The kits as they are by default (3.9.4).
+keepKitDefaults();
 
 type Server = Awaited<ReturnType<typeof startServer>>;
 let s: Server | undefined;

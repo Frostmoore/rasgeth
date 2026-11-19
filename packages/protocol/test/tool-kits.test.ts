@@ -71,6 +71,10 @@ describe("the catalog's kits", () => {
     expect(kitDefault("platform", "god")).toBe("on");
     expect(kitDefault("team", "orchestrator")).toBe("on");
     expect(kitDefault("team", "agent")).toBe("auto");
+    // Who coordinates gets the helpers: sub-agents, the board, groups.
+    expect(kitDefault("helpers", "orchestrator")).toBe("on");
+    expect(kitDefault("helpers", "god")).toBe("on");
+    expect(kitDefault("helpers", "agent")).toBe("auto");
     expect(KIT_PROFILES.agent).toBeUndefined();
   });
 });

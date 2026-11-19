@@ -8,7 +8,10 @@ import type { Event, PermissionRequestInfo, ToolsView } from "@redgiant/protocol
 import { AnthropicProvider, type CompletionRequest, type FakeTurn } from "@redgiant/providers";
 import { afterEach, describe, expect, it } from "vitest";
 import { toolChars } from "../src/tool-choice.js";
-import { startServer } from "./helpers.js";
+import { keepKitDefaults, startServer } from "./helpers.js";
+
+// The kits as they are by default (3.9.4).
+keepKitDefaults();
 
 type Server = Awaited<ReturnType<typeof startServer>>;
 let s: Server | undefined;

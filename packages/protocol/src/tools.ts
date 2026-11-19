@@ -53,8 +53,8 @@ export type KitState = z.infer<typeof KitState>;
 
 /** The kits an agent's profile starts on (its kind): what its role cannot do without. */
 export const KIT_PROFILES: Readonly<Record<string, readonly ToolKit[]>> = {
-  god: ["team", "platform"],
-  orchestrator: ["team"],
+  god: ["team", "helpers", "platform"],
+  orchestrator: ["team", "helpers"],
 };
 
 export interface ToolCatalogEntry {

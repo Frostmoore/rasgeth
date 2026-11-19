@@ -380,7 +380,7 @@ describe("finding a tool (p3.5.3)", () => {
     const view = render(<ToolsPage />);
     await waitFor(() => expect(view.container.querySelectorAll(".tl-row")).toHaveLength(5));
     // The command beside its name in words, as the chat's lines and request_tool say it.
-    const ids = [...view.container.querySelectorAll(".tl-id")].map((x) => x.textContent);
+    const ids = [...view.container.querySelectorAll(".tl-row .tl-id")].map((x) => x.textContent);
     expect(ids).toEqual(["read_file", "grep", "web_search", "browser", "complete_task"]);
     const box = view.container.querySelector(".tl-search input") as HTMLInputElement;
     const shown = () =>

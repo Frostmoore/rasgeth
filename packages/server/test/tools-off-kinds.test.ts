@@ -5,7 +5,10 @@
 // every agent, and a sub-agent follows the choice made for its parent.
 import type { Event, ToolsView } from "@redgiant/protocol";
 import { afterEach, describe, expect, it } from "vitest";
-import { startServer } from "./helpers.js";
+import { keepKitDefaults, startServer } from "./helpers.js";
+
+// The kits as they are by default (3.9.4).
+keepKitDefaults();
 
 type Server = Awaited<ReturnType<typeof startServer>>;
 let s: Server | undefined;

@@ -6,7 +6,10 @@ import { invalidToolIds, TOOL_CATALOG, toolEntryOf, toolsSwitchedOff } from "@re
 import { afterEach, describe, expect, it } from "vitest";
 import type { PlatformChange } from "../src/index.js";
 import { toolChars, toolsView } from "../src/tool-choice.js";
-import { OTHER, startServer } from "./helpers.js";
+import { keepKitDefaults, OTHER, startServer } from "./helpers.js";
+
+// The kits as they are by default (3.9.4).
+keepKitDefaults();
 
 type Server = Awaited<ReturnType<typeof startServer>>;
 let s: Server | undefined;
