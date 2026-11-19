@@ -294,6 +294,18 @@ export function countsTowardAgentLimit(a: LimitNode, projectId: string): boolean
   return false;
 }
 
+/**
+ * Whether an agent has a mascot of its own (decision «Mascotte solo per orchestratori e agenti di
+ * primo livello», 2026-11-19): the first level, every lasting kind (God, the Demi-God,
+ * orchestrators, agents, assistants, inspectors), made by the person or by an agent as part of the
+ * team. A sub-agent never does: an agent opens it for one task (`run_subagent`, `run_subagents`)
+ * and it stops when the task ends, so it shows a plain sign instead. The kind decides, not the
+ * `persistent` flag.
+ */
+export function hasOwnMascot(a: { kind: AgentKind; persistent?: boolean }): boolean {
+  return a.kind !== "subagent";
+}
+
 export interface AgentRoom {
   ok: boolean;
   /** The agents that count now. */
