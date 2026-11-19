@@ -77,7 +77,7 @@ void main() {
             final lib = await pixelsOf(tester, const Key('lib'));
             expect(app.width, lib.width);
             final d = _diff(app.rgba, lib.rgba);
-            expect(d, lessThan(.01), reason: "diff $d");
+            expect(d, lessThan(.01), reason: 'diff $d');
           });
         }
       }

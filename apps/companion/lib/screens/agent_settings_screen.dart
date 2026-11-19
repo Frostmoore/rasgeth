@@ -604,6 +604,7 @@ class _GeneralState extends State<_General> {
     final c = RgColors.of(context);
     final a = widget.agent;
     final god = a.kind == AgentKind.god;
+    final sub = a.kind == AgentKind.subagent;
     final chat = app.isChat(a);
     final assignable = a.kind == AgentKind.agent || a.kind == AgentKind.assistant;
     final others = app.projects.where((p) => p.id != a.projectId).toList();
@@ -689,10 +690,15 @@ class _GeneralState extends State<_General> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          god ? l.asMascotGod : l.asMascotHelp,
+                          god
+                              ? l.asMascotGod
+                              : sub
+                              ? l.asMascotSub
+                              : l.asMascotHelp,
                           style: TextStyle(color: c.dim, fontSize: 13, height: 1.35),
                         ),
-                        if (!god && a.active) ...[
+                        // A sub-agent has no mascot of its own (2026-11-19): nothing to change.
+                        if (!god && !sub && a.active) ...[
                           const SizedBox(height: 8),
                           OutlinedButton.icon(
                             key: const Key('as-mascot'),

@@ -10383,4 +10383,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cvMediaNativeHelp =>
       'Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.';
+
+  @override
+  String get asMascotSub =>
+      'A sub-agent has no mascot of its own: it lives for one task, and shows a ring in its parent\'s colour.';
 }

@@ -17906,6 +17906,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.'**
   String get cvMediaNativeHelp;
+
+  /// The page's `mascotSubHelp` (packages/web/src/i18n.ts): a sub-agent's card, instead of «Change mascot».
+  ///
+  /// In en, this message translates to:
+  /// **'A sub-agent has no mascot of its own: it lives for one task, and shows a ring in its parent\'s colour.'**
+  String get asMascotSub;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

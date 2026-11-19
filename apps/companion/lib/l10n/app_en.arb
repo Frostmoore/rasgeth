@@ -7826,5 +7826,9 @@
   "cvMediaNativeHelp": "Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.",
   "@cvMediaNativeHelp": {
     "description": "The page's `mediaNativeHelp` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "asMascotSub": "A sub-agent has no mascot of its own: it lives for one task, and shows a ring in its parent's colour.",
+  "@asMascotSub": {
+    "description": "The page's `mascotSubHelp` (packages/web/src/i18n.ts): a sub-agent's card, instead of «Change mascot»."
   }
 }

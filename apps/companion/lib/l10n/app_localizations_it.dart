@@ -10418,4 +10418,8 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get cvMediaNativeHelp =>
       'Alcuni modelli fanno le immagini da sé (ChatGPT con Codex): allora si usa il loro, e l\'immagine ti arriva in chat come con il nostro. Spento: sempre il fornitore scelto qui. Se in una conversazione chiedi «il vostro strumento», si usa sempre il nostro. Vale per le conversazioni nuove.';
+
+  @override
+  String get asMascotSub =>
+      'Un sotto-agente non ha una mascotte sua: vive per un compito, e mostra un anello nel colore del genitore.';
 }
