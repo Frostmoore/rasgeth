@@ -293,7 +293,9 @@ describe("the setup wizard", () => {
       locked: { telegram: true },
     });
     await next.applyAtStartup();
-    expect(again.calls).toEqual(["key:anthropic:set", "key:gemini:set", "search:http://s:8080"]);
+    // The keys are checked in the background (3.9.1): the search is set first.
+    await next.startupDone;
+    expect(again.calls).toEqual(["search:http://s:8080", "key:anthropic:set", "key:gemini:set"]);
     await expect(next.saveTelegram("9:OTHER")).rejects.toThrow(/environment/);
     next.stop();
   });
@@ -352,6 +354,7 @@ describe("the setup wizard", () => {
       hooks: again.hooks,
     });
     await next.applyAtStartup();
+    await next.startupDone;
     expect(again.calls).toEqual(["key:anthropic:set", "server:http://llm.local:8080/v1"]);
     const state = await next.state();
     expect(state.config).toMatchObject({

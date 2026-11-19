@@ -15837,6 +15837,12 @@ abstract class AppLocalizations {
   /// **'Got it'**
   String get renameNoticeOk;
 
+  /// The server started without internet (3.9.1, the page's noInternet): parts lists what connects once it is back (Anthropic, Telegram...).
+  ///
+  /// In en, this message translates to:
+  /// **'No internet. Waiting for the network: {parts} (the connection starts again by itself once it is back). Everything else works, local models included.'**
+  String noInternetNotice(String parts);
+
   /// No description provided for @auAsstNewRoutine.
   ///
   /// In en, this message translates to:

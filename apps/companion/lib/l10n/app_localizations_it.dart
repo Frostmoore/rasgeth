@@ -9260,6 +9260,11 @@ class AppLocalizationsIt extends AppLocalizations {
   String get renameNoticeOk => 'Ho capito';
 
   @override
+  String noInternetNotice(String parts) {
+    return 'Senza internet. In attesa della rete: $parts (il collegamento riparte da solo appena torna). Tutto il resto funziona, modelli locali compresi.';
+  }
+
+  @override
   String get auAsstNewRoutine => 'Nuova routine';
 
   @override

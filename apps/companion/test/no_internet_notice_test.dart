@@ -4,12 +4,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rgcompanion/api/servers.dart';
 import 'package:rgcompanion/api/token_store.dart';
 import 'package:rgcompanion/api/types.dart';
-import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
+import 'package:rgcompanion/l10n/app_localizations.dart';
+import 'package:rgcompanion/theme/theme.dart';
 import 'package:rgcompanion/ui/no_internet_notice.dart';
 
 import 'fake_server.dart';
@@ -54,9 +56,6 @@ void main() {
     tearDown(() => server.close());
 
     testWidgets('said over the home, gone once the network is back', (tester) async {
-      tester.view.physicalSize = const Size(420, 900);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.reset);
       final app = AppController(
         tokens: MemoryTokenStore(),
         prefs: MemoryAppPrefs(),
@@ -69,7 +68,24 @@ void main() {
       await tester.runAsync(() => app.connect(server.base.toString(), 'secret'));
       await tester.runAsync(() => app.noInternet.refresh(app.client));
       expect(app.noInternet.parts, ['OpenAI', 'Telegram']);
-      await tester.pumpWidget(RGCompanionApp(controller: app));
+      // The notice alone (the home's other screens read the server too).
+      await tester.pumpWidget(
+        AppScope(
+          controller: app,
+          child: MaterialApp(
+            theme: buildTheme(Brightness.light),
+            locale: const Locale('it'),
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            home: const Scaffold(body: NoInternetNotice()),
+          ),
+        ),
+      );
       await tester.pump();
       expect(find.byKey(const Key('no-internet-notice')), findsOneWidget);
       expect(find.textContaining('In attesa della rete: OpenAI, Telegram'), findsOneWidget);
