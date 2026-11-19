@@ -312,7 +312,7 @@ async function fakeTools(dir: string, f: { version: string; filters: string }, p
 }
 
 describe("the ffmpeg already on the computer", () => {
-  it("uses REDGIANT_FFMPEG with its ffprobe, then RedGiant's own", async () => {
+  it("uses REDGIANT_FFMPEG with its ffprobe, then Rasgeth's own", async () => {
     const dir = await mkdtemp(join(tmpdir(), "rg-ffmpeg-find-"));
     try {
       const data = join(dir, "data");

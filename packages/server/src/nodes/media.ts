@@ -18,7 +18,7 @@
 import { mkdir, readFile, realpath, rm, stat } from "node:fs/promises";
 import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { nodeMedia } from "@redgiant/hierarchy";
-import { isMediaRef, readRgVideo, VIDEO_RENDER_QUALITIES } from "@redgiant/protocol";
+import { isMediaRef, PRODUCT_NAME, readRgVideo, VIDEO_RENDER_QUALITIES } from "@redgiant/protocol";
 import {
   compileVideo,
   EmptyTimeline,
@@ -166,7 +166,7 @@ export function nodeMediaHandler(o: NodeMediaOptions) {
     if (b.compiler !== VIDEO_COMPILER_VERSION)
       throw new NodeError(
         "invalid",
-        `This machine renders with another version of the video compiler (${VIDEO_COMPILER_VERSION}, asked ${String(b.compiler)}): update RedGiant on both`,
+        `This machine renders with another version of the video compiler (${VIDEO_COMPILER_VERSION}, asked ${String(b.compiler)}): update ${PRODUCT_NAME} on both`,
       );
     const tools = o.machine.found();
     if (!tools) throw new NodeError("invalid", "There is no ffmpeg here yet (ask «ensure» first)");

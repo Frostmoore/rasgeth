@@ -833,6 +833,17 @@
       ],
       "note": "The page's viewer through embed=canvas inside the native frame (G42.6: tabs, bar from title and bar, reload, download, full screen, open outside) (OraView); editing in the page's editor inside the same embed (G42.7): collaboration, the agent's marks, «Changes», proposals and «changed outside» come with the page, the save state in the native bar (a failure with why and «Try saving again»), Ctrl/Cmd+S, Z, Shift+Z, F passed on when the focus is in the frame, «Ask the agent» about a selection into the conversation's composer (a phone goes back to the conversation), an archived project's file opened in its viewer and said read only; ImageEditor: pen and touch, «Paste a picture» and Ctrl/Cmd+V as a new layer, PNG/JPEG/WebP/ORA/PSD export through «Save as…», «Open in Krita» not from a phone."
     },
+    "timeline": {
+      "app": "partial",
+      "files": [
+        "lib/canvas/canvas_shell.dart",
+        "lib/canvas/canvas_model.dart",
+        "lib/embed/embed_view.dart",
+        "lib/embed/bridge.dart"
+      ],
+      "phase": "G42.18",
+      "note": "A video timeline (.rgvideo, G41.5b-G41.7, 3.10): the page's VideoEditor through embed=canvas inside the native frame like the other editors; the video's own integration (the phone layout of G41.5c checked in the web views, J/K/L, I/O and Ctrl+B passed on, a file dragged from the native tree, render progress in native notifications, «Ask the agent here» into the native composer, «Save as…» of the finished video and of the XML for Resolve, the viewer kind's word) comes with G42.18."
+    },
     "unknown": {
       "app": "embed",
       "files": [

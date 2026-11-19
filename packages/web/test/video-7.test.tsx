@@ -111,8 +111,8 @@ describe("what each machine offers (it, en)", () => {
     [off, "solo CPU · spento", "CPU only · offline"],
     [
       { ...coder, ok: false, reason: "no-media" },
-      "solo CPU · serve RedGiant 3.9 o più nuovo lì",
-      "CPU only · RedGiant 3.9 or later needed there",
+      "solo CPU · serve Rasgeth 3.10 o più nuovo lì",
+      "CPU only · Rasgeth 3.10 or later needed there",
     ],
     [
       { ...coder, ok: false, reason: "no-right" },

@@ -88,7 +88,7 @@ describe("the .rgvideo file", () => {
     expect(() => videoFamily.load(new Uint8Array([0xff, 0xfe, 0x00]))).toThrow(/not UTF-8/);
     expect(() => videoFamily.load(new TextEncoder().encode("ciao"))).toThrow(/not JSON/);
     expect(() => videoFamily.load(new TextEncoder().encode('{"formatVersion":9}'))).toThrow(
-      /newer RedGiant \(format 9/,
+      /newer Rasgeth \(format 9/,
     );
   });
 

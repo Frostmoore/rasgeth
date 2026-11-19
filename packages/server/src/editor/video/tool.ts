@@ -29,6 +29,7 @@ import {
   type Job,
   type MediaAnalysis,
   type MediaProbe,
+  PRODUCT_NAME,
   parseTime,
   type RenderMachine,
   type RenderWhere,
@@ -339,7 +340,7 @@ export function videoTool(
       if (!within(resolve(ws.root), abs)) bad(`"${p}" is outside your workspace.`);
     }
     const file = await host.docFileOf(owner, abs);
-    if (!file) bad(`${basename(abs)} is in no project or folder RedGiant knows.`);
+    if (!file) bad(`${basename(abs)} is in no project or folder ${PRODUCT_NAME} knows.`);
     return { abs, file: file as DocFile };
   };
 

@@ -1023,8 +1023,8 @@ describe("the .rgvideo file, old and new", () => {
     expect(() => readRgVideo("<xml/>")).toThrow(/not JSON/);
     expect(() => readRgVideo("[1]")).toThrow(/not an object/);
     expect(() => readRgVideo('{"formatVersion":2}')).toThrow(NewerVideoFormat);
-    expect(() => readRgVideo('{"formatVersion":2}')).toThrow(/newer RedGiant \(format 2/);
-    expect(() => readRgVideo('{"formatVersion":"1"}')).toThrow(/not one RedGiant knows/);
+    expect(() => readRgVideo('{"formatVersion":2}')).toThrow(/newer Rasgeth \(format 2/);
+    expect(() => readRgVideo('{"formatVersion":"1"}')).toThrow(/not one Rasgeth knows/);
   });
 
   it("reads montatore's timeline (no formatVersion) as the first version", () => {
@@ -1236,7 +1236,7 @@ describe("texts measured once, for the page and the render", () => {
   it.each<
     [string, "title" | "lower_third", "center" | "top" | "bottom" | "lower_third", number, number]
   >([
-    ["Il giro di Red Giant", "title", "center", 1280, 720],
+    ["Il giro di Rasgeth", "title", "center", 1280, 720],
     ["Marta Rossi, regista del documentario sulla costa", "lower_third", "lower_third", 1280, 720],
     ["Un titolo molto lungo che deve andare a capo in verticale", "title", "top", 1080, 1920],
     ["In fondo", "title", "bottom", 1080, 1080],

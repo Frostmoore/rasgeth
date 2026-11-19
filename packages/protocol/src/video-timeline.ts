@@ -7,6 +7,7 @@
 // the difference into the family's actions, each with its exact inverse. Behaviour follows
 // DaVinci Resolve as montatore does: where clips land they overwrite, locked tracks are never
 // touched, linked clips (audio and video of one file) move, trim and delete together.
+import { PRODUCT_NAME } from "./brand.js";
 import {
   RGVIDEO_FORMAT_VERSION,
   RgVideo,
@@ -1889,10 +1890,10 @@ export function readRgVideo(text: string): RgVideo {
   if (!isObj(raw)) throw new Error("its JSON is not an object (an .rgvideo timeline)");
   const v = raw.formatVersion;
   if (v !== undefined && (typeof v !== "number" || !Number.isInteger(v) || v < 1))
-    throw new Error(`its formatVersion (${JSON.stringify(v)}) is not one RedGiant knows`);
+    throw new Error(`its formatVersion (${JSON.stringify(v)}) is not one ${PRODUCT_NAME} knows`);
   if (typeof v === "number" && v > RGVIDEO_FORMAT_VERSION)
     throw new NewerVideoFormat(
-      `it was written by a newer RedGiant (format ${v}; this one reads up to ${RGVIDEO_FORMAT_VERSION}): update RedGiant to edit it`,
+      `it was written by a newer ${PRODUCT_NAME} (format ${v}; this one reads up to ${RGVIDEO_FORMAT_VERSION}): update ${PRODUCT_NAME} to edit it`,
     );
   return cleanTimeline(upgradeRgVideo(raw));
 }
