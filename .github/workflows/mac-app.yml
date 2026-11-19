@@ -21,6 +21,14 @@ on:
 permissions:
   contents: read
 
+# pnpm's own retries for the registry (3.9.6): a slow minute of npm's registry is waited out
+# instead of failing the install; a lockfile that does not match still fails at once.
+env:
+  npm_config_fetch_retries: "5"
+  npm_config_fetch_retry_mintimeout: "10000"
+  npm_config_fetch_retry_maxtimeout: "120000"
+  pnpm_config_fetch_retries: "5"
+
 jobs:
   mac-app:
     runs-on: macos-latest
@@ -53,6 +61,20 @@ jobs:
           hdiutil detach /tmp/rg-dmg -quiet
       - uses: actions/upload-artifact@v4
         with:
+          name: Rasgeth-mac-signed
+          path: packaging/mac/dist/Rasgeth-mac-*.dmg
+          retention-days: 7
+        id: upload_62
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ steps.upload_62.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ steps.upload_62.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
           name: Rasgeth-mac-signed
           path: packaging/mac/dist/Rasgeth-mac-*.dmg
           retention-days: 7

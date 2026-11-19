@@ -85,8 +85,13 @@ concurrency:
 
 jobs:
   # What this run does (3.7.4):
-  # - build: false when release.yml reuses an earlier run (reuse_run), or a work branch does not
-  #   touch the OS (packaging/os, the helper, this file).
+  # - build: false when release.yml reuses an earlier run (reuse_run), a work branch does not
+  #   touch the OS, or a version branch's OS is unchanged since the latest release with images.
+  #   "The OS" is os-release.mjs's OS_PATHS: packaging/os, the OS helper
+  #   (packages/server/helpers), this file and the update key (packages/server/src/release-key.ts).
+  #   Without a build the run is plan (+ the Docker images and the update test on a version
+  #   branch) and green in minutes: release.yml still finds it, and attaches the latest OS
+  #   release's images' stack only (stack_only).
   # - release: a version branch's push with a version in release-kind.json: the Docker images of
   #   this commit first (ci tags), the OS with them and that version.
   # - otherwise (by hand, work branches, a tag's build): the images of `version`, else the latest
@@ -151,8 +156,12 @@ jobs:
             # of the earlier one, so it must build too.
             base=$(gh api "repos/$GITHUB_REPOSITORY" --jq .default_branch)
             changed=$(gh api "repos/$GITHUB_REPOSITORY/compare/$base...$GITHUB_SHA" --jq '.files[].filename' 2>/dev/null || echo "?")
+            # The OS's files are os-release.mjs's OS_PATHS (3.9.6: one list for both cases): what
+            # goes into the images. The stack (compose.yaml, docker/egress.json, searxng) is not
+            # among them: every release attaches it anyway (stack.mjs), with or without new images.
             # The API lists 300 files at most: past that, build rather than guess.
-            if grep -qE '^(packaging/os/|packages/server/helpers/|\.github/workflows/os\.yml$|\?$)' <<<"$changed" || [ "$(wc -l <<<"$changed")" -ge 300 ]; then
+            os_paths=$(node --input-type=module -e 'import { OS_PATHS } from "./packaging/os/os-release.mjs"; console.log(OS_PATHS.map((p) => p.replace(/[.]/g, "[.]")).join("|"))')
+            if grep -qE "^($os_paths)(/|\$)|^[?]\$" <<<"$changed" || [ "$(wc -l <<<"$changed")" -ge 300 ]; then
               why="a work branch that touches the OS"
             else
               build=false; why="a work branch that does not touch the OS"
@@ -221,6 +230,23 @@ jobs:
             dist/rasgeth-os-files.json
             dist/rasgeth-os-files-*.tar.zst
           retention-days: 7
+        id: upload_216
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ steps.upload_216.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ steps.upload_216.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: rasgeth-os-stack
+          path: |
+            dist/rasgeth-os-stack.json
+            dist/rasgeth-os-files.json
+            dist/rasgeth-os-files-*.tar.zst
+          retention-days: 7
 
   build:
     needs: stack
@@ -262,6 +288,18 @@ jobs:
         with:
           name: rasgeth-os-stack
           path: stack
+        id: download_260
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ (env.SKIP != '1') && steps.download_260.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ (env.SKIP != '1') && steps.download_260.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: rasgeth-os-stack
+          path: stack
       - name: Room on the disk
         if: ${{ env.SKIP != '1' }}
         run: |
@@ -283,11 +321,11 @@ jobs:
       - name: QEMU
         if: ${{ env.SKIP != '1' }}
         run: |
-          sudo apt-get update -q
+          sudo apt-get -o Acquire::Retries=4 update -q
           if [ "${{ matrix.arch }}" = amd64 ]; then
-            sudo apt-get install -y -q --no-install-recommends qemu-system-x86 qemu-utils ovmf
+            sudo apt-get -o Acquire::Retries=4 install -y -q --no-install-recommends qemu-system-x86 qemu-utils ovmf
           else
-            sudo apt-get install -y -q --no-install-recommends qemu-system-arm qemu-utils qemu-efi-aarch64
+            sudo apt-get -o Acquire::Retries=4 install -y -q --no-install-recommends qemu-system-arm qemu-utils qemu-efi-aarch64
           fi
           if [ -e /dev/kvm ]; then sudo chmod 666 /dev/kvm; echo "KVM: yes"; else echo "KVM: no (emulated)"; fi
       - name: Boot the qcow2 (UEFI) and check, HTTPS included
@@ -359,9 +397,40 @@ jobs:
             !/mnt/os/work-*
           compression-level: 0
           retention-days: 7
+        id: upload_353
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ (always() && env.SKIP != '1') && steps.upload_353.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ (always() && env.SKIP != '1') && steps.upload_353.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: rasgeth-os-${{ matrix.arch }}
+          path: |
+            /mnt/os/*
+            !/mnt/os/work-*
+          compression-level: 0
+          retention-days: 7
       - uses: actions/upload-artifact@v4
         if: ${{ always() && env.SKIP != '1' }}
         with:
+          name: rasgeth-os-${{ matrix.arch }}-logs
+          path: logs/**/serial-*.log
+          retention-days: 7
+        id: upload_362
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ (always() && env.SKIP != '1') && steps.upload_362.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ (always() && env.SKIP != '1') && steps.upload_362.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
           name: rasgeth-os-${{ matrix.arch }}-logs
           path: logs/**/serial-*.log
           retention-days: 7
@@ -389,6 +458,18 @@ jobs:
         with:
           name: rasgeth-os-stack
           path: stack
+        id: download_388
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ steps.download_388.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ steps.download_388.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: rasgeth-os-stack
+          path: stack
       - name: Room on the disk
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true
@@ -408,8 +489,8 @@ jobs:
       - name: Incus
         timeout-minutes: 10
         run: |
-          sudo apt-get update -q
-          sudo apt-get install -y -q --no-install-recommends incus dnsmasq-base
+          sudo apt-get -o Acquire::Retries=4 update -q
+          sudo apt-get -o Acquire::Retries=4 install -y -q --no-install-recommends incus dnsmasq-base
           sudo incus admin init --minimal
           # Docker's firewall drops forwarded traffic; the container's bridge is let through.
           sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT || true
@@ -458,9 +539,40 @@ jobs:
             !/mnt/os/work-*
           compression-level: 0
           retention-days: 7
+        id: upload_452
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ (always()) && steps.upload_452.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ (always()) && steps.upload_452.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: rasgeth-os-amd64-lxc
+          path: |
+            /mnt/os/*
+            !/mnt/os/work-*
+          compression-level: 0
+          retention-days: 7
       - uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
+          name: rasgeth-os-amd64-lxc-logs
+          path: logs/lxc/*.log
+          retention-days: 7
+        id: upload_461
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ (always()) && steps.upload_461.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ (always()) && steps.upload_461.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
           name: rasgeth-os-amd64-lxc-logs
           path: logs/lxc/*.log
           retention-days: 7
@@ -499,7 +611,7 @@ jobs:
             echo "skip=true" >>"$GITHUB_OUTPUT"
             exit 0
           fi
-          gh release download "$OS_TAG" -R "$GITHUB_REPOSITORY" -p SHA256SUMS-os -p SHA256SUMS-os.sig -p 'rasgeth-os-*-x86_64-lxc.tar.zst'
+          for try in 1 2 3; do gh release download "$OS_TAG" -R "$GITHUB_REPOSITORY" -p SHA256SUMS-os -p SHA256SUMS-os.sig -p 'rasgeth-os-*-x86_64-lxc.tar.zst' --clobber && break; [ "$try" = 3 ] && exit 1; sleep $((20 * try)); done
           sed -n '/BEGIN PUBLIC KEY/,/END PUBLIC KEY/p' ../packages/server/src/release-key.ts | sed 's/^.*\(-----BEGIN\)/\1/; s/\(KEY-----\).*$/\1/' >key.pem
           openssl dgst -sha256 -verify key.pem -signature <(base64 -d SHA256SUMS-os.sig) SHA256SUMS-os
           sha256sum -c --ignore-missing SHA256SUMS-os
@@ -508,8 +620,8 @@ jobs:
         if: steps.old.outputs.skip != 'true'
         timeout-minutes: 10
         run: |
-          sudo apt-get update -q
-          sudo apt-get install -y -q --no-install-recommends incus dnsmasq-base
+          sudo apt-get -o Acquire::Retries=4 update -q
+          sudo apt-get -o Acquire::Retries=4 install -y -q --no-install-recommends incus dnsmasq-base
           sudo incus admin init --minimal
           sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT || true
           sudo iptables -I DOCKER-USER -o incusbr0 -j ACCEPT || true
@@ -533,6 +645,21 @@ jobs:
 
           path: logs/update/*.log
           retention-days: 7
+        id: upload_529
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ (always() && steps.old.outputs.skip != 'true') && steps.upload_529.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ (always() && steps.old.outputs.skip != 'true') && steps.upload_529.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: rasgeth-os-update-test-logs
+
+          path: logs/update/*.log
+          retention-days: 7
 
   # Raspberry Pi 4 (G39.2): no Pi here, so the image's layout and files are checked (build.sh does it
   # as it writes them, and here again from the file), then its system is started on QEMU's virt
@@ -547,6 +674,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
+        with:
+          name: rasgeth-os-stack
+          path: stack
+        id: download_549
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ steps.download_549.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ steps.download_549.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
         with:
           name: rasgeth-os-stack
           path: stack
@@ -569,8 +708,8 @@ jobs:
       - name: The image's partitions and boot files
         timeout-minutes: 20
         run: |
-          sudo apt-get update -q
-          sudo apt-get install -y -q --no-install-recommends mtools qemu-system-arm qemu-utils
+          sudo apt-get -o Acquire::Retries=4 update -q
+          sudo apt-get -o Acquire::Retries=4 install -y -q --no-install-recommends mtools qemu-system-arm qemu-utils
           img="$RUNNER_TEMP/raspi.img"
           xz -dc "$OUT"/rasgeth-os-*-arm64-raspi.img.xz > "$img"
           sfdisk -d "$img" | tee "$RUNNER_TEMP/layout"
@@ -622,9 +761,40 @@ jobs:
             !/mnt/os/work-*
           compression-level: 0
           retention-days: 7
+        id: upload_616
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ (always()) && steps.upload_616.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ (always()) && steps.upload_616.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: rasgeth-os-arm64-raspi
+          path: |
+            /mnt/os/*
+            !/mnt/os/work-*
+          compression-level: 0
+          retention-days: 7
       - uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
+          name: rasgeth-os-arm64-raspi-logs
+          path: logs/raspi/serial-*.log
+          retention-days: 7
+        id: upload_625
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ (always()) && steps.upload_625.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ (always()) && steps.upload_625.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
           name: rasgeth-os-arm64-raspi-logs
           path: logs/raspi/serial-*.log
           retention-days: 7
@@ -643,6 +813,18 @@ jobs:
         with:
           node-version: 24
       - uses: actions/download-artifact@v4
+        with:
+          pattern: rasgeth-os-*
+          path: dl
+        id: download_645
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ steps.download_645.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ steps.download_645.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
         with:
           pattern: rasgeth-os-*
           path: dl
@@ -667,6 +849,21 @@ jobs:
       # this repository's token may not create releases.
       - uses: actions/upload-artifact@v4
         with:
+          name: rasgeth-os-preview
+          path: rel/*
+          compression-level: 0
+          retention-days: 14
+        id: upload_668
+        continue-on-error: true
+      - name: "upload artifact: a pause before the second try"
+        if: ${{ steps.upload_668.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "upload artifact (second try)"
+        if: ${{ steps.upload_668.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
           name: rasgeth-os-preview
           path: rel/*
           compression-level: 0
@@ -706,6 +903,20 @@ jobs:
         with:
           node-version: 24
       - uses: actions/download-artifact@v4
+        with:
+          pattern: rasgeth-os-*
+          path: dl
+          run-id: ${{ inputs.reuse_run || github.run_id }}
+          github-token: ${{ github.token }}
+        id: download_708
+        continue-on-error: true
+      - name: "download artifact: a pause before the second try"
+        if: ${{ steps.download_708.outcome == 'failure' }}
+        shell: bash
+        run: sleep 30
+      - name: "download artifact (second try)"
+        if: ${{ steps.download_708.outcome == 'failure' }}
+        uses: actions/download-artifact@v4
         with:
           pattern: rasgeth-os-*
           path: dl
