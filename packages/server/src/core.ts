@@ -7050,7 +7050,8 @@ export class RedGiantCore implements OrchestrationHost {
     // may write in it (G33.2): automations, webhooks, emails and other agents never do.
     const human = extra.watch === true || extra.human === true;
     this.sharedMemory.turnStarted(sessionId, human);
-    this.skillNudge.turnStarted(sessionId);
+    // 3.9.7: the person's words can put a skill in doubt (a correction, «the skill could be better»).
+    this.skillNudge.turnStarted(sessionId, human ? ownWords(text, extra.quotes) : undefined);
     if (human) this.heardPerson(ownerId, sessionId, l.agentId, ownWords(text, extra.quotes));
     const notify = (state: "idle" | "running", stopReason?: string, repliedAt?: string) => {
       for (const f of l.listeners)

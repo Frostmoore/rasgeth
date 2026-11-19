@@ -15,6 +15,7 @@ import {
   NAME_RE as SKILL_NAME_RE,
   SkillArchiveError,
   SkillExistsError,
+  SkillVersionError,
 } from "@redgiant/extensions";
 import { teamsAppPackage } from "@redgiant/gateway";
 import { AgentLimitError, can, HierarchyError } from "@redgiant/hierarchy";
@@ -3500,6 +3501,50 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       throw err;
     }
   });
+  // 3.9.7: a skill's versions (who, why, when), one version's SKILL.md, and the way back. The
+  // scope is the one above; only the person reaches these routes.
+  const versionScope = async (c: Context<Env>) => {
+    const raw = c.req.query("scope");
+    const scope =
+      !raw || raw === "platform" ? "platform" : raw.startsWith("project:") ? raw : `project:${raw}`;
+    return (await skillRoot(c, scope)) ? scope : undefined;
+  };
+  app.get("/api/extensions/skills/:name/versions", async (c) => {
+    const name = c.req.param("name");
+    if (!SKILL_NAME_RE.test(name)) return c.json({ error: "Invalid skill name" }, 400);
+    const scope = await versionScope(c);
+    if (!scope) return c.json({ error: "Project not found" }, 404);
+    // What is on disk now and not in the history yet (a skill from before, a change by hand).
+    await core.extensions.versions.keepCurrent(owner(c), scope, name);
+    return c.json(await core.extensions.versions.list(owner(c), scope, name), 200);
+  });
+  app.get("/api/extensions/skills/:name/versions/:version", async (c) => {
+    const name = c.req.param("name");
+    const version = Number(c.req.param("version"));
+    if (!SKILL_NAME_RE.test(name) || !Number.isInteger(version) || version < 1)
+      return c.json({ error: "Invalid skill or version" }, 400);
+    const scope = await versionScope(c);
+    if (!scope) return c.json({ error: "Project not found" }, 404);
+    const skillMd = await core.extensions.versions.skillMd(owner(c), scope, name, version);
+    if (skillMd === undefined) return c.json({ error: `No version ${version}` }, 404);
+    return c.json({ name, version, skillMd }, 200);
+  });
+  app.post("/api/extensions/skills/:name/rollback", async (c) => {
+    const name = c.req.param("name");
+    const body = (await c.req.json().catch(() => ({}))) as { version?: unknown };
+    const version = Number(body.version);
+    if (!SKILL_NAME_RE.test(name) || !Number.isInteger(version) || version < 1)
+      return c.json({ error: "Invalid skill or version" }, 400);
+    const scope = await versionScope(c);
+    if (!scope) return c.json({ error: "Project not found" }, 404);
+    try {
+      const v = await core.extensions.versions.rollback(owner(c), scope, name, version, "human");
+      return c.json({ name, version: v, fromVersion: version }, 200);
+    } catch (err) {
+      if (err instanceof SkillVersionError) return c.json({ error: err.message }, 400);
+      throw err;
+    }
+  });
   /** The archive is the raw body; `?scope=` as above, `?replace=1` to overwrite a skill. */
   app.post("/api/extensions/skills/import", async (c) => {
     const root = await skillRoot(c, c.req.query("scope"));
@@ -3510,7 +3555,18 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     const body = new Uint8Array(await c.req.arrayBuffer());
     if (body.length > SKILL_ARCHIVE_LIMITS.archiveBytes) return c.json(tooLarge, 413);
     try {
-      const r = await importSkill(body, root, { replace: c.req.query("replace") === "1" });
+      const scope = (await versionScope(c)) ?? "platform";
+      // 3.9.7: the skill it replaces stays in the history, and the import is a version.
+      const r = await importSkill(body, root, {
+        replace: c.req.query("replace") === "1",
+        beforeReplace: (name) => core.extensions.versions.keepCurrent(owner(c), scope, name),
+      });
+      await core.extensions.versions.record(owner(c), scope, r.name, {
+        how: "import",
+        author: "human",
+        approvedBy: null,
+        reason: null,
+      });
       return c.json({ name: r.name, description: r.description, replaced: r.replaced }, 201);
     } catch (err) {
       if (err instanceof SkillExistsError) return c.json({ error: err.message }, 409);
