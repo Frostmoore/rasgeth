@@ -4,12 +4,19 @@
 import type { Tool } from "@redgiant/agent";
 import type { SqlClient } from "@redgiant/events";
 import {
+  type KitState,
+  type KitView,
+  kitDefault,
+  kitState,
   TOOL_CATALOG,
+  TOOL_KITS,
   ToolChoice,
+  type ToolKit,
+  type ToolStateFor,
   type ToolsView,
   type ToolView,
   toolEntryOf,
-  toolEntryOn,
+  toolState,
   toolTokens,
 } from "@redgiant/protocol";
 import type { Workspace } from "@redgiant/tools";
@@ -50,16 +57,18 @@ export function toolChars(t: Pick<Tool, "def">): number {
 }
 
 /**
- * The page's entries from the tools measured (name → characters): only the entries some agent has,
- * in the catalog's order. With `agentId`, each one says what that agent gets.
+ * The page's entries and kits from the tools measured (name → characters): only the entries some
+ * agent has, in the catalog's order. With `who`, each one says what that agent gets (3.9.4: on from
+ * the start, off by default, or switched off by the person).
  */
 export function toolsView(
   choice: ToolChoice,
   measured: ReadonlyMap<string, number>,
-  agentId: string | null,
+  who: ToolStateFor | null,
   /** The person's agents by id (the view for every agent names the exceptions); others are left out. */
   agentNames?: ReadonlyMap<string, string>,
 ): ToolsView {
+  const agentId = who?.agentId ?? null;
   const byEntry = new Map<string, string[]>();
   for (const name of [...measured.keys()].sort()) {
     const e = toolEntryOf(name);
@@ -73,14 +82,21 @@ export function toolsView(
     const chars = tools.reduce((n, t) => n + (measured.get(t) ?? 0), 0);
     const essential = e.essential === true;
     const global = essential || !choice.off.includes(e.id);
+    const state: KitState = who
+      ? toolState(choice, e.id, who)
+      : essential
+        ? "on"
+        : !global
+          ? "off"
+          : kitState(choice, e.kit as ToolKit, null);
     // Agents that differ from the switch for everyone, so the page can say so (3.5.3).
     const exceptions =
       agentId === null && !essential && agentNames
         ? Object.entries(choice.agents).flatMap(([id, m]) => {
-            const state = m[e.id];
+            const st = m[e.id];
             const name = agentNames.get(id);
-            return state && name !== undefined && (state === "on") !== global
-              ? [{ agentId: id, name, state }]
+            return st && name !== undefined && (st === "on") !== global
+              ? [{ agentId: id, name, state: st }]
               : [];
           })
         : [];
@@ -88,6 +104,8 @@ export function toolsView(
       id: e.id,
       group: e.group,
       essential,
+      ...(e.kit && { kit: e.kit }),
+      state,
       tools,
       chars,
       tokens: toolTokens(chars),
@@ -95,16 +113,33 @@ export function toolsView(
       ...(exceptions.length > 0 && { exceptions }),
       ...(agentId !== null && {
         own: essential ? null : (choice.agents[agentId]?.[e.id] ?? null),
-        on: toolEntryOn(choice, agentId, e.id),
+        on: state !== "off",
       }),
     });
   }
-  const on = (v: ToolView) => (agentId === null ? v.global : v.on === true);
+  const kits: KitView[] = TOOL_KITS.flatMap((k) => {
+    const of = entries.filter((v) => v.kit === k);
+    if (of.length === 0) return [];
+    return [
+      {
+        id: k,
+        entries: of.map((v) => v.id),
+        tokens: of.reduce((n, v) => n + v.tokens, 0),
+        state: kitState(choice, k, who),
+        default: kitDefault(k, who?.kind),
+        own: who ? (choice.agentKits?.[who.agentId]?.[k] ?? null) : (choice.kits?.[k] ?? null),
+        ...(who && { global: choice.kits?.[k] ?? null }),
+      },
+    ];
+  });
+  const sum = (vs: ToolView[]) => vs.reduce((n, v) => n + v.tokens, 0);
   return {
     agentId,
     entries,
-    total: entries.filter(on).reduce((n, v) => n + v.tokens, 0),
-    saved: entries.filter((v) => !on(v)).reduce((n, v) => n + v.tokens, 0),
+    kits,
+    total: sum(entries.filter((v) => v.state === "on")),
+    saved: sum(entries.filter((v) => v.state !== "on")),
+    essential: sum(entries.filter((v) => v.essential)),
   };
 }
 

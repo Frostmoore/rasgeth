@@ -84,6 +84,7 @@ import {
   type Event,
   type ImagePart,
   isCriticalId,
+  type KitState,
   type ListName,
   MCP_CATALOG,
   type MediaChoice,
@@ -110,7 +111,7 @@ import {
   type ToolsView,
   type TurnQueueView,
   textLanguage,
-  toolsSwitchedOff,
+  toolsAside,
   type UiLanguage,
   UNATTENDED_MAX_TURNS,
   type UpdateStatus,
@@ -2118,33 +2119,35 @@ export class RedGiantCore implements OrchestrationHost {
     const receivesTasks =
       assignedTo !== undefined || ["orchestrator", "agent", "subagent"].includes(agent.kind);
     if (receivesTasks) tools.push(completeTaskTool(agent, ws, this.broker, this.tasks));
-    // The tools the person switched off (G34.5), fixed for the whole conversation: chosen when it
-    // starts, read back from its start when it resumes. Essential ones never go. In place, so
-    // run_script sees the same list.
-    const toolsOff =
+    // Every tool the agent could get, before any is left aside (the guidance of the system prompt
+    // follows what it may switch on, not only what it starts with).
+    const every = tools.map((t) => t.def.name);
+    // The tools it starts without (G34.5; 3.9.4): switched off by the person, or off by default
+    // (their kit), fixed for the whole conversation: chosen when it starts, read back from its
+    // start when it resumes. Essential ones never go. In place, so run_script sees the same list.
+    const { off: toolsOff, deferred: toolsDeferred } =
       preview === "dry"
-        ? []
-        : await this.toolsOffFor(
-            ownerId,
-            agentId,
-            sessionId,
-            resume,
-            tools.map((t) => t.def.name),
-          );
-    // Asking for one back (G36.15): request_tool, with the tools kept aside; on resume the ones the
-    // person switched back on in this conversation are there again.
-    const granted =
-      resume && toolsOff.length > 0 ? await this.toolsAdded(sessionId) : new Set<string>();
+        ? { off: [], deferred: [] }
+        : await this.toolsAsideFor(agent, sessionId, resume, every);
+    // Switching them on (G36.15, 3.9.4): request_tool, with the tools kept aside. The session
+    // declares them all (deferred) and moves those switched on in this conversation, from its log.
     const aside: Tool[] = [];
+    const kept: Tool[] = [];
+    const granted: Tool[] = [];
     let sessionRef: AgentSession | undefined;
-    if (toolsOff.length > 0) {
-      const off = new Set(toolsOff.filter((n) => !granted.has(n)));
+    if (toolsOff.length + toolsDeferred.length > 0) {
+      const out = new Set([...toolsOff, ...toolsDeferred]);
       for (let i = tools.length - 1; i >= 0; i--)
-        if (off.has((tools[i] as Tool).def.name)) aside.unshift(...tools.splice(i, 1));
+        if (out.has((tools[i] as Tool).def.name)) aside.unshift(...tools.splice(i, 1));
+      kept.push(...aside);
+      const on = resume ? await this.toolsAdded(sessionId) : new Set<string>();
+      const waiting = aside.filter((t) => !on.has(t.def.name));
+      // Those already switched on: the session puts them back from its log, in their order.
+      granted.push(...aside.filter((t) => on.has(t.def.name)));
       tools.push(
-        this.requestToolTool(agent, aside, async (added, payload) => {
+        this.requestToolTool(agent, waiting, new Set(toolsOff), async (added, payload) => {
           tools.push(...added);
-          await sessionRef?.addTools(added, payload);
+          return (await sessionRef?.addTools(added, payload)) ?? [];
         }),
       );
     }
@@ -2177,7 +2180,7 @@ export class RedGiantCore implements OrchestrationHost {
         this.instructions
           ? `## The person's instructions for every agent\n${this.instructions}`
           : "",
-        toolsOff.length > 0 ? switchedOffSection(toolsOff, aside) : "",
+        kept.length > 0 ? switchedOffSection(toolsOff, toolsDeferred, kept) : "",
         // Pictures the engine draws itself (2026-11-19): Rasgeth keeps and sends them.
         ws ? nativeSection(native) : "",
         // What it can search and how to cite (G36.5); fixed with the conversation's start.
@@ -2198,13 +2201,15 @@ export class RedGiantCore implements OrchestrationHost {
         magicExtSession?.agentId === agent.id ? MAGIC_EXT_PROMPT : "",
         // Text, widget, artifact, board or project (3.5.9): for every agent that can show files;
         // the everyday Chat's version welcomes widgets, as its own instructions do (2026-11-17).
-        tools.some((t) => t.def.name === "show_file")
+        every.includes("show_file")
           ? artifactGuidanceFor((await this.chatAgentIdOf(agent.ownerId)) === agent.id)
           : "",
         // Products to buy or compare (G40.16): cards with pictures.
-        tools.some((t) => t.def.name === "show_products") ? PRODUCTS_GUIDANCE : "",
+        every.includes("show_products") && !toolsOff.includes("show_products")
+          ? PRODUCTS_GUIDANCE
+          : "",
         // Email is data, never instructions (G38.1): for every agent that can read it.
-        tools.some((t) => t.def.name === "mail_read") ? MAIL_GUIDANCE : "",
+        every.includes("mail_read") && !toolsOff.includes("mail_read") ? MAIL_GUIDANCE : "",
         assignedTo
           ? `## Assigned to a project\nIn this conversation you work for the project "${(await this.projects.get(ownerId, assignedTo))?.name ?? assignedTo}", on tasks its orchestrator gives you. Your files here are your own worktree of that project; close each task with complete_task.`
           : "",
@@ -2234,6 +2239,8 @@ export class RedGiantCore implements OrchestrationHost {
         }),
       },
       ...(toolsOff.length > 0 && { toolsOff }),
+      ...(toolsDeferred.length > 0 && { toolsDeferred }),
+      ...(kept.length > 0 && { aside: kept }),
       ...(engine && { native }),
       ...(engine &&
         ws &&
@@ -2309,6 +2316,8 @@ export class RedGiantCore implements OrchestrationHost {
         ? await AgentSession.resume(options)
         : await AgentSession.start(options);
     sessionRef = session;
+    // run_script's list too (the session has its own copy, made above).
+    tools.push(...granted);
     return {
       id: sessionId,
       ownerId,
@@ -2576,8 +2585,13 @@ export class RedGiantCore implements OrchestrationHost {
   }
 
   /** request_tool for one conversation of an agent (G36.15). */
-  private requestToolTool(agent: AgentRecord, aside: Tool[], add: RequestToolHost["add"]): Tool {
-    return requestTool(aside, {
+  private requestToolTool(
+    agent: AgentRecord,
+    aside: Tool[],
+    off: ReadonlySet<string>,
+    add: RequestToolHost["add"],
+  ): Tool {
+    return requestTool(aside, off, {
       ask: async (input, ctx) => {
         const id = `tool_${randomUUID().slice(0, 12)}`;
         try {
@@ -2645,29 +2659,38 @@ export class RedGiantCore implements OrchestrationHost {
     return sessionNative(provider, this.media.native !== false, recorded);
   }
 
-  /** What a conversation leaves out (G34.5): its start's record when resumed, the choice now otherwise. */
-  private async toolsOffFor(
-    ownerId: string,
-    agentId: string,
+  /**
+   * What a conversation leaves out (G34.5; 3.9.4): the tools switched off by the person and those
+   * off by default. Its start's record when resumed, the choice now otherwise.
+   */
+  private async toolsAsideFor(
+    agent: AgentRecord,
     sessionId: string,
     resume: boolean,
     names: string[],
-  ): Promise<string[]> {
+  ): Promise<{ off: string[]; deferred: string[] }> {
     // A sub-agent is made for one run: it follows the choice the person made for its parent.
-    const self = this.registry.get(agentId);
-    const parent = self?.kind === "subagent" ? self.parentId : undefined;
+    const who = {
+      agentId: agent.id,
+      parentId: agent.kind === "subagent" ? agent.parentId : undefined,
+      kind: agent.kind,
+    };
+    const now = async () => toolsAside(await this.toolChoices.get(agent.ownerId), names, who);
     if (resume) {
       const started = (await sessionLog(this.store, sessionId)).find(
         (e) => e.type === "session.started",
       );
       if (started?.type === "session.started" && started.payload)
-        return started.payload.toolsOff ?? [];
+        return {
+          off: started.payload.toolsOff ?? [],
+          // Before 3.9.4 nothing was off by default: the tools it had stay.
+          deferred: started.payload.toolsDeferred ?? [],
+        };
       // An imported conversation (G36.7) has no start of its own: the person's choice now.
-      if (!started)
-        return toolsSwitchedOff(await this.toolChoices.get(ownerId), agentId, names, parent);
-      return [];
+      if (!started) return now();
+      return { off: [], deferred: [] };
     }
-    return toolsSwitchedOff(await this.toolChoices.get(ownerId), agentId, names, parent);
+    return now();
   }
 
   /** Each tool of an agent and its characters, nothing switched off (a dry build, G34.5). */
@@ -2690,27 +2713,26 @@ export class RedGiantCore implements OrchestrationHost {
    */
   async toolsView(ownerId: string, agentId?: string): Promise<ToolsView> {
     const choice = await this.toolChoices.get(ownerId);
+    // Every agent with something aside has request_tool to switch it on (G36.15, 3.9.4).
+    const ask = toolChars(requestTool([], new Set(), REQUEST_TOOL_DRY));
     if (agentId) {
       const agent = this.registry.get(agentId);
       if (!agent || agent.ownerId !== ownerId)
         throw new NotFoundError(`Agent "${agentId}" not found`);
       const measured = await this.measureTools(agent);
-      // With something off, the agent also gets request_tool to ask for it back (G36.15).
-      const parent = agent.kind === "subagent" ? agent.parentId : undefined;
-      if (toolsSwitchedOff(choice, agentId, [...measured.keys()], parent).length > 0)
-        measured.set("request_tool", toolChars(requestTool([], REQUEST_TOOL_DRY)));
-      return toolsView(choice, measured, agentId);
+      measured.set("request_tool", ask);
+      return toolsView(choice, measured, {
+        agentId,
+        parentId: agent.kind === "subagent" ? agent.parentId : undefined,
+        kind: agent.kind,
+      });
     }
     const measured = new Map<string, number>();
     for (const a of this.registry.list({ ownerId, activeOnly: true })) {
       const m = await this.measureTools(a).catch(() => new Map<string, number>());
       for (const [name, chars] of m) measured.set(name, Math.max(chars, measured.get(name) ?? 0));
     }
-    if (
-      choice.off.length > 0 ||
-      Object.values(choice.agents).some((m) => Object.values(m).includes("off"))
-    )
-      measured.set("request_tool", toolChars(requestTool([], REQUEST_TOOL_DRY)));
+    measured.set("request_tool", ask);
     const names = new Map(
       this.registry.list({ ownerId, activeOnly: true }).map((a) => [a.id, a.name] as const),
     );
@@ -2720,7 +2742,44 @@ export class RedGiantCore implements OrchestrationHost {
   /** Switches tools off (or back on) for every agent; essential ones are refused (G34.5). */
   async setToolsOff(ownerId: string, off: string[]) {
     const now = await this.toolChoices.get(ownerId);
-    return this.config.setTools(ownerId, "human", { off, agents: now.agents });
+    return this.config.setTools(ownerId, "human", { ...now, off });
+  }
+
+  /**
+   * Kits for every agent (3.9.4): "on" from the start, "auto" off until the agent switches them on,
+   * "off" switched off by the person, "default" back to the kit's default. Only the person.
+   */
+  async setKits(ownerId: string, states: Record<string, KitState | "default">) {
+    const now = await this.toolChoices.get(ownerId);
+    const kits = { ...(now.kits ?? {}) };
+    for (const [id, v] of Object.entries(states)) {
+      if (v === "default") delete kits[id];
+      else kits[id] = v;
+    }
+    return this.config.setTools(ownerId, "human", { ...now, kits });
+  }
+
+  /** One agent's kits (3.9.4), as `setKits`; "default" follows the choice for every agent again. */
+  async setAgentKits(
+    ownerId: string,
+    agentId: string,
+    states: Record<string, KitState | "default">,
+  ) {
+    const agent = this.registry.get(agentId);
+    if (!agent || !can({ type: "human", ownerId }, "tools", agent, this.registry.resolve))
+      throw new NotFoundError(`Agent "${agentId}" not found`);
+    const now = await this.toolChoices.get(ownerId);
+    const own = { ...(now.agentKits?.[agentId] ?? {}) };
+    for (const [id, v] of Object.entries(states)) {
+      if (v === "default") delete own[id];
+      else own[id] = v;
+    }
+    return this.config.setTools(
+      ownerId,
+      "human",
+      { ...now, agentKits: { ...(now.agentKits ?? {}), [agentId]: own } },
+      { agentId },
+    );
   }
 
   /**
@@ -2744,7 +2803,7 @@ export class RedGiantCore implements OrchestrationHost {
     return this.config.setTools(
       ownerId,
       "human",
-      { off: now.off, agents: { ...now.agents, [agentId]: own } },
+      { ...now, agents: { ...now.agents, [agentId]: own } },
       { agentId },
     );
   }

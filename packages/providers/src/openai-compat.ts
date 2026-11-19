@@ -1,3 +1,4 @@
+import { forProvider } from "./deferred.js";
 import { type EffortStyle, openAiEffortFields } from "./effort.js";
 import { MetricsClock } from "./metrics.js";
 import { sseData } from "./sse.js";
@@ -170,7 +171,9 @@ export class OpenAICompatProvider implements Provider {
   }
 
   /** Builds the request body. Exposed for tests. */
-  buildBody(request: CompletionRequest): Record<string, unknown> {
+  buildBody(full: CompletionRequest): Record<string, unknown> {
+    // Never deferred tools here: only those the model may call (3.9.4).
+    const request = forProvider({}, full.model, full);
     const messages: WireMessage[] = [];
     if (request.system) messages.push({ role: "system", content: request.system });
     for (const m of request.messages) {

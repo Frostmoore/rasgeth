@@ -6,6 +6,7 @@ import {
   isNewModel,
   newestRelease,
 } from "./catalog.js";
+import { forProvider } from "./deferred.js";
 import { anthropicEffort } from "./effort.js";
 import { MetricsClock } from "./metrics.js";
 import {
@@ -241,6 +242,18 @@ export class AnthropicProvider implements Provider {
     };
   }
 
+  /**
+   * Tool search's deferred loading (3.9.4): every model from Claude 4.5 on ("Tool search tool",
+   * model compatibility: Opus 4.1 and earlier do not have it).
+   */
+  deferredTools(model: string): boolean {
+    const m = /^claude-(?:opus|sonnet|haiku|fable|mythos)-(\d+)(?:-(\d{1,2}))?(?:-|$)/.exec(model);
+    if (!m) return false;
+    const major = Number(m[1]);
+    const minor = Number(m[2] ?? 0);
+    return major > 4 || (major === 4 && minor >= 5);
+  }
+
   /** Builds the request body. Exposed for tests of prompt-cache placement. */
   buildParams(request: CompletionRequest): Anthropic.MessageCreateParamsStreaming {
     const e = this.entry(request.model);
@@ -249,8 +262,21 @@ export class AnthropicProvider implements Provider {
       : { type: "ephemeral" };
 
     const native = this.options.nativeWebSearch !== false;
-    const tools: Anthropic.Tool[] = request.tools.map((t, i) => {
-      const last = i === request.tools.length - 1 && { cache_control: cacheControl };
+    // Deferred tools (3.9.4) stay out of the cached prefix; the breakpoint goes on the last loaded
+    // tool (a deferred one cannot carry it). Without deferred loading for the model, only the
+    // tools it may call.
+    const sent = forProvider(this, request.model, request).tools;
+    const lastLoaded = sent.findLastIndex((t) => !t.deferred);
+    const tools: Anthropic.Tool[] = sent.map((t, i) => {
+      const last = i === lastLoaded && { cache_control: cacheControl };
+      if (t.deferred)
+        return {
+          name: t.name,
+          description: t.description,
+          input_schema: t.inputSchema as Anthropic.Tool.InputSchema,
+          eager_input_streaming: true,
+          defer_loading: true,
+        };
       // The same name, done by Anthropic: the tool list stays the same for RedGiant.
       if (native && t.name === "web_search")
         return {
@@ -308,7 +334,13 @@ export class AnthropicProvider implements Provider {
                 : {
                     type: "tool_result",
                     tool_use_id: p.callId,
-                    content: p.content,
+                    // Deferred tools switched on (3.9.4): the API loads their definitions here.
+                    content: p.refs?.length
+                      ? [
+                          ...(p.content ? [{ type: "text" as const, text: p.content }] : []),
+                          ...p.refs.map((n) => ({ type: "tool_reference" as const, tool_name: n })),
+                        ]
+                      : p.content,
                     ...(p.isError && { is_error: true }),
                   },
         ),

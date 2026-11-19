@@ -28,6 +28,11 @@ export const EventBody = z.discriminatedUnion("type", [
       /** Tools the person had switched off when it started (G34.5): resuming keeps them off. */
       toolsOff: z.array(z.string()).optional(),
       /**
+       * Tools off by default when it started (3.9.4): the agent switches them on itself with
+       * request_tool (`session.tools_added`, by "agent"); resuming keeps the same split.
+       */
+      toolsDeferred: z.array(z.string()).optional(),
+      /**
        * What the model's engine makes by itself in this conversation (2026-11-19: `image`…, see
        * `capabilities.ts`): fixed at its start, resuming keeps it.
        */
@@ -48,6 +53,16 @@ export const EventBody = z.discriminatedUnion("type", [
       why: z.string(),
       /** "session": this conversation only; "agent": from now on for this agent too. */
       scope: z.enum(["session", "agent"]),
+      /**
+       * Who switched them on (3.9.4): the agent itself (tools off by default), or the person's yes
+       * (absent: the person, as before).
+       */
+      by: z.enum(["agent", "person"]).optional(),
+      /**
+       * They were declared from the start as deferred tools and surfaced by reference in
+       * request_tool's result (Anthropic's deferred loading): the cached prefix did not change.
+       */
+      deferred: z.boolean().optional(),
     }),
   }),
   /**
@@ -144,6 +159,11 @@ export const EventBody = z.discriminatedUnion("type", [
        * in `output`, marked so a resumed session counts the next calls from the same point.
        */
       reminder: z.enum(["todos"]).optional(),
+      /**
+       * Deferred tools the result surfaces by name (3.9.4, request_tool): the provider loads their
+       * definitions from here on (Anthropic's `tool_reference`), the prefix stays the same.
+       */
+      refs: z.array(z.string()).optional(),
     }),
   }),
   z.object({
