@@ -2359,6 +2359,8 @@ if (process.env.DEMO_SUBAGENTS) {
 // of their own (decision of 2026-11-19): the ring in the Coder's colour. One finished, one waiting
 // for the person's yes.
 if (process.env.DEMO_SUBSIGN) {
+  // Room for the two sub-agents beside the demo's agents.
+  await core.setProjectAgents("local", "demo", 6);
   const at = (sessionId, agentId, body) =>
     core.store.append({ ownerId: "local", projectId: "demo", agentId, sessionId, body });
   const mine = await core.startSession("local", coder.id);

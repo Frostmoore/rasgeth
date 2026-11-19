@@ -891,6 +891,18 @@ class FakeRedGiant {
           'futureField': {'ignored': true},
           ...?agentOverrides['a$i'],
         },
+    // A sub-agent, after the fixtures' first-level agents: no mascot of its own (2026-11-19).
+    if (!onlyLeaders)
+      {
+        'id': 'a${mascots.length}',
+        'kind': 'subagent',
+        'parentId': 'a0',
+        'projectId': null,
+        'persistent': false,
+        'name': 'Tester',
+        'status': 'active',
+        ...?agentOverrides['a${mascots.length}'],
+      },
     ...created,
   ];
 
