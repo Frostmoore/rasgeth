@@ -150,22 +150,38 @@ String windowsSwapScript(SwapPlan p) =>
 \$alive = ${_ps(p.alive)}
 \$waitS = ${p.waitSeconds}
 \$prev = "\${dest}.previous"
-function Say(\$t) { Add-Content -LiteralPath \$log -Value ("{0:yyyy-MM-dd HH:mm:ss} {1}" -f (Get-Date), \$t) }
+# UTF-8 like the app's own lines (Add-Content would write the system's code page).
+function Say(\$t) {
+  try { [IO.File]::AppendAllText(\$log, ("{0:yyyy-MM-dd HH:mm:ss} {1}`r`n" -f (Get-Date), \$t)) } catch { }
+}
 trap { Say "error: \$(\$_)"; continue }
-function StartApp([string[]]\$a) { Start-Process -FilePath \$exe -ArgumentList \$a -WorkingDirectory \$dest -PassThru }
+function StartApp([string[]]\$a, [string]\$in = \$dest) {
+  Start-Process -FilePath (Join-Path \$in (Split-Path -Leaf \$exe)) -ArgumentList \$a -WorkingDirectory \$in -PassThru
+}
 function StopInFolder {
   Get-Process -ErrorAction SilentlyContinue | Where-Object { \$_.Path -like "\$dest\\*" } |
     ForEach-Object { if (-not \$_.WaitForExit(0)) { Stop-Process -Id \$_.Id -Force -ErrorAction SilentlyContinue } }
 }
+# The kept folder back in place: a file of the new version may stay locked a moment after it
+# stopped, so the removal is retried, and the kept folder moves only once the place is free (a
+# Move-Item onto a folder that is still there would put it inside, the new version still in place).
 function GoBack(\$why) {
-  Say "\$(\$why): going back to \$from"
-  StopInFolder
-  Start-Sleep -Milliseconds 500
+  Say "\$(\$why): going back to \${from}"
+  \$in = \$dest
   if (Test-Path -LiteralPath \$prev) {
-    Remove-Item -LiteralPath \$dest -Recurse -Force -ErrorAction SilentlyContinue
-    Move-Item -LiteralPath \$prev -Destination \$dest -Force
+    \$back = \$false
+    for (\$k = 1; \$k -le 40 -and -not \$back; \$k++) {
+      StopInFolder
+      Start-Sleep -Milliseconds 500
+      try {
+        if (Test-Path -LiteralPath \$dest) { Remove-Item -LiteralPath \$dest -Recurse -Force -ErrorAction Stop }
+        Move-Item -LiteralPath \$prev -Destination \$dest -ErrorAction Stop
+        \$back = \$true
+      } catch { if (\$k -eq 1 -or \$k -eq 40) { Say "putting \${from} back, try \${k}: \$(\$_)" } }
+    }
+    if (-not \$back) { Say "\${from} could not be put back: it starts from \$prev"; \$in = \$prev }
   }
-  [void](StartApp @("$kUpdateFailedArg\$to"))
+  [void](StartApp @("$kUpdateFailedArg\$to") \$in)
 }
 Say "helper \${PID}: update \${from} -> \${to}, waiting for the app (\${appPid}) to close"
 Set-Content -LiteralPath \$alive -Value \$PID
@@ -173,6 +189,7 @@ Set-Content -LiteralPath \$alive -Value \$PID
 if (\$p -and -not \$p.WaitForExit(30000)) { Say "the app did not close: nothing changed"; exit 1 }
 if (-not (Test-Path -LiteralPath \$setup)) { Say "no installer: nothing changed"; [void](StartApp @("$kUpdateFailedArg\$to")); exit 1 }
 Remove-Item -LiteralPath \$prev -Recurse -Force -ErrorAction SilentlyContinue
+if (Test-Path -LiteralPath \$prev) { Say "an old \$prev is in the way: nothing changed"; [void](StartApp @("$kUpdateFailedArg\$to")); exit 1 }
 try { Copy-Item -LiteralPath \$dest -Destination \$prev -Recurse -Force -ErrorAction Stop }
 catch { Say "the folder could not be kept: nothing changed (\$_)"; [void](StartApp @("$kUpdateFailedArg\$to")); exit 1 }
 Say "installing \$to"

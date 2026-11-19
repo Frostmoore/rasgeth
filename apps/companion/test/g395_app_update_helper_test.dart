@@ -9,6 +9,7 @@
 // Windows, the helper run for real on fake folders: replaced and started, put back when the new
 // version does not start or the installer fails.
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -39,7 +40,8 @@ Future<void> _waitFor(bool Function() ok, {int seconds = 30}) async {
   }
 }
 
-String _read(String path) => File(path).existsSync() ? File(path).readAsStringSync() : '';
+String _read(String path) =>
+    File(path).existsSync() ? utf8.decode(File(path).readAsBytesSync(), allowMalformed: true) : '';
 
 Future<void> _rmRetry(Directory d) async {
   for (var i = 0; i < 50; i++) {
@@ -100,6 +102,12 @@ void main() {
     expect(l, contains(r": >'/it'\''s/alive'"));
     expect(l.indexOf('say "helper'), lessThan(l.indexOf(': >')));
     expect(l.indexOf(': >'), lessThan(l.indexOf('while kill -0')));
+  });
+
+  test('the Windows helper writes its log in UTF-8, never in the code page', () {
+    final w = windowsSwapScript(_plan);
+    expect(w, contains(r'[IO.File]::AppendAllText($log'));
+    expect(w, isNot(contains(r'Add-Content -LiteralPath $log')));
   });
 
   test('Windows PowerShell 5.1 by its full path', () {
@@ -288,6 +296,14 @@ $e | ForEach-Object { "line $($_.Extent.StartLineNumber): $($_.Message)" }
       File('$dir\\app.ps1').writeAsStringSync('''
 \$name = (Get-Content -LiteralPath (Join-Path \$PSScriptRoot 'version.txt')).Trim()
 Add-Content -LiteralPath '${tmp.path}\\out.txt' -Value ("\$name " + \$env:RGARGS)
+if (\$name -eq 'bad-locked') {
+  # Something of the new version holds a file (and the folder) a few seconds after it stopped.
+  \$lock = Join-Path \$PSScriptRoot 'lock.bin'
+  Start-Process -FilePath '$_ps' -WindowStyle Hidden -WorkingDirectory \$PSScriptRoot -ArgumentList @(
+    '-NoProfile', '-Command', "`\$f = [IO.File]::Open('\$lock', 'OpenOrCreate', 'ReadWrite', 'None'); Start-Sleep -Seconds 4; `\$f.Close()")
+  Start-Sleep -Milliseconds 800
+  exit 1
+}
 if (\$name -eq 'bad') { exit 1 }
 if (\$env:RGARGS -match '$kMarkerArg"?([^"]+)"?') { Set-Content -LiteralPath \$Matches[1].Trim() -Value ok }
 Start-Sleep -Seconds 2
@@ -350,6 +366,21 @@ Start-Sleep -Seconds 2
       expect(Directory('$dest.previous').existsSync(), isFalse);
       expect(out, contains('old ${kUpdateFailedArg}3.9.3'));
       expect(log, contains('3.9.3 did not start: going back to 3.9.0'));
+    });
+
+    test('a file of the new version still held: retried, the old folder back in place', () async {
+      final (code, out, log) = await run(newApp: 'bad-locked');
+      final dest = '${tmp.path}\\Rasgeth App';
+      expect(code, 2, reason: log);
+      expect(File('$dest\\version.txt').readAsStringSync(), 'old', reason: log);
+      expect(
+        Directory('$dest\\Rasgeth App.previous').existsSync(),
+        isFalse,
+        reason: 'never inside',
+      );
+      expect(Directory('$dest.previous').existsSync(), isFalse);
+      expect(out, contains('old ${kUpdateFailedArg}3.9.3'));
+      expect(log, contains('putting 3.9.0 back, try 1:'));
     });
 
     test('the installer fails: the old folder back, the old version told', () async {
