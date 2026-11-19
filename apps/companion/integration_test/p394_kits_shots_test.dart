@@ -37,7 +37,8 @@ void main() {
     await frames(t, 1500);
     final nav = t.state<NavigatorState>(find.byType(Navigator).first);
     final ctx = nav.context;
-    final coder = app.agents.where((a) => a.kind == AgentKind.agent).firstOrNull ??
+    final coder =
+        app.agents.where((a) => a.kind == AgentKind.agent).firstOrNull ??
         app.agents.where((a) => a.kind == AgentKind.orchestrator).firstOrNull;
 
     Future<void> scrollTo(Key key) async {

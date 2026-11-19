@@ -247,12 +247,13 @@ describe("tool groups (3.9.4)", () => {
     await waitFor(() => expect(r.container.querySelector('[data-kit="browser"]')).toBeTruthy());
     const kit = r.container.querySelector('[data-kit="browser"]') as HTMLElement;
     expect([...kit.querySelectorAll("button")].map((b) => b.textContent)).toEqual([
-      "Come per tutti: Spento di serie",
+      "Come per tutti",
       "Spento di serie",
       "Acceso sempre",
       "Spento da te",
     ]);
     expect(kit.querySelector('[aria-pressed="true"]')?.textContent).toBe("Acceso sempre");
+    expect(kit.textContent).toContain("Come per tutti: Spento di serie");
     fireEvent.click([...kit.querySelectorAll("button")][3] as HTMLElement);
     await waitFor(() =>
       expect(calls.find(([n]) => n === "setAgentKits")?.[1]).toEqual(["a1", { browser: "off" }]),

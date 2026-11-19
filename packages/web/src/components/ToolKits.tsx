@@ -49,7 +49,7 @@ function KitRow({
   const names = k.entries.map(toolName).join(", ");
   const options: [Pick, string][] = [
     ...(forAgent
-      ? [["default", t("kitAsAll", { state: stateWord(k.global ?? k.default) })] as [Pick, string]]
+      ? [["default", t("toolsDefault")] as [Pick, string]]
       : []),
     ["auto", t("kitAuto")],
     ["on", t("kitOn")],
@@ -73,6 +73,11 @@ function KitRow({
             {t("kitWeight", { n: aboutTokens(k.tokens) })}
             {k.default === "on" && k.id !== "core" ? ` · ${t("kitRole")}` : ""}
           </small>
+          {forAgent && (
+            <small class="tl-kit-tools">
+              {t("kitAsAll", { state: stateWord(k.global ?? k.default) })}
+            </small>
+          )}
           <small class="tl-kit-tools">{t("kitTools", { list: names })}</small>
         </div>
       </div>
