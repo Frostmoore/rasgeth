@@ -126,7 +126,8 @@ export function ProposalView({
           ]}
         />
         {description && <p class="wz-lead2">{description}</p>}
-        {p.input.summary && (
+        {/* A new version says why in its line (3.9.7): the summary card is for new skills. */}
+        {p.input.summary && !(update && p.updateLine) && (
           <div class="wz-card wz-left xw-summary">
             <b>{t("xwSummary")}</b>
             <p>{p.input.summary}</p>

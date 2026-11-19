@@ -148,6 +148,8 @@ describe("a proposed new version (3.9.7)", () => {
     expect(r.getByTestId("update-line").textContent).toBe(
       "Cosa è cambiato e perchéLetta l'IVA dalla tabella sopra il totale: era letta da quella sbagliata",
     );
+    // The reason is in the line, not repeated in a card of its own.
+    expect(r.container.querySelector(".xw-summary")).toBeNull();
     // The whole comparison only when asked.
     expect(r.getByTestId("proposal-diff").querySelector("del")).toBeNull();
     fireEvent.click(r.getByTestId("proposal-compare"));
