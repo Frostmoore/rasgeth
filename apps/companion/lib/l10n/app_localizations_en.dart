@@ -9237,6 +9237,280 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get cvGeneratingImage => 'Generating a picture…';
+
+  @override
+  String get cvGeneratingVideo => 'Making a video…';
+
+  @override
+  String get cvGeneratingAudio => 'Making a sound…';
+
+  @override
+  String get cvImageUnreadable => 'This picture cannot be opened';
+
+  @override
+  String cvImageUnreachable(String name) {
+    return 'Picture not available here: $name';
+  }
+
+  @override
+  String get cvMediaNativeTitle => 'Use the model\'s own tool when it has one';
+
+  @override
+  String get cvMediaNativeHelp =>
+      'Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.';
+
+  @override
+  String get ptrSection => 'Portrait';
+
+  @override
+  String get ptrHub => 'How the agents see you, built from your conversations';
+
+  @override
+  String get ptrTitle => 'How the agents see you';
+
+  @override
+  String get ptrLead =>
+      'This portrait builds itself from your conversations: your tastes, how you like to be spoken to, your habits, what you are working on, what to avoid. The agents you choose read it when a conversation starts. Correct it whenever you like: your word always wins.';
+
+  @override
+  String get ptrOnTitle => 'Build the portrait from the conversations';
+
+  @override
+  String get ptrOnOn =>
+      'After a conversation goes quiet, a light model reads only your own messages and updates the portrait. It never notes passwords, keys, email addresses, phone numbers or things about other people. It spends a little from your budget.';
+
+  @override
+  String get ptrOnOff =>
+      'Off: the portrait does not change and no agent reads it. What is here stays until you delete it.';
+
+  @override
+  String get ptrWhoTitle => 'Who reads it';
+
+  @override
+  String get ptrWhoLead =>
+      'Changes count from the next conversation: the ones already open go on as they were.';
+
+  @override
+  String get ptrWho_god => 'God';
+
+  @override
+  String get ptrWho_orchestrators => 'The projects\' orchestrators';
+
+  @override
+  String get ptrWho_chat => 'The Chat';
+
+  @override
+  String get ptrWho_others => 'Every other agent';
+
+  @override
+  String get ptrListTitle => 'Traits';
+
+  @override
+  String get ptrListLead =>
+      'Each trait says how sure it is and where it comes from. A trait no conversation says again fades with time.';
+
+  @override
+  String ptrCount(String n) {
+    return '$n traits';
+  }
+
+  @override
+  String get ptrCountOne => '1 trait';
+
+  @override
+  String get ptrEmpty => 'No traits yet: the portrait fills in as you talk with the agents.';
+
+  @override
+  String get ptrEmptyOff => 'The portrait is off and empty.';
+
+  @override
+  String get ptrAddPlaceholder => 'Add a trait yourself, e.g. I like answers with examples';
+
+  @override
+  String get ptrAdd => 'Add';
+
+  @override
+  String get ptrCat_preference => 'Preferences';
+
+  @override
+  String get ptrCat_style => 'How to talk to you';
+
+  @override
+  String get ptrCat_habit => 'Habits';
+
+  @override
+  String get ptrCat_project => 'Current projects';
+
+  @override
+  String get ptrCat_avoid => 'To avoid';
+
+  @override
+  String get ptrCat_about => 'About you';
+
+  @override
+  String get ptrSure => 'Sure';
+
+  @override
+  String get ptrLikely => 'Likely';
+
+  @override
+  String get ptrUnsure => 'Not sure yet';
+
+  @override
+  String get ptrByYou => 'Written by you';
+
+  @override
+  String ptrSeen(String n) {
+    return 'seen $n times';
+  }
+
+  @override
+  String get ptrSeenOnce => 'seen once';
+
+  @override
+  String get ptrWhere => 'Where it comes from';
+
+  @override
+  String get ptrUntitled => 'A conversation';
+
+  @override
+  String ptrWith(String name) {
+    return 'with $name';
+  }
+
+  @override
+  String get ptrEdit => 'Change';
+
+  @override
+  String get ptrRemove => 'Remove';
+
+  @override
+  String get ptrDeny => 'Not true';
+
+  @override
+  String get ptrEditTitle => 'Change the trait';
+
+  @override
+  String get ptrEditNote =>
+      'Once you change it, the trait is yours: it never fades and nothing changes it by itself.';
+
+  @override
+  String ptrDenied(String n) {
+    return '$n traits you said are not true: they will not be proposed again.';
+  }
+
+  @override
+  String get ptrDeniedOne => '1 trait you said is not true: it will not be proposed again.';
+
+  @override
+  String get ptrTextTitle => 'What the agents read';
+
+  @override
+  String get ptrTextLead =>
+      'The portrait exactly as it goes into a new conversation, short and always the same until it changes.';
+
+  @override
+  String get ptrTextShow => 'Show the text';
+
+  @override
+  String get ptrTextHide => 'Hide the text';
+
+  @override
+  String get ptrForgetTitle => 'Forget everything';
+
+  @override
+  String get ptrForgetLead =>
+      'Every trait goes, and its words go from the history too. It cannot be undone.';
+
+  @override
+  String get ptrForgetText =>
+      'Every trait of the portrait is deleted and its words erased from the history, the «not true» ones too. The portrait starts again empty.';
+
+  @override
+  String get ptrForget => 'Forget everything';
+
+  @override
+  String get ptrErr_empty => 'Write the trait.';
+
+  @override
+  String get ptrErr_long => 'A trait is at most 200 characters: write it shorter.';
+
+  @override
+  String get ptrErr_secret =>
+      'That looks like a password, a code or a card number: secrets never go into the portrait.';
+
+  @override
+  String get ptrErr_private => 'Email addresses and phone numbers never go into the portrait.';
+
+  @override
+  String get ptrErr_gone => 'That trait is not there any more.';
+
+  @override
+  String get tkTitle => 'Tool groups';
+
+  @override
+  String get tkLead =>
+      'Agents start with few tools, to keep every message light. The other groups are off by default: an agent switches one on by itself when the work needs it, for that conversation. Always on: the agent has it from the start. Off by you: the agent has to ask you.';
+
+  @override
+  String tkAgentLead(String name) {
+    return 'The groups for $name: as for every agent, or a choice of its own.';
+  }
+
+  @override
+  String get tkAuto => 'Off by default';
+
+  @override
+  String get tkOn => 'Always on';
+
+  @override
+  String get tkOff => 'Off by you';
+
+  @override
+  String tkAsAll(String state) {
+    return 'As for everyone: $state';
+  }
+
+  @override
+  String get tkIsDefault => 'default';
+
+  @override
+  String get tkRole => 'on for its role';
+
+  @override
+  String tkWeight(String n) {
+    return 'about $n tokens when on';
+  }
+
+  @override
+  String tkEssential(String n) {
+    return 'Essential tools, always on: about $n tokens';
+  }
+
+  @override
+  String tkStartTotal(String n) {
+    return 'At the start: about $n tokens in every message';
+  }
+
+  @override
+  String tkRest(String n) {
+    return 'Off at the start: $n tokens that weigh only if a group is switched on';
+  }
+
+  @override
+  String tkTools(String list) {
+    return 'Tools: $list';
+  }
+
+  @override
+  String get tkStateAuto => 'off by default';
+
+  @override
+  String get asMascotSub =>
+      'A sub-agent has no mascot of its own: it lives for one task, and shows a ring in its parent\'s colour.';
+
+  @override
   String get auAsstNewRoutine => 'New routine';
 
   @override
@@ -10359,214 +10633,4 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get auOwnReadOnly =>
       'Automations can be changed only by the person (not from a project\'s device).';
-
-  @override
-  String get cvGeneratingImage => 'Generating a picture…';
-
-  @override
-  String get cvGeneratingVideo => 'Making a video…';
-
-  @override
-  String get cvGeneratingAudio => 'Making a sound…';
-
-  @override
-  String get cvImageUnreadable => 'This picture cannot be opened';
-
-  @override
-  String cvImageUnreachable(String name) {
-    return 'Picture not available here: $name';
-  }
-
-  @override
-  String get cvMediaNativeTitle => 'Use the model\'s own tool when it has one';
-
-  @override
-  String get cvMediaNativeHelp =>
-      'Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.';
-
-  @override
-  String get ptrSection => 'Portrait';
-
-  @override
-  String get ptrHub => 'How the agents see you, built from your conversations';
-
-  @override
-  String get ptrTitle => 'How the agents see you';
-
-  @override
-  String get ptrLead =>
-      'This portrait builds itself from your conversations: your tastes, how you like to be spoken to, your habits, what you are working on, what to avoid. The agents you choose read it when a conversation starts. Correct it whenever you like: your word always wins.';
-
-  @override
-  String get ptrOnTitle => 'Build the portrait from the conversations';
-
-  @override
-  String get ptrOnOn =>
-      'After a conversation goes quiet, a light model reads only your own messages and updates the portrait. It never notes passwords, keys, email addresses, phone numbers or things about other people. It spends a little from your budget.';
-
-  @override
-  String get ptrOnOff =>
-      'Off: the portrait does not change and no agent reads it. What is here stays until you delete it.';
-
-  @override
-  String get ptrWhoTitle => 'Who reads it';
-
-  @override
-  String get ptrWhoLead =>
-      'Changes count from the next conversation: the ones already open go on as they were.';
-
-  @override
-  String get ptrWho_god => 'God';
-
-  @override
-  String get ptrWho_orchestrators => 'The projects\' orchestrators';
-
-  @override
-  String get ptrWho_chat => 'The Chat';
-
-  @override
-  String get ptrWho_others => 'Every other agent';
-
-  @override
-  String get ptrListTitle => 'Traits';
-
-  @override
-  String get ptrListLead =>
-      'Each trait says how sure it is and where it comes from. A trait no conversation says again fades with time.';
-
-  @override
-  String ptrCount(String n) {
-    return '$n traits';
-  }
-
-  @override
-  String get ptrCountOne => '1 trait';
-
-  @override
-  String get ptrEmpty => 'No traits yet: the portrait fills in as you talk with the agents.';
-
-  @override
-  String get ptrEmptyOff => 'The portrait is off and empty.';
-
-  @override
-  String get ptrAddPlaceholder => 'Add a trait yourself, e.g. I like answers with examples';
-
-  @override
-  String get ptrAdd => 'Add';
-
-  @override
-  String get ptrCat_preference => 'Preferences';
-
-  @override
-  String get ptrCat_style => 'How to talk to you';
-
-  @override
-  String get ptrCat_habit => 'Habits';
-
-  @override
-  String get ptrCat_project => 'Current projects';
-
-  @override
-  String get ptrCat_avoid => 'To avoid';
-
-  @override
-  String get ptrCat_about => 'About you';
-
-  @override
-  String get ptrSure => 'Sure';
-
-  @override
-  String get ptrLikely => 'Likely';
-
-  @override
-  String get ptrUnsure => 'Not sure yet';
-
-  @override
-  String get ptrByYou => 'Written by you';
-
-  @override
-  String ptrSeen(String n) {
-    return 'seen $n times';
-  }
-
-  @override
-  String get ptrSeenOnce => 'seen once';
-
-  @override
-  String get ptrWhere => 'Where it comes from';
-
-  @override
-  String get ptrUntitled => 'A conversation';
-
-  @override
-  String ptrWith(String name) {
-    return 'with $name';
-  }
-
-  @override
-  String get ptrEdit => 'Change';
-
-  @override
-  String get ptrRemove => 'Remove';
-
-  @override
-  String get ptrDeny => 'Not true';
-
-  @override
-  String get ptrEditTitle => 'Change the trait';
-
-  @override
-  String get ptrEditNote =>
-      'Once you change it, the trait is yours: it never fades and nothing changes it by itself.';
-
-  @override
-  String ptrDenied(String n) {
-    return '$n traits you said are not true: they will not be proposed again.';
-  }
-
-  @override
-  String get ptrDeniedOne => '1 trait you said is not true: it will not be proposed again.';
-
-  @override
-  String get ptrTextTitle => 'What the agents read';
-
-  @override
-  String get ptrTextLead =>
-      'The portrait exactly as it goes into a new conversation, short and always the same until it changes.';
-
-  @override
-  String get ptrTextShow => 'Show the text';
-
-  @override
-  String get ptrTextHide => 'Hide the text';
-
-  @override
-  String get ptrForgetTitle => 'Forget everything';
-
-  @override
-  String get ptrForgetLead =>
-      'Every trait goes, and its words go from the history too. It cannot be undone.';
-
-  @override
-  String get ptrForgetText =>
-      'Every trait of the portrait is deleted and its words erased from the history, the «not true» ones too. The portrait starts again empty.';
-
-  @override
-  String get ptrForget => 'Forget everything';
-
-  @override
-  String get ptrErr_empty => 'Write the trait.';
-
-  @override
-  String get ptrErr_long => 'A trait is at most 200 characters: write it shorter.';
-
-  @override
-  String get ptrErr_secret =>
-      'That looks like a password, a code or a card number: secrets never go into the portrait.';
-
-  @override
-  String get ptrErr_private => 'Email addresses and phone numbers never go into the portrait.';
-
-  @override
-  String get ptrErr_gone => 'That trait is not there any more.';
 }
