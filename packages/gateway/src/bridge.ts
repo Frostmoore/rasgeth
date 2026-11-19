@@ -6,7 +6,7 @@
 // The conversation is the owner's, not the chat's: Demi-God keeps one work session per person,
 // so a talk started on Telegram goes on on Discord, Slack, Signal, WhatsApp or the web.
 
-import { randomInt } from "node:crypto";
+import { randomBytes, randomInt } from "node:crypto";
 import type { SqlClient } from "@redgiant/events";
 import {
   type Answers,
@@ -14,6 +14,7 @@ import {
   CHANNEL_NAMES,
   criticalChatLines,
   dangerWords,
+  findSecrets,
   type ImagePart,
   mailRequestLines,
   type PermissionRequestInfo,
@@ -22,6 +23,7 @@ import {
   type QuestionRequestInfo,
   requestReasons,
   requestSentence,
+  type SecretSpan,
 } from "@redgiant/protocol";
 import { type Language, say, type TextKey, VOICE_FAILURES, type VoiceFailure } from "./texts.js";
 
@@ -97,6 +99,11 @@ export interface GatewayHost {
       images?: ImagePart[];
       files?: { name: string; data: Buffer }[];
       onQueued?: () => void;
+      /**
+       * The person chose «Send anyway» on the secret warning (2026-11-19): their words go as
+       * written, and the choice is in the log (`message.user.secretOk`).
+       */
+      secretOk?: boolean;
     },
   ): Promise<string>;
   /**
@@ -192,7 +199,39 @@ const IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 /** What a chat is being asked right now: its numbered choices answer it. */
 type Prompt =
   | { kind: "perm"; requestId: string }
-  | { kind: "question"; requestId: string; index: number };
+  | { kind: "question"; requestId: string; index: number }
+  | { kind: "secret"; requestId: string };
+
+/** How long a message that looks like a secret waits for the person's choice. */
+export const SECRET_HOLD_MS = 10 * 60_000;
+
+/** The words for each kind of secret found. */
+const SECRET_WORDS: Record<SecretSpan["kind"], TextKey> = {
+  key: "secretKey",
+  password: "secretPassword",
+  code: "secretCode",
+  card: "secretCard",
+  iban: "secretIban",
+};
+
+type RelayExtra = { images?: ImagePart[]; files?: { name: string; data: Buffer }[] };
+
+/**
+ * A message held because it looks like a secret (2026-11-19): only in memory, never written
+ * anywhere, gone once the person chooses or the time runs out.
+ */
+interface HeldSecret {
+  ownerId: string;
+  chatId: string;
+  text: string;
+  extra?: RelayExtra | undefined;
+  expires: number;
+  messageId?: string;
+  notice: string;
+}
+
+/** The three choices on a held secret, in the order they are numbered. */
+const SECRET_CHOICES = ["send", "clean", "drop"] as const;
 
 /** A question being answered: one message per question, in order. */
 interface Asking {
@@ -216,6 +255,7 @@ export class ChatBridge {
   private readonly sentOwner = new Map<string, string>();
   private readonly asking = new Map<string, Asking>();
   private readonly prompts = new Map<string, Prompt>();
+  private readonly held = new Map<string, HeldSecret>();
   private readonly inFlight = new Set<Promise<void>>();
   private stopped = false;
 
@@ -493,8 +533,21 @@ export class ChatBridge {
     owner: string,
     chatId: string,
     text: string,
-    extra?: { images?: ImagePart[]; files?: { name: string; data: Buffer }[] },
+    extra?: RelayExtra,
+    /**
+     * The person already chose on the secret warning: "anyway" sends it as written (secretOk),
+     * "without" lets the server blank it as it always does.
+     */
+    chosen?: "anyway" | "without",
   ) {
+    // A secret in the message (G33.4) waits for the person's choice, as in the page and the app.
+    if (!chosen) {
+      const found = findSecrets(text);
+      if (found.length > 0) {
+        await this.holdSecret(owner, chatId, text, found, extra);
+        return;
+      }
+    }
     const typing = this.t.typing
       ? setInterval(() => void this.t.typing?.(chatId).catch(() => {}), 4500)
       : undefined;
@@ -502,6 +555,7 @@ export class ChatBridge {
     try {
       const answer = await this.o.host.askDemigod(owner, chatId, text, {
         ...extra,
+        ...(chosen === "anyway" && { secretOk: true }),
         onQueued: () => void this.reply(chatId, this.say(owner, "queued")),
       });
       for (const part of splitText(answer, this.t.maxLength)) await this.t.send(chatId, part);
@@ -510,6 +564,74 @@ export class ChatBridge {
     } finally {
       if (typing) clearInterval(typing);
     }
+  }
+
+  /**
+   * «This looks like a secret» (2026-11-19): buttons where the platform has them, numbered
+   * choices where not (1 send anyway, 2 send without it, 3 leave it). The secret is never repeated.
+   */
+  private async holdSecret(
+    owner: string,
+    chatId: string,
+    text: string,
+    found: SecretSpan[],
+    extra?: RelayExtra,
+  ) {
+    const now = Date.now();
+    for (const [id, h] of this.held) if (h.expires <= now) this.held.delete(id);
+    const id = randomBytes(6).toString("hex");
+    const what = [...new Set(found.map((s) => s.kind))]
+      .map((k) => this.say(owner, SECRET_WORDS[k]))
+      .join(", ");
+    const labels = {
+      send: this.say(owner, "secretSendAnyway"),
+      clean: this.say(owner, "secretSendWithout"),
+      drop: this.say(owner, "secretDrop"),
+    };
+    const h: HeldSecret = {
+      ownerId: owner,
+      chatId,
+      text,
+      extra,
+      expires: now + SECRET_HOLD_MS,
+      notice: "",
+    };
+    this.held.set(id, h);
+    const m = await this.ask(
+      chatId,
+      owner,
+      this.say(owner, "secretHeld", { what }),
+      SECRET_CHOICES.map((c) => ({ id: `sec:${id}:${c}`, label: labels[c] })),
+      { kind: "secret", requestId: id },
+    );
+    h.notice = m.text;
+    if (m.messageId) h.messageId = m.messageId;
+  }
+
+  /** The person's choice on a held secret, from a button or a number. */
+  private async settleSecret(owner: string, id: string, choice: (typeof SECRET_CHOICES)[number]) {
+    const h = this.held.get(id);
+    if (!h || h.ownerId !== owner) return;
+    this.held.delete(id);
+    this.clearPrompt(h.chatId, id);
+    const expired = h.expires <= Date.now();
+    const tail = this.say(
+      owner,
+      expired
+        ? "secretExpired"
+        : choice === "send"
+          ? "secretSent"
+          : choice === "clean"
+            ? "secretSentWithout"
+            : "secretDropped",
+    );
+    if (h.messageId && this.t.edit)
+      await this.t.edit(h.chatId, h.messageId, `${h.notice}\n\n${tail}`).catch(() => {});
+    else await this.reply(h.chatId, tail);
+    if (expired || choice === "drop") return;
+    this.background(
+      this.relay(owner, h.chatId, h.text, h.extra, choice === "send" ? "anyway" : "without"),
+    );
   }
 
   // ---------- Outgoing ----------
@@ -745,6 +867,12 @@ export class ChatBridge {
     const numbers = /^\d+(\s*,\s*\d+)*$/.test(text)
       ? text.split(",").map((n) => Number(n.trim()) - 1)
       : undefined;
+    if (p.kind === "secret") {
+      const choice = numbers?.length === 1 ? SECRET_CHOICES[numbers[0] as number] : undefined;
+      if (!choice) return false;
+      await this.settleSecret(owner, p.requestId, choice);
+      return true;
+    }
     if (p.kind === "perm") {
       if (numbers?.length !== 1 || (numbers[0] !== 0 && numbers[0] !== 1)) return false;
       this.o.host.approvals.decide(
@@ -778,6 +906,11 @@ export class ChatBridge {
         undefined,
         this.platform,
       );
+      return;
+    }
+    const sec = id.match(/^sec:([0-9a-f]+):(send|clean|drop)$/);
+    if (sec) {
+      await this.settleSecret(owner, sec[1] as string, sec[2] as (typeof SECRET_CHOICES)[number]);
       return;
     }
     const q = id.match(/^q:(.+):(\d+):(\d+)$/);

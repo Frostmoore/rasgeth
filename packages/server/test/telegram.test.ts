@@ -219,6 +219,78 @@ describe("Demi-God on Telegram", () => {
     expect(tg?.calls.some((c) => c.method === "sendChatAction")).toBe(true);
   });
 
+  it("holds a message that looks like a secret; «Send anyway» passes it as written, in the log (2026-11-19)", async () => {
+    await setup((req) =>
+      req.system.startsWith("You are Demi-God")
+        ? { text: `Demi-God heard: ${lastText(req).split("\n")[0]}` }
+        : { text: "x" },
+    );
+    await pair();
+    // Built at run time: no key-shaped literal in the sources.
+    const token = `ghp_${"A1b2".repeat(9)}`;
+    const before = s?.provider.requests.length ?? 0;
+    await s?.gateway?.handleUpdate(tg?.text(USER, `my link ${token}`) as never);
+    await s?.gateway?.idle();
+    const notice = tg?.sent(USER).at(-1);
+    expect(notice?.text).toMatch(/^This message looks like it holds a secret \(a key\)/);
+    expect(String(notice?.text)).not.toContain(token);
+    const keyboard = (
+      notice?.reply_markup as { inline_keyboard: { text: string; callback_data: string }[][] }
+    ).inline_keyboard.flat();
+    expect(keyboard.map((b) => b.text)).toEqual(["Send anyway", "Send without it", "Leave it"]);
+    // Nothing reached a model yet.
+    expect(s?.provider.requests.length).toBe(before);
+    // Someone not linked cannot choose for the person.
+    await s?.gateway?.handleUpdate(tg?.button(9999, keyboard[0]?.callback_data ?? "") as never);
+    await s?.gateway?.idle();
+    expect(s?.provider.requests.length).toBe(before);
+    await s?.gateway?.handleUpdate(tg?.button(USER, keyboard[0]?.callback_data ?? "") as never);
+    await s?.gateway?.idle();
+    expect(tg?.sent(USER).at(-1)?.text).toBe(`Demi-God heard: my link ${token}`);
+    expect(tg?.calls.filter((c) => c.method === "editMessageText").at(-1)?.body.text).toMatch(
+      /Sent as written\.$/,
+    );
+    const core = s?.core as unknown as {
+      registry: { list(o: { ownerId: string }): { id: string; kind: string }[] };
+      workSession(a: unknown): Promise<string>;
+      history(o: string, sid: string): Promise<{ type: string; payload: unknown }[]>;
+    };
+    const demigod = core.registry.list({ ownerId: "me" }).find((a) => a.kind === "demigod");
+    const sid = await core.workSession(demigod);
+    const users = (await core.history("me", sid)).filter((e) => e.type === "message.user");
+    expect(users.at(-1)?.payload).toMatchObject({ secretOk: true });
+
+    // «Send without it»: the server blanks it, as before; «Leave it»: nothing is sent.
+    await s?.gateway?.handleUpdate(tg?.text(USER, `again ${token}`) as never);
+    await s?.gateway?.idle();
+    const second = (
+      tg?.sent(USER).at(-1)?.reply_markup as {
+        inline_keyboard: { callback_data: string }[][];
+      }
+    ).inline_keyboard.flat();
+    await s?.gateway?.handleUpdate(tg?.button(USER, second[1]?.callback_data ?? "") as never);
+    await s?.gateway?.idle();
+    expect(tg?.sent(USER).at(-1)?.text).toBe("Demi-God heard: again [secret removed]");
+    const after = s?.provider.requests.length ?? 0;
+    await s?.gateway?.handleUpdate(tg?.text(USER, `third ${token}`) as never);
+    await s?.gateway?.idle();
+    const third = (
+      tg?.sent(USER).at(-1)?.reply_markup as {
+        inline_keyboard: { callback_data: string }[][];
+      }
+    ).inline_keyboard.flat();
+    await s?.gateway?.handleUpdate(tg?.button(USER, third[2]?.callback_data ?? "") as never);
+    await s?.gateway?.idle();
+    expect(s?.provider.requests.length).toBe(after);
+    expect(tg?.calls.filter((c) => c.method === "editMessageText").at(-1)?.body.text).toMatch(
+      /Not sent\.$/,
+    );
+    // The same button twice: the message is gone, nothing more is sent.
+    await s?.gateway?.handleUpdate(tg?.button(USER, keyboard[0]?.callback_data ?? "") as never);
+    await s?.gateway?.idle();
+    expect(s?.provider.requests.length).toBe(after);
+  });
+
   it("asks for approvals with buttons and closes them everywhere", async () => {
     const { god } = await setup((req) =>
       toolResult(req) === undefined

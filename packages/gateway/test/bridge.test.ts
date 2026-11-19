@@ -40,10 +40,10 @@ function fakeHost() {
   const questions = new EventEmitter();
   const decided: [string, string][] = [];
   const answered: unknown[] = [];
-  const asked: { chatId: string; text: string }[] = [];
+  const asked: { chatId: string; text: string; secretOk?: boolean }[] = [];
   const host: GatewayHost = {
-    async askDemigod(_owner, chatId, text) {
-      asked.push({ chatId, text });
+    async askDemigod(_owner, chatId, text, extra) {
+      asked.push({ chatId, text, ...(extra?.secretOk && { secretOk: true }) });
       return `You said: ${text}`;
     },
     transcription: {},
@@ -308,5 +308,82 @@ describe("chat bridge (G29.5)", () => {
       "Nothing was running.",
       "Working now: God.\nWaiting for you: 1 approvals, 0 questions.\nSpent: $1.50.",
     ]);
+  });
+});
+
+// Built at run time: no key-shaped literal in the sources.
+const fakeToken = () => `ghp_${"A1b2".repeat(9)}`;
+
+describe("a message that looks like a secret (2026-11-19)", () => {
+  it("is held with buttons, and «Send anyway» passes it as written with secretOk", async () => {
+    const { t, send, asked } = await setup();
+    const text = `the link is ${fakeToken()}`;
+    await send({ text });
+    expect(asked).toEqual([]);
+    const notice = t.sent.at(-1);
+    expect(notice?.text).toMatch(/looks like it holds a secret \(a key\)/);
+    expect(notice?.text).not.toContain(fakeToken());
+    expect(notice?.buttons?.map((b) => b.label)).toEqual([
+      "Send anyway",
+      "Send without it",
+      "Leave it",
+    ]);
+    await send({ button: notice?.buttons?.[0]?.id ?? "" });
+    expect(asked).toEqual([{ chatId: "c1", text, secretOk: true }]);
+    expect(t.edits.at(-1)?.text).toMatch(/Sent as written\.$/);
+    // A choice counts once: the same button again sends nothing more.
+    await send({ button: notice?.buttons?.[0]?.id ?? "" });
+    expect(asked).toHaveLength(1);
+  });
+
+  it("«Send without it» lets the server blank it (no secretOk), «Leave it» sends nothing", async () => {
+    const { t, send, asked } = await setup();
+    await send({ text: `one ${fakeToken()}` });
+    await send({ button: t.sent.at(-1)?.buttons?.[1]?.id ?? "" });
+    expect(asked).toEqual([{ chatId: "c1", text: `one ${fakeToken()}` }]);
+    expect(t.edits.at(-1)?.text).toMatch(/Sent without the secret\.$/);
+    await send({ text: `two ${fakeToken()}` });
+    await send({ button: t.sent.at(-1)?.buttons?.[2]?.id ?? "" });
+    expect(asked).toHaveLength(1);
+    expect(t.edits.at(-1)?.text).toMatch(/Not sent\.$/);
+  });
+
+  it("without buttons the choices are numbered and answered by number", async () => {
+    const { t, send, asked } = await setup(false);
+    await send({ text: `password: Zx81-hunter2` });
+    const notice = t.sent.at(-1)?.text ?? "";
+    expect(notice).toMatch(/a password/);
+    expect(notice).toMatch(/1\. Send anyway\n2\. Send without it\n3\. Leave it/);
+    expect(notice).not.toContain("Zx81-hunter2");
+    await send({ text: "1" });
+    expect(asked).toEqual([{ chatId: "c1", text: "password: Zx81-hunter2", secretOk: true }]);
+    // The number answered the warning: it is not a message of its own.
+    expect(asked.map((a) => a.text)).not.toContain("1");
+  });
+
+  it("only the person who sent it chooses, and a choice after the time runs out sends nothing", async () => {
+    const { bridge, t, send, asked } = await setup();
+    await send({ text: `x ${fakeToken()}` });
+    const id = t.sent.at(-1)?.buttons?.[0]?.id ?? "";
+    // Someone else linked to another owner presses it.
+    const { code } = bridge.pairingCode("other");
+    await send({ userId: "u2", chatId: "c2", text: `/start ${code}` });
+    await send({ userId: "u2", chatId: "c2", button: id });
+    expect(asked).toEqual([]);
+    const realNow = Date.now;
+    try {
+      Date.now = () => realNow() + 11 * 60_000;
+      await send({ button: id });
+    } finally {
+      Date.now = realNow;
+    }
+    expect(asked).toEqual([]);
+    expect(t.edits.at(-1)?.text).toMatch(/Too late/);
+  });
+
+  it("a plain message, a link without a secret, goes on as before", async () => {
+    const { send, asked } = await setup();
+    await send({ text: "https://www.amazon.it/dp/B0CX23V2ZK?ref=nav_logo&th=1" });
+    expect(asked).toHaveLength(1);
   });
 });

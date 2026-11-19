@@ -3307,6 +3307,8 @@ export class RedGiantCore implements OrchestrationHost {
       quotes?: MessageQuote[];
       /** The message waits behind the previous one: the person is told at once. */
       onQueued?: () => void;
+      /** «Send anyway» on the chat's secret warning (2026-11-19): as written, in the log. */
+      secretOk?: boolean;
     } = {},
   ): Promise<string> {
     const demigod = this.registry
@@ -3341,6 +3343,7 @@ export class RedGiantCore implements OrchestrationHost {
       ...(extra.quotes?.length && { quotes: extra.quotes }),
       queue: true,
       human: true,
+      ...(extra.secretOk === true && { secretOk: true }),
     });
     if (queued) extra.onQueued?.();
     const r = await done;
@@ -6664,8 +6667,9 @@ export class RedGiantCore implements OrchestrationHost {
     } = {},
   ): Promise<{ done: Promise<SendResult>; queued?: boolean; waiting?: boolean }> {
     // A secret the person pasted (G33.4) never reaches the model nor the log: it is blanked here,
-    // and the agent is told so it can point them to the keychain. The page and the app ask first;
-    // «Send anyway» there (2026-11-19, a link taken for a secret) sends it as written.
+    // and the agent is told so it can point them to the keychain. The page, the app and the chats
+    // (Telegram and the gateway's) ask first; «Send anyway» there (2026-11-19, a link taken for a
+    // secret) sends it as written.
     const person = extra.watch === true || extra.human === true;
     const blank = person && extra.secretOk !== true;
     const text = blank ? blankPastedSecrets(raw) : raw;

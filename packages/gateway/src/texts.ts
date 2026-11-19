@@ -55,6 +55,20 @@ const en = {
   spent: "Spent: ${spent}.",
   spentOf: "Spent: ${spent} of ${limit}.",
   encrypted: `This room is end-to-end encrypted and I cannot read it. Write to me in a room without encryption, or put a Pantalaimon proxy in front of the homeserver (${PRODUCT_NAME}, Settings, Other chats, Matrix).`,
+  // A message that looks like a secret is held until the person chooses (2026-11-19).
+  secretHeld: `This message looks like it holds a secret ({what}): I have not passed it on yet. Secrets are safer in ${PRODUCT_NAME}, Settings, Keychain. Send it as written only if it is not one (a link, a code meant to be shared).`,
+  secretKey: "a key",
+  secretPassword: "a password",
+  secretCode: "a code",
+  secretCard: "a card number",
+  secretIban: "an IBAN",
+  secretSendAnyway: "Send anyway",
+  secretSendWithout: "Send without it",
+  secretDrop: "Leave it",
+  secretSent: "Sent as written.",
+  secretSentWithout: "Sent without the secret.",
+  secretDropped: "Not sent.",
+  secretExpired: "Too late: that message is no longer held. Send it again.",
 } as const;
 
 export type TextKey = keyof typeof en;
@@ -124,6 +138,19 @@ const it: Record<TextKey, string> = {
   spent: "Speso: ${spent}.",
   spentOf: "Speso: ${spent} su ${limit}.",
   encrypted: `Questa stanza è cifrata end-to-end e non riesco a leggerla. Scrivimi in una stanza senza cifratura, oppure metti un proxy Pantalaimon davanti all'homeserver (${PRODUCT_NAME}, Impostazioni, Altre chat, Matrix).`,
+  secretHeld: `Sembra che questo messaggio contenga un segreto ({what}): per ora non l'ho passato. I segreti sono più al sicuro in ${PRODUCT_NAME}, Impostazioni, Portachiavi. Invialo così com'è solo se non lo è (un link, un codice da condividere).`,
+  secretKey: "una chiave",
+  secretPassword: "una password",
+  secretCode: "un codice",
+  secretCard: "un numero di carta",
+  secretIban: "un IBAN",
+  secretSendAnyway: "Invia comunque",
+  secretSendWithout: "Invia senza",
+  secretDrop: "Lascia stare",
+  secretSent: "Inviato così com'è.",
+  secretSentWithout: "Inviato senza il segreto.",
+  secretDropped: "Non inviato.",
+  secretExpired: "Troppo tardi: quel messaggio non è più qui. Mandalo di nuovo.",
 };
 
 export type Language = "it" | "en";
