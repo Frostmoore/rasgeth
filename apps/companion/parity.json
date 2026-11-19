@@ -314,14 +314,15 @@
         "lib/settings/tools_screen.dart",
         "lib/settings/api/rules_api.dart",
         "lib/screens/agent_settings_screen.dart",
-        "lib/screens/new_agent_screen.dart"
+        "lib/screens/new_agent_screen.dart",
+        "lib/settings/tool_kits.dart"
       ],
       "phase": "G42.4",
       "rows": [
         196,
         220
       ],
-      "note": "Native (G42.4): the common tools with their cost, search, the essential ones locked, exceptions per agent back to «As for everyone», the extensions' tools; one agent's tools in its settings and when it is made."
+      "note": "Native (G42.4): the common tools with their cost, search, the essential ones locked, exceptions per agent back to «As for everyone», the extensions' tools; one agent's tools in its settings and when it is made. 3.9.4: the tool groups (off by default, always on, off by you) with their cost, for every agent and in an agent's settings (ToolKitsSection, AgentKits)."
     },
     "import": {
       "app": "partial",
