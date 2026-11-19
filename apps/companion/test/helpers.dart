@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -71,3 +72,15 @@ Widget onCanvas(Widget child, {Key key = const Key('canvas'), Color bg = Colors.
         ),
       ),
     );
+
+/// 3.9.6: the team's screen has Echo's search box over the list, so a tile can sit under the
+/// bottom bar (or not be built yet): the list is scrolled until [f] is in its middle.
+Future<void> bringToMiddle(WidgetTester tester, Finder f) async {
+  final list = find
+      .descendant(of: find.byType(CustomScrollView).first, matching: find.byType(Scrollable))
+      .first;
+  if (f.evaluate().isEmpty) await tester.scrollUntilVisible(f, 200, scrollable: list);
+  unawaited(Scrollable.ensureVisible(tester.element(f.first), alignment: 0.5));
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 50));
+}

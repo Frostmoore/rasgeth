@@ -44,8 +44,12 @@ void main() {
     Future<void> type(String words) async {
       await t.enterText(find.byKey(const Key('echo-box')), words);
       await frames(t, 400);
-      await waitFor(t, () => find.byKey(const Key('echo-results')).evaluate().isNotEmpty ||
-          find.textContaining('Nessuna conversazione').evaluate().isNotEmpty);
+      await waitFor(
+        t,
+        () =>
+            find.byKey(const Key('echo-results')).evaluate().isNotEmpty ||
+            find.textContaining('Nessuna conversazione').evaluate().isNotEmpty,
+      );
       await frames(t, 600);
     }
 
@@ -54,9 +58,8 @@ void main() {
       await frames(t, 600);
       final tag = '${p}_$theme';
       if (!_phone) {
-        DeskScope.read(t.element(find.byKey(const Key('view-team')))).show(
-          const PanelPage(PanelScreen.echo),
-        );
+        DeskScope.read(t.element(find.byKey(const Key('view-team'))))
+            .show(const PanelPage(PanelScreen.echo));
         await frames(t, 1200);
       }
       await shot(t, 'p396_${tag}_01_casella');
@@ -65,17 +68,27 @@ void main() {
       await type('zzzqqq');
       await shot(t, 'p396_${tag}_03_niente');
       await type('report');
-      await t.tap(find.byKey(const Key('echo-results')).evaluate().isEmpty
-          ? find.byType(InkWell).first
-          : find.descendant(of: find.byKey(const Key('echo-results')), matching: find.byType(InkWell)).first);
+      await t.tap(
+        find.byKey(const Key('echo-results')).evaluate().isEmpty
+            ? find.byType(InkWell).first
+            : find
+                  .descendant(
+                    of: find.byKey(const Key('echo-results')),
+                    matching: find.byType(InkWell),
+                  )
+                  .first,
+      );
       await frames(t, 2500);
       await shot(t, 'p396_${tag}_04_aperta');
       if (_phone) {
         nav.pop();
         await frames(t, 800);
       }
-      await t.enterText(find.byKey(const Key('echo-box')), '');
-      await frames(t, 500);
+      // On a computer the panel shows the conversation now: the next round opens the search again.
+      if (find.byKey(const Key('echo-box')).evaluate().isNotEmpty) {
+        await t.enterText(find.byKey(const Key('echo-box')), '');
+        await frames(t, 500);
+      }
     }
   });
 }
