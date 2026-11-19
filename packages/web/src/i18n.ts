@@ -2476,6 +2476,12 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news397Skills: "Skills that get better",
+  news397SkillsText:
+    "When an agent struggles with a skill it can propose a better version; you approve it, with one line saying what changed and why, and «Compare» shows every difference. Each skill keeps its history and you can go back to any version.",
+  news397Secrets: "«Send anyway» in your chats too",
+  news397SecretsText:
+    "On Telegram and the other linked chats, a message that looks like a secret is held back with «Send anyway», «Send without» and «Leave it»; the bot never repeats the secret.",
   news396Echo: "Search past conversations",
   news396EchoText:
     "A search box at the top of the left bar (and in the app) finds words in every past conversation, with the lines that match; agents can search what you already did together, each only where it may look.",
@@ -9528,6 +9534,12 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news397Skills: "Abilità che migliorano",
+  news397SkillsText:
+    "Quando un agente fatica con un'abilità può proporne una versione migliore; la approvi tu, con una riga che dice cosa è cambiato e perché, e «Confronta» mostra ogni differenza. Ogni abilità tiene la sua cronologia e puoi tornare a qualsiasi versione.",
+  news397Secrets: "«Invia comunque» anche nelle chat",
+  news397SecretsText:
+    "Su Telegram e nelle altre chat collegate, un messaggio che sembra un segreto viene trattenuto con «Invia comunque», «Invia senza» e «Lascia stare»; il bot non ripete mai il segreto.",
   news396Echo: "Cerca nelle conversazioni passate",
   news396EchoText:
     "Una casella in cima alla barra di sinistra (e nell'app) trova le parole in tutte le conversazioni passate, con le righe che le contengono; gli agenti possono cercare in quello che avete già fatto insieme, ognuno solo dove può guardare.",

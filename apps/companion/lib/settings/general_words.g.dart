@@ -4,10 +4,12 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.9.6';
+const newsVersion = '3.9.7';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.9.7', 'news397Skills', 'news397SkillsText'),
+  NewsRow('3.9.7', 'news397Secrets', 'news397SecretsText'),
   NewsRow('3.9.6', 'news396Echo', 'news396EchoText'),
   NewsRow('3.9.6', 'news396Engines', 'news396EnginesText'),
   NewsRow('3.9.5', 'news395Questions', 'news395QuestionsText'),
@@ -639,6 +641,10 @@ const generalWords = <String, Map<String, String>>{
     'news396EchoText': 'Una casella in cima alla barra di sinistra (e nell\'app) trova le parole in tutte le conversazioni passate, con le righe che le contengono; gli agenti possono cercare in quello che avete già fatto insieme, ognuno solo dove può guardare.',
     'news396Engines': 'Tornano i motori locali per le schede NVIDIA',
     'news396EnginesText': 'Il motore per Windows con le schede NVIDIA e quello con il prefetch degli esperti si costruiscono di nuovo a ogni versione.',
+    'news397Secrets': '«Invia comunque» anche nelle chat',
+    'news397SecretsText': 'Su Telegram e nelle altre chat collegate, un messaggio che sembra un segreto viene trattenuto con «Invia comunque», «Invia senza» e «Lascia stare»; il bot non ripete mai il segreto.',
+    'news397Skills': 'Abilità che migliorano',
+    'news397SkillsText': 'Quando un agente fatica con un\'abilità può proporne una versione migliore; la approvi tu, con una riga che dice cosa è cambiato e perché, e «Confronta» mostra ogni differenza. Ogni abilità tiene la sua cronologia e puoi tornare a qualsiasi versione.',
     'searchCard_brave': 'Ha un indice suo, indipendente da Google e Bing; rispetta la privacy. Credito gratuito ogni mese, poi a consumo.',
     'searchCard_exa': 'Cerca per significato: forte su documentazione, articoli scientifici e tecnici. Credito gratuito all\'inizio.',
     'searchCard_searxng': 'Gratis, senza chiave né account: un motore di ricerca che gira a casa tua (lo avvia Rasgeth, dove può, oppure usi il tuo).',
@@ -925,6 +931,10 @@ const generalWords = <String, Map<String, String>>{
     'news396EchoText': 'A search box at the top of the left bar (and in the app) finds words in every past conversation, with the lines that match; agents can search what you already did together, each only where it may look.',
     'news396Engines': 'Local engines for NVIDIA cards are back',
     'news396EnginesText': 'The Windows engine for NVIDIA cards and the experts\' prefetch engine are built again with every release.',
+    'news397Secrets': '«Send anyway» in your chats too',
+    'news397SecretsText': 'On Telegram and the other linked chats, a message that looks like a secret is held back with «Send anyway», «Send without» and «Leave it»; the bot never repeats the secret.',
+    'news397Skills': 'Skills that get better',
+    'news397SkillsText': 'When an agent struggles with a skill it can propose a better version; you approve it, with one line saying what changed and why, and «Compare» shows every difference. Each skill keeps its history and you can go back to any version.',
     'searchCard_brave': 'Its own index, independent of Google and Bing; private. Free monthly credit, then pay as you go.',
     'searchCard_exa': 'Searches by meaning: strong on documentation, papers and technical articles. Free credit to start.',
     'searchCard_searxng': 'Free, no key, no account: a search engine that runs at your place (Rasgeth starts it, where it can, or you use yours).',
