@@ -1239,6 +1239,8 @@ jobs:
         shell: bash
         run: |
           version=${GITHUB_REF_NAME#v}
+          # A run by hand on a branch (wip/p3.9.6): a tag has no "/" (built, never pushed there).
+          version=${version//\//-}
           image=$REGISTRY/redgiant2-engine
           echo "tags=$image:cuda-prefetch,$image:$version-cuda-prefetch,$image:cuda-prefetch-${{ needs.engine-plan.outputs.linux_fp }}" >> "$GITHUB_OUTPUT"
       - uses: docker/build-push-action@v6
