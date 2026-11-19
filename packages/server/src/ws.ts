@@ -337,6 +337,7 @@ export function attachWebSocket(
               ...(msg.images?.length ? { images: msg.images } : {}),
               ...(msg.quotes?.length ? { quotes: msg.quotes } : {}),
               ...(msg.via && { via: msg.via }),
+              ...(msg.secretOk === true && { secretOk: true }),
               watch: true,
               // Written while it works: it joins the turn after its tools (2026-11-05), or right after.
               queue: true,

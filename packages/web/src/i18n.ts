@@ -6953,6 +6953,9 @@ const en = {
   subagentSignOf: "Sub-agent {name}, {state}",
   mascotSubHelp:
     "A sub-agent has no mascot of its own: it lives for one task, and shows a ring in its parent's colour.",
+  chSecretAnyway: "Send anyway",
+  chSecretAnywayNote:
+    "Not a secret (a link, an order code)? «Send anyway» sends it as you wrote it.",
 } as const;
 
 export type Key = keyof typeof en;
@@ -14002,6 +14005,9 @@ const it: Record<Key, string> = {
   subagentSignOf: "Sotto-agente {name}, {state}",
   mascotSubHelp:
     "Un sotto-agente non ha una mascotte sua: vive per un compito, e mostra un anello nel colore del genitore.",
+  chSecretAnyway: "Invia comunque",
+  chSecretAnywayNote:
+    "Non è un segreto (un link, un codice d'ordine)? «Invia comunque» lo manda come l'hai scritto.",
 };
 
 export const dictionaries: Record<Lang, Record<Key, string>> = { en, it };

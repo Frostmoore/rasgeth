@@ -8012,5 +8012,13 @@
       }
     }
   },
-  "auOwnReadOnly": "Automations can be changed only by the person (not from a project's device)."
+  "auOwnReadOnly": "Automations can be changed only by the person (not from a project's device).",
+  "cvChSecretAnyway": "Send anyway",
+  "@cvChSecretAnyway": {
+    "description": "Secret warning: send the message as written (the person's choice, 2026-11-19)."
+  },
+  "cvChSecretAnywayNote": "Not a secret (a link, an order code)? «Send anyway» sends it as you wrote it.",
+  "@cvChSecretAnywayNote": {
+    "description": "Secret warning: what Send anyway does."
+  }
 }

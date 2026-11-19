@@ -457,6 +457,8 @@ const routes = {
             schema: z.object({
               text: z.string().min(1),
               images: z.array(ImagePart).max(10).optional(),
+              /** «Send anyway» on the secret warning (2026-11-19): not blanked, the choice logged. */
+              secretOk: z.boolean().optional(),
             }),
           },
         },
@@ -1650,9 +1652,10 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     c.json(await core.history(owner(c), c.req.valid("param").id), 200),
   );
   app.openapi(routes.sendMessage, async (c) => {
-    const { text, images } = c.req.valid("json");
+    const { text, images, secretOk } = c.req.valid("json");
     const { done } = await core.send(owner(c), c.req.valid("param").id, text, {
       ...(images?.length ? { images } : {}),
+      ...(secretOk === true && { secretOk: true }),
       watch: true,
       queue: true,
     });

@@ -120,6 +120,11 @@ export const EventBody = z.discriminatedUnion("type", [
        * («send to chat»). Shown like their other messages, marked.
        */
       via: z.enum(["artifact", "voice"]).optional(),
+      /**
+       * The person chose «Send anyway» on the page's or the app's secret warning (2026-11-19):
+       * their words were not blanked, by their choice (the log's Redactor still applies).
+       */
+      secretOk: z.boolean().optional(),
     }),
   }),
   z.object({ type: z.literal("message.assistant.delta"), payload: text }),

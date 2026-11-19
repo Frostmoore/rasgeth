@@ -1342,6 +1342,7 @@ class AppController extends ChangeNotifier {
     List<Map<String, Object?>>? images,
     List<Quote> quotes = const [],
     String? shown,
+    bool secretOk = false,
   }) async {
     // A Chat conversation's first message names it (G40.9), unless the server named it already.
     final row = live.sessions.where((r) => r.id == sessionId).firstOrNull;
@@ -1350,7 +1351,14 @@ class AppController extends ChangeNotifier {
         row.agentId == chatAgentId &&
         row.title?.isNotEmpty != true &&
         !(live.views[sessionId]?.events.any((e) => e.type == 'message.user') ?? false);
-    final sent = await _send(sessionId, text, images: images, quotes: quotes, shown: shown);
+    final sent = await _send(
+      sessionId,
+      text,
+      images: images,
+      quotes: quotes,
+      shown: shown,
+      secretOk: secretOk,
+    );
     if (sent && first) unawaited(nameNewChat(sessionId, text));
     return sent;
   }
@@ -1361,13 +1369,21 @@ class AppController extends ChangeNotifier {
     List<Map<String, Object?>>? images,
     List<Quote> quotes = const [],
     String? shown,
+    bool secretOk = false,
   }) async {
     final s = socket;
     final clientId = 'app-${DateTime.now().microsecondsSinceEpoch}';
     final view = live.views[sessionId];
     if (s != null &&
         s.send(
-          sessionSendMessage(sessionId, text, images: images, quotes: quotes, clientId: clientId),
+          sessionSendMessage(
+            sessionId,
+            text,
+            images: images,
+            quotes: quotes,
+            clientId: clientId,
+            secretOk: secretOk,
+          ),
         )) {
       // Sent while it works (as the page): shown at once in line, until the log has it.
       if (view != null && view.running) {
@@ -1376,7 +1392,13 @@ class AppController extends ChangeNotifier {
       return true;
     }
     try {
-      await client?.sendMessage(sessionId, text, images: images, quotes: quotes);
+      await client?.sendMessage(
+        sessionId,
+        text,
+        images: images,
+        quotes: quotes,
+        secretOk: secretOk,
+      );
       return true;
     } on ApiException {
       return false;

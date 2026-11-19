@@ -3040,5 +3040,7 @@
   "auOwnWhereExtensions": "Estensioni",
   "auOwnWhereKeychain": "Portachiavi",
   "auOwnLoadFailed": "Non riesco a leggere: {why}",
-  "auOwnReadOnly": "Le automazioni le cambia solo la persona (non da un dispositivo di progetto)."
+  "auOwnReadOnly": "Le automazioni le cambia solo la persona (non da un dispositivo di progetto).",
+  "cvChSecretAnyway": "Invia comunque",
+  "cvChSecretAnywayNote": "Non è un segreto (un link, un codice d'ordine)? «Invia comunque» lo manda come l'hai scritto."
 }

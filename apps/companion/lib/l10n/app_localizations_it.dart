@@ -10670,4 +10670,11 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get auOwnReadOnly =>
       'Le automazioni le cambia solo la persona (non da un dispositivo di progetto).';
+
+  @override
+  String get cvChSecretAnyway => 'Invia comunque';
+
+  @override
+  String get cvChSecretAnywayNote =>
+      'Non è un segreto (un link, un codice d\'ordine)? «Invia comunque» lo manda come l\'hai scritto.';
 }

@@ -53,6 +53,47 @@ Future<bool> askConfirm(
   return r ?? false;
 }
 
+/// One button of [askChoice].
+class RgWindowChoice<T> {
+  const RgWindowChoice(this.value, this.label, {this.key, this.main = false});
+
+  final T value;
+  final String label;
+  final Key? key;
+
+  /// The filled button (the suggested way); the others are plain.
+  final bool main;
+}
+
+/// Our window with several ways out («Torna a scrivere», «Invia comunque», «Invia senza»…): the
+/// value of the button pressed, or null when closed.
+Future<T?> askChoice<T>(
+  BuildContext context, {
+  required String title,
+  required String body,
+  required List<RgWindowChoice<T>> choices,
+}) => showDialog<T>(
+  context: context,
+  builder: (context) => AlertDialog(
+    title: Text(title),
+    content: SelectableText(body),
+    actions: [
+      for (final c in choices)
+        c.main
+            ? FilledButton(
+                key: c.key,
+                onPressed: () => Navigator.pop(context, c.value),
+                child: Text(c.label),
+              )
+            : TextButton(
+                key: c.key,
+                onPressed: () => Navigator.pop(context, c.value),
+                child: Text(c.label),
+              ),
+    ],
+  ),
+);
+
 Future<String?> askText(
   BuildContext context, {
   required String title,
