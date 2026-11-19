@@ -112,6 +112,10 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   one("knowledge_status", "memory", "knowledge"),
   // After a summary the details of the conversation are only reachable through it.
   one("conversation_history", "memory", true),
+  // Echo (3.9.6): past conversations the agent may see, searched by their words. In the core
+  // kit (on from the start: an agent looks back without asking) but not essential (the person
+  // may not want agents to look at old conversations).
+  one("search_conversations", "memory", "core"),
   one("use_credential", "credentials", "keychain"),
   one("request_connection", "credentials", "keychain"),
   one("show_file", "canvas", "core"),

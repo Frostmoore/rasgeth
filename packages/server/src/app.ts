@@ -1645,6 +1645,19 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   app.get("/api/search", async (c) =>
     c.json(await core.search(owner(c), c.req.query("q") ?? ""), 200),
   );
+  // Echo (3.9.6): past conversations by their words, the same results the agents' tool gives.
+  app.get("/api/conversations/search", async (c) => {
+    const q = (c.req.query("q") ?? "").slice(0, 500);
+    const limit = Number(c.req.query("limit") ?? "20");
+    const agentId = c.req.query("agent") || undefined;
+    return c.json(
+      await core.searchConversations(owner(c), q, {
+        limit: Number.isFinite(limit) ? Math.min(Math.max(Math.trunc(limit), 1), 50) : 20,
+        ...(agentId ? { agentId } : {}),
+      }),
+      200,
+    );
+  });
   app.openapi(routes.startSession, async (c) =>
     c.json({ sessionId: await core.startSession(owner(c), c.req.valid("json").agentId) }, 201),
   );

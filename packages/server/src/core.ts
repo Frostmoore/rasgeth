@@ -29,7 +29,7 @@ import {
   type RunOutcome,
 } from "@redgiant/automations";
 import { Board, BoardSummarizer, boardTools, migrateBoard } from "@redgiant/board";
-import { EventStore, migrate, type Redactor, type SqlClient } from "@redgiant/events";
+import { EventStore, migrate, Redactor, type SqlClient } from "@redgiant/events";
 import {
   customTools,
   ExtensionBuilder,
@@ -234,6 +234,7 @@ import type {
   KnowledgePlace,
   KnowledgeService,
 } from "./knowledge/service.js";
+import { ConversationIndex, echoReaders, migrateEcho, searchConversationsTool } from "./echo.js";
 import { knowledgeSection, searchKnowledgeTool } from "./knowledge/tool.js";
 import { LoginStore, migrateLogin } from "./login.js";
 import { type MachineOptions, Machines } from "./machines.js";
@@ -748,6 +749,8 @@ const gitBashPaths: NonNullable<Hooks["preToolUse"]>[number] = (call) => {
 
 export class RedGiantCore implements OrchestrationHost {
   readonly store: EventStore;
+  /** Echo (3.9.6): the conversations' index, filled from the log. */
+  readonly echo: ConversationIndex;
   readonly registry: AgentRegistry;
   readonly budget: PersistentBudget;
   readonly broker: PermissionBroker;
@@ -976,6 +979,12 @@ export class RedGiantCore implements OrchestrationHost {
 
   private constructor(private readonly o: CoreOptions) {
     this.store = new EventStore(o.db, o.redactor ? { redactor: o.redactor } : {});
+    const echoRedactor = o.redactor ?? new Redactor();
+    this.echo = new ConversationIndex({
+      db: o.db,
+      store: this.store,
+      redact: (text) => echoRedactor.redactText(text).text,
+    });
     // MCP sign-ins and keys live in the keychain (G36.20), one entry per server.
     const mcpKey = (name: string) => `mcp:${name}`;
     const mcpMeta = (name: string) => ({
@@ -1589,6 +1598,7 @@ export class RedGiantCore implements OrchestrationHost {
     await migrateDevices(o.db);
     await migrateSaved(o.db);
     await migratePush(o.db);
+    await migrateEcho(o.db);
     const core = new RedGiantCore(o);
     // Notifications to the devices (G40.4): one more channel of the requests «all at once».
     core.push.attach({
@@ -1623,6 +1633,8 @@ export class RedGiantCore implements OrchestrationHost {
     await core.editorSettings.load();
     await core.acpWorkers.load();
     await core.tasks.rebuild();
+    // Echo (3.9.6): the conversations' index catches up with the log, then follows it.
+    core.echo.start();
     await core.reapCommands();
     // The links to this machine's parent and the polls of its nodes (G39.4).
     await core.nodes.start();
@@ -2097,6 +2109,18 @@ export class RedGiantCore implements OrchestrationHost {
         memoryTool(this.notes, this.noteOwner(agent, assignedTo)),
         // The person's documents (G36.5): only the collections this agent may read.
         searchKnowledgeTool(() => this.knowledge, this.knowledgeAsker(agent, assignedTo)),
+        // Past conversations (Echo, 3.9.6): only those of the agents this one may read.
+        searchConversationsTool({
+          index: () => this.echo,
+          readers: () => {
+            const me = this.registry.get(agent.id) ?? agent;
+            return echoReaders(this.registry, ownerId, { kind: "agent", agent: me });
+          },
+          agentName: (id) => this.registry.get(id)?.name ?? id,
+          projectName: async (id) =>
+            id ? ((await this.projects.get(ownerId, id).catch(() => undefined))?.name ?? null) : null,
+          archived: (id) => this.registry.isProjectArchived(ownerId, id),
+        }),
         // Making collections and their sources (3.5.3): every agent that can make one (the table).
         ...(agent.kind === "subagent"
           ? []
@@ -6477,6 +6501,24 @@ export class RedGiantCore implements OrchestrationHost {
   }
 
   /**
+   * Echo (3.9.6): the person's past conversations with these words, best first, as the agents'
+   * `search_conversations` finds them (every agent still in the team; archived projects marked).
+   */
+  async searchConversations(
+    ownerId: string,
+    query: string,
+    o: { limit?: number; agentId?: string } = {},
+  ) {
+    const hits = await this.echo.search(ownerId, {
+      query,
+      agents: echoReaders(this.registry, ownerId, { kind: "human" }),
+      limit: o.limit ?? 20,
+      ...(o.agentId ? { agentId: o.agentId } : {}),
+    });
+    return hits.map((h) => ({ ...h, archived: this.registry.isProjectArchived(ownerId, h.projectId) }));
+  }
+
+  /**
    * Searches what was said in the owner's conversations: agents' sessions and daily chats.
    * Newest first; each hit names its conversation and carries a short excerpt.
    */
@@ -8339,6 +8381,7 @@ export class RedGiantCore implements OrchestrationHost {
     this.files.stop();
     this.sharedMemory.stop();
     this.portrait.stop();
+    this.echo.stop();
     clearInterval(this.sweeper);
     this.inspector.stop();
     this.code?.unwatch();

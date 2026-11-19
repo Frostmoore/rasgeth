@@ -58,6 +58,8 @@ describe("the catalog's kits", () => {
       ["board_post", "helpers"],
       ["platform_code_start", "platform"],
       ["search_knowledge", "knowledge"],
+      // Echo (3.9.6): the memory of past work, used without asking, but the person can switch it off.
+      ["search_conversations", "core"],
       ["find_files", "computer"],
       ["mcp__github__x", undefined],
     ];

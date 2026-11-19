@@ -278,6 +278,8 @@ export const READ_ONLY_TOOLS = new Set([
   // Searching the person's documents (G36.5) only reads; so does their state (3.5.3).
   "search_knowledge",
   "knowledge_status",
+  // Past conversations (Echo, 3.9.6): only reads.
+  "search_conversations",
   // The agent's list of steps (2026-11-05): shown to the person, changes nothing.
   "update_todos",
   // Reads or stops the conversation's own background command (p3.3.1): starting it was a bash
