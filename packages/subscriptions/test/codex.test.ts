@@ -271,8 +271,8 @@ describe("ChatGPT on a subscription", () => {
     expect(askInput([{ title: "T?", options: ["p", "q"] }])).toEqual({
       questions: [{ question: "T?", options: [{ label: "p" }, { label: "q" }] }],
     });
-    expect(codexAnswers("First?\n-> x; y\n\nSecond?\n-> my own words", qs)).toEqual({
-      a: { answers: ["x", "y"] },
+    expect(codexAnswers("First?\n-> Yes, 300 W; 10 minutes\n\nSecond?\n-> my own words", qs)).toEqual({
+      a: { answers: ["Yes, 300 W; 10 minutes"] },
       b: { answers: ["my own words"] },
     });
     // Not the person's own answer (their classifier, nobody, an error): whole, to the first one.

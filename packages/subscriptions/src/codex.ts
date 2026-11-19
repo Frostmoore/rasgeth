@@ -382,7 +382,7 @@ export class CodexEngine implements Engine {
     let turnId: string | undefined;
     let gaveUp: () => void = () => {};
     /** One Codex turn; "asked": we stopped it at a question that does not wait (see below). */
-    const run = (input: Json[]) => {
+    const run = () => {
       turnId = undefined;
       let asked: { callId: string; questions: Json[] } | undefined;
       const stopAt = () => {
@@ -508,7 +508,7 @@ export class CodexEngine implements Engine {
         })),
       ];
       for (;;) {
-        const turn = run(input);
+        const turn = run();
         const r = await this.conn.request<{ turn: { id: string } }>("turn/start", {
           threadId: id,
           model: t.model.model,
@@ -615,7 +615,7 @@ export function askInput(questions: Json[]): {
 }
 
 /**
- * ask_user's answer as Codex's `request_user_input` response: each question's chosen labels (or
+ * ask_user's answer as Codex's `request_user_input` response: each question's chosen option (or
  * the person's own words). An answer that is not the person's (nobody answered, their classifier,
  * an error) goes whole to the first question, for the model to read.
  */
@@ -637,7 +637,8 @@ export function codexAnswers(
     const from = (at[n] ?? 0) + (asked[n]?.length ?? 0) + 4;
     const to = n + 1 < at.length ? (at[n + 1] ?? content.length) - 2 : content.length;
     const text = content.slice(from, to);
-    out[key] = { answers: text ? text.split("; ") : [] };
+    // One answer each: Codex's questions pick one option (a label may hold "; " itself).
+    out[key] = { answers: text ? [text] : [] };
   });
   return out;
 }

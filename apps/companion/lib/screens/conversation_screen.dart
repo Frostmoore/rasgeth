@@ -877,11 +877,13 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
                                   style: TextStyle(color: c.dim, fontSize: 13.5),
                                 ),
                               ),
-                            // 2026-11-19: not while something is being made (its own card).
+                            // 2026-11-19: not while something is being made (its own card);
+                            // 3.9.5: nor while the turn waits for the person's answer (the card).
                             if (view.running &&
                                 call != null &&
                                 !view.compacting &&
-                                generatingNow(view.events) == null)
+                                generatingNow(view.events) == null &&
+                                !app.live.questions.any((q) => q.sessionId == widget.sessionId))
                               TurnProgress(call: call, now: app.live.now, still: still),
                             // G42.2: generate_image's picture as it forms (`image.progress`).
                             if (view.drawing case final d?)
