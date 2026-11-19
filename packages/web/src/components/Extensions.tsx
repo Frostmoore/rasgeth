@@ -991,7 +991,11 @@ export function versionHow(v: Pick<SkillVersion, "how" | "fromVersion">): string
 
 /** Who wrote a version and who let it in (3.9.7). */
 export function versionWho(v: Pick<SkillVersion, "author" | "approvedBy">): string {
-  const parts = [v.author ? t("svBy", { who: who(v.author) }) : t("svUnknown")];
+  const parts = [
+    v.author
+      ? t("svBy", { who: v.author === "human" ? t("svYou") : who(v.author) })
+      : t("svUnknown"),
+  ];
   if (v.approvedBy === "human" && v.author !== "human") parts.push(t("svApprovedYou"));
   if (v.approvedBy === "auto") parts.push(t("svApprovedAuto"));
   return parts.join(" · ");
@@ -1021,7 +1025,12 @@ export function SkillHistory({ name, scope }: { name: string; scope: string }) {
     setOpen({ version: v.version, before: a.skillMd, after: b.skillMd });
   };
   const rollback = async (v: SkillVersion) => {
-    if (!(await askConfirm(t("svRollbackConfirm", { n: String(v.version), name })))) return;
+    const n = String(v.version);
+    const yes = await askConfirm(t("svRollbackTitle", { n }), {
+      text: t("svRollbackConfirm", { name }),
+      yes: t("svRollback", { n }),
+    });
+    if (!yes) return;
     const r = await attempt(() => getApi().rollbackSkill(name, scope, v.version));
     if (!r) return;
     setOpen(null);

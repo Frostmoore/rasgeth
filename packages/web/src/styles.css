@@ -21873,3 +21873,9 @@ fieldset.saved-filter legend {
 .sv-item .rf-diff-wrap {
   margin-top: 8px;
 }
+
+/* 3.9.7: our questions (askConfirm, askText) open above any window, the wizard's (z-index 80)
+   included: «Go back to version N» asked from a skill's window was hidden under it. */
+.ui-modal-back:has(> .ui-modal.dlg) {
+  z-index: 90;
+}

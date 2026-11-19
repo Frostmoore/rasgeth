@@ -108,12 +108,17 @@ describe("a skill's versions (3.9.7)", () => {
   });
 
   it("says when a version was too large to keep", async () => {
-    versions = [version({ version: 2, current: true }), version({ version: 1, restorable: false })];
+    versions = [
+      version({ version: 2, current: true }),
+      version({ version: 1, restorable: false, author: "human", approvedBy: null }),
+    ];
     const r = render(<SkillHistory name="invoice-pdf" scope="platform" />);
     await waitFor(() =>
       expect(r.getByText("Troppo grande per essere conservata: non può tornare.")).toBeTruthy(),
     );
     expect(r.queryByTestId("skill-rollback-1")).toBeNull();
+    // The person's own version says «di te».
+    expect(r.container.textContent).toContain("di te ·");
   });
 });
 
