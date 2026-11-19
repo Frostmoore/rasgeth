@@ -12,6 +12,8 @@ class ToolView {
     this.tokens = 0,
     this.global = true,
     this.exceptions = const [],
+    this.kit,
+    this.state = 'on',
   });
 
   factory ToolView.fromJson(Map<String, dynamic> j) => ToolView(
@@ -20,6 +22,8 @@ class ToolView {
     essential: j['essential'] == true,
     tokens: (j['tokens'] as num?)?.toInt() ?? 0,
     global: j['global'] != false,
+    kit: j['kit'] is String ? j['kit'] as String : null,
+    state: j['state'] is String ? j['state'] as String : (j['global'] == false ? 'off' : 'on'),
     exceptions: [
       for (final e in (j['exceptions'] is List ? j['exceptions'] as List : const []))
         if (e is Map<String, dynamic> && e['agentId'] is String)
@@ -41,19 +45,92 @@ class ToolView {
   /// The agents whose own choice differs from the rule for everyone.
   final List<({String agentId, String name})> exceptions;
 
-  ToolView withGlobal(bool on) => ToolView(
+  /// Its kit (3.9.4; none for the essential ones).
+  final String? kit;
+
+  /// on (from the start) | auto (off by default) | off (switched off by the person).
+  final String state;
+
+  ToolView withGlobal(bool on, [String? kitState]) => ToolView(
     id: id,
     group: group,
     essential: essential,
     tokens: tokens,
     global: on,
     exceptions: exceptions,
+    kit: kit,
+    state: on ? (kitState ?? 'on') : 'off',
+  );
+
+  ToolView withState(String s) => ToolView(
+    id: id,
+    group: group,
+    essential: essential,
+    tokens: tokens,
+    global: global,
+    exceptions: exceptions,
+    kit: kit,
+    state: s,
+  );
+}
+
+/// One kit of tools (3.9.4, `KitView`): what it weighs, its state and how it was chosen.
+class KitView {
+  const KitView({
+    required this.id,
+    this.entries = const [],
+    this.tokens = 0,
+    this.state = 'auto',
+    this.byDefault = 'auto',
+    this.own,
+    this.global,
+  });
+
+  factory KitView.fromJson(Map<String, dynamic> j) => KitView(
+    id: j['id'] is String ? j['id'] as String : '',
+    entries: [for (final e in (j['entries'] is List ? j['entries'] as List : const [])) '$e'],
+    tokens: (j['tokens'] as num?)?.toInt() ?? 0,
+    state: j['state'] is String ? j['state'] as String : 'auto',
+    byDefault: j['default'] is String ? j['default'] as String : 'auto',
+    own: j['own'] is String ? j['own'] as String : null,
+    global: j['global'] is String ? j['global'] as String : null,
+  );
+
+  final String id;
+  final List<String> entries;
+  final int tokens;
+  final String state;
+
+  /// Its state without a choice: the kit's default, or the agent's role.
+  final String byDefault;
+
+  /// The choice that sets it (the agent's own, in an agent's view), or none.
+  final String? own;
+
+  /// In an agent's view: the choice for every agent, or none.
+  final String? global;
+
+  KitView chosen(String? pick, {required bool forAgent}) => KitView(
+    id: id,
+    entries: entries,
+    tokens: tokens,
+    state: pick ?? (forAgent ? (global ?? byDefault) : byDefault),
+    byDefault: byDefault,
+    own: pick,
+    global: global,
   );
 }
 
 /// The tools for every agent: the entries, and the tokens on every message now and saved.
 class ToolsView {
-  const ToolsView({required this.entries, this.total = 0, this.saved = 0});
+  const ToolsView({
+    required this.entries,
+    this.total = 0,
+    this.saved = 0,
+    this.kits = const [],
+    this.essential,
+    this.agentId,
+  });
 
   factory ToolsView.fromJson(Map<String, dynamic> j) => ToolsView(
     entries: [
@@ -62,20 +139,53 @@ class ToolsView {
     ],
     total: (j['total'] as num?)?.toInt() ?? 0,
     saved: (j['saved'] as num?)?.toInt() ?? 0,
+    kits: [
+      for (final k in (j['kits'] is List ? j['kits'] as List : const []))
+        if (k is Map<String, dynamic>) KitView.fromJson(k),
+    ],
+    essential: (j['essential'] as num?)?.toInt(),
+    agentId: j['agentId'] is String ? j['agentId'] as String : null,
   );
 
   final List<ToolView> entries;
+
+  /// Tokens on every message with what is on from the start, and the rest (3.9.4).
   final int total;
   final int saved;
+  final List<KitView> kits;
+
+  /// Tokens of the essential tools alone.
+  final int? essential;
+
+  /// The agent of the view; none for every agent.
+  final String? agentId;
+
+  ToolsView _with(List<ToolView> next, List<KitView> kitsNext) => ToolsView(
+    entries: next,
+    total: next.where((e) => e.state == 'on').fold(0, (n, e) => n + e.tokens),
+    saved: next.where((e) => e.state != 'on').fold(0, (n, e) => n + e.tokens),
+    kits: kitsNext,
+    essential: essential,
+    agentId: agentId,
+  );
 
   /// [id] switched on or off, the sums counted again (lit at once; the server's answer follows).
   ToolsView flipped(String id, bool on) {
-    final next = [for (final e in entries) e.id == id ? e.withGlobal(on) : e];
-    return ToolsView(
-      entries: next,
-      total: next.where((e) => e.global).fold(0, (n, e) => n + e.tokens),
-      saved: next.where((e) => !e.global).fold(0, (n, e) => n + e.tokens),
-    );
+    String? kitOf(ToolView e) => kits.where((k) => k.id == e.kit).firstOrNull?.state;
+    return _with([
+      for (final e in entries) e.id == id ? e.withGlobal(on, kitOf(e)) : e,
+    ], kits);
+  }
+
+  /// A kit's choice changed ([pick] null: back to the default), the sums counted again.
+  ToolsView withKit(String id, String? pick) {
+    final forAgent = agentId != null;
+    final next = [for (final k in kits) k.id == id ? k.chosen(pick, forAgent: forAgent) : k];
+    final state = next.where((k) => k.id == id).firstOrNull?.state;
+    return _with([
+      for (final e in entries)
+        e.kit == id && state != null && (forAgent || e.global) ? e.withState(state) : e,
+    ], next);
   }
 }
 
@@ -171,8 +281,18 @@ extension RulesApi on RedGiantClient {
   /// `PUT /api/setup/safety`.
   Future<void> setSafety(Map<String, dynamic> b) => callJson('PUT', '/api/setup/safety', b);
 
-  /// `GET /api/tools`: every tool for every agent.
-  Future<ToolsView> toolsView() async => ToolsView.fromJson(objectOf(await getJson('/api/tools')));
+  /// `GET /api/tools`: every tool for every agent; with [agentId], what that agent gets.
+  Future<ToolsView> toolsView({String? agentId}) async => ToolsView.fromJson(
+    objectOf(await getJson('/api/tools', agentId == null ? null : {'agentId': agentId})),
+  );
+
+  /// `PUT /api/tools/kits`: the kits for every agent (3.9.4): on | auto | off | default.
+  Future<void> setKits(Map<String, String> kits) =>
+      callJson('PUT', '/api/tools/kits', {'kits': kits});
+
+  /// `PUT /api/agents/:id/tools/kits`: one agent's kits (default: as for every agent).
+  Future<void> setAgentKits(String agentId, Map<String, String> kits) =>
+      callJson('PUT', '/api/agents/${Uri.encodeComponent(agentId)}/tools/kits', {'kits': kits});
 
   /// `PUT /api/tools`: the tools off for every agent (the essential ones are refused).
   Future<void> setToolsOff(List<String> off) => callJson('PUT', '/api/tools', {'off': off});

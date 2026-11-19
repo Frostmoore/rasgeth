@@ -8,6 +8,7 @@ import { t } from "../i18n.js";
 import { IconArrowRight, IconLock } from "../icons.js";
 import { attempt, getApi, openTab } from "../state.js";
 import { Seg } from "./SettingsKit.js";
+import { ToolKits } from "./ToolKits.js";
 import {
   aboutTokens,
   NewOnly,
@@ -66,13 +67,16 @@ export function AgentTools({ agent }: { agent: Agent }) {
   const choose = async (e: ToolView, pick: Pick) => {
     if (!view || e.essential) return;
     const own = pick === "default" ? null : pick;
-    const on = own === null ? e.global : own === "on";
-    const entries = view.entries.map((x) => (x.id === e.id ? { ...x, own, on } : x));
+    const kit = view.kits.find((k) => k.id === e.kit)?.state ?? "auto";
+    const state = own ?? (e.global ? kit : "off");
+    const entries = view.entries.map((x) =>
+      x.id === e.id ? { ...x, own, state, on: state !== "off" } : x,
+    );
     setView({
       ...view,
       entries,
-      total: entries.filter((x) => x.on).reduce((n, x) => n + x.tokens, 0),
-      saved: entries.filter((x) => !x.on).reduce((n, x) => n + x.tokens, 0),
+      total: entries.filter((x) => x.state === "on").reduce((n, x) => n + x.tokens, 0),
+      saved: entries.filter((x) => x.state !== "on").reduce((n, x) => n + x.tokens, 0),
     });
     setBusy(true);
     try {
@@ -96,12 +100,19 @@ export function AgentTools({ agent }: { agent: Agent }) {
               <b>{t("toolsAgentTotal", { name: agent.name, n: aboutTokens(view.total) })}</b>
               <span>
                 {view.saved > 0
-                  ? t("toolsSaved", { n: aboutTokens(view.saved) })
+                  ? t("kitRest", { n: aboutTokens(view.saved) })
                   : t("toolsNoneSaved")}
               </span>
             </div>
           </div>
           <NewOnly />
+          <ToolKits
+            view={view}
+            setView={setView}
+            setError={setError}
+            load={load}
+            agentName={agent.name}
+          />
           <AgentEditRule agent={agent} />
           <button
             type="button"
@@ -134,7 +145,14 @@ export function AgentTools({ agent }: { agent: Agent }) {
                       value={e.own ?? "default"}
                       onChange={(p) => void choose(e, p)}
                       options={[
-                        ["default", e.global ? t("toolsDefaultOn") : t("toolsDefaultOff")],
+                        [
+                          "default",
+                          !e.global
+                            ? t("toolsDefaultOff")
+                            : view.kits.find((k) => k.id === e.kit)?.state === "auto"
+                              ? t("kitAsAll", { state: t("kitAuto") })
+                              : t("toolsDefaultOn"),
+                        ],
                         ["on", t("toolsAlways")],
                         ["off", t("toolsOff")],
                       ]}

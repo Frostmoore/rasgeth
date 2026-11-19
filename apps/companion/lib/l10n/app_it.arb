@@ -2968,5 +2968,20 @@
   "cvImageUnreadable": "Non riesco ad aprire questa immagine",
   "cvImageUnreachable": "Immagine non disponibile qui: {name}",
   "cvMediaNativeTitle": "Usa lo strumento del modello quando c'è",
-  "cvMediaNativeHelp": "Alcuni modelli fanno le immagini da sé (ChatGPT con Codex): allora si usa il loro, e l'immagine ti arriva in chat come con il nostro. Spento: sempre il fornitore scelto qui. Se in una conversazione chiedi «il vostro strumento», si usa sempre il nostro. Vale per le conversazioni nuove."
+  "cvMediaNativeHelp": "Alcuni modelli fanno le immagini da sé (ChatGPT con Codex): allora si usa il loro, e l'immagine ti arriva in chat come con il nostro. Spento: sempre il fornitore scelto qui. Se in una conversazione chiedi «il vostro strumento», si usa sempre il nostro. Vale per le conversazioni nuove.",
+  "tkTitle": "Gruppi di strumenti",
+  "tkLead": "Gli agenti partono con pochi strumenti, così ogni messaggio pesa poco. Gli altri gruppi sono spenti di serie: un agente ne accende uno da sé quando il lavoro lo chiede, per quella conversazione. Acceso sempre: l'agente lo ha dall'inizio. Spento da te: l'agente deve chiedertelo.",
+  "tkAgentLead": "I gruppi di {name}: come per tutti gli agenti, oppure una scelta sua.",
+  "tkAuto": "Spento di serie",
+  "tkOn": "Acceso sempre",
+  "tkOff": "Spento da te",
+  "tkAsAll": "Come per tutti: {state}",
+  "tkIsDefault": "di serie",
+  "tkRole": "acceso per il suo ruolo",
+  "tkWeight": "circa {n} token quando è acceso",
+  "tkEssential": "Strumenti essenziali, sempre accesi: circa {n} token",
+  "tkStartTotal": "All'inizio: circa {n} token a ogni messaggio",
+  "tkRest": "Spenti all'inizio: {n} token che pesano solo se si accende un gruppo",
+  "tkTools": "Strumenti: {list}",
+  "tkStateAuto": "spento di serie"
 }

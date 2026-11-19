@@ -16,6 +16,7 @@ import '../theme/colors.dart';
 import '../ui/icons.dart';
 import 'api/rules_api.dart';
 import 'rules_kit.dart';
+import 'tool_kits.dart';
 
 Future<void> openToolsSettings(BuildContext context) =>
     openRulesPage(context, (panel) => ToolsScreen(panel: panel));
@@ -203,14 +204,14 @@ class _ToolsScreenState extends State<ToolsScreen> {
               Expanded(
                 child: _SumBox(
                   key: const Key('tl-total'),
-                  strong: l.g4TlTotal(aboutTokens(l, v.total)),
+                  strong: l.tkStartTotal(aboutTokens(l, v.total)),
                   small: l.g4TlHowMany('$on', '${v.entries.length}'),
                 ),
               ),
               Expanded(
                 child: _SumBox(
                   key: const Key('tl-saved'),
-                  strong: v.saved > 0 ? l.g4TlSaved(aboutTokens(l, v.saved)) : l.g4TlNoneSaved,
+                  strong: v.saved > 0 ? l.tkRest(aboutTokens(l, v.saved)) : l.g4TlNoneSaved,
                   lit: v.saved > 0,
                 ),
               ),
@@ -230,6 +231,14 @@ class _ToolsScreenState extends State<ToolsScreen> {
             ],
           ),
         ),
+        // The groups (3.9.4): off by default, always on, or off by the person.
+        ToolKitsSection(
+          view: v,
+          onView: (n) => setState(() => _view = n),
+          onError: (e) => setState(() => _error = e),
+          reload: _load,
+        ),
+        const SizedBox(height: 12),
         TextField(
           key: const Key('tl-search'),
           decoration: InputDecoration(
@@ -447,7 +456,11 @@ class _ToolRow extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 3),
                       child: Text(
-                        l.g4TlWeight(aboutTokens(l, e.tokens)),
+                        [
+                          l.g4TlWeight(aboutTokens(l, e.tokens)),
+                          // Off at the start: the agent switches it on with its group (3.9.4).
+                          if (e.state == 'auto') l.tkStateAuto,
+                        ].join(' · '),
                         style: TextStyle(color: c.dim, fontSize: 11.5),
                       ),
                     ),

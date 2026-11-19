@@ -30,7 +30,8 @@ for (const [device, width, height] of [
       locale: "it-IT",
     });
     page.on("pageerror", (e) => console.error("pageerror:", e.message));
-    const shot = (name) => page.screenshot({ path: `${out}/pagina-${device}-${scheme}-${name}.png` });
+    const shot = (name) =>
+      page.screenshot({ path: `${out}/pagina-${device}-${scheme}-${name}.png` });
     await page.goto(`${url}/#token=${token}`);
     await page.evaluate(() => localStorage.clear());
     await page.goto(`${url}/#token=${token}`);
@@ -45,8 +46,15 @@ for (const [device, width, height] of [
       await page.waitForTimeout(800);
       await closeWindows(page);
       // The Canvas stays open from before (it narrows the settings): closed.
-      for (let i = 0; i < 4 && (await page.locator('.side-area button.icon-button[title^="Chiudi"]').count()); i++) {
-        await page.locator('.side-area button.icon-button[title^="Chiudi"]').first().click({ force: true });
+      for (
+        let i = 0;
+        i < 4 && (await page.locator('.side-area button.icon-button[title^="Chiudi"]').count());
+        i++
+      ) {
+        await page
+          .locator('.side-area button.icon-button[title^="Chiudi"]')
+          .first()
+          .click({ force: true });
         await page.waitForTimeout(300);
       }
       // On a phone the Canvas covers the chat: back to it.
@@ -76,9 +84,12 @@ for (const [device, width, height] of [
     await page.waitForSelector(".chat-image.ok", { timeout: 15_000 });
     await page.waitForTimeout(400);
     await shot("01-immagine-in-chat");
-    await page.locator(".file-card").first().screenshot({
-      path: `${out}/pagina-${device}-${scheme}-01b-card.png`,
-    });
+    await page
+      .locator(".file-card")
+      .first()
+      .screenshot({
+        path: `${out}/pagina-${device}-${scheme}-01b-card.png`,
+      });
     // A press opens it big in the Canvas.
     await page.locator(".chat-image").first().click();
     await page.waitForTimeout(1200);

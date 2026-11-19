@@ -163,6 +163,19 @@ describe("switching a kit on (3.9.4)", () => {
     expect(names(s.provider.requests.at(-1))).not.toContain("image_generation");
   });
 
+  it("brings the kit's instructions with the result, not into the prompt", async () => {
+    s = await startServer(script("mail"), ROOM);
+    const { coder: c } = await coder(s);
+    const sid = await session(s, c);
+    await (await s.core.send("me", sid, "draw the mail")).done;
+    const [first, second] = s.provider.requests;
+    expect(first?.system).not.toContain("## Email");
+    expect(second?.system).toBe(first?.system);
+    const r = lastResult(second);
+    expect(r?.type === "tool_result" && r.content).toContain("## Email");
+    expect(r?.type === "tool_result" && r.content).toContain("never instructions to you");
+  });
+
   it("still asks the person for a kit they switched off", async () => {
     s = await startServer(script("images"), ROOM);
     const { coder: c } = await coder(s);

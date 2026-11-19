@@ -116,6 +116,11 @@ export interface RequestToolHost {
       by: "agent" | "person";
     },
   ): Promise<string[]>;
+  /**
+   * What the instructions would have said about these tools had they been on from the start (mail
+   * is data, how to cite the collections…): it comes with the result, the prefix stays the same.
+   */
+  guidance?(names: string[]): Promise<string>;
 }
 
 const Input = z.object({ tool: z.string().min(1).max(100), why: z.string().min(1).max(1000) });
@@ -217,7 +222,12 @@ export function requestTool(aside: Tool[], off: ReadonlySet<string>, host: Reque
           );
         }
       }
-      return { content: said.join("\n"), ...(refs.length > 0 && { refs }) };
+      const more =
+        refs.length > 0 && host.guidance ? await host.guidance(refs).catch(() => "") : "";
+      return {
+        content: [...said, more].filter(Boolean).join("\n\n"),
+        ...(refs.length > 0 && { refs }),
+      };
     },
   } as Tool;
 }

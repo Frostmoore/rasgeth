@@ -1573,9 +1573,7 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
             v.call &&
             !v.compacting &&
             !generating &&
-            !externalAgent(agentId) && (
-            <TurnProgress call={v.call} />
-          )}
+            !externalAgent(agentId) && <TurnProgress call={v.call} />}
           {(v.thinking || v.text) && (
             <div class="bubble assistant streaming">
               {/* The reasoning as it comes (2026-11-05), folded away once the answer starts. */}

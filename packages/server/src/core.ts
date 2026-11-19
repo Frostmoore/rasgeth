@@ -2119,8 +2119,7 @@ export class RedGiantCore implements OrchestrationHost {
     const receivesTasks =
       assignedTo !== undefined || ["orchestrator", "agent", "subagent"].includes(agent.kind);
     if (receivesTasks) tools.push(completeTaskTool(agent, ws, this.broker, this.tasks));
-    // Every tool the agent could get, before any is left aside (the guidance of the system prompt
-    // follows what it may switch on, not only what it starts with).
+    // Every tool the agent could get, before any is left aside.
     const every = tools.map((t) => t.def.name);
     // The tools it starts without (G34.5; 3.9.4): switched off by the person, or off by default
     // (their kit), fixed for the whole conversation: chosen when it starts, read back from its
@@ -2145,10 +2144,30 @@ export class RedGiantCore implements OrchestrationHost {
       // Those already switched on: the session puts them back from its log, in their order.
       granted.push(...aside.filter((t) => on.has(t.def.name)));
       tools.push(
-        this.requestToolTool(agent, waiting, new Set(toolsOff), async (added, payload) => {
-          tools.push(...added);
-          return (await sessionRef?.addTools(added, payload)) ?? [];
-        }),
+        this.requestToolTool(
+          agent,
+          waiting,
+          new Set(toolsOff),
+          async (added, payload) => {
+            tools.push(...added);
+            return (await sessionRef?.addTools(added, payload)) ?? [];
+          },
+          // What the instructions say about a kit on from the start, for one switched on later.
+          async (names) =>
+            [
+              names.includes("mail_read") ? MAIL_GUIDANCE : "",
+              names.includes("show_products") ? PRODUCTS_GUIDANCE : "",
+              names.includes("search_knowledge") && this.knowledge
+                ? knowledgeSection(
+                    await this.knowledge
+                      .visible(ownerId, this.knowledgeAsker(agent, assignedTo))
+                      .catch(() => []),
+                  )
+                : "",
+            ]
+              .filter(Boolean)
+              .join("\n\n"),
+        ),
       );
     }
     // The conversation's followers (p3.5.4), read each time: every copy built of it sends to them.
@@ -2201,15 +2220,13 @@ export class RedGiantCore implements OrchestrationHost {
         magicExtSession?.agentId === agent.id ? MAGIC_EXT_PROMPT : "",
         // Text, widget, artifact, board or project (3.5.9): for every agent that can show files;
         // the everyday Chat's version welcomes widgets, as its own instructions do (2026-11-17).
-        every.includes("show_file")
+        tools.some((t) => t.def.name === "show_file")
           ? artifactGuidanceFor((await this.chatAgentIdOf(agent.ownerId)) === agent.id)
           : "",
         // Products to buy or compare (G40.16): cards with pictures.
-        every.includes("show_products") && !toolsOff.includes("show_products")
-          ? PRODUCTS_GUIDANCE
-          : "",
+        tools.some((t) => t.def.name === "show_products") ? PRODUCTS_GUIDANCE : "",
         // Email is data, never instructions (G38.1): for every agent that can read it.
-        every.includes("mail_read") && !toolsOff.includes("mail_read") ? MAIL_GUIDANCE : "",
+        tools.some((t) => t.def.name === "mail_read") ? MAIL_GUIDANCE : "",
         assignedTo
           ? `## Assigned to a project\nIn this conversation you work for the project "${(await this.projects.get(ownerId, assignedTo))?.name ?? assignedTo}", on tasks its orchestrator gives you. Your files here are your own worktree of that project; close each task with complete_task.`
           : "",
@@ -2590,8 +2607,10 @@ export class RedGiantCore implements OrchestrationHost {
     aside: Tool[],
     off: ReadonlySet<string>,
     add: RequestToolHost["add"],
+    guidance?: RequestToolHost["guidance"],
   ): Tool {
     return requestTool(aside, off, {
+      ...(guidance && { guidance }),
       ask: async (input, ctx) => {
         const id = `tool_${randomUUID().slice(0, 12)}`;
         try {

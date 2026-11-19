@@ -7826,5 +7826,100 @@
   "cvMediaNativeHelp": "Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.",
   "@cvMediaNativeHelp": {
     "description": "The page's `mediaNativeHelp` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "tkTitle": "Tool groups",
+  "@tkTitle": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkLead": "Agents start with few tools, to keep every message light. The other groups are off by default: an agent switches one on by itself when the work needs it, for that conversation. Always on: the agent has it from the start. Off by you: the agent has to ask you.",
+  "@tkLead": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkAgentLead": "The groups for {name}: as for every agent, or a choice of its own.",
+  "@tkAgentLead": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tkAuto": "Off by default",
+  "@tkAuto": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkOn": "Always on",
+  "@tkOn": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkOff": "Off by you",
+  "@tkOff": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkAsAll": "As for everyone: {state}",
+  "@tkAsAll": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "tkIsDefault": "default",
+  "@tkIsDefault": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkRole": "on for its role",
+  "@tkRole": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
+  },
+  "tkWeight": "about {n} tokens when on",
+  "@tkWeight": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tkEssential": "Essential tools, always on: about {n} tokens",
+  "@tkEssential": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tkStartTotal": "At the start: about {n} tokens in every message",
+  "@tkStartTotal": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tkRest": "Off at the start: {n} tokens that weigh only if a group is switched on",
+  "@tkRest": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tkTools": "Tools: {list}",
+  "@tkTools": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).",
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "tkStateAuto": "off by default",
+  "@tkStateAuto": {
+    "description": "The page's `kit…` words (3.9.4, packages/web/src/i18n.ts)."
   }
 }
