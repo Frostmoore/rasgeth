@@ -1713,6 +1713,19 @@ if (typeof document !== "undefined")
     if (/^\d+$/.test(id)) void openCitation(id).catch(() => {});
   });
 
+/**
+ * A past conversation an agent found (`#conv:<session>`, Echo 3.9.6, `search_conversations`)
+ * opens in its tab instead of following the address.
+ */
+if (typeof document !== "undefined")
+  document.addEventListener("click", (e) => {
+    const a = (e.target as Element | null)?.closest?.("a[href^='#conv:']");
+    if (!a) return;
+    e.preventDefault();
+    const id = (a.getAttribute("href") ?? "").slice(6);
+    if (/^[\w-]{1,200}$/.test(id)) void openSessionById(id).catch(() => {});
+  });
+
 /** Opens a board of variants as a page of its own (G25.4). */
 export function openBoard(sessionId: string, proposalId: string, title: string): void {
   openTab({ id: `tavola:${proposalId}`, type: "tavola", title, sessionId, proposalId });

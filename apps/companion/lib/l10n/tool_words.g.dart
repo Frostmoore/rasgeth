@@ -110,6 +110,7 @@ const toolWords = <String, Map<String, String>>{
     'tool_restore_agent': r"Ripristinare agenti",
     'tool_resume_agent': r"Riattivare agenti",
     'tool_run_script': r"Passi in fila",
+    'tool_search_conversations': r"Cerca nelle conversazioni passate",
     'tool_search_knowledge': r"Cerca nei documenti",
     'tool_send_file': r"Mandare file",
     'tool_set_agent_model': r"Cambiare il modello di un agente",
@@ -199,6 +200,7 @@ const toolWords = <String, Map<String, String>>{
         r"Riattiva un agente fermato sotto di sé: i suoi compiti aperti ripartono.",
     'toolDo_run_script':
         r"Lancia un piccolo programma che usa i suoi strumenti tante volte di fila.",
+    'toolDo_search_conversations': r"Ritrova quello che si è già detto e fatto nelle conversazioni passate che può vedere, con il link per aprirle.",
     'toolDo_search_knowledge':
         r"Cerca nei tuoi documenti (Impostazioni > Conoscenza) e cita da dove viene ogni risposta.",
     'toolDo_send_file': r"Ti manda un file nella chat (e su Telegram).",
@@ -348,6 +350,7 @@ const toolWords = <String, Map<String, String>>{
     'tool_restore_agent': r"Restore agents",
     'tool_resume_agent': r"Resume agents",
     'tool_run_script': r"Chains of steps",
+    'tool_search_conversations': r"Search past conversations",
     'tool_search_knowledge': r"Search the documents",
     'tool_send_file': r"Send files",
     'tool_set_agent_model': r"Change an agent's model",
@@ -436,6 +439,7 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_restore_agent': r"Brings a removed agent back into the team.",
     'toolDo_resume_agent': r"Resumes a stopped agent under it: its open tasks go on.",
     'toolDo_run_script': r"Runs a small program that uses its tools many times in a row.",
+    'toolDo_search_conversations': r"Looks up what was already said and done in past conversations it may see, with a link to open them.",
     'toolDo_search_knowledge':
         r"Looks up your documents (Settings > Knowledge) and cites where each answer comes from.",
     'toolDo_send_file': r"Sends you a file in the chat (and on Telegram).",

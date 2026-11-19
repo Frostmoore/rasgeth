@@ -18350,6 +18350,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not a secret (a link, an order code)? «Send anyway» sends it as you wrote it.'**
   String get cvChSecretAnywayNote;
+
+  /// Echo (3.9.6): the search over past conversations; the page's echoSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search past conversations'**
+  String get echoSearch;
+
+  /// No description provided for @echoClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear the search'**
+  String get echoClear;
+
+  /// No description provided for @echoNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No past conversation has these words.'**
+  String get echoNone;
+
+  /// No description provided for @echoArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'archived'**
+  String get echoArchived;
+
+  /// No description provided for @echoMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} messages'**
+  String echoMatches(String n);
+
+  /// No description provided for @echoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'1 message'**
+  String get echoMatch;
+
+  /// No description provided for @echoYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get echoYou;
+
+  /// No description provided for @echoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type at least two letters: every word is looked for in what you and the agents wrote.'**
+  String get echoHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

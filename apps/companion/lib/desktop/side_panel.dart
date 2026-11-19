@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../screens/agent_conversations_screen.dart';
+import '../screens/echo_search.dart';
 import '../screens/project_overview_screen.dart';
 import '../ui/agent_menu.dart';
 import '../screens/chat_screen.dart';
@@ -26,6 +27,7 @@ String panelTitle(AppLocalizations l, PanelScreen s) => switch (s) {
   PanelScreen.chat => l.tabChat,
   PanelScreen.saved => l.savedTitle,
   PanelScreen.you => l.tabYou,
+  PanelScreen.echo => l.echoSearch,
 };
 
 Widget _screen(PanelScreen s) => switch (s) {
@@ -33,6 +35,8 @@ Widget _screen(PanelScreen s) => switch (s) {
   PanelScreen.chat => const ChatScreen(),
   PanelScreen.saved => const SavedScreen(),
   PanelScreen.you => const YouScreen(),
+  // Echo (3.9.6): the past conversations' search, from the palette.
+  PanelScreen.echo => const EchoSearch(autofocus: true),
 };
 
 /// A small round button of a panel's header.

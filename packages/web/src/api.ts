@@ -521,6 +521,19 @@ export interface SearchHit {
   excerpt: string;
 }
 
+/** Echo (3.9.6): one past conversation found, with the places that have the words. */
+export interface EchoHit {
+  sessionId: string;
+  title: string | null;
+  agentId: string;
+  projectId: string | null;
+  at: string;
+  lastAt: string | null;
+  matches: number;
+  archived: boolean;
+  snippets: { role: "person" | "agent" | "other"; at: string; text: string; marks: [number, number][] }[];
+}
+
 export interface FileEntry {
   name: string;
   path: string;
@@ -896,6 +909,9 @@ export class Api {
   refreshModelsCatalog = () =>
     this.call<ModelsCatalogStatus | null>("POST", "/api/models/catalog/refresh");
   search = (q: string) => this.call<SearchHit[]>("GET", `/api/search?q=${encodeURIComponent(q)}`);
+  /** Echo (3.9.6): the same conversations the agents' search_conversations finds. */
+  searchConversations = (q: string, limit = 20) =>
+    this.call<EchoHit[]>("GET", `/api/conversations/search?q=${encodeURIComponent(q)}&limit=${limit}`);
   startSession = (agentId: string) =>
     this.call<{ sessionId: string }>("POST", "/api/sessions", { agentId });
   events = (sessionId: string) => this.call<Event[]>("GET", `/api/sessions/${sessionId}/events`);

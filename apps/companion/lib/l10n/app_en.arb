@@ -8020,5 +8020,23 @@
   "cvChSecretAnywayNote": "Not a secret (a link, an order code)? «Send anyway» sends it as you wrote it.",
   "@cvChSecretAnywayNote": {
     "description": "Secret warning: what Send anyway does."
-  }
+  },
+  "echoSearch": "Search past conversations",
+  "@echoSearch": {
+    "description": "Echo (3.9.6): the search over past conversations; the page's echoSearch."
+  },
+  "echoClear": "Clear the search",
+  "echoNone": "No past conversation has these words.",
+  "echoArchived": "archived",
+  "echoMatches": "{n} messages",
+  "@echoMatches": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "echoMatch": "1 message",
+  "echoYou": "You",
+  "echoHint": "Type at least two letters: every word is looked for in what you and the agents wrote."
 }

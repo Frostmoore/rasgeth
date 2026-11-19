@@ -10677,4 +10677,31 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get cvChSecretAnywayNote =>
       'Non è un segreto (un link, un codice d\'ordine)? «Invia comunque» lo manda come l\'hai scritto.';
+
+  @override
+  String get echoSearch => 'Cerca nelle conversazioni passate';
+
+  @override
+  String get echoClear => 'Cancella la ricerca';
+
+  @override
+  String get echoNone => 'Nessuna conversazione passata ha queste parole.';
+
+  @override
+  String get echoArchived => 'archiviato';
+
+  @override
+  String echoMatches(String n) {
+    return '$n messaggi';
+  }
+
+  @override
+  String get echoMatch => '1 messaggio';
+
+  @override
+  String get echoYou => 'Tu';
+
+  @override
+  String get echoHint =>
+      'Scrivi almeno due lettere: ogni parola si cerca in quello che hai scritto tu e gli agenti.';
 }

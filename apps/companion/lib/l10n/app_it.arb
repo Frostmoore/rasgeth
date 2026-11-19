@@ -3042,5 +3042,13 @@
   "auOwnLoadFailed": "Non riesco a leggere: {why}",
   "auOwnReadOnly": "Le automazioni le cambia solo la persona (non da un dispositivo di progetto).",
   "cvChSecretAnyway": "Invia comunque",
-  "cvChSecretAnywayNote": "Non è un segreto (un link, un codice d'ordine)? «Invia comunque» lo manda come l'hai scritto."
+  "cvChSecretAnywayNote": "Non è un segreto (un link, un codice d'ordine)? «Invia comunque» lo manda come l'hai scritto.",
+  "echoSearch": "Cerca nelle conversazioni passate",
+  "echoClear": "Cancella la ricerca",
+  "echoNone": "Nessuna conversazione passata ha queste parole.",
+  "echoArchived": "archiviato",
+  "echoMatches": "{n} messaggi",
+  "echoMatch": "1 messaggio",
+  "echoYou": "Tu",
+  "echoHint": "Scrivi almeno due lettere: ogni parola si cerca in quello che hai scritto tu e gli agenti."
 }

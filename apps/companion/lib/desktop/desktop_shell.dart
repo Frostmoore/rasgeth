@@ -253,6 +253,14 @@ class _DesktopShellState extends State<DesktopShell> {
           icon: RgIcons.bookmark,
           run: () => _desk.show(const PanelPage(PanelScreen.saved)),
         ),
+        // Echo (3.9.6): the past conversations' search, as the page's box in the left bar.
+        DeskCommand(
+          id: 'echo',
+          label: l.echoSearch,
+          group: l.deskMenuFile,
+          icon: RgIcons.search,
+          run: () => _desk.show(const PanelPage(PanelScreen.echo)),
+        ),
         null,
         DeskCommand(
           id: 'settings',

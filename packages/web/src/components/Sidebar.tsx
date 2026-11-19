@@ -40,6 +40,7 @@ import {
   subprojects,
 } from "../state.js";
 import { askConfirm } from "./dialogs.js";
+import { EchoSearch } from "./EchoSearch.js";
 import { FolderMenu } from "./FolderMenu.js";
 import { Mascot } from "./Mascot.js";
 import { ArchivedList, ArchiveProjectDialog, noGitNotice } from "./ProjectArchive.js";
@@ -622,6 +623,8 @@ export function Sidebar() {
   return (
     <nav class="bar">
       <TurnMeter />
+      {/* Echo (3.9.6): while a search is typed, its results take the lists' place. */}
+      <EchoSearch>
       {god && (
         <div class="bar-god">
           <Entry
@@ -815,6 +818,7 @@ export function Sidebar() {
           </>
         )}
       </div>
+      </EchoSearch>
       {archiving && (
         <ArchiveProjectDialog project={archiving} onClose={() => setArchiving(undefined)} />
       )}

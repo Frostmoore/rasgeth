@@ -30,6 +30,7 @@ import 'agent_conversations_screen.dart';
 import 'agent_settings_screen.dart';
 import 'code/project_screen.dart';
 import 'conversation_screen.dart';
+import 'echo_search.dart';
 import 'first_start_screen.dart';
 import 'instructions_screen.dart';
 import 'new_agent_screen.dart';
@@ -114,162 +115,169 @@ class TeamScreen extends StatelessWidget {
                 ],
               ),
             ),
+            // Echo (3.9.6): the past conversations' search, over the team as the page's bar.
             Expanded(
-              child: !everyone && app.servers.isEmpty && !app.connecting
-                  ? const _FirstSteps()
-                  : !everyone
-                  ? EmptyState(
-                      icon: RgIcons.users,
-                      text: hello == null ? l.connectFromYou : l.teamEmpty,
-                    )
-                  : CustomScrollView(
-                      key: const Key('team-scroll'),
-                      slivers: [
-                        if (app.god case final god?)
+              child: EchoSearch(
+                enabled: everyone && app.connected,
+                child: !everyone && app.servers.isEmpty && !app.connecting
+                    ? const _FirstSteps()
+                    : !everyone
+                    ? EmptyState(
+                        icon: RgIcons.users,
+                        text: hello == null ? l.connectFromYou : l.teamEmpty,
+                      )
+                    : CustomScrollView(
+                        key: const Key('team-scroll'),
+                        slivers: [
+                          if (app.god case final god?)
+                            SliverToBoxAdapter(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                                child: AgentPress(
+                                  agent: god,
+                                  longPress: false,
+                                  child: GodCard(
+                                    agent: god,
+                                    state: app.live.mascotStateOf(god.id),
+                                    doing: doingOf(l, app, god, app.live.mascotStateOf(god.id)),
+                                    onTap: () => openAgentConversations(context, god),
+                                    onLongPress: () => showAgentSheet(context, god),
+                                  ),
+                                ),
+                              ),
+                            ),
                           SliverToBoxAdapter(
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
                               child: AgentPress(
-                                agent: god,
+                                agent: app.chatAgent,
                                 longPress: false,
-                                child: GodCard(
-                                  agent: god,
-                                  state: app.live.mascotStateOf(god.id),
-                                  doing: doingOf(l, app, god, app.live.mascotStateOf(god.id)),
-                                  onTap: () => openAgentConversations(context, god),
-                                  onLongPress: () => showAgentSheet(context, god),
+                                child: ChatCard(
+                                  agent: app.chatAgent,
+                                  state: app.chatAgent == null
+                                      ? MascotState.idle
+                                      : app.live.mascotStateOf(app.chatAgent!.id),
+                                  latest: app.chatAgent == null
+                                      ? null
+                                      : app.latestOf(app.chatAgent!.id),
+                                  onTap: () => app.setTab(AppTab.chat),
+                                  onLongPress: app.chatAgent == null
+                                      ? null
+                                      : () => showAgentSheet(context, app.chatAgent!),
                                 ),
                               ),
                             ),
                           ),
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-                            child: AgentPress(
-                              agent: app.chatAgent,
-                              longPress: false,
-                              child: ChatCard(
-                                agent: app.chatAgent,
-                                state: app.chatAgent == null
-                                    ? MascotState.idle
-                                    : app.live.mascotStateOf(app.chatAgent!.id),
-                                latest: app.chatAgent == null
-                                    ? null
-                                    : app.latestOf(app.chatAgent!.id),
-                                onTap: () => app.setTab(AppTab.chat),
-                                onLongPress: app.chatAgent == null
-                                    ? null
-                                    : () => showAgentSheet(context, app.chatAgent!),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 14, 12, 6),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Semantics(
-                                    header: true,
-                                    child: Text(
-                                      l.teamAgents,
-                                      key: const Key('team-agents-header'),
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w800,
-                                        color: c.text,
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 14, 12, 6),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Semantics(
+                                      header: true,
+                                      child: Text(
+                                        l.teamAgents,
+                                        key: const Key('team-agents-header'),
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w800,
+                                          color: c.text,
+                                        ),
                                       ),
                                     ),
                                   ),
+                                  // G42.4: the whole tree, beyond the first level.
+                                  IconButton(
+                                    key: const Key('team-tree'),
+                                    tooltip: l.g4AgTreeTitle,
+                                    onPressed: () => openAgentTree(context),
+                                    icon: RgIcon(RgIcons.nodes, size: 19, color: c.accent),
+                                  ),
+                                  TextButton.icon(
+                                    key: const Key('team-new-agent'),
+                                    onPressed: () => openNewAgent(context),
+                                    icon: RgIcon(RgIcons.plus, size: 18, color: c.accent),
+                                    label: Text(
+                                      l.teamNewAgent,
+                                      style: TextStyle(
+                                        color: c.accent,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          if (app.projects.isNotEmpty || app.favourites.isNotEmpty)
+                            const SliverToBoxAdapter(child: _Filters()),
+                          if (team.isEmpty)
+                            SliverToBoxAdapter(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 24),
+                                child: EmptyState(
+                                  icon: app.teamFilter == TeamFilter.favourites
+                                      ? RgIcons.star
+                                      : RgIcons.users,
+                                  text: app.teamFilter == TeamFilter.favourites
+                                      ? l.teamNoFavourites
+                                      : app.teamFilter == TeamFilter.all
+                                      ? l.teamNoAgents
+                                      : l.teamNoneInProject,
                                 ),
-                                // G42.4: the whole tree, beyond the first level.
-                                IconButton(
-                                  key: const Key('team-tree'),
-                                  tooltip: l.g4AgTreeTitle,
-                                  onPressed: () => openAgentTree(context),
-                                  icon: RgIcon(RgIcons.nodes, size: 19, color: c.accent),
+                              ),
+                            )
+                          else
+                            SliverPadding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                              sliver: SliverGrid.builder(
+                                key: const Key('team-grid'),
+                                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: 220,
+                                  mainAxisSpacing: 10,
+                                  crossAxisSpacing: 10,
+                                  childAspectRatio: .95,
                                 ),
-                                TextButton.icon(
-                                  key: const Key('team-new-agent'),
-                                  onPressed: () => openNewAgent(context),
-                                  icon: RgIcon(RgIcons.plus, size: 18, color: c.accent),
-                                  label: Text(
-                                    l.teamNewAgent,
-                                    style: TextStyle(color: c.accent, fontWeight: FontWeight.w700),
+                                itemCount: team.length,
+                                itemBuilder: (context, i) => AgentPress(
+                                  agent: team[i],
+                                  longPress: false,
+                                  child: AgentCard(
+                                    agent: team[i],
+                                    state: app.live.mascotStateOf(team[i].id),
+                                    favourite: app.isFavourite(team[i].id),
+                                    onTap: () => openAgentConversations(context, team[i]),
+                                    onLongPress: () => showAgentSheet(context, team[i]),
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                        if (app.projects.isNotEmpty || app.favourites.isNotEmpty)
-                          const SliverToBoxAdapter(child: _Filters()),
-                        if (team.isEmpty)
+                          // 3.8.9: the agents taken out of the team, to read and bring back.
                           SliverToBoxAdapter(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 24),
-                              child: EmptyState(
-                                icon: app.teamFilter == TeamFilter.favourites
-                                    ? RgIcons.star
-                                    : RgIcons.users,
-                                text: app.teamFilter == TeamFilter.favourites
-                                    ? l.teamNoFavourites
-                                    : app.teamFilter == TeamFilter.all
-                                    ? l.teamNoAgents
-                                    : l.teamNoneInProject,
-                              ),
-                            ),
-                          )
-                        else
-                          SliverPadding(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                            sliver: SliverGrid.builder(
-                              key: const Key('team-grid'),
-                              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 220,
-                                mainAxisSpacing: 10,
-                                crossAxisSpacing: 10,
-                                childAspectRatio: .95,
-                              ),
-                              itemCount: team.length,
-                              itemBuilder: (context, i) => AgentPress(
-                                agent: team[i],
-                                longPress: false,
-                                child: AgentCard(
-                                  agent: team[i],
-                                  state: app.live.mascotStateOf(team[i].id),
-                                  favourite: app.isFavourite(team[i].id),
-                                  onTap: () => openAgentConversations(context, team[i]),
-                                  onLongPress: () => showAgentSheet(context, team[i]),
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                              child: ListTile(
+                                key: const Key('team-removed'),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                  side: BorderSide(color: c.line),
                                 ),
+                                tileColor: c.panel,
+                                leading: RgIcon(RgIcons.archive, size: 18, color: c.dim),
+                                title: Text(
+                                  l.raListTitle,
+                                  style: TextStyle(fontWeight: FontWeight.w700, color: c.text),
+                                ),
+                                subtitle: Text(l.raListRow, style: TextStyle(color: c.dim)),
+                                trailing: RgIcon(RgIcons.chevronRight, size: 18, color: c.dim),
+                                onTap: () => openRemovedAgents(context),
                               ),
                             ),
                           ),
-                        // 3.8.9: the agents taken out of the team, to read and bring back.
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                            child: ListTile(
-                              key: const Key('team-removed'),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                                side: BorderSide(color: c.line),
-                              ),
-                              tileColor: c.panel,
-                              leading: RgIcon(RgIcons.archive, size: 18, color: c.dim),
-                              title: Text(
-                                l.raListTitle,
-                                style: TextStyle(fontWeight: FontWeight.w700, color: c.text),
-                              ),
-                              subtitle: Text(l.raListRow, style: TextStyle(color: c.dim)),
-                              trailing: RgIcon(RgIcons.chevronRight, size: 18, color: c.dim),
-                              onTap: () => openRemovedAgents(context),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+              ),
             ),
           ],
         );

@@ -10640,4 +10640,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cvChSecretAnywayNote =>
       'Not a secret (a link, an order code)? «Send anyway» sends it as you wrote it.';
+
+  @override
+  String get echoSearch => 'Search past conversations';
+
+  @override
+  String get echoClear => 'Clear the search';
+
+  @override
+  String get echoNone => 'No past conversation has these words.';
+
+  @override
+  String get echoArchived => 'archived';
+
+  @override
+  String echoMatches(String n) {
+    return '$n messages';
+  }
+
+  @override
+  String get echoMatch => '1 message';
+
+  @override
+  String get echoYou => 'You';
+
+  @override
+  String get echoHint =>
+      'Type at least two letters: every word is looked for in what you and the agents wrote.';
 }

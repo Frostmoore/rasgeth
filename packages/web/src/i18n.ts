@@ -6965,6 +6965,18 @@ const en = {
   chSecretAnyway: "Send anyway",
   chSecretAnywayNote:
     "Not a secret (a link, an order code)? «Send anyway» sends it as you wrote it.",
+  // Echo (3.9.6): past conversations searched by their words.
+  tool_search_conversations: "Search past conversations",
+  toolDo_search_conversations:
+    "Looks up what was already said and done in past conversations it may see, with a link to open them.",
+  echoSearch: "Search past conversations",
+  echoClear: "Clear the search",
+  echoNone: "No past conversation has these words.",
+  echoArchived: "archived",
+  echoMatches: "{n} messages",
+  echoMatch: "1 message",
+  echoYou: "You",
+  echoHint: "Type at least two letters: every word is looked for in what you and the agents wrote.",
 } as const;
 
 export type Key = keyof typeof en;
@@ -14026,6 +14038,18 @@ const it: Record<Key, string> = {
   chSecretAnyway: "Invia comunque",
   chSecretAnywayNote:
     "Non è un segreto (un link, un codice d'ordine)? «Invia comunque» lo manda come l'hai scritto.",
+  // Echo (3.9.6): le conversazioni passate cercate per parole.
+  tool_search_conversations: "Cerca nelle conversazioni passate",
+  toolDo_search_conversations:
+    "Ritrova quello che si è già detto e fatto nelle conversazioni passate che può vedere, con il link per aprirle.",
+  echoSearch: "Cerca nelle conversazioni passate",
+  echoClear: "Cancella la ricerca",
+  echoNone: "Nessuna conversazione passata ha queste parole.",
+  echoArchived: "archiviato",
+  echoMatches: "{n} messaggi",
+  echoMatch: "1 messaggio",
+  echoYou: "Tu",
+  echoHint: "Scrivi almeno due lettere: ogni parola si cerca in quello che hai scritto tu e gli agenti.",
 };
 
 export const dictionaries: Record<Lang, Record<Key, string>> = { en, it };
