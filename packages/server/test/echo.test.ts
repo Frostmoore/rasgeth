@@ -195,6 +195,7 @@ describe("Echo: the conversations' index (3.9.6)", () => {
     expect(echoQuery("città perché", "|")).toBe("città:* | perché:*");
     expect(echoQuery("!", "&")).toBeNull();
     expect(unmark("the ⟪word⟫ here")).toEqual({ text: "the word here", marks: [[4, 8]] });
+    expect(unmark("**bold** ⟪code⟫ `x`")).toEqual({ text: "bold code x", marks: [[5, 9]] });
   });
 });
 

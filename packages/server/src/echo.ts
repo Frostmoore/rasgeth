@@ -119,7 +119,7 @@ export function echoText(e: Event): { role: EchoRole; text: string } | null {
   return null;
 }
 
-/** A snippet from ts_headline with its marks taken out and kept as offsets. */
+/** A snippet from ts_headline with its marks taken out and kept as offsets (Markdown's * and ` dropped). */
 export function unmark(headline: string): { text: string; marks: [number, number][] } {
   let text = "";
   const marks: [number, number][] = [];
@@ -129,6 +129,8 @@ export function unmark(headline: string): { text: string; marks: [number, number
     else if (ch === STOP) {
       if (open >= 0 && text.length > open) marks.push([open, text.length]);
       open = -1;
+    } else if (ch === "*" || ch === "`") {
+      // Markdown's emphasis and code marks: a snippet is plain text.
     } else text += ch;
   }
   return { text, marks };
