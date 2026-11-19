@@ -4,10 +4,12 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.9.0';
+const newsVersion = '3.9.1';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.9.1', 'news391Mascots', 'news391MascotsText'),
+  NewsRow('3.9.1', 'news391Offline', 'news391OfflineText'),
   NewsRow('3.9.0', 'news390Name', 'news390NameText'),
   NewsRow('3.9.0', 'news390Look', 'news390LookText'),
   NewsRow('3.9.0', 'news390Install', 'news390InstallText'),
@@ -603,6 +605,10 @@ const generalWords = <String, Map<String, String>>{
     'news390LookText': 'La gigante rossa coronata nel cielo notturno è l\'icona del programma, dell\'app, degli installer e del sito, a ogni misura, con le sue silhouette per la barra delle applicazioni, la barra dei menu e le notifiche.',
     'news390Name': 'RedGiant ora si chiama Rasgeth',
     'news390NameText': 'Cambia solo il nome: agenti, conversazioni, progetti e dati restano gli stessi. Si legge «ràs-ghet», con la g dura, e viene da Rasalgethi, una stella gigante rossa. Il sito è rasgeth.it.',
+    'news391Mascots': 'God e il Demigod ridisegnati',
+    'news391MascotsText': 'God è adesso la stella gigante coronata dell\'icona, con tre stelline che le girano attorno; il Demigod è una di quelle stelline cresciuta, crema e oro, con la gemma rossa di God sul diadema. Nella pagina e nell\'app, in ogni stato.',
+    'news391Offline': 'Parte anche senza internet',
+    'news391OfflineText': 'Rasgeth si apre subito anche quando internet non c\'è: chiavi, Telegram e gli altri collegamenti si controllano in sottofondo e tornano da soli con la rete, e un avviso dice cosa sta aspettando. I modelli locali continuano a funzionare.',
     'searchCard_brave': 'Ha un indice suo, indipendente da Google e Bing; rispetta la privacy. Credito gratuito ogni mese, poi a consumo.',
     'searchCard_exa': 'Cerca per significato: forte su documentazione, articoli scientifici e tecnici. Credito gratuito all\'inizio.',
     'searchCard_searxng': 'Gratis, senza chiave né account: un motore di ricerca che gira a casa tua (lo avvia Rasgeth, dove può, oppure usi il tuo).',
@@ -865,6 +871,10 @@ const generalWords = <String, Map<String, String>>{
     'news390LookText': 'The crowned red giant in the night sky is the icon of the program, the app, the installers and the site, at every size, with its own silhouettes for the taskbar, the menu bar and notifications.',
     'news390Name': 'RedGiant is now called Rasgeth',
     'news390NameText': 'Only the name changes: your agents, conversations, projects and data are the same. It is read «rahs-get», with a hard g, and comes from Rasalgethi, a red giant star. The site is rasgeth.it.',
+    'news391Mascots': 'God and the Demigod, redrawn',
+    'news391MascotsText': 'God is now the crowned giant star of the icon, with three little stars going round it; the Demigod is one of those stars grown up, cream and gold, with God\'s red gem on its diadem. In the page and in the app, in every state.',
+    'news391Offline': 'It starts without internet',
+    'news391OfflineText': 'Rasgeth now opens at once even when the internet is down: keys, Telegram and the other links are checked in the background and come back by themselves with the network, and a notice says what is waiting. Local models keep working.',
     'searchCard_brave': 'Its own index, independent of Google and Bing; private. Free monthly credit, then pay as you go.',
     'searchCard_exa': 'Searches by meaning: strong on documentation, papers and technical articles. Free credit to start.',
     'searchCard_searxng': 'Free, no key, no account: a search engine that runs at your place (Rasgeth starts it, where it can, or you use yours).',

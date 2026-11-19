@@ -113,7 +113,7 @@ describe("seed and choices", () => {
     expect(still(mascotSvg(a, { idPrefix: "x" }))).toBe(still(mascotSvg(b, { idPrefix: "x" })));
   });
 
-  it("draws God as the crowned red giant with three companion stars, and the Demigod as its child", () => {
+  it("draws God as the crowned giant star with three companion stars, and the Demigod as its child", () => {
     const god = mascotSpec("God", "god");
     expect([god.parts.body, god.parts.head]).toEqual(["god", "crown"]);
     const demi = mascotSpec("Demetra#9", "demigod");

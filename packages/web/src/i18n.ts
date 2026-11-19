@@ -2476,6 +2476,12 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news391Mascots: "God and the Demigod, redrawn",
+  news391MascotsText:
+    "God is now the crowned giant star of the icon, with three little stars going round it; the Demigod is one of those stars grown up, cream and gold, with God's red gem on its diadem. In the page and in the app, in every state.",
+  news391Offline: "It starts without internet",
+  news391OfflineText:
+    "{product} now opens at once even when the internet is down: keys, Telegram and the other links are checked in the background and come back by themselves with the network, and a notice says what is waiting. Local models keep working.",
   news390Name: "RedGiant is now called Rasgeth",
   news390NameText:
     "Only the name changes: your agents, conversations, projects and data are the same. It is read «rahs-get», with a hard g, and comes from Rasalgethi, a red giant star. The site is rasgeth.it.",
@@ -9310,6 +9316,12 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news391Mascots: "God e il Demigod ridisegnati",
+  news391MascotsText:
+    "God è adesso la stella gigante coronata dell'icona, con tre stelline che le girano attorno; il Demigod è una di quelle stelline cresciuta, crema e oro, con la gemma rossa di God sul diadema. Nella pagina e nell'app, in ogni stato.",
+  news391Offline: "Parte anche senza internet",
+  news391OfflineText:
+    "{product} si apre subito anche quando internet non c'è: chiavi, Telegram e gli altri collegamenti si controllano in sottofondo e tornano da soli con la rete, e un avviso dice cosa sta aspettando. I modelli locali continuano a funzionare.",
   news390Name: "RedGiant ora si chiama Rasgeth",
   news390NameText:
     "Cambia solo il nome: agenti, conversazioni, progetti e dati restano gli stessi. Si legge «ràs-ghet», con la g dura, e viene da Rasalgethi, una stella gigante rossa. Il sito è rasgeth.it.",
