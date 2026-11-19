@@ -44,7 +44,8 @@ const KEY =
 /** JSON web tokens (only real ones: see `isJwt`). */
 const JWT = /\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]*/g;
 /** Long random strings with lower case, upper case and digits mixed. */
-const RANDOM = /\b(?=[A-Za-z0-9+/_-]*\d)(?=[A-Za-z0-9+/_-]*[a-z])(?=[A-Za-z0-9+/_-]*[A-Z])[A-Za-z0-9+/_-]{24,}\b/g;
+const RANDOM =
+  /\b(?=[A-Za-z0-9+/_-]*\d)(?=[A-Za-z0-9+/_-]*[a-z])(?=[A-Za-z0-9+/_-]*[A-Z])[A-Za-z0-9+/_-]{24,}\b/g;
 
 /**
  * A JSON web token's header names its algorithm: `eyJ2IjoiMSJ9.…` ({"v":"1"}, Amazon's `dib`

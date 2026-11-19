@@ -64,12 +64,28 @@ const SECRET: [string, string, string][] = [
     "ya29.a0AfH6SMBx1yZ2Kq",
   ],
   ["?api_key=", "https://maps.example.com/api?api_key=4f7c9a2b1e8d6f3a&q=roma", "4f7c9a2b1e8d6f3a"],
-  ["#access_token= in the fragment", "https://app.example.com/cb#access_token=Ab12Cd34Ef56Gh78&x=1", "Ab12Cd34Ef56Gh78"],
-  ["Azure's sig=", "https://acct.blob.core.windows.net/c/f.txt?sv=2022-11-02&sig=Xy7%2BAb3cD9eF", "Xy7%2BAb3cD9eF"],
+  [
+    "#access_token= in the fragment",
+    "https://app.example.com/cb#access_token=Ab12Cd34Ef56Gh78&x=1",
+    "Ab12Cd34Ef56Gh78",
+  ],
+  [
+    "Azure's sig=",
+    "https://acct.blob.core.windows.net/c/f.txt?sv=2022-11-02&sig=Xy7%2BAb3cD9eF",
+    "Xy7%2BAb3cD9eF",
+  ],
   ["a real JWT (alg) on its own", `il token: ${JWT}`, JWT],
-  ["a real JWT (alg) in a link parameter of any name", `https://app.example.com/?state=${JWT}`, JWT],
+  [
+    "a real JWT (alg) in a link parameter of any name",
+    `https://app.example.com/?state=${JWT}`,
+    JWT,
+  ],
   ["a known key format inside a link", `https://example.com/hook?x=${GHP}&y=1`, GHP],
-  ["a long mixed string outside a link", "la chiave è Ab3dE5fG7hJ9kL1mN3pQ5rS7tU", "Ab3dE5fG7hJ9kL1mN3pQ5rS7tU"],
+  [
+    "a long mixed string outside a link",
+    "la chiave è Ab3dE5fG7hJ9kL1mN3pQ5rS7tU",
+    "Ab3dE5fG7hJ9kL1mN3pQ5rS7tU",
+  ],
   ["a password next to a link", "password: hunter22 https://example.com", "hunter22"],
 ];
 
