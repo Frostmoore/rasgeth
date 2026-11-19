@@ -94,9 +94,7 @@ export interface EchoSearch {
 /** The words of a query, as a tsquery of prefixes (letters and digits only: always valid). */
 export function echoQuery(query: string, join: "&" | "|"): string | null {
   const words = [
-    ...new Set(
-      (query.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []).filter((w) => w.length >= 2),
-    ),
+    ...new Set((query.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []).filter((w) => w.length >= 2)),
   ].slice(0, 12);
   return words.length ? words.map((w) => `${w}:*`).join(` ${join} `) : null;
 }
@@ -387,7 +385,10 @@ export function searchConversationsTool(host: EchoToolHost): Tool<z.infer<typeof
         type: "object",
         properties: {
           query: { type: "string", description: "The words to look for." },
-          limit: { type: "integer", description: "Conversations to return (default 8, at most 20)." },
+          limit: {
+            type: "integer",
+            description: "Conversations to return (default 8, at most 20).",
+          },
           agent_id: { type: "string", description: "Only this agent's conversations." },
         },
         required: ["query"],
@@ -399,7 +400,10 @@ export function searchConversationsTool(host: EchoToolHost): Tool<z.infer<typeof
       if (!index) return { content: "The conversations' search is not available.", isError: true };
       const agents = host.readers();
       if (agent_id && !agents.includes(agent_id))
-        return { content: `You may not see the conversations of agent ${agent_id}.`, isError: true };
+        return {
+          content: `You may not see the conversations of agent ${agent_id}.`,
+          isError: true,
+        };
       const hits = await index.search(ctx.ownerId, {
         query,
         agents,
@@ -408,7 +412,9 @@ export function searchConversationsTool(host: EchoToolHost): Tool<z.infer<typeof
         exceptSession: ctx.sessionId,
       });
       if (hits.length === 0) return `No past conversation has «${query}».`;
-      const names = await Promise.all(hits.map((h) => host.projectName(h.projectId).catch(() => null)));
+      const names = await Promise.all(
+        hits.map((h) => host.projectName(h.projectId).catch(() => null)),
+      );
       const lines = hits.map((h, i) => {
         const title = (h.title ?? "Untitled conversation").replace(/[[\]]/g, "");
         const project = names[i];
@@ -421,7 +427,10 @@ export function searchConversationsTool(host: EchoToolHost): Tool<z.infer<typeof
           .join(", ");
         const passages = h.snippets
           .filter((s) => s.text)
-          .map((s) => `   - ${s.role === "person" ? "Person" : s.role === "agent" ? "Agent" : "Other"}: ${boldMarks(s)}`);
+          .map(
+            (s) =>
+              `   - ${s.role === "person" ? "Person" : s.role === "agent" ? "Agent" : "Other"}: ${boldMarks(s)}`,
+          );
         return [
           `${i + 1}. [${title}](#conv:${h.sessionId}) · ${h.at.slice(0, 10)} · ${where} · ${h.matches} message${h.matches === 1 ? "" : "s"}`,
           ...passages,

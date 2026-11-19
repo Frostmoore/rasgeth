@@ -1,7 +1,7 @@
 import { EventStore, migrate, Redactor, type SqlClient } from "@redgiant/events";
 import type { AgentNode, AgentRegistry } from "@redgiant/hierarchy";
-import type { FakeTurn } from "@redgiant/providers";
 import type { CompletionRequest } from "@redgiant/protocol";
+import type { FakeTurn } from "@redgiant/providers";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   ConversationIndex,
@@ -76,7 +76,12 @@ describe("Echo: the conversations' index (3.9.6)", () => {
     await b.say("s2", "a1", "Book the train to Lisbon");
     const hits = await b.index.search("me", { query: "invoice rounding", agents: ["a1"] });
     expect(hits.map((h) => h.sessionId)).toEqual(["s1"]);
-    expect(hits[0]).toMatchObject({ title: "Invoices", agentId: "a1", projectId: "p1", matches: 1 });
+    expect(hits[0]).toMatchObject({
+      title: "Invoices",
+      agentId: "a1",
+      projectId: "p1",
+      matches: 1,
+    });
     const s = hits[0]?.snippets[0];
     expect(s?.role).toBe("agent");
     expect(s?.marks.map(([a, z]) => s.text.slice(a, z).toLowerCase())).toEqual(
@@ -113,9 +118,7 @@ describe("Echo: the conversations' index (3.9.6)", () => {
     const stop = b.index.start();
     try {
       await b.say("s1", "a1", "papaya plantation");
-      await expect
-        .poll(async () => count(b.db), { timeout: 2000, interval: 20 })
-        .toBe(1);
+      await expect.poll(async () => count(b.db), { timeout: 2000, interval: 20 }).toBe(1);
     } finally {
       stop();
     }
@@ -157,9 +160,9 @@ describe("Echo: the conversations' index (3.9.6)", () => {
     const text = JSON.stringify(hits);
     expect(text).not.toContain("sk-ant-api03");
     expect(text).not.toContain("correct-horse-battery");
-    expect(await b.index.search("me", { query: "abcdefghijklmnopqrstuvwx1234", agents: ["a1"] })).toEqual(
-      [],
-    );
+    expect(
+      await b.index.search("me", { query: "abcdefghijklmnopqrstuvwx1234", agents: ["a1"] }),
+    ).toEqual([]);
     const rows = await b.db.query<{ body: string }>("SELECT body FROM rg_echo_messages");
     expect(rows.map((r) => r.body).join(" ")).toContain("[REDACTED:");
   });
@@ -289,13 +292,21 @@ describe("Echo: search_conversations", () => {
       if (!searching) return { text: "Noted: the warehouse code is MAG-4471." };
       const last = req.messages.at(-1)?.parts.find((p) => p.type === "tool_result");
       if (last && last.type === "tool_result") {
-        results.push(typeof last.content === "string" ? last.content : JSON.stringify(last.content));
+        results.push(
+          typeof last.content === "string" ? last.content : JSON.stringify(last.content),
+        );
         return { text: "done" };
       }
-      return { toolCalls: [{ id: "t1", name: "search_conversations", input: { query: "warehouse" } }] };
+      return {
+        toolCalls: [{ id: "t1", name: "search_conversations", input: { query: "warehouse" } }],
+      };
     });
     const god = (
-      await s.api<{ id: string }>("POST", "/api/agents", { kind: "god", parentId: null, name: "God" })
+      await s.api<{ id: string }>("POST", "/api/agents", {
+        kind: "god",
+        parentId: null,
+        name: "God",
+      })
     ).body.id;
     const old = (await s.api<{ sessionId: string }>("POST", "/api/sessions", { agentId: god })).body
       .sessionId;
@@ -314,8 +325,14 @@ describe("Echo: search_conversations", () => {
     expect(page.map((h) => h.sessionId).sort()).toEqual([now, old].sort());
     expect(page.every((h) => h.archived === false)).toBe(true);
     expect(
-      (await s.api<Hit[]>("GET", "/api/conversations/search?q=warehouse", undefined, "other-token-0123456789"))
-        .body,
+      (
+        await s.api<Hit[]>(
+          "GET",
+          "/api/conversations/search?q=warehouse",
+          undefined,
+          "other-token-0123456789",
+        )
+      ).body,
     ).toEqual([]);
     expect((await s.api<Hit[]>("GET", "/api/conversations/search?q=")).body).toEqual([]);
   });

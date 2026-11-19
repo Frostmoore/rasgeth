@@ -200,6 +200,7 @@ import { Programs } from "./convert-programs.js";
 import { convertTools, vaultFigma } from "./convert-tools.js";
 import { debugLog } from "./debug-log.js";
 import { DeviceStore, migrateDevices } from "./devices.js";
+import { ConversationIndex, echoReaders, migrateEcho, searchConversationsTool } from "./echo.js";
 import { copyOfAnyOriginal, originalOfSheetCopy } from "./editor/copies.js";
 import { EditorHost, type EditorHostOptions } from "./editor/host.js";
 import { ImageFamily, oraCopyOfOriginal } from "./editor/image-family.js";
@@ -234,7 +235,6 @@ import type {
   KnowledgePlace,
   KnowledgeService,
 } from "./knowledge/service.js";
-import { ConversationIndex, echoReaders, migrateEcho, searchConversationsTool } from "./echo.js";
 import { knowledgeSection, searchKnowledgeTool } from "./knowledge/tool.js";
 import { LoginStore, migrateLogin } from "./login.js";
 import { type MachineOptions, Machines } from "./machines.js";
@@ -2118,7 +2118,9 @@ export class RedGiantCore implements OrchestrationHost {
           },
           agentName: (id) => this.registry.get(id)?.name ?? id,
           projectName: async (id) =>
-            id ? ((await this.projects.get(ownerId, id).catch(() => undefined))?.name ?? null) : null,
+            id
+              ? ((await this.projects.get(ownerId, id).catch(() => undefined))?.name ?? null)
+              : null,
           archived: (id) => this.registry.isProjectArchived(ownerId, id),
         }),
         // Making collections and their sources (3.5.3): every agent that can make one (the table).
@@ -6515,7 +6517,10 @@ export class RedGiantCore implements OrchestrationHost {
       limit: o.limit ?? 20,
       ...(o.agentId ? { agentId: o.agentId } : {}),
     });
-    return hits.map((h) => ({ ...h, archived: this.registry.isProjectArchived(ownerId, h.projectId) }));
+    return hits.map((h) => ({
+      ...h,
+      archived: this.registry.isProjectArchived(ownerId, h.projectId),
+    }));
   }
 
   /**

@@ -42,7 +42,11 @@ const IMAGE_TYPES: string[] = ["image/gif", "image/jpeg", "image/png", "image/we
 export function toolKind(tool: string): acp.ToolKind {
   if (/^(read_file|list_files|glob|read_agent|canvas_look|history)$/.test(tool)) return "read";
   if (/^(write_file|edit_file|canvas_edit|multi_edit)$/.test(tool)) return "edit";
-  if (/^(grep|find_files|search|search_knowledge|search_conversations|web_search|skill_search)$/.test(tool))
+  if (
+    /^(grep|find_files|search|search_knowledge|search_conversations|web_search|skill_search)$/.test(
+      tool,
+    )
+  )
     return "search";
   if (/^(bash|run_script|complete_task)$/.test(tool)) return "execute";
   if (/^(web_fetch|browser_)/.test(tool)) return "fetch";

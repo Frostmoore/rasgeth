@@ -36,8 +36,18 @@ const hit = {
   matches: 3,
   archived: true,
   snippets: [
-    { role: "person", at: "2026-11-12T10:00:00.000Z", text: "the invoices are wrong", marks: [[4, 12]] },
-    { role: "agent", at: "2026-11-12T10:01:00.000Z", text: "fixed the invoices rounding", marks: [[10, 18]] },
+    {
+      role: "person",
+      at: "2026-11-12T10:00:00.000Z",
+      text: "the invoices are wrong",
+      marks: [[4, 12]],
+    },
+    {
+      role: "agent",
+      at: "2026-11-12T10:01:00.000Z",
+      text: "fixed the invoices rounding",
+      marks: [[10, 18]],
+    },
   ],
 };
 const setUp = () => {

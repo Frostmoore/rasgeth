@@ -56,7 +56,7 @@ export function EchoSearch({ children }: { children: ComponentChildren }) {
   };
   return (
     <>
-      <form class="echo-bar" role="search" onSubmit={(e) => e.preventDefault()}>
+      <form class="echo-bar" onSubmit={(e) => e.preventDefault()}>
         <IconSearch size={14} />
         <input
           value={q}

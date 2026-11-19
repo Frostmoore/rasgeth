@@ -625,199 +625,201 @@ export function Sidebar() {
       <TurnMeter />
       {/* Echo (3.9.6): while a search is typed, its results take the lists' place. */}
       <EchoSearch>
-      {god && (
-        <div class="bar-god">
-          <Entry
-            icon={<Mascot agent={god} size={24} />}
-            name={god.name}
-            open={open.has("god")}
-            toggle={() => toggle("god")}
-            onNew={() => void attempt(() => newSession(god))}
-          />
-          {open.has("god") && <Sessions agent={god} />}
-        </div>
-      )}
-
-      <div class="bar-big">
-        <button
-          type="button"
-          class={section === "projects" ? "on" : ""}
-          aria-pressed={section === "projects"}
-          onClick={() => setSection("projects")}
-        >
-          <IconBox size={18} />
-          <span>{t("projects")}</span>
-          <small>{t("barProjectsN", { n: String(projects.value.length) })}</small>
-        </button>
-        <button
-          type="button"
-          class={section === "agents" ? "on" : ""}
-          aria-pressed={section === "agents"}
-          onClick={() => setSection("agents")}
-        >
-          <IconUser size={18} />
-          <span>{t("assistants")}</span>
-          <small>
-            {assistants.length > 0 ? assistants.map((a) => a.name).join(", ") : t("barAgentsNone")}
-          </small>
-        </button>
-      </div>
-
-      <div class="bar-list">
-        {section === "agents" ? (
-          <Assistants open={open} toggle={toggle} />
-        ) : (
-          <>
-            <button type="button" class="bar-new" onClick={() => setAdding(!adding)}>
-              <IconPlus size={13} /> {t("projectNew")}
-            </button>
-            {adding && (
-              <form class="new-project" onSubmit={(e) => void create(e)}>
-                <input
-                  required
-                  placeholder={t("projectName")}
-                  value={name}
-                  onInput={(e) => setName((e.target as HTMLInputElement).value)}
-                />
-                <div class="row">
-                  <button type="submit" class="primary" disabled={!name.trim()}>
-                    {t("create")}
-                  </button>
-                  <button type="button" onClick={() => setAdding(false)}>
-                    {t("cancel")}
-                  </button>
-                </div>
-              </form>
-            )}
-            {projects.value.length === 0 && !adding && <div class="empty">{t("noProjects")}</div>}
-            {projects.value.map((p) => {
-              const key = `p:${p.id}`;
-              const orchestrator = projectLead(p.id);
-              const running = sessionRows.value.some((r) => r.projectId === p.id && r.running);
-              // The name opens the orchestrator's chat and shows the conversations (p3.5.4);
-              // the arrow only folds and unfolds.
-              const openProject = () => {
-                if (!open.has(key)) setOpen(new Set([...open, key]));
-                if (orchestrator) void attempt(() => openOrchestrator(orchestrator));
-              };
-              return (
-                <div key={p.id}>
-                  <div class="bar-row project-row">
-                    <button
-                      type="button"
-                      class="bar-fold"
-                      title={open.has(key) ? t("collapse") : t("expand")}
-                      aria-label={`${open.has(key) ? t("collapse") : t("expand")}: ${p.name}`}
-                      aria-expanded={open.has(key)}
-                      onClick={() => toggle(key)}
-                    >
-                      <IconChevron open={open.has(key)} />
-                    </button>
-                    <button
-                      type="button"
-                      class="bar-item project-name"
-                      title={orchestrator ? t("barOpenOrchestrator", { name: p.name }) : p.name}
-                      onClick={openProject}
-                    >
-                      {orchestrator && <Mascot agent={orchestrator} size={20} />}
-                      <span class="name">{p.name}</span>
-                      {running && (
-                        <span
-                          class="dot running"
-                          role="img"
-                          aria-label={t("barWorking")}
-                          title={t("barWorking")}
-                        />
-                      )}
-                    </button>
-                    <span class="project-actions">
-                      <button
-                        type="button"
-                        class="icon-button"
-                        title={t("board")}
-                        onClick={() =>
-                          openTab({
-                            id: `board:${p.id}`,
-                            type: "board",
-                            title: `${t("board")} · ${p.name}`,
-                            projectId: p.id,
-                          })
-                        }
-                      >
-                        <IconBoard />
-                      </button>
-                      <button
-                        type="button"
-                        class="icon-button"
-                        title={t("inspector")}
-                        onClick={() =>
-                          openTab({
-                            id: `inspector:${p.id}`,
-                            type: "inspector",
-                            title: `${t("inspector")} · ${p.name}`,
-                            projectId: p.id,
-                          })
-                        }
-                      >
-                        <IconEye />
-                      </button>
-                      <button
-                        type="button"
-                        class="icon-button"
-                        title={t("agentsOf", { project: p.name })}
-                        onClick={() =>
-                          openTab({
-                            id: `agents:${p.id}`,
-                            type: "agents",
-                            title: t("agentsOf", { project: p.name }),
-                            projectId: p.id,
-                          })
-                        }
-                      >
-                        <IconTree size={14} />
-                      </button>
-                      <button
-                        type="button"
-                        class="icon-button"
-                        title={t("paArchiveAction")}
-                        onClick={() => setArchiving(p)}
-                      >
-                        <IconArchive />
-                      </button>
-                    </span>
-                  </div>
-                  {open.has(key) &&
-                    (orchestrator ? (
-                      <>
-                        <Sessions agent={orchestrator} />
-                        <TeamSessions projectId={p.id} orchestratorId={orchestrator.id} />
-                      </>
-                    ) : (
-                      <div class="sessions">
-                        <span class="dim">{t("noOrchestrator")}</span>
-                      </div>
-                    ))}
-                  {open.has(key) && <Subprojects projectId={p.id} open={open} toggle={toggle} />}
-                </div>
-              );
-            })}
-            {archivedProjects.value.length > 0 && (
-              <div class="bar-archived">
-                <button
-                  type="button"
-                  class="more"
-                  aria-expanded={showArchived}
-                  onClick={() => setShowArchived(!showArchived)}
-                >
-                  <IconChevron open={showArchived} />
-                  {t("paArchivedN", { n: String(archivedProjects.value.length) })}
-                </button>
-                {showArchived && <ArchivedList compact />}
-              </div>
-            )}
-          </>
+        {god && (
+          <div class="bar-god">
+            <Entry
+              icon={<Mascot agent={god} size={24} />}
+              name={god.name}
+              open={open.has("god")}
+              toggle={() => toggle("god")}
+              onNew={() => void attempt(() => newSession(god))}
+            />
+            {open.has("god") && <Sessions agent={god} />}
+          </div>
         )}
-      </div>
+
+        <div class="bar-big">
+          <button
+            type="button"
+            class={section === "projects" ? "on" : ""}
+            aria-pressed={section === "projects"}
+            onClick={() => setSection("projects")}
+          >
+            <IconBox size={18} />
+            <span>{t("projects")}</span>
+            <small>{t("barProjectsN", { n: String(projects.value.length) })}</small>
+          </button>
+          <button
+            type="button"
+            class={section === "agents" ? "on" : ""}
+            aria-pressed={section === "agents"}
+            onClick={() => setSection("agents")}
+          >
+            <IconUser size={18} />
+            <span>{t("assistants")}</span>
+            <small>
+              {assistants.length > 0
+                ? assistants.map((a) => a.name).join(", ")
+                : t("barAgentsNone")}
+            </small>
+          </button>
+        </div>
+
+        <div class="bar-list">
+          {section === "agents" ? (
+            <Assistants open={open} toggle={toggle} />
+          ) : (
+            <>
+              <button type="button" class="bar-new" onClick={() => setAdding(!adding)}>
+                <IconPlus size={13} /> {t("projectNew")}
+              </button>
+              {adding && (
+                <form class="new-project" onSubmit={(e) => void create(e)}>
+                  <input
+                    required
+                    placeholder={t("projectName")}
+                    value={name}
+                    onInput={(e) => setName((e.target as HTMLInputElement).value)}
+                  />
+                  <div class="row">
+                    <button type="submit" class="primary" disabled={!name.trim()}>
+                      {t("create")}
+                    </button>
+                    <button type="button" onClick={() => setAdding(false)}>
+                      {t("cancel")}
+                    </button>
+                  </div>
+                </form>
+              )}
+              {projects.value.length === 0 && !adding && <div class="empty">{t("noProjects")}</div>}
+              {projects.value.map((p) => {
+                const key = `p:${p.id}`;
+                const orchestrator = projectLead(p.id);
+                const running = sessionRows.value.some((r) => r.projectId === p.id && r.running);
+                // The name opens the orchestrator's chat and shows the conversations (p3.5.4);
+                // the arrow only folds and unfolds.
+                const openProject = () => {
+                  if (!open.has(key)) setOpen(new Set([...open, key]));
+                  if (orchestrator) void attempt(() => openOrchestrator(orchestrator));
+                };
+                return (
+                  <div key={p.id}>
+                    <div class="bar-row project-row">
+                      <button
+                        type="button"
+                        class="bar-fold"
+                        title={open.has(key) ? t("collapse") : t("expand")}
+                        aria-label={`${open.has(key) ? t("collapse") : t("expand")}: ${p.name}`}
+                        aria-expanded={open.has(key)}
+                        onClick={() => toggle(key)}
+                      >
+                        <IconChevron open={open.has(key)} />
+                      </button>
+                      <button
+                        type="button"
+                        class="bar-item project-name"
+                        title={orchestrator ? t("barOpenOrchestrator", { name: p.name }) : p.name}
+                        onClick={openProject}
+                      >
+                        {orchestrator && <Mascot agent={orchestrator} size={20} />}
+                        <span class="name">{p.name}</span>
+                        {running && (
+                          <span
+                            class="dot running"
+                            role="img"
+                            aria-label={t("barWorking")}
+                            title={t("barWorking")}
+                          />
+                        )}
+                      </button>
+                      <span class="project-actions">
+                        <button
+                          type="button"
+                          class="icon-button"
+                          title={t("board")}
+                          onClick={() =>
+                            openTab({
+                              id: `board:${p.id}`,
+                              type: "board",
+                              title: `${t("board")} · ${p.name}`,
+                              projectId: p.id,
+                            })
+                          }
+                        >
+                          <IconBoard />
+                        </button>
+                        <button
+                          type="button"
+                          class="icon-button"
+                          title={t("inspector")}
+                          onClick={() =>
+                            openTab({
+                              id: `inspector:${p.id}`,
+                              type: "inspector",
+                              title: `${t("inspector")} · ${p.name}`,
+                              projectId: p.id,
+                            })
+                          }
+                        >
+                          <IconEye />
+                        </button>
+                        <button
+                          type="button"
+                          class="icon-button"
+                          title={t("agentsOf", { project: p.name })}
+                          onClick={() =>
+                            openTab({
+                              id: `agents:${p.id}`,
+                              type: "agents",
+                              title: t("agentsOf", { project: p.name }),
+                              projectId: p.id,
+                            })
+                          }
+                        >
+                          <IconTree size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          class="icon-button"
+                          title={t("paArchiveAction")}
+                          onClick={() => setArchiving(p)}
+                        >
+                          <IconArchive />
+                        </button>
+                      </span>
+                    </div>
+                    {open.has(key) &&
+                      (orchestrator ? (
+                        <>
+                          <Sessions agent={orchestrator} />
+                          <TeamSessions projectId={p.id} orchestratorId={orchestrator.id} />
+                        </>
+                      ) : (
+                        <div class="sessions">
+                          <span class="dim">{t("noOrchestrator")}</span>
+                        </div>
+                      ))}
+                    {open.has(key) && <Subprojects projectId={p.id} open={open} toggle={toggle} />}
+                  </div>
+                );
+              })}
+              {archivedProjects.value.length > 0 && (
+                <div class="bar-archived">
+                  <button
+                    type="button"
+                    class="more"
+                    aria-expanded={showArchived}
+                    onClick={() => setShowArchived(!showArchived)}
+                  >
+                    <IconChevron open={showArchived} />
+                    {t("paArchivedN", { n: String(archivedProjects.value.length) })}
+                  </button>
+                  {showArchived && <ArchivedList compact />}
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </EchoSearch>
       {archiving && (
         <ArchiveProjectDialog project={archiving} onClose={() => setArchiving(undefined)} />

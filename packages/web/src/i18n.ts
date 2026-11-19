@@ -14049,7 +14049,8 @@ const it: Record<Key, string> = {
   echoMatches: "{n} messaggi",
   echoMatch: "1 messaggio",
   echoYou: "Tu",
-  echoHint: "Scrivi almeno due lettere: ogni parola si cerca in quello che hai scritto tu e gli agenti.",
+  echoHint:
+    "Scrivi almeno due lettere: ogni parola si cerca in quello che hai scritto tu e gli agenti.",
 };
 
 export const dictionaries: Record<Lang, Record<Key, string>> = { en, it };
