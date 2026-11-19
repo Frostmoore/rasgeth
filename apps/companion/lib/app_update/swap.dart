@@ -1,5 +1,5 @@
-// The replacement (G41.8b): a small helper outside the app's folder, started detached just before
-// the app closes. It waits for the app to be gone, keeps the folder as it was (`<dir>.previous`),
+// The replacement (G41.8b): a small helper outside the app's folder, started just before the app
+// closes (Linux: detached; Windows: see `_launch`). It waits for the app to be gone, keeps the folder as it was (`<dir>.previous`),
 // puts the new version in (Windows: the downloaded RGCompanion-Setup.exe, silent, for this user,
 // no administrator; Linux: the bundle of the downloaded archive, in install-app.sh's folder), then
 // starts it with a marker file to write. A new version that does not write it within a minute (or
@@ -9,9 +9,12 @@
 // 3.9.5: the app writes its own line into that log before starting the helper and closes only once
 // the helper has written its `alive` file (its first step after its first line: the app's last
 // line comes after it, never over it); a helper that does not start
-// leaves the app open, with the reason in the log. 3.9.0-3.9.4's Windows helper never ran: its
-// first line held `$to:`, which PowerShell reads as a drive-qualified variable, so the whole file
-// failed to parse (hidden window, detached: nobody saw it).
+// leaves the app open, with the reason in the log. 3.9.0-3.9.4's Windows helper never ran, twice
+// over: its first line held `$to:`, which PowerShell reads as a drive-qualified variable, so the
+// whole file failed to parse; and it was started `detached`, without a console, where Windows
+// PowerShell 5.1 exits at once. Nobody saw either: no window, and the app had already closed.
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import '../brand.dart';
@@ -202,11 +205,29 @@ class SwapNotStarted implements Exception {
   String toString() => 'SwapNotStarted($reason)';
 }
 
-/// Starts a program detached and gives its process id ([Process.start] by default).
-typedef SwapLauncher = Future<int> Function(String exe, List<String> args);
+/// The helper as started: its process id, and (Windows) its end and its error output.
+class SwapHelper {
+  const SwapHelper(this.pid, {this.exitCode, this.stderr});
 
-Future<int> _launch(String exe, List<String> args) async =>
-    (await Process.start(exe, args, mode: ProcessStartMode.detached)).pid;
+  final int pid;
+  final Future<int>? exitCode;
+  final Stream<List<int>>? stderr;
+}
+
+/// Starts the helper ([Process.start] by default).
+typedef SwapLauncher = Future<SwapHelper> Function(String exe, List<String> args);
+
+Future<SwapHelper> _launch(String exe, List<String> args) async {
+  if (!Platform.isWindows) {
+    return SwapHelper((await Process.start(exe, args, mode: ProcessStartMode.detached)).pid);
+  }
+  // Windows: never `detached` (DETACHED_PROCESS, no console at all): Windows PowerShell 5.1 then
+  // exits at once without running a line. The normal start gives it a console without a window
+  // (CREATE_NO_WINDOW), no job: it outlives the app; its pipes simply break when the app is gone.
+  final p = await Process.start(exe, args);
+  unawaited(p.stdout.drain<void>().catchError((Object _) {}));
+  return SwapHelper(p.pid, exitCode: p.exitCode, stderr: p.stderr);
+}
 
 /// Windows PowerShell 5.1 by its full path: never another `powershell.exe` found first in PATH.
 String windowsPowerShell(Map<String, String> env) {
@@ -230,9 +251,10 @@ Future<void> appendSwapLog(String log, String line) async {
   }
 }
 
-/// Writes the helper next to the download, starts it detached and returns once it runs (its
-/// `alive` file is there): only then may the caller close the app. A helper that does not start
-/// within [aliveWithin] is stopped and [SwapNotStarted] thrown: the app stays open.
+/// Writes the helper next to the download, starts it and returns once it runs (its `alive` file
+/// is there): only then may the caller close the app. A helper that stops first or does not start
+/// within [aliveWithin] (stopped then) throws [SwapNotStarted], with what it said in the log: the
+/// app stays open.
 Future<void> startSwap(
   SwapPlan p,
   String folder, {
@@ -272,27 +294,46 @@ Future<void> startSwap(
     throw const SwapNotStarted('stale alive file');
   }
   await appendSwapLog(p.log, 'app ${p.fromVersion}: starting the helper for ${p.toVersion}');
-  final int helper;
+  final SwapHelper helper;
   try {
     helper = await launch(exe, args);
   } on Object catch (e) {
     await appendSwapLog(p.log, 'app ${p.fromVersion}: the helper could not start ($e)');
     throw SwapNotStarted('$e');
   }
+  final errors = StringBuffer();
+  final errorsDone = helper.stderr
+      ?.transform(const Utf8Decoder(allowMalformed: true))
+      .forEach((t) => errors.length < 4000 ? errors.write(t) : null)
+      .catchError((Object _) {});
+  int? ended;
+  unawaited(helper.exitCode?.then((c) => ended = c));
   final deadline = DateTime.now().add(aliveWithin);
   while (!alive.existsSync()) {
-    if (DateTime.now().isAfter(deadline)) {
-      Process.killPid(helper);
+    final gone = ended != null;
+    if (gone || DateTime.now().isAfter(deadline)) {
+      if (gone) {
+        await errorsDone?.timeout(const Duration(seconds: 2), onTimeout: () {});
+      } else {
+        Process.killPid(helper.pid);
+      }
+      final why = gone
+          ? 'stopped with $ended before running'
+          : 'did not start within ${aliveWithin.inSeconds} s';
+      final said = errors.toString().trim();
       await appendSwapLog(
         p.log,
-        'app ${p.fromVersion}: the helper ($helper) did not start within '
-        '${aliveWithin.inSeconds} s: the app stays open',
+        'app ${p.fromVersion}: the helper (${helper.pid}) $why: the app stays open'
+        '${said.isEmpty ? '' : '\n$said'}',
       );
-      throw const SwapNotStarted('no alive file');
+      throw SwapNotStarted(why);
     }
     await Future<void>.delayed(const Duration(milliseconds: 100));
   }
-  await appendSwapLog(p.log, 'app ${p.fromVersion}: the helper ($helper) runs, the app closes');
+  await appendSwapLog(
+    p.log,
+    'app ${p.fromVersion}: the helper (${helper.pid}) runs, the app closes',
+  );
 }
 
 /// The bundle folder inside the unpacked Linux archive (`<top>/bundle/rgcompanion`), or null.

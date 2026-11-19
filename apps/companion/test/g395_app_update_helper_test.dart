@@ -1,11 +1,14 @@
-// 3.9.5: the update's helper must really run. 3.9.0-3.9.4's Windows helper never did: its first
-// line held `$to:`, which PowerShell reads as a drive-qualified variable, so the whole file failed
-// to parse and nothing ran (hidden window, detached: nobody saw it; the app had already closed).
+// 3.9.5: the update's helper must really run. 3.9.0-3.9.4's Windows helper never did, twice over:
+// its first line held `$to:`, which PowerShell reads as a drive-qualified variable, so the whole
+// file failed to parse; and it was started `detached` (no console), where Windows PowerShell 5.1
+// exits at once. Nobody saw it: no window, and the app had already closed.
 // Here: the script's text has no such reference (table of the scopes PowerShell allows), Windows
 // PowerShell 5.1's own parser finds no error (on Windows), the handshake (the app writes its line,
-// closes only once the helper wrote its first line and its `alive` file, stays open otherwise) and, on Windows, the
-// helper run for real on fake folders: replaced and started, put back when the new version does not
-// start or the installer fails.
+// closes only once the helper wrote its first line and its `alive` file, stays open otherwise and
+// logs at once what a helper that stopped first said; on Windows the app's real start) and, on
+// Windows, the helper run for real on fake folders: replaced and started, put back when the new
+// version does not start or the installer fails.
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -193,7 +196,8 @@ $e | ForEach-Object { "line $($_.Extent.StartLineNumber): $($_.Message)" }
           aliveWithin: const Duration(seconds: 1),
           launch: (exe, args) async {
             quiet = await _running(20000);
-            return started = quiet!.pid;
+            started = quiet!.pid;
+            return SwapHelper(started!, exitCode: quiet!.exitCode);
           },
         ),
         throwsA(isA<SwapNotStarted>()),
@@ -204,6 +208,36 @@ $e | ForEach-Object { "line $($_.Extent.StartLineNumber): $($_.Message)" }
         _read(p.log),
         contains('the helper ($started) did not start within 1 s: the app stays open'),
       );
+    });
+
+    test('a helper that stops before running: at once, what it said in the log', () async {
+      final p = plan(pid);
+      final w = Stopwatch()..start();
+      await expectLater(
+        startSwap(
+          p,
+          tmp.path,
+          launch: (exe, args) async {
+            final q = Platform.isWindows
+                ? await Process.start(_ps, [
+                    '-NoProfile',
+                    '-Command',
+                    "[Console]::Error.WriteLine('InvalidVariableReferenceWithDrive'); exit 1",
+                  ])
+                : await Process.start('sh', [
+                    '-c',
+                    'echo InvalidVariableReferenceWithDrive >&2; exit 1',
+                  ]);
+            unawaited(q.stdout.drain<void>());
+            return SwapHelper(q.pid, exitCode: q.exitCode, stderr: q.stderr);
+          },
+        ),
+        throwsA(isA<SwapNotStarted>()),
+      );
+      expect(w.elapsed, lessThan(const Duration(seconds: 20)), reason: 'not the whole wait');
+      final log = _read(p.log);
+      expect(log, contains('stopped with 1 before running: the app stays open'));
+      expect(log, contains('InvalidVariableReferenceWithDrive'));
     });
 
     test('a helper that cannot be started: the app stays open, the reason logged', () async {
@@ -229,7 +263,7 @@ $e | ForEach-Object { "line $($_.Extent.StartLineNumber): $($_.Message)" }
           aliveWithin: const Duration(seconds: 1),
           launch: (exe, args) async {
             final q = await _running(5000);
-            return q.pid;
+            return SwapHelper(q.pid);
           },
         ),
         throwsA(isA<SwapNotStarted>()),
