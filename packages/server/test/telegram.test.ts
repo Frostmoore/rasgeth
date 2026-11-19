@@ -234,9 +234,10 @@ describe("Demi-God on Telegram", () => {
     const notice = tg?.sent(USER).at(-1);
     expect(notice?.text).toMatch(/^This message looks like it holds a secret \(a key\)/);
     expect(String(notice?.text)).not.toContain(token);
-    const keyboard = (
-      notice?.reply_markup as { inline_keyboard: { text: string; callback_data: string }[][] }
-    ).inline_keyboard.flat();
+    const keyboard =
+      (
+        notice?.reply_markup as { inline_keyboard: { text: string; callback_data: string }[][] }
+      )?.inline_keyboard.flat() ?? [];
     expect(keyboard.map((b) => b.text)).toEqual(["Send anyway", "Send without it", "Leave it"]);
     // Nothing reached a model yet.
     expect(s?.provider.requests.length).toBe(before);
@@ -263,22 +264,24 @@ describe("Demi-God on Telegram", () => {
     // «Send without it»: the server blanks it, as before; «Leave it»: nothing is sent.
     await s?.gateway?.handleUpdate(tg?.text(USER, `again ${token}`) as never);
     await s?.gateway?.idle();
-    const second = (
-      tg?.sent(USER).at(-1)?.reply_markup as {
-        inline_keyboard: { callback_data: string }[][];
-      }
-    ).inline_keyboard.flat();
+    const second =
+      (
+        tg?.sent(USER).at(-1)?.reply_markup as {
+          inline_keyboard: { callback_data: string }[][];
+        }
+      )?.inline_keyboard.flat() ?? [];
     await s?.gateway?.handleUpdate(tg?.button(USER, second[1]?.callback_data ?? "") as never);
     await s?.gateway?.idle();
     expect(tg?.sent(USER).at(-1)?.text).toBe("Demi-God heard: again [secret removed]");
     const after = s?.provider.requests.length ?? 0;
     await s?.gateway?.handleUpdate(tg?.text(USER, `third ${token}`) as never);
     await s?.gateway?.idle();
-    const third = (
-      tg?.sent(USER).at(-1)?.reply_markup as {
-        inline_keyboard: { callback_data: string }[][];
-      }
-    ).inline_keyboard.flat();
+    const third =
+      (
+        tg?.sent(USER).at(-1)?.reply_markup as {
+          inline_keyboard: { callback_data: string }[][];
+        }
+      )?.inline_keyboard.flat() ?? [];
     await s?.gateway?.handleUpdate(tg?.button(USER, third[2]?.callback_data ?? "") as never);
     await s?.gateway?.idle();
     expect(s?.provider.requests.length).toBe(after);

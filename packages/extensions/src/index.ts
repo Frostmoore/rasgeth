@@ -5,3 +5,4 @@ export * from "./oauth.js";
 export * from "./propose.js";
 export * from "./share.js";
 export * from "./skills.js";
+export * from "./versions.js";

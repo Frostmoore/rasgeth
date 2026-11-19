@@ -692,6 +692,23 @@ export const EventBody = z.discriminatedUnion("type", [
     type: z.literal("extension.removed"),
     payload: z.object({ kind: z.enum(["tool", "skill"]), name: z.string(), by: z.string() }),
   }),
+  /**
+   * A skill's new version (3.9.7): installed from a proposal (by the person's yes or by policy),
+   * written or imported by the person, its state before the history began or after a change by
+   * hand, or a return to an earlier version. The history only goes forward.
+   */
+  z.object({
+    type: z.literal("extension.versioned"),
+    payload: z.object({
+      kind: z.literal("skill"),
+      name: z.string(),
+      scope: z.string(),
+      version: z.number().int().positive(),
+      how: z.enum(["baseline", "edited", "install", "update", "import", "rollback"]),
+      author: z.string().nullable(),
+      fromVersion: z.number().int().positive().optional(),
+    }),
+  }),
   /** An automation started (status `running`) or ended; `skipped` when the previous run was still going. */
   z.object({
     type: z.literal("automation.run"),

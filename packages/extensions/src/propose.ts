@@ -32,8 +32,9 @@ export function proposeTool(
         "Propose a new tool or skill for this project. A tool: input_schema, command (run in the tool's folder with the path of a " +
         "JSON file of arguments as last argument; print the result) and files, plus tests [{input, expectExitCode?, " +
         "expectStdoutContains?}]. A skill: body (instructions) and files, plus tests [{command}] or untestable_reason, " +
-        "and summary (the problem and what worked, two or three lines). To change an installed skill use its name " +
-        "with updates: true (files you leave out stay). It is tested in a sandbox and waits for the user's approval.",
+        "and summary (the problem and what worked, two or three lines). To improve an installed skill (a new version) use its name " +
+        "with updates: true (files you leave out stay) and summary saying what went wrong with it and what you changed. " +
+        "It is tested in a sandbox and waits for the user's approval.",
       inputSchema: {
         type: "object",
         properties: {
@@ -103,6 +104,8 @@ export function proposeTool(
           content: `Proposal ${p.id} failed its tests:\n${lines.join("\n")}\nFix it and propose again.`,
           isError: true,
         };
+      if (p.status === "installed" && p.previous)
+        return `The new version of the skill "${i.name}" passed its tests and is installed (the user can go back to an earlier one in Extensions): every agent gets it from its next conversation; this one keeps the version it started with.\n${lines.join("\n")}`;
       if (p.status === "installed")
         return `Skill "${i.name}" passed its tests and is installed: every agent finds it from its next conversation.\n${lines.join("\n")}`;
       if (p.previous)

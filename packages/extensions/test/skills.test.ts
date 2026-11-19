@@ -309,7 +309,7 @@ describe("installing skills", () => {
     untestable_reason: "Instructions only, nothing to run.",
   });
 
-  it("never lets an agent's auto-installed skill replace an existing one (G29.4)", async () => {
+  it("an agent's new version installs by itself only over an agent's version, and says why (3.9.7)", async () => {
     const { builder, installRoot } = await setup();
     const tool = proposeTool(
       { id: "agent_cccccccc", ownerId: "me", projectId: "p" },
@@ -319,14 +319,43 @@ describe("installing skills", () => {
     expect(text(await tool.run(skill("First version of the instructions."), ctx))).toMatch(
       /is installed/,
     );
-    const second = text(await tool.run(skill("Second version, replacing the first."), ctx));
-    expect(second).toMatch(/waits for the user's approval/);
-    expect(second).toMatch(/already installed/);
+    // A new version without a reason is refused.
+    expect(text(await tool.run(skill("Second version, replacing the first."), ctx))).toMatch(
+      /say why in summary/,
+    );
     const read = () => readFile(join(installRoot, "skills", "flaky-ci", "SKILL.md"), "utf8");
-    expect(await read()).toMatch(/First version/);
+    // Over a version an agent wrote, with the person's policy: installed, with a way back.
+    const second = text(
+      await tool.run(
+        { ...skill("Second version, replacing the first."), summary: "The first missed a step." },
+        ctx,
+      ),
+    );
+    expect(second).toMatch(/new version of the skill "flaky-ci".*is installed/);
+    expect(await read()).toMatch(/Second version/);
+    // Over the person's own version it waits for them.
+    await builder.propose({
+      ownerId: "me",
+      projectId: "p",
+      author: "human",
+      input: {
+        kind: "skill",
+        name: "flaky-ci",
+        description: "What to do when CI fails only on Windows",
+        body: "The person's own version of these instructions.",
+        untestableReason: "Instructions only, nothing to run.",
+      },
+      autoInstall: true,
+    });
+    const third = text(
+      await tool.run({ ...skill("Third version from the agent."), summary: "Better." }, ctx),
+    );
+    expect(third).toMatch(/waits for the user's approval/);
+    expect(third).toMatch(/was not written by an agent/);
+    expect(await read()).toMatch(/person's own version/);
     const [pending] = await builder.list("me", "pending");
     await builder.decide("me", pending?.id ?? "", "approve", "human");
-    expect(await read()).toMatch(/Second version/);
+    expect(await read()).toMatch(/Third version/);
   });
 
   it("lets the person replace their own skill directly", async () => {
