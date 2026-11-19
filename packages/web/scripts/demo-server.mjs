@@ -2384,6 +2384,68 @@ if (process.env.DEMO_SUBAGENTS) {
     }
   }
 }
+// 3.9.4, DEMO_SUBSIGN=1: the Coder's conversation with two real sub-agents, which have no mascot
+// of their own (decision of 2026-11-19): the ring in the Coder's colour. One finished, one waiting
+// for the person's yes.
+if (process.env.DEMO_SUBSIGN) {
+  // Room for the two sub-agents beside the demo's agents.
+  await core.setProjectAgents("local", "demo", 6);
+  const at = (sessionId, agentId, body) =>
+    core.store.append({ ownerId: "local", projectId: "demo", agentId, sessionId, body });
+  const mine = await core.startSession("local", coder.id);
+  await core.nameSession(mine, "Pagina prodotto");
+  await at(mine, null, {
+    type: "message.user",
+    payload: { text: "Prepara la pagina prodotto: prova la UI e prepara la migrazione." },
+  });
+  await at(mine, coder.id, {
+    type: "message.assistant",
+    payload: {
+      parts: [{ type: "text", text: "Divido il lavoro fra due sotto-agenti." }],
+      metrics: {
+        inputTokens: 3000,
+        outputTokens: 80,
+        cachedReadTokens: 2500,
+        contextUsed: 3080,
+        contextWindow: 200000,
+        startedAt: new Date().toISOString(),
+        source: "server",
+      },
+      costUsd: 0.003,
+      model: "claude-opus-5-5",
+      stopReason: "tool_use",
+    },
+  });
+  for (const [title, said, wait] of [
+    ["Test UI", "Task from Coder: «Test UI»\n\nRun the UI tests of the product page.", false],
+    ["Migrazione DB", "Task from God: «Publish the migration»\n\nWrite the migration.", true],
+  ]) {
+    const sub = await core.registry.create(
+      { type: "agent", agent: coder },
+      { kind: "subagent", parentId: coder.id, name: `Coder › ${title}`, mode: "manual" },
+    );
+    const child = await core.startSession("local", sub.id);
+    await at(mine, coder.id, {
+      type: "subagent.started",
+      payload: {
+        childSessionId: child,
+        childAgentId: sub.id,
+        via: "run_subagents",
+        title,
+        task: said,
+      },
+    });
+    const { done } = await core.send("local", child, said);
+    if (wait) done.catch(() => {});
+    else {
+      await done;
+      await at(mine, coder.id, {
+        type: "subagent.ended",
+        payload: { childSessionId: child, status: "done", summary: "12 prove su 12 passate" },
+      });
+    }
+  }
+}
 if (subSession)
   await (await core.send("local", subSession, "Start the test server, the tests and the build."))
     .done;

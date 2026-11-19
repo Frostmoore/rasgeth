@@ -45,21 +45,14 @@ void main() {
         'agent',
         'assistant',
         'inspector',
-        'subagent',
       });
+      // Sub-agents have no mascot (2026-11-19): their sign, subagent_sign_test.dart.
       for (final m in mascots) {
         expect(m.spec.v, 1);
         expect(m.spec.kind.name, m.kind);
         expect(m.spec.bodyPath, startsWith('M'));
         expect(m.spec.light.body, matches(RegExp(r'^#[0-9a-f]{6}$')));
       }
-    });
-
-    test('a subagent looks like its parent: same body and hue', () {
-      final parent = mascots.firstWhere((m) => m.seed == 'Coder Web');
-      final sub = byKind('subagent');
-      expect(sub.raw['body'], parent.raw['body']);
-      expect(sub.spec.hue, parent.spec.hue);
     });
   });
 
@@ -82,16 +75,6 @@ void main() {
         expect(x.svg.split('<g').length, x.svg.split('</g>').length, reason: x.svg);
         expect(x.svg, isNot(contains('class="core"')));
       }
-    });
-
-    test("a subagent's moving parts stay inside its parent's scale", () {
-      final l = splitMascotSvg(
-        byKind('subagent').svgOf(MascotTheme.light, MascotState.work),
-        moving,
-      );
-      final tool = l.layers.firstWhere((x) => x.el == 'tool');
-      expect(tool.svg, contains('<g transform="translate(10 18) scale(.8)">'));
-      expect(tool.parent!.entry(0, 0), closeTo(.8, 1e-9));
     });
 
     test(

@@ -6,6 +6,7 @@
 // (the person: «tutte le pagine delle impostazioni con lo stesso stile del wizard»): a big
 // heading, segments, a switch, nodes and cards lit by border and background (never a check
 // mark), and the forms to create an agent in the wizard's windows.
+import { hasOwnMascot } from "@redgiant/mascot";
 import { useState } from "preact/hooks";
 import type { Agent, Budget } from "../api.js";
 import { roleText, t, tOptional } from "../i18n.js";
@@ -219,8 +220,16 @@ function GeneralTab({ agent }: { agent: Agent }) {
         <Mascot agent={agent} size={128} />
         <div class="mascot-field-text">
           <span class="wz-lb">{t("mascotTitle")}</span>
-          <span class="ui-help">{t(agent.kind === "god" ? "mascotGodHelp" : "mascotHelp")}</span>
-          {agent.kind !== "god" && agent.status === "active" && (
+          <span class="ui-help">
+            {t(
+              agent.kind === "god"
+                ? "mascotGodHelp"
+                : hasOwnMascot(agent)
+                  ? "mascotHelp"
+                  : "mascotSubHelp",
+            )}
+          </span>
+          {agent.kind !== "god" && hasOwnMascot(agent) && agent.status === "active" && (
             <div class="st-save">
               {newFace && <span class="st-on">{t("mascotChanged")}</span>}
               <button type="button" class="wz-btn small" onClick={() => void changeMascot()}>

@@ -804,7 +804,8 @@ class AgentSheet extends StatelessWidget {
                       label: Text(l.agentOpenTask),
                     ),
                   ),
-                if (a.kind != AgentKind.god && a.active)
+                // A sub-agent has no mascot of its own (2026-11-19): nothing to change.
+                if (a.kind != AgentKind.god && a.kind != AgentKind.subagent && a.active)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: OutlinedButton.icon(

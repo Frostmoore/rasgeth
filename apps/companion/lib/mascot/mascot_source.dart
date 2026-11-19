@@ -44,17 +44,26 @@ class ClientMascotSource implements MascotSource {
   void forget(String agentId) => _cache.removeWhere((k, _) => k.startsWith('$agentId|'));
 }
 
-/// Gives the mascots under it their source and the app's «Reduce motion».
+/// Gives the mascots under it their source, the app's «Reduce motion» and the agents by id.
 class MascotScope extends InheritedWidget {
-  const MascotScope({super.key, this.source, this.reduceMotion = false, required super.child});
+  const MascotScope({
+    super.key,
+    this.source,
+    this.reduceMotion = false,
+    this.agentOf,
+    required super.child,
+  });
 
   final MascotSource? source;
   final bool reduceMotion;
+
+  /// The agent with an id: a sub-agent shows its sign, in its parent's colour (2026-11-19).
+  final Agent? Function(String id)? agentOf;
 
   static MascotScope? maybeOf(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<MascotScope>();
 
   @override
   bool updateShouldNotify(MascotScope old) =>
-      old.source != source || old.reduceMotion != reduceMotion;
+      old.source != source || old.reduceMotion != reduceMotion || old.agentOf != agentOf;
 }

@@ -89,6 +89,14 @@ describe("the app's parity table (G42.0)", () => {
     },
   );
 
+  // Decision «Mascotte solo per orchestratori e agenti di primo livello» (2026-11-19).
+  it("draws a sub-agent's sign natively, as the page does", () => {
+    const places = (table as unknown as Record<string, Record<string, Row>>).places;
+    expect(places?.subagentSign?.app).toBe("native");
+    expect(places?.subagentSign?.files).toContain("lib/mascot/subagent_sign.dart");
+    expect(read("../src/components/Mascot.tsx")).toContain("subagentSignSvg(");
+  });
+
   it("every row says how, with the app's files, or the phase that brings it", () => {
     const wrong: string[] = [];
     for (const [group, rows] of Object.entries(table).filter(([g]) => g in page))

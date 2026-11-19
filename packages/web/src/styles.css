@@ -20695,6 +20695,62 @@ html[data-theme="dark"] {
     animation: none !important;
   }
 }
+/* A sub-agent's sign instead of a mascot (2026-11-19, board choice A): a ring in its parent's
+   colour (`subagentSignSvg`); working an arc turns, thinking the dot pulses, waiting a red badge
+   blinks. Still with reduced motion or while the page is not in front. */
+.sgn {
+  overflow: visible;
+  display: block;
+}
+.sgn .sgr {
+  stroke: oklch(var(--mL) var(--c) var(--h));
+}
+.sgn .sgf {
+  fill: oklch(var(--mL) var(--c) var(--h));
+}
+.sgn .sge {
+  stroke: var(--err);
+}
+.sgn .sgw {
+  fill: var(--accent);
+  stroke: var(--panel);
+}
+.sgn .spin,
+.sgn .pulse {
+  transform-box: view-box;
+}
+.sgn .spin {
+  animation: rg-sign-spin 1.1s linear infinite;
+}
+.sgn .pulse {
+  animation: rg-sign-fade 1.4s ease-in-out infinite;
+}
+.sgn .blink {
+  animation: rg-sign-fade 1.2s ease-in-out infinite;
+}
+@keyframes rg-sign-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+@keyframes rg-sign-fade {
+  50% {
+    opacity: 0.3;
+  }
+}
+/* After the rules above, with their weight: no !important needed. */
+.rg-hidden .sgn .spin,
+.rg-hidden .sgn .pulse,
+.rg-hidden .sgn .blink {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sgn .spin,
+  .sgn .pulse,
+  .sgn .blink {
+    animation: none;
+  }
+}
 /* «Change mascot» in the agent's General tab (G40.2). */
 .st-field.mascot-field {
   flex-direction: row;

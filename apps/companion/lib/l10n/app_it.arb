@@ -3039,5 +3039,6 @@
   "tkStartTotal": "All'inizio: circa {n} token a ogni messaggio",
   "tkRest": "Spenti all'inizio: {n} token che pesano solo se si accende un gruppo",
   "tkTools": "Strumenti: {list}",
-  "tkStateAuto": "spento di serie"
+  "tkStateAuto": "spento di serie",
+  "asMascotSub": "Un sotto-agente non ha una mascotte sua: vive per un compito, e mostra un anello nel colore del genitore."
 }

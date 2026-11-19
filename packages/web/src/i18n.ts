@@ -6941,6 +6941,9 @@ const en = {
   kitDo_keychain: "Use a stored key; ask you for a connection",
   kit_extensions: "Extensions",
   kitDo_extensions: "Propose a new tool or skill",
+  subagentSignOf: "Sub-agent {name}, {state}",
+  mascotSubHelp:
+    "A sub-agent has no mascot of its own: it lives for one task, and shows a ring in its parent's colour.",
 } as const;
 
 export type Key = keyof typeof en;
@@ -13978,6 +13981,9 @@ const it: Record<Key, string> = {
   kitDo_keychain: "Usare una chiave salvata; chiederti un collegamento",
   kit_extensions: "Estensioni",
   kitDo_extensions: "Proporre uno strumento o un'abilità nuovi",
+  subagentSignOf: "Sotto-agente {name}, {state}",
+  mascotSubHelp:
+    "Un sotto-agente non ha una mascotte sua: vive per un compito, e mostra un anello nel colore del genitore.",
 };
 
 export const dictionaries: Record<Lang, Record<Key, string>> = { en, it };
