@@ -6983,6 +6983,34 @@ const en = {
   echoMatch: "1 message",
   echoYou: "You",
   echoHint: "Type at least two letters: every word is looked for in what you and the agents wrote.",
+  // 3.9.7: skills that improve with use (versions, differences, the way back).
+  svTitle: "Versions",
+  svLead:
+    "Every change of this skill is kept: who wrote it, why and when. Agents use the newest from their next conversation.",
+  svVersion: "Version {n}",
+  svCurrent: "in use",
+  svHow_baseline: "As it was before the history began",
+  svHow_edited: "Changed by hand",
+  svHow_install: "First version",
+  svHow_update: "New version",
+  svHow_import: "Imported",
+  svHow_rollback: "Back to version {n}",
+  svBy: "by {who}",
+  svUnknown: "author unknown",
+  svApprovedYou: "approved by you",
+  svApprovedAuto: "installed by itself (your choice in Safety)",
+  svCompare: "Compare with the one in use",
+  svHideCompare: "Hide the comparison",
+  svRollback: "Go back to version {n}",
+  svRollbackConfirm:
+    "Go back to version {n} of «{name}»? Its files replace those in use, as a new version: nothing is lost and you can come back here. Agents get it from their next conversation.",
+  svRolledBack: "Back to version {n}: it is version {v} now.",
+  svNotRestorable: "Too large to keep: it cannot come back.",
+  svNone: "No versions yet.",
+  svWhy: "Why",
+  svChanges: "What changes",
+  svNextSession:
+    "Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.",
 } as const;
 
 export type Key = keyof typeof en;
@@ -14063,6 +14091,33 @@ const it: Record<Key, string> = {
   echoYou: "Tu",
   echoHint:
     "Scrivi almeno due lettere: ogni parola si cerca in quello che hai scritto tu e gli agenti.",
+  svTitle: "Versioni",
+  svLead:
+    "Ogni cambiamento di questa skill resta: chi l'ha scritto, perché e quando. Gli agenti usano la più nuova dalla loro conversazione successiva.",
+  svVersion: "Versione {n}",
+  svCurrent: "in uso",
+  svHow_baseline: "Com'era prima della cronologia",
+  svHow_edited: "Cambiata a mano",
+  svHow_install: "Prima versione",
+  svHow_update: "Nuova versione",
+  svHow_import: "Importata",
+  svHow_rollback: "Ritorno alla versione {n}",
+  svBy: "di {who}",
+  svUnknown: "autore sconosciuto",
+  svApprovedYou: "approvata da te",
+  svApprovedAuto: "installata da sola (la tua scelta in Sicurezza)",
+  svCompare: "Confronta con quella in uso",
+  svHideCompare: "Nascondi il confronto",
+  svRollback: "Torna alla versione {n}",
+  svRollbackConfirm:
+    "Tornare alla versione {n} di «{name}»? I suoi file prendono il posto di quelli in uso, come versione nuova: non si perde niente e puoi tornare qui. Gli agenti la usano dalla loro conversazione successiva.",
+  svRolledBack: "Tornata alla versione {n}: adesso è la versione {v}.",
+  svNotRestorable: "Troppo grande per essere conservata: non può tornare.",
+  svNone: "Ancora nessuna versione.",
+  svWhy: "Perché",
+  svChanges: "Cosa cambia",
+  svNextSession:
+    "Una volta installata, gli agenti la usano dalla loro conversazione successiva; quelli che stanno già parlando tengono la versione con cui hanno cominciato.",
 };
 
 export const dictionaries: Record<Lang, Record<Key, string>> = { en, it };

@@ -620,9 +620,28 @@ export interface Proposal {
     /** G36.8: it changes the installed skill of the same name. */
     updates?: boolean;
   };
-  /** G36.8: the installed skill an update replaces, as it is now. */
-  previous?: { skillMd: string; files: string[] } | null;
+  /** G36.8: the installed skill an update replaces, as it is now (3.9.7: and where it lives). */
+  previous?: { skillMd: string; files: string[]; scope?: string } | null;
+  /** 3.9.7: the SKILL.md the proposal would write, for the differences. */
+  proposedSkillMd?: string;
   decidedBy?: string | null;
+}
+
+/** One version of an installed skill (3.9.7). */
+export interface SkillVersion {
+  name: string;
+  scope: string;
+  version: number;
+  how: "baseline" | "edited" | "install" | "update" | "import" | "rollback";
+  author: string | null;
+  approvedBy: string | null;
+  reason: string | null;
+  fromVersion: number | null;
+  proposalId: string | null;
+  createdAt: string;
+  files: string[];
+  restorable: boolean;
+  current: boolean;
 }
 
 export interface Installed {
@@ -956,6 +975,24 @@ export class Api {
   decideExtension = (id: string, decision: "approve" | "reject") =>
     this.call<Proposal>("POST", `/api/extensions/proposals/${id}/decision`, { decision });
   installed = () => this.call<Installed[]>("GET", "/api/extensions/installed");
+  /** 3.9.7: a skill's versions, newest first (scope as in `installed`). */
+  skillVersions = (name: string, scope: string) =>
+    this.call<SkillVersion[]>(
+      "GET",
+      `/api/extensions/skills/${encodeURIComponent(name)}/versions?scope=${encodeURIComponent(scope)}`,
+    );
+  skillVersion = (name: string, scope: string, version: number) =>
+    this.call<{ name: string; version: number; skillMd: string }>(
+      "GET",
+      `/api/extensions/skills/${encodeURIComponent(name)}/versions/${version}?scope=${encodeURIComponent(scope)}`,
+    );
+  /** «Go back to version N»: a new version equal to it. */
+  rollbackSkill = (name: string, scope: string, version: number) =>
+    this.call<{ name: string; version: number; fromVersion: number }>(
+      "POST",
+      `/api/extensions/skills/${encodeURIComponent(name)}/rollback?scope=${encodeURIComponent(scope)}`,
+      { version },
+    );
   /** A skill's folder as a .zip, to share it (scope as in `installed`). */
   async exportSkill(name: string, scope: string): Promise<{ blob: Blob; name: string }> {
     const r = await fetch(

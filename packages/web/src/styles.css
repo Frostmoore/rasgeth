@@ -21806,3 +21806,70 @@ fieldset.saved-filter legend {
   border-radius: 3px;
   padding: 0 1px;
 }
+
+/* 3.9.7: skills that improve with use: the differences of a new version, the versions kept. */
+.sv-changes {
+  margin: 12px 0;
+}
+.sv-history {
+  margin-top: 16px;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+.sv-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sv-item {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--panel);
+}
+.sv-item.current {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.sv-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sv-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-text);
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+.sv-how {
+  color: var(--dim);
+}
+.sv-meta {
+  margin: 4px 0 0;
+  color: var(--dim);
+  font-size: 13px;
+}
+.sv-why {
+  margin: 6px 0 0;
+  white-space: pre-line;
+}
+.sv-why span {
+  font-weight: 600;
+}
+.sv-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.sv-item .rf-diff-wrap {
+  margin-top: 8px;
+}
