@@ -10704,4 +10704,157 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get echoHint =>
       'Scrivi almeno due lettere: ogni parola si cerca in quello che hai scritto tu e gli agenti.';
+
+  @override
+  String get skSection => 'Skill';
+
+  @override
+  String get skHub => 'Le skill degli agenti, le loro versioni e il ritorno indietro';
+
+  @override
+  String get skQuestion => 'Cosa hanno imparato gli agenti';
+
+  @override
+  String get skLead =>
+      'Le skill sono istruzioni che gli agenti scrivono dopo un lavoro andato bene, o che dai tu. Ognuna tiene le sue versioni: chi l\'ha scritta, perché e quando, e puoi tornare a una qualsiasi.';
+
+  @override
+  String get skWaitingTitle => 'Ti aspettano';
+
+  @override
+  String get skWaitingLead =>
+      'Skill nuove e versioni nuove di quelle installate, provate a parte. Non cambia niente finché non dici di sì.';
+
+  @override
+  String get skNoneWaiting => 'Non ti aspetta niente.';
+
+  @override
+  String get skNew => 'Skill nuova';
+
+  @override
+  String get skUpdate => 'Nuova versione di una skill installata';
+
+  @override
+  String skBy(String who) {
+    return 'di $who';
+  }
+
+  @override
+  String get skWhy => 'Perché';
+
+  @override
+  String get skChanges => 'Cosa cambia';
+
+  @override
+  String get skTestsOk => 'Le sue prove sono passate.';
+
+  @override
+  String skScripts(String files) {
+    return 'Ha degli script ($files): il codice non si installa mai da solo.';
+  }
+
+  @override
+  String get skApprove => 'Approva';
+
+  @override
+  String get skReject => 'Rifiuta';
+
+  @override
+  String get skNextSession =>
+      'Una volta installata, gli agenti la usano dalla loro conversazione successiva; quelli che stanno già parlando tengono la versione con cui hanno cominciato.';
+
+  @override
+  String get skInstalledTitle => 'Installate';
+
+  @override
+  String get skInstalledLead => 'Aprine una per vedere le sue versioni.';
+
+  @override
+  String get skNoneInstalled => 'Ancora nessuna skill.';
+
+  @override
+  String get skEverywhere => 'per tutti i progetti';
+
+  @override
+  String skProject(String name) {
+    return 'progetto $name';
+  }
+
+  @override
+  String get skVersionsTitle => 'Versioni';
+
+  @override
+  String get skVersionsLead => 'Gli agenti usano la più nuova dalla loro conversazione successiva.';
+
+  @override
+  String skVersion(String n) {
+    return 'Versione $n';
+  }
+
+  @override
+  String get skCurrent => 'in uso';
+
+  @override
+  String get skHow_baseline => 'Com\'era prima della cronologia';
+
+  @override
+  String get skHow_edited => 'Cambiata a mano';
+
+  @override
+  String get skHow_install => 'Prima versione';
+
+  @override
+  String get skHow_update => 'Nuova versione';
+
+  @override
+  String get skHow_import => 'Importata';
+
+  @override
+  String skHow_rollback(String n) {
+    return 'Ritorno alla versione $n';
+  }
+
+  @override
+  String get skUnknown => 'autore sconosciuto';
+
+  @override
+  String get skYou => 'te';
+
+  @override
+  String get skApprovedYou => 'approvata da te';
+
+  @override
+  String get skApprovedAuto => 'installata da sola (la tua scelta in Sicurezza)';
+
+  @override
+  String get skCompare => 'Confronta con quella in uso';
+
+  @override
+  String get skHideCompare => 'Nascondi il confronto';
+
+  @override
+  String skRollback(String n) {
+    return 'Torna alla versione $n';
+  }
+
+  @override
+  String skRollbackTitle(String n) {
+    return 'Tornare alla versione $n?';
+  }
+
+  @override
+  String skRollbackText(String name) {
+    return 'I suoi file prendono il posto di quelli di «$name» in uso, come versione nuova: non si perde niente e puoi tornare qui. Gli agenti la usano dalla loro conversazione successiva.';
+  }
+
+  @override
+  String skRolledBack(String n, String v) {
+    return 'Tornata alla versione $n: adesso è la versione $v.';
+  }
+
+  @override
+  String get skNotRestorable => 'Troppo grande per essere conservata: non può tornare.';
+
+  @override
+  String get skNoVersions => 'Ancora nessuna versione.';
 }

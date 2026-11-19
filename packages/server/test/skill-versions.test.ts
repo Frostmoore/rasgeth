@@ -93,6 +93,14 @@ describe("skill versions through the server (3.9.7)", () => {
     );
     expect(after.body[0]).toMatchObject({ how: "rollback", fromVersion: 1 });
 
+    // The app's client sends the scope in the body.
+    expect(
+      await s.api("POST", "/api/extensions/skills/invoice-pdf/rollback", {
+        version: 2,
+        scope: "platform",
+      }),
+    ).toMatchObject({ status: 200, body: { version: 4, fromVersion: 2 } });
+
     // Wrong requests say why.
     expect(
       (await s.api("POST", "/api/extensions/skills/invoice-pdf/rollback", { version: 9 })).status,

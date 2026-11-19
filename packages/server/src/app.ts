@@ -3503,8 +3503,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   });
   // 3.9.7: a skill's versions (who, why, when), one version's SKILL.md, and the way back. The
   // scope is the one above; only the person reaches these routes.
-  const versionScope = async (c: Context<Env>) => {
-    const raw = c.req.query("scope");
+  const versionScope = async (c: Context<Env>, given?: unknown) => {
+    const raw = c.req.query("scope") ?? (typeof given === "string" ? given : undefined);
     const scope =
       !raw || raw === "platform" ? "platform" : raw.startsWith("project:") ? raw : `project:${raw}`;
     return (await skillRoot(c, scope)) ? scope : undefined;
@@ -3531,11 +3531,12 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   });
   app.post("/api/extensions/skills/:name/rollback", async (c) => {
     const name = c.req.param("name");
-    const body = (await c.req.json().catch(() => ({}))) as { version?: unknown };
+    const body = (await c.req.json().catch(() => ({}))) as { version?: unknown; scope?: unknown };
     const version = Number(body.version);
     if (!SKILL_NAME_RE.test(name) || !Number.isInteger(version) || version < 1)
       return c.json({ error: "Invalid skill or version" }, 400);
-    const scope = await versionScope(c);
+    // The scope in the query (the page) or in the body (the app's client keeps paths plain).
+    const scope = await versionScope(c, body.scope);
     if (!scope) return c.json({ error: "Project not found" }, 404);
     try {
       const v = await core.extensions.versions.rollback(owner(c), scope, name, version, "human");

@@ -166,7 +166,9 @@
     "extensions": {
       "app": "partial",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/screens/full_settings_screen.dart",
+        "lib/settings/skills_screen.dart",
+        "lib/settings/api/skills_api.dart"
       ],
       "phase": "G42.11",
       "rows": [
@@ -179,7 +181,7 @@
         177,
         253
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native extensions, MCP and skills in G42.11."
+      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native extensions, MCP and skills in G42.11. 3.9.7: Settings › Skills native (skills_screen.dart): the agents' skills waiting (a new version with its reason and what changes word by word, approve or reject), the installed skills with their versions (who, why, when, the one in use), compared and brought back after a yes."
     },
     "keychain": {
       "app": "partial",

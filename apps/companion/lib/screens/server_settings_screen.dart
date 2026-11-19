@@ -39,6 +39,7 @@ import 'you_screen.dart' show reachWord;
 import '../settings/knowledge_screen.dart' show openKnowledgeSettings;
 import '../settings/memory_screen.dart' show openSharedMemory;
 import '../settings/portrait_screen.dart' show openPortrait;
+import '../settings/skills_screen.dart' show openSkills;
 
 /// «12 MB of 340 MB · 2.1 MB/s · 2 min left», as the page says a download.
 String progressText(AppLocalizations l, Progress p) {
@@ -510,6 +511,15 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       l.g4TlSection,
                       l.g4HubTools,
                       () => openToolsSettings(context),
+                    ),
+                    // 3.9.7: the agents' skills, their versions and the way back, native.
+                    _hub(
+                      c,
+                      'skills',
+                      RgIcons.spark,
+                      l.skSection,
+                      l.skHub,
+                      () => openSkills(context),
                     ),
                     _hub(
                       c,

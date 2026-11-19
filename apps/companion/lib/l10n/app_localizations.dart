@@ -18398,6 +18398,270 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Type at least two letters: every word is looked for in what you and the agents wrote.'**
   String get echoHint;
+
+  /// No description provided for @skSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get skSection;
+
+  /// No description provided for @skHub.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents\' skills, their versions and the way back'**
+  String get skHub;
+
+  /// No description provided for @skQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'What the agents learned'**
+  String get skQuestion;
+
+  /// No description provided for @skLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills are instructions the agents write after a job that went well, or that you give them. Each one keeps its versions: who wrote it, why and when, and you can go back to any of them.'**
+  String get skLead;
+
+  /// No description provided for @skWaitingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you'**
+  String get skWaitingTitle;
+
+  /// No description provided for @skWaitingLead.
+  ///
+  /// In en, this message translates to:
+  /// **'New skills and new versions of installed ones, tested apart. Nothing changes until you say yes.'**
+  String get skWaitingLead;
+
+  /// No description provided for @skNoneWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing waits for you.'**
+  String get skNoneWaiting;
+
+  /// No description provided for @skNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New skill'**
+  String get skNew;
+
+  /// No description provided for @skUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'New version of an installed skill'**
+  String get skUpdate;
+
+  /// No description provided for @skBy.
+  ///
+  /// In en, this message translates to:
+  /// **'by {who}'**
+  String skBy(String who);
+
+  /// No description provided for @skWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Why'**
+  String get skWhy;
+
+  /// No description provided for @skChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'What changes'**
+  String get skChanges;
+
+  /// No description provided for @skTestsOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Its tests passed.'**
+  String get skTestsOk;
+
+  /// No description provided for @skScripts.
+  ///
+  /// In en, this message translates to:
+  /// **'It has scripts ({files}): code never installs by itself.'**
+  String skScripts(String files);
+
+  /// No description provided for @skApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get skApprove;
+
+  /// No description provided for @skReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get skReject;
+
+  /// No description provided for @skNextSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.'**
+  String get skNextSession;
+
+  /// No description provided for @skInstalledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get skInstalledTitle;
+
+  /// No description provided for @skInstalledLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Open one to see its versions.'**
+  String get skInstalledLead;
+
+  /// No description provided for @skNoneInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'No skills yet.'**
+  String get skNoneInstalled;
+
+  /// No description provided for @skEverywhere.
+  ///
+  /// In en, this message translates to:
+  /// **'for every project'**
+  String get skEverywhere;
+
+  /// No description provided for @skProject.
+  ///
+  /// In en, this message translates to:
+  /// **'project {name}'**
+  String skProject(String name);
+
+  /// No description provided for @skVersionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Versions'**
+  String get skVersionsTitle;
+
+  /// No description provided for @skVersionsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents use the newest from their next conversation.'**
+  String get skVersionsLead;
+
+  /// No description provided for @skVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {n}'**
+  String skVersion(String n);
+
+  /// No description provided for @skCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'in use'**
+  String get skCurrent;
+
+  /// No description provided for @skHow_baseline.
+  ///
+  /// In en, this message translates to:
+  /// **'As it was before the history began'**
+  String get skHow_baseline;
+
+  /// No description provided for @skHow_edited.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed by hand'**
+  String get skHow_edited;
+
+  /// No description provided for @skHow_install.
+  ///
+  /// In en, this message translates to:
+  /// **'First version'**
+  String get skHow_install;
+
+  /// No description provided for @skHow_update.
+  ///
+  /// In en, this message translates to:
+  /// **'New version'**
+  String get skHow_update;
+
+  /// No description provided for @skHow_import.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported'**
+  String get skHow_import;
+
+  /// No description provided for @skHow_rollback.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to version {n}'**
+  String skHow_rollback(String n);
+
+  /// No description provided for @skUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'author unknown'**
+  String get skUnknown;
+
+  /// No description provided for @skYou.
+  ///
+  /// In en, this message translates to:
+  /// **'you'**
+  String get skYou;
+
+  /// No description provided for @skApprovedYou.
+  ///
+  /// In en, this message translates to:
+  /// **'approved by you'**
+  String get skApprovedYou;
+
+  /// No description provided for @skApprovedAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'installed by itself (your choice in Safety)'**
+  String get skApprovedAuto;
+
+  /// No description provided for @skCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare with the one in use'**
+  String get skCompare;
+
+  /// No description provided for @skHideCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the comparison'**
+  String get skHideCompare;
+
+  /// No description provided for @skRollback.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back to version {n}'**
+  String skRollback(String n);
+
+  /// No description provided for @skRollbackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back to version {n}?'**
+  String skRollbackTitle(String n);
+
+  /// No description provided for @skRollbackText.
+  ///
+  /// In en, this message translates to:
+  /// **'Its files replace those of «{name}» in use, as a new version: nothing is lost and you can come back here. Agents get it from their next conversation.'**
+  String skRollbackText(String name);
+
+  /// No description provided for @skRolledBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to version {n}: it is version {v} now.'**
+  String skRolledBack(String n, String v);
+
+  /// No description provided for @skNotRestorable.
+  ///
+  /// In en, this message translates to:
+  /// **'Too large to keep: it cannot come back.'**
+  String get skNotRestorable;
+
+  /// No description provided for @skNoVersions.
+  ///
+  /// In en, this message translates to:
+  /// **'No versions yet.'**
+  String get skNoVersions;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -10667,4 +10667,157 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get echoHint =>
       'Type at least two letters: every word is looked for in what you and the agents wrote.';
+
+  @override
+  String get skSection => 'Skills';
+
+  @override
+  String get skHub => 'The agents\' skills, their versions and the way back';
+
+  @override
+  String get skQuestion => 'What the agents learned';
+
+  @override
+  String get skLead =>
+      'Skills are instructions the agents write after a job that went well, or that you give them. Each one keeps its versions: who wrote it, why and when, and you can go back to any of them.';
+
+  @override
+  String get skWaitingTitle => 'Waiting for you';
+
+  @override
+  String get skWaitingLead =>
+      'New skills and new versions of installed ones, tested apart. Nothing changes until you say yes.';
+
+  @override
+  String get skNoneWaiting => 'Nothing waits for you.';
+
+  @override
+  String get skNew => 'New skill';
+
+  @override
+  String get skUpdate => 'New version of an installed skill';
+
+  @override
+  String skBy(String who) {
+    return 'by $who';
+  }
+
+  @override
+  String get skWhy => 'Why';
+
+  @override
+  String get skChanges => 'What changes';
+
+  @override
+  String get skTestsOk => 'Its tests passed.';
+
+  @override
+  String skScripts(String files) {
+    return 'It has scripts ($files): code never installs by itself.';
+  }
+
+  @override
+  String get skApprove => 'Approve';
+
+  @override
+  String get skReject => 'Reject';
+
+  @override
+  String get skNextSession =>
+      'Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.';
+
+  @override
+  String get skInstalledTitle => 'Installed';
+
+  @override
+  String get skInstalledLead => 'Open one to see its versions.';
+
+  @override
+  String get skNoneInstalled => 'No skills yet.';
+
+  @override
+  String get skEverywhere => 'for every project';
+
+  @override
+  String skProject(String name) {
+    return 'project $name';
+  }
+
+  @override
+  String get skVersionsTitle => 'Versions';
+
+  @override
+  String get skVersionsLead => 'Agents use the newest from their next conversation.';
+
+  @override
+  String skVersion(String n) {
+    return 'Version $n';
+  }
+
+  @override
+  String get skCurrent => 'in use';
+
+  @override
+  String get skHow_baseline => 'As it was before the history began';
+
+  @override
+  String get skHow_edited => 'Changed by hand';
+
+  @override
+  String get skHow_install => 'First version';
+
+  @override
+  String get skHow_update => 'New version';
+
+  @override
+  String get skHow_import => 'Imported';
+
+  @override
+  String skHow_rollback(String n) {
+    return 'Back to version $n';
+  }
+
+  @override
+  String get skUnknown => 'author unknown';
+
+  @override
+  String get skYou => 'you';
+
+  @override
+  String get skApprovedYou => 'approved by you';
+
+  @override
+  String get skApprovedAuto => 'installed by itself (your choice in Safety)';
+
+  @override
+  String get skCompare => 'Compare with the one in use';
+
+  @override
+  String get skHideCompare => 'Hide the comparison';
+
+  @override
+  String skRollback(String n) {
+    return 'Go back to version $n';
+  }
+
+  @override
+  String skRollbackTitle(String n) {
+    return 'Go back to version $n?';
+  }
+
+  @override
+  String skRollbackText(String name) {
+    return 'Its files replace those of «$name» in use, as a new version: nothing is lost and you can come back here. Agents get it from their next conversation.';
+  }
+
+  @override
+  String skRolledBack(String n, String v) {
+    return 'Back to version $n: it is version $v now.';
+  }
+
+  @override
+  String get skNotRestorable => 'Too large to keep: it cannot come back.';
+
+  @override
+  String get skNoVersions => 'No versions yet.';
 }

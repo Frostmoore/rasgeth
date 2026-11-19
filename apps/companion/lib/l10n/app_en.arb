@@ -8038,5 +8038,115 @@
   },
   "echoMatch": "1 message",
   "echoYou": "You",
-  "echoHint": "Type at least two letters: every word is looked for in what you and the agents wrote."
+  "echoHint": "Type at least two letters: every word is looked for in what you and the agents wrote.",
+  "skSection": "Skills",
+  "skHub": "The agents' skills, their versions and the way back",
+  "skQuestion": "What the agents learned",
+  "skLead": "Skills are instructions the agents write after a job that went well, or that you give them. Each one keeps its versions: who wrote it, why and when, and you can go back to any of them.",
+  "skWaitingTitle": "Waiting for you",
+  "skWaitingLead": "New skills and new versions of installed ones, tested apart. Nothing changes until you say yes.",
+  "skNoneWaiting": "Nothing waits for you.",
+  "skNew": "New skill",
+  "skUpdate": "New version of an installed skill",
+  "skBy": "by {who}",
+  "@skBy": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "skWhy": "Why",
+  "skChanges": "What changes",
+  "skTestsOk": "Its tests passed.",
+  "skScripts": "It has scripts ({files}): code never installs by itself.",
+  "@skScripts": {
+    "placeholders": {
+      "files": {
+        "type": "String"
+      }
+    }
+  },
+  "skApprove": "Approve",
+  "skReject": "Reject",
+  "skNextSession": "Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.",
+  "skInstalledTitle": "Installed",
+  "skInstalledLead": "Open one to see its versions.",
+  "skNoneInstalled": "No skills yet.",
+  "skEverywhere": "for every project",
+  "skProject": "project {name}",
+  "@skProject": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "skVersionsTitle": "Versions",
+  "skVersionsLead": "Agents use the newest from their next conversation.",
+  "skVersion": "Version {n}",
+  "@skVersion": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "skCurrent": "in use",
+  "skHow_baseline": "As it was before the history began",
+  "skHow_edited": "Changed by hand",
+  "skHow_install": "First version",
+  "skHow_update": "New version",
+  "skHow_import": "Imported",
+  "skHow_rollback": "Back to version {n}",
+  "@skHow_rollback": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "skUnknown": "author unknown",
+  "skYou": "you",
+  "skApprovedYou": "approved by you",
+  "skApprovedAuto": "installed by itself (your choice in Safety)",
+  "skCompare": "Compare with the one in use",
+  "skHideCompare": "Hide the comparison",
+  "skRollback": "Go back to version {n}",
+  "@skRollback": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "skRollbackTitle": "Go back to version {n}?",
+  "@skRollbackTitle": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "skRollbackText": "Its files replace those of «{name}» in use, as a new version: nothing is lost and you can come back here. Agents get it from their next conversation.",
+  "@skRollbackText": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "skRolledBack": "Back to version {n}: it is version {v} now.",
+  "@skRolledBack": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "skNotRestorable": "Too large to keep: it cannot come back.",
+  "skNoVersions": "No versions yet."
 }
