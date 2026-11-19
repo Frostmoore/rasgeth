@@ -1619,8 +1619,12 @@ export class Api {
     this.call<NodeGrant>("POST", "/api/nodes/grants", b);
   revokeNodeGrant = (target: string, id: string) =>
     this.call("POST", "/api/nodes/grants/revoke", { target, id });
-  setNodePlacement = (b: { scope: string; commands?: string | null; backups?: string | null }) =>
-    this.call<{ placements: NodePlacement[] }>("PUT", "/api/nodes/placements", b);
+  setNodePlacement = (b: {
+    scope: string;
+    commands?: string | null;
+    backups?: string | null;
+    render?: string | null;
+  }) => this.call<{ placements: NodePlacement[] }>("PUT", "/api/nodes/placements", b);
   setNodeName = (name: string) => this.call("PUT", "/api/nodes/name", { name });
   nodeBackup = (projectId: string) =>
     this.call<{ name: string; bytes: number }>("POST", "/api/nodes/backup", { projectId });
@@ -1951,6 +1955,75 @@ export class Api {
     errors: import("@redgiant/protocol").ArtifactError[];
     fresh?: boolean;
   }) => this.call<{ added: number }>("POST", "/api/artifacts/errors", body);
+  /** A timeline's files for the page's playback (G41.5a): links, and the jobs started. */
+  videoPrepare = (scope: string, path: string, extra?: string[]) =>
+    this.call<import("@redgiant/protocol").VideoPrepared>("POST", "/api/editor/video/prepare", {
+      scope,
+      path,
+      ...(extra?.length && { extra }),
+    });
+  /** The exact preview of frames [from, to) of a timeline, made by ffmpeg: a job to follow. */
+  videoExact = (scope: string, path: string, from: number, to: number) =>
+    this.call<{ job: Job }>("POST", "/api/editor/video/exact", { scope, path, from, to });
+  /** A finished exact preview's link (plays with ranges). */
+  /** The subtitles from what the timeline plays (G41.5c): `captions`, or the jobs analysing. */
+  videoCaptions = (scope: string, path: string) =>
+    this.call<{
+      jobs: string[];
+      silent: string[];
+      captions?: {
+        start: number;
+        end: number;
+        text: string;
+        words: import("@redgiant/protocol").VideoCaptionWord[];
+      }[];
+    }>("POST", "/api/editor/video/captions", { scope, path });
+  /** G41.6: the video made on this machine, a job `video_render` (its result: the MP4's path). */
+  videoRender = (scope: string, path: string, ask: import("@redgiant/protocol").VideoRenderAsk) =>
+    this.call<{ job: Job }>("POST", "/api/editor/video/render", { scope, path, ...ask });
+  /**
+   * G41.6b: the timeline for another editor, saved beside it: `resolve` (FCP7 XML for DaVinci
+   * Resolve, as montatore writes it) or `otio`; `mediaRoot` the folder of the originals on the
+   * computer with Resolve (empty: this machine).
+   */
+  videoExport = (
+    scope: string,
+    path: string,
+    format: import("@redgiant/protocol").VideoExportFormat,
+    mediaRoot?: string,
+  ) =>
+    this.call<{ result: import("@redgiant/protocol").VideoExportResult }>(
+      "POST",
+      "/api/editor/video/export",
+      { scope, path, format, ...(mediaRoot && { mediaRoot }) },
+    );
+  /** G41.7: where a render can go, and the project's choice (unset: not asked yet). */
+  videoMachines = (scope: string) =>
+    this.call<{ machines: import("@redgiant/protocol").RenderMachine[]; chosen?: string }>(
+      "GET",
+      `/api/editor/video/machines?scope=${encodeURIComponent(scope)}`,
+    );
+  /** A5: a timeline's named versions, the newest first. */
+  videoVersions = (scope: string, path: string) =>
+    this.call<{ versions: import("@redgiant/protocol").VideoVersionEntry[] }>(
+      "POST",
+      "/api/editor/video/versions",
+      { scope, path },
+    );
+  videoVersionSave = (scope: string, path: string, name: string) =>
+    this.call<{ version: import("@redgiant/protocol").VideoVersionEntry }>(
+      "POST",
+      "/api/editor/video/versions/save",
+      { scope, path, name },
+    );
+  videoVersionRead = (scope: string, path: string, version: string) =>
+    this.call<{ doc: import("@redgiant/protocol").RgVideo }>(
+      "POST",
+      "/api/editor/video/versions/read",
+      { scope, path, version },
+    );
+  videoExactLink = (id: string) =>
+    this.call<{ url: string }>("GET", `/api/editor/video/exact/${encodeURIComponent(id)}`);
   /** When what the canvas shows last changed (ms). */
   canvasVersion = (scope: string, path: string, fileOnly = false) =>
     this.call<{ version: number }>(

@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xmeml version="4">
+    <project>
+        <name>Prova "59,94" è</name>
+        <children>
+            <sequence id="sequence-1">
+                <name>Prova "59,94" è</name>
+                <duration>910</duration>
+                <rate>
+                    <timebase>60</timebase>
+                    <ntsc>TRUE</ntsc>
+                </rate>
+                <media>
+                    <video>
+                        <format />
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-1">
+                                <file id="file-1">
+                                    <pathurl>file://localhost/srv/riprese/scena%20%231%2050%25%3F.mp4</pathurl>
+                                    <name>scena #1 50%?.mp4</name>
+                                    <rate>
+                                        <timebase>60</timebase>
+                                        <ntsc>TRUE</ntsc>
+                                    </rate>
+                                    <duration>3000</duration>
+                                    <timecode>
+                                        <rate>
+                                            <timebase>60</timebase>
+                                            <ntsc>TRUE</ntsc>
+                                        </rate>
+                                        <string>00:59:59;28</string>
+                                        <frame>215752</frame>
+                                        <displayformat>DF</displayformat>
+                                    </timecode>
+                                    <media>
+                                        <video><samplecharacteristics><width>3840</width><height>2160</height></samplecharacteristics></video><audio><samplecharacteristics><depth>16</depth><samplerate>44100</samplerate></samplecharacteristics><channelcount>1</channelcount></audio></media>
+                                </file>
+                                <name>scena #1 50%?.mp4</name>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>600</duration>
+                                <start>0</start>
+                                <end>600</end>
+                                <in>0</in>
+                                <out>600</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-2">
+                                <file id="file-2">
+                                    <pathurl>file://nas/video/Ripresa%20%C3%A9%20%C3%BC.mov</pathurl>
+                                    <name>Ripresa é ü.mov</name>
+                                    <rate>
+                                        <timebase>60</timebase>
+                                        <ntsc>TRUE</ntsc>
+                                    </rate>
+                                    <duration>900</duration>
+                                    <timecode>
+                                        <rate>
+                                            <timebase>60</timebase>
+                                            <ntsc>TRUE</ntsc>
+                                        </rate>
+                                        <string>12:12:33.23</string>
+                                        <frame>2637203</frame>
+                                        <displayformat>NDF</displayformat>
+                                    </timecode>
+                                    <media>
+                                        <video><samplecharacteristics><width>1280</width><height>720</height></samplecharacteristics></video><audio><samplecharacteristics><depth>16</depth><samplerate>48000</samplerate></samplecharacteristics><channelcount>2</channelcount></audio></media>
+                                </file>
+                                <name>Ripresa é ü.mov</name>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>300</duration>
+                                <start>600</start>
+                                <end>900</end>
+                                <in>120</in>
+                                <out>420</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-3">
+                                <file id="file-3">
+                                    <pathurl>file:///già/così.mp4</pathurl>
+                                    <name>così.mp4</name>
+                                    <rate>
+                                        <timebase>60</timebase>
+                                        <ntsc>TRUE</ntsc>
+                                    </rate>
+                                    <duration>600</duration>
+                                    <timecode>
+                                        <rate>
+                                            <timebase>60</timebase>
+                                            <ntsc>TRUE</ntsc>
+                                        </rate>
+                                        <string>1:02:03:04</string>
+                                        <frame>223384</frame>
+                                        <displayformat>NDF</displayformat>
+                                    </timecode>
+                                    <media>
+                                        <video><samplecharacteristics><width>3840</width><height>2160</height></samplecharacteristics></video><audio><samplecharacteristics><depth>16</depth><samplerate>48000</samplerate></samplecharacteristics><channelcount>2</channelcount></audio></media>
+                                </file>
+                                <name>così.mp4</name>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>10</duration>
+                                <start>900</start>
+                                <end>910</end>
+                                <in>5</in>
+                                <out>15</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                        </track>
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-4">
+                                <file id="file-1" />
+                                <name>scena #1 50%?.mp4</name>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>600</duration>
+                                <start>100</start>
+                                <end>700</end>
+                                <in>0</in>
+                                <out>600</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                        </track>
+                    </video>
+                    <audio>
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-5">
+                                <file id="file-1" />
+                                <name>scena #1 50%?.mp4</name>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>600</duration>
+                                <start>0</start>
+                                <end>600</end>
+                                <in>0</in>
+                                <out>600</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-6">
+                                <file id="file-2" />
+                                <name>Ripresa é ü.mov</name>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>300</duration>
+                                <start>600</start>
+                                <end>900</end>
+                                <in>120</in>
+                                <out>420</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-7">
+                                <file id="file-3" />
+                                <name>così.mp4</name>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>10</duration>
+                                <start>900</start>
+                                <end>910</end>
+                                <in>5</in>
+                                <out>15</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                        </track>
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-8">
+                                <file id="file-1" />
+                                <name>scena #1 50%?.mp4</name>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>60</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>600</duration>
+                                <start>100</start>
+                                <end>700</end>
+                                <in>0</in>
+                                <out>600</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack><enabled>FALSE</enabled></clipitem>
+                        </track>
+                    </audio>
+                </media>
+                <timecode>
+                    <rate>
+                        <timebase>60</timebase>
+                        <ntsc>TRUE</ntsc>
+                    </rate>
+                    <string>00:00:00:00</string>
+                    <frame>0</frame>
+                    <displayformat>NDF</displayformat>
+                </timecode>
+            </sequence>
+        </children>
+    </project>
+</xmeml>

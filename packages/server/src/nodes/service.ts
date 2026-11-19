@@ -120,6 +120,8 @@ export type NodeOp =
   | "models"
   | "complete"
   | "storage"
+  | "media"
+  | "cancel"
   | "grant.set"
   | "grant.revoke"
   | "unpair";
@@ -132,6 +134,10 @@ const OP_ACTION: Record<NodeOp, NodeAction> = {
   models: "use",
   complete: "use",
   storage: "use",
+  // G41.7: ffmpeg, files and renders in the asker's folder (`nodeMedia`: «use» is enough).
+  media: "use",
+  // Stops one of the asker's own operations (by its id): nothing else can be named.
+  cancel: "see",
   "grant.set": "grant",
   "grant.revoke": "revoke",
   unpair: "unpair",
@@ -188,6 +194,8 @@ export interface NodeHandlers {
   models?(c: NodeCaller): Promise<unknown>;
   complete?(c: NodeCaller, body: unknown): Promise<unknown>;
   storage?(c: NodeCaller, body: unknown): Promise<unknown>;
+  /** G41.7: ffmpeg, files in pieces, renders. */
+  media?(c: NodeCaller, body: unknown): Promise<unknown>;
 }
 
 export interface NodesOptions {
@@ -248,7 +256,14 @@ export class Nodes {
   private readonly pending = new Map<string, Pending>();
   private readonly status = new Map<string, Status>();
   private readonly parentStatus = new Map<string, { status: NodeStatus; reason?: string }>();
-  private readonly results = new Map<string, { at: number; value: Promise<unknown> }>();
+  /**
+   * Operations served, by id: one asked again after a reconnect gets the same work, and its pieces
+   * (`chunk`) go to the latest request. Kept a while once settled; never swept while running.
+   */
+  private readonly results = new Map<
+    string,
+    { at: number; value: Promise<unknown>; env: Envelope; settled?: boolean; stop: AbortController }
+  >();
   private readonly dialers = new Map<string, { stop: () => void }>();
   private readonly linkWaiters = new Set<() => void>();
   private readonly changes = new Set<(ownerId: string) => void>();
@@ -943,10 +958,18 @@ export class Nodes {
     }
     const opId =
       typeof body.opId === "string" ? `${env.from}:${body.opId}` : `${env.from}:${env.id}`;
+    // Cancel: the asker stops one of its own operations here (G41.7).
+    if (op === "cancel") {
+      const target = `${env.from}:${String(body.target ?? "")}`;
+      const r = this.results.get(target);
+      if (r && !r.settled) r.stop.abort(new NodeError("timeout", "Stopped by the asker"));
+      return reply({ ok: true, value: { stopped: Boolean(r && !r.settled) } });
+    }
     const kept = this.results.get(opId);
+    if (kept) kept.env = env;
     for (const [k, r] of this.results)
-      if (r.at < Date.now() - RESULTS_KEPT_MS) this.results.delete(k);
-    const ac = new AbortController();
+      if (r.settled && r.at < Date.now() - RESULTS_KEPT_MS) this.results.delete(k);
+    const ac = kept?.stop ?? new AbortController();
     const caller: NodeCaller = {
       ownerId,
       from: env.from,
@@ -954,14 +977,28 @@ export class Nodes {
       rights: this.rightsHere(s, self, env.from),
       opId,
       signal: ac.signal,
-      chunk: (b) => void this.answer(ownerId, env, "chunk", b),
+      // To the latest request for this operation (asked again after a reconnect).
+      chunk: (b) => void this.answer(ownerId, this.results.get(opId)?.env ?? env, "chunk", b),
     };
     // Asked again after a reconnect: the same operation is never run twice.
     const work = kept?.value ?? this.run(ownerId, s, self, op, caller, body);
-    if (!kept && op !== "status") this.results.set(opId, { at: Date.now(), value: work });
+    if (!kept && op !== "status")
+      this.results.set(opId, { at: Date.now(), value: work, env, stop: ac });
+    const settle = () => {
+      const r = this.results.get(opId);
+      if (r) Object.assign(r, { settled: true, at: Date.now() });
+    };
+    work.then(settle, settle);
+    // Pieces of a file are not each a line of the log: the file is, at its first piece.
+    const quiet =
+      op === "status" ||
+      op === "fs" ||
+      (op === "media" &&
+        (body.action === "state" ||
+          ((body.action === "put" || body.action === "get") && Number(body.offset) > 0)));
     try {
       const value = await work;
-      if (op !== "status" && op !== "fs")
+      if (!quiet)
         await this.log(ownerId, {
           peer: env.from,
           peerName: fromName,
@@ -1025,6 +1062,10 @@ export class Nodes {
         return need(h.complete)(c, body);
       case "storage":
         return need(h.storage)(c, body);
+      case "media":
+        return need(h.media)(c, body);
+      case "cancel":
+        return { stopped: false };
       case "grant.set": {
         const controller = String(body.controller ?? "");
         const rights = (Array.isArray(body.rights) ? body.rights : []).filter(
@@ -1173,6 +1214,15 @@ export class Nodes {
       };
       const onAbort = () => {
         finish();
+        // The node stops it too (G41.7): a render or a copy does not go on there by itself.
+        if (env)
+          void this.request(
+            ownerId,
+            to,
+            "cancel",
+            { target: opId },
+            { timeoutMs: 5000, waitMs: 0, once: true },
+          ).catch(() => {});
         reject(new NodeError("timeout", "Stopped"));
       };
       o.signal?.addEventListener("abort", onAbort, { once: true });
@@ -1388,9 +1438,11 @@ export class Nodes {
           const out: NodePlacement = { scope: p.scope };
           if (p.commands && p.commands !== fingerprint) out.commands = p.commands;
           if (p.backups && p.backups !== fingerprint) out.backups = p.backups;
+          // A render on a node that is gone is asked again at the next render.
+          if (p.render && p.render !== fingerprint) out.render = p.render;
           return out;
         })
-        .filter((p) => p.commands || p.backups),
+        .filter((p) => p.commands || p.backups || p.render),
     };
     if (s.parent?.fingerprint === fingerprint) {
       delete next.parent;
@@ -1416,13 +1468,18 @@ export class Nodes {
   async setPlacement(
     ownerId: string,
     scope: string,
-    p: { commands?: string | null | undefined; backups?: string | null | undefined },
+    p: {
+      commands?: string | null | undefined;
+      backups?: string | null | undefined;
+      render?: string | null | undefined;
+    },
   ): Promise<NodePlacement[]> {
     const s = await this.load(ownerId);
     const old = s.placements.find((x) => x.scope === scope) ?? { scope };
     const next: NodePlacement = { scope };
     const commands = p.commands === undefined ? old.commands : p.commands;
     const backups = p.backups === undefined ? old.backups : p.backups;
+    const render = p.render === undefined ? old.render : p.render;
     const known = (fp: string) => this.allNodes(ownerId, s).some((n) => n.fingerprint === fp);
     if (commands) {
       if (!known(commands)) throw new NodeError("not-found", "Unknown node");
@@ -1432,10 +1489,21 @@ export class Nodes {
       if (!known(backups)) throw new NodeError("not-found", "Unknown node");
       next.backups = backups;
     }
+    // G41.7, R2: «here» is a choice too (asked once, then remembered).
+    if (render) {
+      if (render !== "here" && !known(render)) throw new NodeError("not-found", "Unknown node");
+      next.render = render;
+    }
     const placements = s.placements.filter((x) => x.scope !== scope);
-    if (next.commands || next.backups) placements.push(next);
+    if (next.commands || next.backups || next.render) placements.push(next);
     await this.save(ownerId, { ...s, placements });
     return placements;
+  }
+
+  /** Where the person renders a project's videos (G41.7): `here`, a node, or not asked yet. */
+  async renderPlacement(ownerId: string, scope: string): Promise<string | undefined> {
+    const s = await this.load(ownerId);
+    return s.placements.find((p) => p.scope === scope)?.render;
   }
 
   /** Where the person pinned an agent's commands: the agent's choice first, then its project's. */
@@ -1616,5 +1684,10 @@ function describe(op: NodeOp, body: Record<string, unknown>): string {
   if (op === "complete") return `model ${String(body.provider ?? "")}/${String(body.model ?? "")}`;
   if (op === "storage") return `storage ${String(body.action ?? "")} ${String(body.name ?? "")}`;
   if (op === "fs") return `files ${String(body.action ?? "")} ${String(body.path ?? "")}`;
+  if (op === "media")
+    return `video ${String(body.action ?? "")}${typeof body.name === "string" ? ` ${body.name}` : ""}`.slice(
+      0,
+      500,
+    );
   return op;
 }

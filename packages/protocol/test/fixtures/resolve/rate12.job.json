@@ -1,0 +1,40 @@
+{
+  "name": "Dodici",
+  "fps_num": 12,
+  "fps_den": 1,
+  "width": 640,
+  "height": 480,
+  "media": {
+    "v": {
+      "url": "/data/stop motion.mp4",
+      "name": "stop motion.mp4",
+      "frames": 240,
+      "timecode": "00:00:10:00",
+      "width": 640,
+      "height": 480,
+      "audio": null
+    }
+  },
+  "tracks": [
+    {
+      "id": "V1",
+      "type": "video",
+      "enabled": true,
+      "clips": [
+        {
+          "media": "v",
+          "start": 12,
+          "in": 24,
+          "dur": 48,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "A1",
+      "type": "audio",
+      "enabled": true,
+      "clips": []
+    }
+  ]
+}

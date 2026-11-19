@@ -1,0 +1,65 @@
+{
+  "name": "Solo suono",
+  "fps_num": 50,
+  "fps_den": 1,
+  "width": 1080,
+  "height": 1920,
+  "media": {
+    "v": {
+      "url": "/data/v.mp4",
+      "name": "v.mp4",
+      "frames": 500,
+      "timecode": null,
+      "width": 1080,
+      "height": 1920,
+      "audio": {
+        "channels": 2,
+        "sample_rate": 48000
+      }
+    }
+  },
+  "tracks": [
+    {
+      "id": "V1",
+      "type": "video",
+      "enabled": true,
+      "clips": [
+        {
+          "media": "v",
+          "start": 0,
+          "in": 0,
+          "dur": 100,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "A1",
+      "type": "audio",
+      "enabled": true,
+      "clips": [
+        {
+          "media": "v",
+          "start": 0,
+          "in": 0,
+          "dur": 100,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "A2",
+      "type": "audio",
+      "enabled": false,
+      "clips": [
+        {
+          "media": "v",
+          "start": 200,
+          "in": 0,
+          "dur": 500,
+          "enabled": true
+        }
+      ]
+    }
+  ]
+}

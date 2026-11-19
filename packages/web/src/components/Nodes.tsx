@@ -527,7 +527,7 @@ function Placements({ s, reload }: { s: NodesState; reload: () => void }) {
   const list: Project[] = projects.value;
   if (!nodes.length) return null;
   const opts = [["", t("ndHere")] as const, ...nodes.map((n) => [n.fingerprint, n.name] as const)];
-  const set = async (scope: string, what: "commands" | "backups", v: string) => {
+  const set = async (scope: string, what: "commands" | "backups" | "render", v: string) => {
     if (
       (await attempt(() => getApi().setNodePlacement({ scope, [what]: v || null }))) !== undefined
     )
@@ -557,6 +557,15 @@ function Placements({ s, reload }: { s: NodesState; reload: () => void }) {
                 label={t("ndBackupsOn")}
                 options={opts}
                 onChange={(v) => void set(scope, "backups", v)}
+              />
+            </Field>
+            {/* G41.7: where the project's videos are rendered (unset: asked at the first). */}
+            <Field label={t("ndRenderOn")}>
+              <Seg
+                value={pl?.render === "here" ? "" : (pl?.render ?? null)}
+                label={t("ndRenderOn")}
+                options={opts}
+                onChange={(v) => void set(scope, "render", v || "here")}
               />
             </Field>
             {pl?.backups && (

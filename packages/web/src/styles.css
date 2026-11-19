@@ -21473,3 +21473,1621 @@ fieldset.saved-filter legend {
 .banner.rename-notice .icon-button {
   margin-left: 0;
 }
+
+/* G41.5a: a timeline played in the page (VideoPreview.tsx, video/player.ts). */
+.vp {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  min-height: 0;
+  overflow: auto;
+  outline: none;
+  color: var(--text);
+}
+.vp-screen {
+  position: relative;
+  align-self: center;
+  width: min(100%, calc(58vh * var(--arn, 1.7778)));
+  aspect-ratio: var(--ar, 16 / 9);
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  flex: none;
+}
+.vp-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  font-family: "RG Inter", Inter, system-ui, sans-serif;
+  --side: 360px;
+}
+.vp-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.vp-video,
+.vp-picture,
+.vp-box {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+.vp-video.fit,
+.vp-picture.fit {
+  object-fit: contain;
+}
+/* A1: a moved crop: the file stretched over the stage, put in place by its transform. */
+.vp-video.framed,
+.vp-picture.framed {
+  object-fit: fill;
+}
+.vp-bgs {
+  display: contents;
+}
+.vp-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+.vp-bg.black {
+  background: #000;
+}
+.vp-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  /* fitText's numbers (G41.5c), as shares of the short side: the render's own sizes and lines. */
+  padding: calc(var(--side) * var(--py, 0.05)) calc(var(--side) * var(--px, 0.05));
+  color: #fff;
+  font-size: calc(var(--side) * var(--size, 0.05));
+  line-height: 1.25;
+  text-align: center;
+  white-space: pre;
+}
+.vp-text.bold {
+  font-weight: 700;
+}
+.vp-text.shadow {
+  text-shadow: 0 calc(var(--side) / 360) calc(var(--side) / 360) rgb(0 0 0 / 0.8);
+}
+.vp-text.pos-top {
+  align-items: flex-start;
+  padding-top: calc(var(--side) * var(--pt, 0.08));
+}
+.vp-text.pos-bottom {
+  align-items: flex-end;
+  padding-bottom: calc(var(--side) * var(--pb, 0.08));
+}
+.vp-text.pos-lower_third {
+  display: block;
+  text-align: left;
+  padding-top: calc(var(--side) * var(--pt, 0.7));
+  padding-left: calc(var(--side) * var(--pl, 0.05));
+}
+.vp-text.boxed > span {
+  background: rgb(0 0 0 / 0.55);
+  padding: calc(var(--side) * var(--bd, 0.015));
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.vp-caption.boxed > span {
+  background: rgb(0 0 0 / 0.55);
+  padding: 0.08em 0.3em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.vp-caption {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 6%;
+  text-align: center;
+  color: #fff;
+  font-family: "RG Inter", Inter, system-ui, sans-serif;
+  font-size: calc(var(--side) * 0.055);
+  line-height: 1.3;
+  white-space: pre-line;
+  pointer-events: none;
+  text-shadow:
+    0 0 2px #000,
+    0 0 2px #000;
+}
+.vp-caption.top {
+  top: 6%;
+  bottom: auto;
+}
+.vp-caption.boxed {
+  text-shadow: none;
+  line-height: 1.45;
+}
+.vp-caption.bold {
+  font-weight: 700;
+  text-shadow:
+    0 0 3px #000,
+    0 0 3px #000,
+    1px 1px 1px #000;
+}
+.vp-audio {
+  display: none;
+}
+.vp-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: #c9ced8;
+}
+.vp-exact {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+}
+.vp-exact-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  opacity: 0.92;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 13px;
+}
+.vp-exact-bar .spacer {
+  flex: 1;
+}
+.vp-exact video {
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+.vp-transport {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.vp-tc {
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.vp-scrub {
+  position: relative;
+  flex: 1 1 160px;
+  min-width: 120px;
+  height: 28px;
+  cursor: pointer;
+  touch-action: none;
+}
+.vp-scrub::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 12px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+}
+.vp-scrub-fill {
+  position: absolute;
+  left: 0;
+  top: 12px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+.vp-scrub-knob {
+  position: absolute;
+  top: 7px;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  border-radius: 50%;
+  background: var(--panel);
+  border: 2px solid var(--accent);
+  box-sizing: border-box;
+}
+.vp-scrub:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.vp-prep,
+.vp-exact-job {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  font-size: 13px;
+}
+.vp-prep-job {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.vp-tracks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 8px;
+}
+.vp-track {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  min-height: 34px;
+}
+.vp-track.a {
+  min-height: 30px;
+}
+.vp-track.off {
+  opacity: 0.55;
+}
+.vp-track-name {
+  flex: none;
+  width: 92px;
+  display: flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--dim);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.vp-lane {
+  position: relative;
+  flex: 1;
+  border-radius: 6px;
+  background: var(--panel-2);
+  cursor: pointer;
+  overflow: hidden;
+}
+.vp-clip {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--accent) 22%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line));
+  box-sizing: border-box;
+}
+.vp-track.a .vp-clip {
+  background: color-mix(in srgb, var(--ok) 18%, var(--panel));
+  border-color: color-mix(in srgb, var(--ok) 55%, var(--line));
+}
+.vp-clip.gen {
+  background: color-mix(in srgb, var(--warn) 22%, var(--panel));
+  border-color: color-mix(in srgb, var(--warn) 55%, var(--line));
+}
+.vp-clip.disabled {
+  opacity: 0.45;
+}
+.vp-clip.missing {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--panel-2) 0 6px,
+    color-mix(in srgb, var(--err) 20%, var(--panel)) 6px 12px
+  );
+}
+.vp-strip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+}
+.vp-strip.still {
+  left: 0;
+  width: 100%;
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+}
+.vp-wave {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: color-mix(in srgb, var(--ok) 75%, var(--text));
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+.vp-clip-name {
+  position: relative;
+  display: inline-block;
+  max-width: calc(100% - 8px);
+  margin: 2px 4px;
+  padding: 0 4px;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 16px;
+  background: color-mix(in srgb, var(--panel) 80%, transparent);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.vp-head {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--accent);
+  pointer-events: none;
+}
+.vp-note {
+  margin: 0;
+  font-size: 12px;
+}
+
+/* ---- G41.5b: the timeline editor ------------------------------------------------------------ */
+.ve {
+  container-type: inline-size;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  overflow: auto;
+  outline: none;
+  color: var(--text);
+}
+.ve-top {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  min-width: 0;
+  flex: none;
+}
+.ve-program,
+.ve-source {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ve-screen {
+  width: min(100%, calc(38vh * var(--arn, 1.7778)));
+}
+.ve-top.two .ve-screen {
+  width: min(100%, calc(32vh * var(--arn, 1.7778)));
+}
+.ve-transport,
+.ve-source-bar,
+.ve-bar {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 4px 8px;
+  gap: 6px 8px;
+}
+.ve-tool.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.ve-tc {
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.ve-viewer-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  min-width: 0;
+}
+.ve-viewer-head strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ve-viewer-head .spacer {
+  flex: 1;
+}
+.ve-source-screen {
+  position: relative;
+  align-self: center;
+  width: min(100%, calc(32vh * 1.7778));
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ve-source-screen video,
+.ve-source-screen img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.ve-source-screen p {
+  color: #ddd;
+  font-size: 13px;
+}
+.ve-source-scrub {
+  position: relative;
+  height: 16px;
+  border-radius: 8px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  cursor: pointer;
+}
+.ve-source-scrub:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.ve-source-range {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+  border-left: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+  box-sizing: border-box;
+}
+.ve-source-knob {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 3px;
+  margin-left: -1px;
+  background: var(--text);
+  border-radius: 2px;
+}
+.ve-source-drag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  cursor: grab;
+  font-size: 12px;
+  color: var(--dim);
+}
+.ve-inspector {
+  flex: none;
+  width: 236px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 8px 10px;
+  font-size: 12px;
+}
+.ve-inspector h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ve-inspector dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 8px;
+  margin: 0;
+}
+.ve-inspector dt {
+  color: var(--dim);
+}
+.ve-inspector dd {
+  margin: 0;
+  font-family: var(--mono);
+  white-space: nowrap;
+}
+.ve-scroll {
+  flex: none;
+  overflow: auto;
+  max-height: 46vh;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  overscroll-behavior: contain;
+}
+.ve-rows {
+  position: relative;
+  min-width: 100%;
+  user-select: none;
+}
+.ve-row {
+  display: flex;
+  background: var(--panel-2);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+}
+.ve-row.off .ve-lane {
+  opacity: 0.5;
+}
+.ve-row.locked .ve-lane {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0 8px,
+    color-mix(in srgb, var(--line) 45%, transparent) 8px 10px
+  );
+}
+.ve-head {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  flex: none;
+  width: 152px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 6px;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+}
+.ve-head .ve-tool {
+  width: 26px;
+  min-height: 26px;
+  border-radius: 7px;
+}
+.ve-target {
+  flex: none;
+  min-width: 30px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  color: var(--dim);
+  font: 600 11px var(--mono);
+  cursor: pointer;
+}
+.ve-target.on {
+  border-color: var(--accent);
+  color: var(--text);
+  background: var(--accent-soft);
+}
+.ve-track-name {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font-size: 12px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+  padding: 0 2px;
+}
+.ve-corner {
+  gap: 8px;
+  font-size: 11px;
+}
+.ve-corner .link {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+}
+.ve-ruler-row {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background: var(--panel);
+}
+.ve-ruler {
+  position: relative;
+  flex: none;
+  cursor: text;
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--line);
+}
+.ve-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  padding-left: 3px;
+  border-left: 1px solid var(--line);
+  font: 10px / 14px var(--mono);
+  color: var(--dim);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.ve-tick.minor {
+  top: 16px;
+}
+.ve-marker {
+  position: absolute;
+  bottom: 0;
+  width: 16px;
+  height: 16px;
+  margin-left: -2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--mk, #60a5fa);
+  display: flex;
+  align-items: flex-end;
+}
+.ve-marker.sel {
+  outline: 2px solid var(--text);
+  border-radius: 3px;
+}
+.ve-marker.c-blue {
+  --mk: #3b82f6;
+}
+.ve-marker.c-green {
+  --mk: #22c55e;
+}
+.ve-marker.c-red {
+  --mk: #ef4444;
+}
+.ve-marker.c-yellow {
+  --mk: #eab308;
+}
+.ve-marker.c-purple {
+  --mk: #a855f7;
+}
+.ve-marker.c-cyan {
+  --mk: #06b6d4;
+}
+.ve-marker .icon {
+  fill: currentColor;
+}
+.ve-lane {
+  position: relative;
+  flex: none;
+  background: var(--panel-2);
+}
+.ve.tool-blade .ve-lane,
+.ve.tool-blade .ve-clip {
+  cursor: crosshair;
+}
+.ve-split {
+  height: 4px;
+  background: var(--line);
+}
+.ve-clip {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--accent) 22%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line));
+  box-sizing: border-box;
+  cursor: grab;
+  touch-action: none;
+}
+.ve-clip.a {
+  background: color-mix(in srgb, var(--ok) 18%, var(--panel));
+  border-color: color-mix(in srgb, var(--ok) 55%, var(--line));
+}
+.ve-clip.gen {
+  background: color-mix(in srgb, var(--warn) 22%, var(--panel));
+  border-color: color-mix(in srgb, var(--warn) 55%, var(--line));
+}
+.ve-clip.disabled {
+  opacity: 0.4;
+}
+.ve-clip.missing {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--panel-2) 0 6px,
+    color-mix(in srgb, var(--err) 20%, var(--panel)) 6px 12px
+  );
+}
+.ve-clip.sel {
+  border: 2px solid var(--text);
+  box-shadow: 0 0 0 1px var(--panel);
+}
+.ve-clip.agent {
+  outline: 2px dashed var(--warn);
+  outline-offset: -2px;
+}
+.ve-clip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.ve-strip,
+.ve-wave {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+.ve-strip {
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.85;
+}
+.ve-strip.still {
+  left: 0;
+  width: 100%;
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+}
+.ve-wave {
+  background: color-mix(in srgb, var(--ok) 75%, var(--text));
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+.ve-clip-name {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  max-width: calc(100% - 8px);
+  margin: 2px 4px;
+  padding: 0 4px;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 16px;
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+.ve-clip-who {
+  position: absolute;
+  right: 4px;
+  bottom: 2px;
+  padding: 0 4px;
+  border-radius: 4px;
+  font-size: 10px;
+  background: var(--warn);
+  color: #1a1a1a;
+  pointer-events: none;
+}
+.ve-edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 7px;
+  cursor: ew-resize;
+}
+.ve-edge.in {
+  left: 0;
+}
+.ve-edge.out {
+  right: 0;
+}
+.ve-clip.sel .ve-edge,
+.ve-clip:hover .ve-edge {
+  background: color-mix(in srgb, var(--text) 25%, transparent);
+}
+.ve.tool-trim .ve-edge {
+  background: color-mix(in srgb, var(--warn) 45%, transparent);
+}
+.ve.tool-blade .ve-edge {
+  cursor: crosshair;
+}
+.ve-gap {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border: 1px dashed var(--accent);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+.ve-trans {
+  position: absolute;
+  top: 0;
+  height: 9px;
+  z-index: 1;
+  border-radius: 0 0 4px 4px;
+  background: linear-gradient(90deg, transparent, var(--text) 50%, transparent);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.ve-drop {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--warn);
+  pointer-events: none;
+}
+.ve-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--accent);
+  z-index: 5;
+  pointer-events: none;
+}
+.ve-playhead::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -5px;
+  border: 6px solid transparent;
+  border-top-color: var(--accent);
+}
+.ve-marquee {
+  position: absolute;
+  z-index: 6;
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  pointer-events: none;
+}
+.ve-pool {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  flex: none;
+}
+.ve-pool-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 220px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  cursor: grab;
+}
+.ve-pool-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ve-pool-item.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.ve-pool-item.missing {
+  border-style: dashed;
+  color: var(--err);
+}
+.ve-pool-hint {
+  font-size: 12px;
+}
+.ve-notice {
+  margin: 0;
+  align-self: flex-start;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  font-size: 13px;
+}
+.ve-keys {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 18px;
+  margin: 0 0 10px;
+}
+.ve-keys div {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.ve-keys dt {
+  flex: none;
+  min-width: 128px;
+}
+.ve-keys dd {
+  margin: 0;
+  font-size: 13px;
+}
+.ve-keys kbd {
+  font: 12px var(--mono);
+  padding: 1px 6px;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--panel-2);
+}
+/* ---- G41.5c: the inspector, transitions, texts, subtitles, the transcript, the phone ------ */
+/* Wide: the inspector beside the viewers, as tall as they are (its body scrolls inside). */
+.ve-inspector {
+  position: relative;
+  align-self: stretch;
+  min-height: 220px;
+  padding: 0;
+}
+.ve-insp-body {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  padding: 8px 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* Narrow (under 820 px of canvas) or a phone: a panel opened from the toolbar, under the viewer. */
+.ve.narrow .ve-top,
+.ve.phone .ve-top {
+  flex-wrap: wrap;
+}
+.ve-inspector.panel {
+  flex: 1 1 100%;
+  width: auto;
+  min-height: 0;
+}
+.ve-inspector.panel .ve-insp-body {
+  position: static;
+  max-height: 52vh;
+}
+.ve-insp-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ve-insp-head h4 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+.ve-insp-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.ve-insp-sec h5 {
+  margin: 0;
+  font-size: 12px;
+}
+.ve-label {
+  font-size: 11px;
+  color: var(--dim);
+  margin-bottom: -3px;
+}
+.ve-small {
+  margin: 0;
+  font-size: 11px;
+}
+.ve-insp-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ve-insp-body > .vw-btn,
+.ve-insp-sec > .vw-btn {
+  align-self: flex-start;
+}
+.ve-inspector .ui-toggle {
+  padding: 6px 8px;
+  gap: 8px;
+}
+.ve-inspector .ui-toggle-label {
+  font-size: 12px;
+}
+.ve-inspector .ui-help {
+  font-size: 11px;
+}
+.ve-inspector .wz-seg,
+.ve-render .wz-seg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 9px;
+}
+.ve-inspector .wz-seg button,
+.ve-render .wz-seg button {
+  flex: 1 1 auto;
+  border: 0;
+  border-radius: 7px;
+  padding: 4px 7px;
+  background: none;
+  color: var(--dim);
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.ve-inspector .wz-seg button.on,
+.ve-render .wz-seg button.on {
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.ve-inspector .wz-seg button:focus-visible,
+.ve-render .wz-seg button:focus-visible,
+.ve-kb-opt:focus-visible,
+.ve-chip:focus-visible,
+.ve-word:focus-visible,
+.ve-fx-item:focus-visible,
+.ve-cap:focus-visible,
+.ve-trans:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.ve-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--dim);
+}
+.ve-field textarea {
+  resize: vertical;
+  min-height: 44px;
+  font: 13px / 1.35 inherit;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 5px 7px;
+}
+.ve-dial {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+}
+.ve-dial-hd {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ve-dial output {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--dim);
+}
+.ve-dial input[type="range"] {
+  width: 100%;
+  margin: 0;
+  height: 20px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.ve-group {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-inline-size: 0;
+}
+.ve-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.ve-chip {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 9px;
+  background: var(--panel-2);
+  color: var(--dim);
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.ve-chip.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+.ve-kb {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ve-thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #000;
+}
+.ve-thumb-pic {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.85;
+}
+.ve-thumb-pic.strip {
+  background-position: 0 0;
+}
+.ve-kb-rect {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px solid #fff;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5);
+}
+.ve-kb-rect.to {
+  border-style: dashed;
+  border-color: var(--warn);
+}
+/* A1: the crop on the miniature, a frame to move; outside it the picture darkens. */
+.ve-crop {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ve-crop-thumb {
+  align-self: center;
+  touch-action: none;
+}
+.ve-crop-thumb .ve-thumb-pic {
+  opacity: 1;
+}
+.ve-crop-shade {
+  position: absolute;
+  pointer-events: none;
+  box-shadow: 0 0 0 999px rgb(0 0 0 / 0.55);
+}
+.ve-crop-rect {
+  position: absolute;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 2px solid #fff;
+  border-radius: 2px;
+  background: transparent;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.6);
+  cursor: grab;
+  touch-action: none;
+}
+.ve-crop-rect.auto {
+  border-style: dashed;
+}
+.ve-crop-rect:active {
+  cursor: grabbing;
+}
+.ve-crop-rect:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.ve-kb-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+}
+.ve-kb-opt {
+  height: 30px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel-2);
+  color: var(--dim);
+  cursor: pointer;
+  font: inherit;
+  font-size: 10.5px;
+}
+.ve-kb-opt.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+.ve-kb-mini {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--text) 18%, transparent);
+}
+.ve-kb-mini .ve-kb-rect {
+  border-width: 1px;
+  box-shadow: none;
+  border-color: var(--text);
+}
+.ve-kb-mini .ve-kb-rect.to {
+  border-color: var(--accent);
+}
+.ve-kb-word {
+  white-space: nowrap;
+}
+/* Transitions on the lane: a bar on the cut, a handle at each end for its length. */
+.ve-trans {
+  pointer-events: auto;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--panel);
+  background: color-mix(in srgb, var(--text) 70%, transparent);
+  opacity: 0.8;
+  cursor: pointer;
+  z-index: 2;
+  min-width: 10px;
+  box-sizing: border-box;
+}
+.ve-trans.sel {
+  opacity: 1;
+  background: var(--accent);
+  color: #fff;
+}
+.ve-trans-h {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: ew-resize;
+  background: color-mix(in srgb, var(--panel) 50%, transparent);
+}
+.ve-trans-h.in {
+  left: 0;
+  border-radius: 0 0 0 4px;
+}
+.ve-trans-h.out {
+  right: 0;
+  border-radius: 0 0 4px 0;
+}
+/* The subtitles' lane. */
+.ve-cap-row .ve-head {
+  gap: 5px;
+  color: var(--dim);
+}
+.ve-cap-lane {
+  background: color-mix(in srgb, var(--panel-2) 80%, var(--line));
+}
+.ve-cap {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  box-sizing: border-box;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent) 14%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
+  font-size: 10.5px;
+  line-height: 22px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: grab;
+  touch-action: none;
+}
+.ve-cap.sel {
+  border: 2px solid var(--text);
+  line-height: 20px;
+}
+/* The transitions to drag. */
+.ve-fx {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  flex: none;
+}
+.ve-fx-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  cursor: grab;
+}
+.ve-fx-pic {
+  width: 30px;
+  height: 18px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #3b82f6, #22c55e);
+}
+.fx-dip .ve-fx-pic {
+  background: linear-gradient(90deg, #3b82f6, #000 50%, #22c55e);
+}
+.fx-wipe .ve-fx-pic {
+  background: linear-gradient(90deg, #3b82f6 55%, #fff 55% 60%, #22c55e 60%);
+}
+.fx-slide .ve-fx-pic {
+  background:
+    linear-gradient(90deg, #3b82f6 0 40%, #22c55e 40%) left / 100% 100% no-repeat,
+    #22c55e;
+  box-shadow: inset -8px 0 0 rgb(0 0 0 / 0.25);
+}
+/* The transcript: words to choose, the one playing marked. */
+/* G41.5d: «Chiedi all'agente qui» (A4) and the versions (A5), panels like the transcript. */
+.ve-ask,
+.ve-versions,
+.ve-render,
+.ve-transcript {
+  flex: none;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 6px 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ve-ask-ctx {
+  margin: 0;
+  max-height: 18vh;
+  overflow: auto;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--dim);
+  font: 12px / 1.5 var(--mono);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.ve-ask textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 52px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+.ve-version-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 26vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ve-version {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--bg);
+}
+.ve-version-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.ve-version-text strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ve-transcript-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+.ve-words {
+  max-height: 26vh;
+  overflow: auto;
+}
+.ve-words-line {
+  margin: 0 0 4px;
+  line-height: 1.9;
+}
+.ve-words-tc {
+  font: 10.5px var(--mono);
+  color: var(--dim);
+  margin-right: 6px;
+}
+.ve-word {
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 13.5px;
+  padding: 1px 2px;
+  margin: 0 1px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.ve-word:hover {
+  background: var(--panel-2);
+}
+.ve-word.now {
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+.ve-word.on {
+  background: color-mix(in srgb, var(--err) 28%, transparent);
+  text-decoration: line-through;
+  text-decoration-color: var(--err);
+}
+/* A text edited on the picture: the render's place and size, typed on. */
+.ve-screen.editing .vp-stage .vp-text {
+  visibility: hidden;
+}
+.ve-text-edit {
+  z-index: 3;
+  pointer-events: none;
+  font-family: "RG Inter", Inter, system-ui, sans-serif;
+}
+.ve-text-edit > span {
+  pointer-events: auto;
+  outline: 1px dashed rgb(255 255 255 / 0.8);
+  outline-offset: 3px;
+  caret-color: #fff;
+  cursor: text;
+}
+/* The inspector's switches keep their drawn size on a touch screen: their words are the target. */
+.side-content .ve button.ui-switch {
+  min-height: 0;
+}
+/* A phone: short headers, one video and one audio track, big targets for fingers. */
+.ve.phone {
+  padding: 6px;
+}
+.ve.phone .ve-head {
+  width: 64px;
+  padding: 0 4px;
+}
+.ve.phone .ve-corner {
+  justify-content: center;
+}
+.ve.phone .ve-edge {
+  width: 14px;
+}
+.ve.phone .ve-tool {
+  min-width: 36px;
+  min-height: 36px;
+}
+.ve.phone .ve-bar,
+.ve.phone .ve-transport {
+  flex-wrap: wrap;
+}
+.ve.phone .ve-scroll {
+  max-height: 42vh;
+}
+.ve.phone .ve-screen {
+  width: 100%;
+}
+.ve.phone .ve-pool-hint {
+  display: none;
+}
+.ve.phone .ve-fx-item,
+.ve.phone .ve-pool-item {
+  min-height: 36px;
+}
+@media (max-width: 900px) {
+  .ve-keys {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* G41.6: «Crea il video», the render's panel: the choices in rows, then the job and the result. */
+.ve-render-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ve-render-row > .ve-small:first-child {
+  min-width: 64px;
+}
+.ve-render .wz-seg {
+  background: var(--bg);
+}
+.ve-render .wz-seg button {
+  font-size: 12.5px;
+  padding: 5px 12px;
+}
+.ve-render .ui-job {
+  margin: 0;
+}
+/* G41.7: where the video is made, one machine a line with what it offers. */
+.ve-render-where {
+  align-items: flex-start;
+}
+.ve-render-where > .ve-small:first-child {
+  padding-top: 6px;
+}
+.ve-render .wz-seg.v {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.ve-render .wz-seg.v button {
+  text-align: left;
+}
+.ve-machine {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.ve-machine > svg {
+  flex: none;
+}
+.ve-machine .dim {
+  font-size: 11.5px;
+}
+.ve-render-off {
+  flex-basis: 100%;
+  margin: 0 0 0 74px;
+}
+.ve-render-ask {
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .ve-render-off {
+    margin-left: 0;
+  }
+}
+.ve-render-done {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+/* G41.6b: «Esporta», the folder of the originals and the two exports. */
+.ve-export-root {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.ve-export-root input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: 12.5px / 1.4 var(--mono);
+}
+.ve-export-root input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.ve-export-done {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ve-export-done p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}

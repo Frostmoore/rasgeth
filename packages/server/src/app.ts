@@ -92,6 +92,7 @@ import { modelRoutes } from "./editor/model-routes.js";
 import { officeRoutes } from "./editor/office-routes.js";
 import { pdfRoutes } from "./editor/pdf-routes.js";
 import { svgRoutes } from "./editor/svg-routes.js";
+import { videoRoutes } from "./editor/video-routes.js";
 import { ISOLATION_HEADERS } from "./editor/zeta.js";
 import { MailboxNotFoundError } from "./email.js";
 import { sessionMarkdown } from "./export.js";
@@ -1723,6 +1724,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   sheetRoutes(app, core, owner);
   svgRoutes(app, core, owner);
   modelRoutes(app, core, owner);
+  // The video editor (G41.5a): media for the page's playback, the exact preview.
+  videoRoutes(app, core, owner);
   browserRoutes(app, core.browserLinks, owner, clientAddress);
   // Mandatory and breaking updates (G36.19): the status, the safety backup, found backups.
   updateRoutes(app, core, owner, options.setup);

@@ -87,6 +87,8 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   one("publish_board", "canvas"),
   one("image_generation", "canvas"),
   one("video_generation", "canvas"),
+  // Video projects (G41.6): inspect, analyse, assemble, subtitles, frames, render. Not essential.
+  one("video", "canvas"),
   one("audio_generation", "canvas"),
   // Email (G38.1): the mailboxes the person opened to the agents; sending always asks them.
   one("mail_search", "mail"),

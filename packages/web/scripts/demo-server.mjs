@@ -1241,6 +1241,12 @@ const me = { type: "human", ownerId: "local" };
 const project = await core.projects.create("local", "Demo");
 await mkdir(join(project.path, "src"), { recursive: true });
 await writeFile(join(project.path, "README.md"), "# Demo\n\nA small project to show Rasgeth.\n");
+// G41.5a (DEMO_VIDEO=<folder>): a timeline (.rgvideo) and its files in the Demo project's
+// `video/` folder, for the preview played in the page (ffmpeg from REDGIANT_FFMPEG).
+if (process.env.DEMO_VIDEO) {
+  const { cp: copyVideo } = await import("node:fs/promises");
+  await copyVideo(process.env.DEMO_VIDEO, join(project.path, "video"), { recursive: true });
+}
 // A picture and a PDF for the previews.
 await mkdir(join(project.path, "docs"), { recursive: true });
 await writeFile(

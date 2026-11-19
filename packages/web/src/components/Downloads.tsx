@@ -1,9 +1,15 @@
 // What RedGiant downloads on its own (the agents' computer, their browser): a card in the corner
-// with the bar, the speed and the time left, until it is done (decision 2026-11-02).
+// with the bar, the speed and the time left, until it is done (decision 2026-11-02); some of them
+// with «Cancel» (G41.1).
 import type { Job } from "@redgiant/protocol";
 import { useEffect, useState } from "preact/hooks";
 import { getApi } from "../state.js";
 import { JobView } from "./ui.js";
+
+/** Downloads people can stop from the card (G41.1: ffmpeg, whose half-done files are removed). */
+const CANCELLABLE = new Set(["download_ffmpeg", "video_render"]);
+/** Besides the downloads: a video an agent or the editor is making (G41.6), with «Cancel». */
+const SHOWN = (kind: string) => kind.startsWith("download_") || kind === "video_render";
 
 export function Downloads() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -14,7 +20,7 @@ export function Downloads() {
       void getApi()
         .jobs()
         .then(
-          (all) => all.filter((j) => j.kind.startsWith("download_") && j.state !== "done"),
+          (all) => all.filter((j) => SHOWN(j.kind) && j.state !== "done"),
           () => [] as Job[],
         )
         .then((list) => {
@@ -33,7 +39,12 @@ export function Downloads() {
   return (
     <div class="downloads" role="status">
       {jobs.map((j) => (
-        <JobView key={j.id} job={j} />
+        <JobView
+          key={j.id}
+          job={j}
+          cancellable={CANCELLABLE.has(j.kind)}
+          {...(j.kind === "video_render" && { countSteps: ["video_probe", "video_render"] })}
+        />
       ))}
     </div>
   );

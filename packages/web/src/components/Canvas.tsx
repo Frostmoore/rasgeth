@@ -47,6 +47,7 @@ import { CanvasTab, lastMove, placeOf, report, setTabKind } from "../viewers/liv
 import { copyQuestion, hasOfficeCopy, isOfficeFile } from "../viewers/office-bridge.js";
 import { bytesText, download, type ViewerSource } from "../viewers/source.js";
 import { ArtifactFrame } from "./ArtifactFrame.js";
+import { lazy } from "./lazy.js";
 import { shortcutsOpen } from "./Shortcuts.js";
 import { CopyStale } from "./viewers/CopyBar.js";
 import { DocEditor, editableInCanvas } from "./viewers/DocEditor.js";
@@ -88,6 +89,10 @@ const clockOf = (s: number) => {
   const r = Math.floor(s % 60);
   return `${m}:${String(r).padStart(2, "0")}`;
 };
+
+/** A timeline (`.rgvideo`): edited in DocEditor (G41.5b); played only when the host cannot open it. */
+const VideoPreview = lazy(() => import("./viewers/VideoPreview.js").then((m) => m.VideoPreview));
+const isTimeline = (path: string) => /\.rgvideo$/i.test(path);
 
 /** The file's own name, from its path in the workspace (or on the computer). */
 export const fileName = (path: string) => path.split(/[\\/]/).filter(Boolean).pop() ?? path;
@@ -633,16 +638,20 @@ export function Canvas({
               file={{ scope: target.scope, path: target.path }}
               line={target.at?.line}
               page={target.at?.page}
-              fallback={() => (
-                <CanvasFile
-                  scope={target.scope}
-                  path={target.path}
-                  name={name}
-                  url={url}
-                  onKind={setShown}
-                  {...(target.at && { at: target.at })}
-                />
-              )}
+              fallback={() =>
+                isTimeline(target.path) ? (
+                  <VideoPreview file={{ scope: target.scope, path: target.path }} />
+                ) : (
+                  <CanvasFile
+                    scope={target.scope}
+                    path={target.path}
+                    name={name}
+                    url={url}
+                    onKind={setShown}
+                    {...(target.at && { at: target.at })}
+                  />
+                )
+              }
             />
           </CanvasTab.Provider>
         ) : site ? (

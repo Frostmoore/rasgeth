@@ -2346,6 +2346,32 @@ export function openDoc(file: DocFile, peer: DocPeer): () => void {
   };
 }
 
+/**
+ * «Chiedi all'agente qui» (G41.5d, A4): a message about a part of an open file, sent to the
+ * conversation the person is in: the active chat, else the latest open chat with an agent of the
+ * file's project, else the latest open chat. That conversation comes to the front (on a phone the
+ * area on the right steps aside). Undefined when no conversation is open: the editor says so.
+ */
+export function askAgentAbout(file: DocFile, text: string): { to: string } | undefined {
+  const chats = tabs.value.filter((x): x is Extract<Tab, { type: "chat" }> => x.type === "chat");
+  const project = /^project:(.+)$/.exec(file.scope)?.[1];
+  const active = chats.find((x) => x.id === activeTab.value);
+  const ofProject = [...chats]
+    .reverse()
+    .find((x) => project && agents.value.find((a) => a.id === x.agentId)?.projectId === project);
+  const to = active ?? ofProject ?? chats.at(-1);
+  if (!to || !live) return undefined;
+  live.send({
+    type: "session.send",
+    sessionId: to.sessionId,
+    text,
+    clientId: `p${Date.now()}${Math.random().toString(36).slice(2, 6)}`,
+  });
+  activeTab.value = to.id;
+  sideAside.value = true;
+  return { to: to.title };
+}
+
 /** A message about an open file (operations, undo, presence, a proposal's answer). */
 export function sendDoc(m: Extract<ClientMessage, { file: DocFile }>): void {
   live?.send(m);
@@ -2511,3 +2537,111 @@ export function dismissOfficeDownloaded(): void {
   const v = officeLoad.value;
   if (v?.downloaded) officeLoad.value = { ...v, downloaded: false };
 }
+
+// ---- G41.5a: the preview of a timeline ------------------------------------------------------
+
+/** The exact preview's lengths offered (seconds from the cursor). */
+export const EXACT_LENGTHS = ["5", "10", "30"] as const;
+export type ExactLength = (typeof EXACT_LENGTHS)[number];
+
+/** One open timeline's preview: the cursor, playing or not, the exact preview asked. */
+export interface VideoViewState {
+  frame: number;
+  playing: boolean;
+  exactLength: ExactLength;
+  /** The job making an exact preview, then its link and where it starts. */
+  exactJob?: string;
+  exact?: { url: string; from: number; frames: number; warnings: string[] };
+}
+
+const VIDEO_VIEW: VideoViewState = { frame: 0, playing: false, exactLength: "5" };
+
+/** By `scope:path`: the preview of every timeline opened in the canvas. */
+export const videoViews = signal<Record<string, VideoViewState>>({});
+
+export const videoViewKey = (file: { scope: string; path: string }) => `${file.scope}:${file.path}`;
+
+export const videoViewOf = (key: string): VideoViewState => videoViews.value[key] ?? VIDEO_VIEW;
+
+export function setVideoView(key: string, patch: Partial<VideoViewState>): void {
+  const now = videoViewOf(key);
+  const next = { ...now, ...patch };
+  // Dropping a field: `undefined` in the patch takes it away.
+  for (const [k, v] of Object.entries(patch))
+    if (v === undefined) delete (next as Record<string, unknown>)[k];
+  videoViews.value = { ...videoViews.value, [key]: next };
+}
+
+/** The timeline's files as the server made them (links, probes, jobs), by `scope:path`. */
+export const videoMedia = signal<Record<string, import("@redgiant/protocol").VideoPrepared>>({});
+
+export function setVideoMedia(key: string, prepared: import("@redgiant/protocol").VideoPrepared) {
+  videoMedia.value = { ...videoMedia.value, [key]: prepared };
+}
+
+// ---- G41.5b: the timeline editor ---------------------------------------------------------------
+
+/** A (selection), B (blade), T (ripple trim): the tools of Resolve. */
+export type VideoTool = "select" | "blade" | "trim";
+
+/** One open timeline's editor: everything but the timeline itself (that is the host's). */
+export interface VideoEditState {
+  tool: VideoTool;
+  /** Clip ids selected. */
+  sel: string[];
+  /** A gap chosen with a click (Delete closes it). */
+  gap?: { track: string; frame: number };
+  snapping: boolean;
+  /** A click takes the linked clips too (Ctrl+Shift+L). */
+  linkedSel: boolean;
+  /** Pixels per frame; undefined until the first fit. */
+  ppf?: number;
+  /** The zoom follows the width (fitted, not zoomed by hand since): a wider canvas fits again. */
+  fitted?: boolean;
+  /** Where F9/F10/Shift+F12 place: a video and an audio track (null: none). */
+  targets: { video: string | null; audio: string | null };
+  /** The source viewer: a file, its In and Out, where it is (frames at the timeline's rate). */
+  source?: { media: string; in: number; out: number; at: number };
+  sourceOpen: boolean;
+  help: boolean;
+  /** Files brought in this time (not in the timeline yet): the pool's row shows them. */
+  pool: string[];
+  /** G41.5c: a transition or a subtitle chosen (the inspector shows it). */
+  trans?: string;
+  cap?: string;
+  /** A narrow canvas: the inspector opened as a panel. */
+  inspOpen?: boolean;
+  /** The «Trascrizione» panel, and its chosen words (indices of `transcriptOf`). */
+  transcript?: boolean;
+  words?: { a: number; b: number };
+  /** A phone: every track shown (otherwise one video and one audio). */
+  allTracks?: boolean;
+  /** A text clip edited on the picture. */
+  editText?: string;
+}
+
+const VIDEO_EDIT: VideoEditState = {
+  tool: "select",
+  sel: [],
+  snapping: true,
+  linkedSel: true,
+  targets: { video: "V1", audio: "A1" },
+  sourceOpen: false,
+  help: false,
+  pool: [],
+};
+
+/** By `scope:path` (as `videoViews`). */
+export const videoEdits = signal<Record<string, VideoEditState>>({});
+
+export const videoEditOf = (key: string): VideoEditState => videoEdits.value[key] ?? VIDEO_EDIT;
+
+export function setVideoEdit(key: string, patch: Partial<VideoEditState>): void {
+  const next = { ...videoEditOf(key), ...patch };
+  for (const [k, v] of Object.entries(patch))
+    if (v === undefined) delete (next as Record<string, unknown>)[k];
+  videoEdits.value = { ...videoEdits.value, [key]: next };
+}
+
+/** Clips copied (Ctrl+C), for any timeline open (Ctrl+V pastes on the same tracks). */
+export const videoClipboard = signal<import("@redgiant/protocol").VideoClip[]>([]);

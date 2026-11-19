@@ -146,3 +146,21 @@ export function nodeCommands(
     ? { ok: true, where: "machine", guardian: false }
     : { ok: false, reason: "no-container" };
 }
+
+/** Whether a node renders video for a machine with these `rights` on it (G41.7). */
+export type NodeMediaCheck = { ok: true; where: "machine" } | { ok: false; reason: "no-right" };
+
+/**
+ * Whether a node runs the `media` operation (ffmpeg downloaded, files copied, a render) for a
+ * machine with these `rights` on it (G41.7, R1). Unlike `nodeCommands`, «use» is enough even
+ * without a container: no command text arrives, only a timeline the node compiles itself into
+ * ffmpeg's arguments (run with `execFile`, inputs limited to files, every path inside the asker's
+ * folder by real path checks), so there is nothing a sandbox would have to keep in. ffmpeg runs
+ * on the machine itself, where its GPU is.
+ */
+export function nodeMedia(rights: ReadonlySet<NodeRight>, container: boolean): NodeMediaCheck {
+  void container;
+  return rights.has("use") || rights.has("admin")
+    ? { ok: true, where: "machine" }
+    : { ok: false, reason: "no-right" };
+}

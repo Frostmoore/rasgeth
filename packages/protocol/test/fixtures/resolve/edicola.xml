@@ -1,0 +1,216 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xmeml version="4">
+    <project>
+        <name>Edicola</name>
+        <children>
+            <sequence id="sequence-1">
+                <name>Edicola</name>
+                <duration>390</duration>
+                <rate>
+                    <timebase>30</timebase>
+                    <ntsc>TRUE</ntsc>
+                </rate>
+                <media>
+                    <video>
+                        <format />
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-1">
+                                <file id="file-1">
+                                    <pathurl>file://localhost/mnt/media/a%201.mp4</pathurl>
+                                    <name>a 1.mp4</name>
+                                    <rate>
+                                        <timebase>30</timebase>
+                                        <ntsc>TRUE</ntsc>
+                                    </rate>
+                                    <duration>600</duration>
+                                    <timecode>
+                                        <rate>
+                                            <timebase>30</timebase>
+                                            <ntsc>TRUE</ntsc>
+                                        </rate>
+                                        <string>12:12:33;23</string>
+                                        <frame>1317295</frame>
+                                        <displayformat>DF</displayformat>
+                                    </timecode>
+                                    <media>
+                                        <video><samplecharacteristics><width>3840</width><height>2160</height></samplecharacteristics></video><audio><samplecharacteristics><depth>16</depth><samplerate>48000</samplerate></samplecharacteristics><channelcount>2</channelcount></audio></media>
+                                </file>
+                                <name>a 1.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>240</duration>
+                                <start>0</start>
+                                <end>240</end>
+                                <in>0</in>
+                                <out>240</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-2">
+                                <file id="file-1" />
+                                <name>a 1.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>100</duration>
+                                <start>250</start>
+                                <end>350</end>
+                                <in>300</in>
+                                <out>400</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                        </track>
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-3">
+                                <file id="file-2">
+                                    <pathurl>file://localhost/E%3a/video/porto.mp4</pathurl>
+                                    <name>porto.mp4</name>
+                                    <rate>
+                                        <timebase>30</timebase>
+                                        <ntsc>TRUE</ntsc>
+                                    </rate>
+                                    <duration>360</duration>
+                                    <timecode>
+                                        <rate>
+                                            <timebase>30</timebase>
+                                            <ntsc>TRUE</ntsc>
+                                        </rate>
+                                        <string>00:00:00:00</string>
+                                        <frame>0</frame>
+                                        <displayformat>NDF</displayformat>
+                                    </timecode>
+                                    <media>
+                                        <video><samplecharacteristics><width>1920</width><height>1080</height></samplecharacteristics></video><audio><samplecharacteristics><depth>16</depth><samplerate>48000</samplerate></samplecharacteristics><channelcount>2</channelcount></audio></media>
+                                </file>
+                                <name>porto.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>120</duration>
+                                <start>60</start>
+                                <end>180</end>
+                                <in>90</in>
+                                <out>210</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-4">
+                                <file id="file-3">
+                                    <pathurl>file://localhost/mnt/media/foto.jpg</pathurl>
+                                    <name>foto.jpg</name>
+                                    <rate>
+                                        <timebase>30</timebase>
+                                        <ntsc>TRUE</ntsc>
+                                    </rate>
+                                    <duration>107892</duration>
+                                    <timecode>
+                                        <rate>
+                                            <timebase>30</timebase>
+                                            <ntsc>TRUE</ntsc>
+                                        </rate>
+                                        <string>00:00:00:00</string>
+                                        <frame>0</frame>
+                                        <displayformat>NDF</displayformat>
+                                    </timecode>
+                                    <media>
+                                        <video><samplecharacteristics><width>1200</width><height>800</height></samplecharacteristics></video></media>
+                                </file>
+                                <name>foto.jpg</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>90</duration>
+                                <start>300</start>
+                                <end>390</end>
+                                <in>0</in>
+                                <out>90</out>
+                            <sourcetrack><mediatype>video</mediatype><trackindex>1</trackindex></sourcetrack><enabled>FALSE</enabled></clipitem>
+                        </track>
+                    </video>
+                    <audio>
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-5">
+                                <file id="file-1" />
+                                <name>a 1.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>240</duration>
+                                <start>0</start>
+                                <end>240</end>
+                                <in>0</in>
+                                <out>240</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                            <clipitem frameBlend="FALSE" id="clipitem-6">
+                                <file id="file-1" />
+                                <name>a 1.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>100</duration>
+                                <start>250</start>
+                                <end>350</end>
+                                <in>300</in>
+                                <out>400</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>
+                        </track>
+                        <track>
+                            <clipitem frameBlend="FALSE" id="clipitem-7">
+                                <file id="file-2" />
+                                <name>porto.mp4</name>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <rate>
+                                    <timebase>30</timebase>
+                                    <ntsc>TRUE</ntsc>
+                                </rate>
+                                <duration>120</duration>
+                                <start>60</start>
+                                <end>180</end>
+                                <in>90</in>
+                                <out>210</out>
+                            <sourcetrack><mediatype>audio</mediatype><trackindex>1</trackindex></sourcetrack><enabled>FALSE</enabled></clipitem>
+                        <enabled>FALSE</enabled></track>
+                    </audio>
+                </media>
+                <timecode>
+                    <rate>
+                        <timebase>30</timebase>
+                        <ntsc>TRUE</ntsc>
+                    </rate>
+                    <string>00:00:00:00</string>
+                    <frame>0</frame>
+                    <displayformat>NDF</displayformat>
+                </timecode>
+            </sequence>
+        </children>
+    </project>
+</xmeml>

@@ -11,6 +11,7 @@ import { ModelChange, ModelDocOp, ModelSnapshot } from "./doc-model.js";
 import { OfficeDocOp, OfficeSnapshot } from "./doc-office.js";
 import { PdfChangeWords, PdfDocOp, PdfSnapshot } from "./doc-pdf.js";
 import { SvgChange, SvgDocOp, SvgSnapshot } from "./doc-svg.js";
+import { VideoChange, VideoDocOp, VideoSnapshot } from "./doc-video.js";
 
 /** A file the editor works on: a workspace's scope and the path inside it. */
 export const DocFile = z.object({
@@ -20,7 +21,16 @@ export const DocFile = z.object({
 export type DocFile = z.infer<typeof DocFile>;
 
 /** The families of files with an editor. G37.2-G37.8 add theirs. */
-export const DOC_FAMILIES = ["text", "sheet", "document", "svg", "pdf", "image", "model"] as const;
+export const DOC_FAMILIES = [
+  "text",
+  "sheet",
+  "document",
+  "svg",
+  "pdf",
+  "image",
+  "model",
+  "video",
+] as const;
 export const DocFamilyId = z.enum(DOC_FAMILIES);
 export type DocFamilyId = z.infer<typeof DocFamilyId>;
 
@@ -203,6 +213,8 @@ export const DocSummary = z.object({
   image: ImageChange.optional(),
   /** A 3D model's change (G37.7), for the page's own words: «Aggiunto un cubo». */
   model: ModelChange.optional(),
+  /** A video timeline's change (G41.2), for the page's own words: «Spostate 2 clip». */
+  video: VideoChange.optional(),
 });
 export type DocSummary = z.infer<typeof DocSummary>;
 
@@ -264,6 +276,7 @@ export const DocOp = z.discriminatedUnion("family", [
   PdfDocOp,
   ImageDocOp,
   ModelDocOp,
+  VideoDocOp,
 ]);
 export type DocOp = z.infer<typeof DocOp>;
 
@@ -413,6 +426,7 @@ export const DocSnapshot = z.discriminatedUnion("family", [
   PdfSnapshot,
   ImageSnapshot,
   ModelSnapshot,
+  VideoSnapshot,
   z.object({
     family: z.literal("sheet"),
     /** csv, tsv or ods: what saving keeps (a CSV keeps values only). */

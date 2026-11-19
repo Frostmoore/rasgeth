@@ -85,6 +85,7 @@ import {
   MCP_CATALOG,
   type MediaChoice,
   type MediaKind,
+  type MediaProbe,
   type MessageQuote,
   type ModelSpec,
   type NotifyReport,
@@ -97,7 +98,11 @@ import {
   type RefineEstimate,
   type RefineRequest,
   type RefineResult,
+  type RenderMachine,
+  type RenderWhere,
   RequestSettings,
+  renderMachines,
+  renderWhere,
   replyLanguageLine,
   type ServerMessage,
   type SharedMemoryView,
@@ -206,6 +211,13 @@ import { sheetCopyOfOriginal, sheetFamily } from "./editor/sheet-family.js";
 import { svgCopyOfOriginal, svgFamily } from "./editor/svg-family.js";
 import { textFamily } from "./editor/text-family.js";
 import { type CanvasEditHost, canvasEditTool } from "./editor/tool.js";
+import { VideoAnalysis } from "./editor/video/analysis.js";
+import { fixedMachine, MediaMachine, type MediaMachineLike } from "./editor/video/machine.js";
+import { type MediaRunner, runMedia } from "./editor/video/media-run.js";
+import { VideoPreviews } from "./editor/video/preview.js";
+import { VideoRenders } from "./editor/video/renders.js";
+import { type VideoToolHost, videoTool } from "./editor/video/tool.js";
+import { videoFamily } from "./editor/video-family.js";
 import { ZetaOffice } from "./editor/zeta.js";
 import { EditorLinks } from "./editor-links.js";
 import {
@@ -219,7 +231,7 @@ import { FileTriggers } from "./file-triggers.js";
 import type { GitHosts } from "./git-hosts.js";
 import { IMAGE_MODEL, imageFileName } from "./images.js";
 import { Inspector } from "./inspector.js";
-import { Jobs } from "./jobs.js";
+import { type JobHandle, Jobs } from "./jobs.js";
 import { knowledgeTools } from "./knowledge/agent-tools.js";
 import type {
   ChatSource,
@@ -228,6 +240,7 @@ import type {
   KnowledgeService,
 } from "./knowledge/service.js";
 import { knowledgeSection, searchKnowledgeTool } from "./knowledge/tool.js";
+import { LocalWhisper } from "./local-voice.js";
 import { LoginStore, migrateLogin } from "./login.js";
 import { type MachineOptions, Machines } from "./machines.js";
 import {
@@ -301,7 +314,7 @@ import {
   toPlaceholders,
 } from "./prompts.js";
 import { migratePush, type PushOptions, PushService } from "./push/service.js";
-import { HumanQuestions, questionTools } from "./questions.js";
+import { askHuman, HumanQuestions, questionTools } from "./questions.js";
 import {
   REQUEST_TOOL_DRY,
   REQUEST_TOOL_TIMEOUT_MS,
@@ -394,6 +407,16 @@ function startsOn(r: Recipe): string {
 
 export interface CoreOptions {
   db: SqlClient;
+  /**
+   * Video projects (G41.4-G41.6): the programs and how they run (tests: a fake ffmpeg); by
+   * default ffmpeg and ffprobe found or downloaded, run without a shell.
+   */
+  videoMedia?: {
+    tools?: (owner: string) => Promise<{ ffmpeg: string; ffprobe: string }>;
+    run?: MediaRunner;
+    /** G41.7: this machine's ffmpeg, cards and NVENC (tests: `fixedMachine`). */
+    machine?: MediaMachineLike;
+  };
   /** The editor's timings (G37.1): tests save at once and hold the person's place briefly. */
   editor?: Pick<EditorHostOptions, "saveDelayMs" | "lockMs" | "watchMs" | "now">;
   /** What applies the document editor's actions on the server (tests: a fake; LibreOffice otherwise). */
@@ -1147,6 +1170,7 @@ export class RedGiantCore implements OrchestrationHost {
         this.pdf,
         this.pictures,
         modelFamily,
+        videoFamily,
       ],
       ...o.editor,
     });
@@ -1315,12 +1339,23 @@ export class RedGiantCore implements OrchestrationHost {
       vault: () => this.vault,
       ...o.machines,
     });
+    // G41.7: what this machine renders with (here and for its nodes' askers). With a fake
+    // ffmpeg (tests) and no machine given: no NVENC, nothing to download.
+    this.mediaMachine =
+      o.videoMedia?.machine ??
+      (o.videoMedia?.tools
+        ? fixedMachine(undefined, { download: false, nvenc: false, encoder: "libx264" })
+        : new MediaMachine({ dataDir: dirname(o.workspacesDir) }));
     this.nodes = new Nodes({
       db: o.db,
       vault: () => this.vault,
       store: this.store,
       handlers: nodeHandlers({
         dataDir: join(dirname(o.workspacesDir), "nodes"),
+        media: {
+          machine: this.mediaMachine,
+          ...(o.videoMedia?.run && { run: o.videoMedia.run }),
+        },
         providers: o.providers,
         sandboxKind: this.sandbox.kind,
         sandbox: async (_ownerId, key, dir) =>
@@ -2004,6 +2039,8 @@ export class RedGiantCore implements OrchestrationHost {
           ...canvasTools(agent, ws, this.canvasHost(agent)),
           // Editing an open file with the person (G37.1).
           canvasEditTool(agent, ws, this.canvasEditHost()),
+          // Video projects (G41.6): analysis, the automatic assembly, subtitles, frames, render.
+          videoTool(agent, ws, this.videoToolHost(agent)),
           this.sendFileTool(agent, ws),
           this.variantsTool(agent, ws),
           // Product cards with pictures (G40.16).
@@ -5115,6 +5152,197 @@ export class RedGiantCore implements OrchestrationHost {
    * necessarily the interface's: that is the hint given to the service (its two letters, «zh» for
    * «zh-Hant»); without one, the language the caller passed.
    */
+  /**
+   * The analysis of video files (G41.4): probe, words with their times, silences, speech or
+   * coverage, proxies, strips and waveforms, cached by file. The words come from whisper.cpp's
+   * own program when the transcription is local (DTW word times), else from the service chosen.
+   */
+  get videoAnalysis(): VideoAnalysis {
+    this.videoAnalysisCache ??= new VideoAnalysis({
+      dataDir: dirname(this.o.workspacesDir),
+      jobs: this.jobs,
+      tools: (owner, into) => this.videoProgramsFor(owner, into),
+      ...(this.o.videoMedia?.run && { run: this.o.videoMedia.run }),
+      transcriber: async () => {
+        const cfg = this.o.transcription;
+        if (!cfg) return undefined;
+        if (cfg.api === "local") {
+          const cli = await new LocalWhisper(dirname(this.o.workspacesDir)).cli();
+          if (cli) return { kind: "cli", ...cli };
+        }
+        return { kind: "service", config: cfg };
+      },
+      language: () => this.agentLang?.split("-")[0],
+    });
+    return this.videoAnalysisCache;
+  }
+  private videoAnalysisCache: VideoAnalysis | undefined;
+
+  /** The exact preview of a stretch of a timeline (G41.5a): ffmpeg at 360p, segments cached. */
+  get videoPreviews(): VideoPreviews {
+    this.videoPreviewsCache ??= new VideoPreviews({
+      analysis: this.videoAnalysis,
+      jobs: this.jobs,
+      tools: (owner, into) => this.videoProgramsFor(owner, into),
+      ...(this.o.videoMedia?.run && { run: this.o.videoMedia.run }),
+    });
+    return this.videoPreviewsCache;
+  }
+  private videoPreviewsCache: VideoPreviews | undefined;
+
+  /** The render of a timeline on this machine (G41.6): a job, one per project at a time. */
+  get videoRenders(): VideoRenders {
+    this.videoRendersCache ??= new VideoRenders({
+      analysis: this.videoAnalysis,
+      jobs: this.jobs,
+      tools: (owner, into) => this.videoProgramsFor(owner, into),
+      ...(this.o.videoMedia?.run && { run: this.o.videoMedia.run }),
+      // NVENC here when it really works (G41.7).
+      encoder: () => this.mediaMachine.encoder(),
+      node: (owner, fingerprint) => (body, o) =>
+        this.nodes.request(owner, fingerprint, "media", body, {
+          signal: o.signal,
+          ...(o.onChunk && { onChunk: o.onChunk }),
+          ...(o.timeoutMs && { timeoutMs: o.timeoutMs }),
+          ...(o.waitMs !== undefined && { waitMs: o.waitMs }),
+          ...(o.what && { log: { what: o.what } }),
+        }),
+    });
+    return this.videoRendersCache;
+  }
+  private videoRendersCache: VideoRenders | undefined;
+  /** G41.7: this machine's ffmpeg, cards and encoder. */
+  readonly mediaMachine: MediaMachineLike;
+
+  /** The machines a video can be rendered on (G41.7): this one first, then the nodes. */
+  async renderMachines(owner: string): Promise<RenderMachine[]> {
+    const known = await this.nodes.known(owner).catch(() => []);
+    return renderMachines(
+      {
+        name: "this machine",
+        gpus: await this.mediaMachine.gpus(),
+        media: await this.mediaMachine.media(),
+      },
+      known.map((k) => ({
+        fingerprint: k.fingerprint,
+        name: k.name,
+        online: k.online,
+        ...(k.rights && { rights: k.rights }),
+        ...(k.view?.capabilities && { capabilities: k.view.capabilities }),
+      })),
+    );
+  }
+
+  /**
+   * Where a render of a timeline in `scope` goes (G41.7, R2): the person's choice for the project,
+   * remembered when it changes (only for projects: other scopes ask nothing and render here).
+   */
+  async renderPlace(
+    owner: string,
+    scope: string,
+    asked: string | undefined,
+    byPerson: boolean,
+  ): Promise<{ where: RenderWhere; machines: RenderMachine[] }> {
+    const machines = await this.renderMachines(owner);
+    const project = /^project:[A-Za-z0-9_-]{1,80}$/.test(scope);
+    const remembered = project ? await this.nodes.renderPlacement(owner, scope) : undefined;
+    const where = renderWhere({
+      machines: project ? machines : machines.slice(0, 1),
+      remembered,
+      asked: project ? asked : asked && "here",
+      byPerson,
+    });
+    if (where.kind === "use" && where.remember && project)
+      await this.nodes.setPlacement(owner, scope, { render: where.id });
+    return { where, machines };
+  }
+
+  /** ffprobe's facts of a file (G41.6b's export; cached; undefined when it cannot be read). */
+  async videoProbe(owner: string, abs: string): Promise<MediaProbe | undefined> {
+    return this.videoAnalysis.probe(abs, await this.videoProgramsFor(owner)).catch(() => undefined);
+  }
+
+  /** ffmpeg and ffprobe for the video editor (downloaded inside `into`'s job when missing). */
+  private async videoProgramsFor(owner: string, into?: JobHandle) {
+    if (this.o.videoMedia?.tools) return this.o.videoMedia.tools(owner);
+    return {
+      ffmpeg: await this.programs.ensure(owner, "ffmpeg", into),
+      ffprobe: await this.programs.ffprobe(owner, into),
+    };
+  }
+
+  /** The video tool's host (G41.6). */
+  private videoToolHost(agent: AgentRecord): VideoToolHost {
+    return {
+      analysis: () => this.videoAnalysis,
+      renders: () => this.videoRenders,
+      previews: () => this.videoPreviews,
+      tools: (owner) => this.videoProgramsFor(owner),
+      run: () => this.o.videoMedia?.run ?? runMedia,
+      jobs: this.jobs,
+      editor: this.editor,
+      docFileOf: (ownerId, abs) => this.docFileOf(ownerId, abs),
+      scopeRoot: (ownerId, scope) => this.scopeRoot(ownerId, scope),
+      readOnly: (ownerId, scope) => this.readOnlyScope(ownerId, scope),
+      lang: (ownerId) => this.language(ownerId),
+      place: (ownerId, scope, asked, byPerson) => this.renderPlace(ownerId, scope, asked, byPerson),
+      // G41.7, R2: where the project's videos are made, asked once; their rules, every channel.
+      choose: async (ctx, question, options) => {
+        const outcome = await askHuman(
+          {
+            store: this.store,
+            questions: this.questions,
+            modeOf: (id) => this.registry.get(id)?.mode ?? "auto",
+            leavePlanMode: async () => {},
+            ask: (a, info, signal, kind) => this.person.ask(a, info, signal, kind),
+          },
+          agent,
+          ctx,
+          [
+            {
+              question,
+              header: "Video",
+              options: options.map((label) => ({ label })),
+              multiSelect: false,
+            },
+          ],
+        );
+        if (outcome.by !== "human" && outcome.by !== "classifier") return undefined;
+        const a = outcome.answers[0]?.[0];
+        return a && options.includes(a) ? a : undefined;
+      },
+      // The person's yes before a timeline they edited is replaced: their rules, every channel.
+      confirm: async (ctx, question, yes, no) => {
+        const outcome = await askHuman(
+          {
+            store: this.store,
+            questions: this.questions,
+            modeOf: (id) => this.registry.get(id)?.mode ?? "auto",
+            leavePlanMode: async () => {},
+            ask: (a, info, signal, kind) => this.person.ask(a, info, signal, kind),
+          },
+          agent,
+          ctx,
+          [
+            {
+              question,
+              header: "Video",
+              options: [{ label: yes }, { label: no }],
+              multiSelect: false,
+            },
+          ],
+        );
+        return (
+          (outcome.by === "human" || outcome.by === "classifier") && outcome.answers[0]?.[0] === yes
+        );
+      },
+      show: async (abs, title, ctx) => {
+        const size = (await stat(abs).catch(() => undefined))?.size ?? 0;
+        await this.showFile(agent, { abs, path: abs, outside: false, title, size }, ctx);
+      },
+    };
+  }
+
   /** The hands-free voice's wake-word models (G38.4), in the data folder. */
   get wakeModels(): WakeModels {
     this.wakeModelsCache ??= new WakeModels(dirname(this.o.workspacesDir));

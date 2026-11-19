@@ -1,0 +1,209 @@
+// What RedGiant learns about a media file of a video project (G41.4): ffprobe's facts, the words
+// spoken with their times, the silences proposed as cuts, how much of it is speech (the "A" clips
+// that carry the story, or the "B" coverage). All of it is a cache of the file (by a fingerprint
+// of its bytes), outside the `.rgvideo` document: only what the person or an agent decides
+// (cuts, captions) goes into the timeline. Times are seconds from the start of the file.
+import { z } from "zod";
+
+/** A rate as a fraction (29.97 = 30000/1001), as in the timeline. */
+const Rate = z.object({ num: z.number().int().positive(), den: z.number().int().positive() });
+
+/** ffprobe's answer, made into what the editor needs. */
+export const MediaProbe = z.object({
+  /** "image": a picture (no length, never a base under the others); "audio": sound only. */
+  kind: z.enum(["video", "image", "audio"]),
+  /** Seconds; null for a picture. */
+  duration: z.number().nonnegative().nullable(),
+  /** As shown (a phone's portrait clip rotated by 90 has its sides swapped). */
+  width: z.number().int().nonnegative(),
+  height: z.number().int().nonnegative(),
+  /** Degrees, 0/90/180/270. */
+  rotation: z.number().int(),
+  /** The video's frame rate; null for a picture or sound. */
+  rate: Rate.nullable(),
+  codec: z.string().nullable(),
+  audio: z.boolean(),
+  audioCodec: z.string().nullable(),
+  sampleRate: z.number().int().nullable(),
+  channels: z.number().int().nullable(),
+  /** The camera's start timecode ("01:02:03:04"), when it wrote one. */
+  timecode: z.string().nullable(),
+  /** When it was shot (ISO 8601, `creation_time`), when the file says. */
+  createdAt: z.string().nullable(),
+  /** Bytes. */
+  size: z.number().int().nonnegative(),
+});
+export type MediaProbe = z.infer<typeof MediaProbe>;
+
+/** One word, with its start and end in seconds and how sure the model was (0..1). */
+export const TranscriptWord = z.object({
+  text: z.string(),
+  start: z.number().nonnegative(),
+  end: z.number().nonnegative(),
+  p: z.number().min(0).max(1).optional(),
+});
+export type TranscriptWord = z.infer<typeof TranscriptWord>;
+
+/** A sentence as the model gave it: its words are `words[w0..w1]`. */
+export const TranscriptSegment = z.object({
+  start: z.number().nonnegative(),
+  end: z.number().nonnegative(),
+  text: z.string(),
+  w0: z.number().int().nonnegative(),
+  w1: z.number().int().nonnegative(),
+});
+export type TranscriptSegment = z.infer<typeof TranscriptSegment>;
+
+/**
+ * How precise the words' times are: "word" from the engine itself (whisper.cpp's DTW, the
+ * cloud's word timestamps), "segment" spread inside the model's sentences, "interpolated" spread
+ * over the parts with sound (a service that answers only text).
+ */
+export const TRANSCRIPT_TIMINGS = ["word", "segment", "interpolated"] as const;
+export type TranscriptTiming = (typeof TRANSCRIPT_TIMINGS)[number];
+
+export const Transcript = z.object({
+  /** What the model heard ("it", "en"), or the language asked for; "" when not known. */
+  language: z.string(),
+  /** Who transcribed it: "whisper.cpp", "OpenAI", "ElevenLabs"… */
+  engine: z.string(),
+  model: z.string().optional(),
+  timing: z.enum(TRANSCRIPT_TIMINGS),
+  duration: z.number().nonnegative(),
+  words: z.array(TranscriptWord),
+  segments: z.array(TranscriptSegment),
+});
+export type Transcript = z.infer<typeof Transcript>;
+
+/** A stretch of seconds [start, end]. */
+export const TimeSpan = z.tuple([z.number(), z.number()]);
+export type TimeSpan = z.infer<typeof TimeSpan>;
+
+/**
+ * A cut proposed between words: "silence" when ffmpeg finds the gap mostly quiet, "long_pause"
+ * when nothing is said but something is heard (breath, "uhm", laughter), as in montatore.
+ */
+export const SilenceCut = z.object({
+  start: z.number().nonnegative(),
+  end: z.number().nonnegative(),
+  kind: z.enum(["silence", "long_pause"]),
+  /** Where the gap is: before the first word, between two, after the last. */
+  where: z.enum(["head", "mid", "tail"]),
+});
+export type SilenceCut = z.infer<typeof SilenceCut>;
+
+export const SilenceSettings = z.object({
+  /** Shorter gaps are left alone (montatore: 0.8 s). */
+  minSec: z.number().min(0.1).max(30).default(0.8),
+  /** Kept around the words, so the attack and tail of a syllable stay (montatore: 0.15 s). */
+  padding: z.number().min(0).max(2).default(0.15),
+  /** Below this the sound counts as quiet (montatore: −35 dB). */
+  noiseDb: z.number().min(-90).max(0).default(-35),
+});
+export type SilenceSettings = z.infer<typeof SilenceSettings>;
+
+/** Speech or coverage: "A" carries the story (speech), "B" covers it. */
+export const SpeechInfo = z.object({
+  ratio: z.number().min(0).max(1),
+  seconds: z.number().nonnegative(),
+  segments: z.array(TimeSpan),
+  role: z.enum(["A", "B"]),
+  /** What the speech was measured from: the words, or (no transcription) the sound's level. */
+  source: z.enum(["words", "sound", "none"]),
+});
+export type SpeechInfo = z.infer<typeof SpeechInfo>;
+
+/** Everything `analyze` learns about one file (the `video analyze` action of G41.6). */
+export const MediaAnalysis = z.object({
+  path: z.string(),
+  /** The cache's key: a fingerprint of the file's bytes. */
+  fingerprint: z.string(),
+  probe: MediaProbe,
+  /** Absent: no sound, or no transcription service. */
+  transcript: Transcript.optional(),
+  /** Quiet stretches found by ffmpeg's `silencedetect`. */
+  silent: z.array(TimeSpan),
+  cuts: z.array(SilenceCut),
+  speech: SpeechInfo,
+  settings: SilenceSettings,
+});
+export type MediaAnalysis = z.infer<typeof MediaAnalysis>;
+
+/** The derived files for playing and showing a clip in the page (G41.5a uses them). */
+export const MEDIA_DERIVED = ["proxy", "filmstrip", "waveform"] as const;
+export type MediaDerived = (typeof MEDIA_DERIVED)[number];
+
+/**
+ * What the page knows of one file of a timeline (G41.5a, `POST /api/editor/video/prepare`):
+ * its probe and signed links (served with Range) to what is made, and the jobs making the rest.
+ */
+export const VideoMediaInfo = z.object({
+  media: z.string(),
+  /** Not in the project (moved or deleted): the timeline shows a gap. */
+  missing: z.literal(true).optional(),
+  kind: z.enum(["video", "image", "audio"]).optional(),
+  probe: MediaProbe.optional(),
+  /** The file itself (pictures are shown as they are; a sound file plays as it is). */
+  file: z.string().optional(),
+  proxy: z.string().optional(),
+  filmstrip: z.object({ url: z.string(), tiles: z.number().int() }).optional(),
+  waveform: z.object({ url: z.string(), width: z.number().int() }).optional(),
+  /** Jobs making what is missing (the page follows them and asks again). */
+  jobs: z.array(z.string()),
+});
+export type VideoMediaInfo = z.infer<typeof VideoMediaInfo>;
+
+/** The answer of `prepare`: the files, and the server's fonts for texts and subtitles. */
+export interface VideoPrepared {
+  media: VideoMediaInfo[];
+  fonts: { regular: string; bold: string };
+}
+
+/** The result of a `video_preview` job (the exact preview of a stretch, G41.5a). */
+export interface VideoPreviewResult {
+  /** Its name, for `GET /api/editor/video/exact/:id`. */
+  id: string;
+  start: number;
+  frames: number;
+  seconds: number;
+  width: number;
+  height: number;
+  warnings: string[];
+}
+
+/** The render presets (G41.6): the shape, the height, the quality. */
+export const VIDEO_RENDER_QUALITIES = ["draft", "good", "best"] as const;
+export type VideoRenderQuality = (typeof VIDEO_RENDER_QUALITIES)[number];
+export const VIDEO_RENDER_HEIGHTS = [2160, 1440, 1080, 720, 480] as const;
+
+/** What the page or an agent asks of a render. */
+export interface VideoRenderAsk {
+  /** Another shape than the timeline's: reframed at the centre (crops and fits kept). */
+  aspect?: "16:9" | "9:16" | "1:1";
+  /** The short side's pixels (never more than the timeline's). */
+  height?: number;
+  quality?: VideoRenderQuality;
+  /**
+   * Where it is made (G41.7): `here` or a node's fingerprint. Unset: the machine the person chose
+   * for the project (asked at its first render, then remembered).
+   */
+  where?: string;
+}
+
+/** The result of a `video_render` job: the MP4 in the project (`renders/<name>-v<n>.mp4`). */
+export interface VideoRenderResult {
+  /** Its path in the project. */
+  path: string;
+  /** The subtitles beside it (SRT, WebVTT), paths in the project. */
+  sidecars: string[];
+  seconds: number;
+  width: number;
+  height: number;
+  frames: number;
+  /** Segments taken from the cache instead of encoded again. */
+  reused: number;
+  warnings: string[];
+  /** Where it was made (G41.7): the node's name, unset here; and with which encoder. */
+  node?: string;
+  encoder?: "h264_nvenc" | "libx264";
+}

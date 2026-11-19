@@ -1,0 +1,144 @@
+{
+  "name": "Ripetute",
+  "fps_num": 30000,
+  "fps_den": 1001,
+  "width": 1920,
+  "height": 1080,
+  "media": {
+    "x": {
+      "url": "C:\\Users\\Pixel\\Videos\\x.mp4",
+      "name": "x.mp4",
+      "frames": 900,
+      "timecode": "00:10:00;00",
+      "width": 1920,
+      "height": 1080,
+      "audio": {
+        "channels": 2,
+        "sample_rate": 48000
+      }
+    },
+    "f": {
+      "url": "C:\\Users\\Pixel\\Pictures\\f.png",
+      "name": "f.png",
+      "frames": null,
+      "timecode": null,
+      "width": 800,
+      "height": 800,
+      "audio": null
+    }
+  },
+  "tracks": [
+    {
+      "id": "V1",
+      "type": "video",
+      "enabled": true,
+      "clips": [
+        {
+          "media": "x",
+          "start": 0,
+          "in": 0,
+          "dur": 30,
+          "enabled": true
+        },
+        {
+          "media": "x",
+          "start": 30,
+          "in": 0,
+          "dur": 30,
+          "enabled": true
+        },
+        {
+          "media": "x",
+          "start": 60,
+          "in": 0,
+          "dur": 30,
+          "enabled": true
+        },
+        {
+          "media": "f",
+          "start": 90,
+          "in": 500,
+          "dur": 30,
+          "enabled": true
+        },
+        {
+          "media": "f",
+          "start": 120,
+          "in": 0,
+          "dur": 30,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "V2",
+      "type": "video",
+      "enabled": true,
+      "clips": [
+        {
+          "media": "x",
+          "start": 0,
+          "in": 0,
+          "dur": 30,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "A1",
+      "type": "audio",
+      "enabled": true,
+      "clips": [
+        {
+          "media": "x",
+          "start": 0,
+          "in": 0,
+          "dur": 30,
+          "enabled": true
+        },
+        {
+          "media": "x",
+          "start": 30,
+          "in": 0,
+          "dur": 30,
+          "enabled": true
+        },
+        {
+          "media": "x",
+          "start": 60,
+          "in": 0,
+          "dur": 30,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "A2",
+      "type": "audio",
+      "enabled": true,
+      "clips": [
+        {
+          "media": "x",
+          "start": 0,
+          "in": 0,
+          "dur": 30,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "A3",
+      "type": "audio",
+      "enabled": true,
+      "clips": [
+        {
+          "media": "x",
+          "start": 0,
+          "in": 0,
+          "dur": 30,
+          "enabled": false
+        }
+      ]
+    }
+  ]
+}

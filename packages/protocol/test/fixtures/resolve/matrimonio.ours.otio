@@ -1,0 +1,744 @@
+{
+    "OTIO_SCHEMA": "Timeline.1",
+    "metadata": {
+        "redgiant": {
+            "captions": {
+                "burnIn": false,
+                "language": "",
+                "position": "bottom",
+                "segments": [],
+                "style": "boxed"
+            },
+            "format": {
+                "aspect": "16:9",
+                "height": 1080,
+                "rate": {
+                    "den": 1,
+                    "num": 25
+                },
+                "width": 1920
+            },
+            "formatVersion": 1,
+            "name": "Sposi & amici <2026>"
+        }
+    },
+    "name": "Sposi & amici <2026>",
+    "global_start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "rate": 25.0,
+        "value": 0.0
+    },
+    "tracks": {
+        "OTIO_SCHEMA": "Stack.1",
+        "metadata": {},
+        "name": "tracks",
+        "source_range": null,
+        "effects": [],
+        "markers": [],
+        "enabled": true,
+        "color": null,
+        "children": [
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "hidden": false,
+                            "id": "V1",
+                            "kind": "Video",
+                            "locked": false,
+                            "name": "V1"
+                        }
+                    }
+                },
+                "name": "V1",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Gap.1",
+                        "metadata": {},
+                        "name": "",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 50.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c1",
+                                    "ref": {
+                                        "media": "10"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 200,
+                                        "start": 100
+                                    },
+                                    "start": 50,
+                                    "track": "V1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "Città 01.MOV",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 200.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 900100.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 1500.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 900000.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/E%3a/Montaggi/Sposi%20%26%20amici/Citt%C3%A0%2001.MOV"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": false,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c2",
+                                    "ref": {
+                                        "media": "11"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 125,
+                                        "start": 0
+                                    },
+                                    "start": 250,
+                                    "track": "V1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "chiesa (2).mp4",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 125.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 855387.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": false,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 750.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 855387.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/E%3a/Montaggi/Sposi%20%26%20amici/chiesa%20%282%29.mp4"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c3",
+                                    "ref": {
+                                        "media": "10"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 300,
+                                        "start": 700
+                                    },
+                                    "start": 375,
+                                    "track": "V1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "Città 01.MOV",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 300.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 900700.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 1500.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 900000.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/E%3a/Montaggi/Sposi%20%26%20amici/Citt%C3%A0%2001.MOV"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Video"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "hidden": false,
+                            "id": "V2",
+                            "kind": "Video",
+                            "locked": false,
+                            "name": "V2"
+                        }
+                    }
+                },
+                "name": "V2",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Gap.1",
+                        "metadata": {},
+                        "name": "",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 100.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c4",
+                                    "ref": {
+                                        "media": "12",
+                                        "still": true
+                                    },
+                                    "sourceRange": {
+                                        "duration": 75,
+                                        "start": 33
+                                    },
+                                    "start": 100,
+                                    "track": "V2",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "Torta è.jpg",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 75.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 90000.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 0.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/E%3a/Montaggi/Sposi%20%26%20amici/Torta%20%C3%A8.jpg"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Video"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "hidden": false,
+                            "id": "V3",
+                            "kind": "Video",
+                            "locked": false,
+                            "name": "V3"
+                        }
+                    }
+                },
+                "name": "V3",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [],
+                "kind": "Video"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "id": "A1",
+                            "kind": "Audio",
+                            "locked": false,
+                            "muted": false,
+                            "name": "A1"
+                        }
+                    }
+                },
+                "name": "A1",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Gap.1",
+                        "metadata": {},
+                        "name": "",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 50.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c5",
+                                    "ref": {
+                                        "media": "10"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 200,
+                                        "start": 100
+                                    },
+                                    "start": 50,
+                                    "track": "A1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "Città 01.MOV",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 200.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 900100.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 1500.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 900000.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/E%3a/Montaggi/Sposi%20%26%20amici/Citt%C3%A0%2001.MOV"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c6",
+                                    "ref": {
+                                        "media": "11"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 125,
+                                        "start": 0
+                                    },
+                                    "start": 250,
+                                    "track": "A1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "chiesa (2).mp4",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 125.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 855387.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 750.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 855387.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/E%3a/Montaggi/Sposi%20%26%20amici/chiesa%20%282%29.mp4"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c7",
+                                    "ref": {
+                                        "media": "10"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 300,
+                                        "start": 700
+                                    },
+                                    "start": 375,
+                                    "track": "A1",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "Città 01.MOV",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 300.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 900700.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 1500.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 900000.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/E%3a/Montaggi/Sposi%20%26%20amici/Citt%C3%A0%2001.MOV"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Audio"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {
+                    "redgiant": {
+                        "track": {
+                            "id": "A2",
+                            "kind": "Audio",
+                            "locked": false,
+                            "muted": true,
+                            "name": "A2"
+                        }
+                    }
+                },
+                "name": "A2",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": false,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {
+                            "redgiant": {
+                                "clip": {
+                                    "enabled": true,
+                                    "fadeIn": 0,
+                                    "fadeOut": 0,
+                                    "fit": "fill",
+                                    "id": "c8",
+                                    "ref": {
+                                        "media": "11"
+                                    },
+                                    "sourceRange": {
+                                        "duration": 40,
+                                        "start": 10
+                                    },
+                                    "start": 0,
+                                    "track": "A2",
+                                    "volume": 0
+                                }
+                            }
+                        },
+                        "name": "chiesa (2).mp4",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 40.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 25.0,
+                                "value": 855397.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 750.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 25.0,
+                                        "value": 855387.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file://localhost/E%3a/Montaggi/Sposi%20%26%20amici/chiesa%20%282%29.mp4"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Audio"
+            }
+        ]
+    }
+}
