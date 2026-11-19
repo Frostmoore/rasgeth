@@ -1237,6 +1237,8 @@ export type SettingsSection =
   | "setup"
   | "agents"
   | "memory"
+  /** The person's portrait, built by itself from the conversations (3.9.4). */
+  | "portrait"
   | "knowledge"
   | "automations"
   | "extensions"

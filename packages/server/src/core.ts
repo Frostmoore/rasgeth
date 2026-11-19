@@ -95,6 +95,7 @@ import {
   nativeToolNote,
   notedText,
   ownWords,
+  type PortraitView,
   PRODUCT_NAME,
   ProjectMaxAgents,
   type Recipe,
@@ -292,6 +293,7 @@ import {
   PolicyStore,
   platformConfigTools,
 } from "./platform.js";
+import { Portrait } from "./portrait.js";
 import { PRODUCTS_GUIDANCE, type ProductsToolHost, showProductsTool } from "./product-cards.js";
 import { ProductImages, type ProductImagesOptions } from "./product-images.js";
 import { migrateProjects, ProjectStore, type Subproject, slug } from "./projects.js";
@@ -470,7 +472,7 @@ export interface CoreOptions {
    * The shared memory's learning (G33.2): its model (default: the board's, else the default) and
    * how long after a turn it reads what the person wrote.
    */
-  memory?: { model?: ModelSpec; delayMs?: number };
+  memory?: { model?: ModelSpec; delayMs?: number; portraitDelayMs?: number };
   /**
    * God works on the real system (G14.3): its workspace is on the host even with Docker
    * sandboxes, and every change it makes asks the human.
@@ -778,6 +780,8 @@ export class RedGiantCore implements OrchestrationHost {
   readonly notes: Notes;
   /** What every agent knows about the person (G33.2), learned from the conversations. */
   readonly sharedMemory: SharedMemory;
+  /** The person's portrait (3.9.4, «Mirror»): built by itself from the conversations. */
+  readonly portrait: Portrait;
   readonly extensions: ExtensionBuilder;
   readonly automations: AutomationService;
   readonly policies: PolicyStore;
@@ -1052,6 +1056,34 @@ export class RedGiantCore implements OrchestrationHost {
       },
     });
     this.notes = new Notes((ownerId) => this.notesPath(ownerId), this.sharedMemory);
+    // The same cheap model as the shared memory; it spends from God's budget and waits when the
+    // budget is gone.
+    const godOf = (ownerId: string) =>
+      this.registry.list({ ownerId }).find((a) => a.kind === "god");
+    this.portrait = new Portrait({
+      store: this.store,
+      providers: o.providers,
+      model: () => this.o.memory?.model ?? this.o.boardModel ?? this.o.defaultModel,
+      redactor: o.redactor,
+      delayMs: o.memory?.portraitDelayMs,
+      language: () => agentLanguage(this.agentLang)?.en,
+      allowed: async (ownerId) => {
+        const god = godOf(ownerId);
+        return (
+          !god || (await this.budget.check(budgetKeys(god, this.registry.resolve))).length === 0
+        );
+      },
+      spent: async (ownerId, usage, provider, model) => {
+        const god = godOf(ownerId);
+        if (!god) return;
+        const usd = costUsd(usage, this.o.providers.get(provider).modelInfo(model).pricing);
+        await this.budget.record(budgetKeys(god, this.registry.resolve), usage, usd, {
+          ownerId,
+          projectId: null,
+          agentId: god.id,
+        });
+      },
+    });
     const dataDir = dirname(o.workspacesDir);
     this.protectedPaths = [
       ...["redgiant.yaml", "secrets.json", "keychain", "postgres", "release"].map((f) =>
@@ -2192,6 +2224,10 @@ export class RedGiantCore implements OrchestrationHost {
         agent.kind !== "demigod" && agent.kind !== "inspector"
           ? await this.notes.prompt(this.noteOwner(agent, assignedTo))
           : "",
+        // The person's portrait (3.9.4), for the agents they chose; read once, like the notes.
+        await this.portrait
+          .prompt(ownerId, agent.kind, (await this.chatAgentIdOf(agent.ownerId)) === agent.id)
+          .catch(() => ""),
         await this.subprojectNote(agent),
         // A magic automation's conversation knows its task from the start (G33.3).
         magicSession ? MAGIC_PROMPT : "",
@@ -2256,7 +2292,7 @@ export class RedGiantCore implements OrchestrationHost {
         l.folded = [...(l.folded ?? []), ...mine];
         for (const q of mine)
           if (q.extra.watch === true || q.extra.human === true)
-            this.sharedMemory.heard(ownerId, sessionId, agentId, ownWords(q.text, q.extra.quotes));
+            this.heardPerson(ownerId, sessionId, agentId, ownWords(q.text, q.extra.quotes));
         return mine.map((q) => ({
           text: q.text,
           ...(q.extra.images?.length && { images: q.extra.images }),
@@ -6084,6 +6120,42 @@ export class RedGiantCore implements OrchestrationHost {
     return done;
   }
 
+  /** The person's own words reach the shared memory and the portrait (only theirs, G33.2). */
+  private heardPerson(ownerId: string, sessionId: string, agentId: string | null, text: string) {
+    this.sharedMemory.heard(ownerId, sessionId, agentId, text);
+    this.portrait.heard(ownerId, sessionId, agentId, text);
+  }
+
+  /** The portrait for its page (3.9.4): each source with its conversation's title and agent. */
+  async portraitView(ownerId: string): Promise<PortraitView> {
+    const v = await this.portrait.view(ownerId);
+    const ids = [...new Set(v.traits.flatMap((t) => t.sources.map((x) => x.sessionId)))];
+    const titles = new Map(
+      ids.length
+        ? (
+            await this.o.db.query<{ id: string; title: string | null }>(
+              "SELECT id, title FROM rg_sessions WHERE owner_id = $1 AND id = ANY($2)",
+              [ownerId, ids],
+            )
+          ).map((r) => [r.id, r.title])
+        : [],
+    );
+    return {
+      ...v,
+      traits: v.traits.map((t) => ({
+        ...t,
+        // A conversation of someone else's never shows (the ids come from this owner's events).
+        sources: t.sources
+          .filter((x) => titles.has(x.sessionId))
+          .map((x) => ({
+            ...x,
+            sessionTitle: titles.get(x.sessionId) ?? null,
+            agentName: x.agentId ? (this.registry.get(x.agentId)?.name ?? null) : null,
+          })),
+      })),
+    };
+  }
+
   /** The shared memory for its page (G33.2): each memory with its conversation's title and agent. */
   async sharedMemoryView(ownerId: string): Promise<SharedMemoryView> {
     const v = await this.sharedMemory.view(ownerId);
@@ -6839,7 +6911,7 @@ export class RedGiantCore implements OrchestrationHost {
     const human = extra.watch === true || extra.human === true;
     this.sharedMemory.turnStarted(sessionId, human);
     this.skillNudge.turnStarted(sessionId);
-    if (human) this.sharedMemory.heard(ownerId, sessionId, l.agentId, ownWords(text, extra.quotes));
+    if (human) this.heardPerson(ownerId, sessionId, l.agentId, ownWords(text, extra.quotes));
     const notify = (state: "idle" | "running", stopReason?: string, repliedAt?: string) => {
       for (const f of l.listeners)
         f({ type: "session.state", sessionId, state, ...(stopReason && { stopReason }) });
@@ -6867,6 +6939,7 @@ export class RedGiantCore implements OrchestrationHost {
           l.running = null;
           seat.release();
           this.sharedMemory.turnEnded(sessionId);
+          this.portrait.turnEnded(sessionId);
           notify("idle", "end_turn");
           this.turnOver(ownerId, sessionId, l);
         });
@@ -6884,6 +6957,7 @@ export class RedGiantCore implements OrchestrationHost {
       l.running = null;
       seat.release();
       this.sharedMemory.turnEnded(sessionId);
+      this.portrait.turnEnded(sessionId);
       // The agent answered the person (3.8.1): its mascot stays awake for a while.
       const repliedAt = human && stopReason === "end_turn" ? new Date().toISOString() : undefined;
       if (repliedAt)
@@ -8175,6 +8249,7 @@ export class RedGiantCore implements OrchestrationHost {
     await this.mail.close().catch(() => {});
     this.files.stop();
     this.sharedMemory.stop();
+    this.portrait.stop();
     clearInterval(this.sweeper);
     this.inspector.stop();
     this.code?.unwatch();

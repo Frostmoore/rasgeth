@@ -21523,3 +21523,58 @@ fieldset.saved-filter legend {
 .banner.rename-notice .icon-button {
   margin-left: 0;
 }
+/* 3.9.4: Settings › Portrait («Mirror»), on the shared memory's page parts */
+.pr-who {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pr-group + .pr-group {
+  margin-top: 14px;
+}
+.pr-group-title {
+  margin: 4px 0 2px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.pr-sure {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-size: 12px;
+}
+.pr-sure.on {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.pr-sources {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pr-sources li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.pr-sources small {
+  color: var(--dim);
+}
+.pr-text {
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--panel-2);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.5;
+}
