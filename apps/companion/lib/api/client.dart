@@ -818,10 +818,12 @@ class RedGiantClient {
     String text, {
     List<Map<String, Object?>>? images,
     List<Quote> quotes = const [],
+    bool secretOk = false,
   }) async {
     await _post('/api/sessions/${Uri.encodeComponent(sessionId)}/messages', {
       'text': withQuotesInText(text, quotes),
       if (images != null && images.isNotEmpty) 'images': images,
+      if (secretOk) 'secretOk': true,
     });
   }
 

@@ -18338,6 +18338,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Automations can be changed only by the person (not from a project\'s device).'**
   String get auOwnReadOnly;
+
+  /// Secret warning: send the message as written (the person's choice, 2026-11-19).
+  ///
+  /// In en, this message translates to:
+  /// **'Send anyway'**
+  String get cvChSecretAnyway;
+
+  /// Secret warning: what Send anyway does.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a secret (a link, an order code)? «Send anyway» sends it as you wrote it.'**
+  String get cvChSecretAnywayNote;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

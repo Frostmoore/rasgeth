@@ -6,6 +6,8 @@
 // test/g42_1_secrets_test.dart checks the port against vectors made by the protocol's own code
 // (tool/secrets_vectors.mjs): change the TypeScript first, then regenerate them.
 
+import 'dart:convert';
+
 /// One well-known key format; the event log's Redactor uses the same list.
 class SecretPattern {
   const SecretPattern(this.name, this.re);
@@ -66,13 +68,43 @@ final _key = RegExp(
   unicode: true,
 );
 
-/// JSON web tokens, and long random strings with lower case, upper case and digits mixed.
-final _random = [
-  RegExp(r'\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]*'),
-  RegExp(
-    r'\b(?=[A-Za-z0-9+/_-]*\d)(?=[A-Za-z0-9+/_-]*[a-z])(?=[A-Za-z0-9+/_-]*[A-Z])[A-Za-z0-9+/_-]{24,}\b',
-  ),
-];
+/// JSON web tokens (only real ones: see [isJwt]).
+final _jwt = RegExp(r'\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]*');
+
+/// Long random strings with lower case, upper case and digits mixed.
+final _random = RegExp(
+  r'\b(?=[A-Za-z0-9+/_-]*\d)(?=[A-Za-z0-9+/_-]*[a-z])(?=[A-Za-z0-9+/_-]*[A-Z])[A-Za-z0-9+/_-]{24,}\b',
+);
+
+/// A JSON web token's header names its algorithm: `eyJ2IjoiMSJ9.…` ({"v":"1"}, Amazon's `dib`
+/// parameter, 2026-11-19) only looks like one. Decoded as JavaScript's `atob` does (Latin-1).
+bool isJwt(String token) {
+  final head = token.split('.').first;
+  try {
+    final b64 = head.replaceAll('-', '+').replaceAll('_', '/');
+    final padded = b64 + '=' * ((4 - b64.length % 4) % 4);
+    final json = jsonDecode(latin1.decode(base64.decode(padded)));
+    return json is Map && json['alg'] is String;
+  } on Object {
+    return false;
+  }
+}
+
+/// http(s) links; the punctuation that ends a sentence is not part of them.
+final _link = RegExp(
+  r'''\bhttps?://[^\s<>"'«»]+?(?=[.,;:!?)\]]*(?:[\s<>"'«»]|$))''',
+  caseSensitive: false,
+);
+
+/// A link's parameters (query and fragment): `name=value`.
+final _linkParam = RegExp(r'[?&#;]([^=&#;?\s]+)=([^&#;\s]*)');
+
+/// A parameter whose name says it carries a secret (2026-11-19): token, access_token,
+/// X-Amz-Signature, X-Amz-Credential, sig, api_key, key… (the whole name or its last part).
+final _secretParam = RegExp(
+  r'^(?:.*[-_.])?(?:token|secret|signature|sig|password|passwd|pwd|apikey|api[-_]?key|key|credential|credentials|auth|authorization)$',
+  caseSensitive: false,
+);
 
 final _card = RegExp(r'\b\d(?:[ -]?\d){12,18}\b');
 final _iban = RegExp(
@@ -166,31 +198,53 @@ List<SecretSpan> findSecrets(String text) {
     out.add(_Span(at, at + v.length, kind));
   }
 
+  // Inside a link only a known key format, a real JWT or a parameter named for a secret counts
+  // (2026-11-19): its ids, tracking codes and the like are not secrets.
+  final links = [for (final m in _link.allMatches(text)) (m.start, m.end)];
+  bool inLink(int at) => links.any((l) => at >= l.$1 && at < l.$2);
+  void outside(RegExpMatch m, SecretKind kind, [String? value]) {
+    final before = out.length;
+    add(m, kind, value);
+    if (out.length > before && inLink(out.last.start)) out.removeLast();
+  }
+
   for (final p in secretPatterns) {
     for (final m in p.re.allMatches(text)) add(m, SecretKind.key);
+  }
+  for (final m in _jwt.allMatches(text)) {
+    if (isJwt(m[0]!)) add(m, SecretKind.key);
+  }
+  for (final (a, b) in links) {
+    for (final m in _linkParam.allMatches(text.substring(a, b))) {
+      final name = m[1] ?? '';
+      final value = m[2] ?? '';
+      if (value.length < 8 || !_secretParam.hasMatch(name)) continue;
+      final at = a + m.start + 1 + name.length + 1;
+      out.add(_Span(at, at + value.length, SecretKind.key));
+    }
   }
   for (final m in _password.allMatches(text)) {
     final v = m[1];
     if (v != null && v.isNotEmpty && !_notAValue.contains(v.toLowerCase())) {
-      add(m, SecretKind.password, v);
+      outside(m, SecretKind.password, v);
     }
   }
   for (final m in _code.allMatches(text)) {
     final v = m[1];
-    if (v != null && v.isNotEmpty) add(m, SecretKind.code, v);
+    if (v != null && v.isNotEmpty) outside(m, SecretKind.code, v);
   }
   for (final m in _key.allMatches(text)) {
     final v = m[1];
-    if (v != null && v.isNotEmpty && _digit.hasMatch(v)) add(m, SecretKind.key, v);
+    if (v != null && v.isNotEmpty && _digit.hasMatch(v)) outside(m, SecretKind.key, v);
   }
-  for (final re in _random) {
-    for (final m in re.allMatches(text)) add(m, SecretKind.key);
+  for (final m in _random.allMatches(text)) {
+    outside(m, SecretKind.key);
   }
   for (final m in _card.allMatches(text)) {
-    if (_luhn(m[0]!.replaceAll(RegExp(r'\D'), ''))) add(m, SecretKind.card);
+    if (_luhn(m[0]!.replaceAll(RegExp(r'\D'), ''))) outside(m, SecretKind.card);
   }
   for (final m in _iban.allMatches(text)) {
-    if (_ibanValid(m[0]!)) add(m, SecretKind.iban);
+    if (_ibanValid(m[0]!)) outside(m, SecretKind.iban);
   }
   // A stable sort, as JavaScript's.
   final indexed = [for (var i = 0; i < out.length; i++) (i, out[i])];

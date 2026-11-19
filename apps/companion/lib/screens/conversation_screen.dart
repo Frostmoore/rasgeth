@@ -463,6 +463,7 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
   Future<void> _send({String? text}) async {
     final l = AppLocalizations.of(context);
     var t = (text ?? _text.text).trim();
+    var secretOk = false;
     if (t.isEmpty && _attached.isEmpty && _quotes.isEmpty) return;
     if (_readOnly) return;
     // A secret in the message (G33.4): held back before it leaves the app, as the page does.
@@ -478,14 +479,21 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
             SecretKind.iban => l.cvChSecretKindIban,
           },
       };
-      final go = await askConfirm(
+      // «Invia comunque» (2026-11-19, a link taken for a secret): as written, the choice logged.
+      final how = await askChoice<String>(
         context,
         title: l.cvChSecretTitle,
-        body: '${l.cvChSecretText}\n\n${l.cvChSecretFound(kinds.join(', '))}',
-        yes: l.cvChSecretSend,
+        body:
+            '${l.cvChSecretText}\n\n${l.cvChSecretFound(kinds.join(', '))}\n\n${l.cvChSecretAnywayNote}',
+        choices: [
+          RgWindowChoice('back', l.cvChSecretBack, key: const Key('secret-back')),
+          RgWindowChoice('anyway', l.cvChSecretAnyway, key: const Key('secret-send-anyway')),
+          RgWindowChoice('without', l.cvChSecretSend, key: const Key('dialog-yes'), main: true),
+        ],
       );
-      if (!go || !mounted) return;
-      t = hideSecrets(t, '[secret removed]').text;
+      if (how == null || how == 'back' || !mounted) return;
+      if (how == 'without') t = hideSecrets(t, '[secret removed]').text;
+      secretOk = how == 'anyway';
     }
     setState(() => _sending = true);
     final c = app.client;
@@ -506,6 +514,7 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
         images: packed.images,
         quotes: quotes,
         shown: t.isEmpty ? l.attachmentOnly : t,
+        secretOk: secretOk,
       );
     } on ApiException {
       ok = false;

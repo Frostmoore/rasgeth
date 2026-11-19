@@ -1403,6 +1403,7 @@ Map<String, Object?> sessionSendMessage(
   List<Map<String, Object?>>? images,
   List<Quote> quotes = const [],
   String? clientId,
+  bool secretOk = false,
 }) => {
   'type': 'session.send',
   'sessionId': sessionId,
@@ -1410,4 +1411,6 @@ Map<String, Object?> sessionSendMessage(
   if (images != null && images.isNotEmpty) 'images': images,
   if (quotes.isNotEmpty) 'quotes': [for (final q in quotes.take(maxQuotes)) q.toJson()],
   'clientId': ?clientId,
+  // «Invia comunque» on the secret warning (2026-11-19): as written, the choice in the log.
+  if (secretOk) 'secretOk': true,
 };
