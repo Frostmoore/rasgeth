@@ -9451,6 +9451,7 @@ button.pick-tile.on {
 }
 .st-switch-row > div {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   gap: 2px;
   min-width: 0;

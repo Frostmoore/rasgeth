@@ -1569,7 +1569,11 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
               <div class="dim">{t("compacting")}</div>
             </div>
           )}
-          {v.state === "running" && v.call && !v.compacting && !externalAgent(agentId) && (
+          {v.state === "running" &&
+            v.call &&
+            !v.compacting &&
+            !generating &&
+            !externalAgent(agentId) && (
             <TurnProgress call={v.call} />
           )}
           {(v.thinking || v.text) && (

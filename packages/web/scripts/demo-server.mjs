@@ -3675,6 +3675,118 @@ if (process.env.DEMO_QUEUE) {
   }
   core.turnFirst("local", queueSessions[3]);
 }
+// DEMO_NATIVE=1 (3.9.2): an agent on a Codex stand-in that draws by itself. One conversation got
+// its picture (copied into the workspace and sent, logged as image_generation), one is drawing
+// now (the «generating» card), one answered with a picture by a path (said plainly) and a picture
+// that cannot be read (the card says so).
+let nativeSessions;
+if (process.env.DEMO_NATIVE) {
+  const { encode: encodePng } = await import(
+    createRequire(new URL("../../server/package.json", import.meta.url)).resolve("fast-png")
+  );
+  /** A red giant over a dark sky (640x420), its glow fading out. */
+  const star = () => {
+    const w = 640;
+    const h = 420;
+    const data = new Uint8Array(w * h * 4);
+    for (let y = 0; y < h; y++)
+      for (let x = 0; x < w; x++) {
+        const d = Math.hypot(x - 380, y - 230) / 170;
+        const glow = Math.max(0, 1 - d);
+        const core_ = d < 0.55 ? 1 : 0;
+        const twinkle = (x * 7919 + y * 104729) % 997 === 0 ? 220 : 0;
+        const i = (y * w + x) * 4;
+        data[i] = Math.min(255, 14 + glow * 240 + core_ * 15 + twinkle);
+        data[i + 1] = Math.min(255, 10 + glow * glow * 120 + core_ * 70 + twinkle);
+        data[i + 2] = Math.min(255, 32 + glow * 30 + twinkle);
+        data[i + 3] = 255;
+      }
+    return Buffer.from(encodePng({ width: w, height: h, data, channels: 4, depth: 8 }));
+  };
+  const nativeFolder = join(dir, "codex-home", "generated_images");
+  const metrics = () => ({
+    startedAt: new Date().toISOString(),
+    endedAt: new Date().toISOString(),
+    inputTokens: 1200,
+    cachedReadTokens: 900,
+    cacheWriteTokens: 0,
+    outputTokens: 60,
+    contextUsed: 1260,
+    contextWindow: 272_000,
+    prefillMs: 0,
+    decodeMs: 0,
+    tokPerSec: 0,
+    source: "server",
+  });
+  const say = (t, text) =>
+    t.onMessage({ parts: [{ type: "text", text }], stopReason: "end_turn", metrics: metrics(), model: t.model.model });
+  core.providers.register({
+    id: "chatgpt-subscription",
+    nativeFolder,
+    modelInfo: (model) => ({ id: model, contextWindow: 272_000, maxOutputTokens: 128_000 }),
+    models: async () => ["gpt-6"],
+    async *stream() {
+      throw new Error("engine only");
+    },
+    engine: {
+      id: "chatgpt-subscription",
+      async turn(t) {
+        if (/cavallo/i.test(t.text) && !/lentamente/i.test(t.text)) {
+          await t.onNativeStart?.({ id: "ig_demo1", kind: "image", prompt: "Una stella gigante rossa nel cielo scuro" });
+          await mkdir(join(nativeFolder, "th-demo"), { recursive: true });
+          const file = join(nativeFolder, "th-demo", "ig_demo1.png");
+          await writeFile(file, star());
+          await t.onNativeMade?.({ id: "ig_demo1", kind: "image", path: file, prompt: "Una stella gigante rossa nel cielo scuro" });
+          await say(t, "Ecco la stella: la trovi qui sopra, ed è salvata anche nella tua cartella.");
+        } else if (/lentamente/i.test(t.text)) {
+          await t.onNativeStart?.({ id: "ig_demo2", kind: "image", prompt: "Un cavallo al tramonto" });
+          // Drawing until the person stops it: the «generating» card stays.
+          await new Promise((ok) => t.signal?.addEventListener("abort", ok, { once: true }));
+          return { resume: "th-demo2", stopReason: "aborted" };
+        } else if (/percorso/i.test(t.text)) {
+          await say(t, "Te l'ho preparata: ![cavallo](/data/engines/codex/generated_images/th-1/ig_1.png)");
+        } else await say(t, "Fatto.");
+        return { resume: "th-demo", stopReason: "end_turn" };
+      },
+    },
+  });
+  // A personal agent: the demo project's budget is spent on purpose.
+  const codexAgent = await core.registry.create(me, {
+    kind: "assistant",
+    parentId: god.id,
+    name: "Grafica",
+    role: "Disegna con Codex",
+    model: { provider: "chatgpt-subscription", model: "gpt-6" },
+  });
+  nativeSessions = {};
+  for (const [key, title, text] of [
+    ["done", "Disegna una stella (Codex)", "Disegnami una stella, anzi un cavallo… no, la stella"],
+    ["path", "Immagine per percorso", "Mandami l'immagine col percorso"],
+  ]) {
+    const s = await core.startSession("local", codexAgent.id);
+    await core.nameSession(s, title);
+    const r = await (await core.send("local", s, key === "done" ? "Disegna il cavallo" : text)).done;
+    console.log(`demo native ${key}: ${r.stopReason} ${r.reason ?? ""}`);
+    nativeSessions[key] = s;
+  }
+  // A picture that cannot be read: its file is gone.
+  await core.store.append({
+    ownerId: "local",
+    projectId: null,
+    agentId: codexAgent.id,
+    sessionId: nativeSessions.path,
+    body: {
+      type: "file.sent",
+      payload: { scope: "assistants", path: "images/manca.png", name: "manca.png", size: 81234, mime: "image/png", caption: "Una foto che non c'è più" },
+    },
+  });
+  const slow = await core.startSession("local", codexAgent.id);
+  await core.nameSession(slow, "Disegna lentamente (Codex)");
+  const { done } = await core.send("local", slow, "Disegna lentamente un cavallo al tramonto");
+  done.catch(() => {});
+  nativeSessions.slow = slow;
+  console.log(JSON.stringify({ nativeSessions }));
+}
 const running = await serve(core, new TokenAuth({ [token]: "local" }), {
   port,
   host: process.env.DEMO_HOST ?? "0.0.0.0",
