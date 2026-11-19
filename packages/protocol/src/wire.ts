@@ -86,6 +86,8 @@ export const ClientMessage = z.discriminatedUnion("type", [
     quotes: z.array(MessageQuote).max(MAX_QUOTES).optional(),
     /** A button the person clicked in an artifact or a widget sent it (3.5.9). */
     via: z.enum(["artifact", "voice"]).optional(),
+    /** «Send anyway» on the secret warning (2026-11-19): not blanked, the choice in the log. */
+    secretOk: z.boolean().optional(),
   }),
   z.object({ type: z.literal("session.interrupt"), sessionId: z.string() }),
   /**

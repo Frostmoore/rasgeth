@@ -573,6 +573,7 @@ type TurnExtra = {
   human?: boolean;
   taskReport?: boolean;
   via?: "artifact" | "voice";
+  secretOk?: boolean;
 };
 
 /** A turn waiting for a place (3.8.10): started by `TurnSeats` when its place comes. */
@@ -619,6 +620,7 @@ interface Live {
       human?: boolean;
       taskReport?: boolean;
       via?: "artifact" | "voice";
+      secretOk?: boolean;
     };
     /** The running turn that waits for its answer (3.8.10): it lends its place. */
     asker?: string;
@@ -2324,6 +2326,7 @@ export class RedGiantCore implements OrchestrationHost {
           ...(q.extra.from && { from: q.extra.from }),
           ...(q.extra.taskReport && { taskReport: true }),
           ...(q.extra.via && { via: q.extra.via }),
+          ...(q.extra.secretOk && { secretOk: true }),
         }));
       },
       priority: PRIORITY[agent.kind],
@@ -6600,6 +6603,11 @@ export class RedGiantCore implements OrchestrationHost {
       /** A button the person clicked in an artifact or a widget sent it (3.5.9). */
       via?: "artifact" | "voice";
       /**
+       * «Send anyway» on the page's or the app's secret warning (2026-11-19): the person's words
+       * are not blanked, by their choice, and the choice is in the log (`message.user.secretOk`).
+       */
+      secretOk?: boolean;
+      /**
        * The turn sending it waits for its answer (3.8.10: run_subagent, ask_god, ask_assistant):
        * it takes that turn's place instead of waiting for one.
        */
@@ -6609,15 +6617,17 @@ export class RedGiantCore implements OrchestrationHost {
     } = {},
   ): Promise<{ done: Promise<SendResult>; queued?: boolean; waiting?: boolean }> {
     // A secret the person pasted (G33.4) never reaches the model nor the log: it is blanked here,
-    // and the agent is told so it can point them to the keychain. The page asks first.
+    // and the agent is told so it can point them to the keychain. The page and the app ask first;
+    // «Send anyway» there (2026-11-19, a link taken for a secret) sends it as written.
     const person = extra.watch === true || extra.human === true;
-    const text = person ? blankPastedSecrets(raw) : raw;
+    const blank = person && extra.secretOk !== true;
+    const text = blank ? blankPastedSecrets(raw) : raw;
     this.updateGate();
     const l = await this.open(ownerId, sessionId);
     this.liveGate(l);
     const { queue, waits, requeue, ...rest } = extra;
     // The replies under quoted passages are the person's words too.
-    if (person && rest.quotes)
+    if (blank && rest.quotes)
       rest.quotes = rest.quotes.map((q) =>
         q.reply ? { ...q, reply: blankPastedSecrets(q.reply) } : q,
       );
@@ -6963,6 +6973,7 @@ export class RedGiantCore implements OrchestrationHost {
       human?: boolean;
       taskReport?: boolean;
       via?: "artifact" | "voice";
+      secretOk?: boolean;
     },
     seat: Seat,
   ): Promise<{ done: Promise<SendResult> }> {

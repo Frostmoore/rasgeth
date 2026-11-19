@@ -41,11 +41,45 @@ const CODE = /\b(?:pin|puk|otp|cvv|cvc|codice segreto|codice pin)\b[^\d\n]{0,12}
 /** "token: …", "api key sk…", "chiave api = …": a long value with letters and digits. */
 const KEY =
   /\b(?:api[ _-]?key|token|secret|chiave(?: api| segreta)?|access key)\s*(?:[:=]|\s(?:is|è)\s)?\s*["'«]?([A-Za-z0-9_\-./+]{16,})/giu;
-/** JSON web tokens, and long random strings with lower case, upper case and digits mixed. */
-const RANDOM = [
-  /\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]*/g,
-  /\b(?=[A-Za-z0-9+/_-]*\d)(?=[A-Za-z0-9+/_-]*[a-z])(?=[A-Za-z0-9+/_-]*[A-Z])[A-Za-z0-9+/_-]{24,}\b/g,
-];
+/** JSON web tokens (only real ones: see `isJwt`). */
+const JWT = /\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]*/g;
+/** Long random strings with lower case, upper case and digits mixed. */
+const RANDOM = /\b(?=[A-Za-z0-9+/_-]*\d)(?=[A-Za-z0-9+/_-]*[a-z])(?=[A-Za-z0-9+/_-]*[A-Z])[A-Za-z0-9+/_-]{24,}\b/g;
+
+/**
+ * A JSON web token's header names its algorithm: `eyJ2IjoiMSJ9.…` ({"v":"1"}, Amazon's `dib`
+ * parameter, 2026-11-19) only looks like one.
+ */
+export function isJwt(token: string): boolean {
+  const head = token.split(".")[0] ?? "";
+  try {
+    const b64 = head.replace(/-/g, "+").replace(/_/g, "/");
+    const json = JSON.parse(atob(b64 + "=".repeat((4 - (b64.length % 4)) % 4))) as unknown;
+    return (
+      typeof json === "object" &&
+      json !== null &&
+      typeof (json as { alg?: unknown }).alg === "string"
+    );
+  } catch {
+    return false;
+  }
+}
+
+/** http(s) links; the punctuation that ends a sentence is not part of them. */
+const LINK = /\bhttps?:\/\/[^\s<>"'«»]+?(?=[.,;:!?)\]]*(?:[\s<>"'«»]|$))/gi;
+/** A link's parameters (query and fragment): `name=value`. */
+const LINK_PARAM = /[?&#;]([^=&#;?\s]+)=([^&#;\s]*)/g;
+/**
+ * A parameter whose name says it carries a secret (2026-11-19): token, access_token,
+ * X-Amz-Signature, X-Amz-Credential, sig, api_key, key… (the whole name or its last part).
+ */
+const SECRET_PARAM =
+  /^(?:.*[-_.])?(?:token|secret|signature|sig|password|passwd|pwd|apikey|api[-_]?key|key|credential|credentials|auth|authorization)$/i;
+
+/** Where the links are: [start, end). */
+function linksIn(text: string): [number, number][] {
+  return [...text.matchAll(LINK)].map((m) => [m.index ?? 0, (m.index ?? 0) + m[0].length]);
+}
 
 function luhn(digits: string): boolean {
   let sum = 0;
@@ -88,16 +122,34 @@ export function findSecrets(text: string): SecretSpan[] {
     const at = (m.index ?? 0) + Math.max(0, m[0].lastIndexOf(value));
     out.push({ start: at, end: at + value.length, kind });
   };
+  // Inside a link only a known key format, a real JWT or a parameter named for a secret counts
+  // (2026-11-19): its ids, tracking codes and the like are not secrets.
+  const links = linksIn(text);
+  const inLink = (at: number) => links.some(([a, b]) => at >= a && at < b);
+  const outside = (kind: SecretSpan["kind"]) => (m: RegExpMatchArray, value?: string) => {
+    const before = out.length;
+    add(m, kind, value);
+    const s = out[before];
+    if (s && inLink(s.start)) out.pop();
+  };
   for (const { re } of SECRET_PATTERNS) for (const m of text.matchAll(re)) add(m, "key");
+  for (const m of text.matchAll(JWT)) if (isJwt(m[0])) add(m, "key");
+  for (const [a, b] of links)
+    for (const m of text.slice(a, b).matchAll(LINK_PARAM)) {
+      const [name, value] = [m[1] ?? "", m[2] ?? ""];
+      if (value.length < 8 || !SECRET_PARAM.test(name)) continue;
+      const at = a + (m.index ?? 0) + 1 + name.length + 1;
+      out.push({ start: at, end: at + value.length, kind: "key" });
+    }
   for (const m of text.matchAll(PASSWORD))
-    if (m[1] && !NOT_A_VALUE.has(m[1].toLowerCase())) add(m, "password", m[1]);
-  for (const m of text.matchAll(CODE)) if (m[1]) add(m, "code", m[1]);
-  for (const m of text.matchAll(KEY)) if (m[1] && /\d/.test(m[1])) add(m, "key", m[1]);
-  for (const re of RANDOM) for (const m of text.matchAll(re)) add(m, "key");
+    if (m[1] && !NOT_A_VALUE.has(m[1].toLowerCase())) outside("password")(m, m[1]);
+  for (const m of text.matchAll(CODE)) if (m[1]) outside("code")(m, m[1]);
+  for (const m of text.matchAll(KEY)) if (m[1] && /\d/.test(m[1])) outside("key")(m, m[1]);
+  for (const m of text.matchAll(RANDOM)) outside("key")(m);
   for (const m of text.matchAll(/\b\d(?:[ -]?\d){12,18}\b/g))
-    if (luhn(m[0].replace(/\D/g, ""))) add(m, "card");
+    if (luhn(m[0].replace(/\D/g, ""))) outside("card")(m);
   for (const m of text.matchAll(/\b[A-Z]{2}\d{2}(?:\s?[A-Z0-9]{4}){2,7}(?:\s?[A-Z0-9]{1,4})?\b/gi))
-    if (ibanValid(m[0])) add(m, "iban");
+    if (ibanValid(m[0])) outside("iban")(m);
   out.sort((a, b) => a.start - b.start || b.end - a.end);
   const merged: Omit<SecretSpan, "value">[] = [];
   for (const s of out) {

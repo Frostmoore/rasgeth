@@ -1660,7 +1660,7 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
         }
         running={v.state === "running"}
         queues
-        onSend={async (text, files) => {
+        onSend={async (text, files, opts) => {
           // Other files land in the workspace the agent works in: its project's, or God's.
           const scope = agent?.projectId ? `project:${agent.projectId}` : "platform";
           const msg = await packMessage(text, files, (path, data) =>
@@ -1676,6 +1676,7 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
             text: msg.text,
             ...(msg.images.length ? { images: msg.images } : {}),
             ...(clean.length ? { quotes: clean } : {}),
+            ...(opts?.secretOk && { secretOk: true }),
             clientId,
           });
           setDrafts([]);

@@ -78,6 +78,8 @@ export interface AgentSessionOptions {
     taskReport?: boolean;
     /** Sent through an artifact's or a widget's button (3.5.9). */
     via?: "artifact" | "voice";
+    /** «Send anyway» on the secret warning (2026-11-19). */
+    secretOk?: boolean;
   }[];
   /**
    * Tools that only read (2026-11-05, as the Claude Agent SDK does): consecutive calls of these
@@ -540,6 +542,8 @@ export class AgentSession {
       person?: boolean;
       /** Sent through an artifact's or a widget's button (3.5.9). */
       via?: "artifact" | "voice";
+      /** «Send anyway» on the secret warning (2026-11-19): recorded with the message. */
+      secretOk?: boolean;
     } = {},
   ): Promise<SendResult> {
     const ctx = { ...this.ctx, signal };
@@ -563,6 +567,7 @@ export class AgentSession {
         ...(quotes.length > 0 && { quotes }),
         ...(notes.length > 0 && { notes }),
         ...(extra.via && { via: extra.via }),
+        ...(extra.secretOk && { secretOk: true }),
       },
     });
     this.history.push({
@@ -1216,6 +1221,7 @@ export class AgentSession {
           ...(m.quotes?.length && { quotes: m.quotes }),
           ...(notes.length > 0 && { notes }),
           ...(m.via && { via: m.via }),
+          ...(m.secretOk && { secretOk: true }),
           steer: true,
         },
       });

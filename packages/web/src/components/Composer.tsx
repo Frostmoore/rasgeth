@@ -264,7 +264,12 @@ export function Composer({
   mentions?: string[];
   placeholder: string;
   running: boolean;
-  onSend: (text: string, attachments: Attachment[]) => void | Promise<void>;
+  /** `secretOk`: the person chose «Send anyway» on the secret warning (2026-11-19). */
+  onSend: (
+    text: string,
+    attachments: Attachment[],
+    opts?: { secretOk?: boolean },
+  ) => void | Promise<void>;
   onStop?: () => void;
   /**
    * The conversation's other commands (p3.5.4: mode, model, effort, Meanwhile, Summarise, Add an
@@ -310,9 +315,10 @@ export function Composer({
   // keychain; the server blanks any that gets through (Telegram and the other chats).
   const [held, setHeld] = useState<SecretSpan[] | null>(null);
   const [vaulting, setVaulting] = useState(false);
-  const send = async (clean?: string) => {
+  // «Send anyway» (2026-11-19, a link taken for a secret): as written, the choice goes with it.
+  const send = async (clean?: string, secretOk = false) => {
     if ((!text.trim() && files.length === 0 && !ready) || (running && !queues) || busy) return;
-    if (clean === undefined) {
+    if (clean === undefined && !secretOk) {
       const found = findSecrets(text);
       if (found.length > 0) {
         setHeld(found);
@@ -323,7 +329,11 @@ export function Composer({
     setBusy(true);
     try {
       const body = clean ?? text;
-      await onSend(body.trim() || files.length === 0 ? body : t("seeAttachments"), files);
+      await onSend(
+        body.trim() || files.length === 0 ? body : t("seeAttachments"),
+        files,
+        ...(secretOk ? [{ secretOk: true }] : []),
+      );
       for (const f of files) if (f.kind === "image") URL.revokeObjectURL(f.url);
       setText("");
       setFiles([]);
@@ -590,10 +600,19 @@ export function Composer({
                 list: [...new Set(held.map((h) => t(`chSecretKind_${h.kind}`)))].join(", "),
               })}
             </p>
+            <p class="dim">{t("chSecretAnywayNote")}</p>
           </div>
           <Acts>
             <button type="button" class="wz-btn quiet" onClick={() => setHeld(null)}>
               {t("chSecretBack")}
+            </button>
+            <button
+              type="button"
+              class="wz-btn quiet"
+              data-testid="secret-send-anyway"
+              onClick={() => void send(undefined, true)}
+            >
+              {t("chSecretAnyway")}
             </button>
             <button
               type="button"
