@@ -4,10 +4,12 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.9.5';
+const newsVersion = '3.9.6';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.9.6', 'news396Echo', 'news396EchoText'),
+  NewsRow('3.9.6', 'news396Engines', 'news396EnginesText'),
   NewsRow('3.9.5', 'news395Questions', 'news395QuestionsText'),
   NewsRow('3.9.5', 'news395AppUpdate', 'news395AppUpdateText'),
   NewsRow('3.9.5', 'news395Secrets', 'news395SecretsText'),
@@ -633,6 +635,10 @@ const generalWords = <String, Map<String, String>>{
     'news395QuestionsText': 'Chat e gli assistenti chiedono adesso con la card delle domande di Rasgeth, con i pulsanti, nella pagina, nell\'app e nelle tue chat, e aspettano la tua risposta; anche con Codex, che prima scriveva le opzioni come elenco e andava avanti da solo.',
     'news395Secrets': 'I link non sono segreti',
     'news395SecretsText': 'Un link incollato non viene più preso per un segreto per colpa di un parametro lungo; i link firmati e i token restano protetti. E quando Rasgeth crede di vedere un segreto, «Invia comunque» manda il messaggio così com\'è.',
+    'news396Echo': 'Cerca nelle conversazioni passate',
+    'news396EchoText': 'Una casella in cima alla barra di sinistra (e nell\'app) trova le parole in tutte le conversazioni passate, con le righe che le contengono; gli agenti possono cercare in quello che avete già fatto insieme, ognuno solo dove può guardare.',
+    'news396Engines': 'Tornano i motori locali per le schede NVIDIA',
+    'news396EnginesText': 'Il motore per Windows con le schede NVIDIA e quello con il prefetch degli esperti si costruiscono di nuovo a ogni versione.',
     'searchCard_brave': 'Ha un indice suo, indipendente da Google e Bing; rispetta la privacy. Credito gratuito ogni mese, poi a consumo.',
     'searchCard_exa': 'Cerca per significato: forte su documentazione, articoli scientifici e tecnici. Credito gratuito all\'inizio.',
     'searchCard_searxng': 'Gratis, senza chiave né account: un motore di ricerca che gira a casa tua (lo avvia Rasgeth, dove può, oppure usi il tuo).',
@@ -915,6 +921,10 @@ const generalWords = <String, Map<String, String>>{
     'news395QuestionsText': 'Chat and the assistants now ask with Rasgeth\'s question card, with buttons, in the page, in the app and in your chats, and wait for your answer; with Codex too, which before wrote the options as a list and went on by itself.',
     'news395Secrets': 'Links are not secrets',
     'news395SecretsText': 'A pasted link is no longer taken for a secret because of a long parameter; signed links and tokens are still protected. And when Rasgeth thinks it sees a secret, «Send anyway» sends your message as it is.',
+    'news396Echo': 'Search past conversations',
+    'news396EchoText': 'A search box at the top of the left bar (and in the app) finds words in every past conversation, with the lines that match; agents can search what you already did together, each only where it may look.',
+    'news396Engines': 'Local engines for NVIDIA cards are back',
+    'news396EnginesText': 'The Windows engine for NVIDIA cards and the experts\' prefetch engine are built again with every release.',
     'searchCard_brave': 'Its own index, independent of Google and Bing; private. Free monthly credit, then pay as you go.',
     'searchCard_exa': 'Searches by meaning: strong on documentation, papers and technical articles. Free credit to start.',
     'searchCard_searxng': 'Free, no key, no account: a search engine that runs at your place (Rasgeth starts it, where it can, or you use yours).',

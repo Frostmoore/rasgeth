@@ -2476,6 +2476,12 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news396Echo: "Search past conversations",
+  news396EchoText:
+    "A search box at the top of the left bar (and in the app) finds words in every past conversation, with the lines that match; agents can search what you already did together, each only where it may look.",
+  news396Engines: "Local engines for NVIDIA cards are back",
+  news396EnginesText:
+    "The Windows engine for NVIDIA cards and the experts' prefetch engine are built again with every release.",
   news395Questions: "Questions wait for your answer",
   news395QuestionsText:
     "Chat and the assistants now ask with {product}'s question card, with buttons, in the page, in the app and in your chats, and wait for your answer; with Codex too, which before wrote the options as a list and went on by itself.",
@@ -9491,6 +9497,12 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news396Echo: "Cerca nelle conversazioni passate",
+  news396EchoText:
+    "Una casella in cima alla barra di sinistra (e nell'app) trova le parole in tutte le conversazioni passate, con le righe che le contengono; gli agenti possono cercare in quello che avete già fatto insieme, ognuno solo dove può guardare.",
+  news396Engines: "Tornano i motori locali per le schede NVIDIA",
+  news396EnginesText:
+    "Il motore per Windows con le schede NVIDIA e quello con il prefetch degli esperti si costruiscono di nuovo a ogni versione.",
   news395Questions: "Le domande aspettano la tua risposta",
   news395QuestionsText:
     "Chat e gli assistenti chiedono adesso con la card delle domande di {product}, con i pulsanti, nella pagina, nell'app e nelle tue chat, e aspettano la tua risposta; anche con Codex, che prima scriveva le opzioni come elenco e andava avanti da solo.",
