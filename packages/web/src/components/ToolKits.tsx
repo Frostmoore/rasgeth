@@ -48,9 +48,7 @@ function KitRow({
   const forAgent = view.agentId !== null;
   const names = k.entries.map(toolName).join(", ");
   const options: [Pick, string][] = [
-    ...(forAgent
-      ? [["default", t("toolsDefault")] as [Pick, string]]
-      : []),
+    ...(forAgent ? [["default", t("toolsDefault")] as [Pick, string]] : []),
     ["auto", t("kitAuto")],
     ["on", t("kitOn")],
     ["off", t("kitOff")],
@@ -82,12 +80,7 @@ function KitRow({
         </div>
       </div>
       <div class={`tl-pick${busy ? " busy" : ""}`}>
-        <Seg<Pick>
-          label={kitName(k.id)}
-          value={value}
-          onChange={onPick}
-          options={options}
-        />
+        <Seg<Pick> label={kitName(k.id)} value={value} onChange={onPick} options={options} />
       </div>
     </div>
   );
