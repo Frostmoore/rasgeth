@@ -7,7 +7,7 @@
 
 import type { AgentKind, MascotColors, MascotSpec, MascotState } from "@redgiant/protocol";
 import { oklchHex } from "./color.js";
-import { mascotRhythm, Z_REST } from "./motion.js";
+import { COMPANIONS, mascotRhythm, Z_REST } from "./motion.js";
 import {
   BODIES,
   COLD,
@@ -107,7 +107,7 @@ export const THEMES = {
 } as const;
 export type MascotTheme = keyof typeof THEMES;
 
-/** God's colour on the hue circle when a page has no `--accent` (its body is a gradient anyway). */
+/** God's hue for its spec's colours (the app's outline before the drawing comes); the drawing has its own. */
 const GOD_HUE = 25;
 const CHROMA = 0.13;
 
@@ -197,13 +197,16 @@ export function mascotSpec(seed: string, kind: AgentKind, parent?: MascotSpec): 
       body: handDrawn ? (kind === "god" ? "god" : "demigod") : at(BODIES, body).n,
       eyes: at(EYES, kind === "god" || kind === "demigod" ? 9 : eyes).n,
       mouth: at(MOUTHS, mouth).n,
-      head: handDrawn ? (kind === "god" ? "crown" : "half crown") : at(HEAD, head).n,
+      head: handDrawn ? (kind === "god" ? "crown" : "diadem") : at(HEAD, head).n,
       pattern: handDrawn ? "none" : at(PATTERNS, pattern),
       holds: holdsOf(kind, tool),
     },
-    bodyPath: handDrawn
-      ? "M50 32.5a28.5 28.5 0 1 1 0 57a28.5 28.5 0 1 1 0-57Z"
-      : at(BODIES, body).d,
+    bodyPath:
+      kind === "god"
+        ? "M50 32.5a28.5 28.5 0 1 1 0 57a28.5 28.5 0 1 1 0-57Z"
+        : kind === "demigod"
+          ? "M50 41.13a24.23 24.23 0 1 1 0 48.45a24.23 24.23 0 1 1 0-48.45Z"
+          : at(BODIES, body).d,
     colors: { light: colorsOf(hue, chroma, "light"), dark: colorsOf(hue, chroma, "dark") },
   };
 }
@@ -396,45 +399,166 @@ function marks(state: MascotState): string {
 /** The body (`core`, the state's motion) and inside it the rare events (`ev`), both around 50,90. */
 const CORE = `<g class="core" style="transform-origin:50px 90px"><g class="ev" style="transform-origin:50px 90px">`;
 
-function godSvg(state: MascotState, small: boolean, demi: boolean, id: string): string {
-  const body = demi ? `class="b so"` : `fill="url(#${id}b)" stroke="#7d1b12"`;
-  // The crown, and the glint that runs over it now and then (hidden at rest).
-  const glint = (x: number, y: number) =>
-    group(
-      "gl",
-      x,
-      y,
-      `<path d="M${x} ${y - 4.2}L${x + 1.1} ${y - 1.1}L${x + 4.2} ${y}L${x + 1.1} ${y + 1.1}L${x} ${y + 4.2}L${x - 1.1} ${y + 1.1}L${x - 4.2} ${y}L${x - 1.1} ${y - 1.1}Z" fill="#fff"/>`,
-      0,
-    );
-  const crown = demi
-    ? `<path d="M40 37L42 27L47 32L52 24L55 33Z" fill="#f5c04a" stroke="#8a5a00" stroke-width="1.8" stroke-linejoin="round" transform="rotate(-14 48 32)"/>${glint(50.5, 23)}`
-    : `<path d="M37 37L39 24L45 30.5L50 20L55 30.5L61 24L63 37Z" fill="#f5c04a" stroke="#8a5a00" stroke-width="2" stroke-linejoin="round"/><circle cx="50" cy="20" r="2.2" fill="#fff3c4" stroke="#8a5a00" stroke-width="1.2"/><circle cx="39" cy="24" r="1.7" fill="#fff3c4" stroke="#8a5a00" stroke-width="1"/><circle cx="61" cy="24" r="1.7" fill="#fff3c4" stroke="#8a5a00" stroke-width="1"/><path d="M38.5 33.5H61.5" stroke="#c88a12" stroke-width="1.6"/>${glint(53, 18.5)}`;
-  // The little planet goes round: the copy behind the body shows on the far half of the orbit.
-  const planet = `<circle cx="17" cy="70.5" r="3.4" class="orbp"/>`;
-  const orbitBack = `<path d="M8 66A43 12 -14 0 1 92 46" fill="none" class="orb" stroke-width="2.4" stroke-linecap="round" opacity=".55"/>${group("orbb", 17, 70.5, planet, 0)}`;
-  const orbitFront = `<path d="M92 46A43 12 -14 0 1 8 66" fill="none" class="orb" stroke-width="2.6" stroke-linecap="round"/>${group("orbf", 17, 70.5, planet)}`;
-  const net = demi
-    ? ""
-    : `<g opacity=".55" stroke="#ffe0b0" stroke-width="1.1" fill="#ffe0b0"><path d="M62 80L70 71L66 62M62 80L55 84" fill="none"/><circle cx="62" cy="80" r="1.6"/><circle cx="70" cy="71" r="1.6"/><circle cx="66" cy="62" r="1.3"/><circle cx="55" cy="84" r="1.3"/></g>`;
-  const mouth =
-    state === "error"
-      ? wavy(70)
-      : state === "think"
-        ? at(MOUTHS, 2).draw(69)
-        : state === "wait"
-          ? at(MOUTHS, 1).draw(69)
-          : at(MOUTHS, 0).draw(69);
-  return `<defs><radialGradient id="${id}b" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#ffb070"/><stop offset=".5" style="stop-color:var(--accent)"/><stop offset="1" stop-color="#8f2016"/></radialGradient><radialGradient id="${id}h"><stop offset=".55" style="stop-color:var(--accent)" stop-opacity=".35"/><stop offset="1" style="stop-color:var(--accent)" stop-opacity="0"/></radialGradient></defs>${
-    demi || small
+// ---------- God and the Demigod (G-B of the 3.9.1 board, the Rasgeth icon) ----------
+// God is the crowned red giant of the icon with three little companion stars going round (the
+// header's); the Demigod is one of those stars grown up, God's drawing at 0.85 with a gold diadem
+// carrying God's red gem. Awake they smile with arched eyes, asleep the eyes are closed and calm.
+// At 32 px and less only body, face and crown (diadem) stay.
+
+/** Eyes per state: happy arcs when awake (the icon's), closed asleep, open at work and waiting. */
+type GodEyes = "happy" | "sleep" | "up" | "x" | "open";
+const godEyeMode = (st: MascotState): GodEyes =>
+  st === "active"
+    ? "happy"
+    : st === "idle"
+      ? "sleep"
+      : st === "think"
+        ? "up"
+        : st === "error"
+          ? "x"
+          : "open";
+
+function godEyeShapes(mode: GodEyes, y: number, dx: number): string {
+  let out = "";
+  for (const x of [50 - dx, 50 + dx]) {
+    if (mode === "happy")
+      out += `<path d="M${x - 5.6} ${y + 1.8}Q${x} ${y - 6.2} ${x + 5.6} ${y + 1.8}" fill="none" stroke="${INK}" stroke-width="3.3" stroke-linecap="round"/>`;
+    else if (mode === "sleep")
+      out += `<path d="M${x - 5.4} ${y - 0.6}Q${x} ${y + 4.6} ${x + 5.4} ${y - 0.6}" fill="none" stroke="${INK}" stroke-width="2.8" stroke-linecap="round"/>`;
+    else if (mode === "x")
+      out += `<path d="M${x - 3.8} ${y - 3.8}l7.6 7.6m0 -7.6l-7.6 7.6" stroke="${INK}" stroke-width="2.8" stroke-linecap="round"/>`;
+    else {
+      const up = mode === "up";
+      out += at(EYES, 9).draw(x, y, up ? 1 : 0, up ? -2 : 0);
+    }
+  }
+  return out;
+}
+
+/** The eyes (`eyes`, blinking) and, asleep, the open eyes of waking up with a start (`eyw`). */
+function godEyes(state: MascotState, y: number, dx: number, tiny: boolean): string {
+  let out = group("eyes", 50, y, godEyeShapes(godEyeMode(state), y, dx));
+  if (state === "idle" && !tiny) out += group("eyw", 50, y, godEyeShapes("open", y, dx), 0);
+  return out;
+}
+
+const godSmile = (y: number) =>
+  `<path d="M44.5 ${y}Q50 ${y + 5.2} 55.5 ${y}" fill="none" stroke="${INK}" stroke-width="2.6" stroke-linecap="round"/>`;
+
+const godMouthOf = (state: MascotState, y: number) =>
+  state === "error"
+    ? wavy(y)
+    : state === "think"
+      ? at(MOUTHS, 2).draw(y)
+      : state === "wait"
+        ? at(MOUTHS, 1).draw(y)
+        : godSmile(y);
+
+const godCheeks = (y: number, fill: string, op: number) =>
+  `<ellipse cx="30.5" cy="${y}" rx="5.4" ry="3.7" fill="${fill}" opacity="${op}"/><ellipse cx="69.5" cy="${y}" rx="5.4" ry="3.7" fill="${fill}" opacity="${op}"/>`;
+
+/** The glint that runs over the crown (or the gem) now and then, hidden at rest. */
+const godGlint = (x: number, y: number) =>
+  group(
+    "gl",
+    x,
+    y,
+    `<path d="M${x} ${y - 4.2}L${x + 1.1} ${y - 1.1}L${x + 4.2} ${y}L${x + 1.1} ${y + 1.1}L${x} ${y + 4.2}L${x - 1.1} ${y + 1.1}L${x - 4.2} ${y}L${x - 1.1} ${y - 1.1}Z" fill="#fff"/>`,
+    0,
+  );
+
+/** The giant's gradient, its halo and the clip of its surface. */
+const giantDefs = (id: string, stops: readonly string[], edge: string) =>
+  `<radialGradient id="${id}b" cx=".4" cy=".36" r=".72"><stop offset="0" stop-color="${stops[0]}"/><stop offset=".45" stop-color="${stops[1]}"/><stop offset=".85" stop-color="${stops[2]}"/><stop offset="1" stop-color="${stops[3]}"/></radialGradient><radialGradient id="${id}h"><stop offset=".5" stop-color="${edge}" stop-opacity=".5"/><stop offset="1" stop-color="${edge}" stop-opacity="0"/></radialGradient><clipPath id="${id}c"><circle cx="50" cy="61" r="28.5"/></clipPath><linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe9a6"/><stop offset=".45" stop-color="#f5c04a"/><stop offset="1" stop-color="#c9861a"/></linearGradient>`;
+
+const GOD_STOPS = ["#ffb45a", "#f45a26", "#d8311a", "#8f1d12"] as const;
+
+/** The red giant's surface: soft bands of lava, clipped to the body. */
+const LAVA = (id: string) =>
+  `<g clip-path="url(#${id}c)" fill="none" stroke-linecap="round"><path d="M18 52C30 44 42 56 56 47S76 44 84 50" stroke="#ffcf6b" stroke-width="3.2" opacity=".45"/><path d="M24 82C36 74 48 86 62 78S78 76 86 70" stroke="#c4261a" stroke-width="5" opacity=".35"/><path d="M30 88C44 84 56 92 70 86" stroke="#c4261a" stroke-width="3" opacity=".3"/></g>`;
+
+/** God's crown (the icon's: three points with balls), tilted on the right of the head. */
+const CROWN = { x: 63, y: 35.5, rot: 18 };
+function godCrown(id: string, s: number): string {
+  const sw = +(1.7 / s).toFixed(2);
+  return `<g transform="translate(${CROWN.x} ${CROWN.y}) rotate(${CROWN.rot}) scale(${s})"><path d="M-11 0L-12.5 -11.5L-5.2 -4.6L0 -14L5.2 -4.6L12.5 -11.5L11 0Z" fill="url(#${id}g)" stroke="#8a5a00" stroke-width="${sw}" stroke-linejoin="round"/><rect x="-11.6" y="-3.2" width="23.2" height="4.6" rx="1.6" fill="#f2b632" stroke="#8a5a00" stroke-width="${sw}"/><g fill="#ffe9a6" stroke="#8a5a00" stroke-width="${+(1.1 / s).toFixed(2)}"><circle cx="-12.5" cy="-11.5" r="2.5"/><circle cx="0" cy="-14" r="2.8"/><circle cx="12.5" cy="-11.5" r="2.5"/></g><circle cx="0" cy="-.9" r="1.5" fill="#e5371f"/></g>`;
+}
+/** The crown's middle point, where the glint shows. */
+function crownTip(s: number): [number, number] {
+  const r = (CROWN.rot * Math.PI) / 180;
+  return [
+    +(CROWN.x + s * 14 * Math.sin(r)).toFixed(2),
+    +(CROWN.y - s * 14 * Math.cos(r)).toFixed(2),
+  ];
+}
+
+/** A companion star with a small face (the header's), drawn around its rest place. */
+const COMPANION_COLORS: Record<string, [string, string]> = {
+  "": ["#ffe7a0", "#c98a1a"],
+  "2": ["#fff4d6", "#c9a35a"],
+  "3": ["#ff9a72", "#b0412a"],
+};
+function companion(k: string, x: number, y: number, scale: number): string {
+  const [fill, line] = COMPANION_COLORS[k] ?? ["#ffe7a0", "#c98a1a"];
+  // Plain shapes, no group inside: the moving group is the only one (the app cuts it as a layer).
+  const n = (v: number) => +v.toFixed(2);
+  const X = (dx: number) => n(x + dx * scale);
+  const Y = (dy: number) => n(y + dy * scale);
+  return `<circle cx="${x}" cy="${y}" r="${n(5.6 * scale)}" fill="${fill}" stroke="${line}" stroke-width="${n(1.1 * scale)}"/><circle cx="${X(-1.9)}" cy="${Y(-0.4)}" r="${n(0.75 * scale)}" fill="${INK}"/><circle cx="${X(1.9)}" cy="${Y(-0.4)}" r="${n(0.75 * scale)}" fill="${INK}"/><path d="M${X(-1.4)} ${Y(1.5)}Q${x} ${Y(2.7)} ${X(1.4)} ${Y(1.5)}" fill="none" stroke="${INK}" stroke-width="${n(0.7 * scale)}" stroke-linecap="round"/>`;
+}
+
+function godSvg(state: MascotState, size: number, id: string): string {
+  const compact = size <= 32;
+  const tiny = size <= 20;
+  let back = "";
+  let front = "";
+  if (!compact) {
+    // The orbit and its three companions: each has a front and a back copy that trade places.
+    back += `<path d="M8 66A43 12 -14 0 1 92 46" fill="none" stroke="#ffb36b" stroke-width="1.2" opacity=".55"/>`;
+    front += `<path d="M92 46A43 12 -14 0 1 8 66" fill="none" stroke="#ffb36b" stroke-width="1.4" opacity=".8"/>`;
+    for (const c of COMPANIONS) {
+      back += group(`orbb${c.k}`, c.x, c.y, companion(c.k, c.x, c.y, 0.82), c.front ? 0 : 1);
+      front += group(`orbf${c.k}`, c.x, c.y, companion(c.k, c.x, c.y, 1), c.front ? 1 : 0);
+    }
+  }
+  const crownS = compact ? 0.95 : 0.8;
+  const mouth = godMouthOf(state, 66);
+  return `<defs>${giantDefs(id, GOD_STOPS, GOD_STOPS[2])}</defs>${
+    compact
       ? ""
-      : group("hal", 50, 60, `<circle cx="50" cy="60" r="48" fill="url(#${id}h)" class="halo"/>`)
-  }${CORE}${small ? "" : orbitBack}<circle cx="50" cy="61" r="28.5" ${body} stroke-width="2.4"/><ellipse cx="38" cy="45" rx="7" ry="4" fill="#fff" opacity=".35" transform="rotate(-35 38 45)"/>${net}${eyesSvg(
-    9,
-    eyeMode(state),
-    demi ? "b" : "godlid",
-    small,
-  )}<ellipse cx="33" cy="64" rx="4.5" ry="2.8" fill="#ff9aa0" opacity=".55"/><ellipse cx="67" cy="64" rx="4.5" ry="2.8" fill="#ff9aa0" opacity=".55"/>${small ? mouth : mouthSvg(mouth, 69, state)}${small ? "" : orbitFront}${small ? "" : crown}${small ? "" : extrasSvg(state, 69, demi ? 24 : 18)}</g></g>`;
+      : group("hal", 50, 61, `<circle cx="50" cy="61" r="42" fill="url(#${id}h)" opacity=".8"/>`)
+  }${CORE}${back}<circle cx="50" cy="61" r="28.5" fill="url(#${id}b)" stroke="#a3200f" stroke-width="${compact ? 2.6 : 1.6}"/>${compact ? "" : LAVA(id)}<ellipse cx="37" cy="44" rx="7" ry="3.6" fill="#fff" opacity=".3" transform="rotate(-35 37 44)"/>${godEyes(state, 57, 11.5, tiny)}${godCheeks(65.5, "#ff5f5f", 0.55)}${tiny ? mouth : mouthSvg(mouth, 66, state)}${front}${godCrown(id, crownS)}${compact ? "" : godGlint(...crownTip(crownS))}${compact ? "" : extrasSvg(state, 66, 24)}</g></g>`;
+}
+
+/** The Demigod: God's drawing at 0.85 around the feet (as a subagent's), so it reads as God's child. */
+const DEMI_SCALE = 0.85;
+const DEMI_G = `<g transform="translate(${+(50 - 50 * DEMI_SCALE).toFixed(2)} ${+(90 - 90 * DEMI_SCALE).toFixed(2)}) scale(${DEMI_SCALE})">`;
+/** The seed's warm hue (55, 75, 95) moves the gold a little: every demigod cream and gold, none alike. */
+const demiGold = (hue: number) => 78 + (hue - 55) * 0.3;
+const demiStops = (hue: number) => {
+  const h = demiGold(hue);
+  return [
+    oklchHex(0.985, 0.03, h + 10),
+    oklchHex(0.94, 0.1, h + 5),
+    oklchHex(0.85, 0.15, h - 5),
+    oklchHex(0.6, 0.12, h - 10),
+  ];
+};
+
+function demigodSvg(state: MascotState, size: number, id: string, hue: number): string {
+  const compact = size <= 32;
+  const tiny = size <= 20;
+  const stops = demiStops(hue);
+  const edge = stops[3] as string;
+  const w = compact ? 1.25 : 1;
+  // The diadem: a thin gold band on the forehead with God's red gem.
+  const diadem = `<path d="M27 43Q50 30 73 43" fill="none" stroke="#8a5a00" stroke-width="${5.4 * w}" stroke-linecap="round"/><path d="M27 43Q50 30 73 43" fill="none" stroke="#f5c04a" stroke-width="${3 * w}" stroke-linecap="round"/><path d="M50 30.5L55 36.5L50 42.5L45 36.5Z" fill="#e5371f" stroke="#7d1b12" stroke-width="1.4" stroke-linejoin="round"/><path d="M48.2 35.2L50 33L51 34.4" fill="none" stroke="#fff" stroke-width="1" opacity=".8" stroke-linecap="round"/>`;
+  const mouth = godMouthOf(state, 68);
+  return `<defs>${giantDefs(id, stops, stops[2] as string)}</defs>${
+    compact
+      ? ""
+      : `${DEMI_G}${group("hal", 50, 61, `<circle cx="50" cy="61" r="42" fill="url(#${id}h)" opacity=".9"/>`)}</g>`
+  }${CORE}${DEMI_G}<circle cx="50" cy="61" r="28.5" fill="url(#${id}b)" stroke="${edge}" stroke-width="${compact ? 3 : 2}"/><ellipse cx="37" cy="47" rx="6.5" ry="3.4" fill="#fff" opacity=".6" transform="rotate(-35 37 47)"/>${diadem}${godEyes(state, 59, 11, tiny)}${godCheeks(67, "#ff7a6a", 0.6)}${tiny ? mouth : mouthSvg(mouth, 68, state)}${compact ? "" : godGlint(50, 31)}${compact ? "" : extrasSvg(state, 68, 28)}</g></g></g>`;
 }
 
 function bodySvg(s: MascotSpec, state: MascotState, size: number, id: string): string {
@@ -527,9 +651,7 @@ function painter(s: MascotSpec, state: MascotState, theme: MascotTheme) {
     if (has("sl")) Object.assign(a, { stroke: c.soft, fill: "none" });
     if (has("tint2")) a.fill = c.second;
     if (has("cap")) a.fill = c.cap;
-    if (has("godlid") || has("hsled") || has("dot")) a.fill = t.accent;
-    if (has("orb")) a.stroke = "#ffb36b";
-    if (has("orbp")) a.fill = "#ffd27a";
+    if (has("hsled") || has("dot")) a.fill = t.accent;
     if (has("ring"))
       Object.assign(a, { fill: "none", stroke: t.accent, "stroke-width": "2.2", opacity: ".45" });
     if (has("mk")) {
@@ -570,9 +692,9 @@ export function mascotSvg(spec: MascotSpec, options: MascotSvgOptions = {}): str
   const id = options.idPrefix ?? `rgm${++uid}`;
   let content =
     spec.kind === "god"
-      ? godSvg(state, small, false, id)
+      ? godSvg(state, size, id)
       : spec.kind === "demigod"
-        ? godSvg(state, small, true, id)
+        ? demigodSvg(state, size, id, spec.hue)
         : bodySvg(spec, state, size, id);
   if (!small) content += marks(state);
   const a11y = options.label

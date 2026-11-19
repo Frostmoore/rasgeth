@@ -3749,7 +3749,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asMascotHelp => 'Renaming it never changes its face: only you change it, here.';
 
   @override
-  String get asMascotGod => 'God\'s mascot is drawn by hand: it is always the red giant.';
+  String get asMascotGod =>
+      'God\'s mascot is drawn by hand: the crowned giant star, with three little stars going round it.';
 
   @override
   String get asName => 'Name';

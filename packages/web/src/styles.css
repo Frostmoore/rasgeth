@@ -4222,6 +4222,10 @@ html[data-theme="dark"] :is(.wz, .wz-look) {
   display: block;
   flex: none;
 }
+.wz-av > svg {
+  width: 100%;
+  height: 100%;
+}
 .wz-role {
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -20598,15 +20602,6 @@ html[data-theme="dark"] {
 }
 .masc .cap {
   fill: oklch(0.64 0.12 var(--h2));
-}
-.masc .godlid {
-  fill: var(--accent);
-}
-.masc .orb {
-  stroke: #ffb36b;
-}
-.masc .orbp {
-  fill: #ffd27a;
 }
 .masc.st-error .b {
   fill: oklch(var(--mL) calc(var(--c) * 0.3) var(--h));

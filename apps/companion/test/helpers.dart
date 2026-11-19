@@ -18,7 +18,8 @@ class MascotFixture {
       svg = (j['svg'] as Map<String, dynamic>).map(
         (theme, states) => MapEntry(theme, (states as Map<String, dynamic>).cast<String, String>()),
       ),
-      tiny = j['tiny'] as String;
+      tiny = j['tiny'] as String,
+      compact = j['compact'] as String;
 
   final String seed;
   final String kind;
@@ -26,6 +27,9 @@ class MascotFixture {
   final Map<String, dynamic> raw;
   final Map<String, Map<String, String>> svg;
   final String tiny;
+
+  /// The 32 px drawing (idle, light): God and the Demigod without orbit, halo and glints.
+  final String compact;
 
   String svgOf(MascotTheme t, MascotState s) => svg[t.name]![s.name]!;
   String get slug => seed.toLowerCase().replaceAll(' ', '-');

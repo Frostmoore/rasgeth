@@ -6546,7 +6546,7 @@ abstract class AppLocalizations {
   /// No description provided for @asMascotGod.
   ///
   /// In en, this message translates to:
-  /// **'God\'s mascot is drawn by hand: it is always the red giant.'**
+  /// **'God\'s mascot is drawn by hand: the crowned giant star, with three little stars going round it.'**
   String get asMascotGod;
 
   /// No description provided for @asName.

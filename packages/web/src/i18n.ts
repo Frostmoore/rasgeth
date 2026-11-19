@@ -340,7 +340,8 @@ const en = {
   mascotState_error: "blocked",
   mascotTitle: "Mascot",
   mascotHelp: "Its face stays the same when you rename it. You can ask for a new one.",
-  mascotGodHelp: "God's mascot is drawn by hand: it is always the red giant.",
+  mascotGodHelp:
+    "God's mascot is drawn by hand: the crowned giant star, with three little stars going round it.",
   mascotChange: "Change mascot",
   mascotChangeAsk: "Give {name} a new face? The current one cannot come back.",
   mascotChanged: "New mascot",
@@ -7145,7 +7146,8 @@ const it: Record<Key, string> = {
   mascotState_error: "bloccato",
   mascotTitle: "Mascotte",
   mascotHelp: "La faccia resta la stessa anche se lo rinomini. Puoi chiederne una nuova.",
-  mascotGodHelp: "La mascotte di God è disegnata a mano: è sempre il gigante rosso.",
+  mascotGodHelp:
+    "La mascotte di God è disegnata a mano: la stella gigante con la corona, con tre stelline che le girano attorno.",
   mascotChange: "Cambia mascotte",
   mascotChangeAsk: "Dare a {name} una faccia nuova? Quella di adesso non torna più.",
   mascotChanged: "Mascotte nuova",
