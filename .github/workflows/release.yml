@@ -1090,7 +1090,8 @@ jobs:
   # Alone: Actions > Release images > Run workflow, only = llama-cuda.
   llama-cuda:
     needs: engine-plan
-    if: needs.engine-plan.outputs.win == 'build'
+    # !cancelled(): with `only` ci-build is skipped, and a skipped ancestor would skip this job too.
+    if: ${{ !cancelled() && needs.engine-plan.outputs.win == 'build' }}
     runs-on: windows-latest
     timeout-minutes: 240
     permissions:
@@ -1187,7 +1188,8 @@ jobs:
   # name the app looks for (moe-prefetch.ts, Rasgeth.cs: releases/download/v<version>/<zip>).
   llama-cuda-reuse:
     needs: engine-plan
-    if: needs.engine-plan.outputs.win == 'reuse'
+    # !cancelled(): with `only` ci-build is skipped, and a skipped ancestor would skip this job too.
+    if: ${{ !cancelled() && needs.engine-plan.outputs.win == 'reuse' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -1215,7 +1217,8 @@ jobs:
   # cuda-prefetch-<fingerprint>. Alone: Run workflow with only = engine-prefetch (built, not pushed).
   engine-prefetch:
     needs: engine-plan
-    if: needs.engine-plan.outputs.linux == 'build'
+    # !cancelled(): with `only` ci-build is skipped, and a skipped ancestor would skip this job too.
+    if: ${{ !cancelled() && needs.engine-plan.outputs.linux == 'build' }}
     runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:
@@ -1256,7 +1259,8 @@ jobs:
   # The fingerprint is known: the image an earlier release built gets this release's tags, no build.
   engine-prefetch-reuse:
     needs: engine-plan
-    if: needs.engine-plan.outputs.linux == 'reuse'
+    # !cancelled(): with `only` ci-build is skipped, and a skipped ancestor would skip this job too.
+    if: ${{ !cancelled() && needs.engine-plan.outputs.linux == 'reuse' }}
     runs-on: ubuntu-latest
     steps:
       - uses: docker/setup-buildx-action@v3
