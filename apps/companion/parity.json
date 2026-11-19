@@ -466,6 +466,16 @@
         27
       ],
       "note": "Who reads aloud, volume and press-and-talk are native; hands-free, wake word and transcription service settings are not."
+    },
+    "portrait": {
+      "app": "native",
+      "files": [
+        "lib/settings/portrait_screen.dart",
+        "lib/settings/api/portrait_api.dart",
+        "lib/screens/server_settings_screen.dart"
+      ],
+      "phase": "3.9.4",
+      "note": "Native (3.9.4): Settings › Portrait («Mirror»): on/off, who reads it, the traits grouped with how sure and where each comes from (the conversation opens), change with category, remove, not true, add by hand, the text the agents read, forget everything."
     }
   },
   "viewers": {

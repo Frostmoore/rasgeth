@@ -54,6 +54,9 @@ import {
   type PairCode,
   type PendingPair,
   type PermissionRequestInfo,
+  type PortraitAgents,
+  type PortraitCategory,
+  type PortraitView,
   PROTOCOL_VERSION,
   type Recipe,
   type RedGiantRole,
@@ -1129,6 +1132,18 @@ export class Api {
   /** Forgets a memory for good: its text goes from every past change too. */
   forgetMemory = (id: string) => this.call("POST", `/api/memory/${encodeURIComponent(id)}/forget`);
   setMemoryAuto = (auto: boolean) => this.call("PUT", "/api/memory/settings", { auto });
+  /** The person's portrait (3.9.4): built by itself from the conversations, corrected here. */
+  portrait = () => this.call<PortraitView>("GET", "/api/portrait");
+  addTrait = (text: string, category: PortraitCategory) =>
+    this.call<{ id: string }>("POST", "/api/portrait", { text, category });
+  editTrait = (id: string, change: { text?: string; category?: PortraitCategory }) =>
+    this.call("PUT", `/api/portrait/${encodeURIComponent(id)}`, change);
+  removeTrait = (id: string) => this.call("DELETE", `/api/portrait/${encodeURIComponent(id)}`);
+  /** «Not true»: gone, and never proposed again. */
+  denyTrait = (id: string) => this.call("POST", `/api/portrait/${encodeURIComponent(id)}/deny`);
+  forgetPortrait = () => this.call("POST", "/api/portrait/forget");
+  setPortrait = (change: { on?: boolean; agents?: PortraitAgents }) =>
+    this.call("PUT", "/api/portrait/settings", change);
   /** The keychain (G33.4): values go up once and come back only through `revealVault`. */
   vault = () => this.call<VaultView>("GET", "/api/vault");
   addVault = (e: VaultInput) => this.call<VaultEntry>("POST", "/api/vault", e);

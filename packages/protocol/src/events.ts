@@ -6,6 +6,7 @@ import { MAX_NOTES, MAX_QUOTES, MessageQuote } from "./chat-tools.js";
 import { DocDecidedPayload, DocOpsPayload, DocProposedPayload, DocReplacedPayload } from "./doc.js";
 import { AssistantPart, ImagePart, NativeContent, StopReason } from "./messages.js";
 import { MessageMetrics } from "./metrics.js";
+import { PortraitAgents, PortraitTraitPayload } from "./portrait.js";
 import { ProductsShownPayload } from "./products.js";
 import { Answers, Question } from "./questions.js";
 
@@ -727,6 +728,28 @@ export const EventBody = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("memory.settings"),
     payload: z.object({ auto: z.boolean(), by: z.string() }),
+  }),
+  /** The person's portrait (3.9.4): one trait learned, said again, corrected or taken away. */
+  z.object({
+    type: z.literal("portrait.trait"),
+    payload: PortraitTraitPayload,
+  }),
+  /** The portrait on or off, and which agents read it (3.9.4). */
+  z.object({
+    type: z.literal("portrait.settings"),
+    payload: z.object({
+      on: z.boolean().optional(),
+      agents: PortraitAgents.optional(),
+      by: z.string(),
+    }),
+  }),
+  /**
+   * «Forget everything» (3.9.4): the text of every `portrait.trait` event was erased; this event
+   * keeps no text, and the portrait starts again empty.
+   */
+  z.object({
+    type: z.literal("portrait.forgotten"),
+    payload: z.object({ by: z.string() }),
   }),
   /**
    * A conversation brought in from another assistant (G36.7, ChatGPT or Claude): the messages

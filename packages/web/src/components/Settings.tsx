@@ -34,6 +34,7 @@ import {
   IconTool,
   IconTree,
   IconUpload,
+  IconUser,
 } from "../icons.js";
 import { openTab, type SettingsSection } from "../state.js";
 import { Artifacts } from "./Artifacts.js";
@@ -55,6 +56,7 @@ import { Knowledge } from "./Knowledge.js";
 import { Machines } from "./Machines.js";
 import { Nodes } from "./Nodes.js";
 import { Platform } from "./Platform.js";
+import { PortraitPage } from "./Portrait.js";
 import { ProjectsPage } from "./ProjectArchive.js";
 import { RemoteSettings } from "./RemoteSettings.js";
 import { RequestsPage } from "./RequestsPage.js";
@@ -87,6 +89,7 @@ export const GROUPS: { title: () => string; sections: Section[] }[] = [
       { id: "projects", label: () => t("paPageQ"), icon: <IconBox size={20} /> },
       { id: "artifacts", label: () => t("arSection"), icon: <IconCode size={20} /> },
       { id: "memory", label: () => t("memSection"), icon: <IconBook size={20} /> },
+      { id: "portrait", label: () => t("prSection"), icon: <IconUser size={20} /> },
       { id: "knowledge", label: () => t("kbSection"), icon: <IconDatabase size={20} /> },
       { id: "automations", label: () => t("automations"), icon: <IconClock size={20} /> },
       { id: "extensions", label: () => t("extensions"), icon: <IconPuzzle size={20} /> },
@@ -203,6 +206,7 @@ export function Settings({ section = "general" }: { section?: SettingsSection | 
         {section === "projects" && <ProjectsPage />}
         {section === "artifacts" && <Artifacts />}
         {section === "memory" && <SharedMemoryPage />}
+        {section === "portrait" && <PortraitPage />}
         {section === "knowledge" && <Knowledge />}
         {section === "automations" && <Automations />}
         {section === "extensions" && <Extensions />}

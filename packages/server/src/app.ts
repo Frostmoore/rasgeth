@@ -37,6 +37,8 @@ import {
   type ModelSpec as ModelSpecType,
   PermissionMode,
   PermissionRequestInfo,
+  PortraitAgents,
+  PortraitCategory,
   PRODUCT_NAME,
   PROJECT_AGENTS_MAX,
   PROTOCOL_VERSION,
@@ -110,6 +112,7 @@ import { MagicExtNotFoundError, MagicExtStateError } from "./magic-extensions.js
 import { nodeRoutes } from "./nodes/routes.js";
 import { personRoutes } from "./person-routes.js";
 import { ConfigError, PlatformPolicy } from "./platform.js";
+import { PortraitError, TRAIT_LIMIT } from "./portrait.js";
 import { hasOwnRepo } from "./project-git.js";
 import { ProjectError, SubprojectError } from "./projects.js";
 import { RefineError } from "./prompt-refiner.js";
@@ -3106,6 +3109,74 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       return c.json({ ok: true }, 200);
     } catch (err) {
       return memoryFailed(c, err);
+    }
+  });
+  // The person's portrait (3.9.4, «Mirror»): built by itself from the conversations; the person
+  // sees each trait with where it comes from, corrects it, says «not true», turns it all off or
+  // forgets everything. Every route acts on the signed-in owner's portrait only.
+  const portraitFailed = (c: Context<Env>, err: unknown) => {
+    if (err instanceof PortraitError) return c.json({ error: err.message, code: err.code }, 400);
+    throw err;
+  };
+  const TraitBody = z.object({
+    text: z
+      .string()
+      .min(1)
+      .max(TRAIT_LIMIT * 2)
+      .optional(),
+    category: PortraitCategory.optional(),
+  });
+  app.get("/api/portrait", async (c) => c.json(await core.portraitView(owner(c)), 200));
+  app.put("/api/portrait/settings", async (c) => {
+    const b = z
+      .object({ on: z.boolean().optional(), agents: PortraitAgents.optional() })
+      .safeParse(await c.req.json().catch(() => undefined));
+    if (!b.success || (b.data.on === undefined && !b.data.agents))
+      return c.json({ error: "on or agents is required" }, 400);
+    await core.portrait.setSettings(owner(c), b.data);
+    return c.json({ ok: true }, 200);
+  });
+  app.post("/api/portrait", async (c) => {
+    const b = TraitBody.safeParse(await c.req.json().catch(() => undefined));
+    if (!b.success || !b.data.text) return c.json({ error: "text is required" }, 400);
+    try {
+      const id = await core.portrait.add(owner(c), b.data.text, b.data.category ?? "about");
+      return c.json({ id }, 200);
+    } catch (err) {
+      return portraitFailed(c, err);
+    }
+  });
+  // «Dimentica tutto»: every trait and its words in every past event (not undoable).
+  app.post("/api/portrait/forget", async (c) => {
+    await core.portrait.forgetAll(owner(c));
+    return c.json({ ok: true }, 200);
+  });
+  app.put("/api/portrait/:id", async (c) => {
+    const b = TraitBody.safeParse(await c.req.json().catch(() => undefined));
+    if (!b.success || (!b.data.text && !b.data.category))
+      return c.json({ error: "text or category is required" }, 400);
+    try {
+      await core.portrait.edit(owner(c), c.req.param("id"), b.data);
+      return c.json({ ok: true }, 200);
+    } catch (err) {
+      return portraitFailed(c, err);
+    }
+  });
+  // «Non è vero»: gone, and never proposed again.
+  app.post("/api/portrait/:id/deny", async (c) => {
+    try {
+      await core.portrait.deny(owner(c), c.req.param("id"));
+      return c.json({ ok: true }, 200);
+    } catch (err) {
+      return portraitFailed(c, err);
+    }
+  });
+  app.delete("/api/portrait/:id", async (c) => {
+    try {
+      await core.portrait.remove(owner(c), c.req.param("id"));
+      return c.json({ ok: true }, 200);
+    } catch (err) {
+      return portraitFailed(c, err);
     }
   });
   // A new conversation that goes on from this one (G36.23): «Continua da qui» from a message
