@@ -1,7 +1,6 @@
 // Pictures and files that reach the person (2026-11-19, «generazione nativa del modello prima del
 // nostro strumento»): what the agent is told when its model draws by itself, and a reminder when
 // an answer shows a picture by a path the person cannot open (the card stayed mute on Coder).
-import { stat } from "node:fs/promises";
 import { isAbsolute } from "node:path";
 import type { Hooks } from "@redgiant/agent";
 import { type Capability, PRODUCT_NAME } from "@redgiant/protocol";
@@ -72,18 +71,11 @@ export function imageTextHook(): NonNullable<Hooks["stop"]>[number] {
 /**
  * send_file's error for a path it cannot send (2026-11-19, Chat on Coder sent Codex's picture by
  * its path): what to do instead. A picture in an engine's own folder is already in the chat; any
- * other file outside the workspace goes there first.
+ * other file goes into the workspace first.
  */
-export async function sendFileMissing(path: string): Promise<string> {
+export function sendFileMissing(path: string): string {
   if (/[/\\]generated_images[/\\]/.test(path))
     return `"${path}" is in your model's own folder, outside your workspace. ${PRODUCT_NAME} saves the pictures your model makes in your workspace (images/<date>/) and sends them to the person by itself: it is already in the chat. Do not send it again; if you need the file, look in images/.`;
-  const exists =
-    isAbsolute(path) &&
-    (await stat(path).then(
-      (x) => x.isFile(),
-      () => false,
-    ));
-  if (exists)
-    return `"${path}" is outside your workspace and the projects you may read: the person cannot get it from there. Save or copy it into your workspace first (for example images/ or files/), then send it from there. Until send_file confirms, do not say it was sent.`;
-  return `There is no file "${path}" in your workspace${isAbsolute(path) ? " or in a project you may read" : ""}. Files reach the person only from your workspace: save or copy it there first, then send it. Until send_file confirms, do not say it was sent.`;
+  // Whether a file exists where the agent may not read is never said (a project not its own).
+  return `There is no file "${path}" in your workspace${isAbsolute(path) ? " or in a project you may read" : ""}. Files reach the person only from your workspace: save or copy it there first (for example in images/), then send it from there. Until send_file confirms, do not say it was sent.`;
 }

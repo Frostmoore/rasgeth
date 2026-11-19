@@ -259,14 +259,17 @@ describe("pictures the person cannot open (2026-11-19)", () => {
     expect(done("all good")).toBeUndefined();
   });
 
-  it("tells send_file's caller what to do with a path outside the workspace", async () => {
-    expect(await sendFileMissing("/data/engines/codex/generated_images/t/a.png")).toMatch(
+  it("tells send_file's caller what to do with a path outside the workspace", () => {
+    expect(sendFileMissing("/data/engines/codex/generated_images/t/a.png")).toMatch(
       /already in the chat/,
     );
-    expect(await sendFileMissing(import.meta.filename)).toMatch(
-      /Save or copy it into your workspace/,
+    // A file elsewhere: never whether it exists, only what to do.
+    expect(sendFileMissing(import.meta.filename)).toMatch(
+      /^There is no file .* or in a project you may read\. Files reach the person only from your workspace/,
     );
-    expect(await sendFileMissing("nope.png")).toMatch(/only from your workspace/);
+    expect(sendFileMissing("nope.png")).toMatch(
+      /^There is no file "nope.png" in your workspace\. /,
+    );
   });
 
   it("knows a picture from its bytes and says nothing without a native image", () => {

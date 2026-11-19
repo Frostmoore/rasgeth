@@ -4689,7 +4689,7 @@ export class RedGiantCore implements OrchestrationHost {
         const abs = (await ws.isFile(i.path).catch(() => false))
           ? await new LocalWorkspace(ws.root).resolve(i.path)
           : await this.readableElsewhere(agent, i.path);
-        if (!abs) return { content: await sendFileMissing(i.path), isError: true };
+        if (!abs) return { content: sendFileMissing(i.path), isError: true };
         const st = await stat(abs);
         if (st.size > MAX)
           return {
