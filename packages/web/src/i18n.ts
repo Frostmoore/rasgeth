@@ -2476,6 +2476,15 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news395Questions: "Questions wait for your answer",
+  news395QuestionsText:
+    "Chat and the assistants now ask with {product}'s question card, with buttons, in the page, in the app and in your chats, and wait for your answer; with Codex too, which before wrote the options as a list and went on by itself.",
+  news395AppUpdate: "The Windows app really updates itself",
+  news395AppUpdateText:
+    "On Windows, «Update and restart» now installs the new app and reopens it, and goes back to the previous one if the new one does not start. From 3.9.0 to 3.9.4 it did not work: install this version by hand once (Rasgeth-App-Setup.exe), then updates are automatic.",
+  news395Secrets: "Links are not secrets",
+  news395SecretsText:
+    "A pasted link is no longer taken for a secret because of a long parameter; signed links and tokens are still protected. And when {product} thinks it sees a secret, «Send anyway» sends your message as it is.",
   news394Portrait: "Your portrait",
   news394PortraitText:
     "{product} now learns from your conversations who you are: preferences, how you like to be spoken to, habits, projects, things to avoid. Each trait says where it comes from; you can change it, remove it or say it isn't true, in Settings › Portrait. No secrets, and it can be switched off.",
@@ -9470,6 +9479,15 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news395Questions: "Le domande aspettano la tua risposta",
+  news395QuestionsText:
+    "Chat e gli assistenti chiedono adesso con la card delle domande di {product}, con i pulsanti, nella pagina, nell'app e nelle tue chat, e aspettano la tua risposta; anche con Codex, che prima scriveva le opzioni come elenco e andava avanti da solo.",
+  news395AppUpdate: "L'app su Windows si aggiorna davvero",
+  news395AppUpdateText:
+    "Su Windows «Aggiorna e riavvia» installa adesso l'app nuova e la riapre, e torna a quella di prima se la nuova non parte. Dalla 3.9.0 alla 3.9.4 non funzionava: installa questa versione a mano una volta (Rasgeth-App-Setup.exe), poi gli aggiornamenti sono automatici.",
+  news395Secrets: "I link non sono segreti",
+  news395SecretsText:
+    "Un link incollato non viene più preso per un segreto per colpa di un parametro lungo; i link firmati e i token restano protetti. E quando {product} crede di vedere un segreto, «Invia comunque» manda il messaggio così com'è.",
   news394Portrait: "Il tuo ritratto",
   news394PortraitText:
     "{product} impara adesso dalle tue conversazioni chi sei: preferenze, come ti piace che ti si parli, abitudini, progetti, cose da evitare. Ogni tratto dice da dove viene; puoi cambiarlo, toglierlo o dire che non è vero, in Impostazioni › Ritratto. Niente segreti, e si può spegnere.",

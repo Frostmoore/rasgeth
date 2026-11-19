@@ -4,10 +4,13 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.9.4';
+const newsVersion = '3.9.5';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.9.5', 'news395Questions', 'news395QuestionsText'),
+  NewsRow('3.9.5', 'news395AppUpdate', 'news395AppUpdateText'),
+  NewsRow('3.9.5', 'news395Secrets', 'news395SecretsText'),
   NewsRow('3.9.4', 'news394Portrait', 'news394PortraitText'),
   NewsRow('3.9.4', 'news394Tools', 'news394ToolsText'),
   NewsRow('3.9.4', 'news394Ring', 'news394RingText'),
@@ -624,6 +627,12 @@ const generalWords = <String, Map<String, String>>{
     'news394RingText': 'I sotto-agenti temporanei non hanno più una mascotte propria: mostrano un anello nel colore del genitore, che dice subito di chi sono e cosa stanno facendo.',
     'news394Tools': 'Agenti più leggeri',
     'news394ToolsText': 'Gli agenti partono con gli strumenti essenziali e accendono un gruppo (immagini, video, documenti, browser…) solo quando serve: fino a tre quarti di token in meno a ogni messaggio. Impostazioni › Strumenti mostra ogni gruppo e il suo costo.',
+    'news395AppUpdate': 'L\'app su Windows si aggiorna davvero',
+    'news395AppUpdateText': 'Su Windows «Aggiorna e riavvia» installa adesso l\'app nuova e la riapre, e torna a quella di prima se la nuova non parte. Dalla 3.9.0 alla 3.9.4 non funzionava: installa questa versione a mano una volta (Rasgeth-App-Setup.exe), poi gli aggiornamenti sono automatici.',
+    'news395Questions': 'Le domande aspettano la tua risposta',
+    'news395QuestionsText': 'Chat e gli assistenti chiedono adesso con la card delle domande di Rasgeth, con i pulsanti, nella pagina, nell\'app e nelle tue chat, e aspettano la tua risposta; anche con Codex, che prima scriveva le opzioni come elenco e andava avanti da solo.',
+    'news395Secrets': 'I link non sono segreti',
+    'news395SecretsText': 'Un link incollato non viene più preso per un segreto per colpa di un parametro lungo; i link firmati e i token restano protetti. E quando Rasgeth crede di vedere un segreto, «Invia comunque» manda il messaggio così com\'è.',
     'searchCard_brave': 'Ha un indice suo, indipendente da Google e Bing; rispetta la privacy. Credito gratuito ogni mese, poi a consumo.',
     'searchCard_exa': 'Cerca per significato: forte su documentazione, articoli scientifici e tecnici. Credito gratuito all\'inizio.',
     'searchCard_searxng': 'Gratis, senza chiave né account: un motore di ricerca che gira a casa tua (lo avvia Rasgeth, dove può, oppure usi il tuo).',
@@ -900,6 +909,12 @@ const generalWords = <String, Map<String, String>>{
     'news394RingText': 'Temporary sub-agents no longer get a mascot of their own: they show a ring in their parent\'s colour, which tells at a glance whose they are and what they are doing.',
     'news394Tools': 'Lighter agents',
     'news394ToolsText': 'Agents start with the essential tools and switch on a group (images, video, documents, browser…) only when they need it: up to three quarters fewer tokens at every message. Settings › Tools shows each group and its cost.',
+    'news395AppUpdate': 'The Windows app really updates itself',
+    'news395AppUpdateText': 'On Windows, «Update and restart» now installs the new app and reopens it, and goes back to the previous one if the new one does not start. From 3.9.0 to 3.9.4 it did not work: install this version by hand once (Rasgeth-App-Setup.exe), then updates are automatic.',
+    'news395Questions': 'Questions wait for your answer',
+    'news395QuestionsText': 'Chat and the assistants now ask with Rasgeth\'s question card, with buttons, in the page, in the app and in your chats, and wait for your answer; with Codex too, which before wrote the options as a list and went on by itself.',
+    'news395Secrets': 'Links are not secrets',
+    'news395SecretsText': 'A pasted link is no longer taken for a secret because of a long parameter; signed links and tokens are still protected. And when Rasgeth thinks it sees a secret, «Send anyway» sends your message as it is.',
     'searchCard_brave': 'Its own index, independent of Google and Bing; private. Free monthly credit, then pay as you go.',
     'searchCard_exa': 'Searches by meaning: strong on documentation, papers and technical articles. Free credit to start.',
     'searchCard_searxng': 'Free, no key, no account: a search engine that runs at your place (Rasgeth starts it, where it can, or you use yours).',
