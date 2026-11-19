@@ -50,7 +50,10 @@ void main() {
       app.setThemeMode(dark ? ThemeMode.dark : ThemeMode.light);
       await frames(t, 800);
       final field = find.byKey(const Key('composer-text')).last;
-      await t.enterText(field, 'il codice del pacco è Ab3dE5fG7hJ9kL1mN3pQ5rS7tU, puoi controllarlo?');
+      await t.enterText(
+        field,
+        'il codice del pacco è Ab3dE5fG7hJ9kL1mN3pQ5rS7tU, puoi controllarlo?',
+      );
       await t.tap(find.byKey(const Key('composer-send')).last);
       await frames(t, 1200);
       await shot(t, 'p395-$p-${dark ? 'scuro' : 'chiaro'}-avviso-segreto');
