@@ -1,7 +1,8 @@
 # llama.cpp with RedGiant's patches for Windows and NVIDIA cards (G32.2), as release.yml's job
 # llama-cuda runs it: clone at $env:LLAMA_BUILD, apply.ps1, CUDA build with MSVC and Ninja, the zip
 # with CUDA's and Visual C++'s libraries next to the program. Part of the engine's fingerprint
-# (engine/fingerprint.sh): changing this file means a new build at the next release.
+# (engine/fingerprint.sh): changing a command here means a new build at the next release (comments
+# and the build.txt label do not).
 # Needs: a Visual C++ developer shell (ilammy/msvc-dev-cmd), Ninja, sccache, CUDA in $env:CUDA_DIR.
 # Env: LLAMA_BUILD, CUDA_DIR, CUDA_VERSION, CUDA_ARCHS, ZIP (the zip's path).
 param(
@@ -20,13 +21,16 @@ $env:PATH = "$env:CUDA_DIR\bin;$env:PATH"
 cl 2>&1 | Select-Object -First 1
 nvcc --version
 sccache --start-server
+# Without llama.cpp's own web UI (Rasgeth never serves it): no download from Hugging Face while
+# building. The shallow clone has no history, so the build number comes from the tag (else it is 1).
 cmake -S . -B build -G Ninja `
   -DCMAKE_BUILD_TYPE=Release `
   -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DCMAKE_CUDA_COMPILER_LAUNCHER=sccache `
   -DCMAKE_CUDA_COMPILER="$env:CUDA_DIR/bin/nvcc.exe" -DCUDAToolkit_ROOT="$env:CUDA_DIR" `
   -DCMAKE_CUDA_ARCHITECTURES="$env:CUDA_ARCHS" -DCMAKE_CUDA_FLAGS="$CudaFlags" `
   -DGGML_CUDA=ON -DGGML_NATIVE=OFF -DGGML_BACKEND_DL=ON -DGGML_CPU_ALL_VARIANTS=ON `
-  -DLLAMA_CURL=OFF -DLLAMA_OPENSSL=OFF -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=OFF -DLLAMA_BUILD_SERVER=ON
+  -DLLAMA_CURL=OFF -DLLAMA_OPENSSL=OFF -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=OFF -DLLAMA_BUILD_SERVER=ON `
+  -DLLAMA_BUILD_UI=OFF -DLLAMA_USE_PREBUILT_UI=OFF -DLLAMA_BUILD_NUMBER="$($env:LLAMA_BUILD.TrimStart('b'))"
 if ($LASTEXITCODE -ne 0) { exit 1 }
 # Everything: with GGML_BACKEND_DL the CUDA and CPU backends are modules llama-server loads.
 cmake --build build --config Release -j $env:NUMBER_OF_PROCESSORS
