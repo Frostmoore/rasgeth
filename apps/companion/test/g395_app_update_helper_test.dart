@@ -110,6 +110,10 @@ void main() {
     expect(w, isNot(contains(r'Add-Content -LiteralPath $log')));
   });
 
+  test('no trap in the Windows helper: its `continue` would skip an `exit`', () {
+    expect(RegExp(r'^\s*trap\b', multiLine: true).hasMatch(windowsSwapScript(_plan)), isFalse);
+  });
+
   test('Windows PowerShell 5.1 by its full path', () {
     expect(
       windowsPowerShell({'SystemRoot': r'D:\Win'}),
@@ -185,6 +189,8 @@ $e | ForEach-Object { "line $($_.Extent.StartLineNumber): $($_.Message)" }
       expect(all, contains('helper '));
       expect(all, contains('update 3.9.0 -> 3.9.3, waiting for the app (${app.pid}) to close'));
       expect(all, contains('nothing changed'));
+      expect(all, isNot(contains('installing')), reason: 'nothing after nothing changed');
+      expect(all, isNot(contains('going back')));
       expect(
         all.indexOf('app 3.9.0: starting the helper'),
         lessThan(all.indexOf('waiting for the app')),
@@ -202,7 +208,7 @@ $e | ForEach-Object { "line $($_.Extent.StartLineNumber): $($_.Message)" }
           p,
           tmp.path,
           aliveWithin: const Duration(seconds: 1),
-          launch: (exe, args) async {
+          launch: (exe, args, cwd) async {
             quiet = await _running(20000);
             started = quiet!.pid;
             return SwapHelper(started!, exitCode: quiet!.exitCode);
@@ -225,7 +231,7 @@ $e | ForEach-Object { "line $($_.Extent.StartLineNumber): $($_.Message)" }
         startSwap(
           p,
           tmp.path,
-          launch: (exe, args) async {
+          launch: (exe, args, cwd) async {
             final q = Platform.isWindows
                 ? await Process.start(_ps, [
                     '-NoProfile',
@@ -254,7 +260,7 @@ $e | ForEach-Object { "line $($_.Extent.StartLineNumber): $($_.Message)" }
         startSwap(
           p,
           tmp.path,
-          launch: (exe, args) async => throw const ProcessException('x', [], 'gone'),
+          launch: (exe, args, cwd) async => throw const ProcessException('x', [], 'gone'),
         ),
         throwsA(isA<SwapNotStarted>()),
       );
@@ -269,7 +275,7 @@ $e | ForEach-Object { "line $($_.Extent.StartLineNumber): $($_.Message)" }
           p,
           tmp.path,
           aliveWithin: const Duration(seconds: 1),
-          launch: (exe, args) async {
+          launch: (exe, args, cwd) async {
             final q = await _running(5000);
             return SwapHelper(q.pid);
           },
@@ -332,7 +338,8 @@ Start-Sleep -Seconds 2
         waitSeconds: 20,
       );
       File('${tmp.path}\\swap.ps1').writeAsStringSync('\uFEFF${windowsSwapScript(plan)}');
-      final r = await Process.run(_ps, [
+      // Started from the app's own folder, as the app's start would leave it without care.
+      final r = await Process.run(workingDirectory: dest, _ps, [
         '-NoProfile',
         '-NonInteractive',
         '-ExecutionPolicy',
@@ -366,6 +373,7 @@ Start-Sleep -Seconds 2
       expect(Directory('$dest.previous').existsSync(), isFalse);
       expect(out, contains('old ${kUpdateFailedArg}3.9.3'));
       expect(log, contains('3.9.3 did not start: going back to 3.9.0'));
+      expect(log, contains('3.9.0 is back in place'));
     });
 
     test('a file of the new version still held: retried, the old folder back in place', () async {

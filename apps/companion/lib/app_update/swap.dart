@@ -154,9 +154,13 @@ String windowsSwapScript(SwapPlan p) =>
 function Say(\$t) {
   try { [IO.File]::AppendAllText(\$log, ("{0:yyyy-MM-dd HH:mm:ss} {1}`r`n" -f (Get-Date), \$t)) } catch { }
 }
-trap { Say "error: \$(\$_)"; continue }
+# Never inside the app's folder (it could not be removed when going back).
+try { [Environment]::CurrentDirectory = Split-Path -Parent \$log; Set-Location -LiteralPath (Split-Path -Parent \$log) } catch { }
+# No trap anywhere: a trap's `continue` would resume after the whole block and skip its `exit`.
 function StartApp([string[]]\$a, [string]\$in = \$dest) {
-  Start-Process -FilePath (Join-Path \$in (Split-Path -Leaf \$exe)) -ArgumentList \$a -WorkingDirectory \$in -PassThru
+  try {
+    Start-Process -FilePath (Join-Path \$in (Split-Path -Leaf \$exe)) -ArgumentList \$a -WorkingDirectory \$in -PassThru -ErrorAction Stop
+  } catch { Say "the app could not start: \$(\$_)"; \$null }
 }
 function StopInFolder {
   Get-Process -ErrorAction SilentlyContinue | Where-Object { \$_.Path -like "\$dest\\*" } |
@@ -179,7 +183,8 @@ function GoBack(\$why) {
         \$back = \$true
       } catch { if (\$k -eq 1 -or \$k -eq 40) { Say "putting \${from} back, try \${k}: \$(\$_)" } }
     }
-    if (-not \$back) { Say "\${from} could not be put back: it starts from \$prev"; \$in = \$prev }
+    if (\$back) { Say "\${from} is back in place" }
+    else { Say "\${from} could not be put back: it starts from \$prev"; \$in = \$prev }
   }
   [void](StartApp @("$kUpdateFailedArg\$to") \$in)
 }
@@ -193,14 +198,16 @@ if (Test-Path -LiteralPath \$prev) { Say "an old \$prev is in the way: nothing c
 try { Copy-Item -LiteralPath \$dest -Destination \$prev -Recurse -Force -ErrorAction Stop }
 catch { Say "the folder could not be kept: nothing changed (\$_)"; [void](StartApp @("$kUpdateFailedArg\$to")); exit 1 }
 Say "installing \$to"
-\$i = Start-Process -FilePath \$setup -ArgumentList @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/NOCANCEL', '/SP-', "/LOG=`"\$log.setup.txt`"") -Wait -PassThru
+try {
+  \$i = Start-Process -FilePath \$setup -ArgumentList @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/NOCANCEL', '/SP-', "/LOG=`"\${log}.setup.txt`"") -Wait -PassThru -ErrorAction Stop
+} catch { GoBack "the installer could not start (\$(\$_))"; exit 2 }
 if (\$i.ExitCode -ne 0) { GoBack "the installer stopped with \$(\$i.ExitCode)"; exit 2 }
 Remove-Item -LiteralPath \$marker -Force -ErrorAction SilentlyContinue
 Say "starting \$to"
 \$n = StartApp @("$kMarkerArg`"\$marker`"", "$kUpdatedFromArg\$from")
 \$deadline = (Get-Date).AddSeconds(\$waitS)
 while (-not (Test-Path -LiteralPath \$marker)) {
-  if ((Get-Date) -gt \$deadline -or \$n.HasExited) {
+  if ((Get-Date) -gt \$deadline -or -not \$n -or \$n.HasExited) {
     if (Test-Path -LiteralPath \$marker) { break }
     GoBack "\$to did not start"
     exit 2
@@ -231,17 +238,26 @@ class SwapHelper {
   final Stream<List<int>>? stderr;
 }
 
-/// Starts the helper ([Process.start] by default).
-typedef SwapLauncher = Future<SwapHelper> Function(String exe, List<String> args);
+/// Starts the helper in [cwd] ([Process.start] by default).
+typedef SwapLauncher = Future<SwapHelper> Function(String exe, List<String> args, String cwd);
 
-Future<SwapHelper> _launch(String exe, List<String> args) async {
+// In [cwd] (the downloads' folder), never the app's own: Windows cannot remove a folder that is a
+// running process's current directory, and the app runs from its install folder, which going back
+// must remove.
+Future<SwapHelper> _launch(String exe, List<String> args, String cwd) async {
   if (!Platform.isWindows) {
-    return SwapHelper((await Process.start(exe, args, mode: ProcessStartMode.detached)).pid);
+    final p = await Process.start(
+      exe,
+      args,
+      workingDirectory: cwd,
+      mode: ProcessStartMode.detached,
+    );
+    return SwapHelper(p.pid);
   }
   // Windows: never `detached` (DETACHED_PROCESS, no console at all): Windows PowerShell 5.1 then
   // exits at once without running a line. The normal start gives it a console without a window
   // (CREATE_NO_WINDOW), no job: it outlives the app; its pipes simply break when the app is gone.
-  final p = await Process.start(exe, args);
+  final p = await Process.start(exe, args, workingDirectory: cwd);
   unawaited(p.stdout.drain<void>().catchError((Object _) {}));
   return SwapHelper(p.pid, exitCode: p.exitCode, stderr: p.stderr);
 }
@@ -313,7 +329,7 @@ Future<void> startSwap(
   await appendSwapLog(p.log, 'app ${p.fromVersion}: starting the helper for ${p.toVersion}');
   final SwapHelper helper;
   try {
-    helper = await launch(exe, args);
+    helper = await launch(exe, args, folder);
   } on Object catch (e) {
     await appendSwapLog(p.log, 'app ${p.fromVersion}: the helper could not start ($e)');
     throw SwapNotStarted('$e');
