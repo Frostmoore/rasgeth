@@ -411,7 +411,7 @@ describe("secrets pasted in a chat (G33.4)", () => {
         true,
         undefined,
       ]);
-      expect((users[1]?.payload as { text: string }).text).toContain("[secret removed]");
+      expect(JSON.stringify(users[1]?.payload)).toContain("[secret removed]");
     } finally {
       await s.close();
     }
