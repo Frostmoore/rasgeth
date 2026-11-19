@@ -112,6 +112,9 @@ class SessionView extends ChangeNotifier {
       if (at >= 0) queued.removeAt(at);
     }
     if (e.type == 'tool.result') drawing = null;
+    // A tool runs (2026-11-19: an engine's own picture comes without a model message first): no
+    // model call is under way until its result.
+    if (e.type == 'tool.call') call = null;
     if (e.type == 'message.assistant') {
       liveText = '';
       liveThinking = '';

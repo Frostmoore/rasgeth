@@ -10359,4 +10359,28 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get auOwnReadOnly =>
       'Automations can be changed only by the person (not from a project\'s device).';
+
+  @override
+  String get cvGeneratingImage => 'Generating a picture…';
+
+  @override
+  String get cvGeneratingVideo => 'Making a video…';
+
+  @override
+  String get cvGeneratingAudio => 'Making a sound…';
+
+  @override
+  String get cvImageUnreadable => 'This picture cannot be opened';
+
+  @override
+  String cvImageUnreachable(String name) {
+    return 'Picture not available here: $name';
+  }
+
+  @override
+  String get cvMediaNativeTitle => 'Use the model\'s own tool when it has one';
+
+  @override
+  String get cvMediaNativeHelp =>
+      'Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.';
 }

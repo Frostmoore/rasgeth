@@ -677,6 +677,13 @@ function MediaTiles() {
   return (
     <>
       <Sub title={t("mediaTitle")} lead={t("mediaPurpose")} />
+      {/* The model's own tool first (2026-11-19), on by default. */}
+      <SwitchRow
+        title={t("mediaNativeTitle")}
+        help={t("mediaNativeHelp")}
+        on={s.config.mediaNative !== false}
+        onChange={(on) => void attempt(() => getApi().setupMediaNative(on)).then(load)}
+      />
       <div class="wz-brain xw-grid">
         {MEDIA_KINDS.filter((k) => MEDIA_PROVIDERS.some((p) => p.models[k]?.length)).map((k) => (
           <Tile

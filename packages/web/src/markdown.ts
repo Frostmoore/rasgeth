@@ -53,6 +53,15 @@ marked.use({
         : escapeHtml(text);
       return `<div class="code"><div class="code-head"><span>${escapeHtml(name)}</span><button type="button" class="copy-code">${escapeHtml(t("copy"))}</button></div><pre><code class="hljs">${body}</code></pre></div>`;
     },
+    // Pictures in an answer (2026-11-19): a web address or an inline picture shows, loaded when
+    // near; a path the page cannot open (an engine's folder, a file of the agent's) says so
+    // plainly instead of an empty frame.
+    image({ href, title, text }) {
+      const src = href ?? "";
+      if (/^(https?:|data:image\/)/i.test(src))
+        return `<img src="${escapeHtml(src)}" alt="${escapeHtml(text)}"${title ? ` title="${escapeHtml(title)}"` : ""} loading="lazy" decoding="async">`;
+      return `<span class="img-missing" title="${escapeHtml(src)}">${escapeHtml(t("imageUnreachable", { name: text || src }))}</span>`;
+    },
   },
 });
 

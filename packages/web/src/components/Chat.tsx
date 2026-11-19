@@ -40,6 +40,7 @@ import {
   archivedProjects,
   attempt,
   buildItems,
+  generatingNow,
   type ChatItem,
   getApi,
   getLive,
@@ -87,6 +88,7 @@ import {
 } from "./ChatTools.js";
 import { CommandStrip } from "./CommandStrip.js";
 import { Composer, packMessage } from "./Composer.js";
+import { ChatImage } from "./ChatImage.js";
 import { askText } from "./dialogs.js";
 import { Images } from "./Images.js";
 import { MailRequestPreview, MailToolCard, mailSummary } from "./MailCards.js";
@@ -102,36 +104,6 @@ import { ToolRequestCard } from "./ToolRequestCard.js";
 import { QueuedNotice } from "./TurnLine.js";
 import { TurnProgress } from "./TurnProgress.js";
 import { FileIcon } from "./viewers/FileIcon.js";
-
-/** A picture from the workspace inside the chat (generate_image's result); a click opens it. */
-function WorkspaceImage({ scope, path }: { scope: string; path: string }) {
-  const [url, setUrl] = useState<string | null>(null);
-  const [failed, setFailed] = useState(false);
-  useEffect(() => {
-    let made: string | null = null;
-    let cancelled = false;
-    void attempt(() => getApi().download(scope, path)).then((blob) => {
-      if (cancelled) return;
-      if (!blob) return setFailed(true);
-      made = URL.createObjectURL(
-        // An SVG shown as an image runs no script; the right type makes it display.
-        path.toLowerCase().endsWith(".svg") ? new Blob([blob], { type: "image/svg+xml" }) : blob,
-      );
-      setUrl(made);
-    });
-    return () => {
-      cancelled = true;
-      if (made) URL.revokeObjectURL(made);
-    };
-  }, [scope, path]);
-  if (failed) return <div class="dim">{path}</div>;
-  if (!url) return <div class="drawing-frame" />;
-  return (
-    <a href={url} target="_blank" rel="noreferrer" class="generated">
-      <img src={url} alt={path} />
-    </a>
-  );
-}
 
 const time = (iso: string) =>
   new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -509,7 +481,16 @@ export function ToolLine({
         </div>
       )}
       {item.tool === "generate_image" && item.result?.ok && picture && (
-        <WorkspaceImage scope={scopeOf(agentId)} path={picture} />
+        <div class="generated">
+          <ChatImage
+            scope={scopeOf(agentId)}
+            path={picture}
+            alt={picture}
+            onOpen={() =>
+              openCanvas(picture, { kind: "file", scope: scopeOf(agentId), path: picture })
+            }
+          />
+        </div>
       )}
     </div>
   );
@@ -1019,7 +1000,8 @@ const MODES = ["manual", "auto", "plan", "readonly"] as const;
 /** A file an agent sent (G25.2): pictures, videos and sounds in place; anything opens or saves. */
 function FileCard({ item }: { item: Extract<ChatItem, { kind: "file" }> }) {
   const kind = canvasKind({ kind: "file", scope: item.scope, path: item.path });
-  const inline = kind === "image" || kind === "video" || kind === "audio";
+  // Pictures load by themselves (ChatImage); videos and sounds play from their link.
+  const inline = kind === "video" || kind === "audio";
   const [url, setUrl] = useState<string>();
   useEffect(() => {
     if (!inline) return;
@@ -1041,17 +1023,15 @@ function FileCard({ item }: { item: Extract<ChatItem, { kind: "file" }> }) {
   };
   return (
     <div class="file-card">
-      {url && kind === "image" && (
-        <button
-          type="button"
-          class="file-card-image"
-          title={t("canvasOpen")}
-          onClick={() =>
+      {kind === "image" && (
+        <ChatImage
+          scope={item.scope}
+          path={item.path}
+          alt={item.caption ?? item.name}
+          onOpen={() =>
             openCanvas(item.name, { kind: "file", scope: item.scope, path: item.path })
           }
-        >
-          <img src={url} alt={item.caption ?? item.name} />
-        </button>
+        />
       )}
       {url && kind === "video" && (
         // biome-ignore lint/a11y/useMediaCaption: agents' videos come without captions.
@@ -1517,6 +1497,8 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
   }, [items.value, pendingJump.value, sessionId]);
 
   const v = view.value;
+  // A picture (video, sound) being made with no percent to tell (2026-11-19).
+  const generating = useComputed(() => generatingNow(view.value.events)).value;
   const mode = agent?.mode ?? "auto";
   const own = sessionRows.value.find((r) => r.id === sessionId)?.model ?? undefined;
   const model = own ?? agent?.model ?? inheritedModel(agentId);
@@ -1572,6 +1554,16 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
                 <span style={{ width: `${v.drawing.percent}%` }} />
               </div>
               <div class="dim">{t("drawing", { percent: String(v.drawing.percent) })}</div>
+            </div>
+          )}
+          {/* Being made, with no percent to tell (2026-11-19: the model's own picture). */}
+          {!v.drawing && v.state === "running" && generating && (
+            <div class="drawing" role="status">
+              <div class="drawing-frame" />
+              <div class="ui-bar busy">
+                <span />
+              </div>
+              <div class="dim">{t(`generating_${generating}`)}</div>
             </div>
           )}
           {v.compacting && (

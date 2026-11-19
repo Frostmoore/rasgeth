@@ -1825,6 +1825,26 @@ class _ImagesPanelState extends State<_ImagesPanel> {
   late final GeneralState _s = widget.initial;
   final _key = TextEditingController();
   late final _model = TextEditingController(text: _s.imagesModel ?? '');
+  late bool _native = _s.mediaNative;
+  String? _nativeError;
+
+  Future<void> _setNative(bool on) async {
+    setState(() {
+      _native = on;
+      _nativeError = null;
+    });
+    try {
+      await AppScope.read(context).client!.setMediaNative(on);
+    } on ApiException catch (e) {
+      if (mounted) {
+        setState(() {
+          _native = !on;
+          _nativeError = e.message;
+        });
+      }
+    }
+  }
+
   bool _busy = false;
   ({bool ok, String text})? _result;
 
@@ -1861,9 +1881,43 @@ class _ImagesPanelState extends State<_ImagesPanel> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final locked = _s.locked.contains('images');
+    final c = RgColors.of(context);
     return _PanelBody(
       lead: l.g4GenImagesHelp,
       children: [
+        // 2026-11-19: the model's own tool first (on by default), as the page's Generation.
+        SettingsCard(
+          children: [
+            InkWell(
+              key: const Key('media-native-switch'),
+              onTap: () => _setNative(!_native),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  spacing: 12,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 2,
+                        children: [
+                          Text(
+                            l.cvMediaNativeTitle,
+                            style: TextStyle(color: c.text, fontWeight: FontWeight.w700),
+                          ),
+                          Text(l.cvMediaNativeHelp, style: TextStyle(color: c.dim, fontSize: 12.5)),
+                        ],
+                      ),
+                    ),
+                    RgSwitch(on: _native),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        if (_nativeError != null) _Result(ok: false, text: l.errGeneric(_nativeError!)),
+        const SizedBox(height: 12),
         if (locked) NoteLine(icon: RgIcons.lock, text: l.g4GenLocked),
         _field(
           context,

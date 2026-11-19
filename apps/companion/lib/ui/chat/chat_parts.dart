@@ -850,9 +850,13 @@ class _ArchivedNoticeState extends State<ArchivedNotice> {
 /// generate_image's picture as it forms (G42.2, the page's `drawing`, `image.progress`): the last
 /// preview (or a frame that shimmers until there is one), a thin bar, «Sto disegnando… n%».
 class DrawingCard extends StatefulWidget {
-  const DrawingCard({super.key, required this.percent, this.preview});
+  const DrawingCard({super.key, this.percent, this.preview, this.label});
 
-  final int percent;
+  /// How far; null: the maker does not say (2026-11-19, the model's own picture): a moving bar.
+  final int? percent;
+
+  /// What it says under the bar instead of «Drawing… n%» («Generating a picture…»).
+  final String? label;
 
   /// The last preview, base64 PNG.
   final String? preview;
@@ -957,14 +961,19 @@ class _DrawingCardState extends State<DrawingCard> with SingleTickerProviderStat
             ClipRRect(
               borderRadius: BorderRadius.circular(2),
               child: LinearProgressIndicator(
-                value: widget.percent / 100,
+                value: widget.percent != null
+                    ? widget.percent! / 100
+                    : (MediaQuery.disableAnimationsOf(context) ? 0 : null),
                 minHeight: 4,
                 color: c.accent,
                 backgroundColor: c.panel2,
               ),
             ),
             const SizedBox(height: 6),
-            Text(l.cvDrawing('${widget.percent}'), style: TextStyle(color: c.dim, fontSize: 13)),
+            Text(
+              widget.label ?? l.cvDrawing('${widget.percent ?? 0}'),
+              style: TextStyle(color: c.dim, fontSize: 13),
+            ),
           ],
         ),
       ),

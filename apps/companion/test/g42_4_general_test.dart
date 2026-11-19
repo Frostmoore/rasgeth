@@ -15,6 +15,7 @@ import 'package:rgcompanion/api/types.dart';
 import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/l10n/app_localizations_it.dart';
+import 'package:rgcompanion/screens/new_agent_screen.dart' show RgSwitch;
 import 'package:rgcompanion/settings/general_screen.dart';
 import 'package:rgcompanion/settings/general_types.dart';
 import 'package:rgcompanion/settings/general_words.g.dart';
@@ -95,6 +96,7 @@ void main() {
         '/api/setup/instructions',
         '/api/setup/backup-model',
         '/api/setup/models',
+        '/api/setup/media-native',
       ]) {
         server.routes['PUT $p'] = (r) async {
           final b = await _body(r);
@@ -386,6 +388,19 @@ void main() {
       expect(puts['/api/setup/models']!.single, {
         'images': {'key': 'sk-images', 'model': 'gpt-image-2.5-flare'},
       });
+      await done(tester);
+    });
+
+    testWidgets('pictures: the model\'s own tool first, on by default, switched off', (
+      tester,
+    ) async {
+      await start(tester);
+      await tap(tester, const Key('general-tile-images'));
+      expect(find.text('Usa lo strumento del modello quando c\'è'), findsOneWidget);
+      expect(tester.widget<RgSwitch>(find.byType(RgSwitch).first).on, isTrue);
+      await tap(tester, const Key('media-native-switch'));
+      expect(puts['/api/setup/media-native']!.single, {'on': false});
+      expect(tester.widget<RgSwitch>(find.byType(RgSwitch).first).on, isFalse);
       await done(tester);
     });
 

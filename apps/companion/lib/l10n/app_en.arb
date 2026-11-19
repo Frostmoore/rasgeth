@@ -7793,5 +7793,38 @@
       }
     }
   },
-  "auOwnReadOnly": "Automations can be changed only by the person (not from a project's device)."
+  "auOwnReadOnly": "Automations can be changed only by the person (not from a project's device).",
+  "cvGeneratingImage": "Generating a picture…",
+  "@cvGeneratingImage": {
+    "description": "The page's `generating_image` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvGeneratingVideo": "Making a video…",
+  "@cvGeneratingVideo": {
+    "description": "The page's `generating_video` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvGeneratingAudio": "Making a sound…",
+  "@cvGeneratingAudio": {
+    "description": "The page's `generating_audio` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvImageUnreadable": "This picture cannot be opened",
+  "@cvImageUnreadable": {
+    "description": "The page's `imageUnreadable` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvImageUnreachable": "Picture not available here: {name}",
+  "@cvImageUnreachable": {
+    "description": "The page's `imageUnreachable` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cvMediaNativeTitle": "Use the model's own tool when it has one",
+  "@cvMediaNativeTitle": {
+    "description": "The page's `mediaNativeTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvMediaNativeHelp": "Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.",
+  "@cvMediaNativeHelp": {
+    "description": "The page's `mediaNativeHelp` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  }
 }

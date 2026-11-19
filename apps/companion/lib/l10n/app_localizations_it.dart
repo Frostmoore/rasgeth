@@ -10394,4 +10394,28 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get auOwnReadOnly =>
       'Le automazioni le cambia solo la persona (non da un dispositivo di progetto).';
+
+  @override
+  String get cvGeneratingImage => 'Sta generando un\'immagine…';
+
+  @override
+  String get cvGeneratingVideo => 'Sta generando un video…';
+
+  @override
+  String get cvGeneratingAudio => 'Sta generando un suono…';
+
+  @override
+  String get cvImageUnreadable => 'Non riesco ad aprire questa immagine';
+
+  @override
+  String cvImageUnreachable(String name) {
+    return 'Immagine non disponibile qui: $name';
+  }
+
+  @override
+  String get cvMediaNativeTitle => 'Usa lo strumento del modello quando c\'è';
+
+  @override
+  String get cvMediaNativeHelp =>
+      'Alcuni modelli fanno le immagini da sé (ChatGPT con Codex): allora si usa il loro, e l\'immagine ti arriva in chat come con il nostro. Spento: sempre il fornitore scelto qui. Se in una conversazione chiedi «il vostro strumento», si usa sempre il nostro. Vale per le conversazioni nuove.';
 }
