@@ -194,11 +194,14 @@ const AskInput = z.object({
 const PlanInput = z.object({ plan: z.string().min(1) });
 
 /**
- * ask_user and propose_plan, for the agents the human talks with (God and the orchestrators).
- * Both wait for the human; the answer comes back as the tool's result.
+ * ask_user and propose_plan, for the agents the human talks with (God, the orchestrators and the
+ * personal assistants, the Chat among them: 3.9.5, its prompt told it to ask with ask_user but it
+ * had none, so its engine's own question came out as text). Both wait for the human; the answer
+ * comes back as the tool's result.
  */
 export function questionTools(agent: AgentRecord, host: QuestionHost): Tool[] {
-  if (agent.kind !== "god" && agent.kind !== "orchestrator") return [];
+  if (agent.kind !== "god" && agent.kind !== "orchestrator" && agent.kind !== "assistant")
+    return [];
   const ask: Tool<z.infer<typeof AskInput>> = {
     def: {
       name: "ask_user",

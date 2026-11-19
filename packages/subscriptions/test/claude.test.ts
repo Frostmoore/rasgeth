@@ -148,6 +148,7 @@ describe("Claude on a subscription", () => {
     expect(asked[0]).toMatchObject({
       model: "claude-opus-5-5",
       effort: "high",
+      // Only its own web search: no AskUserQuestion (3.9.5), questions go through ask_user's card.
       tools: ["WebSearch"],
       skills: [],
       strictMcpConfig: true,

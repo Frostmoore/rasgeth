@@ -229,6 +229,7 @@ export class CodexEngine implements Engine {
     private readonly o: ChatgptSubscriptionOptions,
   ) {
     conn.onRequest = async (method, params) => {
+      if (method === "item/tool/requestUserInput") return this.userInput(params);
       if (method !== "item/tool/call") throw new Error(`Not supported: ${method}`);
       const running = this.turns.get(String(params.threadId));
       if (!running)
@@ -256,6 +257,27 @@ export class CodexEngine implements Engine {
       const r = await t.runTool({ callId, name, input: params.arguments });
       return { success: !r.isError, contentItems: [{ type: "inputText", text: r.content }] };
     };
+  }
+
+  /**
+   * Codex asks the person and waits (`item/tool/requestUserInput`): Rasgeth's card, then the
+   * answers back by question id. Codex's own question tools are switched off (`thread/start`),
+   * so this comes only if a later Codex offers them anyway.
+   */
+  private async userInput(
+    params: Json,
+  ): Promise<{ answers: Record<string, { answers: string[] }> }> {
+    const questions = Array.isArray(params.questions) ? (params.questions as Json[]) : [];
+    const say = (text: string) => ({ answers: codexAnswers(text, questions) });
+    const running = this.turns.get(String(params.threadId));
+    if (!running) return say("No turn is running.");
+    // Keys never travel in an answer (G36.20): they go in the keychain, from Settings.
+    if (questions.some((q) => q.isSecret === true))
+      return say(
+        `Secrets are never asked in a question: ask the person to add it in ${PRODUCT_NAME}'s Settings (the keychain).`,
+      );
+    const r = await this.ask(running, String(params.itemId ?? params.callId ?? ""), questions);
+    return say(r?.content ?? NOBODY_TO_ASK);
   }
 
   private readonly usage = new Map<string, { last: Json; window: number | null; at: number }>();
@@ -312,6 +334,9 @@ export class CodexEngine implements Engine {
         "features.shell_tool": false,
         "features.unified_exec": false,
         "features.image_generation": drawsItself,
+        // Codex's own questions off (3.9.5): its async one did not wait for the person. The agent
+        // asks with Rasgeth's ask_user, which shows the card and waits.
+        "tools.experimental_request_user_input.enabled": false,
         web_search: native ? "live" : "disabled",
       },
     };
@@ -356,85 +381,116 @@ export class CodexEngine implements Engine {
     this.turns.set(id, { t, say: (m) => say(m, USAGE_WAIT_MS) });
     let turnId: string | undefined;
     let gaveUp: () => void = () => {};
-    const done = new Promise<"end_turn" | "aborted">((ok, ko) => {
-      const listen = (method: string, p: Json) => {
-        if (p.threadId !== undefined && p.threadId !== id) return;
-        t.alive?.();
-        if (method === "thread/tokenUsage/updated") {
-          const u = p.tokenUsage as { last: Json; modelContextWindow: number | null };
-          this.usage.set(id, { last: u.last, window: u.modelContextWindow, at: Date.now() });
-          if (u.modelContextWindow) this.windows.set(t.model.model, u.modelContextWindow);
-          record();
-        } else if (method === "thread/compacted") {
-          // Codex summarised its own context.
-          t.onCompaction?.({ trigger: "auto" });
-        } else if (
-          (method === "item/started" || method === "item/completed") &&
-          (p.item as Json | undefined)?.type === "imageGeneration"
-        ) {
-          // A picture Codex draws itself: RedGiant shows «generating», then saves and sends it.
-          const item = p.item as Json;
-          const id = String(item.id ?? "");
-          const prompt = typeof item.revisedPrompt === "string" ? item.revisedPrompt : undefined;
-          const started = method === "item/started";
-          // What was said before it goes first (with the numbers known so far): the picture can
-          // take a minute and the request's usage comes only after it.
-          if (started) record();
-          recording = recording
-            .then(() =>
-              started
-                ? t.onNativeStart?.({ id, kind: "image", ...(prompt && { prompt }) })
-                : t.onNativeMade?.(codexImage(id, item, prompt)),
-            )
-            .catch(() => {});
-        } else if (method === "item/agentMessage/delta") {
-          t.live?.({ type: "text_delta", text: String(p.delta ?? "") });
-        } else if (method === "item/completed") {
-          const item = p.item as Json;
-          const parts: AssistantPart[] = [];
-          if (item.type === "contextCompaction") t.onCompaction?.({ trigger: "auto" });
-          if (item.type === "reasoning") {
-            const text = [
-              ...((item.summary as string[]) ?? []),
-              ...((item.content as string[]) ?? []),
-            ].join("\n");
-            if (text) parts.push({ type: "thinking", text });
-          } else if (item.type === "agentMessage" && typeof item.text === "string" && item.text) {
-            parts.push({ type: "text", text: item.text });
+    /** One Codex turn; "asked": we stopped it at a question that does not wait (see below). */
+    const run = (input: Json[]) => {
+      turnId = undefined;
+      let asked: { callId: string; questions: Json[] } | undefined;
+      const stopAt = () => {
+        if (turnId)
+          void this.conn.request("turn/interrupt", { threadId: id, turnId }).catch(() => {});
+      };
+      const done = new Promise<"end_turn" | "aborted" | "asked">((ok, ko) => {
+        const listen = (method: string, p: Json) => {
+          if (p.threadId !== undefined && p.threadId !== id) return;
+          t.alive?.();
+          if (method === "thread/tokenUsage/updated") {
+            const u = p.tokenUsage as { last: Json; modelContextWindow: number | null };
+            this.usage.set(id, { last: u.last, window: u.modelContextWindow, at: Date.now() });
+            if (u.modelContextWindow) this.windows.set(t.model.model, u.modelContextWindow);
+            record();
+          } else if (method === "thread/compacted") {
+            // Codex summarised its own context.
+            t.onCompaction?.({ trigger: "auto" });
+          } else if (
+            (method === "item/started" || method === "item/completed") &&
+            (p.item as Json | undefined)?.type === "imageGeneration"
+          ) {
+            // A picture Codex draws itself: RedGiant shows «generating», then saves and sends it.
+            const item = p.item as Json;
+            const id = String(item.id ?? "");
+            const prompt = typeof item.revisedPrompt === "string" ? item.revisedPrompt : undefined;
+            const started = method === "item/started";
+            // What was said before it goes first (with the numbers known so far): the picture can
+            // take a minute and the request's usage comes only after it.
+            if (started) record();
+            recording = recording
+              .then(() =>
+                started
+                  ? t.onNativeStart?.({ id, kind: "image", ...(prompt && { prompt }) })
+                  : t.onNativeMade?.(codexImage(id, item, prompt)),
+              )
+              .catch(() => {});
+          } else if (method === "item/agentMessage/delta") {
+            t.live?.({ type: "text_delta", text: String(p.delta ?? "") });
+          } else if (method === "item/completed") {
+            const item = p.item as Json;
+            const parts: AssistantPart[] = [];
+            if (item.type === "contextCompaction") t.onCompaction?.({ trigger: "auto" });
+            const questions = Array.isArray(item.questions) ? (item.questions as Json[]) : [];
+            if (item.type === "agentMessage" && questions.length && !asked) {
+              // A question Codex asks without waiting (`request_user_input_async`, 3.9.5: on 3.9.3
+              // it showed as a bulleted text and Codex went on by itself 9 s later). Its own
+              // questions are switched off; should one come anyway, the turn stops here and the
+              // person gets Rasgeth's question card; their answer starts the next Codex turn.
+              asked = { callId: String(item.id ?? ""), questions };
+              record();
+              stopAt();
+            } else if (item.type === "reasoning") {
+              const text = [
+                ...((item.summary as string[]) ?? []),
+                ...((item.content as string[]) ?? []),
+              ].join("\n");
+              if (text) parts.push({ type: "thinking", text });
+            } else if (
+              item.type === "agentMessage" &&
+              !asked &&
+              typeof item.text === "string" &&
+              item.text
+            ) {
+              parts.push({ type: "text", text: item.text });
+            }
+            if (parts.length) say({ parts, stopReason: "end_turn" }).catch(() => {});
+          } else if (method === "account/rateLimits/updated") {
+            const w = codexWindows(p.rateLimits);
+            if (w.length) this.onLimits?.(w);
+          } else if (method === "turn/completed") {
+            this.conn.listeners.delete(listen);
+            // A request that ended without its usage (failed, interrupted): what is held goes now.
+            record();
+            const turn = p.turn as { status?: string; error?: { message?: string } | null };
+            if (asked && !t.signal?.aborted) ok("asked");
+            else if (turn.status === "interrupted") ok("aborted");
+            else if (turn.status === "failed") {
+              const msg = turn.error?.message ?? "the turn failed";
+              ko(
+                new ProviderError(
+                  `ChatGPT subscription: ${msg}`,
+                  false,
+                  /401|unauthori[sz]ed|log ?in|token/i.test(msg) ? { status: 401 } : {},
+                ),
+              );
+            } else ok("end_turn");
           }
-          if (parts.length) say({ parts, stopReason: "end_turn" }).catch(() => {});
-        } else if (method === "account/rateLimits/updated") {
-          const w = codexWindows(p.rateLimits);
-          if (w.length) this.onLimits?.(w);
-        } else if (method === "turn/completed") {
+        };
+        this.conn.listeners.add(listen);
+        // Cancelled and Codex does not confirm (3.5.4: it may be the one stuck): its process is
+        // stopped, the turn ends as aborted, and the next one starts a fresh Codex.
+        gaveUp = () => {
           this.conn.listeners.delete(listen);
-          // A request that ended without its usage (failed, interrupted): what is held goes now.
           record();
-          const turn = p.turn as { status?: string; error?: { message?: string } | null };
-          if (turn.status === "interrupted") ok("aborted");
-          else if (turn.status === "failed") {
-            const msg = turn.error?.message ?? "the turn failed";
-            ko(
-              new ProviderError(
-                `ChatGPT subscription: ${msg}`,
-                false,
-                /401|unauthori[sz]ed|log ?in|token/i.test(msg) ? { status: 401 } : {},
-              ),
-            );
-          } else ok("end_turn");
-        }
+          this.loaded.clear();
+          this.conn.stop();
+          ok("aborted");
+        };
+      });
+      return {
+        done,
+        asked: () => asked,
+        started: () => {
+          if (asked) stopAt();
+        },
       };
-      this.conn.listeners.add(listen);
-      // Cancelled and Codex does not confirm (3.5.4: it may be the one stuck): its process is
-      // stopped, the turn ends as aborted, and the next one starts a fresh Codex.
-      gaveUp = () => {
-        this.conn.listeners.delete(listen);
-        record();
-        this.loaded.clear();
-        this.conn.stop();
-        ok("aborted");
-      };
-    });
+    };
     let giveUp: ReturnType<typeof setTimeout> | undefined;
     const interrupt = () => {
       if (turnId)
@@ -444,29 +500,146 @@ export class CodexEngine implements Engine {
     };
     t.signal?.addEventListener("abort", interrupt, { once: true });
     try {
-      const r = await this.conn.request<{ turn: { id: string } }>("turn/start", {
-        threadId: id,
-        model: t.model.model,
-        ...(t.model.effort && { effort: t.model.effort === "max" ? "xhigh" : t.model.effort }),
-        input: [
-          { type: "text", text: t.text, text_elements: [] },
-          ...t.images.map((im) => ({
-            type: "image",
-            url: `data:${im.mediaType};base64,${im.data}`,
-          })),
-        ],
-      });
-      turnId = r.turn.id;
-      if (t.signal?.aborted) interrupt();
-      const stopReason = await done;
-      await recording;
-      return { resume: id, stopReason };
+      let input: Json[] = [
+        { type: "text", text: t.text, text_elements: [] },
+        ...t.images.map((im) => ({
+          type: "image",
+          url: `data:${im.mediaType};base64,${im.data}`,
+        })),
+      ];
+      for (;;) {
+        const turn = run(input);
+        const r = await this.conn.request<{ turn: { id: string } }>("turn/start", {
+          threadId: id,
+          model: t.model.model,
+          ...(t.model.effort && { effort: t.model.effort === "max" ? "xhigh" : t.model.effort }),
+          input,
+        });
+        turnId = r.turn.id;
+        turn.started();
+        if (t.signal?.aborted) interrupt();
+        const stopReason = await turn.done;
+        await recording;
+        const asked = turn.asked();
+        if (stopReason !== "asked" || !asked)
+          return { resume: id, stopReason: stopReason === "asked" ? "end_turn" : stopReason };
+        // The person answers on the card (or the question's rules decide); Codex goes on with it.
+        // Codex's turn is over: no usage will come for it, the call is recorded at once.
+        const r2 = await this.ask(
+          {
+            t,
+            say: (m) => {
+              const said = say(m);
+              record();
+              return said;
+            },
+          },
+          asked.callId,
+          asked.questions,
+        );
+        await recording;
+        if (t.signal?.aborted) return { resume: id, stopReason: "aborted" };
+        input = [
+          {
+            type: "text",
+            text: r2?.content ?? NOBODY_TO_ASK,
+            text_elements: [],
+          },
+        ];
+      }
     } finally {
       clearTimeout(giveUp);
       t.signal?.removeEventListener("abort", interrupt);
       this.turns.delete(id);
     }
   }
+
+  /**
+   * A question from Codex through Rasgeth's `ask_user` (3.9.5): announced in the log like any tool
+   * call and run as one, so the person gets the same card on every channel and the turn waits
+   * for them under the questions' own rules (no answer is never an answer). Undefined: this agent
+   * has no ask_user (it does not talk with the person).
+   */
+  private async ask(
+    running: { t: EngineTurn; say: (m: Said) => Promise<void> },
+    callId: string,
+    questions: Json[],
+  ): Promise<{ content: string; isError: boolean } | undefined> {
+    const { t, say } = running;
+    if (!t.tools.some((d) => d.name === ASK_TOOL)) return undefined;
+    const input = askInput(questions);
+    await say({
+      parts: [
+        { type: "tool_call", callId, name: ASK_TOOL, input, rawInput: JSON.stringify(input) },
+      ],
+      stopReason: "tool_use",
+    });
+    return t.runTool({ callId, name: ASK_TOOL, input });
+  }
+}
+
+/** Rasgeth's question tool: the one way an agent asks the person (its card, every channel). */
+const ASK_TOOL = "ask_user";
+const NOBODY_TO_ASK =
+  "No person can answer questions here: choose yourself, and say plainly which choice you made.";
+
+/**
+ * Codex's questions (`request_user_input`: question, header, options with label and description;
+ * the async one: title, options as strings) as ask_user's input.
+ */
+export function askInput(questions: Json[]): {
+  questions: {
+    question: string;
+    header?: string;
+    options: { label: string; description?: string }[];
+  }[];
+} {
+  return {
+    questions: questions.map((q) => {
+      const header = typeof q.header === "string" ? q.header.trim().slice(0, 40) : "";
+      const options = (Array.isArray(q.options) ? (q.options as unknown[]) : []).map((o) => {
+        if (typeof o === "string") return { label: o };
+        const { label, description } = o as Json;
+        return {
+          label: String(label ?? ""),
+          ...(typeof description === "string" && description && { description }),
+        };
+      });
+      return {
+        question: String(q.question ?? q.title ?? ""),
+        ...(header && { header }),
+        options,
+      };
+    }),
+  };
+}
+
+/**
+ * ask_user's answer as Codex's `request_user_input` response: each question's chosen labels (or
+ * the person's own words). An answer that is not the person's (nobody answered, their classifier,
+ * an error) goes whole to the first question, for the model to read.
+ */
+export function codexAnswers(
+  content: string,
+  questions: Json[],
+): Record<string, { answers: string[] }> {
+  const asked = askInput(questions).questions.map((q) => q.question);
+  const at = asked.map((q) => content.indexOf(`${q}\n-> `));
+  const plain =
+    at[0] === 0 && at.every((i) => i >= 0) && at.every((i, n) => n === 0 || i > (at[n - 1] ?? 0));
+  const out: Record<string, { answers: string[] }> = {};
+  questions.forEach((q, n) => {
+    const key = String(q.id ?? n);
+    if (!plain) {
+      out[key] = { answers: n === 0 ? [content] : [] };
+      return;
+    }
+    const from = (at[n] ?? 0) + (asked[n]?.length ?? 0) + 4;
+    const to = n + 1 < at.length ? (at[n + 1] ?? content.length) - 2 : content.length;
+    const text = content.slice(from, to);
+    out[key] = { answers: text ? text.split("; ") : [] };
+  });
+  return out;
 }
 
 /**
