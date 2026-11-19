@@ -97,6 +97,8 @@ export function ProposalView({
       onClose();
     });
   const description = p.input.spec?.description ?? p.input.description ?? "";
+  // 3.9.7: a new version is decided on its line; the whole comparison on request.
+  const [comparing, setComparing] = useState(false);
   // G36.8: an agent's skill that changes an installed one, its scripts, why it came.
   const update = p.kind === "skill" && Boolean(p.previous);
   const scripts =
@@ -133,10 +135,24 @@ export function ProposalView({
         {scripts.length > 0 && p.status === "pending" && p.author !== "human" && (
           <p class="notice warn">{t("xwScripts", { files: scripts.join(", ") })}</p>
         )}
+        {update && p.updateLine && (
+          <div class="wz-card wz-left sv-line" data-testid="update-line">
+            <b>{t("svLineTitle")}</b>
+            <p>{p.updateLine}</p>
+          </div>
+        )}
         {update && p.previous && p.proposedSkillMd !== undefined && (
           <div class="sv-changes" data-testid="proposal-diff">
-            <h4>{t("svChanges")}</h4>
-            <DiffView before={p.previous.skillMd} after={p.proposedSkillMd} />
+            <button
+              type="button"
+              class="wz-btn quiet"
+              data-testid="proposal-compare"
+              aria-expanded={comparing}
+              onClick={() => setComparing(!comparing)}
+            >
+              {comparing ? t("svHideCompare") : t("svCompareFull")}
+            </button>
+            {comparing && <DiffView before={p.previous.skillMd} after={p.proposedSkillMd} />}
             {p.status === "pending" && <p class="ui-help">{t("svNextSession")}</p>}
           </div>
         )}
@@ -1199,7 +1215,7 @@ export function Extensions() {
       icon={p.kind === "tool" ? <IconTool /> : <IconBook />}
       title={p.name}
       badge={t(p.kind === "tool" ? "extKindTool" : "extKindSkill")}
-      text={p.input.spec?.description ?? p.input.description ?? ""}
+      text={p.updateLine ?? p.input.spec?.description ?? p.input.description ?? ""}
       state={
         waiting
           ? `${t("xwWaitsYou")} · ${t("by")} ${who(p.author)}`

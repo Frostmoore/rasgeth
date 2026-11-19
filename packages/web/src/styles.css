@@ -21879,3 +21879,16 @@ fieldset.saved-filter legend {
 .ui-modal-back:has(> .ui-modal.dlg) {
   z-index: 90;
 }
+
+/* 3.9.7: the line a new version of a skill is approved by. */
+.sv-line {
+  margin: 10px 0;
+  border-color: var(--accent);
+}
+.sv-line p {
+  margin: 4px 0 0;
+  font-size: 15px;
+}
+.sv-changes .rf-diff-wrap {
+  margin-top: 8px;
+}

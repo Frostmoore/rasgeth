@@ -24,6 +24,7 @@ import {
   requestReasons,
   requestSentence,
   type SecretSpan,
+  type SkillUpdateRequestInfo,
 } from "@redgiant/protocol";
 import { type Language, say, type TextKey, VOICE_FAILURES, type VoiceFailure } from "./texts.js";
 
@@ -155,6 +156,20 @@ export interface GatewayHost {
     answer(ownerId: string, requestId: string, answers: Answers, via?: string): boolean;
   };
   language?(ownerId: string): Language;
+  /** 3.9.7: new versions of skills waiting for the person, approved or rejected here. */
+  skillUpdates?: {
+    on(event: "request", l: (ownerId: string, info: SkillUpdateRequestInfo) => void): unknown;
+    on(
+      event: "closed",
+      l: (ownerId: string, proposalId: string, decision: "approve" | "reject", via: string) => void,
+    ): unknown;
+    decide(
+      ownerId: string,
+      proposalId: string,
+      decision: "approve" | "reject",
+      via: string,
+    ): Promise<boolean>;
+  };
 }
 
 export interface ChatLink {
@@ -200,7 +215,8 @@ const IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 type Prompt =
   | { kind: "perm"; requestId: string }
   | { kind: "question"; requestId: string; index: number }
-  | { kind: "secret"; requestId: string };
+  | { kind: "secret"; requestId: string }
+  | { kind: "skill"; requestId: string };
 
 /** How long a message that looks like a secret waits for the person's choice. */
 export const SECRET_HOLD_MS = 10 * 60_000;
@@ -305,6 +321,18 @@ export class ChatBridge {
       "closed",
       guard((_o: string, id: string, d: "allow" | "deny", via: string | undefined) =>
         this.closeApproval(id, d, via),
+      ),
+    );
+    h.skillUpdates?.on(
+      "request",
+      guard(async (owner: string, info: SkillUpdateRequestInfo) => {
+        await this.sendSkillUpdate(owner, info);
+      }),
+    );
+    h.skillUpdates?.on(
+      "closed",
+      guard((_o: string, id: string, d: "approve" | "reject", via: string) =>
+        this.closeSkillUpdate(id, d, via),
       ),
     );
     h.questions?.on(
@@ -721,6 +749,60 @@ export class ChatBridge {
     }
   }
 
+  /** 3.9.7: «{agent} proposes a new version…», the line, and Approve / Reject (or 1 / 2). */
+  private async sendSkillUpdate(ownerId: string, info: SkillUpdateRequestInfo) {
+    const text = [
+      this.say(ownerId, "skillUpdateFrom", { agent: info.agentName, name: info.name }),
+      info.line,
+      this.say(ownerId, "skillUpdateCompare"),
+    ]
+      .filter(Boolean)
+      .join("\n");
+    const choices = [
+      { id: `xs:${info.proposalId}:approve`, label: this.say(ownerId, "skillApprove") },
+      { id: `xs:${info.proposalId}:reject`, label: this.say(ownerId, "skillReject") },
+    ];
+    this.sentOwner.set(info.proposalId, ownerId);
+    for (const link of await this.links(ownerId)) {
+      const m = await this.ask(link.chatId, ownerId, text, choices, {
+        kind: "skill",
+        requestId: info.proposalId,
+      });
+      this.sent.set(info.proposalId, [
+        ...(this.sent.get(info.proposalId) ?? []),
+        { chatId: link.chatId, ...m },
+      ]);
+    }
+  }
+
+  private async closeSkillUpdate(proposalId: string, decision: "approve" | "reject", via: string) {
+    const owner = this.sentOwner.get(proposalId);
+    const sent = this.sent.get(proposalId) ?? [];
+    const done = this.say(owner, decision === "approve" ? "skillApproved" : "skillRejected");
+    const app = appViaName(via);
+    const tail =
+      via === this.platform
+        ? done
+        : this.say(owner, "decidedVia", {
+            where:
+              via === "web"
+                ? this.say(owner, "whereWeb")
+                : app
+                  ? this.say(owner, "whereApp", { name: app })
+                  : this.say(owner, "whereChat", { name: CHANNEL_NAMES[via] ?? via }),
+            decision: done.split(":")[0]?.toLowerCase() ?? "",
+          });
+    for (const m of sent) {
+      this.clearPrompt(m.chatId, proposalId);
+      if (m.messageId && this.t.edit)
+        await this.t.edit(m.chatId, m.messageId, `${m.text}\n\n${tail}`).catch(() => {});
+    }
+    if (!this.t.edit)
+      for (const chatId of new Set(sent.map((m) => m.chatId))) await this.reply(chatId, tail);
+    this.sent.delete(proposalId);
+    this.sentOwner.delete(proposalId);
+  }
+
   private async closeApproval(
     requestId: string,
     decision: "allow" | "deny",
@@ -873,6 +955,16 @@ export class ChatBridge {
       await this.settleSecret(owner, p.requestId, choice);
       return true;
     }
+    if (p.kind === "skill") {
+      if (numbers?.length !== 1 || (numbers[0] !== 0 && numbers[0] !== 1)) return false;
+      await this.o.host.skillUpdates?.decide(
+        owner,
+        p.requestId,
+        numbers[0] === 0 ? "approve" : "reject",
+        this.platform,
+      );
+      return true;
+    }
     if (p.kind === "perm") {
       if (numbers?.length !== 1 || (numbers[0] !== 0 && numbers[0] !== 1)) return false;
       this.o.host.approvals.decide(
@@ -904,6 +996,16 @@ export class ChatBridge {
         perm[1] as string,
         perm[2] as "allow" | "deny",
         undefined,
+        this.platform,
+      );
+      return;
+    }
+    const skill = id.match(/^xs:(.+):(approve|reject)$/);
+    if (skill) {
+      await this.o.host.skillUpdates?.decide(
+        owner,
+        skill[1] as string,
+        skill[2] as "approve" | "reject",
         this.platform,
       );
       return;

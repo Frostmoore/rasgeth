@@ -76,20 +76,35 @@ const v1 = {
 const v2 = {
   ...v1,
   updates: true,
+  change: "Read the VAT from the table above the total",
   body: "Open the PDF with read_document; the total is on the last page, the VAT in the table above it.",
   summary: "The VAT was read from the wrong table twice: it is the one above the total.",
 };
 const skillFile = (root: string, name = "invoice-pdf") => join(root, "skills", name, "SKILL.md");
 
 describe("a new version of a skill (3.9.7)", () => {
-  it("is proposed against the installed one, tested, installed by policy and kept in the history", async () => {
+  it("is proposed against the installed one, tested, waits even with the policy, and once approved is in the history", async () => {
     const { tool, builder, platform, store } = await setup();
     expect(text(await tool.run(v1, ctx))).toMatch(/is installed/);
     const r = text(await tool.run(v2, ctx));
-    expect(r).toMatch(/new version of the skill "invoice-pdf".*is installed/);
+    expect(r).toMatch(/new version of the skill "invoice-pdf".*waits for the user's approval/s);
     expect(r).toMatch(/next conversation; this one keeps the version it started with/);
+    expect(await readFile(skillFile(platform), "utf8")).not.toMatch(/VAT in the table/);
+    const [p] = await builder.list("me", "pending");
+    // One line for the person: what changed and why.
+    expect(p?.updateLine).toBe(
+      "Read the VAT from the table above the total: the VAT was read from the wrong table twice",
+    );
+    expect(
+      (await store.list()).find((e) => e.type === "extension.proposed" && e.payload.update)
+        ?.payload,
+    ).toMatchObject({
+      update: true,
+      line: p?.updateLine,
+      status: "pending",
+    });
+    await builder.decide("me", p?.id ?? "", "approve", "human");
     expect(await readFile(skillFile(platform), "utf8")).toMatch(/VAT in the table/);
-    const [p] = await builder.list("me");
     // The person sees the reason and the differences: the version before and the one proposed.
     expect(p?.previous?.skillMd).toMatch(/the total is on the last page\.\n/);
     expect(p?.proposedSkillMd).toBe(renderSkillMd({ ...v1, body: v2.body }));
@@ -97,7 +112,7 @@ describe("a new version of a skill (3.9.7)", () => {
     expect(
       history.map((v) => [v.version, v.how, v.author, v.approvedBy, v.reason, v.current]),
     ).toEqual([
-      [2, "update", "agent_x", "auto", v2.summary, true],
+      [2, "update", "agent_x", "human", v2.summary, true],
       [1, "install", "agent_x", "auto", v1.summary, false],
     ]);
     expect(
@@ -108,11 +123,13 @@ describe("a new version of a skill (3.9.7)", () => {
     ]);
   });
 
-  it("says why or is refused, and a failing test installs nothing", async () => {
+  it("says what changed and why or is refused, and a failing test installs nothing", async () => {
     const { tool, builder, platform } = await setup();
     await tool.run(v1, ctx);
     const { summary: _, ...noWhy } = v2;
-    expect(text(await tool.run(noWhy, ctx))).toMatch(/say why in summary/);
+    expect(text(await tool.run(noWhy, ctx))).toMatch(/Add summary/);
+    const { change: __, ...noWhat } = v2;
+    expect(text(await tool.run(noWhat, ctx))).toMatch(/Add change/);
     const broken = text(
       await tool.run(
         { ...v2, untestable_reason: undefined, tests: [{ command: "exit 3" }] } as never,
@@ -128,7 +145,9 @@ describe("a new version of a skill (3.9.7)", () => {
     const { tool, builder, setAuto } = await setup();
     await tool.run(v1, ctx);
     setAuto(false);
-    expect(text(await tool.run(v2, ctx))).toMatch(/an update of the skill "invoice-pdf".*waits/);
+    expect(text(await tool.run(v2, ctx))).toMatch(
+      /a new version of the skill "invoice-pdf".*waits/,
+    );
     const [p] = await builder.list("me", "pending");
     await builder.decide("me", p?.id ?? "", "approve", "human");
     const [last] = await builder.versions.list("me", "platform", "invoice-pdf");
@@ -170,6 +189,8 @@ describe("a new version of a skill (3.9.7)", () => {
     // Then the person edits the file by hand.
     await writeFile(skillFile(platform), renderSkillMd({ ...v1, body: "Edited by hand, twice." }));
     await tool.run({ ...v2, body: `${v2.body} Check the due date too.` }, ctx);
+    // What the page and the app do before showing the history (GET …/versions).
+    await builder.versions.keepCurrent("me", "platform", "invoice-pdf");
     const history = await builder.versions.list("me", "platform", "invoice-pdf");
     expect(history.map((v) => [v.version, v.how, v.author])).toEqual([
       [3, "edited", null],
@@ -184,6 +205,8 @@ describe("a new version of a skill (3.9.7)", () => {
     const { tool, builder, platform, store } = await setup();
     await tool.run({ ...v1, files: { "suppliers.md": "ACME, Rossi\n" } }, ctx);
     await tool.run({ ...v2, updates: undefined, files: { "vat.md": "Above the total.\n" } }, ctx);
+    const [waiting] = await builder.list("me", "pending");
+    await builder.decide("me", waiting?.id ?? "", "approve", "human");
     const folder = join(platform, "skills", "invoice-pdf");
     expect(await stat(join(folder, "suppliers.md")).catch(() => undefined)).toBeUndefined();
     const v = await builder.versions.rollback("me", "platform", "invoice-pdf", 1, "human");
@@ -226,7 +249,9 @@ describe("a new version of a skill (3.9.7)", () => {
       () => true,
     );
     await tool.run(v1, ctx);
-    expect(text(await inProject.run(v2, { ...ctx, projectId: "p" }))).toMatch(/is installed/);
+    expect(text(await inProject.run(v2, { ...ctx, projectId: "p" }))).toMatch(/waits/);
+    const [waiting] = await builder.list("me", "pending");
+    await builder.decide("me", waiting?.id ?? "", "approve", "human");
     expect(await readFile(skillFile(platform), "utf8")).toMatch(/VAT in the table/);
     expect(await stat(skillFile(project)).catch(() => undefined)).toBeUndefined();
     expect((await builder.versions.list("me", "platform", "invoice-pdf"))[0]).toMatchObject({

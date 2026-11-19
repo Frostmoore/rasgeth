@@ -129,7 +129,9 @@ describe("friction after a skill asks for a new version of it (3.9.7)", () => {
     expect(r?.content).toMatch(
       /^total 120\n\n\[Rasgeth\] 2 attempts failed after you loaded the skill "invoice-pdf"\./,
     );
-    expect(r?.content).toMatch(/name "invoice-pdf", updates true.*summary saying what went wrong/);
+    expect(r?.content).toMatch(
+      /name "invoice-pdf", updates true.*change \(what it changes.*summary saying what went wrong/,
+    );
     // Not again for the same skill in this conversation.
     n.turnStarted("f1", "no, the VAT is wrong");
     expect(await hook(call("bash"), ok(), c)).toBeUndefined();

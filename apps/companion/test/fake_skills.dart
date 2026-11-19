@@ -69,6 +69,7 @@ class FakeSkills {
         'scope': 'platform',
       },
       'proposedSkillMd': 'The total is on the last page; check the due date too.',
+      'updateLine': 'Added the due date check: the due date was missed',
     },
     {
       'id': 'prop_t',

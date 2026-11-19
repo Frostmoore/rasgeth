@@ -18465,12 +18465,6 @@ abstract class AppLocalizations {
   /// **'Why'**
   String get skWhy;
 
-  /// No description provided for @skChanges.
-  ///
-  /// In en, this message translates to:
-  /// **'What changes'**
-  String get skChanges;
-
   /// No description provided for @skTestsOk.
   ///
   /// In en, this message translates to:
@@ -18662,6 +18656,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No versions yet.'**
   String get skNoVersions;
+
+  /// No description provided for @skLineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What changed and why'**
+  String get skLineTitle;
+
+  /// No description provided for @skCompareFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare: every difference'**
+  String get skCompareFull;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -3062,7 +3062,6 @@
   "skUpdate": "Nuova versione di una skill installata",
   "skBy": "di {who}",
   "skWhy": "Perché",
-  "skChanges": "Cosa cambia",
   "skTestsOk": "Le sue prove sono passate.",
   "skScripts": "Ha degli script ({files}): il codice non si installa mai da solo.",
   "skApprove": "Approva",
@@ -3094,5 +3093,7 @@
   "skRollbackText": "I suoi file prendono il posto di quelli di «{name}» in uso, come versione nuova: non si perde niente e puoi tornare qui. Gli agenti la usano dalla loro conversazione successiva.",
   "skRolledBack": "Tornata alla versione {n}: adesso è la versione {v}.",
   "skNotRestorable": "Troppo grande per essere conservata: non può tornare.",
-  "skNoVersions": "Ancora nessuna versione."
+  "skNoVersions": "Ancora nessuna versione.",
+  "skLineTitle": "Cosa è cambiato e perché",
+  "skCompareFull": "Confronta: tutte le differenze"
 }

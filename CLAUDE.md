@@ -100,10 +100,11 @@
   user (`ExtensionBuilder.decide`); only the user's own extensions install directly once their tests pass. The one
   exception is the user's choice (G29.4, policy `skills: "auto"`): an agent's _skill_ (instructions) installs once
   tested; tools that run code always wait. Skills improve with use (3.9.7): an agent's new version of an installed
-  skill (`updates`, with `summary` saying why) follows the same path, and installs by itself only over a version an
-  agent wrote (never over the person's, an imported one or one of unknown origin, never with scripts). Every
-  installed skill keeps its versions (`SkillVersions`: who, why, when) and only the person goes back to one, as a
-  new version; a new version reaches agents from their next session (the index and `skill_load` stay fixed).
+  skill (`updates`, with `change`: what changed, and `summary`: why) is tested the same way and **always** waits for
+  the person, whatever the policy, who decides on one line «what changed: why» (`skillUpdateLine`, protocol) with
+  the whole comparison on request; the request reaches every channel like the other requests (`SkillUpdateRequests`).
+  Every installed skill keeps its versions (`SkillVersions`: who, why, when) and only the person goes back to one,
+  as a new version; a new version reaches agents from their next session (the index and `skill_load` stay fixed).
 - Automations (`@redgiant/automations`): recipes choose an agent, never its tools; a run never overlaps the previous
   one; webhook bodies reach the agent as data, never as instructions. Test schedules with the service's fake clock
   (`now`, `tick`), never by waiting for real time.

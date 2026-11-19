@@ -624,6 +624,8 @@ export interface Proposal {
   previous?: { skillMd: string; files: string[]; scope?: string } | null;
   /** 3.9.7: the SKILL.md the proposal would write, for the differences. */
   proposedSkillMd?: string;
+  /** 3.9.7: «what changed: why», the line a new version is approved by. */
+  updateLine?: string;
   decidedBy?: string | null;
 }
 

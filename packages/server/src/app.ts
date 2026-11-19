@@ -2024,15 +2024,12 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   });
   app.openapi(routes.decideExtension, async (c) => {
     try {
-      return c.json(
-        await core.extensions.decide(
-          owner(c),
-          c.req.valid("param").id,
-          c.req.valid("json").decision,
-          "human",
-        ),
-        200,
-      );
+      const id = c.req.valid("param").id;
+      const decision = c.req.valid("json").decision;
+      const p = await core.extensions.decide(owner(c), id, decision, "human");
+      // 3.9.7: the chats' copies of a new version's request say it was decided here.
+      core.skillUpdates.decidedElsewhere(owner(c), id, decision, "web");
+      return c.json(p, 200);
     } catch (err) {
       return c.json(
         { error: (err as Error).message },

@@ -8057,7 +8057,6 @@
     }
   },
   "skWhy": "Why",
-  "skChanges": "What changes",
   "skTestsOk": "Its tests passed.",
   "skScripts": "It has scripts ({files}): code never installs by itself.",
   "@skScripts": {
@@ -8148,5 +8147,7 @@
     }
   },
   "skNotRestorable": "Too large to keep: it cannot come back.",
-  "skNoVersions": "No versions yet."
+  "skNoVersions": "No versions yet.",
+  "skLineTitle": "What changed and why",
+  "skCompareFull": "Compare: every difference"
 }

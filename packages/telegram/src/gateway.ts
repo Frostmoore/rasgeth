@@ -17,6 +17,7 @@ import {
   requestReasons,
   requestSentence,
   type SecretSpan,
+  type SkillUpdateRequestInfo,
 } from "@redgiant/protocol";
 import { Bot, type Context, InlineKeyboard, InputFile } from "grammy";
 import type { Update } from "grammy/types";
@@ -98,6 +99,20 @@ export interface TelegramHost {
   };
   /** What its texts are written in: the agents' language if translated, else the interface's. */
   language?(ownerId: string): Language;
+  /** 3.9.7: new versions of skills waiting for the person, approved or rejected with buttons. */
+  skillUpdates?: {
+    on(event: "request", l: (ownerId: string, info: SkillUpdateRequestInfo) => void): unknown;
+    on(
+      event: "closed",
+      l: (ownerId: string, proposalId: string, decision: "approve" | "reject", via: string) => void,
+    ): unknown;
+    decide(
+      ownerId: string,
+      proposalId: string,
+      decision: "approve" | "reject",
+      via: string,
+    ): Promise<boolean>;
+  };
 }
 
 /** How long a message that looks like a secret waits for the person's choice. */
@@ -276,6 +291,14 @@ export class TelegramGateway {
       "closed",
       (_ownerId, requestId, decision, via) =>
         void this.closeApproval(requestId, decision, via).catch(() => {}),
+    );
+    o.host.skillUpdates?.on("request", (ownerId, info) => {
+      void this.sendSkillUpdate(ownerId, info).catch(() => {});
+    });
+    o.host.skillUpdates?.on(
+      "closed",
+      (_ownerId, proposalId, decision, via) =>
+        void this.closeSkillUpdate(proposalId, decision, via).catch(() => {}),
     );
     o.host.questions?.on("request", (ownerId, info) => {
       void this.sendQuestion(ownerId, info).catch(() => {});
@@ -754,6 +777,49 @@ export class TelegramGateway {
     }
   }
 
+  /** 3.9.7: «{agent} proposes a new version…», the line, and Approve / Reject. */
+  private async sendSkillUpdate(ownerId: string, info: SkillUpdateRequestInfo) {
+    const text = [
+      this.say(ownerId, "skillUpdateFrom", { agent: info.agentName, name: info.name }),
+      info.line,
+      this.say(ownerId, "skillUpdateCompare"),
+    ]
+      .filter(Boolean)
+      .join("\n");
+    const keyboard = new InlineKeyboard()
+      .text(this.say(ownerId, "skillApprove"), `xs:${info.proposalId}:approve`)
+      .text(this.say(ownerId, "skillReject"), `xs:${info.proposalId}:reject`);
+    this.sentOwner.set(info.proposalId, ownerId);
+    for (const link of await this.links(ownerId)) {
+      const m = await this.bot.api.sendMessage(link.chatId, text, { reply_markup: keyboard });
+      this.sent.set(info.proposalId, [
+        ...(this.sent.get(info.proposalId) ?? []),
+        { chatId: link.chatId, messageId: m.message_id, text },
+      ]);
+    }
+  }
+
+  private async closeSkillUpdate(proposalId: string, decision: "approve" | "reject", via: string) {
+    const owner = this.sentOwner.get(proposalId);
+    const done = this.say(owner, decision === "approve" ? "skillApproved" : "skillRejected");
+    const tail =
+      via === "telegram"
+        ? done
+        : this.say(owner, "decidedVia", {
+            where:
+              via === "web"
+                ? this.say(owner, "whereWeb")
+                : this.say(owner, "whereChat", { name: CHANNEL_NAMES[via] ?? via }),
+            decision: done.split(":")[0]?.toLowerCase() ?? "",
+          });
+    for (const m of this.sent.get(proposalId) ?? [])
+      await this.bot.api
+        .editMessageText(m.chatId, m.messageId, `${m.text}\n\n${tail}`)
+        .catch(() => {});
+    this.sent.delete(proposalId);
+    this.sentOwner.delete(proposalId);
+  }
+
   private async closeApproval(
     requestId: string,
     decision: "allow" | "deny",
@@ -936,6 +1002,22 @@ export class TelegramGateway {
     const owner = await this.ownerOf(ctx.from?.id);
     if (owner && data.startsWith("q:")) return this.onQuestionButton(ctx, owner, data);
     if (owner && data.startsWith("sec:")) return this.onSecretButton(ctx, owner, data);
+    const skill = data.match(/^xs:([\w-]+):(approve|reject)$/);
+    if (owner && skill) {
+      const ok = await this.o.host.skillUpdates?.decide(
+        owner,
+        skill[1] as string,
+        skill[2] as "approve" | "reject",
+        "telegram",
+      );
+      await ctx.answerCallbackQuery({
+        text: this.say(
+          owner,
+          ok ? (skill[2] === "approve" ? "skillApproved" : "skillRejected") : "closedAlready",
+        ),
+      });
+      return;
+    }
     const m = data.match(/^perm:([\w-]+):(allow|deny)$/);
     if (!m || !owner) {
       await ctx.answerCallbackQuery({ text: this.say(owner, "notAllowed") });

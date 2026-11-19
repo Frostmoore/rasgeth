@@ -76,6 +76,7 @@ class SkillProposal {
     required this.summary,
     required this.previousSkillMd,
     required this.proposedSkillMd,
+    required this.updateLine,
     required this.scripts,
     required this.passed,
   });
@@ -93,6 +94,7 @@ class SkillProposal {
       summary: _s(input['summary']),
       previousSkillMd: previous is Map<String, dynamic> ? _s(previous['skillMd']) : null,
       proposedSkillMd: _s(j['proposedSkillMd']),
+      updateLine: _s(j['updateLine']),
       scripts: [
         for (final e in files.entries)
           if (_scriptExt.hasMatch(e.key) ||
@@ -116,6 +118,9 @@ class SkillProposal {
   /// The installed skill it changes, as it is now (null for a new skill).
   final String? previousSkillMd;
   final String? proposedSkillMd;
+
+  /// «What changed: why», the line a new version is approved by (3.9.7).
+  final String? updateLine;
   final List<String> scripts;
   final bool passed;
 

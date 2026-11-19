@@ -677,6 +677,9 @@ export const EventBody = z.discriminatedUnion("type", [
       name: z.string(),
       author: z.string(),
       status: z.enum(["failed", "pending", "installed"]),
+      /** 3.9.7: a new version of an installed skill, and «what changed: why». */
+      update: z.boolean().optional(),
+      line: z.string().optional(),
     }),
   }),
   z.object({

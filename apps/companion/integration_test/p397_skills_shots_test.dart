@@ -86,14 +86,29 @@ void main() {
       unawaited(openSkills(ctx));
       await frames(t, 3000);
       await shot(t, '02_skill_$tag');
-      final waiting = find.byWidgetPredicate(
-        (w) => w.key is ValueKey<String> && '${(w.key! as ValueKey<String>).value}'.startsWith('skill-diff-'),
+      final line = find.byWidgetPredicate(
+        (w) =>
+            w.key is ValueKey<String> &&
+            (w.key! as ValueKey<String>).value.startsWith('skill-line-'),
       );
-      if (waiting.evaluate().isNotEmpty) {
-        await t.ensureVisible(waiting.first);
+      if (line.evaluate().isNotEmpty) {
+        await t.ensureVisible(line.first);
         await frames(t, 600);
       }
       await shot(t, '03_versione_in_attesa_$tag');
+      final compare = find.byWidgetPredicate(
+        (w) =>
+            w.key is ValueKey<String> &&
+            (w.key! as ValueKey<String>).value.startsWith('skill-compare-prop_'),
+      );
+      if (compare.evaluate().isNotEmpty) {
+        await t.ensureVisible(compare.first);
+        await t.tap(compare.first);
+        await frames(t, 1200);
+        await t.ensureVisible(compare.first);
+        await frames(t, 400);
+        await shot(t, '03b_confronta_in_attesa_$tag');
+      }
       await scrollTo(const Key('skill-installed-release-notes'));
       await t.tap(find.byKey(const Key('skill-installed-release-notes')));
       await frames(t, 2500);

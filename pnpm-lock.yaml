@@ -365,6 +365,9 @@ importers:
       '@redgiant/events':
         specifier: workspace:*
         version: link:../events
+      '@redgiant/protocol':
+        specifier: workspace:*
+        version: link:../protocol
       '@redgiant/tools':
         specifier: workspace:*
         version: link:../tools

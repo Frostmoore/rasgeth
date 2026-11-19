@@ -17,6 +17,7 @@
     "@modelcontextprotocol/sdk": "^1.32.2",
     "@redgiant/agent": "workspace:*",
     "@redgiant/events": "workspace:*",
+    "@redgiant/protocol": "workspace:*",
     "@redgiant/tools": "workspace:*",
     "fflate": "^0.8.3",
     "yaml": "^2.9.1",

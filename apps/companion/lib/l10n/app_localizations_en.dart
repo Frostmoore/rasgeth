@@ -10706,9 +10706,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get skWhy => 'Why';
 
   @override
-  String get skChanges => 'What changes';
-
-  @override
   String get skTestsOk => 'Its tests passed.';
 
   @override
@@ -10820,4 +10817,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skNoVersions => 'No versions yet.';
+
+  @override
+  String get skLineTitle => 'What changed and why';
+
+  @override
+  String get skCompareFull => 'Compare: every difference';
 }

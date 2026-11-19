@@ -326,6 +326,7 @@ import { scriptTool } from "./script.js";
 import { settingValue } from "./setting-value.js";
 import { SharedMemory } from "./shared-memory.js";
 import { SKILL_PROMPT, SkillNudge } from "./skill-nudge.js";
+import { SkillUpdateRequests } from "./skill-requests.js";
 import { type SshToolsHost, sshTools } from "./ssh-tools.js";
 import { dryWorkspace, ToolChoiceStore, toolChars, toolsView } from "./tool-choice.js";
 import { type Seat, TurnSeats } from "./turn-seats.js";
@@ -825,6 +826,10 @@ export class RedGiantCore implements OrchestrationHost {
   private readonly protectedPaths: string[];
   /** Skills that come by themselves (G36.8): one quiet nudge after a problem solved. */
   readonly skillNudge = new SkillNudge();
+  /** 3.9.7: new versions of skills waiting for the person, asked on every chat. */
+  readonly skillUpdates = new SkillUpdateRequests((ownerId, id, decision) =>
+    this.extensions.decide(ownerId, id, decision, "human"),
+  );
   /** The keys kept by the setup (providers, chats, git…), listed in the keychain (set by main). */
   vaultSystem?: (ownerId: string) => Promise<VaultSystemEntry[]>;
   /** The knowledge (G36, the RAG): set by main.ts once the database and the setup are up. */
@@ -1563,7 +1568,21 @@ export class RedGiantCore implements OrchestrationHost {
       // The canvas opens on the person's pages also for a conversation none of them follows.
       if (l && (e.type === "canvas.show" || e.type === "canvas.act"))
         this.toOwner(l.ownerId, { type: "canvas.open", sessionId: l.id, event: e });
-      if (e.type === "extension.proposed" && e.payload?.status === "pending" && e.ownerId)
+      // 3.9.7: a new version of a skill is a request with its buttons on every chat.
+      if (
+        e.type === "extension.proposed" &&
+        e.payload?.status === "pending" &&
+        e.payload.update &&
+        e.ownerId
+      )
+        this.skillUpdates.request(e.ownerId, {
+          proposalId: e.payload.proposalId,
+          name: e.payload.name,
+          agentName: this.registry.get(e.payload.author)?.name ?? e.payload.author,
+          line: e.payload.line ?? "",
+          createdAt: e.ts,
+        });
+      else if (e.type === "extension.proposed" && e.payload?.status === "pending" && e.ownerId)
         this.alert(e.ownerId, {
           kind: "proposal",
           title: this.say(e.ownerId, "proposal"),

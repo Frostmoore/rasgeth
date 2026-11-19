@@ -51,6 +51,7 @@ class _SkillsScreenState extends State<SkillsScreen> {
   List<InstalledSkill>? _installed;
   String? _error;
   final _busy = <String>{};
+  final _comparing = <String>{};
 
   @override
   void initState() {
@@ -142,7 +143,7 @@ class _SkillsScreenState extends State<SkillsScreen> {
                     style: TextStyle(color: col.dim, fontSize: 13),
                   ),
                   if (p.description.isNotEmpty) KbLine(p.description),
-                  if (p.summary != null) ...[
+                  if (p.summary != null && p.updateLine == null) ...[
                     const SizedBox(height: 4),
                     Text(
                       l.skWhy,
@@ -150,17 +151,54 @@ class _SkillsScreenState extends State<SkillsScreen> {
                     ),
                     KbLine(p.summary!),
                   ],
+                  if (p.isUpdate && p.updateLine != null) ...[
+                    Container(
+                      key: Key('skill-line-${p.id}'),
+                      margin: const EdgeInsets.only(top: 8),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: col.bg,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: col.accent),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l.skLineTitle,
+                            style: TextStyle(
+                              color: col.dim,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12.5,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(p.updateLine!, style: TextStyle(color: col.text, fontSize: 15)),
+                        ],
+                      ),
+                    ),
+                  ],
                   if (p.isUpdate && p.proposedSkillMd != null) ...[
-                    const SizedBox(height: 6),
-                    Text(
-                      l.skChanges,
-                      style: TextStyle(color: col.text, fontWeight: FontWeight.w700, fontSize: 13),
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: OutlinedButton(
+                        key: Key('skill-compare-${p.id}'),
+                        onPressed: () => setState(
+                          () => _comparing.contains(p.id)
+                              ? _comparing.remove(p.id)
+                              : _comparing.add(p.id),
+                        ),
+                        child: Text(_comparing.contains(p.id) ? l.skHideCompare : l.skCompareFull),
+                      ),
                     ),
-                    const SizedBox(height: 4),
-                    KeyedSubtree(
-                      key: Key('skill-diff-${p.id}'),
-                      child: WordDiffView(before: p.previousSkillMd!, after: p.proposedSkillMd!),
-                    ),
+                    if (_comparing.contains(p.id)) ...[
+                      const SizedBox(height: 6),
+                      KeyedSubtree(
+                        key: Key('skill-diff-${p.id}'),
+                        child: WordDiffView(before: p.previousSkillMd!, after: p.proposedSkillMd!),
+                      ),
+                    ],
                   ] else if (p.body.isNotEmpty)
                     Container(
                       margin: const EdgeInsets.only(top: 6),

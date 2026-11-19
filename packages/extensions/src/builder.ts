@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { lstat, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { EventStore, SqlClient } from "@redgiant/events";
+import { SKILL_CHANGE_MAX, skillUpdateLine } from "@redgiant/protocol";
 import { LocalWorkspace, type Workspace } from "@redgiant/tools";
 import { z } from "zod";
 import { CustomToolSpec, RESERVED, runCustomTool, ToolTest } from "./customtools.js";
@@ -46,6 +47,11 @@ export const ProposalInput = z.discriminatedUnion("kind", [
     summary: z.string().min(1).max(2000).optional(),
     /** G36.8: this changes the installed skill of the same name instead of adding one. */
     updates: z.boolean().optional(),
+    /**
+     * 3.9.7: what this new version changes, in one short line («Added the step for .rtf
+     * files»); with `summary` (why) it makes the line the person approves.
+     */
+    change: z.string().min(3).max(SKILL_CHANGE_MAX).optional(),
   }),
 ]);
 export type ProposalInput = z.input<typeof ProposalInput>;
@@ -77,6 +83,8 @@ export interface Proposal {
   previous: { skillMd: string; files: string[]; scope?: string } | null;
   /** 3.9.7: the SKILL.md a skill proposal would write (beside `previous`, for the differences). */
   proposedSkillMd?: string;
+  /** 3.9.7: «what changed: why», the line the person approves a new version by. */
+  updateLine?: string;
 }
 
 /** "platform" or "project:<id>": where a skill lives, as /api/extensions/installed says it. */
@@ -145,6 +153,10 @@ const fromRow = (r: Row): Proposal => {
     decidedBy: r.decided_by,
     previous: r.previous ? parse(r.previous) : null,
     ...(input.kind === "skill" && { proposedSkillMd: renderSkillMd(input) }),
+    // 3.9.7: what changed and why, in one line, for a new version of an installed skill.
+    ...(input.kind === "skill" && r.previous
+      ? { updateLine: skillUpdateLine({ change: input.change, why: input.summary }) }
+      : {}),
   };
 };
 
@@ -232,10 +244,17 @@ export class ExtensionBuilder {
       }
     }
     // 3.9.7: a new version of a skill says why, for the person and for its history.
-    if (previous && input.kind === "skill" && o.author !== "human" && !input.summary?.trim())
-      throw new Error(
-        `This changes the installed skill "${input.name}": say why in summary (what went wrong or was missing with the installed version, and what you changed).`,
-      );
+    if (previous && input.kind === "skill" && o.author !== "human") {
+      const missing = [
+        !input.change?.trim() && "change (what this version changes, in one short line)",
+        !input.summary?.trim() &&
+          "summary (why: what went wrong or was missing with the installed version)",
+      ].filter(Boolean);
+      if (missing.length)
+        throw new Error(
+          `This is a new version of the installed skill "${input.name}": the user approves it reading one line, what changed and why. Add ${missing.join(" and ")}.`,
+        );
+    }
     const id = `prop_${randomUUID().slice(0, 8)}`;
     const report = await this.test(id, input, o.testEnv, o.routesOnly);
     const passed = report.every((r) => r.passed);
@@ -252,21 +271,16 @@ export class ExtensionBuilder {
         passed: true,
         detail: `It has scripts (${scripts.join(", ")}): code never installs by itself, it waits for the user's approval.`,
       });
-    // An agent's new version of a skill installs by itself (3.9.7, with the person's policy and a
-    // way back) only over a version an agent wrote; over the person's own, an imported one or
-    // one whose author nobody knows, it waits.
+    // A new version of an installed skill always waits for the person (G29.4, the person's
+    // decision of 3.9.7): the policy installs by itself only an agent's brand-new skill.
     const target = previous?.scope ?? skillScope(o.projectId);
     if (status === "installed" && o.author !== "human" && (await this.exists(o, input, target))) {
-      await this.versions.keepCurrent(o.ownerId, target, name);
-      const last = await this.versions.latest(o.ownerId, target, name);
-      if (!last?.author || last.author === "human") {
-        status = "pending";
-        report.push({
-          name: "existing skill",
-          passed: true,
-          detail: `The installed version of "${name}" was not written by an agent: a new version of it waits for the user's approval.`,
-        });
-      }
+      status = "pending";
+      report.push({
+        name: "existing skill",
+        passed: true,
+        detail: `"${name}" is already installed: a new version of it always waits for the user's approval.`,
+      });
     }
     // "installed" is recorded only once the files are in place.
     if (status === "installed") {
@@ -315,6 +329,14 @@ export class ExtensionBuilder {
           name,
           author: o.author,
           status: status === "installed" ? "installed" : status === "failed" ? "failed" : "pending",
+          // 3.9.7: a new version of an installed skill, with the line the person reads.
+          ...(previous && {
+            update: true,
+            line: skillUpdateLine({
+              change: input.kind === "skill" ? input.change : null,
+              why: input.kind === "skill" ? input.summary : null,
+            }),
+          }),
         },
       },
     });

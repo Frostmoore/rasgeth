@@ -137,12 +137,13 @@ describe("skills that come by themselves (G36.8)", () => {
         {
           ...flaky,
           updates: true,
+          change: "Set core.autocrlf false on checkout",
           body: "Use path.join; also set core.autocrlf false on checkout.",
         },
         ctx,
       ),
     );
-    expect(r).toMatch(/an update of the skill "windows-ci-flakes".*waits/);
+    expect(r).toMatch(/a new version of the skill "windows-ci-flakes".*waits/);
     const [p] = await builder.list("me", "pending");
     expect(p?.previous?.skillMd).toMatch(/Retry the npm cache/);
     expect(p?.previous?.files).toEqual(["notes.md"]);

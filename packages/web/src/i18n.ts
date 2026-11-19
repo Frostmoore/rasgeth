@@ -7010,7 +7010,8 @@ const en = {
   svNotRestorable: "Too large to keep: it cannot come back.",
   svNone: "No versions yet.",
   svWhy: "Why",
-  svChanges: "What changes",
+  svLineTitle: "What changed and why",
+  svCompareFull: "Compare: every difference",
   svNextSession:
     "Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.",
 } as const;
@@ -14119,7 +14120,8 @@ const it: Record<Key, string> = {
   svNotRestorable: "Troppo grande per essere conservata: non può tornare.",
   svNone: "Ancora nessuna versione.",
   svWhy: "Perché",
-  svChanges: "Cosa cambia",
+  svLineTitle: "Cosa è cambiato e perché",
+  svCompareFull: "Confronta: tutte le differenze",
   svNextSession:
     "Una volta installata, gli agenti la usano dalla loro conversazione successiva; quelli che stanno già parlando tengono la versione con cui hanno cominciato.",
 };

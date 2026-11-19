@@ -69,6 +69,13 @@ const en = {
   secretSentWithout: "Sent without the secret.",
   secretDropped: "Not sent.",
   secretExpired: "Too late: that message is no longer held. Send it again.",
+  // 3.9.7: a new version of a skill, asked like the other requests.
+  skillUpdateFrom: "{agent} proposes a new version of the skill «{name}»:",
+  skillUpdateCompare: `The whole comparison: ${PRODUCT_NAME}, Settings, Extensions.`,
+  skillApprove: "Approve",
+  skillReject: "Reject",
+  skillApproved: "Approved: agents use it from their next conversation.",
+  skillRejected: "Rejected: the skill stays as it was.",
 } as const;
 
 export type TextKey = keyof typeof en;
@@ -151,6 +158,12 @@ const it: Record<TextKey, string> = {
   secretSentWithout: "Inviato senza il segreto.",
   secretDropped: "Non inviato.",
   secretExpired: "Troppo tardi: quel messaggio non è più qui. Mandalo di nuovo.",
+  skillUpdateFrom: "{agent} propone una nuova versione della skill «{name}»:",
+  skillUpdateCompare: `Il confronto completo: ${PRODUCT_NAME}, Impostazioni, Estensioni.`,
+  skillApprove: "Approva",
+  skillReject: "Rifiuta",
+  skillApproved: "Approvata: gli agenti la usano dalla loro conversazione successiva.",
+  skillRejected: "Rifiutata: la skill resta com'era.",
 };
 
 export type Language = "it" | "en";

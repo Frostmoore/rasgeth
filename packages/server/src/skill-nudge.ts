@@ -22,8 +22,8 @@ export const SKILL_PROMPT = [
     "person (those belong in memory). Never ask the person about it: the proposal waits for them in Extensions.",
   "When a skill you followed turned out wrong or incomplete (you had to retry, the person corrected you, or they said " +
     "it could be better), propose a new version of it once the work is done: its name, updates true, the improved body, " +
-    "and summary saying what went wrong and what you changed. At most one proposal per conversation, and only when it " +
-    "would really help the next time.",
+    "change (what the new version changes, one short line) and summary saying what went wrong. The person approves it " +
+    "reading those two. At most one proposal per conversation, and only when it would really help the next time.",
 ].join("\n");
 
 /** How much effort makes a nudge worth it. */
@@ -106,7 +106,7 @@ export function frictionText(o: {
       : o.why === "correction"
         ? `The person corrected you after you followed the skill "${o.skill}".`
         : `The person said the skill "${o.skill}" could be better.`;
-  return `\n\n[${PRODUCT_NAME}] ${what} Once this works, if the skill was wrong or missed a step, propose a new version of it: propose_extension with kind "skill", name "${o.skill}", updates true, the improved body, and summary saying what went wrong and what you changed. If the skill was not the cause, ignore this; do not mention it to the person.`;
+  return `\n\n[${PRODUCT_NAME}] ${what} Once this works, if the skill was wrong or missed a step, propose a new version of it: propose_extension with kind "skill", name "${o.skill}", updates true, the improved body, change (what it changes, one short line) and summary saying what went wrong. If the skill was not the cause, ignore this; do not mention it to the person.`;
 }
 
 /** The text added to the result (exported for the tests). */

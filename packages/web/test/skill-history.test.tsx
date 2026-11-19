@@ -123,7 +123,7 @@ describe("a skill's versions (3.9.7)", () => {
 });
 
 describe("a proposed new version (3.9.7)", () => {
-  it("shows what changes, word by word, beside the reason", async () => {
+  it("is decided on one line, what changed and why; every difference on request", async () => {
     const p: Proposal = {
       id: "prop_1",
       projectId: null,
@@ -141,10 +141,16 @@ describe("a proposed new version (3.9.7)", () => {
       },
       previous: { skillMd: "The total is on the last page.", files: [], scope: "platform" },
       proposedSkillMd: "The VAT is above the total.",
+      updateLine: "Letta l'IVA dalla tabella sopra il totale: era letta da quella sbagliata",
     };
     const { ProposalView } = await import("../src/components/Extensions.js");
     const r = render(<ProposalView p={p} onDone={() => {}} onClose={() => {}} />);
-    expect(r.getByText("Cosa cambia")).toBeTruthy();
+    expect(r.getByTestId("update-line").textContent).toBe(
+      "Cosa è cambiato e perchéLetta l'IVA dalla tabella sopra il totale: era letta da quella sbagliata",
+    );
+    // The whole comparison only when asked.
+    expect(r.getByTestId("proposal-diff").querySelector("del")).toBeNull();
+    fireEvent.click(r.getByTestId("proposal-compare"));
     expect(r.getByTestId("proposal-diff").querySelector("del")?.textContent).toBeTruthy();
     expect(r.getByTestId("proposal-diff").querySelector("ins")?.textContent).toBeTruthy();
     expect(r.container.textContent).toContain("dalla loro conversazione successiva");

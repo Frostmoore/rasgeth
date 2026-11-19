@@ -110,7 +110,11 @@ void main() {
       // Tools are approved in the page, not here.
       expect(find.byKey(const Key('skill-waiting-prop_t')), findsNothing);
       expect(find.textContaining('Nuova versione di una skill installata'), findsOneWidget);
-      expect(find.text('The due date was missed.'), findsOneWidget);
+      // Decided on one line: what changed and why; every difference on request.
+      expect(find.text('Cosa è cambiato e perché'), findsOneWidget);
+      expect(find.text('Added the due date check: the due date was missed'), findsOneWidget);
+      expect(find.byKey(const Key('skill-diff-prop_1')), findsNothing);
+      await tap(tester, 'skill-compare-prop_1');
       expect(find.byKey(const Key('skill-diff-prop_1')), findsOneWidget);
       expect(find.textContaining('dalla loro conversazione successiva'), findsWidgets);
       await tap(tester, 'skill-approve-prop_1');
