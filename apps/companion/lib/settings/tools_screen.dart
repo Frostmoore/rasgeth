@@ -194,7 +194,7 @@ class _ToolsScreenState extends State<ToolsScreen> {
         );
       }
     } else {
-      final on = v.entries.where((e) => e.global).length;
+      final on = v.entries.where((e) => e.state == 'on').length;
       children.addAll([
         IntrinsicHeight(
           child: Row(

@@ -426,7 +426,7 @@ void main() {
       expect(find.text('Gruppi di strumenti'), findsOneWidget);
       expect(find.text('Strumenti essenziali, sempre accesi: circa 240 token'), findsOneWidget);
       expect(find.text('circa 1.200 token quando è acceso'), findsOneWidget);
-      expect(find.text('Spento di serie (di serie)'), findsOneWidget);
+      expect(find.byKey(const Key('tl-kit-browser-auto')), findsOneWidget);
       expect(find.textContaining('spento di serie'), findsWidgets);
       await tap(tester, 'tl-kit-browser-on');
       expect(kitPuts.single, {

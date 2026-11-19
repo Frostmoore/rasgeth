@@ -134,7 +134,7 @@ describe("the tools page (G34.5)", () => {
     expect(
       r.getByText("Spenti all'inizio: 1270 token che pesano solo se si accende un gruppo"),
     ).toBeTruthy();
-    expect(r.getByText("4 su 5 accesi")).toBeTruthy();
+    expect(r.getByText("3 su 5 accesi")).toBeTruthy();
     expect(r.getByText(/Le modifiche valgono dalle conversazioni nuove/)).toBeTruthy();
     // Groups with their names.
     expect(r.getByText("File e codice")).toBeTruthy();
@@ -221,7 +221,7 @@ describe("tool groups (3.9.4)", () => {
       b.getAttribute("aria-pressed"),
     ]);
     expect(buttons).toEqual([
-      ["Spento di serie (di serie)", "true"],
+      ["Spento di serie", "true"],
       ["Acceso sempre", "false"],
       ["Spento da te", "false"],
     ]);

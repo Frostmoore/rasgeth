@@ -135,13 +135,11 @@ class _KitCard extends StatelessWidget {
       'off' => c.warnText,
       _ => c.dim,
     };
-    String mark(String id, String text) =>
-        !forAgent && id == k.byDefault ? '$text (${l.tkIsDefault})' : text;
     final options = <(String, String)>[
       if (forAgent) ('default', l.tkAsAll(kitStateWord(l, k.global ?? k.byDefault))),
-      ('auto', mark('auto', l.tkAuto)),
-      ('on', mark('on', l.tkOn)),
-      ('off', mark('off', l.tkOff)),
+      ('auto', l.tkAuto),
+      ('on', l.tkOn),
+      ('off', l.tkOff),
     ];
     final names = [for (final e in k.entries) _w(l, 'tool_$e', e)].join(', ');
     return Padding(

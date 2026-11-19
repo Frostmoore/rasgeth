@@ -81,10 +81,7 @@ function KitRow({
           label={kitName(k.id)}
           value={value}
           onChange={onPick}
-          options={options.map(([id, text]) => [
-            id,
-            !forAgent && id === k.default ? `${text} (${t("kitIsDefault")})` : text,
-          ])}
+          options={options}
         />
       </div>
     </div>

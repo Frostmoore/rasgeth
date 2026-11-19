@@ -244,7 +244,7 @@ export function ToolsPage() {
               <b>{t("kitStartTotal", { n: aboutTokens(view.total) })}</b>
               <span>
                 {t("toolsHowMany", {
-                  on: String(view.entries.filter((e) => e.global).length),
+                  on: String(view.entries.filter((e) => e.state === "on").length),
                   all: String(view.entries.length),
                 })}
               </span>
