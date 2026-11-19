@@ -256,7 +256,8 @@ Future<SwapHelper> _launch(String exe, List<String> args, String cwd) async {
   }
   // Windows: never `detached` (DETACHED_PROCESS, no console at all): Windows PowerShell 5.1 then
   // exits at once without running a line. The normal start gives it a console without a window
-  // (CREATE_NO_WINDOW), no job: it outlives the app; its pipes simply break when the app is gone.
+  // (CREATE_NO_WINDOW) and outlives the app (tried on Windows 11, also from an app inside a job);
+  // its pipes simply break when the app is gone.
   final p = await Process.start(exe, args, workingDirectory: cwd);
   unawaited(p.stdout.drain<void>().catchError((Object _) {}));
   return SwapHelper(p.pid, exitCode: p.exitCode, stderr: p.stderr);
