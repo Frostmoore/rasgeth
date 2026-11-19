@@ -2476,6 +2476,12 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news393Images: "Pictures you see in the chat",
+  news393ImagesText:
+    "Every picture that reaches a conversation, made by an agent or found somewhere, now shows right in the chat; a tap opens it big in the Canvas, with Open and Download as before.",
+  news393Native: "The model's own image tool first",
+  news393NativeText:
+    "When the model can draw by itself (Codex with ChatGPT), it does, and {product} saves the picture and sends it to you, showing while it is being made; ask for {product}'s tool by name to use your provider instead. A setting turns it off.",
   news391Mascots: "God and the Demigod, redrawn",
   news391MascotsText:
     "God is now the crowned giant star of the icon, with three little stars going round it; the Demigod is one of those stars grown up, cream and gold, with God's red gem on its diadem. In the page and in the app, in every state.",
@@ -9324,6 +9330,12 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news393Images: "Le immagini si vedono in chat",
+  news393ImagesText:
+    "Ogni immagine che arriva in una conversazione, fatta da un agente o presa da qualche parte, si vede adesso direttamente in chat; con un tocco si apre grande nel Canvas, con Apri e Scarica come prima.",
+  news393Native: "Prima lo strumento d'immagini del modello",
+  news393NativeText:
+    "Quando il modello sa disegnare da sé (Codex con ChatGPT), lo fa, e {product} salva l'immagine e te la manda, mostrando che la sta preparando; chiedi lo strumento di {product} per nome se vuoi il tuo fornitore. Un'impostazione lo spegne.",
   news391Mascots: "God e il Demigod ridisegnati",
   news391MascotsText:
     "God è adesso la stella gigante coronata dell'icona, con tre stelline che le girano attorno; il Demigod è una di quelle stelline cresciuta, crema e oro, con la gemma rossa di God sul diadema. Nella pagina e nell'app, in ogni stato.",

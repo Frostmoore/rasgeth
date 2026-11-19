@@ -4,10 +4,12 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.9.1';
+const newsVersion = '3.9.3';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.9.3', 'news393Images', 'news393ImagesText'),
+  NewsRow('3.9.3', 'news393Native', 'news393NativeText'),
   NewsRow('3.9.1', 'news391Mascots', 'news391MascotsText'),
   NewsRow('3.9.1', 'news391Offline', 'news391OfflineText'),
   NewsRow('3.9.0', 'news390Name', 'news390NameText'),
@@ -609,6 +611,10 @@ const generalWords = <String, Map<String, String>>{
     'news391MascotsText': 'God è adesso la stella gigante coronata dell\'icona, con tre stelline che le girano attorno; il Demigod è una di quelle stelline cresciuta, crema e oro, con la gemma rossa di God sul diadema. Nella pagina e nell\'app, in ogni stato.',
     'news391Offline': 'Parte anche senza internet',
     'news391OfflineText': 'Rasgeth si apre subito anche quando internet non c\'è: chiavi, Telegram e gli altri collegamenti si controllano in sottofondo e tornano da soli con la rete, e un avviso dice cosa sta aspettando. I modelli locali continuano a funzionare.',
+    'news393Images': 'Le immagini si vedono in chat',
+    'news393ImagesText': 'Ogni immagine che arriva in una conversazione, fatta da un agente o presa da qualche parte, si vede adesso direttamente in chat; con un tocco si apre grande nel Canvas, con Apri e Scarica come prima.',
+    'news393Native': 'Prima lo strumento d\'immagini del modello',
+    'news393NativeText': 'Quando il modello sa disegnare da sé (Codex con ChatGPT), lo fa, e Rasgeth salva l\'immagine e te la manda, mostrando che la sta preparando; chiedi lo strumento di Rasgeth per nome se vuoi il tuo fornitore. Un\'impostazione lo spegne.',
     'searchCard_brave': 'Ha un indice suo, indipendente da Google e Bing; rispetta la privacy. Credito gratuito ogni mese, poi a consumo.',
     'searchCard_exa': 'Cerca per significato: forte su documentazione, articoli scientifici e tecnici. Credito gratuito all\'inizio.',
     'searchCard_searxng': 'Gratis, senza chiave né account: un motore di ricerca che gira a casa tua (lo avvia Rasgeth, dove può, oppure usi il tuo).',
@@ -875,6 +881,10 @@ const generalWords = <String, Map<String, String>>{
     'news391MascotsText': 'God is now the crowned giant star of the icon, with three little stars going round it; the Demigod is one of those stars grown up, cream and gold, with God\'s red gem on its diadem. In the page and in the app, in every state.',
     'news391Offline': 'It starts without internet',
     'news391OfflineText': 'Rasgeth now opens at once even when the internet is down: keys, Telegram and the other links are checked in the background and come back by themselves with the network, and a notice says what is waiting. Local models keep working.',
+    'news393Images': 'Pictures you see in the chat',
+    'news393ImagesText': 'Every picture that reaches a conversation, made by an agent or found somewhere, now shows right in the chat; a tap opens it big in the Canvas, with Open and Download as before.',
+    'news393Native': 'The model\'s own image tool first',
+    'news393NativeText': 'When the model can draw by itself (Codex with ChatGPT), it does, and Rasgeth saves the picture and sends it to you, showing while it is being made; ask for Rasgeth\'s tool by name to use your provider instead. A setting turns it off.',
     'searchCard_brave': 'Its own index, independent of Google and Bing; private. Free monthly credit, then pay as you go.',
     'searchCard_exa': 'Searches by meaning: strong on documentation, papers and technical articles. Free credit to start.',
     'searchCard_searxng': 'Free, no key, no account: a search engine that runs at your place (Rasgeth starts it, where it can, or you use yours).',

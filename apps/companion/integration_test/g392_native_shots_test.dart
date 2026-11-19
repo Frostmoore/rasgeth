@@ -84,9 +84,7 @@ void main() {
       nav.pop();
       await frames(t, 600);
 
-      nav
-          .push(MaterialPageRoute<void>(builder: (_) => const GeneralSettingsScreen()))
-          .ignore();
+      nav.push(MaterialPageRoute<void>(builder: (_) => const GeneralSettingsScreen())).ignore();
       final tile = find.byKey(const Key('general-tile-images'));
       await waitFor(t, () => find.text('Come vuoi Rasgeth?').evaluate().isNotEmpty);
       await frames(t, 600);

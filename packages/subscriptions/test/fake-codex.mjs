@@ -87,7 +87,7 @@ createInterface({ input: process.stdin }).on("line", (line) => {
         // Codex's own image tool (2026-11-19): it says it starts, saves the picture under its
         // CODEX_HOME's generated_images/ and says it is done with the file's path.
         const at = { threadId: m.params.threadId, turnId: "tu-1" };
-        const item = { type: "imageGeneration", id: "ig_1", revisedPrompt: "A red giant star" };
+        const item = { type: "imageGeneration", id: "ig_1", revisedPrompt: "A crowned star" };
         send({
           method: "item/started",
           params: { ...at, item: { ...item, status: "inProgress" } },

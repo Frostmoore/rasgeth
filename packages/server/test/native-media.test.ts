@@ -51,7 +51,7 @@ class FakeEngineProvider {
         source: "server" as const,
       };
       if (t.native?.includes("image") && !explicit && /draw/.test(t.text)) {
-        await t.onNativeStart?.({ id: "ig_1", kind: "image", prompt: "A red giant star" });
+        await t.onNativeStart?.({ id: "ig_1", kind: "image", prompt: "A crowned star" });
         const dir = join(this.nativeFolder, "th-1");
         await mkdir(dir, { recursive: true });
         const file = join(dir, "ig_1.png");
@@ -60,7 +60,7 @@ class FakeEngineProvider {
           id: "ig_1",
           kind: "image",
           path: file,
-          prompt: "A red giant star",
+          prompt: "A crowned star",
         });
       } else if (/draw/.test(t.text)) {
         await t.onMessage({
@@ -135,7 +135,7 @@ describe("the model's own generation first (2026-11-19)", () => {
     cleanup.push(async () => c.close());
     c.send({ type: "session.follow", sessionId: sid });
     await c.waitFor("session.synced");
-    await (await s.core.send("me", sid, "draw a red giant")).done;
+    await (await s.core.send("me", sid, "draw a crowned star")).done;
 
     // The engine was told it may draw, and our tool says to use it only when asked by name.
     expect(engine.seen[0]?.native).toEqual(["image"]);
@@ -151,20 +151,20 @@ describe("the model's own generation first (2026-11-19)", () => {
     expect(call?.type === "tool.call" && call.payload).toMatchObject({
       callId: "native_ig_1",
       tool: "image_generation",
-      input: { prompt: "A red giant star", by: "chatgpt-subscription" },
+      input: { prompt: "A crowned star", by: "chatgpt-subscription" },
     });
     const result = log.find((e) => e.type === "tool.result");
     expect(result?.type === "tool.result" && result.payload.ok).toBe(true);
     const rel =
       (result?.type === "tool.result" && result.payload.output.match(/Saved (\S+)/)?.[1]) || "";
-    expect(rel).toMatch(/^images\/\d{4}-\d{2}-\d{2}\/\d{6}-a-red-giant-star\.png$/);
+    expect(rel).toMatch(/^images\/\d{4}-\d{2}-\d{2}\/\d{6}-a-crowned-star\.png$/);
     expect(await readFile(join(s.core.platformPath("me"), rel))).toEqual(PNG);
     const sent = log.find((e) => e.type === "file.sent");
     expect(sent?.type === "file.sent" && sent.payload).toMatchObject({
       path: rel,
       mime: "image/png",
       size: PNG.length,
-      caption: "A red giant star",
+      caption: "A crowned star",
     });
     // Live: the call reaches the page before the file (the «generating» card).
     const live = c.messages.flatMap((m) =>

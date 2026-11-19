@@ -147,7 +147,7 @@ describe("ChatGPT on a subscription", () => {
     expect(started[0]?.config["features.image_generation"]).toBe(true);
     expect(log).toEqual([
       "end_turn thinking",
-      "start ig_1 image A red giant star",
+      "start ig_1 image A crowned star",
       "made ig_1 ok",
       "end_turn Here it is.",
     ]);
