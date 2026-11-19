@@ -2628,6 +2628,13 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       );
     }),
   );
+  // «Use the model's own tool when it has one» (2026-11-19).
+  app.put("/api/setup/media-native", (c) =>
+    wizard(c, async () => {
+      const b = await parsed(c, z.object({ on: z.boolean() }));
+      await (setup as SetupService).saveMediaNative(b.on);
+    }),
+  );
   app.put("/api/setup/media-keys/:provider", (c) =>
     wizard(c, async () => {
       const b = await parsed(c, z.object({ key: z.string().min(8).max(500).nullable() }));

@@ -9,7 +9,7 @@
 import { type ChildProcessWithoutNullStreams, spawn } from "node:child_process";
 import { mkdir } from "node:fs/promises";
 import { createRequire } from "node:module";
-import { delimiter } from "node:path";
+import { delimiter, join } from "node:path";
 import { createInterface } from "node:readline";
 import type { Engine, EngineTurn } from "@redgiant/agent";
 import type { AssistantPart, MessageMetrics } from "@redgiant/protocol";
@@ -182,6 +182,31 @@ export function codexWindows(snapshot: unknown): SubscriptionWindow[] {
   return out;
 }
 
+/** A finished `imageGeneration` item as what the engine made: its saved file, or its bytes. */
+export function codexImage(id: string, item: Json, prompt: string | undefined) {
+  const failure = item.failure as { type?: string } | null | undefined;
+  const failed = failure || item.status === "failed";
+  const path = typeof item.savedPath === "string" && item.savedPath ? item.savedPath : undefined;
+  const data = !path && typeof item.result === "string" && item.result ? item.result : undefined;
+  return {
+    id,
+    kind: "image" as const,
+    ...(prompt && { prompt }),
+    ...(failed
+      ? {
+          error:
+            failure?.type === "usageLimitExceeded"
+              ? "the plan's image limit is reached"
+              : "Codex could not make it",
+        }
+      : path
+        ? { path }
+        : data
+          ? { data: data.replace(/^data:[^,]*,/, "") }
+          : { error: "Codex gave no file" }),
+  };
+}
+
 /** The window assumed for a model before Codex has said its own (its first usage report). */
 const CODEX_WINDOW = 272_000;
 /** How long a tool call waits for its model request's usage before it is recorded without it. */
@@ -263,6 +288,9 @@ export class CodexEngine implements Engine {
   async turn(t: EngineTurn): Promise<{ resume: string; stopReason: "end_turn" | "aborted" }> {
     await this.conn.start();
     const native = this.o.nativeWebSearch !== false;
+    // Codex's own image tool (2026-11-19) only when the conversation lets it (`sessionNative`):
+    // otherwise pictures go through Rasgeth's image_generation.
+    const drawsItself = t.native?.includes("image") === true;
     // With Codex's own search, RedGiant's is not offered too (one way to search).
     const tools = t.tools
       .filter((d) => !native || d.name !== "web_search")
@@ -283,6 +311,7 @@ export class CodexEngine implements Engine {
       config: {
         "features.shell_tool": false,
         "features.unified_exec": false,
+        "features.image_generation": drawsItself,
         web_search: native ? "live" : "disabled",
       },
     };
@@ -339,6 +368,25 @@ export class CodexEngine implements Engine {
         } else if (method === "thread/compacted") {
           // Codex summarised its own context.
           t.onCompaction?.({ trigger: "auto" });
+        } else if (
+          (method === "item/started" || method === "item/completed") &&
+          (p.item as Json | undefined)?.type === "imageGeneration"
+        ) {
+          // A picture Codex draws itself: RedGiant shows «generating», then saves and sends it.
+          const item = p.item as Json;
+          const id = String(item.id ?? "");
+          const prompt = typeof item.revisedPrompt === "string" ? item.revisedPrompt : undefined;
+          const started = method === "item/started";
+          // What was said before it goes first (with the numbers known so far): the picture can
+          // take a minute and the request's usage comes only after it.
+          if (started) record();
+          recording = recording
+            .then(() =>
+              started
+                ? t.onNativeStart?.({ id, kind: "image", ...(prompt && { prompt }) })
+                : t.onNativeMade?.(codexImage(id, item, prompt)),
+            )
+            .catch(() => {});
         } else if (method === "item/agentMessage/delta") {
           t.live?.({ type: "text_delta", text: String(p.delta ?? "") });
         } else if (method === "item/completed") {
@@ -432,7 +480,11 @@ export class ChatgptSubscriptionProvider implements Provider {
   private windows: SubscriptionWindow[] = [];
   private modelCache: string[] | undefined;
 
+  /** Where Codex saves the pictures it draws itself (2026-11-19): Rasgeth takes them from here. */
+  readonly nativeFolder: string;
+
   constructor(o: ChatgptSubscriptionOptions) {
+    this.nativeFolder = join(o.home, "generated_images");
     this.conn = new CodexConnection(o);
     this.engine = new CodexEngine(this.conn, o);
     this.engine.onLimits = (w) => {

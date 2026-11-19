@@ -604,6 +604,34 @@ class WidgetItem extends ChatItem {
   };
 }
 
+/// Our tools that make things, by what they make (2026-11-19, the page's `GENERATION_TOOLS`).
+const _generationTools = {
+  'image_generation': 'image',
+  'generate_image': 'image',
+  'video_generation': 'video',
+  'audio_generation': 'audio',
+};
+
+/// What is being made right now (the page's `generatingNow`, 2026-11-19): the last call to a
+/// generation tool still without its result, ours or the model's own (logged as ours): `image`,
+/// `video`, `audio` or null. The chat shows «generating a picture» for it.
+String? generatingNow(List<RgEvent> events) {
+  final open = <String, String>{};
+  for (final e in events) {
+    final p = e.payload;
+    if (p == null) continue;
+    if (e.type == 'tool.call') {
+      final kind = _generationTools[p['tool']];
+      if (kind != null) open['${p['callId']}'] = kind;
+    } else if (e.type == 'tool.result') {
+      open.remove('${p['callId']}');
+    } else if (e.type == 'message.user' && p['from'] != 'redgiant') {
+      open.clear();
+    }
+  }
+  return open.isEmpty ? null : open.values.last;
+}
+
 /// Their question card stands for these calls: no tool line for them. `show_products` shows as
 /// its cards (`products.shown`).
 const _hiddenTools = {'ask_user', 'propose_plan'};

@@ -17864,6 +17864,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Automations can be changed only by the person (not from a project\'s device).'**
   String get auOwnReadOnly;
+
+  /// The page's `generating_image` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Generating a picture…'**
+  String get cvGeneratingImage;
+
+  /// The page's `generating_video` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Making a video…'**
+  String get cvGeneratingVideo;
+
+  /// The page's `generating_audio` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Making a sound…'**
+  String get cvGeneratingAudio;
+
+  /// The page's `imageUnreadable` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'This picture cannot be opened'**
+  String get cvImageUnreadable;
+
+  /// The page's `imageUnreachable` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Picture not available here: {name}'**
+  String cvImageUnreachable(String name);
+
+  /// The page's `mediaNativeTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Use the model\'s own tool when it has one'**
+  String get cvMediaNativeTitle;
+
+  /// The page's `mediaNativeHelp` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.'**
+  String get cvMediaNativeHelp;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

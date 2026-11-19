@@ -27,6 +27,11 @@ export const EventBody = z.discriminatedUnion("type", [
       tools: z.array(z.string()),
       /** Tools the person had switched off when it started (G34.5): resuming keeps them off. */
       toolsOff: z.array(z.string()).optional(),
+      /**
+       * What the model's engine makes by itself in this conversation (2026-11-19: `image`…, see
+       * `capabilities.ts`): fixed at its start, resuming keeps it.
+       */
+      native: z.array(z.string()).optional(),
     }),
   }),
   /**

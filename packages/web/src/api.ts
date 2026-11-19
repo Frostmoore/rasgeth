@@ -166,6 +166,8 @@ export interface SetupState {
         { provider: string; model: string; voice?: string }
       >
     >;
+    /** «Use the model's own tool when it has one» (2026-11-19): false when switched off. */
+    mediaNative?: boolean;
     subscriptions?: { claude?: boolean; chatgpt?: boolean };
     engine?: {
       variant: EngineVariant;
@@ -1896,6 +1898,8 @@ export class Api {
   /** Who makes one kind of media (G25.3); null: nobody. */
   setupMedia = (kind: string, choice: { provider: string; model: string; voice?: string } | null) =>
     this.call("PUT", `/api/setup/media/${encodeURIComponent(kind)}`, { choice });
+  /** «Use the model's own tool when it has one» (2026-11-19). */
+  setupMediaNative = (on: boolean) => this.call("PUT", "/api/setup/media-native", { on });
   setupMediaKey = (provider: string, key: string | null) =>
     this.call("PUT", `/api/setup/media-keys/${encodeURIComponent(provider)}`, { key });
   mediaVoices = (provider: string) =>

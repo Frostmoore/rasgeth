@@ -144,7 +144,12 @@ class SafeMarkdown extends StatelessWidget {
             const SizedBox(width: 6),
             Flexible(
               child: Text(
-                (alt == null || alt.isEmpty) ? uri.toString() : alt,
+                // 2026-11-19: a path the app cannot open (an engine's folder, a file of the
+                // agent's) says so plainly; a web picture shows its name (nothing is fetched).
+                const {'http', 'https', 'data'}.contains(uri.scheme)
+                    ? ((alt == null || alt.isEmpty) ? uri.toString() : alt)
+                    : AppLocalizations.of(context)
+                          .cvImageUnreachable((alt == null || alt.isEmpty) ? uri.toString() : alt),
                 style: TextStyle(color: c.dim, fontSize: 13),
               ),
             ),

@@ -2961,5 +2961,12 @@
   "auOwnWhereExtensions": "Estensioni",
   "auOwnWhereKeychain": "Portachiavi",
   "auOwnLoadFailed": "Non riesco a leggere: {why}",
-  "auOwnReadOnly": "Le automazioni le cambia solo la persona (non da un dispositivo di progetto)."
+  "auOwnReadOnly": "Le automazioni le cambia solo la persona (non da un dispositivo di progetto).",
+  "cvGeneratingImage": "Sta generando un'immagine…",
+  "cvGeneratingVideo": "Sta generando un video…",
+  "cvGeneratingAudio": "Sta generando un suono…",
+  "cvImageUnreadable": "Non riesco ad aprire questa immagine",
+  "cvImageUnreachable": "Immagine non disponibile qui: {name}",
+  "cvMediaNativeTitle": "Usa lo strumento del modello quando c'è",
+  "cvMediaNativeHelp": "Alcuni modelli fanno le immagini da sé (ChatGPT con Codex): allora si usa il loro, e l'immagine ti arriva in chat come con il nostro. Spento: sempre il fornitore scelto qui. Se in una conversazione chiedi «il vostro strumento», si usa sempre il nostro. Vale per le conversazioni nuove."
 }

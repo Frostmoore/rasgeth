@@ -139,6 +139,7 @@ class GeneralState {
     this.transcriptionKey = false,
     this.imagesModel,
     this.imagesKey = false,
+    this.mediaNative = true,
     this.searchKeys = const [],
     this.voiceKeys = const [],
     this.locked = const {},
@@ -167,6 +168,7 @@ class GeneralState {
       transcriptionKey: s['transcription'] == true,
       imagesModel: str(c['imagesModel']),
       imagesKey: s['images'] == true,
+      mediaNative: c['mediaNative'] != false,
       searchKeys: list(s['search']),
       voiceKeys: list(s['voice']),
       locked: {
@@ -188,6 +190,9 @@ class GeneralState {
   final bool transcriptionKey;
   final String? imagesModel;
   final bool imagesKey;
+
+  /// «Use the model's own tool when it has one» (2026-11-19): on unless switched off.
+  final bool mediaNative;
 
   /// The search services with a key kept.
   final List<String> searchKeys;

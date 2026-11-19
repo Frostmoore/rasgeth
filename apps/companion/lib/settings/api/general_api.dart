@@ -117,6 +117,9 @@ extension GeneralApi on RedGiantClient {
   /// The search, the voice messages' or the pictures' part of `PUT /api/setup/models`.
   Future<void> setServices(Map<String, Object?> body) => callJson('PUT', '/api/setup/models', body);
 
+  /// «Use the model's own tool when it has one» (2026-11-19, the page's `setupMediaNative`).
+  Future<void> setMediaNative(bool on) => callJson('PUT', '/api/setup/media-native', {'on': on});
+
   /// A search service tried before it is saved: how many results, the first's title.
   Future<({int results, String? first})> trySearch(Map<String, Object?> choice) async {
     final j = objectOf(await callJson('POST', '/api/setup/search/try', choice));

@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { EngineTurn } from "@redgiant/agent";
 import { afterEach, describe, expect, it } from "vitest";
-import { ChatgptSubscriptionProvider, codexWindows } from "../src/index.js";
+import { ChatgptSubscriptionProvider, codexImage, codexWindows } from "../src/index.js";
 
 const fake = join(import.meta.dirname, "fake-codex.mjs");
 let providers: ChatgptSubscriptionProvider[] = [];
@@ -110,9 +110,68 @@ describe("ChatGPT on a subscription", () => {
       config: {
         "features.shell_tool": false,
         "features.unified_exec": false,
+        // Codex's own pictures only when the conversation lets it (2026-11-19).
+        "features.image_generation": false,
         web_search: "live",
       },
     });
+  });
+
+  it("lets Codex draw only when the conversation allows it, and hands over the file it saved", async () => {
+    const p = await provider();
+    const started: { config: Record<string, unknown> }[] = [];
+    const conn = (
+      p as unknown as {
+        conn: { request: (m: string, x: unknown) => Promise<unknown> };
+      }
+    ).conn;
+    const original = conn.request.bind(conn);
+    conn.request = async (m: string, x: unknown) => {
+      if (m === "thread/start") started.push(x as { config: Record<string, unknown> });
+      return original(m, x);
+    };
+    const log: string[] = [];
+    const made: { path?: string | undefined; prompt?: string | undefined }[] = [];
+    const r = await p.engine.turn({
+      ...turn("draw", log),
+      native: ["image"],
+      onNativeStart: async (m) => {
+        log.push(`start ${m.id} ${m.kind} ${m.prompt}`);
+      },
+      onNativeMade: async (m) => {
+        log.push(`made ${m.id} ${m.error ?? "ok"}`);
+        made.push(m);
+      },
+    });
+    expect(r.stopReason).toBe("end_turn");
+    expect(started[0]?.config["features.image_generation"]).toBe(true);
+    expect(log).toEqual([
+      "end_turn thinking",
+      "start ig_1 image A red giant star",
+      "made ig_1 ok",
+      "end_turn Here it is.",
+    ]);
+    expect(made[0]?.path).toMatch(/generated_images[/\\]th-1[/\\]ig_1\.png$/);
+  });
+
+  it("reads a finished picture: its file, its bytes, or why it failed", () => {
+    expect(codexImage("a", { savedPath: "/h/g.png", result: "x" }, "p")).toEqual({
+      id: "a",
+      kind: "image",
+      prompt: "p",
+      path: "/h/g.png",
+    });
+    expect(codexImage("b", { result: "data:image/png;base64,QUJD" }, undefined)).toEqual({
+      id: "b",
+      kind: "image",
+      data: "QUJD",
+    });
+    expect(
+      codexImage("c", { failure: { type: "usageLimitExceeded" }, result: "" }, undefined).error,
+    ).toMatch(/limit/);
+    expect(codexImage("d", { status: "completed", result: "" }, undefined).error).toMatch(
+      /no file/,
+    );
   });
 
   it("reports a failed login as a rejected key, and logs in with a device code", async () => {
