@@ -11,9 +11,9 @@ import {
   AgentSession,
   type AsideResult,
   type Engine,
-  type NativeMade,
   forkPoint,
   type Hooks,
+  type NativeMade,
   type SendResult,
   sessionLog,
   type Tool,
@@ -72,6 +72,8 @@ import {
   type ArtifactError,
   type ArtifactRef,
   agentLanguage,
+  CAPABILITY_FOLDER,
+  type Capability,
   CommandSettings,
   DEFAULT_COMMAND_SETTINGS,
   DEFAULT_EDITOR_SETTINGS,
@@ -84,16 +86,13 @@ import {
   isCriticalId,
   type ListName,
   MCP_CATALOG,
-  type Capability,
-  CAPABILITY_FOLDER,
   type MediaChoice,
   type MediaKind,
-  nativeToolNote,
-  sessionNative,
   type MessageQuote,
   type ModelSpec,
   type NotifyReport,
   nativePaths,
+  nativeToolNote,
   notedText,
   ownWords,
   PRODUCT_NAME,
@@ -106,6 +105,7 @@ import {
   replyLanguageLine,
   type ServerMessage,
   type SharedMemoryView,
+  sessionNative,
   type ToolChoice,
   type ToolsView,
   type TurnQueueView,
@@ -223,7 +223,6 @@ import {
 import { FileTriggers } from "./file-triggers.js";
 import type { GitHosts } from "./git-hosts.js";
 import { IMAGE_MODEL, imageFileName } from "./images.js";
-import { imageTextHook, nativeSection, sendFileMissing, sniffImage } from "./native-media.js";
 import { Inspector } from "./inspector.js";
 import { Jobs } from "./jobs.js";
 import { knowledgeTools } from "./knowledge/agent-tools.js";
@@ -260,6 +259,7 @@ import { MailService, SendLimiter } from "./mail/service.js";
 import { MAIL_GUIDANCE, mailSendHook, mailTools } from "./mail/tools.js";
 import { MediaError, type MediaRequest, type MediaResult, makeMedia } from "./media.js";
 import type { CatalogWatcher } from "./models-catalog.js";
+import { imageTextHook, nativeSection, sendFileMissing, sniffImage } from "./native-media.js";
 import {
   NodeProvider,
   NodeSandboxProvider,
@@ -5021,7 +5021,11 @@ export class RedGiantCore implements OrchestrationHost {
   }
 
   /** image_generation, video_generation, audio_generation: always offered (G25.3). */
-  private mediaTools(agent: AgentRecord, ws: Workspace, native: readonly Capability[] = []): Tool[] {
+  private mediaTools(
+    agent: AgentRecord,
+    ws: Workspace,
+    native: readonly Capability[] = [],
+  ): Tool[] {
     // The model makes some of these by itself (2026-11-19): ours stays, for when it is asked for.
     const note = (c: Capability, text: string) =>
       native.includes(c) ? `${nativeToolNote(c)} ${text}` : text;

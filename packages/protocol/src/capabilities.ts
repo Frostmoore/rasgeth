@@ -88,7 +88,6 @@ export function sessionNative(
  * the set (the prefix does not change), for when the person asks for Rasgeth's tool by name.
  */
 export function nativeToolNote(capability: Capability): string {
-  const what =
-    capability === "image" ? "pictures" : capability === "video" ? "videos" : "sounds";
+  const what = capability === "image" ? "pictures" : capability === "video" ? "videos" : "sounds";
   return `Your model makes ${what} by itself: use your own tool for that. Use this one only when the person asks for it by name or for the provider chosen in Settings (for example «use your tool», «use Rasgeth's tool», «use the provider I chose»).`;
 }

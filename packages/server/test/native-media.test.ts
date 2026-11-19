@@ -56,11 +56,21 @@ class FakeEngineProvider {
         await mkdir(dir, { recursive: true });
         const file = join(dir, "ig_1.png");
         await writeFile(file, PNG);
-        await t.onNativeMade?.({ id: "ig_1", kind: "image", path: file, prompt: "A red giant star" });
+        await t.onNativeMade?.({
+          id: "ig_1",
+          kind: "image",
+          path: file,
+          prompt: "A red giant star",
+        });
       } else if (/draw/.test(t.text)) {
         await t.onMessage({
           parts: [
-            { type: "tool_call", callId: "c1", name: "image_generation", input: { prompt: "a star" } },
+            {
+              type: "tool_call",
+              callId: "c1",
+              name: "image_generation",
+              input: { prompt: "a star" },
+            },
           ],
           stopReason: "tool_use",
           metrics,
@@ -237,10 +247,12 @@ describe("pictures the person cannot open (2026-11-19)", () => {
   it("reminds the agent once per path, as Rasgeth's quiet note", () => {
     const hook = imageTextHook();
     const done = (text: string) =>
-      hook(
-        { message: { role: "assistant", parts: [{ type: "text", text }] } } as never,
-        { sessionId: "s1", ownerId: "me", projectId: null, agentId: "a" },
-      );
+      hook({ message: { role: "assistant", parts: [{ type: "text", text }] } } as never, {
+        sessionId: "s1",
+        ownerId: "me",
+        projectId: null,
+        agentId: "a",
+      });
     const first = done("![x](/tmp/x.png)");
     expect(first).toMatchObject({ quiet: true, text: expect.stringMatching(/send_file/) });
     expect(done("![x](/tmp/x.png)")).toBeUndefined();
@@ -251,7 +263,9 @@ describe("pictures the person cannot open (2026-11-19)", () => {
     expect(await sendFileMissing("/data/engines/codex/generated_images/t/a.png")).toMatch(
       /already in the chat/,
     );
-    expect(await sendFileMissing(import.meta.filename)).toMatch(/Save or copy it into your workspace/);
+    expect(await sendFileMissing(import.meta.filename)).toMatch(
+      /Save or copy it into your workspace/,
+    );
     expect(await sendFileMissing("nope.png")).toMatch(/only from your workspace/);
   });
 

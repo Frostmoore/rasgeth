@@ -88,7 +88,10 @@ createInterface({ input: process.stdin }).on("line", (line) => {
         // CODEX_HOME's generated_images/ and says it is done with the file's path.
         const at = { threadId: m.params.threadId, turnId: "tu-1" };
         const item = { type: "imageGeneration", id: "ig_1", revisedPrompt: "A red giant star" };
-        send({ method: "item/started", params: { ...at, item: { ...item, status: "inProgress" } } });
+        send({
+          method: "item/started",
+          params: { ...at, item: { ...item, status: "inProgress" } },
+        });
         const dir = join(process.env.CODEX_HOME, "generated_images", "th-1");
         mkdirSync(dir, { recursive: true });
         const file = join(dir, "ig_1.png");

@@ -40,8 +40,8 @@ import {
   archivedProjects,
   attempt,
   buildItems,
-  generatingNow,
   type ChatItem,
+  generatingNow,
   getApi,
   getLive,
   inheritedModel,
@@ -74,6 +74,7 @@ import { canvasKind } from "../viewers/canvas-kind.js";
 import { WidgetCard } from "./ArtifactFrame.js";
 import { ArtifactGrantCard } from "./ArtifactGrantCard.js";
 import { noEnter, useArmed } from "./armed.js";
+import { ChatImage } from "./ChatImage.js";
 import {
   AsidePanel,
   addQuote,
@@ -88,7 +89,6 @@ import {
 } from "./ChatTools.js";
 import { CommandStrip } from "./CommandStrip.js";
 import { Composer, packMessage } from "./Composer.js";
-import { ChatImage } from "./ChatImage.js";
 import { askText } from "./dialogs.js";
 import { Images } from "./Images.js";
 import { MailRequestPreview, MailToolCard, mailSummary } from "./MailCards.js";
@@ -1028,9 +1028,7 @@ function FileCard({ item }: { item: Extract<ChatItem, { kind: "file" }> }) {
           scope={item.scope}
           path={item.path}
           alt={item.caption ?? item.name}
-          onOpen={() =>
-            openCanvas(item.name, { kind: "file", scope: item.scope, path: item.path })
-          }
+          onOpen={() => openCanvas(item.name, { kind: "file", scope: item.scope, path: item.path })}
         />
       )}
       {url && kind === "video" && (

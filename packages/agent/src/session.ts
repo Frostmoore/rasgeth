@@ -987,8 +987,7 @@ export class AgentSession {
   private recordStopNote(note: StopNote) {
     return this.record({
       type: "message.user",
-      payload:
-        typeof note === "string" ? { text: note } : { text: note.text, from: "redgiant" },
+      payload: typeof note === "string" ? { text: note } : { text: note.text, from: "redgiant" },
     });
   }
 

@@ -80,7 +80,9 @@ describe("a picture in the chat", () => {
 
     link = () => Promise.reject(new Error("gone"));
     cleanup();
-    const again = render(<ChatImage scope="platform" path="images/c.png" alt="c" onOpen={() => {}} />);
+    const again = render(
+      <ChatImage scope="platform" path="images/c.png" alt="c" onOpen={() => {}} />,
+    );
     await act(async () => {});
     expect(again.container.querySelector(".chat-image.bad")).not.toBeNull();
   });

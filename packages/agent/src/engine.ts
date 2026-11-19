@@ -55,7 +55,9 @@ export interface EngineTurn {
    */
   native?: readonly string[] | undefined;
   /** The engine started making something with its own tool (the chat says «generating…»). */
-  onNativeStart?: ((m: { id: string; kind: NativeKind; prompt?: string }) => Promise<void>) | undefined;
+  onNativeStart?:
+    | ((m: { id: string; kind: NativeKind; prompt?: string }) => Promise<void>)
+    | undefined;
   /** The engine made it (or failed): RedGiant saves it in the workspace and sends it. */
   onNativeMade?: ((m: NativeMade) => Promise<void>) | undefined;
 }
