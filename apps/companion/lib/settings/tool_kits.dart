@@ -175,7 +175,11 @@ class _KitCard extends StatelessWidget {
                   ),
                   child: Text(
                     kitStateWord(l, k.state),
-                    style: TextStyle(color: stateColor, fontSize: 11.5, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      color: stateColor,
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],

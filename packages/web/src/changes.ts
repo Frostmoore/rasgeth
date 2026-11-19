@@ -114,13 +114,38 @@ function mcp(id: string, before: Mcp, after: Mcp, n: Names) {
   return [t("chgMcpChanged", { name, where: where(after) })];
 }
 
-type Tools = { off?: string[]; agents?: Record<string, Record<string, "on" | "off">> };
+type KitStates = Record<string, "on" | "auto" | "off">;
+type Tools = {
+  off?: string[];
+  agents?: Record<string, Record<string, "on" | "off">>;
+  kits?: KitStates;
+  agentKits?: Record<string, KitStates>;
+};
 const toolList = (ids: string[]) => ids.map((id) => tOptional(`tool_${id}`) ?? id).join(", ");
+
+/** The kits whose choice changed (3.9.4), in sentences: "Images: always on", "back to default". */
+function kitLines(b: KitStates, a: KitStates, who?: string): string[] {
+  const ids = [...new Set([...Object.keys(b), ...Object.keys(a)])].filter((id) => b[id] !== a[id]);
+  return ids.map((id) => {
+    const kit = tOptional(`kit_${id}`) ?? id;
+    const v = a[id];
+    const state =
+      v === "on"
+        ? t("kitOn")
+        : v === "off"
+          ? t("kitOff")
+          : v === "auto"
+            ? t("kitAuto")
+            : t("chgKitDefault");
+    return who ? t("chgKitAgent", { name: who, kit, state }) : t("chgKit", { kit, state });
+  });
+}
 
 /** The tools page (G34.5): switched off or back on for everyone, or one agent's exceptions. */
 function tools(agentId: string, before: Tools, after: Tools, n: Names) {
   const out: string[] = [];
   if (!agentId) {
+    out.push(...kitLines(before.kits ?? {}, after.kits ?? {}));
     const b = before.off ?? [];
     const a = after.off ?? [];
     const off = a.filter((x) => !b.includes(x));
@@ -130,6 +155,7 @@ function tools(agentId: string, before: Tools, after: Tools, n: Names) {
     return out.length > 0 ? out : [t("chgToolsSame")];
   }
   const name = n.agent(agentId);
+  out.push(...kitLines(before.agentKits?.[agentId] ?? {}, after.agentKits?.[agentId] ?? {}, name));
   const b = before.agents?.[agentId] ?? {};
   const a = after.agents?.[agentId] ?? {};
   const ids = [...new Set([...Object.keys(b), ...Object.keys(a)])].filter((id) => b[id] !== a[id]);

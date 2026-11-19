@@ -10418,4 +10418,64 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get cvMediaNativeHelp =>
       'Alcuni modelli fanno le immagini da sé (ChatGPT con Codex): allora si usa il loro, e l\'immagine ti arriva in chat come con il nostro. Spento: sempre il fornitore scelto qui. Se in una conversazione chiedi «il vostro strumento», si usa sempre il nostro. Vale per le conversazioni nuove.';
+
+  @override
+  String get tkTitle => 'Gruppi di strumenti';
+
+  @override
+  String get tkLead =>
+      'Gli agenti partono con pochi strumenti, così ogni messaggio pesa poco. Gli altri gruppi sono spenti di serie: un agente ne accende uno da sé quando il lavoro lo chiede, per quella conversazione. Acceso sempre: l\'agente lo ha dall\'inizio. Spento da te: l\'agente deve chiedertelo.';
+
+  @override
+  String tkAgentLead(String name) {
+    return 'I gruppi di $name: come per tutti gli agenti, oppure una scelta sua.';
+  }
+
+  @override
+  String get tkAuto => 'Spento di serie';
+
+  @override
+  String get tkOn => 'Acceso sempre';
+
+  @override
+  String get tkOff => 'Spento da te';
+
+  @override
+  String tkAsAll(String state) {
+    return 'Come per tutti: $state';
+  }
+
+  @override
+  String get tkIsDefault => 'di serie';
+
+  @override
+  String get tkRole => 'acceso per il suo ruolo';
+
+  @override
+  String tkWeight(String n) {
+    return 'circa $n token quando è acceso';
+  }
+
+  @override
+  String tkEssential(String n) {
+    return 'Strumenti essenziali, sempre accesi: circa $n token';
+  }
+
+  @override
+  String tkStartTotal(String n) {
+    return 'All\'inizio: circa $n token a ogni messaggio';
+  }
+
+  @override
+  String tkRest(String n) {
+    return 'Spenti all\'inizio: $n token che pesano solo se si accende un gruppo';
+  }
+
+  @override
+  String tkTools(String list) {
+    return 'Strumenti: $list';
+  }
+
+  @override
+  String get tkStateAuto => 'spento di serie';
 }

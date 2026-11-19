@@ -7,6 +7,7 @@
 import type { Event, PermissionRequestInfo, ToolsView } from "@redgiant/protocol";
 import { AnthropicProvider, type CompletionRequest, type FakeTurn } from "@redgiant/providers";
 import { afterEach, describe, expect, it } from "vitest";
+import { toolChars } from "../src/tool-choice.js";
 import { startServer } from "./helpers.js";
 
 type Server = Awaited<ReturnType<typeof startServer>>;
@@ -227,5 +228,33 @@ describe("deferred loading (Anthropic's tool search, 3.9.4)", () => {
     s.core.agentModelChanged(c);
     await (await s.core.send("me", sid, "go on")).done;
     expect(s.provider.requests.at(-1)?.tools).toEqual(before);
+  });
+});
+
+describe("what a message weighs (3.9.4)", () => {
+  it("is much less at the start than with every tool, for every kind of agent", async () => {
+    s = await startServer(() => ({ text: "ok" }), ROOM);
+    const { god, orch, coder: c } = await coder(s);
+    const assistant = (
+      await s.api<{ id: string }>("POST", "/api/agents", {
+        kind: "assistant",
+        parentId: god,
+        name: "Mail",
+      })
+    ).body.id;
+    const chat = (await s.core.chatAgent("me")).id;
+    const rows: string[] = [];
+    const tok = (chars: number) => Math.ceil(chars / 3.5);
+    for (const [kind, id] of Object.entries({ god, orch, coder: c, assistant, chat })) {
+      const v = (await s.api<ToolsView>("GET", `/api/tools?agentId=${id}`)).body;
+      const sid = await session(s, id);
+      await (await s.core.send("me", sid, "hi")).done;
+      const sent = (s.provider.requests.at(-1)?.tools ?? []).filter((t) => !t.deferred);
+      const after = tok(sent.reduce((n, t) => n + toolChars({ def: t }), 0));
+      const before = v.total + v.saved;
+      rows.push(`${kind}: ${before} -> ${after} tokens of tools (${sent.length} tools)`);
+      expect(after, kind).toBeLessThan(before * 0.6);
+    }
+    console.log(`Tools per message, every tool -> at the start:\n${rows.join("\n")}`);
   });
 });

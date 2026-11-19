@@ -17906,6 +17906,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.'**
   String get cvMediaNativeHelp;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Tool groups'**
+  String get tkTitle;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Agents start with few tools, to keep every message light. The other groups are off by default: an agent switches one on by itself when the work needs it, for that conversation. Always on: the agent has it from the start. Off by you: the agent has to ask you.'**
+  String get tkLead;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'The groups for {name}: as for every agent, or a choice of its own.'**
+  String tkAgentLead(String name);
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Off by default'**
+  String get tkAuto;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Always on'**
+  String get tkOn;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Off by you'**
+  String get tkOff;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'As for everyone: {state}'**
+  String tkAsAll(String state);
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'default'**
+  String get tkIsDefault;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'on for its role'**
+  String get tkRole;
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'about {n} tokens when on'**
+  String tkWeight(String n);
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Essential tools, always on: about {n} tokens'**
+  String tkEssential(String n);
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'At the start: about {n} tokens in every message'**
+  String tkStartTotal(String n);
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Off at the start: {n} tokens that weigh only if a group is switched on'**
+  String tkRest(String n);
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'Tools: {list}'**
+  String tkTools(String list);
+
+  /// The page's `kit…` words (3.9.4, packages/web/src/i18n.ts).
+  ///
+  /// In en, this message translates to:
+  /// **'off by default'**
+  String get tkStateAuto;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -172,9 +172,7 @@ class ToolsView {
   /// [id] switched on or off, the sums counted again (lit at once; the server's answer follows).
   ToolsView flipped(String id, bool on) {
     String? kitOf(ToolView e) => kits.where((k) => k.id == e.kit).firstOrNull?.state;
-    return _with([
-      for (final e in entries) e.id == id ? e.withGlobal(on, kitOf(e)) : e,
-    ], kits);
+    return _with([for (final e in entries) e.id == id ? e.withGlobal(on, kitOf(e)) : e], kits);
   }
 
   /// A kit's choice changed ([pick] null: back to the default), the sums counted again.

@@ -10383,4 +10383,64 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cvMediaNativeHelp =>
       'Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.';
+
+  @override
+  String get tkTitle => 'Tool groups';
+
+  @override
+  String get tkLead =>
+      'Agents start with few tools, to keep every message light. The other groups are off by default: an agent switches one on by itself when the work needs it, for that conversation. Always on: the agent has it from the start. Off by you: the agent has to ask you.';
+
+  @override
+  String tkAgentLead(String name) {
+    return 'The groups for $name: as for every agent, or a choice of its own.';
+  }
+
+  @override
+  String get tkAuto => 'Off by default';
+
+  @override
+  String get tkOn => 'Always on';
+
+  @override
+  String get tkOff => 'Off by you';
+
+  @override
+  String tkAsAll(String state) {
+    return 'As for everyone: $state';
+  }
+
+  @override
+  String get tkIsDefault => 'default';
+
+  @override
+  String get tkRole => 'on for its role';
+
+  @override
+  String tkWeight(String n) {
+    return 'about $n tokens when on';
+  }
+
+  @override
+  String tkEssential(String n) {
+    return 'Essential tools, always on: about $n tokens';
+  }
+
+  @override
+  String tkStartTotal(String n) {
+    return 'At the start: about $n tokens in every message';
+  }
+
+  @override
+  String tkRest(String n) {
+    return 'Off at the start: $n tokens that weigh only if a group is switched on';
+  }
+
+  @override
+  String tkTools(String list) {
+    return 'Tools: $list';
+  }
+
+  @override
+  String get tkStateAuto => 'off by default';
 }

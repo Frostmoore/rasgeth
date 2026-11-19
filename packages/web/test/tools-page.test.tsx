@@ -330,6 +330,51 @@ describe("words (G34.5)", () => {
   });
 });
 
+describe("the history's kit changes (3.9.4)", () => {
+  it("tells them in sentences, for everyone and for one agent", () => {
+    const names = {
+      agent: (id: string) => (id === "a1" ? "Coder" : id),
+      project: (id: string) => id,
+    };
+    const base = {
+      id: "c",
+      ownerId: "me",
+      kind: "config" as const,
+      change: "",
+      stage: "promoted" as const,
+      detail: null,
+      by: "human",
+      createdAt: "",
+      updatedAt: "",
+    };
+    expect(
+      describeChange(
+        {
+          ...base,
+          target: "tools",
+          before: { off: [], agents: {}, kits: { mail: "off" } },
+          after: { off: [], agents: {}, kits: { images: "on" } },
+        },
+        names,
+      ),
+    ).toEqual([
+      "Gruppo di strumenti Email: di nuovo com'era di serie",
+      "Gruppo di strumenti Immagini: Acceso sempre",
+    ]);
+    expect(
+      describeChange(
+        {
+          ...base,
+          target: "tools:a1",
+          before: { off: [], agents: {} },
+          after: { off: [], agents: {}, agentKits: { a1: { browser: "off" } } },
+        },
+        names,
+      ),
+    ).toEqual(["Coder: gruppo di strumenti Browser: Spento da te"]);
+  });
+});
+
 describe("finding a tool (p3.5.3)", () => {
   it("shows each tool's real name and filters by words, name and what it does", async () => {
     const view = render(<ToolsPage />);

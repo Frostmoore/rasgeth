@@ -6833,6 +6833,9 @@ const en = {
   kitRest: "Off at the start: {n} tokens that weigh only if a group is switched on",
   kitTools: "Tools: {list}",
   toolStateAuto: "off by default",
+  chgKit: "Tool group {kit}: {state}",
+  chgKitAgent: "{name}: tool group {kit}: {state}",
+  chgKitDefault: "back to its default",
   kit_core: "Base",
   kitDo_core:
     "Find and search files, the list of steps, memory, the web, showing and sending files",
@@ -13797,6 +13800,9 @@ const it: Record<Key, string> = {
   kitRest: "Spenti all'inizio: {n} token che pesano solo se si accende un gruppo",
   kitTools: "Strumenti: {list}",
   toolStateAuto: "spento di serie",
+  chgKit: "Gruppo di strumenti {kit}: {state}",
+  chgKitAgent: "{name}: gruppo di strumenti {kit}: {state}",
+  chgKitDefault: "di nuovo com'era di serie",
   kit_core: "Di base",
   kitDo_core:
     "Cercare file e testo, l'elenco dei passi, la memoria, il web, mostrare e mandare file",
