@@ -671,7 +671,11 @@ jobs:
             console.log("manifest " + m.version + ": " + m.files.length + " files, installer sha256 " + sha);' "$m" "$VERSION" ci/windows/Rasgeth-Setup.exe
           cmp <(gzip -dc "$m.gz") "$m"
           ls ci/mac/Rasgeth-mac-*.dmg
-          tar -tzf ci/linux/rasgeth-app-linux-x64.tar.gz | grep -qx "rasgeth-app-linux-x64/bundle/rasgeth-app" || { echo "the Linux tar has no app"; exit 1; }
+          # The listing whole, then the search: `tar | grep -q` stops reading at the first match and
+          # tar, still listing, fails on the closed pipe (3.9.1: «tar: stdout: write error», with
+          # pipefail the check said the app was missing; the files' order in the tar decides it).
+          tar -tzf ci/linux/rasgeth-app-linux-x64.tar.gz >"$RUNNER_TEMP/linux-tar.txt"
+          grep -qx "rasgeth-app-linux-x64/bundle/rasgeth-app" "$RUNNER_TEMP/linux-tar.txt" || { echo "the Linux tar has no app"; exit 1; }
           # Rasgeth App on its own for Windows (3.8.2): an Inno Setup installer from the same run.
           [ -s ci/windows/Rasgeth-App-Setup.exe ] || { echo "CI's Windows packages have no Rasgeth-App-Setup.exe"; exit 1; }
           head -c 2 ci/windows/Rasgeth-App-Setup.exe | grep -q MZ || { echo "Rasgeth-App-Setup.exe is not a Windows program"; exit 1; }
@@ -860,7 +864,9 @@ jobs:
           linux_fp=$(engine/fingerprint.sh linux)
           cached_zip="${ZIP%.zip}-$win_fp.zip"
           image="$REGISTRY/redgiant2-engine:cuda-prefetch-$linux_fp"
-          if gh api "repos/$GITHUB_REPOSITORY/releases/tags/$ENGINE_CACHE" --jq '.assets[].name' 2>/dev/null | grep -qxF "$cached_zip"; then win_have=yes; else win_have=no; fi
+          # grep reads the whole list (with -q it would stop early and gh could fail on the pipe).
+          if gh api "repos/$GITHUB_REPOSITORY/releases/tags/$ENGINE_CACHE" --jq '.assets[].name' 2>/dev/null | grep -xF "$cached_zip" >/dev/null; then win_have=yes; else win_have=no; fi
+
           if docker buildx imagetools inspect "$image" >/dev/null 2>&1; then linux_have=yes; else linux_have=no; fi
           wanted() { if [ -z "$ONLY" ] || [ "$ONLY" = "$1" ]; then echo yes; else echo no; fi; }
           echo "| Engine | Fingerprint | Decision | Why |" >> "$GITHUB_STEP_SUMMARY"

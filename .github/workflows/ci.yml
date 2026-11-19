@@ -711,7 +711,8 @@ jobs:
           [ "$up" = 1 ] || { echo "Rasgeth did not answer"; exit 1; }
           token=$(cat ~/Library/Application\ Support/RedGiant/data/token.txt)
           curl -sf -H "Authorization: Bearer $token" http://127.0.0.1:7600/api/setup >/dev/null
-          curl -sf http://127.0.0.1:7600/ | grep -q "<html"
+          curl -sf http://127.0.0.1:7600/ | grep "<html" >/dev/null
+
           # The command line in the bundle (G36.15), through a link as the instructions say.
           ln -sf /tmp/Rasgeth.app/Contents/Resources/bin/rasgeth /tmp/rasgeth
           /tmp/rasgeth projects create "CLI check" | grep -q "Created project cli-check" || { echo "the rasgeth command failed"; exit 1; }
