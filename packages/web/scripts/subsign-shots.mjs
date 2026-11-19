@@ -46,23 +46,36 @@ for (const [device, width, height] of [
     await menu();
     await page.locator(".bar-item", { hasText: "Demo" }).first().click();
     await page.waitForTimeout(400);
-    await page.locator(".session-row .open", { hasText: "Pagina prodotto" }).first().click();
+    // On a phone the bar slides over the page: a direct click, wherever the row is.
+    await page
+      .locator(".session-row .open", { hasText: "Pagina prodotto" })
+      .first()
+      .dispatchEvent("click");
     await page.waitForSelector(".sub-tab");
     await page.waitForTimeout(1200);
     await shot("01-conversation");
     const tabs = page.locator(".sub-tab");
-    console.log(`${device} ${scheme}: ${await tabs.count()} tabs, ${await page.locator(".sub-tab svg.sgn").count()} signs, ${await page.locator(".sub-tab svg.masc").count()} faces`);
+    console.log(
+      `${device} ${scheme}: ${await tabs.count()} tabs, ${await page.locator(".sub-tab svg.sgn").count()} signs, ${await page.locator(".sub-tab svg.masc").count()} faces`,
+    );
     if ((await tabs.count()) > 1) {
-      await tabs.nth(1).locator(".sub-tab-main").click();
+      await tabs.nth(1).locator(".sub-tab-main").dispatchEvent("click");
       await page.waitForTimeout(1200);
       await shot("02-subagent-tab");
     }
     await closeWindows(page);
     await menu();
-    await page.locator(".bar-settings").click();
+    await page.locator(".bar-settings").dispatchEvent("click");
     await page.waitForSelector(".settings");
-    await page.locator(".settings-nav .st-nav-item", { hasText: "Agenti" }).first().click();
+    await page
+      .locator(".settings-nav .st-nav-item", { hasText: "Agenti" })
+      .first()
+      .dispatchEvent("click");
     await page.waitForTimeout(1200);
+    // The tree's sub-agents, under their agent.
+    const sign = page.locator(".settings svg.sgn").first();
+    if (await sign.count()) await sign.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(600);
     await shot("03-agents");
     console.log(`${device} ${scheme} agents: ${await page.locator("svg.sgn").count()} signs`);
     await page.close();
