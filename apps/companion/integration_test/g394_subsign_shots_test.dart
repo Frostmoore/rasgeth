@@ -32,13 +32,46 @@ void main() {
       ..locale = const Locale('it');
     await t.pumpWidget(RGCompanionApp(controller: app));
     await frames(t);
-    await t.tap(find.byKey(const Key('tab-you')));
-    await frames(t);
+    // A computer-sized window opens the control room, already on the connection form.
+    final desk = find.byKey(const Key('tab-you')).evaluate().isEmpty;
+    if (!desk) {
+      await t.tap(find.byKey(const Key('tab-you')));
+      await frames(t);
+    }
     await t.enterText(find.byKey(const Key('server-address')), _url);
     await t.enterText(find.byKey(const Key('server-password')), _password);
     await t.tap(find.byKey(const Key('server-connect')));
     await waitFor(t, () => app.connected && app.liveStatus == LiveStatus.open);
     await waitFor(t, () => app.agents.where((a) => a.kind == AgentKind.subagent).length >= 2);
+    if (desk) {
+      for (final mode in [ThemeMode.light, ThemeMode.dark]) {
+        app.setThemeMode(mode);
+        await frames(t, 2500);
+        await shot(t, '$_prefix-${mode.name}-01-room');
+        final coder = app.agents.firstWhere((a) => a.name == 'Coder');
+        final tile = find.byKey(Key('tile-${coder.id}'));
+        await t.ensureVisible(tile);
+        await t.tap(tile);
+        await waitFor(t, () => find.text('Pagina prodotto').evaluate().isNotEmpty);
+        await frames(t, 800);
+        await t.tap(find.text('Pagina prodotto').first);
+        await waitFor(t, () => find.byType(SubagentSign).evaluate().isNotEmpty);
+        await frames(t, 2500);
+        await shot(t, '$_prefix-${mode.name}-02-conversation');
+        final tabs = find.byWidgetPredicate(
+          (w) =>
+              w.key is ValueKey<String> &&
+              (w.key! as ValueKey<String>).value.startsWith('sub-tab-'),
+        );
+        if (tabs.evaluate().length > 1) {
+          await t.tap(tabs.at(1));
+          await frames(t, 2500);
+          await shot(t, '$_prefix-${mode.name}-03-subagent-tab');
+        }
+        debugPrint('TOUR desk ${mode.name}: ${find.byType(SubagentSign).evaluate().length} signs');
+      }
+      return;
+    }
     for (final mode in [ThemeMode.light, ThemeMode.dark]) {
       app.setThemeMode(mode);
       await t.tap(find.byKey(const Key('tab-team')));
@@ -48,7 +81,8 @@ void main() {
       final signs = find.byType(SubagentSign).evaluate().length;
       debugPrint('TOUR tree ${mode.name}: $signs signs');
       await shot(t, '$_prefix-${mode.name}-01-tree');
-      await t.pageBack();
+      // The tree's own arrow is not the standard back button.
+      await t.state<NavigatorState>(find.byType(Navigator).last).maybePop();
       await frames(t, 1200);
       final coder = app.agents.firstWhere((a) => a.name == 'Coder');
       await t.tap(find.text('Coder').first);
