@@ -314,6 +314,7 @@ void main() {
       _Clock? clock,
       List<SwapPlan>? plans,
       List<String>? quits,
+      bool swapFails = false,
     }) => AppUpdater(
       spot: noSpot
           ? null
@@ -333,7 +334,10 @@ void main() {
         File('$into/rasgeth-app-linux-x64/bundle/rasgeth-app').writeAsStringSync('new');
         return '$into/rasgeth-app-linux-x64/bundle';
       },
-      swap: (plan, folder) async => plans?.add(plan),
+      swap: (plan, folder) async {
+        plans?.add(plan);
+        if (swapFails) throw const SwapNotStarted('no alive file');
+      },
       quit: () => quits?.add('quit'),
     );
 
@@ -479,6 +483,7 @@ void main() {
       expect(p.fromVersion, '3.8.14');
       expect(p.toVersion, '3.9.0');
       expect(_slash(p.package), endsWith('/unpacked/rasgeth-app-linux-x64/bundle'));
+      expect(_slash(p.alive), '${_slash(tmp.path)}/updates/helper-alive');
       expect(quits, ['quit']);
 
       // The next start (new or old version) takes it once.
@@ -488,6 +493,19 @@ void main() {
       expect(r.view, 'projects');
       expect(r.full, isTrue);
       expect(await next.takeResume(), isNull);
+    });
+
+    test('a helper that does not start: the app stays open, failed', () async {
+      final plans = <SwapPlan>[];
+      final quits = <String>[];
+      final u = make(_Github(), plans: plans, quits: quits, swapFails: true);
+      await u.check();
+      await u.download();
+      await u.apply(const ResumeState(sessionId: 's1'));
+      expect(plans, hasLength(1));
+      expect(quits, isEmpty);
+      expect(u.stage, AppUpdateStage.failed);
+      expect(u.error, AppUpdateError.swap);
     });
 
     test('at the next start: the marker, the notice, a failed version skipped', () async {
@@ -541,6 +559,7 @@ sleep 5''' : 'exit 1'}
         package: '${tmp.path}/new/bundle',
         marker: '${tmp.path}/started',
         log: '${tmp.path}/update.log',
+        alive: '${tmp.path}/alive',
         waitSeconds: 3,
       );
       File('${tmp.path}/swap.sh').writeAsStringSync(linuxSwapScript(plan));
@@ -562,6 +581,7 @@ sleep 5''' : 'exit 1'}
       expect(Directory('$dest.previous').existsSync(), isFalse);
       expect(out, contains('new $kMarkerArg${tmp.path}/started ${kUpdatedFromArg}3.8.14'));
       expect(File('${tmp.path}/started').existsSync(), isTrue);
+      expect(File('${tmp.path}/alive').existsSync(), isTrue, reason: 'written first');
     });
 
     test('the new version does not start: the old folder back, the old version told', () async {
@@ -587,6 +607,7 @@ sleep 5''' : 'exit 1'}
         package: r"C:\Users\O'Brien\AppData\Roaming\Rasgeth\Rasgeth\app-update\3.9.0\Rasgeth-App-Setup.exe",
         marker: r'C:\m',
         log: r'C:\l',
+        alive: r'C:\a',
       ),
     );
     expect(s, contains("'/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART'"));
