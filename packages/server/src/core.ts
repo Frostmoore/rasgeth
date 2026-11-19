@@ -11,6 +11,7 @@ import {
   AgentSession,
   type AsideResult,
   type Engine,
+  type NativeMade,
   forkPoint,
   type Hooks,
   type SendResult,
@@ -83,8 +84,12 @@ import {
   isCriticalId,
   type ListName,
   MCP_CATALOG,
+  type Capability,
+  CAPABILITY_FOLDER,
   type MediaChoice,
   type MediaKind,
+  nativeToolNote,
+  sessionNative,
   type MessageQuote,
   type ModelSpec,
   type NotifyReport,
@@ -218,6 +223,7 @@ import {
 import { FileTriggers } from "./file-triggers.js";
 import type { GitHosts } from "./git-hosts.js";
 import { IMAGE_MODEL, imageFileName } from "./images.js";
+import { imageTextHook, nativeSection, sendFileMissing, sniffImage } from "./native-media.js";
 import { Inspector } from "./inspector.js";
 import { Jobs } from "./jobs.js";
 import { knowledgeTools } from "./knowledge/agent-tools.js";
@@ -1889,6 +1895,8 @@ export class RedGiantCore implements OrchestrationHost {
       this.o.defaultModel ??
       (preview === "dry" ? { provider: "none", model: "none" } : undefined);
     if (!model) throw new NoModelError(`No model configured for "${agent.name}" or its ancestors`);
+    // What the model's engine makes by itself (2026-11-19): fixed at the start, read back on resume.
+    const native = preview === "dry" ? [] : await this.nativeFor(sessionId, resume, model.provider);
     const folder =
       preview === "dry"
         ? agent.kind === "demigod"
@@ -1998,7 +2006,7 @@ export class RedGiantCore implements OrchestrationHost {
       // Always offered (only the person's tools page takes tools away, G34.5); without a key it says so.
       if (ws)
         tools.push(
-          ...this.mediaTools(agent, ws),
+          ...this.mediaTools(agent, ws, native),
           this.showTool(agent, ws),
           // The canvas seen and moved by the agent (G36.12).
           ...canvasTools(agent, ws, this.canvasHost(agent)),
@@ -2170,6 +2178,8 @@ export class RedGiantCore implements OrchestrationHost {
           ? `## The person's instructions for every agent\n${this.instructions}`
           : "",
         toolsOff.length > 0 ? switchedOffSection(toolsOff, aside) : "",
+        // Pictures the engine draws itself (2026-11-19): Rasgeth keeps and sends them.
+        ws ? nativeSection(native) : "",
         // What it can search and how to cite (G36.5); fixed with the conversation's start.
         tools.some((t) => t.def.name === "search_knowledge") && this.knowledge
           ? knowledgeSection(
@@ -2216,10 +2226,21 @@ export class RedGiantCore implements OrchestrationHost {
             agent.kind !== "inspector" && {
               postToolUse: [this.skillNudge.hook(), this.editorNotesHook()],
             }),
-          ...(receivesTasks && { stop: [this.tasks.stopHook(agentId)] }),
+          // A picture in the answer the person cannot open (2026-11-19): one reminder to send it.
+          stop: [
+            ...(receivesTasks ? [this.tasks.stopHook(agentId)] : []),
+            ...(tools.some((t) => t.def.name === "send_file") ? [this.imageText] : []),
+          ],
         }),
       },
       ...(toolsOff.length > 0 && { toolsOff }),
+      ...(engine && { native }),
+      ...(engine &&
+        ws &&
+        native.length > 0 && {
+          nativeMade: (m: NativeMade, ctx: ToolContext) =>
+            this.keepNative(agent, ws, model.provider, m, ctx),
+        }),
       sessionId,
       ownerId,
       projectId: assignedTo ?? agent.projectId,
@@ -2607,6 +2628,21 @@ export class RedGiantCore implements OrchestrationHost {
       },
       add,
     });
+  }
+
+  /**
+   * What the model's engine makes by itself in a conversation (2026-11-19): its start's record
+   * when resumed (where the provider still can), the person's setting now otherwise.
+   */
+  private async nativeFor(sessionId: string, resume: boolean, provider: string) {
+    let recorded: readonly string[] | undefined;
+    if (resume) {
+      const started = (await sessionLog(this.store, sessionId)).find(
+        (e) => e.type === "session.started",
+      );
+      if (started?.type === "session.started") recorded = started.payload?.native;
+    }
+    return sessionNative(provider, this.media.native !== false, recorded);
   }
 
   /** What a conversation leaves out (G34.5): its start's record when resumed, the choice now otherwise. */
@@ -4653,11 +4689,7 @@ export class RedGiantCore implements OrchestrationHost {
         const abs = (await ws.isFile(i.path).catch(() => false))
           ? await new LocalWorkspace(ws.root).resolve(i.path)
           : await this.readableElsewhere(agent, i.path);
-        if (!abs)
-          return {
-            content: `There is no file "${i.path}" in your workspace${isAbsolute(i.path) ? " or in a project you may read" : ""}.`,
-            isError: true,
-          };
+        if (!abs) return { content: await sendFileMissing(i.path), isError: true };
         const st = await stat(abs);
         if (st.size > MAX)
           return {
@@ -4802,9 +4834,15 @@ export class RedGiantCore implements OrchestrationHost {
   private media: {
     choices: Partial<Record<MediaKind, MediaChoice>>;
     keys: Record<string, string>;
+    /** «Use the model's own tool when it has one» (2026-11-19); on unless the person said no. */
+    native?: boolean;
   } = { choices: {}, keys: {} };
 
-  setMedia(m: { choices: Partial<Record<MediaKind, MediaChoice>>; keys: Record<string, string> }) {
+  setMedia(m: {
+    choices: Partial<Record<MediaKind, MediaChoice>>;
+    keys: Record<string, string>;
+    native?: boolean;
+  }) {
     for (const [p, key] of Object.entries(m.keys)) this.o.redactor?.addSecret(`media-${p}`, key);
     this.media = m;
   }
@@ -4862,11 +4900,13 @@ export class RedGiantCore implements OrchestrationHost {
     } catch (err) {
       return { content: (err as Error).message, isError: true };
     }
-    const now = new Date();
-    const rel = `${folder}/${now.toISOString().slice(0, 10)}/${now.toISOString().slice(11, 19).replace(/:/g, "")}-${imageFileName(req.prompt)}.${made.ext}`;
-    const abs = await new LocalWorkspace(ws.root).resolve(rel);
-    await mkdir(dirname(abs), { recursive: true });
-    await writeFile(abs, made.data);
+    const rel = await this.keepAndSend(agent, ws, ctx, {
+      data: made.data,
+      ext: made.ext,
+      mime: made.mime,
+      prompt: req.prompt,
+      folder,
+    });
     if (made.costUsd !== null || (made.tokens ?? 0) > 0)
       await this.budget.record(
         keys,
@@ -4879,6 +4919,26 @@ export class RedGiantCore implements OrchestrationHost {
         made.costUsd ?? 0,
         { ownerId: ctx.ownerId, projectId: agent.projectId, agentId: agent.id },
       );
+    const cost = made.costUsd !== null ? `, about $${made.costUsd.toFixed(3)}` : "";
+    return `Saved ${rel} (${m.choice.provider} ${m.choice.model}${cost}). The person sees it in the chat; show puts it in the canvas.`;
+  }
+
+  /**
+   * Saves what was made in the workspace (`<folder>/<date>/<time>-<name>.<ext>`) and sends it to
+   * the person: the chat's card, and Telegram when they talk from there. Our tools' pictures and
+   * the engine's own (2026-11-19) alike. Returns the file's path in the workspace.
+   */
+  private async keepAndSend(
+    agent: AgentRecord,
+    ws: Workspace,
+    ctx: ToolContext,
+    f: { data: Buffer; ext: string; mime: string; prompt: string; folder: string },
+  ): Promise<string> {
+    const now = new Date();
+    const rel = `${f.folder}/${now.toISOString().slice(0, 10)}/${now.toISOString().slice(11, 19).replace(/:/g, "")}-${imageFileName(f.prompt)}.${f.ext}`;
+    const abs = await new LocalWorkspace(ws.root).resolve(rel);
+    await mkdir(dirname(abs), { recursive: true });
+    await writeFile(abs, f.data);
     const where = await this.scopeOf(agent.ownerId, abs);
     await this.store.append({
       ownerId: agent.ownerId,
@@ -4890,9 +4950,9 @@ export class RedGiantCore implements OrchestrationHost {
         payload: {
           ...where,
           name: basename(abs),
-          size: made.data.length,
-          mime: made.mime,
-          caption: req.prompt.slice(0, 300),
+          size: f.data.length,
+          mime: f.mime,
+          ...(f.prompt && { caption: f.prompt.slice(0, 300) }),
         },
       },
     });
@@ -4902,17 +4962,69 @@ export class RedGiantCore implements OrchestrationHost {
     )
       await this.sendFile?.(
         agent.ownerId,
-        made.data,
+        f.data,
         basename(abs),
-        made.mime,
-        req.prompt.slice(0, 200),
+        f.mime,
+        f.prompt.slice(0, 200),
       ).catch(() => {});
-    const cost = made.costUsd !== null ? `, about $${made.costUsd.toFixed(3)}` : "";
-    return `Saved ${rel} (${m.choice.provider} ${m.choice.model}${cost}). The person sees it in the chat; show puts it in the canvas.`;
+    return rel;
+  }
+
+  /**
+   * Something the model's engine made with its own tool (2026-11-19: a picture Codex drew, saved
+   * under its CODEX_HOME): copied into the agent's workspace and sent like our tools' results,
+   * nobody in between. Only a file in the engine's own folder for it, of the right kind.
+   */
+  private async keepNative(
+    agent: AgentRecord,
+    ws: Workspace,
+    provider: string,
+    m: NativeMade,
+    ctx: ToolContext,
+  ): Promise<{ ok: boolean; output: string }> {
+    const MAX = 50 * 1024 * 1024;
+    let data: Buffer;
+    let name: string;
+    if (m.path) {
+      const engine = this.o.providers.has(provider)
+        ? (this.o.providers.get(provider) as { nativeFolder?: string })
+        : undefined;
+      const folder = engine?.nativeFolder;
+      const abs = await realpath(m.path).catch(() => undefined);
+      const root = folder ? await realpath(folder).catch(() => undefined) : undefined;
+      if (!abs || !root || inside(root, abs) === undefined)
+        return { ok: false, output: `The engine's file is not where it keeps them: ${m.path}` };
+      const st = await stat(abs);
+      if (!st.isFile() || st.size > MAX)
+        return { ok: false, output: `The engine's file cannot be sent: ${m.path}` };
+      data = await readFile(abs);
+      name = abs;
+    } else if (m.data) {
+      data = Buffer.from(m.data, "base64");
+      name = "picture.png";
+    } else return { ok: false, output: "The engine gave no file." };
+    const mime = m.path ? (contentType(name).split(";")[0] ?? "") : sniffImage(data);
+    const ext = mime.split("/")[1]?.replace("jpeg", "jpg").replace("svg+xml", "svg") ?? "";
+    if (!mime.startsWith(`${m.kind}/`) || !ext)
+      return { ok: false, output: `The engine's file is not a ${m.kind}: ${basename(name)}` };
+    const rel = await this.keepAndSend(agent, ws, ctx, {
+      data,
+      ext,
+      mime,
+      prompt: m.prompt ?? "",
+      folder: CAPABILITY_FOLDER[m.kind] ?? "images",
+    });
+    return {
+      ok: true,
+      output: `Saved ${rel} in your workspace and sent it to the person: it is in the chat. Do not send it again.`,
+    };
   }
 
   /** image_generation, video_generation, audio_generation: always offered (G25.3). */
-  private mediaTools(agent: AgentRecord, ws: Workspace): Tool[] {
+  private mediaTools(agent: AgentRecord, ws: Workspace, native: readonly Capability[] = []): Tool[] {
+    // The model makes some of these by itself (2026-11-19): ours stays, for when it is asked for.
+    const note = (c: Capability, text: string) =>
+      native.includes(c) ? `${nativeToolNote(c)} ${text}` : text;
     const Ratio = z.enum(["1:1", "16:9", "9:16", "4:3", "3:4"]).optional();
     const Image = z.object({
       prompt: z.string().min(1),
@@ -4943,8 +5055,10 @@ export class RedGiantCore implements OrchestrationHost {
       {
         def: {
           name: "image_generation",
-          description:
+          description: note(
+            "image",
             "Make a picture from a description, with the provider the person chose; it is saved in your workspace (images/<date>/) and sent to the person. Describe subject, style, colours and any text precisely. It costs money: use it when a picture is wanted.",
+          ),
           inputSchema: {
             type: "object",
             properties: {
@@ -4976,8 +5090,10 @@ export class RedGiantCore implements OrchestrationHost {
       {
         def: {
           name: "video_generation",
-          description:
+          description: note(
+            "video",
             "Make a short video from a description (and, where supported, a first frame from your workspace), with the provider the person chose; saved in videos/<date>/ and sent to the person. It can take minutes and costs money.",
+          ),
           inputSchema: {
             type: "object",
             properties: {
@@ -5008,8 +5124,10 @@ export class RedGiantCore implements OrchestrationHost {
       {
         def: {
           name: "audio_generation",
-          description:
+          description: note(
+            "audio",
             "Make a sound with the provider the person chose for it: type speech says text aloud (style: how to say it), music composes a piece from a description, sound makes a sound effect from a description. Saved in audio/<date>/ and sent to the person. It costs money.",
+          ),
           inputSchema: {
             type: "object",
             properties: {
@@ -5036,6 +5154,9 @@ export class RedGiantCore implements OrchestrationHost {
       } as Tool,
     ];
   }
+
+  /** The reminder about pictures by a path the person cannot open (2026-11-19), per conversation. */
+  private readonly imageText = imageTextHook();
 
   /** Providers whose key was refused, with the provider's words (shown in the web UI). */
   private readonly keyProblems = new Map<string, string>();

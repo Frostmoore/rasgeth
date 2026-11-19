@@ -39,9 +39,16 @@ import {
   trimResult,
   withoutReasoning,
 } from "./compaction.js";
-import type { Engine, EngineTurn } from "./engine.js";
+import {
+  type Engine,
+  type EngineTurn,
+  NATIVE_TOOL,
+  type NativeKind,
+  type NativeMade,
+  nativeCallId,
+} from "./engine.js";
 import { sessionLog } from "./forks.js";
-import type { Hooks, ToolCallInfo } from "./hooks.js";
+import type { Hooks, StopNote, ToolCallInfo } from "./hooks.js";
 import { type HistoryEntry, rebuildHistory, summaryMessage } from "./rebuild.js";
 import { repairJson } from "./repair.js";
 import { TodoWatch } from "./todos.js";
@@ -117,6 +124,16 @@ export interface AgentSessionOptions {
    * session starts, so a resumed one keeps the same set (the cached prefix does not move).
    */
   toolsOff?: readonly string[];
+  /**
+   * What the model's engine makes by itself in this conversation (2026-11-19, `image`…): recorded
+   * at the start and told to the engine at every turn.
+   */
+  native?: readonly string[];
+  /**
+   * The engine made something with its own tool (2026-11-19): saved in the workspace and sent to
+   * the person by the caller; the result is recorded as our tool's would be.
+   */
+  nativeMade?: (m: NativeMade, ctx: ToolContext) => Promise<{ ok: boolean; output: string }>;
   /** A summary is being made in the foreground (the chat says so) or done. */
   onCompacting?: (busy: boolean) => void;
   /**
@@ -314,6 +331,7 @@ export class AgentSession {
         system: options.system,
         tools: s.tools.map((t) => t.def.name),
         ...(options.toolsOff?.length && { toolsOff: [...options.toolsOff] }),
+        ...(options.native && { native: [...options.native] }),
       },
     });
     for (const h of options.hooks?.sessionStart ?? []) await h(s.ctx);
@@ -552,9 +570,9 @@ export class AgentSession {
             this.compactAhead();
             return { stopReason: "end_turn", turns: turn, lastCompletion: completion };
           }
-          const e = await this.record({ type: "message.user", payload: { text: more } });
+          const e = await this.recordStopNote(more);
           this.history.push({
-            message: { role: "user", parts: [{ type: "text", text: more }] },
+            message: { role: "user", parts: [{ type: "text", text: stopText(more) }] },
             firstSeq: e.seq,
           });
           continue;
@@ -637,6 +655,26 @@ export class AgentSession {
     }
   }
 
+  /** The engine's native calls already logged (one `tool.call` each, at their start or end). */
+  private readonly nativeCalls = new Set<string>();
+
+  /** Logs an engine's own making as our tool's call, once (2026-11-19). */
+  private async nativeCall(
+    engine: string,
+    m: { id: string; kind: NativeKind; prompt?: string | undefined },
+  ): Promise<void> {
+    if (this.nativeCalls.has(m.id)) return;
+    this.nativeCalls.add(m.id);
+    await this.record({
+      type: "tool.call",
+      payload: {
+        callId: nativeCallId(m.id),
+        tool: NATIVE_TOOL[m.kind],
+        input: { ...(m.prompt && { prompt: m.prompt }), by: engine },
+      },
+    });
+  }
+
   /**
    * A turn on an external engine (G21): the engine runs the model, RedGiant runs and logs the
    * tools. Stop hooks still apply: their reminder is the next turn's message.
@@ -702,6 +740,28 @@ export class AgentSession {
             payload: { callId: result.callId, ok: result.ok, output: result.output },
           });
         },
+        // The engine's own picture (2026-11-19): logged as our tool's call and result, so the
+        // chat shows «generating» and then the file; the watch waits while it draws.
+        onNativeStart: async (m) => {
+          said();
+          watch.pause();
+          await this.nativeCall(engine.id, m);
+        },
+        onNativeMade: async (m) => {
+          said();
+          watch.resume();
+          await this.nativeCall(engine.id, m);
+          const r = m.error
+            ? { ok: false, output: `Not made: ${m.error}` }
+            : ((await this.o.nativeMade?.(m, ctx).catch((err: Error) => ({
+                ok: false,
+                output: err.message,
+              }))) ?? { ok: false, output: "Nobody keeps what the engine makes here." });
+          await this.record({
+            type: "tool.result",
+            payload: { callId: nativeCallId(m.id), ok: r.ok, output: r.output },
+          });
+        },
         runTool: async (call) => {
           // A tool's time is not the provider's: the watch waits while it runs.
           watch.pause();
@@ -753,12 +813,12 @@ export class AgentSession {
       if (r.stopReason !== "end_turn") return { stopReason: r.stopReason, turns: turn };
       const more = await this.engineStopHooks(ctx);
       if (more === undefined) return { stopReason: "end_turn", turns: turn };
-      const e = await this.record({ type: "message.user", payload: { text: more } });
+      const e = await this.recordStopNote(more);
       this.history.push({
-        message: { role: "user", parts: [{ type: "text", text: more }] },
+        message: { role: "user", parts: [{ type: "text", text: stopText(more) }] },
         firstSeq: e.seq,
       });
-      message = more;
+      message = stopText(more);
       pictures = [];
     }
     return { stopReason: "max_turns", turns: limit };
@@ -782,7 +842,13 @@ export class AgentSession {
       said: () => void,
     ) => Pick<
       EngineTurn,
-      "onMessage" | "runTool" | "onCompaction" | "onExternalTool" | "onExternalResult"
+      | "onMessage"
+      | "runTool"
+      | "onCompaction"
+      | "onExternalTool"
+      | "onExternalResult"
+      | "onNativeStart"
+      | "onNativeMade"
     >,
   ): Promise<{ resume: string; stopReason: StopReason }> {
     const limits = engine.stall ?? ENGINE_STALL;
@@ -819,6 +885,7 @@ export class AgentSession {
           tools: this.tools.map((t) => t.def),
           model,
           resume: this.engineSession,
+          ...(this.o.native && { native: this.o.native }),
           signal: inner.signal,
           alive: () => watch.touch(),
           live: (e) => {
@@ -894,7 +961,7 @@ export class AgentSession {
   }
 
   /** Stop hooks for engines: they see the last assistant text as a completion. */
-  private async engineStopHooks(ctx: ToolContext): Promise<string | undefined> {
+  private async engineStopHooks(ctx: ToolContext): Promise<StopNote | undefined> {
     const last = [...this.history].reverse().find((h) => h.message.role === "assistant");
     const completion = {
       message: { role: "assistant", parts: last?.message.parts ?? [] },
@@ -916,7 +983,16 @@ export class AgentSession {
     throw new Error("Model stream ended without a completion");
   }
 
-  private async stopHooks(completion: Completion, ctx: ToolContext): Promise<string | undefined> {
+  /** A stop hook's message in the log: the person's to see, or RedGiant's quiet note. */
+  private recordStopNote(note: StopNote) {
+    return this.record({
+      type: "message.user",
+      payload:
+        typeof note === "string" ? { text: note } : { text: note.text, from: "redgiant" },
+    });
+  }
+
+  private async stopHooks(completion: Completion, ctx: ToolContext): Promise<StopNote | undefined> {
     for (const h of this.o.hooks?.stop ?? []) {
       const more = await h(completion, ctx);
       if (more !== undefined) return more;
@@ -1491,3 +1567,6 @@ export function decodeJsonStrings(input: unknown): Record<string, unknown> | und
   }
   return changed ? out : undefined;
 }
+
+/** A stop hook's message as the model reads it. */
+const stopText = (note: StopNote) => (typeof note === "string" ? note : note.text);

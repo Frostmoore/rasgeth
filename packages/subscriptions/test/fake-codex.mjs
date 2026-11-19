@@ -2,6 +2,8 @@
 // that calls a dynamic tool, then answers with what the tool returned. Like the real one, each
 // model request's usage (`thread/tokenUsage/updated`) comes after that request's items and tool
 // calls, while the tool still runs; its context window is the engine's own (475000).
+import { mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { createInterface } from "node:readline";
 
 const send = (m) => process.stdout.write(`${JSON.stringify(m)}\n`);
@@ -81,6 +83,48 @@ createInterface({ input: process.stdin }).on("line", (line) => {
           item: { type: "reasoning", id: "i0", summary: ["Need the tool."], content: [] },
         },
       });
+      if (m.params.input[0].text === "draw") {
+        // Codex's own image tool (2026-11-19): it says it starts, saves the picture under its
+        // CODEX_HOME's generated_images/ and says it is done with the file's path.
+        const at = { threadId: m.params.threadId, turnId: "tu-1" };
+        const item = { type: "imageGeneration", id: "ig_1", revisedPrompt: "A red giant star" };
+        send({ method: "item/started", params: { ...at, item: { ...item, status: "inProgress" } } });
+        const dir = join(process.env.CODEX_HOME, "generated_images", "th-1");
+        mkdirSync(dir, { recursive: true });
+        const file = join(dir, "ig_1.png");
+        // A 1x1 PNG.
+        writeFileSync(
+          file,
+          Buffer.from(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==",
+            "base64",
+          ),
+        );
+        setTimeout(() => {
+          send({
+            method: "item/completed",
+            params: {
+              ...at,
+              completedAtMs: 0,
+              item: { ...item, status: "completed", savedPath: file, result: "" },
+            },
+          });
+          send({
+            method: "item/completed",
+            params: {
+              ...at,
+              completedAtMs: 0,
+              item: { type: "agentMessage", id: "i3", text: "Here it is." },
+            },
+          });
+          send(usage(1300, 0, 50));
+          send({
+            method: "turn/completed",
+            params: { threadId: m.params.threadId, turn: { id: "tu-1", status: "completed" } },
+          });
+        }, 30);
+        return;
+      }
       if (m.params.input[0].text === "fail") {
         send({
           method: "turn/completed",

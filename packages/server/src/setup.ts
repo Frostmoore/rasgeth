@@ -320,6 +320,11 @@ export interface SetupConfig {
   imagesModel?: string;
   /** Who makes pictures, videos and sounds (G25.3), by kind. */
   media?: Partial<Record<MediaKind, MediaChoice>>;
+  /**
+   * «Use the model's own tool when it has one» (2026-11-19): false when the person switched it
+   * off; absent: on. New conversations follow it, running ones keep their start's choice.
+   */
+  mediaNative?: boolean;
   engine?: EngineConfig;
   retentionDays?: number;
   /** The user read that a personal subscription may not be allowed in third-party tools (RD23). */
@@ -2706,7 +2711,19 @@ export class SetupService {
       const k = this.mediaKey(p.id);
       if (k) keys[p.id] = k;
     }
-    this.o.core.setMedia({ choices: this.config.media ?? {}, keys });
+    this.o.core.setMedia({
+      choices: this.config.media ?? {},
+      keys,
+      native: this.config.mediaNative !== false,
+    });
+  }
+
+  /** «Use the model's own tool when it has one» (Settings, Generation; 2026-11-19). */
+  async saveMediaNative(on: boolean): Promise<void> {
+    if (on) delete this.config.mediaNative;
+    else this.config.mediaNative = false;
+    await this.save();
+    this.applyMedia();
   }
 
   /** Who makes one kind (Settings, Generation); null: nobody. */

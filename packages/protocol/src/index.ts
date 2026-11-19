@@ -7,6 +7,7 @@ export * from "./backup.js";
 export * from "./backup-host.js";
 export * from "./brand.js";
 export * from "./canvas.js";
+export * from "./capabilities.js";
 export * from "./chat-tools.js";
 export * from "./critical.js";
 export * from "./dangers.js";

@@ -49,6 +49,47 @@ export interface EngineTurn {
     | undefined;
   /** The engine summarised its own conversation (shown in the chat; RedGiant's history stays). */
   onCompaction?: ((info: { trigger: string; preTokens?: number | undefined }) => void) | undefined;
+  /**
+   * What the engine may make with its own tools in this conversation (2026-11-19, `image`…:
+   * `sessionNative` in the protocol), fixed at its start. The rest goes through RedGiant's tools.
+   */
+  native?: readonly string[] | undefined;
+  /** The engine started making something with its own tool (the chat says «generating…»). */
+  onNativeStart?: ((m: { id: string; kind: NativeKind; prompt?: string }) => Promise<void>) | undefined;
+  /** The engine made it (or failed): RedGiant saves it in the workspace and sends it. */
+  onNativeMade?: ((m: NativeMade) => Promise<void>) | undefined;
+}
+
+/** What an engine makes by itself (2026-11-19). */
+export type NativeKind = "image" | "video" | "audio";
+
+/** Our tool an engine's own making is logged as (the chat draws it the same way). */
+export const NATIVE_TOOL: Record<NativeKind, string> = {
+  image: "image_generation",
+  video: "video_generation",
+  audio: "audio_generation",
+};
+
+/**
+ * The log's call id of an engine's own making. Its result has no tool call in a model message
+ * (the engine kept it): `rebuildHistory` leaves these out of a history sent to another model.
+ */
+export const nativeCallId = (id: string) => `native_${id}`;
+export const isNativeCallId = (callId: string) => callId.startsWith("native_");
+
+/** Something the engine made with its own tool: a picture Codex drew. */
+export interface NativeMade {
+  /** The engine's id for it: the same as `onNativeStart`'s. */
+  id: string;
+  kind: NativeKind;
+  /** Where the engine saved it (absolute), when it did. */
+  path?: string | undefined;
+  /** Its bytes in base64, when the engine gave them instead of a file. */
+  data?: string | undefined;
+  /** What it was asked to make, in the engine's words. */
+  prompt?: string | undefined;
+  /** Why it was not made, when it was not. */
+  error?: string | undefined;
 }
 
 /**
