@@ -9,6 +9,14 @@ const [url, token, out] = process.argv.slice(2);
 await mkdir(out, { recursive: true });
 const browser = await chromium.launch();
 
+/** Closes what opens by itself at the start (What's new, notices). */
+async function closeWindows(page) {
+  for (let i = 0; i < 4 && (await page.locator(".ui-modal-veil").count()); i++) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(250);
+  }
+}
+
 for (const [device, width, height] of [
   ["computer", 1440, 900],
   ["phone", 390, 844],
@@ -27,7 +35,8 @@ for (const [device, width, height] of [
     await page.evaluate(() => localStorage.clear());
     await page.goto(`${url}/#token=${token}`);
     await page.waitForSelector(".top");
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(800);
+    await closeWindows(page);
     const menu = async () => {
       if (phone) {
         await page.locator('button[aria-label="Menu"]').click();
@@ -48,6 +57,7 @@ for (const [device, width, height] of [
       await page.waitForTimeout(1200);
       await shot("02-subagent-tab");
     }
+    await closeWindows(page);
     await menu();
     await page.locator(".bar-settings").click();
     await page.waitForSelector(".settings");
