@@ -2476,6 +2476,15 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news394Portrait: "Your portrait",
+  news394PortraitText:
+    "{product} now learns from your conversations who you are: preferences, how you like to be spoken to, habits, projects, things to avoid. Each trait says where it comes from; you can change it, remove it or say it isn't true, in Settings › Portrait. No secrets, and it can be switched off.",
+  news394Tools: "Lighter agents",
+  news394ToolsText:
+    "Agents start with the essential tools and switch on a group (images, video, documents, browser…) only when they need it: up to three quarters fewer tokens at every message. Settings › Tools shows each group and its cost.",
+  news394Ring: "Sub-agents wear their parent's ring",
+  news394RingText:
+    "Temporary sub-agents no longer get a mascot of their own: they show a ring in their parent's colour, which tells at a glance whose they are and what they are doing.",
   news393Images: "Pictures you see in the chat",
   news393ImagesText:
     "Every picture that reaches a conversation, made by an agent or found somewhere, now shows right in the chat; a tap opens it big in the Canvas, with Open and Download as before.",
@@ -9458,6 +9467,15 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news394Portrait: "Il tuo ritratto",
+  news394PortraitText:
+    "{product} impara adesso dalle tue conversazioni chi sei: preferenze, come ti piace che ti si parli, abitudini, progetti, cose da evitare. Ogni tratto dice da dove viene; puoi cambiarlo, toglierlo o dire che non è vero, in Impostazioni › Ritratto. Niente segreti, e si può spegnere.",
+  news394Tools: "Agenti più leggeri",
+  news394ToolsText:
+    "Gli agenti partono con gli strumenti essenziali e accendono un gruppo (immagini, video, documenti, browser…) solo quando serve: fino a tre quarti di token in meno a ogni messaggio. Impostazioni › Strumenti mostra ogni gruppo e il suo costo.",
+  news394Ring: "I sotto-agenti portano l'anello del genitore",
+  news394RingText:
+    "I sotto-agenti temporanei non hanno più una mascotte propria: mostrano un anello nel colore del genitore, che dice subito di chi sono e cosa stanno facendo.",
   news393Images: "Le immagini si vedono in chat",
   news393ImagesText:
     "Ogni immagine che arriva in una conversazione, fatta da un agente o presa da qualche parte, si vede adesso direttamente in chat; con un tocco si apre grande nel Canvas, con Apri e Scarica come prima.",

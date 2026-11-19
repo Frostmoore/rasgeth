@@ -4,10 +4,13 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.9.3';
+const newsVersion = '3.9.4';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.9.4', 'news394Portrait', 'news394PortraitText'),
+  NewsRow('3.9.4', 'news394Tools', 'news394ToolsText'),
+  NewsRow('3.9.4', 'news394Ring', 'news394RingText'),
   NewsRow('3.9.3', 'news393Images', 'news393ImagesText'),
   NewsRow('3.9.3', 'news393Native', 'news393NativeText'),
   NewsRow('3.9.1', 'news391Mascots', 'news391MascotsText'),
@@ -615,6 +618,12 @@ const generalWords = <String, Map<String, String>>{
     'news393ImagesText': 'Ogni immagine che arriva in una conversazione, fatta da un agente o presa da qualche parte, si vede adesso direttamente in chat; con un tocco si apre grande nel Canvas, con Apri e Scarica come prima.',
     'news393Native': 'Prima lo strumento d\'immagini del modello',
     'news393NativeText': 'Quando il modello sa disegnare da sé (Codex con ChatGPT), lo fa, e Rasgeth salva l\'immagine e te la manda, mostrando che la sta preparando; chiedi lo strumento di Rasgeth per nome se vuoi il tuo fornitore. Un\'impostazione lo spegne.',
+    'news394Portrait': 'Il tuo ritratto',
+    'news394PortraitText': 'Rasgeth impara adesso dalle tue conversazioni chi sei: preferenze, come ti piace che ti si parli, abitudini, progetti, cose da evitare. Ogni tratto dice da dove viene; puoi cambiarlo, toglierlo o dire che non è vero, in Impostazioni › Ritratto. Niente segreti, e si può spegnere.',
+    'news394Ring': 'I sotto-agenti portano l\'anello del genitore',
+    'news394RingText': 'I sotto-agenti temporanei non hanno più una mascotte propria: mostrano un anello nel colore del genitore, che dice subito di chi sono e cosa stanno facendo.',
+    'news394Tools': 'Agenti più leggeri',
+    'news394ToolsText': 'Gli agenti partono con gli strumenti essenziali e accendono un gruppo (immagini, video, documenti, browser…) solo quando serve: fino a tre quarti di token in meno a ogni messaggio. Impostazioni › Strumenti mostra ogni gruppo e il suo costo.',
     'searchCard_brave': 'Ha un indice suo, indipendente da Google e Bing; rispetta la privacy. Credito gratuito ogni mese, poi a consumo.',
     'searchCard_exa': 'Cerca per significato: forte su documentazione, articoli scientifici e tecnici. Credito gratuito all\'inizio.',
     'searchCard_searxng': 'Gratis, senza chiave né account: un motore di ricerca che gira a casa tua (lo avvia Rasgeth, dove può, oppure usi il tuo).',
@@ -885,6 +894,12 @@ const generalWords = <String, Map<String, String>>{
     'news393ImagesText': 'Every picture that reaches a conversation, made by an agent or found somewhere, now shows right in the chat; a tap opens it big in the Canvas, with Open and Download as before.',
     'news393Native': 'The model\'s own image tool first',
     'news393NativeText': 'When the model can draw by itself (Codex with ChatGPT), it does, and Rasgeth saves the picture and sends it to you, showing while it is being made; ask for Rasgeth\'s tool by name to use your provider instead. A setting turns it off.',
+    'news394Portrait': 'Your portrait',
+    'news394PortraitText': 'Rasgeth now learns from your conversations who you are: preferences, how you like to be spoken to, habits, projects, things to avoid. Each trait says where it comes from; you can change it, remove it or say it isn\'t true, in Settings › Portrait. No secrets, and it can be switched off.',
+    'news394Ring': 'Sub-agents wear their parent\'s ring',
+    'news394RingText': 'Temporary sub-agents no longer get a mascot of their own: they show a ring in their parent\'s colour, which tells at a glance whose they are and what they are doing.',
+    'news394Tools': 'Lighter agents',
+    'news394ToolsText': 'Agents start with the essential tools and switch on a group (images, video, documents, browser…) only when they need it: up to three quarters fewer tokens at every message. Settings › Tools shows each group and its cost.',
     'searchCard_brave': 'Its own index, independent of Google and Bing; private. Free monthly credit, then pay as you go.',
     'searchCard_exa': 'Searches by meaning: strong on documentation, papers and technical articles. Free credit to start.',
     'searchCard_searxng': 'Free, no key, no account: a search engine that runs at your place (Rasgeth starts it, where it can, or you use yours).',
