@@ -10,7 +10,9 @@ const local = (host) =>
 const lookup = dns.lookup;
 dns.lookup = function (host, ...rest) {
   if (local(host)) return lookup.call(this, host, ...rest);
-  // Never answers: the caller's own timeout is the only way out.
+  // Never answers: the caller's own timeout is the only way out. Said on stderr, so a test that
+  // fails shows what the server waited for.
+  process.stderr.write(`no-network: lookup ${host} (never answered)\n`);
 };
 const promises = dns.promises.lookup;
 dns.promises.lookup = (host, ...rest) =>

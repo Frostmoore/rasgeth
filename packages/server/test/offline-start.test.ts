@@ -4,7 +4,7 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 
 // The real server, built (`pnpm build` runs before the tests), started on a machine whose
@@ -59,7 +59,8 @@ describe.skipIf(!existsSync(main))("the server without internet", () => {
     const port = await freePort();
     let output = "";
     const t0 = Date.now();
-    child = spawn(process.execPath, ["--import", noNetwork, main], {
+    // --import takes a URL: a Windows path (D:\\…) is read as a URL scheme and refused.
+    child = spawn(process.execPath, ["--import", pathToFileURL(noNetwork).href, main], {
       cwd: dir,
       env: {
         PATH: process.env.PATH ?? "",
@@ -73,6 +74,9 @@ describe.skipIf(!existsSync(main))("the server without internet", () => {
         REDGIANT_HOST: "127.0.0.1",
         REDGIANT_TOKEN: "offline-test-token-0123456789",
         REDGIANT_BROWSER: "docker",
+        // The keychain's key from here: on a Mac without a screen (CI, ssh) the login Keychain
+        // waits to be unlocked, which is not what this test measures.
+        REDGIANT_VAULT_KEY: Buffer.alloc(32, 7).toString("base64"),
       },
       stdio: ["ignore", "pipe", "pipe"],
     });

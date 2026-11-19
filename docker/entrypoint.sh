@@ -34,6 +34,7 @@ image_build() {
 }
 # The supervisor's state says the live commit is built: it starts it without building.
 mark_built() {
+  # shellcheck disable=SC2016 # the ${…} are JavaScript's, read by node, not the shell's
   node -e '
     const fs = require("fs");
     const [file, commit] = process.argv.slice(1);
