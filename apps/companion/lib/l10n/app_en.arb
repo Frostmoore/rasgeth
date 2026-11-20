@@ -8199,5 +8199,26 @@
   "jobNoticeCancelled": "Stopped.",
   "@jobNoticeCancelled": {
     "description": "A followed job was cancelled (G42.18)."
+  },
+  "saveCancelled": "Saving {name} stopped",
+  "@saveCancelled": {
+    "description": "A «Save as…» stopped with «Annulla» under its bar (3.10).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "saveTooBigPhone": "{name} is too big to save from the phone ({size}): save it from a computer",
+  "@saveTooBigPhone": {
+    "description": "A file over 512 MB that a phone cannot hand to the system's save (3.10).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
   }
 }

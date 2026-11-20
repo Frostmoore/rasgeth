@@ -10853,4 +10853,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get jobNoticeCancelled => 'Stopped.';
+
+  @override
+  String saveCancelled(String name) {
+    return 'Saving $name stopped';
+  }
+
+  @override
+  String saveTooBigPhone(String name, String size) {
+    return '$name is too big to save from the phone ($size): save it from a computer';
+  }
 }

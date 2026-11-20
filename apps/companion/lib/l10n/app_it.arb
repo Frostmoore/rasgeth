@@ -3103,5 +3103,7 @@
   "jobNoticeDone": "Fatto: aprilo nel Canvas.",
   "jobNoticeFailed": "Non è riuscito.",
   "jobNoticeFailedWhy": "Non è riuscito: {why}",
-  "jobNoticeCancelled": "Fermato."
+  "jobNoticeCancelled": "Fermato.",
+  "saveCancelled": "Salvataggio di {name} fermato",
+  "saveTooBigPhone": "{name} è troppo grande per salvarlo dal telefono ({size}): salvalo dal computer"
 }

@@ -50,6 +50,7 @@ import { pdfChangeText } from "../../viewers/pdf-words.js";
 import { sheetChangeText } from "../../viewers/sheet-words.js";
 import { svgChangeText } from "../../viewers/svg-words.js";
 import { videoChangeText } from "../../viewers/video-ops.js";
+import { DropChoice } from "../ui.js";
 import type { DocDiff as DiffView, DiffWhat } from "./DocDiff.js";
 import { ImageEditor, pictureEditable } from "./ImageEditor.js";
 import { MODEL_EDITABLE, ModelEditor } from "./ModelEditor.js";
@@ -491,25 +492,23 @@ export function DocEditor({
           </span>
         ))}
         <div class="spacer" />
-        <label class="doc-mode">
-          <span>{t("docModeLabel")}</span>
-          <select
+        <span class="doc-mode">
+          <span class="doc-mode-label" aria-hidden="true">
+            {t("docModeLabel")}
+          </span>
+          {/* Our drawn choice, never a native select (3.10). */}
+          <DropChoice<"now" | "propose" | "default">
             value={v.modeOwn ? v.mode : "default"}
+            label={t("docModeLabel")}
             title={modeHint}
-            onChange={(e) =>
-              void attempt(() =>
-                setDocMode(
-                  file,
-                  (e.target as HTMLSelectElement).value as "now" | "propose" | "default",
-                ),
-              )
-            }
-          >
-            <option value="default">{defaultLabel}</option>
-            <option value="now">{t("docModeNow")}</option>
-            <option value="propose">{t("docModePropose")}</option>
-          </select>
-        </label>
+            onChange={(mode) => void attempt(() => setDocMode(file, mode))}
+            options={[
+              { id: "default", label: defaultLabel },
+              { id: "now", label: t("docModeNow") },
+              { id: "propose", label: t("docModePropose") },
+            ]}
+          />
+        </span>
         <button
           type="button"
           class={`vw-toggle ${panel ? "on" : ""}`}

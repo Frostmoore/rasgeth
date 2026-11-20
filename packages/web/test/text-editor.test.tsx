@@ -276,12 +276,11 @@ describe("the editor of text and code", () => {
     // One change in the turn: both buttons.
     expect(container.querySelector(".doc-undo-turn")?.textContent).toBe("Annulla tutto il turno");
     expect(container.querySelector(".doc-undo")).toBeTruthy();
-    const select = () => container.querySelector<HTMLSelectElement>(".doc-mode select");
-    expect(select()?.selectedOptions[0]?.textContent).toBe("Come per l'agente: subito");
+    // The mode is our drawn choice (3.10): its button says what is chosen.
+    const chosen = () => container.querySelector(".doc-mode .ui-drop-current")?.textContent;
+    expect(chosen()).toBe("Come per l'agente: subito");
     applyMessage({ type: "doc.mode", file, mode: "now", modeOwn: false, agentsPropose: ["ada"] });
-    await waitFor(() =>
-      expect(select()?.selectedOptions[0]?.textContent).toBe("Come per l'agente: proposte (Ada)"),
-    );
+    await waitFor(() => expect(chosen()).toBe("Come per l'agente: proposte (Ada)"));
     applyMessage({
       type: "doc.mode",
       file,
@@ -289,8 +288,7 @@ describe("the editor of text and code", () => {
       modeOwn: true,
       agentsPropose: ["ada"],
     });
-    await waitFor(() => expect(select()?.value).toBe("propose"));
-    expect(select()?.selectedOptions[0]?.textContent).toBe("Come proposte da accettare");
+    await waitFor(() => expect(chosen()).toBe("Come proposte da accettare"));
     // A refusal stays until closed, and goes when closed.
     applyMessage({
       type: "doc.rejected",

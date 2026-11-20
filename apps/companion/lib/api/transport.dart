@@ -90,10 +90,49 @@ abstract class Transport {
     Duration idle = const Duration(seconds: 30),
   });
 
+  /// The same GET written to [out] as it arrives (3.10: «Save as…» of a finished video or the XML
+  /// for Resolve), never kept whole in memory. [cancel] stops it (`DownloadCancelled`); the
+  /// answer's status and type come back with no bytes. A refusal's body (not 200) is read as usual.
+  Future<ApiResponse> downloadTo(
+    String pathAndQuery,
+    File out, {
+    Map<String, String> headers = const {},
+    void Function(int got, int? total)? onProgress,
+    DownloadCancel? cancel,
+    Duration idle = const Duration(seconds: 30),
+  });
+
   /// A WebSocket at [path] (`/ws`), with the same trust as the requests.
   Future<WebSocket> socket(String path);
 
   void close();
+}
+
+/// Stops a download to a file (3.10): the person's «Cancel» under its bar.
+class DownloadCancel {
+  bool _done = false;
+  final _waiters = <void Function()>[];
+
+  bool get cancelled => _done;
+
+  void cancel() {
+    if (_done) return;
+    _done = true;
+    for (final f in _waiters) {
+      f();
+    }
+    _waiters.clear();
+  }
+
+  void _onCancel(void Function() f) => _done ? f() : _waiters.add(f);
+}
+
+/// A download stopped by the person.
+class DownloadCancelled implements Exception {
+  const DownloadCancelled();
+
+  @override
+  String toString() => 'DownloadCancelled';
 }
 
 /// `SecurityContext` that trusts only [caPem] (PEM text, or the base64 of it as the channel gives).
@@ -200,6 +239,70 @@ class HttpTransport implements Transport {
   }
 
   @override
+  Future<ApiResponse> downloadTo(
+    String pathAndQuery,
+    File out, {
+    Map<String, String> headers = const {},
+    void Function(int got, int? total)? onProgress,
+    DownloadCancel? cancel,
+    Duration idle = const Duration(seconds: 30),
+  }) async {
+    final url = base.resolve(pathAndQuery);
+    HttpClientRequest? req;
+    IOSink? sink;
+    try {
+      if (cancel?.cancelled ?? false) throw const DownloadCancelled();
+      req = await _client.getUrl(url).timeout(idle);
+      final r = req;
+      cancel?._onCancel(() => r.abort(const DownloadCancelled()));
+      headers.forEach(req.headers.set);
+      final res = await req.close().timeout(idle);
+      final type = res.headers.contentType?.mimeType ?? '';
+      if (res.statusCode != 200) {
+        final b = BytesBuilder(copy: false);
+        await for (final chunk in res.timeout(idle)) {
+          b.add(chunk);
+        }
+        return ApiResponse(res.statusCode, type, b.takeBytes());
+      }
+      final total = res.contentLength >= 0 ? res.contentLength : null;
+      sink = out.openWrite();
+      var got = 0;
+      onProgress?.call(0, total);
+      await for (final chunk in res.timeout(idle)) {
+        if (cancel?.cancelled ?? false) throw const DownloadCancelled();
+        sink.add(chunk);
+        got += chunk.length;
+        onProgress?.call(got, total);
+      }
+      await sink.flush();
+      await sink.close();
+      sink = null;
+      if (total != null && got != total) {
+        throw const TransportException('The download ended before the whole file came');
+      }
+      return ApiResponse(res.statusCode, type, Uint8List(0));
+    } on DownloadCancelled {
+      rethrow;
+    } on TimeoutException {
+      throw const TransportException('The server did not answer in time');
+    } on HandshakeException catch (e) {
+      throw TransportException(
+        '${e.message} ${e.osError?.message ?? ''}'.trim(),
+        certificate: true,
+      );
+    } on SocketException catch (e) {
+      if (cancel?.cancelled ?? false) throw const DownloadCancelled();
+      throw TransportException(e.message);
+    } on HttpException catch (e) {
+      if (cancel?.cancelled ?? false) throw const DownloadCancelled();
+      throw TransportException(e.message);
+    } finally {
+      await sink?.close().catchError((_) {});
+    }
+  }
+
+  @override
   Future<WebSocket> socket(String path) {
     final u = base.replace(scheme: base.scheme == 'https' ? 'wss' : 'ws', path: path);
     return WebSocket.connect(u.toString(), customClient: _client);
@@ -261,6 +364,25 @@ class ChannelTransport implements Transport {
     final r = await send('GET', pathAndQuery, headers: headers);
     onProgress?.call(r.bytes.length, r.bytes.length);
     return r;
+  }
+
+  /// The channel carries text only: the file comes whole, then is written.
+  @override
+  Future<ApiResponse> downloadTo(
+    String pathAndQuery,
+    File out, {
+    Map<String, String> headers = const {},
+    void Function(int got, int? total)? onProgress,
+    DownloadCancel? cancel,
+    Duration idle = const Duration(seconds: 30),
+  }) async {
+    if (cancel?.cancelled ?? false) throw const DownloadCancelled();
+    final r = await send('GET', pathAndQuery, headers: headers);
+    if (cancel?.cancelled ?? false) throw const DownloadCancelled();
+    if (r.status != 200) return r;
+    await out.writeAsBytes(r.bytes, flush: true);
+    onProgress?.call(r.bytes.length, r.bytes.length);
+    return ApiResponse(r.status, r.contentType, Uint8List(0));
   }
 
   @override

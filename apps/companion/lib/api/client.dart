@@ -4,6 +4,7 @@
 // machine's http, or the setup channel), chosen by `transportFor`.
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show File;
 import 'dart:typed_data';
 
 import 'artifacts.dart';
@@ -1094,6 +1095,33 @@ class RedGiantClient {
     );
     if (r.status != 200) _decode(r);
     return r.bytes;
+  }
+
+  /// A link of this server the page inside the app gave, written to [out] as it arrives (3.10:
+  /// «Save as…» of a finished video or the XML, never whole in memory). [cancel] stops it.
+  Future<void> serverDownloadTo(
+    String link,
+    File out, {
+    void Function(int got, int? total)? onProgress,
+    DownloadCancel? cancel,
+  }) async {
+    final u = Uri.parse(link);
+    if (u.hasScheme || u.hasAuthority || !u.path.startsWith('/')) {
+      throw ArgumentError.value(link, 'link', 'Not a link of this server');
+    }
+    final ApiResponse r;
+    try {
+      r = await transport.downloadTo(
+        _path(u.path, u.hasQuery ? u.queryParameters : null),
+        out,
+        headers: _headers(accept: '*/*'),
+        onProgress: onProgress,
+        cancel: cancel,
+      );
+    } on TransportException catch (e) {
+      throw ApiException(0, e.message, certificate: e.certificate);
+    }
+    if (r.status != 200) _decode(r);
   }
 
   // ---- the first start (G40.8) and the settings of this RedGiant ----

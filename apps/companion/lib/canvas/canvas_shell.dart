@@ -30,7 +30,7 @@ import '../screens/files/files_explorer.dart' show ExplorerFileDrag;
 import '../screens/first_start_screen.dart' show openExternal;
 import '../theme/colors.dart';
 import '../ui/artifact_frame_view.dart' show FrameSupport, frameSupportOf;
-import '../ui/chat/file_download.dart' show saveChatFile;
+import '../ui/chat/file_download.dart' show saveServerLink;
 import '../ui/file_icons.dart';
 import '../ui/icons.dart';
 import '../ui/paste_files.dart' show clipboardReader, pastedImage, sniffImage;
@@ -462,17 +462,15 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
     }
   }
 
+  /// The bar's «Download»: written to disk as it comes, with its bar and «Annulla» (3.10: a
+  /// finished video can be gigabytes), never whole in memory.
   void _download(CanvasTab t) {
     final info = _m.info[t.id];
-    unawaited(
-      saveChatFile(
-        context,
-        scope: t.scope!,
-        path: t.path!,
-        name: t.fileName,
-        size: info?.size ?? 0,
-      ),
-    );
+    final link = Uri(
+      path: '/api/files/raw',
+      queryParameters: {'scope': t.scope!, 'path': t.path!},
+    ).toString();
+    unawaited(saveServerLink(context, link: link, name: t.fileName, size: info?.size ?? 0));
   }
 
   /// A video timeline (G41.5b): its keys and files dragged from the tree go to the page (G42.18).

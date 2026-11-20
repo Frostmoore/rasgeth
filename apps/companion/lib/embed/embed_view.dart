@@ -16,6 +16,7 @@ import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../screens/first_start_screen.dart' show openExternal;
 import '../theme/colors.dart';
+import '../ui/chat/file_download.dart' show saveServerLink;
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import 'bridge.dart';
@@ -296,6 +297,9 @@ class EmbedViewState extends State<EmbedView> {
   }
 
   Future<void> _saveAs(String name, {String? url, String? data, String? mime}) async {
+    // A link of the server (the finished video, the XML for Resolve): written to disk as it
+    // comes, with its bar and «Annulla» (3.10); bytes from the page are small and already here.
+    if (url != null) return saveServerLink(context, link: url, name: name);
     final app = AppScope.read(context);
     final l = AppLocalizations.of(context);
     try {

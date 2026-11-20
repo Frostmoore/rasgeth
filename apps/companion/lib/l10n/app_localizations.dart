@@ -18716,6 +18716,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stopped.'**
   String get jobNoticeCancelled;
+
+  /// A «Save as…» stopped with «Annulla» under its bar (3.10).
+  ///
+  /// In en, this message translates to:
+  /// **'Saving {name} stopped'**
+  String saveCancelled(String name);
+
+  /// A file over 512 MB that a phone cannot hand to the system's save (3.10).
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is too big to save from the phone ({size}): save it from a computer'**
+  String saveTooBigPhone(String name, String size);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

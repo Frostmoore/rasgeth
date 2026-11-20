@@ -6,7 +6,7 @@ import type { ComponentChildren, JSX } from "preact";
 import { useEffect, useId, useRef, useState } from "preact/hooks";
 import { bytes } from "../format.js";
 import { t, tOptional } from "../i18n.js";
-import { IconAlert, IconChevron, IconSpinner, IconX } from "../icons.js";
+import { IconAlert, IconCheck, IconChevron, IconSpinner, IconX } from "../icons.js";
 import { attempt, getApi } from "../state.js";
 
 /** One screen of a guided flow: a title, one sentence on what it is for, an optional skip. */
@@ -186,6 +186,162 @@ export function Choice<T extends string>({
         );
       })}
     </div>
+  );
+}
+
+/** One of a `DropChoice`'s options: its value, its words, an optional line under them. */
+export interface DropOption<T extends string> {
+  id: T;
+  label: string;
+  hint?: string;
+}
+
+/**
+ * A choice that opens a list (3.10): what the page uses instead of a native `<select>`, which no
+ * page may show (the project's rule: our drawn controls only). A button with the chosen words
+ * and a chevron; its list placed over the page (a bar clips what overflows it), with the keys a
+ * list takes: arrows and Home/End move, Enter or Space choose, Esc and a click away close.
+ */
+export function DropChoice<T extends string>({
+  value,
+  options,
+  onChange,
+  label,
+  title,
+  class: c,
+  disabled,
+}: {
+  value: T;
+  options: DropOption<T>[];
+  onChange: (value: T) => void;
+  /** What is chosen (the button's and the list's accessible name). */
+  label: string;
+  title?: string;
+  class?: string;
+  disabled?: boolean;
+}) {
+  /** Where the list opens: under the button, from its left, or from its right near the edge. */
+  const [at, setAt] = useState<{ left?: number; right?: number; top: number; width: number }>();
+  const btn = useRef<HTMLButtonElement>(null);
+  const list = useRef<HTMLDivElement>(null);
+  const id = useId();
+  const cur = options.find((o) => o.id === value) ?? options[0];
+  const close = (focus = true) => {
+    setAt(undefined);
+    if (focus) btn.current?.focus();
+  };
+  const open = () => {
+    const r = btn.current?.getBoundingClientRect();
+    const width = Math.max(r?.width ?? 0, 200);
+    const top = (r?.bottom ?? 0) + 4;
+    // Near the window's right edge the list grows leftwards from the button's right side.
+    if ((r?.left ?? 0) + 280 > window.innerWidth)
+      setAt({ right: Math.max(4, window.innerWidth - (r?.right ?? 0)), top, width });
+    else setAt({ left: Math.max(4, r?.left ?? 0), top, width });
+  };
+  useEffect(() => {
+    if (!at) return;
+    const on =
+      list.current?.querySelector<HTMLElement>("[aria-checked=true]") ??
+      list.current?.querySelector<HTMLElement>("button");
+    on?.focus();
+    const away = (e: PointerEvent) => {
+      const n = e.target as Node;
+      if (!list.current?.contains(n) && !btn.current?.contains(n)) close(false);
+    };
+    const gone = () => close(false);
+    document.addEventListener("pointerdown", away, true);
+    window.addEventListener("resize", gone);
+    return () => {
+      document.removeEventListener("pointerdown", away, true);
+      window.removeEventListener("resize", gone);
+    };
+  }, [!!at]);
+  const listKey = (e: KeyboardEvent) => {
+    const items = [...(list.current?.querySelectorAll<HTMLElement>("button") ?? [])];
+    const i = items.indexOf(document.activeElement as HTMLElement);
+    const go = (n: number) => items[(n + items.length) % items.length]?.focus();
+    if (e.key === "Escape" || e.key === "Tab") {
+      // Esc closes the list only (the editor around it keeps its own Esc).
+      e.stopPropagation();
+      if (e.key === "Escape") e.preventDefault();
+      return close(e.key === "Escape");
+    }
+    const move: Record<string, () => void> = {
+      ArrowDown: () => go(i + 1),
+      ArrowUp: () => go(i - 1),
+      Home: () => go(0),
+      End: () => go(items.length - 1),
+    };
+    const f = move[e.key];
+    if (!f) return;
+    e.preventDefault();
+    e.stopPropagation();
+    f();
+  };
+  return (
+    <span class={`ui-drop${c ? ` ${c}` : ""}`}>
+      <button
+        ref={btn}
+        type="button"
+        class="ui-drop-current"
+        aria-haspopup="listbox"
+        aria-expanded={!!at}
+        aria-controls={at ? id : undefined}
+        aria-label={`${label}: ${cur?.label ?? ""}`}
+        title={title ?? label}
+        disabled={disabled}
+        onClick={() => (at ? close() : open())}
+        onKeyDown={(e) => {
+          if (!at && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+            e.preventDefault();
+            e.stopPropagation();
+            open();
+          }
+        }}
+      >
+        <span>{cur?.label}</span>
+        <IconChevron open={!!at} size={12} />
+      </button>
+      {at && (
+        <div
+          ref={list}
+          id={id}
+          class="ui-drop-list"
+          role="listbox"
+          aria-label={label}
+          style={{
+            ...(at.right !== undefined ? { right: `${at.right}px` } : { left: `${at.left}px` }),
+            top: `${at.top}px`,
+            minWidth: `${at.width}px`,
+          }}
+          onKeyDown={listKey}
+        >
+          {options.map((o) => (
+            <button
+              type="button"
+              key={o.id}
+              role="option"
+              aria-selected={o.id === value}
+              aria-checked={o.id === value}
+              class={o.id === value ? "on" : ""}
+              onClick={() => {
+                close();
+                if (o.id !== value) onChange(o.id);
+              }}
+            >
+              <span class="ui-drop-mark" aria-hidden="true">
+                {o.id === value && <IconCheck size={13} />}
+              </span>
+              <span class="ui-drop-words">
+                <span>{o.label}</span>
+                {o.hint && <small>{o.hint}</small>}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+    </span>
   );
 }
 

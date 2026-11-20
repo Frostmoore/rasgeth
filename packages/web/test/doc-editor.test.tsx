@@ -237,7 +237,9 @@ describe("the shell", () => {
     const { DocEditor } = await import("../src/components/viewers/DocEditor.js");
     const { container } = render(<DocEditor file={file} />);
     expect(container.querySelector(".doc-bar")).toBeTruthy();
-    expect(container.querySelector(".doc-mode select")).toBeTruthy();
+    // The agents' mode: our drawn choice, never a native select (3.10).
+    expect(container.querySelector(".doc-mode .ui-drop-current")).toBeTruthy();
+    expect(container.querySelector("select, input[type=checkbox], input[type=radio]")).toBeNull();
     const text = container.textContent ?? "";
     expect(text).not.toMatch(/[←-⇿☀-➿\u{1f300}-\u{1faff}]/u);
   });

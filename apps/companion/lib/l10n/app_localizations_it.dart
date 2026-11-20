@@ -10890,4 +10890,14 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get jobNoticeCancelled => 'Fermato.';
+
+  @override
+  String saveCancelled(String name) {
+    return 'Salvataggio di $name fermato';
+  }
+
+  @override
+  String saveTooBigPhone(String name, String size) {
+    return '$name è troppo grande per salvarlo dal telefono ($size): salvalo dal computer';
+  }
 }
