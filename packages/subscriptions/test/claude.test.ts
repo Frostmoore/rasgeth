@@ -189,7 +189,14 @@ describe("Claude on a subscription", () => {
 
   it("keeps the plan's limits the turns report: events first, then the full reading", async () => {
     const { sdk, asked } = fakeSdk("tools");
-    const p = new ClaudeSubscriptionProvider({ token: "t", configDir: "/tmp/c", cwd: "/tmp", sdk });
+    // Before the windows' resets (a window past its reset shows 0%).
+    const p = new ClaudeSubscriptionProvider({
+      token: "t",
+      configDir: "/tmp/c",
+      cwd: "/tmp",
+      sdk,
+      now: () => Date.parse("2026-10-31T12:00:00Z"),
+    });
     expect(await p.limits()).toEqual([]);
     await p.engine.turn(turn().t);
     expect(await p.limits()).toEqual([
