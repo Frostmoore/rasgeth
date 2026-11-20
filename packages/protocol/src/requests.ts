@@ -520,6 +520,12 @@ const SENTENCES: Record<string, Record<Lang, Sentence>> = {
     en: ({ i, q }) =>
       `Uses the key ${q(str(i.service) ?? str(i.credential) ?? "?")} from your keychain${str(i.host) ? ` for ${str(i.host)}` : ""} (the agent never sees it)`,
   },
+  import_passwords: {
+    it: ({ i }) =>
+      `Propone di mettere nel portachiavi le password di ${str(i.path) ?? "un file"} (l'agente non le vede)`,
+    en: ({ i }) =>
+      `Proposes to put the passwords of ${str(i.path) ?? "a file"} in your keychain (the agent never sees them)`,
+  },
   automation_run: {
     it: ({ i, q }) => `Avvia l'automazione ${q(str(i.automation) ?? "?")}`,
     en: ({ i, q }) => `Runs the automation ${q(str(i.automation) ?? "?")}`,

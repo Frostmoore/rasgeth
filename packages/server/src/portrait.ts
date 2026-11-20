@@ -555,6 +555,38 @@ export class Portrait {
     });
   }
 
+  /**
+   * A message erased for good (3.9.8): the traits learned from it (its conversation, said within a
+   * minute of it: the trait keeps when it heard the words, not the event's time) go with it, their
+   * words erased from the log; what the pass was still to read of that conversation is dropped.
+   * Returns how many traits went.
+   */
+  forgetMessage(ownerId: string, sessionId: string, at: string): Promise<number> {
+    const when = Date.parse(at);
+    const near = (x: string) => Math.abs(Date.parse(x) - when) <= 60_000;
+    return this.serial(ownerId, async () => {
+      if (this.heardIn.get(sessionId)?.ownerId === ownerId) this.dropHeard(sessionId);
+      const s = await this.state(ownerId);
+      const ids = new Set(
+        [...s.traits.values()]
+          .filter((t) => t.sources.some((x) => x.sessionId === sessionId && near(x.at)))
+          .map((t) => t.id),
+      );
+      if (ids.size === 0) return 0;
+      const events = (await this.o.store.list({ types: ["portrait.trait"] })).filter(
+        (e) =>
+          e.ownerId === ownerId &&
+          e.type === "portrait.trait" &&
+          e.payload &&
+          ids.has(e.payload.traitId),
+      );
+      for (const e of events)
+        await this.o.store.erase(e.seq, "message erased for good", { ownerId });
+      this.cache.delete(ownerId);
+      return ids.size;
+    });
+  }
+
   /** «Non è vero»: gone, and never proposed again. */
   deny(ownerId: string, traitId: string): Promise<void> {
     return this.serial(ownerId, async () => {

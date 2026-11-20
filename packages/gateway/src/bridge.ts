@@ -109,6 +109,11 @@ export interface GatewayHost {
     },
   ): Promise<string>;
   /**
+   * A password manager's export into the person's keychain (3.9.8, «Put them in the keychain»):
+   * only counts come back; a closed keychain imports nothing and throws `vault_closed`.
+   */
+  importPasswords?(ownerId: string, text: string): Promise<{ added: number; skipped: number }>;
+  /**
    * A message from a linked person, before Demi-God reads it (G33.3): automations waiting for
    * one like it start; `taken` when one keeps it, then Demi-God does not answer it and the chat
    * is told which automation took it.
@@ -231,6 +236,7 @@ const SECRET_WORDS: Record<SecretSpan["kind"], TextKey> = {
   code: "secretCode",
   card: "secretCard",
   iban: "secretIban",
+  export: "secretExport",
 };
 
 type RelayExtra = { images?: ImagePart[]; files?: { name: string; data: Buffer }[] };
@@ -247,10 +253,20 @@ interface HeldSecret {
   expires: number;
   messageId?: string;
   notice: string;
+  /** A password manager's export (3.9.8): how many passwords; «Send anyway» asks again. */
+  rows?: number;
+  /** The second question («Yes, send N passwords») is the one waiting. */
+  sure?: boolean;
 }
 
-/** The three choices on a held secret, in the order they are numbered. */
+/** The choices on a held secret, in the order they are numbered. */
 const SECRET_CHOICES = ["send", "clean", "drop"] as const;
+/** On a password export (3.9.8): the keychain first; «Send anyway» asks a second time. */
+const EXPORT_CHOICES = ["vault", "clean", "send", "drop"] as const;
+const SURE_CHOICES = ["sure", "drop"] as const;
+type SecretChoice = "send" | "clean" | "drop" | "vault" | "sure";
+const choicesOf = (h: HeldSecret | undefined): readonly SecretChoice[] =>
+  h?.sure ? SURE_CHOICES : h?.rows ? EXPORT_CHOICES : SECRET_CHOICES;
 
 /** A question being answered: one message per question, in order. */
 interface Asking {
@@ -614,11 +630,7 @@ export class ChatBridge {
     const what = [...new Set(found.map((s) => s.kind))]
       .map((k) => this.say(owner, SECRET_WORDS[k]))
       .join(", ");
-    const labels = {
-      send: this.say(owner, "secretSendAnyway"),
-      clean: this.say(owner, "secretSendWithout"),
-      drop: this.say(owner, "secretDrop"),
-    };
+    const rows = found.reduce((n, s) => n + (s.kind === "export" ? (s.rows ?? 0) : 0), 0);
     const h: HeldSecret = {
       ownerId: owner,
       chatId,
@@ -626,13 +638,38 @@ export class ChatBridge {
       extra,
       expires: now + SECRET_HOLD_MS,
       notice: "",
+      ...(rows > 0 && { rows }),
+    };
+    await this.askSecret(
+      owner,
+      id,
+      h,
+      rows > 0
+        ? this.say(owner, "exportHeld", { what: this.howMany(owner, rows) })
+        : this.say(owner, "secretHeld", { what }),
+    );
+  }
+
+  private howMany(owner: string, n: number): string {
+    return n === 1 ? this.say(owner, "pwOne") : this.say(owner, "pwMany", { n: String(n) });
+  }
+
+  /** Holds a message and asks what to do with it, with the choices its kind has. */
+  private async askSecret(owner: string, id: string, h: HeldSecret, notice: string) {
+    const what = this.howMany(owner, h.rows ?? 0);
+    const labels: Record<SecretChoice, string> = {
+      send: this.say(owner, "secretSendAnyway"),
+      clean: this.say(owner, "secretSendWithout"),
+      drop: this.say(owner, "secretDrop"),
+      vault: this.say(owner, "exportVault"),
+      sure: this.say(owner, "exportSureYes", { what }),
     };
     this.held.set(id, h);
     const m = await this.ask(
-      chatId,
+      h.chatId,
       owner,
-      this.say(owner, "secretHeld", { what }),
-      SECRET_CHOICES.map((c) => ({ id: `sec:${id}:${c}`, label: labels[c] })),
+      notice,
+      choicesOf(h).map((c) => ({ id: `sec:${id}:${c}`, label: labels[c] })),
       { kind: "secret", requestId: id },
     );
     h.notice = m.text;
@@ -640,17 +677,21 @@ export class ChatBridge {
   }
 
   /** The person's choice on a held secret, from a button or a number. */
-  private async settleSecret(owner: string, id: string, choice: (typeof SECRET_CHOICES)[number]) {
+  private async settleSecret(owner: string, id: string, choice: SecretChoice) {
     const h = this.held.get(id);
-    if (!h || h.ownerId !== owner) return;
+    if (!h || h.ownerId !== owner || !choicesOf(h).includes(choice)) return;
     this.held.delete(id);
     this.clearPrompt(h.chatId, id);
     const expired = h.expires <= Date.now();
+    if (!expired && (choice === "vault" || (choice === "send" && h.rows))) {
+      await this.settleExport(owner, h, choice);
+      return;
+    }
     const tail = this.say(
       owner,
       expired
         ? "secretExpired"
-        : choice === "send"
+        : choice === "send" || choice === "sure"
           ? "secretSent"
           : choice === "clean"
             ? "secretSentWithout"
@@ -661,8 +702,56 @@ export class ChatBridge {
     else await this.reply(h.chatId, tail);
     if (expired || choice === "drop") return;
     this.background(
-      this.relay(owner, h.chatId, h.text, h.extra, choice === "send" ? "anyway" : "without"),
+      this.relay(
+        owner,
+        h.chatId,
+        h.text,
+        h.extra,
+        choice === "send" || choice === "sure" ? "anyway" : "without",
+      ),
     );
+  }
+
+  /**
+   * A password export (3.9.8): «Put them in the keychain» imports it (only counts are said) and
+   * sends the words without it; «Send anyway» asks once more, naming how many.
+   */
+  private async settleExport(owner: string, h: HeldSecret, choice: SecretChoice) {
+    const edit = async (tail: string) => {
+      if (h.messageId && this.t.edit)
+        await this.t.edit(h.chatId, h.messageId, `${h.notice}\n\n${tail}`).catch(() => {});
+      else await this.reply(h.chatId, tail);
+    };
+    if (choice === "send") {
+      await edit(this.say(owner, "secretDropped"));
+      const what = this.howMany(owner, h.rows ?? 0);
+      const again = randomBytes(6).toString("hex");
+      await this.askSecret(
+        owner,
+        again,
+        { ...h, sure: true, notice: "" },
+        this.say(owner, "exportSure", { what }),
+      );
+      return;
+    }
+    let tail: string;
+    let ok = false;
+    try {
+      if (!this.o.host.importPasswords) throw new Error("not available here");
+      const r = await this.o.host.importPasswords(owner, h.text);
+      tail = this.say(owner, "exportVaulted", {
+        added: String(r.added),
+        skipped: String(r.skipped),
+      });
+      ok = true;
+    } catch (err) {
+      tail =
+        (err as { code?: string }).code === "vault_closed"
+          ? this.say(owner, "exportVaultClosed")
+          : this.say(owner, "exportVaultFailed", { error: (err as Error).message });
+    }
+    await edit(tail);
+    if (ok) this.background(this.relay(owner, h.chatId, h.text, h.extra, "without"));
   }
 
   // ---------- Outgoing ----------
@@ -957,7 +1046,10 @@ export class ChatBridge {
       ? text.split(",").map((n) => Number(n.trim()) - 1)
       : undefined;
     if (p.kind === "secret") {
-      const choice = numbers?.length === 1 ? SECRET_CHOICES[numbers[0] as number] : undefined;
+      const choice =
+        numbers?.length === 1
+          ? choicesOf(this.held.get(p.requestId))[numbers[0] as number]
+          : undefined;
       if (!choice) return false;
       await this.settleSecret(owner, p.requestId, choice);
       return true;
@@ -1020,9 +1112,9 @@ export class ChatBridge {
       );
       return;
     }
-    const sec = id.match(/^sec:([0-9a-f]+):(send|clean|drop)$/);
+    const sec = id.match(/^sec:([0-9a-f]+):(send|clean|drop|vault|sure)$/);
     if (sec) {
-      await this.settleSecret(owner, sec[1] as string, sec[2] as (typeof SECRET_CHOICES)[number]);
+      await this.settleSecret(owner, sec[1] as string, sec[2] as SecretChoice);
       return;
     }
     const q = id.match(/^q:(.+):(\d+):(\d+)$/);

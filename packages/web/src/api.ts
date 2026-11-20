@@ -1219,6 +1219,35 @@ export class Api {
     this.call<VaultImportPreview>("POST", "/api/vault-import/preview", { csv });
   confirmVaultImport = (id: string, keep: number[]) =>
     this.call<{ added: number }>("POST", "/api/vault-import/confirm", { id, keep });
+  /** A password export into the keychain (3.9.8): only counts and names come back. */
+  importPasswordText = (text: string) =>
+    this.call<{ added: number; skipped: number; names: string[] }>(
+      "POST",
+      "/api/vault-import/text",
+      { text },
+    );
+  /** An agent's import_passwords proposal, confirmed (3.9.8): the file is destroyed after. */
+  importProposedPasswords = (sessionId: string, callId: string) =>
+    this.call<{ added: number; skipped: number; names: string[]; file: string }>(
+      "POST",
+      `/api/sessions/${encodeURIComponent(sessionId)}/import-passwords`,
+      { callId },
+    );
+  /** «Cancella per sempre» (3.9.8): what it would take, then the erasure. */
+  erasePreview = (sessionId: string, seq: number) =>
+    this.call<{ quotes: number; engine: boolean }>(
+      "POST",
+      `/api/sessions/${encodeURIComponent(sessionId)}/erase-preview`,
+      { seq },
+    );
+  eraseMessage = (sessionId: string, seq: number, withQuotes: boolean) =>
+    this.call<{
+      erased: number;
+      seqs: number[];
+      echo: number;
+      traits: number;
+      transcripts: number;
+    }>("POST", `/api/sessions/${encodeURIComponent(sessionId)}/erase`, { seq, withQuotes });
   exportVault = (passphrase: string) =>
     this.call<{ file: string }>("POST", "/api/vault-export", { passphrase });
   importVaultFile = (file: string, passphrase: string) =>

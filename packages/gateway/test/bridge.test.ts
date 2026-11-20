@@ -466,3 +466,62 @@ describe("a new version of a skill waiting for the person (3.9.7)", () => {
     expect(t.edits.at(-1)?.text).toMatch(/Already decided by you on the web page: approved\.$/);
   });
 });
+
+describe("a password manager's export (3.9.8)", () => {
+  /** Generated rows only: never a real password in a test. */
+  const exportText = (n: number) =>
+    [
+      "name,url,username,password",
+      ...Array.from(
+        { length: n },
+        (_, i) => `Site ${i},https://s${i}.example.com/,u${i},Gx${i}#fake${i * 31}Q`,
+      ),
+    ].join("\n");
+
+  it("offers the keychain first; it imports, says only counts, and sends the words without it", async () => {
+    const { t, send, asked, host } = await setup();
+    const imported: string[] = [];
+    host.importPasswords = async (_owner, text) => {
+      imported.push(text);
+      return { added: 3, skipped: 0 };
+    };
+    await send({ text: `here they are\n${exportText(3)}` });
+    const notice = t.sent.at(-1);
+    expect(notice?.text).toMatch(/3 passwords exported from a password manager/);
+    expect(notice?.text).not.toContain("Gx0#fake0Q");
+    expect(notice?.buttons?.map((b) => b.label)).toEqual([
+      "Put them in the keychain",
+      "Send without it",
+      "Send anyway",
+      "Leave it",
+    ]);
+    await send({ button: notice?.buttons?.[0]?.id ?? "" });
+    expect(imported).toHaveLength(1);
+    expect(t.edits.at(-1)?.text).toMatch(/In the keychain: 3 new, 0 already there/);
+    // The words go on without secretOk: the server blanks the export.
+    expect(asked).toEqual([{ chatId: "c1", text: `here they are\n${exportText(3)}` }]);
+  });
+
+  it("«Send anyway» asks a second time, naming how many", async () => {
+    const { t, send, asked } = await setup();
+    await send({ text: exportText(2) });
+    await send({ button: t.sent.at(-1)?.buttons?.[2]?.id ?? "" });
+    expect(asked).toEqual([]);
+    const sure = t.sent.at(-1);
+    expect(sure?.text).toMatch(/Send 2 passwords to the agent as written\?/);
+    expect(sure?.buttons?.map((b) => b.label)).toEqual(["Yes, send 2 passwords", "Leave it"]);
+    await send({ button: sure?.buttons?.[0]?.id ?? "" });
+    expect(asked).toEqual([{ chatId: "c1", text: exportText(2), secretOk: true }]);
+  });
+
+  it("a closed keychain imports nothing and sends nothing", async () => {
+    const { t, send, asked, host } = await setup();
+    host.importPasswords = async () => {
+      throw Object.assign(new Error("The keychain is closed"), { code: "vault_closed" });
+    };
+    await send({ text: exportText(2) });
+    await send({ button: t.sent.at(-1)?.buttons?.[0]?.id ?? "" });
+    expect(t.edits.at(-1)?.text).toMatch(/The keychain is closed: nothing was imported or sent/);
+    expect(asked).toEqual([]);
+  });
+});

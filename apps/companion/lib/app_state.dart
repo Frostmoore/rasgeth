@@ -1537,6 +1537,26 @@ class AppController extends ChangeNotifier {
     }
   }
 
+  /// «Cancella per sempre» (3.9.8): what it would take (null when the server could not say).
+  Future<({int quotes, bool engine})?> erasePreview(String sessionId, int seq) async {
+    final c = client;
+    if (c == null) return null;
+    try {
+      return await c.erasePreview(sessionId, seq);
+    } on ApiException {
+      return null;
+    }
+  }
+
+  /// The message erased for good; its events lose their words in the view. Throws the server's
+  /// refusal (409 while the agent works).
+  Future<void> eraseMessage(String sessionId, int seq, {required bool withQuotes}) async {
+    final c = client;
+    if (c == null) throw const ApiException(0, 'offline');
+    final seqs = await c.eraseMessage(sessionId, seq, withQuotes: withQuotes);
+    live.views[sessionId]?.erase(seqs);
+  }
+
   /// A conversation pinned, archived or moved to a folder (the page's row actions, the same
   /// `PATCH /api/sessions/:id`); the rows are read again. False when it failed.
   Future<bool> updateSession(

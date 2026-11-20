@@ -6987,6 +6987,47 @@ const en = {
   echoSearch: "Search past conversations",
   echoClear: "Clear the search",
   echoNone: "No past conversation has these words.",
+  // 3.9.8: password exports held in the composer, put in the keychain; a message erased for good.
+  tool_import_passwords: "Put passwords in the keychain",
+  toolDo_import_passwords:
+    "Proposes to put a password export it finds in its workspace into your keychain; you confirm, it never sees the values.",
+  chSecretKind_export: "a password export",
+  pwOne: "1 password",
+  pwMany: "{n} passwords",
+  pwExportTitle: "This is a password export",
+  pwExportText:
+    "The message holds {what} exported from a password manager. They do not belong in a conversation: the model, the log, the search and the engine's transcript would keep them.",
+  pwExportVault: "Put them in the keychain",
+  pwExportWithout: "Send without",
+  pwExportWithoutNote: "«Send without» sends your words with the export taken out.",
+  pwExportAnyway: "Send anyway",
+  pwExportAnywayTitle: "Send {what} to the agent?",
+  pwExportAnywayText:
+    "{what} will reach the model and stay in the conversation's log, in the search and in the engine's transcript. Only do it if you are sure.",
+  pwExportAnywayYes: "Send {what}",
+  pwImported: "In the keychain: {added} new, {skipped} already there.",
+  pwImportClosed:
+    "The keychain is closed: nothing was imported. Open it in Settings › Keychain and try again.",
+  pwImportFailed: "Nothing was imported: {error}",
+  pwImportFile: "Import a password file",
+  pwImportFileHint: "An export from Bitwarden, Avira, Chrome, Edge, Firefox, 1Password or KeePass",
+  pwProposal: "Proposes to put the passwords of {file} in your keychain.",
+  pwProposalButton: "Put them in the keychain",
+  pwProposalAsk: "Put the passwords of {file} in the keychain?",
+  pwProposalText:
+    "They go into your keychain without the agent seeing them; then the file is destroyed.",
+  pwProposalYes: "Import and destroy the file",
+  pwProposalDone: "{added} passwords of {file} are in the keychain; the file is destroyed.",
+  eraseForever: "Erase for good",
+  eraseTitle: "Erase this message for good?",
+  eraseText:
+    "It goes from the conversation's log, the search, the portrait and what the agent remembers of it. It cannot be undone.",
+  eraseTextEngine:
+    "It goes from the conversation's log, the search, the portrait, what the agent remembers of it and the engine's own transcript. It cannot be undone.",
+  eraseQuotes: "Also erase {n} of the agent's replies and results that quote it",
+  eraseYes: "Erase for good",
+  eraseDone: "Erased for good ({n}).",
+  eraseBusy: "The agent is working: stop it or wait for it to finish, then try again.",
   echoArchived: "archived",
   echoMatches: "{n} messages",
   echoMatch: "1 message",
@@ -14106,6 +14147,48 @@ const it: Record<Key, string> = {
   echoSearch: "Cerca nelle conversazioni passate",
   echoClear: "Cancella la ricerca",
   echoNone: "Nessuna conversazione passata ha queste parole.",
+  // 3.9.8: esportazioni di password trattenute nel composer, messe nel Portachiavi; un messaggio cancellato per sempre.
+  tool_import_passwords: "Mettere password nel portachiavi",
+  toolDo_import_passwords:
+    "Propone di mettere nel tuo portachiavi un'esportazione di password che trova nel suo spazio di lavoro; confermi tu, lui non vede i valori.",
+  chSecretKind_export: "un'esportazione di password",
+  pwOne: "1 password",
+  pwMany: "{n} password",
+  pwExportTitle: "Questa è un'esportazione di password",
+  pwExportText:
+    "Nel messaggio ci sono {what} esportate da un gestore di password. In una conversazione non vanno: le terrebbero il modello, il registro, la ricerca e la trascrizione del motore.",
+  pwExportVault: "Mettile nel Portachiavi",
+  pwExportWithout: "Invia senza",
+  pwExportWithoutNote: "«Invia senza» manda le tue parole senza l'esportazione.",
+  pwExportAnyway: "Invia comunque",
+  pwExportAnywayTitle: "Mandare {what} all'agente?",
+  pwExportAnywayText:
+    "{what} arriveranno al modello e resteranno nel registro della conversazione, nella ricerca e nella trascrizione del motore. Fallo solo se ne sei sicuro.",
+  pwExportAnywayYes: "Invia {what}",
+  pwImported: "Nel Portachiavi: {added} nuove, {skipped} c'erano già.",
+  pwImportClosed:
+    "Il Portachiavi è chiuso: non ho importato niente. Aprilo in Impostazioni › Portachiavi e riprova.",
+  pwImportFailed: "Non ho importato niente: {error}",
+  pwImportFile: "Importa un file di password",
+  pwImportFileHint:
+    "Un'esportazione di Bitwarden, Avira, Chrome, Edge, Firefox, 1Password o KeePass",
+  pwProposal: "Propone di mettere nel tuo Portachiavi le password di {file}.",
+  pwProposalButton: "Mettile nel Portachiavi",
+  pwProposalAsk: "Mettere nel Portachiavi le password di {file}?",
+  pwProposalText:
+    "Vanno nel tuo Portachiavi senza che l'agente le veda; poi il file viene distrutto.",
+  pwProposalYes: "Importa e distruggi il file",
+  pwProposalDone: "{added} password di {file} sono nel Portachiavi; il file è distrutto.",
+  eraseForever: "Cancella per sempre",
+  eraseTitle: "Cancellare per sempre questo messaggio?",
+  eraseText:
+    "Sparisce dal registro della conversazione, dalla ricerca, dal ritratto e da quello che l'agente ne ricorda. Non si può annullare.",
+  eraseTextEngine:
+    "Sparisce dal registro della conversazione, dalla ricerca, dal ritratto, da quello che l'agente ne ricorda e dalla trascrizione del motore. Non si può annullare.",
+  eraseQuotes: "Cancella anche {n} risposte e risultati dell'agente che lo riportano",
+  eraseYes: "Cancella per sempre",
+  eraseDone: "Cancellato per sempre ({n}).",
+  eraseBusy: "L'agente sta lavorando: fermalo o aspetta che finisca, poi riprova.",
   echoArchived: "archiviato",
   echoMatches: "{n} messaggi",
   echoMatch: "1 messaggio",

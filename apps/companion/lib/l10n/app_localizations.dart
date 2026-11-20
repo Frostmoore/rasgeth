@@ -62,7 +62,8 @@ import 'app_localizations_it.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -70,7 +71,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -91,7 +93,10 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('it')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('it'),
+  ];
 
   /// No description provided for @appTitle.
   ///
@@ -9601,7 +9606,12 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{done} of {total} · {speed}/s · {left} left'**
-  String chatFileDownloadOf(String done, String total, String speed, String left);
+  String chatFileDownloadOf(
+    String done,
+    String total,
+    String speed,
+    String left,
+  );
 
   /// No description provided for @chatFileDownloadSoFar.
   ///
@@ -18680,9 +18690,184 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Allow the same kind of command on the same machine without asking again, for the rest of this conversation\'s work'**
   String get cvAllowWorkHint;
+
+  /// The page's `chSecretKind_export` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'a password export'**
+  String get cvChSecretKindExport;
+
+  /// The page's `pwOne` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'1 password'**
+  String get cvPwOne;
+
+  /// The page's `pwMany` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{n} passwords'**
+  String cvPwMany(String n);
+
+  /// The page's `pwExportTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'This is a password export'**
+  String get cvPwExportTitle;
+
+  /// The page's `pwExportText` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'The message holds {what} exported from a password manager. They do not belong in a conversation: the model, the log, the search and the engine\'s transcript would keep them.'**
+  String cvPwExportText(String what);
+
+  /// The page's `pwExportVault` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Put them in the keychain'**
+  String get cvPwExportVault;
+
+  /// The page's `pwExportWithout` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Send without'**
+  String get cvPwExportWithout;
+
+  /// The page's `pwExportWithoutNote` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'«Send without» sends your words with the export taken out.'**
+  String get cvPwExportWithoutNote;
+
+  /// The page's `pwExportAnyway` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Send anyway'**
+  String get cvPwExportAnyway;
+
+  /// The page's `pwExportAnywayTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Send {what} to the agent?'**
+  String cvPwExportAnywayTitle(String what);
+
+  /// The page's `pwExportAnywayText` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{what} will reach the model and stay in the conversation\'s log, in the search and in the engine\'s transcript. Only do it if you are sure.'**
+  String cvPwExportAnywayText(String what);
+
+  /// The page's `pwExportAnywayYes` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Send {what}'**
+  String cvPwExportAnywayYes(String what);
+
+  /// The page's `pwImported` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'In the keychain: {added} new, {skipped} already there.'**
+  String cvPwImported(String added, String skipped);
+
+  /// The page's `pwImportClosed` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain is closed: nothing was imported. Open it in Settings › Keychain and try again.'**
+  String get cvPwImportClosed;
+
+  /// The page's `pwImportFailed` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing was imported: {error}'**
+  String cvPwImportFailed(String error);
+
+  /// The page's `pwProposal` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Proposes to put the passwords of {file} in your keychain.'**
+  String cvPwProposal(String file);
+
+  /// The page's `pwProposalButton` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Put them in the keychain'**
+  String get cvPwProposalButton;
+
+  /// The page's `pwProposalAsk` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Put the passwords of {file} in the keychain?'**
+  String cvPwProposalAsk(String file);
+
+  /// The page's `pwProposalText` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'They go into your keychain without the agent seeing them; then the file is destroyed.'**
+  String get cvPwProposalText;
+
+  /// The page's `pwProposalYes` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Import and destroy the file'**
+  String get cvPwProposalYes;
+
+  /// The page's `pwProposalDone` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{added} passwords of {file} are in the keychain; the file is destroyed.'**
+  String cvPwProposalDone(String added, String file);
+
+  /// The page's `eraseForever` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Erase for good'**
+  String get cvEraseForever;
+
+  /// The page's `eraseTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Erase this message for good?'**
+  String get cvEraseTitle;
+
+  /// The page's `eraseText` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'It goes from the conversation\'s log, the search, the portrait and what the agent remembers of it. It cannot be undone.'**
+  String get cvEraseText;
+
+  /// The page's `eraseTextEngine` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'It goes from the conversation\'s log, the search, the portrait, what the agent remembers of it and the engine\'s own transcript. It cannot be undone.'**
+  String get cvEraseTextEngine;
+
+  /// The page's `eraseQuotes` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Also erase {n} of the agent\'s replies and results that quote it'**
+  String cvEraseQuotes(String n);
+
+  /// The page's `eraseYes` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Erase for good'**
+  String get cvEraseYes;
+
+  /// The page's `eraseDone` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Erased for good ({n}).'**
+  String cvEraseDone(String n);
+
+  /// The page's `eraseBusy` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'The agent is working: stop it or wait for it to finish, then try again.'**
+  String get cvEraseBusy;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -18691,7 +18876,8 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'it'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'it'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;

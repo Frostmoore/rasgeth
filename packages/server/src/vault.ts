@@ -32,6 +32,7 @@ import type { Redactor } from "@redgiant/events";
 import {
   hideSecrets,
   PRODUCT_NAME,
+  readPasswordExport,
   type VaultEntry,
   type VaultImportPreview,
   VaultInput,
@@ -1235,6 +1236,66 @@ export class Vault {
     return n;
   }
 
+  /**
+   * A password manager's export into the keychain in one write (3.9.8: pasted in a message, picked
+   * as a file, or a workspace file an agent proposed and the person confirmed). One login per row,
+   * named from its site and user, for the person only (no agent, ask always); a row already there
+   * (same site, user and value) is skipped. Only counts and names come back, never a value. A closed
+   * keychain imports nothing (`vault_closed`).
+   */
+  async importExportText(
+    ownerId: string,
+    text: string,
+  ): Promise<{ added: number; skipped: number; names: string[] }> {
+    this.need();
+    const { rows } = readPasswordExport(text);
+    if (rows.length === 0)
+      throw new VaultError("vault_bad_file", "There is no password manager's export here");
+    const mine = this.data.entries.filter((e) => e.ownerId === ownerId);
+    const taken = new Set(mine.map((e) => e.name));
+    const at = this.now().toISOString();
+    const names: string[] = [];
+    let skipped = 0;
+    for (const r of rows) {
+      const url = r.url.slice(0, 500);
+      if (mine.some((e) => e.url === url && e.username === r.username && e.value === r.value)) {
+        skipped++;
+        continue;
+      }
+      const user = r.username.split("@")[0] ?? "";
+      const name = nameFor(user ? `${r.service} ${user}` : r.service, taken);
+      const h = hostOf(url);
+      const e: Stored = {
+        id: `key_${randomUUID().slice(0, 12)}`,
+        ownerId,
+        name,
+        service: r.service.slice(0, 80),
+        category: "login",
+        tags: [],
+        username: r.username.slice(0, 200),
+        value: r.value,
+        url,
+        hosts: h ? [h] : [],
+        notes: r.notes.slice(0, 4000),
+        expires: null,
+        ask: "always",
+        allow: { allAgents: false, agents: [], tools: [], automations: [] },
+        inject: { header: "", format: "{value}" },
+        createdAt: at,
+        updatedAt: at,
+      };
+      this.data.entries.push(e);
+      mine.push(e);
+      this.remember(e);
+      names.push(name);
+    }
+    if (names.length > 0) {
+      await this.save();
+      await this.publish();
+    }
+    return { added: names.length, skipped, names };
+  }
+
   /** The person's credentials sealed with a passphrase of theirs (a file to keep or to move). */
   exportSealed(ownerId: string, passphrase: string): string {
     this.need();
@@ -1376,6 +1437,10 @@ export function vaultTool(
 /** The person's words with any secret blanked, and a line for the agent when one was. */
 export function blankPastedSecrets(text: string): string {
   const { text: clean, found } = hideSecrets(text, "[secret removed]");
+  // A password manager's export (3.9.8): removed whole, and the agent hears of the keychain's import.
+  const rows = found.reduce((n, s) => n + (s.kind === "export" ? (s.rows ?? 0) : 0), 0);
+  if (rows > 0)
+    return `${clean}\n\n(${PRODUCT_NAME} removed a password manager's export (${rows} ${rows === 1 ? "password" : "passwords"}) from this message before it reached you. Never ask for it again in the chat. Tell the person, in their language, that they can put it in the keychain without anyone seeing it: «Put them in the keychain» when the composer warns them, or Settings > Keychain > Import.)`;
   return found.length === 0
     ? text
     : `${clean}\n\n(${PRODUCT_NAME} removed ${found.length === 1 ? "a secret" : `${found.length} secrets`} from this message before it reached you. Tell the person, in their language, that secrets never go in a chat, and that they can keep it safely in Settings > Keychain, where you can use it by name without seeing it.)`;

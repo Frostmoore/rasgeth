@@ -80,7 +80,9 @@ import {
   AsidePanel,
   addQuote,
   ContinueHere,
+  EraseForever,
   ForkMark,
+  ImportProposal,
   jumpToQuote,
   type PickedPassage,
   type QuoteDraft,
@@ -317,6 +319,7 @@ function UserItem({
             </button>
           )}
           <ContinueHere sessionId={sessionId} agentId={agentId} seq={seq} />
+          <EraseForever sessionId={sessionId} seq={seq} />
         </div>
       )}
     </>
@@ -914,8 +917,21 @@ function Item({
           agentId={agentId}
         />
       );
-    case "tool":
-      return <ToolLine item={item} agentId={agentId} />;
+    case "tool": {
+      const file = (item.input as { path?: unknown } | null)?.path;
+      // An agent's proposal to put a password export in the keychain (3.9.8).
+      return item.tool === "import_passwords" &&
+        item.result?.ok &&
+        actions &&
+        typeof file === "string" ? (
+        <>
+          <ToolLine item={item} agentId={agentId} />
+          <ImportProposal sessionId={sessionId} callId={item.callId} file={file} />
+        </>
+      ) : (
+        <ToolLine item={item} agentId={agentId} />
+      );
+    }
     case "question":
       return (
         <QuestionCard

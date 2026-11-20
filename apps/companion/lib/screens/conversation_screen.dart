@@ -51,6 +51,7 @@ import '../ui/turn_queue_view.dart';
 import '../api/image_shrink.dart';
 import '../api/pasted.dart';
 import '../api/secrets.dart';
+import '../api/password_export.dart';
 import 'board_screen.dart';
 import '../canvas/canvas_shell.dart';
 import '../api/parallel.dart';
@@ -91,7 +92,15 @@ class ChatActions {
     this.continueFrom,
     this.readOnly = false,
     this.showCanvas,
+    this.erase,
+    this.importProposal,
   });
+
+  /// «Cancella per sempre» (3.9.8) on one of the person's messages.
+  final void Function(int seq)? erase;
+
+  /// An agent's import_passwords proposal (3.9.8): the person puts the file in the keychain.
+  final void Function(String callId, String file)? importProposal;
 
   /// G42.2: «Ha aperto … nel Canvas» tapped: the Canvas shows it again (beside the conversation,
   /// or the whole screen where it is narrow).
@@ -466,8 +475,77 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
     var secretOk = false;
     if (t.isEmpty && _attached.isEmpty && _quotes.isEmpty) return;
     if (_readOnly) return;
+    // A password manager's export (3.9.8), in the words or in a pasted or attached text: held,
+    // with the way to the keychain, «Invia senza» and «Invia comunque» behind a second question.
+    String? textOf(Attached a) => switch (a) {
+      AttachedText(:final content) => content,
+      AttachedPasted(:final content) => content,
+      _ => null,
+    };
+    final rows =
+        passwordExportRows(t) +
+        _attached.fold<int>(0, (n, a) => n + passwordExportRows(textOf(a) ?? ''));
+    if (rows > 0) {
+      final what = rows == 1 ? l.cvPwOne : l.cvPwMany('$rows');
+      final how = await askChoice<String>(
+        context,
+        title: l.cvPwExportTitle,
+        body: '${l.cvPwExportText(what)}\n\n${l.cvPwExportWithoutNote}',
+        choices: [
+          RgWindowChoice('back', l.cvChSecretBack, key: const Key('pw-export-back')),
+          RgWindowChoice('anyway', l.cvPwExportAnyway, key: const Key('pw-export-anyway')),
+          RgWindowChoice('without', l.cvPwExportWithout, key: const Key('pw-export-without')),
+          RgWindowChoice('vault', l.cvPwExportVault, key: const Key('pw-export-vault'), main: true),
+        ],
+      );
+      if (how == null || how == 'back' || !mounted) return;
+      if (how == 'anyway') {
+        final sure = await askConfirm(
+          context,
+          title: l.cvPwExportAnywayTitle(what),
+          body: l.cvPwExportAnywayText(what),
+          yes: l.cvPwExportAnywayYes(what),
+          danger: true,
+        );
+        if (!sure || !mounted) return;
+        secretOk = true;
+      } else {
+        if (how == 'vault') {
+          final c = app.client;
+          var added = 0;
+          var skipped = 0;
+          try {
+            for (final part in [t, for (final a in _attached) textOf(a) ?? '']) {
+              if (passwordExportRows(part) == 0 || c == null) continue;
+              final r = await c.importPasswordText(part);
+              added += r.added;
+              skipped += r.skipped;
+            }
+          } on ApiException catch (e) {
+            if (!mounted) return;
+            setState(
+              () => _note = e.code == 'vault_closed'
+                  ? l.cvPwImportClosed
+                  : l.cvPwImportFailed(e.message),
+            );
+            return;
+          }
+          if (!mounted) return;
+          setState(() => _note = l.cvPwImported('$added', '$skipped'));
+        }
+        const mark = '[password export removed]';
+        t = withoutPasswordExports(t, mark);
+        setState(() => _attached.removeWhere((a) => passwordExportRows(textOf(a) ?? '') > 0));
+        if (t.replaceAll(mark, '').trim().isEmpty && _attached.isEmpty && _quotes.isEmpty) {
+          if (text == null) _text.clear();
+          return;
+        }
+        // The rest goes as it is: the server blanks any other secret.
+        secretOk = false;
+      }
+    }
     // A secret in the message (G33.4): held back before it leaves the app, as the page does.
-    final found = findSecrets(t);
+    final found = rows > 0 ? const <SecretSpan>[] : findSecrets(t);
     if (found.isNotEmpty) {
       final kinds = {
         for (final f in found)
@@ -477,6 +555,7 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
             SecretKind.code => l.cvChSecretKindCode,
             SecretKind.card => l.cvChSecretKindCard,
             SecretKind.iban => l.cvChSecretKindIban,
+            SecretKind.export => l.cvChSecretKindExport,
           },
       };
       // «Invia comunque» (2026-11-19, a link taken for a secret): as written, the choice logged.
@@ -653,6 +732,73 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
         ),
       ),
     );
+  }
+
+  /// «Cancella per sempre» (3.9.8): our window says what goes, with the agent's replies quoting it
+  /// as a second way out (their count); refused while the agent works.
+  Future<void> _erase(int seq) async {
+    final l = AppLocalizations.of(context);
+    final pre = await app.erasePreview(widget.sessionId, seq);
+    if (!mounted || pre == null) return;
+    final body = pre.engine ? l.cvEraseTextEngine : l.cvEraseText;
+    String? how;
+    if (pre.quotes > 0) {
+      how = await askChoice<String>(
+        context,
+        title: l.cvEraseTitle,
+        body: body,
+        choices: [
+          RgWindowChoice('back', l.cancel, key: const Key('dialog-no')),
+          RgWindowChoice('one', l.cvEraseYes, key: const Key('erase-one')),
+          RgWindowChoice(
+            'all',
+            l.cvEraseQuotes('${pre.quotes}'),
+            key: const Key('erase-all'),
+            main: true,
+          ),
+        ],
+      );
+    } else {
+      final yes = await askConfirm(
+        context,
+        title: l.cvEraseTitle,
+        body: body,
+        yes: l.cvEraseYes,
+        danger: true,
+      );
+      how = yes ? 'one' : null;
+    }
+    if (how == null || how == 'back' || !mounted) return;
+    try {
+      await app.eraseMessage(widget.sessionId, seq, withQuotes: how == 'all');
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      setState(() => _note = e.status == 409 ? l.cvEraseBusy : e.message);
+    }
+  }
+
+  /// An agent's import_passwords proposal (3.9.8): after our window, the server imports the file
+  /// and destroys it; only the count comes back.
+  Future<void> _importProposal(String callId, String file) async {
+    final l = AppLocalizations.of(context);
+    final yes = await askConfirm(
+      context,
+      title: l.cvPwProposalAsk(file),
+      body: l.cvPwProposalText,
+      yes: l.cvPwProposalYes,
+    );
+    final c = app.client;
+    if (!yes || !mounted || c == null) return;
+    try {
+      final added = await c.importProposedPasswords(widget.sessionId, callId);
+      if (!mounted) return;
+      setState(() => _note = l.cvPwProposalDone('$added', file));
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      setState(
+        () => _note = e.code == 'vault_closed' ? l.cvPwImportClosed : l.cvPwImportFailed(e.message),
+      );
+    }
   }
 
   Future<void> _continueFrom(int seq) async {
@@ -940,6 +1086,8 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
                             openSession: _openSession,
                             editMessage: _edit,
                             continueFrom: (seq) => unawaited(_continueFrom(seq)),
+                            erase: (seq) => unawaited(_erase(seq)),
+                            importProposal: (id, file) => unawaited(_importProposal(id, file)),
                             readOnly: _readOnly,
                             showCanvas: (title, target) => _showCanvas(title, target, force: true),
                           );
@@ -1652,6 +1800,32 @@ class ChatItemView extends StatelessWidget {
         products: products,
         title: title,
       ),
+      ToolItem() when _proposalFile(it) != null && a.importProposal != null && !a.readOnly =>
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ToolLine(
+              item: it,
+              scope: a.agent == null ? null : attachmentScope(a.agent),
+              onOpenSession: a.openSession == null ? null : (s, ag) => a.openSession!(s, ag),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 4, bottom: 4),
+              child: Wrap(
+                spacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Text(l.cvPwProposal(_proposalFile(it)!)),
+                  FilledButton(
+                    key: Key('pw-proposal-${it.callId}'),
+                    onPressed: () => a.importProposal!(it.callId, _proposalFile(it)!),
+                    child: Text(l.cvPwProposalButton),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ToolItem() => ToolLine(
         item: it,
         scope: a.agent == null ? null : attachmentScope(a.agent),
@@ -1935,6 +2109,13 @@ class _UserBubbleState extends State<_UserBubble> {
                   label: l.cvForkHere,
                   tooltip: l.cvForkHereHint,
                   onTap: () => a.continueFrom!(seq),
+                ),
+              if (a.erase != null)
+                _MsgAction(
+                  key: Key('erase-${it.key}'),
+                  icon: RgIcons.trash,
+                  label: l.cvEraseForever,
+                  onTap: () => a.erase!(seq),
                 ),
             ],
           ),
@@ -2657,4 +2838,12 @@ class _QuoteDrafts extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The file an agent's import_passwords proposal names, once it succeeded (3.9.8).
+String? _proposalFile(ToolItem it) {
+  if (it.tool != 'import_passwords' || it.ok != true) return null;
+  final input = it.input;
+  final path = input is Map ? input['path'] : null;
+  return path is String && path.isNotEmpty ? path : null;
 }

@@ -3,6 +3,7 @@
 import { MAX_QUOTES, type MessageQuote } from "@redgiant/protocol";
 import type { RefObject } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
+import { ApiError } from "../api.js";
 import { usd } from "../format.js";
 import { t } from "../i18n.js";
 import {
@@ -10,9 +11,11 @@ import {
   IconBookmark,
   IconBranch,
   IconClose,
+  IconKey,
   IconReply,
   IconSend,
   IconSpinner,
+  IconTrash,
 } from "../icons.js";
 import { renderAnswer } from "../markdown.js";
 import { selectionMarkdown } from "../saved-markdown.js";
@@ -20,11 +23,14 @@ import {
   asidesOf,
   attempt,
   getApi,
+  lastError,
   openSession,
   refreshConversations,
   sessionRows,
   sessionView,
+  withErased,
 } from "../state.js";
+import { askConfirm, askConfirmWith } from "./dialogs.js";
 
 export type QuoteDraft = MessageQuote & { key: string };
 
@@ -517,5 +523,104 @@ export function AsidePanel({
         </button>
       </form>
     </section>
+  );
+}
+
+/**
+ * «Cancella per sempre» on one of the person's messages (3.9.8): our Modal says what goes, with
+ * the switch for the agent's replies and results quoting it (their count); the erased events lose
+ * their words in this view at once. Refused while the agent works.
+ */
+export async function eraseForGood(sessionId: string, seq: number): Promise<boolean> {
+  const api = getApi();
+  const pre = await attempt(() => api.erasePreview(sessionId, seq));
+  if (!pre) return false;
+  const text = t(pre.engine ? "eraseTextEngine" : "eraseText");
+  const o = { text, yes: t("eraseYes"), danger: true };
+  const answer =
+    pre.quotes > 0
+      ? await askConfirmWith(t("eraseTitle"), {
+          ...o,
+          option: t("eraseQuotes", { n: String(pre.quotes) }),
+        })
+      : { yes: await askConfirm(t("eraseTitle"), o), option: false };
+  if (!answer.yes) return false;
+  try {
+    lastError.value = null;
+    const r = await api.eraseMessage(sessionId, seq, answer.option);
+    const view = sessionView(sessionId);
+    view.value = { ...view.value, events: withErased(view.value.events, r.seqs) };
+    return true;
+  } catch (err) {
+    lastError.value =
+      err instanceof ApiError && err.status === 409 ? t("eraseBusy") : (err as Error).message;
+    return false;
+  }
+}
+
+export function EraseForever({ sessionId, seq }: { sessionId: string; seq: number }) {
+  const [busy, setBusy] = useState(false);
+  return (
+    <button
+      type="button"
+      class="link msg-action"
+      data-testid="erase-forever"
+      disabled={busy}
+      onClick={() => {
+        setBusy(true);
+        void eraseForGood(sessionId, seq).finally(() => setBusy(false));
+      }}
+    >
+      <IconTrash size={13} />
+      {t("eraseForever")}
+    </button>
+  );
+}
+
+/**
+ * An agent's import_passwords proposal (3.9.8): the person puts the file's passwords in the
+ * keychain from here, after our Modal; the server destroys the file. Only counts come back.
+ */
+export function ImportProposal({
+  sessionId,
+  callId,
+  file,
+}: {
+  sessionId: string;
+  callId: string;
+  file: string;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState<string | null>(null);
+  const go = async () => {
+    const yes = await askConfirm(t("pwProposalAsk", { file }), {
+      text: t("pwProposalText"),
+      yes: t("pwProposalYes"),
+    });
+    if (!yes) return;
+    setBusy(true);
+    try {
+      lastError.value = null;
+      const r = await getApi().importProposedPasswords(sessionId, callId);
+      setDone(t("pwProposalDone", { added: String(r.added), file }));
+    } catch (err) {
+      lastError.value =
+        err instanceof ApiError && err.code === "vault_closed"
+          ? t("pwImportClosed")
+          : t("pwImportFailed", { error: (err as Error).message });
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div class="pw-proposal" data-testid="pw-proposal">
+      <IconKey size={16} />
+      <span>{done ?? t("pwProposal", { file })}</span>
+      {!done && (
+        <button type="button" class="wz-btn primary" disabled={busy} onClick={() => void go()}>
+          {t("pwProposalButton")}
+        </button>
+      )}
+    </div>
   );
 }
