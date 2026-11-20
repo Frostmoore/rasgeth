@@ -11,11 +11,14 @@ import type { Engine, EngineTurn } from "@redgiant/agent";
 import type { AssistantPart, MessageMetrics, ModelSpec } from "@redgiant/protocol";
 import {
   anthropicModel,
+  type Completion,
+  type CompletionRequest,
   catalogModel,
   catalogModels,
   type ModelInfo,
   type Provider,
   ProviderError,
+  type StreamEvent,
   type SubscriptionWindow,
 } from "@redgiant/providers";
 import { z } from "zod";
@@ -460,6 +463,96 @@ export class ClaudeEngine implements Engine {
     if (stoppedForTools && stopReason === "end_turn") stopReason = "tools_added";
     return { resume: session, stopReason };
   }
+
+  /**
+   * One answer without tools, outside any session (3.9.8): the person's classifier and the other
+   * side requests. Without it every classifier decision on a Claude subscription was a "no" (the
+   * subscription had no way to answer but a session's turn). The conversation goes as one prompt.
+   */
+  async once(req: CompletionRequest, signal?: AbortSignal): Promise<Completion> {
+    const sdk = this.o.sdk ?? (await loadSdk());
+    const now = this.o.now ?? Date.now;
+    const started = now();
+    const text = req.messages
+      .map((m) => {
+        const words = (m.parts as { type: string; text?: string }[])
+          .flatMap((p) => (p.type === "text" && p.text ? [p.text] : []))
+          .join("\n");
+        return req.messages.length > 1
+          ? `${m.role === "user" ? "User" : "Assistant"}: ${words}`
+          : words;
+      })
+      .join("\n\n");
+    async function* prompt() {
+      yield {
+        type: "user",
+        parent_tool_use_id: null,
+        message: { role: "user", content: [{ type: "text", text }] },
+      };
+    }
+    const abort = new AbortController();
+    const stop = () => abort.abort();
+    signal?.addEventListener("abort", stop, { once: true });
+    const model = { model: req.model, ...(req.effort && { effort: req.effort }) } as ModelSpec;
+    let answer = "";
+    let usage: Record<string, number> | undefined;
+    let used = req.model;
+    try {
+      const q = sdk.query({
+        prompt: prompt(),
+        options: this.options(model, {
+          systemPrompt: req.system,
+          tools: [],
+          allowedTools: [],
+          permissionMode: "dontAsk",
+          maxTurns: 1,
+          abortController: abort,
+        }),
+      });
+      for await (const m of q) {
+        if (m.type === "assistant" && m.parent_tool_use_id === null) {
+          const msg = m.message as {
+            content?: Block[];
+            usage?: Record<string, number>;
+            model?: string;
+          };
+          for (const b of msg.content ?? [])
+            if (b.type === "text" && typeof b.text === "string") answer += b.text;
+          usage = msg.usage ?? usage;
+          used = msg.model ?? used;
+        }
+        if (m.type === "rate_limit_event") {
+          const w = eventWindows(m.rate_limit_info);
+          if (w.length) this.onLimits?.(w);
+        }
+        if (m.type === "result" && (m.subtype !== "success" || m.is_error === true)) {
+          const why =
+            typeof m.result === "string" && m.result
+              ? m.result
+              : Array.isArray(m.errors)
+                ? (m.errors as string[]).join("; ")
+                : String(m.subtype);
+          throw new ProviderError(`Claude subscription: ${why}`, false);
+        }
+      }
+    } finally {
+      signal?.removeEventListener("abort", stop);
+    }
+    const metrics = metricsOf(usage, used, started, now());
+    return {
+      message: { role: "assistant", parts: answer ? [{ type: "text", text: answer }] : [] },
+      stopReason: "end_turn",
+      usage: {
+        inputTokens: usage?.input_tokens ?? 0,
+        cachedReadTokens: usage?.cache_read_input_tokens ?? 0,
+        cacheWriteTokens: usage?.cache_creation_input_tokens ?? 0,
+        outputTokens: usage?.output_tokens ?? 0,
+      },
+      metrics,
+      model: used,
+      provider: CLAUDE_SUBSCRIPTION,
+    };
+  }
 }
 
 /** The SDK's window names as ours. */
@@ -627,12 +720,20 @@ export class ClaudeSubscriptionProvider implements Provider {
     };
   }
 
-  // biome-ignore lint/correctness/useYield: a session on a subscription never streams here.
-  async *stream(): AsyncIterable<never> {
-    throw new ProviderError(
-      "A Claude subscription runs through its engine, not as a stream",
-      false,
-    );
+  /**
+   * Sessions run through the engine (`turn`); a request without tools (the classifier, a title)
+   * gets one answer from it (3.9.8). A request with tools never streams here.
+   */
+  async *stream(req: CompletionRequest, signal?: AbortSignal): AsyncIterable<StreamEvent> {
+    if (req.tools.length > 0)
+      throw new ProviderError(
+        "A Claude subscription runs through its engine, not as a stream",
+        false,
+      );
+    const completion = await this.engine.once(req, signal);
+    for (const p of completion.message.parts)
+      if (p.type === "text") yield { type: "text_delta", text: p.text };
+    yield { type: "done", completion };
   }
 
   private windows: SubscriptionWindow[] = [];
