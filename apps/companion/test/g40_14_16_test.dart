@@ -361,6 +361,10 @@ void main() {
       ],
     });
     await _settle(tester);
+    // The person's message has its own menu since 3.9.8 («Cancella per sempre»): taller, so the
+    // list scrolls and 5 may sit under the «no live connection» strip.
+    await tester.ensureVisible(find.byKey(const Key('message-menu-5')));
+    await _settle(tester);
     await tester.tap(find.byKey(const Key('message-menu-5')));
     await _settle(tester);
     await tester.tap(find.byKey(const Key('message-save')));
@@ -374,6 +378,8 @@ void main() {
     await tester.tap(find.byKey(const Key('save-close')));
     await _settle(tester);
     // The quote in the person's message lights its passage up.
+    await tester.ensureVisible(find.byKey(const Key('quote-ref-5'), skipOffstage: false));
+    await _settle(tester);
     expect(find.text('Venus in acciaio'), findsOneWidget);
     await tester.tap(find.byKey(const Key('quote-ref-5')));
     await tester.pump();
