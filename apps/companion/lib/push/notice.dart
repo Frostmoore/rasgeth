@@ -95,6 +95,7 @@ class ShowNotification extends NotificationPlan {
     required this.channel,
     required this.answers,
     required this.payload,
+    this.progress,
   });
 
   final String title;
@@ -107,6 +108,10 @@ class ShowNotification extends NotificationPlan {
 
   /// What a tap or an answer brings back to the app ([NoticeTap.fromPayload]).
   final String payload;
+
+  /// A job that runs (G42.18): how far, 0-100, or -1 while the server does not count it yet (a
+  /// bar that moves by itself). Null: not a job's. Shown quietly, once, then updated in place.
+  final int? progress;
 }
 
 class WithdrawNotification extends NotificationPlan {

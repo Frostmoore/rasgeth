@@ -3095,5 +3095,13 @@
   "skNotRestorable": "Troppo grande per essere conservata: non può tornare.",
   "skNoVersions": "Ancora nessuna versione.",
   "skLineTitle": "Cosa è cambiato e perché",
-  "skCompareFull": "Confronta: tutte le differenze"
+  "skCompareFull": "Confronta: tutte le differenze",
+  "cvVwKindTimeline": "Timeline video",
+  "jobNoticeStarting": "Sta per partire…",
+  "jobNoticePercent": "{percent}% fatto",
+  "jobNoticePercentLeft": "{percent}% fatto, mancano circa {min} min",
+  "jobNoticeDone": "Fatto: aprilo nel Canvas.",
+  "jobNoticeFailed": "Non è riuscito.",
+  "jobNoticeFailedWhy": "Non è riuscito: {why}",
+  "jobNoticeCancelled": "Fermato."
 }

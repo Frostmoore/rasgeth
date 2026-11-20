@@ -190,7 +190,18 @@ class LocalSystemNotifier implements SystemNotifier {
         priority: requests ? Priority.high : Priority.defaultPriority,
         subText: p.server,
         styleInformation: BigTextStyleInformation(p.body),
-        category: requests ? AndroidNotificationCategory.reminder : null,
+        category: requests
+            ? AndroidNotificationCategory.reminder
+            : p.progress != null
+            ? AndroidNotificationCategory.progress
+            : null,
+        // A job's bar (G42.18): updated in place, without a sound each time.
+        showProgress: p.progress != null,
+        maxProgress: 100,
+        progress: (p.progress ?? 0).clamp(0, 100),
+        indeterminate: p.progress == -1,
+        onlyAlertOnce: p.progress != null,
+        ongoing: p.progress != null,
         actions: [
           for (final a in p.answers)
             AndroidNotificationAction(

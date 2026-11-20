@@ -332,6 +332,23 @@ export const EmbedToApp = z.discriminatedUnion("t", [
     .strict(),
   /** Something to open in another tab of the app's Canvas (an open copy made, a file inside). */
   z.object({ t: z.literal("open"), title: text(300), target: CanvasTargetSchema }).strict(),
+  /**
+   * A long job the person started in the tab (a video's render, G42.18): the app follows it
+   * itself (`GET /api/jobs/:id`) and shows how far it is in the system's notifications, also when
+   * the tab is closed. Only the id and the words of its notification: the job's own state comes
+   * from the server.
+   */
+  z
+    .object({
+      t: z.literal("job"),
+      id: z
+        .string()
+        .min(1)
+        .max(64)
+        .regex(/^[A-Za-z0-9_-]+$/),
+      title: z.string().min(1).max(200),
+    })
+    .strict(),
 ]);
 export type EmbedToApp = z.infer<typeof EmbedToApp>;
 
@@ -349,8 +366,33 @@ export const EmbedFile = z
   .strict();
 export type EmbedFile = z.infer<typeof EmbedFile>;
 
-/** The keys the app passes on (Ctrl/Cmd+S, Z, Shift+Z, F) when the web view does not hold them. */
-export const EMBED_KEYS = ["save", "undo", "redo", "find"] as const;
+/**
+ * The keys the app passes on (Ctrl/Cmd+S, Z, Shift+Z, F) when the web view does not hold them.
+ * G42.18: a video timeline's own too, J, K, L (shuttle), I, O (in and out) and Ctrl/Cmd+B (blade),
+ * passed on only while a timeline is the tab in view.
+ */
+export const EMBED_KEYS = [
+  "save",
+  "undo",
+  "redo",
+  "find",
+  "shuttleBack",
+  "pause",
+  "shuttleForward",
+  "markIn",
+  "markOut",
+  "blade",
+] as const;
+export type EmbedKey = (typeof EMBED_KEYS)[number];
+/** The keys a video timeline takes (G42.18): the app passes them on only to a timeline. */
+export const EMBED_TIMELINE_KEYS: readonly EmbedKey[] = [
+  "shuttleBack",
+  "pause",
+  "shuttleForward",
+  "markIn",
+  "markOut",
+  "blade",
+];
 
 /** App → page. */
 export const AppToEmbed = z.discriminatedUnion("t", [
@@ -386,6 +428,20 @@ export const AppToEmbed = z.discriminatedUnion("t", [
     .strict(),
   /** One of the bar's actions used (its `id`). */
   z.object({ t: z.literal("action"), id: actionId }).strict(),
+  /**
+   * A file of a project dragged from the app's own file tree and dropped on the page (G42.18), at
+   * a point of the page (CSS pixels from its top left): a video timeline places it on the track
+   * under that point, as a file dragged from the page's own tree would be.
+   */
+  z
+    .object({
+      t: z.literal("drop"),
+      scope: z.string().min(1).max(200),
+      path: z.string().min(1).max(4000),
+      x: z.number().min(0).max(100_000),
+      y: z.number().min(0).max(100_000),
+    })
+    .strict(),
   /**
    * The app's Canvas now (G42.6): its tabs, and whether this page is the one in view. The page
    * answers an agent's `canvas.query` with them, as a tab of the page's own Canvas would.

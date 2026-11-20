@@ -25,6 +25,7 @@ import 'api/token_store.dart';
 import 'api/update_follower.dart';
 import 'api/transport.dart';
 import 'api/types.dart';
+import 'canvas/job_notices.dart';
 import 'desktop/handoff.dart';
 import 'l10n/app_localizations.dart';
 import 'mascot/mascot_source.dart';
@@ -1847,6 +1848,26 @@ class AppController extends ChangeNotifier {
   }
 
   AppLocalizations get _words => wordsFor(locale?.languageCode);
+
+  /// The long jobs started in a Canvas tab (a video's render, G42.18), followed in the system's
+  /// notifications: one follower per server, made when the first job of that server comes.
+  final _jobNotices = <String, JobNotices>{};
+
+  /// Follows job [id] of the server in use in the system's notifications under [title]; a tap
+  /// brings back [sessionId]'s conversation.
+  void followJob(String id, String title, {String? sessionId}) {
+    final s = server;
+    final c = client;
+    if (s == null || c == null) return;
+    final f = _jobNotices[s.id] ??= JobNotices(
+      notifier: notifier,
+      fetch: c.job,
+      words: () => _words,
+      serverId: s.id,
+      server: displayName,
+    );
+    f.follow(id, title, sessionId: sessionId);
+  }
 
   /// A tap on a notification (or on one of its answers) while the app runs.
   void _onNoticeResponse(NoticeTap tap, String? action) {

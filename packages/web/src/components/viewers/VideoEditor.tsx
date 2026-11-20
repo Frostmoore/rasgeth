@@ -80,6 +80,7 @@ import {
 import type { JSX } from "preact";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { announce, typingIn } from "../../a11y.js";
+import { askAppAbout, type EmbedDrop, embedded, saveFileThroughApp } from "../../embed.js";
 import { lang, t } from "../../i18n.js";
 import {
   IconAppend,
@@ -552,6 +553,25 @@ export function VideoEditor({
 }) {
   const key = videoViewKey(file);
   const view = videoViewOf(key);
+  // Inside the app (G42.18): «Chiedi all'agente qui» goes into the app's composer (an empty `to`:
+  // not sent yet), «Salva come…» of an exported file through the app's own dialog.
+  const inApp = embedded();
+  const askHere = (text: string): { to: string } | undefined =>
+    inApp
+      ? askAppAbout({ scope: file.scope, path: file.path }, text)
+        ? { to: "" }
+        : undefined
+      : askAgentAbout(file, text);
+  const saveVia =
+    onDownload ??
+    (inApp
+      ? (f: { scope: string; path: string; name: string }) => {
+          void saveFileThroughApp(getApi().canvasLink, f);
+          return true;
+        }
+      : undefined);
+  /** What a file dropped from the app's tree does (set on every draw: it reads the present). */
+  const appDrop = useRef<((d: EmbedDrop) => void) | undefined>(undefined);
   const ed = videoEditOf(key);
   // Choosing clips leaves a chosen transition or subtitle (one thing in the inspector).
   const edit = (patch: Partial<VideoEditState>) =>
@@ -798,6 +818,14 @@ export function VideoEditor({
     ro.observe(el);
     return () => ro.disconnect();
   }, [!!doc]);
+
+  // A file dragged from the app's own tree (G42.18): the page's embed hands it over as an event.
+  useEffect(() => {
+    if (!inApp) return;
+    const on = (e: Event) => appDrop.current?.((e as CustomEvent<EmbedDrop>).detail);
+    window.addEventListener("rg-embed-drop", on);
+    return () => window.removeEventListener("rg-embed-drop", on);
+  }, [inApp]);
 
   // A file dropped before it was read: placed now that its probe came.
   useEffect(() => {
@@ -1629,10 +1657,31 @@ export function VideoEditor({
       scope?: string;
       path?: string;
     };
+    placeFile(f, tr, frame);
+  };
+  /** A project's file dropped on a track at a frame (the page's tree, or the app's, G42.18). */
+  const placeFile = (f: { scope?: string; path?: string }, tr: VideoTrack, frame: number) => {
     if (!f.path || f.scope !== file.scope) return say(t("veOtherProject"));
     if (!isTimelineMedia(f.path)) return say(t("veNotMedia", { name: fileName(f.path) }));
     place(f.path, 0, undefined, frame, targetsFor(tr), "overwrite");
   };
+  /**
+   * A file dragged from the app's own tree (G42.18): on the track under the point, at its frame;
+   * not on a track, at the playhead of the first video track (an audio file: of the first audio).
+   */
+  const dropFromApp = (d: EmbedDrop) => {
+    const lane = trackUnder(d.x, d.y);
+    const over = lane ? trackOf(doc, lane) : undefined;
+    const audio = /\.(mp3|wav|m4a|aac|ogg|opus|flac)$/i.test(d.path);
+    const tr =
+      over ??
+      trackOf(doc, lanes(doc, audio ? "Audio" : "Video")[0] ?? "") ??
+      doc.tracks.find((x) => x.kind === "Video");
+    if (!tr) return say(t("veNoTrack"));
+    if (tr.locked) return say(t("veLocked", { id: tr.id }));
+    placeFile(d, tr, over ? snapFrame(frameAt(d.x), new Set()) : playhead);
+  };
+  appDrop.current = dropFromApp;
   const addFile = async () => {
     const path = await askText(t("veAddFile"), "", { label: t("veAddFilePath") });
     if (!path?.trim()) return;
@@ -1688,12 +1737,10 @@ export function VideoEditor({
   };
   const sendAsk = () => {
     if (!ask?.question.trim()) return;
-    const to = (onAsk ?? ((text: string) => askAgentAbout(file, text)))(
-      askHereMessage(ask.question, ask.ctx.text),
-    );
+    const to = (onAsk ?? askHere)(askHereMessage(ask.question, ask.ctx.text));
     if (!to) return say(t("veAskNoChat"));
     setAsk(undefined);
-    say(t("veAskSent", { to: to.to }));
+    say(to.to ? t("veAskSent", { to: to.to }) : t("veAskInApp"));
   };
   const loadVersions = async () => {
     setVersions((v) => ({ ...v, busy: true }));
@@ -2015,6 +2062,8 @@ export function VideoEditor({
       ref={root}
       tabIndex={-1}
       onKeyDown={onKey}
+      // The app's keys land here when nothing in the page has the focus (G42.18: J/K/L, I/O, Ctrl+B).
+      data-embed-keys=""
       aria-label={t("veEditor")}
     >
       <div class={`ve-top${ed.sourceOpen && ed.source ? " two" : ""}`}>
@@ -2518,12 +2567,19 @@ export function VideoEditor({
           </div>
         </section>
       )}
-      {renderOpen && <RenderPanel file={file} doc={doc} onClose={() => setRenderOpen(false)} />}
+      {renderOpen && (
+        <RenderPanel
+          file={file}
+          doc={doc}
+          onClose={() => setRenderOpen(false)}
+          {...(saveVia && { onDownload: saveVia })}
+        />
+      )}
       {exportOpen && (
         <ExportPanel
           file={file}
           onClose={() => setExportOpen(false)}
-          {...(onDownload && { onDownload })}
+          {...(saveVia && { onDownload: saveVia })}
         />
       )}
       {versions && (

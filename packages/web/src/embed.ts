@@ -8,6 +8,7 @@ import {
   type AppToEmbed,
   EMBED_CHANNEL,
   type EmbedAction,
+  type EmbedKey,
   type EmbedParams,
   type EmbedRef,
   type EmbedTab,
@@ -35,6 +36,14 @@ export function takeEmbed(): EmbedParams | null {
 }
 
 /** For tests: forget the embed. */
+/**
+ * A long job started in the tab (a video's render, G42.18): the app follows it in the system's
+ * notifications. False outside an app.
+ */
+export function followJobInApp(id: string, title: string): boolean {
+  return toApp({ t: "job", id, title: title.slice(0, 200) || id });
+}
+
 export function resetEmbed(): void {
   params = null;
   appCanvas = null;
@@ -173,6 +182,33 @@ export async function saveThroughApp(url: string, name: string): Promise<boolean
   }
 }
 
+/**
+ * «Save as…» of a project's file through the app (G42.18: the finished video, the XML for
+ * Resolve): its signed link, which the app fetches with its own sign-in. False outside an app or
+ * when the link cannot be had.
+ */
+export async function saveFileThroughApp(
+  link: (target: { kind: "file"; scope: string; path: string }) => Promise<{ url: string }>,
+  f: { scope: string; path: string; name: string },
+): Promise<boolean> {
+  if (!embedded()) return false;
+  try {
+    const { url } = await link({ kind: "file", scope: f.scope, path: f.path });
+    return await saveThroughApp(url, f.name);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * «Ask the agent» from a tab with its own words and place (G42.18, a video timeline's «Ask the
+ * agent here»): into the app's composer, as a selection's would go. False outside an app.
+ */
+export function askAppAbout(ref: EmbedRef, text: string): boolean {
+  const body = text.trim().slice(0, 20_000);
+  return !!body && toApp({ t: "askAgent", text: body, ref });
+}
+
 /** The editor's save state, for the app's bar (with why it failed, G42.7). */
 export function reportSave(
   s: "saving" | "saved" | "unsaved" | "failed" | undefined,
@@ -202,13 +238,30 @@ const toFile = (f: { name: string; type: string; data: string }) => {
   return new File([bytes], f.name, { type: f.type });
 };
 
-/** The page's keys for the app's `key` (Ctrl/Cmd+S, Z, Shift+Z, F). */
-const KEYS = {
-  save: { key: "s" },
-  undo: { key: "z" },
-  redo: { key: "z", shiftKey: true },
-  find: { key: "f" },
-} as const;
+/**
+ * The page's keys for the app's `key`: Ctrl/Cmd+S, Z, Shift+Z, F, and a video timeline's J, K, L,
+ * I, O (no modifier) and Ctrl/Cmd+B (G42.18).
+ */
+const KEYS: Record<EmbedKey, { key: string; shiftKey?: boolean; mod: boolean }> = {
+  save: { key: "s", mod: true },
+  undo: { key: "z", mod: true },
+  redo: { key: "z", shiftKey: true, mod: true },
+  find: { key: "f", mod: true },
+  shuttleBack: { key: "j", mod: false },
+  pause: { key: "k", mod: false },
+  shuttleForward: { key: "l", mod: false },
+  markIn: { key: "i", mod: false },
+  markOut: { key: "o", mod: false },
+  blade: { key: "b", mod: true },
+};
+
+/** A file dragged from the app's tree onto the page (G42.18): where, and which. */
+export interface EmbedDrop {
+  scope: string;
+  path: string;
+  x: number;
+  y: number;
+}
 
 /**
  * What the page does with the app's messages that are not the root's (theme, language, font and
@@ -226,15 +279,22 @@ export function handleAppInput(m: AppToEmbed): boolean {
         : (document.querySelector("[data-embed-keys]") ??
           document.querySelector(".doc-shell") ??
           document.body);
+    const { key, shiftKey, mod } = KEYS[m.key];
     target.dispatchEvent(
       new KeyboardEvent("keydown", {
-        ...KEYS[m.key],
-        ctrlKey: !mac,
-        metaKey: mac,
+        key,
+        ...(shiftKey && { shiftKey }),
+        ctrlKey: mod && !mac,
+        metaKey: mod && mac,
         bubbles: true,
         cancelable: true,
       }),
     );
+    return true;
+  }
+  if (m.t === "drop") {
+    const detail: EmbedDrop = { scope: m.scope, path: m.path, x: m.x, y: m.y };
+    window.dispatchEvent(new CustomEvent("rg-embed-drop", { detail }));
     return true;
   }
   if (m.t === "files") {

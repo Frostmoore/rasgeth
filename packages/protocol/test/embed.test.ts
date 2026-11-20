@@ -4,6 +4,8 @@ import { describe, expect, it } from "vitest";
 import {
   AppToEmbed,
   EMBED_ASK_ACTION,
+  EMBED_KEYS,
+  EMBED_TIMELINE_KEYS,
   type EmbedParams,
   EmbedToApp,
   embedEnvelope,
@@ -282,5 +284,25 @@ describe("the bridge", () => {
     expect(app({ t: "paste", files: [{ ...file, data: "%%" }] })).toBe(false);
     expect(app({ t: "paste", image: "AAAA" })).toBe(false);
     expect(app({ t: "action", id: EMBED_ASK_ACTION })).toBe(true);
+  });
+
+  it("the video timeline's (G42.18): its keys, a file from the app's tree, a render to follow", () => {
+    const app = (m: unknown) => AppToEmbed.safeParse(m).success;
+    for (const key of EMBED_TIMELINE_KEYS) expect(app({ t: "key", key })).toBe(true);
+    expect(EMBED_TIMELINE_KEYS.every((k) => EMBED_KEYS.includes(k))).toBe(true);
+    expect(app({ t: "key", key: "j" })).toBe(false);
+    expect(app({ t: "drop", scope: "project:p1", path: "girato/a b.mp4", x: 412.5, y: 0 })).toBe(
+      true,
+    );
+    expect(app({ t: "drop", scope: "p", path: "a.mp4", x: -1, y: 0 })).toBe(false);
+    expect(app({ t: "drop", scope: "p", path: "", x: 0, y: 0 })).toBe(false);
+    expect(app({ t: "drop", scope: "p", path: "a.mp4", x: 0 })).toBe(false);
+    expect(app({ t: "drop", scope: "p", path: "a.mp4", x: 0, y: 0, files: [] })).toBe(false);
+    const ok = (m: unknown) => EmbedToApp.safeParse(m).success;
+    expect(ok({ t: "job", id: "6f1c2d3e-0a1b-4c5d-8e9f-0123456789ab", title: "Video" })).toBe(true);
+    expect(ok({ t: "job", id: "a/b", title: "x" })).toBe(false);
+    expect(ok({ t: "job", id: "a", title: "" })).toBe(false);
+    expect(ok({ t: "job", id: "a", title: "x".repeat(201) })).toBe(false);
+    expect(ok({ t: "job", id: "a", title: "x", progress: 3 })).toBe(false);
   });
 });

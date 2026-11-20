@@ -8,8 +8,21 @@ import 'dart:convert';
 const embedFilesMax = 20;
 const embedFileMax = 25 * 1024 * 1024;
 
-/// The keys the app passes on (`EMBED_KEYS`).
-enum EmbedKey { save, undo, redo, find }
+/// The keys the app passes on (`EMBED_KEYS`). G42.18: a video timeline's J, K, L, I, O and
+/// Ctrl/Cmd+B too, passed on only while a timeline is the tab in view.
+enum EmbedKey { save, undo, redo, find, shuttleBack, pause, shuttleForward, markIn, markOut, blade }
+
+/// The keys a video timeline takes (`EMBED_TIMELINE_KEYS`, G42.18).
+const embedTimelineKeys = {
+  EmbedKey.shuttleBack,
+  EmbedKey.pause,
+  EmbedKey.shuttleForward,
+  EmbedKey.markIn,
+  EmbedKey.markOut,
+  EmbedKey.blade,
+};
+
+final _jobId = RegExp(r'^[A-Za-z0-9_-]+$');
 
 /// The drawn icons a Canvas action may carry (`EMBED_ACTION_ICONS`, G42.6).
 const embedActionIcons = [
@@ -142,6 +155,11 @@ Map<String, Object?>? embedToApp(Object? m) {
       _only(x, {'t', 'title', 'target'}) &&
           _str(x['title'], max: 300) &&
           embedTargetOk(x['target']),
+    'job' =>
+      _only(x, {'t', 'id', 'title'}) &&
+          _str(x['id'], min: 1, max: 64) &&
+          _jobId.hasMatch(x['id']! as String) &&
+          _str(x['title'], min: 1, max: 200),
     _ => false,
   };
   return ok ? x : null;
@@ -170,6 +188,8 @@ Map<String, Object?>? readEmbedEnvelope(String raw, String nonce) {
   if (v is! Map || v['rg'] != 'embed' || v['n'] != nonce) return null;
   return embedToApp(v['m']);
 }
+
+bool _point(Object? v) => v is num && v >= 0 && v <= 100000;
 
 /// A file for the page (`EmbedFile`).
 Map<String, Object?> embedFile(String name, String type, List<int> bytes) => {
@@ -212,6 +232,12 @@ bool appToEmbedOk(Map<String, Object?> m) {
           _optStr(m['text'], max: 1000000) &&
           (m['files'] == null || files(m['files'])),
     'action' => _only(m, {'t', 'id'}) && _id(m['id']),
+    'drop' =>
+      _only(m, {'t', 'scope', 'path', 'x', 'y'}) &&
+          _str(m['scope'], min: 1, max: 200) &&
+          _str(m['path'], min: 1, max: 4000) &&
+          _point(m['x']) &&
+          _point(m['y']),
     'tabs' =>
       _only(m, {'t', 'visible', 'tabs'}) &&
           m['visible'] is bool &&
@@ -253,6 +279,7 @@ class EmbedHandlers {
     this.back,
     this.bar,
     this.open,
+    this.job,
   });
 
   final void Function()? ready;
@@ -275,6 +302,10 @@ class EmbedHandlers {
 
   /// Something to open in another tab of the app's Canvas (G42.6).
   final void Function(String title, Map<String, dynamic> target)? open;
+
+  /// A long job started in the tab (a video's render, G42.18): the app follows it in the
+  /// system's notifications.
+  final void Function(String id, String title)? job;
 }
 
 /// One of the Canvas's own buttons, drawn by the app (`EmbedAction`).
@@ -400,6 +431,8 @@ class EmbedBridge {
         h.bar?.call(EmbedBar.fromJson(m));
       case 'open':
         h.open?.call(m['title']! as String, Map<String, dynamic>.from(m['target']! as Map));
+      case 'job':
+        h.job?.call(m['id']! as String, m['title']! as String);
     }
     return m;
   }
@@ -417,6 +450,15 @@ class EmbedBridge {
   Future<void> paste({String? text, List<Map<String, Object?>>? files}) =>
       send({'t': 'paste', 'text': ?text, 'files': ?files});
   Future<void> action(String id) => send({'t': 'action', 'id': id});
+
+  /// A project's file dragged from the app's tree and dropped on the page at ([x], [y]), in the
+  /// page's pixels (G42.18).
+  Future<void> drop({
+    required String scope,
+    required String path,
+    required double x,
+    required double y,
+  }) => send({'t': 'drop', 'scope': scope, 'path': path, 'x': x < 0 ? 0 : x, 'y': y < 0 ? 0 : y});
 
   /// The app's Canvas tabs, and whether this page is the one in view (G42.6).
   Future<void> tabs({required bool visible, required List<Map<String, Object?>> tabs}) =>

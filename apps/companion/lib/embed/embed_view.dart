@@ -42,6 +42,7 @@ class EmbedView extends StatefulWidget {
     this.onReady,
     this.onBar,
     this.onOpen,
+    this.onJob,
     this.fallback,
     this.readyWithin = const Duration(seconds: 25),
     this.eager = true,
@@ -71,6 +72,9 @@ class EmbedView extends StatefulWidget {
 
   /// Something to open in another tab of the app's Canvas (G42.6).
   final void Function(String title, Map<String, dynamic> target)? onOpen;
+
+  /// A long job started in the page (a video's render, G42.18), to follow in the notifications.
+  final void Function(String id, String title)? onJob;
 
   /// What shows when the page cannot be loaded or does not answer in [readyWithin] (G42.6: the
   /// Canvas's native viewers), under a line that says so and «Try again». Null: the error alone.
@@ -125,6 +129,7 @@ class EmbedViewState extends State<EmbedView> {
           close: () => widget.onClose?.call(),
           bar: (b) => widget.onBar?.call(b),
           open: (t, target) => widget.onOpen?.call(t, target),
+          job: (id, title) => widget.onJob?.call(id, title),
           back: (handled) {
             final b = _back;
             if (b != null && !b.isCompleted) b.complete(handled);
@@ -250,6 +255,19 @@ class EmbedViewState extends State<EmbedView> {
 
   /// A key the web view did not hold (a Flutter shortcut), passed on to the page.
   Future<void> key(EmbedKey k) async => _bridge?.key(k);
+
+  /// A project's file from the app's tree dropped on the page at [global] (G42.18): in the page's
+  /// own pixels (the web view fills this widget, one logical pixel is one of the page's).
+  Future<void> dropProjectFile({
+    required String scope,
+    required String path,
+    required Offset global,
+  }) async {
+    final box = context.findRenderObject();
+    if (box is! RenderBox || !box.hasSize) return;
+    final at = box.globalToLocal(global);
+    await _bridge?.drop(scope: scope, path: path, x: at.dx, y: at.dy);
+  }
 
   /// A picture (or text) from the system's clipboard, for the page's editor (G42.7).
   Future<void> paste({String? text, List<Map<String, Object?>>? files}) async {

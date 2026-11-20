@@ -7442,6 +7442,12 @@ const en = {
   svCompareFull: "Compare: every difference",
   svNextSession:
     "Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.",
+  // G42.18: the video timeline inside the app.
+  veNoTrack: "This timeline has no track to put it on.",
+  veAskInApp: "The question is in the conversation's composer: send it from there.",
+  veSaveAs: "Save as…",
+  veRenderSaveHint: "Saves a copy of the finished video where you choose.",
+  veRenderJob: "Video of {name}",
 } as const;
 
 export type Key = keyof typeof en;
@@ -14981,6 +14987,12 @@ const it: Record<Key, string> = {
   svCompareFull: "Confronta: tutte le differenze",
   svNextSession:
     "Una volta installata, gli agenti la usano dalla loro conversazione successiva; quelli che stanno già parlando tengono la versione con cui hanno cominciato.",
+  // G42.18: la timeline video dentro l'app.
+  veNoTrack: "Questa timeline non ha una traccia dove metterlo.",
+  veAskInApp: "La domanda è nel riquadro della conversazione: mandala da lì.",
+  veSaveAs: "Salva come…",
+  veRenderSaveHint: "Salva una copia del video finito dove scegli tu.",
+  veRenderJob: "Video di {name}",
 };
 
 export const dictionaries: Record<Lang, Record<Key, string>> = { en, it };

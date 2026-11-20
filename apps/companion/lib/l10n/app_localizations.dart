@@ -18668,6 +18668,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Compare: every difference'**
   String get skCompareFull;
+
+  /// The page's `vwKind_timeline` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Video timeline'**
+  String get cvVwKindTimeline;
+
+  /// A job followed in the notifications (a video's render, G42.18) before the server counts it.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting…'**
+  String get jobNoticeStarting;
+
+  /// How far a followed job is (G42.18).
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% done'**
+  String jobNoticePercent(int percent);
+
+  /// How far a followed job is and the minutes left (G42.18).
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% done, about {min} min left'**
+  String jobNoticePercentLeft(int percent, int min);
+
+  /// A followed job finished (G42.18).
+  ///
+  /// In en, this message translates to:
+  /// **'Done: open it in the Canvas.'**
+  String get jobNoticeDone;
+
+  /// A followed job failed without a reason (G42.18).
+  ///
+  /// In en, this message translates to:
+  /// **'It did not work.'**
+  String get jobNoticeFailed;
+
+  /// A followed job failed, with the server's reason (G42.18).
+  ///
+  /// In en, this message translates to:
+  /// **'It did not work: {why}'**
+  String jobNoticeFailedWhy(String why);
+
+  /// A followed job was cancelled (G42.18).
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped.'**
+  String get jobNoticeCancelled;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

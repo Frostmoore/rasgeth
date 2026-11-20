@@ -10860,4 +10860,34 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get skCompareFull => 'Confronta: tutte le differenze';
+
+  @override
+  String get cvVwKindTimeline => 'Timeline video';
+
+  @override
+  String get jobNoticeStarting => 'Sta per partire…';
+
+  @override
+  String jobNoticePercent(int percent) {
+    return '$percent% fatto';
+  }
+
+  @override
+  String jobNoticePercentLeft(int percent, int min) {
+    return '$percent% fatto, mancano circa $min min';
+  }
+
+  @override
+  String get jobNoticeDone => 'Fatto: aprilo nel Canvas.';
+
+  @override
+  String get jobNoticeFailed => 'Non è riuscito.';
+
+  @override
+  String jobNoticeFailedWhy(String why) {
+    return 'Non è riuscito: $why';
+  }
+
+  @override
+  String get jobNoticeCancelled => 'Fermato.';
 }

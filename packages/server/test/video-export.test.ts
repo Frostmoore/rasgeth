@@ -98,7 +98,9 @@ describe("exportTimeline", () => {
     format,
     ...(mediaRoot !== undefined && { mediaRoot }),
     mediaAbs: async (m: string) => (facts[m] ? join(dir, "video", m) : undefined),
-    probe: async (abs: string) => facts[abs.slice(join(dir, "video").length + 1)],
+    // The file's path under the timeline's folder, with "/" also on Windows (join writes "\\").
+    probe: async (abs: string) =>
+      facts[abs.slice(join(dir, "video").length + 1).replaceAll("\\", "/")],
   });
 
   it("writes montatore's XML beside the timeline, the files in the person's folder (D21)", async () => {

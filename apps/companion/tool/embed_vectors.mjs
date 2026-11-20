@@ -92,6 +92,8 @@ const pageMessages = [
   { t: "bar", actions: [{ id: "ask", label: "Chiedi all'agente", icon: "chat", primary: true }] },
   { t: "bar", actions: [], paste: true },
   { t: "bar", actions: [], readOnly: true, download: true },
+  // The video timeline (G42.18): a render the app follows in its notifications.
+  { t: "job", id: "6f1c2d3e-0a1b-4c5d-8e9f-0123456789ab", title: "Video di gita.rgvideo" },
   // Refused:
   { t: "saveAs", name: "a", url: "/x", data: "AA==" },
   { t: "saveAs", name: "a" },
@@ -130,6 +132,10 @@ const pageMessages = [
   { t: "saveAs", name: "x".repeat(256), url: "/x" },
   { t: "bar", actions: [], paste: "yes" },
   { t: "bar", actions: [], readOnly: 1 },
+  { t: "job", id: "a/b", title: "x" },
+  { t: "job", id: "a", title: "" },
+  { t: "job", id: "a" },
+  { t: "job", id: "a", title: "x", progress: 3 },
 ];
 const envelopes = [
   ...pageMessages.map((m) => env(NONCE, m)),
@@ -163,6 +169,14 @@ const appMessages = [
   { t: "paste", text: "hi", files: [] },
   { t: "action", id: "ask" },
   { t: "key", key: "undo" },
+  // The video timeline (G42.18): its keys, and a file dragged from the app's tree.
+  { t: "key", key: "shuttleBack" },
+  { t: "key", key: "pause" },
+  { t: "key", key: "shuttleForward" },
+  { t: "key", key: "markIn" },
+  { t: "key", key: "markOut" },
+  { t: "key", key: "blade" },
+  { t: "drop", scope: "project:p1", path: "girato/clip 2.mp4", x: 412.5, y: 300 },
 ];
 for (const m of appMessages) if (!p.readAppMessage({ rg: "app", m })) throw new Error(`refused: ${JSON.stringify(m)}`);
 const png = { name: "a.png", type: "image/png", size: 3, data: "AAAA" };
@@ -176,6 +190,11 @@ const badAppMessages = [
   { t: "key", key: "quit" },
   { t: "action", id: "Ask" },
   { t: "files", files: [{ ...png, extra: 1 }] },
+  { t: "drop", scope: "p", path: "a.mp4", x: -1, y: 0 },
+  { t: "drop", scope: "p", path: "", x: 0, y: 0 },
+  { t: "drop", scope: "p", path: "a.mp4", x: 0 },
+  { t: "drop", scope: "p", path: "a.mp4", x: 0, y: 0, files: [] },
+  { t: "key", key: "j" },
 ];
 for (const m of badAppMessages) if (p.readAppMessage({ rg: "app", m })) throw new Error(`taken: ${JSON.stringify(m)}`);
 

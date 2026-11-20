@@ -7,6 +7,7 @@
 import type { DocFile, VideoExportFormat, VideoExportResult } from "@redgiant/protocol";
 import { useState } from "preact/hooks";
 import { ApiError } from "../../../api.js";
+import { embedded } from "../../../embed.js";
 import { t } from "../../../i18n.js";
 import { IconClose, IconDownload, IconExternal, IconFilm } from "../../../icons.js";
 import { getApi, openCanvas } from "../../../state.js";
@@ -150,7 +151,7 @@ export function ExportPanel({
           <p class="ve-render-done">
             {t("veExportDone", { path: result.path, clips: String(result.clips) })}{" "}
             <button type="button" class="vw-btn small" onClick={() => void download()}>
-              <IconDownload size={13} /> {t("veExportDownload")}
+              <IconDownload size={13} /> {t(embedded() ? "veSaveAs" : "veExportDownload")}
             </button>{" "}
             <button
               type="button"

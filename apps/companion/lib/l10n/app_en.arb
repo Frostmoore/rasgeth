@@ -8149,5 +8149,55 @@
   "skNotRestorable": "Too large to keep: it cannot come back.",
   "skNoVersions": "No versions yet.",
   "skLineTitle": "What changed and why",
-  "skCompareFull": "Compare: every difference"
+  "skCompareFull": "Compare: every difference",
+  "cvVwKindTimeline": "Video timeline",
+  "@cvVwKindTimeline": {
+    "description": "The page's `vwKind_timeline` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "jobNoticeStarting": "Starting…",
+  "@jobNoticeStarting": {
+    "description": "A job followed in the notifications (a video's render, G42.18) before the server counts it."
+  },
+  "jobNoticePercent": "{percent}% done",
+  "@jobNoticePercent": {
+    "description": "How far a followed job is (G42.18).",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "jobNoticePercentLeft": "{percent}% done, about {min} min left",
+  "@jobNoticePercentLeft": {
+    "description": "How far a followed job is and the minutes left (G42.18).",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "jobNoticeDone": "Done: open it in the Canvas.",
+  "@jobNoticeDone": {
+    "description": "A followed job finished (G42.18)."
+  },
+  "jobNoticeFailed": "It did not work.",
+  "@jobNoticeFailed": {
+    "description": "A followed job failed without a reason (G42.18)."
+  },
+  "jobNoticeFailedWhy": "It did not work: {why}",
+  "@jobNoticeFailedWhy": {
+    "description": "A followed job failed, with the server's reason (G42.18).",
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "jobNoticeCancelled": "Stopped.",
+  "@jobNoticeCancelled": {
+    "description": "A followed job was cancelled (G42.18)."
+  }
 }

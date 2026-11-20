@@ -16,8 +16,16 @@ import {
   type VideoRenderResult,
 } from "@redgiant/protocol";
 import { useEffect, useState } from "preact/hooks";
+import { followJobInApp } from "../../../embed.js";
 import { t } from "../../../i18n.js";
-import { IconClose, IconCpu, IconFilm, IconGpu, IconMonitor } from "../../../icons.js";
+import {
+  IconClose,
+  IconCpu,
+  IconDownload,
+  IconFilm,
+  IconGpu,
+  IconMonitor,
+} from "../../../icons.js";
 import { getApi, openCanvas } from "../../../state.js";
 import { Seg } from "../../SettingsKit.js";
 import { JobView, useJob } from "../../ui.js";
@@ -125,10 +133,13 @@ export function RenderPanel({
   file,
   doc,
   onClose,
+  onDownload,
 }: {
   file: DocFile;
   doc: RgVideo;
   onClose: () => void;
+  /** G42.18: an app embedding the editor saves the finished video its own way (true: done). */
+  onDownload?: (f: { scope: string; path: string; name: string }) => boolean;
 }) {
   const heights = renderHeights(doc);
   const [shape, setShape] = useState<Shape>("same");
@@ -169,7 +180,24 @@ export function RenderPanel({
         ...(where && { where }),
       });
       setJobId(r.job.id);
+      // Inside the app its notifications follow the render too (G42.18).
+      followJobInApp(r.job.id, t("veRenderJob", { name: file.path.split("/").pop() ?? file.path }));
       if (where) setChosen(where);
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+  /** «Salva come…» of the finished video: the app's dialog inside it, the browser's here. */
+  const saveResult = async (path: string) => {
+    const name = path.split("/").pop() ?? path;
+    if (onDownload?.({ scope: file.scope, path, name })) return;
+    try {
+      const blob = await getApi().download(file.scope, path);
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(a.href);
     } catch (e) {
       setError((e as Error).message);
     }
@@ -279,6 +307,14 @@ export function RenderPanel({
             }
           >
             {t("veRenderOpen")}
+          </button>{" "}
+          <button
+            type="button"
+            class="vw-btn small"
+            title={t("veRenderSaveHint")}
+            onClick={() => void saveResult(result.path)}
+          >
+            <IconDownload size={13} /> {t("veSaveAs")}
           </button>
         </p>
       )}

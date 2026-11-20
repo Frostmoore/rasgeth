@@ -10823,4 +10823,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skCompareFull => 'Compare: every difference';
+
+  @override
+  String get cvVwKindTimeline => 'Video timeline';
+
+  @override
+  String get jobNoticeStarting => 'Starting…';
+
+  @override
+  String jobNoticePercent(int percent) {
+    return '$percent% done';
+  }
+
+  @override
+  String jobNoticePercentLeft(int percent, int min) {
+    return '$percent% done, about $min min left';
+  }
+
+  @override
+  String get jobNoticeDone => 'Done: open it in the Canvas.';
+
+  @override
+  String get jobNoticeFailed => 'It did not work.';
+
+  @override
+  String jobNoticeFailedWhy(String why) {
+    return 'It did not work: $why';
+  }
+
+  @override
+  String get jobNoticeCancelled => 'Stopped.';
 }

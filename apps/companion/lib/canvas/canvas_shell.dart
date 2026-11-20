@@ -26,6 +26,7 @@ import '../embed/embed_screen.dart';
 import '../embed/embed_view.dart';
 import '../l10n/app_localizations.dart';
 import '../screens/canvas_screen.dart';
+import '../screens/files/files_explorer.dart' show ExplorerFileDrag;
 import '../screens/first_start_screen.dart' show openExternal;
 import '../theme/colors.dart';
 import '../ui/artifact_frame_view.dart' show FrameSupport, frameSupportOf;
@@ -239,8 +240,22 @@ String viewerKindWord(AppLocalizations l, String kind) => switch (kind) {
   'tree' => l.cvVwKindTree,
   'site' => l.cvVwKindSite,
   'layers' => l.cvVwKindLayers,
+  'timeline' => l.cvVwKindTimeline,
   _ => l.cvVwKindUnknown,
 };
+
+/// A video timeline's key (G42.18): J, K, L (shuttle), I, O (in, out) without a modifier, B with
+/// Ctrl/Cmd (blade, [mod]); null for any other.
+EmbedKey? timelineKeyOf(LogicalKeyboardKey k, {required bool mod}) {
+  if (mod) return k == LogicalKeyboardKey.keyB ? EmbedKey.blade : null;
+  return {
+    LogicalKeyboardKey.keyJ: EmbedKey.shuttleBack,
+    LogicalKeyboardKey.keyK: EmbedKey.pause,
+    LogicalKeyboardKey.keyL: EmbedKey.shuttleForward,
+    LogicalKeyboardKey.keyI: EmbedKey.markIn,
+    LogicalKeyboardKey.keyO: EmbedKey.markOut,
+  }[k];
+}
 
 String _bytes(int n) => n < 1024
     ? '$n B'
@@ -460,6 +475,32 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
     );
   }
 
+  /// A video timeline (G41.5b): its keys and files dragged from the tree go to the page (G42.18).
+  static bool isTimeline(CanvasTab t) =>
+      !t.isPort && (t.path ?? '').toLowerCase().endsWith('.rgvideo');
+
+  /// The timeline's keys while the focus is in the app's own part of the Canvas (its bar, its
+  /// tabs): J, K, L, I, O and Ctrl/Cmd+B to the page, as pressed inside it. Never while a text
+  /// field has the focus, and only when a timeline is the tab in view.
+  KeyEventResult _timelineKeys(KeyEvent e, {required bool meta}) {
+    final t = _m.current;
+    if (e is! KeyDownEvent || t == null || !isTimeline(t)) return KeyEventResult.ignored;
+    final focus = FocusManager.instance.primaryFocus?.context;
+    if (focus != null &&
+        (focus.widget is EditableText ||
+            focus.findAncestorWidgetOfExactType<EditableText>() != null)) {
+      return KeyEventResult.ignored;
+    }
+    final keys = HardwareKeyboard.instance;
+    final mod = meta ? keys.isMetaPressed : keys.isControlPressed;
+    final other = (meta ? keys.isControlPressed : keys.isMetaPressed) || keys.isAltPressed;
+    if (other || keys.isShiftPressed) return KeyEventResult.ignored;
+    final k = timelineKeyOf(e.logicalKey, mod: mod);
+    if (k == null) return KeyEventResult.ignored;
+    _key(k);
+    return KeyEventResult.handled;
+  }
+
   void _key(EmbedKey k) {
     final id = _m.active;
     if (id != null) unawaited(_views[id]?.currentState?.key(k) ?? Future<void>.value());
@@ -561,7 +602,7 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
     }
     final nonce = _nonces.putIfAbsent(t.id, newEmbedNonce);
     final fallback = _fallbackOf(t);
-    return EmbedView(
+    final view = EmbedView(
       key: _views.putIfAbsent(t.id, GlobalKey<EmbedViewState>.new),
       url: embedUrl(e.base, _params(e, t, nonce), isolated: !t.isPort && embedIsolatedFor(t.path)),
       nonce: nonce,
@@ -580,6 +621,25 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
       onBar: (b) => _m.tell(t.id, (was) => was.copyWith(bar: b)),
       onOpen: (title, target) => _m.show(title, target),
       onAskAgent: widget.onAskAgent == null ? null : _askAgent,
+      // A render started in the tab: the system's notifications follow it (G42.18).
+      onJob: (id, title) =>
+          AppScope.read(context).followJob(id, title, sessionId: widget.sessionId),
+    );
+    if (!isTimeline(t)) return view;
+    // A file of the project's tree dragged onto a timeline: placed on the track under the pointer
+    // (G42.18). Nothing is drawn over the web view (WebKitGTK's is a window above Flutter).
+    return DragTarget<ExplorerFileDrag>(
+      key: ValueKey('canvas-timeline-drop-${t.id}'),
+      onWillAcceptWithDetails: (_) => true,
+      onAcceptWithDetails: (d) => unawaited(
+        _views[t.id]?.currentState?.dropProjectFile(
+              scope: d.data.scope,
+              path: d.data.path,
+              global: d.offset,
+            ) ??
+            Future<void>.value(),
+      ),
+      builder: (context, _, _) => view,
     );
   }
 
@@ -616,6 +676,7 @@ class CanvasShellState extends State<CanvasShell> with WidgetsBindingObserver {
         },
       },
       child: Focus(
+        onKeyEvent: (_, e) => _timelineKeys(e, meta: meta),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
