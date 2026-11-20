@@ -156,7 +156,10 @@ List<LimitBar> headerBars({
   if (plan != null) {
     // Before any reading the 5h bar waits with a dash; a plan without that window (3.9.8,
     // Claude's) shows only the windows it has.
-    final windows = [if (plan.windows.isEmpty) const PlanWindow(id: '5h', label: '5h'), ...plan.windows];
+    final windows = [
+      if (plan.windows.isEmpty) const PlanWindow(id: '5h', label: '5h'),
+      ...plan.windows,
+    ];
     // The 5h window first, the rest as the provider sent them (a stable sort, as the page's).
     final sorted = [...windows.where((w) => w.id == '5h'), ...windows.where((w) => w.id != '5h')];
     return [
