@@ -130,6 +130,38 @@ export class DeviceStore extends EventEmitter<{
     return rows.length > 0;
   }
 
+  /**
+   * Revokes the owner's devices never used, made more than `olderThanMs` ago (3.9.8): a pairing
+   * whose app never kept its token (Settings › Devices, «Togli quelli mai usati»). With `like`,
+   * only those with that name and platform: a new pairing from the same app replaces its own
+   * leftovers instead of piling them up. Returns how many went.
+   */
+  async forgetUnused(
+    ownerId: string,
+    olderThanMs: number,
+    like?: { name: string; platform: DevicePlatform },
+  ): Promise<number> {
+    const before = new Date(this.now() - olderThanMs).toISOString();
+    const rows = like
+      ? await this.db.query<{ id: string }>(
+          `UPDATE rg_app_devices SET revoked_at = now()
+           WHERE owner_id = $1 AND revoked_at IS NULL AND last_used_at IS NULL
+             AND created_at < $2::timestamptz AND name = $3 AND platform = $4 RETURNING id`,
+          [ownerId, before, like.name.trim().slice(0, 60) || "Device", like.platform],
+        )
+      : await this.db.query<{ id: string }>(
+          `UPDATE rg_app_devices SET revoked_at = now()
+           WHERE owner_id = $1 AND revoked_at IS NULL AND last_used_at IS NULL
+             AND created_at < $2::timestamptz RETURNING id`,
+          [ownerId, before],
+        );
+    this.gone(
+      ownerId,
+      rows.map((r) => r.id),
+    );
+    return rows.length;
+  }
+
   /** Revokes every device of the owner but `keep` (signed out everywhere, a new password). */
   async revokeAll(ownerId: string, keep?: string): Promise<number> {
     const rows = await this.db.query<{ id: string }>(

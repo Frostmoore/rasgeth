@@ -8168,5 +8168,17 @@
       }
     }
   },
-  "pairAgainNote": "This device no longer has its key for this server: pair it again with the password, without removing it."
+  "pairAgainNote": "This device no longer has its key for this server: pair it again with the password, without removing it.",
+  "errKeystore": "This computer could not save the access key in its keystore, so the pairing was undone and no extra device is left on the server. Try again; if it happens again, restart the computer and try again.",
+  "devForgetUnused": "Remove the ones never used",
+  "devForgetUnusedTitle": "Remove the devices never used?",
+  "devForgetUnusedBody": "Every device that never signed in once goes (an app that could not keep its key, for example). The ones paired in the last ten minutes stay: they may be connecting right now.",
+  "devForgetUnusedDone": "Devices removed: {count}.",
+  "@devForgetUnusedDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -1,4 +1,5 @@
 // 3.9.8: the old Windows folder's data, faked (test/p398_legacy_test.dart, p398_pair_again_test.dart).
+import 'dart:async';
 import 'dart:io';
 
 import 'package:rgcompanion/api/legacy_data.dart';
@@ -68,3 +69,23 @@ LegacyAppData oldData({Map<String, String>? secrets, List<Map<String, dynamic>>?
             'someone.else': 'not ours',
           },
     );
+
+/// A keystore whose writes throw, are lost, or never finish (the Windows plugin's endless retry).
+class FailingWrites extends MemoryTokenStore {
+  FailingWrites(this.how);
+
+  /// 'throw', 'lose' or 'hang'.
+  final String how;
+
+  @override
+  Future<void> write(String server, String token) {
+    switch (how) {
+      case 'throw':
+        return Future.error(const FileSystemException('Access denied'));
+      case 'lose':
+        return Future.value();
+      default:
+        return Completer<void>().future;
+    }
+  }
+}

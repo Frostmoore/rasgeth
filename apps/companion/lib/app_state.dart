@@ -71,7 +71,21 @@ enum ConnectError {
 
   /// The password is needed again (a revoked token, or requests that ride the setup channel).
   signInAgain,
+
+  /// The device's token could not be saved in the system's keystore (3.9.8): the pairing was
+  /// undone (the device just made revoked), the person is told, never a silent failure.
+  keystore,
   other,
+}
+
+/// The keystore refused (or did not finish) a token's write, or read back something else.
+class KeystoreWriteFailed implements Exception {
+  const KeystoreWriteFailed(this.detail);
+
+  final String detail;
+
+  @override
+  String toString() => 'KeystoreWriteFailed: $detail';
 }
 
 typedef ClientFactory = RedGiantClient Function(SavedServer server, String? token);
@@ -88,6 +102,10 @@ DevicePlatform currentPlatform() {
     return DevicePlatform.other;
   }
 }
+
+/// How long a keystore write or read may take before pairing is undone (3.9.8: the Windows
+/// plugin retries a failing write forever).
+const kKeystoreTimeout = Duration(seconds: 15);
 
 class AppController extends ChangeNotifier {
   AppController({
@@ -157,6 +175,9 @@ class AppController extends ChangeNotifier {
   ResumeState Function()? resumeNow;
 
   final TokenStore tokens;
+
+  /// How long the keystore may take (shorter in tests).
+  Duration keystoreTimeout = kKeystoreTimeout;
 
   /// The app's data under its name before 3.9.0, carried once at start (Windows; null elsewhere).
   final LegacySource? legacy;
@@ -488,7 +509,11 @@ class AppController extends ChangeNotifier {
             address: h.address,
             deviceId: h.deviceId,
           );
-    await _keep(saved, h.token);
+    try {
+      await _keep(saved, h.token);
+    } on KeystoreWriteFailed catch (e) {
+      return _fail(ConnectError.keystore, e.detail);
+    }
     notifyListeners();
     final ok = await useServer(saved);
     if (ok && old != null && old != h.deviceId) {
@@ -541,9 +566,11 @@ class AppController extends ChangeNotifier {
         fingerprint: h.nodeFingerprint,
         deviceId: created.device.id,
       );
-      await _keep(saved, created.token);
+      await _keep(saved, created.token, undo: () => c.revokeDevice(created.device.id));
       await _use(c, checked: true);
       return connected;
+    } on KeystoreWriteFailed catch (e) {
+      return _fail(ConnectError.keystore, e.detail);
     } on ApiException catch (e) {
       // A local name with RedGiant's own CA, not trusted yet: the setup channel gets the CA.
       if (e.certificate && _lan(base.host)) viaChannel = true;
@@ -614,7 +641,7 @@ class AppController extends ChangeNotifier {
           server = https;
           await _check(c, https);
           saved = https;
-          await _keep(saved, device.token);
+          await _keep(saved, device.token, undo: () => c.revokeDevice(device.deviceId));
           await ch.close();
           ch = null;
           await _use(c, checked: true);
@@ -624,8 +651,8 @@ class AppController extends ChangeNotifier {
           c.close();
         }
       }
-      await _keep(saved, device.token);
       final c = _clientFor(saved, device.token, transport: ChannelTransport(ch!));
+      await _keep(saved, device.token, undo: () => c.revokeDevice(device.deviceId));
       ch = null;
       await _use(c, checked: true);
       return connected;
@@ -640,6 +667,8 @@ class AppController extends ChangeNotifier {
       }, e.message);
     } on SetupRequestException catch (e) {
       return _fail(ConnectError.other, e.message);
+    } on KeystoreWriteFailed catch (e) {
+      return _fail(ConnectError.keystore, e.detail);
     } on ApiException catch (e) {
       return _fail(_errorOf(e), e.message);
     } on _KeyChanged catch (e) {
@@ -660,8 +689,30 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _keep(SavedServer s, String token) async {
-    await tokens.write(s.id, token);
+  /// Keeps [s] with its token: written, read back, only then the server is saved. On failure the
+  /// device just made is revoked ([undo]) so none piles up on the server, and the caller tells
+  /// the person ([ConnectError.keystore]).
+  Future<void> _keep(SavedServer s, String token, {Future<void> Function()? undo}) async {
+    String? failure;
+    try {
+      await tokens.write(s.id, token).timeout(keystoreTimeout);
+      final back = await tokens.read(s.id).timeout(keystoreTimeout);
+      if (back != token) failure = 'the token read back is not the one written';
+    } on TimeoutException {
+      failure = 'the keystore did not answer in ${keystoreTimeout.inSeconds} s';
+    } on Object catch (e) {
+      failure = '$e';
+    }
+    if (failure != null) {
+      if (undo != null) {
+        try {
+          await undo().timeout(const Duration(seconds: 10));
+        } on Object {
+          // The device stays listed as never used: Settings › Devices can remove it.
+        }
+      }
+      throw KeystoreWriteFailed(failure);
+    }
     servers = await book.put(s);
     server = s;
     await prefs.set('current', s.id);

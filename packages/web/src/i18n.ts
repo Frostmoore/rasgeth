@@ -7020,6 +7020,11 @@ const en = {
   svCompareFull: "Compare: every difference",
   svNextSession:
     "Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.",
+  dvForgetUnused: "Remove the ones never used",
+  dvForgetUnusedQ: "Remove the devices never used?",
+  dvForgetUnusedText:
+    "Every device that never signed in once goes (an app that could not keep its key, for example). The ones paired in the last ten minutes stay: they may be connecting right now.",
+  dvForgetUnusedDone: "Devices removed: {count}.",
 } as const;
 
 export type Key = keyof typeof en;
@@ -14136,6 +14141,11 @@ const it: Record<Key, string> = {
   svCompareFull: "Confronta: tutte le differenze",
   svNextSession:
     "Una volta installata, gli agenti la usano dalla loro conversazione successiva; quelli che stanno già parlando tengono la versione con cui hanno cominciato.",
+  dvForgetUnused: "Togli quelli mai usati",
+  dvForgetUnusedQ: "Togliere i dispositivi mai usati?",
+  dvForgetUnusedText:
+    "Vanno via tutti i dispositivi che non hanno mai fatto un accesso (per esempio un'app che non è riuscita a tenere la sua chiave). Restano quelli abbinati negli ultimi dieci minuti: potrebbero collegarsi proprio adesso.",
+  dvForgetUnusedDone: "Dispositivi tolti: {count}.",
 };
 
 export const dictionaries: Record<Lang, Record<Key, string>> = { en, it };

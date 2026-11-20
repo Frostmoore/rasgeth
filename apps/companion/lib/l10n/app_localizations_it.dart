@@ -10880,4 +10880,23 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get pairAgainNote =>
       'Questo dispositivo non ha più la sua chiave per questo server: abbinalo di nuovo con la password, senza toglierlo.';
+
+  @override
+  String get errKeystore =>
+      'Questo computer non è riuscito a salvare la chiave di accesso nel suo portachiavi, quindi l\'abbinamento è stato annullato e sul server non resta un dispositivo in più. Riprova; se succede ancora, riavvia il computer e riprova.';
+
+  @override
+  String get devForgetUnused => 'Togli quelli mai usati';
+
+  @override
+  String get devForgetUnusedTitle => 'Togliere i dispositivi mai usati?';
+
+  @override
+  String get devForgetUnusedBody =>
+      'Vanno via tutti i dispositivi che non hanno mai fatto un accesso (per esempio un\'app che non è riuscita a tenere la sua chiave). Restano quelli abbinati negli ultimi dieci minuti: potrebbero collegarsi proprio adesso.';
+
+  @override
+  String devForgetUnusedDone(int count) {
+    return 'Dispositivi tolti: $count.';
+  }
 }

@@ -37,6 +37,11 @@ import type { FirstAccess } from "./first-access.js";
 import { LoginError } from "./login.js";
 import { PushError } from "./push/service.js";
 
+/** A device paired this recently may still be connecting: never «unused» yet (3.9.8). */
+export const UNUSED_PAIRING_GRACE_MS = 10 * 60_000;
+/** A new pairing replaces the same app's never-used devices older than this (3.9.8). */
+export const PAIRING_REPLACES_AFTER_MS = 2 * 60_000;
+
 export interface DeviceRouteOptions<E extends { Variables: { principal: Principal } }> {
   owner: (c: Context<E>) => string;
   clientAddress: (c: Context<E>) => string;
@@ -106,10 +111,25 @@ export function deviceRoutes<E extends { Variables: { principal: Principal } }>(
         );
       throw err;
     }
+    // The same app pairing again replaces its own leftovers: devices with its name and platform
+    // that never signed in once (an app that could not keep its token, 3.9.8).
+    await core.devices
+      .forgetUnused(o.loginOwner, PAIRING_REPLACES_AFTER_MS, {
+        name: b.data.name,
+        platform: b.data.platform,
+      })
+      .catch(() => 0);
     return c.json(
       await core.devices.create(o.loginOwner, { name: b.data.name, platform: b.data.platform }),
       200,
     );
+  });
+
+  // «Togli quelli mai usati» (Settings › Devices, 3.9.8): every device that never signed in once,
+  // except one paired in the last minutes (its app may be connecting right now).
+  app.post("/api/devices/forget-unused", async (c) => {
+    const removed = await core.devices.forgetUnused(o.owner(c), UNUSED_PAIRING_GRACE_MS);
+    return c.json({ removed }, 200);
   });
 
   app.post("/api/devices", async (c) => {

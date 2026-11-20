@@ -542,6 +542,7 @@ class _AddServerState extends State<AddServer> {
     ConnectError.certificate => l.errCertificate,
     ConnectError.busy => l.errBusy,
     ConnectError.signInAgain => l.errSignInAgain,
+    ConnectError.keystore => l.errKeystore,
     _ => l.errGeneric(app.errorMessage ?? ''),
   };
 
