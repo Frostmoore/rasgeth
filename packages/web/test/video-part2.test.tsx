@@ -273,8 +273,8 @@ describe("3.10, video part 2: the inspector", () => {
 
   it("the music's beats from the server, then the cuts on them", async () => {
     const { r, host } = await open();
-    handlers.videoBeats = (_s: string, _p: string, clip: string) => ({
-      clip,
+    handlers.videoBeats = (..._args: unknown[]) => ({
+      clip: String(_args[2]),
       bpm: 120,
       frames: [12, 24, 37, 50, 98, 150],
     });
@@ -295,5 +295,53 @@ describe("3.10, video part 2: the inspector", () => {
       expect(host.doc.clips.find((c) => c.id === "a")?.sourceRange.duration).toBe(98),
     );
     expect(lastWhat()).toBe("beats");
+  });
+});
+
+describe("3.10, video part 2: the page's player", () => {
+  it("a box as a transform of the frame; the colour as CSS filters", async () => {
+    const { boxCss, colorCss } = await import("../src/components/viewers/video/player.js");
+    const base = timeline().clips[0] as VideoClip;
+    expect(boxCss({ ...base, box: { x: 0.75, y: 0.25, scale: 0.3 } }, 0)).toBe(
+      "translate(25%, -25%) scale(0.3)",
+    );
+    expect(
+      boxCss(
+        {
+          ...base,
+          boxKeys: [
+            { at: 0, x: 0.5, y: 0.5, scale: 1 },
+            { at: 10, x: 1, y: 0.5, scale: 0.5 },
+          ],
+        },
+        5,
+      ),
+    ).toBe("translate(25%, 0%) scale(0.75)");
+    expect(boxCss(base, 0)).toBe("");
+    expect(
+      colorCss({
+        ...base,
+        color: { exposure: 1, contrast: 0.2, saturation: -1, temperature: 0.5 },
+      }),
+    ).toBe("brightness(2) contrast(1.2) saturate(0) sepia(0.175)");
+    expect(
+      colorCss({ ...base, color: { exposure: 0, contrast: 0, saturation: 0, temperature: -1 } }),
+    ).toBe("hue-rotate(18deg)");
+  });
+
+  it("a speed reads further into the file, a still stays on its frame; the volume's keys", async () => {
+    const { videoLayers, audioLayers } = await import("../src/components/viewers/video/player.js");
+    const d = timeline();
+    const a = d.clips.find((c) => c.id === "a") as VideoClip;
+    a.speed = 2;
+    expect(videoLayers(d, "V1", 25, {})[0]?.time).toBeCloseTo(2);
+    a.freeze = true;
+    expect(videoLayers(d, "V1", 25, {})[0]?.time).toBeCloseTo(0);
+    const va = d.clips.find((c) => c.id === "va") as VideoClip;
+    va.volumeKeys = [
+      { at: 0, db: 0 },
+      { at: 50, db: -20 },
+    ];
+    expect(audioLayers(d, "A1", 50)[0]?.gain).toBeCloseTo(0.1);
   });
 });

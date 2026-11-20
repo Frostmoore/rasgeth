@@ -13,6 +13,7 @@
 // element per player, under it).
 
 import {
+  boxAt,
   clipEnd,
   clipLength,
   fitText,
@@ -26,6 +27,7 @@ import {
   type VideoKenBurns,
   type VideoTextRef,
   type VideoTransition,
+  volumeAt,
   wholeCrop,
 } from "@redgiant/protocol";
 
@@ -155,18 +157,55 @@ function kindOf(c: VideoClip, media: PlayerMediaMap): VideoLayer["kind"] {
   return c.ref.still || media[c.ref.media]?.kind === "image" ? "image" : "video";
 }
 
+/**
+ * 3.10: where a clip's box puts its picture, as a CSS transform of the whole frame (the render
+ * scales the picture and places its centre), or nothing for the whole frame.
+ */
+export function boxCss(c: VideoClip, offset: number): string {
+  if (!c.box && !c.boxKeys?.length) return "";
+  const b = boxAt(c, offset);
+  if (b.scale === 1 && b.x === 0.5 && b.y === 0.5) return "";
+  const n = (v: number) => Number(v.toFixed(4));
+  return `translate(${n((b.x - 0.5) * 100)}%, ${n((b.y - 0.5) * 100)}%) scale(${n(b.scale)})`;
+}
+
+/**
+ * 3.10: the colour correction as CSS filters, close to the render's (exposure as brightness in
+ * stops, contrast, saturation, temperature as a warm or cold tint). A LUT shows in the exact
+ * preview only (ffmpeg's).
+ */
+export function colorCss(c: VideoClip): string {
+  const k = c.color;
+  if (!k) return "";
+  const n = (v: number) => Number(v.toFixed(3));
+  const parts: string[] = [];
+  if (k.exposure) parts.push(`brightness(${n(2 ** k.exposure)})`);
+  if (k.contrast) parts.push(`contrast(${n(1 + k.contrast)})`);
+  if (k.saturation) parts.push(`saturate(${n(1 + k.saturation)})`);
+  if (k.temperature > 0) parts.push(`sepia(${n(k.temperature * 0.35)})`);
+  if (k.temperature < 0) parts.push(`hue-rotate(${n(k.temperature * -18)}deg)`);
+  return parts.join(" ");
+}
+
 function layerOf(doc: RgVideo, c: VideoClip, frame: number, media: PlayerMediaMap): VideoLayer {
   const kind = kindOf(c, media);
   const offset = frame - c.start;
   const rate = doc.format.rate;
   const L = clipLength(c);
+  // 3.10: a speed reads further into the file; a still stays on its first frame.
+  const into = c.freeze ? 0 : offset * (c.speed ?? 1);
   return {
     clip: c,
     kind,
-    time: framesToSeconds(c.sourceRange.start + offset, rate),
+    time: framesToSeconds(c.sourceRange.start + into, rate),
     opacity: fadeGain(c, frame),
     brightness: 1,
-    transform: c.kenBurns ? kenBurnsCss(c.kenBurns, offset / Math.max(1, L - 1)) : "",
+    transform: [
+      boxCss(c, offset),
+      c.kenBurns ? kenBurnsCss(c.kenBurns, offset / Math.max(1, L - 1)) : "",
+    ]
+      .filter(Boolean)
+      .join(" "),
     clipPath: "",
     top: false,
   };
@@ -267,10 +306,11 @@ export function audioLayers(doc: RgVideo, trackId: string, frame: number): Audio
     (track.duck?.under.some((u) => audioLayers({ ...doc, transitions: [] }, u, f).length) ?? false)
       ? dbGain(track.duck?.amountDb ?? -12)
       : 1;
+  // 3.10: a speed, and the volume's keys at this frame of the clip.
   const at = (c: VideoClip, g: number): AudioLayer => ({
     clip: c,
-    time: framesToSeconds(c.sourceRange.start + f - c.start, rate),
-    gain: Math.min(1, g * dbGain(c.volume) * duck),
+    time: framesToSeconds(c.sourceRange.start + (f - c.start) * (c.speed ?? 1), rate),
+    gain: Math.min(1, g * dbGain(volumeAt(c, f - c.start)) * duck),
   });
   const byId = new Map(clips.map((c) => [c.id, c]));
   for (const t of liveTransitions(doc, trackId)) {
@@ -570,9 +610,9 @@ export class TimelinePlayer {
     return slot;
   }
 
-  private drive(el: MediaLike, time: number, playing: boolean): void {
+  private drive(el: MediaLike, time: number, playing: boolean, speed = 1): void {
     if (playing) {
-      el.playbackRate = this.rate;
+      el.playbackRate = this.rate * speed;
       if (el.paused || Math.abs(el.currentTime - time) > DRIFT) el.currentTime = time;
       if (el.paused) void el.play()?.catch(() => {});
     } else {
@@ -622,7 +662,7 @@ export class TimelinePlayer {
         el.style.opacity = String(l.opacity);
         el.style.transform = [l.transform, frame?.transform].filter(Boolean).join(" ");
         el.style.clipPath = frame ? frame.clipPath : l.clipPath;
-        el.style.filter = bright;
+        el.style.filter = [bright, colorCss(l.clip)].filter(Boolean).join(" ");
         el.style.zIndex = z;
       };
       /** The picture of a file: where its crop puts it, and what shows around it. */
@@ -686,7 +726,7 @@ export class TimelinePlayer {
               ? { w: v.videoWidth, h: v.videoHeight }
               : undefined;
         place(slot.el, "vp-video", size, () => this.bgFor(e, slot), src, l.time);
-        this.drive(slot.el, l.time, playing);
+        this.drive(slot.el, l.time, playing && !l.clip.freeze, l.clip.speed ?? 1);
       } else if (l.kind === "image" && isMediaRef(l.clip.ref)) {
         const m = this.media[l.clip.ref.media];
         const i = img++;
@@ -742,7 +782,7 @@ export class TimelinePlayer {
       const slot = this.slotFor(e, src, l.clip.id, taken);
       taken.add(slot);
       slot.el.volume = Math.max(0, Math.min(1, l.gain));
-      this.drive(slot.el, l.time, playing);
+      this.drive(slot.el, l.time, playing, l.clip.speed ?? 1);
     }
     for (const s of e.slots) if (!taken.has(s)) this.idle(s);
     this.preload(id, e, frame, playing, taken);
