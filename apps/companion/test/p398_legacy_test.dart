@@ -321,7 +321,7 @@ void main() {
     }, skip: !Platform.isWindows);
   });
 
-  group('a RedGiant without its token', () {
+  group('a server without its token', () {
     AppController make(MemoryTokenStore t, MemoryAppPrefs p, {LegacySource? legacy}) =>
         AppController(
           tokens: t,
