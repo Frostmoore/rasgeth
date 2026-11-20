@@ -2476,6 +2476,18 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news398Passwords: "Passwords stay out of the chat",
+  news398PasswordsText:
+    "A password export pasted or attached by mistake (Bitwarden, Avira, Chrome, 1Password, KeePass…) is held back: «Put them in the keychain» imports them without the model ever seeing them. «Erase for good» removes one message from the conversation, the search and the engine's own copy.",
+  news398Requests: "Fewer requests",
+  news398RequestsText:
+    "Commands that only read, on containers and machines too, no longer ask; words inside a command (a commit message) no longer look like dangers. «Always allow for this job» covers the same kind of command for the rest of the work, also after a restart.",
+  news398Subscriptions: "Subscriptions that work everywhere",
+  news398SubscriptionsText:
+    "With a Claude or ChatGPT subscription your classifier, the agents' parents, the inspector and the portrait answer again instead of refusing everything; tools switched on are usable at once, and the plan's limits show in the header.",
+  news398App: "The app keeps its pairing",
+  news398AppText:
+    "The desktop app no longer loses the server it was paired with; a new pairing replaces the never-used devices, and God's field on the home page starts a new conversation each time.",
   news397Skills: "Skills that get better",
   news397SkillsText:
     "When an agent struggles with a skill it can propose a better version; you approve it, with one line saying what changed and why, and «Compare» shows every difference. Each skill keeps its history and you can go back to any version.",
@@ -9583,6 +9595,18 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news398Passwords: "Le password restano fuori dalla chat",
+  news398PasswordsText:
+    "Un'esportazione di password incollata o allegata per sbaglio (Bitwarden, Avira, Chrome, 1Password, KeePass…) viene trattenuta: «Mettile nel Portachiavi» le importa senza che il modello le veda mai. «Cancella per sempre» toglie un messaggio dalla conversazione, dalla ricerca e dalla copia del motore.",
+  news398Requests: "Meno richieste",
+  news398RequestsText:
+    "I comandi che leggono soltanto, anche su container e macchine, non chiedono più; le parole dentro un comando (un messaggio di commit) non sembrano più pericoli. «Consenti sempre per questo lavoro» vale per lo stesso tipo di comando per il resto del lavoro, anche dopo un riavvio.",
+  news398Subscriptions: "Abbonamenti che funzionano ovunque",
+  news398SubscriptionsText:
+    "Con un abbonamento Claude o ChatGPT il tuo classificatore, i genitori degli agenti, l'ispettore e il ritratto rispondono di nuovo invece di rifiutare tutto; gli strumenti accesi si usano subito e i limiti del piano si vedono in alto.",
+  news398App: "L'app non perde l'abbinamento",
+  news398AppText:
+    "L'app per il computer non dimentica più il server a cui è abbinata; un nuovo abbinamento sostituisce i dispositivi mai usati, e il campo di God nella home apre ogni volta una conversazione nuova.",
   news397Skills: "Abilità che migliorano",
   news397SkillsText:
     "Quando un agente fatica con un'abilità può proporne una versione migliore; la approvi tu, con una riga che dice cosa è cambiato e perché, e «Confronta» mostra ogni differenza. Ogni abilità tiene la sua cronologia e puoi tornare a qualsiasi versione.",
