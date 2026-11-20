@@ -84,6 +84,7 @@ import {
   type Event,
   type ImagePart,
   isCriticalId,
+  isMediaRef,
   type KitState,
   type ListName,
   MCP_CATALOG,
@@ -107,6 +108,7 @@ import {
   type RenderMachine,
   type RenderWhere,
   RequestSettings,
+  type RgVideo,
   renderMachines,
   renderWhere,
   replyLanguageLine,
@@ -220,6 +222,7 @@ import { svgCopyOfOriginal, svgFamily } from "./editor/svg-family.js";
 import { textFamily } from "./editor/text-family.js";
 import { type CanvasEditHost, canvasEditTool } from "./editor/tool.js";
 import { VideoAnalysis } from "./editor/video/analysis.js";
+import { clipBeats, musicClip } from "./editor/video/beats.js";
 import { fixedMachine, MediaMachine, type MediaMachineLike } from "./editor/video/machine.js";
 import { type MediaRunner, runMedia } from "./editor/video/media-run.js";
 import { VideoPreviews } from "./editor/video/preview.js";
@@ -5566,6 +5569,34 @@ export class RedGiantCore implements OrchestrationHost {
       ffmpeg: await this.programs.ensure(owner, "ffmpeg", into),
       ffprobe: await this.programs.ffprobe(owner, into),
     };
+  }
+
+  /**
+   * 3.10: the beats of an audio clip of a timeline (the page's «Rileva le battute»): the clip's
+   * part of its file read by ffmpeg, the beats in timeline frames.
+   */
+  async videoBeats(
+    owner: string,
+    doc: RgVideo,
+    clipId: string | undefined,
+    mediaAbs: (m: string) => Promise<string | undefined>,
+  ): Promise<{ clip: string; bpm: number; frames: number[] } | undefined> {
+    const clip = musicClip(doc, clipId);
+    if (!clip || !isMediaRef(clip.ref)) return undefined;
+    const abs = await mediaAbs(clip.ref.media);
+    if (!abs) return undefined;
+    const tools = await this.videoProgramsFor(owner);
+    const work = join(this.videoAnalysis.cacheRoot, "work");
+    await mkdir(work, { recursive: true });
+    const r = await clipBeats(
+      doc,
+      clip,
+      abs,
+      this.o.videoMedia?.run ?? runMedia,
+      tools.ffmpeg,
+      work,
+    );
+    return { clip: clip.id, ...r };
   }
 
   /** The video tool's host (G41.6). */

@@ -360,6 +360,22 @@ export function videoRoutes<E extends { Variables: any }>(
     return c.json({ jobs, silent, captions: captionsForTimeline(t.doc, transcripts) }, 200);
   });
 
+  // 3.10: the music's beats of a timeline (an audio clip's, else the music's): in frames.
+  app.post("/api/editor/video/beats", async (c) => {
+    const raw = (await c.req.json().catch(() => ({}))) as Record<string, unknown>;
+    const b = FileBody.safeParse(raw);
+    if (!b.success) return c.json({ error: b.error.message }, 400);
+    const clip = typeof raw.clip === "string" && raw.clip.length <= 80 ? raw.clip : undefined;
+    const o = owner(c);
+    const t = await timeline(o, b.data.scope, b.data.path);
+    const r = await core.videoBeats(o, t.doc, clip, async (m) => {
+      const abs = await t.mediaAbs(m);
+      return abs && (await stat(abs).catch(() => undefined))?.isFile() ? abs : undefined;
+    });
+    if (!r) return c.json({ error: "No music clip to read", code: "video_no_music" }, 404);
+    return c.json(r, 200);
+  });
+
   app.get("/api/editor/video/exact/:id", async (c) => {
     const o = owner(c);
     const file = core.videoPreviews.previewPath(o, c.req.param("id"));

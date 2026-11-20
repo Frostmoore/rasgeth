@@ -256,6 +256,76 @@ describe("the agent's operations", () => {
   });
 });
 
+describe("the agent's operations, video part 2 (3.10)", () => {
+  it("speed, still, box, colour and LUT in «set»; keys; undone exactly", () => {
+    const d0 = timeline();
+    const [c1, c2] = d0.clips.filter((c) => c.track === "V1").map((c) => c.id) as [string, string];
+    const d = roundTrip(
+      d0,
+      agent(d0, [
+        {
+          op: "set",
+          clips: [c1],
+          speed: 2,
+          color: { exposure: 0.4, saturation: -0.2 },
+          lut: "lut/a.cube",
+        },
+        { op: "set", clips: [c2], freeze: true, box: { x: 0.7, y: 0.3, scale: 0.4 } },
+        { op: "key", clip: c2, at: "6s", box: { x: 0.2, y: 0.8, scale: 0.6 } },
+        { op: "key", clip: c1, at: "2s", volume: -12 },
+      ]),
+    );
+    const one = d.clips.find((c) => c.id === c1);
+    const two = d.clips.find((c) => c.id === c2);
+    expect(one).toMatchObject({
+      speed: 2,
+      color: { exposure: 0.4, contrast: 0, saturation: -0.2, temperature: 0 },
+      lut: "lut/a.cube",
+    });
+    expect(two).toMatchObject({ freeze: true, box: { x: 0.7, y: 0.3, scale: 0.4 } });
+    expect(two?.boxKeys).toEqual([
+      { at: 0, x: 0.7, y: 0.3, scale: 0.4 },
+      { at: 50, x: 0.2, y: 0.8, scale: 0.6 },
+    ]);
+    expect(
+      d.clips
+        .filter((c) => c.link === one?.link)
+        .every((c) => !c.volumeKeys || c.volumeKeys.length === 2),
+    ).toBe(true);
+  });
+
+  it("slip, roll and beats; cuts to beats; what cannot be done says why", () => {
+    const d0 = timeline();
+    const [c1, c2] = d0.clips.filter((c) => c.track === "V1").map((c) => c.id) as [string, string];
+    // Nothing after the last piece: roll needs a clip that touches.
+    const bad = videoFromAgent(d0, [{ op: "roll", clip: c2, by: "4f" }]);
+    expect(bad).toMatchObject({
+      error: expect.stringContaining("a clip must touch it after"),
+      index: 0,
+    });
+    const d1 = roundTrip(d0, agent(d0, [{ op: "slip", clip: c2, by: "10f" }]));
+    expect(d1.clips.find((c) => c.id === c2)?.sourceRange.start).toBe(310);
+    const d2 = roundTrip(
+      d1,
+      agent(d1, [
+        { op: "beats", beats: ["1s", "3.92s", 300], of: c1 },
+        { op: "cuts_to_beats", track: "V1", within: "4f" },
+      ]),
+    );
+    expect(d2.beats).toEqual([25, 98, 300]);
+    expect(d2.clips.find((c) => c.id === c1)?.sourceRange.duration).toBe(98);
+    expect(videoFromAgent(d0, [{ op: "cuts_to_beats" }])).toMatchObject({
+      error: expect.stringContaining("no beats yet"),
+    });
+    expect(videoFromAgent(d0, [{ op: "set", clips: [c1], lut: "../x.cube" }])).toMatchObject({
+      error: expect.stringContaining("inside the project"),
+    });
+    expect(videoFromAgent(d0, [{ op: "set", clips: [c1], color: { contrast: 3 } }])).toMatchObject({
+      error: expect.stringContaining("from -1 to 1"),
+    });
+  });
+});
+
 describe("the structure an agent reads", () => {
   it("lists tracks from the top, clips with timecodes, gaps, links and the rest", () => {
     const d = agent(timeline(), [

@@ -16,6 +16,7 @@ import {
   clipOf,
   closeGap,
   copyClips,
+  cutsToBeats,
   diffTimeline,
   isLocked,
   kenBurnsPreset,
@@ -32,8 +33,11 @@ import {
   removeTrack,
   removeTransition,
   rippleDeleteClips,
+  rollEdit,
+  setBeats,
   setCaption,
   setCaptionSettings,
+  setClipKey,
   setClipProps,
   setFormat,
   setGenerator,
@@ -41,6 +45,8 @@ import {
   setNormalize,
   setTrack,
   setTransition,
+  slideClip,
+  slipClip,
   trackOf,
   trimClip,
   unlinkClips,
@@ -49,7 +55,9 @@ import {
   VIDEO_TEXT_STYLES,
   VIDEO_TRANSITIONS,
   type VideoAction,
+  type VideoBox,
   type VideoClipProps,
+  type VideoColor,
   type VideoEdit,
   type VideoFormat,
   type VideoKenBurns,
@@ -73,7 +81,11 @@ export const VIDEO_CATALOG = `Video timelines (.rgvideo, tracks as in DaVinci Re
 - {"op":"add_text","text":"Titolo","at":"0s","length":"4s","style":"${VIDEO_TEXT_STYLES.join("|")}","position":"${VIDEO_TEXT_POSITIONS.join("|")}","track":"V3","fade":"12f"}: a title clip on a video track (by default the top one if free there, otherwise a new track on top). {"op":"add_color","color":"#000000","at":…,"length":…}. {"op":"set_text","clip":"c9","text":"…"}.
 - {"op":"add_marker","at":…,"color":"${VIDEO_MARKER_COLORS.join("|")}","note":"…"} / {"op":"set_marker","id":"m1",…} / {"op":"remove_marker","id":"m1"}.
 - {"op":"captions","language":"it","burn_in":true,"style":"plain|boxed|bold","position":"bottom|top"} / {"op":"add_caption","start":…,"end":…,"text":"…"} / {"op":"set_caption","id":"s3","text":"…"} / {"op":"remove_captions","ids":["s3"]}.
-- {"op":"format","aspect":"16:9|9:16|1:1|free","width":1920,"height":1080,"rate":"30000/1001","name":"Gita","normalize":true}: a shape alone takes its usual size; another rate retimes every clip; "normalize" brings the finished sound to −14 LUFS (on unless false).`;
+- {"op":"format","aspect":"16:9|9:16|1:1|free","width":1920,"height":1080,"rate":"30000/1001","name":"Gita","normalize":true}: a shape alone takes its usual size; another rate retimes every clip; "normalize" brings the finished sound to −14 LUFS (on unless false).
+- 3.10, in "set": "speed":0.5|2 (slow or fast motion), "freeze":true (a still of the clip's first frame), "box":{"x":0.75,"y":0.25,"scale":0.3} (picture in picture: the centre, 0..1, and the size, 1 = the whole frame; null: the whole frame), "color":{"exposure":0.3,"contrast":0.1,"saturation":-0.2,"temperature":0.2} (exposure in stops −3..3, the others −1..1; null: as shot), "lut":"lut/film.cube" (a .cube of the project; null: none).
+- {"op":"key","clip":"c4","at":"2s","box":{"x":0.2,"y":0.8,"scale":0.4}} or "volume":-12: a keyframe at that time of the timeline; between keys the picture moves (and the sound changes) in a straight line. "box":null / "volume":null removes the key there.
+- {"op":"slip","clip":"c4","by":"10f"}: same place and length, other frames of its file. {"op":"slide","clip":"c4","by":"-12f"}: the clip moves between the two clips that touch it, which give and take the frames. {"op":"roll","clip":"c4","by":"8f"}: the cut after c4 moves (c4 longer, the next shorter).
+- {"op":"beats","beats":["0.5s","1s",…],"of":"c7"} (from video "beats": the music's beats; [] removes them) / {"op":"cuts_to_beats","track":"V1","within":"6f"}: every cut of the track rolls to the nearest beat within reach.`;
 
 type Plain = Record<string, unknown>;
 
@@ -244,11 +256,56 @@ function props(doc: RgVideo, o: Plain): VideoClipProps {
     p.speed = s === 1 ? null : s;
   }
   if (o.name !== undefined) p.name = o.name === null ? null : String(o.name).slice(0, 200);
+  // 3.10
+  const freeze = boolOf(o.freeze, "freeze");
+  if (freeze !== undefined) p.freeze = freeze;
+  if (o.box !== undefined) p.box = o.box === null ? null : boxOf(o.box, "box");
+  if (o.color !== undefined) p.color = o.color === null ? null : colorOf(o.color);
+  if (o.lut !== undefined) {
+    if (o.lut === null) p.lut = null;
+    else {
+      const lut = strOf(o.lut, '"lut" (a .cube of the project)').replace(/\\/g, "/");
+      if (!/\.cube$/i.test(lut) || lut.startsWith("/") || lut.split("/").includes(".."))
+        bad('"lut" is a .cube file inside the project');
+      p.lut = lut;
+    }
+  }
   if (!Object.keys(p).length)
     bad(
-      "say what to change (enabled, volume, fade_in, fade_out, ken_burns, fit, background, crop, name)",
+      "say what to change (enabled, volume, fade_in, fade_out, ken_burns, fit, background, crop, speed, freeze, box, color, lut, name)",
     );
   return p;
+}
+
+/** A box (picture in picture): its centre 0..1 and its scale. */
+function boxOf(v: unknown, what: string): VideoBox {
+  if (!v || typeof v !== "object") return bad(`"${what}" is {x, y, scale}`);
+  const o = v as Plain;
+  const b = {
+    x: numOf(o.x ?? 0.5, `${what}.x`),
+    y: numOf(o.y ?? 0.5, `${what}.y`),
+    scale: numOf(o.scale ?? 1, `${what}.scale`),
+  };
+  if (b.x < 0 || b.x > 1 || b.y < 0 || b.y > 1) bad(`"${what}" x and y are 0..1 (the centre)`);
+  if (b.scale < 0.05 || b.scale > 4) bad(`"${what}.scale" is from 0.05 to 4`);
+  return b;
+}
+
+/** A colour correction: exposure −3..3 stops, the others −1..1. */
+function colorOf(v: unknown): VideoColor {
+  if (!v || typeof v !== "object")
+    return bad('"color" is {exposure, contrast, saturation, temperature}');
+  const o = v as Plain;
+  const c = {
+    exposure: o.exposure === undefined ? 0 : numOf(o.exposure, "color.exposure"),
+    contrast: o.contrast === undefined ? 0 : numOf(o.contrast, "color.contrast"),
+    saturation: o.saturation === undefined ? 0 : numOf(o.saturation, "color.saturation"),
+    temperature: o.temperature === undefined ? 0 : numOf(o.temperature, "color.temperature"),
+  };
+  if (Math.abs(c.exposure) > 3) bad('"color.exposure" is from -3 to 3 (stops)');
+  for (const k of ["contrast", "saturation", "temperature"] as const)
+    if (Math.abs(c[k]) > 1) bad(`"color.${k}" is from -1 to 1`);
+  return c;
 }
 
 /** One operation: the edit it is, and the timeline after it. */
@@ -591,6 +648,58 @@ function one(doc: RgVideo, o: Plain): [VideoEdit, RgVideo, string] {
       const ids = (Array.isArray(raw) ? raw : [raw]).filter((x) => x !== undefined).map(String);
       if (!ids.length) bad('give "ids"');
       return ["caption", removeCaptions(doc, ids), " (there are no such subtitles)"];
+    }
+    // 3.10, video part 2
+    case "key": {
+      const [id] = clipsOf(doc, o) as [string];
+      const at = time(doc, o.at, "at");
+      const c = clipOf(doc, id) as NonNullable<ReturnType<typeof clipOf>>;
+      if (at < c.start || at >= clipEnd(c)) bad(`"at" must be inside clip ${id}`);
+      if (o.box !== undefined)
+        return [
+          "keys",
+          setClipKey(doc, id, "box", at, o.box === null ? null : boxOf(o.box, "box")),
+          "",
+        ];
+      if (o.volume !== undefined) {
+        const v = o.volume === null ? null : numOf(o.volume, "volume");
+        if (v !== null && (v < -60 || v > 12)) bad('"volume" is in dB, from -60 to +12');
+        return ["keys", setClipKey(doc, id, "volume", at, v), ""];
+      }
+      return bad('give "box" or "volume"');
+    }
+    case "slip":
+    case "slide":
+    case "roll": {
+      const [id] = clipsOf(doc, o) as [string];
+      const by = time(doc, o.by, "by");
+      const linked = o.linked === false ? { linked: false } : {};
+      const f = op === "slip" ? slipClip : op === "slide" ? slideClip : rollEdit;
+      const why =
+        op === "slip"
+          ? " (the file has no more frames that way)"
+          : op === "slide"
+            ? " (both neighbours must touch the clip, and keep a frame)"
+            : " (a clip must touch it after, and keep a frame)";
+      return [op, f(doc, id, by, linked), why];
+    }
+    case "beats": {
+      const list = Array.isArray(o.beats) ? o.beats : bad('"beats" is a list of times');
+      const beats = list.map((b, i) => time(doc, b, `beats[${i}]`));
+      const of = o.of === undefined || o.of === null ? undefined : clipsOf(doc, { clip: o.of })[0];
+      return ["beats", setBeats(doc, beats.length ? beats : null, of), ""];
+    }
+    case "cuts_to_beats": {
+      if (!doc.beats?.length) bad('no beats yet: video "beats" finds them, then op "beats"');
+      const track = trackIdOf(doc, o.track ?? "V1");
+      const within =
+        optTime(doc, o.within, "within") ??
+        Math.round(doc.format.rate.num / doc.format.rate.den / 4);
+      return [
+        "beats",
+        cutsToBeats(doc, track, within),
+        " (the cuts are already on the beats, or too far)",
+      ];
     }
     case "format": {
       const p: Partial<VideoFormat> = {};

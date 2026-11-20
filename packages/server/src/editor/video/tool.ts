@@ -35,6 +35,7 @@ import {
   type RenderWhere,
   type RgVideo,
   readRgVideo,
+  setBeats,
   setCaptionSegments,
   setCaptionSettings,
   timecode,
@@ -43,6 +44,7 @@ import {
   VIDEO_ENGINE_VERSION,
   VIDEO_EXPORT_FORMATS,
   type VideoAction,
+  type VideoClip,
   type VideoDocOp,
   type VideoRenderResult,
   validateInserts,
@@ -54,6 +56,7 @@ import { fileAt, within } from "../../canvas-tools.js";
 import type { Jobs } from "../../jobs.js";
 import type { EditorHost } from "../host.js";
 import type { VideoAnalysis, VideoTools } from "./analysis.js";
+import { clipBeats, musicClip } from "./beats.js";
 import { captionsForTimeline, timelineWords } from "./captions.js";
 import { exportText, exportTimeline, importOtio, VideoExportRateError } from "./export.js";
 import type { MediaRunner } from "./media-run.js";
@@ -107,7 +110,8 @@ Recommended flow: inspect → analyze → assemble → look at the B clips (fram
 - {"action":"frame","file":"riprese/porto.mp4","at":["2s","00:00:07:12"]} or "every":"2s": exact frames to look at (at most ${FRAMES_MAX}); on a timeline, the finished picture at that time.
 - {"action":"render","path":"montaggio.rgvideo","aspect":"16:9|9:16|1:1","height":1080,"quality":"draft|good|best"}: the MP4 (minutes; the person sees the bar and can cancel), saved as renders/<name>-v<n>.mp4 and shown. One render at a time per project. It is made on the machine the person chose for the project (this one or a node, asked at the first render); "where" only suggests one then, it cannot change their choice.
 - {"action":"export","path":"montaggio.rgvideo","format":"resolve|otio","media_root":"E:/Video/Sposi"}: the timeline for another editor, saved beside it: "resolve" an FCP7 XML for DaVinci Resolve (tracks, clips, off clips and tracks; fades, volumes, Ken Burns, titles and transitions are redone there), "otio" OpenTimelineIO (all of it). "media_root" is the folder of the original files on the computer that runs Resolve (ask the person); without it the files point to this machine.
-- {"action":"import","file":"da-resolve.otio","path":"montaggio.rgvideo"}: a new timeline from an .otio (its tracks, clips of the project's files, gaps, transitions, markers; the rest is listed as left out).`;
+- {"action":"import","file":"da-resolve.otio","path":"montaggio.rgvideo"}: a new timeline from an .otio or a DaVinci Resolve / Premiere FCP7 .xml (its tracks, clips of the project's files, gaps, transitions, markers; the rest is listed as left out).
+- {"action":"beats","path":"montaggio.rgvideo","clip":"c7"}: the music's beats (the clip named, else the longest music clip), found in its sound and kept in the timeline: shown on the ruler, taken by the snapping; then canvas_edit {"op":"cuts_to_beats","track":"V1"} puts the cuts on them.`;
 
 const Insert = z.object({
   media: z.string().min(1),
@@ -127,7 +131,10 @@ const Input = z.object({
     "render",
     "export",
     "import",
+    "beats",
   ]),
+  /** 3.10: the audio clip whose beats to find (else the music's). */
+  clip: z.string().min(1).max(80).optional(),
   files: z.array(z.string().min(1)).max(200).optional(),
   file: z.string().min(1).optional(),
   path: z.string().min(1).optional(),
@@ -736,6 +743,39 @@ export function videoTool(
     return `${segs.length} subtitles from the speech in ${tl.file.path} (revision ${out.revision})${next.captions.burnIn ? ", burnt into the picture at the render" : ", as SRT and WebVTT beside the render (burn_in: true writes them into the picture)"}.${silent.length ? ` No words in: ${silent.join(", ")}.` : ""} Fix a line with canvas_edit set_caption.`;
   };
 
+  /** 3.10: the music's beats into the timeline (one edit the person can undo). */
+  const beats = async (i: In, ctx: ToolContext) => {
+    const tl = await timeline(i.path);
+    if (host.readOnly(owner, tl.file.scope))
+      bad(`${basename(tl.file.path)} belongs to an archived project.`);
+    const clip = musicClip(tl.doc, i.clip);
+    if (!clip || !isMediaRef(clip.ref))
+      bad(i.clip ? `there is no audio clip «${i.clip}»` : "the timeline has no music clip");
+    const c = clip as VideoClip & { ref: { media: string } };
+    const abs = (await tl.mediaPath(c.ref.media)) ?? bad(`${c.ref.media} is missing`);
+    const tools = await host.tools(owner);
+    const work = join(host.analysis().cacheRoot, "work");
+    await mkdir(work, { recursive: true });
+    const r = await clipBeats(tl.doc, c, abs, host.run(), tools.ffmpeg, work, ctx.signal);
+    if (!r.frames.length) return `No beat found in ${c.ref.media} (too short, or no rhythm).`;
+    const next = setBeats(tl.doc, r.frames, c.id);
+    const action = diffTimeline(tl.doc, next, "beats");
+    if (!action) return `The beats are already these (${r.frames.length}, ${r.bpm} BPM).`;
+    await host.editor.writeNow(owner, tl.file).catch(() => {});
+    const read = await host.editor.read(owner, tl.file);
+    const out = await host.editor.apply(owner, tl.file, {
+      author: author(ctx),
+      baseRevision: read.revision,
+      ops: [wrap(action)],
+      groupId: host.editor.groupOf(ctx.sessionId),
+    });
+    if (!out.ok) return { content: `Refused (nothing changed): ${out.reason}.`, isError: true };
+    host.editor.seen(ctx.sessionId, owner, tl.file, out.revision);
+    const rate = tl.doc.format.rate;
+    const first = r.frames.slice(0, 8).map((f) => timecode(f, rate));
+    return `${r.frames.length} beats at about ${r.bpm} BPM in ${c.ref.media} (clip ${c.id}), kept in ${tl.file.path} (revision ${out.revision}): ${first.join(", ")}${r.frames.length > 8 ? "…" : ""}. canvas_edit {"op":"cuts_to_beats","track":"V1"} puts the cuts on them.`;
+  };
+
   const frame = async (i: In, ctx: ToolContext) => {
     const name = i.file ?? i.path ?? bad('give "file"');
     const side = i.width ?? 768;
@@ -965,8 +1005,10 @@ export function videoTool(
               "render",
               "export",
               "import",
+              "beats",
             ],
           },
+          clip: { type: "string", description: "beats: the music's audio clip (its id)" },
           files: {
             type: "array",
             items: { type: "string" },
@@ -1039,6 +1081,8 @@ export function videoTool(
             return await render(i, ctx);
           case "export":
             return await exportAction(i, ctx);
+          case "beats":
+            return await beats(i, ctx);
           case "import":
             return await importAction(i, ctx);
         }
