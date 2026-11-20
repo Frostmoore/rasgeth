@@ -2272,7 +2272,10 @@ export class RedGiantCore implements OrchestrationHost {
       model,
       ...(engine && { engine: engineOf }),
       ...(subscription && {
-        engineOnly: { name: `${model.provider.replace("-subscription", "")} subscription` },
+        engineOnly: {
+          name: `${model.provider.replace("-subscription", "")} subscription`,
+          present: () => this.o.providers.has(model.provider),
+        },
       }),
       system: [
         this.systemFor(agent),
