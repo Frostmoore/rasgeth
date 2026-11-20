@@ -3,7 +3,7 @@
 // unknown elements and the spaces in texts kept through edits, elements without an id named
 // first, conflicts on the same element, scripts and outside links refused, and the family in the
 // editor's host (PGlite) and from end to end with a scripted model (FakeProvider).
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, utimes, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { EventStore, migrate } from "@redgiant/events";
@@ -607,6 +607,10 @@ describe("a drawing in the editor's host", () => {
     const h = host();
     await h.read("me", file);
     await writeFile(join(dir, "ws", "a.svg"), one.replace('width="1"', 'width="2"'));
+    // The host tells a change by size and time; the same size written in the same instant (a
+    // fast Windows disk) keeps the time, so the outside save is moved a second on, as a real one is.
+    const later = new Date(Date.now() + 1000);
+    await utimes(join(dir, "ws", "a.svg"), later, later);
     const read = await h.read("me", file);
     expect(read.revision).toBe(1);
     const u = await h.undo("me", file, { revision: 1 }, { id: PERSON });
