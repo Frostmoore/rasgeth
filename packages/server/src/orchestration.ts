@@ -1164,6 +1164,13 @@ export function orchestrationTools(
         }),
         async run({ agent_id, message, include_shared }) {
           const a = target(agent_id);
+          // An orchestrator has no worktree (3.9.8, Coder: God was told «not an agent you
+          // manage»): it works in the project's folder itself, so there is nothing to merge.
+          if (a.kind === "orchestrator" && can(me, "message", a, host.registry.resolve))
+            return {
+              content: `Nothing to merge: ${a.name} is an orchestrator and works in the project's folder itself, not in a worktree. Its changes are already in the project; to keep them in git, ask ${a.name} to commit them (with run_command: git add and git commit).`,
+              isError: true,
+            };
           if (a.kind !== "agent" || !can(me, "message", a, host.registry.resolve)) {
             throw new Error(`${a.name} is not an agent you manage`);
           }

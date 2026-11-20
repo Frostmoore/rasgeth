@@ -439,6 +439,42 @@ describe("orchestration", () => {
     );
   });
 
+  it("merge_work on an orchestrator says it works in the project's folder (3.9.8)", async () => {
+    let orchId = "";
+    s = await startServer((req) => {
+      const { n } = step(req);
+      if (role(req) === "god" && n === 0)
+        return call("merge_work", { agent_id: orchId, message: "Keep it" });
+      return { text: "ok" };
+    });
+    const { core } = s;
+    const god = await s.api<{ id: string }>("POST", "/api/agents", {
+      kind: "god",
+      parentId: null,
+      name: "God",
+    });
+    await s.api("POST", "/api/projects", { name: "Folder" });
+    orchId = (
+      await s.api<{ id: string }>("POST", "/api/agents", {
+        kind: "orchestrator",
+        parentId: god.body.id,
+        projectId: "folder",
+        name: "O",
+      })
+    ).body.id;
+    const godRecord = core.registry.get(god.body.id);
+    if (!godRecord) throw new Error("no god");
+    const sid = await core.workSession(godRecord);
+    await (await core.send("me", sid, "Merge O's work")).done;
+    const results = (await core.store.list({ sessionId: sid }))
+      .filter((e) => e.type === "tool.result")
+      .map((e) => (e.payload as { output: string }).output);
+    expect(results[0]).toMatch(
+      /^Nothing to merge: O is an orchestrator and works in the project's folder/,
+    );
+    expect(results[0]).toContain("ask O to commit");
+  });
+
   it("merges an agent's worktree into the project, and shares one sandbox per project", async () => {
     let creates = 0;
     const host = new HostSandboxProvider();
