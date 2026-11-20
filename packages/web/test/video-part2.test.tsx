@@ -345,3 +345,57 @@ describe("3.10, video part 2: the page's player", () => {
     expect(audioLayers(d, "A1", 50)[0]?.gain).toBeCloseTo(0.1);
   });
 });
+
+describe("3.10, video part 2: the T tool", () => {
+  beforeEach(() => {
+    // Clips where their style puts them (one pixel per frame).
+    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (
+      this: Element,
+    ) {
+      const el = this as HTMLElement;
+      const left = el.dataset?.clip ? Number.parseFloat(el.style.left) : 0;
+      const width = el.dataset?.clip ? Number.parseFloat(el.style.width) : 0;
+      return {
+        left,
+        width,
+        right: left + width,
+        top: 0,
+        bottom: 44,
+        height: 44,
+        x: left,
+        y: 0,
+      } as DOMRect;
+    });
+  });
+  const drag = (el: Element, from: number, to: number, more: PointerEventInit = {}) => {
+    fireEvent.pointerDown(el, { button: 0, clientX: from, clientY: 10, ...more });
+    fireEvent.pointerMove(window, { clientX: to, clientY: 10 });
+    fireEvent.pointerUp(window, { clientX: to });
+  };
+
+  it("the middle of a clip slips its frames; Shift on a cut rolls it", async () => {
+    const { r, host } = await open();
+    await act(async () => state.setVideoEdit(KEY, { tool: "trim" }));
+    const b = () => host.doc.clips.find((c) => c.id === "b") as VideoClip;
+    const left = Number.parseFloat(
+      (r.container.querySelector("[data-clip=b]") as HTMLElement).style.left,
+    );
+    // Dragging left shows later frames of the file, as in Resolve; same place and length.
+    await act(async () =>
+      drag(r.container.querySelector("[data-clip=b]") as Element, left + 50, left + 40),
+    );
+    await waitFor(() => expect(b().sourceRange.start).toBe(60));
+    expect([b().start, b().sourceRange.duration]).toEqual([100, 100]);
+    expect(lastWhat()).toBe("slip");
+    // Shift on b's start: the cut between a and b moves, a longer and b shorter.
+    await act(async () =>
+      drag(r.container.querySelector("[data-clip=b]") as Element, left + 1, left + 9, {
+        shiftKey: true,
+      }),
+    );
+    await waitFor(() => expect(b().start).toBe(108));
+    expect(host.doc.clips.find((c) => c.id === "a")?.sourceRange.duration).toBe(108);
+    expect([b().sourceRange.start, b().sourceRange.duration]).toEqual([68, 92]);
+    expect(lastWhat()).toBe("roll");
+  });
+});
