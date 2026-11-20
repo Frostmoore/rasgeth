@@ -10823,4 +10823,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skCompareFull => 'Compare: every difference';
+
+  @override
+  String get pairAgain => 'Pair again';
+
+  @override
+  String get statusPairAgain => 'needs pairing again';
+
+  @override
+  String pairAgainTitle(String name) {
+    return 'Pair $name again';
+  }
+
+  @override
+  String pairAgainBody(String name) {
+    return 'This device no longer has its key for $name. Type the password: the server stays in the list with its settings and works again.';
+  }
+
+  @override
+  String get pairAgainNote =>
+      'This device no longer has its key for this server: pair it again with the password, without removing it.';
 }

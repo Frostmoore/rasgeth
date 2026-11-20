@@ -18668,6 +18668,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Compare: every difference'**
   String get skCompareFull;
+
+  /// No description provided for @pairAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair again'**
+  String get pairAgain;
+
+  /// No description provided for @statusPairAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'needs pairing again'**
+  String get statusPairAgain;
+
+  /// No description provided for @pairAgainTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair {name} again'**
+  String pairAgainTitle(String name);
+
+  /// No description provided for @pairAgainBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This device no longer has its key for {name}. Type the password: the server stays in the list with its settings and works again.'**
+  String pairAgainBody(String name);
+
+  /// No description provided for @pairAgainNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This device no longer has its key for this server: pair it again with the password, without removing it.'**
+  String get pairAgainNote;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

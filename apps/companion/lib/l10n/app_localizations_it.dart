@@ -10860,4 +10860,24 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get skCompareFull => 'Confronta: tutte le differenze';
+
+  @override
+  String get pairAgain => 'Abbina di nuovo';
+
+  @override
+  String get statusPairAgain => 'da abbinare di nuovo';
+
+  @override
+  String pairAgainTitle(String name) {
+    return 'Abbina di nuovo $name';
+  }
+
+  @override
+  String pairAgainBody(String name) {
+    return 'Questo dispositivo non ha più la sua chiave per $name. Scrivi la password: il server resta nell\'elenco con le sue impostazioni e torna a funzionare.';
+  }
+
+  @override
+  String get pairAgainNote =>
+      'Questo dispositivo non ha più la sua chiave per questo server: abbinalo di nuovo con la password, senza toglierlo.';
 }
