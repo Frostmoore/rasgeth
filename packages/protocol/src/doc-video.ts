@@ -123,6 +123,37 @@ export type VideoRef = z.infer<typeof VideoRef>;
 export const VideoKenBurns = z.object({ from: VideoRect, to: VideoRect });
 export type VideoKenBurns = z.infer<typeof VideoKenBurns>;
 
+/**
+ * Where a clip's picture sits in the frame (3.10, picture in picture): its centre (0..1 of the
+ * width and the height) and its scale (1: the whole frame, 0.3: a box a third wide). Absent: the
+ * whole frame, as before. Resolve's «Basic Motion» (centre and scale) says the same.
+ */
+export const VideoBox = z.object({
+  x: Unit,
+  y: Unit,
+  scale: z.number().min(0.05).max(4),
+});
+export type VideoBox = z.infer<typeof VideoBox>;
+/** A box at a frame of the clip (from its first frame): the picture moves linearly between keys. */
+export const VideoBoxKey = VideoBox.extend({ at: Frame });
+export type VideoBoxKey = z.infer<typeof VideoBoxKey>;
+/** A volume (dB) at a frame of the clip: the sound goes linearly between keys. */
+export const VideoVolumeKey = z.object({ at: Frame, db: z.number().min(-60).max(12) });
+export type VideoVolumeKey = z.infer<typeof VideoVolumeKey>;
+/**
+ * A simple colour correction (3.10): exposure in stops, contrast, saturation and temperature from
+ * −1 to 1 (0: as shot; −1 saturation: black and white; temperature −1 cold, 1 warm).
+ */
+export const VideoColor = z.object({
+  exposure: z.number().min(-3).max(3).default(0),
+  contrast: z.number().min(-1).max(1).default(0),
+  saturation: z.number().min(-1).max(1).default(0),
+  temperature: z.number().min(-1).max(1).default(0),
+});
+export type VideoColor = z.infer<typeof VideoColor>;
+/** The longest list of keys on one clip. */
+export const VIDEO_KEYS_MAX = 200;
+
 export const VideoClip = z.object({
   id: Id,
   track: VideoTrackId,
@@ -150,6 +181,16 @@ export const VideoClip = z.object({
   crop: VideoRect.optional(),
   /** Speed (A3, 3.10): 0.5 slower, 2 faster; the source range is what plays. */
   speed: z.number().min(0.1).max(10).optional(),
+  /** A still of the source's first frame for the whole clip (3.10, «fermo immagine»). */
+  freeze: z.boolean().optional(),
+  /** Where the picture sits (3.10, picture in picture); with `boxKeys` it moves. */
+  box: VideoBox.optional(),
+  boxKeys: z.array(VideoBoxKey).max(VIDEO_KEYS_MAX).optional(),
+  /** The volume over time (3.10): with keys `volume` is not used. */
+  volumeKeys: z.array(VideoVolumeKey).max(VIDEO_KEYS_MAX).optional(),
+  color: VideoColor.optional(),
+  /** A `.cube` LUT of the project, applied after the colour correction (3.10). */
+  lut: z.string().min(1).max(4000).optional(),
   metadata: Meta.optional(),
 });
 export type VideoClip = z.infer<typeof VideoClip>;
@@ -286,6 +327,12 @@ export const RgVideo = z.object({
   normalize: z.boolean().optional(),
   /** Set only in a named version's copy (A5). */
   version: VideoVersionInfo.optional(),
+  /**
+   * The music's beats (3.10), in timeline frames: found in an audio clip's sound, drawn on the
+   * ruler and taken by the snapping; `beatsOf` names the clip they came from.
+   */
+  beats: z.array(Frame).max(20_000).optional(),
+  beatsOf: Id.optional(),
   metadata: Meta.optional(),
 });
 export type RgVideo = z.infer<typeof RgVideo>;
@@ -301,6 +348,8 @@ export const VIDEO_META_KEYS = [
   "assembled",
   "normalize",
   "version",
+  "beats",
+  "beatsOf",
   "metadata",
 ] as const;
 export const VideoMetaKey = z.enum(VIDEO_META_KEYS);
@@ -332,6 +381,12 @@ export const VIDEO_EDITS = [
   "format",
   "replace",
   "edit",
+  "slip",
+  "slide",
+  "roll",
+  "beats",
+  "color",
+  "keys",
 ] as const;
 export const VideoEdit = z.enum(VIDEO_EDITS);
 export type VideoEdit = z.infer<typeof VideoEdit>;

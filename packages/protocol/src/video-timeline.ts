@@ -12,15 +12,19 @@ import {
   RGVIDEO_FORMAT_VERSION,
   RgVideo,
   VIDEO_ASPECTS,
+  VIDEO_KEYS_MAX,
   VIDEO_MARKER_COLORS,
   VIDEO_TEXT_POSITIONS,
   VIDEO_TEXT_STYLES,
   VIDEO_TRANSITIONS,
   type VideoAspect,
+  type VideoBox,
+  type VideoBoxKey,
   type VideoCaption,
   type VideoCaptionSettings,
   type VideoCaptionWord,
   type VideoClip,
+  type VideoColor,
   type VideoColorRef,
   type VideoDuck,
   type VideoFormat,
@@ -37,6 +41,7 @@ import {
   type VideoTransition,
   type VideoTransitionKind,
   type VideoVersionInfo,
+  type VideoVolumeKey,
 } from "./doc-video.js";
 
 /** Makes a new id with this prefix (c clip, g link, m marker, t transition, s caption). */
@@ -914,9 +919,29 @@ export interface VideoClipProps {
   speed?: number | null;
   name?: string | null;
   metadata?: Record<string, unknown> | null;
+  /** 3.10: a still frame, the picture's box and the keys, the colour and a LUT. */
+  freeze?: boolean | null;
+  box?: VideoBox | null;
+  boxKeys?: VideoBoxKey[] | null;
+  volumeKeys?: VideoVolumeKey[] | null;
+  color?: VideoColor | null;
+  lut?: string | null;
 }
 
-const OPTIONAL_PROPS = ["kenBurns", "background", "crop", "speed", "name", "metadata"] as const;
+const OPTIONAL_PROPS = [
+  "kenBurns",
+  "background",
+  "crop",
+  "speed",
+  "name",
+  "metadata",
+  "freeze",
+  "box",
+  "boxKeys",
+  "volumeKeys",
+  "color",
+  "lut",
+] as const;
 
 export function setClipProps(
   doc0: RgVideo,
@@ -941,9 +966,35 @@ export function setClipProps(
     c.volume = Math.max(-60, Math.min(12, Math.round(c.volume * 10) / 10));
     c.fadeIn = Math.round(c.fadeIn);
     c.fadeOut = Math.round(c.fadeOut);
+    tidyClip(c);
   }
   if (!changed) return doc0;
   return settle(doc);
+}
+
+/**
+ * A clip's 3.10 settings kept in order: keys inside the clip, sorted, one per frame (the last
+ * set wins), none left empty; a colour with nothing changed removed; a speed of 1 removed.
+ */
+export function tidyClip(c: VideoClip): void {
+  const len = clipLength(c);
+  const keys = <T extends { at: number }>(list: T[] | undefined): T[] | undefined => {
+    if (!list) return undefined;
+    const by = new Map<number, T>();
+    for (const k of list) by.set(Math.max(0, Math.min(len - 1, Math.round(k.at))), k);
+    const out = [...by.entries()].sort((a, b) => a[0] - b[0]).map(([at, k]) => ({ ...k, at }));
+    return out.length ? out : undefined;
+  };
+  const bk = keys(c.boxKeys);
+  if (bk) c.boxKeys = bk;
+  else delete c.boxKeys;
+  const vk = keys(c.volumeKeys);
+  if (vk) c.volumeKeys = vk;
+  else delete c.volumeKeys;
+  const k = c.color;
+  if (k && !k.exposure && !k.contrast && !k.saturation && !k.temperature) delete c.color;
+  if (c.speed === 1) delete c.speed;
+  if (c.freeze === false) delete c.freeze;
 }
 
 /** A text's or a colour's content (the clip keeps its place and length). */
@@ -1392,6 +1443,8 @@ export function snapPoints(
       pts.add(clipEnd(c));
     }
   for (const m of doc.markers) pts.add(m.frame);
+  // 3.10: the music's beats.
+  for (const b of doc.beats ?? []) pts.add(b);
   if (playhead !== null) pts.add(playhead);
   return [...pts];
 }
@@ -1673,8 +1726,47 @@ function clipFrom(
   if (crop) clip.crop = crop;
   if (typeof c.speed === "number" && Number.isFinite(c.speed) && c.speed !== 1)
     clip.speed = numOf(c.speed, 0.1, 10, 1);
+  // 3.10: a still, the picture's box and its keys, the volume's keys, the colour, a LUT.
+  if (c.freeze === true) clip.freeze = true;
+  const box = boxOf(c.box);
+  if (box) clip.box = box;
+  if (Array.isArray(c.boxKeys)) {
+    const keys = c.boxKeys
+      .slice(0, VIDEO_KEYS_MAX)
+      .filter(isObj)
+      .flatMap((k) => {
+        const b = boxOf(k);
+        return b ? [{ at: intOf(k.at, 0, F, 0), ...b }] : [];
+      });
+    if (keys.length) clip.boxKeys = keys;
+  }
+  if (Array.isArray(c.volumeKeys)) {
+    const keys = c.volumeKeys
+      .slice(0, VIDEO_KEYS_MAX)
+      .filter(isObj)
+      .map((k) => ({ at: intOf(k.at, 0, F, 0), db: numOf(k.db, -60, 12, 0) }));
+    if (keys.length) clip.volumeKeys = keys;
+  }
+  if (isObj(c.color))
+    clip.color = {
+      exposure: numOf(c.color.exposure, -3, 3, 0),
+      contrast: numOf(c.color.contrast, -1, 1, 0),
+      saturation: numOf(c.color.saturation, -1, 1, 0),
+      temperature: numOf(c.color.temperature, -1, 1, 0),
+    };
+  const lut = strOf(c.lut, 4000);
+  if (lut && /\.cube$/i.test(lut)) clip.lut = lut;
   if (isObj(c.metadata)) clip.metadata = c.metadata;
+  tidyClip(clip);
   return clip;
+}
+
+/** A box read from a file: centre inside the frame, scale within its limits. */
+function boxOf(v: unknown): VideoBox | undefined {
+  if (!isObj(v)) return undefined;
+  if (typeof v.x !== "number" || typeof v.y !== "number" || typeof v.scale !== "number")
+    return undefined;
+  return { x: numOf(v.x, 0, 1, 0.5), y: numOf(v.y, 0, 1, 0.5), scale: numOf(v.scale, 0.05, 4, 1) };
 }
 
 /**
@@ -1816,6 +1908,19 @@ export function cleanTimeline(raw: unknown, probes?: Record<string, VideoProbe>)
       ...(typeof d.version.of === "string" && { of: d.version.of.slice(0, 4000) }),
       reason: d.version.reason === "before_assemble" ? "before_assemble" : "manual",
     };
+  if (Array.isArray(d.beats)) {
+    const beats = [
+      ...new Set(
+        d.beats
+          .slice(0, 20_000)
+          .map((b) => intOf(b, -1, F, -1))
+          .filter((b) => b >= 0),
+      ),
+    ].sort((a, b) => a - b);
+    if (beats.length) doc.beats = beats;
+    const of = idOf(d.beatsOf);
+    if (beats.length && of) doc.beatsOf = of;
+  }
   if (isObj(d.metadata)) doc.metadata = d.metadata;
   doc.transitions = validTransitions(doc, doc.transitions);
   // The schema's own key order (an edit and its inverse give back the same bytes).
@@ -1953,4 +2058,264 @@ export function fromVersion(version: RgVideo): RgVideo {
 export function versionFileOf(file: string): { stamp: string; name: string } | undefined {
   const m = /^(\d{4}-\d{2}-\d{2} \d{4}) (.+)\.rgvideo$/i.exec(file.split("/").pop() ?? "");
   return m ? { stamp: m[1] as string, name: (m[2] as string).trim() } : undefined;
+}
+
+// -------------------------------------------------------------------------------------------
+// 3.10, video part 2: keys, slip/slide/roll, beats
+
+/** Linear between two values. */
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+/** The keys around frame `at` of a clip and how far between them (0..1). */
+function around<T extends { at: number }>(keys: readonly T[], at: number): [T, T, number] {
+  const first = keys[0] as T;
+  const last = keys[keys.length - 1] as T;
+  if (at <= first.at) return [first, first, 0];
+  if (at >= last.at) return [last, last, 0];
+  for (let i = 1; i < keys.length; i++) {
+    const b = keys[i] as T;
+    if (b.at >= at) {
+      const a = keys[i - 1] as T;
+      return [a, b, b.at === a.at ? 0 : (at - a.at) / (b.at - a.at)];
+    }
+  }
+  return [last, last, 0];
+}
+
+/** The whole frame: a clip without a box. */
+export const FULL_BOX: VideoBox = { x: 0.5, y: 0.5, scale: 1 };
+
+/** Where the picture is at frame `at` of the clip (from its first frame): keys, else its box. */
+export function boxAt(c: Pick<VideoClip, "box" | "boxKeys">, at: number): VideoBox {
+  const keys = c.boxKeys;
+  if (!keys?.length) return c.box ?? FULL_BOX;
+  const [a, b, t] = around(keys, at);
+  return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t), scale: lerp(a.scale, b.scale, t) };
+}
+
+/** The volume (dB) at frame `at` of the clip: keys, else its volume. */
+export function volumeAt(c: Pick<VideoClip, "volume" | "volumeKeys">, at: number): number {
+  const keys = c.volumeKeys;
+  if (!keys?.length) return c.volume;
+  const [a, b, t] = around(keys, at);
+  return lerp(a.db, b.db, t);
+}
+
+/**
+ * Sets a key of clip `id` at timeline frame `frame` (`box` or `volume`), or removes the one there
+ * (`value` null). The first key of a clip without keys starts from what it shows now: a box key
+ * added at a later frame also keeps the present box at the clip's first frame, so the picture
+ * moves from where it was; the same for the volume.
+ */
+export function setClipKey(
+  doc0: RgVideo,
+  id: string,
+  kind: "box" | "volume",
+  frame: number,
+  value: VideoBox | number | null,
+): RgVideo {
+  const c0 = doc0.clips.find((c) => c.id === id);
+  if (!c0 || isLocked(doc0, c0.track)) return doc0;
+  const at = Math.max(0, Math.min(clipLength(c0) - 1, Math.round(frame - c0.start)));
+  if (kind === "box") {
+    let keys = [...(c0.boxKeys ?? [])];
+    if (value === null) keys = keys.filter((k) => k.at !== at);
+    else {
+      if (!keys.length && at > 0) keys.push({ at: 0, ...(c0.box ?? FULL_BOX) });
+      keys = keys.filter((k) => k.at !== at);
+      keys.push({ at, ...(value as VideoBox) });
+    }
+    return setClipProps(doc0, [id], { boxKeys: keys.length ? keys : null });
+  }
+  let keys = [...(c0.volumeKeys ?? [])];
+  if (value === null) keys = keys.filter((k) => k.at !== at);
+  else {
+    if (!keys.length && at > 0) keys.push({ at: 0, db: c0.volume });
+    keys = keys.filter((k) => k.at !== at);
+    keys.push({ at, db: Math.max(-60, Math.min(12, value as number)) });
+  }
+  return setClipProps(doc0, [id], { volumeKeys: keys.length ? keys : null });
+}
+
+/** The source frames a clip uses: its length at its speed (a still uses one). */
+export const sourceUsed = (c: VideoClip): number =>
+  c.freeze ? 1 : Math.ceil(clipLength(c) * (c.speed ?? 1));
+
+/** How far a clip's source may move: left to its file's start, right to its end. */
+function slipRoom(c: VideoClip): { left: number; right: number } {
+  if (isStillClip(c) || c.freeze)
+    return { left: Number.POSITIVE_INFINITY, right: Number.POSITIVE_INFINITY };
+  const frames = (c.ref as VideoMediaRef).frames;
+  return {
+    left: c.sourceRange.start,
+    right:
+      frames === undefined
+        ? Number.POSITIVE_INFINITY
+        : frames - (c.sourceRange.start + sourceUsed(c)),
+  };
+}
+
+/** The clips of `id`'s group that move with it (linked, unless `linked` false), on unlocked tracks. */
+function groupOf(doc: RgVideo, id: string, linked?: boolean): VideoClip[] {
+  const ids = linked === false ? [id] : withLinked(doc, [id]);
+  return doc.clips.filter((c) => ids.includes(c.id) && !isLocked(doc, c.track));
+}
+
+/** Neighbours of a clip on its track, only when they touch it. */
+function touching(doc: RgVideo, c: VideoClip): { prev?: VideoClip; next?: VideoClip } {
+  const sorted = trackClips(doc, c.track);
+  const i = sorted.findIndex((x) => x.id === c.id);
+  const prev = sorted[i - 1];
+  const next = sorted[i + 1];
+  return {
+    ...(prev && clipEnd(prev) === c.start && { prev }),
+    ...(next && next.start === clipEnd(c) && { next }),
+  };
+}
+
+/**
+ * Slip (Resolve's, the T tool on a clip's middle): the clip stays where it is and as long as it is,
+ * the part of its file it plays moves by `delta` frames, within the file.
+ */
+export function slipClip(
+  doc0: RgVideo,
+  id: string,
+  delta: number,
+  o: { linked?: boolean } = {},
+): RgVideo {
+  const doc = clone(doc0);
+  const group = groupOf(doc, id, o.linked);
+  if (!group.length) return doc0;
+  let lo = Number.NEGATIVE_INFINITY;
+  let hi = Number.POSITIVE_INFINITY;
+  for (const c of group) {
+    const r = slipRoom(c);
+    lo = Math.max(lo, -r.left);
+    hi = Math.min(hi, r.right);
+  }
+  const d = Math.max(lo, Math.min(hi, Math.round(delta)));
+  if (!d || !Number.isFinite(d)) return doc0;
+  for (const c of group)
+    if (!isStillClip(c) && !c.freeze)
+      c.sourceRange = { start: c.sourceRange.start + d, duration: c.sourceRange.duration };
+  return settle(doc);
+}
+
+/**
+ * Slide (Resolve's, Alt with the T tool): the clip moves by `delta` frames between the two clips
+ * that touch it, which give and take the frames (the one before ends later or sooner, the one
+ * after starts later or sooner); its own content and length stay. Both neighbours must touch it.
+ */
+export function slideClip(
+  doc0: RgVideo,
+  id: string,
+  delta: number,
+  o: { linked?: boolean } = {},
+): RgVideo {
+  const doc = clone(doc0);
+  const group = groupOf(doc, id, o.linked);
+  if (!group.length) return doc0;
+  let lo = Number.NEGATIVE_INFINITY;
+  let hi = Number.POSITIVE_INFINITY;
+  const pairs: { c: VideoClip; prev: VideoClip; next: VideoClip }[] = [];
+  for (const c of group) {
+    const { prev, next } = touching(doc, c);
+    if (!prev || !next || isLocked(doc, c.track)) return doc0;
+    pairs.push({ c, prev, next });
+    // The one before: at least one frame, and its file must have the frames it takes.
+    lo = Math.max(lo, 1 - clipLength(prev));
+    hi = Math.min(
+      hi,
+      slipRoom(prev).right === Number.POSITIVE_INFINITY ? hi : slipRoom(prev).right,
+    );
+    // The one after: at least one frame, and its file must start early enough.
+    hi = Math.min(hi, clipLength(next) - 1);
+    lo = Math.max(lo, -slipRoom(next).left);
+  }
+  const d = Math.max(lo, Math.min(hi, Math.round(delta)));
+  if (!d || !Number.isFinite(d)) return doc0;
+  for (const { c, prev, next } of pairs) {
+    prev.sourceRange = { start: prev.sourceRange.start, duration: prev.sourceRange.duration + d };
+    c.start += d;
+    next.start += d;
+    next.sourceRange = {
+      start: next.sourceRange.start + (isStillClip(next) || next.freeze ? 0 : d),
+      duration: next.sourceRange.duration - d,
+    };
+  }
+  return settle(doc);
+}
+
+/**
+ * Roll (Resolve's, the T tool on a cut): the cut between two clips that touch moves by `delta`
+ * frames; the clip before gets longer as the one after gets shorter, nothing else moves. `id` is
+ * the clip before the cut.
+ */
+export function rollEdit(
+  doc0: RgVideo,
+  id: string,
+  delta: number,
+  o: { linked?: boolean } = {},
+): RgVideo {
+  const doc = clone(doc0);
+  const group = groupOf(doc, id, o.linked);
+  if (!group.length) return doc0;
+  let lo = Number.NEGATIVE_INFINITY;
+  let hi = Number.POSITIVE_INFINITY;
+  const pairs: { a: VideoClip; b: VideoClip }[] = [];
+  for (const a of group) {
+    const { next: b } = touching(doc, a);
+    if (!b) continue;
+    pairs.push({ a, b });
+    lo = Math.max(lo, 1 - clipLength(a), -slipRoom(b).left);
+    hi = Math.min(hi, clipLength(b) - 1);
+    const right = slipRoom(a).right;
+    if (Number.isFinite(right)) hi = Math.min(hi, right);
+  }
+  if (!pairs.length) return doc0;
+  const d = Math.max(lo, Math.min(hi, Math.round(delta)));
+  if (!d || !Number.isFinite(d)) return doc0;
+  for (const { a, b } of pairs) {
+    a.sourceRange = { start: a.sourceRange.start, duration: a.sourceRange.duration + d };
+    b.start += d;
+    b.sourceRange = {
+      start: b.sourceRange.start + (isStillClip(b) || b.freeze ? 0 : d),
+      duration: b.sourceRange.duration - d,
+    };
+  }
+  return settle(doc);
+}
+
+/** The beats found in an audio clip's sound (timeline frames), or none (`null`). */
+export function setBeats(doc0: RgVideo, beats: readonly number[] | null, of?: string): RgVideo {
+  const doc = clone(doc0);
+  if (beats === null || !beats.length) {
+    delete doc.beats;
+    delete doc.beatsOf;
+  } else {
+    doc.beats = [...new Set(beats.map((b) => Math.max(0, Math.round(b))))].sort((a, b) => a - b);
+    if (of) doc.beatsOf = of;
+    else delete doc.beatsOf;
+  }
+  return doc;
+}
+
+/**
+ * «Taglia a ritmo»: every cut between two touching clips of `trackId` rolls to the nearest beat
+ * within `maxShift` frames (a cut already on a beat stays; the beats are the timeline's).
+ */
+export function cutsToBeats(doc0: RgVideo, trackId: string, maxShift: number): RgVideo {
+  const beats = doc0.beats ?? [];
+  if (!beats.length) return doc0;
+  let doc = doc0;
+  for (const a of trackClips(doc0, trackId)) {
+    const now = doc.clips.find((c) => c.id === a.id);
+    if (!now) continue;
+    const { next } = touching(doc, now);
+    if (!next) continue;
+    const cut = clipEnd(now);
+    const to = snap(cut, beats, maxShift);
+    if (to !== cut) doc = rollEdit(doc, now.id, to - cut);
+  }
+  return doc;
 }

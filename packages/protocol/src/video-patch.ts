@@ -5,6 +5,7 @@
 // made on an older revision applies as it is after another that touched other entities: two
 // actions conflict only on the same id, on an entity the other points at (a clip's track, a
 // transition's clips), or on clips of one track that would overlap.
+import { z } from "zod";
 import {
   type RgVideo,
   type VideoAction,
@@ -87,6 +88,10 @@ function metaValue(key: VideoMetaKey, v: unknown): unknown {
       return v === null ? null : v === true;
     case "version":
       return v === null ? null : VideoVersionInfo.parse(v);
+    case "beats":
+      return v === null ? null : z.array(z.number().int().min(0)).max(20_000).parse(v);
+    case "beatsOf":
+      return v === null ? null : String(v).slice(0, 80);
     case "metadata":
       return v === null ? null : (v as Record<string, unknown>);
   }
@@ -267,6 +272,8 @@ export function diffTimeline(
     "assembled",
     "normalize",
     "version",
+    "beats",
+    "beatsOf",
     "metadata",
   ] as const) {
     const b = metaOf(before, key);
