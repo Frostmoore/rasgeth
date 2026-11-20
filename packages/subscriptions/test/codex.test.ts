@@ -337,3 +337,42 @@ describe("ChatGPT on a subscription", () => {
     expect(codexWindows(null)).toEqual([]);
   });
 });
+
+describe("one answer without tools (3.9.8: the person's classifier)", () => {
+  const request = {
+    model: "gpt-6",
+    system: "You decide.",
+    tools: [],
+    messages: [{ role: "user" as const, parts: [{ type: "text" as const, text: "May it?" }] }],
+  };
+
+  it("answers through a Codex thread with no tools, and keeps no thread", async () => {
+    const p = await provider();
+    const events = [];
+    for await (const e of p.stream(request)) events.push(e);
+    const done = events.at(-1);
+    expect(done?.type).toBe("done");
+    if (done?.type !== "done") return;
+    expect(done.completion.message.parts).toEqual([
+      { type: "text", text: '{"decision":"allow","reason":"ok"}' },
+    ]);
+    expect(done.completion.provider).toBe("chatgpt-subscription");
+    expect(done.completion.usage.outputTokens).toBe(12);
+    const { readdir } = await import("node:fs/promises");
+    const home = (p as unknown as { nativeFolder: string }).nativeFolder.replace(
+      /[/\\]generated_images$/,
+      "",
+    );
+    expect(await readdir(home)).not.toContain("rasgeth-thread-tools.json");
+  });
+
+  it("a request with tools still never streams", async () => {
+    const p = await provider();
+    await expect(async () => {
+      for await (const _ of p.stream({
+        ...request,
+        tools: [{ name: "x", description: "x", inputSchema: {} }],
+      }));
+    }).rejects.toThrow(/runs through its engine/);
+  });
+});
