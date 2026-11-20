@@ -18864,6 +18864,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The agent is working: stop it or wait for it to finish, then try again.'**
   String get cvEraseBusy;
+
+  /// No description provided for @pairAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair again'**
+  String get pairAgain;
+
+  /// No description provided for @statusPairAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'needs pairing again'**
+  String get statusPairAgain;
+
+  /// No description provided for @pairAgainTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair {name} again'**
+  String pairAgainTitle(String name);
+
+  /// No description provided for @pairAgainBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This device no longer has its key for {name}. Type the password: the server stays in the list with its settings and works again.'**
+  String pairAgainBody(String name);
+
+  /// No description provided for @pairAgainNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This device no longer has its key for this server: pair it again with the password, without removing it.'**
+  String get pairAgainNote;
+
+  /// No description provided for @errKeystore.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer could not save the access key in its keystore, so the pairing was undone and no extra device is left on the server. Try again; if it happens again, restart the computer and try again.'**
+  String get errKeystore;
+
+  /// No description provided for @devForgetUnused.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the ones never used'**
+  String get devForgetUnused;
+
+  /// No description provided for @devForgetUnusedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the devices never used?'**
+  String get devForgetUnusedTitle;
+
+  /// No description provided for @devForgetUnusedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Every device that never signed in once goes (an app that could not keep its key, for example). The ones paired in the last ten minutes stay: they may be connecting right now.'**
+  String get devForgetUnusedBody;
+
+  /// No description provided for @devForgetUnusedDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices removed: {count}.'**
+  String devForgetUnusedDone(int count);
 }
 
 class _AppLocalizationsDelegate

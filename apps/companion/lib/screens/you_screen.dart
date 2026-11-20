@@ -312,6 +312,8 @@ class _ServerTile extends StatelessWidget {
     final c = RgColors.of(context);
     final s = server;
     final on = current && app.connected;
+    // A RedGiant without a valid token stays here: paired again, never dropped (3.9.8).
+    final pair = current && app.needsPairing;
     return Container(
       key: Key('server-${s.id}'),
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
@@ -333,8 +335,13 @@ class _ServerTile extends StatelessWidget {
             isThreeLine: true,
             trailing: current
                 ? Text(
-                    on ? l.statusConnected : l.statusUnreachable,
-                    style: TextStyle(color: on ? c.ok : c.dim),
+                    on
+                        ? l.statusConnected
+                        : pair
+                        ? l.statusPairAgain
+                        : l.statusUnreachable,
+                    key: Key('server-status-${s.id}'),
+                    style: TextStyle(color: on ? c.ok : (pair ? c.warnText : c.dim)),
                   )
                 : TextButton(
                     key: Key('use-${s.id}'),
@@ -342,6 +349,26 @@ class _ServerTile extends StatelessWidget {
                     child: Text(l.useServer),
                   ),
           ),
+          if (pair)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(l.pairAgainNote, style: TextStyle(color: c.text, fontSize: 13)),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: FilledButton.icon(
+                      key: Key('pair-again-${s.id}'),
+                      onPressed: app.connecting ? null : () => askPairAgain(context, s),
+                      icon: const RgIcon(RgIcons.lock, size: 16),
+                      label: Text(l.pairAgain),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           if (s.fingerprint != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 6),
@@ -405,6 +432,70 @@ class _ServerTile extends StatelessWidget {
   }
 }
 
+/// «Abbina di nuovo»: the password for [s] at its own address, the same entry kept.
+Future<void> askPairAgain(BuildContext context, SavedServer s) async {
+  final app = AppScope.read(context);
+  final name = readableName(label: s.label);
+  final password = await showRgWindow<String>(
+    context: context,
+    builder: (_) => _PairAgainDialog(name: name),
+  );
+  if (password == null || password.isEmpty) return;
+  await app.pairAgain(s, password);
+}
+
+class _PairAgainDialog extends StatefulWidget {
+  const _PairAgainDialog({required this.name});
+
+  final String name;
+
+  @override
+  State<_PairAgainDialog> createState() => _PairAgainDialogState();
+}
+
+class _PairAgainDialogState extends State<_PairAgainDialog> {
+  final _password = TextEditingController();
+
+  @override
+  void dispose() {
+    _password.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return AlertDialog(
+      title: Text(l.pairAgainTitle(widget.name)),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(l.pairAgainBody(widget.name)),
+          const SizedBox(height: 12),
+          TextField(
+            key: const Key('pair-again-password'),
+            controller: _password,
+            obscureText: true,
+            autofocus: true,
+            autofillHints: const [AutofillHints.password],
+            decoration: InputDecoration(labelText: l.serverPassword),
+            onSubmitted: (v) => Navigator.pop(context, v),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(l.cancel)),
+        FilledButton(
+          key: const Key('pair-again-yes'),
+          onPressed: () => Navigator.pop(context, _password.text),
+          child: Text(l.pairAgain),
+        ),
+      ],
+    );
+  }
+}
+
 /// Adding a RedGiant: one found on the network, or an address; then the password once.
 class AddServer extends StatefulWidget {
   const AddServer({super.key});
@@ -451,6 +542,7 @@ class _AddServerState extends State<AddServer> {
     ConnectError.certificate => l.errCertificate,
     ConnectError.busy => l.errBusy,
     ConnectError.signInAgain => l.errSignInAgain,
+    ConnectError.keystore => l.errKeystore,
     _ => l.errGeneric(app.errorMessage ?? ''),
   };
 

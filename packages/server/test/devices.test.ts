@@ -307,3 +307,51 @@ describe("the app as a channel of the requests (G36.17)", () => {
     app.close();
   });
 });
+
+describe("devices never used (3.9.8)", () => {
+  it("forgetUnused: only never used, only older than the grace, only with that name when asked", async () => {
+    const { db } = await memoryDb();
+    await migrateDevices(db);
+    let now = Date.parse("2026-11-20T10:00:00Z");
+    const store = new DeviceStore(db, { now: () => now });
+    const revoked: string[][] = [];
+    store.on("revoked", (_o, ids) => revoked.push(ids));
+    const win = { name: "Rasgeth (Windows)", platform: "windows" as const };
+    const old1 = await store.create("me", win);
+    const old2 = await store.create("me", win);
+    const used = await store.create("me", win);
+    await store.used(used.device.id, "10.0.0.2");
+    const phone = await store.create("me", { name: "Rasgeth (Android)", platform: "android" });
+    const theirs = await store.create("other", win);
+    now += 5 * 60_000;
+    const fresh = await store.create("me", win);
+    // Same name and platform, older than two minutes, never used: the two leftovers only.
+    expect(await store.forgetUnused("me", 2 * 60_000, win)).toBe(2);
+    expect(revoked.flat().sort()).toEqual([old1.device.id, old2.device.id].sort());
+    const left = (await store.list("me")).map((d) => d.id).sort();
+    expect(left).toEqual([used.device.id, phone.device.id, fresh.device.id].sort());
+    // Every never-used one older than the grace: the phone's; the fresh one stays.
+    expect(await store.forgetUnused("me", 2 * 60_000)).toBe(1);
+    expect((await store.list("me")).map((d) => d.id).sort()).toEqual(
+      [used.device.id, fresh.device.id].sort(),
+    );
+    expect(await store.authenticate(old1.token)).toBeNull();
+    expect(await store.authenticate(theirs.token)).not.toBeNull();
+  });
+
+  it("over HTTP: a new pairing replaces nothing recent; «forget unused» says how many went", async () => {
+    s = await startServer(() => ({ text: "x" }));
+    await s.api("PUT", "/api/auth/password", { password: PASSWORD });
+    const dev = { name: "Rasgeth (Windows)", platform: "windows" };
+    for (let i = 0; i < 3; i++) {
+      expect((await anon("POST", "/api/app/pair", { ...dev, password: PASSWORD })).status).toBe(
+        200,
+      );
+    }
+    // Just paired: all three may still be connecting, none is removed.
+    expect((await s.api<DeviceView[]>("GET", "/api/devices")).body).toHaveLength(3);
+    const r = await s.api<{ removed: number }>("POST", "/api/devices/forget-unused", {});
+    expect(r.status).toBe(200);
+    expect(r.body).toEqual({ removed: 0 });
+  });
+});

@@ -1260,6 +1260,13 @@ class RedGiantClient {
     for (final d in _array(await _get('/api/devices'))) DeviceRow.fromJson(d),
   ];
 
+  /// `POST /api/devices/forget-unused` (3.9.8): every device that never signed in once (but
+  /// those paired in the last minutes); how many went.
+  Future<int> forgetUnusedDevices() async {
+    final r = _object(await _post('/api/devices/forget-unused', const {}));
+    return (r['removed'] as num?)?.toInt() ?? 0;
+  }
+
   /// `DELETE /api/devices/:id`: that device is signed out at once.
   Future<void> revokeDevice(String id) =>
       _call('DELETE', '/api/devices/${Uri.encodeComponent(id)}');

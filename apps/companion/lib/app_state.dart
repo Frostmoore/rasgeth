@@ -18,6 +18,7 @@ import 'api/discovery.dart';
 import 'api/live.dart';
 import 'api/live_model.dart';
 import 'api/names.dart';
+import 'api/legacy_data.dart';
 import 'api/servers.dart';
 import 'api/settings_types.dart';
 import 'api/setup_channel.dart';
@@ -70,7 +71,21 @@ enum ConnectError {
 
   /// The password is needed again (a revoked token, or requests that ride the setup channel).
   signInAgain,
+
+  /// The device's token could not be saved in the system's keystore (3.9.8): the pairing was
+  /// undone (the device just made revoked), the person is told, never a silent failure.
+  keystore,
   other,
+}
+
+/// The keystore refused (or did not finish) a token's write, or read back something else.
+class KeystoreWriteFailed implements Exception {
+  const KeystoreWriteFailed(this.detail);
+
+  final String detail;
+
+  @override
+  String toString() => 'KeystoreWriteFailed: $detail';
 }
 
 typedef ClientFactory = RedGiantClient Function(SavedServer server, String? token);
@@ -88,6 +103,10 @@ DevicePlatform currentPlatform() {
   }
 }
 
+/// How long a keystore write or read may take before pairing is undone (3.9.8: the Windows
+/// plugin retries a failing write forever).
+const kKeystoreTimeout = Duration(seconds: 15);
+
 class AppController extends ChangeNotifier {
   AppController({
     TokenStore? tokens,
@@ -102,6 +121,7 @@ class AppController extends ChangeNotifier {
     ShareIntake? share,
     VoiceRecorder? recorder,
     VoicePlayer? player,
+    this.legacy,
   }) : tokens = tokens ?? SecureTokenStore(),
        prefs = prefs ?? MemoryAppPrefs(),
        platform = platform ?? currentPlatform(),
@@ -155,6 +175,12 @@ class AppController extends ChangeNotifier {
   ResumeState Function()? resumeNow;
 
   final TokenStore tokens;
+
+  /// How long the keystore may take (shorter in tests).
+  Duration keystoreTimeout = kKeystoreTimeout;
+
+  /// The app's data under its name before 3.9.0, carried once at start (Windows; null elsewhere).
+  final LegacySource? legacy;
   final AppPrefs prefs;
   final DevicePlatform platform;
   final ClientFactory? _clientFactory;
@@ -411,6 +437,11 @@ class AppController extends ChangeNotifier {
     }
     desktopNotify = await prefs.get('desktopNotify') != '0';
     desktopFrom = int.tryParse(await prefs.get('desktopFrom') ?? '') ?? kDesktopFrom;
+    try {
+      await carryLegacyData(source: legacy, prefs: prefs, tokens: tokens);
+    } on Object {
+      // The next start tries again; what the app has now is used as it is.
+    }
     servers = await book.load();
     _renameSeen = await prefs.get('renameSeen') != null;
     // The app's own memory: the first start of a version with the new name finds servers saved
@@ -435,7 +466,13 @@ class AppController extends ChangeNotifier {
     error = null;
     errorMessage = null;
     await prefs.set('current', s.id);
-    final token = await tokens.read(s.id);
+    String? token;
+    try {
+      token = await tokens.read(s.id);
+    } on Object {
+      // An unreadable keystore (the plugin drops its file then): paired again, never forgotten.
+      token = null;
+    }
     if (token == null) return _fail(ConnectError.signInAgain);
     if (transportFor(s.base, hasCa: s.caPem != null) == TransportKind.channel) {
       // The channel carries its own sign-in, not the device's token: the password again.
@@ -472,7 +509,11 @@ class AppController extends ChangeNotifier {
             address: h.address,
             deviceId: h.deviceId,
           );
-    await _keep(saved, h.token);
+    try {
+      await _keep(saved, h.token);
+    } on KeystoreWriteFailed catch (e) {
+      return _fail(ConnectError.keystore, e.detail);
+    }
     notifyListeners();
     final ok = await useServer(saved);
     if (ok && old != null && old != h.deviceId) {
@@ -525,9 +566,11 @@ class AppController extends ChangeNotifier {
         fingerprint: h.nodeFingerprint,
         deviceId: created.device.id,
       );
-      await _keep(saved, created.token);
+      await _keep(saved, created.token, undo: () => c.revokeDevice(created.device.id));
       await _use(c, checked: true);
       return connected;
+    } on KeystoreWriteFailed catch (e) {
+      return _fail(ConnectError.keystore, e.detail);
     } on ApiException catch (e) {
       // A local name with RedGiant's own CA, not trusted yet: the setup channel gets the CA.
       if (e.certificate && _lan(base.host)) viaChannel = true;
@@ -598,7 +641,7 @@ class AppController extends ChangeNotifier {
           server = https;
           await _check(c, https);
           saved = https;
-          await _keep(saved, device.token);
+          await _keep(saved, device.token, undo: () => c.revokeDevice(device.deviceId));
           await ch.close();
           ch = null;
           await _use(c, checked: true);
@@ -608,8 +651,8 @@ class AppController extends ChangeNotifier {
           c.close();
         }
       }
-      await _keep(saved, device.token);
       final c = _clientFor(saved, device.token, transport: ChannelTransport(ch!));
+      await _keep(saved, device.token, undo: () => c.revokeDevice(device.deviceId));
       ch = null;
       await _use(c, checked: true);
       return connected;
@@ -624,6 +667,8 @@ class AppController extends ChangeNotifier {
       }, e.message);
     } on SetupRequestException catch (e) {
       return _fail(ConnectError.other, e.message);
+    } on KeystoreWriteFailed catch (e) {
+      return _fail(ConnectError.keystore, e.detail);
     } on ApiException catch (e) {
       return _fail(_errorOf(e), e.message);
     } on _KeyChanged catch (e) {
@@ -644,8 +689,30 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _keep(SavedServer s, String token) async {
-    await tokens.write(s.id, token);
+  /// Keeps [s] with its token: written, read back, only then the server is saved. On failure the
+  /// device just made is revoked ([undo]) so none piles up on the server, and the caller tells
+  /// the person ([ConnectError.keystore]).
+  Future<void> _keep(SavedServer s, String token, {Future<void> Function()? undo}) async {
+    String? failure;
+    try {
+      await tokens.write(s.id, token).timeout(keystoreTimeout);
+      final back = await tokens.read(s.id).timeout(keystoreTimeout);
+      if (back != token) failure = 'the token read back is not the one written';
+    } on TimeoutException {
+      failure = 'the keystore did not answer in ${keystoreTimeout.inSeconds} s';
+    } on Object catch (e) {
+      failure = '$e';
+    }
+    if (failure != null) {
+      if (undo != null) {
+        try {
+          await undo().timeout(const Duration(seconds: 10));
+        } on Object {
+          // The device stays listed as never used: Settings › Devices can remove it.
+        }
+      }
+      throw KeystoreWriteFailed(failure);
+    }
     servers = await book.put(s);
     server = s;
     await prefs.set('current', s.id);
@@ -676,6 +743,33 @@ class AppController extends ChangeNotifier {
       // The app's own name is enough.
     }
     notifyListeners();
+  }
+
+  /// The RedGiant in use has no valid token (lost, refused): it stays in the list, to be paired
+  /// again with its password ([pairAgain]); forgetting it is the person's own choice.
+  bool get needsPairing => server != null && error == ConnectError.signInAgain;
+
+  /// Pairs [s] again at its address: the same entry (its name, the app's settings for it), a
+  /// new device token, and the device the app had there before revoked.
+  Future<bool> pairAgain(SavedServer s, String password, {String? code}) async {
+    final ok = await connect(s.address, password, code: code);
+    final now = server;
+    if (!ok || now == null) return ok;
+    if (now.label != s.label) {
+      final n = now.copyWith(label: s.label);
+      servers = await book.put(n);
+      server = n;
+    }
+    final old = s.deviceId;
+    if (old != null && old != now.deviceId) {
+      unawaited(client?.revokeDevice(old).catchError((Object _) {}));
+    }
+    if (now.id != s.id) {
+      servers = await book.remove(s.id);
+      unawaited(tokens.delete(s.id).catchError((Object _) {}));
+    }
+    notifyListeners();
+    return ok;
   }
 
   /// Forgets a token the app no longer uses (a RedGiant paired again under another id).

@@ -1386,6 +1386,9 @@ export class Api {
   renameDevice = (id: string, name: string) =>
     this.call<DeviceView>("PATCH", `/api/devices/${encodeURIComponent(id)}`, { name });
   revokeDevice = (id: string) => this.call("DELETE", `/api/devices/${encodeURIComponent(id)}`);
+  /** 3.9.8: every device that never signed in once (but those paired in the last minutes). */
+  forgetUnusedDevices = () =>
+    this.call<{ removed: number }>("POST", "/api/devices/forget-unused", {});
   /** «Send a test» to a device's notifications (G40.4). */
   testDevicePush = (id: string) =>
     this.call<{ ok: boolean; error?: string; gone?: boolean }>(

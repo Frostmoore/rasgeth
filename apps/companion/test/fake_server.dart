@@ -1800,6 +1800,11 @@ class FakeRedGiant {
       return os == null ? _json(r, 400, {'error': 'Not Rasgeth OS'}) : _json(r, 200, os);
     }
     if (r.method == 'GET' && path == '/api/devices') return _json(r, 200, devices);
+    if (r.method == 'POST' && path == '/api/devices/forget-unused') {
+      final before = devices.length;
+      devices.removeWhere((d) => d['lastUsedAt'] == null && d['current'] != true);
+      return _json(r, 200, {'removed': before - devices.length});
+    }
     final dev = RegExp(r'^/api/devices/([^/]+)$').firstMatch(path);
     if (r.method == 'PATCH' && dev != null) {
       final body = jsonDecode(await utf8.decoder.bind(r).join()) as Map<String, dynamic>;

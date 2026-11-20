@@ -73,6 +73,23 @@ export function Devices() {
     }
   };
 
+  const forgetUnused = async () => {
+    if (
+      !(await askConfirm(t("dvForgetUnusedQ"), {
+        text: t("dvForgetUnusedText"),
+        yes: t("dvForgetUnused"),
+        danger: true,
+      }))
+    )
+      return;
+    const r = await attempt(() => getApi().forgetUnusedDevices());
+    if (r) {
+      setDone(t("dvForgetUnusedDone", { count: String(r.removed) }));
+      reload();
+    }
+  };
+  const unused = list?.filter((d) => !d.lastUsedAt && !d.current).length ?? 0;
+
   const test = async (d: DeviceView) => {
     setDone(undefined);
     const r = await attempt(() => getApi().testDevicePush(d.id));
@@ -129,6 +146,17 @@ export function Devices() {
           <p class="dim">{t("dvNone")}</p>
         ) : null}
       </Box>
+      {unused > 0 && (
+        <p>
+          <button
+            type="button"
+            class="wz-btn small quiet dv-forget-unused"
+            onClick={() => void forgetUnused()}
+          >
+            {t("dvForgetUnused")}
+          </button>
+        </p>
+      )}
       <p class="ui-help">{t("dvKeysNote")}</p>
       {done && (
         <p class="notice ok" role="status">

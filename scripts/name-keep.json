@@ -332,5 +332,11 @@
     "path": "packaging/release-kind.json",
     "group": "rename",
     "why": "the 3.9.0 breaking note tells a 3.8.x install that RedGiant is now called Rasgeth"
+  },
+  {
+    "path": "apps/companion/lib/api/legacy_data.dart",
+    "pattern": "RedGiant.{1,4}RGCompanion",
+    "group": "history",
+    "why": "the app's Windows folder before 3.9.0 (%APPDATA%\\RedGiant\\RGCompanion), read once to carry its keystore and servers over (3.9.8)"
   }
 ]

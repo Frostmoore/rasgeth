@@ -3126,5 +3126,15 @@
   "cvEraseQuotes": "Cancella anche {n} risposte e risultati dell'agente che lo riportano",
   "cvEraseYes": "Cancella per sempre",
   "cvEraseDone": "Cancellato per sempre ({n}).",
-  "cvEraseBusy": "L'agente sta lavorando: fermalo o aspetta che finisca, poi riprova."
+  "cvEraseBusy": "L'agente sta lavorando: fermalo o aspetta che finisca, poi riprova.",
+  "pairAgain": "Abbina di nuovo",
+  "statusPairAgain": "da abbinare di nuovo",
+  "pairAgainTitle": "Abbina di nuovo {name}",
+  "pairAgainBody": "Questo dispositivo non ha più la sua chiave per {name}. Scrivi la password: il server resta nell'elenco con le sue impostazioni e torna a funzionare.",
+  "pairAgainNote": "Questo dispositivo non ha più la sua chiave per questo server: abbinalo di nuovo con la password, senza toglierlo.",
+  "errKeystore": "Questo computer non è riuscito a salvare la chiave di accesso nel suo portachiavi, quindi l'abbinamento è stato annullato e sul server non resta un dispositivo in più. Riprova; se succede ancora, riavvia il computer e riprova.",
+  "devForgetUnused": "Togli quelli mai usati",
+  "devForgetUnusedTitle": "Togliere i dispositivi mai usati?",
+  "devForgetUnusedBody": "Vanno via tutti i dispositivi che non hanno mai fatto un accesso (per esempio un'app che non è riuscita a tenere la sua chiave). Restano quelli abbinati negli ultimi dieci minuti: potrebbero collegarsi proprio adesso.",
+  "devForgetUnusedDone": "Dispositivi tolti: {count}."
 }

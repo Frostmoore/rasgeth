@@ -16,7 +16,9 @@ namespace {
 // from Runner.rc) moved with the name, RedGiant\RGCompanion before 3.9.0 and Rasgeth\Rasgeth now.
 // At the first start under the new name the old folder (pairing, settings, the secure storage,
 // which DPAPI ties to the user, not to the folder) is copied over, once, when the new one is not
-// there yet; the old one stays as it was, so an older app still finds its own.
+// there yet; the old one stays as it was. From 3.9.8 the app itself also reads the old folder once
+// (lib/api/legacy_data.dart): keystore entries and servers the new one lacks are carried over, and
+// only the old keystore file is removed, after every entry was written anew and read back.
 void CarryOldAppData() {
   PWSTR roaming = nullptr;
   if (FAILED(::SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, nullptr, &roaming))) return;

@@ -11155,4 +11155,43 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cvEraseBusy =>
       'The agent is working: stop it or wait for it to finish, then try again.';
+
+  @override
+  String get pairAgain => 'Pair again';
+
+  @override
+  String get statusPairAgain => 'needs pairing again';
+
+  @override
+  String pairAgainTitle(String name) {
+    return 'Pair $name again';
+  }
+
+  @override
+  String pairAgainBody(String name) {
+    return 'This device no longer has its key for $name. Type the password: the server stays in the list with its settings and works again.';
+  }
+
+  @override
+  String get pairAgainNote =>
+      'This device no longer has its key for this server: pair it again with the password, without removing it.';
+
+  @override
+  String get errKeystore =>
+      'This computer could not save the access key in its keystore, so the pairing was undone and no extra device is left on the server. Try again; if it happens again, restart the computer and try again.';
+
+  @override
+  String get devForgetUnused => 'Remove the ones never used';
+
+  @override
+  String get devForgetUnusedTitle => 'Remove the devices never used?';
+
+  @override
+  String get devForgetUnusedBody =>
+      'Every device that never signed in once goes (an app that could not keep its key, for example). The ones paired in the last ten minutes stay: they may be connecting right now.';
+
+  @override
+  String devForgetUnusedDone(int count) {
+    return 'Devices removed: $count.';
+  }
 }

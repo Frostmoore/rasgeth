@@ -8339,5 +8339,36 @@
   "cvEraseBusy": "The agent is working: stop it or wait for it to finish, then try again.",
   "@cvEraseBusy": {
     "description": "The page's `eraseBusy` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "pairAgain": "Pair again",
+  "statusPairAgain": "needs pairing again",
+  "pairAgainTitle": "Pair {name} again",
+  "@pairAgainTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pairAgainBody": "This device no longer has its key for {name}. Type the password: the server stays in the list with its settings and works again.",
+  "@pairAgainBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pairAgainNote": "This device no longer has its key for this server: pair it again with the password, without removing it.",
+  "errKeystore": "This computer could not save the access key in its keystore, so the pairing was undone and no extra device is left on the server. Try again; if it happens again, restart the computer and try again.",
+  "devForgetUnused": "Remove the ones never used",
+  "devForgetUnusedTitle": "Remove the devices never used?",
+  "devForgetUnusedBody": "Every device that never signed in once goes (an app that could not keep its key, for example). The ones paired in the last ten minutes stay: they may be connecting right now.",
+  "devForgetUnusedDone": "Devices removed: {count}.",
+  "@devForgetUnusedDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }
