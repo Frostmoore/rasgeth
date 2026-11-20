@@ -189,10 +189,16 @@ export function Canvas({
       ),
     [id, site, artifact, editable, shown?.kind],
   );
+  // An editor shows no viewer: its kind is the file's (G42.18: the app's bar says «Timeline
+  // video» for a timeline being edited, as it says the kind of a file only looked at).
+  const kindNow =
+    editable && target.kind === "file" && !artifact && !site
+      ? viewerFor(target.path).kind
+      : shown?.kind;
   useEffect(() => {
-    if (shown)
-      onShown?.({ kind: shown.kind, ...(shown.size !== undefined && { size: shown.size }) });
-  }, [shown?.kind, shown?.size]);
+    if (kindNow)
+      onShown?.({ kind: kindNow, ...(shown?.size !== undefined && { size: shown.size }) });
+  }, [kindNow, shown?.size]);
   // The agent's move, said for a few seconds in the head.
   const move = lastMove.value?.id === id ? lastMove.value : undefined;
   const [moveShown, setMoveShown] = useState<number>();

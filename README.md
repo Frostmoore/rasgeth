@@ -380,8 +380,14 @@ Rasgeth is in pre-alpha. What comes next, in order:
   beside the whole Rasgeth), new file names for every download, the `rasgeth` command and the site
   [rasgeth.it](https://rasgeth.it/). The data stay where they are; moving over is a clean install that the
   page guides, with a checked backup first.
-- **3.10 — Video and 3D generation**: a video editor shared by you and the agent, and 3D
-  generation with local or cloud engines, finished in Blender.
+- **3.10 — Video and 3D generation** (3.10.0 brings the video; 3D generation follows): a video editor
+  with tracks, shared by you and the agent. The agent assembles a first cut from your clips (words, silences,
+  speech or cover shots), writes the subtitles and puts music under them that dips when someone speaks; you
+  cut, move clips across tracks, trim with ripple, make J- and L-cuts, add transitions, titles and Ken Burns,
+  with Resolve's keys, and ask the agent about the very clip you chose. The video is made where you choose,
+  this machine or a node with its graphics card (NVENC), and the timeline opens in DaVinci Resolve (XML) or
+  any OpenTimelineIO tool. The same editor in the app, with its keys, files dragged from its tree and the
+  render in the system's notifications. Then 3D generation with local or cloud engines, finished in Blender.
 - **3.11 — Emulators in the Canvas**: an Android emulator or the iOS simulator found on the computer
   opens in the Canvas, for you and for the agents trying the apps they build.
 - **4.0 — Alpha**: documentation, security and privacy pages, and a stability round on everything.

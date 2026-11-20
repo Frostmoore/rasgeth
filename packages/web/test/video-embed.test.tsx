@@ -296,7 +296,7 @@ describe("G42.18: the timeline in the app", () => {
     fireEvent.input(box, { target: { value: "Accorcia questa parte" } });
     fireEvent.click(byText(r.container.querySelector(".ve-ask") as HTMLElement, "button", "Manda"));
     await waitFor(() => expect(r.container.querySelector(".ve-ask")).toBeNull());
-    const ask = toApp.find((m) => m.t === "askAgent") as { text: string; ref: unknown };
+    const ask = toApp.find((m) => m.t === "askAgent") as unknown as { text: string; ref: unknown };
     expect(ask.ref).toEqual({ scope: "p1", path: "video/gita.rgvideo" });
     expect(ask.text.startsWith("Accorcia questa parte\n\n[Nel montaggio video/gita.rgvideo")).toBe(
       true,
