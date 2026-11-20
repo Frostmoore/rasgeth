@@ -140,7 +140,9 @@ describe("«Cancella per sempre» (3.9.8)", () => {
     const done = eraseForGood("s1", 5);
     await waitFor(() => r.getByText("Cancellare per sempre questo messaggio?"));
     expect(r.getByText(/trascrizione del motore/)).toBeTruthy();
-    fireEvent.click(r.getByText("Cancella anche 2 risposte e risultati dell'agente che lo riportano"));
+    fireEvent.click(
+      r.getByText("Cancella anche 2 risposte e risultati dell'agente che lo riportano"),
+    );
     fireEvent.click(r.getByText("Cancella per sempre"));
     expect(await done).toBe(true);
     expect(calls).toEqual([["eraseMessage", ["s1", 5, true]]]);

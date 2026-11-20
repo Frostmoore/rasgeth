@@ -192,9 +192,10 @@ function readCsvExports(s: string): CsvExport[] {
       }
       return -1;
     };
-    const idx = Object.fromEntries(
-      Object.entries(COLUMNS).map(([k, v]) => [k, col(v)]),
-    ) as Record<keyof ExportedCredential, number>;
+    const idx = Object.fromEntries(Object.entries(COLUMNS).map(([k, v]) => [k, col(v)])) as Record<
+      keyof ExportedCredential,
+      number
+    >;
     const rows: ExportedCredential[] = [];
     let skipped = 0;
     let end = head.next;
@@ -438,8 +439,7 @@ function listLine(line: string): ExportedCredential | null {
 
 function readLists(s: string): Found[] {
   const out: Found[] = [];
-  let run: { start: number; end: number; rows: ExportedCredential[]; others: number } | null =
-    null;
+  let run: { start: number; end: number; rows: ExportedCredential[]; others: number } | null = null;
   const close = () => {
     if (run && run.rows.length >= 3 && run.rows.length >= run.others * 2)
       out.push({ kind: "list", start: run.start, end: run.end, rows: run.rows });

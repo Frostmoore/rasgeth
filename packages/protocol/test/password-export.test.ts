@@ -40,7 +40,11 @@ const EXPORTS: [string, string, string, number][] = [
   ],
   [
     "Chrome and Edge CSV",
-    csv("name,url,username,password,note", (i) => `${sites(9)[i]},https://${sites(9)[i]}/,u${i},${fake(i)},`, 5),
+    csv(
+      "name,url,username,password,note",
+      (i) => `${sites(9)[i]},https://${sites(9)[i]}/,u${i},${fake(i)},`,
+      5,
+    ),
     "chrome",
     5,
   ],
@@ -48,7 +52,8 @@ const EXPORTS: [string, string, string, number][] = [
     "Firefox CSV, quoted",
     csv(
       '"url","username","password","httpRealm","formActionOrigin","guid","timeCreated","timeLastUsed","timePasswordChanged"',
-      (i) => `"https://${sites(9)[i]}","u${i}","${fake(i)}",,"https://${sites(9)[i]}","{guid-${i}}","1700000000000","1700000000000","1700000000000"`,
+      (i) =>
+        `"https://${sites(9)[i]}","u${i}","${fake(i)}",,"https://${sites(9)[i]}","{guid-${i}}","1700000000000","1700000000000","1700000000000"`,
     ),
     "firefox",
     3,
@@ -65,7 +70,8 @@ const EXPORTS: [string, string, string, number][] = [
     "KeePass CSV (KeePassXC)",
     csv(
       '"Group","Title","Username","Password","URL","Notes","TOTP","Icon","Last Modified","Created"',
-      (i) => `"Root","Site ${i}","u${i}","${fake(i)}","https://${sites(9)[i]}","","","0","2026-01-01","2026-01-01"`,
+      (i) =>
+        `"Root","Site ${i}","u${i}","${fake(i)}","https://${sites(9)[i]}","","","0","2026-01-01","2026-01-01"`,
     ),
     "keepass",
     3,
@@ -100,7 +106,11 @@ const EXPORTS: [string, string, string, number][] = [
           id: `id-${i}`,
           type: 1,
           name: `Site ${i}`,
-          login: { uris: [{ uri: `https://${sites(9)[i]}` }], username: `u${i}`, password: fake(i) },
+          login: {
+            uris: [{ uri: `https://${sites(9)[i]}` }],
+            username: `u${i}`,
+            password: fake(i),
+          },
         })),
       },
       null,
@@ -154,9 +164,7 @@ const EXPORTS: [string, string, string, number][] = [
   ],
   [
     "a plain list with tabs and names",
-    [0, 1, 2, 3]
-      .map((i) => `Banca ${i}\tutente${i}\t${fake(i)}`)
-      .join("\n"),
+    [0, 1, 2, 3].map((i) => `Banca ${i}\tutente${i}\t${fake(i)}`).join("\n"),
     "list",
     4,
   ],
@@ -164,7 +172,10 @@ const EXPORTS: [string, string, string, number][] = [
 
 /** Texts that are not exports: they go as written. */
 const NOT_EXPORTS: [string, string][] = [
-  ["an ordinary CSV", csv("date,amount,description", (i) => `2026-01-0${i + 1},12.50,coffee ${i}`, 5)],
+  [
+    "an ordinary CSV",
+    csv("date,amount,description", (i) => `2026-01-0${i + 1},12.50,coffee ${i}`, 5),
+  ],
   [
     "a CSV of users without passwords",
     csv("name,email,role", (i) => `Person ${i},p${i}@example.com,admin`, 5),
@@ -195,7 +206,10 @@ const NOT_EXPORTS: [string, string][] = [
     "versions in a changelog",
     "core.example.com v1.2.3 2026-11-01\napi.example.com v2.0.0 2026-11-02\nweb.example.com v3.1.4 2026-11-03",
   ],
-  ["prose about a password manager", "Ho esportato le password da Avira, come le metto nel portachiavi?"],
+  [
+    "prose about a password manager",
+    "Ho esportato le password da Avira, come le metto nel portachiavi?",
+  ],
 ];
 
 describe("password exports (3.9.8)", () => {
@@ -226,7 +240,9 @@ describe("password exports (3.9.8)", () => {
     const text = EXPORTS[7]?.[1] ?? "";
     const out = withoutPasswordExports(text);
     expect(out.rows).toBe(6);
-    expect(out.text).toBe("ecco le mie password, mettile a posto\n[password export removed]\ngrazie");
+    expect(out.text).toBe(
+      "ecco le mie password, mettile a posto\n[password export removed]\ngrazie",
+    );
     for (let i = 0; i < 6; i++) expect(out.text).not.toContain(fake(i));
   });
 
