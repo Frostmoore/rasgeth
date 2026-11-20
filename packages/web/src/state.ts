@@ -658,6 +658,12 @@ export function withEvent(events: Event[], e: Event): Event[] {
   return [...events.slice(0, at), e, ...events.slice(at)];
 }
 
+/** The events with these erased for good (3.9.8): their words gone, as the log has them now. */
+export function withErased(events: Event[], seqs: readonly number[]): Event[] {
+  const gone = new Set(seqs);
+  return events.map((e) => (gone.has(e.seq) ? ({ ...e, payload: null } as unknown as Event) : e));
+}
+
 /**
  * The events with many more (a history), once each and in the log's order. The usual case, all
  * after the last one the view has, costs one copy.
