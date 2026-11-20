@@ -343,7 +343,10 @@ export async function sftpTarget(o: SftpTargetOptions): Promise<BackupTarget> {
         checkName(folder, file);
         const local = await stagingFile(o.stagingDir);
         try {
-          await pipeline(keepErrors(sftp.createReadStream(at(folder, file))), createWriteStream(local));
+          await pipeline(
+            keepErrors(sftp.createReadStream(at(folder, file))),
+            createWriteStream(local),
+          );
         } catch (err) {
           await rm(local, { force: true });
           throw err;

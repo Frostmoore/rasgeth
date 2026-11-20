@@ -644,7 +644,9 @@ export function sshReadTool(host: SshToolsHost): Tool<z.infer<typeof ReadInput>>
         if (!isFileMode(st.mode)) throw new Error(`${file} is not a file`);
         const chunks: Buffer[] = [];
         let got = 0;
-        const stream = keepErrors(sftp.createReadStream(file, { start: 0, end: READ_MAX_BYTES - 1 }));
+        const stream = keepErrors(
+          sftp.createReadStream(file, { start: 0, end: READ_MAX_BYTES - 1 }),
+        );
         for await (const c of stream) {
           chunks.push(c as Buffer);
           got += (c as Buffer).length;

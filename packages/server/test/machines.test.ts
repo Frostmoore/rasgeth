@@ -45,12 +45,15 @@ const fingerprintOf = (privateKey: string) => {
 async function setup(script: Parameters<typeof startServer>[0] = { text: "OK" }) {
   const home = await mkdtemp(join(tmpdir(), "rg-ssh-home-"));
   dirs.push(home);
-  const target = { port: 0 };
+  const target: { port: number; byName?: Record<string, number> } = { port: 0 };
   s = await startServer(
     script,
     {},
     {
-      machines: { dial: () => ({ host: "127.0.0.1", port: target.port }), connectTimeoutMs: 5000 },
+      machines: {
+        dial: (m) => ({ host: "127.0.0.1", port: target.byName?.[m.name] ?? target.port }),
+        connectTimeoutMs: 5000,
+      },
     },
   );
   return { server: s, home, target };
@@ -272,6 +275,11 @@ describe.runIf(process.platform !== "win32")(
           name: "ssh_copy",
           input: { machine: "web", direction: "download", remote: "big.txt", local: "big.txt" },
         },
+        { name: "ssh_read", input: { machine: "slow", path: "small.txt" } },
+        {
+          name: "ssh_copy",
+          input: { machine: "slow", direction: "download", remote: "small.txt", local: "s.txt" },
+        },
         { name: "ssh_run", input: { machine: "web", command: "echo still here" } },
       ];
       const { server, home, target } = await setup((req, i) => {
@@ -281,6 +289,7 @@ describe.runIf(process.platform !== "win32")(
         return step ? { toolCalls: [step] } : { text: "Done." };
       });
       await writeFile(join(home, "big.txt"), "line of text\n".repeat(40_000));
+      await writeFile(join(home, "small.txt"), "short\n");
       const { body: m } = await server.api<MachineView>("POST", "/api/settings/machines", {
         name: "web",
         host: "web.example.test",
@@ -304,6 +313,27 @@ describe.runIf(process.platform !== "win32")(
       });
       fakes.push(dropping);
       target.port = dropping.port;
+      // A second machine whose answers to CLOSE never come: the read ends, the client hangs up.
+      const { body: slow } = await server.api<MachineView>("POST", "/api/settings/machines", {
+        name: "slow",
+        host: "slow.example.test",
+        user: "deploy",
+        folder: home,
+        access: { everyone: true },
+      });
+      const holding = await fakeSsh({
+        home,
+        keys: [m.publicKey as string, slow.publicKey as string],
+        hostKey: first.hostKey,
+        holdClose: true,
+      });
+      fakes.push(holding);
+      target.port = holding.port;
+      const look2 = await server.api<MachineTest>("POST", `/api/settings/machines/${slow.id}/test`);
+      await server.api("POST", `/api/settings/machines/${slow.id}/trust`, {
+        fingerprint: look2.body.hostKey?.fingerprint,
+      });
+      target.byName = { web: dropping.port, slow: holding.port };
       const crashes: unknown[] = [];
       const onCrash = (err: unknown) => crashes.push(err);
       process.on("uncaughtException", onCrash);
@@ -315,12 +345,15 @@ describe.runIf(process.platform !== "win32")(
       } finally {
         process.off("uncaughtException", onCrash);
       }
+      if (process.env.DEBUG_SSH) console.log(answers);
       expect(crashes).toEqual([]);
-      expect(answers).toHaveLength(3);
-      expect(answers[0]).toMatch(/No response from server|closed|not writable|Error/i);
-      expect(answers[1]).toMatch(/No response from server|closed|not writable|Error/i);
+      expect(answers).toHaveLength(5);
+      expect(answers[0]).toMatch(/No response from server|closed|not writable/i);
+      expect(answers[1]).toMatch(/No response from server|closed|not writable/i);
+      // 6 bytes came before the close that never answered: the read itself is fine.
+      expect(answers[2]).toContain("short");
       // The server still works: the next command on the machine runs.
-      expect(answers[2]).toContain("still here");
+      expect(answers[4]).toContain("still here");
     });
 
     it("an agent runs, copies, lists and reads there; every call in the log, no secret anywhere", async () => {

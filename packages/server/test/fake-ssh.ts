@@ -75,6 +75,11 @@ export async function fakeSsh(o: {
    * that goes away in the middle of a transfer.
    */
   dropAfterReads?: number;
+  /**
+   * Never answers a file's CLOSE (3.9.8): a slow machine whose answer is still on its way when
+   * the client hangs up (ssh2 then fails the pending close).
+   */
+  holdClose?: boolean;
 }): Promise<FakeSsh> {
   const hostKey = o.hostKey ?? newSshKeyPair().private;
   const state: FakeSsh = {
@@ -279,6 +284,7 @@ export async function fakeSsh(o: {
             const x = handles.get(k);
             if (x?.fd !== undefined) closeSync(x.fd);
             handles.delete(k);
+            if (o.holdClose && x?.fd !== undefined) return;
             sftp.status(id, STATUS_CODE.OK);
           });
         });
