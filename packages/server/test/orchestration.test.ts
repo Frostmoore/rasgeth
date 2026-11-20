@@ -246,6 +246,14 @@ describe("orchestration", () => {
         ),
       ),
     ).toBe(true);
+    // The report shows how the task was proven, for the parent to check it against what it asked
+    // (3.9.8: a verifier of the README closed a task that asked for a commit).
+    const proven = of("tool.result")
+      .map((e) => String((e.payload as { output: string }).output))
+      .find((o) => o.includes(`\nConversation: ${subSession} (${sub})`));
+    expect(proven).toContain("It closed with this verifier, which exited 0:");
+    expect(proven).toContain(exists("greeting.txt"));
+    expect(proven).toContain('Check that this proves what you asked ("write file")');
     // The work conversations are named after who gave the task and what, not after an id.
     const titles = (await s.core.listSessions("me")).map((r) => r.title);
     expect(titles).toEqual(expect.arrayContaining(["God: Greeting", "Orch: Write greeting"]));
