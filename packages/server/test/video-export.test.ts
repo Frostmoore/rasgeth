@@ -12,6 +12,7 @@ import {
   newRgVideo,
   type RgVideo,
   readRgVideo,
+  resolveFileUrl,
   resolveJob,
   type VideoClip,
   type VideoExportResult,
@@ -147,8 +148,9 @@ describe("exportTimeline", () => {
     expect(r.example).toBe(join(dir, "video", "riprese", "intervista.mp4"));
     expect(r.leftOut.missing).toEqual(["riprese/sparito.mov"]);
     const xml = await readFile(join(dir, "video", "gita.xml"), "utf8");
+    // The address as Resolve reads it, on this system (file://localhost/C%3a/… on Windows).
     expect(xml).toContain(
-      `<pathurl>file://localhost${join(dir, "video", "riprese", "sparito.mov")}</pathurl>`,
+      `<pathurl>${resolveFileUrl(join(dir, "video", "riprese", "sparito.mov"))}</pathurl>`,
     );
     expect(exportText(r)).toContain(
       "Not found here (exported with what the timeline knows): riprese/sparito.mov.",
