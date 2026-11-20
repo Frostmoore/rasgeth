@@ -344,7 +344,9 @@ describe("devices never used (3.9.8)", () => {
     await s.api("PUT", "/api/auth/password", { password: PASSWORD });
     const dev = { name: "Rasgeth (Windows)", platform: "windows" };
     for (let i = 0; i < 3; i++) {
-      expect((await anon("POST", "/api/app/pair", { ...dev, password: PASSWORD })).status).toBe(200);
+      expect((await anon("POST", "/api/app/pair", { ...dev, password: PASSWORD })).status).toBe(
+        200,
+      );
     }
     // Just paired: all three may still be connecting, none is removed.
     expect((await s.api<DeviceView[]>("GET", "/api/devices")).body).toHaveLength(3);
