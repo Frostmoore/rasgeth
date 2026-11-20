@@ -195,7 +195,8 @@ describe("«Cancella per sempre» on one message (3.9.8)", () => {
     const tr = await readFile(transcript, "utf8");
     expect(tr).not.toContain("MAG-4471");
     expect(tr).toContain("the weather is nice");
-    expect((await stat(transcript)).mode & 0o777).toBe(0o600);
+    // Windows has no Unix modes: the owner and mode are kept where they exist.
+    if (process.platform !== "win32") expect((await stat(transcript)).mode & 0o777).toBe(0o600);
     const hits = await s.core.echo.search("me", { query: "warehouse", agents: [god] });
     expect(hits).toEqual([]);
     // The next turn is rebuilt from the log: the erased words are not in the model's history.
