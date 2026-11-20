@@ -150,3 +150,28 @@ describe("the Chat as an agent (2026-11-03)", () => {
     );
   });
 });
+
+describe("the daily chat on a flat subscription (3.9.8)", () => {
+  it("asks without tools, so the subscription answers, and tells the model why", async () => {
+    const asked: CompletionRequest[] = [];
+    s = await startServer(
+      (req) => {
+        asked.push(req);
+        // A subscription's stream refuses any request with tools.
+        if (req.tools.length > 0) throw new Error("runs through its engine, not as a stream");
+        return { text: "Ciao!" };
+      },
+      { id: "claude-subscription" },
+      { defaultModel: { provider: "claude-subscription", model: "claude-x" } },
+    );
+    const chat = (await s.api<{ id: string }>("POST", "/api/chats")).body;
+    const events = await send(chat.id, "Ciao");
+    expect(events.at(-1)?.event).toBe("done");
+    expect(asked.length).toBe(1);
+    expect(asked[0]?.tools).toEqual([]);
+    expect(asked[0]?.system).toContain("without tools");
+    const entries = (await s.api<ChatEntry[]>("GET", `/api/chats/${chat.id}`)).body;
+    const answer = entries.at(-1)?.message.parts.find((p) => p.type === "text");
+    expect(answer?.type === "text" && answer.text).toBe("Ciao!");
+  });
+});
