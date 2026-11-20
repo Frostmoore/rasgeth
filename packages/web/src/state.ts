@@ -1055,6 +1055,19 @@ export async function refreshLimits(): Promise<void> {
     .catch(() => limits.value);
 }
 
+/**
+ * A plan's bars in the header: its windows with 5h first, the rest as the provider sent them.
+ * Before any reading the 5h bar waits with a dash (null); a plan without that window (3.9.8,
+ * Claude's) shows only the windows it has.
+ */
+export function planBars(
+  windows: import("./api.js").PlanLimits["windows"],
+): { id: string; label: string; usedPct: number | null; resetsAt?: string | undefined }[] {
+  const all: { id: string; label: string; usedPct: number | null; resetsAt?: string }[] =
+    windows.length ? [...windows] : [{ id: "5h", label: "5h", usedPct: null }];
+  return all.sort((a, b) => (a.id === "5h" ? -1 : b.id === "5h" ? 1 : 0));
+}
+
 /** The model an agent inherits from its ancestors (RD13). */
 export function inheritedModel(agentId: string) {
   let a = agents.value.find((x) => x.id === agentId);

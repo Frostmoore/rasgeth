@@ -1,3 +1,6 @@
+import { mkdtemp, readFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import type { EngineTurn } from "@redgiant/agent";
 import { describe, expect, it } from "vitest";
 import {
@@ -209,7 +212,116 @@ describe("Claude on a subscription", () => {
       }),
     ).toEqual([{ id: "5h", label: "5h", usedPct: 7, resetsAt: "2026-11-03T18:00:00.000Z" }]);
     expect(eventWindows({ status: "allowed", rateLimitType: "seven_day" })).toEqual([]);
+    // As recorded from the engine (2026-11-20): the flat form without a figure, the figure in
+    // `unifiedWindows`.
+    expect(
+      eventWindows({
+        status: "allowed",
+        resetsAt: 1795543200,
+        rateLimitType: "seven_day",
+        overageStatus: "allowed",
+        isUsingOverage: false,
+        unifiedWindows: {
+          seven_day: { utilization: 0.01, resetsAt: 1795543200, status: "allowed" },
+        },
+      }),
+    ).toEqual([{ id: "7d", label: "7g", usedPct: 1, resetsAt: "2026-11-24T18:00:00.000Z" }]);
     expect(claudeWindows({})).toEqual([]);
+  });
+
+  it("reads the plan's limits on its own, without a message, and keeps them over a restart (3.9.8)", async () => {
+    // The engine's usage answer as recorded on a Max plan (2026-11-20): no 5-hour window.
+    const recorded = {
+      subscription_type: "max",
+      rate_limits_available: true,
+      rate_limits: {
+        five_hour: null,
+        seven_day: { utilization: 2, resets_at: "2026-11-24T17:59:59.663875+00:00" },
+        seven_day_opus: null,
+        model_scoped: [
+          { display_name: "Fable", utilization: 0, resets_at: "2026-11-24T18:00:00+00:00" },
+        ],
+      },
+    };
+    let clock = Date.parse("2026-11-20T17:00:00Z");
+    const runs: { messages: number; aborted: () => boolean; options: Record<string, unknown> }[] =
+      [];
+    let answer: unknown = recorded;
+    const sdk = {
+      tool: () => ({}),
+      createSdkMcpServer: (o: unknown) => o,
+      query({ prompt, options }: { prompt: AsyncIterable<unknown>; options: Record<string, unknown> }) {
+        const run = {
+          messages: 0,
+          aborted: () => (options.abortController as AbortController).signal.aborted,
+          options,
+        };
+        runs.push(run);
+        void (async () => {
+          for await (const _ of prompt) run.messages++;
+        })();
+        const it = (async function* () {})() as ReturnType<ClaudeSdk["query"]>;
+        it.usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET = async (o) => {
+          expect(o).toEqual({ skipBehaviors: true });
+          return answer;
+        };
+        return it;
+      },
+    } as unknown as ClaudeSdk;
+    const dir = await mkdtemp(join(tmpdir(), "rg-limits-"));
+    const file = join(dir, "plan-limits.json");
+    const make = () =>
+      new ClaudeSubscriptionProvider({
+        token: "",
+        configDir: dir,
+        cwd: dir,
+        sdk,
+        readPlan: true,
+        limitsFile: file,
+        now: () => clock,
+      });
+    const p = make();
+    const read = [
+      { id: "7d", label: "7g", usedPct: 2, resetsAt: "2026-11-24T17:59:59.663875+00:00" },
+      { id: "model:Fable", label: "Fable", usedPct: 0, resetsAt: "2026-11-24T18:00:00+00:00" },
+    ];
+    expect(await p.limits()).toEqual(read);
+    // One engine run, no message sent to it (no model call), closed at once, no model chosen.
+    expect(runs).toHaveLength(1);
+    expect(runs[0]?.messages).toBe(0);
+    expect(runs[0]?.aborted()).toBe(true);
+    expect(runs[0]?.options).not.toHaveProperty("model");
+    // Looked at again soon: no new run.
+    clock += 60_000;
+    expect(await p.limits()).toEqual(read);
+    expect(runs).toHaveLength(1);
+    // A restart shows the kept windows at once, before any reading answers.
+    await new Promise((r) => setTimeout(r, 20));
+    expect(JSON.parse(await readFile(file, "utf8")).windows).toEqual(read);
+    answer = new Promise(() => {});
+    const again = make();
+    expect(await again.limits()).toEqual(read);
+    // After the week's reset the kept figure is 0%, not last week's.
+    clock = Date.parse("2026-11-25T09:00:00Z");
+    expect(await again.limits()).toEqual([
+      { id: "7d", label: "7g", usedPct: 0 },
+      { id: "model:Fable", label: "Fable", usedPct: 0 },
+    ]);
+    // A token without the profile scope reads nothing: no bars, and no new run at every look.
+    answer = { rate_limits_available: false, rate_limits: null };
+    const dir2 = await mkdtemp(join(tmpdir(), "rg-limits-"));
+    const bare = new ClaudeSubscriptionProvider({
+      token: "t",
+      configDir: dir2,
+      cwd: dir2,
+      sdk,
+      readPlan: true,
+      now: () => clock,
+    });
+    const before = runs.length;
+    expect(await bare.limits()).toEqual([]);
+    expect(await bare.limits()).toEqual([]);
+    expect(runs.length).toBe(before + 1);
   });
 
   it("offers the catalog's models and those the engine says the plan has (3.5.4)", async () => {

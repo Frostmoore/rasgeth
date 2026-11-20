@@ -5,6 +5,8 @@
 //
 // This is the only file that knows the SDK. Its usage method is marked experimental: if it changes,
 // only `limits` here needs fixing.
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { dirname } from "node:path";
 import type { Engine, EngineTurn } from "@redgiant/agent";
 import type { AssistantPart, MessageMetrics, ModelSpec } from "@redgiant/protocol";
 import {
@@ -65,6 +67,14 @@ export interface ClaudeSubscriptionOptions {
    * searches with the subscription and cites its sources. Default on.
    */
   nativeWebSearch?: boolean;
+  /**
+   * The plan's limits read on their own when none is known or the last is old (3.9.8): an engine
+   * started without a message answers the usage request (no model call). Off in tests that count
+   * the engine's runs.
+   */
+  readPlan?: boolean;
+  /** Where the last windows are kept, so a restart does not leave the header empty (3.9.8). */
+  limitsFile?: string;
 }
 
 /** RedGiant's search tool, done by the engine itself when its own search is on. */
@@ -212,6 +222,49 @@ export class ClaudeEngine implements Engine {
         if (w.length) this.onLimits?.(w);
       })
       .catch(() => {});
+  }
+
+  /**
+   * The plan's windows read on their own (3.9.8): the engine started without a message (it makes
+   * no model call) answers the usage request and is closed at once. Empty when the plan has no
+   * readable limits (a `setup-token` token lacks the profile scope) or the engine does not answer.
+   */
+  async readPlan(timeoutMs = 15_000): Promise<SubscriptionWindow[]> {
+    const sdk = this.o.sdk ?? (await loadSdk());
+    const abort = new AbortController();
+    let release = () => {};
+    const gate = new Promise<void>((r) => {
+      release = r;
+    });
+    // The engine's input: nothing, until it is closed.
+    async function* idle(): AsyncIterable<unknown> {
+      await gate;
+    }
+    try {
+      const { model: _none, ...options } = this.options(
+        { provider: CLAUDE_SUBSCRIPTION, model: "" },
+        { abortController: abort, permissionMode: "dontAsk" },
+      );
+      const q = sdk.query({ prompt: idle(), options });
+      const usage = q.usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET?.({
+        skipBehaviors: true,
+      });
+      if (!usage) return [];
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const u = await Promise.race([
+        usage,
+        new Promise<undefined>((r) => {
+          timer = setTimeout(() => r(undefined), timeoutMs);
+          timer.unref?.();
+        }),
+      ]).finally(() => clearTimeout(timer));
+      return claudeWindows(u);
+    } catch {
+      return [];
+    } finally {
+      release();
+      abort.abort();
+    }
   }
 
   async turn(
@@ -484,6 +537,13 @@ export function claudeWindows(r: unknown): SubscriptionWindow[] {
   return out;
 }
 
+/** A reading older than this is read again when someone looks (3.9.8). */
+const STALE_MS = 10 * 60_000;
+/** After a reading that gave nothing, the next try waits this long. */
+const RETRY_MS = 2 * 60_000;
+/** How long the first look waits for a reading on its own. */
+const FIRST_WAIT_MS = 2500;
+
 /**
  * The provider RedGiant sees: models to pick, their windows, the engine, the plan's limits.
  * It has no `stream`: sessions on it always go through the engine.
@@ -491,11 +551,50 @@ export function claudeWindows(r: unknown): SubscriptionWindow[] {
 export class ClaudeSubscriptionProvider implements Provider {
   readonly id = CLAUDE_SUBSCRIPTION;
   readonly engine: ClaudeEngine;
-  private cached: { at: number; windows: SubscriptionWindow[] } | undefined;
+  private readonly now: () => number;
+  /** When the windows were last reported (a turn or a reading); 0: never. */
+  private at = 0;
+  /** When a reading on its own was last tried, and the one running. */
+  private tried = 0;
+  private reading: Promise<void> | undefined;
+  private readonly loaded: Promise<void>;
 
-  constructor(o: ClaudeSubscriptionOptions) {
+  constructor(private readonly o: ClaudeSubscriptionOptions) {
+    this.now = o.now ?? Date.now;
     this.engine = new ClaudeEngine(o);
     this.engine.onLimits = (w) => this.merge(w);
+    this.loaded = this.load();
+  }
+
+  /** The windows the last run of the server knew (3.9.8): shown until a newer report. */
+  private async load(): Promise<void> {
+    if (!this.o.limitsFile) return;
+    try {
+      const kept = JSON.parse(await readFile(this.o.limitsFile, "utf8")) as {
+        at?: number;
+        windows?: SubscriptionWindow[];
+      };
+      if (!Array.isArray(kept.windows) || this.windows.length) return;
+      this.windows = kept.windows.filter(
+        (w) => typeof w?.id === "string" && typeof w.label === "string",
+      );
+      this.at = typeof kept.at === "number" ? kept.at : 0;
+    } catch {
+      // Nothing kept yet.
+    }
+  }
+
+  private async save(): Promise<void> {
+    const file = this.o.limitsFile;
+    if (!file) return;
+    try {
+      await mkdir(dirname(file), { recursive: true });
+      const tmp = `${file}.tmp`;
+      await writeFile(tmp, JSON.stringify({ at: this.at, windows: this.windows }));
+      await rename(tmp, file);
+    } catch {
+      // Only a convenience for the next start.
+    }
   }
 
   /**
@@ -538,12 +637,46 @@ export class ClaudeSubscriptionProvider implements Provider {
   private windows: SubscriptionWindow[] = [];
 
   /**
-   * The plan's limits as the last turn left them: the SDK knows them only after a real request
-   * in the same process, so they come with the turns (no extra calls, no extra cost). Windows a
-   * newer report does not mention stay as they were.
+   * The plan's limits: what the turns report (their rate-limit events and the usage reading), and,
+   * with `readPlan`, a reading on its own when none is known or the last is older than
+   * {@link STALE_MS} (3.9.8: after a restart the header stayed empty until God's next turn). The
+   * answer never waits long for it: the first one waits at most {@link FIRST_WAIT_MS}, the others
+   * get the windows known and the next look gets the new ones. A window past its reset shows 0%.
    */
   async limits(): Promise<SubscriptionWindow[]> {
-    return this.windows;
+    await this.loaded;
+    const now = this.now();
+    if (
+      this.o.readPlan &&
+      !this.reading &&
+      now - this.at > STALE_MS &&
+      now - this.tried > (this.windows.length ? STALE_MS : RETRY_MS)
+    ) {
+      this.tried = now;
+      this.reading = this.engine
+        .readPlan()
+        .then((w) => {
+          if (w.length) this.merge(w);
+        })
+        .finally(() => {
+          this.reading = undefined;
+        });
+    }
+    if (!this.windows.length && this.reading) {
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      await Promise.race([
+        this.reading,
+        new Promise<void>((r) => {
+          timer = setTimeout(r, FIRST_WAIT_MS);
+          timer.unref?.();
+        }),
+      ]).finally(() => clearTimeout(timer));
+    }
+    return this.windows.map((w) => {
+      if (!w.resetsAt || Date.parse(w.resetsAt) > now) return w;
+      const { resetsAt: _past, ...rest } = w;
+      return { ...rest, usedPct: 0 };
+    });
   }
 
   private merge(fresh: SubscriptionWindow[]): void {
@@ -551,5 +684,7 @@ export class ClaudeSubscriptionProvider implements Provider {
     for (const w of fresh) byId.set(w.id, w);
     const order = (id: string) => (id === "5h" ? 0 : id === "7d" ? 1 : 2);
     this.windows = [...byId.values()].sort((a, b) => order(a.id) - order(b.id));
+    this.at = this.now();
+    void this.save();
   }
 }
