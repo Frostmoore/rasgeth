@@ -16,6 +16,7 @@ import { SAFETY_FILE, SAFETY_FOLDER } from "./backup.js";
 import {
   execRemote,
   isWindowsPath,
+  keepErrors,
   MachineError,
   type Machines,
   type SshClient,
@@ -204,7 +205,7 @@ export async function sftpTarget(o: SftpTargetOptions): Promise<BackupTarget> {
     windows = isWindowsPath(m.folder) || isWindowsPath(o.path);
     client = await o.machines.connect(o.ownerId, m);
     sftp = await new Promise<SFTPWrapper>((ok, no) =>
-      client.sftp((err, s) => (err ? no(err) : ok(s))),
+      client.sftp((err, s) => (err ? no(err) : ok(keepErrors(s)))),
     );
   } catch (err) {
     if (err instanceof MachineError && err.code === "not-found")
@@ -293,7 +294,7 @@ export async function sftpTarget(o: SftpTargetOptions): Promise<BackupTarget> {
         const final = at(folder, file);
         const size = (await stat(staged)).size;
         try {
-          await pipeline(createReadStream(staged), sftp.createWriteStream(tmp));
+          await pipeline(createReadStream(staged), keepErrors(sftp.createWriteStream(tmp)));
           const there = await exists(tmp);
           if (there?.size !== size)
             throw new TargetError(
@@ -342,7 +343,7 @@ export async function sftpTarget(o: SftpTargetOptions): Promise<BackupTarget> {
         checkName(folder, file);
         const local = await stagingFile(o.stagingDir);
         try {
-          await pipeline(sftp.createReadStream(at(folder, file)), createWriteStream(local));
+          await pipeline(keepErrors(sftp.createReadStream(at(folder, file))), createWriteStream(local));
         } catch (err) {
           await rm(local, { force: true });
           throw err;

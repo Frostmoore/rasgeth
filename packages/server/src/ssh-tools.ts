@@ -22,7 +22,14 @@ import {
 } from "@redgiant/tools";
 import type { SFTPWrapper } from "ssh2";
 import { z } from "zod";
-import { execRemote, folderOf, isWindowsPath, MachineError, type SshClient } from "./machines.js";
+import {
+  execRemote,
+  folderOf,
+  isWindowsPath,
+  keepErrors,
+  MachineError,
+  type SshClient,
+} from "./machines.js";
 
 /** What the tools need from the server. */
 export interface SshToolsHost {
@@ -244,7 +251,7 @@ function remoteWorkspace(ws: Workspace, run: (o: ExecOptions) => Promise<ExecRes
 // ---------------------------------------------------------------- SFTP
 
 function sftpOf(client: SshClient): Promise<SFTPWrapper> {
-  return new Promise((ok, no) => client.sftp((err, s) => (err ? no(err) : ok(s))));
+  return new Promise((ok, no) => client.sftp((err, s) => (err ? no(err) : ok(keepErrors(s)))));
 }
 
 const call = <T>(f: (cb: (err: Error | null | undefined, v: T) => void) => void) =>
@@ -353,7 +360,7 @@ async function upload(
     return;
   }
   t.add(st.size, from);
-  await pipeline(createReadStream(from), sftp.createWriteStream(to), { signal });
+  await pipeline(createReadStream(from), keepErrors(sftp.createWriteStream(to)), { signal });
 }
 
 async function download(
@@ -383,7 +390,7 @@ async function download(
   }
   t.add(st.size, from);
   await mkdir(dirname(to), { recursive: true });
-  await pipeline(sftp.createReadStream(from), createWriteStream(to), { signal });
+  await pipeline(keepErrors(sftp.createReadStream(from)), createWriteStream(to), { signal });
 }
 
 // ---------------------------------------------------------------- ssh_copy
@@ -637,7 +644,8 @@ export function sshReadTool(host: SshToolsHost): Tool<z.infer<typeof ReadInput>>
         if (!isFileMode(st.mode)) throw new Error(`${file} is not a file`);
         const chunks: Buffer[] = [];
         let got = 0;
-        for await (const c of sftp.createReadStream(file, { start: 0, end: READ_MAX_BYTES - 1 })) {
+        const stream = keepErrors(sftp.createReadStream(file, { start: 0, end: READ_MAX_BYTES - 1 }));
+        for await (const c of stream) {
           chunks.push(c as Buffer);
           got += (c as Buffer).length;
         }

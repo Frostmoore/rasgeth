@@ -637,6 +637,21 @@ export interface RemoteResult {
  * take; one with a character either shell would expand inside the quotes is refused. Anything
  * else goes through a POSIX shell's `cd`.
  */
+/**
+ * Keeps an ssh2 object's errors from stopping the server (3.9.8). ssh2's SFTP sessions, file
+ * streams and channels emit 'error' even after whoever read them stopped listening: a dropped
+ * connection fails every pending request at once ("No response from server"), the `close` of a
+ * stream `pipeline` or `for await` already left included, and an 'error' nobody listens to ends
+ * the process. The errors still reach `pipeline`, `for await` and the callbacks, so a failed
+ * transfer is the tool's error.
+ */
+export function keepErrors<T extends { on(event: "error", f: (err: Error) => void): unknown }>(
+  s: T,
+): T {
+  s.on("error", () => {});
+  return s;
+}
+
 export function remoteLine(command: string, cwd: string | undefined): string {
   if (!cwd) return command;
   if (isWindowsPath(cwd)) {
@@ -680,6 +695,9 @@ export function execRemote(
   return new Promise((resolve, reject) => {
     client.exec(line, { pty: false }, (err, ch) => {
       if (err) return reject(err);
+      // Its end still comes as "close" (the connection dropped: no exit code).
+      keepErrors(ch);
+      keepErrors(ch.stderr);
       let stdout = "";
       let stderr = "";
       let timedOut = false;

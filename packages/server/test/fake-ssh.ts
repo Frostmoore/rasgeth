@@ -70,6 +70,11 @@ export async function fakeSsh(o: {
   password?: string;
   /** Programs found before the system's (fake `pct`, `mount`…: nothing real is touched). */
   binDir?: string;
+  /**
+   * Drops the connection, without an answer, at the SFTP read after this many (3.9.8): a machine
+   * that goes away in the middle of a transfer.
+   */
+  dropAfterReads?: number;
 }): Promise<FakeSsh> {
   const hostKey = o.hostKey ?? newSshKeyPair().private;
   const state: FakeSsh = {
@@ -87,6 +92,7 @@ export async function fakeSsh(o: {
   };
   const children = new Set<ChildProcess>();
   const clients = new Set<{ end: () => unknown }>();
+  let reads = 0;
   const server = new Server({ hostKeys: [hostKey] }, (client) => {
     clients.add(client);
     client.on("close", () => clients.delete(client));
@@ -231,6 +237,10 @@ export async function fakeSsh(o: {
             }
           });
           sftp.on("READ", (id, h, offset, length) => {
+            if (o.dropAfterReads !== undefined && reads++ >= o.dropAfterReads) {
+              client.end();
+              return;
+            }
             const x = handles.get(h.toString("hex"));
             if (x?.fd === undefined) return sftp.status(id, STATUS_CODE.FAILURE);
             const buf = Buffer.alloc(length);

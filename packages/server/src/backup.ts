@@ -756,13 +756,20 @@ export async function importBackup(
       }
       await mkdir(dirname(target), { recursive: true });
       const out = createWriteStream(target);
+      // A write that fails between two awaits is this restore's error, not the server's end.
+      let failed: Error | undefined;
+      out.on("error", (e) => {
+        failed ??= e;
+      });
       for await (const b of r.body(entry.size)) {
+        if (failed) break;
         if (!out.write(b)) await once(out, "drain");
         written += b.length;
         h.progress(written, data.filesBytes);
       }
       out.end();
-      await once(out, "close");
+      if (!out.closed) await once(out, "close");
+      if (failed) throw failed;
       result.files++;
     }
     return result;

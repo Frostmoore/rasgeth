@@ -261,6 +261,68 @@ describe.runIf(process.platform !== "win32")(
       expect(dup.status).toBe(400);
     });
 
+    it("a machine that goes away in the middle of a read is the tool's error, never the server's end", async () => {
+      // 3.9.8: ssh2 fails every pending request when the connection drops, the `close` of a
+      // stream already left by `for await`/`pipeline` included; an 'error' nobody listened to
+      // stopped the whole server.
+      const answers: string[] = [];
+      const steps = [
+        { name: "ssh_read", input: { machine: "web", path: "big.txt" } },
+        {
+          name: "ssh_copy",
+          input: { machine: "web", direction: "download", remote: "big.txt", local: "big.txt" },
+        },
+        { name: "ssh_run", input: { machine: "web", command: "echo still here" } },
+      ];
+      const { server, home, target } = await setup((req, i) => {
+        const r = resultOf(req);
+        if (r !== undefined) answers.push(r);
+        const step = steps[i];
+        return step ? { toolCalls: [step] } : { text: "Done." };
+      });
+      await writeFile(join(home, "big.txt"), "line of text\n".repeat(40_000));
+      const { body: m } = await server.api<MachineView>("POST", "/api/settings/machines", {
+        name: "web",
+        host: "web.example.test",
+        user: "deploy",
+        folder: home,
+        access: { everyone: true },
+      });
+      const first = await fakeSsh({ home, keys: [m.publicKey as string] });
+      fakes.push(first);
+      target.port = first.port;
+      const look = await server.api<MachineTest>("POST", `/api/settings/machines/${m.id}/test`);
+      await server.api("POST", `/api/settings/machines/${m.id}/trust`, {
+        fingerprint: look.body.hostKey?.fingerprint,
+      });
+      // The same key on a server that drops the connection after its first read.
+      const dropping = await fakeSsh({
+        home,
+        keys: [m.publicKey as string],
+        hostKey: first.hostKey,
+        dropAfterReads: 1,
+      });
+      fakes.push(dropping);
+      target.port = dropping.port;
+      const crashes: unknown[] = [];
+      const onCrash = (err: unknown) => crashes.push(err);
+      process.on("uncaughtException", onCrash);
+      try {
+        const { sessionId } = await god(server);
+        await (await server.core.send("me", sessionId, "Read the big file")).done;
+        // Errors ssh2 emits late (a pending close) come on the next turns of the event loop.
+        await new Promise((r) => setTimeout(r, 300));
+      } finally {
+        process.off("uncaughtException", onCrash);
+      }
+      expect(crashes).toEqual([]);
+      expect(answers).toHaveLength(3);
+      expect(answers[0]).toMatch(/No response from server|closed|not writable|Error/i);
+      expect(answers[1]).toMatch(/No response from server|closed|not writable|Error/i);
+      // The server still works: the next command on the machine runs.
+      expect(answers[2]).toContain("still here");
+    });
+
     it("an agent runs, copies, lists and reads there; every call in the log, no secret anywhere", async () => {
       const answers: string[] = [];
       const steps = [
