@@ -268,3 +268,85 @@ describe("Claude on a subscription", () => {
     expect(new Set(ids).size).toBe(2);
   });
 });
+
+describe("one answer without tools (3.9.8: the person's classifier)", () => {
+  function onceSdk(result: { subtype: string; is_error?: boolean; result?: string }) {
+    const asked: Record<string, unknown>[] = [];
+    const prompts: unknown[] = [];
+    const sdk: ClaudeSdk = {
+      tool: (name, _d, _s, handler) => ({ name, handler }),
+      createSdkMcpServer: (o) => o,
+      query({ prompt, options }) {
+        asked.push(options);
+        async function* run() {
+          for await (const m of prompt) prompts.push(m);
+          yield { type: "system", subtype: "init", session_id: "s1" };
+          yield {
+            type: "assistant",
+            parent_tool_use_id: null,
+            session_id: "s1",
+            message: {
+              model: "claude-opus-5-5",
+              content: [{ type: "text", text: '{"decision":"allow","reason":"ok"}' }],
+              usage: { input_tokens: 10, output_tokens: 5 },
+            },
+          };
+          yield { type: "result", session_id: "s1", ...result };
+        }
+        return run();
+      },
+    };
+    return { sdk, asked, prompts };
+  }
+  const request = {
+    model: "claude-opus-5-5",
+    system: "You decide.",
+    tools: [],
+    messages: [{ role: "user" as const, parts: [{ type: "text" as const, text: "May it?" }] }],
+  };
+
+  it("answers through the engine with no tools at all", async () => {
+    const f = onceSdk({ subtype: "success" });
+    const p = new ClaudeSubscriptionProvider({ configDir: "/tmp/x", cwd: "/tmp", sdk: f.sdk });
+    const events = [];
+    for await (const e of p.stream(request)) events.push(e);
+    const done = events.at(-1);
+    expect(done?.type).toBe("done");
+    if (done?.type !== "done") return;
+    expect(done.completion.message.parts).toEqual([
+      { type: "text", text: '{"decision":"allow","reason":"ok"}' },
+    ]);
+    expect(done.completion.provider).toBe("claude-subscription");
+    expect(done.completion.usage.outputTokens).toBe(5);
+    expect(f.asked[0]).toMatchObject({
+      tools: [],
+      allowedTools: [],
+      maxTurns: 1,
+      systemPrompt: "You decide.",
+    });
+    expect(f.asked[0]?.mcpServers).toBeUndefined();
+    expect(JSON.stringify(f.prompts)).toContain("May it?");
+  });
+
+  it("an engine error is an error, never an answer", async () => {
+    const f = onceSdk({ subtype: "success", is_error: true, result: "rate limited" });
+    const p = new ClaudeSubscriptionProvider({ configDir: "/tmp/x", cwd: "/tmp", sdk: f.sdk });
+    await expect(async () => {
+      for await (const _ of p.stream(request));
+    }).rejects.toThrow(/rate limited/);
+  });
+
+  it("a request with tools still never streams", async () => {
+    const p = new ClaudeSubscriptionProvider({
+      configDir: "/tmp/x",
+      cwd: "/tmp",
+      sdk: onceSdk({ subtype: "success" }).sdk,
+    });
+    await expect(async () => {
+      for await (const _ of p.stream({
+        ...request,
+        tools: [{ name: "x", description: "x", inputSchema: {} }],
+      }));
+    }).rejects.toThrow(/runs through its engine/);
+  });
+});
