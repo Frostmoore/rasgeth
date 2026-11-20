@@ -416,6 +416,21 @@ function words(
       return "changed the timeline's format";
     case "replace":
       return "replaced the timeline";
+    // 3.10, video part 2
+    case "slip":
+      return `slipped ${touched} (other frames of the file)`;
+    case "slide":
+      return `slid ${touched} between its neighbours`;
+    case "roll":
+      return `rolled a cut (${plural(c.changed, "clip")} changed)`;
+    case "beats":
+      return plain.some((p) => p.t === "meta" && p.key === "beats")
+        ? "set the music's beats"
+        : `put ${plural(c.changed, "cut")} on the beats`;
+    case "color":
+      return `changed the colour of ${touched}`;
+    case "keys":
+      return `changed the keyframes of ${touched}`;
     default:
       return `edited ${plural(plain.length, "item")}`;
   }

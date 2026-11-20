@@ -55,19 +55,20 @@ import {
   removeTransition,
   rippleDeleteClips,
   rollEdit,
+  setBeats,
   setCaptionSegments,
   setClipProps,
   setGenerator,
   setMarker,
   setTrack,
   setTransition,
+  slideClip,
+  slipClip,
   snap,
   snapPoints,
   TEXT_LOOK,
   timecode,
   timelineDuration,
-  slideClip,
-  slipClip,
   trackClips,
   trackOf,
   trimClip,
@@ -238,18 +239,21 @@ type Drag =
       linked: boolean;
       view?: RgVideo;
     }
-  | {
-      // 3.10, Resolve's trims with the T tool: slip (the middle), slide (Alt), roll (Shift on a cut).
-      mode: "slip" | "slide" | "roll";
-      id: string;
-      x0: number;
-      base: RgVideo;
-      linked: boolean;
-      view?: RgVideo;
-    }
+  // 3.10, Resolve's trims with the T tool: slip (the middle), slide (Alt), roll (Shift on a cut).
+  | (ResolveTrim & { mode: "slip" })
+  | (ResolveTrim & { mode: "slide" })
+  | (ResolveTrim & { mode: "roll" })
   | { mode: "marquee"; x0: number; y0: number; keep: string[]; frame: number; moved: boolean }
   | { mode: "trans"; id: string; side: "in" | "out"; x0: number; base: RgVideo; view?: RgVideo }
   | { mode: "cap"; id: string; x0: number; base: RgVideo; moved: boolean; view?: RgVideo };
+
+interface ResolveTrim {
+  id: string;
+  x0: number;
+  base: RgVideo;
+  linked: boolean;
+  view?: RgVideo;
+}
 
 interface HostApi {
   commit(next: RgVideo, what: VideoEdit, select?: string[]): boolean;
@@ -595,6 +599,7 @@ export function VideoEditor({
   const [marks, setMarks] = useState<Record<string, { who: string; rev: number }>>({});
   const [marquee, setMarquee] = useState<{ x: number; y: number; w: number; h: number }>();
   const [dropHint, setDropHint] = useState<{ track: string; frame: number }>();
+  const [beatsBusy, setBeatsBusy] = useState(false);
   const [notice, setNotice] = useState<string>();
   const [selMarker, setSelMarker] = useState<string>();
   /** The canvas's width class: a narrow one (inspector as a panel), a phone's. */
@@ -1802,6 +1807,20 @@ export function VideoEditor({
     setAsk(undefined);
     say(to.to ? t("veAskSent", { to: to.to }) : t("veAskInApp"));
   };
+  /** 3.10: the music's beats of an audio clip, asked of the server, kept as one edit. */
+  const findBeats = async (clipId: string) => {
+    setBeatsBusy(true);
+    try {
+      const r = await getApi().videoBeats(file.scope, file.path, clipId);
+      if (!r.frames.length) return say(t("veBeatsNoMusic"));
+      commit(setBeats(doc, r.frames, r.clip), "beats");
+      say(t("veBeatsHere", { n: String(r.frames.length) }));
+    } catch (e) {
+      say((e as Error).message);
+    } finally {
+      setBeatsBusy(false);
+    }
+  };
   const loadVersions = async () => {
     setVersions((v) => ({ ...v, busy: true }));
     try {
@@ -2257,6 +2276,8 @@ export function VideoEditor({
               onLink={() => run("link")}
               onEditText={(id) => startTextEdit(id)}
               onClose={size !== "wide" ? () => edit({ inspOpen: false }) : undefined}
+              onBeats={(id) => void findBeats(id)}
+              beatsBusy={beatsBusy}
             />
           </aside>
         )}
@@ -2452,6 +2473,10 @@ export function VideoEditor({
                 >
                   {k.label}
                 </span>
+              ))}
+              {/* 3.10: the music's beats, small marks the snapping takes */}
+              {(tl.beats ?? []).map((b) => (
+                <span key={`b${b}`} class="ve-beat" style={{ left: px(b) }} aria-hidden="true" />
               ))}
               {tl.markers.map((m) => (
                 <button

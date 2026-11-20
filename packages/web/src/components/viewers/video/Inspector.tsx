@@ -68,6 +68,7 @@ import {
 } from "../../../viewers/video-ops.js";
 import { Seg } from "../../SettingsKit.js";
 import { Toggle } from "../../ui.js";
+import { BeatsSection, BoxSection, ColorSection, SpeedSection, VolumeKeys } from "./Effects.js";
 
 type Commit = (next: RgVideo, what: VideoEdit, select?: string[]) => boolean;
 
@@ -590,6 +591,9 @@ export interface InspectorProps {
   onLink: () => void;
   onEditText: (id: string) => void;
   onClose?: (() => void) | undefined;
+  /** 3.10: find the music's beats in this audio clip (the page asks the server). */
+  onBeats?: ((clipId: string) => void) | undefined;
+  beatsBusy?: boolean;
 }
 
 export function Inspector(p: InspectorProps) {
@@ -807,14 +811,12 @@ export function Inspector(p: InspectorProps) {
         </section>
       )}
       {audio && (
-        <Dial
-          label={t("veVolume")}
-          value={Math.max(-30, Math.min(12, c.volume))}
-          min={-30}
-          max={12}
-          step={0.5}
+        <VolumeKeys
+          doc={doc}
+          clip={c}
+          playhead={p.playhead}
+          commit={commit}
           format={(v) => dbText(v, it)}
-          onCommit={(volume) => props({ volume })}
         />
       )}
       {fadeMax > 0 && (
@@ -881,7 +883,23 @@ export function Inspector(p: InspectorProps) {
               props({ kenBurns: kenBurnsPreset(z, d) });
             }}
           />
+          {/* 3.10, video part 2 */}
+          {!(c.ref as { still?: boolean }).still && (
+            <SpeedSection doc={doc} clip={c} commit={commit} audio={false} />
+          )}
+          <BoxSection doc={doc} clip={c} playhead={p.playhead} commit={commit} />
+          <ColorSection doc={doc} clip={c} commit={commit} />
         </>
+      )}
+      {audio && media && <SpeedSection doc={doc} clip={c} commit={commit} audio />}
+      {audio && media && p.onBeats && (
+        <BeatsSection
+          doc={doc}
+          clip={c}
+          commit={commit}
+          busy={!!p.beatsBusy}
+          onFind={() => p.onBeats?.(c.id)}
+        />
       )}
       <button type="button" class="vw-btn small" onClick={p.onLink}>
         <IconLink size={13} /> {c.link ? t("veUnlinkClip") : t("veLinkClip")}

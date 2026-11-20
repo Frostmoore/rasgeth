@@ -2077,6 +2077,13 @@ export class Api {
    * Resolve, as montatore writes it) or `otio`; `mediaRoot` the folder of the originals on the
    * computer with Resolve (empty: this machine).
    */
+  /** 3.10: the music's beats of a timeline's audio clip (else the music's), in frames. */
+  videoBeats = (scope: string, path: string, clip?: string) =>
+    this.call<{ clip: string; bpm: number; frames: number[] }>("POST", "/api/editor/video/beats", {
+      scope,
+      path,
+      ...(clip && { clip }),
+    });
   videoExport = (
     scope: string,
     path: string,

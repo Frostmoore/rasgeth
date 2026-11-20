@@ -288,6 +288,7 @@ export const VIDEO_KEYS: readonly { keys: string; what: Key }[] = [
   { keys: "Shift+V", what: "veKeySelectAt" },
   { keys: "Ctrl+Z / Ctrl+Shift+Z", what: "veKeyUndo" },
   { keys: "Ctrl+Alt+L", what: "veKeyLink" },
+  { keys: "T + drag", what: "veKeyTrimSlip" },
   { keys: "Ctrl+Shift+L", what: "veKeyLinkedSel" },
   { keys: "M", what: "veKeyMarker" },
   { keys: "D", what: "veKeyEnable" },
@@ -638,6 +639,19 @@ export function videoChangeText(s: DocSummary): string {
       return t("veChFormat");
     case "replace":
       return t("docReplaced");
+    // 3.10, video part 2
+    case "slip":
+      return t("veChSlip");
+    case "slide":
+      return t("veChSlide");
+    case "roll":
+      return t("veChRoll");
+    case "beats":
+      return t("veChBeats");
+    case "color":
+      return one ? t("veChColor") : t("veChColorN", { n });
+    case "keys":
+      return t("veChKeys");
     default:
       return one ? t("veChEdit") : t("veChEditN", { n });
   }
