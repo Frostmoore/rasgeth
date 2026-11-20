@@ -975,7 +975,7 @@ class _StatusBar extends StatelessWidget {
                   ),
                   Text(
                     !app.connected
-                        ? l.statusUnreachable
+                        ? (app.needsPairing ? l.statusPairAgain : l.statusUnreachable)
                         : reconnecting
                         ? l.statusReconnecting
                         : app.displayName,

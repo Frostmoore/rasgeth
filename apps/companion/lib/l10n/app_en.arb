@@ -8149,5 +8149,24 @@
   "skNotRestorable": "Too large to keep: it cannot come back.",
   "skNoVersions": "No versions yet.",
   "skLineTitle": "What changed and why",
-  "skCompareFull": "Compare: every difference"
+  "skCompareFull": "Compare: every difference",
+  "pairAgain": "Pair again",
+  "statusPairAgain": "needs pairing again",
+  "pairAgainTitle": "Pair {name} again",
+  "@pairAgainTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pairAgainBody": "This device no longer has its key for {name}. Type the password: the server stays in the list with its settings and works again.",
+  "@pairAgainBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pairAgainNote": "This device no longer has its key for this server: pair it again with the password, without removing it."
 }
