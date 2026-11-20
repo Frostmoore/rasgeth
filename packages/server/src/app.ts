@@ -3076,6 +3076,53 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       return vaultFailed(c, err);
     }
   });
+  // A password manager's export pasted in the composer or picked as a file (3.9.8): straight into
+  // the keychain; only counts and names come back.
+  app.post("/api/vault-import/text", async (c) => {
+    try {
+      c.header("cache-control", "no-store");
+      const b = await vaultBody(c, z.object({ text: z.string().min(1).max(20_000_000) }));
+      return c.json(await core.importPasswordText(owner(c), b.text), 200);
+    } catch (err) {
+      return vaultFailed(c, err);
+    }
+  });
+  // An agent's import_passwords proposal, confirmed by the person (3.9.8): the file is shredded.
+  app.post("/api/sessions/:id/import-passwords", async (c) => {
+    try {
+      const b = await vaultBody(c, z.object({ callId: z.string().min(1).max(200) }));
+      return c.json(await core.importProposedPasswords(owner(c), c.req.param("id"), b.callId), 200);
+    } catch (err) {
+      if (err instanceof VaultError || err instanceof z.ZodError) return vaultFailed(c, err);
+      return c.json({ error: (err as Error).message }, 400);
+    }
+  });
+  // «Cancella per sempre» on one message (3.9.8): what it would take, then the erasure.
+  app.post("/api/sessions/:id/erase-preview", async (c) => {
+    try {
+      const b = await vaultBody(c, z.object({ seq: z.number().int().min(0) }));
+      return c.json(await core.erasePreview(owner(c), c.req.param("id"), b.seq), 200);
+    } catch (err) {
+      return c.json({ error: (err as Error).message }, 400);
+    }
+  });
+  app.post("/api/sessions/:id/erase", async (c) => {
+    try {
+      const b = await vaultBody(
+        c,
+        z.object({ seq: z.number().int().min(0), withQuotes: z.boolean().optional() }),
+      );
+      return c.json(
+        await core.eraseMessage(owner(c), c.req.param("id"), b.seq, {
+          withQuotes: b.withQuotes === true,
+        }),
+        200,
+      );
+    } catch (err) {
+      if (err instanceof SessionBusyError) return c.json({ error: err.message, code: "busy" }, 409);
+      return c.json({ error: (err as Error).message }, 400);
+    }
+  });
   app.post("/api/vault-import/confirm", async (c) => {
     try {
       const b = await vaultBody(
