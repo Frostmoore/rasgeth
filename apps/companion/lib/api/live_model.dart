@@ -124,6 +124,18 @@ class SessionView extends ChangeNotifier {
   }
 
   void changed() => notifyListeners();
+
+  /// «Cancella per sempre» (3.9.8): these events lose their words here at once, as in the log.
+  void erase(Iterable<int> seqs) {
+    final gone = seqs.toSet();
+    for (var i = 0; i < events.length; i++) {
+      final e = events[i];
+      if (gone.contains(e.seq)) {
+        events[i] = RgEvent(seq: e.seq, ts: e.ts, type: e.type, sessionId: e.sessionId);
+      }
+    }
+    notifyListeners();
+  }
 }
 
 /// An agent showed something in the Canvas, live (the page's `canvasEvent`, G42.2): a file or an

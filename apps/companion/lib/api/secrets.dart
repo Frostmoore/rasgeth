@@ -8,6 +8,8 @@
 
 import 'dart:convert';
 
+import 'password_export.dart';
+
 /// One well-known key format; the event log's Redactor uses the same list.
 class SecretPattern {
   const SecretPattern(this.name, this.re);
@@ -145,7 +147,7 @@ bool _ibanValid(String raw) {
 }
 
 /// The kinds of secret (the protocol's `SecretSpan["kind"]`).
-enum SecretKind { key, password, code, card, iban }
+enum SecretKind { key, password, code, card, iban, export }
 
 /// One secret found in a text: where its value is, what kind, and the value itself.
 class SecretSpan {
@@ -154,6 +156,7 @@ class SecretSpan {
     required this.end,
     required this.kind,
     required this.value,
+    this.rows,
   });
 
   /// [start, end) of the value only, in UTF-16 code units: «password: hunter2» spans «hunter2».
@@ -162,7 +165,16 @@ class SecretSpan {
   final SecretKind kind;
   final String value;
 
-  Map<String, Object> toJson() => {'start': start, 'end': end, 'kind': kind.name, 'value': value};
+  /// A password manager's export (3.9.8): how many passwords it holds.
+  final int? rows;
+
+  Map<String, Object> toJson() => {
+    'start': start,
+    'end': end,
+    'kind': kind.name,
+    'rows': ?rows,
+    'value': value,
+  };
 
   @override
   bool operator ==(Object other) =>
@@ -180,16 +192,21 @@ class SecretSpan {
 }
 
 class _Span {
-  _Span(this.start, this.end, this.kind);
+  _Span(this.start, this.end, this.kind, [this.rows]);
 
   final int start;
   int end;
-  final SecretKind kind;
+  SecretKind kind;
+  int? rows;
 }
 
 /// Where the secrets are in a text, sorted and merged when they overlap.
 List<SecretSpan> findSecrets(String text) {
   final out = <_Span>[];
+  // A password manager's export (3.9.8) is one span: its rows, not each value in them.
+  for (final x in findPasswordExports(text)) {
+    out.add(_Span(x.start, x.end, SecretKind.export, x.rows));
+  }
   void add(RegExpMatch m, SecretKind kind, [String? value]) {
     final whole = m[0]!;
     final v = value ?? whole;
@@ -260,13 +277,23 @@ List<SecretSpan> findSecrets(String text) {
     final last = merged.isEmpty ? null : merged.last;
     if (last != null && s.start < last.end) {
       if (s.end > last.end) last.end = s.end;
+      if (s.kind == SecretKind.export) {
+        last.kind = SecretKind.export;
+        last.rows = (last.rows ?? 0) + (s.rows ?? 0);
+      }
     } else {
-      merged.add(_Span(s.start, s.end, s.kind));
+      merged.add(_Span(s.start, s.end, s.kind, s.rows));
     }
   }
   return [
     for (final s in merged)
-      SecretSpan(start: s.start, end: s.end, kind: s.kind, value: text.substring(s.start, s.end)),
+      SecretSpan(
+        start: s.start,
+        end: s.end,
+        kind: s.kind,
+        value: text.substring(s.start, s.end),
+        rows: s.rows,
+      ),
   ];
 }
 
