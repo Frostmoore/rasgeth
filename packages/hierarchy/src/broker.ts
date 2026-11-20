@@ -239,7 +239,7 @@ export class PermissionBroker {
         .list({ sessionId, types: ["permission.resolved"] })
         .then((events) => {
           for (const e of events) {
-            if (e.type !== "permission.resolved") continue;
+            if (e.type !== "permission.resolved" || !e.payload) continue;
             const { scope, kind, decision } = e.payload;
             if (scope !== "work" || !kind || decision !== "allow") continue;
             const set = this.workAllows.get(sessionId) ?? new Set<string>();
