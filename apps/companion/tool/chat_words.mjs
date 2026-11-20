@@ -8,7 +8,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fillProduct } from "./product.mjs";
 
-const KEYS = `permAsks permWhy permDetails permTool permRawReasons showLess showAllInput allow thisChat
+const KEYS = `permAsks permWhy permDetails permTool permRawReasons showLess showAllInput allow allowWork
+allowWorkHint thisChat
 thisChatHint always alwaysHint deny denyWhy denyWhyPlaceholder criticalTitle criticalWhat toolReqTitle
 toolReqWhy toolReqHint toolReqSession toolReqAlways toolReqNo agTitle agCap agCapHint agHint agAllowCap
 agAllow agDeny manyAnswers otherAnswer proposedPlan waitingAnswer notAnswered planFeedback planApprove

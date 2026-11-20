@@ -5,6 +5,7 @@ import {
   criticalSentences,
   type Event,
   isCriticalRequest,
+  offersWorkAllow,
   ownWords,
   type PermissionRequestInfo,
   requestReasons,
@@ -626,7 +627,7 @@ function ToolPermission({ r }: { r: PermissionRequestInfo }) {
   const input = JSON.stringify(r.input, null, 2);
   const resolve = (
     decision: "allow" | "deny",
-    scope: "once" | "session" | "always" = "once",
+    scope: "once" | "session" | "always" | "work" = "once",
     reason?: string,
   ) => {
     if (!armed) return;
@@ -715,6 +716,18 @@ function ToolPermission({ r }: { r: PermissionRequestInfo }) {
         >
           {t("allow")}
         </button>
+        {offersWorkAllow(r) && (
+          <button
+            type="button"
+            class="always"
+            disabled={!armed}
+            onKeyDown={noEnter}
+            title={t("allowWorkHint")}
+            onClick={() => resolve("allow", "work")}
+          >
+            {t("allowWork")}
+          </button>
+        )}
         {r.danger.length === 0 && r.sessionId && (
           <button
             type="button"

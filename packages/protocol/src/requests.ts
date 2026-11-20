@@ -687,14 +687,17 @@ export function requestReasons(lang: string, r: { reasons: readonly string[] }):
   ];
 }
 
-/** Requests the person always answers one by one (an email leaving, another agent's model). */
-const ONE_BY_ONE = ["outgoing-mail", "agent-model"];
+/**
+ * Requests the person always answers one by one: an email leaving, another agent's model, and a
+ * change to the platform itself (a yes to archiving one project is not a yes to every change).
+ */
+const ONE_BY_ONE = ["outgoing-mail", "agent-model", "platform"];
 
 /**
  * Whether a request offers «Always allow for this job» (3.9.8): a danger (the ordinary ones have
  * «This conversation» and «Always» already) in a conversation, never a truly dangerous request,
- * an email, another agent's model, a switched-off tool or an artifact's capability. The page, the
- * app and every chat show it from this one function.
+ * an email, another agent's model, a platform change, a switched-off tool or an artifact's
+ * capability. The page, the app and every chat show it from this one function.
  */
 export function offersWorkAllow(r: {
   tool: string;

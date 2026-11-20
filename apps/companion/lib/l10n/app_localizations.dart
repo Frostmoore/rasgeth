@@ -18668,6 +18668,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Compare: every difference'**
   String get skCompareFull;
+
+  /// The page's `allowWork` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Always allow for this job'**
+  String get cvAllowWork;
+
+  /// The page's `allowWorkHint` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Allow the same kind of command on the same machine without asking again, for the rest of this conversation\'s work'**
+  String get cvAllowWorkHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

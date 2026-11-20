@@ -8149,5 +8149,13 @@
   "skNotRestorable": "Too large to keep: it cannot come back.",
   "skNoVersions": "No versions yet.",
   "skLineTitle": "What changed and why",
-  "skCompareFull": "Compare: every difference"
+  "skCompareFull": "Compare: every difference",
+  "cvAllowWork": "Always allow for this job",
+  "@cvAllowWork": {
+    "description": "The page's `allowWork` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAllowWorkHint": "Allow the same kind of command on the same machine without asking again, for the rest of this conversation's work",
+  "@cvAllowWorkHint": {
+    "description": "The page's `allowWorkHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  }
 }

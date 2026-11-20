@@ -58,8 +58,8 @@ function fakeHost() {
     },
     approvals: {
       on: (e: string, l: (...a: never[]) => void) => approvals.on(e, l),
-      decide(_o, id, d) {
-        decided.push([id, d]);
+      decide(_o, id, d, _reason, _via, scope) {
+        decided.push(scope ? [id, `${d}:${scope}`] : [id, d]);
         approvals.emit("closed", "me", id, d);
         return true;
       },
@@ -202,6 +202,27 @@ describe("chat bridge (G29.5)", () => {
     expect(decided).toEqual([["r1", "deny"]]);
     await new Promise((r) => setTimeout(r, 20));
     expect(t.edits.at(-1)?.text).toMatch(/Denied$/);
+  });
+
+  it("offers «Always allow for this job» on a danger in a conversation, as a button and as 3 (3.9.8)", async () => {
+    const { t, send, approvals, decided } = await setup();
+    const restart = {
+      ...perm,
+      requestId: "w1",
+      input: { command: "docker restart caddy" },
+      danger: ["containers"],
+      sessionId: "s1",
+    };
+    approvals.emit("request", "me", restart);
+    await new Promise((r) => setTimeout(r, 20));
+    const m = t.sent.at(-1);
+    expect(m?.buttons?.map((b) => b.label)).toEqual(["Allow", "Deny", "Always allow for this job"]);
+    await send({ button: m?.buttons?.[2]?.id ?? "" });
+    expect(decided).toEqual([["w1", "allow:work"]]);
+    // Never on a truly dangerous request.
+    approvals.emit("request", "me", { ...restart, requestId: "w2", danger: ["critical-system"] });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(t.sent.at(-1)?.buttons?.map((b) => b.label)).toEqual(["Allow", "Deny"]);
   });
 
   it("says what a platform request does, with the project's name (3.5.6)", async () => {

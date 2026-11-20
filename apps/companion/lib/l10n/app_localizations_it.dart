@@ -10860,4 +10860,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get skCompareFull => 'Confronta: tutte le differenze';
+
+  @override
+  String get cvAllowWork => 'Consenti sempre per questo lavoro';
+
+  @override
+  String get cvAllowWorkHint =>
+      'Consenti lo stesso tipo di comando sulla stessa macchina senza chiederlo più, per il resto del lavoro di questa conversazione';
 }

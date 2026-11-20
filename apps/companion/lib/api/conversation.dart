@@ -1071,6 +1071,17 @@ class PermissionRequest extends PersonRequest {
   /// Truly dangerous (G36.17b): a full screen of its own, never the quick yes. The server says
   /// so with `critical` (from `criticalOf`); the dangers' ids of `critical.ts` count too.
   bool get isCritical => critical.isNotEmpty || danger.any(criticalDangers.contains);
+
+  /// «Consenti sempre per questo lavoro» (3.9.8), the protocol's `offersWorkAllow`: a danger in a
+  /// conversation, never a truly dangerous request, an email, another agent's model, a platform
+  /// change, a switched-off tool or an artifact's capability.
+  bool get offersWorkAllow =>
+      sessionId != null &&
+      danger.isNotEmpty &&
+      !isCritical &&
+      tool != 'request_tool' &&
+      tool != 'artifact_capability' &&
+      !danger.any(const ['outgoing-mail', 'agent-model', 'platform'].contains);
 }
 
 /// A request in one language, as the server says it (`RequestWordsLang` in

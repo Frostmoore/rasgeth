@@ -355,6 +355,111 @@ describe("PermissionBroker", () => {
     expect(yes.asked).toEqual(["human", "human"]);
   });
 
+  /** A broker whose person answers from a list, with «Always allow for this job» when asked to. */
+  async function workSetup(
+    answers: ({ answer: "allow" | "deny"; scope?: "work" } | { fail: true } | { never: true })[],
+    settings: Partial<PolicySettings> = {},
+  ) {
+    const t = await buildTree();
+    const asked: string[] = [];
+    const scopes = new Map<string, "work">();
+    const broker = new PermissionBroker({
+      store,
+      resolve: registry.resolve,
+      settingsFor: () => ({ ...DEFAULT_POLICY, approverKinds: [], ...settings }),
+      modeFor: () => "auto",
+      askAgent: async () => "escalate",
+      askHuman: (req, signal) => {
+        asked.push(String((req.call.input as { command?: string }).command));
+        const a = answers.shift() ?? { answer: "deny" as const };
+        if ("fail" in a) {
+          // The channel failed after the person had chosen «this job»: still a no.
+          scopes.set(req.requestId, "work");
+          return Promise.reject(new Error("the page went away"));
+        }
+        if ("never" in a) {
+          scopes.set(req.requestId, "work");
+          return new Promise((_ok, ko) =>
+            signal.addEventListener("abort", () => ko(new Error("aborted"))),
+          );
+        }
+        if (a.scope) scopes.set(req.requestId, a.scope);
+        return Promise.resolve(a.answer);
+      },
+      answeredScope: (id) => {
+        const s = scopes.get(id);
+        scopes.delete(id);
+        return s;
+      },
+    });
+    return { t, broker, asked };
+  }
+  const bash = (command: string) => call("bash", { command });
+
+  it("«Always allow for this job» covers the same kind of command in the same conversation only (3.9.8)", async () => {
+    const w = await workSetup([{ answer: "allow", scope: "work" }, { answer: "allow" }]);
+    expect(await w.broker.check(w.t.sub, bash("docker restart caddy"), "s1")).toEqual({
+      allow: true,
+    });
+    const resolved = (await store.list()).filter((e) => e.type === "permission.resolved");
+    expect(resolved.at(-1)?.payload).toMatchObject({
+      decision: "allow",
+      by: "human",
+      scope: "work",
+      kind: "bash · here · containers · docker restart",
+    });
+    // The same kind again, in this conversation: no question.
+    expect(await w.broker.check(w.t.sub, bash("docker restart web"), "s1")).toEqual({
+      allow: true,
+    });
+    expect(w.asked).toEqual(["docker restart caddy"]);
+    // Another kind (removing is not restarting), or another conversation: asked again.
+    await w.broker.check(w.t.sub, bash("docker rm -f web"), "s1");
+    await w.broker.check(w.t.sub, bash("docker restart caddy"), "s2");
+    expect(w.asked).toEqual(["docker restart caddy", "docker rm -f web", "docker restart caddy"]);
+  });
+
+  it("«Always allow for this job» never covers a truly dangerous request (3.9.8)", async () => {
+    const w = await workSetup([
+      { answer: "allow", scope: "work" },
+      { answer: "allow", scope: "work" },
+      { answer: "deny" },
+    ]);
+    const wipe = bash("rm -rf /etc/caddy");
+    expect(await w.broker.check(w.t.sub, wipe, "s1")).toEqual({ allow: true });
+    const resolved = (await store.list()).filter((e) => e.type === "permission.resolved");
+    expect(resolved.at(-1)?.payload).not.toHaveProperty("scope");
+    // Asked again, every time.
+    await w.broker.check(w.t.sub, wipe, "s1");
+    expect(await w.broker.check(w.t.sub, wipe, "s1")).toMatchObject({ allow: false });
+    expect(w.asked).toHaveLength(3);
+  });
+
+  it("«Always allow for this job» never comes from a failure or a timeout (3.9.8)", async () => {
+    const failing = await workSetup([{ fail: true }, { answer: "deny" }]);
+    expect(await failing.broker.check(failing.t.sub, bash("docker restart caddy"), "s1")).toEqual({
+      allow: false,
+      reason: "denied by the user",
+    });
+    expect(
+      await failing.broker.check(failing.t.sub, bash("docker restart caddy"), "s1"),
+    ).toMatchObject({ allow: false });
+    expect(failing.asked).toHaveLength(2);
+    const late = await workSetup([{ never: true }, { answer: "deny" }], { askTimeoutMs: 20 });
+    expect(await late.broker.check(late.t.sub, bash("docker restart caddy"), "s1")).toMatchObject({
+      allow: false,
+    });
+    expect(await late.broker.check(late.t.sub, bash("docker restart caddy"), "s1")).toMatchObject({
+      allow: false,
+    });
+    expect(late.asked).toHaveLength(2);
+    // No resolution recorded a grant.
+    const grants = (await store.list()).filter(
+      (e) => e.type === "permission.resolved" && (e.payload as { scope?: string }).scope,
+    );
+    expect(grants).toEqual([]);
+  });
+
   it("never turns an agent's own request into a yes by the rules alone (G38.6)", async () => {
     // Auto mode would allow `ls`; the external agent asked, so someone decides.
     const yes = await setup({ Coder: "escalate" }, "allow");

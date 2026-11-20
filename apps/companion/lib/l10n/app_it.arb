@@ -3095,5 +3095,7 @@
   "skNotRestorable": "Troppo grande per essere conservata: non può tornare.",
   "skNoVersions": "Ancora nessuna versione.",
   "skLineTitle": "Cosa è cambiato e perché",
-  "skCompareFull": "Confronta: tutte le differenze"
+  "skCompareFull": "Confronta: tutte le differenze",
+  "cvAllowWork": "Consenti sempre per questo lavoro",
+  "cvAllowWorkHint": "Consenti lo stesso tipo di comando sulla stessa macchina senza chiederlo più, per il resto del lavoro di questa conversazione"
 }

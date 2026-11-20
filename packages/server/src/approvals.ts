@@ -1,10 +1,6 @@
 import { EventEmitter } from "node:events";
 import type { ApprovalRequest, HumanAnswer } from "@redgiant/hierarchy";
-import {
-  offersWorkAllow,
-  type PermissionRequestInfo,
-  requestNameIds,
-} from "@redgiant/protocol";
+import { offersWorkAllow, type PermissionRequestInfo, requestNameIds } from "@redgiant/protocol";
 
 interface Pending {
   info: PermissionRequestInfo;

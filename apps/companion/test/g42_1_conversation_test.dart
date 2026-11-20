@@ -160,6 +160,32 @@ void main() {
     await done(tester);
   });
 
+  testWidgets('«consenti sempre per questo lavoro» on a danger, never on a truly dangerous one', (
+    tester,
+  ) async {
+    server.permissions.addAll([
+      perm('p1', input: {'command': 'docker restart caddy'}, danger: ['containers']),
+      perm('p2'),
+      {
+        ...perm('p3', input: {'command': 'rm -rf /etc'}, danger: ['critical-system']),
+        'critical': [
+          {'id': 'critical-system', 'action': 'system-delete', 'target': '/etc'},
+        ],
+      },
+    ]);
+    await open(tester);
+    await _armed(tester);
+    expect(find.byKey(const Key('chat-work-p2')), findsNothing);
+    expect(find.byKey(const Key('chat-work-p3')), findsNothing);
+    await tester.ensureVisible(find.byKey(const Key('chat-work-p1')));
+    await tester.tap(find.byKey(const Key('chat-work-p1')));
+    await _settle(tester);
+    expect(server.resolves.last, containsPair('scope', 'work'));
+    expect(server.resolves.last, containsPair('decision', 'allow'));
+    expect(server.resolves.last, containsPair('remember', false));
+    await done(tester);
+  });
+
   testWidgets('a switched-off tool asked back, and an artifact\'s spending cap', (tester) async {
     server.permissions.addAll([
       perm('t1', tool: 'request_tool', input: {'tool': 'web_fetch', 'why': 'leggere la guida'}),

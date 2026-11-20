@@ -2945,6 +2945,9 @@ const en = {
   todosTitle: "Steps: {done} of {all} done",
   unqueue: "Take it back (if the agent has not read it yet)",
   thisChat: "In this conversation",
+  allowWork: "Always allow for this job",
+  allowWorkHint:
+    "Allow the same kind of command on the same machine without asking again, for the rest of this conversation's work",
   thisChatHint: "Allow {tool} without asking again, in this conversation only",
   denyWhy: "Deny and say why",
   denyWhyPlaceholder: "What to do instead (the agent reads it)",
@@ -10003,6 +10006,9 @@ const it: Record<Key, string> = {
   todosTitle: "Passi: {done} su {all} fatti",
   unqueue: "Ritira (se l'agente non l'ha ancora letto)",
   thisChat: "In questa conversazione",
+  allowWork: "Consenti sempre per questo lavoro",
+  allowWorkHint:
+    "Consenti lo stesso tipo di comando sulla stessa macchina senza chiederlo più, per il resto del lavoro di questa conversazione",
   thisChatHint: "Consenti {tool} senza chiederlo più, solo in questa conversazione",
   denyWhy: "Nega e spiega perché",
   denyWhyPlaceholder: "Cosa fare invece (l'agente lo legge)",

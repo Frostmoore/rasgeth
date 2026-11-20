@@ -622,7 +622,10 @@ export function attachWebSocket(
             }
             const toolRequest = pending?.tool === "request_tool";
             if (toolRequest)
-              core.toolRequestScope(msg.requestId, msg.remember ? "always" : msg.scope);
+              core.toolRequestScope(
+                msg.requestId,
+                msg.remember ? "always" : msg.scope === "work" ? undefined : msg.scope,
+              );
             if (
               !core.approvals.decide(
                 owner,
