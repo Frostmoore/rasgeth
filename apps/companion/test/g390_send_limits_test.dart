@@ -221,6 +221,19 @@ void main() {
       await sendKeys(tester);
       expect(find.byKey(const Key('desk-panel')), findsOneWidget);
       expect(server.sent.any((m) => m['text'] == 'Fai il punto'), isTrue);
+      // A new conversation each time (3.9.8), as Chat's field: never God's shared one.
+      await tester.enterText(
+        find.descendant(
+          of: find.byKey(const Key('desk-god-field')),
+          matching: find.byType(TextField),
+        ),
+        'E adesso?',
+      );
+      await sendKeys(tester);
+      final first = server.sent.firstWhere((m) => m['text'] == 'Fai il punto')['sessionId'];
+      final second = server.sent.firstWhere((m) => m['text'] == 'E adesso?')['sessionId'];
+      expect(first, isNot(second));
+      expect(server.requests.where((q) => q.contains('/work-session')), isEmpty);
       // And the shortcut is listed.
       await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
       await tester.sendKeyEvent(LogicalKeyboardKey.slash);
