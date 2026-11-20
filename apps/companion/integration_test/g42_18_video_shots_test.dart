@@ -144,9 +144,13 @@ void main() {
     await t.runAsync(() => view?.runForTest(_ask) ?? Future<void>.value());
     await shot(t, 'g42-18-$_tag-$_theme-05-chiedi', wait: 2000);
 
-    final model = t.state<CanvasShellState>(find.byType(CanvasShell)).widget.model;
-    for (final tab in [...model.tabs]) {
-      model.close(tab.id);
+    // On a phone the Canvas went away with the question (the conversation came back).
+    final shells = find.byType(CanvasShell);
+    if (shells.evaluate().isNotEmpty) {
+      final model = t.state<CanvasShellState>(shells).widget.model;
+      for (final tab in [...model.tabs]) {
+        model.close(tab.id);
+      }
     }
     await frames(t, 600);
     if (nav.canPop()) nav.pop();
