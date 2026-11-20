@@ -12,7 +12,7 @@ import { join } from "node:path";
 import { isMediaRef, type Job, type RgVideo, type VideoPreviewResult } from "@redgiant/protocol";
 import { JobFailure, type JobHandle, type Jobs } from "../../jobs.js";
 import { mediaFingerprint, type VideoAnalysis, type VideoTools } from "./analysis.js";
-import { compileVideo, EmptyTimeline, type RenderProbe } from "./compile.js";
+import { compileVideo, EmptyTimeline, lutFile, type RenderProbe, readLuts } from "./compile.js";
 import type { MediaRunner } from "./media-run.js";
 import { renderProbeOf } from "./probe.js";
 import { ffmpegRunner, RENDER_FONTS_DIR, renderVideo } from "./render.js";
@@ -169,6 +169,7 @@ export class VideoPreviews {
         captions: o.doc.captions.burnIn ? "burn" : "none",
         fontsDir: this.o.fontsDir ?? RENDER_FONTS_DIR,
         span: { from: o.from, to: o.to },
+        luts: await readLuts(o.doc, o.mediaPath, lutFile),
       });
     } catch (e) {
       if (e instanceof EmptyTimeline)

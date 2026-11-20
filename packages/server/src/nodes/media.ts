@@ -22,7 +22,9 @@ import { isMediaRef, PRODUCT_NAME, readRgVideo, VIDEO_RENDER_QUALITIES } from "@
 import {
   compileVideo,
   EmptyTimeline,
+  lutFile,
   type RenderProbe,
+  readLuts,
   VIDEO_COMPILER_VERSION,
 } from "../editor/video/compile.js";
 import type { MediaMachineLike } from "../editor/video/machine.js";
@@ -203,11 +205,19 @@ export function nodeMediaHandler(o: NodeMediaOptions) {
     const encoder = await o.machine.encoder();
     let plan: ReturnType<typeof compileVideo>;
     try {
+      // 3.10: the LUTs were copied here like the media, under their hash.
+      const lutNames = files as Record<string, unknown>;
+      const luts = await readLuts(
+        doc,
+        async (l) => (typeof lutNames[l] === "string" ? at(lutNames[l] as string) : undefined),
+        lutFile,
+      );
       plan = compileVideo(doc, probes, {
         encoder,
         ...(height && { height }),
         quality,
         fontsDir: o.fontsDir ?? RENDER_FONTS_DIR,
+        luts,
       });
     } catch (e) {
       if (e instanceof EmptyTimeline)

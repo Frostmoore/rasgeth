@@ -587,4 +587,145 @@ describe.skipIf(!on)("video render with ffmpeg", () => {
       `G41.6: ${report.seconds.toFixed(2)} s assembled (${report.cut.toFixed(2)} s cut), ${report.inserts.length} B, rendered ${v?.width}×${v?.height} ${v?.nb_read_frames} frames`,
     );
   }, 300_000);
+
+  it("3.10, video part 2: speed, a still frame, a box over the picture with a LUT, colour, volume keys", async () => {
+    // A LUT that makes everything red: what it touches is easy to find in the picture.
+    const lutDir = join(dir, "lut");
+    mkdirSync(lutDir, { recursive: true });
+    const red = `LUT_3D_SIZE 2\n${Array.from({ length: 8 }, () => "1 0 0").join("\n")}\n`;
+    const d = newRgVideo({ width: 640, height: 360, rate: R, aspect: "16:9" }, "Parte 2");
+    d.tracks = [
+      { id: "V1", kind: "Video", name: "V1", locked: false },
+      { id: "V2", kind: "Video", name: "V2", locked: false },
+      { id: "A1", kind: "Audio", name: "A1", locked: false },
+      { id: "A2", kind: "Audio", name: "A2", locked: false },
+    ];
+    d.clips = [
+      // 4 s of the file in 2 s, then 2 s still on its frame at 1 s; warmer and brighter.
+      clip(
+        "fast",
+        "V1",
+        0,
+        50,
+        { media: "land.mp4", frames: 200 },
+        {
+          speed: 2,
+          color: { exposure: 0.3, contrast: 0.1, saturation: 0.2, temperature: 0.5 },
+        },
+      ),
+      clip("still", "V1", 50, 50, { media: "land.mp4", frames: 200 }, { freeze: true }, 25),
+      // A box top right, a third of the frame, through the red LUT.
+      clip(
+        "pip",
+        "V2",
+        0,
+        100,
+        { media: "port.mp4", frames: 150 },
+        {
+          box: { x: 0.75, y: 0.25, scale: 0.3 },
+          lut: "lut/red.cube",
+        },
+      ),
+      clip("snd", "A1", 0, 50, { media: "land.mp4", frames: 200 }, { speed: 2 }),
+      clip(
+        "mus",
+        "A2",
+        0,
+        100,
+        { media: "music.m4a", frames: 300 },
+        {
+          volumeKeys: [
+            { at: 0, db: -30 },
+            { at: 99, db: 0 },
+          ],
+        },
+      ),
+    ];
+    const plan = compileVideo(d, probes, target({ luts: { "lut/red.cube": red } }));
+    expect(plan.warnings).toEqual([]);
+    const out = join(dir, "renders", "parte2.mp4");
+    const res = await renderVideo(plan, {
+      run: ffmpegRunner(ffmpeg),
+      mediaPath: (m) => join(media, m),
+      workDir: join(dir, "work2"),
+      cacheDir: join(dir, "cache2"),
+      out,
+    });
+    expect(res.frames).toBe(100);
+    const info = probe(out);
+    expect(info.streams.find((x) => x.codec_type === "video")?.nb_read_frames).toBe("100");
+    expect(Number(info.format.duration)).toBeCloseTo(4, 1);
+    /** One pixel of frame `n` (RGB). */
+    const px = (n: number, x: number, y: number) => {
+      const r = spawnSync(
+        ffmpeg,
+        [
+          "-v",
+          "error",
+          "-i",
+          out,
+          "-vf",
+          `select=eq(n\\,${n}),format=rgb24,crop=1:1:${x}:${y}`,
+          "-frames:v",
+          "1",
+          "-f",
+          "rawvideo",
+          "-pix_fmt",
+          "rgb24",
+          "-",
+        ],
+        { encoding: "buffer" },
+      );
+      return [...r.stdout.subarray(0, 3)];
+    };
+    if (process.env.RG_KEEP_FRAME)
+      spawnSync(ffmpeg, [
+        "-v",
+        "error",
+        "-y",
+        "-i",
+        out,
+        "-vf",
+        "select=eq(n\\,10)",
+        "-frames:v",
+        "1",
+        process.env.RG_KEEP_FRAME,
+      ]);
+    // Inside the box (its centre at 480, 90): red; outside it: not.
+    const [r1, g1, b1] = px(10, 480, 90);
+    expect(r1).toBeGreaterThan(180);
+    expect(g1).toBeLessThan(80);
+    expect(b1).toBeLessThan(80);
+    const out1 = px(10, 200, 300);
+    expect(out1[0] > 180 && out1[1] < 80 && out1[2] < 80).toBe(false);
+    /** How different two frames are, in the left part (away from the box): mean of |a−b|. */
+    const area = (n: number) =>
+      spawnSync(
+        ffmpeg,
+        [
+          "-v",
+          "error",
+          "-i",
+          out,
+          "-vf",
+          `select=eq(n\\,${n}),format=rgb24,crop=320:200:0:150`,
+          "-frames:v",
+          "1",
+          "-f",
+          "rawvideo",
+          "-",
+        ],
+        { encoding: "buffer" },
+      ).stdout;
+    const diff = (a: number, b: number) => {
+      const [x, y] = [area(a), area(b)];
+      let sum = 0;
+      for (let k = 0; k < x.length; k++) sum += Math.abs((x[k] ?? 0) - (y[k] ?? 0));
+      return sum / Math.max(1, x.length);
+    };
+    // The still: a second apart, the same picture (the encoder's noise only)…
+    expect(diff(60, 90)).toBeLessThan(2);
+    // …while the fast part moves.
+    expect(diff(5, 30)).toBeGreaterThan(2);
+  }, 300_000);
 });

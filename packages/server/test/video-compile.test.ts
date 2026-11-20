@@ -13,6 +13,7 @@ import {
 import { describe, expect, it } from "vitest";
 import { captionsToSrt, captionsToVtt } from "../src/editor/video/captions.js";
 import {
+  atempo,
   compileVideo,
   EmptyTimeline,
   encoderArgs,
@@ -20,6 +21,7 @@ import {
   filterValue,
   fitText,
   joinArgs,
+  keyExpr,
   loudnormApplyArgs,
   outputSize,
   parseLoudnorm,
@@ -910,12 +912,109 @@ describe("encoding and hashes", () => {
     const end = compileVideo(d, PROBES, { ...TARGET, span: { from: 500, to: 900 } });
     expect([end.start, end.frames]).toEqual([199, 1]);
   });
+});
 
-  it("speed (A3) is not rendered yet, and says so", () => {
-    const plan = compileVideo(doc([clip("v", "V1", 0, 25, A, { speed: 2 })]), PROBES, TARGET);
-    expect(plan.warnings).toEqual([
-      "speed is not rendered yet (3.10): those clips play at normal speed",
+describe("video part 2 (3.10)", () => {
+  /** keyExpr evaluated as ffmpeg would: if(c,a,b) and lt(a,b) as JavaScript. */
+  const evalExpr = (e: string, F: number) =>
+    Function(
+      "if_",
+      "lt",
+      `return ${e.replace(/\bif\(/g, "if_(").replace(/\(F\)|\bF\b/g, `(${F})`)};`,
+    )(
+      (c: number, a: number, b: number) => (c ? a : b),
+      (a: number, b: number) => (a < b ? 1 : 0),
+    ) as number;
+  it.each([
+    [0, 1],
+    [10, 1],
+    [15, 0.65],
+    [20, 0.3],
+    [40, 0.65],
+    [60, 1],
+    [90, 1],
+  ])("a key expression at frame %i is %d", (F, v) => {
+    const e = keyExpr(
+      [
+        { at: 10, v: 1 },
+        { at: 20, v: 0.3 },
+        { at: 60, v: 1 },
+      ],
+      "F",
+    );
+    expect(evalExpr(e, F)).toBeCloseTo(v);
+  });
+
+  it("speed: twice as many source frames read, played back at the timeline's rate; atempo", () => {
+    const d = doc([
+      clip("v", "V1", 0, 50, A, { speed: 2, link: "g" }, 100),
+      clip("a", "A1", 0, 50, A, { speed: 2, link: "g" }, 100),
     ]);
+    const plan = compileVideo(d, PROBES, TARGET);
+    expect(plan.warnings).toEqual([]);
+    const s = seg(d, 0);
+    expect(s.script).toContain("trim=end_frame=100,setpts=PTS-STARTPTS");
+    expect(s.script).toContain("setpts=PTS/2,fps=25/1");
+    expect(plan.audio.script).toContain("atempo=2,atrim=end_sample=96000");
+    expect(atempo(0.25)).toBe("atempo=0.5,atempo=0.5");
+    expect(atempo(0.5)).toBe("atempo=0.5");
+  });
+
+  it("a still frame: one frame of the file held for the whole clip", () => {
+    const s = seg(doc([clip("v", "V1", 0, 50, A, { freeze: true }, 75)]), 0);
+    expect(s.inputs[0]?.before.slice(0, 2)).toEqual(["-ss", "3.000000"]);
+    expect(s.script).toContain("trim=end_frame=1,setpts=PTS-STARTPTS,loop=loop=-1:size=1");
+  });
+
+  it("colour and a LUT after the picture is framed; a LUT not found is said", () => {
+    const d = doc([
+      clip("v", "V1", 0, 25, A, {
+        color: { exposure: 0.5, contrast: 0.2, saturation: -1, temperature: 0.4 },
+        lut: "lut/film.cube",
+      }),
+    ]);
+    const s = seg(d, 0, PROBES, { ...TARGET, luts: { "lut/film.cube": "LUT_3D_SIZE 2\n0 0 0\n" } });
+    expect(s.script).toContain(
+      "exposure=exposure=0.5,eq=contrast=1.2:saturation=0,colortemperature=temperature=5500,lut3d=file=",
+    );
+    expect(Object.values(s.files)).toContain("LUT_3D_SIZE 2\n0 0 0\n");
+    const none = compileVideo(d, PROBES, TARGET);
+    expect(none.warnings).toEqual(["v's LUT lut/film.cube was not found: left out"]);
+    expect(none.segments[0]?.script).not.toContain("lut3d");
+  });
+
+  it("picture in picture: scaled and placed on a clear frame over the clip under it", () => {
+    const d = doc([
+      clip("base", "V1", 0, 50, A),
+      clip("pip", "V2", 0, 50, B, {
+        boxKeys: [
+          { at: 0, x: 0.75, y: 0.25, scale: 0.3 },
+          { at: 49, x: 0.25, y: 0.25, scale: 0.5 },
+        ],
+      }),
+    ]);
+    const s = seg(d, 0);
+    expect(s.script).toMatch(/scale=w='max\(2,trunc\(640\*\(if\(lt\(\(n\+0\),0\)/);
+    expect(s.script).toContain("eval=frame,format=yuva420p");
+    expect(s.script).toContain("color=c=black@0:s=640x360");
+    expect(s.script).toMatch(/overlay=x='W\*\(.*\)-w\/2':y='H\*\(.*\)-h\/2':eval=frame/);
+    // A clip in a box is never the base: the clip under it is.
+    const still = doc([clip("pip", "V1", 0, 50, B, { box: { x: 0.5, y: 0.5, scale: 0.5 } })]);
+    expect(seg(still, 0).script.split("\n")[0]).toContain("color=c=black:s=640x360");
+  });
+
+  it("the volume's keys on the clip's own time", () => {
+    const d = doc([
+      clip("m", "A1", 0, 100, MUSIC, {
+        volumeKeys: [
+          { at: 0, db: 0 },
+          { at: 50, db: -20 },
+        ],
+      }),
+    ]);
+    const a = compileVideo(d, PROBES, TARGET).audio.script;
+    expect(a).toContain("volume='pow(10,(if(lt((t*25/1-0),0),0,");
+    expect(a).toContain(")/20)':eval=frame");
   });
 });
 

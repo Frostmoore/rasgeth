@@ -34,6 +34,7 @@
 // text, the arguments, the files the graphs read and a hash per segment out. `render.ts` runs
 // it with `execFile` and `-/filter_complex <file>` (ffmpeg 9 has no -filter_complex_script).
 import { createHash } from "node:crypto";
+import { readFile, stat } from "node:fs/promises";
 import {
   cleanTimeline,
   clipEnd,
@@ -58,7 +59,7 @@ import { captionsAss, subtitleLanguage } from "./render-subtitles.js";
 export { type FittedText, fitText, TITLE_SAFE, textWidth, wrapToWidth } from "@redgiant/protocol";
 
 /** Changes when the graphs change: cached segments of another version are not reused. */
-export const VIDEO_COMPILER_VERSION = "1";
+export const VIDEO_COMPILER_VERSION = "2";
 /** Seconds read past what a segment needs, so an input never runs short. */
 const MARGIN = 0.25;
 /** A picture with Ken Burns is prepared at twice the output's size (smooth movement). */
@@ -97,7 +98,47 @@ export interface RenderTarget {
    * at its ends, the sound of the whole timeline (cached by its hash) started at `from`.
    */
   span?: { from: number; to: number };
+  /**
+   * 3.10: the `.cube` LUTs the clips use, their text by project path (read by the caller from the
+   * project, checked and limited); a LUT missing here is left out with a warning.
+   */
+  luts?: Record<string, string>;
 }
+
+/** The biggest `.cube` a render takes (a 65³ LUT in text is about 7 MB). */
+export const LUT_MAX_BYTES = 16 * 1024 * 1024;
+
+/** The `.cube` LUTs a timeline's clips use (3.10), by project path. */
+export const timelineLuts = (doc: RgVideo): string[] => [
+  ...new Set(doc.clips.flatMap((c) => (c.lut ? [c.lut] : []))),
+];
+
+/**
+ * The LUTs' text for a render (3.10): each `.cube` the clips use, found by `absOf` (a file of the
+ * project, or the node's copy), read when it is small enough and looks like a 3D LUT (a
+ * `LUT_3D_SIZE` line); anything else is left out (the render warns).
+ */
+export async function readLuts(
+  doc: RgVideo,
+  absOf: (lut: string) => Promise<string | undefined>,
+  read: (abs: string) => Promise<{ size: number; text: () => Promise<string> } | undefined>,
+): Promise<Record<string, string>> {
+  const out: Record<string, string> = {};
+  for (const lut of timelineLuts(doc)) {
+    const abs = await absOf(lut).catch(() => undefined);
+    const f = abs ? await read(abs).catch(() => undefined) : undefined;
+    if (!f || f.size > LUT_MAX_BYTES) continue;
+    const text = await f.text().catch(() => "");
+    if (/^\s*LUT_3D_SIZE\s+\d+/m.test(text)) out[lut] = text;
+  }
+  return out;
+}
+
+/** A file on this machine, for `readLuts`. */
+export const lutFile = async (abs: string) => {
+  const st = await stat(abs);
+  return st.isFile() ? { size: st.size, text: () => readFile(abs, "utf8") } : undefined;
+};
 
 /** One ffmpeg input: its options and the project file it reads. */
 export interface RenderInput {
@@ -267,6 +308,7 @@ interface Ctx {
   fontsDir: string;
   dips: Map<string, Dips>;
   warn: (s: string) => void;
+  luts: Record<string, string>;
 }
 
 /** The transitions of a track that join two clips that both play, one right after the other. */
@@ -352,6 +394,21 @@ class Graph {
     this.inputs.push({ before, media });
     return this.inputs.length - 1;
   }
+}
+
+/** A number as short as it reads: 2, 0.5, 1.25 (four decimals at most). */
+const short = (x: number, d = 4) => String(Number(x.toFixed(d)));
+
+/** A speed as atempo filters (each one takes 0.5…100: slower ones are chained). */
+export function atempo(speed: number): string {
+  const parts: string[] = [];
+  let s = speed;
+  while (s < 0.5) {
+    parts.push("atempo=0.5");
+    s /= 0.5;
+  }
+  parts.push(`atempo=${short(s)}`);
+  return parts.join(",");
 }
 
 /** Appends filters to a chain that is either open (`[0:v]a,b`) or a bare label (`[x]`). */
@@ -445,6 +502,8 @@ function isBase(p: Piece, segStart: number, n: number): boolean {
   const c = p.clip;
   if (!isMediaRef(c.ref) || c.ref.still) return false;
   if (c.fit === "fit" && !c.background) return false;
+  // 3.10: a clip in a box (picture in picture) leaves the frame around it.
+  if (hasBox(c)) return false;
   return !alphaFades(c, segStart - c.start, n);
 }
 
@@ -473,6 +532,96 @@ function textFilter(g: Graph, ctx: Ctx, c: VideoClip): string {
   }
   if (look.box) opts.push("box=1", "boxcolor=black@0.55", `boxborderw=${fit.border}`);
   return `drawtext=${opts.join(":")}`;
+}
+
+/** Does the clip sit in a box (3.10, picture in picture)? */
+const hasBox = (c: VideoClip): boolean =>
+  !!c.boxKeys?.length || (!!c.box && (c.box.scale !== 1 || c.box.x !== 0.5 || c.box.y !== 0.5));
+
+/**
+ * A value over the clip's frames as an ffmpeg expression of `F` (the clip's own frame): linear
+ * between its keys, held before the first and after the last.
+ */
+export function keyExpr(keys: readonly { at: number; v: number }[], F: string): string {
+  if (!keys.length) return "0";
+  const first = keys[0] as { at: number; v: number };
+  let e = short((keys[keys.length - 1] as { at: number; v: number }).v, 5);
+  for (let i = keys.length - 1; i >= 1; i--) {
+    const a = keys[i - 1] as { at: number; v: number };
+    const b = keys[i] as { at: number; v: number };
+    const span = Math.max(1, b.at - a.at);
+    const seg = `${short(a.v, 5)}+(${short(b.v - a.v, 5)})*((${F})-${a.at})/${span}`;
+    e = `if(lt(${F},${b.at}),${seg},${e})`;
+  }
+  return `if(lt(${F},${first.at}),${short(first.v, 5)},${e})`;
+}
+
+/** The colour correction (3.10) and the LUT, after the picture is framed. */
+function colorFilters(g: Graph, ctx: Ctx, c: VideoClip): string {
+  const parts: string[] = [];
+  const k = c.color;
+  if (k) {
+    if (k.exposure) parts.push(`exposure=exposure=${short(k.exposure, 3)}`);
+    if (k.contrast || k.saturation)
+      parts.push(
+        `eq=contrast=${short(1 + k.contrast, 3)}:saturation=${short(1 + k.saturation, 3)}`,
+      );
+    // Warm (1) is a lower colour temperature to correct from: 4000 K; cold (−1): 9000 K.
+    if (k.temperature)
+      parts.push(`colortemperature=temperature=${Math.round(6500 - 2500 * k.temperature)}`);
+  }
+  if (c.lut) {
+    const text = ctx.luts[c.lut];
+    if (text === undefined) ctx.warn(`${c.id}'s LUT ${c.lut} was not found: left out`);
+    else parts.push(`lut3d=file=${contentFile(g.files, "cube", text)}:interp=tetrahedral`);
+  }
+  return parts.join(",");
+}
+
+/**
+ * The picture put in its box (3.10): scaled and placed on a transparent frame, both following the
+ * keys on the clip's own frame (`n` plus where the segment starts in the clip).
+ */
+function boxFilters(g: Graph, ctx: Ctx, c: VideoClip, chain: string, o: number): string {
+  const { w, h, rate: r } = ctx;
+  const keys = c.boxKeys?.length
+    ? c.boxKeys
+    : [{ at: 0, ...(c.box ?? { x: 0.5, y: 0.5, scale: 1 }) }];
+  const F = `(n+${o})`;
+  const S = keyExpr(
+    keys.map((k) => ({ at: k.at, v: k.scale })),
+    F,
+  );
+  const X = keyExpr(
+    keys.map((k) => ({ at: k.at, v: k.x })),
+    F,
+  );
+  const Y = keyExpr(
+    keys.map((k) => ({ at: k.at, v: k.y })),
+    F,
+  );
+  const pic = g.label("bx");
+  const canvas = g.label("cv");
+  const out = g.label("bo");
+  g.lines.push(
+    cont(
+      chain,
+      `scale=w='max(2,trunc(${w}*(${S})/2)*2)':h='max(2,trunc(${h}*(${S})/2)*2)':eval=frame,format=yuva420p[${pic}]`,
+    ),
+  );
+  g.lines.push(`color=c=black@0:s=${w}x${h}:r=${r.num}/${r.den},format=yuva420p[${canvas}]`);
+  g.lines.push(
+    `[${canvas}][${pic}]overlay=x='W*(${X})-w/2':y='H*(${Y})-h/2':eval=frame:eof_action=pass:format=auto[${out}]`,
+  );
+  return `[${out}]`;
+}
+
+/** Colour, LUT and box after a media clip's picture (3.10). */
+function finish(g: Graph, ctx: Ctx, c: VideoClip, chain: string, o: number): string {
+  const col = colorFilters(g, ctx, c);
+  let ch = col ? cont(chain, col) : chain;
+  if (hasBox(c)) ch = boxFilters(g, ctx, c, ch, o);
+  return ch;
 }
 
 /**
@@ -511,19 +660,36 @@ function clipStream(
     ch = c.kenBurns
       ? cont(ch, kenBurns(c, w, h, n, o, r))
       : cont(ch, `loop=loop=-1:size=1,setpts=N*${r.den}/${r.num}/TB`);
-    g.lines.push(cont(ch, `tpad=stop=-1:stop_mode=clone,${tail}`));
+    ch = finish(g, ctx, c, cont(ch, "tpad=stop=-1:stop_mode=clone"), o);
+    g.lines.push(cont(ch, tail));
+    return out;
+  }
+  // 3.10: a still of the source's first frame for the whole clip.
+  if (c.freeze) {
+    const k = g.input(
+      ["-ss", secOf(c.sourceRange.start, r), "-t", num(r.den / r.num + MARGIN, 4), "-an"],
+      ref.media,
+    );
+    let ch = `[${k}:v]fps=${R},trim=end_frame=1,setpts=PTS-STARTPTS,loop=loop=-1:size=1,setpts=N*${r.den}/${r.num}/TB`;
+    ch = picture(g, ch, c, w, h);
+    if (c.kenBurns) ch = cont(ch, kenBurns(c, w, h, 1, o, r));
+    ch = finish(g, ctx, c, ch, o);
+    g.lines.push(cont(ch, tail));
     return out;
   }
   // A video: the frames it reads from the file, the ones it holds at either edge.
   const known = ref.frames ?? ctx.probes[ref.media]?.frames ?? undefined;
-  const end = known ?? c.sourceRange.start + clipLength(c);
-  const s = c.sourceRange.start + o;
-  const padStart = Math.max(0, Math.min(n, -s));
+  // 3.10: at a speed the clip reads `speed` source frames for each of its own.
+  const sp = c.speed ?? 1;
+  const end = known ?? c.sourceRange.start + Math.ceil(clipLength(c) * sp);
+  const s = c.sourceRange.start + Math.round(o * sp);
+  const want = Math.max(1, Math.ceil(n * sp));
+  const padStart = Math.max(0, Math.min(want, -s));
   let s0 = Math.max(0, s);
-  let read = n - padStart;
+  let read = want - padStart;
   if (s0 >= end) s0 = Math.max(0, end - 1);
   if (s0 + read > end) read = Math.max(1, end - s0);
-  const held = n - padStart - read;
+  const held = want - padStart - read;
   if (padStart > 0)
     ctx.warn(`${c.id} holds its first frame for ${padStart} frames: the file has none before it`);
   if (held > 0 && o + n > clipLength(c))
@@ -539,8 +705,10 @@ function clipStream(
   let ch = `[${k}:v]fps=${R},trim=end_frame=${read},setpts=PTS-STARTPTS`;
   if (padStart > 0) ch += `,tpad=start=${padStart}:start_mode=clone`;
   ch += ",tpad=stop=-1:stop_mode=clone";
+  if (sp !== 1) ch += `,setpts=PTS/${short(sp)},fps=${R}`;
   ch = picture(g, ch, c, w, h);
   if (c.kenBurns) ch = cont(ch, kenBurns(c, w, h, 1, o, r));
+  ch = finish(g, ctx, c, ch, o);
   g.lines.push(cont(ch, tail));
   return out;
 }
@@ -725,13 +893,24 @@ function audioStep(ctx: Ctx, total: number, loudnorm: boolean): RenderStep {
       const N = samplesOf(len, r);
       const nIn = Math.min(Math.max(AUDIO_EDGE, samplesOf(fin, r)), Math.floor(N / 2));
       const nOut = Math.min(Math.max(AUDIO_EDGE, samplesOf(fout, r)), Math.floor(N / 2));
+      // 3.10: a speed reads more (or less) of the file and plays it at its pitch (atempo).
+      const sp = c.speed ?? 1;
       const k = g.input(
-        ["-ss", secOf(src, r), "-t", num((len * r.den) / r.num + MARGIN, 4), "-vn"],
+        ["-ss", secOf(src, r), "-t", num((len * sp * r.den) / r.num + MARGIN, 4), "-vn"],
         ref.media,
       );
       const lbl = g.label("c");
+      const tempo = sp === 1 ? "" : `${atempo(sp)},`;
+      // 3.10: the volume's keys on the clip's own time (`t` from its first sample).
+      const pre = c.start - st;
+      const vol = c.volumeKeys?.length
+        ? `volume='pow(10,(${keyExpr(
+            c.volumeKeys.map((v) => ({ at: v.at, v: v.db })),
+            `(t*${r.num}/${r.den}-${pre})`,
+          )})/20)':eval=frame`
+        : `volume=${num(c.volume, 1)}dB`;
       g.lines.push(
-        `[${k}:a]aresample=${AUDIO_RATE},aformat=sample_fmts=fltp:channel_layouts=stereo,atrim=end_sample=${N},asetpts=PTS-STARTPTS,afade=t=in:ns=${nIn},afade=t=out:ss=${N - nOut}:ns=${nOut},volume=${num(c.volume, 1)}dB,adelay=delays=${samplesOf(st, r)}S:all=1[${lbl}]`,
+        `[${k}:a]aresample=${AUDIO_RATE},aformat=sample_fmts=fltp:channel_layouts=stereo,${tempo}atrim=end_sample=${N},asetpts=PTS-STARTPTS,afade=t=in:ns=${nIn},afade=t=out:ss=${N - nOut}:ns=${nOut},${vol},adelay=delays=${samplesOf(st, r)}S:all=1[${lbl}]`,
       );
       labels.push(lbl);
     }
@@ -839,9 +1018,8 @@ export function compileVideo(
     fontsDir: target.fontsDir,
     dips: new Map(),
     warn: (s) => warnings.add(s),
+    luts: target.luts ?? {},
   };
-  if (doc.clips.some((c) => c.speed !== undefined && c.speed !== 1))
-    warnings.add("speed is not rendered yet (3.10): those clips play at normal speed");
 
   const videoTracks = lanes(doc, "Video").filter((id) => !trackOf(doc, id)?.hidden);
   const audioTracks = lanes(doc, "Audio").filter((id) => !trackOf(doc, id)?.muted);

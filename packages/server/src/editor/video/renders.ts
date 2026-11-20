@@ -19,7 +19,7 @@ import {
 } from "@redgiant/protocol";
 import { JobFailure, type JobHandle, type Jobs } from "../../jobs.js";
 import { mediaFingerprint, type VideoAnalysis, type VideoTools } from "./analysis.js";
-import { compileVideo, EmptyTimeline, type RenderProbe } from "./compile.js";
+import { compileVideo, EmptyTimeline, lutFile, type RenderProbe, readLuts } from "./compile.js";
 import type { MediaRunner } from "./media-run.js";
 import { renderProbeOf } from "./probe.js";
 import { type NodeMediaCall, REMOTE_RENDER_STEPS, renderOnNode } from "./remote-render.js";
@@ -206,6 +206,7 @@ export class VideoRenders {
         ...(r.height && { height: renderHeight(doc, r.height) as number }),
         quality: r.quality ?? "good",
         fontsDir: this.o.fontsDir ?? RENDER_FONTS_DIR,
+        luts: await readLuts(doc, r.mediaPath, lutFile),
       });
     } catch (e) {
       if (e instanceof EmptyTimeline)

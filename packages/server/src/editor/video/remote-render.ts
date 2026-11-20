@@ -21,7 +21,7 @@ import {
 } from "@redgiant/protocol";
 import { JobFailure, type JobHandle } from "../../jobs.js";
 import { fileHash, PIECE } from "../../nodes/pieces.js";
-import { VIDEO_COMPILER_VERSION } from "./compile.js";
+import { timelineLuts, VIDEO_COMPILER_VERSION } from "./compile.js";
 
 /** The steps of a render on a node. */
 export const REMOTE_RENDER_STEPS = [
@@ -123,7 +123,13 @@ export async function renderOnNode(
   try {
     // Every file of the timeline by its hash: the name it has on the node.
     h.step("video_probe");
-    const used = [...new Set(a.doc.clips.flatMap((c) => (isMediaRef(c.ref) ? [c.ref.media] : [])))];
+    // The media and (3.10) the LUTs the clips use.
+    const used = [
+      ...new Set([
+        ...a.doc.clips.flatMap((c) => (isMediaRef(c.ref) ? [c.ref.media] : [])),
+        ...timelineLuts(a.doc),
+      ]),
+    ];
     const files: { media: string; abs: string; name: string; sha256: string; size: number }[] = [];
     for (const [i, m] of used.entries()) {
       signal.throwIfAborted();
