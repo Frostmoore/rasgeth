@@ -237,6 +237,7 @@ export class ClaudeEngine implements Engine {
       release = r;
     });
     // The engine's input: nothing, until it is closed.
+    // biome-ignore lint/correctness/useYield: the engine's input stays empty until it is closed
     async function* idle(): AsyncIterable<unknown> {
       await gate;
     }

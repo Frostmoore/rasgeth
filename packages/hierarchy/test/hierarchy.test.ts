@@ -435,7 +435,7 @@ describe("PermissionBroker", () => {
     expect(w.asked).toHaveLength(3);
   });
 
-  it("«Always allow for this job» never comes from a failure or a timeout (3.9.8)", async () => {
+  it("«Always allow for this job» never comes from a failing channel (3.9.8)", async () => {
     const failing = await workSetup([{ fail: true }, { answer: "deny" }]);
     expect(await failing.broker.check(failing.t.sub, bash("docker restart caddy"), "s1")).toEqual({
       allow: false,
@@ -445,6 +445,13 @@ describe("PermissionBroker", () => {
       await failing.broker.check(failing.t.sub, bash("docker restart caddy"), "s1"),
     ).toMatchObject({ allow: false });
     expect(failing.asked).toHaveLength(2);
+    const grants = (await store.list()).filter(
+      (e) => e.type === "permission.resolved" && (e.payload as { scope?: string }).scope,
+    );
+    expect(grants).toEqual([]);
+  });
+
+  it("«Always allow for this job» never comes from a timeout (3.9.8)", async () => {
     const late = await workSetup([{ never: true }, { answer: "deny" }], { askTimeoutMs: 20 });
     expect(await late.broker.check(late.t.sub, bash("docker restart caddy"), "s1")).toMatchObject({
       allow: false,

@@ -178,6 +178,8 @@ void main() {
     expect(find.byKey(const Key('chat-work-p2')), findsNothing);
     expect(find.byKey(const Key('chat-work-p3')), findsNothing);
     await tester.ensureVisible(find.byKey(const Key('chat-work-p1')));
+    // Scrolled into view: armed again (the page's `useArmed`).
+    await _armed(tester);
     await tester.tap(find.byKey(const Key('chat-work-p1')));
     await _settle(tester);
     expect(server.resolves.last, containsPair('scope', 'work'));

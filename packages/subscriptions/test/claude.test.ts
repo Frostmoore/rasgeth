@@ -257,7 +257,13 @@ describe("Claude on a subscription", () => {
     const sdk = {
       tool: () => ({}),
       createSdkMcpServer: (o: unknown) => o,
-      query({ prompt, options }: { prompt: AsyncIterable<unknown>; options: Record<string, unknown> }) {
+      query({
+        prompt,
+        options,
+      }: {
+        prompt: AsyncIterable<unknown>;
+        options: Record<string, unknown>;
+      }) {
         const run = {
           messages: 0,
           aborted: () => (options.abortController as AbortController).signal.aborted,
