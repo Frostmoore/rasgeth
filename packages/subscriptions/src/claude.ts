@@ -28,7 +28,9 @@ export interface ClaudeSdk {
   query(o: { prompt: AsyncIterable<unknown>; options: Record<string, unknown> }): AsyncIterable<
     Record<string, unknown>
   > & {
-    usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET?(): Promise<unknown>;
+    usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET?(o?: {
+      skipBehaviors?: boolean;
+    }): Promise<unknown>;
     interrupt?(): Promise<void>;
     supportedModels?(): Promise<unknown>;
   };
@@ -194,7 +196,27 @@ export class ClaudeEngine implements Engine {
       .catch(() => {});
   }
 
-  async turn(t: EngineTurn): Promise<{ resume: string; stopReason: "end_turn" | "aborted" }> {
+  /** The plan's full reading (5 hours, 7 days, per-model windows such as Fable), never waited for. */
+  private readUsage(q: {
+    usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET?(o?: {
+      skipBehaviors?: boolean;
+    }): Promise<unknown>;
+  }): void {
+    const usage = q.usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET?.({
+      skipBehaviors: true,
+    });
+    if (!usage) return;
+    void Promise.race([usage, new Promise((r) => setTimeout(r, 10_000).unref?.())])
+      .then((u) => {
+        const w = claudeWindows(u);
+        if (w.length) this.onLimits?.(w);
+      })
+      .catch(() => {});
+  }
+
+  async turn(
+    t: EngineTurn,
+  ): Promise<{ resume: string; stopReason: "end_turn" | "aborted" | "tools_added" }> {
     const sdk = this.o.sdk ?? (await loadSdk());
     const now = this.o.now ?? Date.now;
     // The SDK's tool calls reach our handlers without their tool_use id: each call takes the
@@ -252,7 +274,16 @@ export class ClaudeEngine implements Engine {
     t.signal?.addEventListener("abort", stop, { once: true });
     let session = t.resume ?? "";
     let started = now();
-    let stopReason: "end_turn" | "aborted" = "end_turn";
+    let stopReason: "end_turn" | "aborted" | "tools_added" = "end_turn";
+    // Tools joined in this turn (3.9.8): the engine's list is fixed for its run, so it stops right
+    // after these results (its PostToolUse hook ends the loop before the next model call) and the
+    // session starts the next turn with the whole list.
+    let stoppedForTools = false;
+    const afterTool = async () => {
+      if (!t.toolsAdded?.()) return { continue: true };
+      stoppedForTools = true;
+      return { continue: false, stopReason: "Tools joined: the turn goes on with them." };
+    };
     try {
       const q = sdk.query({
         prompt: prompt(),
@@ -266,6 +297,7 @@ export class ClaudeEngine implements Engine {
           // Only RedGiant's tools are allowed, and RedGiant asks its own permissions inside
           // each of them; anything else the engine would refuse without asking.
           permissionMode: "dontAsk",
+          hooks: { PostToolUse: [{ hooks: [afterTool] }] },
           // Always: every piece of the answer tells the session the engine is alive (3.5.4).
           includePartialMessages: true,
           abortController: abort,
@@ -273,8 +305,16 @@ export class ClaudeEngine implements Engine {
         }),
       });
       this.learnModels(q);
+      let askedUsage = false;
       for await (const m of q) {
         t.alive?.();
+        // The plan's windows (5 hours, 7 days, per model) once per turn, asked as soon as the engine
+        // runs (3.9.8): asked at the end, the engine was already closing and never answered, so the
+        // header stayed empty. No model call: the engine reads the plan's usage page.
+        if (!askedUsage && m.type === "system") {
+          askedUsage = true;
+          this.readUsage(q);
+        }
         if (typeof m.session_id === "string") session = m.session_id;
         // The engine summarised its own context (Claude Agent SDK "compact_boundary").
         if (m.type === "system" && (m as { subtype?: string }).subtype === "compact_boundary") {
@@ -338,24 +378,14 @@ export class ClaudeEngine implements Engine {
           continue;
         }
         if (m.type === "result") {
-          // The full reading (with per-model windows such as Fable) when the process still
-          // answers; the rate-limit events already gave 5h and 7d.
-          const usage = q.usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET?.();
-          if (usage)
-            void Promise.race([usage, new Promise((r) => setTimeout(r, 3000).unref?.())])
-              .then((u) => {
-                const w = claudeWindows(u);
-                if (w.length) this.onLimits?.(w);
-              })
-              .catch(() => {});
-          if (m.subtype !== "success") {
+          if (m.subtype !== "success" && !stoppedForTools) {
             const why = Array.isArray(m.errors)
               ? (m.errors as string[]).join("; ")
               : String(m.subtype);
             if (abort.signal.aborted) stopReason = "aborted";
             else throw new ProviderError(`Claude subscription: ${why}`, false);
           }
-          if (m.is_error === true && typeof m.result === "string") {
+          if (m.is_error === true && typeof m.result === "string" && !stoppedForTools) {
             const text = m.result;
             throw new ProviderError(
               `Claude subscription: ${text}`,
@@ -373,12 +403,41 @@ export class ClaudeEngine implements Engine {
     } finally {
       t.signal?.removeEventListener("abort", stop);
     }
+    if (stoppedForTools && stopReason === "end_turn") stopReason = "tools_added";
     return { resume: session, stopReason };
   }
 }
 
-/** A `rate_limit_event`'s windows (utilisation as a fraction, reset in seconds). */
+/** The SDK's window names as ours. */
+const EVENT_WINDOWS: Record<string, [string, string]> = {
+  five_hour: ["5h", "5h"],
+  seven_day: ["7d", "7g"],
+};
+
+/**
+ * A `rate_limit_event`'s windows (utilisation as a fraction or a percentage, reset in seconds).
+ * The SDK sends one window per event (`rateLimitType`, `utilization`, `resetsAt`: 3.9.8, on Coder
+ * the header stayed empty because only the older `unifiedWindows` form was read); both are read.
+ */
 export function eventWindows(info: unknown): SubscriptionWindow[] {
+  const flat = info as
+    | { rateLimitType?: string; utilization?: number; resetsAt?: number }
+    | undefined;
+  const named = flat?.rateLimitType ? EVENT_WINDOWS[flat.rateLimitType] : undefined;
+  if (named && typeof flat?.utilization === "number") {
+    const [id, label] = named;
+    const pct = flat.utilization <= 1 ? flat.utilization * 100 : flat.utilization;
+    return [
+      {
+        id,
+        label,
+        usedPct: Math.round(pct),
+        ...(flat.resetsAt && {
+          resetsAt: new Date(flat.resetsAt * (flat.resetsAt < 1e12 ? 1000 : 1)).toISOString(),
+        }),
+      },
+    ];
+  }
   const u = (
     info as
       | { unifiedWindows?: Record<string, { utilization?: number; resetsAt?: number }> }

@@ -25,6 +25,8 @@ function fakeSdk(script: "tools" | "refused") {
       asked.push(options);
       const server = (options.mcpServers as Record<string, { tools: Tool[] }> | undefined)
         ?.redgiant;
+      // As the real engine: it answers control requests while it works, not once its result is out.
+      let closing = false;
       async function* run() {
         for await (const _ of prompt) break;
         if (script === "refused") {
@@ -71,20 +73,28 @@ function fakeSdk(script: "tools" | "refused") {
         };
         yield {
           type: "rate_limit_event",
+          // The SDK's form: one window per event.
           rate_limit_info: {
-            unifiedWindows: { seven_day: { utilization: 0.1, resetsAt: 1793728800 } },
+            status: "allowed",
+            rateLimitType: "seven_day",
+            utilization: 0.12,
+            resetsAt: 1793728800,
           },
         };
+        closing = true;
         yield { type: "result", subtype: "success", session_id: "sess-1", result: "done" };
       }
       const it = run() as ReturnType<ClaudeSdk["query"]>;
-      it.usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET = async () => ({
-        rate_limits: {
-          five_hour: { utilization: 36.4, resets_at: "2026-11-01T18:00:00Z" },
-          seven_day: { utilization: 12, resets_at: null },
-          model_scoped: [{ display_name: "Fable", utilization: 80 }],
-        },
-      });
+      it.usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET = async () =>
+        closing
+          ? new Promise(() => {})
+          : {
+              rate_limits: {
+                five_hour: { utilization: 36.4, resets_at: "2026-11-01T18:00:00Z" },
+                seven_day: { utilization: 12, resets_at: null },
+                model_scoped: [{ display_name: "Fable", utilization: 80 }],
+              },
+            };
       it.supportedModels = async () => [
         { value: "default", resolvedModel: "claude-opus-5-5", displayName: "Default" },
         { value: "claude-nova-6", displayName: "Nova 6", supportsEffort: true },
@@ -181,7 +191,7 @@ describe("Claude on a subscription", () => {
     await p.engine.turn(turn().t);
     expect(await p.limits()).toEqual([
       { id: "5h", label: "5h", usedPct: 36, resetsAt: "2026-11-01T18:00:00Z" },
-      { id: "7d", label: "7g", usedPct: 12 },
+      { id: "7d", label: "7g", usedPct: 12, resetsAt: "2026-11-03T18:00:00.000Z" },
       { id: "model:Fable", label: "Fable", usedPct: 80 },
     ]);
     // Reading them made no extra request.
@@ -189,6 +199,16 @@ describe("Claude on a subscription", () => {
     expect(
       eventWindows({ unifiedWindows: { seven_day: { utilization: 0.36, resetsAt: 1793728800 } } }),
     ).toEqual([{ id: "7d", label: "7g", usedPct: 36, resetsAt: "2026-11-03T18:00:00.000Z" }]);
+    // The SDK's own form (3.9.8): one window per event.
+    expect(
+      eventWindows({
+        status: "allowed",
+        rateLimitType: "five_hour",
+        utilization: 0.07,
+        resetsAt: 1793728800,
+      }),
+    ).toEqual([{ id: "5h", label: "5h", usedPct: 7, resetsAt: "2026-11-03T18:00:00.000Z" }]);
+    expect(eventWindows({ status: "allowed", rateLimitType: "seven_day" })).toEqual([]);
     expect(claudeWindows({})).toEqual([]);
   });
 

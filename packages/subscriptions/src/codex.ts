@@ -7,7 +7,7 @@
 // This is the only file that knows the protocol. Dynamic tools are an experimental part of it: if
 // they change, only this file needs fixing.
 import { type ChildProcessWithoutNullStreams, spawn } from "node:child_process";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { delimiter, join } from "node:path";
 import { createInterface } from "node:readline";
@@ -224,6 +224,12 @@ export class CodexEngine implements Engine {
   readonly id = CHATGPT_SUBSCRIPTION;
   onLimits: ((w: SubscriptionWindow[]) => void) | undefined;
   private readonly loaded = new Set<string>();
+  /**
+   * The tools each thread was started with (3.9.8): Codex takes dynamic tools only at
+   * `thread/start` (never at `thread/resume` or `turn/start`). Kept in CODEX_HOME, so a thread
+   * resumed after a restart is still known.
+   */
+  private declared: Map<string, string[]> | undefined;
   /** The turn waiting for each thread's dynamic tool calls, and how it records a message. */
   private readonly turns = new Map<string, { t: EngineTurn; say: (m: Said) => Promise<void> }>();
   /** Each model's context window as Codex last said it (the catalogue knows none of them). */
@@ -312,14 +318,57 @@ export class CodexEngine implements Engine {
     };
   }
 
+  private get declaredFile(): string {
+    return join(this.o.home, "rasgeth-thread-tools.json");
+  }
+
+  private async declaredMap(): Promise<Map<string, string[]>> {
+    if (this.declared) return this.declared;
+    const read = await readFile(this.declaredFile, "utf8")
+      .then((x) => JSON.parse(x) as Record<string, string[]>)
+      .catch(() => ({}));
+    this.declared ??= new Map(Object.entries(read));
+    return this.declared;
+  }
+
+  /** Writes down the tools a thread started with (the newest 500 threads). */
+  private async remember(threadId: string, names: string[]): Promise<void> {
+    const map = await this.declaredMap();
+    map.delete(threadId);
+    map.set(threadId, names);
+    while (map.size > 500) map.delete(map.keys().next().value as string);
+    await writeFile(this.declaredFile, JSON.stringify(Object.fromEntries(map))).catch(() => {});
+  }
+
+  /** Whether a thread has these tools: only those it was started with (3.9.8). */
+  addable(resume: string | undefined, names: readonly string[]): boolean {
+    // A new thread starts at the next turn with every tool.
+    if (!resume) return true;
+    const had = this.declared?.get(resume);
+    return had !== undefined && names.every((n) => had.includes(n));
+  }
+
   async turn(t: EngineTurn): Promise<{ resume: string; stopReason: "end_turn" | "aborted" }> {
     await this.conn.start();
+    // What each thread was started with: `addable` reads it during the turn.
+    await this.declaredMap();
     const native = this.o.nativeWebSearch !== false;
     // Codex's own image tool (2026-11-19) only when the conversation lets it (`sessionNative`):
     // otherwise pictures go through Rasgeth's image_generation.
     const drawsItself = t.native?.includes("image") === true;
-    // With Codex's own search, RedGiant's is not offered too (one way to search).
-    const tools = t.tools
+    // With Codex's own search, RedGiant's is not offered too (one way to search). The tools left
+    // aside are declared too (3.9.8), marked off: Codex takes its tools only when a thread starts,
+    // so one switched on later is callable at the next step; until then the session refuses it.
+    const ours = new Set(t.tools.map((d) => d.name));
+    const tools = [
+      ...t.tools,
+      ...(t.aside ?? [])
+        .filter((d) => !ours.has(d.name))
+        .map((d) => ({
+          ...d,
+          description: `(Off until switched on with request_tool.) ${d.description}`,
+        })),
+    ]
       .filter((d) => !native || d.name !== "web_search")
       .map((d) => ({
         type: "function",
@@ -354,6 +403,10 @@ export class CodexEngine implements Engine {
       const r = await this.conn.request<{ thread: { id: string } }>("thread/start", threadParams);
       threadId = r.thread.id;
       this.loaded.add(threadId);
+      await this.remember(
+        threadId,
+        tools.map((d) => d.name),
+      );
     }
     const id = threadId;
     // Codex reports a model request's usage (`thread/tokenUsage/updated`) only after that

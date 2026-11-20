@@ -48,6 +48,26 @@ const turn = (text: string, log: string[]): EngineTurn => ({
 });
 
 describe("ChatGPT on a subscription", () => {
+  it("a Codex that cannot start fails the turn, never the server (3.9.8)", async () => {
+    const home = await mkdtemp(join(tmpdir(), "rg-codex-missing-"));
+    const p = new ChatgptSubscriptionProvider({
+      home,
+      cwd: join(home, "work"),
+      command: { file: join(home, "no-such-codex"), args: [] },
+    });
+    providers.push(p);
+    const crashes: unknown[] = [];
+    const onCrash = (err: unknown) => crashes.push(err);
+    process.on("uncaughtException", onCrash);
+    try {
+      await expect(p.engine.turn(turn("Hi", []))).rejects.toThrow(/Codex could not start/);
+      await new Promise((r) => setTimeout(r, 50));
+      expect(crashes).toEqual([]);
+    } finally {
+      process.off("uncaughtException", onCrash);
+    }
+  });
+
   it("runs the turn in Codex with Rasgeth's tools as dynamic tools, and keeps the plan's limits", async () => {
     const p = await provider();
     const log: string[] = [];

@@ -61,6 +61,9 @@ export interface PermissionDecision {
 }
 
 /** Told to an engine whose earlier try was cancelled after it had started working (3.5.4). */
+/** Told to an engine whose turn stopped where tools joined (3.9.8): they are callable now. */
+export const toolsReadyText = (names: readonly string[]) =>
+  `[${PRODUCT_NAME}: the tools you switched on are ready now (${names.join(", ")}). Go on with the work where you were.]`;
 const STALL_GO_ON = `[${PRODUCT_NAME}: the provider stopped answering and your request was cancelled. Go on from where you were; the tool results you already have are real.]`;
 
 export interface AgentSessionOptions {
@@ -807,7 +810,10 @@ export class AgentSession {
           turns: turn - 1,
           ...(gate.reason && { reason: gate.reason }),
         };
+      // Tools switched on by a call of this engine turn (3.9.8): the engine's list is its own.
+      let joined: string[] = [];
       const r = await this.engineTurnWatched(engine, message, pictures, ctx, (watch, said) => ({
+        toolsAdded: () => joined.length > 0,
         onCompaction: (info) =>
           void this.record({
             type: "engine.compacted",
@@ -882,11 +888,17 @@ export class AgentSession {
               type: "tool.call",
               payload: { callId: call.callId, tool: call.name, input: call.input },
             });
+            const before = new Set(this.callable.map((t) => t.def.name));
             const r = await this.runOne(
               { callId: call.callId, name: call.name, input: call.input },
               JSON.stringify(call.input ?? null),
               ctx,
             );
+            const fresh = this.callable.map((t) => t.def.name).filter((n) => !before.has(n));
+            // Never «it is on» for a tool this engine conversation cannot call (3.9.8).
+            if (fresh.length > 0 && engine.addable?.(this.engineSession, fresh) === false)
+              r.content = `${r.content}\n\nBut this conversation runs on an engine that took its tools when it started, and these were not among them: you cannot call ${fresh.join(", ")} here. Hand the work that needs them to an agent (delegate), or tell the person a new conversation has them.`;
+            else joined = [...joined, ...fresh];
             const reminder = this.todoReminder(call.name, call.input, r);
             const e = await this.record({
               type: "tool.result",
@@ -923,6 +935,18 @@ export class AgentSession {
         this.engineSession = r.resume;
         await this.record({ type: "engine.session", payload: { engine: engine.id, id: r.resume } });
       }
+      // The engine stopped where tools joined (3.9.8): the next engine turn has them all, at once.
+      if (r.stopReason === "tools_added") {
+        const note = toolsReadyText(joined);
+        const e = await this.recordStopNote({ text: note, quiet: true });
+        this.history.push({
+          message: { role: "user", parts: [{ type: "text", text: note }] },
+          firstSeq: e.seq,
+        });
+        message = note;
+        pictures = [];
+        continue;
+      }
       if (r.stopReason !== "end_turn") return { stopReason: r.stopReason, turns: turn };
       const more = await this.engineStopHooks(ctx);
       if (more === undefined) return { stopReason: "end_turn", turns: turn };
@@ -957,13 +981,14 @@ export class AgentSession {
       EngineTurn,
       | "onMessage"
       | "runTool"
+      | "toolsAdded"
       | "onCompaction"
       | "onExternalTool"
       | "onExternalResult"
       | "onNativeStart"
       | "onNativeMade"
     >,
-  ): Promise<{ resume: string; stopReason: StopReason }> {
+  ): Promise<{ resume: string; stopReason: StopReason | "tools_added" }> {
     const limits = engine.stall ?? ENGINE_STALL;
     const delays = this.o.stallDelaysMs ?? STALL_RETRY_DELAYS_MS;
     let spec: ModelSpec | undefined = this.o.model;
@@ -996,6 +1021,7 @@ export class AgentSession {
           images: pictures,
           system: this.o.system,
           tools: this.callable.map((t) => t.def),
+          aside: this.shelved.filter((t) => !this.callable.includes(t)).map((t) => t.def),
           model,
           resume: this.engineSession,
           ...(this.o.native && { native: this.o.native }),
@@ -1302,7 +1328,12 @@ export class AgentSession {
     const ctx: ToolContext = { ...base, callId: call.callId };
     const fail = (content: string) => ({ content, isError: true });
     const tool = this.callable.find((t) => t.def.name === call.name);
-    if (!tool) return fail(`Unknown tool "${call.name}".`);
+    if (!tool)
+      return fail(
+        this.shelved.some((t) => t.def.name === call.name)
+          ? `"${call.name}" is off in this conversation: switch its group on with request_tool first.`
+          : `Unknown tool "${call.name}".`,
+      );
     let input: unknown = call.input;
     if (input === undefined) {
       // Small models often write almost-JSON; repair it when that needs no guessing.
