@@ -111,8 +111,10 @@ export class PermissionBroker {
       sessionId && ev.critical.length === 0 && !ev.danger.some((d) => ALWAYS_HUMAN.includes(d))
         ? workKind(call, ev.danger, settings.danger, { roots: settings.roots })
         : undefined;
-    if (ev.decision === "ask" && kind && sessionId && this.workAllows.get(sessionId)?.has(kind))
-      return { allow: true };
+    if (ev.decision === "ask" && kind && sessionId) {
+      await this.loadWork(sessionId);
+      if (this.workAllows.get(sessionId)?.has(kind)) return { allow: true };
+    }
 
     const request: ApprovalRequest = {
       requestId: randomUUID(),
@@ -225,6 +227,34 @@ export class PermissionBroker {
 
   /** Kinds of calls the person allowed for the rest of a conversation's work (3.9.8). */
   private readonly workAllows = new Map<string, Set<string>>();
+  /**
+   * The grants read back from the log once per conversation (3.9.8): after a restart the
+   * person's «for this job» still holds, as its `permission.resolved` events say.
+   */
+  private readonly workLoaded = new Map<string, Promise<void>>();
+  private loadWork(sessionId: string): Promise<void> {
+    let loading = this.workLoaded.get(sessionId);
+    if (!loading) {
+      loading = this.o.store
+        .list({ sessionId, types: ["permission.resolved"] })
+        .then((events) => {
+          for (const e of events) {
+            if (e.type !== "permission.resolved") continue;
+            const { scope, kind, decision } = e.payload;
+            if (scope !== "work" || !kind || decision !== "allow") continue;
+            const set = this.workAllows.get(sessionId) ?? new Set<string>();
+            set.add(kind);
+            this.workAllows.set(sessionId, set);
+          }
+        })
+        .catch(() => {
+          // Unread now: the person is asked again, and the next request tries once more.
+          this.workLoaded.delete(sessionId);
+        });
+      this.workLoaded.set(sessionId, loading);
+    }
+    return loading;
+  }
 
   /** Tools the person allowed for one conversation (never past a human-only danger). */
   private readonly sessionAllows = new Map<string, Set<string>>();

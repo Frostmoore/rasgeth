@@ -419,6 +419,36 @@ describe("PermissionBroker", () => {
     expect(w.asked).toEqual(["docker restart caddy", "docker rm -f web", "docker restart caddy"]);
   });
 
+  it("«Always allow for this job» still holds after a restart: read back from the log (3.9.8)", async () => {
+    const w = await workSetup([{ answer: "allow", scope: "work" }]);
+    await w.broker.check(w.t.sub, bash("docker restart caddy"), "s1");
+    expect(w.asked).toEqual(["docker restart caddy"]);
+    // A new broker on the same log, as after a restart: nothing in memory.
+    const asked: string[] = [];
+    const restarted = new PermissionBroker({
+      store,
+      resolve: registry.resolve,
+      settingsFor: () => ({ ...DEFAULT_POLICY, approverKinds: [] }),
+      modeFor: () => "auto",
+      askAgent: async () => "escalate",
+      askHuman: async (req) => {
+        asked.push(String((req.call.input as { command?: string }).command));
+        return "deny";
+      },
+    });
+    expect(await restarted.check(w.t.sub, bash("docker restart web"), "s1")).toEqual({
+      allow: true,
+    });
+    // Only that kind, only that conversation.
+    expect(await restarted.check(w.t.sub, bash("docker rm -f web"), "s1")).toMatchObject({
+      allow: false,
+    });
+    expect(await restarted.check(w.t.sub, bash("docker restart web"), "s2")).toMatchObject({
+      allow: false,
+    });
+    expect(asked).toEqual(["docker rm -f web", "docker restart web"]);
+  });
+
   it("«Always allow for this job» never covers a truly dangerous request (3.9.8)", async () => {
     const w = await workSetup([
       { answer: "allow", scope: "work" },
