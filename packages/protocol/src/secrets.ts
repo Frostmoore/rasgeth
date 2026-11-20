@@ -4,6 +4,8 @@
 // IBANs, and a password or a PIN only when its value is there. Talking about passwords («il
 // password manager è comodo», «uso il PIN sul telefono») is fine.
 
+import { findPasswordExports } from "./password-export.js";
+
 /** Well-known key formats; the event log's Redactor uses the same list. */
 export const SECRET_PATTERNS: readonly { name: string; re: RegExp }[] = [
   {
@@ -112,13 +114,18 @@ export interface SecretSpan {
   /** [start, end) of the value only: «password: hunter2» spans «hunter2». */
   start: number;
   end: number;
-  kind: "key" | "password" | "code" | "card" | "iban";
+  kind: "key" | "password" | "code" | "card" | "iban" | "export";
   value: string;
+  /** A password manager's export (3.9.8): how many passwords it holds. */
+  rows?: number;
 }
 
 /** Where the secrets are in a text, sorted and merged when they overlap. */
 export function findSecrets(text: string): SecretSpan[] {
   const out: Omit<SecretSpan, "value">[] = [];
+  // A password manager's export (3.9.8) is one span: its rows, not each value in them.
+  for (const x of findPasswordExports(text))
+    out.push({ start: x.start, end: x.end, kind: "export", rows: x.rows });
   const add = (m: RegExpMatchArray, kind: SecretSpan["kind"], value = m[0]) => {
     const at = (m.index ?? 0) + Math.max(0, m[0].lastIndexOf(value));
     out.push({ start: at, end: at + value.length, kind });
@@ -155,8 +162,13 @@ export function findSecrets(text: string): SecretSpan[] {
   const merged: Omit<SecretSpan, "value">[] = [];
   for (const s of out) {
     const last = merged.at(-1);
-    if (last && s.start < last.end) last.end = Math.max(last.end, s.end);
-    else merged.push({ ...s });
+    if (last && s.start < last.end) {
+      last.end = Math.max(last.end, s.end);
+      if (s.kind === "export") {
+        last.kind = "export";
+        last.rows = (last.rows ?? 0) + (s.rows ?? 0);
+      }
+    } else merged.push({ ...s });
   }
   return merged.map((s) => ({ ...s, value: text.slice(s.start, s.end) }));
 }
