@@ -252,6 +252,12 @@ export class NativeLauncher {
         for (const line of b.toString().split("\n")) if (line) this.tail.push(line);
         if (this.tail.length > 60) this.tail.splice(0, this.tail.length - 60);
       };
+      // A program that cannot start (missing, not allowed) is this engine's failure (3.9.8).
+      let failed = false;
+      p.on("error", (err) => {
+        failed = true;
+        keep(Buffer.from(err.message));
+      });
       p.stdout?.on("data", keep);
       p.stderr?.on("data", keep);
       await this.status(gen, { id: r.id, state: "loading" });
@@ -264,7 +270,7 @@ export class NativeLauncher {
           await this.status(gen, { id: r.id, state: "failed", error: "no_gpu", log });
           return;
         }
-        if (p.exitCode !== null || p.signalCode !== null) {
+        if (failed || p.exitCode !== null || p.signalCode !== null) {
           await this.status(gen, { id: r.id, state: "failed", log });
           return;
         }

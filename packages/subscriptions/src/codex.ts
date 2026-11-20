@@ -79,12 +79,17 @@ class CodexConnection {
       });
       this.proc = proc;
       proc.stderr.resume();
-      proc.on("exit", () => {
-        this.proc = undefined;
+      const gone = (why: string) => {
+        if (this.proc === proc) this.proc = undefined;
         this.ready = undefined;
-        for (const p of this.pending.values()) p.ko(new ProviderError("Codex stopped", true));
+        for (const p of this.pending.values()) p.ko(new ProviderError(why, true));
         this.pending.clear();
-      });
+      };
+      proc.on("exit", () => gone("Codex stopped"));
+      // Codex that cannot start, or a write after it ended, fails its requests (3.9.8): an
+      // 'error' nobody listened to stopped the whole server.
+      proc.on("error", (err) => gone(`Codex could not start: ${err.message}`));
+      proc.stdin.on("error", () => {});
       createInterface({ input: proc.stdout }).on("line", (line) => this.receive(line));
       await this.request("initialize", {
         clientInfo: { name: "redgiant", title: PRODUCT_NAME, version: "2" },

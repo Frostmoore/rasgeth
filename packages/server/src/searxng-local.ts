@@ -254,10 +254,16 @@ export class LocalSearxng {
       windowsHide: true,
     });
     closeSync(log);
+    // A program that cannot start is this start's failure, never the server's end (3.9.8).
+    let failed: Error | undefined;
+    this.proc.on("error", (err) => {
+      failed = err;
+    });
     h?.step("searxng_check");
     const base = `http://127.0.0.1:${port}`;
     for (let i = 0; i < 120; i++) {
-      if (this.proc.exitCode !== null) throw new Error("SearXNG stopped at start");
+      if (failed) throw new Error(`SearXNG could not start: ${failed.message}`);
+      if (this.proc?.exitCode !== null) throw new Error("SearXNG stopped at start");
       const up = await fetch(`${base}/healthz`, { signal: AbortSignal.timeout(2000) }).then(
         (r) => r.ok,
         () => false,
