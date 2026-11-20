@@ -2253,16 +2253,25 @@ export class RedGiantCore implements OrchestrationHost {
     const listeners = (): Iterable<(m: ServerMessage) => void> =>
       preview ? [] : (this.followers.get(sessionId) ?? []);
     // A flat subscription's engine runs the turns (G21); everything else stays the same.
-    const found = this.o.providers.has(model.provider)
-      ? (this.o.providers.get(model.provider) as { engine?: Partial<Engine> }).engine
-      : undefined;
-    // Only a real agent loop: a provider's other helper with that name must not take the turn.
-    const engine = typeof found?.turn === "function" ? (found as Engine) : undefined;
+    // Read at every send (3.9.8): after a restart a subscription's provider comes up only once its
+    // program is ready, and a conversation opened before (the page reconnecting) must not stream.
+    const engineOf = (): Engine | undefined => {
+      const found = this.o.providers.has(model.provider)
+        ? (this.o.providers.get(model.provider) as { engine?: Partial<Engine> }).engine
+        : undefined;
+      // Only a real agent loop: a provider's other helper with that name must not take the turn.
+      return typeof found?.turn === "function" ? (found as Engine) : undefined;
+    };
+    const subscription = model.provider.endsWith("-subscription");
+    const engine = engineOf() !== undefined || subscription;
     const options = {
       store: this.store,
       providers: this.o.providers,
       model,
-      ...(engine && { engine }),
+      ...(engine && { engine: engineOf }),
+      ...(subscription && {
+        engineOnly: { name: `${model.provider.replace("-subscription", "")} subscription` },
+      }),
       system: [
         this.systemFor(agent),
         whereYouRun(model),
