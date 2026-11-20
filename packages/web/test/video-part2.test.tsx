@@ -303,7 +303,7 @@ describe("3.10, video part 2: the page's player", () => {
     const { boxCss, colorCss } = await import("../src/components/viewers/video/player.js");
     const base = timeline().clips[0] as VideoClip;
     expect(boxCss({ ...base, box: { x: 0.75, y: 0.25, scale: 0.3 } }, 0)).toBe(
-      "translate(25%, -25%) scale(0.3)",
+      "translate(60%, 10%) scale(0.3)",
     );
     expect(
       boxCss(
@@ -316,7 +316,7 @@ describe("3.10, video part 2: the page's player", () => {
         },
         5,
       ),
-    ).toBe("translate(25%, 0%) scale(0.75)");
+    ).toBe("translate(37.5%, 12.5%) scale(0.75)");
     expect(boxCss(base, 0)).toBe("");
     expect(
       colorCss({

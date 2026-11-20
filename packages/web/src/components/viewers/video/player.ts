@@ -159,14 +159,16 @@ function kindOf(c: VideoClip, media: PlayerMediaMap): VideoLayer["kind"] {
 
 /**
  * 3.10: where a clip's box puts its picture, as a CSS transform of the whole frame (the render
- * scales the picture and places its centre), or nothing for the whole frame.
+ * scales the picture and places its centre there), or nothing for the whole frame.
  */
 export function boxCss(c: VideoClip, offset: number): string {
   if (!c.box && !c.boxKeys?.length) return "";
   const b = boxAt(c, offset);
   if (b.scale === 1 && b.x === 0.5 && b.y === 0.5) return "";
   const n = (v: number) => Number(v.toFixed(4));
-  return `translate(${n((b.x - 0.5) * 100)}%, ${n((b.y - 0.5) * 100)}%) scale(${n(b.scale)})`;
+  // The player's pictures turn around their top left corner (`.vp-video`, as Ken Burns): the
+  // corner goes where the centre minus half the scaled size lands.
+  return `translate(${n((b.x - b.scale / 2) * 100)}%, ${n((b.y - b.scale / 2) * 100)}%) scale(${n(b.scale)})`;
 }
 
 /**

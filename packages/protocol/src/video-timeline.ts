@@ -949,7 +949,9 @@ export function setClipProps(
   props: VideoClipProps,
 ): RgVideo {
   const doc = clone(doc0);
-  const set = new Set(ids);
+  // 3.10: a speed changes the clip's sound and picture together, as in Resolve.
+  const speed = props.speed !== undefined;
+  const set = new Set(speed ? withLinked(doc0, ids) : ids);
   let changed = false;
   for (const c of doc.clips) {
     if (!set.has(c.id) || isLocked(doc, c.track)) continue;
@@ -962,6 +964,11 @@ export function setClipProps(
         continue;
       }
       m[k] = clone(v);
+    }
+    // Faster reads more of the file: what is left of it sets the clip's length.
+    if (speed && !c.freeze && isMediaRef(c.ref) && c.ref.frames !== undefined) {
+      const room = Math.floor((c.ref.frames - c.sourceRange.start) / (c.speed ?? 1));
+      if (room >= 1 && room < c.sourceRange.duration) c.sourceRange.duration = room;
     }
     c.volume = Math.max(-60, Math.min(12, Math.round(c.volume * 10) / 10));
     c.fadeIn = Math.round(c.fadeIn);

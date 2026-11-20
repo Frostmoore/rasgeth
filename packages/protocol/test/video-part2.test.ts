@@ -163,6 +163,25 @@ describe("keys", () => {
     expect(sourceUsed(get(d1, "a"))).toBe(1);
     expect(sourceUsed({ ...get(d0, "a"), speed: 2 })).toBe(200);
   });
+
+  it("a speed goes to the linked clips too, and never reads past the file's end", () => {
+    const d0 = three();
+    // a's sound on A1, linked; c uses its file up to frame 200 of 250.
+    d0.clips.push(clip("sa", "A1", 0, 100, 0, { link: "g1" }));
+    get(d0, "a").link = "g1";
+    get(d0, "c").ref = { media: "v/c.mp4", frames: 250 };
+    const d1 = setClipProps(d0, ["a"], { speed: 2 });
+    expect([get(d1, "a").speed, get(d1, "sa").speed]).toEqual([2, 2]);
+    expect(get(d1, "a").sourceRange.duration).toBe(100);
+    roundTrip(d0, d1);
+    // 150 frames left in c's file: at 2× they last 75 frames of the timeline.
+    const d2 = setClipProps(d0, ["c"], { speed: 2 });
+    expect(get(d2, "c").sourceRange.duration).toBe(75);
+    expect(sourceUsed(get(d2, "c"))).toBe(150);
+    roundTrip(d0, d2);
+    // Slower reads less: the length stays.
+    expect(get(setClipProps(d0, ["c"], { speed: 0.5 }), "c").sourceRange.duration).toBe(100);
+  });
 });
 
 describe("slip, slide, roll", () => {
