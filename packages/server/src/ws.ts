@@ -86,20 +86,27 @@ export function attachWebSocket(
   live: { pages?: OpenPages; version?: string | null; setupChannel?: SetupChannel } = {},
 ): WebSocketServer {
   const wss = new WebSocketServer({ noServer: true, maxPayload: 32 * 1024 * 1024 });
+  wss.on("error", () => {});
+  // A connection's error (a frame too big or malformed, a reset) ends that connection ("close"
+  // follows), never the server (3.9.8): without a listener ws's 'error' would stop the process.
+  const kept = (ws: WebSocket) => {
+    ws.on("error", () => {});
+    return ws;
+  };
   server.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
     const path = new URL(req.url ?? "/", "http://x").pathname;
     if (path === "/ws")
-      return wss.handleUpgrade(req, socket, head, (ws) => connection(ws, addressOf(req)));
+      return wss.handleUpgrade(req, socket, head, (ws) => connection(kept(ws), addressOf(req)));
     // Another RedGiant (G39.4): its own handshake authenticates it (pinned keys), no token.
     if (path === "/nodes")
-      return wss.handleUpgrade(req, socket, head, (ws) => void core.nodes.accept(ws));
+      return wss.handleUpgrade(req, socket, head, (ws) => void core.nodes.accept(kept(ws)));
     // The app's setup channel (G40.3): the nodes' handshake in setup mode, one device at a time.
     if (path === SETUP_CHANNEL_PATH && live.setupChannel) {
       const channel = live.setupChannel;
-      return wss.handleUpgrade(req, socket, head, (ws) => void channel.accept(ws, req));
+      return wss.handleUpgrade(req, socket, head, (ws) => void channel.accept(kept(ws), req));
     }
     if (path === "/term")
-      return wss.handleUpgrade(req, socket, head, (ws) => handleTerminal(ws, core, auth));
+      return wss.handleUpgrade(req, socket, head, (ws) => handleTerminal(kept(ws), core, auth));
     socket.destroy();
   });
 
@@ -615,9 +622,19 @@ export function attachWebSocket(
             }
             const toolRequest = pending?.tool === "request_tool";
             if (toolRequest)
-              core.toolRequestScope(msg.requestId, msg.remember ? "always" : msg.scope);
+              core.toolRequestScope(
+                msg.requestId,
+                msg.remember ? "always" : msg.scope === "work" ? undefined : msg.scope,
+              );
             if (
-              !core.approvals.decide(owner, msg.requestId, msg.decision, msg.reason, via(msg.via))
+              !core.approvals.decide(
+                owner,
+                msg.requestId,
+                msg.decision,
+                msg.reason,
+                via(msg.via),
+                msg.scope === "work" ? "work" : undefined,
+              )
             )
               return fail("not_found", "No such pending request");
             if (toolRequest) return;

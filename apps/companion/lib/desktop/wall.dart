@@ -531,8 +531,9 @@ class GodHero extends StatelessWidget {
                         l,
                         mac: mac,
                       ),
+                      // A new conversation each time (3.9.8), as Chat's field does.
                       onSend: (t) async =>
-                          god != null && await desk.openAgent(god, firstMessage: t),
+                          god != null && await desk.openAgent(god, fresh: true, firstMessage: t),
                     ),
                   ],
                 ),
@@ -1266,7 +1267,9 @@ class HeroStrip extends StatelessWidget {
                   hint: l.deskGodHint,
                   focus: desk.godFocus,
                   shortcut: shortcutLabel(cmdKey(LogicalKeyboardKey.keyG, mac: mac), l, mac: mac),
-                  onSend: (t) async => god != null && await desk.openAgent(god, firstMessage: t),
+                  // A new conversation each time (3.9.8), as Chat's field does.
+                  onSend: (t) async =>
+                      god != null && await desk.openAgent(god, fresh: true, firstMessage: t),
                 ),
               ),
               if (!narrow) ...[

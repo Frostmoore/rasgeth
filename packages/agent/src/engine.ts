@@ -19,11 +19,25 @@ export interface EngineTurn {
   images: ImagePart[];
   system: string;
   tools: ToolDef[];
+  /**
+   * The tools left aside (off by default or switched off, 3.9.8): an engine that can declare tools
+   * only when its conversation starts (Codex) declares these too, so one switched on later is
+   * callable at the next step; until then the session refuses them.
+   */
+  aside?: ToolDef[] | undefined;
   model: ModelSpec;
   /** The engine's own conversation id from an earlier turn: the turn continues it. */
   resume: string | undefined;
   signal?: AbortSignal | undefined;
   runTool: RunTool;
+  /**
+   * Tools joined the conversation during this turn (3.9.8: `request_tool`), read after each tool
+   * call. An engine whose tool list is fixed for its turn (Claude Code, Codex) then ends the turn
+   * once the results are delivered and returns "tools_added": the session starts the next one at
+   * once, in the same engine conversation, with the whole list. Never a tool said to be on that
+   * the model cannot call.
+   */
+  toolsAdded?: (() => boolean) | undefined;
   /** An assistant message as the engine produced it: recorded at once, before its tools run. */
   onMessage(m: {
     parts: AssistantPart[];
@@ -103,5 +117,11 @@ export interface Engine {
   readonly id: string;
   /** How long it may stay silent (3.5.4); default `ENGINE_STALL`. */
   readonly stall?: StallLimits | undefined;
-  turn(t: EngineTurn): Promise<{ resume: string; stopReason: StopReason }>;
+  turn(t: EngineTurn): Promise<{ resume: string; stopReason: StopReason | "tools_added" }>;
+  /**
+   * Whether tools switched on now can be called in the engine conversation `resume` (3.9.8);
+   * absent: always (the engine takes a new list at its next turn). Codex declares its tools once,
+   * when a conversation starts: one started without them can never call them.
+   */
+  addable?(resume: string | undefined, names: readonly string[]): boolean;
 }

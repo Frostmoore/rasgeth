@@ -6,7 +6,7 @@ import { signal } from "@preact/signals";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { t } from "../i18n.js";
 import { Acts } from "./SettingsKit.js";
-import { Field, Modal } from "./ui.js";
+import { Field, Modal, Toggle } from "./ui.js";
 
 type Ask = { id: number } & (
   | {
@@ -15,7 +15,9 @@ type Ask = { id: number } & (
       text?: string | undefined;
       yes: string;
       danger: boolean;
-      done: (yes: boolean) => void;
+      /** A switch under the text (3.9.8: «also the replies quoting it»), off at first. */
+      option?: string | undefined;
+      done: (yes: boolean, option?: boolean) => void;
     }
   | {
       kind: "text";
@@ -55,6 +57,31 @@ export function askConfirm(
         yes: o.yes ?? t("dlgOk"),
         danger: o.danger === true,
         done,
+      },
+    ];
+  });
+}
+
+/**
+ * A yes or no with one switch under the text (3.9.8, «Cancella per sempre»: also the agent's
+ * replies quoting it): the answer and whether the switch was on.
+ */
+export function askConfirmWith(
+  title: string,
+  o: { text?: string; yes?: string; danger?: boolean; option: string },
+): Promise<{ yes: boolean; option: boolean }> {
+  return new Promise((done) => {
+    asking.value = [
+      ...asking.value,
+      {
+        id: ++seq,
+        kind: "confirm",
+        title,
+        text: o.text,
+        yes: o.yes ?? t("dlgOk"),
+        danger: o.danger === true,
+        option: o.option,
+        done: (yes, option) => done({ yes, option: yes && option === true }),
       },
     ];
   });
@@ -129,14 +156,16 @@ function TextAsk({ a }: { a: Extract<Ask, { kind: "text" }> }) {
 
 function ConfirmAsk({ a }: { a: Extract<Ask, { kind: "confirm" }> }) {
   const yes = useRef<HTMLButtonElement>(null);
+  const [option, setOption] = useState(false);
   useEffect(() => yes.current?.focus(), []);
   const close = (v: boolean) => {
     finish(a);
-    a.done(v);
+    a.done(v, option);
   };
   return (
     <Modal title={a.title} onClose={() => close(false)} class="dlg">
       {a.text && <p class="dlg-text">{a.text}</p>}
+      {a.option && <Toggle label={a.option} checked={option} onChange={setOption} />}
       <Acts>
         <button type="button" class="wz-btn" onClick={() => close(false)}>
           {t("cancel")}

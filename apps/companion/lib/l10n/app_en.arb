@@ -8220,5 +8220,226 @@
         "type": "String"
       }
     }
+  },
+  "cvAllowWork": "Always allow for this job",
+  "@cvAllowWork": {
+    "description": "The page's `allowWork` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvAllowWorkHint": "Allow the same kind of command on the same machine without asking again, for the rest of this conversation's work",
+  "@cvAllowWorkHint": {
+    "description": "The page's `allowWorkHint` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvChSecretKindExport": "a password export",
+  "@cvChSecretKindExport": {
+    "description": "The page's `chSecretKind_export` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPwOne": "1 password",
+  "@cvPwOne": {
+    "description": "The page's `pwOne` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPwMany": "{n} passwords",
+  "@cvPwMany": {
+    "description": "The page's `pwMany` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvPwExportTitle": "This is a password export",
+  "@cvPwExportTitle": {
+    "description": "The page's `pwExportTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPwExportText": "The message holds {what} exported from a password manager. They do not belong in a conversation: the model, the log, the search and the engine's transcript would keep them.",
+  "@cvPwExportText": {
+    "description": "The page's `pwExportText` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "cvPwExportVault": "Put them in the keychain",
+  "@cvPwExportVault": {
+    "description": "The page's `pwExportVault` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPwExportWithout": "Send without",
+  "@cvPwExportWithout": {
+    "description": "The page's `pwExportWithout` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPwExportWithoutNote": "«Send without» sends your words with the export taken out.",
+  "@cvPwExportWithoutNote": {
+    "description": "The page's `pwExportWithoutNote` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPwExportAnyway": "Send anyway",
+  "@cvPwExportAnyway": {
+    "description": "The page's `pwExportAnyway` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPwExportAnywayTitle": "Send {what} to the agent?",
+  "@cvPwExportAnywayTitle": {
+    "description": "The page's `pwExportAnywayTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "cvPwExportAnywayText": "{what} will reach the model and stay in the conversation's log, in the search and in the engine's transcript. Only do it if you are sure.",
+  "@cvPwExportAnywayText": {
+    "description": "The page's `pwExportAnywayText` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "cvPwExportAnywayYes": "Send {what}",
+  "@cvPwExportAnywayYes": {
+    "description": "The page's `pwExportAnywayYes` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "cvPwImported": "In the keychain: {added} new, {skipped} already there.",
+  "@cvPwImported": {
+    "description": "The page's `pwImported` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "added": {
+        "type": "String"
+      },
+      "skipped": {
+        "type": "String"
+      }
+    }
+  },
+  "cvPwImportClosed": "The keychain is closed: nothing was imported. Open it in Settings › Keychain and try again.",
+  "@cvPwImportClosed": {
+    "description": "The page's `pwImportClosed` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPwImportFailed": "Nothing was imported: {error}",
+  "@cvPwImportFailed": {
+    "description": "The page's `pwImportFailed` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cvPwProposal": "Proposes to put the passwords of {file} in your keychain.",
+  "@cvPwProposal": {
+    "description": "The page's `pwProposal` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "file": {
+        "type": "String"
+      }
+    }
+  },
+  "cvPwProposalButton": "Put them in the keychain",
+  "@cvPwProposalButton": {
+    "description": "The page's `pwProposalButton` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPwProposalAsk": "Put the passwords of {file} in the keychain?",
+  "@cvPwProposalAsk": {
+    "description": "The page's `pwProposalAsk` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "file": {
+        "type": "String"
+      }
+    }
+  },
+  "cvPwProposalText": "They go into your keychain without the agent seeing them; then the file is destroyed.",
+  "@cvPwProposalText": {
+    "description": "The page's `pwProposalText` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPwProposalYes": "Import and destroy the file",
+  "@cvPwProposalYes": {
+    "description": "The page's `pwProposalYes` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvPwProposalDone": "{added} passwords of {file} are in the keychain; the file is destroyed.",
+  "@cvPwProposalDone": {
+    "description": "The page's `pwProposalDone` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "added": {
+        "type": "String"
+      },
+      "file": {
+        "type": "String"
+      }
+    }
+  },
+  "cvEraseForever": "Erase for good",
+  "@cvEraseForever": {
+    "description": "The page's `eraseForever` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvEraseTitle": "Erase this message for good?",
+  "@cvEraseTitle": {
+    "description": "The page's `eraseTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvEraseText": "It goes from the conversation's log, the search, the portrait and what the agent remembers of it. It cannot be undone.",
+  "@cvEraseText": {
+    "description": "The page's `eraseText` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvEraseTextEngine": "It goes from the conversation's log, the search, the portrait, what the agent remembers of it and the engine's own transcript. It cannot be undone.",
+  "@cvEraseTextEngine": {
+    "description": "The page's `eraseTextEngine` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvEraseQuotes": "Also erase {n} of the agent's replies and results that quote it",
+  "@cvEraseQuotes": {
+    "description": "The page's `eraseQuotes` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvEraseYes": "Erase for good",
+  "@cvEraseYes": {
+    "description": "The page's `eraseYes` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvEraseDone": "Erased for good ({n}).",
+  "@cvEraseDone": {
+    "description": "The page's `eraseDone` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvEraseBusy": "The agent is working: stop it or wait for it to finish, then try again.",
+  "@cvEraseBusy": {
+    "description": "The page's `eraseBusy` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "pairAgain": "Pair again",
+  "statusPairAgain": "needs pairing again",
+  "pairAgainTitle": "Pair {name} again",
+  "@pairAgainTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pairAgainBody": "This device no longer has its key for {name}. Type the password: the server stays in the list with its settings and works again.",
+  "@pairAgainBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pairAgainNote": "This device no longer has its key for this server: pair it again with the password, without removing it.",
+  "errKeystore": "This computer could not save the access key in its keystore, so the pairing was undone and no extra device is left on the server. Try again; if it happens again, restart the computer and try again.",
+  "devForgetUnused": "Remove the ones never used",
+  "devForgetUnusedTitle": "Remove the devices never used?",
+  "devForgetUnusedBody": "Every device that never signed in once goes (an app that could not keep its key, for example). The ones paired in the last ten minutes stay: they may be connecting right now.",
+  "devForgetUnusedDone": "Devices removed: {count}.",
+  "@devForgetUnusedDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

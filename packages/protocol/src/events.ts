@@ -192,6 +192,12 @@ export const EventBody = z.discriminatedUnion("type", [
        * "timeout". Absent in older logs and when an agent or the classifier decided.
        */
       via: z.string().optional(),
+      /**
+       * «Always allow for this job» (3.9.8): the person's yes covers the same kind of command on
+       * the same machine for the rest of the conversation; `kind` says which, in words.
+       */
+      scope: z.literal("work").optional(),
+      kind: z.string().optional(),
     }),
   }),
   /**

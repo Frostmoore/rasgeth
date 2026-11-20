@@ -118,6 +118,8 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   one("search_conversations", "memory", "core"),
   one("use_credential", "credentials", "keychain"),
   one("request_connection", "credentials", "keychain"),
+  // A password export in the workspace proposed for the keychain (3.9.8): the person confirms.
+  one("import_passwords", "credentials", "keychain"),
   one("show_file", "canvas", "core"),
   // Looking at the person's canvas and leafing through it (G36.12).
   one("canvas_look", "canvas", "canvas"),

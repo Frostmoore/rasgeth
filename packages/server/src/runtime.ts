@@ -409,14 +409,21 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
       const own = join(o.dataDir ?? ".", "engines", "claude");
       await mkdir(join(own, "work"), { recursive: true });
       const tool = await ensureTool("claude");
-      o.providers.register(
-        new ClaudeSubscriptionProvider({
-          token,
-          configDir: token ? own : signInDir("claude", own, ".credentials.json"),
-          cwd: join(own, "work"),
-          ...(tool.source !== "bundled" && { executable: tool.file }),
-        }),
-      );
+      const configDir = token ? own : signInDir("claude", own, ".credentials.json");
+      // Where its transcripts are, for «Cancella per sempre» (3.9.8).
+      o.core.engineHomes.set("claude-subscription", configDir);
+      const claude = new ClaudeSubscriptionProvider({
+        token,
+        configDir,
+        cwd: join(own, "work"),
+        ...(tool.source !== "bundled" && { executable: tool.file }),
+        // The plan's limits without waiting for a turn, and kept over a restart (3.9.8).
+        readPlan: true,
+        limitsFile: join(own, "plan-limits.json"),
+      });
+      o.providers.register(claude);
+      // The header has them by the time someone looks.
+      void claude.limits().catch(() => {});
       o.core.clearKeyProblem("claude-subscription");
     },
 
@@ -451,9 +458,11 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
       if (!on) return;
       const own = join(o.dataDir ?? ".", "engines", "codex");
       const tool = await ensureTool("codex");
+      const home = signInDir("codex", own, "auth.json");
+      o.core.engineHomes.set("chatgpt-subscription", home);
       o.providers.register(
         new ChatgptSubscriptionProvider({
-          home: signInDir("codex", own, "auth.json"),
+          home,
           cwd: join(own, "work"),
           ...(tool.source !== "bundled" && {
             command: { file: tool.file, args: [...tool.args, "app-server"] },

@@ -249,10 +249,15 @@ export class LocalBrowserLauncher implements BrowserLauncher {
         },
       },
     );
+    // A browser that cannot start ends this try, never the server (3.9.8).
+    let failed = false;
+    child.on("error", () => {
+      failed = true;
+    });
     const url = `http://127.0.0.1:${port}`;
     this.running.set(ownerId, { child, url });
     for (let i = 0; i < 60; i++) {
-      if (child.exitCode !== null) break;
+      if (failed || child.exitCode !== null) break;
       if (
         await fetch(`${url}/json/version`).then(
           (r) => r.ok,

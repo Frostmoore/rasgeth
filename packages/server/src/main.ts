@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // RedGiant server. Configured by environment variables until the setup wizard (G17) exists.
-import { readFile, writeFile } from "node:fs/promises";
+import { appendFile, readFile, writeFile } from "node:fs/promises";
 import { homedir, hostname } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -25,6 +25,7 @@ import { TokenAuth } from "./auth.js";
 import { Browsers, DockerBrowserLauncher, findBrowser, LocalBrowserLauncher } from "./browser.js";
 import { ChatHub, Outlets } from "./chats.js";
 import { RedGiantCore } from "./core.js";
+import { type CrashRecord, crashText, installCrashGuard } from "./crash-guard.js";
 import { debugLog } from "./debug-log.js";
 import { localVaultEgress, routesFileEgress } from "./egress-routes.js";
 import { startEmbeddedDatabase } from "./embedded-db.js";
@@ -83,6 +84,21 @@ const need = (name: string) => {
 const token = need("REDGIANT_TOKEN");
 const dataDir = resolve(env.REDGIANT_DATA_DIR ?? "./data");
 const redactor = new Redactor().addSecret("redgiant-token", token);
+// The last safety net (3.9.8): what nobody caught is written down and told; only an unknown state
+// stops the server (the supervisor starts it again and the cut work resumes).
+let tellCrash: ((r: CrashRecord) => void) | undefined;
+installCrashGuard({
+  redact: (t) => redactor.redactText(t).text,
+  record: (r) => {
+    console.error(`[${r.kind}] ${r.stack}`);
+    debugLog.write("crash", r.message, { kind: r.kind, stack: r.stack });
+    void appendFile(
+      join(dataDir, "crashes.jsonl"),
+      `${JSON.stringify({ t: new Date().toISOString(), ...r })}\n`,
+    ).catch(() => {});
+  },
+  tell: (r) => tellCrash?.(r),
+});
 
 const providers = new ProviderRegistry();
 const shutdownHooks: (() => Promise<void>)[] = [];
@@ -611,6 +627,9 @@ await core.automations.start();
 void ensureGit(core.jobs, owner, dataDir).catch((err) =>
   console.warn(`git: ${(err as Error).message}`),
 );
+// From here on the person hears of an error nobody caught (their linked chats).
+tellCrash = (r) =>
+  void core.notify?.(owner, crashText(r, core.language(owner), PRODUCT_NAME))?.catch(() => {});
 core.inspector.start();
 core.email.start();
 // Routines on files that change in a project's folder (G33.3).

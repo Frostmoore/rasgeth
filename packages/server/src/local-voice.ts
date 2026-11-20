@@ -208,9 +208,16 @@ export class LocalWhisper {
           ],
           { stdio: "ignore", windowsHide: true },
         );
+    // A program that cannot start is this start's failure, never the server's end (3.9.8).
+    let failed: Error | undefined;
+    this.proc.on("error", (err) => {
+      failed = err;
+    });
+    this.proc.stdin?.on("error", () => {});
     const base = `http://127.0.0.1:${port}`;
     for (let i = 0; i < 120; i++) {
-      if (this.proc.exitCode !== null) throw new Error("whisper.cpp's server stopped at start");
+      if (failed) throw new Error(`whisper.cpp's server could not start: ${failed.message}`);
+      if (this.proc?.exitCode !== null) throw new Error("whisper.cpp's server stopped at start");
       const up = await fetch(base, { signal: AbortSignal.timeout(1000) }).then(
         () => true,
         () => false,

@@ -2476,6 +2476,18 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news398Passwords: "Passwords stay out of the chat",
+  news398PasswordsText:
+    "A password export pasted or attached by mistake (Bitwarden, Avira, Chrome, 1Password, KeePass…) is held back: «Put them in the keychain» imports them without the model ever seeing them. «Erase for good» removes one message from the conversation, the search and the engine's own copy.",
+  news398Requests: "Fewer requests",
+  news398RequestsText:
+    "Commands that only read, on containers and machines too, no longer ask; words inside a command (a commit message) no longer look like dangers. «Always allow for this job» covers the same kind of command for the rest of the work, also after a restart.",
+  news398Subscriptions: "Subscriptions that work everywhere",
+  news398SubscriptionsText:
+    "With a Claude or ChatGPT subscription your classifier, the agents' parents, the inspector and the portrait answer again instead of refusing everything; tools switched on are usable at once, and the plan's limits show in the header.",
+  news398App: "The app keeps its pairing",
+  news398AppText:
+    "The desktop app no longer loses the server it was paired with; a new pairing replaces the never-used devices, and God's field on the home page starts a new conversation each time.",
   news397Skills: "Skills that get better",
   news397SkillsText:
     "When an agent struggles with a skill it can propose a better version; you approve it, with one line saying what changed and why, and «Compare» shows every difference. Each skill keeps its history and you can go back to any version.",
@@ -3364,6 +3376,9 @@ const en = {
   todosTitle: "Steps: {done} of {all} done",
   unqueue: "Take it back (if the agent has not read it yet)",
   thisChat: "In this conversation",
+  allowWork: "Always allow for this job",
+  allowWorkHint:
+    "Allow the same kind of command on the same machine without asking again, for the rest of this conversation's work",
   thisChatHint: "Allow {tool} without asking again, in this conversation only",
   denyWhy: "Deny and say why",
   denyWhyPlaceholder: "What to do instead (the agent reads it)",
@@ -7408,6 +7423,47 @@ const en = {
   echoSearch: "Search past conversations",
   echoClear: "Clear the search",
   echoNone: "No past conversation has these words.",
+  // 3.9.8: password exports held in the composer, put in the keychain; a message erased for good.
+  tool_import_passwords: "Put passwords in the keychain",
+  toolDo_import_passwords:
+    "Proposes to put a password export it finds in its workspace into your keychain; you confirm, it never sees the values.",
+  chSecretKind_export: "a password export",
+  pwOne: "1 password",
+  pwMany: "{n} passwords",
+  pwExportTitle: "This is a password export",
+  pwExportText:
+    "The message holds {what} exported from a password manager. They do not belong in a conversation: the model, the log, the search and the engine's transcript would keep them.",
+  pwExportVault: "Put them in the keychain",
+  pwExportWithout: "Send without",
+  pwExportWithoutNote: "«Send without» sends your words with the export taken out.",
+  pwExportAnyway: "Send anyway",
+  pwExportAnywayTitle: "Send {what} to the agent?",
+  pwExportAnywayText:
+    "{what} will reach the model and stay in the conversation's log, in the search and in the engine's transcript. Only do it if you are sure.",
+  pwExportAnywayYes: "Send {what}",
+  pwImported: "In the keychain: {added} new, {skipped} already there.",
+  pwImportClosed:
+    "The keychain is closed: nothing was imported. Open it in Settings › Keychain and try again.",
+  pwImportFailed: "Nothing was imported: {error}",
+  pwImportFile: "Import a password file",
+  pwImportFileHint: "An export from Bitwarden, Avira, Chrome, Edge, Firefox, 1Password or KeePass",
+  pwProposal: "Proposes to put the passwords of {file} in your keychain.",
+  pwProposalButton: "Put them in the keychain",
+  pwProposalAsk: "Put the passwords of {file} in the keychain?",
+  pwProposalText:
+    "They go into your keychain without the agent seeing them; then the file is destroyed.",
+  pwProposalYes: "Import and destroy the file",
+  pwProposalDone: "{added} passwords of {file} are in the keychain; the file is destroyed.",
+  eraseForever: "Erase for good",
+  eraseTitle: "Erase this message for good?",
+  eraseText:
+    "It goes from the conversation's log, the search, the portrait and what the agent remembers of it. It cannot be undone.",
+  eraseTextEngine:
+    "It goes from the conversation's log, the search, the portrait, what the agent remembers of it and the engine's own transcript. It cannot be undone.",
+  eraseQuotes: "Also erase {n} of the agent's replies and results that quote it",
+  eraseYes: "Erase for good",
+  eraseDone: "Erased for good ({n}).",
+  eraseBusy: "The agent is working: stop it or wait for it to finish, then try again.",
   echoArchived: "archived",
   echoMatches: "{n} messages",
   echoMatch: "1 message",
@@ -7494,6 +7550,11 @@ const en = {
   veChColorN: "Changed the colour of {n} clips",
   veChKeys: "Changed the keyframes",
   veKeyTrimSlip: "T tool: middle of a clip slips, Alt slides, Shift on a cut rolls",
+  dvForgetUnused: "Remove the ones never used",
+  dvForgetUnusedQ: "Remove the devices never used?",
+  dvForgetUnusedText:
+    "Every device that never signed in once goes (an app that could not keep its key, for example). The ones paired in the last ten minutes stay: they may be connecting right now.",
+  dvForgetUnusedDone: "Devices removed: {count}.",
 } as const;
 
 export type Key = keyof typeof en;
@@ -10008,6 +10069,18 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news398Passwords: "Le password restano fuori dalla chat",
+  news398PasswordsText:
+    "Un'esportazione di password incollata o allegata per sbaglio (Bitwarden, Avira, Chrome, 1Password, KeePass…) viene trattenuta: «Mettile nel Portachiavi» le importa senza che il modello le veda mai. «Cancella per sempre» toglie un messaggio dalla conversazione, dalla ricerca e dalla copia del motore.",
+  news398Requests: "Meno richieste",
+  news398RequestsText:
+    "I comandi che leggono soltanto, anche su container e macchine, non chiedono più; le parole dentro un comando (un messaggio di commit) non sembrano più pericoli. «Consenti sempre per questo lavoro» vale per lo stesso tipo di comando per il resto del lavoro, anche dopo un riavvio.",
+  news398Subscriptions: "Abbonamenti che funzionano ovunque",
+  news398SubscriptionsText:
+    "Con un abbonamento Claude o ChatGPT il tuo classificatore, i genitori degli agenti, l'ispettore e il ritratto rispondono di nuovo invece di rifiutare tutto; gli strumenti accesi si usano subito e i limiti del piano si vedono in alto.",
+  news398App: "L'app non perde l'abbinamento",
+  news398AppText:
+    "L'app per il computer non dimentica più il server a cui è abbinata; un nuovo abbinamento sostituisce i dispositivi mai usati, e il campo di God nella home apre ogni volta una conversazione nuova.",
   news397Skills: "Abilità che migliorano",
   news397SkillsText:
     "Quando un agente fatica con un'abilità può proporne una versione migliore; la approvi tu, con una riga che dice cosa è cambiato e perché, e «Confronta» mostra ogni differenza. Ogni abilità tiene la sua cronologia e puoi tornare a qualsiasi versione.",
@@ -10897,6 +10970,9 @@ const it: Record<Key, string> = {
   todosTitle: "Passi: {done} su {all} fatti",
   unqueue: "Ritira (se l'agente non l'ha ancora letto)",
   thisChat: "In questa conversazione",
+  allowWork: "Consenti sempre per questo lavoro",
+  allowWorkHint:
+    "Consenti lo stesso tipo di comando sulla stessa macchina senza chiederlo più, per il resto del lavoro di questa conversazione",
   thisChatHint: "Consenti {tool} senza chiederlo più, solo in questa conversazione",
   denyWhy: "Nega e spiega perché",
   denyWhyPlaceholder: "Cosa fare invece (l'agente lo legge)",
@@ -14999,6 +15075,48 @@ const it: Record<Key, string> = {
   echoSearch: "Cerca nelle conversazioni passate",
   echoClear: "Cancella la ricerca",
   echoNone: "Nessuna conversazione passata ha queste parole.",
+  // 3.9.8: esportazioni di password trattenute nel composer, messe nel Portachiavi; un messaggio cancellato per sempre.
+  tool_import_passwords: "Mettere password nel portachiavi",
+  toolDo_import_passwords:
+    "Propone di mettere nel tuo portachiavi un'esportazione di password che trova nel suo spazio di lavoro; confermi tu, lui non vede i valori.",
+  chSecretKind_export: "un'esportazione di password",
+  pwOne: "1 password",
+  pwMany: "{n} password",
+  pwExportTitle: "Questa è un'esportazione di password",
+  pwExportText:
+    "Nel messaggio ci sono {what} esportate da un gestore di password. In una conversazione non vanno: le terrebbero il modello, il registro, la ricerca e la trascrizione del motore.",
+  pwExportVault: "Mettile nel Portachiavi",
+  pwExportWithout: "Invia senza",
+  pwExportWithoutNote: "«Invia senza» manda le tue parole senza l'esportazione.",
+  pwExportAnyway: "Invia comunque",
+  pwExportAnywayTitle: "Mandare {what} all'agente?",
+  pwExportAnywayText:
+    "{what} arriveranno al modello e resteranno nel registro della conversazione, nella ricerca e nella trascrizione del motore. Fallo solo se ne sei sicuro.",
+  pwExportAnywayYes: "Invia {what}",
+  pwImported: "Nel Portachiavi: {added} nuove, {skipped} c'erano già.",
+  pwImportClosed:
+    "Il Portachiavi è chiuso: non ho importato niente. Aprilo in Impostazioni › Portachiavi e riprova.",
+  pwImportFailed: "Non ho importato niente: {error}",
+  pwImportFile: "Importa un file di password",
+  pwImportFileHint:
+    "Un'esportazione di Bitwarden, Avira, Chrome, Edge, Firefox, 1Password o KeePass",
+  pwProposal: "Propone di mettere nel tuo Portachiavi le password di {file}.",
+  pwProposalButton: "Mettile nel Portachiavi",
+  pwProposalAsk: "Mettere nel Portachiavi le password di {file}?",
+  pwProposalText:
+    "Vanno nel tuo Portachiavi senza che l'agente le veda; poi il file viene distrutto.",
+  pwProposalYes: "Importa e distruggi il file",
+  pwProposalDone: "{added} password di {file} sono nel Portachiavi; il file è distrutto.",
+  eraseForever: "Cancella per sempre",
+  eraseTitle: "Cancellare per sempre questo messaggio?",
+  eraseText:
+    "Sparisce dal registro della conversazione, dalla ricerca, dal ritratto e da quello che l'agente ne ricorda. Non si può annullare.",
+  eraseTextEngine:
+    "Sparisce dal registro della conversazione, dalla ricerca, dal ritratto, da quello che l'agente ne ricorda e dalla trascrizione del motore. Non si può annullare.",
+  eraseQuotes: "Cancella anche {n} risposte e risultati dell'agente che lo riportano",
+  eraseYes: "Cancella per sempre",
+  eraseDone: "Cancellato per sempre ({n}).",
+  eraseBusy: "L'agente sta lavorando: fermalo o aspetta che finisca, poi riprova.",
   echoArchived: "archiviato",
   echoMatches: "{n} messaggi",
   echoMatch: "1 messaggio",
@@ -15085,6 +15203,11 @@ const it: Record<Key, string> = {
   veChColorN: "Cambiato il colore di {n} clip",
   veChKeys: "Cambiate le chiavi",
   veKeyTrimSlip: "Strumento T: al centro di una clip slip, Alt slide, Maiusc su un taglio roll",
+  dvForgetUnused: "Togli quelli mai usati",
+  dvForgetUnusedQ: "Togliere i dispositivi mai usati?",
+  dvForgetUnusedText:
+    "Vanno via tutti i dispositivi che non hanno mai fatto un accesso (per esempio un'app che non è riuscita a tenere la sua chiave). Restano quelli abbinati negli ultimi dieci minuti: potrebbero collegarsi proprio adesso.",
+  dvForgetUnusedDone: "Dispositivi tolti: {count}.",
 };
 
 export const dictionaries: Record<Lang, Record<Key, string>> = { en, it };

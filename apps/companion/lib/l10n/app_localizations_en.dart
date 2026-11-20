@@ -10863,4 +10863,166 @@ class AppLocalizationsEn extends AppLocalizations {
   String saveTooBigPhone(String name, String size) {
     return '$name is too big to save from the phone ($size): save it from a computer';
   }
+
+  @override
+  String get cvAllowWork => 'Always allow for this job';
+
+  @override
+  String get cvAllowWorkHint =>
+      'Allow the same kind of command on the same machine without asking again, for the rest of this conversation\'s work';
+
+  @override
+  String get cvChSecretKindExport => 'a password export';
+
+  @override
+  String get cvPwOne => '1 password';
+
+  @override
+  String cvPwMany(String n) {
+    return '$n passwords';
+  }
+
+  @override
+  String get cvPwExportTitle => 'This is a password export';
+
+  @override
+  String cvPwExportText(String what) {
+    return 'The message holds $what exported from a password manager. They do not belong in a conversation: the model, the log, the search and the engine\'s transcript would keep them.';
+  }
+
+  @override
+  String get cvPwExportVault => 'Put them in the keychain';
+
+  @override
+  String get cvPwExportWithout => 'Send without';
+
+  @override
+  String get cvPwExportWithoutNote => '«Send without» sends your words with the export taken out.';
+
+  @override
+  String get cvPwExportAnyway => 'Send anyway';
+
+  @override
+  String cvPwExportAnywayTitle(String what) {
+    return 'Send $what to the agent?';
+  }
+
+  @override
+  String cvPwExportAnywayText(String what) {
+    return '$what will reach the model and stay in the conversation\'s log, in the search and in the engine\'s transcript. Only do it if you are sure.';
+  }
+
+  @override
+  String cvPwExportAnywayYes(String what) {
+    return 'Send $what';
+  }
+
+  @override
+  String cvPwImported(String added, String skipped) {
+    return 'In the keychain: $added new, $skipped already there.';
+  }
+
+  @override
+  String get cvPwImportClosed =>
+      'The keychain is closed: nothing was imported. Open it in Settings › Keychain and try again.';
+
+  @override
+  String cvPwImportFailed(String error) {
+    return 'Nothing was imported: $error';
+  }
+
+  @override
+  String cvPwProposal(String file) {
+    return 'Proposes to put the passwords of $file in your keychain.';
+  }
+
+  @override
+  String get cvPwProposalButton => 'Put them in the keychain';
+
+  @override
+  String cvPwProposalAsk(String file) {
+    return 'Put the passwords of $file in the keychain?';
+  }
+
+  @override
+  String get cvPwProposalText =>
+      'They go into your keychain without the agent seeing them; then the file is destroyed.';
+
+  @override
+  String get cvPwProposalYes => 'Import and destroy the file';
+
+  @override
+  String cvPwProposalDone(String added, String file) {
+    return '$added passwords of $file are in the keychain; the file is destroyed.';
+  }
+
+  @override
+  String get cvEraseForever => 'Erase for good';
+
+  @override
+  String get cvEraseTitle => 'Erase this message for good?';
+
+  @override
+  String get cvEraseText =>
+      'It goes from the conversation\'s log, the search, the portrait and what the agent remembers of it. It cannot be undone.';
+
+  @override
+  String get cvEraseTextEngine =>
+      'It goes from the conversation\'s log, the search, the portrait, what the agent remembers of it and the engine\'s own transcript. It cannot be undone.';
+
+  @override
+  String cvEraseQuotes(String n) {
+    return 'Also erase $n of the agent\'s replies and results that quote it';
+  }
+
+  @override
+  String get cvEraseYes => 'Erase for good';
+
+  @override
+  String cvEraseDone(String n) {
+    return 'Erased for good ($n).';
+  }
+
+  @override
+  String get cvEraseBusy =>
+      'The agent is working: stop it or wait for it to finish, then try again.';
+
+  @override
+  String get pairAgain => 'Pair again';
+
+  @override
+  String get statusPairAgain => 'needs pairing again';
+
+  @override
+  String pairAgainTitle(String name) {
+    return 'Pair $name again';
+  }
+
+  @override
+  String pairAgainBody(String name) {
+    return 'This device no longer has its key for $name. Type the password: the server stays in the list with its settings and works again.';
+  }
+
+  @override
+  String get pairAgainNote =>
+      'This device no longer has its key for this server: pair it again with the password, without removing it.';
+
+  @override
+  String get errKeystore =>
+      'This computer could not save the access key in its keystore, so the pairing was undone and no extra device is left on the server. Try again; if it happens again, restart the computer and try again.';
+
+  @override
+  String get devForgetUnused => 'Remove the ones never used';
+
+  @override
+  String get devForgetUnusedTitle => 'Remove the devices never used?';
+
+  @override
+  String get devForgetUnusedBody =>
+      'Every device that never signed in once goes (an app that could not keep its key, for example). The ones paired in the last ten minutes stay: they may be connecting right now.';
+
+  @override
+  String devForgetUnusedDone(int count) {
+    return 'Devices removed: $count.';
+  }
 }

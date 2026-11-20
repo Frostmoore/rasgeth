@@ -83,7 +83,18 @@ void main() {
       );
     });
 
-    test('a flat subscription: its windows, 5h first (a dash when unknown), 7d in words', () {
+    test('a flat subscription: its windows, 5h first, 7d in words; a dash before any reading', () {
+      // Nothing read yet: the 5h bar waits with a dash.
+      final waiting = headerBars(
+        provider: 'claude-sub',
+        plans: [
+          PlanLimits.fromJson({'provider': 'claude-sub', 'windows': <Object>[]})!,
+        ],
+        budgets: const [],
+        words: _words,
+      );
+      expect([for (final b in waiting) b.text], ['–']);
+      // A plan without a 5-hour window (3.9.8, Claude's): only what it has, no empty 5h.
       final bars = headerBars(
         provider: 'claude-sub',
         plans: [
@@ -91,14 +102,30 @@ void main() {
             'provider': 'claude-sub',
             'windows': [
               {'id': '7d', 'label': '7d', 'usedPct': 41},
+              {'id': 'model:Fable', 'label': 'Fable', 'usedPct': 0},
             ],
           })!,
         ],
         budgets: budgets([_budget('global', 'owner', 6.3, limit: 10)]),
         words: _words,
       );
-      expect([for (final b in bars) b.name], ['5h', '7g']);
-      expect([for (final b in bars) b.text], ['–', '41%']);
+      expect([for (final b in bars) b.name], ['7g', 'Fable']);
+      expect([for (final b in bars) b.text], ['41%', '0%']);
+      final both = headerBars(
+        provider: 'claude-sub',
+        plans: [
+          PlanLimits.fromJson({
+            'provider': 'claude-sub',
+            'windows': [
+              {'id': '7d', 'label': '7d', 'usedPct': 41},
+              {'id': '5h', 'label': '5h', 'usedPct': 3},
+            ],
+          })!,
+        ],
+        budgets: const [],
+        words: _words,
+      );
+      expect([for (final b in both) b.name], ['5h', '7g']);
     });
 
     test('a local model: the context before the automatic summary', () {
@@ -221,6 +248,19 @@ void main() {
       await sendKeys(tester);
       expect(find.byKey(const Key('desk-panel')), findsOneWidget);
       expect(server.sent.any((m) => m['text'] == 'Fai il punto'), isTrue);
+      // A new conversation each time (3.9.8), as Chat's field: never God's shared one.
+      await tester.enterText(
+        find.descendant(
+          of: find.byKey(const Key('desk-god-field')),
+          matching: find.byType(TextField),
+        ),
+        'E adesso?',
+      );
+      await sendKeys(tester);
+      final first = server.sent.firstWhere((m) => m['text'] == 'Fai il punto')['sessionId'];
+      final second = server.sent.firstWhere((m) => m['text'] == 'E adesso?')['sessionId'];
+      expect(first, isNot(second));
+      expect(server.requests.where((q) => q.contains('/work-session')), isEmpty);
       // And the shortcut is listed.
       await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
       await tester.sendKeyEvent(LogicalKeyboardKey.slash);

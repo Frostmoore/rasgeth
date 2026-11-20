@@ -5,6 +5,7 @@ import {
   criticalSentences,
   type Event,
   isCriticalRequest,
+  offersWorkAllow,
   ownWords,
   type PermissionRequestInfo,
   requestReasons,
@@ -79,7 +80,9 @@ import {
   AsidePanel,
   addQuote,
   ContinueHere,
+  EraseForever,
   ForkMark,
+  ImportProposal,
   jumpToQuote,
   type PickedPassage,
   type QuoteDraft,
@@ -316,6 +319,7 @@ function UserItem({
             </button>
           )}
           <ContinueHere sessionId={sessionId} agentId={agentId} seq={seq} />
+          <EraseForever sessionId={sessionId} seq={seq} />
         </div>
       )}
     </>
@@ -626,7 +630,7 @@ function ToolPermission({ r }: { r: PermissionRequestInfo }) {
   const input = JSON.stringify(r.input, null, 2);
   const resolve = (
     decision: "allow" | "deny",
-    scope: "once" | "session" | "always" = "once",
+    scope: "once" | "session" | "always" | "work" = "once",
     reason?: string,
   ) => {
     if (!armed) return;
@@ -715,6 +719,18 @@ function ToolPermission({ r }: { r: PermissionRequestInfo }) {
         >
           {t("allow")}
         </button>
+        {offersWorkAllow(r) && (
+          <button
+            type="button"
+            class="always"
+            disabled={!armed}
+            onKeyDown={noEnter}
+            title={t("allowWorkHint")}
+            onClick={() => resolve("allow", "work")}
+          >
+            {t("allowWork")}
+          </button>
+        )}
         {r.danger.length === 0 && r.sessionId && (
           <button
             type="button"
@@ -901,8 +917,21 @@ function Item({
           agentId={agentId}
         />
       );
-    case "tool":
-      return <ToolLine item={item} agentId={agentId} />;
+    case "tool": {
+      const file = (item.input as { path?: unknown } | null)?.path;
+      // An agent's proposal to put a password export in the keychain (3.9.8).
+      return item.tool === "import_passwords" &&
+        item.result?.ok &&
+        actions &&
+        typeof file === "string" ? (
+        <>
+          <ToolLine item={item} agentId={agentId} />
+          <ImportProposal sessionId={sessionId} callId={item.callId} file={file} />
+        </>
+      ) : (
+        <ToolLine item={item} agentId={agentId} />
+      );
+    }
     case "question":
       return (
         <QuestionCard

@@ -61,6 +61,9 @@ export interface PermissionDecision {
 }
 
 /** Told to an engine whose earlier try was cancelled after it had started working (3.5.4). */
+/** Told to an engine whose turn stopped where tools joined (3.9.8): they are callable now. */
+export const toolsReadyText = (names: readonly string[]) =>
+  `[${PRODUCT_NAME}: the tools you switched on are ready now (${names.join(", ")}). Go on with the work where you were.]`;
 const STALL_GO_ON = `[${PRODUCT_NAME}: the provider stopped answering and your request was cancelled. Go on from where you were; the tool results you already have are real.]`;
 
 export interface AgentSessionOptions {
@@ -167,8 +170,22 @@ export interface AgentSessionOptions {
    * ends `send` with stopReason "budget".
    */
   beforeModelCall?: () => Promise<{ allow: boolean; reason?: string }>;
-  /** A flat subscription's own agent runs the turns (G21); the tools stay these. */
-  engine?: Engine;
+  /**
+   * A flat subscription's own agent runs the turns (G21); the tools stay these. A function is read
+   * at every `send` (3.9.8): the provider's engine comes up after the server started (its program
+   * found or downloaded) and is made again when the person signs in anew.
+   */
+  engine?: Engine | (() => Engine | undefined);
+  /**
+   * The model runs only through an engine (a flat subscription, 3.9.8): never as a stream. A send
+   * that finds no engine waits for it up to `waitMs` (default 3 minutes), then fails saying why.
+   */
+  engineOnly?: {
+    name: string;
+    waitMs?: number;
+    /** Whether the provider is there: there without an engine, it streams (a stand-in). */
+    present?: () => boolean;
+  };
   /** Pauses before trying a silent engine again (3.5.4); tests make them short. */
   stallDelaysMs?: readonly number[];
 }
@@ -518,6 +535,34 @@ export class AgentSession {
     return info.unconfirmed === true && !info.pricing;
   }
 
+  /** Whether an engine runs this conversation's turns (now or once it comes up). */
+  private get onEngine(): boolean {
+    return this.o.engine !== undefined || this.o.engineOnly !== undefined;
+  }
+
+  /**
+   * The engine for this send (3.9.8): the provider's current one. A conversation that runs only
+   * through an engine waits for it while it comes up (after a restart its program is found or
+   * downloaded first), then fails saying so: it never falls back to a stream the provider lacks.
+   */
+  private async engineNow(signal?: AbortSignal): Promise<Engine | undefined> {
+    const read = () => (typeof this.o.engine === "function" ? this.o.engine() : this.o.engine);
+    let engine = read();
+    const only = this.o.engineOnly;
+    if (engine || !only || only.present?.()) return engine;
+    const end = Date.now() + (only.waitMs ?? 180_000);
+    while (!engine && !only.present?.() && Date.now() < end && !signal?.aborted) {
+      await new Promise((r) => setTimeout(r, Math.min(500, Math.max(1, end - Date.now()))));
+      engine = read();
+    }
+    if (engine || only.present?.()) return engine;
+    if (signal?.aborted) throw new ProviderError("Stopped", false);
+    throw new ProviderError(
+      `The ${only.name} is not ready yet: its program is still starting after the server's start, or it is not signed in. Send the message again in a minute.`,
+      false,
+    );
+  }
+
   /** The step limit of one `send`, read when it starts (Infinity: none). */
   private turnLimit(person: boolean): number {
     const m = this.o.maxTurns;
@@ -556,6 +601,8 @@ export class AgentSession {
     }
     // What the model reads: the quoted passages first, each with its reply (G36.22).
     const said = quotedText(text, quotes, notes);
+    // An engine's turn needs the engine: it may still be coming up after a restart (3.9.8).
+    const engine = await this.engineNow(signal);
     // A summary made after the last turn is applied first: the message lands after it.
     await this.background;
     const first = await this.record({
@@ -576,7 +623,7 @@ export class AgentSession {
     });
 
     const limit = this.turnLimit(extra.person === true);
-    if (this.o.engine) return this.sendToEngine(this.o.engine, said, images, ctx, limit);
+    if (engine) return this.sendToEngine(engine, said, images, ctx, limit);
 
     let last: Completion | undefined;
     // Calls cut by the output limit, answered with an error and retried (at most twice).
@@ -768,7 +815,10 @@ export class AgentSession {
           turns: turn - 1,
           ...(gate.reason && { reason: gate.reason }),
         };
+      // Tools switched on by a call of this engine turn (3.9.8): the engine's list is its own.
+      let joined: string[] = [];
       const r = await this.engineTurnWatched(engine, message, pictures, ctx, (watch, said) => ({
+        toolsAdded: () => joined.length > 0,
         onCompaction: (info) =>
           void this.record({
             type: "engine.compacted",
@@ -843,11 +893,17 @@ export class AgentSession {
               type: "tool.call",
               payload: { callId: call.callId, tool: call.name, input: call.input },
             });
+            const before = new Set(this.callable.map((t) => t.def.name));
             const r = await this.runOne(
               { callId: call.callId, name: call.name, input: call.input },
               JSON.stringify(call.input ?? null),
               ctx,
             );
+            const fresh = this.callable.map((t) => t.def.name).filter((n) => !before.has(n));
+            // Never «it is on» for a tool this engine conversation cannot call (3.9.8).
+            if (fresh.length > 0 && engine.addable?.(this.engineSession, fresh) === false)
+              r.content = `${r.content}\n\nBut this conversation runs on an engine that took its tools when it started, and these were not among them: you cannot call ${fresh.join(", ")} here. Hand the work that needs them to an agent (delegate), or tell the person a new conversation has them.`;
+            else joined = [...joined, ...fresh];
             const reminder = this.todoReminder(call.name, call.input, r);
             const e = await this.record({
               type: "tool.result",
@@ -884,6 +940,18 @@ export class AgentSession {
         this.engineSession = r.resume;
         await this.record({ type: "engine.session", payload: { engine: engine.id, id: r.resume } });
       }
+      // The engine stopped where tools joined (3.9.8): the next engine turn has them all, at once.
+      if (r.stopReason === "tools_added") {
+        const note = toolsReadyText(joined);
+        const e = await this.recordStopNote({ text: note, quiet: true });
+        this.history.push({
+          message: { role: "user", parts: [{ type: "text", text: note }] },
+          firstSeq: e.seq,
+        });
+        message = note;
+        pictures = [];
+        continue;
+      }
       if (r.stopReason !== "end_turn") return { stopReason: r.stopReason, turns: turn };
       const more = await this.engineStopHooks(ctx);
       if (more === undefined) return { stopReason: "end_turn", turns: turn };
@@ -918,13 +986,14 @@ export class AgentSession {
       EngineTurn,
       | "onMessage"
       | "runTool"
+      | "toolsAdded"
       | "onCompaction"
       | "onExternalTool"
       | "onExternalResult"
       | "onNativeStart"
       | "onNativeMade"
     >,
-  ): Promise<{ resume: string; stopReason: StopReason }> {
+  ): Promise<{ resume: string; stopReason: StopReason | "tools_added" }> {
     const limits = engine.stall ?? ENGINE_STALL;
     const delays = this.o.stallDelaysMs ?? STALL_RETRY_DELAYS_MS;
     let spec: ModelSpec | undefined = this.o.model;
@@ -957,6 +1026,7 @@ export class AgentSession {
           images: pictures,
           system: this.o.system,
           tools: this.callable.map((t) => t.def),
+          aside: this.shelved.filter((t) => !this.callable.includes(t)).map((t) => t.def),
           model,
           resume: this.engineSession,
           ...(this.o.native && { native: this.o.native }),
@@ -1263,7 +1333,12 @@ export class AgentSession {
     const ctx: ToolContext = { ...base, callId: call.callId };
     const fail = (content: string) => ({ content, isError: true });
     const tool = this.callable.find((t) => t.def.name === call.name);
-    if (!tool) return fail(`Unknown tool "${call.name}".`);
+    if (!tool)
+      return fail(
+        this.shelved.some((t) => t.def.name === call.name)
+          ? `"${call.name}" is off in this conversation: switch its group on with request_tool first.`
+          : `Unknown tool "${call.name}".`,
+      );
     let input: unknown = call.input;
     if (input === undefined) {
       // Small models often write almost-JSON; repair it when that needs no guessing.
@@ -1344,7 +1419,7 @@ export class AgentSession {
    * of a new conversation then reads only itself. Nothing when it is already kept.
    */
   async prefillStart(signal?: AbortSignal): Promise<void> {
-    if (this.o.engine) return;
+    if (this.onEngine) return;
     const p = this.o.providers.get(this.o.model.provider) as {
       prefill?: (
         r: ReturnType<AgentSession["request"]>,
@@ -1366,7 +1441,7 @@ export class AgentSession {
   }
 
   async prefill(signal?: AbortSignal): Promise<void> {
-    if (this.o.engine) return;
+    if (this.onEngine) return;
     const p = this.o.providers.get(this.o.model.provider) as {
       prefill?: (r: ReturnType<AgentSession["request"]>, signal?: AbortSignal) => Promise<void>;
     };
@@ -1382,7 +1457,7 @@ export class AgentSession {
 
   private compactAhead(): void {
     const m = this.lastMetrics;
-    if (!m || this.o.engine || m.contextUsed < (this.o.compactAt ?? 0.8) * m.contextWindow) return;
+    if (!m || this.onEngine || m.contextUsed < (this.o.compactAt ?? 0.8) * m.contextWindow) return;
     this.background = this.compactNow({ reason: "auto" })
       .then(async (done) => {
         if (!done) return;
@@ -1540,7 +1615,7 @@ export class AgentSession {
         costUsd: 0,
         error,
       });
-    if (this.o.engine)
+    if (this.onEngine)
       return failed("A subscription's engine keeps its own conversation: ask in the chat.");
     const base = {
       ...this.request(),

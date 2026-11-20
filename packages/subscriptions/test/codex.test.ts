@@ -48,6 +48,26 @@ const turn = (text: string, log: string[]): EngineTurn => ({
 });
 
 describe("ChatGPT on a subscription", () => {
+  it("a Codex that cannot start fails the turn, never the server (3.9.8)", async () => {
+    const home = await mkdtemp(join(tmpdir(), "rg-codex-missing-"));
+    const p = new ChatgptSubscriptionProvider({
+      home,
+      cwd: join(home, "work"),
+      command: { file: join(home, "no-such-codex"), args: [] },
+    });
+    providers.push(p);
+    const crashes: unknown[] = [];
+    const onCrash = (err: unknown) => crashes.push(err);
+    process.on("uncaughtException", onCrash);
+    try {
+      await expect(p.engine.turn(turn("Hi", []))).rejects.toThrow(/Codex could not start/);
+      await new Promise((r) => setTimeout(r, 50));
+      expect(crashes).toEqual([]);
+    } finally {
+      process.off("uncaughtException", onCrash);
+    }
+  });
+
   it("runs the turn in Codex with Rasgeth's tools as dynamic tools, and keeps the plan's limits", async () => {
     const p = await provider();
     const log: string[] = [];
@@ -315,5 +335,44 @@ describe("ChatGPT on a subscription", () => {
       codexWindows({ primary: { usedPercent: 99.6, windowDurationMins: 300 }, secondary: null }),
     ).toEqual([{ id: "5h", label: "5h", usedPct: 100 }]);
     expect(codexWindows(null)).toEqual([]);
+  });
+});
+
+describe("one answer without tools (3.9.8: the person's classifier)", () => {
+  const request = {
+    model: "gpt-6",
+    system: "You decide.",
+    tools: [],
+    messages: [{ role: "user" as const, parts: [{ type: "text" as const, text: "May it?" }] }],
+  };
+
+  it("answers through a Codex thread with no tools, and keeps no thread", async () => {
+    const p = await provider();
+    const events = [];
+    for await (const e of p.stream(request)) events.push(e);
+    const done = events.at(-1);
+    expect(done?.type).toBe("done");
+    if (done?.type !== "done") return;
+    expect(done.completion.message.parts).toEqual([
+      { type: "text", text: '{"decision":"allow","reason":"ok"}' },
+    ]);
+    expect(done.completion.provider).toBe("chatgpt-subscription");
+    expect(done.completion.usage.outputTokens).toBe(12);
+    const { readdir } = await import("node:fs/promises");
+    const home = (p as unknown as { nativeFolder: string }).nativeFolder.replace(
+      /[/\\]generated_images$/,
+      "",
+    );
+    expect(await readdir(home)).not.toContain("rasgeth-thread-tools.json");
+  });
+
+  it("a request with tools still never streams", async () => {
+    const p = await provider();
+    await expect(async () => {
+      for await (const _ of p.stream({
+        ...request,
+        tools: [{ name: "x", description: "x", inputSchema: {} }],
+      }));
+    }).rejects.toThrow(/runs through its engine/);
   });
 });

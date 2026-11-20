@@ -144,7 +144,13 @@ export class KnowledgeBackup {
       );
       const path = join(dir, `${c.id}.jsonl`);
       const file = createWriteStream(path);
+      // A write that fails between two awaits is this backup's error, not the server's (3.9.8).
+      let failed: Error | undefined;
+      file.on("error", (e) => {
+        failed ??= e;
+      });
       const write = async (line: unknown) => {
+        if (failed) throw failed;
         if (!file.write(`${JSON.stringify(line)}\n`)) await once(file, "drain");
       };
       const { num, ...collection } = c;
@@ -190,7 +196,8 @@ export class KnowledgeBackup {
         }
       }
       file.end();
-      await once(file, "close");
+      if (!file.closed) await once(file, "close");
+      if (failed) throw failed;
       out.push({ name: `knowledge/${c.id}.jsonl`, path, size: (await stat(path)).size });
     }
     return out;

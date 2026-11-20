@@ -284,6 +284,46 @@ class RedGiantClient {
     return r['sessionId'] as String? ?? '';
   }
 
+  /// `POST /api/vault-import/text` (3.9.8): a password export into the keychain; only counts and
+  /// names come back. A closed keychain throws with the code `vault_closed`.
+  Future<({int added, int skipped})> importPasswordText(String text) async {
+    final r = _object(await _post('/api/vault-import/text', {'text': text}));
+    return (
+      added: (r['added'] as num?)?.toInt() ?? 0,
+      skipped: (r['skipped'] as num?)?.toInt() ?? 0,
+    );
+  }
+
+  /// `POST /api/sessions/:id/import-passwords` (3.9.8): an agent's import_passwords proposal,
+  /// confirmed by the person; the server destroys the file after.
+  Future<int> importProposedPasswords(String sessionId, String callId) async {
+    final r = _object(
+      await _post('/api/sessions/${Uri.encodeComponent(sessionId)}/import-passwords', {
+        'callId': callId,
+      }),
+    );
+    return (r['added'] as num?)?.toInt() ?? 0;
+  }
+
+  /// `POST /api/sessions/:id/erase-preview` (3.9.8): what «Cancella per sempre» would take.
+  Future<({int quotes, bool engine})> erasePreview(String sessionId, int seq) async {
+    final r = _object(
+      await _post('/api/sessions/${Uri.encodeComponent(sessionId)}/erase-preview', {'seq': seq}),
+    );
+    return (quotes: (r['quotes'] as num?)?.toInt() ?? 0, engine: r['engine'] == true);
+  }
+
+  /// `POST /api/sessions/:id/erase` (3.9.8): the message erased for good; the seqs erased.
+  Future<List<int>> eraseMessage(String sessionId, int seq, {bool withQuotes = false}) async {
+    final r = _object(
+      await _post('/api/sessions/${Uri.encodeComponent(sessionId)}/erase', {
+        'seq': seq,
+        'withQuotes': withQuotes,
+      }),
+    );
+    return [for (final x in (r['seqs'] as List? ?? const [])) (x as num).toInt()];
+  }
+
   /// `POST /api/projects/:id/restore` (p3.5.3): an archived project works again.
   Future<void> restoreProject(String projectId) =>
       _call('POST', '/api/projects/${Uri.encodeComponent(projectId)}/restore', const {});
@@ -1247,6 +1287,13 @@ class RedGiantClient {
   Future<List<DeviceRow>> devices() async => [
     for (final d in _array(await _get('/api/devices'))) DeviceRow.fromJson(d),
   ];
+
+  /// `POST /api/devices/forget-unused` (3.9.8): every device that never signed in once (but
+  /// those paired in the last minutes); how many went.
+  Future<int> forgetUnusedDevices() async {
+    final r = _object(await _post('/api/devices/forget-unused', const {}));
+    return (r['removed'] as num?)?.toInt() ?? 0;
+  }
 
   /// `DELETE /api/devices/:id`: that device is signed out at once.
   Future<void> revokeDevice(String id) =>

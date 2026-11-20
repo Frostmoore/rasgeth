@@ -373,6 +373,25 @@ const Input = z.object({
   agent_id: z.string().min(1).optional(),
 });
 
+/**
+ * The agent an `agent_id` names, among those the caller may see: its id, «me»/«self», its name
+ * (any case) or the start of its id before the "_" ("god" for "god_x1"), when only one fits.
+ */
+export function resolveAgent(
+  named: string,
+  agents: readonly string[],
+  self: string | null | undefined,
+  name: (id: string) => string,
+): string | null {
+  if (agents.includes(named)) return named;
+  const n = named.trim().toLowerCase();
+  if (self && ["me", "self", "myself", "i"].includes(n)) return self;
+  const byName = agents.filter((id) => name(id).trim().toLowerCase() === n);
+  if (byName.length === 1) return byName[0] ?? null;
+  const byPrefix = agents.filter((id) => id.toLowerCase().startsWith(`${n}_`));
+  return byPrefix.length === 1 ? (byPrefix[0] ?? null) : null;
+}
+
 /** `search_conversations`: «what we already did», for an agent. */
 export function searchConversationsTool(host: EchoToolHost): Tool<z.infer<typeof Input>> {
   return {
@@ -400,17 +419,23 @@ export function searchConversationsTool(host: EchoToolHost): Tool<z.infer<typeof
     run: async ({ query, limit, agent_id }, ctx) => {
       const index = host.index();
       if (!index) return { content: "The conversations' search is not available.", isError: true };
-      const agents = host.readers();
-      if (agent_id && !agents.includes(agent_id))
+      // Its own conversations are always the caller's to see ("yours").
+      const readable = host.readers();
+      const agents =
+        ctx.agentId && !readable.includes(ctx.agentId) ? [...readable, ctx.agentId] : readable;
+      // An agent may be named by its id, its name or its kind's alias (3.9.8, Coder: God asked
+      // for agent_id "god" and was refused its own conversations).
+      const wanted = agent_id ? resolveAgent(agent_id, agents, ctx.agentId, host.agentName) : null;
+      if (agent_id && !wanted)
         return {
-          content: `You may not see the conversations of agent ${agent_id}.`,
+          content: `You may not see the conversations of agent ${agent_id}. Agents you may see: ${agents.map((id) => `${host.agentName(id)} (${id})`).join(", ")}.`,
           isError: true,
         };
       const hits = await index.search(ctx.ownerId, {
         query,
         agents,
         limit: limit ?? 8,
-        ...(agent_id ? { agentId: agent_id } : {}),
+        ...(wanted ? { agentId: wanted } : {}),
         exceptSession: ctx.sessionId,
       });
       if (hits.length === 0) return `No past conversation has «${query}».`;

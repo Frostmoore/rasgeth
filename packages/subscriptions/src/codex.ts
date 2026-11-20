@@ -7,7 +7,7 @@
 // This is the only file that knows the protocol. Dynamic tools are an experimental part of it: if
 // they change, only this file needs fixing.
 import { type ChildProcessWithoutNullStreams, spawn } from "node:child_process";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { delimiter, join } from "node:path";
 import { createInterface } from "node:readline";
@@ -15,9 +15,12 @@ import type { Engine, EngineTurn } from "@redgiant/agent";
 import type { AssistantPart, MessageMetrics } from "@redgiant/protocol";
 import { PRODUCT_NAME } from "@redgiant/protocol";
 import {
+  type Completion,
+  type CompletionRequest,
   type ModelInfo,
   type Provider,
   ProviderError,
+  type StreamEvent,
   type SubscriptionWindow,
 } from "@redgiant/providers";
 import { windowsBasics } from "./tools.js";
@@ -79,12 +82,17 @@ class CodexConnection {
       });
       this.proc = proc;
       proc.stderr.resume();
-      proc.on("exit", () => {
-        this.proc = undefined;
+      const gone = (why: string) => {
+        if (this.proc === proc) this.proc = undefined;
         this.ready = undefined;
-        for (const p of this.pending.values()) p.ko(new ProviderError("Codex stopped", true));
+        for (const p of this.pending.values()) p.ko(new ProviderError(why, true));
         this.pending.clear();
-      });
+      };
+      proc.on("exit", () => gone("Codex stopped"));
+      // Codex that cannot start, or a write after it ended, fails its requests (3.9.8): an
+      // 'error' nobody listened to stopped the whole server.
+      proc.on("error", (err) => gone(`Codex could not start: ${err.message}`));
+      proc.stdin.on("error", () => {});
       createInterface({ input: proc.stdout }).on("line", (line) => this.receive(line));
       await this.request("initialize", {
         clientInfo: { name: "redgiant", title: PRODUCT_NAME, version: "2" },
@@ -219,10 +227,18 @@ export class CodexEngine implements Engine {
   readonly id = CHATGPT_SUBSCRIPTION;
   onLimits: ((w: SubscriptionWindow[]) => void) | undefined;
   private readonly loaded = new Set<string>();
+  /**
+   * The tools each thread was started with (3.9.8): Codex takes dynamic tools only at
+   * `thread/start` (never at `thread/resume` or `turn/start`). Kept in CODEX_HOME, so a thread
+   * resumed after a restart is still known.
+   */
+  private declared: Map<string, string[]> | undefined;
   /** The turn waiting for each thread's dynamic tool calls, and how it records a message. */
   private readonly turns = new Map<string, { t: EngineTurn; say: (m: Said) => Promise<void> }>();
   /** Each model's context window as Codex last said it (the catalogue knows none of them). */
   private readonly windows = new Map<string, number>();
+  /** Turns that are one answer outside any session (`once`): their thread is never kept. */
+  private readonly oneShots = new WeakSet<EngineTurn>();
 
   constructor(
     private readonly conn: CodexConnection,
@@ -307,14 +323,57 @@ export class CodexEngine implements Engine {
     };
   }
 
+  private get declaredFile(): string {
+    return join(this.o.home, "rasgeth-thread-tools.json");
+  }
+
+  private async declaredMap(): Promise<Map<string, string[]>> {
+    if (this.declared) return this.declared;
+    const read = await readFile(this.declaredFile, "utf8")
+      .then((x) => JSON.parse(x) as Record<string, string[]>)
+      .catch(() => ({}));
+    this.declared ??= new Map(Object.entries(read));
+    return this.declared;
+  }
+
+  /** Writes down the tools a thread started with (the newest 500 threads). */
+  private async remember(threadId: string, names: string[]): Promise<void> {
+    const map = await this.declaredMap();
+    map.delete(threadId);
+    map.set(threadId, names);
+    while (map.size > 500) map.delete(map.keys().next().value as string);
+    await writeFile(this.declaredFile, JSON.stringify(Object.fromEntries(map))).catch(() => {});
+  }
+
+  /** Whether a thread has these tools: only those it was started with (3.9.8). */
+  addable(resume: string | undefined, names: readonly string[]): boolean {
+    // A new thread starts at the next turn with every tool.
+    if (!resume) return true;
+    const had = this.declared?.get(resume);
+    return had !== undefined && names.every((n) => had.includes(n));
+  }
+
   async turn(t: EngineTurn): Promise<{ resume: string; stopReason: "end_turn" | "aborted" }> {
     await this.conn.start();
+    // What each thread was started with: `addable` reads it during the turn.
+    await this.declaredMap();
     const native = this.o.nativeWebSearch !== false;
     // Codex's own image tool (2026-11-19) only when the conversation lets it (`sessionNative`):
     // otherwise pictures go through Rasgeth's image_generation.
     const drawsItself = t.native?.includes("image") === true;
-    // With Codex's own search, RedGiant's is not offered too (one way to search).
-    const tools = t.tools
+    // With Codex's own search, RedGiant's is not offered too (one way to search). The tools left
+    // aside are declared too (3.9.8), marked off: Codex takes its tools only when a thread starts,
+    // so one switched on later is callable at the next step; until then the session refuses it.
+    const ours = new Set(t.tools.map((d) => d.name));
+    const tools = [
+      ...t.tools,
+      ...(t.aside ?? [])
+        .filter((d) => !ours.has(d.name))
+        .map((d) => ({
+          ...d,
+          description: `(Off until switched on with request_tool.) ${d.description}`,
+        })),
+    ]
       .filter((d) => !native || d.name !== "web_search")
       .map((d) => ({
         type: "function",
@@ -349,6 +408,11 @@ export class CodexEngine implements Engine {
       const r = await this.conn.request<{ thread: { id: string } }>("thread/start", threadParams);
       threadId = r.thread.id;
       this.loaded.add(threadId);
+      if (!this.oneShots.has(t))
+        await this.remember(
+          threadId,
+          tools.map((d) => d.name),
+        );
     }
     const id = threadId;
     // Codex reports a model request's usage (`thread/tokenUsage/updated`) only after that
@@ -555,6 +619,61 @@ export class CodexEngine implements Engine {
   }
 
   /**
+   * One answer without tools, outside any session (3.9.8): the person's classifier and the other
+   * side requests. A fresh Codex thread with no tools and one turn; the conversation goes as one
+   * prompt. Without it every classifier decision on a ChatGPT subscription was a "no".
+   */
+  async once(req: CompletionRequest, signal?: AbortSignal): Promise<Completion> {
+    const text = req.messages
+      .map((m) => {
+        const words = (m.parts as { type: string; text?: string }[])
+          .flatMap((p) => (p.type === "text" && p.text ? [p.text] : []))
+          .join("\n");
+        return req.messages.length > 1
+          ? `${m.role === "user" ? "User" : "Assistant"}: ${words}`
+          : words;
+      })
+      .join("\n\n");
+    let answer = "";
+    let metrics: MessageMetrics | undefined;
+    const t: EngineTurn = {
+      text,
+      images: [],
+      system: req.system,
+      tools: [],
+      model: {
+        provider: CHATGPT_SUBSCRIPTION,
+        model: req.model,
+        ...(req.effort && { effort: req.effort }),
+      } as EngineTurn["model"],
+      resume: undefined,
+      signal,
+      runTool: async () => ({ content: "No tools here.", isError: true }),
+      onMessage: async (m) => {
+        for (const p of m.parts) if (p.type === "text") answer += p.text;
+        metrics = m.metrics;
+      },
+    };
+    this.oneShots.add(t);
+    const r = await this.turn(t);
+    if (r.stopReason === "aborted") throw new ProviderError("ChatGPT subscription: aborted", false);
+    const m = metrics ?? this.metrics(r.resume, req.model);
+    return {
+      message: { role: "assistant", parts: answer ? [{ type: "text", text: answer }] : [] },
+      stopReason: "end_turn",
+      usage: {
+        inputTokens: m.inputTokens,
+        cachedReadTokens: m.cachedReadTokens,
+        cacheWriteTokens: m.cacheWriteTokens,
+        outputTokens: m.outputTokens,
+      },
+      metrics: m,
+      model: req.model,
+      provider: CHATGPT_SUBSCRIPTION,
+    };
+  }
+
+  /**
    * A question from Codex through Rasgeth's `ask_user` (3.9.5): announced in the log like any tool
    * call and run as one, so the person gets the same card on every channel and the turn waits
    * for them under the questions' own rules (no answer is never an answer). Undefined: this agent
@@ -688,12 +807,20 @@ export class ChatgptSubscriptionProvider implements Provider {
     };
   }
 
-  // biome-ignore lint/correctness/useYield: a session on a subscription never streams here.
-  async *stream(): AsyncIterable<never> {
-    throw new ProviderError(
-      "A ChatGPT subscription runs through its engine, not as a stream",
-      false,
-    );
+  /**
+   * Sessions run through the engine (`turn`); a request without tools (the classifier, a title)
+   * gets one answer from it (3.9.8). A request with tools never streams here.
+   */
+  async *stream(req: CompletionRequest, signal?: AbortSignal): AsyncIterable<StreamEvent> {
+    if (req.tools.length > 0)
+      throw new ProviderError(
+        "A ChatGPT subscription runs through its engine, not as a stream",
+        false,
+      );
+    const completion = await this.engine.once(req, signal);
+    for (const p of completion.message.parts)
+      if (p.type === "text") yield { type: "text_delta", text: p.text };
+    yield { type: "done", completion };
   }
 
   /** The plan's windows: the last update from the turns, or a fresh reading. */

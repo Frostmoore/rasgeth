@@ -12,6 +12,8 @@ dependencies:
   audioplayers: ^6.8.1
   bonsoir: ^7.1.6
   cryptography: ^2.9.0
+  # The old Windows keystore's file, read once after the rename (DPAPI, lib/api/legacy_data.dart).
+  ffi: ^2.2.0
   file_picker: ^13.3.3
   flutter:
     sdk: flutter
@@ -39,6 +41,7 @@ dependencies:
   url_launcher: ^6.3.3
   # Pinned (BSD-3, flutter.dev): Android, iOS, macOS (WKWebView).
   webview_flutter: 4.14.1
+  win32: ^6.4.0
   # The person's terminal (G42.5): the page's xterm.js drawn natively, pinned (MIT, TerminalStudio).
   xterm: 4.0.0
   # WebView2 on Windows, drawn into Flutter (composition), pinned (BSD-3, tomars.tech).

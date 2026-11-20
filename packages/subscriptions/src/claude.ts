@@ -5,15 +5,20 @@
 //
 // This is the only file that knows the SDK. Its usage method is marked experimental: if it changes,
 // only `limits` here needs fixing.
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { dirname } from "node:path";
 import type { Engine, EngineTurn } from "@redgiant/agent";
 import type { AssistantPart, MessageMetrics, ModelSpec } from "@redgiant/protocol";
 import {
   anthropicModel,
+  type Completion,
+  type CompletionRequest,
   catalogModel,
   catalogModels,
   type ModelInfo,
   type Provider,
   ProviderError,
+  type StreamEvent,
   type SubscriptionWindow,
 } from "@redgiant/providers";
 import { z } from "zod";
@@ -28,7 +33,9 @@ export interface ClaudeSdk {
   query(o: { prompt: AsyncIterable<unknown>; options: Record<string, unknown> }): AsyncIterable<
     Record<string, unknown>
   > & {
-    usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET?(): Promise<unknown>;
+    usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET?(o?: {
+      skipBehaviors?: boolean;
+    }): Promise<unknown>;
     interrupt?(): Promise<void>;
     supportedModels?(): Promise<unknown>;
   };
@@ -63,6 +70,14 @@ export interface ClaudeSubscriptionOptions {
    * searches with the subscription and cites its sources. Default on.
    */
   nativeWebSearch?: boolean;
+  /**
+   * The plan's limits read on their own when none is known or the last is old (3.9.8): an engine
+   * started without a message answers the usage request (no model call). Off in tests that count
+   * the engine's runs.
+   */
+  readPlan?: boolean;
+  /** Where the last windows are kept, so a restart does not leave the header empty (3.9.8). */
+  limitsFile?: string;
 }
 
 /** RedGiant's search tool, done by the engine itself when its own search is on. */
@@ -194,7 +209,71 @@ export class ClaudeEngine implements Engine {
       .catch(() => {});
   }
 
-  async turn(t: EngineTurn): Promise<{ resume: string; stopReason: "end_turn" | "aborted" }> {
+  /** The plan's full reading (5 hours, 7 days, per-model windows such as Fable), never waited for. */
+  private readUsage(q: {
+    usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET?(o?: {
+      skipBehaviors?: boolean;
+    }): Promise<unknown>;
+  }): void {
+    const usage = q.usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET?.({
+      skipBehaviors: true,
+    });
+    if (!usage) return;
+    void Promise.race([usage, new Promise((r) => setTimeout(r, 10_000).unref?.())])
+      .then((u) => {
+        const w = claudeWindows(u);
+        if (w.length) this.onLimits?.(w);
+      })
+      .catch(() => {});
+  }
+
+  /**
+   * The plan's windows read on their own (3.9.8): the engine started without a message (it makes
+   * no model call) answers the usage request and is closed at once. Empty when the plan has no
+   * readable limits (a `setup-token` token lacks the profile scope) or the engine does not answer.
+   */
+  async readPlan(timeoutMs = 15_000): Promise<SubscriptionWindow[]> {
+    const sdk = this.o.sdk ?? (await loadSdk());
+    const abort = new AbortController();
+    let release = () => {};
+    const gate = new Promise<void>((r) => {
+      release = r;
+    });
+    // The engine's input: nothing, until it is closed.
+    // biome-ignore lint/correctness/useYield: the engine's input stays empty until it is closed
+    async function* idle(): AsyncIterable<unknown> {
+      await gate;
+    }
+    try {
+      const { model: _none, ...options } = this.options(
+        { provider: CLAUDE_SUBSCRIPTION, model: "" },
+        { abortController: abort, permissionMode: "dontAsk" },
+      );
+      const q = sdk.query({ prompt: idle(), options });
+      const usage = q.usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET?.({
+        skipBehaviors: true,
+      });
+      if (!usage) return [];
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const u = await Promise.race([
+        usage,
+        new Promise<undefined>((r) => {
+          timer = setTimeout(() => r(undefined), timeoutMs);
+          timer.unref?.();
+        }),
+      ]).finally(() => clearTimeout(timer));
+      return claudeWindows(u);
+    } catch {
+      return [];
+    } finally {
+      release();
+      abort.abort();
+    }
+  }
+
+  async turn(
+    t: EngineTurn,
+  ): Promise<{ resume: string; stopReason: "end_turn" | "aborted" | "tools_added" }> {
     const sdk = this.o.sdk ?? (await loadSdk());
     const now = this.o.now ?? Date.now;
     // The SDK's tool calls reach our handlers without their tool_use id: each call takes the
@@ -252,7 +331,16 @@ export class ClaudeEngine implements Engine {
     t.signal?.addEventListener("abort", stop, { once: true });
     let session = t.resume ?? "";
     let started = now();
-    let stopReason: "end_turn" | "aborted" = "end_turn";
+    let stopReason: "end_turn" | "aborted" | "tools_added" = "end_turn";
+    // Tools joined in this turn (3.9.8): the engine's list is fixed for its run, so it stops right
+    // after these results (its PostToolUse hook ends the loop before the next model call) and the
+    // session starts the next turn with the whole list.
+    let stoppedForTools = false;
+    const afterTool = async () => {
+      if (!t.toolsAdded?.()) return { continue: true };
+      stoppedForTools = true;
+      return { continue: false, stopReason: "Tools joined: the turn goes on with them." };
+    };
     try {
       const q = sdk.query({
         prompt: prompt(),
@@ -266,6 +354,7 @@ export class ClaudeEngine implements Engine {
           // Only RedGiant's tools are allowed, and RedGiant asks its own permissions inside
           // each of them; anything else the engine would refuse without asking.
           permissionMode: "dontAsk",
+          hooks: { PostToolUse: [{ hooks: [afterTool] }] },
           // Always: every piece of the answer tells the session the engine is alive (3.5.4).
           includePartialMessages: true,
           abortController: abort,
@@ -273,8 +362,16 @@ export class ClaudeEngine implements Engine {
         }),
       });
       this.learnModels(q);
+      let askedUsage = false;
       for await (const m of q) {
         t.alive?.();
+        // The plan's windows (5 hours, 7 days, per model) once per turn, asked as soon as the engine
+        // runs (3.9.8): asked at the end, the engine was already closing and never answered, so the
+        // header stayed empty. No model call: the engine reads the plan's usage page.
+        if (!askedUsage && m.type === "system") {
+          askedUsage = true;
+          this.readUsage(q);
+        }
         if (typeof m.session_id === "string") session = m.session_id;
         // The engine summarised its own context (Claude Agent SDK "compact_boundary").
         if (m.type === "system" && (m as { subtype?: string }).subtype === "compact_boundary") {
@@ -338,24 +435,14 @@ export class ClaudeEngine implements Engine {
           continue;
         }
         if (m.type === "result") {
-          // The full reading (with per-model windows such as Fable) when the process still
-          // answers; the rate-limit events already gave 5h and 7d.
-          const usage = q.usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET?.();
-          if (usage)
-            void Promise.race([usage, new Promise((r) => setTimeout(r, 3000).unref?.())])
-              .then((u) => {
-                const w = claudeWindows(u);
-                if (w.length) this.onLimits?.(w);
-              })
-              .catch(() => {});
-          if (m.subtype !== "success") {
+          if (m.subtype !== "success" && !stoppedForTools) {
             const why = Array.isArray(m.errors)
               ? (m.errors as string[]).join("; ")
               : String(m.subtype);
             if (abort.signal.aborted) stopReason = "aborted";
             else throw new ProviderError(`Claude subscription: ${why}`, false);
           }
-          if (m.is_error === true && typeof m.result === "string") {
+          if (m.is_error === true && typeof m.result === "string" && !stoppedForTools) {
             const text = m.result;
             throw new ProviderError(
               `Claude subscription: ${text}`,
@@ -373,12 +460,131 @@ export class ClaudeEngine implements Engine {
     } finally {
       t.signal?.removeEventListener("abort", stop);
     }
+    if (stoppedForTools && stopReason === "end_turn") stopReason = "tools_added";
     return { resume: session, stopReason };
+  }
+
+  /**
+   * One answer without tools, outside any session (3.9.8): the person's classifier and the other
+   * side requests. Without it every classifier decision on a Claude subscription was a "no" (the
+   * subscription had no way to answer but a session's turn). The conversation goes as one prompt.
+   */
+  async once(req: CompletionRequest, signal?: AbortSignal): Promise<Completion> {
+    const sdk = this.o.sdk ?? (await loadSdk());
+    const now = this.o.now ?? Date.now;
+    const started = now();
+    const text = req.messages
+      .map((m) => {
+        const words = (m.parts as { type: string; text?: string }[])
+          .flatMap((p) => (p.type === "text" && p.text ? [p.text] : []))
+          .join("\n");
+        return req.messages.length > 1
+          ? `${m.role === "user" ? "User" : "Assistant"}: ${words}`
+          : words;
+      })
+      .join("\n\n");
+    async function* prompt() {
+      yield {
+        type: "user",
+        parent_tool_use_id: null,
+        message: { role: "user", content: [{ type: "text", text }] },
+      };
+    }
+    const abort = new AbortController();
+    const stop = () => abort.abort();
+    signal?.addEventListener("abort", stop, { once: true });
+    const model = { model: req.model, ...(req.effort && { effort: req.effort }) } as ModelSpec;
+    let answer = "";
+    let usage: Record<string, number> | undefined;
+    let used = req.model;
+    try {
+      const q = sdk.query({
+        prompt: prompt(),
+        options: this.options(model, {
+          systemPrompt: req.system,
+          tools: [],
+          allowedTools: [],
+          permissionMode: "dontAsk",
+          maxTurns: 1,
+          abortController: abort,
+        }),
+      });
+      for await (const m of q) {
+        if (m.type === "assistant" && m.parent_tool_use_id === null) {
+          const msg = m.message as {
+            content?: Block[];
+            usage?: Record<string, number>;
+            model?: string;
+          };
+          for (const b of msg.content ?? [])
+            if (b.type === "text" && typeof b.text === "string") answer += b.text;
+          usage = msg.usage ?? usage;
+          used = msg.model ?? used;
+        }
+        if (m.type === "rate_limit_event") {
+          const w = eventWindows(m.rate_limit_info);
+          if (w.length) this.onLimits?.(w);
+        }
+        if (m.type === "result" && (m.subtype !== "success" || m.is_error === true)) {
+          const why =
+            typeof m.result === "string" && m.result
+              ? m.result
+              : Array.isArray(m.errors)
+                ? (m.errors as string[]).join("; ")
+                : String(m.subtype);
+          throw new ProviderError(`Claude subscription: ${why}`, false);
+        }
+      }
+    } finally {
+      signal?.removeEventListener("abort", stop);
+    }
+    const metrics = metricsOf(usage, used, started, now());
+    return {
+      message: { role: "assistant", parts: answer ? [{ type: "text", text: answer }] : [] },
+      stopReason: "end_turn",
+      usage: {
+        inputTokens: usage?.input_tokens ?? 0,
+        cachedReadTokens: usage?.cache_read_input_tokens ?? 0,
+        cacheWriteTokens: usage?.cache_creation_input_tokens ?? 0,
+        outputTokens: usage?.output_tokens ?? 0,
+      },
+      metrics,
+      model: used,
+      provider: CLAUDE_SUBSCRIPTION,
+    };
   }
 }
 
-/** A `rate_limit_event`'s windows (utilisation as a fraction, reset in seconds). */
+/** The SDK's window names as ours. */
+const EVENT_WINDOWS: Record<string, [string, string]> = {
+  five_hour: ["5h", "5h"],
+  seven_day: ["7d", "7g"],
+};
+
+/**
+ * A `rate_limit_event`'s windows (utilisation as a fraction or a percentage, reset in seconds).
+ * The SDK sends one window per event (`rateLimitType`, `utilization`, `resetsAt`: 3.9.8, on Coder
+ * the header stayed empty because only the older `unifiedWindows` form was read); both are read.
+ */
 export function eventWindows(info: unknown): SubscriptionWindow[] {
+  const flat = info as
+    | { rateLimitType?: string; utilization?: number; resetsAt?: number }
+    | undefined;
+  const named = flat?.rateLimitType ? EVENT_WINDOWS[flat.rateLimitType] : undefined;
+  if (named && typeof flat?.utilization === "number") {
+    const [id, label] = named;
+    const pct = flat.utilization <= 1 ? flat.utilization * 100 : flat.utilization;
+    return [
+      {
+        id,
+        label,
+        usedPct: Math.round(pct),
+        ...(flat.resetsAt && {
+          resetsAt: new Date(flat.resetsAt * (flat.resetsAt < 1e12 ? 1000 : 1)).toISOString(),
+        }),
+      },
+    ];
+  }
   const u = (
     info as
       | { unifiedWindows?: Record<string, { utilization?: number; resetsAt?: number }> }
@@ -425,6 +631,13 @@ export function claudeWindows(r: unknown): SubscriptionWindow[] {
   return out;
 }
 
+/** A reading older than this is read again when someone looks (3.9.8). */
+const STALE_MS = 10 * 60_000;
+/** After a reading that gave nothing, the next try waits this long. */
+const RETRY_MS = 2 * 60_000;
+/** How long the first look waits for a reading on its own. */
+const FIRST_WAIT_MS = 2500;
+
 /**
  * The provider RedGiant sees: models to pick, their windows, the engine, the plan's limits.
  * It has no `stream`: sessions on it always go through the engine.
@@ -432,11 +645,50 @@ export function claudeWindows(r: unknown): SubscriptionWindow[] {
 export class ClaudeSubscriptionProvider implements Provider {
   readonly id = CLAUDE_SUBSCRIPTION;
   readonly engine: ClaudeEngine;
-  private cached: { at: number; windows: SubscriptionWindow[] } | undefined;
+  private readonly now: () => number;
+  /** When the windows were last reported (a turn or a reading); 0: never. */
+  private at = 0;
+  /** When a reading on its own was last tried, and the one running. */
+  private tried = 0;
+  private reading: Promise<void> | undefined;
+  private readonly loaded: Promise<void>;
 
-  constructor(o: ClaudeSubscriptionOptions) {
+  constructor(private readonly o: ClaudeSubscriptionOptions) {
+    this.now = o.now ?? Date.now;
     this.engine = new ClaudeEngine(o);
     this.engine.onLimits = (w) => this.merge(w);
+    this.loaded = this.load();
+  }
+
+  /** The windows the last run of the server knew (3.9.8): shown until a newer report. */
+  private async load(): Promise<void> {
+    if (!this.o.limitsFile) return;
+    try {
+      const kept = JSON.parse(await readFile(this.o.limitsFile, "utf8")) as {
+        at?: number;
+        windows?: SubscriptionWindow[];
+      };
+      if (!Array.isArray(kept.windows) || this.windows.length) return;
+      this.windows = kept.windows.filter(
+        (w) => typeof w?.id === "string" && typeof w.label === "string",
+      );
+      this.at = typeof kept.at === "number" ? kept.at : 0;
+    } catch {
+      // Nothing kept yet.
+    }
+  }
+
+  private async save(): Promise<void> {
+    const file = this.o.limitsFile;
+    if (!file) return;
+    try {
+      await mkdir(dirname(file), { recursive: true });
+      const tmp = `${file}.tmp`;
+      await writeFile(tmp, JSON.stringify({ at: this.at, windows: this.windows }));
+      await rename(tmp, file);
+    } catch {
+      // Only a convenience for the next start.
+    }
   }
 
   /**
@@ -468,23 +720,65 @@ export class ClaudeSubscriptionProvider implements Provider {
     };
   }
 
-  // biome-ignore lint/correctness/useYield: a session on a subscription never streams here.
-  async *stream(): AsyncIterable<never> {
-    throw new ProviderError(
-      "A Claude subscription runs through its engine, not as a stream",
-      false,
-    );
+  /**
+   * Sessions run through the engine (`turn`); a request without tools (the classifier, a title)
+   * gets one answer from it (3.9.8). A request with tools never streams here.
+   */
+  async *stream(req: CompletionRequest, signal?: AbortSignal): AsyncIterable<StreamEvent> {
+    if (req.tools.length > 0)
+      throw new ProviderError(
+        "A Claude subscription runs through its engine, not as a stream",
+        false,
+      );
+    const completion = await this.engine.once(req, signal);
+    for (const p of completion.message.parts)
+      if (p.type === "text") yield { type: "text_delta", text: p.text };
+    yield { type: "done", completion };
   }
 
   private windows: SubscriptionWindow[] = [];
 
   /**
-   * The plan's limits as the last turn left them: the SDK knows them only after a real request
-   * in the same process, so they come with the turns (no extra calls, no extra cost). Windows a
-   * newer report does not mention stay as they were.
+   * The plan's limits: what the turns report (their rate-limit events and the usage reading), and,
+   * with `readPlan`, a reading on its own when none is known or the last is older than
+   * {@link STALE_MS} (3.9.8: after a restart the header stayed empty until God's next turn). The
+   * answer never waits long for it: the first one waits at most {@link FIRST_WAIT_MS}, the others
+   * get the windows known and the next look gets the new ones. A window past its reset shows 0%.
    */
   async limits(): Promise<SubscriptionWindow[]> {
-    return this.windows;
+    await this.loaded;
+    const now = this.now();
+    if (
+      this.o.readPlan &&
+      !this.reading &&
+      now - this.at > STALE_MS &&
+      now - this.tried > (this.windows.length ? STALE_MS : RETRY_MS)
+    ) {
+      this.tried = now;
+      this.reading = this.engine
+        .readPlan()
+        .then((w) => {
+          if (w.length) this.merge(w);
+        })
+        .finally(() => {
+          this.reading = undefined;
+        });
+    }
+    if (!this.windows.length && this.reading) {
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      await Promise.race([
+        this.reading,
+        new Promise<void>((r) => {
+          timer = setTimeout(r, FIRST_WAIT_MS);
+          timer.unref?.();
+        }),
+      ]).finally(() => clearTimeout(timer));
+    }
+    return this.windows.map((w) => {
+      if (!w.resetsAt || Date.parse(w.resetsAt) > now) return w;
+      const { resetsAt: _past, ...rest } = w;
+      return { ...rest, usedPct: 0 };
+    });
   }
 
   private merge(fresh: SubscriptionWindow[]): void {
@@ -492,5 +786,7 @@ export class ClaudeSubscriptionProvider implements Provider {
     for (const w of fresh) byId.set(w.id, w);
     const order = (id: string) => (id === "5h" ? 0 : id === "7d" ? 1 : 2);
     this.windows = [...byId.values()].sort((a, b) => order(a.id) - order(b.id));
+    this.at = this.now();
+    void this.save();
   }
 }

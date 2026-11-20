@@ -210,6 +210,27 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
     if (mounted && list != null) setState(() => _devices = list);
   }
 
+  /// «Togli quelli mai usati» (3.9.8, as the page's Settings › Devices).
+  Future<void> _forgetUnused() async {
+    final l = AppLocalizations.of(context);
+    final ok = await askConfirm(
+      context,
+      title: l.devForgetUnusedTitle,
+      body: l.devForgetUnusedBody,
+      yes: l.devForgetUnused,
+      danger: true,
+    );
+    if (!ok || !mounted) return;
+    final n = await _try(_c!.forgetUnusedDevices);
+    final list = await _try(_c!.devices);
+    if (!mounted) return;
+    setState(() => _devices = list ?? _devices);
+    if (n != null) {
+      ScaffoldMessenger.maybeOf(context)
+          ?.showSnackBar(SnackBar(content: Text(l.devForgetUnusedDone(n))));
+    }
+  }
+
   Future<void> _renameDevice(DeviceRow d) async {
     final l = AppLocalizations.of(context);
     final t = await askText(
@@ -402,6 +423,19 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                             ],
                           ),
                         ),
+                    if (_devices?.any((d) => d.lastUsedAt == null && !d.current) ?? false)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton.icon(
+                            key: const Key('devices-forget-unused'),
+                            onPressed: _forgetUnused,
+                            icon: RgIcon(RgIcons.trash, size: 16, color: c.err),
+                            label: Text(l.devForgetUnused, style: TextStyle(color: c.err)),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
                 // ---- this device's notifications ----

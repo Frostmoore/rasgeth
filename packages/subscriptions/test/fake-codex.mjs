@@ -244,6 +244,24 @@ createInterface({ input: process.stdin }).on("line", (line) => {
         });
         return;
       }
+      if (m.params.input[0].text.startsWith("May it")) {
+        // A request without tools (the person's classifier, 3.9.8): one answer, then done.
+        const at = { threadId: m.params.threadId, turnId: "tu-1" };
+        send({
+          method: "item/completed",
+          params: {
+            ...at,
+            completedAtMs: 0,
+            item: { type: "agentMessage", id: "i8", text: '{"decision":"allow","reason":"ok"}' },
+          },
+        });
+        send(usage(300, 0, 12));
+        send({
+          method: "turn/completed",
+          params: { ...at, turn: { id: "tu-1", status: "completed" } },
+        });
+        return;
+      }
       if (m.params.input[0].text === "fail") {
         send({
           method: "turn/completed",

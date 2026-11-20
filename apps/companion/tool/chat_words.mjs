@@ -8,7 +8,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fillProduct } from "./product.mjs";
 
-const KEYS = `permAsks permWhy permDetails permTool permRawReasons showLess showAllInput allow thisChat
+const KEYS = `permAsks permWhy permDetails permTool permRawReasons showLess showAllInput allow allowWork
+allowWorkHint thisChat
 thisChatHint always alwaysHint deny denyWhy denyWhyPlaceholder criticalTitle criticalWhat toolReqTitle
 toolReqWhy toolReqHint toolReqSession toolReqAlways toolReqNo agTitle agCap agCapHint agHint agAllowCap
 agAllow agDeny manyAnswers otherAnswer proposedPlan waitingAnswer notAnswered planFeedback planApprove
@@ -21,7 +22,11 @@ writeTo stopWhenBack sendQueued interrupt paBadge paChatReadOnly paRestore impCh
 viaVoiceHint viaArtifact viaArtifactHint canvasOpened canvasShown boardOpen boardWaiting boardDone fileSave
 canvasOpen chSecretTitle chSecretText chSecretFound chSecretKind_key chSecretKind_password
 chSecretKind_code chSecretKind_card chSecretKind_iban chSecretBack chSecretSend
-chSecretVault attachmentOpen toBottom thinking seeAttachments pastedOpen pastedAsText remove close
+chSecretVault chSecretKind_export pwOne pwMany pwExportTitle pwExportText pwExportVault
+pwExportWithout pwExportWithoutNote pwExportAnyway pwExportAnywayTitle pwExportAnywayText pwExportAnywayYes
+pwImported pwImportClosed pwImportFailed pwProposal pwProposalButton pwProposalAsk pwProposalText
+pwProposalYes pwProposalDone eraseForever eraseTitle eraseText eraseTextEngine eraseQuotes eraseYes
+eraseDone eraseBusy attachmentOpen toBottom thinking seeAttachments pastedOpen pastedAsText remove close
 pastedSize copy copied startConversation subAsks tooMany acpKind_read acpKind_edit acpKind_delete
 acpKind_move acpKind_search acpKind_execute acpKind_think acpKind_fetch acpKind_switch_mode acpKind_other
 findVia_everything findVia_spotlight findVia_locate findVia_walk findVia_path findVia_container findTook

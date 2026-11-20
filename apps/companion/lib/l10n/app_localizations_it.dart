@@ -10900,4 +10900,165 @@ class AppLocalizationsIt extends AppLocalizations {
   String saveTooBigPhone(String name, String size) {
     return '$name è troppo grande per salvarlo dal telefono ($size): salvalo dal computer';
   }
+
+  @override
+  String get cvAllowWork => 'Consenti sempre per questo lavoro';
+
+  @override
+  String get cvAllowWorkHint =>
+      'Consenti lo stesso tipo di comando sulla stessa macchina senza chiederlo più, per il resto del lavoro di questa conversazione';
+
+  @override
+  String get cvChSecretKindExport => 'un\'esportazione di password';
+
+  @override
+  String get cvPwOne => '1 password';
+
+  @override
+  String cvPwMany(String n) {
+    return '$n password';
+  }
+
+  @override
+  String get cvPwExportTitle => 'Questa è un\'esportazione di password';
+
+  @override
+  String cvPwExportText(String what) {
+    return 'Nel messaggio ci sono $what esportate da un gestore di password. In una conversazione non vanno: le terrebbero il modello, il registro, la ricerca e la trascrizione del motore.';
+  }
+
+  @override
+  String get cvPwExportVault => 'Mettile nel Portachiavi';
+
+  @override
+  String get cvPwExportWithout => 'Invia senza';
+
+  @override
+  String get cvPwExportWithoutNote => '«Invia senza» manda le tue parole senza l\'esportazione.';
+
+  @override
+  String get cvPwExportAnyway => 'Invia comunque';
+
+  @override
+  String cvPwExportAnywayTitle(String what) {
+    return 'Mandare $what all\'agente?';
+  }
+
+  @override
+  String cvPwExportAnywayText(String what) {
+    return '$what arriveranno al modello e resteranno nel registro della conversazione, nella ricerca e nella trascrizione del motore. Fallo solo se ne sei sicuro.';
+  }
+
+  @override
+  String cvPwExportAnywayYes(String what) {
+    return 'Invia $what';
+  }
+
+  @override
+  String cvPwImported(String added, String skipped) {
+    return 'Nel Portachiavi: $added nuove, $skipped c\'erano già.';
+  }
+
+  @override
+  String get cvPwImportClosed =>
+      'Il Portachiavi è chiuso: non ho importato niente. Aprilo in Impostazioni › Portachiavi e riprova.';
+
+  @override
+  String cvPwImportFailed(String error) {
+    return 'Non ho importato niente: $error';
+  }
+
+  @override
+  String cvPwProposal(String file) {
+    return 'Propone di mettere nel tuo Portachiavi le password di $file.';
+  }
+
+  @override
+  String get cvPwProposalButton => 'Mettile nel Portachiavi';
+
+  @override
+  String cvPwProposalAsk(String file) {
+    return 'Mettere nel Portachiavi le password di $file?';
+  }
+
+  @override
+  String get cvPwProposalText =>
+      'Vanno nel tuo Portachiavi senza che l\'agente le veda; poi il file viene distrutto.';
+
+  @override
+  String get cvPwProposalYes => 'Importa e distruggi il file';
+
+  @override
+  String cvPwProposalDone(String added, String file) {
+    return '$added password di $file sono nel Portachiavi; il file è distrutto.';
+  }
+
+  @override
+  String get cvEraseForever => 'Cancella per sempre';
+
+  @override
+  String get cvEraseTitle => 'Cancellare per sempre questo messaggio?';
+
+  @override
+  String get cvEraseText =>
+      'Sparisce dal registro della conversazione, dalla ricerca, dal ritratto e da quello che l\'agente ne ricorda. Non si può annullare.';
+
+  @override
+  String get cvEraseTextEngine =>
+      'Sparisce dal registro della conversazione, dalla ricerca, dal ritratto, da quello che l\'agente ne ricorda e dalla trascrizione del motore. Non si può annullare.';
+
+  @override
+  String cvEraseQuotes(String n) {
+    return 'Cancella anche $n risposte e risultati dell\'agente che lo riportano';
+  }
+
+  @override
+  String get cvEraseYes => 'Cancella per sempre';
+
+  @override
+  String cvEraseDone(String n) {
+    return 'Cancellato per sempre ($n).';
+  }
+
+  @override
+  String get cvEraseBusy => 'L\'agente sta lavorando: fermalo o aspetta che finisca, poi riprova.';
+
+  @override
+  String get pairAgain => 'Abbina di nuovo';
+
+  @override
+  String get statusPairAgain => 'da abbinare di nuovo';
+
+  @override
+  String pairAgainTitle(String name) {
+    return 'Abbina di nuovo $name';
+  }
+
+  @override
+  String pairAgainBody(String name) {
+    return 'Questo dispositivo non ha più la sua chiave per $name. Scrivi la password: il server resta nell\'elenco con le sue impostazioni e torna a funzionare.';
+  }
+
+  @override
+  String get pairAgainNote =>
+      'Questo dispositivo non ha più la sua chiave per questo server: abbinalo di nuovo con la password, senza toglierlo.';
+
+  @override
+  String get errKeystore =>
+      'Questo computer non è riuscito a salvare la chiave di accesso nel suo portachiavi, quindi l\'abbinamento è stato annullato e sul server non resta un dispositivo in più. Riprova; se succede ancora, riavvia il computer e riprova.';
+
+  @override
+  String get devForgetUnused => 'Togli quelli mai usati';
+
+  @override
+  String get devForgetUnusedTitle => 'Togliere i dispositivi mai usati?';
+
+  @override
+  String get devForgetUnusedBody =>
+      'Vanno via tutti i dispositivi che non hanno mai fatto un accesso (per esempio un\'app che non è riuscita a tenere la sua chiave). Restano quelli abbinati negli ultimi dieci minuti: potrebbero collegarsi proprio adesso.';
+
+  @override
+  String devForgetUnusedDone(int count) {
+    return 'Dispositivi tolti: $count.';
+  }
 }

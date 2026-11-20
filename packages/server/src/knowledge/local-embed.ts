@@ -378,6 +378,11 @@ export class LocalEmbedServers {
     };
     proc.stdout?.on("data", keep);
     proc.stderr?.on("data", keep);
+    // A program that cannot start is this job's failure, never the server's end (3.9.8).
+    let failed: Error | undefined;
+    proc.on("error", (err) => {
+      failed = err;
+    });
     const base = `http://127.0.0.1:${port}`;
     const running: Running = {
       key: `${id}:${gpu}`,
@@ -389,6 +394,8 @@ export class LocalEmbedServers {
     this.running.set(role, running);
     // Loading a model of a few hundred MB takes seconds; four minutes covers slow disks.
     for (let i = 0; i < 480; i++) {
+      if (failed)
+        throw new JobFailure("engine_stopped", `llama.cpp could not start: ${failed.message}`);
       if (proc.exitCode !== null)
         throw new JobFailure("engine_stopped", `llama.cpp stopped: ${log.slice(-5).join(" | ")}`);
       const ok = await fetch(`${base}/health`, { signal: AbortSignal.timeout(1000) }).then(

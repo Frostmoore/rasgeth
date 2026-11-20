@@ -120,7 +120,38 @@ const texts = [
   `https://example.com/hook?x=${GHP}&y=1`,
   "la chiave è Ab3dE5fG7hJ9kL1mN3pQ5rS7tU",
   "password: hunter22 https://example.com",
+  // Password managers' exports (3.9.8): one span with its rows. Generated fakes only.
+  ...exports(),
 ];
+
+/** Exports of each kind and look-alikes that are not, with generated values only. */
+function exports() {
+  const fake = (i) => `Fk${(i * 7919).toString(36)}#Qz${i % 10}x`;
+  const site = (i) => `site${i}.example.com`;
+  const rows = (n, row) => Array.from({ length: n }, (_, i) => row(i));
+  return [
+    ["folder,favorite,type,name,notes,fields,reprompt,login_uri,login_username,login_password,login_totp", ...rows(3, (i) => `,,login,Site ${i},,,0,https://${site(i)}/,u${i}@example.com,${fake(i)},`)].join("\n"),
+    ["name,website,login,password,secondary_login,notes", ...rows(3, (i) => `Site ${i},https://${site(i)},u${i},${fake(i)},,`)].join("\n"),
+    `ecco le password\n${["name,url,username,password", ...rows(4, (i) => `${site(i)},https://${site(i)}/,u${i},${fake(i)}`)].join("\r\n")}\ngrazie`,
+    ['"url","username","password","httpRealm","formActionOrigin","guid"', ...rows(2, (i) => `"https://${site(i)}","u${i}","${fake(i)}",,"https://${site(i)}","{g${i}}"`)].join("\n"),
+    ['"Group","Title","Username","Password","URL","Notes"', ...rows(2, (i) => `"Root","Site ${i}","u${i}","${fake(i)}","https://${site(i)}",""`)].join("\n"),
+    ["sito;utente;password", ...rows(3, (i) => `${site(i)};u${i};${fake(i)}`)].join("\n"),
+    JSON.stringify({ encrypted: false, items: rows(2, (i) => ({ name: `S${i}`, login: { username: `u${i}`, password: fake(i), uris: [{ uri: `https://${site(i)}` }] } })) }, null, 2),
+    JSON.stringify({ accounts: [{ vaults: [{ items: rows(2, (i) => ({ overview: { title: `S${i}` }, details: { loginFields: [{ designation: "password", value: fake(i) }] } })) }] }] }),
+    `<?xml version="1.0"?>\n<KeePassFile><Root>${rows(2, (i) => `<Entry><String><Key>Title</Key><Value>S${i}</Value></String><String><Key>Password</Key><Value>${fake(i)}</Value></String></Entry>`).join("")}</Root></KeePassFile>`,
+    rows(4, (i) => `${site(i)} u${i}@example.com ${fake(i)}`).join("\n"),
+    rows(3, (i) => `Banca ${i}\tutente${i}\t${fake(i)}`).join("\n"),
+    `prima riga\n${rows(3, (i) => `${site(i)} u${i}@example.com ${fake(i)}`).join("\n")}\n\npassword: hunter22`,
+    // Not exports.
+    ["date,amount,description", ...rows(4, (i) => `2026-01-0${i + 1},12.50,coffee ${i}`)].join("\n"),
+    ["name,email,role", ...rows(3, (i) => `Person ${i},p${i}@example.com,admin`)].join("\n"),
+    "the file has these columns: name,url,username,password",
+    rows(4, (i) => `192.168.1.${i} GET example.com/api/v1/items 200 ${12 + i}ms`).join("\n"),
+    JSON.stringify({ smtp: { host: "mail.example.com", user: "me", password: "x" } }),
+    "example.com Mario Rossi\nexample.org Anna Bianchi\nexample.net Luca Verdi",
+    "core.example.com v1.2.3 2026-11-01\napi.example.com v2.0.0 2026-11-02\nweb.example.com v3.1.4 2026-11-03",
+  ];
+}
 
 const out = texts.map((text) => ({
   text,

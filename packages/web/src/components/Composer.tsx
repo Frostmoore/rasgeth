@@ -1,6 +1,14 @@
-import { findSecrets, hideSecrets, type ImagePart, type SecretSpan } from "@redgiant/protocol";
+import {
+  findSecrets,
+  hideSecrets,
+  type ImagePart,
+  passwordExportRows,
+  type SecretSpan,
+  withoutPasswordExports,
+} from "@redgiant/protocol";
 import type { ComponentChildren } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
+import { ApiError } from "../api.js";
 import { explain } from "../explain.js";
 import { t } from "../i18n.js";
 import {
@@ -15,6 +23,7 @@ import {
   IconStop,
 } from "../icons.js";
 import { getApi, platformInfo } from "../state.js";
+import { askConfirm } from "./dialogs.js";
 import { lazy } from "./lazy.js";
 import { Acts } from "./SettingsKit.js";
 import { Modal } from "./ui.js";
@@ -315,10 +324,80 @@ export function Composer({
   // keychain; the server blanks any that gets through (Telegram and the other chats).
   const [held, setHeld] = useState<SecretSpan[] | null>(null);
   const [vaulting, setVaulting] = useState(false);
+  // A password manager's export (3.9.8), in the words or in a pasted or attached text: held,
+  // with the way to the keychain, «Send without» and, behind a second question, «Send anyway».
+  const [exportHeld, setExportHeld] = useState<number | null>(null);
+  const textFiles = (list: Attachment[]) =>
+    list.flatMap((f) => (f.kind === "text" || f.kind === "pasted" ? [f.content] : []));
+  const howMany = (n: number) => (n === 1 ? t("pwOne") : t("pwMany", { n: String(n) }));
+  /** The words and the attachments without the exports; null when nothing is left to send. */
+  const withoutExports = (mark: string): { body: string; list: Attachment[] } | null => {
+    const body = withoutPasswordExports(text, mark).text;
+    const list = files.filter(
+      (f) => !((f.kind === "text" || f.kind === "pasted") && passwordExportRows(f.content) > 0),
+    );
+    return body.replace(mark, "").trim() || list.length > 0 ? { body, list } : null;
+  };
+  const sendWithout = async (mark: string) => {
+    setExportHeld(null);
+    const rest = withoutExports(mark);
+    if (!rest) {
+      setText("");
+      setFiles([]);
+      return;
+    }
+    await send(rest.body, false, rest.list);
+  };
+  const sendExportAnyway = async (rows: number) => {
+    const what = howMany(rows);
+    const yes = await askConfirm(t("pwExportAnywayTitle", { what }), {
+      text: t("pwExportAnywayText", { what }),
+      yes: t("pwExportAnywayYes", { what }),
+      danger: true,
+    });
+    if (!yes) return;
+    setExportHeld(null);
+    await send(undefined, true);
+  };
+  const exportToVault = async () => {
+    let note = "";
+    setBusy(true);
+    try {
+      let added = 0;
+      let skipped = 0;
+      for (const part of [text, ...textFiles(files)])
+        if (passwordExportRows(part) > 0) {
+          const r = await getApi().importPasswordText(part);
+          added += r.added;
+          skipped += r.skipped;
+        }
+      note = t("pwImported", { added: String(added), skipped: String(skipped) });
+    } catch (err) {
+      setExportHeld(null);
+      setProblem(
+        err instanceof ApiError && err.code === "vault_closed"
+          ? t("pwImportClosed")
+          : t("pwImportFailed", { error: (err as Error).message }),
+      );
+      return;
+    } finally {
+      setBusy(false);
+    }
+    await sendWithout("[password export removed: now in the keychain]");
+    setProblem(note);
+  };
+
   // «Send anyway» (2026-11-19, a link taken for a secret): as written, the choice goes with it.
-  const send = async (clean?: string, secretOk = false) => {
+  const send = async (clean?: string, secretOk = false, only?: Attachment[]) => {
+    const list = only ?? files;
     if ((!text.trim() && files.length === 0 && !ready) || (running && !queues) || busy) return;
     if (clean === undefined && !secretOk) {
+      const rows =
+        passwordExportRows(text) + textFiles(files).reduce((n, c) => n + passwordExportRows(c), 0);
+      if (rows > 0) {
+        setExportHeld(rows);
+        return;
+      }
       const found = findSecrets(text);
       if (found.length > 0) {
         setHeld(found);
@@ -330,8 +409,8 @@ export function Composer({
     try {
       const body = clean ?? text;
       await onSend(
-        body.trim() || files.length === 0 ? body : t("seeAttachments"),
-        files,
+        body.trim() || list.length === 0 ? body : t("seeAttachments"),
+        list,
         ...(secretOk ? [{ secretOk: true }] : []),
       );
       for (const f of files) if (f.kind === "image") URL.revokeObjectURL(f.url);
@@ -591,6 +670,44 @@ export function Composer({
           </button>
         </div>
       </div>
+      {exportHeld !== null && (
+        <Modal title={t("pwExportTitle")} onClose={() => setExportHeld(null)}>
+          <div class="wz-panel-in ch-secret" data-testid="pw-export-held">
+            <p class="wz-lead2">{t("pwExportText", { what: howMany(exportHeld) })}</p>
+            <p class="dim">{t("pwExportWithoutNote")}</p>
+          </div>
+          <Acts>
+            <button type="button" class="wz-btn quiet" onClick={() => setExportHeld(null)}>
+              {t("chSecretBack")}
+            </button>
+            <button
+              type="button"
+              class="wz-btn quiet"
+              data-testid="pw-export-anyway"
+              onClick={() => void sendExportAnyway(exportHeld)}
+            >
+              {t("pwExportAnyway")}
+            </button>
+            <button
+              type="button"
+              class="wz-btn"
+              data-testid="pw-export-without"
+              onClick={() => void sendWithout("[password export removed]")}
+            >
+              {t("pwExportWithout")}
+            </button>
+            <button
+              type="button"
+              class="wz-btn primary"
+              data-testid="pw-export-vault"
+              disabled={busy}
+              onClick={() => void exportToVault()}
+            >
+              {t("pwExportVault")}
+            </button>
+          </Acts>
+        </Modal>
+      )}
       {held && !vaulting && (
         <Modal title={t("chSecretTitle")} onClose={() => setHeld(null)}>
           <div class="wz-panel-in ch-secret">
