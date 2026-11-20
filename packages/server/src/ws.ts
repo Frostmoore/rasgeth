@@ -624,7 +624,14 @@ export function attachWebSocket(
             if (toolRequest)
               core.toolRequestScope(msg.requestId, msg.remember ? "always" : msg.scope);
             if (
-              !core.approvals.decide(owner, msg.requestId, msg.decision, msg.reason, via(msg.via))
+              !core.approvals.decide(
+                owner,
+                msg.requestId,
+                msg.decision,
+                msg.reason,
+                via(msg.via),
+                msg.scope === "work" ? "work" : undefined,
+              )
             )
               return fail("not_found", "No such pending request");
             if (toolRequest) return;

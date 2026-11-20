@@ -17,6 +17,7 @@ import {
   findSecrets,
   type ImagePart,
   mailRequestLines,
+  offersWorkAllow,
   type PermissionRequestInfo,
   PLAN_APPROVE,
   PLAN_REVISE,
@@ -145,6 +146,8 @@ export interface GatewayHost {
       decision: "allow" | "deny",
       reason?: string,
       via?: string,
+      /** «Always allow for this job» (3.9.8). */
+      scope?: "work",
     ): boolean;
   };
   questions?: {
@@ -213,7 +216,7 @@ const IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
 /** What a chat is being asked right now: its numbered choices answer it. */
 type Prompt =
-  | { kind: "perm"; requestId: string }
+  | { kind: "perm"; requestId: string; work?: boolean }
   | { kind: "question"; requestId: string; index: number }
   | { kind: "secret"; requestId: string }
   | { kind: "skill"; requestId: string };
@@ -732,15 +735,19 @@ export class ChatBridge {
         input: input.length > 400 ? `${input.slice(0, 400)}...` : input,
       }),
     ].join("\n");
+    // «Always allow for this job» (3.9.8) third, so 1 and 2 keep their meaning.
+    const work = offersWorkAllow(info);
     const choices = [
       { id: `perm:${info.requestId}:allow`, label: s("allow") },
       { id: `perm:${info.requestId}:deny`, label: s("deny") },
+      ...(work ? [{ id: `perm:${info.requestId}:work`, label: s("allowWork") }] : []),
     ];
     this.sentOwner.set(info.requestId, ownerId);
     for (const link of await this.links(ownerId)) {
       const m = await this.ask(link.chatId, ownerId, text, choices, {
         kind: "perm",
         requestId: info.requestId,
+        ...(work && { work }),
       });
       this.sent.set(info.requestId, [
         ...(this.sent.get(info.requestId) ?? []),
@@ -966,13 +973,15 @@ export class ChatBridge {
       return true;
     }
     if (p.kind === "perm") {
-      if (numbers?.length !== 1 || (numbers[0] !== 0 && numbers[0] !== 1)) return false;
+      const n = numbers?.length === 1 ? numbers[0] : undefined;
+      if (n !== 0 && n !== 1 && !(n === 2 && p.work)) return false;
       this.o.host.approvals.decide(
         owner,
         p.requestId,
-        numbers[0] === 0 ? "allow" : "deny",
+        n === 1 ? "deny" : "allow",
         undefined,
         this.platform,
+        n === 2 ? "work" : undefined,
       );
       return true;
     }
@@ -989,14 +998,15 @@ export class ChatBridge {
   }
 
   private async onButton(owner: string, id: string) {
-    const perm = id.match(/^perm:(.+):(allow|deny)$/);
+    const perm = id.match(/^perm:(.+):(allow|deny|work)$/);
     if (perm) {
       this.o.host.approvals.decide(
         owner,
         perm[1] as string,
-        perm[2] as "allow" | "deny",
+        perm[2] === "deny" ? "deny" : "allow",
         undefined,
         this.platform,
+        perm[2] === "work" ? "work" : undefined,
       );
       return;
     }

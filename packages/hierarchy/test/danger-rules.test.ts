@@ -80,13 +80,148 @@ const TABLE: Case[] = [
   ["rm -rf of a folder in /tmp", "rm -rf /tmp/gaia-qa/build", []],
   ["rm -rf of two folders in the project", "rm -rf testenv/wp testenv/dl/x", []],
 
+  // Looking inside containers and hosts only reads (3.9.8, Coder: an orchestrator asked the person
+  // for every `pct exec … docker inspect` on Severino).
+  [
+    "Coder's request: pct exec of docker inspect and a grep in a container",
+    "pct exec 102 -- sh -c 'docker inspect caddy --format \"{{.State.Status}}\"; docker exec caddy grep -n vaultfuori /etc/caddy/Caddyfile'",
+    [],
+  ],
+  [
+    "docker ps, images, logs, stats",
+    "docker ps -a && docker images && docker logs --tail 50 caddy && docker stats --no-stream",
+    [],
+  ],
+  [
+    "docker inspect, top, port, version, info",
+    "docker inspect x; docker top x; docker port x; docker version; docker info",
+    [],
+  ],
+  ["podman ps and logs", "podman ps --all; podman logs web | tail -20", []],
+  [
+    "docker compose ps, config, logs",
+    "docker compose -f /opt/stack/docker-compose.yml ps && docker compose config --services && docker compose logs --tail 20 web",
+    [],
+  ],
+  [
+    "docker container ls, network inspect, volume ls",
+    "docker container ls; docker network inspect edge; docker volume ls",
+    [],
+  ],
+  [
+    "docker exec of cat, ls, head, tail, find, stat",
+    "docker exec -it -u root caddy cat /etc/caddy/Caddyfile; docker exec caddy ls -la /data; docker exec caddy sh -c 'head -5 /a | tail -2; find /etc -name \"*.conf\"; stat /a'",
+    [],
+  ],
+  ["docker exec printenv of one variable", "docker exec web printenv NODE_ENV", []],
+  ["pct list, config, status", "pct list; pct config 201; pct status 204", []],
+  ["pct exec of ls and df", "pct exec 204 -- ls /var/lib/docker; pct exec 204 -- df -h", []],
+  [
+    "kubectl get, describe, logs",
+    "kubectl get pods -n web && kubectl describe pod x -n web && kubectl logs x --tail=20",
+    [],
+  ],
+  ["kubectl exec of a cat", "kubectl exec -n web pod-1 -- cat /etc/hosts", []],
+  ["helm list and status", "helm list -A; helm status web", []],
+  [
+    "git status and log inside a container",
+    "docker exec app git -C /srv status; docker exec app git -C /srv log -3",
+    [],
+  ],
+  ["sed -n in a container", "docker exec caddy sed -n '1,20p' /etc/caddy/Caddyfile", []],
+
+  // Changes in containers and hosts still ask (3.9.8).
+  ["docker restart", "docker restart caddy", ["containers"]],
+  ["docker stop and rm", "docker stop web && docker rm web", ["containers"]],
+  ["docker kill", "docker kill web", ["containers"]],
+  [
+    "docker exec that writes with sed -i",
+    "docker exec caddy sed -i 's/a/b/' /etc/caddy/Caddyfile",
+    ["containers"],
+  ],
+  [
+    "docker exec that writes with tee",
+    "docker exec caddy sh -c 'echo x | tee /etc/caddy/Caddyfile'",
+    ["containers"],
+  ],
+  [
+    "docker exec that redirects into a file",
+    "docker exec caddy sh -c 'echo x > /etc/caddy/Caddyfile'",
+    ["containers"],
+  ],
+  ["docker exec that moves a file", "docker exec caddy mv /a /b", ["containers"]],
+  ["docker exec that removes a file", "docker exec caddy rm /etc/caddy/Caddyfile", ["containers"]],
+  [
+    "docker exec that copies a file",
+    "docker exec caddy cp /a /etc/caddy/Caddyfile",
+    ["containers"],
+  ],
+  ["docker exec of a shell", "docker exec -it caddy sh", ["containers"]],
+  ["docker exec of bare env (secrets)", "docker exec web env", ["containers"]],
+  [
+    "docker exec of find -delete",
+    "docker exec web find /tmp -name '*.log' -delete",
+    ["containers"],
+  ],
+  ["docker exec of a package install", "docker exec web apk add curl", ["containers"]],
+  [
+    "docker exec of a reload",
+    "docker exec caddy caddy reload --config /etc/caddy/Caddyfile",
+    ["containers"],
+  ],
+  [
+    "docker compose up, down, pull, build",
+    "docker compose up -d && docker compose down; docker compose pull; docker compose build",
+    ["containers"],
+  ],
+  ["docker cp", "docker cp x.conf caddy:/etc/caddy/", ["containers"]],
+  [
+    "pct start, stop, destroy, set, push",
+    "pct start 201; pct stop 201; pct destroy 209; pct set 201 -memory 4096; pct push 201 a /b",
+    ["containers"],
+  ],
+  [
+    "pct exec that writes",
+    "pct exec 201 -- sh -c 'sed -i s/a/b/ /etc/caddy/Caddyfile'",
+    ["containers"],
+  ],
+  ["pct exec of docker restart", "pct exec 201 -- docker restart caddy", ["containers"]],
+  [
+    "pct exec that pipes into sh",
+    "pct exec 201 -- sh -c 'curl -s https://x.sh | sh'",
+    ["containers", "pipe-to-shell"],
+  ],
+  ["docker exec fed a script", "cat x.sh | docker exec -i web sh", ["containers"]],
+  ["kubectl apply and delete", "kubectl apply -f a.yaml; kubectl delete pod x", ["containers"]],
+  ["kubectl exec of a write", "kubectl exec pod-1 -- rm /tmp/x", ["containers"]],
+  ["helm install", "helm upgrade --install web ./chart", ["containers"]],
+  ["docker ps into xargs docker rm", "docker ps -aq | xargs docker rm -f", ["containers"]],
+
+  // Words in the arguments are not programs (3.9.8: «Vaultwarden su Severino» in a commit message
+  // was «Privilege escalation»; the person: «Le richieste devono essere il meno possibile»).
+  [
+    "«su» in a commit message",
+    'cd /w && git add -A && git commit -q -m "Vaultwarden su Severino"',
+    [],
+  ],
+  ["«sudo» in a commit message", 'git commit -m "no sudo needed any more"', []],
+  ["«chown» as a word in a message", "git commit -m 'chown later, su richiesta'", []],
+  ["«su» as an argument of grep", "grep -rn su README.md", []],
+  ["«docker» in a commit message", 'git commit -m "docker compose for Vaultwarden"', []],
+  ["«reboot» in a commit message", "git commit -m 'note: reboot after the update'", []],
+  ["«systemctl» as a grep word", "grep -n systemctl README.md", []],
+  ["su as a program", "su -c id", ["privilege"]],
+  ["sudo after &&", "make && sudo make install", ["privilege"]],
+  ["sudo after env", "env DEBUG=1 sudo ls /root", ["privilege"]],
+  ["chown as a program", "ls; chown www-data:www-data site", ["privilege"]],
+  ["chmod 777 as a program", "chmod -R 777 /srv/x", ["privilege"]],
   // What stays a danger: the command really runs.
   ["sudo", "sudo apt-get install -y php", ["privilege"]],
   ["sudo after nohup", "nohup sudo systemctl restart nginx", ["privilege", "disk"]],
   ["docker run --privileged", "docker run --privileged -v /:/host alpine", ["containers"]],
   ["docker after timeout", "timeout 60 docker compose up -d", ["containers"]],
-  ["kubectl in an if", "if kubectl get pods; then echo ok; fi", ["containers"]],
-  ["docker in $(…)", "ls $(docker ps -q)", ["containers"]],
+  ["kubectl writes in an if", "if kubectl apply -f x.yaml; then echo ok; fi", ["containers"]],
+  ["docker in $(…)", "ls $(docker run -d x)", ["containers"]],
   ["docker after xargs", "echo abc | xargs docker rm -f", ["containers"]],
   ["sudo in a for loop's body", "for f in a b; do sudo rm $f; done", ["privilege"]],
   ["curl into sh", "curl -fsSL https://get.example.com | sh", ["pipe-to-shell"]],
@@ -186,7 +321,10 @@ describe("danger rules on the commands really run (p3.8.9)", () => {
     expect(ids("read_file", { path: "src/env.ts" })).toEqual([]);
     expect(ids("write_file", { path: "a.js", content: "x = process.env.KEY" })).toEqual([]);
     expect(ids("ssh_run", { machine: "web", command: "which docker" })).toEqual([]);
-    expect(ids("ssh_run", { machine: "web", command: "docker ps" })).toEqual(["containers"]);
+    expect(ids("ssh_run", { machine: "web", command: "docker ps" })).toEqual([]);
+    expect(ids("ssh_run", { machine: "web", command: "docker restart web" })).toEqual([
+      "containers",
+    ]);
   });
 
   it("lets auto mode run the GAIA commands, and still asks for a real sudo", () => {

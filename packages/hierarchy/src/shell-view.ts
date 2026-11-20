@@ -16,6 +16,9 @@
  *   no variable, no `~`, no `.git`, never the project's root itself (p3.8.9, Coder: `rm -rf x`
  *   before extracting a zip again into x). Without the folders known, it stays.
  *
+ * - containers and hosts only looked at (`docker ps`, `pct exec N -- cat …`, 3.9.8): only what they
+ *   run inside stays (`containerLook`).
+ *
  * `$(…)` and backticks are commands of their own. Interpreters' inline code (`python -c`,
  * `node -e`) stays as it is: what it runs cannot be known, so its words still count. Pure.
  */
@@ -28,6 +31,7 @@ import {
   substitutions,
   takeHeredocs,
 } from "@redgiant/protocol";
+import { CONTAINER_TOOLS, containerLook } from "./container-look.js";
 
 const SHELLS = new Set(["bash", "sh", "zsh", "dash", "ksh"]);
 /** Commands whose arguments are only words: they run nothing and read no file. */
@@ -202,7 +206,15 @@ export function commandsRun(command: string, place: ShellPlace = {}, depth = 0):
             : cwd && posix.resolve(cwd, to);
     }
     const onlyWork = name === "rm" && deletesOnlyWork(args, cwd, roots);
-    if (ws.length && !onlyWork) pipe.push(ws.join(" "));
+    // A container or host only looked at (3.9.8): what it runs inside, never the program itself.
+    const look = CONTAINER_TOOLS.has(name)
+      ? containerLook(ws.slice(ws.findIndex((w) => !/^\w+=/.test(w))))
+      : undefined;
+    if (look) {
+      for (const s of look.scripts) more(s);
+      const inner = wordsRun(look.words);
+      if (inner.length) pipe.push(inner.join(" "));
+    } else if (ws.length && !onlyWork) pipe.push(ws.join(" "));
     if (c.sep !== "|" && pipe.length) {
       lines.push(pipe.join(" | "));
       pipe = [];

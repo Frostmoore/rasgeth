@@ -10,6 +10,7 @@ import {
   type ImagePart,
   type MessageQuote,
   mailRequestLines,
+  offersWorkAllow,
   type PermissionRequestInfo,
   PLAN_APPROVE,
   PLAN_REVISE,
@@ -86,6 +87,8 @@ export interface TelegramHost {
       decision: "allow" | "deny",
       reason?: string,
       via?: string,
+      /** «Always allow for this job» (3.9.8). */
+      scope?: "work",
     ): boolean;
   };
   /** Questions and plans from the agents (ask_user, propose_plan), answered with buttons. */
@@ -767,6 +770,8 @@ export class TelegramGateway {
     const keyboard = new InlineKeyboard()
       .text(s("allow"), `perm:${info.requestId}:allow`)
       .text(s("deny"), `perm:${info.requestId}:deny`);
+    // «Always allow for this job» (3.9.8), where the page offers it too.
+    if (offersWorkAllow(info)) keyboard.row().text(s("allowWork"), `perm:${info.requestId}:work`);
     this.sentOwner.set(info.requestId, ownerId);
     for (const link of await this.links(ownerId)) {
       const m = await this.bot.api.sendMessage(link.chatId, text, { reply_markup: keyboard });
@@ -1018,20 +1023,25 @@ export class TelegramGateway {
       });
       return;
     }
-    const m = data.match(/^perm:([\w-]+):(allow|deny)$/);
+    const m = data.match(/^perm:([\w-]+):(allow|deny|work)$/);
     if (!m || !owner) {
       await ctx.answerCallbackQuery({ text: this.say(owner, "notAllowed") });
       return;
     }
+    const work = m[2] === "work";
     const ok = this.o.host.approvals.decide(
       owner,
       m[1] as string,
-      m[2] as "allow" | "deny",
+      work ? "allow" : (m[2] as "allow" | "deny"),
       undefined,
       "telegram",
+      work ? "work" : undefined,
     );
     await ctx.answerCallbackQuery({
-      text: this.say(owner, ok ? (m[2] === "allow" ? "allowed" : "denied") : "closedAlready"),
+      text: this.say(
+        owner,
+        ok ? (work ? "allowedWork" : m[2] === "allow" ? "allowed" : "denied") : "closedAlready",
+      ),
     });
   }
 

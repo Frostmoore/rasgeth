@@ -268,10 +268,12 @@ describe("evaluate", () => {
       ...s,
       danger: s.danger.map((r) => (r.id === "containers" ? { ...r, enabled: false } : r)),
     };
-    expect(evaluate("auto", call("bash", { command: "docker ps" }), s).decision).toBe("ask");
-    expect(evaluate("auto", call("bash", { command: "docker ps" }), noDocker).decision).toBe(
-      "allow",
+    expect(evaluate("auto", call("bash", { command: "docker restart web" }), s).decision).toBe(
+      "ask",
     );
+    expect(
+      evaluate("auto", call("bash", { command: "docker restart web" }), noDocker).decision,
+    ).toBe("allow");
   });
 
   it("the guardian asks the human before writing outside the project, unless set to auto", () => {
