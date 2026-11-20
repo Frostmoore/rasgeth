@@ -62,6 +62,19 @@ const en = {
   secretCode: "a code",
   secretCard: "a card number",
   secretIban: "an IBAN",
+  secretExport: "a password export",
+  exportHeld: `This message holds {what} exported from a password manager: I have not passed it on. They do not belong in a chat; ${PRODUCT_NAME} can put them in the keychain without anyone seeing them.`,
+  exportVault: "Put them in the keychain",
+  exportSure:
+    "Send {what} to the agent as written? They will stay in the conversation's log and in the engine's transcript.",
+  exportSureYes: "Yes, send {what}",
+  exportVaulted:
+    "In the keychain: {added} new, {skipped} already there. Your words go on without them.",
+  exportVaultClosed:
+    "The keychain is closed: nothing was imported or sent. Open it in Settings, Keychain, and send it again.",
+  exportVaultFailed: "Nothing was imported or sent: {error}",
+  pwOne: "1 password",
+  pwMany: "{n} passwords",
   secretSendAnyway: "Send anyway",
   secretSendWithout: "Send without it",
   secretDrop: "Leave it",
@@ -151,6 +164,19 @@ const it: Record<TextKey, string> = {
   secretCode: "un codice",
   secretCard: "un numero di carta",
   secretIban: "un IBAN",
+  secretExport: "un'esportazione di password",
+  exportHeld: `Questo messaggio contiene {what} esportate da un gestore di password: non l'ho passato. In una chat non vanno; ${PRODUCT_NAME} può metterle nel Portachiavi senza che nessuno le veda.`,
+  exportVault: "Mettile nel Portachiavi",
+  exportSure:
+    "Mandare {what} all'agente così come sono? Resteranno nel registro della conversazione e nella trascrizione del motore.",
+  exportSureYes: "Sì, invia {what}",
+  exportVaulted:
+    "Nel Portachiavi: {added} nuove, {skipped} c'erano già. Le tue parole proseguono senza.",
+  exportVaultClosed:
+    "Il Portachiavi è chiuso: non ho importato né inviato niente. Aprilo in Impostazioni, Portachiavi, e mandalo di nuovo.",
+  exportVaultFailed: "Non ho importato né inviato niente: {error}",
+  pwOne: "1 password",
+  pwMany: "{n} password",
   secretSendAnyway: "Invia comunque",
   secretSendWithout: "Invia senza",
   secretDrop: "Lascia stare",

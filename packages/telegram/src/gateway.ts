@@ -45,6 +45,11 @@ export interface TelegramHost {
     },
   ): Promise<string>;
   /**
+   * A password manager's export into the person's keychain (3.9.8, «Put them in the keychain»):
+   * only counts come back; a closed keychain imports nothing and throws `vault_closed`.
+   */
+  importPasswords?(ownerId: string, text: string): Promise<{ added: number; skipped: number }>;
+  /**
    * A message from a linked person, before Demi-God reads it (G33.3): automations waiting for
    * one like it start; `taken` when one keeps it, then Demi-God does not answer it and the chat
    * is told which automation took it.
@@ -125,6 +130,7 @@ const SECRET_WORDS: Record<SecretSpan["kind"], TextKey> = {
   code: "secretCode",
   card: "secretCard",
   iban: "secretIban",
+  export: "secretExport",
 };
 
 /**
@@ -139,6 +145,10 @@ interface HeldSecret {
   expires: number;
   messageId?: number;
   notice: string;
+  /** A password manager's export (3.9.8): how many passwords; «Send anyway» asks again. */
+  rows?: number;
+  /** The second question («Yes, send N passwords») is the one waiting. */
+  sure?: boolean;
 }
 
 type RelayExtra = {
@@ -616,12 +626,26 @@ export class TelegramGateway {
     const what = [...new Set(found.map((s) => s.kind))]
       .map((k) => this.say(owner, SECRET_WORDS[k]))
       .join(", ");
-    const notice = this.say(owner, "secretHeld", { what });
-    const keyboard = new InlineKeyboard()
-      .text(this.say(owner, "secretSendAnyway"), `sec:${id}:send`)
-      .text(this.say(owner, "secretSendWithout"), `sec:${id}:clean`)
-      .row()
-      .text(this.say(owner, "secretDrop"), `sec:${id}:drop`);
+    // A password manager's export (3.9.8): the keychain first, «Send anyway» asks again.
+    const rows = found.reduce((n, s) => n + (s.kind === "export" ? (s.rows ?? 0) : 0), 0);
+    const notice =
+      rows > 0
+        ? this.say(owner, "exportHeld", { what: this.howMany(owner, rows) })
+        : this.say(owner, "secretHeld", { what });
+    const keyboard =
+      rows > 0
+        ? new InlineKeyboard()
+            .text(this.say(owner, "exportVault"), `sec:${id}:vault`)
+            .row()
+            .text(this.say(owner, "secretSendWithout"), `sec:${id}:clean`)
+            .text(this.say(owner, "secretSendAnyway"), `sec:${id}:send`)
+            .row()
+            .text(this.say(owner, "secretDrop"), `sec:${id}:drop`)
+        : new InlineKeyboard()
+            .text(this.say(owner, "secretSendAnyway"), `sec:${id}:send`)
+            .text(this.say(owner, "secretSendWithout"), `sec:${id}:clean`)
+            .row()
+            .text(this.say(owner, "secretDrop"), `sec:${id}:drop`);
     const h: HeldSecret = {
       ownerId: owner,
       chatId,
@@ -629,6 +653,7 @@ export class TelegramGateway {
       extra,
       expires: now + SECRET_HOLD_MS,
       notice,
+      ...(rows > 0 && { rows }),
     };
     this.held.set(id, h);
     const m = await this.bot.api
@@ -637,8 +662,52 @@ export class TelegramGateway {
     if (m) h.messageId = m.message_id;
   }
 
+  private howMany(owner: string, n: number): string {
+    return n === 1 ? this.say(owner, "pwOne") : this.say(owner, "pwMany", { n: String(n) });
+  }
+
+  /** «Send anyway» on a password export (3.9.8): a second question naming how many. */
+  private async askSure(owner: string, h: HeldSecret) {
+    const id = randomBytes(6).toString("hex");
+    const what = this.howMany(owner, h.rows ?? 0);
+    const notice = this.say(owner, "exportSure", { what });
+    const next: HeldSecret = { ...h, sure: true, notice };
+    delete next.messageId;
+    this.held.set(id, next);
+    const keyboard = new InlineKeyboard()
+      .text(this.say(owner, "exportSureYes", { what }), `sec:${id}:sure`)
+      .text(this.say(owner, "secretDrop"), `sec:${id}:drop`);
+    const m = await this.bot.api
+      .sendMessage(h.chatId, notice, { reply_markup: keyboard })
+      .catch(() => undefined);
+    if (m) next.messageId = m.message_id;
+  }
+
+  /** «Put them in the keychain» (3.9.8): only counts are said; the words go on without them. */
+  private async vaultExport(owner: string, h: HeldSecret): Promise<{ tail: string; ok: boolean }> {
+    try {
+      if (!this.o.host.importPasswords) throw new Error("not available here");
+      const r = await this.o.host.importPasswords(owner, h.text);
+      return {
+        tail: this.say(owner, "exportVaulted", {
+          added: String(r.added),
+          skipped: String(r.skipped),
+        }),
+        ok: true,
+      };
+    } catch (err) {
+      return {
+        tail:
+          (err as { code?: string }).code === "vault_closed"
+            ? this.say(owner, "exportVaultClosed")
+            : this.say(owner, "exportVaultFailed", { error: (err as Error).message }),
+        ok: false,
+      };
+    }
+  }
+
   private async onSecretButton(ctx: Context, owner: string, data: string) {
-    const m = data.match(/^sec:([0-9a-f]+):(send|clean|drop)$/);
+    const m = data.match(/^sec:([0-9a-f]+):(send|clean|drop|vault|sure)$/);
     const h = m ? this.held.get(m[1] as string) : undefined;
     if (!m || !h || h.ownerId !== owner) {
       await ctx.answerCallbackQuery({ text: this.say(owner, h ? "notAllowed" : "secretExpired") });
@@ -657,19 +726,48 @@ export class TelegramGateway {
           .catch(() => {});
       return;
     }
-    const choice = m[2] as "send" | "clean" | "drop";
-    const tail = this.say(
-      owner,
-      choice === "send" ? "secretSent" : choice === "clean" ? "secretSentWithout" : "secretDropped",
-    );
+    const choice = m[2] as "send" | "clean" | "drop" | "vault" | "sure";
+    const allowed = h.sure
+      ? ["sure", "drop"]
+      : h.rows
+        ? ["vault", "clean", "send", "drop"]
+        : ["send", "clean", "drop"];
+    if (!allowed.includes(choice)) {
+      await ctx.answerCallbackQuery({ text: this.say(owner, "secretExpired") });
+      return;
+    }
+    const vaulted = choice === "vault" ? await this.vaultExport(owner, h) : undefined;
+    const tail = vaulted
+      ? vaulted.tail
+      : this.say(
+          owner,
+          choice === "send" && h.rows
+            ? "secretDropped"
+            : choice === "send" || choice === "sure"
+              ? "secretSent"
+              : choice === "clean"
+                ? "secretSentWithout"
+                : "secretDropped",
+        );
     await ctx.answerCallbackQuery({ text: tail });
     if (h.messageId !== undefined)
       await this.bot.api
         .editMessageText(h.chatId, h.messageId, `${h.notice}\n\n${tail}`)
         .catch(() => {});
+    if (choice === "send" && h.rows) {
+      await this.askSure(owner, h);
+      return;
+    }
+    if (vaulted && !vaulted.ok) return;
     if (choice !== "drop")
       this.background(
-        this.relay(owner, h.chatId, h.text, h.extra, choice === "send" ? "anyway" : "without"),
+        this.relay(
+          owner,
+          h.chatId,
+          h.text,
+          h.extra,
+          choice === "send" || choice === "sure" ? "anyway" : "without",
+        ),
       );
   }
 
