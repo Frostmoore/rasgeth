@@ -63,6 +63,14 @@ export interface DangerRule {
   enabled?: boolean;
 }
 
+/**
+ * Where a program starts in the commands really run (3.9.8): a line, after a pipe or a separator,
+ * after a wrapper (env, xargs, nohup, timeout…) or inside inline code. A rule anchored here matches
+ * the program, never a word of its arguments («Vaultwarden su Severino» in a commit message).
+ */
+const PROGRAM =
+  "(?:^|\\n|[|;&(]\\s*|\\b(?:env|xargs|nice|nohup|exec|time|timeout|-c)\\s+(?:(?:\\w+=\\S*|-\\S+|\\d+\\S*)\\s+)*|['\"`]|\\bdo\\s+|\\bthen\\s+)";
+
 export const DEFAULT_DANGER_RULES: DangerRule[] = [
   {
     id: "rm-recursive",
@@ -99,21 +107,25 @@ export const DEFAULT_DANGER_RULES: DangerRule[] = [
     label: "Privilege escalation",
     tool: "bash",
     field: "command",
-    pattern: "\\b(sudo|su|doas|chmod\\s+[0-7]*7[0-7]{2}|chown)\\b",
+    // The program run, never a word of its arguments (3.9.8: «su» in a commit message): at the start
+    // of a command, after a pipe or a separator, or after a wrapper (env, xargs, nohup, timeout…).
+    pattern: `${PROGRAM}(?:sudo|su|doas|chown|chmod\\s+(?:-\\S+\\s+)*[0-7]*7[0-7]{2})\\b`,
   },
   {
     id: "disk",
     label: "Disk and system",
     tool: "bash",
     field: "command",
-    pattern: "\\b(dd|mkfs[.\\w]*|fdisk|parted|shutdown|reboot|systemctl)\\b",
+    pattern: `${PROGRAM}(?:sudo\\s+(?:-\\S+\\s+)*)?(dd|mkfs[.\\w]*|fdisk|parted|shutdown|reboot|systemctl)\\b`,
   },
   {
     id: "containers",
     label: "Containers and clusters",
     tool: "bash",
     field: "command",
-    pattern: "\\b(docker|podman|kubectl|helm)\\b",
+    // On the commands run: looking (ps, inspect, logs, exec of a read) is gone already (3.9.8).
+    // The program, not a word in a path (`ls /var/lib/docker`, `cat docker-compose.yml`).
+    pattern: `${PROGRAM}(?:sudo\\s+(?:-\\S+\\s+)*)?(docker|podman|kubectl|helm|pct)(?=$|[\\s;|&)])`,
   },
   {
     id: "database-drop",
@@ -425,6 +437,46 @@ export function classify(
       (!r.name || new RegExp(r.name, "i").test(toolWords(call.name))) &&
       new RegExp(r.pattern, "i").test(subject(call, r.field)),
   );
+}
+
+/**
+ * The kind of call «Always allow for this job» covers (3.9.8): the tool, the machine, the dangers,
+ * and for a command the programs that made it a danger with their first word (`pct exec`,
+ * `docker restart`), so a yes to restarting a container is not a yes to removing one. Pure.
+ */
+export function workKind(
+  raw: ToolCallInfo,
+  danger: readonly string[],
+  rules: DangerRule[],
+  ctx: DangerContext = {},
+): string {
+  const input = (raw.input ?? {}) as Record<string, unknown>;
+  const where = [input.machine, input.node].find((v): v is string => typeof v === "string");
+  const programs = new Set<string>();
+  if (typeof input.command === "string") {
+    const call = asRun(raw, ctx);
+    const lines = String((call.input as { command?: unknown }).command ?? "").split("\n");
+    for (const line of lines)
+      for (const part of line.split(" | ")) {
+        const one = { ...call, input: { ...input, command: part } };
+        const hit = rules.filter(
+          (r) =>
+            r.enabled !== false &&
+            ruleApplies(r.tool, call.name) &&
+            new RegExp(r.pattern, "i").test(subject(one, r.field)),
+        );
+        if (hit.length === 0) continue;
+        const words = part.split(/\s+/).filter(Boolean);
+        const verb = words.slice(1).find((w) => !w.startsWith("-"));
+        programs.add([words[0], verb].filter(Boolean).join(" "));
+      }
+  }
+  return [
+    raw.name,
+    where ?? "here",
+    [...danger].sort().join(","),
+    [...programs].sort().join(", "),
+  ].join(" · ");
 }
 
 export interface Evaluation {

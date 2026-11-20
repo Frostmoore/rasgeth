@@ -159,6 +159,10 @@ export type ChatEvent =
 
 export class ChatError extends Error {}
 
+/** Said to a chat on a flat subscription (3.9.8): it has no tools there. */
+export const SUBSCRIPTION_CHAT_NOTE =
+  "In this chat you run on the person's flat subscription, which answers here without tools: no web search, no page fetching, no files. Answer from what you know; when an answer needs something you would have looked up (today's news, prices, weather, a page), say plainly that this chat cannot look it up on a subscription and that a conversation with an agent, or a chat model with an API key, can.";
+
 const MAX_ATTACHMENT = 200_000;
 const MAX_STEPS = 10;
 const parse = <T>(v: unknown): T => (typeof v === "string" ? JSON.parse(v) : v) as T;
@@ -378,11 +382,19 @@ export class DailyChat {
     onEvent({ type: "entry", entry: await this.store(chatId, user, { shown: text }) });
     history.push(user);
 
-    const tools = profile?.tools ?? this.tools();
+    // A flat subscription answers here only without tools (3.9.8): its engine runs tool loops
+    // only inside a conversation's session. The chat then answers from what the model knows, and
+    // says so when asked for something it would have looked up.
+    const subscription = model.provider.endsWith("-subscription");
+    const tools = subscription ? [] : (profile?.tools ?? this.tools());
     const own =
       settings.systemPrompt &&
       (this.o.expand?.(ownerId, settings.systemPrompt) ?? settings.systemPrompt);
-    const system = [profile?.system ?? own ?? DEFAULT_CHAT_PROMPT, this.o.language?.(ownerId)]
+    const system = [
+      profile?.system ?? own ?? DEFAULT_CHAT_PROMPT,
+      subscription && SUBSCRIPTION_CHAT_NOTE,
+      this.o.language?.(ownerId),
+    ]
       .filter(Boolean)
       .join("\n\n");
     for (let step = 0; step < MAX_STEPS; step++) {

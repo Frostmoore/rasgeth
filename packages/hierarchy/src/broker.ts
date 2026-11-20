@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import type { PermissionDecision, ToolCallInfo } from "@redgiant/agent";
 import type { EventStore } from "@redgiant/events";
 import type { CriticalDetail, PermissionMode } from "@redgiant/protocol";
-import { ALWAYS_HUMAN, evaluate, type PolicySettings } from "./policy.js";
+import { ALWAYS_HUMAN, evaluate, type PolicySettings, workKind } from "./policy.js";
 import { type AgentNode, approvalChain, type Resolve } from "./scopes.js";
 
 export interface ApprovalRequest {
@@ -58,6 +58,8 @@ export interface PermissionBrokerOptions {
    * once after `askHuman` (p3.5.4): `permission.resolved` records it.
    */
   answeredVia?: (requestId: string) => string | undefined;
+  /** «Always allow for this job» (3.9.8): whether the person's yes was that one, taken once. */
+  answeredScope?: (requestId: string) => "work" | undefined;
 }
 
 /**
@@ -103,6 +105,16 @@ export class PermissionBroker {
     )
       return { allow: true };
     if (ev.decision === "deny") return { allow: false, reason: ev.reasons.join("; ") };
+    // «Always allow for this job» (3.9.8): the same kind of call on the same machine, allowed by
+    // the person earlier in this conversation (recorded then). Never a truly dangerous one.
+    const kind =
+      sessionId && ev.critical.length === 0 && !ev.danger.some((d) => ALWAYS_HUMAN.includes(d))
+        ? workKind(call, ev.danger, settings.danger, { roots: settings.roots })
+        : undefined;
+    if (ev.decision === "ask" && kind && sessionId) {
+      await this.loadWork(sessionId);
+      if (this.workAllows.get(sessionId)?.has(kind)) return { allow: true };
+    }
 
     const request: ApprovalRequest = {
       requestId: randomUUID(),
@@ -154,6 +166,12 @@ export class PermissionBroker {
         };
       }
       const said = typeof answer === "object" ? answer.deny : undefined;
+      const forWork =
+        !approver &&
+        answer === "allow" &&
+        this.o.answeredScope?.(request.requestId) === "work" &&
+        kind !== undefined &&
+        ev.danger.length > 0;
       await this.log(agent, sessionId, {
         type: "permission.resolved",
         payload: {
@@ -161,8 +179,14 @@ export class PermissionBroker {
           decision: typeof answer === "object" ? "deny" : answer,
           by: approver?.id ?? "human",
           ...(via && { via }),
+          ...(forWork && { scope: "work" as const, kind }),
         },
       });
+      if (forWork && sessionId && kind) {
+        const set = this.workAllows.get(sessionId) ?? new Set<string>();
+        set.add(kind);
+        this.workAllows.set(sessionId, set);
+      }
       if (said !== undefined)
         return { allow: false, reason: `denied by the person, who said: ${said}` };
       if (answer === "allow") {
@@ -199,6 +223,37 @@ export class PermissionBroker {
     const yes = this.personYes.get(key)?.includes(id) === true;
     if (yes) this.personYes.delete(key);
     return yes;
+  }
+
+  /** Kinds of calls the person allowed for the rest of a conversation's work (3.9.8). */
+  private readonly workAllows = new Map<string, Set<string>>();
+  /**
+   * The grants read back from the log once per conversation (3.9.8): after a restart the
+   * person's «for this job» still holds, as its `permission.resolved` events say.
+   */
+  private readonly workLoaded = new Map<string, Promise<void>>();
+  private loadWork(sessionId: string): Promise<void> {
+    let loading = this.workLoaded.get(sessionId);
+    if (!loading) {
+      loading = this.o.store
+        .list({ sessionId, types: ["permission.resolved"] })
+        .then((events) => {
+          for (const e of events) {
+            if (e.type !== "permission.resolved" || !e.payload) continue;
+            const { scope, kind, decision } = e.payload;
+            if (scope !== "work" || !kind || decision !== "allow") continue;
+            const set = this.workAllows.get(sessionId) ?? new Set<string>();
+            set.add(kind);
+            this.workAllows.set(sessionId, set);
+          }
+        })
+        .catch(() => {
+          // Unread now: the person is asked again, and the next request tries once more.
+          this.workLoaded.delete(sessionId);
+        });
+      this.workLoaded.set(sessionId, loading);
+    }
+    return loading;
   }
 
   /** Tools the person allowed for one conversation (never past a human-only danger). */

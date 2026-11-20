@@ -10823,4 +10823,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skCompareFull => 'Compare: every difference';
+
+  @override
+  String get cvAllowWork => 'Always allow for this job';
+
+  @override
+  String get cvAllowWorkHint =>
+      'Allow the same kind of command on the same machine without asking again, for the rest of this conversation\'s work';
 }

@@ -3,6 +3,7 @@
 // abbastanza chiara la riga della spiegazione»).
 import { describe, expect, it } from "vitest";
 import {
+  offersWorkAllow,
   REQUEST_SENTENCE_TOOLS,
   reasonSentence,
   requestNameIds,
@@ -424,5 +425,36 @@ describe("the reasons the person reads (3.5.6)", () => {
       requestReasons("it", { reasons: ["manual mode", "Changes the platform", "manual mode"] }),
     ).toEqual(["L'agente è in modalità manuale: chiede prima di ogni modifica"]);
     expect(requestReasons("it", { reasons: ["Changes the platform"] })).toEqual([]);
+  });
+});
+
+describe("«Always allow for this job» is offered (3.9.8)", () => {
+  type W = [what: string, r: Parameters<typeof offersWorkAllow>[0], offered: boolean];
+  const r = (danger: string[], more: Partial<Parameters<typeof offersWorkAllow>[0]> = {}) => ({
+    tool: "bash",
+    danger,
+    sessionId: "s1",
+    ...more,
+  });
+  const ROWS: W[] = [
+    ["a container restart", r(["containers"]), true],
+    ["a plain git push", r(["git-push"]), true],
+    ["sudo", r(["privilege"]), true],
+    ["an ordinary request (it has «this conversation»)", r([]), false],
+    ["outside a conversation", r(["containers"], { sessionId: undefined }), false],
+    ["a truly dangerous request", r(["critical-system"]), false],
+    [
+      "a request with critical details",
+      r(["containers"], { critical: [{ id: "critical-system" }] }),
+      false,
+    ],
+    ["an email leaving", r(["outgoing-mail"], { tool: "mail_send" }), false],
+    ["another agent's model", r(["agent-model"], { tool: "set_agent_model" }), false],
+    ["a platform change", r(["platform"], { tool: "platform_project" }), false],
+    ["a switched-off tool asked back", r(["containers"], { tool: "request_tool" }), false],
+    ["an artifact's capability", r(["containers"], { tool: "artifact_capability" }), false],
+  ];
+  it.each(ROWS)("%s", (_what, req, offered) => {
+    expect(offersWorkAllow(req)).toBe(offered);
   });
 });

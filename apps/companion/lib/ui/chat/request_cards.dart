@@ -2,8 +2,8 @@
 // `PermissionCard` (packages/web/src/components/Chat.tsx): a switched-off tool asked back
 // (`ToolRequestCard.tsx`), an artifact's first use of a capability (`ArtifactGrantCard.tsx`), or
 // any other call (`ToolPermission`): what it does in words (the server's `words`, the page's
-// `requestSentence`), why, its dangers, the details folded, then «Consenti», «Per questa chat»,
-// «Sempre», «Nega» and «Nega e spiega». The buttons wait a moment once shown (the page's
+// `requestSentence`), why, its dangers, the details folded, then «Consenti», «Consenti sempre per
+// questo lavoro» (a danger, 3.9.8), «Per questa chat», «Sempre», «Nega» and «Nega e spiega». The buttons wait a moment once shown (the page's
 // `useArmed`, 800 ms): a tap meant for something else decides nothing. A truly dangerous request
 // (G36.17b) shows red here too, but its yes is given only from its own screen
 // (`CriticalRequestScreen`). The first answer, here or anywhere, closes every copy.
@@ -409,6 +409,14 @@ class _ToolPermissionCardState extends State<ToolPermissionCard> with _Armed {
                             kind: ActKind.yes,
                             onTap: on ? () => _resolve(true) : null,
                           ),
+                          if (r.offersWorkAllow)
+                            ActButton(
+                              key: Key('chat-work-${r.requestId}'),
+                              label: l.cvAllowWork,
+                              tooltip: l.cvAllowWorkHint,
+                              kind: ActKind.always,
+                              onTap: on ? () => _resolve(true, scope: 'work') : null,
+                            ),
                           if (r.danger.isEmpty && r.sessionId != null)
                             ActButton(
                               key: Key('chat-session-${r.requestId}'),

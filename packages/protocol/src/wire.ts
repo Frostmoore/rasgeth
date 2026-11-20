@@ -122,8 +122,12 @@ export const ClientMessage = z.discriminatedUnion("type", [
     requestId: z.string(),
     decision: z.enum(["allow", "deny"]),
     remember: z.boolean().default(false),
-    /** 2026-11-05: allow for this conversation only; "always" is the same as remember. */
-    scope: z.enum(["once", "session", "always"]).optional(),
+    /**
+     * 2026-11-05: allow for this conversation only; "always" is the same as remember. "work"
+     * (3.9.8): the same kind of command on the same machine, for the rest of this conversation's
+     * work, also for dangers (never a truly dangerous request: `offersWorkAllow`).
+     */
+    scope: z.enum(["once", "session", "always", "work"]).optional(),
     /** Denied with words the agent reads ("not that file, the other one"). */
     reason: z.string().max(1000).optional(),
     /** Answered in an editor through `redgiant-acp` (G38.6), recorded as where it was decided. */

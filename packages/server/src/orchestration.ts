@@ -146,6 +146,12 @@ export interface Task {
   escalation?: { task: Task; done: Promise<unknown> };
   /** Its closing (and escalation), once started: closing twice waits for the first. */
   closing?: Promise<void>;
+  /**
+   * How it was proven (3.9.8): the verifier that passed, or the reason it could not be tested.
+   * Its report shows it, so the parent checks that it tests what was asked (on Coder a task «close
+   * what is half done» closed with a verifier of the README, not of the commit it asked for).
+   */
+  proof?: { verifier: string } | { notTestable: string };
 }
 
 /**
@@ -264,7 +270,10 @@ export class TaskTracker {
 
   async verified(task: Task, verifier: string, passed: boolean): Promise<void> {
     await this.log(task, { type: "task.verified", payload: { taskId: task.id, verifier, passed } });
-    if (passed) await this.close(task, { outcome: "verified" });
+    if (passed) {
+      task.proof = { verifier };
+      await this.close(task, { outcome: "verified" });
+    }
   }
 
   async close(
@@ -278,6 +287,7 @@ export class TaskTracker {
   ): Promise<void> {
     if (task.closing) return task.closing;
     task.outcome = how.outcome;
+    if (how.outcome === "not_testable") task.proof = { notTestable: how.justification };
     task.closing = (async () => {
       await this.log(task, { type: "task.closed", payload: { taskId: task.id, ...how } });
       // Once only: a task the backup model gives up on too is reported as abandoned.
@@ -569,7 +579,7 @@ export function orchestrationTools(
     await close(endOf(r, t.outcome), clip(answer, 1000));
     const outcome = `${t.outcome ?? "still open"}${t.escalatedFrom ? " (by the backup model, after the first one gave up)" : ""}`;
     // The last line lets the chat open the sub-agent's conversation (and the model read it).
-    return `Task ${t.id} — ${outcome}${r.stopReason !== "end_turn" ? ` (agent stopped: ${r.stopReason}${r.reason ? `, ${r.reason}` : ""})` : ""}.\nReport from ${to.name}:\n${clip(answer)}\nConversation: ${at} (${to.id})`;
+    return `Task ${t.id} — ${outcome}${r.stopReason !== "end_turn" ? ` (agent stopped: ${r.stopReason}${r.reason ? `, ${r.reason}` : ""})` : ""}.\nReport from ${to.name}:\n${clip(answer)}\n${proofNote(t)}Conversation: ${at} (${to.id})`;
   };
 
   const tools: Tool[] = [];
@@ -1154,6 +1164,13 @@ export function orchestrationTools(
         }),
         async run({ agent_id, message, include_shared }) {
           const a = target(agent_id);
+          // An orchestrator has no worktree (3.9.8, Coder: God was told «not an agent you
+          // manage»): it works in the project's folder itself, so there is nothing to merge.
+          if (a.kind === "orchestrator" && can(me, "message", a, host.registry.resolve))
+            return {
+              content: `Nothing to merge: ${a.name} is an orchestrator and works in the project's folder itself, not in a worktree. Its changes are already in the project; to keep them in git, ask ${a.name} to commit them (with run_command: git add and git commit).`,
+              isError: true,
+            };
           if (a.kind !== "agent" || !can(me, "message", a, host.registry.resolve)) {
             throw new Error(`${a.name} is not an agent you manage`);
           }
@@ -1418,6 +1435,25 @@ export function orchestrationTools(
   return tools;
 }
 
+/**
+ * What a closed task's report says about how it was proven (3.9.8): its verifier, or why it could
+ * not be tested, and that the parent checks it against what was asked. Pure.
+ */
+export function proofNote(task: Pick<Task, "title" | "proof" | "outcome">): string {
+  const p = task.proof;
+  if (!p || task.outcome === "abandoned") return "";
+  const asked = task.title.replace(/"/g, "'");
+  const how =
+    "verifier" in p
+      ? `It closed with this verifier, which exited 0:\n\`\`\`\n${clip(p.verifier, 1500)}\n\`\`\`\n`
+      : `It closed as not testable, because: ${clip(p.notTestable, 1500)}\n`;
+  return (
+    how +
+    `Check that this proves what you asked ("${asked}"), not something nearby. If it does not, the result is ` +
+    "not proven: check it yourself, or hand the task back with what is missing.\n"
+  );
+}
+
 /** `complete_task`, for agents that receive tasks; runs the verifier in their workspace. */
 export function completeTaskTool(
   self: AgentRecord,
@@ -1435,7 +1471,9 @@ export function completeTaskTool(
       name: "complete_task",
       description:
         "Close your current task. Give verify_command: a shell command that exits 0 only if the result is right " +
-        "(tests, build, a check of the output). Only if it truly cannot be tested, give not_testable_reason instead.",
+        "(tests, build, a check of the output). It must check the outcome the task asked for (the commit, the " +
+        "file, the passing tests it names), not something nearby: whoever gave you the task sees it and checks. " +
+        "Only if it truly cannot be tested, give not_testable_reason instead.",
       inputSchema: {
         type: "object",
         properties: {

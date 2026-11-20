@@ -246,6 +246,14 @@ describe("orchestration", () => {
         ),
       ),
     ).toBe(true);
+    // The report shows how the task was proven, for the parent to check it against what it asked
+    // (3.9.8: a verifier of the README closed a task that asked for a commit).
+    const proven = of("tool.result")
+      .map((e) => String((e.payload as { output: string }).output))
+      .find((o) => o.includes(`\nConversation: ${subSession} (${sub})`));
+    expect(proven).toContain("It closed with this verifier, which exited 0:");
+    expect(proven).toContain(exists("greeting.txt"));
+    expect(proven).toContain('Check that this proves what you asked ("write file")');
     // The work conversations are named after who gave the task and what, not after an id.
     const titles = (await s.core.listSessions("me")).map((r) => r.title);
     expect(titles).toEqual(expect.arrayContaining(["God: Greeting", "Orch: Write greeting"]));
@@ -429,6 +437,42 @@ describe("orchestration", () => {
     expect((await core.budget.used({ scope: "agent", id: orch.body.id })).tokens).toBeGreaterThan(
       0,
     );
+  });
+
+  it("merge_work on an orchestrator says it works in the project's folder (3.9.8)", async () => {
+    let orchId = "";
+    s = await startServer((req) => {
+      const { n } = step(req);
+      if (role(req) === "god" && n === 0)
+        return call("merge_work", { agent_id: orchId, message: "Keep it" });
+      return { text: "ok" };
+    });
+    const { core } = s;
+    const god = await s.api<{ id: string }>("POST", "/api/agents", {
+      kind: "god",
+      parentId: null,
+      name: "God",
+    });
+    await s.api("POST", "/api/projects", { name: "Folder" });
+    orchId = (
+      await s.api<{ id: string }>("POST", "/api/agents", {
+        kind: "orchestrator",
+        parentId: god.body.id,
+        projectId: "folder",
+        name: "O",
+      })
+    ).body.id;
+    const godRecord = core.registry.get(god.body.id);
+    if (!godRecord) throw new Error("no god");
+    const sid = await core.workSession(godRecord);
+    await (await core.send("me", sid, "Merge O's work")).done;
+    const results = (await core.store.list({ sessionId: sid }))
+      .filter((e) => e.type === "tool.result")
+      .map((e) => (e.payload as { output: string }).output);
+    expect(results[0]).toMatch(
+      /^Nothing to merge: O is an orchestrator and works in the project's folder/,
+    );
+    expect(results[0]).toContain("ask O to commit");
   });
 
   it("merges an agent's worktree into the project, and shares one sandbox per project", async () => {

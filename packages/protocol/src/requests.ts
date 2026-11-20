@@ -9,6 +9,7 @@
 
 import { ARTIFACT_GRANT_TOOL, grantSentence } from "./artifact-bridge.js";
 import { PRODUCT_NAME } from "./brand.js";
+import { isCriticalId } from "./critical.js";
 import { preparedMailOf } from "./mail.js";
 import { routePhrase } from "./model-routes.js";
 import { shellSummary } from "./shell-summary.js";
@@ -684,4 +685,28 @@ export function requestReasons(lang: string, r: { reasons: readonly string[] }):
   return [
     ...new Set(r.reasons.map((x) => reasonSentence(lang, x)).filter((x): x is string => !!x)),
   ];
+}
+
+/**
+ * Requests the person always answers one by one: an email leaving, another agent's model, and a
+ * change to the platform itself (a yes to archiving one project is not a yes to every change).
+ */
+const ONE_BY_ONE = ["outgoing-mail", "agent-model", "platform"];
+
+/**
+ * Whether a request offers «Always allow for this job» (3.9.8): a danger (the ordinary ones have
+ * «This conversation» and «Always» already) in a conversation, never a truly dangerous request,
+ * an email, another agent's model, a platform change, a switched-off tool or an artifact's
+ * capability. The page, the app and every chat show it from this one function.
+ */
+export function offersWorkAllow(r: {
+  tool: string;
+  danger: readonly string[];
+  critical?: readonly unknown[] | undefined;
+  sessionId?: string | undefined;
+}): boolean {
+  if (!r.sessionId || r.danger.length === 0) return false;
+  if ((r.critical?.length ?? 0) > 0 || r.danger.some(isCriticalId)) return false;
+  if (r.tool === "request_tool" || r.tool === ARTIFACT_GRANT_TOOL) return false;
+  return !r.danger.some((d) => ONE_BY_ONE.includes(d));
 }

@@ -1,6 +1,6 @@
 import { EventEmitter } from "node:events";
 import type { ApprovalRequest, HumanAnswer } from "@redgiant/hierarchy";
-import { type PermissionRequestInfo, requestNameIds } from "@redgiant/protocol";
+import { offersWorkAllow, type PermissionRequestInfo, requestNameIds } from "@redgiant/protocol";
 
 interface Pending {
   info: PermissionRequestInfo;
@@ -20,6 +20,8 @@ export class HumanApprovals extends EventEmitter<{
   private readonly pending = new Map<string, Pending>();
   /** Where each closed request was answered, until the broker records it (`takeVia`). */
   private readonly answered = new Map<string, string>();
+  /** «Always allow for this job» answers (3.9.8), until the broker records them (`takeScope`). */
+  private readonly forWork = new Set<string>();
 
   /**
    * The names of the projects and agents a request mentions (3.5.6): every channel says them
@@ -95,10 +97,20 @@ export class HumanApprovals extends EventEmitter<{
     decision: "allow" | "deny",
     reason?: string,
     via?: string,
+    scope?: "work",
   ): boolean {
     const p = this.pending.get(requestId);
     if (!p || p.ownerId !== ownerId) return false;
     this.pending.delete(requestId);
+    // Only where it was offered (never a truly dangerous request).
+    if (scope === "work" && decision === "allow" && offersWorkAllow(p.info)) {
+      this.forWork.add(requestId);
+      while (this.forWork.size > 1000) {
+        const first = this.forWork.values().next().value;
+        if (first === undefined) break;
+        this.forWork.delete(first);
+      }
+    }
     if (via) {
       this.answered.set(requestId, via);
       // Answers nobody came to take (a broker without `answeredVia`) are dropped, oldest first.
@@ -117,6 +129,12 @@ export class HumanApprovals extends EventEmitter<{
     const via = this.answered.get(requestId);
     this.answered.delete(requestId);
     return via;
+  }
+
+  /** Whether a closed request's yes was «Always allow for this job»; taken once. */
+  takeScope(requestId: string): "work" | undefined {
+    const yes = this.forWork.delete(requestId);
+    return yes ? "work" : undefined;
   }
 
   /** Denies everything still open (shutdown). */

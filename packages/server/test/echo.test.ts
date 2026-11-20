@@ -8,6 +8,7 @@ import {
   echoQuery,
   echoReaders,
   migrateEcho,
+  resolveAgent,
   searchConversationsTool,
   unmark,
 } from "../src/echo.js";
@@ -284,6 +285,25 @@ describe("Echo: search_conversations", () => {
     expect(await tool.run({ query: "rounding", agent_id: "a7" }, ctx)).toMatchObject({
       isError: true,
     });
+    // 3.9.8: by name, by its kind's alias, and the caller's own conversations.
+    expect(await tool.run({ query: "rounding", agent_id: "dev 1" }, ctx)).toMatch(
+      /^1 conversation found:/,
+    );
+    expect(await tool.run({ query: "rounding", agent_id: "me" }, ctx)).toBe(
+      "No past conversation has «rounding».",
+    );
+  });
+
+  it("resolves an agent named by id, name, alias or kind prefix (3.9.8)", () => {
+    const name = (id: string) => ({ god_x1: "God", a1: "Dev 1" })[id] ?? id;
+    const agents = ["god_x1", "a1"];
+    expect(resolveAgent("a1", agents, "god_x1", name)).toBe("a1");
+    expect(resolveAgent("god", agents, "god_x1", name)).toBe("god_x1");
+    expect(resolveAgent("God", agents, "a1", name)).toBe("god_x1");
+    expect(resolveAgent("me", agents, "god_x1", name)).toBe("god_x1");
+    expect(resolveAgent("DEV 1", agents, "god_x1", name)).toBe("a1");
+    expect(resolveAgent("a7", agents, "god_x1", name)).toBeNull();
+    expect(resolveAgent("god", ["god_x1", "god_x2"], null, () => "x")).toBeNull();
   });
 
   it("is an agent's tool on the server, and the page's search gives the same conversations", async () => {

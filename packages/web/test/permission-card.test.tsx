@@ -206,3 +206,51 @@ describe("the click guard (3.5.6)", () => {
     expect(sent).toHaveLength(1);
   });
 });
+
+describe("«Consenti sempre per questo lavoro» (3.9.8)", () => {
+  const restart: PermissionRequestInfo = {
+    ...archive,
+    requestId: "w1",
+    tool: "bash",
+    input: { command: "docker restart caddy" },
+    reasons: ["Containers and clusters"],
+    danger: ["containers"],
+  };
+  const work = (root: Element) =>
+    buttons(root).find((b) => b.textContent === "Consenti sempre per questo lavoro");
+
+  it("is offered on a danger and sends the job's scope", () => {
+    const { container } = render(<PermissionCard r={restart} />);
+    act(() => {
+      vi.advanceTimersByTime(ARM_MS);
+    });
+    fireEvent.click(work(container) as HTMLElement);
+    expect(sent).toEqual([
+      {
+        type: "permission.resolve",
+        requestId: "w1",
+        decision: "allow",
+        remember: false,
+        scope: "work",
+      },
+    ]);
+  });
+
+  it("is never offered on a truly dangerous request, a platform change or outside a conversation", () => {
+    for (const r of [
+      { ...restart, danger: ["critical-system"] },
+      archive,
+      { ...restart, sessionId: undefined },
+    ]) {
+      const { container, unmount } = render(<PermissionCard r={r} />);
+      expect(work(container)).toBeUndefined();
+      unmount();
+    }
+  });
+
+  it("says it in English too", () => {
+    lang.value = "en";
+    const { container } = render(<PermissionCard r={restart} />);
+    expect(buttons(container).map((b) => b.textContent)).toContain("Always allow for this job");
+  });
+});

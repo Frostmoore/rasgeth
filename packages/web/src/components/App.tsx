@@ -42,6 +42,7 @@ import {
   openBoard,
   openCanvas,
   openTab,
+  planBars,
   platformInfo,
   questions,
   refresh,
@@ -137,13 +138,7 @@ function Limits() {
   const provider = chat?.model?.provider;
   const plan = limits.value.find((l) => l.provider === provider);
   if (plan) {
-    const has = (id: string) => plan.windows.some((w) => w.id === id);
-    const windows = [
-      ...(has("5h")
-        ? []
-        : [{ id: "5h", label: "5h", usedPct: null as number | null, resetsAt: undefined }]),
-      ...plan.windows,
-    ].sort((a, b) => (a.id === "5h" ? -1 : b.id === "5h" ? 1 : 0));
+    const windows = planBars(plan.windows);
     return (
       <div class="limits">
         {windows.map((w) => {
