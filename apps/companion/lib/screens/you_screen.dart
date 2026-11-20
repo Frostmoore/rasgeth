@@ -436,7 +436,7 @@ class _ServerTile extends StatelessWidget {
 Future<void> askPairAgain(BuildContext context, SavedServer s) async {
   final app = AppScope.read(context);
   final name = readableName(label: s.label);
-  final password = await showDialog<String>(
+  final password = await showRgWindow<String>(
     context: context,
     builder: (_) => _PairAgainDialog(name: name),
   );
