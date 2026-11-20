@@ -11,6 +11,7 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "nod
 import { fileURLToPath } from "node:url";
 import {
   fcp7Xml,
+  fromFcp7Xml,
   fromOtio,
   isMediaRef,
   type MediaProbe,
@@ -122,6 +123,8 @@ export function exportText(x: VideoExportResult): string {
     add(l.kenBurns, "Ken Burns move(s)");
     add(l.reframes, "reframed clip(s)");
     add(l.speeds, "speed change(s)");
+    add(l.colors ?? 0, "colour correction(s) or LUT(s)");
+    add(l.stills ?? 0, "still frame(s)");
     add(l.ducking, "ducked track(s)");
     add(l.markers, "marker(s)");
     add(l.captions, "subtitle(s)");
@@ -159,5 +162,7 @@ export async function importOtio(
     if (!rel || rel.startsWith("..") || isAbsolute(rel)) return undefined;
     return rel.split(sep).join("/");
   };
+  // 3.10: an FCP7 XML from DaVinci Resolve or Premiere, beside the .otio.
+  if (/\.xml$/i.test(abs)) return fromFcp7Xml(text, { media: inside });
   return fromOtio(text, { media: inside });
 }

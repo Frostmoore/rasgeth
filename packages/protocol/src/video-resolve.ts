@@ -21,7 +21,7 @@
 // One difference from montatore, on purpose: a sound-only file (music, a voice-over) is
 // described without a picture (`video: false`); montatore never had one and would give it the
 // timeline's size.
-import type { RgVideo } from "./doc-video.js";
+import type { RgVideo, VideoBox, VideoBoxKey, VideoVolumeKey } from "./doc-video.js";
 import { isMediaRef } from "./video-timeline.js";
 
 /** The rates OpenTimelineIO writes SMPTE timecode at (any other: montatore's engine fails). */
@@ -60,6 +60,12 @@ export interface ResolveJobClip {
   in: number;
   dur: number;
   enabled: boolean;
+  /** 3.10: written as Premiere writes them, which Resolve reads (absent: as before). */
+  speed?: number;
+  box?: VideoBox;
+  boxKeys?: VideoBoxKey[];
+  volume?: number;
+  volumeKeys?: VideoVolumeKey[];
 }
 export interface ResolveJobTrack {
   id: string;
@@ -254,6 +260,101 @@ const baseName = (p: string) => p.slice(p.lastIndexOf("/") + 1);
  * `ResolveRateError` at a rate without SMPTE timecode, and on a clip whose media is not in
  * `job.media` (montatore fails there too).
  */
+/** A filter of a clip item, as Premiere writes it (Resolve reads Time Remap, Basic Motion, levels). */
+function effect(name: string, id: string, category: string, mediaType: string, params: El[]): El {
+  const f = el("filter");
+  const e = add(f, "effect");
+  add(e, "name", name);
+  add(e, "effectid", id);
+  add(e, "effectcategory", category);
+  add(e, "effecttype", category);
+  add(e, "mediatype", mediaType);
+  e.kids.push(...params);
+  return f;
+}
+const short = (x: number) => String(Number(x.toFixed(5)));
+/** A parameter: one value, or keyframes at the clip's frames. */
+function param(
+  id: string,
+  name: string,
+  min: string,
+  max: string,
+  keys: { at: number; v: string | El }[],
+): El {
+  const p = el("parameter", undefined, [["authoringApp", "PremierePro"]]);
+  add(p, "parameterid", id);
+  add(p, "name", name);
+  add(p, "valuemin", min);
+  add(p, "valuemax", max);
+  const value = (v: string | El) => (typeof v === "string" ? el("value", v) : v);
+  if (keys.length === 1) p.kids.push(value((keys[0] as { v: string | El }).v));
+  else
+    for (const k of keys) {
+      const kf = add(p, "keyframe");
+      add(kf, "when", String(k.at));
+      kf.kids.push(value(k.v));
+    }
+  return p;
+}
+/** The box's centre as Premiere writes it: from the frame's centre, in fractions of its size. */
+const center = (b: VideoBox): El => {
+  const v = el("value");
+  add(v, "horiz", short(b.x - 0.5));
+  add(v, "vert", short(b.y - 0.5));
+  return v;
+};
+/** 3.10: a clip's speed, box and volume as filters. */
+function clipFilters(c: ResolveJobClip, type: "video" | "audio"): El[] {
+  const out: El[] = [];
+  if (c.speed && c.speed !== 1)
+    out.push(
+      effect("Time Remap", "timeremap", "motion", type, [
+        param("variablespeed", "variablespeed", "0", "1", [{ at: 0, v: "0" }]),
+        param("speed", "speed", "-100000", "100000", [{ at: 0, v: short(c.speed * 100) }]),
+        param("reverse", "reverse", "", "", [{ at: 0, v: "FALSE" }]),
+        param("frameblending", "frameblending", "", "", [{ at: 0, v: "FALSE" }]),
+      ]),
+    );
+  if (type === "video" && (c.box || c.boxKeys?.length)) {
+    const keys = c.boxKeys?.length ? c.boxKeys : [{ at: 0, ...(c.box as VideoBox) }];
+    out.push(
+      effect("Basic Motion", "basic", "motion", "video", [
+        param(
+          "scale",
+          "Scale",
+          "0",
+          "1000",
+          keys.map((k) => ({ at: k.at, v: short(k.scale * 100) })),
+        ),
+        param(
+          "center",
+          "Center",
+          "",
+          "",
+          keys.map((k) => ({ at: k.at, v: center(k) })),
+        ),
+      ]),
+    );
+  }
+  if (type === "audio" && (c.volumeKeys?.length || (c.volume !== undefined && c.volume !== 0))) {
+    const keys = c.volumeKeys?.length
+      ? c.volumeKeys.map((k) => ({ at: k.at, db: k.db }))
+      : [{ at: 0, db: c.volume as number }];
+    out.push(
+      effect("Audio Levels", "audiolevels", "audiolevels", "audio", [
+        param(
+          "level",
+          "Level",
+          "0",
+          "3.98109",
+          keys.map((k) => ({ at: k.at, v: short(10 ** (k.db / 20)) })),
+        ),
+      ]),
+    );
+  }
+  return out;
+}
+
 export function fcp7Xml(job: ResolveJob): string {
   const fps = job.fps_num / job.fps_den;
   if (!VALID_RATES.has(fps))
@@ -326,7 +427,10 @@ export function fcp7Xml(job: ResolveJob): string {
       add(item, "start", String(at));
       add(item, "end", String(at + dur));
       add(item, "in", String(inF));
-      add(item, "out", String(inF + dur));
+      // At a speed the clip plays `speed` source frames for each of its own.
+      const used = c.speed ? roundTime((c.dur * c.speed) / fps, fps) : dur;
+      add(item, "out", String(inF + used));
+      for (const f of clipFilters(c, t.type)) item.kids.push(f);
       trackEl.kids.push(item);
       items.push(item);
       at += dur;
@@ -421,6 +525,9 @@ export interface ResolveLeftOut {
   kenBurns: number;
   reframes: number;
   speeds: number;
+  /** 3.10: colour corrections and LUTs, still frames (redone in Resolve). */
+  colors?: number;
+  stills?: number;
   ducking: number;
   markers: number;
   captions: number;
@@ -489,6 +596,8 @@ export function resolveJob(
     kenBurns: 0,
     reframes: 0,
     speeds: 0,
+    colors: 0,
+    stills: 0,
     ducking: doc.tracks.filter((t) => t.duck).length,
     markers: doc.markers.length,
     captions: doc.captions.segments.length,
@@ -501,10 +610,11 @@ export function resolveJob(
       continue;
     }
     if (c.fadeIn > 0 || c.fadeOut > 0) leftOut.fades++;
-    if (c.volume !== 0) leftOut.volumes++;
+    // 3.10: volumes (and their keys), speeds and boxes go into the XML; colour, LUT and stills not.
     if (c.kenBurns) leftOut.kenBurns++;
     if (c.crop || c.fit !== "fill") leftOut.reframes++;
-    if (c.speed !== undefined && c.speed !== 1) leftOut.speeds++;
+    if (c.color || c.lut) leftOut.colors = (leftOut.colors ?? 0) + 1;
+    if (c.freeze) leftOut.stills = (leftOut.stills ?? 0) + 1;
     const end = c.sourceRange.start + c.sourceRange.duration;
     ends.set(c.ref.media, Math.max(ends.get(c.ref.media) ?? 0, end));
   }
@@ -552,6 +662,11 @@ export function resolveJob(
           in: c.sourceRange.start,
           dur: c.sourceRange.duration,
           enabled: c.enabled,
+          ...(c.speed && c.speed !== 1 && !c.freeze && { speed: c.speed }),
+          ...(t.kind === "Video" && c.box && { box: c.box }),
+          ...(t.kind === "Video" && c.boxKeys?.length && { boxKeys: c.boxKeys }),
+          ...(t.kind === "Audio" && c.volume !== 0 && { volume: c.volume }),
+          ...(t.kind === "Audio" && c.volumeKeys?.length && { volumeKeys: c.volumeKeys }),
         })),
     })),
   };

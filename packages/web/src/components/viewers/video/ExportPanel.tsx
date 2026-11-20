@@ -34,6 +34,8 @@ export function leftOutLines(r: VideoExportResult): string[] {
     [l.kenBurns, "veExportKenBurns"],
     [l.reframes, "veExportReframes"],
     [l.speeds, "veExportSpeeds"],
+    [l.colors ?? 0, "veExportColors"],
+    [l.stills ?? 0, "veExportStills"],
     [l.ducking, "veExportDucking"],
     [l.markers, "veExportMarkers"],
     [l.captions, "veExportCaptions"],

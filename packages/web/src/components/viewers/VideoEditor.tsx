@@ -54,6 +54,7 @@ import {
   removeTrack,
   removeTransition,
   rippleDeleteClips,
+  rollEdit,
   setCaptionSegments,
   setClipProps,
   setGenerator,
@@ -65,6 +66,8 @@ import {
   TEXT_LOOK,
   timecode,
   timelineDuration,
+  slideClip,
+  slipClip,
   trackClips,
   trackOf,
   trimClip,
@@ -232,6 +235,15 @@ type Drag =
       x0: number;
       base: RgVideo;
       ripple: boolean;
+      linked: boolean;
+      view?: RgVideo;
+    }
+  | {
+      // 3.10, Resolve's trims with the T tool: slip (the middle), slide (Alt), roll (Shift on a cut).
+      mode: "slip" | "slide" | "roll";
+      id: string;
+      x0: number;
+      base: RgVideo;
       linked: boolean;
       view?: RgVideo;
     }
@@ -1430,6 +1442,23 @@ export function VideoEditor({
       if (now) player.current?.seek(d.edge === "in" ? now.start : clipEnd(now) - 1);
       return;
     }
+    if (d.mode === "slip" || d.mode === "slide" || d.mode === "roll") {
+      const delta = Math.round((ev.clientX - d.x0) / ppf);
+      if (!d.view) host.current?.presence(true);
+      const o = { linked: d.linked };
+      // Slip: dragging right shows earlier frames of the file, as in Resolve.
+      d.view =
+        d.mode === "slip"
+          ? slipClip(d.base, d.id, -delta, o)
+          : d.mode === "slide"
+            ? slideClip(d.base, d.id, delta, o)
+            : rollEdit(d.base, d.id, delta, o);
+      setShown(d.view);
+      const now = clipOf(d.view, d.id);
+      // The viewer shows the frame that changes: the clip's first (slip, slide), the cut (roll).
+      if (now) player.current?.seek(d.mode === "roll" ? clipEnd(now) - 1 : now.start);
+      return;
+    }
     if (d.mode === "trans") {
       const x = d.base.transitions.find((y) => y.id === d.id);
       if (!x) return;
@@ -1492,6 +1521,14 @@ export function VideoEditor({
       if (v && v !== d.base) commit(v, d.mode === "trans" ? "transition" : "caption", []);
       return;
     }
+    if (d.mode === "slip" || d.mode === "slide" || d.mode === "roll") {
+      const v = d.view;
+      setShown(undefined);
+      if (v) host.current?.presence(false);
+      if (v && v !== d.base) commit(v, d.mode);
+      player.current?.seek(playhead);
+      return;
+    }
     if (d.mode === "move" || d.mode === "trim") {
       const v = d.view;
       setShown(undefined);
@@ -1530,6 +1567,29 @@ export function VideoEditor({
     const edge = edgeAt(e.clientX, r.left, r.width, phone ? 14 : EDGE_PX);
     const link = linked && !e.altKey;
     const mine = link ? withLinked(doc, [c.id]) : [c.id];
+    // 3.10: the T tool trims as Resolve's: Shift on a cut rolls it, the middle slips (Alt slides).
+    if (ed.tool === "trim" && edge && e.shiftKey) {
+      const sorted = trackClips(doc, c.track);
+      const i = sorted.findIndex((x) => x.id === c.id);
+      const left = edge === "out" ? c : sorted[i - 1];
+      const right = edge === "out" ? sorted[i + 1] : c;
+      if (left && right && clipEnd(left) === right.start) {
+        edit({ sel: mine, gap: undefined });
+        startDrag({ mode: "roll", id: left.id, x0: e.clientX, base: doc, linked: link });
+        return;
+      }
+    }
+    if (ed.tool === "trim" && !edge && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
+      edit({ sel: mine, gap: undefined });
+      startDrag({
+        mode: e.altKey ? "slide" : "slip",
+        id: c.id,
+        x0: e.clientX,
+        base: doc,
+        linked: linked,
+      });
+      return;
+    }
     if (edge) {
       edit({ sel: mine, gap: undefined });
       startDrag({

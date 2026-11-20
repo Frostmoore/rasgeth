@@ -965,9 +965,13 @@ export function videoTool(
   };
 
   const importAction = async (i: In, ctx: ToolContext) => {
-    const src = await where(i.file ?? bad('give "file", the .otio to read'));
-    if (extname(src.abs).toLowerCase() !== ".otio") bad(`"${i.file}" is not an .otio file`);
-    const path = (i.path ?? (i.file as string).replace(/\.otio$/i, ".rgvideo")).replace(/\\/g, "/");
+    const src = await where(i.file ?? bad('give "file", the .otio or .xml to read'));
+    if (![".otio", ".xml"].includes(extname(src.abs).toLowerCase()))
+      bad(`"${i.file}" is not an .otio file nor an FCP7 .xml (DaVinci Resolve, Premiere)`);
+    const path = (i.path ?? (i.file as string).replace(/\.(otio|xml)$/i, ".rgvideo")).replace(
+      /\\/g,
+      "/",
+    );
     if (extname(path).toLowerCase() !== ".rgvideo") bad(`"${path}" is not a timeline (.rgvideo)`);
     const target = await where(path, false);
     if (host.readOnly(owner, target.file.scope))

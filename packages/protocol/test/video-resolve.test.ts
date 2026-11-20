@@ -284,10 +284,13 @@ describe("resolveJob: montatore's job from a timeline", () => {
       titles: 1,
       transitions: 0,
       fades: 1,
-      volumes: 1,
+      // 3.10: volumes, speeds and boxes go into the XML now (Audio Levels, Time Remap, Basic Motion).
+      volumes: 0,
       kenBurns: 1,
       reframes: 0,
       speeds: 0,
+      colors: 0,
+      stills: 0,
       ducking: 1,
       markers: 1,
       captions: 0,
@@ -319,8 +322,11 @@ describe("resolveJob: montatore's job from a timeline", () => {
       track: "A2",
       enabled: false,
     });
-    for (const c of d.clips)
+    for (const c of d.clips) {
       c.ref = { media: (c.ref as { media: string }).media.replace("riprese/a 1.mp4", "a 1.mp4") };
+      // montatore writes no audio levels (3.10 does): its text is the one without volumes.
+      c.volume = 0;
+    }
     const f = { ...facts, "a 1.mp4": facts["riprese/a 1.mp4"] as ResolveFileFacts };
     const urls: Record<string, string> = {
       "a 1.mp4": "/mnt/media/a 1.mp4",
