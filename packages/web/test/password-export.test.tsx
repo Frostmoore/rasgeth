@@ -83,7 +83,7 @@ describe("a password export in the composer (3.9.8)", () => {
     expect(calls[0]?.[0]).toBe("importPasswordText");
     expect(sent[0]?.text).toContain("ecco le password");
     for (let i = 0; i < 3; i++) expect(sent[0]?.text).not.toContain(fake(i));
-    expect(r.getByText("Nel Portachiavi: 3 nuove, 1 c'erano già.")).toBeTruthy();
+    await waitFor(() => r.getByText("Nel Portachiavi: 3 nuove, 1 c'erano già."));
   });
 
   it("«Invia senza» takes the export out", async () => {

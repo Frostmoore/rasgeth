@@ -17,7 +17,7 @@ type Ask = { id: number } & (
       danger: boolean;
       /** A switch under the text (3.9.8: «also the replies quoting it»), off at first. */
       option?: string | undefined;
-      done: (yes: boolean, option: boolean) => void;
+      done: (yes: boolean, option?: boolean) => void;
     }
   | {
       kind: "text";
@@ -81,7 +81,7 @@ export function askConfirmWith(
         yes: o.yes ?? t("dlgOk"),
         danger: o.danger === true,
         option: o.option,
-        done: (yes, option) => done({ yes, option: yes && option }),
+        done: (yes, option) => done({ yes, option: yes && option === true }),
       },
     ];
   });
