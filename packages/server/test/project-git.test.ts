@@ -125,6 +125,50 @@ describe("initProjectRepo", () => {
     ]);
   });
 
+  it("gives a repository with no identity its own, and keeps the one the person set (3.9.9)", async () => {
+    // git as on Coder's server: no identity anywhere, or the person's own in their configuration.
+    const as = (global: string): RunGit => {
+      return (args, cwd) =>
+        new Promise((ok) =>
+          execFile(
+            "git",
+            args,
+            { cwd, env: { ...process.env, GIT_CONFIG_GLOBAL: global, GIT_CONFIG_NOSYSTEM: "1" } },
+            (err, stdout, stderr) =>
+              ok({ code: err ? Number(err.code) || 1 : 0, stdout, stderr: String(stderr) }),
+          ),
+        );
+    };
+    const none = join(await folder(), "gitconfig");
+    await writeFile(none, "");
+    const d = await folder();
+    await writeFile(join(d, "a.txt"), "a\n");
+    const run = as(none);
+    expect(await initProjectRepo(d, run)).toEqual({ git: "created" });
+    expect((await run(["config", "--local", "--get", "user.email"], d)).stdout.trim()).toBe(
+      "rasgeth@localhost",
+    );
+    // An agent's commit works now: before, «Author identity unknown» (exit 128).
+    await writeFile(join(d, "b.txt"), "b\n");
+    await run(["add", "-A"], d);
+    expect((await run(["commit", "-q", "-m", "b"], d)).code).toBe(0);
+    // Nothing was written outside the repository.
+    expect(await readFile(none, "utf8")).toBe("");
+
+    // A repository already there, without an identity, gets one too.
+    const old = await folder();
+    await run(["init", "-q"], old);
+    expect(await initProjectRepo(old, run)).toEqual({ git: "present" });
+    expect((await run(["config", "--get", "user.name"], old)).stdout.trim()).toBe("Rasgeth");
+
+    // The person's own identity wins: nothing is set in the repository.
+    const mine = join(await folder(), "gitconfig");
+    await writeFile(mine, "[user]\n\tname = Me\n\temail = me@example.org\n");
+    const p = await folder();
+    expect(await initProjectRepo(p, as(mine))).toEqual({ git: "created" });
+    expect((await as(mine)(["config", "--local", "--get", "user.email"], p)).code).not.toBe(0);
+  });
+
   it("reports a git that fails, with git's own words", async () => {
     const d = await folder();
     const run: RunGit = async () => ({ code: 128, stdout: "", stderr: "fatal: cannot mkdir" });
