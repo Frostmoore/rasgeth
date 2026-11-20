@@ -180,7 +180,12 @@ export interface AgentSessionOptions {
    * The model runs only through an engine (a flat subscription, 3.9.8): never as a stream. A send
    * that finds no engine waits for it up to `waitMs` (default 3 minutes), then fails saying why.
    */
-  engineOnly?: { name: string; waitMs?: number };
+  engineOnly?: {
+    name: string;
+    waitMs?: number;
+    /** Whether the provider is there: there without an engine, it streams (a stand-in). */
+    present?: () => boolean;
+  };
   /** Pauses before trying a silent engine again (3.5.4); tests make them short. */
   stallDelaysMs?: readonly number[];
 }
@@ -544,13 +549,13 @@ export class AgentSession {
     const read = () => (typeof this.o.engine === "function" ? this.o.engine() : this.o.engine);
     let engine = read();
     const only = this.o.engineOnly;
-    if (engine || !only) return engine;
+    if (engine || !only || only.present?.()) return engine;
     const end = Date.now() + (only.waitMs ?? 180_000);
-    while (!engine && Date.now() < end && !signal?.aborted) {
+    while (!engine && !only.present?.() && Date.now() < end && !signal?.aborted) {
       await new Promise((r) => setTimeout(r, Math.min(500, Math.max(1, end - Date.now()))));
       engine = read();
     }
-    if (engine) return engine;
+    if (engine || only.present?.()) return engine;
     if (signal?.aborted) throw new ProviderError("Stopped", false);
     throw new ProviderError(
       `The ${only.name} is not ready yet: its program is still starting after the server's start, or it is not signed in. Send the message again in a minute.`,

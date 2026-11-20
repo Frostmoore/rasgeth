@@ -3980,6 +3980,29 @@ if (process.env.DEMO_CODEX_ASK) {
   );
   done.catch(() => {});
 }
+// DEMO_CLAUDE_ENGINE=1 (3.9.8): the Claude subscription on Rasgeth's real Claude adapter, driven
+// by a Claude Code stand-in (demo-claude-engine.mjs): God switches the machines on and lists them
+// in the same turn; the header shows the plan's limits as the SDK reports them.
+if (process.env.DEMO_CLAUDE_ENGINE) {
+  const { ClaudeSubscriptionProvider } = await import(
+    createRequire(new URL("../../server/package.json", import.meta.url)).resolve(
+      "@redgiant/subscriptions",
+    )
+  );
+  const { demoClaudeSdk } = await import("./demo-claude-engine.mjs");
+  const claudeHome = join(dir, "claude-engine");
+  await mkdir(claudeHome, { recursive: true });
+  core.providers.remove("claude-subscription");
+  core.providers.register(
+    new ClaudeSubscriptionProvider({
+      token: "",
+      configDir: claudeHome,
+      cwd: claudeHome,
+      sdk: demoClaudeSdk(),
+      nativeWebSearch: false,
+    }),
+  );
+}
 const running = await serve(core, new TokenAuth({ [token]: "local" }), {
   port,
   host: process.env.DEMO_HOST ?? "0.0.0.0",
