@@ -1,10 +1,10 @@
-// G42.11 in the real app on Linux, against the demo server (DEMO_MAGIC=1: God's packages for the
-// magic integrations and extensions; the demo's own proposals, a server that signs in, installed
+// G42.11 in the real app on Linux, against the demo server (a magic integration started through
+// the server's route; the demo's own proposals, a server that signs in, installed
 // skills), light and dark: «Settings of <name>» with the new row, Settings › Extensions from the
 // top down (magic, what waits, services, generation, catalog, installed, made by hand), an agent's
 // new version of a skill, a catalog entry with its key, a kind of generation, a magic package
 // beside its conversation, and a skill's .zip import.
-// Run by tool/linux_shots.sh with RG_DEMO_ENV="DEMO_PASSWORD=companion-test-1 DEMO_MAGIC=1":
+// Run by tool/linux_shots.sh with RG_DEMO_ENV="DEMO_PASSWORD=companion-test-1":
 //   RG_SCREEN=390x844 … integration_test/g42_11_shots_test.dart
 //   RG_SCREEN=1440x900 … integration_test/g42_11_shots_test.dart
 import 'dart:async';
@@ -20,6 +20,7 @@ import 'package:rgcompanion/api/types.dart';
 import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/screens/server_settings_screen.dart';
+import 'package:rgcompanion/settings/api/extensions_api.dart';
 import 'package:rgcompanion/settings/extensions/extensions_screen.dart';
 
 import 'shots_test.dart' show frames, shot, waitFor;
@@ -43,6 +44,16 @@ void main() {
     await t.pumpWidget(RGCompanionApp(controller: app));
     await waitFor(t, () => app.connected && app.liveStatus == LiveStatus.open);
     await frames(t, 2000);
+    // A magic integration being built with God (the demo's FakeProvider answers).
+    await t.runAsync(() async {
+      final c = app.client!;
+      if ((await c.magicExts()).isEmpty) {
+        await c.startMagicExt(
+          'integration',
+          'Collegami a Notion: cerca le mie pagine e creane di nuove',
+        );
+      }
+    });
     final nav = t.state<NavigatorState>(find.byType(Navigator).first);
     final ctx = nav.context;
     final p = _phone ? 'telefono' : 'computer';
@@ -96,10 +107,10 @@ void main() {
       unawaited(openExtensionsSettings(ctx));
       await frames(t, 3500);
       await shot(t, '02_estensioni_magia_$tag');
+      await scrollTo(const Key('xt-pending'));
       final pending = find.byWidgetPredicate(
         (w) =>
-            w.key is ValueKey<String> &&
-            (w.key! as ValueKey<String>).value.startsWith('xt-prop-'),
+            w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('xt-prop-'),
       );
       if (pending.evaluate().isNotEmpty) {
         await t.ensureVisible(pending.first);
@@ -145,7 +156,11 @@ void main() {
       final magic = find.byWidgetPredicate(
         (w) =>
             w.key is ValueKey<String> &&
-            (w.key! as ValueKey<String>).value.startsWith('xt-magic-mx'),
+            (w.key! as ValueKey<String>).value.startsWith('xt-magic-') &&
+            !const [
+              'xt-magic-integration',
+              'xt-magic-extension',
+            ].contains((w.key! as ValueKey<String>).value),
       );
       if (magic.evaluate().isNotEmpty) {
         await t.ensureVisible(magic.first);

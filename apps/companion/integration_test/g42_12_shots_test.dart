@@ -150,11 +150,23 @@ void main() {
       await shot(t, '04_portachiavi_usi_browser_$tag');
       await scrollTo(const Key('kc-import-open'));
       await shot(t, '05_portachiavi_porta_$tag');
+      // Back to the top, where the list and «Add» are.
+      t
+          .state<ScrollableState>(
+            find
+                .descendant(
+                  of: find.byKey(const Key('keychain-settings')),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          )
+          .position
+          .jumpTo(0);
+      await frames(t, 600);
       // A credential's window.
       final item = find.byWidgetPredicate(
         (w) =>
-            w.key is ValueKey<String> &&
-            (w.key! as ValueKey<String>).value.startsWith('kc-item-v'),
+            w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('kc-item-v'),
       );
       if (item.evaluate().isNotEmpty) {
         await t.ensureVisible(item.first);

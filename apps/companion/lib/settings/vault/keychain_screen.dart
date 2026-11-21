@@ -1164,13 +1164,10 @@ class _KeychainScreenState extends State<KeychainScreen> {
             ),
           const SizedBox(height: 12),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Expanded(
-                child: AutoField(
-                  label: l.vkKcSearch,
+                child: SearchField(
                   hint: l.vkKcSearch,
-                  value: _q,
                   fieldKey: const Key('kc-search'),
                   onChanged: (s) => setState(() => _q = s),
                 ),

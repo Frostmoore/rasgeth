@@ -342,3 +342,60 @@ class WarnLine extends StatelessWidget {
     );
   }
 }
+
+/// A search field with its drawn magnifier (the page's `xw-search`, `kc-search`): no label, the
+/// hint says what it searches; [value] empties it from outside (a kind chosen on a phone).
+class SearchField extends StatefulWidget {
+  const SearchField({
+    super.key,
+    required this.hint,
+    required this.onChanged,
+    this.fieldKey,
+    this.value,
+  });
+
+  final String hint;
+  final ValueChanged<String> onChanged;
+  final Key? fieldKey;
+  final String? value;
+
+  @override
+  State<SearchField> createState() => _SearchFieldState();
+}
+
+class _SearchFieldState extends State<SearchField> {
+  late final _ctl = TextEditingController(text: widget.value ?? '');
+
+  @override
+  void didUpdateWidget(SearchField old) {
+    super.didUpdateWidget(old);
+    final v = widget.value;
+    if (v != null && v != _ctl.text) _ctl.text = v;
+  }
+
+  @override
+  void dispose() {
+    _ctl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    return TextField(
+      key: widget.fieldKey,
+      controller: _ctl,
+      onChanged: widget.onChanged,
+      decoration: InputDecoration(
+        isDense: true,
+        hintText: widget.hint,
+        prefixIcon: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: RgIcon(RgIcons.search, size: 18, color: c.dim),
+        ),
+        prefixIconConstraints: const BoxConstraints(minWidth: 38, minHeight: 38),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
+}

@@ -896,8 +896,7 @@ class _CatalogState extends State<_Catalog> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         RulesSub(title: l.xtExtCatalog, lead: l.xtExtCatalogHelp),
-        AutoField(
-          label: l.xtExtSearch,
+        SearchField(
           hint: l.xtExtSearch,
           value: _q,
           fieldKey: const Key('xt-search'),
