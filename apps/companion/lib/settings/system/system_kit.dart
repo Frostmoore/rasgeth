@@ -246,7 +246,7 @@ class SysFacts extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: wide ? 150 : null,
+                      width: wide ? 190 : null,
                       child: Text(
                         k,
                         style: TextStyle(color: c.dim, fontSize: 13, fontWeight: FontWeight.w600),

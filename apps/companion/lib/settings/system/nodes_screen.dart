@@ -454,6 +454,7 @@ class _ControlWindowState extends State<_ControlWindow> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     return AlertDialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
       title: Text(sw(l, 'ndControlTitle', {'name': widget.target.name})),
       content: SizedBox(
         width: 460,

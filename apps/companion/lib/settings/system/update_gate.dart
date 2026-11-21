@@ -66,7 +66,7 @@ class UpdateGateScreen extends StatelessWidget {
                   onPressed: () => Navigator.of(context).pop(),
                   icon: RgIcon(RgIcons.x, color: c.text),
                 ),
-          title: Text(mandatory ? l.syUpdReqTitle : l.syUpdBrkTitle),
+          title: Text(mandatory ? l.syUpdReqTitle : l.syUpdBrkTitle, maxLines: 2),
         ),
         body: Align(
           alignment: Alignment.topCenter,
@@ -76,9 +76,13 @@ class UpdateGateScreen extends StatelessWidget {
               key: const Key('sy-gate'),
               padding: const EdgeInsets.only(bottom: 24),
               children: [
-                SysHead(
-                  q: mandatory ? l.syUpdReqTitle : l.syUpdBrkTitle,
-                  lead: sw(l, mandatory ? 'updReqSub' : 'updBrkSub', v),
+                // The title is the bar's; under it, what it means here.
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+                  child: Text(
+                    sw(l, mandatory ? 'updReqSub' : 'updBrkSub', v),
+                    style: TextStyle(color: c.text, fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
                 ),
                 if (mandatory) _Mandatory(s: s) else _Breaking(s: s),
               ],

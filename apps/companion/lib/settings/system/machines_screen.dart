@@ -554,6 +554,7 @@ class _MachineEditorState extends State<MachineEditor> {
         .toList();
     void touch(String _) => setState(() {});
     return AlertDialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
       title: Text(m?.name ?? l.syMcNew),
       content: SizedBox(
         width: 520,
