@@ -2481,6 +2481,15 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news3102Tray: "The app stays in the tray",
+  news3102TrayText:
+    "On the computer, closing the app's window keeps it in the system tray, so requests, questions and reports still reach you; Open and Quit are in its menu, and you can switch this off in You › Notifications. Opening it again brings back the one already running.",
+  news3102Wake: "The wake word in the app too",
+  news3102WakeText:
+    "Hands-free voice now listens for its wake word on Android, Windows and Linux, on the device itself; the voice model is downloaded only when you turn it on, with a real progress bar. On the Mac and the iPhone «Speak now» stays for now.",
+  news3102Models: "Newest models first, unmerged work shown",
+  news3102ModelsText:
+    "Every model in the catalog now carries its official release date, so the newest really come first in the menus. Removed agents whose work wasn't merged say so, with how to get it back.",
   news3101Unlock: "Your fingerprint before a password",
   news3101UnlockText:
     "In the app, showing or copying a password from the keychain first asks for your fingerprint, face or PIN. Every choice on the page now uses our own menus, with search where the list is long.",
@@ -10100,6 +10109,15 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news3102Tray: "L'app resta nella barra di sistema",
+  news3102TrayText:
+    "Sul computer, chiudendo la finestra l'app resta nella barra di sistema, così richieste, domande e resoconti ti arrivano lo stesso; nel suo menu ci sono Apri ed Esci, e puoi spegnerlo in Tu › Notifiche. Riaprendola torna avanti quella già aperta.",
+  news3102Wake: "La parola di attivazione anche nell'app",
+  news3102WakeText:
+    "La voce a mani libere ascolta la sua parola di attivazione anche su Android, Windows e Linux, sul dispositivo stesso; il modello vocale si scarica solo quando la accendi, con la sua barra vera. Su Mac e iPhone per ora resta «Parla ora».",
+  news3102Models: "Modelli più nuovi in cima, lavoro non unito in vista",
+  news3102ModelsText:
+    "Ogni modello del catalogo ha ora la sua data di uscita ufficiale, quindi nei menu i più nuovi stanno davvero in cima. Gli agenti rimossi con lavoro non unito lo dicono, con il modo per riprenderlo.",
   news3101Unlock: "L'impronta prima di una password",
   news3101UnlockText:
     "Nell'app, mostrare o copiare una password del Portachiavi chiede prima l'impronta, il volto o il PIN. Ogni scelta nella pagina usa ora i nostri menu, con la ricerca quando l'elenco è lungo.",

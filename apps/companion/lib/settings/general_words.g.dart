@@ -4,10 +4,13 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.10.1';
+const newsVersion = '3.10.2';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.10.2', 'news3102Tray', 'news3102TrayText'),
+  NewsRow('3.10.2', 'news3102Wake', 'news3102WakeText'),
+  NewsRow('3.10.2', 'news3102Models', 'news3102ModelsText'),
   NewsRow('3.10.1', 'news3101Unlock', 'news3101UnlockText'),
   NewsRow('3.10.1', 'news3101Faster', 'news3101FasterText'),
   NewsRow('3.10.0', 'news3100Video', 'news3100VideoText'),
@@ -392,6 +395,12 @@ const generalWords = <String, Map<String, String>>{
     'news3101FasterText': 'Il primo sguardo dell\'ispettore a un progetto lungo richiede uno o due passaggi invece di una dozzina. Rimuovere un agente toglie anche il suo ramo e la sua cartella quando è tutto unito, e dice cosa resta quando non lo è.',
     'news3101Unlock': 'L\'impronta prima di una password',
     'news3101UnlockText': 'Nell\'app, mostrare o copiare una password del Portachiavi chiede prima l\'impronta, il volto o il PIN. Ogni scelta nella pagina usa ora i nostri menu, con la ricerca quando l\'elenco è lungo.',
+    'news3102Models': 'Modelli più nuovi in cima, lavoro non unito in vista',
+    'news3102ModelsText': 'Ogni modello del catalogo ha ora la sua data di uscita ufficiale, quindi nei menu i più nuovi stanno davvero in cima. Gli agenti rimossi con lavoro non unito lo dicono, con il modo per riprenderlo.',
+    'news3102Tray': 'L\'app resta nella barra di sistema',
+    'news3102TrayText': 'Sul computer, chiudendo la finestra l\'app resta nella barra di sistema, così richieste, domande e resoconti ti arrivano lo stesso; nel suo menu ci sono Apri ed Esci, e puoi spegnerlo in Tu › Notifiche. Riaprendola torna avanti quella già aperta.',
+    'news3102Wake': 'La parola di attivazione anche nell\'app',
+    'news3102WakeText': 'La voce a mani libere ascolta la sua parola di attivazione anche su Android, Windows e Linux, sul dispositivo stesso; il modello vocale si scarica solo quando la accendi, con la sua barra vera. Su Mac e iPhone per ora resta «Parla ora».',
     'news321Linux': 'Strato dopo in anticipo anche su Linux',
     'news321LinuxText': 'L\'interruttore sperimentale «Strato dopo in anticipo» di SSD stream ora funziona anche su Linux con una scheda NVIDIA, con un\'immagine del motore tutta sua scaricata solo quando lo accendi.',
     'news321Settings': 'Le Impostazioni nello stile della configurazione',
@@ -704,6 +713,12 @@ const generalWords = <String, Map<String, String>>{
     'news3101FasterText': 'The inspector\'s first look at a long project takes one or two steps instead of a dozen. Removing an agent also removes its branch and folder when everything is merged, and says what\'s left when it isn\'t.',
     'news3101Unlock': 'Your fingerprint before a password',
     'news3101UnlockText': 'In the app, showing or copying a password from the keychain first asks for your fingerprint, face or PIN. Every choice on the page now uses our own menus, with search where the list is long.',
+    'news3102Models': 'Newest models first, unmerged work shown',
+    'news3102ModelsText': 'Every model in the catalog now carries its official release date, so the newest really come first in the menus. Removed agents whose work wasn\'t merged say so, with how to get it back.',
+    'news3102Tray': 'The app stays in the tray',
+    'news3102TrayText': 'On the computer, closing the app\'s window keeps it in the system tray, so requests, questions and reports still reach you; Open and Quit are in its menu, and you can switch this off in You › Notifications. Opening it again brings back the one already running.',
+    'news3102Wake': 'The wake word in the app too',
+    'news3102WakeText': 'Hands-free voice now listens for its wake word on Android, Windows and Linux, on the device itself; the voice model is downloaded only when you turn it on, with a real progress bar. On the Mac and the iPhone «Speak now» stays for now.',
     'news321Linux': 'Next layer ahead on Linux too',
     'news321LinuxText': 'The experimental «Next layer ahead» switch of SSD stream now works on Linux with an NVIDIA card too, with an engine image of its own downloaded only when you turn it on.',
     'news321Settings': 'Settings in the setup\'s style',

@@ -380,7 +380,7 @@ Rasgeth is in pre-alpha. What comes next, in order:
   beside the whole Rasgeth), new file names for every download, the `rasgeth` command and the site
   [rasgeth.it](https://rasgeth.it/). The data stay where they are; moving over is a clean install that the
   page guides, with a checked backup first.
-- **3.10 — Video, the whole app, and 3D generation** (3.10.0–3.10.1 released: the video editor and its second part, and the app doing natively everything the page does, then a fingerprint before a password and a quicker inspector; 3D generation follows): a video editor
+- **3.10 — Video, the whole app, and 3D generation** (3.10.0–3.10.2 released: the video editor and its second part, and the app doing natively everything the page does, then a fingerprint before a password and a quicker inspector, the app in the tray and the wake word in the app; 3D generation follows): a video editor
   with tracks, shared by you and the agent. The agent assembles a first cut from your clips (words, silences,
   speech or cover shots), writes the subtitles and puts music under them that dips when someone speaks; you
   cut, move clips across tracks, trim with ripple, make J- and L-cuts, add transitions, titles and Ken Burns,
