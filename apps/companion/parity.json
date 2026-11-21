@@ -501,7 +501,9 @@
         "lib/voice/hands_free/runtime.dart",
         "lib/voice/hands_free/settings.dart",
         "lib/voice/hands_free/settings_view.dart",
-        "lib/voice/hands_free/indicator.dart"
+        "lib/voice/hands_free/indicator.dart",
+        "lib/voice/hands_free/vosk.dart",
+        "lib/voice/hands_free/wake_model.dart"
       ],
       "phase": "G42.16",
       "rows": [
@@ -512,7 +514,7 @@
         26,
         27
       ],
-      "note": "Native (G42.16): who reads aloud, volume and press-and-talk (G40.10); hands-free as the page's voice/* (the state machine, the VAD, the wake word's spelling and checks, what is read of an answer, ported with the page's vectors), the indicator at the top (phone band, conversation header, computer's bar) with Talk now, Stop, Switch off, Settings › Voice's hands-free part (on this device, wake word of one's own checked by the server, sensitivity, language, who writes down with General's panel, follow-up, barge-in, where it goes), Android's foreground service while it listens. The wake word is not heard in the app yet (no recogniser): a turn starts from Talk now, and the app says so."
+      "note": "Native (G42.16): who reads aloud, volume and press-and-talk (G40.10); hands-free as the page's voice/* (the state machine, the VAD, the wake word's spelling and checks, what is read of an answer, ported with the page's vectors), the indicator at the top (phone band, conversation header, computer's bar) with Talk now, Stop, Switch off, Settings › Voice's hands-free part (on this device, wake word of one's own checked by the server, sensitivity, language, who writes down with General's panel, follow-up, barge-in, where it goes), Android's foreground service while it listens. The wake word (3.10.2): Vosk on the device through dart:ffi with the page's grammar and classifyHeard (Android carries libvosk, Windows and Linux download alphacephei's release checked by SHA-256), the model from the server's job and file with a real bar, only when asked; macOS and iOS keep Talk now and say so."
     },
     "portrait": {
       "app": "native",
