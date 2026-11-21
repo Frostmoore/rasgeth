@@ -26,7 +26,7 @@ import { agents, getApi, projects } from "../state.js";
 import { explain } from "./Brain.js";
 import { MailboxNeed, useMailboxes } from "./EmailSettings.js";
 import { Acts, Chips, Seg, SwitchRow } from "./SettingsKit.js";
-import { Advanced, Field } from "./ui.js";
+import { Advanced, DropChoice, Field } from "./ui.js";
 
 // --- When it runs on a schedule, in words (G24.8): the choices people make, and their cron ------
 
@@ -1119,17 +1119,13 @@ export function Editor({
             </span>
             <div class="aw-when-row">
               <Field label={t("projects")}>
-                <select
-                  class="wz-field"
+                <DropChoice
+                  class="field"
+                  label={t("projects")}
                   value={d.files.project}
-                  onChange={(e) => up({ files: { ...d.files, project: value(e) } })}
-                >
-                  {projects.value.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
+                  options={projects.value.map((p) => ({ id: p.id, label: p.name }))}
+                  onChange={(project) => up({ files: { ...d.files, project } })}
+                />
               </Field>
               <Field label={t("axFilesPath")} help={t("axFilesPathHelp")}>
                 <input
@@ -1165,17 +1161,13 @@ export function Editor({
               <IconGit size={16} /> {t("whenKind_repo")}
             </span>
             <Field label={t("projects")}>
-              <select
-                class="wz-field"
+              <DropChoice
+                class="field"
+                label={t("projects")}
                 value={d.repo.project}
-                onChange={(e) => up({ repo: { ...d.repo, project: value(e) } })}
-              >
-                {projects.value.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
+                options={projects.value.map((p) => ({ id: p.id, label: p.name }))}
+                onChange={(project) => up({ repo: { ...d.repo, project } })}
+              />
             </Field>
             <Chips<string>
               multiple
@@ -1192,18 +1184,16 @@ export function Editor({
               <IconLayers size={16} /> {t("axStart_after")}
             </span>
             <Field label={t("axAfterWhich")}>
-              <select
-                class="wz-field"
+              <DropChoice
+                class="field"
+                label={t("axAfterWhich")}
                 value={d.after.automation}
-                onChange={(e) => up({ after: { ...d.after, automation: value(e) } })}
-              >
-                <option value="">{t("axPick")}</option>
-                {others.map((a) => (
-                  <option key={a.id} value={a.name}>
-                    {a.recipe.description || a.name}
-                  </option>
-                ))}
-              </select>
+                options={[
+                  { id: "", label: t("axPick") },
+                  ...others.map((a) => ({ id: a.name, label: a.recipe.description || a.name })),
+                ]}
+                onChange={(automation) => up({ after: { ...d.after, automation } })}
+              />
             </Field>
             <Chips<string>
               multiple
@@ -1222,18 +1212,16 @@ export function Editor({
               <IconPlay size={16} /> {t("axStart_task")}
             </span>
             <Field label={t("projects")}>
-              <select
-                class="wz-field"
+              <DropChoice
+                class="field"
+                label={t("projects")}
                 value={d.task.project}
-                onChange={(e) => up({ task: { ...d.task, project: value(e) } })}
-              >
-                <option value="">{t("axAnyProject")}</option>
-                {projects.value.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
+                options={[
+                  { id: "", label: t("axAnyProject") },
+                  ...projects.value.map((p) => ({ id: p.id, label: p.name })),
+                ]}
+                onChange={(project) => up({ task: { ...d.task, project } })}
+              />
             </Field>
             <Chips<string>
               multiple
@@ -1451,13 +1439,13 @@ export function Editor({
         {d.does === "agent" ? (
           <>
             <Field label={t("autoWho")} help={t("autoWhoHelp")}>
-              <select class="wz-field" value={d.whoKey} onChange={(e) => up({ whoKey: value(e) })}>
-                {who.map((x) => (
-                  <option key={x.key} value={x.key}>
-                    {x.label}
-                  </option>
-                ))}
-              </select>
+              <DropChoice
+                class="field"
+                label={t("autoWho")}
+                value={d.whoKey}
+                options={who.map((x) => ({ id: x.key, label: x.label }))}
+                onChange={(whoKey) => up({ whoKey })}
+              />
             </Field>
             <Field label={t("autoWhat")} help={t("autoWhatHelp")}>
               <textarea
@@ -1559,18 +1547,16 @@ export function Editor({
                 </Field>
                 {mail.boxes.length > 0 && (
                   <Field label={t("axTellEmailFrom")}>
-                    <select
-                      class="wz-field"
+                    <DropChoice
+                      class="field"
+                      label={t("axTellEmailFrom")}
                       value={d.notifyBox}
-                      onChange={(e) => up({ notifyBox: value(e) })}
-                    >
-                      <option value="">{t("axFirstBox")}</option>
-                      {mail.boxes.map((b) => (
-                        <option key={b.id} value={b.id}>
-                          {b.name}
-                        </option>
-                      ))}
-                    </select>
+                      options={[
+                        { id: "", label: t("axFirstBox") },
+                        ...mail.boxes.map((b) => ({ id: b.id, label: b.name })),
+                      ]}
+                      onChange={(notifyBox) => up({ notifyBox })}
+                    />
                   </Field>
                 )}
               </div>
@@ -1607,18 +1593,16 @@ export function Editor({
               </Field>
             )}
             <Field label={t("axFallback")}>
-              <select
-                class="wz-field"
+              <DropChoice
+                class="field"
+                label={t("axFallback")}
                 value={d.fallback}
-                onChange={(e) => up({ fallback: value(e) })}
-              >
-                <option value="">{t("axNone")}</option>
-                {others.map((a) => (
-                  <option key={a.id} value={a.name}>
-                    {a.recipe.description || a.name}
-                  </option>
-                ))}
-              </select>
+                options={[
+                  { id: "", label: t("axNone") },
+                  ...others.map((a) => ({ id: a.name, label: a.recipe.description || a.name })),
+                ]}
+                onChange={(fallback) => up({ fallback })}
+              />
             </Field>
           </div>
           <span class="wz-lb">{t("axOverlap")}</span>
@@ -1665,18 +1649,19 @@ export function Editor({
                   />
                 </Field>
                 <Field label={t("axEffort")}>
-                  <select
-                    class="wz-field"
+                  <DropChoice
+                    class="field"
+                    label={t("axEffort")}
                     value={d.effort}
-                    onChange={(e) => up({ effort: value(e) })}
-                  >
-                    <option value="">{t("axAgentOwn")}</option>
-                    {["low", "medium", "high", "xhigh", "max"].map((x) => (
-                      <option key={x} value={x}>
-                        {x}
-                      </option>
-                    ))}
-                  </select>
+                    options={[
+                      { id: "", label: t("axAgentOwn") },
+                      ...["low", "medium", "high", "xhigh", "max"].map((x) => ({
+                        id: x,
+                        label: x,
+                      })),
+                    ]}
+                    onChange={(effort) => up({ effort })}
+                  />
                 </Field>
               </>
             )}

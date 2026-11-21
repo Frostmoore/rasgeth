@@ -231,8 +231,12 @@ describe("«Save as…» through the app", () => {
     open("p1", "relazione.odt");
     await state.signIn("t", { keep: false });
     const r = render(<OfficeEditor file={{ scope: "p1", path: "relazione.odt" }} />);
-    const select = r.container.querySelector(".doc-office-export select") as HTMLSelectElement;
-    expect(select).not.toBeNull();
+    // Our drawn choice (3.10.1), not a native select.
+    const menu = r.container.querySelector(
+      ".doc-office-export .ui-drop-current",
+    ) as HTMLButtonElement;
+    expect(menu).not.toBeNull();
+    expect(r.container.querySelector("select")).toBeNull();
     // jsdom has no blob URLs to fetch: the URL the page made answers with the export's bytes.
     const urls = vi
       .spyOn(URL, "createObjectURL")
@@ -245,7 +249,11 @@ describe("«Save as…» through the app", () => {
           : new Response(null, { status: 404 }),
       );
     try {
-      fireEvent.change(select, { target: { value: "pdf" } });
+      fireEvent.click(menu);
+      const pdf = [...document.querySelectorAll<HTMLButtonElement>(".ui-drop-list button")].find(
+        (b) => b.textContent === "PDF",
+      ) as HTMLButtonElement;
+      fireEvent.click(pdf);
       await waitFor(() => expect(of("saveAs")).toHaveLength(1));
       expect(of("saveAs")[0]).toEqual({ t: "saveAs", name: "relazione.pdf", data: "UEsDBA==" });
     } finally {

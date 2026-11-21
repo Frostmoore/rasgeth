@@ -16,7 +16,7 @@ import {
   type DraftTarget,
   godName,
 } from "./PromptRefiner.js";
-import { Advanced, Choice, Field } from "./ui.js";
+import { Advanced, Choice, DropChoice, Field } from "./ui.js";
 
 /** Ready roles; their instructions are for the model, so in English like every prompt. */
 const ROLES = {
@@ -143,32 +143,31 @@ export function AgentWizard({ onDone }: { onDone: () => void }) {
       )}
       <div class="form">
         <Field label={t("agentStep2")} help={t("agentStep2Help")}>
-          <select
+          <DropChoice
+            class="field"
+            label={t("agentStep2")}
             value={project}
-            onChange={(e) => {
-              setProject((e.target as HTMLSelectElement).value);
+            options={projects.value.map((p) => ({ id: p.id, label: p.name }))}
+            onChange={(id) => {
+              setProject(id);
               setSub("");
             }}
-          >
-            {projects.value.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+          />
         </Field>
         {subprojects.value.some((s) => s.projectId === project) && (
           <Field label={t("agentWhere")} help={t("agentWhereHelp")}>
-            <select value={sub} onChange={(e) => setSub((e.target as HTMLSelectElement).value)}>
-              <option value="">{t("agentWholeProject")}</option>
-              {subprojects.value
-                .filter((s) => s.projectId === project)
-                .map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name} ({s.dir}/)
-                  </option>
-                ))}
-            </select>
+            <DropChoice
+              class="field"
+              label={t("agentWhere")}
+              value={sub}
+              options={[
+                { id: "", label: t("agentWholeProject") },
+                ...subprojects.value
+                  .filter((s) => s.projectId === project)
+                  .map((s) => ({ id: s.id, label: `${s.name} (${s.dir}/)` })),
+              ]}
+              onChange={setSub}
+            />
           </Field>
         )}
         <Field label={t("agentStep3")}>
@@ -192,16 +191,16 @@ export function AgentWizard({ onDone }: { onDone: () => void }) {
         </Field>
         {model && (
           <Field label={t("effort")} help={t("brainEffortHelp")}>
-            <select
+            <DropChoice
+              class="field"
+              label={t("effort")}
               value={effort}
-              onChange={(e) => setEffort((e.target as HTMLSelectElement).value)}
-            >
-              {(["low", "medium", "high", "max"] as const).map((x) => (
-                <option key={x} value={x}>
-                  {t(`effort_${x}`)}
-                </option>
-              ))}
-            </select>
+              options={(["low", "medium", "high", "max"] as const).map((x) => ({
+                id: x,
+                label: t(`effort_${x}`),
+              }))}
+              onChange={setEffort}
+            />
           </Field>
         )}
       </div>

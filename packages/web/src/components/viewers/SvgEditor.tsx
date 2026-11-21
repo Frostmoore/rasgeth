@@ -47,7 +47,7 @@ import { OwnUndo } from "../../viewers/own-undo.js";
 import { download } from "../../viewers/source.js";
 import type { SvgIsland, SvgLayer, SvgSelection, SvgTool } from "../../viewers/svg-island.js";
 import { SvgCollab, svgActionsOf, svgDocOp, touchedIds } from "../../viewers/svg-ops.js";
-import { SmallSwitch } from "../ui.js";
+import { DropChoice, SmallSwitch } from "../ui.js";
 import { CopyBar } from "./CopyBar.js";
 
 /** The drawings the page edits (G37.6); an AI or EPS is edited on its SVG copy. */
@@ -580,27 +580,30 @@ export function SvgEditor({
           </Btn>
         </div>
         <div class="spacer" />
+        {/* biome-ignore lint/a11y/noLabelWithoutControl: the control is the DropChoice inside it. */}
         <label class="sheet-export svg-export">
           {busy ? <IconSpinner size={14} /> : <IconDownload size={14} />}
-          <select
-            aria-label={t("svgExport")}
+          <DropChoice<"svg" | "png" | "pdf" | "">
+            label={t("svgExport")}
             value=""
+            current={t("svgExport")}
             disabled={!!busy}
-            onChange={(e) => {
-              const to = (e.target as HTMLSelectElement).value as "svg" | "png" | "pdf" | "";
-              (e.target as HTMLSelectElement).value = "";
+            options={[
+              { id: "svg", label: t("svgExportSvg") },
+              { id: "png", label: t("svgExportPng") },
+              ...(info && info.pdf !== "missing"
+                ? [
+                    {
+                      id: "pdf" as const,
+                      label: info.pdf === "inkscape" ? t("svgExportPdf") : t("svgExportPdfSimple"),
+                    },
+                  ]
+                : []),
+            ]}
+            onChange={(to) => {
               if (to) exportAs(to);
             }}
-          >
-            <option value="">{t("svgExport")}</option>
-            <option value="svg">{t("svgExportSvg")}</option>
-            <option value="png">{t("svgExportPng")}</option>
-            {info && info.pdf !== "missing" && (
-              <option value="pdf">
-                {info.pdf === "inkscape" ? t("svgExportPdf") : t("svgExportPdfSimple")}
-              </option>
-            )}
-          </select>
+          />
         </label>
         {info?.inkscape && (
           <button

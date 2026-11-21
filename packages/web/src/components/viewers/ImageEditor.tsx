@@ -75,6 +75,7 @@ import {
 import { OwnUndo } from "../../viewers/own-undo.js";
 import { download } from "../../viewers/source.js";
 import { askConfirm, askText } from "../dialogs.js";
+import { DropChoice } from "../ui.js";
 import { CopyBar } from "./CopyBar.js";
 import { DEFAULT_TEXT_OPTIONS, ImageOptions, type TextOptions } from "./ImageOptions.js";
 import { ImageToolbar } from "./ImageToolbar.js";
@@ -781,31 +782,25 @@ export function ImageEditor({ file }: { file: DocFile }) {
           </span>
         )}
         <div class="spacer" />
+        {/* biome-ignore lint/a11y/noLabelWithoutControl: the control is the DropChoice inside it. */}
         <label class="sheet-export svg-export img-export">
           {exporting ? <IconSpinner size={14} /> : <IconDownload size={14} />}
-          <select
-            aria-label={t("imgExport")}
+          <DropChoice<"png" | "jpeg" | "webp" | "ora" | "psd" | "">
+            label={t("imgExport")}
             value=""
+            current={t("imgExport")}
             disabled={!!exporting}
-            onChange={(e) => {
-              const to = (e.target as HTMLSelectElement).value as
-                | "png"
-                | "jpeg"
-                | "webp"
-                | "ora"
-                | "psd"
-                | "";
-              (e.target as HTMLSelectElement).value = "";
+            options={[
+              { id: "png", label: "PNG" },
+              { id: "jpeg", label: "JPEG" },
+              { id: "webp", label: "WebP" },
+              { id: "ora", label: t("imgExportOra") },
+              { id: "psd", label: t("imgExportPsd") },
+            ]}
+            onChange={(to) => {
               if (to) exportAs(to);
             }}
-          >
-            <option value="">{t("imgExport")}</option>
-            <option value="png">PNG</option>
-            <option value="jpeg">JPEG</option>
-            <option value="webp">WebP</option>
-            <option value="ora">{t("imgExportOra")}</option>
-            <option value="psd">{t("imgExportPsd")}</option>
-          </select>
+          />
         </label>
         {/* Krita opens on the server's computer: not from a phone (G42.7). */}
         {info?.krita && !(embedded() && phoneScreen()) && (
@@ -1148,23 +1143,20 @@ export function ImageEditor({ file }: { file: DocFile }) {
                   />
                   <span class="dim img-val">{Math.round(cur.opacity * 100)}%</span>
                 </label>
+                {/* biome-ignore lint/a11y/noLabelWithoutControl: the control is the DropChoice inside it. */}
                 <label class="wide">
                   <span>{t("imgBlend")}</span>
-                  <select
+                  <DropChoice
+                    label={t("imgBlend")}
                     value={cur.blend}
-                    onChange={(e) =>
-                      i?.setProps(cur.id, { blend: (e.target as HTMLSelectElement).value })
-                    }
-                  >
-                    {!(IMAGE_BLENDS as readonly string[]).includes(cur.blend) && (
-                      <option value={cur.blend}>{cur.blend}</option>
-                    )}
-                    {IMAGE_BLENDS.map((b) => (
-                      <option key={b} value={b}>
-                        {blendLabel(b)}
-                      </option>
-                    ))}
-                  </select>
+                    options={[
+                      ...((IMAGE_BLENDS as readonly string[]).includes(cur.blend)
+                        ? []
+                        : [{ id: cur.blend, label: cur.blend }]),
+                      ...IMAGE_BLENDS.map((b) => ({ id: b as string, label: blendLabel(b) })),
+                    ]}
+                    onChange={(blend) => i?.setProps(cur.id, { blend })}
+                  />
                 </label>
               </div>
             )}
@@ -1264,13 +1256,20 @@ export function ImageEditor({ file }: { file: DocFile }) {
             <h4>
               <IconSliders size={14} /> {t("imgFilters")}
             </h4>
+            {/* biome-ignore lint/a11y/noLabelWithoutControl: the control is the DropChoice inside it. */}
             <label class="wide img-filter-pick">
-              <select
-                aria-label={t("imgFilterPick")}
+              <DropChoice
+                label={t("imgFilterPick")}
                 value={filter?.id ?? ""}
                 disabled={!cur}
-                onChange={(e) => {
-                  const id = (e.target as HTMLSelectElement).value;
+                options={[
+                  { id: "", label: t("imgFilterPick") },
+                  ...IMAGE_FILTERS.map((f) => ({
+                    id: f.id as string,
+                    label: tOptional(`imgFilter_${f.id}`) ?? f.id,
+                  })),
+                ]}
+                onChange={(id) => {
                   const def = IMAGE_FILTERS.find((f) => f.id === id);
                   if (!def) {
                     isl.current?.cancelFilter();
@@ -1280,14 +1279,7 @@ export function ImageEditor({ file }: { file: DocFile }) {
                   setFilter({ id, params });
                   isl.current?.previewFilter(id, params);
                 }}
-              >
-                <option value="">{t("imgFilterPick")}</option>
-                {IMAGE_FILTERS.map((f) => (
-                  <option key={f.id} value={f.id}>
-                    {tOptional(`imgFilter_${f.id}`) ?? f.id}
-                  </option>
-                ))}
-              </select>
+              />
             </label>
             {filter && filterDef && (
               <div class="svg-fields">

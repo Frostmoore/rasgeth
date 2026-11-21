@@ -23603,6 +23603,51 @@ fieldset.saved-filter legend {
   }
 }
 
+/* 3.10.1: the choices that took the place of a form's native select: as wide as the field */
+.ui-drop.field {
+  display: flex;
+  width: 100%;
+}
+.ui-drop.field .ui-drop-current,
+.ui-drop.st-filter .ui-drop-current {
+  flex: 1;
+  justify-content: space-between;
+  min-height: 34px;
+  background: var(--bg);
+  font-size: 13px;
+}
+:is(.wz, .wz-look) .ui-drop.field .ui-drop-current,
+.wz-look .ui-drop.st-filter .ui-drop-current {
+  min-height: 52px;
+  padding: 0 14px 0 16px;
+  border-radius: 12px;
+  background: var(--panel);
+  font-size: 16px;
+}
+.wz-look .ui-drop.st-filter {
+  height: auto;
+}
+.wz-look .ui-drop.st-filter .ui-drop-current {
+  min-height: 50px;
+}
+.board-composer .row .ui-drop,
+.img-side .svg-fields .ui-drop,
+.img-filter-pick .ui-drop,
+.model-editor .svg-fields .ui-drop {
+  flex: 1;
+  min-width: 0;
+}
+.board-composer .row .ui-drop .ui-drop-current,
+.img-side .svg-fields .ui-drop .ui-drop-current,
+.img-filter-pick .ui-drop .ui-drop-current,
+.model-editor .svg-fields .ui-drop .ui-drop-current {
+  flex: 1;
+  justify-content: space-between;
+}
+.chat-head .ui-drop {
+  max-width: 60%;
+}
+
 /* The model menus (2026-11-20): headings per provider and way, a search when the list is long */
 .ui-drop-group {
   position: sticky;

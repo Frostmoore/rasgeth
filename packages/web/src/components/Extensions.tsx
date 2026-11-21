@@ -63,7 +63,7 @@ import { KindRow } from "./Media.js";
 import { DiffView } from "./PromptRefiner.js";
 import { Acts, Facts, Head, Seg, Sub, SwitchRow, Tile, WzPage } from "./SettingsKit.js";
 import { PHONE, useMedia } from "./SetupKit.js";
-import { Field, Modal } from "./ui.js";
+import { DropChoice, type DropOption, Field, Modal } from "./ui.js";
 
 const scopeLabel = (projectId: string | null) =>
   projectId
@@ -73,13 +73,32 @@ const who = (id: string) =>
   id === "human" ? t("you") : (agents.value.find((a) => a.id === id)?.name ?? id);
 const value = (e: Event) => (e.target as HTMLInputElement).value;
 
-/** The projects as options of a select, after the first one (everywhere). */
-const projectOptions = (val: (id: string) => string, label: (name: string) => string) =>
-  projects.value.map((p) => (
-    <option key={p.id} value={val(p.id)}>
-      {label(p.name)}
-    </option>
-  ));
+/** Where something works: a first choice (everywhere), then the projects. */
+function ScopeChoice({
+  label,
+  value: v,
+  onChange,
+  first,
+  val,
+  name,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  first: DropOption<string>;
+  val: (id: string) => string;
+  name: (name: string) => string;
+}) {
+  return (
+    <DropChoice
+      class="field"
+      label={label}
+      value={v}
+      options={[first, ...projects.value.map((p) => ({ id: val(p.id), label: name(p.name) }))]}
+      onChange={onChange}
+    />
+  );
+}
 
 /** An agent's proposal, read in full: what it does, its files, how its tests went. */
 export function ProposalView({
@@ -343,13 +362,14 @@ function AddForm({
         </details>
       )}
       <Field label={t("extWhere")} help={t("extWhereHelp")}>
-        <select class="wz-field" value={scope} onChange={(e) => setScope(value(e))}>
-          <option value="">{t("extEverywhere")}</option>
-          {projectOptions(
-            (id) => id,
-            (name) => t("extOnlyProject", { name }),
-          )}
-        </select>
+        <ScopeChoice
+          label={t("extWhere")}
+          value={scope}
+          onChange={setScope}
+          first={{ id: "", label: t("extEverywhere") }}
+          val={(id) => id}
+          name={(name) => t("extOnlyProject", { name })}
+        />
       </Field>
       {entry.userUrl && (
         <Field label={t("extServerUrl", { name: entry.name })} help={t("extServerUrlHelp")}>
@@ -784,13 +804,14 @@ function NewSkill({ onDone, onCancel }: { onDone: () => void; onCancel: () => vo
         />
       </Field>
       <Field label={t("scope")}>
-        <select class="wz-field" value={scope} onChange={(e) => setScope(value(e))}>
-          <option value="">{t("scopePlatform")}</option>
-          {projectOptions(
-            (id) => id,
-            (n) => n,
-          )}
-        </select>
+        <ScopeChoice
+          label={t("scope")}
+          value={scope}
+          onChange={setScope}
+          first={{ id: "", label: t("scopePlatform") }}
+          val={(id) => id}
+          name={(n) => n}
+        />
       </Field>
       <Field label={t("instructions")}>
         <textarea
@@ -853,13 +874,14 @@ function McpForm({ onDone, onCancel }: { onDone: () => void; onCancel: () => voi
         />
       </Field>
       <Field label={t("scope")}>
-        <select class="wz-field" value={scope} onChange={(e) => setScope(value(e))}>
-          <option value="">{t("scopePlatform")}</option>
-          {projectOptions(
-            (id) => id,
-            (n) => n,
-          )}
-        </select>
+        <ScopeChoice
+          label={t("scope")}
+          value={scope}
+          onChange={setScope}
+          first={{ id: "", label: t("scopePlatform") }}
+          val={(id) => id}
+          name={(n) => n}
+        />
       </Field>
       <span class="wz-lb">{t("extTransport")}</span>
       <Seg
@@ -958,13 +980,14 @@ function ImportSkill({ onDone, onClose }: { onDone: () => void; onClose: () => v
     <div class="xw-form">
       <p class="wz-lead2">{t("skillImportHelp")}</p>
       <Field label={t("skillImportWhere")}>
-        <select class="wz-field" value={scope} onChange={(e) => setScope(value(e))}>
-          <option value="platform">{t("scopePlatform")}</option>
-          {projectOptions(
-            (id) => `project:${id}`,
-            (n) => n,
-          )}
-        </select>
+        <ScopeChoice
+          label={t("skillImportWhere")}
+          value={scope}
+          onChange={setScope}
+          first={{ id: "platform", label: t("scopePlatform") }}
+          val={(id) => `project:${id}`}
+          name={(n) => n}
+        />
       </Field>
       <input
         ref={picker}

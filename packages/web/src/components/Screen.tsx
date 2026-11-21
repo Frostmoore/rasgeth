@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import { t } from "../i18n.js";
 import { agents, browserScreen, getLive } from "../state.js";
 import { askText } from "./dialogs.js";
+import { DropChoice } from "./ui.js";
 
 /** Keys sent as such; everything else printable is typed as text. */
 const KEYS = new Set([
@@ -116,17 +117,12 @@ export function Screen() {
       ) : (
         personal.length > 0 && (
           <div class="row screen-teach">
-            <select
-              aria-label={t("teachWho")}
+            <DropChoice
+              label={t("teachWho")}
               value={pupil}
-              onChange={(e) => setPupil((e.target as HTMLSelectElement).value)}
-            >
-              {personal.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.name}
-                </option>
-              ))}
-            </select>
+              options={personal.map((a) => ({ id: a.id, label: a.name }))}
+              onChange={setPupil}
+            />
             <button
               type="button"
               title={t("teachHint")}

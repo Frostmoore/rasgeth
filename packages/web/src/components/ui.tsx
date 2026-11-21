@@ -215,6 +215,8 @@ export function DropChoice<T extends string>({
   search,
   current,
   onOpen,
+  startOpen,
+  onClose,
 }: {
   value: T;
   options: DropOption<T>[];
@@ -230,6 +232,10 @@ export function DropChoice<T extends string>({
   current?: string;
   /** Called as the list opens (to read the options again). */
   onOpen?: () => void;
+  /** Open the list as soon as it is shown (a choice that appears after a button). */
+  startOpen?: boolean;
+  /** Called as the list closes, whether something was chosen or not. */
+  onClose?: () => void;
 }) {
   /** Where the list opens: under the button, from its left, or from its right near the edge. */
   const [at, setAt] = useState<{ left?: number; right?: number; top: number; width: number }>();
@@ -248,6 +254,7 @@ export function DropChoice<T extends string>({
     setAt(undefined);
     setQuery("");
     if (focus) btn.current?.focus();
+    onClose?.();
   };
   const open = () => {
     onOpen?.();
@@ -259,6 +266,9 @@ export function DropChoice<T extends string>({
       setAt({ right: Math.max(4, window.innerWidth - (r?.right ?? 0)), top, width });
     else setAt({ left: Math.max(4, r?.left ?? 0), top, width });
   };
+  useEffect(() => {
+    if (startOpen) open();
+  }, []);
   useEffect(() => {
     if (!at) return;
     const on =

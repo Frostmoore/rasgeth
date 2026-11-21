@@ -3,6 +3,7 @@ import type { BoardPost, BoardThread } from "../api.js";
 import { t } from "../i18n.js";
 import { renderMarkdown } from "../markdown.js";
 import { agents, attempt, boardVersion, getApi, subprojects } from "../state.js";
+import { DropChoice } from "./ui.js";
 
 const KINDS = t("postKinds").split(",") as BoardPost["kind"][];
 const kindLabel = (k: BoardPost["kind"]) => t("postKindLabels").split(",")[KINDS.indexOf(k)] ?? k;
@@ -50,16 +51,12 @@ function Composer({
         onInput={(e) => setBody((e.target as HTMLTextAreaElement).value)}
       />
       <div class="row">
-        <select
+        <DropChoice<BoardPost["kind"]>
+          label={t("kind")}
           value={kind}
-          onChange={(e) => setKind((e.target as HTMLSelectElement).value as BoardPost["kind"])}
-        >
-          {KINDS.map((k) => (
-            <option key={k} value={k}>
-              {kindLabel(k)}
-            </option>
-          ))}
-        </select>
+          options={KINDS.map((k) => ({ id: k, label: kindLabel(k) }))}
+          onChange={setKind}
+        />
         <button type="submit" class="primary">
           {withTitle ? t("newThread") : t("reply")}
         </button>
@@ -102,18 +99,16 @@ export function Board({ projectId }: { projectId: string | null }) {
     <div class="board">
       <aside class="board-list">
         {subs.length > 0 && (
-          <select
-            aria-label={t("boardSub")}
+          <DropChoice
+            class="field"
+            label={t("boardSub")}
             value={sub}
-            onChange={(e) => setSub((e.target as HTMLSelectElement).value)}
-          >
-            <option value="">{t("agentWholeProject")}</option>
-            {subs.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
-          </select>
+            options={[
+              { id: "", label: t("agentWholeProject") },
+              ...subs.map((s) => ({ id: s.id, label: s.name })),
+            ]}
+            onChange={setSub}
+          />
         )}
         <form class="row" onSubmit={(e) => void search(e)}>
           <input

@@ -7,7 +7,7 @@ import type { SetupState } from "../api.js";
 import { t } from "../i18n.js";
 import { getApi } from "../state.js";
 import { explain } from "./Brain.js";
-import { Choice, Field } from "./ui.js";
+import { Choice, DropChoice, Field } from "./ui.js";
 
 type Pick = { provider: string; model: string; voice?: string };
 
@@ -176,30 +176,26 @@ export function KindRow({
         <>
           <div class="form">
             <Field label={t("model")}>
-              <select
+              <DropChoice
+                class="field"
+                label={t("model")}
                 value={saved.model}
-                onChange={(e) => save({ ...saved, model: (e.target as HTMLSelectElement).value })}
-              >
-                {models.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.label}
-                  </option>
-                ))}
-              </select>
+                options={models.map((m) => ({ id: m.id, label: m.label }))}
+                onChange={(model) => save({ ...saved, model })}
+              />
             </Field>
             {kind === "speech" && voices && voices.length > 0 && (
               <Field label={t("mediaVoice")}>
-                <select
+                <DropChoice
+                  class="field"
+                  label={t("mediaVoice")}
                   value={saved.voice ?? ""}
-                  onChange={(e) => save({ ...saved, voice: (e.target as HTMLSelectElement).value })}
-                >
-                  {!saved.voice && <option value="">{t("mediaVoiceFirst")}</option>}
-                  {voices.map((v) => (
-                    <option key={v.id} value={v.id}>
-                      {v.label}
-                    </option>
-                  ))}
-                </select>
+                  options={[
+                    ...(saved.voice ? [] : [{ id: "", label: t("mediaVoiceFirst") }]),
+                    ...voices.map((v) => ({ id: v.id, label: v.label })),
+                  ]}
+                  onChange={(voice) => save({ ...saved, voice })}
+                />
               </Field>
             )}
           </div>
