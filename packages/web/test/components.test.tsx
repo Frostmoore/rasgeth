@@ -243,13 +243,16 @@ describe("ui pieces", () => {
       budgetUsd: null,
     } as unknown as SetupState;
     const r = render(<Safety s={s} register={() => {}} />);
-    fireEvent.click(r.getByRole("button", { name: /^Personalizza$/ }));
+    const button = [...r.container.querySelectorAll("button")].find(
+      (b) => b.textContent === "Personalizza",
+    );
+    fireEvent.click(button as Element);
     const sw = r.getByRole("switch", { name: "Rimuovere un agente dalla squadra" });
     expect(sw.getAttribute("aria-checked")).toBe("false");
     fireEvent.click(sw);
     expect(sw.getAttribute("aria-checked")).toBe("true");
     // Who approves the others did not change: still the ready choice «Libera».
-    expect(r.queryByText(/Una scelta tua/)).toBeNull();
+    expect(r.container.textContent).not.toMatch(/Una scelta tua/);
     r.unmount();
   });
 
