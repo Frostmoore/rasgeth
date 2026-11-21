@@ -660,6 +660,10 @@ class _AddServerState extends State<AddServer> {
                 key: const Key('server-error'),
                 style: TextStyle(color: app.error == ConnectError.keyChanged ? c.critical : c.err),
               ),
+              // 3.10.1: what the keystore said, for whoever looks into it (on Rig: DPAPI's
+              // «Could not get the master key», 0x8009000B, gone after a restart).
+              if (app.error == ConnectError.keystore && (app.errorMessage ?? '').isNotEmpty)
+                ErrorDetails(app.errorMessage!),
             ],
             const SizedBox(height: 12),
             FilledButton(
@@ -692,6 +696,53 @@ class _NewTag extends StatelessWidget {
         text,
         style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: c.accent),
       ),
+    );
+  }
+}
+
+/// A small «Dettagli» under an error, opening the technical words as they came (selectable).
+class ErrorDetails extends StatefulWidget {
+  const ErrorDetails(this.detail, {super.key});
+
+  final String detail;
+
+  @override
+  State<ErrorDetails> createState() => _ErrorDetailsState();
+}
+
+class _ErrorDetailsState extends State<ErrorDetails> {
+  bool _open = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          key: const Key('server-error-details'),
+          borderRadius: BorderRadius.circular(6),
+          onTap: () => setState(() => _open = !_open),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RgIcon(_open ? RgIcons.chevronDown : RgIcons.chevronRight, size: 13, color: c.dim),
+                const SizedBox(width: 4),
+                Text(l.errKeystoreDetails, style: TextStyle(color: c.dim, fontSize: 12.5)),
+              ],
+            ),
+          ),
+        ),
+        if (_open)
+          SelectableText(
+            widget.detail,
+            key: const Key('server-error-detail'),
+            style: TextStyle(color: c.dim, fontSize: 12, fontFamily: 'monospace', height: 1.4),
+          ),
+      ],
     );
   }
 }
