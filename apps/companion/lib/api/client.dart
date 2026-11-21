@@ -1180,6 +1180,21 @@ class RedGiantClient {
   /// G42.4: any other request (its answer may be empty: null).
   Future<Object?> callJson(String method, String path, [Object? body]) => _call(method, path, body);
 
+  /// G42.11: a request whose answer is bytes (a skill's .zip); a refusal throws.
+  Future<Uint8List> rawBytes(String method, String path, {Map<String, String>? query}) async {
+    final r = await _send(method, path, query: query, accept: '*/*');
+    if (r.status < 200 || r.status >= 300) _decode(r);
+    return r.bytes;
+  }
+
+  /// G42.11: bytes up (a skill's .zip), its JSON answer back.
+  Future<Object?> rawCall(
+    String method,
+    String path, {
+    Map<String, String>? query,
+    required List<int> body,
+  }) async => _decode(await _send(method, path, query: query, raw: body));
+
   /// G42.4: an answer that must be an object, or a list of objects.
   Map<String, dynamic> objectOf(Object? o) => _object(o);
   List<Map<String, dynamic>> arrayOf(Object? o) => _array(o);

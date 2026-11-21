@@ -18,6 +18,7 @@ import '../ui/common.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../settings/automations/automation_notices.dart';
+import '../settings/extensions/proposals_block.dart';
 
 /// What a permission asks to do, in one line (the command, the path, else the input).
 String requestSummary(PermissionRequest r) {
@@ -98,6 +99,11 @@ class _InboxScreenState extends State<InboxScreen> {
                         ),
                       ],
                     ),
+            ),
+            // G42.11: the agents' proposals, only when one waits.
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: ProposalsBlock(hideEmpty: true),
             ),
             // G42.9: the automations' messages (`automation.notice`), as the page's bell.
             if (app.live.notices.isNotEmpty && top == null)

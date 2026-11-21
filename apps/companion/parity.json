@@ -164,11 +164,19 @@
       "note": "Native (G42.9): the list with its switch, runs, run now, the webhook's secret shown once, delete; a new automation or reminder; the whole editor (When, Only if, What it does, Where it tells you, Advanced, the YAML in a coloured field, the next times from the server), ported from AutomationEditor.tsx and checked with the page's vectors; the magic automation with God (proposal beside the conversation, needs, approve, change, reject); an assistant's routines with the same editor; the messages in For you, the bell and the system's notifications (push kind automation). The mailboxes are only listed (added in Channels and mailboxes, G42.13)."
     },
     "extensions": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
+        "lib/settings/extensions/extensions_screen.dart",
+        "lib/settings/extensions/magic_extension.dart",
+        "lib/settings/extensions/media_kind.dart",
+        "lib/settings/extensions/proposals_block.dart",
+        "lib/settings/extensions/ext_catalog.dart",
+        "lib/settings/extensions/ext_catalog.g.dart",
+        "lib/settings/extensions/ext_kit.dart",
+        "lib/settings/api/extensions_api.dart",
         "lib/settings/skills_screen.dart",
-        "lib/settings/api/skills_api.dart"
+        "lib/settings/api/skills_api.dart",
+        "lib/desktop/bell.dart"
       ],
       "phase": "G42.11",
       "rows": [
@@ -181,12 +189,15 @@
         177,
         253
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native extensions, MCP and skills in G42.11. 3.9.7: Settings › Skills native (skills_screen.dart): the agents' skills waiting (a new version with its reason and what changes word by word, approve or reject), the installed skills with their versions (who, why, when, the one in use), compared and brought back after a yes."
+      "note": "Native (G42.11): the magic integration and extension with God (the package beside the conversation, its parts with their arguments and tests, the hosts it reaches, the missing key added in its window into the keychain or given to the package after a yes, approve, test again, reject with a reason, change, uninstall); the agents' proposals read in full (a new version with its line, word by word, its scripts) and decided, also in the bell and in For you; the services connected with their state (signing in opens the service's page in the system's browser, then the state is read again until it works), sign in again, remove; the generation (the model's own tool, who makes each kind, its key with where to get it, the model and the voice); the catalog (the protocol's MCP_CATALOG and catalogConfig, checked with its vectors: search, kinds, official first, the guide with the return address to copy, the person's own app, the fields, the key); the installed skills and tools (versions, download as .zip, open the file); a skill's .zip imported (asked before replacing), a skill written, an MCP server by address or command. No brand logos: the kinds' drawn icons. 3.9.7: Settings › Skills (skills_screen.dart) stays as a shortcut."
     },
     "keychain": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/vault/keychain_screen.dart",
+        "lib/settings/api/keychain_api.dart",
+        "lib/settings/extensions/ext_kit.dart",
+        "lib/screens/conversation_screen.dart"
       ],
       "phase": "G42.12",
       "rows": [
@@ -200,7 +211,7 @@
         265,
         12
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native keychain in G42.12."
+      "note": "Native (G42.12): the list with search and kinds, how it is sealed, what expires soon; the keys a part of Rasgeth uses (usedBy: «Used by» with its page, never deleted here) and the ones it keeps elsewhere (system, set by the administrator when locked); a credential's window (service and name, kind, user, address, the value shown or copied only after our window and dropped when hidden or closed, the clipboard emptied after 30 s, the generator, where it may go, who may use it, agents, tools and automations, when to ask, expiry, labels, notes, the header), its last uses; importing a password manager's CSV (preview, the rows kept) or a sealed file, the sealed export; the browsers linked with a code, unlinked after a yes; a secret held back in the composer put in the keychain («Put it in the keychain»), a magic automation's missing key added from its need. The device's own unlock (biometrics) is not there yet: the plugin is not in the app."
     },
     "telegram": {
       "app": "native",

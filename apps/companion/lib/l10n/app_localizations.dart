@@ -22010,6 +22010,2748 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Subscriptions, API keys, your own server, the model on this computer and who uses which'**
   String get moHubModels;
+
+  /// No description provided for @xtAddServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Add server'**
+  String get xtAddServer;
+
+  /// No description provided for @xtApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get xtApprove;
+
+  /// No description provided for @xtArgs.
+  ///
+  /// In en, this message translates to:
+  /// **'Arguments'**
+  String get xtArgs;
+
+  /// No description provided for @xtAxMagicDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Put it away'**
+  String get xtAxMagicDismiss;
+
+  /// No description provided for @xtAxMagicExamples.
+  ///
+  /// In en, this message translates to:
+  /// **'Or start from an example'**
+  String get xtAxMagicExamples;
+
+  /// No description provided for @xtAxMagicGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask God'**
+  String get xtAxMagicGo;
+
+  /// No description provided for @xtAxMagicReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Not like this'**
+  String get xtAxMagicReject;
+
+  /// No description provided for @xtAxMagicSendNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to God'**
+  String get xtAxMagicSendNo;
+
+  /// No description provided for @xtAxMagicStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Calling God…'**
+  String get xtAxMagicStarting;
+
+  /// No description provided for @xtAxMagicWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'What is wrong? God reads it and tries again'**
+  String get xtAxMagicWhy;
+
+  /// No description provided for @xtAxNeedMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing'**
+  String get xtAxNeedMissing;
+
+  /// No description provided for @xtAxNeedReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get xtAxNeedReady;
+
+  /// No description provided for @xtAxNeedVault.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to the keychain'**
+  String get xtAxNeedVault;
+
+  /// No description provided for @xtBy.
+  ///
+  /// In en, this message translates to:
+  /// **'by'**
+  String get xtBy;
+
+  /// No description provided for @xtCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get xtCancel;
+
+  /// No description provided for @xtCommand.
+  ///
+  /// In en, this message translates to:
+  /// **'Command'**
+  String get xtCommand;
+
+  /// No description provided for @xtCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get xtCopied;
+
+  /// No description provided for @xtCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get xtCopy;
+
+  /// No description provided for @xtCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get xtCreate;
+
+  /// No description provided for @xtDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get xtDescription;
+
+  /// No description provided for @xtExtAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get xtExtAdd;
+
+  /// No description provided for @xtExtAddAndConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Add and connect'**
+  String get xtExtAddAndConnect;
+
+  /// No description provided for @xtExtAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get xtExtAdded;
+
+  /// No description provided for @xtExtAppConsole.
+  ///
+  /// In en, this message translates to:
+  /// **'Open {name}\'s developer page'**
+  String xtExtAppConsole(String name);
+
+  /// No description provided for @xtExtAppGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your own app on {name} (once, about ten minutes)'**
+  String xtExtAppGuide(String name);
+
+  /// No description provided for @xtExtAskHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask God with a magic integration or extension, in your own words: God looks for a ready service in the catalog, or writes a new ability, tests it and asks you before installing anything.'**
+  String get xtExtAskHelp;
+
+  /// No description provided for @xtExtAskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What should your agents be able to do?'**
+  String get xtExtAskTitle;
+
+  /// No description provided for @xtExtAuth_app.
+  ///
+  /// In en, this message translates to:
+  /// **'Your own app, with a guide'**
+  String get xtExtAuth_app;
+
+  /// No description provided for @xtExtAuth_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs a key'**
+  String get xtExtAuth_header;
+
+  /// No description provided for @xtExtAuth_none.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to sign in to'**
+  String get xtExtAuth_none;
+
+  /// No description provided for @xtExtAuth_oauth.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in on its page'**
+  String get xtExtAuth_oauth;
+
+  /// No description provided for @xtExtBroken.
+  ///
+  /// In en, this message translates to:
+  /// **'Not working'**
+  String get xtExtBroken;
+
+  /// No description provided for @xtExtBrokenHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A service that does not work: check the key, or remove it and add it again. Hover over the label to see the error.'**
+  String get xtExtBrokenHelp;
+
+  /// No description provided for @xtExtCatAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get xtExtCatAll;
+
+  /// No description provided for @xtExtCat_cloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud'**
+  String get xtExtCat_cloud;
+
+  /// No description provided for @xtExtCat_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get xtExtCat_code;
+
+  /// No description provided for @xtExtCat_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get xtExtCat_data;
+
+  /// No description provided for @xtExtCat_design.
+  ///
+  /// In en, this message translates to:
+  /// **'Design'**
+  String get xtExtCat_design;
+
+  /// No description provided for @xtExtCat_docs.
+  ///
+  /// In en, this message translates to:
+  /// **'Documentation'**
+  String get xtExtCat_docs;
+
+  /// No description provided for @xtExtCat_home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get xtExtCat_home;
+
+  /// No description provided for @xtExtCat_web.
+  ///
+  /// In en, this message translates to:
+  /// **'Web'**
+  String get xtExtCat_web;
+
+  /// No description provided for @xtExtCat_work.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get xtExtCat_work;
+
+  /// No description provided for @xtExtCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Services you can add'**
+  String get xtExtCatalog;
+
+  /// No description provided for @xtExtCatalogHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Each one gives your agents new tools. The services\' own ones come first; the community ones are made by others.'**
+  String get xtExtCatalogHelp;
+
+  /// No description provided for @xtExtChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking…'**
+  String get xtExtChecking;
+
+  /// No description provided for @xtExtClientId.
+  ///
+  /// In en, this message translates to:
+  /// **'Client ID of your app'**
+  String get xtExtClientId;
+
+  /// No description provided for @xtExtClientSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'Client secret of your app'**
+  String get xtExtClientSecret;
+
+  /// No description provided for @xtExtClientSecretOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Client secret of your app (if it has one)'**
+  String get xtExtClientSecretOptional;
+
+  /// No description provided for @xtExtCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Community'**
+  String get xtExtCommunity;
+
+  /// No description provided for @xtExtConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get xtExtConnect;
+
+  /// No description provided for @xtExtConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Your services'**
+  String get xtExtConnected;
+
+  /// No description provided for @xtExtEverywhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Everywhere'**
+  String get xtExtEverywhere;
+
+  /// No description provided for @xtExtGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'How to set up {name}'**
+  String xtExtGuide(String name);
+
+  /// No description provided for @xtExtKey.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} key'**
+  String xtExtKey(String name);
+
+  /// No description provided for @xtExtKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It is kept in a private file on your server and never shown again, not even to the agents.'**
+  String get xtExtKeyHelp;
+
+  /// No description provided for @xtExtKeyWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where do I find the {name} key?'**
+  String xtExtKeyWhere(String name);
+
+  /// No description provided for @xtExtKindSkill.
+  ///
+  /// In en, this message translates to:
+  /// **'Skill'**
+  String get xtExtKindSkill;
+
+  /// No description provided for @xtExtKindTool.
+  ///
+  /// In en, this message translates to:
+  /// **'Tool'**
+  String get xtExtKindTool;
+
+  /// No description provided for @xtExtManualOauth.
+  ///
+  /// In en, this message translates to:
+  /// **'It signs in on its own page (OAuth)'**
+  String get xtExtManualOauth;
+
+  /// No description provided for @xtExtManualToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Key (optional, sent as Bearer)'**
+  String get xtExtManualToken;
+
+  /// No description provided for @xtExtMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More about it'**
+  String get xtExtMore;
+
+  /// No description provided for @xtExtNeedsLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs you to sign in'**
+  String get xtExtNeedsLogin;
+
+  /// No description provided for @xtExtNothingFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing found. Ask God with the magic extension above: it can write what is missing.'**
+  String get xtExtNothingFound;
+
+  /// No description provided for @xtExtOauthHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A new tab opens on {name}\'s page: sign in there and allow Rasgeth. Then come back here.'**
+  String xtExtOauthHelp(String name);
+
+  /// No description provided for @xtExtOfficial.
+  ///
+  /// In en, this message translates to:
+  /// **'Official'**
+  String get xtExtOfficial;
+
+  /// No description provided for @xtExtOnlyProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Only in {name}'**
+  String xtExtOnlyProject(String name);
+
+  /// No description provided for @xtExtProposals.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you'**
+  String get xtExtProposals;
+
+  /// No description provided for @xtExtProposalsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Abilities written by the agents and already tested: nothing is installed until you approve it.'**
+  String get xtExtProposalsHelp;
+
+  /// No description provided for @xtExtSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search a service'**
+  String get xtExtSearch;
+
+  /// No description provided for @xtExtServerUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\'s address'**
+  String xtExtServerUrl(String name);
+
+  /// No description provided for @xtExtServerUrlHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'As Rasgeth\'s server reaches it, for example on your home network.'**
+  String get xtExtServerUrlHelp;
+
+  /// No description provided for @xtExtSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills and tools'**
+  String get xtExtSkills;
+
+  /// No description provided for @xtExtSkillsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Abilities installed for your agents. Click one to read or change it.'**
+  String get xtExtSkillsHelp;
+
+  /// No description provided for @xtExtTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'How it runs'**
+  String get xtExtTransport;
+
+  /// No description provided for @xtExtTransportHttp.
+  ///
+  /// In en, this message translates to:
+  /// **'Online (address)'**
+  String get xtExtTransportHttp;
+
+  /// No description provided for @xtExtTransportStdio.
+  ///
+  /// In en, this message translates to:
+  /// **'On this server (command)'**
+  String get xtExtTransportStdio;
+
+  /// No description provided for @xtExtUnverified.
+  ///
+  /// In en, this message translates to:
+  /// **'Not confirmed on the service\'s own pages: if something does not match, its documentation is right.'**
+  String get xtExtUnverified;
+
+  /// No description provided for @xtExtUnverifiedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'to be checked'**
+  String get xtExtUnverifiedShort;
+
+  /// No description provided for @xtExtWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it works'**
+  String get xtExtWhere;
+
+  /// No description provided for @xtExtWhereHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Everywhere, or only for the agents of one project.'**
+  String get xtExtWhereHelp;
+
+  /// No description provided for @xtExtWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'Works · {n} tools'**
+  String xtExtWorks(String n);
+
+  /// No description provided for @xtExtensions.
+  ///
+  /// In en, this message translates to:
+  /// **'Extensions'**
+  String get xtExtensions;
+
+  /// No description provided for @xtFailedTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed its tests'**
+  String get xtFailedTests;
+
+  /// No description provided for @xtInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions'**
+  String get xtInstructions;
+
+  /// No description provided for @xtMediaGetKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a key'**
+  String get xtMediaGetKey;
+
+  /// No description provided for @xtMediaHasKey.
+  ///
+  /// In en, this message translates to:
+  /// **'key already there'**
+  String get xtMediaHasKey;
+
+  /// No description provided for @xtMediaKey.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} key'**
+  String xtMediaKey(String name);
+
+  /// No description provided for @xtMediaKeyLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} key linked'**
+  String xtMediaKeyLinked(String name);
+
+  /// No description provided for @xtMediaKeyStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the {name} page where keys are made and sign in (or create an account).'**
+  String xtMediaKeyStep1(String name);
+
+  /// No description provided for @xtMediaKeyStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new key and copy it.'**
+  String get xtMediaKeyStep2;
+
+  /// No description provided for @xtMediaKeyStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste it here and save:'**
+  String get xtMediaKeyStep3;
+
+  /// No description provided for @xtMediaNativeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.'**
+  String get xtMediaNativeHelp;
+
+  /// No description provided for @xtMediaNativeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the model\'s own tool when it has one'**
+  String get xtMediaNativeTitle;
+
+  /// No description provided for @xtMediaNeedsKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs its key'**
+  String get xtMediaNeedsKey;
+
+  /// No description provided for @xtMediaOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get xtMediaOff;
+
+  /// No description provided for @xtMediaOtherProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose another provider'**
+  String get xtMediaOtherProvider;
+
+  /// No description provided for @xtMediaPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Who makes pictures, videos, voices, music and sound effects when an agent is asked for one (the tools image_generation, video_generation and audio_generation). Choose a provider and a model for each, and paste its key: a key you already gave for the chat (OpenAI, Gemini, xAI) works here too. They are paid by the provider for what you make.'**
+  String get xtMediaPurpose;
+
+  /// No description provided for @xtMediaStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Who makes it'**
+  String get xtMediaStep1;
+
+  /// No description provided for @xtMediaStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'2. The {name} key'**
+  String xtMediaStep2(String name);
+
+  /// No description provided for @xtMediaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Default extensions'**
+  String get xtMediaTitle;
+
+  /// No description provided for @xtMediaTurnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get xtMediaTurnOff;
+
+  /// No description provided for @xtMediaVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get xtMediaVoice;
+
+  /// No description provided for @xtMediaVoiceFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'The account\'s first one'**
+  String get xtMediaVoiceFirst;
+
+  /// No description provided for @xtMedia_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Pictures'**
+  String get xtMedia_image;
+
+  /// No description provided for @xtMedia_image_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawings, photos, illustrations, logos from a description (or from a picture).'**
+  String get xtMedia_image_help;
+
+  /// No description provided for @xtMedia_music.
+  ///
+  /// In en, this message translates to:
+  /// **'Music'**
+  String get xtMedia_music;
+
+  /// No description provided for @xtMedia_music_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Songs and pieces from a description, with or without singing.'**
+  String get xtMedia_music_help;
+
+  /// No description provided for @xtMedia_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound effects'**
+  String get xtMedia_sound;
+
+  /// No description provided for @xtMedia_sound_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Short sounds from a description: a door, rain, a crowd, an engine.'**
+  String get xtMedia_sound_help;
+
+  /// No description provided for @xtMedia_speech.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get xtMedia_speech;
+
+  /// No description provided for @xtMedia_speech_help.
+  ///
+  /// In en, this message translates to:
+  /// **'A text read aloud, with the voice you choose.'**
+  String get xtMedia_speech_help;
+
+  /// No description provided for @xtMedia_video.
+  ///
+  /// In en, this message translates to:
+  /// **'Videos'**
+  String get xtMedia_video;
+
+  /// No description provided for @xtMedia_video_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Short clips from a description or from a first frame. They take minutes and cost more. (OpenAI closed Sora in September 2026.)'**
+  String get xtMedia_video_help;
+
+  /// No description provided for @xtModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get xtModel;
+
+  /// No description provided for @xtMxApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve and install'**
+  String get xtMxApprove;
+
+  /// No description provided for @xtMxArgs.
+  ///
+  /// In en, this message translates to:
+  /// **'Arguments:'**
+  String get xtMxArgs;
+
+  /// No description provided for @xtMxBadgeApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'To install'**
+  String get xtMxBadgeApprove;
+
+  /// No description provided for @xtMxBadgeInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get xtMxBadgeInstalled;
+
+  /// No description provided for @xtMxBadgeMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Something missing'**
+  String get xtMxBadgeMissing;
+
+  /// No description provided for @xtMxBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'God is building it with you: answer its questions in the conversation.'**
+  String get xtMxBuilding;
+
+  /// No description provided for @xtMxChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change it'**
+  String get xtMxChange;
+
+  /// No description provided for @xtMxChangeGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask God'**
+  String get xtMxChangeGo;
+
+  /// No description provided for @xtMxChangeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'What should change? God proposes it again and you install it as before.'**
+  String get xtMxChangeLabel;
+
+  /// No description provided for @xtMxChanging.
+  ///
+  /// In en, this message translates to:
+  /// **'God is changing it with you; what is installed keeps working until you approve the new version.'**
+  String get xtMxChanging;
+
+  /// No description provided for @xtMxCheckHost.
+  ///
+  /// In en, this message translates to:
+  /// **'The address {what}'**
+  String xtMxCheckHost(String what);
+
+  /// No description provided for @xtMxCheckKey.
+  ///
+  /// In en, this message translates to:
+  /// **'The key for {what}'**
+  String xtMxCheckKey(String what);
+
+  /// No description provided for @xtMxCheckKeyUndeclared.
+  ///
+  /// In en, this message translates to:
+  /// **'The key {what}, used by the code but not declared'**
+  String xtMxCheckKeyUndeclared(String what);
+
+  /// No description provided for @xtMxCheckTest.
+  ///
+  /// In en, this message translates to:
+  /// **'The test of {what}'**
+  String xtMxCheckTest(String what);
+
+  /// No description provided for @xtMxCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Read the code'**
+  String get xtMxCode;
+
+  /// No description provided for @xtMxDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed: every agent has these tools from its next conversation.'**
+  String get xtMxDone;
+
+  /// No description provided for @xtMxExtension.
+  ///
+  /// In en, this message translates to:
+  /// **'Magic extension'**
+  String get xtMxExtension;
+
+  /// No description provided for @xtMxExtensionAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'What should the agents be able to do?'**
+  String get xtMxExtensionAsk;
+
+  /// No description provided for @xtMxExtensionEx1.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn a CSV into a chart and tell me the totals'**
+  String get xtMxExtensionEx1;
+
+  /// No description provided for @xtMxExtensionEx2.
+  ///
+  /// In en, this message translates to:
+  /// **'Check that an Italian VAT number and tax code are valid'**
+  String get xtMxExtensionEx2;
+
+  /// No description provided for @xtMxExtensionEx3.
+  ///
+  /// In en, this message translates to:
+  /// **'A skill for writing my weekly report the way I like it'**
+  String get xtMxExtensionEx3;
+
+  /// No description provided for @xtMxExtensionLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell God what the agents should be able to do. God asks, writes tools and skills with their tests and tries them in a closed sandbox: you see the result and install it with one button.'**
+  String get xtMxExtensionLead;
+
+  /// No description provided for @xtMxExtensionPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: turn a CSV into a chart and tell me the totals'**
+  String get xtMxExtensionPlaceholder;
+
+  /// No description provided for @xtMxExtensionTile.
+  ///
+  /// In en, this message translates to:
+  /// **'New abilities for the agents, of any kind: God writes the tools and skills, tests them apart and you install them.'**
+  String get xtMxExtensionTile;
+
+  /// No description provided for @xtMxGiveKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Give it to these tools'**
+  String get xtMxGiveKey;
+
+  /// No description provided for @xtMxGiveKeyText.
+  ///
+  /// In en, this message translates to:
+  /// **'Only these tools will receive it, through the proxy, and only towards {hosts}: {tools}.'**
+  String xtMxGiveKeyText(String hosts, String tools);
+
+  /// No description provided for @xtMxGiveKeyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Give {what} to this package?'**
+  String xtMxGiveKeyTitle(String what);
+
+  /// No description provided for @xtMxIntegration.
+  ///
+  /// In en, this message translates to:
+  /// **'Magic integration'**
+  String get xtMxIntegration;
+
+  /// No description provided for @xtMxIntegrationAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Which service, and what for?'**
+  String get xtMxIntegrationAsk;
+
+  /// No description provided for @xtMxIntegrationEx1.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect me to Notion: search my pages and create new ones'**
+  String get xtMxIntegrationEx1;
+
+  /// No description provided for @xtMxIntegrationEx2.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect me to my management software\'s API (invoices and customers)'**
+  String get xtMxIntegrationEx2;
+
+  /// No description provided for @xtMxIntegrationEx3.
+  ///
+  /// In en, this message translates to:
+  /// **'Read my Todoist tasks and mark them done'**
+  String get xtMxIntegrationEx3;
+
+  /// No description provided for @xtMxIntegrationLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell God which service and what the agents should do with it. God asks what it needs, writes the connector with its tests and tries it in a closed sandbox: you see the result and install it with one button.'**
+  String get xtMxIntegrationLead;
+
+  /// No description provided for @xtMxIntegrationPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: connect me to Notion so the agents can search my pages and add notes'**
+  String get xtMxIntegrationPlaceholder;
+
+  /// No description provided for @xtMxIntegrationTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Rasgeth to a service through its API (Notion, your management software, a bank…): God writes the connector, tests it apart and you install it.'**
+  String get xtMxIntegrationTile;
+
+  /// No description provided for @xtMxKeyHosts.
+  ///
+  /// In en, this message translates to:
+  /// **'It may go only to:'**
+  String get xtMxKeyHosts;
+
+  /// No description provided for @xtMxKeyLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the key here: it goes straight into your keychain, encrypted. Nobody reads it, God included; the tools receive it only through the proxy.'**
+  String get xtMxKeyLead;
+
+  /// No description provided for @xtMxKeyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name in the keychain:'**
+  String get xtMxKeyName;
+
+  /// No description provided for @xtMxKeyOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Used only by this package\'s tools; you can change it in Settings > Keychain.'**
+  String get xtMxKeyOnly;
+
+  /// No description provided for @xtMxKeySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save in the keychain'**
+  String get xtMxKeySave;
+
+  /// No description provided for @xtMxKeyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Key for {service}'**
+  String xtMxKeyTitle(String service);
+
+  /// No description provided for @xtMxKeyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'The key'**
+  String get xtMxKeyValue;
+
+  /// No description provided for @xtMxKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys'**
+  String get xtMxKeys;
+
+  /// No description provided for @xtMxListLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Built with God: open one to go on with the conversation, install it, change it or remove it.'**
+  String get xtMxListLead;
+
+  /// No description provided for @xtMxListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Magic integrations and extensions'**
+  String get xtMxListTitle;
+
+  /// No description provided for @xtMxMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Before you can install it, this is missing:'**
+  String get xtMxMissing;
+
+  /// No description provided for @xtMxParts.
+  ///
+  /// In en, this message translates to:
+  /// **'What it adds'**
+  String get xtMxParts;
+
+  /// No description provided for @xtMxPromise1.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is installed without your yes.'**
+  String get xtMxPromise1;
+
+  /// No description provided for @xtMxPromise2.
+  ///
+  /// In en, this message translates to:
+  /// **'Every part is tested in a closed sandbox that reaches only the services it declares.'**
+  String get xtMxPromise2;
+
+  /// No description provided for @xtMxPromise3.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys go into your keychain from the window, never in the chat.'**
+  String get xtMxPromise3;
+
+  /// No description provided for @xtMxProposal.
+  ///
+  /// In en, this message translates to:
+  /// **'God\'s package'**
+  String get xtMxProposal;
+
+  /// No description provided for @xtMxReaches.
+  ///
+  /// In en, this message translates to:
+  /// **'It reaches only'**
+  String get xtMxReaches;
+
+  /// No description provided for @xtMxReachesNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing: it works without the network.'**
+  String get xtMxReachesNothing;
+
+  /// No description provided for @xtMxRetest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test again'**
+  String get xtMxRetest;
+
+  /// No description provided for @xtMxState_building.
+  ///
+  /// In en, this message translates to:
+  /// **'Being built'**
+  String get xtMxState_building;
+
+  /// No description provided for @xtMxState_dismissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Put away'**
+  String get xtMxState_dismissed;
+
+  /// No description provided for @xtMxState_done.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get xtMxState_done;
+
+  /// No description provided for @xtMxState_ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready: it waits for you'**
+  String get xtMxState_ready;
+
+  /// No description provided for @xtMxState_testing.
+  ///
+  /// In en, this message translates to:
+  /// **'Tests running'**
+  String get xtMxState_testing;
+
+  /// No description provided for @xtMxStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'You say what you want'**
+  String get xtMxStep1;
+
+  /// No description provided for @xtMxStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'God writes and tests it'**
+  String get xtMxStep2;
+
+  /// No description provided for @xtMxStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'You install it'**
+  String get xtMxStep3;
+
+  /// No description provided for @xtMxTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'The tests are running again in the sandbox…'**
+  String get xtMxTesting;
+
+  /// No description provided for @xtMxUninstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstall'**
+  String get xtMxUninstall;
+
+  /// No description provided for @xtMxUninstallText.
+  ///
+  /// In en, this message translates to:
+  /// **'These go away: {what}. The keys added for it leave the keychain too.'**
+  String xtMxUninstallText(String what);
+
+  /// No description provided for @xtMxUninstallTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstall {what}?'**
+  String xtMxUninstallTitle(String what);
+
+  /// No description provided for @xtMxWhyGod.
+  ///
+  /// In en, this message translates to:
+  /// **'God has to fix it: tell it in the conversation if it does not.'**
+  String get xtMxWhyGod;
+
+  /// No description provided for @xtMxWhyHost.
+  ///
+  /// In en, this message translates to:
+  /// **'The code reaches it but does not declare it: God has to declare it or remove it.'**
+  String get xtMxWhyHost;
+
+  /// No description provided for @xtMxWhyMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Not in your keychain yet: add it here, it goes to these tools only.'**
+  String get xtMxWhyMissing;
+
+  /// No description provided for @xtMxWhyNotGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'It is in your keychain, but not given to these tools (or not towards these addresses).'**
+  String get xtMxWhyNotGiven;
+
+  /// No description provided for @xtMxWhyTest.
+  ///
+  /// In en, this message translates to:
+  /// **'It failed in the sandbox: God reads why and fixes it; with a key added, the tests run again.'**
+  String get xtMxWhyTest;
+
+  /// No description provided for @xtName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get xtName;
+
+  /// No description provided for @xtNewSkill.
+  ///
+  /// In en, this message translates to:
+  /// **'New skill'**
+  String get xtNewSkill;
+
+  /// No description provided for @xtNoProposals.
+  ///
+  /// In en, this message translates to:
+  /// **'No proposals.'**
+  String get xtNoProposals;
+
+  /// No description provided for @xtOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'open'**
+  String get xtOpen;
+
+  /// No description provided for @xtProposals.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposals waiting for you'**
+  String get xtProposals;
+
+  /// No description provided for @xtReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get xtReject;
+
+  /// No description provided for @xtRemotePasswordChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change it'**
+  String get xtRemotePasswordChange;
+
+  /// No description provided for @xtRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get xtRemove;
+
+  /// No description provided for @xtSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get xtSave;
+
+  /// No description provided for @xtScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope'**
+  String get xtScope;
+
+  /// No description provided for @xtScopePlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'platform'**
+  String get xtScopePlatform;
+
+  /// No description provided for @xtSkillDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get xtSkillDownload;
+
+  /// No description provided for @xtSkillDownloadHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Download this skill as a .zip, to share it'**
+  String get xtSkillDownloadHelp;
+
+  /// No description provided for @xtSkillImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import a skill'**
+  String get xtSkillImport;
+
+  /// No description provided for @xtSkillImportFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a .zip file'**
+  String get xtSkillImportFile;
+
+  /// No description provided for @xtSkillImportHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A skill\'s folder as a .zip (the agentskills.io format), from another Rasgeth or another tool.'**
+  String get xtSkillImportHelp;
+
+  /// No description provided for @xtSkillImportWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Install in'**
+  String get xtSkillImportWhere;
+
+  /// No description provided for @xtSkillImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Skill \"{name}\" imported.'**
+  String xtSkillImported(String name);
+
+  /// No description provided for @xtSkillReplaceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'A skill with this name already exists there. Replace it?'**
+  String get xtSkillReplaceConfirm;
+
+  /// No description provided for @xtSvApprovedAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'installed by itself (your choice in Safety)'**
+  String get xtSvApprovedAuto;
+
+  /// No description provided for @xtSvApprovedYou.
+  ///
+  /// In en, this message translates to:
+  /// **'approved by you'**
+  String get xtSvApprovedYou;
+
+  /// No description provided for @xtSvBy.
+  ///
+  /// In en, this message translates to:
+  /// **'by {who}'**
+  String xtSvBy(String who);
+
+  /// No description provided for @xtSvCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare with the one in use'**
+  String get xtSvCompare;
+
+  /// No description provided for @xtSvCompareFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare: every difference'**
+  String get xtSvCompareFull;
+
+  /// No description provided for @xtSvCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'in use'**
+  String get xtSvCurrent;
+
+  /// No description provided for @xtSvHideCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the comparison'**
+  String get xtSvHideCompare;
+
+  /// No description provided for @xtSvHow_baseline.
+  ///
+  /// In en, this message translates to:
+  /// **'As it was before the history began'**
+  String get xtSvHow_baseline;
+
+  /// No description provided for @xtSvHow_edited.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed by hand'**
+  String get xtSvHow_edited;
+
+  /// No description provided for @xtSvHow_import.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported'**
+  String get xtSvHow_import;
+
+  /// No description provided for @xtSvHow_install.
+  ///
+  /// In en, this message translates to:
+  /// **'First version'**
+  String get xtSvHow_install;
+
+  /// No description provided for @xtSvHow_rollback.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to version {n}'**
+  String xtSvHow_rollback(String n);
+
+  /// No description provided for @xtSvHow_update.
+  ///
+  /// In en, this message translates to:
+  /// **'New version'**
+  String get xtSvHow_update;
+
+  /// No description provided for @xtSvLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Every change of this skill is kept: who wrote it, why and when. Agents use the newest from their next conversation.'**
+  String get xtSvLead;
+
+  /// No description provided for @xtSvLineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What changed and why'**
+  String get xtSvLineTitle;
+
+  /// No description provided for @xtSvNextSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.'**
+  String get xtSvNextSession;
+
+  /// No description provided for @xtSvNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No versions yet.'**
+  String get xtSvNone;
+
+  /// No description provided for @xtSvNotRestorable.
+  ///
+  /// In en, this message translates to:
+  /// **'Too large to keep: it cannot come back.'**
+  String get xtSvNotRestorable;
+
+  /// No description provided for @xtSvRollback.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back to version {n}'**
+  String xtSvRollback(String n);
+
+  /// No description provided for @xtSvRollbackConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Its files replace those of «{name}» in use, as a new version: nothing is lost and you can come back here. Agents get it from their next conversation.'**
+  String xtSvRollbackConfirm(String name);
+
+  /// No description provided for @xtSvRollbackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back to version {n}?'**
+  String xtSvRollbackTitle(String n);
+
+  /// No description provided for @xtSvRolledBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to version {n}: it is version {v} now.'**
+  String xtSvRolledBack(String n, String v);
+
+  /// No description provided for @xtSvTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Versions'**
+  String get xtSvTitle;
+
+  /// No description provided for @xtSvUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'author unknown'**
+  String get xtSvUnknown;
+
+  /// No description provided for @xtSvVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {n}'**
+  String xtSvVersion(String n);
+
+  /// No description provided for @xtSvWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Why'**
+  String get xtSvWhy;
+
+  /// No description provided for @xtSvYou.
+  ///
+  /// In en, this message translates to:
+  /// **'you'**
+  String get xtSvYou;
+
+  /// No description provided for @xtUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'URL'**
+  String get xtUrl;
+
+  /// No description provided for @xtWzDoneBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get xtWzDoneBtn;
+
+  /// No description provided for @xtXwAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get xtXwAddress;
+
+  /// No description provided for @xtXwAuthor.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposed by'**
+  String get xtXwAuthor;
+
+  /// No description provided for @xtXwConnectedLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The lit ones work. Open one to sign in again or remove it.'**
+  String get xtXwConnectedLead;
+
+  /// No description provided for @xtXwFailedLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposals of the agents whose tests did not pass: they were never installed.'**
+  String get xtXwFailedLead;
+
+  /// No description provided for @xtXwFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get xtXwFile;
+
+  /// No description provided for @xtXwImportText.
+  ///
+  /// In en, this message translates to:
+  /// **'A .zip someone shared, into everything or one project.'**
+  String get xtXwImportText;
+
+  /// No description provided for @xtXwKeptFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files of the skill it keeps: {files}'**
+  String xtXwKeptFiles(String files);
+
+  /// No description provided for @xtXwKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Kind'**
+  String get xtXwKind;
+
+  /// No description provided for @xtXwNewSkillText.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions you write for your agents; it installs right away.'**
+  String get xtXwNewSkillText;
+
+  /// No description provided for @xtXwOpenFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the file'**
+  String get xtXwOpenFile;
+
+  /// No description provided for @xtXwOwnLead.
+  ///
+  /// In en, this message translates to:
+  /// **'For experts: a skill someone shared with you, one you write, a server not in the catalog.'**
+  String get xtXwOwnLead;
+
+  /// No description provided for @xtXwOwnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Made by hand'**
+  String get xtXwOwnTitle;
+
+  /// No description provided for @xtXwPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Now installed'**
+  String get xtXwPrevious;
+
+  /// No description provided for @xtXwScripts.
+  ///
+  /// In en, this message translates to:
+  /// **'It has scripts ({files}): approve only if you trust what they do.'**
+  String xtXwScripts(String files);
+
+  /// No description provided for @xtXwServerText.
+  ///
+  /// In en, this message translates to:
+  /// **'An MCP server by address or by command, with its key if it needs one.'**
+  String get xtXwServerText;
+
+  /// No description provided for @xtXwSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in'**
+  String get xtXwSignIn;
+
+  /// No description provided for @xtXwSkillNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowercase letters, digits and dashes, such as weekly-report.'**
+  String get xtXwSkillNameHelp;
+
+  /// No description provided for @xtXwSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Made by'**
+  String get xtXwSource;
+
+  /// No description provided for @xtXwState.
+  ///
+  /// In en, this message translates to:
+  /// **'State'**
+  String get xtXwState;
+
+  /// No description provided for @xtXwSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Why it came'**
+  String get xtXwSummary;
+
+  /// No description provided for @xtXwTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Tests in a throwaway sandbox'**
+  String get xtXwTests;
+
+  /// No description provided for @xtXwTestsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'tests failed'**
+  String get xtXwTestsFailed;
+
+  /// No description provided for @xtXwUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Update of an installed skill'**
+  String get xtXwUpdates;
+
+  /// No description provided for @xtXwWaitsYou.
+  ///
+  /// In en, this message translates to:
+  /// **'waits for your yes'**
+  String get xtXwWaitsYou;
+
+  /// No description provided for @xtYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get xtYou;
+
+  /// No description provided for @vkCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get vkCancel;
+
+  /// No description provided for @vkClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get vkClose;
+
+  /// No description provided for @vkDvSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices'**
+  String get vkDvSection;
+
+  /// No description provided for @vkKcAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get vkKcAdd;
+
+  /// No description provided for @vkKcAddSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Its value is sealed as soon as you save'**
+  String get vkKcAddSub;
+
+  /// No description provided for @vkKcAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A new credential'**
+  String get vkKcAddTitle;
+
+  /// No description provided for @vkKcAgentsHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents use a credential with use_credential, or through the tools you bind to it below each credential.'**
+  String get vkKcAgentsHow;
+
+  /// No description provided for @vkKcAgentsHowNoProxy.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents use a credential with use_credential.'**
+  String get vkKcAgentsHowNoProxy;
+
+  /// No description provided for @vkKcAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get vkKcAll;
+
+  /// No description provided for @vkKcAllAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent'**
+  String get vkKcAllAgents;
+
+  /// No description provided for @vkKcAllAgentsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: only the agents you choose.'**
+  String get vkKcAllAgentsHelp;
+
+  /// No description provided for @vkKcAllCats.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get vkKcAllCats;
+
+  /// No description provided for @vkKcAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me before it is used'**
+  String get vkKcAsk;
+
+  /// No description provided for @vkKcAsk_always.
+  ///
+  /// In en, this message translates to:
+  /// **'Every time'**
+  String get vkKcAsk_always;
+
+  /// No description provided for @vkKcAsk_never.
+  ///
+  /// In en, this message translates to:
+  /// **'Never: I trust the rules above'**
+  String get vkKcAsk_never;
+
+  /// No description provided for @vkKcAsk_session.
+  ///
+  /// In en, this message translates to:
+  /// **'The first time in each conversation'**
+  String get vkKcAsk_session;
+
+  /// No description provided for @vkKcAutos.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations that may use it'**
+  String get vkKcAutos;
+
+  /// No description provided for @vkKcBrAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth\'s address'**
+  String get vkKcBrAddress;
+
+  /// No description provided for @vkKcBrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get vkKcBrCode;
+
+  /// No description provided for @vkKcBrCodeLead.
+  ///
+  /// In en, this message translates to:
+  /// **'In the extension (the key in the browser\'s bar) write this address and this code. The code works for ten minutes and for one browser.'**
+  String get vkKcBrCodeLead;
+
+  /// No description provided for @vkKcBrCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get vkKcBrCopied;
+
+  /// No description provided for @vkKcBrCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get vkKcBrCopy;
+
+  /// No description provided for @vkKcBrDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked: «{name}». You can close this window.'**
+  String vkKcBrDone(String name);
+
+  /// No description provided for @vkKcBrDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the extension'**
+  String get vkKcBrDownload;
+
+  /// No description provided for @vkKcBrDownloadFirefox.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the version for Firefox'**
+  String get vkKcBrDownloadFirefox;
+
+  /// No description provided for @vkKcBrExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'That code expired: make a new one.'**
+  String get vkKcBrExpired;
+
+  /// No description provided for @vkKcBrExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid until {time}'**
+  String vkKcBrExpires(String time);
+
+  /// No description provided for @vkKcBrHowChromium.
+  ///
+  /// In en, this message translates to:
+  /// **'Unzip it into a folder you will keep. Open {page}, switch on «Developer mode», press «Load unpacked» and choose the folder. You can also drag the zip onto that page.'**
+  String vkKcBrHowChromium(String page);
+
+  /// No description provided for @vkKcBrHowFirefox.
+  ///
+  /// In en, this message translates to:
+  /// **'Open about:debugging#/runtime/this-firefox, press «Load Temporary Add-on…» and choose the zip. Firefox keeps it until it closes: to keep it for good it must be signed by Mozilla.'**
+  String get vkKcBrHowFirefox;
+
+  /// No description provided for @vkKcBrHowOpera.
+  ///
+  /// In en, this message translates to:
+  /// **'Unzip it into a folder you will keep. Open opera://extensions, switch on «Developer mode» at the top right, press «Load unpacked» and choose the folder. You can also drag the zip onto that page.'**
+  String get vkKcBrHowOpera;
+
+  /// No description provided for @vkKcBrHttpNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This address starts with http: the extension accepts it only at home (this computer or the local network). From outside use remote access, with https.'**
+  String get vkKcBrHttpNote;
+
+  /// No description provided for @vkKcBrLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain\'s extension fills sign-ins in Opera, Chrome, Edge, Brave and Firefox, only on the site each password belongs to, and saves the new ones here. Every use shows in the list above.'**
+  String get vkKcBrLead;
+
+  /// No description provided for @vkKcBrLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Link a browser'**
+  String get vkKcBrLink;
+
+  /// No description provided for @vkKcBrLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'linked {when}'**
+  String vkKcBrLinked(String when);
+
+  /// No description provided for @vkKcBrMakeCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a code'**
+  String get vkKcBrMakeCode;
+
+  /// No description provided for @vkKcBrNever.
+  ///
+  /// In en, this message translates to:
+  /// **'not used yet'**
+  String get vkKcBrNever;
+
+  /// No description provided for @vkKcBrNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No browser linked yet.'**
+  String get vkKcBrNone;
+
+  /// No description provided for @vkKcBrSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'last seen {when}'**
+  String vkKcBrSeen(String when);
+
+  /// No description provided for @vkKcBrStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Install the extension'**
+  String get vkKcBrStep1;
+
+  /// No description provided for @vkKcBrStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'2. Link it with a code'**
+  String get vkKcBrStep2;
+
+  /// No description provided for @vkKcBrStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Later also in the Chrome Web Store: one click to install, and it updates itself.'**
+  String get vkKcBrStore;
+
+  /// No description provided for @vkKcBrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'In your browser'**
+  String get vkKcBrTitle;
+
+  /// No description provided for @vkKcBrUnlink.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink'**
+  String get vkKcBrUnlink;
+
+  /// No description provided for @vkKcBrUnlinkQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink {name}?'**
+  String vkKcBrUnlinkQ(String name);
+
+  /// No description provided for @vkKcBrUnlinkText.
+  ///
+  /// In en, this message translates to:
+  /// **'The browser stops reaching the keychain at once. The passwords stay here; to use it again, link it with a new code.'**
+  String get vkKcBrUnlinkText;
+
+  /// No description provided for @vkKcBrWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Your browser'**
+  String get vkKcBrWhich;
+
+  /// No description provided for @vkKcBrWinLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain\'s extension fills sign-ins in Opera, Chrome, Edge, Brave and Firefox, only on the site each password belongs to, and saves the new ones here.'**
+  String get vkKcBrWinLead;
+
+  /// No description provided for @vkKcBrWinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Link a browser'**
+  String get vkKcBrWinTitle;
+
+  /// No description provided for @vkKcCat_api.
+  ///
+  /// In en, this message translates to:
+  /// **'API keys'**
+  String get vkKcCat_api;
+
+  /// No description provided for @vkKcCat_bank.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank'**
+  String get vkKcCat_bank;
+
+  /// No description provided for @vkKcCat_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get vkKcCat_email;
+
+  /// No description provided for @vkKcCat_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Logins'**
+  String get vkKcCat_login;
+
+  /// No description provided for @vkKcCat_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get vkKcCat_other;
+
+  /// No description provided for @vkKcCat_server.
+  ///
+  /// In en, this message translates to:
+  /// **'Servers'**
+  String get vkKcCat_server;
+
+  /// No description provided for @vkKcCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Kind'**
+  String get vkKcCategory;
+
+  /// No description provided for @vkKcChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get vkKcChange;
+
+  /// No description provided for @vkKcClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain is closed'**
+  String get vkKcClosed;
+
+  /// No description provided for @vkKcClosedKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Until it opens, the keys you gave Rasgeth stay where they were (secrets.json and the private files), and nothing is deleted.'**
+  String get vkKcClosedKeys;
+
+  /// No description provided for @vkKcCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get vkKcCopied;
+
+  /// No description provided for @vkKcCopiedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied: it leaves the clipboard in 30 seconds.'**
+  String get vkKcCopiedNote;
+
+  /// No description provided for @vkKcCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get vkKcCopy;
+
+  /// No description provided for @vkKcEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here yet. Add the key of a service an agent should use, or import your passwords from another manager.'**
+  String get vkKcEmpty;
+
+  /// No description provided for @vkKcExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get vkKcExpired;
+
+  /// No description provided for @vkKcExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires on'**
+  String get vkKcExpires;
+
+  /// No description provided for @vkKcExpiresHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth reminds you a month before.'**
+  String get vkKcExpiresHelp;
+
+  /// No description provided for @vkKcExpiresIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires in {n} days'**
+  String vkKcExpiresIn(String n);
+
+  /// No description provided for @vkKcExpiresToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires today'**
+  String get vkKcExpiresToday;
+
+  /// No description provided for @vkKcExpiringLead.
+  ///
+  /// In en, this message translates to:
+  /// **'To renew soon:'**
+  String get vkKcExpiringLead;
+
+  /// No description provided for @vkKcExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export sealed'**
+  String get vkKcExport;
+
+  /// No description provided for @vkKcExportGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get vkKcExportGo;
+
+  /// No description provided for @vkKcExportLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A file with every credential, sealed with a passphrase of yours: without it nobody can open it, Rasgeth included.'**
+  String get vkKcExportLead;
+
+  /// No description provided for @vkKcExportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export the keychain'**
+  String get vkKcExportTitle;
+
+  /// No description provided for @vkKcExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded. Keep the file and its passphrase apart.'**
+  String get vkKcExported;
+
+  /// No description provided for @vkKcEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Keychain'**
+  String get vkKcEyebrow;
+
+  /// No description provided for @vkKcFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Value of the header'**
+  String get vkKcFormat;
+
+  /// No description provided for @vkKcFormat_1password.
+  ///
+  /// In en, this message translates to:
+  /// **'1Password'**
+  String get vkKcFormat_1password;
+
+  /// No description provided for @vkKcFormat_bitwarden.
+  ///
+  /// In en, this message translates to:
+  /// **'Bitwarden'**
+  String get vkKcFormat_bitwarden;
+
+  /// No description provided for @vkKcFormat_chrome.
+  ///
+  /// In en, this message translates to:
+  /// **'Chrome or Edge'**
+  String get vkKcFormat_chrome;
+
+  /// No description provided for @vkKcFormat_firefox.
+  ///
+  /// In en, this message translates to:
+  /// **'Firefox'**
+  String get vkKcFormat_firefox;
+
+  /// No description provided for @vkKcFormat_generic.
+  ///
+  /// In en, this message translates to:
+  /// **'CSV'**
+  String get vkKcFormat_generic;
+
+  /// No description provided for @vkKcGenAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Another one'**
+  String get vkKcGenAgain;
+
+  /// No description provided for @vkKcGenChars.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} characters'**
+  String vkKcGenChars(String n);
+
+  /// No description provided for @vkKcGenDigits.
+  ///
+  /// In en, this message translates to:
+  /// **'Digits only (PIN)'**
+  String get vkKcGenDigits;
+
+  /// No description provided for @vkKcGenKind.
+  ///
+  /// In en, this message translates to:
+  /// **'What it is made of'**
+  String get vkKcGenKind;
+
+  /// No description provided for @vkKcGenLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Length'**
+  String get vkKcGenLength;
+
+  /// No description provided for @vkKcGenLetters.
+  ///
+  /// In en, this message translates to:
+  /// **'Letters and digits'**
+  String get vkKcGenLetters;
+
+  /// No description provided for @vkKcGenSymbols.
+  ///
+  /// In en, this message translates to:
+  /// **'Letters, digits, symbols'**
+  String get vkKcGenSymbols;
+
+  /// No description provided for @vkKcGenUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this'**
+  String get vkKcGenUse;
+
+  /// No description provided for @vkKcGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Make one'**
+  String get vkKcGenerate;
+
+  /// No description provided for @vkKcHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Header'**
+  String get vkKcHeader;
+
+  /// No description provided for @vkKcHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get vkKcHide;
+
+  /// No description provided for @vkKcHosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed addresses'**
+  String get vkKcHosts;
+
+  /// No description provided for @vkKcHostsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Host names separated by commas; *.example.com for all its subdomains.'**
+  String get vkKcHostsHelp;
+
+  /// No description provided for @vkKcHow.
+  ///
+  /// In en, this message translates to:
+  /// **'How it goes on a request'**
+  String get vkKcHow;
+
+  /// No description provided for @vkKcHowHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'When an agent does not write {ref} itself, the value goes in this header. {value} stands for the secret.'**
+  String vkKcHowHelp(String ref, String value);
+
+  /// No description provided for @vkKcImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get vkKcImport;
+
+  /// No description provided for @vkKcImport1password.
+  ///
+  /// In en, this message translates to:
+  /// **'1Password: File > Export > CSV'**
+  String get vkKcImport1password;
+
+  /// No description provided for @vkKcImportBitwarden.
+  ///
+  /// In en, this message translates to:
+  /// **'Bitwarden: Tools > Export vault > .csv'**
+  String get vkKcImportBitwarden;
+
+  /// No description provided for @vkKcImportChrome.
+  ///
+  /// In en, this message translates to:
+  /// **'Chrome and Edge: Settings > Passwords > Export passwords'**
+  String get vkKcImportChrome;
+
+  /// No description provided for @vkKcImportFirefox.
+  ///
+  /// In en, this message translates to:
+  /// **'Firefox: Passwords > menu > Export passwords'**
+  String get vkKcImportFirefox;
+
+  /// No description provided for @vkKcImportFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} passwords found in the {from} file. Choose the ones to keep:'**
+  String vkKcImportFound(String from, String n);
+
+  /// No description provided for @vkKcImportGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Import {n}'**
+  String vkKcImportGo(String n);
+
+  /// No description provided for @vkKcImportLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Export your passwords from the other manager as a CSV file, then choose it here. A keychain file exported by Rasgeth works too.'**
+  String get vkKcImportLead;
+
+  /// No description provided for @vkKcImportLogins.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported logins are for you only: no agent may use them until you allow it.'**
+  String get vkKcImportLogins;
+
+  /// No description provided for @vkKcImportPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the file'**
+  String get vkKcImportPick;
+
+  /// No description provided for @vkKcImportSafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the CSV file afterwards: it holds your passwords in clear.'**
+  String get vkKcImportSafe;
+
+  /// No description provided for @vkKcImportSealedGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Open and import'**
+  String get vkKcImportSealedGo;
+
+  /// No description provided for @vkKcImportSealedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The passphrase chosen when the file was exported.'**
+  String get vkKcImportSealedHelp;
+
+  /// No description provided for @vkKcImportSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} without a password were left out.'**
+  String vkKcImportSkipped(String n);
+
+  /// No description provided for @vkKcImportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import passwords'**
+  String get vkKcImportTitle;
+
+  /// No description provided for @vkKcImported.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} credentials added to the keychain.'**
+  String vkKcImported(String n);
+
+  /// No description provided for @vkKcLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Sealed on this computer. Agents use them by name and never see them; you choose where each one may go and who may use it.'**
+  String get vkKcLead;
+
+  /// No description provided for @vkKcLockedAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Set by the administrator'**
+  String get vkKcLockedAdmin;
+
+  /// No description provided for @vkKcManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get vkKcManage;
+
+  /// No description provided for @vkKcMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get vkKcMore;
+
+  /// No description provided for @vkKcMoveLead.
+  ///
+  /// In en, this message translates to:
+  /// **'From Bitwarden, 1Password, Chrome, Edge or Firefox; out in a file sealed with a passphrase of yours.'**
+  String get vkKcMoveLead;
+
+  /// No description provided for @vkKcMoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring them in, take them with you'**
+  String get vkKcMoveTitle;
+
+  /// No description provided for @vkKcName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name for the agents'**
+  String get vkKcName;
+
+  /// No description provided for @vkKcNameBad.
+  ///
+  /// In en, this message translates to:
+  /// **'Only lower-case letters, digits, - and _ (at least two)'**
+  String get vkKcNameBad;
+
+  /// No description provided for @vkKcNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower case, no spaces: agents write it to use the credential.'**
+  String get vkKcNameHelp;
+
+  /// No description provided for @vkKcNeverUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Never used'**
+  String get vkKcNeverUsed;
+
+  /// No description provided for @vkKcNoHosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Without an address no agent can use it: it stays for you only.'**
+  String get vkKcNoHosts;
+
+  /// No description provided for @vkKcNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches the search.'**
+  String get vkKcNoMatch;
+
+  /// No description provided for @vkKcNoUses.
+  ///
+  /// In en, this message translates to:
+  /// **'No agent has used a credential yet.'**
+  String get vkKcNoUses;
+
+  /// No description provided for @vkKcNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get vkKcNone;
+
+  /// No description provided for @vkKcNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get vkKcNotes;
+
+  /// No description provided for @vkKcPassphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase'**
+  String get vkKcPassphrase;
+
+  /// No description provided for @vkKcPassphraseAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'The passphrase again'**
+  String get vkKcPassphraseAgain;
+
+  /// No description provided for @vkKcPassphraseDiffer.
+  ///
+  /// In en, this message translates to:
+  /// **'The two are different'**
+  String get vkKcPassphraseDiffer;
+
+  /// No description provided for @vkKcPassphraseHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 8 characters. Keep it somewhere safe: it cannot be recovered.'**
+  String get vkKcPassphraseHelp;
+
+  /// No description provided for @vkKcProt_dpapi.
+  ///
+  /// In en, this message translates to:
+  /// **'Protected by Windows'**
+  String get vkKcProt_dpapi;
+
+  /// No description provided for @vkKcProt_env.
+  ///
+  /// In en, this message translates to:
+  /// **'Sealed with the server\'s own key'**
+  String get vkKcProt_env;
+
+  /// No description provided for @vkKcProt_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Sealed with a key kept on this computer'**
+  String get vkKcProt_file;
+
+  /// No description provided for @vkKcProt_keychain.
+  ///
+  /// In en, this message translates to:
+  /// **'Protected by the Mac\'s Keychain'**
+  String get vkKcProt_keychain;
+
+  /// No description provided for @vkKcQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Your keys and passwords, safe in one place'**
+  String get vkKcQ;
+
+  /// No description provided for @vkKcRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get vkKcRemove;
+
+  /// No description provided for @vkKcRemoveQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}?'**
+  String vkKcRemoveQ(String name);
+
+  /// No description provided for @vkKcRemoveText.
+  ///
+  /// In en, this message translates to:
+  /// **'The credential goes from the keychain for good: agents and tools can no longer use it.'**
+  String get vkKcRemoveText;
+
+  /// No description provided for @vkKcSafeText.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted (AES-256), never in a project or in git, never written in a chat or a log.'**
+  String get vkKcSafeText;
+
+  /// No description provided for @vkKcSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, service, user or label'**
+  String get vkKcSearch;
+
+  /// No description provided for @vkKcSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'The secret'**
+  String get vkKcSecret;
+
+  /// No description provided for @vkKcSecretLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The key, token or password. Once saved it is never shown again unless you ask.'**
+  String get vkKcSecretLead;
+
+  /// No description provided for @vkKcSecretPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste or type it here'**
+  String get vkKcSecretPlaceholder;
+
+  /// No description provided for @vkKcService.
+  ///
+  /// In en, this message translates to:
+  /// **'Service'**
+  String get vkKcService;
+
+  /// No description provided for @vkKcServiceExample.
+  ///
+  /// In en, this message translates to:
+  /// **'Revolut Business'**
+  String get vkKcServiceExample;
+
+  /// No description provided for @vkKcServiceHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The name you know it by: Revolut, Gmail, the office server.'**
+  String get vkKcServiceHelp;
+
+  /// No description provided for @vkKcShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get vkKcShow;
+
+  /// No description provided for @vkKcShowQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the secret?'**
+  String get vkKcShowQ;
+
+  /// No description provided for @vkKcShowText.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be on the screen until you hide it or close the window. Make sure nobody is looking.'**
+  String get vkKcShowText;
+
+  /// No description provided for @vkKcSomeAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents that may use it'**
+  String get vkKcSomeAgents;
+
+  /// No description provided for @vkKcSomeone.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone'**
+  String get vkKcSomeone;
+
+  /// No description provided for @vkKcSys_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat: {what}'**
+  String vkKcSys_chat(String what);
+
+  /// No description provided for @vkKcSys_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailbox: {what}'**
+  String vkKcSys_email(String what);
+
+  /// No description provided for @vkKcSys_git.
+  ///
+  /// In en, this message translates to:
+  /// **'Code hosting: {what}'**
+  String vkKcSys_git(String what);
+
+  /// No description provided for @vkKcSys_mcp.
+  ///
+  /// In en, this message translates to:
+  /// **'Extension: {what}'**
+  String vkKcSys_mcp(String what);
+
+  /// No description provided for @vkKcSys_other.
+  ///
+  /// In en, this message translates to:
+  /// **'{what}'**
+  String vkKcSys_other(String what);
+
+  /// No description provided for @vkKcSys_provider.
+  ///
+  /// In en, this message translates to:
+  /// **'Model provider: {what}'**
+  String vkKcSys_provider(String what);
+
+  /// No description provided for @vkKcSys_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Web search: {what}'**
+  String vkKcSys_search(String what);
+
+  /// No description provided for @vkKcSys_ssh.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine (SSH): {what}'**
+  String vkKcSys_ssh(String what);
+
+  /// No description provided for @vkKcSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept by Rasgeth'**
+  String get vkKcSystem;
+
+  /// No description provided for @vkKcSystemLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys set by whoever installed this server (in its environment): Rasgeth uses them, they cannot be changed here.'**
+  String get vkKcSystemLead;
+
+  /// No description provided for @vkKcSystemTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set by the administrator'**
+  String get vkKcSystemTitle;
+
+  /// No description provided for @vkKcTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Labels'**
+  String get vkKcTags;
+
+  /// No description provided for @vkKcTagsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Separated by commas: work, home…'**
+  String get vkKcTagsHelp;
+
+  /// No description provided for @vkKcTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Extensions\' tools that receive it'**
+  String get vkKcTools;
+
+  /// No description provided for @vkKcToolsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A tool chosen here gets the address to reach the service with this credential, never the value.'**
+  String get vkKcToolsHelp;
+
+  /// No description provided for @vkKcUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Address (if any)'**
+  String get vkKcUrl;
+
+  /// No description provided for @vkKcUseAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents call it {name}'**
+  String vkKcUseAs(String name);
+
+  /// No description provided for @vkKcUseBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} (browser)'**
+  String vkKcUseBrowser(String name);
+
+  /// No description provided for @vkKcUse_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'asked for {name} towards {host}: you said no'**
+  String vkKcUse_denied(String host, String name);
+
+  /// No description provided for @vkKcUse_moved.
+  ///
+  /// In en, this message translates to:
+  /// **'moved {name} here from {host}'**
+  String vkKcUse_moved(String host, String name);
+
+  /// No description provided for @vkKcUse_refused.
+  ///
+  /// In en, this message translates to:
+  /// **'could not use {name} towards {host}'**
+  String vkKcUse_refused(String host, String name);
+
+  /// No description provided for @vkKcUse_used.
+  ///
+  /// In en, this message translates to:
+  /// **'used {name} towards {host}'**
+  String vkKcUse_used(String host, String name);
+
+  /// No description provided for @vkKcUsedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Used by:'**
+  String get vkKcUsedBy;
+
+  /// No description provided for @vkKcUsedByText.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth uses this key by itself. Here you can change it, choose whether agents may use it too and see every use; you remove it from its page.'**
+  String get vkKcUsedByText;
+
+  /// No description provided for @vkKcUsedTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'Used {n} times, last {when}'**
+  String vkKcUsedTimes(String n, String when);
+
+  /// No description provided for @vkKcUser.
+  ///
+  /// In en, this message translates to:
+  /// **'User or email (if any)'**
+  String get vkKcUser;
+
+  /// No description provided for @vkKcUsesLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Every time an agent asked for a credential: when, where to, and how it went.'**
+  String get vkKcUsesLead;
+
+  /// No description provided for @vkKcUsesOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Its last uses'**
+  String get vkKcUsesOne;
+
+  /// No description provided for @vkKcUsesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who used them'**
+  String get vkKcUsesTitle;
+
+  /// No description provided for @vkKcWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it may go'**
+  String get vkKcWhere;
+
+  /// No description provided for @vkKcWhereLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The value is put on a request only towards these addresses: anywhere else it is refused.'**
+  String get vkKcWhereLead;
+
+  /// No description provided for @vkKcWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who may use it'**
+  String get vkKcWho;
+
+  /// No description provided for @vkKcWhoLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents never see the value: they ask for it by name, and Rasgeth puts it on the request.'**
+  String get vkKcWhoLead;
+
+  /// No description provided for @vkMcSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Machines'**
+  String get vkMcSection;
+
+  /// No description provided for @vkSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get vkSave;
+
+  /// No description provided for @vkSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get vkSettings;
+
+  /// No description provided for @vkWzCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the code lives'**
+  String get vkWzCode;
+
+  /// No description provided for @vkWzRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Access from outside home'**
+  String get vkWzRemote;
+
+  /// No description provided for @vkAutomations.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations'**
+  String get vkAutomations;
+
+  /// No description provided for @vkChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Other chats'**
+  String get vkChats;
+
+  /// No description provided for @vkExtensions.
+  ///
+  /// In en, this message translates to:
+  /// **'Extensions'**
+  String get vkExtensions;
+
+  /// No description provided for @vkSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Models and subscriptions'**
+  String get vkSubscriptions;
+
+  /// No description provided for @vkTelegram.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram'**
+  String get vkTelegram;
+
+  /// No description provided for @g4211Hub.
+  ///
+  /// In en, this message translates to:
+  /// **'Services, skills, generation and the agents\' proposals'**
+  String get g4211Hub;
+
+  /// No description provided for @g4212Hub.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys and passwords, safe in one place'**
+  String get g4212Hub;
+
+  /// No description provided for @g4211SignInOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'The service\'s page opened in the browser: sign in there, then come back here.'**
+  String get g4211SignInOpened;
+
+  /// No description provided for @g4211OpenExtensions.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Extensions'**
+  String get g4211OpenExtensions;
+
+  /// No description provided for @g4212OpenKeychain.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the keychain'**
+  String get g4212OpenKeychain;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

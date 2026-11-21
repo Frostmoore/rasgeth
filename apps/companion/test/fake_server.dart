@@ -6,11 +6,13 @@ import 'dart:io';
 
 import 'fake_automations.dart';
 import 'fake_channels.dart';
+import 'fake_extensions.dart';
 import 'fake_files.dart';
 import 'fake_knowledge.dart';
 import 'fake_models.dart';
 import 'fake_portrait.dart';
 import 'fake_skills.dart';
+import 'fake_vault.dart';
 import 'helpers.dart';
 
 class FakeRedGiant {
@@ -36,6 +38,12 @@ class FakeRedGiant {
 
   /// G42.15: the ways of thinking and the local engine in memory (null: the canned answers).
   FakeModels? modelsFake;
+
+  /// G42.11: Settings › Extensions in memory (null: no extensions routes).
+  FakeExtensions? extensions;
+
+  /// G42.12: the keychain in memory (null: no keychain routes).
+  FakeVault? vault;
   bool codeOn = false;
   int appProtocol = 1;
   int wrongTries = 0;
@@ -984,6 +992,8 @@ class FakeRedGiant {
     if (skills case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (channels case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (modelsFake case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
+    if (extensions case final x? when await x.handle(r, path, (s, b) => _json(r, s, b))) return;
+    if (vault case final v? when await v.handle(r, path, (s, b) => _json(r, s, b))) return;
     final own = routes['${r.method} $path'];
     if (own != null) return own(r);
     if (await automations.handle(r, path, (s, b) => _json(r, s, b))) return;

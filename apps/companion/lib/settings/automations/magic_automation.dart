@@ -16,6 +16,8 @@ import '../../screens/conversation_screen.dart';
 import '../../theme/colors.dart';
 import '../../ui/icons.dart';
 import '../api/automations_api.dart';
+import '../extensions/extensions_screen.dart' show openExtensionsSettings;
+import '../vault/keychain_screen.dart' show VaultDraft, openCredentialWindow;
 import 'automation_draft.dart';
 import 'automation_editor.dart';
 import 'automation_kit.dart';
@@ -338,9 +340,12 @@ class _Side extends StatelessWidget {
 
 /// Where the conversation stands, in three steps lit by border and background.
 class MagicSteps extends StatelessWidget {
-  const MagicSteps({super.key, required this.status});
+  const MagicSteps({super.key, required this.status, this.labels});
 
   final String status;
+
+  /// The steps' words (a magic integration's, G42.11); the automation's when null.
+  final List<String>? labels;
 
   @override
   Widget build(BuildContext context) {
@@ -351,7 +356,7 @@ class MagicSteps extends StatelessWidget {
         : status == 'ready' || status == 'testing'
         ? 3
         : 4;
-    final labels = [l.auAxMagicStep1, l.auAxMagicStep2, l.auAxMagicStep3];
+    final labels = this.labels ?? [l.auAxMagicStep1, l.auAxMagicStep2, l.auAxMagicStep3];
     return Column(
       key: const Key('au-magic-steps'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -663,7 +668,28 @@ class _Need extends StatelessWidget {
                 ),
                 if (n.why.isNotEmpty)
                   Text(n.why, style: TextStyle(color: c.dim, fontSize: 12.5, height: 1.35)),
-                if (n.ready == false)
+                // G42.11-12: a key is added right here, an extension opens Extensions; a chat
+                // or a mailbox is still made in its page.
+                if (n.ready == false && n.kind == 'credential')
+                  TextButton(
+                    key: Key('au-need-vault-${n.what}'),
+                    onPressed: () => openCredentialWindow(
+                      context,
+                      draft: VaultDraft(
+                        service: n.service ?? n.what,
+                        name: n.what,
+                        hosts: [?n.host],
+                      ),
+                    ),
+                    child: Text(l.auAxNeedVault),
+                  )
+                else if (n.ready == false && (n.kind == 'extension' || n.kind == 'other'))
+                  TextButton(
+                    key: Key('au-need-open-${n.what}'),
+                    onPressed: () => openExtensionsSettings(context),
+                    child: Text(l.auAxNeedOpen),
+                  )
+                else if (n.ready == false)
                   Text(
                     l.auOwnNeedOpenWhere(where),
                     style: TextStyle(color: c.warnText, fontSize: 12.5),

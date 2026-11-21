@@ -9559,5 +9559,916 @@
   "moLmSpeedMode_none": "Model alone",
   "chHubTelegram": "Demi-God on Telegram: the bot, its token and the accounts that talk to it",
   "chHubChats": "Demi-God on Discord, Slack, Signal, WhatsApp, Matrix, Teams and iMessage",
-  "moHubModels": "Subscriptions, API keys, your own server, the model on this computer and who uses which"
+  "moHubModels": "Subscriptions, API keys, your own server, the model on this computer and who uses which",
+  "xtAddServer": "Add server",
+  "xtApprove": "Approve",
+  "xtArgs": "Arguments",
+  "xtAxMagicDismiss": "Put it away",
+  "xtAxMagicExamples": "Or start from an example",
+  "xtAxMagicGo": "Ask God",
+  "xtAxMagicReject": "Not like this",
+  "xtAxMagicSendNo": "Send to God",
+  "xtAxMagicStarting": "Calling God…",
+  "xtAxMagicWhy": "What is wrong? God reads it and tries again",
+  "xtAxNeedMissing": "Missing",
+  "xtAxNeedReady": "Ready",
+  "xtAxNeedVault": "Add to the keychain",
+  "xtBy": "by",
+  "xtCancel": "Cancel",
+  "xtCommand": "Command",
+  "xtCopied": "Copied",
+  "xtCopy": "Copy",
+  "xtCreate": "Create",
+  "xtDescription": "Description",
+  "xtExtAdd": "Add",
+  "xtExtAddAndConnect": "Add and connect",
+  "xtExtAdded": "Added",
+  "xtExtAppConsole": "Open {name}'s developer page",
+  "@xtExtAppConsole": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtAppGuide": "Create your own app on {name} (once, about ten minutes)",
+  "@xtExtAppGuide": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtAskHelp": "Ask God with a magic integration or extension, in your own words: God looks for a ready service in the catalog, or writes a new ability, tests it and asks you before installing anything.",
+  "xtExtAskTitle": "What should your agents be able to do?",
+  "xtExtAuth_app": "Your own app, with a guide",
+  "xtExtAuth_header": "Needs a key",
+  "xtExtAuth_none": "Nothing to sign in to",
+  "xtExtAuth_oauth": "Sign in on its page",
+  "xtExtBroken": "Not working",
+  "xtExtBrokenHelp": "A service that does not work: check the key, or remove it and add it again. Hover over the label to see the error.",
+  "xtExtCatAll": "All",
+  "xtExtCat_cloud": "Cloud",
+  "xtExtCat_code": "Code",
+  "xtExtCat_data": "Data",
+  "xtExtCat_design": "Design",
+  "xtExtCat_docs": "Documentation",
+  "xtExtCat_home": "Home",
+  "xtExtCat_web": "Web",
+  "xtExtCat_work": "Work",
+  "xtExtCatalog": "Services you can add",
+  "xtExtCatalogHelp": "Each one gives your agents new tools. The services' own ones come first; the community ones are made by others.",
+  "xtExtChecking": "Checking…",
+  "xtExtClientId": "Client ID of your app",
+  "xtExtClientSecret": "Client secret of your app",
+  "xtExtClientSecretOptional": "Client secret of your app (if it has one)",
+  "xtExtCommunity": "Community",
+  "xtExtConnect": "Connect",
+  "xtExtConnected": "Your services",
+  "xtExtEverywhere": "Everywhere",
+  "xtExtGuide": "How to set up {name}",
+  "@xtExtGuide": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtKey": "{name} key",
+  "@xtExtKey": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtKeyHelp": "It is kept in a private file on your server and never shown again, not even to the agents.",
+  "xtExtKeyWhere": "Where do I find the {name} key?",
+  "@xtExtKeyWhere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtKindSkill": "Skill",
+  "xtExtKindTool": "Tool",
+  "xtExtManualOauth": "It signs in on its own page (OAuth)",
+  "xtExtManualToken": "Key (optional, sent as Bearer)",
+  "xtExtMore": "More about it",
+  "xtExtNeedsLogin": "Needs you to sign in",
+  "xtExtNothingFound": "Nothing found. Ask God with the magic extension above: it can write what is missing.",
+  "xtExtOauthHelp": "A new tab opens on {name}'s page: sign in there and allow Rasgeth. Then come back here.",
+  "@xtExtOauthHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtOfficial": "Official",
+  "xtExtOnlyProject": "Only in {name}",
+  "@xtExtOnlyProject": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtProposals": "Waiting for you",
+  "xtExtProposalsHelp": "Abilities written by the agents and already tested: nothing is installed until you approve it.",
+  "xtExtSearch": "Search a service",
+  "xtExtServerUrl": "{name}'s address",
+  "@xtExtServerUrl": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtServerUrlHelp": "As Rasgeth's server reaches it, for example on your home network.",
+  "xtExtSkills": "Skills and tools",
+  "xtExtSkillsHelp": "Abilities installed for your agents. Click one to read or change it.",
+  "xtExtTransport": "How it runs",
+  "xtExtTransportHttp": "Online (address)",
+  "xtExtTransportStdio": "On this server (command)",
+  "xtExtUnverified": "Not confirmed on the service's own pages: if something does not match, its documentation is right.",
+  "xtExtUnverifiedShort": "to be checked",
+  "xtExtWhere": "Where it works",
+  "xtExtWhereHelp": "Everywhere, or only for the agents of one project.",
+  "xtExtWorks": "Works · {n} tools",
+  "@xtExtWorks": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtensions": "Extensions",
+  "xtFailedTests": "Failed its tests",
+  "xtInstructions": "Instructions",
+  "xtMediaGetKey": "Get a key",
+  "xtMediaHasKey": "key already there",
+  "xtMediaKey": "{name} key",
+  "@xtMediaKey": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMediaKeyLinked": "{name} key linked",
+  "@xtMediaKeyLinked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMediaKeyStep1": "Open the {name} page where keys are made and sign in (or create an account).",
+  "@xtMediaKeyStep1": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMediaKeyStep2": "Create a new key and copy it.",
+  "xtMediaKeyStep3": "Paste it here and save:",
+  "xtMediaNativeHelp": "Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.",
+  "xtMediaNativeTitle": "Use the model's own tool when it has one",
+  "xtMediaNeedsKey": "Needs its key",
+  "xtMediaOff": "Off",
+  "xtMediaOtherProvider": "Choose another provider",
+  "xtMediaPurpose": "Who makes pictures, videos, voices, music and sound effects when an agent is asked for one (the tools image_generation, video_generation and audio_generation). Choose a provider and a model for each, and paste its key: a key you already gave for the chat (OpenAI, Gemini, xAI) works here too. They are paid by the provider for what you make.",
+  "xtMediaStep1": "1. Who makes it",
+  "xtMediaStep2": "2. The {name} key",
+  "@xtMediaStep2": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMediaTitle": "Default extensions",
+  "xtMediaTurnOff": "Turn off",
+  "xtMediaVoice": "Voice",
+  "xtMediaVoiceFirst": "The account's first one",
+  "xtMedia_image": "Pictures",
+  "xtMedia_image_help": "Drawings, photos, illustrations, logos from a description (or from a picture).",
+  "xtMedia_music": "Music",
+  "xtMedia_music_help": "Songs and pieces from a description, with or without singing.",
+  "xtMedia_sound": "Sound effects",
+  "xtMedia_sound_help": "Short sounds from a description: a door, rain, a crowd, an engine.",
+  "xtMedia_speech": "Voice",
+  "xtMedia_speech_help": "A text read aloud, with the voice you choose.",
+  "xtMedia_video": "Videos",
+  "xtMedia_video_help": "Short clips from a description or from a first frame. They take minutes and cost more. (OpenAI closed Sora in September 2026.)",
+  "xtModel": "Model",
+  "xtMxApprove": "Approve and install",
+  "xtMxArgs": "Arguments:",
+  "xtMxBadgeApprove": "To install",
+  "xtMxBadgeInstalled": "Installed",
+  "xtMxBadgeMissing": "Something missing",
+  "xtMxBuilding": "God is building it with you: answer its questions in the conversation.",
+  "xtMxChange": "Change it",
+  "xtMxChangeGo": "Ask God",
+  "xtMxChangeLabel": "What should change? God proposes it again and you install it as before.",
+  "xtMxChanging": "God is changing it with you; what is installed keeps working until you approve the new version.",
+  "xtMxCheckHost": "The address {what}",
+  "@xtMxCheckHost": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxCheckKey": "The key for {what}",
+  "@xtMxCheckKey": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxCheckKeyUndeclared": "The key {what}, used by the code but not declared",
+  "@xtMxCheckKeyUndeclared": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxCheckTest": "The test of {what}",
+  "@xtMxCheckTest": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxCode": "Read the code",
+  "xtMxDone": "Installed: every agent has these tools from its next conversation.",
+  "xtMxExtension": "Magic extension",
+  "xtMxExtensionAsk": "What should the agents be able to do?",
+  "xtMxExtensionEx1": "Turn a CSV into a chart and tell me the totals",
+  "xtMxExtensionEx2": "Check that an Italian VAT number and tax code are valid",
+  "xtMxExtensionEx3": "A skill for writing my weekly report the way I like it",
+  "xtMxExtensionLead": "Tell God what the agents should be able to do. God asks, writes tools and skills with their tests and tries them in a closed sandbox: you see the result and install it with one button.",
+  "xtMxExtensionPlaceholder": "For example: turn a CSV into a chart and tell me the totals",
+  "xtMxExtensionTile": "New abilities for the agents, of any kind: God writes the tools and skills, tests them apart and you install them.",
+  "xtMxGiveKey": "Give it to these tools",
+  "xtMxGiveKeyText": "Only these tools will receive it, through the proxy, and only towards {hosts}: {tools}.",
+  "@xtMxGiveKeyText": {
+    "placeholders": {
+      "hosts": {
+        "type": "String"
+      },
+      "tools": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxGiveKeyTitle": "Give {what} to this package?",
+  "@xtMxGiveKeyTitle": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxIntegration": "Magic integration",
+  "xtMxIntegrationAsk": "Which service, and what for?",
+  "xtMxIntegrationEx1": "Connect me to Notion: search my pages and create new ones",
+  "xtMxIntegrationEx2": "Connect me to my management software's API (invoices and customers)",
+  "xtMxIntegrationEx3": "Read my Todoist tasks and mark them done",
+  "xtMxIntegrationLead": "Tell God which service and what the agents should do with it. God asks what it needs, writes the connector with its tests and tries it in a closed sandbox: you see the result and install it with one button.",
+  "xtMxIntegrationPlaceholder": "For example: connect me to Notion so the agents can search my pages and add notes",
+  "xtMxIntegrationTile": "Connect Rasgeth to a service through its API (Notion, your management software, a bank…): God writes the connector, tests it apart and you install it.",
+  "xtMxKeyHosts": "It may go only to:",
+  "xtMxKeyLead": "Paste the key here: it goes straight into your keychain, encrypted. Nobody reads it, God included; the tools receive it only through the proxy.",
+  "xtMxKeyName": "Name in the keychain:",
+  "xtMxKeyOnly": "Used only by this package's tools; you can change it in Settings > Keychain.",
+  "xtMxKeySave": "Save in the keychain",
+  "xtMxKeyTitle": "Key for {service}",
+  "@xtMxKeyTitle": {
+    "placeholders": {
+      "service": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxKeyValue": "The key",
+  "xtMxKeys": "Keys",
+  "xtMxListLead": "Built with God: open one to go on with the conversation, install it, change it or remove it.",
+  "xtMxListTitle": "Magic integrations and extensions",
+  "xtMxMissing": "Before you can install it, this is missing:",
+  "xtMxParts": "What it adds",
+  "xtMxPromise1": "Nothing is installed without your yes.",
+  "xtMxPromise2": "Every part is tested in a closed sandbox that reaches only the services it declares.",
+  "xtMxPromise3": "Keys go into your keychain from the window, never in the chat.",
+  "xtMxProposal": "God's package",
+  "xtMxReaches": "It reaches only",
+  "xtMxReachesNothing": "Nothing: it works without the network.",
+  "xtMxRetest": "Test again",
+  "xtMxState_building": "Being built",
+  "xtMxState_dismissed": "Put away",
+  "xtMxState_done": "Installed",
+  "xtMxState_ready": "Ready: it waits for you",
+  "xtMxState_testing": "Tests running",
+  "xtMxStep1": "You say what you want",
+  "xtMxStep2": "God writes and tests it",
+  "xtMxStep3": "You install it",
+  "xtMxTesting": "The tests are running again in the sandbox…",
+  "xtMxUninstall": "Uninstall",
+  "xtMxUninstallText": "These go away: {what}. The keys added for it leave the keychain too.",
+  "@xtMxUninstallText": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxUninstallTitle": "Uninstall {what}?",
+  "@xtMxUninstallTitle": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxWhyGod": "God has to fix it: tell it in the conversation if it does not.",
+  "xtMxWhyHost": "The code reaches it but does not declare it: God has to declare it or remove it.",
+  "xtMxWhyMissing": "Not in your keychain yet: add it here, it goes to these tools only.",
+  "xtMxWhyNotGiven": "It is in your keychain, but not given to these tools (or not towards these addresses).",
+  "xtMxWhyTest": "It failed in the sandbox: God reads why and fixes it; with a key added, the tests run again.",
+  "xtName": "Name",
+  "xtNewSkill": "New skill",
+  "xtNoProposals": "No proposals.",
+  "xtOpen": "open",
+  "xtProposals": "Proposals waiting for you",
+  "xtReject": "Reject",
+  "xtRemotePasswordChange": "Change it",
+  "xtRemove": "Remove",
+  "xtSave": "Save",
+  "xtScope": "Scope",
+  "xtScopePlatform": "platform",
+  "xtSkillDownload": "Download",
+  "xtSkillDownloadHelp": "Download this skill as a .zip, to share it",
+  "xtSkillImport": "Import a skill",
+  "xtSkillImportFile": "Choose a .zip file",
+  "xtSkillImportHelp": "A skill's folder as a .zip (the agentskills.io format), from another Rasgeth or another tool.",
+  "xtSkillImportWhere": "Install in",
+  "xtSkillImported": "Skill \"{name}\" imported.",
+  "@xtSkillImported": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSkillReplaceConfirm": "A skill with this name already exists there. Replace it?",
+  "xtSvApprovedAuto": "installed by itself (your choice in Safety)",
+  "xtSvApprovedYou": "approved by you",
+  "xtSvBy": "by {who}",
+  "@xtSvBy": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSvCompare": "Compare with the one in use",
+  "xtSvCompareFull": "Compare: every difference",
+  "xtSvCurrent": "in use",
+  "xtSvHideCompare": "Hide the comparison",
+  "xtSvHow_baseline": "As it was before the history began",
+  "xtSvHow_edited": "Changed by hand",
+  "xtSvHow_import": "Imported",
+  "xtSvHow_install": "First version",
+  "xtSvHow_rollback": "Back to version {n}",
+  "@xtSvHow_rollback": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSvHow_update": "New version",
+  "xtSvLead": "Every change of this skill is kept: who wrote it, why and when. Agents use the newest from their next conversation.",
+  "xtSvLineTitle": "What changed and why",
+  "xtSvNextSession": "Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.",
+  "xtSvNone": "No versions yet.",
+  "xtSvNotRestorable": "Too large to keep: it cannot come back.",
+  "xtSvRollback": "Go back to version {n}",
+  "@xtSvRollback": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSvRollbackConfirm": "Its files replace those of «{name}» in use, as a new version: nothing is lost and you can come back here. Agents get it from their next conversation.",
+  "@xtSvRollbackConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSvRollbackTitle": "Go back to version {n}?",
+  "@xtSvRollbackTitle": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSvRolledBack": "Back to version {n}: it is version {v} now.",
+  "@xtSvRolledBack": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSvTitle": "Versions",
+  "xtSvUnknown": "author unknown",
+  "xtSvVersion": "Version {n}",
+  "@xtSvVersion": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSvWhy": "Why",
+  "xtSvYou": "you",
+  "xtUrl": "URL",
+  "xtWzDoneBtn": "Done",
+  "xtXwAddress": "Address",
+  "xtXwAuthor": "Proposed by",
+  "xtXwConnectedLead": "The lit ones work. Open one to sign in again or remove it.",
+  "xtXwFailedLead": "Proposals of the agents whose tests did not pass: they were never installed.",
+  "xtXwFile": "File",
+  "xtXwImportText": "A .zip someone shared, into everything or one project.",
+  "xtXwKeptFiles": "Files of the skill it keeps: {files}",
+  "@xtXwKeptFiles": {
+    "placeholders": {
+      "files": {
+        "type": "String"
+      }
+    }
+  },
+  "xtXwKind": "Kind",
+  "xtXwNewSkillText": "Instructions you write for your agents; it installs right away.",
+  "xtXwOpenFile": "Open the file",
+  "xtXwOwnLead": "For experts: a skill someone shared with you, one you write, a server not in the catalog.",
+  "xtXwOwnTitle": "Made by hand",
+  "xtXwPrevious": "Now installed",
+  "xtXwScripts": "It has scripts ({files}): approve only if you trust what they do.",
+  "@xtXwScripts": {
+    "placeholders": {
+      "files": {
+        "type": "String"
+      }
+    }
+  },
+  "xtXwServerText": "An MCP server by address or by command, with its key if it needs one.",
+  "xtXwSignIn": "Sign-in",
+  "xtXwSkillNameHelp": "Lowercase letters, digits and dashes, such as weekly-report.",
+  "xtXwSource": "Made by",
+  "xtXwState": "State",
+  "xtXwSummary": "Why it came",
+  "xtXwTests": "Tests in a throwaway sandbox",
+  "xtXwTestsFailed": "tests failed",
+  "xtXwUpdates": "Update of an installed skill",
+  "xtXwWaitsYou": "waits for your yes",
+  "xtYou": "You",
+  "vkCancel": "Cancel",
+  "vkClose": "Close",
+  "vkDvSection": "Devices",
+  "vkKcAdd": "Add",
+  "vkKcAddSub": "Its value is sealed as soon as you save",
+  "vkKcAddTitle": "A new credential",
+  "vkKcAgentsHow": "Agents use a credential with use_credential, or through the tools you bind to it below each credential.",
+  "vkKcAgentsHowNoProxy": "Agents use a credential with use_credential.",
+  "vkKcAll": "All",
+  "vkKcAllAgents": "Every agent",
+  "vkKcAllAgentsHelp": "Off: only the agents you choose.",
+  "vkKcAllCats": "All",
+  "vkKcAsk": "Ask me before it is used",
+  "vkKcAsk_always": "Every time",
+  "vkKcAsk_never": "Never: I trust the rules above",
+  "vkKcAsk_session": "The first time in each conversation",
+  "vkKcAutos": "Automations that may use it",
+  "vkKcBrAddress": "Rasgeth's address",
+  "vkKcBrCode": "Code",
+  "vkKcBrCodeLead": "In the extension (the key in the browser's bar) write this address and this code. The code works for ten minutes and for one browser.",
+  "vkKcBrCopied": "Copied",
+  "vkKcBrCopy": "Copy",
+  "vkKcBrDone": "Linked: «{name}». You can close this window.",
+  "@vkKcBrDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcBrDownload": "Download the extension",
+  "vkKcBrDownloadFirefox": "Download the version for Firefox",
+  "vkKcBrExpired": "That code expired: make a new one.",
+  "vkKcBrExpires": "Valid until {time}",
+  "@vkKcBrExpires": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcBrHowChromium": "Unzip it into a folder you will keep. Open {page}, switch on «Developer mode», press «Load unpacked» and choose the folder. You can also drag the zip onto that page.",
+  "@vkKcBrHowChromium": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcBrHowFirefox": "Open about:debugging#/runtime/this-firefox, press «Load Temporary Add-on…» and choose the zip. Firefox keeps it until it closes: to keep it for good it must be signed by Mozilla.",
+  "vkKcBrHowOpera": "Unzip it into a folder you will keep. Open opera://extensions, switch on «Developer mode» at the top right, press «Load unpacked» and choose the folder. You can also drag the zip onto that page.",
+  "vkKcBrHttpNote": "This address starts with http: the extension accepts it only at home (this computer or the local network). From outside use remote access, with https.",
+  "vkKcBrLead": "The keychain's extension fills sign-ins in Opera, Chrome, Edge, Brave and Firefox, only on the site each password belongs to, and saves the new ones here. Every use shows in the list above.",
+  "vkKcBrLink": "Link a browser",
+  "vkKcBrLinked": "linked {when}",
+  "@vkKcBrLinked": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcBrMakeCode": "Make a code",
+  "vkKcBrNever": "not used yet",
+  "vkKcBrNone": "No browser linked yet.",
+  "vkKcBrSeen": "last seen {when}",
+  "@vkKcBrSeen": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcBrStep1": "1. Install the extension",
+  "vkKcBrStep2": "2. Link it with a code",
+  "vkKcBrStore": "Later also in the Chrome Web Store: one click to install, and it updates itself.",
+  "vkKcBrTitle": "In your browser",
+  "vkKcBrUnlink": "Unlink",
+  "vkKcBrUnlinkQ": "Unlink {name}?",
+  "@vkKcBrUnlinkQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcBrUnlinkText": "The browser stops reaching the keychain at once. The passwords stay here; to use it again, link it with a new code.",
+  "vkKcBrWhich": "Your browser",
+  "vkKcBrWinLead": "The keychain's extension fills sign-ins in Opera, Chrome, Edge, Brave and Firefox, only on the site each password belongs to, and saves the new ones here.",
+  "vkKcBrWinTitle": "Link a browser",
+  "vkKcCat_api": "API keys",
+  "vkKcCat_bank": "Bank",
+  "vkKcCat_email": "Email",
+  "vkKcCat_login": "Logins",
+  "vkKcCat_other": "Other",
+  "vkKcCat_server": "Servers",
+  "vkKcCategory": "Kind",
+  "vkKcChange": "Change",
+  "vkKcClosed": "The keychain is closed",
+  "vkKcClosedKeys": "Until it opens, the keys you gave Rasgeth stay where they were (secrets.json and the private files), and nothing is deleted.",
+  "vkKcCopied": "Copied",
+  "vkKcCopiedNote": "Copied: it leaves the clipboard in 30 seconds.",
+  "vkKcCopy": "Copy",
+  "vkKcEmpty": "Nothing here yet. Add the key of a service an agent should use, or import your passwords from another manager.",
+  "vkKcExpired": "Expired",
+  "vkKcExpires": "Expires on",
+  "vkKcExpiresHelp": "Rasgeth reminds you a month before.",
+  "vkKcExpiresIn": "Expires in {n} days",
+  "@vkKcExpiresIn": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcExpiresToday": "Expires today",
+  "vkKcExpiringLead": "To renew soon:",
+  "vkKcExport": "Export sealed",
+  "vkKcExportGo": "Download",
+  "vkKcExportLead": "A file with every credential, sealed with a passphrase of yours: without it nobody can open it, Rasgeth included.",
+  "vkKcExportTitle": "Export the keychain",
+  "vkKcExported": "Downloaded. Keep the file and its passphrase apart.",
+  "vkKcEyebrow": "Keychain",
+  "vkKcFormat": "Value of the header",
+  "vkKcFormat_1password": "1Password",
+  "vkKcFormat_bitwarden": "Bitwarden",
+  "vkKcFormat_chrome": "Chrome or Edge",
+  "vkKcFormat_firefox": "Firefox",
+  "vkKcFormat_generic": "CSV",
+  "vkKcGenAgain": "Another one",
+  "vkKcGenChars": "{n} characters",
+  "@vkKcGenChars": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcGenDigits": "Digits only (PIN)",
+  "vkKcGenKind": "What it is made of",
+  "vkKcGenLength": "Length",
+  "vkKcGenLetters": "Letters and digits",
+  "vkKcGenSymbols": "Letters, digits, symbols",
+  "vkKcGenUse": "Use this",
+  "vkKcGenerate": "Make one",
+  "vkKcHeader": "Header",
+  "vkKcHide": "Hide",
+  "vkKcHosts": "Allowed addresses",
+  "vkKcHostsHelp": "Host names separated by commas; *.example.com for all its subdomains.",
+  "vkKcHow": "How it goes on a request",
+  "vkKcHowHelp": "When an agent does not write {ref} itself, the value goes in this header. {value} stands for the secret.",
+  "@vkKcHowHelp": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcImport": "Import",
+  "vkKcImport1password": "1Password: File > Export > CSV",
+  "vkKcImportBitwarden": "Bitwarden: Tools > Export vault > .csv",
+  "vkKcImportChrome": "Chrome and Edge: Settings > Passwords > Export passwords",
+  "vkKcImportFirefox": "Firefox: Passwords > menu > Export passwords",
+  "vkKcImportFound": "{n} passwords found in the {from} file. Choose the ones to keep:",
+  "@vkKcImportFound": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcImportGo": "Import {n}",
+  "@vkKcImportGo": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcImportLead": "Export your passwords from the other manager as a CSV file, then choose it here. A keychain file exported by Rasgeth works too.",
+  "vkKcImportLogins": "Imported logins are for you only: no agent may use them until you allow it.",
+  "vkKcImportPick": "Choose the file",
+  "vkKcImportSafe": "Delete the CSV file afterwards: it holds your passwords in clear.",
+  "vkKcImportSealedGo": "Open and import",
+  "vkKcImportSealedHelp": "The passphrase chosen when the file was exported.",
+  "vkKcImportSkipped": "{n} without a password were left out.",
+  "@vkKcImportSkipped": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcImportTitle": "Import passwords",
+  "vkKcImported": "{n} credentials added to the keychain.",
+  "@vkKcImported": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcLead": "Sealed on this computer. Agents use them by name and never see them; you choose where each one may go and who may use it.",
+  "vkKcLockedAdmin": "Set by the administrator",
+  "vkKcManage": "Manage",
+  "vkKcMore": "More",
+  "vkKcMoveLead": "From Bitwarden, 1Password, Chrome, Edge or Firefox; out in a file sealed with a passphrase of yours.",
+  "vkKcMoveTitle": "Bring them in, take them with you",
+  "vkKcName": "Name for the agents",
+  "vkKcNameBad": "Only lower-case letters, digits, - and _ (at least two)",
+  "vkKcNameHelp": "Lower case, no spaces: agents write it to use the credential.",
+  "vkKcNeverUsed": "Never used",
+  "vkKcNoHosts": "Without an address no agent can use it: it stays for you only.",
+  "vkKcNoMatch": "Nothing matches the search.",
+  "vkKcNoUses": "No agent has used a credential yet.",
+  "vkKcNone": "None",
+  "vkKcNotes": "Notes",
+  "vkKcPassphrase": "Passphrase",
+  "vkKcPassphraseAgain": "The passphrase again",
+  "vkKcPassphraseDiffer": "The two are different",
+  "vkKcPassphraseHelp": "At least 8 characters. Keep it somewhere safe: it cannot be recovered.",
+  "vkKcProt_dpapi": "Protected by Windows",
+  "vkKcProt_env": "Sealed with the server's own key",
+  "vkKcProt_file": "Sealed with a key kept on this computer",
+  "vkKcProt_keychain": "Protected by the Mac's Keychain",
+  "vkKcQ": "Your keys and passwords, safe in one place",
+  "vkKcRemove": "Delete",
+  "vkKcRemoveQ": "Delete {name}?",
+  "@vkKcRemoveQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcRemoveText": "The credential goes from the keychain for good: agents and tools can no longer use it.",
+  "vkKcSafeText": "Encrypted (AES-256), never in a project or in git, never written in a chat or a log.",
+  "vkKcSearch": "Search by name, service, user or label",
+  "vkKcSecret": "The secret",
+  "vkKcSecretLead": "The key, token or password. Once saved it is never shown again unless you ask.",
+  "vkKcSecretPlaceholder": "Paste or type it here",
+  "vkKcService": "Service",
+  "vkKcServiceExample": "Revolut Business",
+  "vkKcServiceHelp": "The name you know it by: Revolut, Gmail, the office server.",
+  "vkKcShow": "Show",
+  "vkKcShowQ": "Show the secret?",
+  "vkKcShowText": "It will be on the screen until you hide it or close the window. Make sure nobody is looking.",
+  "vkKcSomeAgents": "The agents that may use it",
+  "vkKcSomeone": "Someone",
+  "vkKcSys_chat": "Chat: {what}",
+  "@vkKcSys_chat": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSys_email": "Mailbox: {what}",
+  "@vkKcSys_email": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSys_git": "Code hosting: {what}",
+  "@vkKcSys_git": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSys_mcp": "Extension: {what}",
+  "@vkKcSys_mcp": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSys_other": "{what}",
+  "@vkKcSys_other": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSys_provider": "Model provider: {what}",
+  "@vkKcSys_provider": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSys_search": "Web search: {what}",
+  "@vkKcSys_search": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSys_ssh": "Machine (SSH): {what}",
+  "@vkKcSys_ssh": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSystem": "Kept by Rasgeth",
+  "vkKcSystemLead": "Keys set by whoever installed this server (in its environment): Rasgeth uses them, they cannot be changed here.",
+  "vkKcSystemTitle": "Set by the administrator",
+  "vkKcTags": "Labels",
+  "vkKcTagsHelp": "Separated by commas: work, home…",
+  "vkKcTools": "Extensions' tools that receive it",
+  "vkKcToolsHelp": "A tool chosen here gets the address to reach the service with this credential, never the value.",
+  "vkKcUrl": "Address (if any)",
+  "vkKcUseAs": "Agents call it {name}",
+  "@vkKcUseAs": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcUseBrowser": "{name} (browser)",
+  "@vkKcUseBrowser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcUse_denied": "asked for {name} towards {host}: you said no",
+  "@vkKcUse_denied": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcUse_moved": "moved {name} here from {host}",
+  "@vkKcUse_moved": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcUse_refused": "could not use {name} towards {host}",
+  "@vkKcUse_refused": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcUse_used": "used {name} towards {host}",
+  "@vkKcUse_used": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcUsedBy": "Used by:",
+  "vkKcUsedByText": "Rasgeth uses this key by itself. Here you can change it, choose whether agents may use it too and see every use; you remove it from its page.",
+  "vkKcUsedTimes": "Used {n} times, last {when}",
+  "@vkKcUsedTimes": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcUser": "User or email (if any)",
+  "vkKcUsesLead": "Every time an agent asked for a credential: when, where to, and how it went.",
+  "vkKcUsesOne": "Its last uses",
+  "vkKcUsesTitle": "Who used them",
+  "vkKcWhere": "Where it may go",
+  "vkKcWhereLead": "The value is put on a request only towards these addresses: anywhere else it is refused.",
+  "vkKcWho": "Who may use it",
+  "vkKcWhoLead": "Agents never see the value: they ask for it by name, and Rasgeth puts it on the request.",
+  "vkMcSection": "Machines",
+  "vkSave": "Save",
+  "vkSettings": "Settings",
+  "vkWzCode": "Where the code lives",
+  "vkWzRemote": "Access from outside home",
+  "vkAutomations": "Automations",
+  "vkChats": "Other chats",
+  "vkExtensions": "Extensions",
+  "vkSubscriptions": "Models and subscriptions",
+  "vkTelegram": "Telegram",
+  "g4211Hub": "Services, skills, generation and the agents' proposals",
+  "g4212Hub": "Keys and passwords, safe in one place",
+  "g4211SignInOpened": "The service's page opened in the browser: sign in there, then come back here.",
+  "g4211OpenExtensions": "Open Extensions",
+  "g4212OpenKeychain": "Open the keychain"
 }

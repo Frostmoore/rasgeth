@@ -37,6 +37,8 @@ import 'full_settings_screen.dart';
 import 'update_screen.dart';
 import 'you_screen.dart' show reachWord;
 // G42.10: Settings › Knowledge and Shared memory, native.
+import '../settings/extensions/extensions_screen.dart' show openExtensionsSettings;
+import '../settings/vault/keychain_screen.dart' show openKeychainSettings;
 import '../settings/knowledge_screen.dart' show openKnowledgeSettings;
 import '../settings/memory_screen.dart' show openSharedMemory;
 import '../settings/portrait_screen.dart' show openPortrait;
@@ -554,6 +556,15 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       l.auOwnHubHint,
                       () => openAutomationsSettings(context),
                     ),
+                    // G42.11: Settings › Extensions, native, after the automations as on the page.
+                    _hub(
+                      c,
+                      'extensions',
+                      RgIcons.puzzle,
+                      l.xtExtensions,
+                      l.g4211Hub,
+                      () => openExtensionsSettings(context),
+                    ),
                     _hub(
                       c,
                       'tools',
@@ -591,6 +602,15 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       l.g4RqSection,
                       l.g4HubRequests,
                       () => openRequestsSettings(context),
+                    ),
+                    // G42.12: Settings › Keychain, native, after the requests as on the page.
+                    _hub(
+                      c,
+                      'keychain',
+                      RgIcons.key,
+                      l.vkKcEyebrow,
+                      l.g4212Hub,
+                      () => openKeychainSettings(context),
                     ),
                     _hub(
                       c,

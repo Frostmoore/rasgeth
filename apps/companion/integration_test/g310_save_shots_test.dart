@@ -75,8 +75,10 @@ void main() {
       await frames(t, 100);
     }
     await shot(t, 'g310-save-$_tag-$_theme-03-saved', wait: 1500);
-    debugPrint('saved: ${File(dest).existsSync() ? File(dest).lengthSync() : -1} bytes; '
-        'left in the folder: ${out.listSync().map((e) => e.path).join(', ')}');
+    debugPrint(
+      'saved: ${File(dest).existsSync() ? File(dest).lengthSync() : -1} bytes; '
+      'left in the folder: ${out.listSync().map((e) => e.path).join(', ')}',
+    );
     if (nav.canPop()) nav.pop();
     await frames(t, 600);
   });

@@ -12805,4 +12805,1564 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get moHubModels =>
       'Subscriptions, API keys, your own server, the model on this computer and who uses which';
+
+  @override
+  String get xtAddServer => 'Add server';
+
+  @override
+  String get xtApprove => 'Approve';
+
+  @override
+  String get xtArgs => 'Arguments';
+
+  @override
+  String get xtAxMagicDismiss => 'Put it away';
+
+  @override
+  String get xtAxMagicExamples => 'Or start from an example';
+
+  @override
+  String get xtAxMagicGo => 'Ask God';
+
+  @override
+  String get xtAxMagicReject => 'Not like this';
+
+  @override
+  String get xtAxMagicSendNo => 'Send to God';
+
+  @override
+  String get xtAxMagicStarting => 'Calling God…';
+
+  @override
+  String get xtAxMagicWhy => 'What is wrong? God reads it and tries again';
+
+  @override
+  String get xtAxNeedMissing => 'Missing';
+
+  @override
+  String get xtAxNeedReady => 'Ready';
+
+  @override
+  String get xtAxNeedVault => 'Add to the keychain';
+
+  @override
+  String get xtBy => 'by';
+
+  @override
+  String get xtCancel => 'Cancel';
+
+  @override
+  String get xtCommand => 'Command';
+
+  @override
+  String get xtCopied => 'Copied';
+
+  @override
+  String get xtCopy => 'Copy';
+
+  @override
+  String get xtCreate => 'Create';
+
+  @override
+  String get xtDescription => 'Description';
+
+  @override
+  String get xtExtAdd => 'Add';
+
+  @override
+  String get xtExtAddAndConnect => 'Add and connect';
+
+  @override
+  String get xtExtAdded => 'Added';
+
+  @override
+  String xtExtAppConsole(String name) {
+    return 'Open $name\'s developer page';
+  }
+
+  @override
+  String xtExtAppGuide(String name) {
+    return 'Create your own app on $name (once, about ten minutes)';
+  }
+
+  @override
+  String get xtExtAskHelp =>
+      'Ask God with a magic integration or extension, in your own words: God looks for a ready service in the catalog, or writes a new ability, tests it and asks you before installing anything.';
+
+  @override
+  String get xtExtAskTitle => 'What should your agents be able to do?';
+
+  @override
+  String get xtExtAuth_app => 'Your own app, with a guide';
+
+  @override
+  String get xtExtAuth_header => 'Needs a key';
+
+  @override
+  String get xtExtAuth_none => 'Nothing to sign in to';
+
+  @override
+  String get xtExtAuth_oauth => 'Sign in on its page';
+
+  @override
+  String get xtExtBroken => 'Not working';
+
+  @override
+  String get xtExtBrokenHelp =>
+      'A service that does not work: check the key, or remove it and add it again. Hover over the label to see the error.';
+
+  @override
+  String get xtExtCatAll => 'All';
+
+  @override
+  String get xtExtCat_cloud => 'Cloud';
+
+  @override
+  String get xtExtCat_code => 'Code';
+
+  @override
+  String get xtExtCat_data => 'Data';
+
+  @override
+  String get xtExtCat_design => 'Design';
+
+  @override
+  String get xtExtCat_docs => 'Documentation';
+
+  @override
+  String get xtExtCat_home => 'Home';
+
+  @override
+  String get xtExtCat_web => 'Web';
+
+  @override
+  String get xtExtCat_work => 'Work';
+
+  @override
+  String get xtExtCatalog => 'Services you can add';
+
+  @override
+  String get xtExtCatalogHelp =>
+      'Each one gives your agents new tools. The services\' own ones come first; the community ones are made by others.';
+
+  @override
+  String get xtExtChecking => 'Checking…';
+
+  @override
+  String get xtExtClientId => 'Client ID of your app';
+
+  @override
+  String get xtExtClientSecret => 'Client secret of your app';
+
+  @override
+  String get xtExtClientSecretOptional => 'Client secret of your app (if it has one)';
+
+  @override
+  String get xtExtCommunity => 'Community';
+
+  @override
+  String get xtExtConnect => 'Connect';
+
+  @override
+  String get xtExtConnected => 'Your services';
+
+  @override
+  String get xtExtEverywhere => 'Everywhere';
+
+  @override
+  String xtExtGuide(String name) {
+    return 'How to set up $name';
+  }
+
+  @override
+  String xtExtKey(String name) {
+    return '$name key';
+  }
+
+  @override
+  String get xtExtKeyHelp =>
+      'It is kept in a private file on your server and never shown again, not even to the agents.';
+
+  @override
+  String xtExtKeyWhere(String name) {
+    return 'Where do I find the $name key?';
+  }
+
+  @override
+  String get xtExtKindSkill => 'Skill';
+
+  @override
+  String get xtExtKindTool => 'Tool';
+
+  @override
+  String get xtExtManualOauth => 'It signs in on its own page (OAuth)';
+
+  @override
+  String get xtExtManualToken => 'Key (optional, sent as Bearer)';
+
+  @override
+  String get xtExtMore => 'More about it';
+
+  @override
+  String get xtExtNeedsLogin => 'Needs you to sign in';
+
+  @override
+  String get xtExtNothingFound =>
+      'Nothing found. Ask God with the magic extension above: it can write what is missing.';
+
+  @override
+  String xtExtOauthHelp(String name) {
+    return 'A new tab opens on $name\'s page: sign in there and allow Rasgeth. Then come back here.';
+  }
+
+  @override
+  String get xtExtOfficial => 'Official';
+
+  @override
+  String xtExtOnlyProject(String name) {
+    return 'Only in $name';
+  }
+
+  @override
+  String get xtExtProposals => 'Waiting for you';
+
+  @override
+  String get xtExtProposalsHelp =>
+      'Abilities written by the agents and already tested: nothing is installed until you approve it.';
+
+  @override
+  String get xtExtSearch => 'Search a service';
+
+  @override
+  String xtExtServerUrl(String name) {
+    return '$name\'s address';
+  }
+
+  @override
+  String get xtExtServerUrlHelp =>
+      'As Rasgeth\'s server reaches it, for example on your home network.';
+
+  @override
+  String get xtExtSkills => 'Skills and tools';
+
+  @override
+  String get xtExtSkillsHelp =>
+      'Abilities installed for your agents. Click one to read or change it.';
+
+  @override
+  String get xtExtTransport => 'How it runs';
+
+  @override
+  String get xtExtTransportHttp => 'Online (address)';
+
+  @override
+  String get xtExtTransportStdio => 'On this server (command)';
+
+  @override
+  String get xtExtUnverified =>
+      'Not confirmed on the service\'s own pages: if something does not match, its documentation is right.';
+
+  @override
+  String get xtExtUnverifiedShort => 'to be checked';
+
+  @override
+  String get xtExtWhere => 'Where it works';
+
+  @override
+  String get xtExtWhereHelp => 'Everywhere, or only for the agents of one project.';
+
+  @override
+  String xtExtWorks(String n) {
+    return 'Works · $n tools';
+  }
+
+  @override
+  String get xtExtensions => 'Extensions';
+
+  @override
+  String get xtFailedTests => 'Failed its tests';
+
+  @override
+  String get xtInstructions => 'Instructions';
+
+  @override
+  String get xtMediaGetKey => 'Get a key';
+
+  @override
+  String get xtMediaHasKey => 'key already there';
+
+  @override
+  String xtMediaKey(String name) {
+    return '$name key';
+  }
+
+  @override
+  String xtMediaKeyLinked(String name) {
+    return '$name key linked';
+  }
+
+  @override
+  String xtMediaKeyStep1(String name) {
+    return 'Open the $name page where keys are made and sign in (or create an account).';
+  }
+
+  @override
+  String get xtMediaKeyStep2 => 'Create a new key and copy it.';
+
+  @override
+  String get xtMediaKeyStep3 => 'Paste it here and save:';
+
+  @override
+  String get xtMediaNativeHelp =>
+      'Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.';
+
+  @override
+  String get xtMediaNativeTitle => 'Use the model\'s own tool when it has one';
+
+  @override
+  String get xtMediaNeedsKey => 'Needs its key';
+
+  @override
+  String get xtMediaOff => 'Off';
+
+  @override
+  String get xtMediaOtherProvider => 'Choose another provider';
+
+  @override
+  String get xtMediaPurpose =>
+      'Who makes pictures, videos, voices, music and sound effects when an agent is asked for one (the tools image_generation, video_generation and audio_generation). Choose a provider and a model for each, and paste its key: a key you already gave for the chat (OpenAI, Gemini, xAI) works here too. They are paid by the provider for what you make.';
+
+  @override
+  String get xtMediaStep1 => '1. Who makes it';
+
+  @override
+  String xtMediaStep2(String name) {
+    return '2. The $name key';
+  }
+
+  @override
+  String get xtMediaTitle => 'Default extensions';
+
+  @override
+  String get xtMediaTurnOff => 'Turn off';
+
+  @override
+  String get xtMediaVoice => 'Voice';
+
+  @override
+  String get xtMediaVoiceFirst => 'The account\'s first one';
+
+  @override
+  String get xtMedia_image => 'Pictures';
+
+  @override
+  String get xtMedia_image_help =>
+      'Drawings, photos, illustrations, logos from a description (or from a picture).';
+
+  @override
+  String get xtMedia_music => 'Music';
+
+  @override
+  String get xtMedia_music_help => 'Songs and pieces from a description, with or without singing.';
+
+  @override
+  String get xtMedia_sound => 'Sound effects';
+
+  @override
+  String get xtMedia_sound_help =>
+      'Short sounds from a description: a door, rain, a crowd, an engine.';
+
+  @override
+  String get xtMedia_speech => 'Voice';
+
+  @override
+  String get xtMedia_speech_help => 'A text read aloud, with the voice you choose.';
+
+  @override
+  String get xtMedia_video => 'Videos';
+
+  @override
+  String get xtMedia_video_help =>
+      'Short clips from a description or from a first frame. They take minutes and cost more. (OpenAI closed Sora in September 2026.)';
+
+  @override
+  String get xtModel => 'Model';
+
+  @override
+  String get xtMxApprove => 'Approve and install';
+
+  @override
+  String get xtMxArgs => 'Arguments:';
+
+  @override
+  String get xtMxBadgeApprove => 'To install';
+
+  @override
+  String get xtMxBadgeInstalled => 'Installed';
+
+  @override
+  String get xtMxBadgeMissing => 'Something missing';
+
+  @override
+  String get xtMxBuilding =>
+      'God is building it with you: answer its questions in the conversation.';
+
+  @override
+  String get xtMxChange => 'Change it';
+
+  @override
+  String get xtMxChangeGo => 'Ask God';
+
+  @override
+  String get xtMxChangeLabel =>
+      'What should change? God proposes it again and you install it as before.';
+
+  @override
+  String get xtMxChanging =>
+      'God is changing it with you; what is installed keeps working until you approve the new version.';
+
+  @override
+  String xtMxCheckHost(String what) {
+    return 'The address $what';
+  }
+
+  @override
+  String xtMxCheckKey(String what) {
+    return 'The key for $what';
+  }
+
+  @override
+  String xtMxCheckKeyUndeclared(String what) {
+    return 'The key $what, used by the code but not declared';
+  }
+
+  @override
+  String xtMxCheckTest(String what) {
+    return 'The test of $what';
+  }
+
+  @override
+  String get xtMxCode => 'Read the code';
+
+  @override
+  String get xtMxDone => 'Installed: every agent has these tools from its next conversation.';
+
+  @override
+  String get xtMxExtension => 'Magic extension';
+
+  @override
+  String get xtMxExtensionAsk => 'What should the agents be able to do?';
+
+  @override
+  String get xtMxExtensionEx1 => 'Turn a CSV into a chart and tell me the totals';
+
+  @override
+  String get xtMxExtensionEx2 => 'Check that an Italian VAT number and tax code are valid';
+
+  @override
+  String get xtMxExtensionEx3 => 'A skill for writing my weekly report the way I like it';
+
+  @override
+  String get xtMxExtensionLead =>
+      'Tell God what the agents should be able to do. God asks, writes tools and skills with their tests and tries them in a closed sandbox: you see the result and install it with one button.';
+
+  @override
+  String get xtMxExtensionPlaceholder =>
+      'For example: turn a CSV into a chart and tell me the totals';
+
+  @override
+  String get xtMxExtensionTile =>
+      'New abilities for the agents, of any kind: God writes the tools and skills, tests them apart and you install them.';
+
+  @override
+  String get xtMxGiveKey => 'Give it to these tools';
+
+  @override
+  String xtMxGiveKeyText(String hosts, String tools) {
+    return 'Only these tools will receive it, through the proxy, and only towards $hosts: $tools.';
+  }
+
+  @override
+  String xtMxGiveKeyTitle(String what) {
+    return 'Give $what to this package?';
+  }
+
+  @override
+  String get xtMxIntegration => 'Magic integration';
+
+  @override
+  String get xtMxIntegrationAsk => 'Which service, and what for?';
+
+  @override
+  String get xtMxIntegrationEx1 => 'Connect me to Notion: search my pages and create new ones';
+
+  @override
+  String get xtMxIntegrationEx2 =>
+      'Connect me to my management software\'s API (invoices and customers)';
+
+  @override
+  String get xtMxIntegrationEx3 => 'Read my Todoist tasks and mark them done';
+
+  @override
+  String get xtMxIntegrationLead =>
+      'Tell God which service and what the agents should do with it. God asks what it needs, writes the connector with its tests and tries it in a closed sandbox: you see the result and install it with one button.';
+
+  @override
+  String get xtMxIntegrationPlaceholder =>
+      'For example: connect me to Notion so the agents can search my pages and add notes';
+
+  @override
+  String get xtMxIntegrationTile =>
+      'Connect Rasgeth to a service through its API (Notion, your management software, a bank…): God writes the connector, tests it apart and you install it.';
+
+  @override
+  String get xtMxKeyHosts => 'It may go only to:';
+
+  @override
+  String get xtMxKeyLead =>
+      'Paste the key here: it goes straight into your keychain, encrypted. Nobody reads it, God included; the tools receive it only through the proxy.';
+
+  @override
+  String get xtMxKeyName => 'Name in the keychain:';
+
+  @override
+  String get xtMxKeyOnly =>
+      'Used only by this package\'s tools; you can change it in Settings > Keychain.';
+
+  @override
+  String get xtMxKeySave => 'Save in the keychain';
+
+  @override
+  String xtMxKeyTitle(String service) {
+    return 'Key for $service';
+  }
+
+  @override
+  String get xtMxKeyValue => 'The key';
+
+  @override
+  String get xtMxKeys => 'Keys';
+
+  @override
+  String get xtMxListLead =>
+      'Built with God: open one to go on with the conversation, install it, change it or remove it.';
+
+  @override
+  String get xtMxListTitle => 'Magic integrations and extensions';
+
+  @override
+  String get xtMxMissing => 'Before you can install it, this is missing:';
+
+  @override
+  String get xtMxParts => 'What it adds';
+
+  @override
+  String get xtMxPromise1 => 'Nothing is installed without your yes.';
+
+  @override
+  String get xtMxPromise2 =>
+      'Every part is tested in a closed sandbox that reaches only the services it declares.';
+
+  @override
+  String get xtMxPromise3 => 'Keys go into your keychain from the window, never in the chat.';
+
+  @override
+  String get xtMxProposal => 'God\'s package';
+
+  @override
+  String get xtMxReaches => 'It reaches only';
+
+  @override
+  String get xtMxReachesNothing => 'Nothing: it works without the network.';
+
+  @override
+  String get xtMxRetest => 'Test again';
+
+  @override
+  String get xtMxState_building => 'Being built';
+
+  @override
+  String get xtMxState_dismissed => 'Put away';
+
+  @override
+  String get xtMxState_done => 'Installed';
+
+  @override
+  String get xtMxState_ready => 'Ready: it waits for you';
+
+  @override
+  String get xtMxState_testing => 'Tests running';
+
+  @override
+  String get xtMxStep1 => 'You say what you want';
+
+  @override
+  String get xtMxStep2 => 'God writes and tests it';
+
+  @override
+  String get xtMxStep3 => 'You install it';
+
+  @override
+  String get xtMxTesting => 'The tests are running again in the sandbox…';
+
+  @override
+  String get xtMxUninstall => 'Uninstall';
+
+  @override
+  String xtMxUninstallText(String what) {
+    return 'These go away: $what. The keys added for it leave the keychain too.';
+  }
+
+  @override
+  String xtMxUninstallTitle(String what) {
+    return 'Uninstall $what?';
+  }
+
+  @override
+  String get xtMxWhyGod => 'God has to fix it: tell it in the conversation if it does not.';
+
+  @override
+  String get xtMxWhyHost =>
+      'The code reaches it but does not declare it: God has to declare it or remove it.';
+
+  @override
+  String get xtMxWhyMissing =>
+      'Not in your keychain yet: add it here, it goes to these tools only.';
+
+  @override
+  String get xtMxWhyNotGiven =>
+      'It is in your keychain, but not given to these tools (or not towards these addresses).';
+
+  @override
+  String get xtMxWhyTest =>
+      'It failed in the sandbox: God reads why and fixes it; with a key added, the tests run again.';
+
+  @override
+  String get xtName => 'Name';
+
+  @override
+  String get xtNewSkill => 'New skill';
+
+  @override
+  String get xtNoProposals => 'No proposals.';
+
+  @override
+  String get xtOpen => 'open';
+
+  @override
+  String get xtProposals => 'Proposals waiting for you';
+
+  @override
+  String get xtReject => 'Reject';
+
+  @override
+  String get xtRemotePasswordChange => 'Change it';
+
+  @override
+  String get xtRemove => 'Remove';
+
+  @override
+  String get xtSave => 'Save';
+
+  @override
+  String get xtScope => 'Scope';
+
+  @override
+  String get xtScopePlatform => 'platform';
+
+  @override
+  String get xtSkillDownload => 'Download';
+
+  @override
+  String get xtSkillDownloadHelp => 'Download this skill as a .zip, to share it';
+
+  @override
+  String get xtSkillImport => 'Import a skill';
+
+  @override
+  String get xtSkillImportFile => 'Choose a .zip file';
+
+  @override
+  String get xtSkillImportHelp =>
+      'A skill\'s folder as a .zip (the agentskills.io format), from another Rasgeth or another tool.';
+
+  @override
+  String get xtSkillImportWhere => 'Install in';
+
+  @override
+  String xtSkillImported(String name) {
+    return 'Skill \"$name\" imported.';
+  }
+
+  @override
+  String get xtSkillReplaceConfirm => 'A skill with this name already exists there. Replace it?';
+
+  @override
+  String get xtSvApprovedAuto => 'installed by itself (your choice in Safety)';
+
+  @override
+  String get xtSvApprovedYou => 'approved by you';
+
+  @override
+  String xtSvBy(String who) {
+    return 'by $who';
+  }
+
+  @override
+  String get xtSvCompare => 'Compare with the one in use';
+
+  @override
+  String get xtSvCompareFull => 'Compare: every difference';
+
+  @override
+  String get xtSvCurrent => 'in use';
+
+  @override
+  String get xtSvHideCompare => 'Hide the comparison';
+
+  @override
+  String get xtSvHow_baseline => 'As it was before the history began';
+
+  @override
+  String get xtSvHow_edited => 'Changed by hand';
+
+  @override
+  String get xtSvHow_import => 'Imported';
+
+  @override
+  String get xtSvHow_install => 'First version';
+
+  @override
+  String xtSvHow_rollback(String n) {
+    return 'Back to version $n';
+  }
+
+  @override
+  String get xtSvHow_update => 'New version';
+
+  @override
+  String get xtSvLead =>
+      'Every change of this skill is kept: who wrote it, why and when. Agents use the newest from their next conversation.';
+
+  @override
+  String get xtSvLineTitle => 'What changed and why';
+
+  @override
+  String get xtSvNextSession =>
+      'Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.';
+
+  @override
+  String get xtSvNone => 'No versions yet.';
+
+  @override
+  String get xtSvNotRestorable => 'Too large to keep: it cannot come back.';
+
+  @override
+  String xtSvRollback(String n) {
+    return 'Go back to version $n';
+  }
+
+  @override
+  String xtSvRollbackConfirm(String name) {
+    return 'Its files replace those of «$name» in use, as a new version: nothing is lost and you can come back here. Agents get it from their next conversation.';
+  }
+
+  @override
+  String xtSvRollbackTitle(String n) {
+    return 'Go back to version $n?';
+  }
+
+  @override
+  String xtSvRolledBack(String n, String v) {
+    return 'Back to version $n: it is version $v now.';
+  }
+
+  @override
+  String get xtSvTitle => 'Versions';
+
+  @override
+  String get xtSvUnknown => 'author unknown';
+
+  @override
+  String xtSvVersion(String n) {
+    return 'Version $n';
+  }
+
+  @override
+  String get xtSvWhy => 'Why';
+
+  @override
+  String get xtSvYou => 'you';
+
+  @override
+  String get xtUrl => 'URL';
+
+  @override
+  String get xtWzDoneBtn => 'Done';
+
+  @override
+  String get xtXwAddress => 'Address';
+
+  @override
+  String get xtXwAuthor => 'Proposed by';
+
+  @override
+  String get xtXwConnectedLead => 'The lit ones work. Open one to sign in again or remove it.';
+
+  @override
+  String get xtXwFailedLead =>
+      'Proposals of the agents whose tests did not pass: they were never installed.';
+
+  @override
+  String get xtXwFile => 'File';
+
+  @override
+  String get xtXwImportText => 'A .zip someone shared, into everything or one project.';
+
+  @override
+  String xtXwKeptFiles(String files) {
+    return 'Files of the skill it keeps: $files';
+  }
+
+  @override
+  String get xtXwKind => 'Kind';
+
+  @override
+  String get xtXwNewSkillText => 'Instructions you write for your agents; it installs right away.';
+
+  @override
+  String get xtXwOpenFile => 'Open the file';
+
+  @override
+  String get xtXwOwnLead =>
+      'For experts: a skill someone shared with you, one you write, a server not in the catalog.';
+
+  @override
+  String get xtXwOwnTitle => 'Made by hand';
+
+  @override
+  String get xtXwPrevious => 'Now installed';
+
+  @override
+  String xtXwScripts(String files) {
+    return 'It has scripts ($files): approve only if you trust what they do.';
+  }
+
+  @override
+  String get xtXwServerText =>
+      'An MCP server by address or by command, with its key if it needs one.';
+
+  @override
+  String get xtXwSignIn => 'Sign-in';
+
+  @override
+  String get xtXwSkillNameHelp => 'Lowercase letters, digits and dashes, such as weekly-report.';
+
+  @override
+  String get xtXwSource => 'Made by';
+
+  @override
+  String get xtXwState => 'State';
+
+  @override
+  String get xtXwSummary => 'Why it came';
+
+  @override
+  String get xtXwTests => 'Tests in a throwaway sandbox';
+
+  @override
+  String get xtXwTestsFailed => 'tests failed';
+
+  @override
+  String get xtXwUpdates => 'Update of an installed skill';
+
+  @override
+  String get xtXwWaitsYou => 'waits for your yes';
+
+  @override
+  String get xtYou => 'You';
+
+  @override
+  String get vkCancel => 'Cancel';
+
+  @override
+  String get vkClose => 'Close';
+
+  @override
+  String get vkDvSection => 'Devices';
+
+  @override
+  String get vkKcAdd => 'Add';
+
+  @override
+  String get vkKcAddSub => 'Its value is sealed as soon as you save';
+
+  @override
+  String get vkKcAddTitle => 'A new credential';
+
+  @override
+  String get vkKcAgentsHow =>
+      'Agents use a credential with use_credential, or through the tools you bind to it below each credential.';
+
+  @override
+  String get vkKcAgentsHowNoProxy => 'Agents use a credential with use_credential.';
+
+  @override
+  String get vkKcAll => 'All';
+
+  @override
+  String get vkKcAllAgents => 'Every agent';
+
+  @override
+  String get vkKcAllAgentsHelp => 'Off: only the agents you choose.';
+
+  @override
+  String get vkKcAllCats => 'All';
+
+  @override
+  String get vkKcAsk => 'Ask me before it is used';
+
+  @override
+  String get vkKcAsk_always => 'Every time';
+
+  @override
+  String get vkKcAsk_never => 'Never: I trust the rules above';
+
+  @override
+  String get vkKcAsk_session => 'The first time in each conversation';
+
+  @override
+  String get vkKcAutos => 'Automations that may use it';
+
+  @override
+  String get vkKcBrAddress => 'Rasgeth\'s address';
+
+  @override
+  String get vkKcBrCode => 'Code';
+
+  @override
+  String get vkKcBrCodeLead =>
+      'In the extension (the key in the browser\'s bar) write this address and this code. The code works for ten minutes and for one browser.';
+
+  @override
+  String get vkKcBrCopied => 'Copied';
+
+  @override
+  String get vkKcBrCopy => 'Copy';
+
+  @override
+  String vkKcBrDone(String name) {
+    return 'Linked: «$name». You can close this window.';
+  }
+
+  @override
+  String get vkKcBrDownload => 'Download the extension';
+
+  @override
+  String get vkKcBrDownloadFirefox => 'Download the version for Firefox';
+
+  @override
+  String get vkKcBrExpired => 'That code expired: make a new one.';
+
+  @override
+  String vkKcBrExpires(String time) {
+    return 'Valid until $time';
+  }
+
+  @override
+  String vkKcBrHowChromium(String page) {
+    return 'Unzip it into a folder you will keep. Open $page, switch on «Developer mode», press «Load unpacked» and choose the folder. You can also drag the zip onto that page.';
+  }
+
+  @override
+  String get vkKcBrHowFirefox =>
+      'Open about:debugging#/runtime/this-firefox, press «Load Temporary Add-on…» and choose the zip. Firefox keeps it until it closes: to keep it for good it must be signed by Mozilla.';
+
+  @override
+  String get vkKcBrHowOpera =>
+      'Unzip it into a folder you will keep. Open opera://extensions, switch on «Developer mode» at the top right, press «Load unpacked» and choose the folder. You can also drag the zip onto that page.';
+
+  @override
+  String get vkKcBrHttpNote =>
+      'This address starts with http: the extension accepts it only at home (this computer or the local network). From outside use remote access, with https.';
+
+  @override
+  String get vkKcBrLead =>
+      'The keychain\'s extension fills sign-ins in Opera, Chrome, Edge, Brave and Firefox, only on the site each password belongs to, and saves the new ones here. Every use shows in the list above.';
+
+  @override
+  String get vkKcBrLink => 'Link a browser';
+
+  @override
+  String vkKcBrLinked(String when) {
+    return 'linked $when';
+  }
+
+  @override
+  String get vkKcBrMakeCode => 'Make a code';
+
+  @override
+  String get vkKcBrNever => 'not used yet';
+
+  @override
+  String get vkKcBrNone => 'No browser linked yet.';
+
+  @override
+  String vkKcBrSeen(String when) {
+    return 'last seen $when';
+  }
+
+  @override
+  String get vkKcBrStep1 => '1. Install the extension';
+
+  @override
+  String get vkKcBrStep2 => '2. Link it with a code';
+
+  @override
+  String get vkKcBrStore =>
+      'Later also in the Chrome Web Store: one click to install, and it updates itself.';
+
+  @override
+  String get vkKcBrTitle => 'In your browser';
+
+  @override
+  String get vkKcBrUnlink => 'Unlink';
+
+  @override
+  String vkKcBrUnlinkQ(String name) {
+    return 'Unlink $name?';
+  }
+
+  @override
+  String get vkKcBrUnlinkText =>
+      'The browser stops reaching the keychain at once. The passwords stay here; to use it again, link it with a new code.';
+
+  @override
+  String get vkKcBrWhich => 'Your browser';
+
+  @override
+  String get vkKcBrWinLead =>
+      'The keychain\'s extension fills sign-ins in Opera, Chrome, Edge, Brave and Firefox, only on the site each password belongs to, and saves the new ones here.';
+
+  @override
+  String get vkKcBrWinTitle => 'Link a browser';
+
+  @override
+  String get vkKcCat_api => 'API keys';
+
+  @override
+  String get vkKcCat_bank => 'Bank';
+
+  @override
+  String get vkKcCat_email => 'Email';
+
+  @override
+  String get vkKcCat_login => 'Logins';
+
+  @override
+  String get vkKcCat_other => 'Other';
+
+  @override
+  String get vkKcCat_server => 'Servers';
+
+  @override
+  String get vkKcCategory => 'Kind';
+
+  @override
+  String get vkKcChange => 'Change';
+
+  @override
+  String get vkKcClosed => 'The keychain is closed';
+
+  @override
+  String get vkKcClosedKeys =>
+      'Until it opens, the keys you gave Rasgeth stay where they were (secrets.json and the private files), and nothing is deleted.';
+
+  @override
+  String get vkKcCopied => 'Copied';
+
+  @override
+  String get vkKcCopiedNote => 'Copied: it leaves the clipboard in 30 seconds.';
+
+  @override
+  String get vkKcCopy => 'Copy';
+
+  @override
+  String get vkKcEmpty =>
+      'Nothing here yet. Add the key of a service an agent should use, or import your passwords from another manager.';
+
+  @override
+  String get vkKcExpired => 'Expired';
+
+  @override
+  String get vkKcExpires => 'Expires on';
+
+  @override
+  String get vkKcExpiresHelp => 'Rasgeth reminds you a month before.';
+
+  @override
+  String vkKcExpiresIn(String n) {
+    return 'Expires in $n days';
+  }
+
+  @override
+  String get vkKcExpiresToday => 'Expires today';
+
+  @override
+  String get vkKcExpiringLead => 'To renew soon:';
+
+  @override
+  String get vkKcExport => 'Export sealed';
+
+  @override
+  String get vkKcExportGo => 'Download';
+
+  @override
+  String get vkKcExportLead =>
+      'A file with every credential, sealed with a passphrase of yours: without it nobody can open it, Rasgeth included.';
+
+  @override
+  String get vkKcExportTitle => 'Export the keychain';
+
+  @override
+  String get vkKcExported => 'Downloaded. Keep the file and its passphrase apart.';
+
+  @override
+  String get vkKcEyebrow => 'Keychain';
+
+  @override
+  String get vkKcFormat => 'Value of the header';
+
+  @override
+  String get vkKcFormat_1password => '1Password';
+
+  @override
+  String get vkKcFormat_bitwarden => 'Bitwarden';
+
+  @override
+  String get vkKcFormat_chrome => 'Chrome or Edge';
+
+  @override
+  String get vkKcFormat_firefox => 'Firefox';
+
+  @override
+  String get vkKcFormat_generic => 'CSV';
+
+  @override
+  String get vkKcGenAgain => 'Another one';
+
+  @override
+  String vkKcGenChars(String n) {
+    return '$n characters';
+  }
+
+  @override
+  String get vkKcGenDigits => 'Digits only (PIN)';
+
+  @override
+  String get vkKcGenKind => 'What it is made of';
+
+  @override
+  String get vkKcGenLength => 'Length';
+
+  @override
+  String get vkKcGenLetters => 'Letters and digits';
+
+  @override
+  String get vkKcGenSymbols => 'Letters, digits, symbols';
+
+  @override
+  String get vkKcGenUse => 'Use this';
+
+  @override
+  String get vkKcGenerate => 'Make one';
+
+  @override
+  String get vkKcHeader => 'Header';
+
+  @override
+  String get vkKcHide => 'Hide';
+
+  @override
+  String get vkKcHosts => 'Allowed addresses';
+
+  @override
+  String get vkKcHostsHelp =>
+      'Host names separated by commas; *.example.com for all its subdomains.';
+
+  @override
+  String get vkKcHow => 'How it goes on a request';
+
+  @override
+  String vkKcHowHelp(String ref, String value) {
+    return 'When an agent does not write $ref itself, the value goes in this header. $value stands for the secret.';
+  }
+
+  @override
+  String get vkKcImport => 'Import';
+
+  @override
+  String get vkKcImport1password => '1Password: File > Export > CSV';
+
+  @override
+  String get vkKcImportBitwarden => 'Bitwarden: Tools > Export vault > .csv';
+
+  @override
+  String get vkKcImportChrome => 'Chrome and Edge: Settings > Passwords > Export passwords';
+
+  @override
+  String get vkKcImportFirefox => 'Firefox: Passwords > menu > Export passwords';
+
+  @override
+  String vkKcImportFound(String from, String n) {
+    return '$n passwords found in the $from file. Choose the ones to keep:';
+  }
+
+  @override
+  String vkKcImportGo(String n) {
+    return 'Import $n';
+  }
+
+  @override
+  String get vkKcImportLead =>
+      'Export your passwords from the other manager as a CSV file, then choose it here. A keychain file exported by Rasgeth works too.';
+
+  @override
+  String get vkKcImportLogins =>
+      'Imported logins are for you only: no agent may use them until you allow it.';
+
+  @override
+  String get vkKcImportPick => 'Choose the file';
+
+  @override
+  String get vkKcImportSafe => 'Delete the CSV file afterwards: it holds your passwords in clear.';
+
+  @override
+  String get vkKcImportSealedGo => 'Open and import';
+
+  @override
+  String get vkKcImportSealedHelp => 'The passphrase chosen when the file was exported.';
+
+  @override
+  String vkKcImportSkipped(String n) {
+    return '$n without a password were left out.';
+  }
+
+  @override
+  String get vkKcImportTitle => 'Import passwords';
+
+  @override
+  String vkKcImported(String n) {
+    return '$n credentials added to the keychain.';
+  }
+
+  @override
+  String get vkKcLead =>
+      'Sealed on this computer. Agents use them by name and never see them; you choose where each one may go and who may use it.';
+
+  @override
+  String get vkKcLockedAdmin => 'Set by the administrator';
+
+  @override
+  String get vkKcManage => 'Manage';
+
+  @override
+  String get vkKcMore => 'More';
+
+  @override
+  String get vkKcMoveLead =>
+      'From Bitwarden, 1Password, Chrome, Edge or Firefox; out in a file sealed with a passphrase of yours.';
+
+  @override
+  String get vkKcMoveTitle => 'Bring them in, take them with you';
+
+  @override
+  String get vkKcName => 'Name for the agents';
+
+  @override
+  String get vkKcNameBad => 'Only lower-case letters, digits, - and _ (at least two)';
+
+  @override
+  String get vkKcNameHelp => 'Lower case, no spaces: agents write it to use the credential.';
+
+  @override
+  String get vkKcNeverUsed => 'Never used';
+
+  @override
+  String get vkKcNoHosts => 'Without an address no agent can use it: it stays for you only.';
+
+  @override
+  String get vkKcNoMatch => 'Nothing matches the search.';
+
+  @override
+  String get vkKcNoUses => 'No agent has used a credential yet.';
+
+  @override
+  String get vkKcNone => 'None';
+
+  @override
+  String get vkKcNotes => 'Notes';
+
+  @override
+  String get vkKcPassphrase => 'Passphrase';
+
+  @override
+  String get vkKcPassphraseAgain => 'The passphrase again';
+
+  @override
+  String get vkKcPassphraseDiffer => 'The two are different';
+
+  @override
+  String get vkKcPassphraseHelp =>
+      'At least 8 characters. Keep it somewhere safe: it cannot be recovered.';
+
+  @override
+  String get vkKcProt_dpapi => 'Protected by Windows';
+
+  @override
+  String get vkKcProt_env => 'Sealed with the server\'s own key';
+
+  @override
+  String get vkKcProt_file => 'Sealed with a key kept on this computer';
+
+  @override
+  String get vkKcProt_keychain => 'Protected by the Mac\'s Keychain';
+
+  @override
+  String get vkKcQ => 'Your keys and passwords, safe in one place';
+
+  @override
+  String get vkKcRemove => 'Delete';
+
+  @override
+  String vkKcRemoveQ(String name) {
+    return 'Delete $name?';
+  }
+
+  @override
+  String get vkKcRemoveText =>
+      'The credential goes from the keychain for good: agents and tools can no longer use it.';
+
+  @override
+  String get vkKcSafeText =>
+      'Encrypted (AES-256), never in a project or in git, never written in a chat or a log.';
+
+  @override
+  String get vkKcSearch => 'Search by name, service, user or label';
+
+  @override
+  String get vkKcSecret => 'The secret';
+
+  @override
+  String get vkKcSecretLead =>
+      'The key, token or password. Once saved it is never shown again unless you ask.';
+
+  @override
+  String get vkKcSecretPlaceholder => 'Paste or type it here';
+
+  @override
+  String get vkKcService => 'Service';
+
+  @override
+  String get vkKcServiceExample => 'Revolut Business';
+
+  @override
+  String get vkKcServiceHelp => 'The name you know it by: Revolut, Gmail, the office server.';
+
+  @override
+  String get vkKcShow => 'Show';
+
+  @override
+  String get vkKcShowQ => 'Show the secret?';
+
+  @override
+  String get vkKcShowText =>
+      'It will be on the screen until you hide it or close the window. Make sure nobody is looking.';
+
+  @override
+  String get vkKcSomeAgents => 'The agents that may use it';
+
+  @override
+  String get vkKcSomeone => 'Someone';
+
+  @override
+  String vkKcSys_chat(String what) {
+    return 'Chat: $what';
+  }
+
+  @override
+  String vkKcSys_email(String what) {
+    return 'Mailbox: $what';
+  }
+
+  @override
+  String vkKcSys_git(String what) {
+    return 'Code hosting: $what';
+  }
+
+  @override
+  String vkKcSys_mcp(String what) {
+    return 'Extension: $what';
+  }
+
+  @override
+  String vkKcSys_other(String what) {
+    return '$what';
+  }
+
+  @override
+  String vkKcSys_provider(String what) {
+    return 'Model provider: $what';
+  }
+
+  @override
+  String vkKcSys_search(String what) {
+    return 'Web search: $what';
+  }
+
+  @override
+  String vkKcSys_ssh(String what) {
+    return 'Machine (SSH): $what';
+  }
+
+  @override
+  String get vkKcSystem => 'Kept by Rasgeth';
+
+  @override
+  String get vkKcSystemLead =>
+      'Keys set by whoever installed this server (in its environment): Rasgeth uses them, they cannot be changed here.';
+
+  @override
+  String get vkKcSystemTitle => 'Set by the administrator';
+
+  @override
+  String get vkKcTags => 'Labels';
+
+  @override
+  String get vkKcTagsHelp => 'Separated by commas: work, home…';
+
+  @override
+  String get vkKcTools => 'Extensions\' tools that receive it';
+
+  @override
+  String get vkKcToolsHelp =>
+      'A tool chosen here gets the address to reach the service with this credential, never the value.';
+
+  @override
+  String get vkKcUrl => 'Address (if any)';
+
+  @override
+  String vkKcUseAs(String name) {
+    return 'Agents call it $name';
+  }
+
+  @override
+  String vkKcUseBrowser(String name) {
+    return '$name (browser)';
+  }
+
+  @override
+  String vkKcUse_denied(String host, String name) {
+    return 'asked for $name towards $host: you said no';
+  }
+
+  @override
+  String vkKcUse_moved(String host, String name) {
+    return 'moved $name here from $host';
+  }
+
+  @override
+  String vkKcUse_refused(String host, String name) {
+    return 'could not use $name towards $host';
+  }
+
+  @override
+  String vkKcUse_used(String host, String name) {
+    return 'used $name towards $host';
+  }
+
+  @override
+  String get vkKcUsedBy => 'Used by:';
+
+  @override
+  String get vkKcUsedByText =>
+      'Rasgeth uses this key by itself. Here you can change it, choose whether agents may use it too and see every use; you remove it from its page.';
+
+  @override
+  String vkKcUsedTimes(String n, String when) {
+    return 'Used $n times, last $when';
+  }
+
+  @override
+  String get vkKcUser => 'User or email (if any)';
+
+  @override
+  String get vkKcUsesLead =>
+      'Every time an agent asked for a credential: when, where to, and how it went.';
+
+  @override
+  String get vkKcUsesOne => 'Its last uses';
+
+  @override
+  String get vkKcUsesTitle => 'Who used them';
+
+  @override
+  String get vkKcWhere => 'Where it may go';
+
+  @override
+  String get vkKcWhereLead =>
+      'The value is put on a request only towards these addresses: anywhere else it is refused.';
+
+  @override
+  String get vkKcWho => 'Who may use it';
+
+  @override
+  String get vkKcWhoLead =>
+      'Agents never see the value: they ask for it by name, and Rasgeth puts it on the request.';
+
+  @override
+  String get vkMcSection => 'Machines';
+
+  @override
+  String get vkSave => 'Save';
+
+  @override
+  String get vkSettings => 'Settings';
+
+  @override
+  String get vkWzCode => 'Where the code lives';
+
+  @override
+  String get vkWzRemote => 'Access from outside home';
+
+  @override
+  String get vkAutomations => 'Automations';
+
+  @override
+  String get vkChats => 'Other chats';
+
+  @override
+  String get vkExtensions => 'Extensions';
+
+  @override
+  String get vkSubscriptions => 'Models and subscriptions';
+
+  @override
+  String get vkTelegram => 'Telegram';
+
+  @override
+  String get g4211Hub => 'Services, skills, generation and the agents\' proposals';
+
+  @override
+  String get g4212Hub => 'Keys and passwords, safe in one place';
+
+  @override
+  String get g4211SignInOpened =>
+      'The service\'s page opened in the browser: sign in there, then come back here.';
+
+  @override
+  String get g4211OpenExtensions => 'Open Extensions';
+
+  @override
+  String get g4212OpenKeychain => 'Open the keychain';
 }
