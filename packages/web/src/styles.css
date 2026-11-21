@@ -784,6 +784,11 @@ button.bar-settings {
 .ra-when {
   color: var(--text);
 }
+/* A kept worktree (3.10.2): work not merged, picked up again by restoring. */
+.ra-kept b {
+  color: var(--warn-text);
+  font-weight: 600;
+}
 .ra-acts {
   display: flex;
   gap: 8px;

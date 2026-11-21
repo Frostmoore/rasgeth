@@ -58,6 +58,7 @@ import {
   can,
   canKnowledge,
   hierarchyGuards,
+  type KeptWork,
   type KnowledgeTarget,
   type LockedFolder,
   migrateHierarchy,
@@ -8023,6 +8024,16 @@ export class RedGiantCore implements OrchestrationHost {
     // Out of the team and its conversations out of the lists, on every page and app.
     if (ownerId) this.listsChanged(ownerId, "agents", "sessions");
     const kept = await this.tidyWorktrees(removed);
+    // The removed list says what each kept worktree holds, and how to get it back (3.10.2).
+    for (const k of kept)
+      await this.registry
+        .noteKept(k.agentId, {
+          branch: k.branch,
+          commits: k.commits.length,
+          changes: k.changes.length,
+          ...(k.error !== undefined && { error: true }),
+        })
+        .catch(() => {});
     return { removed: ids, tasks: closed.map((t) => t.id), interrupted, kept };
   }
 
@@ -8095,6 +8106,10 @@ export class RedGiantCore implements OrchestrationHost {
           .filter((x) => x.id !== a.id && x.removed?.root === a.id)
           .map((x) => ({ id: x.id, name: x.name, kind: x.kind })),
         sessions: counts.get(a.id) ?? 0,
+        // Its worktree and those of the agents removed with it that hold work not merged.
+        kept: all
+          .filter((x) => (x.id === a.id || x.removed?.root === a.id) && x.removed?.kept)
+          .map((x) => ({ id: x.id, name: x.name, ...(x.removed?.kept as KeptWork) })),
       }));
   }
 

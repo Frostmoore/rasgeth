@@ -454,5 +454,31 @@ describe("a removed agent's worktree and branch (3.10.1)", () => {
     expect(said).toContain("1 uncommitted change(s): ?? draft.md");
     expect(existsSync(join(wt, "draft.md"))).toBe(true);
     expect(await branches(path)).toContain(worktreeBranch(t.dev));
+
+    // The removed list says it too (3.10.2), for the page and the app; restoring clears it.
+    type Removed = { id: string; removed: { kept: unknown[] } }[];
+    const listed = (await srv.api<Removed>("GET", "/api/agents/removed")).body;
+    expect(listed.find((r) => r.id === t.dev)?.removed.kept).toEqual([
+      { id: t.dev, name: "Dev", branch: worktreeBranch(t.dev), commits: 1, changes: 1 },
+    ]);
+    await srv.api("POST", `/api/agents/${t.dev}/restore`);
+    expect(srv.core.registry.get(t.dev)?.removed).toBeUndefined();
+  });
+
+  it("are listed for an agent removed with its orchestrator, under the orchestrator", async () => {
+    const srv = await start();
+    const t = await team(srv);
+    const path = (await srv.core.projects.get("me", "shop"))?.path ?? "";
+    const wt = join(path, worktreeDir(t.dev));
+    await until(() => existsSync(join(wt, ".git")));
+    await writeFile(join(wt, "a.ts"), "export const a = 1;\n");
+    await writeFile(join(wt, "b.ts"), "export const b = 1;\n");
+    await srv.api("POST", `/api/agents/${t.orch}/remove`, {});
+    type Removed = { id: string; removed: { kept: { id: string; changes: number }[] } }[];
+    const listed = (await srv.api<Removed>("GET", "/api/agents/removed")).body;
+    expect(listed.map((r) => r.id)).toEqual([t.orch]);
+    expect(listed[0]?.removed.kept).toEqual([
+      expect.objectContaining({ id: t.dev, name: "Dev", commits: 0, changes: 2 }),
+    ]);
   });
 });

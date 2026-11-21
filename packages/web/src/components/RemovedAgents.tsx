@@ -272,6 +272,17 @@ export function RemovedAgentsList({ projectId = null }: { projectId?: string | n
                   {t("raWithLine", { names: r.removed.with.map((w) => w.name).join(", ") })}
                 </small>
               )}
+              {(r.removed.kept ?? []).map((k) => (
+                <small key={k.id} class="ra-kept" role="note">
+                  <b>
+                    {k.id !== r.id ? `${k.name} · ` : ""}
+                    {k.error
+                      ? t("raKeptError")
+                      : t("raKept", { commits: String(k.commits), files: String(k.changes) })}
+                  </b>{" "}
+                  <span class="dim">{t("raKeptHow", { branch: k.branch })}</span>
+                </small>
+              ))}
             </div>
             <div class="ra-acts">
               <button

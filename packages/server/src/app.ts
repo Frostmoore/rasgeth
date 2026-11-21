@@ -1474,7 +1474,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   });
   app.get("/api/agents/removed", async (c) =>
     c.json(
-      (await core.removedAgents(owner(c))).map(({ agent, with: others, sessions }) => {
+      (await core.removedAgents(owner(c))).map(({ agent, with: others, sessions, kept }) => {
         const { removed, ...rest } = agentOut(agent, core.registry);
         return {
           ...rest,
@@ -1484,6 +1484,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
             reason: removed?.reason ?? "",
             with: others,
             sessions,
+            kept,
           },
         };
       }),

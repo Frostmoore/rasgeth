@@ -479,6 +479,18 @@ export interface RemovedAgent extends Agent {
     reason: string;
     with: AgentBrief[];
     sessions: number;
+    /**
+     * Worktrees left in place because they hold work not in the project (3.10.2): this agent's and
+     * those removed with it. Restoring the agent picks the work up again.
+     */
+    kept?: {
+      id: string;
+      name: string;
+      branch: string;
+      commits: number;
+      changes: number;
+      error?: boolean;
+    }[];
   };
 }
 

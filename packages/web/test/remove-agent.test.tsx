@@ -201,6 +201,25 @@ describe("removed agents (p3.8.9)", () => {
     await waitFor(() => expect(refreshTeam).toHaveBeenCalled());
   });
 
+  it("says what work not merged a removal left, and how to get it back (3.10.2)", () => {
+    removedAgents.value = [
+      {
+        ...removed,
+        removed: {
+          ...removed.removed,
+          kept: [{ id: "a1", name: "Coder", branch: "rg/a1", commits: 2, changes: 3 }],
+        },
+      },
+    ] as never;
+    const r = render(<RemovedAgentsList />);
+    expect(r.getByText("Coder · Lavoro non unito: 2 commit, 3 file modificati")).toBeTruthy();
+    expect(r.getByText("Resta nel ramo rg/a1: ripristina l'agente per riprenderlo.")).toBeTruthy();
+    r.unmount();
+    lang.value = "en";
+    const e = render(<RemovedAgentsList />);
+    expect(e.getByText("Coder · Work not merged: 2 commit(s), 3 changed file(s)")).toBeTruthy();
+  });
+
   it("shows why a restore fails", async () => {
     restoreFails = true;
     removedAgents.value = [removed] as never;

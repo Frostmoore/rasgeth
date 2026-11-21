@@ -32,6 +32,19 @@ export interface Removal {
   reason: string;
   root: string;
   was: "active" | "stopped";
+  /** Work its worktree held that is not in the project, so the worktree stayed (3.10.2). */
+  kept?: KeptWork;
+}
+
+/** What a removed agent's kept worktree holds (3.10.2): restoring the agent gets it back. */
+export interface KeptWork {
+  branch: string;
+  /** Commits not in the project's checked-out branch (counted up to 20). */
+  commits: number;
+  /** Files changed and not committed in its worktree. */
+  changes: number;
+  /** It could not be checked, so it was kept as it is. */
+  error?: boolean;
 }
 
 export interface AgentRecord extends AgentSpec {
@@ -720,6 +733,18 @@ export class AgentRegistry {
       },
     });
     return { removed: group };
+  }
+
+  /** Notes on a removed agent the work its kept worktree holds (3.10.2), for the removed list. */
+  async noteKept(id: string, kept: KeptWork): Promise<void> {
+    const a = this.cache.get(id);
+    if (!a || a.status !== "removed" || !a.removed) return;
+    const removal: Removal = { ...a.removed, kept };
+    await this.db.query("UPDATE rg_agents SET removed = $2 WHERE id = $1", [
+      id,
+      JSON.stringify(removal),
+    ]);
+    a.removed = removal;
   }
 
   /**
