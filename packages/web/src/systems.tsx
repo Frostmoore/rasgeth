@@ -1,12 +1,19 @@
 // The marketing names of Rasgeth's own systems (3.10.3, decided with the person on 2026-11-21:
-// «devono essere quelli veramente distintivi ad avere un nome loro»). Only these have one (four so far, 2026-11-21); the
+// «devono essere quelli veramente distintivi ad avere un nome loro»). Only these six have one; the
 // rest keeps its plain name (Knowledge, Automations, Keychain…). A name goes on the title of its
 // feature (a settings section, a page header, a part of a page) with a few words beside it saying
 // what it is, in the person's language; buttons and sentences inside a flow keep plain words.
-// Internal code names do not change. RGCompanion is to mirror this list (not done yet).
+// Internal code names do not change. RGCompanion mirrors this list (`lib/ui/systems.dart`).
 import { type Key, t } from "./i18n.js";
 
-export const SYSTEMS = ["constellation", "eventHorizon", "nebula", "deepField"] as const;
+export const SYSTEMS = [
+  "constellation",
+  "eventHorizon",
+  "nebula",
+  "deepField",
+  "filament",
+  "persistar",
+] as const;
 export type SystemId = (typeof SYSTEMS)[number];
 
 const KEYS: Record<SystemId, [Key, Key]> = {
@@ -14,6 +21,8 @@ const KEYS: Record<SystemId, [Key, Key]> = {
   eventHorizon: ["sysEventHorizon", "sysEventHorizonWhat"],
   nebula: ["sysNebula", "sysNebulaWhat"],
   deepField: ["sysDeepField", "sysDeepFieldWhat"],
+  filament: ["sysFilament", "sysFilamentWhat"],
+  persistar: ["sysPersistar", "sysPersistarWhat"],
 };
 
 /** The system's name (the same in every language). */

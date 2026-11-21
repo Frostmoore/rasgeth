@@ -1,6 +1,7 @@
 import type { MessageMetrics } from "@redgiant/protocol";
 import { clock, duration, kTokens, localModelName, usd } from "../format.js";
 import { t } from "../i18n.js";
+import { sysName } from "../systems.js";
 
 /**
  * The per-message bar: how much of the context the request used (read from cache, read
@@ -72,7 +73,7 @@ export function MetricsBar({
         </span>
         {m.kvRestoredTokens !== undefined && (
           <span class="ssd" title={t("restoredFromDisk")}>
-            SSD {kTokens(m.kvRestoredTokens)} ({duration(m.kvRestoreMs)})
+            {sysName("persistar")} {kTokens(m.kvRestoredTokens)} ({duration(m.kvRestoreMs)})
           </span>
         )}
         {costUnknown ? (

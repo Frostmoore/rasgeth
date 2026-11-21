@@ -81,7 +81,7 @@ if (mode === "knowledge") {
     .last()
     .click({ force: true });
   await page.waitForTimeout(1500);
-  const ssd = page.locator('[role="switch"][aria-label="SSD stream"]');
+  const ssd = page.locator('[role="switch"][aria-label="Deep Field"]');
   if ((await ssd.getAttribute("aria-checked")) !== "true") await ssd.click();
   await page.waitForTimeout(1200);
   await page.locator(".settings-body").screenshot({ path: `${out}/local-models.png` });

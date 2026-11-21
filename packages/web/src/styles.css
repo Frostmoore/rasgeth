@@ -23790,3 +23790,9 @@ fieldset.saved-filter legend {
 .wz-sub .sys-what {
   font-size: 0.7em;
 }
+.sys-line {
+  margin-top: 14px;
+}
+.sys-line h3 {
+  margin: 0 0 4px;
+}

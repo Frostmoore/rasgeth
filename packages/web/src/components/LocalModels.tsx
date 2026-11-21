@@ -1385,6 +1385,12 @@ function WzMachine({
         )}
         {prefetch && <MoePrefetchSwitch {...prefetch} variant={variant} />}
         {plan && <p class="dim">{planText(plan)}</p>}
+        <div class="sys-line">
+          <h3>
+            <SysTitle id="persistar" />
+          </h3>
+          <p class="dim">{t("sysPersistarLine")}</p>
+        </div>
       </div>
       {info && (
         <Modal title={sysName("deepField")} onClose={() => setInfo(false)}>

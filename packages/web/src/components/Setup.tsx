@@ -45,6 +45,7 @@ import {
   Logo,
 } from "../icons.js";
 import { agents, attempt, getApi, lastError, openAgent, openTab, refresh } from "../state.js";
+import { SysTitle } from "../systems.js";
 import { setTheme, theme } from "../theme.js";
 import {
   ADVANCED_STEPS,
@@ -771,7 +772,7 @@ function SafetyStep() {
   const { s } = useWz();
   return (
     <div class="wz-inner wide">
-      <Head q={t("wzSafety")} lead={t("wzSafetyLead")} />
+      <Head eyebrow={<SysTitle id="eventHorizon" />} q={t("wzSafety")} lead={t("wzSafetyLead")} />
       <Safety s={s} register={useOnNext} />
     </div>
   );

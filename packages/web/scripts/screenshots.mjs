@@ -103,7 +103,7 @@ for (const scheme of ["dark", "light"]) {
   await page.waitForSelector(".settings");
   await shot("10-settings-general");
   for (const [section, name] of [
-    ["Agenti", "11-settings-agents"],
+    ["Constellation", "11-settings-agents"],
     ["Automazioni", "12-settings-automations"],
     ["Estensioni", "13-settings-extensions"],
     ["Storico delle modifiche", "14-settings-history"],

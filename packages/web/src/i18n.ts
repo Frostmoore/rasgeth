@@ -31,7 +31,7 @@ const en = {
   stCodeEyebrow: "Code",
   stRemoteQ: "{product} away from home",
   stAgQ: "Your team",
-  // The marketing names of Rasgeth's own systems (3.10.3, four confirmed so far): the name, then what it is.
+  // The marketing names of Rasgeth's own systems (3.10.3): the name, then what it is.
   sysConstellation: "Constellation",
   sysConstellationWhat: "the team of agents, in levels",
   sysEventHorizon: "Event Horizon",
@@ -40,6 +40,12 @@ const en = {
   sysNebulaWhat: "the Canvas, with editors shared with the agent",
   sysDeepField: "Deep Field",
   sysDeepFieldWhat: "models bigger than the card, from the SSD",
+  sysFilament: "Filament",
+  sysFilamentWhat: "the same prefix for the whole conversation, so the cache holds",
+  sysPersistar: "Persistar",
+  sysPersistarWhat: "each conversation's context saved on disk",
+  sysPersistarLine:
+    "The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again.",
   // Import from other agents (G36.7) and skills that come by themselves (G36.8).
   impSection: "Import",
   wzImport: "Coming from another agent?",
@@ -2337,7 +2343,8 @@ const en = {
   prefill: "prefill",
   generation: "generation",
   timedByClient: "timed by the client",
-  restoredFromDisk: "KV cache restored from the SSD before this request",
+  restoredFromDisk:
+    "Persistar: this conversation's context came back from the disk before this request",
   terminalClosed: "The shell exited. Close the tab or open a new terminal.",
   createGodFirst: "Create God to start: it oversees the platform and every project.",
   createGod: "Create God",
@@ -2492,7 +2499,7 @@ const en = {
   renameOk: "Got it",
   news3103Names: "Names for Rasgeth's own systems",
   news3103NamesText:
-    "The features only Rasgeth has now carry their name, with what they are beside it: Constellation (the team of agents in levels), Event Horizon (requests to you and protections), Nebula (the Canvas) and Deep Field (local models bigger than the card). Everything else keeps its plain name.",
+    "The features only Rasgeth has now carry their name, with what they are beside it: Constellation (the team of agents in levels, with permissions), Event Horizon (the protections: truly dangerous requests always reach you), Nebula (the Canvas, with real editors shared with the agent), Deep Field (local models bigger than the graphics card), Filament (the same prefix for the whole conversation, so the cache holds) and Persistar (local models' context saved on disk). Everything else keeps its plain name.",
   news3102Tray: "The app stays in the tray",
   news3102TrayText:
     "On the computer, closing the app's window keeps it in the system tray, so requests, questions and reports still reach you; Open and Quit are in its menu, and you can switch this off in You › Notifications. Opening it again brings back the one already running.",
@@ -7645,6 +7652,12 @@ const it: Record<Key, string> = {
   sysNebulaWhat: "il Canvas, con editor condivisi con l'agente",
   sysDeepField: "Deep Field",
   sysDeepFieldWhat: "modelli più grandi della scheda, dall'SSD",
+  sysFilament: "Filament",
+  sysFilamentWhat: "lo stesso prefisso per tutta la conversazione, così la cache regge",
+  sysPersistar: "Persistar",
+  sysPersistarWhat: "il contesto di ogni conversazione salvato su disco",
+  sysPersistarLine:
+    "Il contesto di ogni conversazione con un modello locale è salvato su disco: tornandoci, anche dopo un riavvio, non si rilegge tutto da capo.",
   // Import from other agents (G36.7) and skills that come by themselves (G36.8).
   impSection: "Importa",
   wzImport: "Vieni da un altro agente?",
@@ -9977,7 +9990,8 @@ const it: Record<Key, string> = {
   prefill: "lettura",
   generation: "generazione",
   timedByClient: "tempi misurati dal client",
-  restoredFromDisk: "KV cache ripristinata dall'SSD prima di questa richiesta",
+  restoredFromDisk:
+    "Persistar: il contesto di questa conversazione è tornato dal disco prima di questa richiesta",
   terminalClosed: "La shell è terminata. Chiudi la linguetta o apri un nuovo terminale.",
   createGodFirst: "Crea God per cominciare: sovrintende la piattaforma e tutti i progetti.",
   createGod: "Crea God",
@@ -10132,7 +10146,7 @@ const it: Record<Key, string> = {
   renameOk: "Ho capito",
   news3103Names: "Un nome per i sistemi di Rasgeth",
   news3103NamesText:
-    "Le funzioni che ha solo Rasgeth ora portano il loro nome, con accanto che cosa sono: Constellation (la squadra di agenti a livelli), Event Horizon (richieste a te e protezioni), Nebula (il Canvas) e Deep Field (modelli locali più grandi della scheda). Il resto tiene il suo nome di sempre.",
+    "Le funzioni che ha solo Rasgeth ora portano il loro nome, con accanto che cosa sono: Constellation (la squadra di agenti a livelli, con i permessi), Event Horizon (le protezioni: le richieste davvero pericolose arrivano sempre a te), Nebula (il Canvas, con editor veri condivisi con l'agente), Deep Field (modelli locali più grandi della scheda video), Filament (lo stesso prefisso per tutta la conversazione, così la cache regge) e Persistar (il contesto dei modelli locali salvato su disco). Il resto tiene il suo nome di sempre.",
   news3102Tray: "L'app resta nella barra di sistema",
   news3102TrayText:
     "Sul computer, chiudendo la finestra l'app resta nella barra di sistema, così richieste, domande e resoconti ti arrivano lo stesso; nel suo menu ci sono Apri ed Esci, e puoi spegnerlo in Tu › Notifiche. Riaprendola torna avanti quella già aperta.",
