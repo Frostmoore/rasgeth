@@ -5,11 +5,12 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import type { Agent } from "../api.js";
 import { usd } from "../format.js";
 import { lang, roleText, t } from "../i18n.js";
-import { IconClose, IconPlus, IconTree } from "../icons.js";
+import { IconClose, IconTree } from "../icons.js";
 import { renderAnswer } from "../markdown.js";
 import { agents, attempt, getApi, projects, refreshRooms, rooms, roomsVersion } from "../state.js";
 import { Composer, packMessage } from "./Composer.js";
 import { Mascot } from "./Mascot.js";
+import { DropChoice } from "./ui.js";
 
 const MAX = 6;
 
@@ -53,40 +54,21 @@ export function joinable(memberIds: string[]): { id: string; label: string; grou
 }
 
 function AddMember({ roomId, members }: { roomId: string; members: string[] }) {
-  const [open, setOpen] = useState(false);
   if (members.length >= MAX) return null;
+  // Already grouped, the person's agents first and then project by project (a heading each).
   const options = joinable(members);
-  const groups = [...new Set(options.map((o) => o.group))];
-  if (!open)
-    return (
-      <button type="button" class="tiny" onClick={() => setOpen(true)}>
-        <IconPlus size={12} /> {t("roomAdd")}
-      </button>
-    );
   return (
-    <select
-      aria-label={t("roomAdd")}
+    <DropChoice
+      class="room-add"
+      label={t("roomAdd")}
       value=""
-      onChange={(e) => {
-        const id = (e.target as HTMLSelectElement).value;
-        setOpen(false);
+      current={t("roomAdd")}
+      options={options}
+      {...(options.length > 8 && { search: t("roomPick") })}
+      onChange={(id) => {
         if (id) void attempt(() => getApi().addRoomMember(roomId, id)).then(refreshRooms);
       }}
-      onBlur={() => setOpen(false)}
-    >
-      <option value="">{t("roomPick")}</option>
-      {groups.map((g) => (
-        <optgroup key={g} label={g}>
-          {options
-            .filter((o) => o.group === g)
-            .map((o) => (
-              <option key={o.id} value={o.id}>
-                {o.label}
-              </option>
-            ))}
-        </optgroup>
-      ))}
-    </select>
+    />
   );
 }
 

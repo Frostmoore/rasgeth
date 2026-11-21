@@ -94,4 +94,38 @@ describe("DropChoice", () => {
     fireEvent.pointerDown(document.body);
     expect(list()).toBeNull();
   });
+
+  it("an action menu: open as it appears, its words kept, closed whatever happens (3.10.1)", () => {
+    const onChange = vi.fn();
+    const onClose = vi.fn();
+    const { container } = render(
+      <DropChoice
+        label="Aggiungi"
+        value=""
+        current="Chi?"
+        options={[
+          { id: "a1", label: "Anna", group: "Personali" },
+          { id: "a2", label: "Ugo", group: "Progetto" },
+        ]}
+        startOpen
+        onClose={onClose}
+        onChange={onChange}
+      />,
+    );
+    const btn = container.querySelector<HTMLButtonElement>(".ui-drop-current") as HTMLButtonElement;
+    expect(btn.getAttribute("aria-label")).toBe("Aggiungi: Chi?");
+    expect(list()).toBeTruthy();
+    expect(items().map((b) => b.getAttribute("aria-selected"))).toEqual(["false", "false"]);
+    expect(
+      [...(list()?.querySelectorAll(".ui-drop-group") ?? [])].map((g) => g.textContent),
+    ).toEqual(["Personali", "Progetto"]);
+    fireEvent.click(items()[1] as HTMLButtonElement);
+    expect(onChange).toHaveBeenCalledWith("a2");
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(btn.textContent).toBe("Chi?");
+    fireEvent.click(btn);
+    fireEvent.pointerDown(document.body);
+    expect(onClose).toHaveBeenCalledTimes(2);
+    expect(onChange).toHaveBeenCalledTimes(1);
+  });
 });

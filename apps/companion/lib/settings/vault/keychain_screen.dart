@@ -1,7 +1,8 @@
 // G42.12: Settings › Keychain, native, as the page's Keychain.tsx and KeychainBrowsers.tsx (G33.4,
 // G36.20, G36.21): every key and password in one place, sealed on the server. The list with its
 // search and kinds, the keys the server keeps for itself (`system`, managed where they were set),
-// a credential's window (what it is, its value shown or copied only after the person confirms,
+// a credential's window (what it is, its value shown or copied only after the device's own lock,
+// fingerprint, face or PIN, 3.10.1, or the person's yes where there is none,
 // where it may go, who may use it and whether to ask; the entries a part of the server uses carry
 // «Used by» and cannot be deleted here), the password generator, its last uses, importing a
 // password manager's CSV (a preview first) or a sealed keychain file, exporting a sealed one, and
@@ -28,6 +29,7 @@ import '../api/extensions_api.dart';
 import '../api/keychain_api.dart';
 import '../automations/automation_kit.dart';
 import '../extensions/ext_catalog.dart';
+import 'device_unlock.dart';
 import '../extensions/ext_kit.dart';
 import '../rules_kit.dart';
 
@@ -409,20 +411,41 @@ class _CredentialFormState extends State<_CredentialForm> {
     }
   }
 
-  Future<void> _show() async {
+  /// 3.10.1: the device's own lock first (fingerprint, face, PIN); a device without one says so
+  /// and asks; where the lock cannot be asked, our window for showing (copying asked nothing).
+  Future<bool> _unlocked({required bool copy}) async {
     final l = AppLocalizations.of(context);
-    final yes = await askVaultConfirm(
-      context,
-      title: l.vkKcShowQ,
-      body: l.vkKcShowText,
-      yes: l.vkKcShow,
-    );
-    if (!yes || !mounted) return;
+    setState(() => _error = null);
+    final r = await deviceUnlock.unlock(copy ? l.vkKcUnlockCopy : l.vkKcUnlockShow);
+    if (!mounted) return false;
+    switch (r) {
+      case DeviceUnlockResult.unlocked:
+        return true;
+      case DeviceUnlockResult.refused:
+        setState(() => _error = l.vkKcUnlockRefused);
+        return false;
+      case DeviceUnlockResult.noLock:
+        return askVaultConfirm(
+          context,
+          title: l.vkKcNoLockQ,
+          body: l.vkKcNoLockText,
+          yes: copy ? l.vkKcCopy : l.vkKcShow,
+        );
+      case DeviceUnlockResult.unsupported:
+        if (copy) return true;
+        return askVaultConfirm(context, title: l.vkKcShowQ, body: l.vkKcShowText, yes: l.vkKcShow);
+    }
+  }
+
+  Future<void> _show() async {
+    if (!await _unlocked(copy: false) || !mounted) return;
     final v = await _reveal();
     if (mounted) setState(() => _shown = v);
   }
 
   Future<void> _copy() async {
+    // A value already on the screen was unlocked to be shown.
+    if (_shown == null && (!await _unlocked(copy: true) || !mounted)) return;
     final v = _shown ?? await _reveal();
     if (v == null) return;
     await Clipboard.setData(ClipboardData(text: v));

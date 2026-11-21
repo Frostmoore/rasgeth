@@ -67,7 +67,7 @@ import {
 } from "../../viewers/model-ops.js";
 import { OwnUndo } from "../../viewers/own-undo.js";
 import { download } from "../../viewers/source.js";
-import { SmallSwitch, useJob } from "../ui.js";
+import { DropChoice, SmallSwitch, useJob } from "../ui.js";
 import { CopyBar } from "./CopyBar.js";
 
 /** The models the page edits (G37.7); other 3D formats are edited on their GLB copy. */
@@ -814,27 +814,27 @@ export function ModelEditor({
           />
         </div>
         <div class="spacer" />
+        {/* biome-ignore lint/a11y/noLabelWithoutControl: the control is the DropChoice inside it. */}
         <label class="sheet-export svg-export">
           {busy ? <IconSpinner size={14} /> : <IconDownload size={14} />}
-          <select
-            aria-label={t("model3dExport")}
+          <DropChoice
+            label={t("model3dExport")}
             value=""
+            current={t("model3dExport")}
             disabled={!!busy || loading}
-            onChange={(e) => {
-              const to = (e.target as HTMLSelectElement).value;
-              (e.target as HTMLSelectElement).value = "";
+            options={[
+              { id: "file", label: t("model3dExportFile", { fmt: container.toUpperCase() }) },
+              ...(container === "gltf" ? [{ id: "glb", label: t("model3dExportGlb") }] : []),
+              { id: "obj", label: "OBJ" },
+              { id: "stl", label: "STL" },
+              { id: "ply", label: "PLY" },
+              { id: "usdz", label: "USDZ" },
+              { id: "png", label: t("model3dExportPng") },
+            ]}
+            onChange={(to) => {
               if (to) exportAs(to);
             }}
-          >
-            <option value="">{t("model3dExport")}</option>
-            <option value="file">{t("model3dExportFile", { fmt: container.toUpperCase() })}</option>
-            {container === "gltf" && <option value="glb">{t("model3dExportGlb")}</option>}
-            <option value="obj">OBJ</option>
-            <option value="stl">STL</option>
-            <option value="ply">PLY</option>
-            <option value="usdz">USDZ</option>
-            <option value="png">{t("model3dExportPng")}</option>
-          </select>
+          />
         </label>
         {info?.blender && (
           <button
@@ -991,20 +991,21 @@ export function ModelEditor({
                     />
                   </>
                 )}
+                {/* biome-ignore lint/a11y/noLabelWithoutControl: the control is the DropChoice inside it. */}
                 <label>
                   <span>{t("model3dParent")}</span>
-                  <select
+                  <DropChoice
+                    label={t("model3dParent")}
                     value={parentNow}
-                    onChange={(e) => reparent((e.target as HTMLSelectElement).value)}
-                  >
-                    <option value="scene">{t("model3dParentScene")}</option>
-                    {parents.map((p) => (
-                      <option key={p.index} value={String(p.index)}>
-                        {" ".repeat(p.depth * 2)}
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
+                    options={[
+                      { id: "scene", label: t("model3dParentScene") },
+                      ...parents.map((p) => ({
+                        id: String(p.index),
+                        label: `${" ".repeat(p.depth * 2)}${p.name}`,
+                      })),
+                    ]}
+                    onChange={reparent}
+                  />
                 </label>
                 {camera && <p class="dim svg-sel">{t("model3dCameraNote")}</p>}
               </div>

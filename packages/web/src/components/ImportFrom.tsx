@@ -29,7 +29,7 @@ import {
 } from "../icons.js";
 import { agents, attempt, getApi, lastError } from "../state.js";
 import { Acts, Head, Seg, Sub, Switch, SwitchRow, Tile, Tiles, WzPage } from "./SettingsKit.js";
-import { Advanced, Field, JobView, Modal, Progress, useJob } from "./ui.js";
+import { Advanced, DropChoice, Field, JobView, Modal, Progress, useJob } from "./ui.js";
 
 const SOURCE: Record<ImportSource, string> = {
   "claude-code": "Claude Code",
@@ -121,18 +121,16 @@ function ItemRow({
         <div class="imp-item-more">
           {item.kind === "instructions" && (
             <Field label={t("impForWhom")}>
-              <select
-                class="wz-field"
+              <DropChoice
+                class="field"
+                label={t("impForWhom")}
                 value={choice.target ?? "everyone"}
-                onChange={(e) => set({ ...choice, target: (e.target as HTMLSelectElement).value })}
-              >
-                <option value="everyone">{t("impEveryone")}</option>
-                {others.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name}
-                  </option>
-                ))}
-              </select>
+                options={[
+                  { id: "everyone", label: t("impEveryone") },
+                  ...others.map((a) => ({ id: a.id, label: a.name })),
+                ]}
+                onChange={(target) => set({ ...choice, target })}
+              />
             </Field>
           )}
           {item.kind === "memory" && (
@@ -313,20 +311,18 @@ function PreviewWindow({
           {(kind === "all" || kind === "conversation") &&
             preview.items.some((i) => i.kind === "conversation") && (
               <Field label={t("impConvTo")} help={t("impConvHelp")}>
-                <select
-                  class="wz-field"
+                <DropChoice
+                  class="field"
+                  label={t("impConvTo")}
                   value={chatAgent}
-                  onChange={(e) => setChatAgent((e.target as HTMLSelectElement).value)}
-                >
-                  <option value="">{t("impConvChat")}</option>
-                  {assistants
-                    .filter((a) => a.name !== "Chat")
-                    .map((a) => (
-                      <option key={a.id} value={a.id}>
-                        {a.name}
-                      </option>
-                    ))}
-                </select>
+                  options={[
+                    { id: "", label: t("impConvChat") },
+                    ...assistants
+                      .filter((a) => a.name !== "Chat")
+                      .map((a) => ({ id: a.id, label: a.name })),
+                  ]}
+                  onChange={setChatAgent}
+                />
               </Field>
             )}
           <div class="imp-list">

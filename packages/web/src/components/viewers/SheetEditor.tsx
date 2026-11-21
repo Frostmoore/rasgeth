@@ -16,6 +16,7 @@ import { freshAgentWrites } from "../../viewers/collab.js";
 import { cellPos, columnLetters, SheetCollab, wroteAreas } from "../../viewers/sheet-collab.js";
 import { download } from "../../viewers/source.js";
 import type { Island } from "../../viewers/univer-island.js";
+import { DropChoice } from "../ui.js";
 import { CopyBar, KeptInFile } from "./CopyBar.js";
 import { PagedView } from "./OpenCopy.js";
 
@@ -359,24 +360,24 @@ export function SheetEditor({
           </span>
         ) : null}
         <div class="spacer" />
+        {/* biome-ignore lint/a11y/noLabelWithoutControl: the control is the DropChoice inside it. */}
         <label class="sheet-export">
           <IconDownload size={14} />
-          <select
-            aria-label={t("sheetExport")}
+          <DropChoice
+            label={t("sheetExport")}
             value=""
+            current={exporting ? t("loading") : t("sheetExport")}
             disabled={!!exporting}
-            onChange={(e) => {
-              const to = (e.target as HTMLSelectElement).value;
-              (e.target as HTMLSelectElement).value = "";
+            options={[
+              { id: "xlsx", label: t("sheetExportXlsx") },
+              { id: "ods", label: t("sheetExportOds") },
+              { id: "csv", label: t("sheetExportCsv") },
+              { id: "pdf", label: t("sheetExportPdf") },
+            ]}
+            onChange={(to) => {
               if (to) void exportAs(to);
             }}
-          >
-            <option value="">{exporting ? t("loading") : t("sheetExport")}</option>
-            <option value="xlsx">{t("sheetExportXlsx")}</option>
-            <option value="ods">{t("sheetExportOds")}</option>
-            <option value="csv">{t("sheetExportCsv")}</option>
-            <option value="pdf">{t("sheetExportPdf")}</option>
-          </select>
+          />
         </label>
       </div>
       {info?.original && (

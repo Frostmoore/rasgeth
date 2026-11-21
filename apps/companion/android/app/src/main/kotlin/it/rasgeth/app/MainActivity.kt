@@ -12,7 +12,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.PatternMatcher
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
@@ -27,8 +27,11 @@ import io.flutter.plugin.common.MethodChannel
  * Permissions: NEARBY_WIFI_DEVICES on Android 13+ (neverForLocation), the fine location before
  * (the system asks it for a network request). A refusal is "denied": the app offers joining by
  * hand, never a silent retry.
+ *
+ * A FlutterFragmentActivity (3.10.1): local_auth's sheet (the keychain's values behind the phone's
+ * own lock) needs a FragmentActivity.
  */
-class MainActivity : FlutterActivity() {
+class MainActivity : FlutterFragmentActivity() {
     private val main = Handler(Looper.getMainLooper())
     private var callback: ConnectivityManager.NetworkCallback? = null
     private var pendingJoin: (() -> Unit)? = null
@@ -54,6 +57,11 @@ class MainActivity : FlutterActivity() {
         // G42.9: the phone's time zone by its IANA name, for the automations' recipes.
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "rgcompanion/timezone").setMethodCallHandler { call, result ->
             if (call.method == "zone") result.success(java.util.TimeZone.getDefault().id) else result.notImplemented()
+        }
+        // 3.10.1: the API level, so the keychain asks the phone's lock only where its sheet is the
+        // system's own (Android 9+).
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "rgcompanion/device").setMethodCallHandler { call, result ->
+            if (call.method == "sdk") result.success(Build.VERSION.SDK_INT) else result.notImplemented()
         }
     }
 

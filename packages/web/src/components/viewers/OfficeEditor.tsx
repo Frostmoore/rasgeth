@@ -52,7 +52,7 @@ import {
   sharedOffice,
 } from "../../viewers/office-shared.js";
 import { bytesText, download } from "../../viewers/source.js";
-import { Progress, useJob } from "../ui.js";
+import { DropChoice, Progress, useJob } from "../ui.js";
 import { CopyBar } from "./CopyBar.js";
 import { changeText, whoText } from "./DocEditor.js";
 import { PagedView } from "./OpenCopy.js";
@@ -610,25 +610,19 @@ function OfficeStrip({
             <IconSpinner size={12} /> {t("officeSaving")}
           </span>
         )}
+        {/* biome-ignore lint/a11y/noLabelWithoutControl: the control is the DropChoice inside it. */}
         <label class="doc-office-export">
           <IconDownload size={13} />
-          <select
-            aria-label={t("officeExport")}
+          <DropChoice
+            label={t("officeExport")}
             value=""
+            current={busy ? t("officeExporting") : t("officeExport")}
             disabled={busy}
-            onChange={(e) => {
-              const v = (e.target as HTMLSelectElement).value;
-              (e.target as HTMLSelectElement).value = "";
+            options={exportsOf(file.path).map((x) => ({ id: x, label: x.toUpperCase() }))}
+            onChange={(v) => {
               if (v) exportAs(v);
             }}
-          >
-            <option value="">{busy ? t("officeExporting") : t("officeExport")}</option>
-            {exportsOf(file.path).map((x) => (
-              <option key={x} value={x}>
-                {x.toUpperCase()}
-              </option>
-            ))}
-          </select>
+          />
         </label>
       </div>
       {original && showVersions && (

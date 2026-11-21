@@ -36,7 +36,7 @@ import { PromptEditor } from "./PromptEditor.js";
 import { RemoveAgentDialog, RemovedAgentsList, removable, resumeStopped } from "./RemovedAgents.js";
 import { Acts, Head, Seg, Sub, Switch } from "./SettingsKit.js";
 import { AtWorkCard } from "./TurnLine.js";
-import { Modal } from "./ui.js";
+import { DropChoice, Modal } from "./ui.js";
 
 const CHILDREN: Record<Agent["kind"], Agent["kind"][]> = {
   god: ["demigod", "orchestrator", "inspector", "assistant"],
@@ -88,19 +88,16 @@ function NewAgentForm({ parent, onDone }: { parent: Agent | null; onDone: () => 
   return (
     <form class="st-form" onSubmit={(e) => void submit(e)}>
       {kinds.length > 1 && (
+        // biome-ignore lint/a11y/noLabelWithoutControl: the control is the DropChoice inside it.
         <label class="st-field">
           <span class="wz-lb">{t("kind")}</span>
-          <select
-            class="wz-field"
+          <DropChoice<Agent["kind"]>
+            class="field"
+            label={t("kind")}
             value={kind}
-            onChange={(e) => setKind((e.target as HTMLSelectElement).value as Agent["kind"])}
-          >
-            {kinds.map((k) => (
-              <option key={k} value={k}>
-                {t(`kind_${k}`)}
-              </option>
-            ))}
-          </select>
+            options={kinds.map((k) => ({ id: k, label: t(`kind_${k}`) }))}
+            onChange={setKind}
+          />
         </label>
       )}
       <label class="st-field">
@@ -121,19 +118,16 @@ function NewAgentForm({ parent, onDone }: { parent: Agent | null; onDone: () => 
         />
       </label>
       {(kind === "orchestrator" || kind === "inspector") && (
+        // biome-ignore lint/a11y/noLabelWithoutControl: the control is the DropChoice inside it.
         <label class="st-field">
           <span class="wz-lb">{t("projects")}</span>
-          <select
-            class="wz-field"
+          <DropChoice
+            class="field"
+            label={t("projects")}
             value={project}
-            onChange={(e) => setProject((e.target as HTMLSelectElement).value)}
-          >
-            {projects.value.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+            options={projects.value.map((p) => ({ id: p.id, label: p.name }))}
+            onChange={setProject}
+          />
         </label>
       )}
       {models && (
@@ -148,19 +142,16 @@ function NewAgentForm({ parent, onDone }: { parent: Agent | null; onDone: () => 
           />
         </div>
       )}
+      {/* biome-ignore lint/a11y/noLabelWithoutControl: the control is the DropChoice inside it. */}
       <label class="st-field">
         <span class="wz-lb">{t("mode")}</span>
-        <select
-          class="wz-field"
+        <DropChoice
+          class="field"
+          label={t("mode")}
           value={mode}
-          onChange={(e) => setMode((e.target as HTMLSelectElement).value)}
-        >
-          {MODES.map((x) => (
-            <option key={x} value={x}>
-              {t(`agentMode_${x}`)}
-            </option>
-          ))}
-        </select>
+          options={MODES.map((x) => ({ id: x, label: t(`agentMode_${x}`) }))}
+          onChange={setMode}
+        />
       </label>
       <Acts>
         <button type="button" class="wz-btn quiet" onClick={onDone}>
@@ -882,19 +873,16 @@ function AgentsPage({ projectId = null }: { projectId?: string | null }) {
             options={(["tree", "cards"] as const).map((v) => [v, t(`agentsView_${v}`)] as const)}
           />
           {!projectId && projects.value.length > 0 && (
-            <select
-              class="wz-field st-filter"
-              aria-label={t("projects")}
+            <DropChoice
+              class="st-filter"
+              label={t("projects")}
               value={filter}
-              onChange={(e) => setFilter((e.target as HTMLSelectElement).value)}
-            >
-              <option value="">{t("agentsAllProjects")}</option>
-              {projects.value.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
+              options={[
+                { id: "", label: t("agentsAllProjects") },
+                ...projects.value.map((p) => ({ id: p.id, label: p.name })),
+              ]}
+              onChange={setFilter}
+            />
           )}
           <span class="st-inline-switch">
             <Switch

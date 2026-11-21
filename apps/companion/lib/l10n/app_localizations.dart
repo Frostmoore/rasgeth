@@ -18948,8 +18948,14 @@ abstract class AppLocalizations {
   /// No description provided for @errKeystore.
   ///
   /// In en, this message translates to:
-  /// **'This computer could not save the access key in its keystore, so the pairing was undone and no extra device is left on the server. Try again; if it happens again, restart the computer and try again.'**
+  /// **'This computer could not save the access key in its keystore, so the pairing was undone and no extra device is left on the server. Try again. If it happens again, restart the computer and sign in with your password, not the PIN.'**
   String get errKeystore;
+
+  /// No description provided for @errKeystoreDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get errKeystoreDetails;
 
   /// No description provided for @devForgetUnused.
   ///
@@ -24452,6 +24458,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'It will be on the screen until you hide it or close the window. Make sure nobody is looking.'**
   String get vkKcShowText;
+
+  /// No description provided for @vkKcUnlockShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock to show this secret'**
+  String get vkKcUnlockShow;
+
+  /// No description provided for @vkKcUnlockCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock to copy this secret'**
+  String get vkKcUnlockCopy;
+
+  /// No description provided for @vkKcUnlockRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'Not unlocked: the secret stays hidden.'**
+  String get vkKcUnlockRefused;
+
+  /// No description provided for @vkKcNoLockQ.
+  ///
+  /// In en, this message translates to:
+  /// **'This device has no lock'**
+  String get vkKcNoLockQ;
+
+  /// No description provided for @vkKcNoLockText.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing on this device checks that it is you: no PIN, fingerprint or face is set in the system\'s settings. Anyone holding it could see your keys, so set a screen lock there. Go on anyway?'**
+  String get vkKcNoLockText;
 
   /// No description provided for @vkKcSomeAgents.
   ///

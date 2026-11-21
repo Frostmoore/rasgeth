@@ -33,7 +33,7 @@ import { ModelSelect, type Spec, useModels } from "./ModelSelect.js";
 import { PromptEditor } from "./PromptEditor.js";
 import { joinable } from "./Room.js";
 import { SaveMessage, saveDraft } from "./Saved.js";
-import { Pick } from "./ui.js";
+import { DropChoice, Pick } from "./ui.js";
 
 /** The chat has no workspace: text files and images travel with the message, nothing else. */
 const chatAttachments = (files: Attachment[]) =>
@@ -207,16 +207,21 @@ function InspectorSettings({ projectId, onClose }: { projectId: string; onClose:
       <Pick small on={alerts} onChange={(v) => setAlerts(v)}>
         {t("inspectorAlerts")}
       </Pick>
+      {/* biome-ignore lint/a11y/noLabelWithoutControl: the control is the DropChoice inside it. */}
       <label>
         {t("inspectorSummary")}
-        <select value={hour} onChange={(e) => setHour((e.target as HTMLSelectElement).value)}>
-          <option value="">—</option>
-          {Array.from({ length: 24 }, (_, h) => (
-            <option key={h} value={String(h)}>
-              {String(h).padStart(2, "0")}:00
-            </option>
-          ))}
-        </select>
+        <DropChoice
+          label={t("inspectorSummary")}
+          value={hour}
+          options={[
+            { id: "", label: "—" },
+            ...Array.from({ length: 24 }, (_, h) => ({
+              id: String(h),
+              label: `${String(h).padStart(2, "0")}:00`,
+            })),
+          ]}
+          onChange={setHour}
+        />
       </label>
       <div class="row">
         <button type="submit" class="primary">
@@ -347,38 +352,35 @@ export function DailyChat({
       <div class="chat-head">
         {headAgent && <Mascot agent={headAgent} size={32} />}
         {projectId && (
-          <select
+          <DropChoice
+            label={t("conversations")}
             value={open ?? ""}
-            onChange={(e) => setOpen((e.target as HTMLSelectElement).value || null)}
-            aria-label={t("conversations")}
-          >
-            <option value="">{t("newChat")}</option>
-            {chats.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.title} · {new Date(c.updatedAt).toLocaleDateString()}
-              </option>
-            ))}
-          </select>
+            options={[
+              { id: "", label: t("newChat") },
+              ...chats.map((c) => ({
+                id: c.id,
+                label: c.title,
+                hint: new Date(c.updatedAt).toLocaleDateString(),
+              })),
+            ]}
+            {...(chats.length > 8 && { search: t("search") })}
+            onChange={(id) => setOpen(id || null)}
+          />
         )}
         <div class="spacer" />
         {!projectId && <ChatModel />}
         {grouping ? (
-          <select
-            aria-label={t("roomAdd")}
+          <DropChoice
+            label={t("roomAdd")}
             value=""
-            onChange={(e) => {
-              const id = (e.target as HTMLSelectElement).value;
+            current={t("roomPick")}
+            options={joinable([])}
+            startOpen
+            onClose={() => setGrouping(false)}
+            onChange={(id) => {
               if (id) void toGroup(id);
             }}
-            onBlur={() => setGrouping(false)}
-          >
-            <option value="">{t("roomPick")}</option>
-            {joinable([]).map((o) => (
-              <option key={o.id} value={o.id}>
-                {o.group} · {o.label}
-              </option>
-            ))}
-          </select>
+          />
         ) : (
           entries.length > 0 && (
             <button

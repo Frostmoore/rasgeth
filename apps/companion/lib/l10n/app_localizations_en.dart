@@ -11009,7 +11009,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errKeystore =>
-      'This computer could not save the access key in its keystore, so the pairing was undone and no extra device is left on the server. Try again; if it happens again, restart the computer and try again.';
+      'This computer could not save the access key in its keystore, so the pairing was undone and no extra device is left on the server. Try again. If it happens again, restart the computer and sign in with your password, not the PIN.';
+
+  @override
+  String get errKeystoreDetails => 'Details';
 
   @override
   String get devForgetUnused => 'Remove the ones never used';
@@ -14178,6 +14181,22 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get vkKcShowText =>
       'It will be on the screen until you hide it or close the window. Make sure nobody is looking.';
+
+  @override
+  String get vkKcUnlockShow => 'Unlock to show this secret';
+
+  @override
+  String get vkKcUnlockCopy => 'Unlock to copy this secret';
+
+  @override
+  String get vkKcUnlockRefused => 'Not unlocked: the secret stays hidden.';
+
+  @override
+  String get vkKcNoLockQ => 'This device has no lock';
+
+  @override
+  String get vkKcNoLockText =>
+      'Nothing on this device checks that it is you: no PIN, fingerprint or face is set in the system\'s settings. Anyone holding it could see your keys, so set a screen lock there. Go on anyway?';
 
   @override
   String get vkKcSomeAgents => 'The agents that may use it';

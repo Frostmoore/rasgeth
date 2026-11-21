@@ -33,7 +33,7 @@ import { explain } from "./Brain.js";
 import { askConfirm } from "./dialogs.js";
 import { Gallery, GalleryCard } from "./Gallery.js";
 import { Acts, Sub, Switch } from "./SettingsKit.js";
-import { Advanced, Field, JobView, Modal, Pick, Progress, useJob } from "./ui.js";
+import { Advanced, DropChoice, Field, JobView, Modal, Pick, Progress, useJob } from "./ui.js";
 
 const gb = (n: number) => `${n.toFixed(1)} GB`;
 /** The name a repository's file gets in the models folder (as the server names it). */
@@ -740,23 +740,26 @@ function HfSearch({
         <button type="submit">{t("search")}</button>
       </form>
       {repos.length > 0 && (
-        <select
+        <DropChoice
+          class="field"
+          label={t("wzPickRepo")}
           value={repo}
-          onChange={(e) => {
-            const r = (e.target as HTMLSelectElement).value;
+          options={[
+            { id: "", label: t("wzPickRepo") },
+            ...repos.map((r) => ({
+              id: r.id,
+              label: r.id,
+              hint: `${r.downloads.toLocaleString()} ${t("downloads")}`,
+            })),
+          ]}
+          {...(repos.length > 8 && { search: t("search") })}
+          onChange={(r) => {
             setRepo(r);
             void getApi()
               .hfFiles(r)
               .then(setList, (err: unknown) => setError(explain(err)));
           }}
-        >
-          <option value="">{t("wzPickRepo")}</option>
-          {repos.map((r) => (
-            <option key={r.id} value={r.id}>
-              {r.id} · {r.downloads.toLocaleString()} {t("downloads")}
-            </option>
-          ))}
-        </select>
+        />
       )}
       {list.length > 0 && (
         <ul class="lm-files">
@@ -1119,18 +1122,23 @@ function ModelPanel({
             </dl>
           )}
           {m.versions && m.versions.length > 1 && (
+            // biome-ignore lint/a11y/noLabelWithoutControl: the control is the DropChoice inside it.
             <label class="gversions">
               <span class="ui-label">{t("lmVersions")}</span>
-              <select value={pick} onChange={(e) => setPick((e.target as HTMLSelectElement).value)}>
-                {m.versions
+              <DropChoice
+                class="field"
+                label={t("lmVersions")}
+                value={pick ?? ""}
+                options={m.versions
                   .filter((v) => v.file === m.file?.file || v.sizeGb <= room)
-                  .map((v) => (
-                    <option key={v.file} value={v.file}>
-                      {v.quant ?? "GGUF"} · {gb(v.sizeGb)} · {t(`lmQuality_${v.quality}`)}
-                      {v.file === m.file?.file ? ` · ${t("lmVersionSuggested")}` : ""}
-                    </option>
-                  ))}
-              </select>
+                  .map((v) => ({
+                    id: v.file,
+                    label: `${v.quant ?? "GGUF"} · ${gb(v.sizeGb)} · ${t(`lmQuality_${v.quality}`)}${
+                      v.file === m.file?.file ? ` · ${t("lmVersionSuggested")}` : ""
+                    }`,
+                  }))}
+                onChange={setPick}
+              />
             </label>
           )}
           <Speculation
@@ -1718,22 +1726,23 @@ export function LocalModels({
   const engineField = (
     <Advanced>
       <Field label={t("lmEngine")} help={t("lmEngineHelp")}>
-        <select
+        <DropChoice<EngineVariant>
+          class="field"
+          label={t("lmEngine")}
           value={variant}
-          onChange={(e) => setVariant((e.target as HTMLSelectElement).value as EngineVariant)}
-        >
-          {(s.hardware.windowsEngine
+          options={(s.hardware.windowsEngine
             ? // On Windows only the engine that runs natively (2026-11-04).
               (["windows"] as const)
             : (["cpu", "cuda", "vulkan"] as const)
-          ).map((v) => (
-            <option key={v} value={v}>
-              {/* A Mac runs the same engine next to RedGiant, with Metal (2026-11-05). */}
-              {t(v === "windows" && s.hardware.os === "darwin" ? "lmEngine_mac" : `lmEngine_${v}`)}
-              {v === s.hardware.suggestion.engine ? ` (${t("lmRecommended")})` : ""}
-            </option>
-          ))}
-        </select>
+          ).map((v) => ({
+            id: v,
+            // A Mac runs the same engine next to RedGiant, with Metal (2026-11-05).
+            label: `${t(v === "windows" && s.hardware.os === "darwin" ? "lmEngine_mac" : `lmEngine_${v}`)}${
+              v === s.hardware.suggestion.engine ? ` (${t("lmRecommended")})` : ""
+            }`,
+          }))}
+          onChange={setVariant}
+        />
       </Field>
     </Advanced>
   );

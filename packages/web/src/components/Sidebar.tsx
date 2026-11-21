@@ -45,6 +45,7 @@ import { FolderMenu } from "./FolderMenu.js";
 import { Mascot } from "./Mascot.js";
 import { ArchivedList, ArchiveProjectDialog, noGitNotice } from "./ProjectArchive.js";
 import { placeWords, TurnMeter } from "./TurnLine.js";
+import { DropChoice } from "./ui.js";
 
 const SHOWN = 8;
 
@@ -472,18 +473,16 @@ function Subprojects({
       {adding ? (
         <form class="new-project" onSubmit={(e) => void create(e)}>
           {others.length > 0 && (
-            <select
-              aria-label={t("subFrom")}
+            <DropChoice
+              class="field"
+              label={t("subFrom")}
               value={from}
-              onChange={(e) => setFrom((e.target as HTMLSelectElement).value)}
-            >
-              <option value="">{t("subNewOne")}</option>
-              {others.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {t("subBringIn", { name: p.name })}
-                </option>
-              ))}
-            </select>
+              options={[
+                { id: "", label: t("subNewOne") },
+                ...others.map((p) => ({ id: p.id, label: t("subBringIn", { name: p.name }) })),
+              ]}
+              onChange={setFrom}
+            />
           )}
           {!from && (
             <input

@@ -11045,7 +11045,10 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get errKeystore =>
-      'Questo computer non è riuscito a salvare la chiave di accesso nel suo portachiavi, quindi l\'abbinamento è stato annullato e sul server non resta un dispositivo in più. Riprova; se succede ancora, riavvia il computer e riprova.';
+      'Questo computer non è riuscito a salvare la chiave di accesso nel suo portachiavi, quindi l\'abbinamento è stato annullato e sul server non resta un dispositivo in più. Riprova. Se succede ancora, riavvia il computer e accedi con la password, non con il PIN.';
+
+  @override
+  String get errKeystoreDetails => 'Dettagli';
 
   @override
   String get devForgetUnused => 'Togli quelli mai usati';
@@ -14221,6 +14224,22 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get vkKcShowText =>
       'Resterà sullo schermo finché non lo nascondi o chiudi la finestra. Assicurati che nessuno stia guardando.';
+
+  @override
+  String get vkKcUnlockShow => 'Sblocca per vedere il segreto';
+
+  @override
+  String get vkKcUnlockCopy => 'Sblocca per copiare il segreto';
+
+  @override
+  String get vkKcUnlockRefused => 'Non sbloccato: il segreto resta nascosto.';
+
+  @override
+  String get vkKcNoLockQ => 'Questo dispositivo non ha un blocco';
+
+  @override
+  String get vkKcNoLockText =>
+      'Su questo dispositivo niente controlla che sia tu: nelle impostazioni di sistema non c\'è un PIN, un\'impronta o il volto. Chiunque lo tenga in mano potrebbe vedere le tue chiavi, quindi imposta lì un blocco schermo. Vuoi andare avanti lo stesso?';
 
   @override
   String get vkKcSomeAgents => 'Gli agenti che possono usarla';
