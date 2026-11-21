@@ -75,7 +75,7 @@ describe("the list of conversations", () => {
     );
     const body = (await s.api<{ model: string; released?: string }[]>("GET", "/api/models")).body;
     expect(body.map((m) => [m.model, m.released])).toEqual([
-      ["claude-opus-5-5", undefined],
+      ["claude-opus-5-5", "2026-09-22"],
       ["claude-fable-5-2", "2026-11-09"],
       ["x-unknown", undefined],
     ]);

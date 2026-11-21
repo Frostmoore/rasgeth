@@ -248,8 +248,9 @@ void main() {
   });
 
   testWidgets('«Annulla» under the bar: nothing left, the empty file gone, said', (tester) async {
+    // Long enough that a loaded machine never finishes it before «Annulla» is pressed.
     server.routes['GET $link'] = (r) =>
-        _serve(r, 400, gap: const Duration(milliseconds: 20)).catchError((_) {});
+        _serve(r, 4000, gap: const Duration(milliseconds: 20)).catchError((_) {});
     final dest = '${dir.path}${Platform.pathSeparator}finale.mp4';
     debugPickSavePath = (name) async {
       await File(dest).writeAsBytes(const []);
