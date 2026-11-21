@@ -1677,7 +1677,7 @@ const en = {
     "The model reads its first context and writes a few words. The first time on a new graphics card this takes minutes: the card prepares its programs once, and then it is fast.",
   lmShowActivation: "Show the activation",
   "lm_glm-4.5-air":
-    "Among the strongest open models for code and tools; needs SSD stream on most computers.",
+    "Among the strongest open models for code and tools; needs Deep Field on most computers.",
   dbgTitle: "Diagnostics",
   dbgHelp:
     "Debug mode keeps a detailed log of everything {product} does: each step of starting a model with its times, the local engine's own messages, the requests, what the Windows program does. Turn it on when something is slow or goes wrong, repeat it, then download the logs and send them. It writes a lot (at most 300 MB, the oldest go first) and never writes passwords or keys.",
@@ -2102,9 +2102,9 @@ const en = {
   "lm_nemotron-3.5-bolt-74b": "NVIDIA's, October 2026: fits in 16 GB of card and 64 of RAM.",
   "lm_qwen3-coder-next": "Made for programming: 80B but only 3B at work, so fast.",
   "lm_mistral-small-4":
-    "Mistral's mixture of experts: writes well in Italian, made for SSD stream.",
+    "Mistral's mixture of experts: writes well in Italian, made for Deep Field.",
   "lm_nemotron-3.5-super-120b": "NVIDIA's largest here: among the strongest, mostly from the SSD.",
-  "lm_qwen3.5-122b": "Among the strongest open models for a home computer: SSD stream.",
+  "lm_qwen3.5-122b": "Among the strongest open models for a home computer: Deep Field.",
   "lm_mistral-medium-3.5": "A large dense model, to compare: slow beyond the card.",
   "lm_gemma-4-26b":
     "Large but quick (only part of it works at each step): one of the best for 16 GB.",
@@ -4123,7 +4123,7 @@ const en = {
   wzStreamInfo3:
     "At the first start {product} measures this computer and keeps the fastest tuning. It needs an SSD with at least 20 GB free: a spinning disk is too slow.",
   wzDisksTitle: "Where the models stay",
-  wzDisksLead: "A model takes from 3 to 80 GB. A fast SSD is best: SSD stream reads from there.",
+  wzDisksLead: "A model takes from 3 to 80 GB. A fast SSD is best: Deep Field reads from there.",
   wzDiskThis: "This disk",
   wzDiskData: "{product}'s data folder",
   wzHereNow: "here now",
@@ -9312,7 +9312,7 @@ const it: Record<Key, string> = {
     "Il modello legge il suo primo contesto e scrive qualche parola. La prima volta su una scheda video nuova ci vogliono minuti: la scheda prepara i suoi programmi una volta sola, poi è veloce.",
   lmShowActivation: "Mostra l'attivazione",
   "lm_glm-4.5-air":
-    "Tra i modelli aperti più forti per codice e strumenti; sulla maggior parte dei computer serve lo SSD stream.",
+    "Tra i modelli aperti più forti per codice e strumenti; sulla maggior parte dei computer serve Deep Field.",
   dbgTitle: "Diagnostica",
   dbgHelp:
     "La modalità di debug tiene un registro dettagliato di tutto quello che fa {product}: ogni passo dell'avvio di un modello con i suoi tempi, i messaggi del motore locale, le richieste, quello che fa il programma di Windows. Accendila quando qualcosa è lento o va storto, ripeti l'operazione, poi scarica i registri e mandali. Scrive tanto (al massimo 300 MB, i più vecchi se ne vanno) e non scrive mai password né chiavi.",
@@ -9743,10 +9743,10 @@ const it: Record<Key, string> = {
   "lm_nemotron-3.5-bolt-74b": "Di NVIDIA, ottobre 2026: entra in 16 GB di scheda e 64 di RAM.",
   "lm_qwen3-coder-next": "Fatto per programmare: 80 miliardi ma solo 3 al lavoro, quindi veloce.",
   "lm_mistral-small-4":
-    "Il modello a esperti di Mistral: scrive bene in italiano, fatto per lo SSD stream.",
+    "Il modello a esperti di Mistral: scrive bene in italiano, fatto per Deep Field.",
   "lm_nemotron-3.5-super-120b":
     "Il più grande di NVIDIA qui: tra i più forti, in buona parte dall'SSD.",
-  "lm_qwen3.5-122b": "Tra i modelli aperti più forti per un computer di casa: SSD stream.",
+  "lm_qwen3.5-122b": "Tra i modelli aperti più forti per un computer di casa: Deep Field.",
   "lm_mistral-medium-3.5": "Un grande modello denso, per confronto: lento fuori dalla scheda.",
   "lm_gemma-4-26b":
     "Grande ma veloce (a ogni passo lavora solo una parte): fra i migliori per 16 GB.",
@@ -11774,7 +11774,7 @@ const it: Record<Key, string> = {
   wzStreamInfo3:
     "Al primo avvio {product} misura questo computer e tiene la regolazione più veloce. Serve un SSD con almeno 20 GB liberi: un disco meccanico è troppo lento.",
   wzDisksTitle: "Dove stanno i modelli",
-  wzDisksLead: "Un modello occupa da 3 a 80 GB. Meglio un SSD veloce: lo SSD stream legge da lì.",
+  wzDisksLead: "Un modello occupa da 3 a 80 GB. Meglio un SSD veloce: Deep Field legge da lì.",
   wzDiskThis: "Questo disco",
   wzDiskData: "la cartella dei dati di {product}",
   wzHereNow: "qui ora",
