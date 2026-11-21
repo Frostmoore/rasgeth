@@ -14,7 +14,6 @@ import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/embed/embed_link.dart';
 import 'package:rgcompanion/embed/embed_screen.dart';
-import 'package:rgcompanion/screens/full_settings_screen.dart';
 
 import 'shots_test.dart' show frames, shot, waitFor;
 
@@ -40,17 +39,7 @@ void main() {
       await frames(t, 600);
       final look = mode == ThemeMode.dark ? 'dark' : 'light';
 
-      nav
-          .push(
-            MaterialPageRoute<void>(
-              builder: (_) => FullSettingsScreen(base: c.base, token: c.token!, title: 'Casa'),
-            ),
-          )
-          .ignore();
-      await shot(t, 'g42-0-impostazioni-$_tag-$theme', wait: 9000);
-      nav.pop();
-      await frames(t, 800);
-
+      // G42.17: «All settings» (the whole page in a web view) is gone; the embeds stay.
       for (final (name, params) in [
         (
           'prova',

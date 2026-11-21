@@ -298,15 +298,8 @@ void main() {
       expect(find.text('Artefatti'), findsWidgets);
       await see(find.byKey(const Key('outside-link')));
       expect(find.text('https://casa.tail1234.ts.net'), findsOneWidget);
-      // On a phone, the page's Settings inside the app.
-      await see(find.byKey(const Key('settings-all')));
-      expect(
-        find.text(
-          "La pagina Impostazioni completa di Rasgeth, dentro l'app, con l'accesso di questo "
-          'dispositivo.',
-        ),
-        findsOneWidget,
-      );
+      // G42.17: no more «All settings» (the page in a web view): every section is native.
+      expect(find.byKey(const Key('settings-all')), findsNothing);
 
       // Signing another device out asks first.
       // «Prova della vista web» (G42.0) sits under it: also there, then back up to the device.

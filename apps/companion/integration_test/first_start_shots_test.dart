@@ -165,8 +165,8 @@ void main() {
     await shot(t, 'set-02-settings');
     await scrollTo(t, const Key('server-settings'), find.byKey(const Key('settings-outside')));
     await shot(t, 'set-03-settings-more');
-    await scrollTo(t, const Key('server-settings'), find.byKey(const Key('settings-all')));
-    await shot(t, 'set-04-settings-all');
+    await scrollTo(t, const Key('server-settings'), find.byKey(const Key('settings-hub')));
+    await shot(t, 'set-04-settings-hub');
     await t.drag(find.byKey(const Key('server-settings')), const Offset(0, 3000));
     await frames(t, 400);
     await t.tap(find.byKey(const Key('settings-rename')));
