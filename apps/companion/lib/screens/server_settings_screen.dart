@@ -40,6 +40,12 @@ import '../settings/knowledge_screen.dart' show openKnowledgeSettings;
 import '../settings/memory_screen.dart' show openSharedMemory;
 import '../settings/portrait_screen.dart' show openPortrait;
 import '../settings/skills_screen.dart' show openSkills;
+import '../settings/system/backup_screen.dart' show openBackupSettings;
+import '../settings/system/machines_screen.dart' show openMachinesSettings;
+import '../settings/system/nodes_screen.dart' show openNodesSettings;
+import '../settings/system/remote_screen.dart' show openRemoteSettings;
+import '../settings/system/system_screen.dart' show openSystemSettings;
+import '../settings/system/update_gate.dart' show openUpdateGate;
 
 /// «12 MB of 340 MB · 2.1 MB/s · 2 min left», as the page says a download.
 String progressText(AppLocalizations l, Progress p) {
@@ -629,6 +635,53 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                     ),
                   ],
                 ),
+                // ---- the system (G42.14: native, as the page's sections) ----
+                _Head(l.syHubTitle),
+                _Card(
+                  key: const Key('settings-system-hub'),
+                  children: [
+                    _hub(
+                      c,
+                      'remote',
+                      RgIcons.shield,
+                      l.syWzRemote,
+                      l.syHubRemote,
+                      () => openRemoteSettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'system',
+                      RgIcons.cpu,
+                      l.syFbSystemSection,
+                      l.syHubSystem,
+                      () => openSystemSettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'machines',
+                      RgIcons.server,
+                      l.syMcSection,
+                      l.syHubMachines,
+                      () => openMachinesSettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'nodes',
+                      RgIcons.nodes,
+                      l.syNdSection,
+                      l.syHubNodes,
+                      () => openNodesSettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'backup',
+                      RgIcons.archive,
+                      l.syBackup,
+                      l.syHubBackup,
+                      () => openBackupSettings(context),
+                    ),
+                  ],
+                ),
                 // ---- artifacts (G42.2: native, as the page's Settings › Artifacts) ----
                 _Head(l.sectionArtifacts),
                 _Card(
@@ -767,6 +820,23 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
       out.add(_Fact(icon: RgIcons.file, text: note));
     }
     if (available && breaking) out.add(_Fact(icon: RgIcons.alert, text: l.updBreaking));
+    // G42.14: a mandatory or breaking update has its own screen (the page's UpdateGate).
+    if (available && u != null && (u.gate == 'mandatory' || u.gate == 'breaking')) {
+      out.add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton.icon(
+              key: const Key('update-gate'),
+              onPressed: () => openUpdateGate(context, u),
+              icon: RgIcon(RgIcons.alert, size: 16, color: c.text),
+              label: Text(l.syGateOpen),
+            ),
+          ),
+        ),
+      );
+    }
     if (available && !canHere && u?.command != null) {
       out.add(_Fact(icon: RgIcons.tool, text: l.updDockerHint));
       out.add(

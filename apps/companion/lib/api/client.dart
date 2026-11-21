@@ -1180,6 +1180,27 @@ class RedGiantClient {
   /// G42.4: any other request (its answer may be empty: null).
   Future<Object?> callJson(String method, String path, [Object? body]) => _call(method, path, body);
 
+  /// G42.14: a file of this server (a backup), its bytes as they arrive ([onProgress]: arrived,
+  /// size or null).
+  Future<Uint8List> getBytes(String path, {void Function(int got, int? total)? onProgress}) async {
+    final ApiResponse r;
+    try {
+      r = await transport.download(
+        _path(path, null),
+        headers: _headers(accept: '*/*'),
+        onProgress: onProgress,
+      );
+    } on TransportException catch (e) {
+      throw ApiException(0, e.message, certificate: e.certificate);
+    }
+    if (r.status != 200) _decode(r);
+    return r.bytes;
+  }
+
+  /// G42.14: a file sent as it is (`application/octet-stream`), the JSON answer.
+  Future<Object?> postBytes(String path, List<int> bytes) async =>
+      _decode(await _send('POST', path, raw: bytes));
+
   /// G42.4: an answer that must be an object, or a list of objects.
   Map<String, dynamic> objectOf(Object? o) => _object(o);
   List<Map<String, dynamic>> arrayOf(Object? o) => _array(o);

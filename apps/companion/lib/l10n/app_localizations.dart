@@ -18974,6 +18974,5544 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Devices removed: {count}.'**
   String devForgetUnusedDone(int count);
+
+  /// No description provided for @syBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get syBackup;
+
+  /// No description provided for @syBackupAddsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A project whose name is taken here comes in beside it, with a number after the name.'**
+  String get syBackupAddsHint;
+
+  /// No description provided for @syBackupAlreadyHere.
+  ///
+  /// In en, this message translates to:
+  /// **'already here, left as it is'**
+  String get syBackupAlreadyHere;
+
+  /// No description provided for @syBackupAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Import another backup'**
+  String get syBackupAnother;
+
+  /// No description provided for @syBackupChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the backup file'**
+  String get syBackupChoose;
+
+  /// No description provided for @syBackupCounts.
+  ///
+  /// In en, this message translates to:
+  /// **'{agents} agents · {conversations} conversations · {size} of files'**
+  String syBackupCounts(String agents, String conversations, String size);
+
+  /// No description provided for @syBackupDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download {file}'**
+  String syBackupDownload(String file);
+
+  /// No description provided for @syBackupExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a backup'**
+  String get syBackupExport;
+
+  /// No description provided for @syBackupExportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects with their files, agents, conversations, chats and the board. Keys and sign-ins to services are not in it: they stay on this computer. node_modules folders are left out (they are rebuilt).'**
+  String get syBackupExportHint;
+
+  /// No description provided for @syBackupFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup of {when}'**
+  String syBackupFrom(String when);
+
+  /// No description provided for @syBackupImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import a backup'**
+  String get syBackupImport;
+
+  /// No description provided for @syBackupImportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'From another Rasgeth or from this one. Nothing here is deleted or replaced: what is in the backup is added, and what is already here stays as it is.'**
+  String get syBackupImportHint;
+
+  /// No description provided for @syBackupImportNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get syBackupImportNow;
+
+  /// No description provided for @syBackupImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Done: {projects} projects, {agents} agents and {conversations} conversations added.'**
+  String syBackupImported(String agents, String conversations, String projects);
+
+  /// No description provided for @syBackupKeepName.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep {name}'**
+  String syBackupKeepName(String name);
+
+  /// No description provided for @syBackupKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Include the keychain'**
+  String get syBackupKeys;
+
+  /// No description provided for @syBackupKeysHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sealed with a passphrase of yours, with the keys of the models, chats and mailboxes: without it the backup\'s credentials cannot be opened.'**
+  String get syBackupKeysHelp;
+
+  /// No description provided for @syBackupKeysIn.
+  ///
+  /// In en, this message translates to:
+  /// **'The backup carries a keychain: its passphrase'**
+  String get syBackupKeysIn;
+
+  /// No description provided for @syBackupKeysInHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave it empty to import everything else without the credentials.'**
+  String get syBackupKeysInHelp;
+
+  /// No description provided for @syBackupKeysWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain was not imported: wrong passphrase. Everything else was.'**
+  String get syBackupKeysWrong;
+
+  /// No description provided for @syBackupMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare the backup'**
+  String get syBackupMake;
+
+  /// No description provided for @syBackupMakeAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare it again'**
+  String get syBackupMakeAgain;
+
+  /// No description provided for @syBackupNameQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'{who} is called {here} here and {backup} in the backup. Which name does it keep?'**
+  String syBackupNameQuestion(String backup, String here, String who);
+
+  /// No description provided for @syBackupNothingNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Every project in this backup is here already: only what is missing is added.'**
+  String get syBackupNothingNew;
+
+  /// No description provided for @syBackupPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Every project with its files, the agents and the conversations in one file: keep it safe, or carry it to another Rasgeth.'**
+  String get syBackupPurpose;
+
+  /// No description provided for @syBackupSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved in your Downloads folder.'**
+  String get syBackupSaved;
+
+  /// No description provided for @syBackupSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending the file to Rasgeth'**
+  String get syBackupSending;
+
+  /// No description provided for @syBackupTakeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Use {name}'**
+  String syBackupTakeName(String name);
+
+  /// No description provided for @syBrainDisconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get syBrainDisconnect;
+
+  /// No description provided for @syCaddyDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'The address'**
+  String get syCaddyDomain;
+
+  /// No description provided for @syCaddyDomainHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth gets its HTTPS certificate from Let\'s Encrypt by itself.'**
+  String get syCaddyDomainHelp;
+
+  /// No description provided for @syCaddyPihole.
+  ///
+  /// In en, this message translates to:
+  /// **'Inside home some routers cannot reach their own public address: then open Rasgeth at home with its usual link, or turn on Pi-hole in Settings, Access from outside home (it is optional).'**
+  String get syCaddyPihole;
+
+  /// No description provided for @syCaddyStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'At your domain\'s provider, make a DNS record of type A for the address you want (for example rasgeth.yourdomain.com) pointing at your home\'s public address. If it changes, use a dynamic DNS service.'**
+  String get syCaddyStep1;
+
+  /// No description provided for @syCaddyStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'On your router, forward ports 80 and 443 to this computer.'**
+  String get syCaddyStep2;
+
+  /// No description provided for @syCaddyWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'With this way Rasgeth\'s sign-in page is on the internet: keep the password strong and the second check on.'**
+  String get syCaddyWarning;
+
+  /// No description provided for @syCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get syCancel;
+
+  /// No description provided for @syCfAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Safer still: in Cloudflare Zero Trust, Access, add an application for this address, so Cloudflare asks who you are before the page even appears.'**
+  String get syCfAccess;
+
+  /// No description provided for @syCfBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy a domain on Cloudflare'**
+  String get syCfBuy;
+
+  /// No description provided for @syCfHost.
+  ///
+  /// In en, this message translates to:
+  /// **'The address you chose'**
+  String get syCfHost;
+
+  /// No description provided for @syCfHostHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For example rasgeth.yourdomain.com: the subdomain and domain of the Public hostname.'**
+  String get syCfHostHelp;
+
+  /// No description provided for @syCfStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'If you have no domain yet, buy one (Cloudflare sells them at cost, about 10 euros a year):'**
+  String get syCfStep1;
+
+  /// No description provided for @syCfStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Tunnels in Cloudflare Zero Trust, press Create a tunnel, choose Cloudflared and give it a name (for example rasgeth):'**
+  String get syCfStep2;
+
+  /// No description provided for @syCfStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'In the step Public hostname: subdomain rasgeth, your domain, Service type HTTP, URL redgiant:7600. Save.'**
+  String get syCfStep3;
+
+  /// No description provided for @syCfStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloudflare shows a command with a long token after --token: copy only the token and write the address here.'**
+  String get syCfStep4;
+
+  /// No description provided for @syCfToken.
+  ///
+  /// In en, this message translates to:
+  /// **'The tunnel\'s token'**
+  String get syCfToken;
+
+  /// No description provided for @syCfTokenHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The long string after --token in the command Cloudflare shows (it starts with eyJ).'**
+  String get syCfTokenHelp;
+
+  /// No description provided for @syCfTunnels.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloudflare tunnels'**
+  String get syCfTunnels;
+
+  /// No description provided for @syConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'connecting…'**
+  String get syConnecting;
+
+  /// No description provided for @syConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations'**
+  String get syConversations;
+
+  /// No description provided for @syErr_agent_limit.
+  ///
+  /// In en, this message translates to:
+  /// **'The project «{project}» can have at most {max} agents besides its orchestrator: it has {count}. Raise the limit in Settings › Projects or remove one.'**
+  String syErr_agent_limit(String count, String max, String project);
+
+  /// No description provided for @syErr_agent_removed.
+  ///
+  /// In en, this message translates to:
+  /// **'The agent was removed from the team: restore it to work with it.'**
+  String get syErr_agent_removed;
+
+  /// No description provided for @syErr_agent_stopped.
+  ///
+  /// In en, this message translates to:
+  /// **'The agent is stopped (paused): resume it to go on.'**
+  String get syErr_agent_stopped;
+
+  /// No description provided for @syErr_bad_name.
+  ///
+  /// In en, this message translates to:
+  /// **'That is not a name (for instance git.home.example.com).'**
+  String get syErr_bad_name;
+
+  /// No description provided for @syErr_code_rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Anthropic did not accept this code: it may be incomplete or old. Open the sign-in page again to get a new one.'**
+  String get syErr_code_rejected;
+
+  /// No description provided for @syErr_email_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The mailbox did not let Rasgeth in: check the server, the address and the app password.'**
+  String get syErr_email_failed;
+
+  /// No description provided for @syErr_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The sign-in did not finish. Try again from the start.'**
+  String get syErr_failed;
+
+  /// No description provided for @syErr_host_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'The server\'s name is known, but its address does not answer from Rasgeth. See Settings › Access from outside home › Your home services.'**
+  String get syErr_host_unreachable;
+
+  /// No description provided for @syErr_key_rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'The provider refused this key. Check that you copied all of it and that it is still active.'**
+  String get syErr_key_rejected;
+
+  /// No description provided for @syErr_memory_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Write something to remember.'**
+  String get syErr_memory_empty;
+
+  /// No description provided for @syErr_memory_forgotten.
+  ///
+  /// In en, this message translates to:
+  /// **'A memory forgotten for good cannot come back.'**
+  String get syErr_memory_forgotten;
+
+  /// No description provided for @syErr_memory_full.
+  ///
+  /// In en, this message translates to:
+  /// **'The memory is full: delete or merge some old memories first.'**
+  String get syErr_memory_full;
+
+  /// No description provided for @syErr_memory_gone.
+  ///
+  /// In en, this message translates to:
+  /// **'That memory is not there any more.'**
+  String get syErr_memory_gone;
+
+  /// No description provided for @syErr_memory_long.
+  ///
+  /// In en, this message translates to:
+  /// **'A memory is at most 400 characters: write it shorter.'**
+  String get syErr_memory_long;
+
+  /// No description provided for @syErr_memory_moved.
+  ///
+  /// In en, this message translates to:
+  /// **'The memory changed again since: undo the newer change first.'**
+  String get syErr_memory_moved;
+
+  /// No description provided for @syErr_memory_same.
+  ///
+  /// In en, this message translates to:
+  /// **'Another memory already says the same.'**
+  String get syErr_memory_same;
+
+  /// No description provided for @syErr_memory_secret.
+  ///
+  /// In en, this message translates to:
+  /// **'That looks like a password, a code or a card number: secrets are never kept in memory.'**
+  String get syErr_memory_secret;
+
+  /// No description provided for @syErr_memory_undone.
+  ///
+  /// In en, this message translates to:
+  /// **'That change was already undone.'**
+  String get syErr_memory_undone;
+
+  /// No description provided for @syErr_missing_permission.
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub did not let the token create repositories. Make a new one with Administration set to Read and write.'**
+  String get syErr_missing_permission;
+
+  /// No description provided for @syErr_name_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth cannot find the server\'s name in the DNS it uses. See Settings › Access from outside home › Your home services.'**
+  String get syErr_name_not_found;
+
+  /// No description provided for @syErr_no_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Anthropic\'s sign-in page first.'**
+  String get syErr_no_login;
+
+  /// No description provided for @syErr_no_model.
+  ///
+  /// In en, this message translates to:
+  /// **'No model is chosen yet: open Settings, Models and subscriptions, connect one (a subscription, a key or a local model) and choose it in \"The model agents use\".'**
+  String get syErr_no_model;
+
+  /// No description provided for @syErr_no_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Anthropic\'s sign-in page could not be prepared. Try again in a moment.'**
+  String get syErr_no_page;
+
+  /// No description provided for @syErr_no_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a password first.'**
+  String get syErr_no_password;
+
+  /// No description provided for @syErr_portrait_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the trait.'**
+  String get syErr_portrait_empty;
+
+  /// No description provided for @syErr_portrait_gone.
+  ///
+  /// In en, this message translates to:
+  /// **'That trait is not there any more.'**
+  String get syErr_portrait_gone;
+
+  /// No description provided for @syErr_portrait_long.
+  ///
+  /// In en, this message translates to:
+  /// **'A trait is at most 200 characters: write it shorter.'**
+  String get syErr_portrait_long;
+
+  /// No description provided for @syErr_portrait_private.
+  ///
+  /// In en, this message translates to:
+  /// **'Email addresses and phone numbers never go into the portrait.'**
+  String get syErr_portrait_private;
+
+  /// No description provided for @syErr_portrait_secret.
+  ///
+  /// In en, this message translates to:
+  /// **'That looks like a password, a code or a card number: secrets never go into the portrait.'**
+  String get syErr_portrait_secret;
+
+  /// No description provided for @syErr_project_archived.
+  ///
+  /// In en, this message translates to:
+  /// **'The project is archived: restore it to work in it.'**
+  String get syErr_project_archived;
+
+  /// No description provided for @syErr_provider_stalled.
+  ///
+  /// In en, this message translates to:
+  /// **'The provider has not answered for {minutes} minutes: I tried again {retries} times. Try again in a while, or choose another model.'**
+  String syErr_provider_stalled(String minutes, String retries);
+
+  /// No description provided for @syErr_terms.
+  ///
+  /// In en, this message translates to:
+  /// **'First tick the box about the providers\' terms.'**
+  String get syErr_terms;
+
+  /// No description provided for @syErr_token_rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram refused this token. Copy it again from BotFather\'s message, all of it.'**
+  String get syErr_token_rejected;
+
+  /// No description provided for @syErr_too_many.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many wrong tries: wait 15 minutes, then try again.'**
+  String get syErr_too_many;
+
+  /// No description provided for @syErr_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'The provider did not answer. Check the address and the internet connection, then try again.'**
+  String get syErr_unreachable;
+
+  /// No description provided for @syErr_vault_bad_file.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is not a password export Rasgeth can read.'**
+  String get syErr_vault_bad_file;
+
+  /// No description provided for @syErr_vault_bad_passphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong passphrase, or a damaged file.'**
+  String get syErr_vault_bad_passphrase;
+
+  /// No description provided for @syErr_vault_closed.
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain is closed on this computer.'**
+  String get syErr_vault_closed;
+
+  /// No description provided for @syErr_vault_in_git.
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain\'s folder is inside a git repository: it must never be committed. Move Rasgeth\'s data folder outside it.'**
+  String get syErr_vault_in_git;
+
+  /// No description provided for @syErr_vault_name_taken.
+  ///
+  /// In en, this message translates to:
+  /// **'Another credential has that name for the agents: choose another one.'**
+  String get syErr_vault_name_taken;
+
+  /// No description provided for @syErr_vault_no_value.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the secret.'**
+  String get syErr_vault_no_value;
+
+  /// No description provided for @syErr_vault_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'That credential is no longer in the keychain.'**
+  String get syErr_vault_not_found;
+
+  /// No description provided for @syErr_vault_system.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth uses this key: remove it from its page in Settings.'**
+  String get syErr_vault_system;
+
+  /// No description provided for @syErr_voice_convert.
+  ///
+  /// In en, this message translates to:
+  /// **'The recording could not be converted for whisper on this computer.'**
+  String get syErr_voice_convert;
+
+  /// No description provided for @syErr_voice_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'The recording is empty.'**
+  String get syErr_voice_empty;
+
+  /// No description provided for @syErr_voice_key_refused.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} refused the key: check it in Settings, Voice.'**
+  String syErr_voice_key_refused(String name);
+
+  /// No description provided for @syErr_voice_no_key.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has no key yet: add it in Settings, Voice.'**
+  String syErr_voice_no_key(String name);
+
+  /// No description provided for @syErr_voice_no_service.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth has no transcription service: choose one in Settings, Voice, Transcription.'**
+  String get syErr_voice_no_service;
+
+  /// No description provided for @syErr_voice_provider.
+  ///
+  /// In en, this message translates to:
+  /// **'This provider cannot do it: choose another one.'**
+  String get syErr_voice_provider;
+
+  /// No description provided for @syErr_voice_rate_limited.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} says too many requests or no credit left.'**
+  String syErr_voice_rate_limited(String name);
+
+  /// No description provided for @syErr_voice_service_error.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} answered with an error ({status}).'**
+  String syErr_voice_service_error(String name, String status);
+
+  /// No description provided for @syErr_voice_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} took too long to answer.'**
+  String syErr_voice_timeout(String name);
+
+  /// No description provided for @syErr_voice_too_long.
+  ///
+  /// In en, this message translates to:
+  /// **'The recording is too long.'**
+  String get syErr_voice_too_long;
+
+  /// No description provided for @syErr_voice_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} cannot be reached: check that it is on and its address.'**
+  String syErr_voice_unreachable(String name);
+
+  /// No description provided for @syErr_weak.
+  ///
+  /// In en, this message translates to:
+  /// **'The password needs at least 10 characters.'**
+  String get syErr_weak;
+
+  /// No description provided for @syErr_wrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong password or code.'**
+  String get syErr_wrong;
+
+  /// No description provided for @syError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get syError;
+
+  /// No description provided for @syFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'failed'**
+  String get syFailed;
+
+  /// No description provided for @syFbArch.
+  ///
+  /// In en, this message translates to:
+  /// **'Architecture'**
+  String get syFbArch;
+
+  /// No description provided for @syFbBackupBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'A backup is already running.'**
+  String get syFbBackupBusy;
+
+  /// No description provided for @syFbBackupNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a backup now'**
+  String get syFbBackupNow;
+
+  /// No description provided for @syFbBackupQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Best on another disk: if this one breaks, the copy is still there.'**
+  String get syFbBackupQ;
+
+  /// No description provided for @syFbBackupStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup started: it shows in Downloads and jobs.'**
+  String get syFbBackupStarted;
+
+  /// No description provided for @syFbBackupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups'**
+  String get syFbBackupTitle;
+
+  /// No description provided for @syFbCannotMount.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot be mounted here'**
+  String get syFbCannotMount;
+
+  /// No description provided for @syFbContainerDisks.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth OS runs in a container ({name}): the disks it sees are those of the machine hosting it and cannot be used from here.'**
+  String syFbContainerDisks(String name);
+
+  /// No description provided for @syFbDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day'**
+  String get syFbDaily;
+
+  /// No description provided for @syFbDataDir.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get syFbDataDir;
+
+  /// No description provided for @syFbDataQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects, conversations and settings are here.'**
+  String get syFbDataQ;
+
+  /// No description provided for @syFbDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The data'**
+  String get syFbDataTitle;
+
+  /// No description provided for @syFbDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get syFbDay;
+
+  /// No description provided for @syFbDestDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups go to the disk {label} ({path}).'**
+  String syFbDestDisk(String label, String path);
+
+  /// No description provided for @syFbDestFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups go to the folder {path}.'**
+  String syFbDestFolder(String path);
+
+  /// No description provided for @syFbDestNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups go to the node {name}, in the storage it lends.'**
+  String syFbDestNode(String name);
+
+  /// No description provided for @syFbDestSftp.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups go to {machine}, in {path} (SFTP).'**
+  String syFbDestSftp(String machine, String path);
+
+  /// No description provided for @syFbDestSmb.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups go to the shared folder {path}, as {user}.'**
+  String syFbDestSmb(String path, String user);
+
+  /// No description provided for @syFbDisks.
+  ///
+  /// In en, this message translates to:
+  /// **'Disks'**
+  String get syFbDisks;
+
+  /// No description provided for @syFbDisksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Removable disks'**
+  String get syFbDisksTitle;
+
+  /// No description provided for @syFbErr_already.
+  ///
+  /// In en, this message translates to:
+  /// **'The container already has a folder with that name.'**
+  String get syFbErr_already;
+
+  /// No description provided for @syFbErr_auth.
+  ///
+  /// In en, this message translates to:
+  /// **'The destination refused the sign-in: check the user and the password (or the machine\'s key).'**
+  String get syFbErr_auth;
+
+  /// No description provided for @syFbErr_bad_path.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a full folder path (/volume1/Rasgeth) or one from the home (~/backups).'**
+  String get syFbErr_bad_path;
+
+  /// No description provided for @syFbErr_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'The destination does not let this user write there.'**
+  String get syFbErr_denied;
+
+  /// No description provided for @syFbErr_disk_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'The backup disk is not connected: plug it in. Nothing was written elsewhere.'**
+  String get syFbErr_disk_missing;
+
+  /// No description provided for @syFbErr_has_filesystem.
+  ///
+  /// In en, this message translates to:
+  /// **'That disk is formatted already: it is never formatted again from here.'**
+  String get syFbErr_has_filesystem;
+
+  /// No description provided for @syFbErr_keychain_closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the keychain first: the password is kept there.'**
+  String get syFbErr_keychain_closed;
+
+  /// No description provided for @syFbErr_mismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The copy arrived different from the original: it was not kept. Try again.'**
+  String get syFbErr_mismatch;
+
+  /// No description provided for @syFbErr_needs_format.
+  ///
+  /// In en, this message translates to:
+  /// **'That disk is not formatted.'**
+  String get syFbErr_needs_format;
+
+  /// No description provided for @syFbErr_no_container.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no container with that id on the host.'**
+  String get syFbErr_no_container;
+
+  /// No description provided for @syFbErr_no_destination.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose where backups go first.'**
+  String get syFbErr_no_destination;
+
+  /// No description provided for @syFbErr_no_disk.
+  ///
+  /// In en, this message translates to:
+  /// **'That disk is not a removable disk of the host (any more).'**
+  String get syFbErr_no_disk;
+
+  /// No description provided for @syFbErr_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder or the destination is not there (any more).'**
+  String get syFbErr_not_found;
+
+  /// No description provided for @syFbErr_not_proxmox.
+  ///
+  /// In en, this message translates to:
+  /// **'That machine is not a Proxmox host.'**
+  String get syFbErr_not_proxmox;
+
+  /// No description provided for @syFbErr_not_trusted.
+  ///
+  /// In en, this message translates to:
+  /// **'Test this machine once in Settings › Machines and trust its key first.'**
+  String get syFbErr_not_trusted;
+
+  /// No description provided for @syFbErr_place_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder from the host is not mounted now: nothing was written on the system disk.'**
+  String get syFbErr_place_missing;
+
+  /// No description provided for @syFbErr_smb_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the shared folder as \\\\host\\share\\folder (letters, digits, spaces, dots and dashes).'**
+  String get syFbErr_smb_address;
+
+  /// No description provided for @syFbErr_smb_bad_domain.
+  ///
+  /// In en, this message translates to:
+  /// **'The domain is letters, digits, dots and dashes.'**
+  String get syFbErr_smb_bad_domain;
+
+  /// No description provided for @syFbErr_smb_bad_password.
+  ///
+  /// In en, this message translates to:
+  /// **'This password cannot be used (no line breaks).'**
+  String get syFbErr_smb_bad_password;
+
+  /// No description provided for @syFbErr_smb_bad_user.
+  ///
+  /// In en, this message translates to:
+  /// **'This user name cannot be used.'**
+  String get syFbErr_smb_bad_user;
+
+  /// No description provided for @syFbErr_smb_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared folders need smbclient, which this installation does not have.'**
+  String get syFbErr_smb_missing;
+
+  /// No description provided for @syFbErr_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'The destination does not answer: is it on and on the network? Nothing was written elsewhere.'**
+  String get syFbErr_unreachable;
+
+  /// No description provided for @syFbFolderLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A folder this machine can write to: a network share, a disk mounted by you. Not inside the data folder.'**
+  String get syFbFolderLead;
+
+  /// No description provided for @syFbFolderPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get syFbFolderPath;
+
+  /// No description provided for @syFbFolderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Or a folder'**
+  String get syFbFolderTitle;
+
+  /// No description provided for @syFbFreeOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{free} free'**
+  String syFbFreeOf(String free);
+
+  /// No description provided for @syFbFreeOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{free} GB free of {total} GB'**
+  String syFbFreeOfTotal(String free, String total);
+
+  /// No description provided for @syFbFri.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get syFbFri;
+
+  /// No description provided for @syFbHostBad_bad_device.
+  ///
+  /// In en, this message translates to:
+  /// **'This disk\'s device cannot be used.'**
+  String get syFbHostBad_bad_device;
+
+  /// No description provided for @syFbHostBad_bad_id.
+  ///
+  /// In en, this message translates to:
+  /// **'The container id is a number, like 105.'**
+  String get syFbHostBad_bad_id;
+
+  /// No description provided for @syFbHostBad_bad_mp.
+  ///
+  /// In en, this message translates to:
+  /// **'No free mount point.'**
+  String get syFbHostBad_bad_mp;
+
+  /// No description provided for @syFbHostBad_bad_name.
+  ///
+  /// In en, this message translates to:
+  /// **'This disk\'s name cannot be used for a folder.'**
+  String get syFbHostBad_bad_name;
+
+  /// No description provided for @syFbHostId.
+  ///
+  /// In en, this message translates to:
+  /// **'Container id on Proxmox'**
+  String get syFbHostId;
+
+  /// No description provided for @syFbHostIdHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The number in Proxmox\'s list (this container is called {hostname}).'**
+  String syFbHostIdHelp(String hostname);
+
+  /// No description provided for @syFbHostKind.
+  ///
+  /// In en, this message translates to:
+  /// **'The host'**
+  String get syFbHostKind;
+
+  /// No description provided for @syFbHostLead.
+  ///
+  /// In en, this message translates to:
+  /// **'From a container Rasgeth sees the host\'s disks but cannot mount them: the host mounts the disk and passes a folder in. Rasgeth notices it by itself.'**
+  String get syFbHostLead;
+
+  /// No description provided for @syFbHostMany.
+  ///
+  /// In en, this message translates to:
+  /// **'On this machine there are {n} removable disks: pick the one for backups.'**
+  String syFbHostMany(String n);
+
+  /// No description provided for @syFbHostNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No removable disk of the host is in sight: plug it into the host, or use a folder on the network below.'**
+  String get syFbHostNone;
+
+  /// No description provided for @syFbHostOne.
+  ///
+  /// In en, this message translates to:
+  /// **'On this machine there is the disk {title}, {how}, {size}.'**
+  String syFbHostOne(String how, String size, String title);
+
+  /// No description provided for @syFbHostOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get syFbHostOther;
+
+  /// No description provided for @syFbHostSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'To run on the host, as root'**
+  String get syFbHostSteps;
+
+  /// No description provided for @syFbHostTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A disk of the host'**
+  String get syFbHostTitle;
+
+  /// No description provided for @syFbHostWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking every few seconds: when {target} arrives it shows above, ready to use.'**
+  String syFbHostWatching(String target);
+
+  /// No description provided for @syFbHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Hour'**
+  String get syFbHour;
+
+  /// No description provided for @syFbKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups kept'**
+  String get syFbKeep;
+
+  /// No description provided for @syFbKeepN.
+  ///
+  /// In en, this message translates to:
+  /// **'keep {n}'**
+  String syFbKeepN(String n);
+
+  /// No description provided for @syFbLastFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The backup of {when} did not work: {why}'**
+  String syFbLastFailed(String when, String why);
+
+  /// No description provided for @syFbLastOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Last backup: {when}, read back and complete.'**
+  String syFbLastOk(String when);
+
+  /// No description provided for @syFbListAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Look again'**
+  String get syFbListAgain;
+
+  /// No description provided for @syFbListEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup yet in {where}.'**
+  String syFbListEmpty(String where);
+
+  /// No description provided for @syFbListLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Each one can be brought back: what is new is added, nothing here is deleted.'**
+  String get syFbListLead;
+
+  /// No description provided for @syFbListShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the backups'**
+  String get syFbListShow;
+
+  /// No description provided for @syFbListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The backups there'**
+  String get syFbListTitle;
+
+  /// No description provided for @syFbMachineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine'**
+  String get syFbMachineTitle;
+
+  /// No description provided for @syFbMethod_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick one: Rasgeth mounts it only for backups. System disks are never offered.'**
+  String get syFbMethod_helper;
+
+  /// No description provided for @syFbMethod_none.
+  ///
+  /// In en, this message translates to:
+  /// **'This installation cannot mount disks (for example plain Docker without privileges): use a disk already mounted, or a folder below.'**
+  String get syFbMethod_none;
+
+  /// No description provided for @syFbMethod_udisks.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick one: the system mounts it (udisks2). System disks are never offered.'**
+  String get syFbMethod_udisks;
+
+  /// No description provided for @syFbMissing_not_installed.
+  ///
+  /// In en, this message translates to:
+  /// **'unknown: the program that tells is not installed'**
+  String get syFbMissing_not_installed;
+
+  /// No description provided for @syFbMissing_unreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'could not be read'**
+  String get syFbMissing_unreadable;
+
+  /// No description provided for @syFbMissing_unsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'not available on this system'**
+  String get syFbMissing_unsupported;
+
+  /// No description provided for @syFbMon.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get syFbMon;
+
+  /// No description provided for @syFbNetAProxy.
+  ///
+  /// In en, this message translates to:
+  /// **'a reverse proxy'**
+  String get syFbNetAProxy;
+
+  /// No description provided for @syFbNetDns.
+  ///
+  /// In en, this message translates to:
+  /// **'A DNS server on your network ({ip}): a name like rasgeth.home can point here.'**
+  String syFbNetDns(String ip);
+
+  /// No description provided for @syFbNetFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder there'**
+  String get syFbNetFolder;
+
+  /// No description provided for @syFbNetFolderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A full path (/volume1/Rasgeth, E:\\Backup) or one from the home (~/RedGiant-backups). It is made if missing.'**
+  String get syFbNetFolderHelp;
+
+  /// No description provided for @syFbNetLanOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Local network only is a fine choice: skip this step.'**
+  String get syFbNetLanOnly;
+
+  /// No description provided for @syFbNetLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to mount: it works also in a container or in Docker. Each backup arrives under a temporary name and gets its real name only once complete and checked.'**
+  String get syFbNetLead;
+
+  /// No description provided for @syFbNetName.
+  ///
+  /// In en, this message translates to:
+  /// **'You reached Rasgeth by name: {name}.'**
+  String syFbNetName(String name);
+
+  /// No description provided for @syFbNetNoMachines.
+  ///
+  /// In en, this message translates to:
+  /// **'No machine yet: add your NAS or another computer in Settings › Machines (SSH), test it once, then come back here.'**
+  String get syFbNetNoMachines;
+
+  /// No description provided for @syFbNetNoNodes.
+  ///
+  /// In en, this message translates to:
+  /// **'No paired Rasgeth yet: pair one in Settings › Nodes (it must lend its storage).'**
+  String get syFbNetNoNodes;
+
+  /// No description provided for @syFbNetNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Another Rasgeth'**
+  String get syFbNetNode;
+
+  /// No description provided for @syFbNetNotTrusted.
+  ///
+  /// In en, this message translates to:
+  /// **'Test it in Settings › Machines first'**
+  String get syFbNetNotTrusted;
+
+  /// No description provided for @syFbNetNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing found that already reaches this machine from outside.'**
+  String get syFbNetNothing;
+
+  /// No description provided for @syFbNetPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Use for backups'**
+  String get syFbNetPick;
+
+  /// No description provided for @syFbNetProxies.
+  ///
+  /// In en, this message translates to:
+  /// **'Running on this machine: {names}.'**
+  String syFbNetProxies(String names);
+
+  /// No description provided for @syFbNetProxyFront.
+  ///
+  /// In en, this message translates to:
+  /// **'There is already {name} in front of Rasgeth.'**
+  String syFbNetProxyFront(String name);
+
+  /// No description provided for @syFbNetSftp.
+  ///
+  /// In en, this message translates to:
+  /// **'One of your machines'**
+  String get syFbNetSftp;
+
+  /// No description provided for @syFbNetSmb.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared folder (SMB)'**
+  String get syFbNetSmb;
+
+  /// No description provided for @syFbNetTailscale.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale is already running here ({name}): you can use it.'**
+  String syFbNetTailscale(String name);
+
+  /// No description provided for @syFbNetTailscaleOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale is installed here but not connected.'**
+  String get syFbNetTailscaleOff;
+
+  /// No description provided for @syFbNetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Or a folder on the network'**
+  String get syFbNetTitle;
+
+  /// No description provided for @syFbNoDisks.
+  ///
+  /// In en, this message translates to:
+  /// **'No removable disk found. Plug one in and open this page again, or use a folder.'**
+  String get syFbNoDisks;
+
+  /// No description provided for @syFbNodeOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline now'**
+  String get syFbNodeOffline;
+
+  /// No description provided for @syFbNodeOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get syFbNodeOnline;
+
+  /// No description provided for @syFbOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Only when I ask'**
+  String get syFbOff;
+
+  /// No description provided for @syFbOfferCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud models: always available.'**
+  String get syFbOfferCloud;
+
+  /// No description provided for @syFbOfferLocalCpu.
+  ///
+  /// In en, this message translates to:
+  /// **'Local models: yes, small ones on the processor, up to about {max} GB (slower than a card).'**
+  String syFbOfferLocalCpu(String max);
+
+  /// No description provided for @syFbOfferLocalGpu.
+  ///
+  /// In en, this message translates to:
+  /// **'Local models: yes, on the graphics card, up to about {max} GB.'**
+  String syFbOfferLocalGpu(String max);
+
+  /// No description provided for @syFbOfferNoLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Local models: not offered, too little memory here. You can still add one from Settings › Models.'**
+  String get syFbOfferNoLocal;
+
+  /// No description provided for @syFbPairLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the main Rasgeth\'s address and the code it shows in Settings › Nodes › «Add a node». You can also do it later, from Settings.'**
+  String get syFbPairLater;
+
+  /// No description provided for @syFbPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get syFbPassword;
+
+  /// No description provided for @syFbPasswordAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'The same password again'**
+  String get syFbPasswordAgain;
+
+  /// No description provided for @syFbPasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 10 characters.'**
+  String get syFbPasswordHelp;
+
+  /// No description provided for @syFbPlaceFree.
+  ///
+  /// In en, this message translates to:
+  /// **'{free} GB free of {total}'**
+  String syFbPlaceFree(String free, String total);
+
+  /// No description provided for @syFbPlaceNotWritable.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth cannot write here'**
+  String get syFbPlaceNotWritable;
+
+  /// No description provided for @syFbPlacesLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders the machine hosting Rasgeth mounted under /var/lib/redgiant/backups (a Proxmox mount point, a network share).'**
+  String get syFbPlacesLead;
+
+  /// No description provided for @syFbPlacesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders mounted for backups'**
+  String get syFbPlacesTitle;
+
+  /// No description provided for @syFbPveDo.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass it to Rasgeth'**
+  String get syFbPveDo;
+
+  /// No description provided for @syFbPveDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done: the folder {target} has arrived.'**
+  String syFbPveDone(String target);
+
+  /// No description provided for @syFbPveFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Not formatted: format and pass it'**
+  String get syFbPveFormat;
+
+  /// No description provided for @syFbPveFormatLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything on it is erased. To go on, type its name: {title}'**
+  String syFbPveFormatLabel(String title);
+
+  /// No description provided for @syFbPveFormatQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Format the disk {title}?'**
+  String syFbPveFormatQ(String title);
+
+  /// No description provided for @syFbPveFormatYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Format and pass it'**
+  String get syFbPveFormatYes;
+
+  /// No description provided for @syFbPveGuess.
+  ///
+  /// In en, this message translates to:
+  /// **'This container is {id}.'**
+  String syFbPveGuess(String id);
+
+  /// No description provided for @syFbPveHost.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: Proxmox {version}.'**
+  String syFbPveHost(String name, String version);
+
+  /// No description provided for @syFbPveLead.
+  ///
+  /// In en, this message translates to:
+  /// **'If the Proxmox host is among your machines (Settings › Machines), Rasgeth can run these steps there itself. It asks you first, with every command in the request.'**
+  String get syFbPveLead;
+
+  /// No description provided for @syFbPveLook.
+  ///
+  /// In en, this message translates to:
+  /// **'Look for the Proxmox host'**
+  String get syFbPveLook;
+
+  /// No description provided for @syFbPveNeedId.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the container id first.'**
+  String get syFbPveNeedId;
+
+  /// No description provided for @syFbPveNoDisks.
+  ///
+  /// In en, this message translates to:
+  /// **'No removable disk on that host.'**
+  String get syFbPveNoDisks;
+
+  /// No description provided for @syFbPveNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None of your {n} machines is a Proxmox host. Add the host in Settings › Machines (as root, with Rasgeth\'s key), test it, then look again.'**
+  String syFbPveNone(String n);
+
+  /// No description provided for @syFbPveQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass the disk {title} of {host} to container {id}?'**
+  String syFbPveQ(String host, String id, String title);
+
+  /// No description provided for @syFbPveRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Done on the host. If {target} does not appear in a minute, restart the container from Proxmox.'**
+  String syFbPveRestart(String target);
+
+  /// No description provided for @syFbPveText.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth asks you again in your requests, with the exact commands, before running anything on the host.'**
+  String get syFbPveText;
+
+  /// No description provided for @syFbPveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Do it for me'**
+  String get syFbPveTitle;
+
+  /// No description provided for @syFbPveYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me with the commands'**
+  String get syFbPveYes;
+
+  /// No description provided for @syFbRamFree.
+  ///
+  /// In en, this message translates to:
+  /// **'{gb} GB free now'**
+  String syFbRamFree(String gb);
+
+  /// No description provided for @syFbRamTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{gb} GB in all'**
+  String syFbRamTotal(String gb);
+
+  /// No description provided for @syFbRemovable.
+  ///
+  /// In en, this message translates to:
+  /// **'removable'**
+  String get syFbRemovable;
+
+  /// No description provided for @syFbRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get syFbRestore;
+
+  /// No description provided for @syFbRestoreQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore the backup of {when}?'**
+  String syFbRestoreQ(String when);
+
+  /// No description provided for @syFbRestoreText.
+  ///
+  /// In en, this message translates to:
+  /// **'It is read back first, then projects, agents and conversations that are not here are added. Nothing here is deleted.'**
+  String get syFbRestoreText;
+
+  /// No description provided for @syFbRestoreYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get syFbRestoreYes;
+
+  /// No description provided for @syFbRoleFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Rasgeth'**
+  String get syFbRoleFull;
+
+  /// No description provided for @syFbRoleFullText.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents, projects, chats and everything else, on this machine.'**
+  String get syFbRoleFullText;
+
+  /// No description provided for @syFbRoleNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Node of another Rasgeth'**
+  String get syFbRoleNode;
+
+  /// No description provided for @syFbRoleNodeText.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine works for a Rasgeth you already have.'**
+  String get syFbRoleNodeText;
+
+  /// No description provided for @syFbRoleSettingsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change it at any time: it asks first and says what changes.'**
+  String get syFbRoleSettingsLead;
+
+  /// No description provided for @syFbRoleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get syFbRoleTitle;
+
+  /// No description provided for @syFbSat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get syFbSat;
+
+  /// No description provided for @syFbSmbAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared folder'**
+  String get syFbSmbAddress;
+
+  /// No description provided for @syFbSmbAddressHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'As Windows writes it (\\\\nas\\backup\\Rasgeth) or smb://nas/backup/Rasgeth.'**
+  String get syFbSmbAddressHelp;
+
+  /// No description provided for @syFbSmbDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Domain or workgroup'**
+  String get syFbSmbDomain;
+
+  /// No description provided for @syFbSmbDomainHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if your network needs one (often empty).'**
+  String get syFbSmbDomainHelp;
+
+  /// No description provided for @syFbSmbMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared folders need smbclient, which this installation does not have (the Docker image and Rasgeth OS have it). On Windows use the folder field above with \\\\host\\share.'**
+  String get syFbSmbMissing;
+
+  /// No description provided for @syFbSmbPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get syFbSmbPassword;
+
+  /// No description provided for @syFbSmbPasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It goes into the keychain only, never into a file or a log.'**
+  String get syFbSmbPasswordHelp;
+
+  /// No description provided for @syFbSmbPasswordKept.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept in the keychain: leave it empty to keep it.'**
+  String get syFbSmbPasswordKept;
+
+  /// No description provided for @syFbSmbUser.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get syFbSmbUser;
+
+  /// No description provided for @syFbSshAddKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Add this key'**
+  String get syFbSshAddKey;
+
+  /// No description provided for @syFbSshContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'In a container ({name}) SSH reaches the container itself, at its own address, as the user redgiant.'**
+  String syFbSshContainer(String name);
+
+  /// No description provided for @syFbSshKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Public key'**
+  String get syFbSshKey;
+
+  /// No description provided for @syFbSshKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'One line starting with ssh-ed25519, ssh-rsa or ecdsa-sha2 (the .pub file).'**
+  String get syFbSshKeyHelp;
+
+  /// No description provided for @syFbSshKeyPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'ssh-ed25519 AAAA… me@laptop'**
+  String get syFbSshKeyPlaceholder;
+
+  /// No description provided for @syFbSshKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} key(s) allowed'**
+  String syFbSshKeys(String n);
+
+  /// No description provided for @syFbSshNeedKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a public key first, then switch it on.'**
+  String get syFbSshNeedKey;
+
+  /// No description provided for @syFbSshOffHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a public key below, then switch it on.'**
+  String get syFbSshOffHelp;
+
+  /// No description provided for @syFbSshOn.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH on'**
+  String get syFbSshOn;
+
+  /// No description provided for @syFbSshQ.
+  ///
+  /// In en, this message translates to:
+  /// **'To work on the machine itself from a terminal. Off unless you switch it on; keys only, never passwords.'**
+  String get syFbSshQ;
+
+  /// No description provided for @syFbSshTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH'**
+  String get syFbSshTitle;
+
+  /// No description provided for @syFbSshWhy_no_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'This installation has no Rasgeth OS system helper: SSH is managed by the system hosting it.'**
+  String get syFbSshWhy_no_helper;
+
+  /// No description provided for @syFbSshWhy_not_installed.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH (openssh-server) is not installed on this system.'**
+  String get syFbSshWhy_not_installed;
+
+  /// No description provided for @syFbSshWhy_other.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH cannot be read here: the system helper answered «{why}».'**
+  String syFbSshWhy_other(String why);
+
+  /// No description provided for @syFbSshWhy_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth OS\'s system helper took too long to answer: try again in a moment.'**
+  String get syFbSshWhy_timeout;
+
+  /// No description provided for @syFbSshWhy_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth OS\'s system helper does not answer (redgiant-helper.socket): SSH cannot be read or changed now. Restarting the machine usually brings it back.'**
+  String get syFbSshWhy_unreachable;
+
+  /// No description provided for @syFbSun.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get syFbSun;
+
+  /// No description provided for @syFbSystemLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine Rasgeth runs on, its role, where its data and backups live, and SSH.'**
+  String get syFbSystemLead;
+
+  /// No description provided for @syFbSystemQ.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get syFbSystemQ;
+
+  /// No description provided for @syFbSystemSection.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get syFbSystemSection;
+
+  /// No description provided for @syFbThu.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get syFbThu;
+
+  /// No description provided for @syFbToFullQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Make this a complete Rasgeth again?'**
+  String get syFbToFullQ;
+
+  /// No description provided for @syFbToFullText.
+  ///
+  /// In en, this message translates to:
+  /// **'It stops working for the other Rasgeth; its own agents, projects and conversations come back as they were.'**
+  String get syFbToFullText;
+
+  /// No description provided for @syFbToFullYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Make it complete'**
+  String get syFbToFullYes;
+
+  /// No description provided for @syFbToNodeQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Make this Rasgeth a node?'**
+  String get syFbToNodeQ;
+
+  /// No description provided for @syFbToNodeText.
+  ///
+  /// In en, this message translates to:
+  /// **'It will stop being a Rasgeth of its own once paired: its agents, projects and conversations stay saved, untouched, but they rest until you make it complete again.'**
+  String get syFbToNodeText;
+
+  /// No description provided for @syFbToNodeYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Make it a node'**
+  String get syFbToNodeYes;
+
+  /// No description provided for @syFbTue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get syFbTue;
+
+  /// No description provided for @syFbUseDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Use for backups'**
+  String get syFbUseDisk;
+
+  /// No description provided for @syFbUseFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this folder'**
+  String get syFbUseFolder;
+
+  /// No description provided for @syFbUsePlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Use for backups'**
+  String get syFbUsePlace;
+
+  /// No description provided for @syFbUseShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this shared folder'**
+  String get syFbUseShare;
+
+  /// No description provided for @syFbVirt.
+  ///
+  /// In en, this message translates to:
+  /// **'Runs on'**
+  String get syFbVirt;
+
+  /// No description provided for @syFbVirtContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'a container ({name})'**
+  String syFbVirtContainer(String name);
+
+  /// No description provided for @syFbVirtNone.
+  ///
+  /// In en, this message translates to:
+  /// **'a physical machine'**
+  String get syFbVirtNone;
+
+  /// No description provided for @syFbVirtVm.
+  ///
+  /// In en, this message translates to:
+  /// **'a virtual machine ({name})'**
+  String syFbVirtVm(String name);
+
+  /// No description provided for @syFbWed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get syFbWed;
+
+  /// No description provided for @syFbWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every week'**
+  String get syFbWeekly;
+
+  /// No description provided for @syFbWhenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get syFbWhenTitle;
+
+  /// No description provided for @syFbWhyFs.
+  ///
+  /// In en, this message translates to:
+  /// **'Format not supported'**
+  String get syFbWhyFs;
+
+  /// No description provided for @syFbWhyNoFs.
+  ///
+  /// In en, this message translates to:
+  /// **'Not formatted'**
+  String get syFbWhyNoFs;
+
+  /// No description provided for @syFbWhyNoUuid.
+  ///
+  /// In en, this message translates to:
+  /// **'Without an id'**
+  String get syFbWhyNoUuid;
+
+  /// No description provided for @syFbWhyNotDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a disk'**
+  String get syFbWhyNotDisk;
+
+  /// No description provided for @syFbWhyNotRemovable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not removable'**
+  String get syFbWhyNotRemovable;
+
+  /// No description provided for @syFbWhySystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Holds the system'**
+  String get syFbWhySystem;
+
+  /// No description provided for @syFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get syFolder;
+
+  /// No description provided for @syGitGiteaAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'The same password again'**
+  String get syGitGiteaAgain;
+
+  /// No description provided for @syGitGiteaGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'Open «Your home services»'**
+  String get syGitGiteaGuide;
+
+  /// No description provided for @syGitGiteaMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The two passwords are different.'**
+  String get syGitGiteaMismatch;
+
+  /// No description provided for @syInspector.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspector'**
+  String get syInspector;
+
+  /// No description provided for @syJob_pihole.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting Pi-hole'**
+  String get syJob_pihole;
+
+  /// No description provided for @syJob_remote.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening access from outside'**
+  String get syJob_remote;
+
+  /// No description provided for @syJob_step_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating your account'**
+  String get syJob_step_account;
+
+  /// No description provided for @syJob_step_arrive.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the folder'**
+  String get syJob_step_arrive;
+
+  /// No description provided for @syJob_step_ask.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for your yes'**
+  String get syJob_step_ask;
+
+  /// No description provided for @syJob_step_conversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations'**
+  String get syJob_step_conversations;
+
+  /// No description provided for @syJob_step_convert.
+  ///
+  /// In en, this message translates to:
+  /// **'Converting'**
+  String get syJob_step_convert;
+
+  /// No description provided for @syJob_step_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copying the models'**
+  String get syJob_step_copy;
+
+  /// No description provided for @syJob_step_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects, agents and settings'**
+  String get syJob_step_data;
+
+  /// No description provided for @syJob_step_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading the model'**
+  String get syJob_step_download;
+
+  /// No description provided for @syJob_step_draft.
+  ///
+  /// In en, this message translates to:
+  /// **'With the small model'**
+  String get syJob_step_draft;
+
+  /// No description provided for @syJob_step_fetch.
+  ///
+  /// In en, this message translates to:
+  /// **'Bringing the backup here'**
+  String get syJob_step_fetch;
+
+  /// No description provided for @syJob_step_files.
+  ///
+  /// In en, this message translates to:
+  /// **'The projects\' files'**
+  String get syJob_step_files;
+
+  /// No description provided for @syJob_step_gitea_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading Gitea (only once)'**
+  String get syJob_step_gitea_image;
+
+  /// No description provided for @syJob_step_gitea_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting Gitea'**
+  String get syJob_step_gitea_start;
+
+  /// No description provided for @syJob_step_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading the engine (only once)'**
+  String get syJob_step_image;
+
+  /// No description provided for @syJob_step_image_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading'**
+  String get syJob_step_image_download;
+
+  /// No description provided for @syJob_step_load.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading the model into memory'**
+  String get syJob_step_load;
+
+  /// No description provided for @syJob_step_look.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking at the host'**
+  String get syJob_step_look;
+
+  /// No description provided for @syJob_step_model_download.
+  ///
+  /// In en, this message translates to:
+  /// **'The model'**
+  String get syJob_step_model_download;
+
+  /// No description provided for @syJob_step_model_prepare.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing it for the page'**
+  String get syJob_step_model_prepare;
+
+  /// No description provided for @syJob_step_move.
+  ///
+  /// In en, this message translates to:
+  /// **'Copying to the new disk'**
+  String get syJob_step_move;
+
+  /// No description provided for @syJob_step_ngram.
+  ///
+  /// In en, this message translates to:
+  /// **'With the n-grams'**
+  String get syJob_step_ngram;
+
+  /// No description provided for @syJob_step_node_check.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking the video (SHA-256)'**
+  String get syJob_step_node_check;
+
+  /// No description provided for @syJob_step_node_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copying the files to {node}'**
+  String syJob_step_node_copy(String node);
+
+  /// No description provided for @syJob_step_node_fetch.
+  ///
+  /// In en, this message translates to:
+  /// **'Bringing the video back from {node}'**
+  String syJob_step_node_fetch(String node);
+
+  /// No description provided for @syJob_step_node_ffmpeg.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting ffmpeg ready on {node}'**
+  String syJob_step_node_ffmpeg(String node);
+
+  /// No description provided for @syJob_step_none.
+  ///
+  /// In en, this message translates to:
+  /// **'The model alone'**
+  String get syJob_step_none;
+
+  /// No description provided for @syJob_step_ocr_languages.
+  ///
+  /// In en, this message translates to:
+  /// **'The languages'**
+  String get syJob_step_ocr_languages;
+
+  /// No description provided for @syJob_step_ocr_program.
+  ///
+  /// In en, this message translates to:
+  /// **'The program'**
+  String get syJob_step_ocr_program;
+
+  /// No description provided for @syJob_step_pihole_check.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking that it answers'**
+  String get syJob_step_pihole_check;
+
+  /// No description provided for @syJob_step_pihole_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading Pi-hole (only once)'**
+  String get syJob_step_pihole_image;
+
+  /// No description provided for @syJob_step_pihole_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting Pi-hole'**
+  String get syJob_step_pihole_start;
+
+  /// No description provided for @syJob_step_preload.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the model once, so the first message does not wait for the disk'**
+  String get syJob_step_preload;
+
+  /// No description provided for @syJob_step_remote_cert.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting the certificate from Let\'s Encrypt'**
+  String get syJob_step_remote_cert;
+
+  /// No description provided for @syJob_step_remote_connect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to Cloudflare'**
+  String get syJob_step_remote_connect;
+
+  /// No description provided for @syJob_step_remote_https.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting the safe address (HTTPS)'**
+  String get syJob_step_remote_https;
+
+  /// No description provided for @syJob_step_remote_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading what is needed (only once)'**
+  String get syJob_step_remote_image;
+
+  /// No description provided for @syJob_step_remote_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you to sign in to Tailscale'**
+  String get syJob_step_remote_login;
+
+  /// No description provided for @syJob_step_remote_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting it'**
+  String get syJob_step_remote_start;
+
+  /// No description provided for @syJob_step_restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Putting the engine back as it was'**
+  String get syJob_step_restore;
+
+  /// No description provided for @syJob_step_run.
+  ///
+  /// In en, this message translates to:
+  /// **'Running the steps on the host'**
+  String get syJob_step_run;
+
+  /// No description provided for @syJob_step_searxng_check.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking that it answers'**
+  String get syJob_step_searxng_check;
+
+  /// No description provided for @syJob_step_searxng_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading SearXNG (only once)'**
+  String get syJob_step_searxng_image;
+
+  /// No description provided for @syJob_step_searxng_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting it'**
+  String get syJob_step_searxng_start;
+
+  /// No description provided for @syJob_step_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting the engine'**
+  String get syJob_step_start;
+
+  /// No description provided for @syJob_step_switch.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting the model on Windows'**
+  String get syJob_step_switch;
+
+  /// No description provided for @syJob_step_tool_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading'**
+  String get syJob_step_tool_download;
+
+  /// No description provided for @syJob_step_tool_unpack.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpacking'**
+  String get syJob_step_tool_unpack;
+
+  /// No description provided for @syJob_step_try.
+  ///
+  /// In en, this message translates to:
+  /// **'Trying an answer'**
+  String get syJob_step_try;
+
+  /// No description provided for @syJob_step_tune.
+  ///
+  /// In en, this message translates to:
+  /// **'Measuring this computer to pick the fastest setting'**
+  String get syJob_step_tune;
+
+  /// No description provided for @syJob_step_verify.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the backup back'**
+  String get syJob_step_verify;
+
+  /// No description provided for @syJob_step_video_derive.
+  ///
+  /// In en, this message translates to:
+  /// **'Making the file'**
+  String get syJob_step_video_derive;
+
+  /// No description provided for @syJob_step_video_probe.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the file'**
+  String get syJob_step_video_probe;
+
+  /// No description provided for @syJob_step_video_render.
+  ///
+  /// In en, this message translates to:
+  /// **'Rendering with ffmpeg'**
+  String get syJob_step_video_render;
+
+  /// No description provided for @syJob_step_video_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving it in the project'**
+  String get syJob_step_video_save;
+
+  /// No description provided for @syJob_step_video_silences.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding the silences'**
+  String get syJob_step_video_silences;
+
+  /// No description provided for @syJob_step_video_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Taking the sound'**
+  String get syJob_step_video_sound;
+
+  /// No description provided for @syJob_step_video_transcribe.
+  ///
+  /// In en, this message translates to:
+  /// **'Writing down the words'**
+  String get syJob_step_video_transcribe;
+
+  /// No description provided for @syJob_step_video_wait.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the render before it'**
+  String get syJob_step_video_wait;
+
+  /// No description provided for @syKcImported.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} credentials added to the keychain.'**
+  String syKcImported(String n);
+
+  /// No description provided for @syKcPassphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase'**
+  String get syKcPassphrase;
+
+  /// No description provided for @syKcPassphraseHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 8 characters. Keep it somewhere safe: it cannot be recovered.'**
+  String get syKcPassphraseHelp;
+
+  /// No description provided for @syLmRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'recommended'**
+  String get syLmRecommended;
+
+  /// No description provided for @syLoginCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code from the app (6 digits)'**
+  String get syLoginCode;
+
+  /// No description provided for @syMcAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get syMcAdd;
+
+  /// No description provided for @syMcAuthKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Key'**
+  String get syMcAuthKey;
+
+  /// No description provided for @syMcAuthPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get syMcAuthPassword;
+
+  /// No description provided for @syMcChangedNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get syMcChangedNow;
+
+  /// No description provided for @syMcChangedText.
+  ///
+  /// In en, this message translates to:
+  /// **'Another computer may be in the place of «{name}». Nothing was sent and the connection was refused. Trust the new key only if you know why it changed (the system was reinstalled, the machine was replaced).'**
+  String syMcChangedText(String name);
+
+  /// No description provided for @syMcChangedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Danger: the machine answered with another key'**
+  String get syMcChangedTitle;
+
+  /// No description provided for @syMcChangedWas.
+  ///
+  /// In en, this message translates to:
+  /// **'Trusted'**
+  String get syMcChangedWas;
+
+  /// No description provided for @syMcCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get syMcCopied;
+
+  /// No description provided for @syMcCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get syMcCopy;
+
+  /// No description provided for @syMcCopyKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the public key'**
+  String get syMcCopyKey;
+
+  /// No description provided for @syMcEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get syMcEdit;
+
+  /// No description provided for @syMcEditorLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the machine is and who logs in. The key or the password goes straight into the keychain.'**
+  String get syMcEditorLead;
+
+  /// No description provided for @syMcEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No machine yet. Add one: Rasgeth makes a key for it, you copy its public half onto the machine.'**
+  String get syMcEmpty;
+
+  /// No description provided for @syMcFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Working folder'**
+  String get syMcFolder;
+
+  /// No description provided for @syMcFolderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Where commands start; deleting outside it always asks you. A full path (/srv/app, ~/app, or on Windows E:\\coding\\site). Leave empty for the home.'**
+  String get syMcFolderHelp;
+
+  /// No description provided for @syMcFolderNone.
+  ///
+  /// In en, this message translates to:
+  /// **'the home (every deletion asks you)'**
+  String get syMcFolderNone;
+
+  /// No description provided for @syMcHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get syMcHost;
+
+  /// No description provided for @syMcHostHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Its name or IP address on the network.'**
+  String get syMcHostHelp;
+
+  /// No description provided for @syMcHostKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine\'s key'**
+  String get syMcHostKey;
+
+  /// No description provided for @syMcKeyGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a new key'**
+  String get syMcKeyGenerate;
+
+  /// No description provided for @syMcKeyGenerateHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth makes an ed25519 key: you will copy its public half into ~/.ssh/authorized_keys on the machine.'**
+  String get syMcKeyGenerateHelp;
+
+  /// No description provided for @syMcKeyKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the key'**
+  String get syMcKeyKeep;
+
+  /// No description provided for @syMcKeyKeepHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The key kept in the keychain stays as it is.'**
+  String get syMcKeyKeepHelp;
+
+  /// No description provided for @syMcKeyPaste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a private key'**
+  String get syMcKeyPaste;
+
+  /// No description provided for @syMcLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Other computers your agents reach over SSH: a server, a Raspberry Pi, a computer at the office. Keys and passwords stay in the keychain; the agents choose a machine by its name and never see them.'**
+  String get syMcLead;
+
+  /// No description provided for @syMcLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get syMcLogin;
+
+  /// No description provided for @syMcLoginGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'key made by Rasgeth, in the keychain'**
+  String get syMcLoginGenerated;
+
+  /// No description provided for @syMcLoginImported.
+  ///
+  /// In en, this message translates to:
+  /// **'your key, in the keychain'**
+  String get syMcLoginImported;
+
+  /// No description provided for @syMcLoginPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'password in the keychain'**
+  String get syMcLoginPassword;
+
+  /// No description provided for @syMcName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get syMcName;
+
+  /// No description provided for @syMcNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'How agents call it: letters, digits, dot, dash, no spaces (web, pi, office).'**
+  String get syMcNameHelp;
+
+  /// No description provided for @syMcNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a machine'**
+  String get syMcNew;
+
+  /// No description provided for @syMcNewKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a new key'**
+  String get syMcNewKey;
+
+  /// No description provided for @syMcNewKeyQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a new key for this machine?'**
+  String get syMcNewKeyQ;
+
+  /// No description provided for @syMcNewKeyText.
+  ///
+  /// In en, this message translates to:
+  /// **'The old key stops working here: copy the new public key onto the machine and remove the old one.'**
+  String get syMcNewKeyText;
+
+  /// No description provided for @syMcPassphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Its passphrase (if it has one)'**
+  String get syMcPassphrase;
+
+  /// No description provided for @syMcPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get syMcPassword;
+
+  /// No description provided for @syMcPasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept in the keychain. A key is safer: a password travels at every login.'**
+  String get syMcPasswordHelp;
+
+  /// No description provided for @syMcPasswordKept.
+  ///
+  /// In en, this message translates to:
+  /// **'The password in the keychain stays unless you write a new one.'**
+  String get syMcPasswordKept;
+
+  /// No description provided for @syMcPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get syMcPort;
+
+  /// No description provided for @syMcPrivateKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Private key'**
+  String get syMcPrivateKey;
+
+  /// No description provided for @syMcPrivateKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenSSH or PEM. It goes into the keychain and is never shown again.'**
+  String get syMcPrivateKeyHelp;
+
+  /// No description provided for @syMcPrivateKeyPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'-----BEGIN OPENSSH PRIVATE KEY-----'**
+  String get syMcPrivateKeyPlaceholder;
+
+  /// No description provided for @syMcProject.
+  ///
+  /// In en, this message translates to:
+  /// **'project'**
+  String get syMcProject;
+
+  /// No description provided for @syMcPublicKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Public key'**
+  String get syMcPublicKey;
+
+  /// No description provided for @syMcPublicKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy it into ~/.ssh/authorized_keys of the user on the machine (one line), then test the connection.'**
+  String get syMcPublicKeyHelp;
+
+  /// No description provided for @syMcRemoveQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove «{name}»?'**
+  String syMcRemoveQ(String name);
+
+  /// No description provided for @syMcRemoveText.
+  ///
+  /// In en, this message translates to:
+  /// **'Its key or password leaves the keychain; agents can no longer use it. Remove the public key from the machine too.'**
+  String get syMcRemoveText;
+
+  /// No description provided for @syMcReplaceQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust the new key of «{name}»?'**
+  String syMcReplaceQ(String name);
+
+  /// No description provided for @syMcReplaceText.
+  ///
+  /// In en, this message translates to:
+  /// **'Do it only if you know why the machine\'s key changed: otherwise someone could be reading what Rasgeth sends.'**
+  String get syMcReplaceText;
+
+  /// No description provided for @syMcReplaceYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust the new key'**
+  String get syMcReplaceYes;
+
+  /// No description provided for @syMcSafety.
+  ///
+  /// In en, this message translates to:
+  /// **'What happens there follows the same rules as here: sudo, switching the machine off, installing system programs, changing its system files and deleting outside its working folder always ask you, also with «Don\'t ask me anything».'**
+  String get syMcSafety;
+
+  /// No description provided for @syMcSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get syMcSave;
+
+  /// No description provided for @syMcSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Machines'**
+  String get syMcSection;
+
+  /// No description provided for @syMcStateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Last test failed'**
+  String get syMcStateFailed;
+
+  /// No description provided for @syMcStateNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Not checked yet'**
+  String get syMcStateNew;
+
+  /// No description provided for @syMcStateTrusted.
+  ///
+  /// In en, this message translates to:
+  /// **'Key trusted'**
+  String get syMcStateTrusted;
+
+  /// No description provided for @syMcTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test the connection'**
+  String get syMcTest;
+
+  /// No description provided for @syMcTestAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine refused the login: is the public key in ~/.ssh/authorized_keys (or the password right)?'**
+  String get syMcTestAuth;
+
+  /// No description provided for @syMcTestError.
+  ///
+  /// In en, this message translates to:
+  /// **'It did not work: {message}'**
+  String syMcTestError(String message);
+
+  /// No description provided for @syMcTestNoSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no key or password in the keychain for this machine: change it and set one.'**
+  String get syMcTestNoSecret;
+
+  /// No description provided for @syMcTestOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected: {system}'**
+  String syMcTestOk(String system);
+
+  /// No description provided for @syMcTestTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine did not answer in time.'**
+  String get syMcTestTimeout;
+
+  /// No description provided for @syMcTestUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine cannot be reached: check the address and that it is on.'**
+  String get syMcTestUnreachable;
+
+  /// No description provided for @syMcTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting…'**
+  String get syMcTesting;
+
+  /// No description provided for @syMcTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your machines'**
+  String get syMcTitle;
+
+  /// No description provided for @syMcTofuHow.
+  ///
+  /// In en, this message translates to:
+  /// **'To see it on the machine: ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub'**
+  String get syMcTofuHow;
+
+  /// No description provided for @syMcTofuText.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing was sent yet. If the fingerprint is the machine\'s, trust it: from now on Rasgeth connects only to a machine with this key.'**
+  String get syMcTofuText;
+
+  /// No description provided for @syMcTofuTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'First connection: is this the machine\'s key?'**
+  String get syMcTofuTitle;
+
+  /// No description provided for @syMcTrust.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust this key'**
+  String get syMcTrust;
+
+  /// No description provided for @syMcUser.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get syMcUser;
+
+  /// No description provided for @syMcWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who may use it'**
+  String get syMcWho;
+
+  /// No description provided for @syMcWhoAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get syMcWhoAgents;
+
+  /// No description provided for @syMcWhoEveryone.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent'**
+  String get syMcWhoEveryone;
+
+  /// No description provided for @syMcWhoEveryoneHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'God, the assistants and every project\'s agents.'**
+  String get syMcWhoEveryoneHelp;
+
+  /// No description provided for @syMcWhoLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents not chosen do not even see it.'**
+  String get syMcWhoLead;
+
+  /// No description provided for @syMcWhoNoAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no agents yet.'**
+  String get syMcWhoNoAgents;
+
+  /// No description provided for @syMcWhoNobody.
+  ///
+  /// In en, this message translates to:
+  /// **'nobody yet'**
+  String get syMcWhoNobody;
+
+  /// No description provided for @syMcWhoProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent of these projects'**
+  String get syMcWhoProjects;
+
+  /// No description provided for @syNdAddButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Show a pairing code'**
+  String get syNdAddButton;
+
+  /// No description provided for @syNdAddLead.
+  ///
+  /// In en, this message translates to:
+  /// **'On the other machine, in its first start (role «Node of another Rasgeth») or in its Settings › Nodes, write this machine\'s address and the code below.'**
+  String get syNdAddLead;
+
+  /// No description provided for @syNdAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a node'**
+  String get syNdAddTitle;
+
+  /// No description provided for @syNdAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'The other Rasgeth\'s address'**
+  String get syNdAddress;
+
+  /// No description provided for @syNdAddressPh.
+  ///
+  /// In en, this message translates to:
+  /// **'https://rasgeth.local or 192.168.1.10:3000'**
+  String get syNdAddressPh;
+
+  /// No description provided for @syNdAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'uses and manages'**
+  String get syNdAdmin;
+
+  /// No description provided for @syNdBackupDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to the node: {name}'**
+  String syNdBackupDone(String name);
+
+  /// No description provided for @syNdBackupNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy now'**
+  String get syNdBackupNow;
+
+  /// No description provided for @syNdBackupsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups'**
+  String get syNdBackupsOn;
+
+  /// No description provided for @syNdCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Pairing code'**
+  String get syNdCode;
+
+  /// No description provided for @syNdCodeAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine\'s address, as the other one reaches it (in the local network, through Tailscale or a proxy): {address}'**
+  String syNdCodeAddress(String address);
+
+  /// No description provided for @syNdCodeExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid once, for {min} more minutes.'**
+  String syNdCodeExpires(String min);
+
+  /// No description provided for @syNdCodeField.
+  ///
+  /// In en, this message translates to:
+  /// **'Its code'**
+  String get syNdCodeField;
+
+  /// No description provided for @syNdCodePh.
+  ///
+  /// In en, this message translates to:
+  /// **'ABCD-EFGH'**
+  String get syNdCodePh;
+
+  /// No description provided for @syNdCodeStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop showing it'**
+  String get syNdCodeStop;
+
+  /// No description provided for @syNdCommandsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Commands'**
+  String get syNdCommandsOn;
+
+  /// No description provided for @syNdConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'They match: confirm'**
+  String get syNdConfirm;
+
+  /// No description provided for @syNdConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting'**
+  String get syNdConnecting;
+
+  /// No description provided for @syNdControl.
+  ///
+  /// In en, this message translates to:
+  /// **'Control'**
+  String get syNdControl;
+
+  /// No description provided for @syNdControlLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Never implicit: a machine commands another only with this grant, which the commanded machine keeps and can take away.'**
+  String get syNdControlLead;
+
+  /// No description provided for @syNdControlTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who may command {name}'**
+  String syNdControlTitle(String name);
+
+  /// No description provided for @syNdController.
+  ///
+  /// In en, this message translates to:
+  /// **'Which machine'**
+  String get syNdController;
+
+  /// No description provided for @syNdCpu.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} CPU'**
+  String syNdCpu(String n);
+
+  /// No description provided for @syNdFingerprint.
+  ///
+  /// In en, this message translates to:
+  /// **'Its key\'s fingerprint'**
+  String get syNdFingerprint;
+
+  /// No description provided for @syNdFree.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} GB free'**
+  String syNdFree(String n);
+
+  /// No description provided for @syNdGive.
+  ///
+  /// In en, this message translates to:
+  /// **'Give'**
+  String get syNdGive;
+
+  /// No description provided for @syNdGrantsHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Who may command this machine'**
+  String get syNdGrantsHere;
+
+  /// No description provided for @syNdGrantsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Only these machines may use this one, each with what the person gave it. Taking it away works at once.'**
+  String get syNdGrantsLead;
+
+  /// No description provided for @syNdHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Here'**
+  String get syNdHere;
+
+  /// No description provided for @syNdJoinLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair this machine as a node of another Rasgeth: on that one, Settings › Nodes › «Add a node» shows its address and a code.'**
+  String get syNdJoinLead;
+
+  /// No description provided for @syNdJoinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Work for another Rasgeth'**
+  String get syNdJoinTitle;
+
+  /// No description provided for @syNdLastSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seen {when}'**
+  String syNdLastSeen(String when);
+
+  /// No description provided for @syNdLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Other Rasgeth machines that work with this one: they lend commands, local models and room for projects and backups. Who may command whom is decided here, machine by machine.'**
+  String get syNdLead;
+
+  /// No description provided for @syNdLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'load {n}%'**
+  String syNdLoad(String n);
+
+  /// No description provided for @syNdModels.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} models'**
+  String syNdModels(String n);
+
+  /// No description provided for @syNdName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get syNdName;
+
+  /// No description provided for @syNdNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'How the other machines and the agents call it.'**
+  String get syNdNameHelp;
+
+  /// No description provided for @syNdNoContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'commands only for who manages it'**
+  String get syNdNoContainer;
+
+  /// No description provided for @syNdNoContainerHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no container there (no Docker): it runs commands only for a machine that manages it, on the machine itself. With «use» alone, files, storage and models only.'**
+  String get syNdNoContainerHelp;
+
+  /// No description provided for @syNdNoNodes.
+  ///
+  /// In en, this message translates to:
+  /// **'No node yet.'**
+  String get syNdNoNodes;
+
+  /// No description provided for @syNdNoProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'No project yet.'**
+  String get syNdNoProjects;
+
+  /// No description provided for @syNdNoRights.
+  ///
+  /// In en, this message translates to:
+  /// **'No permissions'**
+  String get syNdNoRights;
+
+  /// No description provided for @syNdNoSandbox.
+  ///
+  /// In en, this message translates to:
+  /// **'no commands'**
+  String get syNdNoSandbox;
+
+  /// No description provided for @syNdNodeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name of the node'**
+  String get syNdNodeName;
+
+  /// No description provided for @syNdNodeNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'How you, the agents and the requests call it here. Empty: the name it gives itself.'**
+  String get syNdNodeNameHelp;
+
+  /// No description provided for @syNdNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Nodes need the keychain: this machine\'s key lives only there. Open it in Settings › Keychain.'**
+  String get syNdNotReady;
+
+  /// No description provided for @syNdOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get syNdOffline;
+
+  /// No description provided for @syNdOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get syNdOnline;
+
+  /// No description provided for @syNdPair.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair'**
+  String get syNdPair;
+
+  /// No description provided for @syNdPairing.
+  ///
+  /// In en, this message translates to:
+  /// **'Pairing…'**
+  String get syNdPairing;
+
+  /// No description provided for @syNdParent.
+  ///
+  /// In en, this message translates to:
+  /// **'Works for'**
+  String get syNdParent;
+
+  /// No description provided for @syNdPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the yes on the other machine'**
+  String get syNdPending;
+
+  /// No description provided for @syNdPendingFromNode.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} wants to be a node of this machine'**
+  String syNdPendingFromNode(String name);
+
+  /// No description provided for @syNdPendingFromPrincipal.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine will work for {name}'**
+  String syNdPendingFromPrincipal(String name);
+
+  /// No description provided for @syNdPendingLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Both machines show the same six digits and each other\'s fingerprint. If they match on both screens, confirm on both: nothing is used before.'**
+  String get syNdPendingLead;
+
+  /// No description provided for @syNdPendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare and confirm'**
+  String get syNdPendingTitle;
+
+  /// No description provided for @syNdPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Where things run'**
+  String get syNdPlaces;
+
+  /// No description provided for @syNdPlacesLead.
+  ///
+  /// In en, this message translates to:
+  /// **'For each project: by default everything stays here. A node pinned for commands is where its agents\' node_run goes; one for backups keeps copies of its files.'**
+  String get syNdPlacesLead;
+
+  /// No description provided for @syNdQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Nodes'**
+  String get syNdQ;
+
+  /// No description provided for @syNdRam.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} GB RAM'**
+  String syNdRam(String n);
+
+  /// No description provided for @syNdReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Why'**
+  String get syNdReason;
+
+  /// No description provided for @syNdRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'Refused: its key changed'**
+  String get syNdRefused;
+
+  /// No description provided for @syNdReject.
+  ///
+  /// In en, this message translates to:
+  /// **'They do not match'**
+  String get syNdReject;
+
+  /// No description provided for @syNdRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get syNdRename;
+
+  /// No description provided for @syNdRenameQ.
+  ///
+  /// In en, this message translates to:
+  /// **'A name for {name}'**
+  String syNdRenameQ(String name);
+
+  /// No description provided for @syNdRenderOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Videos'**
+  String get syNdRenderOn;
+
+  /// No description provided for @syNdRevoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Take away'**
+  String get syNdRevoke;
+
+  /// No description provided for @syNdRevokeQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Take away what {name} may do here?'**
+  String syNdRevokeQ(String name);
+
+  /// No description provided for @syNdRightAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage it'**
+  String get syNdRightAdmin;
+
+  /// No description provided for @syNdRightAdminHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Give and take away the control of this machine to other machines, and write outside the sandbox.'**
+  String get syNdRightAdminHelp;
+
+  /// No description provided for @syNdRightUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use it'**
+  String get syNdRightUse;
+
+  /// No description provided for @syNdRightUseHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Run its agents\' commands in a sandbox here, use its models and keep files here.'**
+  String get syNdRightUseHelp;
+
+  /// No description provided for @syNdRights.
+  ///
+  /// In en, this message translates to:
+  /// **'What it may do'**
+  String get syNdRights;
+
+  /// No description provided for @syNdRightsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What {name} may do on this machine'**
+  String syNdRightsTitle(String name);
+
+  /// No description provided for @syNdSas.
+  ///
+  /// In en, this message translates to:
+  /// **'The six digits'**
+  String get syNdSas;
+
+  /// No description provided for @syNdSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Nodes'**
+  String get syNdSection;
+
+  /// No description provided for @syNdTheirFp.
+  ///
+  /// In en, this message translates to:
+  /// **'The other machine\'s fingerprint'**
+  String get syNdTheirFp;
+
+  /// No description provided for @syNdThis.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine'**
+  String get syNdThis;
+
+  /// No description provided for @syNdTree.
+  ///
+  /// In en, this message translates to:
+  /// **'The tree'**
+  String get syNdTree;
+
+  /// No description provided for @syNdTreeLead.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine, its nodes and theirs. Control is separate: it is shown under each machine.'**
+  String get syNdTreeLead;
+
+  /// No description provided for @syNdUnpair.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpair'**
+  String get syNdUnpair;
+
+  /// No description provided for @syNdUnpairQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpair {name}?'**
+  String syNdUnpairQ(String name);
+
+  /// No description provided for @syNdUnpairText.
+  ///
+  /// In en, this message translates to:
+  /// **'The two machines forget each other: links, grants and placements with it go. Its files stay where they are. To pair again, a new code.'**
+  String get syNdUnpairText;
+
+  /// No description provided for @syNdUse.
+  ///
+  /// In en, this message translates to:
+  /// **'uses'**
+  String get syNdUse;
+
+  /// No description provided for @syNdWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who may command it'**
+  String get syNdWho;
+
+  /// No description provided for @syNdWhoNobody.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody but itself'**
+  String get syNdWhoNobody;
+
+  /// No description provided for @syOiAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth\'s address in the network'**
+  String get syOiAddress;
+
+  /// No description provided for @syOiAddressHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the proxy or the VPN finds Rasgeth; its port is {port}.'**
+  String syOiAddressHelp(String port);
+
+  /// No description provided for @syOiAuthCaddy.
+  ///
+  /// In en, this message translates to:
+  /// **'Caddyfile with forward auth (Authelia), leaving out the app\'s paths'**
+  String get syOiAuthCaddy;
+
+  /// No description provided for @syOiAuthIf.
+  ///
+  /// In en, this message translates to:
+  /// **'If you want it anyway, leave /api/ and /ws out of it: forward auth then guards the page, and Rasgeth\'s password everything else.'**
+  String get syOiAuthIf;
+
+  /// No description provided for @syOiAuthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Authelia, Authentik or another forward auth in front?'**
+  String get syOiAuthTitle;
+
+  /// No description provided for @syOiAuthWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Better not: Rasgeth has its own password, with limited tries and the optional code from an authenticator app, and a sign-in in front of it blocks the app, the command line, ACP agents, the browser extension and the webhooks (Telegram, WhatsApp, automations), which come in with their own tokens.'**
+  String get syOiAuthWhy;
+
+  /// No description provided for @syOiCaddy.
+  ///
+  /// In en, this message translates to:
+  /// **'Caddyfile: a site of its own'**
+  String get syOiCaddy;
+
+  /// No description provided for @syOiCaddyReload.
+  ///
+  /// In en, this message translates to:
+  /// **'Then reload Caddy (caddy reload, or restart its container).'**
+  String get syOiCaddyReload;
+
+  /// No description provided for @syOiCaddyWildcard.
+  ///
+  /// In en, this message translates to:
+  /// **'Caddyfile: inside a wildcard site you already have (*.{domain})'**
+  String syOiCaddyWildcard(String domain);
+
+  /// No description provided for @syOiCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check that it answers'**
+  String get syOiCheck;
+
+  /// No description provided for @syOiCheckAnswers.
+  ///
+  /// In en, this message translates to:
+  /// **'Something answers at this address (the browser does not let the page read who): open it to see Rasgeth.'**
+  String get syOiCheckAnswers;
+
+  /// No description provided for @syOiCheckGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Check {url} from here'**
+  String syOiCheckGo(String url);
+
+  /// No description provided for @syOiCheckLead.
+  ///
+  /// In en, this message translates to:
+  /// **'From any computer: Rasgeth answers {lb}\"ok\":true,…{rb}.'**
+  String syOiCheckLead(String lb, String rb);
+
+  /// No description provided for @syOiCheckNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No answer from this browser: check the name in the DNS, the proxy\'s block and, from outside, the VPN.'**
+  String get syOiCheckNo;
+
+  /// No description provided for @syOiCheckRedgiant.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth answers at this address.'**
+  String get syOiCheckRedgiant;
+
+  /// No description provided for @syOiClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the guide'**
+  String get syOiClose;
+
+  /// No description provided for @syOiCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get syOiCopied;
+
+  /// No description provided for @syOiCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get syOiCopy;
+
+  /// No description provided for @syOiDnsAdguard.
+  ///
+  /// In en, this message translates to:
+  /// **'AdGuard Home: Filters › DNS rewrites: *.{domain} or the single name → {address}.'**
+  String syOiDnsAdguard(String address, String domain);
+
+  /// No description provided for @syOiDnsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A name instead of an address: point it to the proxy when there is one, otherwise to Rasgeth\'s address.'**
+  String get syOiDnsLead;
+
+  /// No description provided for @syOiDnsPihole.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole: Settings › Local DNS › DNS Records: {name} → {address}.'**
+  String syOiDnsPihole(String address, String name);
+
+  /// No description provided for @syOiDnsRouter.
+  ///
+  /// In en, this message translates to:
+  /// **'The router: its «static DNS», «local names» or DHCP reservation page (the name varies by router).'**
+  String get syOiDnsRouter;
+
+  /// No description provided for @syOiDnsTs.
+  ///
+  /// In en, this message translates to:
+  /// **'Away from home with Tailscale: add the home DNS in Tailscale\'s DNS › Nameservers, restricted to your domain, so the same names work outside too.'**
+  String get syOiDnsTs;
+
+  /// No description provided for @syOiDnsWildcard.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole or dnsmasq, every name of *.{domain} at once (a file in /etc/dnsmasq.d/)'**
+  String syOiDnsWildcard(String domain);
+
+  /// No description provided for @syOiHomeAdguard.
+  ///
+  /// In en, this message translates to:
+  /// **'AdGuard Home: Filters › DNS rewrites: {name} → {address}.'**
+  String syOiHomeAdguard(String address, String name);
+
+  /// No description provided for @syOiHomeDnsmasq.
+  ///
+  /// In en, this message translates to:
+  /// **'dnsmasq (or a file in Pi-hole\'s /etc/dnsmasq.d/)'**
+  String get syOiHomeDnsmasq;
+
+  /// No description provided for @syOiHomeHosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole\'s records or /etc/hosts, by hand'**
+  String get syOiHomeHosts;
+
+  /// No description provided for @syOiHomeLookup.
+  ///
+  /// In en, this message translates to:
+  /// **'On Rasgeth OS, what its DNS answers for the name'**
+  String get syOiHomeLookup;
+
+  /// No description provided for @syOiHomePihole.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole: Settings › Local DNS › DNS Records: {name} → {address}.'**
+  String syOiHomePihole(String address, String name);
+
+  /// No description provided for @syOiHomeRouter.
+  ///
+  /// In en, this message translates to:
+  /// **'The router: its «static DNS» or «local names» page: {name} → {address}.'**
+  String syOiHomeRouter(String address, String name);
+
+  /// No description provided for @syOiHomeSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth asks the name server {dns}.'**
+  String syOiHomeSeen(String dns);
+
+  /// No description provided for @syOiHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your home services (Gitea, NAS…) seen by Rasgeth'**
+  String get syOiHomeTitle;
+
+  /// No description provided for @syOiHomeTs.
+  ///
+  /// In en, this message translates to:
+  /// **'If your Pi-hole answers with Tailscale addresses (100.…), those work only for devices in Tailscale: add a local record with the address in your network as above, or let Rasgeth\'s machine use the router as DNS with the name there.'**
+  String get syOiHomeTs;
+
+  /// No description provided for @syOiHomeV6.
+  ///
+  /// In en, this message translates to:
+  /// **'A router that answers «does not exist» to the IPv6 (AAAA) question for names added by hand: Rasgeth OS handles it already; on other systems with systemd-resolved, put Cache=no-negative in a file of /etc/systemd/resolved.conf.d/, or the name seems missing for a while.'**
+  String get syOiHomeV6;
+
+  /// No description provided for @syOiHomeWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'In the DNS Rasgeth uses, give the name that local address:'**
+  String get syOiHomeWhat;
+
+  /// No description provided for @syOiHomeWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Which DNS Rasgeth uses: on Rasgeth OS the console (or SSH) shows it with the command below, under «Current DNS Server»; on another computer it is that computer\'s DNS (its network settings, /etc/resolv.conf on Linux). «Try a name» asks the very DNS Rasgeth uses.'**
+  String get syOiHomeWhich;
+
+  /// No description provided for @syOiHomeWhichCmd.
+  ///
+  /// In en, this message translates to:
+  /// **'On Rasgeth OS, which DNS it uses'**
+  String get syOiHomeWhichCmd;
+
+  /// No description provided for @syOiHomeWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth reaches your Gitea, NAS or other services by name, through the DNS of the machine it runs on (often the router). A name your phone opens may be unknown there, or point to an address Rasgeth cannot reach: then «A Gitea you already have» fails even though the service works.'**
+  String get syOiHomeWhy;
+
+  /// No description provided for @syOiLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A reverse proxy, a VPN, a home DNS: if you already reach your machines that way, Rasgeth goes behind them like any other service. Here are the blocks to copy.'**
+  String get syOiLead;
+
+  /// No description provided for @syOiName.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth\'s name'**
+  String get syOiName;
+
+  /// No description provided for @syOiNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The name you will open, e.g. rasgeth.home.example.com.'**
+  String get syOiNameHelp;
+
+  /// No description provided for @syOiNpm1.
+  ///
+  /// In en, this message translates to:
+  /// **'Hosts › Proxy Hosts › Add Proxy Host; Domain Names: {name}.'**
+  String syOiNpm1(String name);
+
+  /// No description provided for @syOiNpm2.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheme http, Forward Hostname / IP {address}, Forward Port {port}.'**
+  String syOiNpm2(String address, String port);
+
+  /// No description provided for @syOiNpm3.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch on «Websockets Support» (Rasgeth\'s page lives on a WebSocket) and «Block Common Exploits».'**
+  String get syOiNpm3;
+
+  /// No description provided for @syOiNpm4.
+  ///
+  /// In en, this message translates to:
+  /// **'SSL: «Request a new SSL Certificate», «Force SSL», «HTTP/2 Support». Save.'**
+  String get syOiNpm4;
+
+  /// No description provided for @syOiOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the guide'**
+  String get syOiOpen;
+
+  /// No description provided for @syOiOtherVpn.
+  ///
+  /// In en, this message translates to:
+  /// **'WireGuard, ZeroTier and the others'**
+  String get syOiOtherVpn;
+
+  /// No description provided for @syOiOtherVpnLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The same idea: with the home network {subnet} in the peer\'s AllowedIPs (WireGuard) or as a managed route (ZeroTier), Rasgeth opens at its home address.'**
+  String syOiOtherVpnLead(String subnet);
+
+  /// No description provided for @syOiPart.
+  ///
+  /// In en, this message translates to:
+  /// **'What you have'**
+  String get syOiPart;
+
+  /// No description provided for @syOiPartDns.
+  ///
+  /// In en, this message translates to:
+  /// **'Home DNS'**
+  String get syOiPartDns;
+
+  /// No description provided for @syOiPartHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Your home services'**
+  String get syOiPartHome;
+
+  /// No description provided for @syOiPartProxy.
+  ///
+  /// In en, this message translates to:
+  /// **'Reverse proxy'**
+  String get syOiPartProxy;
+
+  /// No description provided for @syOiPartVpn.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale or another VPN'**
+  String get syOiPartVpn;
+
+  /// No description provided for @syOiProbe.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a name'**
+  String get syOiProbe;
+
+  /// No description provided for @syOiProbeBad.
+  ///
+  /// In en, this message translates to:
+  /// **'That is not a name (for instance git.home.example.com).'**
+  String get syOiProbeBad;
+
+  /// No description provided for @syOiProbeDnsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The DNS Rasgeth uses did not answer for {name}. Check that it works, then try again.'**
+  String syOiProbeDnsFailed(String name);
+
+  /// No description provided for @syOiProbeGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Try {name}'**
+  String syOiProbeGo(String name);
+
+  /// No description provided for @syOiProbeLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth looks the name up and opens https://{name} from where it runs, as it does for your Gitea. Nothing of the answer is kept or shown but its code.'**
+  String syOiProbeLead(String name);
+
+  /// No description provided for @syOiProbeNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'The DNS Rasgeth uses does not know {name}. Add the name there (router, Pi-hole or AdGuard) with the proxy\'s local address, then try again.'**
+  String syOiProbeNotFound(String name);
+
+  /// No description provided for @syOiProbeOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Fine: here {name} is {address}, and https://{name} answered (HTTP {status}).'**
+  String syOiProbeOk(String address, String name, String status);
+
+  /// No description provided for @syOiProbeTailscale.
+  ///
+  /// In en, this message translates to:
+  /// **'Here {name} is {address}: a Tailscale address, which Rasgeth cannot reach. In the DNS Rasgeth uses, give the name the proxy\'s local address.'**
+  String syOiProbeTailscale(String address, String name);
+
+  /// No description provided for @syOiProbeTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Here {name} is {address}, but it did not answer in time: probably an address Rasgeth cannot reach (another network, a VPN).'**
+  String syOiProbeTimeout(String address, String name);
+
+  /// No description provided for @syOiProbeTls.
+  ///
+  /// In en, this message translates to:
+  /// **'Here {name} is {address} and answers, but with a certificate Rasgeth does not trust (made by hand?). Give the proxy a certificate from a public authority (Let\'s Encrypt).'**
+  String syOiProbeTls(String address, String name);
+
+  /// No description provided for @syOiProbeUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Here {name} is {address}, but nothing answers on https from Rasgeth. Check that it is the proxy\'s local address and that the proxy is running.'**
+  String syOiProbeUnreachable(String address, String name);
+
+  /// No description provided for @syOiProxyAddr.
+  ///
+  /// In en, this message translates to:
+  /// **'The proxy\'s local address'**
+  String get syOiProxyAddr;
+
+  /// No description provided for @syOiProxyAddrHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The address in your network (192.168.…) of the proxy in front of the service, or of the service itself. Not a Tailscale address (100.…): Rasgeth reaches it only if it is in Tailscale too.'**
+  String get syOiProxyAddrHelp;
+
+  /// No description provided for @syOiProxyLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The proxy can be on another machine: it only needs to reach Rasgeth\'s address. It gets the certificate (HTTPS) and sends everything on, the WebSocket included.'**
+  String get syOiProxyLead;
+
+  /// No description provided for @syOiReachedAs.
+  ///
+  /// In en, this message translates to:
+  /// **'You are reachable already as {host}.'**
+  String syOiReachedAs(String host);
+
+  /// No description provided for @syOiReachedName.
+  ///
+  /// In en, this message translates to:
+  /// **'This page came with a name of your network: at home it works already; from outside one of the ways below is needed (Tailscale, for instance).'**
+  String get syOiReachedName;
+
+  /// No description provided for @syOiReachedProxy.
+  ///
+  /// In en, this message translates to:
+  /// **'This page came through a reverse proxy of your network: the guide below is filled with what Rasgeth saw.'**
+  String get syOiReachedProxy;
+
+  /// No description provided for @syOiSaid.
+  ///
+  /// In en, this message translates to:
+  /// **'You said Rasgeth is reachable already your own way: it does not ask again to set up its ways.'**
+  String get syOiSaid;
+
+  /// No description provided for @syOiSaidUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask again'**
+  String get syOiSaidUndo;
+
+  /// No description provided for @syOiSaidUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'You said Rasgeth is reachable already at {url}: it does not ask again to set up its ways, and its links (Telegram…) use that address.'**
+  String syOiSaidUrl(String url);
+
+  /// No description provided for @syOiService.
+  ///
+  /// In en, this message translates to:
+  /// **'The service\'s name'**
+  String get syOiService;
+
+  /// No description provided for @syOiServiceHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'As you open it, e.g. git.home.example.com.'**
+  String get syOiServiceHelp;
+
+  /// No description provided for @syOiSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip: I am reachable already'**
+  String get syOiSkip;
+
+  /// No description provided for @syOiSkipNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth stops asking to set up its own ways out (Tailscale, Cloudflare, its own domain); they stay here if you want one later.'**
+  String get syOiSkipNote;
+
+  /// No description provided for @syOiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have your own infrastructure'**
+  String get syOiTitle;
+
+  /// No description provided for @syOiTraefik.
+  ///
+  /// In en, this message translates to:
+  /// **'Traefik: file provider (dynamic configuration)'**
+  String get syOiTraefik;
+
+  /// No description provided for @syOiTraefikNote.
+  ///
+  /// In en, this message translates to:
+  /// **'With Docker labels instead: the same rule and the URL as a service with loadbalancer.server.url. Use your entry point and certificate resolver names.'**
+  String get syOiTraefikNote;
+
+  /// No description provided for @syOiTsHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale on Rasgeth\'s machine'**
+  String get syOiTsHere;
+
+  /// No description provided for @syOiTsHereLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Install Tailscale on the machine and sign in (tailscale up): from your devices in the tailnet Rasgeth opens at http://<machine>:7600. For HTTPS with a real certificate:'**
+  String get syOiTsHereLead;
+
+  /// No description provided for @syOiTsRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale runs here already as {name}: from your devices in the tailnet Rasgeth opens with that name. For HTTPS with a real certificate:'**
+  String syOiTsRunning(String name);
+
+  /// No description provided for @syOiTsServe.
+  ///
+  /// In en, this message translates to:
+  /// **'On the machine'**
+  String get syOiTsServe;
+
+  /// No description provided for @syOiTsSubnet.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale as a subnet router'**
+  String get syOiTsSubnet;
+
+  /// No description provided for @syOiTsSubnetLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale on another device of the house (the router, a Pi, the proxy\'s machine) that shares the network {subnet}:'**
+  String syOiTsSubnetLead(String subnet);
+
+  /// No description provided for @syOiTsSubnetThen.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve the route in Tailscale\'s admin console (Machines › Edit route settings). Your phone then opens http://{address}:{port} from anywhere, and the names of your home DNS too if you add it in DNS › Nameservers (restricted to your domain).'**
+  String syOiTsSubnetThen(String address, String port);
+
+  /// No description provided for @syOiWs.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth keeps the page live through a WebSocket at /ws: Caddy and Traefik pass it on by themselves; Nginx needs the Upgrade headers (Websockets Support in Nginx Proxy Manager).'**
+  String get syOiWs;
+
+  /// No description provided for @syOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'connected'**
+  String get syOnline;
+
+  /// No description provided for @syOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'open'**
+  String get syOpen;
+
+  /// No description provided for @syOsErr_bad_password.
+  ///
+  /// In en, this message translates to:
+  /// **'A Wi-Fi password has 8 to 63 characters.'**
+  String get syOsErr_bad_password;
+
+  /// No description provided for @syOsErr_bad_ssid.
+  ///
+  /// In en, this message translates to:
+  /// **'A network\'s name has 1 to 32 characters.'**
+  String get syOsErr_bad_ssid;
+
+  /// No description provided for @syOsErr_busy.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine is already joining a network: wait a moment.'**
+  String get syOsErr_busy;
+
+  /// No description provided for @syOsErr_cannot_https.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS is not managed by this installation.'**
+  String get syOsErr_cannot_https;
+
+  /// No description provided for @syOsErr_cannot_reboot.
+  ///
+  /// In en, this message translates to:
+  /// **'Restarts are not managed by this installation.'**
+  String get syOsErr_cannot_reboot;
+
+  /// No description provided for @syOsErr_cannot_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates are not managed by this installation.'**
+  String get syOsErr_cannot_update;
+
+  /// No description provided for @syOsErr_cannot_wifi.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi is not managed by this installation.'**
+  String get syOsErr_cannot_wifi;
+
+  /// No description provided for @syOsErr_clean_install.
+  ///
+  /// In en, this message translates to:
+  /// **'This version needs a clean install.'**
+  String get syOsErr_clean_install;
+
+  /// No description provided for @syOsErr_connect_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The network refused to connect: check the password and try again.'**
+  String get syOsErr_connect_failed;
+
+  /// No description provided for @syOsErr_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'That did not work. Try again in a moment.'**
+  String get syOsErr_failed;
+
+  /// No description provided for @syOsErr_https_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Local HTTPS did not start.'**
+  String get syOsErr_https_failed;
+
+  /// No description provided for @syOsErr_https_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Local HTTPS is off: switch it on first.'**
+  String get syOsErr_https_off;
+
+  /// No description provided for @syOsErr_manual.
+  ///
+  /// In en, this message translates to:
+  /// **'This installation cannot update by itself.'**
+  String get syOsErr_manual;
+
+  /// No description provided for @syOsErr_no_wifi.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine has no Wi-Fi card.'**
+  String get syOsErr_no_wifi;
+
+  /// No description provided for @syOsErr_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'That network is not in reach now.'**
+  String get syOsErr_not_found;
+
+  /// No description provided for @syOsErr_not_installed.
+  ///
+  /// In en, this message translates to:
+  /// **'This system cannot do that.'**
+  String get syOsErr_not_installed;
+
+  /// No description provided for @syOsErr_not_trusted.
+  ///
+  /// In en, this message translates to:
+  /// **'This device does not trust the certificate yet.'**
+  String get syOsErr_not_trusted;
+
+  /// No description provided for @syOsErr_reboot_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The restart could not be scheduled.'**
+  String get syOsErr_reboot_failed;
+
+  /// No description provided for @syOsErr_start_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The update could not start.'**
+  String get syOsErr_start_failed;
+
+  /// No description provided for @syOsErr_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine took too long to answer.'**
+  String get syOsErr_timeout;
+
+  /// No description provided for @syOsErr_tls_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The certificate could not be made.'**
+  String get syOsErr_tls_failed;
+
+  /// No description provided for @syOsErr_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine\'s helper did not answer.'**
+  String get syOsErr_unreachable;
+
+  /// No description provided for @syOsErr_wifi_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi is not running on this machine.'**
+  String get syOsErr_wifi_off;
+
+  /// No description provided for @syOsHttpsAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get syOsHttpsAddress;
+
+  /// No description provided for @syOsHttpsCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check this device'**
+  String get syOsHttpsCheck;
+
+  /// No description provided for @syOsHttpsDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Your device'**
+  String get syOsHttpsDevice;
+
+  /// No description provided for @syOsHttpsDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the certificate'**
+  String get syOsHttpsDownload;
+
+  /// No description provided for @syOsHttpsFingerprint.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate\'s fingerprint (SHA-256)'**
+  String get syOsHttpsFingerprint;
+
+  /// No description provided for @syOsHttpsFirefox.
+  ///
+  /// In en, this message translates to:
+  /// **'Firefox on any system: Settings › Privacy & Security › Certificates › View Certificates › Authorities › Import, tick «Trust this CA to identify websites».'**
+  String get syOsHttpsFirefox;
+
+  /// No description provided for @syOsHttpsHow_android.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings › Security (or Security & privacy) › More › Encryption & credentials › Install a certificate › CA certificate: «Install anyway», choose Rasgeth-CA.crt.'**
+  String get syOsHttpsHow_android;
+
+  /// No description provided for @syOsHttpsHow_iphone.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the download in Safari, «Allow». Settings › General › VPN & Device Management: install the profile. Then Settings › General › About › Certificate Trust Settings: switch on «Rasgeth on …».'**
+  String get syOsHttpsHow_iphone;
+
+  /// No description provided for @syOsHttpsHow_linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Debian/Ubuntu: sudo cp Rasgeth-CA.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates. Chrome and Firefox keep their own list: add it under the browser\'s certificate settings (Authorities, «Import»).'**
+  String get syOsHttpsHow_linux;
+
+  /// No description provided for @syOsHttpsHow_mac.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Rasgeth-CA.crt: Keychain Access adds it. Double-click «Rasgeth on …» in the login keychain, open «Trust», set «When using this certificate» to «Always Trust», close and type your password.'**
+  String get syOsHttpsHow_mac;
+
+  /// No description provided for @syOsHttpsHow_windows.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Rasgeth-CA.crt, «Install certificate…», «Current user», «Place all certificates in the following store», «Trusted Root Certification Authorities», Finish, Yes. Restart the browser.'**
+  String get syOsHttpsHow_windows;
+
+  /// No description provided for @syOsHttpsInFront.
+  ///
+  /// In en, this message translates to:
+  /// **'You already reach Rasgeth over HTTPS through {name}: the local certificate is not needed for that address.'**
+  String syOsHttpsInFront(String name);
+
+  /// No description provided for @syOsHttpsLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS in the local network'**
+  String get syOsHttpsLocal;
+
+  /// No description provided for @syOsHttpsLocalOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: Rasgeth answers on http only (or through the HTTPS you set up yourself).'**
+  String get syOsHttpsLocalOff;
+
+  /// No description provided for @syOsHttpsLocalOn.
+  ///
+  /// In en, this message translates to:
+  /// **'https://{name} and the machine\'s addresses answer with a certificate of this machine. http keeps working until you say it is trusted.'**
+  String syOsHttpsLocalOn(String name);
+
+  /// No description provided for @syOsHttpsNotYet.
+  ///
+  /// In en, this message translates to:
+  /// **'This device does not trust the certificate yet (or https://… does not answer): nothing has changed, http keeps working.'**
+  String get syOsHttpsNotYet;
+
+  /// No description provided for @syOsHttpsNowOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'This device trusts it. From now on http goes to https for the machine\'s local name and addresses.'**
+  String get syOsHttpsNowOnly;
+
+  /// No description provided for @syOsHttpsOffQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch local HTTPS off?'**
+  String get syOsHttpsOffQ;
+
+  /// No description provided for @syOsHttpsOffText.
+  ///
+  /// In en, this message translates to:
+  /// **'Browsers that already went to https://rasgeth.local keep asking for https for up to 30 days: in those, open the machine by its address (http://192.168…:7600) until then.'**
+  String get syOsHttpsOffText;
+
+  /// No description provided for @syOsHttpsOffYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch off'**
+  String get syOsHttpsOffYes;
+
+  /// No description provided for @syOsHttpsQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Should the browser show the padlock on your home network?'**
+  String get syOsHttpsQ;
+
+  /// No description provided for @syOsHttpsQr.
+  ///
+  /// In en, this message translates to:
+  /// **'QR code to download the certificate'**
+  String get syOsHttpsQr;
+
+  /// No description provided for @syOsHttpsQrHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On a phone on the same network, scan the code to download it.'**
+  String get syOsHttpsQrHelp;
+
+  /// No description provided for @syOsHttpsRedirect.
+  ///
+  /// In en, this message translates to:
+  /// **'Always send to HTTPS'**
+  String get syOsHttpsRedirect;
+
+  /// No description provided for @syOsHttpsRedirectOn.
+  ///
+  /// In en, this message translates to:
+  /// **'http requests in your network go to https; browsers remember it (HSTS, 30 days). Devices without the certificate show a warning: install it there too.'**
+  String get syOsHttpsRedirectOn;
+
+  /// No description provided for @syOsHttpsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS in your network'**
+  String get syOsHttpsTitle;
+
+  /// No description provided for @syOsHttpsTrustLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Download it on the device (phone: scan the code), install it as below, then press «Check this device». The certificate works only for this machine\'s local names and addresses, never for any website.'**
+  String get syOsHttpsTrustLead;
+
+  /// No description provided for @syOsHttpsTrustTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust the certificate on each device'**
+  String get syOsHttpsTrustTitle;
+
+  /// No description provided for @syOsHttpsUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine\'s certificate renews itself before'**
+  String get syOsHttpsUntil;
+
+  /// No description provided for @syOsNetSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get syOsNetSub;
+
+  /// No description provided for @syOsNetSubLead.
+  ///
+  /// In en, this message translates to:
+  /// **'How the machine joins the network, and HTTPS for the pages of your home network.'**
+  String get syOsNetSubLead;
+
+  /// No description provided for @syOsRebootNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart now'**
+  String get syOsRebootNow;
+
+  /// No description provided for @syOsRebootQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart the machine now?'**
+  String get syOsRebootQ;
+
+  /// No description provided for @syOsRebootText.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth stops for two or three minutes while the machine restarts; agents working now are interrupted and pick up again from what was saved. This page comes back by itself.'**
+  String get syOsRebootText;
+
+  /// No description provided for @syOsRebootYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get syOsRebootYes;
+
+  /// No description provided for @syOsRebooting.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine restarts in a few seconds. This page comes back by itself.'**
+  String get syOsRebooting;
+
+  /// No description provided for @syOsSecLast.
+  ///
+  /// In en, this message translates to:
+  /// **'Last time'**
+  String get syOsSecLast;
+
+  /// No description provided for @syOsSecLastAt.
+  ///
+  /// In en, this message translates to:
+  /// **'{when}'**
+  String syOsSecLastAt(String when);
+
+  /// No description provided for @syOsSecLastN.
+  ///
+  /// In en, this message translates to:
+  /// **'{when}, {n} packages'**
+  String syOsSecLastN(String n, String when);
+
+  /// No description provided for @syOsSecNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet (it runs once a day)'**
+  String get syOsSecNever;
+
+  /// No description provided for @syOsSecNoReboot.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing waits for a restart.'**
+  String get syOsSecNoReboot;
+
+  /// No description provided for @syOsSecQ.
+  ///
+  /// In en, this message translates to:
+  /// **'The system installs Debian\'s security updates by itself, every day.'**
+  String get syOsSecQ;
+
+  /// No description provided for @syOsSecReboot.
+  ///
+  /// In en, this message translates to:
+  /// **'An update asks for a restart to finish'**
+  String get syOsSecReboot;
+
+  /// No description provided for @syOsSecTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'System security updates'**
+  String get syOsSecTitle;
+
+  /// No description provided for @syOsUpdApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Update to {version}'**
+  String syOsUpdApply(String version);
+
+  /// No description provided for @syOsUpdApplyQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Rasgeth to {version}?'**
+  String syOsUpdApplyQ(String version);
+
+  /// No description provided for @syOsUpdApplyText.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine downloads the new version while this one keeps working, then restarts Rasgeth: the page stops for a few minutes and comes back by itself. Nothing is lost, and if the new version does not start the previous one comes back.'**
+  String get syOsUpdApplyText;
+
+  /// No description provided for @syOsUpdApplyYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get syOsUpdApplyYes;
+
+  /// No description provided for @syOsUpdBreaking.
+  ///
+  /// In en, this message translates to:
+  /// **'This version cannot be installed over the current one: Rasgeth guides you (backup on a USB disk, reinstall Rasgeth OS, restore).'**
+  String get syOsUpdBreaking;
+
+  /// No description provided for @syOsUpdChecked.
+  ///
+  /// In en, this message translates to:
+  /// **'Last look'**
+  String get syOsUpdChecked;
+
+  /// No description provided for @syOsUpdInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get syOsUpdInstalled;
+
+  /// No description provided for @syOsUpdQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Is Rasgeth up to date on this machine?'**
+  String get syOsUpdQ;
+
+  /// No description provided for @syOsUpdState.
+  ///
+  /// In en, this message translates to:
+  /// **'State'**
+  String get syOsUpdState;
+
+  /// No description provided for @syOsUpdSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates'**
+  String get syOsUpdSub;
+
+  /// No description provided for @syOsUpdSubLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth and the system it runs on, kept up to date.'**
+  String get syOsUpdSubLead;
+
+  /// No description provided for @syOsUpdTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth'**
+  String get syOsUpdTitle;
+
+  /// No description provided for @syOsUpd_applying.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating to {version}'**
+  String syOsUpd_applying(String version);
+
+  /// No description provided for @syOsUpd_available.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth {version} is ready to install'**
+  String syOsUpd_available(String version);
+
+  /// No description provided for @syOsUpd_breaking.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth {version} needs a clean install'**
+  String syOsUpd_breaking(String version);
+
+  /// No description provided for @syOsUpd_error.
+  ///
+  /// In en, this message translates to:
+  /// **'The last update did not finish (the previous version is running)'**
+  String get syOsUpd_error;
+
+  /// No description provided for @syOsUpd_latest.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get syOsUpd_latest;
+
+  /// No description provided for @syOsUpd_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Not looked yet'**
+  String get syOsUpd_unknown;
+
+  /// No description provided for @syOsUpd_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach GitHub to look'**
+  String get syOsUpd_unreachable;
+
+  /// No description provided for @syOsUpd_unsigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth {version} is out, but without a signed package for Rasgeth OS yet: it comes with a later release'**
+  String syOsUpd_unsigned(String version);
+
+  /// No description provided for @syOsWifi8021x.
+  ///
+  /// In en, this message translates to:
+  /// **'company network (not from here)'**
+  String get syOsWifi8021x;
+
+  /// No description provided for @syOsWifiConnectedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to «{name}» ({ip})'**
+  String syOsWifiConnectedTo(String ip, String name);
+
+  /// No description provided for @syOsWifiForget.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget'**
+  String get syOsWifiForget;
+
+  /// No description provided for @syOsWifiForgetQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget «{name}»?'**
+  String syOsWifiForgetQ(String name);
+
+  /// No description provided for @syOsWifiForgetText.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine stops joining this network and its password is erased. If it is the network in use and there is no cable, the page stops answering until the machine has another network.'**
+  String get syOsWifiForgetText;
+
+  /// No description provided for @syOsWifiGood.
+  ///
+  /// In en, this message translates to:
+  /// **'good signal'**
+  String get syOsWifiGood;
+
+  /// No description provided for @syOsWifiHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden network…'**
+  String get syOsWifiHidden;
+
+  /// No description provided for @syOsWifiHiddenName.
+  ///
+  /// In en, this message translates to:
+  /// **'The network\'s name'**
+  String get syOsWifiHiddenName;
+
+  /// No description provided for @syOsWifiInReach.
+  ///
+  /// In en, this message translates to:
+  /// **'Networks in reach'**
+  String get syOsWifiInReach;
+
+  /// No description provided for @syOsWifiInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'in use'**
+  String get syOsWifiInUse;
+
+  /// No description provided for @syOsWifiJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get syOsWifiJoin;
+
+  /// No description provided for @syOsWifiJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to «{name}». If you are using this page over that network, it keeps working.'**
+  String syOsWifiJoined(String name);
+
+  /// No description provided for @syOsWifiJoining.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining…'**
+  String get syOsWifiJoining;
+
+  /// No description provided for @syOsWifiKnown.
+  ///
+  /// In en, this message translates to:
+  /// **'saved'**
+  String get syOsWifiKnown;
+
+  /// No description provided for @syOsWifiKnownAway.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved, not in reach now: {names}'**
+  String syOsWifiKnownAway(String names);
+
+  /// No description provided for @syOsWifiLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking…'**
+  String get syOsWifiLooking;
+
+  /// No description provided for @syOsWifiNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No network found. Look again, or join a hidden network by its name.'**
+  String get syOsWifiNone;
+
+  /// No description provided for @syOsWifiNotConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected to a Wi-Fi network'**
+  String get syOsWifiNotConnected;
+
+  /// No description provided for @syOsWifiNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get syOsWifiNow;
+
+  /// No description provided for @syOsWifiPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password of «{name}»'**
+  String syOsWifiPassword(String name);
+
+  /// No description provided for @syOsWifiPasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'8 to 63 characters. It is kept only on the machine, readable by the system alone; Rasgeth never stores or shows it.'**
+  String get syOsWifiPasswordHelp;
+
+  /// No description provided for @syOsWifiQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Which wireless network does the machine join?'**
+  String get syOsWifiQ;
+
+  /// No description provided for @syOsWifiSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'«{name}» is saved: the machine joins it as soon as it is in reach.'**
+  String syOsWifiSaved(String name);
+
+  /// No description provided for @syOsWifiScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Look again'**
+  String get syOsWifiScan;
+
+  /// No description provided for @syOsWifiStrong.
+  ///
+  /// In en, this message translates to:
+  /// **'strong signal'**
+  String get syOsWifiStrong;
+
+  /// No description provided for @syOsWifiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi'**
+  String get syOsWifiTitle;
+
+  /// No description provided for @syOsWifiWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'weak signal'**
+  String get syOsWifiWeak;
+
+  /// No description provided for @syOsWifiWhy_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi could not be read now. Try again in a moment.'**
+  String get syOsWifiWhy_failed;
+
+  /// No description provided for @syOsWifiWhy_no_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi is managed by the system of this machine.'**
+  String get syOsWifiWhy_no_helper;
+
+  /// No description provided for @syOsWifiWhy_no_wifi.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine has no Wi-Fi card (or the system does not recognise it).'**
+  String get syOsWifiWhy_no_wifi;
+
+  /// No description provided for @syOsWifiWhy_not_installed.
+  ///
+  /// In en, this message translates to:
+  /// **'This system has no Wi-Fi tools.'**
+  String get syOsWifiWhy_not_installed;
+
+  /// No description provided for @syOsWifiWhy_wifi_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi is not running on this machine. Restart it, or connect a cable.'**
+  String get syOsWifiWhy_wifi_off;
+
+  /// No description provided for @syOsWifiWired.
+  ///
+  /// In en, this message translates to:
+  /// **'A cable is connected: the machine uses the cable, Wi-Fi stays as a spare.'**
+  String get syOsWifiWired;
+
+  /// No description provided for @syPiholeAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole\'s own page, to see what it blocks and allow a site:'**
+  String get syPiholeAdmin;
+
+  /// No description provided for @syPiholeAds.
+  ///
+  /// In en, this message translates to:
+  /// **'About blocking ads'**
+  String get syPiholeAds;
+
+  /// No description provided for @syPiholeAdsText.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole blocks the names of well-known advertising and tracking services, for every device that uses it, phones and TVs included. Now and then a site or an app needs one of those names to work (some shop links, some streaming apps): it then looks broken.'**
+  String get syPiholeAdsText;
+
+  /// No description provided for @syPiholeAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'If a site stops working: open the Pi-hole page, Query Log, find the blocked name and press Allow. To pause all blocking for a few minutes, use Disable blocking in the same page.'**
+  String get syPiholeAllow;
+
+  /// No description provided for @syPiholeAnswers.
+  ///
+  /// In en, this message translates to:
+  /// **'At home, {domain} now leads to {ip}.'**
+  String syPiholeAnswers(String domain, String ip);
+
+  /// No description provided for @syPiholeChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'What changes at home, and how to go back'**
+  String get syPiholeChanges;
+
+  /// No description provided for @syPiholeDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'If your router does not let you change the DNS (some providers\' routers do not), set it on each device instead: in the Wi-Fi network\'s details on phones, in the network adapter\'s settings on computers.'**
+  String get syPiholeDevice;
+
+  /// No description provided for @syPiholeDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Your domain (optional)'**
+  String get syPiholeDomain;
+
+  /// No description provided for @syPiholeDomainHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The address you use from outside, like rasgeth.yourdomain.com: Pi-hole answers for it with the address above. Leave it empty to use Pi-hole only to block ads.'**
+  String get syPiholeDomainHelp;
+
+  /// No description provided for @syPiholeDomainWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'It must be a name like rasgeth.yourdomain.com.'**
+  String get syPiholeDomainWrong;
+
+  /// No description provided for @syPiholeIp.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer\'s address at home'**
+  String get syPiholeIp;
+
+  /// No description provided for @syPiholeIpHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Four numbers like 192.168.1.50. Find it on the router\'s page among the connected devices, or on this computer: \"ip a\" on Linux, \"ipconfig\" on Windows, System Settings, Network on Mac. Better if the router always gives this computer the same address (address reservation).'**
+  String get syPiholeIpHelp;
+
+  /// No description provided for @syPiholeIpWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'It must be four numbers from 0 to 255 separated by dots, like 192.168.1.50.'**
+  String get syPiholeIpWrong;
+
+  /// No description provided for @syPiholeNeed.
+  ///
+  /// In en, this message translates to:
+  /// **'you reach Rasgeth from outside with your own domain, and at home the same link does not open. Many routers cannot send you back to your own house through the internet (the feature is called NAT loopback or hairpin, and theirs lacks it).'**
+  String get syPiholeNeed;
+
+  /// No description provided for @syPiholeNeedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You need it if'**
+  String get syPiholeNeedTitle;
+
+  /// No description provided for @syPiholeNoNeed.
+  ///
+  /// In en, this message translates to:
+  /// **'you use Tailscale or Cloudflare Tunnel: those links work the same at home and outside. You can still turn it on just to block ads, if you like.'**
+  String get syPiholeNoNeed;
+
+  /// No description provided for @syPiholeNoNeedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not need it if'**
+  String get syPiholeNoNeedTitle;
+
+  /// No description provided for @syPiholeNowRouter.
+  ///
+  /// In en, this message translates to:
+  /// **'Last step, yours: on your router (or on each device) set the DNS server to {ip}. Until then nothing at home uses Pi-hole.'**
+  String syPiholeNowRouter(String ip);
+
+  /// No description provided for @syPiholeOff.
+  ///
+  /// In en, this message translates to:
+  /// **'To go back: put the router\'s DNS back as it was (often \"automatic\") and turn Pi-hole off here. Nothing else on your computers changes.'**
+  String get syPiholeOff;
+
+  /// No description provided for @syPiholeOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole is on, at {ip}.'**
+  String syPiholeOn(String ip);
+
+  /// No description provided for @syPiholeOpenAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Pi-hole'**
+  String get syPiholeOpenAdmin;
+
+  /// No description provided for @syPiholePort.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical details: port 53'**
+  String get syPiholePort;
+
+  /// No description provided for @syPiholePortText.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole answers on port 53 (the DNS port) of this computer\'s home address only, not on the internet, and its own page on port 8053. If something on this computer already answers on port 53 (another DNS, or the system\'s own on some Linux systems), Pi-hole cannot start: Rasgeth says so and nothing changes.'**
+  String get syPiholePortText;
+
+  /// No description provided for @syPiholeRouter.
+  ///
+  /// In en, this message translates to:
+  /// **'For every device at once: open your router\'s page (its address is usually written under the router, like 192.168.1.1), find the DHCP or LAN settings and set the DNS server to this computer\'s home address. Devices pick it up the next time they connect (or restart them).'**
+  String get syPiholeRouter;
+
+  /// No description provided for @syPiholeSecond.
+  ///
+  /// In en, this message translates to:
+  /// **'A second DNS: if this computer is off, devices that only know Pi-hole cannot open any site. As a second DNS you can put your router\'s address or a public one (1.1.1.1): everything keeps working when this computer is off, but devices may sometimes ask the second one and then see ads, or not find your domain at home.'**
+  String get syPiholeSecond;
+
+  /// No description provided for @syPiholeShowPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show its password'**
+  String get syPiholeShowPassword;
+
+  /// No description provided for @syPiholeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Pi-hole'**
+  String get syPiholeStart;
+
+  /// No description provided for @syPiholeStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off Pi-hole'**
+  String get syPiholeStop;
+
+  /// No description provided for @syPiholeTest.
+  ///
+  /// In en, this message translates to:
+  /// **'How to check: connect your phone to the home Wi-Fi and open your Rasgeth link. If it opens, you do not need Pi-hole for this (you may still want it to block ads). If it does not, but works on mobile data, Pi-hole fixes it.'**
+  String get syPiholeTest;
+
+  /// No description provided for @syPiholeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The home\'s own DNS, with Pi-hole (optional)'**
+  String get syPiholeTitle;
+
+  /// No description provided for @syPiholeWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'Every device at home asks a DNS server which number is behind a name (for example rasgeth.yourdomain.com). Usually your router or your internet provider answers. Pi-hole is a small DNS that Rasgeth can run on this computer: it answers for your domain with this computer\'s home address, so the link works at home too, and it also blocks advertising and tracking for every device that uses it.'**
+  String get syPiholeWhat;
+
+  /// No description provided for @syPwSignOutOthersQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out your other devices too?'**
+  String get syPwSignOutOthersQ;
+
+  /// No description provided for @syPwSignOutOthersText.
+  ///
+  /// In en, this message translates to:
+  /// **'The other browsers and the apps signed in with the old password stay in if you keep them. Sign them out if you changed it because someone else might know it.'**
+  String get syPwSignOutOthersText;
+
+  /// No description provided for @syPwSignOutOthersYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign them out'**
+  String get syPwSignOutOthersYes;
+
+  /// No description provided for @syRemoteCaddy.
+  ///
+  /// In en, this message translates to:
+  /// **'For experts: your domain pointing at home, ports 80 and 443 opened on the router. Anyone on the internet can reach the sign-in page.'**
+  String get syRemoteCaddy;
+
+  /// No description provided for @syRemoteCloudflare.
+  ///
+  /// In en, this message translates to:
+  /// **'An address on your own domain (about 10 euros a year), nothing opened on the router. A few more steps on Cloudflare\'s site.'**
+  String get syRemoteCloudflare;
+
+  /// No description provided for @syRemoteCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Second check (recommended)'**
+  String get syRemoteCode;
+
+  /// No description provided for @syRemoteCodeConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get syRemoteCodeConfirm;
+
+  /// No description provided for @syRemoteCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Besides the password, a 6-digit code from an app on your phone (Google Authenticator, Microsoft Authenticator, 2FAS…): someone who learns the password still cannot get in.'**
+  String get syRemoteCodeHint;
+
+  /// No description provided for @syRemoteCodeOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Second check off.'**
+  String get syRemoteCodeOff;
+
+  /// No description provided for @syRemoteCodeOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Second check on'**
+  String get syRemoteCodeOn;
+
+  /// No description provided for @syRemoteCodeQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan with the authenticator app'**
+  String get syRemoteCodeQr;
+
+  /// No description provided for @syRemoteCodeScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the code with the app (or type the key below in it), then write here the 6 digits it shows.'**
+  String get syRemoteCodeScan;
+
+  /// No description provided for @syRemoteCodeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch on the second check'**
+  String get syRemoteCodeStart;
+
+  /// No description provided for @syRemoteConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get syRemoteConnect;
+
+  /// No description provided for @syRemoteHow.
+  ///
+  /// In en, this message translates to:
+  /// **'How to reach it'**
+  String get syRemoteHow;
+
+  /// No description provided for @syRemoteNeedsPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Set the password above first.'**
+  String get syRemoteNeedsPassword;
+
+  /// No description provided for @syRemoteNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get syRemoteNewPassword;
+
+  /// No description provided for @syRemoteOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch off access from outside'**
+  String get syRemoteOff;
+
+  /// No description provided for @syRemoteOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth can be reached from outside at this address:'**
+  String get syRemoteOn;
+
+  /// No description provided for @syRemoteOwnDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Your domain, open router'**
+  String get syRemoteOwnDomain;
+
+  /// No description provided for @syRemotePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password'**
+  String get syRemotePassword;
+
+  /// No description provided for @syRemotePasswordChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change it'**
+  String get syRemotePasswordChange;
+
+  /// No description provided for @syRemotePasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'From outside, Rasgeth asks for this password (the link with the token stays for this computer). Choose one you use nowhere else.'**
+  String get syRemotePasswordHint;
+
+  /// No description provided for @syRemotePasswordRule.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 10 characters. A short sentence is easy to remember and hard to guess.'**
+  String get syRemotePasswordRule;
+
+  /// No description provided for @syRemotePasswordSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Password saved.'**
+  String get syRemotePasswordSaved;
+
+  /// No description provided for @syRemotePasswordSet.
+  ///
+  /// In en, this message translates to:
+  /// **'A password is set'**
+  String get syRemotePasswordSet;
+
+  /// No description provided for @syRemotePurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Rasgeth from your phone or another computer when you are away. First a password, then one of three ways; nothing is reachable from outside until you finish. Optional.'**
+  String get syRemotePurpose;
+
+  /// No description provided for @syRemoteSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed-in browsers'**
+  String get syRemoteSessions;
+
+  /// No description provided for @syRemoteSessionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each sign-in lasts 30 days. If you lost a phone, or think someone else got in (the Rasgeth apps are signed out too):'**
+  String get syRemoteSessionsHint;
+
+  /// No description provided for @syRemoteSignOutAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out everywhere'**
+  String get syRemoteSignOutAll;
+
+  /// No description provided for @syRemoteSignedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed out everywhere.'**
+  String get syRemoteSignedOut;
+
+  /// No description provided for @syRemoteTailscale.
+  ///
+  /// In en, this message translates to:
+  /// **'A private network between your own devices: nothing opened on the router, free for personal use. You install Tailscale on your phone too.'**
+  String get syRemoteTailscale;
+
+  /// No description provided for @syRemoteWaysFolded.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth\'s own ways out'**
+  String get syRemoteWaysFolded;
+
+  /// No description provided for @syRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get syRemove;
+
+  /// No description provided for @sySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get sySave;
+
+  /// No description provided for @sySaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get sySaved;
+
+  /// No description provided for @sySbBackupQ.
+  ///
+  /// In en, this message translates to:
+  /// **'All of Rasgeth in one file'**
+  String get sySbBackupQ;
+
+  /// No description provided for @sySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get sySettings;
+
+  /// No description provided for @sySnCable.
+  ///
+  /// In en, this message translates to:
+  /// **'I use the cable'**
+  String get sySnCable;
+
+  /// No description provided for @sySnCableDone.
+  ///
+  /// In en, this message translates to:
+  /// **'The cable works: Rasgeth is at {address}. Join your home network with this device and open http://{address}:7600 (or http://rasgeth.local:7600).'**
+  String sySnCableDone(String address);
+
+  /// No description provided for @sySnFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth could not join «{name}»: {why}'**
+  String sySnFailed(String name, String why);
+
+  /// No description provided for @sySnHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'A hidden network'**
+  String get sySnHidden;
+
+  /// No description provided for @sySnHiddenName.
+  ///
+  /// In en, this message translates to:
+  /// **'Network name'**
+  String get sySnHiddenName;
+
+  /// No description provided for @sySnJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this network'**
+  String get sySnJoin;
+
+  /// No description provided for @sySnMaintQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth could not find your home network, so it opened {ssid} again: choose the network it should use.'**
+  String sySnMaintQ(String ssid);
+
+  /// No description provided for @sySnNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No network was seen around: use the cable, or type the name of a hidden network.'**
+  String get sySnNone;
+
+  /// No description provided for @sySnPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password of «{name}»'**
+  String sySnPassword(String name);
+
+  /// No description provided for @sySnQ.
+  ///
+  /// In en, this message translates to:
+  /// **'You are on {ssid}, Rasgeth\'s temporary network: which network should Rasgeth use at home?'**
+  String sySnQ(String ssid);
+
+  /// No description provided for @sySnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your home network'**
+  String get sySnTitle;
+
+  /// No description provided for @sySnTrying.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth is joining «{name}»: this temporary network closes now. Join your home network with this device and open http://rasgeth.local:7600. If it does not work, {ssid} comes back in a minute with the reason.'**
+  String sySnTrying(String name, String ssid);
+
+  /// No description provided for @syStRemoteQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth away from home'**
+  String get syStRemoteQ;
+
+  /// No description provided for @syStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'stopped'**
+  String get syStopped;
+
+  /// No description provided for @syTgQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan with your phone\'s camera'**
+  String get syTgQr;
+
+  /// No description provided for @syTsApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale apps'**
+  String get syTsApps;
+
+  /// No description provided for @syTsDns.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale DNS settings'**
+  String get syTsDns;
+
+  /// No description provided for @syTsOpenSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Tailscale\'s sign-in page'**
+  String get syTsOpenSignIn;
+
+  /// No description provided for @syTsSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale wants you to sign in, to add Rasgeth to your network:'**
+  String get syTsSignIn;
+
+  /// No description provided for @syTsSignUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up on Tailscale'**
+  String get syTsSignUp;
+
+  /// No description provided for @syTsStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a free Tailscale account (with Google, Microsoft or GitHub is fine):'**
+  String get syTsStep1;
+
+  /// No description provided for @syTsStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'In Tailscale\'s DNS page switch on MagicDNS and HTTPS Certificates (they give Rasgeth a safe address):'**
+  String get syTsStep2;
+
+  /// No description provided for @syTsStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Then here:'**
+  String get syTsStep3;
+
+  /// No description provided for @syTsStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'Install Tailscale on your phone and the other computers, signed in with the same account:'**
+  String get syTsStep4;
+
+  /// No description provided for @syUiAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get syUiAdvanced;
+
+  /// No description provided for @syUiDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done.'**
+  String get syUiDone;
+
+  /// No description provided for @syUiNotNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'not needed'**
+  String get syUiNotNeeded;
+
+  /// No description provided for @syUpdBrkChecked.
+  ///
+  /// In en, this message translates to:
+  /// **'{file} · {size} · {projects} projects, {conversations} conversations, memories and settings'**
+  String syUpdBrkChecked(String conversations, String file, String projects, String size);
+
+  /// No description provided for @syUpdBrkDockerCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder is inside Rasgeth\'s data volume, which a clean install removes: copy the file out first, from Rasgeth\'s folder:'**
+  String get syUpdBrkDockerCopy;
+
+  /// No description provided for @syUpdBrkDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get syUpdBrkDone;
+
+  /// No description provided for @syUpdBrkKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Your keychain ({n} keys, the models\', chats\' and mailboxes\' ones too) is not in the backup: it goes in only protected by a passphrase of yours.'**
+  String syUpdBrkKeys(String n);
+
+  /// No description provided for @syUpdBrkKeysAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the keychain too'**
+  String get syUpdBrkKeysAdd;
+
+  /// No description provided for @syUpdBrkKeysAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Make the backup again with the keychain'**
+  String get syUpdBrkKeysAgain;
+
+  /// No description provided for @syUpdBrkKeysIn.
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain is in the backup too, protected by your passphrase.'**
+  String get syUpdBrkKeysIn;
+
+  /// No description provided for @syUpdBrkLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth {version} changed too much inside to update the usual way: installed over the old one it could break.'**
+  String syUpdBrkLead(String version);
+
+  /// No description provided for @syUpdBrkNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Go on'**
+  String get syUpdBrkNext;
+
+  /// No description provided for @syUpdBrkRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try the backup again'**
+  String get syUpdBrkRetry;
+
+  /// No description provided for @syUpdBrkSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup made and read back: it is in this folder'**
+  String get syUpdBrkSaved;
+
+  /// No description provided for @syUpdBrkStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the old Rasgeth'**
+  String get syUpdBrkStep1;
+
+  /// No description provided for @syUpdBrkStep1Docker.
+  ///
+  /// In en, this message translates to:
+  /// **'In Rasgeth\'s folder remove the containers and their volumes:'**
+  String get syUpdBrkStep1Docker;
+
+  /// No description provided for @syUpdBrkStep1Mac.
+  ///
+  /// In en, this message translates to:
+  /// **'From the menu bar icon choose «Uninstall…» (or drag Rasgeth from Applications to the Bin).'**
+  String get syUpdBrkStep1Mac;
+
+  /// No description provided for @syUpdBrkStep1Os.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the backup to a USB disk (Settings › System › Backups): reinstalling Rasgeth OS erases this machine\'s disk.'**
+  String get syUpdBrkStep1Os;
+
+  /// No description provided for @syUpdBrkStep1Source.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop Rasgeth and move its data folder away.'**
+  String get syUpdBrkStep1Source;
+
+  /// No description provided for @syUpdBrkStep1Win.
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstall Rasgeth. When it asks whether to keep the data, you can answer No: everything is in the backup.'**
+  String get syUpdBrkStep1Win;
+
+  /// No description provided for @syUpdBrkStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Install Rasgeth {version}'**
+  String syUpdBrkStep2(String version);
+
+  /// No description provided for @syUpdBrkStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get syUpdBrkStep3;
+
+  /// No description provided for @syUpdBrkStep3Docker.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Rasgeth, finish the setup and import the copied file in Settings › Backup › Import a backup.'**
+  String get syUpdBrkStep3Docker;
+
+  /// No description provided for @syUpdBrkStep3Os.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the new Rasgeth OS (USB stick or image) and start the machine: the first start offers «Restore from the backup» and finds it on the USB disk.'**
+  String get syUpdBrkStep3Os;
+
+  /// No description provided for @syUpdBrkStep3Text.
+  ///
+  /// In en, this message translates to:
+  /// **'At its first start the new Rasgeth offers «Restore from the backup»: it finds it in that folder by itself.'**
+  String get syUpdBrkStep3Text;
+
+  /// No description provided for @syUpdBrkSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth {version} cannot be installed over the {installed}'**
+  String syUpdBrkSub(String installed, String version);
+
+  /// No description provided for @syUpdBrkSure.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth closes and its uninstaller starts. The backup stays in {folder}.'**
+  String syUpdBrkSure(String folder);
+
+  /// No description provided for @syUpdBrkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This version needs a clean install'**
+  String get syUpdBrkTitle;
+
+  /// No description provided for @syUpdBrkUninstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstall Rasgeth'**
+  String get syUpdBrkUninstall;
+
+  /// No description provided for @syUpdBrkUninstallYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, uninstall'**
+  String get syUpdBrkUninstallYes;
+
+  /// No description provided for @syUpdBrkUninstalling.
+  ///
+  /// In en, this message translates to:
+  /// **'The uninstaller is starting on your desktop.'**
+  String get syUpdBrkUninstalling;
+
+  /// No description provided for @syUpdBrkWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'So it goes in three short steps: first a backup of everything (I am making it now, by myself), then you remove the old Rasgeth and install the new one, which puts everything back from the backup.'**
+  String get syUpdBrkWhy;
+
+  /// No description provided for @syUpdCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get syUpdCopied;
+
+  /// No description provided for @syUpdCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get syUpdCopy;
+
+  /// No description provided for @syUpdDownloadNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the new version'**
+  String get syUpdDownloadNew;
+
+  /// No description provided for @syUpdFoundDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything is back. Go on with the next steps to set up the models.'**
+  String get syUpdFoundDone;
+
+  /// No description provided for @syUpdFoundKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'The passphrase you chose for the keychain. Without it everything else is restored, and the keys of models and chats are put in again from their pages.'**
+  String get syUpdFoundKeys;
+
+  /// No description provided for @syUpdFoundLead.
+  ///
+  /// In en, this message translates to:
+  /// **'There is a backup of {date} (Rasgeth {version}): {projects} projects and {conversations} conversations. Put everything back now?'**
+  String syUpdFoundLead(String conversations, String date, String projects, String version);
+
+  /// No description provided for @syUpdFoundRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from the backup'**
+  String get syUpdFoundRestore;
+
+  /// No description provided for @syUpdFoundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from the backup'**
+  String get syUpdFoundTitle;
+
+  /// No description provided for @syUpdLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get syUpdLater;
+
+  /// No description provided for @syUpdLook.
+  ///
+  /// In en, this message translates to:
+  /// **'Look for updates'**
+  String get syUpdLook;
+
+  /// No description provided for @syUpdLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking…'**
+  String get syUpdLooking;
+
+  /// No description provided for @syUpdReqAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Look again'**
+  String get syUpdReqAgain;
+
+  /// No description provided for @syUpdReqClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close Rasgeth'**
+  String get syUpdReqClose;
+
+  /// No description provided for @syUpdReqClosing.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth is closing. You can close this page.'**
+  String get syUpdReqClosing;
+
+  /// No description provided for @syUpdReqDocker.
+  ///
+  /// In en, this message translates to:
+  /// **'On the computer where Rasgeth runs, in its folder, run:'**
+  String get syUpdReqDocker;
+
+  /// No description provided for @syUpdReqInstaller.
+  ///
+  /// In en, this message translates to:
+  /// **'If the update does not start, the whole installer is here:'**
+  String get syUpdReqInstaller;
+
+  /// No description provided for @syUpdReqInstallerLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth-Setup.exe'**
+  String get syUpdReqInstallerLink;
+
+  /// No description provided for @syUpdReqLead.
+  ///
+  /// In en, this message translates to:
+  /// **'This update cannot wait: Rasgeth {version} fixes something that the {installed} cannot keep doing safely.'**
+  String syUpdReqLead(String installed, String version);
+
+  /// No description provided for @syUpdReqMac.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the downloaded file and drag Rasgeth into Applications, replacing the old one; then open it again.'**
+  String get syUpdReqMac;
+
+  /// No description provided for @syUpdReqNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get syUpdReqNow;
+
+  /// No description provided for @syUpdReqSafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Until you update, agents and automations wait. Your conversations, projects and settings are safe: nothing is lost.'**
+  String get syUpdReqSafe;
+
+  /// No description provided for @syUpdReqSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring the code up to date (git pull), build it and start Rasgeth again.'**
+  String get syUpdReqSource;
+
+  /// No description provided for @syUpdReqSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} is needed (you have {installed})'**
+  String syUpdReqSub(String installed, String version);
+
+  /// No description provided for @syUpdReqTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth must be updated'**
+  String get syUpdReqTitle;
+
+  /// No description provided for @syUpdReqUpdating.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth is downloading the update: follow the window on your desktop. It restarts by itself.'**
+  String get syUpdReqUpdating;
+
+  /// No description provided for @syUpdReqUpdatingOs.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth OS is updating Rasgeth: the page stops for a few minutes and comes back by itself.'**
+  String get syUpdReqUpdatingOs;
+
+  /// No description provided for @syWzBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get syWzBack;
+
+  /// No description provided for @syWzCpu.
+  ///
+  /// In en, this message translates to:
+  /// **'Processor'**
+  String get syWzCpu;
+
+  /// No description provided for @syWzFree.
+  ///
+  /// In en, this message translates to:
+  /// **'free'**
+  String get syWzFree;
+
+  /// No description provided for @syWzGpu.
+  ///
+  /// In en, this message translates to:
+  /// **'Graphics card'**
+  String get syWzGpu;
+
+  /// No description provided for @syWzMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory'**
+  String get syWzMemory;
+
+  /// No description provided for @syWzNoGpu.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get syWzNoGpu;
+
+  /// No description provided for @syWzRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'recommended'**
+  String get syWzRecommended;
+
+  /// No description provided for @syWzRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Access from outside home'**
+  String get syWzRemote;
+
+  /// No description provided for @syWzStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Data and backups'**
+  String get syWzStorage;
+
+  /// No description provided for @syWzThreads.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} threads'**
+  String syWzThreads(String n);
+
+  /// No description provided for @syHubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'System and access'**
+  String get syHubTitle;
+
+  /// No description provided for @syHubRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Password, second check, Tailscale, Cloudflare, your own domain, Pi-hole'**
+  String get syHubRemote;
+
+  /// No description provided for @syHubSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine, its role, data and backups, Wi-Fi, HTTPS, SSH, updates'**
+  String get syHubSystem;
+
+  /// No description provided for @syHubMachines.
+  ///
+  /// In en, this message translates to:
+  /// **'Your computers the agents reach over SSH'**
+  String get syHubMachines;
+
+  /// No description provided for @syHubNodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Other machines working with this one'**
+  String get syHubNodes;
+
+  /// No description provided for @syHubBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything in one file, and a file brought back'**
+  String get syHubBackup;
+
+  /// No description provided for @syGateOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'What to do'**
+  String get syGateOpen;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

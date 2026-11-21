@@ -199,6 +199,7 @@ class UpdateStatus {
     this.phase,
     this.progress,
     this.firstVersion,
+    this.canUninstall = false,
   });
 
   factory UpdateStatus.fromJson(Map<String, dynamic> j) {
@@ -218,8 +219,12 @@ class UpdateStatus {
       phase: _str(p['phase']),
       progress: Progress.fromJson(j['progress']),
       firstVersion: _str(j['firstVersion']),
+      canUninstall: j['canUninstall'] == true,
     );
   }
+
+  /// G42.14: this installation can uninstall itself (a breaking update's first step).
+  final bool canUninstall;
 
   /// The version this installation was born with (kept with its data), null when unknown.
   final String? firstVersion;

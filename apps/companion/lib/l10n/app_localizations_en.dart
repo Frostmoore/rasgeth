@@ -11025,4 +11025,3260 @@ class AppLocalizationsEn extends AppLocalizations {
   String devForgetUnusedDone(int count) {
     return 'Devices removed: $count.';
   }
+
+  @override
+  String get syBackup => 'Backup';
+
+  @override
+  String get syBackupAddsHint =>
+      'A project whose name is taken here comes in beside it, with a number after the name.';
+
+  @override
+  String get syBackupAlreadyHere => 'already here, left as it is';
+
+  @override
+  String get syBackupAnother => 'Import another backup';
+
+  @override
+  String get syBackupChoose => 'Choose the backup file';
+
+  @override
+  String syBackupCounts(String agents, String conversations, String size) {
+    return '$agents agents · $conversations conversations · $size of files';
+  }
+
+  @override
+  String syBackupDownload(String file) {
+    return 'Download $file';
+  }
+
+  @override
+  String get syBackupExport => 'Make a backup';
+
+  @override
+  String get syBackupExportHint =>
+      'Projects with their files, agents, conversations, chats and the board. Keys and sign-ins to services are not in it: they stay on this computer. node_modules folders are left out (they are rebuilt).';
+
+  @override
+  String syBackupFrom(String when) {
+    return 'Backup of $when';
+  }
+
+  @override
+  String get syBackupImport => 'Import a backup';
+
+  @override
+  String get syBackupImportHint =>
+      'From another Rasgeth or from this one. Nothing here is deleted or replaced: what is in the backup is added, and what is already here stays as it is.';
+
+  @override
+  String get syBackupImportNow => 'Import';
+
+  @override
+  String syBackupImported(String agents, String conversations, String projects) {
+    return 'Done: $projects projects, $agents agents and $conversations conversations added.';
+  }
+
+  @override
+  String syBackupKeepName(String name) {
+    return 'Keep $name';
+  }
+
+  @override
+  String get syBackupKeys => 'Include the keychain';
+
+  @override
+  String get syBackupKeysHelp =>
+      'Sealed with a passphrase of yours, with the keys of the models, chats and mailboxes: without it the backup\'s credentials cannot be opened.';
+
+  @override
+  String get syBackupKeysIn => 'The backup carries a keychain: its passphrase';
+
+  @override
+  String get syBackupKeysInHelp =>
+      'Leave it empty to import everything else without the credentials.';
+
+  @override
+  String get syBackupKeysWrong =>
+      'The keychain was not imported: wrong passphrase. Everything else was.';
+
+  @override
+  String get syBackupMake => 'Prepare the backup';
+
+  @override
+  String get syBackupMakeAgain => 'Prepare it again';
+
+  @override
+  String syBackupNameQuestion(String backup, String here, String who) {
+    return '$who is called $here here and $backup in the backup. Which name does it keep?';
+  }
+
+  @override
+  String get syBackupNothingNew =>
+      'Every project in this backup is here already: only what is missing is added.';
+
+  @override
+  String get syBackupPurpose =>
+      'Every project with its files, the agents and the conversations in one file: keep it safe, or carry it to another Rasgeth.';
+
+  @override
+  String get syBackupSaved => 'Saved in your Downloads folder.';
+
+  @override
+  String get syBackupSending => 'Sending the file to Rasgeth';
+
+  @override
+  String syBackupTakeName(String name) {
+    return 'Use $name';
+  }
+
+  @override
+  String get syBrainDisconnect => 'Disconnect';
+
+  @override
+  String get syCaddyDomain => 'The address';
+
+  @override
+  String get syCaddyDomainHelp =>
+      'Rasgeth gets its HTTPS certificate from Let\'s Encrypt by itself.';
+
+  @override
+  String get syCaddyPihole =>
+      'Inside home some routers cannot reach their own public address: then open Rasgeth at home with its usual link, or turn on Pi-hole in Settings, Access from outside home (it is optional).';
+
+  @override
+  String get syCaddyStep1 =>
+      'At your domain\'s provider, make a DNS record of type A for the address you want (for example rasgeth.yourdomain.com) pointing at your home\'s public address. If it changes, use a dynamic DNS service.';
+
+  @override
+  String get syCaddyStep2 => 'On your router, forward ports 80 and 443 to this computer.';
+
+  @override
+  String get syCaddyWarning =>
+      'With this way Rasgeth\'s sign-in page is on the internet: keep the password strong and the second check on.';
+
+  @override
+  String get syCancel => 'Cancel';
+
+  @override
+  String get syCfAccess =>
+      'Safer still: in Cloudflare Zero Trust, Access, add an application for this address, so Cloudflare asks who you are before the page even appears.';
+
+  @override
+  String get syCfBuy => 'Buy a domain on Cloudflare';
+
+  @override
+  String get syCfHost => 'The address you chose';
+
+  @override
+  String get syCfHostHelp =>
+      'For example rasgeth.yourdomain.com: the subdomain and domain of the Public hostname.';
+
+  @override
+  String get syCfStep1 =>
+      'If you have no domain yet, buy one (Cloudflare sells them at cost, about 10 euros a year):';
+
+  @override
+  String get syCfStep2 =>
+      'Open Tunnels in Cloudflare Zero Trust, press Create a tunnel, choose Cloudflared and give it a name (for example rasgeth):';
+
+  @override
+  String get syCfStep3 =>
+      'In the step Public hostname: subdomain rasgeth, your domain, Service type HTTP, URL redgiant:7600. Save.';
+
+  @override
+  String get syCfStep4 =>
+      'Cloudflare shows a command with a long token after --token: copy only the token and write the address here.';
+
+  @override
+  String get syCfToken => 'The tunnel\'s token';
+
+  @override
+  String get syCfTokenHelp =>
+      'The long string after --token in the command Cloudflare shows (it starts with eyJ).';
+
+  @override
+  String get syCfTunnels => 'Cloudflare tunnels';
+
+  @override
+  String get syConnecting => 'connecting…';
+
+  @override
+  String get syConversations => 'Conversations';
+
+  @override
+  String syErr_agent_limit(String count, String max, String project) {
+    return 'The project «$project» can have at most $max agents besides its orchestrator: it has $count. Raise the limit in Settings › Projects or remove one.';
+  }
+
+  @override
+  String get syErr_agent_removed =>
+      'The agent was removed from the team: restore it to work with it.';
+
+  @override
+  String get syErr_agent_stopped => 'The agent is stopped (paused): resume it to go on.';
+
+  @override
+  String get syErr_bad_name => 'That is not a name (for instance git.home.example.com).';
+
+  @override
+  String get syErr_code_rejected =>
+      'Anthropic did not accept this code: it may be incomplete or old. Open the sign-in page again to get a new one.';
+
+  @override
+  String get syErr_email_failed =>
+      'The mailbox did not let Rasgeth in: check the server, the address and the app password.';
+
+  @override
+  String get syErr_failed => 'The sign-in did not finish. Try again from the start.';
+
+  @override
+  String get syErr_host_unreachable =>
+      'The server\'s name is known, but its address does not answer from Rasgeth. See Settings › Access from outside home › Your home services.';
+
+  @override
+  String get syErr_key_rejected =>
+      'The provider refused this key. Check that you copied all of it and that it is still active.';
+
+  @override
+  String get syErr_memory_empty => 'Write something to remember.';
+
+  @override
+  String get syErr_memory_forgotten => 'A memory forgotten for good cannot come back.';
+
+  @override
+  String get syErr_memory_full => 'The memory is full: delete or merge some old memories first.';
+
+  @override
+  String get syErr_memory_gone => 'That memory is not there any more.';
+
+  @override
+  String get syErr_memory_long => 'A memory is at most 400 characters: write it shorter.';
+
+  @override
+  String get syErr_memory_moved => 'The memory changed again since: undo the newer change first.';
+
+  @override
+  String get syErr_memory_same => 'Another memory already says the same.';
+
+  @override
+  String get syErr_memory_secret =>
+      'That looks like a password, a code or a card number: secrets are never kept in memory.';
+
+  @override
+  String get syErr_memory_undone => 'That change was already undone.';
+
+  @override
+  String get syErr_missing_permission =>
+      'GitHub did not let the token create repositories. Make a new one with Administration set to Read and write.';
+
+  @override
+  String get syErr_name_not_found =>
+      'Rasgeth cannot find the server\'s name in the DNS it uses. See Settings › Access from outside home › Your home services.';
+
+  @override
+  String get syErr_no_login => 'Open Anthropic\'s sign-in page first.';
+
+  @override
+  String get syErr_no_model =>
+      'No model is chosen yet: open Settings, Models and subscriptions, connect one (a subscription, a key or a local model) and choose it in \"The model agents use\".';
+
+  @override
+  String get syErr_no_page =>
+      'Anthropic\'s sign-in page could not be prepared. Try again in a moment.';
+
+  @override
+  String get syErr_no_password => 'Set a password first.';
+
+  @override
+  String get syErr_portrait_empty => 'Write the trait.';
+
+  @override
+  String get syErr_portrait_gone => 'That trait is not there any more.';
+
+  @override
+  String get syErr_portrait_long => 'A trait is at most 200 characters: write it shorter.';
+
+  @override
+  String get syErr_portrait_private =>
+      'Email addresses and phone numbers never go into the portrait.';
+
+  @override
+  String get syErr_portrait_secret =>
+      'That looks like a password, a code or a card number: secrets never go into the portrait.';
+
+  @override
+  String get syErr_project_archived => 'The project is archived: restore it to work in it.';
+
+  @override
+  String syErr_provider_stalled(String minutes, String retries) {
+    return 'The provider has not answered for $minutes minutes: I tried again $retries times. Try again in a while, or choose another model.';
+  }
+
+  @override
+  String get syErr_terms => 'First tick the box about the providers\' terms.';
+
+  @override
+  String get syErr_token_rejected =>
+      'Telegram refused this token. Copy it again from BotFather\'s message, all of it.';
+
+  @override
+  String get syErr_too_many => 'Too many wrong tries: wait 15 minutes, then try again.';
+
+  @override
+  String get syErr_unreachable =>
+      'The provider did not answer. Check the address and the internet connection, then try again.';
+
+  @override
+  String get syErr_vault_bad_file => 'This file is not a password export Rasgeth can read.';
+
+  @override
+  String get syErr_vault_bad_passphrase => 'Wrong passphrase, or a damaged file.';
+
+  @override
+  String get syErr_vault_closed => 'The keychain is closed on this computer.';
+
+  @override
+  String get syErr_vault_in_git =>
+      'The keychain\'s folder is inside a git repository: it must never be committed. Move Rasgeth\'s data folder outside it.';
+
+  @override
+  String get syErr_vault_name_taken =>
+      'Another credential has that name for the agents: choose another one.';
+
+  @override
+  String get syErr_vault_no_value => 'Write the secret.';
+
+  @override
+  String get syErr_vault_not_found => 'That credential is no longer in the keychain.';
+
+  @override
+  String get syErr_vault_system => 'Rasgeth uses this key: remove it from its page in Settings.';
+
+  @override
+  String get syErr_voice_convert =>
+      'The recording could not be converted for whisper on this computer.';
+
+  @override
+  String get syErr_voice_empty => 'The recording is empty.';
+
+  @override
+  String syErr_voice_key_refused(String name) {
+    return '$name refused the key: check it in Settings, Voice.';
+  }
+
+  @override
+  String syErr_voice_no_key(String name) {
+    return '$name has no key yet: add it in Settings, Voice.';
+  }
+
+  @override
+  String get syErr_voice_no_service =>
+      'Rasgeth has no transcription service: choose one in Settings, Voice, Transcription.';
+
+  @override
+  String get syErr_voice_provider => 'This provider cannot do it: choose another one.';
+
+  @override
+  String syErr_voice_rate_limited(String name) {
+    return '$name says too many requests or no credit left.';
+  }
+
+  @override
+  String syErr_voice_service_error(String name, String status) {
+    return '$name answered with an error ($status).';
+  }
+
+  @override
+  String syErr_voice_timeout(String name) {
+    return '$name took too long to answer.';
+  }
+
+  @override
+  String get syErr_voice_too_long => 'The recording is too long.';
+
+  @override
+  String syErr_voice_unreachable(String name) {
+    return '$name cannot be reached: check that it is on and its address.';
+  }
+
+  @override
+  String get syErr_weak => 'The password needs at least 10 characters.';
+
+  @override
+  String get syErr_wrong => 'Wrong password or code.';
+
+  @override
+  String get syError => 'Error';
+
+  @override
+  String get syFailed => 'failed';
+
+  @override
+  String get syFbArch => 'Architecture';
+
+  @override
+  String get syFbBackupBusy => 'A backup is already running.';
+
+  @override
+  String get syFbBackupNow => 'Make a backup now';
+
+  @override
+  String get syFbBackupQ => 'Best on another disk: if this one breaks, the copy is still there.';
+
+  @override
+  String get syFbBackupStarted => 'Backup started: it shows in Downloads and jobs.';
+
+  @override
+  String get syFbBackupTitle => 'Backups';
+
+  @override
+  String get syFbCannotMount => 'Cannot be mounted here';
+
+  @override
+  String syFbContainerDisks(String name) {
+    return 'Rasgeth OS runs in a container ($name): the disks it sees are those of the machine hosting it and cannot be used from here.';
+  }
+
+  @override
+  String get syFbDaily => 'Every day';
+
+  @override
+  String get syFbDataDir => 'Folder';
+
+  @override
+  String get syFbDataQ => 'Projects, conversations and settings are here.';
+
+  @override
+  String get syFbDataTitle => 'The data';
+
+  @override
+  String get syFbDay => 'Day';
+
+  @override
+  String syFbDestDisk(String label, String path) {
+    return 'Backups go to the disk $label ($path).';
+  }
+
+  @override
+  String syFbDestFolder(String path) {
+    return 'Backups go to the folder $path.';
+  }
+
+  @override
+  String syFbDestNode(String name) {
+    return 'Backups go to the node $name, in the storage it lends.';
+  }
+
+  @override
+  String syFbDestSftp(String machine, String path) {
+    return 'Backups go to $machine, in $path (SFTP).';
+  }
+
+  @override
+  String syFbDestSmb(String path, String user) {
+    return 'Backups go to the shared folder $path, as $user.';
+  }
+
+  @override
+  String get syFbDisks => 'Disks';
+
+  @override
+  String get syFbDisksTitle => 'Removable disks';
+
+  @override
+  String get syFbErr_already => 'The container already has a folder with that name.';
+
+  @override
+  String get syFbErr_auth =>
+      'The destination refused the sign-in: check the user and the password (or the machine\'s key).';
+
+  @override
+  String get syFbErr_bad_path =>
+      'Write a full folder path (/volume1/Rasgeth) or one from the home (~/backups).';
+
+  @override
+  String get syFbErr_denied => 'The destination does not let this user write there.';
+
+  @override
+  String get syFbErr_disk_missing =>
+      'The backup disk is not connected: plug it in. Nothing was written elsewhere.';
+
+  @override
+  String get syFbErr_has_filesystem =>
+      'That disk is formatted already: it is never formatted again from here.';
+
+  @override
+  String get syFbErr_keychain_closed => 'Open the keychain first: the password is kept there.';
+
+  @override
+  String get syFbErr_mismatch =>
+      'The copy arrived different from the original: it was not kept. Try again.';
+
+  @override
+  String get syFbErr_needs_format => 'That disk is not formatted.';
+
+  @override
+  String get syFbErr_no_container => 'There is no container with that id on the host.';
+
+  @override
+  String get syFbErr_no_destination => 'Choose where backups go first.';
+
+  @override
+  String get syFbErr_no_disk => 'That disk is not a removable disk of the host (any more).';
+
+  @override
+  String get syFbErr_not_found => 'The folder or the destination is not there (any more).';
+
+  @override
+  String get syFbErr_not_proxmox => 'That machine is not a Proxmox host.';
+
+  @override
+  String get syFbErr_not_trusted =>
+      'Test this machine once in Settings › Machines and trust its key first.';
+
+  @override
+  String get syFbErr_place_missing =>
+      'The folder from the host is not mounted now: nothing was written on the system disk.';
+
+  @override
+  String get syFbErr_smb_address =>
+      'Write the shared folder as \\\\host\\share\\folder (letters, digits, spaces, dots and dashes).';
+
+  @override
+  String get syFbErr_smb_bad_domain => 'The domain is letters, digits, dots and dashes.';
+
+  @override
+  String get syFbErr_smb_bad_password => 'This password cannot be used (no line breaks).';
+
+  @override
+  String get syFbErr_smb_bad_user => 'This user name cannot be used.';
+
+  @override
+  String get syFbErr_smb_missing =>
+      'Shared folders need smbclient, which this installation does not have.';
+
+  @override
+  String get syFbErr_unreachable =>
+      'The destination does not answer: is it on and on the network? Nothing was written elsewhere.';
+
+  @override
+  String get syFbFolderLead =>
+      'A folder this machine can write to: a network share, a disk mounted by you. Not inside the data folder.';
+
+  @override
+  String get syFbFolderPath => 'Folder';
+
+  @override
+  String get syFbFolderTitle => 'Or a folder';
+
+  @override
+  String syFbFreeOf(String free) {
+    return '$free free';
+  }
+
+  @override
+  String syFbFreeOfTotal(String free, String total) {
+    return '$free GB free of $total GB';
+  }
+
+  @override
+  String get syFbFri => 'Fri';
+
+  @override
+  String get syFbHostBad_bad_device => 'This disk\'s device cannot be used.';
+
+  @override
+  String get syFbHostBad_bad_id => 'The container id is a number, like 105.';
+
+  @override
+  String get syFbHostBad_bad_mp => 'No free mount point.';
+
+  @override
+  String get syFbHostBad_bad_name => 'This disk\'s name cannot be used for a folder.';
+
+  @override
+  String get syFbHostId => 'Container id on Proxmox';
+
+  @override
+  String syFbHostIdHelp(String hostname) {
+    return 'The number in Proxmox\'s list (this container is called $hostname).';
+  }
+
+  @override
+  String get syFbHostKind => 'The host';
+
+  @override
+  String get syFbHostLead =>
+      'From a container Rasgeth sees the host\'s disks but cannot mount them: the host mounts the disk and passes a folder in. Rasgeth notices it by itself.';
+
+  @override
+  String syFbHostMany(String n) {
+    return 'On this machine there are $n removable disks: pick the one for backups.';
+  }
+
+  @override
+  String get syFbHostNone =>
+      'No removable disk of the host is in sight: plug it into the host, or use a folder on the network below.';
+
+  @override
+  String syFbHostOne(String how, String size, String title) {
+    return 'On this machine there is the disk $title, $how, $size.';
+  }
+
+  @override
+  String get syFbHostOther => 'Other';
+
+  @override
+  String get syFbHostSteps => 'To run on the host, as root';
+
+  @override
+  String get syFbHostTitle => 'A disk of the host';
+
+  @override
+  String syFbHostWatching(String target) {
+    return 'Looking every few seconds: when $target arrives it shows above, ready to use.';
+  }
+
+  @override
+  String get syFbHour => 'Hour';
+
+  @override
+  String get syFbKeep => 'Backups kept';
+
+  @override
+  String syFbKeepN(String n) {
+    return 'keep $n';
+  }
+
+  @override
+  String syFbLastFailed(String when, String why) {
+    return 'The backup of $when did not work: $why';
+  }
+
+  @override
+  String syFbLastOk(String when) {
+    return 'Last backup: $when, read back and complete.';
+  }
+
+  @override
+  String get syFbListAgain => 'Look again';
+
+  @override
+  String syFbListEmpty(String where) {
+    return 'No backup yet in $where.';
+  }
+
+  @override
+  String get syFbListLead =>
+      'Each one can be brought back: what is new is added, nothing here is deleted.';
+
+  @override
+  String get syFbListShow => 'Show the backups';
+
+  @override
+  String get syFbListTitle => 'The backups there';
+
+  @override
+  String get syFbMachineTitle => 'The machine';
+
+  @override
+  String get syFbMethod_helper =>
+      'Pick one: Rasgeth mounts it only for backups. System disks are never offered.';
+
+  @override
+  String get syFbMethod_none =>
+      'This installation cannot mount disks (for example plain Docker without privileges): use a disk already mounted, or a folder below.';
+
+  @override
+  String get syFbMethod_udisks =>
+      'Pick one: the system mounts it (udisks2). System disks are never offered.';
+
+  @override
+  String get syFbMissing_not_installed => 'unknown: the program that tells is not installed';
+
+  @override
+  String get syFbMissing_unreadable => 'could not be read';
+
+  @override
+  String get syFbMissing_unsupported => 'not available on this system';
+
+  @override
+  String get syFbMon => 'Mon';
+
+  @override
+  String get syFbNetAProxy => 'a reverse proxy';
+
+  @override
+  String syFbNetDns(String ip) {
+    return 'A DNS server on your network ($ip): a name like rasgeth.home can point here.';
+  }
+
+  @override
+  String get syFbNetFolder => 'Folder there';
+
+  @override
+  String get syFbNetFolderHelp =>
+      'A full path (/volume1/Rasgeth, E:\\Backup) or one from the home (~/RedGiant-backups). It is made if missing.';
+
+  @override
+  String get syFbNetLanOnly => 'Local network only is a fine choice: skip this step.';
+
+  @override
+  String get syFbNetLead =>
+      'Nothing to mount: it works also in a container or in Docker. Each backup arrives under a temporary name and gets its real name only once complete and checked.';
+
+  @override
+  String syFbNetName(String name) {
+    return 'You reached Rasgeth by name: $name.';
+  }
+
+  @override
+  String get syFbNetNoMachines =>
+      'No machine yet: add your NAS or another computer in Settings › Machines (SSH), test it once, then come back here.';
+
+  @override
+  String get syFbNetNoNodes =>
+      'No paired Rasgeth yet: pair one in Settings › Nodes (it must lend its storage).';
+
+  @override
+  String get syFbNetNode => 'Another Rasgeth';
+
+  @override
+  String get syFbNetNotTrusted => 'Test it in Settings › Machines first';
+
+  @override
+  String get syFbNetNothing => 'Nothing found that already reaches this machine from outside.';
+
+  @override
+  String get syFbNetPick => 'Use for backups';
+
+  @override
+  String syFbNetProxies(String names) {
+    return 'Running on this machine: $names.';
+  }
+
+  @override
+  String syFbNetProxyFront(String name) {
+    return 'There is already $name in front of Rasgeth.';
+  }
+
+  @override
+  String get syFbNetSftp => 'One of your machines';
+
+  @override
+  String get syFbNetSmb => 'Shared folder (SMB)';
+
+  @override
+  String syFbNetTailscale(String name) {
+    return 'Tailscale is already running here ($name): you can use it.';
+  }
+
+  @override
+  String get syFbNetTailscaleOff => 'Tailscale is installed here but not connected.';
+
+  @override
+  String get syFbNetTitle => 'Or a folder on the network';
+
+  @override
+  String get syFbNoDisks =>
+      'No removable disk found. Plug one in and open this page again, or use a folder.';
+
+  @override
+  String get syFbNodeOffline => 'Offline now';
+
+  @override
+  String get syFbNodeOnline => 'Online';
+
+  @override
+  String get syFbOff => 'Only when I ask';
+
+  @override
+  String get syFbOfferCloud => 'Cloud models: always available.';
+
+  @override
+  String syFbOfferLocalCpu(String max) {
+    return 'Local models: yes, small ones on the processor, up to about $max GB (slower than a card).';
+  }
+
+  @override
+  String syFbOfferLocalGpu(String max) {
+    return 'Local models: yes, on the graphics card, up to about $max GB.';
+  }
+
+  @override
+  String get syFbOfferNoLocal =>
+      'Local models: not offered, too little memory here. You can still add one from Settings › Models.';
+
+  @override
+  String get syFbPairLater =>
+      'Write the main Rasgeth\'s address and the code it shows in Settings › Nodes › «Add a node». You can also do it later, from Settings.';
+
+  @override
+  String get syFbPassword => 'Password';
+
+  @override
+  String get syFbPasswordAgain => 'The same password again';
+
+  @override
+  String get syFbPasswordHelp => 'At least 10 characters.';
+
+  @override
+  String syFbPlaceFree(String free, String total) {
+    return '$free GB free of $total';
+  }
+
+  @override
+  String get syFbPlaceNotWritable => 'Rasgeth cannot write here';
+
+  @override
+  String get syFbPlacesLead =>
+      'Folders the machine hosting Rasgeth mounted under /var/lib/redgiant/backups (a Proxmox mount point, a network share).';
+
+  @override
+  String get syFbPlacesTitle => 'Folders mounted for backups';
+
+  @override
+  String get syFbPveDo => 'Pass it to Rasgeth';
+
+  @override
+  String syFbPveDone(String target) {
+    return 'Done: the folder $target has arrived.';
+  }
+
+  @override
+  String get syFbPveFormat => 'Not formatted: format and pass it';
+
+  @override
+  String syFbPveFormatLabel(String title) {
+    return 'Everything on it is erased. To go on, type its name: $title';
+  }
+
+  @override
+  String syFbPveFormatQ(String title) {
+    return 'Format the disk $title?';
+  }
+
+  @override
+  String get syFbPveFormatYes => 'Format and pass it';
+
+  @override
+  String syFbPveGuess(String id) {
+    return 'This container is $id.';
+  }
+
+  @override
+  String syFbPveHost(String name, String version) {
+    return '$name: Proxmox $version.';
+  }
+
+  @override
+  String get syFbPveLead =>
+      'If the Proxmox host is among your machines (Settings › Machines), Rasgeth can run these steps there itself. It asks you first, with every command in the request.';
+
+  @override
+  String get syFbPveLook => 'Look for the Proxmox host';
+
+  @override
+  String get syFbPveNeedId => 'Write the container id first.';
+
+  @override
+  String get syFbPveNoDisks => 'No removable disk on that host.';
+
+  @override
+  String syFbPveNone(String n) {
+    return 'None of your $n machines is a Proxmox host. Add the host in Settings › Machines (as root, with Rasgeth\'s key), test it, then look again.';
+  }
+
+  @override
+  String syFbPveQ(String host, String id, String title) {
+    return 'Pass the disk $title of $host to container $id?';
+  }
+
+  @override
+  String syFbPveRestart(String target) {
+    return 'Done on the host. If $target does not appear in a minute, restart the container from Proxmox.';
+  }
+
+  @override
+  String get syFbPveText =>
+      'Rasgeth asks you again in your requests, with the exact commands, before running anything on the host.';
+
+  @override
+  String get syFbPveTitle => 'Do it for me';
+
+  @override
+  String get syFbPveYes => 'Ask me with the commands';
+
+  @override
+  String syFbRamFree(String gb) {
+    return '$gb GB free now';
+  }
+
+  @override
+  String syFbRamTotal(String gb) {
+    return '$gb GB in all';
+  }
+
+  @override
+  String get syFbRemovable => 'removable';
+
+  @override
+  String get syFbRestore => 'Restore';
+
+  @override
+  String syFbRestoreQ(String when) {
+    return 'Restore the backup of $when?';
+  }
+
+  @override
+  String get syFbRestoreText =>
+      'It is read back first, then projects, agents and conversations that are not here are added. Nothing here is deleted.';
+
+  @override
+  String get syFbRestoreYes => 'Restore';
+
+  @override
+  String get syFbRoleFull => 'Complete Rasgeth';
+
+  @override
+  String get syFbRoleFullText => 'Agents, projects, chats and everything else, on this machine.';
+
+  @override
+  String get syFbRoleNode => 'Node of another Rasgeth';
+
+  @override
+  String get syFbRoleNodeText => 'This machine works for a Rasgeth you already have.';
+
+  @override
+  String get syFbRoleSettingsLead =>
+      'You can change it at any time: it asks first and says what changes.';
+
+  @override
+  String get syFbRoleTitle => 'Role';
+
+  @override
+  String get syFbSat => 'Sat';
+
+  @override
+  String get syFbSmbAddress => 'Shared folder';
+
+  @override
+  String get syFbSmbAddressHelp =>
+      'As Windows writes it (\\\\nas\\backup\\Rasgeth) or smb://nas/backup/Rasgeth.';
+
+  @override
+  String get syFbSmbDomain => 'Domain or workgroup';
+
+  @override
+  String get syFbSmbDomainHelp => 'Only if your network needs one (often empty).';
+
+  @override
+  String get syFbSmbMissing =>
+      'Shared folders need smbclient, which this installation does not have (the Docker image and Rasgeth OS have it). On Windows use the folder field above with \\\\host\\share.';
+
+  @override
+  String get syFbSmbPassword => 'Password';
+
+  @override
+  String get syFbSmbPasswordHelp => 'It goes into the keychain only, never into a file or a log.';
+
+  @override
+  String get syFbSmbPasswordKept => 'Kept in the keychain: leave it empty to keep it.';
+
+  @override
+  String get syFbSmbUser => 'User';
+
+  @override
+  String get syFbSshAddKey => 'Add this key';
+
+  @override
+  String syFbSshContainer(String name) {
+    return 'In a container ($name) SSH reaches the container itself, at its own address, as the user redgiant.';
+  }
+
+  @override
+  String get syFbSshKey => 'Public key';
+
+  @override
+  String get syFbSshKeyHelp =>
+      'One line starting with ssh-ed25519, ssh-rsa or ecdsa-sha2 (the .pub file).';
+
+  @override
+  String get syFbSshKeyPlaceholder => 'ssh-ed25519 AAAA… me@laptop';
+
+  @override
+  String syFbSshKeys(String n) {
+    return '$n key(s) allowed';
+  }
+
+  @override
+  String get syFbSshNeedKey => 'Paste a public key first, then switch it on.';
+
+  @override
+  String get syFbSshOffHelp => 'Paste a public key below, then switch it on.';
+
+  @override
+  String get syFbSshOn => 'SSH on';
+
+  @override
+  String get syFbSshQ =>
+      'To work on the machine itself from a terminal. Off unless you switch it on; keys only, never passwords.';
+
+  @override
+  String get syFbSshTitle => 'SSH';
+
+  @override
+  String get syFbSshWhy_no_helper =>
+      'This installation has no Rasgeth OS system helper: SSH is managed by the system hosting it.';
+
+  @override
+  String get syFbSshWhy_not_installed => 'SSH (openssh-server) is not installed on this system.';
+
+  @override
+  String syFbSshWhy_other(String why) {
+    return 'SSH cannot be read here: the system helper answered «$why».';
+  }
+
+  @override
+  String get syFbSshWhy_timeout =>
+      'Rasgeth OS\'s system helper took too long to answer: try again in a moment.';
+
+  @override
+  String get syFbSshWhy_unreachable =>
+      'Rasgeth OS\'s system helper does not answer (redgiant-helper.socket): SSH cannot be read or changed now. Restarting the machine usually brings it back.';
+
+  @override
+  String get syFbSun => 'Sun';
+
+  @override
+  String get syFbSystemLead =>
+      'The machine Rasgeth runs on, its role, where its data and backups live, and SSH.';
+
+  @override
+  String get syFbSystemQ => 'System';
+
+  @override
+  String get syFbSystemSection => 'System';
+
+  @override
+  String get syFbThu => 'Thu';
+
+  @override
+  String get syFbToFullQ => 'Make this a complete Rasgeth again?';
+
+  @override
+  String get syFbToFullText =>
+      'It stops working for the other Rasgeth; its own agents, projects and conversations come back as they were.';
+
+  @override
+  String get syFbToFullYes => 'Make it complete';
+
+  @override
+  String get syFbToNodeQ => 'Make this Rasgeth a node?';
+
+  @override
+  String get syFbToNodeText =>
+      'It will stop being a Rasgeth of its own once paired: its agents, projects and conversations stay saved, untouched, but they rest until you make it complete again.';
+
+  @override
+  String get syFbToNodeYes => 'Make it a node';
+
+  @override
+  String get syFbTue => 'Tue';
+
+  @override
+  String get syFbUseDisk => 'Use for backups';
+
+  @override
+  String get syFbUseFolder => 'Use this folder';
+
+  @override
+  String get syFbUsePlace => 'Use for backups';
+
+  @override
+  String get syFbUseShare => 'Use this shared folder';
+
+  @override
+  String get syFbVirt => 'Runs on';
+
+  @override
+  String syFbVirtContainer(String name) {
+    return 'a container ($name)';
+  }
+
+  @override
+  String get syFbVirtNone => 'a physical machine';
+
+  @override
+  String syFbVirtVm(String name) {
+    return 'a virtual machine ($name)';
+  }
+
+  @override
+  String get syFbWed => 'Wed';
+
+  @override
+  String get syFbWeekly => 'Every week';
+
+  @override
+  String get syFbWhenTitle => 'When';
+
+  @override
+  String get syFbWhyFs => 'Format not supported';
+
+  @override
+  String get syFbWhyNoFs => 'Not formatted';
+
+  @override
+  String get syFbWhyNoUuid => 'Without an id';
+
+  @override
+  String get syFbWhyNotDisk => 'Not a disk';
+
+  @override
+  String get syFbWhyNotRemovable => 'Not removable';
+
+  @override
+  String get syFbWhySystem => 'Holds the system';
+
+  @override
+  String get syFolder => 'Folder';
+
+  @override
+  String get syGitGiteaAgain => 'The same password again';
+
+  @override
+  String get syGitGiteaGuide => 'Open «Your home services»';
+
+  @override
+  String get syGitGiteaMismatch => 'The two passwords are different.';
+
+  @override
+  String get syInspector => 'Inspector';
+
+  @override
+  String get syJob_pihole => 'Starting Pi-hole';
+
+  @override
+  String get syJob_remote => 'Opening access from outside';
+
+  @override
+  String get syJob_step_account => 'Creating your account';
+
+  @override
+  String get syJob_step_arrive => 'Waiting for the folder';
+
+  @override
+  String get syJob_step_ask => 'Waiting for your yes';
+
+  @override
+  String get syJob_step_conversations => 'Conversations';
+
+  @override
+  String get syJob_step_convert => 'Converting';
+
+  @override
+  String get syJob_step_copy => 'Copying the models';
+
+  @override
+  String get syJob_step_data => 'Projects, agents and settings';
+
+  @override
+  String get syJob_step_download => 'Downloading the model';
+
+  @override
+  String get syJob_step_draft => 'With the small model';
+
+  @override
+  String get syJob_step_fetch => 'Bringing the backup here';
+
+  @override
+  String get syJob_step_files => 'The projects\' files';
+
+  @override
+  String get syJob_step_gitea_image => 'Downloading Gitea (only once)';
+
+  @override
+  String get syJob_step_gitea_start => 'Starting Gitea';
+
+  @override
+  String get syJob_step_image => 'Downloading the engine (only once)';
+
+  @override
+  String get syJob_step_image_download => 'Downloading';
+
+  @override
+  String get syJob_step_load => 'Loading the model into memory';
+
+  @override
+  String get syJob_step_look => 'Looking at the host';
+
+  @override
+  String get syJob_step_model_download => 'The model';
+
+  @override
+  String get syJob_step_model_prepare => 'Preparing it for the page';
+
+  @override
+  String get syJob_step_move => 'Copying to the new disk';
+
+  @override
+  String get syJob_step_ngram => 'With the n-grams';
+
+  @override
+  String get syJob_step_node_check => 'Checking the video (SHA-256)';
+
+  @override
+  String syJob_step_node_copy(String node) {
+    return 'Copying the files to $node';
+  }
+
+  @override
+  String syJob_step_node_fetch(String node) {
+    return 'Bringing the video back from $node';
+  }
+
+  @override
+  String syJob_step_node_ffmpeg(String node) {
+    return 'Getting ffmpeg ready on $node';
+  }
+
+  @override
+  String get syJob_step_none => 'The model alone';
+
+  @override
+  String get syJob_step_ocr_languages => 'The languages';
+
+  @override
+  String get syJob_step_ocr_program => 'The program';
+
+  @override
+  String get syJob_step_pihole_check => 'Checking that it answers';
+
+  @override
+  String get syJob_step_pihole_image => 'Downloading Pi-hole (only once)';
+
+  @override
+  String get syJob_step_pihole_start => 'Starting Pi-hole';
+
+  @override
+  String get syJob_step_preload =>
+      'Reading the model once, so the first message does not wait for the disk';
+
+  @override
+  String get syJob_step_remote_cert => 'Getting the certificate from Let\'s Encrypt';
+
+  @override
+  String get syJob_step_remote_connect => 'Connecting to Cloudflare';
+
+  @override
+  String get syJob_step_remote_https => 'Getting the safe address (HTTPS)';
+
+  @override
+  String get syJob_step_remote_image => 'Downloading what is needed (only once)';
+
+  @override
+  String get syJob_step_remote_login => 'Waiting for you to sign in to Tailscale';
+
+  @override
+  String get syJob_step_remote_start => 'Starting it';
+
+  @override
+  String get syJob_step_restore => 'Putting the engine back as it was';
+
+  @override
+  String get syJob_step_run => 'Running the steps on the host';
+
+  @override
+  String get syJob_step_searxng_check => 'Checking that it answers';
+
+  @override
+  String get syJob_step_searxng_image => 'Downloading SearXNG (only once)';
+
+  @override
+  String get syJob_step_searxng_start => 'Starting it';
+
+  @override
+  String get syJob_step_start => 'Starting the engine';
+
+  @override
+  String get syJob_step_switch => 'Starting the model on Windows';
+
+  @override
+  String get syJob_step_tool_download => 'Downloading';
+
+  @override
+  String get syJob_step_tool_unpack => 'Unpacking';
+
+  @override
+  String get syJob_step_try => 'Trying an answer';
+
+  @override
+  String get syJob_step_tune => 'Measuring this computer to pick the fastest setting';
+
+  @override
+  String get syJob_step_verify => 'Reading the backup back';
+
+  @override
+  String get syJob_step_video_derive => 'Making the file';
+
+  @override
+  String get syJob_step_video_probe => 'Reading the file';
+
+  @override
+  String get syJob_step_video_render => 'Rendering with ffmpeg';
+
+  @override
+  String get syJob_step_video_save => 'Saving it in the project';
+
+  @override
+  String get syJob_step_video_silences => 'Finding the silences';
+
+  @override
+  String get syJob_step_video_sound => 'Taking the sound';
+
+  @override
+  String get syJob_step_video_transcribe => 'Writing down the words';
+
+  @override
+  String get syJob_step_video_wait => 'Waiting for the render before it';
+
+  @override
+  String syKcImported(String n) {
+    return '$n credentials added to the keychain.';
+  }
+
+  @override
+  String get syKcPassphrase => 'Passphrase';
+
+  @override
+  String get syKcPassphraseHelp =>
+      'At least 8 characters. Keep it somewhere safe: it cannot be recovered.';
+
+  @override
+  String get syLmRecommended => 'recommended';
+
+  @override
+  String get syLoginCode => 'Code from the app (6 digits)';
+
+  @override
+  String get syMcAdd => 'Add';
+
+  @override
+  String get syMcAuthKey => 'Key';
+
+  @override
+  String get syMcAuthPassword => 'Password';
+
+  @override
+  String get syMcChangedNow => 'Now';
+
+  @override
+  String syMcChangedText(String name) {
+    return 'Another computer may be in the place of «$name». Nothing was sent and the connection was refused. Trust the new key only if you know why it changed (the system was reinstalled, the machine was replaced).';
+  }
+
+  @override
+  String get syMcChangedTitle => 'Danger: the machine answered with another key';
+
+  @override
+  String get syMcChangedWas => 'Trusted';
+
+  @override
+  String get syMcCopied => 'Copied';
+
+  @override
+  String get syMcCopy => 'Copy';
+
+  @override
+  String get syMcCopyKey => 'Copy the public key';
+
+  @override
+  String get syMcEdit => 'Change';
+
+  @override
+  String get syMcEditorLead =>
+      'Where the machine is and who logs in. The key or the password goes straight into the keychain.';
+
+  @override
+  String get syMcEmpty =>
+      'No machine yet. Add one: Rasgeth makes a key for it, you copy its public half onto the machine.';
+
+  @override
+  String get syMcFolder => 'Working folder';
+
+  @override
+  String get syMcFolderHelp =>
+      'Where commands start; deleting outside it always asks you. A full path (/srv/app, ~/app, or on Windows E:\\coding\\site). Leave empty for the home.';
+
+  @override
+  String get syMcFolderNone => 'the home (every deletion asks you)';
+
+  @override
+  String get syMcHost => 'Address';
+
+  @override
+  String get syMcHostHelp => 'Its name or IP address on the network.';
+
+  @override
+  String get syMcHostKey => 'Machine\'s key';
+
+  @override
+  String get syMcKeyGenerate => 'Make a new key';
+
+  @override
+  String get syMcKeyGenerateHelp =>
+      'Rasgeth makes an ed25519 key: you will copy its public half into ~/.ssh/authorized_keys on the machine.';
+
+  @override
+  String get syMcKeyKeep => 'Keep the key';
+
+  @override
+  String get syMcKeyKeepHelp => 'The key kept in the keychain stays as it is.';
+
+  @override
+  String get syMcKeyPaste => 'Paste a private key';
+
+  @override
+  String get syMcLead =>
+      'Other computers your agents reach over SSH: a server, a Raspberry Pi, a computer at the office. Keys and passwords stay in the keychain; the agents choose a machine by its name and never see them.';
+
+  @override
+  String get syMcLogin => 'Login';
+
+  @override
+  String get syMcLoginGenerated => 'key made by Rasgeth, in the keychain';
+
+  @override
+  String get syMcLoginImported => 'your key, in the keychain';
+
+  @override
+  String get syMcLoginPassword => 'password in the keychain';
+
+  @override
+  String get syMcName => 'Name';
+
+  @override
+  String get syMcNameHelp =>
+      'How agents call it: letters, digits, dot, dash, no spaces (web, pi, office).';
+
+  @override
+  String get syMcNew => 'Add a machine';
+
+  @override
+  String get syMcNewKey => 'Make a new key';
+
+  @override
+  String get syMcNewKeyQ => 'Make a new key for this machine?';
+
+  @override
+  String get syMcNewKeyText =>
+      'The old key stops working here: copy the new public key onto the machine and remove the old one.';
+
+  @override
+  String get syMcPassphrase => 'Its passphrase (if it has one)';
+
+  @override
+  String get syMcPassword => 'Password';
+
+  @override
+  String get syMcPasswordHelp =>
+      'Kept in the keychain. A key is safer: a password travels at every login.';
+
+  @override
+  String get syMcPasswordKept => 'The password in the keychain stays unless you write a new one.';
+
+  @override
+  String get syMcPort => 'Port';
+
+  @override
+  String get syMcPrivateKey => 'Private key';
+
+  @override
+  String get syMcPrivateKeyHelp =>
+      'OpenSSH or PEM. It goes into the keychain and is never shown again.';
+
+  @override
+  String get syMcPrivateKeyPlaceholder => '-----BEGIN OPENSSH PRIVATE KEY-----';
+
+  @override
+  String get syMcProject => 'project';
+
+  @override
+  String get syMcPublicKey => 'Public key';
+
+  @override
+  String get syMcPublicKeyHelp =>
+      'Copy it into ~/.ssh/authorized_keys of the user on the machine (one line), then test the connection.';
+
+  @override
+  String syMcRemoveQ(String name) {
+    return 'Remove «$name»?';
+  }
+
+  @override
+  String get syMcRemoveText =>
+      'Its key or password leaves the keychain; agents can no longer use it. Remove the public key from the machine too.';
+
+  @override
+  String syMcReplaceQ(String name) {
+    return 'Trust the new key of «$name»?';
+  }
+
+  @override
+  String get syMcReplaceText =>
+      'Do it only if you know why the machine\'s key changed: otherwise someone could be reading what Rasgeth sends.';
+
+  @override
+  String get syMcReplaceYes => 'Trust the new key';
+
+  @override
+  String get syMcSafety =>
+      'What happens there follows the same rules as here: sudo, switching the machine off, installing system programs, changing its system files and deleting outside its working folder always ask you, also with «Don\'t ask me anything».';
+
+  @override
+  String get syMcSave => 'Save';
+
+  @override
+  String get syMcSection => 'Machines';
+
+  @override
+  String get syMcStateFailed => 'Last test failed';
+
+  @override
+  String get syMcStateNew => 'Not checked yet';
+
+  @override
+  String get syMcStateTrusted => 'Key trusted';
+
+  @override
+  String get syMcTest => 'Test the connection';
+
+  @override
+  String get syMcTestAuth =>
+      'The machine refused the login: is the public key in ~/.ssh/authorized_keys (or the password right)?';
+
+  @override
+  String syMcTestError(String message) {
+    return 'It did not work: $message';
+  }
+
+  @override
+  String get syMcTestNoSecret =>
+      'There is no key or password in the keychain for this machine: change it and set one.';
+
+  @override
+  String syMcTestOk(String system) {
+    return 'Connected: $system';
+  }
+
+  @override
+  String get syMcTestTimeout => 'The machine did not answer in time.';
+
+  @override
+  String get syMcTestUnreachable =>
+      'The machine cannot be reached: check the address and that it is on.';
+
+  @override
+  String get syMcTesting => 'Connecting…';
+
+  @override
+  String get syMcTitle => 'Your machines';
+
+  @override
+  String get syMcTofuHow =>
+      'To see it on the machine: ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub';
+
+  @override
+  String get syMcTofuText =>
+      'Nothing was sent yet. If the fingerprint is the machine\'s, trust it: from now on Rasgeth connects only to a machine with this key.';
+
+  @override
+  String get syMcTofuTitle => 'First connection: is this the machine\'s key?';
+
+  @override
+  String get syMcTrust => 'Trust this key';
+
+  @override
+  String get syMcUser => 'User';
+
+  @override
+  String get syMcWho => 'Who may use it';
+
+  @override
+  String get syMcWhoAgents => 'Agents';
+
+  @override
+  String get syMcWhoEveryone => 'Every agent';
+
+  @override
+  String get syMcWhoEveryoneHelp => 'God, the assistants and every project\'s agents.';
+
+  @override
+  String get syMcWhoLead => 'The agents not chosen do not even see it.';
+
+  @override
+  String get syMcWhoNoAgents => 'There are no agents yet.';
+
+  @override
+  String get syMcWhoNobody => 'nobody yet';
+
+  @override
+  String get syMcWhoProjects => 'Every agent of these projects';
+
+  @override
+  String get syNdAddButton => 'Show a pairing code';
+
+  @override
+  String get syNdAddLead =>
+      'On the other machine, in its first start (role «Node of another Rasgeth») or in its Settings › Nodes, write this machine\'s address and the code below.';
+
+  @override
+  String get syNdAddTitle => 'Add a node';
+
+  @override
+  String get syNdAddress => 'The other Rasgeth\'s address';
+
+  @override
+  String get syNdAddressPh => 'https://rasgeth.local or 192.168.1.10:3000';
+
+  @override
+  String get syNdAdmin => 'uses and manages';
+
+  @override
+  String syNdBackupDone(String name) {
+    return 'Copied to the node: $name';
+  }
+
+  @override
+  String get syNdBackupNow => 'Copy now';
+
+  @override
+  String get syNdBackupsOn => 'Backups';
+
+  @override
+  String get syNdCode => 'Pairing code';
+
+  @override
+  String syNdCodeAddress(String address) {
+    return 'This machine\'s address, as the other one reaches it (in the local network, through Tailscale or a proxy): $address';
+  }
+
+  @override
+  String syNdCodeExpires(String min) {
+    return 'Valid once, for $min more minutes.';
+  }
+
+  @override
+  String get syNdCodeField => 'Its code';
+
+  @override
+  String get syNdCodePh => 'ABCD-EFGH';
+
+  @override
+  String get syNdCodeStop => 'Stop showing it';
+
+  @override
+  String get syNdCommandsOn => 'Commands';
+
+  @override
+  String get syNdConfirm => 'They match: confirm';
+
+  @override
+  String get syNdConnecting => 'Connecting';
+
+  @override
+  String get syNdControl => 'Control';
+
+  @override
+  String get syNdControlLead =>
+      'Never implicit: a machine commands another only with this grant, which the commanded machine keeps and can take away.';
+
+  @override
+  String syNdControlTitle(String name) {
+    return 'Who may command $name';
+  }
+
+  @override
+  String get syNdController => 'Which machine';
+
+  @override
+  String syNdCpu(String n) {
+    return '$n CPU';
+  }
+
+  @override
+  String get syNdFingerprint => 'Its key\'s fingerprint';
+
+  @override
+  String syNdFree(String n) {
+    return '$n GB free';
+  }
+
+  @override
+  String get syNdGive => 'Give';
+
+  @override
+  String get syNdGrantsHere => 'Who may command this machine';
+
+  @override
+  String get syNdGrantsLead =>
+      'Only these machines may use this one, each with what the person gave it. Taking it away works at once.';
+
+  @override
+  String get syNdHere => 'Here';
+
+  @override
+  String get syNdJoinLead =>
+      'Pair this machine as a node of another Rasgeth: on that one, Settings › Nodes › «Add a node» shows its address and a code.';
+
+  @override
+  String get syNdJoinTitle => 'Work for another Rasgeth';
+
+  @override
+  String syNdLastSeen(String when) {
+    return 'Last seen $when';
+  }
+
+  @override
+  String get syNdLead =>
+      'Other Rasgeth machines that work with this one: they lend commands, local models and room for projects and backups. Who may command whom is decided here, machine by machine.';
+
+  @override
+  String syNdLoad(String n) {
+    return 'load $n%';
+  }
+
+  @override
+  String syNdModels(String n) {
+    return '$n models';
+  }
+
+  @override
+  String get syNdName => 'Name';
+
+  @override
+  String get syNdNameHelp => 'How the other machines and the agents call it.';
+
+  @override
+  String get syNdNoContainer => 'commands only for who manages it';
+
+  @override
+  String get syNdNoContainerHelp =>
+      'There is no container there (no Docker): it runs commands only for a machine that manages it, on the machine itself. With «use» alone, files, storage and models only.';
+
+  @override
+  String get syNdNoNodes => 'No node yet.';
+
+  @override
+  String get syNdNoProjects => 'No project yet.';
+
+  @override
+  String get syNdNoRights => 'No permissions';
+
+  @override
+  String get syNdNoSandbox => 'no commands';
+
+  @override
+  String get syNdNodeName => 'Name of the node';
+
+  @override
+  String get syNdNodeNameHelp =>
+      'How you, the agents and the requests call it here. Empty: the name it gives itself.';
+
+  @override
+  String get syNdNotReady =>
+      'Nodes need the keychain: this machine\'s key lives only there. Open it in Settings › Keychain.';
+
+  @override
+  String get syNdOffline => 'Offline';
+
+  @override
+  String get syNdOnline => 'Online';
+
+  @override
+  String get syNdPair => 'Pair';
+
+  @override
+  String get syNdPairing => 'Pairing…';
+
+  @override
+  String get syNdParent => 'Works for';
+
+  @override
+  String get syNdPending => 'Waiting for the yes on the other machine';
+
+  @override
+  String syNdPendingFromNode(String name) {
+    return '$name wants to be a node of this machine';
+  }
+
+  @override
+  String syNdPendingFromPrincipal(String name) {
+    return 'This machine will work for $name';
+  }
+
+  @override
+  String get syNdPendingLead =>
+      'Both machines show the same six digits and each other\'s fingerprint. If they match on both screens, confirm on both: nothing is used before.';
+
+  @override
+  String get syNdPendingTitle => 'Compare and confirm';
+
+  @override
+  String get syNdPlaces => 'Where things run';
+
+  @override
+  String get syNdPlacesLead =>
+      'For each project: by default everything stays here. A node pinned for commands is where its agents\' node_run goes; one for backups keeps copies of its files.';
+
+  @override
+  String get syNdQ => 'Nodes';
+
+  @override
+  String syNdRam(String n) {
+    return '$n GB RAM';
+  }
+
+  @override
+  String get syNdReason => 'Why';
+
+  @override
+  String get syNdRefused => 'Refused: its key changed';
+
+  @override
+  String get syNdReject => 'They do not match';
+
+  @override
+  String get syNdRename => 'Rename';
+
+  @override
+  String syNdRenameQ(String name) {
+    return 'A name for $name';
+  }
+
+  @override
+  String get syNdRenderOn => 'Videos';
+
+  @override
+  String get syNdRevoke => 'Take away';
+
+  @override
+  String syNdRevokeQ(String name) {
+    return 'Take away what $name may do here?';
+  }
+
+  @override
+  String get syNdRightAdmin => 'Manage it';
+
+  @override
+  String get syNdRightAdminHelp =>
+      'Give and take away the control of this machine to other machines, and write outside the sandbox.';
+
+  @override
+  String get syNdRightUse => 'Use it';
+
+  @override
+  String get syNdRightUseHelp =>
+      'Run its agents\' commands in a sandbox here, use its models and keep files here.';
+
+  @override
+  String get syNdRights => 'What it may do';
+
+  @override
+  String syNdRightsTitle(String name) {
+    return 'What $name may do on this machine';
+  }
+
+  @override
+  String get syNdSas => 'The six digits';
+
+  @override
+  String get syNdSection => 'Nodes';
+
+  @override
+  String get syNdTheirFp => 'The other machine\'s fingerprint';
+
+  @override
+  String get syNdThis => 'This machine';
+
+  @override
+  String get syNdTree => 'The tree';
+
+  @override
+  String get syNdTreeLead =>
+      'This machine, its nodes and theirs. Control is separate: it is shown under each machine.';
+
+  @override
+  String get syNdUnpair => 'Unpair';
+
+  @override
+  String syNdUnpairQ(String name) {
+    return 'Unpair $name?';
+  }
+
+  @override
+  String get syNdUnpairText =>
+      'The two machines forget each other: links, grants and placements with it go. Its files stay where they are. To pair again, a new code.';
+
+  @override
+  String get syNdUse => 'uses';
+
+  @override
+  String get syNdWho => 'Who may command it';
+
+  @override
+  String get syNdWhoNobody => 'Nobody but itself';
+
+  @override
+  String get syOiAddress => 'Rasgeth\'s address in the network';
+
+  @override
+  String syOiAddressHelp(String port) {
+    return 'Where the proxy or the VPN finds Rasgeth; its port is $port.';
+  }
+
+  @override
+  String get syOiAuthCaddy =>
+      'Caddyfile with forward auth (Authelia), leaving out the app\'s paths';
+
+  @override
+  String get syOiAuthIf =>
+      'If you want it anyway, leave /api/ and /ws out of it: forward auth then guards the page, and Rasgeth\'s password everything else.';
+
+  @override
+  String get syOiAuthTitle => 'Authelia, Authentik or another forward auth in front?';
+
+  @override
+  String get syOiAuthWhy =>
+      'Better not: Rasgeth has its own password, with limited tries and the optional code from an authenticator app, and a sign-in in front of it blocks the app, the command line, ACP agents, the browser extension and the webhooks (Telegram, WhatsApp, automations), which come in with their own tokens.';
+
+  @override
+  String get syOiCaddy => 'Caddyfile: a site of its own';
+
+  @override
+  String get syOiCaddyReload => 'Then reload Caddy (caddy reload, or restart its container).';
+
+  @override
+  String syOiCaddyWildcard(String domain) {
+    return 'Caddyfile: inside a wildcard site you already have (*.$domain)';
+  }
+
+  @override
+  String get syOiCheck => 'Check that it answers';
+
+  @override
+  String get syOiCheckAnswers =>
+      'Something answers at this address (the browser does not let the page read who): open it to see Rasgeth.';
+
+  @override
+  String syOiCheckGo(String url) {
+    return 'Check $url from here';
+  }
+
+  @override
+  String syOiCheckLead(String lb, String rb) {
+    return 'From any computer: Rasgeth answers $lb\"ok\":true,…$rb.';
+  }
+
+  @override
+  String get syOiCheckNo =>
+      'No answer from this browser: check the name in the DNS, the proxy\'s block and, from outside, the VPN.';
+
+  @override
+  String get syOiCheckRedgiant => 'Rasgeth answers at this address.';
+
+  @override
+  String get syOiClose => 'Hide the guide';
+
+  @override
+  String get syOiCopied => 'Copied';
+
+  @override
+  String get syOiCopy => 'Copy';
+
+  @override
+  String syOiDnsAdguard(String address, String domain) {
+    return 'AdGuard Home: Filters › DNS rewrites: *.$domain or the single name → $address.';
+  }
+
+  @override
+  String get syOiDnsLead =>
+      'A name instead of an address: point it to the proxy when there is one, otherwise to Rasgeth\'s address.';
+
+  @override
+  String syOiDnsPihole(String address, String name) {
+    return 'Pi-hole: Settings › Local DNS › DNS Records: $name → $address.';
+  }
+
+  @override
+  String get syOiDnsRouter =>
+      'The router: its «static DNS», «local names» or DHCP reservation page (the name varies by router).';
+
+  @override
+  String get syOiDnsTs =>
+      'Away from home with Tailscale: add the home DNS in Tailscale\'s DNS › Nameservers, restricted to your domain, so the same names work outside too.';
+
+  @override
+  String syOiDnsWildcard(String domain) {
+    return 'Pi-hole or dnsmasq, every name of *.$domain at once (a file in /etc/dnsmasq.d/)';
+  }
+
+  @override
+  String syOiHomeAdguard(String address, String name) {
+    return 'AdGuard Home: Filters › DNS rewrites: $name → $address.';
+  }
+
+  @override
+  String get syOiHomeDnsmasq => 'dnsmasq (or a file in Pi-hole\'s /etc/dnsmasq.d/)';
+
+  @override
+  String get syOiHomeHosts => 'Pi-hole\'s records or /etc/hosts, by hand';
+
+  @override
+  String get syOiHomeLookup => 'On Rasgeth OS, what its DNS answers for the name';
+
+  @override
+  String syOiHomePihole(String address, String name) {
+    return 'Pi-hole: Settings › Local DNS › DNS Records: $name → $address.';
+  }
+
+  @override
+  String syOiHomeRouter(String address, String name) {
+    return 'The router: its «static DNS» or «local names» page: $name → $address.';
+  }
+
+  @override
+  String syOiHomeSeen(String dns) {
+    return 'Rasgeth asks the name server $dns.';
+  }
+
+  @override
+  String get syOiHomeTitle => 'Your home services (Gitea, NAS…) seen by Rasgeth';
+
+  @override
+  String get syOiHomeTs =>
+      'If your Pi-hole answers with Tailscale addresses (100.…), those work only for devices in Tailscale: add a local record with the address in your network as above, or let Rasgeth\'s machine use the router as DNS with the name there.';
+
+  @override
+  String get syOiHomeV6 =>
+      'A router that answers «does not exist» to the IPv6 (AAAA) question for names added by hand: Rasgeth OS handles it already; on other systems with systemd-resolved, put Cache=no-negative in a file of /etc/systemd/resolved.conf.d/, or the name seems missing for a while.';
+
+  @override
+  String get syOiHomeWhat => 'In the DNS Rasgeth uses, give the name that local address:';
+
+  @override
+  String get syOiHomeWhich =>
+      'Which DNS Rasgeth uses: on Rasgeth OS the console (or SSH) shows it with the command below, under «Current DNS Server»; on another computer it is that computer\'s DNS (its network settings, /etc/resolv.conf on Linux). «Try a name» asks the very DNS Rasgeth uses.';
+
+  @override
+  String get syOiHomeWhichCmd => 'On Rasgeth OS, which DNS it uses';
+
+  @override
+  String get syOiHomeWhy =>
+      'Rasgeth reaches your Gitea, NAS or other services by name, through the DNS of the machine it runs on (often the router). A name your phone opens may be unknown there, or point to an address Rasgeth cannot reach: then «A Gitea you already have» fails even though the service works.';
+
+  @override
+  String get syOiLead =>
+      'A reverse proxy, a VPN, a home DNS: if you already reach your machines that way, Rasgeth goes behind them like any other service. Here are the blocks to copy.';
+
+  @override
+  String get syOiName => 'Rasgeth\'s name';
+
+  @override
+  String get syOiNameHelp => 'The name you will open, e.g. rasgeth.home.example.com.';
+
+  @override
+  String syOiNpm1(String name) {
+    return 'Hosts › Proxy Hosts › Add Proxy Host; Domain Names: $name.';
+  }
+
+  @override
+  String syOiNpm2(String address, String port) {
+    return 'Scheme http, Forward Hostname / IP $address, Forward Port $port.';
+  }
+
+  @override
+  String get syOiNpm3 =>
+      'Switch on «Websockets Support» (Rasgeth\'s page lives on a WebSocket) and «Block Common Exploits».';
+
+  @override
+  String get syOiNpm4 =>
+      'SSL: «Request a new SSL Certificate», «Force SSL», «HTTP/2 Support». Save.';
+
+  @override
+  String get syOiOpen => 'Show the guide';
+
+  @override
+  String get syOiOtherVpn => 'WireGuard, ZeroTier and the others';
+
+  @override
+  String syOiOtherVpnLead(String subnet) {
+    return 'The same idea: with the home network $subnet in the peer\'s AllowedIPs (WireGuard) or as a managed route (ZeroTier), Rasgeth opens at its home address.';
+  }
+
+  @override
+  String get syOiPart => 'What you have';
+
+  @override
+  String get syOiPartDns => 'Home DNS';
+
+  @override
+  String get syOiPartHome => 'Your home services';
+
+  @override
+  String get syOiPartProxy => 'Reverse proxy';
+
+  @override
+  String get syOiPartVpn => 'Tailscale or another VPN';
+
+  @override
+  String get syOiProbe => 'Try a name';
+
+  @override
+  String get syOiProbeBad => 'That is not a name (for instance git.home.example.com).';
+
+  @override
+  String syOiProbeDnsFailed(String name) {
+    return 'The DNS Rasgeth uses did not answer for $name. Check that it works, then try again.';
+  }
+
+  @override
+  String syOiProbeGo(String name) {
+    return 'Try $name';
+  }
+
+  @override
+  String syOiProbeLead(String name) {
+    return 'Rasgeth looks the name up and opens https://$name from where it runs, as it does for your Gitea. Nothing of the answer is kept or shown but its code.';
+  }
+
+  @override
+  String syOiProbeNotFound(String name) {
+    return 'The DNS Rasgeth uses does not know $name. Add the name there (router, Pi-hole or AdGuard) with the proxy\'s local address, then try again.';
+  }
+
+  @override
+  String syOiProbeOk(String address, String name, String status) {
+    return 'Fine: here $name is $address, and https://$name answered (HTTP $status).';
+  }
+
+  @override
+  String syOiProbeTailscale(String address, String name) {
+    return 'Here $name is $address: a Tailscale address, which Rasgeth cannot reach. In the DNS Rasgeth uses, give the name the proxy\'s local address.';
+  }
+
+  @override
+  String syOiProbeTimeout(String address, String name) {
+    return 'Here $name is $address, but it did not answer in time: probably an address Rasgeth cannot reach (another network, a VPN).';
+  }
+
+  @override
+  String syOiProbeTls(String address, String name) {
+    return 'Here $name is $address and answers, but with a certificate Rasgeth does not trust (made by hand?). Give the proxy a certificate from a public authority (Let\'s Encrypt).';
+  }
+
+  @override
+  String syOiProbeUnreachable(String address, String name) {
+    return 'Here $name is $address, but nothing answers on https from Rasgeth. Check that it is the proxy\'s local address and that the proxy is running.';
+  }
+
+  @override
+  String get syOiProxyAddr => 'The proxy\'s local address';
+
+  @override
+  String get syOiProxyAddrHelp =>
+      'The address in your network (192.168.…) of the proxy in front of the service, or of the service itself. Not a Tailscale address (100.…): Rasgeth reaches it only if it is in Tailscale too.';
+
+  @override
+  String get syOiProxyLead =>
+      'The proxy can be on another machine: it only needs to reach Rasgeth\'s address. It gets the certificate (HTTPS) and sends everything on, the WebSocket included.';
+
+  @override
+  String syOiReachedAs(String host) {
+    return 'You are reachable already as $host.';
+  }
+
+  @override
+  String get syOiReachedName =>
+      'This page came with a name of your network: at home it works already; from outside one of the ways below is needed (Tailscale, for instance).';
+
+  @override
+  String get syOiReachedProxy =>
+      'This page came through a reverse proxy of your network: the guide below is filled with what Rasgeth saw.';
+
+  @override
+  String get syOiSaid =>
+      'You said Rasgeth is reachable already your own way: it does not ask again to set up its ways.';
+
+  @override
+  String get syOiSaidUndo => 'Ask again';
+
+  @override
+  String syOiSaidUrl(String url) {
+    return 'You said Rasgeth is reachable already at $url: it does not ask again to set up its ways, and its links (Telegram…) use that address.';
+  }
+
+  @override
+  String get syOiService => 'The service\'s name';
+
+  @override
+  String get syOiServiceHelp => 'As you open it, e.g. git.home.example.com.';
+
+  @override
+  String get syOiSkip => 'Skip: I am reachable already';
+
+  @override
+  String get syOiSkipNote =>
+      'Rasgeth stops asking to set up its own ways out (Tailscale, Cloudflare, its own domain); they stay here if you want one later.';
+
+  @override
+  String get syOiTitle => 'Already have your own infrastructure';
+
+  @override
+  String get syOiTraefik => 'Traefik: file provider (dynamic configuration)';
+
+  @override
+  String get syOiTraefikNote =>
+      'With Docker labels instead: the same rule and the URL as a service with loadbalancer.server.url. Use your entry point and certificate resolver names.';
+
+  @override
+  String get syOiTsHere => 'Tailscale on Rasgeth\'s machine';
+
+  @override
+  String get syOiTsHereLead =>
+      'Install Tailscale on the machine and sign in (tailscale up): from your devices in the tailnet Rasgeth opens at http://<machine>:7600. For HTTPS with a real certificate:';
+
+  @override
+  String syOiTsRunning(String name) {
+    return 'Tailscale runs here already as $name: from your devices in the tailnet Rasgeth opens with that name. For HTTPS with a real certificate:';
+  }
+
+  @override
+  String get syOiTsServe => 'On the machine';
+
+  @override
+  String get syOiTsSubnet => 'Tailscale as a subnet router';
+
+  @override
+  String syOiTsSubnetLead(String subnet) {
+    return 'Tailscale on another device of the house (the router, a Pi, the proxy\'s machine) that shares the network $subnet:';
+  }
+
+  @override
+  String syOiTsSubnetThen(String address, String port) {
+    return 'Approve the route in Tailscale\'s admin console (Machines › Edit route settings). Your phone then opens http://$address:$port from anywhere, and the names of your home DNS too if you add it in DNS › Nameservers (restricted to your domain).';
+  }
+
+  @override
+  String get syOiWs =>
+      'Rasgeth keeps the page live through a WebSocket at /ws: Caddy and Traefik pass it on by themselves; Nginx needs the Upgrade headers (Websockets Support in Nginx Proxy Manager).';
+
+  @override
+  String get syOnline => 'connected';
+
+  @override
+  String get syOpen => 'open';
+
+  @override
+  String get syOsErr_bad_password => 'A Wi-Fi password has 8 to 63 characters.';
+
+  @override
+  String get syOsErr_bad_ssid => 'A network\'s name has 1 to 32 characters.';
+
+  @override
+  String get syOsErr_busy => 'The machine is already joining a network: wait a moment.';
+
+  @override
+  String get syOsErr_cannot_https => 'HTTPS is not managed by this installation.';
+
+  @override
+  String get syOsErr_cannot_reboot => 'Restarts are not managed by this installation.';
+
+  @override
+  String get syOsErr_cannot_update => 'Updates are not managed by this installation.';
+
+  @override
+  String get syOsErr_cannot_wifi => 'Wi-Fi is not managed by this installation.';
+
+  @override
+  String get syOsErr_clean_install => 'This version needs a clean install.';
+
+  @override
+  String get syOsErr_connect_failed =>
+      'The network refused to connect: check the password and try again.';
+
+  @override
+  String get syOsErr_failed => 'That did not work. Try again in a moment.';
+
+  @override
+  String get syOsErr_https_failed => 'Local HTTPS did not start.';
+
+  @override
+  String get syOsErr_https_off => 'Local HTTPS is off: switch it on first.';
+
+  @override
+  String get syOsErr_manual => 'This installation cannot update by itself.';
+
+  @override
+  String get syOsErr_no_wifi => 'This machine has no Wi-Fi card.';
+
+  @override
+  String get syOsErr_not_found => 'That network is not in reach now.';
+
+  @override
+  String get syOsErr_not_installed => 'This system cannot do that.';
+
+  @override
+  String get syOsErr_not_trusted => 'This device does not trust the certificate yet.';
+
+  @override
+  String get syOsErr_reboot_failed => 'The restart could not be scheduled.';
+
+  @override
+  String get syOsErr_start_failed => 'The update could not start.';
+
+  @override
+  String get syOsErr_timeout => 'The machine took too long to answer.';
+
+  @override
+  String get syOsErr_tls_failed => 'The certificate could not be made.';
+
+  @override
+  String get syOsErr_unreachable => 'The machine\'s helper did not answer.';
+
+  @override
+  String get syOsErr_wifi_off => 'Wi-Fi is not running on this machine.';
+
+  @override
+  String get syOsHttpsAddress => 'Address';
+
+  @override
+  String get syOsHttpsCheck => 'Check this device';
+
+  @override
+  String get syOsHttpsDevice => 'Your device';
+
+  @override
+  String get syOsHttpsDownload => 'Download the certificate';
+
+  @override
+  String get syOsHttpsFingerprint => 'Certificate\'s fingerprint (SHA-256)';
+
+  @override
+  String get syOsHttpsFirefox =>
+      'Firefox on any system: Settings › Privacy & Security › Certificates › View Certificates › Authorities › Import, tick «Trust this CA to identify websites».';
+
+  @override
+  String get syOsHttpsHow_android =>
+      'Settings › Security (or Security & privacy) › More › Encryption & credentials › Install a certificate › CA certificate: «Install anyway», choose Rasgeth-CA.crt.';
+
+  @override
+  String get syOsHttpsHow_iphone =>
+      'Open the download in Safari, «Allow». Settings › General › VPN & Device Management: install the profile. Then Settings › General › About › Certificate Trust Settings: switch on «Rasgeth on …».';
+
+  @override
+  String get syOsHttpsHow_linux =>
+      'Debian/Ubuntu: sudo cp Rasgeth-CA.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates. Chrome and Firefox keep their own list: add it under the browser\'s certificate settings (Authorities, «Import»).';
+
+  @override
+  String get syOsHttpsHow_mac =>
+      'Open Rasgeth-CA.crt: Keychain Access adds it. Double-click «Rasgeth on …» in the login keychain, open «Trust», set «When using this certificate» to «Always Trust», close and type your password.';
+
+  @override
+  String get syOsHttpsHow_windows =>
+      'Open Rasgeth-CA.crt, «Install certificate…», «Current user», «Place all certificates in the following store», «Trusted Root Certification Authorities», Finish, Yes. Restart the browser.';
+
+  @override
+  String syOsHttpsInFront(String name) {
+    return 'You already reach Rasgeth over HTTPS through $name: the local certificate is not needed for that address.';
+  }
+
+  @override
+  String get syOsHttpsLocal => 'HTTPS in the local network';
+
+  @override
+  String get syOsHttpsLocalOff =>
+      'Off: Rasgeth answers on http only (or through the HTTPS you set up yourself).';
+
+  @override
+  String syOsHttpsLocalOn(String name) {
+    return 'https://$name and the machine\'s addresses answer with a certificate of this machine. http keeps working until you say it is trusted.';
+  }
+
+  @override
+  String get syOsHttpsNotYet =>
+      'This device does not trust the certificate yet (or https://… does not answer): nothing has changed, http keeps working.';
+
+  @override
+  String get syOsHttpsNowOnly =>
+      'This device trusts it. From now on http goes to https for the machine\'s local name and addresses.';
+
+  @override
+  String get syOsHttpsOffQ => 'Switch local HTTPS off?';
+
+  @override
+  String get syOsHttpsOffText =>
+      'Browsers that already went to https://rasgeth.local keep asking for https for up to 30 days: in those, open the machine by its address (http://192.168…:7600) until then.';
+
+  @override
+  String get syOsHttpsOffYes => 'Switch off';
+
+  @override
+  String get syOsHttpsQ => 'Should the browser show the padlock on your home network?';
+
+  @override
+  String get syOsHttpsQr => 'QR code to download the certificate';
+
+  @override
+  String get syOsHttpsQrHelp => 'On a phone on the same network, scan the code to download it.';
+
+  @override
+  String get syOsHttpsRedirect => 'Always send to HTTPS';
+
+  @override
+  String get syOsHttpsRedirectOn =>
+      'http requests in your network go to https; browsers remember it (HSTS, 30 days). Devices without the certificate show a warning: install it there too.';
+
+  @override
+  String get syOsHttpsTitle => 'HTTPS in your network';
+
+  @override
+  String get syOsHttpsTrustLead =>
+      'Download it on the device (phone: scan the code), install it as below, then press «Check this device». The certificate works only for this machine\'s local names and addresses, never for any website.';
+
+  @override
+  String get syOsHttpsTrustTitle => 'Trust the certificate on each device';
+
+  @override
+  String get syOsHttpsUntil => 'The machine\'s certificate renews itself before';
+
+  @override
+  String get syOsNetSub => 'Network';
+
+  @override
+  String get syOsNetSubLead =>
+      'How the machine joins the network, and HTTPS for the pages of your home network.';
+
+  @override
+  String get syOsRebootNow => 'Restart now';
+
+  @override
+  String get syOsRebootQ => 'Restart the machine now?';
+
+  @override
+  String get syOsRebootText =>
+      'Rasgeth stops for two or three minutes while the machine restarts; agents working now are interrupted and pick up again from what was saved. This page comes back by itself.';
+
+  @override
+  String get syOsRebootYes => 'Restart';
+
+  @override
+  String get syOsRebooting =>
+      'The machine restarts in a few seconds. This page comes back by itself.';
+
+  @override
+  String get syOsSecLast => 'Last time';
+
+  @override
+  String syOsSecLastAt(String when) {
+    return '$when';
+  }
+
+  @override
+  String syOsSecLastN(String n, String when) {
+    return '$when, $n packages';
+  }
+
+  @override
+  String get syOsSecNever => 'Not yet (it runs once a day)';
+
+  @override
+  String get syOsSecNoReboot => 'Nothing waits for a restart.';
+
+  @override
+  String get syOsSecQ => 'The system installs Debian\'s security updates by itself, every day.';
+
+  @override
+  String get syOsSecReboot => 'An update asks for a restart to finish';
+
+  @override
+  String get syOsSecTitle => 'System security updates';
+
+  @override
+  String syOsUpdApply(String version) {
+    return 'Update to $version';
+  }
+
+  @override
+  String syOsUpdApplyQ(String version) {
+    return 'Update Rasgeth to $version?';
+  }
+
+  @override
+  String get syOsUpdApplyText =>
+      'The machine downloads the new version while this one keeps working, then restarts Rasgeth: the page stops for a few minutes and comes back by itself. Nothing is lost, and if the new version does not start the previous one comes back.';
+
+  @override
+  String get syOsUpdApplyYes => 'Update now';
+
+  @override
+  String get syOsUpdBreaking =>
+      'This version cannot be installed over the current one: Rasgeth guides you (backup on a USB disk, reinstall Rasgeth OS, restore).';
+
+  @override
+  String get syOsUpdChecked => 'Last look';
+
+  @override
+  String get syOsUpdInstalled => 'Installed';
+
+  @override
+  String get syOsUpdQ => 'Is Rasgeth up to date on this machine?';
+
+  @override
+  String get syOsUpdState => 'State';
+
+  @override
+  String get syOsUpdSub => 'Updates';
+
+  @override
+  String get syOsUpdSubLead => 'Rasgeth and the system it runs on, kept up to date.';
+
+  @override
+  String get syOsUpdTitle => 'Rasgeth';
+
+  @override
+  String syOsUpd_applying(String version) {
+    return 'Updating to $version';
+  }
+
+  @override
+  String syOsUpd_available(String version) {
+    return 'Rasgeth $version is ready to install';
+  }
+
+  @override
+  String syOsUpd_breaking(String version) {
+    return 'Rasgeth $version needs a clean install';
+  }
+
+  @override
+  String get syOsUpd_error => 'The last update did not finish (the previous version is running)';
+
+  @override
+  String get syOsUpd_latest => 'Up to date';
+
+  @override
+  String get syOsUpd_unknown => 'Not looked yet';
+
+  @override
+  String get syOsUpd_unreachable => 'Could not reach GitHub to look';
+
+  @override
+  String syOsUpd_unsigned(String version) {
+    return 'Rasgeth $version is out, but without a signed package for Rasgeth OS yet: it comes with a later release';
+  }
+
+  @override
+  String get syOsWifi8021x => 'company network (not from here)';
+
+  @override
+  String syOsWifiConnectedTo(String ip, String name) {
+    return 'Connected to «$name» ($ip)';
+  }
+
+  @override
+  String get syOsWifiForget => 'Forget';
+
+  @override
+  String syOsWifiForgetQ(String name) {
+    return 'Forget «$name»?';
+  }
+
+  @override
+  String get syOsWifiForgetText =>
+      'The machine stops joining this network and its password is erased. If it is the network in use and there is no cable, the page stops answering until the machine has another network.';
+
+  @override
+  String get syOsWifiGood => 'good signal';
+
+  @override
+  String get syOsWifiHidden => 'Hidden network…';
+
+  @override
+  String get syOsWifiHiddenName => 'The network\'s name';
+
+  @override
+  String get syOsWifiInReach => 'Networks in reach';
+
+  @override
+  String get syOsWifiInUse => 'in use';
+
+  @override
+  String get syOsWifiJoin => 'Join';
+
+  @override
+  String syOsWifiJoined(String name) {
+    return 'Connected to «$name». If you are using this page over that network, it keeps working.';
+  }
+
+  @override
+  String get syOsWifiJoining => 'Joining…';
+
+  @override
+  String get syOsWifiKnown => 'saved';
+
+  @override
+  String syOsWifiKnownAway(String names) {
+    return 'Saved, not in reach now: $names';
+  }
+
+  @override
+  String get syOsWifiLooking => 'Looking…';
+
+  @override
+  String get syOsWifiNone => 'No network found. Look again, or join a hidden network by its name.';
+
+  @override
+  String get syOsWifiNotConnected => 'Not connected to a Wi-Fi network';
+
+  @override
+  String get syOsWifiNow => 'Now';
+
+  @override
+  String syOsWifiPassword(String name) {
+    return 'Password of «$name»';
+  }
+
+  @override
+  String get syOsWifiPasswordHelp =>
+      '8 to 63 characters. It is kept only on the machine, readable by the system alone; Rasgeth never stores or shows it.';
+
+  @override
+  String get syOsWifiQ => 'Which wireless network does the machine join?';
+
+  @override
+  String syOsWifiSaved(String name) {
+    return '«$name» is saved: the machine joins it as soon as it is in reach.';
+  }
+
+  @override
+  String get syOsWifiScan => 'Look again';
+
+  @override
+  String get syOsWifiStrong => 'strong signal';
+
+  @override
+  String get syOsWifiTitle => 'Wi-Fi';
+
+  @override
+  String get syOsWifiWeak => 'weak signal';
+
+  @override
+  String get syOsWifiWhy_failed => 'Wi-Fi could not be read now. Try again in a moment.';
+
+  @override
+  String get syOsWifiWhy_no_helper => 'Wi-Fi is managed by the system of this machine.';
+
+  @override
+  String get syOsWifiWhy_no_wifi =>
+      'This machine has no Wi-Fi card (or the system does not recognise it).';
+
+  @override
+  String get syOsWifiWhy_not_installed => 'This system has no Wi-Fi tools.';
+
+  @override
+  String get syOsWifiWhy_wifi_off =>
+      'Wi-Fi is not running on this machine. Restart it, or connect a cable.';
+
+  @override
+  String get syOsWifiWired =>
+      'A cable is connected: the machine uses the cable, Wi-Fi stays as a spare.';
+
+  @override
+  String get syPiholeAdmin => 'Pi-hole\'s own page, to see what it blocks and allow a site:';
+
+  @override
+  String get syPiholeAds => 'About blocking ads';
+
+  @override
+  String get syPiholeAdsText =>
+      'Pi-hole blocks the names of well-known advertising and tracking services, for every device that uses it, phones and TVs included. Now and then a site or an app needs one of those names to work (some shop links, some streaming apps): it then looks broken.';
+
+  @override
+  String get syPiholeAllow =>
+      'If a site stops working: open the Pi-hole page, Query Log, find the blocked name and press Allow. To pause all blocking for a few minutes, use Disable blocking in the same page.';
+
+  @override
+  String syPiholeAnswers(String domain, String ip) {
+    return 'At home, $domain now leads to $ip.';
+  }
+
+  @override
+  String get syPiholeChanges => 'What changes at home, and how to go back';
+
+  @override
+  String get syPiholeDevice =>
+      'If your router does not let you change the DNS (some providers\' routers do not), set it on each device instead: in the Wi-Fi network\'s details on phones, in the network adapter\'s settings on computers.';
+
+  @override
+  String get syPiholeDomain => 'Your domain (optional)';
+
+  @override
+  String get syPiholeDomainHelp =>
+      'The address you use from outside, like rasgeth.yourdomain.com: Pi-hole answers for it with the address above. Leave it empty to use Pi-hole only to block ads.';
+
+  @override
+  String get syPiholeDomainWrong => 'It must be a name like rasgeth.yourdomain.com.';
+
+  @override
+  String get syPiholeIp => 'This computer\'s address at home';
+
+  @override
+  String get syPiholeIpHelp =>
+      'Four numbers like 192.168.1.50. Find it on the router\'s page among the connected devices, or on this computer: \"ip a\" on Linux, \"ipconfig\" on Windows, System Settings, Network on Mac. Better if the router always gives this computer the same address (address reservation).';
+
+  @override
+  String get syPiholeIpWrong =>
+      'It must be four numbers from 0 to 255 separated by dots, like 192.168.1.50.';
+
+  @override
+  String get syPiholeNeed =>
+      'you reach Rasgeth from outside with your own domain, and at home the same link does not open. Many routers cannot send you back to your own house through the internet (the feature is called NAT loopback or hairpin, and theirs lacks it).';
+
+  @override
+  String get syPiholeNeedTitle => 'You need it if';
+
+  @override
+  String get syPiholeNoNeed =>
+      'you use Tailscale or Cloudflare Tunnel: those links work the same at home and outside. You can still turn it on just to block ads, if you like.';
+
+  @override
+  String get syPiholeNoNeedTitle => 'You do not need it if';
+
+  @override
+  String syPiholeNowRouter(String ip) {
+    return 'Last step, yours: on your router (or on each device) set the DNS server to $ip. Until then nothing at home uses Pi-hole.';
+  }
+
+  @override
+  String get syPiholeOff =>
+      'To go back: put the router\'s DNS back as it was (often \"automatic\") and turn Pi-hole off here. Nothing else on your computers changes.';
+
+  @override
+  String syPiholeOn(String ip) {
+    return 'Pi-hole is on, at $ip.';
+  }
+
+  @override
+  String get syPiholeOpenAdmin => 'Open Pi-hole';
+
+  @override
+  String get syPiholePort => 'Technical details: port 53';
+
+  @override
+  String get syPiholePortText =>
+      'Pi-hole answers on port 53 (the DNS port) of this computer\'s home address only, not on the internet, and its own page on port 8053. If something on this computer already answers on port 53 (another DNS, or the system\'s own on some Linux systems), Pi-hole cannot start: Rasgeth says so and nothing changes.';
+
+  @override
+  String get syPiholeRouter =>
+      'For every device at once: open your router\'s page (its address is usually written under the router, like 192.168.1.1), find the DHCP or LAN settings and set the DNS server to this computer\'s home address. Devices pick it up the next time they connect (or restart them).';
+
+  @override
+  String get syPiholeSecond =>
+      'A second DNS: if this computer is off, devices that only know Pi-hole cannot open any site. As a second DNS you can put your router\'s address or a public one (1.1.1.1): everything keeps working when this computer is off, but devices may sometimes ask the second one and then see ads, or not find your domain at home.';
+
+  @override
+  String get syPiholeShowPassword => 'Show its password';
+
+  @override
+  String get syPiholeStart => 'Turn on Pi-hole';
+
+  @override
+  String get syPiholeStop => 'Turn off Pi-hole';
+
+  @override
+  String get syPiholeTest =>
+      'How to check: connect your phone to the home Wi-Fi and open your Rasgeth link. If it opens, you do not need Pi-hole for this (you may still want it to block ads). If it does not, but works on mobile data, Pi-hole fixes it.';
+
+  @override
+  String get syPiholeTitle => 'The home\'s own DNS, with Pi-hole (optional)';
+
+  @override
+  String get syPiholeWhat =>
+      'Every device at home asks a DNS server which number is behind a name (for example rasgeth.yourdomain.com). Usually your router or your internet provider answers. Pi-hole is a small DNS that Rasgeth can run on this computer: it answers for your domain with this computer\'s home address, so the link works at home too, and it also blocks advertising and tracking for every device that uses it.';
+
+  @override
+  String get syPwSignOutOthersQ => 'Sign out your other devices too?';
+
+  @override
+  String get syPwSignOutOthersText =>
+      'The other browsers and the apps signed in with the old password stay in if you keep them. Sign them out if you changed it because someone else might know it.';
+
+  @override
+  String get syPwSignOutOthersYes => 'Sign them out';
+
+  @override
+  String get syRemoteCaddy =>
+      'For experts: your domain pointing at home, ports 80 and 443 opened on the router. Anyone on the internet can reach the sign-in page.';
+
+  @override
+  String get syRemoteCloudflare =>
+      'An address on your own domain (about 10 euros a year), nothing opened on the router. A few more steps on Cloudflare\'s site.';
+
+  @override
+  String get syRemoteCode => 'Second check (recommended)';
+
+  @override
+  String get syRemoteCodeConfirm => 'Confirm';
+
+  @override
+  String get syRemoteCodeHint =>
+      'Besides the password, a 6-digit code from an app on your phone (Google Authenticator, Microsoft Authenticator, 2FAS…): someone who learns the password still cannot get in.';
+
+  @override
+  String get syRemoteCodeOff => 'Second check off.';
+
+  @override
+  String get syRemoteCodeOn => 'Second check on';
+
+  @override
+  String get syRemoteCodeQr => 'Scan with the authenticator app';
+
+  @override
+  String get syRemoteCodeScan =>
+      'Scan the code with the app (or type the key below in it), then write here the 6 digits it shows.';
+
+  @override
+  String get syRemoteCodeStart => 'Switch on the second check';
+
+  @override
+  String get syRemoteConnect => 'Connect';
+
+  @override
+  String get syRemoteHow => 'How to reach it';
+
+  @override
+  String get syRemoteNeedsPassword => 'Set the password above first.';
+
+  @override
+  String get syRemoteNewPassword => 'New password';
+
+  @override
+  String get syRemoteOff => 'Switch off access from outside';
+
+  @override
+  String get syRemoteOn => 'Rasgeth can be reached from outside at this address:';
+
+  @override
+  String get syRemoteOwnDomain => 'Your domain, open router';
+
+  @override
+  String get syRemotePassword => 'Your password';
+
+  @override
+  String get syRemotePasswordChange => 'Change it';
+
+  @override
+  String get syRemotePasswordHint =>
+      'From outside, Rasgeth asks for this password (the link with the token stays for this computer). Choose one you use nowhere else.';
+
+  @override
+  String get syRemotePasswordRule =>
+      'At least 10 characters. A short sentence is easy to remember and hard to guess.';
+
+  @override
+  String get syRemotePasswordSaved => 'Password saved.';
+
+  @override
+  String get syRemotePasswordSet => 'A password is set';
+
+  @override
+  String get syRemotePurpose =>
+      'Use Rasgeth from your phone or another computer when you are away. First a password, then one of three ways; nothing is reachable from outside until you finish. Optional.';
+
+  @override
+  String get syRemoteSessions => 'Signed-in browsers';
+
+  @override
+  String get syRemoteSessionsHint =>
+      'Each sign-in lasts 30 days. If you lost a phone, or think someone else got in (the Rasgeth apps are signed out too):';
+
+  @override
+  String get syRemoteSignOutAll => 'Sign out everywhere';
+
+  @override
+  String get syRemoteSignedOut => 'Signed out everywhere.';
+
+  @override
+  String get syRemoteTailscale =>
+      'A private network between your own devices: nothing opened on the router, free for personal use. You install Tailscale on your phone too.';
+
+  @override
+  String get syRemoteWaysFolded => 'Rasgeth\'s own ways out';
+
+  @override
+  String get syRemove => 'Remove';
+
+  @override
+  String get sySave => 'Save';
+
+  @override
+  String get sySaved => 'Saved';
+
+  @override
+  String get sySbBackupQ => 'All of Rasgeth in one file';
+
+  @override
+  String get sySettings => 'Settings';
+
+  @override
+  String get sySnCable => 'I use the cable';
+
+  @override
+  String sySnCableDone(String address) {
+    return 'The cable works: Rasgeth is at $address. Join your home network with this device and open http://$address:7600 (or http://rasgeth.local:7600).';
+  }
+
+  @override
+  String sySnFailed(String name, String why) {
+    return 'Rasgeth could not join «$name»: $why';
+  }
+
+  @override
+  String get sySnHidden => 'A hidden network';
+
+  @override
+  String get sySnHiddenName => 'Network name';
+
+  @override
+  String get sySnJoin => 'Use this network';
+
+  @override
+  String sySnMaintQ(String ssid) {
+    return 'Rasgeth could not find your home network, so it opened $ssid again: choose the network it should use.';
+  }
+
+  @override
+  String get sySnNone =>
+      'No network was seen around: use the cable, or type the name of a hidden network.';
+
+  @override
+  String sySnPassword(String name) {
+    return 'Password of «$name»';
+  }
+
+  @override
+  String sySnQ(String ssid) {
+    return 'You are on $ssid, Rasgeth\'s temporary network: which network should Rasgeth use at home?';
+  }
+
+  @override
+  String get sySnTitle => 'Your home network';
+
+  @override
+  String sySnTrying(String name, String ssid) {
+    return 'Rasgeth is joining «$name»: this temporary network closes now. Join your home network with this device and open http://rasgeth.local:7600. If it does not work, $ssid comes back in a minute with the reason.';
+  }
+
+  @override
+  String get syStRemoteQ => 'Rasgeth away from home';
+
+  @override
+  String get syStopped => 'stopped';
+
+  @override
+  String get syTgQr => 'Scan with your phone\'s camera';
+
+  @override
+  String get syTsApps => 'Tailscale apps';
+
+  @override
+  String get syTsDns => 'Tailscale DNS settings';
+
+  @override
+  String get syTsOpenSignIn => 'Open Tailscale\'s sign-in page';
+
+  @override
+  String get syTsSignIn => 'Tailscale wants you to sign in, to add Rasgeth to your network:';
+
+  @override
+  String get syTsSignUp => 'Sign up on Tailscale';
+
+  @override
+  String get syTsStep1 =>
+      'Make a free Tailscale account (with Google, Microsoft or GitHub is fine):';
+
+  @override
+  String get syTsStep2 =>
+      'In Tailscale\'s DNS page switch on MagicDNS and HTTPS Certificates (they give Rasgeth a safe address):';
+
+  @override
+  String get syTsStep3 => 'Then here:';
+
+  @override
+  String get syTsStep4 =>
+      'Install Tailscale on your phone and the other computers, signed in with the same account:';
+
+  @override
+  String get syUiAdvanced => 'Advanced';
+
+  @override
+  String get syUiDone => 'Done.';
+
+  @override
+  String get syUiNotNeeded => 'not needed';
+
+  @override
+  String syUpdBrkChecked(String conversations, String file, String projects, String size) {
+    return '$file · $size · $projects projects, $conversations conversations, memories and settings';
+  }
+
+  @override
+  String get syUpdBrkDockerCopy =>
+      'The folder is inside Rasgeth\'s data volume, which a clean install removes: copy the file out first, from Rasgeth\'s folder:';
+
+  @override
+  String get syUpdBrkDone => 'Got it';
+
+  @override
+  String syUpdBrkKeys(String n) {
+    return 'Your keychain ($n keys, the models\', chats\' and mailboxes\' ones too) is not in the backup: it goes in only protected by a passphrase of yours.';
+  }
+
+  @override
+  String get syUpdBrkKeysAdd => 'Add the keychain too';
+
+  @override
+  String get syUpdBrkKeysAgain => 'Make the backup again with the keychain';
+
+  @override
+  String get syUpdBrkKeysIn => 'The keychain is in the backup too, protected by your passphrase.';
+
+  @override
+  String syUpdBrkLead(String version) {
+    return 'Rasgeth $version changed too much inside to update the usual way: installed over the old one it could break.';
+  }
+
+  @override
+  String get syUpdBrkNext => 'Go on';
+
+  @override
+  String get syUpdBrkRetry => 'Try the backup again';
+
+  @override
+  String get syUpdBrkSaved => 'Backup made and read back: it is in this folder';
+
+  @override
+  String get syUpdBrkStep1 => 'Remove the old Rasgeth';
+
+  @override
+  String get syUpdBrkStep1Docker => 'In Rasgeth\'s folder remove the containers and their volumes:';
+
+  @override
+  String get syUpdBrkStep1Mac =>
+      'From the menu bar icon choose «Uninstall…» (or drag Rasgeth from Applications to the Bin).';
+
+  @override
+  String get syUpdBrkStep1Os =>
+      'Copy the backup to a USB disk (Settings › System › Backups): reinstalling Rasgeth OS erases this machine\'s disk.';
+
+  @override
+  String get syUpdBrkStep1Source => 'Stop Rasgeth and move its data folder away.';
+
+  @override
+  String get syUpdBrkStep1Win =>
+      'Uninstall Rasgeth. When it asks whether to keep the data, you can answer No: everything is in the backup.';
+
+  @override
+  String syUpdBrkStep2(String version) {
+    return 'Install Rasgeth $version';
+  }
+
+  @override
+  String get syUpdBrkStep3 => 'Restore';
+
+  @override
+  String get syUpdBrkStep3Docker =>
+      'Open Rasgeth, finish the setup and import the copied file in Settings › Backup › Import a backup.';
+
+  @override
+  String get syUpdBrkStep3Os =>
+      'Write the new Rasgeth OS (USB stick or image) and start the machine: the first start offers «Restore from the backup» and finds it on the USB disk.';
+
+  @override
+  String get syUpdBrkStep3Text =>
+      'At its first start the new Rasgeth offers «Restore from the backup»: it finds it in that folder by itself.';
+
+  @override
+  String syUpdBrkSub(String installed, String version) {
+    return 'Rasgeth $version cannot be installed over the $installed';
+  }
+
+  @override
+  String syUpdBrkSure(String folder) {
+    return 'Rasgeth closes and its uninstaller starts. The backup stays in $folder.';
+  }
+
+  @override
+  String get syUpdBrkTitle => 'This version needs a clean install';
+
+  @override
+  String get syUpdBrkUninstall => 'Uninstall Rasgeth';
+
+  @override
+  String get syUpdBrkUninstallYes => 'Yes, uninstall';
+
+  @override
+  String get syUpdBrkUninstalling => 'The uninstaller is starting on your desktop.';
+
+  @override
+  String get syUpdBrkWhy =>
+      'So it goes in three short steps: first a backup of everything (I am making it now, by myself), then you remove the old Rasgeth and install the new one, which puts everything back from the backup.';
+
+  @override
+  String get syUpdCopied => 'Copied';
+
+  @override
+  String get syUpdCopy => 'Copy';
+
+  @override
+  String get syUpdDownloadNew => 'Download the new version';
+
+  @override
+  String get syUpdFoundDone =>
+      'Everything is back. Go on with the next steps to set up the models.';
+
+  @override
+  String get syUpdFoundKeys =>
+      'The passphrase you chose for the keychain. Without it everything else is restored, and the keys of models and chats are put in again from their pages.';
+
+  @override
+  String syUpdFoundLead(String conversations, String date, String projects, String version) {
+    return 'There is a backup of $date (Rasgeth $version): $projects projects and $conversations conversations. Put everything back now?';
+  }
+
+  @override
+  String get syUpdFoundRestore => 'Restore from the backup';
+
+  @override
+  String get syUpdFoundTitle => 'Restore from the backup';
+
+  @override
+  String get syUpdLater => 'Later';
+
+  @override
+  String get syUpdLook => 'Look for updates';
+
+  @override
+  String get syUpdLooking => 'Looking…';
+
+  @override
+  String get syUpdReqAgain => 'Look again';
+
+  @override
+  String get syUpdReqClose => 'Close Rasgeth';
+
+  @override
+  String get syUpdReqClosing => 'Rasgeth is closing. You can close this page.';
+
+  @override
+  String get syUpdReqDocker => 'On the computer where Rasgeth runs, in its folder, run:';
+
+  @override
+  String get syUpdReqInstaller => 'If the update does not start, the whole installer is here:';
+
+  @override
+  String get syUpdReqInstallerLink => 'Rasgeth-Setup.exe';
+
+  @override
+  String syUpdReqLead(String installed, String version) {
+    return 'This update cannot wait: Rasgeth $version fixes something that the $installed cannot keep doing safely.';
+  }
+
+  @override
+  String get syUpdReqMac =>
+      'Open the downloaded file and drag Rasgeth into Applications, replacing the old one; then open it again.';
+
+  @override
+  String get syUpdReqNow => 'Update now';
+
+  @override
+  String get syUpdReqSafe =>
+      'Until you update, agents and automations wait. Your conversations, projects and settings are safe: nothing is lost.';
+
+  @override
+  String get syUpdReqSource =>
+      'Bring the code up to date (git pull), build it and start Rasgeth again.';
+
+  @override
+  String syUpdReqSub(String installed, String version) {
+    return 'Version $version is needed (you have $installed)';
+  }
+
+  @override
+  String get syUpdReqTitle => 'Rasgeth must be updated';
+
+  @override
+  String get syUpdReqUpdating =>
+      'Rasgeth is downloading the update: follow the window on your desktop. It restarts by itself.';
+
+  @override
+  String get syUpdReqUpdatingOs =>
+      'Rasgeth OS is updating Rasgeth: the page stops for a few minutes and comes back by itself.';
+
+  @override
+  String get syWzBack => 'Back';
+
+  @override
+  String get syWzCpu => 'Processor';
+
+  @override
+  String get syWzFree => 'free';
+
+  @override
+  String get syWzGpu => 'Graphics card';
+
+  @override
+  String get syWzMemory => 'Memory';
+
+  @override
+  String get syWzNoGpu => 'None';
+
+  @override
+  String get syWzRecommended => 'recommended';
+
+  @override
+  String get syWzRemote => 'Access from outside home';
+
+  @override
+  String get syWzStorage => 'Data and backups';
+
+  @override
+  String syWzThreads(String n) {
+    return '$n threads';
+  }
+
+  @override
+  String get syHubTitle => 'System and access';
+
+  @override
+  String get syHubRemote =>
+      'Password, second check, Tailscale, Cloudflare, your own domain, Pi-hole';
+
+  @override
+  String get syHubSystem => 'The machine, its role, data and backups, Wi-Fi, HTTPS, SSH, updates';
+
+  @override
+  String get syHubMachines => 'Your computers the agents reach over SSH';
+
+  @override
+  String get syHubNodes => 'Other machines working with this one';
+
+  @override
+  String get syHubBackup => 'Everything in one file, and a file brought back';
+
+  @override
+  String get syGateOpen => 'What to do';
 }
