@@ -74,12 +74,13 @@ void main() {
     await _settle(tester);
     expect(find.text('Modello di Coder Web'), findsOneWidget);
     expect(find.text('Ora: Lo stesso di chi sta sopra'), findsOneWidget);
-    // One family with both ways: chosen, the way is a drawn choice with what it means.
-    await tester.tap(find.byKey(const Key('model-anthropic/claude-sonnet-5')));
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('way-claude-subscription/claude-sonnet-5')), findsOneWidget);
+    // By provider and way (G42.15): each way its own row, under its heading and what it means.
+    expect(find.byKey(const Key('model-group-claude-subscription')), findsOneWidget);
+    expect(find.byKey(const Key('model-group-anthropic')), findsOneWidget);
+    expect(find.byKey(const Key('model-claude-subscription/claude-sonnet-5')), findsOneWidget);
     expect(find.text('Nei limiti del tuo piano: non paghi a consumo.'), findsOneWidget);
-    await tester.tap(find.byKey(const Key('way-anthropic/claude-sonnet-5')));
+    expect(find.byKey(const Key('model-search')), findsNothing);
+    await tester.tap(find.byKey(const Key('model-anthropic/claude-sonnet-5')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('effort-high')));
     await tester.pumpAndSettle();

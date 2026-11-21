@@ -93,6 +93,7 @@ import {
   type MediaProbe,
   type MessageQuote,
   type ModelSpec,
+  modelRoute,
   type NotifyReport,
   nativePaths,
   nativeToolNote,
@@ -131,6 +132,7 @@ import {
   widgetOf,
 } from "@redgiant/protocol";
 import {
+  catalogModel,
   complete,
   costUsd,
   hasLimits,
@@ -768,6 +770,8 @@ export interface ModelChoice {
   name?: string;
   /** "new": released in the last weeks; "unconfirmed": not in the models catalog yet. */
   status?: "new" | "unconfirmed";
+  /** The day it was released, per the models catalog (the menus put the newest first). */
+  released?: string;
 }
 
 /** A tool call's paths in Git Bash's way (/c/Users/…, ~) as Windows names them (p3.5.4). */
@@ -6792,6 +6796,8 @@ export class RedGiantCore implements OrchestrationHost {
       const ids = (await p.models?.(AbortSignal.timeout(5000)).catch(() => [])) ?? [];
       for (const model of ids) {
         const info = p.modelInfo(model);
+        const route = modelRoute(p.id, model);
+        const released = catalogModel(route.vendor, route.model)?.released;
         out.push({
           provider: p.id,
           model,
@@ -6800,6 +6806,7 @@ export class RedGiantCore implements OrchestrationHost {
           ...(info.unconfirmed
             ? { status: "unconfirmed" as const }
             : info.isNew && { status: "new" as const }),
+          ...(released && { released }),
         });
       }
     }

@@ -413,19 +413,34 @@ class DeviceRow {
 
 /// `ModelChoice` (`GET /api/models`).
 class ModelChoice {
-  const ModelChoice({required this.provider, required this.model, this.name, this.effort = false});
+  const ModelChoice({
+    required this.provider,
+    required this.model,
+    this.name,
+    this.effort = false,
+    this.status,
+    this.released,
+  });
 
   factory ModelChoice.fromJson(Map<String, dynamic> j) => ModelChoice(
     provider: _str(j['provider']) ?? '',
     model: _str(j['model']) ?? '',
     name: _str(j['name']),
     effort: j['effort'] == true,
+    status: _str(j['status']),
+    released: _str(j['released']),
   );
 
   final String provider;
   final String model;
   final String? name;
   final bool effort;
+
+  /// «new»: released in the last weeks; «unconfirmed»: not in the models catalog yet.
+  final String? status;
+
+  /// The day it was released, per the models catalog (the menus put the newest first).
+  final String? released;
 
   String get key => '$provider/$model';
   String get label => name ?? model;

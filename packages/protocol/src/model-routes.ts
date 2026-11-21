@@ -182,3 +182,170 @@ export function routePhrase(provider: string, model: string, lang: string): stri
       return "";
   }
 }
+
+/**
+ * The model menus by provider and by how one pays (2026-11-20, the person: «quando scelgo i
+ * modelli vorrei che siano proprio chiaramente divisi per fornitore e chiave api/abbonamento […]
+ * e i modelli più nuovi devono stare in cima»). Every way a model goes is its own entry, under a
+ * clear heading: Anthropic's subscription, Anthropic's API key, OpenAI's…, each computer of the
+ * person's (a node), then this computer and the person's own server. Inside a group the newest
+ * model comes first (the release day of the models catalog); a model the catalog does not date
+ * keeps the provider's order after the dated ones.
+ */
+export interface ModelGroup<T> {
+  /** Stable: the provider, or `<provider>|<vendor>` for a node. */
+  id: string;
+  kind: ModelRouteKind;
+  /** The company behind the models (`anthropic`…), or the provider when there is none. */
+  vendor: string;
+  /** Which key or subscription, which node, which local engine: the provider's id. */
+  provider: string;
+  /** For `node`: the node's name. */
+  node?: string;
+  choices: T[];
+}
+
+/** The companies in the menus' order; the others follow by name. */
+const VENDORS = [
+  "anthropic",
+  "openai",
+  "gemini",
+  "xai",
+  "deepseek",
+  "mistral",
+  "groq",
+  "cerebras",
+  "together",
+  "fireworks",
+  "openrouter",
+];
+const GROUP_ORDER: readonly ModelRouteKind[] = ["subscription", "key", "other", "node", "local"];
+
+const vendorRank = (v: string) => {
+  const i = VENDORS.indexOf(v);
+  return i < 0 ? VENDORS.length : i;
+};
+
+/** The models in groups by provider and way, the newest first in each. */
+export function modelGroups<
+  T extends { provider: string; model: string; name?: string; released?: string },
+>(choices: readonly T[]): ModelGroup<T>[] {
+  const groups: ModelGroup<T>[] = [];
+  const byId = new Map<string, ModelGroup<T>>();
+  for (const choice of choices) {
+    const r = modelRoute(choice.provider, choice.model, choice.name);
+    const id = r.kind === "node" ? `${choice.provider}|${r.vendor}` : choice.provider;
+    let g = byId.get(id);
+    if (!g) {
+      g = {
+        id,
+        kind: r.kind,
+        vendor: r.vendor,
+        provider: choice.provider,
+        ...(r.node && { node: r.node }),
+        choices: [],
+      };
+      byId.set(id, g);
+      groups.push(g);
+    }
+    g.choices.push(choice);
+  }
+  // Nodes and local engines after the companies; companies in their order, subscription first.
+  const place = (g: ModelGroup<T>) => {
+    const outer = g.kind === "node" ? 1 : g.kind === "local" ? 2 : 0;
+    return [
+      outer,
+      outer === 1 ? 0 : vendorRank(g.vendor),
+      GROUP_ORDER.indexOf(g.kind),
+      g.kind === "local" && g.provider === "local" ? 0 : 1,
+    ];
+  };
+  const cmp = (a: ModelGroup<T>, b: ModelGroup<T>) => {
+    const pa = place(a);
+    const pb = place(b);
+    for (let i = 0; i < pa.length; i++) if (pa[i] !== pb[i]) return (pa[i] ?? 0) - (pb[i] ?? 0);
+    if (a.kind === "node" && b.kind === "node") {
+      const n = (a.node ?? "").localeCompare(b.node ?? "");
+      if (n !== 0) return n;
+      return vendorRank(a.vendor) - vendorRank(b.vendor) || a.vendor.localeCompare(b.vendor);
+    }
+    return a.vendor.localeCompare(b.vendor);
+  };
+  groups.sort(cmp);
+  for (const g of groups) {
+    const dated = g.choices.map((c, i) => ({ c, i }));
+    dated.sort((a, b) => {
+      const ra = a.c.released;
+      const rb = b.c.released;
+      if (ra && rb && ra !== rb) return ra < rb ? 1 : -1;
+      if (ra && !rb) return -1;
+      if (!ra && rb) return 1;
+      return a.i - b.i;
+    });
+    g.choices = dated.map((x) => x.c);
+  }
+  return groups;
+}
+
+/** A company's name in the menus' headings. */
+const VENDOR_NAMES: Readonly<Record<string, string>> = {
+  anthropic: "Anthropic",
+  openai: "OpenAI",
+  gemini: "Google",
+  xai: "xAI",
+  deepseek: "DeepSeek",
+  mistral: "Mistral",
+  groq: "Groq",
+  cerebras: "Cerebras",
+  together: "Together AI",
+  fireworks: "Fireworks AI",
+  openrouter: "OpenRouter",
+};
+
+/** A group's heading: «Anthropic · Abbonamento Claude», «OpenAI · Chiave API», «Tramite Rig · Anthropic». */
+export function groupTitle(
+  g: Pick<ModelGroup<unknown>, "kind" | "vendor" | "provider" | "node">,
+  lang: string,
+): string {
+  const it = lng(lang) === "it";
+  const vendor = VENDOR_NAMES[g.vendor] ?? g.vendor;
+  switch (g.kind) {
+    case "subscription": {
+      const plan =
+        g.provider === "claude-subscription"
+          ? "Claude"
+          : g.provider === "chatgpt-subscription"
+            ? "ChatGPT"
+            : "";
+      if (it) return `${vendor} · Abbonamento${plan ? ` ${plan}` : ""}`;
+      return `${vendor} · ${plan ? `${plan} subscription` : "Subscription"}`;
+    }
+    case "key":
+      return `${vendor} · ${it ? "Chiave API" : "API key"}`;
+    case "node": {
+      const own = g.vendor === "local" || g.vendor === "server";
+      return `${it ? "Tramite" : "Via"} ${g.node} · ${own ? (it ? "Locale" : "Local") : vendor}`;
+    }
+    case "local":
+      return g.provider === "local"
+        ? it
+          ? "Su questo computer"
+          : "On this computer"
+        : it
+          ? "Il tuo server"
+          : "Your own server";
+    default:
+      return vendor;
+  }
+}
+
+/** Whether a model answers a search in the menus: its name, its id or its group's heading. */
+export function modelMatches(
+  m: { provider: string; model: string; name?: string },
+  heading: string,
+  query: string,
+): boolean {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  return [m.name ?? "", m.model, heading].some((s) => s.toLowerCase().includes(q));
+}

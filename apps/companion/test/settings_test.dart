@@ -272,20 +272,21 @@ void main() {
       await see(find.text('Attive, attraverso ntfy.sh'));
       await see(find.byKey(const Key('settings-model')));
       expect(find.text('Claude Sonnet 5 · Chiave API'), findsOneWidget);
-      // The model reached both ways shows once, with the way to choose and its line (G40.9b).
+      // By provider and way, each way its own row under its heading and line (G42.15).
       await tester.tap(find.byKey(const Key('settings-model')));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('model-anthropic/claude-sonnet-5')), findsOneWidget);
-      expect(find.text('Abbonamento o Chiave API'), findsOneWidget);
-      expect(find.text('Chiave API'), findsWidgets);
+      expect(find.byKey(const Key('model-claude-subscription/claude-sonnet-5')), findsOneWidget);
+      expect(find.text('ANTHROPIC · ABBONAMENTO CLAUDE'), findsOneWidget);
+      expect(find.text('ANTHROPIC · CHIAVE API'), findsOneWidget);
       expect(
         find.text('A consumo con la tua chiave API: conta per il tetto di spesa.'),
         findsOneWidget,
       );
-      await tester.tap(find.byKey(const Key('way-claude-subscription/claude-sonnet-5')));
-      await tester.pumpAndSettle();
       expect(find.text('Nei limiti del tuo piano: non paghi a consumo.'), findsOneWidget);
-      await tester.tap(find.byKey(const Key('model-anthropic/claude-sonnet-5')));
+      await tester.tap(find.byKey(const Key('model-claude-subscription/claude-sonnet-5')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('model-use')));
       await tester.pumpAndSettle();
       await _settle(tester);
       expect(

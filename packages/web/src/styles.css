@@ -23603,6 +23603,88 @@ fieldset.saved-filter legend {
   }
 }
 
+/* The model menus (2026-11-20): headings per provider and way, a search when the list is long */
+.ui-drop-group {
+  position: sticky;
+  top: -4px;
+  z-index: 1;
+  margin: 6px -4px 2px;
+  padding: 6px 12px 4px;
+  background: var(--panel);
+  color: var(--dim);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.ui-drop-group:first-child,
+.ui-drop-search + .ui-drop-group {
+  margin-top: 0;
+}
+.ui-drop-search {
+  position: sticky;
+  top: -4px;
+  z-index: 2;
+  margin: -4px -4px 4px;
+  padding: 9px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 8px 8px 0 0;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+}
+.ui-drop-none {
+  margin: 8px 10px;
+  color: var(--dim);
+  font-size: 12.5px;
+}
+.ui-drop.model-drop .ui-drop-list,
+.model-drop .ui-drop-list {
+  max-width: min(420px, calc(100vw - 8px));
+}
+.model-select .model-drop,
+.wz-look .model-drop {
+  min-width: 220px;
+}
+.model-select .ui-drop-current,
+.wz-look .model-drop .ui-drop-current,
+.wz-look .effort-drop .ui-drop-current {
+  min-height: 38px;
+  font-size: 14px;
+}
+.ui-drop.model .ui-drop-current {
+  font-weight: 600;
+  max-width: 34vw;
+}
+.ui-drop.model.own .ui-drop-current {
+  border-color: var(--accent);
+}
+.more-panel .ui-drop.model {
+  flex: 1 1 0;
+}
+.more-panel .ui-drop.model .ui-drop-current {
+  width: 100%;
+  max-width: none;
+  justify-content: space-between;
+  font-size: 13px;
+}
+.more-panel .ui-drop.model.effort {
+  flex: 0 0 auto;
+}
+:is(.wz, .wz-look) .ui-modal .box-bar .ui-drop.model .ui-drop-current {
+  min-height: 0;
+  font-size: 12px;
+  border-radius: 999px;
+}
+@media (max-width: 480px) {
+  .ui-drop.model .ui-drop-current {
+    max-width: 38vw;
+  }
+}
+
 /* 3.10, video part 2: the music's beats on the ruler, and the rows of keys and LUTs */
 .ve-beat {
   position: absolute;

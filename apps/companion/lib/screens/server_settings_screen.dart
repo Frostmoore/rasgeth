@@ -4,7 +4,6 @@
 // one out), this device's notifications, the default model, the voice, the access from outside
 // (to read, with its link); and «All settings», the page's Settings inside the app.
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
@@ -18,7 +17,9 @@ import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../settings/code_settings.dart';
 import '../settings/projects_settings.dart';
+import '../api/types.dart' show AgentModel;
 import '../ui/dialogs.dart';
+import '../ui/model_sheet.dart' show showModelPicker;
 import '../ui/icons.dart';
 import '../ui/words.dart';
 import '../embed/embed_screen.dart';
@@ -40,6 +41,10 @@ import '../settings/knowledge_screen.dart' show openKnowledgeSettings;
 import '../settings/memory_screen.dart' show openSharedMemory;
 import '../settings/portrait_screen.dart' show openPortrait;
 import '../settings/skills_screen.dart' show openSkills;
+// G42.13 and G42.15: Telegram, Chats, Models and subscriptions, native.
+import '../settings/channels/chats_screen.dart' show openChatPlatforms;
+import '../settings/channels/telegram_screen.dart' show openTelegramSettings;
+import '../settings/models/models_screen.dart' show openModelsSettings;
 
 /// «12 MB of 340 MB · 2.1 MB/s · 2 min left», as the page says a download.
 String progressText(AppLocalizations l, Progress p) {
@@ -266,15 +271,26 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
   Future<void> _pickModel() async {
     final models = _models ?? const <ModelChoice>[];
     if (models.isEmpty) return;
-    final chosen = await showModalBottomSheet<ModelChoice>(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (context) => ModelSheet(models: models, current: _setup?.defaultModel),
+    final l = AppLocalizations.of(context);
+    final cur = _setup?.defaultModel;
+    final i = cur?.indexOf('/') ?? -1;
+    // The same sheet as every other model choice: by provider and way, the newest first.
+    final pick = await showModelPicker(
+      context,
+      title: l.setModel,
+      models: models,
+      current: cur == null || i < 0
+          ? null
+          : AgentModel(
+              provider: cur.substring(0, i),
+              model: cur.substring(i + 1),
+              effort: _setup?.defaultEffort,
+            ),
     );
+    final chosen = pick?.model;
     if (chosen == null || !mounted) return;
     final ok = await _try<bool>(() async {
-      await _c!.setDefaultModel(chosen.provider, chosen.model, effort: _setup?.defaultEffort);
+      await _c!.setDefaultModel(chosen.provider, chosen.model, effort: chosen.effort);
       return true;
     });
     if (ok != true) return;
@@ -583,6 +599,32 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       l.g4SfTitle,
                       l.g4HubSafety,
                       () => openSafetySettings(context),
+                    ),
+                    // G42.13 and G42.15: the page's «Where» group (Telegram, Chats) and
+                    // Models and subscriptions, before the budgets as on the page.
+                    _hub(
+                      c,
+                      'telegram',
+                      RgIcons.send,
+                      l.chTelegram,
+                      l.chHubTelegram,
+                      () => openTelegramSettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'chats',
+                      RgIcons.chat,
+                      l.chChats,
+                      l.chHubChats,
+                      () => openChatPlatforms(context),
+                    ),
+                    _hub(
+                      c,
+                      'models',
+                      RgIcons.cpu,
+                      l.moSubscriptions,
+                      l.moHubModels,
+                      () => openModelsSettings(context),
                     ),
                     _hub(
                       c,
@@ -938,98 +980,6 @@ class _Banner extends StatelessWidget {
         border: Border.all(color: col.withValues(alpha: .35)),
       ),
       child: Text(text, style: TextStyle(color: col)),
-    );
-  }
-}
-
-/// The models by family (G40.9b): a model that goes both through the subscription and through the
-/// API key shows once, with the drawn choice of the way and a line on what it means; a model with
-/// one way says it under its name. A tap on the model takes it with the way shown.
-class ModelSheet extends StatefulWidget {
-  const ModelSheet({super.key, required this.models, this.current});
-
-  final List<ModelChoice> models;
-
-  /// The `provider/model` in use now.
-  final String? current;
-
-  @override
-  State<ModelSheet> createState() => _ModelSheetState();
-}
-
-class _ModelSheetState extends State<ModelSheet> {
-  late final List<ModelFamily> _families = modelFamilies(widget.models);
-
-  /// The way shown per family: the one in use, else the first (the subscription).
-  late final Map<String, int> _way = {
-    for (final f in _families)
-      f.id: math.max(0, f.ways.indexWhere((w) => w.choice.key == widget.current)),
-  };
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    final c = RgColors.of(context);
-    return SafeArea(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * .8),
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-              child: Text(l.setModel, style: const TextStyle(fontWeight: FontWeight.w700)),
-            ),
-            for (final f in _families) _family(context, l, c, f),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _family(BuildContext context, AppLocalizations l, RgColors c, ModelFamily f) {
-    final i = _way[f.id] ?? 0;
-    final way = f.ways[i];
-    final inUse = f.ways.any((w) => w.choice.key == widget.current);
-    final many = f.ways.length > 1;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ListTile(
-          key: Key('model-${f.id}'),
-          title: Text(f.label),
-          subtitle: Text(
-            many ? f.ways.map((w) => wayWord(l, w)).join(' ${l.modelWayOr} ') : wayWord(l, way),
-          ),
-          trailing: inUse ? const RgIcon(RgIcons.check) : null,
-          onTap: () => Navigator.pop(context, way.choice),
-        ),
-        if (many)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 6,
-              children: [
-                SegmentedButton<int>(
-                  key: Key('ways-${f.id}'),
-                  showSelectedIcon: false,
-                  segments: [
-                    for (final (j, w) in f.ways.indexed)
-                      ButtonSegment(
-                        value: j,
-                        label: Text(wayWord(l, w), key: Key('way-${w.choice.key}')),
-                      ),
-                  ],
-                  selected: {i},
-                  onSelectionChanged: (s) => setState(() => _way[f.id] = s.first),
-                ),
-                Text(wayHint(l, way), style: TextStyle(color: c.dim, fontSize: 12.5)),
-              ],
-            ),
-          ),
-      ],
     );
   }
 }

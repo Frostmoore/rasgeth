@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   familyOf,
+  groupTitle,
   type ModelRoute,
   modelFamilies,
+  modelGroups,
+  modelMatches,
   modelRoute,
   routeHint,
   routeLabel,
@@ -146,5 +149,79 @@ describe("labels", () => {
       expect(routePhrase(p, m, "it")).toBe(it_);
       expect(routePhrase(p, m, "en")).toBe(en);
     }
+  });
+});
+
+describe("modelGroups (2026-11-20: by provider and way, the newest first)", () => {
+  type C = { provider: string; model: string; name?: string; released?: string };
+  const choices: C[] = [
+    { provider: "local", model: "qwen3-8b" },
+    { provider: "anthropic", model: "claude-sonnet-5", released: "2026-05-01" },
+    { provider: "openai", model: "gpt-5.5", released: "2026-04-10" },
+    { provider: "claude-subscription", model: "claude-sonnet-5", released: "2026-05-01" },
+    { provider: "claude-subscription", model: "claude-opus-5-5", released: "2026-09-01" },
+    { provider: "claude-subscription", model: "claude-haiku-5" },
+    { provider: "anthropic", model: "claude-opus-5-5", released: "2026-09-01" },
+    {
+      provider: "node-rig",
+      model: "claude-subscription:claude-opus-5-5",
+      name: "Opus 5.5 (via Rig)",
+    },
+    { provider: "server", model: "llama-4" },
+    { provider: "chatgpt-subscription", model: "gpt-5.5", released: "2026-04-10" },
+    { provider: "chatgpt-subscription", model: "gpt-6", released: "2026-10-01" },
+    { provider: "deepseek", model: "deepseek-v4" },
+    { provider: "acme", model: "x-1" },
+  ];
+  const groups = modelGroups(choices);
+
+  it("orders the groups: companies, subscription before key, then nodes, then local", () => {
+    expect(groups.map((g) => g.id)).toEqual([
+      "claude-subscription",
+      "anthropic",
+      "chatgpt-subscription",
+      "openai",
+      "deepseek",
+      "acme",
+      "node-rig|anthropic",
+      "local",
+      "server",
+    ]);
+  });
+
+  it("puts the newest first, undated after in the provider's order", () => {
+    expect(groups[0]?.choices.map((c) => c.model)).toEqual([
+      "claude-opus-5-5",
+      "claude-sonnet-5",
+      "claude-haiku-5",
+    ]);
+    expect(groups[2]?.choices.map((c) => c.model)).toEqual(["gpt-6", "gpt-5.5"]);
+  });
+
+  it("names each group clearly, it and en", () => {
+    const table: [string, string, string][] = [
+      ["claude-subscription", "Anthropic · Abbonamento Claude", "Anthropic · Claude subscription"],
+      ["anthropic", "Anthropic · Chiave API", "Anthropic · API key"],
+      ["chatgpt-subscription", "OpenAI · Abbonamento ChatGPT", "OpenAI · ChatGPT subscription"],
+      ["openai", "OpenAI · Chiave API", "OpenAI · API key"],
+      ["deepseek", "DeepSeek · Chiave API", "DeepSeek · API key"],
+      ["acme", "acme", "acme"],
+      ["node-rig|anthropic", "Tramite Rig · Anthropic", "Via Rig · Anthropic"],
+      ["local", "Su questo computer", "On this computer"],
+      ["server", "Il tuo server", "Your own server"],
+    ];
+    for (const [id, it_, en] of table) {
+      const g = groups.find((x) => x.id === id);
+      expect(g && groupTitle(g, "it")).toBe(it_);
+      expect(g && groupTitle(g, "en")).toBe(en);
+    }
+  });
+
+  it("finds a model by its name, id or heading", () => {
+    const m = { provider: "anthropic", model: "claude-opus-5-5", name: "Opus 5.5" };
+    expect(modelMatches(m, "Anthropic · API key", "")).toBe(true);
+    expect(modelMatches(m, "Anthropic · API key", "opus")).toBe(true);
+    expect(modelMatches(m, "Anthropic · API key", "api KEY")).toBe(true);
+    expect(modelMatches(m, "Anthropic · API key", "gpt")).toBe(false);
   });
 });

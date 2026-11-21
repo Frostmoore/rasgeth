@@ -11061,4 +11061,1787 @@ class AppLocalizationsIt extends AppLocalizations {
   String devForgetUnusedDone(int count) {
     return 'Dispositivi tolti: $count.';
   }
+
+  @override
+  String get chAxCat_other => 'Altro';
+
+  @override
+  String get chAxCat_personal => 'Personale';
+
+  @override
+  String get chAxCat_social => 'Social';
+
+  @override
+  String get chAxCat_work => 'Lavoro';
+
+  @override
+  String get chAxMailboxAdd => 'Aggiungi casella';
+
+  @override
+  String get chAxMailboxAddText => 'Quante vuoi, ognuna nella sua categoria.';
+
+  @override
+  String get chAxMailboxAgents => 'Gli agenti possono usarla';
+
+  @override
+  String get chAxMailboxAgentsHelp =>
+      'Cercano, leggono e scrivono bozze qui; ogni email che inviano te la chiede prima e te la mostra intera.';
+
+  @override
+  String get chAxMailboxCategory => 'Categoria';
+
+  @override
+  String get chAxMailboxName => 'Come la chiami';
+
+  @override
+  String get chAxMailboxNameHelp => 'Per esempio Lavoro o Gmail; vuoto: l\'indirizzo.';
+
+  @override
+  String get chAxMailboxNew => 'Nuova casella';
+
+  @override
+  String get chAxMailboxNewCategory => 'Oppure una categoria nuova';
+
+  @override
+  String get chAxMailboxNewCategoryPlaceholder => 'Famiglia, Circolo, Negozio…';
+
+  @override
+  String get chAxMailboxPasswordKept => 'Lasciala vuota per tenere quella che hai già dato.';
+
+  @override
+  String get chAxMailboxPurpose =>
+      'Una casella per le automazioni: si legge solo la posta nuova, niente viene segnato o spostato.';
+
+  @override
+  String chAxMailboxesWatching(String n, String names) {
+    return '$n caselle collegate: $names.';
+  }
+
+  @override
+  String get chAxSmtpHost => 'Server per mandare (SMTP)';
+
+  @override
+  String get chAxSmtpHostHelp =>
+      'Serve solo per ricevere i messaggi via email; vuoto: quello solito.';
+
+  @override
+  String get chAxSmtpPort => 'Porta per mandare';
+
+  @override
+  String get chChatChange => 'Cambia le impostazioni';
+
+  @override
+  String get chChatDiscordHow =>
+      'Nel Discord Developer Portal crea un\'applicazione, aggiungi un bot, accendi Message Content Intent, copia il token e invita il bot in un tuo server (o scrivigli direttamente).';
+
+  @override
+  String get chChatDiscordToken => 'Token del bot';
+
+  @override
+  String get chChatImHow =>
+      'Apple non offre iMessage ai programmi: serve un Mac sempre acceso, con l\'accesso a Messaggi e il server gratuito BlueBubbles. Il Mac risponde con il suo ID Apple: usane uno fatto apposta per Rasgeth, non il tuo.';
+
+  @override
+  String get chChatImLimits =>
+      'Senza la Private API le risposte non si possono modificare e non compare «sta scrivendo»; approvazioni e domande si rispondono con i numeri. Mentre il Mac dorme o è spento i messaggi aspettano e arrivano al risveglio.';
+
+  @override
+  String get chChatImPassword => 'Password del server BlueBubbles';
+
+  @override
+  String get chChatImPrivate =>
+      'La Private API di BlueBubbles è attiva (modifiche e «sta scrivendo...»)';
+
+  @override
+  String get chChatImStep1 =>
+      'Sul Mac crea (o usa) un ID Apple solo per Rasgeth e accedi con quello in Messaggi.';
+
+  @override
+  String get chChatImStep2 =>
+      'Scarica BlueBubbles Server da bluebubbles.app, aprilo e scegli una password del server.';
+
+  @override
+  String get chChatImStep3 =>
+      'Quando lo chiede, consenti Accesso completo al disco e Accessibilità in Impostazioni di Sistema, Privacy e sicurezza: gli servono per leggere e mandare i messaggi.';
+
+  @override
+  String get chChatImStep4 =>
+      'In BlueBubbles impedisci al Mac di andare in stop e annota il suo indirizzo: http://<indirizzo del Mac>:1234 in casa, oppure l\'indirizzo del suo tunnel da fuori.';
+
+  @override
+  String get chChatImStep5 =>
+      'Scrivi qui indirizzo e password e premi Collega. Dal tuo iPhone scrivi all\'ID Apple del passo 1 e manda il codice.';
+
+  @override
+  String get chChatImUrl => 'Indirizzo del server BlueBubbles (http://...:1234)';
+
+  @override
+  String chChatLinked(String who) {
+    return 'Collegato: $who';
+  }
+
+  @override
+  String get chChatMatrixE2ee =>
+      'Chat cifrate: in Element le chat dirette sono cifrate e il bot non riesce a leggerle. Per tenere la cifratura avvia Pantalaimon (l\'aiutante gratuito di Matrix per la cifratura) accanto a Rasgeth e scrivi il suo indirizzo al posto di quello del server.';
+
+  @override
+  String get chChatMatrixHomeserver => 'Indirizzo del server (per esempio https://matrix.org)';
+
+  @override
+  String get chChatMatrixHow =>
+      'Rasgeth ha bisogno di un account Matrix tutto suo, non il tuo: è quello a cui scriverai.';
+
+  @override
+  String get chChatMatrixStep1 =>
+      'Crea un account nuovo per il bot, per esempio su app.element.io (o sul tuo server).';
+
+  @override
+  String get chChatMatrixStep2 =>
+      'Entrato come bot, apri Impostazioni, Aiuto e informazioni, Avanzate, Token di accesso, e copialo. Poi chiudi quella scheda senza uscire dall\'account: uscendo il token si annulla.';
+
+  @override
+  String get chChatMatrixStep3 =>
+      'Scrivi qui l\'indirizzo del server e incolla il token, poi premi Collega.';
+
+  @override
+  String get chChatMatrixStep4 =>
+      'Dal tuo account crea una stanza nuova senza cifratura (spegni «Attiva la crittografia end-to-end»), invita il bot (entra da solo) e manda il codice che compare.';
+
+  @override
+  String get chChatMatrixToken => 'Il token di accesso dell\'account del bot';
+
+  @override
+  String get chChatSendCode => 'Manda questo dalla chat per collegarla:';
+
+  @override
+  String get chChatSignalHow =>
+      'Signal ha bisogno di signal-cli-rest-api acceso con un numero suo collegato (una seconda SIM o un dispositivo collegato); scrivi qui il suo indirizzo e il numero.';
+
+  @override
+  String get chChatSignalNumber => 'Il numero del bot (+39...)';
+
+  @override
+  String get chChatSignalUrl => 'Indirizzo di signal-cli-rest-api';
+
+  @override
+  String get chChatSlackApp => 'Token dell\'app (xapp-..., connections:write)';
+
+  @override
+  String get chChatSlackBot => 'Token del bot (xoxb-...)';
+
+  @override
+  String get chChatSlackHow =>
+      'Su api.slack.com/apps crea un\'app, accendi Socket Mode (non serve un indirizzo pubblico), aggiungi i permessi chat:write, im:history, app_mentions:read, files:read, files:write, iscriviti a message.im e app_mention, installala e copia i due token.';
+
+  @override
+  String get chChatSteps => 'Passo per passo';
+
+  @override
+  String get chChatTeamsAppId => 'Microsoft App ID';
+
+  @override
+  String get chChatTeamsDownload => 'Scarica l\'app per Teams';
+
+  @override
+  String chChatTeamsEndpoint(String url) {
+    return 'Endpoint di messaggistica per Azure: $url';
+  }
+
+  @override
+  String get chChatTeamsFiles =>
+      'I file di Rasgeth arrivano come una scheda da accettare: accettati, finiscono nel tuo OneDrive. A un bot di Teams non si possono mandare messaggi vocali.';
+
+  @override
+  String get chChatTeamsHow =>
+      'Teams parla con i bot solo attraverso Microsoft Azure. Serve un account Microsoft 365 di lavoro o scuola che possa aggiungere app personalizzate (Teams gratuito per uso personale non accetta bot) e Rasgeth raggiungibile da fuori (Impostazioni, Accesso da fuori).';
+
+  @override
+  String get chChatTeamsSecret => 'Segreto client (il suo Valore)';
+
+  @override
+  String get chChatTeamsStep1 =>
+      'Apri portal.azure.com (basta un account gratuito), scegli Crea una risorsa, cerca Azure Bot e premi Crea.';
+
+  @override
+  String get chChatTeamsStep2 =>
+      'Dagli un nome, scegli il piano gratuito (F0), Tipo di app: Tenant singolo, Tipo di creazione: Crea un nuovo ID app Microsoft. Premi Crea, poi Vai alla risorsa.';
+
+  @override
+  String chChatTeamsStep3(String url) {
+    return 'In Configurazione scrivi questo Endpoint di messaggistica e premi Applica: $url. Copia il Microsoft App ID e l\'App Tenant ID.';
+  }
+
+  @override
+  String get chChatTeamsStep4 =>
+      'Accanto a Microsoft App ID premi Gestisci password, poi Nuovo segreto client, Aggiungi, e copia il suo Valore (si vede una volta sola).';
+
+  @override
+  String get chChatTeamsStep5 =>
+      'In Canali aggiungi Microsoft Teams, accetta le condizioni e premi Applica.';
+
+  @override
+  String get chChatTeamsStep6 =>
+      'Incolla qui i tre valori e premi Collega. Poi scarica l\'app per Teams con il pulsante che compare.';
+
+  @override
+  String get chChatTeamsTenant => 'App Tenant ID';
+
+  @override
+  String get chChatTeamsUpload =>
+      'In Teams apri App, Gestisci le tue app, Carica un\'app, Carica un\'app personalizzata, scegli il file scaricato e premi Aggiungi. Poi apri la chat con Rasgeth e manda il codice.';
+
+  @override
+  String get chChatTurnOff => 'Spegni';
+
+  @override
+  String get chChatWaHow =>
+      'In Meta for Developers crea un\'app WhatsApp, copia il token di accesso, l\'ID del numero e il segreto dell\'app, e scegli un token di verifica. WhatsApp manda i messaggi a un indirizzo pubblico: Rasgeth deve essere raggiungibile da fuori (Impostazioni, Accesso da fuori).';
+
+  @override
+  String get chChatWaPhoneId => 'ID del numero di telefono';
+
+  @override
+  String get chChatWaSecret => 'Segreto dell\'app';
+
+  @override
+  String get chChatWaToken => 'Token di accesso';
+
+  @override
+  String get chChatWaVerify => 'Token di verifica (sceglilo tu)';
+
+  @override
+  String chChatWaWebhook(String url) {
+    return 'Webhook per Meta: $url con il token di verifica che hai scelto; iscriviti a messages.';
+  }
+
+  @override
+  String get chChats => 'Altre chat';
+
+  @override
+  String get chChatsHint =>
+      'Parla con il Demi-God anche da Discord, Slack, Signal, WhatsApp, Matrix, Teams o iMessage. È una conversazione sola: cominciata su Telegram o qui, continua ovunque scrivi. Approvazioni e domande arrivano con i pulsanti (su Signal, Matrix e iMessage, con i numeri da rispondere).';
+
+  @override
+  String get chEmailChange => 'Cambia';
+
+  @override
+  String get chEmailConnect => 'Collega la casella email';
+
+  @override
+  String chEmailConnected(String host, String user) {
+    return 'Leggo $user su $host.';
+  }
+
+  @override
+  String get chEmailHost => 'Server di posta (IMAP)';
+
+  @override
+  String get chEmailHostHelp =>
+      'Per esempio imap.gmail.com, outlook.office365.com, imap.mail.me.com.';
+
+  @override
+  String get chEmailNeedFirst =>
+      'Prima collega la casella email: finché non è collegata, questa automazione non parte.';
+
+  @override
+  String get chEmailNotConnected => 'Non collegata';
+
+  @override
+  String get chEmailPassword => 'Password per le app';
+
+  @override
+  String get chEmailPasswordHelp =>
+      'Meglio una password per le app (Gmail, Outlook e iCloud la creano nelle impostazioni di sicurezza dell\'account) che la tua: la puoi revocare quando vuoi. Resta in un file privato sul tuo server.';
+
+  @override
+  String get chEmailPort => 'Porta';
+
+  @override
+  String get chEmailPurpose =>
+      'Una routine può partire quando arriva una email (una fattura, un avviso). Rasgeth guarda solo la posta nuova, ogni due minuti, e non cambia niente nella tua casella; l\'email arriva all\'agente come informazione, mai come istruzioni.';
+
+  @override
+  String get chEmailSave => 'Collega la casella';
+
+  @override
+  String get chEmailSecure => 'Cifrata da subito (porta 993)';
+
+  @override
+  String get chEmailTesting => 'Provo la casella…';
+
+  @override
+  String get chEmailTileText => 'Per le automazioni che partono quando arriva una email.';
+
+  @override
+  String get chEmailTitle => 'Casella email';
+
+  @override
+  String get chEmailUser => 'Indirizzo o nome utente';
+
+  @override
+  String chEmailWatching(String host, String user) {
+    return 'Guarda $user su $host.';
+  }
+
+  @override
+  String get chInput => 'letti';
+
+  @override
+  String get chRemove => 'Rimuovi';
+
+  @override
+  String get chSbChatAccounts => 'Account collegati';
+
+  @override
+  String get chSbChatDiscordText => 'Un bot nel tuo server Discord, in privato o in un canale.';
+
+  @override
+  String get chSbChatImText =>
+      'Con un Mac sempre acceso e BlueBubbles: risponde l\'app Messaggi del Mac.';
+
+  @override
+  String get chSbChatMatrixText =>
+      'Un account bot su qualsiasi server Matrix (matrix.org o il tuo), in chat o in una stanza.';
+
+  @override
+  String get chSbChatNoAccount =>
+      'Ancora nessun account collegato: manda il codice qui sotto dalla chat.';
+
+  @override
+  String get chSbChatOnWaiting => 'Acceso: manda il codice dalla chat';
+
+  @override
+  String get chSbChatSignalText => 'Un numero Signal tutto suo, con signal-cli-rest-api.';
+
+  @override
+  String get chSbChatSlackText =>
+      'Un\'app nel tuo spazio di lavoro Slack, in Socket Mode: niente indirizzo pubblico.';
+
+  @override
+  String get chSbChatTeamsText =>
+      'Un bot in Microsoft Teams, per account di lavoro o scuola, con un Azure Bot gratuito.';
+
+  @override
+  String get chSbChatWaText => 'Il tuo numero WhatsApp Business, con la Cloud API di Meta.';
+
+  @override
+  String get chSbChatWaiting => 'Aspetto il codice… questa finestra se ne accorge da sola.';
+
+  @override
+  String get chSbChatsQ => 'Parla con Demi-God anche da altre app';
+
+  @override
+  String get chStTgAccounts => 'Account collegati';
+
+  @override
+  String get chTelegram => 'Telegram';
+
+  @override
+  String get chTgChangeBot => 'Usa un altro bot';
+
+  @override
+  String chTgLinked(String who) {
+    return 'Collegato a $who';
+  }
+
+  @override
+  String get chTgLinkedHint =>
+      'Scrivi al tuo bot quando vuoi: Demi-God lo passa a God e ti riporta la risposta.';
+
+  @override
+  String chTgOpenBot(String bot) {
+    return 'Apri @$bot';
+  }
+
+  @override
+  String get chTgQr => 'Inquadra con la fotocamera del telefono';
+
+  @override
+  String get chTgWaiting => 'Aspetto che premi Avvia… questa pagina se ne accorge da sola.';
+
+  @override
+  String get chUnlink => 'Scollega';
+
+  @override
+  String get chWzConnect => 'Collega';
+
+  @override
+  String get chWzDoneBtn => 'Fatto';
+
+  @override
+  String get chWzLocked => 'impostato dall\'ambiente';
+
+  @override
+  String get chWzTgAsks => 'Qui ti avviso anche quando serve un tuo sì.';
+
+  @override
+  String get chWzTgBf1 => 'Va bene. Come lo chiamiamo?';
+
+  @override
+  String get chWzTgBf2 => 'Ora un nome utente, che finisca con «bot».';
+
+  @override
+  String get chWzTgBf3 => 'Fatto! Ecco il token: 123456789:AAH…';
+
+  @override
+  String get chWzTgBfName => 'Il mio Rasgeth';
+
+  @override
+  String get chWzTgCheck => 'Controlla';
+
+  @override
+  String get chWzTgChecking => 'Controllo…';
+
+  @override
+  String get chWzTgDone => 'fatto';
+
+  @override
+  String get chWzTgExampleBot => 'il_mio_rasgeth_bot';
+
+  @override
+  String get chWzTgHaveToken => 'Ho già un token';
+
+  @override
+  String chWzTgHello(String demigod, String god) {
+    return 'Ciao, sono $demigod. Scrivimi quando vuoi: passo tutto a $god e ti riporto la risposta.';
+  }
+
+  @override
+  String get chWzTgLater => 'dopo';
+
+  @override
+  String chWzTgLead(String demigod) {
+    return 'Con Telegram scrivi a $demigod da dove vuoi e ricevi lì gli avvisi: approvazioni, domande, lavori lunghi, budget. Tre passi, un paio di minuti.';
+  }
+
+  @override
+  String chWzTgLinked(String demigod, String who) {
+    return 'Collegato a $who. Scrivi a $demigod quando vuoi.';
+  }
+
+  @override
+  String get chWzTgLinkedShort => 'Collegato. Scrivi al tuo bot quando vuoi.';
+
+  @override
+  String get chWzTgMessage => 'Messaggio';
+
+  @override
+  String get chWzTgNow => 'adesso';
+
+  @override
+  String get chWzTgOfficial => 'bot ufficiale di Telegram';
+
+  @override
+  String get chWzTgOnline => 'bot · online';
+
+  @override
+  String get chWzTgOpenBf => 'Apri BotFather';
+
+  @override
+  String get chWzTgPressStart => 'Premi Avvia per iniziare a parlare con questo bot.';
+
+  @override
+  String get chWzTgQ => 'Rasgeth sul tuo telefono';
+
+  @override
+  String get chWzTgStart => 'AVVIA';
+
+  @override
+  String get chWzTgStep1 => 'Crea il bot con @BotFather';
+
+  @override
+  String get chWzTgStep1Text =>
+      'BotFather è il bot ufficiale di Telegram che crea i bot. Scrivigli /newbot, dagli un nome e un nome utente che finisce con «bot».';
+
+  @override
+  String get chWzTgStep2 => 'Incolla il token';
+
+  @override
+  String get chWzTgStep2Text =>
+      'BotFather risponde con una riga lunga, tipo 123456789:AAH… È la chiave del bot: tienila per te.';
+
+  @override
+  String get chWzTgStep3 => 'Abbina il telefono';
+
+  @override
+  String chWzTgStep3Text(String bot) {
+    return 'Apri $bot e premi Avvia: Telegram gli manda da solo questo codice, niente da scrivere.';
+  }
+
+  @override
+  String get chWzTgToken => 'Il token del bot';
+
+  @override
+  String get chWzTgYouWillSee => 'Cosa vedrai in Telegram';
+
+  @override
+  String get chWzTgYourBot => 'Il tuo bot';
+
+  @override
+  String get chWzTgYourBotName => 'il tuo bot';
+
+  @override
+  String get chWzTrying => 'Provo il modello…';
+
+  @override
+  String get moActive => 'attivo';
+
+  @override
+  String get moAgentModelDefault => 'Il modello predefinito';
+
+  @override
+  String get moAgents => 'Agenti';
+
+  @override
+  String get moAgentsModel => 'Modello dell\'agente';
+
+  @override
+  String get moBackup => 'Backup';
+
+  @override
+  String get moBackupModelNone => 'Nessuno: un task abbandonato resta tale';
+
+  @override
+  String get moBackupModelTitle => 'Modello di riserva per i task';
+
+  @override
+  String get moBrainChatgpt => 'Abbonamento ChatGPT';
+
+  @override
+  String get moBrainChatgptDevice =>
+      'Se OpenAI dice che l\'accesso con codice dispositivo non è permesso: su chatgpt.com apri Impostazioni, Sicurezza, attiva l\'autorizzazione con codice dispositivo e riprova.';
+
+  @override
+  String get moBrainChatgptHint =>
+      'Rasgeth usa ChatGPT tramite Codex, il programma ufficiale di OpenAI, collegato al tuo account. Quello che usi conta sui limiti del tuo piano.';
+
+  @override
+  String get moBrainChatgptStart => 'Collega ChatGPT';
+
+  @override
+  String get moBrainChatgptStep1 => 'Apri questa pagina e accedi:';
+
+  @override
+  String get moBrainChatgptStep2 => 'Lì scrivi questo codice:';
+
+  @override
+  String get moBrainClaude => 'Abbonamento Claude';
+
+  @override
+  String get moBrainClaudeCode => 'Incolla qui il codice';
+
+  @override
+  String get moBrainClaudeHint =>
+      'Rasgeth usa Claude tramite il programma ufficiale di Anthropic, collegato al tuo account. Quello che usi conta sui limiti del tuo piano, non costa soldi in più.';
+
+  @override
+  String get moBrainClaudeOpen => 'Apri la pagina di accesso di Anthropic';
+
+  @override
+  String get moBrainClaudeStep2 =>
+      'Accedi con il tuo account Claude. Alla fine Anthropic ti mostra un codice: copialo.';
+
+  @override
+  String get moBrainConnect => 'Collega';
+
+  @override
+  String get moBrainDefault => 'Il modello che usano gli agenti';
+
+  @override
+  String get moBrainDefaultHint =>
+      'Gli agenti usano questo modello, a meno che tu non ne scelga un altro per loro. Prima di salvarlo viene provato con una domanda vera.';
+
+  @override
+  String get moBrainDefaultSaved => 'Salvato: gli agenti useranno questo.';
+
+  @override
+  String get moBrainDefaultTry => 'Prova e usa questo';
+
+  @override
+  String get moBrainDisconnect => 'Scollega';
+
+  @override
+  String get moBrainEffortHelp =>
+      'Quanto ragiona prima di rispondere: basso è veloce ed economico, alto è più lento ma più accurato.';
+
+  @override
+  String moBrainKeyExample(String example) {
+    return 'È fatta così: $example';
+  }
+
+  @override
+  String moBrainKeyMake(String name) {
+    return 'Crea una chiave sulla pagina di $name';
+  }
+
+  @override
+  String get moBrainKeyTry => 'Prova e salva';
+
+  @override
+  String moBrainKeyWorks(String n) {
+    return 'Funziona: $n modelli disponibili.';
+  }
+
+  @override
+  String get moBrainLocal => 'Un modello su questo computer';
+
+  @override
+  String get moBrainNoModel =>
+      'Non è ancora collegato nessun modello, quindi gli agenti non possono rispondere. Collegane uno qui sopra (un abbonamento, una chiave, o un modello locale al passo dopo), oppure più tardi da Impostazioni, Modelli e abbonamenti.';
+
+  @override
+  String get moBrainNotOpened => 'Non si è aperto niente?';
+
+  @override
+  String get moBrainOpenHere => 'Aprila da qui';
+
+  @override
+  String get moBrainServer => 'Un server tuo';
+
+  @override
+  String get moBrainServerHint =>
+      'Se fai già girare dei modelli con Ollama, LM Studio o vLLM, dai a Rasgeth il suo indirizzo.';
+
+  @override
+  String get moBrainServerKey => 'La sua chiave';
+
+  @override
+  String get moBrainServerKeyHelp => 'Solo se il server la chiede; quasi sempre non serve.';
+
+  @override
+  String get moBrainServerUrl => 'Indirizzo del server';
+
+  @override
+  String get moBrainServerUrlHelp =>
+      'Con /v1 alla fine. Ollama: http://localhost:11434/v1, LM Studio: http://localhost:1234/v1.';
+
+  @override
+  String get moBrainWhyText =>
+      'Se paghi già Claude o ChatGPT, comincia da lì: non spendi altro. Con una chiave paghi quello che usi e puoi scegliere fra tanti fornitori. Un modello su questo computer non costa niente e tiene tutto privato, ma è più lento e meno bravo dei grandi modelli online. Puoi anche combinarli: per esempio un abbonamento per i lavori difficili e un modello locale per quelli piccoli.';
+
+  @override
+  String get moCatalogBuiltin => 'quello incluso in Rasgeth';
+
+  @override
+  String moCatalogChecked(String when) {
+    return 'controllato $when';
+  }
+
+  @override
+  String get moCatalogDownloaded => 'scaricato e firmato';
+
+  @override
+  String get moCatalogRefresh => 'Aggiorna ora';
+
+  @override
+  String get moCatalogRefreshing => 'Aggiorno…';
+
+  @override
+  String moCatalogRow(String date) {
+    return 'Catalogo dei modelli: aggiornato il $date';
+  }
+
+  @override
+  String get moCatalogUnreachable => 'GitHub non ha risposto: resta il catalogo in uso.';
+
+  @override
+  String get moCatalogUnsigned =>
+      'Il catalogo scaricato non ha una firma valida: non è stato usato.';
+
+  @override
+  String moCatalogVersion(String n) {
+    return 'versione $n';
+  }
+
+  @override
+  String get moChat => 'Chat';
+
+  @override
+  String get moDownloaded => 'scaricato';
+
+  @override
+  String get moDownloads => 'download';
+
+  @override
+  String get moEffort => 'Effort';
+
+  @override
+  String get moEffortHint =>
+      'Sforzo di ragionamento: più alto pensa di più, è più lento e costa di più. Dal prossimo messaggio.';
+
+  @override
+  String get moEffort_high => 'Alto';
+
+  @override
+  String get moEffort_low => 'Basso';
+
+  @override
+  String get moEffort_max => 'Massimo';
+
+  @override
+  String get moEffort_medium => 'Medio';
+
+  @override
+  String get moError => 'Errore';
+
+  @override
+  String get moFailed => 'fallito';
+
+  @override
+  String get moJob_step_model_download => 'Il modello';
+
+  @override
+  String get moLmBeyondMemory =>
+      'più grande di RAM e scheda insieme: una parte si legge dall\'SSD a ogni token, più lento';
+
+  @override
+  String get moLmBigChunks => 'Blocchi grandi';
+
+  @override
+  String get moLmBigChunksHelp =>
+      'Legge i messaggi lunghi a blocchi da 8.192 o 16.384 token invece che da 4.096, quando la scheda video ha posto, e carica il modello nella RAM quando ci sta con margine: gli esperti passano nella scheda una volta a blocco, quindi meno blocchi leggono più in fretta. Al primo avvio li misura su un messaggio lungo (qualche minuto in più) e tiene il più veloce. Solo per i modelli a esperti.';
+
+  @override
+  String moLmCardDownloading(String pct) {
+    return 'in download, $pct%';
+  }
+
+  @override
+  String moLmCardGet(String size) {
+    return 'da scaricare, $size';
+  }
+
+  @override
+  String get moLmCardOff => 'scelto, spento';
+
+  @override
+  String get moLmCardPaused => 'download in pausa';
+
+  @override
+  String get moLmCardReady => 'scaricato';
+
+  @override
+  String get moLmCardTooBig => 'troppo grande per questo computer';
+
+  @override
+  String get moLmContextTokens => 'token di contesto';
+
+  @override
+  String get moLmDelete => 'Elimina';
+
+  @override
+  String get moLmDeleteActiveConfirm =>
+      'Questo modello è in uso: il motore si ferma e il file viene eliminato. Vado avanti?';
+
+  @override
+  String get moLmDiscard => 'Butta via il download';
+
+  @override
+  String moLmDownload(String size) {
+    return 'Scarica · $size';
+  }
+
+  @override
+  String get moLmDownloadedBusy => 'in download';
+
+  @override
+  String moLmDownloadedConfirm(String name, String size) {
+    return 'Eliminare $name? Libera $size.';
+  }
+
+  @override
+  String moLmDownloadedConfirmActive(String name, String size) {
+    return '$name è il modello in uso: il motore si ferma e il file viene cancellato ($size). Procedo?';
+  }
+
+  @override
+  String get moLmDownloadedEmpty => 'Nessun modello scaricato.';
+
+  @override
+  String moLmDownloadedHelp(String size) {
+    return 'Tutti i file di modello nella cartella ($size in tutto), dal più grande. Eliminarne uno libera subito il suo spazio; quelli suggeriti si possono riscaricare.';
+  }
+
+  @override
+  String moLmDownloadedNote(String n, String size) {
+    return '$n sul disco · $size';
+  }
+
+  @override
+  String get moLmDownloadedPartial => 'incompleto';
+
+  @override
+  String get moLmDownloadedTitle => 'Modelli scaricati';
+
+  @override
+  String get moLmEngine => 'Motore';
+
+  @override
+  String get moLmEngineHelp =>
+      'Rasgeth sceglie quello adatto a questo computer. Cambialo solo se l\'avvio non riesce.';
+
+  @override
+  String get moLmEngine_cpu => 'Processore';
+
+  @override
+  String get moLmEngine_cuda => 'Scheda video NVIDIA (CUDA)';
+
+  @override
+  String get moLmEngine_mac => 'Il chip grafico del Mac (Metal), accanto a Rasgeth';
+
+  @override
+  String get moLmEngine_vulkan => 'Scheda AMD, Intel o integrata (Vulkan)';
+
+  @override
+  String get moLmEngine_windows => 'Scheda video, con il motore di Windows (Vulkan)';
+
+  @override
+  String get moLmExperimental => 'sperimentale';
+
+  @override
+  String get moLmFactCache => 'Cache degli esperti nella scheda';
+
+  @override
+  String get moLmFactRam => 'RAM libera contata';
+
+  @override
+  String get moLmFactSsd => 'Dall\'SSD a ogni token';
+
+  @override
+  String moLmFactSsdGb(String gb) {
+    return 'circa $gb GB';
+  }
+
+  @override
+  String get moLmFactSsdNone => 'niente: sta in RAM';
+
+  @override
+  String moLmGbPerSec(String n) {
+    return '$n GB/s';
+  }
+
+  @override
+  String moLmHwCpu(String max) {
+    return 'Nessuna scheda video da usare: i modelli girano sul processore, più lenti; piccoli, fino a circa $max GB.';
+  }
+
+  @override
+  String moLmHwGpu(String max, String name, String vram) {
+    return '$name con $vram GB di memoria video: ci girano veloci modelli fino a circa $max GB.';
+  }
+
+  @override
+  String get moLmHwGpuUnknown =>
+      'C\'è una scheda video NVIDIA, ma non si sa quanta memoria ha: comincia da un modello piccolo.';
+
+  @override
+  String moLmHwIgpu(String max) {
+    return 'Una scheda video integrata nel processore: un po\' più veloce del solo processore; modelli fino a circa $max GB.';
+  }
+
+  @override
+  String moLmHwUnreachable(String max) {
+    return 'Qui il motore non riesce a raggiungere la scheda video: i modelli girano sul processore, più lenti; fino a circa $max GB.';
+  }
+
+  @override
+  String get moLmInUse => 'in uso';
+
+  @override
+  String get moLmLoading => 'Cerco i modelli…';
+
+  @override
+  String get moLmMoePrefetch => 'Strato dopo in anticipo';
+
+  @override
+  String get moLmOff => 'Spento';
+
+  @override
+  String get moLmOn => 'Acceso';
+
+  @override
+  String get moLmOther => 'Altri modelli nella cartella';
+
+  @override
+  String moLmOtherHelp(String size) {
+    return 'Un file di modello nella cartella, fuori dai suggeriti ($size).';
+  }
+
+  @override
+  String moLmPartRamSub(String free) {
+    return '$free liberi adesso';
+  }
+
+  @override
+  String get moLmPartSsd => 'SSD dei modelli';
+
+  @override
+  String moLmPartSsdSub(String free) {
+    return '$free liberi';
+  }
+
+  @override
+  String get moLmPause => 'Pausa';
+
+  @override
+  String moLmPaused(String done, String total) {
+    return 'In pausa: $done di $total';
+  }
+
+  @override
+  String moLmPausedAt(String done) {
+    return 'In pausa a $done';
+  }
+
+  @override
+  String get moLmPreloadSpeed => 'Modello letto dal disco';
+
+  @override
+  String get moLmRecommended => 'consigliato';
+
+  @override
+  String get moLmResume => 'Riprendi';
+
+  @override
+  String get moLmRoom => 'Spazio';
+
+  @override
+  String get moLmScoresHint =>
+      'Le barre confrontano questi modelli tra loro (cinque è il migliore di loro). La velocità è una stima per questo computer.';
+
+  @override
+  String get moLmSearch => 'Altri modelli da Hugging Face';
+
+  @override
+  String get moLmSearchHint =>
+      'Cerca per nome, scegli un repository e un file. I file che non sono modelli sono nascosti.';
+
+  @override
+  String get moLmSearchPlaceholder => 'per esempio gemma, qwen, mistral';
+
+  @override
+  String get moLmShowActivation => 'Mostra l\'attivazione';
+
+  @override
+  String get moLmSpecDraft => 'Con un modello piccolo della famiglia';
+
+  @override
+  String moLmSpecDraftGet(String size) {
+    return 'Scarica il modello piccolo · $size';
+  }
+
+  @override
+  String moLmSpecDraftHelp(String name, String size) {
+    return '$name ($size) propone fino a 8 token; sta tutto nella scheda con il suo contesto, quindi al modello grande resta un po\' meno posto lì. Funziona solo con un modello della stessa famiglia (stesso vocabolario): lo sceglie Rasgeth.';
+  }
+
+  @override
+  String get moLmSpecDraftReady => 'modello piccolo pronto';
+
+  @override
+  String get moLmSpecHelp =>
+      'Scrive più in fretta senza cambiare le risposte: qualcosa di economico propone i token successivi e il modello li controlla tutti in un passaggio, leggendo i suoi pesi una volta per più token. Aiuta soprattutto dove il testo è prevedibile (codice da riscrivere, grandi modelli densi fuori dalla scheda); su testo nuovo guadagna poco. Misurato su una RTX 4080 Super: Llama 3.3 70B (quasi tutto in RAM) da 1,1 a 2,6 token/s su testo nuovo e a 7,4 sul codice riscritto; Qwen3 14B (nella scheda) da 59 a 155 sul codice, quasi pari sul testo. La velocità è sotto ogni risposta.';
+
+  @override
+  String get moLmSpecNgram => 'Dal testo già scritto';
+
+  @override
+  String get moLmSpecNgramHelp =>
+      'Le proposte vengono da pezzi della conversazione che si ripetono (codice che si modifica, documenti citati): nessun secondo modello, nessuna memoria in più. Aiuta solo lì: su testo nuovo niente, e su un grande modello denso poco anche sul codice (misurato: Llama 3.3 70B da 1,1 a 1,3). Se la famiglia ha un modello piccolo, meglio quello.';
+
+  @override
+  String get moLmSpecNone => 'Spenta';
+
+  @override
+  String get moLmSpecTitle => 'Decodifica speculativa (per esperti)';
+
+  @override
+  String get moLmSpeedEstimate => 'token/s, stima';
+
+  @override
+  String get moLmSpeedMeasured => 'token/s, misurati';
+
+  @override
+  String get moLmSpeedTest => 'Misura il guadagno';
+
+  @override
+  String get moLmSpeedTestCode => 'Codice riscritto (token/s)';
+
+  @override
+  String get moLmSpeedTestCost =>
+      'Richiede un bel po\' di tempo e di calcolo: il modello viene caricato più volte, minuti per uno grande. Nel frattempo il modello locale non risponde agli agenti.';
+
+  @override
+  String get moLmSpeedTestDone =>
+      'Il motore è tornato com\'era. Scegli il modo qui sopra e riavvia il modello per usarlo.';
+
+  @override
+  String get moLmSpeedTestIntro =>
+      'Rasgeth avvia questo modello una volta per ogni modo di scrivere (da solo, con il modello piccolo, con gli n-gram), gli fa scrivere un breve testo nuovo e riscrivere un pezzo di codice, e mostra i token al secondo di ciascuno. Alla fine il motore torna com\'era.';
+
+  @override
+  String get moLmSpeedTestMode => 'Modo';
+
+  @override
+  String get moLmSpeedTestProse => 'Testo nuovo (token/s)';
+
+  @override
+  String get moLmSpeedTestStart => 'Avvia il test';
+
+  @override
+  String get moLmSpeedTestTitle => 'Quanto va più veloce qui';
+
+  @override
+  String get moLmStart => 'Avvia';
+
+  @override
+  String get moLmStarting => 'Comincio…';
+
+  @override
+  String get moLmStream => 'SSD stream';
+
+  @override
+  String moLmStreamCache(String gb) {
+    return ', $gb della scheda per gli esperti';
+  }
+
+  @override
+  String get moLmStreamFromCard => 'il modello sta nella scheda';
+
+  @override
+  String get moLmStreamFromRam => 'il modello sta in RAM: l\'SSD si legge solo all\'avvio';
+
+  @override
+  String moLmStreamFromSsd(String gb) {
+    return 'circa $gb GB letti dall\'SSD a ogni token';
+  }
+
+  @override
+  String moLmStreamHdd(String disk) {
+    return 'Non disponibile: $disk è un disco meccanico, troppo lento per leggerci un modello a ogni token.';
+  }
+
+  @override
+  String moLmStreamMaybeSsd(String disk) {
+    return 'Windows non dice se $disk è un SSD: usalo solo se lo è.';
+  }
+
+  @override
+  String moLmStreamNoRoom(String disk, String free) {
+    return 'Non disponibile: $disk ha solo $free liberi; ne servono almeno 20 GB.';
+  }
+
+  @override
+  String moLmStreamPlan(String cache, String ctx, String ram, String source) {
+    return 'In uso: contesto fino a $ctx token$cache, $source (contando $ram di RAM libera).';
+  }
+
+  @override
+  String get moLmStreamThisDisk => 'il disco dei modelli';
+
+  @override
+  String get moLmStreamUnknownDisk =>
+      'Rasgeth non sa ancora su che disco stanno i modelli (lo saprà al prossimo avvio di Rasgeth): usalo solo se è un SSD.';
+
+  @override
+  String get moLmSysmemClose => 'Ho capito';
+
+  @override
+  String get moLmSysmemStep1 => 'Apri il Pannello di controllo NVIDIA (clic destro sul desktop).';
+
+  @override
+  String get moLmSysmemStep2 =>
+      'Gestisci impostazioni 3D, poi Impostazioni globali (oppure Impostazioni programma con llama-server.exe, solo per il motore).';
+
+  @override
+  String get moLmSysmemStep3 =>
+      'CUDA - Sysmem Fallback Policy: scegli «Prefer No Sysmem Fallback» e Applica.';
+
+  @override
+  String get moLmSysmemStep4 =>
+      'Riattiva il modello: il motore legge l\'impostazione quando parte.';
+
+  @override
+  String get moLmSysmemText =>
+      'Quando la memoria della scheda finisce, il driver NVIDIA su Windows usa la RAM del computer invece di dare errore: la lettura dei messaggi diventa da 2 a 3,5 volte più lenta. Rasgeth non può leggere questa impostazione, quindi controllala una volta:';
+
+  @override
+  String get moLmSysmemTitle => 'Scheda NVIDIA: spegni «CUDA Sysmem Fallback»';
+
+  @override
+  String get moLmThisPc => 'Questo computer';
+
+  @override
+  String moLmTokensPerSec(String n) {
+    return '$n token/s';
+  }
+
+  @override
+  String get moLmTokensUnit => 'token/s';
+
+  @override
+  String moLmTooBig(String max, String need) {
+    return 'Serve almeno $need: su questo computer ci sta fino a $max.';
+  }
+
+  @override
+  String moLmTuneBatch(String n) {
+    return 'blocchi da $n token';
+  }
+
+  @override
+  String get moLmTuneCache => 'Scheda per gli esperti';
+
+  @override
+  String get moLmTuneChosen => 'scelta';
+
+  @override
+  String get moLmTuneCtx => 'Contesto';
+
+  @override
+  String get moLmTuneFailed => 'non è partito';
+
+  @override
+  String get moLmTuneHelp =>
+      'Ogni riga è una prova vera: il modello legge un contesto di circa 2.000 token e ne scrive 64. Il turno tipico è un agente che legge 1.500 token di risultati e ne scrive 300: resta la riga più veloce, per questo modello, e puoi sceglierne un\'altra.';
+
+  @override
+  String moLmTuneLongRead(String n) {
+    return 'un messaggio da $n token';
+  }
+
+  @override
+  String get moLmTuneNoCopy => 'esperti calcolati sul processore nella lettura';
+
+  @override
+  String get moLmTuneRead => 'Lettura (tok/s)';
+
+  @override
+  String get moLmTuneRunning => 'misuro…';
+
+  @override
+  String get moLmTuneTitle => 'Regolazione su questo computer';
+
+  @override
+  String get moLmTuneTurn => 'Turno tipico (s)';
+
+  @override
+  String get moLmTuneUse => 'Usa';
+
+  @override
+  String get moLmTuneWrite => 'Scrittura (tok/s)';
+
+  @override
+  String get moLmUnavailable => 'Hugging Face non risponde: riprova più tardi.';
+
+  @override
+  String get moLmUseForAgents => 'Usalo per gli agenti';
+
+  @override
+  String get moLmUsedForAgents => 'Gli agenti useranno questo modello.';
+
+  @override
+  String get moLmVersionSuggested => 'consigliata';
+
+  @override
+  String get moLmVersions => 'Versione del file';
+
+  @override
+  String get moLmWarmHelp =>
+      'Il modello legge il suo primo contesto e scrive qualche parola. La prima volta su una scheda video nuova ci vogliono minuti: la scheda prepara i suoi programmi una volta sola, poi è veloce.';
+
+  @override
+  String get moLmWarmSpeed => 'Contesto letto (come un primo messaggio)';
+
+  @override
+  String get moLmWhere => 'Dove va il modello';
+
+  @override
+  String get moLoading => 'Carico…';
+
+  @override
+  String get moModelHint =>
+      'Il modello di questa conversazione (modelli degli agenti: Impostazioni, Agenti)';
+
+  @override
+  String get moModelNew => 'nuovo';
+
+  @override
+  String get moModelPick => 'Scegli un modello';
+
+  @override
+  String get moModelSearch => 'Cerca un modello';
+
+  @override
+  String get moModelUnconfirmed => 'dati da confermare';
+
+  @override
+  String get moModelWay => 'Da dove passa';
+
+  @override
+  String get moMpChange => 'Cambia';
+
+  @override
+  String get moMpLead =>
+      'Scegline uno o più: li combini come vuoi. Ogni riquadro apre la sua finestra; quelli accesi sono collegati.';
+
+  @override
+  String get moMpLocalLead =>
+      'Gratis, e niente esce da qui: il computer, dove stanno i modelli, quelli da scaricare e quelli già sul disco.';
+
+  @override
+  String get moMpNoDefault => 'Nessun modello scelto';
+
+  @override
+  String get moMpNoDefaultText => 'Collega un modo qui sopra, poi scegli quale usano gli agenti.';
+
+  @override
+  String get moMpSearchLead =>
+      'Come gli agenti cercano su internet. Un fornitore alla volta: quello acceso è in uso.';
+
+  @override
+  String get moMpSearchTitle => 'Ricerca sul web';
+
+  @override
+  String get moSearch => 'Cerca';
+
+  @override
+  String get moSearchInUse => 'in uso';
+
+  @override
+  String get moSubsDeviceWait => 'Questa pagina se ne accorge da sola quando hai finito.';
+
+  @override
+  String moSubsLoggedAs(String plan, String who) {
+    return 'Collegato: $who $plan';
+  }
+
+  @override
+  String moSubsProgramDownload(String name) {
+    return '$name viene scaricato quando lo attivi (una volta sola, qualche centinaio di MB, con la barra nell\'angolo).';
+  }
+
+  @override
+  String moSubsProgramSystem(String name) {
+    return '$name è già installato su questo computer: Rasgeth usa quello.';
+  }
+
+  @override
+  String moSubsSharedLogin(String name) {
+    return '$name è già collegato su questo computer: Rasgeth usa quell\'accesso così com\'è, senza rifarlo.';
+  }
+
+  @override
+  String get moSubsUseShared => 'Usa l\'accesso già presente';
+
+  @override
+  String get moSubscriptions => 'Modelli e abbonamenti';
+
+  @override
+  String moTermsOf(String name) {
+    return 'Termini di $name';
+  }
+
+  @override
+  String moUiAboutHours(String h, String min) {
+    return 'mancano circa $h h $min min';
+  }
+
+  @override
+  String moUiAboutMinutes(String min) {
+    return 'mancano circa $min min';
+  }
+
+  @override
+  String get moUiDropNone => 'Nessun risultato.';
+
+  @override
+  String get moUiLessThanMinute => 'manca meno di un minuto';
+
+  @override
+  String get moUiNotNeeded => 'non serve';
+
+  @override
+  String moUiOf(String done, String total) {
+    return '$done di $total';
+  }
+
+  @override
+  String get moViaLocal => 'locale';
+
+  @override
+  String get moViaSubscription => 'abbonamento';
+
+  @override
+  String get moWzAgents => 'Agenti';
+
+  @override
+  String get moWzAgentsSub => 'fanno il lavoro';
+
+  @override
+  String get moWzAgentsText =>
+      'Ricevono i compiti dagli orchestratori: scrivono codice, provano, cercano.';
+
+  @override
+  String get moWzAlreadySet => 'già impostata';
+
+  @override
+  String get moWzAssign => 'Chi usa quale modello';
+
+  @override
+  String get moWzAssignChat =>
+      'La chat di tutti i giorni, con la ricerca sul web: domande, testi, idee.';
+
+  @override
+  String get moWzAssignConnect => 'Collega un modello';
+
+  @override
+  String get moWzAssignDemigod2 =>
+      'Ti risponde su Telegram e nelle chat, e passa il lavoro: basta un modello veloce.';
+
+  @override
+  String get moWzAssignEmpty =>
+      'Non hai ancora collegato nessun modello, quindi qui non c\'è niente da scegliere. Collegane uno al passo «Come deve pensare Rasgeth?» o avvia un modello locale.';
+
+  @override
+  String get moWzAssignGod =>
+      'Quello che guida tutto: piani, progetti, altri agenti. Qui conviene il modello più forte.';
+
+  @override
+  String get moWzAssignLead =>
+      'Ognuno lavora con il suo modello: il più forte per chi decide, uno veloce per chi risponde. Tocca un modello per cambiarlo.';
+
+  @override
+  String get moWzAssignLocal => 'Scegli un modello locale';
+
+  @override
+  String get moWzAssignOthers => 'Gli agenti che crei dopo';
+
+  @override
+  String get moWzAssignOthersHelp =>
+      'E i riassunti della bacheca, se non ne scegli uno apposta per loro. Prima di salvarlo viene provato con una domanda vera.';
+
+  @override
+  String get moWzAssistants => 'Assistenti personali';
+
+  @override
+  String get moWzAssistantsSub => 'lavorano per te';
+
+  @override
+  String get moWzBackupText =>
+      'Se un agente rinuncia a un task (un errore, il budget, nessuna verifica superata), questo modello lo riprova una volta, sapendo cosa ha fatto il primo. Meglio se è di un altro fornitore.';
+
+  @override
+  String get moWzBackupWindow =>
+      'Riprova una volta i task abbandonati, in una conversazione nuova.';
+
+  @override
+  String get moWzBrain => 'Come deve pensare Rasgeth?';
+
+  @override
+  String get moWzBrainChatgpt =>
+      'Il tuo piano ChatGPT Plus o Pro. Scrivi un codice breve sulla pagina di OpenAI.';
+
+  @override
+  String get moWzBrainClaude => 'Il tuo piano Claude Pro o Max. Accedi sulla pagina di Anthropic.';
+
+  @override
+  String get moWzBrainKeys =>
+      'Anthropic, OpenAI, Gemini, Mistral, DeepSeek, Grok e altri. Paghi quello che usi.';
+
+  @override
+  String get moWzBrainKeysTitle => 'Una chiave API';
+
+  @override
+  String get moWzBrainLocal => 'Gratis e privato: niente esce da qui. Lo scegli al passo dopo.';
+
+  @override
+  String get moWzBrainQ => 'Come deve pensare Rasgeth?';
+
+  @override
+  String get moWzBrainServer =>
+      'Ollama, LM Studio, vLLM o un altro server che parla la lingua di OpenAI.';
+
+  @override
+  String get moWzChosen => 'scelto';
+
+  @override
+  String get moWzDefaultModel => 'Modello predefinito';
+
+  @override
+  String get moWzDemiRole => 'Il portavoce';
+
+  @override
+  String moWzDense(String b) {
+    return '$b miliardi · denso';
+  }
+
+  @override
+  String get moWzDiskHdd => 'Disco meccanico: troppo lento per i modelli.';
+
+  @override
+  String get moWzDisksLead =>
+      'Un modello occupa da 3 a 80 GB. Meglio un SSD veloce: lo SSD stream legge da lì.';
+
+  @override
+  String get moWzDisksNoMove =>
+      'I modelli si spostano su un altro disco solo nell\'installazione di Rasgeth per Windows.';
+
+  @override
+  String get moWzDisksOne =>
+      'Qui i modelli stanno nella cartella dei dati di Rasgeth. Nell\'installazione di Rasgeth per Windows puoi spostarli su un altro SSD.';
+
+  @override
+  String get moWzDisksTitle => 'Dove stanno i modelli';
+
+  @override
+  String get moWzDoneBtn => 'Fatto';
+
+  @override
+  String get moWzEffortHelp =>
+      'Poco è veloce ed economico, a fondo è più lento ma più accurato. Resta fisso per ogni conversazione.';
+
+  @override
+  String get moWzEffortTitle => 'Quanto ragiona prima di rispondere';
+
+  @override
+  String get moWzEffort_high => 'A fondo';
+
+  @override
+  String get moWzEffort_low => 'Poco';
+
+  @override
+  String get moWzEffort_max => 'Al massimo';
+
+  @override
+  String get moWzEffort_medium => 'Il giusto';
+
+  @override
+  String get moWzFitNone => 'Nessuno gira abbastanza veloce qui: quelli sotto funzionano, piano.';
+
+  @override
+  String get moWzFitTab => 'Adatti';
+
+  @override
+  String get moWzFitTitle => 'Adatti a questo computer';
+
+  @override
+  String moWzFitsUpTo(String max) {
+    return 'Ci girano veloci modelli fino a circa $max; quelli più grandi usano anche la RAM.';
+  }
+
+  @override
+  String get moWzFolder => 'Cartella';
+
+  @override
+  String get moWzFolderHelp => 'Una cartella di questo disco; se non c\'è, viene creata.';
+
+  @override
+  String get moWzFolderLead =>
+      'Dove Rasgeth salva i file dei modelli su questo disco. Quelli già scaricati vengono copiati lì.';
+
+  @override
+  String moWzFolderTitle(String disk) {
+    return 'Cartella dei modelli su $disk';
+  }
+
+  @override
+  String get moWzFree => 'liberi';
+
+  @override
+  String moWzFreeOf(String total) {
+    return 'liberi di $total GB';
+  }
+
+  @override
+  String get moWzGodRole => 'Il capo';
+
+  @override
+  String get moWzHereNow => 'qui ora';
+
+  @override
+  String get moWzHowItWorks => 'Come funziona';
+
+  @override
+  String moWzKeyOf(String name) {
+    return 'La chiave di $name';
+  }
+
+  @override
+  String get moWzKeysLead =>
+      'Una chiave è come una password che lascia usare a Rasgeth i modelli del fornitore sul tuo account. Paghi il fornitore per quello che usi. Aggiungine quante vuoi: ognuna viene provata subito.';
+
+  @override
+  String moWzLegend(String n) {
+    return 'Contorno verde: gira su questo computer tra scheda video e RAM, ad almeno $n token al secondo. Gli altri funzionano, ma piano.';
+  }
+
+  @override
+  String moWzLikeAbove(String who) {
+    return 'Lo stesso di $who';
+  }
+
+  @override
+  String get moWzLocal => 'Modello locale';
+
+  @override
+  String get moWzLocalQ => 'Un modello su questo computer';
+
+  @override
+  String get moWzLocked => 'impostato dall\'ambiente';
+
+  @override
+  String moWzMoe(String b) {
+    return '$b miliardi · a esperti';
+  }
+
+  @override
+  String get moWzMoreModels => 'Altri file e ricerche';
+
+  @override
+  String get moWzMoveHere => 'Sposta qui';
+
+  @override
+  String moWzMoveLead(String folder, String free, String kind) {
+    return '$kind, $free liberi. I modelli già scaricati vengono copiati in $folder; il modello in uso poi riparte.';
+  }
+
+  @override
+  String moWzMoveTitle(String disk) {
+    return 'Spostare i modelli su $disk?';
+  }
+
+  @override
+  String moWzNModels(String n) {
+    return '$n modelli';
+  }
+
+  @override
+  String get moWzNone => 'Nessuno';
+
+  @override
+  String get moWzOfRamLong => 'di RAM';
+
+  @override
+  String get moWzOrchestrators => 'Orchestratori';
+
+  @override
+  String get moWzOrchestratorsSub => 'i capi dei progetti';
+
+  @override
+  String get moWzOrchestratorsText => 'Uno per progetto: divide il lavoro e lo passa agli agenti.';
+
+  @override
+  String get moWzPickFolder => 'Scegli cartella';
+
+  @override
+  String get moWzPickModel => 'Scegli il modello';
+
+  @override
+  String get moWzPickRepo => 'Scegli un repository';
+
+  @override
+  String get moWzProvider => 'Fornitore';
+
+  @override
+  String get moWzRemove => 'Togli';
+
+  @override
+  String get moWzSlowTab => 'Vanno piano';
+
+  @override
+  String get moWzSlowTitle => 'Funzionano, ma piano';
+
+  @override
+  String moWzStateKey(String name) {
+    return '$name: collegata';
+  }
+
+  @override
+  String moWzStateKeys(String n) {
+    return '$n chiavi collegate';
+  }
+
+  @override
+  String get moWzStateLinked => 'collegato';
+
+  @override
+  String moWzStateLocal(String model) {
+    return '$model, in uso';
+  }
+
+  @override
+  String get moWzStateLocalNext => 'lo scegli al passo dopo';
+
+  @override
+  String moWzStateServer(String url) {
+    return 'collegato: $url';
+  }
+
+  @override
+  String get moWzStreamInfo1 =>
+      'Per modelli più grandi della scheda video, e per un contesto molto più lungo.';
+
+  @override
+  String get moWzStreamInfo2 =>
+      'Le parti del modello usate di più stanno nella scheda e in RAM; il resto si legge dall\'SSD quando serve. Rende al meglio con i modelli a esperti; quelli densi funzionano, ma più lenti.';
+
+  @override
+  String get moWzStreamInfo3 =>
+      'Al primo avvio Rasgeth misura questo computer e tiene la regolazione più veloce. Serve un SSD con almeno 20 GB liberi: un disco meccanico è troppo lento.';
+
+  @override
+  String get moWzStreamOff => 'Spento: girano solo i modelli che stanno nella scheda e nella RAM.';
+
+  @override
+  String moWzStreamOn(String disk) {
+    return 'Acceso: i modelli più grandi della scheda e della RAM leggono il resto dall\'SSD ($disk) quando serve. Più lenti, ma girano.';
+  }
+
+  @override
+  String get moWzSubscription =>
+      'So che usare un abbonamento personale (al posto di una chiave API) in uno strumento di terzi può non essere permesso dalle condizioni del fornitore.';
+
+  @override
+  String get moWzTrying => 'Provo il modello…';
+
+  @override
+  String get moWzUnderstood => 'Ho capito';
+
+  @override
+  String get moWzUseFolder => 'Usa questa cartella';
+
+  @override
+  String moWzVram(String gb) {
+    return '$gb di memoria video';
+  }
+
+  @override
+  String get moWzWhich => 'Quale scelgo?';
+
+  @override
+  String get chUiAdvanced => 'Avanzate';
+
+  @override
+  String moJob_engine(String model) {
+    return 'Avvio di $model';
+  }
+
+  @override
+  String moJob_engine_load(String model) {
+    return 'Carico $model';
+  }
+
+  @override
+  String get moJob_error_bad_file => 'Questo non è un file di modello di Hugging Face.';
+
+  @override
+  String get moJob_error_checksum =>
+      'Il download è arrivato rovinato (l\'impronta non coincide): riprova.';
+
+  @override
+  String get moJob_error_engine_stopped =>
+      'Il motore si è fermato da solo. I dettagli qui sotto dicono perché.';
+
+  @override
+  String get moJob_error_incomplete =>
+      'Il download si è fermato prima della fine: premi Riprendi per continuare da dove era.';
+
+  @override
+  String get moJob_error_load_timeout =>
+      'Il modello non si è caricato in 15 minuti. Prova con uno più piccolo.';
+
+  @override
+  String get moJob_error_model_missing =>
+      'Il file del modello non è più nella cartella. Scaricalo di nuovo.';
+
+  @override
+  String get moJob_error_no_gpu =>
+      'Il motore non vede la scheda video. Aggiorna i driver della scheda e riavvia il computer, oppure scegli il processore in Avanzate.';
+
+  @override
+  String get moJob_error_out_of_memory =>
+      'Non c\'è abbastanza memoria per questo modello. Scegline uno più piccolo, o lo stesso con una qualità più bassa.';
+
+  @override
+  String moJob_model_download(String model) {
+    return 'Download di $model';
+  }
+
+  @override
+  String moJob_speed_test(String model) {
+    return 'Misuro $model';
+  }
+
+  @override
+  String get moJob_step_draft => 'Con il modello piccolo';
+
+  @override
+  String get moJob_step_image => 'Scarico il motore (una volta sola)';
+
+  @override
+  String get moJob_step_load => 'Carico il modello in memoria';
+
+  @override
+  String get moJob_step_ngram => 'Con gli n-gram';
+
+  @override
+  String get moJob_step_none => 'Il modello da solo';
+
+  @override
+  String get moJob_step_preload =>
+      'Leggo il modello una volta, così il primo messaggio non aspetta il disco';
+
+  @override
+  String get moJob_step_start => 'Avvio il motore';
+
+  @override
+  String get moJob_step_try => 'Provo una risposta';
+
+  @override
+  String get moJob_step_tune => 'Misuro questo computer per scegliere la regolazione più veloce';
+
+  @override
+  String get moLmQuality_good => 'qualità buona';
+
+  @override
+  String get moLmQuality_high => 'qualità alta';
+
+  @override
+  String get moLmQuality_reduced => 'qualità ridotta, per starci';
+
+  @override
+  String get moLmScore_code => 'Programmazione';
+
+  @override
+  String get moLmScore_languages => 'Altre lingue';
+
+  @override
+  String get moLmScore_smart => 'Intelligenza';
+
+  @override
+  String get moLmScore_speed => 'Velocità qui';
+
+  @override
+  String get moLmScore_tools => 'Strumenti';
+
+  @override
+  String get moLmSpeedMode_draft => 'Con il modello piccolo';
+
+  @override
+  String get moLmSpeedMode_ngram => 'N-gram';
+
+  @override
+  String get moLmSpeedMode_none => 'Modello da solo';
+
+  @override
+  String get chHubTelegram =>
+      'Demi-God su Telegram: il bot, il suo token e gli account che gli scrivono';
+
+  @override
+  String get chHubChats => 'Demi-God su Discord, Slack, Signal, WhatsApp, Matrix, Teams e iMessage';
+
+  @override
+  String get moHubModels =>
+      'Abbonamenti, chiavi API, il tuo server, il modello su questo computer e chi usa quale';
 }

@@ -1,0 +1,3126 @@
+{
+ "keyProviders": [
+  {
+   "id": "anthropic",
+   "name": "Anthropic (Claude)",
+   "keyExample": "sk-ant-api03-…",
+   "keyUrl": "https://platform.claude.com/settings/keys"
+  },
+  {
+   "id": "openai",
+   "name": "OpenAI (GPT)",
+   "keyExample": "sk-proj-…",
+   "keyUrl": "https://platform.openai.com/api-keys"
+  },
+  {
+   "id": "gemini",
+   "name": "Google Gemini",
+   "keyExample": "AIza…",
+   "keyUrl": "https://aistudio.google.com/apikey"
+  },
+  {
+   "id": "mistral",
+   "name": "Mistral",
+   "keyExample": "…",
+   "keyUrl": "https://console.mistral.ai/api-keys"
+  },
+  {
+   "id": "deepseek",
+   "name": "DeepSeek",
+   "keyExample": "sk-…",
+   "keyUrl": "https://platform.deepseek.com/api_keys"
+  },
+  {
+   "id": "xai",
+   "name": "xAI (Grok)",
+   "keyExample": "xai-…",
+   "keyUrl": "https://console.x.ai"
+  },
+  {
+   "id": "groq",
+   "name": "Groq",
+   "keyExample": "gsk_…",
+   "keyUrl": "https://console.groq.com/keys"
+  },
+  {
+   "id": "openrouter",
+   "name": "OpenRouter",
+   "keyExample": "sk-or-v1-…",
+   "keyUrl": "https://openrouter.ai/keys"
+  },
+  {
+   "id": "together",
+   "name": "Together AI",
+   "keyExample": "…",
+   "keyUrl": "https://api.together.ai/settings/api-keys"
+  },
+  {
+   "id": "fireworks",
+   "name": "Fireworks AI",
+   "keyExample": "fw_…",
+   "keyUrl": "https://app.fireworks.ai/settings/users/api-keys"
+  },
+  {
+   "id": "cerebras",
+   "name": "Cerebras",
+   "keyExample": "csk-…",
+   "keyUrl": "https://cloud.cerebras.ai"
+  }
+ ],
+ "speeds": [
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 100,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 5,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 1,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 1,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 100,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 2,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 100,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 27,
+    "stars": 3
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 300,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 12,
+    "stars": 2
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 3,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 200,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 8,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 600,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 24,
+    "stars": 3
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 6,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 8,
+    "activeB": 8
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 46,
+    "stars": 4
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 11,
+    "stars": 2
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 7,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 2,
+    "stars": 1,
+    "range": [
+     1,
+     3
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 24,
+    "stars": 3
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 6,
+    "stars": 1,
+    "range": [
+     1,
+     9
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 4,
+    "stars": 1,
+    "range": [
+     1,
+     6
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 1,
+    "stars": 1,
+    "range": [
+     0,
+     3
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 270,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 11,
+    "stars": 2,
+    "range": [
+     4,
+     14
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 5,
+    "stars": 1,
+    "range": [
+     1,
+     8
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 2,
+    "stars": 1,
+    "range": [
+     0,
+     3
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 300,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 120,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 32,
+    "stars": 3
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 10,
+    "stars": 2,
+    "range": [
+     2,
+     15
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 5,
+    "stars": 1,
+    "range": [
+     1,
+     10
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 2,
+    "stars": 1,
+    "range": [
+     0,
+     5
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 200,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 80,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 12,
+    "stars": 2,
+    "range": [
+     3,
+     22
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 5,
+    "stars": 1,
+    "range": [
+     1,
+     10
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 3,
+    "stars": 1,
+    "range": [
+     1,
+     7
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 2,
+    "stars": 1,
+    "range": [
+     0,
+     3
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 600,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 240,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 65,
+    "stars": 4
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 12,
+    "stars": 2,
+    "range": [
+     2,
+     30
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 6,
+    "stars": 1,
+    "range": [
+     1,
+     21
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 30,
+    "activeB": 3
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 2,
+    "stars": 1,
+    "range": [
+     0,
+     10
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 111,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 26,
+    "stars": 3
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 16,
+    "stars": 2
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 5,
+    "stars": 1,
+    "range": [
+     1,
+     7
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 58,
+    "stars": 4
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 14,
+    "stars": 2,
+    "range": [
+     4,
+     21
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 8,
+    "stars": 1,
+    "range": [
+     2,
+     14
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 4,
+    "stars": 1,
+    "range": [
+     1,
+     6
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 649,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 27,
+    "stars": 3,
+    "range": [
+     9,
+     33
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 12,
+    "stars": 2,
+    "range": [
+     3,
+     18
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 4,
+    "stars": 1,
+    "range": [
+     1,
+     7
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 300,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 288,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 78,
+    "stars": 4
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 24,
+    "stars": 3,
+    "range": [
+     6,
+     36
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 13,
+    "stars": 2,
+    "range": [
+     2,
+     25
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 5,
+    "stars": 1,
+    "range": [
+     1,
+     12
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 200,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 192,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 30,
+    "stars": 3,
+    "range": [
+     6,
+     52
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 12,
+    "stars": 2,
+    "range": [
+     2,
+     24
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 8,
+    "stars": 1,
+    "range": [
+     1,
+     17
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 4,
+    "stars": 1,
+    "range": [
+     1,
+     8
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 600,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 576,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 156,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 29,
+    "stars": 3,
+    "range": [
+     4,
+     73
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 15,
+    "stars": 2,
+    "range": [
+     2,
+     50
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 120,
+    "activeB": 5
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 6,
+    "stars": 1,
+    "range": [
+     1,
+     24
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 100,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 5,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 1,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 1,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 100,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 2,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 100,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 27,
+    "stars": 3
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 300,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 12,
+    "stars": 2
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 3,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 200,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 8,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 600,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 24,
+    "stars": 3
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 6,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 70,
+    "activeB": 70
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 0,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 883,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 41,
+    "stars": 4
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 10,
+    "stars": 2
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 6,
+    "stars": 1
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 16,
+    "ramGb": 64
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 2,
+    "stars": 1,
+    "range": [
+     0,
+     2
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 883,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 21,
+    "stars": 3
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 5,
+    "stars": 1,
+    "range": [
+     1,
+     8
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 3,
+    "stars": 1,
+    "range": [
+     1,
+     5
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 8,
+    "ramGb": 16
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 1,
+    "stars": 1,
+    "range": [
+     0,
+     2
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 1000,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 883,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 239,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 10,
+    "stars": 2,
+    "range": [
+     3,
+     12
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 4,
+    "stars": 1,
+    "range": [
+     1,
+     7
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu",
+    "vramGb": 24
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 1,
+    "stars": 1,
+    "range": [
+     0,
+     3
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 300,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 106,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 29,
+    "stars": 3
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 9,
+    "stars": 1,
+    "range": [
+     2,
+     13
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 5,
+    "stars": 1,
+    "range": [
+     1,
+     9
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "igpu",
+    "vramGb": 0,
+    "ramGb": 32
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 2,
+    "stars": 1,
+    "range": [
+     0,
+     4
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 200,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 71,
+    "stars": 4
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 11,
+    "stars": 2,
+    "range": [
+     2,
+     19
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 4,
+    "stars": 1,
+    "range": [
+     1,
+     9
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 3,
+    "stars": 1,
+    "range": [
+     1,
+     6
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "cpu",
+    "vramGb": 0,
+    "ramGb": 8
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 1,
+    "stars": 1,
+    "range": [
+     0,
+     3
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 0.05,
+   "out": {
+    "tokensPerSec": 600,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 5,
+   "out": {
+    "tokensPerSec": 212,
+    "stars": 5
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 18.5,
+   "out": {
+    "tokensPerSec": 57,
+    "stars": 4
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 39.7,
+   "out": {
+    "tokensPerSec": 11,
+    "stars": 2,
+    "range": [
+     2,
+     27
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 58,
+   "out": {
+    "tokensPerSec": 6,
+    "stars": 1,
+    "range": [
+     1,
+     18
+    ]
+   }
+  },
+  {
+   "m": {
+    "totalB": 106,
+    "activeB": 12
+   },
+   "hw": {
+    "kind": "gpu-unknown",
+    "vramGb": 0,
+    "ramGb": 27
+   },
+   "fileGb": 120,
+   "out": {
+    "tokensPerSec": 2,
+    "stars": 1,
+    "range": [
+     0,
+     9
+    ]
+   }
+  }
+ ]
+}

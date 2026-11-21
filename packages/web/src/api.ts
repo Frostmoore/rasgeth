@@ -509,6 +509,8 @@ export interface ModelChoice {
   name?: string;
   /** "new": released in the last weeks; "unconfirmed": not in the models catalog yet (3.5.4). */
   status?: "new" | "unconfirmed";
+  /** The day it was released, per the models catalog (the menus put the newest first). */
+  released?: string;
 }
 
 export interface SearchHit {
