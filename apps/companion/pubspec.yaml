@@ -55,6 +55,7 @@ dependencies:
   desktop_drop: ^0.8.0
   # Pasted images and copied files (Ctrl/Cmd+V in the composer); pinned.
   pasteboard: 0.6.0
+  local_auth: ^3.0.2
 
 dev_dependencies:
   flutter_test:

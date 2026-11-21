@@ -73,6 +73,8 @@
 	</dict>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Press and talk: what you say is written down by Rasgeth.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Face ID checks that it is you before a key from your keychain is shown or copied.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Rasgeth looks for your server on the local network.</string>
 	<key>NSBonjourServices</key>
