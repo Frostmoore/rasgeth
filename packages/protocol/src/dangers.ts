@@ -71,7 +71,7 @@ const en: Record<string, Words> = {
   },
   "remove-agent": {
     name: "Removing an agent from the team",
-    hint: "God or an orchestrator removes an agent and those below it: their turns stop, their tasks close; the history stays and they can be restored.",
+    hint: "God or an orchestrator removes an agent and those below it: their turns stop, their tasks close; the history stays and they can be restored. Off by default: nobody is asked; on, only you approve it.",
   },
 };
 
@@ -138,7 +138,7 @@ const it: Record<string, Words> = {
   },
   "remove-agent": {
     name: "Rimuovere un agente dalla squadra",
-    hint: "God o un orchestratore rimuove un agente e chi è sotto di lui: i turni si fermano, i compiti si chiudono; la storia resta e si possono ripristinare.",
+    hint: "God o un orchestratore rimuove un agente e chi è sotto di lui: i turni si fermano, i compiti si chiudono; la storia resta e si possono ripristinare. Spento di serie: non si chiede a nessuno; acceso, lo approvi solo tu.",
   },
 };
 

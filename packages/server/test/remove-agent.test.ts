@@ -4,7 +4,10 @@
 // GAIA 3». So stopping is a pause (the open tasks wait, resuming lets them go on in the same
 // conversation, nothing is made again) and removing takes an agent out of the team (its turns stop,
 // its open tasks close as «agent removed», its history stays readable, and it can be restored).
-// Removing is an ordinary request the person answers (danger remove-agent), never a critical one.
+// Removing asks nobody by default (3.10, the person's decision of 2026-11-21: «al limite ne spawna un
+// altro se gli serve»): the danger remove-agent is off unless the person switches it on in
+// Settings > Safety (`enabledDanger`); then it is an ordinary request only they answer, never a
+// critical one.
 import type { Event, PermissionRequestInfo } from "@redgiant/protocol";
 import type { CompletionRequest, FakeTurn } from "@redgiant/providers";
 import { afterEach, describe, expect, it } from "vitest";
@@ -224,7 +227,7 @@ describe("stopping is a pause, resuming lets the work go on (p3.8.9)", () => {
 });
 
 describe("removing an agent from the team (p3.8.9)", () => {
-  it("God removes one with the person's yes: turns stop, tasks close, it leaves the lists, history stays, it comes back", async () => {
+  it("God removes one asking nobody: turns stop, tasks close, it leaves the lists, history stays, it comes back", async () => {
     const srv = await start();
     const t = await team(srv);
     const seen = person(srv);
@@ -247,10 +250,8 @@ describe("removing an agent from the team (p3.8.9)", () => {
       call("remove_agent", { agent_id: t.dev, reason: "not needed any more" }),
     );
     expect(said).toContain("Removed from the team: Dev");
-    // An ordinary request the person answered: the danger remove-agent, nothing critical.
-    const asked = seen.find((r) => r.tool === "remove_agent");
-    expect(asked?.danger).toContain("remove-agent");
-    expect(asked?.critical ?? []).toEqual([]);
+    // Nobody was asked: not the person, not the classifier, not a parent.
+    expect(seen.find((r) => r.tool === "remove_agent")).toBeUndefined();
     await until(() => !srv.core.isRunning(t.devSid));
 
     // The task closed, said why, and went back to who handed it over.
@@ -327,6 +328,40 @@ describe("removing an agent from the team (p3.8.9)", () => {
     expect(log).toContain("agent.removed");
     expect(log).toContain("agent.restored");
     expect((await events(srv, t.devSid)).some((e) => e.type === "message.user")).toBe(true);
+  });
+
+  it("asks the person once they switch the danger on, also over a policy saved before 3.10", async () => {
+    const srv = await start();
+    const t = await team(srv);
+    const seen = person(srv);
+    // A policy saved before (no enabledDanger, remove-agent among the human-only ones) asks nobody.
+    await srv.core.policies.set("me", {
+      rules: [],
+      humanOnly: ["platform", "remove-agent"],
+      disabledDanger: [],
+      guardian: "ask",
+      skills: "ask",
+    } as never);
+    const god = srv.core.registry.get(t.god);
+    if (!god) throw new Error("no God");
+    expect(
+      srv.core.policies.settingsFor(god, false).danger.find((d) => d.id === "remove-agent")
+        ?.enabled,
+    ).toBe(false);
+    // Switched on (Settings > Safety saves `enabledDanger`): removing asks the person.
+    await srv.core.policies.set("me", {
+      ...srv.core.policies.get("me"),
+      enabledDanger: ["remove-agent"],
+    });
+    const said = await say(
+      srv,
+      t.godSid,
+      call("remove_agent", { agent_id: t.dev, reason: "not needed any more" }),
+    );
+    expect(said).toContain("Removed from the team: Dev");
+    const asked = seen.find((r) => r.tool === "remove_agent");
+    expect(asked?.danger).toContain("remove-agent");
+    expect(asked?.critical ?? []).toEqual([]);
   });
 
   it("removes an orchestrator with its agents; restoring waits for its place to be free", async () => {
