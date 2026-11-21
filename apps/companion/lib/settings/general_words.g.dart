@@ -4,10 +4,14 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.9.9';
+const newsVersion = '3.10.0';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.10.0', 'news3100Video', 'news3100VideoText'),
+  NewsRow('3.10.0', 'news3100App', 'news3100AppText'),
+  NewsRow('3.10.0', 'news3100Questions', 'news3100QuestionsText'),
+  NewsRow('3.10.0', 'news3100Quiet', 'news3100QuietText'),
   NewsRow('3.9.9', 'news399Inspector', 'news399InspectorText'),
   NewsRow('3.9.8', 'news398Passwords', 'news398PasswordsText'),
   NewsRow('3.9.8', 'news398Requests', 'news398RequestsText'),
@@ -374,6 +378,14 @@ const sttProviders = <SttProviderRow>[
 /// The page's words for the news and the search services.
 const generalWords = <String, Map<String, String>>{
   'it': {
+    'news3100App': 'Tutto anche nell\'app',
+    'news3100AppText': 'L\'app ora fa in modo nativo quello che fa la pagina: estensioni e abilità (anche uno .zip di un\'abilità), il Portachiavi, Telegram e le altre chat, le caselle email, modelli e abbonamenti divisi per fornitore, sistema e accesso da fuori, macchine e nodi, backup, voce a mani libere, la configurazione guidata, le importazioni e la ricerca in tutte le conversazioni.',
+    'news3100Questions': 'Alle domande rispondi sempre tu',
+    'news3100QuestionsText': 'Il tuo classificatore decide i permessi quando glielo chiedi, mai le domande e i piani degli agenti: quelli arrivano sempre a te, in pagina, nell\'app e nelle chat, e aspettano la tua risposta.',
+    'news3100Quiet': 'Meno richieste inutili',
+    'news3100QuietText': 'Rimuovere un agente non chiede più niente a nessuno (si può ripristinare; se vuoi la richiesta la riaccendi in Sicurezza). La prova di una porta e /dev/null dentro un comando non sono più «file di sistema», e una parola come «dall\'» dopo «password:» non viene più presa per una password. Sul computer, God nella barra laterale apre l\'ultima conversazione.',
+    'news3100Video': 'Montaggio video, seconda parte',
+    'news3100VideoText': 'Chiavi di volume, posizione e dimensione (immagine nell\'immagine), correzione del colore semplice e LUT .cube, tagli a ritmo della musica, slip, slide e roll, velocità 0,5× e 2×, fermo immagine, e timeline di Resolve (FCP7 XML) aperte dagli agenti.',
     'news321Linux': 'Strato dopo in anticipo anche su Linux',
     'news321LinuxText': 'L\'interruttore sperimentale «Strato dopo in anticipo» di SSD stream ora funziona anche su Linux con una scheda NVIDIA, con un\'immagine del motore tutta sua scaricata solo quando lo accendi.',
     'news321Settings': 'Le Impostazioni nello stile della configurazione',
@@ -674,6 +686,14 @@ const generalWords = <String, Map<String, String>>{
     'searchHow_tavily': 'Apri Tavily (link qui sotto) ed entra con Google, GitHub o la tua email.\nNella pagina iniziale la chiave c\'è già: comincia con tvly-. Copiala.\nIncollala qui: il piano gratuito dà 1.000 ricerche al mese.',
   },
   'en': {
+    'news3100App': 'Everything in the app',
+    'news3100AppText': 'The app now does natively what the page does: extensions and skills (a skill .zip too), the keychain, Telegram and the other chats, mailboxes, models and subscriptions grouped by provider, system and remote access, machines and nodes, backups, hands-free voice, the setup wizard, imports and the search through every conversation.',
+    'news3100Questions': 'Questions are always yours',
+    'news3100QuestionsText': 'Your classifier decides permissions when you ask it to, never the agents\' questions and plans: those always reach you, on the page, in the app and in your chats, and wait for your answer.',
+    'news3100Quiet': 'Fewer needless requests',
+    'news3100QuietText': 'Removing an agent no longer asks anyone (it can be restored; switch it back on in Safety if you want). Port probes and /dev/null inside a command are no longer «system files», and a word like «dall\'» after «password:» is no longer taken for one. On the computer, God in the side bar opens the latest conversation.',
+    'news3100Video': 'Video editing, part two',
+    'news3100VideoText': 'Keyframes for volume, position and size (picture in picture), simple colour correction and .cube LUTs, cuts on the music\'s beats, slip, slide and roll, 0.5× and 2× speed, still frames, and Resolve timelines (FCP7 XML) opened by the agents.',
     'news321Linux': 'Next layer ahead on Linux too',
     'news321LinuxText': 'The experimental «Next layer ahead» switch of SSD stream now works on Linux with an NVIDIA card too, with an engine image of its own downloaded only when you turn it on.',
     'news321Settings': 'Settings in the setup\'s style',
